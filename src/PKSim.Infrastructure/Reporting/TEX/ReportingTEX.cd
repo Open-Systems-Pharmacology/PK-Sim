@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.BuildingBlocksReporter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAABAAAgAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\BuildingBlocksReporter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.BuildingBlocksTEXBuilder" Collapsed="true">
+    <Position X="4" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\BuildingBlocksTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.BuildingBlockTEXBuilder&lt;TBuildingBlock&gt;" Collapsed="true">
+    <Position X="7.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAgAAEAAAAAAAAAAAAIAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\BuildingBlockTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.BuildingBlockTEXBuilder" Collapsed="true">
+    <Position X="9.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\BuildingBlockTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.CompoundProcessTEXBuilder&lt;T&gt;" Collapsed="true">
+    <Position X="16.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\CompoundProcessTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.CompoundProcessTEXBuilder" Collapsed="true">
+    <Position X="16.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\CompoundProcessTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.CompoundTEXBuilder" Collapsed="true">
+    <Position X="8" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACIAAAIAAAAAAAAAgAQBAAgAIAAIAAgCAAAhQBEBAAA=</HashCode>
+      <FileName>Reporting\TEX\CompoundTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.HistoryReporter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAACAAAAAABAAAgAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\HistoryReporter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.IndividualMoleculeTEXBuilder&lt;TMolecule&gt;" Collapsed="true">
+    <Position X="13" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAIAAAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Reporting\TEX\IndividualMoleculeTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.IndividualProteinTEXBuilder" Collapsed="true">
+    <Position X="14" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\IndividualProteinTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.IndividualTEXBuilder" Collapsed="true">
+    <Position X="6" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAIAAAAAAAAAAIAQBAAEIAAAAAAgAAAA=</HashCode>
+      <FileName>Reporting\TEX\IndividualTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.IndividualTransporterTEXBuilder" Collapsed="true">
+    <Position X="11.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\IndividualTransporterTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.ObservedDataCollectionTEXBuilder" Collapsed="true">
+    <Position X="11" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\ObservedDataCollectionTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.ObservedDataTEXBuilder" Collapsed="true">
+    <Position X="18.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAEAAAEAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\ObservedDataTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.OriginDataTEXBuilder" Collapsed="true">
+    <Position X="2.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\OriginDataTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.ParameterTEXBuilder" Collapsed="true">
+    <Position X="5.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\ParameterTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.PKSimTEXBuilder&lt;T&gt;" Collapsed="true">
+    <Position X="13" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAEAAAAQAAAAAAAAAAAgAAAAAAAAgAIAAA=</HashCode>
+      <FileName>Reporting\TEX\PKSimTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.StringBuilderExtensions" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\PKSimTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.SimulationPropertiesTEXBuilder" Collapsed="true">
+    <Position X="14.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\SimulationPropertiesTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.SimulationsReporter" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAgAAABAAAgAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\SimulationsReporter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.TEX.SimulationTEXBuilder" Collapsed="true">
+    <Position X="9.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\SimulationTEXBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="PKSim.Infrastructure.Reporting.TEX.ITEXReporter" Collapsed="true">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\TEX\ITEXReporter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

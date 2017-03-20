@@ -1,0 +1,62 @@
+﻿using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Format;
+using DevExpress.XtraEditors;
+using DevExpress.XtraGrid.Columns;
+using PKSim.Assets;
+using PKSim.Presentation.DTO.Compounds;
+using PKSim.Presentation.Presenters.Compounds;
+using PKSim.Presentation.Views.Compounds;
+using OSPSuite.UI.Extensions;
+
+namespace PKSim.UI.Views.Compounds
+{
+   public partial class PermeabilityGroupView : CompoundParameterGroupWithCalculatedDefaultBaseView<PermeabilityAlternativeDTO>, IPermeabilityGroupView
+   {
+      private IGridViewColumn _colValue;
+
+      public PermeabilityGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever) : base(toolTipCreator, imageListRetriever)
+      {
+         InitializeComponent();
+      }
+
+      public override void InitializeBinding()
+      {
+         var colValue = _gridViewBinder.AutoBind(x => x.Permeability)
+            .WithCaption(PKSimConstants.UI.Permeability);
+
+         AddValueBinding(colValue);
+         colValue.WithFormat(formatForAlternative);
+         colValue.OnValueSet += (x, e) => permeabilityGroupPresenter.SetPermabilityValue(x, e.NewValue);
+         _colValue = colValue;
+         _comboBoxUnit.ParameterUnitSet += (dto, unit) => OnEvent(() => permeabilityGroupPresenter.SetPermabilityUnit(dto, unit));
+
+         //to do at the end to respect order
+         base.InitializeBinding();
+      }
+
+      private IFormatter<double> formatForAlternative(PermeabilityAlternativeDTO alternativeDTO)
+      {
+         return IsCalculatedAlternative(alternativeDTO) ? null : alternativeDTO.PermeabilityParameter.ParameterFormatter();
+      }
+
+      protected override void ConfigureValueRepository(BaseEdit baseEdit, ParameterAlternativeDTO alternativeDTO)
+      {
+         var permAlternative = alternativeDTO.DowncastTo<PermeabilityAlternativeDTO>();
+         _comboBoxUnit.UpdateUnitsFor(baseEdit, permAlternative.PermeabilityParameter);
+      }
+
+      protected override bool ColumnIsValue(GridColumn gridColumn)
+      {
+         if (_colValue == null) return false;
+         return _colValue.XtraColumn == gridColumn;
+      }
+
+      private IPermeabilityGroupPresenter permeabilityGroupPresenter
+      {
+         get { return _presenter.DowncastTo<IPermeabilityGroupPresenter>(); }
+      }
+   }
+}

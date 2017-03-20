@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="ExamplesFolder" />
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="Examples">
+            <Component Id="cmp1A96C4820E68208718379C694228B18C" Directory="ExamplesFolder" Guid="{9B6AC55E-C4EF-45C5-AA7A-7781C4BE7340}">
+                <File Id="filAECEB471A9533AF767FF6B97C78B29FF" KeyPath="yes" Source="$(var.DeployDir)\Aciclovir.pksim5" />
+            </Component>
+            <Component Id="cmp120321EE48CD59493F8DCCD27412275E" Directory="ExamplesFolder" Guid="{E79ADBF8-CFE7-4021-9A75-7C89E9675935}">
+                <File Id="filF27012D64F5A13BD9EE156DA3764FC4B" KeyPath="yes" Source="$(var.DeployDir)\Caffeine.pksim5" />
+            </Component>
+            <Component Id="cmp047690B44683317C13CCBDDA25C6D1F5" Directory="ExamplesFolder" Guid="{71259E02-555E-43A8-A872-0F978E19C2D3}">
+                <File Id="fil69D8778BACB01834535B589A46091010" KeyPath="yes" Source="$(var.DeployDir)\Paracetamol.pksim5" />
+            </Component>
+            <Component Id="cmpA6FEA60F837F9718196DC2F94C0DA79E" Directory="ExamplesFolder" Guid="{BAA636E3-58B5-4C31-93E5-77AEC3A5F885}">
+                <File Id="filCAFD35D622156BB102D9588184F1A053" KeyPath="yes" Source="$(var.DeployDir)\Theophylline.pksim5" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

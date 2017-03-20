@@ -1,0 +1,169 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
+
+namespace PKSim.Core.Chart
+{
+   
+   public interface ICurveDataSettings : IWithId
+   {
+      Color Color { get; set; }
+      Symbols Symbol { get; set; }
+      string Caption { get; set; }
+      LineStyles LineStyle { get; set; }
+      string PaneCaption { get; }
+   }
+
+   // for RangeArea, IndividualCurves: TX = double , XValues is reference to timegrid
+   // for Scatter: TX = double , XValues is specific for each Curve
+   // for BoxWhisker: TX = string[], TX could be reference to the same (complete) List of grouping value tupels, empty y-values are expressed by NaN
+   //                 alternatively TX could be specific for each curve, this would require an chart internal creation of all used x-Values within one pane/chart 
+   //                 and using string as X-Axis DataType or mapping to (numeric) index of x-Values
+
+   // for RangeArea: TY = double[3] for median+/-stdDev or double[N] for quantils
+   // for IndividualCurves: TY = double[NIndividuals] (all cndividual curves <-> Curve)  or   double (each cndividual curve <-> Curve)
+   // for Scatter: TY = double 
+   // for BoxWhisker: TY = double[5] for lowerWhisker, lowerQuartil, median, upperQuartil, upperWhisker
+   public class CurveData<TX, TY> : ICurveDataSettings
+      where TX : IXValue
+      where TY : IYValue
+   {
+      public virtual string Id { get; set; }
+      /// <summary>
+      /// Dictionary containing all fields {Name, Value} that where used to create this curve based on the population data
+      /// </summary>
+      public virtual IReadOnlyDictionary<string, string> FieldKeyValues { get; private set; }
+      public virtual PaneData Pane { get; set; }
+      public virtual Color Color { get; set; }
+      public virtual LineStyles LineStyle { get; set; }
+      public virtual Symbols Symbol { get; set; }
+      public virtual string Caption { get; set; }
+      private readonly List<TX> _xValues;
+      private readonly List<TY> _yValues;
+      private readonly List<string> _fieldValues;
+      private readonly List<XYValue> _xyValues;
+
+      /// <summary>
+      /// Path of underlying quantity being displayed. This is only set if the field is an IQuantityField
+      /// </summary>
+      public virtual string QuantityPath { get; set; }
+
+      /// <summary>
+      ///    Convenience constructor especially useful for tests
+      /// </summary>
+      public CurveData() : this(new Dictionary<string, string>())
+      {
+      }
+
+      public CurveData(IReadOnlyDictionary<string, string> fieldKeyValues)
+      {
+         Id = ShortGuid.NewGuid();
+         FieldKeyValues = fieldKeyValues;
+         Color = Color.Black;
+         Symbol = Symbols.Circle;
+         LineStyle = LineStyles.Solid;
+         _xValues = new List<TX>();
+         _yValues = new List<TY>();
+         _xyValues = new List<XYValue>();
+         _fieldValues = fieldKeyValues.Values.ToList();
+      }
+
+      public IEnumerable<string> FieldNames
+      {
+         get { return FieldKeyValues.Keys; }
+      }
+
+      public IReadOnlyList<string> FieldValues
+      {
+         get { return _fieldValues; }
+      }
+
+      public virtual void Add(TX xValue, TY yValue)
+      {
+         _xValues.Add(xValue);
+         _yValues.Add(yValue);
+         _xyValues.Add(new XYValue(_xValues.Count - 1, xValue, yValue));
+      }
+
+      public virtual IReadOnlyList<TX> XValues
+      {
+         get { return _xValues; }
+      }
+
+      public virtual IReadOnlyList<TY> YValues
+      {
+         get { return _yValues; }
+      }
+
+      public virtual string PaneCaption
+      {
+         get { return Pane.Caption; }
+      }
+
+      public virtual int GetPointIndexForDisplayValues(double xValueInDisplayUnit, double yValueInDisplayUnit)
+      {
+         var xBaseUnit = XAxis.ConvertToBaseUnit(xValueInDisplayUnit);
+         var yBaseUnit = YAxis.ConvertToBaseUnit(yValueInDisplayUnit);
+
+         return _xyValues.OrderBy(x => x.DistanceTo(xBaseUnit, yBaseUnit)).First().Index;
+      }
+
+      public virtual AxisData XAxis
+      {
+         get { return Pane.ChartAxis; }
+      }
+
+      public virtual AxisData YAxis
+      {
+         get { return Pane.Axis; }
+      }
+
+      public virtual string XDisplayValueAt(int pointIndex)
+      {
+         return XValues[pointIndex].ToString(XAxis);
+      }
+
+      public virtual string YDisplayValueAt(int pointIndex)
+      {
+         return YValues[pointIndex].ToString(YAxis);
+      }
+
+      private class XYValue
+      {
+         private readonly IXValue _xValue;
+         private readonly IYValue _yValue;
+         public int Index { get; private set; }
+
+         public XYValue(int index, IXValue xValue, IYValue yValue)
+         {
+            Index = index;
+            _xValue = xValue;
+            _yValue = yValue;
+         }
+
+         private double calcDistance(double baseUnitValue, double value)
+         {
+            return Math.Abs(baseUnitValue - value);
+         }
+
+         public double DistanceTo(double xBaseUnit, double yBaseUnit)
+         {
+            var distanceToX = calcDistance(xBaseUnit, _xValue.X);
+            if (shouldCalculateDistanceOnlyBasedOnXValue(yBaseUnit))
+               return distanceToX;
+
+            return distanceToX + calcDistance(yBaseUnit, _yValue.Y);
+         }
+
+         private bool shouldCalculateDistanceOnlyBasedOnXValue(double yBaseUnit)
+         {
+            return double.IsNaN(_yValue.Y) || double.IsNaN(yBaseUnit) || _xValue.IsAnImplementationOf<BoxWhiskerXValue>();
+         }
+      }
+   }
+}

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="$(var.ProductId)" Name="$(var.ProductFullName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="35BAE78E-2BCE-491C-A496-450A82E2BB5E">
+    <Package InstallerVersion="200" Compressed="yes" InstallPrivileges="elevated" />
+
+    <Condition Message="For a correct installation of the software, administrator rights are necessary. You do not have these rights. Please contact your IT-administrator to carry out the installation">Privileged</Condition>
+
+    <Upgrade Id="35BAE78E-2BCE-491C-A496-450A82E2BB5E">
+      <UpgradeVersion OnlyDetect="no" Property="PREVIOUSFOUND" Minimum="5.0.0" IncludeMinimum="yes" Maximum="$(var.ProductVersion)" IncludeMaximum="no" />
+    </Upgrade>
+
+    <!--Setup Properties -->
+    <Property Id="ALLUSERS" Value="1" />
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+    <?if $(sys.BUILDARCH) = x64 ?>
+    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?else?>
+    <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?endif?>
+
+    <!--Programm Files Set by bundle Setup-->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="OSP_SUITE" Name="$(var.Manufacturer)">
+        <Directory Id="INSTALLDIR" Name="$(var.ProductFullName)">
+          <Component Id="PKSim.exe" Guid="7E30E944-CA31-4330-93E7-A6F4F4AE4663">
+            <File Name="PKSim.exe" Id="PKSim.exe" KeyPath="yes" Source="$(var.DeployDir)/PKSim.exe">
+              <Shortcut Name="$(var.ProductName)" Id="PKSimShortcut" Icon="PKSimIcon.exe" Directory="OSPSuiteMenuDir" WorkingDirectory="INSTALLDIR" Advertise="yes" />
+            </File>
+
+            <File Name="PKSim5FileIcon.ico" Id="PKSim5FileIcon.ico" Source="$(var.DeployDir)/PKSim5FileIcon.ico" />
+            <ProgId Id="PKSim.pksim5File" Description="PK-Sim Project File" Icon="PKSim5FileIcon.ico" IconIndex="0">
+              <Extension Id="pksim5" ContentType="application/pksim5">
+                <Verb Id="open" Command="Open" TargetFile="PKSim.exe" Argument='"%1"' />
+              </Extension>
+            </ProgId>
+
+            <File Name="JournalFile.ico" Id="JournalFile.ico" Source="$(var.DeployDir)/JournalFile.ico" />
+            <ProgId Id="OSPSuite.JournalFile" Description="OSPSuite Journal File" Icon="JournalFile.ico" IconIndex="0">
+              <Extension Id="sbj" ContentType="application/sbj">
+                <Verb Id="open" Command="Open" TargetFile="PKSim.exe" Argument='/j "%1"' />
+              </Extension>
+            </ProgId>
+
+            <RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)\PK-Sim\$(var.ProductReleaseVersion)" Name="InstallPath" Type="string" KeyPath="no" Value="[INSTALLDIR]PKSim.exe" />
+            <RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)\PK-Sim\$(var.ProductReleaseVersion)" Name="InstallDir" Type="string" KeyPath="no" Value="[INSTALLDIR]" />
+          </Component>
+
+          <Component Id="OSPSuiteLicense" Guid="CBB85B48-B261-4366-9B90-55CAAB5DD263">
+            <File Name="Open Systems Pharmacology Suite License.pdf" Id="OSPSuiteLicense" Source="$(var.DeployDir)/Open Systems Pharmacology Suite License.pdf" KeyPath="yes">
+              <Shortcut Name="Open Systems Pharmacology Suite License" Id="OSPSuiteLicenseShortcut" Directory="OSPSuiteMenuDir" WorkingDirectory="INSTALLDIR" Advertise="yes" />
+            </File>
+          </Component>
+
+          <Component Id="Manual.pdf" Guid="9BC79938-9513-4472-8338-AB65F24783C8">
+            <File Name="Open Systems Pharmacology Suite.pdf" Id="Manual.pdf" Source="$(var.DeployDir)/Open Systems Pharmacology Suite.pdf" KeyPath="yes">
+              <Shortcut Name="Open Systems Pharmacology Suite Manual" Id="ManualShortcut" Directory="OSPSuiteMenuDir" WorkingDirectory="INSTALLDIR" Advertise="yes" />
+            </File>
+          </Component>
+
+          <Component Id='log4net.config.xml' Guid='A6BF052C-E9BA-4959-82B1-5B61011A06AB'>
+            <File Name='log4net.config.xml' Id='log4net.config.xml' Source='$(var.DeployDir)/log4net.config.xml' KeyPath='yes' />
+          </Component>
+        </Directory>
+      </Directory>
+
+
+      <!--Common Data Folder-->
+      <Directory Id="CommonAppDataFolder">
+        <Directory Id="OSPSuiteDataFolder" Name="$(var.Manufacturer)">
+
+          <Component Id="OSPSuiteDataFolder" Guid="1CF6D42E-850F-476A-B752-99D7F3E43A83">
+            <CreateFolder Directory="OSPSuiteDataFolder">
+              <Permission User="Everyone" GenericAll="yes" />
+            </CreateFolder>
+          </Component>
+
+          <Directory Id="PKSimCommonDataFolder" Name="$(var.ProductName)">
+            <Component Id="PKSimCommonDataFolder" Guid="2B27CBD6-4F07-481F-9783-F12799C6E769">
+              <CreateFolder Directory="PKSimCommonDataFolder">
+                <Permission User="Everyone" GenericAll="yes" />
+              </CreateFolder>
+            </Component>
+
+            <Directory Id="PKSimCommonDataVersionFolder" Name="$(var.ProductReleaseVersion)">
+              <Component Id="PKSimCommonDataVersionFolder" Guid="A98ED116-21D6-4662-B4EE-F24CAC2C3E8D">
+                <CreateFolder Directory="PKSimCommonDataVersionFolder">
+                  <Permission User="Everyone" GenericAll="yes" />
+                </CreateFolder>
+              </Component>
+
+              <Component Id="PKSimDB" Guid="686F86BE-F0C7-4F00-8982-4B376997D8BA">
+                <File Name="PKSimDB.mdb" Id="PKSimDB" Source="$(var.DeployDir)/PKSimDB.mdb" KeyPath="yes" />
+              </Component>
+
+              <Component Id='OSPSuite.Dimensions' Guid='79ED18B0-4CBC-45D3-A24F-16FC2B324409'>
+                <File Name='OSPSuite.Dimensions.xml' Id='OSPSuite.Dimensions' Source='$(var.DeployDir)/OSPSuite.Dimensions.xml' KeyPath='yes' />
+              </Component>
+
+              <Component Id='OSPSuite.PKParameters' Guid='1FB33C95-C00E-4C5C-B8C3-0D5E3C7B5034'>
+                <File Name='OSPSuite.PKParameters.xml' Id='OSPSuite.PKParameters' Source='$(var.DeployDir)/OSPSuite.PKParameters.xml' KeyPath='yes' />
+              </Component>
+
+              <Component Id="PKSimTemplateDBSystem" Guid="DF39FF9D-DAB8-4A6A-9E3E-FEFD68489F3C">
+                <File Name="PKSimTemplateDBSystem.mdb" Id="PKSimTemplateDBSystem" Source="$(var.DeployDir)/PKSimTemplateDBSystem.mdb" KeyPath="yes" />
+              </Component>
+
+              <Directory Id="ChartLayoutsFolder" Name="ChartLayouts">
+                <Component Id="ChartLayoutsFolder" Guid="FE800FCC-CF4A-452E-AA9D-E5DF4AF61777">
+                  <CreateFolder Directory="ChartLayoutsFolder">
+                    <Permission User="Everyone" GenericAll="yes" />
+                  </CreateFolder>
+                </Component>
+              </Directory>
+
+              <Directory Id="TeXTemplatesFolder" Name="TeXTemplates">
+                <Component Id="TeXTemplatesFolder" Guid="1EB74549-916C-42E1-B40B-199B43DF2ECC">
+                  <CreateFolder Directory="TeXTemplatesFolder">
+                    <Permission User="Everyone" GenericAll="yes" />
+                  </CreateFolder>
+                </Component>
+              </Directory>
+
+              <Directory Id="ExamplesFolder" Name="Examples">
+                <Component Id="ExamplesFolder" Guid="4CCE3113-8250-40AF-A9ED-7A9AC0CFED1B">
+                  <CreateFolder Directory="ExamplesFolder">
+                    <Permission User="Everyone" GenericAll="yes" />
+                  </CreateFolder>
+                </Component>
+
+                <Component Id="ExampleFolderShortCut" Guid="21CC8E07-4C3B-4613-B237-28F17160E474">
+                  <Shortcut Id="ExampleFolderShortCut" Name="$(var.ProductName) Examples" Directory="OSPSuiteMenuDir" />
+                  <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="Examples" KeyPath="yes" />
+                </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <!--Start menu Programms -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="OSPSuiteMenuDir" Name="$(var.SuiteName) $(var.ProductReleaseVersion)">
+          <Component Id="OSPSuiteMenuDir" Guid="5D07DE39-0070-487B-94F4-C0ADB6118BF0">
+            <RemoveFolder Id="OSPSuiteMenuDir" On="uninstall" />
+            <RegistryValue Root="HKMU" Key="Software\[Manufacturer]\[ProductName]\OSP" Type="string" Value="" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+
+      <Merge Id="msxml4sxs32" SourceFile="$(var.DeployDir)/msxml4sxs32.msm" Language="1033" DiskId="1" />
+      <Merge Id="msxml4sys32" SourceFile="$(var.DeployDir)/msxml4sys32.msm" Language="1033" DiskId="1" />
+      <Merge Id="vb6" SourceFile="$(var.DeployDir)/MSVBVM60.msm" Language="1033" DiskId="1" />
+      <Merge Id="comcat" SourceFile="$(var.DeployDir)/COMCAT.msm" Language="1033" DiskId="1" />
+      <Merge Id="ole" SourceFile="$(var.DeployDir)/OLEAUT32.msm" Language="1033" DiskId="1" />
+    </Directory>
+
+
+    <Property Id="ARPHELPLINK" Value="http://www.open-systems-pharmacology.org" />
+    <Property Id="ARPPRODUCTICON" Value="PKSimIcon.ico" />
+    <Property Id="ARPCONTACT" Value="http://forum.open-systems-pharmacology.org" />
+    <Property Id="ARPURLUPDATEINFO" Value="http://www.open-systems-pharmacology.org" />
+    <Property Id="ARPURLINFOABOUT" Value="http://www.open-systems-pharmacology.org" />
+    <Icon Id="PKSimIcon.exe" SourceFile="$(var.DeployDir)/PKSim.exe" />
+    <Icon Id="PKSimIcon.ico" SourceFile="$(var.DeployDir)/PKSim.ico" />
+
+
+    <Feature Id="Main" Title="$(var.ProductName)" Level="1" Absent="disallow" AllowAdvertise="no">
+      <ComponentGroupRef Id="App" />
+      <ComponentGroupRef Id="ChartLayouts" />
+      <ComponentGroupRef Id="OSPSuite.TeXReporting" />
+      <ComponentGroupRef Id="Examples" />
+
+      <ComponentRef Id="PKSim.exe" />
+      <ComponentRef Id="log4net.config.xml" />
+      <ComponentRef Id="OSPSuiteMenuDir" />
+      <ComponentRef Id="Manual.pdf" />
+      <ComponentRef Id="PKSimDB" />
+      <ComponentRef Id="OSPSuiteDataFolder" />
+      <ComponentRef Id="PKSimCommonDataFolder" />
+      <ComponentRef Id="PKSimCommonDataVersionFolder" />
+      <ComponentRef Id="OSPSuiteLicense" />
+      <ComponentRef Id="PKSimTemplateDBSystem" />
+      <ComponentRef Id="ChartLayoutsFolder" />
+      <ComponentRef Id="TeXTemplatesFolder" />
+      <ComponentRef Id="ExamplesFolder" />
+      <ComponentRef Id="ExampleFolderShortCut" />
+      <ComponentRef Id="OSPSuite.Dimensions" />
+      <ComponentRef Id="OSPSuite.PKParameters" />
+
+      <MergeRef Id="msxml4sys32" />
+      <MergeRef Id="msxml4sxs32" />
+      <MergeRef Id="vb6" />
+      <MergeRef Id="comcat" />
+      <MergeRef Id="ole" />
+    </Feature>
+
+
+    <InstallExecuteSequence>
+      <RemoveExistingProducts Before="InstallInitialize" />
+    </InstallExecuteSequence>
+
+    <!-- UISection-->
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <!--<UIRef Id="WixUI_Advanced" />-->
+    <UIRef Id="WixUI_InstallDir" />
+
+    <!--Customisation of Features and install location-->
+    <UIRef Id="WixUI_ErrorProgressText" />
+    <WixVariable Id="WixUILicenseRtf" Value="EULA.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="Banner.bmp" />
+  </Product>
+</Wix>

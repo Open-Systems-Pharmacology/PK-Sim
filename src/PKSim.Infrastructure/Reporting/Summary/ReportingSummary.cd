@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.AdvancedProtocolReportBuilder" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\AdvancedProtocolReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.CalculationMethodsReportBuilder" Collapsed="true">
+    <Position X="9.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\CalculationMethodsReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.CompoundPropertiesReportBuilder" Collapsed="true">
+    <Position X="6.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\CompoundPropertiesReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.CompoundReportBuilder" Collapsed="true">
+    <Position X="12.75" Y="2.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAA=</HashCode>
+      <FileName>Reporting\Summary\CompoundReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.DataColumnReportBuilder" Collapsed="true">
+    <Position X="4.25" Y="3.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\DataColumnReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.EventMappingReportBuilder" Collapsed="true">
+    <Position X="8.75" Y="3.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAIEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\EventMappingReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.EventPropertiesReportBuilder" Collapsed="true">
+    <Position X="4.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\EventPropertiesReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.EventReportBuilder" Collapsed="true">
+    <Position X="11.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\EventReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ExtendedPropertiesReportBuilder" Collapsed="true">
+    <Position X="8" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\ExtendedPropertiesReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.FormulationReportBuilder" Collapsed="true">
+    <Position X="13" Y="1.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\FormulationReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.GenderRatioReportBuilder" Collapsed="true">
+    <Position X="5.75" Y="3.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAQA=</HashCode>
+      <FileName>Reporting\Summary\GenderRatioReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.IndividualReportBuilder" Collapsed="true">
+    <Position X="18.75" Y="3.25" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Reporting\Summary\IndividualReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ReportBuilder&lt;T&gt;" Collapsed="true">
+    <Position X="15.75" Y="0.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAEAAAAABAA=</HashCode>
+      <FileName>Reporting\Summary\IReportBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.DelegateReportBuilder&lt;T&gt;" Collapsed="true">
+    <Position X="17.75" Y="1.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\IReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ReportBuilderRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\IReportBuilderRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Orientation="Left" Position="0.491" Collapsed="true" />
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ModelPropertiesReportBuilder" Collapsed="true">
+    <Position X="6.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\ModelPropertiesReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ObservedDataReportBuilder" Collapsed="true">
+    <Position X="2.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\ObservedDataReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.OriginDataReportBuilder" Collapsed="true">
+    <Position X="9.75" Y="2.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAABAAAAAAAAAEAQAAAAQA=</HashCode>
+      <FileName>Reporting\Summary\OriginDataReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ParameterAlternativeGroupReportBuilder" Collapsed="true">
+    <Position X="2.75" Y="3.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\ParameterAlternativeGroupReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ParameterRangeReportBuilder" Collapsed="true">
+    <Position X="7.25" Y="3.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\ParameterRangeReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ParameterReportBuilder" Collapsed="true">
+    <Position X="10.25" Y="3.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\ParameterReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ParmeterAlternativeReportBuilder" Collapsed="true">
+    <Position X="8" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\ParmeterAlternativeReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.PopulationSettingsReportBuilder" Collapsed="true">
+    <Position X="4.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\PopulationSettingsReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ProcessSelectionGroupReportBuilder" Collapsed="true">
+    <Position X="11.25" Y="2.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\ProcessSelectionGroupReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.RandomPopulationReportBuilder" Collapsed="true">
+    <Position X="17.25" Y="3.25" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Reporting\Summary\RandomPopulationReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.ReportGenerator" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAgABAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Reporting\Summary\ReportGenerator.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.SchemaItemReportBuilder" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\SchemaItemReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.SchemaReportBuilder" Collapsed="true">
+    <Position X="13.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\SchemaReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.SimpleProtocolReportBuilder" Collapsed="true">
+    <Position X="14.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAQAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\SimpleProtocolReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.SimulationPropertiesReportBuilder" Collapsed="true">
+    <Position X="14.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\SimulationPropertiesReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.SimulationReportBuilder" Collapsed="true">
+    <Position X="4.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\SimulationReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.SubPopulationReportBuilder" Collapsed="true">
+    <Position X="6.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\SubPopulationReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PKSim.Infrastructure.Reporting.Summary.UsedBuildingBlockReportBuilder" Collapsed="true">
+    <Position X="11.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAEAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\UsedBuildingBlockReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="PKSim.Infrastructure.Reporting.Summary.IReportBuilder" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Reporting\Summary\IReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="PKSim.Infrastructure.Reporting.Summary.IReportBuilder&lt;T&gt;" Collapsed="true">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Reporting\Summary\IReportBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="PKSim.Infrastructure.Reporting.Summary.IReportBuilderRepository" Collapsed="true">
+    <Position X="2.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reporting\Summary\IReportBuilderRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

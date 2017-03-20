@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<McDataRepository id="6a4d5c9c-3df3-442f-8b9c-de24b92ab096" name="Workshop_SBSuite.Ex_IV Willis 1979 MEAN" icon="ObservedData">
+    <Columns>
+        <McBaseGrid id="87543e38-38a6-45f2-b46d-60b94092235c" name="Time " dimension="Time" baseGrid="87543e38-38a6-45f2-b46d-60b94092235c">
+            <DataInfo origin="BaseGrid" auxiliaryType="Undefined" displayUnitName="h" date="-8588052344787667956" source="WorkShop_SBSuite.Ex_IV Willis 1979 Diclo MEAN.Time [h]" />
+            <QuantityInfo name="Time " type="Time" orderIndex="0" Path="Workshop_SBSuite.Ex_IV Willis 1979 MEAN|Time " />
+            <Values>AAEAAAD/////AQAAAAAAAAAPAQAAAAsAAAALKVyfQOxRIEEAAHBBZmaeQQAA8EEAADRCAABwQgAAtEIAAPBCAAAWQwAANEML</Values>
+            <RelatedColumnsCache />
+        </McBaseGrid>
+        <McDataColumn id="1f70b278-6f8b-461c-8eae-d6b88489cc7d" name="Conc. " dimension="Concentration (mass)" baseGrid="87543e38-38a6-45f2-b46d-60b94092235c">
+            <DataInfo origin="Observation" auxiliaryType="Undefined" displayUnitName="µg/ml" date="-8588052344787657956" source="WorkShop_SBSuite.Ex_IV Willis 1979 Diclo MEAN.Conc. [µg/ml]" molWeight="2.96E-07" />
+            <QuantityInfo name="Conc. " type="Undefined" orderIndex="0" Path="Workshop_SBSuite.Ex_IV Willis 1979 MEAN|ObservedData|Peripheral Venous Blood|Plasma|Diclofenac|Conc. " />
+            <Values>AAEAAAD/////AQAAAAAAAAAPAQAAAAsAAAALIy8EN/FIijZuHCg2csPjNSmwojXNOUM1bsPjNCuwojTOOUM0hyYCNLaIrTML</Values>
+            <RelatedColumnsCache>
+                <ColumnId>559aef2e-d4ff-4695-8530-e67b76480384</ColumnId>
+            </RelatedColumnsCache>
+        </McDataColumn>
+        <McDataColumn id="559aef2e-d4ff-4695-8530-e67b76480384" name="Error " dimension="Concentration (mass)" baseGrid="87543e38-38a6-45f2-b46d-60b94092235c">
+            <DataInfo origin="ObservationAuxiliary" auxiliaryType="ArithmeticStdDev" displayUnitName="µg/ml" date="-8588052344787657956" source="WorkShop_SBSuite.Ex_IV Willis 1979 Diclo MEAN.Error [µg/ml]" molWeight="2.96E-07" />
+            <QuantityInfo name="Error " type="Undefined" orderIndex="0" Path="Workshop_SBSuite.Ex_IV Willis 1979 MEAN|ObservedData|Peripheral Venous Blood|Plasma|Diclofenac|Error " />
+            <Values>AAEAAAD/////AQAAAAAAAAAPAQAAAAsAAAALKbCiNaJ+UzWSJgI1ILCiNIAmgjSOJgI0AAAAAAAAAAAAAAAAAAAAAAAAAAAL</Values>
+            <RelatedColumnsCache />
+        </McDataColumn>
+    </Columns>
+    <ExtendedProperties>
+        <StringExtendedProperty name="Source" readOnly="0" value="C:\BTS Software User Training\WorkShop_SBSuite.xlsx.Ex_IV Willis 1979 Diclo MEAN" />
+        <StringExtendedProperty name="Molecule" readOnly="0" value="Diclofenac" />
+        <StringExtendedProperty name="Species" readOnly="0" value="Human" />
+        <StringExtendedProperty name="Organ" readOnly="0" value="Peripheral Venous Blood" />
+        <StringExtendedProperty name="Compartment" readOnly="0" value="Plasma" />
+    </ExtendedProperties>
+</McDataRepository>

@@ -1,0 +1,12 @@
+[submodule "scripts"]
+	path = scripts
+	url = https://github.com/Open-Systems-Pharmacology/build-scripts.git
+[submodule "dimensions"]
+	path = dimensions
+	url = https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions.git
+[submodule "pkparameters"]
+	path = pkparameters
+	url = https://github.com/Open-Systems-Pharmacology/OSPSuite.PKParameters.git
+[submodule "documentation"]
+	path = documentation
+	url = https://github.com/Open-Systems-Pharmacology/OSPSuite.Documentation.git

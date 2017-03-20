@@ -1,0 +1,90 @@
+ParameterPath;0;1;2
+RaceIndex;0;0;0
+Gender;1;1;2
+Organism|Weight;77.782659737149;54.2500088173889;7.81888296860979
+Organism|BMI;0.282310829331004;0.183925857972658;0.176719973313838
+Organism|Gestational age;40;40;40
+Organism|Age;39.4841773991865;18.6491825890956;0.560491271578004
+Organism|Ontogeny factor (alpha1-acid glycoprotein);1;1;1
+Organism|Ontogeny factor (albumin);1;1;0.974838305109722
+Organism|Height;16.5988356873402;17.1742788979853;6.65165227473282
+Organism|Hematocrit;0.47;0.432163941963652;0.36
+Organism|VenousBlood|Volume;0.919547310379422;0.828226670972821;0.0776957800476169
+Organism|ArterialBlood|Volume;0.368849715865837;0.392291812446839;0.0322425641507344
+Organism|Bone|Specific blood flow rate;0.0268434923037349;0.0349338765491751;0.0561996542233643
+Organism|Bone|Volume;10.2628579099791;9.87647459856962;1.01844053166064
+Organism|Brain|Volume;1.49179232943797;1.5271699428048;0.706903035026473
+Organism|Brain|Specific blood flow rate;0.513790420070614;0.491133449797827;0.640885333173787
+Organism|Fat|Volume;22.3756985413373;6.64330844655839;2.77030014234615
+Organism|Fat|Vf (lipid);0.8;0.747029518749113;0.507703167031381
+Organism|Fat|Vf (neutral lipid)-PT;0.79;0.737691649764749;0.501356877443489
+Organism|Fat|Vf (phospholipid)-PT;0.002;0.00186757379687278;0.00126925791757845
+Organism|Fat|Fraction interstitial;0.16;0.205403269643617;0.433506658400179
+Organism|Fat|Vf (water)-PT;0.18;0.243564577501064;0.53075619955898
+Organism|Fat|Vf (water);0.15;0.202970481250887;0.442296832965817
+Organism|Fat|Vf (neutral lipid)-WS;0.92;0.85908394656148;0.583858642086088
+Organism|Fat|Vf (neutral lipid)-RR;0.853;0.796520224366242;0.54133850184721
+Organism|Fat|Vf (neutral phospholipid, plasma)-WS;0.002024;0.00188998468243526;0.00128448901258939
+Organism|Fat|Vf (neutral phospholipid)-RR;0.0016;0.00149405903749823;0.00101540633406276
+Organism|Fat|Vf (extracellular water)-RR;0.135;0.182673433125798;0.398067149669235
+Organism|Fat|Vf (intracellular water)-RR;0.00899999999999998;0.0121782288750532;0.0265378099779489
+Organism|Fat|Vf (water)-WS;0.03;0.0405940962501774;0.0884593665931633
+Organism|Fat|Specific blood flow rate;0.0218991110951342;0.0291748786720153;0.0245109713081659
+Organism|Gonads|Volume;0.0402505452232855;0.0254826823704265;0.000798218011621548
+Organism|Gonads|Specific blood flow rate;0.0742816050874651;0.137755404488674;0.281253419676438
+Organism|Heart|Volume;0.466743619057495;0.397806188791913;0.0591823491246934
+Organism|Heart|Specific blood flow rate;0.617258025513348;0.805214447166347;0.797222751078887
+Organism|Kidney|Volume;0.355891514733895;0.419698375758115;0.0731672727564107
+Organism|Kidney|TM50 for GFR;42.186830431958;44.386331289736;45.3048401203809
+Organism|Kidney|Hill coefficient for GFR;15.2438221385476;15.7134448336882;15.2622487462208
+Organism|Kidney|GFRmat;0.151092046516068;0.0775980002429994;0.0903849347281109
+Organism|Kidney|Specific blood flow rate;2.64592172016877;3.34644945768414;2.54359225830798
+Organism|Lumen|Stomach|Length;2;1.92258742525763;0.797700697556553
+Organism|Lumen|Stomach|Distal radius;0.5;0.480650639920212;0.199424075617317
+Organism|Lumen|Stomach|Proximal radius;0.5;0.480650639920212;0.199424075617317
+Organism|Lumen|Duodenum|Effective surface area enhancement factor;292.6883;292.6883;266.346353
+Organism|Lumen|UpperJejunum|Effective surface area enhancement factor;447.9877;447.9877;407.668807
+Organism|Lumen|LowerJejunum|Effective surface area enhancement factor;372.9358;372.9358;339.371578
+Organism|Lumen|UpperIleum|Effective surface area enhancement factor;260.7527;260.7527;237.284957
+Organism|Lumen|LowerIleum|Effective surface area enhancement factor;146.565;146.565;133.37415
+Organism|Lumen|Caecum|Effective surface area enhancement factor;1.8;1.8;1.638
+Organism|Lumen|ColonAscendens|Effective surface area enhancement factor;2.5;2.5;2.275
+Organism|Lumen|ColonTransversum|Effective surface area enhancement factor;2.5;2.5;2.275
+Organism|Lumen|ColonDescendens|Effective surface area enhancement factor;2.5;2.5;2.275
+Organism|Lumen|ColonSigmoid|Effective surface area enhancement factor;2.5;2.5;2.275
+Organism|Lumen|Rectum|Effective surface area enhancement factor;3.56;3.56;3.2396
+Organism|Stomach|Volume;0.222737171098516;0.169797674438382;0.0162102005773394
+Organism|Stomach|Specific blood flow rate;0.375616705967649;0.449474563838769;0.630543809224083
+Organism|SmallIntestine|Volume;0.778520134067999;0.752512885989264;0.0565804195621619
+Organism|SmallIntestine|Specific blood flow rate;0.763101095542688;0.973806281368709;1.39048000826617
+Organism|LargeIntestine|Volume;0.511884036053066;0.41018735292212;0.0366241055750813
+Organism|LargeIntestine|Specific blood flow rate;0.629920351147513;0.742956309080939;0.993301033085634
+Organism|Liver|Volume;2.713728040205;2.31497475983262;0.330788947620629
+Organism|Liver|Specific blood flow rate;0.182375900628934;0.230081066618012;0.197313300120496
+Organism|Lung|Volume;1.39004038728842;0.866868619436356;0.125236856949003
+Organism|Lung|Fraction vascular;0.58;0.58;0.53
+Organism|Muscle|Volume;30.8495552953317;25.6687581729472;1.99781920182837
+Organism|Muscle|Vf (lipid);0.013;0.013;0.013
+Organism|Muscle|Vf (neutral lipid)-PT;0.0238;0.0238;0.0238
+Organism|Muscle|Vf (phospholipid)-PT;0.0072;0.0072;0.0072
+Organism|Muscle|Vf (protein);0.177;0.177;0.220725930284844
+Organism|Muscle|Fraction interstitial;0.16;0.175134423214539;0.37274104741064
+Organism|Muscle|Vf (water)-PT;0.76;0.76;0.789176886620456
+Organism|Muscle|Vf (water);0.811;0.811;0.84213480927525
+Organism|Muscle|Vf (neutral lipid)-RR;0.022;0.022;0.022
+Organism|Muscle|Vf (neutral lipid)-WS;0.0049;0.0049;0.0049
+Organism|Muscle|Vf (neutral phospholipid)-RR;0.0078;0.0078;0.0078
+Organism|Muscle|Vf (neutral phospholipid, plasma)-WS;0.0042;0.0042;0.0042
+Organism|Muscle|Vf (extracellular water)-RR;0.079;0.079;0.0820328605829158
+Organism|Muscle|Vf (protein)-WS;0.19;0.19;0.236937439288815
+Organism|Muscle|Vf (intracellular water)-RR;0.666;0.666;0.691568166433189
+Organism|Muscle|Vf (water)-WS;0.76;0.76;0.789176886620456
+Organism|Muscle|Specific blood flow rate;0.0350368442183917;0.0333465146861756;0.0345071935051495
+Organism|Pancreas|Volume;0.203109862540144;0.138832883327745;0.0149252219700567
+Organism|Pancreas|Specific blood flow rate;0.367175491097981;0.390451676263194;0.535293537653822
+Organism|PortalVein|Volume;0.897696728088767;0.939046175958889;0.085384524313547
+Organism|Skin|Volume;3.77848967064565;2.70662949153464;0.338100130608785
+Organism|Skin|Specific blood flow rate;0.0857078195775709;0.12336117008067;0.137604514922186
+Organism|Spleen|Volume;0.155266925815395;0.171942082728775;0.078483466480483
+Organism|Spleen|Specific blood flow rate;0.692160763808987;0.918639716982447;0.874214562579125
+Organism|pH (plasma);3.94169701954617;9.0859235606805;6.81393628900991
