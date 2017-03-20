@@ -21,6 +21,7 @@ task :create_setup, [:product_version, :configuration] do |t, args|
 		'src/PKSim.Assets/Resources/*.ico',
 		'src/Db/PKSimDB.mdb',
 		'src/Db/TemplateDB/PKSimTemplateDBSystem.mdb',
+		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
 		'dimensions/*.xml',
 		'pkparameters/*.xml',
