@@ -15,6 +15,7 @@
 *.mdb binary
 *.TIF binary
 *.ico binary
+*.msm binary
 
 *.ascx text
 *.cd text
