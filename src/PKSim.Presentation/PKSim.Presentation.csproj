@@ -84,19 +84,19 @@
       <HintPath>..\..\packages\csmpfit.1.1.0\lib\net20\MPFitLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.21\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.24\lib\net452\OSPSuite.Assets.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.21\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.24\lib\net452\OSPSuite.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.21\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.24\lib\net452\OSPSuite.Presentation.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.Serializer">
