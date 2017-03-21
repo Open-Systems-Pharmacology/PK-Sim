@@ -3,15 +3,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using Northwoods.Go;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Infrastructure;
-using PKSim.Presentation;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.Views;
-using PKSim.UI.Views.Core;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
@@ -26,6 +17,14 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Infrastructure;
+using PKSim.Presentation;
+using PKSim.Presentation.Core;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.Views;
+using PKSim.UI.Views.Core;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using PresenterRegister = OSPSuite.Presentation.PresenterRegister;
 
@@ -75,7 +74,7 @@ namespace PKSim.UI.BootStrapping
       private static void updateGoDiagramKey()
       {
          // This line is patched during creation of setup. Do not modify.
-         GoView.LicenseKey = $"{Environment.GetEnvironmentVariable("GO_DIAGRAM_KEY")}";
+         UIRegister.GoDiagramKey = $"{Environment.GetEnvironmentVariable("GO_DIAGRAM_KEY")}";
       }
 
       private SynchronizationContext getCurrentContext()
