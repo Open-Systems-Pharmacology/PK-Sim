@@ -1,8 +1,8 @@
 using System.Threading;
+using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
-using OSPSuite.Utility.Container;
 
 namespace PKSim.Matlab
 {
@@ -38,15 +38,18 @@ namespace PKSim.Matlab
          if (!string.IsNullOrEmpty(pkParameterFilePath))
             pksimConfiguration.PKParametersFilePath = pkParameterFilePath;
 
-         container.RegisterImplementationOf(new SynchronizationContext());
-         container.AddRegister(x => x.FromType<MatlabRegister>());
-         container.AddRegister(x => x.FromType<PresenterRegister>());
-         container.AddRegister(x => x.FromType<CoreRegister>());
-         container.AddRegister(x => x.FromType<InfrastructureRegister>());
-         container.AddRegister(x => x.FromType<OSPSuite.Presentation.PresenterRegister>());
+         using (container.OptimizeDependencyResolution())
+         {
+            container.RegisterImplementationOf(new SynchronizationContext());
+            container.AddRegister(x => x.FromType<MatlabRegister>());
+            container.AddRegister(x => x.FromType<PresenterRegister>());
+            container.AddRegister(x => x.FromType<CoreRegister>());
+            container.AddRegister(x => x.FromType<InfrastructureRegister>());
+            container.AddRegister(x => x.FromType<OSPSuite.Presentation.PresenterRegister>());
 
-         //no computation required in matlab interface
-         InfrastructureRegister.RegisterSerializationDependencies(registerSimModelSchema: false);
+            //no computation required in matlab interface
+            InfrastructureRegister.RegisterSerializationDependencies(registerSimModelSchema: false);
+         }
       }
    }
 }
