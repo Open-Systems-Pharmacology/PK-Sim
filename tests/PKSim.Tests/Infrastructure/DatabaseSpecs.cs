@@ -1,7 +1,6 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Infrastructure.ORM.Core;
-using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Exceptions;
 
 namespace PKSim.Infrastructure

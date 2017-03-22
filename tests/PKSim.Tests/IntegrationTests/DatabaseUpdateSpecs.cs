@@ -225,36 +225,47 @@ namespace PKSim.IntegrationTests
 
    public class When_checking_the_changes_in_the_database_for_version_7_1_0 : concern_for_DatabaseUpdate
    {
+      private IParameterValueRepository _parameterValueRepository;
+      private IParameterRateRepository _parameterRateRepository;
+      private ISpeciesRepository _speciesRepository;
+      private ICalculationMethodRepository _calculationMethodRepository;
+      private IRateFormulaRepository _rateFormulaRepository;
+      private IRateObjectPathsRepository _rateObjectPathsRepository;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _parameterValueRepository= IoC.Resolve<IParameterValueRepository>();
+         _parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         _speciesRepository = IoC.Resolve<ISpeciesRepository>();
+         _calculationMethodRepository = IoC.Resolve<ICalculationMethodRepository>();
+         _rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
+         _rateObjectPathsRepository = IoC.Resolve<IRateObjectPathsRepository>();
+      }
+
       [Observation]
       public void should_remove_species_cattle_and_cat()
       {
-         var speciesRepo = IoC.Resolve<ISpeciesRepository>();
-         var speciesNames = from species in speciesRepo.All() select species.Name;
-
+         var speciesNames = from species in _speciesRepository.All() select species.Name;
          speciesNames.ShouldNotContain("Cat", "Cattle");
       }
 
       [Observation]
       public void should_remove_intestinal_permeability_MPTC()
       {
-         var calcMethodsRepo = IoC.Resolve<ICalculationMethodRepository>();
-         var calcMethodNames = from cm in calcMethodsRepo.All() select cm.Name;
-
+         var calcMethodNames = from cm in _calculationMethodRepository.All() select cm.Name;
          calcMethodNames.ShouldNotContain("IntestinalPermeability_CACO_MPTC");
       }
 
       [Observation]
       public void should_use_updated_rates_for_lymph_and_fluid_recirculation_flow()
       {
-         var parameterRateRepo    = IoC.Resolve<IParameterRateRepository>();
-         var rateFormulaRepo = IoC.Resolve<IRateFormulaRepository>();
-
-         var lymphFlowRates = from pr in parameterRateRepo.All().Where(isChangedLymphFlowParameter)
-                              select rateFormulaRepo.FormulaFor(new RateKey(pr.CalculationMethod, pr.Rate));
+         var lymphFlowRates = from pr in _parameterRateRepository.All().Where(isChangedLymphFlowParameter)
+                              select _rateFormulaRepository.FormulaFor(new RateKey(pr.CalculationMethod, pr.Rate));
          lymphFlowRates.Each(r => r.Contains("f_lymph").ShouldBeTrue());
 
-         var fluidRecircFlowRates = from pr in parameterRateRepo.All().Where(isChangedFluidRecircFlowParameter)
-                                    select rateFormulaRepo.FormulaFor(new RateKey(pr.CalculationMethod, pr.Rate));
+         var fluidRecircFlowRates = from pr in _parameterRateRepository.All().Where(isChangedFluidRecircFlowParameter)
+                                    select _rateFormulaRepository.FormulaFor(new RateKey(pr.CalculationMethod, pr.Rate));
          fluidRecircFlowRates.Each(r => r.Contains("f_Jiso").ShouldBeTrue());
 
       }
@@ -294,11 +305,9 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_fix_FCRN_binding_reactions()
       {
-         var rateObjectPathsRepo = IoC.Resolve<IRateObjectPathsRepository>();
-
-         checkRate(rateObjectPathsRepo, "FcRn binding drug in endosomal space");
-         checkRate(rateObjectPathsRepo, "FcRn binding drug in interstitial");
-         checkRate(rateObjectPathsRepo, "FcRn binding drug in plasma");
+         checkRate(_rateObjectPathsRepository, "FcRn binding drug in endosomal space");
+         checkRate(_rateObjectPathsRepository, "FcRn binding drug in interstitial");
+         checkRate(_rateObjectPathsRepository, "FcRn binding drug in plasma");
       }
 
       private void checkRate(IRateObjectPathsRepository rateObjectPathsRepo, string rate)
@@ -314,11 +323,133 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_add_variability_factor_to_meal_rates()
       {
-         var rateFormulaRepo = IoC.Resolve<IRateFormulaRepository>();
-         var rates = rateFormulaRepo.All().Where(r => r.Rate.IsOneOf("PARAM_Meal_alpha", "PARAM_Meal_beta"));
-
+         var rates = _rateFormulaRepository.All().Where(r => r.Rate.IsOneOf("PARAM_Meal_alpha", "PARAM_Meal_beta"));
          rates.Each(r=>r.Formula.Contains("Variability_Factor").ShouldBeTrue());
-      } 
+      }
 
+      [Observation]
+      public void should_update_proteinmodel_values()
+      {
+         checkOrganParameter("Bone", "Flow fraction via large pores", 0.05);
+         checkOrganParameter("Bone", "Radius (small pores)", 4.5e-8);
+         checkOrganParameter("Bone", "Radius (large pores)", 2.5e-7);
+         checkOrganParameter("Bone", "Hydraulic conductivity", 9e-12);
+         checkOrganParameter("Bone", "Lymph flow proportionality factor", 6.62e-4);
+         checkOrganParameter("Bone", "Fluid recirculation flow proportionality factor", 0.96);
+
+         checkOrganParameter("Brain", "Lymph flow proportionality factor", 7.27e-5);
+         checkOrganParameter("Brain", "Fluid recirculation flow proportionality factor", 0.404);
+
+         checkOrganParameter("Fat", "Hydraulic conductivity", 9e-12);
+         checkOrganParameter("Fat", "Lymph flow proportionality factor", 7.54e-3);
+         checkOrganParameter("Fat", "Fluid recirculation flow proportionality factor", 0.357);
+
+         checkOrganParameter("Gonads", "Hydraulic conductivity", 9e-12);
+         checkOrganParameter("Gonads", "Lymph flow proportionality factor", 0.0111);
+         checkOrganParameter("Gonads", "Fluid recirculation flow proportionality factor", 0.96);
+
+         checkOrganParameter("Heart", "Lymph flow proportionality factor", 1.47e-3);
+         checkOrganParameter("Heart", "Fluid recirculation flow proportionality factor", 0.96);
+
+         checkOrganParameter("Kidney", "Hydraulic conductivity", 1.25e-10);
+         checkOrganParameter("Kidney", "Lymph flow proportionality factor", 7.09e-4);
+         checkOrganParameter("Kidney", "Fluid recirculation flow proportionality factor", 0.761);
+
+         checkOrganParameter("LargeIntestine", "Lymph flow proportionality factor", 0.0144);
+         checkOrganParameter("LargeIntestine", "Fluid recirculation flow proportionality factor", 0.179);
+
+         checkOrganParameter("Liver", "Lymph flow proportionality factor", 0.0199);
+         checkOrganParameter("Liver", "Fluid recirculation flow proportionality factor", 0.96);
+
+         checkOrganParameter("Lung", "Lymph flow proportionality factor", 3.56E-5);
+         checkOrganParameter("Lung", "Fluid recirculation flow proportionality factor", 0.01);
+
+         checkOrganParameter("Muscle", "Hydraulic conductivity", 9E-12);
+         checkOrganParameter("Muscle", "Lymph flow proportionality factor", 2.01E-3);
+         checkOrganParameter("Muscle", "Fluid recirculation flow proportionality factor", 0.292);
+
+         checkOrganParameter("Pancreas", "Lymph flow proportionality factor", 0.0303);
+         checkOrganParameter("Pancreas", "Fluid recirculation flow proportionality factor", 0.01);
+
+         checkOrganParameter("Skin", "Hydraulic conductivity", 1.94722E-11);
+         checkOrganParameter("Skin", "Lymph flow proportionality factor", 3.52E-3);
+         checkOrganParameter("Skin", "Fluid recirculation flow proportionality factor", 0.617);
+
+         checkOrganParameter("SmallIntestine", "Lymph flow proportionality factor", 1.95E-3);
+         checkOrganParameter("SmallIntestine", "Fluid recirculation flow proportionality factor", 0.179);
+
+         checkOrganParameter("Spleen", "Lymph flow proportionality factor", 0.0199);
+         checkOrganParameter("Spleen", "Fluid recirculation flow proportionality factor", 0.01);
+
+         checkOrganParameter("Stomach", "Lymph flow proportionality factor", 2.04E-3);
+         checkOrganParameter("Stomach", "Fluid recirculation flow proportionality factor", 0.96);
+
+         checkOrganParameter("EndogenousIgG", "Radius (small pores)", 4.5E-8);
+         checkOrganParameter("EndogenousIgG", "Radius (large pores)", 2.5E-7);
+         checkOrganParameter("EndogenousIgG", "Hydraulic conductivity", 1.84722E-11);
+
+         checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 70, "Human");
+         checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 75, "Monkey");
+         checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 70, "Beagle");
+         checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 70, "Dog");
+         checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 70, "Minipig");
+         checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 70, "Rat");
+         checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 18, "Mouse");
+         checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 18, "Rabbit");
+
+         checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 80.8, "Human");
+         checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 21, "Monkey");
+         checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 80.8, "Beagle");
+         checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 80.8, "Dog");
+         checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 80.8, "Minipig");
+         checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 80.8, "Rat");
+         checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 38.7, "Mouse");
+         checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 38.7, "Rabbit");
+
+         checkOrganismParameter("Fraction of endosomal uptake from plasma (global)", 1);
+         checkOrganismParameter("Fraction recycled to plasma (global)", 1);
+         checkOrganismParameter("Rate constant for endosomal uptake (global)", 0.294);
+         checkOrganismParameter("Rate constant for recycling from endosomal space (global)", 0.0888);
+
+         _rateFormulaRepository.FormulaFor(new RateKey("CompoundCommon", "PARAM_Kass_FcRn")).ShouldBeEqualTo("0.87", "'kass (FcRn)' has wrong value");
+         _rateFormulaRepository.FormulaFor(new RateKey("Individual_PKSim", "PARAM_Kass_FcRn_LigandEndo")).ShouldBeEqualTo("0.87", "'kass (FcRn, endogenous IgG)' has wrong value");
+
+         checkInitialFormula("krint", "STARTAMOUNT_FcRn_Interstitial", "STARTAMOUNT_LigandEndoComplex_Interstitial");
+         checkInitialFormula("krpls", "STARTAMOUNT_FcRn_Plasma", "STARTAMOUNT_LigandEndoComplex_Plasma");
+      }
+
+      private void checkInitialFormula(string alias, params string[] rates)
+      {
+         string newFormulaStart = $"{alias} <= 0 ? 0 :";
+
+         foreach (var rate in rates)
+         {
+            _rateFormulaRepository.FormulaFor(new RateKey("EndosomalSpaceBindingFormulas", rate))
+               .StartsWith(newFormulaStart).ShouldBeTrue();
+         }
+      }
+
+      private void checkOrganismParameter(string parameterName, double expectedValue, string speciesName="")
+      {
+         checkParameter("Organism", parameterName, expectedValue, speciesName);
+      }
+
+
+      private void checkOrganParameter(string organName, string parameterName, double expectedValue)
+      {
+         checkParameter("Organism|" + organName, parameterName, expectedValue);
+      }
+
+      private void checkParameter(string containerPath, string parameterName, double expectedValue, string speciesName = "")
+      {
+         var message = $"'{containerPath}|{parameterName}' has wrong value";
+
+         var parameters = _parameterValueRepository.AllFor(containerPath).Where(p => p.ParameterName.Equals(parameterName)).ToList();
+         if (!string.IsNullOrEmpty(speciesName))
+            parameters = parameters.Where(p => p.Species.Equals(speciesName)).ToList();
+
+         parameters.Count().ShouldBeGreaterThan(0);
+         parameters.Each(p => p.DefaultValue.ShouldBeEqualTo(expectedValue, message));
+      }
    }
 }
