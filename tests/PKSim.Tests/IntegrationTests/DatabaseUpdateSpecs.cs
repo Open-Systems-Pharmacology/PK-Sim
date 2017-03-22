@@ -416,6 +416,8 @@ namespace PKSim.IntegrationTests
 
          checkInitialFormula("krint", "STARTAMOUNT_FcRn_Interstitial", "STARTAMOUNT_LigandEndoComplex_Interstitial");
          checkInitialFormula("krpls", "STARTAMOUNT_FcRn_Plasma", "STARTAMOUNT_LigandEndoComplex_Plasma");
+
+         _rateFormulaRepository.FormulaFor(new RateKey("TwoPoresTransportLinkPls2Int", "TwoPoresTransportLink")).StartsWith("fu").ShouldBeTrue();
       }
 
       private void checkInitialFormula(string alias, params string[] rates)
