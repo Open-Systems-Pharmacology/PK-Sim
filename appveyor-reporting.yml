@@ -3,6 +3,8 @@ configuration: Debug
 environment:
   app_version: '7.1.0'
   MIK_TEX_INSTALL_DIR: 'C:\MikTex\'
+  COVERALLS_REPO_TOKEN:
+    secure: AwPQsR3sUfd3yH1OsZRpp1IpbWtWLdxpU513cpMdOLPhW8swzdEHFbJHWAIkbl8Y
 
 version: '%app_version%.{build}'
 
@@ -51,9 +53,8 @@ notifications:
     incoming_webhook:      
       secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyF1h7st5qNdNezFp6T+bWXqrcZ4q/smtPcJ7LkUFHL46JDYUFlIL8FDz+ApX/vP+x0=
 
-test:
-  assemblies:
-    - PKSim.Tests.dll
+test_script:
+  - rake cover["+[PKSim.Core]* +[PKSim.Assets]* +[PKSim.Presentation]* +[PKSim.Infrastructure]*"]
 
   categories:
     - Reporting
