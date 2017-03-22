@@ -1,3 +1,7 @@
+using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
 using System.Threading;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
@@ -13,6 +17,9 @@ namespace PKSim.Matlab
       public static void Initialize(string dimensionFilePath = null, string databaseFilePath = null, string pkParameterFilePath = null)
       {
          if (_initialized) return;
+
+         redirectNHibernateAssembly();
+
          new ApplicationStartup().initializeForMatlab(dimensionFilePath, databaseFilePath, pkParameterFilePath);
          _initialized = true;
       }
@@ -50,6 +57,33 @@ namespace PKSim.Matlab
             //no computation required in matlab interface
             InfrastructureRegister.RegisterSerializationDependencies(registerSimModelSchema: false);
          }
+      }
+
+      private static void redirectNHibernateAssembly()
+      {
+         redirectAssembly("NHibernate", new Version(4, 1, 0, 4000), "aa95f207798dfdb4");
+      }
+
+      private static void redirectAssembly(string shortName, Version targetVersion, string publicKeyToken)
+      {
+         ResolveEventHandler handler = null;
+
+         handler = (sender, args) =>
+         {
+            var requestedAssembly = new AssemblyName(args.Name);
+            if (requestedAssembly.Name != shortName)
+               return null;
+
+            requestedAssembly.Version = targetVersion;
+            requestedAssembly.SetPublicKeyToken(new AssemblyName("x, PublicKeyToken=" + publicKeyToken).GetPublicKeyToken());
+            requestedAssembly.CultureInfo = CultureInfo.InvariantCulture;
+
+            //once found, not need to react to event anymore
+            AppDomain.CurrentDomain.AssemblyResolve -= handler;
+
+            return Assembly.Load(requestedAssembly);
+         };
+         AppDomain.CurrentDomain.AssemblyResolve += handler;
       }
    }
 }
