@@ -55,6 +55,3 @@ notifications:
 
 test_script:
   - rake cover["+[PKSim.Core]* +[PKSim.Assets]* +[PKSim.Presentation]* +[PKSim.Infrastructure]*"]
-
-  categories:
-    - Reporting
