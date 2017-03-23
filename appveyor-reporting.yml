@@ -4,7 +4,7 @@ environment:
   app_version: '7.1.0'
   MIK_TEX_INSTALL_DIR: 'C:\MikTex\'
   COVERALLS_REPO_TOKEN:
-    secure: AwPQsR3sUfd3yH1OsZRpp1IpbWtWLdxpU513cpMdOLPhW8swzdEHFbJHWAIkbl8Y
+    secure: 4H+Y+O5LkVl1OWbAK4Ri95U9/4ZN6p98TYU740P5rLaOV/MnO4f/j1QRcp2GNGiZ
 
 version: '%app_version%.{build}'
 
@@ -20,6 +20,7 @@ cache:
   packages -> **\packages.config  
 
 install:
+- set PATH=C:\Ruby22\bin;%PATH%
 - cmd: git submodule update --init --recursive
 - ps: >-
     (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi', 'C:\\msxml.msi')
@@ -54,4 +55,4 @@ notifications:
       secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyF1h7st5qNdNezFp6T+bWXqrcZ4q/smtPcJ7LkUFHL46JDYUFlIL8FDz+ApX/vP+x0=
 
 test_script:
-  - rake cover["+[PKSim.Core]* +[PKSim.Assets]* +[PKSim.Presentation]* +[PKSim.Infrastructure]*"]
+  - rake cover["+[PKSim.Core]* +[PKSim.Assets]* +[PKSim.Presentation]* +[PKSim.Infrastructure]*",PKSim.Tests.csproj]
