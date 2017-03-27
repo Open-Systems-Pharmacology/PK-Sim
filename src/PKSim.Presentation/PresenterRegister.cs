@@ -164,7 +164,7 @@ namespace PKSim.Presentation
          {
             scan.AssemblyContainingType<PresenterRegister>();
             scan.IncludeNamespaceContainingType<IndividualSimulationContextMenu>();
-            scan.WithConvention<ContextMenuRegistrationConvention>();
+            scan.WithConvention<AllInterfacesAndConcreteTypeRegistrationConvention>();
          });
       }
    }
