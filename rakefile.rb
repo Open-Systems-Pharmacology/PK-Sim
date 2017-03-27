@@ -3,6 +3,16 @@ require_relative 'scripts/copy-dependencies'
 require_relative 'scripts/utils'
 require_relative 'scripts/coverage'
 
+task :cover do
+	filter = []
+	filter << "+[PKSim.Core]*"
+	filter << "+[PKSim.Assets]*"
+	filter << "+[PKSim.Presentation]*"
+	filter << "+[PKSim.Infrastructure]*"
+
+	Coverage.cover(filter, "PKSim.Tests.csproj")
+end
+
 task :create_setup, [:product_version, :configuration] do |t, args|
 	setup_dir = File.join(solution_dir, 'setup')
 	src_dir = File.join(solution_dir, 'src', 'PKSim', 'bin', args.configuration)

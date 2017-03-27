@@ -28,7 +28,7 @@ to obtain a multiple dose simulation model, or substitute the compound to obtain
 
 ## Code Status
 [![Build status](https://ci.appveyor.com/api/projects/status/65aa66s8aj2tcp45/branch/develop?svg=true)](https://ci.appveyor.com/project/open-systems-pharmacology-ci/pk-sim/branch/develop)
-[![Coverage Status](https://coveralls.io/repos/github/Open-Systems-Pharmacology/PK-Sim/badge.svg?branch=develop)](https://coveralls.io/github/Open-Systems-Pharmacology/PK-Sim?branch=develop)
+[![Coverage status](https://codecov.io/gh/Open-Systems-Pharmacology/PK-Sim/branch/develop/graph/badge.svg)](https://codecov.io/gh/Open-Systems-Pharmacology/PK-Sim)
 
 ## Code of conduct
 Everyone interacting in the Open Systems Pharmacology community (codebases, issue trackers, chat rooms, mailing lists etc...) is expected to follow the Open Systems Pharmacology [code of conduct](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/CODE_OF_CONDUCT.md).
