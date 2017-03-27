@@ -819,7 +819,6 @@
     <Compile Include="Presentation\EditRandomPopulationPresenterSpecs.cs" />
     <Compile Include="Presentation\ObjectBaseNodeSpecs.cs" />
     <Compile Include="Presentation\EntityTaskSpecs.cs" />
-    <Compile Include="IntegrationTests\ExceptionManagerSpecs.cs" />
     <Compile Include="Presentation\ExportPopulationSimulationToCSVCommandSpecs.cs" />
     <Compile Include="Presentation\ExportPopulationToCSVCommandSpecs.cs" />
     <Compile Include="Presentation\FormulationSettingsPresenterSpecs.cs" />
