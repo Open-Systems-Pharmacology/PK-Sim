@@ -903,15 +903,9 @@ namespace PKSim.Assets
             }
          }
 
-         public static string SummaryChartInfo
-         {
-            get { return "<B>Drag-and-drop the simulations to compare and select curves in data browser of chart editor.</B>"; }
-         }
+         public static string SimulationComparisonInfo => "<B>Drag-and-drop the simulations to compare and select curves in data browser of chart editor.</B>";
 
-         public static string NoParameterAvailableForScaling
-         {
-            get { return "No parameter was changed in the base individual. Default Scaling configuration will be used."; }
-         }
+         public static string NoParameterAvailableForScaling => "No parameter was changed in the base individual. Default Scaling configuration will be used.";
 
          public static string BuildingBlockSettingsDoNotMatchWithTemplate(string buildingBlockType)
          {

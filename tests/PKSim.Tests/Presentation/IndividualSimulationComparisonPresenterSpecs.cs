@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using OSPSuite.BDDHelper;
 using FakeItEasy;
+using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
@@ -105,6 +106,27 @@ namespace PKSim.Presentation
       public void should_simply_update_the_new_curve_defined_in_the_simulation()
       {
          A.CallTo(() => _chartTemplatingTask.UpdateDefaultSettings(_chartPresenter.EditorPresenter, A<IReadOnlyCollection<DataColumn>>._, A<IReadOnlyCollection<IndividualSimulation>>._, false)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_an_individual_simulation_comparison : concern_for_IndividualSimulationComparisonPresenter
+   {
+      private IndividualSimulationComparison _indivisualSimulationComparison;
+
+      protected override void Context()
+      {
+         base.Context();
+         _indivisualSimulationComparison = new IndividualSimulationComparison();
+      }
+      protected override void Because()
+      {
+         sut.Edit(_indivisualSimulationComparison);
+      }
+
+      [Observation]
+      public void should_bind_the_chart_to_all_editor_even_when_no_simulation_is_used_in_the_comparison()
+      {
+         _chartPresenter.DisplayPresenter.DataSource.ShouldBeEqualTo(_indivisualSimulationComparison);
       }
    }
 }
