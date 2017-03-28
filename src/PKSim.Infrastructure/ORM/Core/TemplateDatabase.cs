@@ -1,5 +1,3 @@
-using PKSim.Core;
-
 namespace PKSim.Infrastructure.ORM.Core
 {
    public interface ITemplateDatabase : IDatabase
@@ -8,8 +6,5 @@ namespace PKSim.Infrastructure.ORM.Core
 
    public class TemplateDatabase : AccessDatabase, ITemplateDatabase
    {
-      public TemplateDatabase(): base(CoreConstants.TemplatePassword)
-      {
-      }
    }
 }

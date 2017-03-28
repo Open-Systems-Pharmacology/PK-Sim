@@ -427,7 +427,6 @@
     <Compile Include="Views\Individuals\IndividualMoleculePropertiesView.Designer.cs">
       <DependentUpon>IndividualMoleculePropertiesView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\MRUArrayList.cs" />
     <Compile Include="Views\PopulationAnalyses\BaseChartView.cs">
       <SubType>UserControl</SubType>
     </Compile>

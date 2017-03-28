@@ -41,7 +41,7 @@ namespace PKSim.UI.Views.Charts
          AllowDrop = true;
          _lblInfo.AllowDrop = true;
          _lblInfo.Font = new Font(_lblInfo.Font.Name, 15.0f);
-         _lblInfo.Text = PKSimConstants.Information.SummaryChartInfo;
+         _lblInfo.Text = PKSimConstants.Information.SimulationComparisonInfo;
          _lblInfo.AutoSizeMode = LabelAutoSizeMode.Vertical;
          _lblInfo.Width = 400;
          _lblInfo.AsDescription();
@@ -71,9 +71,6 @@ namespace PKSim.UI.Views.Charts
          panelControl.FillWith(view);
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.IndividualSimulationComparison; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.IndividualSimulationComparison;
    }
 }

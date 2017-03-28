@@ -63,8 +63,6 @@ namespace PKSim.Core
       public static readonly string ExpressionPassword = "rhcp!!06";
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string AccessUserName = "Admin";
-      public static readonly string SQLiteUserName = "admin";
-      public static readonly string TemplatePassword = "";
       public static readonly string Excel = "Excel®";
       public static readonly IEnumerable<string> IllegalCharacters = new List<string> {ObjectPath.PATH_DELIMITER, ":", "*", "?", "<", ">", "|", "{", "}"}.Distinct();
       public static readonly string ProjectUndefined = "Undefined";
