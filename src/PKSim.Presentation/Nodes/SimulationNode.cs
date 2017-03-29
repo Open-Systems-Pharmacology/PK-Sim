@@ -10,9 +10,6 @@ namespace PKSim.Presentation.Nodes
       {
       }
 
-      public Simulation Simulation
-      {
-         get { return Tag.Simulation; }
-      }
+      public Simulation Simulation => Tag.Simulation;
    }
 }

@@ -1,15 +1,11 @@
-using PKSim.Core.Model;
-using PKSim.Presentation.DTO.Mappers;
-
-using PKSim.Presentation.DTO.Parameters;
-
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Presentation.DTO.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Mappers;
+using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.DTO.Parameters;
 
 namespace PKSim.Presentation
 {
@@ -24,7 +20,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_mapping_a_simulation_interval_to_a_simulation_interval_dto : concern_for_SimulationIntervalToSimulationIntervalDTOMapper
    {
       private OutputInterval _simulationInterval;
@@ -50,4 +45,4 @@ namespace PKSim.Presentation
          _result.ResolutionParameter.ShouldNotBeNull();
       }
    }
-}	
+}

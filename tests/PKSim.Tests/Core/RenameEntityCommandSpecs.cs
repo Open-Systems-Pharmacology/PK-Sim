@@ -1,13 +1,13 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Commands;
-using FakeItEasy;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_rename_entity_command : ContextSpecification<RenameEntityCommand>
+   public abstract class concern_for_RenameEntityCommand : ContextSpecification<RenameEntityCommand>
    {
       protected IEntity _entity;
       protected string _oldName;
@@ -20,13 +20,12 @@ namespace PKSim.Core
          _newName = "_newName";
          _executionContext = A.Fake<IExecutionContext>();
          _entity = A.Fake<IEntity>().WithName(_oldName);
-         _entity.Id="tralalal";
+         _entity.Id = "tralalal";
          sut = new RenameEntityCommand(_entity, _newName, _executionContext);
       }
    }
 
-   
-   public class When_executing_the_rename_entity_command : concern_for_rename_entity_command
+   public class When_executing_the_rename_entity_command : concern_for_RenameEntityCommand
    {
       protected override void Because()
       {
@@ -40,8 +39,7 @@ namespace PKSim.Core
       }
    }
 
-   
-   public class When_executing_the_rename_entity_inverse_command : concern_for_rename_entity_command
+   public class When_executing_the_rename_entity_inverse_command : concern_for_RenameEntityCommand
    {
       private IReversibleCommand<IExecutionContext> _inverseCommand;
 
