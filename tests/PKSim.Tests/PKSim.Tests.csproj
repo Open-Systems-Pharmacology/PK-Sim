@@ -323,7 +323,6 @@
     <Compile Include="Core\DataColumnExtensionsSpecs.cs" />
     <Compile Include="Core\DistributedTableFormulaSpecs.cs" />
     <Compile Include="Core\DistributionMetaDataToDistributionMapperSpecs.cs" />
-    <Compile Include="Core\EntityValidatorSpecs.cs" />
     <Compile Include="Core\DataRepositorySynchronizerSpecs.cs" />
     <Compile Include="Core\DistributionFactorySpecs.cs" />
     <Compile Include="Core\DistributionFormulaExtensionsSpecs.cs" />
@@ -705,7 +704,7 @@
     <Compile Include="IntegrationTests\IndividualEnzymeFactorySpecs.cs" />
     <Compile Include="IntegrationTests\LazyLoadingIntegrationTests.cs" />
     <Compile Include="Infrastructure\LazyLoadTaskSpecs.cs" />
-    <Compile Include="Infrastructure\McDataRepositoryMetaDataSpecs.cs" />
+    <Compile Include="Infrastructure\DataRepositoryMetaDataSpecs.cs" />
     <Compile Include="IntegrationTests\ModelConfigurationRepositorySpecs.cs" />
     <Compile Include="Infrastructure\ModelContainerQuerySpecs.cs" />
     <Compile Include="Infrastructure\ModelNeighborhoodQuerySpecs.cs" />
@@ -817,7 +816,6 @@
     <Compile Include="Presentation\EditIndividualSimulationPresenterSpecs.cs" />
     <Compile Include="Presentation\EditProtocolPresenterSpecs.cs" />
     <Compile Include="Presentation\EditRandomPopulationPresenterSpecs.cs" />
-    <Compile Include="Presentation\ObjectBaseNodeSpecs.cs" />
     <Compile Include="Presentation\EntityTaskSpecs.cs" />
     <Compile Include="Presentation\ExportPopulationSimulationToCSVCommandSpecs.cs" />
     <Compile Include="Presentation\ExportPopulationToCSVCommandSpecs.cs" />
@@ -826,7 +824,7 @@
     <Compile Include="Presentation\FullPathDisplayResolverSpecs.cs" />
     <Compile Include="Presentation\HeavyWorkManagerForSpecs.cs" />
     <Compile Include="Presentation\HistoryPresenterSpecs.cs" />
-    <Compile Include="Presentation\IContainerViewExtensionsSpecs.cs" />
+    <Compile Include="Presentation\ContainerViewExtensionsSpecs.cs" />
     <Compile Include="Presentation\ImportObservedDataCommmandSpecs.cs" />
     <Compile Include="Presentation\IndividualDefaultValueRetrieverSpecs.cs" />
     <Compile Include="Presentation\IndividualProteinToProteinExpressionDTOMapperSpecs.cs" />
@@ -917,7 +915,6 @@
     <Compile Include="Presentation\StatusBarPresenterSpecs.cs" />
     <Compile Include="Presentation\StopSimulationCommandSpecs.cs" />
     <Compile Include="Presentation\SubPresenterHelper.cs" />
-    <Compile Include="Presentation\SubPresenterItemSpecs.cs" />
     <Compile Include="Presentation\IndividualSimulationComparisonPresenterSpecs.cs" />
     <Compile Include="Presentation\SystemicProcessToRootNodeTypeMapperSpecs.cs" />
     <Compile Include="Presentation\TableFormulationPresenterSpecs.cs" />
