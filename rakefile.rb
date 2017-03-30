@@ -13,11 +13,13 @@ task :cover do
 	Coverage.cover(filter, "PKSim.Tests.csproj")
 end
 
-task :create_setup, [:product_version, :configuration] do |t, args|
+task :create_setup, [:product_version, :configuration, :smart_xls_package] do |t, args|
 	setup_dir = File.join(solution_dir, 'setup')
 	src_dir = File.join(solution_dir, 'src', 'PKSim', 'bin', args.configuration)
 	product_version = args.product_version
 	suite_name = 'Open Systems Pharmacology Suite'
+
+	update_smart_xls src_dir, args.smart_xls_package
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
@@ -84,6 +86,17 @@ task :postclean do |t, args|
 end
 
 private
+
+def update_smart_xls(source_dir, smart_xls_package)
+	#unzip smart xls and replace SX.dll in target dir
+  unzip_dir = File.dirname(smart_xls_package)
+  command_line = %W[e #{smart_xls_package} -o#{unzip_dir}]
+  Utils.run_cmd('7z', command_line)
+  copy_depdencies unzip_dir, source_dir do
+  	copy_file 'SX.dll'
+  end
+end
+
 def solution_dir
 	File.dirname(__FILE__)
 end
