@@ -37,6 +37,7 @@ before_build:
   - nuget sources add -name simmodel -source https://ci.appveyor.com/nuget/ospsuite-simmodel
   - nuget sources add -name cvodes -source https://ci.appveyor.com/nuget/ospsuite-simmodel-solver-cvodes-282
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
+  - nuget sources add -name smartxls -source https://ci.appveyor.com/nuget/ospsuite-smartxls
   - nuget restore
   - rake "update_go_license[ApplicationStartup.cs, %GO_DIAGRAM_KEY%]"
 
