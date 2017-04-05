@@ -19,7 +19,7 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package] do |t
 	product_version = args.product_version
 	suite_name = 'Open Systems Pharmacology Suite'
 
-	update_smart_xls src_dir, args.smart_xls_package
+	#update_smart_xls src_dir, args.smart_xls_package
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
