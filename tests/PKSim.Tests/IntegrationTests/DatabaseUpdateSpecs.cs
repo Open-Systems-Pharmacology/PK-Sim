@@ -395,7 +395,7 @@ namespace PKSim.IntegrationTests
          checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 70, "Minipig");
          checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 70, "Rat");
          checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 18, "Mouse");
-         checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 18, "Rabbit");
+         checkParameter("Organism|EndogenousIgG|Plasma","Start concentration of free endogenous IgG (plasma)", 70, "Rabbit");
 
          checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 80.8, "Human");
          checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 21, "Monkey");
@@ -404,7 +404,7 @@ namespace PKSim.IntegrationTests
          checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 80.8, "Minipig");
          checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 80.8, "Rat");
          checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 38.7, "Mouse");
-         checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 38.7, "Rabbit");
+         checkParameter("Organism|EndogenousIgG|Endosome", "Start concentration of free FcRn (endosome)", 80.8, "Rabbit");
 
          checkOrganismParameter("Fraction of endosomal uptake from plasma (global)", 1);
          checkOrganismParameter("Fraction recycled to plasma (global)", 1);
