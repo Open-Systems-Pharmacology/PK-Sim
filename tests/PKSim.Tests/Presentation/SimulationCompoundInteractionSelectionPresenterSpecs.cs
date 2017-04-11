@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation
 {
@@ -53,15 +53,15 @@ namespace PKSim.Presentation
          comp2.AddProcess(_interactionProcess2);
          comp2.AddProcess(_interactionProcess3);
 
-         _allSimulationInteractionProcesses.Add(new SimulationPartialProcess { CompoundProcess = _interactionProcess1, IndividualMolecule = _molecule1 });
-         _allSimulationInteractionProcesses.Add(new SimulationPartialProcess { CompoundProcess = _interactionProcess2, IndividualMolecule = _molecule1 });
+         _allSimulationInteractionProcesses.Add(new SimulationPartialProcess {CompoundProcess = _interactionProcess1, IndividualMolecule = _molecule1});
+         _allSimulationInteractionProcesses.Add(new SimulationPartialProcess {CompoundProcess = _interactionProcess2, IndividualMolecule = _molecule1});
 
          A.CallTo(() => _simulation.InteractionProperties).Returns(_interactionProperties);
          A.CallTo(() => _simulation.Individual).Returns(individual);
          A.CallTo(() => _simulation.Compounds).Returns(new[] {comp1, comp2});
 
          A.CallTo(_interactionProcessRetriever).WithReturnType<IReadOnlyList<SimulationPartialProcess>>()
-            .Invokes(x=> _useDefaultMap= x.GetArgument<bool>(2))
+            .Invokes(x => _useDefaultMap = x.GetArgument<bool>(2))
             .Returns(_allSimulationInteractionProcesses);
 
          A.CallTo(() => _view.BindTo(A<IEnumerable<SimulationInteractionProcessSelectionDTO>>._))
@@ -71,7 +71,6 @@ namespace PKSim.Presentation
 
    public class When_editing_the_interaction_selection_defined_in_a_given_simulation_being_created : concern_for_SimulationInteractionSelectionPresenter
    {
-   
       protected override void Because()
       {
          sut.EditSimulation(_simulation, CreationMode.New);
@@ -107,7 +106,6 @@ namespace PKSim.Presentation
       {
          base.Context();
          _interactionProcess2.InteractionType = InteractionType.IrreversibleInhibition;
-
       }
 
       protected override void Because()
@@ -146,7 +144,6 @@ namespace PKSim.Presentation
          _useDefaultMap.ShouldBeFalse();
       }
 
-
       [Observation]
       public void shoul_hide_the_warning_from_the_user()
       {
@@ -172,7 +169,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_all_interaction_processes_defined_in_the_compound()
       {
-         _allInteractionProcesses.ShouldContain(_interactionProcess1, _interactionProcess2,_interactionProcess3);
+         _allInteractionProcesses.ShouldContain(_interactionProcess1, _interactionProcess2, _interactionProcess3);
       }
 
       [Observation]
@@ -215,7 +212,6 @@ namespace PKSim.Presentation
          _allMolecules.ShouldNotContain(_undefinedLiver);
       }
    }
-
 
    public class When_adding_a_new_interaction_to_the_simulation : concern_for_SimulationInteractionSelectionPresenter
    {
@@ -270,8 +266,8 @@ namespace PKSim.Presentation
          base.Context();
          sut.EditSimulation(_simulation, CreationMode.New);
          _allSimulationInteractionProcessSelectionDTO.ElementAt(0).SimulationPartialProcess.CompoundProcess = _interactionProcessRetriever.NotSelectedInteractionProcess;
-
       }
+
       protected override void Because()
       {
          sut.SaveConfiguration();
@@ -290,8 +286,7 @@ namespace PKSim.Presentation
       }
    }
 
-
-   public class When_the_user_is_selecting_an_interaction_process_that_is_already_used  : concern_for_SimulationInteractionSelectionPresenter
+   public class When_the_user_is_selecting_an_interaction_process_that_is_already_used : concern_for_SimulationInteractionSelectionPresenter
    {
       private SimulationInteractionProcessSelectionDTO _dto;
 
@@ -306,6 +301,19 @@ namespace PKSim.Presentation
       public void should_warn_the_user_that_the_selection_is_not_accepted()
       {
          The.Action(() => sut.CompoundProcessSelectionChanged(_dto, _interactionProcess2)).ShouldThrowAn<CannotSelectThePartialProcessMoreThanOnceException>();
+      }
+
+      [Observation]
+      public void should_refresh_the_view_to_ensure_that_the_previously_selected_value_is_shown_again_to_the_user()
+      {
+         try
+         {
+            sut.CompoundProcessSelectionChanged(_dto, _interactionProcess2);
+         }
+         catch (CannotSelectThePartialProcessMoreThanOnceException e)
+         {
+            A.CallTo(() => _view.Repaint()).MustHaveHappened();
+         }
       }
    }
 

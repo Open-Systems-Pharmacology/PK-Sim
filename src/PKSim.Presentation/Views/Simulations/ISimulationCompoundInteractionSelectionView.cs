@@ -5,7 +5,7 @@ using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.Simulations
 {
-   public interface ISimulationCompoundInteractionSelectionView : IView<ISimulationCompoundInteractionSelectionPresenter>
+   public interface ISimulationCompoundInteractionSelectionView : IView<ISimulationCompoundInteractionSelectionPresenter>, IResizableView
    {
       void BindTo(IEnumerable<SimulationInteractionProcessSelectionDTO> allPartialProcessesDTO);
       bool WarningVisible { get; set; }
