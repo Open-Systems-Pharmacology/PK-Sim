@@ -231,6 +231,7 @@ namespace PKSim.IntegrationTests
       private ICalculationMethodRepository _calculationMethodRepository;
       private IRateFormulaRepository _rateFormulaRepository;
       private IRateObjectPathsRepository _rateObjectPathsRepository;
+      private IParameterDistributionRepository _parameterDistributionRepository;
 
       public override void GlobalContext()
       {
@@ -241,6 +242,25 @@ namespace PKSim.IntegrationTests
          _calculationMethodRepository = IoC.Resolve<ICalculationMethodRepository>();
          _rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
          _rateObjectPathsRepository = IoC.Resolve<IRateObjectPathsRepository>();
+         _parameterDistributionRepository = IoC.Resolve<IParameterDistributionRepository>();
+      }
+
+      [Observation]
+      public void should_update_nhanes_values()
+      {
+         var nhanesParams = _parameterDistributionRepository.All().Where(pd => pd.Population.EndsWith("NHANES_1997")).ToList();
+
+         var bwParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.MEAN_WEIGHT)).ToList();
+         var heightParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.MEAN_HEIGHT)).ToList();
+         var volumeParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.VOLUME)).ToList();
+
+         //check number of new bw/height/volume parameters
+         (bwParams.Count+ heightParams.Count+ volumeParams.Count).ShouldBeEqualTo(1420);
+
+         //check some heigth standard deviations
+         var teenHeightParams = heightParams.Where(p => p.Age == 13 || p.Age == 15).ToList();
+         teenHeightParams.Count.ShouldBeEqualTo(2*2*3); //2 age groups*2genders*3populations
+         teenHeightParams.Each(p=>p.Deviation.ShouldBeGreaterThan(0.6));
       }
 
       [Observation]
@@ -450,7 +470,7 @@ namespace PKSim.IntegrationTests
          if (!string.IsNullOrEmpty(speciesName))
             parameters = parameters.Where(p => p.Species.Equals(speciesName)).ToList();
 
-         parameters.Count().ShouldBeGreaterThan(0);
+         parameters.Count.ShouldBeGreaterThan(0);
          parameters.Each(p => p.DefaultValue.ShouldBeEqualTo(expectedValue, message));
       }
    }
