@@ -34,7 +34,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_throw_a_not_license_exception()
       {
-         The.Action(() => sut.FindBy("toto")).ShouldThrowAn<CalculationMethodNotLicensedException>();
+         The.Action(() => sut.FindBy("toto")).ShouldThrowAn<CalculationMethodNotFoundException>();
       }
    }
 }

@@ -683,9 +683,9 @@ namespace PKSim.Assets
             return $"Calculation method '{calculationMethod}' in category '{category}' is not defined for species '{species}'.";
          }
 
-         public static string CalculationMethodIsNotLicensed(string calculationMethod)
+         public static string CalculationMethodIsNotFound(string calculationMethod)
          {
-            return $"No license found for calculation method '{calculationMethod}'.";
+            return $"Calculation method '{calculationMethod}' was not found.";
          }
 
          public static string SimulationHasNoResultsAndCannotBeUsedInSummaryChart(string simulationName)

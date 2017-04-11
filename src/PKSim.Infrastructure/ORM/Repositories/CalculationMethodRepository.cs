@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.FlatObjects;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -19,9 +17,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly ICache<string, CalculationMethod> _calculationMethods = new Cache<string, CalculationMethod>(cm => cm.Name);
 
       public CalculationMethodRepository(IFlatCalculationMethodRepository flatCalculationMethodRepository,
-                                         IFlatSpeciesCalculationMethodRepository flatSpeciesCalculationMethodRepository,
-                                         IFlatModelCalculationMethodRepository flatModelCalculationMethodRepository,
-                                         IRepresentationInfoRepository representationInfoRepository)
+         IFlatSpeciesCalculationMethodRepository flatSpeciesCalculationMethodRepository,
+         IFlatModelCalculationMethodRepository flatModelCalculationMethodRepository,
+         IRepresentationInfoRepository representationInfoRepository)
       {
          _flatCalculationMethodRepository = flatCalculationMethodRepository;
          _flatSpeciesCalculationMethodRepository = flatSpeciesCalculationMethodRepository;
@@ -55,9 +53,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          if (_calculationMethods.Contains(name))
             return _calculationMethods[name];
 
-         //not licensed
-         throw new CalculationMethodNotLicensedException(name);
-
+         throw new CalculationMethodNotFoundException(name);
       }
    }
 }
