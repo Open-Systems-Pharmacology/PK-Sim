@@ -2,10 +2,9 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.Repositories;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.IntegrationTests
 {
@@ -32,7 +31,7 @@ namespace PKSim.IntegrationTests
    public class When_a_calculation_method_that_does_not_exist : concern_for_CalculationMethodRepository
    {
       [Observation]
-      public void should_throw_a_not_license_exception()
+      public void should_throw_a_calculation_method_not_found_exception()
       {
          The.Action(() => sut.FindBy("toto")).ShouldThrowAn<CalculationMethodNotFoundException>();
       }
