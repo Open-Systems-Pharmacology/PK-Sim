@@ -255,11 +255,11 @@ namespace PKSim.IntegrationTests
          var volumeParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.VOLUME)).ToList();
 
          //check number of new bw/height/volume parameters
-         (bwParams.Count()+ heightParams.Count()+ volumeParams.Count()).ShouldBeEqualTo(1420);
+         (bwParams.Count+ heightParams.Count+ volumeParams.Count).ShouldBeEqualTo(1420);
 
          //check some heigth standard deviations
          var teenHeightParams = heightParams.Where(p => p.Age == 13 || p.Age == 15).ToList();
-         teenHeightParams.Count().ShouldBeEqualTo(2*2*3); //2 age groups*2genders*3populations
+         teenHeightParams.Count.ShouldBeEqualTo(2*2*3); //2 age groups*2genders*3populations
          teenHeightParams.Each(p=>p.Deviation.ShouldBeGreaterThan(0.6));
       }
 
@@ -470,7 +470,7 @@ namespace PKSim.IntegrationTests
          if (!string.IsNullOrEmpty(speciesName))
             parameters = parameters.Where(p => p.Species.Equals(speciesName)).ToList();
 
-         parameters.Count().ShouldBeGreaterThan(0);
+         parameters.Count.ShouldBeGreaterThan(0);
          parameters.Each(p => p.DefaultValue.ShouldBeEqualTo(expectedValue, message));
       }
    }
