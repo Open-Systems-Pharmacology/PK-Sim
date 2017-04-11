@@ -78,12 +78,12 @@
       <HintPath>..\..\packages\csmpfit.1.1.0\lib\net20\MPFitLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.1.0.62, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.62\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.1.0.63, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.63\lib\net452\OSPSuite.Assets.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.1.0.62, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.62\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.1.0.63, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.63\lib\net452\OSPSuite.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
