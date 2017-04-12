@@ -119,7 +119,6 @@ namespace PKSim.Presentation.UICommands
       private void saveToPKML(IBuildingBlock buildingBlock, string folder)
       {
          var fileName = Path.Combine(folder, buildingBlock.Name + ".pkml");
-         //no licenses required when generating templates
          _pkmlPersistor.SaveToPKML(buildingBlock, fileName);
       }
    }

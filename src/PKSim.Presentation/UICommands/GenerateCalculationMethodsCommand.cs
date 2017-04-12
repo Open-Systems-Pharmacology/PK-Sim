@@ -31,7 +31,6 @@ namespace PKSim.Presentation.UICommands
 
          var mobiRepository = new CoreCalculationMethodRepository();
          _calculationMethodRepository.All().Each(mobiRepository.AddCalculationMethod);
-         //no licenses required when generating calculation methods
          _pkmlPersistor.SaveToPKML(mobiRepository, file);
       }
    }

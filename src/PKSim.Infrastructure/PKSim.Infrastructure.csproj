@@ -202,7 +202,7 @@
     <Compile Include="ORM\Repositories\CompoundCalculationMethodCategoryRepository.cs" />
     <Compile Include="ORM\Repositories\FlatModelContainerMoleculeRepository.cs" />
     <Compile Include="ORM\Repositories\FlatModelPassiveTransportMoleculeNameRepository.cs" />
-    <Compile Include="ORM\Repositories\CalculationMethodNotLicensedException.cs" />
+    <Compile Include="ORM\Repositories\CalculationMethodNotFoundException.cs" />
     <Compile Include="ORM\Repositories\DynamicFormulaCriteriaRepository.cs" />
     <Compile Include="ORM\Repositories\FlatDynamicFormulaCriteriaRepository.cs" />
     <Compile Include="ORM\Repositories\FlatMoleculeParameterRepository.cs" />

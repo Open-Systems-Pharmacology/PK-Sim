@@ -683,9 +683,9 @@ namespace PKSim.Assets
             return $"Calculation method '{calculationMethod}' in category '{category}' is not defined for species '{species}'.";
          }
 
-         public static string CalculationMethodIsNotLicensed(string calculationMethod)
+         public static string CalculationMethodIsNotFound(string calculationMethod)
          {
-            return $"No license found for calculation method '{calculationMethod}'.";
+            return $"Calculation method '{calculationMethod}' was not found.";
          }
 
          public static string SimulationHasNoResultsAndCannotBeUsedInSummaryChart(string simulationName)
@@ -1768,11 +1768,6 @@ namespace PKSim.Assets
          public static readonly string DI_24 = "24 h (once-daily)";
          public static readonly string DI_6_6_6_6 = "6 - 6 - 6 - 6 h";
          public static readonly string DI_6_6_12 = "6 - 6 - 12 h";
-         public static readonly string PKSimLicenseFile = "Please select license file";
-         public static readonly string DoYouWantToEnterANewKey = "Do you want to select a new Key?";
-         public static readonly string DoYouWantToEnterANewKeyOrStartInReadOnly = "Do you want to enter a new Key or start in Read-Only mode?";
-         public static readonly string NeyKeyButton = "&New Key";
-         public static readonly string ReadOnlyButton = "&Read-Only";
          public static readonly string CloseButton = "&Close";
          public static readonly string ExportActiveSimulationToMoBiDescription = "Export active simulation to MoBi";
          public static readonly string NaN = "<NaN>";
@@ -1850,7 +1845,6 @@ namespace PKSim.Assets
          public static readonly string RelTol = "Relative tolerance";
          public static readonly string AbsTol = "Absolute tolerance";
          public static readonly string SimulationResults = "Simulation Results";
-         public static readonly string RegisterLicenseDescription = "Register a new license...";
          public static readonly string No = "No";
          public static readonly string Yes = "Yes";
          public static readonly string ExportObservedDataToPkml = "Export observed data to pkml";
