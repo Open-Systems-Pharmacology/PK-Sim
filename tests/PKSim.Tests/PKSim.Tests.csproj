@@ -425,6 +425,7 @@
     <Compile Include="IntegrationTests\ParameterIdentificationResultXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\PKSimParameterStartValuesCreatorSpecs.cs" />
+    <Compile Include="IntegrationTests\RegistrationSpecs.cs" />
     <Compile Include="IntegrationTests\SensitivityAnalysisXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationAnalysisWorkflowXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationTransferLoaderSpecs.cs" />
