@@ -68,7 +68,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          Start();
 
          if (!this.ExistsByName(processTemplateName))
-            throw new ArgumentOutOfRangeException("processTemplateName", PKSimConstants.Error.CompoundProcessNotExists.FormatWith(processTemplateName));
+            throw new ArgumentOutOfRangeException("processTemplateName", PKSimConstants.Error.CompoundProcessNotExists(processTemplateName));
 
          return All().FindByName(processTemplateName);
       }

@@ -51,7 +51,7 @@ namespace PKSim.IntegrationTests
             var targetParameter = _allTargetParameters[sourceKeyValue.Key];
             if (targetParameter == null)
             {
-               errorList.Add("Could not find parameter '{0}'".FormatWith(sourceKeyValue.Key));
+               errorList.Add($"Could not find parameter '{sourceKeyValue.Key}'");
                continue;
             }
 
@@ -60,13 +60,13 @@ namespace PKSim.IntegrationTests
 
             if (sourceFormula.IsExplicit() && sourceFormula.Id != targetFormula.Id)
             {
-               errorList.Add("Formula Ids for parameter '{0}' are not equal ({1} vs {2})".FormatWith(sourceKeyValue.Key, sourceFormula.Id, targetFormula.Id));
+               errorList.Add($"Formula Ids for parameter '{sourceKeyValue.Key}' are not equal ({sourceFormula.Id} vs {targetFormula.Id})");
                continue;
             }
 
             if (!ValueComparer.AreValuesEqual(tryGetValue(sourceParameter), tryGetValue(targetParameter)))
             {
-               errorList.Add("For parmaeter '{0}'. source value ({1}) is not equal target value ({2}),".FormatWith(sourceKeyValue.Key, sourceParameter.Value, targetParameter.Value));
+               errorList.Add($"For parmaeter '{sourceKeyValue.Key}'. source value ({sourceParameter.Value}) is not equal target value ({targetParameter.Value}),");
                continue;
             }
          }

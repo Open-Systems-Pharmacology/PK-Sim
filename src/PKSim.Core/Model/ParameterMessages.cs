@@ -1,10 +1,9 @@
 using System;
 using System.Globalization;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Format;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Format;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
@@ -41,17 +40,17 @@ namespace PKSim.Core.Model
 
       public static string SetParameterPercentile(string parameterDisplayName, double oldPercentile, double newPercentile)
       {
-         return PKSimConstants.Command.SetPercentileValueDescription.FormatWith(parameterDisplayName, oldPercentile, newPercentile);
+         return string.Format(PKSimConstants.Command.SetPercentileValueDescription, parameterDisplayName, oldPercentile, newPercentile);
       }
 
       public static string SetParameterFormula(string parameterDisplayName)
       {
-         return PKSimConstants.Command.SetParameterFormulaDescription.FormatWith(parameterDisplayName);
+         return string.Format(PKSimConstants.Command.SetParameterFormulaDescription, parameterDisplayName);
       }
 
       public static string UpdateTableParameterFormula(string parameterDisplayName)
       {
-         return PKSimConstants.Command.UpdateTableParameterFormula.FormatWith(parameterDisplayName);
+         return string.Format(PKSimConstants.Command.UpdateTableParameterFormula, parameterDisplayName);
       }
 
       public static string ResetParameterValue(IParameter parameter, string parameterDisplayName, double oldValue)

@@ -27,7 +27,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       protected override void UpdateCaption()
       {
-         _view.Caption = PKSimConstants.UI.EditIndividualSimulation.FormatWith(Analyzable.Name);
+         _view.Caption = PKSimConstants.UI.EditIndividualSimulation(Analyzable.Name);
          _view.ApplicationIcon = Analyzable.AllowAging ? ApplicationIcons.AgingSimulation : ApplicationIcons.Simulation;
       }
 

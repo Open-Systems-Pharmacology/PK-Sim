@@ -56,7 +56,7 @@ namespace PKSim.Core.Batch.Mapper
          {
             var individualTransporter = addMoleculeTo<IndividualTransporter>(individual, transporter);
             individualTransporter.TransportType = EnumHelper.ParseValue<TransportType>(transporter.TransportType);
-            _batchLogger.AddDebug("Transport type for transporter '{0}' is {1}".FormatWith(individualTransporter.Name, individualTransporter.TransportType));
+            _batchLogger.AddDebug($"Transport type for transporter '{individualTransporter.Name}' is {individualTransporter.TransportType}");
          });
 
          return individual;
@@ -77,12 +77,12 @@ namespace PKSim.Core.Batch.Mapper
             var expressionParameter = newMolecule.GetRelativeExpressionNormParameterFor(expression.Key);
             if (expressionParameter == null)
             {
-               _batchLogger.AddWarning("Relative Expression container '{0}' not found for '{1}'".FormatWith(expression.Key, molecule.Name));
+               _batchLogger.AddWarning($"Relative Expression container '{expression.Key}' not found for '{molecule.Name}'");
                continue;
             }
 
             expressionParameter.Value = expression.Value;
-            _batchLogger.AddDebug("Relative Expression norm for container '{0}' set to {1}".FormatWith(expression.Key, expression.Value));
+            _batchLogger.AddDebug($"Relative Expression norm for container '{expression.Key}' set to {expression.Value}");
          }
          return newMolecule.DowncastTo<TMolecule>();
       }

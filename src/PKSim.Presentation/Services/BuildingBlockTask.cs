@@ -83,7 +83,7 @@ namespace PKSim.Presentation.Services
 
             var addCommand = new AddBuildingBlockToProjectCommand(clone, _executionContext).Run(_executionContext);
             var entityType = _entityTask.TypeFor(buildingBlockToClone);
-            addCommand.Description = PKSimConstants.Command.CloneEntity.FormatWith(entityType, buildingBlockToClone.Name, clone.Name);
+            addCommand.Description = PKSimConstants.Command.CloneEntity(entityType, buildingBlockToClone.Name, clone.Name);
 
             AddCommandToHistory(addCommand);
          }

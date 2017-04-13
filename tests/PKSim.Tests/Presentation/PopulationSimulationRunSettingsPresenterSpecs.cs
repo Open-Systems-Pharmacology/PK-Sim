@@ -127,7 +127,7 @@ namespace PKSim.Presentation
       [Observation]
       public void it_should_update_the_view_with_the_number_of_curves_that_will_be_generated()
       {
-         _quantitySelectionPresenter.Info.ShouldBeEqualTo(PKSimConstants.UI.NumberOfGeneratedCurves.FormatWith(2 * 10));
+         _quantitySelectionPresenter.Info.ShouldBeEqualTo(PKSimConstants.UI.NumberOfGeneratedCurves(2 * 10));
       }
 
       [Observation]

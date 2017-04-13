@@ -59,7 +59,7 @@ namespace PKSim.IntegrationTests
                continue;
 
             if (process.Formula.IsConstant())
-               errorList.Add("Constant kinetic found for '{0}'".FormatWith(process.Name));
+               errorList.Add($"Constant kinetic found for '{process.Name}'");
          }
          Assert.IsTrue(errorList.Count == 0, errorList.ToString("\n"));
       }

@@ -24,7 +24,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          base.RefreshView();
          int numberOfSelectedMolecules = _quantitySelectionPresenter.NumberOfSelectedQuantities;
-         _quantitySelectionPresenter.Info = PKSimConstants.UI.NumberOfGeneratedCurves.FormatWith(numberOfSelectedMolecules);
+         _quantitySelectionPresenter.Info = PKSimConstants.UI.NumberOfGeneratedCurves(numberOfSelectedMolecules);
       }
    }
 }

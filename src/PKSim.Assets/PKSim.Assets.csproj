@@ -71,8 +71,9 @@
       <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.65\lib\net452\OSPSuite.Assets.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Utility">
-      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.1\lib\net45\OSPSuite.Utility.dll</HintPath>
+    <Reference Include="OSPSuite.Utility, Version=2.0.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.5\lib\net45\OSPSuite.Utility.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

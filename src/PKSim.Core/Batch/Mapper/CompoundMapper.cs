@@ -101,23 +101,23 @@ namespace PKSim.Core.Batch.Mapper
             var calculationMethod = _calculationMethodRepository.FindByName(calculationMethodName);
             if (calculationMethod == null)
             {
-               _batchLogger.AddWarning("Calculation method '{0}' not found".FormatWith(calculationMethodName));
+               _batchLogger.AddWarning($"Calculation method '{calculationMethodName}' not found");
                continue;
             }
 
             var category = _calculationMethodCategoryRepository.FindByName(calculationMethod.Category);
             if (category == null)
             {
-               _batchLogger.AddWarning("Could not find compound category '{0}' for calculation method '{1}.".FormatWith(calculationMethod.Category, calculationMethodName));
+               _batchLogger.AddWarning($"Could not find compound category '{calculationMethod.Category}' for calculation method '{calculationMethodName}.");
                continue;
             }
 
             //this is a compound calculationmethod. Swap them out
-            var existingaCalculationMethod = compound.CalculationMethodFor(category);
-            compound.RemoveCalculationMethod(existingaCalculationMethod);
+            var existingCalculationMethod = compound.CalculationMethodFor(category);
+            compound.RemoveCalculationMethod(existingCalculationMethod);
             compound.AddCalculationMethod(calculationMethod);
 
-            _batchLogger.AddDebug("Using calculation method '{0}' instead of '{1}' for category '{2}'".FormatWith(calculationMethod.Name, existingaCalculationMethod.Name, calculationMethod.Category));
+            _batchLogger.AddDebug($"Using calculation method '{calculationMethod.Name}' instead of '{existingCalculationMethod.Name}' for category '{calculationMethod.Category}'");
          }
 
          return compound;
@@ -128,7 +128,7 @@ namespace PKSim.Core.Batch.Mapper
          var template = _compoundProcessRepository.ProcessByName<TProcess>(batchCompoundProcess.InternalName);
          if (template == null)
          {
-            _batchLogger.AddWarning("Could not find process named '{0}' in database".FormatWith(batchCompoundProcess.InternalName));
+            _batchLogger.AddWarning($"Could not find process named '{batchCompoundProcess.InternalName}' in database");
             return null;
          }
          var process = _cloner.Clone(template);
@@ -157,7 +157,7 @@ namespace PKSim.Core.Batch.Mapper
             var parameter = compoundProcess.Parameter(parameterValue.Key);
             if (parameter == null)
             {
-               _batchLogger.AddWarning("Parameter '{0}' not found in process '{1}'".FormatWith(parameterValue.Key, compoundProcess.InternalName));
+               _batchLogger.AddWarning($"Parameter '{parameterValue.Key}' not found in process '{compoundProcess.InternalName}'");
                continue;
             }
             parameter.Value = parameterValue.Value;

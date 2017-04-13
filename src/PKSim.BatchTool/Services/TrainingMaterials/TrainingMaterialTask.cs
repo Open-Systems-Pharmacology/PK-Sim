@@ -138,7 +138,7 @@ namespace PKSim.BatchTool.Services.TrainingMaterials
       {
          var fileName = Path.Combine(outputFolder, projectName + CoreConstants.Filter.PROJECT_EXTENSION);
          _workspace.SaveProject(fileName);
-         _logger.AddInfo("Saving project '{0}'".FormatWith(projectName));
+         _logger.AddInfo($"Saving project '{projectName}'");
       }
 
       public TCoreObject MapFrom<TCoreObject>(object batchBuilingBlock, params object[] parameters) where TCoreObject : class

@@ -39,7 +39,7 @@ namespace PKSim.Presentation.DTO.Simulations
             return CreateRule.For<CompoundParameterSelectionDTO>()
                .Property(item => item.SelectedAlternative)
                .WithRule((param, value) => value != null)
-               .WithError((param, value) => PKSimConstants.Error.CompoundParameterSelectionNeededFor.FormatWith(param.ParameterName));
+               .WithError((param, value) => PKSimConstants.Error.CompoundParameterSelectionNeededFor(param.ParameterName));
          }
       }
    }

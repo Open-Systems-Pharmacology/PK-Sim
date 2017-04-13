@@ -28,7 +28,7 @@ namespace PKSim.Core.Commands
          Visible = false;
          ObjectType = PKSimConstants.ObjectTypes.Simulation;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         Description = PKSimConstants.Command.SetUsedBuildingBlockVersionCommandDescription.FormatWith(
+         Description = string.Format(PKSimConstants.Command.SetUsedBuildingBlockVersionCommandDescription,
             context.TypeFor(buildingBlock), usedBuildingBlock.Name, _version, _simulation.Name);
          context.UpdateBuildinBlockProperties(this, _simulation);
       }

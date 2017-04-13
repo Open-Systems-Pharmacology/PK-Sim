@@ -24,7 +24,7 @@ namespace PKSim.Core.Batch.Mapper
       public ModelProperties MapFrom(SimulationConfiguration configuration, Model.Individual individual)
       {
          var modelProperties = _modelPropertiesTask.DefaultFor(individual.OriginData, configuration.Model);
-         _batchLogger.AddDebug("Using model method '{0}'".FormatWith(configuration.Model));
+         _batchLogger.AddDebug($"Using model method '{configuration.Model}'");
          return modelProperties;
       }
    }

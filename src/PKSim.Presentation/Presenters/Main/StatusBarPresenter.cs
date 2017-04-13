@@ -188,7 +188,7 @@ namespace PKSim.Presentation.Presenters.Main
          if (_numberOfReportsBeingCreated == 1)
             caption = "1 report is being created...";
          else if (_numberOfReportsBeingCreated > 1)
-            caption = "{0} reports are being created...".FormatWith(_numberOfReportsBeingCreated);
+            caption = $"{_numberOfReportsBeingCreated} reports are being created...";
 
          update(StatusBarElements.Report)
             .WithCaption(caption);

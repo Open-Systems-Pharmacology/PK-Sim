@@ -96,12 +96,12 @@ namespace PKSim.Core.Batch.Mapper
          simulation.Solver.AbsTol = config.AbsTol;
          simulation.Solver.RelTol = config.RelTol;
 
-         _logger.AddDebug("Start Time = {0}".FormatWith(config.StartTime));
-         _logger.AddDebug("End Time = {0}".FormatWith(config.EndTime));
-         _logger.AddDebug("Resolution = {0}".FormatWith(config.Resolution));
-         _logger.AddDebug("AbsTol = {0}".FormatWith(config.AbsTol));
-         _logger.AddDebug("RelTol = {0}".FormatWith(config.RelTol));
-         _logger.AddDebug("UseJacobian = {0}".FormatWith(config.UseJacobian));
+         _logger.AddDebug($"Start Time = {config.StartTime}");
+         _logger.AddDebug($"End Time = {config.EndTime}");
+         _logger.AddDebug($"Resolution = {config.Resolution}");
+         _logger.AddDebug($"AbsTol = {config.AbsTol}");
+         _logger.AddDebug($"RelTol = {config.RelTol}");
+         _logger.AddDebug($"UseJacobian = {config.UseJacobian}");
 
          var simForBatch = new SimulationForBatch
          {

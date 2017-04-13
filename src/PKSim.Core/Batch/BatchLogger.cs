@@ -40,7 +40,7 @@ namespace PKSim.Core.Batch
 
       public void AddParameterValueToDebug(string parameterName, double value)
       {
-         this.AddDebug("Parameter '{0}' set to '{1}'".FormatWith(parameterName, value));
+         this.AddDebug($"Parameter '{parameterName}' set to '{value}'");
       }
 
       public void AddParameterValueToDebug(IParameter parameter)
