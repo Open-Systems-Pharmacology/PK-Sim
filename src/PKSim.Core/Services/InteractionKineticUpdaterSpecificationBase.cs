@@ -100,7 +100,7 @@ namespace PKSim.Core.Services
          var inibitionTerms = new List<string>();
 
          doOverAllInteractions(moleculeName, compoundName, simulation, kiAliasBase,
-            (interactionProcess, inhibitorAlias, kiAlias, kwaterAlias) => inibitionTerms.Add("{0}*{1}/{2}".FormatWith(kwaterAlias,inhibitorAlias, kiAlias)));
+            (interactionProcess, inhibitorAlias, kiAlias, kwaterAlias) => inibitionTerms.Add($"{kwaterAlias}*{inhibitorAlias}/{kiAlias}"));
 
          return inibitionTerms.ToString(" + ");
       }

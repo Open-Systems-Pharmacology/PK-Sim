@@ -25,8 +25,8 @@ namespace PKSim.Core.Commands
 
       public override void Execute(IExecutionContext context)
       {
-         Description = PKSimConstants.Command.ScaleParametersDescription.FormatWith(_factor);
-         foreach (IParameter parameter in _parameters.Where(parameterCanBeScaled))
+         Description = PKSimConstants.Command.ScaleParametersDescription(_factor);
+         foreach (var parameter in _parameters.Where(parameterCanBeScaled))
          {
             Add(new SetParameterValueCommand(parameter, parameter.Value * _factor));
          }

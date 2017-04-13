@@ -70,7 +70,7 @@ namespace PKSim.Infrastructure.ORM.Queries
                continue;
             }
 
-            throw new ArgumentException(PKSimConstants.Error.UnknownUsageInIndividualFlag.FormatWith(flatModelContainer.UsageInIndividual));
+            throw new ArgumentException(PKSimConstants.Error.UnknownUsageInIndividualFlag(flatModelContainer.UsageInIndividual));
          }
 
          return allSubContainers;

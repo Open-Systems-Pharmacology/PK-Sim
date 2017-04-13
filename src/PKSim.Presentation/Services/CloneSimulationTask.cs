@@ -50,7 +50,7 @@ namespace PKSim.Presentation.Services
             _simulationSettingsRetriever.SynchronizeSettingsIn(clone);
 
             var addCommand = new AddBuildingBlockToProjectCommand(clone, _executionContext).Run(_executionContext);
-            addCommand.Description = PKSimConstants.Command.CloneEntity.FormatWith(PKSimConstants.ObjectTypes.Simulation, simulationToClone.Name, clone.Name);
+            addCommand.Description = PKSimConstants.Command.CloneEntity(PKSimConstants.ObjectTypes.Simulation, simulationToClone.Name, clone.Name);
             _buildingBlockTask.AddCommandToHistory(addCommand);
 
             //after clone => we go in edit mode

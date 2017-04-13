@@ -56,7 +56,7 @@ namespace PKSim.BatchTool.Services
 
          clear();
 
-         _logger.AddInSeparator("Starting project comparison run: {0}".FormatWith(DateTime.Now.ToIsoFormat()));
+         _logger.AddInSeparator($"Starting project comparison run: {DateTime.Now.ToIsoFormat()}");
 
          var inputDirectory = new DirectoryInfo(inputFolder);
          if (!inputDirectory.Exists)
@@ -70,7 +70,7 @@ namespace PKSim.BatchTool.Services
          if (outputDirectory.Exists)
          {
             outputDirectory.Delete(recursive: true);
-            _logger.AddInfo("Deleting folder '{0}'".FormatWith(outputFolder));
+            _logger.AddInfo($"Deleting folder '{outputFolder}'");
          }
 
          outputDirectory.Create();
@@ -91,14 +91,14 @@ namespace PKSim.BatchTool.Services
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
 
-         _logger.AddInSeparator("Finished project comparison run in {0}'".FormatWith(timeSpent.ToDisplay()));
+         _logger.AddInSeparator($"Finished project comparison run in {timeSpent.ToDisplay()}'");
       }
 
       private async Task exportProjectResults(FileInfo projectFile, DirectoryInfo originalDirectory, DirectoryInfo afterConversionDirectory, DirectoryInfo newDirectory, DirectoryInfo pkmlOldDirectory, DirectoryInfo pkmlNewDirectory)
       {
          int simulationCount = 0;
          var begin = DateTime.UtcNow;
-         _logger.AddInSeparator("Loading simulations in project file '{0}'".FormatWith(projectFile.FullName));
+         _logger.AddInSeparator($"Loading simulations in project file '{projectFile.FullName}'");
 
          _workspacePersistor.LoadSession(_workspace, projectFile.FullName);
          var project = _workspace.Project;
@@ -121,7 +121,7 @@ namespace PKSim.BatchTool.Services
          var timeSpent = end - begin;
 
          _workspace.CloseProject();
-         _logger.AddInfo("{0} simulations exported from project '{1}' in {2}".FormatWith(simulationCount, projectFile.FullName, timeSpent.ToDisplay()));
+         _logger.AddInfo($"{simulationCount} simulations exported from project '{projectFile.FullName}' in {timeSpent.ToDisplay()}");
       }
 
       private async Task<bool> exportSimulation(DirectoryInfo originalDirectory, DirectoryInfo afterConversionDirectory, DirectoryInfo newDirectory, DirectoryInfo pkmlOldDirectory, DirectoryInfo pkmlNewDirectory, IndividualSimulation simulation, IPKSimProject project)
@@ -129,13 +129,13 @@ namespace PKSim.BatchTool.Services
          _lazyLoadTask.Load(simulation);
 
          if (!simulation.HasResults)
-            return warn("No results found for simulation '{0}'".FormatWith(simulation.Name));
+            return warn($"No results found for simulation '{simulation.Name}'");
 
          if (!simulation.HasUpToDateResults)
-            return warn("Results not up to date in simulation '{0}'".FormatWith(simulation.Name));
+            return warn($"Results not up to date in simulation '{simulation.Name}'");
 
          if (simulation.IsImported)
-            return warn("Import simulation '{0}' cannot be exported".FormatWith(simulation.Name));
+            return warn($"Imported simulation '{simulation.Name}' cannot be exported");
 
          await exportSimulationToPkml(pkmlOldDirectory, project.Name, simulation);
 
@@ -148,7 +148,7 @@ namespace PKSim.BatchTool.Services
          IndividualSimulation otherSimulation = null;
          try
          {
-            _logger.AddDebug("Creating simulation based on old building blocks for '{0}'".FormatWith(simulation.Name));
+            _logger.AddDebug($"Creating simulation based on old building blocks for '{simulation.Name}'");
             otherSimulation = await createNewSimulationBasedOn(simulation, project);
 
             await runSimulation(simulation);
@@ -167,7 +167,7 @@ namespace PKSim.BatchTool.Services
 
       private Task runSimulation(IndividualSimulation simulation)
       {
-         _logger.AddDebug("Running simulation '{0}'".FormatWith(simulation.Name));
+         _logger.AddDebug($"Running simulation '{simulation.Name}'");
          return _simulationEngine.RunAsync(simulation);
       }
 
@@ -203,14 +203,14 @@ namespace PKSim.BatchTool.Services
 
       private Task exportSimulationToPkml(DirectoryInfo directoryInfo, string projectName, IndividualSimulation simulation)
       {
-         _logger.AddDebug("Exporting simulation to pkml format '{0}'".FormatWith(simulation.Name));
+         _logger.AddDebug($"Exporting simulation to pkml format '{simulation.Name}'");
          var fileName = createFileName(directoryInfo, projectName, simulation, Constants.Filter.PKML_EXTENSION);
          return _moBiExportTask.SaveSimulationToFileAsync(simulation, fileName);
       }
 
       private Task exportSimulationResultsToCSV(DirectoryInfo directoryInfo, string projectName, IndividualSimulation simulation, string type)
       {
-         _logger.AddDebug("Exporting {0} results for simulation '{1}'".FormatWith(type, simulation.Name));
+         _logger.AddDebug($"Exporting {type} results for simulation '{simulation.Name}'");
 
          var fileName = createFileName(directoryInfo, projectName, simulation, Constants.Filter.CSV_EXTENSION);
          return _simulationExportTask.ExportResultsToCSVAsync(simulation, fileName);

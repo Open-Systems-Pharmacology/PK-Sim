@@ -61,7 +61,7 @@ namespace PKSim.Presentation
       public void should_add_the_name_of_the_compound_in_the_resulting_table()
       {
          var allValues = _data.AllValuesInColumn<string>(sut.GroupingName);
-         allValues.ShouldOnlyContain("{0}-DRUG".FormatWith(ApplicationTypes.Intravenous), "{0}-DRUG".FormatWith(ApplicationTypes.Oral));
+         allValues.ShouldOnlyContain($"{ApplicationTypes.Intravenous}-DRUG", $"{ApplicationTypes.Oral}-DRUG");
       }
    }
 

@@ -18,7 +18,7 @@ namespace PKSim.Core.Model
          var startTimeParameter = eventGroupBuilder.Parameter(Constants.Parameters.START_TIME);
 
          if (startTimeParameter == null)
-            throw new ArgumentException(PKSimConstants.Error.NoStartTimeInEventBuilder.FormatWith(eventGroupBuilder.Name, Constants.Parameters.START_TIME));
+            throw new ArgumentException(PKSimConstants.Error.NoStartTimeInEventBuilder(eventGroupBuilder.Name, Constants.Parameters.START_TIME));
 
          return startTimeParameter;
       }

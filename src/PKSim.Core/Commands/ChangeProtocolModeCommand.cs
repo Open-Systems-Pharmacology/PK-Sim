@@ -41,7 +41,7 @@ namespace PKSim.Core.Commands
    {
       public StartingChangeProtocolModeCommand(Protocol protocol, ProtocolMode oldProtocolMode, ProtocolMode newProtocolMode, IExecutionContext context) : base(protocol, oldProtocolMode, newProtocolMode, context)
       {
-         Description = PKSimConstants.Command.ProtocolModeChangingFrom.FormatWith(oldProtocolMode, newProtocolMode);
+         Description = PKSimConstants.Command.ProtocolModeChangingFrom(oldProtocolMode.ToString(), newProtocolMode.ToString());
       }
 
       protected override void ExecuteWith(IExecutionContext context)
@@ -59,7 +59,7 @@ namespace PKSim.Core.Commands
    {
       public FinishingChangeProtocolModeCommand(Protocol protocol, ProtocolMode oldProtocolMode, ProtocolMode newProtocolMode, IExecutionContext context) : base(protocol, oldProtocolMode, newProtocolMode, context)
       {
-         Description = PKSimConstants.Command.ProtocolModeChangedFrom.FormatWith(oldProtocolMode, newProtocolMode);
+         Description = PKSimConstants.Command.ProtocolModeChangedFrom(oldProtocolMode.ToString(), newProtocolMode.ToString());
       }
 
       protected override void ExecuteWith(IExecutionContext context)

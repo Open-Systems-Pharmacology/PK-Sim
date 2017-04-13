@@ -113,11 +113,11 @@ namespace PKSim.Core.Batch
             //enzyme not found in individual
             if (molecule == null)
             {
-               _batchLogger.AddDebug("Molecule '{0}' not found in individual  but is defined in compound for process '{1}'".FormatWith(process.MoleculeName, process.Name));
+               _batchLogger.AddDebug($"Molecule '{process.MoleculeName}' not found in individual  but is defined in compound for process '{process.Name}'");
                continue;
             }
 
-            _batchLogger.AddDebug("Adding process {0} for molecule {1}".FormatWith(process.Name, molecule.Name));
+            _batchLogger.AddDebug($"Adding process {process.Name} for molecule {molecule.Name}");
             processSelectionGroup.AddPartialProcessSelection(new TProcessSelection {ProcessName = process.Name, MoleculeName = molecule.Name, CompoundName = compound.Name});
          }
       }

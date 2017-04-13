@@ -18,7 +18,7 @@ namespace PKSim.Core.Commands
          _newProtocolMode = newProtocolMode;
          ObjectType = PKSimConstants.ObjectTypes.AdministrationProtocol;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         Description = PKSimConstants.Command.SetProtocolModeCommandDescription.FormatWith(oldProtocolMode, newProtocolMode);
+         Description = PKSimConstants.Command.SetProtocolModeCommandDescription(oldProtocolMode.ToString(), newProtocolMode.ToString());
          context.UpdateBuildinBlockProperties(this, _protocol);
       }
 

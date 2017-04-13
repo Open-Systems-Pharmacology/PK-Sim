@@ -112,8 +112,9 @@
       <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.0.1\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Utility">
-      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.1\lib\net45\OSPSuite.Utility.dll</HintPath>
+    <Reference Include="OSPSuite.Utility, Version=2.0.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.5\lib\net45\OSPSuite.Utility.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SX, Version=2.6.3.1, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.3.1\lib\net45\SX.dll</HintPath>

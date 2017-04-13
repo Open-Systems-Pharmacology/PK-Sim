@@ -72,7 +72,7 @@ namespace PKSim.BatchTool.Services
       private ProjectInfo addProjectInfo(FileInfo projectFile)
       {
          var projectInfo = new ProjectInfo {FullPath = projectFile.FullName, Name= projectFile.Name };
-         _logger.AddInSeparator("Loading project file '{0}'".FormatWith(projectFile.FullName));
+         _logger.AddInSeparator($"Loading project file '{projectFile.FullName}'");
 
          _workspacePersistor.LoadSession(_workspace, projectFile.FullName);
          var project = _workspace.Project;

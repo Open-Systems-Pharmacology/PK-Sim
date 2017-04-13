@@ -27,7 +27,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       public void ShowParametersFor(Simulation simulation)
       {
          var allParameters = simulation.All<IParameter>().Where(parameterShouldBeDisplayed);
-         _view.Caption = "All Parameters for Simulation with Id {0}".FormatWith(simulation.Id);
+         _view.Caption = $"All Parameters for Simulation with Id {simulation.Id}";
 
          var parameterIdTable = new DataTable("Parameter Id");
          parameterIdTable.Columns.Add("Parameter Path", typeof (string));

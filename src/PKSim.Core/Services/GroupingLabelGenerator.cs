@@ -116,7 +116,7 @@ namespace PKSim.Core.Services
          if (generationStrategy == LabelGenerationStrategies.Roman)
             return romanCharactersFrom;
 
-         throw new Exception("Unknow LabelGenerationStrategy '{0}'".FormatWith(generationStrategy));
+         throw new Exception($"Unknow LabelGenerationStrategy '{generationStrategy}'");
       }
 
       private string romanCharactersFrom(int i)

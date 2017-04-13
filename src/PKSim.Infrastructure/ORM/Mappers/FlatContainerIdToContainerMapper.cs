@@ -41,7 +41,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
                return containerMapper.MapFrom(flatContainerId);
          }
 
-         throw new ArgumentException(PKSimConstants.Error.CannotCreateContainerOfType.FormatWith(containerType));
+         throw new ArgumentException(PKSimConstants.Error.CannotCreateContainerOfType(containerType.ToString()));
       }
    }
 }

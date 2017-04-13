@@ -29,12 +29,12 @@ namespace PKSim.BatchTool.Services
          string outputFolder = parameters.outputFolder;
          EnvironmentHelper.UserName = () => "PK-Sim Master";
 
-         _logger.AddInSeparator("Starting training material generation: {0}".FormatWith(DateTime.Now.ToIsoFormat()));
+         _logger.AddInSeparator($"Starting training material generation: {DateTime.Now.ToIsoFormat()}");
          var outputDirectory = new DirectoryInfo(outputFolder);
          if (outputDirectory.Exists)
          {
             outputDirectory.Delete(recursive: true);
-            _logger.AddInfo("Deleting folder '{0}'".FormatWith(outputFolder));
+            _logger.AddInfo($"Deleting folder '{outputFolder}'");
          }
 
          outputDirectory.Create();
@@ -44,7 +44,7 @@ namespace PKSim.BatchTool.Services
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
 
-         _logger.AddInSeparator("Finished training material generation in {0}'".FormatWith(timeSpent.ToDisplay()));
+         _logger.AddInSeparator($"Finished training material generation in {timeSpent.ToDisplay()}'");
       }
 
       private async Task generateTrainingMaterial(string outputFolder)

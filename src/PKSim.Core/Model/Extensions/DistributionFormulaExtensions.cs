@@ -24,7 +24,7 @@ namespace PKSim.Core.Model.Extensions
          if (formula.IsAnImplementationOf<UnknownDistributionFormula>())
             return DistributionTypes.Unknown;
 
-         throw new ArgumentException(PKSimConstants.Error.DistributionUnknown.FormatWith(formula));
+         throw new ArgumentException(PKSimConstants.Error.DistributionUnknown(formula.ToString()));
       }
    }
 }

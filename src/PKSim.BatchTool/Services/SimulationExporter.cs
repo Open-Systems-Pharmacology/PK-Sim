@@ -38,17 +38,17 @@ namespace PKSim.BatchTool.Services
       public void RunAndExport(IndividualSimulation simulation, string outputFolder, string exportFileName, SimulationConfiguration simulationConfiguration)
       {
          var individualSimulation = simulation.DowncastTo<IndividualSimulation>();
-         var fileName = Path.Combine(outputFolder, string.Format("{0}.csv", exportFileName));
-         var parameterReportFileName = Path.Combine(outputFolder, string.Format("{0}_parameters.csv", exportFileName));
-         _logger.AddInfo("------> Running simulation '{0}'".FormatWith(exportFileName));
+         var fileName = Path.Combine(outputFolder, $"{exportFileName}.csv");
+         var parameterReportFileName = Path.Combine(outputFolder, $"{exportFileName}_parameters.csv");
+         _logger.AddInfo($"------> Running simulation '{exportFileName}'");
          var engine = _simulationEngineFactory.Create<IndividualSimulation>();
          engine.RunForBatch(individualSimulation, simulationConfiguration.CheckForNegativeValues);
 
-         _logger.AddDebug("------> Exporting simulation results to '{0}'".FormatWith(exportFileName));
+         _logger.AddDebug($"------> Exporting simulation results to '{fileName}'");
          var dataTable = _dataRepositoryTask.ToDataTable(simulation.DataRepository, x => _quantityDisplayPathMapper.DisplayPathAsStringFor(simulation, x)).First();
          dataTable.ExportToCSV(fileName);
 
-         _logger.AddDebug("------> Exporting simulation parameters to '{0}'".FormatWith(parameterReportFileName));
+         _logger.AddDebug($"------> Exporting simulation parameters to '{parameterReportFileName}'");
          _parametersReportCreator.ExportParametersTo(individualSimulation.Model, parameterReportFileName);
       }
    }
