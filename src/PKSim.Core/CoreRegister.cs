@@ -1,8 +1,6 @@
-using PKSim.Core.Batch;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
+using OSPSuite.Core;
 using OSPSuite.Core.Commands;
+using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
@@ -11,6 +9,11 @@ using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Data;
+using PKSim.Core.Batch;
+using PKSim.Core.Comparison;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using Individual = PKSim.Core.Model.Individual;
 using Simulation = PKSim.Core.Model.Simulation;
@@ -38,6 +41,8 @@ namespace PKSim.Core
             scan.ExcludeType<ProjectChangedNotifier>();
             scan.ExcludeType<BatchLogger>();
             scan.ExcludeType<SimulationRunner>();
+
+            scan.ExcludeNamespaceContainingType<IndividualDiffBuilder>();
             scan.WithConvention<PKSimRegistrationConvention>();
          });
 
@@ -90,6 +95,7 @@ namespace PKSim.Core
          container.Register<IOSPSuiteExecutionContext, ExecutionContext>();
 
          registerMoleculeFactories(container);
+         registerComparers(container);
       }
 
       private void registerMoleculeFactories(IContainer container)
@@ -97,6 +103,16 @@ namespace PKSim.Core
          container.Register<IIndividualMoleculeFactory, IndividualEnzymeFactory>();
          container.Register<IIndividualMoleculeFactory, IndividualTransporterFactory>();
          container.Register<IIndividualMoleculeFactory, IndividualOtherProteinFactory>();
+      }
+
+      private static void registerComparers(IContainer container)
+      {
+         container.AddScanner(scan =>
+         {
+            scan.AssemblyContainingType<CoreRegister>();
+            scan.IncludeNamespaceContainingType<IndividualDiffBuilder>();
+            scan.WithConvention<RegisterTypeConvention<IDiffBuilder>>();
+         });
       }
    }
 }
