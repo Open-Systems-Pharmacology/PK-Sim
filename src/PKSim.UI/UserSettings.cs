@@ -115,6 +115,7 @@ namespace PKSim.UI
          DefaultPopulationAnalysis = PopulationAnalysisType.TimeProfile;
          PreferredViewLayout = ViewLayouts.AccordionView;
          DefaultChartYScaling = Scalings.Log;
+         DefaultChartEditorLayout = Constants.DEFAULT_CHART_LAYOUT;
       }
 
       public DirectoryMapSettings DirectoryMapSettings => _directoryMapSettings;
