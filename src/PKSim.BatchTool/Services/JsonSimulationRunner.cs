@@ -46,20 +46,20 @@ namespace PKSim.BatchTool.Services
          return Task.Run(() =>
          {
 
-            _logger.AddInSeparator("Starting batch run: {0}".FormatWith(DateTime.Now.ToIsoFormat()));
+            _logger.AddInSeparator($"Starting batch run: {DateTime.Now.ToIsoFormat()}");
 
             var inputDirectory = new DirectoryInfo(inputFolder);
             if (!inputDirectory.Exists)
                throw new ArgumentException($"Input folder '{inputFolder}' does not exist");
 
-            var allSimulationFiles = inputDirectory.GetFiles(Constants.Filter.JSON_FILE_FILTER);
+            var allSimulationFiles = inputDirectory.GetFiles(CoreConstants.Filter.JSON_FILTER);
             if (allSimulationFiles.Length == 0)
                throw new ArgumentException($"No simulation json file found in '{inputFolder}'");
 
             var outputDirectory = new DirectoryInfo(outputFolder);
             if (!outputDirectory.Exists)
             {
-               _logger.AddInfo("Creating folder '{0}'".FormatWith(outputFolder));
+               _logger.AddInfo($"Creating folder '{outputFolder}'");
                outputDirectory.Create();
             }
 
@@ -67,18 +67,18 @@ namespace PKSim.BatchTool.Services
             allExistingFiles.Each(outputFile =>
             {
                FileHelper.DeleteFile(outputFile.FullName);
-               _logger.AddDebug("Deleting file '{0}'".FormatWith(outputFile.FullName));
+               _logger.AddDebug($"Deleting file '{outputFile.FullName}'");
             });
 
             var begin = DateTime.UtcNow;
             allSimulationFiles.Each(s => exportSimulationTo(s, outputFolder));
             var end = DateTime.UtcNow;
             var timeSpent = end - begin;
-            _logger.AddInSeparator("{0} simulations calculated and exported in '{1}'".FormatWith(_allSimulationNames.Count, timeSpent.ToDisplay()));
+            _logger.AddInSeparator($"{_allSimulationNames.Count} simulations calculated and exported in '{timeSpent.ToDisplay()}'");
 
             createSummaryFilesIn(outputDirectory);
 
-            _logger.AddInSeparator("Batch run finished: {0}".FormatWith(DateTime.Now.ToIsoFormat()));
+            _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat()}");
 
             exportLogFile(outputDirectory);
          });
@@ -113,22 +113,22 @@ namespace PKSim.BatchTool.Services
          {
             var tmp = FileHelper.FileNameFromFileFullPath(FileHelper.GenerateTemporaryFileName());
             tmp = Path.Combine(outputDirectory.FullName, $"{tmp}.csv");
-            _logger.AddWarning("File '{0}' already exists and will be saved under '{1}'".FormatWith(fileName, tmp));
+            _logger.AddWarning($"File '{fileName}' already exists and will be saved under '{tmp}'");
             fileName = tmp;
          }
 
-         _logger.AddDebug("Exporting simulation file names to '{0}'".FormatWith(fileName));
+         _logger.AddDebug($"Exporting simulation file names to '{fileName}'");
          dataTable.ExportToCSV(fileName);
       }
 
       private void exportSimulationTo(FileInfo simulationFile, string outputFolder)
       {
-         _logger.AddInSeparator("Starting batch simulation for file '{0}'".FormatWith(simulationFile));
+         _logger.AddInSeparator($"Starting batch simulation for file '{simulationFile}'");
          try
          {
             var simForBatch = _simulationLoader.LoadSimulationFrom(simulationFile.FullName);
             string simText = simForBatch.NumberOfSimulations > 1 ? "simulations" : "simulation";
-            _logger.AddInfo("{0} {1} found in file '{2}'".FormatWith(simForBatch.NumberOfSimulations, simText, simulationFile));
+            _logger.AddInfo($"{simForBatch.NumberOfSimulations} {simText} found in file '{simulationFile}'");
 
             var simulation = simForBatch.Simulation;
 
@@ -166,16 +166,16 @@ namespace PKSim.BatchTool.Services
             if (parameter == null)
             {
                //try with adding the name of the simulation at first
-               parameterPath = "{0}{1}{2}".FormatWith(Simulation.Name, ObjectPath.PATH_DELIMITER, parameterPath);
+               parameterPath = $"{Simulation.Name}{ObjectPath.PATH_DELIMITER}{parameterPath}";
                parameter = allParameters[parameterPath];
                if (parameter == null)
                {
-                  _logger.AddWarning("Parameter with path '{0}' not found!".FormatWith(parameterValue.ParameterPath));
+                  _logger.AddWarning($"Parameter with path '{parameterValue.ParameterPath}' not found!");
                   continue;
                }
             }
 
-            _logger.AddDebug("Parameter '{0}' value set from '{1} to '{2}'.".FormatWith(parameterValue.ParameterPath, parameter.Value, parameterValue.Value));
+            _logger.AddDebug($"Parameter '{parameterValue.ParameterPath}' value set from '{parameter.Value} to '{parameterValue.Value}'.");
             macroCommand.Add(new SetParameterValueCommand(parameter, parameterValue.Value));
          }
 

@@ -87,6 +87,7 @@ namespace PKSim.Core
          public static readonly string PROJECT_OLD_EXTENSION = ".pkprj";
          public static readonly string MDB_EXTENSION = ".mdb";
          public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
+         public static readonly string JSON_FILTER = $"*{Constants.Filter.JSON_EXTENSION}";
          public static readonly string SIMULATION_RESULTS_FILTER = $"*{Constants.Filter.CSV_EXTENSION}";
          public static readonly string EXPRESSION_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Expression Database", MDB_EXTENSION);
          public static readonly string TEMPLATE_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Template Database", MDB_EXTENSION);
