@@ -17,7 +17,7 @@ namespace PKSim.Core
       {
          _dosingInterval = DosingIntervals.DI_24;
          _context = A.Fake<IExecutionContext>();
-         _protocol = new SimpleProtocol();
+         _protocol = new SimpleProtocol {DosingInterval = DosingIntervals.DI_8_8_8};
          sut = new SetProtocolDosingIntervalCommand(_protocol, _dosingInterval, _context);
       }
    }
