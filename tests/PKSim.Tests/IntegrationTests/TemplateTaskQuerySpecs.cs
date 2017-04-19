@@ -92,7 +92,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void loaded_individuals_should_have_updated_proteinmodel_structure()
+      public void loaded_individuals_should_have_updated_protein_model_structure()
       {
          _individuals.Count.ShouldBeGreaterThan(0);
          _individuals.Each(checkNewProteinModelStructure);
