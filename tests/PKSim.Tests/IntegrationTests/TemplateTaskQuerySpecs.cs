@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
@@ -10,6 +13,7 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Spikes;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.IntegrationTests
 {
@@ -60,6 +64,40 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_loading_individuals_from_system_templates : concern_for_TemplateTaskQuery
+   {
+      private IList<Individual> _individuals;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+
+         var configuration = IoC.Resolve<IPKSimConfiguration>();
+         configuration.TemplateSystemDatabasePath = DomainHelperForSpecs.SystemTemplateDatabasePath();
+
+         var templates= sut.AllTemplatesFor(TemplateDatabaseType.System, TemplateType.Individual);
+
+         _individuals=new List<Individual>();
+         foreach (var template in templates)
+         {
+            _individuals.Add(sut.LoadTemplate<Individual>(template));
+         }
+      }
+
+      private void checkNewProteinModelStructure(Individual individual)
+      {
+         //just check that some of new parameters were added
+         individual.Organism.Organ(CoreConstants.Organ.Bone)
+            .AllParameters().Count(p => p.Name.EndsWith("flow proportionality factor")).ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void loaded_individuals_should_have_updated_protein_model_structure()
+      {
+         _individuals.Count.ShouldBeGreaterThan(0);
+         _individuals.Each(checkNewProteinModelStructure);
+      }
+   }
 
    public class When_saving_a_building_block_to_the_database : concern_for_TemplateTaskQuery
    {

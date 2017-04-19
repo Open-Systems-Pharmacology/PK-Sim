@@ -67,6 +67,11 @@ namespace PKSim.Core
          return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\src\\Db\\TemplateDB", "PKSimTemplateDBUser.template");
       }
 
+      public static string SystemTemplateDatabasePath()
+      {
+         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\src\\Db\\TemplateDB", "PKSimTemplateDBSystem.mdb");
+      }
+
       public static Individual CreateIndividual()
       {
          var originData = new OriginData();
