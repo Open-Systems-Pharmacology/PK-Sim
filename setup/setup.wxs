@@ -47,6 +47,14 @@
             <RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)\PK-Sim\$(var.ProductReleaseVersion)" Name="InstallDir" Type="string" KeyPath="no" Value="[INSTALLDIR]" />
           </Component>
 
+          <Component Id='PKSim.BatchTool.exe' Guid='BD7AEBCF-1CDC-48A1-A491-5831AC753F35'>
+            <File Name='PKSim.BatchTool.exe' Id='PKSim.BatchTool.exe' Source='$(var.DeployDir)/PKSim.BatchTool.exe' KeyPath='yes' />
+          </Component>
+
+          <Component Id='PKSim.BatchTool.exe.config' Guid='BC1CA07A-EDC7-40C0-B7CD-0D2F3D755A57'>
+            <File Name='PKSim.BatchTool.exe.config' Id='PKSim.BatchTool.exe.config' Source='$(var.DeployDir)/PKSim.BatchTool.exe.config' KeyPath='yes' />
+          </Component>
+
           <Component Id="OSPSuiteLicense" Guid="CBB85B48-B261-4366-9B90-55CAAB5DD263">
             <File Name="Open Systems Pharmacology Suite License.pdf" Id="OSPSuiteLicense" Source="$(var.DeployDir)/Open Systems Pharmacology Suite License.pdf" KeyPath="yes">
               <Shortcut Name="Open Systems Pharmacology Suite License" Id="OSPSuiteLicenseShortcut" Directory="OSPSuiteMenuDir" WorkingDirectory="INSTALLDIR" Advertise="yes" />
@@ -173,6 +181,8 @@
       <ComponentGroupRef Id="Examples" />
 
       <ComponentRef Id="PKSim.exe" />
+      <ComponentRef Id="PKSim.BatchTool.exe.config" />
+      <ComponentRef Id="PKSim.BatchTool.exe" />
       <ComponentRef Id="log4net.config.xml" />
       <ComponentRef Id="OSPSuiteMenuDir" />
       <ComponentRef Id="Manual.pdf" />

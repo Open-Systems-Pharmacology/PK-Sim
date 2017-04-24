@@ -21,15 +21,19 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 	src_dir = File.join(solution_dir, 'src', 'PKSim', 'bin', args.configuration)
 	product_version = args.product_version
 	suite_name = 'Open Systems Pharmacology Suite'
+	batch_tool_dir = File.join('src', 'PKSim.BatchTool', 'bin', args.configuration)
 
 	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
+
+	#For the batch tool, we only need to update the assembly binding
+	SmartXls.update_sx_assembly_binding File.join(solution_dir, batch_tool_dir), args.smart_xls_version
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
 		'PKSim.exe' 
 	]
 
-	#Files required for setup creation only
+	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
 		'packages/**/OSPSuite.Presentation/**/*.{wxs,xml}',
 		'packages/**/OSPSuite.TeXReporting/**/*.*',
@@ -37,6 +41,8 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		'src/PKSim.Assets/Resources/*.ico',
 		'src/Db/PKSimDB.mdb',
 		'src/Db/TemplateDB/PKSimTemplateDBSystem.mdb',
+		File.join(batch_tool_dir, 'PKSim.BatchTool.exe'),
+		File.join(batch_tool_dir, 'PKSim.BatchTool.exe.config'),
 		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
 		'dimensions/*.xml',
