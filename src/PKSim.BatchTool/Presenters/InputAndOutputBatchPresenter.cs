@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Validation;
 using PKSim.BatchTool.Services;
 using PKSim.BatchTool.Views;
 using PKSim.Core;
 using PKSim.Core.Batch;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.BatchTool.Presenters
 {
@@ -48,23 +48,23 @@ namespace PKSim.BatchTool.Presenters
             });
       }
 
-      public override void InitializeWith(BatchStartOptions startOptions)
+      public override async Task InitializeWith(BatchStartOptions startOptions)
       {
+         _dto = new InputAndOutputBatchDTO();
+         if (startOptions.IsValid())
          {
-            _dto = new InputAndOutputBatchDTO();
-            if (startOptions.IsValid)
-            {
-               _startedFromCommandLine = true;
-               _dto.InputFolder = startOptions.InputFolder;
-               _dto.OutputFolder = startOptions.OutputFolder;
-            }
+            _startedFromCommandLine = true;
+            _dto.InputFolder = startOptions.InputFolder;
+            _dto.OutputFolder = startOptions.OutputFolder;
+         }
 
-            _view.BindTo(_dto);
+         _view.BindTo(_dto);
+         if (_dto.IsValid())
+            await RunBatch();
+         else
+         {
             _view.Display();
-            if (_dto.IsValid())
-               RunBatch();
-            else
-               _startedFromCommandLine = false;
+            _startedFromCommandLine = false;
          }
       }
    }

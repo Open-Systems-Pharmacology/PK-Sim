@@ -12,10 +12,11 @@ using OSPSuite.Presentation.Views;
 
 namespace PKSim.BatchTool.Presenters
 {
-   public interface IBatchPresenter : IInitializablePresenter<BatchStartOptions>
+   public interface IBatchPresenter: IPresenter
    {
       void Exit();
-      void RunBatch();
+      Task RunBatch();
+      Task InitializeWith(BatchStartOptions startOptions);
    }
 
    public abstract class BatchPresenter<TView, TPresenter, TBatchRunner> : AbstractPresenter<TView, TPresenter>, IBatchPresenter
@@ -41,7 +42,7 @@ namespace PKSim.BatchTool.Presenters
          _view.AddLogView(_logPresenter.View);
       }
 
-      public virtual async void RunBatch()
+      public virtual async Task RunBatch()
       {
          if (_isRunning) return;
          _isRunning = true;
@@ -77,11 +78,11 @@ namespace PKSim.BatchTool.Presenters
          Application.Exit();
       }
 
-      private bool shouldClose
-      {
-         get { return _startedFromCommandLine && !Debugger.IsAttached; }
-      }
+      private bool shouldClose => _startedFromCommandLine ;//&& !Debugger.IsAttached;
 
-      public abstract void InitializeWith(BatchStartOptions startOptions);
+      public virtual Task InitializeWith(BatchStartOptions startOptions)
+      {
+         return Task.FromResult(true);
+      }
    }
 }

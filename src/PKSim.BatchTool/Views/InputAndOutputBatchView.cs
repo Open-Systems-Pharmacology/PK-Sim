@@ -52,7 +52,7 @@ namespace PKSim.BatchTool.Views
          btnInputFolder.ButtonClick += (o, e) => OnEvent(_presenter.SelectInputFolder);
          btnOutputFolder.ButtonClick += (o, e) => OnEvent(_presenter.SelectOutputFolder);
          btnClose.Click += (o, e) => OnEvent(_presenter.Exit);
-         btnCalculate.Click += (o, e) => OnEvent(_presenter.RunBatch);
+         btnCalculate.Click += (o, e) => OnEvent(async ()=> await _presenter.RunBatch());
 
          RegisterValidationFor(_screenBinder);
       }
