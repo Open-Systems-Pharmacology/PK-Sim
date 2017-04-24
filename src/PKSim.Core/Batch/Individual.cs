@@ -22,7 +22,7 @@ namespace PKSim.Core.Batch
          Enzymes = new List<Enzyme>();
          OtherProteins = new List<OtherProtein>();
          Transporters = new List<Transporter>();
-         Optimize = true;
+         Optimize = false;
       }
    }
 }

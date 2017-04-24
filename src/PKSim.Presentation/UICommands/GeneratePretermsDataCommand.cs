@@ -47,7 +47,7 @@ namespace PKSim.Presentation.UICommands
          var batchSimulation = new PKSim.Core.Batch.Simulation();
          batchSimulation.Compounds.Add(new Compound {Name = "Standard Molecule", Lipophilicity = 3, FractionUnbound = 0.1, MolWeight = 4E-7, SolubilityAtRefpH = 9999, RefpH = 7});
          batchSimulation.ApplicationProtocols.Add(new ApplicationProtocol {CompoundName ="Standard Molecule", ApplicationType = CoreConstants.Application.Name.IntravenousBolus, Dose = 1, DoseUnit = "mg/kg", DosingInterval = DosingIntervals.Single.ToString()});
-         batchSimulation.Individual = new Individual {Age = 0, Species = CoreConstants.Species.Human, Population = CoreConstants.Population.Preterm};
+         batchSimulation.Individual = new Individual {Age = 0, Species = CoreConstants.Species.Human, Population = CoreConstants.Population.Preterm, Optimize = true};
          batchSimulation.Configuration = new SimulationConfiguration {Model = CoreConstants.Model.FourComp, AllowAging = true};
 
          foreach (var gestationalAge in CoreConstants.PretermRange)
