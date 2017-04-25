@@ -41,6 +41,8 @@ namespace PKSim.BatchTool.Services
       {
          string inputFolder = parameters.inputFolder;
          string outputFolder = parameters.outputFolder;
+         BatchExportMode exportMode = parameters.exportMode;
+
          clear();
 
          return Task.Run(() =>
@@ -71,7 +73,7 @@ namespace PKSim.BatchTool.Services
             });
 
             var begin = DateTime.UtcNow;
-            allSimulationFiles.Each(s => exportSimulationTo(s, outputFolder));
+            allSimulationFiles.Each(s => exportSimulationTo(s, outputFolder, exportMode));
             var end = DateTime.UtcNow;
             var timeSpent = end - begin;
             _logger.AddInSeparator($"{_allSimulationNames.Count} simulations calculated and exported in '{timeSpent.ToDisplay()}'");
@@ -121,7 +123,7 @@ namespace PKSim.BatchTool.Services
          dataTable.ExportToCSV(fileName);
       }
 
-      private void exportSimulationTo(FileInfo simulationFile, string outputFolder)
+      private void exportSimulationTo(FileInfo simulationFile, string outputFolder, BatchExportMode batchExportMode)
       {
          _logger.AddInSeparator($"Starting batch simulation for file '{simulationFile}'");
          try
@@ -134,13 +136,13 @@ namespace PKSim.BatchTool.Services
 
             var defaultSimulationName = FileHelper.FileNameFromFileFullPath(simulationFile.FullName);
             var allParameters = _entitiesInContainerRetriever.ParametersFrom(simulation);
-            _simulationExporter.RunAndExport(simulation, outputFolder, defaultSimulationName, simForBatch.Configuration);
+            _simulationExporter.RunAndExport(simulation, outputFolder, defaultSimulationName, simForBatch.Configuration, batchExportMode);
             _allSimulationNames.Add(defaultSimulationName);
             foreach (var parameterValueSet in simForBatch.ParameterVariationSets)
             {
                string currentName = $"{defaultSimulationName}_{parameterValueSet.Name}";
                var command = updateParameters(allParameters, parameterValueSet);
-               _simulationExporter.RunAndExport(simulation, outputFolder, currentName, simForBatch.Configuration);
+               _simulationExporter.RunAndExport(simulation, outputFolder, currentName, simForBatch.Configuration, batchExportMode);
                _allSimulationNames.Add(currentName);
                _commandTask.ResetChanges(command, _executionContext);
             }

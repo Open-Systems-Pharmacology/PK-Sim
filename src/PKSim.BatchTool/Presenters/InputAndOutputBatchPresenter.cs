@@ -44,7 +44,8 @@ namespace PKSim.BatchTool.Presenters
             new
             {
                inputFolder = _dto.InputFolder,
-               outputFolder = _dto.OutputFolder
+               outputFolder = _dto.OutputFolder,
+               exportMode = _startedFromCommandLine ? BatchExportMode.Json : BatchExportMode.Csv | BatchExportMode.Json
             });
       }
 
