@@ -1,6 +1,8 @@
-﻿using PKSim.BatchTool.Views;
-using OSPSuite.Presentation.Core;
+﻿using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Validation;
+using PKSim.BatchTool.Views;
 
 namespace PKSim.BatchTool.Presenters
 {
@@ -11,15 +13,18 @@ namespace PKSim.BatchTool.Presenters
       void StartBatchComparison();
       void GenerateTrainingMaterial();
       void GenerateProjectOverview();
+      IView ActiveView { get; }
    }
 
    public class BatchMainPresenter : AbstractPresenter<IBatchMainView, IBatchMainPresenter>, IBatchMainPresenter
    {
+      private readonly IView _batchSilentView;
       private readonly IApplicationController _applicationController;
       private BatchStartOptions _startOptions;
 
-      public BatchMainPresenter(IBatchMainView view, IApplicationController applicationController) : base(view)
+      public BatchMainPresenter(IBatchMainView view, IBatchSilentView batchSilentView, IApplicationController applicationController) : base(view)
       {
+         _batchSilentView = batchSilentView;
          _applicationController = applicationController;
          _startOptions = new BatchStartOptions();
       }
@@ -27,6 +32,10 @@ namespace PKSim.BatchTool.Presenters
       public void Initialize(BatchStartOptions startOptions)
       {
          _startOptions = startOptions;
+         if (_startOptions.IsValid())
+         {
+            StartBatchRun();
+         }
       }
 
       public void StartBatchRun()
@@ -44,10 +53,10 @@ namespace PKSim.BatchTool.Presenters
          start<IGenerateTrainingMaterialPresenter>();
       }
 
-      private void start<T>() where T : IInitializablePresenter<BatchStartOptions>
+      private void start<T>() where T : IBatchPresenter
       {
          var presenter = _applicationController.Start<T>();
-         _view.Hide();
+         View.Hide();
          presenter.InitializeWith(_startOptions);
       }
 
@@ -55,5 +64,7 @@ namespace PKSim.BatchTool.Presenters
       {
          start<IGenerateProjectOverviewPresenter>();
       }
+
+      public IView ActiveView => _startOptions.IsValid() ? _batchSilentView : BaseView;
    }
 }

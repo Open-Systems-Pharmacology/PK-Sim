@@ -37,13 +37,13 @@ namespace PKSim.BatchTool.Presenters
             });
       }
 
-      public override void InitializeWith(BatchStartOptions startOptions)
+      public override Task InitializeWith(BatchStartOptions startOptions)
       {
          _dto = new OutputBatchDTO();
-
          _view.BindTo(_dto);
          _view.Display();
          _startedFromCommandLine = false;
+         return base.InitializeWith(startOptions);
       }
    }
 }

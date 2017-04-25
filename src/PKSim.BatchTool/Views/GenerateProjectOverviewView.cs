@@ -36,7 +36,7 @@ namespace PKSim.BatchTool.Views
          _screenBinder.Bind(x => x.OutputFolder).To(btnInputFolder);
 
          btnInputFolder.ButtonClick += (o, e) => OnEvent(_presenter.SelectInputFolder);
-         btnGenerate.Click += (o, e) => OnEvent(_presenter.RunBatch);
+         btnGenerate.Click += (o, e) => OnEvent(async ()=> await _presenter.RunBatch());
 
          RegisterValidationFor(_screenBinder);
       }

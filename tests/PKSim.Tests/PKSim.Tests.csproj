@@ -222,6 +222,7 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="BatchTool\BatchStartOptionsSpecs.cs" />
     <Compile Include="BatchTool\BatchToolFactoryForSpecs.cs" />
     <Compile Include="BatchTool\ContextForBatch.cs" />
     <Compile Include="BatchTool\InteractionSpecs.cs" />
