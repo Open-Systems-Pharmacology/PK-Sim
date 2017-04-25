@@ -78,7 +78,7 @@ namespace PKSim.BatchTool.Presenters
          Application.Exit();
       }
 
-      private bool shouldClose => _startedFromCommandLine && !Debugger.IsAttached;
+      private bool shouldClose => _startedFromCommandLine;
 
       public virtual Task InitializeWith(BatchStartOptions startOptions)
       {

@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Validation;
 using PKSim.BatchTool.Presenters;
 
 namespace PKSim.BatchTool
@@ -13,7 +14,7 @@ namespace PKSim.BatchTool
       Success = 0,
       Error = 1 << 0,
    }
-
+   
    static class Program
    {
       /// <summary>
@@ -30,7 +31,8 @@ namespace PKSim.BatchTool
             var mainPresenter = IoC.Resolve<IBatchMainPresenter>();
             var options = BatchStartOptions.From(args);
             mainPresenter.Initialize(options);
-            Application.Run(mainPresenter.ActiveView.DowncastTo<Form>());
+            var applicationContext = createContextFrom(mainPresenter, options);
+            Application.Run(applicationContext); 
           
             return (int)ExitCodes.Success;
          }
@@ -39,6 +41,14 @@ namespace PKSim.BatchTool
             e.LogError();
             return (int)ExitCodes.Error;
          }
+      }
+
+      private static ApplicationContext createContextFrom(IBatchMainPresenter mainPresenter, BatchStartOptions options)
+      {
+         if(options.IsValid())
+            return new ApplicationContext();
+
+         return new ApplicationContext(mainPresenter.BaseView.DowncastTo<Form>());
       }
    }
 }

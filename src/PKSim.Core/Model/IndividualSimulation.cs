@@ -59,10 +59,7 @@ namespace PKSim.Core.Model
          return pkValueFunc(_compoundPKCache[compoundName]);
       }
 
-      public IEnumerable<CompoundPK> AllCompoundPK
-      {
-         get { return _compoundPKCache; }
-      }
+      public IEnumerable<CompoundPK> AllCompoundPK => _compoundPKCache;
 
       /// <summary>
       ///    Representation in memory of the actual simulation results
@@ -78,10 +75,7 @@ namespace PKSim.Core.Model
          }
       }
 
-      public override bool HasResults
-      {
-         get { return !DataRepository.IsNull() && DataRepository.Any(); }
-      }
+      public override bool HasResults => !DataRepository.IsNull() && DataRepository.Any();
 
       public override TBuildingBlock BuildingBlock<TBuildingBlock>()
       {

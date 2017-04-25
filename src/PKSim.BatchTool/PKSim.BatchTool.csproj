@@ -271,11 +271,14 @@
     <Compile Include="Presenters\GenerateTrainingMaterialPresenter.cs" />
     <Compile Include="Presenters\InputAndOutputBatchPresenter.cs" />
     <Compile Include="Services\BatchDiagramModel.cs" />
-    <Compile Include="Services\BatchDiagramModelToXmlMapper.cs" />
+    <Compile Include="Mappers\BatchDiagramModelToXmlMapper.cs" />
     <Compile Include="Presenters\BatchDTO.cs" />
     <Compile Include="Services\BatchJournalDiagramManagerFactory.cs" />
     <Compile Include="Presenters\BatchMainPresenter.cs" />
+    <Compile Include="Services\BatchSimulationExport.cs" />
     <Compile Include="Services\ProjectOverviewRunner.cs" />
+    <Compile Include="Services\SimulationResultsExporter.cs" />
+    <Compile Include="Mappers\SimulationResultsToBatchSimulationExportMapper.cs" />
     <Compile Include="Services\TrainingMaterialRunner.cs" />
     <Compile Include="Services\TrainingMaterials\ITrainingMaterialExercise.cs" />
     <Compile Include="Services\TrainingMaterials\IV.cs" />
@@ -294,12 +297,6 @@
     <Compile Include="BatchStarter.cs" />
     <Compile Include="BatchStartOptions.cs" />
     <Compile Include="Services\BatchUserSettings.cs" />
-    <Compile Include="Views\BatchSilentView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\BatchSilentView.Designer.cs">
-      <DependentUpon>BatchSilentView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\GenerateProjectOverviewView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -315,7 +312,6 @@
     <Compile Include="Views\IBatchMainView.cs" />
     <Compile Include="Presenters\IBatchPresenter.cs" />
     <Compile Include="Services\IBatchRunner.cs" />
-    <Compile Include="Views\IBatchSilentView.cs" />
     <Compile Include="Views\IBatchView.cs" />
     <Compile Include="Views\IGenerateProjectOverviewView.cs" />
     <Compile Include="Views\InputAndOutputBatchView.cs">
@@ -331,9 +327,6 @@
     <Compile Include="Views\IGenerateTrainingMaterialView.cs" />
     <EmbeddedResource Include="Views\BatchMainView.resx">
       <DependentUpon>BatchMainView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\BatchSilentView.resx">
-      <DependentUpon>BatchSilentView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\GenerateProjectOverviewView.resx">
       <DependentUpon>GenerateProjectOverviewView.cs</DependentUpon>
@@ -426,6 +419,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
