@@ -4,6 +4,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
+using PKSim.Core;
 
 namespace PKSim.BatchTool
 {
@@ -12,7 +13,6 @@ namespace PKSim.BatchTool
       private static readonly string[] INPUTS = {"--input", "-i"};
       private static readonly string[] OUTPUTS = {"--output", "-o"};
       private static readonly string[] LOGS = {"--log", "-l"};
-      private const string DEFAULT_LOG_FILE_NAME = "log.txt";
 
       public string InputFolder { get; private set; }
       public string OutputFolder { get; private set; }
@@ -63,7 +63,7 @@ namespace PKSim.BatchTool
          OutputFolder = outputFolder;
          if (string.IsNullOrEmpty(LogFileFullPath))
          {
-            LogFileFullPath = Path.Combine(OutputFolder, DEFAULT_LOG_FILE_NAME);
+            LogFileFullPath = CoreConstants.DefaultBatchLogFullPath(OutputFolder);
          }
       }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
@@ -30,14 +31,12 @@ namespace PKSim.Core
       public const double DEFAULT_REFERENCE_CONCENTRATION_VALUE = 1;
       public const double DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN = 36 * 60;
       public const double DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN = 23 * 60;
-
       public const double DEFAULT_MIN_PERCENTILE = 0.0001;
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
+      public const string DEFAULT_BATCH_LOG_FILE_NAME = "log.txt";
+      
       public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};
-
       public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17);
-      public static readonly int DimensionIndex = 7;
-      public static readonly int QuantityTypeIndex = 8;
 
       public static readonly string ApplicationFolderPath = @"Open Systems Pharmacology\PK-Sim";
       public static readonly string MoBiRegPath = @"Open Systems Pharmacology\MoBi\";
@@ -51,20 +50,12 @@ namespace PKSim.Core
       public static readonly string DimensionFile = "OSPSuite.Dimensions.xml";
       public static readonly string PKParametersFile = "OSPSuite.PKParameters.xml";
       public static readonly string Log4NetConfigFile = "log4net.config.xml";
-      public static readonly string Name = "Name";
-      public static readonly string MoleculeName = "MoleculeName";
       public static readonly string Value = "Value";
       public static readonly string ProductName = "PK-Sim";
       public static readonly string ProductNameWithTrademark = "PK-Sim®";
-      public static readonly string SystemsBiologySuite = "SBSuite";
-      public static readonly string ParameterValuesTableName = "ParameterValues";
-      public static readonly string ParameterPercentilesTableName = "ParameterPercentiles";
-      public static readonly string ExpressionUserName = "Admin";
       public static readonly string ExpressionPassword = "rhcp!!06";
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string AccessUserName = "Admin";
-      public static readonly string Excel = "Excel®";
-      public static readonly IEnumerable<string> IllegalCharacters = new List<string> {ObjectPath.PATH_DELIMITER, ":", "*", "?", "<", ">", "|", "{", "}"}.Distinct();
       public static readonly string ProjectUndefined = "Undefined";
       public static readonly string DefaultFormulationKey = "Formulation";
       public static readonly string DefaultCalculationMethodsFileNameForMoBi = "AllCalculationMethods";
@@ -112,6 +103,11 @@ namespace PKSim.Core
       public static IReadOnlyList<string> NamesFromCompositeName(string compositeName)
       {
          return compositeName.Split(COMPOSITE_SEPARATOR);
+      }
+
+      public static string DefaultBatchLogFullPath(string outputFolder)
+      {
+         return Path.Combine(outputFolder, DEFAULT_BATCH_LOG_FILE_NAME);
       }
 
       public static class DirectoryKey
