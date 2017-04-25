@@ -229,7 +229,10 @@
     <Compile Include="BatchTool\JsonSerializationSpecs.cs" />
     <Compile Include="BatchTool\OralSpecs.cs" />
     <Compile Include="BatchTool\MetabolizationSpecs.cs" />
+    <Compile Include="BatchTool\SimulationExporterSpecs.cs" />
     <Compile Include="BatchTool\SimulationExportSpecs.cs" />
+    <Compile Include="BatchTool\SimulationResultsExporterSpecs.cs" />
+    <Compile Include="BatchTool\SimulationResultsToBatchSimulationExportMapperSpecs.cs" />
     <Compile Include="BatchTool\SpecificBindingSpecs.cs" />
     <Compile Include="BatchTool\StandardSpecs.cs" />
     <Compile Include="BatchTool\TransportSpecs.cs" />

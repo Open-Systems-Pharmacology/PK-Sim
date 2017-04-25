@@ -8,6 +8,11 @@ using PKSim.BatchTool.Services;
 
 namespace PKSim.BatchTool.Mappers
 {
+   public interface ISimulationResultsToBatchSimulationExportMapper
+   {
+      BatchSimulationExport MapFrom(ISimulation simulation, DataRepository results);
+   }
+
    public class SimulationResultsToBatchSimulationExportMapper : ISimulationResultsToBatchSimulationExportMapper
    {
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
@@ -28,14 +33,14 @@ namespace PKSim.BatchTool.Mappers
             ParameterValues = parameterValuesFor(simulation.Model)
          };
 
-         results.AllButBaseGrid().Each(c=>simulationExport.OutputValues.Add(quantityResultsFrom(simulation, c)));
+         results.AllButBaseGrid().Each(c => simulationExport.OutputValues.Add(quantityResultsFrom(simulation, c)));
 
          return simulationExport;
       }
 
       private List<ParameterValue> parameterValuesFor(IModel simulationModel)
       {
-         return  simulationModel.Root.GetAllChildren<IParameter>().Select(p => new ParameterValue
+         return simulationModel.Root.GetAllChildren<IParameter>().Select(p => new ParameterValue
          {
             Path = _objectPathFactory.CreateAbsoluteObjectPath(p).PathAsString,
             Value = p.Value
@@ -48,7 +53,7 @@ namespace PKSim.BatchTool.Mappers
          {
             Path = _quantityDisplayPathMapper.DisplayPathAsStringFor(simulation, column),
             //TODO READ THRESHOLD FROM COLUMN EXTENDED PROPERTIES WHEN READY
-            Threshold = 1.5f, 
+            Threshold = 1.5f,
             Values = displayValuesFor(column)
          };
       }

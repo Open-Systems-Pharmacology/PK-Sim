@@ -271,12 +271,14 @@
     <Compile Include="Presenters\GenerateTrainingMaterialPresenter.cs" />
     <Compile Include="Presenters\InputAndOutputBatchPresenter.cs" />
     <Compile Include="Services\BatchDiagramModel.cs" />
-    <Compile Include="Services\BatchDiagramModelToXmlMapper.cs" />
+    <Compile Include="Mappers\BatchDiagramModelToXmlMapper.cs" />
     <Compile Include="Presenters\BatchDTO.cs" />
     <Compile Include="Services\BatchJournalDiagramManagerFactory.cs" />
     <Compile Include="Presenters\BatchMainPresenter.cs" />
+    <Compile Include="Services\BatchSimulationExport.cs" />
     <Compile Include="Services\ProjectOverviewRunner.cs" />
     <Compile Include="Services\SimulationResultsExporter.cs" />
+    <Compile Include="Mappers\SimulationResultsToBatchSimulationExportMapper.cs" />
     <Compile Include="Services\TrainingMaterialRunner.cs" />
     <Compile Include="Services\TrainingMaterials\ITrainingMaterialExercise.cs" />
     <Compile Include="Services\TrainingMaterials\IV.cs" />
@@ -417,6 +419,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
