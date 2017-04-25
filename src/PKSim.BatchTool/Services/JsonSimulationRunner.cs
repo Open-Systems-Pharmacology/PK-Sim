@@ -82,6 +82,8 @@ namespace PKSim.BatchTool.Services
                var timeSpent = end - begin;
                _logger.AddInSeparator($"{_allSimulationNames.Count} simulations calculated and exported in '{timeSpent.ToDisplay()}'", NotificationType.Info);
 
+               createSummaryFilesIn(outputDirectory);
+
                _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
             }
          });
@@ -90,6 +92,29 @@ namespace PKSim.BatchTool.Services
       private void clear()
       {
          _allSimulationNames.Clear();
+      }
+
+      private void createSummaryFilesIn(DirectoryInfo outputDirectory)
+      {
+         var dataTable = new DataTable(outputDirectory.Name);
+         dataTable.Columns.Add("Sim_id", typeof(string));
+         foreach (var simulationName in _allSimulationNames)
+         {
+            var row = dataTable.NewRow();
+            row[0] = simulationName;
+            dataTable.Rows.Add(row);
+         }
+         var fileName = Path.Combine(outputDirectory.FullName, $"{outputDirectory.Name}.csv");
+         if (FileHelper.FileExists(fileName))
+         {
+            var tmp = FileHelper.FileNameFromFileFullPath(FileHelper.GenerateTemporaryFileName());
+            tmp = Path.Combine(outputDirectory.FullName, $"{tmp}.csv");
+            _logger.AddWarning($"File '{fileName}' already exists and will be saved under '{tmp}'");
+            fileName = tmp;
+         }
+
+         _logger.AddDebug($"Exporting simulation file names to '{fileName}'");
+         dataTable.ExportToCSV(fileName);
       }
 
       private void exportSimulationTo(FileInfo simulationFile, string outputFolder, BatchExportMode batchExportMode)
