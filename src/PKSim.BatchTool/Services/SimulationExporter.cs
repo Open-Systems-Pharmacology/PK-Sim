@@ -10,7 +10,8 @@ namespace PKSim.BatchTool.Services
    public enum BatchExportMode
    {
       Json = 1 << 0,
-      Csv = 1 << 1
+      Csv = 1 << 1,
+      All = Json |Csv
    }
 
    public interface ISimulationExporter
@@ -35,7 +36,7 @@ namespace PKSim.BatchTool.Services
 
       public void RunAndExport(IndividualSimulation simulation, string outputFolder, string exportFileName, SimulationConfiguration simulationConfiguration, BatchExportMode batchExportMode)
       {
-         _logger.AddInfo($"------> Running simulation '{exportFileName}'");
+         _logger.AddDebug($"------> Running simulation '{exportFileName}'");
          var engine = _simulationEngineFactory.Create<IndividualSimulation>();
          engine.RunForBatch(simulation, simulationConfiguration.CheckForNegativeValues);
 
@@ -56,7 +57,6 @@ namespace PKSim.BatchTool.Services
          var fileName = Path.Combine(outputFolder, $"{exportFileName}.json");
          _simulationResultsExporter.ExportToJson(simulation, simulation.DataRepository, fileName);
          _logger.AddDebug($"------> Exporting simulation results to '{fileName}'");
-
       }
 
       private void exportResultsToCsv(IndividualSimulation simulation, string outputFolder, string exportFileName)

@@ -46,7 +46,7 @@ namespace PKSim.BatchTool
       }
    }
 
-   public class When_running_an_exporting_a_simulation_for_batch_run_to_csv_and_json : concern_for_SimulationExporter
+   public class When_running_and_exporting_a_simulation_for_batch_run_to_csv_and_json : concern_for_SimulationExporter
    {
       protected override void Context()
       {
@@ -83,7 +83,7 @@ namespace PKSim.BatchTool
    }
 
 
-   public class When_running_an_exporting_a_simulation_for_batch_run_to_csv_only : concern_for_SimulationExporter
+   public class When_running_and_exporting_a_simulation_for_batch_run_to_csv_only : concern_for_SimulationExporter
    {
       protected override void Context()
       {
@@ -116,7 +116,7 @@ namespace PKSim.BatchTool
       }
    }
 
-   public class When_running_an_exporting_a_simulation_for_batch_run_to_json_only : concern_for_SimulationExporter
+   public class When_running_and_exporting_a_simulation_for_batch_run_to_json_only : concern_for_SimulationExporter
    {
       protected override void Context()
       {
