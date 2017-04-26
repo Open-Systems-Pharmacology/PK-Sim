@@ -41,7 +41,7 @@ namespace PKSim.Core.Batch.Mapper
          };
 
          var originData = _originDataMapper.MapFrom(batchOriginData);
-         var individual = _individualFactory.CreateAndOptimizeFor(originData).WithName("Individual");
+         var individual = _individualFactory.CreateAndOptimizeFor(originData, batchIndividual.Seed).WithName("Individual");
 
          batchIndividual.Enzymes.Each(enzyme => addMoleculeTo<IndividualEnzyme>(individual, enzyme));
          batchIndividual.OtherProteins.Each(otherProtein => addMoleculeTo<IndividualOtherProtein>(individual, otherProtein));
