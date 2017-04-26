@@ -37,18 +37,11 @@ namespace PKSim.Core.Batch.Mapper
             Age = batchIndividual.Age.GetValueOrDefault(double.NaN),
             Height = batchIndividual.Height.GetValueOrDefault(double.NaN),
             Weight = batchIndividual.Weight.GetValueOrDefault(double.NaN),
-            GestationalAge = batchIndividual.GestationalAge.GetValueOrDefault(double.NaN)
+            GestationalAge = batchIndividual.GestationalAge.GetValueOrDefault(double.NaN),
          };
 
          var originData = _originDataMapper.MapFrom(batchOriginData);
-
-         Model.Individual individual;
-         if (batchIndividual.Optimize)
-            individual = _individualFactory.CreateAndOptimizeFor(originData);
-         else
-            individual = _individualFactory.CreateStandardFor(originData);
-
-         individual.Name = "Individual";
+         var individual = _individualFactory.CreateAndOptimizeFor(originData).WithName("Individual");
 
          batchIndividual.Enzymes.Each(enzyme => addMoleculeTo<IndividualEnzyme>(individual, enzyme));
          batchIndividual.OtherProteins.Each(otherProtein => addMoleculeTo<IndividualOtherProtein>(individual, otherProtein));

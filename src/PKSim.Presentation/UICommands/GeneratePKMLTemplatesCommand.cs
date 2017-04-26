@@ -59,7 +59,6 @@ namespace PKSim.Presentation.UICommands
                Height = defaultIndividual.MeanHeight,
                Species = defaultIndividual.Species.Name,
                Population = defaultIndividual.Population.Name,
-               Optimize = true
             };
 
          batchSimulation.Compounds.Add(new Compound {Name = "Standard Molecule", Lipophilicity = 3, FractionUnbound = 0.1, MolWeight = 4E-7, SolubilityAtRefpH = 9999, RefpH = 7});
@@ -78,7 +77,6 @@ namespace PKSim.Presentation.UICommands
          batchSimulation.ApplicationProtocols.Add(intrevanousBolus);
          batchSimulation.Configuration = new SimulationConfiguration { Model = CoreConstants.Model.FourComp };
          var fourCompIvBolusMg = configurationFrom(batchSimulation);
-
 
 
          twoPore.SpatialStructure.Name = "Human 2 Pores";

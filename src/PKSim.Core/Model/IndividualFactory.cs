@@ -9,7 +9,10 @@ namespace PKSim.Core.Model
 {
    public interface IIndividualFactory
    {
-      Individual CreateAndOptimizeFor(OriginData originData);
+      /// <summary>
+      /// Create an individual an optimize the volume if required. if the <paramref name="seed"/> parameter is defined, it will be used as seed in the created individual
+      /// </summary>
+      Individual CreateAndOptimizeFor(OriginData originData, int? seed=null);
       Individual CreateStandardFor(OriginData originData);
       Individual CreateParameterLessIndividual();
    }
@@ -36,9 +39,12 @@ namespace PKSim.Core.Model
          _ontogenyVariabilityUpdater = ontogenyVariabilityUpdater;
       }
 
-      public Individual CreateAndOptimizeFor(OriginData originData)
+      public Individual CreateAndOptimizeFor(OriginData originData, int? seed = null)
       {
          var individual = CreateStandardFor(originData);
+         if (seed.HasValue)
+            individual.Seed = seed.Value;
+
          _createIndividualAlgorithm.Optimize(individual);
          validate(individual);
          return individual;

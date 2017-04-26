@@ -5,7 +5,8 @@
         "Gender": "MALE",
         "Age": 30,
         "Weight": 80,
-        "Height": 17.8
+        "Height": 17.8,
+        "Seed": 111 
     },
     "Compounds": [{
 		"Name": "drug",
@@ -31,6 +32,6 @@
         "EndTime": 1440
     }],
     "Configuration": {
-        "Model": "4Comp",
+        "Model": "4Comp"
     }
 }
