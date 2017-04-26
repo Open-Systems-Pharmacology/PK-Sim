@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -53,14 +54,11 @@ namespace PKSim.BatchTool
          _dataTables = new List<DataTable> {dataTable};
          A.CallTo(_dataRepositoryTask).WithReturnType<IEnumerable<DataTable>>().Returns(_dataTables);
       }
-      protected override void Because()
-      {
-         sut.ExportToCsv(_simulation, _results, _fileName);
-      }
 
       [Observation]
-      public void should_create_a_data_table_with_all_results_from_the_simulation_and_export_it_to_the_file()
+      public async Task should_create_a_data_table_with_all_results_from_the_simulation_and_export_it_to_the_file()
       {
+         await sut.ExportToCsvAsync(_simulation, _results, _fileName);
          FileHelper.FileExists(_fileName).ShouldBeTrue();
       }
    }
@@ -75,14 +73,11 @@ namespace PKSim.BatchTool
          _batchSimulationExport = new BatchSimulationExport {Name = "Sim"};
          A.CallTo(() => _batchSimulationExportMapper.MapFrom(_simulation, _results)).Returns(_batchSimulationExport);
       }
-      protected override void Because()
-      {
-         sut.ExportToJson(_simulation, _results, _fileName);
-      }
 
       [Observation]
-      public void should_create_a_batch_simulation_export_object_and_export_it_to_the_file()
+      public async Task should_create_a_batch_simulation_export_object_and_export_it_to_the_file()
       {
+         await sut.ExportToJsonAsync(_simulation, _results, _fileName);
          FileHelper.FileExists(_fileName).ShouldBeTrue();
       }
    }

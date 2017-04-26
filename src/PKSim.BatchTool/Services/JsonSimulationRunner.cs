@@ -37,7 +37,7 @@ namespace PKSim.BatchTool.Services
          _commandTask = commandTask;
       }
 
-      public Task RunBatch(dynamic parameters)
+      public async Task RunBatch(dynamic parameters)
       {
          string inputFolder = parameters.inputFolder;
          string outputFolder = parameters.outputFolder;
@@ -47,8 +47,6 @@ namespace PKSim.BatchTool.Services
 
          clear();
 
-         return Task.Run(() =>
-         {
             using (new BatchLoggerDisposer(_logger, logFileFullPath, notificationType))
             {
                _logger.AddInSeparator($"Starting batch run: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
@@ -77,7 +75,12 @@ namespace PKSim.BatchTool.Services
 
                var begin = DateTime.UtcNow;
                _logger.AddInfo($"Found {allSimulationFiles.Length} files in '{inputFolder}'");
-               allSimulationFiles.Each(s => exportSimulationTo(s, outputFolder, exportMode));
+
+               foreach (var simulationFile in allSimulationFiles)
+               {
+                  await exportSimulationTo(simulationFile, outputFolder, exportMode);
+               }
+   
                var end = DateTime.UtcNow;
                var timeSpent = end - begin;
                _logger.AddInSeparator($"{_allSimulationNames.Count} simulations calculated and exported in '{timeSpent.ToDisplay()}'", NotificationType.Info);
@@ -86,7 +89,6 @@ namespace PKSim.BatchTool.Services
 
                _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
             }
-         });
       }
 
       private void clear()
@@ -117,7 +119,7 @@ namespace PKSim.BatchTool.Services
          dataTable.ExportToCSV(fileName);
       }
 
-      private void exportSimulationTo(FileInfo simulationFile, string outputFolder, BatchExportMode batchExportMode)
+      private async Task exportSimulationTo(FileInfo simulationFile, string outputFolder, BatchExportMode batchExportMode)
       {
          _logger.AddInSeparator($"Starting batch simulation for file '{simulationFile}'");
          try
@@ -130,13 +132,13 @@ namespace PKSim.BatchTool.Services
 
             var defaultSimulationName = FileHelper.FileNameFromFileFullPath(simulationFile.FullName);
             var allParameters = _entitiesInContainerRetriever.ParametersFrom(simulation);
-            _simulationExporter.RunAndExport(simulation, outputFolder, defaultSimulationName, simForBatch.Configuration, batchExportMode);
+            await _simulationExporter.RunAndExport(simulation, outputFolder, defaultSimulationName, simForBatch.Configuration, batchExportMode);
             _allSimulationNames.Add(defaultSimulationName);
             foreach (var parameterValueSet in simForBatch.ParameterVariationSets)
             {
                string currentName = $"{defaultSimulationName}_{parameterValueSet.Name}";
                var command = updateParameters(allParameters, parameterValueSet);
-               _simulationExporter.RunAndExport(simulation, outputFolder, currentName, simForBatch.Configuration, batchExportMode);
+               await _simulationExporter.RunAndExport(simulation, outputFolder, currentName, simForBatch.Configuration, batchExportMode);
                _allSimulationNames.Add(currentName);
                _commandTask.ResetChanges(command, _executionContext);
             }

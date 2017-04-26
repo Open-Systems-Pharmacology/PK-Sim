@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
@@ -18,7 +20,7 @@ namespace PKSim.BatchTool.Services
 
    public interface ISimulationExporter
    {
-      void RunAndExport(IndividualSimulation simulation, string outputFolder, string exportFileName, SimulationConfiguration simulationConfiguration, BatchExportMode batchExportMode);
+      Task RunAndExport(IndividualSimulation simulation, string outputFolder, string exportFileName, SimulationConfiguration simulationConfiguration, BatchExportMode batchExportMode);
    }
 
    public class SimulationExporter : ISimulationExporter
@@ -39,47 +41,50 @@ namespace PKSim.BatchTool.Services
          _simulationExportTask = simulationExportTask;
       }
 
-      public void RunAndExport(IndividualSimulation simulation, string outputFolder, string exportFileName, SimulationConfiguration simulationConfiguration, BatchExportMode batchExportMode)
+      public async Task RunAndExport(IndividualSimulation simulation, string outputFolder, string exportFileName, SimulationConfiguration simulationConfiguration, BatchExportMode batchExportMode)
       {
          _logger.AddDebug($"------> Running simulation '{exportFileName}'");
          var engine = _simulationEngineFactory.Create<IndividualSimulation>();
-         engine.RunForBatch(simulation, simulationConfiguration.CheckForNegativeValues);
+         await engine.RunForBatch(simulation, simulationConfiguration.CheckForNegativeValues);
 
-         exportResults(simulation, outputFolder, exportFileName, batchExportMode);
+         await exportResults(simulation, outputFolder, exportFileName, batchExportMode);
       }
 
-      private void exportResults(IndividualSimulation simulation, string outputFolder, string exportFileName, BatchExportMode batchExportMode)
+      private Task exportResults(IndividualSimulation simulation, string outputFolder, string exportFileName, BatchExportMode batchExportMode)
       {
+         var tasks = new List<Task>();
          if (batchExportMode.HasFlag(BatchExportMode.Csv))
-            exportResultsToCsv(simulation, outputFolder, exportFileName);
+            tasks.Add(exportResultsToCsv(simulation, outputFolder, exportFileName));
 
          if (batchExportMode.HasFlag(BatchExportMode.Json))
-            exportResultsToJson(simulation, outputFolder, exportFileName);
+            tasks.Add(exportResultsToJson(simulation, outputFolder, exportFileName));
 
          if (batchExportMode.HasFlag(BatchExportMode.Xml))
-            exportSimModelXml(simulation, outputFolder, exportFileName);
+            tasks.Add(exportSimModelXmlAsync(simulation, outputFolder, exportFileName));
+
+         return Task.WhenAll(tasks);
       }
 
-      private void exportSimModelXml(IndividualSimulation simulation, string outputFolder, string exportFileName)
+      private async Task exportSimModelXmlAsync(IndividualSimulation simulation, string outputFolder, string exportFileName)
       {
          var xmlOutputFolder = Path.Combine(outputFolder, "Xml");
          DirectoryHelper.CreateDirectory(xmlOutputFolder);
          var fileName = Path.Combine(xmlOutputFolder, $"{exportFileName}.xml");
-         _simulationExportTask.ExportSimulationToSimModelXml(simulation, fileName);
+         await _simulationExportTask.ExportSimulationToSimModelXmlAsync(simulation, fileName);
          _logger.AddDebug($"------> Exporting SimModel xml to '{fileName}'");
       }
 
-      private void exportResultsToJson(IndividualSimulation simulation, string outputFolder, string exportFileName)
+      private async Task exportResultsToJson(IndividualSimulation simulation, string outputFolder, string exportFileName)
       {
          var fileName = Path.Combine(outputFolder, $"{exportFileName}.json");
-         _simulationResultsExporter.ExportToJson(simulation, simulation.DataRepository, fileName);
+         await _simulationResultsExporter.ExportToJsonAsync(simulation, simulation.DataRepository, fileName);
          _logger.AddDebug($"------> Exporting simulation results to '{fileName}'");
       }
 
-      private void exportResultsToCsv(IndividualSimulation simulation, string outputFolder, string exportFileName)
+      private async Task exportResultsToCsv(IndividualSimulation simulation, string outputFolder, string exportFileName)
       {
          var fileName = Path.Combine(outputFolder, $"{exportFileName}.csv");
-         _simulationResultsExporter.ExportToCsv(simulation, simulation.DataRepository, fileName);
+         await _simulationResultsExporter.ExportToCsvAsync(simulation, simulation.DataRepository, fileName);
          _logger.AddDebug($"------> Exporting simulation results to '{fileName}'");
          exportParameters(outputFolder, exportFileName, simulation);
       }

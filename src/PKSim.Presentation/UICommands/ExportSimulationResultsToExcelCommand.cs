@@ -1,3 +1,4 @@
+using OSPSuite.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Services;
@@ -16,7 +17,7 @@ namespace PKSim.Presentation.UICommands
 
       protected override void PerformExecute()
       {
-         _simulationTask.ExportResultsToExcel(Subject);
+         _simulationTask.SecureAwait(x=>x.ExportResultsToExcel(Subject));
       }
    }
 }

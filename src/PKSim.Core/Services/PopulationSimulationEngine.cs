@@ -102,10 +102,10 @@ namespace PKSim.Core.Services
          RunAsync(simulation).Wait();
       }
 
-      public void RunForBatch(PopulationSimulation populationSimulation, bool checkNegativeValues)
+      public Task RunForBatch(PopulationSimulation populationSimulation, bool checkNegativeValues)
       {
          //no specific implementation for population run
-         Run(populationSimulation);
+         return RunAsync(populationSimulation);
       }
 
       public void Stop()

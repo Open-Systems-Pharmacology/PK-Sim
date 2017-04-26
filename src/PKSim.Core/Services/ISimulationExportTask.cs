@@ -8,7 +8,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Exports individual simulation results to excel
       /// </summary>
-      void ExportResultsToExcel(IndividualSimulation individualSimulation);
+      Task ExportResultsToExcel(IndividualSimulation individualSimulation);
 
       /// <summary>
       ///    Exports simulation results to csv file selected by the user
@@ -23,20 +23,20 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    save the simulation as xml format (the one saved in the pksim project)
       /// </summary>
-      void ExportSimulationToXml(Simulation simulation);
+      Task ExportSimulationToXmlAsync(Simulation simulation);
 
       /// <summary>
       ///    save the simulation as sim model xml  format (the one used in SimModel or matlab)
       /// </summary>
-      void ExportSimulationToSimModelXml(Simulation simulation);
+      Task ExportSimulationToSimModelXmlAsync(Simulation simulation);
 
       /// <summary>
       ///    save the simulation as sim model xml  format (the one used in SimModel or matlab)
       /// </summary>
-      void ExportSimulationToSimModelXml(Simulation simulation, string fileName);
+      Task ExportSimulationToSimModelXmlAsync(Simulation simulation, string fileName);
 
 
-      void CreateSimulationReport(Simulation simulation);
+      Task CreateSimulationReport(Simulation simulation);
 
       /// <summary>
       ///    Exports simulation pk-analyses to csv file
