@@ -68,6 +68,7 @@ namespace PKSim.BatchTool
          individual.OriginData.Age.ShouldBeEqualTo(30);
          individual.OriginData.Weight.ShouldBeEqualTo(80);
          individual.OriginData.Height.ShouldBeEqualTo(17.8); //cm in dm
+         individual.Seed.ShouldBeEqualTo(111);
       }
    }
 }

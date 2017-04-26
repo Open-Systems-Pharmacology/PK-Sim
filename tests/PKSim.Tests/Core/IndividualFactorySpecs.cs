@@ -1,13 +1,12 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Core
 {
@@ -29,8 +28,8 @@ namespace PKSim.Core
          _speciesRepository = A.Fake<ISpeciesRepository>();
          _entityValidator = A.Fake<IEntityValidator>();
          _reportGenerator = A.Fake<IReportGenerator>();
-         _moleculeOntogenyVariabilityUpdater= A.Fake<IMoleculeOntogenyVariabilityUpdater>();
-         sut = new IndividualFactory(_individualModelTask, _entityBaseFactory, _createIndvidualAlgorithm, _speciesRepository, _entityValidator, _reportGenerator,_moleculeOntogenyVariabilityUpdater);
+         _moleculeOntogenyVariabilityUpdater = A.Fake<IMoleculeOntogenyVariabilityUpdater>();
+         sut = new IndividualFactory(_individualModelTask, _entityBaseFactory, _createIndvidualAlgorithm, _speciesRepository, _entityValidator, _reportGenerator, _moleculeOntogenyVariabilityUpdater);
       }
    }
 
@@ -96,9 +95,48 @@ namespace PKSim.Core
       }
 
       [Observation]
+      public void individual_should_have_a_random_seed()
+      {
+         _individual.Seed.ShouldBeGreaterThan(0);
+      }
+
+      [Observation]
       public void should_validate_the_created_individual()
       {
          A.CallTo(() => _entityValidator.Validate(_individual)).MustHaveHappened();
+      }
+   }
+
+   public class When_creating_an_individual_for_the_predefined_origine_data_with_a_predefined_seed : concern_for_IndividualFactory
+   {
+      private OriginData _originData;
+      private Individual _individual;
+      private Individual _result;
+      private int _seed;
+
+      protected override void Context()
+      {
+         base.Context();
+         _seed = 20;
+         _originData = new OriginData {Species = A.Fake<Species>().WithName("toto"), SpeciesPopulation = A.Fake<SpeciesPopulation>()};
+         _individual = new Individual();
+         A.CallTo(() => _entityBaseFactory.Create<Individual>()).Returns(_individual);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CreateAndOptimizeFor(_originData, _seed);
+      }
+
+      [Observation]
+      public void should_have_used_the_predefined_seed()
+      {
+         _result.Seed.ShouldBeEqualTo(_seed);
+      }
+
+      public void should_use_the_registered_create_individual_algorithm_to_modify_the_standard_parameters()
+      {
+         A.CallTo(() => _createIndvidualAlgorithm.Optimize(_individual)).MustHaveHappened();
       }
    }
 

@@ -79,7 +79,6 @@ namespace PKSim.Presentation.UICommands
          var fourCompIvBolusMg = configurationFrom(batchSimulation);
 
 
-
          twoPore.SpatialStructure.Name = "Human 2 Pores";
          twoPore.PassiveTransports.Name = "2 Pores Passive Transports";
 

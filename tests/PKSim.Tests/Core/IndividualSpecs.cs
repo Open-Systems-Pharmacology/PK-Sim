@@ -1,6 +1,6 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 
@@ -9,13 +9,13 @@ namespace PKSim.Core
    public abstract class concern_for_Individual : ContextSpecification<Individual>
    {
       protected OriginData _originData;
-      protected PKSim.Core.Model.Organism _organism;
+      protected Organism _organism;
 
       protected override void Context()
       {
          _originData = new OriginData();
          sut = new Individual {OriginData = _originData};
-         _organism = A.Fake<PKSim.Core.Model.Organism>();
+         _organism = A.Fake<Organism>();
          sut.Add(_organism);
       }
    }

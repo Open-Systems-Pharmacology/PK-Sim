@@ -11,7 +11,7 @@ namespace PKSim.Core.Batch
       public double? GestationalAge { get; set; }
       public double? Weight { get; set; }
       public double? Height { get; set; }
-      public bool Optimize { get; set; } 
+      public int Seed { get; set; }
 
       public List<Enzyme> Enzymes { get; set; }
       public List<OtherProtein> OtherProteins { get; set; }
@@ -22,7 +22,7 @@ namespace PKSim.Core.Batch
          Enzymes = new List<Enzyme>();
          OtherProteins = new List<OtherProtein>();
          Transporters = new List<Transporter>();
-         Optimize = true;
+         Seed = 123456;
       }
    }
 }

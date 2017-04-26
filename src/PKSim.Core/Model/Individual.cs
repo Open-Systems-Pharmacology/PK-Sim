@@ -11,7 +11,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Seed used to intialize the random generator while creating the individual
       /// </summary>
-      public virtual int Seed { get; private set; }
+      public virtual int Seed { get;  set; }
 
       /// <summary>
       ///    Origin data defining the property used to create the individual
@@ -198,6 +198,7 @@ namespace PKSim.Core.Model
 
          base.UpdatePropertiesFrom(individual, cloneManager);
          OriginData = individual.OriginData.Clone();
+         Seed = individual.Seed;
       }
    }
 }

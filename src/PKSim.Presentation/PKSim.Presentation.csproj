@@ -510,7 +510,6 @@
     <Compile Include="UICommands\ExportToPDFCommand.cs" />
     <Compile Include="UICommands\GenerateGroupsTemplateCommand.cs" />
     <Compile Include="UICommands\GeneratePKMLTemplatesCommand.cs" />
-    <Compile Include="UICommands\GeneratePretermsDataCommand.cs" />
     <Compile Include="UICommands\ImportPKAnalysesCommand.cs" />
     <Compile Include="UICommands\ImportPopulationCommand.cs" />
     <Compile Include="UICommands\ImportSimulationResultsCommand.cs" />
