@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility;
 using PKSim.Core.Batch;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -11,7 +12,8 @@ namespace PKSim.BatchTool.Services
    {
       Json = 1 << 0,
       Csv = 1 << 1,
-      All = Json |Csv
+      Xml = 1 << 2,
+      All = Json | Csv | Xml
    }
 
    public interface ISimulationExporter
@@ -25,13 +27,16 @@ namespace PKSim.BatchTool.Services
       private readonly IBatchLogger _logger;
       private readonly IParametersReportCreator _parametersReportCreator;
       private readonly ISimulationResultsExporter _simulationResultsExporter;
+      private readonly ISimulationExportTask _simulationExportTask;
 
-      public SimulationExporter(ISimulationEngineFactory simulationEngineFactory, IBatchLogger logger, IParametersReportCreator parametersReportCreator, ISimulationResultsExporter simulationResultsExporter)
+      public SimulationExporter(ISimulationEngineFactory simulationEngineFactory, IBatchLogger logger, IParametersReportCreator parametersReportCreator,
+         ISimulationResultsExporter simulationResultsExporter, ISimulationExportTask simulationExportTask)
       {
          _simulationEngineFactory = simulationEngineFactory;
          _logger = logger;
          _parametersReportCreator = parametersReportCreator;
          _simulationResultsExporter = simulationResultsExporter;
+         _simulationExportTask = simulationExportTask;
       }
 
       public void RunAndExport(IndividualSimulation simulation, string outputFolder, string exportFileName, SimulationConfiguration simulationConfiguration, BatchExportMode batchExportMode)
@@ -50,6 +55,18 @@ namespace PKSim.BatchTool.Services
 
          if (batchExportMode.HasFlag(BatchExportMode.Json))
             exportResultsToJson(simulation, outputFolder, exportFileName);
+
+         if (batchExportMode.HasFlag(BatchExportMode.Xml))
+            exportSimModelXml(simulation, outputFolder, exportFileName);
+      }
+
+      private void exportSimModelXml(IndividualSimulation simulation, string outputFolder, string exportFileName)
+      {
+         var xmlOutputFolder = Path.Combine(outputFolder, "Xml");
+         DirectoryHelper.CreateDirectory(xmlOutputFolder);
+         var fileName = Path.Combine(xmlOutputFolder, $"{exportFileName}.xml");
+         _simulationExportTask.ExportSimulationToSimModelXml(simulation, fileName);
+         _logger.AddDebug($"------> Exporting SimModel xml to '{fileName}'");
       }
 
       private void exportResultsToJson(IndividualSimulation simulation, string outputFolder, string exportFileName)

@@ -1,19 +1,18 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using PKSim.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Mappers;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -25,13 +24,13 @@ namespace PKSim.Infrastructure.Services
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       private readonly IStringSerializer _stringSerializer;
       private readonly IModelReportCreator _modelReportCreator;
-      private readonly ISimulationToModelCoreSimulationMapper _simulationMapper;
+      private readonly ISimulationToModelCoreSimulationMapper _coreSimulationMapper;
       private readonly ISimModelExporter _simModelExporter;
       private readonly ISimulationResultsToDataTableConverter _simulationResultsToDataTableConverter;
 
       public SimulationExportTask(IBuildingBlockTask buildingBlockTask, IDialogCreator dialogCreator, IDataRepositoryTask dataRepositoryTask,
          IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IStringSerializer stringSerializer,
-         IModelReportCreator modelReportCreator, ISimulationToModelCoreSimulationMapper simulationMapper, ISimModelExporter simModelExporter, ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
+         IModelReportCreator modelReportCreator, ISimulationToModelCoreSimulationMapper coreSimulationMapper, ISimModelExporter simModelExporter, ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
       {
          _buildingBlockTask = buildingBlockTask;
          _dialogCreator = dialogCreator;
@@ -39,7 +38,7 @@ namespace PKSim.Infrastructure.Services
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
          _stringSerializer = stringSerializer;
          _modelReportCreator = modelReportCreator;
-         _simulationMapper = simulationMapper;
+         _coreSimulationMapper = coreSimulationMapper;
          _simModelExporter = simModelExporter;
          _simulationResultsToDataTableConverter = simulationResultsToDataTableConverter;
       }
@@ -63,10 +62,7 @@ namespace PKSim.Infrastructure.Services
          if (!simulation.HasResults)
             throw new PKSimException(PKSimConstants.Error.CannotExportResultsPleaseRunSimulation(simulation.Name));
 
-         await exportToFileAsync(PKSimConstants.UI.ExportSimulationResultsToCSV, Constants.Filter.CSV_FILE_FILTER, PKSimConstants.UI.DefaultResultsExportNameFor(simulation.Name), async fileName =>
-         {
-            await ExportResultsToCSVAsync(simulation, fileName);
-         }, Constants.DirectoryKey.REPORT);
+         await exportToFileAsync(PKSimConstants.UI.ExportSimulationResultsToCSV, Constants.Filter.CSV_FILE_FILTER, PKSimConstants.UI.DefaultResultsExportNameFor(simulation.Name), async fileName => { await ExportResultsToCSVAsync(simulation, fileName); }, Constants.DirectoryKey.REPORT);
       }
 
       public async Task ExportResultsToCSVAsync(Simulation simulation, string fileName)
@@ -89,8 +85,12 @@ namespace PKSim.Infrastructure.Services
       public void ExportSimulationToSimModelXml(Simulation simulation)
       {
          exportSimulationToFile(PKSimConstants.UI.SaveSimulationToSimModelXmlFile, Constants.Filter.XML_FILE_FILTER, simulation,
-            fileName => _simModelExporter.Export(_simulationMapper.MapFrom(simulation, shouldCloneModel: false), fileName),
-            Constants.DirectoryKey.SIM_MODEL_XML);
+            fileName => ExportSimulationToSimModelXml(simulation, fileName), Constants.DirectoryKey.SIM_MODEL_XML);
+      }
+
+      public void ExportSimulationToSimModelXml(Simulation simulation, string fileName)
+      {
+         _simModelExporter.Export(_coreSimulationMapper.MapFrom(simulation, shouldCloneModel: false), fileName);
       }
 
       public void CreateSimulationReport(Simulation simulation)

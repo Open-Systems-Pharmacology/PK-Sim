@@ -30,6 +30,12 @@ namespace PKSim.Core.Services
       /// </summary>
       void ExportSimulationToSimModelXml(Simulation simulation);
 
+      /// <summary>
+      ///    save the simulation as sim model xml  format (the one used in SimModel or matlab)
+      /// </summary>
+      void ExportSimulationToSimModelXml(Simulation simulation, string fileName);
+
+
       void CreateSimulationReport(Simulation simulation);
 
       /// <summary>
