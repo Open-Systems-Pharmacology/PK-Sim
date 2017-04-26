@@ -22,10 +22,7 @@ namespace PKSim.Core.Model
       private RandomGenerator _randomGenerator;
       private int _seed;
 
-      public virtual RandomGenerator RandomGenerator
-      {
-         get { return _randomGenerator; }
-      }
+      public virtual RandomGenerator RandomGenerator => _randomGenerator;
 
       protected Population() : base(PKSimBuildingBlockType.Population)
       {
@@ -55,10 +52,7 @@ namespace PKSim.Core.Model
          return defaultValuesWith(CoreConstants.DEFAULT_PERCENTILE);
       }
 
-      public virtual int NumberOfItems
-      {
-         get { return IndividualPropertiesCache.Count; }
-      }
+      public virtual int NumberOfItems => IndividualPropertiesCache.Count;
 
       /// <summary>
       ///    Returns all values defined for the organism parameter names <paramref name="parameterName" />
@@ -133,10 +127,7 @@ namespace PKSim.Core.Model
          return IndividualPropertiesCache.AllCovariates.Select(x => x.Covariate(covariateName)).ToList();
       }
 
-      public bool DisplayParameterUsingGroupStructure
-      {
-         get { return true; }
-      }
+      public bool DisplayParameterUsingGroupStructure => true;
 
       /// <summary>
       ///    Return the fist individual defined in the population
@@ -164,15 +155,9 @@ namespace PKSim.Core.Model
          }
       }
 
-      public virtual Species Species
-      {
-         get { return OriginData.Species; }
-      }
+      public virtual Species Species => OriginData.Species;
 
-      public virtual bool IsPreterm
-      {
-         get { return OriginData.SpeciesPopulation.IsPreterm; }
-      }
+      public virtual bool IsPreterm => OriginData.SpeciesPopulation.IsPreterm;
 
       public virtual bool IsHuman
       {
@@ -239,10 +224,7 @@ namespace PKSim.Core.Model
          get { return this.GetSingleChild<IAdvancedParameterCollection>(x => true); }
       }
 
-      public virtual IEnumerable<IAdvancedParameter> AdvancedParameters
-      {
-         get { return AdvancedParameterCollection.AdvancedParameters; }
-      }
+      public virtual IEnumerable<IAdvancedParameter> AdvancedParameters => AdvancedParameterCollection.AdvancedParameters;
 
       public virtual IAdvancedParameter AdvancedParameterFor(IEntityPathResolver entityPathResolver, IParameter parameter)
       {
