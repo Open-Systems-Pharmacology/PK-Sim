@@ -1,5 +1,6 @@
 using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Mappers;
 
