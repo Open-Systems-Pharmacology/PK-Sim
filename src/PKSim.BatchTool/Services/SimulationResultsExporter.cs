@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -12,8 +13,8 @@ namespace PKSim.BatchTool.Services
 {
    public interface ISimulationResultsExporter
    {
-      void ExportToCsv(ISimulation simulation, DataRepository results, string fileName);
-      void ExportToJson(ISimulation simulation, DataRepository results, string fileName);
+      Task ExportToCsvAsync(ISimulation simulation, DataRepository results, string fileName);
+      Task ExportToJsonAsync(ISimulation simulation, DataRepository results, string fileName);
    }
 
    public class SimulationResultsExporter : ISimulationResultsExporter
@@ -29,22 +30,24 @@ namespace PKSim.BatchTool.Services
          _simulationExportMapper = simulationExportMapper;
       }
 
-      public void ExportToCsv(ISimulation simulation, DataRepository results, string fileName)
+      public Task ExportToCsvAsync(ISimulation simulation, DataRepository results, string fileName)
       {
          var dataTable = _dataRepositoryTask.ToDataTable(results, x => _quantityDisplayPathMapper.DisplayPathAsStringFor(simulation, x)).First();
-         dataTable.ExportToCSV(fileName);
+         return Task.Run(() => dataTable.ExportToCSV(fileName));
       }
 
-      public void ExportToJson(ISimulation simulation, DataRepository results, string fileName)
+      public Task ExportToJsonAsync(ISimulation simulation, DataRepository results, string fileName)
       {
-         var exportResults = _simulationExportMapper.MapFrom(simulation, results);
-         // serialize JSON directly to a file
-         using (var file = File.CreateText(fileName))
+         return Task.Run(() =>
          {
-            var serializer = new JsonSerializer();
-            serializer.Serialize(file, exportResults);
-         }
+            var exportResults = _simulationExportMapper.MapFrom(simulation, results);
+            // serialize JSON directly to a file
+            using (var file = File.CreateText(fileName))
+            {
+               var serializer = new JsonSerializer();
+               serializer.Serialize(file, exportResults);
+            }
+         });
       }
    }
-
 }

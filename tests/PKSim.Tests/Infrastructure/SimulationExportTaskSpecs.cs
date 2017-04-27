@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
-using FakeItEasy;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.Services;
-
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.SimModel.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Mappers;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Infrastructure.Services;
 using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 
 namespace PKSim.Infrastructure
@@ -81,14 +80,10 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, null, null)).Returns(string.Empty);
       }
 
-      protected override void Because()
-      {
-         sut.ExportResultsToExcel(_simulation);
-      }
-
       [Observation]
-      public void should_not_export_the_results_to_excel()
+      public async Task should_not_export_the_results_to_excel()
       {
+         await sut.ExportResultsToExcel(_simulation);
          A.CallTo(() => _dataRepositoryTask.ExportToExcel(_simulation.DataRepository, A<string>.Ignored, true)).MustNotHaveHappened();
       }
    }
@@ -108,18 +103,14 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _simulation.Name).Returns("toto");
          A.CallTo(() => _simulation.DataRepository).Returns(new DataRepository());
          _excelFile = "tralala";
-         A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, PKSimConstants.UI.DefaultResultsExportNameFor(_simulation.Name),null)).Returns(_excelFile);
+         A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, PKSimConstants.UI.DefaultResultsExportNameFor(_simulation.Name), null)).Returns(_excelFile);
          A.CallTo(() => _dataRepositoryTask.ToDataTable(_simulation.DataRepository, A<Func<DataColumn, string>>.Ignored, false)).Returns(_dataTables);
       }
 
-      protected override void Because()
-      {
-         sut.ExportResultsToExcel(_simulation);
-      }
-
       [Observation]
-      public void should_export_the_results_to_excel()
+      public async Task should_export_the_results_to_excel()
       {
+         await sut.ExportResultsToExcel(_simulation);
          A.CallTo(() => _dataRepositoryTask.ExportToExcel(_dataTables, _excelFile, true)).MustHaveHappened();
       }
    }
@@ -135,24 +126,21 @@ namespace PKSim.Infrastructure
          _simulation = A.Fake<Simulation>().WithName("Sim");
          A.CallTo(() => _simulation.HasResults).Returns(true);
          _fileFullPath = "file full path";
-         A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToCSV, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.REPORT, PKSimConstants.UI.DefaultResultsExportNameFor(_simulation.Name),null))
+         A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToCSV, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.REPORT, PKSimConstants.UI.DefaultResultsExportNameFor(_simulation.Name), null))
             .Returns(_fileFullPath);
       }
 
-      protected override void Because()
-      {
-         sut.ExportResultsToCSVAsync(_simulation);
-      }
-
       [Observation]
-      public void should_load_the_results()
+      public async Task should_load_the_results()
       {
+         await sut.ExportResultsToCSVAsync(_simulation);
          A.CallTo(() => _buildingBlockTask.LoadResults(_simulation)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_export_the_file_to_csv()
+      public async Task should_export_the_file_to_csv()
       {
+         await sut.ExportResultsToCSVAsync(_simulation);
          A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTable(_simulation)).MustHaveHappened();
       }
    }
@@ -198,20 +186,17 @@ namespace PKSim.Infrastructure
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
       }
 
-      protected override void Because()
-      {
-         sut.ExportResultsToCSVAsync(_simulation);
-      }
-
       [Observation]
-      public void should_load_the_results()
+      public async Task should_load_the_results()
       {
+         await sut.ExportResultsToCSVAsync(_simulation);
          A.CallTo(() => _buildingBlockTask.LoadResults(_simulation)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_not_export_the_file_to_csv()
+      public async Task should_not_export_the_file_to_csv()
       {
+         await sut.ExportResultsToCSVAsync(_simulation);
          A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTable(_simulation)).MustNotHaveHappened();
       }
    }
@@ -245,17 +230,16 @@ namespace PKSim.Infrastructure
       }
    }
 
-
    public class When_exporting_the_simulation_pk_analysis_to_an_excel_file : concern_for_SimulationExportTask
    {
       private PopulationSimulation _populationSimulation;
       private string _fileFullPath;
-      private DataTable _dataTable  ;
+      private DataTable _dataTable;
 
       protected override void Context()
       {
          base.Context();
-         _dataTable=new DataTable();
+         _dataTable = new DataTable();
          _populationSimulation = A.Fake<PopulationSimulation>().WithName("POP");
          A.CallTo(() => _populationSimulation.HasPKAnalyses).Returns(true);
          _fileFullPath = "file full path";

@@ -1,7 +1,8 @@
-using PKSim.Core.Model;
-using PKSim.Core.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Presentation.UICommands
 {
@@ -16,7 +17,7 @@ namespace PKSim.Presentation.UICommands
 
       protected override void PerformExecute()
       {
-         _simulationExportTask.ExportSimulationToSimModelXml(Subject);
+         _simulationExportTask.SecureAwait(x => x.ExportSimulationToSimModelXmlAsync(Subject));
       }
    }
 }

@@ -171,7 +171,6 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.GenerateCalculationMethods].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.GeneratePKMLTemplates].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.GenerateGroupsTemplate].Enabled = true;
-         _menuBarItemRepository[MenuBarItemIds.GeneratePretermsData].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.Exit].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.Help].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.About].Enabled = true;

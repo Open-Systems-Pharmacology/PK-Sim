@@ -61,7 +61,7 @@ namespace PKSim.BatchTool.Presenters
 
       private BatchExportMode exportModeFrom(bool startedFromCommandLine)
       {
-         return startedFromCommandLine ? BatchExportMode.Json : BatchExportMode.All;
+         return startedFromCommandLine ? BatchExportMode.Json | BatchExportMode.Xml : BatchExportMode.All;
       }
 
       public override async Task InitializeWith(BatchStartOptions startOptions)

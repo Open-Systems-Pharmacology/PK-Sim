@@ -2,7 +2,9 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Serialization.SimModel.Services;
 using PKSim.BatchTool.Services;
 using PKSim.Core.Batch;
 using PKSim.Core.Model;
@@ -22,6 +24,7 @@ namespace PKSim.BatchTool
       protected SimulationConfiguration _configuration;
       protected BatchExportMode _mode;
       protected ISimulationEngine<IndividualSimulation> _simulationEngine;
+      protected ISimulationExportTask _simulationExportTask;
 
       protected override void Context()
       {
@@ -29,7 +32,8 @@ namespace PKSim.BatchTool
          _logger = A.Fake<IBatchLogger>();
          _parameterReportCreator = A.Fake<IParametersReportCreator>();
          _simulationResultsExporter = A.Fake<ISimulationResultsExporter>();
-         sut = new SimulationExporter(_simulationEngineFactory, _logger, _parameterReportCreator, _simulationResultsExporter);
+         _simulationExportTask= A.Fake<ISimulationExportTask>();
+         sut = new SimulationExporter(_simulationEngineFactory, _logger, _parameterReportCreator, _simulationResultsExporter,_simulationExportTask);
 
          _simulation = new IndividualSimulation {DataRepository = new DataRepository("Rep")};
          _outputFolder = "OutputFolder";
@@ -46,12 +50,12 @@ namespace PKSim.BatchTool
       }
    }
 
-   public class When_running_and_exporting_a_simulation_for_batch_run_to_csv_and_json : concern_for_SimulationExporter
+   public class When_running_and_exporting_a_simulation_for_batch_run_to_csv_and_json_and_xml : concern_for_SimulationExporter
    {
       protected override void Context()
       {
          base.Context();
-         _mode = BatchExportMode.Csv | BatchExportMode.Json;
+         _mode = BatchExportMode.Csv | BatchExportMode.Json | BatchExportMode.All;
       }
 
       [Observation]
@@ -64,14 +68,22 @@ namespace PKSim.BatchTool
       public void should_export_the_result_to_json()
       {
          var fileName = Path.Combine(_outputFolder, $"{_exportName}.json");
-         A.CallTo(() => _simulationResultsExporter.ExportToJson(_simulation, _simulation.DataRepository, fileName)).MustHaveHappened();
+         A.CallTo(() => _simulationResultsExporter.ExportToJsonAsync(_simulation, _simulation.DataRepository, fileName)).MustHaveHappened();
       }
 
       [Observation]
       public void should_export_the_result_to_csv()
       {
          var fileName = Path.Combine(_outputFolder, $"{_exportName}.csv");
-         A.CallTo(() => _simulationResultsExporter.ExportToCsv(_simulation, _simulation.DataRepository, fileName)).MustHaveHappened();
+         A.CallTo(() => _simulationResultsExporter.ExportToCsvAsync(_simulation, _simulation.DataRepository, fileName)).MustHaveHappened();
+      }
+
+
+      [Observation]
+      public void should_export_the_simmodel_simulation_to_xml()
+      {
+         var fileName = Path.Combine(_outputFolder, "Xml", $"{_exportName}.xml");
+         A.CallTo(() => _simulationExportTask.ExportSimulationToSimModelXmlAsync(_simulation, fileName)).MustHaveHappened();
       }
 
       [Observation]
@@ -100,13 +112,20 @@ namespace PKSim.BatchTool
       [Observation]
       public void should_not_export_the_result_to_json()
       {
-         A.CallTo(() => _simulationResultsExporter.ExportToJson(_simulation, _simulation.DataRepository, A<string>._)).MustNotHaveHappened();
+         A.CallTo(() => _simulationResultsExporter.ExportToJsonAsync(_simulation, _simulation.DataRepository, A<string>._)).MustNotHaveHappened();
+      }
+
+
+      [Observation]
+      public void should_not_export_the_result_to_xml()
+      {
+         A.CallTo(() => _simulationExportTask.ExportSimulationToSimModelXmlAsync(_simulation,  A<string>._)).MustNotHaveHappened();
       }
 
       [Observation]
       public void should_export_the_result_to_csv()
       {
-         A.CallTo(() => _simulationResultsExporter.ExportToCsv(_simulation, _simulation.DataRepository, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _simulationResultsExporter.ExportToCsvAsync(_simulation, _simulation.DataRepository, A<string>._)).MustHaveHappened();
       }
 
       [Observation]
@@ -133,13 +152,13 @@ namespace PKSim.BatchTool
       [Observation]
       public void should_nexport_the_result_to_json()
       {
-         A.CallTo(() => _simulationResultsExporter.ExportToJson(_simulation, _simulation.DataRepository, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _simulationResultsExporter.ExportToJsonAsync(_simulation, _simulation.DataRepository, A<string>._)).MustHaveHappened();
       }
 
       [Observation]
       public void should_not_export_the_result_to_csv()
       {
-         A.CallTo(() => _simulationResultsExporter.ExportToCsv(_simulation, _simulation.DataRepository, A<string>._)).MustNotHaveHappened();
+         A.CallTo(() => _simulationResultsExporter.ExportToCsvAsync(_simulation, _simulation.DataRepository, A<string>._)).MustNotHaveHappened();
       }
 
       [Observation]

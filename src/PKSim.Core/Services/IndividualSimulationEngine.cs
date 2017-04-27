@@ -5,14 +5,12 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Events;
-using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.SimModel.Services;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Services
 {
@@ -49,8 +47,7 @@ namespace PKSim.Core.Services
 
       private void terminated()
       {
-         if (_progressUpdater != null)
-            _progressUpdater.Dispose();
+         _progressUpdater?.Dispose();
          _simModelManager.Terminated -= terminated;
          _simModelManager.SimulationProgress -= simulationProgress;
       }
@@ -118,10 +115,10 @@ namespace PKSim.Core.Services
          });
       }
 
-      public void RunForBatch(IndividualSimulation individualSimulation, bool checkNegativeValues)
+      public Task RunForBatch(IndividualSimulation individualSimulation, bool checkNegativeValues)
       {
          //we want to export all 
-         runSimulation(individualSimulation, exportAll: true, raiseEvents: false, checkForNegativeValues: checkNegativeValues).Wait();
+         return runSimulation(individualSimulation, exportAll: true, raiseEvents: false, checkForNegativeValues: checkNegativeValues);
       }
 
       private void updatePersistableFor(IndividualSimulation simulation, bool exportAll)
