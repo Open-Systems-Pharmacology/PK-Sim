@@ -48,13 +48,11 @@ namespace PKSim.Infrastructure
          _chartFactory = A.Fake<IPKSimChartFactory>();
          _quantityDisplayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
          _chartTemplateMapper = A.Fake<ICurveChartToCurveChartTemplateMapper>();
-         _chartEditorXmlSerializerRepository = A.Fake<IPKSimXmlSerializerRepository>();
          sut = new ChartTemplatingTask(
             _chartFromTemplateService, 
             _projectRetriever, 
             _chartTemplatePersistor, 
             _stringCompression, 
-            _chartEditorXmlSerializerRepository, 
             _dialogCreator, 
             _chartFactory, 
             _quantityDisplayPathMapper, 

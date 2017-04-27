@@ -2,9 +2,8 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization.SimModel.Services;
+using OSPSuite.Core.Services;
 using PKSim.BatchTool.Services;
 using PKSim.Core.Batch;
 using PKSim.Core.Model;
@@ -32,8 +31,8 @@ namespace PKSim.BatchTool
          _logger = A.Fake<IBatchLogger>();
          _parameterReportCreator = A.Fake<IParametersReportCreator>();
          _simulationResultsExporter = A.Fake<ISimulationResultsExporter>();
-         _simulationExportTask= A.Fake<ISimulationExportTask>();
-         sut = new SimulationExporter(_simulationEngineFactory, _logger, _parameterReportCreator, _simulationResultsExporter,_simulationExportTask);
+         _simulationExportTask = A.Fake<ISimulationExportTask>();
+         sut = new SimulationExporter(_simulationEngineFactory, _logger, _parameterReportCreator, _simulationResultsExporter, _simulationExportTask);
 
          _simulation = new IndividualSimulation {DataRepository = new DataRepository("Rep")};
          _outputFolder = "OutputFolder";
@@ -78,7 +77,6 @@ namespace PKSim.BatchTool
          A.CallTo(() => _simulationResultsExporter.ExportToCsvAsync(_simulation, _simulation.DataRepository, fileName)).MustHaveHappened();
       }
 
-
       [Observation]
       public void should_export_the_simmodel_simulation_to_xml()
       {
@@ -93,7 +91,6 @@ namespace PKSim.BatchTool
          A.CallTo(() => _parameterReportCreator.ExportParametersTo(_simulation.Model, fileName)).MustHaveHappened();
       }
    }
-
 
    public class When_running_and_exporting_a_simulation_for_batch_run_to_csv_only : concern_for_SimulationExporter
    {
@@ -115,11 +112,10 @@ namespace PKSim.BatchTool
          A.CallTo(() => _simulationResultsExporter.ExportToJsonAsync(_simulation, _simulation.DataRepository, A<string>._)).MustNotHaveHappened();
       }
 
-
       [Observation]
       public void should_not_export_the_result_to_xml()
       {
-         A.CallTo(() => _simulationExportTask.ExportSimulationToSimModelXmlAsync(_simulation,  A<string>._)).MustNotHaveHappened();
+         A.CallTo(() => _simulationExportTask.ExportSimulationToSimModelXmlAsync(_simulation, A<string>._)).MustNotHaveHappened();
       }
 
       [Observation]

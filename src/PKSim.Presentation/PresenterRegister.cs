@@ -1,5 +1,6 @@
 using OSPSuite.Assets;
 using OSPSuite.Core;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;

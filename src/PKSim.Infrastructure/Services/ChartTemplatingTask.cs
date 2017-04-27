@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Core;
-using PKSim.Core.Chart;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
-using PKSim.Infrastructure.Serialization.Xml.Serializers;
-using PKSim.Presentation.Services;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Mappers;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Utility.Compression;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
+using PKSim.Core.Chart;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -39,7 +38,6 @@ namespace PKSim.Infrastructure.Services
          IProjectRetriever projectRetriever,
          IChartTemplatePersistor chartTemplatePersistor,
          IStringCompression stringCompression,
-         IPKSimXmlSerializerRepository serializerRepository,
          IDialogCreator dialogCreator,
          IPKSimChartFactory chartFactory,
          IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper,
