@@ -84,26 +84,26 @@
       <HintPath>..\..\packages\csmpfit.1.1.0\lib\net20\MPFitLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.1.0.70, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.70\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.1.0.74, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.74\lib\net452\OSPSuite.Assets.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.1.0.70, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.70\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.1.0.74, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.74\lib\net452\OSPSuite.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.1.0.70, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.70\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.1.0.74, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.74\lib\net452\OSPSuite.Presentation.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.Serializer">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.SimModel.2.0.0.9\lib\net45\OSPSuite.SimModel.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.SimModel.2.0.0.12\lib\net45\OSPSuite.SimModel.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.TeXReporting, Version=2.0.0.1, Culture=neutral, processorArchitecture=x86">
@@ -114,8 +114,8 @@
       <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.5\lib\net45\OSPSuite.Utility.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SX, Version=2.6.3.1, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.3.1\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.6.3.3, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.3.3\lib\net45\SX.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
