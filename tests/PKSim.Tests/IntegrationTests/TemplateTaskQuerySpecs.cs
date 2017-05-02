@@ -179,14 +179,9 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_load_the_template()
+      public void should_be_able_to_load_the_template_and_delete_the_referece()
       {
          sut.LoadTemplate<Compound>(_template).ShouldNotBeNull();
-      }
-
-      [Observation]
-      public void should_have_deleted_the_reference()
-      {
          sut.Exists(TemplateDatabaseType.User, _metabolite.Name, TemplateType.Compound).ShouldBeFalse();
       }
    }
