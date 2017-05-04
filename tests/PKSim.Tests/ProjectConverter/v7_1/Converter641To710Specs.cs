@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Infrastructure.ProjectConverter.v6_4;
+using PKSim.Infrastructure.ProjectConverter.v7_1;
 using PKSim.IntegrationTests;
 using PKSim.Presentation;
-using OSPSuite.Core.Domain;
 
-namespace PKSim.ProjectConverter.v6_4
+namespace PKSim.ProjectConverter.v7_1
 {
-   public class When_converting_the_layout_63_project : ContextWithLoadedProject<Converter641To642>
+   public class When_converting_the_layout_63_project : ContextWithLoadedProject<Converter641To710>
    {
       public override void GlobalContext()
       {
