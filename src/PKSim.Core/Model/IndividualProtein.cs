@@ -34,7 +34,7 @@ namespace PKSim.Core.Model
 
       public virtual MembraneLocation MembraneLocation
       {
-         get { return _membraneLocation; }
+         get => _membraneLocation;
          set
          {
             _membraneLocation = value;
@@ -44,7 +44,7 @@ namespace PKSim.Core.Model
 
       public virtual TissueLocation TissueLocation
       {
-         get { return _tissueLocation; }
+         get => _tissueLocation;
          set
          {
             _tissueLocation = value;
@@ -54,7 +54,7 @@ namespace PKSim.Core.Model
 
       public virtual IntracellularVascularEndoLocation IntracellularVascularEndoLocation
       {
-         get { return _intracellularVascularEndoLocation; }
+         get => _intracellularVascularEndoLocation;
          set
          {
             _intracellularVascularEndoLocation = value;
