@@ -19,16 +19,16 @@ namespace PKSim.Core.Model
 
       public virtual double OntogenyFactor
       {
-         get { return OntogenyFactorParameter.Value; }
-         set { OntogenyFactorParameter.Value = value; }
+         get => OntogenyFactorParameter.Value;
+         set => OntogenyFactorParameter.Value = value;
       }
 
       public IParameter OntogenyFactorParameter => this.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR);
 
       public virtual double OntogenyFactorGI
       {
-         get { return OntogenyFactorGIParameter.Value; }
-         set { OntogenyFactorGIParameter.Value = value; }
+         get => OntogenyFactorGIParameter.Value;
+         set => OntogenyFactorGIParameter.Value = value;
       }
 
       public IParameter OntogenyFactorGIParameter => this.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR_GI);
@@ -37,7 +37,7 @@ namespace PKSim.Core.Model
       {
          return GetAllChildren<IMoleculeExpressionContainer>().FindByName(expressionContainerName) != null;
       }
-
+         
       public virtual IMoleculeExpressionContainer ExpressionContainer(string expressionContainerName)
       {
          return GetAllChildren<IMoleculeExpressionContainer>().FindByName(expressionContainerName);
@@ -78,15 +78,13 @@ namespace PKSim.Core.Model
          QueryConfiguration = sourceMolecule.QueryConfiguration;
          MoleculeType = sourceMolecule.MoleculeType;
          var sourceOntogeny = sourceMolecule.Ontogeny;
-         if(sourceOntogeny.IsUserDefined())
-            Ontogeny = cloneManager.Clone(sourceOntogeny);
-         else
-            Ontogeny = sourceMolecule.Ontogeny;
+
+         Ontogeny = sourceOntogeny.IsUserDefined() ? cloneManager.Clone(sourceOntogeny) : sourceMolecule.Ontogeny;
       }
 
       public virtual Ontogeny Ontogeny
       {
-         get { return _ontogeny; }
+         get => _ontogeny;
          set
          {
             _ontogeny = value;
