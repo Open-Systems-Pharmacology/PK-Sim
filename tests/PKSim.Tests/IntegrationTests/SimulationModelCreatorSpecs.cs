@@ -26,7 +26,7 @@ namespace PKSim.IntegrationTests
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
 
          _enzyme = enzymeFactory.CreateFor(templateIndividual).DowncastTo<IndividualEnzyme>().WithName("CYP");
-         _enzyme.TissueLocation = TissueLocation.Interstitial;
+         _enzyme.TissueLocation = TissueLocation.Intracellular;
          templateIndividual.AddMolecule(_enzyme);
 
          _protein = enzymeFactory.CreateFor(templateIndividual).DowncastTo<IndividualEnzyme>().WithName("PROT");
