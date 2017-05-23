@@ -73,15 +73,9 @@ namespace PKSim.Core.Chart
          _fieldValues = fieldKeyValues.Values.ToList();
       }
 
-      public IEnumerable<string> FieldNames
-      {
-         get { return FieldKeyValues.Keys; }
-      }
+      public IEnumerable<string> FieldNames => FieldKeyValues.Keys;
 
-      public IReadOnlyList<string> FieldValues
-      {
-         get { return _fieldValues; }
-      }
+      public IReadOnlyList<string> FieldValues => _fieldValues;
 
       public virtual void Add(TX xValue, TY yValue)
       {
@@ -90,20 +84,11 @@ namespace PKSim.Core.Chart
          _xyValues.Add(new XYValue(_xValues.Count - 1, xValue, yValue));
       }
 
-      public virtual IReadOnlyList<TX> XValues
-      {
-         get { return _xValues; }
-      }
+      public virtual IReadOnlyList<TX> XValues => _xValues;
 
-      public virtual IReadOnlyList<TY> YValues
-      {
-         get { return _yValues; }
-      }
+      public virtual IReadOnlyList<TY> YValues => _yValues;
 
-      public virtual string PaneCaption
-      {
-         get { return Pane.Caption; }
-      }
+      public virtual string PaneCaption => Pane.Caption;
 
       public virtual int GetPointIndexForDisplayValues(double xValueInDisplayUnit, double yValueInDisplayUnit)
       {
@@ -113,15 +98,9 @@ namespace PKSim.Core.Chart
          return _xyValues.OrderBy(x => x.DistanceTo(xBaseUnit, yBaseUnit)).First().Index;
       }
 
-      public virtual AxisData XAxis
-      {
-         get { return Pane.ChartAxis; }
-      }
+      public virtual AxisData XAxis => Pane.ChartAxis;
 
-      public virtual AxisData YAxis
-      {
-         get { return Pane.Axis; }
-      }
+      public virtual AxisData YAxis => Pane.Axis;
 
       public virtual string XDisplayValueAt(int pointIndex)
       {

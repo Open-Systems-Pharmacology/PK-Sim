@@ -18,10 +18,12 @@ namespace PKSim.Core
          var chartData = ChartDataHelperForSpecs.CreateBoxWhiskerChartData();
          _paneData = ChartDataHelperForSpecs.CreateBoxWhiskerPaneData11(chartData);
          var name = "Male";
-         sut = new CurveData<BoxWhiskerXValue, BoxWhiskerYValue>(new Dictionary<string, string>{{name,name}});
-         sut.Id = name;
-         sut.Caption = name;
-         sut.Pane = _paneData;
+         sut = new CurveData<BoxWhiskerXValue, BoxWhiskerYValue>(new Dictionary<string, string> {{name, name}})
+         {
+            Id = name,
+            Caption = name,
+            Pane = _paneData
+         };
       }
    }
 
@@ -60,7 +62,14 @@ namespace PKSim.Core
       protected override void Because()
       {
          _xValue = new BoxWhiskerXValue(new string[] {"Normal", "Young"});
-         _yValue = new BoxWhiskerYValue() {LowerWhisker = 1.1F, LowerBox = 1.2F, Median = 1.3F, UpperBox = 1.4F, UpperWhisker = 1.5F};
+         _yValue = new BoxWhiskerYValue
+         {
+            LowerWhisker = new ValueWithIndvividualId(1.1F),
+            LowerBox = new ValueWithIndvividualId(1.2F), 
+            Median = new ValueWithIndvividualId(1.3F),
+            UpperBox = new ValueWithIndvividualId(1.4F),
+            UpperWhisker = new ValueWithIndvividualId(1.5F)
+         };
          sut.Add(_xValue, _yValue);
       }
 
@@ -99,8 +108,7 @@ namespace PKSim.Core
          var yAxis = new AxisData(dimension, dimension.DefaultUnit, Scalings.Linear);
          A.CallTo(() => paneData.ChartAxis).Returns(xAxis);
          A.CallTo(() => paneData.Axis).Returns(yAxis);
-         sut = new CurveData<ScatterXValue, ScatterYValue>();
-         sut.Pane = paneData;
+         sut = new CurveData<ScatterXValue, ScatterYValue> {Pane = paneData};
       }
    }
 
@@ -139,8 +147,7 @@ namespace PKSim.Core
          var yAxis = new AxisData(dimension, dimension.DefaultUnit, Scalings.Linear);
          A.CallTo(() => paneData.ChartAxis).Returns(xAxis);
          A.CallTo(() => paneData.Axis).Returns(yAxis);
-         sut = new CurveData<BoxWhiskerXValue, BoxWhiskerYValue>();
-         sut.Pane = paneData;
+         sut = new CurveData<BoxWhiskerXValue, BoxWhiskerYValue> {Pane = paneData};
       }
    }
 
@@ -149,8 +156,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.Add(new BoxWhiskerXValue(new[] {"A"}) {X = 1}, new BoxWhiskerYValue {LowerWhisker = 10});
-         sut.Add(new BoxWhiskerXValue(new[] {"B"}) {X = 2}, new BoxWhiskerYValue {LowerWhisker = 20});
+         sut.Add(new BoxWhiskerXValue(new[] {"A"}) {X = 1}, new BoxWhiskerYValue {LowerWhisker = new ValueWithIndvividualId(10)});
+         sut.Add(new BoxWhiskerXValue(new[] {"B"}) {X = 2}, new BoxWhiskerYValue {LowerWhisker = new ValueWithIndvividualId(20)});
       }
 
       [Observation]

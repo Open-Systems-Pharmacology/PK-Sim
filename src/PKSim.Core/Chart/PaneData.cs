@@ -25,10 +25,7 @@ namespace PKSim.Core.Chart
          get { return _observedCurveData.Where(c => c.Visible).ToList(); }
       }
 
-      public virtual IReadOnlyList<ObservedCurveData> ObservedCurveData
-      {
-         get { return _observedCurveData; }
-      }
+      public virtual IReadOnlyList<ObservedCurveData> ObservedCurveData => _observedCurveData;
 
       public void AddObservedCurve(ObservedCurveData observedCurveData)
       {
@@ -60,10 +57,7 @@ namespace PKSim.Core.Chart
          _fieldValues = fieldKeyValues.Values.ToList();
       }
 
-      public ICache<string, CurveData<TX, TY>> Curves
-      {
-         get { return _allCurves; }
-      }
+      public ICache<string, CurveData<TX, TY>> Curves => _allCurves;
 
       public void AddCurve(CurveData<TX, TY> curve)
       {
@@ -87,19 +81,10 @@ namespace PKSim.Core.Chart
          _allCurves.AddRange(sortedCurves);
       }
 
-      public override AxisData ChartAxis
-      {
-         get { return Chart.Axis; }
-      }
+      public override AxisData ChartAxis => Chart.Axis;
 
-      public virtual IEnumerable<string> FieldNames
-      {
-         get { return FieldKeyValues.Keys; }
-      }
+      public virtual IEnumerable<string> FieldNames => FieldKeyValues.Keys;
 
-      public virtual IReadOnlyList<string> FieldValues
-      {
-         get { return _fieldValues; }
-      }
+      public virtual IReadOnlyList<string> FieldValues => _fieldValues;
    }
 }

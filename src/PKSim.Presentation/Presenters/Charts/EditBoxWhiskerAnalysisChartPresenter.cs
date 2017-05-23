@@ -1,10 +1,10 @@
-﻿using PKSim.Core.Chart;
+﻿using OSPSuite.Assets;
+using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.Charts;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.Presenters.Charts
 {

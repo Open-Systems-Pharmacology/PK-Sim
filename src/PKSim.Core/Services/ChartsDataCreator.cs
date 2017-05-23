@@ -8,7 +8,6 @@ using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 
@@ -100,8 +99,8 @@ namespace PKSim.Core.Services
 
       protected void CreatePrimaryKey(IEnumerable<string> seriesFieldNames, IEnumerable<string> paneFieldNames)
       {
-         var pkColumnNames = new List<string>();
-         pkColumnNames.Add(_dataColumnName); // first entry in PrimaryKey is DataField
+         // first entry in PrimaryKey is DataField
+         var pkColumnNames = new List<string> {_dataColumnName};
          pkColumnNames.AddRange(seriesFieldNames);
          pkColumnNames.AddRange(paneFieldNames);
          _data.PrimaryKey = pkColumnNames.Select(name => _data.Columns[name]).ToArray();
