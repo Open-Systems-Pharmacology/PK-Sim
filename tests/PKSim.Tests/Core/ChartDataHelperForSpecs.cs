@@ -97,13 +97,22 @@ namespace PKSim.Core
 
       public static CurveData<BoxWhiskerXValue, BoxWhiskerYValue> CreateBoxWhiskerCurveData(PaneData<BoxWhiskerXValue, BoxWhiskerYValue> paneData, string name, IList<BoxWhiskerXYValue> bwValues)
       {
-         var curveData = new CurveData<BoxWhiskerXValue, BoxWhiskerYValue>(new Dictionary<string, string> { { name, name } });
-         curveData.Id = name;
-         curveData.Caption = name;
+         var curveData = new CurveData<BoxWhiskerXValue, BoxWhiskerYValue>(new Dictionary<string, string> {{name, name}})
+         {
+            Id = name,
+            Caption = name
+         };
          foreach (var v in bwValues)
          {
             var X = new BoxWhiskerXValue(new List<string>() {v.X1, v.X2});
-            var Y = new BoxWhiskerYValue() {LowerWhisker = v.LW, LowerBox = v.LW, Median = v.M, UpperBox = v.LW, UpperWhisker = v.LW};
+            var Y = new BoxWhiskerYValue
+            {
+               LowerWhisker = new ValueWithIndvividualId(v.LW),
+               LowerBox = new ValueWithIndvividualId(v.LW),
+               Median = new ValueWithIndvividualId(v.M),
+               UpperBox = new ValueWithIndvividualId(v.LW),
+               UpperWhisker = new ValueWithIndvividualId(v.LW),
+            };
             curveData.Add(X, Y);
          }
 

@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Data;
 using FakeItEasy;
+using FluentNHibernate.Utils;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
@@ -20,7 +21,7 @@ namespace PKSim.Core
       protected readonly PopulationAnalysisCovariateField _raceField = new PopulationAnalysisCovariateField {Name = "RACE", Covariate = "RACE"};
       protected readonly PopulationAnalysisParameterField _bmiField = new PopulationAnalysisParameterField {Name = "BMI", ParameterPath = "BMI"};
       protected readonly PopulationAnalysisPKParameterField _cmaxField = new PopulationAnalysisPKParameterField {Name = "Cmax", QuantityPath = "Path", PKParameter = "Cmax"};
-      private IPopulationAnalysisField _bmiClass;
+      protected IPopulationAnalysisField _bmiClass;
       private IDimensionRepository _dimensionRepository;
       private IPivotResultCreator _pivotResultCreator;
 
@@ -55,7 +56,7 @@ namespace PKSim.Core
             boxWhiskerXValue[i].ShouldBeEqualTo(xValue[i]);
          }
 
-         curve.YValues[index].Median.ShouldBeEqualTo(median);
+         curve.YValues[index].Median.Value.ShouldBeEqualTo(median);
       }
    }
 
@@ -101,9 +102,63 @@ namespace PKSim.Core
          thinSerie.XValues.Count.ShouldBeEqualTo(2);
 
          CheckSeriesItem(bigSerie, 0, new[] {"Male", "EU"}, 1000);
-
          CheckSeriesItem(thinSerie, 0, new[] {"Male", "US"}, 900);
          CheckSeriesItem(thinSerie, 1, new[] {"Female", "EU"}, 600);
+      }
+
+      [Observation]
+      public void should_set_the_expected_individual_id_matching_the_retrieved_percentile()
+      {
+         var pane = _chartData.Panes["Cmax"];
+         //two grouping (BMI Class)
+         pane.Curves.Count.ShouldBeEqualTo(2);
+
+         var thinSerie = pane.Curves.ElementAt(0);
+         thinSerie.YValues.Count.ShouldBeEqualTo(2);
+
+         thinSerie.YValues[0].AllValues.Each(x=>x.IndividualId.ShouldBeEqualTo(0)); //900 Cmax
+         thinSerie.YValues[1].AllValues.Each(x=>x.IndividualId.ShouldBeEqualTo(1)); //600 Cmax
+
+         var bigSerie = pane.Curves.ElementAt(1);
+         bigSerie.Id.ShouldBeEqualTo("Big");
+         bigSerie.YValues[0].AllValues.Each(x => x.IndividualId.ShouldBeEqualTo(2)); //1000 Cmax
+      }
+   }
+
+   public class When_creating_the_box_whisker_chart_data_based_on_row_data_without_any_grouping_by_race : concern_for_BoxWhiskerChartsDataCreator
+   {
+      private PivotResult _pivotResult;
+      private ChartData<BoxWhiskerXValue, BoxWhiskerYValue> _chartData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _pivotAnalysis.SetPosition(_genderField, PivotArea.FilterArea, 0);
+         _pivotAnalysis.SetPosition(_raceField, PivotArea.FilterArea, 0);
+         _pivotAnalysis.SetPosition(_bmiClass, PivotArea.FilterArea, 0);
+         _pivotResult = ChartDataHelperForSpecs.CreatePivotResult(_pivotAnalysis, _aggregate, _genderField, _raceField, _bmiField, _cmaxField);
+      }
+      
+      protected override void Because()
+      {
+         _chartData = sut.CreateFor(_pivotResult);
+      }
+      
+      [Observation]
+      public void should_set_the_execpted_individual_id_matching_the_percentile()
+      {
+         var pane = _chartData.Panes["Cmax"];
+         pane.Curves.Count.ShouldBeEqualTo(1);
+         var curveData = pane.Curves.ElementAt(0);
+         curveData.YValues.Count.ShouldBeEqualTo(1);
+         var boxWishkerYValue = curveData.YValues.ElementAt(0);
+
+         //900, 600, 1000 
+         boxWishkerYValue.LowerWhisker.IndividualId.ShouldBeEqualTo(0);
+         boxWishkerYValue.LowerBox.IndividualId.ShouldBeEqualTo(0);
+         boxWishkerYValue.Median.IndividualId.ShouldBeEqualTo(0);
+         boxWishkerYValue.UpperBox.IndividualId.ShouldBeEqualTo(2);
+         boxWishkerYValue.UpperWhisker.IndividualId.ShouldBeEqualTo(2);
       }
    }
 

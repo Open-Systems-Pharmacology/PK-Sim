@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Data;
-using PKSim.Core.Chart;
-using PKSim.Core.Extensions;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Data;
+using PKSim.Core.Chart;
 
 namespace PKSim.Core.Model
 {
@@ -28,40 +28,43 @@ namespace PKSim.Core.Model
 
       private static Aggregate<BoxWhiskerYValue> boxWhiskerAggregation(double percentile)
       {
+         const float outlierRange = 1.5F;
+
          return new Aggregate<double, BoxWhiskerYValue>
          {
             Aggregation = doubles =>
             {
-               var floats = doubles.ToFloatArray().OrderedAndPurified();
-               var lowerWhisker = floats.Percentile(percentile);
-               var upperWhisker = floats.Percentile(100 - percentile);
+               var ordereredValues = doubles.ToFloatArray().OrderedAndPurified();
 
-               return getBoxWhiskerYValue(lowerWhisker, floats, upperWhisker);
+               var boxWhiskerYValue = new BoxWhiskerYValue
+               {
+                  LowerWhisker = valueWithIndex(ordereredValues, percentile),
+                  LowerBox = valueWithIndex(ordereredValues,  25),
+                  Median = valueWithIndex(ordereredValues,  50),
+                  UpperBox = valueWithIndex(ordereredValues,  75),
+                  UpperWhisker = valueWithIndex(ordereredValues,  100 - percentile),
+               };
+
+               var range = outlierRange * (boxWhiskerYValue.UpperBox - boxWhiskerYValue.LowerBox);
+
+               var lowerLimit = boxWhiskerYValue.LowerWhisker - range;
+               var upperLimit = boxWhiskerYValue.UpperWhisker + range;
+
+               var outliers = ordereredValues.Where(f => f < lowerLimit || f > upperLimit)
+                  .Select(f => new ValueWithIndvividualId(f))
+                  .ToArray();
+
+               boxWhiskerYValue.Outliers = outliers;
+               return boxWhiskerYValue;
             },
             Name = "BoxWhisker"
          };
       }
 
-      private static BoxWhiskerYValue getBoxWhiskerYValue(float lowerWhisker, float[] orderedArray, float upperWhisker)
+      private static ValueWithIndvividualId valueWithIndex(float[] orderedValues,  double percentile)
       {
-         const float outlierRange = 1.5F;
-
-         var lowerBox = orderedArray.Percentile(25);
-         var upperBox = orderedArray.Percentile(75);
-         var median = orderedArray.Median();
-         var lowerLimit = lowerWhisker - outlierRange * (upperBox - lowerBox);
-         var upperLimit = upperWhisker + outlierRange * (upperBox - lowerBox);
-         var outliers = orderedArray.Where(f => f < lowerLimit || f > upperLimit).ToArray();
-
-         return new BoxWhiskerYValue
-         {
-            LowerWhisker = lowerWhisker,
-            LowerBox = lowerBox,
-            Median = median,
-            UpperBox = upperBox,
-            UpperWhisker = upperWhisker,
-            Outliers = outliers
-         };
+         var value = orderedValues.Percentile(percentile);
+         return new ValueWithIndvividualId(value);
       }
    }
 }

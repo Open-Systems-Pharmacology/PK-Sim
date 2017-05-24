@@ -154,7 +154,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
                   var median = TEXHelper.ValueInDisplayUnit(dimension, unit, boxWhisker.Median);
                   var upperBox = TEXHelper.ValueInDisplayUnit(dimension, unit, boxWhisker.UpperBox);
                   var upperWhisker = TEXHelper.ValueInDisplayUnit(dimension, unit, boxWhisker.UpperWhisker);
-                  var outliers = TEXHelper.ValueInDisplayUnit(dimension, unit, boxWhisker.Outliers);
+                  var outliers = TEXHelper.ValueInDisplayUnit(dimension, unit, boxWhisker.Outliers.Select(x=>x.Value).ToArray());
 
                   var coordinates = outliers.Select(outlier => new Coordinate(xValue, outlier)).ToList();
 

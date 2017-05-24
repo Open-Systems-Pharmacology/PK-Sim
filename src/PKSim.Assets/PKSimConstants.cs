@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.Utility.Extensions;
@@ -934,8 +935,6 @@ namespace PKSim.Assets
             return $"Population simulation '{simulationName}' was successfully created with '{numberOfIndividuals}' individuals";
          }
 
-
-
          public static readonly string CompoundProcessesInfo = "Enter all relevant properties of the compound by a right click on the selected item in the tree view (left part).\n<B>Note:</B> In the simulation process, these compound properties will be linked to enzymatic, transport, and binding settings defined for the selected individual/species";
          public static readonly string ObjectReferences = "References";
          public static readonly string DoNotShowVersionUpdate = "Ignore this update";
@@ -945,14 +944,32 @@ namespace PKSim.Assets
             return $"X = {x}";
          }
 
-         public static string BoxWhiskerYAsTooltip(string lowerWhisker, string lowerBox, string median, string upperBox, string upperWhisker, string[] outliers)
+         public static string BoxWhiskerYAsTooltip(string lowerWhisker, int lowerWiskerIndividualId, string lowerBox, int lowerBoxIndividualId, string median, int medianIndividualId, string upperBox, int upperboxIndividualId, string upperWhisker,int  upperWhiskerIndividualId,  string[] outliers, int[] outlierIndividualIds)
          {
-            var outlierString = String.Empty;
-            if (outliers.Length > 0)
-               outlierString = $"\nOutliers: {string.Join(", ", outliers)}";
+            var sb = new StringBuilder();
 
-            return $"95% = {upperWhisker}\n75% = {upperBox}\n50% = {median}\n25% = {lowerBox}\n  5% = {lowerWhisker}{outlierString}";
+            sb.AppendLine(percentilWithIndividualId("95", upperWhisker, upperWhiskerIndividualId));
+            sb.AppendLine(percentilWithIndividualId("75", upperBox, upperboxIndividualId));
+            sb.AppendLine(percentilWithIndividualId("50", median, medianIndividualId));
+            sb.AppendLine(percentilWithIndividualId("25", lowerBox, lowerBoxIndividualId));
+            sb.AppendLine(percentilWithIndividualId("05", lowerWhisker, lowerWiskerIndividualId));
+
+            if (outliers.Length > 0 && outliers.Length == outlierIndividualIds.Length)
+            {
+               sb.AppendLine();
+               sb.AppendLine("<b>Outliers</b>");
+               outliers.Each((v, i) =>
+               {
+                  sb.AppendLine(valueWithIndividualId(v,outlierIndividualIds[i]));
+               });
+            }
+
+            return sb.ToString();
          }
+
+         private static string percentilWithIndividualId(string percentil, string value, int individualId) => valueWithIndividualId($"{percentil}% = {value}", individualId);
+
+         private static string valueWithIndividualId(string value, int individualId) => $"{value}, IndividualId = {individualId}";
 
          public static string RangeXAsTooltip(string minimum, string value, string maximum, int numberOfIndividuals)
          {
