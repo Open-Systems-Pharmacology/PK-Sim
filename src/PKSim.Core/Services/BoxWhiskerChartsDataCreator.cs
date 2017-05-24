@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Utility.Data;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
@@ -72,7 +71,7 @@ namespace PKSim.Core.Services
       {
          var chartData = base.CreateFor(pivotResult);
          var boxWhiskerAnalysis = pivotResult.Analysis as PopulationBoxWhiskerAnalysis;
-         if (boxWhiskerAnalysis == null || chartData==null)
+         if (boxWhiskerAnalysis == null || chartData == null)
             return chartData;
 
          chartData.Panes.Each(p => updateIndividualIdForField(pivotResult.PopulationDataCollector, boxWhiskerAnalysis, p));
@@ -89,10 +88,10 @@ namespace PKSim.Core.Services
          var fieldValues = field.GetValues(populationDataCollector).Where(x => x.IsValid()).ToFloatArray();
          var sortedValues = fieldValues.OrderBy(x => x).ToList();
 
-         dataPane.Curves.SelectMany(x => x.YValues).Each(y => updateIndexes(y, fieldValues, sortedValues));
+         dataPane.Curves.SelectMany(x => x.YValues).Each(y => updateIndividualId(y, fieldValues, sortedValues));
       }
 
-      private void updateIndexes(BoxWhiskerYValue boxWhiskerYValue, float[] fieldValues, List<float> sortedValues)
+      private void updateIndividualId(BoxWhiskerYValue boxWhiskerYValue, float[] fieldValues, List<float> sortedValues)
       {
          boxWhiskerYValue.AllValues.Each(v =>
          {
