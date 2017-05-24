@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.SensitivityAnalyses;
 
 namespace PKSim.Core.Model
 {
    public interface IPKSimProject : IProject
    {
-
       /// <summary>
       ///    Returns all the building block of a given type <paramref name="buildingBlockType" />
       /// </summary>
@@ -32,9 +30,8 @@ namespace PKSim.Core.Model
       /// </summary>
       void RemoveBuildingBlock(IPKSimBuildingBlock buildingBlockToRemove);
 
-
       /// <summary>
-      ///    Returns all <see cref="ISimulationComparison"/> defined in the project
+      ///    Returns all <see cref="ISimulationComparison" /> defined in the project
       /// </summary>
       IReadOnlyCollection<ISimulationComparison> AllSimulationComparisons { get; }
 
@@ -63,10 +60,9 @@ namespace PKSim.Core.Model
 
       private bool _hasChanged;
 
-
       public override bool HasChanged
       {
-         get { return _hasChanged; }
+         get => _hasChanged;
          set
          {
             _hasChanged = value;
@@ -75,7 +71,7 @@ namespace PKSim.Core.Model
          }
       }
 
-      public override IEnumerable<IUsesObservedData> AllUsersOfObservedData => AllParameterAnalysables.OfType<IUsesObservedData>().Union(All<Simulation>());
+      public override IEnumerable<IUsesObservedData> AllUsersOfObservedData => AllParameterAnalysables.OfType<IUsesObservedData>().Union(All<Simulation>()).Union(AllSimulationComparisons);
 
       public IReadOnlyCollection<ISimulationComparison> AllSimulationComparisons => _simulationComparisons;
 
@@ -106,10 +102,10 @@ namespace PKSim.Core.Model
       public IReadOnlyCollection<T> All<T>(Func<T, bool> predicate) where T : class
       {
          var query = from child in _allBuildingBlocks
-                     let castChild = child as T
-                     where castChild != null
-                     where predicate(castChild)
-                     select castChild;
+            let castChild = child as T
+            where castChild != null
+            where predicate(castChild)
+            select castChild;
 
          return query.ToList();
       }

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core.Model
 {
@@ -207,6 +207,11 @@ namespace PKSim.Core.Model
          {
             return pkParameter.Name.GetHashCode();
          }
+      }
+
+      public bool UsesObservedData(DataRepository observedData)
+      {
+         return Analyses.OfType<IWithObservedData>().Any(x => x.UsesObservedData(observedData));
       }
    }
 }
