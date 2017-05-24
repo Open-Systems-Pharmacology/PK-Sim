@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Extensions;
 
 namespace PKSim.Core.Chart
 {
@@ -20,7 +20,6 @@ namespace PKSim.Core.Chart
       }
 
       public bool IsValid => Value.IsValid();
-
 
       public static implicit operator float(ValueWithIndvividualId valueWithIndvividualId)
       {
@@ -72,20 +71,19 @@ namespace PKSim.Core.Chart
             yield return UpperBox;
             yield return UpperWhisker;
 
-            if(Outliers==null)
+            if (Outliers == null)
                yield break;
-            
+
             foreach (var outlier in Outliers)
             {
                yield return outlier;
             }
-            
          }
       }
 
       public void ClearOutliers()
       {
-         Outliers = new ValueWithIndvividualId[]{};
+         Outliers = new ValueWithIndvividualId[] { };
       }
    }
 
