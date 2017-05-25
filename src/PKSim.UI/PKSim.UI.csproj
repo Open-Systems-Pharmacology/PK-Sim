@@ -214,9 +214,8 @@
     <Reference Include="OSPSuite.DataBinding">
       <HintPath>..\..\packages\OSPSuite.DataBinding.2.0.0.1\lib\net45\OSPSuite.DataBinding.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.DataBinding.DevExpress, Version=2.0.0.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.DataBinding.DevExpress.2.0.0.3\lib\net45\OSPSuite.DataBinding.DevExpress.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.DataBinding.DevExpress, Version=2.0.1.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DataBinding.DevExpress.2.0.1.1\lib\net45\OSPSuite.DataBinding.DevExpress.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
