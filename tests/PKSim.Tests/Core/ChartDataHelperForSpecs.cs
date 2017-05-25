@@ -192,7 +192,7 @@ namespace PKSim.Core
          A.CallTo(() => populationSimulation.AllCovariateValuesFor(genderFielder.Covariate)).Returns(new List<string> {"Male", "Female", "Male"});
          A.CallTo(() => populationSimulation.AllCovariateValuesFor(raceField.Covariate)).Returns(new List<string> {"US", "EU", "EU"});
          A.CallTo(() => populationSimulation.AllPKParameterValuesFor(cmaxField.QuantityPath, cmaxField.PKParameter)).Returns(new List<double> {900, 600, 1000});
-         A.CallTo(() => populationSimulation.AllSimulationNames()).Returns(new List<string> {"Sim", "Sim", "Sim"});
+         A.CallTo(() => populationSimulation.AllSimulationNames).Returns(new List<string> {"Sim", "Sim", "Sim"});
 
          return pivotResultCreator.Create(pivotAnalysis, populationSimulation, new ObservedDataCollection(), aggregate);
       }
@@ -217,7 +217,7 @@ namespace PKSim.Core
          A.CallTo(() => populationSimulation.AllCovariateValuesFor(CoreConstants.Covariates.GENDER)).Returns(new List<string> {"Male", "Female", "Male"});
          A.CallTo(() => populationSimulation.AllOutputValuesFor(outputField1.QuantityPath)).Returns(new List<QuantityValues> {output11, output12, output13});
          A.CallTo(() => populationSimulation.AllOutputValuesFor(outputField2.QuantityPath)).Returns(new List<QuantityValues> {output21, output22, output23});
-         A.CallTo(() => populationSimulation.AllSimulationNames()).Returns(new List<string> {"Sim", "Sim", "Sim"});
+         A.CallTo(() => populationSimulation.AllSimulationNames).Returns(new List<string> {"Sim", "Sim", "Sim"});
 
 
          if (observedDataCollection == null)

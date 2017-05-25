@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
@@ -76,7 +78,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly IChartsDataBinder<TX, TY> _chartDataBinder;
       private ChartData<TX, TY> _chartData;
 
-      public PopulationAnalysisChart AnalysisChart { get; set; }
+      public PopulationAnalysisChart AnalysisChart { get; private set; }
 
       public virtual bool AllowEdit { get; set; }
 
@@ -124,11 +126,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public ObservedCurveData ObservedCurveDataFor(string paneId, string caption)
       {
          var paneData = _chartData.Panes[paneId];
-         if (paneData == null)
-            return null;
 
          //Observed data can only be identifed using caption for now as their Id (observedData.Id) is not available in the DevExpress Series.
-         return paneData.ObservedCurveData.FirstOrDefault(o => string.Equals(o.Caption, caption));
+         return paneData?.ObservedCurveData.FirstOrDefault(o => string.Equals(o.Caption, caption));
       }
 
       public CurveData<TX, TY> CurveDataFor(string paneId, string seriesId)

@@ -354,8 +354,7 @@ namespace PKSim.Presentation.Services
 
       protected virtual void SaveAsTemplate(TBuildingBlock buildingBlockToSave, TemplateDatabaseType templateDatabaseType)
       {
-         var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>();
-         cache[buildingBlockToSave] = new List<IPKSimBuildingBlock>();
+         var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> {[buildingBlockToSave] = new List<IPKSimBuildingBlock>()};
          _buildingBlockTask.SaveAsTemplate(cache, templateDatabaseType);
       }
 

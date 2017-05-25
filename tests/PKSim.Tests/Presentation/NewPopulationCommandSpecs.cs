@@ -1,7 +1,7 @@
-using OSPSuite.BDDHelper;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.UICommands;
 using FakeItEasy;
+using OSPSuite.BDDHelper;
+using PKSim.Core.Services;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation
 {
@@ -16,7 +16,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_executing_the_new_population_command : concern_for_NewPopulationCommand
    {
       protected override void Because()

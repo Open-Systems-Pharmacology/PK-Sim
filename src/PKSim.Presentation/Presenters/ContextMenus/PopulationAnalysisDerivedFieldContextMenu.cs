@@ -3,7 +3,6 @@ using PKSim.Assets;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
@@ -21,7 +20,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(PopulationAnalysisDerivedField populationAnalysisDerivedField, IPopulationAnalysisFieldsPresenter presenter)
       {
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Edit)
+         yield return CreateMenuButton.WithCaption(MenuNames.Edit)
             .WithActionCommand(() => presenter.EditDerivedField(populationAnalysisDerivedField))
             .WithIcon(ApplicationIcons.Edit);
 

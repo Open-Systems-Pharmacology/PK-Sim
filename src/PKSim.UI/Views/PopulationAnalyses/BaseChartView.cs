@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -23,13 +24,15 @@ namespace PKSim.UI.Views.PopulationAnalyses
       where TY : IYValue
    {
       private readonly IToolTipCreator _toolTipCreator;
-      protected readonly UxChartControl _chartControl;
+      private readonly UxChartControl _chartControl;
       protected IPopulationAnalysisChartPresenter<TX, TY> _presenter;
+      protected CurveData<TX, TY> _latestTrackedCurvedData;
+      protected SeriesPoint _latestSeriesPoint;
       public bool DragDropEnabled { get; set; }
 
-      public virtual XYDiagram Diagram => _chartControl.XYDiagram;
+      public XYDiagram Diagram => _chartControl.XYDiagram;
 
-      public virtual UxChartControl Chart => _chartControl;
+      public UxChartControl Chart => _chartControl;
 
       public IChartsDataBinder<TX, TY> ChartsDataBinder { get; protected set; }
 
@@ -38,7 +41,11 @@ namespace PKSim.UI.Views.PopulationAnalyses
          InitializeComponent();
 
          _toolTipCreator = toolTipCreator;
-         _chartControl = new UxChartControl(addDefaultPopup: false) { Images = imageListRetriever.AllImages16x16, CrosshairEnabled = DefaultBoolean.False };
+         _chartControl = new UxChartControl(useDefaultPopupMechanism: true,addCopyToClipboardMenu:false)
+         {
+            Images = imageListRetriever.AllImages16x16,
+            CrosshairEnabled = DefaultBoolean.False
+         };
          _pnlChart.FillWith(_chartControl);
          _chartControl.RefreshDataOnRepaint = false;
          _chartControl.CacheToMemory = true;
@@ -59,6 +66,12 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _chartControl.DragOver += (o, e) => OnEvent(OnDragOver, e);
          _chartControl.DragDrop += (o, e) => OnEvent(OnDragDrop, e);
          _chartControl.Zoom += (o, e) => OnEvent(() => ChartsDataBinder.UpdateAxesSettings(_presenter.AnalysisChart));
+         _chartControl.PopupMenu.BeforePopup += (o, e) => OnEvent(() => ConfigurePopup(e));
+      }
+
+      protected virtual void ConfigurePopup(CancelEventArgs cancelEventArgs)
+      {
+
       }
 
       public override void InitializeResources()
@@ -92,6 +105,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
       private void onObjectHotTracked(HotTrackEventArgs e)
       {
          var series = e.Series();
+         _latestTrackedCurvedData = null;
+         _latestSeriesPoint = null;
          if (series == null)
          {
             hideToolTip(e);
@@ -99,25 +114,25 @@ namespace PKSim.UI.Views.PopulationAnalyses
          }
 
          var diagramCoordinates = _chartControl.DiagramCoordinatesAt(e);
-         var point = e.HitInfo.SeriesPoint;
+         _latestSeriesPoint  = e.HitInfo.SeriesPoint;
          SuperToolTip superToolTip = null;
 
          var observedCurveData = _presenter.ObservedCurveDataFor(diagramCoordinates.Pane.Name, series.Name);
          if (observedCurveData != null)
          {
-            superToolTip = getSuperToolTipFor(observedCurveData, point, diagramCoordinates);
+            superToolTip = getSuperToolTipFor(observedCurveData, _latestSeriesPoint, diagramCoordinates);
          }
 
          if (superToolTip == null)
          {
-            var curveData = _presenter.CurveDataFor(diagramCoordinates.Pane.Name, series.Name);
-            if (curveData == null)
+            _latestTrackedCurvedData  = _presenter.CurveDataFor(diagramCoordinates.Pane.Name, series.Name);
+            if (_latestTrackedCurvedData == null)
             {
                hideToolTip(e);
                return;
             }
 
-            superToolTip = getSuperToolTipFor(curveData, point, diagramCoordinates);
+            superToolTip = getSuperToolTipFor(_latestTrackedCurvedData, _latestSeriesPoint, diagramCoordinates);
          }
          if (superToolTip == null)
          {
@@ -172,14 +187,14 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       public virtual void AddDynamicMenus(bool allowEdit = true)
       {
-         _chartControl.AddPopupMenu(PKSimConstants.MenuNames.ResetZoom, ResetZoom, ApplicationIcons.Reset);
-         _chartControl.AddPopupMenu(Captions.CopyAsImage, () => _presenter.AnalysisChart.CopyToClipboard(_chartControl), ApplicationIcons.Paste, beginGroup: true);
+         _chartControl.AddPopupMenu(MenuNames.ResetZoom, ResetZoom, ApplicationIcons.Reset);
+         _chartControl.AddPopupMenu(MenuNames.CopyToClipboard, () => _presenter.AnalysisChart.CopyToClipboard(_chartControl), ApplicationIcons.Copy, beginGroup: true);
 
          if (allowEdit)
-            _chartControl.AddPopupMenu(PKSimConstants.MenuNames.Edit, _presenter.Edit, ApplicationIcons.Edit);
+            _chartControl.AddPopupMenu(MenuNames.Edit, _presenter.Edit, ApplicationIcons.Edit);
 
-         _chartControl.AddPopupMenu(PKSimConstants.MenuNames.ExportToExcel, _presenter.ExportDataToExcel, ApplicationIcons.Excel);
-         _chartControl.AddPopupMenu(PKSimConstants.MenuNames.ExportToPDF, _presenter.ExportToPDF, ApplicationIcons.PDF);
+         _chartControl.AddPopupMenu(MenuNames.ExportToExcel, _presenter.ExportDataToExcel, ApplicationIcons.Excel);
+         _chartControl.AddPopupMenu(MenuNames.ExportToPDF, _presenter.ExportToPDF, ApplicationIcons.PDF);
       }
 
       protected virtual void ResetZoom()

@@ -104,7 +104,7 @@ namespace PKSim.Core.Services
       }
 
       public ICommand UpdateValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters)
-      {
+      {  
          var updateCommands = new PKSimMacroCommand {CommandType = PKSimConstants.Command.CommandTypeEdit, ObjectType = PKSimConstants.ObjectTypes.Parameter};
          //should update non distributed parameter first and then distributed parameter
          foreach (var sourceParameter in sourceParameters.KeyValues.OrderBy(x => x.Value.IsDistributed()))

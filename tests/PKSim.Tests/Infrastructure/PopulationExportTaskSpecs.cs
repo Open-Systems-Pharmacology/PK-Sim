@@ -50,7 +50,7 @@ namespace PKSim.Infrastructure
          _dialogCreator = A.Fake<IDialogCreator>();
          _cloner= A.Fake<ICloner>();
          _population = A.Fake<Population>().WithName("MyPop");
-         A.CallTo(() => _population.AllCovariateNames()).Returns(new[] {CoreConstants.Covariates.GENDER, CoreConstants.Covariates.RACE});
+         A.CallTo(() => _population.AllCovariateNames).Returns(new[] {CoreConstants.Covariates.GENDER, CoreConstants.Covariates.RACE});
          A.CallTo(() => _applicationController.Start<ISelectFilePresenter>()).Returns(_selectFilePresenter);
          sut = new PopulationExportTask(_applicationController, _entityPathResolver, _lazyLoadTask, _simModelExporter,
             _modelCoreSimulationMapper, _workspace, _configuration, _simulationSettingsRetriever, _dialogCreator,_cloner);

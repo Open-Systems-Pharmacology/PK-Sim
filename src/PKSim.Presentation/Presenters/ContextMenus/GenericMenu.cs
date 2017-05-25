@@ -20,21 +20,21 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       public static IMenuBarItem ExportToPDFMenuFor<T>(T objectToExport) where T : class
       {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPDF)
+         return CreateMenuButton.WithCaption(MenuNames.ExportToPDF)
             .WithCommandFor<ExportToPDFCommand<T>, T>(objectToExport)
             .WithIcon(ApplicationIcons.PDF);
       }
 
       public static IMenuBarItem ExportCollectionToPDFMenuFor<T>()
       {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPDF)
+         return CreateMenuButton.WithCaption(MenuNames.ExportToPDF)
             .WithCommand<ExportCollectionToPDFCommand<T>>()
             .WithIcon(ApplicationIcons.PDF);
       }
 
       public static IMenuBarItem EditMenuFor<TCommand, T>(T objectToEdit) where T : class where TCommand : IObjectUICommand<T>
       {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Edit)
+         return CreateMenuButton.WithCaption(MenuNames.Edit)
             .WithCommandFor<TCommand, T>(objectToEdit)
             .WithIcon(ApplicationIcons.Edit);
       }

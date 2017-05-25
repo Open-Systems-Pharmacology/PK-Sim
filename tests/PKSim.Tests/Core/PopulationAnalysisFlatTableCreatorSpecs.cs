@@ -64,7 +64,7 @@ namespace PKSim.Core
          _populationDataCollector.ReferenceGroupingItem = null;
 
          A.CallTo(() => _populationDataCollector.NumberOfItems).Returns(_ageValues.Count);
-         A.CallTo(() => _populationDataCollector.AllSimulationNames()).Returns(Enumerable.Repeat("Sim", _ageValues.Count).ToArray());
+         A.CallTo(() => _populationDataCollector.AllSimulationNames).Returns(Enumerable.Repeat("Sim", _ageValues.Count).ToArray());
          A.CallTo(() => _populationDataCollector.AllValuesFor(_ageField.ParameterPath)).Returns(_ageValues);
       }
 
@@ -97,7 +97,7 @@ namespace PKSim.Core
          _populationDataCollector.ReferenceGroupingItem = _referenceGroupingItem;
 
          A.CallTo(() => _populationDataCollector.NumberOfItems).Returns(_ageValues.Count);
-         A.CallTo(() => _populationDataCollector.AllSimulationNames()).Returns(Enumerable.Repeat(referenceSimulation.Name, _ageValues.Count).ToArray());
+         A.CallTo(() => _populationDataCollector.AllSimulationNames).Returns(Enumerable.Repeat(referenceSimulation.Name, _ageValues.Count).ToArray());
          A.CallTo(() => _populationDataCollector.AllValuesFor(_ageField.ParameterPath)).Returns(_ageValues);
       }
 
@@ -148,7 +148,7 @@ namespace PKSim.Core
 
 
          A.CallTo(() => _populationDataCollector.NumberOfItems).Returns(_ageValues.Count * 2);
-         A.CallTo(() => _populationDataCollector.AllSimulationNames()).Returns(
+         A.CallTo(() => _populationDataCollector.AllSimulationNames).Returns(
             Enumerable.Repeat(referenceSimulation.Name, _ageValues.Count).Concat(
                Enumerable.Repeat("Sim2", _ageValues.Count)).ToArray());
          A.CallTo(() => _populationDataCollector.AllValuesFor(_ageField.ParameterPath)).Returns(_ageValues.Concat(_ageValues).ToArray());
@@ -211,7 +211,7 @@ namespace PKSim.Core
          _populationDataCollector.ReferenceGroupingItem = _referenceGroupingItem;
 
          A.CallTo(() => _populationDataCollector.NumberOfItems).Returns(_ageValues.Count * 2);
-         A.CallTo(() => _populationDataCollector.AllSimulationNames()).Returns(
+         A.CallTo(() => _populationDataCollector.AllSimulationNames).Returns(
             Enumerable.Repeat(referenceSimulation.Name, _ageValues.Count).Concat(
                Enumerable.Repeat("Sim2", _ageValues.Count)).ToArray());
          A.CallTo(() => _populationDataCollector.AllValuesFor(_ageField.ParameterPath)).Returns(_ageValues.Concat(_ageValues).ToArray());

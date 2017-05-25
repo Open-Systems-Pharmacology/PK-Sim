@@ -78,11 +78,11 @@
       <HintPath>..\..\packages\csmpfit.1.1.0\lib\net20\MPFitLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.2.0.1, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.1\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.10, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.10\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.2.0.1, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.1\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.10, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.10\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
@@ -217,9 +217,12 @@
     <Compile Include="Services\ApplicationDiscriminator.cs" />
     <Compile Include="Services\BuildingBlockInSimulationSynchronizer.cs" />
     <Compile Include="Services\IEntityTask.cs" />
+    <Compile Include="Services\IIndividualTask.cs" />
     <Compile Include="Services\IndividualExpressionTask.cs" />
+    <Compile Include="Services\IndividualExtracter.cs" />
     <Compile Include="Services\InteractionProcessRetriever.cs" />
     <Compile Include="Services\IParameterIdentificationContentLoader.cs" />
+    <Compile Include="Services\IPopulationTask.cs" />
     <Compile Include="Services\IrreversibleInhibitionKineticUpdaterSpecification.cs" />
     <Compile Include="Services\ISensitivityAnalysisContentLoader.cs" />
     <Compile Include="Services\ISimulationSubjectExpressionTask.cs" />

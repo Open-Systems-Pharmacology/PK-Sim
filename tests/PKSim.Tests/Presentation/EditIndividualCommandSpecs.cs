@@ -1,19 +1,19 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using PKSim.Core.Model;
-using PKSim.Presentation.Services;
+using PKSim.Core.Services;
 using PKSim.Presentation.UICommands;
-using FakeItEasy;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_EditIndividualCommand : ContextSpecification<EditIndividualCommand>
    {
-      protected PKSim.Core.Model.Individual _individual;
+      protected Individual _individual;
       protected IIndividualTask _individualTask;
 
       protected override void Context()
       {
-         _individual = A.Fake<PKSim.Core.Model.Individual>();
+         _individual = A.Fake<Individual>();
          _individualTask = A.Fake<IIndividualTask>();
          sut = new EditIndividualCommand(_individualTask);
          sut.For(_individual);

@@ -47,12 +47,12 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns all genders associated to the vectorial container
       /// </summary>
-      IReadOnlyList<Gender> AllGenders();
+      IReadOnlyList<Gender> AllGenders { get; }
 
       /// <summary>
       ///    Returns all races associated to the vectorial container
       /// </summary>
-      IReadOnlyList<SpeciesPopulation> AllRaces();
+      IReadOnlyList<SpeciesPopulation> AllRaces { get; }
 
       /// <summary>
       /// Returns all covariates values defined for the covariate named <paramref name="covariateName"/>
@@ -62,7 +62,7 @@ namespace PKSim.Core.Model
       /// <summary>
       /// Returns all defined covariate names
       /// </summary>
-      IReadOnlyList<string> AllCovariateNames();
+      IReadOnlyList<string> AllCovariateNames { get; }
 
       /// <summary>
       /// Returns wether the parameters should be displayed using the group structure or the container structure

@@ -12,7 +12,7 @@ namespace PKSim.Core.Model
       IReadOnlyList<QuantityPKParameter> AllPKParametersFor(string quantityPath);
       bool HasPKParameterFor(string quantityPath, string pkParameter);
       double? MolWeightFor(string quantityPath);
-      IReadOnlyList<string> AllSimulationNames();
+      IReadOnlyList<string> AllSimulationNames { get; }
       IReadOnlyList<Compound> Compounds { get; }
    }
 }

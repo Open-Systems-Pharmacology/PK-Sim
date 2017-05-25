@@ -1,13 +1,13 @@
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Services;
-using OSPSuite.Core.Commands;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
@@ -24,7 +24,6 @@ namespace PKSim.Core
       void UpdateBuildinBlockProperties(IPKSimCommand command, IPKSimBuildingBlock buildingBlock);
       void UpdateDependenciesOn(IParameter parameter);
       string ReportFor<T>(T objectToReport);
-
    }
 
    public class ExecutionContext : IExecutionContext
@@ -43,7 +42,7 @@ namespace PKSim.Core
       private readonly IReportGenerator _reportGenerator;
       private readonly IFullPathDisplayResolver _fullPathDisplayResolver;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
-      public ICloneManager CloneManager { get; private set; }
+      public ICloneManager CloneManager { get; }
 
       public ExecutionContext(IPKSimProjectRetriever projectRetriever, IWithIdRepository withIdRepository,
          ILazyLoadTask lazyLoadTask, IRegistrationTask registrationTask,
@@ -51,7 +50,7 @@ namespace PKSim.Core
          IBuildingBlockRetriever buildingBlockRetriever, ICompressedSerializationManager serializationManager,
          IBuildingBlockVersionUpdater buildingBlockVersionUpdater, IProjectChangedNotifier projectChangedNotifier,
          ICloner cloner, IContainer container,
-         IReportGenerator reportGenerator, 
+         IReportGenerator reportGenerator,
          IFullPathDisplayResolver fullPathDisplayResolver,
          IParameterChangeUpdater parameterChangeUpdater)
       {
@@ -72,10 +71,7 @@ namespace PKSim.Core
          _parameterChangeUpdater = parameterChangeUpdater;
       }
 
-      public IPKSimProject CurrentProject
-      {
-         get { return _projectRetriever.CurrentProject.DowncastTo<IPKSimProject>(); }
-      }
+      public IPKSimProject CurrentProject => _projectRetriever.CurrentProject.DowncastTo<IPKSimProject>();
 
       public T Get<T>(string id) where T : class, IWithId
       {
@@ -192,10 +188,7 @@ namespace PKSim.Core
          return _reportGenerator.StringReportFor(objectToReport);
       }
 
-      public IProject Project
-      {
-         get { return CurrentProject; }
-      }
+      public IProject Project => CurrentProject;
 
       public void AddToHistory(ICommand command)
       {

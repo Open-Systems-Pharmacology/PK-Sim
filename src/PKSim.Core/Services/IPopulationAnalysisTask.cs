@@ -1,5 +1,4 @@
 ﻿using PKSim.Core.Chart;
-using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Domain;
 

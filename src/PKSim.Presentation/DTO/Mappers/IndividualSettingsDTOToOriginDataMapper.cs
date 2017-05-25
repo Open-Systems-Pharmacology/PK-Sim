@@ -3,10 +3,7 @@ using System.Linq;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-
 using PKSim.Presentation.DTO.Individuals;
-
-using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.Mappers

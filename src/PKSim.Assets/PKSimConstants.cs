@@ -762,7 +762,6 @@ namespace PKSim.Assets
             return sb.ToString();
          }
 
-
          public static string IndividualIdDoesNotMatchTheValueLength(int indiviudalId, int count)
          {
             return $"Individual Id '{indiviudalId}' does not match the expected number of individual '{count}'. A reason could be that the results were imported starting with an id of 1 instead of 0.";
@@ -859,6 +858,11 @@ namespace PKSim.Assets
          {
             return $"Comparison between building blocks is not supported for {buildingBlockType}";
          }
+
+         public static string CannotExtractIndividualFrom(string objectType)
+         {
+            return $"Individual extraction is not available for '{objectType}'";
+         }
       }
 
       public static class Information
@@ -952,7 +956,7 @@ namespace PKSim.Assets
             sb.AppendLine(percentilWithIndividualId("75", upperBox, upperboxIndividualId));
             sb.AppendLine(percentilWithIndividualId("50", median, medianIndividualId));
             sb.AppendLine(percentilWithIndividualId("25", lowerBox, lowerBoxIndividualId));
-            sb.AppendLine(percentilWithIndividualId("05", lowerWhisker, lowerWiskerIndividualId));
+            sb.AppendLine(percentilWithIndividualId("5", lowerWhisker, lowerWiskerIndividualId));
 
             if (outliers.Length > 0 && outliers.Length == outlierIndividualIds.Length)
             {
@@ -1008,14 +1012,12 @@ namespace PKSim.Assets
          public static readonly string SaveAsTemplate = UI.SaveAsTemplate;
          public static readonly string SaveAsSytemTemplate = "Save as System Template...";
          public static readonly string Reset = "Reset";
-         public static readonly string ResetZoom = "Reset zoom";
          public static readonly string Undo = "Undo";
          public static readonly string Diff = "Show Differences...";
          public static readonly string Update = "Update from Building Block...";
          public static readonly string Commit = "Commit to Building Block...";
          public static readonly string File = "&File";
          public static readonly string RecentProjects = "&Recent Projects";
-         public static readonly string Edit = "&Edit...";
          public static readonly string EditQuery = "&Edit Database Query...";
          public static readonly string ExportToCSV = "E&xport to CSV...";
          public static readonly string ExportPopulationToCSV = "E&xport Population to CSV...";
@@ -1084,11 +1086,9 @@ namespace PKSim.Assets
          public static readonly string HistoryView = UI.History;
          public static readonly string ComparisonView = UI.Comparison;
          public static readonly string ExportToExcelMenu = $"Export to {UI.Excel}";
-         public static readonly string ExportToExcel = $"{ExportToExcelMenu}...";
          public static readonly string ExportToPDFMenu = "Export to PDF";
          public static readonly string ExportToPKML = "Export to pkml...";
          public static readonly string ExportSimulationToPDFMenu = "PDF";
-         public static readonly string ExportToPDF = $"{ExportToPDFMenu}...";
          public static readonly string ProjectReport = "Project Report";
          public static readonly string Report = "Report";
          public static readonly string Help = "Help";
@@ -1115,12 +1115,13 @@ namespace PKSim.Assets
          public static readonly string AddNewProcess = "Add new...";
          public static readonly string ExportHistory = "Export History";
          public static readonly string CreateDerivedField = $"{UI.CreateGrouping}...";
-         public static readonly string LoadDerivedFieldFromTemplate = $"{"Load Grouping"}...";
-         public static readonly string SaveDerivedFieldToTemplate = $"{"Save Grouping"}...";
-         public static readonly string LoadPopulationAnalysisWorkflowFromTemplate = $"{"Load Analyses from Template"}...";
-         public static readonly string SavePopulationAnalysisWorkflowToTemplate = $"{"Save Analyses to Template"}...";
+         public static readonly string LoadDerivedFieldFromTemplate = "Load Grouping...";
+         public static readonly string SaveDerivedFieldToTemplate = "Save Grouping...";
+         public static readonly string LoadPopulationAnalysisWorkflowFromTemplate = "Load Analyses from Template...";
+         public static readonly string SavePopulationAnalysisWorkflowToTemplate = "Save Analyses to Template...";
          public static readonly string LoadPopulationAnalysisWorkflowFromTemplateMenu = "Load Analyses";
          public static readonly string SavePopulationAnalysisWorkflowToTemplateMenu = "Save Analyses";
+         public static readonly string ExtractIndividualByPercentile = "Extract Individuals";
 
          public static string CompareBuildingBlocks(string buildingBlockType)
          {

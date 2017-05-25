@@ -99,10 +99,7 @@ namespace PKSim.Core.Model
       public virtual TBuildingBlock BuildingBlockByTemplateId<TBuildingBlock>(string templateId) where TBuildingBlock : class, IPKSimBuildingBlock
       {
          var usedBuildingBlock = UsedBuildingBlockByTemplateId(templateId);
-         if (usedBuildingBlock == null)
-            return null;
-
-         return usedBuildingBlock.BuildingBlock as TBuildingBlock;
+         return usedBuildingBlock?.BuildingBlock as TBuildingBlock;
       }
 
       /// <summary>
