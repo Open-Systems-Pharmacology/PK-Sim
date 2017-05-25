@@ -16,6 +16,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
@@ -140,10 +141,8 @@ namespace PKSim.Infrastructure.Services
 
       private bool parameterShouldBeExported(IParameter parameter, IEnumerable<IParameter> advancedParameters)
       {
-         //BMI and BodyWeight should always be exported (Mantis 2907)
          if (parameter.NameIsOneOf(CoreConstants.Parameter.BMI, CoreConstants.Parameter.WEIGHT)) return true;
 
-         //BMI MeanHeight MeanWeight should never be exported (Mantis 2907)
          if (parameter.NameIsOneOf(CoreConstants.Parameter.MEAN_WEIGHT, CoreConstants.Parameter.MEAN_HEIGHT)) return false;
 
          //distribution parameter search as mean, std, gsd etc should not be exported
@@ -246,12 +245,17 @@ namespace PKSim.Infrastructure.Services
          //some path have changed and the parameter is not found anymore
          if (parameter == null) return;
 
-         addColumnForParameterToTable(parameterContainer, dataTable, _entityPathResolver.PathFor(parameter));
+         addColumnForParameterToTable(parameterContainer, dataTable, _entityPathResolver.PathFor(parameter), parameter.DisplayUnit.ToString());
       }
 
-      private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath)
+      private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath, string displayUnit)
       {
-         addColumnValues(parameterContainer, dataTable, parameterPath, parameterContainer.AllValuesFor(parameterPath));
+         addColumnValues(parameterContainer, dataTable, columnName(parameterPath, displayUnit), parameterContainer.AllValuesFor(parameterPath));
+      }
+
+      private static string columnName(string parameterPath, string displayUnit)
+      {
+         return string.IsNullOrEmpty(displayUnit) ? parameterPath : $"{parameterPath} [{displayUnit}]";
       }
    }
 }

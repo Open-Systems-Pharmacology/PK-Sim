@@ -131,7 +131,7 @@ namespace PKSim.Presentation
 
       private bool resultsHasParameter(string parameterPath)
       {
-         return _result.Columns.Cast<DataColumn>().Any(col => col.ColumnName == parameterPath);
+         return _result.Columns.Cast<DataColumn>().Any(col => col.ColumnName.StartsWith(parameterPath));
       }
    }
 }
