@@ -1,5 +1,5 @@
 using System.Linq;
-using FluentNHibernate.Utils;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
