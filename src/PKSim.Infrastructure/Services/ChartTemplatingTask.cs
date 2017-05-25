@@ -12,7 +12,6 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.Charts;
-using OSPSuite.Utility.Compression;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Chart;
@@ -26,35 +25,26 @@ namespace PKSim.Infrastructure.Services
    {
       private readonly IChartFromTemplateService _chartFromTemplateService;
       private readonly IProjectRetriever _projectRetriever;
-      private readonly IStringCompression _stringCompression;
       private readonly IDialogCreator _dialogCreator;
       private readonly IPKSimChartFactory _chartFactory;
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       private readonly ICurveChartToCurveChartTemplateMapper _chartTemplateMapper;
       private readonly IExecutionContext _executionContext;
+      private readonly IChartTask _chartTask;
 
-      public ChartTemplatingTask(
-         IChartFromTemplateService chartFromTemplateService,
-         IProjectRetriever projectRetriever,
-         IChartTemplatePersistor chartTemplatePersistor,
-         IStringCompression stringCompression,
-         IDialogCreator dialogCreator,
-         IPKSimChartFactory chartFactory,
-         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper,
-         ICurveChartToCurveChartTemplateMapper chartTemplateMapper,
-         IExecutionContext executionContext,
-         IApplicationController applicationController,
-         ICloneManager cloneManager)
+      public ChartTemplatingTask(IChartFromTemplateService chartFromTemplateService, IProjectRetriever projectRetriever, IChartTemplatePersistor chartTemplatePersistor, IDialogCreator dialogCreator,
+         IPKSimChartFactory chartFactory, IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, ICurveChartToCurveChartTemplateMapper chartTemplateMapper,
+         IExecutionContext executionContext, IApplicationController applicationController, ICloneManager cloneManager, IChartTask chartTask)
          : base(applicationController, chartTemplatePersistor, cloneManager, chartTemplateMapper, chartFromTemplateService)
       {
          _chartFromTemplateService = chartFromTemplateService;
          _projectRetriever = projectRetriever;
-         _stringCompression = stringCompression;
          _dialogCreator = dialogCreator;
          _chartFactory = chartFactory;
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
          _chartTemplateMapper = chartTemplateMapper;
          _executionContext = executionContext;
+         _chartTask = chartTask;
       }
 
       public void InitFromTemplate(ICurveChart chart, IChartEditorAndDisplayPresenter chartEditorPresenter,
@@ -87,15 +77,20 @@ namespace PKSim.Infrastructure.Services
 
       private void addObservedDataToChart(IChartEditorPresenter chartEditorPresenter, IndividualSimulation simulation)
       {
-         allObservedDataIn(simulation).Each(observedData =>
-         {
-            var allObservationColumns = observedData.ObservationColumns();
-            allObservationColumns.Each(observationColumn =>
+         var chartWithObservedData = chartEditorPresenter.DataSource as IChartWithObservedData;
+         if (chartWithObservedData != null)
+            _chartTask.UpdateObservedDataInChartFor(simulation, chartWithObservedData);
+
+         allObservedDataIn(simulation)
+            .Each(observedData =>
             {
-               var sourceCurve = CurvePlotting(simulation, observationColumn);
-               addRepositoryToChartEditorWithDefaultCurveOptions(chartEditorPresenter, observedData, observationColumn, sourceCurve);
+               var allObservationColumns = observedData.ObservationColumns();
+               allObservationColumns.Each(observationColumn =>
+               {
+                  var sourceCurve = CurvePlotting(simulation, observationColumn);
+                  addRepositoryToChartEditorWithDefaultCurveOptions(chartEditorPresenter, observedData, observationColumn, sourceCurve);
+               });
             });
-         });
       }
 
       private static void addRepositoryToChartEditorWithDefaultCurveOptions(IChartEditorPresenter chartEditorPresenter, DataRepository dataRepository, DataColumn observationColumn, ICurve sourceCurve)

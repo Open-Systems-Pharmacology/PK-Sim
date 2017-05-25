@@ -3,6 +3,8 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using PKSim.Core.Chart;
 
 namespace PKSim.Core
 {
@@ -21,6 +23,26 @@ namespace PKSim.Core
          sut.AddSimulation(_popSim1);
          sut.AddSimulation(_popSim2);
          sut.AddSimulation(_popSim3);
+      }
+   }
+
+   public class When_inspecting_used_observed_data : concern_for_PopulationSimulationComparison
+   {
+      private DataRepository _observedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _observedData = new DataRepository();
+         var simulationTimeProfileChart = new SimulationTimeProfileChart();
+         simulationTimeProfileChart.AddObservedData(_observedData);
+         sut.AddAnalysis(simulationTimeProfileChart);
+      }
+
+      [Observation]
+      public void the_observed_data_should_be_indicated_as_used()
+      {
+         sut.UsesObservedData(_observedData).ShouldBeTrue();
       }
    }
 
