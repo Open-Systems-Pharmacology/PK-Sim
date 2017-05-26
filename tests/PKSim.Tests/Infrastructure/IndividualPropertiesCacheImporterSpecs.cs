@@ -10,6 +10,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Infrastructure
 {
@@ -55,6 +56,22 @@ namespace PKSim.Infrastructure
       public void should_have_created_one_individual_per_available_columns()
       {
          _results.Count.ShouldBeEqualTo(10);
+      }
+   }
+
+   public class When_importing_a_population_from_file_that_has_units_in_headers : concern_for_IndividualPropertiesCacheImporter
+   {
+      private IndividualPropertiesCache _result;
+
+      protected override void Because()
+      {
+         _result = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("units_test"), _logger);
+      }
+
+      [Observation]
+      public void the_cache_keys_must_not_contain_units()
+      {
+         _result.ParameterValuesCache.AllParameterValues.Each(parameterValue => parameterValue.ParameterPath.ShouldNotContain('[',']'));
       }
    }
 
@@ -108,9 +125,9 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_imported_the_covariates()
       {
-         var genotypeCovariate = _results.AllCovariates.Select(x=>x.Covariate("Genotype")).ToList();
+         var genotypeCovariate = _results.AllCovariates.Select(x => x.Covariate("Genotype")).ToList();
          genotypeCovariate.Count.ShouldBeEqualTo(50);
-         genotypeCovariate.Distinct().ShouldOnlyContain("A","B","C");
+         genotypeCovariate.Distinct().ShouldOnlyContain("A", "B", "C");
       }
    }
 

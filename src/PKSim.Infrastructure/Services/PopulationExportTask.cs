@@ -3,24 +3,22 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Presenters;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Core;
+using PKSim.Presentation.Presenters;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Infrastructure.Services
@@ -245,7 +243,7 @@ namespace PKSim.Infrastructure.Services
          //some path have changed and the parameter is not found anymore
          if (parameter == null) return;
 
-         addColumnForParameterToTable(parameterContainer, dataTable, _entityPathResolver.PathFor(parameter), parameter.DisplayUnit.ToString());
+         addColumnForParameterToTable(parameterContainer, dataTable, _entityPathResolver.PathFor(parameter), parameter.Dimension.BaseUnit.ToString());
       }
 
       private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath, string displayUnit)
