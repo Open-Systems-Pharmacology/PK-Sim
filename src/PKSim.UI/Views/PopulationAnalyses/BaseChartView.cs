@@ -38,7 +38,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          InitializeComponent();
 
          _toolTipCreator = toolTipCreator;
-         _chartControl = new UxChartControl(addDefaultPopup: false) { Images = imageListRetriever.AllImages16x16, CrosshairEnabled = DefaultBoolean.False };
+         _chartControl = new UxChartControl(useDefaultPopupMechanism: true, addCopyToClipboardMenu:false) { Images = imageListRetriever.AllImages16x16, CrosshairEnabled = DefaultBoolean.False };
          _pnlChart.FillWith(_chartControl);
          _chartControl.RefreshDataOnRepaint = false;
          _chartControl.CacheToMemory = true;
