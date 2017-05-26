@@ -32,7 +32,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
       protected override void ConfigurePopup(CancelEventArgs cancelEventArgs)
       {
          base.ConfigurePopup(cancelEventArgs);
-         _exportIndividualsMenu.Visible = _latestTrackedCurvedData != null;
+         _exportIndividualsMenu.Visible = canExtract;
       }
 
       public override void AddDynamicMenus(bool allowEdit = true)
@@ -43,7 +43,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       private void extractIndividuals()
       {
-         if (_latestTrackedCurvedData == null || _latestSeriesPoint == null)
+         if (!canExtract)
             return;
 
          int index = _latestTrackedCurvedData.GetPointIndexForDisplayValues(_latestSeriesPoint.NumericalArgument, _latestSeriesPoint.Values[0]);
@@ -52,5 +52,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
       }
 
       private IBoxWhiskerChartPresenter boxWhiskerChartPresenter => _presenter.DowncastTo<IBoxWhiskerChartPresenter>();
+
+      private bool canExtract => _latestTrackedCurvedData != null && _latestSeriesPoint != null;
    }
 }
