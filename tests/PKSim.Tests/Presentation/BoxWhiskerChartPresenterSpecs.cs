@@ -19,7 +19,7 @@ namespace PKSim.Presentation
    {
       private IBoxWhiskerChartView _view;
       private IPopulationAnalysisChartSettingsPresenter _chartSettingsPresenter;
-      protected IIndividualExtracter _individualExtracter;
+      protected IIndividualExtractor _individualExtractor;
       private IObjectTypeResolver _objetTypeResolver;
       private ChartData<BoxWhiskerXValue, BoxWhiskerYValue> _chartData;
       protected BoxWhiskerAnalysisChart _boxWiskerAnalysisChart;
@@ -28,9 +28,9 @@ namespace PKSim.Presentation
       {
          _view = A.Fake<IBoxWhiskerChartView>();
          _chartSettingsPresenter = A.Fake<IPopulationAnalysisChartSettingsPresenter>();
-         _individualExtracter = A.Fake<IIndividualExtracter>();
+         _individualExtractor = A.Fake<IIndividualExtractor>();
          _objetTypeResolver = A.Fake<IObjectTypeResolver>();
-         sut = new BoxWhiskerChartPresenter(_view, _chartSettingsPresenter, _individualExtracter, _objetTypeResolver);
+         sut = new BoxWhiskerChartPresenter(_view, _chartSettingsPresenter, _individualExtractor, _objetTypeResolver);
 
          _chartData = A.Fake<ChartData<BoxWhiskerXValue, BoxWhiskerYValue>>();
          _boxWiskerAnalysisChart = new BoxWhiskerAnalysisChart();
@@ -62,7 +62,7 @@ namespace PKSim.Presentation
          A.CallTo(() => populationSimulation.Population).Returns(_population);
          _boxWiskerAnalysisChart.Analysable = populationSimulation;
 
-         A.CallTo(() => _individualExtracter.ExtractIndividualsFrom(_population, A<IEnumerable<int>>._))
+         A.CallTo(() => _individualExtractor.ExtractIndividualsFrom(_population, A<IEnumerable<int>>._))
             .Invokes(x => _allIndividualIds = x.GetArgument<IEnumerable<int>>(1).ToList());
       }
 

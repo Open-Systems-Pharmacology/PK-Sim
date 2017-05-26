@@ -10,13 +10,13 @@ using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
-   public interface IIndividualExtracter
+   public interface IIndividualExtractor
    {
       void ExtractIndividualsFrom(Population population, params int[] individualIds);
       void ExtractIndividualsFrom(Population population, IEnumerable<int> individualIds);
    }
 
-   public class IndividualExtracter : IIndividualExtracter
+   public class IndividualExtractor : IIndividualExtractor
    {
       private readonly IExecutionContext _executionContext;
       private readonly IEntityPathResolver _entityPathResolver;
@@ -24,7 +24,7 @@ namespace PKSim.Core.Services
       private readonly IContainerTask _containerTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public IndividualExtracter(IExecutionContext executionContext, IEntityPathResolver entityPathResolver, IIndividualTask individualTask, IContainerTask containerTask, IBuildingBlockRepository buildingBlockRepository)
+      public IndividualExtractor(IExecutionContext executionContext, IEntityPathResolver entityPathResolver, IIndividualTask individualTask, IContainerTask containerTask, IBuildingBlockRepository buildingBlockRepository)
       {
          _executionContext = executionContext;
          _entityPathResolver = entityPathResolver;

@@ -28,12 +28,12 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
    public class BoxWhiskerChartPresenter : PopulationAnalysisChartPresenter<IBoxWhiskerChartView, IBoxWhiskerChartPresenter, BoxWhiskerXValue, BoxWhiskerYValue>, IBoxWhiskerChartPresenter
    {
-      private readonly IIndividualExtracter _individualExtracter;
+      private readonly IIndividualExtractor _individualExtractor;
       private readonly IObjectTypeResolver _objectTypeResolver;
 
-      public BoxWhiskerChartPresenter(IBoxWhiskerChartView view, IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter, IIndividualExtracter individualExtracter, IObjectTypeResolver objectTypeResolver) : base(view, populationAnalysisChartSettingsPresenter)
+      public BoxWhiskerChartPresenter(IBoxWhiskerChartView view, IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter, IIndividualExtractor individualExtractor, IObjectTypeResolver objectTypeResolver) : base(view, populationAnalysisChartSettingsPresenter)
       {
-         _individualExtracter = individualExtracter;
+         _individualExtractor = individualExtractor;
          _objectTypeResolver = objectTypeResolver;
       }
 
@@ -52,7 +52,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          if (populationSimulation == null)
             throw new PKSimException(PKSimConstants.Error.CannotExtractIndividualFrom(_objectTypeResolver.TypeFor(analyzable)));
 
-         _individualExtracter.ExtractIndividualsFrom(populationSimulation.Population, individualIds);
+         _individualExtractor.ExtractIndividualsFrom(populationSimulation.Population, individualIds);
       }
    }
 }

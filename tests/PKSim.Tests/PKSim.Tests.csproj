@@ -245,7 +245,7 @@
     <Compile Include="Core\AdvancedParameterFactorySpecs.cs" />
     <Compile Include="Core\AgingDataSpecs.cs" />
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />
-    <Compile Include="Core\IndividualExtracterSpecs.cs" />
+    <Compile Include="Core\IndividualExtractorSpecs.cs" />
     <Compile Include="Core\InteractionProcessRetrieverSpecs.cs" />
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />

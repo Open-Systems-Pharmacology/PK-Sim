@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FakeItEasy;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -11,7 +10,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_IndividualExtracter : ContextSpecification<IIndividualExtracter>
+   public abstract class concern_for_IndividualExtractor : ContextSpecification<IIndividualExtractor>
    {
       protected IExecutionContext _executionContext;
       protected IEntityPathResolver _entityPathResolver;
@@ -24,19 +23,18 @@ namespace PKSim.Core
       {
          _executionContext = A.Fake<IExecutionContext>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
-         _individualTask= A.Fake<IIndividualTask>();
-         _containerTask =  new ContainerTaskForSpecs();
-         _buildingBlockRepository= A.Fake<IBuildingBlockRepository>();
+         _individualTask = A.Fake<IIndividualTask>();
+         _containerTask = new ContainerTaskForSpecs();
+         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
 
-         sut = new IndividualExtracter(_executionContext, _entityPathResolver,_individualTask,_containerTask,_buildingBlockRepository);
+         sut = new IndividualExtractor(_executionContext, _entityPathResolver, _individualTask, _containerTask, _buildingBlockRepository);
 
-         _templateIndividual1=new Individual();
-         A.CallTo(() => _buildingBlockRepository.All<Individual>()).Returns(new []{_templateIndividual1});
-
+         _templateIndividual1 = new Individual();
+         A.CallTo(() => _buildingBlockRepository.All<Individual>()).Returns(new[] {_templateIndividual1});
       }
    }
 
-   public class When_extracting_indiduals_by_id_for_a_population_that_was_created_from_MoBi : concern_for_IndividualExtracter
+   public class When_extracting_indiduals_by_id_for_a_population_that_was_created_from_MoBi : concern_for_IndividualExtractor
    {
       private Population _population;
 
@@ -53,7 +51,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_extracting_individuals_by_id_for_a_population_created_in_PKSim_with_a_valid_individual : concern_for_IndividualExtracter
+   public class When_extracting_individuals_by_id_for_a_population_created_in_PKSim_with_a_valid_individual : concern_for_IndividualExtractor
    {
       private RandomPopulation _population;
       private Individual _baseIndividual;
@@ -95,13 +93,13 @@ namespace PKSim.Core
          _indParam3 = new PKSimParameter().WithName("P3").WithFormula(new ExplicitFormula("P2*2"));
          _indParam3.Formula.AddObjectPath(new FormulaUsablePath("..", "P2").WithAlias("P2"));
          _indParam4 = DomainHelperForSpecs.ConstantParameterWithValue(4).WithName("P4");
-         var container2 = new Container { _indParam1, _indParam2, _indParam3, _indParam4 };
+         var container2 = new Container {_indParam1, _indParam2, _indParam3, _indParam4};
 
          A.CallTo(() => _executionContext.Clone(_baseIndividual)).Returns(_cloneIndividual);
          A.CallTo(() => _population.FirstIndividual).Returns(_baseIndividual);
          //put explicit formula first
-         A.CallTo(() => _population.AllVectorialParameters(_entityPathResolver)).Returns(new [] { _forumlaParameter, _constParam1, _constParam2});
-         A.CallTo(() => _cloneIndividual.GetAllChildren<IParameter>()).Returns(new[] {_indParam1, _indParam2, _indParam3, _indParam4 });
+         A.CallTo(() => _population.AllVectorialParameters(_entityPathResolver)).Returns(new[] {_forumlaParameter, _constParam1, _constParam2});
+         A.CallTo(() => _cloneIndividual.GetAllChildren<IParameter>()).Returns(new[] {_indParam1, _indParam2, _indParam3, _indParam4});
 
          A.CallTo(() => _entityPathResolver.PathFor(_constParam1)).Returns("PATH1");
          A.CallTo(() => _entityPathResolver.PathFor(_constParam2)).Returns("PATH2");
