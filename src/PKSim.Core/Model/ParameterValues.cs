@@ -67,9 +67,9 @@ namespace PKSim.Core.Model
          }
       }
 
-      public void UpdatePath(string pathWithUnitsRemoved)
+      public void UpdatePath(string newPath)
       {
-         ParameterPath = pathWithUnitsRemoved;
+         ParameterPath = newPath;
       }
    }
 }
