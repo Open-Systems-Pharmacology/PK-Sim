@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using PKSim.Assets;
-using OSPSuite.Utility.Events;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Model
 {
@@ -147,7 +147,6 @@ namespace PKSim.Core.Model
          {
             individualValues.RenamePath(parameterPath, pathWithUnitsRemoved);
             parameterValue.UpdatePath(pathWithUnitsRemoved);
-
          }
       }
 
