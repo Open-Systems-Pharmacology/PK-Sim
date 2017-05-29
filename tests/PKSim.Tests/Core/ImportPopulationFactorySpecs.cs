@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
@@ -55,6 +56,23 @@ namespace PKSim.Core
 
    public class When_told_to_create_a_import_population_based_on_some_files : concern_for_ImportPopulationFactory
    {
+      private ParameterValues _parameterValues;
+      private IndividualPropertiesCache _individualPropertiesCache;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualPropertiesCache = new IndividualPropertiesCache();
+         _parameterValues = new ParameterValues("A|Path|With|Unit [l]");
+         _individualPropertiesCache.Add(_parameterValues);
+         A.CallTo(() => _individualCacheImporter.ImportFrom(_file1, A<IImportLogger>._)).Returns(_individualPropertiesCache);
+
+
+         var pathCache = A.Fake<PathCache<IParameter>>();
+         A.CallTo(() => pathCache.Contains("A|Path|With|Unit")).Returns(true);
+         A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(_cloneIndividual)).Returns(pathCache);
+      }
+
       [Observation]
       public async Task should_have_created_a_population_with_the_clone_of_the_base_individual()
       {
@@ -67,6 +85,15 @@ namespace PKSim.Core
       {
          _population = await sut.CreateFor(new[] {_file1, _file2}, _individual, new CancellationToken());
          A.CallTo(() => _population.IndividualPropertiesCache.Merge(_popFile2, A<PathCache<IParameter>>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public async Task should_remove_units_when_path_is_not_found()
+      {
+         _population = await sut.CreateFor(new[] { _file1 }, _individual, new CancellationToken());
+         _individualPropertiesCache.AllParameterPaths().Contains("A|Path|With|Unit").ShouldBeTrue();
+         _individualPropertiesCache.AllParameterPaths().Contains("A|Path|With|Unit [l]").ShouldBeFalse();
+         _parameterValues.ParameterPath.ShouldBeEqualTo("A|Path|With|Unit");
       }
    }
 

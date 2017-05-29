@@ -5,7 +5,7 @@ namespace PKSim.Core.Model
 {
    public class ParameterValues
    {
-      public string ParameterPath { get; private set; }
+      public string ParameterPath { get; set; }
       public List<double> Values { get; set; }
       public List<double> Percentiles { get; set; }
 

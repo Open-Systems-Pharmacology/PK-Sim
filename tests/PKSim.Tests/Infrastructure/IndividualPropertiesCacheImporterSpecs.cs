@@ -108,9 +108,9 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_imported_the_covariates()
       {
-         var genotypeCovariate = _results.AllCovariates.Select(x=>x.Covariate("Genotype")).ToList();
+         var genotypeCovariate = _results.AllCovariates.Select(x => x.Covariate("Genotype")).ToList();
          genotypeCovariate.Count.ShouldBeEqualTo(50);
-         genotypeCovariate.Distinct().ShouldOnlyContain("A","B","C");
+         genotypeCovariate.Distinct().ShouldOnlyContain("A", "B", "C");
       }
    }
 
