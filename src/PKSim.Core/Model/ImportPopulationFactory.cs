@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -120,8 +122,8 @@ namespace PKSim.Core.Model
 
             var importResult = new ImportResult {IndividualValues = _individualPropertiesCacheImporter.ImportFrom(file, populationFile)};
             cancellationToken.ThrowIfCancellationRequested();
-
-            validate(file, importResult.IndividualValues, populationFile);
+            updatePathsContaininUnits(importResult.IndividualValues);
+            validate(importResult.IndividualValues, populationFile);
             populationFile.NumberOfIndividuals = importResult.IndividualValues.Count;
             importResult.PopulationFile = populationFile;
 
@@ -129,11 +131,45 @@ namespace PKSim.Core.Model
          }, cancellationToken);
       }
 
-      private void validate(string file, IndividualPropertiesCache individualValues, IImportLogger logger)
+      private void updatePathsContaininUnits(IndividualPropertiesCache individualValues)
+      {
+         individualValues.AllParameterValues.ToList().Each(parameterValue => { removeUnits(individualValues, parameterValue); });
+      }
+
+      private void removeUnits(IndividualPropertiesCache individualValues, ParameterValues parameterValue)
+      {
+         var parameterPath = parameterValue.ParameterPath;
+         if (allParametersContains(parameterPath))
+            return;
+
+         var pathWithUnitsRemoved = importedPathWithUnitsRemoved(parameterPath);
+         if (allParametersContains(pathWithUnitsRemoved))
+         {
+            individualValues.RenamePath(parameterPath, pathWithUnitsRemoved);
+            parameterValue.UpdatePath(pathWithUnitsRemoved);
+
+         }
+      }
+
+      private bool allParametersContains(string parameterPath)
+      {
+         return _allParameters.Contains(parameterPath);
+      }
+
+      private string importedPathWithUnitsRemoved(string path)
+      {
+         if (!path.TrimEnd().EndsWith("]")) return path;
+
+         var indexOfUnitStart = path.LastIndexOf("[", StringComparison.Ordinal);
+
+         return indexOfUnitStart == -1 ? path : path.Remove(indexOfUnitStart, path.Length - indexOfUnitStart).TrimEnd();
+      }
+
+      private void validate(IndividualPropertiesCache individualValues, IImportLogger logger)
       {
          foreach (var parameterPath in individualValues.AllParameterPaths().ToList())
          {
-            if (_allParameters.Contains(parameterPath))
+            if (allParametersContains(parameterPath))
                continue;
 
             logger.AddWarning(PKSimConstants.Warning.ParameterWithPathNotFoundInBaseIndividual(parameterPath));

@@ -59,7 +59,7 @@ namespace PKSim.Infrastructure.Services
          using (var reader = new CsvReaderDisposer(fileFullPath, delimiter))
          {
             var csv = reader.Csv;
-            var headers = csv.GetFieldHeaders().Select(removeUnitsFromHeader).ToArray();
+            var headers = csv.GetFieldHeaders();
             if (headers.Contains(Constants.Population.INDIVIDUAL_ID_COLUMN))
                loadNewCSVFormat(individualPropertiesCache, csv, headers);
             else
@@ -70,15 +70,6 @@ namespace PKSim.Infrastructure.Services
          }
 
          return individualPropertiesCache;
-      }
-
-      private string removeUnitsFromHeader(string header)
-      {
-         if (!header.TrimEnd().EndsWith("]")) return header;
-
-         var indexOfUnitStart = header.LastIndexOf("[", StringComparison.Ordinal);
-
-         return indexOfUnitStart == -1 ? header : header.Remove(indexOfUnitStart, header.Length - indexOfUnitStart).TrimEnd();
       }
 
       private void loadNewCSVFormat(IndividualPropertiesCache individualPropertiesCache, CsvReader csv, string[] headers)

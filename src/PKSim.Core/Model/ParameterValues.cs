@@ -66,5 +66,10 @@ namespace PKSim.Core.Model
             Add(defaultValue);
          }
       }
+
+      public void UpdatePath(string pathWithUnitsRemoved)
+      {
+         ParameterPath = pathWithUnitsRemoved;
+      }
    }
 }

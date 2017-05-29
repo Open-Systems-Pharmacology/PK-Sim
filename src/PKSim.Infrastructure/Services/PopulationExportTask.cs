@@ -243,17 +243,17 @@ namespace PKSim.Infrastructure.Services
          //some path have changed and the parameter is not found anymore
          if (parameter == null) return;
 
-         addColumnForParameterToTable(parameterContainer, dataTable, _entityPathResolver.PathFor(parameter), parameter.Dimension.BaseUnit.ToString());
+         addColumnForParameterToTable(parameterContainer, dataTable, _entityPathResolver.PathFor(parameter), parameter.Dimension.BaseUnit.Name);
       }
 
-      private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath, string displayUnit)
+      private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath, string baseUnit)
       {
-         addColumnValues(parameterContainer, dataTable, columnName(parameterPath, displayUnit), parameterContainer.AllValuesFor(parameterPath));
+         addColumnValues(parameterContainer, dataTable, columnName(parameterPath, baseUnit), parameterContainer.AllValuesFor(parameterPath));
       }
 
-      private static string columnName(string parameterPath, string displayUnit)
+      private static string columnName(string parameterPath, string baseUnit)
       {
-         return string.IsNullOrEmpty(displayUnit) ? parameterPath : $"{parameterPath} [{displayUnit}]";
+         return string.IsNullOrEmpty(baseUnit) ? parameterPath : $"{parameterPath} [{baseUnit}]";
       }
    }
 }
