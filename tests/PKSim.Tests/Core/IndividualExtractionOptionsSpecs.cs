@@ -18,7 +18,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.NamingPattern = $"{IndividualExtractionOptions.POP} with Individual Id = {IndividualExtractionOptions.INDIVIDUAL_ID}";
+         sut.NamingPattern = $"{IndividualExtractionOptions.POPULATION_NAME} with Individual Id = {IndividualExtractionOptions.INDIVIDUAL_ID}";
       }
 
       [Observation]

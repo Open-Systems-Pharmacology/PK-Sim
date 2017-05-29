@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.Utility.Extensions;
@@ -375,6 +374,11 @@ namespace PKSim.Assets
          public static string RemoveAdvancedParametersForMoleculeInPopulation(string moleculeName, string populationName)
          {
             return $"Remove advanced parameters defined for molecule '{moleculeName}' in population '{populationName}'";
+         }
+
+         public static string ExtractingIndividualsDescription(string populationName)
+         {
+            return $"Extracting individuals from population '{populationName}'";
          }
       }
 
@@ -1122,6 +1126,7 @@ namespace PKSim.Assets
          public static readonly string LoadPopulationAnalysisWorkflowFromTemplateMenu = "Load Analyses";
          public static readonly string SavePopulationAnalysisWorkflowToTemplateMenu = "Save Analyses";
          public static readonly string ExtractIndividualByPercentile = "Extract Individuals";
+         public static readonly string ExtractIndividualsMenu = "Extract Individuals...";
 
          public static string CompareBuildingBlocks(string buildingBlockType)
          {
@@ -2098,6 +2103,24 @@ namespace PKSim.Assets
          public static readonly string Processes = "Processes";
          public static readonly string Protocol = "Protocol";
          public static readonly string SimulationProperties = "Simulation Properties";
+         public static readonly string IndividualIds = "Individual Ids";
+         public static readonly string IndividualIdsDescription = "Ids of individuals to extract separated with comma (e.g. 1, 4, 8)";
+
+         public static string NumberOfIndividualsToExtract(int count, string populationName) => $"{count} {"individual".PluralizeIf(count)} will be extracted from population {populationName}.";
+
+         public static string IndividualExtractionNamingPatternDescription(string populationNamePattern, string individualIdPattern)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine("Automatically generates individual names replacing the occurence in the naming pattern of:");
+            sb.AppendLine($" -   <b>{populationNamePattern}</b> with the name of the population");
+            sb.AppendLine($" -   <b>{individualIdPattern}</b> with the id of the individual");
+            return sb.ToString();
+         }
+
+         public static string ExtractIndividualFromPopulation(string populationName) => $"Extract Individuals from Population '{populationName}'";
+
+         public static string ExtractIndividualPopulationDescription(string populationName, int numberOfIndividuals) => 
+            $"Population '{populationName}' has {numberOfIndividuals} individuals. Individual Ids for this population are defined between 0 and {numberOfIndividuals-1}.";
 
          public static string GenderRationFor(string gender)
          {

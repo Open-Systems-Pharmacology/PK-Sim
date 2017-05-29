@@ -2,6 +2,7 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
@@ -41,7 +42,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_add_the_simulation_to_the_project()
       {
-         A.CallTo(() => _simulationTask.AddToProject(A<Simulation>._,A<bool>._)).MustNotHaveHappened();
+         A.CallTo(_simulationTask).WithReturnType<PKSimCommand>().MustNotHaveHappened();
       }
    }
 
@@ -60,7 +61,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_the_simulation_to_the_project()
       {
-         A.CallTo(() => _simulationTask.AddToProject(_importedSimulation, true)).MustHaveHappened();
+         A.CallTo(() => _simulationTask.AddToProject(_importedSimulation, true, true)).MustHaveHappened();
       }
    }
 }	

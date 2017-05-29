@@ -1,9 +1,13 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -63,6 +67,8 @@ namespace PKSim.Core
       private IParameter _indParam2;
       private IParameter _indParam3;
       private IParameter _indParam4;
+      private IPKSimCommand _addIndividualCommand;
+      private ICommand _overallCommand;
 
       protected override void Context()
       {
@@ -115,6 +121,13 @@ namespace PKSim.Core
          A.CallTo(() => _population.AllValuesFor("PATH3")).Returns(new[] {40d, 42, 44, 46, 48, 50, 52});
 
          _templateIndividual1.Name = "POP-3";
+
+         _addIndividualCommand= A.Fake<IPKSimCommand>();
+         A.CallTo(() => _individualTask.AddToProject(_cloneIndividual, false, false)).Returns(_addIndividualCommand);
+
+         A.CallTo(() => _executionContext.AddToHistory(A<ICommand>._))
+            .Invokes(x => _overallCommand = x.GetArgument<ICommand>(0));
+
       }
 
       protected override void Because()
@@ -157,7 +170,15 @@ namespace PKSim.Core
       [Observation]
       public void should_add_the_individual_to_the_project_using_a_unique_name()
       {
-         A.CallTo(() => _individualTask.AddToProject(_cloneIndividual, false)).MustHaveHappened();
+         A.CallTo(() => _individualTask.AddToProject(_cloneIndividual, false, false)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_add_the_command_resulting_from_the_extraction_to_the_history_as_a_unique_macro_command()
+      {
+         _overallCommand.ShouldBeAnInstanceOf<PKSimMacroCommand>();
+         var macroCommand = _overallCommand.DowncastTo<PKSimMacroCommand>();
+         macroCommand.All().ShouldContain(_addIndividualCommand);
       }
 
       [Observation]

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
@@ -27,6 +29,13 @@ namespace PKSim.Core.Services
       ///    <paramref name="individualExtractionOptions" />
       /// </summary>
       void ExtractIndividualsFrom(Population population, IndividualExtractionOptions individualExtractionOptions);
+
+      /// <summary>
+      ///    Extracts individuals from <paramref name="population" /> using the provided
+      ///    <paramref name="individualExtractionOptions" />
+      /// </summary>
+      /// <returns>The executed command for the extraction. This command was not added to the history</returns>
+      ICommand ExtractIndividualsFromPopulationCommand(Population population, IndividualExtractionOptions individualExtractionOptions);
    }
 
    public class IndividualExtractor : IIndividualExtractor
@@ -53,10 +62,15 @@ namespace PKSim.Core.Services
 
       public void ExtractIndividualsFrom(Population population, IEnumerable<int> individualIds)
       {
-         ExtractIndividualsFrom(population, new IndividualExtractionOptions { IndividualIds = individualIds});
+         ExtractIndividualsFrom(population, new IndividualExtractionOptions {IndividualIds = individualIds});
       }
 
       public void ExtractIndividualsFrom(Population population, IndividualExtractionOptions individualExtractionOptions)
+      {
+         _executionContext.AddToHistory(ExtractIndividualsFromPopulationCommand(population, individualExtractionOptions));
+      }
+
+      public ICommand ExtractIndividualsFromPopulationCommand(Population population, IndividualExtractionOptions individualExtractionOptions)
       {
          if (population.IsAnImplementationOf<MoBiPopulation>())
             throw new PKSimException(PKSimConstants.Error.CannotExtractIndividualFrom(_executionContext.TypeFor(population)));
@@ -70,13 +84,28 @@ namespace PKSim.Core.Services
          //Update constant parameters first, then distributed and last all others. This ensures that formula parameters in the extracted individuals are not updated with a constant value
          var allParametersOrderedByFormulaType = allConstantParameters.Union(allDistributedParameters).Union(allRemainingParameters).ToList();
 
-         individualExtractionOptions.IndividualIds.Distinct().Each(individualId => extractIndividualFrom(population, individualId, allParametersOrderedByFormulaType, individualExtractionOptions));
+         var addCommands = individualExtractionOptions.IndividualIds.Distinct()
+            .Select(individualId => extractIndividualFrom(population, individualId, allParametersOrderedByFormulaType, individualExtractionOptions))
+            .ToList();
+
+         var overallCommand = new PKSimMacroCommand
+         {
+            CommandType = PKSimConstants.Command.CommandTypeAdd,
+            ObjectType = PKSimConstants.ObjectTypes.Population,
+            Description = PKSimConstants.Command.ExtractingIndividualsDescription(population.Name),
+            BuildingBlockName = population.Name,
+            BuildingBlockType = PKSimConstants.ObjectTypes.Population
+         };
+
+         overallCommand.AddRange(addCommands);
+
+         return overallCommand;
       }
 
-      private void extractIndividualFrom(Population population, int individualId, IEnumerable<IParameter> allParametersOrderedByFormulaType, IndividualExtractionOptions individualExtractionOptions)
+      private IPKSimCommand extractIndividualFrom(Population population, int individualId, IEnumerable<IParameter> allParametersOrderedByFormulaType, IndividualExtractionOptions individualExtractionOptions)
       {
          if (population.NumberOfItems <= individualId)
-            return;
+            return new PKSimEmptyCommand();
 
          var individual = _executionContext.Clone(population.FirstIndividual)
             .WithName(createIndividualName(population, individualId, individualExtractionOptions));
@@ -94,7 +123,7 @@ namespace PKSim.Core.Services
          originData.Gender = population.AllGenders[individualId];
          originData.SpeciesPopulation = population.AllRaces[individualId];
 
-         _individualTask.AddToProject(individual, editBuildingBlock: false);
+         return _individualTask.AddToProject(individual, editBuildingBlock: false, addToHistory: false);
       }
 
       private static void updateOriginDataFromIndividual(Individual individual, OriginData originData)

@@ -147,7 +147,7 @@ namespace PKSim.Core
       [Observation]
       public void should_add_the_building_block_to_the_project()
       {
-         A.CallTo(() => _buildingBlockTask.AddToProject(_relatedObject, true)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockTask.AddToProject(_relatedObject, true, true)).MustHaveHappened();
       }
    }
 
@@ -173,7 +173,7 @@ namespace PKSim.Core
       [Observation]
       public void should_add_the_building_block_to_the_project()
       {
-         A.CallTo(() => _buildingBlockTask.AddToProject(_relatedObject, true)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockTask.AddToProject(_relatedObject, true, true)).MustHaveHappened();
       }
    }
 

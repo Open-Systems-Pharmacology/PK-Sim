@@ -529,7 +529,10 @@
     <Compile Include="Presentation\DynamicGroupExpanderSpecs.cs" />
     <Compile Include="Presentation\EnzymaticCompoundProcessPresenterSpecs.cs" />
     <Compile Include="Presentation\EnzymaticProcessToEnzymaticProcessDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\ExtractIndividualsFromPopulationPresenterSpecs.cs" />
     <Compile Include="Presentation\ExpressionContainerDTOSpecs.cs" />
+    <Compile Include="Presentation\ExtractIndividualsDTOSpecs.cs" />
+    <Compile Include="Presentation\ExtractIndividualsFromPopulationCommandSpecs.cs" />
     <Compile Include="Presentation\FormulationMappingDTOSpecs.cs" />
     <Compile Include="Presentation\FormulationSelectionDTOSpecs.cs" />
     <Compile Include="Presentation\GlobalPKAnalysisPresenterSpecs.cs" />
@@ -889,7 +892,7 @@
     <Compile Include="Presentation\SimulationExplorerPresenterSpecs.cs" />
     <Compile Include="Presentation\ProjectTaskSpecs.cs" />
     <Compile Include="Presentation\MoleculeExpressionTaskSpecs.cs" />
-    <Compile Include="Presentation\RandomPopulationTaskSpecs.cs" />
+    <Compile Include="Presentation\PopulationTaskSpecs.cs" />
     <Compile Include="Presentation\RenameBuildingBlockUICommandSpecs.cs" />
     <Compile Include="Presentation\RootNodeToIndividualExpressionsPresenterMapperSpecs.cs" />
     <Compile Include="Presentation\RunActiveSimulationCommandSpecs.cs" />

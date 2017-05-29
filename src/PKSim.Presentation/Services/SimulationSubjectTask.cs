@@ -7,6 +7,7 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
+using PKSim.Core.Commands;
 
 namespace PKSim.Presentation.Services
 {
@@ -44,7 +45,7 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      public void AddToProject(ISimulationSubject buildingBlock, bool editBuildingBlock)
+      public IPKSimCommand AddToProject(ISimulationSubject buildingBlock, bool editBuildingBlock, bool addToHistory)
       {
          throw new NotSupportedException("Do not call AddToProject for a simulation subject. Use the dedicated method instead");
       }
