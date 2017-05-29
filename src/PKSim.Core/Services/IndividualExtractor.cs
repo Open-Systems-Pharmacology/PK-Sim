@@ -12,8 +12,21 @@ namespace PKSim.Core.Services
 {
    public interface IIndividualExtractor
    {
+      /// <summary>
+      ///    Extracts individuals with id in <paramref name="individualIds" /> from <paramref name="population" />
+      /// </summary>
       void ExtractIndividualsFrom(Population population, params int[] individualIds);
+
+      /// <summary>
+      ///    Extracts individuals with id in <paramref name="individualIds" /> from <paramref name="population" />
+      /// </summary>
       void ExtractIndividualsFrom(Population population, IEnumerable<int> individualIds);
+
+      /// <summary>
+      ///    Extracts individuals from <paramref name="population" /> using the provided
+      ///    <paramref name="individualExtractionOptions" />
+      /// </summary>
+      void ExtractIndividualsFrom(Population population, IndividualExtractionOptions individualExtractionOptions);
    }
 
    public class IndividualExtractor : IIndividualExtractor
@@ -40,6 +53,11 @@ namespace PKSim.Core.Services
 
       public void ExtractIndividualsFrom(Population population, IEnumerable<int> individualIds)
       {
+         ExtractIndividualsFrom(population, new IndividualExtractionOptions { IndividualIds = individualIds});
+      }
+
+      public void ExtractIndividualsFrom(Population population, IndividualExtractionOptions individualExtractionOptions)
+      {
          if (population.IsAnImplementationOf<MoBiPopulation>())
             throw new PKSimException(PKSimConstants.Error.CannotExtractIndividualFrom(_executionContext.TypeFor(population)));
 
@@ -49,19 +67,19 @@ namespace PKSim.Core.Services
          var allConstantParameters = allPopulationParameters.Where(x => x.Formula.IsConstant()).ToList();
          var allRemainingParameters = allPopulationParameters.Except(allConstantParameters).Except(allDistributedParameters);
 
-         //Update distributed parameters first, then constant and last all others. This ensures that formula parameters in the extracted individuals are not updated with a constant value
-         var allParametersOrderedByFormulaType = allDistributedParameters.Union(allConstantParameters).Union(allRemainingParameters).ToList();
+         //Update constant parameters first, then distributed and last all others. This ensures that formula parameters in the extracted individuals are not updated with a constant value
+         var allParametersOrderedByFormulaType = allConstantParameters.Union(allDistributedParameters).Union(allRemainingParameters).ToList();
 
-         individualIds.Distinct().Each(individualId => extractIndividualFrom(population, individualId, allParametersOrderedByFormulaType));
+         individualExtractionOptions.IndividualIds.Distinct().Each(individualId => extractIndividualFrom(population, individualId, allParametersOrderedByFormulaType, individualExtractionOptions));
       }
 
-      private void extractIndividualFrom(Population population, int individualId, IEnumerable<IParameter> allParametersOrderedByFormulaType)
+      private void extractIndividualFrom(Population population, int individualId, IEnumerable<IParameter> allParametersOrderedByFormulaType, IndividualExtractionOptions individualExtractionOptions)
       {
          if (population.NumberOfItems <= individualId)
             return;
 
          var individual = _executionContext.Clone(population.FirstIndividual)
-            .WithName(createIndividualName(population, individualId));
+            .WithName(createIndividualName(population, individualId, individualExtractionOptions));
 
          var exctractedIndividualParameterCache = new PathCache<IParameter>(_entityPathResolver).For(individual.GetAllChildren<IParameter>());
 
@@ -107,9 +125,9 @@ namespace PKSim.Core.Services
          return !ValueComparer.AreValuesEqual(parameter.Value, value);
       }
 
-      private string createIndividualName(Population population, int individualId)
+      private string createIndividualName(Population population, int individualId, IndividualExtractionOptions options)
       {
-         var proposedName = $"{population.Name}-{individualId}";
+         var proposedName = options.GenerateIndividualName(population.Name, individualId);
          return _containerTask.CreateUniqueName(_buildingBlockRepository.All<Individual>(), proposedName, canUseBaseName: true);
       }
    }

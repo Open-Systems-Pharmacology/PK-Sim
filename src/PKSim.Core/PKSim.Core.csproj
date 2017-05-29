@@ -219,6 +219,7 @@
     <Compile Include="Services\IEntityTask.cs" />
     <Compile Include="Services\IIndividualTask.cs" />
     <Compile Include="Services\IndividualExpressionTask.cs" />
+    <Compile Include="Services\IndividualExtractionOptions.cs" />
     <Compile Include="Services\IndividualExtractor.cs" />
     <Compile Include="Services\InteractionProcessRetriever.cs" />
     <Compile Include="Services\IParameterIdentificationContentLoader.cs" />
