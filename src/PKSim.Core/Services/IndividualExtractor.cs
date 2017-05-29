@@ -85,7 +85,7 @@ namespace PKSim.Core.Services
 
          foreach (var parameter in allParametersOrderedByFormulaType)
          {
-            updateParameterValye(population, individualId, parameter, exctractedIndividualParameterCache);
+            updateParameterValue(population, individualId, parameter, exctractedIndividualParameterCache);
          }
 
          var originData = individual.OriginData;
@@ -107,7 +107,7 @@ namespace PKSim.Core.Services
          originData.Weight = organism.Parameter(CoreConstants.Parameter.WEIGHT).Value;
       }
 
-      private void updateParameterValye(Population population, int individualId, IParameter parameter, PathCache<IParameter> exctractedIndividualParameterCache)
+      private void updateParameterValue(Population population, int individualId, IParameter parameter, PathCache<IParameter> exctractedIndividualParameterCache)
       {
          var parameterPath = _entityPathResolver.PathFor(parameter);
          var parameterValues = population.AllValuesFor(parameterPath);

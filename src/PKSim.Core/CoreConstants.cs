@@ -20,7 +20,7 @@ namespace PKSim.Core
       public const uint DEFAULT_DECIMAL_PLACE = 2;
       public const uint DEFAULT_MRU_LIST_ITEM_COUNT = 10;
       
-public const double NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS = 40;
+      public const double NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS = 40;
       public const double PRETERM_DEFAULT_AGE = 1 / 365.25; /*in years=>1 days*/
       public const double DEFAULT_PERCENTILE = 0.5;
       public const double DEFAULT_ABS_TOL = 1e-10;
