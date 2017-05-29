@@ -146,7 +146,7 @@ namespace PKSim.Core.Model
          if (allParametersContains(pathWithUnitsRemoved))
          {
             individualValues.RenamePath(parameterPath, pathWithUnitsRemoved);
-            parameterValue.UpdatePath(pathWithUnitsRemoved);
+            parameterValue.ParameterPath = pathWithUnitsRemoved;
          }
       }
 
