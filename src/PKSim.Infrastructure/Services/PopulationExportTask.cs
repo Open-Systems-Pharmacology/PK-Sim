@@ -139,8 +139,10 @@ namespace PKSim.Infrastructure.Services
 
       private bool parameterShouldBeExported(IParameter parameter, IEnumerable<IParameter> advancedParameters)
       {
+         //BMI and BodyWeight should always be exported
          if (parameter.NameIsOneOf(CoreConstants.Parameter.BMI, CoreConstants.Parameter.WEIGHT)) return true;
 
+         //BMI MeanHeight MeanWeight should never be exported
          if (parameter.NameIsOneOf(CoreConstants.Parameter.MEAN_WEIGHT, CoreConstants.Parameter.MEAN_HEIGHT)) return false;
 
          //distribution parameter search as mean, std, gsd etc should not be exported
@@ -253,7 +255,7 @@ namespace PKSim.Infrastructure.Services
 
       private static string columnName(string parameterPath, string baseUnit)
       {
-         return string.IsNullOrEmpty(baseUnit) ? parameterPath : $"{parameterPath} [{baseUnit}]";
+         return Constants.NameWithUnitFor(parameterPath, baseUnit);
       }
    }
 }
