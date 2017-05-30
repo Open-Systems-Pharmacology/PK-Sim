@@ -26,7 +26,6 @@ namespace PKSim.IntegrationTests
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
 
          _enzyme = enzymeFactory.CreateFor(templateIndividual).DowncastTo<IndividualEnzyme>().WithName("CYP");
-         _enzyme.TissueLocation = TissueLocation.Intracellular;
          templateIndividual.AddMolecule(_enzyme);
 
          _protein = enzymeFactory.CreateFor(templateIndividual).DowncastTo<IndividualEnzyme>().WithName("PROT");
@@ -98,16 +97,6 @@ namespace PKSim.IntegrationTests
 
          protBoneInterstitial.Parameter(CoreConstants.Parameter.RelExp).Visible.ShouldBeFalse();
          protBoneInterstitial.Parameter(CoreConstants.Parameter.RelExpNorm).Visible.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_not_hide_the_relative_expression_parameters_defined_in_interstitial_for_protein_defined_with_a_tissue_localization_in_interstitial()
-      {
-         var enzBoneInterstitial = _simulation.Model.Root.EntityAt<MoleculeAmount>(
-            Constants.ORGANISM, CoreConstants.Organ.Bone, CoreConstants.Compartment.Interstitial, _enzyme.Name);
-
-         enzBoneInterstitial.Parameter(CoreConstants.Parameter.RelExp).Visible.ShouldBeTrue();
-         enzBoneInterstitial.Parameter(CoreConstants.Parameter.RelExpNorm).Visible.ShouldBeTrue();
       }
    }
 }
