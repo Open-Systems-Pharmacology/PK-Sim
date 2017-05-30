@@ -19,7 +19,7 @@ namespace PKSim.UI.Views.Populations
       private IExtractIndividualsFromPopulationPresenter _presenter;
       private readonly ScreenBinder<ExtractIndividualsDTO> _screenBinder;
 
-      public ExtractIndividualsFromPopulationView(IShell shell):base(shell)
+      public ExtractIndividualsFromPopulationView(IShell shell) : base(shell)
       {
          InitializeComponent();
          _screenBinder = new ScreenBinder<ExtractIndividualsDTO>();
@@ -41,16 +41,12 @@ namespace PKSim.UI.Views.Populations
             .To(tbIndividualIdsExpression)
             .Changing += updateOutput;
 
-
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
       private void updateOutput()
       {
-         OnEvent(() =>
-         {
-            _presenter.UpdateGeneratedOutput(tbNamingPattern.EditValue?.ToString(), tbIndividualIdsExpression.EditValue?.ToString());
-         });
+         OnEvent(() => { _presenter.UpdateGeneratedOutput(tbNamingPattern.EditValue?.ToString(), tbIndividualIdsExpression.EditValue?.ToString()); });
       }
 
       public override void InitializeResources()
@@ -84,7 +80,7 @@ namespace PKSim.UI.Views.Populations
 
       public void UpdateGeneratedOutputDescription(int count, IReadOnlyList<string> individualNames, string populationName)
       {
-         var lines = new List<string>{PKSimConstants.UI.NumberOfIndividualsToExtract(count, populationName), string.Empty};
+         var lines = new List<string> {PKSimConstants.UI.NumberOfIndividualsToExtract(count, populationName), string.Empty};
          lines.AddRange(individualNames);
          tbOutput.Lines = lines.ToArray();
       }
