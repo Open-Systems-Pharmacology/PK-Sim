@@ -44,7 +44,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public override void StartAnalysis(IPopulationDataCollector populationDataCollector, PopulationAnalysis populationAnalysis)
       {
          base.StartAnalysis(populationDataCollector, populationAnalysis);
-         _allPopulationParametersPresenter.AddParamtersAndCovariates(allVisibleParametersIn(populationDataCollector), populationDataCollector.AllCovariateNames(), displayParameterUsingGroupStructure: populationDataCollector.ComesFromPKSim);
+         _allPopulationParametersPresenter.AddParamtersAndCovariates(allVisibleParametersIn(populationDataCollector), populationDataCollector.AllCovariateNames, displayParameterUsingGroupStructure: populationDataCollector.ComesFromPKSim);
          _selectedPopulationParametersPresenter.StartAnalysis(populationDataCollector, populationAnalysis);
       }
 

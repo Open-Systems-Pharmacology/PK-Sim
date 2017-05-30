@@ -76,10 +76,8 @@ namespace PKSim.Core.Model.PopulationAnalyses
                   .WithRule((field, name) =>
                   {
                      var populationAnalysis = field.PopulationAnalysis;
-                     if (populationAnalysis == null)
-                        return true;
 
-                     var otherField = populationAnalysis.FieldByName(name);
+                     var otherField = populationAnalysis?.FieldByName(name);
                      if (otherField == null)
                         return true;
 

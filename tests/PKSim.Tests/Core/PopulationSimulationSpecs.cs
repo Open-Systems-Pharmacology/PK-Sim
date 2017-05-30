@@ -136,7 +136,7 @@ namespace PKSim.Core
       [Observation]
       public void should_always_return_an_empty_string()
       {
-         sut.AllSimulationNames().ShouldOnlyContain(sut.Name, sut.Name, sut.Name);
+         sut.AllSimulationNames.ShouldOnlyContain(sut.Name, sut.Name, sut.Name);
       }
    }
 

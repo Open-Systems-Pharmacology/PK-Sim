@@ -24,20 +24,18 @@ namespace PKSim.Core.Model
 
    public abstract class PKSimBuildingBlock : Entity, IPKSimBuildingBlock
    {
-      private readonly PKSimBuildingBlockType _buildingBlockType;
-
       public virtual bool IsLoaded { get; set; }
       public virtual bool HasChanged { get; set; }
       public virtual string ExtendedDescription { get; set; }
       public virtual CreationMetaData Creation { get; set; }
-
+      public virtual PKSimBuildingBlockType BuildingBlockType { get; }
       public virtual int Version { get; set; }
       public virtual int StructureVersion { get; set; }
       private IRootContainer _root;
 
       public virtual IRootContainer Root
       {
-         get { return _root; }
+         get => _root;
          set
          {
             _root = value;
@@ -55,7 +53,7 @@ namespace PKSim.Core.Model
 
       protected PKSimBuildingBlock(PKSimBuildingBlockType buildingBlockType) : this()
       {
-         _buildingBlockType = buildingBlockType;
+         BuildingBlockType = buildingBlockType;
          Icon = buildingBlockType.ToString();
       }
 
@@ -77,11 +75,6 @@ namespace PKSim.Core.Model
       {
          base.AcceptVisitor(visitor);
          Root.AcceptVisitor(visitor);
-      }
-
-      public virtual PKSimBuildingBlockType BuildingBlockType
-      {
-         get { return _buildingBlockType; }
       }
 
       public virtual void Add(IEntity newChild)
@@ -141,20 +134,17 @@ namespace PKSim.Core.Model
 
       public virtual ContainerType ContainerType
       {
-         get { return Root.ContainerType; }
-         set { Root.ContainerType = value; }
+         get => Root.ContainerType;
+         set => Root.ContainerType = value;
       }
 
       public virtual ContainerMode Mode
       {
-         get { return Root.Mode; }
-         set { Root.Mode = value; }
+         get => Root.Mode;
+         set => Root.Mode = value;
       }
 
-      public virtual IEnumerable<IEntity> Children
-      {
-         get { return Root.Children; }
-      }
+      public virtual IEnumerable<IEntity> Children => Root.Children;
 
       public IEnumerator<IEntity> GetEnumerator()
       {

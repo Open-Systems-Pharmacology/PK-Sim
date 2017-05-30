@@ -254,13 +254,13 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          if (string.Equals(genderId, CoreConstants.Population.AllGender))
             return PKSimConstants.UI.AllGender;
 
-         var gender = _vectorialParametersContainer.AllGenders().Distinct().FindByName(genderId);
+         var gender = _vectorialParametersContainer.AllGenders.Distinct().FindByName(genderId);
          return _representationInfoRepository.DisplayNameFor(gender);
       }
 
       private IEnumerable<string> genderSelectionsFrom(IVectorialParametersContainer vectorialParametersContainer)
       {
-         var allGenders = vectorialParametersContainer.AllGenders().Distinct().ToList();
+         var allGenders = vectorialParametersContainer.AllGenders.Distinct().ToList();
          if (allGenders.Count == 1)
             yield return allGenders[0].Name;
          else

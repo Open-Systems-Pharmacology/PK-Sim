@@ -329,13 +329,13 @@ namespace PKSim.Presentation.Repositories
             .WithId(MenuBarItemIds.HistoryReportGroup)
             .WithIcon(ApplicationIcons.HistoryExport);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToExcel)
+         yield return CreateMenuButton.WithCaption(MenuNames.ExportToExcel)
             .WithId(MenuBarItemIds.HistoryReportExcel)
             .WithDescription(PKSimConstants.UI.ExportHistoryToExcelDescription)
             .WithCommand<ExportHistoryToExcelCommand>()
             .WithIcon(ApplicationIcons.Excel);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPDF)
+         yield return CreateMenuButton.WithCaption(MenuNames.ExportToPDF)
             .WithId(MenuBarItemIds.HistoryReportPDF)
             .WithDescription(PKSimConstants.UI.ExportHistoryToPDFDescription)
             .WithIcon(ApplicationIcons.PDF)

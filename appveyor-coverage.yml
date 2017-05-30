@@ -1,7 +1,8 @@
 configuration: Debug
+image: Visual Studio 2017
 
 environment:
-  app_version: '7.1.0'
+  app_version: '7.2.0'
   MIK_TEX_INSTALL_DIR: 'C:\MikTex\'
 
 version: '%app_version%.{build}'

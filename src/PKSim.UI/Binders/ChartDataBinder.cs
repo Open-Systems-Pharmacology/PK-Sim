@@ -231,6 +231,7 @@ namespace PKSim.UI.Binders
             var pane = getPaneFor(paneData.Id, diagram);
             if (isNoTitleNeededFor(paneData))
                continue;
+
             _view.AddTitleTo(pane, paneData.Caption);
          }
       }

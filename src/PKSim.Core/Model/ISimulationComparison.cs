@@ -3,7 +3,7 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Model
 {
-   public interface ISimulationComparison : ILazyLoadable, IObjectBase
+   public interface ISimulationComparison : ILazyLoadable, IObjectBase, IUsesObservedData
    {
    }
 

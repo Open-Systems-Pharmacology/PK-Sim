@@ -181,8 +181,7 @@ namespace PKSim.Presentation
          _templatePopulationAnalysis.Add(_parameterFound);
          _templatePopulationAnalysis.Add(_parameterNotFound);
 
-         _cache = new PathCacheForSpecs<IParameter>();
-         _cache.Add("P1", new PKSimParameter());
+         _cache = new PathCacheForSpecs<IParameter> {{"P1", new PKSimParameter()}};
 
          A.CallTo(_templateTask).WithReturnType<PopulationAnalysis>().Returns(_templatePopulationAnalysis);
 
@@ -230,7 +229,7 @@ namespace PKSim.Presentation
 
          A.CallTo(_templateTask).WithReturnType<PopulationAnalysis>().Returns(_templatePopulationAnalysis);
 
-         A.CallTo(() => _populationDataCollector.AllCovariateNames()).Returns(new List<string> {_covariateFound.Covariate});
+         A.CallTo(() => _populationDataCollector.AllCovariateNames).Returns(new List<string> {_covariateFound.Covariate});
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
 

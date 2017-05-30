@@ -10,13 +10,16 @@ namespace PKSim.Core
    public static class CoreConstants
    {
       public const int LAYOUT_VERSION = 38;
-      public const uint RESOLUTION_FOR_FORMULATION_PLOT = 20;
-      public const uint DEFAULT_DECIMAL_PLACE = 2;
       public const int DEFAULT_NUMBER_OF_BINS = 20;
       public const int DEFAULT_NUMBER_OF_INDIVIDUALS_PER_BIN = 100;
-      public const uint DEFAULT_MRU_LIST_ITEM_COUNT = 10;
       public const int MAX_NUMBER_OF_POINT_PER_INTERVAL = 1000;
       public const int DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION = 100;
+      public const int MAX_NUMBER_OF_CURVES_TO_SHOW_AT_ONCE = 10;
+
+      public const uint RESOLUTION_FOR_FORMULATION_PLOT = 20;
+      public const uint DEFAULT_DECIMAL_PLACE = 2;
+      public const uint DEFAULT_MRU_LIST_ITEM_COUNT = 10;
+      
       public const double NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS = 40;
       public const double PRETERM_DEFAULT_AGE = 1 / 365.25; /*in years=>1 days*/
       public const double DEFAULT_PERCENTILE = 0.5;
@@ -26,8 +29,7 @@ namespace PKSim.Core
       public const double HIGH_RESOLUTION_IN_PTS_PER_MIN = 1.0 / 3; //20 pts per hours
       public const double LOW_RESOLUTION_IN_PTS_PER_MIN = 1.0 / 15; //4 pts per hours
       public const double DEFAULT_PROTOCOL_END_TIME_IN_MIN = 1440;
-      public const byte DEFAULT_ONTOGENY_FACTOR = 1;
-      public const int MAX_NUMBER_OF_CURVES_TO_SHOW_AT_ONCE = 10;
+      public const double DEFAULT_ONTOGENY_FACTOR = 1;
       public const double DEFAULT_REFERENCE_CONCENTRATION_VALUE = 1;
       public const double DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN = 36 * 60;
       public const double DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN = 23 * 60;
@@ -78,15 +80,12 @@ namespace PKSim.Core
          public static readonly string PROJECT_OLD_EXTENSION = ".pkprj";
          public static readonly string MDB_EXTENSION = ".mdb";
          public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
-         public static readonly string JSON_FILTER = $"*{Constants.Filter.JSON_EXTENSION}";
          public static readonly string SIMULATION_RESULTS_FILTER = $"*{Constants.Filter.CSV_EXTENSION}";
          public static readonly string EXPRESSION_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Expression Database", MDB_EXTENSION);
          public static readonly string TEMPLATE_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Template Database", MDB_EXTENSION);
          public static readonly string MOBI_FILE_FILTER = Constants.Filter.FileFilter("MoBi", ".exe");
-         public static readonly string MATLAB_POPULATION_FILE_FILTER = string.Format("Matlab Population Files (*.{0};*{1})|*.{0};*{1})", Constants.Filter.CSV_EXTENSION, Constants.Filter.XML_EXTENSION);
          public static readonly string LOAD_PROJECT_FILTER =  string.Format("{0} Project (*{1};*{2})|*{1};*{2}", ProductDisplayName, PROJECT_EXTENSION, PROJECT_OLD_EXTENSION);
          public static readonly string SAVE_PROJECT_FILTER = Constants.Filter.FileFilter($"{ProductDisplayName} Project", PROJECT_EXTENSION);
-         public static readonly string LICENSE_FILE_FILTER = Constants.Filter.FileFilter($"{ProductDisplayName} License File", Constants.Filter.TEXT_EXTENSION);
       }
 
       public static string CompositeNameFor(params string[] names)

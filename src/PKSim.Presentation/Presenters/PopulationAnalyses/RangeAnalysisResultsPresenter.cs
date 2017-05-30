@@ -1,6 +1,5 @@
 ﻿using PKSim.Core.Chart;
 using PKSim.Core.Model;
-using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Presentation.Views.PopulationAnalyses;
 

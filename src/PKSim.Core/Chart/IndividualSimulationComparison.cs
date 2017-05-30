@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core.Model;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Chart
 {
@@ -52,7 +51,6 @@ namespace PKSim.Core.Chart
          _allSimulations.Clear();
       }
 
-  
       public void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
          var originalChart = source as IndividualSimulationComparison;

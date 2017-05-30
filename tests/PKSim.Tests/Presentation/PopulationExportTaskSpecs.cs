@@ -52,7 +52,7 @@ namespace PKSim.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _cloner= A.Fake<ICloner>();
          _population = A.Fake<Population>().WithName("MyPop");
-         A.CallTo(() => _population.AllCovariateNames()).Returns(new[] {CoreConstants.Covariates.GENDER, CoreConstants.Covariates.RACE});
+         A.CallTo(() => _population.AllCovariateNames).Returns(new[] {CoreConstants.Covariates.GENDER, CoreConstants.Covariates.RACE});
          A.CallTo(() => _applicationController.Start<ISelectFilePresenter>()).Returns(_selectFilePresenter);
          sut = new PopulationExportTask(_applicationController, _entityPathResolver, _lazyLoadTask, _simModelExporter,
             _modelCoreSimulationMapper,  _workspace, _configuration,_simulationSettingsRetriever,_dialogCreator,_cloner);
@@ -102,8 +102,8 @@ namespace PKSim.Presentation
          A.CallTo(() => _population.AllAdvancedParameters(_entityPathResolver)).Returns(_allAdvancedParameters);
 
          A.CallTo(() => _population.NumberOfItems).Returns(3);
-         A.CallTo(() => _population.AllGenders()).Returns(new[] {_male, _male, _male});
-         A.CallTo(() => _population.AllRaces()).Returns(new[] {_american, _american, _american});
+         A.CallTo(() => _population.AllGenders).Returns(new[] {_male, _male, _male});
+         A.CallTo(() => _population.AllRaces).Returns(new[] {_american, _american, _american});
       }
 
       protected override void Because()
@@ -131,7 +131,7 @@ namespace PKSim.Presentation
 
       private bool resultsHasParameter(string parameterPath)
       {
-         return _result.Columns.Cast<DataColumn>().Any(col => col.ColumnName == parameterPath);
+         return _result.Columns.Cast<DataColumn>().Any(col => col.ColumnName.StartsWith(parameterPath));
       }
    }
 }

@@ -164,7 +164,7 @@ namespace PKSim.Presentation.Services
          //ToList() because we are removing in the iteration 
          foreach (var covariateField in populationAnalysis.AllFields.OfType<PopulationAnalysisCovariateField>().ToList())
          {
-            if (populationDataCollector.AllCovariateNames().Contains(covariateField.Covariate))
+            if (populationDataCollector.AllCovariateNames.Contains(covariateField.Covariate))
                continue;
 
             populationAnalysis.Remove(covariateField);

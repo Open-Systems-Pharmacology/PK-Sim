@@ -123,7 +123,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
       {
          var originData = individual.OriginData.Clone();
          var allAges = randomPopulation.AllValuesFor(_entityPathResolver.PathFor(individual.Organism.Parameter(CoreConstants.Parameter.AGE))).ToList();
-         var allGender = randomPopulation.AllGenders().ToList();
+         var allGender = randomPopulation.AllGenders.ToList();
          var allValues = randomPopulation.AllValuesFor(_entityPathResolver.PathFor(parameter)).ToList();
          var allPercentiles = new double[allValues.Count].InitializeWith(0);
          originData.GestationalAge = CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;

@@ -27,11 +27,11 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(DataRepository dataRepository, Simulation activeSimulation)
       {
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Edit)
+         yield return CreateMenuButton.WithCaption(MenuNames.Edit)
             .WithCommandFor<EditSubjectUICommand<DataRepository>, DataRepository>(dataRepository)
             .WithIcon(ApplicationIcons.Edit);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Rename)
+         yield return CreateMenuButton.WithCaption(MenuNames.Rename)
             .WithCommandFor<RenameObservedDataUICommand, DataRepository>(dataRepository)
             .WithIcon(ApplicationIcons.Rename);
 
@@ -44,7 +44,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithCommandFor<ExportObservedDataToExcelCommand, DataRepository>(dataRepository)
             .WithIcon(ApplicationIcons.Excel);
             
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPDF)
+         yield return CreateMenuButton.WithCaption(MenuNames.ExportToPDF)
             .WithCommandFor<ExportToPDFCommand<DataRepository>, DataRepository>(dataRepository)
             .WithIcon(ApplicationIcons.PDF);
 

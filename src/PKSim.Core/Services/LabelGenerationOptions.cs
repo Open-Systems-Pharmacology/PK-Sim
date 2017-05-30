@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Format;
@@ -16,7 +15,7 @@ namespace PKSim.Core.Services
       public const string ITERATION_PATTERN = "#";
       public static readonly string START_INTERVAL_PATTERN = intervalPattern(_startPattern,"n");
       public static readonly string END_INTERVAL_PATTERN = intervalPattern(_endPattern, "n");
-      public static readonly string DEFAULT_NAMING_PATTERN = String.Format("Group_{0} from {1} to {2}", ITERATION_PATTERN, intervalPattern(_startPattern, 2), intervalPattern(_endPattern, 2));
+      public static readonly string DEFAULT_NAMING_PATTERN = $"Group_{ITERATION_PATTERN} from {intervalPattern(_startPattern, 2)} to {intervalPattern(_endPattern, 2)}";
       private readonly INumericFormatterOptions _numericFormatterOptions;
       private readonly NumericFormatter<double> _numericFormatter;
       private readonly Cache<string, Regex> _intervalRegexCache;
@@ -60,10 +59,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      public bool HasIterationPattern
-      {
-         get { return !String.IsNullOrEmpty(Pattern) && Pattern.Contains(ITERATION_PATTERN); }
-      }
+      public bool HasIterationPattern => !string.IsNullOrEmpty(Pattern) && Pattern.Contains(ITERATION_PATTERN);
 
       private static string intervalPattern(string limitName, uint? numberOfDigits = null)
       {
@@ -76,14 +72,11 @@ namespace PKSim.Core.Services
 
       private static string intervalPattern(string limitName, string numberOfDigits)
       {
-         string digitsPattern = string.IsNullOrEmpty(numberOfDigits) ? "" : string.Format(":{0}", numberOfDigits);
-         return string.Format("{{{0}{1}}}", limitName, digitsPattern);
+         string digitsPattern = string.IsNullOrEmpty(numberOfDigits) ? "" : $":{numberOfDigits}";
+         return $"{{{limitName}{digitsPattern}}}";
       }
 
-      public bool IsValid
-      {
-         get { return HasIntervalPattern || HasIterationPattern; }
-      }
+      public bool IsValid => HasIntervalPattern || HasIterationPattern;
 
       public string ReplaceStartIntervalIn(string label, double startValue)
       {

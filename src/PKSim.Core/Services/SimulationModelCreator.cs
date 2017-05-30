@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Services
 {
@@ -27,8 +27,8 @@ namespace PKSim.Core.Services
       private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
 
       public SimulationModelCreator(IBuildConfigurationTask buildConfigurationTask, IModelConstructor modelConstructor, IParameterIdUpdater parameterIdUpdater,
-                                    IEntityPathResolver entityPathResolver, IExpressionContainersRetriever expressionContainersRetriever,
-                                    ISimulationSettingsFactory  simulationSettingsFactory, ISimulationPersistableUpdater simulationPersistableUpdater)
+         IEntityPathResolver entityPathResolver, IExpressionContainersRetriever expressionContainersRetriever,
+         ISimulationSettingsFactory simulationSettingsFactory, ISimulationPersistableUpdater simulationPersistableUpdater)
       {
          _buildConfigurationTask = buildConfigurationTask;
          _modelConstructor = modelConstructor;
@@ -44,9 +44,9 @@ namespace PKSim.Core.Services
          _buildConfigurationTask.ValidateConfigurationFor(simulation);
 
          simulation.SimulationSettings = _simulationSettingsFactory.CreateFor(simulation);
-         var buildConfiguration = _buildConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation:true);
+         var buildConfiguration = _buildConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
          buildConfiguration.ShowProgress = shouldShowProgress;
-         buildConfiguration.ShouldValidate =  shouldValidate;
+         buildConfiguration.ShouldValidate = shouldValidate;
 
          var creationResult = _modelConstructor.CreateModelFrom(buildConfiguration, simulation.Name);
 
@@ -67,7 +67,7 @@ namespace PKSim.Core.Services
 
          var allMoleculeAmounts = simulation.All<IMoleculeAmount>().ToList();
 
-         //local protein parameters parameter id need to be updated as well
+         //local molecule parameters parameter id need to be updated as well
          var allIndividualMoleculeAmounts = allMoleculeAmounts.Where(m => m.IsIndividualMolecule());
          var individual = simulation.Individual;
          var allOrganismContainers = _expressionContainersRetriever.AllOrganismContainers(individual).ToList();
@@ -101,7 +101,7 @@ namespace PKSim.Core.Services
             .Where(c => c.ContainerType == ContainerType.Molecule)
             .SelectMany(c => c.AllParameters(p => double.IsNaN(p.Value)));
 
-         allNaNParametersFromMolecules.Each(p => p.Visible = false);
+         allNaNParametersFromMolecules.Each(hideParameter);
       }
 
       private void updateAllParametersFor(Simulation simulation, Individual individual, IList<IContainer> allOrganismContainers, IndividualMolecule molecule, PathCache<IMoleculeAmount> moleculeAmountPath)
@@ -109,46 +109,92 @@ namespace PKSim.Core.Services
          var globalMoleculeContainer = simulation.Model.Root
             .GetSingleChildByName<IContainer>(molecule.Name);
 
-         globalMoleculeContainer.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR_GI).Visible = false;
-         globalMoleculeContainer.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR).Visible = false;
+         hideParameter(globalMoleculeContainer.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR_GI));
+         hideParameter(globalMoleculeContainer.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR));
 
          hideGlobalParametersForUndefinedMolecule(globalMoleculeContainer);
 
+         hideInterstialParametersForIntracellularLocalizationInTissue(individual,  molecule, allOrganismContainers, moleculeAmountPath);
+
          foreach (var expressionContainer in molecule.AllExpressionsContainers())
          {
-            var relExpNorm = expressionContainer.RelativeExpressionNormParameter;
-            var relExp = expressionContainer.RelativeExpressionParameter;
-
             if (expressionContainer.IsSurrogate())
             {
-               string relExpName;
-               if (expressionContainer.IsBloodCell())
-                  relExpName = CoreConstants.Parameter.RelExpBloodCell;
-               else if (expressionContainer.IsPlasma())
-                  relExpName = CoreConstants.Parameter.RelExpPlasma;
-               else if (expressionContainer.IsVascularEndothelium())
-                  relExpName = CoreConstants.Parameter.RelExpVascEndo;
-               else
-                  continue;
-
-               string relExpNormName = CoreConstants.Parameter.NormParameterFor(relExpName);
-               updateFromIndividualParameter(globalMoleculeContainer.Parameter(relExpName), relExp, individual, molecule);
-               updateFromIndividualParameter(globalMoleculeContainer.Parameter(relExpNormName), relExpNorm, individual, molecule);
+               updateReferenceToIndividualParametersForSurrogateContainer(individual, molecule, expressionContainer, globalMoleculeContainer);
             }
             else
             {
-               //not a global parameter simply update the norm  parameters
-               var allContainers = _expressionContainersRetriever.AllContainersFor(individual.Organism, allOrganismContainers, molecule, expressionContainer);
-               foreach (var container in allContainers)
-               {
-                  var amount = moleculeAmountPath[_entityPathResolver.ObjectPathFor(container).AndAdd(molecule.Name).ToString()];
-                  if (amount == null) continue;
-
-                  updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameter.RelExpNorm), relExpNorm, individual, molecule);
-                  updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameter.RelExp), relExp, individual, molecule);
-               }
+               updateReferenceToIndividualParametersForStandardContainer(individual, molecule, expressionContainer, allOrganismContainers, moleculeAmountPath);
             }
          }
+      }
+
+      private void hideInterstialParametersForIntracellularLocalizationInTissue(Individual individual, IndividualMolecule molecule, IList<IContainer> allOrganismContainers, PathCache<IMoleculeAmount> moleculeAmountPath)
+      {
+         var protein = molecule as IndividualProtein;
+
+         if (protein?.TissueLocation != TissueLocation.Intracellular || protein.IntracellularVascularEndoLocation != IntracellularVascularEndoLocation.Interstitial)
+            return;
+
+         var vascularEndothelium = protein.ExpressionContainer(CoreConstants.Compartment.VascularEndothelium);
+         if (vascularEndothelium == null)
+            return;
+
+         var allInterstitialContainer = _expressionContainersRetriever.AllContainersFor(individual.Organism, allOrganismContainers, protein, vascularEndothelium);
+      
+         foreach (var interstitial in allInterstitialContainer)
+         {
+            var amount = amountFor(interstitial, molecule, moleculeAmountPath);
+            if (amount == null) continue;
+
+            hideParameter(amount.Parameter(CoreConstants.Parameter.RelExp));
+            hideParameter(amount.Parameter(CoreConstants.Parameter.RelExpNorm));
+         }
+      }
+
+      private void hideParameter(IParameter parameter)
+      {
+         if (parameter == null)
+            return;
+
+         parameter.Visible = false;
+      }
+
+      private void updateReferenceToIndividualParametersForStandardContainer(Individual individual, IndividualMolecule molecule, IMoleculeExpressionContainer expressionContainer, IList<IContainer> allOrganismContainers, PathCache<IMoleculeAmount> moleculeAmountPath)
+      {
+         var allContainers = _expressionContainersRetriever.AllContainersFor(individual.Organism, allOrganismContainers, molecule, expressionContainer);
+
+         foreach (var container in allContainers)
+         {
+            var amount = amountFor(container, molecule, moleculeAmountPath);
+            if (amount == null) continue;
+
+            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameter.RelExp), expressionContainer.RelativeExpressionParameter, individual, molecule);
+            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameter.RelExpNorm), expressionContainer.RelativeExpressionNormParameter, individual, molecule);
+         }
+      }
+
+      private IMoleculeAmount amountFor(IContainer container, IndividualMolecule molecule, PathCache<IMoleculeAmount> moleculeAmountPath)
+      {
+         var amount = moleculeAmountPath[_entityPathResolver.ObjectPathFor(container).AndAdd(molecule.Name).ToString()];
+         return amount;
+      }
+
+      private void updateReferenceToIndividualParametersForSurrogateContainer(Individual individual, IndividualMolecule molecule, IMoleculeExpressionContainer expressionContainer, IContainer globalMoleculeContainer)
+      {
+         string relExpName;
+         if (expressionContainer.IsBloodCell())
+            relExpName = CoreConstants.Parameter.RelExpBloodCell;
+         else if (expressionContainer.IsPlasma())
+            relExpName = CoreConstants.Parameter.RelExpPlasma;
+         else if (expressionContainer.IsVascularEndothelium())
+            relExpName = CoreConstants.Parameter.RelExpVascEndo;
+         else
+            return;
+
+         var relExpNormName = CoreConstants.Parameter.NormParameterFor(relExpName);
+         updateFromIndividualParameter(globalMoleculeContainer.Parameter(relExpName), expressionContainer.RelativeExpressionParameter, individual, molecule);
+         updateFromIndividualParameter(globalMoleculeContainer.Parameter(relExpNormName), expressionContainer.RelativeExpressionNormParameter, individual, molecule);
       }
 
       private void hideGlobalParametersForUndefinedMolecule(IContainer globalMoleculeContainer)
@@ -156,7 +202,7 @@ namespace PKSim.Core.Services
          if (!globalMoleculeContainer.IsUndefinedMolecule())
             return;
 
-         globalMoleculeContainer.GetAllChildren<IParameter>().Each(x=>x.Visible=false);
+         globalMoleculeContainer.GetAllChildren<IParameter>().Each(hideParameter);
       }
 
       private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual, IndividualMolecule molecule)

@@ -115,10 +115,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          return AllFieldsOn<IStringValueField>(area).Select(f => f.Name).ToList();
       }
 
-      public virtual ICache<IPopulationAnalysisField, PivotPosition> AllFieldPositions
-      {
-         get { return _fieldPositions; }
-      }
+      public virtual ICache<IPopulationAnalysisField, PivotPosition> AllFieldPositions => _fieldPositions;
 
       /// <summary>
       ///    This compare method s used to give an ordering for PopulationAnalysisFields.
@@ -153,8 +150,8 @@ namespace PKSim.Core.Model.PopulationAnalyses
 
       public virtual IStringValueField ColorField
       {
-         get { return firstOn<IStringValueField>(PivotArea.ColorArea); }
-         set { updateToUniqueAreaPosition(value, PivotArea.ColorArea); }
+         get => firstOn<IStringValueField>(PivotArea.ColorArea);
+         set => updateToUniqueAreaPosition(value, PivotArea.ColorArea);
       }
 
       private T firstOn<T>(PivotArea area) where T : IPopulationAnalysisField
@@ -164,8 +161,8 @@ namespace PKSim.Core.Model.PopulationAnalyses
 
       public virtual IStringValueField SymbolField
       {
-         get { return firstOn<IStringValueField>(PivotArea.SymbolArea); }
-         set { updateToUniqueAreaPosition(value, PivotArea.SymbolArea); }
+         get => firstOn<IStringValueField>(PivotArea.SymbolArea);
+         set => updateToUniqueAreaPosition(value, PivotArea.SymbolArea);
       }
 
       private void updateToUniqueAreaPosition(IPopulationAnalysisField field, PivotArea area)

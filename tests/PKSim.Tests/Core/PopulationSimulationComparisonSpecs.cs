@@ -3,6 +3,8 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using PKSim.Core.Chart;
 
 namespace PKSim.Core
 {
@@ -21,6 +23,26 @@ namespace PKSim.Core
          sut.AddSimulation(_popSim1);
          sut.AddSimulation(_popSim2);
          sut.AddSimulation(_popSim3);
+      }
+   }
+
+   public class When_inspecting_used_observed_data : concern_for_PopulationSimulationComparison
+   {
+      private DataRepository _observedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _observedData = new DataRepository();
+         var simulationTimeProfileChart = new SimulationTimeProfileChart();
+         simulationTimeProfileChart.AddObservedData(_observedData);
+         sut.AddAnalysis(simulationTimeProfileChart);
+      }
+
+      [Observation]
+      public void the_observed_data_should_be_indicated_as_used()
+      {
+         sut.UsesObservedData(_observedData).ShouldBeTrue();
       }
    }
 
@@ -46,15 +68,15 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _popSim1.AllCovariateNames()).Returns(new[] {"cov1", "cov2"});
-         A.CallTo(() => _popSim2.AllCovariateNames()).Returns(new[] {"cov3", "cov2"});
-         A.CallTo(() => _popSim3.AllCovariateNames()).Returns(new[] {"cov1", "cov4"});
+         A.CallTo(() => _popSim1.AllCovariateNames).Returns(new[] {"cov1", "cov2"});
+         A.CallTo(() => _popSim2.AllCovariateNames).Returns(new[] {"cov3", "cov2"});
+         A.CallTo(() => _popSim3.AllCovariateNames).Returns(new[] {"cov1", "cov4"});
       }
 
       [Observation]
       public void should_return_the_union_of_all_the_covariates_defined_in_the_population_simulation_with_the_population_name_covariate()
       {
-         sut.AllCovariateNames().ShouldOnlyContain("cov1", "cov2", "cov3", "cov4", CoreConstants.Covariates.SIMULATION_NAME);
+         sut.AllCovariateNames.ShouldOnlyContain("cov1", "cov2", "cov3", "cov4", CoreConstants.Covariates.SIMULATION_NAME);
       }
    }
 
@@ -85,15 +107,15 @@ namespace PKSim.Core
          _race1 = new SpeciesPopulation();
          _race2 = new SpeciesPopulation();
          _race3 = new SpeciesPopulation();
-         A.CallTo(() => _popSim1.AllRaces()).Returns(new[] {_race1, _race2});
-         A.CallTo(() => _popSim2.AllRaces()).Returns(new[] {_race2, _race3});
-         A.CallTo(() => _popSim3.AllRaces()).Returns(new[] {_race3, _race1});
+         A.CallTo(() => _popSim1.AllRaces).Returns(new[] {_race1, _race2});
+         A.CallTo(() => _popSim2.AllRaces).Returns(new[] {_race2, _race3});
+         A.CallTo(() => _popSim3.AllRaces).Returns(new[] {_race3, _race1});
       }
 
       [Observation]
       public void should_return_the_concatenated_list_of_races_in_the_accurate_order()
       {
-         sut.AllRaces().ShouldOnlyContainInOrder(_race1, _race2, _race2, _race3, _race3, _race1);
+         sut.AllRaces.ShouldOnlyContainInOrder(_race1, _race2, _race2, _race3, _race3, _race1);
       }
    }
 
@@ -106,15 +128,15 @@ namespace PKSim.Core
          base.Context();
          _gender1 = new Gender();
          _gender2 = new Gender();
-         A.CallTo(() => _popSim1.AllGenders()).Returns(new[] {_gender1, _gender2});
-         A.CallTo(() => _popSim2.AllGenders()).Returns(new[] {_gender2, _gender1});
-         A.CallTo(() => _popSim3.AllGenders()).Returns(new[] {_gender2, _gender1});
+         A.CallTo(() => _popSim1.AllGenders).Returns(new[] {_gender1, _gender2});
+         A.CallTo(() => _popSim2.AllGenders).Returns(new[] {_gender2, _gender1});
+         A.CallTo(() => _popSim3.AllGenders).Returns(new[] {_gender2, _gender1});
       }
 
       [Observation]
       public void should_return_the_concatenated_list_of_genders_in_the_accurate_order()
       {
-         sut.AllGenders().ShouldOnlyContainInOrder(_gender1, _gender2, _gender2, _gender1, _gender2, _gender1);
+         sut.AllGenders.ShouldOnlyContainInOrder(_gender1, _gender2, _gender2, _gender1, _gender2, _gender1);
       }
    }
 
@@ -231,15 +253,15 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _popSim1.AllSimulationNames()).Returns(new[] { _popSim1.Name, _popSim1.Name });
-         A.CallTo(() => _popSim2.AllSimulationNames()).Returns(new[] { _popSim2.Name, _popSim2.Name, _popSim2.Name });
-         A.CallTo(() => _popSim3.AllSimulationNames()).Returns(new[] { _popSim3.Name });
+         A.CallTo(() => _popSim1.AllSimulationNames).Returns(new[] { _popSim1.Name, _popSim1.Name });
+         A.CallTo(() => _popSim2.AllSimulationNames).Returns(new[] { _popSim2.Name, _popSim2.Name, _popSim2.Name });
+         A.CallTo(() => _popSim3.AllSimulationNames).Returns(new[] { _popSim3.Name });
       }
 
       [Observation]
       public void should_return_the_name_of_all_simulations_used_in_the_comparison()
       {
-         sut.AllSimulationNames().ShouldOnlyContainInOrder(_popSim1.Name, _popSim1.Name,_popSim2.Name,_popSim2.Name,_popSim2.Name,_popSim3.Name);
+         sut.AllSimulationNames.ShouldOnlyContainInOrder(_popSim1.Name, _popSim1.Name,_popSim2.Name,_popSim2.Name,_popSim2.Name,_popSim3.Name);
       }
    }
 }

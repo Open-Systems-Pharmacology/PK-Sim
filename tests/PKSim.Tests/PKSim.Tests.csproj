@@ -155,27 +155,23 @@
       <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.99\lib\net452\OSPSuite.Assets.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.10, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.10\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.BDDHelper">
       <HintPath>..\..\packages\OSPSuite.BDDHelper.2.0.0.1\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.99\lib\net452\OSPSuite.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.10, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.10\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.1.0.79, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.1.0.79\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.2.0.1, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.2.0.1\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.99\lib\net452\OSPSuite.Presentation.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Presentation, Version=7.2.0.10, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.10\lib\net452\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -249,6 +245,8 @@
     <Compile Include="Core\AdvancedParameterFactorySpecs.cs" />
     <Compile Include="Core\AgingDataSpecs.cs" />
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />
+    <Compile Include="Core\IndividualExtractionOptionsSpecs.cs" />
+    <Compile Include="Core\IndividualExtractorSpecs.cs" />
     <Compile Include="Core\InteractionProcessRetrieverSpecs.cs" />
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
@@ -257,6 +255,7 @@
     <Compile Include="Core\TablePartSpecs.cs" />
     <Compile Include="Core\TimeProfileAnalysisChartSpecs.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
+    <Compile Include="Infrastructure\SimulationComparisonContentLoaderSpecs.cs" />
     <Compile Include="IntegrationTests\JacobianMatrixXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationConfigurationClonerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationResidualVsTimeChartXmlSerializerSpecs.cs" />
@@ -434,6 +433,7 @@
     <Compile Include="IntegrationTests\SimulationTransferLoaderSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQuerySpecs.cs" />
     <Compile Include="Presentation\AdvancedParameterPresenterSpecs.cs" />
+    <Compile Include="Presentation\BoxWhiskerChartPresenterSpecs.cs" />
     <Compile Include="Presentation\BoxWhiskerNumericFieldsPresenterSpecs.cs" />
     <Compile Include="Presentation\BuildingBlockSelectionDisplayerSpecs.cs" />
     <Compile Include="Core\SimulationOutputFactorySpecs.cs" />
@@ -589,7 +589,6 @@
     <Compile Include="Presentation\ExportToPDFInvokerSpecs.cs" />
     <Compile Include="Presentation\MenuAndToolBarPresenterSpecs.cs" />
     <Compile Include="Presentation\MultipleNumericFieldsPresenterSpecs.cs" />
-    <Compile Include="Presentation\BoxWhiskerPivotChartPresenterSpecs.cs" />
     <Compile Include="Presentation\ClassifiableDataRepositorySpecs.cs" />
     <Compile Include="Presentation\ClassificationPresenterSpecs.cs" />
     <Compile Include="Presentation\EditPopulationAnalysisGroupingFieldPresenterSpecs.cs" />

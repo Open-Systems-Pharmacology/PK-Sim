@@ -310,7 +310,7 @@ namespace PKSim.Presentation
          {
             sut.CompoundProcessSelectionChanged(_dto, _interactionProcess2);
          }
-         catch (CannotSelectThePartialProcessMoreThanOnceException e)
+         catch (CannotSelectThePartialProcessMoreThanOnceException)
          {
             A.CallTo(() => _view.Repaint()).MustHaveHappened();
          }

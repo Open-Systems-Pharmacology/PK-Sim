@@ -4,7 +4,6 @@ using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
 using OSPSuite.Presentation.Core;

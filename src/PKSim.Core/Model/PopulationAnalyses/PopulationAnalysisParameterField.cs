@@ -13,10 +13,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          return populationDataCollector.AllValuesFor(ParameterPath);
       }
 
-      public override string Id
-      {
-         get { return ParameterPath; }
-      }
+      public override string Id => ParameterPath;
 
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PKSim.Assets;
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -42,8 +41,8 @@ namespace PKSim.Core.Model.PopulationAnalyses
       /// </summary>
       public IDimension Dimension
       {
-         get { return _dimension; }
-         set { _dimension = this.UpdateDimension(value); }
+         get => _dimension;
+         set => _dimension = this.UpdateDimension(value);
       }
 
       public virtual bool CanBeUsedForGroupingIn(IPopulationDataCollector populationDataCollector)
@@ -66,10 +65,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          Name = PKSimConstants.UI.None;
       }
 
-      public override string Id
-      {
-         get { return string.Empty; }
-      }
+      public override string Id => string.Empty;
 
       public override IReadOnlyList<double> GetValues(IPopulationDataCollector populationDataCollector)
       {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Model
 {
@@ -127,10 +127,7 @@ namespace PKSim.Core.Model
          newValues.Each(x => parameterValues.Add(x));
       }
 
-      public virtual IEnumerable<ParameterValues> AllParameterValues
-      {
-         get { return _parameterValuesCache; }
-      }
+      public virtual IEnumerable<ParameterValues> AllParameterValues => _parameterValuesCache;
 
       public virtual void Merge(ParameterValuesCache parameterValuesCache, PathCache<IParameter> parameterCache)
       {

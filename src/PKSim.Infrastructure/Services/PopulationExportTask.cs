@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Presenters;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Mappers;
@@ -20,6 +11,14 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Core;
+using PKSim.Presentation.Presenters;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Infrastructure.Services
@@ -33,7 +32,6 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       private readonly IWorkspace _workspace;
       private readonly IPKSimConfiguration _configuration;
-
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly IDialogCreator _dialogCreator;
       private readonly ICloner _cloner;
@@ -50,7 +48,6 @@ namespace PKSim.Infrastructure.Services
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
          _workspace = workspace;
          _configuration = configuration;
-
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _dialogCreator = dialogCreator;
          _cloner = cloner;
@@ -118,12 +115,12 @@ namespace PKSim.Infrastructure.Services
          addColumnValues(population, dataTable, Constants.Population.INDIVIDUAL_ID_COLUMN, individualIds);
 
          //and one column for each individual in the population
-         foreach (var covariate in population.AllCovariateNames())
+         foreach (var covariate in population.AllCovariateNames)
          {
             if (covariate == CoreConstants.Covariates.GENDER)
-               addColumnValues(population, dataTable, CoreConstants.Parameter.GENDER, population.AllGenders().Select(x => x.Index).ToList());
+               addColumnValues(population, dataTable, CoreConstants.Parameter.GENDER, population.AllGenders.Select(x => x.Index).ToList());
             else if (covariate == CoreConstants.Covariates.RACE)
-               addColumnValues(population, dataTable, CoreConstants.Parameter.RACE_INDEX, population.AllRaces().Select(x => x.RaceIndex).ToList());
+               addColumnValues(population, dataTable, CoreConstants.Parameter.RACE_INDEX, population.AllRaces.Select(x => x.RaceIndex).ToList());
             else
                addColumnValues(population, dataTable, covariate, population.AllCovariateValuesFor(covariate));
          }
@@ -140,10 +137,10 @@ namespace PKSim.Infrastructure.Services
 
       private bool parameterShouldBeExported(IParameter parameter, IEnumerable<IParameter> advancedParameters)
       {
-         //BMI and BodyWeight should always be exported (Mantis 2907)
+         //BMI and BodyWeight should always be exported
          if (parameter.NameIsOneOf(CoreConstants.Parameter.BMI, CoreConstants.Parameter.WEIGHT)) return true;
 
-         //BMI MeanHeight MeanWeight should never be exported (Mantis 2907)
+         //BMI MeanHeight MeanWeight should never be exported
          if (parameter.NameIsOneOf(CoreConstants.Parameter.MEAN_WEIGHT, CoreConstants.Parameter.MEAN_HEIGHT)) return false;
 
          //distribution parameter search as mean, std, gsd etc should not be exported
@@ -246,12 +243,17 @@ namespace PKSim.Infrastructure.Services
          //some path have changed and the parameter is not found anymore
          if (parameter == null) return;
 
-         addColumnForParameterToTable(parameterContainer, dataTable, _entityPathResolver.PathFor(parameter));
+         addColumnForParameterToTable(parameterContainer, dataTable, _entityPathResolver.PathFor(parameter), parameter.Dimension.BaseUnit.Name);
       }
 
-      private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath)
+      private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath, string baseUnit)
       {
-         addColumnValues(parameterContainer, dataTable, parameterPath, parameterContainer.AllValuesFor(parameterPath));
+         addColumnValues(parameterContainer, dataTable, columnName(parameterPath, baseUnit), parameterContainer.AllValuesFor(parameterPath));
+      }
+
+      private static string columnName(string parameterPath, string baseUnit)
+      {
+         return Constants.NameWithUnitFor(parameterPath, baseUnit);
       }
    }
 }
