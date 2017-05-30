@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using OSPSuite.Utility.Container;
@@ -25,8 +24,7 @@ namespace PKSim.Infrastructure
          var defaultIndividualRetriever = IoC.Resolve<IDefaultIndividualRetriever>();
          var populationRepository = IoC.Resolve<IPopulationRepository>();
          var cloneManager = IoC.Resolve<ICloneManagerForBuildingBlock>();
-         var standardIndividual = cloneManager.Clone(defaultIndividualRetriever.DefaultIndividualFor(populationRepository.FindByName(population)), new FormulaCache());
-         return standardIndividual;
+         return cloneManager.Clone(defaultIndividualRetriever.DefaultIndividualFor(populationRepository.FindByName(population)), new FormulaCache());
       }
 
       public static Compound CreateStandardCompound()
@@ -47,15 +45,13 @@ namespace PKSim.Infrastructure
       public static Protocol CreateStandardIVBolusProtocol()
       {
          var protocolFactory = IoC.Resolve<IProtocolFactory>();
-         var protocol = protocolFactory.Create(ProtocolMode.Simple).WithName("Protocol");
-         return protocol;
+         return protocolFactory.Create(ProtocolMode.Simple).WithName("Protocol");
       }
 
       public static Protocol CreateStandardIVProtocol()
       {
          var protocolFactory = IoC.Resolve<IProtocolFactory>();
-         var protocol = protocolFactory.Create(ProtocolMode.Simple, ApplicationTypes.Intravenous).WithName("Protocol");
-         return protocol;
+         return protocolFactory.Create(ProtocolMode.Simple, ApplicationTypes.Intravenous).WithName("Protocol");
       }
 
       public static IndividualSimulation CreateDefaultSimulation()

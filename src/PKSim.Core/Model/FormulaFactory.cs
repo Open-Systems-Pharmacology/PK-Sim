@@ -131,7 +131,7 @@ namespace PKSim.Core.Model
 
          var formula = _objectBaseFactory.Create<ExplicitFormula>()
             .WithName(CoreConstants.Parameter.BMI)
-            .WithFormulaString("{0}>0 ? {1} / ({0})^2 : 0".FormatWith(height, weight))
+            .WithFormulaString($"{height}>0 ? {weight} / ({height})^2 : 0")
             .WithDimension(_dimensionRepository.BMI);
 
          formula.AddObjectPath(pathInParentContainerFor(weightParameter, weight));
@@ -148,7 +148,7 @@ namespace PKSim.Core.Model
          //Age is in year but time is in min
          var formula = _objectBaseFactory.Create<ExplicitFormula>()
             .WithName(CoreConstants.Parameter.AGE)
-            .WithFormulaString("{0} + {1} * {2}".FormatWith(age0, Constants.TIME, minToYearFactor))
+            .WithFormulaString($"{age0} + {Constants.TIME} * {minToYearFactor}")
             .WithDimension(_dimensionRepository.AgeInYears);
 
          formula.AddObjectPath(pathInParentContainerFor(age0Parameter, age0));

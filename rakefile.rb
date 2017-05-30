@@ -1,19 +1,35 @@
 require_relative 'scripts/setup'
 require_relative 'scripts/copy-dependencies'
 require_relative 'scripts/utils'
+require_relative 'scripts/coverage'
 
-task :create_setup, [:product_version, :configuration] do |t, args|
+task :cover do
+	filter = []
+	filter << "+[PKSim.Core]*"
+	filter << "+[PKSim.Assets]*"
+	filter << "+[PKSim.Presentation]*"
+	filter << "+[PKSim.Infrastructure]*"
+
+	Coverage.cover(filter, "PKSim.Tests.csproj")
+end
+
+task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
+
+	require_relative 'scripts/smartxls'
+
 	setup_dir = File.join(solution_dir, 'setup')
 	src_dir = File.join(solution_dir, 'src', 'PKSim', 'bin', args.configuration)
 	product_version = args.product_version
 	suite_name = 'Open Systems Pharmacology Suite'
+
+	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
 		'PKSim.exe' 
 	]
 
-	#Files required for setup creation only
+	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
 		'packages/**/OSPSuite.Presentation/**/*.{wxs,xml}',
 		'packages/**/OSPSuite.TeXReporting/**/*.*',
@@ -73,6 +89,7 @@ task :postclean do |t, args|
 end
 
 private
+
 def solution_dir
 	File.dirname(__FILE__)
 end

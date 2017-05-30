@@ -192,12 +192,6 @@ namespace PKSim.Presentation.Repositories
             .WithIcon(ApplicationIcons.PKML)
             .ForDeveloper();
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.GeneratePretermsData)
-            .WithId(MenuBarItemIds.GeneratePretermsData)
-            .WithCommand<GeneratePretermsDataCommand>()
-            .WithIcon(ApplicationIcons.PDF)
-            .ForDeveloper();
-
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Options)
             .WithId(MenuBarItemIds.Options)
             .WithCommand<SettingsCommand>()

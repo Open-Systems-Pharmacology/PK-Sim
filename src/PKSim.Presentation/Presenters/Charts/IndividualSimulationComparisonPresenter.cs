@@ -195,6 +195,7 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          InitializeAnalysis(chart);
          UpdateTemplatesBasedOn(_chartPresenterContext.ProjectRetriever.CurrentProject);
+         BindChartToEditors();
          updateResultsInChart();
          LoadSettingsForSubject(chart);
       }

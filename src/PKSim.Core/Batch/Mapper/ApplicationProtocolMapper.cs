@@ -32,10 +32,10 @@ namespace PKSim.Core.Batch.Mapper
          simpleProtocol.Dose.Value = simpleProtocol.Dose.Dimension.UnitValueToBaseUnitValue(simpleProtocol.Dose.DisplayUnit, batchProtocol.Dose);
          simpleProtocol.DosingInterval = DosingIntervals.ById(dosingIntervalId);
 
-         _logger.AddDebug("Application Type = {0}".FormatWith(applicationType.Name));
-         _logger.AddDebug("Dosing Interval = {0}".FormatWith(simpleProtocol.DosingInterval.DisplayName));
-         _logger.AddDebug("Application Dose = {0} [{1}]".FormatWith(simpleProtocol.Dose.Value, simpleProtocol.Dose.DisplayUnit));
-         _logger.AddDebug("Application End Time = {0}".FormatWith(simpleProtocol.EndTime));
+         _logger.AddDebug($"Application Type = {applicationType.Name}");
+         _logger.AddDebug($"Dosing Interval = {simpleProtocol.DosingInterval.DisplayName}");
+         _logger.AddDebug($"Application Dose = {simpleProtocol.Dose.Value} [{simpleProtocol.Dose.DisplayUnit}]");
+         _logger.AddDebug($"Application End Time = {simpleProtocol.EndTime}");
 
          return simpleProtocol;
       }

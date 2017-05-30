@@ -1,8 +1,9 @@
 ﻿using System.Xml;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Serialization.Diagram;
+using PKSim.BatchTool.Services;
 
-namespace PKSim.BatchTool.Services
+namespace PKSim.BatchTool.Mappers
 {
    public class BatchDiagramModelToXmlMapper : IDiagramModelToXmlMapper
    {

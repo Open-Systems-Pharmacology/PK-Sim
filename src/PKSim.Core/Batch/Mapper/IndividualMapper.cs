@@ -37,18 +37,11 @@ namespace PKSim.Core.Batch.Mapper
             Age = batchIndividual.Age.GetValueOrDefault(double.NaN),
             Height = batchIndividual.Height.GetValueOrDefault(double.NaN),
             Weight = batchIndividual.Weight.GetValueOrDefault(double.NaN),
-            GestationalAge = batchIndividual.GestationalAge.GetValueOrDefault(double.NaN)
+            GestationalAge = batchIndividual.GestationalAge.GetValueOrDefault(double.NaN),
          };
 
          var originData = _originDataMapper.MapFrom(batchOriginData);
-
-         Model.Individual individual;
-         if (batchIndividual.Optimize)
-            individual = _individualFactory.CreateAndOptimizeFor(originData);
-         else
-            individual = _individualFactory.CreateStandardFor(originData);
-
-         individual.Name = "Individual";
+         var individual = _individualFactory.CreateAndOptimizeFor(originData, batchIndividual.Seed).WithName("Individual");
 
          batchIndividual.Enzymes.Each(enzyme => addMoleculeTo<IndividualEnzyme>(individual, enzyme));
          batchIndividual.OtherProteins.Each(otherProtein => addMoleculeTo<IndividualOtherProtein>(individual, otherProtein));
@@ -56,7 +49,7 @@ namespace PKSim.Core.Batch.Mapper
          {
             var individualTransporter = addMoleculeTo<IndividualTransporter>(individual, transporter);
             individualTransporter.TransportType = EnumHelper.ParseValue<TransportType>(transporter.TransportType);
-            _batchLogger.AddDebug("Transport type for transporter '{0}' is {1}".FormatWith(individualTransporter.Name, individualTransporter.TransportType));
+            _batchLogger.AddDebug($"Transport type for transporter '{individualTransporter.Name}' is {individualTransporter.TransportType}");
          });
 
          return individual;
@@ -77,12 +70,12 @@ namespace PKSim.Core.Batch.Mapper
             var expressionParameter = newMolecule.GetRelativeExpressionNormParameterFor(expression.Key);
             if (expressionParameter == null)
             {
-               _batchLogger.AddWarning("Relative Expression container '{0}' not found for '{1}'".FormatWith(expression.Key, molecule.Name));
+               _batchLogger.AddWarning($"Relative Expression container '{expression.Key}' not found for '{molecule.Name}'");
                continue;
             }
 
             expressionParameter.Value = expression.Value;
-            _batchLogger.AddDebug("Relative Expression norm for container '{0}' set to {1}".FormatWith(expression.Key, expression.Value));
+            _batchLogger.AddDebug($"Relative Expression norm for container '{expression.Key}' set to {expression.Value}");
          }
          return newMolecule.DowncastTo<TMolecule>();
       }

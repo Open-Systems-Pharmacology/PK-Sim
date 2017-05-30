@@ -96,7 +96,7 @@ namespace PKSim.Assets
          public static readonly string CommandTypeScale = "Scale";
          public static readonly string ConfigureSimulationDescription = "Configure simulation";
          public static readonly string ResetParametersDescription = "Reset parameters to their default values.";
-         public static readonly string ScaleParametersDescription = "Scaling parameters with factor '{0}'.";
+         public static string ScaleParametersDescription(double factor) => $"Scaling parameters with factor '{factor}'.";
          public static readonly string SetParameterValueAndDisplayUnitDescription = "Value and unit updated for parameter.";
          public static readonly string SetPercentileValueDescription = "Percentile of parameter '{0}' set from '{1}' to '{2}.";
          public static readonly string SetParameterFormulaDescription = "Formula of parameter '{0}' was set.";
@@ -111,13 +111,10 @@ namespace PKSim.Assets
          public static readonly string CreateAdministrationProtocolDescripton = "Create and add administration protocol to project";
          public static readonly string CreateFormulationDescription = "Create and add formulation to project";
          public static readonly string CreateSimulationDescription = "Create and add simulation to project";
-         public static readonly string SetSimpleProtocolDosingIntervalDescription = "Dosing interval changed from '{0}' to '{1}'";
-         public static readonly string RenameEnzymeInPartialProcess = "Enzyme name in process '{0}' set to '{1}'";
-         public static readonly string CloneEntity = "Cloning {0} '{1}' to '{2}'";
-         public static readonly string ChangeProcessType = "Process type of link '{0}' changed to '{1}'";
-         public static readonly string SetProtocolModeCommandDescription = "Set administration protocol mode from '{0}' to '{1}'";
-         public static readonly string ProtocolModeChangingFrom = "Protocol mode changing from '{0}' to '{1}'";
-         public static readonly string ProtocolModeChangedFrom = "Protocol mode changed from '{0}' to '{1}'";
+         public static string SetSimpleProtocolDosingIntervalDescription(string oldDosingInterval, string newDosingInterval) => $"Dosing interval changed from '{oldDosingInterval}' to '{newDosingInterval}'";
+         public static string RenameEnzymeInPartialProcess(string processName, string name) => $"Enzyme name in process '{processName}' set to '{name}'";
+         public static string CloneEntity(string type, string sourceName, string cloneName) => $"Cloning {type} '{sourceName}' to '{cloneName}'";
+         
          public static readonly string AddSimulationIntervalToSimulationOutputDescription = "Output interval added to simulation output.";
          public static readonly string RemoveSimulationIntervalFromSimulationOutputDescription = "Output interval removed from simulation output.";
          public static readonly string ObservedDataDeletedFromProject = "Observed data deleted from project";
@@ -125,6 +122,10 @@ namespace PKSim.Assets
          public static readonly string MetaDataRemovedFromDataRepositories = "Meta Data removed from multiple repositories";
          public static readonly string MetaDataModifiedInDataRepositories = "Meta Data modified in multiple repositories";
          public static readonly string ChartTemplate = "Chart Template";
+
+         public static string ProtocolModeChangingFrom(string oldProtocol, string newProtocol) => $"Protocol mode changing from '{oldProtocol}' to '{newProtocol}'";
+         public static string ProtocolModeChangedFrom(string oldProtocol, string newProtocol)  => $"Protocol mode changed from '{oldProtocol}' to '{newProtocol}'";
+         public static string SetProtocolModeCommandDescription(string oldProtocol, string newProtocol) => $"Set administration protocol mode from '{oldProtocol}' to '{newProtocol}'";
 
          public static string ObjectsDeletedFromProject(string objectType)
          {
@@ -381,39 +382,24 @@ namespace PKSim.Assets
          public const string ValueIsRequired = "Value is required";
          public const string DescriptionIsRequired = "Description is required";
          public const string UnknownObserverBuilderType = "Observer builer type unknown";
-         public const string CompoundProcessNotExists = "Compound process {0} does not exist";
-         public const string DatabasePathDoesNotExist = "Database path '{0}' does not exist or file is currently not available";
-         public const string CannotCreateApplication = "Unable to create administration '{0}': {1}";
-         public const string UnableToCreateIndividual = "Could not create individuals with given constraint:\n{0}";
-         public const string UnableToCreatePopulation = "Could not create population with given constraint:\n{0}";
+         public static string CompoundProcessNotExists(string processName) => $"Compound process {processName} does not exist";
+         public static string UnableToCreateIndividual(string constraints) => $"Could not create individuals with given constraint:\n{constraints}";
+         public static string UnableToCreatePopulation(string constraints) => $"Could not create population with given constraint:\n{constraints}";
          public const string FactorShouldBeBiggerThanZero = "Factor should be bigger than 0.";
          public const string UnableToCreateInstanceOfShell = "Unable to create an instance of the shell.";
-         public const string DistributionNotFound = "Cannot create distribution for '{0}' with the following data:\n{1}";
-         public const string DistributionUnknown = "Distribution '{0}' is unknown";
-         public const string NameAlreadyExistsInProject = "Name '{0}' already exists in project.";
-         public const string ProteinAlreadyExistsInIndividual = "Enzyme '{0}' already exists in individual.";
+         public static string DistributionNotFound(string entityName, string data) => $"Cannot create distribution for '{entityName}' with the following data:\n{data}";
+         public static string DistributionUnknown(string distribution) => $"Distribution '{distribution}' is unknown";
          public const string NameIsRequired = "Name is required.";
          public const string MoleculeIsRequired = "Molecule is required.";
          public const string DataSourceIsRequired = "Data source is required.";
-         public const string ParameterNameDoesNotMatch = "Parameter name '{0}' should be equal to '{1}'";
-         public const string EnzymeContainerExpressionNotFound = "Enzyme container '{0}' not found for enzyme '{1}'.";
-         public const string ParameterInEnzymeContainerExpressionNotFound = "Parameter '{0}' not found in container '{1}' for enzyme '{2}'.";
-         public const string BuildingBlockNotFoundFor = "Building block not found for '{0}'";
-         public const string ProteinExpressionFactoryNotFound = "Cannot retrieve enzyme expression factory for enzyme type '{0}'";
+         public static string ProteinExpressionFactoryNotFound(string enzymeType) => $"Cannot retrieve enzyme expression factory for enzyme type '{enzymeType}'";
          public const string RenameSameNameError = "The new name is the same as the original one.";
-         public const string CannotRetrieveDbContainerType = "Cannot retrieve database container type for '{0}'";
-         public const string CannotRetrieveDbPath = "Cannot retrieve database path for container '{0}'";
          public const string NoBuildingBlockTemplateSelected = "No template selected.";
-         public const string NoLinkForGroup = "Cannot create link for group '{0}'";
-         public const string CannotCreateFormula = "Cannot create formula for parameter info with type '{0}'";
-         public const string CannotCreateContainerOfType = "Cannot create container of type '{0}'";
-         public const string UnknownUsageInIndividualFlag = "'{0}' is not valid flag for 'Usage in individual'";
-         public const string CompoundParameterSelectionNeededFor = "Compound parameter selection is required for '{0}'.";
+         public static string CannotCreateContainerOfType(string type) => $"Cannot create container of type '{type}'";
+         public static string UnknownUsageInIndividualFlag(string flag) => $"'{flag}' is not valid flag for 'Usage in individual'";
+         public static string CompoundParameterSelectionNeededFor(string parameterName) => $"Compound parameter selection is required for '{parameterName}'.";
          public const string InvalidPartialStabiLink = "Invalid link for creating enzymatic stability partial process passed";
-         public const string NoChangeProcessTypeCommandFound = "No ChangeProcessTypeCommand for {0} found";
          public const string ContainerPathIsEmpty = "Given container path is empty";
-         public const string ContainerPathDoesNotMatchRoot = "Container path '{0}' does not match root name '{1}'";
-         public const string PathEntryInPathDoesNotExistInHierarchy = "Path entry '{0}' from path '{1}' does not exist in hiearchy";
          public const string CannotDeleteSchemaItem = "At least one schema item needs to be defined.";
          public const string CannotDeleteSimulationInterval = "At least one interval needs to be defined.";
          public const string CannotDeleteSchema = "At least one schema needs to be defined.";
@@ -421,10 +407,9 @@ namespace PKSim.Assets
          public const string CannotDeleteParameterAlternative = "At least one alternative needs to be defined.";
          public const string CannotExecuteCommandWhileErrorNotCorrected = "Cannot execute action. Error needs to be corrected.";
          public const string AlternativeViewNotControl = "View of compound parameter group alternative is not a user control";
-         public const string InteractionTypeUnknown = "Interaction type {0} is unknown";
-         public const string CouldNotFindAdvancedParameterContainerForParameter = "Could not find advanced parameter container for parameter '{0}'.";
-         public const string CouldNotFindAdvancedParameterInContainerForParameter = "Could not find advanced parameter in container '{0}' for parameter '{1}'.";
-         public const string CompoundProcessParameterMappingNotAvailable = "No compound process parameter mapping found for process='{0}' and parameter ='{1}'";
+         public static string CouldNotFindAdvancedParameterContainerForParameter(string parameterName) => $"Could not find advanced parameter container for parameter '{parameterName}'.";
+         public static string CouldNotFindAdvancedParameterInContainerForParameter(string containerName, string parameterName) => $"Could not find advanced parameter in container '{containerName}' for parameter '{parameterName}'.";
+         public static string CompoundProcessParameterMappingNotAvailable(string process, string parameter) => $"No compound process parameter mapping found for process='{process}' and parameter ='{parameter}'";
          public const string InvalidNumberOfBins = "Number of particle bins must be in [1..20]";
          public const string InvalidParticleSizeDistribution = "Unknown particles size distribution passed";
          public const string FirstOrderActiveTransportsNotSupported = "First order active transports are not supported";
@@ -432,10 +417,10 @@ namespace PKSim.Assets
          public const string MolWeightNotAvailable = "Molecular Weight not available";
          public const string MolWeightNotAvailableForPopulationSimulationComparison = "Molecular Weight was not found or is not the same in all compared simulations";
          public const string EventGroupSubContainerHasInvalidType = "Subcontainer of event group must be of type event or event group";
-         public const string NoStartTimeInEventBuilder = "Event group builder {0} does not contain parameter {1}";
-         public const string ModelNotAvailableForSpecies = "Model {0} is not available for species {1}";
+         public static string NoStartTimeInEventBuilder(string eventName, string timeName) => $"Event group builder {eventName} does not contain parameter {timeName}";
+         public static string ModelNotAvailableForSpecies(string model, string species) => $"Model {model} is not available for species {species}";
          public const string UnableToConverterIntestinalSecretion = "intestinal secretion directly into feces as a surrogate for luminal secretion and subsequent transport into faeces without re-absorption from the lumen is not supported any longer but can mechanistically be implemented";
-         public const string ExtendedNeighborhoodNotAllowed = "Neighborhood {0} is marked as EXTENDED which is not allowed";
+         public static string ExtendedNeighborhoodNotAllowed(string neighborhood) => $"Neighborhood {neighborhood} is marked as EXTENDED which is not allowed";
          public const string FourCompModelCannotBeUsedWithLargeMolecule = "Model for small molecules cannot be used for a large molecule.\nPlease use the dedicated model for proteins and large molecules.";
          public const string ProjectNeedsToBeSavedFirst = "Project needs to be saved first.";
          public const string SimulationCloneOnlyAvailableWhenBuildingBlocksAreUptodate = "Cloning a simulation requires that all building blocks are consistent with the simulation (e.g. all have green checkmarks)";
@@ -491,17 +476,17 @@ namespace PKSim.Assets
 
          public static string MissingColumnInView(string propertyName)
          {
-            return "Property named {0} not found.".FormatWith(propertyName);
+            return $"Property named {propertyName} not found.";
          }
 
          public static string ProjectFileIsCorrupt(string productName)
          {
-            return "Project file is corrupted and unreadable or this is not a {0} project file.".FormatWith(productName);
+            return $"Project file is corrupted and unreadable or this is not a {productName} project file.";
          }
 
          public static string CannotCalculateDDIRatioFor(string parameterName)
          {
-            return "Cannot calculate AUC Ratio: don't know how to handle parameter {0}".FormatWith(parameterName);
+            return $"Cannot calculate AUC Ratio: don't know how to handle parameter {parameterName}";
          }
 
          public static string NoBatchFileFoundIn(string inputFolder)
@@ -582,7 +567,7 @@ namespace PKSim.Assets
             var sb = new StringBuilder();
             sb.AppendLine("Support for project file of version 4.2 and older has ended with version 5.6 of the software.");
             sb.AppendLine();
-            sb.AppendLine("In order to convert the file '{0}' to the latest PK-Sim version please proceed as follows:".FormatWith(projectFile));
+            sb.AppendLine($"In order to convert the file '{projectFile}' to the latest PK-Sim version please proceed as follows:");
             sb.AppendLine(); 
             sb.AppendLine("  1 - Install an earlier version of PK-Sim (version 5.5 or earlier) and open the file");
             sb.AppendLine("  2 - Save the file");
@@ -683,9 +668,9 @@ namespace PKSim.Assets
             return $"Calculation method '{calculationMethod}' in category '{category}' is not defined for species '{species}'.";
          }
 
-         public static string CalculationMethodIsNotLicensed(string calculationMethod)
+         public static string CalculationMethodIsNotFound(string calculationMethod)
          {
-            return $"No license found for calculation method '{calculationMethod}'.";
+            return $"Calculation method '{calculationMethod}' was not found.";
          }
 
          public static string SimulationHasNoResultsAndCannotBeUsedInSummaryChart(string simulationName)
@@ -857,9 +842,9 @@ namespace PKSim.Assets
          private static string cannotAddToAnalysisBecauseOfDimensionMismatch(string objectType, string objectName, IEnumerable<string> allowedDimensions, IEnumerable<string> usedDimensions)
          {
             var sb = new StringBuilder();
-            sb.AppendLine("The {0} '{1}' cannot be added to the analysis.".FormatWith(objectType, objectName));
+            sb.AppendLine($"The {objectType} '{objectName}' cannot be added to the analysis.");
             sb.AppendLine();
-            sb.AppendLine("Its dimension '{0}' is not in the list of possible dimension(s):".FormatWith(usedDimensions.ToString(", ")));
+            sb.AppendLine($"Its dimension '{usedDimensions.ToString(", ")}' is not in the list of possible dimension(s):");
             sb.Append(allowedDimensions.ToString("\n"));
             return sb.ToString();
          }
@@ -903,15 +888,9 @@ namespace PKSim.Assets
             }
          }
 
-         public static string SummaryChartInfo
-         {
-            get { return "<B>Drag-and-drop the simulations to compare and select curves in data browser of chart editor.</B>"; }
-         }
+         public static string SimulationComparisonInfo => "<B>Drag-and-drop the simulations to compare and select curves in data browser of chart editor.</B>";
 
-         public static string NoParameterAvailableForScaling
-         {
-            get { return "No parameter was changed in the base individual. Default Scaling configuration will be used."; }
-         }
+         public static string NoParameterAvailableForScaling => "No parameter was changed in the base individual. Default Scaling configuration will be used.";
 
          public static string BuildingBlockSettingsDoNotMatchWithTemplate(string buildingBlockType)
          {
@@ -1354,42 +1333,42 @@ namespace PKSim.Assets
 
             public static string MinGreaterThanDbMinValue(double? dbMinValue, string unit)
             {
-               return "Minimum value should be greater than or equal to {0} {1}.".FormatWith(dbMinValue, unit);
+               return $"Minimum value should be greater than or equal to {dbMinValue} {unit}.";
             }
 
             public static string MaxGreaterThanDbMinValue(double? dbMinValue, string unit)
             {
-               return "Maximum value should be greater than or equal to {0} {1}.".FormatWith(dbMinValue, unit);
+               return $"Maximum value should be greater than or equal to {dbMinValue} {unit}.";
             }
 
             public static string MaxLessThanDbMaxValue(double? dbMaxValue, string unit)
             {
-               return "Maximum value should be less than or equal to {0} {1}.".FormatWith(dbMaxValue, unit);
+               return $"Maximum value should be less than or equal to {dbMaxValue} {unit}.";
             }
 
             public static string MinLessThanDbMaxValue(double? dbMaxValue, string unit)
             {
-               return "Minimum value should be less than or equal to {0} {1}.".FormatWith(dbMaxValue, unit);
+               return $"Minimum value should be less than or equal to {dbMaxValue} {unit}.";
             }
 
             public static string ValueSmallerThanMax(string parameterName, string value, string unit)
             {
-               return "Value for {0} should be less than or equal to {1} {2}".FormatWith(parameterName, value, unit);
+               return $"Value for {parameterName} should be less than or equal to {value} {unit}";
             }
 
             public static string ValueBiggerThanMin(string parameterName, string value, string unit)
             {
-               return "Value for {0} should be greater than or equal to {1} {2}".FormatWith(parameterName, value, unit);
+               return $"Value for {parameterName} should be greater than or equal to {value} {unit}";
             }
 
             public static string ValueStrictBiggerThanMin(string parameterName, string value, string unit)
             {
-               return "Value for {0} should be strictly greater than {1} {2}".FormatWith(parameterName, value, unit);
+               return $"Value for {parameterName} should be strictly greater than {value} {unit}";
             }
 
             public static string ValueStrictSmallerThanMax(string parameterName, string value, string unit)
             {
-               return "Value for {0} should be strictly less than {1} {2}".FormatWith(parameterName, value, unit);
+               return $"Value for {parameterName} should be strictly less than {value} {unit}";
             }
 
             public static readonly string ProportionOfFemaleBetween0And100 = "Proportion of females should be between 0 and 100";
@@ -1399,7 +1378,7 @@ namespace PKSim.Assets
 
          public static string PatternShouldContainOneIterationPattern(string iterationPattern, string startPattern, string endPattern)
          {
-            return "Naming pattern should contain one of '{0}', '{1}' or '{2}' .".FormatWith(iterationPattern, startPattern, endPattern);
+            return $"Naming pattern should contain one of '{iterationPattern}', '{startPattern}' or '{endPattern}'.";
          }
 
          public static readonly string AtLeastTwoBinsRequired = "At least two bins are required";
@@ -1673,7 +1652,6 @@ namespace PKSim.Assets
          public static readonly string AdvancedParameterTabCaption = "Advanced Parameters";
          public static readonly string CompoundParameterInSimulationSimple = BasicPharmacochemistry;
          public static readonly string CompoundParameterInSimulationAdvanced = AdvancedParameterTabCaption;
-         public static readonly string ConfirmRemoveParameterGroupAlternative = "Remove '{0}' from compound parameter group '{1}'?";
          public static readonly string ADME = "ADME";
          public static readonly string CompoundTypeAcid = "Acid";
          public static readonly string CompoundTypeBase = "Base";
@@ -1733,7 +1711,7 @@ namespace PKSim.Assets
          public static readonly string PopulationSimulationSettings = "Population Simulation Settings: Curve Selection";
          public static readonly string IndividualSimulationSettings = "Individual Simulation Settings: Curve Selection";
          public static readonly string SimulationSettingsDescription = "Select the curves that will be generated by the simulation.";
-         public static readonly string NumberOfGeneratedCurves = "Number of curves to generate for this simulation : {0}";
+         public static string NumberOfGeneratedCurves(int number) => $"Number of curves to generate for this simulation : {number}";
          public static readonly string AtLeastOneMoleculeNeedsToBeSelected = "At least one molecule needs to be selected";
          public static readonly string GeneratePopulationSimulationReport = "Generate report";
          public static readonly string IndividualSimulation = "Individual";
@@ -1741,8 +1719,8 @@ namespace PKSim.Assets
          public static readonly string CreateSimulation = "Create Simulation";
          public static readonly string CloneSimulation = "Clone Simulation";
          public static readonly string ConfigureSimulationDescription = "Configure Simulation";
-         public static readonly string EditIndividualSimulation = "Simulation: '{0}'";
-         public static readonly string EditPopulationSimulation = "Population Simulation : '{0}'";
+         public static string EditIndividualSimulation(string simulationName) => $"Simulation: '{simulationName}'";
+         public static string EditPopulationSimulation(string simulationName)  => $"Population Simulation : '{simulationName}'";
          public static readonly string RegisterAssembliesWithDefaultConvention = "Loading assemblies";
          public static readonly string RegisterCoreDependencies = "Registering core dependencies";
          public static readonly string RegisterORMDependencies = "Configuring database access";
@@ -1774,11 +1752,6 @@ namespace PKSim.Assets
          public static readonly string DI_24 = "24 h (once-daily)";
          public static readonly string DI_6_6_6_6 = "6 - 6 - 6 - 6 h";
          public static readonly string DI_6_6_12 = "6 - 6 - 12 h";
-         public static readonly string PKSimLicenseFile = "Please select license file";
-         public static readonly string DoYouWantToEnterANewKey = "Do you want to select a new Key?";
-         public static readonly string DoYouWantToEnterANewKeyOrStartInReadOnly = "Do you want to enter a new Key or start in Read-Only mode?";
-         public static readonly string NeyKeyButton = "&New Key";
-         public static readonly string ReadOnlyButton = "&Read-Only";
          public static readonly string CloseButton = "&Close";
          public static readonly string ExportActiveSimulationToMoBiDescription = "Export active simulation to MoBi";
          public static readonly string NaN = "<NaN>";
@@ -1856,7 +1829,6 @@ namespace PKSim.Assets
          public static readonly string RelTol = "Relative tolerance";
          public static readonly string AbsTol = "Absolute tolerance";
          public static readonly string SimulationResults = "Simulation Results";
-         public static readonly string RegisterLicenseDescription = "Register a new license...";
          public static readonly string No = "No";
          public static readonly string Yes = "Yes";
          public static readonly string ExportObservedDataToPkml = "Export observed data to pkml";
@@ -2111,7 +2083,7 @@ namespace PKSim.Assets
 
          public static string GenderRationFor(string gender)
          {
-            return "{0} ratio".FormatWith(gender);
+            return $"{gender} ratio";
          }
 
          public static string AddPartialProcess(string partialProcessType)
@@ -2394,7 +2366,7 @@ namespace PKSim.Assets
 
          public static string SelectDatabasePathFor(string speciesDisplayName)
          {
-            return "Select Expressions Database for {0}".FormatWith(speciesDisplayName);
+            return $"Select Expressions Database for {speciesDisplayName}";
          }
 
          public static string CreateSystemicProcessInCompoundCaption(string systemicProcessType)
@@ -2404,27 +2376,27 @@ namespace PKSim.Assets
 
          public static string EnterNameEntityCaption(string type)
          {
-            return "Enter name for {0}".FormatWith(type, type);
+            return $"Enter name for {type}";
          }
 
          public static string RenameEntityCaption(string type, string name)
          {
-            return "New name for {0} '{1}'".FormatWith(type, name);
+            return $"New name for {type} '{name}'";
          }
 
          public static string RenameDataSourceCaption()
          {
-            return "New name for {0}".FormatWith(DataSource.ToLower());
+            return $"New name for {DataSource.ToLower()}";
          }
 
          public static string RenamePartialProcessesMolecule(string moleculeType)
          {
-            return "New name for {0}".FormatWith(moleculeType.ToLower());
+            return $"New name for {moleculeType.ToLower()}";
          }
 
          public static string EditDescriptionEntityCaption(string type, string name)
          {
-            return "Description for {0} '{1}'".FormatWith(type, name);
+            return $"Description for {type} '{name}'";
          }
 
          public static string ReallyDeleteAlternative(string alternativeName)

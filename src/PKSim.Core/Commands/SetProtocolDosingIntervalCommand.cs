@@ -25,7 +25,7 @@ namespace PKSim.Core.Commands
       {
          _oldDosingInterval = _simpleProtocol.DosingInterval;
          _simpleProtocol.DosingInterval = _newDosingInterval;
-         Description = PKSimConstants.Command.SetSimpleProtocolDosingIntervalDescription.FormatWith(_oldDosingInterval, _newDosingInterval);
+         Description = PKSimConstants.Command.SetSimpleProtocolDosingIntervalDescription(_oldDosingInterval.ToString(), _newDosingInterval.ToString());
       }
 
       public override void RestoreExecutionData(IExecutionContext context)

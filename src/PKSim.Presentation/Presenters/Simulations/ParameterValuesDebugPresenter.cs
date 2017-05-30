@@ -24,7 +24,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void ShowParametersFor(IPKSimBuildingBlock buildingBlock)
       {
-         _view.Caption = "All Parameters for BuidlingBlock {0}".FormatWith(buildingBlock.Name);
+         _view.Caption = $"All Parameters for BuidlingBlock {buildingBlock.Name}";
          var allParameters = buildingBlock.GetAllChildren<IParameter>();
          _view.BindTo(_parametersReportCreator.ExportParametersToTable(allParameters));
          _view.Display();

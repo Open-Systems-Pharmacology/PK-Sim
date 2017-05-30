@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Mappers;

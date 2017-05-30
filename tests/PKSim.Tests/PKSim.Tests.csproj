@@ -106,13 +106,13 @@
       <HintPath>..\..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DevExpress.Data.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.4\lib\net452\DevExpress.Data.v16.2.dll</HintPath>
+    <Reference Include="DevExpress.Data.v16.2, Version=16.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.6\lib\net452\DevExpress.Data.v16.2.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="DevExpress.Utils.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.4\lib\net452\DevExpress.Utils.v16.2.dll</HintPath>
+    <Reference Include="DevExpress.Utils.v16.2, Version=16.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.6\lib\net452\DevExpress.Utils.v16.2.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="FakeItEasy, Version=2.3.3.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FakeItEasy.2.3.3\lib\net40\FakeItEasy.dll</HintPath>
@@ -155,43 +155,45 @@
       <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.24\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.99\lib\net452\OSPSuite.Assets.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.BDDHelper">
       <HintPath>..\..\packages\OSPSuite.BDDHelper.2.0.0.1\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.24\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.99\lib\net452\OSPSuite.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.1.0.24\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.1.0.79, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.1.0.79\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.24\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.99\lib\net452\OSPSuite.Presentation.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.Serializer">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.SimModel">
-      <HintPath>..\..\packages\OSPSuite.SimModel.2.0.0.1\lib\net45\OSPSuite.SimModel.dll</HintPath>
+    <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.SimModel.2.0.0.12\lib\net45\OSPSuite.SimModel.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.TeXReporting">
-      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.0.1\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    <Reference Include="OSPSuite.TeXReporting, Version=2.0.0.6, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.0.6\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Utility">
-      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.1\lib\net45\OSPSuite.Utility.dll</HintPath>
+    <Reference Include="OSPSuite.Utility, Version=2.0.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.5\lib\net45\OSPSuite.Utility.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SX, Version=2.6.2.8, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.2.8\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.6.3.3, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.3.3\lib\net45\SX.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -220,12 +222,14 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="BatchTool\BatchStartOptionsSpecs.cs" />
     <Compile Include="BatchTool\BatchToolFactoryForSpecs.cs" />
     <Compile Include="BatchTool\ContextForBatch.cs" />
     <Compile Include="BatchTool\InteractionSpecs.cs" />
     <Compile Include="BatchTool\JsonSerializationSpecs.cs" />
     <Compile Include="BatchTool\OralSpecs.cs" />
     <Compile Include="BatchTool\MetabolizationSpecs.cs" />
+    <Compile Include="BatchTool\SimulationExporterSpecs.cs" />
     <Compile Include="BatchTool\SimulationExportSpecs.cs" />
     <Compile Include="BatchTool\SpecificBindingSpecs.cs" />
     <Compile Include="BatchTool\StandardSpecs.cs" />
@@ -323,7 +327,6 @@
     <Compile Include="Core\DataColumnExtensionsSpecs.cs" />
     <Compile Include="Core\DistributedTableFormulaSpecs.cs" />
     <Compile Include="Core\DistributionMetaDataToDistributionMapperSpecs.cs" />
-    <Compile Include="Core\EntityValidatorSpecs.cs" />
     <Compile Include="Core\DataRepositorySynchronizerSpecs.cs" />
     <Compile Include="Core\DistributionFactorySpecs.cs" />
     <Compile Include="Core\DistributionFormulaExtensionsSpecs.cs" />
@@ -416,32 +419,20 @@
     <Compile Include="Infrastructure\DatabaseSpecs.cs" />
     <Compile Include="Infrastructure\HistoryItemMetaDataRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\AdvancedParameterXmlSerializerSpecs.cs" />
-    <Compile Include="IntegrationTests\AllJournalDiagramsQuerySpecs.cs" />
-    <Compile Include="IntegrationTests\AllJournalItemsQuerySpecs.cs" />
     <Compile Include="IntegrationTests\ContextForSimulationIntegration.cs" />
-    <Compile Include="IntegrationTests\AddRelatedItemToJournalPageCommandSpecs.cs" />
-    <Compile Include="IntegrationTests\AllKnownTagsQuerySpecs.cs" />
-    <Compile Include="IntegrationTests\ContextForJournalDatabase.cs" />
     <Compile Include="IntegrationTests\DatabaseUpdateSpecs.cs" />
-    <Compile Include="IntegrationTests\DeleteRelatedItemFromJournalPageCommandSpecs.cs" />
-    <Compile Include="IntegrationTests\DeleteJournalPageCommandSpecs.cs" />
     <Compile Include="IntegrationTests\FlatMoleculeParameterRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\IndividualTransporterFactorySpecs.cs" />
     <Compile Include="IntegrationTests\MoleculeParameterRepositorySpecs.cs" />
-    <Compile Include="IntegrationTests\NextAvailableWorkingJournalIndexQuerySpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationConfigurationXmSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationResultXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\PKSimParameterStartValuesCreatorSpecs.cs" />
+    <Compile Include="IntegrationTests\RegistrationSpecs.cs" />
     <Compile Include="IntegrationTests\SensitivityAnalysisXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationAnalysisWorkflowXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationTransferLoaderSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQuerySpecs.cs" />
-    <Compile Include="IntegrationTests\CreateWorkingJournalItemCommandSpecs.cs" />
-    <Compile Include="IntegrationTests\UpdateJournalDiagramCommandSpecs.cs" />
-    <Compile Include="IntegrationTests\UpdateJournalPageCommandSpecs.cs" />
-    <Compile Include="IntegrationTests\UpdateJournalPageTagsCommandSpecs.cs" />
-    <Compile Include="IntegrationTests\JournalPageIdsFromSearchQuerySpecs.cs" />
     <Compile Include="Presentation\AdvancedParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\BoxWhiskerNumericFieldsPresenterSpecs.cs" />
     <Compile Include="Presentation\BuildingBlockSelectionDisplayerSpecs.cs" />
@@ -718,7 +709,7 @@
     <Compile Include="IntegrationTests\IndividualEnzymeFactorySpecs.cs" />
     <Compile Include="IntegrationTests\LazyLoadingIntegrationTests.cs" />
     <Compile Include="Infrastructure\LazyLoadTaskSpecs.cs" />
-    <Compile Include="Infrastructure\McDataRepositoryMetaDataSpecs.cs" />
+    <Compile Include="Infrastructure\DataRepositoryMetaDataSpecs.cs" />
     <Compile Include="IntegrationTests\ModelConfigurationRepositorySpecs.cs" />
     <Compile Include="Infrastructure\ModelContainerQuerySpecs.cs" />
     <Compile Include="Infrastructure\ModelNeighborhoodQuerySpecs.cs" />
@@ -830,9 +821,7 @@
     <Compile Include="Presentation\EditIndividualSimulationPresenterSpecs.cs" />
     <Compile Include="Presentation\EditProtocolPresenterSpecs.cs" />
     <Compile Include="Presentation\EditRandomPopulationPresenterSpecs.cs" />
-    <Compile Include="Presentation\ObjectBaseNodeSpecs.cs" />
     <Compile Include="Presentation\EntityTaskSpecs.cs" />
-    <Compile Include="IntegrationTests\ExceptionManagerSpecs.cs" />
     <Compile Include="Presentation\ExportPopulationSimulationToCSVCommandSpecs.cs" />
     <Compile Include="Presentation\ExportPopulationToCSVCommandSpecs.cs" />
     <Compile Include="Presentation\FormulationSettingsPresenterSpecs.cs" />
@@ -840,7 +829,7 @@
     <Compile Include="Presentation\FullPathDisplayResolverSpecs.cs" />
     <Compile Include="Presentation\HeavyWorkManagerForSpecs.cs" />
     <Compile Include="Presentation\HistoryPresenterSpecs.cs" />
-    <Compile Include="Presentation\IContainerViewExtensionsSpecs.cs" />
+    <Compile Include="Presentation\ContainerViewExtensionsSpecs.cs" />
     <Compile Include="Presentation\ImportObservedDataCommmandSpecs.cs" />
     <Compile Include="Presentation\IndividualDefaultValueRetrieverSpecs.cs" />
     <Compile Include="Presentation\IndividualProteinToProteinExpressionDTOMapperSpecs.cs" />
@@ -931,7 +920,6 @@
     <Compile Include="Presentation\StatusBarPresenterSpecs.cs" />
     <Compile Include="Presentation\StopSimulationCommandSpecs.cs" />
     <Compile Include="Presentation\SubPresenterHelper.cs" />
-    <Compile Include="Presentation\SubPresenterItemSpecs.cs" />
     <Compile Include="Presentation\IndividualSimulationComparisonPresenterSpecs.cs" />
     <Compile Include="Presentation\SystemicProcessToRootNodeTypeMapperSpecs.cs" />
     <Compile Include="Presentation\TableFormulationPresenterSpecs.cs" />
@@ -990,7 +978,7 @@
     <Compile Include="ProjectConverter\v6_2\Theophylline_612Specs.cs" />
     <Compile Include="ProjectConverter\v6_3\631_EnzymesOntogenySpecs.cs" />
     <Compile Include="ProjectConverter\v6_4\Converter632To641Specs.cs" />
-    <Compile Include="ProjectConverter\v6_4\Converter641To642Specs.cs" />
+    <Compile Include="ProjectConverter\v7_1\Converter641To710Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IntegrationTests\NightlyOnlyAttribute.cs" />
     <Compile Include="Spikes\PopulationResults30000Updates.cs" />
@@ -1027,7 +1015,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\packages\OSPSuite.SimModel.2.0.0.1\OSPSuite.SimModel\OSPSuite.SimModel.xsd">
+    <None Include="..\..\packages\OSPSuite.SimModel.2.0.0.12\OSPSuite.SimModel\OSPSuite.SimModel.xsd">
       <Link>OSPSuite.SimModel.xsd</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

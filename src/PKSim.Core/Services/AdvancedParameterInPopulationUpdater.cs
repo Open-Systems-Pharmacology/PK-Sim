@@ -1,10 +1,9 @@
 using System;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Services
 {
@@ -37,11 +36,11 @@ namespace PKSim.Core.Services
          var advancedParameterContainer = _buildingBlockRetriever.BuildingBlockContaining(parameter) as IAdvancedParameterContainer;
 
          if (advancedParameterContainer == null)
-            throw new ArgumentException(PKSimConstants.Error.CouldNotFindAdvancedParameterContainerForParameter.FormatWith(parameter.Name));
+            throw new ArgumentException(PKSimConstants.Error.CouldNotFindAdvancedParameterContainerForParameter(parameter.Name));
 
          var advancedParameter = parameter.ParentContainer.ParentContainer as IAdvancedParameter;
          if (advancedParameter == null)
-            throw new ArgumentException(PKSimConstants.Error.CouldNotFindAdvancedParameterInContainerForParameter.FormatWith(advancedParameterContainer.Name, parameter.Name));
+            throw new ArgumentException(PKSimConstants.Error.CouldNotFindAdvancedParameterInContainerForParameter(advancedParameterContainer.Name, parameter.Name));
 
          advancedParameterContainer.GenerateRandomValuesFor(advancedParameter);
          _eventPublisher.PublishEvent(new AdvancedParameterDistributionChangedEvent(advancedParameterContainer, advancedParameter));

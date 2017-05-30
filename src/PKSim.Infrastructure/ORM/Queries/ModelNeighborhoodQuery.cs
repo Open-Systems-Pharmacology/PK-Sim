@@ -71,10 +71,10 @@ namespace PKSim.Infrastructure.ORM.Queries
 
             if (flatNeighborhoodContainer.UsageInIndividual == CoreConstants.ORM.UsageInIndividualExtended)
             {
-               throw new ArgumentException(PKSimConstants.Error.ExtendedNeighborhoodNotAllowed.FormatWith(flatNeighborhoodContainer.Name));
+               throw new ArgumentException(PKSimConstants.Error.ExtendedNeighborhoodNotAllowed(flatNeighborhoodContainer.Name));
             }
 
-            throw new ArgumentException(PKSimConstants.Error.UnknownUsageInIndividualFlag.FormatWith(flatNeighborhoodContainer.UsageInIndividual));
+            throw new ArgumentException(PKSimConstants.Error.UnknownUsageInIndividualFlag(flatNeighborhoodContainer.UsageInIndividual));
          }
 
          return individualNeighborhoods.GetChildren<IContainer>(c => neighborhoodNames.Contains(c.Name));

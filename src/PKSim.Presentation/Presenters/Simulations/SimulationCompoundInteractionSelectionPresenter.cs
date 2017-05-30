@@ -85,10 +85,18 @@ namespace PKSim.Presentation.Presenters.Simulations
       public void CompoundProcessSelectionChanged(SimulationInteractionProcessSelectionDTO dto, PartialProcess interactionProcess)
       {
          if (processAlreadySelected(interactionProcess))
+         {
+            refreshView();
             throw new CannotSelectThePartialProcessMoreThanOnceException(interactionProcess);
+         }
 
          dto.SimulationPartialProcess.CompoundProcess = interactionProcess;
          updateWaring();
+      }
+
+      private void refreshView()
+      {
+         _view.Repaint();
       }
 
       private void updateWaring()

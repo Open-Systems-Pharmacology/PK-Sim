@@ -13,41 +13,43 @@ namespace PKSim.BatchTool
    {
       public static Individual Individual()
       {
-         var ind = new Individual();
-         ind.Species = CoreConstants.Species.Human;
-         ind.Population = CoreConstants.Population.ICRP;
-         ind.Age = 30;
-         ind.Weight = 80;
-         ind.Height = 178;
-         return ind;
+         return new Individual
+         {
+            Species = CoreConstants.Species.Human,
+            Population = CoreConstants.Population.ICRP,
+            Age = 30,
+            Weight = 80,
+            Height = 17.8
+         };
       }
 
       public static Compound Compound()
       {
-         var comp = new Compound();
-         comp.Lipophilicity = 3;
-         comp.FractionUnbound  = 0.8;
-         comp.MolWeight  = 400;
-         comp.F  = 1;
-         comp.SolubilityAtRefpH = 100;
+         var comp = new Compound
+         {
+            Lipophilicity = 3,
+            FractionUnbound = 0.8,
+            MolWeight = 4E-7,
+            F = 1,
+            SolubilityAtRefpH = 100
+         };
          comp.PkaTypes.Add(new PkaType{Type = CompoundType.Acid.ToString(),Value =8 });
          return comp;
       }
 
       public static ApplicationProtocol ApplicationProtocol()
       {
-         var protocol = new ApplicationProtocol();
-         protocol.ApplicationType = CoreConstants.Application.Name.IntravenousBolus;
-         protocol.DosingInterval = DosingIntervalId.DI_6_6_6_6.ToString();
-         protocol.EndTime = 1440;
-         return protocol;
+         return new ApplicationProtocol
+         {
+            ApplicationType = CoreConstants.Application.Name.IntravenousBolus,
+            DosingInterval = DosingIntervalId.DI_6_6_6_6.ToString(),
+            EndTime = 1440
+         };
       }
 
       public static SimulationConfiguration Configuration()
       {
-         var config = new SimulationConfiguration();
-         config.Model = CoreConstants.Model.FourComp;
-         return config;
+         return new SimulationConfiguration {Model = CoreConstants.Model.FourComp};
       }
       public static Simulation DefaultSimulation()
       {
@@ -57,8 +59,7 @@ namespace PKSim.BatchTool
       public static Simulation SimulationFrom(Individual individual, Compound compound, 
          ApplicationProtocol protocol, SimulationConfiguration configuration, IEnumerable<ParameterVariationSet> parameterVariationSets )
       {
-         var simulation = new Simulation();
-         simulation.Individual =individual;
+         var simulation = new Simulation {Individual = individual};
          simulation.Compounds.Add(compound);
          simulation.ApplicationProtocols.Add(protocol);
          simulation.Configuration = configuration;

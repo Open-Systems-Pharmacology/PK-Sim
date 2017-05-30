@@ -1,11 +1,12 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Validation;
 using PKSim.BatchTool.Services;
 using PKSim.BatchTool.Views;
 using PKSim.Core;
 using PKSim.Core.Batch;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.BatchTool.Presenters
 {
@@ -18,6 +19,7 @@ namespace PKSim.BatchTool.Presenters
    public class InputAndOutputBatchPresenter<TBatchRunner> : BatchPresenter<IInputAndOutputBatchView, IInputAndOutputBatchPresenter, TBatchRunner>, IInputAndOutputBatchPresenter where TBatchRunner : IBatchRunner
    {
       protected InputAndOutputBatchDTO _dto;
+      private string _logFileFullPath;
 
       public InputAndOutputBatchPresenter(IInputAndOutputBatchView view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger)
          : base(view, batchRunner, dialogCreator, logPresenter, batchLogger)
@@ -26,16 +28,17 @@ namespace PKSim.BatchTool.Presenters
 
       public virtual void SelectInputFolder()
       {
-         string inputFolder = _dialogCreator.AskForFolder("Select input folder", CoreConstants.DirectoryKey.BATCH);
+         var inputFolder = _dialogCreator.AskForFolder("Select input folder", CoreConstants.DirectoryKey.BATCH);
          if (string.IsNullOrEmpty(inputFolder)) return;
          _dto.InputFolder = inputFolder;
       }
 
       public virtual void SelectOutputFolder()
       {
-         string outputFolder = _dialogCreator.AskForFolder("Select output folder where results will be exported", CoreConstants.DirectoryKey.BATCH);
+         var outputFolder = _dialogCreator.AskForFolder("Select output folder where results will be exported", CoreConstants.DirectoryKey.BATCH);
          if (string.IsNullOrEmpty(outputFolder)) return;
          _dto.OutputFolder = outputFolder;
+         _logFileFullPath = CoreConstants.DefaultBatchLogFullPath(outputFolder);
       }
 
       protected override Task StartBatch()
@@ -44,27 +47,39 @@ namespace PKSim.BatchTool.Presenters
             new
             {
                inputFolder = _dto.InputFolder,
-               outputFolder = _dto.OutputFolder
+               outputFolder = _dto.OutputFolder,
+               logFileFullPath = _logFileFullPath,
+               exportMode = exportModeFrom(_startedFromCommandLine),
+               notificationType = notificationTypeFrom(_startedFromCommandLine),
             });
       }
 
-      public override void InitializeWith(BatchStartOptions startOptions)
+      private NotificationType notificationTypeFrom(bool startedFromCommandLine)
       {
-         {
-            _dto = new InputAndOutputBatchDTO();
-            if (startOptions.IsValid)
-            {
-               _startedFromCommandLine = true;
-               _dto.InputFolder = startOptions.InputFolder;
-               _dto.OutputFolder = startOptions.OutputFolder;
-            }
+         return startedFromCommandLine ? NotificationType.Info | NotificationType.Error : NotificationType.All;
+      }
 
+      private BatchExportMode exportModeFrom(bool startedFromCommandLine)
+      {
+         return startedFromCommandLine ? BatchExportMode.Json | BatchExportMode.Xml : BatchExportMode.All;
+      }
+
+      public override async Task InitializeWith(BatchStartOptions startOptions)
+      {
+         _dto = new InputAndOutputBatchDTO();
+         if (startOptions.IsValid())
+         {
+            _startedFromCommandLine = true;
+            _logFileFullPath = startOptions.LogFileFullPath;
+            _dto.InputFolder = startOptions.InputFolder;
+            _dto.OutputFolder = startOptions.OutputFolder;
+            await RunBatch();
+         }
+         else
+         {
+            _startedFromCommandLine = false;
             _view.BindTo(_dto);
             _view.Display();
-            if (_dto.IsValid())
-               RunBatch();
-            else
-               _startedFromCommandLine = false;
          }
       }
    }

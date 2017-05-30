@@ -20,7 +20,7 @@ namespace PKSim.BatchTool
 
       public void Load(string jsonFileName)
       {
-         var projectFile = DomainHelperForSpecs.DataFilePathFor(string.Format("BatchFiles\\{0}.json", jsonFileName));
+         var projectFile = DomainHelperForSpecs.DataFilePathFor($"BatchFiles\\{jsonFileName}.json");
          _simulationForBatch = sut.LoadSimulationFrom(projectFile);
          _simulation = _simulationForBatch.Simulation;
       }

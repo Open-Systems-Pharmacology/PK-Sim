@@ -1,6 +1,7 @@
-﻿using PKSim.BatchTool.Views;
-using OSPSuite.Presentation.Core;
+﻿using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Validation;
+using PKSim.BatchTool.Views;
 
 namespace PKSim.BatchTool.Presenters
 {
@@ -27,6 +28,10 @@ namespace PKSim.BatchTool.Presenters
       public void Initialize(BatchStartOptions startOptions)
       {
          _startOptions = startOptions;
+         if (_startOptions.IsValid())
+         {
+            StartBatchRun();
+         }
       }
 
       public void StartBatchRun()
@@ -44,10 +49,10 @@ namespace PKSim.BatchTool.Presenters
          start<IGenerateTrainingMaterialPresenter>();
       }
 
-      private void start<T>() where T : IInitializablePresenter<BatchStartOptions>
+      private void start<T>() where T : IBatchPresenter
       {
          var presenter = _applicationController.Start<T>();
-         _view.Hide();
+         View.Hide();
          presenter.InitializeWith(_startOptions);
       }
 

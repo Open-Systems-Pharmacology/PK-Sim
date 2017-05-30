@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B4D05BE-A0E7-41D6-8FCF-1C6005FBE801}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		appveyor-coverage.yml = appveyor-coverage.yml
 		appveyor-nightly.yml = appveyor-nightly.yml
-		appveyor-reporting.yml = appveyor-reporting.yml
 		appveyor.yml = appveyor.yml
 		log4net.config.xml = log4net.config.xml
 		postclean.bat = postclean.bat

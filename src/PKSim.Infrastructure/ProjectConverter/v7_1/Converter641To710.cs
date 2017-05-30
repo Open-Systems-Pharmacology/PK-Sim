@@ -1,23 +1,24 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
+using OSPSuite.Core.Converter.v7_1;
+using OSPSuite.Core.Serialization.Xml.Extensions;
 using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Presentation;
-using OSPSuite.Core.Converter.v6_4;
-using OSPSuite.Core.Serialization.Xml.Extensions;
 
-namespace PKSim.Infrastructure.ProjectConverter.v6_4
+namespace PKSim.Infrastructure.ProjectConverter.v7_1
 {
-   public class Converter641To642 : IObjectConverter
+   public class Converter641To710 : IObjectConverter
+
    {
-      private readonly Converter63To64 _coreConverter63To64;
+      private readonly Converter63To710 _coreConverter63To710;
       private const string DEFAULT_PRESENTATION_SETTINGS = "DefaultPresentationSettings";
       private const string PRESENTATION_KEY = "presentationKey";
 
-      public Converter641To642(Converter63To64 coreConverter63To64)
+      public Converter641To710(Converter63To710 coreConverter63To710)
       {
-         _coreConverter63To64 = coreConverter63To64;
+         _coreConverter63To710 = coreConverter63To710;
       }
 
       public bool IsSatisfiedBy(int version)
@@ -27,15 +28,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_4
 
       public int Convert(object objectToConvert, int originalVersion)
       {
-         return ProjectVersions.V6_4_2;
+         return ProjectVersions.V7_1_0;
       }
 
       public int ConvertXml(XElement element, int originalVersion)
       {
-         _coreConverter63To64.ConvertXml(element);
+         _coreConverter63To710.ConvertXml(element);
          element.DescendantsAndSelfNamed("WorkspaceLayoutItem").Each(convertWorkspaceLayoutItem);
 
-         return ProjectVersions.V6_4_2;
+         return ProjectVersions.V7_1_0;
       }
 
       private void convertWorkspaceLayoutItem(XElement layoutItemElement)

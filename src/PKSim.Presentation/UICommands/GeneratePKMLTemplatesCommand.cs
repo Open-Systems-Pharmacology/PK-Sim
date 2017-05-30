@@ -79,7 +79,6 @@ namespace PKSim.Presentation.UICommands
          var fourCompIvBolusMg = configurationFrom(batchSimulation);
 
 
-
          twoPore.SpatialStructure.Name = "Human 2 Pores";
          twoPore.PassiveTransports.Name = "2 Pores Passive Transports";
 
@@ -119,7 +118,6 @@ namespace PKSim.Presentation.UICommands
       private void saveToPKML(IBuildingBlock buildingBlock, string folder)
       {
          var fileName = Path.Combine(folder, buildingBlock.Name + ".pkml");
-         //no licenses required when generating templates
          _pkmlPersistor.SaveToPKML(buildingBlock, fileName);
       }
    }

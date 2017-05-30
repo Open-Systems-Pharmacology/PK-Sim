@@ -39,7 +39,7 @@ namespace PKSim.Core.Batch.Mapper
             var parameter = formulation.Parameter(parameterValue.Key);
             if (parameter == null)
             {
-               _batchLogger.AddWarning("Parameter '{0}' not found in formulation '{1}'".FormatWith(parameterValue.Key, formulation.Name));
+               _batchLogger.AddWarning($"Parameter '{parameterValue.Key}' not found in formulation '{formulation.Name}'");
                continue;
             }
 

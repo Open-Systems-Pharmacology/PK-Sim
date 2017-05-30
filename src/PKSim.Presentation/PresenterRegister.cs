@@ -1,5 +1,16 @@
-using System;
-using System.Linq;
+using OSPSuite.Assets;
+using OSPSuite.Core;
+using OSPSuite.Core.Domain.Mappers;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Mappers;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.Comparisons;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Presenters.Journal;
+using OSPSuite.Presentation.Presenters.Main;
+using OSPSuite.Presentation.UICommands;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -17,18 +28,6 @@ using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Repositories;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
-using OSPSuite.Assets;
-using OSPSuite.Core;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Mappers;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.Comparisons;
-using OSPSuite.Presentation.Presenters.Journal;
-using OSPSuite.Presentation.Presenters.Main;
-using OSPSuite.Presentation.UICommands;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Container.Conventions;
-using OSPSuite.Utility.Format;
 using JournalDiagramMainPresenter = PKSim.Presentation.Presenters.Main.JournalDiagramMainPresenter;
 using JournalPresenter = PKSim.Presentation.Presenters.Main.JournalPresenter;
 using MainComparisonPresenter = PKSim.Presentation.Presenters.Main.MainComparisonPresenter;
@@ -166,21 +165,8 @@ namespace PKSim.Presentation
          {
             scan.AssemblyContainingType<PresenterRegister>();
             scan.IncludeNamespaceContainingType<IndividualSimulationContextMenu>();
-            scan.WithConvention<ContextMenuRegistrationConvention>();
+            scan.WithConvention<AllInterfacesAndConcreteTypeRegistrationConvention>();
          });
-      }
-   }
-
-   public class ContextMenuRegistrationConvention : IRegistrationConvention
-   {
-      public void Process(Type concreteType, IContainer container, LifeStyle lifeStyle)
-      {
-         var allInterfaces = concreteType.GetInterfaces()
-            .Where(x => x.IsInterface)
-            .ToList();
-
-         allInterfaces.Add(concreteType);
-         container.Register(allInterfaces, concreteType, lifeStyle);
       }
    }
 }

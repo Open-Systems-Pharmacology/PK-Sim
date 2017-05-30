@@ -1,6 +1,6 @@
-﻿using PKSim.Core.Model;
+﻿using OSPSuite.Core.Comparison;
+using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Comparison;
 
 namespace PKSim.Core.Comparison
 {

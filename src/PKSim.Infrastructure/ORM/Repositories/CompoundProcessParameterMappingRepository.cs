@@ -1,29 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using PKSim.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
-   public class CompoundProcessParameterMappingRepository :StartableRepository<ICompoundProcessParameterMapping>,  ICompoundProcessParameterMappingRepository
+   public class CompoundProcessParameterMappingRepository : StartableRepository<ICompoundProcessParameterMapping>, ICompoundProcessParameterMappingRepository
    {
       private readonly IFlatCompoundProcessParameterMappingRepository _flatParameterMappingRepo;
       private readonly IFlatContainerRepository _flatContainerRepo;
       private readonly ICache<CompositeKey, ICompoundProcessParameterMapping> _parameterMappings;
 
-      public CompoundProcessParameterMappingRepository(IFlatCompoundProcessParameterMappingRepository flatParameterMappingRepo,IFlatContainerRepository flatContainerRepo)
+      public CompoundProcessParameterMappingRepository(IFlatCompoundProcessParameterMappingRepository flatParameterMappingRepo, IFlatContainerRepository flatContainerRepo)
       {
          _flatParameterMappingRepo = flatParameterMappingRepo;
          _flatContainerRepo = flatContainerRepo;
          _parameterMappings = new Cache<CompositeKey, ICompoundProcessParameterMapping>(pm => keyFor(pm.ProcessName, pm.ParameterName));
       }
 
-    
       public override IEnumerable<ICompoundProcessParameterMapping> All()
       {
          Start();
@@ -52,8 +50,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
          var key = keyFor(compoundProcessName, processParameterName);
 
          if (!_parameterMappings.Contains(key))
-            throw new ArgumentException(PKSimConstants.Error.CompoundProcessParameterMappingNotAvailable.FormatWith(compoundProcessName,
-                                                                                           processParameterName));
+            throw new ArgumentException(PKSimConstants.Error.CompoundProcessParameterMappingNotAvailable(compoundProcessName, processParameterName));
+
          return _parameterMappings[key].MappedParameterPath;
       }
 

@@ -26,6 +26,6 @@ namespace PKSim.Core.Services
       /// <summary>
       /// Run the simulation as a batch run an ensure that all outputs are available
       /// </summary>
-      void RunForBatch(TSimulation simulation, bool checkNegativeValues);
+      Task RunForBatch(TSimulation simulation, bool checkNegativeValues);
    }
 }

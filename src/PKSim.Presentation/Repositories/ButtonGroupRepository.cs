@@ -249,7 +249,6 @@ namespace PKSim.Presentation.Repositories
                .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GarbageCollection)))
                .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GenerateCalculationMethods)))
                .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GeneratePKMLTemplates)))
-               .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GeneratePretermsData)))
                .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GenerateGroupsTemplate)))
                .WithId(ButtonGroupIds.Admin);
          }

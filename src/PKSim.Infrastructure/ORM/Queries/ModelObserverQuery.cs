@@ -260,7 +260,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
          var fractionFormula = _objectBaseFactory.Create<ExplicitFormula>()
             .WithName(formulaName)
-            .WithFormulaString("{0}>0 ? M/{0} : 0".FormatWith(TOTAL_DRUG_MASS_ALIAS))
+            .WithFormulaString($"{TOTAL_DRUG_MASS_ALIAS}>0 ? M/{TOTAL_DRUG_MASS_ALIAS} : 0")
             .WithDimension(_dimensionRepository.Fraction);
 
          fractionFormula.AddObjectPath(_objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER)

@@ -56,7 +56,6 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId PopulationSimulationComparison = createMenuBarItemId("PopulationSimulationComparison");
       public static MenuBarItemId PopulationSimulationComparisonInAnalyze = createMenuBarItemId("PopulationSimulationComparisonInAnalyze");
       public static MenuBarItemId GeneratePKMLTemplates = createMenuBarItemId("GeneratePKMLTemplates");
-      public static MenuBarItemId GeneratePretermsData = createMenuBarItemId("GeneratePretermsData");
       public static MenuBarItemId HistoryReportGroup = createMenuBarItemId("HistoryReportGroup");
       public static MenuBarItemId HistoryReportExcel = createMenuBarItemId("HistoryReportExcel");
       public static MenuBarItemId HistoryReportPDF = createMenuBarItemId("HistoryReportPDF");

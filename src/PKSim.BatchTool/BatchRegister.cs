@@ -7,6 +7,7 @@ using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Presentation;
+using PKSim.BatchTool.Mappers;
 
 namespace PKSim.BatchTool
 {

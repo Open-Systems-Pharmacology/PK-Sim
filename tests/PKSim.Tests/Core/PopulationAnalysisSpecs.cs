@@ -222,7 +222,7 @@ namespace PKSim.Core
          _groupingFieldUsing1 = new PopulationAnalysisGroupingField(new NumberOfBinsGroupingDefinition(_oldName) { NumberOfBins = 5 }) { Name = "Using1" };
          _groupingFieldUsing2 = new PopulationAnalysisGroupingField(new FixedLimitsGroupingDefinition(_oldName) ) { Name = "Using2"};
          _groupingFieldNotUsing = new PopulationAnalysisGroupingField(new FixedLimitsGroupingDefinition("ANOTHER NAME")) {Name = "NotUsing"};
-         _expressionField = new PopulationAnalysisExpressionField("[{0}] + [Field2]".FormatWith(_oldName)) {Name = "Expression"};
+         _expressionField = new PopulationAnalysisExpressionField($"[{_oldName}] + [Field2]") {Name = "Expression"};
          sut = new PopulationPivotAnalysis();
          sut.Add(_renamedField);
          sut.Add(_groupingFieldUsing1);

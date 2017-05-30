@@ -1,34 +1,54 @@
 ﻿using System;
 using System.Windows.Forms;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Validation;
 using PKSim.BatchTool.Presenters;
-using OSPSuite.Presentation.Services;
 
 namespace PKSim.BatchTool
 {
+   [Flags]
+   enum ExitCodes
+   {
+      Success = 0,
+      Error = 1 << 0,
+   }
+   
    static class Program
    {
       /// <summary>
-      /// The main entry point for the application.
+      ///    The main entry point for the application.
       /// </summary>
       [STAThread]
-      static void Main(string[] args)
-      { 
+      static int  Main(string[] args)
+      {
          Application.EnableVisualStyles();
          Application.SetCompatibleTextRenderingDefault(false);
          try
-         { 
+         {
             BatchStarter.Start();
             var mainPresenter = IoC.Resolve<IBatchMainPresenter>();
-            mainPresenter.Initialize(BatchStartOptions.From(args));
-            Application.Run(mainPresenter.View.DowncastTo<Form>());
+            var options = BatchStartOptions.From(args);
+            mainPresenter.Initialize(options);
+            var applicationContext = createContextFrom(mainPresenter, options);
+            Application.Run(applicationContext); 
+          
+            return (int)ExitCodes.Success;
          }
          catch (Exception e)
          {
-            MessageBox.Show(ExceptionManager.ExceptionMessageWithStackTraceFrom(e), "Unhandled Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             e.LogError();
+            return (int)ExitCodes.Error;
          }
+      }
+
+      private static ApplicationContext createContextFrom(IBatchMainPresenter mainPresenter, BatchStartOptions options)
+      {
+         if(options.IsValid())
+            return new ApplicationContext();
+
+         return new ApplicationContext(mainPresenter.BaseView.DowncastTo<Form>());
       }
    }
 }

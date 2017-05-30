@@ -15,6 +15,14 @@ assembly_info:
 
 skip_branch_with_pr: true
 
+branches:
+  only:
+    - master
+    - develop
+
+pull_requests: 
+  do_not_increment_build_number: true     
+
 skip_commits:
   files:
     - '*.md'

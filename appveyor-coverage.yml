@@ -18,6 +18,8 @@ cache:
   packages -> **\packages.config  
 
 install:
+- set PATH=C:\Ruby22\bin;C:\\Python34;C:\\Python34\\Scripts;%PATH%"
+- pip install codecov
 - cmd: git submodule update --init --recursive
 - ps: >-
     (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi', 'C:\\msxml.msi')
@@ -51,9 +53,5 @@ notifications:
     incoming_webhook:      
       secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyF1h7st5qNdNezFp6T+bWXqrcZ4q/smtPcJ7LkUFHL46JDYUFlIL8FDz+ApX/vP+x0=
 
-test:
-  assemblies:
-    - PKSim.Tests.dll
-
-  categories:
-    - Reporting
+test_script:
+  - rake cover

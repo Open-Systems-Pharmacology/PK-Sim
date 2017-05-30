@@ -66,7 +66,7 @@ namespace PKSim.Core.Services
          }
 
          //model not found for given species
-         throw new ArgumentException(PKSimConstants.Error.ModelNotAvailableForSpecies.FormatWith(modelName, originData.Species.Name));
+         throw new ArgumentException(PKSimConstants.Error.ModelNotAvailableForSpecies(modelName, originData.Species.Name));
       }
 
       public ModelProperties DefaultFor(ModelConfiguration modelConfiguration, OriginData originData)
