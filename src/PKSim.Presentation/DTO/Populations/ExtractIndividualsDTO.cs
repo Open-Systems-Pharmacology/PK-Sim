@@ -94,7 +94,7 @@ namespace PKSim.Presentation.DTO.Populations
                return CreateRule.For<ExtractIndividualsDTO>()
                   .Property(dto => dto.IndividualIdsExpression)
                   .WithRule((dto, individualIds) => dto.CountFor(individualIds) > 0)
-                  .WithError((dto, individualIds) => PKSimConstants.Error.AtLeastOneFileRequiredToStartPopulationImport);
+                  .WithError((dto, individualIds) => PKSimConstants.Error.AtLeastOneIndividualIdRequiredTOPerformPopulationExtraction);
             }
          }
 

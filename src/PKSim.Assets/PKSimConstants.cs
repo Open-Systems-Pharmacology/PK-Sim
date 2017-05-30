@@ -446,6 +446,7 @@ namespace PKSim.Assets
          public const string KeywordsAndReplacementsSizeDiffer = "Keywords and replacementValues do not have the same length!";
          public const string GenderAndOrPopulationMissingFromFile = "Gender and/or Population are not defined in the file to import.";
          public const string FormulationShouldBeUsedAsTemplateOrAsSimulationBuildingBlock = "Formulation usage is inconsitent. Please use either the template formulation or the simulation formulation";
+         public const string AtLeastOneIndividualIdRequiredTOPerformPopulationExtraction = "At least one valid individual id is required to perform the population extraction.";
 
          public static string SimulationResultsFileDoesNotHaveTheExpectedFormat
          {
