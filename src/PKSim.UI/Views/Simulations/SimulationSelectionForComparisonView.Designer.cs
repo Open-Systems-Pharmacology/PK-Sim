@@ -40,7 +40,7 @@ namespace PKSim.UI.Views.Simulations
          this.tbLabel = new DevExpress.XtraEditors.TextEdit();
          this.cbReferenceSimulation = new DevExpress.XtraEditors.ComboBoxEdit();
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
-         this.gridControl = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemGridView = new DevExpress.XtraLayout.LayoutControlItem();
@@ -320,7 +320,7 @@ namespace PKSim.UI.Views.Simulations
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
-      private PKSim.UI.Views.Core.UxGridControl gridControl;
+      private OSPSuite.UI.Controls.UxGridControl gridControl;
       private PKSim.UI.Views.Core.UxGridView gridView;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemGridView;
       private DevExpress.XtraEditors.LabelControl lblDescription;

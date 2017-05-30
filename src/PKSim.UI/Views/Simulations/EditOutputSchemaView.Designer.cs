@@ -31,7 +31,7 @@ namespace PKSim.UI.Views.Simulations
       /// </summary>
       private void InitializeComponent()
       {
-         this.gridOutputInterval = new UxGridControl();
+         this.gridOutputInterval = new OSPSuite.UI.Controls.UxGridControl();
          this.mainView = new UxGridView();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridOutputInterval)).BeginInit();
@@ -72,7 +72,7 @@ namespace PKSim.UI.Views.Simulations
 
       #endregion
 
-      private UxGridControl gridOutputInterval;
+      private OSPSuite.UI.Controls.UxGridControl gridOutputInterval;
       private UxGridView mainView;
 
    }

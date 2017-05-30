@@ -33,7 +33,7 @@
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnAddFile = new DevExpress.XtraEditors.SimpleButton();
          this.splitContainer = new DevExpress.XtraEditors.SplitContainerControl();
-         this.gridControl = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.tbLog = new DevExpress.XtraEditors.MemoEdit();
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
@@ -267,7 +267,7 @@
       private DevExpress.XtraEditors.LabelControl lblDescription;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;
       private DevExpress.XtraEditors.SplitContainerControl splitContainer;
-      private PKSim.UI.Views.Core.UxGridControl gridControl;
+      private OSPSuite.UI.Controls.UxGridControl gridControl;
       private PKSim.UI.Views.Core.UxGridView gridView;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
       private DevExpress.XtraEditors.SimpleButton btnAddFile;

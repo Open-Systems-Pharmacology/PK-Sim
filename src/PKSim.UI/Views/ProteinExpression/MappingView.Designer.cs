@@ -30,7 +30,7 @@
       {
          DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.grdMappping = new DevExpress.XtraGrid.GridControl();
+         this.grdMappping = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView1 = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();

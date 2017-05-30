@@ -35,10 +35,10 @@ namespace PKSim.UI.Views.Individuals
       /// </summary>
       private void InitializeComponent()
       {
-         this.gridCalculationMethods = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridCalculationMethods = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewCalculationMethods = new PKSim.UI.Views.Core.UxGridView();
          this.uxHeight = new UxParameterDTOEdit();
-         this.gridParameterValueVersions = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridParameterValueVersions = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewParameterValueVersions = new PKSim.UI.Views.Core.UxGridView();
          this.uxAge = new UxParameterDTOEdit();
          this.cbSpecies = new DevExpress.XtraEditors.ImageComboBoxEdit();
@@ -503,14 +503,14 @@ namespace PKSim.UI.Views.Individuals
       private DevExpress.XtraEditors.ComboBoxEdit cbGender;
       private DevExpress.XtraEditors.SimpleButton btnMeanValues;
       private DevExpress.XtraEditors.ImageComboBoxEdit cbSpecies;
-      private UxGridControl gridParameterValueVersions;
+      private OSPSuite.UI.Controls.UxGridControl gridParameterValueVersions;
       private UxGridView gridViewParameterValueVersions;
       private UxParameterDTOEdit uxAge;
       private UxParameterDTOEdit uxHeight;
       private UxParameterDTOEdit uxWeight;
       private UxParameterDTOEdit uxGestationalAge;
       private UxGridView gridViewCalculationMethods;
-      private UxGridControl gridCalculationMethods;
+      private OSPSuite.UI.Controls.UxGridControl gridCalculationMethods;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup2;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemSpecies;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemPopulation;

@@ -34,7 +34,7 @@ namespace PKSim.UI.Views.Individuals
       private void InitializeComponent()
       {
          DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
-         this.gridScalingConfiguration = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridScalingConfiguration = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.uxWeight = new UxParameterDTOEdit();
@@ -176,7 +176,7 @@ namespace PKSim.UI.Views.Individuals
 
       #endregion
 
-      private UxGridControl gridScalingConfiguration;
+      private OSPSuite.UI.Controls.UxGridControl gridScalingConfiguration;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemGrid;
       private UxGridView gridView;

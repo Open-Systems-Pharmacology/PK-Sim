@@ -29,7 +29,7 @@
       private void InitializeComponent()
       {
          DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
-         this.grdTransfer = new DevExpress.XtraGrid.GridControl();
+         this.grdTransfer = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView1 = new PKSim.UI.Views.Core.UxGridView();
          this.gridView2 = new PKSim.UI.Views.Core.UxGridView();
          this.radioGroup = new DevExpress.XtraEditors.RadioGroup();

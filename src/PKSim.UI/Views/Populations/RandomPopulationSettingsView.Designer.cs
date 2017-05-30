@@ -39,7 +39,7 @@ namespace PKSim.UI.Views.Populations
          this.tbProportionsOfFemales = new DevExpress.XtraEditors.TextEdit();
          this.tbNumberOfIndividuals = new DevExpress.XtraEditors.TextEdit();
          this.panelIndividualSelection = new DevExpress.XtraEditors.PanelControl();
-         this.gridParameters = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridParameters = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewParameters = new PKSim.UI.Views.Core.UxGridView();
          this.layoutMainGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutGroupPopulationProperties = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -372,7 +372,7 @@ namespace PKSim.UI.Views.Populations
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutMainGroup;
       private DevExpress.XtraEditors.TextEdit tbNumberOfIndividuals;
-      private UxGridControl gridParameters;
+      private OSPSuite.UI.Controls.UxGridControl gridParameters;
       private UxGridView gridViewParameters;
       private DevExpress.XtraEditors.PanelControl panelIndividualSelection;
       private DevExpress.XtraEditors.TextEdit tbProportionsOfFemales;

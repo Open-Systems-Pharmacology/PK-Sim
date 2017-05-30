@@ -32,7 +32,7 @@
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl(); 
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.chkApplyGroupingToObservedData = new OSPSuite.UI.Controls.UxCheckEdit();

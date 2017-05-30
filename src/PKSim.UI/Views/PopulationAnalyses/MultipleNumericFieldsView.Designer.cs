@@ -29,7 +29,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.gridControl = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
@@ -215,7 +215,7 @@
 
       #endregion
 
-      private PKSim.UI.Views.Core.UxGridControl gridControl;
+      private OSPSuite.UI.Controls.UxGridControl gridControl;
       private PKSim.UI.Views.Core.UxGridView gridView;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraEditors.SimpleButton btnMoveDown;

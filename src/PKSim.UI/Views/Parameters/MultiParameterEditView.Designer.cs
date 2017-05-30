@@ -30,7 +30,7 @@ namespace PKSim.UI.Views.Parameters
       /// </summary>
       private void InitializeComponent()
       {
-         this.gridParameters = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridParameters = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewParameters = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlParameters = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelScaling = new DevExpress.XtraEditors.PanelControl();
@@ -170,7 +170,7 @@ namespace PKSim.UI.Views.Parameters
 
       #endregion
 
-      private UxGridControl gridParameters;
+      private OSPSuite.UI.Controls.UxGridControl gridParameters;
       private UxGridView gridViewParameters;
       private DevExpress.XtraEditors.PanelControl panelScaling;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;

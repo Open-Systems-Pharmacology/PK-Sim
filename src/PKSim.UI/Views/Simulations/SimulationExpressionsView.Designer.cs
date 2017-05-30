@@ -33,7 +33,7 @@
          this.mainLayout = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelHalfLifeIntestine = new DevExpress.XtraEditors.PanelControl();
          this.panelHalfLifeLiver = new DevExpress.XtraEditors.PanelControl();
-         this.gridParameters = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridParameters = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewParameters = new PKSim.UI.Views.Core.UxGridView();
          this.panelReferenceConcentration = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -224,7 +224,7 @@
       #endregion
 
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private PKSim.UI.Views.Core.UxGridControl gridParameters;
+      private OSPSuite.UI.Controls.UxGridControl gridParameters;
       private PKSim.UI.Views.Core.UxGridView gridViewParameters;
       private DevExpress.XtraEditors.PanelControl panelReferenceConcentration;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemReferenceConcentration;

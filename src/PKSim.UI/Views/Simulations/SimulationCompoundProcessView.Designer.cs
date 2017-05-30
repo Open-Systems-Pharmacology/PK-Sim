@@ -36,9 +36,9 @@ namespace PKSim.UI.Views.Simulations
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelWarning = new OSPSuite.UI.Controls.UxHintPanel();
-         this.gridSystemicProcesses = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridSystemicProcesses = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewSystemicProcesses = new PKSim.UI.Views.Core.UxGridView();
-         this.gridPartialProcesses = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridPartialProcesses = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewPartialProcesses = new PKSim.UI.Views.Core.UxGridView();
          this.layoutMainGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemPartialProcesses = new DevExpress.XtraLayout.LayoutControlItem();
@@ -204,9 +204,9 @@ namespace PKSim.UI.Views.Simulations
       #endregion
 
       private DevExpress.XtraLayout.LayoutControlGroup layoutMainGroup;
-      private UxGridControl gridSystemicProcesses;
+      private OSPSuite.UI.Controls.UxGridControl gridSystemicProcesses;
       private UxGridView gridViewSystemicProcesses;
-      private UxGridControl gridPartialProcesses;
+      private OSPSuite.UI.Controls.UxGridControl gridPartialProcesses;
       protected UxGridView gridViewPartialProcesses;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemPartialProcesses;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemSystemicProcesses;

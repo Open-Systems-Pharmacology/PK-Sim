@@ -34,7 +34,7 @@ namespace PKSim.UI.Views.Simulations
          this.uxHintPanel = new OSPSuite.UI.Controls.UxHintPanel();
          this.btnLoadCompound = new DevExpress.XtraEditors.SimpleButton();
          this.btnCreateCompound = new DevExpress.XtraEditors.SimpleButton();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();

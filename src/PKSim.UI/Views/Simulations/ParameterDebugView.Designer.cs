@@ -28,7 +28,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.gridParameterId = new DevExpress.XtraGrid.GridControl();
+         this.gridParameterId = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewParameterId = new PKSim.UI.Views.Core.UxGridView();
          this.gridView2 = new PKSim.UI.Views.Core.UxGridView();
          this.btnExport = new DevExpress.XtraEditors.SimpleButton();

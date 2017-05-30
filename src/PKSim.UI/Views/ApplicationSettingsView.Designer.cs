@@ -32,7 +32,7 @@ namespace PKSim.UI.Views
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.gridDatabasePath = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridDatabasePath = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewDatabasePath = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemDatabasePath = new DevExpress.XtraLayout.LayoutControlItem();
@@ -124,7 +124,7 @@ namespace PKSim.UI.Views
       #endregion
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
-      private UxGridControl gridDatabasePath;
+      private OSPSuite.UI.Controls.UxGridControl gridDatabasePath;
       private UxGridView gridViewDatabasePath;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDatabasePath;
