@@ -37,7 +37,7 @@ namespace PKSim.UI.Views.Protocols
          DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
          DevExpress.XtraGrid.GridLevelNode gridLevelNode2 = new DevExpress.XtraGrid.GridLevelNode();
          this.gridViewSchemaItems = new PKSim.UI.Views.Core.UxGridView();
-         this.gridProtocol = new DevExpress.XtraGrid.GridControl();
+         this.gridProtocol = new OSPSuite.UI.Controls.UxGridControl();
          this.mainView = new PKSim.UI.Views.Core.UxGridView();
          this.gridViewDynamicParameters = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();

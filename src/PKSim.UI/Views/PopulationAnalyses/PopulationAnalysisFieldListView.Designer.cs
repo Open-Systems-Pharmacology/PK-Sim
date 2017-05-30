@@ -31,7 +31,7 @@
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.gridControl = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
@@ -144,7 +144,7 @@
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraEditors.LabelControl lblDescription;
-      private PKSim.UI.Views.Core.UxGridControl gridControl;
+      private OSPSuite.UI.Controls.UxGridControl gridControl;
       private PKSim.UI.Views.Core.UxGridView gridView;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;

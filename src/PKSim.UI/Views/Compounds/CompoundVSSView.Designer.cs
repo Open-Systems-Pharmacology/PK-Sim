@@ -34,7 +34,7 @@
          this.btnCalculateVSS = new DevExpress.XtraEditors.SimpleButton();
          this.layoutItemCalculateVSS = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem = new DevExpress.XtraLayout.EmptySpaceItem();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutItemGrid = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();

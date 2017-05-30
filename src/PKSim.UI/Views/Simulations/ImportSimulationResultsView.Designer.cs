@@ -34,7 +34,7 @@
          this.tbLog = new DevExpress.XtraEditors.MemoEdit();
          this.btnAddFile = new DevExpress.XtraEditors.SimpleButton();
          this.btnImport = new DevExpress.XtraEditors.SimpleButton();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemButtonImport = new DevExpress.XtraLayout.LayoutControlItem();

@@ -30,7 +30,7 @@
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.gridControl = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemOutputs = new DevExpress.XtraLayout.LayoutControlItem();
@@ -122,7 +122,7 @@
       #endregion
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
-      private PKSim.UI.Views.Core.UxGridControl gridControl;
+      private OSPSuite.UI.Controls.UxGridControl gridControl;
       private PKSim.UI.Views.Core.UxGridView gridView;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemOutputs;

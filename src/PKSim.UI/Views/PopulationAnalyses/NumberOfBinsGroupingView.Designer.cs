@@ -37,7 +37,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          this.cbSymbol = new DevExpress.XtraEditors.ComboBoxEdit();
          this.ceEndColor = new UxColorPickEditWithHistory();
          this.cbGenerationStrategy = new DevExpress.XtraEditors.ComboBoxEdit();
-         this.gridControl = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.lblNamingPatternDescription = new DevExpress.XtraEditors.LabelControl();
          this.tbNamingPattern = new DevExpress.XtraEditors.TextEdit();
@@ -355,7 +355,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraEditors.ComboBoxEdit cbGenerationStrategy;
-      private PKSim.UI.Views.Core.UxGridControl gridControl;
+      private OSPSuite.UI.Controls.UxGridControl gridControl;
       private PKSim.UI.Views.Core.UxGridView gridView;
       private DevExpress.XtraEditors.LabelControl lblNamingPatternDescription;
       private DevExpress.XtraEditors.TextEdit tbNamingPattern;

@@ -28,7 +28,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.gridParameters = new DevExpress.XtraGrid.GridControl();
+         this.gridParameters = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewParameters = new PKSim.UI.Views.Core.UxGridView();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).BeginInit();

@@ -35,7 +35,7 @@ namespace PKSim.UI.Views.Simulations
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl(); 
          this.panelWarning = new UxHintPanel();
          this.btnAddInteraction = new DevExpress.XtraEditors.SimpleButton();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemInteractionSelection = new DevExpress.XtraLayout.LayoutControlItem();

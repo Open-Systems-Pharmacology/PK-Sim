@@ -35,7 +35,7 @@ namespace PKSim.UI.Views.Applications
       private void InitializeComponent()
       {
          DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
-         this.gridApplications = new UxGridControl();
+         this.gridApplications = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewParameters =  new UxGridView();;
          this.mainView =  new UxGridView();;
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
@@ -91,7 +91,7 @@ namespace PKSim.UI.Views.Applications
 
       #endregion
 
-      private UxGridControl gridApplications;
+      private OSPSuite.UI.Controls.UxGridControl gridApplications;
       private UxGridView gridViewParameters;
       private UxGridView mainView;
    }
