@@ -76,10 +76,7 @@ namespace PKSim.Core.Model
          get { return _allSimulations.Aggregate(true, (upToDate, s) => upToDate && s.HasUpToDateResults); }
       }
 
-      public virtual IReadOnlyList<SpeciesPopulation> AllRaces()
-      {
-         return concatenateValues(x => x.AllRaces());
-      }
+      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => concatenateValues(x => x.AllRaces);
 
       private IReadOnlyList<T> concatenateValues<T>(Func<PopulationSimulation, IReadOnlyList<T>> simulationValuesRetriever)
       {
@@ -99,21 +96,21 @@ namespace PKSim.Core.Model
          return _allSimulations.Aggregate((IEnumerable<T>) (seed), (current, s) => current.Intersect(simulationValuesRetriever(s), comparer)).ToList();
       }
 
-      public virtual IReadOnlyList<string> AllCovariateValuesFor(string covariateName)
-      {
-         return concatenateValues(x => x.AllCovariateValuesFor(covariateName));
-      }
+      public virtual IReadOnlyList<string> AllCovariateValuesFor(string covariateName) => concatenateValues(x => x.AllCovariateValuesFor(covariateName));
 
       public virtual IReadOnlyList<double> AllPKParameterValuesFor(string quantityPath, string pkParameter)
       {
          return concatenateValues(x => x.AllPKParameterValuesFor(quantityPath, pkParameter));
       }
 
-      public virtual IReadOnlyList<string> AllCovariateNames()
+      public virtual IReadOnlyList<string> AllCovariateNames
       {
-         var covariates = concatenateValues(x => x.AllCovariateNames()).Distinct().ToList();
-         covariates.Add(CoreConstants.Covariates.SIMULATION_NAME);
-         return covariates;
+         get
+         {
+            var covariates = concatenateValues(x => x.AllCovariateNames).Distinct().ToList();
+            covariates.Add(CoreConstants.Covariates.SIMULATION_NAME);
+            return covariates;
+         }
       }
 
       public virtual bool DisplayParameterUsingGroupStructure => ComesFromPKSim;
@@ -133,10 +130,7 @@ namespace PKSim.Core.Model
          return concatenateValues(x => x.AllOutputValuesFor(quantityPath));
       }
 
-      public virtual int NumberOfItems
-      {
-         get { return _allSimulations.Sum(x => x.NumberOfItems); }
-      }
+      public virtual int NumberOfItems => _allSimulations.Sum(x => x.NumberOfItems);
 
       public virtual IEnumerable<IParameter> AllVectorialParameters(IEntityPathResolver entityPathResolver)
       {
@@ -153,10 +147,7 @@ namespace PKSim.Core.Model
          return simulation.ParameterByPath(parameterPath, entityPathResolver);
       }
 
-      public virtual IReadOnlyList<Gender> AllGenders()
-      {
-         return concatenateValues(x => x.AllGenders());
-      }
+      public virtual IReadOnlyList<Gender> AllGenders => concatenateValues(x => x.AllGenders);
 
       private PopulationSimulation simulation => _allSimulations.FirstOrDefault() ?? new PopulationSimulation();
 
@@ -186,10 +177,7 @@ namespace PKSim.Core.Model
          return molWeights[0];
       }
 
-      public virtual IReadOnlyList<string> AllSimulationNames()
-      {
-         return concatenateValues(x => x.AllSimulationNames());
-      }
+      public virtual IReadOnlyList<string> AllSimulationNames => concatenateValues(x => x.AllSimulationNames);
 
       public IReadOnlyList<Compound> Compounds
       {

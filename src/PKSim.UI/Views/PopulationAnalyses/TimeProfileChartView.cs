@@ -13,7 +13,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
       {
          InitializeComponent();
          ChartsDataBinder = new TimeProfileChartDataBinder(this);
-         _chartControl.SeriesSelectionMode = SeriesSelectionMode.Series;
+         Chart.SeriesSelectionMode = SeriesSelectionMode.Series;
       }
 
       public void AttachPresenter(ITimeProfileChartPresenter presenter)

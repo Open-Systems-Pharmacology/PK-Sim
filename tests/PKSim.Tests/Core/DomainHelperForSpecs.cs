@@ -1,11 +1,6 @@
 using System;
 using System.IO;
-using System.Linq;
-using OSPSuite.Utility;
-using PKSim.Core.Model;
-using PKSim.Presentation.DTO.Parameters;
-using PKSim.Presentation.DTO.Protocols;
-using OSPSuite;
+using FakeItEasy;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
@@ -13,6 +8,10 @@ using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility;
+using PKSim.Core.Model;
+using PKSim.Presentation.DTO.Parameters;
+using PKSim.Presentation.DTO.Protocols;
 
 namespace PKSim.Core
 {
@@ -74,11 +73,14 @@ namespace PKSim.Core
 
       public static Individual CreateIndividual()
       {
-         var originData = new OriginData();
-         originData.SubPopulation = new SubPopulation();
-         originData.Species = new Species().WithName("Species");
-         originData.Gender = new Gender().WithName("Gender");
-         originData.SpeciesPopulation = new SpeciesPopulation().WithName("Population");
+         var originData = new OriginData
+         {
+            SubPopulation = new SubPopulation(),
+            Species = new Species().WithName("Species"),
+            Gender = new Gender().WithName("Gender"),
+            SpeciesPopulation = new SpeciesPopulation().WithName("Population")
+         };
+
          var pvv = new ParameterValueVersion().WithName("PVVName");
          var category = new ParameterValueVersionCategory().WithName("CategoryName");
          category.Add(pvv);
@@ -259,14 +261,13 @@ namespace PKSim.Core
          }.WithName(name);
       }
 
-      public static SensitivityParameter SensitivityParameter(string name = "SensitivityParameter", double range = 0.1, double steps = 2 )
+      public static SensitivityParameter SensitivityParameter(string name = "SensitivityParameter", double range = 0.1, double steps = 2)
       {
          return new SensitivityParameter
          {
             ConstantParameterWithValue(range).WithName(Constants.Parameters.VARIATION_RANGE),
             ConstantParameterWithValue(steps).WithName(Constants.Parameters.NUMBER_OF_STEPS),
          }.WithName(name);
-
       }
 
       public static DataRepository IndividualSimulationDataRepositoryFor(string simulationName)
@@ -312,9 +313,12 @@ namespace PKSim.Core
 
       private static QuantityValues createArray(string path, IDimension dimension, int numberOfPoints)
       {
-         var quantityValues = new QuantityValues();
-         quantityValues.ColumnId = ShortGuid.NewGuid();
-         quantityValues.QuantityPath = path;
+         var quantityValues = new QuantityValues
+         {
+            ColumnId = ShortGuid.NewGuid(),
+            QuantityPath = path
+         };
+
          var values = new float[numberOfPoints];
          for (int i = 0; i < values.Length; i++)
          {
@@ -326,9 +330,11 @@ namespace PKSim.Core
 
       public static SchemaItemDTO SchemaItemDTO(ApplicationType applicationType, Unit doseDisplayUnit = null, double? doseValue = null, double? startTimeValue = null)
       {
-         var schemaItemDTO = new SchemaItemDTO(new SchemaItem {ApplicationType = applicationType});
-         schemaItemDTO.DoseParameter = new ParameterDTO(ConstantParameterWithValue(doseValue.GetValueOrDefault(1)).WithName(CoreConstants.Parameter.INPUT_DOSE));
-         schemaItemDTO.StartTimeParameter = new ParameterDTO(ConstantParameterWithValue(startTimeValue.GetValueOrDefault(0)).WithName(Constants.Parameters.START_TIME));
+         var schemaItemDTO = new SchemaItemDTO(new SchemaItem {ApplicationType = applicationType})
+         {
+            DoseParameter = new ParameterDTO(ConstantParameterWithValue(doseValue.GetValueOrDefault(1)).WithName(CoreConstants.Parameter.INPUT_DOSE)),
+            StartTimeParameter = new ParameterDTO(ConstantParameterWithValue(startTimeValue.GetValueOrDefault(0)).WithName(Constants.Parameters.START_TIME))
+         };
 
          if (doseDisplayUnit != null)
             schemaItemDTO.DoseParameter.Parameter.DisplayUnit = doseDisplayUnit;
@@ -338,11 +344,12 @@ namespace PKSim.Core
 
       public static IndividualMolecule DefaultIndividualMolecule()
       {
-         var molecule = new IndividualEnzyme();
-         molecule.Add(ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.REFERENCE_CONCENTRATION));
-         molecule.Add(ConstantParameterWithValue(20).WithName(CoreConstants.Parameter.HALF_LIFE_LIVER));
-         molecule.Add(ConstantParameterWithValue(30).WithName(CoreConstants.Parameter.HALF_LIFE_INTESTINE));
-         return molecule;
+         return new IndividualEnzyme
+         {
+            ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.REFERENCE_CONCENTRATION),
+            ConstantParameterWithValue(20).WithName(CoreConstants.Parameter.HALF_LIFE_LIVER),
+            ConstantParameterWithValue(30).WithName(CoreConstants.Parameter.HALF_LIFE_INTESTINE)
+         };
       }
    }
 
@@ -363,6 +370,13 @@ namespace PKSim.Core
    public class PathCacheForSpecs<T> : PathCache<T> where T : class, IEntity
    {
       public PathCacheForSpecs() : base(new EntityPathResolverForSpecs())
+      {
+      }
+   }
+
+   public class ContainerTaskForSpecs : ContainerTask
+   {
+      public ContainerTaskForSpecs() : base(A.Fake<IObjectBaseFactory>(), new EntityPathResolverForSpecs())
       {
       }
    }

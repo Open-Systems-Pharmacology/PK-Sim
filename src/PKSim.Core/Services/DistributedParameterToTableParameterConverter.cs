@@ -298,7 +298,7 @@ namespace PKSim.Core.Services
          var allAges = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameter.AGE, _entityPathResolver);
          var allGAs = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameter.GESTATIONAL_AGE, _entityPathResolver);
          var allHeights = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameter.HEIGHT, _entityPathResolver);
-         var allGender = populationSimulation.AllGenders().ToList();
+         var allGender = populationSimulation.AllGenders.ToList();
          var allValues = populationSimulation.AllValuesFor(parameterPath).ToList();
          var allPercentiles = populationSimulation.AllPercentilesFor(parameterPath)
             .Select(x => x.CorrectedPercentileValue()).ToList();

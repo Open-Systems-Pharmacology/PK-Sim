@@ -32,7 +32,6 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       private readonly IWorkspace _workspace;
       private readonly IPKSimConfiguration _configuration;
-
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly IDialogCreator _dialogCreator;
       private readonly ICloner _cloner;
@@ -49,7 +48,6 @@ namespace PKSim.Infrastructure.Services
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
          _workspace = workspace;
          _configuration = configuration;
-
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _dialogCreator = dialogCreator;
          _cloner = cloner;
@@ -117,12 +115,12 @@ namespace PKSim.Infrastructure.Services
          addColumnValues(population, dataTable, Constants.Population.INDIVIDUAL_ID_COLUMN, individualIds);
 
          //and one column for each individual in the population
-         foreach (var covariate in population.AllCovariateNames())
+         foreach (var covariate in population.AllCovariateNames)
          {
             if (covariate == CoreConstants.Covariates.GENDER)
-               addColumnValues(population, dataTable, CoreConstants.Parameter.GENDER, population.AllGenders().Select(x => x.Index).ToList());
+               addColumnValues(population, dataTable, CoreConstants.Parameter.GENDER, population.AllGenders.Select(x => x.Index).ToList());
             else if (covariate == CoreConstants.Covariates.RACE)
-               addColumnValues(population, dataTable, CoreConstants.Parameter.RACE_INDEX, population.AllRaces().Select(x => x.RaceIndex).ToList());
+               addColumnValues(population, dataTable, CoreConstants.Parameter.RACE_INDEX, population.AllRaces.Select(x => x.RaceIndex).ToList());
             else
                addColumnValues(population, dataTable, covariate, population.AllCovariateValuesFor(covariate));
          }

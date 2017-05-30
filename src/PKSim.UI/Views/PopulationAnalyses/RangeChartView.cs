@@ -13,7 +13,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
       {
          InitializeComponent();
          ChartsDataBinder = new RangeChartDataBinder(this);
-         _chartControl.SeriesSelectionMode = SeriesSelectionMode.Series;
+         Chart.SeriesSelectionMode = SeriesSelectionMode.Series;
       }
 
       public void AttachPresenter(IRangeChartPresenter presenter)

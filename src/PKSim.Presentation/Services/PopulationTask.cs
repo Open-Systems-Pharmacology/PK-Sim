@@ -7,11 +7,6 @@ using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
 {
-   public interface IPopulationTask : IBuildingBlockTask<Population>
-   {
-      void AddToProjectBasedOn(Individual individual);
-   }
-
    public class PopulationTask : BuildingBlockTask<Population>, IPopulationTask
    {
       public PopulationTask(IExecutionContext executionContext, IBuildingBlockTask buildingBlockTask, IApplicationController applicationController)

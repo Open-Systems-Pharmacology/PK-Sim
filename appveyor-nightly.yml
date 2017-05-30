@@ -40,7 +40,7 @@ before_build:
   - nuget sources add -name cvodes -source https://ci.appveyor.com/nuget/ospsuite-simmodel-solver-cvodes-282
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
   #TODO DELETE
-  - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core-version7-2-0
+  - nuget sources add -name core-version7-2-0 -source https://ci.appveyor.com/nuget/ospsuite-core-version7-2-0
   - nuget restore
   - rake "update_go_license[ApplicationStartup.cs, %GO_DIAGRAM_KEY%]"
 

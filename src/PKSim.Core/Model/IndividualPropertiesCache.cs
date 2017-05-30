@@ -8,8 +8,9 @@ namespace PKSim.Core.Model
    {
       //covariates names
       //gender, race, populationName 
-      public ParameterValuesCache ParameterValuesCache { get; private set; }
-      public List<IndividualCovariates> AllCovariates { get; private set; }
+      public List<IndividualCovariates> AllCovariates { get; }
+
+      public ParameterValuesCache ParameterValuesCache { get; }
 
       public IndividualPropertiesCache() : this(new ParameterValuesCache(), new List<IndividualCovariates>())
       {
@@ -45,10 +46,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns the number of individuals
       /// </summary>
-      public virtual int Count
-      {
-         get { return ParameterValuesCache.Count; }
-      }
+      public virtual int Count => ParameterValuesCache.Count;
 
       public virtual IReadOnlyList<Gender> Genders
       {
@@ -85,10 +83,7 @@ namespace PKSim.Core.Model
          ParameterValuesCache.SetValues(parameterPath, newValues);
       }
 
-      public virtual IEnumerable<ParameterValues> AllParameterValues
-      {
-         get { return ParameterValuesCache.AllParameterValues; }
-      }
+      public virtual IEnumerable<ParameterValues> AllParameterValues => ParameterValuesCache.AllParameterValues;
 
       public virtual ParameterValues ParameterValuesFor(string parameterPath)
       {

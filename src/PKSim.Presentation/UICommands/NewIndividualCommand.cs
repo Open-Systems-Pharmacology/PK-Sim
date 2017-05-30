@@ -1,10 +1,9 @@
 using PKSim.Core.Model;
-using PKSim.Presentation.Services;
+using PKSim.Core.Services;
 
 namespace PKSim.Presentation.UICommands
 {
-  
-   public class NewIndividualCommand : AddBuildingBlockUICommand<PKSim.Core.Model.Individual, IIndividualTask>
+   public class NewIndividualCommand : AddBuildingBlockUICommand<Individual, IIndividualTask>
    {
       public NewIndividualCommand(IIndividualTask individualTask) : base(individualTask)
       {

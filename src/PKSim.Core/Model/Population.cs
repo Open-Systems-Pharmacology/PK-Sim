@@ -36,7 +36,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public int Seed
       {
-         get { return _seed; }
+         get => _seed;
          private set
          {
             _seed = value;
@@ -104,20 +104,11 @@ namespace PKSim.Core.Model
          return AllParameters(entityPathResolver)[parameterPath];
       }
 
-      public virtual IReadOnlyList<Gender> AllGenders()
-      {
-         return IndividualPropertiesCache.Genders;
-      }
+      public virtual IReadOnlyList<Gender> AllGenders => IndividualPropertiesCache.Genders;
+      
+      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => IndividualPropertiesCache.Races;
 
-      public virtual IReadOnlyList<SpeciesPopulation> AllRaces()
-      {
-         return IndividualPropertiesCache.Races;
-      }
-
-      public virtual IReadOnlyList<string> AllCovariateNames()
-      {
-         return new List<string>(IndividualPropertiesCache.AllCovariatesNames().Union(new[] {CoreConstants.Covariates.POPULATION_NAME}));
-      }
+      public virtual IReadOnlyList<string> AllCovariateNames => new List<string>(IndividualPropertiesCache.AllCovariatesNames().Union(new[] {CoreConstants.Covariates.POPULATION_NAME}));
 
       public virtual IReadOnlyList<string> AllCovariateValuesFor(string covariateName)
       {
@@ -199,14 +190,12 @@ namespace PKSim.Core.Model
 
       public void AddMolecule(IndividualMolecule molecule)
       {
-         if (FirstIndividual != null)
-            FirstIndividual.AddMolecule(molecule);
+         FirstIndividual?.AddMolecule(molecule);
       }
 
       public void RemoveMolecule(IndividualMolecule molecule)
       {
-         if (FirstIndividual != null)
-            FirstIndividual.RemoveMolecule(molecule);
+         FirstIndividual?.RemoveMolecule(molecule);
       }
 
       public virtual IEnumerable<IParameter> AllAdvancedParameters(IEntityPathResolver entityPathResolver)
@@ -286,8 +275,7 @@ namespace PKSim.Core.Model
       public override void AcceptVisitor(IVisitor visitor)
       {
          base.AcceptVisitor(visitor);
-         if (FirstIndividual == null) return;
-         FirstIndividual.AcceptVisitor(visitor);
+         FirstIndividual?.AcceptVisitor(visitor);
       }
    }
 }

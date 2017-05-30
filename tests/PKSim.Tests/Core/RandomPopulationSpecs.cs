@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Model;
 
 namespace PKSim.Core
 {
@@ -155,9 +155,11 @@ namespace PKSim.Core
          _advancedParameter = A.Fake<IAdvancedParameter>();
          _advancedParameter.ParameterPath = "A NEW PARAMETER PATH";
          A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns(_advancedParameter.ParameterPath);
-         _randomValues = new List<RandomValue>();
-         _randomValues.Add(new RandomValue {Value = 1, Percentile = 0.5});
-         _randomValues.Add(new RandomValue {Value = 2, Percentile = 0.6});
+         _randomValues = new List<RandomValue>
+         {
+            new RandomValue {Value = 1, Percentile = 0.5},
+            new RandomValue {Value = 2, Percentile = 0.6}
+         };
          A.CallTo(() => _advancedParameter.GenerateRandomValues(sut.NumberOfItems)).Returns(_randomValues);
       }
 
@@ -225,22 +227,21 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.IndividualPropertiesCache.AddConvariate("Cov1", new List<string>{"Male"});
-         sut.IndividualPropertiesCache.AddConvariate("Cov2", new List<string> { "EU" });
+         sut.IndividualPropertiesCache.AddConvariate("Cov1", new List<string> {"Male"});
+         sut.IndividualPropertiesCache.AddConvariate("Cov2", new List<string> {"EU"});
       }
 
       [Observation]
       public void should_return_the_convariate_defined_in_the_individual_properties_cache_extended_with_the_population_name()
       {
-         sut.AllCovariateNames().ShouldOnlyContain("Cov1", "Cov2", CoreConstants.Covariates.POPULATION_NAME);
+         sut.AllCovariateNames.ShouldOnlyContain("Cov1", "Cov2", CoreConstants.Covariates.POPULATION_NAME);
       }
 
       [Observation]
       public void the_population_name_should_only_be_available_once()
       {
-         sut.IndividualPropertiesCache.AddConvariate(CoreConstants.Covariates.POPULATION_NAME, new List<string> { "TOTO" });
-         sut.AllCovariateNames().ShouldOnlyContain("Cov1", "Cov2", CoreConstants.Covariates.POPULATION_NAME);
-
+         sut.IndividualPropertiesCache.AddConvariate(CoreConstants.Covariates.POPULATION_NAME, new List<string> {"TOTO"});
+         sut.AllCovariateNames.ShouldOnlyContain("Cov1", "Cov2", CoreConstants.Covariates.POPULATION_NAME);
       }
    }
 }

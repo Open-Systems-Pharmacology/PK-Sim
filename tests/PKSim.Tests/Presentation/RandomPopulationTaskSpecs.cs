@@ -1,14 +1,12 @@
-using OSPSuite.BDDHelper;
 using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.Presentation.Core;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
-
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Services;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation
 {
@@ -28,7 +26,7 @@ namespace PKSim.Presentation
          _project = A.Fake<IPKSimProject>();
          _population = A.Fake<RandomPopulation>();
          _randomPopulationPresenter = A.Fake<ICreateRandomPopulationPresenter>();
-         _applicationController= A.Fake<IApplicationController>();
+         _applicationController = A.Fake<IApplicationController>();
          A.CallTo(() => _applicationController.Start<ICreateRandomPopulationPresenter>()).Returns(_randomPopulationPresenter);
          A.CallTo(() => _randomPopulationPresenter.BuildingBlock).Returns(_population);
          A.CallTo(() => _buildingBlockTask.TypeFor(_population)).Returns("pop");
@@ -93,7 +91,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_the_created_population_to_the_project()
       {
-         A.CallTo(() => _buildingBlockTask.AddToProject((Population)_population, true)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockTask.AddToProject((Population) _population, true)).MustHaveHappened();
       }
    }
 

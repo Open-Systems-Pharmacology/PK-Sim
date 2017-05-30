@@ -59,7 +59,7 @@ namespace PKSim.Core.Services
 
       private static IReadOnlyList<Gender> allGendersFrom(IVectorialParametersContainer parameterContainer, int count)
       {
-         var allGenders = parameterContainer.AllGenders();
+         var allGenders = parameterContainer.AllGenders;
          if (allGenders.Count == count)
             return allGenders;
 
