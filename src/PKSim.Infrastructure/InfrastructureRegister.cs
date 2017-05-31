@@ -234,9 +234,11 @@ namespace PKSim.Infrastructure
             scan.AssemblyContainingType<InfrastructureRegister>();
             scan.IncludeNamespaceContainingType<IReportBuilder>();
             scan.ExcludeType<ReportGenerator>();
-            scan.WithConvention<PKSimRegistrationConvention>();
+            scan.ExcludeType<ReportBuilderRepository>();
+            scan.WithConvention<RegisterTypeConvention<IReportBuilder>>();
          });
          container.Register<IReportGenerator, ReportGenerator>(LifeStyle.Singleton);
+         container.Register<IReportBuilderRepository, ReportBuilderRepository>(LifeStyle.Singleton);
       }
 
       private static void registerTexReporters(IContainer container)
