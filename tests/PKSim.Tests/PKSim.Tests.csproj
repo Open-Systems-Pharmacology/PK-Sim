@@ -167,7 +167,8 @@
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.2.0.13, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="OSPSuite.Infrastructure, Version=7.2.0.10, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.Infrastructure.7.2.0.13\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Presentation, Version=7.2.0.13, Culture=neutral, processorArchitecture=x86">
@@ -529,7 +530,10 @@
     <Compile Include="Presentation\DynamicGroupExpanderSpecs.cs" />
     <Compile Include="Presentation\EnzymaticCompoundProcessPresenterSpecs.cs" />
     <Compile Include="Presentation\EnzymaticProcessToEnzymaticProcessDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\ExtractIndividualsFromPopulationPresenterSpecs.cs" />
     <Compile Include="Presentation\ExpressionContainerDTOSpecs.cs" />
+    <Compile Include="Presentation\ExtractIndividualsDTOSpecs.cs" />
+    <Compile Include="Presentation\ExtractIndividualsFromPopulationCommandSpecs.cs" />
     <Compile Include="Presentation\FormulationMappingDTOSpecs.cs" />
     <Compile Include="Presentation\FormulationSelectionDTOSpecs.cs" />
     <Compile Include="Presentation\GlobalPKAnalysisPresenterSpecs.cs" />
@@ -889,7 +893,7 @@
     <Compile Include="Presentation\SimulationExplorerPresenterSpecs.cs" />
     <Compile Include="Presentation\ProjectTaskSpecs.cs" />
     <Compile Include="Presentation\MoleculeExpressionTaskSpecs.cs" />
-    <Compile Include="Presentation\RandomPopulationTaskSpecs.cs" />
+    <Compile Include="Presentation\PopulationTaskSpecs.cs" />
     <Compile Include="Presentation\RenameBuildingBlockUICommandSpecs.cs" />
     <Compile Include="Presentation\RootNodeToIndividualExpressionsPresenterMapperSpecs.cs" />
     <Compile Include="Presentation\RunActiveSimulationCommandSpecs.cs" />

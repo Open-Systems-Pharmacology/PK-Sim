@@ -27,7 +27,6 @@ namespace PKSim.Presentation
       protected IApplicationController _applicationController;
       private ISimulationParametersToBuildingBlockUpdater _simulationParametersToBlockUpdater;
       protected IBuildingBlockParametersToSimulationUpdater _blockParametersToSimulationUpdater;
-      private IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -39,10 +38,9 @@ namespace PKSim.Presentation
          _applicationController = A.Fake<IApplicationController>();
          _simulationParametersToBlockUpdater = A.Fake<ISimulationParametersToBuildingBlockUpdater>();
          _blockParametersToSimulationUpdater = A.Fake<IBuildingBlockParametersToSimulationUpdater>();
-         _dialogCreator = A.Fake<IDialogCreator>();
          A.CallTo(() => _applicationController.Start<ICreateSimulationPresenter>()).Returns(_createSimulationPresenter);
          sut = new SimulationTask(_executionContext, _buildingBlockTask, _applicationController, _simulationBuildingBlockUpdater,
-            _configureSimulationTask, _blockParametersToSimulationUpdater, _simulationParametersToBlockUpdater, _dialogCreator);
+            _configureSimulationTask, _blockParametersToSimulationUpdater, _simulationParametersToBlockUpdater);
       }
    }
 

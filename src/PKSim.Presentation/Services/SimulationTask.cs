@@ -9,7 +9,6 @@ using PKSim.Presentation.Presenters.Simulations;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
@@ -62,21 +61,16 @@ namespace PKSim.Presentation.Services
       private readonly IConfigureSimulationTask _configureSimulationTask;
       private readonly IBuildingBlockParametersToSimulationUpdater _blockParametersToSimulationUpdater;
       private readonly ISimulationParametersToBuildingBlockUpdater _simulationParametersToBlockUpdater;
-      private readonly IDialogCreator _dialogCreator;
-      private readonly IApplicationController _applicationController;
 
       public SimulationTask(IExecutionContext executionContext, IBuildingBlockTask buildingBlockTask, IApplicationController applicationController,
          ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater, IConfigureSimulationTask configureSimulationTask,
-         IBuildingBlockParametersToSimulationUpdater blockParametersToSimulationUpdater, ISimulationParametersToBuildingBlockUpdater simulationParametersToBlockUpdater,
-         IDialogCreator dialogCreator)
+         IBuildingBlockParametersToSimulationUpdater blockParametersToSimulationUpdater, ISimulationParametersToBuildingBlockUpdater simulationParametersToBlockUpdater)
          : base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Simulation)
       {
          _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
          _configureSimulationTask = configureSimulationTask;
          _blockParametersToSimulationUpdater = blockParametersToSimulationUpdater;
          _simulationParametersToBlockUpdater = simulationParametersToBlockUpdater;
-         _dialogCreator = dialogCreator;
-         _applicationController = applicationController;
       }
 
       public override Simulation AddToProject()

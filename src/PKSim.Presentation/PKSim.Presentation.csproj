@@ -174,6 +174,7 @@
     <Compile Include="DTO\PopulationAnalyses\QuantityPKParameterDTO.cs" />
     <Compile Include="DTO\PopulationAnalyses\XandYFieldsSelectionDTO.cs" />
     <Compile Include="DTO\PopulationSimulationSelectionDTO.cs" />
+    <Compile Include="DTO\Populations\ExtractIndividualsDTO.cs" />
     <Compile Include="DTO\Populations\ImportPopulationSettingsDTO.cs" />
     <Compile Include="DTO\Populations\PopulationFileSelectionDTO.cs" />
     <Compile Include="DTO\SimulationComparisonSelectionDTO.cs" />
@@ -246,6 +247,7 @@
     <Compile Include="Presenters\Parameters\EditParameterPresenter.cs" />
     <Compile Include="Presenters\Parameters\ParameterGroupsPresenterSettings.cs" />
     <Compile Include="Presenters\Parameters\ParameterSetPresenter.cs" />
+    <Compile Include="Presenters\Populations\ExtractIndividualsFromPopulationPresenter.cs" />
     <Compile Include="Presenters\Populations\PopulationMoleculesPresenter.cs" />
     <Compile Include="Presenters\ProteinExpression\IProteinExpressionDataHelper.cs" />
     <Compile Include="Presenters\Simulations\EditSolverSettingsPresenter.cs" />
@@ -504,6 +506,7 @@
     <Compile Include="UICommands\ExportPopulationSimulationPKAnalysesCommand.cs" />
     <Compile Include="UICommands\ExportSimulationResultsToCSVCommand.cs" />
     <Compile Include="UICommands\ExportToPDFCommand.cs" />
+    <Compile Include="UICommands\ExtractIndividualsFromPopulationCommand.cs" />
     <Compile Include="UICommands\GenerateGroupsTemplateCommand.cs" />
     <Compile Include="UICommands\GeneratePKMLTemplatesCommand.cs" />
     <Compile Include="UICommands\ImportPKAnalysesCommand.cs" />
@@ -562,6 +565,7 @@
     <Compile Include="Views\PopulationAnalyses\IValueMappingGroupingView.cs" />
     <Compile Include="Views\PopulationAnalyses\IXAndYNumericFieldsView.cs" />
     <Compile Include="Views\Populations\IEditImportPopulationView.cs" />
+    <Compile Include="Views\Populations\IExtractIndividualsFromPopulationView.cs" />
     <Compile Include="Views\Populations\IImportPopulationSettingsView.cs" />
     <Compile Include="Views\Populations\IImportPopulationView.cs" />
     <Compile Include="Views\Populations\IPopulationParameterDistributionView.cs" />

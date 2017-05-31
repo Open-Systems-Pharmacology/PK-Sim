@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -22,6 +23,14 @@ namespace PKSim.Presentation.Services
       public void AddToProjectBasedOn(Individual individual)
       {
          AddToProject<ICreateRandomPopulationPresenter>(x => x.CreatePopulation(individual));
+      }
+
+      public void ExtractIndividuals(Population population, IEnumerable<int> indivdualIds = null)
+      {
+         using (var presenter = _applicationController.Start<IExtractIndividualsFromPopulationPresenter>())
+         {
+            presenter.ExctractIndividuals(population, indivdualIds);
+         }
       }
    }
 }

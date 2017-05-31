@@ -102,7 +102,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_a_command_to_the_history()
       {
-         A.CallTo(() => _buildingBlockTask.AddToProject(_individual, true)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockTask.AddToProject(_individual, true, true)).MustHaveHappened();
       }
    }
 
