@@ -55,12 +55,12 @@ namespace PKSim.Infrastructure.Services
 
       public void ExportToCSV(Population population)
       {
-         exportVectorialParametersContainerToCSV(population, x => CreatePopulationDataFor(x, true));
+         exportVectorialParametersContainerToCSV(population, populationToCreateDataFor => CreatePopulationDataFor(populationToCreateDataFor, true));
       }
 
       public void ExportToCSV(PopulationSimulation populationSimulation)
       {
-         exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, true));
+         exportVectorialParametersContainerToCSV(populationSimulation, simulationToCreateDataFor => CreatePopulationDataFor(simulationToCreateDataFor, true));
       }
 
       private void exportVectorialParametersContainerToCSV<T>(T advancedParameterContainer, Func<T, DataTable> createData) where T : IAdvancedParameterContainer
@@ -243,19 +243,16 @@ namespace PKSim.Infrastructure.Services
          //some path have changed and the parameter is not found anymore
          if (parameter == null) return;
 
-         var unitName = includeUnitsInHeader ? parameter.Dimension.BaseUnit.Name : string.Empty;
+         var parameterPath = _entityPathResolver.PathFor(parameter);
 
-         addColumnForParameterToTable(parameterContainer, dataTable, _entityPathResolver.PathFor(parameter), unitName);
+         var columnName = includeUnitsInHeader ? Constants.NameWithUnitFor(parameterPath, parameter.Dimension.BaseUnit.Name) : parameterPath;
+
+         addColumnForParameterToTable(parameterContainer, dataTable, parameterPath, columnName);
       }
 
-      private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath, string baseUnit)
+      private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath, string columnName)
       {
-         addColumnValues(parameterContainer, dataTable, columnName(parameterPath, baseUnit), parameterContainer.AllValuesFor(parameterPath));
-      }
-
-      private static string columnName(string parameterPath, string baseUnit)
-      {
-         return Constants.NameWithUnitFor(parameterPath, baseUnit);
+         addColumnValues(parameterContainer, dataTable, columnName, parameterContainer.AllValuesFor(parameterPath));
       }
    }
 }
