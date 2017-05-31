@@ -474,4 +474,14 @@ namespace PKSim.IntegrationTests
          parameters.Each(p => p.DefaultValue.ShouldBeEqualTo(expectedValue, message));
       }
    }
+
+    public class When_checking_the_changes_in_the_database_for_version_7_2_0 : concern_for_DatabaseUpdate
+   {
+      [Observation]
+      public void should_have_updated_the_description_of_the_auc_ratio ()
+      {
+         var represenationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
+         represenationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, CoreConstants.PKAnalysis.AUCRatio).Description.Contains("AUC_inf_tDLast").ShouldBeTrue();
+      }
+   }
 }
