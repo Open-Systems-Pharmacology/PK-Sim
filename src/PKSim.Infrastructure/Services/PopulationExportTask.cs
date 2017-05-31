@@ -55,12 +55,12 @@ namespace PKSim.Infrastructure.Services
 
       public void ExportToCSV(Population population)
       {
-         exportVectorialParametersContainerToCSV(population, populationToCreateDataFor => CreatePopulationDataFor(populationToCreateDataFor, true));
+         exportVectorialParametersContainerToCSV(population, x => CreatePopulationDataFor(x, includeUnitsInHeader:true));
       }
 
       public void ExportToCSV(PopulationSimulation populationSimulation)
       {
-         exportVectorialParametersContainerToCSV(populationSimulation, simulationToCreateDataFor => CreatePopulationDataFor(simulationToCreateDataFor, true));
+         exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, includeUnitsInHeader:true));
       }
 
       private void exportVectorialParametersContainerToCSV<T>(T advancedParameterContainer, Func<T, DataTable> createData) where T : IAdvancedParameterContainer
