@@ -763,7 +763,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Reporting\Summary\ReportingSummary.cd" />
     <None Include="Reporting\TeX\ReportingTEX.cd" />
   </ItemGroup>
   <ItemGroup />
