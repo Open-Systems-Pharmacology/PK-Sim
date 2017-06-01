@@ -8,6 +8,7 @@ using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Core.Model
 {
@@ -46,6 +47,11 @@ namespace PKSim.Core.Model
       ///    Creates and returns a constant formula based on the <paramref name="valueDefinition" />
       /// </summary>
       IFormula ValueFor(ParameterValueMetaData valueDefinition);
+
+      /// <summary>
+      ///    Creates and returns a constant formula based on the <paramref name="valueDefinition" />
+      /// </summary>
+      IFormula ValueFor(double value, IDimension dimension);
 
       /// <summary>
       ///    Return the formula defined for the rate key and add it to the formula cache, if the formula did not exist already
@@ -91,6 +97,21 @@ namespace PKSim.Core.Model
       /// </param>
       /// <param name="minToYearFactorParameter">Factor to convert time in min to year</param>
       IFormula AgeFormulaFor(IParameter age0Parameter, IParameter minToYearFactorParameter);
+
+      /// <summary>
+      ///    Returns the drug mass formula for an application molecule builer 
+      /// </summary>
+      IFormula DrugMassFormulaFor(IFormulaCache formulaCache);
+
+      /// <summary>
+      ///    Returns the Dose Formula as a function of the DosePerBodyWeight Parmaeter;
+      /// </summary>
+      IFormula DoseFromDosePerBodyWeightFor(IFormulaCache formulaCache);
+
+      /// <summary>
+      ///    Returns the Dose Formula as a function of the DosePerBodyWeight Parmaeter;
+      /// </summary>
+      IFormula DoseFromDosePerBodySurfaceAreaFor(IFormulaCache formulaCache);
    }
 
    public class FormulaFactory : IFormulaFactory
@@ -159,6 +180,35 @@ namespace PKSim.Core.Model
          return formula;
       }
 
+      public IFormula DrugMassFormulaFor(IFormulaCache formulaCache)
+      {
+         if (formulaCache.ExistsByName(Constants.Parameters.DRUG_MASS))
+            return formulaCache.FindByName(Constants.Parameters.DRUG_MASS);
+
+         var startFormula = _objectBaseFactory.Create<ExplicitFormula>()
+            .WithFormulaString(Constants.Parameters.DRUG_MASS)
+            .WithDimension(_dimensionRepository.Amount)
+            .WithName(Constants.Parameters.DRUG_MASS);
+
+         var pathToDrugMass = _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, CoreConstants.ContainerName.ProtocolSchemaItem, Constants.Parameters.DRUG_MASS)
+            .WithAlias(Constants.Parameters.DRUG_MASS)
+            .WithDimension(_dimensionRepository.Amount);
+
+         startFormula.AddObjectPath(pathToDrugMass);
+         formulaCache.Add(startFormula);
+         return startFormula;
+      }
+
+      public IFormula DoseFromDosePerBodyWeightFor(IFormulaCache formulaCache)
+      {
+         return RateFor(CoreConstants.CalculationMethod.ApplicationParameter, CoreConstants.Rate.APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT, formulaCache);
+      }
+
+      public IFormula DoseFromDosePerBodySurfaceAreaFor(IFormulaCache formulaCache)
+      {
+         return RateFor(CoreConstants.CalculationMethod.ApplicationParameter_Human, CoreConstants.Rate.APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA, formulaCache);
+      }
+
       private IFormulaUsablePath pathInParentContainerFor(IParameter parameter, string alias)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, parameter.Name)
@@ -182,6 +232,11 @@ namespace PKSim.Core.Model
          formulaCache.Add(formula);
          formula.Dimension = _dimensionRepository.MolarConcentration;
          return formula;
+      }
+
+      public IFormula ValueFor(double value, IDimension dimension)
+      {
+         return _objectBaseFactory.Create<ConstantFormula>().WithValue(value).WithDimension(dimension);
       }
 
       public IFormula RateFor(RateKey rateKey, IFormulaCache formulaCache)

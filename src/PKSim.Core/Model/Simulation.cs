@@ -578,6 +578,8 @@ namespace PKSim.Core.Model
 
       public virtual IReadOnlyList<Compound> Compounds => AllBuildingBlocks<Compound>().ToList();
 
+      public virtual IReadOnlyList<Protocol> Protocols => AllBuildingBlocks<Protocol>().ToList();
+
       public virtual IReadOnlyList<string> CompoundNames => Compounds.AllNames().ToList();
 
       /// <summary>

@@ -95,6 +95,12 @@ namespace PKSim.IntegrationTests
             .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId));
          allParameters.Count().ShouldBeEqualTo(0);
       }
+
+      [Observation]
+      public void should_have_a_bsa_parameter_set()
+      {
+         _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameter.BSA).ShouldNotBeNull();
+      }
    }
 
    public class When_creating_an_individual_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_IndividualSimulation

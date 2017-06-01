@@ -32,10 +32,7 @@ namespace PKSim.Core.Model
          Percentiles.Add(percentile);
       }
 
-      public int Count
-      {
-         get { return Values.Count; }
-      }
+      public int Count => Values.Count;
 
       public ParameterValues Clone()
       {

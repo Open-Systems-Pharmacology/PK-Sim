@@ -1,12 +1,4 @@
 using System.Collections.Generic;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.LookAndFeel;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
@@ -15,16 +7,23 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO;
-
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.UI.Extensions;
-using OSPSuite.Presentation;
-using OSPSuite.UI.Controls;
-using OSPSuite.Presentation.Extensions;
 
 namespace PKSim.UI.Views.Individuals
 {
@@ -35,11 +34,10 @@ namespace PKSim.UI.Views.Individuals
       private readonly UserLookAndFeel _lookAndFeel;
       private IIndividualSettingsPresenter _presenter;
 
-      private ScreenBinder<IndividualSettingsDTO> _settingsBinder;
-      private ScreenBinder<IndividualSettingsDTO> _parameterBinder;
-
-      private GridViewBinder<CategoryParameterValueVersionDTO> _gridParameterValueVersionsBinder;
-      private GridViewBinder<CategoryCalculationMethodDTO> _gridCalculationMethodsBinder;
+      private readonly ScreenBinder<IndividualSettingsDTO> _settingsBinder;
+      private readonly ScreenBinder<IndividualSettingsDTO> _parameterBinder;
+      private readonly GridViewBinder<CategoryParameterValueVersionDTO> _gridParameterValueVersionsBinder;
+      private readonly GridViewBinder<CategoryCalculationMethodDTO> _gridCalculationMethodsBinder;
 
       private readonly RepositoryItemComboBox _repositoryForParameterValueVersions;
       private readonly RepositoryItemComboBox _repositoryForCalculationMethods;
@@ -55,10 +53,16 @@ namespace PKSim.UI.Views.Individuals
          _imageListRetriever = imageListRetriever;
          _toolTipCreator = toolTipCreator;
          _lookAndFeel = lookAndFeel;
-         gridViewParameterValueVersions.AllowsFiltering = false;
-         gridViewCalculationMethods.AllowsFiltering = false;
+
+         _settingsBinder = new ScreenBinder<IndividualSettingsDTO>();
+         _parameterBinder = new ScreenBinder<IndividualSettingsDTO>();
+         _gridParameterValueVersionsBinder = new GridViewBinder<CategoryParameterValueVersionDTO>(gridViewParameterValueVersions);
+         _gridCalculationMethodsBinder = new GridViewBinder<CategoryCalculationMethodDTO>(gridViewCalculationMethods);
          _repositoryForParameterValueVersions = new UxRepositoryItemComboBox(gridViewParameterValueVersions);
          _repositoryForCalculationMethods = new UxRepositoryItemComboBox(gridViewCalculationMethods);
+
+         gridViewParameterValueVersions.AllowsFiltering = false;
+         gridViewCalculationMethods.AllowsFiltering = false;
          gridViewParameterValueVersions.ShowColumnHeaders = false;
          gridViewCalculationMethods.ShowColumnHeaders = false;
          gridViewCalculationMethods.ShowRowIndicator = false;
@@ -68,10 +72,6 @@ namespace PKSim.UI.Views.Individuals
 
       public override void InitializeBinding()
       {
-         _settingsBinder = new ScreenBinder<IndividualSettingsDTO>();
-         _parameterBinder = new ScreenBinder<IndividualSettingsDTO>();
-         _gridParameterValueVersionsBinder = new GridViewBinder<CategoryParameterValueVersionDTO>(gridViewParameterValueVersions);
-         _gridCalculationMethodsBinder = new GridViewBinder<CategoryCalculationMethodDTO>(gridViewCalculationMethods);
          gridViewParameterValueVersions.CustomRowFilter += (o, e) => customizedParameterValueVersionRowVisibility(e);
          gridViewCalculationMethods.CustomRowFilter += (o, e) => customizedCalculationMethodsRowVisibility(e);
          _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
@@ -121,7 +121,7 @@ namespace PKSim.UI.Views.Individuals
          _parameterBinder.Bind(dto => dto.ParameterWeight).To(uxWeight);
          _parameterBinder.Bind(dto => dto.ParameterBMI).To(uxBMI);
 
-         btnMeanValues.Click += (o, e) => this.DoWithinWaitCursor(() =>OnEvent(_presenter.RetrieveMeanValues));
+         btnMeanValues.Click += (o, e) => this.DoWithinWaitCursor(() => OnEvent(_presenter.RetrieveMeanValues));
 
          RegisterValidationFor(_settingsBinder, settingsChanged, settingsChanged);
          RegisterValidationFor(_parameterBinder, settingsChanged, settingsChanged);
@@ -130,17 +130,16 @@ namespace PKSim.UI.Views.Individuals
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
       {
          var gridControl = e.SelectedControl as GridControl;
-         if (gridControl == null) return;
-         var gridView = gridControl.GetViewAt(e.ControlMousePosition) as GridView;
+         var gridView = gridControl?.GetViewAt(e.ControlMousePosition) as GridView;
          if (gridView == null) return;
 
-         CategoryCategoryItemDTO categoryCategoryItemDTO ;
+         CategoryCategoryItemDTO categoryCategoryItemDTO;
          if (gridView == gridViewCalculationMethods)
             categoryCategoryItemDTO = _gridCalculationMethodsBinder.ElementAt(e);
          else
             categoryCategoryItemDTO = _gridParameterValueVersionsBinder.ElementAt(e);
-         
-         if(categoryCategoryItemDTO==null)
+
+         if (categoryCategoryItemDTO == null)
             return;
 
          var superToolTip = _toolTipCreator.ToolTipFor(categoryCategoryItemDTO);
@@ -179,17 +178,15 @@ namespace PKSim.UI.Views.Individuals
       public void BindToSettings(IndividualSettingsDTO individualSettingsDTO)
       {
          this.DoWithinLatch(() => _settingsBinder.BindToSource(individualSettingsDTO));
-
       }
 
       public void BindToParameters(IndividualSettingsDTO individualSettingsDTO)
       {
          this.DoWithinLatch(() =>
-            {
-               _parameterBinder.BindToSource(individualSettingsDTO);
-               _gridCalculationMethodsBinder.BindToSource(individualSettingsDTO.CalculationMethods);
-
-            });
+         {
+            _parameterBinder.BindToSource(individualSettingsDTO);
+            _gridCalculationMethodsBinder.BindToSource(individualSettingsDTO.CalculationMethods);
+         });
 
          layoutItemCalculationMethods.AdjustControlHeight(gridViewCalculationMethods.OptimalHeight);
          settingsChanged();
@@ -220,8 +217,9 @@ namespace PKSim.UI.Views.Individuals
             layoutItemAge.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
             emptySpaceAge.Visibility = layoutItemAge.Visibility;
          }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemAge.Visibility); }
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemAge.Visibility);
       }
+
       public bool GestationalAgeVisible
       {
          set
@@ -229,7 +227,7 @@ namespace PKSim.UI.Views.Individuals
             layoutItemGestationalAge.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
             layoutItemAge.Text = (value ? PKSimConstants.UI.PostnatalAge : PKSimConstants.UI.Age).FormatForLabel();
          }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemGestationalAge.Visibility); }
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemGestationalAge.Visibility);
       }
 
       public bool HeightAndBMIVisible
@@ -240,8 +238,7 @@ namespace PKSim.UI.Views.Individuals
             layoutItemBMI.Visibility = layoutItemHeight.Visibility;
             emptySpaceBMI.Visibility = layoutItemBMI.Visibility;
          }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemHeight.Visibility); }
-
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemHeight.Visibility);
       }
 
       public bool IsReadOnly
@@ -251,13 +248,13 @@ namespace PKSim.UI.Views.Individuals
             layoutControlGroupPopulationProperties.Enabled = !value;
             layoutControlGroupPopulationParameters.Enabled = layoutControlGroupPopulationProperties.Enabled;
          }
-         get { return !layoutControlGroupPopulationProperties.Enabled; }
+         get => !layoutControlGroupPopulationProperties.Enabled;
       }
 
       public bool SpeciesVisible
       {
-         set { layoutItemSpecies.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemSpecies.Visibility); }
+         set => layoutItemSpecies.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemSpecies.Visibility);
       }
 
       public void BeginUpdate()
@@ -272,7 +269,7 @@ namespace PKSim.UI.Views.Individuals
          layoutControl.EndUpdate();
       }
 
-      public override bool HasError => _settingsBinder.HasError ||_parameterBinder.HasError;
+      public override bool HasError => _settingsBinder.HasError || _parameterBinder.HasError;
 
       public override void InitializeResources()
       {
@@ -284,7 +281,7 @@ namespace PKSim.UI.Views.Individuals
          layoutItemGestationalAge.Text = PKSimConstants.UI.GestationalAge.FormatForLabel();
          layoutItemWeight.Text = PKSimConstants.UI.Weight.FormatForLabel();
          layoutItemHeight.Text = PKSimConstants.UI.Height.FormatForLabel();
-         layoutItemBMI.Text = PKSimConstants.UI.BMI.FormatForLabel(checkCase:false);
+         layoutItemBMI.Text = PKSimConstants.UI.BMI.FormatForLabel(checkCase: false);
          layoutItemSubPopulation.Text = PKSimConstants.UI.SubPopulation.FormatForLabel();
          layoutItemSubPopulation.Visibility = LayoutVisibilityConvertor.FromBoolean(false);
          layoutItemCalculationMethods.Text = PKSimConstants.UI.CalculationMethods.FormatForLabel();

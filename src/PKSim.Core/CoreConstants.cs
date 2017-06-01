@@ -118,14 +118,19 @@ namespace PKSim.Core
       public static class Units
       {
          public static readonly string LiterPerKg = "l/kg";
-         public static readonly string KgPerm2 = "kg/m²";
+         public static readonly string KgPerM2 = "kg/m²";
          public static readonly string Kg = "kg";
          public static readonly string cm = "cm";
+         public static readonly string mg = "mg";
          public static readonly string MicroMolPerLiter = "µmol/l";
          public static readonly string Percent = "%";
          public static readonly string Days = "day(s)";
          public static readonly string Weeks = "week(s)";
          public static readonly string Years = "year(s)";
+         public static readonly string KgPerKg = "kg/kg";
+         public static readonly string MgPerKg = "mg/kg";
+         public static readonly string MgPerM2 = "mg/m²";
+
       }  
 
       public static class Observer
@@ -181,6 +186,8 @@ namespace PKSim.Core
          public static readonly string RelExpEndosomal = "RelExpEndosomal";
          public static readonly string RelExpOutFromNorm = "RelExpOutFromNorm";
          public static readonly string TableFormulaWithOffsetPrefix = "TableFormulaWithOffset_";
+         public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA = "PARAM_Application_DoseFromDosePerBodySurfaceArea";
+         public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT = "PARAM_Application_DoseFromDosePerBodyWeight";
       }
 
       public static class Alias
@@ -252,6 +259,7 @@ namespace PKSim.Core
          public static readonly string LinksCommon = "LinksCommon";
          public static readonly string DistributionInVitroPKSim = "DistributionInVitro_PKSim";
          public static readonly string ApplicationParameter = "ApplicationParameter";
+         public static readonly string ApplicationParameter_Human = "ApplicationParameter_Human";
          public static readonly string SchemaItemParameter = "SchemaItemParameter";
          public static readonly string CompoundCommon = "CompoundCommon";
          public static readonly string CompoundMWPKSim = "CompoundMW_PKSim";
@@ -286,7 +294,7 @@ namespace PKSim.Core
          public static readonly IEnumerable<string> ForEvents = new List<string> {Events};
          public static readonly IEnumerable<string> ForFormulations = new List<string> {Formulation, FormulationParticles};
          public static readonly IEnumerable<string> ForSchemaItems = new List<string> {SchemaItemParameter};
-         public static readonly IEnumerable<string> ForApplications = new List<string> {Formulation, ApplicationParameter, SchemaItemParameter};
+         public static readonly IEnumerable<string> ForApplications = new List<string> {Formulation, ApplicationParameter, SchemaItemParameter, ApplicationParameter_Human };
          public static readonly string RenalAgingHuman = "Renal_Aging_Human";
          public static readonly string RenalAgingAnimals = "Renal_Aging_Animals";
       }
@@ -857,6 +865,7 @@ namespace PKSim.Core
          public static readonly string INPUT_DOSE = "InputDose";
          public static readonly string DOSE = "Dose";
          public static readonly string DOSE_PER_BODY_WEIGHT = "DosePerBodyWeight";
+         public static readonly string DOSE_PER_BODY_SURFACE_AREA = "DosePerBodySurfaceArea";
          public static readonly string AGE = "Age";
          public static readonly string Age0 = "Age of individual at t=0";
          public static readonly string GESTATIONAL_AGE = "Gestational age";
@@ -869,6 +878,7 @@ namespace PKSim.Core
          public static readonly string MEAN_HEIGHT = "MeanHeight";
          public static readonly string HEIGHT = "Height";
          public static readonly string BMI = "BMI";
+         public static readonly string BSA = "BSA";
          public static readonly string BLOOD_FLOW = "Blood flow rate";
          public static readonly string DENSITY = "Density (tissue)";
          public static readonly string DRUG = "DRUG";
@@ -1100,7 +1110,8 @@ namespace PKSim.Core
                WEIGHT,
                MEAN_WEIGHT,
                MEAN_HEIGHT,
-               BMI
+               BMI,
+               BSA
             };
 
          /// <summary>

@@ -102,18 +102,39 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       protected override void DoStart()
       {
+         loadDimensionsFromFile();
+
+         addInputDoseDimension();
+
+         _dimensionNames = _dimensionFactory.GetDimensionNames().ToList();
+         _dimensionFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
+      }
+
+      private void addInputDoseDimension()
+      {
+         var inputDoseDimension = _dimensionFactory.AddDimension(new BaseDimensionRepresentation(), CoreConstants.Dimension.InputDose, CoreConstants.Units.KgPerKg);
+         inputDoseDimension.BaseUnit.Visible = false;
+
+         //factor to convert mg to kg
+         addInputDoseUnit(inputDoseDimension, CoreConstants.Units.mg, 1e-6);
+
+         //factor to convert mg/kg to kg/kg
+         inputDoseDimension.DefaultUnit = addInputDoseUnit(inputDoseDimension, CoreConstants.Units.MgPerKg, 1e-6);
+
+         //factor to convert mg/m2 to kg/dm2
+         addInputDoseUnit(inputDoseDimension, CoreConstants.Units.MgPerM2, 1e-8);
+      }
+
+      private void loadDimensionsFromFile()
+      {
          var serializer = _unitSystemXmlSerializerRepository.SerializerFor(_dimensionFactory);
          var xel = XElement.Load(_pkSimConfiguration.DimensionFilePath);
          serializer.Deserialize(_dimensionFactory, xel, SerializationTransaction.Create());
+      }
 
-         //add pksim specific dimension
-         var inputDose = _dimensionFactory.AddDimension(new BaseDimensionRepresentation(), CoreConstants.Dimension.InputDose, "kg/kg");
-         inputDose.AddUnit("mg", 1e-6, 0);
-         inputDose.DefaultUnit = inputDose.AddUnit("mg/kg", 1e-6, 0);
-         inputDose.BaseUnit.Visible = false;
-         _dimensionNames = _dimensionFactory.GetDimensionNames().ToList();
-
-         _dimensionFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
+      private Unit addInputDoseUnit(IDimension inputDose, string unit, double factor)
+      {
+         return inputDose.AddUnit(unit, factor, 0);
       }
 
       protected override void PerformPostStartProcessing()
