@@ -65,12 +65,11 @@ namespace PKSim.Presentation.Services
          string oldName = simulation.Name;
 
          var individualSimulation = simulation as IndividualSimulation;
-         var populationSimulation = simulation as PopulationSimulation;
          if (individualSimulation != null)
             renameForIndividualSimulation(individualSimulation, newName);
 
-         else if(populationSimulation != null)
-            renameSimulation(populationSimulation, newName);
+         else
+            renameSimulation(simulation, newName);
 
          _renameAbsolutePathVisitor.RenameAllAbsolutePathIn(simulation, oldName);
 
