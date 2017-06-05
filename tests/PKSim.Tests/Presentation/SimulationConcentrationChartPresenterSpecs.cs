@@ -18,6 +18,7 @@ using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Charts;
 using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters.Charts;
@@ -35,7 +36,6 @@ namespace PKSim.Presentation
       protected IChartDisplayPresenter _chartDisplayPresenter;
       protected IChartEditorPresenter _chartEditorPresenter;
       protected IDataColumnToPathElementsMapper _dataColumnToPathElementsMapper;
-      protected IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       protected IIndividualPKAnalysisPresenter _pkAnalysisPresenter;
       protected IChartTask _chartTask;
       protected IObservedDataTask _observedDataTask;
@@ -47,6 +47,7 @@ namespace PKSim.Presentation
       private IUserSettings _userSettings;
       private IProjectRetriever _projectRetriever;
       private ChartPresenterContext _chartPresenterContext;
+      private ICurveNamer _curveNamer;
 
       protected override void Context()
       {
@@ -57,7 +58,6 @@ namespace PKSim.Presentation
          _chartEditorAndDisplayPresenter = A.Fake<IChartEditorAndDisplayPresenter>();
          A.CallTo(() => _chartEditorAndDisplayPresenter.Control).Returns(new Control());
          _dataColumnToPathElementsMapper = A.Fake<IDataColumnToPathElementsMapper>();
-         _quantityDisplayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
          _chartTask = A.Fake<IChartTask>();
          _observedDataTask = A.Fake<IObservedDataTask>();
          _chartLayoutTask = A.Fake<IChartEditorLayoutTask>();
@@ -72,9 +72,10 @@ namespace PKSim.Presentation
          _projectRetriever = A.Fake<IProjectRetriever>();
          _userSettings = A.Fake<IUserSettings>();
          _chartPresenterContext= A.Fake<ChartPresenterContext>();
+         _curveNamer = A.Fake<ICurveNamer>();
 
          A.CallTo(() => _chartPresenterContext.ChartEditorAndDisplayPresenter).Returns(_chartEditorAndDisplayPresenter);
-         A.CallTo(() => _chartPresenterContext.QuantityDisplayPathMapper).Returns(_quantityDisplayPathMapper);
+         A.CallTo(() => _chartPresenterContext.CurveNamer).Returns(_curveNamer);
          A.CallTo(() => _chartPresenterContext.EditorLayoutTask).Returns(_chartLayoutTask);
          A.CallTo(() => _chartPresenterContext.TemplatingTask).Returns(_chartTemplatingTask);
          A.CallTo(() => _chartPresenterContext.ProjectRetriever).Returns(_projectRetriever);

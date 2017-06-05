@@ -172,14 +172,14 @@
       <HintPath>..\..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.2.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\OSPSuite.Assets.7.2.0.16\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\packages\OSPSuite.Assets.7.2.0.17\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.BDDHelper">
       <HintPath>..\..\..\packages\OSPSuite.BDDHelper.2.0.0.1\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.2.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\OSPSuite.Core.7.2.0.16\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\packages\OSPSuite.Core.7.2.0.17\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.DataBinding">
       <HintPath>..\..\..\packages\OSPSuite.DataBinding.2.0.0.1\lib\net45\OSPSuite.DataBinding.dll</HintPath>
@@ -190,8 +190,8 @@
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.2.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\OSPSuite.Presentation.7.2.0.16\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.2.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\packages\OSPSuite.Presentation.7.2.0.17\lib\net452\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer">
       <HintPath>..\..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -203,8 +203,8 @@
     <Reference Include="OSPSuite.TeXReporting, Version=2.0.0.6, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\..\packages\OSPSuite.TeXReporting.2.0.0.6\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.UI, Version=7.2.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\OSPSuite.UI.7.2.0.16\lib\net452\OSPSuite.UI.dll</HintPath>
+    <Reference Include="OSPSuite.UI, Version=7.2.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\packages\OSPSuite.UI.7.2.0.17\lib\net452\OSPSuite.UI.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Utility, Version=2.0.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\OSPSuite.Utility.2.0.0.5\lib\net45\OSPSuite.Utility.dll</HintPath>
