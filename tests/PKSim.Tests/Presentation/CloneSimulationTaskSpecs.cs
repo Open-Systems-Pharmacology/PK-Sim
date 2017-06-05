@@ -20,6 +20,7 @@ namespace PKSim.Presentation
       protected ISimulationSettingsRetriever _simulationSettingsRetriever;
       protected ISimulationResultsTask _simulationResultsTask;
       protected IApplicationController _applicationController;
+      protected IRenameBuildingBlockTask _renameBuildingBlockTask;
 
       protected override void Context()
       {
@@ -28,7 +29,8 @@ namespace PKSim.Presentation
          _simulationSettingsRetriever = A.Fake<ISimulationSettingsRetriever>();
          _simulationResultsTask = A.Fake<ISimulationResultsTask>();
          _applicationController= A.Fake<IApplicationController>();
-         sut = new CloneSimulationTask(_buildingBlockTask,  _buildingBlockInSimulationManager, _simulationSettingsRetriever, _simulationResultsTask, _applicationController);
+         _renameBuildingBlockTask = A.Fake<IRenameBuildingBlockTask>();
+         sut = new CloneSimulationTask(_buildingBlockTask,  _buildingBlockInSimulationManager, _simulationSettingsRetriever, _simulationResultsTask, _applicationController, _renameBuildingBlockTask);
       }
    }
 
@@ -51,11 +53,18 @@ namespace PKSim.Presentation
          A.CallTo(() => _cloneSimulationPresenter.CloneSimulation(_simulationToClone)).Returns(_command);
          A.CallTo(() => _cloneSimulationPresenter.Simulation).Returns(_clonedSimulation);
          A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulationToClone)).Returns(BuildingBlockStatus.Green);
+         A.CallTo(() => _cloneSimulationPresenter.CloneName).Returns("NEW");
       }
 
       protected override void Because()
       {
          sut.Clone(_simulationToClone);
+      }
+
+      [Observation]
+      public void the_rename_task_is_used_to_rename_the_cloned_simulation()
+      {
+         A.CallTo(() => _renameBuildingBlockTask.RenameSimulation(_clonedSimulation, "NEW")).MustHaveHappened();
       }
 
       [Observation]

@@ -94,18 +94,16 @@ namespace PKSim.Presentation.Services
 
       private void renameForIndividualSimulation(IndividualSimulation individualSimulation, string newName)
       {
-         var curvesToRename = _curveNamer.CurvesWithOriginalName(individualSimulation, individualSimulation.Charts).ToList();
+         _curveNamer.RenameCurvesWithOriginalNames(individualSimulation, () => renameIndividualSimulation(individualSimulation, newName), addSimulationName:true);
+      }
 
+      private void renameIndividualSimulation(IndividualSimulation individualSimulation, string newName)
+      {
          var individualSimulationDataRepository = individualSimulation.DataRepository;
-         if(individualSimulationDataRepository != null)
+         if (individualSimulationDataRepository != null)
             _dataRepositoryNamer.Rename(individualSimulationDataRepository, newName);
 
          renameSimulation(individualSimulation, newName);
-
-         curvesToRename.Each(curve =>
-         {
-            curve.Name = _curveNamer.CurveNameForColumn(individualSimulation, curve.yData);
-         });
       }
 
       private bool pathContains(List<string> path, string oldCompoundName)

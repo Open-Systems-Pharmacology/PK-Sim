@@ -1,13 +1,8 @@
-﻿using System.Collections.Generic;
-using FakeItEasy;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
-using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
@@ -22,7 +17,6 @@ namespace PKSim.Presentation
       protected ICloner _cloner;
       protected ISimulationResultsCreator _simulationResultsCreator;
       protected IDataRepositoryFromResultsCreator _dataRepositoryCreator;
-      protected ICurveNamer _curveNamer;
 
       protected override void Context()
       {
@@ -32,8 +26,7 @@ namespace PKSim.Presentation
          _simulationResultsCreator = A.Fake<ISimulationResultsCreator>();
          _dataRepositoryCreator = A.Fake<IDataRepositoryFromResultsCreator>();
          _cloner = A.Fake<ICloner>();
-         _curveNamer = A.Fake<ICurveNamer>();
-         sut = new SimulationResultsTask(_chartTemplatingTask, _simulationResultsSynchronizer, _cloner, _simulationResultsCreator, _dataRepositoryCreator, _curveNamer);
+         sut = new SimulationResultsTask(_chartTemplatingTask, _simulationResultsSynchronizer, _cloner, _simulationResultsCreator, _dataRepositoryCreator);
       }
    }
 
@@ -83,49 +76,6 @@ namespace PKSim.Presentation
       public void should_have_set_the_result_version_equal_to_the_previous_version()
       {
          _clonedSimulation.ResultsVersion.ShouldBeEqualTo(_simulationToClone.ResultsVersion);
-      }
-   }
-
-   public class When_cloning_simulation_results_with_charts : concern_for_SimulationResultsTask
-   {
-      private IndividualSimulation _clonedSimulation;
-      private IndividualSimulation _simulationToClone;
-      private SimulationTimeProfileChart _clonedSimulationAnalysis;
-      private SimulationTimeProfileChart _simulationAnalysisToClone;
-      private Curve _clonedCurve;
-
-      protected override void Context()
-      {
-         base.Context();
-         _clonedSimulation = new IndividualSimulation();
-         _simulationToClone = new IndividualSimulation {DataRepository = new DataRepository()};
-         _clonedSimulationAnalysis = new SimulationTimeProfileChart();
-         _simulationAnalysisToClone = new SimulationTimeProfileChart();
-
-         _clonedSimulation.AddAnalysis(_clonedSimulationAnalysis);
-         _simulationToClone.AddAnalysis(_simulationAnalysisToClone);
-
-         _clonedCurve = new Curve();
-         var dimensionFactory = A.Fake<IDimensionFactory>();
-         _clonedCurve.SetyData(new DataColumn(), dimensionFactory);
-         _clonedCurve.SetxData(new DataColumn(), dimensionFactory);
-         _clonedSimulationAnalysis.AddCurve(_clonedCurve);
-         var originalCurve = new Curve();
-         originalCurve.SetyData(new DataColumn(), dimensionFactory);
-         originalCurve.SetxData(new DataColumn(), dimensionFactory);
-         _simulationAnalysisToClone.AddCurve(originalCurve);
-         A.CallTo(() => _curveNamer.CurvesWithOriginalName(_simulationToClone, A<IEnumerable<ICurveChart>>._)).Returns(new[] {originalCurve});
-      }
-
-      protected override void Because()
-      {
-         sut.CloneResults(_simulationToClone, _clonedSimulation);
-      }
-
-      [Observation]
-      public void the_curve_namer_should_rename_the_cloned_curve()
-      {
-         A.CallTo(() => _curveNamer.CurveNameForColumn(_clonedSimulation, _clonedCurve.yData)).MustHaveHappened();
       }
    }
 

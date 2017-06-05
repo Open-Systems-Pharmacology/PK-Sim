@@ -15,17 +15,15 @@ namespace PKSim.Presentation.Services
       private readonly ICloner _cloner;
       private readonly ISimulationResultsCreator _simulationResultsCreator;
       private readonly IDataRepositoryFromResultsCreator _dataRepositoryCreator;
-      private readonly ICurveNamer _curveNamer;
 
       public SimulationResultsTask(IChartTemplatingTask chartTemplatingTask, ISimulationResultsSynchronizer simulationResultsSynchronizer, ICloner cloner, ISimulationResultsCreator simulationResultsCreator,
-         IDataRepositoryFromResultsCreator dataRepositoryCreator, ICurveNamer curveNamer)
+         IDataRepositoryFromResultsCreator dataRepositoryCreator)
       {
          _chartTemplatingTask = chartTemplatingTask;
          _simulationResultsSynchronizer = simulationResultsSynchronizer;
          _cloner = cloner;
          _simulationResultsCreator = simulationResultsCreator;
          _dataRepositoryCreator = dataRepositoryCreator;
-         _curveNamer = curveNamer;
       }
 
       public void CloneResults(Simulation sourceSimulation, Simulation targetSimulation)
@@ -68,15 +66,7 @@ namespace PKSim.Presentation.Services
          //Step 2 - update the data repository based on the results created above
          targetSimulation.DataRepository = _dataRepositoryCreator.CreateResultsFor(targetSimulation);
 
-
-         var curveNamesToRename = _curveNamer.CurvesWithOriginalName(sourceSimulation, sourceSimulation.Charts).Select(x => x.Name);
-
          sourceSimulation.SimulationCharts.Each(c => targetSimulation.AddAnalysis(_chartTemplatingTask.CloneChart(c, targetSimulation)));
-         targetSimulation.Charts.SelectMany(chart => chart.Curves).Where(curve => curveNamesToRename.Contains(curve.Name)).
-            Each(curve =>
-            {
-               curve.Name = _curveNamer.CurveNameForColumn(targetSimulation, curve.yData);
-            });
       }
 
       private void copyResultsForIndividualSimulation(IndividualSimulation sourceSimulation, IndividualSimulation targetSimulation)

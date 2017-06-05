@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.BDDHelper;
@@ -18,6 +19,7 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation
@@ -119,8 +121,7 @@ namespace PKSim.Presentation
          _individualSimulation.DataRepository = new DataRepository();
          A.CallTo(_containerTask).WithReturnType<PathCache<IQuantity>>().Returns(quantityCache);
 
-         _curve = A.Fake<ICurve>();
-         A.CallTo(() => _curveNamer.CurvesWithOriginalName(_individualSimulation, A<IEnumerable<ICurveChart>>._)).Returns(new[] {_curve});
+         A.CallTo(() => _curveNamer.RenameCurvesWithOriginalNames(_individualSimulation, A<Action>._, true)).Invokes(x => x.Arguments[1].DowncastTo<Action>()());
       }
 
       protected override void Because()
@@ -136,7 +137,7 @@ namespace PKSim.Presentation
       [Observation]
       public void the_curves_should_also_be_renamed()
       {
-         A.CallTo(() => _curveNamer.CurvesWithOriginalName(_individualSimulation, A<IEnumerable<ICurveChart>>._)).MustHaveHappened();
+         A.CallTo(() => _curveNamer.RenameCurvesWithOriginalNames(_individualSimulation, A<Action>._, true)).MustHaveHappened();
       }
 
       [Observation]
