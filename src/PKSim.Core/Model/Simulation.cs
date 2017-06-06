@@ -348,6 +348,25 @@ namespace PKSim.Core.Model
          Results.Clear();
       }
 
+      public override string Name
+      {
+         get => base.Name;
+         set
+         {
+            base.Name = value;
+            setName(Model, value);
+            setName(Model?.Root, value);
+            setName(Reactions, value);
+            setName(SimulationSettings, value);
+         }
+      }
+
+      private void setName(IWithName withName, string value)
+      {
+         if (withName != null)
+            withName.Name = value;
+      }
+
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
