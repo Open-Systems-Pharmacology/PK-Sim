@@ -44,7 +44,7 @@ namespace PKSim.Core
          _protocolToProtocolSchemaItemMapper = A.Fake<IProtocolToSchemaItemsMapper>();
          sut = new SimulationConfigurationValidator(_protocolToProtocolSchemaItemMapper);
 
-         _speciesPopulation.IsBodySurfaceAreaDependent = false;
+         _speciesPopulation.IsHeightDependent = false;
          _schemaItem= A.Fake<ISchemaItem>();
          _doseUnit= A.Fake<Unit>();
          _schemaItem.Dose.DisplayUnit = _doseUnit;
@@ -153,7 +153,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _speciesPopulation.IsBodySurfaceAreaDependent = false;
+         _speciesPopulation.IsHeightDependent = false;
          A.CallTo(() => _doseUnit.Name).Returns(CoreConstants.Units.MgPerM2);
       }
 
@@ -169,7 +169,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _speciesPopulation.IsBodySurfaceAreaDependent = false;
+         _speciesPopulation.IsHeightDependent = false;
          A.CallTo(() => _doseUnit.Name).Returns(CoreConstants.Units.MgPerKg);
       }
 
@@ -186,7 +186,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _speciesPopulation.IsBodySurfaceAreaDependent = true;
+         _speciesPopulation.IsHeightDependent = true;
          A.CallTo(() => _doseUnit.Name).Returns(CoreConstants.Units.MgPerM2);
       }
 

@@ -30,7 +30,6 @@ namespace PKSim.Infrastructure.ORM.Mappers
             Species = flatPopulation.Species,
             IsAgeDependent = flatPopulation.IsAgeDependent,
             IsHeightDependent = flatPopulation.IsHeightDependent,
-            IsBodySurfaceAreaDependent = flatPopulation.IsBodySurfaceAreaDependent,
             Name = flatPopulation.Id,
             RaceIndex = flatPopulation.RaceIndex,
             Sequence = flatPopulation.Sequence,

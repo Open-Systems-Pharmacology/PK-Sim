@@ -10,7 +10,7 @@ namespace PKSim.Core.Model
       public virtual string Species { get; set; }
       public virtual bool IsAgeDependent { get; set; }
       public virtual bool IsHeightDependent { get; set; }
-      public virtual bool IsBodySurfaceAreaDependent { get; set; }
+      public virtual bool IsBodySurfaceAreaDependent => IsHeightDependent;
       public virtual string DisplayName { get; set; }
       public virtual int RaceIndex { get; set; }
       public virtual int Sequence { get; set; }
