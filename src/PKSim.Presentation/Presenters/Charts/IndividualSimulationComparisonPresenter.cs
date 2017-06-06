@@ -2,28 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using PKSim.Assets;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Events;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Charts;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Events;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Presenters.Charts;
-using OSPSuite.Presentation.Services.Charts;
 using IChartTemplatingTask = PKSim.Presentation.Services.IChartTemplatingTask;
-using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
-using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Presentation.Presenters.Charts
 {
@@ -49,7 +47,7 @@ namespace PKSim.Presentation.Presenters.Charts
 
       public event EventHandler Closing = delegate { };
 
-      public IndividualSimulationComparisonPresenter(IIndividualSimulationComparisonView view,  ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, ILazyLoadTask lazyLoadTask, IChartTemplatingTask chartTemplatingTask, IUserSettings userSettings) :
+      public IndividualSimulationComparisonPresenter(IIndividualSimulationComparisonView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, ILazyLoadTask lazyLoadTask, IChartTemplatingTask chartTemplatingTask, IUserSettings userSettings) :
          base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, userSettings)
       {
          _lazyLoadTask = lazyLoadTask;
@@ -122,7 +120,7 @@ namespace PKSim.Presentation.Presenters.Charts
 
       protected override string NameForColumn(DataColumn dataColumn)
       {
-         return _chartPresenterContext.QuantityDisplayPathMapper.DisplayPathAsStringFor(SimulationFor(dataColumn), dataColumn, addSimulationName: true);
+         return _chartPresenterContext.CurveNamer.CurveNameForColumn(SimulationFor(dataColumn), dataColumn);
       }
 
       private bool containsIndividualSimulationNodes(IEnumerable<ITreeNode> simulationNodes)

@@ -15,15 +15,17 @@ namespace PKSim.Presentation.Services
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly ISimulationResultsTask _simulationResultsTask;
       private readonly IApplicationController _applicationController;
+      private readonly IRenameBuildingBlockTask _renameBuildingBlockTask;
 
       public CloneSimulationTask(IBuildingBlockTask buildingBlockTask, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
-         ISimulationSettingsRetriever simulationSettingsRetriever, ISimulationResultsTask simulationResultsTask, IApplicationController applicationController)
+         ISimulationSettingsRetriever simulationSettingsRetriever, ISimulationResultsTask simulationResultsTask, IApplicationController applicationController, IRenameBuildingBlockTask renameBuildingBlockTask)
       {
          _buildingBlockTask = buildingBlockTask;
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _simulationResultsTask = simulationResultsTask;
          _applicationController = applicationController;
+         _renameBuildingBlockTask = renameBuildingBlockTask;
       }
 
       public void Clone(Simulation simulationToClone)
@@ -42,6 +44,10 @@ namespace PKSim.Presentation.Services
             var clone = presenter.Simulation;
 
             _simulationResultsTask.CloneResults(simulationToClone, clone);
+
+            // The simulation must be renamed after results are added to the simulation
+            _renameBuildingBlockTask.RenameSimulation(clone, presenter.CloneName);
+
             clone.Creation.AsCloneOf(simulationToClone);
             _simulationSettingsRetriever.SynchronizeSettingsIn(clone);
 

@@ -13,6 +13,7 @@ using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Assets;
+using OSPSuite.Core.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.Services
@@ -29,11 +30,13 @@ namespace PKSim.Presentation.Services
       private readonly IObjectReferencingRetriever _objectReferencingRetriever;
       private readonly IProjectRetriever _projectRetriever;
       private readonly IParameterIdentificationSimulationPathUpdater _simulationPathUpdater;
+      private readonly IDataRepositoryNamer _dataRepositoryNamer;
+      private readonly ICurveNamer _curveNamer;
 
       public RenameBuildingBlockTask(IBuildingBlockTask buildingBlockTask, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
          IApplicationController applicationController, ILazyLoadTask lazyLoadTask, IContainerTask containerTask,
          IHeavyWorkManager heavyWorkManager, IRenameAbsolutePathVisitor renameAbsolutePathVisitor, IObjectReferencingRetriever objectReferencingRetriever,
-         IProjectRetriever projectRetriever, IParameterIdentificationSimulationPathUpdater simulationPathUpdater)
+         IProjectRetriever projectRetriever, IParameterIdentificationSimulationPathUpdater simulationPathUpdater, IDataRepositoryNamer dataRepositoryNamer, ICurveNamer curveNamer)
       {
          _buildingBlockTask = buildingBlockTask;
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
@@ -45,6 +48,8 @@ namespace PKSim.Presentation.Services
          _objectReferencingRetriever = objectReferencingRetriever;
          _projectRetriever = projectRetriever;
          _simulationPathUpdater = simulationPathUpdater;
+         _dataRepositoryNamer = dataRepositoryNamer;
+         _curveNamer = curveNamer;
       }
 
       public void RenameSimulation(Simulation simulation, string newName)
@@ -58,9 +63,13 @@ namespace PKSim.Presentation.Services
 
          //Model and root
          string oldName = simulation.Name;
-         simulation.Name = newName;
-         simulation.Model.Name = simulation.Name;
-         simulation.Model.Root.Name = simulation.Name;
+
+         var individualSimulation = simulation as IndividualSimulation;
+         if (individualSimulation != null)
+            renameForIndividualSimulation(individualSimulation, newName);
+
+         else
+            renameSimulation(simulation, newName);
 
          _renameAbsolutePathVisitor.RenameAllAbsolutePathIn(simulation, oldName);
 
@@ -74,6 +83,27 @@ namespace PKSim.Presentation.Services
 
          //edit the simulation back, since it was edited
          _buildingBlockTask.Edit(simulation);
+      }
+
+      private static void renameSimulation(Simulation simulation, string newName)
+      {
+         simulation.Name = newName;
+         simulation.Model.Name = simulation.Name;
+         simulation.Model.Root.Name = simulation.Name;
+      }
+
+      private void renameForIndividualSimulation(IndividualSimulation individualSimulation, string newName)
+      {
+         _curveNamer.RenameCurvesWithOriginalNames(individualSimulation, () => renameIndividualSimulation(individualSimulation, newName), addSimulationName:true);
+      }
+
+      private void renameIndividualSimulation(IndividualSimulation individualSimulation, string newName)
+      {
+         var individualSimulationDataRepository = individualSimulation.DataRepository;
+         if (individualSimulationDataRepository != null)
+            _dataRepositoryNamer.Rename(individualSimulationDataRepository, newName);
+
+         renameSimulation(individualSimulation, newName);
       }
 
       private bool pathContains(List<string> path, string oldCompoundName)

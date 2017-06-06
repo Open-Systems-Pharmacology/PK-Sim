@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -15,6 +17,9 @@ using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Assets;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation
@@ -36,6 +41,8 @@ namespace PKSim.Presentation
       protected IProjectRetriever _projectRetriever;
       protected IParameterIdentificationSimulationPathUpdater _parameterIdentificationSimulationPathUpdater;
       protected string _initialSimulationName;
+      protected IDataRepositoryNamer _dataRepositoryNamer;
+      protected ICurveNamer _curveNamer;
 
       protected override void Context()
       {
@@ -50,9 +57,11 @@ namespace PKSim.Presentation
          _renameAbsolutePathVisitor = new RenameAbsolutePathVisitor();
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          _parameterIdentificationSimulationPathUpdater = A.Fake<IParameterIdentificationSimulationPathUpdater>();
+         _dataRepositoryNamer = A.Fake<IDataRepositoryNamer>();
+         _curveNamer = A.Fake<ICurveNamer>();
 
          sut = new RenameBuildingBlockTask(_buildingBlockTask, _buildingBlockInSimulationManager, _applicationController, _lazyloadTask,
-            _containerTask, _heavyWorkManager, _renameAbsolutePathVisitor, _objectReferencingRetriever, _projectRetriever, _parameterIdentificationSimulationPathUpdater);
+            _containerTask, _heavyWorkManager, _renameAbsolutePathVisitor, _objectReferencingRetriever, _projectRetriever, _parameterIdentificationSimulationPathUpdater, _dataRepositoryNamer, _curveNamer);
 
          _initialSimulationName = "S";
          _individualSimulation = new IndividualSimulation().WithName(_initialSimulationName);
@@ -70,6 +79,7 @@ namespace PKSim.Presentation
       private IFormula _f2;
       private IFormula _f3;
       private IndividualResults _individualResults;
+      private ICurve _curve;
 
       protected override void Context()
       {
@@ -108,12 +118,26 @@ namespace PKSim.Presentation
          _individualResults.Add(new QuantityValues {PathList = new[] {"Liver", "Cell", "Meta"}.ToList()});
 
          _individualSimulation.Results = results;
+         _individualSimulation.DataRepository = new DataRepository();
          A.CallTo(_containerTask).WithReturnType<PathCache<IQuantity>>().Returns(quantityCache);
+
+         A.CallTo(() => _curveNamer.RenameCurvesWithOriginalNames(_individualSimulation, A<Action>._, true)).Invokes(x => x.Arguments[1].DowncastTo<Action>()());
       }
 
       protected override void Because()
       {
          sut.RenameSimulation(_individualSimulation, _newName);
+      }
+
+      [Observation]
+      public void the_data_repository_should_also_be_renamed()
+      {
+         A.CallTo(() => _dataRepositoryNamer.Rename(_individualSimulation.DataRepository, _newName)).MustHaveHappened();
+      }
+      [Observation]
+      public void the_curves_should_also_be_renamed()
+      {
+         A.CallTo(() => _curveNamer.RenameCurvesWithOriginalNames(_individualSimulation, A<Action>._, true)).MustHaveHappened();
       }
 
       [Observation]

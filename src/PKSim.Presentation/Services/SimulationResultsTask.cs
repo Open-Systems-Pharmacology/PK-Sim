@@ -4,6 +4,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Services;
 
 namespace PKSim.Presentation.Services
 {
@@ -15,8 +16,7 @@ namespace PKSim.Presentation.Services
       private readonly ISimulationResultsCreator _simulationResultsCreator;
       private readonly IDataRepositoryFromResultsCreator _dataRepositoryCreator;
 
-      public SimulationResultsTask(IChartTemplatingTask chartTemplatingTask, IRenameBuildingBlockTask renameBuildingBlockTask,
-         ISimulationResultsSynchronizer simulationResultsSynchronizer, ICloner cloner, ISimulationResultsCreator simulationResultsCreator,
+      public SimulationResultsTask(IChartTemplatingTask chartTemplatingTask, ISimulationResultsSynchronizer simulationResultsSynchronizer, ICloner cloner, ISimulationResultsCreator simulationResultsCreator,
          IDataRepositoryFromResultsCreator dataRepositoryCreator)
       {
          _chartTemplatingTask = chartTemplatingTask;
