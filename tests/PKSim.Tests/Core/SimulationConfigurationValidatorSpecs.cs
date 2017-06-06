@@ -31,7 +31,7 @@ namespace PKSim.Core
             ModelConfiguration = new ModelConfiguration()
          };
          _individual = new Individual().WithName("MyIndividuyal");
-         _speciesPopulation = A.Fake<SpeciesPopulation>();
+         _speciesPopulation = new SpeciesPopulation();
 
          _individual.OriginData = new OriginData {SpeciesPopulation = _speciesPopulation};
          _compound = A.Fake<Compound>().WithName("MyCompound");
@@ -148,7 +148,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_valiidating_the_configuration_of_a_simulation_using_a_simulation_that_is_not_surface_area_dependent_using_a_protocol_in_body_surface_area_dosing : concern_for_SimulationConfigurationValidator
+   public class When_validating_the_configuration_of_a_simulation_using_a_simulation_that_is_not_surface_area_dependent_using_a_protocol_in_body_surface_area_dosing : concern_for_SimulationConfigurationValidator
    {
       protected override void Context()
       {
@@ -164,7 +164,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_valiidating_the_configuration_of_a_simulation_using_a_simulation_that_is_not_surface_area_dependent_using_a_protocol_in_body_weight_dosing : concern_for_SimulationConfigurationValidator
+   public class When_validating_the_configuration_of_a_simulation_using_a_simulation_that_is_not_surface_area_dependent_using_a_protocol_in_body_weight_dosing : concern_for_SimulationConfigurationValidator
    {
       protected override void Context()
       {
@@ -181,7 +181,7 @@ namespace PKSim.Core
    }
 
 
-   public class When_valiidating_the_configuration_of_a_simulation_using_a_simulation_that_is_surface_area_dependent_using_a_protocol_in_body_surface_area_dosing : concern_for_SimulationConfigurationValidator
+   public class When_validating_the_configuration_of_a_simulation_using_a_simulation_that_is_surface_area_dependent_using_a_protocol_in_body_surface_area_dosing : concern_for_SimulationConfigurationValidator
    {
       protected override void Context()
       {
