@@ -18,6 +18,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
@@ -118,6 +119,8 @@ namespace PKSim.Presentation
 
          _individualSimulation.Results = results;
          _individualSimulation.DataRepository = new DataRepository();
+         _individualSimulation.Reactions = new ReactionBuildingBlock();
+         _individualSimulation.SimulationSettings = new SimulationSettings();
          A.CallTo(_containerTask).WithReturnType<PathCache<IQuantity>>().Returns(quantityCache);
 
          A.CallTo(() => _curveNamer.RenameCurvesWithOriginalNames(_individualSimulation, A<Action>._, true)).Invokes(x => x.Arguments[1].DowncastTo<Action>()());
@@ -129,10 +132,18 @@ namespace PKSim.Presentation
       }
 
       [Observation]
+      public void the_building_blocks_should_be_renamed()
+      {
+         _individualSimulation.Reactions.Name.ShouldBeEqualTo(_newName);
+         _individualSimulation.SimulationSettings.Name.ShouldBeEqualTo(_newName);
+      }
+
+      [Observation]
       public void the_data_repository_should_also_be_renamed()
       {
          A.CallTo(() => _dataRepositoryNamer.Rename(_individualSimulation.DataRepository, _newName)).MustHaveHappened();
       }
+
       [Observation]
       public void the_curves_should_also_be_renamed()
       {
