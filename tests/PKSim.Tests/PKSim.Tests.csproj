@@ -251,6 +251,7 @@
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
     <Compile Include="Core\PKValuesToPKAnalysisMapperSpecs.cs" />
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
+    <Compile Include="Core\SimulationConfigurationValidatorSpecs.cs" />
     <Compile Include="Core\TablePartSpecs.cs" />
     <Compile Include="Core\TimeProfileAnalysisChartSpecs.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
@@ -427,6 +428,7 @@
     <Compile Include="IntegrationTests\ParameterIdentificationXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\PKSimParameterStartValuesCreatorSpecs.cs" />
     <Compile Include="IntegrationTests\RegistrationSpecs.cs" />
+    <Compile Include="IntegrationTests\SchemaItemExtensionsSpecs.cs" />
     <Compile Include="IntegrationTests\SensitivityAnalysisXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationAnalysisWorkflowXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationTransferLoaderSpecs.cs" />
@@ -980,6 +982,7 @@
     <Compile Include="ProjectConverter\v6_3\631_EnzymesOntogenySpecs.cs" />
     <Compile Include="ProjectConverter\v6_4\Converter632To641Specs.cs" />
     <Compile Include="ProjectConverter\v7_1\Converter641To710Specs.cs" />
+    <Compile Include="ProjectConverter\v7_2\Converter710To720Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IntegrationTests\NightlyOnlyAttribute.cs" />
     <Compile Include="Spikes\PopulationResults30000Updates.cs" />
@@ -1024,6 +1027,8 @@
     <None Include="app.config" />
     <None Include="Data\2Pore_515.pksim5" />
     <None Include="Data\515_UnitTest.pksim5" />
+    <None Include="Data\6.3.2_GFR_TS.pksim5" />
+    <None Include="Data\631_EnzymesOntogeny.pksim5" />
     <None Include="Data\BatchFiles\interaction.json" />
     <None Include="Data\BuildingBlockRename_611.pksim5" />
     <None Include="Data\ChartTemplate_531.pksim5" />
@@ -1110,6 +1115,7 @@
     <None Include="Data\S1_concentrBased.pkml" />
     <None Include="Data\SimpleCompound_515.pksim5" />
     <None Include="Data\SimpleSimulationIV_551.pksim5" />
+    <None Include="Data\SimpleSimulationIV_710.pksim5" />
     <None Include="Data\Simple_MoBi_531.pksim5" />
     <None Include="Data\Simple_Population_531.pksim5" />
     <None Include="Data\simple_simulation.pkml" />

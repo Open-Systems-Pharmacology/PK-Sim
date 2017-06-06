@@ -1,10 +1,11 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.IntegrationTests
 {
@@ -12,24 +13,49 @@ namespace PKSim.IntegrationTests
    {
       protected override void Context()
       {
-         sut = DomainFactoryForSpecs.CreateStandardIndividual();
       }
    }
 
    public class When_creating_a_default_individual : concern_for_Individual
    {
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         sut = DomainFactoryForSpecs.CreateStandardIndividual();
+      }
+
       [Observation]
       public void the_resulting_GFR_spec_value_should_be_comparable_with_the_value_defined_in_the_literature()
       {
          sut.Organism.Organ(CoreConstants.Organ.Kidney)
             .Parameter(ConverterConstants.Parameter.GFRspec).Value.ShouldBeEqualTo(0.266, 1e-2);
       }
+
+      [Observation]
+      public void should_have_defined_a_BSA_parameter_as_formula()
+      {
+         var bsa = sut.Organism.Parameter(CoreConstants.Parameter.BSA);
+         bsa.ShouldNotBeNull();
+
+         bsa.Formula.IsExplicit().ShouldBeTrue();
+         bsa.DisplayUnit = bsa.Dimension.Unit("m²");
+         sut.Organism.Parameter(CoreConstants.Parameter.WEIGHT).Value = 73;
+         sut.Organism.Parameter(CoreConstants.Parameter.HEIGHT).Value = 17.6;
+         bsa.ValueInDisplayUnit.ShouldBeEqualTo(1.89, 1e-2);
+      }
+
+      [Observation]
+      public void the_default_calculation_method_for_bsa_calculation_should_be_DuBois()
+      {
+         sut.OriginData.CalculationMethodFor(ConverterConstants.Category.BSA).Name.ShouldBeEqualTo(ConverterConstants.CalculationMethod.BSA_DuBois);
+      }
    }
 
    public class When_creating_rabbit : concern_for_Individual
    {
-      protected override void Context()
+      public override void GlobalContext()
       {
+         base.GlobalContext();
          sut = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Species.Rabbit);
       }
 
@@ -37,6 +63,12 @@ namespace PKSim.IntegrationTests
       public void individual_species_should_be_rabbit()
       {
          sut.Population.Species.ShouldBeEqualTo(CoreConstants.Species.Rabbit);
+      }
+
+      [Observation]
+      public void individual_should_not_have_BSA_parameter()
+      {
+         sut.Organism.Parameter(CoreConstants.Parameter.BSA).ShouldBeNull();
       }
    }
 }

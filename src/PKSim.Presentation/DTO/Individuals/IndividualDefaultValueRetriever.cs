@@ -5,8 +5,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
-
-using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.Individuals

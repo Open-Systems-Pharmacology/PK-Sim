@@ -15,20 +15,14 @@ namespace PKSim.Core.Model
          return _allPopulations.FindByName(name);
       }
 
-      public virtual IEnumerable<SpeciesPopulation> Populations
-      {
-         get { return _allPopulations; }
-      }
+      public virtual IEnumerable<SpeciesPopulation> Populations => _allPopulations;
 
       public virtual void AddPopulation(SpeciesPopulation speciesPopulation)
       {
          _allPopulations.Add(speciesPopulation);
       }
 
-      public virtual IEnumerable<ParameterValueVersionCategory> PVVCategories
-      {
-         get { return _pvvCategories; }
-      }
+      public virtual IEnumerable<ParameterValueVersionCategory> PVVCategories => _pvvCategories;
 
       public virtual void AddPVVCategory(ParameterValueVersionCategory pvvCategory)
       {
@@ -40,9 +34,6 @@ namespace PKSim.Core.Model
          return _pvvCategories[categoryName];
       }
 
-      public virtual bool IsHuman
-      {
-         get { return string.Equals(Name, CoreConstants.Species.Human); }
-      }
+      public virtual bool IsHuman => string.Equals(Name, CoreConstants.Species.Human);
    }
 }

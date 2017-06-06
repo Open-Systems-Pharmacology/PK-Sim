@@ -50,10 +50,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          return new PKSimMacroCommand();
       }
 
-      public Simulation BuildingBlock
-      {
-         get { return Simulation; }
-      }
+      public Simulation BuildingBlock => Simulation;
 
       protected override void UpdateSimulationProperties()
       {
@@ -72,9 +69,6 @@ namespace PKSim.Presentation.Presenters.Simulations
          AllSimulationItemsAfterModel.Each(x => PresenterAt(x).EditSimulation(Simulation, CreationMode.New));
       }
 
-      protected override string HeayWorkCaption
-      {
-         get { return PKSimConstants.UI.CreatingSimulation; }
-      }
+      protected override string HeayWorkCaption => PKSimConstants.UI.CreatingSimulation;
    }
 }

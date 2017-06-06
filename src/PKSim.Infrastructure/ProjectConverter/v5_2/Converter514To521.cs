@@ -306,7 +306,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
                originData.HeightUnit = CoreConstants.Units.cm;
 
             if (originData.BMIUnit == null)
-               originData.BMIUnit = CoreConstants.Units.KgPerm2;
+               originData.BMIUnit = CoreConstants.Units.KgPerM2;
          }
 
          if (originData.SpeciesPopulation.IsAgeDependent)

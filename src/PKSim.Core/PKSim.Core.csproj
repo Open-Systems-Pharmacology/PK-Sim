@@ -212,6 +212,7 @@
     <Compile Include="Model\ParameterValueVersion.cs" />
     <Compile Include="Model\PopulationAnalyses\AxisSettings.cs" />
     <Compile Include="Model\PopulationAnalyses\PopulationAnalysisChartFactory.cs" />
+    <Compile Include="Model\SchemaItemExtensions.cs" />
     <Compile Include="Model\SimulationAnalysisWorkflow.cs" />
     <Compile Include="Repositories\CompoundCalculationMethodRepository.cs" />
     <Compile Include="Services\ApplicationDiscriminator.cs" />
@@ -470,6 +471,7 @@
     <Compile Include="Services\ParameterChangeUpdater.cs" />
     <Compile Include="Services\ParameterAnalysableParameterSelector.cs" />
     <Compile Include="Services\PopulationSimulationAnalysisSynchronizer.cs" />
+    <Compile Include="Services\SimulationConfigurationValidator.cs" />
     <Compile Include="Services\SimulationSelector.cs" />
     <Compile Include="Services\PivotResultCreator.cs" />
     <Compile Include="Services\PopulationAnalysisFlatTableCreator.cs" />

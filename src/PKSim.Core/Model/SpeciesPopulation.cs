@@ -10,14 +10,12 @@ namespace PKSim.Core.Model
       public virtual string Species { get; set; }
       public virtual bool IsAgeDependent { get; set; }
       public virtual bool IsHeightDependent { get; set; }
+      public virtual bool IsBodySurfaceAreaDependent => IsHeightDependent;
       public virtual string DisplayName { get; set; }
       public virtual int RaceIndex { get; set; }
       public virtual int Sequence { get; set; }
 
-      public virtual bool IsPreterm
-      {
-         get { return string.Equals(Name, CoreConstants.Population.Preterm); }
-      }
+      public virtual bool IsPreterm => string.Equals(Name, CoreConstants.Population.Preterm);
 
       public virtual void AddGender(Gender gender)
       {
@@ -29,9 +27,6 @@ namespace PKSim.Core.Model
          return _allGenders.FindByName(name);
       }
 
-      public virtual IEnumerable<Gender> Genders
-      {
-         get { return _allGenders; }
-      }
+      public virtual IEnumerable<Gender> Genders => _allGenders;
    }
 }

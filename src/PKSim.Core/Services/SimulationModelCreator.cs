@@ -25,10 +25,11 @@ namespace PKSim.Core.Services
       private readonly IExpressionContainersRetriever _expressionContainersRetriever;
       private readonly ISimulationSettingsFactory _simulationSettingsFactory;
       private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
+      private readonly ISimulationConfigurationValidator _simulationConfigurationValidator;
 
       public SimulationModelCreator(IBuildConfigurationTask buildConfigurationTask, IModelConstructor modelConstructor, IParameterIdUpdater parameterIdUpdater,
          IEntityPathResolver entityPathResolver, IExpressionContainersRetriever expressionContainersRetriever,
-         ISimulationSettingsFactory simulationSettingsFactory, ISimulationPersistableUpdater simulationPersistableUpdater)
+         ISimulationSettingsFactory simulationSettingsFactory, ISimulationPersistableUpdater simulationPersistableUpdater, ISimulationConfigurationValidator simulationConfigurationValidator)
       {
          _buildConfigurationTask = buildConfigurationTask;
          _modelConstructor = modelConstructor;
@@ -37,11 +38,12 @@ namespace PKSim.Core.Services
          _expressionContainersRetriever = expressionContainersRetriever;
          _simulationSettingsFactory = simulationSettingsFactory;
          _simulationPersistableUpdater = simulationPersistableUpdater;
+         _simulationConfigurationValidator = simulationConfigurationValidator;
       }
 
       public void CreateModelFor(Simulation simulation, bool shouldValidate = true, bool shouldShowProgress = false)
       {
-         _buildConfigurationTask.ValidateConfigurationFor(simulation);
+         _simulationConfigurationValidator.ValidateConfigurationFor(simulation);
 
          simulation.SimulationSettings = _simulationSettingsFactory.CreateFor(simulation);
          var buildConfiguration = _buildConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);

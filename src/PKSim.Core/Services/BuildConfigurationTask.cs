@@ -17,12 +17,6 @@ namespace PKSim.Core.Services
       /// <param name="createAgingDataInSimulation">True if aging data should be created in the simulation. False if they should stay as is (typically for MoBi Export)</param>
       IBuildConfiguration CreateFor(Simulation simulation, bool shouldValidate, bool createAgingDataInSimulation);
 
-      /// <summary>
-      ///    Validate the configuration defined in the simulation.
-      /// </summary>
-      /// <param name="simulation">Simulation to validate</param>
-      /// <exception cref="InvalidSimulationConfigurationException">is thrown if the configuration is not valid</exception>
-      void ValidateConfigurationFor(Simulation simulation);
    }
 
    public class BuildConfigurationTask : IBuildConfigurationTask
@@ -90,23 +84,6 @@ namespace PKSim.Core.Services
          _distributedParameterToTableParameterConverter.UpdateBuildConfigurationForAging(buildConfiguration, simulation, createAgingDataInSimulation);
 
          return buildConfiguration;
-      }
-
-      public void ValidateConfigurationFor(Simulation simulation)
-      {
-         var compounds = simulation.Compounds;
-         var individual = simulation.Individual;
-         var modelConfiguration = simulation.ModelConfiguration;
-
-         //ForComp model can only be used with small molecules
-         if (string.Equals(modelConfiguration.ModelName ,CoreConstants.Model.FourComp) && compounds.Any(x=>!x.IsSmallMolecule))
-            throw new InvalidSimulationConfigurationException(PKSimConstants.Error.FourCompModelCannotBeUsedWithLargeMolecule);
-
-         if (simulation.NameIsOneOf(compounds.AllNames()))
-            throw new InvalidSimulationConfigurationException(PKSimConstants.Error.CompoundAndSimulationCannotShareTheSameName);
-
-         if(simulation.NameIsOneOf(individual.AllMolecules().AllNames()))
-            throw new InvalidSimulationConfigurationException(PKSimConstants.Error.IndividualMoleculesAnSimulationCannotShareTheSameName);
       }
    }
 }

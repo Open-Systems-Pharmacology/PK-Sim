@@ -10,7 +10,6 @@ using PKSim.Presentation;
 namespace PKSim.Infrastructure.ProjectConverter.v7_1
 {
    public class Converter641To710 : IObjectConverter
-
    {
       private readonly Converter63To710 _coreConverter63To710;
       private const string DEFAULT_PRESENTATION_SETTINGS = "DefaultPresentationSettings";
