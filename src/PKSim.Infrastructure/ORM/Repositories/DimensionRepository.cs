@@ -112,17 +112,16 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private void addInputDoseDimension()
       {
+         const double CONVERSION_FACTOR_MG_TO_KG = 1e-6;
+         const double CONVERSION_FACTOR_MG_PER_KG_TO_KG_PER_KG = 1e-6;
+         const double CONVERSION_FACTOR_MG_PER_M2_TO_KG_PER_M2 = 1e-8;
+
          var inputDoseDimension = _dimensionFactory.AddDimension(new BaseDimensionRepresentation(), CoreConstants.Dimension.InputDose, CoreConstants.Units.KgPerKg);
          inputDoseDimension.BaseUnit.Visible = false;
 
-         //factor to convert mg to kg
-         addInputDoseUnit(inputDoseDimension, CoreConstants.Units.mg, 1e-6);
-
-         //factor to convert mg/kg to kg/kg
-         inputDoseDimension.DefaultUnit = addInputDoseUnit(inputDoseDimension, CoreConstants.Units.MgPerKg, 1e-6);
-
-         //factor to convert mg/m2 to kg/dm2
-         addInputDoseUnit(inputDoseDimension, CoreConstants.Units.MgPerM2, 1e-8);
+         addInputDoseUnit(inputDoseDimension, CoreConstants.Units.mg, CONVERSION_FACTOR_MG_TO_KG);
+         inputDoseDimension.DefaultUnit = addInputDoseUnit(inputDoseDimension, CoreConstants.Units.MgPerKg, CONVERSION_FACTOR_MG_PER_KG_TO_KG_PER_KG);
+         addInputDoseUnit(inputDoseDimension, CoreConstants.Units.MgPerM2, CONVERSION_FACTOR_MG_PER_M2_TO_KG_PER_M2);
       }
 
       private void loadDimensionsFromFile()
