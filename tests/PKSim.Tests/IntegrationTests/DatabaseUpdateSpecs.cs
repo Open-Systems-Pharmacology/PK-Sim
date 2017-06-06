@@ -31,13 +31,13 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_set_the_body_surface_area_parameter_of_an_individual_to_can_be_varied_and_can_be_varied_in_population()
+      public void should_set_the_body_surface_area_parameter_of_an_individual_to_can_be_varied_true_and_can_be_varied_in_population_false()
       {
          var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
          var bsaParameter = parameterRateRepository.All().First(p =>  string.Equals(p.ParameterName,CoreConstants.Parameter.BSA));
 
          bsaParameter.CanBeVaried.ShouldBeTrue();
-         bsaParameter.CanBeVariedInPopulation.ShouldBeTrue();
+         bsaParameter.CanBeVariedInPopulation.ShouldBeFalse();
       }
    }
 
