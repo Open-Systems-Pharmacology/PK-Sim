@@ -79,8 +79,7 @@ namespace PKSim.Presentation
       private IFormula _f2;
       private IFormula _f3;
       private IndividualResults _individualResults;
-      private ICurve _curve;
-
+  
       protected override void Context()
       {
          base.Context();
