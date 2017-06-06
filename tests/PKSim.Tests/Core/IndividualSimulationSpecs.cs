@@ -1,14 +1,14 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Diagram;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.IntegrationTests;
-using OSPSuite.Core.Diagram;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core
 {
@@ -20,6 +20,35 @@ namespace PKSim.Core
       {
          _cloneManager = A.Fake<ICloneManager>();
          sut = new IndividualSimulation();
+      }
+   }
+
+   public class When_renaming_a_simulation : concern_for_IndividualSimulation
+   {
+      private string _newName;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.Reactions = new ReactionBuildingBlock();
+         sut.Model = new OSPSuite.Core.Domain.Model {Root = new Container()};
+         sut.SimulationSettings = new SimulationSettings();
+         sut.Name = "oldName";
+      }
+
+      protected override void Because()
+      {
+         _newName = "newName";
+         sut.Name = _newName;
+      }
+
+      [Observation]
+      public void the_building_blocks_and_model_should_be_renamed()
+      {
+         sut.Reactions.Name.ShouldBeEqualTo(_newName);
+         sut.SimulationSettings.Name.ShouldBeEqualTo(_newName);
+         sut.Model.Name.ShouldBeEqualTo(_newName);
+         sut.Model.Root.Name.ShouldBeEqualTo(_newName);
       }
    }
 
@@ -502,7 +531,6 @@ namespace PKSim.Core
       }
    }
 
-
    public class When_adding_used_observed_data_in_the_simulation : concern_for_IndividualSimulation
    {
       private DataRepository _observedData;
@@ -537,8 +565,6 @@ namespace PKSim.Core
          _timeProfileAnalysisChart.UsesObservedData(_observedData).ShouldBeFalse();
          _chartWithObservedData.UsesObservedData(_observedData).ShouldBeTrue();
       }
-
-
    }
 
    public class When_adding_some_observed_data_in_the_simulation_that_were_already_marked_as_used : concern_for_IndividualSimulation
@@ -629,7 +655,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.AddUsedObservedData(new DataRepository { Id = "toto" });
+         sut.AddUsedObservedData(new DataRepository {Id = "toto"});
       }
 
       [Observation]
@@ -646,7 +672,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _DataRepository = new DataRepository { Id = "toto" };
+         _DataRepository = new DataRepository {Id = "toto"};
          sut.AddUsedObservedData(_DataRepository);
          sut.HasChanged = false;
       }

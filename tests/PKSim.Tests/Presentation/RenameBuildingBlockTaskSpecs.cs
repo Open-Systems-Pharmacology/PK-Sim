@@ -1,25 +1,24 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
-using FakeItEasy;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
-using OSPSuite.Assets;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation
@@ -79,7 +78,7 @@ namespace PKSim.Presentation
       private IFormula _f2;
       private IFormula _f3;
       private IndividualResults _individualResults;
-  
+
       protected override void Context()
       {
          base.Context();
@@ -118,6 +117,8 @@ namespace PKSim.Presentation
 
          _individualSimulation.Results = results;
          _individualSimulation.DataRepository = new DataRepository();
+         _individualSimulation.Reactions = new ReactionBuildingBlock();
+         _individualSimulation.SimulationSettings = new SimulationSettings();
          A.CallTo(_containerTask).WithReturnType<PathCache<IQuantity>>().Returns(quantityCache);
 
          A.CallTo(() => _curveNamer.RenameCurvesWithOriginalNames(_individualSimulation, A<Action>._, true)).Invokes(x => x.Arguments[1].DowncastTo<Action>()());
@@ -133,6 +134,7 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _dataRepositoryNamer.Rename(_individualSimulation.DataRepository, _newName)).MustHaveHappened();
       }
+
       [Observation]
       public void the_curves_should_also_be_renamed()
       {
@@ -142,7 +144,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_paths_in_the_parameter_identification()
       {
-         A.CallTo(() => _parameterIdentificationSimulationPathUpdater.UpdatePathsForRenamedSimulation(_individualSimulation, _initialSimulationName, _newName)).MustHaveHappened();  
+         A.CallTo(() => _parameterIdentificationSimulationPathUpdater.UpdatePathsForRenamedSimulation(_individualSimulation, _initialSimulationName, _newName)).MustHaveHappened();
       }
 
       [Observation]
@@ -281,23 +283,23 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _project= A.Fake<IProject>();
+         _project = A.Fake<IProject>();
          _oldName = "OLD";
          _compound = new Compound().WithName("NEW");
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
-         _observedData1=new DataRepository("1");
+         _observedData1 = new DataRepository("1");
          _observedData1.ExtendedProperties.Add(ObservedData.MOLECULE, new ExtendedProperty<string>());
          _observedData1.ExtendedProperties[ObservedData.MOLECULE].ValueAsObject = _oldName;
 
          _observedData2 = new DataRepository("2");
          _observedData2.ExtendedProperties.Add(ObservedData.MOLECULE, new ExtendedProperty<string>());
          _observedData2.ExtendedProperties[ObservedData.MOLECULE].ValueAsObject = "NOT USING";
-         A.CallTo(() => _project.AllObservedData).Returns(new[]{_observedData1, _observedData2});
+         A.CallTo(() => _project.AllObservedData).Returns(new[] {_observedData1, _observedData2});
       }
 
       protected override void Because()
       {
-         sut.RenameUsageOfBuildingBlockInProject(_compound,_oldName);
+         sut.RenameUsageOfBuildingBlockInProject(_compound, _oldName);
       }
 
       [Observation]

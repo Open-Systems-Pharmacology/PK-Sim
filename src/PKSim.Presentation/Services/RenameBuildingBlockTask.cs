@@ -88,8 +88,6 @@ namespace PKSim.Presentation.Services
       private static void renameSimulation(Simulation simulation, string newName)
       {
          simulation.Name = newName;
-         simulation.Model.Name = simulation.Name;
-         simulation.Model.Root.Name = simulation.Name;
       }
 
       private void renameForIndividualSimulation(IndividualSimulation individualSimulation, string newName)
