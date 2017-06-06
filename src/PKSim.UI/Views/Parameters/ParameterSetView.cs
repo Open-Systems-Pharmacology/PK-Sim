@@ -31,7 +31,7 @@ using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Parameters
 {
-   public partial class ParameterSetView : BaseUserControlWithValueInGrid, IViewWithPopup, IView<IParameterSetPresenter>
+   public partial class ParameterSetView : BaseUserControlWithValueInGrid, IViewWithPopup, OSPSuite.Presentation.Views.IView<IParameterSetPresenter>
    {
       protected readonly IToolTipCreator _toolTipCreator;
       private readonly IImageListRetriever _imageListRetriever;
