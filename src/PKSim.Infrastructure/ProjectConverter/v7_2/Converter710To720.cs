@@ -19,7 +19,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
       private readonly ICalculationMethodRepository _calculationMethodRepository;
-      private readonly Individual _defaultHuman;
       private readonly IEntityPathResolver _entityPathResolver;
 
       public Converter710To720(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, ICalculationMethodRepository calculationMethodRepository, IEntityPathResolver entityPathResolver)
@@ -28,8 +27,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
          _cloner = cloner;
          _calculationMethodRepository = calculationMethodRepository;
          _entityPathResolver = entityPathResolver;
-         //use own instance so that we can manipulate parameter to calculate BSA for population
-         _defaultHuman = _cloner.Clone(defaultIndividualRetriever.DefaultHuman());
       }
 
       public bool IsSatisfiedBy(int version)
@@ -83,9 +80,11 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
          if (!population.IsHuman)
             return;
 
-         var heightParameter = _defaultHuman.Organism.Parameter(CoreConstants.Parameter.HEIGHT);
-         var weightParameter = _defaultHuman.Organism.Parameter(CoreConstants.Parameter.WEIGHT);
-         var bsaParameter = _defaultHuman.Organism.Parameter(CoreConstants.Parameter.BSA);
+         var defaultHuman = _cloner.Clone(_defaultIndividualRetriever.DefaultHuman());
+
+         var heightParameter = defaultHuman.Organism.Parameter(CoreConstants.Parameter.HEIGHT);
+         var weightParameter = defaultHuman.Organism.Parameter(CoreConstants.Parameter.WEIGHT);
+         var bsaParameter = defaultHuman.Organism.Parameter(CoreConstants.Parameter.BSA);
 
          var allWeights = population.AllOrganismValuesFor(weightParameter.Name, _entityPathResolver);
          var allHeights = population.AllOrganismValuesFor(heightParameter.Name, _entityPathResolver);
