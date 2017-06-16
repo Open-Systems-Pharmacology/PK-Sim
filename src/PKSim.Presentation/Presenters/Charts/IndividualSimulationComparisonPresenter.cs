@@ -93,7 +93,7 @@ namespace PKSim.Presentation.Presenters.Charts
          return treeNodes.OfType<SimulationNode>().Select(x => x.Simulation).OfType<IndividualSimulation>();
       }
 
-      public override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
+      protected override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
       {
          base.AddObservedData(observedData, asResultOfDragAndDrop);
          showChartView();
@@ -236,7 +236,7 @@ namespace PKSim.Presentation.Presenters.Charts
          var repo = DataRepositoryFor(simulation);
          if (repo == null) return;
          _repositoryCache.Remove(repo);
-         ChartEditorPresenter.RemoveDataRepository(repo);
+         ChartEditorPresenter.RemoveDataRepositories(new []{repo});
          Chart.RemoveSimulation(simulation);
       }
 

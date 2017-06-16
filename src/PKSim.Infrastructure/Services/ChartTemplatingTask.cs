@@ -63,10 +63,7 @@ namespace PKSim.Infrastructure.Services
 
       public void UpdateDefaultSettings(IChartEditorPresenter chartEditorPresenter, IReadOnlyCollection<DataColumn> allAvailableColumns, IReadOnlyCollection<ISimulation> simulations, bool addCurveIfNoSourceDefined = true)
       {
-         UpdateDefaultSettings(chartEditorPresenter, allAvailableColumns, simulations, addCurveIfNoSourceDefined, () =>
-         {
-            addObservedDataToChart(chartEditorPresenter, simulations.OfType<IndividualSimulation>());
-         });
+         UpdateDefaultSettings(chartEditorPresenter, allAvailableColumns, simulations, addCurveIfNoSourceDefined, () => { addObservedDataToChart(chartEditorPresenter, simulations.OfType<IndividualSimulation>()); });
       }
 
       private void addObservedDataToChart(IChartEditorPresenter chartEditorPresenter, IEnumerable<IndividualSimulation> simulations)
@@ -80,23 +77,15 @@ namespace PKSim.Infrastructure.Services
          if (chartWithObservedData != null)
             _chartTask.UpdateObservedDataInChartFor(simulation, chartWithObservedData);
 
-         allObservedDataIn(simulation)
-            .Each(observedData =>
-            {
-               var allObservationColumns = observedData.ObservationColumns();
-               allObservationColumns.Each(observationColumn =>
-               {
-                  var sourceCurve = CurvePlotting(simulation, observationColumn);
-                  addRepositoryToChartEditorWithDefaultCurveOptions(chartEditorPresenter, observedData, observationColumn, sourceCurve);
-               });
-            });
-      }
+         var allObservedDataColumnsToAdd = (from column in allObservedDataIn(simulation).SelectMany(x => x.Columns)
+            let curve = CurvePlotting(simulation, column)
+            where curve != null
+            select new {curve, column, repository = column.Repository}).ToList();
 
-      private static void addRepositoryToChartEditorWithDefaultCurveOptions(IChartEditorPresenter chartEditorPresenter, DataRepository dataRepository, DataColumn observationColumn, Curve sourceCurve)
-      {
-         if (sourceCurve == null) return;
-         chartEditorPresenter.AddDataRepository(dataRepository);
-         AddCurveForColumnWithOptionsFromSourceCurve(chartEditorPresenter, observationColumn, sourceCurve);
+         var allDataRepositoriesToAdd = allObservedDataColumnsToAdd.Select(x => x.repository).Distinct();
+         chartEditorPresenter.AddDataRepositories(allDataRepositoriesToAdd);
+
+         allObservedDataColumnsToAdd.Each(x => AddCurveForColumnWithOptionsFromSourceCurve(chartEditorPresenter, x.column, x.curve));
       }
 
       public SimulationTimeProfileChart CloneChart(SimulationTimeProfileChart originalChart, IndividualSimulation simulation)
@@ -145,7 +134,6 @@ namespace PKSim.Infrastructure.Services
          simulation?.Charts.Each(c => LoadCurves(c, simulation));
       }
 
-   
       protected override ICommand ReplaceTemplatesCommand(IWithChartTemplates withChartTemplates, IEnumerable<CurveChartTemplate> curveChartTemplates)
       {
          return updateChartTemplates(withChartTemplates, x =>

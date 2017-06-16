@@ -39,7 +39,7 @@ namespace PKSim.Presentation.Presenters.Charts
          PresentationKey = PresenterConstants.PresenterKeys.SimulationTimeProfileChartPresenter;
       }
 
-      public override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
+      protected override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
       {
          base.AddObservedData(observedData, asResultOfDragAndDrop);
          if (asResultOfDragAndDrop)

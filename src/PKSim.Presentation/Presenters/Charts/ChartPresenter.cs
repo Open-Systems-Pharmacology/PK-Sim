@@ -94,7 +94,8 @@ namespace PKSim.Presentation.Presenters.Charts
 
          if (_repositoryCache.Contains(dataRepository))
          {
-            ChartEditorPresenter.RemoveUnusedColumnsAndAdd(dataRepository);
+            ChartEditorPresenter.RemoveUnusedColumns();
+            ChartEditorPresenter.AddDataRepositories(new []{dataRepository});
             ChartDisplayPresenter.Refresh();
 
             //after refresh, some data might not be available anymore=>in that case init chart from template
@@ -105,7 +106,7 @@ namespace PKSim.Presentation.Presenters.Charts
          else
          {
             _repositoryCache[dataRepository] = simulation;
-            ChartEditorPresenter.AddDataRepository(dataRepository);
+            ChartEditorPresenter.AddDataRepositories(new[] { dataRepository });
          }
       }
 
@@ -178,7 +179,7 @@ namespace PKSim.Presentation.Presenters.Charts
          RefreshPKAnalysisIfVisible();
       }
 
-      public override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
+      protected override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
       {
          AddDataRepositoriesToEditor(observedData);
 
