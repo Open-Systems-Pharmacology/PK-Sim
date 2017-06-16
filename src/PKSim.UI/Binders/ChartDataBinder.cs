@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraCharts;
 using DevExpress.XtraCharts.Native;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.UI.Mappers;
 using PKSim.UI.Views.PopulationAnalyses;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Services;
 using Axis = DevExpress.XtraCharts.Axis;
 using Constants = OSPSuite.Core.Domain.Constants;
 
@@ -382,7 +382,7 @@ namespace PKSim.UI.Binders
             ValueScaleType = ScaleType.Numerical,
             LabelsVisibility = DefaultBoolean.False,
             Visible = true,
-            View = { Color = curve.Color },
+            View = {Color = curve.Color},
          };
 
 
@@ -467,7 +467,7 @@ namespace PKSim.UI.Binders
             view.Marker1Visibility = DefaultBoolean.False;
             view.Marker2Visibility = DefaultBoolean.False;
             view.FillStyle.FillMode = FillMode.Solid;
-            view.Transparency = Constants.Population.STD_DEV_CURVE_TRANSPARENCY;
+            view.Transparency = Constants.RANGE_AREA_TRANSPARENCY;
          });
       }
 
@@ -493,7 +493,6 @@ namespace PKSim.UI.Binders
          updatePrimaryYAxisSettings(analysisChart);
 
          updateSecondaryYAxisSettings(analysisChart);
-
       }
 
       private void updateSecondaryYAxisSettings(PopulationAnalysisChart analysisChart)
@@ -520,7 +519,6 @@ namespace PKSim.UI.Binders
          var axisSettings = analysisChart.PrimaryXAxisSettings;
 
          updateAxisSettingsAndRanges(axis, axisSettings);
-
       }
 
       private void updateAxisSettingsAndRanges(Axis axis, AxisSettings axisSettings)

@@ -241,7 +241,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    All charts defined for the simulation
       /// </summary>
-      public virtual IEnumerable<ICurveChart> Charts => SimulationCharts;
+      public virtual IEnumerable<CurveChart> Charts => SimulationCharts;
 
       public virtual IEnumerable<SimulationTimeProfileChart> SimulationCharts => _allSimulationAnalyses.OfType<SimulationTimeProfileChart>();
 
@@ -261,7 +261,7 @@ namespace PKSim.Core.Model
       }
 
       private IEnumerable<IWithObservedData> analysesWithObservedData => _allSimulationAnalyses.OfType<IWithObservedData>();
-      public virtual  IEnumerable<IChartWithObservedData> ChartWithObservedData => analysesWithObservedData.OfType<IChartWithObservedData>();
+      public virtual  IEnumerable<ChartWithObservedData> ChartWithObservedData => analysesWithObservedData.OfType<ChartWithObservedData>();
 
       public virtual void AddUsedObservedData(UsedObservedData usedObservedData)
       {

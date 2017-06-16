@@ -42,7 +42,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          _builderRepository.Report(objectsToReport, buildTracker);
       }
 
-      private IEnumerable<object> pkAnalysisFor(Simulation simulation, ICurveChart chart, OSPSuiteTracker buildTracker)
+      private IEnumerable<object> pkAnalysisFor(Simulation simulation, CurveChart chart, OSPSuiteTracker buildTracker)
       {
          var report = new List<object>();
 

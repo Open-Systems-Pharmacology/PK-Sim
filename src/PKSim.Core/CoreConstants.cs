@@ -36,7 +36,7 @@ namespace PKSim.Core
       public const double DEFAULT_MIN_PERCENTILE = 0.0001;
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
       public const string DEFAULT_BATCH_LOG_FILE_NAME = "log.txt";
-      
+
       public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};
       public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17);
 

@@ -66,7 +66,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       {
          var chart = _simpleChartPresenter.Plot(_compoundAlternativeTask.SolubilityTableForPh(solubilityAlternativeDTO.ParameterAlternative, _compound));
          //log scaling for solubility chart is more appropriate
-         chart.Axes[AxisTypes.Y].Scaling = Scalings.Log;
+         chart.AxisBy(AxisTypes.Y).Scaling = Scalings.Log;
       }
 
       protected override IEnumerable<ParameterAlternativeDTO> FillUpParameterGroupAlternatives()

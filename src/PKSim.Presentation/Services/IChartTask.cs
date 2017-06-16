@@ -8,14 +8,14 @@ namespace PKSim.Presentation.Services
    {
       void ProjectChanged();
       void UpdateObservedDataInChartsFor(Simulation simulation);
-      void UpdateObservedDataInChartFor(Simulation simulation, IChartWithObservedData chartWithObservedData);
+      void UpdateObservedDataInChartFor(Simulation simulation, ChartWithObservedData chartWithObservedData);
 
       /// <summary>
       ///    Returns if the column should be displayed or not
       /// </summary>
       bool IsColumnVisibleInDataBrowser(DataColumn dataColumn);
 
-      void ExportToPDF(ICurveChart chart);
+      void ExportToPDF(CurveChart chart);
 
       /// <summary>
       /// Sets origin data for the <paramref name="chart"/> to indicate project name , <paramref name="simulationName"/> and current date/time

@@ -57,14 +57,14 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       public void Edit(PopulationAnalysisChart populationAnalysisChart)
       {
-         _chartExportSettingsPresenter.BindTo(populationAnalysisChart);
-         _chartSettingsPresenter.BindTo(populationAnalysisChart);
+         _chartExportSettingsPresenter.Edit(populationAnalysisChart);
+         _chartSettingsPresenter.Edit(populationAnalysisChart);
       }
 
       public bool AllowEdit
       {
-         get { return _view.AllowEditConfiguration; }
-         set { _view.AllowEditConfiguration = value; }
+         get => _view.AllowEditConfiguration;
+         set => _view.AllowEditConfiguration = value;
       }
    }
 }

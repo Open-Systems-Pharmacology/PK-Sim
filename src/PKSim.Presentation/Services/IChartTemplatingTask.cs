@@ -17,10 +17,10 @@ namespace PKSim.Presentation.Services
       /// <param name="simulation">Simulation containing the chart to clone</param>
       SimulationTimeProfileChart CloneChart(SimulationTimeProfileChart originalChart, IndividualSimulation simulation);
 
-      void InitFromTemplate(ICurveChart chart, IChartEditorAndDisplayPresenter chartEditorPresenter,
-         IReadOnlyCollection<DataColumn> allAvailableColumns, IReadOnlyCollection<IndividualSimulation> simulations, Func<DataColumn, string> nameForColumns, CurveChartTemplate defaultChartTemplate = null);
+      void InitFromTemplate(CurveChart chart, IChartEditorAndDisplayPresenter chartEditorPresenter,
+         IReadOnlyCollection<DataColumn> allAvailableColumns, IReadOnlyCollection<IndividualSimulation> simulations, Func<DataColumn, string> nameForColumn, CurveChartTemplate defaultChartTemplate = null);
 
-      void LoadCurves(ICurveChart chart, IndividualSimulation simulation);
+      void LoadCurves(CurveChart chart, IndividualSimulation simulation);
       void LoadCurves(IndividualSimulation simulation);
    }
 }

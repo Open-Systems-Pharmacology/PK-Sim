@@ -21,7 +21,7 @@ namespace PKSim.Presentation
       private IRepresentationInfoRepository _representationInfoRepository;
       protected IReadOnlyList<IndividualPKAnalysis> _allPKAnalysis;
       protected DataTable _result;
-      protected IList<ICurve> _curves;
+      protected IList<Curve> _curves;
 
       protected override void Context()
       {
@@ -29,9 +29,9 @@ namespace PKSim.Presentation
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          sut = new IndividualPKAnalysisToDataTableMapper(_pkParameterRepository, _representationInfoRepository);
 
-         _curves = new List<ICurve>();
-         var curve1 = A.Fake<ICurve>();
-         var curve2 = A.Fake<ICurve>();
+         _curves = new List<Curve>();
+         var curve1 = A.Fake<Curve>();
+         var curve2 = A.Fake<Curve>();
          var dataColumn1 = generateDataColumn();
          var dataColumn2 = generateDataColumn();
          A.CallTo(() => curve1.yData).Returns(dataColumn1);

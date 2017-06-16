@@ -1,8 +1,8 @@
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Presentation.UICommands;
 using OSPSuite.Utility.Reflection;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Presentation.UICommands;
 
 namespace PKSim.Presentation.UICommands
 {
@@ -18,7 +18,7 @@ namespace PKSim.Presentation.UICommands
 
       protected override void PerformExecute()
       {
-         _observedDataTask.AddObservedDataToAnalysable(_observedDataReference.Target, Subject,showData: true);
+         _observedDataTask.AddObservedDataToAnalysable(new[] {_observedDataReference.Target}, Subject, showData: true);
       }
 
       public AddObservedDataToActiveSimulationUICommand For(DataRepository observedData)

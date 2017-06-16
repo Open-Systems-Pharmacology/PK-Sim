@@ -58,7 +58,8 @@ namespace PKSim.Presentation
 
          A.CallTo(() => _dimensionRepository.AgeInYears).Returns(A.Fake<IDimension>());
          A.CallTo(() => _dimensionRepository.Fraction).Returns(DomainHelperForSpecs.FractionDimensionForSpecs());
-         A.CallTo(() => _simpleChartPresenter.Plot(_tableFormula)).Returns(new CurveChart().WithAxes());
+         A.CallTo(() => _simpleChartPresenter.Plot(A<TableFormula>._)).Returns(new CurveChart().WithAxes());
+         A.CallTo(() => _simpleChartPresenter.Plot(A<DataRepository>._, Scalings.Linear)).Returns(new CurveChart().WithAxes());
          A.CallTo(() => _groupRepository.GroupByName("Liver")).Returns(_groupLiver);
          A.CallTo(() => _groupRepository.GroupByName("Duodenum")).Returns(_groupDuodenum);
          A.CallTo(() => _ontogenyRepository.AllValuesFor(_ontogeny)).Returns(_ontoData);

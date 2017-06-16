@@ -47,8 +47,8 @@ namespace PKSim.Presentation.Presenters.Charts
 
       public event EventHandler Closing = delegate { };
 
-      public IndividualSimulationComparisonPresenter(IIndividualSimulationComparisonView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, ILazyLoadTask lazyLoadTask, IChartTemplatingTask chartTemplatingTask, IUserSettings userSettings) :
-         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, userSettings)
+      public IndividualSimulationComparisonPresenter(IIndividualSimulationComparisonView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, ILazyLoadTask lazyLoadTask, IChartTemplatingTask chartTemplatingTask) :
+         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask)
       {
          _lazyLoadTask = lazyLoadTask;
          PresentationKey = PresenterConstants.PresenterKeys.IndividualSimulationComparisonPresenter;
@@ -92,7 +92,7 @@ namespace PKSim.Presentation.Presenters.Charts
          return treeNodes.OfType<SimulationNode>().Select(x => x.Simulation).OfType<IndividualSimulation>();
       }
 
-      public override void AddObservedData(DataRepository observedData, bool asResultOfDragAndDrop)
+      public override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
       {
          base.AddObservedData(observedData, asResultOfDragAndDrop);
          showChartView();
@@ -131,8 +131,9 @@ namespace PKSim.Presentation.Presenters.Charts
          return simulationNodes.OfType<SimulationNode>().Any(x => x.Simulation.IsAnImplementationOf<IndividualSimulation>());
       }
 
-      protected override void ConfigureEditor()
+      protected override void ConfigureColumns()
       {
+         base.ConfigureColumns();
          Column(BrowserColumns.RepositoryName).Visible = true;
          Column(BrowserColumns.RepositoryName).VisibleIndex = 1;
          Column(BrowserColumns.RepositoryName).GroupIndex = -1;

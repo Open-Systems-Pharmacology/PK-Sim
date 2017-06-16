@@ -44,7 +44,6 @@ namespace PKSim.Presentation
       protected IStartOptions _runOptions;
       protected IChartEditorLayoutTask _chartLayoutTask;
       protected IChartTemplatingTask _chartTemplatingTask;
-      private IUserSettings _userSettings;
       private IProjectRetriever _projectRetriever;
       private ChartPresenterContext _chartPresenterContext;
       private ICurveNamer _curveNamer;
@@ -56,7 +55,6 @@ namespace PKSim.Presentation
          _pkAnalysisPresenter = A.Fake<IIndividualPKAnalysisPresenter>();
          _chartEditorPresenter = A.Fake<IChartEditorPresenter>();
          _chartEditorAndDisplayPresenter = A.Fake<IChartEditorAndDisplayPresenter>();
-         A.CallTo(() => _chartEditorAndDisplayPresenter.Control).Returns(new Control());
          _dataColumnToPathElementsMapper = A.Fake<IDataColumnToPathElementsMapper>();
          _chartTask = A.Fake<IChartTask>();
          _observedDataTask = A.Fake<IObservedDataTask>();
@@ -65,12 +63,11 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartLayoutTask.AllTemplates()).Returns(_allTemplates);
          A.CallTo(() => _chartEditorAndDisplayPresenter.EditorPresenter).Returns(_chartEditorPresenter);
          A.CallTo(() => _chartEditorAndDisplayPresenter.DisplayPresenter).Returns(_chartDisplayPresenter);
-         A.CallTo(() => _chartEditorPresenter.GetDataBrowserColumnSettings(A<BrowserColumns>.Ignored)).Returns(new GridColumnSettings(BrowserColumns.Origin.ToString()));
-         A.CallTo(() => _chartEditorPresenter.GetAxisOptionsColumnSettings(A<AxisOptionsColumns>.Ignored)).Returns(new GridColumnSettings(AxisOptionsColumns.AxisType.ToString()));
-         A.CallTo(() => _chartEditorPresenter.GetCurveOptionsColumnSettings(A<CurveOptionsColumns>.Ignored)).Returns(new GridColumnSettings(CurveOptionsColumns.xData.ToString()));
+         A.CallTo(() => _chartEditorPresenter.DataBrowserColumnSettingsFor(A<BrowserColumns>._)).Returns(new GridColumnSettings(BrowserColumns.Origin.ToString()));
+         A.CallTo(() => _chartEditorPresenter.AxisOptionsColumnSettingsFor(A<AxisOptionsColumns>._)).Returns(new GridColumnSettings(AxisOptionsColumns.AxisType.ToString()));
+         A.CallTo(() => _chartEditorPresenter.CurveOptionsColumnSettingsFor(A<CurveOptionsColumns>._)).Returns(new GridColumnSettings(CurveOptionsColumns.xData.ToString()));
          _chartTemplatingTask = A.Fake<IChartTemplatingTask>();
          _projectRetriever = A.Fake<IProjectRetriever>();
-         _userSettings = A.Fake<IUserSettings>();
          _chartPresenterContext= A.Fake<ChartPresenterContext>();
          _curveNamer = A.Fake<ICurveNamer>();
 
@@ -80,7 +77,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartPresenterContext.TemplatingTask).Returns(_chartTemplatingTask);
          A.CallTo(() => _chartPresenterContext.ProjectRetriever).Returns(_projectRetriever);
 
-         sut = new SimulationTimeProfileChartPresenter(_view,_chartPresenterContext,  _pkAnalysisPresenter,_chartTask, _observedDataTask,  _chartTemplatingTask, _userSettings);
+         sut = new SimulationTimeProfileChartPresenter(_view,_chartPresenterContext,  _pkAnalysisPresenter,_chartTask, _observedDataTask,  _chartTemplatingTask);
       }
    }
 
@@ -133,7 +130,7 @@ namespace PKSim.Presentation
       public void should_use_the_default_tempalte()
       {
          A.CallTo(() => _chartTemplatingTask.InitFromTemplate(
-            A<ICurveChart>._, A<IChartEditorAndDisplayPresenter>._,
+            A<CurveChart>._, A<IChartEditorAndDisplayPresenter>._,
             A<IReadOnlyCollection<DataColumn>>._,
             A<IReadOnlyCollection<IndividualSimulation>>._,
             A<Func<DataColumn, string>>._, _defaultChartTemplate)).MustHaveHappened();
@@ -163,7 +160,7 @@ namespace PKSim.Presentation
       public void should_use_the_first_template_in_the_sequence()
       {
          A.CallTo(() => _chartTemplatingTask.InitFromTemplate(
-            A<ICurveChart>._, A<IChartEditorAndDisplayPresenter>._,
+            A<CurveChart>._, A<IChartEditorAndDisplayPresenter>._,
             A<IReadOnlyCollection<DataColumn>>._,
             A<IReadOnlyCollection<IndividualSimulation>>._,
             A<Func<DataColumn, string>>._, _defaultChartTemplate)).MustHaveHappened();
@@ -305,15 +302,15 @@ namespace PKSim.Presentation
       [Observation]
       public void should_clart_data_source_into_the_chart_display_presenter_and_chart_editor_presenter()
       {
-         _chartDisplayPresenter.DataSource.ShouldBeNull();
-         _chartEditorPresenter.DataSource.ShouldBeNull();
+         A.CallTo(() => _chartDisplayPresenter.Clear()).MustHaveHappened();
+         A.CallTo(() => _chartEditorPresenter.Clear()).MustHaveHappened();
       }
    }
 
    public class When_notified_that_curve_data_has_been_hidden : concern_for_SimulationTimeProfileChartPresenter
    {
       private SimulationTimeProfileChart _chart;
-      private ICurve _curve;
+      private Curve _curve;
 
       protected override void Context()
       {
@@ -336,14 +333,14 @@ namespace PKSim.Presentation
       [Observation]
       public void the_pk_analysis_presenter_must_also_be_updated_at_the_same_time()
       {
-         A.CallTo(() => _pkAnalysisPresenter.ShowPKAnalysis(A<IEnumerable<Simulation>>._, A<IEnumerable<ICurve>>._)).MustHaveHappened();
+         A.CallTo(() => _pkAnalysisPresenter.ShowPKAnalysis(A<IEnumerable<Simulation>>._, A<IEnumerable<Curve>>._)).MustHaveHappened();
       }
    }
 
    public class When_notified_that_curve_name_has_changed : concern_for_SimulationTimeProfileChartPresenter
    {
       private SimulationTimeProfileChart _chart;
-      private ICurve _curve;
+      private Curve _curve;
 
       protected override void Context()
       {
@@ -366,13 +363,14 @@ namespace PKSim.Presentation
       [Observation]
       public void the_pk_analysis_presenter_must_also_be_updated_at_the_same_time()
       {
-         A.CallTo(() => _pkAnalysisPresenter.ShowPKAnalysis(A<IEnumerable<Simulation>>._, A<IEnumerable<ICurve>>._)).MustHaveHappened();
+         A.CallTo(() => _pkAnalysisPresenter.ShowPKAnalysis(A<IEnumerable<Simulation>>._, A<IEnumerable<Curve>>._)).MustHaveHappened();
       }
    }
 
    public class When_adding_observed_data_to_the_chart : concern_for_SimulationTimeProfileChartPresenter
    {
       private DataRepository _dataRepository;
+      private IReadOnlyList<DataRepository> _dataRepositories;
 
       protected override void Context()
       {
@@ -383,11 +381,12 @@ namespace PKSim.Presentation
          simulation.DataRepository = new DataRepository();
          sut.UpdateAnalysisBasedOn(simulation);
          sut.InitializeAnalysis(new SimulationTimeProfileChart());
+         _dataRepositories =new List<DataRepository>{_dataRepository};
       }
 
       protected override void Because()
       {
-         sut.AddObservedData(_dataRepository, true);
+         sut.AddObservedData(_dataRepositories, true);
       }
 
       [Observation]

@@ -177,7 +177,7 @@ namespace PKSim.BatchTool.Services.TrainingMaterials
          return observedData;
       }
 
-      public void AddObservedDataToAnalysable(DataRepository observedData, IAnalysable analysable)
+      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable)
       {
          _observedDataTask.AddObservedDataToAnalysable(observedData, analysable);
       }

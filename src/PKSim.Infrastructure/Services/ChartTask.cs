@@ -28,7 +28,7 @@ namespace PKSim.Infrastructure.Services
          _projectChangedNotifier.Changed();
       }
 
-      public void ExportToPDF(ICurveChart chart)
+      public void ExportToPDF(CurveChart chart)
       {
          _exportChartToPDFCommand.Subject = chart;
          _exportChartToPDFCommand.Execute();
@@ -44,7 +44,7 @@ namespace PKSim.Infrastructure.Services
          simulation.ChartWithObservedData.Each(c => UpdateObservedDataInChartFor(simulation, c));
       }
 
-      public void UpdateObservedDataInChartFor(Simulation simulation, IChartWithObservedData chartWithObservedData)
+      public void UpdateObservedDataInChartFor(Simulation simulation, ChartWithObservedData chartWithObservedData)
       {
          foreach (var usedObservedData in simulation.UsedObservedData)
          {

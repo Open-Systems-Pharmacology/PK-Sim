@@ -1,23 +1,21 @@
+using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Events;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Charts;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Events;
-using OSPSuite.Presentation.Mappers;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.Charts;
-using OSPSuite.Presentation.Services;
-using OSPSuite.Presentation.Services.Charts;
 using IChartTemplatingTask = PKSim.Presentation.Services.IChartTemplatingTask;
-using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Presentation.Presenters.Charts
 {
@@ -34,13 +32,13 @@ namespace PKSim.Presentation.Presenters.Charts
       ISimulationTimeProfileChartPresenter,
       ISimulationAnalysisPresenter<IndividualSimulation>
    {
-      public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext,IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask, IUserSettings userSettings) :
-            base(view,chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter,  chartTask, observedDataTask,  userSettings)
+      public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask) :
+         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask)
       {
          PresentationKey = PresenterConstants.PresenterKeys.SimulationTimeProfileChartPresenter;
       }
 
-      public override void AddObservedData(DataRepository observedData, bool asResultOfDragAndDrop)
+      public override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
       {
          base.AddObservedData(observedData, asResultOfDragAndDrop);
          if (asResultOfDragAndDrop)
@@ -86,7 +84,8 @@ namespace PKSim.Presentation.Presenters.Charts
       public void Handle(ObservedDataRemovedFromAnalysableEvent eventToHandle)
       {
          if (!canHandle(eventToHandle)) return;
-         RemoveDataRepositoryFromEditor(eventToHandle.ObservedData);
+         RemoveDataRepositoriesFromEditor(eventToHandle.ObservedData);
+         ChartDisplayPresenter.Refresh();
       }
 
       private bool canHandle(AnalysableEvent analysableEvent)
@@ -96,15 +95,15 @@ namespace PKSim.Presentation.Presenters.Charts
 
       public ISimulationAnalysis Analysis => Chart;
 
-
       public void Handle(SimulationResultsUpdatedEvent eventToHandle)
       {
          if (!canHandle(eventToHandle)) return;
          _chartTask.SetOriginTextFor(Simulation.Name, Chart);
       }
 
-      protected override void ConfigureEditor()
+      protected override void ConfigureColumns()
       {
+         base.ConfigureColumns();
          Column(BrowserColumns.RepositoryName).GroupIndex = 0;
          Column(BrowserColumns.RepositoryName).Visible = true;
          Column(BrowserColumns.RepositoryName).VisibleIndex = 0;
