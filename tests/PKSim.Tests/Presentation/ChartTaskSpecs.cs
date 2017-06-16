@@ -15,18 +15,14 @@ namespace PKSim.Presentation
    public abstract class concern_for_ChartTask : ContextSpecification<IChartTask>
    {
       protected IEventPublisher _eventPublisher;
-      protected IProjectChangedNotifier _projectChangedNotifier;
-      private IChartTemplatingTask _chartTemplatingTask;
       private IProjectRetriever _projectRetriever;
       protected ExportChartToPDFCommand _exportChartToPDFCommand;
 
       protected override void Context()
       {
-         _projectChangedNotifier = A.Fake<IProjectChangedNotifier>();
-         _chartTemplatingTask = A.Fake<IChartTemplatingTask>();
          _projectRetriever = A.Fake<IProjectRetriever>();
          _exportChartToPDFCommand = A.Fake<ExportChartToPDFCommand>();
-         sut = new ChartTask(_projectChangedNotifier, _projectRetriever, _exportChartToPDFCommand);
+         sut = new ChartTask(_projectRetriever, _exportChartToPDFCommand);
       }
    }
 

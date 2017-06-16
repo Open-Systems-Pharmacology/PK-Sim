@@ -36,17 +36,20 @@ namespace PKSim.Presentation.Presenters.Charts
       protected readonly IIndividualPKAnalysisPresenter _pkAnalysisPresenter;
       protected readonly IChartTask _chartTask;
       protected readonly IObservedDataTask _observedDataTask;
+      private readonly IChartUpdater _chartUpdater;
 
       protected ChartDisplayMode _chartDisplayMode;
       protected readonly ICache<DataRepository, IndividualSimulation> _repositoryCache;
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
       protected readonly IChartTemplatingTask _chartTemplatingTask;
 
-      protected ChartPresenter(TView view, ChartPresenterContext chartPresenterContext, IChartTemplatingTask chartTemplatingTask, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask)
+      protected ChartPresenter(TView view, ChartPresenterContext chartPresenterContext, IChartTemplatingTask chartTemplatingTask, IIndividualPKAnalysisPresenter pkAnalysisPresenter, 
+         IChartTask chartTask, IObservedDataTask observedDataTask, IChartUpdater chartUpdater)
          : base(view, chartPresenterContext)
       {
          _chartTask = chartTask;
          _observedDataTask = observedDataTask;
+         _chartUpdater = chartUpdater;
          _view.SetChartView(chartPresenterContext.ChartEditorAndDisplayPresenter.BaseView);
          _pkAnalysisPresenter = pkAnalysisPresenter;
          _view.SetPKAnalysisView(_pkAnalysisPresenter.View);
@@ -182,9 +185,11 @@ namespace PKSim.Presentation.Presenters.Charts
          //make curve visibles
          if (!asResultOfDragAndDrop) return;
 
-         var columnsToAdd = observedData.SelectMany(x=>x.ObservationColumns());
-         columnsToAdd.Each(c => ChartEditorPresenter.AddCurveForColumn(c));
-         ChartDisplayPresenter.Refresh();
+         using (_chartUpdater.UpdateTransaction(Chart))
+         {
+            var columnsToAdd = observedData.SelectMany(x => x.ObservationColumns());
+            columnsToAdd.Each(c => ChartEditorPresenter.AddCurveForColumn(c));
+         }
       }
 
       protected virtual void OnDragOver(object sender, DragEventArgs e)
@@ -196,11 +201,6 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e).ToList();
          AddObservedData(droppedObservedData, asResultOfDragAndDrop: true);
-      }
-
-      protected override void NotifyProjectChanged()
-      {
-         _chartTask.ProjectChanged();
       }
 
       protected override void ConfigureColumns()

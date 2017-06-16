@@ -41,6 +41,7 @@ namespace PKSim.Presentation
       protected IProjectRetriever _projectRetriever;
       private ChartPresenterContext _chartPresenterContext;
       private ICurveNamer _curveNamer;
+      private IChartUpdater _chartUpdateTask;
 
       protected override void Context()
       {
@@ -56,7 +57,7 @@ namespace PKSim.Presentation
          _dataColumnToPathElementsMapper = A.Fake<IDataColumnToPathElementsMapper>();
          _projectRetriever = A.Fake<IProjectRetriever>();
          _chartPresenterContext = A.Fake<ChartPresenterContext>();
-
+         _chartUpdateTask= A.Fake<IChartUpdater>();
          A.CallTo(() => _chartPresenterContext.ChartEditorAndDisplayPresenter).Returns(_chartPresenter);
          A.CallTo(() => _chartPresenterContext.CurveNamer).Returns(_curveNamer);
          A.CallTo(() => _chartPresenterContext.EditorLayoutTask).Returns(_chartLayoutTask);
@@ -64,7 +65,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartPresenterContext.ProjectRetriever).Returns(_projectRetriever);
 
          sut = new IndividualSimulationComparisonPresenter(_view, _chartPresenterContext, _pkAnalysisPresenter,
-            _chartTask, _observedDataTask, _lazyLoadTask, _chartTemplatingTask);
+            _chartTask, _observedDataTask, _lazyLoadTask, _chartTemplatingTask, _chartUpdateTask);
       }
    }
 

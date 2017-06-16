@@ -6,7 +6,6 @@ namespace PKSim.Presentation.Services
 {
    public interface IChartTask
    {
-      void ProjectChanged();
       void UpdateObservedDataInChartsFor(Simulation simulation);
       void UpdateObservedDataInChartFor(Simulation simulation, ChartWithObservedData chartWithObservedData);
 

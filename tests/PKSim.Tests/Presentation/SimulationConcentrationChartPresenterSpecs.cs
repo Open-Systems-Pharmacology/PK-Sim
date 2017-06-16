@@ -47,6 +47,7 @@ namespace PKSim.Presentation
       private IProjectRetriever _projectRetriever;
       private ChartPresenterContext _chartPresenterContext;
       private ICurveNamer _curveNamer;
+      private IChartUpdater _chartUpdateTask;
 
       protected override void Context()
       {
@@ -59,6 +60,7 @@ namespace PKSim.Presentation
          _chartTask = A.Fake<IChartTask>();
          _observedDataTask = A.Fake<IObservedDataTask>();
          _chartLayoutTask = A.Fake<IChartEditorLayoutTask>();
+         _chartUpdateTask= A.Fake<IChartUpdater>();
          _allTemplates = new List<ChartEditorLayoutTemplate>();
          A.CallTo(() => _chartLayoutTask.AllTemplates()).Returns(_allTemplates);
          A.CallTo(() => _chartEditorAndDisplayPresenter.EditorPresenter).Returns(_chartEditorPresenter);
@@ -77,7 +79,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartPresenterContext.TemplatingTask).Returns(_chartTemplatingTask);
          A.CallTo(() => _chartPresenterContext.ProjectRetriever).Returns(_projectRetriever);
 
-         sut = new SimulationTimeProfileChartPresenter(_view,_chartPresenterContext,  _pkAnalysisPresenter,_chartTask, _observedDataTask,  _chartTemplatingTask);
+         sut = new SimulationTimeProfileChartPresenter(_view,_chartPresenterContext,  _pkAnalysisPresenter,_chartTask, _observedDataTask,  _chartTemplatingTask, _chartUpdateTask);
       }
    }
 
