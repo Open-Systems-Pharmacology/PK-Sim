@@ -390,15 +390,16 @@ namespace PKSim.Presentation
       {
          base.Context();
          _simulation = A.Fake<IndividualSimulation>();
-         _observedData = A.Fake<DataRepository>();
+         _observedData = new DataRepository("OBS");
          _chart = new SimulationTimeProfileChart();
          _chart.AddObservedData(_observedData);
          sut.InitializeAnalysis(_chart);
          _simulation.DataRepository = new DataRepository();
          sut.UpdateAnalysisBasedOn(_simulation);
 
+         _dataRepositoriesRemoved = new List<DataRepository>();
          A.CallTo(() => _chartEditorPresenter.RemoveDataRepositories(A<IEnumerable<DataRepository>>._))
-            .Invokes(x => _dataRepositoriesRemoved = x.GetArgument<IEnumerable<DataRepository>>(0).ToList());
+            .Invokes(x => _dataRepositoriesRemoved.AddRange(x.GetArgument<IEnumerable<DataRepository>>(0)));
       }
 
       protected override void Because()
