@@ -9,7 +9,7 @@ namespace PKSim.Presentation.DTO.Mappers
 {
    public interface IIndividualPKAnalysisToPKAnalysisDTOMapper
    {
-      PKAnalysisDTO MapFrom(IReadOnlyList<IndividualPKAnalysis> analyses, IEnumerable<ICurve> curves);
+      PKAnalysisDTO MapFrom(IReadOnlyList<IndividualPKAnalysis> analyses, IEnumerable<Curve> curves);
    }
 
    public class IndividualPKAnalysisToPKAnalysisDTOMapper : IIndividualPKAnalysisToPKAnalysisDTOMapper
@@ -21,7 +21,7 @@ namespace PKSim.Presentation.DTO.Mappers
          _dataTableMapper = dataTableMapper;
       }
 
-      public PKAnalysisDTO MapFrom(IReadOnlyList<IndividualPKAnalysis> analyses, IEnumerable<ICurve> curves)
+      public PKAnalysisDTO MapFrom(IReadOnlyList<IndividualPKAnalysis> analyses, IEnumerable<Curve> curves)
       {
          return new PKAnalysisDTO(_dataTableMapper.MapFrom(analyses, curves, addMetaData: true));
       }

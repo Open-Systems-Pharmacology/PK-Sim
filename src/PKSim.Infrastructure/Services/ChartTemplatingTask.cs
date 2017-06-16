@@ -25,21 +25,19 @@ namespace PKSim.Infrastructure.Services
    {
       private readonly IChartFromTemplateService _chartFromTemplateService;
       private readonly IProjectRetriever _projectRetriever;
-      private readonly IDialogCreator _dialogCreator;
       private readonly IPKSimChartFactory _chartFactory;
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       private readonly ICurveChartToCurveChartTemplateMapper _chartTemplateMapper;
       private readonly IExecutionContext _executionContext;
       private readonly IChartTask _chartTask;
 
-      public ChartTemplatingTask(IChartFromTemplateService chartFromTemplateService, IProjectRetriever projectRetriever, IChartTemplatePersistor chartTemplatePersistor, IDialogCreator dialogCreator,
+      public ChartTemplatingTask(IChartFromTemplateService chartFromTemplateService, IProjectRetriever projectRetriever, IChartTemplatePersistor chartTemplatePersistor, IChartUpdater chartUpdater, IDialogCreator dialogCreator,
          IPKSimChartFactory chartFactory, IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, ICurveChartToCurveChartTemplateMapper chartTemplateMapper,
          IExecutionContext executionContext, IApplicationController applicationController, ICloneManager cloneManager, IChartTask chartTask)
-         : base(applicationController, chartTemplatePersistor, cloneManager, chartTemplateMapper, chartFromTemplateService)
+         : base(applicationController, chartTemplatePersistor, cloneManager, chartTemplateMapper, chartFromTemplateService, chartUpdater, dialogCreator)
       {
          _chartFromTemplateService = chartFromTemplateService;
          _projectRetriever = projectRetriever;
-         _dialogCreator = dialogCreator;
          _chartFactory = chartFactory;
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
          _chartTemplateMapper = chartTemplateMapper;
@@ -47,8 +45,8 @@ namespace PKSim.Infrastructure.Services
          _chartTask = chartTask;
       }
 
-      public void InitFromTemplate(ICurveChart chart, IChartEditorAndDisplayPresenter chartEditorPresenter,
-         IReadOnlyCollection<DataColumn> allAvailableColumns, IReadOnlyCollection<IndividualSimulation> simulations, Func<DataColumn, string> nameForColumns, CurveChartTemplate defaultChartTemplate = null)
+      public void InitFromTemplate(CurveChart chart, IChartEditorAndDisplayPresenter chartEditorPresenter,
+         IReadOnlyCollection<DataColumn> allAvailableColumns, IReadOnlyCollection<IndividualSimulation> simulations, Func<DataColumn, string> nameForColumn, CurveChartTemplate defaultChartTemplate = null)
       {
          if (defaultChartTemplate == null)
          {
@@ -56,18 +54,16 @@ namespace PKSim.Infrastructure.Services
             return;
          }
 
-         _chartFromTemplateService.CurveNameDefinition = nameForColumns;
-         _chartFromTemplateService.InitializeChartFromTemplate(chart, allAvailableColumns, defaultChartTemplate);
+         _chartFromTemplateService.InitializeChartFromTemplate(chart, allAvailableColumns, defaultChartTemplate, nameForColumn);
 
          //this can happen if template does not have any matching curve
          if (!chart.Curves.Any())
             UpdateDefaultSettings(chartEditorPresenter.EditorPresenter, allAvailableColumns, simulations);
       }
 
-      public override void UpdateDefaultSettings(IChartEditorPresenter chartEditorPresenter, IReadOnlyCollection<DataColumn> allAvailableColumns, IReadOnlyCollection<ISimulation> simulations, bool addCurveIfNoSourceDefined = true)
+      public void UpdateDefaultSettings(IChartEditorPresenter chartEditorPresenter, IReadOnlyCollection<DataColumn> allAvailableColumns, IReadOnlyCollection<ISimulation> simulations, bool addCurveIfNoSourceDefined = true)
       {
-         base.UpdateDefaultSettings(chartEditorPresenter, allAvailableColumns, simulations, addCurveIfNoSourceDefined);
-         addObservedDataToChart(chartEditorPresenter, simulations.OfType<IndividualSimulation>());
+         UpdateDefaultSettings(chartEditorPresenter, allAvailableColumns, simulations, addCurveIfNoSourceDefined, () => { addObservedDataToChart(chartEditorPresenter, simulations.OfType<IndividualSimulation>()); });
       }
 
       private void addObservedDataToChart(IChartEditorPresenter chartEditorPresenter, IEnumerable<IndividualSimulation> simulations)
@@ -77,27 +73,19 @@ namespace PKSim.Infrastructure.Services
 
       private void addObservedDataToChart(IChartEditorPresenter chartEditorPresenter, IndividualSimulation simulation)
       {
-         var chartWithObservedData = chartEditorPresenter.DataSource as IChartWithObservedData;
+         var chartWithObservedData = chartEditorPresenter.Chart as ChartWithObservedData;
          if (chartWithObservedData != null)
             _chartTask.UpdateObservedDataInChartFor(simulation, chartWithObservedData);
 
-         allObservedDataIn(simulation)
-            .Each(observedData =>
-            {
-               var allObservationColumns = observedData.ObservationColumns();
-               allObservationColumns.Each(observationColumn =>
-               {
-                  var sourceCurve = CurvePlotting(simulation, observationColumn);
-                  addRepositoryToChartEditorWithDefaultCurveOptions(chartEditorPresenter, observedData, observationColumn, sourceCurve);
-               });
-            });
-      }
+         var allObservedDataColumnsToAdd = (from column in allObservedDataIn(simulation).SelectMany(x => x.Columns)
+            let curve = CurvePlotting(simulation, column)
+            where curve != null
+            select new {curve, column, repository = column.Repository}).ToList();
 
-      private static void addRepositoryToChartEditorWithDefaultCurveOptions(IChartEditorPresenter chartEditorPresenter, DataRepository dataRepository, DataColumn observationColumn, ICurve sourceCurve)
-      {
-         if (sourceCurve == null) return;
-         chartEditorPresenter.AddDataRepository(dataRepository);
-         AddCurveForColumnWithOptionsFromSourceCurve(chartEditorPresenter, observationColumn, sourceCurve);
+         var allDataRepositoriesToAdd = allObservedDataColumnsToAdd.Select(x => x.repository).Distinct();
+         chartEditorPresenter.AddDataRepositories(allDataRepositoriesToAdd);
+
+         allObservedDataColumnsToAdd.Each(x => AddCurveForColumnWithOptionsFromSourceCurve(chartEditorPresenter, x.column, x.curve));
       }
 
       public SimulationTimeProfileChart CloneChart(SimulationTimeProfileChart originalChart, IndividualSimulation simulation)
@@ -110,13 +98,13 @@ namespace PKSim.Infrastructure.Services
          return clonedChart.DowncastTo<SimulationTimeProfileChart>();
       }
 
-      private void initializeFromTemplate(ICurveChart originalChart, ICurveChart clonedChart, IndividualSimulation simulation)
+      private void initializeFromTemplate(CurveChart originalChart, CurveChart clonedChart, IndividualSimulation simulation)
       {
          var allAvailableColumns = new List<DataColumn>();
          addSimulationResults(simulation, allAvailableColumns);
          addObservedDataColumns(simulation, allAvailableColumns);
-         _chartFromTemplateService.CurveNameDefinition = c => _quantityDisplayPathMapper.DisplayPathAsStringFor(simulation, c);
-         _chartFromTemplateService.InitializeChartFromTemplate(clonedChart, allAvailableColumns, _chartTemplateMapper.MapFrom(originalChart));
+         Func<DataColumn, string> curveNameDefinition = c => _quantityDisplayPathMapper.DisplayPathAsStringFor(simulation, c);
+         _chartFromTemplateService.InitializeChartFromTemplate(clonedChart, allAvailableColumns, _chartTemplateMapper.MapFrom(originalChart), curveNameDefinition);
       }
 
       private void addSimulationResults(IndividualSimulation simulation, List<DataColumn> allAvailableColumns)
@@ -136,7 +124,7 @@ namespace PKSim.Infrastructure.Services
             .Where(x => !x.IsNull());
       }
 
-      public void LoadCurves(ICurveChart chart, IndividualSimulation simulation)
+      public void LoadCurves(CurveChart chart, IndividualSimulation simulation)
       {
          initializeFromTemplate(chart, chart, simulation);
       }
@@ -144,11 +132,6 @@ namespace PKSim.Infrastructure.Services
       public void LoadCurves(IndividualSimulation simulation)
       {
          simulation?.Charts.Each(c => LoadCurves(c, simulation));
-      }
-
-      protected override string AskForInput(string caption, string s, string defaultName, List<string> usedNames)
-      {
-         return _dialogCreator.AskForInput(caption, s, defaultName, usedNames);
       }
 
       protected override ICommand ReplaceTemplatesCommand(IWithChartTemplates withChartTemplates, IEnumerable<CurveChartTemplate> curveChartTemplates)

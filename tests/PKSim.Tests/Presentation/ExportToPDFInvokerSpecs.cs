@@ -22,12 +22,12 @@ namespace PKSim.Presentation
 
    internal class When_notify_than_a_chart_needs_to_be_reported : concern_for_ExportToPDFInvoker
    {
-      private ICurveChart _chart;
+      private CurveChart _chart;
 
       protected override void Context()
       {
          base.Context();
-         _chart = A.Fake<ICurveChart>();
+         _chart = new CurveChart();
       }
 
       protected override void Because()

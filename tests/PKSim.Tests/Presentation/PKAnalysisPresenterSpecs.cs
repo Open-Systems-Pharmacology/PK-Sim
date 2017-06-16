@@ -36,7 +36,7 @@ namespace PKSim.Presentation
       protected IEnumerable<IParameter> _allGlobalPKParameters;
       private IPKAnalysisExportTask _exportTask;
       protected List<Simulation> _simulations;
-      protected List<ICurve> _curves;
+      protected List<Curve> _curves;
       private DataColumn _col3;
       private IDimension _timeDim;
       private BaseGrid _baseGrid;
@@ -68,19 +68,19 @@ namespace PKSim.Presentation
          dataRepository.Add(_col1);
          dataRepository.Add(_col2);
          _simulation.DataRepository = dataRepository;
-         var curve1 = A.Fake<ICurve>();
+         var curve1 = A.Fake<Curve>();
          A.CallTo(() => curve1.yData).Returns(_col1);
          A.CallTo(() => curve1.xData).Returns(_baseGrid);
 
-         var curve2 = A.Fake<ICurve>();
+         var curve2 = A.Fake<Curve>();
          A.CallTo(() => curve2.yData).Returns(_col2);
          A.CallTo(() => curve2.xData).Returns(_baseGrid);
 
-         var curve3 = A.Fake<ICurve>();
+         var curve3 = A.Fake<Curve>();
          A.CallTo(() => curve3.yData).Returns(_col3);
          A.CallTo(() => curve3.xData).Returns(_col1);
 
-         _curves = new List<ICurve> {curve1, curve2, curve3};
+         _curves = new List<Curve> {curve1, curve2, curve3};
          _allPKAnalysis = new List<Tuple<DataColumn, PKAnalysis>>();
          _pkAnalysis1 = createPKAnalysis();
          _pkAnalysis2 = createPKAnalysis();

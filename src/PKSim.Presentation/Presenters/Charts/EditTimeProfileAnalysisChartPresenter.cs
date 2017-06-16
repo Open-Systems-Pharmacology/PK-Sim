@@ -1,19 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
-using PKSim.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
-using PKSim.Core.Chart;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
-using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Presentation.Presenters.PopulationAnalyses;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Views.Charts;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -21,13 +8,25 @@ using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Binders;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Chart;
+using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.PopulationAnalyses;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Views.Charts;
 
 namespace PKSim.Presentation.Presenters.Charts
 {
    public interface IEditTimeProfileAnalysisChartPresenter : IEditPopulationAnalysisChartPresenter, IPKAnalysisWithChartPresenter,
       IListener<ObservedDataRemovedFromAnalysableEvent>
    {
-      void AddObservedData(DataRepository observedData);
+      void AddObservedData(IReadOnlyList<DataRepository> observedData);
    }
 
    public class EditTimeProfileAnalysisChartPresenter : EditPopulationAnalysisChartPresenter<TimeProfileAnalysisChart, TimeProfileXValue, TimeProfileYValue>, IEditTimeProfileAnalysisChartPresenter
@@ -58,13 +57,12 @@ namespace PKSim.Presentation.Presenters.Charts
          _observedDataDragDropBinder = new ObservedDataDragDropBinder();
          _timeProfileAnalysisChartView.SetChartView(_populationAnalysisChartPresenter.BaseView);
          _timeProfileAnalysisChartView.SetPKAnalysisView(_pkAnalysisPresenter.BaseView);
-
       }
 
       protected override void RefreshData()
       {
          base.RefreshData();
-         if(_chartDisplayMode == ChartDisplayMode.PKAnalysis)
+         if (_chartDisplayMode == ChartDisplayMode.PKAnalysis)
             calculatePKAnalysis();
       }
 
@@ -81,49 +79,57 @@ namespace PKSim.Presentation.Presenters.Charts
       protected virtual void OnDragDrop(object sender, DragEventArgs e)
       {
          var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e);
-         droppedObservedData.Each(AddObservedData);
+         AddObservedData(droppedObservedData.ToList());
          RefreshData();
       }
 
-      public void AddObservedData(DataRepository observedData)
+      public void AddObservedData(IReadOnlyList<DataRepository> observedData)
       {
-         if (PopulationAnalysisChart.UsesObservedData(observedData))
+         var observedDataToAdd = observedData.Where(x => !PopulationAnalysisChart.UsesObservedData(x)).ToList();
+
+         if (!observedDataToAdd.Any())
             return;
 
          checkDimensionCompatibilityFor(observedData);
 
-         PopulationAnalysisChart.AddObservedData(observedData);
+         observedDataToAdd.Each(PopulationAnalysisChart.AddObservedData);
+
          _observedDataTask.AddObservedDataToAnalysable(observedData, PopulationDataCollector);
 
-         observedData.ObservationColumns().Each(c =>
+         observedData.SelectMany(x => x.ObservationColumns()).Each(c =>
          {
             var curveOption = PopulationAnalysisChart.CurveOptionsFor(c);
             curveOption.Color = _colorGenerator.NextColor();
          });
       }
 
-      private void checkDimensionCompatibilityFor(DataRepository observedData)
+      private void checkDimensionCompatibilityFor(IReadOnlyList<DataRepository> observedData)
       {
-         var allUsedDimensions = observedData.ObservationColumns().Select(x => x.Dimension)
-            .Distinct()
-            .ToList();
-
          //use merge dimension for the output to ensure proper conversion between mass and amount
          var availableDimensions = PopulationAnalysisChart.PopulationAnalysis.All<PopulationAnalysisOutputField>()
-            .Select(f=>_dimensionRepository.MergedDimensionFor(new NumericFieldContext(f, PopulationDataCollector)))
+            .Select(f => _dimensionRepository.MergedDimensionFor(new NumericFieldContext(f, PopulationDataCollector)))
             .Distinct()
             .ToList();
 
-         if (allUsedDimensions.Any(dimension => availableDimensions.Any(d => !d.CanConvertToUnit(dimension.DefaultUnitName))))
-            throw new PKSimException(PKSimConstants.Error.CannotAddObservedDataBecauseOfDimensionMismatch(observedData.Name, 
-               availableDimensions.Select(x => x.DisplayName), 
-               allUsedDimensions.Select(x => x.DisplayName)));
+         var availableDimensionNames = availableDimensions.Select(x => x.DisplayName).ToList();
+
+         foreach (var dataRepository in observedData)
+         {
+            var allUsedDimensions = dataRepository.ObservationColumns().Select(x => x.Dimension)
+               .Distinct()
+               .ToList();
+
+            if (allUsedDimensions.Any(dimension => availableDimensions.Any(d => !d.CanConvertToUnit(dimension.DefaultUnitName))))
+               throw new PKSimException(PKSimConstants.Error.CannotAddObservedDataBecauseOfDimensionMismatch(dataRepository.Name,
+                  availableDimensionNames,
+                  allUsedDimensions.Select(x => x.DisplayName)));
+         }
       }
 
       public void Handle(ObservedDataRemovedFromAnalysableEvent eventToHandle)
       {
          if (!canHandle(eventToHandle)) return;
-         PopulationAnalysisChart.RemoveObservedData(eventToHandle.ObservedData);
+         eventToHandle.ObservedData.Each(PopulationAnalysisChart.RemoveObservedData);
          RefreshData();
       }
 
@@ -146,7 +152,7 @@ namespace PKSim.Presentation.Presenters.Charts
 
       private void setViewMode(bool shouldShowAnalysis)
       {
-         if(shouldShowAnalysis)
+         if (shouldShowAnalysis)
             showAnalysis();
          else
             showChart();

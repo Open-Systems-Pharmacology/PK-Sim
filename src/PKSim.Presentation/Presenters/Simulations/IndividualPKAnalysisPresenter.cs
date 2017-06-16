@@ -19,7 +19,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 {
    public interface IIndividualPKAnalysisPresenter : IPresenter<IIndividualPKAnalysisView>, IPKAnalysisPresenter
    {
-      void ShowPKAnalysis(IEnumerable<Simulation> simulations, IEnumerable<ICurve> curves);
+      void ShowPKAnalysis(IEnumerable<Simulation> simulations, IEnumerable<Curve> curves);
    }
 
    public class IndividualPKAnalysisPresenter : PKAnalysisPresenter<IIndividualPKAnalysisView, IIndividualPKAnalysisPresenter>, IIndividualPKAnalysisPresenter
@@ -28,7 +28,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly IPKAnalysisExportTask _exportTask;
       private List<IndividualPKAnalysis> _allPKAnalysis;
       private IReadOnlyList<Simulation> _simulations;
-      private readonly ICache<DataColumn, ICurve> _curveCache;
+      private readonly ICache<DataColumn, Curve> _curveCache;
       private List<DataColumn> _allColumns;
       private readonly IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
       private readonly IIndividualPKAnalysisToPKAnalysisDTOMapper _pKAnalysisToDTOMapper;
@@ -41,7 +41,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          _globalPKAnalysisPresenter = globalPKAnalysisPresenter;
          _exportTask = exportTask;
          _view.ShowControls = false;
-         _curveCache = new Cache<DataColumn, ICurve>(onMissingKey: x => null);
+         _curveCache = new Cache<DataColumn, Curve>(onMissingKey: x => null);
          AddSubPresenters(_globalPKAnalysisPresenter);
          _view.AddGlobalPKAnalysisView(_globalPKAnalysisPresenter.View);
          _pKAnalysisToDTOMapper = pKAnalysisToDTOMapper;
@@ -49,7 +49,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public override string PresentationKey => PresenterConstants.PresenterKeys.IndividualPKParametersPresenter;
 
-      public void ShowPKAnalysis(IEnumerable<Simulation> simulations, IEnumerable<ICurve> curves)
+      public void ShowPKAnalysis(IEnumerable<Simulation> simulations, IEnumerable<Curve> curves)
       {
          _simulations = simulations.ToList();
          _globalPKAnalysisPresenter.CalculatePKAnalysis(_simulations);
@@ -70,7 +70,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          BindToPKAnalysis();
       }
 
-      private void createColumnsWithPKAnalysesFrom(IEnumerable<ICurve> curves)
+      private void createColumnsWithPKAnalysesFrom(IEnumerable<Curve> curves)
       {
          //should be done before cache clear as the curves might well be the cache itselfs
          var curvesToDisplay = curves.ForPKAnalysis();

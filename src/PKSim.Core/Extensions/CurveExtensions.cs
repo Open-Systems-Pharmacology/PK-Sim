@@ -11,7 +11,7 @@ namespace PKSim.Core.Extensions
       /// <summary>
       /// Returns <c>true</c> if the <paramref name="curve"/> represents a Concentration Time profile curve otherwise <c>false</c>
       /// </summary>
-      public static bool IsConcentrationTimeProfile(this ICurve curve)
+      public static bool IsConcentrationTimeProfile(this Curve curve)
       {
          if (curve == null)
             return false;
@@ -31,7 +31,7 @@ namespace PKSim.Core.Extensions
       /// <summary>
       /// Returns the subset of <see cref="ICurve"/> defined in <paramref name="curves"/> that can be used for PK-Analysis calculations
       /// </summary>
-      public static IReadOnlyList<ICurve> ForPKAnalysis(this IEnumerable<ICurve> curves)
+      public static IReadOnlyList<Curve> ForPKAnalysis(this IEnumerable<Curve> curves)
       {
          return curves.Where(c => c.Visible).Where(c => c.IsConcentrationTimeProfile()).ToList();
       }

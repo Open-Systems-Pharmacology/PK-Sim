@@ -42,7 +42,7 @@ namespace PKSim.Presentation.UICommands
       }
    }
 
-   public class ExportChartToPDFCommand : ExportToPDFCommand<ICurveChart>
+   public class ExportChartToPDFCommand : ExportToPDFCommand<CurveChart>
    {
       public ExportChartToPDFCommand(IApplicationController applicationController)
          : base(applicationController)

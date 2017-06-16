@@ -8,7 +8,7 @@ using PKSim.Core.Chart;
 
 namespace PKSim.Infrastructure.Reporting.TeX.Reporters
 {
-   internal abstract class CurveChartReporter<TCurveChart> : OSPSuiteTeXReporter<TCurveChart> where TCurveChart:ICurveChart
+   internal abstract class CurveChartReporter<TCurveChart> : OSPSuiteTeXReporter<TCurveChart> where TCurveChart:CurveChart
    {
       public override IReadOnlyCollection<object> Report(TCurveChart chart, OSPSuiteTracker buildTracker)
       {
@@ -46,13 +46,13 @@ namespace PKSim.Infrastructure.Reporting.TeX.Reporters
          }
       }
 
-      private DataTable dataTableFor(ICurveChart chart, ICurve curve)
+      private DataTable dataTableFor(CurveChart chart, Curve curve)
       {
-         var xName = chart.Axes[AxisTypes.X].Caption;
-         var yName = chart.Axes[AxisTypes.Y].Caption;
+         var xName = chart.AxisBy(AxisTypes.X).Caption;
+         var yName = chart.AxisBy(AxisTypes.Y).Caption;
 
-         var xUnit = chart.Axes[AxisTypes.X].UnitName;
-         var yUnit = chart.Axes[AxisTypes.Y].UnitName;
+         var xUnit = chart.AxisBy(AxisTypes.X).UnitName;
+         var yUnit = chart.AxisBy(AxisTypes.Y).UnitName;
 
          var dt = new DataTable(curve.Name);
          dt.Columns.Add(xName, typeof(float));

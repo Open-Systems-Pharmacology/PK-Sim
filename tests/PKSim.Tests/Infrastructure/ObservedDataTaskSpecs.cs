@@ -91,7 +91,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         sut.AddObservedDataToAnalysable(_observedData, _sim);
+         sut.AddObservedDataToAnalysable( new []{_observedData }, _sim);
       }
 
       [Observation]

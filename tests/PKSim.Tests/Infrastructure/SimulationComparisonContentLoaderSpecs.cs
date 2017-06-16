@@ -35,7 +35,7 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          _simulationComparison = new IndividualSimulationComparison();
-         var curve = A.Fake<ICurve>();
+         var curve = A.Fake<Curve>();
          _dataRepository = new DataRepository();
          _dataColumn = new DataColumn {Repository = _dataRepository};
          A.CallTo(() => curve.xData).Returns(_dataColumn);

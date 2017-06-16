@@ -7,11 +7,13 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Presentation.Services.Charts;
+using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Presentation.Nodes;
@@ -37,9 +39,9 @@ namespace PKSim.Presentation
       protected IChartTemplatingTask _chartTemplatingTask;
       protected IDataColumnToPathElementsMapper _dataColumnToPathElementsMapper;
       protected IProjectRetriever _projectRetriever;
-      private IUserSettings _userSettings;
       private ChartPresenterContext _chartPresenterContext;
       private ICurveNamer _curveNamer;
+      private IChartUpdater _chartUpdateTask;
 
       protected override void Context()
       {
@@ -54,9 +56,8 @@ namespace PKSim.Presentation
          _chartTemplatingTask = A.Fake<IChartTemplatingTask>();
          _dataColumnToPathElementsMapper = A.Fake<IDataColumnToPathElementsMapper>();
          _projectRetriever = A.Fake<IProjectRetriever>();
-         _userSettings = A.Fake<IUserSettings>();
          _chartPresenterContext = A.Fake<ChartPresenterContext>();
-
+         _chartUpdateTask= A.Fake<IChartUpdater>();
          A.CallTo(() => _chartPresenterContext.ChartEditorAndDisplayPresenter).Returns(_chartPresenter);
          A.CallTo(() => _chartPresenterContext.CurveNamer).Returns(_curveNamer);
          A.CallTo(() => _chartPresenterContext.EditorLayoutTask).Returns(_chartLayoutTask);
@@ -64,7 +65,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartPresenterContext.ProjectRetriever).Returns(_projectRetriever);
 
          sut = new IndividualSimulationComparisonPresenter(_view, _chartPresenterContext, _pkAnalysisPresenter,
-            _chartTask, _observedDataTask, _lazyLoadTask, _chartTemplatingTask, _userSettings);
+            _chartTask, _observedDataTask, _lazyLoadTask, _chartTemplatingTask, _chartUpdateTask);
       }
    }
 
@@ -78,7 +79,14 @@ namespace PKSim.Presentation
       {
          base.Context();
          _individualSimulationComparison = new IndividualSimulationComparison();
-         _individualSimulationComparison.Curves.Add(new Curve("TOTO"));
+         var dataRepository = DomainHelperForSpecs.ObservedData();
+         var curve = new Curve
+         {
+            xData = dataRepository.BaseGrid,
+            yData = dataRepository.FirstDataColumn()
+         };
+
+         _individualSimulationComparison.AddCurve(curve);
          sut.InitializeAnalysis(_individualSimulationComparison);
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(() => _simulation.HasResults).Returns(true);
@@ -95,7 +103,7 @@ namespace PKSim.Presentation
       public void should_not_initiate_the_creation_from_template()
       {
          A.CallTo(() => _chartTemplatingTask.InitFromTemplate(
-               A<ICurveChart>._, A<IChartEditorAndDisplayPresenter>._, A<IReadOnlyCollection<DataColumn>>._,
+               A<CurveChart>._, A<IChartEditorAndDisplayPresenter>._, A<IReadOnlyCollection<DataColumn>>._,
                A<IReadOnlyCollection<IndividualSimulation>>._, A<Func<DataColumn, string>>._, null))
             .MustNotHaveHappened();
       }
@@ -103,7 +111,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_simply_update_the_new_curve_defined_in_the_simulation()
       {
-         A.CallTo(() => _chartTemplatingTask.UpdateDefaultSettings(_chartPresenter.EditorPresenter, A<IReadOnlyCollection<DataColumn>>._, A<IReadOnlyCollection<IndividualSimulation>>._, false)).MustHaveHappened();
+         A.CallTo(() => _chartTemplatingTask.UpdateDefaultSettings(_chartPresenter.EditorPresenter, A<IReadOnlyCollection<DataColumn>>._, A<IReadOnlyCollection<IndividualSimulation>>._, false, null)).MustHaveHappened();
       }
    }
 
@@ -125,7 +133,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_bind_the_chart_to_all_editor_even_when_no_simulation_is_used_in_the_comparison()
       {
-         _chartPresenter.DisplayPresenter.DataSource.ShouldBeEqualTo(_indivisualSimulationComparison);
+         A.CallTo(() => _chartPresenter.DisplayPresenter.Edit(_indivisualSimulationComparison)).MustHaveHappened();
       }
    }
 }

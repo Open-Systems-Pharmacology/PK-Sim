@@ -38,6 +38,7 @@ namespace PKSim.Infrastructure
       protected ICloneManager _cloneManager;
       protected IApplicationController _applicationController;
       protected IExecutionContext _executionContext;
+      private IChartUpdater _chartUpdater;
 
       protected override void Context()
       {
@@ -53,7 +54,8 @@ namespace PKSim.Infrastructure
          _cloneManager = A.Fake<ICloneManager>();
          _applicationController = A.Fake<IApplicationController>();
          _executionContext = A.Fake<IExecutionContext>();
-         sut = new ChartTemplatingTask(_chartFromTemplateService, _projectRetriever, _chartTemplatePersistor, _dialogCreator, _chartFactory, _quantityDisplayPathMapper, _chartTemplateMapper,
+         _chartUpdater= A.Fake<IChartUpdater>();
+         sut = new ChartTemplatingTask(_chartFromTemplateService, _projectRetriever, _chartTemplatePersistor,_chartUpdater, _dialogCreator, _chartFactory, _quantityDisplayPathMapper, _chartTemplateMapper,
             _executionContext, _applicationController, _cloneManager, _chartTask);
       }
    }
@@ -63,7 +65,7 @@ namespace PKSim.Infrastructure
       private IChartEditorPresenter _chartEditorPresenter;
       private IReadOnlyCollection<DataColumn> _allAvailableColumns;
       private IReadOnlyCollection<ISimulation> _simulationCollection;
-      private IChartWithObservedData _chartWithObservedData;
+      private ChartWithObservedData _chartWithObservedData;
 
       protected override void Context()
       {
@@ -72,8 +74,8 @@ namespace PKSim.Infrastructure
          _chartEditorPresenter = A.Fake<IChartEditorPresenter>();
          var individualSimulation = new IndividualSimulation { SimulationSettings = new SimulationSettings() };
          _simulationCollection = new List<ISimulation> { individualSimulation };
-         _chartWithObservedData = A.Fake<IChartWithObservedData>();
-         A.CallTo(() => _chartEditorPresenter.DataSource).Returns(_chartWithObservedData);
+         _chartWithObservedData = A.Fake<ChartWithObservedData>();
+         A.CallTo(() => _chartEditorPresenter.Chart).Returns(_chartWithObservedData);
       }
 
       protected override void Because()
@@ -89,12 +91,12 @@ namespace PKSim.Infrastructure
    }
 
 
-   public abstract class When_updating_default_settings_base_class : concern_for_ChartTemplatingTask
+   public abstract class When_updating_default_settings : concern_for_ChartTemplatingTask
    {
       protected IReadOnlyCollection<IndividualSimulation> _simulations;
       protected IReadOnlyCollection<DataColumn> _allAvailableColumns;
       protected IChartEditorPresenter _chartEditorPresenter;
-      protected ICurve _curve;
+      protected Curve _curve;
       protected DataColumn _column;
 
       protected abstract DataColumn GenerateDataColumn();
@@ -107,8 +109,7 @@ namespace PKSim.Infrastructure
 
          _chartEditorPresenter = A.Fake<IChartEditorPresenter>();
          _simulations = A.Fake<IReadOnlyCollection<IndividualSimulation>>();
-         var individualSimulation = new IndividualSimulation();
-         individualSimulation.SimulationSettings = new SimulationSettings();
+         var individualSimulation = new IndividualSimulation {SimulationSettings = new SimulationSettings()};
          _simulations = new List<IndividualSimulation> { individualSimulation };
          var simulationConcentrationChart = new SimulationTimeProfileChart();
          individualSimulation.AddAnalysis(simulationConcentrationChart);
@@ -120,7 +121,7 @@ namespace PKSim.Infrastructure
          simulationConcentrationChart.AddCurve(_curve);
 
          A.CallTo(() => _projectRetriever.CurrentProject.ObservedDataBy(dataRepository.Id)).Returns(dataRepository);
-         _chartEditorPresenter.DataSource = new CurveChart();
+         _chartEditorPresenter.Edit(new CurveChart());
       }
 
       private DataRepository generateDataRepository()
@@ -143,7 +144,7 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_updating_the_default_settings_for_a_calcualted_output_and_no_template_is_found : When_updating_default_settings_base_class
+   public class When_updating_the_default_settings_for_a_calcualted_output_and_no_template_is_found : When_updating_default_settings
    {
       protected override void Context()
       {
@@ -165,11 +166,11 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_add_the_new_curve_to_the_chart_with_the_settings_from_the_simulation_as_defaults()
       {
-         A.CallTo(() => _chartEditorPresenter.AddCurveForColumn(_column.Id, _curve.CurveOptions)).MustHaveHappened();
+         A.CallTo(() => _chartEditorPresenter.AddCurveForColumn(_column, _curve.CurveOptions, false)).MustHaveHappened();
       }
    }
 
-   public class When_updating_the_default_settings_for_a_observed_data_and_no_template_is_found : When_updating_default_settings_base_class
+   public class When_updating_the_default_settings_for_a_observed_data_and_no_template_is_found : When_updating_default_settings
    {
 
       protected override DataColumn GenerateDataColumn()
@@ -184,7 +185,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_add_the_new_curve_to_the_chart_with_the_settings_from_the_simulation_as_defaults()
       {
-         A.CallTo(() => _chartEditorPresenter.AddCurveForColumn(_column.Id, _curve.CurveOptions)).MustHaveHappened();
+         A.CallTo(() => _chartEditorPresenter.AddCurveForColumn(_column, _curve.CurveOptions, false)).MustHaveHappened();
       }
    }
 }
