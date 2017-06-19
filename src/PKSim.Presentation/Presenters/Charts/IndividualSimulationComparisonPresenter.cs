@@ -116,7 +116,7 @@ namespace PKSim.Presentation.Presenters.Charts
 
       private void showChartView()
       {
-         _view.SetChartView(_chartPresenterContext.ChartEditorAndDisplayPresenter.BaseView);
+         _view.SetChartView(_chartPresenterContext.EditorAndDisplayPresenter.BaseView);
       }
 
       protected override string NameForColumn(DataColumn dataColumn)

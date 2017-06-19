@@ -52,7 +52,15 @@ namespace PKSim.UI.Binders
 
       private void doUpdateOf(ChartCollectionBase collection, Action actionToPerform)
       {
-         _view.Chart.DoUpdateOf(collection, actionToPerform);
+         collection.BeginUpdate();
+         try
+         {
+            actionToPerform();
+         }
+         finally
+         {
+            collection.EndUpdate();
+         }         
       }
 
       public void Bind(ChartData<TX, TY> chartData, PopulationAnalysisChart analysisChart)
@@ -91,9 +99,6 @@ namespace PKSim.UI.Binders
          // annotations must be placed at the end because otherwise they get removed for example when series are added.
          // this is a behavior of dev express.
          doUpdateOf(diagram.Panes, () => addPaneTitles(chartData, diagram));
-
-         if (_allowZoom)
-            _diagramZoomRectangleService.InitializeZoomFor(diagram);
 
          _view.Refresh();
       }
@@ -232,7 +237,7 @@ namespace PKSim.UI.Binders
             if (isNoTitleNeededFor(paneData))
                continue;
 
-            _view.AddTitleTo(pane, paneData.Caption);
+            doUpdateOf(pane.Annotations, () => _view.AddTitleTo(pane, paneData.Caption));
          }
       }
 

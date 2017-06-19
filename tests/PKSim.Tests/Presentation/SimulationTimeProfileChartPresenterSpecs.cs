@@ -16,6 +16,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Charts;
 using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Presentation.Settings;
 using PKSim.Core.Chart;
@@ -44,9 +45,11 @@ namespace PKSim.Presentation
       protected IChartEditorLayoutTask _chartLayoutTask;
       protected IChartTemplatingTask _chartTemplatingTask;
       private IProjectRetriever _projectRetriever;
-      private ChartPresenterContext _chartPresenterContext;
+      protected ChartPresenterContext _chartPresenterContext;
       private ICurveNamer _curveNamer;
       private IChartUpdater _chartUpdateTask;
+      private IPresentationSettingsTask _presentationSettingsTask;
+      private IDimensionFactory _dimensionFactory;
 
       protected override void Context()
       {
@@ -57,9 +60,11 @@ namespace PKSim.Presentation
          _chartEditorAndDisplayPresenter = A.Fake<IChartEditorAndDisplayPresenter>();
          _dataColumnToPathElementsMapper = A.Fake<IDataColumnToPathElementsMapper>();
          _chartTask = A.Fake<IChartTask>();
+         _dimensionFactory= A.Fake<IDimensionFactory>();
          _observedDataTask = A.Fake<IObservedDataTask>();
          _chartLayoutTask = A.Fake<IChartEditorLayoutTask>();
          _chartUpdateTask = A.Fake<IChartUpdater>();
+         _presentationSettingsTask= A.Fake<IPresentationSettingsTask>();
          _allTemplates = new List<ChartEditorLayoutTemplate>();
          A.CallTo(() => _chartLayoutTask.AllTemplates()).Returns(_allTemplates);
          A.CallTo(() => _chartEditorAndDisplayPresenter.EditorPresenter).Returns(_chartEditorPresenter);
@@ -69,14 +74,8 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartEditorPresenter.CurveOptionsColumnSettingsFor(A<CurveOptionsColumns>._)).Returns(new GridColumnSettings(CurveOptionsColumns.xData.ToString()));
          _chartTemplatingTask = A.Fake<IChartTemplatingTask>();
          _projectRetriever = A.Fake<IProjectRetriever>();
-         _chartPresenterContext = A.Fake<ChartPresenterContext>();
+         _chartPresenterContext = new ChartPresenterContext(_chartEditorAndDisplayPresenter, _curveNamer, _dataColumnToPathElementsMapper, _chartTemplatingTask, _presentationSettingsTask,_chartLayoutTask, _projectRetriever,_dimensionFactory);
          _curveNamer = A.Fake<ICurveNamer>();
-
-         A.CallTo(() => _chartPresenterContext.ChartEditorAndDisplayPresenter).Returns(_chartEditorAndDisplayPresenter);
-         A.CallTo(() => _chartPresenterContext.CurveNamer).Returns(_curveNamer);
-         A.CallTo(() => _chartPresenterContext.EditorLayoutTask).Returns(_chartLayoutTask);
-         A.CallTo(() => _chartPresenterContext.TemplatingTask).Returns(_chartTemplatingTask);
-         A.CallTo(() => _chartPresenterContext.ProjectRetriever).Returns(_projectRetriever);
 
          sut = new SimulationTimeProfileChartPresenter(_view, _chartPresenterContext, _pkAnalysisPresenter, _chartTask, _observedDataTask, _chartTemplatingTask, _chartUpdateTask);
       }
@@ -312,10 +311,10 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_clart_data_source_into_the_chart_display_presenter_and_chart_editor_presenter()
+      public void should_clear_data_source_into_the_chart_display_presenter_and_chart_editor_presenter()
       {
-         A.CallTo(() => _chartDisplayPresenter.Clear()).MustHaveHappened();
          A.CallTo(() => _chartEditorPresenter.Clear()).MustHaveHappened();
+         A.CallTo(() => _chartDisplayPresenter.Clear()).MustHaveHappened();
       }
    }
 
