@@ -50,7 +50,7 @@ namespace PKSim.Presentation.Presenters.Charts
          _chartTask = chartTask;
          _observedDataTask = observedDataTask;
          _chartUpdater = chartUpdater;
-         _view.SetChartView(chartPresenterContext.ChartEditorAndDisplayPresenter.BaseView);
+         _view.SetChartView(chartPresenterContext.EditorAndDisplayPresenter.BaseView);
          _pkAnalysisPresenter = pkAnalysisPresenter;
          _view.SetPKAnalysisView(_pkAnalysisPresenter.View);
          AddSubPresenters(_pkAnalysisPresenter);
@@ -66,15 +66,15 @@ namespace PKSim.Presentation.Presenters.Charts
          _observedDataDragDropBinder = new ObservedDataDragDropBinder();
       }
 
-      protected bool IsColumnVisibleInDataBrowser(DataColumn dataColumn)
+      public override void InitializeAnalysis(TChart chart)
       {
-         return _chartTask.IsColumnVisibleInDataBrowser(dataColumn);
+         base.InitializeAnalysis(chart);
+         ChartEditorPresenter.AddDataRepositories(chart.AllObservedData());
       }
 
-      private IndividualSimulation noDataForSimulation(DataRepository dataRepository)
-      {
-         return null;
-      }
+      protected bool IsColumnVisibleInDataBrowser(DataColumn dataColumn) => _chartTask.IsColumnVisibleInDataBrowser(dataColumn);
+
+      private IndividualSimulation noDataForSimulation(DataRepository dataRepository) => null;
 
       protected override ISimulation SimulationFor(DataColumn dataColumn)
       {
@@ -90,8 +90,6 @@ namespace PKSim.Presentation.Presenters.Charts
 
       protected virtual void UpdateAnalysisBasedOn(IndividualSimulation simulation, DataRepository dataRepository)
       {
-         BindChartToEditors();
-
          if (_repositoryCache.Contains(dataRepository))
          {
             ChartEditorPresenter.RemoveUnusedColumns();
@@ -117,7 +115,7 @@ namespace PKSim.Presentation.Presenters.Charts
 
       protected virtual void InitializeFromTemplate(IReadOnlyCollection<DataColumn> allColumns, IReadOnlyCollection<IndividualSimulation> simulations)
       {
-         _chartTemplatingTask.InitFromTemplate(Chart, _chartPresenterContext.ChartEditorAndDisplayPresenter, allColumns, simulations, NameForColumn, DefaultChartTemplate);
+         _chartTemplatingTask.InitFromTemplate(Chart, _chartPresenterContext.EditorAndDisplayPresenter, allColumns, simulations, NameForColumn, DefaultChartTemplate);
       }
 
       public override void Clear()
@@ -179,7 +177,7 @@ namespace PKSim.Presentation.Presenters.Charts
          RefreshPKAnalysisIfVisible();
       }
 
-      protected override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
+      protected virtual void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
       {
          AddDataRepositoriesToEditor(observedData);
 

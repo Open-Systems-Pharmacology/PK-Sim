@@ -58,7 +58,7 @@ namespace PKSim.Presentation
          _projectRetriever = A.Fake<IProjectRetriever>();
          _chartPresenterContext = A.Fake<ChartPresenterContext>();
          _chartUpdateTask= A.Fake<IChartUpdater>();
-         A.CallTo(() => _chartPresenterContext.ChartEditorAndDisplayPresenter).Returns(_chartPresenter);
+         A.CallTo(() => _chartPresenterContext.EditorAndDisplayPresenter).Returns(_chartPresenter);
          A.CallTo(() => _chartPresenterContext.CurveNamer).Returns(_curveNamer);
          A.CallTo(() => _chartPresenterContext.EditorLayoutTask).Returns(_chartLayoutTask);
          A.CallTo(() => _chartPresenterContext.TemplatingTask).Returns(_chartTemplatingTask);
