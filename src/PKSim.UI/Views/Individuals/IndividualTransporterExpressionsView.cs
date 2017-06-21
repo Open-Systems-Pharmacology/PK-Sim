@@ -89,7 +89,7 @@ namespace PKSim.UI.Views.Individuals
             .WithImages(transporterIconIndex)
             .WithValues(x => _presenter.AllTransportTypes())
             .AndDisplays(x => _presenter.TransportTypeCaptionFor(x))
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.UpdateTransportType(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.UpdateTransportType(e.NewValue));
 
          _colGrouping = _gridViewBinder.AutoBind(item => item.GroupingPathDTO)
             .WithRepository(dto => configureContainerRepository(dto.GroupingPathDTO))
@@ -103,11 +103,11 @@ namespace PKSim.UI.Views.Individuals
             .WithEditorConfiguration(editTransporterMembraneTypeRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
-            .OnValueSet += (transporter, args) => _presenter.SetMembraneLocation(transporter, args.NewValue);
+            .OnValueUpdating += (transporter, args) => _presenter.SetMembraneLocation(transporter, args.NewValue);
 
          _colRelativeExpression = _gridViewBinder.Bind(item => item.RelativeExpression)
             .WithCaption(PKSimConstants.UI.RelativeExpression)
-            .WithOnValueSet((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
+            .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
 
          var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
             .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)

@@ -128,18 +128,18 @@ namespace PKSim.UI.Views.Protocols
             .WithFormat(schemaDto => schemaDto.StartTimeParameter.ParameterFormatter())
             .WithEditorConfiguration((activeEditor, schemaDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, schemaDTO.StartTimeParameter));
 
-         colStartTime.OnValueSet += (dto, valueInGuiUnit) => setParameterValue(dto.StartTimeParameter, valueInGuiUnit.NewValue);
+         colStartTime.OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.StartTimeParameter, valueInGuiUnit.NewValue);
          colStartTime.XtraColumn.SortOrder = ColumnSortOrder.Ascending;
 
          _gridProtocolBinder.AutoBind(x => x.NumberOfRepetitions)
             .WithCaption(PKSimConstants.UI.NumberOfRepetitions)
-            .OnValueSet += (dto, valueInGuiUnit) => setParameterValue(dto.NumberOfRepetitionsParameter, valueInGuiUnit.NewValue);
+            .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.NumberOfRepetitionsParameter, valueInGuiUnit.NewValue);
 
          _gridProtocolBinder.AutoBind(x => x.TimeBetweenRepetitions)
             .WithCaption(PKSimConstants.UI.TimeBetweenRepetitions)
             .WithFormat(schemaDto => schemaDto.TimeBetweenRepetitionsParameter.ParameterFormatter())
             .WithEditorConfiguration((activeEditor, schemaDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, schemaDTO.TimeBetweenRepetitionsParameter))
-            .OnValueSet += (dto, valueInGuiUnit) => setParameterValue(dto.TimeBetweenRepetitionsParameter, valueInGuiUnit.NewValue);
+            .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.TimeBetweenRepetitionsParameter, valueInGuiUnit.NewValue);
 
          _gridProtocolBinder.AutoBind(x => x.EndTime)
             .WithCaption(PKSimConstants.UI.EndTime)
@@ -173,14 +173,14 @@ namespace PKSim.UI.Views.Protocols
             .WithCaption(PKSimConstants.UI.StartTime)
             .WithFormat(dto => dto.StartTimeParameter.ParameterFormatter())
             .WithEditorConfiguration((activeEditor, schemaItemDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, schemaItemDTO.StartTimeParameter));
-         colStartTime.OnValueSet += (dto, valueInGuiUnit) => setParameterValue(dto.StartTimeParameter, valueInGuiUnit.NewValue);
+         colStartTime.OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.StartTimeParameter, valueInGuiUnit.NewValue);
          colStartTime.XtraColumn.SortOrder = ColumnSortOrder.Ascending;
 
          schemaItemBinder.AutoBind(x => x.Dose)
             .WithCaption(PKSimConstants.UI.Dose)
             .WithFormat(dto => dto.DoseParameter.ParameterFormatter())
             .WithEditorConfiguration((activeEditor, schemaItemDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, schemaItemDTO.DoseParameter))
-            .OnValueSet += (dto, valueInGuiUnit) => setParameterValue(dto.DoseParameter, valueInGuiUnit.NewValue);
+            .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.DoseParameter, valueInGuiUnit.NewValue);
 
          var appTypeColumn = schemaItemBinder.AutoBind(x => x.ApplicationType)
             .WithRepository(x => configureApplicationRepository(applicationRepository))
@@ -188,7 +188,7 @@ namespace PKSim.UI.Views.Protocols
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
          appTypeColumn.OnChanged += dto => updateApplicationParameter(schemaItemBinder, dto);
-         appTypeColumn.OnValueSet += (dto, applicationType) => setApplicationType(dto, applicationType.NewValue);
+         appTypeColumn.OnValueUpdating += (dto, applicationType) => setApplicationType(dto, applicationType.NewValue);
 
          var formulationColumn = schemaItemBinder.AutoBind(x => x.FormulationKey);
 
@@ -196,7 +196,7 @@ namespace PKSim.UI.Views.Protocols
             .WithCaption(PKSimConstants.UI.PlaceholderFormulation)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
-         formulationColumn.OnValueSet += (dto, formulationType) => OnEvent(() => _presenter.SetFormulationType(dto, formulationType.NewValue));
+         formulationColumn.OnValueUpdating += (dto, formulationType) => OnEvent(() => _presenter.SetFormulationType(dto, formulationType.NewValue));
 
          schemaItemBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
@@ -217,7 +217,7 @@ namespace PKSim.UI.Views.Protocols
          parameterBinder.Bind(x => x.Value)
             .WithFormat(dto => dto.ParameterFormatter())
             .WithEditorConfiguration(_comboBoxUnit.UpdateUnitsFor)
-            .OnValueSet += (dto, valueInGuiUnit) => setParameterValue(dto, valueInGuiUnit.NewValue);
+            .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto, valueInGuiUnit.NewValue);
 
          parameterBinder.Changed += NotifyViewChanged;
       }

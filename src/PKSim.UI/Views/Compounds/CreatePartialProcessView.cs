@@ -45,7 +45,7 @@ namespace PKSim.UI.Views.Compounds
             .WithImages(species => _imageListRetriever.ImageIndex(species.Icon))
             .WithValues(dto => _presenter.AllSpecies())
             .AndDisplays(species => species.DisplayName)
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SpeciesChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SpeciesChanged(e.NewValue));
 
          RegisterValidationFor(_propertiesBinder);
       }

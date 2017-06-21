@@ -102,7 +102,7 @@ namespace PKSim.UI.Views.Parameters
          _columnValueDescription = _gridViewBinder.AutoBind(param => param.ValueDescription)
             .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
             .WithCaption(PKSimConstants.UI.ValueDescription)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
       }
 
       protected void InitializeValueBinding()
@@ -114,7 +114,7 @@ namespace PKSim.UI.Views.Parameters
             .WithRepository(repoForParameter)
             .WithEditorConfiguration(configureRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetParameterValue(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValue(o, e.NewValue)));
 
          _comboBoxUnit.ParameterUnitSet += setParameterUnit;
 
@@ -144,7 +144,7 @@ namespace PKSim.UI.Views.Parameters
             .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _favoriteRepository)
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
       }
 
       private void resetParameter()

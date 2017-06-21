@@ -69,9 +69,9 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartLayoutTask.AllTemplates()).Returns(_allTemplates);
          A.CallTo(() => _chartEditorAndDisplayPresenter.EditorPresenter).Returns(_chartEditorPresenter);
          A.CallTo(() => _chartEditorAndDisplayPresenter.DisplayPresenter).Returns(_chartDisplayPresenter);
-         A.CallTo(() => _chartEditorPresenter.DataBrowserColumnSettingsFor(A<BrowserColumns>._)).Returns(new GridColumnSettings(BrowserColumns.Origin.ToString()));
-         A.CallTo(() => _chartEditorPresenter.AxisOptionsColumnSettingsFor(A<AxisOptionsColumns>._)).Returns(new GridColumnSettings(AxisOptionsColumns.AxisType.ToString()));
-         A.CallTo(() => _chartEditorPresenter.CurveOptionsColumnSettingsFor(A<CurveOptionsColumns>._)).Returns(new GridColumnSettings(CurveOptionsColumns.xData.ToString()));
+         A.CallTo(() => _chartEditorPresenter.ColumnSettingsFor(A<BrowserColumns>._)).Returns(new GridColumnSettings(BrowserColumns.Origin.ToString()));
+         A.CallTo(() => _chartEditorPresenter.ColumnSettingsFor(A<AxisOptionsColumns>._)).Returns(new GridColumnSettings(AxisOptionsColumns.AxisType.ToString()));
+         A.CallTo(() => _chartEditorPresenter.ColumnSettingsFor(A<CurveOptionsColumns>._)).Returns(new GridColumnSettings(CurveOptionsColumns.xData.ToString()));
          _chartTemplatingTask = A.Fake<IChartTemplatingTask>();
          _projectRetriever = A.Fake<IProjectRetriever>();
          _chartPresenterContext = new ChartPresenterContext(_chartEditorAndDisplayPresenter, _curveNamer, _dataColumnToPathElementsMapper, _chartTemplatingTask, _presentationSettingsTask,_chartLayoutTask, _projectRetriever,_dimensionFactory);

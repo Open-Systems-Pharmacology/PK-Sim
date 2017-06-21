@@ -88,7 +88,7 @@ namespace PKSim.UI.Views.Compounds
             .WithRepository(dto => _isDefaultRepository)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH);
 
-         colDefault.OnValueSet += (o, e) => OnEvent(() => _presenter.SetIsDefaultFor(o, e.NewValue));
+         colDefault.OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetIsDefaultFor(o, e.NewValue));
          _colDefault = colDefault;
 
          _gridViewBinder.AddUnboundColumn()

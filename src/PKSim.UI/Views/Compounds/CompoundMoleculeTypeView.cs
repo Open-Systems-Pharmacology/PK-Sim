@@ -33,7 +33,7 @@ namespace PKSim.UI.Views.Compounds
       {
          _screenBinder.Bind(x => x.Value)
             .To(chkIsSmallMolecule)
-            .OnValueSet += (o, e) => OnEvent(() => moleculeTypePresenter.SetMoleculeType(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => moleculeTypePresenter.SetMoleculeType(e.NewValue));
       }
 
       private ICompoundMoleculeTypePresenter moleculeTypePresenter

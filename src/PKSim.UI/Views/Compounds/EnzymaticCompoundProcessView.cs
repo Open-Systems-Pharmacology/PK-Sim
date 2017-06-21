@@ -32,7 +32,7 @@ namespace PKSim.UI.Views.Compounds
          base.InitializeBinding();
          _screenBinder.Bind(x => x.Metabolite)
             .To(_comboBox)
-            .OnValueSet += (o, e) => OnEvent(() => enzymaticCompoundProcessPresenter.MetaboliteChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => enzymaticCompoundProcessPresenter.MetaboliteChanged(e.NewValue));
       }
 
       public override void InitializeResources()

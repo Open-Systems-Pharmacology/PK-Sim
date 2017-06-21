@@ -47,10 +47,10 @@ namespace PKSim.UI.Views.Parameters
          gridView.ShowingEditor += onShowingEditor;
 
          _columnX = _gridViewBinder.AutoBind(x => x.X)
-            .WithOnValueSet((o, e) => _presenter.SetXValue(o, e.NewValue));
+            .WithOnValueUpdating((o, e) => _presenter.SetXValue(o, e.NewValue));
 
          _columnY = _gridViewBinder.AutoBind(x => x.Y)
-            .WithOnValueSet((o, e) => _presenter.SetYValue(o, e.NewValue));
+            .WithOnValueUpdating((o, e) => _presenter.SetYValue(o, e.NewValue));
 
          _removeColumn = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)

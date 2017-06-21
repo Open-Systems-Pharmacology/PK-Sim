@@ -76,7 +76,7 @@ namespace PKSim.UI.Views.Individuals
             .WithRepository(item => _scalingMethodRepository)
             .WithEditorConfiguration(configureScalingMethodRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .OnValueSet += (o, e) => _presenter.ScalingMethodChanged(o, e.NewValue);
+            .OnValueUpdating += (o, e) => _presenter.ScalingMethodChanged(o, e.NewValue);
 
          _screenBinder.Bind(x => x.Weight).To(uxWeight);
       }
