@@ -76,19 +76,19 @@ namespace PKSim.UI.Views.Compounds
          _gridViewBinder.Bind(dto => dto.CompoundType)
             .WithRepository(dto => compoundTypeRepository())
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .OnValueSet += (dto, e) => compoundTypeGroupPresenter.SetCompoundType(dto, e.NewValue);
+            .OnValueUpdating += (dto, e) => compoundTypeGroupPresenter.SetCompoundType(dto, e.NewValue);
 
          _colPKa = _gridViewBinder.Bind(x => x.PKa)
             .WithEditRepository(x => _parameterEditRepository)
             .WithFormat(dto => new PKaFormatter(dto))
-            .WithOnValueSet((dto, e) => compoundTypeGroupPresenter.SetPKa(dto, e.NewValue));
+            .WithOnValueUpdating((dto, e) => compoundTypeGroupPresenter.SetPKa(dto, e.NewValue));
 
          _colFavorites = _gridViewBinder.Bind(x => x.IsFavorite)
             .WithCaption(PKSimConstants.UI.Favorites)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _favoriteRepository)
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
-            .WithOnValueSet((o, e) => OnEvent(() => compoundTypeGroupPresenter.SetFavorite(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => compoundTypeGroupPresenter.SetFavorite(o, e.NewValue)));
       }
 
       protected override bool ColumnIsValue(GridColumn column)

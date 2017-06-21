@@ -104,7 +104,7 @@ namespace PKSim.UI.Views.Simulations
 
          _columnValue = _gridViewBinder.Bind(item => item.RelativeExpression)
             .WithCaption(PKSimConstants.UI.RelativeExpression)
-            .WithOnValueSet((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
+            .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
 
          var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
             .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
@@ -121,7 +121,7 @@ namespace PKSim.UI.Views.Simulations
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _favoriteRepository)
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
 
 
          _screenBinder.Bind(x => x.ReferenceConcentration).To(_uxReferenceConcentration);

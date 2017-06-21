@@ -70,7 +70,7 @@ namespace PKSim.UI.Views.Populations
 
          _settingsBinder.Bind(x => x.Individual)
             .To(_uxIndividualSelection)
-            .OnValueSet += (o, e) => _presenter.IndividualSelectionChanged(e.NewValue);
+            .OnValueUpdating += (o, e) => _presenter.IndividualSelectionChanged(e.NewValue);
 
          _settingsBinder.Bind(dto => dto.NumberOfIndividuals)
             .To(tbNumberOfIndividuals);

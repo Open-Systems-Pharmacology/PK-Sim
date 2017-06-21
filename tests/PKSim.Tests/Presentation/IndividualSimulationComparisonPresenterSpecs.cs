@@ -7,6 +7,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
@@ -74,17 +75,17 @@ namespace PKSim.Presentation
       private DragEventArgs _dropEventArgs;
       private IndividualSimulation _simulation;
       private IndividualSimulationComparison _individualSimulationComparison;
+      private IDimensionFactory _dimensionFactory;
 
       protected override void Context()
       {
          base.Context();
+         _dimensionFactory= A.Fake<IDimensionFactory>();
          _individualSimulationComparison = new IndividualSimulationComparison();
          var dataRepository = DomainHelperForSpecs.ObservedData();
-         var curve = new Curve
-         {
-            xData = dataRepository.BaseGrid,
-            yData = dataRepository.FirstDataColumn()
-         };
+         var curve = new Curve();
+         curve.SetxData(dataRepository.BaseGrid, _dimensionFactory);
+         curve.SetyData(dataRepository.FirstDataColumn(), _dimensionFactory);
 
          _individualSimulationComparison.AddCurve(curve);
          sut.InitializeAnalysis(_individualSimulationComparison);

@@ -62,8 +62,8 @@ namespace PKSim.Infrastructure.Reporting.TeX.Reporters
          for (var i = 0; i < curve.xData.Values.Count; i++)
          {
             var newRow = dt.NewRow();
-            newRow[xName] = TEXHelper.ValueInDisplayUnit(curve.XDimension, curve.XDimension.Unit(xUnit), curve.xData.Values[i]);
-            newRow[yName] = TEXHelper.ValueInDisplayUnit(curve.YDimension, curve.YDimension.Unit(yUnit), curve.yData.Values[i]);
+            newRow[xName] = TEXHelper.ValueInDisplayUnit(curve.xDimension, curve.xDimension.Unit(xUnit), curve.xData.Values[i]);
+            newRow[yName] = TEXHelper.ValueInDisplayUnit(curve.yDimension, curve.yDimension.Unit(yUnit), curve.yData.Values[i]);
             dt.Rows.Add(newRow);
          }
          dt.EndLoadData();

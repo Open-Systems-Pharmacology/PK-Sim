@@ -98,7 +98,7 @@ namespace PKSim.UI.Views.Compounds
             .WithRepository(getRepository)
             .WithEditorConfiguration(configureRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueSet((o, e) => OnEvent(() => setParameterValue(o, e)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => setParameterValue(o, e)));
       }
 
       protected override void OnValueColumnMouseDown(UxGridView gridView, GridColumn col, int rowHandle)

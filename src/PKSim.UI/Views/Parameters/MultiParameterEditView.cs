@@ -88,7 +88,7 @@ namespace PKSim.UI.Views.Parameters
          _columnPercentile = _gridViewBinder.Bind(param => param.Percentile)
             .WithCaption(PKSimConstants.UI.Percentile)
             .WithRepository(getPercentileRepository)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetParameterPercentile(o, e.NewValue)))
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterPercentile(o, e.NewValue)))
             .AsReadOnly();
       }
 

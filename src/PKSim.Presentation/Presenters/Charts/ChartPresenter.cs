@@ -69,7 +69,7 @@ namespace PKSim.Presentation.Presenters.Charts
       public override void InitializeAnalysis(TChart chart)
       {
          base.InitializeAnalysis(chart);
-         ChartEditorPresenter.AddDataRepositories(chart.AllObservedData());
+         AddDataRepositoriesToEditor(chart.AllObservedData());
       }
 
       protected bool IsColumnVisibleInDataBrowser(DataColumn dataColumn) => _chartTask.IsColumnVisibleInDataBrowser(dataColumn);
@@ -93,7 +93,7 @@ namespace PKSim.Presentation.Presenters.Charts
          if (_repositoryCache.Contains(dataRepository))
          {
             ChartEditorPresenter.RemoveUnusedColumns();
-            ChartEditorPresenter.AddDataRepositories(new []{dataRepository});
+            AddDataRepositoriesToEditor(new []{dataRepository});
             ChartDisplayPresenter.Refresh();
 
             //after refresh, some data might not be available anymore=>in that case init chart from template
@@ -104,7 +104,7 @@ namespace PKSim.Presentation.Presenters.Charts
          else
          {
             _repositoryCache[dataRepository] = simulation;
-            ChartEditorPresenter.AddDataRepositories(new[] { dataRepository });
+            AddDataRepositoriesToEditor(new[] { dataRepository });
          }
       }
 
@@ -124,7 +124,6 @@ namespace PKSim.Presentation.Presenters.Charts
          _repositoryCache.Clear();
       }
 
-    
       public void SwitchPKAnalysisPlot()
       {
          if (_chartDisplayMode == ChartDisplayMode.Chart)

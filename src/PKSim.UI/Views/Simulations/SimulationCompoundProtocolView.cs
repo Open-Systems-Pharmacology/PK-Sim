@@ -30,7 +30,7 @@ namespace PKSim.UI.Views.Simulations
       {
          _screenBinder.Bind(x => x.BuildingBlock)
             .To(uxProtocolSelection)
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.ProtocolSelectionChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.ProtocolSelectionChanged(e.NewValue));
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }

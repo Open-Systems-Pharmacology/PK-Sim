@@ -138,7 +138,7 @@ namespace PKSim.UI.Views.Simulations
             .WithRepository(repositoryItemForCompoundProcesses)
             .WithEditorConfiguration(configureCompoundProcessesRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueSet((dto, e) => OnEvent(() => _presenter.CompoundProcessChanged(dto, e.NewValue)))
+            .WithOnValueUpdating((dto, e) => OnEvent(() => _presenter.CompoundProcessChanged(dto, e.NewValue)))
             .WithOnChanged(dto => OnEvent(() => _presenter.SelectionChanged(dto)));
       }
 

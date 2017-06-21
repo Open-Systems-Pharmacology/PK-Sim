@@ -26,7 +26,7 @@ namespace PKSim.UI.Views.Compounds
             .WithCaption(PKSimConstants.UI.Lipophilicity)
             .WithFormat(dto => dto.LipophilictyParameter.ParameterFormatter())
             .WithEditorConfiguration((editor, dto) => _comboBoxUnit.UpdateUnitsFor(editor, dto.LipophilictyParameter))
-            .WithOnValueSet((dto, e) => OnEvent(() => lipophilicityGroupPresenter.SetLipophilicityValue(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => lipophilicityGroupPresenter.SetLipophilicityValue(dto, e.NewValue)));
 
          //to do at the end to respect order
          base.InitializeBinding();

@@ -38,7 +38,7 @@ namespace PKSim.UI.Views.Compounds
          _templateBinder.Bind(dto => dto.SelectedProcessTemplate)
             .To(lbProcessType)
             .WithValues(p => p.AllTemplates)
-            .OnValueSet += (o, e) => OnEvent(() => selectedProcessTypeChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => selectedProcessTypeChanged(e.NewValue));
       }
 
       public void BindProcessTypes()

@@ -20,7 +20,7 @@ namespace PKSim.UI.Views.Compounds
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         _boundColumn.WithOnValueSet(newValueSetForCalculationMethod);
+         _boundColumn.WithOnValueUpdating(newValueSetForCalculationMethod);
       }
 
   

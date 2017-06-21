@@ -81,7 +81,7 @@ namespace PKSim.UI.Views.Individuals
 
          _colRelativeExpression = _gridViewBinder.Bind(item => item.RelativeExpression)
             .WithCaption(PKSimConstants.UI.RelativeExpression)
-            .WithOnValueSet((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
+            .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
 
          var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
             .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
@@ -97,17 +97,17 @@ namespace PKSim.UI.Views.Individuals
             .WithImages(x => _imageListRetriever.ImageIndex(_presenter.IconFor(x)))
             .WithValues(x => _presenter.AllTissueLocations())
             .AndDisplays(x => _presenter.DisplayFor(x))
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.TissueLocationChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.TissueLocationChanged(e.NewValue));
 
          _screenBinder.Bind(x => x.IntracellularVascularEndoLocation)
             .To(chkIntracellularVascularEndoLocation)
             .WithValues(x => _presenter.AllIntracellularVascularEndoLocations())
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.IntracellularLocationVascularEndoChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.IntracellularLocationVascularEndoChanged(e.NewValue));
 
          _screenBinder.Bind(x => x.MembraneLocation)
             .To(cbLocationOnVascularEndo)
             .WithValues(x => _presenter.AllMembraneLocation())
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.MembraneLocationChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.MembraneLocationChanged(e.NewValue));
 
          RegisterValidationFor(_screenBinder,NotifyViewChanged);
       }

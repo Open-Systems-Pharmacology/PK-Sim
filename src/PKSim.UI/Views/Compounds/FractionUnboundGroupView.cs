@@ -50,14 +50,14 @@ namespace PKSim.UI.Views.Compounds
             .WithCaption(PKSimConstants.UI.FractionUnbound)
             .WithFormat(dto => dto.FractionUnboundParameter.ParameterFormatter())
             .WithEditorConfiguration((editor, sol) => _comboBoxUnit.UpdateUnitsFor(editor, sol.FractionUnboundParameter))
-            .WithOnValueSet((dto, e) => OnEvent(() => fractionUnboundGroupPresenter.SetFractionUnboundValue(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => fractionUnboundGroupPresenter.SetFractionUnboundValue(dto, e.NewValue)));
 
          _comboBoxUnit.ParameterUnitSet += (dto, unit) => OnEvent(() => fractionUnboundGroupPresenter.SetFractionUnboundUnit(dto, unit));
 
          _gridViewBinder.Bind(x => x.Species)
             .WithRepository(dto => configureSpeciesRepository())
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueSet((dto, e) => OnEvent(() => fractionUnboundGroupPresenter.SetSpeciesValue(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => fractionUnboundGroupPresenter.SetSpeciesValue(dto, e.NewValue)));
 
          //to do at the end to respect order
          base.InitializeBinding();

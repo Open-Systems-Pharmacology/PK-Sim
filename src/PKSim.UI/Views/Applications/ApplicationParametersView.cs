@@ -112,19 +112,19 @@ namespace PKSim.UI.Views.Applications
             .WithCaption(PKSimConstants.UI.Value)
             .WithFormat(param => param.ParameterFormatter())
             .WithEditorConfiguration((activeEditor, param) => _comboBoxUnit.UpdateUnitsFor(activeEditor, param))
-            .WithOnValueSet((p, valueInGuiUnit) => OnEvent(() => _presenter.SetParameterValue(p, valueInGuiUnit.NewValue)));
+            .WithOnValueUpdating((p, valueInGuiUnit) => OnEvent(() => _presenter.SetParameterValue(p, valueInGuiUnit.NewValue)));
 
          parameterBinder.AutoBind(param => param.ValueDescription)
             .WithWidth(UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
             .WithCaption(PKSimConstants.UI.ValueDescription)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
 
          parameterBinder.Bind(x => x.IsFavorite)
             .WithCaption(PKSimConstants.UI.Favorites)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => new UxRepositoryItemCheckEdit(parameterBinder.GridView))
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
       }
 
       public void AttachPresenter(IApplicationParametersPresenter presenter)

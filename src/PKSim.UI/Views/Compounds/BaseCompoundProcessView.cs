@@ -45,11 +45,11 @@ namespace PKSim.UI.Views.Compounds
             .WithImages(s => _imageListRetriever.ImageIndex(s.Icon))
             .WithValues(dto => _presenter.AllSpecies())
             .AndDisplays(s => s.DisplayName)
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SpeciesChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SpeciesChanged(e.NewValue));
 
          _screenBinder.Bind(x => x.Description)
             .To(tbDescription)
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.DescriptionChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.DescriptionChanged(e.NewValue));
       }
 
       public bool SpeciesVisible

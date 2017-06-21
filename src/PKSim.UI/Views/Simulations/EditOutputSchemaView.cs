@@ -37,10 +37,7 @@ namespace PKSim.UI.Views.Simulations
          InitializeWithGrid(mainView);
       }
 
-      public override string Caption
-      {
-         get { return PKSimConstants.UI.SimulationSettings; }
-      }
+      public override string Caption => PKSimConstants.UI.SimulationSettings;
 
       public override void InitializeBinding()
       {
@@ -50,19 +47,19 @@ namespace PKSim.UI.Views.Simulations
             .WithCaption(PKSimConstants.UI.StartTime)
             .WithFormat(x => x.StartTimeParameter.ParameterFormatter())
             .WithEditorConfiguration((activeEditor, intervalDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, intervalDTO.StartTimeParameter))
-            .OnValueSet += (dto, valueInGuiUnit) => setParameterValue(dto.StartTimeParameter, valueInGuiUnit.NewValue);
+            .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.StartTimeParameter, valueInGuiUnit.NewValue);
 
          _gridViewBinder.Bind(x => x.EndTime)
             .WithCaption(PKSimConstants.UI.EndTime)
             .WithFormat(x => x.EndTimeParameter.ParameterFormatter())
             .WithEditorConfiguration((activeEditor, intervalDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, intervalDTO.EndTimeParameter))
-            .OnValueSet += (dto, valueInGuiUnit) => setParameterValue(dto.EndTimeParameter, valueInGuiUnit.NewValue);
+            .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.EndTimeParameter, valueInGuiUnit.NewValue);
 
          _gridViewBinder.Bind(x => x.Resolution)
             .WithFormat(x => x.ResolutionParameter.ParameterFormatter())
             .WithCaption(PKSimConstants.UI.NumberOfTimePoints)
             .WithEditorConfiguration((activeEditor, intervalDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, intervalDTO.ResolutionParameter))
-            .OnValueSet += (dto, valueInGuiUnit) => setParameterValue(dto.ResolutionParameter, valueInGuiUnit.NewValue);
+            .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.ResolutionParameter, valueInGuiUnit.NewValue);
 
          _buttonColumn = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
@@ -125,10 +122,7 @@ namespace PKSim.UI.Views.Simulations
          _presenter = presenter;
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.OutputInterval; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.OutputInterval;
 
       public void BindTo(IEnumerable<OutputIntervalDTO> allIntervals)
       {
