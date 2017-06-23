@@ -52,6 +52,7 @@ namespace PKSim.Infrastructure
          {
             var appDataFile = Path.Combine(sut.ApplicationSettingsFolderPath, CoreConstants.PKSimDbFile);
             FileHelper.FileExists = s => string.Equals(s, appDataFile);
+            sut = new PKSimConfiguration();
             sut.PKSimDbPath.ShouldBeEqualTo(appDataFile);
          });
       }
@@ -63,6 +64,7 @@ namespace PKSim.Infrastructure
          {
             var localFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CoreConstants.PKSimDbFile);
             FileHelper.FileExists = s => string.Equals(s, localFile);
+            sut = new PKSimConfiguration();
             sut.PKSimDbPath.ShouldBeEqualTo(localFile);
          });
       }
@@ -74,6 +76,7 @@ namespace PKSim.Infrastructure
          {
             var appDataFile = Path.Combine(sut.ApplicationSettingsFolderPath, CoreConstants.PKSimDbFile);
             FileHelper.FileExists = s => false;
+            sut = new PKSimConfiguration();
             sut.PKSimDbPath.ShouldBeEqualTo(appDataFile);
          });
       }
