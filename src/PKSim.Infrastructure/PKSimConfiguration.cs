@@ -1,31 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using OSPSuite.Assets;
-using OSPSuite.Utility;
 using Microsoft.Win32;
-using PKSim.Core;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Infrastructure.Configuration;
+using OSPSuite.Utility;
+using PKSim.Core;
 
 namespace PKSim.Infrastructure
 {
    public class PKSimConfiguration : OSPSuiteConfiguration, IPKSimConfiguration
    {
-      public string PKSimDb { get; set; }
-      public string DimensionFilePath { get; set; }
-      public string TemplateSystemDatabasePath { get; set; }
-      public bool IsToken { get; set; }
+      public string PKSimDbPath { get; }
+      public string DimensionFilePath { get; }
+      public string TemplateSystemDatabasePath { get;  }
 
-      private static readonly string[] LATEST_VERSION_WITH_OTHER_MAJOR = { "5.6" };
+      private static readonly string[] LATEST_VERSION_WITH_OTHER_MAJOR = {"6.3", "5.6"};
 
       public PKSimConfiguration()
       {
          createDefaultSettingsFolder();
-         PKSimDb = createApplicationDataPathForFile(CoreConstants.PKSimDb);
-         DimensionFilePath = createApplicationDataPathForFile(CoreConstants.DimensionFile);
-         PKParametersFilePath = createApplicationDataPathForFile(CoreConstants.PKParametersFile);
-         TemplateSystemDatabasePath = createApplicationDataPathForFile(CoreConstants.TemplateSystemDatabase);
+         PKSimDbPath = createApplicationDataOrLocalPathForFile(CoreConstants.PKSimDbFile);
+         DimensionFilePath = createApplicationDataOrLocalPathForFile(CoreConstants.DimensionFile);
+         PKParametersFilePath = createApplicationDataOrLocalPathForFile(CoreConstants.PKParametersFile);
+         TemplateSystemDatabasePath = createApplicationDataOrLocalPathForFile(CoreConstants.TemplateSystemDatabase);
       }
 
       private void createDefaultSettingsFolder()
@@ -37,23 +36,30 @@ namespace PKSim.Infrastructure
             Directory.CreateDirectory(ApplicationSettingsFolderPath);
       }
 
-      public string LogConfigurationFile => createAbsolutePathForFile(CoreConstants.Log4NetConfigFile);
+      public string LogConfigurationFile => createLocalPathForFile(CoreConstants.Log4NetConfigFile);
 
-      public string TemplateUserDatabaseTemplatePath => createAbsolutePathForFile(CoreConstants.TemplateUserDatabaseTemplate);
+      public string TemplateUserDatabaseTemplatePath => createLocalPathForFile(CoreConstants.TemplateUserDatabaseTemplate);
 
       public string DefaultTemplateUserDatabasePath => Path.Combine(UserApplicationSettingsFolderPath, CoreConstants.TemplateUserDatabase);
 
-      public string SimModelSchemaPath => createAbsolutePathForFile(CoreConstants.SimModelSchema);
+      public string SimModelSchemaPath => createLocalPathForFile(CoreConstants.SimModelSchemaFile);
 
-      private string createApplicationDataPathForFile(string fileName)
+      private string createApplicationDataOrLocalPathForFile(string fileName)
       {
-         return Path.Combine(ApplicationSettingsFolderPath, fileName);
+         var applicationDataPathForFile = Path.Combine(ApplicationSettingsFolderPath, fileName);
+         if (FileHelper.FileExists(applicationDataPathForFile))
+            return applicationDataPathForFile;
+
+         //try local if id does not exist
+         var localPathForFile = createLocalPathForFile(fileName);
+         if (FileHelper.FileExists(localPathForFile))
+            return localPathForFile;
+
+         //neither app data nor local exist, return app data
+         return applicationDataPathForFile;
       }
 
-      private string createAbsolutePathForFile(string fileName)
-      {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-      }
+      private string createLocalPathForFile(string fileName) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
 
       public string MoBiPath
       {
@@ -61,7 +67,7 @@ namespace PKSim.Infrastructure
          {
             try
             {
-               return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{CoreConstants.MoBiRegPath}{MajorVersion}", "InstallPath", null);
+               return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{Constants.RegistryPaths.MOBI_REG_PATH}{MajorVersion}", Constants.RegistryPaths.INSTALL_PATH, null);
             }
             catch (Exception)
             {

@@ -41,14 +41,13 @@ namespace PKSim.Core
       public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17);
 
       public static readonly string ApplicationFolderPath = @"Open Systems Pharmacology\PK-Sim";
-      public static readonly string MoBiRegPath = @"Open Systems Pharmacology\MoBi\";
       public static readonly string ChartLayoutFolderPathName = "ChartLayouts";
       public static readonly string TEXTemplateFolderPathName = "TEXTemplates";
       public static readonly string TemplateSystemDatabase = "PKSimTemplateDBSystem.mdb";
       public static readonly string TemplateUserDatabase = "PKSimTemplateDBUser.mdb";
       public static readonly string TemplateUserDatabaseTemplate = "PKSimTemplateDBUser.template";
-      public static readonly string PKSimDb = "PKSimDB.mdb";
-      public static readonly string SimModelSchema = "OSPSuite.SimModel.xsd";
+      public static readonly string PKSimDbFile = "PKSimDB.mdb";
+      public static readonly string SimModelSchemaFile = "OSPSuite.SimModel.xsd";
       public static readonly string DimensionFile = "OSPSuite.Dimensions.xml";
       public static readonly string PKParametersFile = "OSPSuite.PKParameters.xml";
       public static readonly string Log4NetConfigFile = "log4net.config.xml";

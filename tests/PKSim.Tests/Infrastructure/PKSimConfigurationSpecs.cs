@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,6 +40,55 @@ namespace PKSim.Infrastructure
       {
          _possibleApplicationPaths[0].ShouldBeEqualTo(sut.ApplicationSettingsFilePath);
          _possibleApplicationPaths.Last().StartsWith(Path.Combine(EnvironmentHelper.ApplicationDataFolder(), CoreConstants.ApplicationFolderPath, "5.6")).ShouldBeTrue();
+      }
+   }
+
+   public class When_retrieving_the_path_of_the_pksim_database : concern_for_PKSimConfiguration
+   {
+      [Observation]
+      public void should_return_the_path_in_the_application_folder_if_the_file_exists_in_the_application_folder()
+      {
+         doWhilePreservingFileExists(() =>
+         {
+            var appDataFile = Path.Combine(sut.ApplicationSettingsFolderPath, CoreConstants.PKSimDbFile);
+            FileHelper.FileExists = s => string.Equals(s, appDataFile);
+            sut.PKSimDbPath.ShouldBeEqualTo(appDataFile);
+         });
+      }
+
+      [Observation]
+      public void should_return_the_local_folder_if_the_file_exists_locally()
+      {
+         doWhilePreservingFileExists(() =>
+         {
+            var localFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CoreConstants.PKSimDbFile);
+            FileHelper.FileExists = s => string.Equals(s, localFile);
+            sut.PKSimDbPath.ShouldBeEqualTo(localFile);
+         });
+      }
+
+      [Observation]
+      public void should_return_the_path_in_the_application_folder_if_the_file_does_not_exists_in_the_application_folder_and_does_not_exists_locally()
+      {
+         doWhilePreservingFileExists(() =>
+         {
+            var appDataFile = Path.Combine(sut.ApplicationSettingsFolderPath, CoreConstants.PKSimDbFile);
+            FileHelper.FileExists = s => false;
+            sut.PKSimDbPath.ShouldBeEqualTo(appDataFile);
+         });
+      }
+
+      private void doWhilePreservingFileExists(Action action)
+      {
+         var oldFileExists = FileHelper.FileExists;
+         try
+         {
+            action();
+         }
+         finally
+         {
+            FileHelper.FileExists = oldFileExists;
+         }
       }
    }
 }

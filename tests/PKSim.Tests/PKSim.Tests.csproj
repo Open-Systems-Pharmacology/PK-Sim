@@ -1164,6 +1164,10 @@
       <Link>PKSimDB.mdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\src\Db\TemplateDB\PKSimTemplateDBSystem.mdb">
+      <Link>PKSimTemplateDBSystem.mdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\TemplateDatabaseV5.2.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

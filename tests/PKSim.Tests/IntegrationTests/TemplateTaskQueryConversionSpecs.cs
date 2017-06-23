@@ -26,11 +26,11 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var configuration = IoC.Resolve<IPKSimConfiguration>();
+         var userSettings = IoC.Resolve<ICoreUserSettings>();
          var testFile = DomainHelperForSpecs.DataFilePathFor("TemplateDatabaseV5.2.mdb");
          _tmpFile = FileHelper.GenerateTemporaryFileName();
          FileHelper.Copy(testFile, _tmpFile);
-         configuration.TemplateSystemDatabasePath = _tmpFile;
+         userSettings.TemplateDatabasePath = _tmpFile;
       }
 
       protected override void Because()
@@ -65,11 +65,11 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var configuration = IoC.Resolve<IPKSimConfiguration>();
+         var userSettings = IoC.Resolve<ICoreUserSettings>();
          var testFile = DomainHelperForSpecs.DataFilePathFor("TemplateDatabaseV5.5.mdb");
          _tmpFile = FileHelper.GenerateTemporaryFileName();
          FileHelper.Copy(testFile, _tmpFile);
-         configuration.TemplateSystemDatabasePath = _tmpFile;
+         userSettings.TemplateDatabasePath = _tmpFile;
       }
 
       protected override void Because()

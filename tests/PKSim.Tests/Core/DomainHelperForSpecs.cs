@@ -25,12 +25,6 @@ namespace PKSim.Core
       private static Dimension _massConcentrationDimension;
       private static Dimension _fractionDimension;
 
-      public static string DimensionFilePath => FilePathFor(CoreConstants.DimensionFile);
-
-      public static string PKParametersFilePath => FilePathFor(CoreConstants.PKParametersFile);
-
-      public static string DbFilePath => FilePathFor(CoreConstants.PKSimDb);
-
       public static string FilePathFor(string fileNameWithExtension)
       {
          return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileNameWithExtension);

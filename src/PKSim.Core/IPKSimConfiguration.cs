@@ -8,13 +8,12 @@ namespace PKSim.Core
       /// <summary>
       ///    Path of the PKSim Database
       /// </summary>
-      string PKSimDb { get; set; }
+      string PKSimDbPath { get; }
 
       /// <summary>
       ///    Path of the dimension file
       /// </summary>
-      string DimensionFilePath { get; set; }
-
+      string DimensionFilePath { get; }
       
       /// <summary>
       ///    Returns the path where the configuration file for the logger resides
@@ -24,7 +23,7 @@ namespace PKSim.Core
       /// <summary>
       ///    Path of the System Template Database (Read only DB delivered with setup)
       /// </summary>
-      string TemplateSystemDatabasePath { get; set; }
+      string TemplateSystemDatabasePath { get; }
 
       /// <summary>
       ///    Path of the template used to create a user database (empty database to be copied and renamed)
@@ -65,12 +64,7 @@ namespace PKSim.Core
       ///    Paths of the current user specific settings file (current user only)
       /// </summary>
       string UserApplicationSettingsFilePath { get; }
-
-      /// <summary>
-      ///    Specify if this assembly was compiled using the token mechanism or not
-      /// </summary>
-      bool IsToken { get; set; }
-
+   
       /// <summary>
       ///    Path to MoBi application exe. This path is read from the registry entry
       /// </summary>
