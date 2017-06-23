@@ -77,7 +77,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          if (!hasDimension(dimensionName))
             return NoDimension;
 
-         return _dimensionFactory.GetDimension(dimensionName);
+         return _dimensionFactory.Dimension(dimensionName);
       }
 
       public IDimensionFactory DimensionFactory
@@ -91,7 +91,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public IDimension MergedDimensionFor(IWithDimension objectWithDimension)
       {
-         return _dimensionFactory.GetMergedDimensionFor(objectWithDimension);
+         return _dimensionFactory.MergedDimensionFor(objectWithDimension);
       }
 
       public IDimension MergedDimensionFor(object objectThatMightHaveDimension)
@@ -106,7 +106,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
          addInputDoseDimension();
 
-         _dimensionNames = _dimensionFactory.GetDimensionNames().ToList();
+         _dimensionNames = _dimensionFactory.DimensionNames.ToList();
          _dimensionFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
       }
 
