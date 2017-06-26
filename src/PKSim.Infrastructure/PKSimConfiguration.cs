@@ -14,39 +14,57 @@ namespace PKSim.Infrastructure
    {
       public string PKSimDbPath { get; }
       public string DimensionFilePath { get; }
-      public string TemplateSystemDatabasePath { get;  }
-
-      private static readonly string[] LATEST_VERSION_WITH_OTHER_MAJOR = {"6.3", "5.6"};
+      public string TemplateSystemDatabasePath { get; }
+      public string LogConfigurationFile { get; }
+      public string TemplateUserDatabaseTemplatePath { get; }
+      public string DefaultTemplateUserDatabasePath { get; }
+      public string SimModelSchemaPath { get; }
+      public override string ProductName { get; } = CoreConstants.ProductName;
+      public override Origin Product { get; } = Origins.PKSim;
+      public override string ProductNameWithTrademark { get; } = CoreConstants.ProductNameWithTrademark;
+      public override ApplicationIcon Icon { get; } = ApplicationIcons.PKSim;
+      public override string UserSettingsFileName { get; } = "UserSettings.xml";
+      public override string IssueTrackerUrl { get; } = CoreConstants.IssueTrackerUrl;
+      protected override string[] LatestVersionWithOtherMajor { get; } = {"6.3", "5.6"};
+      public override string ChartLayoutTemplateFolderPath { get; }
+      public override string TEXTemplateFolderPath { get; }
+      public string ApplicationSettingsFilePath { get; }
+      public string ApplicationSettingsFolderPath { get; }
 
       public PKSimConfiguration()
       {
+         ApplicationSettingsFolderPath = applicationSettingsFolderPathFor(MajorVersion);
+
          createDefaultSettingsFolder();
+
+         ApplicationSettingsFilePath = createAppDataPath("ApplicationSettings.xml");
+         ChartLayoutTemplateFolderPath = createAppDataPath(CoreConstants.ChartLayoutFolderPathName);
+         TEXTemplateFolderPath = createAppDataPath(CoreConstants.TEXTemplateFolderPathName);
+
          PKSimDbPath = createApplicationDataOrLocalPathForFile(CoreConstants.PKSimDbFile);
          DimensionFilePath = createApplicationDataOrLocalPathForFile(CoreConstants.DimensionFile);
          PKParametersFilePath = createApplicationDataOrLocalPathForFile(CoreConstants.PKParametersFile);
          TemplateSystemDatabasePath = createApplicationDataOrLocalPathForFile(CoreConstants.TemplateSystemDatabase);
-      }
+         LogConfigurationFile = createApplicationDataOrLocalPathForFile(CoreConstants.TemplateSystemDatabase);
+         TemplateUserDatabaseTemplatePath = createApplicationDataOrLocalPathForFile(CoreConstants.TemplateSystemDatabase);
+
+         SimModelSchemaPath = createLocalPathForFile(CoreConstants.TemplateSystemDatabase);
+
+         DefaultTemplateUserDatabasePath = createUserAppDataPath(CoreConstants.TemplateUserDatabase);
+     }
 
       private void createDefaultSettingsFolder()
       {
-         if (!Directory.Exists(UserApplicationSettingsFolderPath))
-            Directory.CreateDirectory(UserApplicationSettingsFolderPath);
+         if (!DirectoryHelper.DirectoryExists(UserApplicationSettingsFolderPath))
+            DirectoryHelper.CreateDirectory(UserApplicationSettingsFolderPath);
 
-         if (!Directory.Exists(ApplicationSettingsFolderPath))
-            Directory.CreateDirectory(ApplicationSettingsFolderPath);
+         if (!DirectoryHelper.DirectoryExists(ApplicationSettingsFolderPath))
+            DirectoryHelper.CreateDirectory(ApplicationSettingsFolderPath);
       }
-
-      public string LogConfigurationFile => createLocalPathForFile(CoreConstants.Log4NetConfigFile);
-
-      public string TemplateUserDatabaseTemplatePath => createLocalPathForFile(CoreConstants.TemplateUserDatabaseTemplate);
-
-      public string DefaultTemplateUserDatabasePath => Path.Combine(UserApplicationSettingsFolderPath, CoreConstants.TemplateUserDatabase);
-
-      public string SimModelSchemaPath => createLocalPathForFile(CoreConstants.SimModelSchemaFile);
 
       private string createApplicationDataOrLocalPathForFile(string fileName)
       {
-         var applicationDataPathForFile = Path.Combine(ApplicationSettingsFolderPath, fileName);
+         var applicationDataPathForFile = createAppDataPath(fileName);
          if (FileHelper.FileExists(applicationDataPathForFile))
             return applicationDataPathForFile;
 
@@ -60,6 +78,10 @@ namespace PKSim.Infrastructure
       }
 
       private string createLocalPathForFile(string fileName) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+      private string createUserAppDataPath(string fileName) => Path.Combine(UserApplicationSettingsFolderPath, fileName);
+
+      private string createAppDataPath(string fileName) => Path.Combine(ApplicationSettingsFolderPath, fileName);
 
       public string MoBiPath
       {
@@ -76,52 +98,12 @@ namespace PKSim.Infrastructure
          }
       }
 
-      public override string ProductName => CoreConstants.ProductName;
+      private string applicationSettingsFolderPathFor(string version) => Path.Combine(EnvironmentHelper.ApplicationDataFolder(), ApplicationFolderPathWithRevision(version));
 
-      public override Origin Product => Origins.PKSim;
+      public string UserApplicationSettingsFolderPath => Path.Combine(EnvironmentHelper.UserApplicationDataFolder(), ApplicationFolderPathWithRevision(MajorVersion));
 
-      public override string ProductNameWithTrademark => CoreConstants.ProductNameWithTrademark;
+      public IEnumerable<string> ApplicationSettingsFilePaths => SettingsFilePaths(ApplicationSettingsFilePath, applicationSettingsFolderPathFor);
 
-      public override ApplicationIcon Icon => ApplicationIcons.PKSim;
-
-      public override string UserSettingsFileName => "UserSettings.xml";
-
-      protected override string[] LatestVersionWithOtherMajor => LATEST_VERSION_WITH_OTHER_MAJOR;
-
-      public override string ChartLayoutTemplateFolderPath => Path.Combine(ApplicationSettingsFolderPath, CoreConstants.ChartLayoutFolderPathName);
-
-      public override string TEXTemplateFolderPath => Path.Combine(ApplicationSettingsFolderPath, CoreConstants.TEXTemplateFolderPathName);
-
-      public string ApplicationSettingsFolderPath => applicationSettingsFolderPath(applicationFolderPathWithMajorVersion);
-
-      public string ApplicationSettingsFilePath => applicationSettingsFilePath(MajorVersion);
-
-      private string applicationSettingsFolderPath(string applicationFolderPath)
-      {
-         return Path.Combine(EnvironmentHelper.ApplicationDataFolder(), applicationFolderPath);
-      }
-
-      private string applicationSettingsFilePath(string revision)
-      {
-         return Path.Combine(EnvironmentHelper.ApplicationDataFolder(), ApplicationFolderPathWithRevision(revision), "ApplicationSettings.xml");
-      }
-
-      public string UserApplicationSettingsFolderPath => userApplicationSettingsFolderPath(applicationFolderPathWithMajorVersion);
-
-      private string userApplicationSettingsFolderPath(string applicationFolderPath)
-      {
-         return Path.Combine(EnvironmentHelper.UserApplicationDataFolder(), applicationFolderPath);
-      }
-
-      public IEnumerable<string> ApplicationSettingsFilePaths => SettingsFilePaths(ApplicationSettingsFilePath, applicationSettingsFilePath);
-
-      private string applicationFolderPathWithMajorVersion => ApplicationFolderPathWithRevision(MajorVersion);
-
-      protected override string ApplicationFolderPathWithRevision(string version)
-      {
-         return Path.Combine(CoreConstants.ApplicationFolderPath, version);
-      }
-
-      public override string IssueTrackerUrl { get; } = CoreConstants.IssueTrackerUrl;
+      protected override string ApplicationFolderPathWithRevision(string version) => Path.Combine(CoreConstants.ApplicationFolderPath, version);
    }
 }
