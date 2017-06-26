@@ -89,7 +89,7 @@ namespace PKSim.Infrastructure.Services
 
       private string retrieveMoBiExecutablePath()
       {
-         //Installed propertly? return standard path
+         //Installed properly via Setup? return standard path
          if (FileHelper.FileExists(_configuration.MoBiPath))
             return _configuration.MoBiPath;
 
