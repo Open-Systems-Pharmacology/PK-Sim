@@ -14,6 +14,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 
       public override void PerformMapping()
       {
+         Map(x => x.MoBiPath);
          MapEnumerable(x => x.SpeciesDataBaseMaps, x => x.AddSpeciesDatabaseMap);
       }
 

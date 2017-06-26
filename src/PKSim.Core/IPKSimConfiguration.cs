@@ -66,7 +66,7 @@ namespace PKSim.Core
       string UserApplicationSettingsFilePath { get; }
    
       /// <summary>
-      ///    Path to MoBi application exe. This path is read from the registry entry
+      ///    Full path to MoBi application exe. This path is read from the registry entry
       /// </summary>
       string MoBiPath { get; }
    }

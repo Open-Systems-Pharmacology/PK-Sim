@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
@@ -17,6 +18,7 @@ namespace PKSim.Presentation.Presenters
    {
       void SelectDatabasePathFor(SpeciesDatabaseMapDTO speciesDatabaseMapDTO);
       void RemoveDatabasePathFor(SpeciesDatabaseMapDTO speciesDatabaseMapDTO);
+      void SelectMoBiPath();
    }
 
    public class ApplicationSettingsPresenter : AbstractSubPresenter<IApplicationSettingsView, IApplicationSettingsPresenter>, IApplicationSettingsPresenter
@@ -90,6 +92,13 @@ namespace PKSim.Presentation.Presenters
       public void RemoveDatabasePathFor(SpeciesDatabaseMapDTO speciesDatabaseMapDTO)
       {
          speciesDatabaseMapDTO.DatabaseFullPath = string.Empty;
+      }
+
+      public void SelectMoBiPath()
+      {
+         var mobiPath = _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectMoBiExecutablePath, CoreConstants.Filter.MOBI_FILE_FILTER, Constants.DirectoryKey.PROJECT);
+         if (string.IsNullOrEmpty(mobiPath)) return;
+         _applicationSettings.MoBiPath = mobiPath;
       }
    }
 }

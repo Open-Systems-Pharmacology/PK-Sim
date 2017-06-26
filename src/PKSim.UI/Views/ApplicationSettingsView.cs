@@ -7,6 +7,8 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.DataBinding;
+using OSPSuite.Presentation.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Presentation.DTO;
@@ -19,13 +21,16 @@ namespace PKSim.UI.Views
    public partial class ApplicationSettingsView : BaseUserControl, IApplicationSettingsView
    {
       private IApplicationSettingsPresenter _presenter;
-      private GridViewBinder<SpeciesDatabaseMapDTO> _gridViewBinder;
+      private readonly GridViewBinder<SpeciesDatabaseMapDTO> _gridViewBinder;
+      private readonly ScreenBinder<IApplicationSettings> _screnBinder;
 
       public ApplicationSettingsView()
       {
          InitializeComponent();
          gridViewDatabasePath.AllowsFiltering = false;
          gridViewDatabasePath.EditorShowMode = EditorShowMode.Default;
+         _gridViewBinder = new GridViewBinder<SpeciesDatabaseMapDTO>(gridViewDatabasePath);
+         _screnBinder = new ScreenBinder<IApplicationSettings>();
       }
 
       public void AttachPresenter(IApplicationSettingsPresenter presenter)
@@ -37,18 +42,15 @@ namespace PKSim.UI.Views
       {
          base.InitializeResources();
          Caption = PKSimConstants.UI.Application;
+         layoutItemMoBiPath.Text = PKSimConstants.UI.MoBiPath.FormatForLabel();
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.SytemSettings; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.SytemSettings;
 
       public override void InitializeBinding()
       {
          var pathSelectionRepository = createButtonRepository();
 
-         _gridViewBinder = new GridViewBinder<SpeciesDatabaseMapDTO>(gridViewDatabasePath);
          _gridViewBinder.Bind(x => x.SpeciesDisplayName)
             .WithCaption(PKSimConstants.UI.Species).AsReadOnly();
 
@@ -57,9 +59,18 @@ namespace PKSim.UI.Views
             .WithRepository(dto => pathSelectionRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
-         _gridViewBinder.Changed += () => _presenter.ViewChanged();
+         _gridViewBinder.Changed += notifyViewChanged;
+
+         _screnBinder.Bind(x => x.MoBiPath)
+            .To(buttonMoBiPath);
+
+         RegisterValidationFor(_screnBinder, statusChangedNotify: notifyViewChanged);
          pathSelectionRepository.ButtonClick += (o, e) => OnEvent(buttonClicked, o, e);
+         buttonMoBiPath.ButtonClick += (o, e) => OnEvent(_presenter.SelectMoBiPath);
+
       }
+
+      private void notifyViewChanged() => _presenter.ViewChanged();
 
       private RepositoryItemButtonEdit createButtonRepository()
       {
@@ -87,12 +98,9 @@ namespace PKSim.UI.Views
 
       public void BindTo(IApplicationSettings applicationSettings)
       {
-         /*nothing to do sofar*/
+         _screnBinder.BindToSource(applicationSettings);
       }
 
-      public override bool HasError
-      {
-         get { return _gridViewBinder.HasError; }
-      }
+       public override bool HasError => _gridViewBinder.HasError;
    }
 }

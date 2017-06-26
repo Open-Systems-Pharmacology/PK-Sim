@@ -435,7 +435,7 @@ namespace PKSim.Assets
          public const string ErrorWhileImportingPopulationAnalyses = "Some errors occured while importing the population analyses:";
          public const string DifferentVectorLengths = "Vectors have different length!";
          public const string DataRepositoryWithoutBaseGrid = "Data Repository does not contain BaseGrid";
-         public const string MoBiNotFound = "MoBi was not found on current system. Please make sure that MoBi was installed using the provided setup.";
+         public const string MoBiNotFound = "MoBi was not found on current system. Please make sure that MoBi was installed using the provided setup. Alternatively, you can where MoBi is installed on your system under Utilities -> Options -> Application";
          public const string CannotExportAnImportedSimulation = "An imported simulation (e.g. from MoBi or pkml Format) cannot be exported.";
          public const string AtLeastOneCompoundMustBeSelected = "At least one compound must be selected";
          public const string AtLeastOneFileRequiredToStartPopulationImport = "At least one file is required to perform the population import.";
@@ -1686,7 +1686,7 @@ namespace PKSim.Assets
          public static readonly string SavingSettings = "Saving Settings...";
          public static readonly string SelectTemplateDatabasePath = "Select Template Database...";
          public static readonly string CreateTemplateDatabasePath = "Create Template Database...";
-         public static readonly string MoBiPath = "Select MoBi Application Path...";
+         public static readonly string MoBiPath = "MoBi Executable Path";
          public static readonly string BasedOnIndividual = "Based on individual";
          public static readonly string CurveSelection = "Curve Selection for Chart";
          public static readonly string ProportionOfFemales = "Proportion of Females [%]";
@@ -2124,35 +2124,17 @@ namespace PKSim.Assets
          public static string ExtractIndividualPopulationDescription(string populationName, int numberOfIndividuals) => 
             $"Population '{populationName}' has {numberOfIndividuals} individuals. Individual Ids for this population are defined between 0 and {numberOfIndividuals-1}.";
 
-         public static string GenderRationFor(string gender)
-         {
-            return $"{gender} ratio";
-         }
+         public static string GenderRationFor(string gender) => $"{gender} ratio";
 
-         public static string AddPartialProcess(string partialProcessType)
-         {
-            return $"Add {partialProcessType} Process...";
-         }
+         public static string AddPartialProcess(string partialProcessType) => $"Add {partialProcessType} Process...";
 
-         private static string chooseFieldsToDisplay(string fieldType)
-         {
-            return $"Choose {fieldType.ToLower()}s to display";
-         }
-         
-         public static string CreateAnalysis(string analysisType)
-         {
-            return $"Create {analysisDisplay(analysisType)}";
-         }
+         private static string chooseFieldsToDisplay(string fieldType) => $"Choose {fieldType.ToLower()}s to display";
 
-         public static string EditAnalysis(string analysisType)
-         {
-            return $"Edit {analysisDisplay(analysisType)}";
-         }
+         public static string CreateAnalysis(string analysisType) => $"Create {analysisDisplay(analysisType)}";
 
-         private static string analysisDisplay(string analysisType)
-         {
-            return $"{analysisType} {Analysis}";
-         }
+         public static string EditAnalysis(string analysisType) => $"Edit {analysisDisplay(analysisType)}";
+
+         private static string analysisDisplay(string analysisType) => $"{analysisType} {Analysis}";
 
          public static string NamingPatternDescription(string iterationPattern, string startPattern, string endPattern)
          {
@@ -2209,50 +2191,23 @@ namespace PKSim.Assets
             }
          } 
          
-         public static string ListOf(string item)
-         {
-            return $"List of {item}";
-         }
+         public static string ListOf(string item) => $"List of {item}";
 
-         public static string AddProteinExpression(string moleculeType)
-         {
-            return $"Add {moleculeType} Expression...";
-         }
+         public static string AddProteinExpression(string moleculeType) => $"Add {moleculeType} Expression...";
 
-         public static string ReportEqual(string name, object value)
-         {
-            return $"{name} = {value}";
-         }
+         public static string ReportEqual(string name, object value) => $"{name} = {value}";
 
-         public static string ReportIs(string name, object value)
-         {
-            return $"{name}: {value}";
-         }
+         public static string ReportIs(string name, object value) => $"{name}: {value}";
 
-         public static string ParametersDefinedIn(string container)
-         {
-            return $"Parameters defined in {container}";
-         }
+         public static string ParametersDefinedIn(string container) => $"Parameters defined in {container}";
 
-         public static string LoadingObject(string objectToLoad)
-         {
-            return $"Loading '{objectToLoad}'...";
-         }
+         public static string LoadingObject(string objectToLoad) => $"Loading '{objectToLoad}'...";
 
-         public static string OntogenyFor(string moleculeName)
-         {
-            return $"{Ontogeny} for {moleculeName}";
-         }
+         public static string OntogenyFor(string moleculeName) => $"{Ontogeny} for {moleculeName}";
 
-         public static string AddParameterAsFavorites(string parameterName)
-         {
-            return $"Add '{parameterName}' as favorite";
-         }
+         public static string AddParameterAsFavorites(string parameterName) => $"Add '{parameterName}' as favorite";
 
-         public static string ProductIsUptodate(string productName)
-         {
-            return $"{productName} is up to date!";
-         }
+         public static string ProductIsUptodate(string productName) => $"{productName} is up to date!";
 
          public static string ImportSimulationPKAnalysesDescription
          {
@@ -2295,105 +2250,45 @@ namespace PKSim.Assets
             return sb.ToString();
          }
 
-         public static string HalfLifeLiverDescription(string moleculeType)
-         {
-            return $"Apparent half life liver of the affected {moleculeType.ToLower()}";
-         }
-         
-         public static string HalfLifeIntestineDescription(string moleculeType)
-         {
-            return $"Apparent half life intestine of the affected {moleculeType.ToLower()}";
-         }
+         public static string HalfLifeLiverDescription(string moleculeType) => $"Apparent half life liver of the affected {moleculeType.ToLower()}";
 
-         public static string ConfigureSimulation(string simulatioName)
-         {
-            return $"Configure Simulation: {simulatioName}";
-         }
+         public static string HalfLifeIntestineDescription(string moleculeType) => $"Apparent half life intestine of the affected {moleculeType.ToLower()}";
 
-         public static string CloningSimulation(string simulatioName)
-         {
-            return $"Cloning Simulation: {simulatioName}";
-         }
+         public static string ConfigureSimulation(string simulatioName) => $"Configure Simulation: {simulatioName}";
 
-         public static string CreateGroupParameterAlternativeCaption(string groupName)
-         {
-            return $"Create new {groupName.ToLower()} value";
-         }
+         public static string CloningSimulation(string simulatioName) => $"Cloning Simulation: {simulatioName}";
 
-         public static string RenameGroupParameterAlternativeCaption(string groupName)
-         {
-            return $"Rename {groupName.ToLower()} value";
-         }
+         public static string CreateGroupParameterAlternativeCaption(string groupName) => $"Create new {groupName.ToLower()} value";
 
-         public static IEnumerable<string> PredefinedSolubilityAlternatives()
-         {
-            return new List<string> { DefaultAlternative, "S_aq", "S_buffer", "S_FaSSIF", "S_FeSSIF", "S_FaSSGF" };
-         }
+         public static string RenameGroupParameterAlternativeCaption(string groupName) => $"Rename {groupName.ToLower()} value";
 
-         public static IEnumerable<string> PredefinedFractionUnboundAlternatives()
-         {
-            return new List<string> { DefaultAlternative, "fu_plasma", "fu_invitro" };
-         }
+         public static IReadOnlyList<string> PredefinedSolubilityAlternatives() => new []{ DefaultAlternative, "S_aq", "S_buffer", "S_FaSSIF", "S_FeSSIF", "S_FaSSGF" };
 
-         public static IEnumerable<string> PredefinedLipophilicityAlternatives()
-         {
-            return new List<string> { DefaultAlternative, "LogP", "LogMA", "LogD", "cLogP", "cLogMA", "cLogD" };
-         }
+         public static IReadOnlyList<string> PredefinedFractionUnboundAlternatives() => new []{ DefaultAlternative, "fu_plasma", "fu_invitro" };
 
-         public static string EditFormulation(string name)
-         {
-            return $"Formulation: '{name}'";
-         }
+         public static IReadOnlyList<string> PredefinedLipophilicityAlternatives() => new []{ DefaultAlternative, "LogP", "LogMA", "LogD", "cLogP", "cLogMA", "cLogD" };
 
-         public static string EditEvent(string name)
-         {
-            return $"Event: '{name}'";
-         }
+         public static string EditFormulation(string name) => $"Formulation: '{name}'";
 
-         public static string ScaleIndividual(string name)
-         {
-            return $"Scale Individual: '{name}'";
-         }
+         public static string EditEvent(string name) => $"Event: '{name}'";
 
-         public static string EditIndividual(string name)
-         {
-            return $"Individual: '{name}'";
-         }
+         public static string ScaleIndividual(string name) => $"Scale Individual: '{name}'";
 
-         public static string EditSimulationSettings(string name)
-         {
-            return $"Simulation Settings: '{name}'";
-         }
-         
-         public static string EditCompound(string name)
-         {
-            return $"Compound: '{name}'";
-         }
+         public static string EditIndividual(string name) => $"Individual: '{name}'";
 
-         public static string EditPopulation(string name)
-         {
-            return $"Population: '{name}'";
-         }
+         public static string EditSimulationSettings(string name) => $"Simulation Settings: '{name}'";
 
-         public static string EditProtocol(string name)
-         {
-            return $"Administration Protocol: '{name}'";
-         }
+         public static string EditCompound(string name) => $"Compound: '{name}'";
 
-         public static string ConvertingProject(string projectName)
-         {
-            return $"Converting project '{projectName}'";
-         }
+         public static string EditPopulation(string name) => $"Population: '{name}'";
 
-         public static string CreatingIndividualInPopulation(int currentIndividual, int numOfIndividual)
-         {
-            return $"Creating individual {currentIndividual}/{numOfIndividual}...";
-         }
+         public static string EditProtocol(string name) => $"Administration Protocol: '{name}'";
 
-         public static string AboutProduct(string productName)
-         {
-            return $"About {productName}";
-         }
+         public static string ConvertingProject(string projectName) => $"Converting project '{projectName}'";
+
+         public static string CreatingIndividualInPopulation(int currentIndividual, int numOfIndividual) => $"Creating individual {currentIndividual}/{numOfIndividual}...";
+
+         public static string AboutProduct(string productName) => $"About {productName}";
 
          public static string SchemaItemDescription(string application, string formulation, string dose, string startTime)
          {
@@ -2407,65 +2302,31 @@ namespace PKSim.Assets
             return sb.ToString();
          }
 
-         public static string SelectDatabasePathFor(string speciesDisplayName)
-         {
-            return $"Select Expressions Database for {speciesDisplayName}";
-         }
+         public static readonly string SelectMoBiExecutablePath = "Select MoBi executable path";
 
-         public static string CreateSystemicProcessInCompoundCaption(string systemicProcessType)
-         {
-            return $"Create new {systemicProcessType} for compound";
-         }
+         public static string SelectDatabasePathFor(string speciesDisplayName) => $"Select Expressions Database for {speciesDisplayName}";
 
-         public static string EnterNameEntityCaption(string type)
-         {
-            return $"Enter name for {type}";
-         }
+         public static string CreateSystemicProcessInCompoundCaption(string systemicProcessType) => $"Create new {systemicProcessType} for compound";
 
-         public static string RenameEntityCaption(string type, string name)
-         {
-            return $"New name for {type} '{name}'";
-         }
+         public static string EnterNameEntityCaption(string type) => $"Enter name for {type}";
 
-         public static string RenameDataSourceCaption()
-         {
-            return $"New name for {DataSource.ToLower()}";
-         }
+         public static string RenameEntityCaption(string type, string name) => $"New name for {type} '{name}'";
 
-         public static string RenamePartialProcessesMolecule(string moleculeType)
-         {
-            return $"New name for {moleculeType.ToLower()}";
-         }
+         public static string RenameDataSourceCaption() => $"New name for {DataSource.ToLower()}";
 
-         public static string EditDescriptionEntityCaption(string type, string name)
-         {
-            return $"Description for {type} '{name}'";
-         }
+         public static string RenamePartialProcessesMolecule(string moleculeType) => $"New name for {moleculeType.ToLower()}";
 
-         public static string ReallyDeleteAlternative(string alternativeName)
-         {
-            return ReallyDeleteObjectOfType(ObjectTypes.ParameterGroupAlternative, alternativeName);
-         }
+         public static string EditDescriptionEntityCaption(string type, string name) => $"Description for {type} '{name}'";
 
-         public static string ReallyDeleteSimulationComparisons(IReadOnlyList<string> simulationComparisons)
-         {
-            return ReallyDeleteObjectOfType(SimulationComparison, simulationComparisons);
-         }
+         public static string ReallyDeleteAlternative(string alternativeName) => ReallyDeleteObjectOfType(ObjectTypes.ParameterGroupAlternative, alternativeName);
 
-         public static string ReallyDeleteTemplate(string templateName)
-         {
-            return ReallyDeleteObjectOfType(ObjectTypes.Template, templateName);
-         }
+         public static string ReallyDeleteSimulationComparisons(IReadOnlyList<string> simulationComparisons) => ReallyDeleteObjectOfType(SimulationComparison, simulationComparisons);
 
-         public static string ReallyDeleteProtein(string proteinType, string proteinName)
-         {
-            return ReallyDeleteObjectOfType(proteinType, proteinName);
-         }
+         public static string ReallyDeleteTemplate(string templateName) => ReallyDeleteObjectOfType(ObjectTypes.Template, templateName);
 
-         public static string ReallyDeleteProcess(string processType, string processName)
-         {
-            return ReallyDeleteObjectOfType(processType, processName);
-         }
+         public static string ReallyDeleteProtein(string proteinType, string proteinName) => ReallyDeleteObjectOfType(proteinType, proteinName);
+
+         public static string ReallyDeleteProcess(string processType, string processName) => ReallyDeleteObjectOfType(processType, processName);
 
          public static string ReallyDeleteObjectOfType(string type, IReadOnlyList<string> names)
          {
@@ -2482,55 +2343,25 @@ namespace PKSim.Assets
             return message;
          }
 
-         public static string ReallyDeleteObjectOfType(string type, params string[] names)
-         {
-            return ReallyDeleteObjectOfType(type, names.ToList());
-         }
+         public static string ReallyDeleteObjectOfType(string type, params string[] names) => ReallyDeleteObjectOfType(type, names.ToList());
 
-         public static string RegisterAssembly(string assemblyname)
-         {
-            return $"Loading {assemblyname.ToLower()}";
-         }
+         public static string RegisterAssembly(string assemblyname) => $"Loading {assemblyname.ToLower()}";
 
-         public static string CreateBuildingBlockHint(string buildingblockType)
-         {
-            return $"Create new {buildingblockType}...";
-         }
+         public static string CreateBuildingBlockHint(string buildingblockType) => $"Create new {buildingblockType}...";
 
-         public static string LoadBuildingBlockHint(string buildingblockType)
-         {
-            return $"Load {buildingblockType} from template...";
-         }
+         public static string LoadBuildingBlockHint(string buildingblockType) => $"Load {buildingblockType} from template...";
 
-         public static string LoadBuildingBlockFromTemplate(string buildingBlock)
-         {
-            return $"Load {buildingBlock} from template";
-         }
+         public static string LoadBuildingBlockFromTemplate(string buildingBlock) => $"Load {buildingBlock} from template";
 
-         public static string TemplateWithNameAlreadyExistsInTheDatabase(string name, string buildingBlockType)
-         {
-            return $"A template for {buildingBlockType} named '{name}' already exists.";
-         }
+         public static string TemplateWithNameAlreadyExistsInTheDatabase(string name, string buildingBlockType) => $"A template for {buildingBlockType} named '{name}' already exists.";
 
-         public static string MoleculeInIndividual(string molecule)
-         {
-            return $"{molecule} in individual";
-         }
+         public static string MoleculeInIndividual(string molecule) => $"{molecule} in individual";
 
-         public static string CreateSystemicProcess(string systemProcessDisplayName)
-         {
-            return $"Add {systemProcessDisplayName} Process...";
-         }
+         public static string CreateSystemicProcess(string systemProcessDisplayName) => $"Add {systemProcessDisplayName} Process...";
 
-         public static string ConvertingSimulation(int currentSimulation, int numberOfSimulations)
-         {
-            return $"Converting simulation {currentSimulation}/{numberOfSimulations}...";
-         }
+         public static string ConvertingSimulation(int currentSimulation, int numberOfSimulations) => $"Converting simulation {currentSimulation}/{numberOfSimulations}...";
 
-         public static string ContactSupport(string productDisplayName, string support)
-         {
-            return $"For more information, please contact your {productDisplayName} support ({support})";
-         }
+         public static string ContactSupport(string productDisplayName, string support) => $"For more information, please contact your {productDisplayName} support ({support})";
 
          public static string EditTableParameter(string parameter, bool editable)
          {
