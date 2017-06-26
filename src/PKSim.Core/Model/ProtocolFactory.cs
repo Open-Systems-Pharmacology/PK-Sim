@@ -68,7 +68,7 @@ namespace PKSim.Core.Model
          protocol.Root = _objectBaseFactory.Create<IRootContainer>();
          protocol.DosingInterval = DosingIntervals.Single;
          protocol.ApplicationType = applicationType;
-         protocol.FormulationKey = applicationType.NeedsFormulation ? CoreConstants.DefaultFormulationKey : string.Empty;
+         protocol.FormulationKey = applicationType.NeedsFormulation ? CoreConstants.DEFAULT_FORMULATION_KEY : string.Empty;
 
          foreach (var parameter in _schemaItemParameterRetriever.AllParametersFor(protocol.ApplicationType))
          {

@@ -26,7 +26,7 @@ namespace PKSim.BatchTool.Views
          btnStartProjectComparison.Text = "Project Comparison";
          btnGenerateTrainingMaterial.Text = "Generate Training Material";
          btnGenerateProjectOverview.Text = "Generate Project Compound and Observed Data";
-         Caption = CoreConstants.ProductName;
+         Caption = CoreConstants.PRODUCT_NAME;
          ShowInTaskbar = true;
          StartPosition = FormStartPosition.CenterScreen;
       }

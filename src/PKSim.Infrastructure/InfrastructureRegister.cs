@@ -94,7 +94,7 @@ namespace PKSim.Infrastructure
          container.Register<IPKSimConfiguration, IApplicationConfiguration, PKSimConfiguration>(LifeStyle.Singleton);
 
          var configuration = container.Resolve<IPKSimConfiguration>();
-         CoreConstants.ProductDisplayName = $"{CoreConstants.ProductNameWithTrademark} {configuration.MajorVersion}";
+         CoreConstants.ProductDisplayName = $"{CoreConstants.PRODUCT_NAME_WITH_TRADEMARK} {configuration.MajorVersion}";
 
          registerLoggerIn(container, configuration);
       }
@@ -222,9 +222,9 @@ namespace PKSim.Infrastructure
 
          var configuration = container.Resolve<IPKSimConfiguration>();
          var versionChecker = container.Resolve<IVersionChecker>();
-         versionChecker.VersionFileUrl = CoreConstants.VersionFileUrl;
+         versionChecker.VersionFileUrl = CoreConstants.VERSION_FILE_URL;
          versionChecker.CurrentVersion = configuration.Version;
-         versionChecker.ProductName = CoreConstants.ProductName;
+         versionChecker.ProductName = CoreConstants.PRODUCT_NAME;
       }
 
       private static void registerReportBuilders(IContainer container)

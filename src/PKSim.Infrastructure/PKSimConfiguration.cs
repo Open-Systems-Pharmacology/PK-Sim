@@ -19,12 +19,12 @@ namespace PKSim.Infrastructure
       public string TemplateUserDatabaseTemplatePath { get; }
       public string DefaultTemplateUserDatabasePath { get; }
       public string SimModelSchemaPath { get; }
-      public override string ProductName { get; } = CoreConstants.ProductName;
+      public override string ProductName { get; } = CoreConstants.PRODUCT_NAME;
       public override Origin Product { get; } = Origins.PKSim;
-      public override string ProductNameWithTrademark { get; } = CoreConstants.ProductNameWithTrademark;
+      public override string ProductNameWithTrademark { get; } = CoreConstants.PRODUCT_NAME_WITH_TRADEMARK;
       public override ApplicationIcon Icon { get; } = ApplicationIcons.PKSim;
       public override string UserSettingsFileName { get; } = "UserSettings.xml";
-      public override string IssueTrackerUrl { get; } = CoreConstants.IssueTrackerUrl;
+      public override string IssueTrackerUrl { get; } = CoreConstants.ISSUE_TRACKER_URL;
       protected override string[] LatestVersionWithOtherMajor { get; } = {"6.3", "5.6"};
       public override string ChartLayoutTemplateFolderPath { get; }
       public override string TEXTemplateFolderPath { get; }
@@ -38,19 +38,19 @@ namespace PKSim.Infrastructure
          createDefaultSettingsFolder();
 
          ApplicationSettingsFilePath = createAppDataPath("ApplicationSettings.xml");
-         ChartLayoutTemplateFolderPath = createAppDataPath(CoreConstants.ChartLayoutFolderPathName);
-         TEXTemplateFolderPath = createAppDataPath(CoreConstants.TEXTemplateFolderPathName);
+         ChartLayoutTemplateFolderPath = createApplicationDataOrLocalPathForFolder(CoreConstants.APP_DATA_CHART_LAYOUT_FOLDER_NAME, CoreConstants.LOCAL_CHART_LAYOUT_FOLDER_NAME);
+         TEXTemplateFolderPath = createApplicationDataOrLocalPathForFolder(CoreConstants.APP_DATA_TEX_TEMPLATE_FOLDER_NAME, CoreConstants.LOCAL_TEX_TEMPLATE_FOLDER_NAME);
 
-         PKSimDbPath = createApplicationDataOrLocalPathForFile(CoreConstants.PKSimDbFile);
-         DimensionFilePath = createApplicationDataOrLocalPathForFile(CoreConstants.DimensionFile);
-         PKParametersFilePath = createApplicationDataOrLocalPathForFile(CoreConstants.PKParametersFile);
-         TemplateSystemDatabasePath = createApplicationDataOrLocalPathForFile(CoreConstants.TemplateSystemDatabase);
-         LogConfigurationFile = createApplicationDataOrLocalPathForFile(CoreConstants.TemplateSystemDatabase);
-         TemplateUserDatabaseTemplatePath = createApplicationDataOrLocalPathForFile(CoreConstants.TemplateSystemDatabase);
+         PKSimDbPath = createApplicationDataOrLocalPathForFile(CoreConstants.PK_SIM_DB_FILE);
+         DimensionFilePath = createApplicationDataOrLocalPathForFile(CoreConstants.DIMENSION_FILE);
+         PKParametersFilePath = createApplicationDataOrLocalPathForFile(CoreConstants.PK_PARAMETERS_FILE);
+         TemplateSystemDatabasePath = createApplicationDataOrLocalPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
+         LogConfigurationFile = createApplicationDataOrLocalPathForFile(CoreConstants.LOG_4_NET_CONFIG_FILE);
+         TemplateUserDatabaseTemplatePath = createApplicationDataOrLocalPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
 
-         SimModelSchemaPath = createLocalPathForFile(CoreConstants.TemplateSystemDatabase);
+         SimModelSchemaPath = createLocalPath(CoreConstants.SIM_MODEL_SCHEMA_FILE);
 
-         DefaultTemplateUserDatabasePath = createUserAppDataPath(CoreConstants.TemplateUserDatabase);
+         DefaultTemplateUserDatabasePath = createUserAppDataPath(CoreConstants.TEMPLATE_USER_DATABASE);
      }
 
       private void createDefaultSettingsFolder()
@@ -62,22 +62,26 @@ namespace PKSim.Infrastructure
             DirectoryHelper.CreateDirectory(ApplicationSettingsFolderPath);
       }
 
-      private string createApplicationDataOrLocalPathForFile(string fileName)
+      private string createApplicationDataOrLocalPathForFile(string fileName) => createApplicationDataOrLocalPathFor(fileName, fileName, FileHelper.FileExists);
+
+      private string createApplicationDataOrLocalPathForFolder(string folderNameAppData, string folderNameLocal) => createApplicationDataOrLocalPathFor(folderNameAppData, folderNameLocal, DirectoryHelper.DirectoryExists);
+
+      private string createApplicationDataOrLocalPathFor(string appDataName, string localName,  Func<string, bool> existsFunc)
       {
-         var applicationDataPathForFile = createAppDataPath(fileName);
-         if (FileHelper.FileExists(applicationDataPathForFile))
-            return applicationDataPathForFile;
+         var applicationDataOrLocal = createAppDataPath(appDataName);
+         if (existsFunc(applicationDataOrLocal))
+            return applicationDataOrLocal;
 
          //try local if id does not exist
-         var localPathForFile = createLocalPathForFile(fileName);
-         if (FileHelper.FileExists(localPathForFile))
-            return localPathForFile;
+         var localPath = createLocalPath(localName);
+         if (existsFunc(localPath))
+            return localPath;
 
          //neither app data nor local exist, return app data
-         return applicationDataPathForFile;
+         return applicationDataOrLocal;
       }
 
-      private string createLocalPathForFile(string fileName) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+      private string createLocalPath(string fileName) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
 
       private string createUserAppDataPath(string fileName) => Path.Combine(UserApplicationSettingsFolderPath, fileName);
 
@@ -104,6 +108,6 @@ namespace PKSim.Infrastructure
 
       public IEnumerable<string> ApplicationSettingsFilePaths => SettingsFilePaths(ApplicationSettingsFilePath, applicationSettingsFolderPathFor);
 
-      protected override string ApplicationFolderPathWithRevision(string version) => Path.Combine(CoreConstants.ApplicationFolderPath, version);
+      protected override string ApplicationFolderPathWithRevision(string version) => Path.Combine(CoreConstants.APPLICATION_FOLDER_PATH, version);
    }
 }

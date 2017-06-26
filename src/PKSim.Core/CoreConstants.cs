@@ -36,32 +36,34 @@ namespace PKSim.Core
       public const double DEFAULT_MIN_PERCENTILE = 0.0001;
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
       public const string DEFAULT_BATCH_LOG_FILE_NAME = "log.txt";
+      public static readonly string DEFAULT_FORMULATION_KEY = "Formulation";
+      public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
 
       public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};
-      public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17);
+      public static readonly IEnumerable<int> PRETERM_RANGE = Enumerable.Range(24, 17);
 
-      public static readonly string ApplicationFolderPath = @"Open Systems Pharmacology\PK-Sim";
-      public static readonly string ChartLayoutFolderPathName = "ChartLayouts";
-      public static readonly string TEXTemplateFolderPathName = "TEXTemplates";
-      public static readonly string TemplateSystemDatabase = "PKSimTemplateDBSystem.mdb";
-      public static readonly string TemplateUserDatabase = "PKSimTemplateDBUser.mdb";
-      public static readonly string TemplateUserDatabaseTemplate = "PKSimTemplateDBUser.template";
-      public static readonly string PKSimDbFile = "PKSimDB.mdb";
-      public static readonly string SimModelSchemaFile = "OSPSuite.SimModel.xsd";
-      public static readonly string DimensionFile = "OSPSuite.Dimensions.xml";
-      public static readonly string PKParametersFile = "OSPSuite.PKParameters.xml";
-      public static readonly string Log4NetConfigFile = "log4net.config.xml";
-      public static readonly string Value = "Value";
-      public static readonly string ProductName = "PK-Sim";
-      public static readonly string ProductNameWithTrademark = "PK-Sim®";
+      public static readonly string APPLICATION_FOLDER_PATH = @"Open Systems Pharmacology\PK-Sim";
+      public static readonly string APP_DATA_CHART_LAYOUT_FOLDER_NAME = "ChartLayouts";
+      public static readonly string LOCAL_CHART_LAYOUT_FOLDER_NAME = "layouts";
+      public static readonly string APP_DATA_TEX_TEMPLATE_FOLDER_NAME = "TEXTemplates";
+      public static readonly string LOCAL_TEX_TEMPLATE_FOLDER_NAME = "Templates";
+      public static readonly string TEMPLATE_SYSTEM_DATABASE = "PKSimTemplateDBSystem.mdb";
+      public static readonly string TEMPLATE_USER_DATABASE = "PKSimTemplateDBUser.mdb";
+      public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
+      public static readonly string PK_SIM_DB_FILE = "PKSimDB.mdb";
+      public static readonly string SIM_MODEL_SCHEMA_FILE = "OSPSuite.SimModel.xsd";
+      public static readonly string DIMENSION_FILE = "OSPSuite.Dimensions.xml";
+      public static readonly string PK_PARAMETERS_FILE = "OSPSuite.PKParameters.xml";
+      public static readonly string LOG_4_NET_CONFIG_FILE = "log4net.config.xml";
+      public static readonly string PRODUCT_NAME = "PK-Sim";
+      public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
       public static readonly string ExpressionPassword = "rhcp!!06";
-      public static readonly string DefaultSkin = "Office 2013 Light Gray";
-      public static readonly string AccessUserName = "Admin";
-      public static readonly string ProjectUndefined = "Undefined";
-      public static readonly string DefaultFormulationKey = "Formulation";
-      public static readonly string DefaultCalculationMethodsFileNameForMoBi = "AllCalculationMethods";
-      public static readonly string VersionFileUrl = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.xml";
-      public static readonly string IssueTrackerUrl = "http://www.open-systems-pharmacology.org/pk-sim/issues";
+      public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
+      public static readonly string ACCESS_USER_NAME = "Admin";
+      public static readonly string VALUE_PROPERTY_NAME = "Value";
+      public static readonly string PROJECT_UNDEFINED = "Undefined";
+      public static readonly string VERSION_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.xml";
+      public static readonly string ISSUE_TRACKER_URL = "http://www.open-systems-pharmacology.org/pk-sim/issues";
 
       public const string APPLICATION_NAME_TEMPLATE = "Application_";
 
@@ -70,7 +72,7 @@ namespace PKSim.Core
       public const char COMPOSITE_SEPARATOR = '-';
 
       //not as readonly as the text will be updated with the current version
-      public static string ProductDisplayName = ProductNameWithTrademark;
+      public static string ProductDisplayName = PRODUCT_NAME_WITH_TRADEMARK;
 
 
       public static class Filter

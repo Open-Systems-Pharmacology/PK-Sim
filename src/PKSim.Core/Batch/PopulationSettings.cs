@@ -113,8 +113,8 @@ namespace PKSim.Core.Batch
          MaxHeight = double.NaN;
          MinBMI = double.NaN;
          MaxBMI = double.NaN;
-         MinGestationalAge = CoreConstants.PretermRange.Min();
-         MaxGestationalAge = CoreConstants.PretermRange.Max();
+         MinGestationalAge = CoreConstants.PRETERM_RANGE.Min();
+         MaxGestationalAge = CoreConstants.PRETERM_RANGE.Max();
          NumberOfIndividuals = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION;
          _cmCache = new Cache<string, string> {OnMissingKey = x => string.Empty};
          ProportionOfFemales = 50;

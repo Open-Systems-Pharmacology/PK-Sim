@@ -137,7 +137,7 @@ namespace PKSim.Presentation.DTO.Parameters
 
       private void handlePropertyChanged(object sender, PropertyChangedEventArgs e)
       {
-         if (e.PropertyName.Equals(CoreConstants.Value))
+         if (e.PropertyName.Equals(CoreConstants.VALUE_PROPERTY_NAME))
          {
             ValueChanged(this, EventArgs.Empty);
          }
@@ -147,7 +147,7 @@ namespace PKSim.Presentation.DTO.Parameters
 
       public virtual void GetPropertyError(string propertyName, ErrorInfo info)
       {
-         if (!string.Equals(propertyName, CoreConstants.Value))
+         if (!string.Equals(propertyName, CoreConstants.VALUE_PROPERTY_NAME))
             return;
 
          var errors = this.Validate(propertyName);

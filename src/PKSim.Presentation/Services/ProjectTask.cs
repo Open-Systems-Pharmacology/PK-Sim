@@ -118,7 +118,7 @@ namespace PKSim.Presentation.Services
 
       private bool saveCurrentProjectAs(string defaultName)
       {
-         bool defaultNameIsUndefined = string.Equals(CoreConstants.ProjectUndefined, defaultName);
+         bool defaultNameIsUndefined = string.Equals(CoreConstants.PROJECT_UNDEFINED, defaultName);
          var defaultFileName = defaultNameIsUndefined ? string.Empty : defaultName;
          var fileName = _dialogCreator.AskForFileToSave(PKSimConstants.UI.SaveProjectTitle, CoreConstants.Filter.SAVE_PROJECT_FILTER, Constants.DirectoryKey.PROJECT, defaultFileName);
          if (string.IsNullOrEmpty(fileName)) return false;
@@ -230,7 +230,7 @@ namespace PKSim.Presentation.Services
       {
          var extension = new FileInfo(fileName).Extension;
          if (!extension.IsOneOf(Constants.Filter.PKML_EXTENSION))
-            throw new PKSimException(PKSimConstants.Error.FileIsNotASimulationFile(fileName, CoreConstants.ProductNameWithTrademark));
+            throw new PKSimException(PKSimConstants.Error.FileIsNotASimulationFile(fileName, CoreConstants.PRODUCT_NAME_WITH_TRADEMARK));
       }
 
       private void newProjectWithWorkingJournal(string journalFileFullPath)
@@ -291,7 +291,7 @@ namespace PKSim.Presentation.Services
       {
          var extension = new FileInfo(projectFile).Extension;
          if (!extension.IsOneOf(CoreConstants.Filter.PROJECT_EXTENSION, CoreConstants.Filter.PROJECT_OLD_EXTENSION))
-            throw new PKSimException(PKSimConstants.Error.FileIsNotAPKSimFile(projectFile, CoreConstants.ProductNameWithTrademark));
+            throw new PKSimException(PKSimConstants.Error.FileIsNotAPKSimFile(projectFile, CoreConstants.PRODUCT_NAME_WITH_TRADEMARK));
       }
 
       private bool tryLockFile(string projectFile)

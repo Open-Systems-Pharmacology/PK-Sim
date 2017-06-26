@@ -39,7 +39,7 @@ namespace PKSim.Infrastructure
       public void should_return_the_one_for_the_current_version_first_and_the_latest_version_with_a_small_major_last()
       {
          _possibleApplicationPaths[0].ShouldBeEqualTo(sut.ApplicationSettingsFilePath);
-         _possibleApplicationPaths.Last().StartsWith(Path.Combine(EnvironmentHelper.ApplicationDataFolder(), CoreConstants.ApplicationFolderPath, "5.6")).ShouldBeTrue();
+         _possibleApplicationPaths.Last().StartsWith(Path.Combine(EnvironmentHelper.ApplicationDataFolder(), CoreConstants.APPLICATION_FOLDER_PATH, "5.6")).ShouldBeTrue();
       }
    }
 
@@ -50,7 +50,7 @@ namespace PKSim.Infrastructure
       {
          doWhilePreservingFileExists(() =>
          {
-            var appDataFile = Path.Combine(sut.ApplicationSettingsFolderPath, CoreConstants.PKSimDbFile);
+            var appDataFile = Path.Combine(sut.ApplicationSettingsFolderPath, CoreConstants.PK_SIM_DB_FILE);
             FileHelper.FileExists = s => string.Equals(s, appDataFile);
             sut = new PKSimConfiguration();
             sut.PKSimDbPath.ShouldBeEqualTo(appDataFile);
@@ -62,7 +62,7 @@ namespace PKSim.Infrastructure
       {
          doWhilePreservingFileExists(() =>
          {
-            var localFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CoreConstants.PKSimDbFile);
+            var localFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CoreConstants.PK_SIM_DB_FILE);
             FileHelper.FileExists = s => string.Equals(s, localFile);
             sut = new PKSimConfiguration();
             sut.PKSimDbPath.ShouldBeEqualTo(localFile);
@@ -74,7 +74,7 @@ namespace PKSim.Infrastructure
       {
          doWhilePreservingFileExists(() =>
          {
-            var appDataFile = Path.Combine(sut.ApplicationSettingsFolderPath, CoreConstants.PKSimDbFile);
+            var appDataFile = Path.Combine(sut.ApplicationSettingsFolderPath, CoreConstants.PK_SIM_DB_FILE);
             FileHelper.FileExists = s => false;
             sut = new PKSimConfiguration();
             sut.PKSimDbPath.ShouldBeEqualTo(appDataFile);
