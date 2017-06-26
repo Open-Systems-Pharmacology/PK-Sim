@@ -58,7 +58,7 @@ notifications:
 
 on_finish: 
   - ps: Get-ChildItem setup.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-  - ps: Get-ChildItem .\setup\deploy\portable-setup.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+  - ps: Get-ChildItem .\setup\portable-setup.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
 test:
   assemblies:
