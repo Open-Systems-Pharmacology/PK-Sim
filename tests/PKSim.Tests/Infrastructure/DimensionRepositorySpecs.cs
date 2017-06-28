@@ -1,11 +1,10 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Serialization.Xml;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.Repositories;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.Infrastructure
 {
@@ -13,11 +12,7 @@ namespace PKSim.Infrastructure
    {
       protected override void Context()
       {
-         var pkSimConfiguration = new PKSimConfiguration
-         {
-            DimensionFilePath = DomainHelperForSpecs.DimensionFilePath,
-            PKParametersFilePath = DomainHelperForSpecs.PKParametersFilePath
-         };
+         var pkSimConfiguration = new PKSimConfiguration();
          var serializerRepository = new UnitSystemXmlSerializerRepository();
          serializerRepository.PerformMapping();
          sut = new DimensionRepository(new PKSimDimensionFactory(), serializerRepository, pkSimConfiguration);

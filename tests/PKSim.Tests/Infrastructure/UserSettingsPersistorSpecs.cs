@@ -34,7 +34,7 @@ namespace PKSim.Infrastructure
          _defaultUserSettings = A.Fake<IUserSettings>();
          _serializationManager = A.Fake<IStringSerializer>();
          _pkSimConfiguration = A.Fake<IPKSimConfiguration>();
-         A.CallTo(() => _pkSimConfiguration.UserApplicationSettingsFilePath).Returns("blah");
+         A.CallTo(() => _pkSimConfiguration.UserSettingsFilePath).Returns("blah");
          _validUserConfigXml = "<UserConfig/>";
          A.CallTo(() => _serializationManager.Serialize(_userSettings)).Returns(_validUserConfigXml);
          sut = new UserSettingsPersistor(_serializationManager, _defaultUserSettings, _pkSimConfiguration);
@@ -56,7 +56,7 @@ namespace PKSim.Infrastructure
       public override void GlobalContext()
       {
          base.GlobalContext();
-         XmlHelper.SaveXmlContentToFile = (content, path) => { _saved = string.Equals(path, _pkSimConfiguration.UserApplicationSettingsFilePath); };
+         XmlHelper.SaveXmlContentToFile = (content, path) => { _saved = string.Equals(path, _pkSimConfiguration.UserSettingsFilePath); };
       }
 
       protected override void Because()
@@ -92,7 +92,7 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          sut.Save(_userSettings);
-         A.CallTo(() => _pkSimConfiguration.UserApplicationSettingsFilePaths).Returns(new[] { "blah" });
+         A.CallTo(() => _pkSimConfiguration.UserSettingsFilePaths).Returns(new[] { "blah" });
          A.CallTo(() => _serializationManager.Deserialize<IUserSettings>(A<string>.Ignored)).Returns(_userSettings);
       }
 

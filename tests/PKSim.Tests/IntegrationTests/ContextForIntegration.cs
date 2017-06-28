@@ -36,9 +36,9 @@ namespace PKSim.IntegrationTests
          using (container.OptimizeDependencyResolution())
          {
             var configuration = container.Resolve<IPKSimConfiguration>();
-            configuration.PKSimDb = DomainHelperForSpecs.DbFilePath;
-            configuration.DimensionFilePath = DomainHelperForSpecs.DimensionFilePath;
-            configuration.PKParametersFilePath = DomainHelperForSpecs.PKParametersFilePath;
+//            configuration.PKSimDb = DomainHelperForSpecs.DbFilePath;
+//            configuration.DimensionFilePath = DomainHelperForSpecs.DimensionFilePath;
+//            configuration.PKParametersFilePath = DomainHelperForSpecs.PKParametersFilePath;
 
             //need to register these serives for which the default implementation is in the UI
             container.RegisterImplementationOf(new SynchronizationContext());

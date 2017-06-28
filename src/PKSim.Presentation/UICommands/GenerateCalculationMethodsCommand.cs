@@ -26,7 +26,7 @@ namespace PKSim.Presentation.UICommands
 
       public void Execute()
       {
-         var file = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportCalculationMethodsToMoBiTitle, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, CoreConstants.DefaultCalculationMethodsFileNameForMoBi);
+         var file = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportCalculationMethodsToMoBiTitle, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, CoreConstants.DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI);
          if (string.IsNullOrEmpty(file)) return;
 
          var mobiRepository = new CoreCalculationMethodRepository();

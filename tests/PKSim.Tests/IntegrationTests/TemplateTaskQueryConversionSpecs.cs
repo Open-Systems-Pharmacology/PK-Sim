@@ -4,11 +4,9 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
-using NUnit.Framework;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Spikes;
 
 namespace PKSim.IntegrationTests
 {
@@ -26,16 +24,16 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var configuration = IoC.Resolve<IPKSimConfiguration>();
+         var userSettings = IoC.Resolve<ICoreUserSettings>();
          var testFile = DomainHelperForSpecs.DataFilePathFor("TemplateDatabaseV5.2.mdb");
          _tmpFile = FileHelper.GenerateTemporaryFileName();
          FileHelper.Copy(testFile, _tmpFile);
-         configuration.TemplateSystemDatabasePath = _tmpFile;
+         userSettings.TemplateDatabasePath = _tmpFile;
       }
 
       protected override void Because()
       {
-         _allTemplates = sut.AllTemplatesFor(TemplateDatabaseType.System, TemplateType.Individual|TemplateType.Event|TemplateType.Formulation|TemplateType.Population|TemplateType.Protocol|TemplateType.Compound);
+         _allTemplates = sut.AllTemplatesFor(TemplateDatabaseType.User, TemplateType.Individual|TemplateType.Event|TemplateType.Formulation|TemplateType.Population|TemplateType.Protocol|TemplateType.Compound);
       }
 
       [Observation]
@@ -65,16 +63,16 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var configuration = IoC.Resolve<IPKSimConfiguration>();
+         var userSettings = IoC.Resolve<ICoreUserSettings>();
          var testFile = DomainHelperForSpecs.DataFilePathFor("TemplateDatabaseV5.5.mdb");
          _tmpFile = FileHelper.GenerateTemporaryFileName();
          FileHelper.Copy(testFile, _tmpFile);
-         configuration.TemplateSystemDatabasePath = _tmpFile;
+         userSettings.TemplateDatabasePath = _tmpFile;
       }
 
       protected override void Because()
       {
-         _allTemplates = sut.AllTemplatesFor(TemplateDatabaseType.System, TemplateType.PopulationAnalysisField);
+         _allTemplates = sut.AllTemplatesFor(TemplateDatabaseType.User, TemplateType.PopulationAnalysisField);
       }
 
       [Observation]

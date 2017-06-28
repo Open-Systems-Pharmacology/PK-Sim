@@ -139,7 +139,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
             userSettings.RelTol = CoreConstants.DEFAULT_REL_TOL;
 
 
-         userSettings.ActiveSkin = CoreConstants.DefaultSkin;
+         userSettings.ActiveSkin = CoreConstants.DEFAULT_SKIN;
       }
 
       public void Visit(SimpleProtocol simpleProtocol)

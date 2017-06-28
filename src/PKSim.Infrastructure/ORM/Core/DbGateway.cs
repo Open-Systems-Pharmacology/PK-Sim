@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ORM.Core
       {
          _modelDatabase = modelDatabase;
          _configuration = configuration;
-         _modelDatabase.Connect(_configuration.PKSimDb);
+         _modelDatabase.Connect(_configuration.PKSimDbPath);
       }
 
       public virtual DataTable ExecuteStatementForDataTable(string selectStatement)

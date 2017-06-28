@@ -14,7 +14,7 @@ namespace PKSim.Infrastructure.Serialization
 
    public class InvalidProjectFileException : PKSimException
    {
-      public InvalidProjectFileException() : base(PKSimConstants.Error.ProjectFileIsCorrupt(CoreConstants.ProductNameWithTrademark))
+      public InvalidProjectFileException() : base(PKSimConstants.Error.ProjectFileIsCorrupt(CoreConstants.PRODUCT_NAME_WITH_TRADEMARK))
       {
       }
    }

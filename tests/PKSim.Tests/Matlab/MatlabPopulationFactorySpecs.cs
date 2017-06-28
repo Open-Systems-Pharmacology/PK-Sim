@@ -16,7 +16,7 @@ namespace PKSim.Matlab
       public override void GlobalContext()
       {
          base.GlobalContext();
-         ApplicationStartup.Initialize(DomainHelperForSpecs.DimensionFilePath, DomainHelperForSpecs.DbFilePath, DomainHelperForSpecs.PKParametersFilePath);
+         ApplicationStartup.Initialize();
       }
 
       protected override void Context()

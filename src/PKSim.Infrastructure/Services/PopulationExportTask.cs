@@ -78,7 +78,7 @@ namespace PKSim.Infrastructure.Services
 
       private IReadOnlyList<string> getProjectMetaInfo(string description = null)
       {
-         var metaInfo = new List<string> {$"Project: {_workspace.Project.Name}", $"{CoreConstants.ProductName} version: {_configuration.FullVersion}"};
+         var metaInfo = new List<string> {$"Project: {_workspace.Project.Name}", $"{CoreConstants.PRODUCT_NAME} version: {_configuration.FullVersion}"};
          if (!string.IsNullOrEmpty(description))
             metaInfo.Add(description);
 

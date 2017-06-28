@@ -1,18 +1,21 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
+﻿using System;
 using FakeItEasy;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Exceptions;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Infrastructure.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Infrastructure
@@ -30,6 +33,8 @@ namespace PKSim.Infrastructure
       protected IProjectRetriever _projectRetriever;
       protected IObjectIdResetter _objectIdResetter;
       private IJournalRetriever _journalRetriever;
+      protected IApplicationSettings _applicationSettings;
+      protected IStartableProcessFactory _startableProcessFactory;
 
       protected override void Context()
       {
@@ -41,11 +46,13 @@ namespace PKSim.Infrastructure
          _dialogCreator = A.Fake<IDialogCreator>();
          _simulationPersistor = A.Fake<ISimulationPersistor>();
          _projectRetriever = A.Fake<IProjectRetriever>();
-         _objectIdResetter= A.Fake<IObjectIdResetter>();
-         _journalRetriever= A.Fake<IJournalRetriever>();
+         _objectIdResetter = A.Fake<IObjectIdResetter>();
+         _journalRetriever = A.Fake<IJournalRetriever>();
+         _applicationSettings = A.Fake<IApplicationSettings>();
+         _startableProcessFactory = A.Fake<IStartableProcessFactory>();
 
          sut = new MoBiExportTask(_buildConfigurationTask, _simulationMapper, _representationInfoRepository,
-            _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter,_journalRetriever);
+            _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory);
       }
    }
 
@@ -81,7 +88,7 @@ namespace PKSim.Infrastructure
          base.Context();
          _sim = A.Fake<Simulation>();
          _fileName = "toto";
-         _observedData1=new DataRepository();
+         _observedData1 = new DataRepository();
          A.CallTo(() => _sim.UsedObservedData).Returns(new[] {new UsedObservedData {Id = "OBS"}});
          A.CallTo(() => _sim.IsImported).Returns(false);
          A.CallTo(() => _simulationPersistor.Save(A<SimulationTransfer>._, _fileName))
@@ -112,6 +119,113 @@ namespace PKSim.Infrastructure
       public void should_have_resetted_the_id_of_the_simulation()
       {
          A.CallTo(() => _objectIdResetter.ResetIdFor(_simulationTransfer.Simulation)).MustHaveHappened();
+      }
+   }
+
+   public class When_exporting_a_simulation_to_MoBi_and_the_application_was_installed_using_the_setup : concern_for_MoBiExportTask
+   {
+      private Simulation _simulation;
+      private readonly string _moBiConfigPath = "MoBiConfigPath";
+      private Func<string, bool> _oldFileHelper;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _oldFileHelper = FileHelper.FileExists;
+         FileHelper.FileExists = s => s == _moBiConfigPath;
+      }
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<Simulation>();
+         A.CallTo(() => _configuration.MoBiPath).Returns(_moBiConfigPath);
+      }
+
+      protected override void Because()
+      {
+         sut.StartWith(_simulation);
+      }
+
+      [Observation]
+      public void should_start_mobi_with_the_simulation_file()
+      {
+         A.CallTo(() => _startableProcessFactory.CreateStartableProcess(_moBiConfigPath, A<string[]>._)).MustHaveHappened();
+      }
+
+      public override void GlobalCleanup()
+      {
+         base.GlobalCleanup();
+         FileHelper.FileExists = _oldFileHelper;
+      }
+   }
+
+   public class When_exporting_a_simulation_to_MoBi_and_the_application_was_installed_using_a_portable_setup_and_mobi_executable_path_can_be_found_on_system_using_the_application_settings : concern_for_MoBiExportTask
+   {
+      private Simulation _simulation;
+      private readonly string _moBiAppSettingsPath = "MoBiAppSettingsPath";
+      private Func<string, bool> _oldFileHelper;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _oldFileHelper = FileHelper.FileExists;
+         FileHelper.FileExists = s => s == _moBiAppSettingsPath;
+      }
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<Simulation>();
+         A.CallTo(() => _applicationSettings.MoBiPath).Returns(_moBiAppSettingsPath);
+      }
+
+      protected override void Because()
+      {
+         sut.StartWith(_simulation);
+      }
+
+      [Observation]
+      public void should_start_mobi_with_the_simulation_file()
+      {
+         A.CallTo(() => _startableProcessFactory.CreateStartableProcess(_moBiAppSettingsPath, A<string[]>._)).MustHaveHappened();
+      }
+
+      public override void GlobalCleanup()
+      {
+         base.GlobalCleanup();
+         FileHelper.FileExists = _oldFileHelper;
+      }
+   }
+
+   public class When_exporting_a_simulation_to_MoBi_and_mobi_is_not_found_on_the_system : concern_for_MoBiExportTask
+   {
+      private Simulation _simulation;
+      private Func<string, bool> _oldFileHelper;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _oldFileHelper = FileHelper.FileExists;
+         FileHelper.FileExists = s => false;
+      }
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<Simulation>();
+      }
+
+      [Observation]
+      public void should_thrown_an_exception()
+      {
+         The.Action(() => sut.StartWith(_simulation)).ShouldThrowAn<OSPSuiteException>();
+      }
+
+      public override void GlobalCleanup()
+      {
+         base.GlobalCleanup();
+         FileHelper.FileExists = _oldFileHelper;
       }
    }
 }
