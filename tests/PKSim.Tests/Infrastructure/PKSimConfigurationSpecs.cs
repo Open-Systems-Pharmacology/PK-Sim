@@ -50,7 +50,7 @@ namespace PKSim.Infrastructure
       {
          doWhilePreservingFileExists(() =>
          {
-            var appDataFile = Path.Combine(sut.ApplicationSettingsFolderPath, CoreConstants.PK_SIM_DB_FILE);
+            var appDataFile = Path.Combine(sut.AllUsersFolderPath, CoreConstants.PK_SIM_DB_FILE);
             FileHelper.FileExists = s => string.Equals(s, appDataFile);
             sut = new PKSimConfiguration();
             sut.PKSimDbPath.ShouldBeEqualTo(appDataFile);
@@ -74,7 +74,7 @@ namespace PKSim.Infrastructure
       {
          doWhilePreservingFileExists(() =>
          {
-            var appDataFile = Path.Combine(sut.ApplicationSettingsFolderPath, CoreConstants.PK_SIM_DB_FILE);
+            var appDataFile = Path.Combine(sut.AllUsersFolderPath, CoreConstants.PK_SIM_DB_FILE);
             FileHelper.FileExists = s => false;
             sut = new PKSimConfiguration();
             sut.PKSimDbPath.ShouldBeEqualTo(appDataFile);

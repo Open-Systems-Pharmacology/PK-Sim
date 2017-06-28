@@ -52,10 +52,9 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		))
 end
 
-task :create_portable_setup, [:product_version, :configuration] do |t, args|
+task :create_portable_setup, [:product_version, :configuration, :package_name] do |t, args|
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
-		'src/Data/Examples/*.pksim5',
 		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
 		'dimensions/*.xml',
@@ -65,6 +64,7 @@ task :create_portable_setup, [:product_version, :configuration] do |t, args|
 	]
 
 	setup_folders = [
+		'src/Data/**/*.pksim5',
 		'packages/**/OSPSuite.Presentation/**/*.{xml}',
 		'packages/**/OSPSuite.TeXReporting/**/*.{json,sty,tex}',
 	]
@@ -78,6 +78,7 @@ task :create_portable_setup, [:product_version, :configuration] do |t, args|
 		suite_name: suite_name,
 		setup_files: setup_files,
 		setup_folders: setup_folders,
+		package_name: args.package_name,
 		))
 end
 

@@ -138,7 +138,8 @@ DocProject/Help/html
 publish/
 
 setup/deploy/
-setup/portable-setup.zip
+setup/PK-Sim*
+setup/*.zip
 
 # Publish Web Output
 *.[Pp]ublish.xml

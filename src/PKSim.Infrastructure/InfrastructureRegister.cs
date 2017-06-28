@@ -85,7 +85,7 @@ namespace PKSim.Infrastructure
       {
          var log4NetLogFactory = new Log4NetLogFactory();
          log4NetLogFactory.Configure(new FileInfo(configuration.LogConfigurationFile));
-         log4NetLogFactory.UpdateLogFileLocation(configuration.ApplicationSettingsFolderPath);
+         log4NetLogFactory.UpdateLogFileLocation(configuration.AllUsersFolderPath);
          container.RegisterImplementationOf((ILogFactory) log4NetLogFactory);
       }
 
@@ -126,7 +126,7 @@ namespace PKSim.Infrastructure
          pKParameterLoader.Load(pkParameterRepository, pkSimConfiguration.PKParametersFilePath);
 
          if (registerSimModelSchema)
-            XMLSchemaCache.InitializeFromFile(pkSimConfiguration.SimModelSchemaPath);
+            XMLSchemaCache.InitializeFromFile(pkSimConfiguration.SimModelSchemaFilePath);
       }
 
       private void registerORMDependencies()

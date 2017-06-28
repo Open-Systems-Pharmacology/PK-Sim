@@ -28,14 +28,14 @@ namespace PKSim.Infrastructure.Services
          userSettings.SaveLayout();
 
          var xmlContent = _stringSerializer.Serialize(userSettings);
-         XmlHelper.SaveXmlContentToFile(xmlContent, _configuration.UserApplicationSettingsFilePath);
+         XmlHelper.SaveXmlContentToFile(xmlContent, _configuration.UserSettingsFilePath);
       }
 
       public IUserSettings Load()
       {
          try
          {
-            foreach (var filePath in _configuration.UserApplicationSettingsFilePaths.Where(FileHelper.FileExists))
+            foreach (var filePath in _configuration.UserSettingsFilePaths.Where(FileHelper.FileExists))
             {
                var xmlContent = XmlHelper.XmlContentFromFile(filePath);
                return _stringSerializer.Deserialize<IUserSettings>(xmlContent);

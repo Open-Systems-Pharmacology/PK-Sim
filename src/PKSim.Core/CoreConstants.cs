@@ -43,18 +43,10 @@ namespace PKSim.Core
       public static readonly IEnumerable<int> PRETERM_RANGE = Enumerable.Range(24, 17);
 
       public static readonly string APPLICATION_FOLDER_PATH = @"Open Systems Pharmacology\PK-Sim";
-      public static readonly string APP_DATA_CHART_LAYOUT_FOLDER_NAME = "ChartLayouts";
-      public static readonly string LOCAL_CHART_LAYOUT_FOLDER_NAME = "layouts";
-      public static readonly string APP_DATA_TEX_TEMPLATE_FOLDER_NAME = "TEXTemplates";
-      public static readonly string LOCAL_TEX_TEMPLATE_FOLDER_NAME = "Templates";
       public static readonly string TEMPLATE_SYSTEM_DATABASE = "PKSimTemplateDBSystem.mdb";
       public static readonly string TEMPLATE_USER_DATABASE = "PKSimTemplateDBUser.mdb";
       public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
       public static readonly string PK_SIM_DB_FILE = "PKSimDB.mdb";
-      public static readonly string SIM_MODEL_SCHEMA_FILE = "OSPSuite.SimModel.xsd";
-      public static readonly string DIMENSION_FILE = "OSPSuite.Dimensions.xml";
-      public static readonly string PK_PARAMETERS_FILE = "OSPSuite.PKParameters.xml";
-      public static readonly string LOG_4_NET_CONFIG_FILE = "log4net.config.xml";
       public static readonly string PRODUCT_NAME = "PK-Sim";
       public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
       public static readonly string ExpressionPassword = "rhcp!!06";
