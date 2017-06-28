@@ -435,7 +435,7 @@ namespace PKSim.Assets
          public const string ErrorWhileImportingPopulationAnalyses = "Some errors occured while importing the population analyses:";
          public const string DifferentVectorLengths = "Vectors have different length!";
          public const string DataRepositoryWithoutBaseGrid = "Data Repository does not contain BaseGrid";
-         public const string MoBiNotFound = "MoBi was not found on current system. Please make sure that MoBi was installed using the provided setup. Alternatively, you can where MoBi is installed on your system under Utilities -> Options -> Application";
+         public const string MoBiNotFound = "MoBi was not found on current system. Please make sure that MoBi was installed using the provided setup. Alternatively, you can specify where MoBi is installed on your system under Utilities -> Options -> Application";
          public const string CannotExportAnImportedSimulation = "An imported simulation (e.g. from MoBi or pkml Format) cannot be exported.";
          public const string AtLeastOneCompoundMustBeSelected = "At least one compound must be selected";
          public const string AtLeastOneFileRequiredToStartPopulationImport = "At least one file is required to perform the population import.";
