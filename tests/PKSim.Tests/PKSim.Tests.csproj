@@ -249,6 +249,7 @@
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
     <Compile Include="Core\PKValuesToPKAnalysisMapperSpecs.cs" />
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
+    <Compile Include="Core\SetRelativeExpressionFromNormalizedCommandSpecs.cs" />
     <Compile Include="Core\SimulationConfigurationValidatorSpecs.cs" />
     <Compile Include="Core\TablePartSpecs.cs" />
     <Compile Include="Core\TimeProfileAnalysisChartSpecs.cs" />

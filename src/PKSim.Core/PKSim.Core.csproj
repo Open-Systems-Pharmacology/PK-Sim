@@ -166,6 +166,7 @@
     <Compile Include="Commands\SetOntogenyInMoleculeCommand.cs" />
     <Compile Include="Commands\SetOntogenyInMoleculeForPopulationCommand.cs" />
     <Compile Include="Commands\SetParameterUnitStructureChangeCommand.cs" />
+    <Compile Include="Commands\SetRelativeExpressionFromNormalizedCommand.cs" />
     <Compile Include="Comparison\AdvancedParameterDiffBuilder.cs" />
     <Compile Include="Comparison\CompoundDiffBuilder.cs" />
     <Compile Include="Comparison\GenderRatioDiffBuilder.cs" />

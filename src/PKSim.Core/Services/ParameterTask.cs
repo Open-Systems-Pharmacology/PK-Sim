@@ -277,12 +277,20 @@ namespace PKSim.Core.Services
       public ICommand SetParameterValue(IParameter parameter, double value)
       {
          if (parameter.IsExpression())
-            return new SetRelativeExpressionInSimulationAndNormalizedCommand(parameter, value).Run(_executionContext);
+            return commandForRelativeExpressionParameter(parameter, value).Run(_executionContext);
 
          if (parameter.IsStructural())
             return SetParameterValueAsStructureChange(parameter, value);
 
          return setParameterValue(parameter, value, shouldChangeVersion: true);
+      }
+
+      private ICommand<IExecutionContext> commandForRelativeExpressionParameter(IParameter parameter, double value)
+      {
+         if (!parameter.IsExpressionNorm())
+            return new SetRelativeExpressionInSimulationAndNormalizedCommand(parameter, value);
+
+         return new SetRelativeExpressionFromNormalizedCommand(parameter, value);
       }
 
       public ICommand SetParameterValueDescription(IParameter parameter, string valueDescription)
