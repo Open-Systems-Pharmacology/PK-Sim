@@ -62,7 +62,7 @@ namespace PKSim.Presentation.DTO.Mappers
          return _parameterMapper.MapFrom(globalParameter);
       }
 
-      private IEnumerable<ExpressionContainerDTO> relativeExpressionsFrom(IEnumerable<IParameter> allParamters)
+      private IEnumerable<ExpressionContainerDTO> relativeExpressionsFrom(IReadOnlyList<IParameter> allParamters)
       {
          var expressionsParameters = _parameterTask.GroupExpressionParameters(allParamters);
          return expressionsParameters.KeyValues.Select(relativeExpression => expressionContainerFor(relativeExpression.Key, relativeExpression.Value))

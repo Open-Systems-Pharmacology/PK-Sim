@@ -1,10 +1,10 @@
 using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
@@ -24,7 +24,7 @@ namespace PKSim.Core.Commands
          Visible = false;
       }
 
-      public string ParameterId { get; private set; }
+      public string ParameterId { get; }
 
       protected override void ClearReferences()
       {
@@ -45,15 +45,10 @@ namespace PKSim.Core.Commands
       protected override void PerformExecuteWith(IExecutionContext context)
       {
          var parameterTask = context.Resolve<IParameterTask>();
-         var proteinContainer = _parameter.ParentContainer;
-         var rootContainer = _parameter.RootContainer;
-         var allParameters = rootContainer.GetAllChildren<IParameter>(x => string.Equals(x.GroupName, CoreConstants.Groups.RELATIVE_EXPRESSION))
-            .Where(x => x.BuildingBlockType == PKSimBuildingBlockType.Individual)
-            .Where(x => string.Equals(proteinContainer.Name, x.ParentContainer.Name))
-            .Where(x => x.Name.StartsWith(CoreConstants.Parameter.RelExp))
-            .Where(x => x.Formula.IsConstant());
 
-         var relNormExpressions = parameterTask.GroupExpressionParameters(allParameters);
+         var allRelativeExpressionParameters = _parameter.AllRelatedRelativeExpressionParameters();
+
+         var relNormExpressions = parameterTask.GroupExpressionParameters(allRelativeExpressionParameters);
 
          double max = relNormExpressions.Keys.Select(x => x.Value).Max();
 
