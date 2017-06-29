@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Mappers;
@@ -104,7 +105,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _simulation.DataRepository).Returns(new DataRepository());
          _excelFile = "tralala";
          A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, PKSimConstants.UI.DefaultResultsExportNameFor(_simulation.Name), null)).Returns(_excelFile);
-         A.CallTo(() => _dataRepositoryTask.ToDataTable(_simulation.DataRepository, A<Func<DataColumn, string>>.Ignored, false)).Returns(_dataTables);
+         A.CallTo(() => _dataRepositoryTask.ToDataTable(_simulation.DataRepository, A<Func<DataColumn, string>>._, A<Func<DataColumn, IDimension>>._, false, true)).Returns(_dataTables);
       }
 
       [Observation]
