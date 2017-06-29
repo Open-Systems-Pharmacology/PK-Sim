@@ -30,7 +30,8 @@ namespace PKSim.Infrastructure.Services
 
       public SimulationExportTask(IBuildingBlockTask buildingBlockTask, IDialogCreator dialogCreator, IDataRepositoryTask dataRepositoryTask,
          IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IStringSerializer stringSerializer,
-         IModelReportCreator modelReportCreator, ISimulationToModelCoreSimulationMapper coreSimulationMapper, ISimModelExporter simModelExporter, ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
+         IModelReportCreator modelReportCreator, ISimulationToModelCoreSimulationMapper coreSimulationMapper, 
+         ISimModelExporter simModelExporter, ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
       {
          _buildingBlockTask = buildingBlockTask;
          _dialogCreator = dialogCreator;
@@ -51,7 +52,7 @@ namespace PKSim.Infrastructure.Services
 
          return exportToFileAsync(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, PKSimConstants.UI.DefaultResultsExportNameFor(individualSimulation.Name), async fileName =>
          {
-            var dataTables = _dataRepositoryTask.ToDataTable(individualSimulation.DataRepository, x => _quantityDisplayPathMapper.DisplayPathAsStringFor(individualSimulation, x));
+            var dataTables = _dataRepositoryTask.ToDataTable(individualSimulation.DataRepository, x => _quantityDisplayPathMapper.DisplayPathAsStringFor(individualSimulation, x), x=>x.Dimension);
             await Task.Run(() => _dataRepositoryTask.ExportToExcel(dataTables, fileName, launchExcel: true));
          }, Constants.DirectoryKey.REPORT);
       }

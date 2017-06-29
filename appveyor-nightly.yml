@@ -43,7 +43,7 @@ before_build:
   - rake "update_go_license[ApplicationStartup.cs, %GO_DIAGRAM_KEY%]"
 
 after_build:
-  - rake "create_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%, C:/smartxls.zip, 2.6.2.9]"
+  - rake "create_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%, C:/smartxls.zip, 2.6.4.1]"
   - 7z a setup.zip %APPVEYOR_BUILD_FOLDER%\setup\deploy\*.msi
   - rake "create_portable_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%, pksim-portable-setup.zip]"
 
