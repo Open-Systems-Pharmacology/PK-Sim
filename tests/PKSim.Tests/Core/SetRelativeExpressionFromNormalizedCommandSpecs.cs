@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Commands;
 
 namespace PKSim.Core
@@ -12,35 +13,51 @@ namespace PKSim.Core
       protected IParameter _normalizedParameter;
       protected IParameter _relativeExpressionParameter;
       protected IExecutionContext _context;
+      private Parameter _maximumRelativeExpression;
 
       protected override void Context()
       {
          _context = A.Fake<IExecutionContext>();
          var container = new Container();
+         var root = new Container();
 
          _normalizedParameter = new Parameter
          {
             Id = "normalizedId",
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
             Name = CoreConstants.Parameter.RelExpNorm,
-            Value = 0.5
+            Formula = new ConstantFormula(0.5)
          };
-         
-         _newNormalizedValue = 4.0;
+
+         _newNormalizedValue = 0.1;
 
          _relativeExpressionParameter = new Parameter
          {
             Id = "relativeId",
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
             Name = CoreConstants.Parameter.RelExp,
-            Value = 1.0
+            Formula = new ConstantFormula(4.0)
+         };
+
+         _maximumRelativeExpression = new Parameter
+         {
+            Id = "maximumId",
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            Name = CoreConstants.Parameter.RelExp,
+            Formula = new ConstantFormula(8.0)
          };
 
          container.Add(_relativeExpressionParameter);
          container.Add(_normalizedParameter);
+         root.Add(_maximumRelativeExpression);
+         root.Add(container);
 
          A.CallTo(() => _context.Get<IParameter>(_relativeExpressionParameter.Id)).Returns(_relativeExpressionParameter);
          A.CallTo(() => _context.Get<IParameter>(_normalizedParameter.Id)).Returns(_normalizedParameter);
+         A.CallTo(() => _context.Get<IParameter>(_maximumRelativeExpression.Id)).Returns(_maximumRelativeExpression);
 
          sut = new SetRelativeExpressionFromNormalizedCommand(_normalizedParameter, _newNormalizedValue);
       }
@@ -56,7 +73,7 @@ namespace PKSim.Core
       [Observation]
       public void the_value_of_the_relative_expression_should_be_reversed()
       {
-         _relativeExpressionParameter.Value.ShouldBeEqualTo(1);
+         _relativeExpressionParameter.Value.ShouldBeEqualTo(4.0);
       }
    }
 
@@ -70,7 +87,7 @@ namespace PKSim.Core
       [Observation]
       public void the_relative_expression_should_be_scaled_with_the_normalized_value()
       {
-         _relativeExpressionParameter.Value.ShouldBeEqualTo(8.0);
+         _relativeExpressionParameter.Value.ShouldBeEqualTo(0.8);
       }
    }
 }

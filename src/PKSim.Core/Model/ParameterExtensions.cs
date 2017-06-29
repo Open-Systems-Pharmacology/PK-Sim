@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -11,7 +12,7 @@ namespace PKSim.Core.Model
       public static double GetPercentile(this IParameter parameter)
       {
          var distributedParameter = parameter as IDistributedParameter;
-         return distributedParameter == null ? 0 : distributedParameter.Percentile;
+         return distributedParameter?.Percentile ?? 0;
       }
 
       public static void SetPercentile(this IParameter parameter, double percentile)
@@ -30,7 +31,7 @@ namespace PKSim.Core.Model
             return true;
 
          return parameter.NameIsOneOf(CoreConstants.Parameter.RelExp, CoreConstants.Parameter.RelExpBloodCell,
-                                      CoreConstants.Parameter.RelExpPlasma, CoreConstants.Parameter.RelExpVascEndo);
+            CoreConstants.Parameter.RelExpPlasma, CoreConstants.Parameter.RelExpVascEndo);
       }
 
       public static bool IsIndividualMolecule(this IParameter parameter)
@@ -56,7 +57,7 @@ namespace PKSim.Core.Model
       {
          if (parameter == null) return false;
          return parameter.NameIsOneOf(CoreConstants.Parameter.RelExpNorm, CoreConstants.Parameter.RelExpBloodCellNorm,
-                                      CoreConstants.Parameter.RelExpPlasmaNorm, CoreConstants.Parameter.RelExpVascEndoNorm);
+            CoreConstants.Parameter.RelExpPlasmaNorm, CoreConstants.Parameter.RelExpVascEndoNorm);
       }
 
       public static bool IsOrganVolume(this IParameter parameter)
@@ -126,6 +127,18 @@ namespace PKSim.Core.Model
             return false;
 
          return parameter.CanBeVariedInPopulation && !parameter.IsChangedByCreateIndividual;
+      }
+
+      public static IEnumerable<IParameter> AllRelatedRelativeExpressions(this IParameter relativeExpressionParameter)
+      {
+         var proteinContainer = relativeExpressionParameter.ParentContainer;
+         var rootContainer = relativeExpressionParameter.RootContainer;
+         var allParameters = rootContainer.GetAllChildren<IParameter>(x => string.Equals(x.GroupName, CoreConstants.Groups.RELATIVE_EXPRESSION))
+            .Where(x => x.BuildingBlockType == PKSimBuildingBlockType.Individual)
+            .Where(x => string.Equals(proteinContainer.Name, x.ParentContainer.Name))
+            .Where(x => x.Name.StartsWith(CoreConstants.Parameter.RelExp))
+            .Where(x => x.Formula.IsConstant());
+         return allParameters;
       }
    }
 }

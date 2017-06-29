@@ -22,37 +22,28 @@ namespace PKSim.Core.Commands
          if (relativeExpressionParameter == null)
             return;
 
-         var relativeExpressionValue = getRelativeExpressionValue(_normalizedParameter, _newNormalizedValue, relativeExpressionParameter);
+         var relativeExpressionValue = getRelativeExpressionValue(_newNormalizedValue, relativeExpressionParameter);
 
-         Add(new SetRelativeExpressionCommand(relativeExpressionParameter, relativeExpressionValue));
+         var setRelativeExpressionCommand = new SetRelativeExpressionCommand(relativeExpressionParameter, relativeExpressionValue)
+         {
+            Visible = false
+         };
+
+         Add(setRelativeExpressionCommand);
          Add(new SetParameterValueCommand(_normalizedParameter, _newNormalizedValue));
 
          base.Execute(context);
       }
 
-      private double getRelativeExpressionValue(IParameter normalizedParameter, double newNormalizedValue, IParameter relativeExpressionParameter)
+      private double getRelativeExpressionValue(double newNormalizedValue, IParameter relativeExpressionParameter)
       {
-         return relativeExpressionParameter.Value * newNormalizedValue / normalizedParameter.Value;
+         return relativeExpressionParameter.AllRelatedRelativeExpressions().Where(x => !x.IsExpressionNorm()).Max(x => x.Value) * newNormalizedValue;
       }
 
       private IParameter getRelativeExpressionFrom(IParameter normalizedParameter)
       {
-         return normalizedParameter.ParentContainer.GetAllChildren<IParameter>().FirstOrDefault(isNonNormalizedRelativeExpression);
-      }
-
-      private static bool isNonNormalizedRelativeExpression(IParameter parameter)
-      {
-         return isRelativeExpression(parameter) && !parameter.IsExpressionNorm() && !isExpressionOut(parameter);
-      }
-
-      private static bool isExpressionOut(IParameter parameter)
-      {
-         return string.Equals(parameter.Name, CoreConstants.Parameter.RelExpOut);
-      }
-
-      private static bool isRelativeExpression(IParameter parameter)
-      {
-         return string.Equals(parameter.GroupName, CoreConstants.Groups.RELATIVE_EXPRESSION) && parameter.Name.StartsWith(CoreConstants.Parameter.RelExp);
+         var nonNormalizedParameterName = normalizedParameter.Name.Replace(CoreConstants.Parameter.NormSuffix, string.Empty);
+         return normalizedParameter.ParentContainer.Parameter(nonNormalizedParameterName);
       }
    }
 }
