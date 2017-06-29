@@ -25,7 +25,7 @@ install:
 
     Start-Process msiexec.exe -ArgumentList /i, C:\msxml.msi, /quiet, /qn, /norestart -Wait    
 - ps: >-
-    (new-object net.webclient).DownloadFile('https://ci.appveyor.com/api/projects/Open-Systems-Pharmacology-ci/smartxls/artifacts/OSPSuite.SmartXLS.2.6.2.9.nupkg', 'C:\smartxls.zip')
+    (new-object net.webclient).DownloadFile('https://ci.appveyor.com/api/projects/Open-Systems-Pharmacology-ci/smartxls/artifacts/OSPSuite.SmartXLS.2.6.4.1.nupkg', 'C:\smartxls.zip')
 
 
 before_build:
