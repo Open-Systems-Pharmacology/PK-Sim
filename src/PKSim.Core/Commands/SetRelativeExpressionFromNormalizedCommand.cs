@@ -37,7 +37,7 @@ namespace PKSim.Core.Commands
 
       private double getRelativeExpressionValue(double newNormalizedValue, IParameter relativeExpressionParameter)
       {
-         return relativeExpressionParameter.AllRelatedRelativeExpressions().Where(x => !x.IsExpressionNorm()).Max(x => x.Value) * newNormalizedValue;
+         return relativeExpressionParameter.AllRelatedRelativeExpressionParameters().Where(x => !x.IsExpressionNorm()).Max(x => x.Value) * newNormalizedValue;
       }
 
       private IParameter getRelativeExpressionFrom(IParameter normalizedParameter)

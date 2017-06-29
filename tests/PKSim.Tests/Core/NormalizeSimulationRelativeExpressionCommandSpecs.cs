@@ -44,7 +44,7 @@ namespace PKSim.Core
          _normParameters.Add(_relExp2,_relExpNorm2);
 
          _parameterTask =A.Fake<IParameterTask>();
-         A.CallTo(() => _parameterTask.GroupExpressionParameters(A<IEnumerable<IParameter>>.Ignored)).Returns(_normParameters);
+         A.CallTo(() => _parameterTask.GroupExpressionParameters(A<IReadOnlyList<IParameter>>.Ignored)).Returns(_normParameters);
          A.CallTo(() => _context.Resolve<IParameterTask>()).Returns(_parameterTask);
          sut = new NormalizeSimulationRelativeExpressionCommand(_relExp1,_context);
       }

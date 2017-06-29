@@ -129,16 +129,15 @@ namespace PKSim.Core.Model
          return parameter.CanBeVariedInPopulation && !parameter.IsChangedByCreateIndividual;
       }
 
-      public static IEnumerable<IParameter> AllRelatedRelativeExpressions(this IParameter relativeExpressionParameter)
+      public static IReadOnlyList<IParameter> AllRelatedRelativeExpressionParameters(this IParameter relativeExpressionParameter)
       {
-         var proteinContainer = relativeExpressionParameter.ParentContainer;
+         var moleculeContainer = relativeExpressionParameter.ParentContainer;
          var rootContainer = relativeExpressionParameter.RootContainer;
-         var allParameters = rootContainer.GetAllChildren<IParameter>(x => string.Equals(x.GroupName, CoreConstants.Groups.RELATIVE_EXPRESSION))
+         return rootContainer.GetAllChildren<IParameter>(x => string.Equals(x.GroupName, CoreConstants.Groups.RELATIVE_EXPRESSION))
             .Where(x => x.BuildingBlockType == PKSimBuildingBlockType.Individual)
-            .Where(x => string.Equals(proteinContainer.Name, x.ParentContainer.Name))
-            .Where(x => x.Name.StartsWith(CoreConstants.Parameter.RelExp))
-            .Where(x => x.Formula.IsConstant());
-         return allParameters;
+            .Where(x => moleculeContainer.IsNamed(x.ParentContainer.Name))
+            .Where(x => x.IsExpression())
+            .Where(x => x.Formula.IsConstant()).ToList();
       }
    }
 }

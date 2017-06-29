@@ -46,7 +46,7 @@ namespace PKSim.Core.Commands
       {
          var parameterTask = context.Resolve<IParameterTask>();
 
-         var allRelativeExpressionParameters = _parameter.AllRelatedRelativeExpressions();
+         var allRelativeExpressionParameters = _parameter.AllRelatedRelativeExpressionParameters();
 
          var relNormExpressions = parameterTask.GroupExpressionParameters(allRelativeExpressionParameters);
 
