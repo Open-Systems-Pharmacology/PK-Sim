@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Collections;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Services
 {
@@ -167,8 +168,8 @@ namespace PKSim.Core.Services
       ///    Assuming that the given parameters represents all expression parameters, returns a cache containing
       ///    as key an expression parameter, and as value the corresponding expression parameter norm
       /// </summary>
-      /// <param name="allExpressionsParameters">all expression parameters</param>
-      ICache<IParameter, IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionsParameters);
+      /// <param name="allExpressionParameters">all expression parameters</param>
+      ICache<IParameter, IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters);
 
       /// <summary>
       ///    Adds the parameter to the favorite, or remove the parameter from the favorite
@@ -254,7 +255,7 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterDisplayValueAsStructureChange(IParameter parameter, double valueToSetInGuiUnit)
       {
-         return  SetParameterValueAsStructureChange(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit));
+         return SetParameterValueAsStructureChange(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit));
       }
 
       public ICommand SetParameterValueAsStructureChange(IParameter parameter, double value)
@@ -371,18 +372,19 @@ namespace PKSim.Core.Services
          return new SetAdvancedParameterUnitCommand(parameter, displayUnit).Run(_executionContext);
       }
 
-      public ICache<IParameter, IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionsParameters)
+      public ICache<IParameter, IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters)
       {
-         var relativeExpressionsParameters = allExpressionsParameters.Where(x => !x.Name.Contains(CoreConstants.Parameter.NormSuffix))
+         var relativeExpressionsParameters = allExpressionParameters
+            .Where(x => !x.Name.Contains(CoreConstants.Parameter.NormSuffix))
             .Where(x => x.Name.StartsWith(CoreConstants.Parameter.RelExp));
 
          var results = new Cache<IParameter, IParameter>();
-         foreach (var parameter in relativeExpressionsParameters)
-         {
-            var normParameter = findNormParameterFor(parameter);
-            if (normParameter != null)
-               results.Add(parameter, normParameter);
-         }
+         var query = from parameter in relativeExpressionsParameters
+            let normParameter = findNormParameterFor(parameter)
+            where normParameter != null
+            select new {parameter, normParameter};
+
+         query.Each(x => results.Add(x.parameter, x.normParameter));
          return results;
       }
 

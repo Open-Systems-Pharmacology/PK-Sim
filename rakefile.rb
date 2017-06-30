@@ -26,7 +26,7 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 	setup_files	 = [
 		'packages/**/OSPSuite.Presentation/**/*.{wxs,xml}',
 		'packages/**/OSPSuite.TeXReporting/**/*.*',
-		'src/Data/Examples/*.*',
+		'examples/**/*.{wxs,pksim5}',
 		'src/PKSim.Assets/Resources/*.ico',
 		'src/Db/PKSimDB.mdb',
 		'src/Db/TemplateDB/PKSimTemplateDBSystem.mdb',
@@ -64,7 +64,7 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 	]
 
 	setup_folders = [
-		'src/Data/**/*.pksim5',
+		'examples/**/*.pksim5',
 		'packages/**/OSPSuite.Presentation/**/*.{xml}',
 		'packages/**/OSPSuite.TeXReporting/**/*.{json,sty,tex}',
 	]
