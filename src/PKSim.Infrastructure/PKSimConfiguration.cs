@@ -26,7 +26,7 @@ namespace PKSim.Infrastructure
       public string ApplicationSettingsFilePath { get; }
       public override string ApplicationFolderPathName { get; } = CoreConstants.APPLICATION_FOLDER_PATH;
 
-      public PKSimConfiguration():base()
+      public PKSimConfiguration()
       {
          createDefaultSettingsFolder();
          ApplicationSettingsFilePath = AllUsersFile("ApplicationSettings.xml");
