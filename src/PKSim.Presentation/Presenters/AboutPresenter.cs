@@ -30,7 +30,7 @@ namespace PKSim.Presentation.Presenters
 
       public override void Initialize()
       {
-         _view.Product = CoreConstants.ProductDisplayName;
+         _view.Product = _configuration.ProductDisplayName;
          _view.VersionInformation = $"Version {_configuration.FullVersion}";
          _view.Display();
       }

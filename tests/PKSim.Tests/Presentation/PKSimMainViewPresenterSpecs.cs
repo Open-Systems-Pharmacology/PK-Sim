@@ -27,7 +27,7 @@ using IContainer = System.ComponentModel.IContainer;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_MainViewPresenter : ContextSpecification<IPKSimMainViewPresenter>
+   public abstract class concern_for_PKSimMainViewPresenter : ContextSpecification<IPKSimMainViewPresenter>
    {
       protected IPKSimMainView _view;
       protected IContainer _container;
@@ -38,6 +38,7 @@ namespace PKSim.Presentation
       protected IProjectTask _projectTask;
       protected IVersionChecker _versionChecker;
       private ITabbedMdiChildViewContextMenuFactory _contextMenuFactory;
+      protected IPKSimConfiguration _configuration;
 
       protected override void Context()
       {
@@ -46,15 +47,17 @@ namespace PKSim.Presentation
          _exitCommand = A.Fake<IExitCommand>();
          _eventPublisher = A.Fake< IEventPublisher>();
          _userSettings = A.Fake<IUserSettings>();
-         _projectTask = A.Fake<IProjectTask>();
+         _projectTask = A.Fake<IProjectTask>(); 
          _versionChecker =A.Fake<IVersionChecker>();
          _contextMenuFactory = A.Fake<ITabbedMdiChildViewContextMenuFactory>();
-         sut = new PKSimMainViewPresenter(_view, _presenterRepository, _exitCommand, _eventPublisher,_userSettings,_projectTask,_versionChecker,_contextMenuFactory);
+         _configuration = A.Fake<IPKSimConfiguration>();
+         A.CallTo(() => _configuration.ProductDisplayName).Returns("AA");
+         sut = new PKSimMainViewPresenter(_view, _presenterRepository, _exitCommand, _eventPublisher,_userSettings,_projectTask,_versionChecker,_contextMenuFactory, _configuration);
       }
    }
 
    
-   public class When_the_main_view_presenter_is_told_to_initialize : concern_for_MainViewPresenter
+   public class When_the_main_view_presenter_is_told_to_initialize : concern_for_PKSimMainViewPresenter
    {
       private IMainViewItemPresenter _presenter1;
       private IMainViewItemPresenter _presenter2;
@@ -81,7 +84,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_set_the_caption_to_the_name_of_the_product()
       {
-          _view.Caption.ShouldBeEqualTo(CoreConstants.ProductDisplayName);
+          _view.Caption.ShouldBeEqualTo(_configuration.ProductDisplayName);
       }
 
       [Observation]
@@ -99,7 +102,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_the_main_view_presenter_is_notified_that_a_heavy_work_is_starting_and_the_hour_glass_should_be_forced_to_display: concern_for_MainViewPresenter
+   public class When_the_main_view_presenter_is_notified_that_a_heavy_work_is_starting_and_the_hour_glass_should_be_forced_to_display: concern_for_PKSimMainViewPresenter
    {
       protected override void Because()
       {
@@ -113,7 +116,7 @@ namespace PKSim.Presentation
       }
    }
    
-   public class When_the_main_view_presenter_is_notified_that_a_heavy_work_is_starting_and_the_hour_glass_should_not_be_forced_to_display : concern_for_MainViewPresenter
+   public class When_the_main_view_presenter_is_notified_that_a_heavy_work_is_starting_and_the_hour_glass_should_not_be_forced_to_display : concern_for_PKSimMainViewPresenter
    {
       protected override void Because()
       {
@@ -127,7 +130,7 @@ namespace PKSim.Presentation
       }
    }
    
-   public class When_the_main_view_presenter_is_notified_that_a_heavy_work_has_finished_and_the_hour_glass_was_forced_to_be_displayed : concern_for_MainViewPresenter
+   public class When_the_main_view_presenter_is_notified_that_a_heavy_work_has_finished_and_the_hour_glass_was_forced_to_be_displayed : concern_for_PKSimMainViewPresenter
    {
       protected override void Because()
       {
@@ -141,7 +144,7 @@ namespace PKSim.Presentation
       }
    }
    
-   public class When_the_main_view_presenter_is_notified_that_a_heavy_work_has_finished_and_the_hour_glass_was_not_forced_to_be_displayed : concern_for_MainViewPresenter
+   public class When_the_main_view_presenter_is_notified_that_a_heavy_work_has_finished_and_the_hour_glass_was_not_forced_to_be_displayed : concern_for_PKSimMainViewPresenter
    {
       protected override void Because()
       {
@@ -155,7 +158,7 @@ namespace PKSim.Presentation
       }
    }
    
-   public class When_the_main_view_is_closing : concern_for_MainViewPresenter
+   public class When_the_main_view_is_closing : concern_for_PKSimMainViewPresenter
    {
       private CancelEventArgs _cancelEventArgs;
 
@@ -187,7 +190,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_the_main_view_presenter_is_being_notified_that_one_child_view_is_being_activated : concern_for_MainViewPresenter
+   public class When_the_main_view_presenter_is_being_notified_that_one_child_view_is_being_activated : concern_for_PKSimMainViewPresenter
    {
       private IMdiChildView _viewToActivate;
       private ScreenActivatedEvent _event;
@@ -215,7 +218,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_the_main_view_presenter_is_being_notified_that_no_screen_is_active : concern_for_MainViewPresenter
+   public class When_the_main_view_presenter_is_being_notified_that_no_screen_is_active : concern_for_PKSimMainViewPresenter
    {
       protected override void Because()
       {
@@ -229,7 +232,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_retrieving_the_active_screen_when_a_screen_has_been_selected_by_the_user : concern_for_MainViewPresenter
+   public class When_retrieving_the_active_screen_when_a_screen_has_been_selected_by_the_user : concern_for_PKSimMainViewPresenter
    {
       private ISingleStartPresenter _result;
       private IMdiChildView _childView;
@@ -255,7 +258,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_retrieving_the_active_screen_when_a_no_screen_was_selected_by_the_user : concern_for_MainViewPresenter
+   public class When_retrieving_the_active_screen_when_a_no_screen_was_selected_by_the_user : concern_for_PKSimMainViewPresenter
    {
       private ISingleStartPresenter _result;
 
@@ -278,7 +281,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_the_main_view_presenter_is_asked_to_save_changes_when_no_active_presenter_is_available : concern_for_MainViewPresenter
+   public class When_the_main_view_presenter_is_asked_to_save_changes_when_no_active_presenter_is_available : concern_for_PKSimMainViewPresenter
    {
       private ISingleStartPresenter _activePresenter;
 
@@ -304,7 +307,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_the_main_view_presenter_is_asked_to_save_changes_when_an_active_presenter_is_available : concern_for_MainViewPresenter
+   public class When_the_main_view_presenter_is_asked_to_save_changes_when_an_active_presenter_is_available : concern_for_PKSimMainViewPresenter
    {
       protected override void Context()
       {
@@ -325,7 +328,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_the_main_view_presenter_is_running_some_defined_startup_options : concern_for_MainViewPresenter
+   public class When_the_main_view_presenter_is_running_some_defined_startup_options : concern_for_PKSimMainViewPresenter
    {
       private StartOptions _startOptions;
 
@@ -348,7 +351,7 @@ namespace PKSim.Presentation
       }
    }
    
-   public class When_starting_the_application_and_the_user_wants_to_be_notified_of_any_version_update : concern_for_MainViewPresenter
+   public class When_starting_the_application_and_the_user_wants_to_be_notified_of_any_version_update : concern_for_PKSimMainViewPresenter
    {
       protected override void Context()
       {
@@ -368,7 +371,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_starting_the_application_and_the_user_does_not_want_to_be_notified_of_any_version_update : concern_for_MainViewPresenter
+   public class When_starting_the_application_and_the_user_does_not_want_to_be_notified_of_any_version_update : concern_for_PKSimMainViewPresenter
    {
       protected override void Context()
       {
@@ -388,7 +391,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_being_notified_that_a_new_version_is_available_and_the_user_wants_to_be_be_notified_for_that_update: concern_for_MainViewPresenter
+   public class When_being_notified_that_a_new_version_is_available_and_the_user_wants_to_be_be_notified_for_that_update: concern_for_PKSimMainViewPresenter
    {
       private string _newVersion;
 
@@ -417,7 +420,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_being_notified_that_a_new_version_is_available_and_the_user_does_not_want_to_be_be_notified_for_that_update : concern_for_MainViewPresenter
+   public class When_being_notified_that_a_new_version_is_available_and_the_user_does_not_want_to_be_be_notified_for_that_update : concern_for_PKSimMainViewPresenter
    {
       private string _newVersion;
 
@@ -444,7 +447,7 @@ namespace PKSim.Presentation
    }
 
    
-   public class When_being_notified_that_a_new_version_is_available_and_the_user_does_not_want_to_be_be_notified_for_an_older_update : concern_for_MainViewPresenter
+   public class When_being_notified_that_a_new_version_is_available_and_the_user_does_not_want_to_be_be_notified_for_an_older_update : concern_for_PKSimMainViewPresenter
    {
       private string _newVersion;
 

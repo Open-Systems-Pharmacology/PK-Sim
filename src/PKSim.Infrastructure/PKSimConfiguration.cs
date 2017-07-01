@@ -26,7 +26,7 @@ namespace PKSim.Infrastructure
       public string ApplicationSettingsFilePath { get; }
       public override string ApplicationFolderPathName { get; } = CoreConstants.APPLICATION_FOLDER_PATH;
 
-      public PKSimConfiguration()
+      public PKSimConfiguration():base()
       {
          createDefaultSettingsFolder();
          ApplicationSettingsFilePath = AllUsersFile("ApplicationSettings.xml");
@@ -45,7 +45,6 @@ namespace PKSim.Infrastructure
             DirectoryHelper.CreateDirectory(AllUsersFolderPath);
       }
 
-   
       public string MoBiPath
       {
          get

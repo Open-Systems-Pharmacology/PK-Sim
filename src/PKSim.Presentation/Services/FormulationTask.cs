@@ -70,7 +70,7 @@ namespace PKSim.Presentation.Services
       {
          var dataImporterSettings = new DataImporterSettings
          {
-            Caption = string.Format("{0} - {1}", CoreConstants.ProductDisplayName, PKSimConstants.UI.ImportFormulation),
+            Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportFormulation}",
             Icon = ApplicationIcons.Formulation
          };
 

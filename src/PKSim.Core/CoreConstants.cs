@@ -66,7 +66,6 @@ namespace PKSim.Core
       //not as readonly as the text will be updated with the current version
       public static string ProductDisplayName = PRODUCT_NAME_WITH_TRADEMARK;
 
-
       public static class Filter
       {
          public static readonly string PROJECT_EXTENSION = ".pksim5";
@@ -77,8 +76,8 @@ namespace PKSim.Core
          public static readonly string EXPRESSION_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Expression Database", MDB_EXTENSION);
          public static readonly string TEMPLATE_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Template Database", MDB_EXTENSION);
          public static readonly string MOBI_FILE_FILTER = Constants.Filter.FileFilter("MoBi", ".exe");
-         public static readonly string LOAD_PROJECT_FILTER =  string.Format("{0} Project (*{1};*{2})|*{1};*{2}", ProductDisplayName, PROJECT_EXTENSION, PROJECT_OLD_EXTENSION);
-         public static readonly string SAVE_PROJECT_FILTER = Constants.Filter.FileFilter($"{ProductDisplayName} Project", PROJECT_EXTENSION);
+         public static readonly string LOAD_PROJECT_FILTER =  string.Format("{0} Project (*{1};*{2})|*{1};*{2}", PRODUCT_NAME_WITH_TRADEMARK, PROJECT_EXTENSION, PROJECT_OLD_EXTENSION);
+         public static readonly string SAVE_PROJECT_FILTER = Constants.Filter.FileFilter($"{PRODUCT_NAME_WITH_TRADEMARK} Project", PROJECT_EXTENSION);
       }
 
       public static string CompositeNameFor(params string[] names)
