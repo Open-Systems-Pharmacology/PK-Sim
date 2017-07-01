@@ -94,8 +94,7 @@ namespace PKSim.Infrastructure
          container.Register<IPKSimConfiguration, IApplicationConfiguration, PKSimConfiguration>(LifeStyle.Singleton);
 
          var configuration = container.Resolve<IPKSimConfiguration>();
-         CoreConstants.ProductDisplayName = $"{CoreConstants.PRODUCT_NAME_WITH_TRADEMARK} {configuration.MajorVersion}";
-
+         CoreConstants.ProductDisplayName = configuration.ProductDisplayName;
          registerLoggerIn(container, configuration);
       }
 

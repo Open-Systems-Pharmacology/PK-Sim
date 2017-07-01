@@ -45,7 +45,6 @@ namespace PKSim.Infrastructure
             DirectoryHelper.CreateDirectory(AllUsersFolderPath);
       }
 
-   
       public string MoBiPath
       {
          get

@@ -33,11 +33,12 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IUserSettings _userSettings;
       private readonly IProjectTask _projectTask;
       private readonly IVersionChecker _versionChecker;
+      private readonly IPKSimConfiguration _configuration;
       public StartOptions StartOptions { get; set; }
 
       public PKSimMainViewPresenter(IPKSimMainView mainView, IRepository<IMainViewItemPresenter> presenterRepository,
          IExitCommand exitCommand, IEventPublisher eventPublisher, IUserSettings userSettings,
-         IProjectTask projectTask, IVersionChecker versionChecker, ITabbedMdiChildViewContextMenuFactory contextMenuFactory)
+         IProjectTask projectTask, IVersionChecker versionChecker, ITabbedMdiChildViewContextMenuFactory contextMenuFactory, IPKSimConfiguration configuration)
          : base(mainView, eventPublisher, contextMenuFactory)
       {
          _presenterRepository = presenterRepository;
@@ -45,12 +46,13 @@ namespace PKSim.Presentation.Presenters.Main
          _userSettings = userSettings;
          _projectTask = projectTask;
          _versionChecker = versionChecker;
+         _configuration = configuration;
       }
 
       public override void Initialize()
       {
          View.Initialize();
-         View.Caption = CoreConstants.ProductDisplayName;
+         View.Caption = _configuration.ProductDisplayName;
 
          //intialize all sub presenter defined in the user interface
          _presenterRepository.All().Each(presenter => presenter.Initialize());
