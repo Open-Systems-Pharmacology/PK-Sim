@@ -697,7 +697,7 @@
     <Compile Include="IntegrationTests\FlatContainerRepositorySpecs.cs" />
     <Compile Include="Infrastructure\FlatContainerToFormulationMapperSpecs.cs" />
     <Compile Include="IntegrationTests\FlatParameterRateRepositorySpecs.cs" />
-    <Compile Include="IntegrationTests\FlatSpeciesContainerRepositorySpecs.cs" />
+    <Compile Include="IntegrationTests\FlatPopulationContainerRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\FormulationRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\GenderRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\GroupRepositoryIntegrationTests.cs" />

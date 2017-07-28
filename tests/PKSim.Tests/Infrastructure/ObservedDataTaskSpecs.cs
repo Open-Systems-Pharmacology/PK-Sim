@@ -16,6 +16,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Exceptions;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure
@@ -195,15 +196,10 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _project.AllUsersOfObservedData).Returns(new []{_observedDataUser});
       }
 
-      protected override void Because()
-      {
-         sut.Delete(new List<DataRepository> { _dataRepository });
-      }
-
       [Observation]
       public void the_observed_data_should_not_be_removed_from_the_project()
       {
-         A.CallTo(() => _project.RemoveObservedData(_dataRepository)).MustNotHaveHappened();
+         The.Action(() => sut.Delete(new List<DataRepository> { _dataRepository })).ShouldThrowAn<OSPSuiteException>();
       }
    }
 

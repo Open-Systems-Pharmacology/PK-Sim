@@ -437,7 +437,7 @@
     <Compile Include="InfrastructureRegister.cs" />
     <Compile Include="ORM\FlatObjects\FlatContainer.cs" />
     <Compile Include="ORM\FlatObjects\FlatContainerId.cs" />
-    <Compile Include="ORM\FlatObjects\FlatSpeciesContainer.cs" />
+    <Compile Include="ORM\FlatObjects\FlatPopulationContainer.cs" />
     <Compile Include="ORM\FlatObjects\FlatModel.cs" />
     <Compile Include="ORM\FlatObjects\FlatModelCalculationMethod.cs" />
     <Compile Include="ORM\FlatObjects\FlatModelContainer.cs" />
@@ -669,7 +669,7 @@
     <Compile Include="Serialization\ORM\Mappers\ProjectMetaDataToProjectMapper.cs" />
     <Compile Include="Serialization\ORM\MetaData\IndividualMetaData.cs" />
     <Compile Include="Serialization\ORM\MetaData\ProjectMetaData.cs" />
-    <Compile Include="ORM\Repositories\FlatSpeciesContainerRepository.cs" />
+    <Compile Include="ORM\Repositories\FlatPopulationContainerRepository.cs" />
     <Compile Include="ORM\Repositories\GenderRepository.cs" />
     <Compile Include="Serialization\ORM\Queries\BuildingBlockMetaDataContentQuery.cs" />
     <Compile Include="ORM\Repositories\FlatParameterValueVersionRepository.cs" />

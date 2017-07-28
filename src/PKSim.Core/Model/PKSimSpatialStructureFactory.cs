@@ -105,7 +105,7 @@ namespace PKSim.Core.Model
       {
          _parameterContainerTask.AddModelParametersTo(container, originData, modelProperties, formulaCache);
 
-         foreach (var subContainer in _modelContainerQuery.SubContainersFor(originData.Species, modelProperties.ModelConfiguration, container))
+         foreach (var subContainer in _modelContainerQuery.SubContainersFor(originData.SpeciesPopulation, modelProperties.ModelConfiguration, container))
          {
             container.Add(subContainer);
             addModelStructureTo(subContainer, originData, modelProperties, formulaCache);
