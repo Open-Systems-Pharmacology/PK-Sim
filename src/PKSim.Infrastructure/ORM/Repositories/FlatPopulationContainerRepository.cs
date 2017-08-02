@@ -24,19 +24,19 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       protected override void PerformPostStartProcessing()
       {
-         foreach (var flatSpeciesContainers in AllElements().GroupBy(x => x.Population))
+         foreach (var flatPopulationContainers in AllElements().GroupBy(x => x.Population))
          {
-            _allContainerCache.Add(flatSpeciesContainers.Key, cacheFor(flatSpeciesContainers));
+            _allContainerCache.Add(flatPopulationContainers.Key, cacheFor(flatPopulationContainers));
          }
       }
 
-      private Cache<int, IEnumerable<FlatPopulationContainer>> cacheFor(IEnumerable<FlatPopulationContainer> flatSpeciesContainers)
+      private Cache<int, IEnumerable<FlatPopulationContainer>> cacheFor(IEnumerable<FlatPopulationContainer> flatPopulationContainers)
       {
          var cache = new Cache<int, IEnumerable<FlatPopulationContainer>>(x => Enumerable.Empty<FlatPopulationContainer>());
 
-         foreach (var flatSpeciesContainer in flatSpeciesContainers.GroupBy(x => x.ParentId))
+         foreach (var flatPopulationContainersByParent in flatPopulationContainers.GroupBy(x => x.ParentId))
          {
-            cache.Add(flatSpeciesContainer.Key, flatSpeciesContainer);
+            cache.Add(flatPopulationContainersByParent.Key, flatPopulationContainersByParent);
          }
          return cache;
       }
