@@ -29,12 +29,9 @@ namespace PKSim.Infrastructure.ORM.Mappers
          return MapFrom(_flatContainerRepository.ContainerFrom(flatContainerId.Id));
       }
 
-      public bool IsSatisfiedBy(PKSimContainerType item)
-      {
-         return item == PKSimContainerType.Formulation;
-      }
+      public bool IsSatisfiedBy(PKSimContainerType containerType) => containerType == PKSimContainerType.Formulation;
 
-      public Formulation MapFrom(FlatContainer flatContainer)
+       public Formulation MapFrom(FlatContainer flatContainer)
       {
          var formulation = _objectBaseFactory.Create<Formulation>();
          formulation.Root = _objectBaseFactory.Create<IRootContainer>();

@@ -37,7 +37,7 @@ namespace PKSim.Core.Mappers
             populationSettings.AddGenderRatio(new GenderRatio {Gender = gender, Ratio = 100 / genderCount});
          }
 
-         if (population.IsAgeDependent)
+         if (individual.IsAgeDependent)
          {
             var ageParameter = individual.Organism.Parameter(CoreConstants.Parameter.AGE);
             populationSettings.AddParameterRange(constrainedParameterRangeFrom(ageParameter));

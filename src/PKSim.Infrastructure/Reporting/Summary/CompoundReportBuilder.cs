@@ -20,7 +20,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
 
          reportPart.AddPart(_reportGenerator.ReportFor(compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY)));
          reportPart.AddToContent(_reportGenerator.ReportFor(compound.Parameter(Constants.Parameters.MOL_WEIGHT)));
-         reportPart.AddToContent(_reportGenerator.ReportFor(compound.Parameter(CoreConstants.Parameter.MolWeightEff)));
+         reportPart.AddToContent(_reportGenerator.ReportFor(compound.Parameter(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT)));
          reportPart.AddToContent(_reportGenerator.ReportFor(compound.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE)));
 
          if(compound.IsNeutral)

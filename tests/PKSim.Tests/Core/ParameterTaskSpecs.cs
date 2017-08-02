@@ -53,7 +53,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.RelExp
+            Name = CoreConstants.Parameter.REL_EXP
          };
 
          _normalizedExpressionParameter = new Parameter
@@ -61,7 +61,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.RelExpNorm
+            Name = CoreConstants.Parameter.REL_EXP_NORM
          };
 
          var container = new Container { _relativeExpressionParameter, _normalizedExpressionParameter };
@@ -93,7 +93,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.RelExp
+            Name = CoreConstants.Parameter.REL_EXP
          };
 
          _normalizedExpressionParameter = new Parameter
@@ -101,7 +101,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.RelExpNorm
+            Name = CoreConstants.Parameter.REL_EXP_NORM
          };
 
          var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
@@ -498,14 +498,14 @@ namespace PKSim.Core
          var kidney = new Container().WithName("Kidney").WithParentContainer(organism);
          var liver = new Container().WithName("Liver").WithParentContainer(organism);
          var bone = new Container().WithName("Bone").WithParentContainer(organism);
-         _relExpPlasma = new PKSimParameter().WithName(CoreConstants.Parameter.RelExpPlasma).WithParentContainer(organism);
-         _relExpPlasmaNorm = new PKSimParameter().WithName(CoreConstants.Parameter.RelExpPlasmaNorm).WithParentContainer(organism);
-         _relExpLiver = new PKSimParameter().WithName(CoreConstants.Parameter.RelExp).WithParentContainer(liver);
-         _relExpLiverNorm = new PKSimParameter().WithName(CoreConstants.Parameter.RelExpNorm).WithParentContainer(liver);
-         _relExpKidney = new PKSimParameter().WithName(CoreConstants.Parameter.RelExp).WithParentContainer(kidney);
-         _relExpKidneyNorm = new PKSimParameter().WithName(CoreConstants.Parameter.RelExpNorm).WithParentContainer(kidney);
+         _relExpPlasma = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_PLASMA).WithParentContainer(organism);
+         _relExpPlasmaNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_PLASMA_NORM).WithParentContainer(organism);
+         _relExpLiver = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(liver);
+         _relExpLiverNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_NORM).WithParentContainer(liver);
+         _relExpKidney = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(kidney);
+         _relExpKidneyNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_NORM).WithParentContainer(kidney);
          _anotherParameter = new PKSimParameter().WithName("not_a_rel_exp").WithParentContainer(kidney);
-         _relExpWithoutNorm = new PKSimParameter().WithName(CoreConstants.Parameter.RelExp).WithParentContainer(bone);
+         _relExpWithoutNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(bone);
       }
 
       protected override void Because()

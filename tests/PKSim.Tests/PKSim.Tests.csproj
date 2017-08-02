@@ -248,6 +248,7 @@
     <Compile Include="Core\TimeProfileAnalysisChartSpecs.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
     <Compile Include="Infrastructure\SimulationComparisonContentLoaderSpecs.cs" />
+    <Compile Include="IntegrationTests\FlatOrganTypeRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\JacobianMatrixXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationConfigurationClonerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationResidualVsTimeChartXmlSerializerSpecs.cs" />

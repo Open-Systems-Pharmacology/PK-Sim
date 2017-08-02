@@ -57,9 +57,8 @@ namespace PKSim.Core.Model
          return OriginData.SpeciesPopulation.Genders;
       }
 
-      /// <summary>
-      ///    returns true if the underlying species is human otherwise false
-      /// </summary>
+      public virtual bool IsAgeDependent => OriginData.SpeciesPopulation.IsAgeDependent;
+
       public virtual bool IsHuman => Species.IsHuman;
 
       public virtual bool IsPreterm

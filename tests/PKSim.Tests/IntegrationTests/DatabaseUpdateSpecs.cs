@@ -39,6 +39,16 @@ namespace PKSim.IntegrationTests
          bsaParameter.CanBeVaried.ShouldBeTrue();
          bsaParameter.CanBeVariedInPopulation.ShouldBeFalse();
       }
+
+      [Observation]
+      public void only_the_species_human_should_have_the_flag_is_human()
+      {
+         var flatSpeciesRepository = IoC.Resolve<IFlatSpeciesRepository>();
+         flatSpeciesRepository.All().Each(species =>
+         {
+            species.IsHuman.ShouldBeEqualTo(string.Equals(species.Id, CoreConstants.Species.Human));
+         });
+      }
    }
 
    public class When_checking_the_changes_in_the_database_for_version_7_1_0 : concern_for_DatabaseUpdate
@@ -70,7 +80,7 @@ namespace PKSim.IntegrationTests
 
          var bwParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.MEAN_WEIGHT)).ToList();
          var heightParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.MEAN_HEIGHT)).ToList();
-         var volumeParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.VOLUME)).ToList();
+         var volumeParams = nhanesParams.Where(p => p.ParameterName.Equals(Constants.Parameters.VOLUME)).ToList();
 
          //check number of new bw/height/volume parameters
          (bwParams.Count + heightParams.Count + volumeParams.Count).ShouldBeEqualTo(1420);

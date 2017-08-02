@@ -81,12 +81,12 @@ namespace PKSim.Core.Model
 
       public IParameter RelativeExpressionParameter
       {
-         get { return this.Parameter(CoreConstants.Parameter.RelExp); }
+         get { return this.Parameter(CoreConstants.Parameter.REL_EXP); }
       }
 
       public IParameter RelativeExpressionNormParameter
       {
-         get { return this.Parameter(CoreConstants.Parameter.RelExpNorm); }
+         get { return this.Parameter(CoreConstants.Parameter.REL_EXP_NORM); }
       }
 
       public IObjectPath CompartmentPath(string compartmentName)

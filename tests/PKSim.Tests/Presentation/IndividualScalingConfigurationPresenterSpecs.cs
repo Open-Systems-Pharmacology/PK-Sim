@@ -60,7 +60,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         sut.EditIndividual(A.Fake<PKSim.Core.Model.Individual>());
+         sut.EditIndividual(A.Fake<Individual>());
       }
 
       [Observation]
@@ -73,8 +73,8 @@ namespace PKSim.Presentation
    
    public class When_configuring_the_scaling_from_one_individual_to_another : concern_for_IndividualScalingConfigurationPresenter
    {
-      protected PKSim.Core.Model.Individual _targetIndividual;
-      protected PKSim.Core.Model.Individual _sourceIndividual;
+      protected Individual _targetIndividual;
+      protected Individual _sourceIndividual;
       protected ParameterScaling _parameterScaling1;
       protected ParameterScaling _parameterScaling2;
       protected ParameterScalingDTO _parameterScalingDTO1;
@@ -83,8 +83,8 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _targetIndividual = A.Fake<PKSim.Core.Model.Individual>();
-         _sourceIndividual = A.Fake<PKSim.Core.Model.Individual>();
+         _targetIndividual = A.Fake<Individual>();
+         _sourceIndividual = A.Fake<Individual>();
          _parameterScaling1 = A.Fake<ParameterScaling>();
          _parameterScaling2 = A.Fake<ParameterScaling>();
          _parameterScalingDTO1 = new ParameterScalingDTO(_parameterScaling1);
@@ -183,16 +183,16 @@ namespace PKSim.Presentation
    
    public class When_performing_the_actual_scaling_between_a_source_and_a_target_individual : concern_for_IndividualScalingConfigurationPresenter
    {
-      private PKSim.Core.Model.Individual _targetIndividual;
-      private PKSim.Core.Model.Individual _sourceIndividual;
+      private Individual _targetIndividual;
+      private Individual _sourceIndividual;
       private List<IPKSimCommand> _scalingCommand;
       private IPKSimCommand _subCommand;
 
       protected override void Context()
       {
          base.Context();
-         _targetIndividual = A.Fake<PKSim.Core.Model.Individual>();
-         _sourceIndividual = A.Fake<PKSim.Core.Model.Individual>();
+         _targetIndividual = A.Fake<Individual>();
+         _sourceIndividual = A.Fake<Individual>();
          _subCommand =A.Fake<IPKSimCommand>();
          _scalingCommand = new List<IPKSimCommand> {_subCommand};
          A.CallTo(() => _individualScalingTask.AllParameterScalingsFrom(_sourceIndividual, _targetIndividual)).Returns(new List<ParameterScaling>());
@@ -227,8 +227,8 @@ namespace PKSim.Presentation
 
    public class When_performing_a_scaling_for_parameters_that_are_not_organ_volumes : concern_for_IndividualScalingConfigurationPresenter
    {
-      protected PKSim.Core.Model.Individual _targetIndividual;
-      protected PKSim.Core.Model.Individual _sourceIndividual;
+      protected Individual _targetIndividual;
+      protected Individual _sourceIndividual;
       protected ParameterScaling _parameterScaling1;
       protected ParameterScaling _parameterScaling2;
       protected ParameterScalingDTO _parameterScalingDTO1;
@@ -237,8 +237,8 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _targetIndividual = A.Fake<PKSim.Core.Model.Individual>();
-         _sourceIndividual = A.Fake<PKSim.Core.Model.Individual>();
+         _targetIndividual = A.Fake<Individual>();
+         _sourceIndividual = A.Fake<Individual>();
          _parameterScaling1 = A.Fake<ParameterScaling>();
          _parameterScaling2 = A.Fake<ParameterScaling>();
          var p1 = A.Fake<IParameter>().WithName("P1").WithParentContainer(A.Fake<IContainer>());
@@ -269,8 +269,8 @@ namespace PKSim.Presentation
 
    public class When_performing_a_scaling_for_parameters_that_contain_at_least_one_organ_volume: concern_for_IndividualScalingConfigurationPresenter
    {
-      protected PKSim.Core.Model.Individual _targetIndividual;
-      protected PKSim.Core.Model.Individual _sourceIndividual;
+      protected Individual _targetIndividual;
+      protected Individual _sourceIndividual;
       protected ParameterScaling _parameterScaling1;
       protected ParameterScaling _parameterScaling2;
       protected ParameterScalingDTO _parameterScalingDTO1;
@@ -279,11 +279,11 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _targetIndividual = A.Fake<PKSim.Core.Model.Individual>();
-         _sourceIndividual = A.Fake<PKSim.Core.Model.Individual>();
+         _targetIndividual = A.Fake<Individual>();
+         _sourceIndividual = A.Fake<Individual>();
          _parameterScaling1 = A.Fake<ParameterScaling>();
          _parameterScaling2 = A.Fake<ParameterScaling>();
-         var volume =new PKSimParameter().WithName(CoreConstants.Parameter.VOLUME).WithParentContainer(new Organ());
+         var volume =new PKSimParameter().WithName(Constants.Parameters.VOLUME).WithParentContainer(new Organ());
          var p2 = new PKSimParameter().WithName("P2").WithParentContainer(new Container());
 
          A.CallTo(() => _individualScalingTask.AllParameterScalingsFrom(_sourceIndividual, _targetIndividual)).Returns(new[] { _parameterScaling1, _parameterScaling2 });

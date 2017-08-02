@@ -189,7 +189,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
                new SubSubSection(molWeight),
                new ParameterList(molWeight,
                                  compound.Parameter(Constants.Parameters.MOL_WEIGHT),
-                                 compound.Parameter(CoreConstants.Parameter.MolWeightEff),
+                                 compound.Parameter(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT),
                                  compound.Parameter(CoreConstants.Parameter.I),
                                  compound.Parameter(CoreConstants.Parameter.F),
                                  compound.Parameter(CoreConstants.Parameter.CL),
@@ -279,7 +279,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       private IEnumerable<object> lipophilicyAlternatives(Compound compound)
       {
-         return simpleAlternatives(compound, CoreConstants.Groups.COMPOUND_LIPOPHILICITY, CoreConstants.Parameter.Lipophilicity, PKSimConstants.UI.Lipophilicity, PKSimConstants.Reporting.LipophilicityDescription);
+         return simpleAlternatives(compound, CoreConstants.Groups.COMPOUND_LIPOPHILICITY, CoreConstants.Parameter.LIPOPHILICITY, PKSimConstants.UI.Lipophilicity, PKSimConstants.Reporting.LipophilicityDescription);
       }
 
       private IEnumerable<object> calculatedAlternatives(Compound compound, string groupName, string columnName, string parameterName, string description, Func<ICompoundAlternativeTask, Func<Compound, IEnumerable<IParameter>>> calculatedParameters)

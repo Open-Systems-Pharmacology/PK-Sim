@@ -51,7 +51,7 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_loading_a_simulation_that_does_not_contain_any_license_information : concern_for_SimulationTransferLoader
+   public class When_loading_a_simulation : concern_for_SimulationTransferLoader
    {
       [Observation]
       public void should_simply_return_the_simulation()

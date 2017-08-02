@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Core.Model;
-using PKSim.Core.Reporting;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Maths.Optimization.NelderMead;
 using OSPSuite.Core.Maths.Random;
+using PKSim.Core.Model;
+using PKSim.Core.Reporting;
 
 namespace PKSim.Core.Services
 {
@@ -33,15 +33,12 @@ namespace PKSim.Core.Services
 
    public class CreateIndividualAlgorithm : ICreateIndividualAlgorithm
    {
+      private const double COVERGENCE_TOLERANCE = 1e-6;
+      private const int MAX_NUMBER_OF_OPTIMIZATION_ITERATIONS = 10000;
+      private const int MAX_CREATION_TRIES = 100;
+
       private readonly IContainerTask _containerTask;
       private readonly IReportGenerator _reportGenerator;
-
-      public CreateIndividualAlgorithm(IContainerTask containerTask, IReportGenerator reportGenerator)
-      {
-         _containerTask = containerTask;
-         _reportGenerator = reportGenerator;
-      }
-
       private IList<IMuSigma> _muSigmas;
       private double _hrel;
       private double _meanBodyWeight;
@@ -55,19 +52,22 @@ namespace PKSim.Core.Services
       private double _objectiveWeight;
 
       //parameters only used during randomization
-
       private RandomGenerator _randomGenerator;
       private double? _minWeight;
       private double? _maxWeight;
       private IParameter _weightParameter;
-      private const int _maxIterations = 100;
+
+
+      public CreateIndividualAlgorithm(IContainerTask containerTask, IReportGenerator reportGenerator)
+      {
+         _containerTask = containerTask;
+         _reportGenerator = reportGenerator;
+      }
 
       public void Optimize(Individual individual)
       {
-         if (individual.OriginData.SpeciesPopulation.IsAgeDependent)
-         {
+         if (individual.IsAgeDependent)
             distributeParameterFor(individual, optimizeVolumes);
-         }
          else
             scaleVolume(individual);
       }
@@ -80,7 +80,7 @@ namespace PKSim.Core.Services
 
          try
          {
-            if (individual.Population.IsAgeDependent)
+            if (individual.IsAgeDependent)
                distributeParameterFor(individual, randomizeAgeDependentVolumes);
             else
                distributeParameterFor(individual, randomizeWeightAndScaleVolumes);
@@ -99,7 +99,8 @@ namespace PKSim.Core.Services
          _objectiveWeight = individual.InputWeight;
          double weightRatio = _objectiveWeight / _meanBodyWeight;
          double[] volumes = createDefaultOrgansVolumesFrom(individual);
-         for (int i = 0; i < volumes.Count(); i++)
+
+         for (int i = 0; i < volumes.Length; i++)
          {
             volumes[i] = volumes[i] * weightRatio;
          }
@@ -149,6 +150,7 @@ namespace PKSim.Core.Services
          //Initialization for optimizer
          double p = 0;
          double[] organWeightsInit = null;
+
          uint numberOfTry = 0;
          _objectiveWeight = individual.InputWeight;
 
@@ -165,13 +167,12 @@ namespace PKSim.Core.Services
 
             p = probabilityOrgans(organWeightsInit);
             numberOfTry++;
-            if (numberOfTry > _maxIterations)
+            if (numberOfTry > MAX_CREATION_TRIES)
                throw new CannotCreateIndividualWithConstraintsException(_reportGenerator.StringReportFor(individual.OriginData));
          }
 
          //Start optimization
-         var result = NelderMeadSimplex.Regress(simplexConstantFrom(organWeightsNonFatFrom(organWeightsInit)), 1e-6, 10000,
-                                                probabilityOrgansWrapper);
+         var result = NelderMeadSimplex.Regress(simplexConstantFrom(organWeightsNonFatFrom(organWeightsInit)), COVERGENCE_TOLERANCE, MAX_NUMBER_OF_OPTIMIZATION_ITERATIONS, probabilityOrgansWrapper);
 
          //Retrieve results and scale fat volume to match objective bodyweight
          var organWeights = organWeightsWithFatFrom(transformedWeights(result.Constants));
@@ -184,7 +185,7 @@ namespace PKSim.Core.Services
          var organVolumes = createRandomOrgansVolumesFrom(individual, getOrganVolumeForPopulation);
          var organWeights = organWeightsFrom(organVolumes);
          double currentWeight = organWeights.Sum();
-         double randomWeight = _weightParameter.RandomDeviateIn(_randomGenerator,_minWeight, _maxWeight);
+         double randomWeight = _weightParameter.RandomDeviateIn(_randomGenerator, _minWeight, _maxWeight);
          var scaleFactor = randomWeight / currentWeight;
          for (int i = 0; i < organWeights.Length; i++)
          {
@@ -210,9 +211,9 @@ namespace PKSim.Core.Services
             organWeights = adjustFatWeightIfRequired(organWeights);
             setOrganVolumesTo(individual, organVolumesFrom(organWeights));
             success = true;
-         } while (!success && numberOfTry < _maxIterations);
+         } while (!success && numberOfTry < MAX_CREATION_TRIES);
 
-         if (numberOfTry >= _maxIterations)
+         if (numberOfTry >= MAX_CREATION_TRIES)
             throw new CannotCreateIndividualWithConstraintsException(_reportGenerator.StringReportFor(individual.OriginData));
       }
 
@@ -258,7 +259,7 @@ namespace PKSim.Core.Services
          int organIndex = 0;
          foreach (var organ in individual.AllOrgans())
          {
-            var volumeParameter = organ.Parameter(CoreConstants.Parameter.VOLUME);
+            var volumeParameter = organ.Parameter(Constants.Parameters.VOLUME);
             volumeParameter.Value = organVolumes[organIndex];
             volumeParameter.DefaultValue = volumeParameter.Value;
             volumeParameter.IsFixedValue = false;
@@ -376,10 +377,10 @@ namespace PKSim.Core.Services
             _organDensity[iOrganIndex] = organ.Parameter(CoreConstants.Parameter.DENSITY).Value;
             organVolumes[iOrganIndex] = generateVolumeFunction(muSigma);
 
-            if (organ.OrganType == OrganType.Skin)
+            if (organ.IsNamed(CoreConstants.Organ.Skin))
                _skinIndex = iOrganIndex;
 
-            if (organ.OrganType == OrganType.Fat)
+            if (organ.IsNamed(CoreConstants.Organ.Fat))
                _fatIndex = iOrganIndex;
 
             iOrganIndex++;
@@ -401,12 +402,13 @@ namespace PKSim.Core.Services
          foreach (var organ in allOrgans)
          {
             _organDensity[iOrganIndex] = organ.Parameter(CoreConstants.Parameter.DENSITY).Value;
-            organVolumes[iOrganIndex] = organ.Parameter(CoreConstants.Parameter.VOLUME).Value;
+            organVolumes[iOrganIndex] = organ.Parameter(Constants.Parameters.VOLUME).Value;
 
-            if (organ.OrganType == OrganType.Skin)
+
+            if (organ.IsNamed(CoreConstants.Organ.Skin))
                _skinIndex = iOrganIndex;
 
-            if (organ.OrganType == OrganType.Fat)
+            if (organ.IsNamed(CoreConstants.Organ.Fat))
                _fatIndex = iOrganIndex;
 
             iOrganIndex++;
@@ -420,7 +422,7 @@ namespace PKSim.Core.Services
          //retrieve disitribution parameters for volumes parameters
          foreach (var organ in individual.AllOrgans())
          {
-            var volumeParameter = organ.Parameter(CoreConstants.Parameter.VOLUME);
+            var volumeParameter = organ.Parameter(Constants.Parameters.VOLUME);
             var allometricScaleFactor = volumeParameter.ParentContainer.Parameter(CoreConstants.Parameter.ALLOMETRIC_SCALE_FACTOR).Value;
             var musSigma = MuSigma.From(volumeParameter);
             musSigma.ScaleWith(_hrel, allometricScaleFactor);

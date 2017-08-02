@@ -87,7 +87,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _subject.OriginData.SpeciesPopulation.IsAgeDependent = true;
+         A.CallTo(() => _subject.IsAgeDependent).Returns(true);
          A.CallTo(() => _subject.IsPreterm).Returns(true);
       }
 
@@ -116,7 +116,7 @@ namespace PKSim.Presentation
       {
          base.Context();
 
-         _subject.OriginData.SpeciesPopulation.IsAgeDependent = true;
+         A.CallTo(() => _subject.IsAgeDependent).Returns(true);
          A.CallTo(() => _subject.IsPreterm).Returns(false);
       }
 
@@ -147,12 +147,12 @@ namespace PKSim.Presentation
 
          var previousSubject = A.Fake<ISimulationSubject>();
          var previousOriginData = new OriginData { SpeciesPopulation = A.Fake<SpeciesPopulation>() };
-         previousOriginData.SpeciesPopulation.IsAgeDependent = true;
          A.CallTo(() => previousSubject.IsPreterm).Returns(true);
+         A.CallTo(() => previousSubject.IsAgeDependent).Returns(true);
          A.CallTo(() => previousSubject.OriginData).Returns(previousOriginData);
 
 
-         _subject.OriginData.SpeciesPopulation.IsAgeDependent = true;
+         A.CallTo(() => _subject.IsAgeDependent).Returns(true);
          A.CallTo(() => _subject.IsPreterm).Returns(false);
          sut.UpdateSelectedSubject(previousSubject);
       }

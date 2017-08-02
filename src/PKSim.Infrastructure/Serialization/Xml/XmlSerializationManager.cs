@@ -99,7 +99,7 @@ namespace PKSim.Infrastructure.Serialization.Xml
          var element = getConvertedElementFrom(serializationBytes, out version);
 
          var context = serializationContext ?? _serializationContextFactory.Create();
-
+            
          try
          {
             using (new XElementDisposer(element))

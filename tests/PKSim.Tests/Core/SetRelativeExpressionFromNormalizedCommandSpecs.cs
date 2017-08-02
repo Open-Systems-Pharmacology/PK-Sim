@@ -26,7 +26,7 @@ namespace PKSim.Core
             Id = "normalizedId",
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.RelExpNorm,
+            Name = CoreConstants.Parameter.REL_EXP_NORM,
             Formula = new ConstantFormula(0.5)
          };
 
@@ -37,7 +37,7 @@ namespace PKSim.Core
             Id = "relativeId",
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
             BuildingBlockType = PKSimBuildingBlockType.Individual,
-            Name = CoreConstants.Parameter.RelExp,
+            Name = CoreConstants.Parameter.REL_EXP,
             Formula = new ConstantFormula(4.0)
          };
 
@@ -46,7 +46,7 @@ namespace PKSim.Core
             Id = "maximumId",
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
             BuildingBlockType = PKSimBuildingBlockType.Individual,
-            Name = CoreConstants.Parameter.RelExp,
+            Name = CoreConstants.Parameter.REL_EXP,
             Formula = new ConstantFormula(8.0)
          };
 

@@ -149,8 +149,8 @@ namespace PKSim.Core.Services
             var amount = amountFor(interstitial, molecule, moleculeAmountPath);
             if (amount == null) continue;
 
-            hideParameter(amount.Parameter(CoreConstants.Parameter.RelExp));
-            hideParameter(amount.Parameter(CoreConstants.Parameter.RelExpNorm));
+            hideParameter(amount.Parameter(CoreConstants.Parameter.REL_EXP));
+            hideParameter(amount.Parameter(CoreConstants.Parameter.REL_EXP_NORM));
          }
       }
 
@@ -171,8 +171,8 @@ namespace PKSim.Core.Services
             var amount = amountFor(container, molecule, moleculeAmountPath);
             if (amount == null) continue;
 
-            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameter.RelExp), expressionContainer.RelativeExpressionParameter, individual, molecule);
-            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameter.RelExpNorm), expressionContainer.RelativeExpressionNormParameter, individual, molecule);
+            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameter.REL_EXP), expressionContainer.RelativeExpressionParameter, individual, molecule);
+            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameter.REL_EXP_NORM), expressionContainer.RelativeExpressionNormParameter, individual, molecule);
          }
       }
 
@@ -186,11 +186,11 @@ namespace PKSim.Core.Services
       {
          string relExpName;
          if (expressionContainer.IsBloodCell())
-            relExpName = CoreConstants.Parameter.RelExpBloodCell;
+            relExpName = CoreConstants.Parameter.REL_EXP_BLOOD_CELL;
          else if (expressionContainer.IsPlasma())
-            relExpName = CoreConstants.Parameter.RelExpPlasma;
+            relExpName = CoreConstants.Parameter.REL_EXP_PLASMA;
          else if (expressionContainer.IsVascularEndothelium())
-            relExpName = CoreConstants.Parameter.RelExpVascEndo;
+            relExpName = CoreConstants.Parameter.REL_EXP_VASC_ENDO;
          else
             return;
 

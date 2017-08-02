@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.FlatObjects;
@@ -18,8 +20,8 @@ namespace PKSim.Infrastructure.ORM.Mappers
       private readonly IFlatPVVListToPVVCategoryListMapper _pvvCategoriesMapper;
 
       public FlatSpeciesToSpeciesMapper(IPopulationRepository populationRepository,
-                                        IFlatParameterValueVersionRepository flatParameterValueVersionRepository,
-                                        IFlatPVVListToPVVCategoryListMapper pvvCategoriesMapper)
+         IFlatParameterValueVersionRepository flatParameterValueVersionRepository,
+         IFlatPVVListToPVVCategoryListMapper pvvCategoriesMapper)
       {
          _populationRepository = populationRepository;
          _flatParameterValueVersionRepository = flatParameterValueVersionRepository;
@@ -28,15 +30,23 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
       public Species MapFrom(FlatSpecies flatSpecies)
       {
-         var species = new Species { Id=flatSpecies.Id, Name = flatSpecies.Id, Icon = flatSpecies.IconName };
+         var species = new Species
+         {
+            Id = flatSpecies.Id,
+            Name = flatSpecies.Id,
+            Icon = flatSpecies.IconName,
+            IsHuman = flatSpecies.IsHuman
+         };
 
-         foreach (var population in _populationRepository.All().Where(pop => pop.Species == flatSpecies.Id).OrderBy(x => x.Sequence))
-            species.AddPopulation(population);
+         allPopulationsFor(flatSpecies).Each(species.AddPopulation);
 
-         foreach (var pvvCategory in _pvvCategoriesMapper.MapFrom(_flatParameterValueVersionRepository.All(), flatSpecies.Id))
-            species.AddPVVCategory(pvvCategory);
+         allParameterValueVersionCategoriesFor(flatSpecies).Each(species.AddPVVCategory);
 
          return species;
       }
+
+      private IEnumerable<ParameterValueVersionCategory> allParameterValueVersionCategoriesFor(FlatSpecies flatSpecies) => _pvvCategoriesMapper.MapFrom(_flatParameterValueVersionRepository.All(), flatSpecies.Id);
+
+      private IEnumerable<SpeciesPopulation> allPopulationsFor(FlatSpecies flatSpecies) => _populationRepository.All().Where(x => x.Species == flatSpecies.Id).OrderBy(x => x.Sequence);
    }
 }

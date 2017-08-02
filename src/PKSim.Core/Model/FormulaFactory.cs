@@ -227,7 +227,7 @@ namespace PKSim.Core.Model
             .WithFormulaString("V>0 ? M/V : 0");
 
          formula.AddObjectPath(_objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER).WithAlias("M").WithDimension(_dimensionRepository.Amount));
-         formula.AddObjectPath(_objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, ObjectPath.PARENT_CONTAINER, CoreConstants.Parameter.VOLUME).WithAlias("V").WithDimension(_dimensionRepository.Volume));
+         formula.AddObjectPath(_objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, ObjectPath.PARENT_CONTAINER, Constants.Parameters.VOLUME).WithAlias("V").WithDimension(_dimensionRepository.Volume));
 
          formulaCache.Add(formula);
          formula.Dimension = _dimensionRepository.MolarConcentration;

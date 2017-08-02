@@ -25,12 +25,12 @@ namespace PKSim.Core
          _relExp1 = DomainHelperForSpecs.ConstantParameterWithValue(10);
          _relExp1.Info.GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION;
          _relExp1.BuildingBlockType = PKSimBuildingBlockType.Individual;
-         _relExp1.Name = CoreConstants.Parameter.RelExp + "1";
+         _relExp1.Name = CoreConstants.Parameter.REL_EXP + "1";
 
          _relExp2 = DomainHelperForSpecs.ConstantParameterWithValue(20);
          _relExp2.Info.GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION;
          _relExp2.BuildingBlockType = PKSimBuildingBlockType.Individual;
-         _relExp2.Name = CoreConstants.Parameter.RelExp + "2";
+         _relExp2.Name = CoreConstants.Parameter.REL_EXP + "2";
 
          _context = A.Fake<IExecutionContext>();
          var container = new Container();

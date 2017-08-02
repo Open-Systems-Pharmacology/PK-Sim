@@ -135,42 +135,17 @@ namespace PKSim.Core.Model
          }
       }
 
-      public virtual OriginData OriginData
-      {
-         get
-         {
-            if (FirstIndividual != null)
-               return FirstIndividual.OriginData;
-
-            return new OriginData();
-         }
-      }
+      public virtual OriginData OriginData => FirstIndividual?.OriginData ?? new OriginData();
 
       public virtual Species Species => OriginData.Species;
 
-      public virtual bool IsPreterm => OriginData.SpeciesPopulation.IsPreterm;
+      public virtual bool IsPreterm => FirstIndividual?.IsPreterm ?? false;
 
-      public virtual bool IsHuman
-      {
-         get
-         {
-            if (FirstIndividual != null)
-               return FirstIndividual.IsHuman;
+      public virtual bool IsAgeDependent => FirstIndividual?.IsAgeDependent ?? false;
 
-            return false;
-         }
-      }
+      public virtual bool IsHuman => FirstIndividual?.IsHuman ?? false;
 
-      public Organism Organism
-      {
-         get
-         {
-            if (FirstIndividual != null)
-               return FirstIndividual.Organism;
-
-            return new Organism();
-         }
-      }
+      public Organism Organism => FirstIndividual?.Organism ?? new Organism();
 
       public IEnumerable<IndividualMolecule> AllMolecules()
       {

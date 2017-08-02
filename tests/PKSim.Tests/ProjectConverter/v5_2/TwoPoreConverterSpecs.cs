@@ -62,19 +62,19 @@ namespace PKSim.ProjectConverter.v5_2
 
       private void validate_neighborhood(Individual individual)
       {
-         var endosomalClearance = individual.Organism.Container(ConverterConstants.ContainerName.EndosomalClearance);
+         var endosomalClearance = individual.Organism.Container(ConverterConstants.ContainerName.ENDOSOMAL_CLEARANCE);
          individual.Neighborhoods.GetSingleChildByName<INeighborhood>("Spleen_end_Spleen_ecl").SecondNeighbor.ShouldBeEqualTo(endosomalClearance);
       }
 
       private void validate_container_removed_in(Individual individual)
       {
-         individual.Organism.Organ(CoreConstants.Organ.Bone).Compartment(ConverterConstants.ContainerName.EndosomalClearance).ShouldBeNull();
+         individual.Organism.Organ(CoreConstants.Organ.Bone).Compartment(ConverterConstants.ContainerName.ENDOSOMAL_CLEARANCE).ShouldBeNull();
          individual.Organism.Organ(CoreConstants.Organ.SmallIntestine)
-            .Compartment(CoreConstants.Compartment.Mucosa).Container(ConverterConstants.ContainerName.EndosomalClearance).ShouldBeNull();
+            .Compartment(CoreConstants.Compartment.Mucosa).Container(ConverterConstants.ContainerName.ENDOSOMAL_CLEARANCE).ShouldBeNull();
 
-         individual.Organism.Organ(CoreConstants.Organ.EndogenousIgG).Compartment(ConverterConstants.ContainerName.EndosomalClearance).ShouldNotBeNull();
+         individual.Organism.Organ(CoreConstants.Organ.EndogenousIgG).Compartment(ConverterConstants.ContainerName.ENDOSOMAL_CLEARANCE).ShouldNotBeNull();
 
-         individual.Organism.Container(ConverterConstants.ContainerName.EndosomalClearance).ShouldNotBeNull();
+         individual.Organism.Container(ConverterConstants.ContainerName.ENDOSOMAL_CLEARANCE).ShouldNotBeNull();
       }
       private void validate_compound_parameters_added(Compound compound)
       {

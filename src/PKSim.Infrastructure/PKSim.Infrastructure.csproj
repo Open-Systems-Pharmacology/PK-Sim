@@ -186,6 +186,7 @@
     <Compile Include="ORM\FlatObjects\FlatMoleculeParameter.cs" />
     <Compile Include="ORM\FlatObjects\FlatProteinSynonym.cs" />
     <Compile Include="ORM\FlatObjects\FlatReactionPartnerBuilder.cs" />
+    <Compile Include="ORM\FlatObjects\FlatOrganType.cs" />
     <Compile Include="ORM\FlatObjects\ProcessActionType.cs" />
     <Compile Include="ORM\Mappers\FlatObjectPathToObjectPathMapper.cs" />
     <Compile Include="ORM\Repositories\CompoundCalculationMethodCategoryRepository.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="ORM\Repositories\DynamicFormulaCriteriaRepository.cs" />
     <Compile Include="ORM\Repositories\FlatDynamicFormulaCriteriaRepository.cs" />
     <Compile Include="ORM\Repositories\FlatMoleculeParameterRepository.cs" />
+    <Compile Include="ORM\Repositories\OrganTypeRepository.cs" />
     <Compile Include="ORM\Repositories\FlatProteinSynonymRepository.cs" />
     <Compile Include="ORM\Repositories\FlatReactionPartnerRepository.cs" />
     <Compile Include="ORM\Repositories\ModelContainerMoleculeRepository.cs" />

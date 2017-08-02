@@ -196,7 +196,7 @@ namespace PKSim.BatchTool.Services.TrainingMaterials
 
       public ParameterAlternative CreateLipophilicityAlternative(Compound compound, string alternativeName, double value, bool setDefault = true)
       {
-         return CreateCompoundAlternative(compound, CoreConstants.Groups.COMPOUND_LIPOPHILICITY, alternativeName, value, CoreConstants.Parameter.Lipophilicity, setDefault);
+         return CreateCompoundAlternative(compound, CoreConstants.Groups.COMPOUND_LIPOPHILICITY, alternativeName, value, CoreConstants.Parameter.LIPOPHILICITY, setDefault);
       }
 
       public SimulationConstruction CreateSimulationConstruction(string simulationName, string simulationSubjectName, IReadOnlyList<string> compoundNames, IReadOnlyList<string> protocolNames, string modelName = CoreConstants.Model.FourComp  )

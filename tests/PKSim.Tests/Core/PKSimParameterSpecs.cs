@@ -144,13 +144,13 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_for_a_volume_parameter()
       {
-         _parameter.WithName(CoreConstants.Parameter.VOLUME).IsChangedByCreateIndividual.ShouldBeTrue();
+         _parameter.WithName(Constants.Parameters.VOLUME).IsChangedByCreateIndividual.ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_false_for_a_volume_parameter_that_is_not_an_individual_parameter()
       {
-         new PKSimParameter{BuildingBlockType = PKSimBuildingBlockType.Simulation}.WithName(CoreConstants.Parameter.VOLUME).IsChangedByCreateIndividual.ShouldBeFalse();
+         new PKSimParameter{BuildingBlockType = PKSimBuildingBlockType.Simulation}.WithName(Constants.Parameters.VOLUME).IsChangedByCreateIndividual.ShouldBeFalse();
       }
 
       [Observation]

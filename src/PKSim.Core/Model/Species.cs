@@ -9,6 +9,7 @@ namespace PKSim.Core.Model
       private readonly IList<SpeciesPopulation> _allPopulations = new List<SpeciesPopulation>();
       private readonly ICache<string, ParameterValueVersionCategory> _pvvCategories = new Cache<string, ParameterValueVersionCategory>(pvv => pvv.Name);
       public virtual string DisplayName { get; set; }
+      public virtual bool IsHuman { get; set; }
 
       public virtual SpeciesPopulation PopulationByName(string name)
       {
@@ -34,6 +35,5 @@ namespace PKSim.Core.Model
          return _pvvCategories[categoryName];
       }
 
-      public virtual bool IsHuman => string.Equals(Name, CoreConstants.Species.Human);
    }
 }

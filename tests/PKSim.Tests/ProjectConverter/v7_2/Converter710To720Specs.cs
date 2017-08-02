@@ -57,6 +57,15 @@ namespace PKSim.ProjectConverter.v7_2
       }
 
       [Observation]
+      public void should_have_converted_the_organ_types_in_all_organ()
+      {
+         var fristIndiviudal = First<Individual>();
+         fristIndiviudal.Organism.GITissueContainers.ShouldNotBeEmpty();
+         fristIndiviudal.Organism.NonGITissueContainers.ShouldNotBeEmpty();
+         fristIndiviudal.Organism.OrgansByType(OrganType.VascularSystem).ShouldNotBeEmpty();
+      }
+
+      [Observation]
       public void should_have_addded_the_bsa_values_to_the_population()
       {
          var population = First<Population>();

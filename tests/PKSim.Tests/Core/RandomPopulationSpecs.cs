@@ -244,4 +244,31 @@ namespace PKSim.Core
          sut.AllCovariateNames.ShouldOnlyContain("Cov1", "Cov2", CoreConstants.Covariates.POPULATION_NAME);
       }
    }
+
+   public class When_retrieving_the_default_species_information_for_a_population_whose_individual_is_not_defined : concern_for_RandomPopulation
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut = new RandomPopulation();
+      }
+
+      [Observation]
+      public void should_return_that_the_species_is_not_human()
+      {
+         sut.IsHuman.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_that_the_species_is_not_age_dependent_human()
+      {
+         sut.IsAgeDependent.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_that_the_species_is_not_preterm()
+      {
+         sut.IsPreterm.ShouldBeFalse();
+      }
+   }
 }

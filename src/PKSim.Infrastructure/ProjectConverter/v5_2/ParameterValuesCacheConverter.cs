@@ -184,7 +184,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          {
             var parameterValuesCache = new ParameterValuesCache();
 
-            foreach (var dataColumnNode in parameterCacheElement.Descendants(ConverterConstants.Xml.DataTableColumn))
+            foreach (var dataColumnNode in parameterCacheElement.Descendants(ConverterConstants.Serialization.DATA_TABLE_COLUMN))
             {
                var parameterValues = new ParameterValues(dataColumnNode.GetAttribute(CoreConstants.Serialization.Attribute.Name));
                parameterValuesCache.Add(parameterValues);
