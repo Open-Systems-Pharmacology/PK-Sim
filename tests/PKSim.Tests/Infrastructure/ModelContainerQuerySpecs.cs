@@ -18,12 +18,13 @@ namespace PKSim.Infrastructure
    public abstract class concern_for_ModelContainerQuery : ContextSpecification<IModelContainerQuery>
    {
       private IFlatModelContainerRepository _modelContainerRepo;
-      private IFlatSpeciesContainerRepository _speciesContainerRepo;
+      private IFlatPopulationContainerRepository _populationContainerRepo;
       private IFlatContainerRepository _flatContainerRepo;
       protected IEntityPathResolver _entityPathResolver;
       protected IFlatContainerIdToContainerMapper _flatContainerIdToContainerMapper;
       protected IContainer _compartment;
       private FlatModelContainer _flatModelCompartment;
+      protected string _populationName;
 
       protected override void Context()
       {
@@ -31,6 +32,7 @@ namespace PKSim.Infrastructure
          _flatContainerIdToContainerMapper = A.Fake<IFlatContainerIdToContainerMapper>();
          _modelContainerRepo = A.Fake<IFlatModelContainerRepository>();
          _compartment = A.Fake<IContainer>();
+         _populationName = "HUMAN_POP";
 
          A.CallTo(() => _modelContainerRepo.All()).Returns(
             new List<FlatModelContainer>
@@ -40,17 +42,17 @@ namespace PKSim.Infrastructure
                NewFMC(3, Constants.ROOT, "SIMULATION", "M1")
             });
 
-         _speciesContainerRepo = A.Fake<IFlatSpeciesContainerRepository>();
-         A.CallTo(() => _speciesContainerRepo.AllSubContainer("Human", 3)).Returns(
-            new List<FlatSpeciesContainer>
+         _populationContainerRepo = A.Fake<IFlatPopulationContainerRepository>();
+         A.CallTo(() => _populationContainerRepo.AllSubContainerFor(_populationName, 3)).Returns(
+            new List<FlatPopulationContainer>
             {
-               NewFCC(1, "C1", "ORGAN", "Human"),
+               CreateFlatPopulationContainer(1, "C1", "ORGAN", _populationName),
             });
 
-         A.CallTo(() => _speciesContainerRepo.AllSubContainer("Human", 1)).Returns(
-            new List<FlatSpeciesContainer>
+         A.CallTo(() => _populationContainerRepo.AllSubContainerFor(_populationName, 1)).Returns(
+            new List<FlatPopulationContainer>
             {
-               NewFCC(2, "C2", "COMPARTMENT", "Human")
+               CreateFlatPopulationContainer(2, "C2", "COMPARTMENT", _populationName)
             });
 
 
@@ -80,7 +82,7 @@ namespace PKSim.Infrastructure
 
          A.CallTo(() => _modelContainerRepo.AllSubContainerFor("M1",1)).Returns(new[] {_flatModelCompartment});
          A.CallTo(() => _flatContainerIdToContainerMapper.MapFrom(_flatModelCompartment)).Returns(_compartment);
-         sut = new ModelContainerQuery(_modelContainerRepo, _speciesContainerRepo,
+         sut = new ModelContainerQuery(_modelContainerRepo, _populationContainerRepo,
             _flatContainerRepo, _flatContainerIdToContainerMapper, _entityPathResolver);
       }
 
@@ -89,9 +91,9 @@ namespace PKSim.Infrastructure
          return new FlatModelContainer {Id = id, Name = name, Type = type, Model = model, UsageInIndividual = "REQUIRED"};
       }
 
-      private FlatSpeciesContainer NewFCC(int id, string name, string type, string species)
+      private FlatPopulationContainer CreateFlatPopulationContainer(int id, string name, string type, string species)
       {
-         return new FlatSpeciesContainer {Id = id, Name = name, Type = type, Species = species};
+         return new FlatPopulationContainer {Id = id, Name = name, Type = type, Population = species};
       }
 
       private FlatContainer NewFC(int id, string name, string type, int? parentId, string parentName, string parentType)
@@ -105,7 +107,7 @@ namespace PKSim.Infrastructure
       private IEnumerable<IContainer> _subcontainers;
       private Organ _organ;
       private ModelConfiguration _modelConfiguration;
-      private Species _species;
+      private SpeciesPopulation _population;
 
       protected override void Context()
       {
@@ -113,14 +115,14 @@ namespace PKSim.Infrastructure
 
          _modelConfiguration = A.Fake<ModelConfiguration>();
          _modelConfiguration.ModelName = "M1";
-         _species = A.Fake<Species>().WithName("Human");
+         _population = new SpeciesPopulation().WithName(_populationName);
          _organ = new Organ().WithName("C1");
          _organ.ParentContainer = A.Fake<Simulation>().WithName(Constants.ROOT);
       }
 
       protected override void Because()
       {
-         _subcontainers = sut.SubContainersFor(_species, _modelConfiguration, _organ);
+         _subcontainers = sut.SubContainersFor(_population, _modelConfiguration, _organ);
       }
 
       [Observation]

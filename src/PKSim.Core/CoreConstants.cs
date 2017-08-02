@@ -672,7 +672,7 @@ namespace PKSim.Core
          public static readonly string ViewGenders = "VIEW_GENDERS";
          public static readonly string ViewSpecies = "VIEW_SPECIES";
          public static readonly string ViewParameterValueVersions = "VIEW_PARAMETER_VALUE_VERSIONS";
-         public static readonly string ViewSpeciesContainers = "VIEW_SPECIES_CONTAINERS";
+         public static readonly string ViewPopulationContainers = "VIEW_POPULATION_CONTAINERS";
          public static readonly string ViewContainers = "VIEW_CONTAINERS";
          public static readonly string ViewRepresentationInfos = "VIEW_REPRESENTATION_DATA";
          public static readonly string ViewRateObjectPaths = "VIEW_RATE_OBJECT_PATHS";

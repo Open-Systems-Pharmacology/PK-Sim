@@ -4,7 +4,6 @@ using System.Linq;
 using PKSim.Assets;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ORM.FlatObjects;

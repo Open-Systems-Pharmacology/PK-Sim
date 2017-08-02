@@ -48,28 +48,28 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
       public IApplicationBuilder MapFrom(FlatContainer flatApplicationContainer)
       {
-         var applicBuilder = MapCommonPropertiesFrom(flatApplicationContainer);
+         var applicationBuilder = MapCommonPropertiesFrom(flatApplicationContainer);
 
          //Set molecule name to "DRUG".
          //Must be replaced during simulation building process
-         applicBuilder.MoleculeName = CoreConstants.Molecule.Drug;
+         applicationBuilder.MoleculeName = CoreConstants.Molecule.Drug;
 
          //Add application processes (e.g. infusion)
-         addApplicationProcessesTo(applicBuilder);
+         addApplicationProcessesTo(applicationBuilder);
 
          //create parent formulation container of the application
          //(in order to resolve paths of application subobjects correctly)
-         createParentFormulation(applicBuilder, flatApplicationContainer.ParentId);
+         createParentFormulation(applicationBuilder, flatApplicationContainer.ParentId);
 
          //Add substructure (subcontainers with parameters and events)
-         addApplicationStructureTo(applicBuilder);
+         addApplicationStructureTo(applicationBuilder);
 
          //add application (=event group) source criteria
          //Each application will be settled under ApplicationSet-Container of
          //the simulation
-         addApplicationSourceCriteria(applicBuilder);
+         addApplicationSourceCriteria(applicationBuilder);
 
-         return applicBuilder;
+         return applicationBuilder;
       }
 
       private static void addApplicationSourceCriteria(IApplicationBuilder applicBuilder)
@@ -116,8 +116,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
                                                       containerType != CoreConstants.ContainerType.Event &&
                                                       containerType != CoreConstants.ContainerType.Process);
 
-         return flatSubContainers.Select(
-            flatSpeciesContainer => _flatContainerIdMapper.MapFrom(flatSpeciesContainer));
+         return flatSubContainers.MapAllUsing(_flatContainerIdMapper);
       }
 
       private IEnumerable<FlatContainer> flatSubContainersFor(IContainer container, Func<string, bool> containerTypeCondition)

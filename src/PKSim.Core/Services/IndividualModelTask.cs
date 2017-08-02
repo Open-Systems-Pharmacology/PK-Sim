@@ -106,7 +106,7 @@ namespace PKSim.Core.Services
          if (addParameter)
             _parameterContainerTask.AddInvididualParametersTo(container, originData);
 
-         foreach (var subContainer in _speciesContainerQuery.SubContainersFor(originData.Species, container))
+         foreach (var subContainer in _speciesContainerQuery.SubContainersFor(originData.SpeciesPopulation, container))
          {
             container.Add(subContainer);
             addModelStructureTo(subContainer, originData, addParameter);

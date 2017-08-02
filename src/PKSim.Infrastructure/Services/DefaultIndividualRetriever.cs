@@ -3,7 +3,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 
@@ -19,7 +18,7 @@ namespace PKSim.Infrastructure.Services
       private readonly ICache<SpeciesPopulation, Individual> _indvidualCacheProSpecies = new Cache<SpeciesPopulation, Individual>();
 
       public DefaultIndividualRetriever(ISpeciesRepository speciesRepository, IIndividualFactory individualFactory, IIndividualSettingsDTOToOriginDataMapper individualSettingsMapper,
-                                        IIndividualDefaultValueRetriever individualDefaultValueRetriever, IPopulationRepository populationRepository)
+         IIndividualDefaultValueRetriever individualDefaultValueRetriever, IPopulationRepository populationRepository)
       {
          _speciesRepository = speciesRepository;
          _individualFactory = individualFactory;

@@ -2,8 +2,11 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
 
@@ -48,6 +51,27 @@ namespace PKSim.IntegrationTests
       public void the_default_calculation_method_for_bsa_calculation_should_be_DuBois()
       {
          sut.OriginData.CalculationMethodFor(ConverterConstants.Category.BSA).Name.ShouldBeEqualTo(ConverterConstants.CalculationMethod.BSA_DuBois);
+      }
+   }
+
+   public class When_creating_an_individual_for_each_population_defined_in_the_database :   concern_for_Individual
+   {
+      private IPopulationRepository _populationRepository;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _populationRepository = IoC.Resolve<IPopulationRepository>();
+      }
+
+      [Observation]
+      public void should_create_a_valid_individual()
+      {
+         _populationRepository.All().Each(x =>
+         {
+            var individual = DomainFactoryForSpecs.CreateStandardIndividual(population: x.Name);
+            individual.ShouldNotBeNull();
+         });
       }
    }
 

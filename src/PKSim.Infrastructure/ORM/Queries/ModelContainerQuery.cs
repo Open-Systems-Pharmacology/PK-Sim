@@ -17,33 +17,33 @@ namespace PKSim.Infrastructure.ORM.Queries
    public class ModelContainerQuery : IModelContainerQuery
    {
       private readonly IFlatModelContainerRepository _modelContainerRepo;
-      private readonly IFlatSpeciesContainerRepository _speciesContainerRepo;
+      private readonly IFlatPopulationContainerRepository _populationContainerRepo;
       private readonly IFlatContainerRepository _flatContainerRepo;
       private readonly IFlatContainerIdToContainerMapper _flatContainerIdToContainerMapper;
       private readonly IEntityPathResolver _entityPathResolver;
 
       public ModelContainerQuery(IFlatModelContainerRepository modelContainerRepo,
-                                 IFlatSpeciesContainerRepository speciesContainerRepo,
+                                 IFlatPopulationContainerRepository populationContainerRepo,
                                  IFlatContainerRepository flatContainerRepo,
                                  IFlatContainerIdToContainerMapper flatContainerIdToContainerMapper,
                                  IEntityPathResolver entityPathResolver)
       {
          _modelContainerRepo = modelContainerRepo;
-         _speciesContainerRepo = speciesContainerRepo;
+         _populationContainerRepo = populationContainerRepo;
          _flatContainerRepo = flatContainerRepo;
          _flatContainerIdToContainerMapper = flatContainerIdToContainerMapper;
          _entityPathResolver = entityPathResolver;
       }
 
-      public IEnumerable<IContainer> SubContainersFor(Species species, ModelConfiguration modelConfiguration, IContainer parentContainer)
+      public IReadOnlyList<IContainer> SubContainersFor(SpeciesPopulation population, ModelConfiguration modelConfiguration, IContainer parentContainer)
       {
-         IList<IContainer> allSubContainers = new List<IContainer>();
+         var allSubContainers = new List<IContainer>();
 
          string pathToParentContainer = _entityPathResolver.PathFor(parentContainer);
 
          var flatParentContainer = _flatContainerRepo.ContainerFrom(pathToParentContainer);
          var flatModelSubContainers = _modelContainerRepo.AllSubContainerFor(modelConfiguration.ModelName, flatParentContainer.Id);
-         var allSpeciesSubContainer = speciesSubContainers(species.Name, flatParentContainer.Id);
+         var allSpeciesSubContainer = populationSubContainers(population, flatParentContainer);
 
          foreach (var flatModelContainer in flatModelSubContainers)
          {
@@ -76,10 +76,10 @@ namespace PKSim.Infrastructure.ORM.Queries
          return allSubContainers;
       }
 
-      private ICache<int, FlatSpeciesContainer> speciesSubContainers(string species, int parentContainerId)
+      private ICache<int, FlatPopulationContainer> populationSubContainers(SpeciesPopulation population, FlatContainer parentContainer)
       {
-         var result = new Cache<int, FlatSpeciesContainer>(flatContainer => flatContainer.Id);
-         result.AddRange(_speciesContainerRepo.AllSubContainer(species, parentContainerId));
+         var result = new Cache<int, FlatPopulationContainer>(x => x.Id);
+         result.AddRange(_populationContainerRepo.AllSubContainerFor(population.Name, parentContainer.Id));
          return result;
       }
    }
