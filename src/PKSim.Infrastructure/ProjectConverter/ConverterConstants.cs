@@ -71,7 +71,6 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static class Attribute
          {
             public static readonly string ORGAN_TYPE = "organType";
-
          }
       }
 

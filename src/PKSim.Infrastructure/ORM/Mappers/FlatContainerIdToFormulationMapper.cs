@@ -1,9 +1,9 @@
 ﻿using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Repositories;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
@@ -31,7 +31,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
       public bool IsSatisfiedBy(PKSimContainerType containerType) => containerType == PKSimContainerType.Formulation;
 
-       public Formulation MapFrom(FlatContainer flatContainer)
+      public Formulation MapFrom(FlatContainer flatContainer)
       {
          var formulation = _objectBaseFactory.Create<Formulation>();
          formulation.Root = _objectBaseFactory.Create<IRootContainer>();
