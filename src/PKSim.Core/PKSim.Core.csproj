@@ -212,6 +212,7 @@
     <Compile Include="Model\SchemaItemExtensions.cs" />
     <Compile Include="Model\SimulationAnalysisWorkflow.cs" />
     <Compile Include="Repositories\CompoundCalculationMethodRepository.cs" />
+    <Compile Include="Repositories\IOrganTypeRepository.cs" />
     <Compile Include="Services\ApplicationDiscriminator.cs" />
     <Compile Include="Services\BuildingBlockInSimulationSynchronizer.cs" />
     <Compile Include="Services\IEntityTask.cs" />

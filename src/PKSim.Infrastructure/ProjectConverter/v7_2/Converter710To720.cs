@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Linq;
+using System.Xml.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Visitor;
@@ -20,13 +21,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
       private readonly ICloner _cloner;
       private readonly ICalculationMethodRepository _calculationMethodRepository;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IOrganTypeRepository _organTypeRepository;
 
-      public Converter710To720(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, ICalculationMethodRepository calculationMethodRepository, IEntityPathResolver entityPathResolver)
+      public Converter710To720(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, ICalculationMethodRepository calculationMethodRepository, IEntityPathResolver entityPathResolver, IOrganTypeRepository organTypeRepository)
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
          _calculationMethodRepository = calculationMethodRepository;
          _entityPathResolver = entityPathResolver;
+         _organTypeRepository = organTypeRepository;
       }
 
       public bool IsSatisfiedBy(int version)
@@ -42,7 +45,27 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
 
       public int ConvertXml(XElement element, int originalVersion)
       {
+         convertOrganTypes(element);
          return ProjectVersions.V7_2_0;
+      }
+
+      private void convertOrganTypes(XElement element)
+      {
+         var allOrganTypesAttributes = from child in element.DescendantsAndSelf()
+            where child.HasAttributes
+            let attr = child.Attribute(ConverterConstants.Serialization.Attribute.ORGAN_TYPE)
+            where attr != null
+            select attr;
+
+         foreach (var organTypesAttribute in allOrganTypesAttributes)
+         {
+            organTypesAttribute.SetValue(convertOrganType(organTypesAttribute.Value));
+         }
+      }
+
+      private OrganType convertOrganType(string oldOrganType)
+      {
+         return _organTypeRepository.OrganTypeFor(organName: oldOrganType);
       }
 
       public void Visit(Individual individual)
@@ -105,7 +128,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
 
       private void addBSACalculationMethod(Individual individual)
       {
-         if (!individual.IsHuman)
+         if (!individual.Species.IsHuman)
             return;
 
          individual.OriginData.AddCalculationMethod(_calculationMethodRepository.FindByName(ConverterConstants.CalculationMethod.BSA_DuBois));

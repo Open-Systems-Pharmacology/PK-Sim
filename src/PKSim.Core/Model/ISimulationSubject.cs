@@ -18,14 +18,19 @@ namespace PKSim.Core.Model
       Species Species { get; }
 
       /// <summary>
-      ///    Returns true if the underlying subject is preterm
+      ///   Returns <c>true</c> if the underlying species is Human otherwise <c>false</c>
+      /// </summary>
+      bool IsHuman { get; }
+
+      /// <summary>
+      ///    Returns <c>true</c> if the underlying subject is preterm otherwise <c>false</c>
       /// </summary>
       bool IsPreterm { get; }
 
       /// <summary>
-      ///    Returns true if the underlying species is Human
+      ///    Returns <c>true</c> if the underlying individual is age dependent otherwise <c>false</c>
       /// </summary>
-      bool IsHuman { get; }
+      bool IsAgeDependent { get; }
 
       Organism Organism { get; }
 

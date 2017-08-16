@@ -81,7 +81,7 @@ namespace PKSim.Core
          originData.SubPopulation.AddParameterValueVersion(pvv);
          var organism = new Organism().WithName("Organism").WithId("OrganismId");
          var organLiver = new Organ().WithName(CoreConstants.Organ.Liver).WithId("LiverId");
-         organLiver.OrganType = OrganType.Liver;
+         organLiver.OrganType = OrganType.TissueOrgansNotInGiTract;
          var periportal = new Compartment().WithName(CoreConstants.Compartment.Periportal).WithId("PeriportalId");
          periportal.Add(new Container().WithName(CoreConstants.Compartment.Intracellular).WithId("PeriportalIntracellular"));
          var pericentral = new Compartment().WithName(CoreConstants.Compartment.Pericentral).WithId("PericentralId");
@@ -90,7 +90,7 @@ namespace PKSim.Core
          organLiver.Add(pericentral);
 
          var organKidney = new Organ().WithName(CoreConstants.Organ.Kidney).WithId("KidneyId");
-         organKidney.OrganType = OrganType.Kidney;
+         organKidney.OrganType = OrganType.TissueOrgansNotInGiTract;
          organKidney.Add(new Compartment {Visible = true}.WithName(CoreConstants.Compartment.Plasma).WithId("KidneyPlasma"));
          var lumen = new Organ().WithName("GiTract").WithId("GiTract");
          lumen.OrganType = OrganType.Lumen;

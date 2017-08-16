@@ -55,7 +55,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       {
          if (parameter.GroupName != CoreConstants.Groups.COMPOUND_MW) return false;
          if (string.Equals(parameter.Name, Constants.Parameters.MOL_WEIGHT)) return false;
-         if (string.Equals(parameter.Name, CoreConstants.Parameter.MolWeightEff)) return false;
+         if (string.Equals(parameter.Name, CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT)) return false;
          if (string.Equals(parameter.Name, CoreConstants.Parameter.HAS_HALOGENS)) return false;
          return true;
       }

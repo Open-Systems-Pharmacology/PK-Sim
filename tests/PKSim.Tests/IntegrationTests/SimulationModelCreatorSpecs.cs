@@ -64,10 +64,10 @@ namespace PKSim.IntegrationTests
          var allMoleculeAmounts = _simulation.All<IMoleculeAmount>();
          foreach (var moleculeAmount in allMoleculeAmounts)
          {
-            if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.Urine))
+            if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.URINE))
                continue;
 
-            if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.Feces))
+            if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.FECES))
                continue;
 
             if (moleculeAmount.HasAncestorNamed(CoreConstants.Organ.Gallbladder))
@@ -95,8 +95,8 @@ namespace PKSim.IntegrationTests
          var protBoneInterstitial = _simulation.Model.Root.EntityAt<MoleculeAmount>(
             Constants.ORGANISM, CoreConstants.Organ.Bone, CoreConstants.Compartment.Interstitial, _protein.Name);
 
-         protBoneInterstitial.Parameter(CoreConstants.Parameter.RelExp).Visible.ShouldBeFalse();
-         protBoneInterstitial.Parameter(CoreConstants.Parameter.RelExpNorm).Visible.ShouldBeFalse();
+         protBoneInterstitial.Parameter(CoreConstants.Parameter.REL_EXP).Visible.ShouldBeFalse();
+         protBoneInterstitial.Parameter(CoreConstants.Parameter.REL_EXP_NORM).Visible.ShouldBeFalse();
       }
    }
 }

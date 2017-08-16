@@ -19,5 +19,4 @@ namespace PKSim.Infrastructure.ORM.Mappers
          return item == PKSimContainerType.EventGroup;
       }
    }
-
 }

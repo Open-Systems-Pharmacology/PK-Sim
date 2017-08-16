@@ -85,7 +85,7 @@ namespace PKSim.IntegrationTests
       public void should_have_added_the_age_0_parameter_and_the_min_to_year_conversion_factor_to_the_organism()
       {
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         organism.Parameter(CoreConstants.Parameter.Age0).ShouldNotBeNull();
+         organism.Parameter(CoreConstants.Parameter.AGE_0).ShouldNotBeNull();
          organism.Parameter(CoreConstants.Parameter.MIN_TO_YEAR_FACTOR).ShouldNotBeNull();
       }
 
@@ -93,7 +93,7 @@ namespace PKSim.IntegrationTests
       public void should_have_added_the_age_0_parameter_and_the_min_to_year_conversion_factor_to_the_parameter_start_values()
       {
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         var age0Path = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameter.Age0));
+         var age0Path = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameter.AGE_0));
          var minToYearFactorPath = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameter.MIN_TO_YEAR_FACTOR));
          var buildConfiguration = _buildConfigurationTask.CreateFor(_simulation,shouldValidate:false, createAgingDataInSimulation: true);
          var psv = buildConfiguration.ParameterStartValues;

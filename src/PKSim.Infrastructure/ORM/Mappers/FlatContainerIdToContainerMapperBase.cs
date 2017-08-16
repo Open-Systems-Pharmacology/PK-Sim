@@ -1,34 +1,35 @@
 ﻿using System.Linq;
-using OSPSuite.Utility.Container;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Descriptors;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Repositories;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public abstract class FlatContainerIdToContainerMapperBase<T> where T:IContainer 
+   public abstract class FlatContainerIdToContainerMapperBase<T> where T : IContainer
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IFlatContainerRepository _flatContainerRepository;
-      private readonly IFlatContainerTagRepository _flatContainerTagRepo;
+      private readonly IFlatContainerTagRepository _flatContainerTagRepository;
 
       protected FlatContainer FlatContainer { get; private set; }
 
-      protected FlatContainerIdToContainerMapperBase() 
-         :this(IoC.Resolve<IObjectBaseFactory>(), 
-               IoC.Resolve<IFlatContainerRepository>(),
-               IoC.Resolve <IFlatContainerTagRepository>())
-      {}
+      protected FlatContainerIdToContainerMapperBase()
+         : this(IoC.Resolve<IObjectBaseFactory>(),
+            IoC.Resolve<IFlatContainerRepository>(),
+            IoC.Resolve<IFlatContainerTagRepository>())
+      {
+      }
 
-      protected FlatContainerIdToContainerMapperBase(IObjectBaseFactory objectBaseFactory, 
-                                                  IFlatContainerRepository flatContainerRepository,
-                                                  IFlatContainerTagRepository flatContainerTagRepo)
+      protected FlatContainerIdToContainerMapperBase(IObjectBaseFactory objectBaseFactory,
+         IFlatContainerRepository flatContainerRepository,
+         IFlatContainerTagRepository flatContainerTagRepository)
       {
          _objectBaseFactory = objectBaseFactory;
          _flatContainerRepository = flatContainerRepository;
-         _flatContainerTagRepo = flatContainerTagRepo;
+         _flatContainerTagRepository = flatContainerTagRepository;
       }
 
       public T MapCommonPropertiesFrom(FlatContainerId flatContainerId)
@@ -46,14 +47,11 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
       private void addTagsToContainer(T container, int id)
       {
-         var containerTags = from flatTag in _flatContainerTagRepo.All()
-                             where flatTag.Id == id
-                             select flatTag.Tag;
+         var containerTags = from flatTag in _flatContainerTagRepository.All()
+            where flatTag.Id == id
+            select flatTag.Tag;
 
-         foreach(var tag in containerTags)
-         {
-            container.AddTag(new Tag(tag));
-         }
+         containerTags.Each(container.AddTag);
       }
    }
 }

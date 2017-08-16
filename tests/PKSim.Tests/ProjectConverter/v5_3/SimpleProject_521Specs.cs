@@ -22,7 +22,7 @@ namespace PKSim.ProjectConverter.v5_3
          LoadProject("SimpleProject_521");
          var individual = First<Individual>();
          var compound = First<Compound>();
-         _liverVolume = individual.Organism.EntityAt<IParameter>(CoreConstants.Organ.Liver, CoreConstants.Parameter.VOLUME);
+         _liverVolume = individual.Organism.EntityAt<IParameter>(CoreConstants.Organ.Liver, Constants.Parameters.VOLUME);
          _fractionUnbound = compound.Parameter(CoreConstants.Parameter.FractionUnbound);
       }
 

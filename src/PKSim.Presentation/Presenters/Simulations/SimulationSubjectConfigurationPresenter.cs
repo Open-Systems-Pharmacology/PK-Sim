@@ -81,19 +81,12 @@ namespace PKSim.Presentation.Presenters.Simulations
 
          SubjectSelectionChanged();
 
-         _view.AllowAgingVisible = simulationSubject.OriginData.SpeciesPopulation.IsAgeDependent;
+         _view.AllowAgingVisible = simulationSubject.IsAgeDependent;
          _simulationSubjectDTO.AllowAging = simulationSubject.IsPreterm;
       }
 
-      public ISimulationSubject SelectedSubject
-      {
-         get { return _simulationSubjectDTO.BuildingBlock; }
-      }
+      public ISimulationSubject SelectedSubject => _simulationSubjectDTO.BuildingBlock;
 
-      public bool AllowAging
-      {
-         get { return _simulationSubjectDTO.AllowAging; }
-      }
-
+      public bool AllowAging => _simulationSubjectDTO.AllowAging;
    }
 }

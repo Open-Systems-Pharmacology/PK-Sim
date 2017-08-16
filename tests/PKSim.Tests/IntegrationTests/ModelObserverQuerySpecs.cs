@@ -120,7 +120,7 @@ namespace PKSim.IntegrationTests
          var lumenSegment = A.Fake<IContainer>().WithName("Whatever, just not feces");
          A.CallTo(() => lumenSegment.Tags).Returns(tags);
 
-         var feces = A.Fake<IContainer>().WithName(CoreConstants.Compartment.Feces);
+         var feces = A.Fake<IContainer>().WithName(CoreConstants.Compartment.FECES);
          A.CallTo(() => feces.Tags).Returns(tags);
 
          var obs = _observers.FindByName(CoreConstants.Observer.CONCENTRATION_IN_LUMEN);

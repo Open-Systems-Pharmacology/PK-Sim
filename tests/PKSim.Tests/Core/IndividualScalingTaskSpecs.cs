@@ -54,7 +54,7 @@ namespace PKSim.Core
          _targetParam1 = A.Fake<IParameter>().WithName("P1");
          _targetParam2 = A.Fake<IParameter>().WithName("P2");
          _targetParam3 = A.Fake<IParameter>().WithName("P3");
-         _originRelExpParam = A.Fake<IParameter>().WithName(CoreConstants.Parameter.RelExp);
+         _originRelExpParam = A.Fake<IParameter>().WithName(CoreConstants.Parameter.REL_EXP);
          _originRefConcParam = A.Fake<IParameter>().WithName(CoreConstants.Parameter.REFERENCE_CONCENTRATION);
 
          _originParam1 = A.Fake<IParameter>().WithName(_targetParam1.Name);
@@ -130,7 +130,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_return_the_expression_parameters()
       {
-         _allParameterScalings.Any(x => x.SourceParameter.IsNamed(CoreConstants.Parameter.RelExp)).ShouldBeFalse();
+         _allParameterScalings.Any(x => x.SourceParameter.IsNamed(CoreConstants.Parameter.REL_EXP)).ShouldBeFalse();
       }
 
       [Observation]

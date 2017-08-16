@@ -359,7 +359,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          endogenous.Add(clone(defaultEndogenous, ConverterConstants.Parameter.Kd_FcRn_LigandEndo));
          endogenous.Add(clone(defaultEndogenous, ConverterConstants.Parameter.Kd_FcRn_ligandEndo_pls_int));
 
-         var endosome = endogenous.Compartment(ConverterConstants.ContainerName.IgG_Endosome);
+         var endosome = endogenous.Compartment(ConverterConstants.ContainerName.IGG_ENDOSOME);
          endosome.Name = CoreConstants.Compartment.Endosome;
 
          endogenous.Compartment(CoreConstants.Compartment.Endosome)
@@ -369,7 +369,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
             .Add(clone(defaultEndogenous.Compartment(CoreConstants.Compartment.Plasma), ConverterConstants.Parameter.Start_concentration_endogenous_plasma));
 
 
-         foreach (var container in individual.Organism.GetAllChildren<IContainer>(x => x.IsNamed(ConverterConstants.ContainerName.EndosomalClearance)))
+         foreach (var container in individual.Organism.GetAllChildren<IContainer>(x => x.IsNamed(ConverterConstants.ContainerName.ENDOSOMAL_CLEARANCE)))
          {
             if (container.ParentContainer.IsNamed(CoreConstants.Organ.EndogenousIgG))
                continue;
@@ -377,7 +377,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
             container.ParentContainer.RemoveChild(container);
          }
 
-         var endsomeClearance = clone(defaultIndividual.Organism, ConverterConstants.ContainerName.EndosomalClearance) as IContainer;
+         var endsomeClearance = clone(defaultIndividual.Organism, ConverterConstants.ContainerName.ENDOSOMAL_CLEARANCE) as IContainer;
          individual.Organism.Add(endsomeClearance);
 
          foreach (var neighborhood in individual.Neighborhoods.GetChildren<INeighborhood>(neighborhoodIsEndosomalClearance))

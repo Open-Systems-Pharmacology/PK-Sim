@@ -270,15 +270,17 @@ namespace PKSim.Infrastructure.Services
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Observer.TISSUE));
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Observer.INTERSTITIAL_UNBOUND));
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Observer.INTRACELLULAR_UNBOUND));
-         addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Compartment.Urine));
-         addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Compartment.Feces));
+         addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Compartment.URINE));
+         addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Compartment.FECES));
       }
 
       private void addPredefinedOrganValues(MetaDataCategory organCategory)
       {
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
+         var organism = defaultIndividual.Organism;
          addUndefinedValueTo(organCategory);
-         foreach (var organ in defaultIndividual.Organism.OrgansByType(OrganType.PeripheralVenousBlood |  OrganType.VascularSystem | OrganType.Tissue | OrganType.Lumen))
+         addInfoToCategory(organCategory, organism.Organ(CoreConstants.Organ.PeripheralVenousBlood));
+         foreach (var organ in organism.OrgansByType(OrganType.VascularSystem | OrganType.Tissue | OrganType.Lumen))
          {
             addInfoToCategory(organCategory, organ);
          }

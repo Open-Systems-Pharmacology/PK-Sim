@@ -101,9 +101,9 @@ namespace PKSim.IntegrationTests
          //one parmaeter defined as a constant for which an alternative was also specififed
          var lipoGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
          _alternativeLipo1 = _parameterAlternativeFactory.CreateAlternativeFor(lipoGroup).WithName("ALT_LIPO1").WithId("ALT_LIPO1");
-         _alternativeLipo1.Parameter(CoreConstants.Parameter.Lipophilicity).Value = 2;
+         _alternativeLipo1.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value = 2;
          _alternativeLipo2 = _parameterAlternativeFactory.CreateAlternativeFor(lipoGroup).WithName("ALT_LIPO2").WithId("ALT_LIPO2");
-         _alternativeLipo2.Parameter(CoreConstants.Parameter.Lipophilicity).Value = 5;
+         _alternativeLipo2.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value = 5;
          lipoGroup.AddAlternative(_alternativeLipo1);
          lipoGroup.AddAlternative(_alternativeLipo2);
 
@@ -190,15 +190,15 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_update_the_parameter_value_according_to_the_selected_alternative_for_other_parameters()
       {
-         var lipoParameter = _molecule.Parameter(CoreConstants.Parameter.Lipophilicity);
+         var lipoParameter = _molecule.Parameter(CoreConstants.Parameter.LIPOPHILICITY);
          lipoParameter.IsFixedValue.ShouldBeFalse();
-         lipoParameter.Value.ShouldBeEqualTo(_alternativeLipo2.Parameter(CoreConstants.Parameter.Lipophilicity).Value);
+         lipoParameter.Value.ShouldBeEqualTo(_alternativeLipo2.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value);
       }
 
       [Observation]
       public void should_update_the_value_description_of_the_parameter_value_according_to_the_selected_alternative_for_alternative_with_only_one_parameter()
       {
-         var lipoParameter = _molecule.Parameter(CoreConstants.Parameter.Lipophilicity);
+         var lipoParameter = _molecule.Parameter(CoreConstants.Parameter.LIPOPHILICITY);
          lipoParameter.ValueDescription.ShouldBeEqualTo(_alternativeLipo2.Description);
       }
    }
@@ -235,9 +235,9 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_update_the_parameter_value_according_to_the_selected_alternative_for_other_parameters()
       {
-         var lipoParameter = _molecule.Parameter(CoreConstants.Parameter.Lipophilicity);
+         var lipoParameter = _molecule.Parameter(CoreConstants.Parameter.LIPOPHILICITY);
          lipoParameter.IsFixedValue.ShouldBeFalse();
-         lipoParameter.Value.ShouldBeEqualTo(_alternativeLipo1.Parameter(CoreConstants.Parameter.Lipophilicity).Value);
+         lipoParameter.Value.ShouldBeEqualTo(_alternativeLipo1.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value);
       }
    }
 

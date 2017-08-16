@@ -79,10 +79,10 @@ namespace PKSim.Core.Services
          if (organism == null)
             return;
 
-         var urine = organism.EntityAt<IContainer>(CoreConstants.Organ.Kidney, CoreConstants.Compartment.Urine);
+         var urine = organism.EntityAt<IContainer>(CoreConstants.Organ.Kidney, CoreConstants.Compartment.URINE);
          updatePersitableInContainerAction(urine);
 
-         var feces = organism.EntityAt<IContainer>(CoreConstants.Organ.Lumen, CoreConstants.Compartment.Feces);
+         var feces = organism.EntityAt<IContainer>(CoreConstants.Organ.Lumen, CoreConstants.Compartment.FECES);
          updatePersitableInContainerAction(feces);
 
          var gallBladder = organism.EntityAt<IContainer>(CoreConstants.Organ.Gallbladder);

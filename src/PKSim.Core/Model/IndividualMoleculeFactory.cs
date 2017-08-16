@@ -111,7 +111,7 @@ namespace PKSim.Core.Model
 
       protected void AddMucosaExpression(ISimulationSubject simulationSubject, TMolecule molecule)
       {
-         foreach (var organ in simulationSubject.Organism.OrgansByType(OrganType.SmallIntestine | OrganType.LargeIntestine))
+         foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SmallIntestine, CoreConstants.Organ.LargeIntestine))
          {
             var organMucosa = organ.Compartment(CoreConstants.Compartment.Mucosa);
             foreach (var compartment in organMucosa.GetChildren<Compartment>().Where(c => c.Visible))
@@ -148,8 +148,8 @@ namespace PKSim.Core.Model
          var expressionContainer = createContainerExpressionFor(protein, containerName);
          expressionContainer.GroupName = groupingName;
          expressionContainer.ContainerName = containerName;
-         createMoleculeParameterIn(expressionContainer, CoreConstants.Parameter.RelExp, 0, Constants.Dimension.DIMENSIONLESS);
-         createMoleculeParameterIn(expressionContainer, CoreConstants.Parameter.RelExpNorm, 0, CoreConstants.Dimension.Fraction);
+         createMoleculeParameterIn(expressionContainer, CoreConstants.Parameter.REL_EXP, 0, Constants.Dimension.DIMENSIONLESS);
+         createMoleculeParameterIn(expressionContainer, CoreConstants.Parameter.REL_EXP_NORM, 0, CoreConstants.Dimension.Fraction);
          return expressionContainer;
       }
 

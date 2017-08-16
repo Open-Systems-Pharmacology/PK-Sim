@@ -107,7 +107,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          return _representationInfoRepository.DisplayNameFor(RepresentationObjectType.CONTAINER, containerName);
       }
 
-      public IEnumerable<string> AllOrgans()
+      public IEnumerable<string> AllOrgans() 
       {
          var organism = _defaultIndivdual.Organism;
 

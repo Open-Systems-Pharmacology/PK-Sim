@@ -1098,7 +1098,6 @@ namespace PKSim.Assets
          public static readonly string ProjectReport = "Project Report";
          public static readonly string Report = "Report";
          public static readonly string Help = "Help";
-         public static readonly string RegisterLicense = "Register License...";
          public static readonly string ExportSimulationResultsToExcel = $"Export Results to {UI.Excel}...";
          public static readonly string ExportSimulationResultsToExcelMenu = $"Results to {UI.Excel}";
          public static readonly string ExportSimulationResultsToCSV = $"Export Results to {"CSV"}...";
@@ -1889,7 +1888,6 @@ namespace PKSim.Assets
          public static readonly string EventProperties = "Event Properties";
          public static readonly string OriginData = "Origin Data";
          public static readonly string Origin = "Origin";
-         public static readonly string LicenseSuccessfullyRegistered = "Registration performed sucessfully\nChanges will be implemented in the next PK-Sim start-up.";
          public static readonly string CompoundProcessSpeciesDescription = "Species used in the experiment. This is not necessarily the species used in the simulation.";
          public static readonly string CompoundProcessDataSourceDescription = "Source of information (e.g. Lab, In-Vitro, Paper etc.)";
          public static readonly string ReallySwitchProtocolMode = "Do you really want to switch between advanced and simple? This action will reset the administration protocol.";
@@ -1931,7 +1929,6 @@ namespace PKSim.Assets
          public static readonly string SavePercentileSettingsToolTip = "Save current curve selection to the user profile. These settings will be used as default settings for each newly created chart.";
          public static readonly string PopulationAnalysisSaveLoadToolTip = "Save or load population analysis settings.";
          public static readonly string ObservedDataMappingDescription = "Which compound are the following observed data related to?";
-         public static readonly string TokenLApplicationCannotBeStartedWithANonTokenKey = "Token based application cannot be started with a non token based license.";
          public static readonly string ObservedDataToCompoundMapping = "Observed Data Conversion";
          public static readonly string SaveAs = "Save As...";
          public static readonly string CompoundEnzymaticProcess = "Enzymatic process";

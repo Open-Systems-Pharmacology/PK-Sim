@@ -5,6 +5,6 @@
       public bool IsUserDefined { get; set; }
       public int Sequence { get; set; }
       public string IconName { get; set; }
-      public bool NeedsLicense { get; set; }
+      public bool IsHuman { get; set; }
    }
 }

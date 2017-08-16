@@ -93,8 +93,8 @@ namespace PKSim.Presentation.UICommands
 
          var defaultCompound = fourCompIvBolusMgPerKg.Molecules.First();
          defaultCompound.Name = string.Empty;
-         defaultCompound.Parameter(CoreConstants.Parameter.Lipophilicity).Value = double.NaN;
-         defaultCompound.Parameter(CoreConstants.Parameter.MolecularWeight).Value = double.NaN;
+         defaultCompound.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value = double.NaN;
+         defaultCompound.Parameter(CoreConstants.Parameter.MOLECULAR_WEIGHT).Value = double.NaN;
          defaultCompound.Parameter(CoreConstants.Parameter.FractionUnbound).Value = double.NaN;
          defaultCompound.Parameter(CoreConstants.Parameter.SolubilityAtRefpH).Value = double.NaN;
 

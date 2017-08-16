@@ -74,7 +74,7 @@ namespace PKSim.Core.Services
 
       public void UpdateAllOntogenies(Population population)
       {
-         if (!population.IsHuman) return;
+         if (!population.IsAgeDependent) return;
 
          var allAges = allAgesIn(population);
          var allGAs = allGAsIn(population);

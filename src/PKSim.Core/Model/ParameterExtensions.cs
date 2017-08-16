@@ -30,8 +30,8 @@ namespace PKSim.Core.Model
          if (parameter.IsExpressionNorm())
             return true;
 
-         return parameter.NameIsOneOf(CoreConstants.Parameter.RelExp, CoreConstants.Parameter.RelExpBloodCell,
-            CoreConstants.Parameter.RelExpPlasma, CoreConstants.Parameter.RelExpVascEndo);
+         return parameter.NameIsOneOf(CoreConstants.Parameter.REL_EXP, CoreConstants.Parameter.REL_EXP_BLOOD_CELL,
+            CoreConstants.Parameter.REL_EXP_PLASMA, CoreConstants.Parameter.REL_EXP_VASC_ENDO);
       }
 
       public static bool IsIndividualMolecule(this IParameter parameter)
@@ -56,13 +56,13 @@ namespace PKSim.Core.Model
       public static bool IsExpressionNorm(this IParameter parameter)
       {
          if (parameter == null) return false;
-         return parameter.NameIsOneOf(CoreConstants.Parameter.RelExpNorm, CoreConstants.Parameter.RelExpBloodCellNorm,
-            CoreConstants.Parameter.RelExpPlasmaNorm, CoreConstants.Parameter.RelExpVascEndoNorm);
+         return parameter.NameIsOneOf(CoreConstants.Parameter.REL_EXP_NORM, CoreConstants.Parameter.REL_EXP_BLOOD_CELL_NORM,
+            CoreConstants.Parameter.REL_EXP_PLASMA_NORM, CoreConstants.Parameter.REL_EXP_VASC_ENDO_NORM);
       }
 
       public static bool IsOrganVolume(this IParameter parameter)
       {
-         return parameter.IsNamed(CoreConstants.Parameter.VOLUME) &&
+         return parameter.IsNamed(Constants.Parameters.VOLUME) &&
                 parameter.ParentContainer.IsAnImplementationOf<Organ>();
       }
 
