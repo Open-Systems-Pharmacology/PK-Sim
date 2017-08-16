@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Extensions;
 using FakeItEasy;
+using FakeItEasy.Core;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
@@ -93,7 +94,7 @@ namespace PKSim.Presentation
    {
       protected override void Because()
       {
-         _timeProfilerChartPresenter.DragDrop += Raise.With<DragEventHandler>(_timeProfilerChartPresenter,_dragEventArgs);
+         _timeProfilerChartPresenter.DragDrop += Raise.FreeForm.With(_timeProfilerChartPresenter, _dragEventArgs);
       }
 
       [Observation]

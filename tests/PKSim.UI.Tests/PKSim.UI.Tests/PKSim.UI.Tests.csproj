@@ -120,11 +120,11 @@
       <HintPath>..\..\..\packages\OSPSuite.DevExpress.17.1.3\lib\net45\DevExpress.XtraVerticalGrid.v17.1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FakeItEasy, Version=3.4.2.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FakeItEasy.3.4.2\lib\net45\FakeItEasy.dll</HintPath>
+    <Reference Include="FakeItEasy, Version=4.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FakeItEasy.4.0.0\lib\net45\FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=3.19.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\MathNet.Numerics.3.19.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
@@ -169,14 +169,14 @@
       <HintPath>..\..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.2.0.65, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\OSPSuite.Assets.7.2.0.65\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.67, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\packages\OSPSuite.Assets.7.2.0.67\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.BDDHelper">
       <HintPath>..\..\..\packages\OSPSuite.BDDHelper.2.0.0.1\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.2.0.65, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\OSPSuite.Core.7.2.0.65\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.67, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\packages\OSPSuite.Core.7.2.0.67\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.DataBinding, Version=2.1.0.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\OSPSuite.DataBinding.2.1.0.4\lib\net45\OSPSuite.DataBinding.dll</HintPath>
@@ -187,33 +187,33 @@
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.2.0.65, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\OSPSuite.Presentation.7.2.0.65\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.2.0.67, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\packages\OSPSuite.Presentation.7.2.0.67\lib\net452\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer">
       <HintPath>..\..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\OSPSuite.SimModel.2.1.0.2\lib\net45\OSPSuite.SimModel.dll</HintPath>
+      <HintPath>..\..\..\packages\OSPSuite.SimModel.2.2.0.4\lib\net45\OSPSuite.SimModel.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.TeXReporting, Version=2.0.1.7, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\..\packages\OSPSuite.TeXReporting.2.0.1.7\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.UI, Version=7.2.0.65, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\..\packages\OSPSuite.UI.7.2.0.65\lib\net452\OSPSuite.UI.dll</HintPath>
+    <Reference Include="OSPSuite.UI, Version=7.2.0.67, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\packages\OSPSuite.UI.7.2.0.67\lib\net452\OSPSuite.UI.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Utility, Version=2.0.1.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\OSPSuite.Utility.2.0.1.2\lib\net45\OSPSuite.Utility.dll</HintPath>
+    <Reference Include="OSPSuite.Utility, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\OSPSuite.Utility.2.0.1.4\lib\net452\OSPSuite.Utility.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="SX, Version=2.6.4.4, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\OSPSuite.SmartXLS.2.6.4.4\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.6.4.9, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\OSPSuite.SmartXLS.2.6.4.9\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;

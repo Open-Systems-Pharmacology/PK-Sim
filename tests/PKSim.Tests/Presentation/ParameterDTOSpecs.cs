@@ -41,7 +41,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _parameter.PropertyChanged += Raise.With<PropertyChangedEventHandler>(_parameter, new PropertyChangedEventArgs("Value"));
+         _parameter.PropertyChanged += Raise.FreeForm.With(_parameter, new PropertyChangedEventArgs("Value"));
       }
 
       [Observation]

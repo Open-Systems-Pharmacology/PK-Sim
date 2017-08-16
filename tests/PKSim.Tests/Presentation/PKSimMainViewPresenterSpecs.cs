@@ -173,7 +173,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _view.Closing+= Raise.With<CancelEventHandler>(_view, _cancelEventArgs);
+         _view.Closing+= Raise.FreeForm.With(_view, _cancelEventArgs);
       }
 
       [Observation]
