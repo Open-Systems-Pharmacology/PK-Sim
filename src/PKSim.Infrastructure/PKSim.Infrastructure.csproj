@@ -659,7 +659,7 @@
     <Compile Include="ORM\Mappers\FlatContainerIdToCompartmentMapper.cs" />
     <Compile Include="ORM\Mappers\FlatContainerIdToOrganMapper.cs" />
     <Compile Include="ORM\Mappers\DataTableToMetaDataMapper.cs" />
-    <Compile Include="ORM\Mappers\FlatSpeciesToCreatureMapper.cs" />
+    <Compile Include="ORM\Mappers\FlatSpeciesToSpeciesMapper.cs" />
     <Compile Include="ORM\Mappers\FlatGenderToGenderMapper.cs" />
     <Compile Include="ORM\Mappers\FlatGroupToGroupMapper.cs" />
     <Compile Include="ORM\Mappers\FlatPopulationToPopulationMapper.cs" />
