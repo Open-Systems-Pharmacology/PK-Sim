@@ -33,7 +33,7 @@ namespace PKSim.Core.Services
 
    public class CreateIndividualAlgorithm : ICreateIndividualAlgorithm
    {
-      private const double COVERGENCE_TOLERANCE = 1e-6;
+      private const double CONVERGENCE_TOLERANCE = 1e-6;
       private const int MAX_NUMBER_OF_OPTIMIZATION_ITERATIONS = 10000;
       private const int MAX_CREATION_TRIES = 100;
 
@@ -172,7 +172,7 @@ namespace PKSim.Core.Services
          }
 
          //Start optimization
-         var result = NelderMeadSimplex.Regress(simplexConstantFrom(organWeightsNonFatFrom(organWeightsInit)), COVERGENCE_TOLERANCE, MAX_NUMBER_OF_OPTIMIZATION_ITERATIONS, probabilityOrgansWrapper);
+         var result = NelderMeadSimplex.Regress(simplexConstantFrom(organWeightsNonFatFrom(organWeightsInit)), CONVERGENCE_TOLERANCE, MAX_NUMBER_OF_OPTIMIZATION_ITERATIONS, probabilityOrgansWrapper);
 
          //Retrieve results and scale fat volume to match objective bodyweight
          var organWeights = organWeightsWithFatFrom(transformedWeights(result.Constants));
