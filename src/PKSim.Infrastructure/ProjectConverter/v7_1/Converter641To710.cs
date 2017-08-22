@@ -12,6 +12,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_1
    public class Converter641To710 : IObjectConverter
    {
       private readonly Converter63To710 _coreConverter63To710;
+      private bool _converted;
       private const string DEFAULT_PRESENTATION_SETTINGS = "DefaultPresentationSettings";
       private const string PRESENTATION_KEY = "presentationKey";
 
@@ -20,22 +21,20 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_1
          _coreConverter63To710 = coreConverter63To710;
       }
 
-      public bool IsSatisfiedBy(int version)
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V6_4_1;
+
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
-         return version == ProjectVersions.V6_4_1;
+         return (ProjectVersions.V7_1_0, false);
       }
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return ProjectVersions.V7_1_0;
-      }
-
-      public int ConvertXml(XElement element, int originalVersion)
-      {
-         _coreConverter63To710.ConvertXml(element);
+         
+         var (_,coreConversionHappened) = _coreConverter63To710.ConvertXml(element);
          element.DescendantsAndSelfNamed("WorkspaceLayoutItem").Each(convertWorkspaceLayoutItem);
 
-         return ProjectVersions.V7_1_0;
+         return (ProjectVersions.V7_1_0, _converted || coreConversionHappened);
       }
 
       private void convertWorkspaceLayoutItem(XElement layoutItemElement)
@@ -44,6 +43,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_1
          if (!string.IsNullOrEmpty(presenterKey))
          {
             layoutItemElement.SetAttributeValue(PRESENTATION_KEY, presenterKey);
+            _converted = true;
          }
 
          var presentationSettings = layoutItemElement.Elements().FirstOrDefault();
@@ -54,6 +54,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_1
          if (presentationSettings.Name == "DefaultPresenterSettings")
          {
             presentationSettings.Name = DEFAULT_PRESENTATION_SETTINGS;
+            _converted = true;
          }
 
          //update property of WorkspaceLayoutItem
@@ -61,12 +62,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_1
          if (!string.IsNullOrEmpty(dynamicName))
          {
             presentationSettings.SetAttributeValue("dynamicName", "PresentationSettings");
+            _converted = true;
          }
 
          //Key was not saved with the right constant
          if (presenterKey == PresenterConstants.PresenterKeys.ParameterGroupPresenter && presentationSettings.Name == DEFAULT_PRESENTATION_SETTINGS)
          {
             layoutItemElement.SetAttributeValue(PRESENTATION_KEY, PresenterConstants.PresenterKeys.IndividualPKParametersPresenter);
+            _converted = true;
          }
       }
    }

@@ -3,6 +3,8 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
@@ -10,8 +12,6 @@ using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.ProteinExpression;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
 
 namespace PKSim.Infrastructure.ProjectConverter.v6_0
 {
@@ -22,6 +22,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
    {
       private readonly INeighborhoodFinalizer _neighborhoodFinalizer;
       private readonly IIndividualUpdater _individualUpdater;
+      private bool _converted;
 
       public Converter601To602(INeighborhoodFinalizer neighborhoodFinalizer, IIndividualUpdater individualUpdater)
       {
@@ -29,20 +30,18 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
          _individualUpdater = individualUpdater;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V6_0_1;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V6_0_1;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V6_0_2;
+         return (ProjectVersions.V6_0_2, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return ProjectVersions.V6_0_2;
+         return (ProjectVersions.V6_0_2, false);
       }
 
       private void updateDatabaseQueryStringToLiverZones(IndividualMolecule molecule)
@@ -91,6 +90,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
       public void Visit(Individual individual)
       {
          convertIndividual(individual);
+         _converted = true;
       }
 
       private void convertIndividual(Individual individual)
@@ -111,14 +111,12 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
       {
          convertIndividual(simulation.Individual);
          finalizeIndividual(simulation.Individual);
+         _converted = true;
       }
 
       private void finalizeIndividual(Individual individual)
       {
-         if (individual == null)
-            return;
-
-         var firstNeighborhood = individual.Neighborhoods.GetChildren<INeighborhood>().FirstOrDefault();
+         var firstNeighborhood = individual?.Neighborhoods.GetChildren<INeighborhood>().FirstOrDefault();
          if (firstNeighborhood == null || firstNeighborhood.FirstNeighbor != null) return;
 
          _neighborhoodFinalizer.SetNeighborsIn(individual);
@@ -132,6 +130,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
             var baseGridName = baseGrid.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
             baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] {observedData.Name, baseGridName}, QuantityType.Time);
          }
+         _converted = true;
       }
    }
 }

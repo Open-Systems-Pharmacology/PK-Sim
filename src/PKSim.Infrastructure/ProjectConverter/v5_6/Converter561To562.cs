@@ -4,7 +4,6 @@ using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_6
 {
@@ -14,6 +13,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
    {
       private readonly ICloner _cloner;
       private readonly IndividualMolecule _defaultMolecule;
+      private bool _converted;
 
       public Converter561To562(ICloner cloner, IIndividualEnzymeFactory individualEnzymeFactory)
       {
@@ -21,25 +21,24 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
          _defaultMolecule = individualEnzymeFactory.CreateEmpty();
       }
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V5_6_2;
+         return (ProjectVersions.V5_6_2, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return ProjectVersions.V5_6_2;
+         return (ProjectVersions.V5_6_2, false);
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_6_1;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_6_1;
 
       public void Visit(Individual individual)
       {
          individual.AllMolecules().Each(addHalfLifeToMolecule);
+         _converted = true;
       }
 
       private void addHalfLifeToMolecule(IndividualMolecule individualMolecule)

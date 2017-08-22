@@ -91,9 +91,6 @@ namespace PKSim.Infrastructure.Services
 
             //special loading steps for simulation
             loadSimulations(objectToLoad as Simulation);
-
-            if (objectToLoad.IsAnImplementationOf<IPKSimBuildingBlock>())
-               objectToLoad.DowncastTo<IPKSimBuildingBlock>().HasChanged = false;
          }
       }
 
@@ -102,6 +99,9 @@ namespace PKSim.Infrastructure.Services
          if (simulation == null)
             return;
 
+         //updating results may triggered update of has changed flag that is not accurate. We save the original state and update it at the end
+         var hasChanged = simulation.HasChanged;
+         
          //Only load results for individual simulations
          if (simulation.IsAnImplementationOf<IndividualSimulation>())
             _simulationResultsLoader.LoadResultsFor(simulation.DowncastTo<IndividualSimulation>());
@@ -111,6 +111,8 @@ namespace PKSim.Infrastructure.Services
 
          //in all cases, load the charts
          _simulationChartsLoader.LoadChartsFor(simulation);
+
+         simulation.HasChanged = hasChanged;
       }
    }
 }

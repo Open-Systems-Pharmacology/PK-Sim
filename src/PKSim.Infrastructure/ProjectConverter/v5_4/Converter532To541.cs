@@ -18,6 +18,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_4
    {
       private readonly IDataRepositoryConverter _dataRepositoryConverter;
       private readonly IDimensionRepository _dimensionRepository;
+      private bool _converted;
 
       public Converter532To541(IDataRepositoryConverter dataRepositoryConverter, IDimensionRepository dimensionRepository)
       {
@@ -25,21 +26,19 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_4
          _dimensionRepository = dimensionRepository;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_3_2;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_3_2;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V5_4_1;
+         return (ProjectVersions.V5_4_1, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          //nothing to do here
-         return ProjectVersions.V5_4_1;
+         return (ProjectVersions.V5_4_1, false);
       }
 
       public void Visit(IPKSimProject project)
@@ -59,11 +58,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_4
          {
             project.AddClassifiable(new ClassifiableComparison { Subject = comparison });
          }
+         _converted = true;
       }
 
       public void Visit(Simulation simulation)
       {
          convertSimulation(simulation);
+         _converted = true;
       }
 
       private static void convertSimulation(Simulation simulation)
@@ -95,6 +96,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_4
          {
             timeProfileAnalysis.PopulationAnalysis.TimeUnit = _dimensionRepository.Time.DefaultUnit;
          }
+         _converted = true;
       }
    }
 }

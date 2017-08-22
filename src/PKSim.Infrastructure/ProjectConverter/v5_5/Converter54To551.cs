@@ -2,27 +2,26 @@
 using System.Xml.Linq;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
-using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Serialization.Xml.Extensions;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_5
 {
    public class Converter54To551 : IObjectConverter
    {
-      public bool IsSatisfiedBy(int version)
+      private bool _converted;
+
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_4_1;
+
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
-         return version == ProjectVersions.V5_4_1;
+         return (ProjectVersions.V5_5_1, false);
       }
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return ProjectVersions.V5_5_1;
-      }
-
-      public int ConvertXml(XElement element, int originalVersion)
-      {
+         _converted = false;
          element.DescendantsAndSelfNamed("IndividualSimulation", "PopulationSimulation").Each(convertSimulationSettingsIn);
-         return ProjectVersions.V5_5_1;
+         return (ProjectVersions.V5_5_1, _converted);
       }
 
       private void convertSimulationSettingsIn(XElement simulationElement)
@@ -42,6 +41,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_5
          }
 
          simulationElement.Add(outputSelections);
+         _converted = true;
       }
    }
 }

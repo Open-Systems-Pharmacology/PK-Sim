@@ -11,7 +11,6 @@ using PKSim.Core.Services;
 using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_1
 {
@@ -30,24 +29,21 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
          _dimensionConverter = dimensionConverter;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_0_1;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_0_1;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
          this.Visit(objectToConvert);
-         return ProjectVersions.V5_1_3;
+         return (ProjectVersions.V5_1_3, true);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          _dimensionConverter.ConvertDimensionIn(element);
 
          //only need to convert individual
          if (!elementNeedsToBeConverted(element))
-            return ProjectVersions.V5_1_3;
+            return (ProjectVersions.V5_1_3, true);
 
          //here we need to convert the nodes for transporter
          var allTransporterNodes = element.Descendants("IndividualTransporter");
@@ -65,7 +61,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
             transporterNode.AddAttribute(_transportType, containerByType.TranstportType);
          }
 
-         return ProjectVersions.V5_1_3;
+         return (ProjectVersions.V5_1_3, true);
       }
 
       private static bool elementNeedsToBeConverted(XElement element)
@@ -132,7 +128,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
                                              string oldSinkConditionAlias)
       {
          var lumenSegmentExtension = ConverterConstants.LumenSegmentExtensionFor(lumenSegmentName);
-         string neighborhoodName = string.Format("Lumen{0}_{1}{2}", lumenSegmentExtension, lumenSegmentName, targetCompartmentExtension);
+         string neighborhoodName = $"Lumen{lumenSegmentExtension}_{lumenSegmentName}{targetCompartmentExtension}";
 
          var drugAbsorptionRateToMucosa = simulation.Model.Root
             .Container(Constants.NEIGHBORHOODS)
@@ -140,9 +136,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
             .GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameter.DrugAbsorptionLumenToMucosaRate))
             .FirstOrDefault();
 
-         if (drugAbsorptionRateToMucosa == null) return;
-
-         var formula = drugAbsorptionRateToMucosa.Formula as ExplicitFormula;
+         var formula = drugAbsorptionRateToMucosa?.Formula as ExplicitFormula;
          if (formula == null) return;
 
          formula.FormulaString = formula.FormulaString.Replace(oldSinkConditionAlias, "NOT " + oldSinkConditionAlias);

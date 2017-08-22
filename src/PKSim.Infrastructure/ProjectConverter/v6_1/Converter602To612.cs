@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Serialization.Xml.Extensions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Serialization.Xml.Extensions;
 
 namespace PKSim.Infrastructure.ProjectConverter.v6_1
 {
@@ -21,6 +21,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
    {
       private readonly IFormulationRepository _formulationRepository;
       private readonly ICloner _cloner;
+      private bool _converted;
 
       public Converter602To612(IFormulationRepository formulationRepository, ICloner cloner)
       {
@@ -28,33 +29,39 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
          _cloner = cloner;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V6_0_2;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V6_0_2;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V6_1_2;
+         return (ProjectVersions.V6_1_2, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
+         _converted = false;
+
          if (element.Name == "RandomPopulationSettings")
+         {
             convertRandomPopulationSettings(element, element.Element("FormulaCache"));
+            _converted = true;
+         }
 
          else if (element.Name == "RandomPopulation")
+         {
             convertRandomPopulationSettings(element.Element("Settings"), element.Element("FormulaCache"));
-
+            _converted = true;
+         }
 
          element.DescendantsAndSelfNamed("ProteinExpressionContainer").ToList().Each(convertExpressionContainer);
-         return ProjectVersions.V6_1_2;
+         return (ProjectVersions.V6_1_2, _converted);
       }
 
       private void convertExpressionContainer(XElement proteinExpressionContainer)
       {
          proteinExpressionContainer.Name = "MoleculeExpressionContainer";
+         _converted = true;
       }
 
       private void convertRandomPopulationSettings(XElement randomPopulationSettingsElement, XElement formulaCacheElement)
@@ -72,14 +79,12 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
       public void Visit(RandomPopulation randomPopulation)
       {
          convertRangeIn(randomPopulation);
+         _converted = true;
       }
 
       private void convertRangeIn(RandomPopulation randomPopulation)
       {
-         if (randomPopulation == null)
-            return;
-
-         randomPopulation.Settings.ParameterRanges.Each(convertRange);
+         randomPopulation?.Settings.ParameterRanges.Each(convertRange);
       }
 
       private void convertRange(ParameterRange parameterRange)
@@ -92,6 +97,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
       {
          Visit(populationSimulation.DowncastTo<Simulation>());
          convertRangeIn(populationSimulation.Population as RandomPopulation);
+         _converted = true;
       }
 
       public void Visit(Simulation simulation)
@@ -99,6 +105,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
          clearFormulaCacheInReactionBuildingBlock(simulation.Reactions);
          updateMoleculeAmountNegativeValuesAllowed(simulation.Model.Root);
          simulation.AllBuildingBlocks<Formulation>().Each(Visit);
+         _converted = true;
       }
 
       private void updateMoleculeAmountNegativeValuesAllowed(IContainer container)
@@ -127,6 +134,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
          var useAsSuspension = _cloner.Clone(templateFormulation.Parameter(CoreConstants.Parameter.USE_AS_SUSPENSION));
          useAsSuspension.Value = 0;
          formulation.Add(useAsSuspension);
+         _converted = true;
       }
    }
 }

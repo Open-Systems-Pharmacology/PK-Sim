@@ -1,11 +1,10 @@
 ﻿using System.Xml.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_2
 {
@@ -19,6 +18,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
       private readonly ICloner _cloner;
       private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
       private readonly Cache<Species, Individual> _defaultCache;
+      private bool _converted;
 
       public Converter521To522(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater)
       {
@@ -28,21 +28,19 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          _defaultCache = new Cache<Species, Individual>(x => x.Species, x => null);
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_2_1;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_2_1;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V5_2_2;
+         return (ProjectVersions.V5_2_2, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          //no xml to convert here
-         return ProjectVersions.V5_2_2;
+         return (ProjectVersions.V5_2_2, false);
       }
 
       public void Visit(Simulation simulation)
@@ -53,17 +51,20 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          Visit(compound);
          addIndividualParameters(simulation.Model.Root, individual.Species, simulation.Name);
          updateParametersOrigin(individual, simulation.Model.Root);
+         _converted = true;
       }
 
       public void Visit(RandomPopulation population)
       {
          Visit(population.FirstIndividual);
+         _converted = true;
       }
 
       public void Visit(Individual individual)
       {
          _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(individual);
          addIndividualParameters(individual, individual.Species);
+         _converted = true;
       }
 
       private void addIndividualParameters(IContainer individual, Species species, string replaceRootName = null)
@@ -100,23 +101,22 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
       private IContainer largeIntestineIn(IContainer container)
       {
-         return container.Container(Constants.ORGANISM).Container(CoreConstants.Organ.LargeIntestine);
+         return container.EntityAt<IContainer>(Constants.ORGANISM,CoreConstants.Organ.LargeIntestine);
       }
 
       private IContainer lumenStomachIn(IContainer container)
       {
-         return container.Container(Constants.ORGANISM)
-            .Container(CoreConstants.Organ.Lumen)
-            .Container(CoreConstants.Compartment.Stomach);
+         return container.EntityAt<IContainer>(Constants.ORGANISM, CoreConstants.Organ.Lumen, CoreConstants.Compartment.Stomach);
       }
 
       public void Visit(Compound compound)
       {
          //required for wrong conversion between 5.1 and 5.2.1
          var oldFractionUnbound = compound.Parameter(ConverterConstants.Parameter.FractionUnboundPlasma);
-         if(oldFractionUnbound==null) return;
+         if (oldFractionUnbound == null) return;
 
          oldFractionUnbound.Name = CoreConstants.Parameter.FractionUnbound;
+         _converted = true;
       }
    }
 }

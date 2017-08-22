@@ -5,7 +5,6 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_3
@@ -16,31 +15,32 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
       IVisitor<Population>
    {
       private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
+      private bool _converted;
 
       public Converter531To532(IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater)
       {
          _renalAgingCalculationMethodUpdater = renalAgingCalculationMethodUpdater;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_3_1;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_3_1;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V5_3_2;
+         return (ProjectVersions.V5_3_2, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          //Remove the favorite node from the project element that would corrupt the project
+         _converted = false;
          if (element.Name == "Project")
          {
             removeFavoritesNode(element);
+            _converted = true;
          }
-         return ProjectVersions.V5_3_2;
+         return (ProjectVersions.V5_3_2, _converted);
       }
 
       private void removeFavoritesNode(XElement element)
@@ -53,17 +53,20 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
       {
          updateVariableInPopulationFlag(populationSimulation.Individual);
          updateVariableInPopulationFlag(populationSimulation.AllPotentialAdvancedParameters.ToList());
+         _converted = true;
       }
 
       public void Visit(Individual individual)
       {
          _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(individual);
          updateVariableInPopulationFlag(individual);
+         _converted = true;
       }
 
       public void Visit(Population population)
       {
          updateVariableInPopulationFlag(population.FirstIndividual);
+         _converted = true;
       }
 
       private void updateVariableInPopulationFlag(Individual individual)
