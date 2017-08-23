@@ -15,6 +15,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_4
    {
       private readonly IParameterFactory _parameterFactory;
       private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
+      private bool _converted;
 
       public Converter632To641(IParameterFactory parameterFactory, IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater)
       {
@@ -22,25 +23,24 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_4
          _renalAgingCalculationMethodUpdater = renalAgingCalculationMethodUpdater;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V6_3_2;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V6_3_2;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = true;
          this.Visit(objectToConvert);
-         return ProjectVersions.V6_4_1;
+         return (ProjectVersions.V6_4_1, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return ProjectVersions.V6_4_1;
+         return (ProjectVersions.V6_4_1, false);
       }
 
       public void Visit(Individual individual)
       {
          convertIndividual(individual);
+         _converted = true;
       }
 
       private void convertIndividual(Individual individual)
@@ -64,12 +64,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_4
       public void Visit(Population population)
       {
          convertIndividual(population.FirstIndividual);
+         _converted = true;
       }
 
       public void Visit(Simulation simulation)
       {
          convertIndividual(simulation.BuildingBlock<Individual>());
          _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(simulation);
+         _converted = true;
       }
    }
 }

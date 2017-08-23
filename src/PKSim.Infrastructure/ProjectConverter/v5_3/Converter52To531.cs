@@ -33,6 +33,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
       private readonly IoC _container;
       private readonly IDimensionFactory _dimensionFactory;
       private readonly List<XElement> _simulationChartElementCache;
+      private bool _converted;
 
       public Converter52To531(ISolverSettingsFactory solverSettingsFactory, ISimulationResultsLoader simulationResultsLoader,
          ICompoundConverter52 compoundConverter, IObjectPathFactory objectPathFactory, IoC container, IDimensionFactory dimensionFactory)
@@ -46,14 +47,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
          _simulationChartElementCache = new List<XElement>();
       }
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V5_3_1;
+         return (ProjectVersions.V5_3_1, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
+         _converted = false;
          updateParameterInfo(element);
 
          if (element.Name.IsOneOf("PopulationSimulation", "IndividualSimulation"))
@@ -61,13 +64,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
             convertModel(element);
             convertSimulationOutput(element);
             addChartElementsFromIndividualSimulation(element);
+            _converted = true;
          }
-         if (element.Name == "SummaryChart")
+
+         else if (element.Name == "SummaryChart")
          {
             renameChartElementToCurveChart(new[] {element});
+            _converted = true;
          }
-         //update in db machen chart xml serializere
-         return ProjectVersions.V5_3_1;
+
+         return (ProjectVersions.V5_3_1, _converted);
       }
 
       private void addChartElementsFromIndividualSimulation(XElement element)
@@ -128,6 +134,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
          {
             moveAttribute(parameterInfoNode, Constants.Serialization.Attribute.Dimension);
             moveAttribute(parameterInfoNode, CoreConstants.Serialization.Attribute.BuildingBlockType);
+            _converted = true;
          }
       }
 
@@ -137,16 +144,10 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
          if (attribute == null)
             return;
 
-         if (node.Parent == null)
-            return;
-
-         node.Parent.Add(attribute);
+         node.Parent?.Add(attribute);
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_2_2;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_2_2;
 
       private void convertSimulation(Simulation simulation)
       {
@@ -158,6 +159,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
 
          convertTotalDrugMassParameter(simulation);
          convertEHCStructure(simulation);
+         _converted = true;
       }
 
       private void convertEHCStructure(Simulation simulation)
@@ -258,6 +260,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
 
          //wrong conversion between 5.1.4 and 5.2. So we need to call the conversion again
          _compoundConverter.UpdateGainPerChargeInAlternatives(compound, updateValues: false);
+         _converted = true;
       }
 
       private void updateHalogensParameter(IParameter parameter)
@@ -283,11 +286,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
             _simulationChartElementCache.Each(e => individualSimulation.AddAnalysis(serializer.Deserialize<SimulationTimeProfileChart>(e, context)));
          }
          _simulationChartElementCache.Clear();
+         _converted = true;
       }
 
       public void Visit(PopulationSimulation populationSimulation)
       {
          convertSimulation(populationSimulation);
+         _converted = true;
       }
    }
 }

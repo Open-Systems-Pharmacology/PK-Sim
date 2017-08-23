@@ -65,6 +65,8 @@ namespace PKSim.Infrastructure
          _workspacePersistor.SaveSession(this, fileFullPath);
          updateProjectPropertiesFrom(fileFullPath);
 
+         _project.HasChanged = false;
+
          //notify event project saved
          _eventPublisher.PublishEvent(new ProjectSavedEvent(_project));
 
@@ -133,7 +135,6 @@ namespace PKSim.Infrastructure
       private void updateProjectPropertiesFrom(string fileFullPath)
       {
          _project.FilePath = fileFullPath;
-         _project.HasChanged = false;
          _mruProvider.Add(fileFullPath);
       }
 
@@ -141,8 +142,7 @@ namespace PKSim.Infrastructure
       {
          //History manager can happen if some events were not released properly.
          //Project was closed however so change should be take into consideration
-         if (HistoryManager == null) return;
-         HistoryManager.AddToHistory(command);
+         HistoryManager?.AddToHistory(command);
       }
 
       public IEnumerable<ICommand> All()

@@ -8,15 +8,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_3
 {
    public class Converter631To632 : IObjectConverter, IVisitor<Simulation>
    {
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V6_3_1;
-      }
+      private bool _converted;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V6_3_1;
+
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V6_3_2;
+         return (ProjectVersions.V6_3_2, _converted);
       }
 
       public void Visit(Simulation simulation)
@@ -31,11 +31,12 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_3
             if (ontogenyFactorGI != null)
                ontogenyFactorGI.CanBeVaried = true;
          }
+         _converted = true;
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return ProjectVersions.V6_3_2;
+         return (ProjectVersions.V6_3_2, false);
       }
    }
 }

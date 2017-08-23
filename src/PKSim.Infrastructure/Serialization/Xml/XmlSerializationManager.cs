@@ -1,5 +1,9 @@
 using System;
 using System.Xml.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Serializer.Xml;
 using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility.Events;
@@ -10,10 +14,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Serialization.Xml;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Infrastructure.Serialization.Xml
@@ -52,8 +52,8 @@ namespace PKSim.Infrastructure.Serialization.Xml
       public TObject Deserialize<TObject>(byte[] serializationBytes, SerializationContext serializationContext = null)
       {
          TObject deseserializedObject;
-         int version;
-         var element = getConvertedElementFrom(serializationBytes, out version);
+
+         var (element, originalVersion, conversionHappened) = getConvertedElementFrom(serializationBytes);
 
          var context = serializationContext ?? _serializationContextFactory.Create();
          try
@@ -78,28 +78,27 @@ namespace PKSim.Infrastructure.Serialization.Xml
                context.Dispose();
          }
 
-         updatePropertiesFor(deseserializedObject, version);
+         updatePropertiesFor(deseserializedObject, originalVersion, conversionHappened);
          return deseserializedObject;
       }
 
-      private XElement getConvertedElementFrom(byte[] serializationBytes, out int version)
+      private (XElement element, int originalVersion, bool conversionHappened) getConvertedElementFrom(byte[] serializationBytes)
       {
          var element = ElementFrom(serializationBytes);
-         version = versionFrom(element);
-         if (!ProjectVersions.CanLoadVersion(version))
-            throw new InvalidProjectVersionException(version);
+         var originalVersion = versionFrom(element);
+         if (!ProjectVersions.CanLoadVersion(originalVersion))
+            throw new InvalidProjectVersionException(originalVersion);
 
-         convertXml(element, version);
-         return element;
+         var conversionHappened = convertXml(element, originalVersion);
+         return (element, originalVersion, conversionHappened);
       }
 
       public void Deserialize<TObject>(TObject objectToDeserialize, byte[] serializationBytes, SerializationContext serializationContext = null)
       {
-         int version;
-         var element = getConvertedElementFrom(serializationBytes, out version);
+         var (element, originalVersion, conversionHappened) = getConvertedElementFrom(serializationBytes);
 
          var context = serializationContext ?? _serializationContextFactory.Create();
-            
+
          try
          {
             using (new XElementDisposer(element))
@@ -122,7 +121,7 @@ namespace PKSim.Infrastructure.Serialization.Xml
                context.Dispose();
          }
 
-         updatePropertiesFor(objectToDeserialize, version);
+         updatePropertiesFor(objectToDeserialize, originalVersion, conversionHappened);
       }
 
       private int versionFrom(XElement element)
@@ -147,21 +146,24 @@ namespace PKSim.Infrastructure.Serialization.Xml
       /// <summary>
       ///    This function converts the XElement prior to deserialization if required
       /// </summary>
-      private void convertXml(XElement sourceElement, int originalVersion)
+      private bool convertXml(XElement sourceElement, int originalVersion)
       {
-         convert(sourceElement, originalVersion, x => x.ConvertXml);
+         return convert(sourceElement, originalVersion, x => x.ConvertXml);
       }
 
-      private bool convert<T>(T objectToConvert, int originalVersion, Func<IObjectConverter, Func<T, int, int>> converterAction)
+      private bool convert<T>(T objectToConvert, int originalVersion, Func<IObjectConverter, Func<T, int, (int, bool)>> converterAction)
       {
          int version = originalVersion;
+         bool conversionHappened = false;
          while (version != ProjectVersions.Current)
          {
             var converter = _objectConverterFinder.FindConverterFor(version);
-            version = converterAction(converter).Invoke(objectToConvert, originalVersion);
+            var (convertedVersion, converted) = converterAction(converter).Invoke(objectToConvert, originalVersion);
+            version = convertedVersion;
+            conversionHappened = conversionHappened || converted;
          }
 
-         return originalVersion != ProjectVersions.Current;
+         return originalVersion != ProjectVersions.Current && conversionHappened;
       }
 
       /// <summary>
@@ -173,10 +175,10 @@ namespace PKSim.Infrastructure.Serialization.Xml
          return convert(deserializedObject, originalVersion, x => x.Convert);
       }
 
-      private void updatePropertiesFor<TObject>(TObject deserializedObject, int version)
+      private void updatePropertiesFor<TObject>(TObject deserializedObject, int originalVersion, bool xmlConversionHappened)
       {
-         //convert object if required
-         var conversionHappened = convert(deserializedObject, version);
+         //convert object 
+         var conversionHappened = convert(deserializedObject, originalVersion) || xmlConversionHappened;
 
          var simulation = deserializedObject as Simulation;
          if (simulation != null)
@@ -194,8 +196,12 @@ namespace PKSim.Infrastructure.Serialization.Xml
          if (lazyLoadable != null)
             lazyLoadable.IsLoaded = true;
 
+         var buildingBlock = deserializedObject as IPKSimBuildingBlock;
+         if (buildingBlock != null)
+            buildingBlock.HasChanged = conversionHappened;
+
          if (conversionHappened && deserializedObject.IsAnImplementationOf<IObjectBase>())
-            _eventPublisher.PublishEvent(new ObjectBaseConvertedEvent(deserializedObject.DowncastTo<IObjectBase>(), ProjectVersions.FindBy(version)));
+            _eventPublisher.PublishEvent(new ObjectBaseConvertedEvent(deserializedObject.DowncastTo<IObjectBase>(), ProjectVersions.FindBy(originalVersion)));
       }
 
       protected virtual IXmlReader<TObject> XmlReaderFor<TObject>()

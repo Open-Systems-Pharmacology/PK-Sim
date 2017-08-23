@@ -153,8 +153,8 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _objectConverterFinder.FindConverterFor(ProjectVersions.V5_0_1)).Returns(_converter);
          _element = new XElement("Individual");
          _element.AddAttribute(CoreConstants.Serialization.Attribute.XmlVersion, ProjectVersions.V5_0_1.VersionAsString);
-          A.CallTo(() =>_converter.Convert(_individual, ProjectVersions.V5_0_1)).Returns(ProjectVersions.Current);
-          A.CallTo(() => _converter.ConvertXml(A<XElement>._, ProjectVersions.V5_0_1)).Returns(ProjectVersions.Current);
+          A.CallTo(() =>_converter.Convert(_individual, ProjectVersions.V5_0_1)).Returns((ProjectVersions.Current, true));
+          A.CallTo(() => _converter.ConvertXml(A<XElement>._, ProjectVersions.V5_0_1)).Returns((ProjectVersions.Current, true));
       }
 
       protected override void Because()

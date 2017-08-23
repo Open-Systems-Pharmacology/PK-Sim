@@ -1,33 +1,33 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
 using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistableUpdater;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_2
 {
    public class Converter514To521 : IObjectConverter,
-                                  IVisitor<RandomPopulation>,
-                                  IVisitor<PopulationSimulation>,
-                                  IVisitor<Individual>,
-                                  IVisitor<IndividualSimulation>,
-                                  IVisitor<Compound>,
-                                  IVisitor<AdvancedProtocol>,
-                                  IVisitor<SimpleProtocol>,
-                                  IVisitor<PKSimEvent>,
-                                  IVisitor<Formulation>,
-                                  IVisitor<DataRepository>,
-                                  IVisitor<PKSimProject>,
-                                  IVisitor<OriginData>
+      IVisitor<RandomPopulation>,
+      IVisitor<PopulationSimulation>,
+      IVisitor<Individual>,
+      IVisitor<IndividualSimulation>,
+      IVisitor<Compound>,
+      IVisitor<AdvancedProtocol>,
+      IVisitor<SimpleProtocol>,
+      IVisitor<PKSimEvent>,
+      IVisitor<Formulation>,
+      IVisitor<DataRepository>,
+      IVisitor<PKSimProject>,
+      IVisitor<OriginData>
    {
       private readonly IParameterValuesCacheConverter _parameterValuesCacheConverter;
       private readonly IEntityPathResolver _entityPathResolver;
@@ -41,9 +41,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
       private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
 
       public Converter514To521(IParameterValuesCacheConverter parameterValuesCacheConverter, IEntityPathResolver entityPathResolver, ICompoundConverter compoundConverter,
-                             IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IFormulaAndDimensionConverter formulaAndDimensionConverter, 
-                             ICalculationMethodRepository calculationMethodRepository,IDimensionRepository dimensionRepository,ISimulationPersistableUpdater simulationPersistableUpdater, 
-                             IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater)
+         IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IFormulaAndDimensionConverter formulaAndDimensionConverter,
+         ICalculationMethodRepository calculationMethodRepository, IDimensionRepository dimensionRepository, ISimulationPersistableUpdater simulationPersistableUpdater,
+         IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater)
       {
          _parameterValuesCacheConverter = parameterValuesCacheConverter;
          _entityPathResolver = entityPathResolver;
@@ -57,18 +57,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          _renalAgingCalculationMethodUpdater = renalAgingCalculationMethodUpdater;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_1_4;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_1_4;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
          this.Visit(objectToConvert);
-         return ProjectVersions.V5_2_1;
+         //Almost each object is converted with this conversion step => true
+         return (ProjectVersions.V5_2_1, true);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          //Always convert dimensions
          _formulaAndDimensionConverter.ConvertDimensionIn(element);
@@ -88,17 +86,17 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
             convertAxisDimension(element);
          }
 
-         return ProjectVersions.V5_2_1;
+         return (ProjectVersions.V5_2_1, true);
       }
 
       private void convertAxisDimension(XElement element)
       {
          //retrieve all elements with an attribute dimension
          var allDimensionAttributes = from child in element.DescendantsAndSelf()
-                                      where child.HasAttributes
-                                      let attr = child.Attribute(Constants.Serialization.Attribute.Dimension) ?? child.Attribute("dimension")
-                                      where attr != null
-                                      select attr;
+            where child.HasAttributes
+            let attr = child.Attribute(Constants.Serialization.Attribute.Dimension) ?? child.Attribute("dimension")
+            where attr != null
+            select attr;
 
          foreach (var dimensionAttribute in allDimensionAttributes)
          {
@@ -211,7 +209,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
                continue;
 
             //default value for all P_endotehlial in dm/min
-            parameter.DefaultValue = 10; 
+            parameter.DefaultValue = 10;
             if (ValueComparer.AreValuesEqual(parameter.DefaultValue.Value, parameter.Value, CoreConstants.DOUBLE_RELATIVE_EPSILON))
                return;
 
@@ -230,7 +228,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
       public void Visit(Individual individual)
       {
-
          _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(individual);
 
          performCommonConversion(individual);
@@ -285,7 +282,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
       {
          var modelProperties = simulation.ModelProperties;
          var individual = simulation.Individual;
-         if(individual.IsHuman)
+         if (individual.IsHuman)
             modelProperties.AddCalculationMethod(_calculationMethodRepository.FindByName("MucosaVolume_Human"));
          else
             modelProperties.AddCalculationMethod(_calculationMethodRepository.FindByName("MucosaVolume_Animals"));
@@ -400,7 +397,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
       private void convertIndividualSimulationSettings(IndividualSimulation simulation)
       {
          _simulationPersistableUpdater.ResetPersistable(simulation);
-         foreach (var observer in simulation.All<IObserver>().Where(x=>x.Persistable))
+         foreach (var observer in simulation.All<IObserver>().Where(x => x.Persistable))
          {
             simulation.OutputSelections.AddOutput(new QuantitySelection(_entityPathResolver.PathFor(observer), observer.QuantityType));
          }

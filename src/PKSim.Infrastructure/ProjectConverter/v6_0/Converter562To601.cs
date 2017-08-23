@@ -4,7 +4,6 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Presentation;
 using OSPSuite.Core.Converter.v6_0;
 using OSPSuite.Core.Domain;
@@ -23,6 +22,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
    {
       private readonly Converter56To601 _coreConverter56To601;
       private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
+      private bool _converted;
 
       public Converter562To601(Converter56To601 coreConverter56To601, IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater)
       {
@@ -30,18 +30,19 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
          _renalAgingCalculationMethodUpdater = renalAgingCalculationMethodUpdater;
       }
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V6_0_1;
+         return (ProjectVersions.V6_0_1, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          element.DescendantsAndSelfNamed("IndividualSimulation", "PopulationSimulation").Each(convertSimulation);
          element.DescendantsAndSelfNamed("CurveChart").Each(convertCurveChart);
          element.DescendantsAndSelfNamed("Favorites").Each(convertFavorites);
-         return ProjectVersions.V6_0_1;
+         return (ProjectVersions.V6_0_1, true);
       }
 
       private void convertFavorites(XElement favoritesElement)
@@ -83,10 +84,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
          parent.Add(elementToAdd);
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_6_2;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_6_2;
 
       private void convertIndividual(Individual individual)
       {
@@ -103,11 +101,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
       public void Visit(Individual individual)
       {
          convertIndividual(individual);
+         _converted = true;
       }
 
       public void Visit(Population population)
       {
          convertIndividual(population.FirstIndividual);
+         _converted = true;
       }
 
       public void Visit(Simulation simulation)
@@ -115,6 +115,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
          convertIndividual(simulation.BuildingBlock<Individual>());
          simulation.AllBuildingBlocks<Protocol>().Each(this.Visit);
          changeBuildModeTypeOfMoleculesParameters(simulation);
+         _converted = true;
       }
 
       private void changeBuildModeTypeOfMoleculesParameters(Simulation simulation)
@@ -138,18 +139,20 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
          if (ValueComparer.AreValuesEqual(userSettings.RelTol, ConverterConstants.OLD_DEFAULT_REL_TOL))
             userSettings.RelTol = CoreConstants.DEFAULT_REL_TOL;
 
-
          userSettings.ActiveSkin = CoreConstants.DEFAULT_SKIN;
+         _converted = true;
       }
 
       public void Visit(SimpleProtocol simpleProtocol)
       {
          convertSchemaItem(simpleProtocol);
+         _converted = true;
       }
 
       public void Visit(AdvancedProtocol advancedProtocol)
       {
          advancedProtocol.AllSchemas.SelectMany(x => x.SchemaItems).Each(convertSchemaItem);
+         _converted = true;
       }
 
       private void convertSchemaItem(ISchemaItem schemaItem)

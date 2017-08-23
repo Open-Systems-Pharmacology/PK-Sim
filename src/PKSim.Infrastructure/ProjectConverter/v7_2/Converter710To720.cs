@@ -22,6 +22,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
       private readonly ICalculationMethodRepository _calculationMethodRepository;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IOrganTypeRepository _organTypeRepository;
+      private bool _converted;
 
       public Converter710To720(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, ICalculationMethodRepository calculationMethodRepository, IEntityPathResolver entityPathResolver, IOrganTypeRepository organTypeRepository)
       {
@@ -32,21 +33,20 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
          _organTypeRepository = organTypeRepository;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V7_1_0;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V7_1_0;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V7_2_0;
+         return (ProjectVersions.V7_2_0, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
+         _converted = false;
          convertOrganTypes(element);
-         return ProjectVersions.V7_2_0;
+         return (ProjectVersions.V7_2_0, _converted);
       }
 
       private void convertOrganTypes(XElement element)
@@ -60,23 +60,35 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
          foreach (var organTypesAttribute in allOrganTypesAttributes)
          {
             organTypesAttribute.SetValue(convertOrganType(organTypesAttribute.Value));
+            _converted = true;
          }
       }
 
-      private OrganType convertOrganType(string oldOrganType)
-      {
-         return _organTypeRepository.OrganTypeFor(organName: oldOrganType);
-      }
+      private OrganType convertOrganType(string oldOrganType) => _organTypeRepository.OrganTypeFor(organName: oldOrganType);
 
       public void Visit(Individual individual)
       {
          convertIndividual(individual);
+         _converted = true;
       }
 
       public void Visit(Population population)
       {
          convertIndividual(population.FirstIndividual);
          addBSAParameterValues(population);
+         _converted = true;
+      }
+
+      public void Visit(IndividualSimulation individualSimulation)
+      {
+         Visit(individualSimulation.Individual);
+         _converted = true;
+      }
+
+      public void Visit(PopulationSimulation populationSimulation)
+      {
+         Visit(populationSimulation.Population);
+         _converted = true;
       }
 
       private void convertIndividual(Individual individual)
@@ -132,16 +144,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
             return;
 
          individual.OriginData.AddCalculationMethod(_calculationMethodRepository.FindByName(ConverterConstants.CalculationMethod.BSA_DuBois));
-      }
-
-      public void Visit(IndividualSimulation individualSimulation)
-      {
-         Visit(individualSimulation.Individual);
-      }
-
-      public void Visit(PopulationSimulation populationSimulation)
-      {
-         Visit(populationSimulation.Population);
       }
    }
 }
