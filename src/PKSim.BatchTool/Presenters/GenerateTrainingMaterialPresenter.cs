@@ -8,14 +8,13 @@ using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.BatchTool.Presenters
 {
-   public interface IGenerateTrainingMaterialPresenter : IBatchPresenter, IPresenter<IGenerateTrainingMaterialView>
+   public interface IGenerateTrainingMaterialPresenter : IBatchPresenter<TrainingMaterialsOptions>
    {
       void SelectOutputFolder();
    }
 
-   public class GenerateTrainingMaterialPresenter : BatchPresenter<IGenerateTrainingMaterialView, IGenerateTrainingMaterialPresenter, TrainingMaterialRunner>, IGenerateTrainingMaterialPresenter
+   public class GenerateTrainingMaterialPresenter : BatchPresenter<IGenerateTrainingMaterialView, IGenerateTrainingMaterialPresenter, TrainingMaterialRunner, TrainingMaterialsOptions>, IGenerateTrainingMaterialPresenter
    {
-      private OutputBatchDTO _dto;
 
       public GenerateTrainingMaterialPresenter(IGenerateTrainingMaterialView view, TrainingMaterialRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger)
          : base(view, batchRunner, dialogCreator, logPresenter,batchLogger)
@@ -26,25 +25,8 @@ namespace PKSim.BatchTool.Presenters
       {
          string outputFolder = _dialogCreator.AskForFolder("Select output folder where files will be generated", Constants.DirectoryKey.TEMPLATE);
          if (string.IsNullOrEmpty(outputFolder)) return;
-         _dto.OutputFolder = outputFolder;
+         _startOptions.OutputFolder = outputFolder;
       }
 
-      protected override Task StartBatch()
-      {
-         return _batchRunner.RunBatch(
-            new
-            {
-               outputFolder = _dto.OutputFolder
-            });
-      }
-
-      public override Task InitializeWith(BatchStartOptions startOptions)
-      {
-         _dto = new OutputBatchDTO();
-         _view.BindTo(_dto);
-         _view.Display();
-         _startedFromCommandLine = false;
-         return base.InitializeWith(startOptions);
-      }
    }
 }

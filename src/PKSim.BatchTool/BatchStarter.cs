@@ -25,7 +25,8 @@ namespace PKSim.BatchTool
             ApplicationStartup.RegisterCommands(container);
 
             var workspace = container.Resolve<IWorkspace>();
-            container.RegisterImplementationOf((IWithWorkspaceLayout) workspace);
+            container.RegisterImplementationOf<IWithWorkspaceLayout>(workspace);
+            container.RegisterImplementationOf<OSPSuite.Core.IWorkspace>(workspace);
          }
       }
    }

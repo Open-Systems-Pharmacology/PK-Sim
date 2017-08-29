@@ -2,8 +2,8 @@
 
 namespace PKSim.BatchTool.Services
 {
-   public interface IBatchRunner
+   public interface IBatchRunner<TBatchOptions>
    {
-      Task RunBatch(dynamic parameters);
+      Task RunBatch(TBatchOptions parameters);
    }
 }

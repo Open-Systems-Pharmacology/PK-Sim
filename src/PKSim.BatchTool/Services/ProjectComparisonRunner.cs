@@ -19,7 +19,7 @@ using Individual = PKSim.Core.Model.Individual;
 
 namespace PKSim.BatchTool.Services
 {
-   public class ProjectComparisonRunner : IBatchRunner
+   public class ProjectComparisonRunner : IBatchRunner<ProjectComparisonOptions>
    {
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly IWorkspace _workspace;
@@ -49,10 +49,10 @@ namespace PKSim.BatchTool.Services
          _simulationEngine = simulationEngineFactory.Create<IndividualSimulation>();
       }
 
-      public async Task RunBatch(dynamic parameters)
+      public async Task RunBatch(ProjectComparisonOptions projectComparisonOptions)
       {
-         string inputFolder = parameters.inputFolder;
-         string outputFolder = parameters.outputFolder;
+         string inputFolder = projectComparisonOptions.InputFolder;
+         string outputFolder = projectComparisonOptions.OutputFolder;
 
          clear();
 

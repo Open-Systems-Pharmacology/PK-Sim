@@ -1,7 +1,8 @@
 ﻿using System.Windows.Forms;
+using OSPSuite.Assets;
+using OSPSuite.UI.Views;
 using PKSim.BatchTool.Presenters;
 using PKSim.Core;
-using OSPSuite.UI.Views;
 
 namespace PKSim.BatchTool.Views
 {
@@ -29,14 +30,16 @@ namespace PKSim.BatchTool.Views
          Caption = CoreConstants.PRODUCT_NAME;
          ShowInTaskbar = true;
          StartPosition = FormStartPosition.CenterScreen;
+         ApplicationIcon = ApplicationIcons.PKSim;
+         Icon = ApplicationIcon.WithSize(IconSizes.Size32x32);
       }
 
       public override void InitializeBinding()
       {
-         btnStartBatchRun.Click += (o, e) => OnEvent(_presenter.StartBatchRun);
-         btnStartProjectComparison.Click += (o, e) => OnEvent(_presenter.StartBatchComparison);
-         btnGenerateTrainingMaterial.Click += (o, e) => OnEvent(_presenter.GenerateTrainingMaterial);
-         btnGenerateProjectOverview.Click += (o, e) => OnEvent(_presenter.GenerateProjectOverview);
+         btnStartBatchRun.Click += (o, e) => OnEvent(() => _presenter.StartBatchRun());
+         btnStartProjectComparison.Click += (o, e) => OnEvent(() => _presenter.StartProjectComparison());
+         btnGenerateTrainingMaterial.Click += (o, e) => OnEvent(() => _presenter.GenerateTrainingMaterial());
+         btnGenerateProjectOverview.Click += (o, e) => OnEvent(() => _presenter.GenerateProjectOverview());
       }
    }
 }

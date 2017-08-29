@@ -8,14 +8,13 @@ using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.BatchTool.Presenters
 {
-   public interface IGenerateProjectOverviewPresenter : IBatchPresenter
+   public interface IGenerateProjectOverviewPresenter : IBatchPresenter<ProjectOverviewOptions>
    {
       void SelectInputFolder();
    }
 
-   public class GenerateProjectOverviewPresenter : BatchPresenter<IGenerateProjectOverviewView, IGenerateProjectOverviewPresenter, ProjectOverviewRunner>, IGenerateProjectOverviewPresenter
+   public class GenerateProjectOverviewPresenter : BatchPresenter<IGenerateProjectOverviewView, IGenerateProjectOverviewPresenter, ProjectOverviewRunner, ProjectOverviewOptions>, IGenerateProjectOverviewPresenter
    {
-      private OutputBatchDTO _dto;
 
       public GenerateProjectOverviewPresenter(IGenerateProjectOverviewView view, ProjectOverviewRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger) : base(view, batchRunner, dialogCreator, logPresenter, batchLogger)
       {
@@ -25,25 +24,8 @@ namespace PKSim.BatchTool.Presenters
       {
          string inputFolder = _dialogCreator.AskForFolder("Select input folder where projects are located", Constants.DirectoryKey.PROJECT);
          if (string.IsNullOrEmpty(inputFolder)) return;
-         _dto.OutputFolder = inputFolder;
+         _startOptions.InputFolder = inputFolder;
       }
 
-      protected override Task StartBatch()
-      {
-         return _batchRunner.RunBatch(
-            new
-            {
-               inputFolder = _dto.OutputFolder
-            });
-      }
-
-      public override Task InitializeWith(BatchStartOptions startOptions)
-      {
-         _dto = new OutputBatchDTO();
-         _view.BindTo(_dto);
-         _view.Display();
-         _startedFromCommandLine = false;
-         return base.InitializeWith(startOptions);
-      }
    }
 }

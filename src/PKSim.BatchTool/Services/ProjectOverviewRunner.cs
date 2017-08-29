@@ -4,43 +4,39 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using PKSim.Core;
-using PKSim.Core.Batch;
-using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
+using PKSim.Core.Batch;
+using PKSim.Presentation.Core;
 using Compound = PKSim.Core.Model.Compound;
 
 namespace PKSim.BatchTool.Services
 {
-   public class ProjectOverviewRunner : IBatchRunner
+   public class ProjectOverviewRunner : IBatchRunner<ProjectOverviewOptions>
    {
       private readonly IBatchLogger _logger;
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly IWorkspace _workspace;
-      private readonly ILazyLoadTask _lazyLoadTask;
 
-      public ProjectOverviewRunner(IBatchLogger logger, IWorkspacePersistor workspacePersistor, IWorkspace workspace,
-         ILazyLoadTask lazyLoadTask)
+      public ProjectOverviewRunner(IBatchLogger logger, IWorkspacePersistor workspacePersistor, IWorkspace workspace)
       {
          _logger = logger;
          _workspacePersistor = workspacePersistor;
          _workspace = workspace;
-         _lazyLoadTask = lazyLoadTask;
       }
 
-      public Task RunBatch(dynamic parameters)
+      public Task RunBatch(ProjectOverviewOptions options)
       {
          return Task.Run(() =>
          {
-            string inputFolder = parameters.inputFolder;
+            string inputFolder = options.InputFolder;
 
             clear();
-            
+
             var inputDirectory = new DirectoryInfo(inputFolder);
             if (!inputDirectory.Exists)
                throw new ArgumentException($"Input folder '{inputFolder}' does not exist");
@@ -71,7 +67,7 @@ namespace PKSim.BatchTool.Services
 
       private ProjectInfo addProjectInfo(FileInfo projectFile)
       {
-         var projectInfo = new ProjectInfo {FullPath = projectFile.FullName, Name= projectFile.Name };
+         var projectInfo = new ProjectInfo {FullPath = projectFile.FullName, Name = projectFile.Name};
          _logger.AddInSeparator($"Loading project file '{projectFile.FullName}'");
 
          _workspacePersistor.LoadSession(_workspace, projectFile.FullName);

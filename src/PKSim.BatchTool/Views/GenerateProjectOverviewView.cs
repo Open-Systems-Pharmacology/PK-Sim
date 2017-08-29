@@ -13,12 +13,12 @@ namespace PKSim.BatchTool.Views
    public partial class GenerateProjectOverviewView : BaseView, IGenerateProjectOverviewView
    {
       private IGenerateProjectOverviewPresenter _presenter;
-      private readonly ScreenBinder<OutputBatchDTO> _screenBinder;
+      private readonly ScreenBinder<ProjectOverviewOptions> _screenBinder;
 
       public GenerateProjectOverviewView()
       {
          InitializeComponent();
-         _screenBinder = new ScreenBinder<OutputBatchDTO>();
+         _screenBinder = new ScreenBinder<ProjectOverviewOptions>();
       }
 
       public override void InitializeResources()
@@ -33,7 +33,7 @@ namespace PKSim.BatchTool.Views
 
       public override void InitializeBinding()
       {
-         _screenBinder.Bind(x => x.OutputFolder).To(btnInputFolder);
+         _screenBinder.Bind(x => x.InputFolder).To(btnInputFolder);
 
          btnInputFolder.ButtonClick += (o, e) => OnEvent(_presenter.SelectInputFolder);
          btnGenerate.Click += (o, e) => OnEvent(async ()=> await _presenter.RunBatch());
@@ -58,7 +58,7 @@ namespace PKSim.BatchTool.Views
          btnGenerate.Enabled = !_screenBinder.HasError;
       }
 
-      public void BindTo(OutputBatchDTO batchDTO)
+      public void BindTo(ProjectOverviewOptions batchDTO)
       {
          _screenBinder.BindToSource(batchDTO);
       }

@@ -1,6 +1,6 @@
 ﻿namespace PKSim.BatchTool.Views
 {
-   partial class InputAndOutputBatchView
+   partial class InputAndOutputBatchView<TStartOptions>
    {
       /// <summary>
       /// Required designer variable.

@@ -1,13 +1,14 @@
-﻿using OSPSuite.Utility.Container;
-using PKSim.BatchTool.Services;
-using PKSim.BatchTool.Services.TrainingMaterials;
-using PKSim.Core;
-using PKSim.Presentation;
-using OSPSuite.Core.Diagram;
+﻿using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Presentation;
+using OSPSuite.Utility.Container;
 using PKSim.BatchTool.Mappers;
+using PKSim.BatchTool.Services;
+using PKSim.BatchTool.Services.TrainingMaterials;
+using PKSim.BatchTool.Views;
+using PKSim.Core;
+using PKSim.Presentation;
 
 namespace PKSim.BatchTool
 {
@@ -17,7 +18,7 @@ namespace PKSim.BatchTool
       {
          container.AddScanner(scan => scan.AssemblyContainingType<BatchRegister>());
          container.AddRegister(x => x.FromType<TrainingMaterialsRegister>());
-         
+
 
          container.Register<IUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, BatchUserSettings>(LifeStyle.Singleton);
          container.Register<IDiagramModelToXmlMapper, BatchDiagramModelToXmlMapper>(LifeStyle.Singleton);
@@ -29,6 +30,7 @@ namespace PKSim.BatchTool
          container.Register<TrainingMaterialRunner, TrainingMaterialRunner>();
          container.Register<ProjectOverviewRunner, ProjectOverviewRunner>();
 
+         container.Register(typeof(IInputAndOutputBatchView<>), typeof(InputAndOutputBatchView<>));
       }
    }
 }

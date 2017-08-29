@@ -1,22 +1,22 @@
 ﻿using System.Windows.Forms;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using PKSim.BatchTool.Presenters;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using PKSim.BatchTool.Presenters;
 
 namespace PKSim.BatchTool.Views
 {
-   public partial class InputAndOutputBatchView : BaseView, IInputAndOutputBatchView
+   public partial class InputAndOutputBatchView<TStartOptions> : BaseView, IInputAndOutputBatchView<TStartOptions> where TStartOptions : IWithInputAndOutputFolders
    {
       private IInputAndOutputBatchPresenter _presenter;
-      private readonly ScreenBinder<InputAndOutputBatchDTO> _screenBinder;
+      private readonly ScreenBinder<TStartOptions> _screenBinder;
 
       public InputAndOutputBatchView()
       {
          InitializeComponent();
-         _screenBinder = new ScreenBinder<InputAndOutputBatchDTO>();
+         _screenBinder = new ScreenBinder<TStartOptions>();
       }
 
       public void AttachPresenter(IInputAndOutputBatchPresenter presenter)
@@ -24,14 +24,14 @@ namespace PKSim.BatchTool.Views
          _presenter = presenter;
       }
 
-      public void BindTo(InputAndOutputBatchDTO batchDTO)
+      public void BindTo(TStartOptions batchDTO)
       {
          _screenBinder.BindToSource(batchDTO);
       }
 
       public bool CalculateEnabled
       {
-         set { btnCalculate.Enabled = value; }
+         set => btnCalculate.Enabled = value;
       }
 
       public void Display()
@@ -49,12 +49,22 @@ namespace PKSim.BatchTool.Views
          _screenBinder.Bind(x => x.InputFolder).To(btnInputFolder);
          _screenBinder.Bind(x => x.OutputFolder).To(btnOutputFolder);
 
-         btnInputFolder.ButtonClick += (o, e) => OnEvent(_presenter.SelectInputFolder);
-         btnOutputFolder.ButtonClick += (o, e) => OnEvent(_presenter.SelectOutputFolder);
+         btnInputFolder.ButtonClick += (o, e) => OnEvent(()=>_presenter.SelectInputFolder());
+         btnOutputFolder.ButtonClick += (o, e) => OnEvent(() => _presenter.SelectOutputFolder());
          btnClose.Click += (o, e) => OnEvent(_presenter.Exit);
-         btnCalculate.Click += (o, e) => OnEvent(async ()=> await _presenter.RunBatch());
+         btnCalculate.Click += (o, e) => OnEvent(async () => await _presenter.RunBatch());
 
          RegisterValidationFor(_screenBinder);
+      }
+
+      protected override void OnFormClosing(FormClosingEventArgs e)
+      {
+         if (e.CloseReason == CloseReason.UserClosing)
+         {
+            OnEvent(_presenter.Exit);
+         }
+
+         base.OnFormClosing(e);
       }
 
       protected override void OnValidationError(Control control, string error)
@@ -73,7 +83,6 @@ namespace PKSim.BatchTool.Views
       {
          btnCalculate.Enabled = !_screenBinder.HasError;
       }
-
 
       public override void InitializeResources()
       {

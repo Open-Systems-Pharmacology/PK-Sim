@@ -3,8 +3,7 @@ using OSPSuite.Presentation.Views;
 
 namespace PKSim.BatchTool.Views
 {
-   public interface IGenerateProjectOverviewView: IView<IGenerateProjectOverviewPresenter>, IBatchView
+   public interface IGenerateProjectOverviewView: IView<IGenerateProjectOverviewPresenter>, IBatchView<ProjectOverviewOptions>
    {
-      void BindTo(OutputBatchDTO dto);
-   }
+  }
 }

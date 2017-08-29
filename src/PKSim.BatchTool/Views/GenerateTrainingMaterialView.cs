@@ -13,12 +13,12 @@ namespace PKSim.BatchTool.Views
    public partial class GenerateTrainingMaterialView : BaseView, IGenerateTrainingMaterialView
    {
       private IGenerateTrainingMaterialPresenter _presenter;
-      private readonly ScreenBinder<OutputBatchDTO> _screenBinder;
+      private readonly ScreenBinder<TrainingMaterialsOptions> _screenBinder;
 
       public GenerateTrainingMaterialView()
       {
          InitializeComponent();
-         _screenBinder = new ScreenBinder<OutputBatchDTO>();
+         _screenBinder = new ScreenBinder<TrainingMaterialsOptions>();
       }
 
       public void AttachPresenter(IGenerateTrainingMaterialPresenter presenter)
@@ -68,7 +68,7 @@ namespace PKSim.BatchTool.Views
          btnGenerate.Enabled = !_screenBinder.HasError;
       }
 
-      public void BindTo(OutputBatchDTO batchDTO)
+      public void BindTo(TrainingMaterialsOptions batchDTO)
       {
          _screenBinder.BindToSource(batchDTO);
       }

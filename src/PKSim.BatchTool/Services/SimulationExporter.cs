@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain.Services;
@@ -10,6 +11,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.BatchTool.Services
 {
+   [Flags]
    public enum BatchExportMode
    {
       Json = 1 << 0,
