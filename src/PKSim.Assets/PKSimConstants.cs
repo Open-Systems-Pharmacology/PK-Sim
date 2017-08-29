@@ -865,10 +865,9 @@ namespace PKSim.Assets
             return $"Comparison between building blocks is not supported for {buildingBlockType}";
          }
 
-         public static string CannotExtractIndividualFrom(string objectType)
-         {
-            return $"Individual extraction is not available for '{objectType}'";
-         }
+         public static string CannotExtractIndividualFrom(string objectType) => $"Individual extraction is not available for '{objectType}'";
+
+         public static string SnapshotNotFoundFor(string modelTypeName) => $"Snapshot not found for '{modelTypeName}'";
       }
 
       public static class Information
@@ -1128,6 +1127,7 @@ namespace PKSim.Assets
          public static readonly string SavePopulationAnalysisWorkflowToTemplateMenu = "Save Analyses";
          public static readonly string ExtractIndividualByPercentile = "Extract Individuals";
          public static readonly string ExtractIndividualsMenu = "Extract Individuals...";
+         public static readonly string ExportSnapshot = "Save Snapshot...";
 
          public static string CompareBuildingBlocks(string buildingBlockType)
          {
@@ -2365,10 +2365,7 @@ namespace PKSim.Assets
             return $"{(editable ? "Edit" : "Show")} table parameter '{parameter}'";
          }
 
-         public static string ChartSettingsSaved()
-         {
-            return "Chart settings were saved into project.";
-         }
+         public static string ChartSettingsSaved() => "Chart settings were saved into project.";
 
          public static string SimulationSettingsSavedFor(string settingsType)
          {
@@ -2385,34 +2382,17 @@ namespace PKSim.Assets
             return $"{buildingBlockNames.ToString(", ", "'")} \nsuccessfully saved in the template database.";
          }
 
-         public static string ReportCreationStartedMessage(string reportFullPath)
-         {
-            return "This might take a while...";
-         }
+         public static string ReportCreationStartedMessage(string reportFullPath) => "This might take a while...";
 
-         public static string ReportCreationFinishedMessage(string reportFullPath)
-         {
-            return $"Report can be found at {reportFullPath}";
-         }
+         public static string ReportCreationFinishedMessage(string reportFullPath) => $"Report can be found at {reportFullPath}";
 
-         public static string CreateGroupingForField(string fieldName)
-         {
-            return $"Create Grouping for '{fieldName}'";
-         }
+         public static string CreateGroupingForField(string fieldName) => $"Create Grouping for '{fieldName}'";
 
-         public static string Interval(string min, string max)
-         {
-            return $"{min}..{max}";
-         }
+         public static string Interval(string min, string max) => $"{min}..{max}";
 
-         public static string EditGroupingFor(string groupingName, string fieldName)
-         {
-            return $"Edit Grouping '{groupingName}' for '{fieldName}'";
-         }
-         public static string DeleteFilesIn(string populationFolder)
-         {
-            return $"Directory '{populationFolder}' is not empty. All Files will be removed. Proceed?";
-         }
+         public static string EditGroupingFor(string groupingName, string fieldName) => $"Edit Grouping '{groupingName}' for '{fieldName}'";
+
+         public static string DeleteFilesIn(string populationFolder) => $"Directory '{populationFolder}' is not empty. All Files will be removed. Proceed?";
 
          public static string DragFieldMessage(string fieldType)
          {
@@ -2425,27 +2405,17 @@ namespace PKSim.Assets
             return $"Drag a field here to group by {fieldType}";
          }
 
-         public static string FilterAreaDragFieldMessage()
-         {
-            return "Drag a field here to remove grouping";
-         }
-         
-         public static string DefaultResultsExportNameFor(string simulationName)
-         {
-            return $"{simulationName}-Results";
-         }
+         public static string FilterAreaDragFieldMessage() => "Drag a field here to remove grouping";
 
-         public static string DefaultPKAnalysesExportNameFor(string simulationName)
-         {
-            return $"{simulationName}-PK-Analyses";
-         }
+         public static string DefaultResultsExportNameFor(string simulationName) => $"{simulationName}-Results";
 
-         public static string DefaultPopulationExportNameFor(string containerName)
-         {
-            return $"{containerName}-Population";
-         }
+         public static string DefaultPKAnalysesExportNameFor(string simulationName) => $"{simulationName}-PK-Analyses";
+
+         public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
 
          public static readonly string ChartYScale = "Chart Y Scale";
+
+         public static string  SelectSnapshotExportFile(string objectName, string ojectType) => $"Export snapshot for {ojectType.ToLowerInvariant()} '{objectName}'";
       }
 
       public static class Reporting

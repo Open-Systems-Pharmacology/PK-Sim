@@ -503,6 +503,7 @@
     <Compile Include="UICommands\ExportObservedDataToPkmlCommand.cs" />
     <Compile Include="UICommands\ExportPopulationSimulationPKAnalysesCommand.cs" />
     <Compile Include="UICommands\ExportSimulationResultsToCSVCommand.cs" />
+    <Compile Include="UICommands\ExportSnapshotCommand.cs" />
     <Compile Include="UICommands\ExportToPDFCommand.cs" />
     <Compile Include="UICommands\ExtractIndividualsFromPopulationCommand.cs" />
     <Compile Include="UICommands\GenerateGroupsTemplateCommand.cs" />

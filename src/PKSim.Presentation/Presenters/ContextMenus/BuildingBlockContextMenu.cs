@@ -49,7 +49,9 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return ExportToPDFMenuFor(buildingBlock);
          
-         yield return AddToJournal(buildingBlock);
+         yield return AddToJournalMenuFor(buildingBlock);
+
+         yield return ExportSnapshotMenuFor(buildingBlock);
       }
 
       protected IEnumerable<IMenuBarItem> EditContextMenusFor<TCommand>(TBuildingBlock buildingBlock) where TCommand : IEditBuildingBlockUICommand<TBuildingBlock>
@@ -117,7 +119,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .ForDeveloper();
       }
 
-      protected IMenuBarItem AddToJournal(TBuildingBlock buildingBlock)
+      protected IMenuBarItem AddToJournalMenuFor(TBuildingBlock buildingBlock)
       {
          return GenericMenu.AddToJournal(buildingBlock);
       }
@@ -125,6 +127,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected IMenuBarItem ExportToPDFMenuFor(TBuildingBlock buildingBlock)
       {
          return GenericMenu.ExportToPDFMenuFor(buildingBlock);
+      }
+
+      protected IMenuBarItem ExportSnapshotMenuFor(TBuildingBlock buildingBlock)
+      {
+         return GenericMenu.ExportSnapshotMenuFor(buildingBlock);
+
       }
    }
 }

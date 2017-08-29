@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Presentation.UICommands;
 using OSPSuite.Presentation.Presenters;

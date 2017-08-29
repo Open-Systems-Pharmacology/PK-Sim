@@ -76,6 +76,9 @@
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="OSPSuite.Assets, Version=7.2.0.68, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.68\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
@@ -843,6 +846,19 @@
     <Compile Include="Model\Species.cs" />
     <Compile Include="Events\ProjectEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Snapshots\Formulation.cs" />
+    <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SnapshotMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SnapshotMapperBase.cs" />
+    <Compile Include="Snapshots\Mappers\TableFormulaMapper.cs" />
+    <Compile Include="Snapshots\Parameter.cs" />
+    <Compile Include="Snapshots\Point.cs" />
+    <Compile Include="Snapshots\Services\SnapshotSerializer.cs" />
+    <Compile Include="Snapshots\Services\SnapshotTask.cs" />
+    <Compile Include="Snapshots\SnapshotBase.cs" />
+    <Compile Include="Snapshots\SnapshotNotFoundException.cs" />
+    <Compile Include="Snapshots\TableFormula.cs" />
     <Compile Include="SpeciesDatabaseMap.cs" />
     <Compile Include="ICoreUserSettings.cs" />
   </ItemGroup>
@@ -871,6 +887,7 @@
       <Name>PKSim.Assets</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

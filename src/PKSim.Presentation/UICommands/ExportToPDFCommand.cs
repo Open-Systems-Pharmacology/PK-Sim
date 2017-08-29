@@ -1,12 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
@@ -14,6 +10,9 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.UICommands;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Presentation.Core;
 
 namespace PKSim.Presentation.UICommands
 {
@@ -82,7 +81,6 @@ namespace PKSim.Presentation.UICommands
       }
    }
 
-
    public class ExportProjectToPDFCommand : ExportToPDFCommand<IPKSimProject>
    {
       private readonly IProjectRetriever _projectRetriever;
@@ -101,17 +99,17 @@ namespace PKSim.Presentation.UICommands
 
    public class ExportCollectionToPDFCommand<T> : ExportToPDFCommand<IReadOnlyCollection<T>>
    {
-      public ExportCollectionToPDFCommand(IApplicationController applicationController, IProjectRetriever projectRetriever): base(applicationController)
+      public ExportCollectionToPDFCommand(IApplicationController applicationController, IProjectRetriever projectRetriever) : base(applicationController)
       {
          var project = projectRetriever.CurrentProject.DowncastTo<IPKSimProject>();
          IEnumerable<T> all;
-         if (typeof (T).IsAnImplementationOf<IPKSimBuildingBlock>())
+         if (typeof(T).IsAnImplementationOf<IPKSimBuildingBlock>())
             all = project.All<IPKSimBuildingBlock>().OfType<T>();
 
-         else if (typeof (T).IsAnImplementationOf<DataRepository>())
+         else if (typeof(T).IsAnImplementationOf<DataRepository>())
             all = project.AllObservedData.Cast<T>();
-         
-         else if (typeof (T).IsAnImplementationOf<ISimulationComparison>())
+
+         else if (typeof(T).IsAnImplementationOf<ISimulationComparison>())
             all = project.AllSimulationComparisons.Cast<T>();
 
          else
@@ -120,5 +118,4 @@ namespace PKSim.Presentation.UICommands
          Subject = new ReadOnlyCollection<T>(all.ToList());
       }
    }
-
 }
