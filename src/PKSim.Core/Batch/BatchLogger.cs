@@ -4,6 +4,7 @@ using System.IO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 
 namespace PKSim.Core.Batch
@@ -89,8 +90,15 @@ namespace PKSim.Core.Batch
 
       public BatchLoggerDisposer(IBatchLogger batchLogger, string logFilePath, NotificationType notificationType)
       {
+         ensureLogDirectoryExists(logFilePath);
          _streamWriter = new StreamWriter(logFilePath, append: false);
          batchLogger.InitializeWith(_streamWriter, notificationType);
+      }
+
+      private void ensureLogDirectoryExists(string logFilePath)
+      {
+         var directory = FileHelper.FolderFromFileFullPath(logFilePath);
+         DirectoryHelper.CreateDirectory(directory);
       }
 
       protected virtual void Cleanup()

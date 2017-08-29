@@ -1,64 +1,56 @@
 ﻿using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Validation;
 using PKSim.BatchTool.Views;
 
 namespace PKSim.BatchTool.Presenters
 {
    public interface IBatchMainPresenter : IPresenter<IBatchMainView>
    {
-      void Initialize(BatchStartOptions startOptions);
-      void StartBatchRun();
-      void StartBatchComparison();
-      void GenerateTrainingMaterial();
-      void GenerateProjectOverview();
+      void StartBatchRun(JsonRunOptions jsonRunOptions = null);
+      void StartProjectComparison(ProjectComparisonOptions projectComparisonOptions = null);
+      void GenerateTrainingMaterial(TrainingMaterialsOptions trainingMaterialsOptions = null);
+      void GenerateProjectOverview(ProjectOverviewOptions projectOverviewOptions = null);
    }
 
    public class BatchMainPresenter : AbstractPresenter<IBatchMainView, IBatchMainPresenter>, IBatchMainPresenter
    {
       private readonly IApplicationController _applicationController;
-      private BatchStartOptions _startOptions;
 
       public BatchMainPresenter(IBatchMainView view, IApplicationController applicationController) : base(view)
       {
          _applicationController = applicationController;
-         _startOptions = new BatchStartOptions();
       }
 
-      public void Initialize(BatchStartOptions startOptions)
+      public void StartBatchRun(JsonRunOptions jsonRunOptions = null)
       {
-         _startOptions = startOptions;
-         if (_startOptions.IsValid())
-         {
-            StartBatchRun();
-         }
+         start<IJsonSimulationBatchPresenter, JsonRunOptions>(jsonRunOptions);
       }
 
-      public void StartBatchRun()
+      public void StartProjectComparison(ProjectComparisonOptions projectComparisonOptions = null)
       {
-         start<IJsonSimulationBatchPresenter>();
+         start<IProjectComparisonPresenter, ProjectComparisonOptions>(projectComparisonOptions);
       }
 
-      public void StartBatchComparison()
+      public void GenerateTrainingMaterial(TrainingMaterialsOptions trainingMaterialsOptions = null)
       {
-         start<IProjectComparisonPresenter>();
+         start<IGenerateTrainingMaterialPresenter, TrainingMaterialsOptions>(trainingMaterialsOptions);
       }
 
-      public void GenerateTrainingMaterial()
+      public void GenerateProjectOverview(ProjectOverviewOptions projectOverviewOptions = null)
       {
-         start<IGenerateTrainingMaterialPresenter>();
+         start<IGenerateProjectOverviewPresenter, ProjectOverviewOptions>(projectOverviewOptions);
       }
 
-      private void start<T>() where T : IBatchPresenter
+      private T start<T, TStartOptions>(TStartOptions startOptions) where T : IBatchPresenter<TStartOptions>
       {
          var presenter = _applicationController.Start<T>();
          View.Hide();
-         presenter.InitializeWith(_startOptions);
-      }
+         if(startOptions!=null)
+            presenter.InitializeForCommandLineRunWith(startOptions);
+         else
+            presenter.InitializeForStandAloneStart();
 
-      public void GenerateProjectOverview()
-      {
-         start<IGenerateProjectOverviewPresenter>();
+         return presenter;
       }
    }
 }

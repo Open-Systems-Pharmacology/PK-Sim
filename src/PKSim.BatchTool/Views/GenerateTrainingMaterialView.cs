@@ -13,12 +13,12 @@ namespace PKSim.BatchTool.Views
    public partial class GenerateTrainingMaterialView : BaseView, IGenerateTrainingMaterialView
    {
       private IGenerateTrainingMaterialPresenter _presenter;
-      private readonly ScreenBinder<OutputBatchDTO> _screenBinder;
+      private readonly ScreenBinder<TrainingMaterialsOptions> _screenBinder;
 
       public GenerateTrainingMaterialView()
       {
          InitializeComponent();
-         _screenBinder = new ScreenBinder<OutputBatchDTO>();
+         _screenBinder = new ScreenBinder<TrainingMaterialsOptions>();
       }
 
       public void AttachPresenter(IGenerateTrainingMaterialPresenter presenter)
@@ -45,7 +45,7 @@ namespace PKSim.BatchTool.Views
          _screenBinder.Bind(x => x.OutputFolder).To(btnOutputFolder);
 
          btnOutputFolder.ButtonClick += (o, e) => OnEvent(_presenter.SelectOutputFolder);
-         btnCancel.Click += (o, e) => OnEvent(_presenter.Exit);
+         btnCancel.Click += (o, e) => OnEvent(()=>_presenter.Exit());
          btnGenerate.Click += (o, e) => OnEvent(async ()=> await _presenter.RunBatch());
 
          RegisterValidationFor(_screenBinder);
@@ -63,12 +63,22 @@ namespace PKSim.BatchTool.Views
          SetOkButtonEnable();
       }
 
+      protected override void OnFormClosing(FormClosingEventArgs e)
+      {
+         if (e.CloseReason == CloseReason.UserClosing)
+         {
+            e.Cancel = !_presenter.Exit();
+         }
+
+         base.OnFormClosing(e);
+      }
+
       protected virtual void SetOkButtonEnable()
       {
          btnGenerate.Enabled = !_screenBinder.HasError;
       }
 
-      public void BindTo(OutputBatchDTO batchDTO)
+      public void BindTo(TrainingMaterialsOptions batchDTO)
       {
          _screenBinder.BindToSource(batchDTO);
       }

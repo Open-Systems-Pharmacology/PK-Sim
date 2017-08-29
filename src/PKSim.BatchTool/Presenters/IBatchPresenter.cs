@@ -12,17 +12,23 @@ using OSPSuite.Presentation.Views;
 
 namespace PKSim.BatchTool.Presenters
 {
-   public interface IBatchPresenter: IPresenter
+   public interface IBatchPresenter : IPresenter
    {
-      void Exit();
+      bool Exit();
       Task RunBatch();
-      Task InitializeWith(BatchStartOptions startOptions);
+      void InitializeForStandAloneStart();
    }
 
-   public abstract class BatchPresenter<TView, TPresenter, TBatchRunner> : AbstractPresenter<TView, TPresenter>, IBatchPresenter
-      where TBatchRunner : IBatchRunner
-      where TView : IView<TPresenter>, IBatchView 
+   public interface IBatchPresenter<TStartOptions>: IBatchPresenter
+   {
+      Task InitializeForCommandLineRunWith(TStartOptions startOptions);
+   }
+
+   public abstract class BatchPresenter<TView, TPresenter, TBatchRunner, TStartOptions> : AbstractPresenter<TView, TPresenter>, IBatchPresenter<TStartOptions>
+      where TBatchRunner : IBatchRunner<TStartOptions>
+      where TView : IView<TPresenter>, IBatchView<TStartOptions>
       where TPresenter : IPresenter
+      where TStartOptions:new()
 
    {
       protected readonly TBatchRunner _batchRunner;
@@ -31,6 +37,7 @@ namespace PKSim.BatchTool.Presenters
       private readonly IBatchLogger _batchLogger;
       private bool _isRunning;
       protected bool _startedFromCommandLine;
+      protected TStartOptions _startOptions = new TStartOptions();
 
       protected BatchPresenter(TView view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger)
          : base(view)
@@ -65,24 +72,39 @@ namespace PKSim.BatchTool.Presenters
             Exit();
       }
 
-      protected abstract Task StartBatch();
+      public virtual void InitializeForStandAloneStart()
+      {
+         _startedFromCommandLine = false;
+         _view.BindTo(_startOptions);
+         _view.Display();
+      }
 
-      public void Exit()
+
+      protected virtual Task StartBatch()
+      {
+         return _batchRunner.RunBatch(_startOptions);
+      }
+
+      public bool Exit()
       {
          if (_isRunning)
          {
             var ans = _dialogCreator.MessageBoxYesNo("Batch is running. Really exit?");
-            if (ans == ViewResult.No) return;
+            if (ans == ViewResult.No)
+               return false;
          }
 
          Application.Exit();
+         return true;
       }
 
       private bool shouldClose => _startedFromCommandLine;
 
-      public virtual Task InitializeWith(BatchStartOptions startOptions)
+      public virtual async Task InitializeForCommandLineRunWith(TStartOptions startOptions)
       {
-         return Task.FromResult(true);
+         _startOptions = startOptions;
+         _startedFromCommandLine = true;
+         await RunBatch();
       }
    }
 }

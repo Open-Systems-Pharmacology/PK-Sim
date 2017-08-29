@@ -13,7 +13,7 @@ using OSPSuite.Core.Services;
 
 namespace PKSim.BatchTool.Services
 {
-   public class TrainingMaterialRunner : IBatchRunner
+   public class TrainingMaterialRunner : IBatchRunner<TrainingMaterialsOptions>
    {
       private readonly IBatchLogger _logger;
       private readonly IReadOnlyList<ITrainingMaterialExercise> _trainingMaterialExercises;
@@ -24,9 +24,9 @@ namespace PKSim.BatchTool.Services
          _trainingMaterialExercises = trainingMaterialExercises.All().ToList();
       }
 
-      public async Task RunBatch(dynamic parameters)
+      public async Task RunBatch(TrainingMaterialsOptions options)
       {
-         string outputFolder = parameters.outputFolder;
+         var outputFolder = options.OutputFolder;
          EnvironmentHelper.UserName = () => "PK-Sim Master";
 
          _logger.AddInSeparator($"Starting training material generation: {DateTime.Now.ToIsoFormat()}");

@@ -102,6 +102,9 @@
       <HintPath>..\..\packages\Castle.Windsor.3.4.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CommandLine, Version=2.0.275.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CommandLineParser.2.1.1-beta\lib\net45\CommandLine.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
       <Private>True</Private>
@@ -211,7 +214,7 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="BatchTool\BatchStartOptionsSpecs.cs" />
+    <Compile Include="BatchTool\JsonRunOptionsSpecs.cs" />
     <Compile Include="BatchTool\BatchToolFactoryForSpecs.cs" />
     <Compile Include="BatchTool\ContextForBatch.cs" />
     <Compile Include="BatchTool\InteractionSpecs.cs" />

@@ -7,23 +7,25 @@ using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.BatchTool.Presenters
 {
-   public interface IProjectComparisonPresenter : IBatchPresenter
+   public interface IProjectComparisonPresenter : IBatchPresenter<ProjectComparisonOptions>
    {
    }
 
-   public class ProjectComparisonPresenter : InputAndOutputBatchPresenter<ProjectComparisonRunner>, IProjectComparisonPresenter
+   public class ProjectComparisonPresenter : InputAndOutputBatchPresenter<ProjectComparisonRunner, ProjectComparisonOptions>, IProjectComparisonPresenter
    {
-      public ProjectComparisonPresenter(IInputAndOutputBatchView view, ProjectComparisonRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger)
+      public ProjectComparisonPresenter(IInputAndOutputBatchView<ProjectComparisonOptions> view, ProjectComparisonRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger)
          : base(view, batchRunner, dialogCreator, logPresenter, batchLogger)
       {
          view.Caption = "PK-Sim BatchTool: Comparison of simulation results in existing projects";
       }
 
-      public override void SelectInputFolder()
+      public override bool SelectInputFolder()
       {
-         base.SelectInputFolder();
-         if (string.IsNullOrEmpty(_dto.InputFolder)) return;
-         _dto.OutputFolder = Path.Combine(_dto.InputFolder, "Output");
+         if (!base.SelectInputFolder())
+            return false;
+
+         _startOptions.OutputFolder = Path.Combine(_startOptions.InputFolder, "Output");
+         return true;
       }
    }
 }

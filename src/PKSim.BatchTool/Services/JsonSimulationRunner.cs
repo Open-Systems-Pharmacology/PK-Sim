@@ -16,7 +16,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.BatchTool.Services
 {
-   public class JsonSimulationRunner : IBatchRunner
+   public class JsonSimulationRunner : IBatchRunner<JsonRunOptions>
    {
       private readonly ISimulationLoader _simulationLoader;
       private readonly ISimulationExporter _simulationExporter;
@@ -37,58 +37,58 @@ namespace PKSim.BatchTool.Services
          _commandTask = commandTask;
       }
 
-      public async Task RunBatch(dynamic parameters)
+      public async Task RunBatch(JsonRunOptions runOptions)
       {
-         string inputFolder = parameters.inputFolder;
-         string outputFolder = parameters.outputFolder;
-         string logFileFullPath = parameters.logFileFullPath;
-         BatchExportMode exportMode = parameters.exportMode;
-         NotificationType notificationType = parameters.notificationType;
+         var inputFolder = runOptions.InputFolder;
+         var outputFolder = runOptions.OutputFolder;
+         var logFileFullPath = runOptions.LogFileFullPath;
+         var exportMode = runOptions.ExportMode;
+         var notificationType = runOptions.NotificationType;
 
          clear();
 
-            using (new BatchLoggerDisposer(_logger, logFileFullPath, notificationType))
+         using (new BatchLoggerDisposer(_logger, logFileFullPath, notificationType))
+         {
+            _logger.AddInSeparator($"Starting batch run: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+
+            var inputDirectory = new DirectoryInfo(inputFolder);
+            if (!inputDirectory.Exists)
+               throw new ArgumentException($"Input folder '{inputFolder}' does not exist");
+
+            var allSimulationFiles = inputDirectory.GetFiles(Constants.Filter.JSON_FILTER);
+            if (allSimulationFiles.Length == 0)
+               throw new ArgumentException($"No simulation json file found in '{inputFolder}'");
+
+            var outputDirectory = new DirectoryInfo(outputFolder);
+            if (!outputDirectory.Exists)
             {
-               _logger.AddInSeparator($"Starting batch run: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
-
-               var inputDirectory = new DirectoryInfo(inputFolder);
-               if (!inputDirectory.Exists)
-                  throw new ArgumentException($"Input folder '{inputFolder}' does not exist");
-
-               var allSimulationFiles = inputDirectory.GetFiles(Constants.Filter.JSON_FILTER);
-               if (allSimulationFiles.Length == 0)
-                  throw new ArgumentException($"No simulation json file found in '{inputFolder}'");
-
-               var outputDirectory = new DirectoryInfo(outputFolder);
-               if (!outputDirectory.Exists)
-               {
-                  _logger.AddDebug($"Creating folder '{outputFolder}'");
-                  outputDirectory.Create();
-               }
-
-               var allExistingFiles = outputDirectory.GetFiles("*.csv");
-               allExistingFiles.Each(outputFile =>
-               {
-                  FileHelper.DeleteFile(outputFile.FullName);
-                  _logger.AddDebug($"Deleting file '{outputFile.FullName}'");
-               });
-
-               var begin = DateTime.UtcNow;
-               _logger.AddInfo($"Found {allSimulationFiles.Length} files in '{inputFolder}'");
-
-               foreach (var simulationFile in allSimulationFiles)
-               {
-                  await exportSimulationTo(simulationFile, outputFolder, exportMode);
-               }
-   
-               var end = DateTime.UtcNow;
-               var timeSpent = end - begin;
-               _logger.AddInSeparator($"{_allSimulationNames.Count} simulations calculated and exported in '{timeSpent.ToDisplay()}'", NotificationType.Info);
-
-               createSummaryFilesIn(outputDirectory);
-
-               _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+               _logger.AddDebug($"Creating folder '{outputFolder}'");
+               outputDirectory.Create();
             }
+
+            var allExistingFiles = outputDirectory.GetFiles("*.csv");
+            allExistingFiles.Each(outputFile =>
+            {
+               FileHelper.DeleteFile(outputFile.FullName);
+               _logger.AddDebug($"Deleting file '{outputFile.FullName}'");
+            });
+
+            var begin = DateTime.UtcNow;
+            _logger.AddInfo($"Found {allSimulationFiles.Length} files in '{inputFolder}'");
+
+            foreach (var simulationFile in allSimulationFiles)
+            {
+               await exportSimulationTo(simulationFile, outputFolder, exportMode);
+            }
+
+            var end = DateTime.UtcNow;
+            var timeSpent = end - begin;
+            _logger.AddInSeparator($"{_allSimulationNames.Count} simulations calculated and exported in '{timeSpent.ToDisplay()}'", NotificationType.Info);
+
+            createSummaryFilesIn(outputDirectory, exportMode);
+
+            _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+         }
       }
 
       private void clear()
@@ -96,8 +96,11 @@ namespace PKSim.BatchTool.Services
          _allSimulationNames.Clear();
       }
 
-      private void createSummaryFilesIn(DirectoryInfo outputDirectory)
+      private void createSummaryFilesIn(DirectoryInfo outputDirectory, BatchExportMode exportMode)
       {
+         if (!exportMode.HasFlag(BatchExportMode.Csv))
+            return;
+
          var dataTable = new DataTable(outputDirectory.Name);
          dataTable.Columns.Add("Sim_id", typeof(string));
          foreach (var simulationName in _allSimulationNames)

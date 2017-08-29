@@ -56,20 +56,13 @@ namespace PKSim.Matlab
          /*nothing to do*/
       }
 
-      public bool ProjectLoaded
-      {
-         get { return true; }
-      }
-
+      public bool ProjectLoaded => true;
 
       public void LockFile(string fullPath)
       {
          /*nothing to do*/
       }
 
-      public bool ProjectHasChanged
-      {
-         get { return false; }
-      }
+      public bool ProjectHasChanged => false;
    }
 }

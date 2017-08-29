@@ -3,8 +3,7 @@ using OSPSuite.Presentation.Views;
 
 namespace PKSim.BatchTool.Views
 {
-   public interface IGenerateTrainingMaterialView : IView<IGenerateTrainingMaterialPresenter>, IBatchView
+   public interface IGenerateTrainingMaterialView : IView<IGenerateTrainingMaterialPresenter>, IBatchView<TrainingMaterialsOptions>
    {
-      void BindTo(OutputBatchDTO dto);
    }
 }
