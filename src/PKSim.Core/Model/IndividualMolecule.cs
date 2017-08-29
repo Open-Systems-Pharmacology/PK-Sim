@@ -35,12 +35,12 @@ namespace PKSim.Core.Model
 
       public virtual bool HasContainerNamed(string expressionContainerName)
       {
-         return GetAllChildren<IMoleculeExpressionContainer>().FindByName(expressionContainerName) != null;
+         return ExpressionContainer(expressionContainerName) != null;
       }
          
-      public virtual IMoleculeExpressionContainer ExpressionContainer(string expressionContainerName)
+      public virtual MoleculeExpressionContainer ExpressionContainer(string expressionContainerName)
       {
-         return GetAllChildren<IMoleculeExpressionContainer>().FindByName(expressionContainerName);
+         return AllExpressionsContainers().FindByName(expressionContainerName);
       }
 
       public virtual bool HasQuery()
@@ -48,10 +48,7 @@ namespace PKSim.Core.Model
          return !string.IsNullOrEmpty(QueryConfiguration);
       }
 
-      public virtual IEnumerable<IMoleculeExpressionContainer> AllExpressionsContainers()
-      {
-         return GetAllChildren<IMoleculeExpressionContainer>();
-      }
+      public virtual IReadOnlyList<MoleculeExpressionContainer> AllExpressionsContainers() => GetAllChildren<MoleculeExpressionContainer>();
 
       public virtual IParameter ReferenceConcentration => this.Parameter(CoreConstants.Parameter.REFERENCE_CONCENTRATION);
 
@@ -61,12 +58,12 @@ namespace PKSim.Core.Model
 
       public virtual IParameter GetRelativeExpressionParameterFor(string expressionContainerName)
       {
-         return ExpressionContainer(expressionContainerName).RelativeExpressionParameter;
+         return ExpressionContainer(expressionContainerName)?.RelativeExpressionParameter;
       }
 
       public virtual IParameter GetRelativeExpressionNormParameterFor(string expressionContainerName)
       {
-         return ExpressionContainer(expressionContainerName).RelativeExpressionNormParameter;
+         return ExpressionContainer(expressionContainerName)?.RelativeExpressionNormParameter;
       }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
@@ -85,11 +82,7 @@ namespace PKSim.Core.Model
       public virtual Ontogeny Ontogeny
       {
          get => _ontogeny;
-         set
-         {
-            _ontogeny = value;
-            OnPropertyChanged(() => Ontogeny);
-         }
+         set => SetProperty(ref _ontogeny, value);
       }
    }
 

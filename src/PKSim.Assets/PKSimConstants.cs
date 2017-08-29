@@ -24,7 +24,7 @@ namespace PKSim.Assets
          {
             return $"At least one metabolite was renamed.\nThe default metabolite name (found in the metabolism process) associated with the parent compound '{parentCompound}' will remain unchanged.";
          }
-         
+
          public static string SystemicProcessAvailableInCompoundButWasNotSelected(string systemicProcessType)
          {
             return $"{systemicProcessType} is available in compound but was not activated.";
@@ -39,6 +39,7 @@ namespace PKSim.Assets
          {
             return $"The transporter '{transporterName}' was not found in the database. The transport direction is therefore set to the default setting '{transportType}'";
          }
+
          public static string ParameterWithPathNotFoundInBaseIndividual(string parameterPath)
          {
             return $"Parameter '{parameterPath}' was not found in individual and will be ignored.";
@@ -82,6 +83,11 @@ namespace PKSim.Assets
             sb.AppendLine("Please check/adjust process mapping in the PROCESSES Tab of the Clone/Configure dialog if needed.");
             return sb.ToString();
          }
+
+         public static string UnitNotFoundInDimensionForParameter(string unit, string dimension, string parameterName)
+         {
+            return $"Unit '{unit}' not found for parameter {parameterName} with dimension '{dimension}";
+         }
       }
 
       public static class Command
@@ -114,7 +120,7 @@ namespace PKSim.Assets
          public static string SetSimpleProtocolDosingIntervalDescription(string oldDosingInterval, string newDosingInterval) => $"Dosing interval changed from '{oldDosingInterval}' to '{newDosingInterval}'";
          public static string RenameEnzymeInPartialProcess(string processName, string name) => $"Enzyme name in process '{processName}' set to '{name}'";
          public static string CloneEntity(string type, string sourceName, string cloneName) => $"Cloning {type} '{sourceName}' to '{cloneName}'";
-         
+
          public static readonly string AddSimulationIntervalToSimulationOutputDescription = "Output interval added to simulation output.";
          public static readonly string RemoveSimulationIntervalFromSimulationOutputDescription = "Output interval removed from simulation output.";
          public static readonly string ObservedDataDeletedFromProject = "Observed data deleted from project";
@@ -124,14 +130,14 @@ namespace PKSim.Assets
          public static readonly string ChartTemplate = "Chart Template";
 
          public static string ProtocolModeChangingFrom(string oldProtocol, string newProtocol) => $"Protocol mode changing from '{oldProtocol}' to '{newProtocol}'";
-         public static string ProtocolModeChangedFrom(string oldProtocol, string newProtocol)  => $"Protocol mode changed from '{oldProtocol}' to '{newProtocol}'";
+         public static string ProtocolModeChangedFrom(string oldProtocol, string newProtocol) => $"Protocol mode changed from '{oldProtocol}' to '{newProtocol}'";
          public static string SetProtocolModeCommandDescription(string oldProtocol, string newProtocol) => $"Set administration protocol mode from '{oldProtocol}' to '{newProtocol}'";
 
          public static string ObjectsDeletedFromProject(string objectType)
          {
-           return $"{objectType.Pluralize()} deleted from project"; 
-         } 
-    
+            return $"{objectType.Pluralize()} deleted from project";
+         }
+
          public static string SetPopulationSimulationResultsCommandDescription(string simulationName)
          {
             return $"Simulation results imported in simulation '{simulationName}'.";
@@ -353,7 +359,7 @@ namespace PKSim.Assets
 
          public static string RemoveChartTemplateFromSimulation(string templateName, string simulationName)
          {
-            return $"Removing template '{templateName}' from '{simulationName}'";            
+            return $"Removing template '{templateName}' from '{simulationName}'";
          }
 
          public static string EditChartTemplatesFor(string simulationName)
@@ -384,60 +390,57 @@ namespace PKSim.Assets
 
       public static class Error
       {
-         public const string ValueIsRequired = "Value is required";
-         public const string DescriptionIsRequired = "Description is required";
-         public const string UnknownObserverBuilderType = "Observer builer type unknown";
-         public static string CompoundProcessNotExists(string processName) => $"Compound process {processName} does not exist";
+         public const string ValueIsRequired = "Value is required.";
+         public const string DescriptionIsRequired = "Description is required.";
+         public const string UnknownObserverBuilderType = "Observer builer type unknown.";
+         public static string CompoundProcessNotExists(string processName) => $"Compound process {processName} does not exist.";
          public static string UnableToCreateIndividual(string constraints) => $"Could not create individuals with given constraint:\n{constraints}";
          public static string UnableToCreatePopulation(string constraints) => $"Could not create population with given constraint:\n{constraints}";
          public const string FactorShouldBeBiggerThanZero = "Factor should be bigger than 0.";
          public const string UnableToCreateInstanceOfShell = "Unable to create an instance of the shell.";
          public static string DistributionNotFound(string entityName, string data) => $"Cannot create distribution for '{entityName}' with the following data:\n{data}";
-         public static string DistributionUnknown(string distribution) => $"Distribution '{distribution}' is unknown";
+         public static string DistributionUnknown(string distribution) => $"Distribution '{distribution}' is unknown.";
          public const string NameIsRequired = "Name is required.";
          public const string MoleculeIsRequired = "Molecule is required.";
          public const string DataSourceIsRequired = "Data source is required.";
-         public static string ProteinExpressionFactoryNotFound(string enzymeType) => $"Cannot retrieve enzyme expression factory for enzyme type '{enzymeType}'";
+         public static string ProteinExpressionFactoryNotFound(string enzymeType) => $"Cannot retrieve enzyme expression factory for enzyme type '{enzymeType}'.";
          public const string RenameSameNameError = "The new name is the same as the original one.";
          public const string NoBuildingBlockTemplateSelected = "No template selected.";
-         public static string CannotCreateContainerOfType(string type) => $"Cannot create container of type '{type}'";
-         public static string UnknownUsageInIndividualFlag(string flag) => $"'{flag}' is not valid flag for 'Usage in individual'";
+         public static string CannotCreateContainerOfType(string type) => $"Cannot create container of type '{type}'.";
+         public static string UnknownUsageInIndividualFlag(string flag) => $"'{flag}' is not valid flag for 'Usage in individual'.";
          public static string CompoundParameterSelectionNeededFor(string parameterName) => $"Compound parameter selection is required for '{parameterName}'.";
-         public const string InvalidPartialStabiLink = "Invalid link for creating enzymatic stability partial process passed";
-         public const string ContainerPathIsEmpty = "Given container path is empty";
+         public const string InvalidPartialStabiLink = "Invalid link for creating enzymatic stability partial process passed.";
+         public const string ContainerPathIsEmpty = "Given container path is empty.";
          public const string CannotDeleteSchemaItem = "At least one schema item needs to be defined.";
          public const string CannotDeleteSimulationInterval = "At least one interval needs to be defined.";
          public const string CannotDeleteSchema = "At least one schema needs to be defined.";
          public const string CannotDeleteDefaultParameterAlternative = "The default parameter alternative cannot be deleted.";
          public const string CannotDeleteParameterAlternative = "At least one alternative needs to be defined.";
-         public const string CannotExecuteCommandWhileErrorNotCorrected = "Cannot execute action. Error needs to be corrected.";
-         public const string AlternativeViewNotControl = "View of compound parameter group alternative is not a user control";
          public static string CouldNotFindAdvancedParameterContainerForParameter(string parameterName) => $"Could not find advanced parameter container for parameter '{parameterName}'.";
          public static string CouldNotFindAdvancedParameterInContainerForParameter(string containerName, string parameterName) => $"Could not find advanced parameter in container '{containerName}' for parameter '{parameterName}'.";
-         public static string CompoundProcessParameterMappingNotAvailable(string process, string parameter) => $"No compound process parameter mapping found for process='{process}' and parameter ='{parameter}'";
-         public const string InvalidNumberOfBins = "Number of particle bins must be in [1..20]";
-         public const string InvalidParticleSizeDistribution = "Unknown particles size distribution passed";
-         public const string FirstOrderActiveTransportsNotSupported = "First order active transports are not supported";
+         public static string CompoundProcessParameterMappingNotAvailable(string process, string parameter) => $"No compound process parameter mapping found for process='{process}' and parameter ='{parameter}'.";
+         public const string InvalidNumberOfBins = "Number of particle bins must be in [1..20].";
+         public const string InvalidParticleSizeDistribution = "Unknown particles size distribution passed.";
+         public const string FirstOrderActiveTransportsNotSupported = "First order active transports are not supported.";
          public const string CannotSwitchToAdvancedProtocolWhenUsingUserDefinedAppplication = "User defined administration cannot be used with an advanced administration protocol.";
-         public const string MolWeightNotAvailable = "Molecular Weight not available";
-         public const string MolWeightNotAvailableForPopulationSimulationComparison = "Molecular Weight was not found or is not the same in all compared simulations";
-         public const string EventGroupSubContainerHasInvalidType = "Subcontainer of event group must be of type event or event group";
-         public static string NoStartTimeInEventBuilder(string eventName, string timeName) => $"Event group builder {eventName} does not contain parameter {timeName}";
-         public static string ModelNotAvailableForSpecies(string model, string species) => $"Model {model} is not available for species {species}";
-         public const string UnableToConverterIntestinalSecretion = "intestinal secretion directly into feces as a surrogate for luminal secretion and subsequent transport into faeces without re-absorption from the lumen is not supported any longer but can mechanistically be implemented";
-         public static string ExtendedNeighborhoodNotAllowed(string neighborhood) => $"Neighborhood {neighborhood} is marked as EXTENDED which is not allowed";
+         public const string MolWeightNotAvailable = "Molecular Weight not available.";
+         public const string MolWeightNotAvailableForPopulationSimulationComparison = "Molecular Weight was not found or is not the same in all compared simulations.";
+         public const string EventGroupSubContainerHasInvalidType = "Subcontainer of event group must be of type event or event group.";
+         public static string NoStartTimeInEventBuilder(string eventName, string timeName) => $"Event group builder {eventName} does not contain parameter {timeName}.";
+         public static string ModelNotAvailableForSpecies(string model, string species) => $"Model {model} is not available for species {species}.";
+         public const string UnableToConverterIntestinalSecretion = "intestinal secretion directly into feces as a surrogate for luminal secretion and subsequent transport into faeces without re-absorption from the lumen is not supported any longer but can mechanistically be implemented.";
+         public static string ExtendedNeighborhoodNotAllowed(string neighborhood) => $"Neighborhood {neighborhood} is marked as EXTENDED which is not allowed.";
          public const string FourCompModelCannotBeUsedWithLargeMolecule = "Model for small molecules cannot be used for a large molecule.\nPlease use the dedicated model for proteins and large molecules.";
          public const string ProjectNeedsToBeSavedFirst = "Project needs to be saved first.";
-         public const string SimulationCloneOnlyAvailableWhenBuildingBlocksAreUptodate = "Cloning a simulation requires that all building blocks are consistent with the simulation (e.g. all have green checkmarks)";
-         public const string NoReportTemplateDefined = "Could not find any report templates. Please check your installation";
+         public const string SimulationCloneOnlyAvailableWhenBuildingBlocksAreUptodate = "Cloning a simulation requires that all building blocks are consistent with the simulation (e.g. all have green checkmarks).";
+         public const string NoReportTemplateDefined = "Could not find any report templates. Please check your installation.";
          public const string CompoundAndSimulationCannotShareTheSameName = "Compound and simulation cannot share the same name. Please rename your simulation.";
-         public const string IndividualMoleculesAnSimulationCannotShareTheSameName = "The simulation cannot share a name with any molecules defined in the individual";
+         public const string IndividualMoleculesAnSimulationCannotShareTheSameName = "The simulation cannot share a name with any molecules defined in the individual.";
          public const string ErrorWhileImportingPopulationAnalyses = "Some errors occured while importing the population analyses:";
          public const string DifferentVectorLengths = "Vectors have different length!";
-         public const string DataRepositoryWithoutBaseGrid = "Data Repository does not contain BaseGrid";
-         public const string MoBiNotFound = "MoBi was not found on current system. Please make sure that MoBi was installed using the provided setup. Alternatively, you can specify where MoBi is installed on your system under Utilities -> Options -> Application";
+         public const string MoBiNotFound = "MoBi was not found on current system. Please make sure that MoBi was installed using the provided setup. Alternatively, you can specify where MoBi is installed on your system under Utilities -> Options -> Application.";
          public const string CannotExportAnImportedSimulation = "An imported simulation (e.g. from MoBi or pkml Format) cannot be exported.";
-         public const string AtLeastOneCompoundMustBeSelected = "At least one compound must be selected";
+         public const string AtLeastOneCompoundMustBeSelected = "At least one compound must be selected.";
          public const string AtLeastOneFileRequiredToStartPopulationImport = "At least one file is required to perform the population import.";
          public const string AtLeastOneProtocolRequiredToCreateSimulation = "Select at least one protocol for the administered compound(s).";
          public const string AProtocolCanOnlyBeUsedOnceInASimulation = "Each administered compound must have a unique administration protocol.";
@@ -445,7 +448,7 @@ namespace PKSim.Assets
          public const string AdvancedCommitNotAvailable = "Advanced commit is not supported.";
          public const string KeywordsAndReplacementsSizeDiffer = "Keywords and replacementValues do not have the same length!";
          public const string GenderAndOrPopulationMissingFromFile = "Gender and/or Population are not defined in the file to import.";
-         public const string FormulationShouldBeUsedAsTemplateOrAsSimulationBuildingBlock = "Formulation usage is inconsitent. Please use either the template formulation or the simulation formulation";
+         public const string FormulationShouldBeUsedAsTemplateOrAsSimulationBuildingBlock = "Formulation usage is inconsitent. Please use either the template formulation or the simulation formulation.";
          public const string AtLeastOneIndividualIdRequiredToPerformPopulationExtraction = "At least one valid individual id is required to perform the population extraction.";
 
          public static string DosePerBodySurfaceAreaProtocolCannotBeUsedWithSpeciesPopulation(string speciesPopulation) => $"Body surface area dosing cannot be used with species '{speciesPopulation}'.";
@@ -464,6 +467,7 @@ namespace PKSim.Assets
                return sb.ToString();
             }
          }
+
          public static string SimulationPKAnalysesFileDoesNotHaveTheExpectedFormat
          {
             get
@@ -480,39 +484,23 @@ namespace PKSim.Assets
             }
          }
 
+         public const string EventTemplateNotDefined = "Event template not defined.";
+
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is requiered for type '{applicationType}'.";
 
-         public static string BuildingBlockNotDefined(string buildingblock) => $"No {buildingblock} defined. Please use create";
+         public static string BuildingBlockNotDefined(string buildingblock) => $"No {buildingblock} defined. Please use create.";
 
-         public static string MissingColumnInView(string propertyName)
-         {
-            return $"Property named {propertyName} not found.";
-         }
+         public static string MissingColumnInView(string propertyName) => $"Property named {propertyName} not found.";
 
-         public static string ProjectFileIsCorrupt(string productName)
-         {
-            return $"Project file is corrupted and unreadable or this is not a {productName} project file.";
-         }
+         public static string ProjectFileIsCorrupt(string productName) => $"Project file is corrupted and unreadable or this is not a {productName} project file.";
 
-         public static string CannotCalculateDDIRatioFor(string parameterName)
-         {
-            return $"Cannot calculate AUC Ratio: don't know how to handle parameter {parameterName}";
-         }
+         public static string CannotCalculateDDIRatioFor(string parameterName) => $"Cannot calculate AUC Ratio: don't know how to handle parameter {parameterName}.";
 
-         public static string NoBatchFileFoundIn(string inputFolder)
-         {
-            return $"No simulation file found in '{inputFolder}'";
-         }
+         public static string NoBatchFileFoundIn(string inputFolder) => $"No simulation file found in '{inputFolder}'.";
 
-         public static string TableFormulaWithOffsetMissingRefs(string rateKey, string ref1, string ref2)
-         {
-            return $"Table formula with offset '{rateKey}' must contain references to '{ref1}' and '{ref2}'";
-         }
+         public static string TableFormulaWithOffsetMissingRefs(string rateKey, string ref1, string ref2) => $"Table formula with offset '{rateKey}' must contain references to '{ref1}' and '{ref2}'.";
 
-         public static string ModelContainerNotAvailable(string containerName)
-         {
-            return $"Model container '{containerName}' not available.";
-         }
+         public static string ModelContainerNotAvailable(string containerName) => $"Model container '{containerName}' not available.";
 
          public static string ProjectFileIsReadOnlyAndCannotBeRead(string fileFullPath)
          {
@@ -522,7 +510,7 @@ namespace PKSim.Assets
          public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string dowloadUrl)
          {
             if (projectVersion > currentVersion)
-               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {dowloadUrl}";
+               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {dowloadUrl}.";
 
             return $"Work in progress.\nThis project file was created with a beta or RC version (version {projectVersion}) and cannot be loaded.\nSorry :-(";
          }
@@ -547,30 +535,15 @@ namespace PKSim.Assets
             return $"Cannot find formulation with id '{formulationId}' for formulation key '{formulationKey}' in simulation '{simulationName}'.";
          }
 
-         public static string NoPartialTemplateProcessFound(string processType)
-         {
-            return $"No templates for partial process {processType} found";
-         }
+         public static string NoPartialTemplateProcessFound(string processType) => $"No templates for partial process {processType} found.";
 
-         public static string BuildingBlockAlreadyExists(string buildingBlockType, string name)
-         {
-            return $"{buildingBlockType} named '{name}' already exists in project";
-         }
+         public static string BuildingBlockAlreadyExists(string buildingBlockType, string name) => $"{buildingBlockType} named '{name}' already exists in project.";
 
-         public static string NameAlreadyExistsInContainerType(string name, string containerType)
-         {
-            return $"'{name}' already exists in {containerType}.";
-         }
+         public static string NameAlreadyExistsInContainerType(string name, string containerType) => $"'{name}' already exists in {containerType}.";
 
-         public static string CompoundProcessDeclaredAsNotTemplate(string processName)
-         {
-            return $"Compound process '{processName}' is not declared as a template";
-         }
+         public static string CompoundProcessDeclaredAsNotTemplate(string processName) => $"Compound process '{processName}' is not declared as a template.";
 
-         public static string ProjectFileDoesNotExist(string projectFile)
-         {
-            return $"Project file '{projectFile}' has been deleted or is not accessible.";
-         }
+         public static string ProjectFileDoesNotExist(string projectFile) => $"Project file '{projectFile}' has been deleted or is not accessible.";
 
          public static string ProjectFileVersion4IsNotSupportedAnymore(string projectFile)
          {
@@ -578,11 +551,11 @@ namespace PKSim.Assets
             sb.AppendLine("Support for project file of version 4.2 and older has ended with version 5.6 of the software.");
             sb.AppendLine();
             sb.AppendLine($"In order to convert the file '{projectFile}' to the latest PK-Sim version please proceed as follows:");
-            sb.AppendLine(); 
+            sb.AppendLine();
             sb.AppendLine("  1 - Install an earlier version of PK-Sim (version 5.5 or earlier) and open the file");
             sb.AppendLine("  2 - Save the file");
             sb.AppendLine("  3 - The file is now converted and can be open with any newer version of PK-Sim");
-            sb.AppendLine(); 
+            sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine("Note: PK-Sim version 4.2 and 5.x or newer can be installed on the same computer without any issues.");
             return sb.ToString();
@@ -600,43 +573,40 @@ namespace PKSim.Assets
 
          public static string NoTemplateBuildingBlockAvailableForType(string buildingBlockType)
          {
-            return $"No template '{buildingBlockType}' available in the template database ";
+            return $"No template '{buildingBlockType}' available in the template database.";
          }
 
          public static string UnableToUpdateParameterException(string parameterPath, string simulationName)
          {
-            return $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'";
+            return $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
          }
 
          public static string ConstantParameterAlreadyExistsInContainer(string containerName, string parameterName)
          {
-            return $"Parameter '{parameterName}' already exists in '{containerName}' but is defined as a constant parameter";
+            return $"Parameter '{parameterName}' already exists in '{containerName}' but is defined as a constant parameter.";
          }
 
          public static string FormulaParamterAlreadyExistsInContainerWithAnotherFormula(string containerName, string parameterName, string formulaString, string formulaStringToAdd)
          {
-            return $"Parameter '{parameterName}' already exists in '{containerName}' with another formula:\nOld formula = '{formulaString}'\nNew formula = '{formulaStringToAdd}'";
+            return $"Parameter '{parameterName}' already exists in '{containerName}' with another formula:\nOld formula = '{formulaString}'\nNew formula = '{formulaStringToAdd}'.";
          }
 
          public static string FormulationCannotBeUsedWithRoute(string formulationName, string applicationRoute)
          {
-            return $"Formulation '{formulationName}' cannot be used with route '{applicationRoute}";
+            return $"Formulation '{formulationName}' cannot be used with route '{applicationRoute}.";
          }
 
          public static string NoFormulationFoundForRoute(string protocolName, string applicationRoute)
          {
-            return $"No formulation found for route '{applicationRoute}' in administration protocol '{protocolName}'";
+            return $"No formulation found for route '{applicationRoute}' in administration protocol '{protocolName}'.";
          }
 
          public static string UnableToCreateSimulationWithMoleculesHavingSameName(string duplicateName)
          {
-            return $"Simulation cannot be created. The selected configuration would result in having two molecules named '{duplicateName}' at the same place";
+            return $"Simulation cannot be created. The selected configuration would result in having two molecules named '{duplicateName}' at the same place.";
          }
 
-         public static string IntervalNotDefinedForParameter(string parameterName)
-         {
-            return $"Interval not defined for parameter '{parameterName}'";
-         }
+         public static string IntervalNotDefinedForParameter(string parameterName) => $"Interval not defined for parameter '{parameterName}'.";
 
          public static string NameCannotContainIllegalCharacters(IEnumerable<string> illegalCharacters)
          {
@@ -645,7 +615,7 @@ namespace PKSim.Assets
 
          public static string MoleculeNameCannotBeUsedAsItWouldCreateDuplicateProcesses(string moleculeName)
          {
-            return $"Molecule cannot be renamed to '{moleculeName}'. Two or more processes would have the same name";
+            return $"Molecule cannot be renamed to '{moleculeName}'. Two or more processes would have the same name.";
          }
 
          public static string CannotSelectTheSamePartialProcessMoreThanOnce(string processName)
@@ -673,15 +643,12 @@ namespace PKSim.Assets
             return $"Could not find calculation method '{calculationMethod}' in category '{category}'.\nAvailable calculation methods are:\n\t{availableCategories.ToString("\n\t")}";
          }
 
-         public static string CalculationMethodIsNotDefinedForSpecies(string calculationMethod, string category, string species)
+         public static string CalculationMethodNotDefinedForSpecies(string calculationMethod, string category, string species)
          {
             return $"Calculation method '{calculationMethod}' in category '{category}' is not defined for species '{species}'.";
          }
 
-         public static string CalculationMethodIsNotFound(string calculationMethod)
-         {
-            return $"Calculation method '{calculationMethod}' was not found.";
-         }
+         public static string CalculationMethodNotFound(string calculationMethod) => $"Calculation method '{calculationMethod}' was not found.";
 
          public static string SimulationHasNoResultsAndCannotBeUsedInSummaryChart(string simulationName)
          {
@@ -695,12 +662,12 @@ namespace PKSim.Assets
 
          public static string CannotExportResultsPleaseRunSimulation(string simulationName)
          {
-            return $"Run simulation '{simulationName}' first before exporting the results to {UI.Excel}";
+            return $"Run simulation '{simulationName}' first before exporting the results to {UI.Excel}.";
          }
 
          public static string CannotExportPKAnalysesPleaseRunSimulation(string simulationName)
          {
-            return $"Run simulation '{simulationName}' first before exporting the PK-Analyses to CSV";
+            return $"Run simulation '{simulationName}' first before exporting the PK-Analyses to CSV.";
          }
 
          public static string ProjectWillBeOpenedAsReadOnly(string errorMessage)
@@ -710,23 +677,17 @@ namespace PKSim.Assets
 
          public static string CouldNotFindTransporterFor(string containerName, string membrane, string transportType)
          {
-            return $"Could not find a transporter template for container '{containerName}' location {membrane} and type {transportType}";
+            return $"Could not find a transporter template for container '{containerName}' location '{membrane}' and type '{transportType}'.";
          }
 
          public static string CannotCreateAgingSimulationWithInvalidPercentile(string parameterPath, double percentile)
          {
-            return $"Cannot create aging simulation: The percentile for parameter '{parameterPath}' is invalid. (percentile = {percentile})";
+            return $"Cannot create aging simulation: The percentile for parameter '{parameterPath}' is invalid. (percentile = {percentile}).";
          }
 
-         public static string FileDoesNotExist(string fileFullPath)
-         {
-            return $"File '{fileFullPath}' does not exist";
-         }
+         public static string FileDoesNotExist(string fileFullPath) => $"File '{fileFullPath}' does not exist.";
 
-         public static string NoDataFieldFoundFor(string name)
-         {
-            return $"No data field found for '{name}' ";
-         }
+         public static string NoDataFieldFoundFor(string name) => $"No data field found for '{name}'.";
 
          public static string DuplicatedIndividualResultsForId(int individualId)
          {
@@ -735,17 +696,17 @@ namespace PKSim.Assets
 
          public static string NumberOfIndividualsInResultsDoNotMatchPopulation(string populationName, int expectedCount, int importedCount)
          {
-            return $"The simulation '{populationName}' has '{expectedCount}' individuals. The imported results however contain values for '{importedCount}' individuals";
-
+            return $"The simulation '{populationName}' has '{expectedCount}' individuals. The imported results however contain values for '{importedCount}' individuals.";
          }
+
          public static string TimeArrayLengthDoesNotMatchFirstIndividual(int id, int expectedLength, int currentLength)
          {
-            return $"Time array for individual '{id}' does not have the expected length ({expectedLength} vs {currentLength})";
+            return $"Time array for individual '{id}' does not have the expected length ({expectedLength} vs {currentLength}).";
          }
 
          public static string TimeArrayValuesDoesNotMatchFirstIndividual(int id, int index, float expectedValue, float currentValue)
          {
-            return $"Time array for individual '{id}' does not have the expected value in row '{index}' ({expectedValue} vs {currentValue})";
+            return $"Time array for individual '{id}' does not have the expected value in row '{index}' ({expectedValue} vs {currentValue}).";
          }
 
          public static string IndividualResultsDoesNotHaveTheExpectedQuantity(int individualId, IReadOnlyList<string> expectedQuantities, IReadOnlyList<string> foundQuantities)
@@ -757,10 +718,7 @@ namespace PKSim.Assets
             return sb.ToString();
          }
 
-         public static string CouldNotFindQuantityWithPath(string quantityPath)
-         {
-            return $"Could not find quantity with path '{quantityPath}'";
-         }
+         public static string CouldNotFindQuantityWithPath(string quantityPath) => $"Could not find quantity with path '{quantityPath}'.";
 
          public static string NotEnoughPKValuesForParameter(string parameterName, string quantityPath, int expectedValue, int currentValue)
          {
@@ -783,64 +741,67 @@ namespace PKSim.Assets
 
          public static string GroupingCannotBeUsedWithFieldOfType(Type fieldType, string grouping)
          {
-            return $"Grouping '{grouping}' cannot be used with field of type '{fieldType}'";
+            return $"Grouping '{grouping}' cannot be used with field of type '{fieldType}'.";
          }
 
          public static string QuantityNotFoundWillBeRemovedFromAnalysis(string quantityPath)
          {
-            return $"Quantity '{quantityPath}' was not found and will be removed";
+            return $"Quantity '{quantityPath}' was not found and will be removed.";
          }
 
          public static string PKParameterWasNotCalculatedForQuantity(string pkParameter, string quantityPath)
          {
-            return $"PK-Parameter '{pkParameter}' was not calculated for quantity '{quantityPath}' and will be removed";
+            return $"PK-Parameter '{pkParameter}' was not calculated for quantity '{quantityPath}' and will be removed.";
          }
 
          public static string ParameterNotFoundWillBeRemovedFromAnalysis(string parameterPath)
          {
-            return $"Parameter '{parameterPath}' was not found and will be removed";
+            return $"Parameter '{parameterPath}' was not found and will be removed.";
          }
 
          public static string CovariateNotFoundWillBeRemovedFromAnalysis(string covariate)
          {
-            return $"Covariate '{covariate}' was not found and will be removed";
+            return $"Covariate '{covariate}' was not found and will be removed.";
          }
+
          public static string OutputFieldCannotBeUsedInAnalysis(string outputName)
          {
-            return $"Output '{outputName}' cannot be used in this analysis and will be removed";
+            return $"Output '{outputName}' cannot be used in this analysis and will be removed.";
          }
+
          public static string InconsistentCurveData(int yValuesCount, int xValuesCount)
          {
-            return $"Length of y values = {yValuesCount} != {xValuesCount} = length of x values";
+            return $"Length of y values = {yValuesCount} != {xValuesCount} = length of x values.";
          }
+
          public static string InconsistentXValuesLength(int xValuesCount, int requiredXValuesCount)
          {
-            return $"Length of x values = {xValuesCount} != {requiredXValuesCount}";
+            return $"Length of x values = {xValuesCount} != {requiredXValuesCount}.";
          }
 
          public static string CouldNotFindDimensionWithUnit(string unit)
          {
-            return $"Could not find dimension containing unit '{unit}'";
+            return $"Could not find dimension containing unit '{unit}'.";
          }
 
          public static string UnitIsNotDefinedInDimension(string unit, string dimension)
          {
-            return $"Unit '{unit}' is not defined in dimension '{dimension}'";
+            return $"Unit '{unit}' is not defined in dimension '{dimension}'."; 
          }
 
          public static string DerivedFieldCannotBeUsedForFieldOfType(string derivedField, string dataField, Type dataType)
          {
-            return $"Grouping '{derivedField}' cannot be used for field '{dataField}' of type '{dataType.Name}'";
+            return $"Grouping '{derivedField}' cannot be used for field '{dataField}' of type '{dataType.Name}'.";
          }
 
          public static string CouldNotLoadSimulationFromFile(string pkmlFileFullPath)
          {
-            return $"Could not load simulation from file '{pkmlFileFullPath}'";
+            return $"Could not load simulation from file '{pkmlFileFullPath}'.";
          }
 
          public static string CannotAddOutputFieldBecauseOfDimensionMismatch(string outputName, IEnumerable<string> allowedDimensions, string currentDimension)
          {
-            return cannotAddToAnalysisBecauseOfDimensionMismatch("output", outputName, allowedDimensions, new[] { currentDimension });
+            return cannotAddToAnalysisBecauseOfDimensionMismatch("output", outputName, allowedDimensions, new[] {currentDimension});
          }
 
          public static string CannotAddObservedDataBecauseOfDimensionMismatch(string observedDataName, IEnumerable<string> allowedDimensions, IEnumerable<string> usedDimensions)
@@ -860,20 +821,54 @@ namespace PKSim.Assets
 
          public static string ComparisonWithTemplateNotSupportedForBuildingBlockOfType(string buildingBlockType)
          {
-            return $"Comparison with template building block is not supported for {buildingBlockType}";
+            return $"Comparison with template building block is not supported for {buildingBlockType}.";
          }
 
          public static string ComparisonBetweenBuildingBLocksNotSupportedForBuildingBlockOfType(string buildingBlockType)
          {
-            return $"Comparison between building blocks is not supported for {buildingBlockType}";
+            return $"Comparison between building blocks is not supported for {buildingBlockType}.";
          }
 
-         public static string CannotExtractIndividualFrom(string objectType)
+         public static string CannotExtractIndividualFrom(string objectType) => $"Individual extraction is not available for '{objectType}'.";
+
+         public static string SnapshotNotFoundFor(string modelTypeName) => $"Snapshot not found for '{modelTypeName}'.";
+
+         public static string SnapshotParameterNotFoundInContainer(string parameterName, string container) => $"Snapshot parameter '{parameterName}' was not found in '{container}'.";
+
+         public static string SnapshotParameterNotFound(string parameterName) => $"Snapshot parameter '{parameterName}' was not found.";
+
+         public const string SnapshotIsOutdated = "Snapshot is outdated and cannot be loaded.";
+
+         
+         public static string MoleculeTypeNotSupported(string moleculeType) => $"Molecule type '{moleculeType}' not supported.";
+
+         public static string RelativeExpressionContainerNotFound(string containerName) => $"Relative expression container '{containerName}' not found.";
+
+         public static string SnapshotProcessNameNotFound(string processName) => $"Snapshot process '{processName}' not found in the PK-Sim database.";
+
+         public static string MapToModelNotSupportedWithoutContext(string modelType, string contextType)
          {
-            return $"Individual extraction is not available for '{objectType}'";
+            return $"{modelType} should not be created from snapshot directly. Instead use the overload with {contextType}.";
          }
-      }
 
+         public static string MapToSnapshotNotSupportedWithoutContext(string snapshotType, string contextType)
+         {
+            return $"{snapshotType} should not be created from model directly. Instead use the overload with {contextType}.";
+         }
+
+         public const string PopulationSnapshotOnlySupportedForRandomPopulation = "Population snapshot can only be created for randomized population.";
+
+         public const string SimulationSubjectUndefinedInSnapshot = "Simulation subject (Individual or Population) is not defined in snapshot.";
+
+         public static string SimulationTemplateBuildingBlocktNotFoundInProject(string buildingBlockName, string buildingBlockType) => $"{buildingBlockType} '{buildingBlockName} not found in project.";
+
+         public static string ProcessNotFoundInCompound(string processName, string compound) => $"Process '{processName}' was not found in compound '{compound}'";
+
+         public static string OnlyPKSimSimulationCanBeExportedToSnapshot(string simulationName, string origin) => $"Snapshot export is not supported for {origin} simulation '{simulationName}'.";
+
+         public static string SnapshotFileMismatch(string desiredType) => $"Snapshot file cannot be used to load a {desiredType.ToLowerInvariant()}.";
+      }
+   
       public static class Information
       {
          public static readonly string Formula = "Formula";
@@ -1009,10 +1004,11 @@ namespace PKSim.Assets
             return $"{ObservedDataYAsTooltip(y)}\n{TimeProfileYAsTooltip(lowerValue, upperValue)}";
          }
 
-         public static string ObservedDataYAsTooltip(string y)
-         {
-            return ScatterYAsTooltip(y);
-         }
+         public static string ObservedDataYAsTooltip(string y) => ScatterYAsTooltip(y);
+
+         public static string LoadingSnapshot(string snapshotFile, string type) => $"Loading {type} from snapshot file '{snapshotFile}'";
+
+         public static string SnapshotLoaded(string typeToLoad) => $"{typeToLoad} loaded from snaphsot";
       }
 
       public static class MenuNames
@@ -1045,6 +1041,10 @@ namespace PKSim.Assets
          public static readonly string About = "&About...";
          public static readonly string OpenProject = "&Open...";
          public static readonly string ProjectDescription = "&Description...";
+         public static readonly string ExportProjectToSnapshot = "Export to Snapshot";
+         public static readonly string LoadProjectFromSnapshot = "Load from Snapshot";
+         public static readonly string ExportProjectToSnapshotMenu = $"&{ExportProjectToSnapshot}...";
+         public static readonly string LoadProjectFromSnapshotMenu = $"{LoadProjectFromSnapshot}...";
          public static readonly string Clone = "Clone...";
          public static readonly string CloneMenu = "Clone";
          public static readonly string ActivateSimulation = "Set as Active Simulation";
@@ -1131,6 +1131,8 @@ namespace PKSim.Assets
          public static readonly string SavePopulationAnalysisWorkflowToTemplateMenu = "Save Analyses";
          public static readonly string ExtractIndividualByPercentile = "Extract Individuals";
          public static readonly string ExtractIndividualsMenu = "Extract Individuals...";
+         public static readonly string ExportSnapshot = "Save Snapshot...";
+         public static readonly string LoadFromSnapshot = "Load from Snapshot...";
 
          public static string CompareBuildingBlocks(string buildingBlockType)
          {
@@ -1537,7 +1539,7 @@ namespace PKSim.Assets
          public static readonly string Simulation = "Simulation";
          public static readonly string OrganType = "Organ Type";
          public static readonly string Calculating = "Calculating...";
-         public static readonly string CalculationPopulationSimulation = "Simulation {0}/{1}...";
+         public static string CalculationPopulationSimulation(int number, int total) => $"Simulation {number}/{total}...";
          public static readonly string StartTime = "Start Time";
          public static readonly string EndTime = "End Time";
          public static readonly string NumberOfTimePoints = "Resolution";
@@ -1558,6 +1560,8 @@ namespace PKSim.Assets
          public static readonly string OpeningProjectDatabase = "Opening project database...";
          public static readonly string CreatingProjectDatabase = "Creating project database...";
          public static readonly string LoadingProject = "Loading project...";
+         public static readonly string LoadingSnapshot = "Loading snapshot...";
+         public static readonly string SnapshotFile = "Select snapshot file";
          public static readonly string SavingProject = "Saving project...";
          public static readonly string LoadingHistory = "Loading history...";
          public static readonly string LoadingMatlab = "Loading Matlab®...";
@@ -1787,6 +1791,8 @@ namespace PKSim.Assets
          public static readonly string NewProjectDescription = "Create a new project...";
          public static readonly string OpenProjectDescription = "Open an existing project...";
          public static readonly string ProjectDescriptionDescription = "Show or edit project description...";
+         public static readonly string ExportProjectToSnapshotDescription = "Export project to snapshot...";
+         public static readonly string LoadProjectFromSnapshotDescription = "Load project from snapshot...";
          public static readonly string CloseProjectDescription = "Close the project";
          public static readonly string NewSimulationDescription = "Create a new simulation...";
          public static readonly string ImportIndividualSimulationDescription = "Import an individual simulation from file...";
@@ -2371,10 +2377,7 @@ namespace PKSim.Assets
             return $"{(editable ? "Edit" : "Show")} table parameter '{parameter}'";
          }
 
-         public static string ChartSettingsSaved()
-         {
-            return "Chart settings were saved into project.";
-         }
+         public static string ChartSettingsSaved() => "Chart settings were saved into project.";
 
          public static string SimulationSettingsSavedFor(string settingsType)
          {
@@ -2391,34 +2394,17 @@ namespace PKSim.Assets
             return $"{buildingBlockNames.ToString(", ", "'")} \nsuccessfully saved in the template database.";
          }
 
-         public static string ReportCreationStartedMessage(string reportFullPath)
-         {
-            return "This might take a while...";
-         }
+         public static string ReportCreationStartedMessage(string reportFullPath) => "This might take a while...";
 
-         public static string ReportCreationFinishedMessage(string reportFullPath)
-         {
-            return $"Report can be found at {reportFullPath}";
-         }
+         public static string ReportCreationFinishedMessage(string reportFullPath) => $"Report can be found at {reportFullPath}";
 
-         public static string CreateGroupingForField(string fieldName)
-         {
-            return $"Create Grouping for '{fieldName}'";
-         }
+         public static string CreateGroupingForField(string fieldName) => $"Create Grouping for '{fieldName}'";
 
-         public static string Interval(string min, string max)
-         {
-            return $"{min}..{max}";
-         }
+         public static string Interval(string min, string max) => $"{min}..{max}";
 
-         public static string EditGroupingFor(string groupingName, string fieldName)
-         {
-            return $"Edit Grouping '{groupingName}' for '{fieldName}'";
-         }
-         public static string DeleteFilesIn(string populationFolder)
-         {
-            return $"Directory '{populationFolder}' is not empty. All Files will be removed. Proceed?";
-         }
+         public static string EditGroupingFor(string groupingName, string fieldName) => $"Edit Grouping '{groupingName}' for '{fieldName}'";
+
+         public static string DeleteFilesIn(string populationFolder) => $"Directory '{populationFolder}' is not empty. All Files will be removed. Proceed?";
 
          public static string DragFieldMessage(string fieldType)
          {
@@ -2431,27 +2417,15 @@ namespace PKSim.Assets
             return $"Drag a field here to group by {fieldType}";
          }
 
-         public static string FilterAreaDragFieldMessage()
-         {
-            return "Drag a field here to remove grouping";
-         }
-         
-         public static string DefaultResultsExportNameFor(string simulationName)
-         {
-            return $"{simulationName}-Results";
-         }
-
-         public static string DefaultPKAnalysesExportNameFor(string simulationName)
-         {
-            return $"{simulationName}-PK-Analyses";
-         }
-
-         public static string DefaultPopulationExportNameFor(string containerName)
-         {
-            return $"{containerName}-Population";
-         }
+         public static string FilterAreaDragFieldMessage() => "Drag a field here to remove grouping";
 
          public static readonly string ChartYScale = "Chart Y Scale";
+
+         public static string  SelectSnapshotExportFile(string objectName, string ojectType) => $"Export snapshot for {ojectType.ToLowerInvariant()} '{objectName}'";
+
+         public static string  LoadObjectFromSnapshot(string ojectType) => $"Load {ojectType.ToLowerInvariant()} from snapshot";
+
+         public static string LoadFromSnapshot => "Load Snapshot";         
       }
 
       public static class Reporting

@@ -1,5 +1,5 @@
-using PKSim.Core.Model.Extensions;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -19,10 +19,10 @@ namespace PKSim.Core.Model
       public static DistributionMetaData From(IDistributedParameter distributedParameter)
       {
          var metaData = new DistributionMetaData
-            {
-               Mean = distributedParameter.MeanParameter.Value,
-               Distribution = distributedParameter.Formula.DistributionType()
-            };
+         {
+            Mean = distributedParameter.MeanParameter.Value,
+            Distribution = distributedParameter.Formula.DistributionType()
+         };
 
          if (distributedParameter.DeviationParameter != null)
             metaData.Deviation = distributedParameter.DeviationParameter.Value;
@@ -33,11 +33,16 @@ namespace PKSim.Core.Model
       public static DistributionMetaData From(IDistributionMetaData distributionMetaData)
       {
          return new DistributionMetaData
-            {
-               Mean = distributionMetaData.Mean,
-               Deviation = distributionMetaData.Deviation,
-               Distribution = distributionMetaData.Distribution
-            };
+         {
+            Mean = distributionMetaData.Mean,
+            Deviation = distributionMetaData.Deviation,
+            Distribution = distributionMetaData.Distribution
+         };
+      }
+
+      public DistributionMetaData Clone()
+      {
+         return From(this);
       }
    }
 }

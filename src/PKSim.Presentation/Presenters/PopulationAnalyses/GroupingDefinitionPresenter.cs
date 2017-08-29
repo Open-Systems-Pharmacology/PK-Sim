@@ -9,7 +9,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       /// <summary>
       /// Returns the grouping definiton defined by the user
       /// </summary>
-      IGroupingDefinition GroupingDefinition { get; }
+      GroupingDefinition GroupingDefinition { get; }
 
       /// <summary>
       /// Initializes the grouping definition presenter allowing the user to setup a new <see cref="IGroupingDefinition"/>
@@ -21,7 +21,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       /// <summary>
       /// Edit the grouping definition <paramref name="groupingDefinition"/>
       /// </summary>
-      void Edit(IGroupingDefinition groupingDefinition);
+      void Edit(GroupingDefinition groupingDefinition);
 
       /// <summary>
       /// This should be called when editing is over to save the changes back in the grouping definition

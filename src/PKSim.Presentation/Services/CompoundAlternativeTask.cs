@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Presentation.Core;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Extensions;
@@ -9,11 +13,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Compounds;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation.Services
@@ -139,8 +138,8 @@ namespace PKSim.Presentation.Services
          //Sol(pH) = ref_Solubility * Solubility_Factor (ref_pH) / Solubility_Factor(pH) 
          //Solubility_pKa_pH_Factor
 
-         var refPh = solubilityAlternative.Parameter(CoreConstants.Parameter.RefpH);
-         var refSolubility = solubilityAlternative.Parameter(CoreConstants.Parameter.SolubilityAtRefpH);
+         var refPh = solubilityAlternative.Parameter(CoreConstants.Parameter.REFERENCE_PH);
+         var refSolubility = solubilityAlternative.Parameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH);
          var gainPerCharge = solubilityAlternative.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge);
          var refSolubilityValue = refSolubility.Value;
 
@@ -148,7 +147,7 @@ namespace PKSim.Presentation.Services
             .WithName(PKSimConstants.UI.Solubility)
             .InitializedWith(PKSimConstants.UI.pH, PKSimConstants.UI.Solubility, refPh.Dimension, refSolubility.Dimension);
 
-         compound.Parameter(CoreConstants.Parameter.RefpH).Value = refPh.Value;
+         compound.Parameter(CoreConstants.Parameter.REFERENCE_PH).Value = refPh.Value;
          compound.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge).Value = gainPerCharge.Value;
 
          double solFactorRefpH = compound.Parameter(CoreConstants.Parameter.SOLUBILITY_P_KA__P_H_FACTOR).Value;
@@ -162,7 +161,7 @@ namespace PKSim.Presentation.Services
          allPh.Add(14);
          foreach (var pH in allPh)
          {
-            compound.Parameter(CoreConstants.Parameter.RefpH).Value = pH;
+            compound.Parameter(CoreConstants.Parameter.REFERENCE_PH).Value = pH;
             double solFactorAtpH = compound.Parameter(CoreConstants.Parameter.SOLUBILITY_P_KA__P_H_FACTOR).Value;
             formula.AddPoint(pH, refSolubilityValue * solFactorRefpH / solFactorAtpH);
          }

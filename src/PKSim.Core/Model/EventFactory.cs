@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using PKSim.Assets;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 
@@ -10,7 +11,7 @@ namespace PKSim.Core.Model
    public interface IEventFactory
    {
       PKSimEvent Create();
-      PKSimEvent Create(string eventName);
+      PKSimEvent Create(string eventTemplateName);
       PKSimEvent Create(IEventGroupBuilder eventGroupBuilder);
    }
 
@@ -29,27 +30,25 @@ namespace PKSim.Core.Model
 
       public PKSimEvent Create()
       {
-         return Create(_eventGroupRepository.All().FirstOrDefault());
+         return Create(_eventGroupRepository.All().First());
       }
 
-      public PKSimEvent Create(string eventName)
+      public PKSimEvent Create(string eventTemplateName)
       {
-         return Create(_eventGroupRepository.FindByName(eventName));
+         return Create(_eventGroupRepository.FindByName(eventTemplateName));
       }
 
       public PKSimEvent Create(IEventGroupBuilder eventGroupBuilder)
       {
          if (eventGroupBuilder == null)
-            throw new ArgumentException("Event template not defined", "eventGroupBuilder");
+            throw new ArgumentException(PKSimConstants.Error.EventTemplateNotDefined, nameof(eventGroupBuilder));
 
          var newEvent = _objectBaseFactory.Create<PKSimEvent>();
          newEvent.TemplateName = eventGroupBuilder.Name;
          var clonedEvent = _cloner.Clone(eventGroupBuilder);
 
-         foreach (var parameter in clonedEvent.GetAllChildren<IParameter>())
-         {
-            newEvent.Add(parameter);
-         }
+         newEvent.AddChildren(clonedEvent.GetAllChildren<IParameter>());
+
          newEvent.IsLoaded = true;
          return newEvent;
       }

@@ -25,11 +25,6 @@ namespace PKSim.UI.Views.Core
          _lookAndFeel = lookAndFeel;
       }
 
-      public void AddView(IView view)
-      {
-         AddViewToLayout(view);
-      }
-
       protected LayoutControlItem AddViewToLayout(IView view)
       {
          LayoutControlItem layoutControlItem;

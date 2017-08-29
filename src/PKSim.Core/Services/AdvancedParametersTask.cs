@@ -11,7 +11,7 @@ namespace PKSim.Core.Services
       ICommand AddAdvancedParameter(IParameter parameter, IAdvancedParameterContainer advancedParameterContainer);
       ICommand RemoveAdvancedParameter(IParameter parameter, IAdvancedParameterContainer advancedParameterContainer);
       ICommand SwitchDistributionTypeFor(IParameter parameter, IAdvancedParameterContainer advancedParameterContainer, DistributionType newDistributionType);
-      ICommand AddAdvancedParameter(IAdvancedParameter advancedParameter, IAdvancedParameterContainer advancedParameterContainer);
+      ICommand AddAdvancedParameter(AdvancedParameter advancedParameter, IAdvancedParameterContainer advancedParameterContainer);
    }
 
    public class AdvancedParametersTask : IAdvancedParametersTask
@@ -43,7 +43,7 @@ namespace PKSim.Core.Services
          return new SwitchAdvancedParameterDistributionTypeCommand(parameter, advancedParameterContainer, newDistributionType, _executionContext).Run(_executionContext);
       }
 
-      public ICommand AddAdvancedParameter(IAdvancedParameter advancedParameter, IAdvancedParameterContainer advancedParameterContainer)
+      public ICommand AddAdvancedParameter(AdvancedParameter advancedParameter, IAdvancedParameterContainer advancedParameterContainer)
       {
          return new AddAdvancedParameterToContainerCommand(advancedParameter, advancedParameterContainer, _executionContext).Run(_executionContext);
       }

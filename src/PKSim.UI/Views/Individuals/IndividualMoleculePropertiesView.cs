@@ -100,7 +100,6 @@ namespace PKSim.UI.Views.Individuals
          _screenBinder.Bind(x => x.HalfLifeIntestineParameter).To(_uxHalfLifeIntestine);
          _uxHalfLifeIntestine.RegisterEditParameterEvents(_presenter);
 
-
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
@@ -117,10 +116,7 @@ namespace PKSim.UI.Views.Individuals
          OntogenyVisible = false;
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
 
       public void AdjustHeight()
       {
@@ -132,9 +128,6 @@ namespace PKSim.UI.Views.Individuals
          layoutControl.Refresh();
       }
 
-      public int OptimalHeight
-      {
-         get { return layoutControlGroup.Height; }
-      }
+      public int OptimalHeight => layoutControlGroup.Height;
    }
 }

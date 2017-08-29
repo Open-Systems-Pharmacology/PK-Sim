@@ -16,11 +16,11 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 {
    public class PopulationPKAnalysesTeXBuilder : PresentableTeXBuilder<PopulationPKAnalyses, DefaultPresentationSettings>
    {
-      private readonly IPKAnalysisTask _pkAnalysisTask;
+      private readonly IPKAnalysesTask _pkAnalysisTask;
       private readonly ITeXBuilderRepository _builderRepository;
       private readonly IPopulationPKAnalysisToDataTableMapper _pkAnalysisToDataTableMapper;
 
-      public PopulationPKAnalysesTeXBuilder(IPKAnalysisTask pkAnalysisTask, ITeXBuilderRepository builderRepository,
+      public PopulationPKAnalysesTeXBuilder(IPKAnalysesTask pkAnalysisTask, ITeXBuilderRepository builderRepository,
          IPopulationPKAnalysisToDataTableMapper pkAnalysisToDataTableMapper, IPresentationSettingsTask presentationSettingsTask, IDisplayUnitRetriever displayUnitRetriever) : base(presentationSettingsTask, displayUnitRetriever)
       {
          _pkAnalysisTask = pkAnalysisTask;

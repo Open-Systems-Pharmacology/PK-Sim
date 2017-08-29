@@ -23,7 +23,7 @@ namespace PKSim.Infrastructure.Services
       {
          var cfg = createSqlLiteConfigurationFor(dataSource);
          var update = new SchemaUpdate(cfg);
-         update.Execute(useStdOut:false, doUpdate: true);
+         update.Execute(useStdOut: false, doUpdate:true);
          return createSessionFactory(cfg);
       }
 

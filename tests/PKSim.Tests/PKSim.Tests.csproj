@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PKSim</RootNamespace>
     <AssemblyName>PKSim.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -96,15 +96,15 @@
   <ItemGroup>
     <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Castle.Windsor, Version=3.4.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Windsor.3.4.0\lib\net45\Castle.Windsor.dll</HintPath>
-      <Private>True</Private>
+    </Reference>
+    <Reference Include="CommandLine, Version=2.0.275.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CommandLineParser.2.1.1-beta\lib\net45\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="DevExpress.Data.v17.1, Version=17.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.17.1.5\lib\net45\DevExpress.Data.v17.1.dll</HintPath>
@@ -119,14 +119,12 @@
     </Reference>
     <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Iesi.Collections.4.0.2\lib\net40\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\packages\Iesi.Collections.4.0.2\lib\net461\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -135,6 +133,9 @@
       <HintPath>..\..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
@@ -143,22 +144,20 @@
     </Reference>
     <Reference Include="NHibernate, Version=4.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.Assets, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.86\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.BDDHelper">
+    <Reference Include="OSPSuite.BDDHelper, Version=2.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.BDDHelper.2.0.0.1\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Core, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.Core.7.2.0.86\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.FuncParser">
+    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Infrastructure, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
@@ -183,16 +182,15 @@
       <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.5.7\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.105.2\lib\net451\System.Data.SQLite.dll</HintPath>
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.105.2\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
@@ -211,19 +209,8 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="BatchTool\BatchStartOptionsSpecs.cs" />
-    <Compile Include="BatchTool\BatchToolFactoryForSpecs.cs" />
-    <Compile Include="BatchTool\ContextForBatch.cs" />
-    <Compile Include="BatchTool\InteractionSpecs.cs" />
-    <Compile Include="BatchTool\JsonSerializationSpecs.cs" />
-    <Compile Include="BatchTool\OralSpecs.cs" />
-    <Compile Include="BatchTool\MetabolizationSpecs.cs" />
-    <Compile Include="BatchTool\SimulationExporterSpecs.cs" />
-    <Compile Include="BatchTool\SimulationExportSpecs.cs" />
-    <Compile Include="BatchTool\SpecificBindingSpecs.cs" />
-    <Compile Include="BatchTool\StandardSpecs.cs" />
-    <Compile Include="BatchTool\TransportSpecs.cs" />
-    <Compile Include="BatchTool\TwoPoresSpecs.cs" />
+    <Compile Include="CLI\ExportSimulationRunnerSpecs.cs" />
+    <Compile Include="CLI\SnapshotRunnerSpecs.cs" />
     <Compile Include="ContextSpecificationWithLocalContainer.cs" />
     <Compile Include="CoreConstantsForSpecs.cs" />
     <Compile Include="Core\AddBuildingBlockToProjectCommandSpecs.cs" />
@@ -236,21 +223,76 @@
     <Compile Include="Core\AddSchemaItemToSchemaCommandSpecs.cs" />
     <Compile Include="Core\AddSchemaToProtocolCommandSpecs.cs" />
     <Compile Include="Core\AdvancedParameterFactorySpecs.cs" />
+    <Compile Include="Core\AdvancedParameterMapperSpecs.cs" />
     <Compile Include="Core\AgingDataSpecs.cs" />
+    <Compile Include="Core\AlternativeMapperSpecs.cs" />
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />
+    <Compile Include="Core\AxisMapperSpecs.cs" />
+    <Compile Include="Core\CalculationMethodCacheMapperSpecs.cs" />
+    <Compile Include="Core\ChartMapperSpecs.cs" />
+    <Compile Include="Core\ClassificationSnapshotTaskSpecs.cs" />
+    <Compile Include="Core\CompositionBusinessRuleSpecs.cs" />
+    <Compile Include="Core\CompoundMapperSpecs.cs" />
+    <Compile Include="Core\CompoundProcessMapperSpecs.cs" />
+    <Compile Include="Core\CompoundPropertiesMapperSpecs.cs" />
+    <Compile Include="Core\CurveChartMapperSpecs.cs" />
+    <Compile Include="Core\CurveMapperSpecs.cs" />
+    <Compile Include="Core\DataColumnMapperSpecs.cs" />
+    <Compile Include="Core\DataInfoMapperSpecs.cs" />
+    <Compile Include="Core\DistributedTableFormulaMapperSpecs.cs" />
+    <Compile Include="Core\EventMapperSpecs.cs" />
+    <Compile Include="Core\EventPropertiesMapperSpec.cs" />
+    <Compile Include="Core\ExpressionContainerMapperSpecs.cs" />
+    <Compile Include="Core\ExtendedPropertiesMapperSpecs.cs" />
+    <Compile Include="Core\ExtendedPropertyMapperSpecs.cs" />
+    <Compile Include="Core\FormulationMapperSpecs.cs" />
+    <Compile Include="Core\GroupingDefinitionMapperSpecs.cs" />
     <Compile Include="Core\IndividualExtractionOptionsSpecs.cs" />
     <Compile Include="Core\IndividualExtractorSpecs.cs" />
+    <Compile Include="Core\IndividualMapperSpecs.cs" />
     <Compile Include="Core\InteractionProcessRetrieverSpecs.cs" />
+    <Compile Include="Core\InteractiveSimulationRunnerSpecs.cs" />
+    <Compile Include="Core\MoleculeMapperSpecs.cs" />
+    <Compile Include="Core\ClassificationMapperSpecs.cs" />
+    <Compile Include="Core\ObservedDataCollectionMappperSpecs.cs" />
+    <Compile Include="Core\ObservedDataMapperSpecs.cs" />
+    <Compile Include="Core\OntogenyMapperSpecs.cs" />
+    <Compile Include="Core\OriginDataMapperSpecs.cs" />
+    <Compile Include="Core\OutputIntervalMapperSpecs.cs" />
+    <Compile Include="Core\OutputSchemaMapperSpecs.cs" />
+    <Compile Include="Core\OutputSelectionsMapperSpecs.cs" />
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
+    <Compile Include="Core\ParameterMapperSpecs.cs" />
+    <Compile Include="Core\ParameterRangeMapperSpecs.cs" />
     <Compile Include="Core\PKValuesToPKAnalysisMapperSpecs.cs" />
+    <Compile Include="Core\PopulationAnalysisChartMapperSpecs.cs" />
+    <Compile Include="Core\PopulationAnalysisFieldMapperSpecs.cs" />
+    <Compile Include="Core\PopulationAnalysisMapperSpecs.cs" />
+    <Compile Include="Core\PopulationMapperSpecs.cs" />
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
+    <Compile Include="Core\ProcessMappingMapperSpecs.cs" />
+    <Compile Include="Core\ProjectMapperSpecs.cs" />
+    <Compile Include="Core\QuantityInfoMapperSpecs.cs" />
+    <Compile Include="Core\RandomPopulationSettingsMapperSpecs.cs" />
+    <Compile Include="Core\SchemaItemMapperSpecs.cs" />
+    <Compile Include="Core\SchemaMapperSpecs.cs" />
     <Compile Include="Core\SetRelativeExpressionFromNormalizedCommandSpecs.cs" />
+    <Compile Include="Core\ProtocolMapperSpecs.cs" />
+    <Compile Include="Core\SimulationComparisonMapperSpecs.cs" />
     <Compile Include="Core\SimulationConfigurationValidatorSpecs.cs" />
+    <Compile Include="Core\SimulationMapperSpecs.cs" />
+    <Compile Include="Core\SnapshotMapperSpecs.cs" />
+    <Compile Include="Core\SnapshotTaskSpecs.cs" />
+    <Compile Include="Core\SolverSettingsMapperSpecs.cs" />
+    <Compile Include="Core\TableFormulaMapperSpecs.cs" />
     <Compile Include="Core\TablePartSpecs.cs" />
     <Compile Include="Core\TimeProfileAnalysisChartSpecs.cs" />
+    <Compile Include="Extensions\AsyncContextSpecification.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
     <Compile Include="Infrastructure\SimulationComparisonContentLoaderSpecs.cs" />
+    <Compile Include="Infrastructure\SimulationConstructor.cs" />
+    <Compile Include="Infrastructure\SnapshotSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\FlatOrganTypeRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\JacobianMatrixXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\OrganTypeRepositorySpecs.cs" />
@@ -304,7 +346,7 @@
     <Compile Include="Core\PaneDataSpecs.cs" />
     <Compile Include="Core\ParameterChangeUpdaterSpecs.cs" />
     <Compile Include="Core\ParameterDistributionMetaDataExtensionsSpecs.cs" />
-    <Compile Include="Core\BatchPopulationSettingsToPopulationSettingsMapperSpecs.cs" />
+    <Compile Include="Matlab\MatlabPopulationSettingsToPopulationSettingsMapperSpecs.cs" />
     <Compile Include="Core\BuildConfigurationTaskSpecs.cs" />
     <Compile Include="Core\BuildingBlockChangeCommandExtensionsSpecs.cs" />
     <Compile Include="Core\BuildingBlockChangeCommandSpecs.cs" />
@@ -364,7 +406,7 @@
     <Compile Include="Core\ParameterRangeSpecs.cs" />
     <Compile Include="Core\ParameterValuesSpecs.cs" />
     <Compile Include="Core\PKAnalysisHelperForSpecs.cs" />
-    <Compile Include="Core\PKAnalysisTaskSpecs.cs" />
+    <Compile Include="Core\PKAnalysesTaskSpecs.cs" />
     <Compile Include="Core\PKCalculationOptionsFactorySpecs.cs" />
     <Compile Include="Core\PKSimCalculationMethodsTaskSpecs.cs" />
     <Compile Include="Core\PopulationAnalysisChartFactorySpecs.cs" />
@@ -506,7 +548,7 @@
     <Compile Include="IntegrationTests\PopulationSimulationSerializationSpecs.cs" />
     <Compile Include="IntegrationTests\ProjectXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\RenameBuildingBlockTaskSpecs.cs" />
-    <Compile Include="IntegrationTests\ReportingSpecs.cs" />
+    <Compile Include="Reporting\ReportingSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationsReporterSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\StringSerializerSpecs.cs" />
@@ -527,6 +569,8 @@
     <Compile Include="Presentation\DynamicGroupExpanderSpecs.cs" />
     <Compile Include="Presentation\EnzymaticCompoundProcessPresenterSpecs.cs" />
     <Compile Include="Presentation\EnzymaticProcessToEnzymaticProcessDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\ExportProjectToSnapshotCommandSpecs.cs" />
+    <Compile Include="Presentation\ExportSnapshotCommandSpecs.cs" />
     <Compile Include="Presentation\ExtractIndividualsFromPopulationPresenterSpecs.cs" />
     <Compile Include="Presentation\ExpressionContainerDTOSpecs.cs" />
     <Compile Include="Presentation\ExtractIndividualsDTOSpecs.cs" />
@@ -579,7 +623,7 @@
     <Compile Include="IntegrationTests\SystemicProcessSelectionXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQueryConversionSpecs.cs" />
     <Compile Include="Matlab\MatlabIndividualFactorySpecs.cs" />
-    <Compile Include="Core\BatchOriginDataToOriginDataMapperSpecs.cs" />
+    <Compile Include="Matlab\MatlabOriginDataToOriginDataMapperSpecs.cs" />
     <Compile Include="Matlab\MatlabPopulationFactorySpecs.cs" />
     <Compile Include="Matlab\OntogenyFactorsRetrieverSpecs.cs" />
     <Compile Include="Presentation\BinSizeGroupingDTOSpecs.cs" />
@@ -588,6 +632,10 @@
     <Compile Include="Presentation\EditTimeProfileAnalysisChartPresenterSpecs.cs" />
     <Compile Include="Presentation\ExportPopulationSimulationPKAnalysesCommandSpecs.cs" />
     <Compile Include="Presentation\ExportToPDFInvokerSpecs.cs" />
+    <Compile Include="Presentation\LoadBuildingBlockFromSnapshotUICommandSpecs.cs" />
+    <Compile Include="Presentation\LoadFromSnapshotPresenterSpecs.cs" />
+    <Compile Include="Presentation\LoadProjectFromSnapshotCommandSpecs.cs" />
+    <Compile Include="Presentation\LoadProjectFromSnapshotPresenterSpecs.cs" />
     <Compile Include="Presentation\MenuAndToolBarPresenterSpecs.cs" />
     <Compile Include="Presentation\MultipleNumericFieldsPresenterSpecs.cs" />
     <Compile Include="Presentation\ClassifiableDataRepositorySpecs.cs" />
@@ -670,7 +718,7 @@
     <Compile Include="Core\SimpleProtocolToSchemaMapperSpecs.cs" />
     <Compile Include="Core\SimulationBuildingBlockUpdaterSpecs.cs" />
     <Compile Include="Core\SimulationFactorySpecs.cs" />
-    <Compile Include="Core\SimulationIntervalFactorySpecs.cs" />
+    <Compile Include="Core\OutputIntervalFactorySpecs.cs" />
     <Compile Include="Core\SimulationRunnerSpecs.cs" />
     <Compile Include="Core\SimulationSettingsTaskSpecs.cs" />
     <Compile Include="Core\SimulationToModelCoreSimulationMapperSpecs.cs" />
@@ -994,6 +1042,14 @@
       <Project>{625D2DE8-F930-4D53-9576-4E3237A30814}</Project>
       <Name>PKSim.BatchTool</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\PKSim.CLI.Core\PKSim.CLI.Core.csproj">
+      <Project>{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}</Project>
+      <Name>PKSim.CLI.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\PKSim.CLI\PKSim.CLI.csproj">
+      <Project>{9BCFE7D4-F76C-453F-95CB-6F53F640C429}</Project>
+      <Name>PKSim.CLI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\PKSim.Core\PKSim.Core.csproj">
       <Project>{CEF9367D-F2C4-4796-847B-42B090A601B5}</Project>
       <Name>PKSim.Core</Name>
@@ -1010,10 +1066,6 @@
       <Project>{0238E2F1-A931-4D3D-9C6E-88924CFF9501}</Project>
       <Name>PKSim.Presentation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\PKSim.UI\PKSim.UI.csproj">
-      <Project>{19E2A5E5-2248-43AA-92E0-190B327D67A8}</Project>
-      <Name>PKSim.UI</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\simmodel.schema\OSPSuite.SimModel.xsd">
@@ -1026,7 +1078,6 @@
     <None Include="Data\515_UnitTest.pksim5" />
     <None Include="Data\6.3.2_GFR_TS.pksim5" />
     <None Include="Data\631_EnzymesOntogeny.pksim5" />
-    <None Include="Data\BatchFiles\interaction.json" />
     <None Include="Data\BuildingBlockRename_611.pksim5" />
     <None Include="Data\ChartTemplate_531.pksim5" />
     <None Include="Data\Individual_553.pksim5" />
@@ -1038,13 +1089,6 @@
     <None Include="Data\PartialProcess_554.pksim5" />
     <None Include="Data\PopSimTest.pksim5" />
     <None Include="Data\PopulationAnalysis_531.pksim5" />
-    <None Include="Data\BatchFiles\specific_binding.json" />
-    <None Include="Data\BatchFiles\transport.json" />
-    <None Include="Data\BatchFiles\oral.json" />
-    <None Include="Data\BatchFiles\two_pores.json" />
-    <None Include="Data\BatchFiles\metabolization.json" />
-    <None Include="Data\BatchFiles\two_parameter_sets.json" />
-    <None Include="Data\BatchFiles\standard.json" />
     <None Include="Data\EHC_Convert_Test_522.pksim5" />
     <None Include="Data\IntegrationTests\IntegrationTests_NonOral.pkprj" />
     <None Include="Data\IntegrationTests\IntegrationTests_NonOral_Export_42\01_Human_3Comp_IVSingle_42.xls" />
@@ -1135,9 +1179,7 @@
     <None Include="Data\SurfaceAreaVariability_551.pksim5" />
     <None Include="Data\Test4Convert_504.pksim5" />
     <None Include="Data\Theophylline_612.pksim5" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
     <None Include="Templates\StandardTemplate\SBSuite.sty" />
     <None Include="Templates\StandardTemplate\StandardTemplate.json" />
     <None Include="Templates\StandardTemplate\StandardTemplate.tex" />
@@ -1193,12 +1235,12 @@
     <Folder Include="ProteinExpressions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -133,7 +133,7 @@ namespace PKSim.Core.Services
             Expression = getReferenceExpression(
                comparison.ReferenceSimulation.Name,
                comparison.ReferenceGroupingItem.Label,
-               string.Format("[{0}]", covariateField.Value))
+               $"[{covariateField.Value}]")
          };
       }
 

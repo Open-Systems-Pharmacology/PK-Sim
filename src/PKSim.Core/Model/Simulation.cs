@@ -17,7 +17,7 @@ namespace PKSim.Core.Model
    {
       private readonly ICache<string, UsedBuildingBlock> _usedBuildingBlocks = new Cache<string, UsedBuildingBlock>(bb => bb.TemplateId);
       private readonly ICache<string, UsedObservedData> _usedObservedData = new Cache<string, UsedObservedData>(bb => bb.Id);
-      private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
+      private readonly List<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
       private SimulationProperties _properties;
       private SimulationResults _results;
 
@@ -228,6 +228,11 @@ namespace PKSim.Core.Model
          HasChanged = true;
       }
 
+      public virtual void AddAnalyses(IEnumerable<ISimulationAnalysis> simulationAnalyses)
+      {
+         simulationAnalyses.Each(AddAnalysis);
+      }
+
       /// <summary>
       ///    Returns all used observed data in the simulation
       /// </summary>
@@ -236,14 +241,18 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    All analyses defined for the simulation
       /// </summary>
-      public virtual IEnumerable<ISimulationAnalysis> Analyses => _allSimulationAnalyses.All();
+      public virtual IEnumerable<ISimulationAnalysis> Analyses => _allSimulationAnalyses;
+
+
+      /// <summary>
+      ///    All analyses defined for the simulation
+      /// </summary>
+      public virtual IEnumerable<T> AnalysesOfType<T>() where T : ISimulationAnalysis => _allSimulationAnalyses.OfType<T>();
 
       /// <summary>
       ///    All charts defined for the simulation
       /// </summary>
-      public virtual IEnumerable<CurveChart> Charts => SimulationCharts;
-
-      public virtual IEnumerable<SimulationTimeProfileChart> SimulationCharts => _allSimulationAnalyses.OfType<SimulationTimeProfileChart>();
+      public virtual IEnumerable<CurveChart> Charts => _allSimulationAnalyses.OfType<CurveChart>();
 
       /// <summary>
       ///    remove the chart from the simulation
@@ -304,7 +313,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual SimulationResults Results
       {
-         get { return _results; }
+         get => _results;
          set
          {
             _results = value ?? new NullSimulationResults();
@@ -448,7 +457,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual SimulationProperties Properties
       {
-         get { return _properties; }
+         get => _properties;
          set
          {
             _properties = value;
@@ -561,39 +570,51 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual bool AllowAging
       {
-         get { return Properties.AllowAging; }
-         set { Properties.AllowAging = value; }
+         get => Properties.AllowAging;
+         set => Properties.AllowAging = value;
       }
 
       public virtual Origin Origin
       {
-         get { return Properties.Origin; }
-         set { Properties.Origin = value; }
+         get => Properties.Origin;
+         set => Properties.Origin = value;
       }
 
       /// <summary>
       ///    Returns the settings for the simulation
       /// </summary>
-      public virtual OutputSelections OutputSelections => SimulationSettings.OutputSelections;
+      public virtual OutputSelections OutputSelections
+      {
+         get => SimulationSettings.OutputSelections;
+         set => SimulationSettings.OutputSelections = value;
+      }
 
       /// <summary>
       ///    return the model properties used in the simulation configuration
       /// </summary>
       public virtual ModelProperties ModelProperties
       {
-         get { return Properties.ModelProperties; }
-         set { Properties.ModelProperties = value; }
+         get => Properties.ModelProperties;
+         set => Properties.ModelProperties = value;
       }
 
       /// <summary>
       ///    Returns the <see cref="OSPSuite.Core.Domain.OutputSchema" /> defined in the settings
       /// </summary>
-      public virtual OutputSchema OutputSchema => SimulationSettings.OutputSchema;
+      public virtual OutputSchema OutputSchema
+      {
+         get => SimulationSettings.OutputSchema;
+         set => SimulationSettings.OutputSchema = value;
+      }
 
       /// <summary>
       ///    Returns the <see cref="Solver" />  defined in the settings
       /// </summary>
-      public virtual SolverSettings Solver => SimulationSettings.Solver;
+      public virtual SolverSettings Solver
+      {
+         get => SimulationSettings.Solver;
+         set => SimulationSettings.Solver = value;
+      }
 
       public virtual IReadOnlyList<Compound> Compounds => AllBuildingBlocks<Compound>().ToList();
 
@@ -621,8 +642,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual ModelConfiguration ModelConfiguration
       {
-         get { return ModelProperties.ModelConfiguration; }
-         set { ModelProperties.ModelConfiguration = value; }
+         get => ModelProperties.ModelConfiguration;
+         set => ModelProperties.ModelConfiguration = value;
       }
 
       /// <summary>
@@ -630,8 +651,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual EventProperties EventProperties
       {
-         get { return Properties.EventProperties; }
-         set { Properties.EventProperties = value; }
+         get => Properties.EventProperties;
+         set => Properties.EventProperties = value;
       }
 
       /// <summary>
@@ -639,8 +660,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual InteractionProperties InteractionProperties
       {
-         get { return Properties.InteractionProperties; }
-         set { Properties.InteractionProperties = value; }
+         get => Properties.InteractionProperties;
+         set => Properties.InteractionProperties = value;
       }
 
       public virtual Individual Individual => BuildingBlock<Individual>();

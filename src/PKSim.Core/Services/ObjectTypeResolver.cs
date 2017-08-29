@@ -45,7 +45,7 @@ namespace PKSim.Core.Services
          addToCache<IndividualEnzyme>(PKSimConstants.ObjectTypes.Enzyme);
          addToCache<IndividualProtein>(PKSimConstants.ObjectTypes.Protein);
          addToCache<RandomPopulation>(PKSimConstants.ObjectTypes.Population);
-         addToCache<IAdvancedParameter>(PKSimConstants.ObjectTypes.AdvancedParameter);
+         addToCache<AdvancedParameter>(PKSimConstants.ObjectTypes.AdvancedParameter);
          addToCache<ParameterAlternativeGroup>(PKSimConstants.ObjectTypes.ParameterGroup);
          addToCache<SystemicProcess>(PKSimConstants.ObjectTypes.SystemicProcess);
          addToCache<Compartment>(PKSimConstants.ObjectTypes.Compartment);

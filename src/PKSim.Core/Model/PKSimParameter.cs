@@ -9,7 +9,7 @@ namespace PKSim.Core.Model
    {
       public override double Value
       {
-         get { return base.Value; }
+         get => base.Value;
          set
          {
             if (Formula == null || !Formula.IsConstant())

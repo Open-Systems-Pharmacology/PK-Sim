@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_UsedMoleculeRepository : ContextSpecification<IUsedMoleculeRepository>
    {
-      private IProjectRetriever _projectRetriever;
-      private IPKSimProject _project;
+      private IPKSimProjectRetriever _projectRetriever;
+      private PKSimProject _project;
       private Compound _compound1;
       private Compound _compound2;
       private Individual _individual1;
@@ -21,8 +21,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          _project = new PKSimProject();
-         _projectRetriever = A.Fake<IProjectRetriever>();
-         A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
+         _projectRetriever = A.Fake<IPKSimProjectRetriever>();
+         A.CallTo(() => _projectRetriever.Current).Returns(_project);
 
          _compound1 = A.Fake<Compound>();
          _compound1.IsLoaded = false;

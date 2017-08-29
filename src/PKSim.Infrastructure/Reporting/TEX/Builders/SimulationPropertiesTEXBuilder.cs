@@ -60,7 +60,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       private static bool anyProcessesDefined(SimulationProperties simulationProperties)
       {
-         return simulationProperties.CompoundPropertiesList.Any(x => x.AnyProcessesDefined());
+         return simulationProperties.CompoundPropertiesList.Any(x => x.AnyProcessesDefined);
       }
 
       private static IEnumerable<object> getObjectsToReport(SimulationProperties simulationProperties, BuildTracker buildTracker, Func<CompoundProperties, object> objectSelectionFunc)

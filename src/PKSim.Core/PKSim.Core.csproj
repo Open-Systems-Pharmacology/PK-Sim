@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PKSim.Core</RootNamespace>
     <AssemblyName>PKSim.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
@@ -97,14 +97,18 @@
     <Reference Include="OSPSuite.Utility, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.2.0.1.4\lib\net452\OSPSuite.Utility.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -122,30 +126,6 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="Batch\ApplicationProtocol.cs" />
-    <Compile Include="Batch\BatchLogger.cs" />
-    <Compile Include="Batch\Compound.cs" />
-    <Compile Include="Batch\CompoundProcess.cs" />
-    <Compile Include="Batch\Event.cs" />
-    <Compile Include="Batch\Formulation.cs" />
-    <Compile Include="Batch\Individual.cs" />
-    <Compile Include="Batch\Mapper\ApplicationProtocolMapper.cs" />
-    <Compile Include="Batch\Mapper\BatchToCoreMapper.cs" />
-    <Compile Include="Batch\Mapper\CompoundMapper.cs" />
-    <Compile Include="Batch\Mapper\FormulationMapper.cs" />
-    <Compile Include="Batch\Mapper\IndividualMapper.cs" />
-    <Compile Include="Batch\Mapper\OriginDataMapper.cs" />
-    <Compile Include="Batch\Mapper\ModelPropertiesMapper.cs" />
-    <Compile Include="Batch\Mapper\PopulationSettingsMapper.cs" />
-    <Compile Include="Batch\Mapper\SimulationMapper.cs" />
-    <Compile Include="Batch\Molecule.cs" />
-    <Compile Include="Batch\OriginData.cs" />
-    <Compile Include="Batch\ParameterVariationSet.cs" />
-    <Compile Include="Batch\PopulationSettings.cs" />
-    <Compile Include="Batch\Simulation.cs" />
-    <Compile Include="Batch\SimulationConfiguration.cs" />
-    <Compile Include="Batch\SimulationConstructor.cs" />
-    <Compile Include="Batch\SimulationForBatch.cs" />
     <Compile Include="Chart\AxisData.cs" />
     <Compile Include="Chart\CurveDataExtensions.cs" />
     <Compile Include="Chart\ISimulationChart.cs" />
@@ -183,9 +163,12 @@
     <Compile Include="Comparison\SimulationDiffBuilder.cs" />
     <Compile Include="Comparison\TransporterExpressionContainerDiffBuilder.cs" />
     <Compile Include="Comparison\UsedBuildingBlocksDiffBuilder.cs" />
+    <Compile Include="CompositionBusinessRule.cs" />
+    <Compile Include="Extensions\CacheExtensions.cs" />
     <Compile Include="Extensions\CurveExtensions.cs" />
     <Compile Include="Extensions\DataRepositoryExtensions.cs" />
     <Compile Include="Extensions\DataSetExtensions.cs" />
+    <Compile Include="Extensions\LoggerExtensions.cs" />
     <Compile Include="Mappers\BasePKAnalysisToDataTableMapper.cs" />
     <Compile Include="Mappers\BoxWhiskerChartDataToDataTableMapper.cs" />
     <Compile Include="Mappers\ChartDataToDataTableMapper.cs" />
@@ -223,6 +206,7 @@
     <Compile Include="Services\IndividualExtractionOptions.cs" />
     <Compile Include="Services\IndividualExtractor.cs" />
     <Compile Include="Services\InteractionProcessRetriever.cs" />
+    <Compile Include="Services\InteractiveSimulationRunner.cs" />
     <Compile Include="Services\IParameterIdentificationContentLoader.cs" />
     <Compile Include="Services\IPopulationTask.cs" />
     <Compile Include="Services\IrreversibleInhibitionKineticUpdaterSpecification.cs" />
@@ -281,7 +265,7 @@
     <Compile Include="Model\PopulationAnalyses\BinsGroupingDefinition.cs" />
     <Compile Include="Model\PopulationAnalyses\FixedLimitsGroupingDefinition.cs" />
     <Compile Include="Model\PopulationAnalyses\IntervalGroupingDefinition.cs" />
-    <Compile Include="Model\PopulationAnalyses\IGroupingDefinition.cs" />
+    <Compile Include="Model\PopulationAnalyses\GroupingDefinition.cs" />
     <Compile Include="Model\PopulationAnalyses\PopulationPivotAnalysis.cs" />
     <Compile Include="Model\PopulationAnalyses\PopulationAnalysisChart.cs" />
     <Compile Include="Model\PopulationAnalyses\PopulationAnalysisDerivedField.cs" />
@@ -472,6 +456,7 @@
     <Compile Include="Services\ParameterAnalysableParameterSelector.cs" />
     <Compile Include="Services\PopulationSimulationAnalysisSynchronizer.cs" />
     <Compile Include="Services\SimulationConfigurationValidator.cs" />
+    <Compile Include="Services\SimulationRunOptions.cs" />
     <Compile Include="Services\SimulationSelector.cs" />
     <Compile Include="Services\PivotResultCreator.cs" />
     <Compile Include="Services\PopulationAnalysisFlatTableCreator.cs" />
@@ -495,7 +480,7 @@
     <Compile Include="Services\InvalidSimulationConfigurationException.cs" />
     <Compile Include="Services\ParticleApplicationCreator.cs" />
     <Compile Include="Services\PKCalculationOptionsFactory.cs" />
-    <Compile Include="Services\PopulationPKAnalysesTask.cs" />
+    <Compile Include="Services\PKAnalysesTask.cs" />
     <Compile Include="Services\SimulationPKParametersImportTask.cs" />
     <Compile Include="Services\SimulationResultsCreator.cs" />
     <Compile Include="Services\SimulationPersistableUpdater.cs" />
@@ -553,7 +538,7 @@
     <Compile Include="Model\EventMapping.cs" />
     <Compile Include="Model\EventMappingFactory.cs" />
     <Compile Include="Model\EventProperties.cs" />
-    <Compile Include="Model\IPartialProcessMapping.cs" />
+    <Compile Include="Model\IProcessMapping.cs" />
     <Compile Include="Model\OutputSchemaFactory.cs" />
     <Compile Include="Model\SolverSettingsFactory.cs" />
     <Compile Include="Model\SystemicProcessSelection.cs" />
@@ -609,7 +594,6 @@
     <Compile Include="Services\NoBuildingBlockTemplateAvailableException.cs" />
     <Compile Include="Services\ObservedDataInSimulationManager.cs" />
     <Compile Include="Services\PKAnalysesMolarToMassConverter.cs" />
-    <Compile Include="Services\PKAnalysisTask.cs" />
     <Compile Include="Services\DataRepositoryFromResultsCreator.cs" />
     <Compile Include="Services\BuildingBlockInSimulationManager.cs" />
     <Compile Include="Services\RenameAbsolutePathVisitor.cs" />
@@ -845,6 +829,121 @@
     <Compile Include="Model\Species.cs" />
     <Compile Include="Events\ProjectEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Snapshots\AdvancedParameter.cs" />
+    <Compile Include="Snapshots\Alternative.cs" />
+    <Compile Include="Snapshots\Axis.cs" />
+    <Compile Include="Snapshots\CalculationMethod.cs" />
+    <Compile Include="Snapshots\Chart.cs" />
+    <Compile Include="Snapshots\Classification.cs" />
+    <Compile Include="Snapshots\CurveOptions.cs" />
+    <Compile Include="Snapshots\ExpressionContainer.cs" />
+    <Compile Include="Snapshots\GroupingDefinition.cs" />
+    <Compile Include="Snapshots\Mappers\ChartMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ClassificationContext.cs" />
+    <Compile Include="Snapshots\Mappers\ClassificationMapper.cs" />
+    <Compile Include="Snapshots\Compound.cs" />
+    <Compile Include="Snapshots\CompoundProcessSelection.cs" />
+    <Compile Include="Snapshots\CompoundProperties.cs" />
+    <Compile Include="Snapshots\Curve.cs" />
+    <Compile Include="Snapshots\CurveChart.cs" />
+    <Compile Include="Snapshots\DataColumn.cs" />
+    <Compile Include="Snapshots\DataInfo.cs" />
+    <Compile Include="Snapshots\DataRepository.cs" />
+    <Compile Include="Snapshots\DistributionMetaData.cs" />
+    <Compile Include="Snapshots\Event.cs" />
+    <Compile Include="Snapshots\EventSelection.cs" />
+    <Compile Include="Snapshots\ExtendedProperties.cs" />
+    <Compile Include="Snapshots\Formulation.cs" />
+    <Compile Include="Snapshots\FormulationSelection.cs" />
+    <Compile Include="Snapshots\Individual.cs" />
+    <Compile Include="Snapshots\Mappers\AdvancedParameterMapper.cs" />
+    <Compile Include="Snapshots\Mappers\AlternativeMapper.cs" />
+    <Compile Include="Snapshots\Mappers\AxisMapper.cs" />
+    <Compile Include="Snapshots\Mappers\CalculationMethodCacheMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ClassificationSnapshotTask.cs" />
+    <Compile Include="Snapshots\Mappers\CompoundMapper.cs" />
+    <Compile Include="Snapshots\CompoundProcess.cs" />
+    <Compile Include="Snapshots\Mappers\CompoundProcessMapper.cs" />
+    <Compile Include="Snapshots\Mappers\CompoundPropertiesMapper.cs" />
+    <Compile Include="Snapshots\Mappers\CurveOptionsMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ExpressionContainerMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ObservedDataCollectionMappper.cs" />
+    <Compile Include="Snapshots\Mappers\OriginDataMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ProcessMappingMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SimulationAnalysisContext.cs" />
+    <Compile Include="Snapshots\Mappers\CurveChartMapper.cs" />
+    <Compile Include="Snapshots\Mappers\CurveMapper.cs" />
+    <Compile Include="Snapshots\Mappers\DataColumnMapper.cs" />
+    <Compile Include="Snapshots\Mappers\DataInfoMapper.cs" />
+    <Compile Include="Snapshots\Mappers\DistributedTableFormulaMapper.cs" />
+    <Compile Include="Snapshots\Mappers\EventMapper.cs" />
+    <Compile Include="Snapshots\Mappers\EventMappingMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ExtendedPropertiesMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ExtendedPropertyMapper.cs" />
+    <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />
+    <Compile Include="Snapshots\Mappers\GroupingDefinitionMapper.cs" />
+    <Compile Include="Snapshots\Mappers\IndividualMapper.cs" />
+    <Compile Include="Snapshots\Mappers\MoleculeMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ObjectBaseSnapshotMapperBase.cs" />
+    <Compile Include="Snapshots\Mappers\ObservedDataMapper.cs" />
+    <Compile Include="Snapshots\Mappers\OntogenyMapper.cs" />
+    <Compile Include="Snapshots\Mappers\OutputIntervalMapper.cs" />
+    <Compile Include="Snapshots\Mappers\OutputSchemaMapper.cs" />
+    <Compile Include="Snapshots\Mappers\OutputSelectionsMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterContainerSnapshotMapperBase.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterRangeMapper.cs" />
+    <Compile Include="Snapshots\Mappers\PopulationAnalysisChartMapper.cs" />
+    <Compile Include="Snapshots\Mappers\PopulationAnalysisFieldMapper.cs" />
+    <Compile Include="Snapshots\Mappers\PopulationAnalysisMapper.cs" />
+    <Compile Include="Snapshots\Mappers\PopulationMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ProjectMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ProtocolMapper.cs" />
+    <Compile Include="Snapshots\Mappers\QuantityInfoMapper.cs" />
+    <Compile Include="Snapshots\Mappers\RandomPopulationSettingsMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SchemaItemMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SchemaMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SimulationComparisonMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SimulationMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SnapshotMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SnapshotMapperBase.cs" />
+    <Compile Include="Snapshots\Mappers\SnapshotMapperBaseExtensions.cs" />
+    <Compile Include="Snapshots\Mappers\SolverSettingsMapper.cs" />
+    <Compile Include="Snapshots\Mappers\TableFormulaMapper.cs" />
+    <Compile Include="Snapshots\Molecule.cs" />
+    <Compile Include="Snapshots\ObservedDataCollection.cs" />
+    <Compile Include="Snapshots\ObservedDataCurveOptions.cs" />
+    <Compile Include="Snapshots\Ontogeny.cs" />
+    <Compile Include="Snapshots\OriginData.cs" />
+    <Compile Include="Snapshots\OutputInterval.cs" />
+    <Compile Include="Snapshots\OutputSchema.cs" />
+    <Compile Include="Snapshots\OutputSelections.cs" />
+    <Compile Include="Snapshots\Parameter.cs" />
+    <Compile Include="Snapshots\ParameterRange.cs" />
+    <Compile Include="Snapshots\Point.cs" />
+    <Compile Include="Snapshots\Population.cs" />
+    <Compile Include="Snapshots\PopulationAnalysis.cs" />
+    <Compile Include="Snapshots\PopulationAnalysisChart.cs" />
+    <Compile Include="Snapshots\PopulationAnalysisField.cs" />
+    <Compile Include="Snapshots\PopulationSettings.cs" />
+    <Compile Include="Snapshots\Project.cs" />
+    <Compile Include="Snapshots\ProtocolSelection.cs" />
+    <Compile Include="Snapshots\QuantityInfo.cs" />
+    <Compile Include="Snapshots\Schema.cs" />
+    <Compile Include="Snapshots\SchemaItem.cs" />
+    <Compile Include="Snapshots\Services\ISnapshotSerializer.cs" />
+    <Compile Include="Snapshots\Services\SnapshotObjectCreator.cs" />
+    <Compile Include="Snapshots\Services\SnapshotTask.cs" />
+    <Compile Include="Snapshots\Protocol.cs" />
+    <Compile Include="Snapshots\Simulation.cs" />
+    <Compile Include="Snapshots\SimulationComparison.cs" />
+    <Compile Include="Snapshots\SnapshotBase.cs" />
+    <Compile Include="Snapshots\ExtendedProperty.cs" />
+    <Compile Include="Snapshots\SnapshotNotFoundException.cs" />
+    <Compile Include="Snapshots\SnapshotOutdatedException.cs" />
+    <Compile Include="Snapshots\SolverSettings.cs" />
+    <Compile Include="Snapshots\StatisticalAggregation.cs" />
+    <Compile Include="Snapshots\TableFormula.cs" />
     <Compile Include="SpeciesDatabaseMap.cs" />
     <Compile Include="ICoreUserSettings.cs" />
   </ItemGroup>
@@ -861,8 +960,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Model\PopulationAnalyses\GroupingDefinition.cd" />
-    <None Include="Model\PopulationAnalyses\PopulationAnalysis.cd" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -873,6 +970,7 @@
       <Name>PKSim.Assets</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

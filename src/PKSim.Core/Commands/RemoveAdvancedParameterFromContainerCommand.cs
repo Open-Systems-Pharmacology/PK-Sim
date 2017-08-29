@@ -4,9 +4,9 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public class RemoveAdvancedParameterFromContainerCommand : RemoveEntityFromContainerCommand<IAdvancedParameter, IAdvancedParameterContainer, RemoveAdvancedParameterFromContainerEvent>
+   public class RemoveAdvancedParameterFromContainerCommand : RemoveEntityFromContainerCommand<AdvancedParameter, IAdvancedParameterContainer, RemoveAdvancedParameterFromContainerEvent>
    {
-      public RemoveAdvancedParameterFromContainerCommand(IAdvancedParameter advancedParameter, IAdvancedParameterContainer advancedParameterContainer, IExecutionContext context)
+      public RemoveAdvancedParameterFromContainerCommand(AdvancedParameter advancedParameter, IAdvancedParameterContainer advancedParameterContainer, IExecutionContext context)
          : base(advancedParameter, advancedParameterContainer, context, x => x.RemoveAdvancedParameter)
       {
       }

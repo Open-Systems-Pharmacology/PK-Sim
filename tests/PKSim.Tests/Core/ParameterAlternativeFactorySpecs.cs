@@ -1,15 +1,13 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
-
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
-
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using FakeItEasy;
-using PKSim.Assets;
 
 namespace PKSim.Core
 {
@@ -19,33 +17,32 @@ namespace PKSim.Core
       protected ICloner _cloner;
       protected ISpeciesRepository _speciesRepository;
       protected Compound _compound;
-      protected PKSim.Core.Model.ParameterAlternativeGroup _compoundParameterGroup;
+      protected ParameterAlternativeGroup _compoundParameterGroup;
       protected ICoreUserSettings _userSettings;
 
       protected override void Context()
       {
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _cloner = A.Fake<ICloner>();
-         _speciesRepository =A.Fake<ISpeciesRepository>();
+         _speciesRepository = A.Fake<ISpeciesRepository>();
          //necessary to create compound since default parameter willl be added to the group based on compound parameters
          _compound = new Compound();
          _compoundParameterGroup = new ParameterAlternativeGroup();
          _compound.AddParameterAlternativeGroup(_compoundParameterGroup);
-         _userSettings =A.Fake<ICoreUserSettings>();
-         sut = new ParameterAlternativeFactory(_objectBaseFactory, _cloner,_speciesRepository,_userSettings);
+         _userSettings = A.Fake<ICoreUserSettings>();
+         sut = new ParameterAlternativeFactory(_objectBaseFactory, _cloner, _speciesRepository, _userSettings);
       }
    }
 
-   
    public class When_retrieving_the_default_alternative_for_a_group_that_should_contain_a_default_calculated_alternative : concern_for_ParameterAlternativeFactory
    {
-      private PKSim.Core.Model.ParameterAlternative _result;
+      private ParameterAlternative _result;
 
       protected override void Context()
       {
          base.Context();
          var alternative = new ParameterAlternative();
-         A.CallTo(() => _objectBaseFactory.Create<PKSim.Core.Model.ParameterAlternative>()).Returns(alternative);
+         A.CallTo(() => _objectBaseFactory.Create<ParameterAlternative>()).Returns(alternative);
          _compoundParameterGroup.Name = CoreConstants.Groups.COMPOUND_PERMEABILITY;
       }
 
@@ -67,17 +64,16 @@ namespace PKSim.Core
       }
    }
 
-   
    public class When_retrieving_the_default_alternative_for_a_standard_group : concern_for_ParameterAlternativeFactory
    {
-      private PKSim.Core.Model.ParameterAlternative _result;
+      private ParameterAlternative _result;
 
       protected override void Context()
       {
          base.Context();
          var alternative = new ParameterAlternative();
          A.CallTo(() => _userSettings.DefaultLipophilicityName).Returns("MyLipo");
-         A.CallTo(() => _objectBaseFactory.Create<PKSim.Core.Model.ParameterAlternative>()).Returns(alternative);
+         A.CallTo(() => _objectBaseFactory.Create<ParameterAlternative>()).Returns(alternative);
          _compoundParameterGroup.Name = CoreConstants.Groups.COMPOUND_LIPOPHILICITY;
       }
 
@@ -99,17 +95,16 @@ namespace PKSim.Core
       }
    }
 
-   
    public class When_creating_an_alternative_for_a_parameter_group_containing_already_a_default_calculated_alternative : concern_for_ParameterAlternativeFactory
    {
-      private PKSim.Core.Model.ParameterAlternative _result;
+      private ParameterAlternative _result;
 
       protected override void Context()
       {
          base.Context();
          var alternative = new ParameterAlternative();
          alternative.Add(new PKSimParameter().WithName("toto").WithFormula(new ExplicitFormula("2*3")));
-         A.CallTo(() => _objectBaseFactory.Create<PKSim.Core.Model.ParameterAlternative>()).Returns(alternative);
+         A.CallTo(() => _objectBaseFactory.Create<ParameterAlternative>()).Returns(alternative);
          A.CallTo(() => _objectBaseFactory.Create<ConstantFormula>()).Returns(new ConstantFormula());
          _compoundParameterGroup.Name = CoreConstants.Groups.COMPOUND_PERMEABILITY;
       }
@@ -126,10 +121,9 @@ namespace PKSim.Core
       }
    }
 
-   
    public class When_retrieving_the_default_alternative_for_a_group_requiring_a_species_information : concern_for_ParameterAlternativeFactory
    {
-      private PKSim.Core.Model.ParameterAlternative _result;
+      private ParameterAlternative _result;
       private Species _species;
 
       protected override void Context()
@@ -140,8 +134,8 @@ namespace PKSim.Core
          A.CallTo(() => _objectBaseFactory.Create<ParameterAlternativeWithSpecies>()).Returns(alternative);
          _compoundParameterGroup.Name = CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND;
          A.CallTo(() => _speciesRepository.DefaultSpecies).Returns(_species);
-
       }
+
       protected override void Because()
       {
          _result = sut.CreateAlternativeFor(_compoundParameterGroup);

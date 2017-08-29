@@ -40,8 +40,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          //select by default
 
          var pivotAnalysis = _populationAnalysis as PopulationPivotAnalysis;
-         if (pivotAnalysis == null) return;
-         pivotAnalysis.SetPosition(outputField, PivotArea.DataArea);
+         pivotAnalysis?.SetPosition(outputField, PivotArea.DataArea);
       }
 
       private static bool outputUsesAnotherDimension(IQuantity output, List<IDimension> allUsedDimensions)

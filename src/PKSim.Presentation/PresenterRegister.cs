@@ -5,7 +5,6 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Comparisons;
-using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Journal;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.UICommands;
@@ -25,6 +24,7 @@ using PKSim.Presentation.Presenters.Individuals.Mappers;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Presenters.Snapshots;
 using PKSim.Presentation.Repositories;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
@@ -119,6 +119,7 @@ namespace PKSim.Presentation
          container.Register(typeof(IIndividualTransporterExpressionsPresenter<>), typeof(IndividualTransporterExpressionsPresenter<>));
          container.Register(typeof(IIndividualMoleculePropertiesPresenter<>), typeof(IndividualMoleculePropertiesPresenter<>));
          container.Register(typeof(IOntogenySelectionPresenter<>), typeof(OntogenySelectionPresenter<>));
+         container.Register(typeof(ILoadFromSnapshotPresenter<>), typeof(LoadFromSnapshotPresenter<>));
 
          //generic types
          container.Register<ISimulationOutputSelectionPresenter<IndividualSimulation>, IndividualSimulationSettingsPresenter>();

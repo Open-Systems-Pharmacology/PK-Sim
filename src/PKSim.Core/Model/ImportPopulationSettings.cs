@@ -21,10 +21,7 @@ namespace PKSim.Core.Model
          _allFiles.Add(populationFile);
       }
 
-      public IReadOnlyCollection<PopulationFile> AllFiles
-      {
-         get { return _allFiles.ToList(); }
-      }
+      public IReadOnlyCollection<PopulationFile> AllFiles => _allFiles.ToList();
 
       public ImportPopulationSettings Clone(ICloneManager cloneManager)
       {

@@ -1,10 +1,7 @@
 using System;
 using System.IO;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.UICommands;
+using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
@@ -16,6 +13,13 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Events;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Snapshots.Services;
+using PKSim.Presentation.Core;
+using PKSim.Presentation.Presenters.Snapshots;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Services
 {
@@ -27,6 +31,8 @@ namespace PKSim.Presentation.Services
       bool SaveCurrentProjectAs();
       void OpenProject();
       void Run(StartOptions startOptions);
+      void LoadProjectFromSnapshot();
+      Task ExportCurrentProjectToSnapshot();
    }
 
    public class ProjectTask : IProjectTask
@@ -40,10 +46,18 @@ namespace PKSim.Presentation.Services
       private readonly IUserSettings _userSettings;
       private readonly IJournalTask _journalTask;
       private readonly IJournalRetriever _journalRetriever;
+      private readonly ISnapshotTask _snapshotTask;
 
-      public ProjectTask(IWorkspace workspace, IApplicationController applicationController, IDialogCreator dialogCreator,
-         IExecutionContext executionContext, IHeavyWorkManager heavyWorkManager,
-         IWorkspaceLayoutUpdater workspaceLayoutUpdater, IUserSettings userSettings, IJournalTask journalTask, IJournalRetriever journalRetriever)
+      public ProjectTask(IWorkspace workspace,
+         IApplicationController applicationController,
+         IDialogCreator dialogCreator,
+         IExecutionContext executionContext,
+         IHeavyWorkManager heavyWorkManager,
+         IWorkspaceLayoutUpdater workspaceLayoutUpdater,
+         IUserSettings userSettings,
+         IJournalTask journalTask,
+         IJournalRetriever journalRetriever,
+         ISnapshotTask snapshotTask)
       {
          _workspace = workspace;
          _applicationController = applicationController;
@@ -54,6 +68,7 @@ namespace PKSim.Presentation.Services
          _userSettings = userSettings;
          _journalTask = journalTask;
          _journalRetriever = journalRetriever;
+         _snapshotTask = snapshotTask;
       }
 
       public void NewProject()
@@ -111,14 +126,11 @@ namespace PKSim.Presentation.Services
          return saveProjectToFile(_workspace.Project.FilePath);
       }
 
-      public bool SaveCurrentProjectAs()
-      {
-         return saveCurrentProjectAs(_workspace.Project.Name);
-      }
+      public bool SaveCurrentProjectAs() => saveCurrentProjectAs(_workspace.Project.Name);
 
       private bool saveCurrentProjectAs(string defaultName)
       {
-         bool defaultNameIsUndefined = string.Equals(CoreConstants.PROJECT_UNDEFINED, defaultName);
+         var defaultNameIsUndefined = string.Equals(CoreConstants.PROJECT_UNDEFINED, defaultName);
          var defaultFileName = defaultNameIsUndefined ? string.Empty : defaultName;
          var fileName = _dialogCreator.AskForFileToSave(PKSimConstants.UI.SaveProjectTitle, CoreConstants.Filter.SAVE_PROJECT_FILTER, Constants.DirectoryKey.PROJECT, defaultFileName);
          if (string.IsNullOrEmpty(fileName)) return false;
@@ -173,13 +185,13 @@ namespace PKSim.Presentation.Services
          var fileName = _dialogCreator.AskForFileToOpen(PKSimConstants.UI.OpenProjectTitle, CoreConstants.Filter.LOAD_PROJECT_FILTER, Constants.DirectoryKey.PROJECT);
          if (string.IsNullOrEmpty(fileName)) return;
 
-         openProjectFromFile(fileName, true);
+         openProjectFromFile(fileName);
       }
 
       public void OpenProjectFrom(string projectFile)
       {
          if (!shouldCloseProject()) return;
-         openProjectFromFile(projectFile, shouldStartWorker: true);
+         openProjectFromFile(projectFile);
       }
 
       public void Run(StartOptions startOptions)
@@ -205,6 +217,22 @@ namespace PKSim.Presentation.Services
                return;
          }
       }
+
+      public void LoadProjectFromSnapshot()
+      {
+         if (!shouldCloseProject()) return;
+
+         closeProject();
+
+         using (var presenter = _applicationController.Start<ILoadProjectFromSnapshotPresenter>())
+         {
+            _workspace.LoadProject(presenter.LoadProject());
+         }        
+      }
+
+      public Task ExportCurrentProjectToSnapshot() => _snapshotTask.ExportModelToSnapshot(_workspace.Project);
+
+      public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshot(snapshotFileFullPath);
 
       private void openSimulationForPopulationSimulation(string simulationFile)
       {
@@ -246,7 +274,7 @@ namespace PKSim.Presentation.Services
          _journalTask.LoadJournal(journalFileFullPath, showJournal: true);
       }
 
-      private void openProjectFromFile(string projectFile, bool shouldStartWorker)
+      private void openProjectFromFile(string projectFile, bool shouldStartWorker = true)
       {
          if (!FileHelper.FileExists(projectFile))
             throw new PKSimException(PKSimConstants.Error.ProjectFileDoesNotExist(projectFile));

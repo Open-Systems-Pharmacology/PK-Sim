@@ -15,10 +15,10 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
 {
    public class DistributionTypeChangedEventArgs : EventArgs
    {
-      public IAdvancedParameter AdvancedParameter { get; private set; }
-      public DistributionType DistributionType { get; private set; }
+      public AdvancedParameter AdvancedParameter { get; }
+      public DistributionType DistributionType { get; }
 
-      public DistributionTypeChangedEventArgs(IAdvancedParameter advancedParameter, DistributionType distributionType)
+      public DistributionTypeChangedEventArgs(AdvancedParameter advancedParameter, DistributionType distributionType)
       {
          AdvancedParameter = advancedParameter;
          DistributionType = distributionType;
@@ -31,7 +31,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       ///    display the settings for the advanced parameter presenter
       /// </summary>
       /// <param name="advancedParameter">advanced parameter to edit</param>
-      void Edit(IAdvancedParameter advancedParameter);
+      void Edit(AdvancedParameter advancedParameter);
 
       /// <summary>
       ///    Triggered when the user decides to change the distribution type for the edited advanced parameter
@@ -59,14 +59,14 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       ///    Removes the selection for the advanced paramter if the parameter was being edited
       /// </summary>
       /// <param name="advancedParameter"></param>
-      void RemoveSelectionFor(IAdvancedParameter advancedParameter);
+      void RemoveSelectionFor(AdvancedParameter advancedParameter);
    }
 
    public class AdvancedParameterPresenter : AbstractCommandCollectorPresenter<IAdvancedParameterView, IAdvancedParameterPresenter>, IAdvancedParameterPresenter
    {
       private readonly IAdvancedParameterToAdvancedParameterDTOMapper _advancedParameterDTOMapper;
       private readonly IMultiParameterEditPresenter _distributionParameterPresenter;
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
       private AdvancedParameterDTO _advancedParameterDTO;
       public event EventHandler<DistributionTypeChangedEventArgs> OnDistributionTypeChanged = delegate { };
 
@@ -92,7 +92,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          _distributionParameterPresenter.ReleaseFrom(eventPublisher);
       }
 
-      public void Edit(IAdvancedParameter advancedParameter)
+      public void Edit(AdvancedParameter advancedParameter)
       {
          _advancedParameter = advancedParameter;
          _advancedParameterDTO = _advancedParameterDTOMapper.MapFrom(_advancedParameter);
@@ -120,7 +120,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          _distributionParameterPresenter.Clear();
       }
 
-      public void RemoveSelectionFor(IAdvancedParameter advancedParameter)
+      public void RemoveSelectionFor(AdvancedParameter advancedParameter)
       {
          if (Equals(advancedParameter, _advancedParameter))
             RemoveSelection();

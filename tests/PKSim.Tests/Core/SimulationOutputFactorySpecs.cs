@@ -1,14 +1,12 @@
 ﻿using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
 using IOutputIntervalFactory = PKSim.Core.Model.IOutputIntervalFactory;
 using IOutputSchemaFactory = PKSim.Core.Model.IOutputSchemaFactory;
 using OutputSchemaFactory = PKSim.Core.Model.OutputSchemaFactory;
@@ -22,19 +20,17 @@ namespace PKSim.Core
       private IDimensionRepository _dimensionRepository;
       protected IDimension _timeDimension;
       protected Unit _dayUnit;
-      private IDisplayUnitRetriever _displayUnitRetriever;
 
       protected override void Context()
       {
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _outputIntervalFactory = A.Fake<IOutputIntervalFactory>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
-         _displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
          _timeDimension = A.Fake<IDimension>();
          _dayUnit = A.Fake<Unit>();
          A.CallTo(() => _dimensionRepository.Time).Returns(_timeDimension);
          A.CallTo(() => _timeDimension.Unit(CoreConstants.Units.Days)).Returns(_dayUnit);
-         sut = new OutputSchemaFactory(_objectBaseFactory, _outputIntervalFactory, _dimensionRepository, _displayUnitRetriever);
+         sut = new OutputSchemaFactory(_objectBaseFactory, _outputIntervalFactory, _dimensionRepository);
       }
    }
 

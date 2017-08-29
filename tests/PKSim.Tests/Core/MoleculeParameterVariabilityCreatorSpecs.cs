@@ -36,13 +36,13 @@ namespace PKSim.Core
          A.CallTo(() => individual.AllMolecules()).Returns(new[] {_molecule1, _molecule2});
          _randomPopulation.Settings.BaseIndividual = individual;
 
-         A.CallTo(() => _advancedParametersTask.AddAdvancedParameter(A<IAdvancedParameter>._, _randomPopulation))
+         A.CallTo(() => _advancedParametersTask.AddAdvancedParameter(A<AdvancedParameter>._, _randomPopulation))
             .Invokes(x =>
             {
-               var advancedParameter = x.GetArgument<IAdvancedParameter>(0);
+               var advancedParameter = x.GetArgument<AdvancedParameter>(0);
                _randomPopulation.AddAdvancedParameter(advancedParameter);
             })
-            .Returns(new AddAdvancedParameterToContainerCommand(A.Fake<IAdvancedParameter>(), _randomPopulation, _executionContext));
+            .Returns(new AddAdvancedParameterToContainerCommand(new AdvancedParameter(), _randomPopulation, _executionContext));
       }
    }
 
@@ -50,8 +50,8 @@ namespace PKSim.Core
    {
       private IDistributedParameter _molecule1RefConcDistribution;
       private IDistributedParameter _molecule2HalfLifeIntestineDistribution;
-      private IAdvancedParameter _advancedParameterMolecule1RefConc;
-      private IAdvancedParameter _advancedParameterMolecule2HalfLifeIntestine;
+      private AdvancedParameter _advancedParameterMolecule1RefConc;
+      private AdvancedParameter _advancedParameterMolecule2HalfLifeIntestine;
 
       protected override void Context()
       {
@@ -69,10 +69,10 @@ namespace PKSim.Core
          A.CallTo(() => _moleculeParameterFactory.ParameterFor(_molecule2.Name, _molecule2.HalfLifeIntestine.Name)).Returns(_molecule2HalfLifeIntestineDistribution);
 
 
-         _advancedParameterMolecule1RefConc = A.Fake<IAdvancedParameter>().WithName("Molecule1RefConf");
+         _advancedParameterMolecule1RefConc = A.Fake<AdvancedParameter>().WithName("Molecule1RefConf");
          _advancedParameterMolecule1RefConc.ParameterPath = "Path1";
 
-         _advancedParameterMolecule2HalfLifeIntestine = A.Fake<IAdvancedParameter>().WithName("Molecule2HalfLifeIntestine");
+         _advancedParameterMolecule2HalfLifeIntestine = A.Fake<AdvancedParameter>().WithName("Molecule2HalfLifeIntestine");
          _advancedParameterMolecule2HalfLifeIntestine.ParameterPath = "Path2";
 
          A.CallTo(() => _advancedParmeterFactory.Create(_molecule1.ReferenceConcentration, DistributionTypes.Normal)).Returns(_advancedParameterMolecule1RefConc);
@@ -109,7 +109,7 @@ namespace PKSim.Core
    {
       private PKSimMacroCommand _result;
       private IDistributedParameter _molecule1RefConcDistribution;
-      private IAdvancedParameter _advancedParameterMolecule1RefConc;
+      private AdvancedParameter _advancedParameterMolecule1RefConc;
 
       protected override void Context()
       {
@@ -119,7 +119,7 @@ namespace PKSim.Core
          A.CallTo(() => _moleculeParameterFactory.ParameterFor(_molecule1.Name, _molecule1.HalfLifeLiver.Name)).Returns(null);
          A.CallTo(() => _moleculeParameterFactory.ParameterFor(_molecule1.Name, _molecule1.HalfLifeIntestine.Name)).Returns(null);
 
-         _advancedParameterMolecule1RefConc = A.Fake<IAdvancedParameter>().WithName("Molecule1RefConf");
+         _advancedParameterMolecule1RefConc = A.Fake<AdvancedParameter>().WithName("Molecule1RefConf");
          _advancedParameterMolecule1RefConc.ParameterPath = "Path1";
          A.CallTo(() => _advancedParmeterFactory.Create(_molecule1.ReferenceConcentration, DistributionTypes.Normal)).Returns(_advancedParameterMolecule1RefConc);
       }

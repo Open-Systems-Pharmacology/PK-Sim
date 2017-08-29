@@ -1,13 +1,12 @@
-﻿using OSPSuite.Utility.Container;
-using PKSim.BatchTool.Services;
-using PKSim.BatchTool.Services.TrainingMaterials;
-using PKSim.Core;
-using PKSim.Presentation;
-using OSPSuite.Core.Diagram;
+﻿using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Presentation;
-using PKSim.BatchTool.Mappers;
+using OSPSuite.Utility.Container;
+using PKSim.BatchTool.Views;
+using PKSim.CLI.Core.MinimalImplementations;
+using PKSim.Core;
+using PKSim.Presentation;
 
 namespace PKSim.BatchTool
 {
@@ -15,20 +14,19 @@ namespace PKSim.BatchTool
    {
       public override void RegisterInContainer(IContainer container)
       {
-         container.AddScanner(scan => scan.AssemblyContainingType<BatchRegister>());
-         container.AddRegister(x => x.FromType<TrainingMaterialsRegister>());
-         
+         container.AddScanner(scan =>
+         {
+            scan.AssemblyContainingType<BatchRegister>();
+            scan.WithDefaultConvention();
+         });
 
-         container.Register<IUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, BatchUserSettings>(LifeStyle.Singleton);
-         container.Register<IDiagramModelToXmlMapper, BatchDiagramModelToXmlMapper>(LifeStyle.Singleton);
-         container.Register<IDiagramModel, BatchDiagramModel>(LifeStyle.Singleton);
-         container.Register<IJournalDiagramManagerFactory, BatchJournalDiagramManagerFactory>(LifeStyle.Singleton);
+         container.Register<IUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, CLIUserSettings>(LifeStyle.Singleton);
+         container.Register<IDiagramModelToXmlMapper, CLIDiagramModelToXmlMapper>();
+         container.Register<IDiagramModel, CLIDiagramModel>();
+         container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
 
-         container.Register<JsonSimulationRunner, JsonSimulationRunner>();
-         container.Register<ProjectComparisonRunner, ProjectComparisonRunner>();
-         container.Register<TrainingMaterialRunner, TrainingMaterialRunner>();
-         container.Register<ProjectOverviewRunner, ProjectOverviewRunner>();
 
+         container.Register(typeof(IInputAndOutputBatchView<>), typeof(InputAndOutputBatchView<>));
       }
    }
 }

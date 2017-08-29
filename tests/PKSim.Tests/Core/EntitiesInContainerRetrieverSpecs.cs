@@ -68,7 +68,7 @@ namespace PKSim.Core
          _comparison = A.Fake<PopulationSimulationComparison>();
          _populationSimulation1 = A.Fake<PopulationSimulation>();
          _populationSimulation2 = A.Fake<PopulationSimulation>();
-         A.CallTo(() => _comparison.AllSimulations()).Returns(new[] {_populationSimulation1, _populationSimulation2});
+         A.CallTo(() => _comparison.AllSimulations).Returns(new[] {_populationSimulation1, _populationSimulation2});
          A.CallTo(() => _containerTask.CacheAllChildrenSatisfying(_populationSimulation1.Model.Root, A<Func<IParameter, bool>>._)).Returns(new PathCacheForSpecs<IParameter> {_p1, _p2, _p4});
          A.CallTo(() => _containerTask.CacheAllChildrenSatisfying(_populationSimulation2.Model.Root, A<Func<IParameter, bool>>._)).Returns(new PathCacheForSpecs<IParameter> {_p2, _p3, _p4});
       }

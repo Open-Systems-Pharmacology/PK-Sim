@@ -105,6 +105,14 @@ namespace PKSim.Core.Model
          return !ValueComparer.AreValuesEqual(parameter.Value, parameter.DefaultValue.Value, CoreConstants.DOUBLE_RELATIVE_EPSILON);
       }
 
+      //TODO Use ValueOrigin state when implemented. It should be != than PKSim default and probably mereged with method above
+      // This is just a dymmy method for now to satisfy requalification project
+      public static bool ParameterHasChanged(this IParameter parameter)
+      {
+         var canBeEdited = parameter.Visible && parameter.Formula.IsConstant();
+         return parameter.ValueDiffersFromDefault() || canBeEdited && parameter.Value != 0;
+      }
+
       /// <summary>
       ///    Returns the factor with which the value was changed from current vlaue
       /// </summary>

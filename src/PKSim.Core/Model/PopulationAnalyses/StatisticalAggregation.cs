@@ -44,10 +44,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
    {
       public StatisticalAggregationType Method { get; set; }
 
-      public override string Id
-      {
-         get { return Method.ToString(); }
-      }
+      public override string Id => Method.ToString();
 
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
@@ -65,10 +62,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
    {
       public double Percentile { get; set; }
 
-      public override string Id
-      {
-         get { return string.Format("Percentile_{0}", Percentile); }
-      }
+      public override string Id => $"Percentile_{Percentile}";
 
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {

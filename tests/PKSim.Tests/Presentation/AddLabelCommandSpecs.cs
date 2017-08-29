@@ -18,7 +18,7 @@ namespace PKSim.Presentation
          _worskpace = A.Fake<IWorkspace>();
          _labelTask = A.Fake<ILabelTask>();
          sut = new AddLabelCommand(_labelTask, _worskpace);
-         A.CallTo(() => _worskpace.HistoryManager).Returns(A.Fake<IHistoryManager<IPKSimProject>>());
+         A.CallTo(() => _worskpace.HistoryManager).Returns(A.Fake<IHistoryManager<PKSimProject>>());
       }
    }
 

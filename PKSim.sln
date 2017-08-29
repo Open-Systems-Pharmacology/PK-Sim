@@ -9,7 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor-coverage.yml = appveyor-coverage.yml
 		appveyor-nightly.yml = appveyor-nightly.yml
 		appveyor.yml = appveyor.yml
-		log4net.config.xml = log4net.config.xml
 		postclean.bat = postclean.bat
 		rakefile.rb = rakefile.rb
 		README.md = README.md
@@ -36,6 +35,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKSim.BatchTool", "src\PKSim.BatchTool\PKSim.BatchTool.csproj", "{625D2DE8-F930-4D53-9576-4E3237A30814}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKSim.UI.Tests", "tests\PKSim.UI.Tests\PKSim.UI.Tests\PKSim.UI.Tests.csproj", "{66E2BBE4-E88C-436F-9A14-B12106237FA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKSim.CLI", "src\PKSim.CLI\PKSim.CLI.csproj", "{9BCFE7D4-F76C-453F-95CB-6F53F640C429}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKSim.CLI.Core", "src\PKSim.CLI.Core\PKSim.CLI.Core.csproj", "{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,11 +86,20 @@ Global
 		{66E2BBE4-E88C-436F-9A14-B12106237FA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66E2BBE4-E88C-436F-9A14-B12106237FA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66E2BBE4-E88C-436F-9A14-B12106237FA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BCFE7D4-F76C-453F-95CB-6F53F640C429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BCFE7D4-F76C-453F-95CB-6F53F640C429}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BCFE7D4-F76C-453F-95CB-6F53F640C429}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BCFE7D4-F76C-453F-95CB-6F53F640C429}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2673A133-1EB3-437B-81FD-7202F21F2B7F}
 		VisualSVNWorkingCopyRoot = 
 		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 	EndGlobalSection

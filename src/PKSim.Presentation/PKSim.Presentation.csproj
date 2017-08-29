@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PKSim.Presentation</RootNamespace>
     <AssemblyName>PKSim.Presentation</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
@@ -115,7 +115,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
@@ -135,7 +135,6 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="BuildingBlockTaskRegistrationConvention.cs" />
-    <Compile Include="Core\CannotExecuteCommandWhileErrorNotCorrectedException.cs" />
     <Compile Include="Core\CloseSubjectPresenterInvoker.cs" />
     <Compile Include="Core\ButtonGroupIds.cs" />
     <Compile Include="Core\CreateProjectCommand.cs" />
@@ -185,6 +184,7 @@
     <Compile Include="DTO\Simulations\SimulationEnzymaticProcessSelectionDTO.cs" />
     <Compile Include="DTO\Simulations\SimulationInteractionProcessSelectionDTO.cs" />
     <Compile Include="DTO\Simulations\SimulationResultsFileSelectionDTO.cs" />
+    <Compile Include="DTO\Snapshots\LoadFromSnapshotDTO.cs" />
     <Compile Include="Extensions\QuantityPresenterExtensions.cs" />
     <Compile Include="IUserSettings.cs" />
     <Compile Include="Mappers\CompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper.cs" />
@@ -264,6 +264,8 @@
     <Compile Include="Presenters\Simulations\SimulationModelConfigurationItems.cs" />
     <Compile Include="Presenters\Simulations\SimulationModelConfigurationPresenter.cs" />
     <Compile Include="Presenters\Simulations\SimulationCompoundProcessSummaryCollectorPresenter.cs" />
+    <Compile Include="Presenters\Snapshots\LoadFromSnapshotPresenter.cs" />
+    <Compile Include="Presenters\Snapshots\LoadProjectFromSnapshotPresenter.cs" />
     <Compile Include="Presenters\UserDisplayUnitsPresenter.cs" />
     <Compile Include="Services\BuildingBlockSelectionDisplayer.cs" />
     <Compile Include="Services\DisplayNameProvider.cs" />
@@ -360,7 +362,6 @@
     <Compile Include="DTO\Individuals\ShowOntogenyDataDTO.cs" />
     <Compile Include="DTO\Individuals\TransportTypeDTO.cs" />
     <Compile Include="DTO\ObservedData\ObservedDataSelectionDTO.cs" />
-    <Compile Include="DTO\ObservedData\ObservedDataToCompoundMappingDTO.cs" />
     <Compile Include="DTO\Simulations\GlobalPKAnalysisDTO.cs" />
     <Compile Include="DTO\Compounds\CompoundTypeDTO.cs" />
     <Compile Include="DTO\Compounds\FractionUnboundAlternativeDTO.cs" />
@@ -475,7 +476,6 @@
     <Compile Include="Presenters\Events\EventParametersPresenter.cs" />
     <Compile Include="Presenters\Formulations\FormulationParametersPresenter.cs" />
     <Compile Include="Presenters\Individuals\ShowOntogenyDataPresenter.cs" />
-    <Compile Include="Presenters\ObservedDataToCompoundMappingPresenter.cs" />
     <Compile Include="Presenters\Parameters\EditTableParameterPresenter.cs" />
     <Compile Include="Presenters\Populations\CreatePopulationPresenter.cs" />
     <Compile Include="Presenters\Populations\EditImportPopulationPresenter.cs" />
@@ -501,9 +501,12 @@
     <Compile Include="Services\TemplateTask.cs" />
     <Compile Include="UICommands\CreatePopulationBasedOnIndividualCommand.cs" />
     <Compile Include="UICommands\DeleteBuildingBlocksUICommand.cs" />
+    <Compile Include="UICommands\ExportProjectToSnapshotCommand.cs" />
     <Compile Include="UICommands\ExportObservedDataToPkmlCommand.cs" />
     <Compile Include="UICommands\ExportPopulationSimulationPKAnalysesCommand.cs" />
     <Compile Include="UICommands\ExportSimulationResultsToCSVCommand.cs" />
+    <Compile Include="UICommands\ExportSimulationSnapshotUICommand.cs" />
+    <Compile Include="UICommands\ExportSnapshotUICommand.cs" />
     <Compile Include="UICommands\ExportToPDFCommand.cs" />
     <Compile Include="UICommands\ExtractIndividualsFromPopulationCommand.cs" />
     <Compile Include="UICommands\GenerateGroupsTemplateCommand.cs" />
@@ -511,8 +514,12 @@
     <Compile Include="UICommands\ImportPKAnalysesCommand.cs" />
     <Compile Include="UICommands\ImportPopulationCommand.cs" />
     <Compile Include="UICommands\ImportSimulationResultsCommand.cs" />
+    <Compile Include="UICommands\LoadObservedDataFromSnapshotUICommand.cs" />
     <Compile Include="UICommands\LoadObservedDataFromTemplateUICommand.cs" />
     <Compile Include="UICommands\LoadPopulationAnalysisWorkflowFromTemplateUICommand.cs" />
+    <Compile Include="UICommands\LoadBuildingBlockFromSnapshotUICommand.cs" />
+    <Compile Include="UICommands\LoadProjectFromSnapshotCommand.cs" />
+    <Compile Include="UICommands\LoadSimulationFromSnapshotUICommand.cs" />
     <Compile Include="UICommands\NewImportIndividualSimulationCommand.cs" />
     <Compile Include="UICommands\NewImportPopulationSimulationCommand.cs" />
     <Compile Include="UICommands\RenameObjectUICommand.cs" />
@@ -817,7 +824,6 @@
     <Compile Include="UICommands\ImportFractionDataCommand.cs" />
     <Compile Include="UICommands\NewEventCommand.cs" />
     <Compile Include="UICommands\DeleteSimulationComparisonsUICommand.cs" />
-    <Compile Include="UICommands\RunSimulationCommand.cs" />
     <Compile Include="UICommands\SaveSimulationToMoBiFileCommand.cs" />
     <Compile Include="UICommands\ImportConcentrationDataCommmand.cs" />
     <Compile Include="UICommands\LoadBuildingBlockFromTemplateUICommand.cs" />
@@ -842,7 +848,7 @@
     <Compile Include="UICommands\OpenMRUProjectCommand.cs" />
     <Compile Include="UICommands\OpenProjectCommand.cs" />
     <Compile Include="UICommands\RenameBuildingBlockUICommand.cs" />
-    <Compile Include="UICommands\RunActiveSimulationCommand.cs" />
+    <Compile Include="UICommands\RunSimulationCommand.cs" />
     <Compile Include="UICommands\SaveProjectCommand.cs" />
     <Compile Include="UICommands\SaveProjectAsCommand.cs" />
     <Compile Include="UICommands\ScaleIndividualCommand.cs" />
@@ -865,7 +871,6 @@
     <Compile Include="Views\Compounds\ICompoundMoleculeTypeView.cs" />
     <Compile Include="Views\Formulations\ITableFormulationView.cs" />
     <Compile Include="Views\Individuals\IShowOntogenyDataView.cs" />
-    <Compile Include="Views\IObservedDataToCompoundMappingView.cs" />
     <Compile Include="Views\Parameters\IEditTableParameterView.cs" />
     <Compile Include="Views\Parameters\INoItemInSelectionView.cs" />
     <Compile Include="Views\Parameters\ITableParameterView.cs" />
@@ -972,6 +977,7 @@
     <Compile Include="Views\Simulations\IEditOutputSchemaView.cs" />
     <Compile Include="Views\Simulations\ISimulationSubjectSelectionView.cs" />
     <Compile Include="Views\Simulations\ISimulationWizardView.cs" />
+    <Compile Include="Views\Snapshots\ILoadFromSnapshotView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PKSim.Assets\PKSim.Assets.csproj">

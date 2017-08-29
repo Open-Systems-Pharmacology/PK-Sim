@@ -1,23 +1,25 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using FakeItEasy;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.Services;
-
 using OSPSuite.Core.Commands;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Exceptions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Services;
+using PKSim.Extensions;
+using PKSim.Infrastructure.Services;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
+using ObservedDataTask = PKSim.Infrastructure.Services.ObservedDataTask;
 
 namespace PKSim.Infrastructure
 {
@@ -30,10 +32,11 @@ namespace PKSim.Infrastructure
       private IDataRepositoryTask _dataRepositoryTask;
       protected IContainerTask _containerTask;
       protected ITemplateTask _templateTask;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       private IPKSimProjectRetriever _projectRetriever;
       protected IObservedDataPersistor _observedDataPersistor;
       private IObjectTypeResolver _objectTypeResolver;
+      protected ISnapshotTask _snapshotTask;
 
       protected override void Context()
       {
@@ -44,14 +47,38 @@ namespace PKSim.Infrastructure
          _dialogCreator = A.Fake<IDialogCreator>();
          _applicationController = A.Fake<IApplicationController>();
          _templateTask = A.Fake<ITemplateTask>();
-         _project = A.Fake<IPKSimProject>();
+         _snapshotTask = A.Fake<ISnapshotTask>();
+         _project = new PKSimProject();
          _observedDataPersistor = A.Fake<IObservedDataPersistor>();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
          A.CallTo(() => _executionContext.Project).Returns(_project);
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         sut = new Services.ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
-            _dataRepositoryTask, _templateTask, _containerTask, _observedDataPersistor, _objectTypeResolver);
+         sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
+            _dataRepositoryTask, _templateTask, _containerTask, _observedDataPersistor, _objectTypeResolver, _snapshotTask);
+      }
+   }
+
+   public class When_loading_observed_data_from_snapshot : concern_for_ObservedDataTask
+   {
+      private DataRepository _mappedObservedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _mappedObservedData = new DataRepository();
+         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<DataRepository>()).Returns(new[] {_mappedObservedData});
+      }
+
+      protected override async void Because()
+      {
+         await sut.LoadFromSnapshot();
+      }
+
+      [Observation]
+      public void the_mapped_data_repository_should_be_added_to_the_project()
+      {
+         _project.AllObservedData.ShouldContain(_mappedObservedData);
       }
    }
 
@@ -68,7 +95,8 @@ namespace PKSim.Infrastructure
          _sim1 = new IndividualSimulation {Name = "Sim1"};
          _sim2 = new IndividualSimulation {Name = "Sim2"};
          _sim1.AddUsedObservedData(_dataRepository);
-         A.CallTo(() => _project.AllUsersOfObservedData).Returns(new [] {_sim1,_sim2, });
+         _project.AddBuildingBlock(_sim1);
+         _project.AddBuildingBlock(_sim2);
       }
 
       [Observation]
@@ -92,7 +120,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         sut.AddObservedDataToAnalysable( new []{_observedData }, _sim);
+         sut.AddObservedDataToAnalysable(new[] {_observedData}, _sim);
       }
 
       [Observation]
@@ -112,7 +140,6 @@ namespace PKSim.Infrastructure
          base.Context();
          _newObservedData = new DataRepository("toto");
          A.CallTo(_templateTask).WithReturnType<DataRepository>().Returns(_newObservedData);
-         A.CallTo(() => _project.AllObservedData).Returns(new List<DataRepository>());
          A.CallTo(() => _containerTask.CreateUniqueName(_project.AllObservedData, _newObservedData.Name, true)).Returns("TOTO");
          A.CallTo(() => _executionContext.AddToHistory(A<ICommand>._))
             .Invokes(x => _command = x.GetArgument<ICommand>(0));
@@ -133,7 +160,7 @@ namespace PKSim.Infrastructure
       public void should_add_the_template_to_the_project_assuring_a_unique_name_if_one_was_selected()
       {
          _newObservedData.Name.ShouldBeEqualTo("TOTO");
-         A.CallTo(() => _project.AddObservedData(_newObservedData)).MustHaveHappened();
+         _project.AllObservedData.ShouldContain(_newObservedData);
       }
 
       [Observation]
@@ -146,7 +173,7 @@ namespace PKSim.Infrastructure
    public class When_removing_all_observed_data_and_one_is_used_by_parameter_identification : concern_for_ObservedDataTask
    {
       private DataRepository _usedDataRepository;
-      private IUsesObservedData _observedDataUser;
+      private Simulation _observedDataUser;
       private DataRepository _unUsedDataRepository;
 
       protected override void Context()
@@ -154,12 +181,13 @@ namespace PKSim.Infrastructure
          base.Context();
          _usedDataRepository = new DataRepository("id");
          _unUsedDataRepository = new DataRepository("anotherid");
-         _observedDataUser = A.Fake<IUsesObservedData>();
+         _observedDataUser = A.Fake<Simulation>();
          A.CallTo(() => _observedDataUser.UsesObservedData(_usedDataRepository)).Returns(true);
          A.CallTo(() => _observedDataUser.UsesObservedData(_unUsedDataRepository)).Returns(false);
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._)).Returns(ViewResult.OK);
-         A.CallTo(() => _project.AllUsersOfObservedData).Returns(new [] { _observedDataUser });
-         A.CallTo(() => _project.AllObservedData).Returns(new List<DataRepository> {_usedDataRepository, _unUsedDataRepository});
+         _project.AddBuildingBlock(_observedDataUser);
+         _project.AddObservedData(_usedDataRepository);
+         _project.AddObservedData(_unUsedDataRepository);
       }
 
       protected override void Because()
@@ -170,36 +198,36 @@ namespace PKSim.Infrastructure
       [Observation]
       public void the_unused_data_should_be_deleted()
       {
-         A.CallTo(() => _project.RemoveObservedData(_usedDataRepository)).MustNotHaveHappened();
+         _project.AllObservedData.ShouldContain(_usedDataRepository);
       }
 
       [Observation]
       public void the_used_data_should_not_be_deleted()
       {
-         A.CallTo(() => _project.RemoveObservedData(_unUsedDataRepository)).MustHaveHappened();
+         _project.AllObservedData.ShouldNotContain(_unUsedDataRepository);
       }
    }
 
    public class When_removing_observed_data_used_by_parameter_identification : concern_for_ObservedDataTask
    {
       private DataRepository _dataRepository;
-      private IUsesObservedData _observedDataUser;
+      private Simulation _observedDataUser;
 
       protected override void Context()
       {
          base.Context();
 
          _dataRepository = new DataRepository("id");
-         _observedDataUser = A.Fake<IUsesObservedData>();
+         _observedDataUser = A.Fake<Simulation>();
          A.CallTo(() => _observedDataUser.UsesObservedData(_dataRepository)).Returns(true);
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._)).Returns(ViewResult.OK);
-         A.CallTo(() => _project.AllUsersOfObservedData).Returns(new []{_observedDataUser});
+         _project.AddBuildingBlock(_observedDataUser);
       }
 
       [Observation]
       public void the_observed_data_should_not_be_removed_from_the_project()
       {
-         The.Action(() => sut.Delete(new List<DataRepository> { _dataRepository })).ShouldThrowAn<OSPSuiteException>();
+         The.Action(() => sut.Delete(new List<DataRepository> {_dataRepository})).ShouldThrowAn<OSPSuiteException>();
       }
    }
 
@@ -218,9 +246,8 @@ namespace PKSim.Infrastructure
          _dataRepository = new DataRepository(_usedObservedData.Id);
          _simulation.AddUsedObservedData(_usedObservedData);
          _parameterIdentification = new ParameterIdentification();
-
-         A.CallTo(() => _project.ObservedDataBy(_usedObservedData.Id)).Returns(_dataRepository);
-         A.CallTo(() => _project.AllParameterIdentifications).Returns(new[] {_parameterIdentification});
+         _project.AddObservedData(_dataRepository);
+         _project.AddParameterIdentification(_parameterIdentification);
 
          var outputMapping = A.Fake<OutputMapping>();
          A.CallTo(() => outputMapping.UsesObservedData(_dataRepository)).Returns(true);
@@ -251,13 +278,12 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          _simulation = new IndividualSimulation();
-         _usedObservedData = new UsedObservedData { Id = "dataRepositoryId", Simulation = _simulation };
+         _usedObservedData = new UsedObservedData {Id = "dataRepositoryId", Simulation = _simulation};
          _dataRepository = new DataRepository(_usedObservedData.Id);
          _simulation.AddUsedObservedData(_usedObservedData);
          _parameterIdentification = new ParameterIdentification();
-
-         A.CallTo(() => _project.ObservedDataBy(_usedObservedData.Id)).Returns(_dataRepository);
-         A.CallTo(() => _project.AllParameterIdentifications).Returns(new[] { _parameterIdentification });
+         _project.AddObservedData(_dataRepository);
+         _project.AddParameterIdentification(_parameterIdentification);
 
          var outputMapping = A.Fake<OutputMapping>();
          A.CallTo(() => outputMapping.UsesObservedData(_dataRepository)).Returns(true);
@@ -267,7 +293,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         sut.RemoveUsedObservedDataFromSimulation(new[] { _usedObservedData });
+         sut.RemoveUsedObservedDataFromSimulation(new[] {_usedObservedData});
       }
 
       [Observation]
@@ -304,8 +330,8 @@ namespace PKSim.Infrastructure
 
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
 
-         A.CallTo(() => _project.ObservedDataBy(_repo1.Id)).Returns(_repo1);
-         A.CallTo(() => _project.ObservedDataBy(_repo2.Id)).Returns(_repo2);
+         _project.AddObservedData(_repo1);
+         _project.AddObservedData(_repo2);
       }
 
       protected override void Because()

@@ -1,13 +1,13 @@
 ﻿using System;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Services
 {
    public interface ISimulationPersistableUpdater : OSPSuite.Core.Domain.Services.ISimulationPersistableUpdater
    {
-      void UpdatePersistableFromSettings(IndividualSimulation simulation);
+      void UpdatePersistableFromSettings(IndividualSimulation individualSimulation);
       void UpdatePersistableFromSettings(PopulationSimulation populationSimulation);
       void ResetPersistable(Simulation simulation);
    }
@@ -18,13 +18,18 @@ namespace PKSim.Core.Services
       {
       }
 
-      public void UpdatePersistableFromSettings(IndividualSimulation simulation)
+      public void UpdatePersistableFromSettings(IndividualSimulation individualSimulation)
       {
-         UpdateSimulationPersistable(simulation);
+         UpdateSimulationPersistable(individualSimulation);
 
-         var organism = simulation.Model.Root.Container(Constants.ORGANISM);
+         var organism = individualSimulation.Model.Root.Container(Constants.ORGANISM);
 
-         simulation.Compounds.Each(compound => addRequiredOutputForSimulation(organism, compound));
+         individualSimulation.Compounds.Each(compound => addRequiredOutputForSimulation(organism, compound));
+      }
+
+      public void UpdatePersistableFromSettings(PopulationSimulation populationSimulation)
+      {
+         UpdateSimulationPersistable(populationSimulation);
       }
 
       private void addRequiredOutputForSimulation(IContainer organism, Compound compound)
@@ -40,11 +45,6 @@ namespace PKSim.Core.Services
          //make sure lumen FabsOral is always selected for fabs calculation
          updatePeristable(organism, CoreConstants.Organ.Lumen, compound.Name,
             CoreConstants.Observer.FABS_ORAL);
-      }
-
-      public void UpdatePersistableFromSettings(PopulationSimulation populationSimulation)
-      {
-         UpdateSimulationPersistable(populationSimulation);
       }
 
       private void updatePeristable(IContainer container, params string[] path)

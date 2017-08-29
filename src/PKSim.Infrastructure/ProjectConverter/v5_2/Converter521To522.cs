@@ -115,7 +115,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          var oldFractionUnbound = compound.Parameter(ConverterConstants.Parameter.FractionUnboundPlasma);
          if (oldFractionUnbound == null) return;
 
-         oldFractionUnbound.Name = CoreConstants.Parameter.FractionUnbound;
+         oldFractionUnbound.Name = CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE;
          _converted = true;
       }
    }

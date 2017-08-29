@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Matlab
 {
@@ -32,7 +32,7 @@ namespace PKSim.Matlab
       ///    returns an enumeration containing the ontogeny factor for each molecule
       ///    For instance, for CYP3A4, the call will return CYP3A4|Ontogeny Factor and CYP3A4|Ontogeny Factor GI
       /// </summary>
-      IEnumerable<ParameterValue> FactorsFor(OriginData originData, IEnumerable<MoleculeOntogeny> moleculeOntogenies);
+      IEnumerable<ParameterValue> FactorsFor(Core.Model.OriginData originData, IEnumerable<MoleculeOntogeny> moleculeOntogenies);
    }
 
    public class OntogenyFactorsRetriever : IOntogenyFactorsRetriever
@@ -44,7 +44,7 @@ namespace PKSim.Matlab
          _ontogenyRepository = ontogenyRepository;
       }
 
-      public IEnumerable<ParameterValue> FactorsFor(OriginData originData, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
+      public IEnumerable<ParameterValue> FactorsFor(Core.Model.OriginData originData, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
       {
          var allOntogenyFactors = new List<ParameterValue>();
 
@@ -65,7 +65,7 @@ namespace PKSim.Matlab
          return allOntogenyFactors;
       }
 
-      private ParameterValue ontogenyFactorFor(Ontogeny ontogeny, string moleculeName, OriginData originData, string parameterName, string ontogenyLocation)
+      private ParameterValue ontogenyFactorFor(Ontogeny ontogeny, string moleculeName, Core.Model.OriginData originData, string parameterName, string ontogenyLocation)
       {
          var path = new ObjectPath {moleculeName, parameterName};
          double factor = _ontogenyRepository.OntogenyFactorFor(ontogeny, ontogenyLocation, originData);

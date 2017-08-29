@@ -59,17 +59,16 @@ namespace PKSim.Core.Services
       void UpdateFormulationsInSimulation(Simulation simulation);
 
       bool BuildingBlockSupportsQuickUpdate(IPKSimBuildingBlock templateBuildingBlock);
+
    }
 
    public class SimulationBuildingBlockUpdater : ISimulationBuildingBlockUpdater
    {
       private readonly IBuildingBlockToUsedBuildingBlockMapper _buildingBlockMapper;
-      private readonly IFormulationFromMappingRetriever _formulationFromMappingRetriever;
 
-      public SimulationBuildingBlockUpdater(IBuildingBlockToUsedBuildingBlockMapper buildingBlockMapper, IFormulationFromMappingRetriever formulationFromMappingRetriever)
+      public SimulationBuildingBlockUpdater(IBuildingBlockToUsedBuildingBlockMapper buildingBlockMapper)
       {
          _buildingBlockMapper = buildingBlockMapper;
-         _formulationFromMappingRetriever = formulationFromMappingRetriever;
       }
 
       public void UpdateUsedBuildingBlockInSimulationFromTemplate(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock, PKSimBuildingBlockType buildingBlockType)

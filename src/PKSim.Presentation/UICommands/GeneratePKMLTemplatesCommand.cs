@@ -1,44 +1,40 @@
 ﻿using System.IO;
 using System.Linq;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
-using PKSim.Core.Batch;
-using PKSim.Core.Batch.Mapper;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Services;
-using Compound = PKSim.Core.Batch.Compound;
-using Individual = PKSim.Core.Batch.Individual;
-using Simulation = PKSim.Core.Batch.Simulation;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Mappers;
+using PKSim.Core.Snapshots.Services;
+using Project = PKSim.Core.Snapshots.Project;
 
 namespace PKSim.Presentation.UICommands
 {
    public class GeneratePKMLTemplatesCommand : IUICommand
    {
-      private readonly ISimulationMapper _simulationMapper;
-      private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly IBuildConfigurationTask _buildConfigurationTask;
       private readonly IPKMLPersistor _pkmlPersistor;
       private readonly IDialogCreator _dialogCreator;
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IMoBiExportTask _moBiExportTask;
+      private readonly ISnapshotObjectCreator _snapshotObjectCreator;
 
-      public GeneratePKMLTemplatesCommand(ISimulationMapper simulationMapper, IDefaultIndividualRetriever defaultIndividualRetriever,
-                                          IBuildConfigurationTask buildConfigurationTask, IPKMLPersistor pkmlPersistor, IDialogCreator dialogCreator,
-                                          IHeavyWorkManager heavyWorkManager, IMoBiExportTask moBiExportTask)
+      public GeneratePKMLTemplatesCommand(IBuildConfigurationTask buildConfigurationTask, IPKMLPersistor pkmlPersistor, IDialogCreator dialogCreator,
+         IHeavyWorkManager heavyWorkManager, IMoBiExportTask moBiExportTask, ISnapshotObjectCreator snapshotObjectCreator)
       {
-         _simulationMapper = simulationMapper;
-         _defaultIndividualRetriever = defaultIndividualRetriever;
          _buildConfigurationTask = buildConfigurationTask;
          _pkmlPersistor = pkmlPersistor;
          _dialogCreator = dialogCreator;
          _heavyWorkManager = heavyWorkManager;
          _moBiExportTask = moBiExportTask;
+         _snapshotObjectCreator = snapshotObjectCreator;
       }
 
       public void Execute()
@@ -46,37 +42,39 @@ namespace PKSim.Presentation.UICommands
          var exportFolder = _dialogCreator.AskForFolder("Select output folder where results will be exported", Constants.DirectoryKey.MODEL_PART);
          if (string.IsNullOrEmpty(exportFolder)) return;
 
-         _heavyWorkManager.Start(() => exportToFolder(exportFolder));
+         _heavyWorkManager.Start(() => exportToFolder(exportFolder).Wait());
       }
 
-      private void exportToFolder(string exportFolder)
+      private async Task exportToFolder(string exportFolder)
       {
-         var defaultIndividual = _defaultIndividualRetriever.DefaultHuman();
-         var batchSimulation = new Simulation();
-         batchSimulation.Individual = new Individual
-            {
-               Age = defaultIndividual.Age,
-               Height = defaultIndividual.MeanHeight,
-               Species = defaultIndividual.Species.Name,
-               Population = defaultIndividual.Population.Name,
-            };
+         var project = new Project();
+         var individual = await _snapshotObjectCreator.DefaultIndividual();
+         project.Individuals = new[] {individual};
 
-         batchSimulation.Compounds.Add(new Compound {Name = "Standard Molecule", Lipophilicity = 3, FractionUnbound = 0.1, MolWeight = 4E-7, SolubilityAtRefpH = 9999, RefpH = 7});
-         var intrevanousBolus = new ApplicationProtocol {CompoundName ="Standard Molecule", ApplicationType = CoreConstants.Application.Name.IntravenousBolus, Dose = 1, DoseUnit = "mg/kg", DosingInterval = DosingIntervals.Single.ToString()};
+         var compound = await _snapshotObjectCreator.StandardCompound(lipophilicity: 3, fractionUnbound: 0.1, molWeight: 400, name:"Standard Molecule");
+         compound.Name = "Standard Molecule";
+         project.Compounds = new[] {compound};
 
+         var intrevanousBolusMgPerKg = await _snapshotObjectCreator.SimpleProtocol(dose: 1, doseUnit: "mg/kg", applicationType: ApplicationTypes.IntravenousBolus);
+         var intrevanousBolusMg = await _snapshotObjectCreator.SimpleProtocol(dose: 1, doseUnit: "mg", applicationType: ApplicationTypes.IntravenousBolus);
+         project.Protocols = new[] {intrevanousBolusMgPerKg, intrevanousBolusMg};
 
-         batchSimulation.Configuration = new SimulationConfiguration {Model = CoreConstants.Model.FourComp};
-         batchSimulation.ApplicationProtocols.Add(intrevanousBolus);
-         var fourCompIvBolusMgPerKg = configurationFrom(batchSimulation);
+         var snapshotConfiguration = new SimulationConstruction
+         {
+            Individual = individual,
+            Compounds = new[] {compound },
+            Protocols = new [] {intrevanousBolusMgPerKg },
+            ModelName = CoreConstants.Model.FourComp,
+         };
 
-         batchSimulation.Configuration = new SimulationConfiguration {Model = CoreConstants.Model.TwoPores};
-         var twoPore = configurationFrom(batchSimulation);
+         var fourCompIvBolusMgPerKg = await configurationFrom(snapshotConfiguration);
 
-         batchSimulation.ApplicationProtocols.Clear();
-         intrevanousBolus.DoseUnit = "mg";
-         batchSimulation.ApplicationProtocols.Add(intrevanousBolus);
-         batchSimulation.Configuration = new SimulationConfiguration { Model = CoreConstants.Model.FourComp };
-         var fourCompIvBolusMg = configurationFrom(batchSimulation);
+         snapshotConfiguration.ModelName = CoreConstants.Model.TwoPores;
+         var twoPore = await configurationFrom(snapshotConfiguration);
+
+         snapshotConfiguration.Protocols = new[] { intrevanousBolusMg};
+         snapshotConfiguration.ModelName = CoreConstants.Model.FourComp;
+         var fourCompIvBolusMg = await configurationFrom(snapshotConfiguration);
 
 
          twoPore.SpatialStructure.Name = "Human 2 Pores";
@@ -95,24 +93,31 @@ namespace PKSim.Presentation.UICommands
          defaultCompound.Name = string.Empty;
          defaultCompound.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value = double.NaN;
          defaultCompound.Parameter(CoreConstants.Parameter.MOLECULAR_WEIGHT).Value = double.NaN;
-         defaultCompound.Parameter(CoreConstants.Parameter.FractionUnbound).Value = double.NaN;
-         defaultCompound.Parameter(CoreConstants.Parameter.SolubilityAtRefpH).Value = double.NaN;
+         defaultCompound.Parameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value = double.NaN;
+         defaultCompound.Parameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH).Value = double.NaN;
 
          _moBiExportTask.UpdateObserverForAllFlag(fourCompIvBolusMgPerKg.Observers);
 
          var buildingBlocks = new IBuildingBlock[]
-            {
-               twoPore.SpatialStructure, twoPore.PassiveTransports,
-               fourCompIvBolusMgPerKg.SpatialStructure, fourCompIvBolusMgPerKg.PassiveTransports, fourCompIvBolusMgPerKg.EventGroups, fourCompIvBolusMgPerKg.Molecules, fourCompIvBolusMgPerKg.Observers,
-               fourCompIvBolusMg.EventGroups
-            };
+         {
+            twoPore.SpatialStructure,
+            twoPore.PassiveTransports,
+            fourCompIvBolusMgPerKg.SpatialStructure,
+            fourCompIvBolusMgPerKg.PassiveTransports,
+            fourCompIvBolusMgPerKg.EventGroups,
+            fourCompIvBolusMgPerKg.Molecules,
+            fourCompIvBolusMgPerKg.Observers,
+            fourCompIvBolusMg.EventGroups
+         };
 
          buildingBlocks.Each(bb => saveToPKML(bb, exportFolder));
       }
 
-      private IBuildConfiguration configurationFrom(Simulation batchSimulation)
+      private async Task<IBuildConfiguration> configurationFrom(SimulationConstruction simulationConstruction)
       {
-         return _buildConfigurationTask.CreateFor(_simulationMapper.MapFrom(batchSimulation).Simulation,shouldValidate:false,createAgingDataInSimulation:false);
+         var simulation = await _snapshotObjectCreator.SimulationFor(simulationConstruction);
+
+         return _buildConfigurationTask.CreateFor(simulation, shouldValidate: false, createAgingDataInSimulation: false);
       }
 
       private void saveToPKML(IBuildingBlock buildingBlock, string folder)

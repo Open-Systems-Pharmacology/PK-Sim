@@ -1,6 +1,6 @@
 ﻿namespace PKSim.BatchTool.Views
 {
-   partial class InputAndOutputBatchView
+   partial class InputAndOutputBatchView<TStartOptions>
    {
       /// <summary>
       /// Required designer variable.
@@ -30,6 +30,7 @@
       private void InitializeComponent()
       {
          this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+         this.panelLog = new DevExpress.XtraEditors.PanelControl();
          this.btnOutputFolder = new DevExpress.XtraEditors.ButtonEdit();
          this.btnCalculate = new DevExpress.XtraEditors.SimpleButton();
          this.btnInputFolder = new DevExpress.XtraEditors.ButtonEdit();
@@ -40,11 +41,11 @@
          this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
-         this.panelLog = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
          this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.panelLog)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.btnOutputFolder.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.btnInputFolder.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
@@ -53,7 +54,6 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelLog)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).BeginInit();
          this.SuspendLayout();
          // 
@@ -71,6 +71,13 @@
          this.layoutControl1.Size = new System.Drawing.Size(808, 641);
          this.layoutControl1.TabIndex = 0;
          this.layoutControl1.Text = "layoutControl1";
+         // 
+         // panelLog
+         // 
+         this.panelLog.Location = new System.Drawing.Point(12, 60);
+         this.panelLog.Name = "panelLog";
+         this.panelLog.Size = new System.Drawing.Size(784, 517);
+         this.panelLog.TabIndex = 8;
          // 
          // btnOutputFolder
          // 
@@ -176,13 +183,6 @@
          this.layoutControlItem4.Text = "Output Folder:";
          this.layoutControlItem4.TextSize = new System.Drawing.Size(71, 13);
          // 
-         // panelLog
-         // 
-         this.panelLog.Location = new System.Drawing.Point(12, 60);
-         this.panelLog.Name = "panelLog";
-         this.panelLog.Size = new System.Drawing.Size(784, 517);
-         this.panelLog.TabIndex = 8;
-         // 
          // layoutControlItem5
          // 
          this.layoutControlItem5.Control = this.panelLog;
@@ -192,18 +192,17 @@
          this.layoutControlItem5.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem5.TextVisible = false;
          // 
-         // BatchView
+         // InputAndOutputBatchView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Caption = "BatchView";
          this.ClientSize = new System.Drawing.Size(808, 641);
          this.Controls.Add(this.layoutControl1);
          this.Name = "InputAndOutputBatchView";
-         this.Text = "BatchView";
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
          this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.panelLog)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.btnOutputFolder.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.btnInputFolder.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
@@ -212,7 +211,6 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelLog)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).EndInit();
          this.ResumeLayout(false);
 

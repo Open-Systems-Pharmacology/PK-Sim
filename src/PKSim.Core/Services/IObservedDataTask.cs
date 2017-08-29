@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 
@@ -32,5 +33,7 @@ namespace PKSim.Core.Services
       ///    Export observed data to pkml format
       /// </summary>
       void ExportToPkml(DataRepository observedData);
+
+      Task LoadFromSnapshot();
    }
 }

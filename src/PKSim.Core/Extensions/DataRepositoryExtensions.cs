@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Extensions
 {
@@ -43,6 +44,16 @@ namespace PKSim.Core.Extensions
                Name = x.Name,
                Value = valueMapper(dataRepositories.SelectMany(repository => repository.ExtendedProperties).Where(iExtendedProperty => iExtendedProperty.Name.Equals(x.Name)), x)
             });
+      }
+
+      public static void AddColumns(this DataRepository repository, IEnumerable<DataColumn> columns)
+      {
+         columns.Each(repository.Add);
+      }
+
+      public static bool ColumnIsInRelatedColumns(this DataRepository repository, DataColumn column)
+      {
+         return repository.SelectMany(x => x.RelatedColumns).Contains(column);
       }
 
       private static string valueMapper(IEnumerable<IExtendedProperty> properties, IExtendedProperty value)

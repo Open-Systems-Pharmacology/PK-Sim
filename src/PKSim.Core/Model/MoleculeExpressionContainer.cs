@@ -3,100 +3,72 @@ using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
-   public interface IMoleculeExpressionContainer : IContainer
+   public class MoleculeExpressionContainer : Container
    {
       /// <summary>
       ///    Path to organ  where the reaction induced by the protein should take place
       /// </summary>
-      IObjectPath OrganPath { get; set; }
+      public IObjectPath OrganPath { get; set; }
 
       /// <summary>
       ///    Name of the parent container of the compartment (for organ, name of organ, for segemnt either lumen or segment name)
       /// </summary>
-      string GroupName { get; set; }
+      public string GroupName { get; set; }
 
       /// <summary>
       ///    Name of the physical container where the expression will be defined(Organ or segment).
       /// </summary>
-      string ContainerName { get; set; }
-
-      /// <summary>
-      ///    relative expression value for the container
-      /// </summary>
-      double RelativeExpression { get; set; }
-
-      /// <summary>
-      ///    relative expression value normalized to all other expressions value for the container
-      /// </summary>
-      double RelativeExpressionNorm { get; set; }
-
-      /// <summary>
-      ///    Parameter representing the relative expression value for this container
-      /// </summary>
-      IParameter RelativeExpressionParameter { get; }
-
-      /// <summary>
-      ///    Parameter representing the relative expression normalized value for this container
-      /// </summary>
-      IParameter RelativeExpressionNormParameter { get; }
-
-      /// <summary>
-      ///    Return the path of the compartment where the protein will be defined
-      /// </summary>
-      IObjectPath CompartmentPath(string compartmentName);
-
-      /// <summary>
-      ///    returns true if the container represents a lumen segment otherwise false
-      /// </summary>
-      bool IsLumen { get; }
-   }
-
-   public class MoleculeExpressionContainer : Container, IMoleculeExpressionContainer
-   {
-      public IObjectPath OrganPath { get; set; }
-      public string GroupName { get; set; }
       public string ContainerName { get; set; }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
-         var moleculeExpressionContainer = sourceObject as IMoleculeExpressionContainer;
-         if (moleculeExpressionContainer == null) return;
+         if (!(sourceObject is MoleculeExpressionContainer moleculeExpressionContainer)) return;
+
          OrganPath = moleculeExpressionContainer.OrganPath.Clone<IObjectPath>();
          GroupName = moleculeExpressionContainer.GroupName;
          ContainerName = moleculeExpressionContainer.ContainerName;
       }
 
+      /// <summary>
+      ///    relative expression value for the container
+      /// </summary>
       public double RelativeExpression
       {
-         get { return RelativeExpressionParameter.Value; }
-         set { RelativeExpressionParameter.Value = value; }
+         get => RelativeExpressionParameter.Value;
+         set => RelativeExpressionParameter.Value = value;
       }
 
+      /// <summary>
+      ///    relative expression value normalized to all other expressions value for the container
+      /// </summary>
       public double RelativeExpressionNorm
       {
-         get { return RelativeExpressionNormParameter.Value; }
-         set { RelativeExpressionNormParameter.Value = value; }
+         get => RelativeExpressionNormParameter.Value;
+         set => RelativeExpressionNormParameter.Value = value;
       }
 
-      public IParameter RelativeExpressionParameter
-      {
-         get { return this.Parameter(CoreConstants.Parameter.REL_EXP); }
-      }
+      /// <summary>
+      ///    Parameter representing the relative expression value for this container
+      /// </summary>
+      public IParameter RelativeExpressionParameter => this.Parameter(CoreConstants.Parameter.REL_EXP);
 
-      public IParameter RelativeExpressionNormParameter
-      {
-         get { return this.Parameter(CoreConstants.Parameter.REL_EXP_NORM); }
-      }
+      /// <summary>
+      ///    Parameter representing the relative expression normalized value for this container
+      /// </summary>
+      public IParameter RelativeExpressionNormParameter => this.Parameter(CoreConstants.Parameter.REL_EXP_NORM);
 
+      /// <summary>
+      ///    Return the path of the compartment where the protein will be defined
+      /// </summary>
       public IObjectPath CompartmentPath(string compartmentName)
       {
          return OrganPath.Clone<IObjectPath>().AndAdd(compartmentName);
       }
 
-      public bool IsLumen
-      {
-         get { return string.Equals(GroupName, CoreConstants.Groups.GI_LUMEN); }
-      }
+      /// <summary>
+      ///    returns true if the container represents a lumen segment otherwise false
+      /// </summary>
+      public bool IsLumen => string.Equals(GroupName, CoreConstants.Groups.GI_LUMEN);
    }
 }

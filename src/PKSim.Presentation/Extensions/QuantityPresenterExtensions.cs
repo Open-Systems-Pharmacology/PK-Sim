@@ -1,6 +1,4 @@
-﻿using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Assets;
 

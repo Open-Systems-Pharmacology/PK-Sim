@@ -38,7 +38,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _fixedLimitDTOs = new NotifyList<FixedLimitGroupingDTO>();
       }
 
-      public IGroupingDefinition GroupingDefinition
+      public GroupingDefinition GroupingDefinition
       {
          get
          {
@@ -94,7 +94,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _view.BindTo(_fixedLimitDTOs, _numericField.DisplayUnit);
       }
 
-      public void Edit(IGroupingDefinition groupingDefinition)
+      public void Edit(GroupingDefinition groupingDefinition)
       {
          _groupingDefinition = groupingDefinition.DowncastTo<FixedLimitsGroupingDefinition>();
          _fixedLimitDTOs.Clear();

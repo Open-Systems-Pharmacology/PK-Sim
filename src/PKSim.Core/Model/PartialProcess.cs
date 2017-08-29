@@ -26,12 +26,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public string MoleculeName
       {
-         get { return _moleculeName; }
-         set
-         {
-            _moleculeName = value;
-            OnPropertyChanged(() => MoleculeName);
-         }
+         get => _moleculeName;
+         set => SetProperty(ref _moleculeName, value);
       }
 
       public abstract string GetProcessClass();

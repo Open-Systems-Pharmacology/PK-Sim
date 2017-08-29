@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
@@ -257,10 +258,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_create_and_run_the_simulation()
+      public async Task should_be_able_to_create_and_run_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, new Core.Services.SimulationRunOptions());
          _simulation.HasResults.ShouldBeTrue();
       }
 
@@ -306,10 +307,7 @@ namespace PKSim.IntegrationTests
          CheckProcess();
       }
 
-      protected override string ProcessName
-      {
-         get { return CoreConstantsForSpecs.Process.HEPATOCYTESHALFTIME; }
-      }
+      protected override string ProcessName => CoreConstantsForSpecs.Process.HEPATOCYTESHALFTIME;
    }
 
    public class When_creating_a_simulation_with_an_InVitro_Hepatocytes_ResidualFraction_process_defined_in_the_compound : When_creating_a_simulation_with_an_inVitro_process_defined_in_the_compound
@@ -320,10 +318,7 @@ namespace PKSim.IntegrationTests
          CheckProcess();
       }
 
-      protected override string ProcessName
-      {
-         get { return CoreConstantsForSpecs.Process.HEPATOCYTESRES; }
-      }
+      protected override string ProcessName => CoreConstantsForSpecs.Process.HEPATOCYTESRES;
    }
 
    public class When_creating_a_simulation_with_an_InVitro_Microsomes_tHalf_process_defined_in_the_compound : When_creating_a_simulation_with_an_inVitro_process_defined_in_the_compound
@@ -334,10 +329,7 @@ namespace PKSim.IntegrationTests
          CheckProcess();
       }
 
-      protected override string ProcessName
-      {
-         get { return CoreConstantsForSpecs.Process.LIVERMICROSOMEHALFTIME; }
-      }
+      protected override string ProcessName => CoreConstantsForSpecs.Process.LIVERMICROSOMEHALFTIME;
    }
 
    public class When_creating_a_simulation_with_an_InVitro_Microsomes_ResidualFraction_process_defined_in_the_compound : When_creating_a_simulation_with_an_inVitro_process_defined_in_the_compound
@@ -348,10 +340,7 @@ namespace PKSim.IntegrationTests
          CheckProcess();
       }
 
-      protected override string ProcessName
-      {
-         get { return CoreConstantsForSpecs.Process.LIVERMICROSOMERES; }
-      }
+      protected override string ProcessName => CoreConstantsForSpecs.Process.LIVERMICROSOMERES;
    }
 
 }

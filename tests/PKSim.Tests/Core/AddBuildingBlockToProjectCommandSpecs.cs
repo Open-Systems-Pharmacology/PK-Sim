@@ -27,7 +27,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _executionContext.CurrentProject).Returns(A.Fake<IPKSimProject>());
+         A.CallTo(() => _executionContext.CurrentProject).Returns(A.Fake<PKSimProject>());
       }
 
       protected override void Because()

@@ -34,10 +34,9 @@ namespace PKSim.Core
       public const double DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN = 23 * 60;
       public const double DEFAULT_MIN_PERCENTILE = 0.0001;
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
-      public const string DEFAULT_BATCH_LOG_FILE_NAME = "log.txt";
       public static readonly string DEFAULT_FORMULATION_KEY = "Formulation";
       public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
-
+      public const int NUMBER_OF_PKA_PARAMETERS = 3;
       public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};
       public static readonly IEnumerable<int> PRETERM_RANGE = Enumerable.Range(24, 17);
 
@@ -46,7 +45,7 @@ namespace PKSim.Core
       public static readonly string TEMPLATE_USER_DATABASE = "PKSimTemplateDBUser.mdb";
       public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
       public static readonly string PK_SIM_DB_FILE = "PKSimDB.mdb";
-      public static readonly string PRODUCT_NAME = "PK-Sim";
+      public const string PRODUCT_NAME = "PK-Sim";
       public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
       public static readonly string ExpressionPassword = "rhcp!!06";
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
@@ -80,6 +79,13 @@ namespace PKSim.Core
          public static readonly string SAVE_PROJECT_FILTER = Constants.Filter.FileFilter($"{PRODUCT_NAME_WITH_TRADEMARK} Project", PROJECT_EXTENSION);
       }
 
+      public static string DefaultResultsExportNameFor(string simulationName) => $"{simulationName}-Results";
+
+      public static string DefaultPKAnalysesExportNameFor(string simulationName) => $"{simulationName}-PK-Analyses";
+
+      public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
+
+  
       public static string CompositeNameFor(params string[] names)
       {
          if (names == null || names.Length == 0)
@@ -96,14 +102,10 @@ namespace PKSim.Core
          return compositeName.Split(COMPOSITE_SEPARATOR);
       }
 
-      public static string DefaultBatchLogFullPath(string outputFolder)
-      {
-         return Path.Combine(outputFolder, DEFAULT_BATCH_LOG_FILE_NAME);
-      }
-
       public static class DirectoryKey
       {
-         public static readonly string BATCH = "Batch";
+         public static readonly string BATCH_INPUT = "BatchInput";
+         public static readonly string BATCH_OUTPUT = "BatchOutput";
          public static readonly string DATABASE = "Database";
       }
 
@@ -363,14 +365,13 @@ namespace PKSim.Core
          public static readonly string Unspecified = "Unspecified";
 
          //const are needed since the values are used in an enum
-         public const int CompoundTypeAcid = -1;
+         public const int COMPOUND_TYPE_ACID = -1;
+         public const int COMPOUND_TYPE_BASE = 1;
+         public const int COMPOUND_TYPE_NEUTRAL = 0;
 
-         public const int CompoundTypeBase = 1;
-         public const int CompoundTypeNeutral = 0;
-
-         public const int BindingPartnerAgp = 0;
-         public const int BindingPartnerAlbumin = 1;
-         public const int BindingPartnerUnknown = 2;
+         public const int BINDING_PARTNER_AGP = 0;
+         public const int BINDING_PARTNER_ALBUMIN = 1;
+         public const int BINDING_PARTNER_UNKNOWN = 2;
       }
 
       public static class Output
@@ -576,11 +577,25 @@ namespace PKSim.Core
          public static readonly string FRACTION_UNBOUND_PLASMA = "FRACTION_UNBOUND_PLASMA";
          public static readonly string ONTOGENY_FACTOR = "ONTOGENY_FACTOR";
 
-         public static readonly IEnumerable<string> GroupsWithCalculatedAlternative = new List<string> {COMPOUND_INTESTINAL_PERMEABILITY, COMPOUND_PERMEABILITY};
-         public static readonly IEnumerable<string> GroupsWithAlternative = new List<string>(GroupsWithCalculatedAlternative) {COMPOUND_LIPOPHILICITY, COMPOUND_FRACTION_UNBOUND, COMPOUND_SOLUBILITY};
-         public static readonly IEnumerable<string> GroupsWithAlternativeAndSpecies = new List<string> {COMPOUND_FRACTION_UNBOUND};
+         public static readonly IReadOnlyList<string> GroupsWithCalculatedAlternative = new[]
+         {
+            COMPOUND_INTESTINAL_PERMEABILITY,
+            COMPOUND_PERMEABILITY
+         };
 
-         public static IEnumerable<string> AllSimulationCompoundGroups = new List<string>
+         public static readonly IReadOnlyList<string> GroupsWithAlternative = new List<string>(GroupsWithCalculatedAlternative)
+         {
+            COMPOUND_LIPOPHILICITY,
+            COMPOUND_FRACTION_UNBOUND,
+            COMPOUND_SOLUBILITY
+         };
+
+         public static readonly IReadOnlyList<string> GroupsWithAlternativeAndSpecies = new[]
+         {
+            COMPOUND_FRACTION_UNBOUND
+         };
+
+         public static IReadOnlyList<string> AllSimulationCompoundGroups = new []
          {
             DISTRIBUTION,
             PARTITION_COEFFICIENT,
@@ -881,9 +896,9 @@ namespace PKSim.Core
             return $"{PARAMETER_PKA_BASE}{index}";
          }
 
-         public static readonly string ParameterPka1 = ParameterPKa(0);
-         public static readonly string ParameterPka2 = ParameterPKa(1);
-         public static readonly string ParameterPka3 = ParameterPKa(2);
+         public static readonly string PARAMETER_PKA1 = ParameterPKa(0);
+         public static readonly string PARAMETER_PKA2 = ParameterPKa(1);
+         public static readonly string PARAMETER_PKA3 = ParameterPKa(NUMBER_OF_PKA_PARAMETERS - 1);
 
          public static readonly string ParameterCompoundTypeBase = "Compound type ";
 
@@ -894,16 +909,16 @@ namespace PKSim.Core
 
          public static readonly string COMPOUND_TYPE1 = ParameterCompoundType(0);
          public static readonly string COMPOUND_TYPE2 = ParameterCompoundType(1);
-         public static readonly string COMPOUND_TYPE3 = ParameterCompoundType(2);
+         public static readonly string COMPOUND_TYPE3 = ParameterCompoundType(NUMBER_OF_PKA_PARAMETERS - 1);
 
          public const string ApplicationRate = "Application rate";
          public const string Permeability = "Permeability";
          public const string SpecificIntestinalPermeability = "Specific intestinal permeability (transcellular)";
-         public const string FractionUnbound = "Fraction unbound (plasma, reference value)";
-         public const string SolubilityAtRefpH = "Solubility at reference pH";
+         public const string FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE = "Fraction unbound (plasma, reference value)";
+         public const string SOLUBILITY_AT_REFERENCE_PH = "Solubility at reference pH";
          public const string SolubilityGainPerCharge = "Solubility gain per charge";
          public const string Solubility = "Solubility";
-         public const string RefpH = "Reference pH";
+         public const string REFERENCE_PH = "Reference pH";
          public const string UndefinedOntogeny = "Undefined";
          public const string TotalDrugMass = "Total drug mass";
          public const string Species = "Species";
@@ -1112,7 +1127,7 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyCollection<string> CompoundMustInputParameters = new[]
          {
-            LIPOPHILICITY, Constants.Parameters.MOL_WEIGHT, FractionUnbound
+            LIPOPHILICITY, Constants.Parameters.MOL_WEIGHT, FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE
          };
 
          public static readonly IReadOnlyCollection<string> Halogens = new[]

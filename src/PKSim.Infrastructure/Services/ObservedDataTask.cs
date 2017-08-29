@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
@@ -16,6 +17,7 @@ using OSPSuite.Core.Commands;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
+using PKSim.Core.Snapshots.Services;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure.Services
@@ -27,15 +29,17 @@ namespace PKSim.Infrastructure.Services
       private readonly IApplicationController _applicationController;
       private readonly ITemplateTask _templateTask;
       private readonly IObservedDataPersistor _observedDataPersistor;
+      private readonly ISnapshotTask _snapshotTask;
 
       public ObservedDataTask(IPKSimProjectRetriever projectRetriever, IExecutionContext executionContext, IDialogCreator dialogCreator, IApplicationController applicationController,IDataRepositoryTask dataRepositoryTask,
-         ITemplateTask templateTask, IContainerTask containerTask, IObservedDataPersistor observedDataPersistor, IObjectTypeResolver objectTypeResolver) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
+         ITemplateTask templateTask, IContainerTask containerTask, IObservedDataPersistor observedDataPersistor, IObjectTypeResolver objectTypeResolver, ISnapshotTask snapshotTask) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
          _applicationController = applicationController;
          _templateTask = templateTask;
          _observedDataPersistor = observedDataPersistor;
+         _snapshotTask = snapshotTask;
       }
 
       public override void Rename(DataRepository observedData)
@@ -60,6 +64,12 @@ namespace PKSim.Infrastructure.Services
          if (string.IsNullOrEmpty(file)) return;
 
          _observedDataPersistor.Save(observedData, file);
+      }
+
+      public async Task LoadFromSnapshot()
+      {
+         var observedData = await _snapshotTask.LoadModelFromSnapshot<DataRepository>();
+         observedData.Each(AddObservedDataToProject);
       }
 
       public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable)

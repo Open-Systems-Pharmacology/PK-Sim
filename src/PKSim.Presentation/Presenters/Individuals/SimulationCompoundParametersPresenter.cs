@@ -7,7 +7,6 @@ using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Parameters;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {

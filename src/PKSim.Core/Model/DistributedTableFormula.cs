@@ -8,7 +8,7 @@ namespace PKSim.Core.Model
 {
    public class DistributedTableFormula : TableFormula
    {
-      private readonly IList<DistributionMetaData> _allDistributionMetaData = new List<DistributionMetaData>();
+      private readonly List<DistributionMetaData> _allDistributionMetaData = new List<DistributionMetaData>();
 
       public DistributedTableFormula()
       {
@@ -22,18 +22,14 @@ namespace PKSim.Core.Model
       public double Percentile { get; set; }
 
       /// <summary>
-      ///    Add one distribtuion meta data. (should be one per point)
+      ///    Add one distribution meta data. (should be one per point)
       /// </summary>
-      /// <param name="distributionMeta"> </param>
       public void AddDistributionMetaData(DistributionMetaData distributionMeta)
       {
          _allDistributionMetaData.Add(distributionMeta);
       }
 
-      public IEnumerable<DistributionMetaData> AllDistributionMetaData()
-      {
-         return _allDistributionMetaData;
-      }
+      public IReadOnlyList<DistributionMetaData> AllDistributionMetaData() => _allDistributionMetaData;
 
       public void RemoveDistributionMetaData(DistributionMetaData distributionMetaData)
       {

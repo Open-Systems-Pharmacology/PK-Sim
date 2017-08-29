@@ -1,33 +1,26 @@
 using System.Collections.Generic;
-using OSPSuite.Utility.Extensions;
+using System.Linq;
 using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
    public class EventProperties
    {
-      private readonly IList<IEventMapping> _eventMappings = new List<IEventMapping>();
+      private readonly List<EventMapping> _eventMappings = new List<EventMapping>();
 
       public virtual EventProperties Clone(ICloneManager cloneManager)
       {
          var clone = new EventProperties();
-         EventMappings.Each(em => clone.AddEventMapping(em.Clone(cloneManager)));
+         clone.AddEventMappings(EventMappings.Select(x => x.Clone(cloneManager)));
          return clone;
       }
 
-      public virtual void AddEventMapping(IEventMapping eventMapping)
-      {
-         _eventMappings.Add(eventMapping);
-      }
+      public virtual void AddEventMapping(EventMapping eventMapping) => _eventMappings.Add(eventMapping);
 
-      public virtual IEnumerable<IEventMapping> EventMappings
-      {
-         get { return _eventMappings; }
-      }
+      public virtual void AddEventMappings(IEnumerable<EventMapping> eventMappings) => _eventMappings.AddRange(eventMappings);
 
-      public virtual void ClearEventMapping()
-      {
-         _eventMappings.Clear();
-      }
+      public virtual IReadOnlyList<EventMapping> EventMappings => _eventMappings;
+
+      public virtual void ClearEventMapping() => _eventMappings.Clear();
    }
 }

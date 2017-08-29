@@ -4,7 +4,7 @@ namespace PKSim.Presentation.Core
 {
    public static class ButtonGroupIds
    {
-      public static ButtonGroupId File = new ButtonGroupId("File");
+      public static ButtonGroupId Project = new ButtonGroupId("Project");
       public static ButtonGroupId Create = new ButtonGroupId("Create");
       public static ButtonGroupId LoadBuildingBlocks = new ButtonGroupId("LoadBuildingBlocks");
       public static ButtonGroupId RunSimulation = new ButtonGroupId("RunSimulation");

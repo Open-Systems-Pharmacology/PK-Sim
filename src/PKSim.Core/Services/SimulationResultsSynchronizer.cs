@@ -32,11 +32,11 @@ namespace PKSim.Core.Services
 
    public class SimulationResultsSynchronizer : ISimulationResultsSynchronizer
    {
-      private readonly IPopulationPKAnalysesTask _populationPKAnalysesTask;
+      private readonly IPKAnalysesTask _populationPKAnalysesTask;
       private readonly ISimulationResultsCreator _simulationResultsCreator;
       private readonly IDisplayUnitUpdater _displayUnitUpdater;
 
-      public SimulationResultsSynchronizer(IPopulationPKAnalysesTask populationPKAnalysesTask, ISimulationResultsCreator simulationResultsCreator, IDisplayUnitUpdater displayUnitUpdater)
+      public SimulationResultsSynchronizer(IPKAnalysesTask populationPKAnalysesTask, ISimulationResultsCreator simulationResultsCreator, IDisplayUnitUpdater displayUnitUpdater)
       {
          _populationPKAnalysesTask = populationPKAnalysesTask;
          _simulationResultsCreator = simulationResultsCreator;

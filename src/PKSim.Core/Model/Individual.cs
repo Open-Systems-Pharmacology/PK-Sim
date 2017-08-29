@@ -20,7 +20,7 @@ namespace PKSim.Core.Model
 
       public Individual() : base(PKSimBuildingBlockType.Individual)
       {
-         GenerateSeed();
+         Seed = Environment.TickCount;
       }
 
 
@@ -33,14 +33,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual SpeciesPopulation Population => OriginData.SpeciesPopulation;
 
-      /// <summary>
-      ///    Create a new seed for the individual
-      /// </summary>
-      public virtual void GenerateSeed()
-      {
-         Seed = Environment.TickCount;
-      }
-
+ 
       /// <summary>
       ///    all available organs in the individual
       /// </summary>
@@ -77,39 +70,24 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    All molecules defined in the individual
       /// </summary>
-      public virtual IEnumerable<IndividualMolecule> AllMolecules()
-      {
-         return AllMolecules<IndividualMolecule>();
-      }
+      public virtual IEnumerable<IndividualMolecule> AllMolecules() => AllMolecules<IndividualMolecule>();
 
       /// <summary>
       ///    All defined molecules defined in the individual
       /// </summary>
-      public virtual IEnumerable<IndividualMolecule> AllDefinedMolecules()
-      {
-         return AllMolecules().Where(x => !x.IsUndefinedMolecule());
-      }
+      public virtual IEnumerable<IndividualMolecule> AllDefinedMolecules() => AllMolecules().Where(x => !x.IsUndefinedMolecule());
 
       /// <summary>
       ///    All protein of type
-      ///    <typeparam name="TProtein" />
+      ///    <typeparam name="TMolecule" />
       ///    in the individual
       /// </summary>
-      /// <typeparam name="TProtein"> Type of protein to be retrieved </typeparam>
-      public virtual IEnumerable<TProtein> AllMolecules<TProtein>() where TProtein : IndividualMolecule
-      {
-         return GetChildren<TProtein>();
-      }
+      /// <typeparam name="TMolecule"> Type of molecule to be retrieved </typeparam>
+      public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule => GetChildren<TMolecule>();
 
-      public virtual void AddMolecule(IndividualMolecule molecule)
-      {
-         Add(molecule);
-      }
+      public virtual void AddMolecule(IndividualMolecule molecule) => Add(molecule);
 
-      public virtual void RemoveMolecule(IndividualMolecule molecule)
-      {
-         RemoveChild(molecule);
-      }
+      public virtual void RemoveMolecule(IndividualMolecule molecule) => RemoveChild(molecule);
 
       /// <summary>
       ///    Return the protein with the name <paramref name="name" /> if defined in the individual, otherwise null

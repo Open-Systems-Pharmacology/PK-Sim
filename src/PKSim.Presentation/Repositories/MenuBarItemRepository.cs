@@ -42,6 +42,19 @@ namespace PKSim.Presentation.Repositories
             .WithIcon(ApplicationIcons.ProjectOpen)
             .WithShortcut(Keys.Control | Keys.D);
 
+         //TODO UPDATE ICON
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportProjectToSnapshot)
+            .WithId(MenuBarItemIds.ExportProjectToSnapshot)
+            .WithCommand<ExportProjectToSnapshotCommand>()
+            .WithDescription(PKSimConstants.UI.ExportProjectToSnapshotDescription)
+            .WithIcon(ApplicationIcons.Save);
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadProjectFromSnapshot)
+            .WithId(MenuBarItemIds.LoadProjectFromSnahpshot)
+            .WithCommand< LoadProjectFromSnapshotCommand>()
+            .WithDescription(PKSimConstants.UI.LoadProjectFromSnapshotDescription)
+            .WithIcon(ApplicationIcons.ProjectOpen);
+
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.CloseProject)
             .WithId(MenuBarItemIds.CloseProject)
             .WithDescription(PKSimConstants.UI.CloseProjectDescription)
@@ -135,7 +148,7 @@ namespace PKSim.Presentation.Repositories
             .WithShortcut(Keys.Control | Keys.Alt | Keys.F);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
-            .WithId(MenuBarItemIds.LoadFormulation)
+            .WithId(MenuBarItemIds.LoadFormulationFromTemplate)
             .WithCommand<LoadFormulationCommand>()
             .WithIcon(ApplicationIcons.LoadFromTemplate);
 
@@ -209,14 +222,14 @@ namespace PKSim.Presentation.Repositories
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Run)
             .WithId(MenuBarItemIds.Run)
             .WithDescription(PKSimConstants.UI.RunDescription)
-            .WithCommand<RunActiveSimulationCommand>()
+            .WithCommand<RunSimulationCommand>()
             .WithIcon(ApplicationIcons.Run)
             .WithShortcut(Keys.F5);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.RunWithSettings)
             .WithId(MenuBarItemIds.RunWithSettings)
             .WithDescription(PKSimConstants.UI.RunWithSettingsDescription)
-            .WithCommand<RunActiveSimulationWithSettingsCommand>()
+            .WithCommand<RunSimulationWithSettingsCommand>()
             .WithIcon(ApplicationIcons.ConfigureAndRun);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Stop)

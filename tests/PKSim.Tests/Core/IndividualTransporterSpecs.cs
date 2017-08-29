@@ -8,9 +8,9 @@ namespace PKSim.Core
 {
    public abstract class concern_for_IndividualTransporter : ContextSpecification<PKSim.Core.Model.IndividualTransporter>
    {
-      protected ITransporterExpressionContainer _transpoterExpressionLiver;
-      protected ITransporterExpressionContainer _transpoterExpressionKidney;
-      protected ITransporterExpressionContainer _transpoterExpressionBrain;
+      protected TransporterExpressionContainer _transpoterExpressionLiver;
+      protected TransporterExpressionContainer _transpoterExpressionKidney;
+      protected TransporterExpressionContainer _transpoterExpressionBrain;
 
       protected override void Context()
       {

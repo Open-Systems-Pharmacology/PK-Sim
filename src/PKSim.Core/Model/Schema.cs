@@ -29,46 +29,25 @@ namespace PKSim.Core.Model
          }
       }
 
-      private double intervalTimeSpan
-      {
-         get { return lastStartTime - firstStartTime; }
-      }
+      private double intervalTimeSpan => lastStartTime - firstStartTime;
 
       /// <summary>
       ///    repetion length is the max betweed time span between the first and the last schema item
       ///    and the time between repetitions
       /// </summary>
-      private double oneRepetionLength
-      {
-         get { return Math.Max(intervalTimeSpan, TimeBetweenRepetitions.Value); }
-      }
+      private double oneRepetionLength => Math.Max(intervalTimeSpan, TimeBetweenRepetitions.Value);
 
-      public virtual IEnumerable<ISchemaItem> SchemaItems
-      {
-         get { return GetChildren<ISchemaItem>(); }
-      }
+      public virtual IEnumerable<SchemaItem> SchemaItems => GetChildren<SchemaItem>();
 
-      public virtual IParameter StartTime
-      {
-         get { return this.Parameter(Constants.Parameters.START_TIME); }
-      }
+      public virtual IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
 
-      public virtual IParameter TimeBetweenRepetitions
-      {
-         get { return this.Parameter(CoreConstants.Parameter.TIME_BETWEEN_REPETITIONS); }
-      }
+      public virtual IParameter TimeBetweenRepetitions => this.Parameter(CoreConstants.Parameter.TIME_BETWEEN_REPETITIONS);
 
-      public virtual IParameter NumberOfRepetitions
-      {
-         get { return this.Parameter(CoreConstants.Parameter.NUMBER_OF_REPETITIONS); }
-      }
+      public virtual IParameter NumberOfRepetitions => this.Parameter(CoreConstants.Parameter.NUMBER_OF_REPETITIONS);
 
-      public virtual void AddSchemaItem(ISchemaItem schemaItem)
-      {
-         Add(schemaItem);
-      }
+      public virtual void AddSchemaItem(SchemaItem schemaItem) => Add(schemaItem);
 
-      public virtual IEnumerable<ISchemaItem> ExpandedSchemaItems(ICloneManager cloneManager)
+      public virtual IEnumerable<SchemaItem> ExpandedSchemaItems(ICloneManager cloneManager)
       {
          {
             double offset = TimeBetweenRepetitions.Value;
@@ -89,10 +68,7 @@ namespace PKSim.Core.Model
          SchemaItems.ToList().Each(RemoveChild);
       }
 
-      public virtual double Duration
-      {
-         get { return StartTime.Value + oneRepetionLength * NumberOfRepetitions.Value; }
-      }
+      public virtual double Duration => StartTime.Value + oneRepetionLength * NumberOfRepetitions.Value;
 
       public virtual double EndTime
       {

@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PKSim.CLI.Core</RootNamespace>
+    <AssemblyName>PKSim.CLI.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Data.v17.1, Version=17.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.17.1.5\lib\net45\DevExpress.Data.v17.1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v17.1, Version=17.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.17.1.5\lib\net45\DevExpress.Utils.v17.1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Assets">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.85\lib\net452\OSPSuite.Assets.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.85 Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.85\lib\net452\OSPSuite.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Presentation, Version=7.2.0.85, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.85\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Serializer">
+      <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.SimModel.2.2.0.5\lib\net45\OSPSuite.SimModel.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.TeXReporting, Version=2.0.1.7, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.1.7\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Utility, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.2.0.1.4\lib\net452\OSPSuite.Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="SX, Version=2.6.5.7, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.5.7\lib\net45\SX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Batch\ApplicationProtocol.cs" />
+    <Compile Include="Batch\Compound.cs" />
+    <Compile Include="Batch\CompoundProcess.cs" />
+    <Compile Include="Batch\Event.cs" />
+    <Compile Include="Batch\Formulation.cs" />
+    <Compile Include="Batch\Individual.cs" />
+    <Compile Include="Batch\Mapper\ApplicationProtocolMapper.cs" />
+    <Compile Include="Batch\Mapper\CompoundMapper.cs" />
+    <Compile Include="Batch\Mapper\FormulationMapper.cs" />
+    <Compile Include="Batch\Mapper\IndividualMapper.cs" />
+    <Compile Include="Batch\Mapper\ModelPropertiesMapper.cs" />
+    <Compile Include="Batch\Mapper\OriginDataMapper.cs" />
+    <Compile Include="Batch\Mapper\PopulationSettingsMapper.cs" />
+    <Compile Include="Batch\Mapper\SimulationMapper.cs" />
+    <Compile Include="Batch\Molecule.cs" />
+    <Compile Include="Batch\OriginData.cs" />
+    <Compile Include="Batch\ParameterVariationSet.cs" />
+    <Compile Include="Batch\PopulationSettings.cs" />
+    <Compile Include="Batch\Simulation.cs" />
+    <Compile Include="Batch\SimulationConfiguration.cs" />
+    <Compile Include="Batch\SimulationConstructor.cs" />
+    <Compile Include="Batch\SimulationForBatch.cs" />
+    <Compile Include="RunOptions\BatchConverterRunOptions.cs" />
+    <Compile Include="RunOptions\ExportRunOptions.cs" />
+    <Compile Include="RunOptions\IWithInputAndOutputFolders.cs" />
+    <Compile Include="CLIRegister.cs" />
+    <Compile Include="MinimalImplementations\CLIDiagramModel.cs" />
+    <Compile Include="MinimalImplementations\CLIDiagramModelToXmlMapper.cs" />
+    <Compile Include="MinimalImplementations\CLIDialogCreator.cs" />
+    <Compile Include="MinimalImplementations\CLIDisplayUnitRetriever.cs" />
+    <Compile Include="MinimalImplementations\CLIExceptionManager.cs" />
+    <Compile Include="MinimalImplementations\CLIJournalDiagramManagerFactory.cs" />
+    <Compile Include="MinimalImplementations\CLIProgressUpdater.cs" />
+    <Compile Include="MinimalImplementations\CLIUserSettings.cs" />
+    <Compile Include="MinimalImplementations\CLIWorkspace.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BatchConverterRunner.cs" />
+    <Compile Include="Services\ExportSimulationRunner.cs" />
+    <Compile Include="Services\IBatchRunner.cs" />
+    <Compile Include="RunOptions\JsonRunOptions.cs" />
+    <Compile Include="Services\JsonSimulationRunner.cs" />
+    <Compile Include="RunOptions\RunOptionsRules.cs" />
+    <Compile Include="Services\SimulationExporter.cs" />
+    <Compile Include="Services\SimulationLoader.cs" />
+    <Compile Include="RunOptions\SnapshotRunOptions.cs" />
+    <Compile Include="Services\SnapshotRunner.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PKSim.Assets\PKSim.Assets.csproj">
+      <Project>{2FFDED35-4F46-4F0C-A5A7-4097B0C5F7AA}</Project>
+      <Name>PKSim.Assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj">
+      <Project>{cef9367d-f2c4-4796-847b-42b090a601b5}</Project>
+      <Name>PKSim.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PKSim.Presentation\PKSim.Presentation.csproj">
+      <Project>{0238e2f1-a931-4d3d-9c6e-88924cff9501}</Project>
+      <Name>PKSim.Presentation</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

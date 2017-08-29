@@ -1,8 +1,6 @@
 using OSPSuite.Presentation.MenuAndBars;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;
-using PKSim.Presentation.Services;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Presentation.UICommands
 {

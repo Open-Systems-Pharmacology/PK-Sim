@@ -23,7 +23,7 @@ namespace PKSim.Presentation
       private IWorkspace _workspace;
       protected IEventPublisher _eventPublisher;
       protected IndividualSimulationComparison _individualSimulationComparison;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IRegistrationTask _registrationTask;
 
       protected override void Context()
@@ -31,7 +31,7 @@ namespace PKSim.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _applicationController = A.Fake<IApplicationController>();
          _workspace = A.Fake<IWorkspace>();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _registrationTask= A.Fake<IRegistrationTask>();
          A.CallTo(() => _workspace.Project).Returns(_project);
          _eventPublisher = A.Fake<IEventPublisher>();

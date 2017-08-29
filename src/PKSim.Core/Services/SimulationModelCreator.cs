@@ -167,7 +167,7 @@ namespace PKSim.Core.Services
          parameter.Visible = false;
       }
 
-      private void updateReferenceToIndividualParametersForStandardContainer(Individual individual, IndividualMolecule molecule, IMoleculeExpressionContainer expressionContainer, IList<IContainer> allOrganismContainers, PathCache<IMoleculeAmount> moleculeAmountPath)
+      private void updateReferenceToIndividualParametersForStandardContainer(Individual individual, IndividualMolecule molecule, MoleculeExpressionContainer expressionContainer, IList<IContainer> allOrganismContainers, PathCache<IMoleculeAmount> moleculeAmountPath)
       {
          var allContainers = _expressionContainersRetriever.AllContainersFor(individual.Organism, allOrganismContainers, molecule, expressionContainer);
 
@@ -187,7 +187,7 @@ namespace PKSim.Core.Services
          return amount;
       }
 
-      private void updateReferenceToIndividualParametersForSurrogateContainer(Individual individual, IndividualMolecule molecule, IMoleculeExpressionContainer expressionContainer, IContainer globalMoleculeContainer)
+      private void updateReferenceToIndividualParametersForSurrogateContainer(Individual individual, IndividualMolecule molecule, MoleculeExpressionContainer expressionContainer, IContainer globalMoleculeContainer)
       {
          string relExpName;
          if (expressionContainer.IsBloodCell())

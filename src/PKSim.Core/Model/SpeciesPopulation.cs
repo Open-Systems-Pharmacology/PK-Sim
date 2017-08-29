@@ -5,7 +5,7 @@ namespace PKSim.Core.Model
 {
    public class SpeciesPopulation : ObjectBase
    {
-      private readonly IList<Gender> _allGenders = new List<Gender>();
+      private readonly List<Gender> _allGenders = new List<Gender>();
 
       public virtual string Species { get; set; }
       public virtual bool IsAgeDependent { get; set; }
@@ -27,6 +27,6 @@ namespace PKSim.Core.Model
          return _allGenders.FindByName(name);
       }
 
-      public virtual IEnumerable<Gender> Genders => _allGenders;
+      public virtual IReadOnlyList<Gender> Genders => _allGenders;
    }
 }

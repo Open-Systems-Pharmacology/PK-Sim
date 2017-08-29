@@ -50,13 +50,13 @@ namespace PKSim.Presentation
       private IConfigureSimulationPresenter _configurePresenter;
       private Simulation _newSimulation;
       private IPKSimCommand _pkSimCommand;
-      private IPKSimProject _project;
+      private PKSimProject _project;
 
       protected override void Context()
       {
          base.Context();
          _pkSimCommand = A.Fake<IPKSimCommand>();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _configurePresenter = A.Fake<IConfigureSimulationPresenter>();
          _simulationToConfigure = new IndividualSimulation().WithId("oldSim");
          _newSimulation = new IndividualSimulation().WithId("newSim");

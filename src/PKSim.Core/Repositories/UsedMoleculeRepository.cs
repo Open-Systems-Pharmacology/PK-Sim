@@ -4,7 +4,6 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Repositories
 {
@@ -14,9 +13,9 @@ namespace PKSim.Core.Repositories
 
    public class UsedMoleculeRepository : IUsedMoleculeRepository
    {
-      private readonly IProjectRetriever _projectRetriever;
+      private readonly IPKSimProjectRetriever _projectRetriever;
 
-      public UsedMoleculeRepository(IProjectRetriever projectRetriever)
+      public UsedMoleculeRepository(IPKSimProjectRetriever projectRetriever)
       {
          _projectRetriever = projectRetriever;
       }
@@ -46,7 +45,7 @@ namespace PKSim.Core.Repositories
 
       private IEnumerable<TBuildingBlock> allLoadedBuildingBlocks<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         return _projectRetriever.CurrentProject.DowncastTo<IPKSimProject>().All<TBuildingBlock>(x => x.IsLoaded);
+         return _projectRetriever.Current.All<TBuildingBlock>(x => x.IsLoaded);
       }
    }
 }

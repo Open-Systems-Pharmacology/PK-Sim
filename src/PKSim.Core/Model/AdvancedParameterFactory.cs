@@ -1,13 +1,13 @@
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
    public interface IAdvancedParameterFactory
    {
-      IAdvancedParameter CreateDefaultFor(IParameter parameter);
-      IAdvancedParameter Create(IParameter parameter, DistributionType distributionType);
+      AdvancedParameter CreateDefaultFor(IParameter parameter);
+      AdvancedParameter Create(IParameter parameter, DistributionType distributionType);
    }
 
    public class AdvancedParameterFactory : IAdvancedParameterFactory
@@ -24,14 +24,14 @@ namespace PKSim.Core.Model
          _objectBaseFactory = objectBaseFactory;
       }
 
-      public IAdvancedParameter CreateDefaultFor(IParameter parameter)
+      public AdvancedParameter CreateDefaultFor(IParameter parameter)
       {
          return Create(parameter, DistributionTypes.Normal);
       }
 
-      public IAdvancedParameter Create(IParameter parameter, DistributionType distributionType)
+      public AdvancedParameter Create(IParameter parameter, DistributionType distributionType)
       {
-         var advancedParameter = _objectBaseFactory.Create<IAdvancedParameter>();
+         var advancedParameter = _objectBaseFactory.Create<AdvancedParameter>();
 
          //we don't care about the name, it should only be unique in the hiearchy
          advancedParameter.Name = _entityPathResolver.PathFor(parameter);
@@ -64,11 +64,11 @@ namespace PKSim.Core.Model
 
          //should set the distribution parameter as visible since they will need to be edited
          advancedParameter.DistributedParameter.AllParameters().Each(x =>
-            {
-               x.Visible = true;
-               x.CanBeVaried = true;
-               x.CanBeVariedInPopulation = false;
-            });
+         {
+            x.Visible = true;
+            x.CanBeVaried = true;
+            x.CanBeVariedInPopulation = false;
+         });
 
          return advancedParameter;
       }

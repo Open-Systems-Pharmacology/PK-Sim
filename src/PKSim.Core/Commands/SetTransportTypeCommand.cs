@@ -9,7 +9,7 @@ namespace PKSim.Core.Commands
 {
    public class SetTransportTypeCommand : BuildingBlockStructureChangeCommand
    {
-      private ITransporterExpressionContainer _transporterContainer;
+      private TransporterExpressionContainer _transporterContainer;
       private readonly MembraneLocation _membraneLocationToUse;
       private readonly string _transporterContainerId;
       private readonly TransportType _newTransportType;
@@ -17,7 +17,7 @@ namespace PKSim.Core.Commands
       private MembraneLocation _oldMembraneLocation;
       private Individual _individual;
 
-      public SetTransportTypeCommand(ITransporterExpressionContainer transporterContainer, TransportType oldTransportType, TransportType newTransportType, MembraneLocation membraneLocationToUse, IExecutionContext context)
+      public SetTransportTypeCommand(TransporterExpressionContainer transporterContainer, TransportType oldTransportType, TransportType newTransportType, MembraneLocation membraneLocationToUse, IExecutionContext context)
       {
          _transporterContainer = transporterContainer;
          _membraneLocationToUse = membraneLocationToUse;
@@ -47,7 +47,7 @@ namespace PKSim.Core.Commands
       {
          base.RestoreExecutionData(context);
          _individual = context.Get<Individual>(BuildingBlockId);
-         _transporterContainer = context.Get<ITransporterExpressionContainer>(_transporterContainerId);
+         _transporterContainer = context.Get<TransporterExpressionContainer>(_transporterContainerId);
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)

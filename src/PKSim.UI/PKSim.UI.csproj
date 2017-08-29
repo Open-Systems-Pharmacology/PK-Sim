@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PKSim.UI</RootNamespace>
     <AssemblyName>PKSim.UI</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
@@ -163,6 +163,24 @@
     <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Debug, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Debug.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Options.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Primitives.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
@@ -248,8 +266,11 @@
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Design" />
     <Reference Include="System.Printing" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.4.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -590,12 +611,6 @@
     </Compile>
     <Compile Include="Views\Individuals\ShowOntogenyDataView.Designer.cs">
       <DependentUpon>ShowOntogenyDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ObservedDataToCompoundMappingView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\ObservedDataToCompoundMappingView.Designer.cs">
-      <DependentUpon>ObservedDataToCompoundMappingView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Parameters\EditTableParameterView.cs">
       <SubType>Form</SubType>
@@ -1342,6 +1357,12 @@
     <Compile Include="Views\Simulations\SimulationParametersView.Designer.cs">
       <DependentUpon>SimulationParametersView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Snapshots\LoadFromSnapshotView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Snapshots\LoadFromSnapshotView.Designer.cs">
+      <DependentUpon>LoadFromSnapshotView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\UserDisplayUnitsView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1541,9 +1562,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Individuals\ShowOntogenyDataView.resx">
       <DependentUpon>ShowOntogenyDataView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\ObservedDataToCompoundMappingView.resx">
-      <DependentUpon>ObservedDataToCompoundMappingView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Parameters\EditTableParameterView.resx">
       <DependentUpon>EditTableParameterView.cs</DependentUpon>
@@ -1936,6 +1954,9 @@
     <EmbeddedResource Include="Views\Simulations\SimulationSubjectSelectionView.resx">
       <DependentUpon>SimulationSubjectSelectionView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Snapshots\LoadFromSnapshotView.resx">
+      <DependentUpon>LoadFromSnapshotView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\UserDisplayUnitsView.resx">
       <DependentUpon>UserDisplayUnitsView.cs</DependentUpon>

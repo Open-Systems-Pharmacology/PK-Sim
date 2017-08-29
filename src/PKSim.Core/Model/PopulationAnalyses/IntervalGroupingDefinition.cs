@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model.PopulationAnalyses
 {
@@ -17,7 +17,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
       /// </summary>
       public IDimension Dimension { get; set; }
 
-      public virtual List<GroupingItem> Items { get; private set; }
+      public virtual List<GroupingItem> Items { get; }
 
       /// <summary>
       ///    Limits used to calculate the intervals. The limit should be ordered
@@ -64,16 +64,13 @@ namespace PKSim.Core.Model.PopulationAnalyses
             expression.AppendFormat("iif([{0}] < {1}, '{2}', ", FieldName, limit.ConvertedTo<string>(), labels[i++]);
 
          expression.AppendFormat("'{0}'", labels[i]);
-         for (var j = 0; j < Limits.Count(); j++)
+         for (var j = 0; j < Limits.Count; j++)
             expression.Append(")");
 
          return expression.ToString();
       }
 
-      public override bool CanBeUsedFor(Type dataType)
-      {
-         return dataType.IsNumeric();
-      }
+      public override bool CanBeUsedFor(Type dataType) => dataType.IsNumeric();
 
       public override int Compare(object value1, object value2)
       {
@@ -87,13 +84,14 @@ namespace PKSim.Core.Model.PopulationAnalyses
       {
          base.UpdatePropertiesFrom(source, cloneManager);
          var intervalGrouping = source as IntervalGroupingDefinition;
-         if (intervalGrouping == null) return;
-         intervalGrouping.Items.Each(item => AddItem(cloneManager.Clone(item))); 
+         if (intervalGrouping == null)
+            return;
+
+         Dimension = intervalGrouping.Dimension;
+         DisplayUnit = intervalGrouping.DisplayUnit;
+         AddItems(intervalGrouping.Items.Select(cloneManager.Clone));
       }
 
-      public override IReadOnlyList<GroupingItem> GroupingItems
-      {
-         get { return Items; }
-      }
+      public override IReadOnlyList<GroupingItem> GroupingItems => Items;
    }
 }

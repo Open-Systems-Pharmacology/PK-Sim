@@ -35,7 +35,7 @@ namespace PKSim.Core.Repositories
          if (_workspace.CurrentProject == null)
             return new List<TBuildingBlock>();
 
-         return _workspace.CurrentProject.DowncastTo<IPKSimProject>().All<TBuildingBlock>();
+         return _workspace.CurrentProject.DowncastTo<PKSimProject>().All<TBuildingBlock>();
       }
 
       public TBuildingBlock ById<TBuildingBlock>(string templateId) where TBuildingBlock : class, IPKSimBuildingBlock

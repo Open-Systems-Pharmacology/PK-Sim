@@ -27,12 +27,12 @@ namespace PKSim.Core
    public class When_the_schema_task_is_removing_a_schema_item_from_a_schema_containing_only_one_schema_item : concern_for_SchemaTask
    {
       private Schema _schema;
-      private ISchemaItem _schemaItem;
+      private SchemaItem _schemaItem;
 
       protected override void Context()
       {
          base.Context();
-         _schemaItem = A.Fake<ISchemaItem>();
+         _schemaItem = A.Fake<SchemaItem>();
          _schema =A.Fake<Schema>();
          A.CallTo(() => _schema.SchemaItems).Returns(new[] { _schemaItem });
       }

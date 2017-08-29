@@ -8,7 +8,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Mappers
 {
-   public interface IProtocolToSchemaItemsMapper : IMapper<Protocol, IReadOnlyList<ISchemaItem>>
+   public interface IProtocolToSchemaItemsMapper : IMapper<Protocol, IReadOnlyList<SchemaItem>>
    {
    }
 
@@ -18,7 +18,7 @@ namespace PKSim.Core.Mappers
    {
       private readonly ISimpleProtocolToSchemaMapper _simpleProtocolToSchemaMapper;
       private readonly ICloner _cloneManager;
-      private IEnumerable<ISchemaItem> _allSchemaItems;
+      private IEnumerable<SchemaItem> _allSchemaItems;
 
       public ProtocolToSchemaItemsMapper(ISimpleProtocolToSchemaMapper simpleProtocolToSchemaMapper, ICloner cloneManager)
       {
@@ -26,7 +26,7 @@ namespace PKSim.Core.Mappers
          _cloneManager = cloneManager;
       }
 
-      public IReadOnlyList<ISchemaItem> MapFrom(Protocol protocol)
+      public IReadOnlyList<SchemaItem> MapFrom(Protocol protocol)
       {
          this.Visit(protocol);
          var resultingList = _allSchemaItems.OrderBy(si => si.StartTime.Value).ToList();

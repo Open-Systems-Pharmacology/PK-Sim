@@ -23,7 +23,7 @@ namespace PKSim.Core
          _containerTask = A.Fake<IContainerTask>();
          _cloner = A.Fake<ICloner>();
          sut = new SchemaItemFactory(_objectBaseFactory, _schemaItemParameterRetriever, _containerTask, _cloner);
-         A.CallTo(() => _objectBaseFactory.Create<ISchemaItem>()).Returns(new SchemaItem());
+         A.CallTo(() => _objectBaseFactory.Create<SchemaItem>()).Returns(new SchemaItem());
       }
    }
 
@@ -71,16 +71,16 @@ namespace PKSim.Core
    public class When_creating_a_schema_item_based_on_a_given_schema_item : concern_for_SchemaItemFactory
    {
       private IContainer _container;
-      private ISchemaItem _schemaItemToClone;
-      private ISchemaItem _schemaItem;
-      private ISchemaItem _clone;
+      private SchemaItem _schemaItemToClone;
+      private SchemaItem _schemaItem;
+      private SchemaItem _clone;
 
       protected override void Context()
       {
          base.Context();
          _container = new Container();
-         _schemaItemToClone = A.Fake<ISchemaItem>();
-         _clone = A.Fake<ISchemaItem>();
+         _schemaItemToClone = A.Fake<SchemaItem>();
+         _clone = A.Fake<SchemaItem>();
          A.CallTo(() => _cloner.Clone(_schemaItemToClone)).Returns(_clone);
          A.CallTo(_containerTask).WithReturnType<string>().Returns("NEW NAME");
       }

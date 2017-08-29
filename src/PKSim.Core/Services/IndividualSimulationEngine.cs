@@ -1,16 +1,13 @@
 using System;
 using System.Threading.Tasks;
-using PKSim.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Exceptions;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
-using OSPSuite.Core.Serialization.SimModel.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Events;
+using PKSim.Assets;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -21,22 +18,18 @@ namespace PKSim.Core.Services
       private IProgressUpdater _progressUpdater;
       private readonly ISimulationResultsSynchronizer _simulationResultsSynchronizer;
       private readonly IEventPublisher _eventPublisher;
-      private readonly IExceptionManager _exceptionManager;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
-      private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
+      private bool _shouldRaiseEvents;
 
       public IndividualSimulationEngine(ISimModelManager simModelManager, IProgressManager progressManager,
          ISimulationResultsSynchronizer simulationResultsSynchronizer,
-         IEventPublisher eventPublisher, IExceptionManager exceptionManager,
-         ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper, ISimulationPersistableUpdater simulationPersistableUpdater)
+         IEventPublisher eventPublisher, ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper)
       {
          _simModelManager = simModelManager;
          _progressManager = progressManager;
          _simulationResultsSynchronizer = simulationResultsSynchronizer;
          _eventPublisher = eventPublisher;
-         _exceptionManager = exceptionManager;
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
-         _simulationPersistableUpdater = simulationPersistableUpdater;
          _simModelManager.Terminated += terminated;
       }
 
@@ -48,34 +41,51 @@ namespace PKSim.Core.Services
       private void terminated()
       {
          _progressUpdater?.Dispose();
+         _progressUpdater = null;
          _simModelManager.Terminated -= terminated;
          _simModelManager.SimulationProgress -= simulationProgress;
       }
 
-      public async Task RunAsync(IndividualSimulation individualSimulation)
+      public async Task RunAsync(IndividualSimulation individualSimulation, SimulationRunOptions simulationRunOptions)
       {
-         _progressUpdater = _progressManager.Create();
-         _progressUpdater.Initialize(100, PKSimConstants.UI.Calculating);
+         _shouldRaiseEvents = simulationRunOptions.RaiseEvents;
+         initializeProgress();
+
          _simModelManager.SimulationProgress += simulationProgress;
          //make sure that thread methods always catch and handle any exception,
          //otherwise we risk unplanned application termination
          var begin = SystemTime.UtcNow();
          try
          {
-            _eventPublisher.PublishEvent(new SimulationRunStartedEvent());
-            await runSimulation(individualSimulation, exportAll: false, raiseEvents: true, checkForNegativeValues: true);
+            raiseEvent(new SimulationRunStartedEvent());
+            await runSimulation(individualSimulation, simulationRunOptions);
          }
-         catch (Exception ex)
+         catch (Exception)
          {
-            _exceptionManager.LogException(ex);
             terminated();
+            throw;
          }
          finally
          {
             var end = SystemTime.UtcNow();
             var timeSpent = end - begin;
-            _eventPublisher.PublishEvent(new SimulationRunFinishedEvent(individualSimulation, timeSpent));
+            raiseEvent(new SimulationRunFinishedEvent(individualSimulation, timeSpent));
          }
+      }
+
+      private void raiseEvent<T>(T eventToRaise)
+      {
+         if (_shouldRaiseEvents)
+            _eventPublisher.PublishEvent(eventToRaise);
+      }
+
+      private void initializeProgress()
+      {
+         if (!_shouldRaiseEvents)
+            return;
+
+         _progressUpdater = _progressManager.Create();
+         _progressUpdater.Initialize(100, PKSimConstants.UI.Calculating);
       }
 
       public void Stop()
@@ -83,55 +93,36 @@ namespace PKSim.Core.Services
          _simModelManager.StopSimulation();
       }
 
-      public void Run(IndividualSimulation simulation)
+      private Task runSimulation(IndividualSimulation simulation, SimulationRunOptions simulationRunOptions)
       {
-         runSimulation(simulation, exportAll: false, raiseEvents: false, checkForNegativeValues: true).Wait();
-      }
-
-      private Task runSimulation(IndividualSimulation simulation, bool exportAll, bool raiseEvents, bool checkForNegativeValues)
-      {
-         //Should be done outside of the Task.Run to ensure that any event that might be raised by this action won't cause threading issue
-         updatePersistableFor(simulation, exportAll);
-
          return Task.Run(() =>
          {
-            var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(simulation, shouldCloneModel:false);
-            var simRunOptions = new SimulationRunOptions
-            {
-               SimModelExportMode = SimModelExportMode.Optimized,
-               CheckForNegativeValues = checkForNegativeValues
-            };
-               
-            var simResults = _simModelManager.RunSimulation(modelCoreSimulation, simRunOptions);
+            var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(simulation, shouldCloneModel: false);
+            var simResults = _simModelManager.RunSimulation(modelCoreSimulation, simulationRunOptions);
 
             if (!simResults.Success)
                return;
 
             _simulationResultsSynchronizer.Synchronize(simulation, simResults.Results);
+            updateResultsName(simulation);
+
             simulation.ClearPKCache();
 
-            if (raiseEvents)
-               _eventPublisher.PublishEvent(new SimulationResultsUpdatedEvent(simulation));
+            raiseEvent(new SimulationResultsUpdatedEvent(simulation));
          });
       }
 
-      public Task RunForBatch(IndividualSimulation individualSimulation, bool checkNegativeValues)
+      private void updateResultsName(IndividualSimulation simulation)
       {
-         //we want to export all 
-         return runSimulation(individualSimulation, exportAll: true, raiseEvents: false, checkForNegativeValues: checkNegativeValues);
-      }
+         if (simulation.DataRepository == null)
+            return;
 
-      private void updatePersistableFor(IndividualSimulation simulation, bool exportAll)
-      {
-         if (exportAll)
-            _simulationPersistableUpdater.ResetPersistable(simulation);
-         else
-            _simulationPersistableUpdater.UpdatePersistableFromSettings(simulation);
+         simulation.DataRepository.Name = simulation.Name;
       }
 
       private void simulationProgress(object sender, SimulationProgressEventArgs simulationProgressArgs)
       {
-         _progressUpdater.ReportProgress(simulationProgressArgs.Progress, PKSimConstants.UI.Calculating);
+         _progressUpdater?.ReportProgress(simulationProgressArgs.Progress, PKSimConstants.UI.Calculating);
       }
    }
 }

@@ -8,9 +8,6 @@ namespace PKSim.Core.Model
       {
       }
 
-      public ISimulationComparison Comparison
-      {
-         get { return Subject; }
-      }
+      public ISimulationComparison Comparison => Subject;
    }
 }

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
@@ -10,7 +10,7 @@ namespace PKSim.Core.Model
    {
       private readonly List<ProcessSelection> _partialProcesses;
       private readonly ICache<SystemicProcessType, SystemicProcessSelection> _systemicProcesses;
-      public string ProductNameTemplate { get; private set; }
+      public string ProductNameTemplate { get; }
 
       public ProcessSelectionGroup(string productNameTemplate)
       {
@@ -19,21 +19,29 @@ namespace PKSim.Core.Model
          ProductNameTemplate = productNameTemplate;
       }
 
-      public void AddPartialProcessSelection(ProcessSelection processSelection)
-      {
-         _partialProcesses.Add(processSelection);
-      }
+      public void AddPartialProcessSelection(ProcessSelection processSelection) => _partialProcesses.Add(processSelection);
 
-      public void RemovePartialProcessSelection(ProcessSelection processSelection)
-      {
-         _partialProcesses.Remove(processSelection);
-      }
+      public void RemovePartialProcessSelection(ProcessSelection processSelection) => _partialProcesses.Remove(processSelection);
 
       public void AddSystemicProcessSelection(SystemicProcessSelection systemicProcessSelection)
       {
          if (_systemicProcesses.Contains(systemicProcessSelection.ProcessType))
             _systemicProcesses.Remove(systemicProcessSelection.ProcessType);
+
          _systemicProcesses.Add(systemicProcessSelection);
+      }
+
+      public void AddProcessSelection(IProcessMapping processMapping)
+      {
+         switch (processMapping)
+         {
+            case SystemicProcessSelection systemicProcess:
+               AddSystemicProcessSelection(systemicProcess);
+               break;
+            case ProcessSelection partialProcess:
+               AddPartialProcessSelection(partialProcess);
+               break;
+         }
       }
 
       public IEnumerable<IReactionMapping> AllEnabledProcesses()
@@ -57,25 +65,13 @@ namespace PKSim.Core.Model
          return AllEnabledProcesses().Select(x => x.MoleculeName).Distinct();
       }
 
-      public IReadOnlyList<ProcessSelection> AllPartialProcesses()
-      {
-         return _partialProcesses;
-      }
+      public IReadOnlyList<ProcessSelection> AllPartialProcesses() => _partialProcesses;
 
-      public IEnumerable<ProcessSelection> AllEnabledPartialProcesses()
-      {
-         return _partialProcesses.Where(x => !string.IsNullOrEmpty(x.ProcessName));
-      }
+      public IEnumerable<ProcessSelection> AllEnabledPartialProcesses() => _partialProcesses.Where(x => !string.IsNullOrEmpty(x.ProcessName));
 
-      public IEnumerable<SystemicProcessSelection> AllEnabledSystemicProcesses()
-      {
-         return _systemicProcesses.Where(x => !string.IsNullOrEmpty(x.ProcessName));
-      }
+      public IEnumerable<SystemicProcessSelection> AllEnabledSystemicProcesses() => _systemicProcesses.Where(x => !string.IsNullOrEmpty(x.ProcessName));
 
-      public IEnumerable<SystemicProcessSelection> AllSystemicProcesses()
-      {
-         return _systemicProcesses;
-      }
+      public IEnumerable<SystemicProcessSelection> AllSystemicProcesses() => _systemicProcesses;
 
       /// <summary>
       ///    returns the systemic process for the given type if it was defined and mapped
@@ -84,14 +80,13 @@ namespace PKSim.Core.Model
       public SystemicProcessSelection ProcessSelectionFor(SystemicProcessType systemicProcessType)
       {
          var process = _systemicProcesses[systemicProcessType];
-         if (process == null) return null;
+         if (process == null)
+            return null;
+
          return process.ProcessName.IsNullOrEmpty() ? null : process;
       }
 
-      public bool IsEmpty
-      {
-         get { return !_systemicProcesses.Any() && _partialProcesses.Count == 0; }
-      }
+      public bool IsEmpty => !_systemicProcesses.Any() && _partialProcesses.Count == 0;
 
       public ProcessSelectionGroup Clone(ICloneManager cloneManager)
       {

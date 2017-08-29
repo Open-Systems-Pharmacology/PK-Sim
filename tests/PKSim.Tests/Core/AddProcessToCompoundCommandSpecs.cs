@@ -1,11 +1,11 @@
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using FakeItEasy;
 using PKSim.Presentation.Core;
 
 namespace PKSim.Core
@@ -15,8 +15,8 @@ namespace PKSim.Core
       protected Compound _compound;
       protected IExecutionContext _executionContext;
       protected IWorkspace _workspace;
-      protected IPKSimProject _project;
-      protected PKSim.Core.Model.CompoundProcess _proc;
+      protected PKSimProject _project;
+      protected CompoundProcess _proc;
 
       protected override void Context()
       {
@@ -31,16 +31,15 @@ namespace PKSim.Core
 
          var serializedStream = new byte[1];
          A.CallTo(() => _executionContext.Serialize(_proc)).Returns(serializedStream);
-         A.CallTo(() => _executionContext.Deserialize<PKSim.Core.Model.CompoundProcess>(serializedStream)).Returns(_proc);
+         A.CallTo(() => _executionContext.Deserialize<CompoundProcess>(serializedStream)).Returns(_proc);
 
          A.CallTo(() => _executionContext.Get<Compound>(_compound.Id)).Returns(_compound);
-         A.CallTo(() => _executionContext.Get<PKSim.Core.Model.CompoundProcess>(_proc.Id)).Returns(_proc);
+         A.CallTo(() => _executionContext.Get<CompoundProcess>(_proc.Id)).Returns(_proc);
 
          sut = new AddProcessToCompoundCommand(_proc, _compound, _executionContext);
       }
    }
 
-   
    public class When_adding_a_process_to_a_compound : concern_for_AddProcessToCompoundCommand
    {
       protected override void Because()
@@ -55,7 +54,6 @@ namespace PKSim.Core
       }
    }
 
-   
    public class When_removing_a_process_from_a_compound : concern_for_AddProcessToCompoundCommand
    {
       protected IReversibleCommand<IExecutionContext> _removePartialStabiCommand;
@@ -81,7 +79,6 @@ namespace PKSim.Core
       }
    }
 
-   
    public class When_restoring_a_process_from_a_compound : concern_for_AddProcessToCompoundCommand
    {
       protected IReversibleCommand<IExecutionContext> _restorePartialStabiCommand;

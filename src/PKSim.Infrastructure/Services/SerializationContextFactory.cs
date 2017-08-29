@@ -25,7 +25,10 @@ namespace PKSim.Infrastructure.Services
       private readonly IContainer _container;
       private readonly ICloneManagerForModel _cloneManagerForModel;
 
-      public SerializationContextFactory(ISerializationDimensionFactory dimensionFactory, IObjectBaseFactory objectBaseFactory, IContainer container,
+      public SerializationContextFactory(
+         ISerializationDimensionFactory dimensionFactory, 
+         IObjectBaseFactory objectBaseFactory, 
+         IContainer container,
          ICloneManagerForModel cloneManagerForModel)
       {
          _dimensionFactory = dimensionFactory;
