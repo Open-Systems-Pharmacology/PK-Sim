@@ -45,7 +45,7 @@ namespace PKSim.BatchTool.Views
          _screenBinder.Bind(x => x.OutputFolder).To(btnOutputFolder);
 
          btnOutputFolder.ButtonClick += (o, e) => OnEvent(_presenter.SelectOutputFolder);
-         btnCancel.Click += (o, e) => OnEvent(_presenter.Exit);
+         btnCancel.Click += (o, e) => OnEvent(()=>_presenter.Exit());
          btnGenerate.Click += (o, e) => OnEvent(async ()=> await _presenter.RunBatch());
 
          RegisterValidationFor(_screenBinder);
@@ -61,6 +61,16 @@ namespace PKSim.BatchTool.Views
       {
          base.OnClearError(control);
          SetOkButtonEnable();
+      }
+
+      protected override void OnFormClosing(FormClosingEventArgs e)
+      {
+         if (e.CloseReason == CloseReason.UserClosing)
+         {
+            e.Cancel = !_presenter.Exit();
+         }
+
+         base.OnFormClosing(e);
       }
 
       protected virtual void SetOkButtonEnable()

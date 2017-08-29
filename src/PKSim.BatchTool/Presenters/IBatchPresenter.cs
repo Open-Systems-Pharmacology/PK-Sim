@@ -14,7 +14,7 @@ namespace PKSim.BatchTool.Presenters
 {
    public interface IBatchPresenter : IPresenter
    {
-      void Exit();
+      bool Exit();
       Task RunBatch();
       void InitializeForStandAloneStart();
    }
@@ -85,15 +85,17 @@ namespace PKSim.BatchTool.Presenters
          return _batchRunner.RunBatch(_startOptions);
       }
 
-      public void Exit()
+      public bool Exit()
       {
          if (_isRunning)
          {
             var ans = _dialogCreator.MessageBoxYesNo("Batch is running. Really exit?");
-            if (ans == ViewResult.No) return;
+            if (ans == ViewResult.No)
+               return false;
          }
 
          Application.Exit();
+         return true;
       }
 
       private bool shouldClose => _startedFromCommandLine;

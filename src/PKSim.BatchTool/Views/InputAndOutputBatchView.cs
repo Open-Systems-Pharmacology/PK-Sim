@@ -51,7 +51,7 @@ namespace PKSim.BatchTool.Views
 
          btnInputFolder.ButtonClick += (o, e) => OnEvent(()=>_presenter.SelectInputFolder());
          btnOutputFolder.ButtonClick += (o, e) => OnEvent(() => _presenter.SelectOutputFolder());
-         btnClose.Click += (o, e) => OnEvent(_presenter.Exit);
+         btnClose.Click += (o, e) => OnEvent(()=>_presenter.Exit());
          btnCalculate.Click += (o, e) => OnEvent(async () => await _presenter.RunBatch());
 
          RegisterValidationFor(_screenBinder);
@@ -61,7 +61,7 @@ namespace PKSim.BatchTool.Views
       {
          if (e.CloseReason == CloseReason.UserClosing)
          {
-            OnEvent(_presenter.Exit);
+            e.Cancel = !_presenter.Exit(); 
          }
 
          base.OnFormClosing(e);
