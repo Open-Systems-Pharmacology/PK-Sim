@@ -1,10 +1,8 @@
-﻿using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Batch.Mapper
 {

@@ -215,7 +215,7 @@ namespace PKSim.Presentation.Repositories
                   .WithCaption(PKSimConstants.ObjectTypes.Compound)
                   .WithStyle(ItemStyle.Small)
                   .WithIcon(ApplicationIcons.Compound))
-               .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadFormulation))
+               .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadFormulationFromTemplate))
                   .WithCaption(PKSimConstants.ObjectTypes.Formulation)
                   .WithStyle(ItemStyle.Small)
                   .WithIcon(ApplicationIcons.Formulation))

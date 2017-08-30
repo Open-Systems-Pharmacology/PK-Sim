@@ -55,10 +55,14 @@ namespace PKSim.Presentation.Services
          throw new NotSupportedException("Do not call Edit for a simulation subject. Use the dedicated method instead");
       }
 
-
       public IReadOnlyList<ISimulationSubject> LoadFromTemplate()
       {
          return _buildingBlockTask.LoadFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+      }
+
+      public IReadOnlyList<ISimulationSubject> LoadFromSnapshot()
+      {
+         throw new NotSupportedException("Do not call LoadFromSnapshot for a simulation subject. Use the dedicated method instead");
       }
 
       public ISimulationSubject LoadSingleFromTemplate()

@@ -1,8 +1,13 @@
-﻿using FakeItEasy;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
 using Parameter = PKSim.Core.Snapshots.Parameter;
@@ -18,18 +23,20 @@ namespace PKSim.Core
       protected ISnapshotSerializer _snapshotSerializer;
       protected Parameter _parameterSnapshot;
       protected ISnapshotMapper _snapshotMapper;
+      protected IObjectTypeResolver _objectTypeResolver;
 
       protected override void Context()
       {
          _dialogCreator = A.Fake<IDialogCreator>();
          _executionContext = A.Fake<IExecutionContext>();
          _snapshotSerializer = A.Fake<ISnapshotSerializer>();
-         _snapshotMapper= A.Fake<ISnapshotMapper>();
-         sut = new SnapshotTask(_dialogCreator, _snapshotSerializer, _snapshotMapper, _executionContext);
+         _snapshotMapper = A.Fake<ISnapshotMapper>();
+         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
+         sut = new SnapshotTask(_dialogCreator, _snapshotSerializer, _snapshotMapper, _executionContext, _objectTypeResolver);
 
          _parameter = A.Fake<IParameter>();
          _parameter.Name = "Param";
-         A.CallTo(() => _executionContext.TypeFor(_parameter)).Returns(_parameterType);
+         A.CallTo(() => _objectTypeResolver.TypeFor(_parameter)).Returns(_parameterType);
 
          _parameterSnapshot = new Parameter();
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_parameter)).Returns(_parameterSnapshot);
@@ -42,6 +49,11 @@ namespace PKSim.Core
       {
          base.Context();
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(null);
+      }
+
+      protected override void Because()
+      {
+         sut.ExportSnapshot(_parameter);
       }
 
       [Observation]
@@ -98,6 +110,80 @@ namespace PKSim.Core
       public void should_export_the_snapshot_to_file()
       {
          A.CallTo(() => _snapshotSerializer.Serialize(_parameterSnapshot, _fileFullPath)).MustHaveHappened();
+      }
+   }
+
+   public class When_loading_objects_from_snapshot : concern_for_SnapshotTask
+   {
+      private readonly string _discrimator = "Discriminator";
+      private readonly string _fileName = "FileName";
+      private List<Formulation> _formulations;
+      private Type _snapshotType;
+      private object _snapshot1;
+      private object _snapshot2;
+      private Formulation _formulation1;
+      private Formulation _formulation2;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshotType = typeof(Snapshots.Formulation);
+         _snapshot1 = new Snapshots.Formulation();
+         _snapshot2 = new Snapshots.Formulation();
+         _formulation1 = new Formulation();
+         _formulation2 = new Formulation();
+
+         A.CallTo(() => _snapshotMapper.SnapshotTypeFor<Formulation>()).Returns(_snapshotType);
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
+         A.CallTo(() => _snapshotSerializer.DeserializeAsArray(_fileName, _snapshotType)).Returns(new[] {_snapshot1, _snapshot2});
+         A.CallTo(() => _snapshotMapper.MapToModel(_snapshot1)).Returns(_formulation1);
+         A.CallTo(() => _snapshotMapper.MapToModel(_snapshot2)).Returns(_formulation2);
+      }
+
+      protected override void Because()
+      {
+         _formulations = sut.LoadFromSnapshot<Formulation>(_discrimator).ToList();
+      }
+
+      [Observation]
+      public void should_ask_the_user_to_select_the_file_containing_the_snapshot_to_laod()
+      {
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT, null, null)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_deserialize_the_file_to_the_matching_snapshot_type_and_return_the_expecting_model_objects()
+      {
+         _formulations.ShouldContain(_formulation1, _formulation2);
+      }
+   }
+
+   public class When_loading_objects_from_snapshot_and_the_user_cancels_the_action : concern_for_SnapshotTask
+   {
+      private readonly string _discrimator = "Discriminator";
+      private List<Formulation> _formulations;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(null);
+      }
+
+      protected override void Because()
+      {
+         _formulations = sut.LoadFromSnapshot<Formulation>(_discrimator).ToList();
+      }
+
+      [Observation]
+      public void should_ask_the_user_to_select_the_file_containing_the_snapshot_to_laod()
+      {
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT, null, null)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_return_an_empty_enumeration_of_model_being_loaded_from_snapshot()
+      {
+         _formulations.ShouldBeEmpty();
       }
    }
 }

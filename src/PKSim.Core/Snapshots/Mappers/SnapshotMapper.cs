@@ -24,6 +24,17 @@ namespace PKSim.Core.Snapshots.Mappers
       ///    <paramref name="snapshot" />
       /// </exception>
       object MapToModel(object snapshot);
+
+
+      /// <summary>
+      /// Returns the snapshot type for the model type <typeparamref name="T"/>
+      /// </summary>
+      /// <typeparam name="T">Model type for which the snapshot type should be found</typeparam>
+      /// <exception cref="SnapshotNotFoundException">
+      ///    is thrown if a snapshot could not be found for the given
+      ///    model type <typeparamref name="T"/>
+      /// </exception>
+      Type SnapshotTypeFor<T>();
    }
 
    public class SnapshotMapper : ISnapshotMapper
@@ -38,18 +49,28 @@ namespace PKSim.Core.Snapshots.Mappers
       public object MapToSnapshot(object model)
       {
          var modelType = model.GetType();
-         foreach (var mapper in _allMappers)
-         {
-            if (mapper.IsSatisfiedBy(modelType))
-               return mapper.MapToSnapshot(model);
-         }
-
-         throw new SnapshotNotFoundException(modelType);
+         return mapperFor(modelType).MapToSnapshot(model);
       }
 
       public object MapToModel(object snapshot)
       {
-         throw new NotImplementedException();
+         var snapshotType = snapshot.GetType();
+         return mapperFor(snapshotType).MapToModel(snapshot);
+      }
+
+      public Type SnapshotTypeFor<T>()
+      {
+         var modelType = typeof(T);
+         return mapperFor(modelType).SnapshotTypeFor<T>();
+      }
+
+      private ISnapshotMapper mapperFor(Type modelOrSnapshotType)
+      {
+         var mapper =  _allMappers.FirstOrDefault(x => x.IsSatisfiedBy(modelOrSnapshotType));
+         if (mapper != null)
+            return mapper;
+
+         throw new SnapshotNotFoundException(modelOrSnapshotType);
       }
    }
 }

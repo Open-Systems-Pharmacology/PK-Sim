@@ -17,6 +17,7 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
@@ -40,6 +41,7 @@ namespace PKSim.Presentation
       protected ILazyLoadTask _lazyLoadTask;
       protected ISimulationReferenceUpdater _simulationReferenceUpdater;
       protected IPresentationSettingsTask _presenterSettingsTask;
+      protected ISnapshotTask _snapshotTask;
 
       protected override void Context()
       {
@@ -58,9 +60,22 @@ namespace PKSim.Presentation
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
+         _snapshotTask= A.Fake<ISnapshotTask>();
 
-         sut = new BuildingBlockTask(_executionContext, _applicationController, _dialogCreator, _buildingBlockInSimulationManager,
-            _entityTask, _templateTaskQuery, _singleStartPresenterTask, _buildingBlockRepository, _lazyLoadTask, _presenterSettingsTask, _simulationReferenceUpdater);
+         sut = new BuildingBlockTask(
+            _executionContext,
+            _applicationController, 
+            _dialogCreator,
+            _buildingBlockInSimulationManager,
+            _entityTask, 
+            _templateTaskQuery, 
+            _singleStartPresenterTask, 
+            _buildingBlockRepository, 
+            _lazyLoadTask, 
+            _presenterSettingsTask,
+            _simulationReferenceUpdater, 
+            _snapshotTask);
+
          A.CallTo(() => _applicationController.Start<ICloneBuildingBlockPresenter>()).Returns(_clonePresenter);
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renamePresenter);
 

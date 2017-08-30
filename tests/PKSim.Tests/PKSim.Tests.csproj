@@ -597,6 +597,7 @@
     <Compile Include="Presentation\EditTimeProfileAnalysisChartPresenterSpecs.cs" />
     <Compile Include="Presentation\ExportPopulationSimulationPKAnalysesCommandSpecs.cs" />
     <Compile Include="Presentation\ExportToPDFInvokerSpecs.cs" />
+    <Compile Include="Presentation\LoadBuildingBlockFromSnapshotUICommandSpecs.cs" />
     <Compile Include="Presentation\MenuAndToolBarPresenterSpecs.cs" />
     <Compile Include="Presentation\MultipleNumericFieldsPresenterSpecs.cs" />
     <Compile Include="Presentation\ClassifiableDataRepositorySpecs.cs" />

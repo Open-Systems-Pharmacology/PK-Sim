@@ -868,6 +868,10 @@ namespace PKSim.Assets
          public static string CannotExtractIndividualFrom(string objectType) => $"Individual extraction is not available for '{objectType}'";
 
          public static string SnapshotNotFoundFor(string modelTypeName) => $"Snapshot not found for '{modelTypeName}'";
+
+         public static string SnapshotParameterNotFoundInContainer(string parameterName, string container) => $"Snapshot parameter '{parameterName}' was not found in '{container}'";
+
+         public const string SnapshotIsOutdated = "Snapshot is outdated and cannot be loaded.";
       }
 
       public static class Information
@@ -1128,6 +1132,7 @@ namespace PKSim.Assets
          public static readonly string ExtractIndividualByPercentile = "Extract Individuals";
          public static readonly string ExtractIndividualsMenu = "Extract Individuals...";
          public static readonly string ExportSnapshot = "Save Snapshot...";
+         public static readonly string LoadFromSnapshot = "Load from Snapshot...";
 
          public static string CompareBuildingBlocks(string buildingBlockType)
          {
@@ -2416,6 +2421,8 @@ namespace PKSim.Assets
          public static readonly string ChartYScale = "Chart Y Scale";
 
          public static string  SelectSnapshotExportFile(string objectName, string ojectType) => $"Export snapshot for {ojectType.ToLowerInvariant()} '{objectName}'";
+
+         public static string  LoadFromSnapshotFile(string ojectType) => $"Load {ojectType.ToLowerInvariant()} from snapshot";
       }
 
       public static class Reporting

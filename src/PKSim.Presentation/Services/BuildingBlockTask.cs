@@ -17,6 +17,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
+using PKSim.Core.Snapshots.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.Services
@@ -34,12 +35,20 @@ namespace PKSim.Presentation.Services
       private readonly IPresentationSettingsTask _presentationSettingsTask;
       private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       private readonly ISimulationReferenceUpdater _simulationReferenceUpdater;
+      private readonly ISnapshotTask _snapshotTask;
 
-      public BuildingBlockTask(IExecutionContext executionContext, IApplicationController applicationController,
-         IDialogCreator dialogCreator, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
-         IEntityTask entityTask, ITemplateTaskQuery templateTaskQuery,
-         ISingleStartPresenterTask singleStartPresenterTask, IBuildingBlockRepository buildingBlockRepository,
-         ILazyLoadTask lazyLoadTask, IPresentationSettingsTask presentationSettingsTask, ISimulationReferenceUpdater simulationReferenceUpdater)
+      public BuildingBlockTask(IExecutionContext executionContext, 
+         IApplicationController applicationController,
+         IDialogCreator dialogCreator, 
+         IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         IEntityTask entityTask, 
+         ITemplateTaskQuery templateTaskQuery,
+         ISingleStartPresenterTask singleStartPresenterTask, 
+         IBuildingBlockRepository buildingBlockRepository,
+         ILazyLoadTask lazyLoadTask, 
+         IPresentationSettingsTask presentationSettingsTask, 
+         ISimulationReferenceUpdater simulationReferenceUpdater,
+         ISnapshotTask snapshotTask)
       {
          _executionContext = executionContext;
          _applicationController = applicationController;
@@ -52,6 +61,7 @@ namespace PKSim.Presentation.Services
          _lazyLoadTask = lazyLoadTask;
          _presentationSettingsTask = presentationSettingsTask;
          _simulationReferenceUpdater = simulationReferenceUpdater;
+         _snapshotTask = snapshotTask;
       }
 
       public void AddCommandToHistory(ICommand command)
@@ -264,20 +274,26 @@ namespace PKSim.Presentation.Services
 
       public IReadOnlyList<TBuildingBlock> LoadFromTemplate<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         var loadedBuildingBlocks = new List<TBuildingBlock>();
          using (var presenter = _applicationController.Start<ITemplatePresenter>())
          {
             var buildingBlocks = presenter.LoadFromTemplate<TBuildingBlock>(typeFrom(buildingBlockType));
 
-            buildingBlocks.Each(bb =>
-            {
-               var command = AddToProject(bb, editBuildingBlock: false);
-               if (!command.IsEmpty())
-                  loadedBuildingBlocks.Add(bb);
-            });
-
-            return loadedBuildingBlocks;
+            return addBuildingBlocksToProject(buildingBlocks).ToList();
          }
+      }
+
+      public IReadOnlyList<TBuildingBlock> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
+      {
+         var buildingBlocks = _snapshotTask.LoadFromSnapshot<TBuildingBlock>(buildingBlockType.ToString());
+         return addBuildingBlocksToProject(buildingBlocks).ToList();
+      }
+
+      private IEnumerable<TBuildingBlock> addBuildingBlocksToProject<TBuildingBlock>(IEnumerable<TBuildingBlock> buildingBlocks) where TBuildingBlock : class, IPKSimBuildingBlock
+      {
+         return from bb in buildingBlocks
+            let command = AddToProject(bb, editBuildingBlock: false)
+            where !command.IsEmpty()
+            select bb;
       }
 
       public bool BuildingBlockNameIsAlreadyUsed(IPKSimBuildingBlock buildingBlock)
@@ -331,6 +347,11 @@ namespace PKSim.Presentation.Services
       public IReadOnlyList<TBuildingBlock> LoadFromTemplate()
       {
          return LoadFromTemplate(_buildingBlockType);
+      }
+
+      public IReadOnlyList<TBuildingBlock> LoadFromSnapshot()
+      {
+         return LoadFromSnapshot(_buildingBlockType);
       }
 
       public void Load(TBuildingBlock buildingBlockToLoad)
@@ -422,6 +443,11 @@ namespace PKSim.Presentation.Services
       protected virtual IReadOnlyList<TBuildingBlock> LoadFromTemplate(PKSimBuildingBlockType buildingBlockType)
       {
          return _buildingBlockTask.LoadFromTemplate<TBuildingBlock>(buildingBlockType);
+      }
+
+      protected virtual IReadOnlyList<TBuildingBlock> LoadFromSnapshot(PKSimBuildingBlockType buildingBlockType)
+      {
+         return _buildingBlockTask.LoadFromSnapshot<TBuildingBlock>(buildingBlockType);
       }
    }
 }
