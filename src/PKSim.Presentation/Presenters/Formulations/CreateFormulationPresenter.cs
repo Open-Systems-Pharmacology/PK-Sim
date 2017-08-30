@@ -29,15 +29,9 @@ namespace PKSim.Presentation.Presenters.Formulations
          _buildingBlockDTOFactory = buildingBlockDTOFactory;
       }
 
-      public Formulation Formulation
-      {
-         get { return formulationSettingsPresenter.Formulation; }
-      }
+      public Formulation Formulation => formulationSettingsPresenter.Formulation;
 
-      private IFormulationSettingsPresenter formulationSettingsPresenter
-      {
-         get { return _subPresenterItemManager.PresenterAt(FormulationItems.Settings); }
-      }
+      private IFormulationSettingsPresenter formulationSettingsPresenter => _subPresenterItemManager.PresenterAt(FormulationItems.Settings);
 
       public override void InitializeWith(ICommandCollector commandCollector)
       {
@@ -71,10 +65,7 @@ namespace PKSim.Presentation.Presenters.Formulations
          return CreateFormulation(string.Empty);
       }
 
-      public Formulation BuildingBlock
-      {
-         get { return Formulation; }
-      }
+      public Formulation BuildingBlock => Formulation;
 
       public override void ViewChanged()
       {

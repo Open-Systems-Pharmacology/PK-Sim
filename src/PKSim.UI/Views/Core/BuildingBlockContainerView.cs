@@ -39,10 +39,7 @@ namespace PKSim.UI.Views.Core
          return _presenter.ShouldCancel;
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
 
       public override void InitializeResources()
       {
