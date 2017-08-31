@@ -16,9 +16,9 @@ namespace PKSim.Core.Model
 
    public class DosingInterval
    {
-      public DosingIntervalId Id { get; private set; }
-      public string DisplayName { get; private set; }
-      public int IntervalLength { get; set; }
+      public DosingIntervalId Id { get; }
+      public string DisplayName { get; }
+      public int IntervalLength { get; }
 
       public DosingInterval(DosingIntervalId id, string displayName, int intervalLength)
       {

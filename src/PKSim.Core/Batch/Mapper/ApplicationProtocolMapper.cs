@@ -1,8 +1,7 @@
-﻿using OSPSuite.Utility;
+﻿using OSPSuite.Core.Services;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Batch.Mapper
 {

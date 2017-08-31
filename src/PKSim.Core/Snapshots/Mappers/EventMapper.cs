@@ -1,5 +1,4 @@
-﻿using OSPSuite.Core.Domain;
-using PKSim.Core.Model;
+﻿using PKSim.Core.Model;
 using SnapshotEvent = PKSim.Core.Snapshots.Event;
 using ModelEvent = PKSim.Core.Model.PKSimEvent;
 
@@ -17,20 +16,17 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override SnapshotEvent MapToSnapshot(ModelEvent modelEvent)
       {
-         var snapshotEvent = new SnapshotEvent();
+         var snapshotEvent = new SnapshotEvent {Template = modelEvent.TemplateName};
          MapModelPropertiesIntoSnapshot(modelEvent, snapshotEvent);
          MapVisibleParameters(modelEvent, snapshotEvent);
-         snapshotEvent.Template = modelEvent.TemplateName;
          return snapshotEvent;
       }
 
       public override ModelEvent MapToModel(SnapshotEvent snapshotEvent)
       {
          var modelEvent = _eventFactory.Create(snapshotEvent.Template);
-
          MapSnapshotPropertiesIntoModel(snapshotEvent, modelEvent);
          UpdateParametersFromSnapshot(modelEvent, snapshotEvent, snapshotEvent.Template);
-
          return modelEvent;
       }
    }

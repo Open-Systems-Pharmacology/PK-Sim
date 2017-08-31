@@ -1,5 +1,4 @@
-﻿using OSPSuite.Core.Domain;
-using PKSim.Core.Repositories;
+﻿using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using SnapshotFormulation = PKSim.Core.Snapshots.Formulation;
 using ModelFormulation = PKSim.Core.Model.Formulation;
@@ -30,10 +29,8 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var template = _formulationRepository.FormulationBy(snapshotFormulation.FormulationType);
          var formulation = _cloner.Clone(template);
-
          MapSnapshotPropertiesIntoModel(snapshotFormulation, formulation);
          UpdateParametersFromSnapshot(formulation, snapshotFormulation, snapshotFormulation.FormulationType);
-
          return formulation;
       }
    }

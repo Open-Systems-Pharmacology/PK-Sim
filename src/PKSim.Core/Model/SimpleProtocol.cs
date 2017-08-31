@@ -20,52 +20,32 @@ namespace PKSim.Core.Model
 
       public virtual ApplicationType ApplicationType
       {
-         get { return _applicationType; }
-         set
-         {
-            _applicationType = value;
-            OnPropertyChanged(() => ApplicationType);
-         }
+         get => _applicationType;
+         set => SetProperty(ref _applicationType, value);
       }
 
       public virtual DosingInterval DosingInterval
       {
-         get { return _dosingInterval; }
-         set
-         {
-            _dosingInterval = value;
-            OnPropertyChanged(() => DosingInterval);
-         }
+         get => _dosingInterval;
+         set => SetProperty(ref _dosingInterval, value);
       }
 
       public virtual string FormulationKey
       {
-         get { return _formulationKey; }
-         set
-         {
-            _formulationKey = value;
-            OnPropertyChanged(() => FormulationKey);
-         }
+         get => _formulationKey;
+         set => SetProperty(ref _formulationKey, value);
       }
 
       public virtual string TargetCompartment
       {
-         get { return _targetCompartment; }
-         set
-         {
-            _targetCompartment = value;
-            OnPropertyChanged(() => TargetCompartment);
-         }
+         get => _targetCompartment;
+         set => SetProperty(ref _targetCompartment, value);
       }
 
       public virtual string TargetOrgan
       {
-         get { return _targetOrgan; }
-         set
-         {
-            _targetOrgan = value;
-            OnPropertyChanged(() => TargetOrgan);
-         }
+         get => _targetOrgan;
+         set => SetProperty(ref _targetOrgan, value);
       }
 
       public virtual bool NeedsFormulation => ApplicationType.NeedsFormulation;
@@ -87,8 +67,8 @@ namespace PKSim.Core.Model
 
       public override Unit TimeUnit
       {
-         get { return EndTimeParameter.DisplayUnit; }
-         set { EndTimeParameter.DisplayUnit = value; }
+         get => EndTimeParameter.DisplayUnit;
+         set => EndTimeParameter.DisplayUnit = value;
       }
 
       public override IEnumerable<string> UsedFormulationKeys => new[] {_formulationKey};
