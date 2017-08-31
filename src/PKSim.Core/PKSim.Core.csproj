@@ -858,6 +858,7 @@
     <Compile Include="Snapshots\Services\SnapshotTask.cs" />
     <Compile Include="Snapshots\SnapshotBase.cs" />
     <Compile Include="Snapshots\SnapshotNotFoundException.cs" />
+    <Compile Include="Snapshots\SnapshotOutdatedException.cs" />
     <Compile Include="Snapshots\TableFormula.cs" />
     <Compile Include="SpeciesDatabaseMap.cs" />
     <Compile Include="ICoreUserSettings.cs" />

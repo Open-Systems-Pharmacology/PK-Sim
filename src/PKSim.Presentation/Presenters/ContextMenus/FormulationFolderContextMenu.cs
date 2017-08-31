@@ -13,7 +13,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
    public class FormulationFolderContextMenu : BuildingBlockFolderContextMenu<Formulation>
    {
       public FormulationFolderContextMenu(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
-         : base(repository, buildingBlockRepository, MenuBarItemIds.NewFormulation, MenuBarItemIds.LoadFormulation)
+         : base(repository, buildingBlockRepository, MenuBarItemIds.NewFormulation, MenuBarItemIds.LoadFormulationFromTemplate)
       {
       }
    }

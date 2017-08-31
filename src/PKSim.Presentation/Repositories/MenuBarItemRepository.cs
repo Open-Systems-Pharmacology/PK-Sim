@@ -135,7 +135,7 @@ namespace PKSim.Presentation.Repositories
             .WithShortcut(Keys.Control | Keys.Alt | Keys.F);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
-            .WithId(MenuBarItemIds.LoadFormulation)
+            .WithId(MenuBarItemIds.LoadFormulationFromTemplate)
             .WithCommand<LoadFormulationCommand>()
             .WithIcon(ApplicationIcons.LoadFromTemplate);
 

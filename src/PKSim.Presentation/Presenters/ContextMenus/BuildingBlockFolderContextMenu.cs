@@ -1,11 +1,10 @@
 ﻿using System.Linq;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Repositories;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -15,11 +14,11 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          staticMenus.Each(menu => _view.AddMenuItem(repository[menu]));
 
+         _view.AddMenuItem(GenericMenu.LoadBuildingBlockFromSnapshot<TBuildingBlock>());
+
          var allBuildingBlocks = buildingBlockRepository.All<TBuildingBlock>();
          if (!allBuildingBlocks.Any())
             return;
-
-         _view.AddMenuItem(GenericMenu.ExportCollectionToPDFMenuFor<TBuildingBlock>().AsGroupStarter());
       }
    }
 }

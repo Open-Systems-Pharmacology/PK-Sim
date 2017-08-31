@@ -331,7 +331,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.NewCompound].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadCompound].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewFormulation].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.LoadFormulation].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.LoadFormulationFromTemplate].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewSimulation].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewImportIndividualSimulation].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewImportPopulationSimulation].Enabled = enabled;

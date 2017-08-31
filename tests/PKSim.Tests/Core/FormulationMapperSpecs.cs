@@ -4,8 +4,11 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using Formulation = PKSim.Core.Model.Formulation;
 
 namespace PKSim.Core
 {
@@ -16,12 +19,17 @@ namespace PKSim.Core
       protected IParameter _parameter1;
       protected IParameter _parameter2;
       protected IParameter _hiddenParameter;
-      private ParameterMapper _parameterMapper;
+      protected ParameterMapper _parameterMapper;
+      protected IFormulationRepository _formulationRepository;
+      protected ICloner _cloner;
 
       protected override void Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         sut = new FormulationMapper(_parameterMapper);
+         _formulationRepository = A.Fake<IFormulationRepository>();
+         _cloner = A.Fake<ICloner>();
+
+         sut = new FormulationMapper(_parameterMapper, _formulationRepository, _cloner);
 
          _parameter1 = DomainHelperForSpecs.ConstantParameterWithValue(5)
             .WithName("Param1");
@@ -43,13 +51,13 @@ namespace PKSim.Core
          _formulation.Add(_parameter2);
          _formulation.Add(_hiddenParameter);
 
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(new Parameter().WithName(_parameter1.Name));
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter2)).Returns(new Parameter().WithName(_parameter2.Name));
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_hiddenParameter)).Returns(new Parameter().WithName(_hiddenParameter.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(new Snapshots.Parameter().WithName(_parameter1.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter2)).Returns(new Snapshots.Parameter().WithName(_parameter2.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_hiddenParameter)).Returns(new Snapshots.Parameter().WithName(_hiddenParameter.Name));
       }
    }
 
-   public class When_mapping_a_model_formulationt_to_a_snapshot_formulation : concern_for_FormulationMapper
+   public class When_mapping_a_model_formulation_to_a_snapshot_formulation : concern_for_FormulationMapper
    {
       protected override void Because()
       {
@@ -71,6 +79,60 @@ namespace PKSim.Core
          _snapshot.Parameters.ExistsByName(_parameter1.Name).ShouldBeTrue();
          _snapshot.Parameters.ExistsByName(_parameter2.Name).ShouldBeTrue();
          _snapshot.Parameters.ExistsByName(_hiddenParameter.Name).ShouldBeFalse();
+      }
+   }
+
+   public class When_mapping_a_valid_formulation_snapshot_to_a_formulation : concern_for_FormulationMapper
+   {
+      private Formulation _newFormulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_formulation);
+         A.CallTo(() => _formulationRepository.FormulationBy(_snapshot.FormulationType)).Returns(_formulation);
+         A.CallTo(() => _cloner.Clone(_formulation)).Returns(_formulation);
+
+         _snapshot.Name = "New Formulation";
+         _snapshot.Description = "The description that will be deserialized";
+      }
+
+      protected override void Because()
+      {
+         _newFormulation = sut.MapToModel(_snapshot);
+      }
+
+      [Observation]
+      public void should_have_created_a_formulation_with_the_expected_properties()
+      {
+         _newFormulation.Name.ShouldBeEqualTo(_snapshot.Name);
+         _newFormulation.Description.ShouldBeEqualTo(_snapshot.Description);
+      }
+
+      [Observation]
+      public void should_have_updated_all_visible_parameters()
+      {
+         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newFormulation.Parameter(_parameter1.Name), _snapshot.Parameters.FindByName(_parameter1.Name))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newFormulation.Parameter(_parameter2.Name), _snapshot.Parameters.FindByName(_parameter2.Name))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(A<IParameter>.That.Matches(x => x.IsNamed(_hiddenParameter.Name)), A<Snapshots.Parameter>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_mapping_an_outdated_formulation_snapshot_to_a_formulation : concern_for_FormulationMapper
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_formulation);
+         A.CallTo(() => _formulationRepository.FormulationBy(_snapshot.FormulationType)).Returns(_formulation);
+         A.CallTo(() => _cloner.Clone(_formulation)).Returns(_formulation);
+         _snapshot.Parameters[0].Name = "Unknown parameter";
+      }
+
+      [Observation]
+      public void should_throw_an_outdated_exception()
+      {
+         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<SnapshotParameterNotFoundException>();
       }
    }
 }
