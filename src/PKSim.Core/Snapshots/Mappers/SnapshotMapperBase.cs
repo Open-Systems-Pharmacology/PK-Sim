@@ -44,7 +44,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       protected string SnapshotValueFor(string value) => !string.IsNullOrEmpty(value) ? value : null;
 
-      protected string UnitValueFor(string unit) => unit ?? " ";
+      protected string UnitValueFor(string unit) => unit ?? "";
    }
 
    public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot> : SnapshotMapperBase<TModel, TSnapshot>
@@ -65,6 +65,19 @@ namespace PKSim.Core.Snapshots.Mappers
       protected void MapParameters(IEnumerable<IParameter> parameters, TSnapshot snapshot)
       {
          parameters.Each(p => snapshot.AddParameters(ParameterSnapshotFor(p)));
+      }
+
+      protected void UpdateParametersFromSnapshot(IContainer container, TSnapshot snapshot, string containerDesciptor)
+      {
+         foreach (var snapshotParameter in snapshot.Parameters)
+         {
+            var modelParameter = container.Parameter(snapshotParameter.Name);
+
+            if (modelParameter == null)
+               throw new SnapshotParameterNotFoundException(snapshotParameter.Name, containerDesciptor);
+
+            _parameterMapper.UpdateParameterFromSnapshot(modelParameter, snapshotParameter);
+         }
       }
    }
 }

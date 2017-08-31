@@ -182,4 +182,30 @@ namespace PKSim.Core
          _parameter.IsFixedValue.ShouldBeTrue();
       }
    }
+
+   public class When_mapping_a_parameter_using_the_parameter_less_dimension : concern_for_ParameterMapper
+   {
+      private SnapshotParameter _snapshotParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.Value = 1;
+         _parameter.Dimension = Constants.Dimension.NO_DIMENSION;
+         _parameter.DisplayUnit = Constants.Dimension.NO_DIMENSION.DefaultUnit;
+         _snapshotParameter = sut.MapToSnapshot(_parameter);
+         _parameter.Value = 10;
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateParameterFromSnapshot(_parameter, _snapshotParameter);
+      }
+
+      [Observation]
+      public void should_be_able_to_update_the_parameter_from_snapshot()
+      {
+         _parameter.Value.ShouldBeEqualTo(1);         
+      }
+   }
 }

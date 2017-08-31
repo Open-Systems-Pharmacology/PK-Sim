@@ -1,4 +1,6 @@
-﻿using SnapshotEvent = PKSim.Core.Snapshots.Event;
+﻿using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
+using SnapshotEvent = PKSim.Core.Snapshots.Event;
 using ModelEvent = PKSim.Core.Model.PKSimEvent;
 
 
@@ -6,8 +8,11 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class EventMapper : ParameterContainerSnapshotMapperBase<ModelEvent, SnapshotEvent>
    {
-      public EventMapper(ParameterMapper parameterMapper) : base(parameterMapper)
+      private readonly IEventFactory _eventFactory;
+
+      public EventMapper(ParameterMapper parameterMapper, IEventFactory eventFactory) : base(parameterMapper)
       {
+         _eventFactory = eventFactory;
       }
 
       public override SnapshotEvent MapToSnapshot(ModelEvent modelEvent)
@@ -21,7 +26,12 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override ModelEvent MapToModel(SnapshotEvent snapshotEvent)
       {
-         throw new System.NotImplementedException();
+         var modelEvent = _eventFactory.Create(snapshotEvent.Template);
+
+         MapSnapshotPropertiesIntoModel(snapshotEvent, modelEvent);
+         UpdateParametersFromSnapshot(modelEvent, snapshotEvent, snapshotEvent.Template);
+
+         return modelEvent;
       }
    }
 }
