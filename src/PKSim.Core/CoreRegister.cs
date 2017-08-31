@@ -14,6 +14,7 @@ using PKSim.Core.Comparison;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Mappers;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using Individual = PKSim.Core.Model.Individual;
 using Simulation = PKSim.Core.Model.Simulation;
@@ -41,6 +42,7 @@ namespace PKSim.Core
             scan.ExcludeType<ProjectChangedNotifier>();
             scan.ExcludeType<BatchLogger>();
             scan.ExcludeType<SimulationRunner>();
+            scan.ExcludeType<SnapshotMapper>();
 
             scan.ExcludeNamespaceContainingType<IndividualDiffBuilder>();
             scan.WithConvention<PKSimRegistrationConvention>();
@@ -58,6 +60,7 @@ namespace PKSim.Core
             scan.IncludeType<ProjectChangedNotifier>();
             scan.IncludeType<BatchLogger>();
             scan.IncludeType<SimulationRunner>();
+            scan.IncludeType<SnapshotMapper>();
 
             scan.RegisterAs(LifeStyle.Singleton);
             scan.WithConvention<PKSimRegistrationConvention>();
