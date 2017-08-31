@@ -846,7 +846,9 @@
     <Compile Include="Model\Species.cs" />
     <Compile Include="Events\ProjectEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Snapshots\Event.cs" />
     <Compile Include="Snapshots\Formulation.cs" />
+    <Compile Include="Snapshots\Mappers\EventMapper.cs" />
     <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterMapper.cs" />
     <Compile Include="Snapshots\Mappers\SnapshotMapper.cs" />

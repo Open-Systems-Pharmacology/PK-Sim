@@ -477,39 +477,23 @@ namespace PKSim.Assets
             }
          }
 
+         public const string EventTemplateNotDefined = "Event template not defined";
+
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is requiered for type '{applicationType}'.";
 
          public static string BuildingBlockNotDefined(string buildingblock) => $"No {buildingblock} defined. Please use create";
 
-         public static string MissingColumnInView(string propertyName)
-         {
-            return $"Property named {propertyName} not found.";
-         }
+         public static string MissingColumnInView(string propertyName) => $"Property named {propertyName} not found.";
 
-         public static string ProjectFileIsCorrupt(string productName)
-         {
-            return $"Project file is corrupted and unreadable or this is not a {productName} project file.";
-         }
+         public static string ProjectFileIsCorrupt(string productName) => $"Project file is corrupted and unreadable or this is not a {productName} project file.";
 
-         public static string CannotCalculateDDIRatioFor(string parameterName)
-         {
-            return $"Cannot calculate AUC Ratio: don't know how to handle parameter {parameterName}";
-         }
+         public static string CannotCalculateDDIRatioFor(string parameterName) => $"Cannot calculate AUC Ratio: don't know how to handle parameter {parameterName}";
 
-         public static string NoBatchFileFoundIn(string inputFolder)
-         {
-            return $"No simulation file found in '{inputFolder}'";
-         }
+         public static string NoBatchFileFoundIn(string inputFolder) => $"No simulation file found in '{inputFolder}'";
 
-         public static string TableFormulaWithOffsetMissingRefs(string rateKey, string ref1, string ref2)
-         {
-            return $"Table formula with offset '{rateKey}' must contain references to '{ref1}' and '{ref2}'";
-         }
+         public static string TableFormulaWithOffsetMissingRefs(string rateKey, string ref1, string ref2) => $"Table formula with offset '{rateKey}' must contain references to '{ref1}' and '{ref2}'";
 
-         public static string ModelContainerNotAvailable(string containerName)
-         {
-            return $"Model container '{containerName}' not available.";
-         }
+         public static string ModelContainerNotAvailable(string containerName) => $"Model container '{containerName}' not available.";
 
          public static string ProjectFileIsReadOnlyAndCannotBeRead(string fileFullPath)
          {
@@ -544,30 +528,15 @@ namespace PKSim.Assets
             return $"Cannot find formulation with id '{formulationId}' for formulation key '{formulationKey}' in simulation '{simulationName}'.";
          }
 
-         public static string NoPartialTemplateProcessFound(string processType)
-         {
-            return $"No templates for partial process {processType} found";
-         }
+         public static string NoPartialTemplateProcessFound(string processType) => $"No templates for partial process {processType} found";
 
-         public static string BuildingBlockAlreadyExists(string buildingBlockType, string name)
-         {
-            return $"{buildingBlockType} named '{name}' already exists in project";
-         }
+         public static string BuildingBlockAlreadyExists(string buildingBlockType, string name) => $"{buildingBlockType} named '{name}' already exists in project";
 
-         public static string NameAlreadyExistsInContainerType(string name, string containerType)
-         {
-            return $"'{name}' already exists in {containerType}.";
-         }
+         public static string NameAlreadyExistsInContainerType(string name, string containerType) => $"'{name}' already exists in {containerType}.";
 
-         public static string CompoundProcessDeclaredAsNotTemplate(string processName)
-         {
-            return $"Compound process '{processName}' is not declared as a template";
-         }
+         public static string CompoundProcessDeclaredAsNotTemplate(string processName) => $"Compound process '{processName}' is not declared as a template";
 
-         public static string ProjectFileDoesNotExist(string projectFile)
-         {
-            return $"Project file '{projectFile}' has been deleted or is not accessible.";
-         }
+         public static string ProjectFileDoesNotExist(string projectFile) => $"Project file '{projectFile}' has been deleted or is not accessible.";
 
          public static string ProjectFileVersion4IsNotSupportedAnymore(string projectFile)
          {
