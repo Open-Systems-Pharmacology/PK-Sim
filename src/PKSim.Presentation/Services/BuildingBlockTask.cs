@@ -284,7 +284,7 @@ namespace PKSim.Presentation.Services
 
       public IReadOnlyList<TBuildingBlock> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         var buildingBlocks = _snapshotTask.LoadFromSnapshot<TBuildingBlock>(buildingBlockType.ToString());
+         var buildingBlocks = _snapshotTask.LoadFromSnapshot<TBuildingBlock>();
          return addBuildingBlocksToProject(buildingBlocks).ToList();
       }
 

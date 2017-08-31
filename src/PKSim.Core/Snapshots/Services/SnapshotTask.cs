@@ -16,7 +16,7 @@ namespace PKSim.Core.Snapshots.Services
       /// </summary>
       void ExportSnapshot<T>(T objectToExport) where T : class, IObjectBase;
 
-      IEnumerable<T> LoadFromSnapshot<T>(string discriminator) where T : class, IObjectBase;
+      IEnumerable<T> LoadFromSnapshot<T>() where T : class, IObjectBase;
    }
 
    public class SnapshotTask : ISnapshotTask
@@ -51,7 +51,7 @@ namespace PKSim.Core.Snapshots.Services
          exportSnapshotFor(objectToExport, fileName);
       }
 
-      public IEnumerable<T> LoadFromSnapshot<T>(string discriminator) where T : class, IObjectBase
+      public IEnumerable<T> LoadFromSnapshot<T>() where T : class, IObjectBase
       {
          var message = PKSimConstants.UI.LoadFromSnapshotFile(_objectTypeResolver.TypeFor<T>());
          var fileName = _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);

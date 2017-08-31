@@ -115,7 +115,6 @@ namespace PKSim.Core
 
    public class When_loading_objects_from_snapshot : concern_for_SnapshotTask
    {
-      private readonly string _discrimator = "Discriminator";
       private readonly string _fileName = "FileName";
       private List<Formulation> _formulations;
       private Type _snapshotType;
@@ -142,7 +141,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _formulations = sut.LoadFromSnapshot<Formulation>(_discrimator).ToList();
+         _formulations = sut.LoadFromSnapshot<Formulation>().ToList();
       }
 
       [Observation]
@@ -160,7 +159,6 @@ namespace PKSim.Core
 
    public class When_loading_objects_from_snapshot_and_the_user_cancels_the_action : concern_for_SnapshotTask
    {
-      private readonly string _discrimator = "Discriminator";
       private List<Formulation> _formulations;
 
       protected override void Context()
@@ -171,7 +169,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _formulations = sut.LoadFromSnapshot<Formulation>(_discrimator).ToList();
+         _formulations = sut.LoadFromSnapshot<Formulation>().ToList();
       }
 
       [Observation]
