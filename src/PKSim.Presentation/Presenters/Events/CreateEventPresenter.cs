@@ -33,10 +33,7 @@ namespace PKSim.Presentation.Presenters.Events
          _propertiesMapper = propertiesMapper;
       }
 
-      private IEventSettingsPresenter eventSettingsPresenter
-      {
-         get { return _subPresenterItemManager.PresenterAt(EventItems.Settings); }
-      }
+      private IEventSettingsPresenter eventSettingsPresenter => _subPresenterItemManager.PresenterAt(EventItems.Settings);
 
       public override void InitializeWith(ICommandCollector commandCollector)
       {
@@ -67,9 +64,6 @@ namespace PKSim.Presentation.Presenters.Events
          return _macroCommand;
       }
 
-      public PKSimEvent BuildingBlock
-      {
-         get { return Event; }
-      }
+      public PKSimEvent BuildingBlock => Event;
    }
 }

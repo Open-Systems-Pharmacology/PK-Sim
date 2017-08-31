@@ -241,6 +241,7 @@
     <Compile Include="Core\AdvancedParameterFactorySpecs.cs" />
     <Compile Include="Core\AgingDataSpecs.cs" />
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />
+    <Compile Include="Core\EventMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />
     <Compile Include="Core\IndividualExtractionOptionsSpecs.cs" />
     <Compile Include="Core\IndividualExtractorSpecs.cs" />

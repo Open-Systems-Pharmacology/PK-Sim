@@ -3,32 +3,23 @@ using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
    public interface ISnapshotMapperSpecification : ISnapshotMapper, ISpecification<Type>
    {
-
    }
 
-   public abstract class SnapshotMapperBase<TModel, TSnapshot> : ISnapshotMapperSpecification 
-      where TSnapshot: ISnapshot
-      where TModel: IObjectBase
+   public abstract class SnapshotMapperBase<TModel, TSnapshot> : ISnapshotMapperSpecification
+      where TSnapshot : ISnapshot
+      where TModel : IObjectBase
    {
-      public virtual object MapToSnapshot(object model)
-      {
-         return MapToSnapshot(model.DowncastTo<TModel>());
-      }
+      public virtual object MapToSnapshot(object model) => MapToSnapshot(model.DowncastTo<TModel>());
 
-      public virtual object MapToModel(object snapshot)
-      {
-         return MapToModel(snapshot.DowncastTo<TSnapshot>());
-      }
+      public virtual object MapToModel(object snapshot) => MapToModel(snapshot.DowncastTo<TSnapshot>());
 
-      public Type SnapshotTypeFor<T>()
-      {
-         return typeof(TSnapshot);
-      }
+      public Type SnapshotTypeFor<T>() => typeof(TSnapshot);
 
       public abstract TSnapshot MapToSnapshot(TModel model);
 
@@ -56,8 +47,8 @@ namespace PKSim.Core.Snapshots.Mappers
       protected string UnitValueFor(string unit) => unit ?? " ";
    }
 
-   public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot> : SnapshotMapperBase<TModel, TSnapshot> 
-      where TModel : IObjectBase 
+   public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot> : SnapshotMapperBase<TModel, TSnapshot>
+      where TModel : IObjectBase
       where TSnapshot : ParameterContainerSnapshotBase
    {
       protected readonly ParameterMapper _parameterMapper;
@@ -68,6 +59,8 @@ namespace PKSim.Core.Snapshots.Mappers
       }
 
       protected Parameter ParameterSnapshotFor(IParameter parameter) => _parameterMapper.MapToSnapshot(parameter);
+
+      protected void MapVisibleParameters(IContainer container, TSnapshot snapshot) => MapParameters(container.AllVisibleParameters(), snapshot);
 
       protected void MapParameters(IEnumerable<IParameter> parameters, TSnapshot snapshot)
       {

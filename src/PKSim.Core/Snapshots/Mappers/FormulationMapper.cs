@@ -1,5 +1,4 @@
 ﻿using OSPSuite.Core.Domain;
-using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using SnapshotFormulation = PKSim.Core.Snapshots.Formulation;
@@ -22,7 +21,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var snapshotFormulation = new SnapshotFormulation();
          MapModelPropertiesIntoSnapshot(modelFormulation, snapshotFormulation);
-         MapParameters(modelFormulation.AllVisibleParameters(), snapshotFormulation);
+         MapVisibleParameters(modelFormulation, snapshotFormulation);
          snapshotFormulation.FormulationType = modelFormulation.FormulationType;
          return snapshotFormulation;
       }
