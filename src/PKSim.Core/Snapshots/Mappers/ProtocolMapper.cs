@@ -1,16 +1,23 @@
 ﻿using System;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using ModelProtocol = PKSim.Core.Model.Protocol;
+using SnapshotProtocol = PKSim.Core.Snapshots.Protocol;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ProtocolMapper : ParameterContainerSnapshotMapperBase<ModelProtocol, Protocol>
+   public class ProtocolMapper : ParameterContainerSnapshotMapperBase<ModelProtocol, SnapshotProtocol>
    {
-      public ProtocolMapper(ParameterMapper parameterMapper) : base(parameterMapper)
+      private readonly IProtocolFactory _protocolFactory;
+
+      public ProtocolMapper(ParameterMapper parameterMapper, IProtocolFactory protocolFactory) : base(parameterMapper)
       {
+         _protocolFactory = protocolFactory;
       }
 
-      public override Protocol MapToSnapshot(ModelProtocol modelProtocol)
+      public override SnapshotProtocol MapToSnapshot(ModelProtocol modelProtocol)
       {
          var snapshot = createSnapshotFrom(modelProtocol);
          MapModelPropertiesIntoSnapshot(modelProtocol, snapshot);
@@ -18,7 +25,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      private Protocol createSnapshotFrom(ModelProtocol modelProtocol)
+      private SnapshotProtocol createSnapshotFrom(ModelProtocol modelProtocol)
       {
          switch (modelProtocol)
          {
@@ -31,14 +38,14 @@ namespace PKSim.Core.Snapshots.Mappers
          return null;
       }
 
-      private Protocol createSnapshotFromAdvancedProtocol(AdvancedProtocol advancedProtocol)
+      private SnapshotProtocol createSnapshotFromAdvancedProtocol(AdvancedProtocol advancedProtocol)
       {
          throw new NotImplementedException();
       }
 
-      private Protocol createSnapshotFromSimpleProtocol(SimpleProtocol simpleProtocol)
+      private SnapshotProtocol createSnapshotFromSimpleProtocol(SimpleProtocol simpleProtocol)
       {
-         return new Protocol
+         return new SnapshotProtocol
          {
             ApplicationType = simpleProtocol.ApplicationType.Name,
             DosingInterval = simpleProtocol.DosingInterval.Id.ToString(),
@@ -47,9 +54,36 @@ namespace PKSim.Core.Snapshots.Mappers
          };
       }
 
-      public override ModelProtocol MapToModel(Protocol snapshotProtocol)
+      public override ModelProtocol MapToModel(SnapshotProtocol snapshotProtocol)
+      {
+         var modelProtocol = createModelProtocolFrom(snapshotProtocol);
+         MapSnapshotPropertiesIntoModel(snapshotProtocol, modelProtocol);
+         UpdateParametersFromSnapshot(modelProtocol, snapshotProtocol, PKSimConstants.ObjectTypes.AdministrationProtocol);
+         return modelProtocol;
+      }
+
+      private ModelProtocol createModelProtocolFrom(SnapshotProtocol snapshotProtocol)
+      {
+         if (snapshotProtocol.IsSimple)
+            return createSimpleProtocolFrom(snapshotProtocol);
+
+         return createAdvancedProtocolFrom(snapshotProtocol);
+      }
+
+      private AdvancedProtocol createAdvancedProtocolFrom(Protocol snapshotProtocol)
       {
          throw new NotImplementedException();
+      }
+
+      private SimpleProtocol createSimpleProtocolFrom(SnapshotProtocol snapshotProtocol)
+      {
+         var applicationType = ApplicationTypes.ByName(snapshotProtocol.ApplicationType);
+         var dosingIntervalId = EnumHelper.ParseValue<DosingIntervalId>(snapshotProtocol.DosingInterval);
+         var simpleProtocol = _protocolFactory.Create(ProtocolMode.Simple, applicationType).DowncastTo<SimpleProtocol>();
+         simpleProtocol.DosingInterval = DosingIntervals.ById(dosingIntervalId);
+         simpleProtocol.TargetOrgan = snapshotProtocol.TargetOrgan;
+         simpleProtocol.TargetCompartment = snapshotProtocol.TargetCompartment;
+         return simpleProtocol;
       }
    }
 }

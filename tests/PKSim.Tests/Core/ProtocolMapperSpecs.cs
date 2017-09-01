@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using Parameter = PKSim.Core.Snapshots.Parameter;
@@ -13,13 +14,14 @@ namespace PKSim.Core
       protected ParameterMapper _parameterMapper;
       protected SimpleProtocol _simpleProtocol;
       protected Snapshots.Protocol _snapshot;
+      protected IProtocolFactory _protocolFactory;
 
       protected override void Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         sut = new ProtocolMapper(_parameterMapper);
+         _protocolFactory= A.Fake<IProtocolFactory>();
 
-         sut = new ProtocolMapper(_parameterMapper);
+         sut = new ProtocolMapper(_parameterMapper, _protocolFactory);
 
          _simpleProtocol = new SimpleProtocol
          {
@@ -61,4 +63,44 @@ namespace PKSim.Core
          _snapshot.Parameters.ExistsByName(Constants.Parameters.END_TIME).ShouldBeTrue();
       }
    }
+
+   public class When_mapping_a_valid_protocol_snapshot_to_a_protocol : concern_for_SimpleProtocolMapper
+   {
+      private SimpleProtocol _newProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_simpleProtocol);
+         A.CallTo(() => _protocolFactory.Create(ProtocolMode.Simple, _simpleProtocol.ApplicationType)).Returns(_simpleProtocol);
+
+         _snapshot.Name = "New Protocol";
+         _snapshot.Description = "The description that will be deserialized";
+         _snapshot.TargetOrgan = "Liver";
+         _snapshot.TargetCompartment = "Cells";
+      }
+
+      protected override void Because()
+      {
+         _newProtocol = sut.MapToModel(_snapshot).DowncastTo<SimpleProtocol>();
+      }
+
+      [Observation]
+      public void should_have_created_a_protocol_with_the_expected_properties()
+      {
+         _newProtocol.Name.ShouldBeEqualTo(_snapshot.Name);
+         _newProtocol.Description.ShouldBeEqualTo(_snapshot.Description);
+         _newProtocol.TargetOrgan.ShouldBeEqualTo(_snapshot.TargetOrgan);
+         _newProtocol.TargetCompartment.ShouldBeEqualTo(_snapshot.TargetCompartment);
+      }
+
+      [Observation]
+      public void should_have_updated_all_visible_parameters()
+      {
+         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newProtocol.Parameter(Constants.Parameters.START_TIME), _snapshot.Parameters.FindByName(Constants.Parameters.START_TIME))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newProtocol.Parameter(Constants.Parameters.END_TIME), _snapshot.Parameters.FindByName(Constants.Parameters.END_TIME))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newProtocol.Parameter(CoreConstants.Parameter.INPUT_DOSE), _snapshot.Parameters.FindByName(CoreConstants.Parameter.INPUT_DOSE))).MustHaveHappened();
+      }
+   }
+
 }

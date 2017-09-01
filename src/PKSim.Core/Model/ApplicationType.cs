@@ -36,29 +36,29 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Application name as defined in the PKSim Database
       /// </summary>
-      public string Name { get; private set; }
+      public string Name { get; }
 
       /// <summary>
       ///    Which route is used by the application type.
       /// </summary>
-      public string Route { get; private set; }
+      public string Route { get; }
 
       /// <summary>
       ///    Does a formulation need to be defined for this type?
       /// </summary>
-      public bool NeedsFormulation { get; private set; }
+      public bool NeedsFormulation { get; }
 
       /// <summary>
       ///    is this application type user defined
       /// </summary>
-      public bool UserDefined { get; private set; }
+      public bool UserDefined { get; }
 
       /// <summary>
       ///    Name of icon used to represent the application
       /// </summary>
-      public string IconName { get; private set; }
+      public string IconName { get; }
 
-      public string DisplayName { get; private set; }
+      public string DisplayName { get; }
 
       public ApplicationType(string name, string route, string displayName, bool needsFormulation, bool userDefined)
       {
