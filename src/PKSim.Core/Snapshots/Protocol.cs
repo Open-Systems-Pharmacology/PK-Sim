@@ -1,6 +1,6 @@
 ﻿namespace PKSim.Core.Snapshots
 {
-   public class SimpleProtocol : ParameterContainerSnapshotBase
+   public class Protocol : ParameterContainerSnapshotBase
    {
       public string ApplicationType { get; set; }
       public string DosingInterval { get; set; }

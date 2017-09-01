@@ -8,18 +8,18 @@ using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_SimpleProtocolMapper : ContextSpecification<SimpleProtocolMapper>
+   public abstract class concern_for_SimpleProtocolMapper : ContextSpecification<ProtocolMapper>
    {
       protected ParameterMapper _parameterMapper;
       protected SimpleProtocol _simpleProtocol;
-      protected Snapshots.SimpleProtocol _snapshot;
+      protected Snapshots.Protocol _snapshot;
 
       protected override void Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         sut = new SimpleProtocolMapper(_parameterMapper);
+         sut = new ProtocolMapper(_parameterMapper);
 
-         sut = new SimpleProtocolMapper(_parameterMapper);
+         sut = new ProtocolMapper(_parameterMapper);
 
          _simpleProtocol = new SimpleProtocol
          {
