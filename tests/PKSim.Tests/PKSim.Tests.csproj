@@ -252,6 +252,7 @@
     <Compile Include="Core\PKValuesToPKAnalysisMapperSpecs.cs" />
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
     <Compile Include="Core\SetRelativeExpressionFromNormalizedCommandSpecs.cs" />
+    <Compile Include="Core\ProtocolMapperSpecs.cs" />
     <Compile Include="Core\SimulationConfigurationValidatorSpecs.cs" />
     <Compile Include="Core\SnapshotMapperSpecs.cs" />
     <Compile Include="Core\SnapshotTaskSpecs.cs" />
