@@ -46,9 +46,7 @@ namespace PKSim.IntegrationTests
          var ageDependentPops = _populationRepository.All().Where(pop => pop.IsAgeDependent);
          var ageParameters = _parameterDistributionRepository.All().Where(pd => pd.ParameterName.Equals(CoreConstants.Parameter.AGE)).ToList();
 
-         //age parameter must be available for every age-dependent pop
-         ageDependentPops.Count().ShouldBeEqualTo(ageParameters.Count());
-
+         //check [Min..Max] range of the Age parameter for every {Population, Gender}-combination
          foreach (var population in ageDependentPops)
          {
             foreach (var gender in population.Genders)
