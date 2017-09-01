@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -11,21 +13,15 @@ namespace PKSim.Core.Snapshots.Mappers
    public class ProtocolMapper : ParameterContainerSnapshotMapperBase<ModelProtocol, SnapshotProtocol>
    {
       private readonly IProtocolFactory _protocolFactory;
+      private readonly SchemaMapper _schemaMapper;
 
-      public ProtocolMapper(ParameterMapper parameterMapper, IProtocolFactory protocolFactory) : base(parameterMapper)
+      public ProtocolMapper(ParameterMapper parameterMapper, IProtocolFactory protocolFactory, SchemaMapper schemaMapper) : base(parameterMapper)
       {
          _protocolFactory = protocolFactory;
+         _schemaMapper = schemaMapper;
       }
 
       public override SnapshotProtocol MapToSnapshot(ModelProtocol modelProtocol)
-      {
-         var snapshot = createSnapshotFrom(modelProtocol);
-         MapModelPropertiesIntoSnapshot(modelProtocol, snapshot);
-         MapVisibleParameters(modelProtocol, snapshot);
-         return snapshot;
-      }
-
-      private SnapshotProtocol createSnapshotFrom(ModelProtocol modelProtocol)
       {
          switch (modelProtocol)
          {
@@ -40,18 +36,24 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private SnapshotProtocol createSnapshotFromAdvancedProtocol(AdvancedProtocol advancedProtocol)
       {
-         throw new NotImplementedException();
+         return SnapshotFrom(advancedProtocol, snapshot =>
+         {
+            snapshot.Schemas = new List<Schema>(advancedProtocol.AllSchemas.Select(snapshotSchemaFrom));
+            snapshot.TimeUnit = advancedProtocol.TimeUnit.Name;
+         });
       }
+
+      private Schema snapshotSchemaFrom(Model.Schema schema) => _schemaMapper.MapToSnapshot(schema);
 
       private SnapshotProtocol createSnapshotFromSimpleProtocol(SimpleProtocol simpleProtocol)
       {
-         return new SnapshotProtocol
+         return SnapshotFrom(simpleProtocol, snapshot =>
          {
-            ApplicationType = simpleProtocol.ApplicationType.Name,
-            DosingInterval = simpleProtocol.DosingInterval.Id.ToString(),
-            TargetOrgan = simpleProtocol.TargetOrgan,
-            TargetCompartment = simpleProtocol.TargetCompartment,
-         };
+            snapshot.ApplicationType = simpleProtocol.ApplicationType.Name;
+            snapshot.DosingInterval = simpleProtocol.DosingInterval.Id.ToString();
+            snapshot.TargetOrgan = SnapshotValueFor(simpleProtocol.TargetOrgan);
+            snapshot.TargetCompartment = SnapshotValueFor(simpleProtocol.TargetCompartment);
+         });
       }
 
       public override ModelProtocol MapToModel(SnapshotProtocol snapshotProtocol)

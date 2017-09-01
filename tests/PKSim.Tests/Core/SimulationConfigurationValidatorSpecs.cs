@@ -19,7 +19,7 @@ namespace PKSim.Core
       protected Protocol _protocol;
       protected IProtocolToSchemaItemsMapper _protocolToProtocolSchemaItemMapper;
       protected SpeciesPopulation _speciesPopulation;
-      private ISchemaItem _schemaItem;
+      private SchemaItem _schemaItem;
       protected Unit _doseUnit;
 
       protected override void Context()
@@ -45,7 +45,7 @@ namespace PKSim.Core
          sut = new SimulationConfigurationValidator(_protocolToProtocolSchemaItemMapper);
 
          _speciesPopulation.IsHeightDependent = false;
-         _schemaItem= A.Fake<ISchemaItem>();
+         _schemaItem= A.Fake<SchemaItem>();
          _doseUnit= A.Fake<Unit>();
          _schemaItem.Dose.DisplayUnit = _doseUnit;
          A.CallTo(() => _protocolToProtocolSchemaItemMapper.MapFrom(_protocol)).Returns(new []{_schemaItem});

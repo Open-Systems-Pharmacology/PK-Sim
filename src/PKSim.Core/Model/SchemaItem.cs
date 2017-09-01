@@ -6,12 +6,12 @@ namespace PKSim.Core.Model
    public interface ISchemaItem : IContainer
    {
       ApplicationType ApplicationType { get; set; }
-      bool NeedsFormulation { get; }
-      IParameter StartTime { get; }
       string FormulationKey { get; set; }
-      IParameter Dose { get; }
       string TargetOrgan { get; set; }
       string TargetCompartment { get; set; }
+      bool NeedsFormulation { get; }
+      IParameter StartTime { get; }
+      IParameter Dose { get; }
    }
 
    public class SchemaItem : Container, ISchemaItem
@@ -28,49 +28,33 @@ namespace PKSim.Core.Model
 
       public ApplicationType ApplicationType
       {
-         get { return _applicationType; }
-         set
-         {
-            _applicationType = value;
-            OnPropertyChanged(() => ApplicationType);
-         }
+         get => _applicationType;
+         set => SetProperty(ref _applicationType, value);
       }
 
       public string FormulationKey
       {
-         get { return _formulationKey; }
-         set
-         {
-            _formulationKey = value;
-            OnPropertyChanged(() => FormulationKey);
-         }
+         get => _formulationKey;
+         set => SetProperty(ref _formulationKey, value);
       }
 
       public string TargetCompartment
       {
-         get { return _targetCompartment; }
-         set
-         {
-            _targetCompartment = value;
-            OnPropertyChanged(() => TargetCompartment);
-         }
+         get => _targetCompartment;
+         set => SetProperty(ref _targetCompartment, value);
       }
 
       public string TargetOrgan
       {
-         get { return _targetOrgan; }
-         set
-         {
-            _targetOrgan = value;
-            OnPropertyChanged(() => TargetOrgan);
-         }
+         get => _targetOrgan;
+         set => SetProperty(ref _targetOrgan, value);
       }
 
       public bool NeedsFormulation => ApplicationType.NeedsFormulation;
 
-      public IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
+      public virtual IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
 
-      public IParameter Dose => this.Parameter(CoreConstants.Parameter.INPUT_DOSE);
+      public virtual IParameter Dose => this.Parameter(CoreConstants.Parameter.INPUT_DOSE);
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {

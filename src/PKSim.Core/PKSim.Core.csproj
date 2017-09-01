@@ -852,11 +852,15 @@
     <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProtocolMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SchemaItemMapper.cs" />
+    <Compile Include="Snapshots\Mappers\SchemaMapper.cs" />
     <Compile Include="Snapshots\Mappers\SnapshotMapper.cs" />
     <Compile Include="Snapshots\Mappers\SnapshotMapperBase.cs" />
     <Compile Include="Snapshots\Mappers\TableFormulaMapper.cs" />
     <Compile Include="Snapshots\Parameter.cs" />
     <Compile Include="Snapshots\Point.cs" />
+    <Compile Include="Snapshots\Schema.cs" />
+    <Compile Include="Snapshots\SchemaItem.cs" />
     <Compile Include="Snapshots\Services\SnapshotSerializer.cs" />
     <Compile Include="Snapshots\Services\SnapshotTask.cs" />
     <Compile Include="Snapshots\Protocol.cs" />

@@ -50,7 +50,7 @@ namespace PKSim.Presentation
          _schema.AddSchemaItem(_schemaItemA);
 
          A.CallTo(_schemaItemDTOMapper).WithReturnType<SchemaItemDTO>()
-            .ReturnsLazily(x => new SchemaItemDTO(x.Arguments[0].DowncastTo<ISchemaItem>()));
+            .ReturnsLazily(x => new SchemaItemDTO(x.Arguments[0].DowncastTo<SchemaItem>()));
       }
 
       protected override void Because()

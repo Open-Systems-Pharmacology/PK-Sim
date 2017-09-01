@@ -37,7 +37,7 @@ namespace PKSim.Core.Model
       /// </summary>
       private double oneRepetionLength => Math.Max(intervalTimeSpan, TimeBetweenRepetitions.Value);
 
-      public virtual IEnumerable<ISchemaItem> SchemaItems => GetChildren<ISchemaItem>();
+      public virtual IEnumerable<SchemaItem> SchemaItems => GetChildren<SchemaItem>();
 
       public virtual IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
 
@@ -45,9 +45,9 @@ namespace PKSim.Core.Model
 
       public virtual IParameter NumberOfRepetitions => this.Parameter(CoreConstants.Parameter.NUMBER_OF_REPETITIONS);
 
-      public virtual void AddSchemaItem(ISchemaItem schemaItem) => Add(schemaItem);
+      public virtual void AddSchemaItem(SchemaItem schemaItem) => Add(schemaItem);
 
-      public virtual IEnumerable<ISchemaItem> ExpandedSchemaItems(ICloneManager cloneManager)
+      public virtual IEnumerable<SchemaItem> ExpandedSchemaItems(ICloneManager cloneManager)
       {
          {
             double offset = TimeBetweenRepetitions.Value;

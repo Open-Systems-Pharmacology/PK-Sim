@@ -32,7 +32,7 @@ namespace PKSim.Core
 
       internal class SchemaItemFactoryForTest : ISchemaItemFactory
       {
-         public ISchemaItem Create()
+         public SchemaItem Create()
          {
             var schemaItem = new SchemaItem().WithName(Guid.NewGuid().ToString());
             schemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.START_TIME));
@@ -40,14 +40,14 @@ namespace PKSim.Core
             return schemaItem;
          }
 
-         public ISchemaItem Create(ApplicationType applicationType, IContainer container)
+         public SchemaItem Create(ApplicationType applicationType, IContainer container)
          {
             var schemaItem = Create();
             schemaItem.ApplicationType = applicationType;
             return schemaItem;
          }
 
-         public ISchemaItem CreateBasedOn(ISchemaItem schemaItemToClone, IContainer container)
+         public SchemaItem CreateBasedOn(SchemaItem schemaItemToClone, IContainer container)
          {
             return Create(schemaItemToClone.ApplicationType, container);
          }

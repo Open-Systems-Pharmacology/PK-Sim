@@ -19,11 +19,11 @@ namespace PKSim.Core.Events
       }
    }
 
-   public class RemoveSchemaItemFromSchemaEvent : RemoveEntityEvent<ISchemaItem, Schema>
+   public class RemoveSchemaItemFromSchemaEvent : RemoveEntityEvent<SchemaItem, Schema>
    {
    }
 
-   public class AddSchemaItemToSchemaEvent : AddEntityEvent<ISchemaItem, Schema>
+   public class AddSchemaItemToSchemaEvent : AddEntityEvent<SchemaItem, Schema>
    {
    }
 
