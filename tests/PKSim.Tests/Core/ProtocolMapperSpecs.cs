@@ -2,8 +2,10 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 using Protocol = PKSim.Core.Snapshots.Protocol;
@@ -16,18 +18,20 @@ namespace PKSim.Core
       protected SimpleProtocol _simpleProtocol;
       protected Protocol _snapshot;
       protected IProtocolFactory _protocolFactory;
-      private SchemaMapper _schemaMapper;
+      protected SchemaMapper _schemaMapper;
       protected AdvancedProtocol _advancedProtocol;
       protected Schema _schema;
-      protected IParameter advancedProtocolParameter;
+      protected IParameter _advancedProtocolParameter;
+      protected IDimensionRepository _dimensionRepository;
 
       protected override void Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _schemaMapper = A.Fake<SchemaMapper>();
          _protocolFactory = A.Fake<IProtocolFactory>();
+         _dimensionRepository= A.Fake<IDimensionRepository>(); 
 
-         sut = new ProtocolMapper(_parameterMapper, _protocolFactory, _schemaMapper);
+         sut = new ProtocolMapper(_parameterMapper, _protocolFactory, _schemaMapper,_dimensionRepository);
 
          _simpleProtocol = new SimpleProtocol
          {
@@ -52,11 +56,13 @@ namespace PKSim.Core
          };
          _schema = new Schema().WithName("Schema1");
          _advancedProtocol.AddSchema(_schema);
-         advancedProtocolParameter = DomainHelperForSpecs.ConstantParameterWithValue(3).WithName("AdvancedProtocolParameter");
-         _advancedProtocol.Add(advancedProtocolParameter);
-         A.CallTo(() => _parameterMapper.MapToSnapshot(advancedProtocolParameter)).Returns(new Parameter().WithName(advancedProtocolParameter.Name));
+         _advancedProtocolParameter = DomainHelperForSpecs.ConstantParameterWithValue(3).WithName("AdvancedProtocolParameter");
+         _advancedProtocol.Add(_advancedProtocolParameter);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_advancedProtocolParameter)).Returns(new Parameter().WithName(_advancedProtocolParameter.Name));
 
          A.CallTo(() => _schemaMapper.MapToSnapshot(_schema)).Returns(new Snapshots.Schema().WithName(_schema.Name));
+
+         A.CallTo(() => _dimensionRepository.Time).Returns(DomainHelperForSpecs.TimeDimensionForSpecs());
       }
    }
 
@@ -102,7 +108,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_all_protocol_parameters()
       {
-         _snapshot.Parameters.ExistsByName(advancedProtocolParameter.Name).ShouldBeTrue();
+         _snapshot.Parameters.ExistsByName(_advancedProtocolParameter.Name).ShouldBeTrue();
       }
 
       [Observation]
@@ -112,7 +118,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_valid_protocol_snapshot_to_a_protocol : concern_for_ProtocolMapper
+   public class When_mapping_a_valid_protocol_snapshot_to_a_simple_protocol : concern_for_ProtocolMapper
    {
       private SimpleProtocol _newProtocol;
 
@@ -150,4 +156,48 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newProtocol.Parameter(CoreConstants.Parameter.INPUT_DOSE), _snapshot.Parameters.FindByName(CoreConstants.Parameter.INPUT_DOSE))).MustHaveHappened();
       }
    }
+
+   public class When_mapping_a_valid_protocol_snapshot_to_an_advanced_protocol : concern_for_ProtocolMapper
+   {
+      private AdvancedProtocol _newProtocol;
+      private Schema _newSchema;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_advancedProtocol);
+         A.CallTo(() => _protocolFactory.Create(ProtocolMode.Advanced)).Returns(_advancedProtocol);
+
+         _snapshot.Name = "New Advanced Protocol";
+         _snapshot.Description = "The description that will be deserialized";
+
+         _newSchema = new Schema().WithName("I am a new schema");
+         A.CallTo(() => _schemaMapper.MapToModel(_snapshot.Schemas.FindByName(_schema.Name))).Returns(_newSchema);
+      }
+
+      protected override void Because()
+      {
+         _newProtocol = sut.MapToModel(_snapshot).DowncastTo<AdvancedProtocol>();
+      }
+
+      [Observation]
+      public void should_have_created_a_protocol_with_the_expected_properties()
+      {
+         _newProtocol.Name.ShouldBeEqualTo(_snapshot.Name);
+         _newProtocol.Description.ShouldBeEqualTo(_snapshot.Description);
+      }
+
+      [Observation]
+      public void should_have_added_a_schema_based_on_snapshot_schema()
+      {
+         _advancedProtocol.Contains(_newSchema).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_have_updated_all_visible_parameters()
+      {
+         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newProtocol.Parameter(_advancedProtocolParameter.Name), _snapshot.Parameters.FindByName(_advancedProtocolParameter.Name))).MustHaveHappened();
+      }
+   }
+
 }

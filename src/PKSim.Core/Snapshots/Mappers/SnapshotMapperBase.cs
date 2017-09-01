@@ -82,10 +82,10 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      protected TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
+      protected TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction)
       {
          var snapshot = CreateSnapshotWithDefaultPropertiesFor(model);
-         configurationAction?.Invoke(snapshot);
+         configurationAction(snapshot);
          return snapshot;
       }
 

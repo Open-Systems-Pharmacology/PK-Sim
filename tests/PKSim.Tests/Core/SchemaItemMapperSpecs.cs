@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
-using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
@@ -13,13 +12,15 @@ namespace PKSim.Core
       protected ParameterMapper _parameterMapper;
       protected SchemaItem _schemaItem;
       protected Snapshots.SchemaItem _snapshot;
-      protected IParameter _parameter1;
+      protected IParameter _parameter;
+      protected ISchemaItemFactory _schemaItemFactory;
 
       protected override void Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
+         _schemaItemFactory = A.Fake<ISchemaItemFactory>();
 
-         sut = new SchemaItemMapper(_parameterMapper);
+         sut = new SchemaItemMapper(_parameterMapper, _schemaItemFactory);
 
          _schemaItem = new SchemaItem
          {
@@ -31,10 +32,10 @@ namespace PKSim.Core
             TargetOrgan = "Liver"
          };
 
-         _parameter1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("Param1");
-         _schemaItem.Add(_parameter1);
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("Param1");
+         _schemaItem.Add(_parameter);
 
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(new Parameter().WithName(_parameter1.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter)).Returns(new Snapshots.Parameter().WithName(_parameter.Name));
       }
    }
 
@@ -58,7 +59,46 @@ namespace PKSim.Core
       [Observation]
       public void should_save_all_schema_items_parameters()
       {
-         _snapshot.Parameters.ExistsByName(_parameter1.Name).ShouldBeTrue();
+         _snapshot.Parameters.ExistsByName(_parameter.Name).ShouldBeTrue();
+      }
+   }
+
+   public class When_mapping_a_valid_schema_item_snapshot_to_a_schema_item : concern_for_SchemaItemMapper
+   {
+      private SchemaItem _newSchemaItem;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_schemaItem);
+         A.CallTo(() => _schemaItemFactory.Create(_schemaItem.ApplicationType, null)).Returns(_schemaItem);
+
+         _snapshot.Name = "New Schema Item";
+         _snapshot.Description = "The description that will be deserialized";
+         _snapshot.FormulationKey = "Toto";
+         _snapshot.TargetOrgan = "Tata";
+         _snapshot.TargetCompartment = "Titi";
+      }
+
+      protected override void Because()
+      {
+         _newSchemaItem = sut.MapToModel(_snapshot);
+      }
+
+      [Observation]
+      public void should_have_created_a_schema_item_with_the_expected_properties()
+      {
+         _newSchemaItem.Name.ShouldBeEqualTo(_snapshot.Name);
+         _newSchemaItem.Description.ShouldBeEqualTo(_snapshot.Description);
+         _newSchemaItem.FormulationKey.ShouldBeEqualTo(_snapshot.FormulationKey);
+         _newSchemaItem.TargetOrgan.ShouldBeEqualTo(_snapshot.TargetOrgan);
+         _newSchemaItem.TargetCompartment.ShouldBeEqualTo(_snapshot.TargetCompartment);
+      }
+
+      [Observation]
+      public void should_have_updated_all_visible_parameters()
+      {
+         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newSchemaItem.Parameter(_parameter.Name), _snapshot.Parameters.FindByName(_parameter.Name))).MustHaveHappened();
       }
    }
 }
