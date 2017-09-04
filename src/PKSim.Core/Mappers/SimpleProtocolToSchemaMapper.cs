@@ -101,7 +101,7 @@ namespace PKSim.Core.Mappers
          }
       }
 
-      private ISchemaItem createSchemaItem(double startTime, SimpleProtocol simpleProtocol, Schema schema)
+      private SchemaItem createSchemaItem(double startTime, SimpleProtocol simpleProtocol, Schema schema)
       {
          var schemaItem = _schemaItemFactory.Create(simpleProtocol.ApplicationType, schema);
          schemaItem.StartTime.Value = startTime;

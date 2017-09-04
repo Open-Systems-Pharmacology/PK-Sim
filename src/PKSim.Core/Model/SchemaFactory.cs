@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
    public interface ISchemaFactory
    {
       Schema CreateWithDefaultItem(ApplicationType applicationType, IContainer container);
-      Schema Create(IContainer container);
+      Schema Create(IContainer container = null);
    }
 
    public class SchemaFactory : ISchemaFactory
@@ -37,17 +37,15 @@ namespace PKSim.Core.Model
 
       public Schema Create(IContainer container)
       {
-         var schema = _objectBaseFactory.Create<Schema>();
-         var usedNames = new List<string>();
+         var schema = _objectBaseFactory.Create<Schema>().WithName(PKSimConstants.UI.Schema);
 
          if (container != null)
-            usedNames.AddRange(container.GetChildren<Schema>().Select(x => x.Name));
-
-         schema.Name = _containerTask.CreateUniqueName(usedNames, PKSimConstants.UI.Schema);
+            schema.Name = _containerTask.CreateUniqueName(container, PKSimConstants.UI.Schema);
 
          schema.Add(_parameterFactory.CreateFor(Constants.Parameters.START_TIME, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol));
          schema.Add(_parameterFactory.CreateFor(CoreConstants.Parameter.NUMBER_OF_REPETITIONS, 1, PKSimBuildingBlockType.Protocol));
          schema.Add(_parameterFactory.CreateFor(CoreConstants.Parameter.TIME_BETWEEN_REPETITIONS, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol));
+
          return schema;
       }
    }

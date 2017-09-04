@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -12,7 +13,7 @@ namespace PKSim.Core.Snapshots.Mappers
    }
 
    public abstract class SnapshotMapperBase<TModel, TSnapshot> : ISnapshotMapperSpecification
-      where TSnapshot : ISnapshot
+      where TSnapshot : ISnapshot, new()
       where TModel : IObjectBase
    {
       public virtual object MapToSnapshot(object model) => MapToSnapshot(model.DowncastTo<TModel>());
@@ -45,11 +46,18 @@ namespace PKSim.Core.Snapshots.Mappers
       protected string SnapshotValueFor(string value) => !string.IsNullOrEmpty(value) ? value : null;
 
       protected string UnitValueFor(string unit) => unit ?? "";
+
+      protected virtual TSnapshot CreateSnapshotWithDefaultPropertiesFor(TModel model)
+      {
+         var snapshot = new TSnapshot();
+         MapModelPropertiesIntoSnapshot(model, snapshot);
+         return snapshot;
+      }
    }
 
    public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot> : SnapshotMapperBase<TModel, TSnapshot>
-      where TModel : IObjectBase
-      where TSnapshot : ParameterContainerSnapshotBase
+      where TModel : IContainer
+      where TSnapshot : ParameterContainerSnapshotBase, new()
    {
       protected readonly ParameterMapper _parameterMapper;
 
@@ -64,7 +72,21 @@ namespace PKSim.Core.Snapshots.Mappers
 
       protected void MapParameters(IEnumerable<IParameter> parameters, TSnapshot snapshot)
       {
-         parameters.Each(p => snapshot.AddParameters(ParameterSnapshotFor(p)));
+         snapshot.Parameters.AddRange(parameters.Select(ParameterSnapshotFor));
+      }
+
+      protected override TSnapshot CreateSnapshotWithDefaultPropertiesFor(TModel model)
+      {
+         var snapshot = base.CreateSnapshotWithDefaultPropertiesFor(model);
+         MapVisibleParameters(model, snapshot);
+         return snapshot;
+      }
+
+      protected TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction)
+      {
+         var snapshot = CreateSnapshotWithDefaultPropertiesFor(model);
+         configurationAction(snapshot);
+         return snapshot;
       }
 
       protected void UpdateParametersFromSnapshot(IContainer container, TSnapshot snapshot, string containerDesciptor)

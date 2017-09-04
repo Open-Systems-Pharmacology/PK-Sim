@@ -2,7 +2,6 @@
 using SnapshotEvent = PKSim.Core.Snapshots.Event;
 using ModelEvent = PKSim.Core.Model.PKSimEvent;
 
-
 namespace PKSim.Core.Snapshots.Mappers
 {
    public class EventMapper : ParameterContainerSnapshotMapperBase<ModelEvent, SnapshotEvent>
@@ -16,10 +15,10 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override SnapshotEvent MapToSnapshot(ModelEvent modelEvent)
       {
-         var snapshotEvent = new SnapshotEvent {Template = modelEvent.TemplateName};
-         MapModelPropertiesIntoSnapshot(modelEvent, snapshotEvent);
-         MapVisibleParameters(modelEvent, snapshotEvent);
-         return snapshotEvent;
+         return SnapshotFrom(modelEvent, snapshot =>
+         {
+            snapshot.Template = modelEvent.TemplateName;
+         });
       }
 
       public override ModelEvent MapToModel(SnapshotEvent snapshotEvent)

@@ -93,6 +93,7 @@ namespace PKSim.Core
          container.Register<Protocol, SimpleProtocol>();
          container.Register<Simulation, IndividualSimulation>();
          container.Register<Population, RandomPopulation>();
+         container.Register<SchemaItem, SchemaItem>();
 
          //generic command registration
          container.Register<IOSPSuiteExecutionContext, ExecutionContext>();

@@ -5,7 +5,7 @@ using OSPSuite.Presentation.Mappers;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
-   public interface ISchemaItemToSchemaItemDTOMapper : IMapper<ISchemaItem, SchemaItemDTO>
+   public interface ISchemaItemToSchemaItemDTOMapper : IMapper<SchemaItem, SchemaItemDTO>
    {
    }
 
@@ -18,7 +18,7 @@ namespace PKSim.Presentation.DTO.Mappers
          _parameterDTOMapper = parameterDTOMapper;
       }
 
-      public SchemaItemDTO MapFrom(ISchemaItem schemaItem)
+      public SchemaItemDTO MapFrom(SchemaItem schemaItem)
       {
          var schemaItemDTO = new SchemaItemDTO(schemaItem);
          schemaItemDTO.DoseParameter = _parameterDTOMapper.MapFrom(schemaItem.Dose, schemaItemDTO, x => x.Dose, x => x.DoseParameter);

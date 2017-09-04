@@ -18,11 +18,10 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override SnapshotFormulation MapToSnapshot(ModelFormulation modelFormulation)
       {
-         var snapshotFormulation = new SnapshotFormulation();
-         MapModelPropertiesIntoSnapshot(modelFormulation, snapshotFormulation);
-         MapVisibleParameters(modelFormulation, snapshotFormulation);
-         snapshotFormulation.FormulationType = modelFormulation.FormulationType;
-         return snapshotFormulation;
+         return SnapshotFrom(modelFormulation, snapshot =>
+         {
+            snapshot.FormulationType = modelFormulation.FormulationType;
+         });
       }
 
       public override ModelFormulation MapToModel(SnapshotFormulation snapshotFormulation)

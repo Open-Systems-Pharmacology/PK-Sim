@@ -10,13 +10,13 @@ namespace PKSim.Core
    public abstract class concern_for_remove_schema_item_from_schema_command : ContextSpecification<RemoveSchemaItemFromSchemaCommand>
    {
       protected IExecutionContext _context;
-      protected ISchemaItem _schemaItem;
+      protected SchemaItem _schemaItem;
       protected Schema _schema;
 
       protected override void Context()
       {
          _context = A.Fake<IExecutionContext>();
-         _schemaItem = A.Fake<ISchemaItem>();
+         _schemaItem = A.Fake<SchemaItem>();
          _schema = A.Fake<Schema>();
          sut = new RemoveSchemaItemFromSchemaCommand(_schemaItem, _schema, _context);
       }
