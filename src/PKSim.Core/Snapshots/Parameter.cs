@@ -7,4 +7,10 @@
       public string ValueDescription { get; set; }
       public TableFormula TableFormula { get; set; }
    }
+
+   public class LocalizedParameter : Parameter
+   {
+      //Full path of parameter in continer hierarchie
+      public string Path { get; set; }
+   }
 }

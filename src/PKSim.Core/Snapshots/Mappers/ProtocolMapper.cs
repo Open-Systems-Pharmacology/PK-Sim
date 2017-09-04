@@ -42,7 +42,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override ModelProtocol MapToModel(SnapshotProtocol snapshotProtocol)
       {
          var modelProtocol = createModelProtocolFrom(snapshotProtocol);
-         MapSnapshotPropertiesIntoModel(snapshotProtocol, modelProtocol);
+         MapSnapshotPropertiesToModel(snapshotProtocol, modelProtocol);
          UpdateParametersFromSnapshot(modelProtocol, snapshotProtocol, PKSimConstants.ObjectTypes.AdministrationProtocol);
          return modelProtocol;
       }

@@ -20,10 +20,7 @@ namespace PKSim.Core.Model
       public string CompartmentName { get; set; }
       private readonly IList<string> _allProcessNames = new List<string>();
 
-      public IEnumerable<string> ProcessNames
-      {
-         get { return _allProcessNames; }
-      }
+      public IEnumerable<string> ProcessNames => _allProcessNames;
 
       public void AddProcessName(string processName)
       {
@@ -37,18 +34,11 @@ namespace PKSim.Core.Model
 
       public MembraneLocation MembraneLocation
       {
-         get { return _membraneLocation; }
-         set
-         {
-            _membraneLocation = value;
-            OnPropertyChanged(() => MembraneLocation);
-         }
+         get => _membraneLocation;
+         set => SetProperty(ref _membraneLocation, value);
       }
 
-      public string OrganName
-      {
-         get { return Name; }
-      }
+      public string OrganName => Name;
 
       public bool HasPolarizedMembrane
       {

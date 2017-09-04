@@ -85,11 +85,7 @@ namespace PKSim.Core.Model
       public virtual Ontogeny Ontogeny
       {
          get => _ontogeny;
-         set
-         {
-            _ontogeny = value;
-            OnPropertyChanged(() => Ontogeny);
-         }
+         set => SetProperty(ref _ontogeny, value);
       }
    }
 

@@ -29,7 +29,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var applicationType = ApplicationTypes.ByName(snapshot.ApplicationType);
          var schemaItem = _schemaItemFactory.Create(applicationType);
-         MapModelPropertiesIntoSnapshot(schemaItem, snapshot);
+         MapModelPropertiesToSnapshot(schemaItem, snapshot);
          UpdateParametersFromSnapshot(schemaItem, snapshot, PKSimConstants.ObjectTypes.SchemaItem);
          schemaItem.FormulationKey = snapshot.FormulationKey;
          schemaItem.TargetOrgan = snapshot.TargetOrgan;

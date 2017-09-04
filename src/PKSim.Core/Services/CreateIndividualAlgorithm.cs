@@ -110,10 +110,10 @@ namespace PKSim.Core.Services
       private void randomizeDistributedParameterIn(Individual individual)
       {
          //all distribued parameters in individual that are not standard parameters
-         var allDistributedParameer = _containerTask.CacheAllChildrenSatisfying<IDistributedParameter>(
+         var allDistributedParameters = _containerTask.CacheAllChildrenSatisfying<IDistributedParameter>(
             individual, p => !CoreConstants.Parameter.StandardCreateIndividualParameters.Contains(p.Name));
 
-         foreach (var parameter in allDistributedParameer)
+         foreach (var parameter in allDistributedParameters)
          {
             parameter.Value = parameter.RandomDeviateIn(_randomGenerator);
          }

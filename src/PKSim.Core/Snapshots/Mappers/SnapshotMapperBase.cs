@@ -31,13 +31,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return item.IsAnImplementationOf<TModel>() || item.IsAnImplementationOf<TSnapshot>();
       }
 
-      protected void MapModelPropertiesIntoSnapshot(TModel model, TSnapshot snapshot)
+      protected void MapModelPropertiesToSnapshot(TModel model, TSnapshot snapshot)
       {
          snapshot.Name = model.Name;
          snapshot.Description = SnapshotValueFor(model.Description);
       }
 
-      protected void MapSnapshotPropertiesIntoModel(TSnapshot snapshot, TModel model)
+      protected void MapSnapshotPropertiesToModel(TSnapshot snapshot, TModel model)
       {
          model.Name = snapshot.Name;
          model.Description = snapshot.Description;
@@ -50,7 +50,7 @@ namespace PKSim.Core.Snapshots.Mappers
       protected virtual TSnapshot CreateSnapshotWithDefaultPropertiesFor(TModel model)
       {
          var snapshot = new TSnapshot();
-         MapModelPropertiesIntoSnapshot(model, snapshot);
+         MapModelPropertiesToSnapshot(model, snapshot);
          return snapshot;
       }
    }

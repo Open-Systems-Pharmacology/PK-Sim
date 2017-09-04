@@ -245,7 +245,9 @@
     <Compile Include="Core\FormulationMapperSpecs.cs" />
     <Compile Include="Core\IndividualExtractionOptionsSpecs.cs" />
     <Compile Include="Core\IndividualExtractorSpecs.cs" />
+    <Compile Include="Core\IndividualMapperSpecs.cs" />
     <Compile Include="Core\InteractionProcessRetrieverSpecs.cs" />
+    <Compile Include="Core\MoleculeMapperSpecs.cs" />
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
     <Compile Include="Core\ParameterMapperSpecs.cs" />

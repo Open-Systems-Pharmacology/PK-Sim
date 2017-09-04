@@ -92,13 +92,13 @@ namespace PKSim.Core.Model
 
       /// <summary>
       ///    All protein of type
-      ///    <typeparam name="TProtein" />
+      ///    <typeparam name="TMolecule" />
       ///    in the individual
       /// </summary>
-      /// <typeparam name="TProtein"> Type of protein to be retrieved </typeparam>
-      public virtual IEnumerable<TProtein> AllMolecules<TProtein>() where TProtein : IndividualMolecule
+      /// <typeparam name="TMolecule"> Type of molecule to be retrieved </typeparam>
+      public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule
       {
-         return GetChildren<TProtein>();
+         return GetChildren<TMolecule>();
       }
 
       public virtual void AddMolecule(IndividualMolecule molecule)
