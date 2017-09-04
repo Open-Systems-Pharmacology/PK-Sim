@@ -2,11 +2,14 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core.Batch.Mapper;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using IndividualMapper = PKSim.Core.Snapshots.Mappers.IndividualMapper;
 using SnapshotIndividual = PKSim.Core.Snapshots.Individual;
 using ModelIndividual = PKSim.Core.Model.Individual;
 using Parameter = PKSim.Core.Snapshots.Parameter;
@@ -30,14 +33,20 @@ namespace PKSim.Core
       protected Molecule _enzymeSnapshot;
       protected Molecule _transporterSnapshot;
       protected LocalizedParameter _localizedParameterKidney;
+      protected IIndividualFactory _individualFactory;
+      protected IOriginDataMapper _originDataMapper;
+      protected IContainerTask _containerTask;
 
       protected override void Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _moleculeMapper = A.Fake<MoleculeMapper>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
+         _individualFactory = A.Fake<IIndividualFactory>();
+         _originDataMapper = A.Fake<IOriginDataMapper>();
+         _containerTask = A.Fake<IContainerTask>();
 
-         sut = new IndividualMapper(_parameterMapper, _dimensionRepository, _moleculeMapper);
+         sut = new IndividualMapper(_parameterMapper, _dimensionRepository, _moleculeMapper, _individualFactory, _originDataMapper, _containerTask);
 
          _individual = DomainHelperForSpecs.CreateIndividual();
          _individual.Name = "Ind";
@@ -79,10 +88,12 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.ParameterFrom(_individual.OriginData.Age, A<string>._, A<IDimension>._)).Returns(_ageSnapshotParameter);
          A.CallTo(() => _parameterMapper.ParameterFrom(_individual.OriginData.Height, A<string>._, A<IDimension>._)).Returns(_heightSnapshotParameter);
 
+         _enzymeSnapshot = new Molecule { Type = "Enzyme" };
          A.CallTo(() => _moleculeMapper.MapToSnapshot(_enzyme)).Returns(_enzymeSnapshot);
+         _transporterSnapshot = new Molecule {Type = "Transporter"};
          A.CallTo(() => _moleculeMapper.MapToSnapshot(_transporter)).Returns(_transporterSnapshot);
 
-         _localizedParameterKidney= new LocalizedParameter();
+         _localizedParameterKidney = new LocalizedParameter {Path = "Organism|Kidney|PKidney"};
          A.CallTo(() => _parameterMapper.LocalizedParameterFrom(_parameterKidney)).Returns(_localizedParameterKidney);
       }
    }
@@ -124,8 +135,89 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_individual_molecules()
       {
-         _snapshot.Enzymes.ShouldContain(_enzymeSnapshot);
-         _snapshot.Transporters.ShouldContain(_transporterSnapshot);
+         _snapshot.Molecules.ShouldOnlyContain(_enzymeSnapshot, _transporterSnapshot);
+      }
+   }
+
+   public class When_mapping_a_valid_individual_snapshot_to_an_individual : concern_for_IndividualMapper
+   {
+      private ModelIndividual _newIndividual;
+      private IndividualMolecule _molecule1;
+      private IndividualMolecule _molecule2;
+      private Batch.OriginData _batchOriginData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_individual);
+
+         A.CallTo(() => _originDataMapper.MapFrom(A<Batch.OriginData>._))
+            .Invokes(x => _batchOriginData = x.GetArgument<Batch.OriginData>(0));
+            
+
+         A.CallTo(() => _individualFactory.CreateAndOptimizeFor(A<OriginData>._, _snapshot.Seed))
+            .Returns(_individual);
+
+         _snapshot.Name = "New individual";
+         _snapshot.Description = "The description that will be deserialized";
+
+         //clear enzyme before mapping them again
+         _individual.RemoveMolecule(_enzyme);
+         _individual.RemoveMolecule(_transporter);
+
+         //reset parameter
+         _parameterKidney.ResetToDefault();
+
+         _molecule1 = new IndividualEnzyme().WithName("Mol1");
+         _molecule2 = new IndividualEnzyme().WithName("Mol2");
+
+         A.CallTo(() => _moleculeMapper.MapToModel(_enzymeSnapshot, _individual)).Returns(_molecule1);
+         A.CallTo(() => _moleculeMapper.MapToModel(_transporterSnapshot, _individual)).Returns(_molecule2);
+
+         var parameterCache = new PathCacheForSpecs<IParameter>();
+         A.CallTo(_containerTask).WithReturnType<PathCache<IParameter>>().Returns(parameterCache);
+         parameterCache.Add(_localizedParameterKidney.Path, _parameterKidney);
+
+         A.CallTo(() => _dimensionRepository.Mass.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value)).Returns(10);
+         A.CallTo(() => _dimensionRepository.AgeInYears.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Age.Value)).Returns(20);
+         A.CallTo(() => _dimensionRepository.Length.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Height.Value)).Returns(30);
+      }
+
+      protected override void Because()
+      {
+         _newIndividual = sut.MapToModel(_snapshot);
+      }
+
+      [Observation]
+      public void should_use_the_expected_individual_origin_data_to_create_the_individual()
+      {
+         _batchOriginData.Species.ShouldBeEqualTo(_snapshot.Species);
+         _batchOriginData.Population.ShouldBeEqualTo(_snapshot.Population);
+         _batchOriginData.Gender.ShouldBeEqualTo(_snapshot.Gender);
+         _batchOriginData.Weight.ShouldBeEqualTo(10);
+         _batchOriginData.Age.ShouldBeEqualTo(20);
+         _batchOriginData.Height.ShouldBeEqualTo(30);
+
+         double.IsNaN(_batchOriginData.GestationalAge).ShouldBeTrue();
+
+      }
+      [Observation]
+      public void should_have_created_an_event_with_the_expected_properties()
+      {
+         _newIndividual.Name.ShouldBeEqualTo(_snapshot.Name);
+         _newIndividual.Description.ShouldBeEqualTo(_snapshot.Description);
+      }
+
+      [Observation]
+      public void should_have_created_the_expected_molecules()
+      {
+         _newIndividual.AllMolecules().ShouldOnlyContain(_molecule1, _molecule2);
+      }
+
+      [Observation]
+      public void should_have_updated_the_parameter_previously_set_by_the_user()
+      {
+         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_parameterKidney, _localizedParameterKidney)).MustHaveHappened();
       }
    }
 }

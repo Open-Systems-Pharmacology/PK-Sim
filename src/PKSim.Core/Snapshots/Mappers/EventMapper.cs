@@ -29,4 +29,4 @@ namespace PKSim.Core.Snapshots.Mappers
          return modelEvent;
       }
    }
-}
+}  

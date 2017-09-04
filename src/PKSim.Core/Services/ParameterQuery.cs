@@ -63,7 +63,7 @@ namespace PKSim.Core.Services
       public IEnumerable<ParameterValueMetaData> ParameterValuesFor(IContainer parameterContainer, OriginData originData, Func<ParameterMetaData, bool> predicate)
       {
          if (originData == null)
-            return new List<ParameterValueMetaData>();
+            return Enumerable.Empty<ParameterValueMetaData>();
 
          var containerPath = _entityPathResolver.PathFor(parameterContainer);
          return from parameterValueDefinition in _parameterValueRepository.AllFor(containerPath)
@@ -100,7 +100,7 @@ namespace PKSim.Core.Services
       private IEnumerable<ParameterDistributionMetaData> distributedParameterMetaDataFor(IEnumerable<ParameterDistributionMetaData> queryableDistributionParameters, OriginData originData)
       {
          if (originData == null)
-            return new List<ParameterDistributionMetaData>();
+            return Enumerable.Empty<ParameterDistributionMetaData>();
 
          var allDistributedParameters = (from distribution in distributedParameterMetaDataFor(queryableDistributionParameters, originData.SpeciesPopulation, originData.SubPopulation)
                                          where distribution.Gender == originData.Gender.Name

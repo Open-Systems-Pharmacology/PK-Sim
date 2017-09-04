@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
+using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
    public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule>
    {
-      public MoleculeMapper(ParameterMapper parameterMapper) : base(parameterMapper)
+      private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
+
+      public MoleculeMapper(ParameterMapper parameterMapper, IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver) : base(parameterMapper)
       {
+         _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
       }
 
       public override Molecule MapToSnapshot(IndividualMolecule molecule)
@@ -16,6 +23,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return SnapshotFrom(molecule, snapshot =>
          {
             updateMoleculeSpecificProperties(snapshot, molecule);
+            snapshot.Type = molecule.MoleculeType.ToString();
             snapshot.Expression = allExpresionFrom(molecule);
          });
       }
@@ -44,9 +52,49 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
+      public virtual IndividualMolecule MapToModel(Molecule snapshot, ISimulationSubject simulationSubject)
+      {
+         var molecule = createMoleculeFrom(snapshot, simulationSubject);
+         UpdateParametersFromSnapshot(molecule, snapshot, snapshot.Type);
+         MapSnapshotPropertiesToModel(snapshot, molecule);
+
+         foreach (var expression in snapshot.Expression)
+         {
+            var expressionParameter = molecule.GetRelativeExpressionParameterFor(expression.Path);
+            if (expressionParameter == null)
+               throw new SnapshotOutdatedException(PKSimConstants.Error.MoleculeTypeNotSupported(expression.Path));
+
+            _parameterMapper.UpdateParameterFromSnapshot(expressionParameter, expression);
+         }
+
+         return molecule;
+      }
+
       public override IndividualMolecule MapToModel(Molecule snapshot)
       {
-         throw new NotImplementedException();
+         throw new NotSupportedException("Molecule should not be created from snapshot directly. Instead use the overload with simulationSubject");
+      }
+
+      private IndividualMolecule createMoleculeFrom(Molecule molecule, ISimulationSubject simulationSubject)
+      {
+         return factoryFor(molecule).CreateFor(simulationSubject);
+      }
+
+      private IIndividualMoleculeFactory factoryFor(Molecule molecule)
+      {
+         var moleculeType = EnumHelper.ParseValue<QuantityType>(molecule.Type);
+         switch (moleculeType)
+         {
+            case QuantityType.Enzyme:
+               return _individualMoleculeFactoryResolver.FactoryFor<IndividualEnzyme>();
+            case QuantityType.OtherProtein:
+               return _individualMoleculeFactoryResolver.FactoryFor<IndividualOtherProtein>();
+            case QuantityType.Transporter:
+               return _individualMoleculeFactoryResolver.FactoryFor<IndividualOtherProtein>();
+
+            default:
+               throw new SnapshotOutdatedException(PKSimConstants.Error.MoleculeTypeNotSupported(moleculeType.ToString()));
+         }
       }
    }
 }

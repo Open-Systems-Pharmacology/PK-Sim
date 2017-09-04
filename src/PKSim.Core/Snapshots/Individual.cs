@@ -15,8 +15,6 @@ namespace PKSim.Core.Snapshots
       public Parameter Height { get; set; }
 
       public List<LocalizedParameter> Parameters { get; set; } = new List<LocalizedParameter>();
-      public List<Molecule> Enzymes { get; set; } = new List<Molecule>();
-      public List<Molecule> OtherProteins { get; set; } = new List<Molecule>();
-      public List<Molecule> Transporters { get; set; } = new List<Molecule>();
+      public List<Molecule> Molecules { get; set; } = new List<Molecule>();
    }
 }

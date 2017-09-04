@@ -4,6 +4,7 @@ namespace PKSim.Core.Snapshots
 {
    public class Molecule : ParameterContainerSnapshotBase
    {
+      public string Type { get; set; }
       //Proteins only
       public string MembraneLocation { get; set; }
 
