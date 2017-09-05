@@ -134,11 +134,9 @@ namespace PKSim.UI.Views.Applications
 
       public override void InitializeBinding()
       {
-         var applicationRepository = new UxRepositoryItemImageComboBox(mainView, _imageListRetriever);
-         _gridApplicationsBinder = new GridViewBinder<ApplicationDTO>(mainView);
-         _gridApplicationsBinder.BindingMode = BindingMode.OneWay;
+         _gridApplicationsBinder = new GridViewBinder<ApplicationDTO>(mainView) {BindingMode = BindingMode.OneWay};
          _gridApplicationsBinder.Bind(x => x.Name)
-            .WithRepository(appDto => applicationDisplay(appDto, applicationRepository))
+            .WithRepository(applicationDisplay)
             .WithShowButton(ShowButtonModeEnum.ShowOnlyInEditor)
             .AsReadOnly();
 
@@ -147,11 +145,11 @@ namespace PKSim.UI.Views.Applications
          _comboBoxUnit.ParameterUnitSet += (p, unit) => OnEvent(() => _presenter.SetParameterUnit(p, unit));
       }
 
-      private RepositoryItem applicationDisplay(ApplicationDTO applicationDTO, UxRepositoryItemImageComboBox uxRepositoryImageComboEdit)
+      private RepositoryItem applicationDisplay(ApplicationDTO applicationDTO)
       {
-         uxRepositoryImageComboEdit.Items.Clear();
-         uxRepositoryImageComboEdit.Items.Add(new ImageComboBoxItem(applicationDTO.Name, _imageListRetriever.ImageIndex(applicationDTO.Icon)));
-         return uxRepositoryImageComboEdit;
+         var applicationRepository = new UxRepositoryItemImageComboBox(mainView, _imageListRetriever);
+         applicationRepository.Items.Add(new ImageComboBoxItem(applicationDTO.Name, _imageListRetriever.ImageIndex(applicationDTO.Icon)));
+         return applicationRepository;
       }
 
       public void BindTo(IEnumerable<ApplicationDTO> allApplications)
