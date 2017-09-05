@@ -29,7 +29,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override ModelSchema MapToModel(SnapshotSchema snapshotSchema)
       {
          var schema = _schemaFactory.Create();
-         MapSnapshotPropertiesIntoModel(snapshotSchema, schema);
+         MapSnapshotPropertiesToModel(snapshotSchema, schema);
          UpdateParametersFromSnapshot(schema, snapshotSchema, PKSimConstants.ObjectTypes.Schema);
          schema.AddChildren(snapshotSchema.SchemaItems.Select(_schemaItemMapper.MapToModel));
          return schema;

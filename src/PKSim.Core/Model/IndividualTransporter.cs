@@ -15,6 +15,15 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
+      ///    Transporter type => Direction of transport
+      /// </summary>
+      public TransportType TransportType
+      {
+         get => _transportType;
+         set => SetProperty(ref _transportType, value);
+      }
+
+      /// <summary>
       ///    Returns the organ container where the transporter mey be defined
       /// </summary>
       public new IEnumerable<ITransporterExpressionContainer> AllExpressionsContainers()
@@ -58,19 +67,6 @@ namespace PKSim.Core.Model
          var sourceTransporter = sourceObject as IndividualTransporter;
          if (sourceTransporter == null) return;
          TransportType = sourceTransporter.TransportType;
-      }
-
-      /// <summary>
-      ///    Transporter type => Direction of transport
-      /// </summary>
-      public TransportType TransportType
-      {
-         get { return _transportType; }
-         set
-         {
-            _transportType = value;
-            OnPropertyChanged(() => TransportType);
-         }
       }
    }
 }

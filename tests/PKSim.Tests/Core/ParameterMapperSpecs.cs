@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
@@ -12,12 +13,14 @@ namespace PKSim.Core
    {
       protected IParameter _parameter;
       protected TableFormulaMapper _tableFormulaMapper;
+      protected IEntityPathResolver _entityPathResolver;
 
       protected override void Context()
       {
          _tableFormulaMapper = A.Fake<TableFormulaMapper>();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
 
-         sut = new ParameterMapper(_tableFormulaMapper);
+         sut = new ParameterMapper(_tableFormulaMapper, _entityPathResolver);
 
          //5 mm is the value
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10)
@@ -124,7 +127,7 @@ namespace PKSim.Core
          _snapshotParameter.TableFormula = new TableFormula();
          var modelTableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
          A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula)).Returns(modelTableFormula);
-         
+
          //Ensure that the first value is the parameter value
          modelTableFormula.AddPoint(0, _parameterValue);
 
@@ -205,7 +208,35 @@ namespace PKSim.Core
       [Observation]
       public void should_be_able_to_update_the_parameter_from_snapshot()
       {
-         _parameter.Value.ShouldBeEqualTo(1);         
+         _parameter.Value.ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_mapping_a_parameter_to_a_localized_parameter : concern_for_ParameterMapper
+   {
+      private LocalizedParameter _localParameter;
+
+      protected override void Because()
+      {
+         _localParameter = sut.LocalizedParameterFrom(_parameter, x => $"Path is {x.Name}");
+      }
+
+      [Observation]
+      public void should_map_the_standard_properties_of_a_parameter()
+      {
+         _localParameter.Value.ShouldBeEqualTo(_parameter.ValueInDisplayUnit);
+      }
+
+      [Observation]
+      public void should_have_set_the_path_to_the_expected_value()
+      {
+         _localParameter.Path.ShouldBeEqualTo($"Path is {_parameter.Name}");
+      }
+
+      [Observation]
+      public void should_have_reset_the_name()
+      {
+         _localParameter.Name.ShouldBeNull();
       }
    }
 }

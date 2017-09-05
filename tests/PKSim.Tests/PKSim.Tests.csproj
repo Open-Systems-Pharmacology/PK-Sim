@@ -241,11 +241,15 @@
     <Compile Include="Core\AdvancedParameterFactorySpecs.cs" />
     <Compile Include="Core\AgingDataSpecs.cs" />
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />
+    <Compile Include="Core\DistributedTableFormulaMapperSpecs.cs" />
     <Compile Include="Core\EventMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />
     <Compile Include="Core\IndividualExtractionOptionsSpecs.cs" />
     <Compile Include="Core\IndividualExtractorSpecs.cs" />
+    <Compile Include="Core\IndividualMapperSpecs.cs" />
     <Compile Include="Core\InteractionProcessRetrieverSpecs.cs" />
+    <Compile Include="Core\MoleculeMapperSpecs.cs" />
+    <Compile Include="Core\OntogenyMapperSpecs.cs" />
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
     <Compile Include="Core\ParameterMapperSpecs.cs" />

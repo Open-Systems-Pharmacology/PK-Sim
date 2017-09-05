@@ -72,14 +72,14 @@ namespace PKSim.Core
             SubPopulation = new SubPopulation(),
             Species = new Species().WithName("Species"),
             Gender = new Gender().WithName("Gender"),
-            SpeciesPopulation = new SpeciesPopulation().WithName("Population")
+            SpeciesPopulation = new SpeciesPopulation().WithName("Population"),
          };
 
          var pvv = new ParameterValueVersion().WithName("PVVName");
          var category = new ParameterValueVersionCategory().WithName("CategoryName");
          category.Add(pvv);
          originData.SubPopulation.AddParameterValueVersion(pvv);
-         var organism = new Organism().WithName("Organism").WithId("OrganismId");
+         var organism = new Organism().WithName(Constants.ORGANISM).WithId("OrganismId");
          var organLiver = new Organ().WithName(CoreConstants.Organ.Liver).WithId("LiverId");
          organLiver.OrganType = OrganType.TissueOrgansNotInGiTract;
          var periportal = new Compartment().WithName(CoreConstants.Compartment.Periportal).WithId("PeriportalId");

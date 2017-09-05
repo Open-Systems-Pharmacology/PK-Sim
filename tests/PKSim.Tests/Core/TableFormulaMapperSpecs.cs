@@ -33,6 +33,7 @@ namespace PKSim.Core
          _tableFormula.XDisplayUnit = _tableFormula.XDimension.Unit("h");
          _tableFormula.YDisplayUnit = _tableFormula.Dimension.Unit("cm");
 
+         _tableFormula.UseDerivedValues = true;
 
          _tableFormula.AddPoint(60, 1); //60 min, 1m
          _tableFormula.AddPoint(120, 2); //120 min, 2m
@@ -57,6 +58,8 @@ namespace PKSim.Core
       {
          _snapshot.XName.ShouldBeEqualTo(_tableFormula.XName);
          _snapshot.YName.ShouldBeEqualTo(_tableFormula.YName);
+
+         _snapshot.UseDerivedValues.ShouldBeEqualTo(_tableFormula.UseDerivedValues);
       }
 
       [Observation]
@@ -98,6 +101,8 @@ namespace PKSim.Core
          _newTableFormula.YName.ShouldBeEqualTo(_snapshot.YName);
          _newTableFormula.YDisplayUnit.Name.ShouldBeEqualTo(_snapshot.YUnit);
          _newTableFormula.Dimension.Name.ShouldBeEqualTo(_snapshot.YDimension);
+
+         _newTableFormula.UseDerivedValues.ShouldBeEqualTo(_snapshot.UseDerivedValues);
       }
 
       [Observation]

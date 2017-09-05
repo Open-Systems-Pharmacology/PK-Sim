@@ -31,13 +31,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return item.IsAnImplementationOf<TModel>() || item.IsAnImplementationOf<TSnapshot>();
       }
 
-      protected void MapModelPropertiesIntoSnapshot(TModel model, TSnapshot snapshot)
+      protected void MapModelPropertiesToSnapshot(TModel model, TSnapshot snapshot)
       {
          snapshot.Name = model.Name;
          snapshot.Description = SnapshotValueFor(model.Description);
       }
 
-      protected void MapSnapshotPropertiesIntoModel(TSnapshot snapshot, TModel model)
+      protected void MapSnapshotPropertiesToModel(TSnapshot snapshot, TModel model)
       {
          model.Name = snapshot.Name;
          model.Description = snapshot.Description;
@@ -47,10 +47,11 @@ namespace PKSim.Core.Snapshots.Mappers
 
       protected string UnitValueFor(string unit) => unit ?? "";
 
-      protected virtual TSnapshot CreateSnapshotWithDefaultPropertiesFor(TModel model)
+      protected virtual TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
       {
          var snapshot = new TSnapshot();
-         MapModelPropertiesIntoSnapshot(model, snapshot);
+         MapModelPropertiesToSnapshot(model, snapshot);
+         configurationAction?.Invoke(snapshot);
          return snapshot;
       }
    }
@@ -75,18 +76,13 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Parameters.AddRange(parameters.Select(ParameterSnapshotFor));
       }
 
-      protected override TSnapshot CreateSnapshotWithDefaultPropertiesFor(TModel model)
+      protected override TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
       {
-         var snapshot = base.CreateSnapshotWithDefaultPropertiesFor(model);
-         MapVisibleParameters(model, snapshot);
-         return snapshot;
-      }
-
-      protected TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction)
-      {
-         var snapshot = CreateSnapshotWithDefaultPropertiesFor(model);
-         configurationAction(snapshot);
-         return snapshot;
+         return base.SnapshotFrom(model, snapshot =>
+         {
+            MapVisibleParameters(model, snapshot);
+            configurationAction?.Invoke(snapshot);
+         });
       }
 
       protected void UpdateParametersFromSnapshot(IContainer container, TSnapshot snapshot, string containerDesciptor)

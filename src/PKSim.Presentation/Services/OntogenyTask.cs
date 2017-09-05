@@ -3,7 +3,6 @@ using System.Linq;
 using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
 using PKSim.Core;
-using PKSim.Core.Commands;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -13,7 +12,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Importer;
-using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
 
@@ -29,7 +27,7 @@ namespace PKSim.Presentation.Services
       private readonly IEntityTask _entityTask;
       private readonly IFormulaFactory _formulaFactory;
 
-      public OntogenyTask(IExecutionContext executionContext, IApplicationController applicationController, IDataImporter dataImporter,
+      protected OntogenyTask(IExecutionContext executionContext, IApplicationController applicationController, IDataImporter dataImporter,
          IDimensionRepository dimensionRepository, IOntogenyRepository ontogenyRepository, IEntityTask entityTask, IFormulaFactory formulaFactory)
       {
          _executionContext = executionContext;

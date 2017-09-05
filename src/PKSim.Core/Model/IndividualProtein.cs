@@ -35,31 +35,19 @@ namespace PKSim.Core.Model
       public virtual MembraneLocation MembraneLocation
       {
          get => _membraneLocation;
-         set
-         {
-            _membraneLocation = value;
-            OnPropertyChanged(() => MembraneLocation);
-         }
+         set => SetProperty(ref _membraneLocation, value);
       }
 
       public virtual TissueLocation TissueLocation
       {
          get => _tissueLocation;
-         set
-         {
-            _tissueLocation = value;
-            OnPropertyChanged(() => TissueLocation);
-         }
+         set => SetProperty(ref _tissueLocation, value);
       }
 
       public virtual IntracellularVascularEndoLocation IntracellularVascularEndoLocation
       {
          get => _intracellularVascularEndoLocation;
-         set
-         {
-            _intracellularVascularEndoLocation = value;
-            OnPropertyChanged(() => IntracellularVascularEndoLocation);
-         }
+         set => SetProperty(ref _intracellularVascularEndoLocation, value);
       }
    }
 }

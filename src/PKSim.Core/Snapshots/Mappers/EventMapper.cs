@@ -24,9 +24,9 @@ namespace PKSim.Core.Snapshots.Mappers
       public override ModelEvent MapToModel(SnapshotEvent snapshotEvent)
       {
          var modelEvent = _eventFactory.Create(snapshotEvent.Template);
-         MapSnapshotPropertiesIntoModel(snapshotEvent, modelEvent);
+         MapSnapshotPropertiesToModel(snapshotEvent, modelEvent);
          UpdateParametersFromSnapshot(modelEvent, snapshotEvent, snapshotEvent.Template);
          return modelEvent;
       }
    }
-}
+}  

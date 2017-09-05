@@ -24,7 +24,7 @@ namespace PKSim.Assets
          {
             return $"At least one metabolite was renamed.\nThe default metabolite name (found in the metabolism process) associated with the parent compound '{parentCompound}' will remain unchanged.";
          }
-         
+
          public static string SystemicProcessAvailableInCompoundButWasNotSelected(string systemicProcessType)
          {
             return $"{systemicProcessType} is available in compound but was not activated.";
@@ -39,6 +39,7 @@ namespace PKSim.Assets
          {
             return $"The transporter '{transporterName}' was not found in the database. The transport direction is therefore set to the default setting '{transportType}'";
          }
+
          public static string ParameterWithPathNotFoundInBaseIndividual(string parameterPath)
          {
             return $"Parameter '{parameterPath}' was not found in individual and will be ignored.";
@@ -114,7 +115,7 @@ namespace PKSim.Assets
          public static string SetSimpleProtocolDosingIntervalDescription(string oldDosingInterval, string newDosingInterval) => $"Dosing interval changed from '{oldDosingInterval}' to '{newDosingInterval}'";
          public static string RenameEnzymeInPartialProcess(string processName, string name) => $"Enzyme name in process '{processName}' set to '{name}'";
          public static string CloneEntity(string type, string sourceName, string cloneName) => $"Cloning {type} '{sourceName}' to '{cloneName}'";
-         
+
          public static readonly string AddSimulationIntervalToSimulationOutputDescription = "Output interval added to simulation output.";
          public static readonly string RemoveSimulationIntervalFromSimulationOutputDescription = "Output interval removed from simulation output.";
          public static readonly string ObservedDataDeletedFromProject = "Observed data deleted from project";
@@ -124,14 +125,14 @@ namespace PKSim.Assets
          public static readonly string ChartTemplate = "Chart Template";
 
          public static string ProtocolModeChangingFrom(string oldProtocol, string newProtocol) => $"Protocol mode changing from '{oldProtocol}' to '{newProtocol}'";
-         public static string ProtocolModeChangedFrom(string oldProtocol, string newProtocol)  => $"Protocol mode changed from '{oldProtocol}' to '{newProtocol}'";
+         public static string ProtocolModeChangedFrom(string oldProtocol, string newProtocol) => $"Protocol mode changed from '{oldProtocol}' to '{newProtocol}'";
          public static string SetProtocolModeCommandDescription(string oldProtocol, string newProtocol) => $"Set administration protocol mode from '{oldProtocol}' to '{newProtocol}'";
 
          public static string ObjectsDeletedFromProject(string objectType)
          {
-           return $"{objectType.Pluralize()} deleted from project"; 
-         } 
-    
+            return $"{objectType.Pluralize()} deleted from project";
+         }
+
          public static string SetPopulationSimulationResultsCommandDescription(string simulationName)
          {
             return $"Simulation results imported in simulation '{simulationName}'.";
@@ -353,7 +354,7 @@ namespace PKSim.Assets
 
          public static string RemoveChartTemplateFromSimulation(string templateName, string simulationName)
          {
-            return $"Removing template '{templateName}' from '{simulationName}'";            
+            return $"Removing template '{templateName}' from '{simulationName}'";
          }
 
          public static string EditChartTemplatesFor(string simulationName)
@@ -461,6 +462,7 @@ namespace PKSim.Assets
                return sb.ToString();
             }
          }
+
          public static string SimulationPKAnalysesFileDoesNotHaveTheExpectedFormat
          {
             get
@@ -544,11 +546,11 @@ namespace PKSim.Assets
             sb.AppendLine("Support for project file of version 4.2 and older has ended with version 5.6 of the software.");
             sb.AppendLine();
             sb.AppendLine($"In order to convert the file '{projectFile}' to the latest PK-Sim version please proceed as follows:");
-            sb.AppendLine(); 
+            sb.AppendLine();
             sb.AppendLine("  1 - Install an earlier version of PK-Sim (version 5.5 or earlier) and open the file");
             sb.AppendLine("  2 - Save the file");
             sb.AppendLine("  3 - The file is now converted and can be open with any newer version of PK-Sim");
-            sb.AppendLine(); 
+            sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine("Note: PK-Sim version 4.2 and 5.x or newer can be installed on the same computer without any issues.");
             return sb.ToString();
@@ -704,6 +706,7 @@ namespace PKSim.Assets
             return $"The simulation '{populationName}' has '{expectedCount}' individuals. The imported results however contain values for '{importedCount}' individuals";
 
          }
+
          public static string TimeArrayLengthDoesNotMatchFirstIndividual(int id, int expectedLength, int currentLength)
          {
             return $"Time array for individual '{id}' does not have the expected length ({expectedLength} vs {currentLength})";
@@ -771,14 +774,17 @@ namespace PKSim.Assets
          {
             return $"Covariate '{covariate}' was not found and will be removed";
          }
+
          public static string OutputFieldCannotBeUsedInAnalysis(string outputName)
          {
             return $"Output '{outputName}' cannot be used in this analysis and will be removed";
          }
+
          public static string InconsistentCurveData(int yValuesCount, int xValuesCount)
          {
             return $"Length of y values = {yValuesCount} != {xValuesCount} = length of x values";
          }
+
          public static string InconsistentXValuesLength(int xValuesCount, int requiredXValuesCount)
          {
             return $"Length of x values = {xValuesCount} != {requiredXValuesCount}";
@@ -806,7 +812,7 @@ namespace PKSim.Assets
 
          public static string CannotAddOutputFieldBecauseOfDimensionMismatch(string outputName, IEnumerable<string> allowedDimensions, string currentDimension)
          {
-            return cannotAddToAnalysisBecauseOfDimensionMismatch("output", outputName, allowedDimensions, new[] { currentDimension });
+            return cannotAddToAnalysisBecauseOfDimensionMismatch("output", outputName, allowedDimensions, new[] {currentDimension});
          }
 
          public static string CannotAddObservedDataBecauseOfDimensionMismatch(string observedDataName, IEnumerable<string> allowedDimensions, IEnumerable<string> usedDimensions)
@@ -841,9 +847,14 @@ namespace PKSim.Assets
          public static string SnapshotParameterNotFoundInContainer(string parameterName, string container) => $"Snapshot parameter '{parameterName}' was not found in '{container}'";
 
          public const string SnapshotIsOutdated = "Snapshot is outdated and cannot be loaded.";
-      }
 
-      public static class Information
+         public static string MoleculeTypeNotSupported(string moleculeType) => $"Molecule type '{moleculeType}' not supported";
+
+         public static string RelativeExpressionContainerNotFound(string containerName) => $"Relative expression container '{containerName}' not found";
+      }
+   
+
+   public static class Information
       {
          public static readonly string Formula = "Formula";
          public static readonly string ParameterDescription = "Description";

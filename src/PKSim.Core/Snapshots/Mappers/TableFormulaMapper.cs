@@ -21,32 +21,13 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override SnapshotTableFormula MapToSnapshot(ModelTableFormula tableFormula)
       {
-         return new SnapshotTableFormula
-         {
-            XDimension = tableFormula.XDimension.Name,
-            XUnit = SnapshotValueFor(tableFormula.XDisplayUnit.Name),
-            XName = tableFormula.XName,
-
-            YDimension = tableFormula.Dimension.Name,
-            YUnit = SnapshotValueFor(tableFormula.YDisplayUnit.Name),
-            YName = tableFormula.YName,
-
-            Points = tableFormula.AllPoints().Select(p => snapshotPointFor(tableFormula, p)).ToList(),
-         };
+         return SnapshotFrom(tableFormula, snapshot => { UpdateSnapshotProperties(snapshot, tableFormula); });
       }
 
       public override ModelTableFormula MapToModel(SnapshotTableFormula snapshotTableFormula)
       {
          var tableFormula = _formulaFactory.CreateTableFormula();
-         tableFormula.XDimension = _dimensionRepository.DimensionByName(snapshotTableFormula.XDimension);
-         tableFormula.XDisplayUnit = tableFormula.XDimension.Unit(UnitValueFor(snapshotTableFormula.XUnit));
-         tableFormula.XName = snapshotTableFormula.XName;
-
-         tableFormula.Dimension = _dimensionRepository.DimensionByName(snapshotTableFormula.YDimension);
-         tableFormula.YDisplayUnit = tableFormula.Dimension.Unit(UnitValueFor(snapshotTableFormula.YUnit));
-         tableFormula.YName = snapshotTableFormula.YName;
-
-         snapshotTableFormula.Points.Each(p => tableFormula.AddPoint(valuePointFrom(tableFormula, p)));
+         UpdateModelProperties(tableFormula, snapshotTableFormula);
          return tableFormula;
       }
 
@@ -63,5 +44,35 @@ namespace PKSim.Core.Snapshots.Mappers
          Y = tableFormula.YDisplayValueFor(p.Y),
          RestartSolver = p.RestartSolver
       };
+
+      public virtual void UpdateModelProperties(ModelTableFormula tableFormula, SnapshotTableFormula snapshotTableFormula)
+      {
+         tableFormula.XDimension = _dimensionRepository.DimensionByName(snapshotTableFormula.XDimension);
+         tableFormula.XDisplayUnit = tableFormula.XDimension.Unit(UnitValueFor(snapshotTableFormula.XUnit));
+         tableFormula.XName = snapshotTableFormula.XName;
+
+         tableFormula.Dimension = _dimensionRepository.DimensionByName(snapshotTableFormula.YDimension);
+         tableFormula.YDisplayUnit = tableFormula.Dimension.Unit(UnitValueFor(snapshotTableFormula.YUnit));
+         tableFormula.YName = snapshotTableFormula.YName;
+
+         snapshotTableFormula.UseDerivedValues = tableFormula.UseDerivedValues;
+
+         snapshotTableFormula.Points.Each(p => tableFormula.AddPoint(valuePointFrom(tableFormula, p)));
+      }
+
+      public virtual void UpdateSnapshotProperties(SnapshotTableFormula snapshot, ModelTableFormula tableFormula)
+      {
+         snapshot.XDimension = tableFormula.XDimension.Name;
+         snapshot.XUnit = SnapshotValueFor(tableFormula.XDisplayUnit.Name);
+         snapshot.XName = tableFormula.XName;
+
+         snapshot.YDimension = tableFormula.Dimension.Name;
+         snapshot.YUnit = SnapshotValueFor(tableFormula.YDisplayUnit.Name);
+         snapshot.YName = tableFormula.YName;
+
+         snapshot.UseDerivedValues = tableFormula.UseDerivedValues;
+
+         snapshot.Points = tableFormula.AllPoints().Select(p => snapshotPointFor(tableFormula, p)).ToList();
+      }
    }
 }

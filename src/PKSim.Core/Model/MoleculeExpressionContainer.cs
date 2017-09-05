@@ -69,34 +69,25 @@ namespace PKSim.Core.Model
 
       public double RelativeExpression
       {
-         get { return RelativeExpressionParameter.Value; }
-         set { RelativeExpressionParameter.Value = value; }
+         get => RelativeExpressionParameter.Value;
+         set => RelativeExpressionParameter.Value = value;
       }
 
       public double RelativeExpressionNorm
       {
-         get { return RelativeExpressionNormParameter.Value; }
-         set { RelativeExpressionNormParameter.Value = value; }
+         get => RelativeExpressionNormParameter.Value;
+         set => RelativeExpressionNormParameter.Value = value;
       }
 
-      public IParameter RelativeExpressionParameter
-      {
-         get { return this.Parameter(CoreConstants.Parameter.REL_EXP); }
-      }
+      public IParameter RelativeExpressionParameter => this.Parameter(CoreConstants.Parameter.REL_EXP);
 
-      public IParameter RelativeExpressionNormParameter
-      {
-         get { return this.Parameter(CoreConstants.Parameter.REL_EXP_NORM); }
-      }
+      public IParameter RelativeExpressionNormParameter => this.Parameter(CoreConstants.Parameter.REL_EXP_NORM);
 
       public IObjectPath CompartmentPath(string compartmentName)
       {
          return OrganPath.Clone<IObjectPath>().AndAdd(compartmentName);
       }
 
-      public bool IsLumen
-      {
-         get { return string.Equals(GroupName, CoreConstants.Groups.GI_LUMEN); }
-      }
+      public bool IsLumen => string.Equals(GroupName, CoreConstants.Groups.GI_LUMEN);
    }
 }

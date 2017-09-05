@@ -48,7 +48,7 @@ namespace PKSim.Core.Model
          return !string.IsNullOrEmpty(QueryConfiguration);
       }
 
-      public virtual IEnumerable<IMoleculeExpressionContainer> AllExpressionsContainers()
+      public virtual IReadOnlyList<IMoleculeExpressionContainer> AllExpressionsContainers()
       {
          return GetAllChildren<IMoleculeExpressionContainer>();
       }
@@ -61,12 +61,12 @@ namespace PKSim.Core.Model
 
       public virtual IParameter GetRelativeExpressionParameterFor(string expressionContainerName)
       {
-         return ExpressionContainer(expressionContainerName).RelativeExpressionParameter;
+         return ExpressionContainer(expressionContainerName)?.RelativeExpressionParameter;
       }
 
       public virtual IParameter GetRelativeExpressionNormParameterFor(string expressionContainerName)
       {
-         return ExpressionContainer(expressionContainerName).RelativeExpressionNormParameter;
+         return ExpressionContainer(expressionContainerName)?.RelativeExpressionNormParameter;
       }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
@@ -85,11 +85,7 @@ namespace PKSim.Core.Model
       public virtual Ontogeny Ontogeny
       {
          get => _ontogeny;
-         set
-         {
-            _ontogeny = value;
-            OnPropertyChanged(() => Ontogeny);
-         }
+         set => SetProperty(ref _ontogeny, value);
       }
    }
 
