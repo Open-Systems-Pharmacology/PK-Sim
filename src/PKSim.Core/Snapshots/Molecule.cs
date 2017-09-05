@@ -15,5 +15,6 @@ namespace PKSim.Core.Snapshots
       public string TransportType { get; set; }
 
       public List<LocalizedParameter> Expression { get; set; } = new List<LocalizedParameter>();
+      public Ontogeny Ontogeny { get; set; }
    }
 }

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
@@ -64,7 +63,6 @@ namespace PKSim.Core.Services
       {
          updateMoleculeOntogeny(molecule, ontogeny, population, allAgesIn(population), allGAsIn(population));
       }
-
 
       private void clearOntogenyFor(string ontogenyFactorPath, string ontogenyFactorGIPath, Population population)
       {

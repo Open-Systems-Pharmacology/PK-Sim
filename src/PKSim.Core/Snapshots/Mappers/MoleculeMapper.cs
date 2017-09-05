@@ -14,11 +14,16 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IExecutionContext _executionContext;
+      private readonly OntogenyMapper _ontogenyMapper;
 
-      public MoleculeMapper(ParameterMapper parameterMapper, IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver, IExecutionContext executionContext) : base(parameterMapper)
+      public MoleculeMapper(ParameterMapper parameterMapper,
+         IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
+         IExecutionContext executionContext,
+         OntogenyMapper ontogenyMapper) : base(parameterMapper)
       {
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
          _executionContext = executionContext;
+         _ontogenyMapper = ontogenyMapper;
       }
 
       public override Molecule MapToSnapshot(IndividualMolecule molecule)
@@ -28,6 +33,7 @@ namespace PKSim.Core.Snapshots.Mappers
             updateMoleculeSpecificPropertiesToSnapshot(snapshot, molecule);
             snapshot.Type = molecule.MoleculeType.ToString();
             snapshot.Expression = allExpresionFrom(molecule);
+            snapshot.Ontogeny = _ontogenyMapper.MapToSnapshot(molecule.Ontogeny);
          });
       }
 
@@ -76,6 +82,7 @@ namespace PKSim.Core.Snapshots.Mappers
          UpdateParametersFromSnapshot(molecule, snapshot, snapshot.Type);
          MapSnapshotPropertiesToModel(snapshot, molecule);
          updateMoleculePropertiesToMolecule(molecule, snapshot);
+         molecule.Ontogeny = _ontogenyMapper.MapToModel(snapshot.Ontogeny, simulationSubject);
          updateExpression(snapshot, molecule);
          return molecule;
       }

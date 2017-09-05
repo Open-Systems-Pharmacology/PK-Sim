@@ -846,13 +846,16 @@
     <Compile Include="Model\Species.cs" />
     <Compile Include="Events\ProjectEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Snapshots\DistributionMetaData.cs" />
     <Compile Include="Snapshots\Event.cs" />
     <Compile Include="Snapshots\Formulation.cs" />
     <Compile Include="Snapshots\Individual.cs" />
+    <Compile Include="Snapshots\Mappers\DistributedTableFormulaMapper.cs" />
     <Compile Include="Snapshots\Mappers\EventMapper.cs" />
     <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />
     <Compile Include="Snapshots\Mappers\IndividualMapper.cs" />
     <Compile Include="Snapshots\Mappers\MoleculeMapper.cs" />
+    <Compile Include="Snapshots\Mappers\OntogenyMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProtocolMapper.cs" />
     <Compile Include="Snapshots\Mappers\SchemaItemMapper.cs" />
@@ -861,6 +864,7 @@
     <Compile Include="Snapshots\Mappers\SnapshotMapperBase.cs" />
     <Compile Include="Snapshots\Mappers\TableFormulaMapper.cs" />
     <Compile Include="Snapshots\Molecule.cs" />
+    <Compile Include="Snapshots\Ontogeny.cs" />
     <Compile Include="Snapshots\Parameter.cs" />
     <Compile Include="Snapshots\Point.cs" />
     <Compile Include="Snapshots\Schema.cs" />

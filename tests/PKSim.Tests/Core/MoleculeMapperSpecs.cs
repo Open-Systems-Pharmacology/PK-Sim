@@ -7,6 +7,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using Ontogeny = PKSim.Core.Model.Ontogeny;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
@@ -29,18 +30,30 @@ namespace PKSim.Core
       private IExecutionContext _executionContext;
       protected IParameter _relativeExpressionParameterNorm1;
       private IParameter _relativeExpressionParameterNotSetNorm;
+      protected ISimulationSubject _simulationSubject;
+      protected OntogenyMapper _ontogenyMapper;
+      protected Ontogeny _ontogeny;
+      protected Snapshots.Ontogeny _snapshotOntogeny;
 
       protected override void Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _executionContext = A.Fake<IExecutionContext>();
          _individualMoleculeFactoryResolver = A.Fake<IIndividualMoleculeFactoryResolver>();
-         sut = new MoleculeMapper(_parameterMapper, _individualMoleculeFactoryResolver, _executionContext);
+         _ontogenyMapper= A.Fake<OntogenyMapper>();
+
+         sut = new MoleculeMapper(_parameterMapper, _individualMoleculeFactoryResolver, _executionContext, _ontogenyMapper);
+
+         _ontogeny = new DatabaseOntogeny
+         {
+            Name = "Ontogeny"
+         };
 
          _enzyme = new IndividualEnzyme
          {
             Name = "Enzyme",
-            Description = "Hellp"
+            Description = "Hellp",
+            Ontogeny = _ontogeny,
          };
 
          _transporter = new IndividualTransporter
@@ -81,6 +94,10 @@ namespace PKSim.Core
          };
 
          A.CallTo(() => _parameterMapper.LocalizedParameterFrom(_relativeExpressionParameter1, A<Func<IParameter, string>>._)).Returns(_relativeExpressionSnapshot1);
+
+         _snapshotOntogeny = new Snapshots.Ontogeny();
+         A.CallTo(() => _ontogenyMapper.MapToSnapshot(_ontogeny)).Returns(_snapshotOntogeny);
+         _simulationSubject = A.Fake<ISimulationSubject>();
       }
    }
 
@@ -112,6 +129,12 @@ namespace PKSim.Core
          _snapshot.TissueLocation.ShouldBeEqualTo(_enzyme.TissueLocation.ToString());
          _snapshot.TransportType.ShouldBeNull();
       }
+
+      [Observation]
+      public void should_have_saved_the_ontogeny_of_the_molecule()
+      {
+         _snapshot.Ontogeny.ShouldBeEqualTo(_snapshotOntogeny);
+      }
    }
 
    public class When_mapping_an_individual_transporter_to_snapshot : concern_for_MoleculeMapper
@@ -140,13 +163,11 @@ namespace PKSim.Core
 
    public class When_mapping_a_valid_enzyme_molecule_snahpshot_to_a_molecule : concern_for_MoleculeMapper
    {
-      private ISimulationSubject _simulationSubject;
       private IndividualEnzyme _newMolecule;
 
       protected override void Context()
       {
          base.Context();
-         _simulationSubject = A.Fake<ISimulationSubject>();
          _snapshot = sut.MapToSnapshot(_enzyme);
 
          _snapshot.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial.ToString();
@@ -160,12 +181,15 @@ namespace PKSim.Core
 
          A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_relativeExpressionParameter1, _relativeExpressionSnapshot1))
             .Invokes(x => _relativeExpressionParameter1.Value = _relativeExpressionSnapshot1.Value);
+
+         _enzyme.Ontogeny = null;
+         A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, _simulationSubject)).Returns(_ontogeny);
       }
 
       protected override void Because()
       {
          _newMolecule = sut.MapToModel(_snapshot, _simulationSubject) as IndividualEnzyme;
-      }
+      }  
 
       [Observation]
       public void should_return_a_molecule_having_the_expected_type()
@@ -187,17 +211,40 @@ namespace PKSim.Core
          _relativeExpressionParameter1.Value.ShouldBeEqualTo(0.5);
          _relativeExpressionParameterNorm1.Value.ShouldBeEqualTo(1);
       }
+
+      [Observation]
+      public void should_have_restored_the_ontogeny()
+      {
+         _enzyme.Ontogeny.ShouldBeEqualTo(_ontogeny);
+      }
+   }
+
+   public class When_mapping_a_snapshot_containg_expression_for_an_unknow_target_container : concern_for_MoleculeMapper
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_enzyme);
+         _snapshot.Expression[0].Path = "Unknown";
+         var enzymeFactory = A.Fake<IIndividualMoleculeFactory>();
+         A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualEnzyme>()).Returns(enzymeFactory);
+         A.CallTo(() => enzymeFactory.CreateFor(_simulationSubject)).Returns(_enzyme);
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.MapToModel(_snapshot, _simulationSubject)).ShouldThrowAn<SnapshotOutdatedException>();
+      }
    }
 
    public class When_mapping_a_valid_transporter_molecule_snahpshot_to_a_molecule : concern_for_MoleculeMapper
    {
-      private ISimulationSubject _simulationSubject;
       private IndividualTransporter _newTransporter;
 
       protected override void Context()
       {
          base.Context();
-         _simulationSubject = A.Fake<ISimulationSubject>();
          _snapshot = sut.MapToSnapshot(_transporter);
 
          _snapshot.TransportType = TransportType.PgpLike.ToString();
@@ -226,13 +273,11 @@ namespace PKSim.Core
 
    public class When_mapping_a_valid_other_protein_molecule_snahpshot_to_a_molecule : concern_for_MoleculeMapper
    {
-      private ISimulationSubject _simulationSubject;
       private IndividualOtherProtein _newOtherProtein;
 
       protected override void Context()
       {
          base.Context();
-         _simulationSubject = A.Fake<ISimulationSubject>();
          _snapshot = sut.MapToSnapshot(_otherProtein);
 
          var individualOtherProteinFactory = A.Fake<IIndividualMoleculeFactory>();
