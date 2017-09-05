@@ -36,7 +36,6 @@ namespace PKSim.UI.Views.Individuals
       private IIndividualTransporterExpressionsPresenter _presenter;
       protected readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
       private IGridViewColumn _colGrouping;
-      private readonly UxRepositoryItemImageComboBox _containerDisplayNameRepository;
       private IGridViewColumn _colRelativeExpression;
 
       public IndividualTransporterExpressionsView(IImageListRetriever imageListRetriever, IToolTipCreator toolTipCreator)
@@ -47,7 +46,6 @@ namespace PKSim.UI.Views.Individuals
          _screenBinder = new ScreenBinder<TransporterExpressionDTO>();
          gridView.AllowsFiltering = false;
          _gridViewBinder = new GridViewBinder<TransporterExpressionContainerDTO>(gridView) {BindingMode = BindingMode.OneWay};
-         _containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridView, imageListRetriever);
 
 
          gridView.EndGrouping += (o, e) => gridView.ExpandAllGroups();
@@ -128,14 +126,14 @@ namespace PKSim.UI.Views.Individuals
 
       private string membraneContainerDisplayName(MembraneLocation membraneLocation, TransporterExpressionContainerDTO containerDTO)
       {
-         return string.Format("{0} ({1})", containerDTO.ContainerPathDTO.DisplayName, membraneLocation);
+         return $"{containerDTO.ContainerPathDTO.DisplayName} ({membraneLocation})";
       }
 
       private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
       {
-         _containerDisplayNameRepository.Items.Clear();
-         _containerDisplayNameRepository.Items.Add(new ImageComboBoxItem(parameterPathDTO, _imageListRetriever.ImageIndex(parameterPathDTO.IconName)));
-         return _containerDisplayNameRepository;
+         var containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
+         containerDisplayNameRepository.Items.Add(new ImageComboBoxItem(parameterPathDTO, _imageListRetriever.ImageIndex(parameterPathDTO.IconName)));
+         return containerDisplayNameRepository;
       }
 
       private RepositoryItem getTransporterMembraneRepository(TransporterExpressionContainerDTO containerDTO)
