@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using PKSim.Assets;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
@@ -12,17 +13,19 @@ namespace PKSim.Core.Snapshots.Mappers
    public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule>
    {
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
+      private readonly IExecutionContext _executionContext;
 
-      public MoleculeMapper(ParameterMapper parameterMapper, IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver) : base(parameterMapper)
+      public MoleculeMapper(ParameterMapper parameterMapper, IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver, IExecutionContext executionContext) : base(parameterMapper)
       {
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
+         _executionContext = executionContext;
       }
 
       public override Molecule MapToSnapshot(IndividualMolecule molecule)
       {
          return SnapshotFrom(molecule, snapshot =>
          {
-            updateMoleculeSpecificProperties(snapshot, molecule);
+            updateMoleculeSpecificPropertiesToSnapshot(snapshot, molecule);
             snapshot.Type = molecule.MoleculeType.ToString();
             snapshot.Expression = allExpresionFrom(molecule);
          });
@@ -37,7 +40,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return _parameterMapper.LocalizedParametersFrom(allSetExpressionParameters, x => x.ParentContainer.Name);
       }
 
-      private void updateMoleculeSpecificProperties(Molecule snapshot, IndividualMolecule molecule)
+      private void updateMoleculeSpecificPropertiesToSnapshot(Molecule snapshot, IndividualMolecule molecule)
       {
          switch (molecule)
          {
@@ -52,12 +55,33 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
+      private void updateMoleculePropertiesToMolecule(IndividualMolecule molecule, Molecule snapshot)
+      {
+         switch (molecule)
+         {
+            case IndividualProtein protein:
+               protein.IntracellularVascularEndoLocation = EnumHelper.ParseValue<IntracellularVascularEndoLocation>(snapshot.IntracellularVascularEndoLocation);
+               protein.TissueLocation = EnumHelper.ParseValue<TissueLocation>(snapshot.TissueLocation);
+               protein.MembraneLocation = EnumHelper.ParseValue<MembraneLocation>(snapshot.MembraneLocation);
+               break;
+            case IndividualTransporter transporter:
+               transporter.TransportType = EnumHelper.ParseValue<TransportType>(snapshot.TransportType);
+               break;
+         }
+      }
+
       public virtual IndividualMolecule MapToModel(Molecule snapshot, ISimulationSubject simulationSubject)
       {
          var molecule = createMoleculeFrom(snapshot, simulationSubject);
          UpdateParametersFromSnapshot(molecule, snapshot, snapshot.Type);
          MapSnapshotPropertiesToModel(snapshot, molecule);
+         updateMoleculePropertiesToMolecule(molecule, snapshot);
+         updateExpression(snapshot, molecule);
+         return molecule;
+      }
 
+      private void updateExpression(Molecule snapshot, IndividualMolecule molecule)
+      {
          foreach (var expression in snapshot.Expression)
          {
             var expressionParameter = molecule.GetRelativeExpressionParameterFor(expression.Path);
@@ -67,7 +91,9 @@ namespace PKSim.Core.Snapshots.Mappers
             _parameterMapper.UpdateParameterFromSnapshot(expressionParameter, expression);
          }
 
-         return molecule;
+         //once expression have been set, we need to update normalized parameter
+         var normalizeExpressionCommand = new NormalizeRelativeExpressionCommand(molecule, _executionContext);
+         normalizeExpressionCommand.Execute(_executionContext);
       }
 
       public override IndividualMolecule MapToModel(Molecule snapshot)
@@ -90,7 +116,7 @@ namespace PKSim.Core.Snapshots.Mappers
             case QuantityType.OtherProtein:
                return _individualMoleculeFactoryResolver.FactoryFor<IndividualOtherProtein>();
             case QuantityType.Transporter:
-               return _individualMoleculeFactoryResolver.FactoryFor<IndividualOtherProtein>();
+               return _individualMoleculeFactoryResolver.FactoryFor<IndividualTransporter>();
 
             default:
                throw new SnapshotOutdatedException(PKSimConstants.Error.MoleculeTypeNotSupported(moleculeType.ToString()));
