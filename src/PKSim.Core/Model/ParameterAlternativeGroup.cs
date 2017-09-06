@@ -13,10 +13,7 @@ namespace PKSim.Core.Model
       ///    All available alternative definitions for current group.
       ///    One alternative contains all group parameters
       /// </summary>
-      public virtual IEnumerable<ParameterAlternative> AllAlternatives
-      {
-         get { return GetChildren<ParameterAlternative>(); }
-      }
+      public virtual IEnumerable<ParameterAlternative> AllAlternatives => GetChildren<ParameterAlternative>();
 
       public virtual void AddAlternative(ParameterAlternative parameterAlternative)
       {

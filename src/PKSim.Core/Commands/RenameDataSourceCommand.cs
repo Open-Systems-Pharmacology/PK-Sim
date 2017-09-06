@@ -1,5 +1,5 @@
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using PKSim.Assets;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
@@ -7,11 +7,11 @@ namespace PKSim.Core.Commands
    public class RenameDataSourceCommand : BuildingBlockStructureChangeCommand
    {
       private readonly string _newDataSource;
-      private PKSim.Core.Model.CompoundProcess _compoundProcess;
+      private CompoundProcess _compoundProcess;
       private readonly string _processId;
       private string _oldDataSource;
 
-      public RenameDataSourceCommand(PKSim.Core.Model.CompoundProcess compoundProcess, string newDataSource, IExecutionContext context)
+      public RenameDataSourceCommand(CompoundProcess compoundProcess, string newDataSource, IExecutionContext context)
       {
          _processId = compoundProcess.Id;
          BuildingBlockId = context.BuildingBlockIdContaining(compoundProcess);
@@ -38,7 +38,7 @@ namespace PKSim.Core.Commands
       public override void RestoreExecutionData(IExecutionContext context)
       {
          base.RestoreExecutionData(context);
-         _compoundProcess = context.Get<PKSim.Core.Model.CompoundProcess>(_processId);
+         _compoundProcess = context.Get<CompoundProcess>(_processId);
       }
 
       protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)

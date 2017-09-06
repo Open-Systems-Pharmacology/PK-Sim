@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
@@ -69,8 +70,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
       protected Parameter ParameterSnapshotFor(IParameter parameter) => _parameterMapper.MapToSnapshot(parameter);
 
-      protected void MapVisibleParameters(IContainer container, TSnapshot snapshot) => MapParameters(container.AllVisibleParameters(), snapshot);
-
       protected void MapParameters(IEnumerable<IParameter> parameters, TSnapshot snapshot)
       {
          snapshot.Parameters.AddRange(parameters.Select(ParameterSnapshotFor));
@@ -80,9 +79,21 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          return base.SnapshotFrom(model, snapshot =>
          {
-            MapVisibleParameters(model, snapshot);
+            MapModelParameters(model, snapshot);
             configurationAction?.Invoke(snapshot);
          });
+      }
+
+      protected virtual void MapModelParameters(TModel model, TSnapshot snapshot)
+      {
+         MapParameters(model.AllParameters(ParameterHasChanged), snapshot);
+      }
+
+      protected virtual bool ParameterHasChanged(IParameter parameter)
+      {
+         //TODO Use ValueOrigin state when implemented. It should be != than PKSim default;
+         var canBeEdited = parameter.Visible && parameter.Editable && parameter.Formula.IsConstant();
+         return parameter.ValueDiffersFromDefault() || canBeEdited && parameter.Value != 0;
       }
 
       protected void UpdateParametersFromSnapshot(IContainer container, TSnapshot snapshot, string containerDesciptor)

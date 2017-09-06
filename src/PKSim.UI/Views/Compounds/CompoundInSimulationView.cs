@@ -1,11 +1,11 @@
-﻿using OSPSuite.Utility.Collections;
-using DevExpress.LookAndFeel;
+﻿using DevExpress.LookAndFeel;
 using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Collections;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -13,11 +13,10 @@ namespace PKSim.UI.Views.Compounds
    {
       private readonly ICache<IView, LayoutControlItem> _layoutItemCache;
 
-
-      public CompoundInSimulationView(UserLookAndFeel defaultLookAndFeel):base(defaultLookAndFeel)
+      public CompoundInSimulationView(UserLookAndFeel defaultLookAndFeel) : base(defaultLookAndFeel)
       {
          InitializeComponent();
-         _layoutItemCache = new Cache<IView, LayoutControlItem>(onMissingKey:view => null);
+         _layoutItemCache = new Cache<IView, LayoutControlItem>(onMissingKey: view => null);
       }
 
       public void AttachPresenter(ICompoundInSimulationPresenter presenter)
@@ -35,9 +34,10 @@ namespace PKSim.UI.Views.Compounds
 
       public void AddCachedView(IView baseView)
       {
-         _layoutItemCache.Add(baseView,AddViewToLayout(baseView));
+         _layoutItemCache.Add(baseView, AddViewToLayout(baseView));
       }
 
+      public void AddView(IView view) => AddViewToLayout(view);
 
       public override void InitializeResources()
       {

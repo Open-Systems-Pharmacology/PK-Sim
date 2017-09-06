@@ -17,7 +17,6 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Services;
 using EntityRules = PKSim.Core.Model.EntityRules;
 
 namespace PKSim.IntegrationTests
@@ -62,7 +61,7 @@ namespace PKSim.IntegrationTests
             //can we find an attribute?
             if (allPossibleTypeDefinedAsAttribute.Any(attributeType => modelType.IsAnImplementationOf(attributeType))) continue;
 
-            errorList.Add(string.Format("No serializer found for {0}", type));
+            errorList.Add($"No serializer found for {type}");
          }
 
          Assert.IsTrue(errorList.Count == 0, errorList.ToString("\n"));
@@ -75,6 +74,7 @@ namespace PKSim.IntegrationTests
          if (type.Name.Contains("Exception")) return true;
          if (type.Name.Contains("Factory")) return true;
          if (type.Equals(typeof (PKSimContainerType))) return true;
+         if (type.Equals(typeof (PlasmaProteinBindingPartner))) return true;
          if (type.Equals(typeof (PivotArea))) return true;
          if (type.Equals(typeof (RandomValue))) return true;
          if (type.Equals(typeof (CompoundType))) return true;

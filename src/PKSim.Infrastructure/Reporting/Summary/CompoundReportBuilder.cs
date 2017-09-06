@@ -40,11 +40,11 @@ namespace PKSim.Infrastructure.Reporting.Summary
       {
          var compoundType = compound.Parameter(parameterCompoundType1).Value;
 
-         if (compoundType == CoreConstants.Compound.CompoundTypeNeutral) return;
+         if (compoundType == CoreConstants.Compound.COMPOUND_TYPE_NEUTRAL) return;
          var pka = compound.Parameter(parameterPka1).Value;
 
          string compoundTypeDisplay;
-         if (compoundType == CoreConstants.Compound.CompoundTypeAcid)
+         if (compoundType == CoreConstants.Compound.COMPOUND_TYPE_ACID)
             compoundTypeDisplay = PKSimConstants.UI.CompoundTypeAcid;
          else
             compoundTypeDisplay = PKSimConstants.UI.CompoundTypeBase;
