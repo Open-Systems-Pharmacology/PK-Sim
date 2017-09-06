@@ -7,7 +7,7 @@ using ModelOntogeny = PKSim.Core.Model.Ontogeny;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class OntogenyMapper : SnapshotMapperBase<ModelOntogeny, SnapshotOntogeny>
+   public class OntogenyMapper : ObjectBaseSnapshotMapperBase<ModelOntogeny, SnapshotOntogeny>
    {
       private readonly DistributedTableFormulaMapper _distributedTableFormulaMapper;
       private readonly IOntogenyRepository _ontogenyRepository;

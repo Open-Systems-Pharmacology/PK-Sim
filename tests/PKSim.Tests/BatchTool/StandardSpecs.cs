@@ -43,7 +43,7 @@ namespace PKSim.BatchTool
          compoundContainer.Parameter(CoreConstants.Parameter.SolubilityAtRefpH).Value.ShouldBeEqualTo(1e-7);
          compoundContainer.Parameter(CoreConstants.Parameter.RefpH).Value.ShouldBeEqualTo(9);
          compoundContainer.Parameter(CoreConstants.Parameter.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int) CompoundType.Acid);
-         compoundContainer.Parameter(CoreConstants.Parameter.ParameterPka1).Value.ShouldBeEqualTo(8);
+         compoundContainer.Parameter(CoreConstants.Parameter.PARAMETER_PKA1).Value.ShouldBeEqualTo(8);
       }
 
       [Observation]

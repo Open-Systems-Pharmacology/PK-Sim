@@ -1,8 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
+using static PKSim.Core.CoreConstants.Groups;
+using static PKSim.Core.CoreConstants.Parameter;
 using SnapshotCompound = PKSim.Core.Snapshots.Compound;
 using ModelCompound = PKSim.Core.Model.Compound;
 
@@ -11,33 +15,79 @@ namespace PKSim.Core.Snapshots.Mappers
    public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound, SnapshotCompound>
    {
       private readonly AlternativeMapper _alternativeMapper;
-      private readonly CalculationMethodMapper _calculationMethodMapper;
+      private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
       private readonly CompoundProcessMapper _processMapper;
+      private readonly ICompoundFactory _compoundFactory;
 
-      public CompoundMapper(ParameterMapper parameterMapper, 
-         AlternativeMapper alternativeMapper, 
-         CalculationMethodMapper calculationMethodMapper,
-         CompoundProcessMapper processMapper) : base(parameterMapper)
+      public CompoundMapper(
+         ParameterMapper parameterMapper,
+         AlternativeMapper alternativeMapper,
+         CalculationMethodCacheMapper calculationMethodCacheMapper,
+         CompoundProcessMapper processMapper,
+         ICompoundFactory compoundFactory) : base(parameterMapper)
       {
          _alternativeMapper = alternativeMapper;
-         _calculationMethodMapper = calculationMethodMapper;
+         _calculationMethodCacheMapper = calculationMethodCacheMapper;
          _processMapper = processMapper;
+         _compoundFactory = compoundFactory;
       }
 
       public override SnapshotCompound MapToSnapshot(ModelCompound compound)
       {
          return SnapshotFrom(compound, snapshot =>
          {
-            snapshot.CalculationMethods = _calculationMethodMapper.MapToSnapshot(compound.CalculationMethodCache);
-            snapshot.Lipophilicity = mapAlternatives(compound, CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
-            snapshot.FractionUnbound = mapAlternatives(compound, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
-            snapshot.Solubility = mapAlternatives(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY);
-            snapshot.IntestinalPermeability = mapAlternatives(compound, CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY);
-            snapshot.Permeability = mapAlternatives(compound, CoreConstants.Groups.COMPOUND_PERMEABILITY);
+            snapshot.CalculationMethods = _calculationMethodCacheMapper.MapToSnapshot(compound.CalculationMethodCache);
+
+            snapshot.Lipophilicity = mapAlternatives(compound, COMPOUND_LIPOPHILICITY);
+            snapshot.FractionUnbound = mapAlternatives(compound, COMPOUND_FRACTION_UNBOUND);
+            snapshot.Solubility = mapAlternatives(compound, COMPOUND_SOLUBILITY);
+            snapshot.IntestinalPermeability = mapAlternatives(compound, COMPOUND_INTESTINAL_PERMEABILITY);
+            snapshot.Permeability = mapAlternatives(compound, COMPOUND_PERMEABILITY);
+
             snapshot.PkaTypes = mapPkaTypes(compound);
             snapshot.Processes = mapProcesses(compound);
             snapshot.IsSmallMolecule = compound.IsSmallMolecule;
             snapshot.PlasmaProteinBindingPartner = compound.PlasmaProteinBindingPartner.ToString();
+         });
+      }
+
+      public override ModelCompound MapToModel(SnapshotCompound snapshot)
+      {
+         var compound = _compoundFactory.Create();
+         MapSnapshotPropertiesToModel(snapshot, compound);
+         _calculationMethodCacheMapper.UpdateCalculationMethodCache(compound, snapshot.CalculationMethods);
+         
+         updateAlternatives(compound, snapshot.Lipophilicity, COMPOUND_LIPOPHILICITY);
+         updateAlternatives(compound, snapshot.FractionUnbound, COMPOUND_FRACTION_UNBOUND);
+         updateAlternatives(compound, snapshot.Solubility, COMPOUND_SOLUBILITY);
+         updateAlternatives(compound, snapshot.IntestinalPermeability, COMPOUND_INTESTINAL_PERMEABILITY);
+         updateAlternatives(compound, snapshot.Permeability, COMPOUND_PERMEABILITY);
+
+         updatePkaTypes(compound, snapshot);
+         compound.AddChildren(snapshot.Processes.Select(_processMapper.MapToModel));
+         compound.IsSmallMolecule = snapshot.IsSmallMolecule;
+         compound.PlasmaProteinBindingPartner = EnumHelper.ParseValue<PlasmaProteinBindingPartner>(snapshot.PlasmaProteinBindingPartner);
+         UpdateParametersFromSnapshot(compound, snapshot, PKSimConstants.ObjectTypes.Compound);
+
+         return compound;
+      }
+
+      private void updateAlternatives(ModelCompound compound, List<Alternative> snapshotAlternatives, string alternativeGroupName)
+      {
+         var alternativeGroup = compound.ParameterAlternativeGroup(alternativeGroupName);
+
+         //Remove all alternatives except calculated ones
+         alternativeGroup.AllAlternatives.ToList().Where(x=>!x.IsCalculated).Each(alternativeGroup.RemoveAlternative);
+         alternativeGroup.AddChildren(snapshotAlternatives.Select(_alternativeMapper.MapToModel));
+      }
+
+      private void updatePkaTypes(ModelCompound compound, SnapshotCompound snapshot)
+      {
+         snapshot.PkaTypes.Each((pkaType, i) =>
+         {
+            var compoundType = EnumHelper.ParseValue<CompoundType>(pkaType.Type);
+            compound.Parameter(ParameterCompoundType(i)).Value = (int) compoundType;
+            compound.Parameter(ParameterPKa(i)).Value = pkaType.Pka;
          });
       }
 
@@ -52,8 +102,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          for (int i = 0; i < CoreConstants.NUMBER_OF_PKA_PARAMETERS; i++)
          {
-            var compoundTypeParameter = compound.Parameter(CoreConstants.Parameter.ParameterCompoundType(i));
-            var pkA = compound.Parameter(CoreConstants.Parameter.ParameterPKa(i)).Value;
+            var compoundTypeParameter = compound.Parameter(ParameterCompoundType(i));
+            var pkA = compound.Parameter(ParameterPKa(i)).Value;
             var compoundType = (CompoundType) compoundTypeParameter.Value;
             if (compoundType == CompoundType.Neutral)
                continue;
@@ -64,26 +114,21 @@ namespace PKSim.Core.Snapshots.Mappers
          return pkaTypes;
       }
 
-      public override ModelCompound MapToModel(SnapshotCompound snapshot)
-      {
-         throw new NotImplementedException();
-      }
-
-      protected override void MapModelParameters(ModelCompound compound, SnapshotCompound snapshot)
+      protected override void AddModelParametersToSnapshot(ModelCompound compound, SnapshotCompound snapshot)
       {
          var parameters = parameterOverwrittenByUserIn(compound);
-         MapParameters(parameters, snapshot);
+         AddParametersToSnapshot(parameters, snapshot);
       }
 
       private IReadOnlyList<IParameter> parameterOverwrittenByUserIn(ModelCompound compound)
       {
          var parameters = new List<IParameter>();
          //Molecular Weight
-         parameters.AddRange(changedGroupParameters(compound, CoreConstants.Groups.COMPOUND_MW));
+         parameters.AddRange(changedGroupParameters(compound, COMPOUND_MW));
 
          //advanced parameters
-         parameters.AddRange(changedGroupParameters(compound, CoreConstants.Groups.COMPOUND_TWO_PORE));
-         parameters.AddRange(changedGroupParameters(compound, CoreConstants.Groups.COMPOUND_DISSOLUTION));
+         parameters.AddRange(changedGroupParameters(compound, COMPOUND_TWO_PORE));
+         parameters.AddRange(changedGroupParameters(compound, COMPOUND_DISSOLUTION));
 
          return parameters;
       }
@@ -98,7 +143,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var alternativeGroup = compound.ParameterAlternativeGroup(alternativeGroupName);
          return alternativeGroup.AllAlternatives.Select(_alternativeMapper.MapToSnapshot)
-            .Where(x=>x!=null).ToList();
+            .Where(x => x != null).ToList();
       }
    }
 }

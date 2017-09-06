@@ -11,7 +11,7 @@ using ModelTableFormula = OSPSuite.Core.Domain.Formulas.TableFormula;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ParameterMapper : SnapshotMapperBase<IParameter, SnapshotParameter>
+   public class ParameterMapper : ObjectBaseSnapshotMapperBase<IParameter, SnapshotParameter>
    {
       private readonly TableFormulaMapper _tableFormulaMapper;
       private readonly IEntityPathResolver _entityPathResolver;

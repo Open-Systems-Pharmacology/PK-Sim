@@ -19,6 +19,6 @@ namespace PKSim.Core.Snapshots
       public List<Alternative> Permeability { get; set; } = new List<Alternative>();
       public List<PkaType> PkaTypes { get; set; } = new List<PkaType>();
       public List<CompoundProcess> Processes { get; set; } = new List<CompoundProcess>();
-      public List<CalculationMethod> CalculationMethods = new List<CalculationMethod>();
+      public CalculationMethodCache CalculationMethods { get; set; }
    }
 }

@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using CalculationMethod = PKSim.Core.Snapshots.CalculationMethod;
 using Compound = PKSim.Core.Snapshots.Compound;
 using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
 
@@ -13,25 +16,27 @@ namespace PKSim.Core
 {
    public abstract class concern_for_CompoundMapper : ContextSpecification<CompoundMapper>
    {
-      protected AlternativeMapper _alernativeMapper;
+      protected AlternativeMapper _alternativeMapper;
       protected ParameterMapper _parameterMapper;
       protected Compound _snapshot;
       protected Model.Compound _compound;
-      private CalculationMethodMapper _calculationMethodMapper;
-      protected List<CalculationMethod> _calculationMethodsSnapshot;
+      protected CalculationMethodCacheMapper _calculationMethodCacheMapper;
+      protected Snapshots.CalculationMethodCache _calculationMethodCacheSnapshot;
       protected CompoundProcessMapper _processMapper;
       protected CompoundProcess _snapshotProcess1;
       protected CompoundProcess _snapshotProcess2;
       protected EnzymaticProcess _partialProcess;
       private SystemicProcess _systemicProcess;
+      protected ICompoundFactory _compoundFactory;
 
       protected override void Context()
       {
-         _alernativeMapper = A.Fake<AlternativeMapper>();
+         _alternativeMapper = A.Fake<AlternativeMapper>();
          _parameterMapper = A.Fake<ParameterMapper>();
-         _calculationMethodMapper = A.Fake<CalculationMethodMapper>();
+         _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
          _processMapper = A.Fake<CompoundProcessMapper>();
-         sut = new CompoundMapper(_parameterMapper, _alernativeMapper, _calculationMethodMapper, _processMapper);
+         _compoundFactory= A.Fake<ICompoundFactory>();
+         sut = new CompoundMapper(_parameterMapper, _alternativeMapper, _calculationMethodCacheMapper, _processMapper,_compoundFactory);
 
          _compound = new Model.Compound
          {
@@ -57,8 +62,8 @@ namespace PKSim.Core
          _compound.AddProcess(_partialProcess);
          _compound.AddProcess(_systemicProcess);
 
-         _calculationMethodsSnapshot = new List<CalculationMethod>();
-         A.CallTo(() => _calculationMethodMapper.MapToSnapshot(_compound.CalculationMethodCache)).Returns(_calculationMethodsSnapshot);
+         _calculationMethodCacheSnapshot = new Snapshots.CalculationMethodCache();
+         A.CallTo(() => _calculationMethodCacheMapper.MapToSnapshot(_compound.CalculationMethodCache)).Returns(_calculationMethodCacheSnapshot);
 
          _snapshotProcess1= new CompoundProcess();
          _snapshotProcess2 = new CompoundProcess();
@@ -101,7 +106,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_calculation_methods_used_in_the_compound()
       {
-         _snapshot.CalculationMethods.ShouldBeEqualTo(_calculationMethodsSnapshot);
+         _snapshot.CalculationMethods.ShouldBeEqualTo(_calculationMethodCacheSnapshot);
       }
 
       [Observation]
@@ -141,6 +146,98 @@ namespace PKSim.Core
 
          _snapshot.PkaTypes[1].Pka.ShouldBeEqualTo(4);
          _snapshot.PkaTypes[1].Type.ShouldBeEqualTo(CompoundType.Acid.ToString());
+      }
+   }
+
+
+   public class When_mapping_a_valid_compound_snapshot_to_a_compound : concern_for_CompoundMapper
+   {
+      private Model.Compound _newCompound;
+      private ParameterAlternative _alternative;
+      private Model.CompoundProcess _newProcess;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _compoundFactory.Create()).Returns(_compound);
+         clearCompound();
+
+         _snapshot = sut.MapToSnapshot(_compound);
+         _snapshot.PlasmaProteinBindingPartner = PlasmaProteinBindingPartner.Albumin.ToString();
+         _snapshot.IsSmallMolecule = false;
+         _snapshot.PkaTypes = new List<PkaType>()
+         {
+            new PkaType {Pka = 1, Type = CompoundType.Acid.ToString()},
+            new PkaType {Pka = 2, Type = CompoundType.Base.ToString()},
+            new PkaType {Pka = 3, Type = CompoundType.Acid.ToString()},
+         };
+
+         _alternative = new ParameterAlternative().WithName("Alternative");
+         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0])).Returns(_alternative);
+
+         _snapshot.Processes = new List<CompoundProcess>{_snapshotProcess1};
+         _newProcess=new EnzymaticProcess();
+         A.CallTo(() =>  _processMapper.MapToModel(_snapshotProcess1)).Returns(_newProcess);
+      }
+
+      private void clearCompound()
+      {
+         _compound.AllProcesses().ToList().Each(_compound.RemoveProcess);
+      }
+
+      protected override void Because()
+      {
+         _newCompound = sut.MapToModel(_snapshot);
+      }
+
+      [Observation]
+      public void should_have_created_an_compound_with_the_expected_properties()
+      {
+         _newCompound.Name.ShouldBeEqualTo(_snapshot.Name);
+         _newCompound.Description.ShouldBeEqualTo(_snapshot.Description);
+      }
+
+      [Observation]
+      public void should_load_the_calculation_methods()
+      {
+         A.CallTo(() => _calculationMethodCacheMapper.UpdateCalculationMethodCache(_newCompound, _snapshot.CalculationMethods)).MustHaveHappened();
+
+      }
+
+      [Observation]
+      public void should_load_the_is_small_molecule_flag()
+      {
+         _newCompound.IsSmallMolecule.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_load_the_binding_partner()
+      {
+         _newCompound.PlasmaProteinBindingPartner.ShouldBeEqualTo(PlasmaProteinBindingPartner.Albumin);
+      }
+
+      [Observation]
+      public void should_have_created_the_expected_processes()
+      {
+         _newCompound.AllProcesses().ShouldOnlyContain(_newProcess);
+      }
+
+      [Observation]
+      public void should_have_created_the_expected_alternatives()
+      {
+         _newCompound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND).AllAlternatives.ShouldContain(_alternative);
+      }
+
+      [Observation]
+      public void should_have_loaded_the_expected_pka_type_values()
+      {
+         _newCompound.Parameter(CoreConstants.Parameter.PARAMETER_PKA1).Value.ShouldBeEqualTo(_snapshot.PkaTypes[0].Pka);
+         _newCompound.Parameter(CoreConstants.Parameter.PARAMETER_PKA2).Value.ShouldBeEqualTo(_snapshot.PkaTypes[1].Pka);
+         _newCompound.Parameter(CoreConstants.Parameter.PARAMETER_PKA3).Value.ShouldBeEqualTo(_snapshot.PkaTypes[2].Pka);
+
+         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int)EnumHelper.ParseValue<CompoundType>(_snapshot.PkaTypes[0].Type));
+         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE2).Value.ShouldBeEqualTo((int)EnumHelper.ParseValue<CompoundType>(_snapshot.PkaTypes[1].Type));
+         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int)EnumHelper.ParseValue<CompoundType>(_snapshot.PkaTypes[2].Type));
       }
    }
 }

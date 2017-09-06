@@ -854,7 +854,7 @@
     <Compile Include="Snapshots\Formulation.cs" />
     <Compile Include="Snapshots\Individual.cs" />
     <Compile Include="Snapshots\Mappers\AlternativeMapper.cs" />
-    <Compile Include="Snapshots\Mappers\CalculationMethodMapper.cs" />
+    <Compile Include="Snapshots\Mappers\CalculationMethodCacheMapper.cs" />
     <Compile Include="Snapshots\Mappers\CompoundMapper.cs" />
     <Compile Include="Snapshots\CompoundProcess.cs" />
     <Compile Include="Snapshots\Mappers\CompoundProcessMapper.cs" />
@@ -863,7 +863,9 @@
     <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />
     <Compile Include="Snapshots\Mappers\IndividualMapper.cs" />
     <Compile Include="Snapshots\Mappers\MoleculeMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ObjectBaseSnapshotMapperBase.cs" />
     <Compile Include="Snapshots\Mappers\OntogenyMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterContainerSnapshotMapperBase.cs" />
     <Compile Include="Snapshots\Mappers\ParameterMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProtocolMapper.cs" />
     <Compile Include="Snapshots\Mappers\SchemaItemMapper.cs" />

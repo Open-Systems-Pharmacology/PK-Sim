@@ -894,9 +894,9 @@ namespace PKSim.Core
             return $"{PARAMETER_PKA_BASE}{index}";
          }
 
-         public static readonly string ParameterPka1 = ParameterPKa(0);
-         public static readonly string ParameterPka2 = ParameterPKa(1);
-         public static readonly string ParameterPka3 = ParameterPKa(NUMBER_OF_PKA_PARAMETERS - 1);
+         public static readonly string PARAMETER_PKA1 = ParameterPKa(0);
+         public static readonly string PARAMETER_PKA2 = ParameterPKa(1);
+         public static readonly string PARAMETER_PKA3 = ParameterPKa(NUMBER_OF_PKA_PARAMETERS - 1);
 
          public static readonly string ParameterCompoundTypeBase = "Compound type ";
 

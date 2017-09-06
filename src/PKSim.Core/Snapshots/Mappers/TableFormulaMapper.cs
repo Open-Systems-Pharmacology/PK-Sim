@@ -8,7 +8,7 @@ using ModelTableFormula = OSPSuite.Core.Domain.Formulas.TableFormula;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class TableFormulaMapper : SnapshotMapperBase<ModelTableFormula, SnapshotTableFormula>
+   public class TableFormulaMapper : ObjectBaseSnapshotMapperBase<ModelTableFormula, SnapshotTableFormula>
    {
       private readonly IFormulaFactory _formulaFactory;
       private readonly IDimensionRepository _dimensionRepository;

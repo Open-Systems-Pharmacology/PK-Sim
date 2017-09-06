@@ -27,9 +27,9 @@ namespace PKSim.Infrastructure.Reporting.Summary
             reportPart.AddToContent(PKSimConstants.UI.CompoundTypeNeutral);
          else
          {
-            addCompoundTypePart(reportPart, compound, CoreConstants.Parameter.ParameterPka1, CoreConstants.Parameter.COMPOUND_TYPE1);
-            addCompoundTypePart(reportPart, compound, CoreConstants.Parameter.ParameterPka2, CoreConstants.Parameter.COMPOUND_TYPE2);
-            addCompoundTypePart(reportPart, compound, CoreConstants.Parameter.ParameterPka3, CoreConstants.Parameter.COMPOUND_TYPE3);
+            addCompoundTypePart(reportPart, compound, CoreConstants.Parameter.PARAMETER_PKA1, CoreConstants.Parameter.COMPOUND_TYPE1);
+            addCompoundTypePart(reportPart, compound, CoreConstants.Parameter.PARAMETER_PKA2, CoreConstants.Parameter.COMPOUND_TYPE2);
+            addCompoundTypePart(reportPart, compound, CoreConstants.Parameter.PARAMETER_PKA3, CoreConstants.Parameter.COMPOUND_TYPE3);
          }
          var fractionUnboundReport = _reportGenerator.ReportFor(compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND));
          fractionUnboundReport.AddToContent(_reportGenerator.ReportFor(compound.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER)));

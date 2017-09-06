@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -42,5 +43,6 @@ namespace PKSim.Core.Model
       {
          return this.GetSingleChildByName<ParameterAlternative>(alternativeName);
       }
+
    }
 }
