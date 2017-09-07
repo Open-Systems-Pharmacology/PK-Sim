@@ -91,7 +91,7 @@ namespace PKSim.Core.Snapshots.Mappers
             if (parameter == null)
                throw new SnapshotParameterNotFoundException(snapshotParameter.Path, individual.Name);
 
-            _parameterMapper.UpdateParameterFromSnapshot(parameter, snapshotParameter);
+            _parameterMapper.MapToModel(snapshotParameter, parameter);
          });
       }
 

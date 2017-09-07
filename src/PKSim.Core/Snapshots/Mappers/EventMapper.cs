@@ -25,7 +25,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var modelEvent = _eventFactory.Create(snapshotEvent.Template);
          MapSnapshotPropertiesToModel(snapshotEvent, modelEvent);
-         UpdateParametersFromSnapshot(modelEvent, snapshotEvent, snapshotEvent.Template);
+         UpdateParametersFromSnapshot(snapshotEvent, modelEvent, snapshotEvent.Template);
          return modelEvent;
       }
    }

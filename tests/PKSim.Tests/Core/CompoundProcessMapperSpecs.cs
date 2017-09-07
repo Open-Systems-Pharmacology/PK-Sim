@@ -4,24 +4,35 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
+using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_CompoundProcessMapper : ContextSpecification<CompoundProcessMapper>
    {
-      private ParameterMapper _parameterMapper;
+      protected ParameterMapper _parameterMapper;
       protected EnzymaticProcess _enzymaticProcess;
       protected EnzymaticProcessWithSpecies _enzymaticProcessWithSpecies;
       protected CompoundProcess _snapshot;
       private IRepresentationInfoRepository _representationInfoRepository;
+      protected ICompoundProcessRepository _compoundProcessRepository;
+      protected ICloner _cloner;
+      protected ISpeciesRepository _speciesRepository;
+      protected ICompoundProcessTask _compoundProcessTask;
 
       protected override void Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         _representationInfoRepository= A.Fake<IRepresentationInfoRepository>();
-         sut = new CompoundProcessMapper(_parameterMapper, _representationInfoRepository);
+         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
+         _compoundProcessRepository = A.Fake<ICompoundProcessRepository>();
+         _cloner = A.Fake<ICloner>();
+         _speciesRepository = A.Fake<ISpeciesRepository>();
+         _compoundProcessTask = A.Fake<ICompoundProcessTask>();
+
+         sut = new CompoundProcessMapper(_parameterMapper, _representationInfoRepository, _compoundProcessRepository, _cloner, _speciesRepository, _compoundProcessTask);
 
          _enzymaticProcess = new EnzymaticProcess
          {
@@ -99,6 +110,104 @@ namespace PKSim.Core
          _snapshot.DataSource.ShouldBeEqualTo(_enzymaticProcessWithSpecies.DataSource);
          _snapshot.Molecule.ShouldBeEqualTo(_enzymaticProcessWithSpecies.MoleculeName);
          _snapshot.Species.ShouldBeEqualTo(_enzymaticProcessWithSpecies.Species.Name);
+      }
+   }
+
+   public class When_mapping_a_valid_systemic_process_snapshot_to_a_process : concern_for_CompoundProcessMapper
+   {
+      private EnzymaticProcess _templateProcess;
+      private EnzymaticProcess _newEnzymaticProcess;
+      private EnzymaticProcess _cloneOfTemplate;
+      private Parameter _snapshotParameter;
+      private IParameter _processParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_enzymaticProcess);
+         _templateProcess = new EnzymaticProcess();
+         A.CallTo(() => _compoundProcessRepository.ProcessByName(_snapshot.InternalName)).Returns(_templateProcess);
+         _cloneOfTemplate = new EnzymaticProcess();
+         A.CallTo(() => _cloner.Clone((Model.CompoundProcess) _templateProcess)).Returns(_cloneOfTemplate);
+
+
+         _snapshot.Description = null;
+         _cloneOfTemplate.Description = "Description of template from database";
+         _snapshot.Molecule = "CYP3A4";
+         _snapshot.Metabolite = "Meta";
+         _snapshot.DataSource = "Lab";
+
+         _snapshotParameter = new Parameter().WithName("Km");
+         _snapshot.Parameters.Add(_snapshotParameter);
+
+         _processParameter = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName("Km");
+         _cloneOfTemplate.Add(_processParameter);
+      }
+
+      protected override void Because()
+      {
+         _newEnzymaticProcess = sut.MapToModel(_snapshot) as EnzymaticProcess;
+      }
+
+      [Observation]
+      public void should_load_the_template_from_the_database_and_return_a_clone_of_the_used_template()
+      {
+         _newEnzymaticProcess.ShouldBeEqualTo(_cloneOfTemplate);
+      }
+
+      [Observation]
+      public void should_not_override_the_description_from_the_process_coming_from_the_database()
+      {
+         _newEnzymaticProcess.Description.ShouldBeEqualTo(_cloneOfTemplate.Description);
+      }
+
+      [Observation]
+      public void should_have_set_the_enzymatic_process_specific_properties()
+      {
+         _newEnzymaticProcess.DataSource.ShouldBeEqualTo(_snapshot.DataSource);
+         _newEnzymaticProcess.MoleculeName.ShouldBeEqualTo(_snapshot.Molecule);
+         _newEnzymaticProcess.MetaboliteName.ShouldBeEqualTo(_snapshot.Metabolite);
+         _newEnzymaticProcess.Name.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_have_update_the_parameters_from_snapshot()
+      {
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshotParameter,_processParameter)).MustHaveHappened();
+      }
+   }
+
+   public class When_mapping_a_valid_species_dependent_snapshot_to_process : concern_for_CompoundProcessMapper
+   {
+      private EnzymaticProcessWithSpecies _newEnzymaticProcess;
+      private EnzymaticProcessWithSpecies _templateProcess;
+      private Species _species;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_enzymaticProcess);
+         _templateProcess = new EnzymaticProcessWithSpecies();
+         A.CallTo(() => _compoundProcessRepository.ProcessByName(_snapshot.InternalName)).Returns(_templateProcess);
+         A.CallTo(() => _cloner.Clone((Model.CompoundProcess)_templateProcess)).Returns(_templateProcess);
+
+
+         _snapshot.Molecule = "CYP3A4";
+         _snapshot.DataSource = "Lab";
+         _snapshot.Species = "Human";
+         _species = new Species {Name = _snapshot.Species};
+         A.CallTo(() => _speciesRepository.All()).Returns(new[] {_species});
+      }
+
+      protected override void Because()
+      {
+         _newEnzymaticProcess = sut.MapToModel(_snapshot) as EnzymaticProcessWithSpecies;
+      }
+
+    [Observation]
+      public void should_update_the_species_for_created_process()
+      {
+         A.CallTo(() => _compoundProcessTask.SetSpeciesForProcess(_newEnzymaticProcess, _species)).MustHaveHappened();
       }
    }
 }

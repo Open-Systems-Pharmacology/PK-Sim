@@ -82,7 +82,7 @@ namespace PKSim.Core.Batch.Mapper
                if (calculationMethod.AllSpecies.Contains(species.Name))
                   originData.AddCalculationMethod(calculationMethod);
                else
-                  throw new PKSimException(PKSimConstants.Error.CalculationMethodIsNotDefinedForSpecies(selectedCalculationMethod, category.Name, species.Name));
+                  throw new PKSimException(PKSimConstants.Error.CalculationMethodNotDefinedForSpecies(selectedCalculationMethod, category.Name, species.Name));
             }
          }
 

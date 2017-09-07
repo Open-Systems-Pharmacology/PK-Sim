@@ -30,6 +30,6 @@ namespace PKSim.Core.Model
          IsDefault = sourceAlternative.IsDefault;
       }
 
-      public bool IsCalculated => this.IsNamed(PKSimConstants.UI.CalculatedAlernative) && CoreConstants.Groups.GroupsWithCalculatedAlternative.Contains(GroupName);
+      public virtual bool IsCalculated => this.IsNamed(PKSimConstants.UI.CalculatedAlernative) && CoreConstants.Groups.GroupsWithCalculatedAlternative.Contains(GroupName);
    }
 }

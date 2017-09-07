@@ -107,9 +107,9 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newEvent.Parameter(_parameter1.Name), _snapshot.Parameters.FindByName(_parameter1.Name))).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newEvent.Parameter(_parameter2.Name), _snapshot.Parameters.FindByName(_parameter2.Name))).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(A<IParameter>.That.Matches(x => x.IsNamed(_hiddenParameter.Name)), A<Parameter>._)).MustNotHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(_parameter1.Name),_newEvent.Parameter(_parameter1.Name))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(_parameter2.Name),_newEvent.Parameter(_parameter2.Name))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(A<Parameter>._, A<IParameter>.That.Matches(x => x.IsNamed(_hiddenParameter.Name)))).MustNotHaveHappened();
       }
    }
 }

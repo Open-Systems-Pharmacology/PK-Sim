@@ -179,7 +179,7 @@ namespace PKSim.Core
          _relativeExpressionParameter1.Value = 0;
          _relativeExpressionParameterNorm1.Value = 0;
 
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_relativeExpressionParameter1, _relativeExpressionSnapshot1))
+         A.CallTo(() => _parameterMapper.MapToModel(_relativeExpressionSnapshot1, _relativeExpressionParameter1))
             .Invokes(x => _relativeExpressionParameter1.Value = _relativeExpressionSnapshot1.Value);
 
          _enzyme.Ontogeny = null;

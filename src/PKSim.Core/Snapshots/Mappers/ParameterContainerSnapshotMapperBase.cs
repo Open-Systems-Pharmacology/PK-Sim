@@ -46,7 +46,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return parameter.ValueDiffersFromDefault() || canBeEdited && parameter.Value != 0;
       }
 
-      protected void UpdateParametersFromSnapshot(IContainer container, TSnapshot snapshot, string containerDesciptor)
+      protected void UpdateParametersFromSnapshot(TSnapshot snapshot, IContainer container, string containerDesciptor)
       {
          foreach (var snapshotParameter in snapshot.Parameters)
          {
@@ -55,8 +55,24 @@ namespace PKSim.Core.Snapshots.Mappers
             if (modelParameter == null)
                throw new SnapshotParameterNotFoundException(snapshotParameter.Name, containerDesciptor);
 
-            _parameterMapper.UpdateParameterFromSnapshot(modelParameter, snapshotParameter);
+            _parameterMapper.MapToModel(snapshotParameter, modelParameter);
          }
+      }
+   }
+
+   public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TContext> : ParameterContainerSnapshotMapperBase<TModel, TSnapshot>
+      where TModel : IContainer
+      where TSnapshot : ParameterContainerSnapshotBase, new()
+   {
+      protected ParameterContainerSnapshotMapperBase(ParameterMapper parameterMapper) : base(parameterMapper)
+      {
+      }
+
+      public abstract TModel MapToModel(TSnapshot snapshot, TContext context);
+
+      public override TModel MapToModel(TSnapshot snapshot)
+      {
+         throw new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>();
       }
    }
 }

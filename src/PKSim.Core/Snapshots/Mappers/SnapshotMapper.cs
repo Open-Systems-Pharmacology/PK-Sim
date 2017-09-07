@@ -25,7 +25,6 @@ namespace PKSim.Core.Snapshots.Mappers
       /// </exception>
       object MapToModel(object snapshot);
 
-
       /// <summary>
       /// Returns the snapshot type for the model type <typeparamref name="T"/>
       /// </summary>

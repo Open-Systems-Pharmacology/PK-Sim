@@ -155,6 +155,7 @@ namespace PKSim.Core
       private Model.Compound _newCompound;
       private ParameterAlternative _alternative;
       private Model.CompoundProcess _newProcess;
+      private ParameterAlternativeGroup _fractionUnboundParameterGroup;
 
       protected override void Context()
       {
@@ -173,7 +174,8 @@ namespace PKSim.Core
          };
 
          _alternative = new ParameterAlternative().WithName("Alternative");
-         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0])).Returns(_alternative);
+         _fractionUnboundParameterGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
+         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], _fractionUnboundParameterGroup)).Returns(_alternative);
 
          _snapshot.Processes = new List<CompoundProcess>{_snapshotProcess1};
          _newProcess=new EnzymaticProcess();
@@ -240,4 +242,4 @@ namespace PKSim.Core
          _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int)EnumHelper.ParseValue<CompoundType>(_snapshot.PkaTypes[2].Type));
       }
    }
-}
+} 

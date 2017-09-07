@@ -30,7 +30,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var schema = _schemaFactory.Create();
          MapSnapshotPropertiesToModel(snapshotSchema, schema);
-         UpdateParametersFromSnapshot(schema, snapshotSchema, PKSimConstants.ObjectTypes.Schema);
+         UpdateParametersFromSnapshot(snapshotSchema, schema, PKSimConstants.ObjectTypes.Schema);
          schema.AddChildren(snapshotSchema.SchemaItems.Select(_schemaItemMapper.MapToModel));
          return schema;
       }

@@ -217,7 +217,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_the_parameter_previously_set_by_the_user()
       {
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_parameterKidney, _localizedParameterKidney)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_localizedParameterKidney, _parameterKidney)).MustHaveHappened();
       }
    }
 }

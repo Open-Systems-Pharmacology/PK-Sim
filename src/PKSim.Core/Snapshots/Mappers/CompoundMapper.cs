@@ -67,7 +67,7 @@ namespace PKSim.Core.Snapshots.Mappers
          compound.AddChildren(snapshot.Processes.Select(_processMapper.MapToModel));
          compound.IsSmallMolecule = snapshot.IsSmallMolecule;
          compound.PlasmaProteinBindingPartner = EnumHelper.ParseValue<PlasmaProteinBindingPartner>(snapshot.PlasmaProteinBindingPartner);
-         UpdateParametersFromSnapshot(compound, snapshot, PKSimConstants.ObjectTypes.Compound);
+         UpdateParametersFromSnapshot(snapshot, compound, PKSimConstants.ObjectTypes.Compound);
 
          return compound;
       }
@@ -78,7 +78,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          //Remove all alternatives except calculated ones
          alternativeGroup.AllAlternatives.ToList().Where(x=>!x.IsCalculated).Each(alternativeGroup.RemoveAlternative);
-         alternativeGroup.AddChildren(snapshotAlternatives.Select(_alternativeMapper.MapToModel));
+         alternativeGroup.AddChildren(snapshotAlternatives.Select(x=>_alternativeMapper.MapToModel(x, alternativeGroup)));
       }
 
       private void updatePkaTypes(ModelCompound compound, SnapshotCompound snapshot)

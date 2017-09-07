@@ -10,7 +10,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule>
+   public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule, ISimulationSubject>
    {
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IExecutionContext _executionContext;
@@ -76,10 +76,10 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-      public virtual IndividualMolecule MapToModel(Molecule snapshot, ISimulationSubject simulationSubject)
+      public override IndividualMolecule MapToModel(Molecule snapshot, ISimulationSubject simulationSubject)
       {
          var molecule = createMoleculeFrom(snapshot, simulationSubject);
-         UpdateParametersFromSnapshot(molecule, snapshot, snapshot.Type);
+         UpdateParametersFromSnapshot(snapshot, molecule, snapshot.Type);
          MapSnapshotPropertiesToModel(snapshot, molecule);
          updateMoleculePropertiesToMolecule(molecule, snapshot);
          molecule.Ontogeny = _ontogenyMapper.MapToModel(snapshot.Ontogeny, simulationSubject);
@@ -95,17 +95,12 @@ namespace PKSim.Core.Snapshots.Mappers
             if (expressionParameter == null)
                throw new SnapshotOutdatedException(PKSimConstants.Error.MoleculeTypeNotSupported(expression.Path));
 
-            _parameterMapper.UpdateParameterFromSnapshot(expressionParameter, expression);
+            _parameterMapper.MapToModel(expression, expressionParameter);
          }
 
          //once expression have been set, we need to update normalized parameter
          var normalizeExpressionCommand = new NormalizeRelativeExpressionCommand(molecule, _executionContext);
          normalizeExpressionCommand.Execute(_executionContext);
-      }
-
-      public override IndividualMolecule MapToModel(Molecule snapshot)
-      {
-         throw new NotSupportedException("Molecule should not be created from snapshot directly. Instead use the overload with simulationSubject");
       }
 
       private IndividualMolecule createMoleculeFrom(Molecule molecule, ISimulationSubject simulationSubject)

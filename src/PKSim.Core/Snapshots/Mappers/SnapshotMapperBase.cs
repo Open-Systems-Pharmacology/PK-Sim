@@ -37,4 +37,15 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
    }
+
+   public abstract class SnapshotMapperBase<TModel, TSnapshot, TContext> : SnapshotMapperBase<TModel, TSnapshot>
+      where TSnapshot : ISnapshot, new()
+   {
+      public abstract TModel MapToModel(TSnapshot snapshot, TContext context);
+
+      public override TModel MapToModel(TSnapshot snapshot)
+      {
+         throw new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>();
+      }
+   }
 }

@@ -1,11 +1,20 @@
-﻿using PKSim.Core.Model;
+﻿using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class AlternativeMapper : ParameterContainerSnapshotMapperBase<ParameterAlternative, Alternative>
+   public class AlternativeMapper : ParameterContainerSnapshotMapperBase<ParameterAlternative, Alternative, ParameterAlternativeGroup>
    {
-      public AlternativeMapper(ParameterMapper parameterMapper) : base(parameterMapper)
+      private readonly ISpeciesRepository _speciesRepository;
+      private readonly IParameterAlternativeFactory _parameterAlternativeFactory;
+
+      public AlternativeMapper(ParameterMapper parameterMapper,
+         IParameterAlternativeFactory parameterAlternativeFactory,
+         ISpeciesRepository speciesRepository) : base(parameterMapper)
       {
+         _speciesRepository = speciesRepository;
+         _parameterAlternativeFactory = parameterAlternativeFactory;
       }
 
       public override Alternative MapToSnapshot(ParameterAlternative parameterAlternative)
@@ -20,9 +29,23 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override ParameterAlternative MapToModel(Alternative snapshot)
+      public override ParameterAlternative MapToModel(Alternative snapshot, ParameterAlternativeGroup parameterAlternativeGroup)
       {
-         throw new System.NotImplementedException();
+         var alternative = _parameterAlternativeFactory.CreateAlternativeFor(parameterAlternativeGroup);
+         alternative.IsDefault = snapshot.IsDefault;
+         MapSnapshotPropertiesToModel(snapshot, alternative);
+         UpdateParametersFromSnapshot(snapshot, alternative, parameterAlternativeGroup.Name);
+
+         var alternativeWithSpecies = alternative as ParameterAlternativeWithSpecies;
+         if (alternativeWithSpecies == null)
+            return alternative;
+
+         var species = _speciesRepository.FindByName(snapshot.Species);
+         if (species == null)
+            throw new SnapshotOutdatedException(PKSimConstants.Error.CouldNotFindSpecies(snapshot.Species, _speciesRepository.AllNames()));
+
+         alternativeWithSpecies.Species = species;
+         return alternativeWithSpecies;
       }
    }
 }
