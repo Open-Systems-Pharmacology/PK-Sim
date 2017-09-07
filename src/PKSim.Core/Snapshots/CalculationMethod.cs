@@ -11,6 +11,7 @@ namespace PKSim.Core.Snapshots
       {
       }
 
+      //This constructor iss required for json deserialization
       public CalculationMethodCache(IEnumerable<string> allCalculationMethods)
       {
          _allCalculationMethods.AddRange(allCalculationMethods);

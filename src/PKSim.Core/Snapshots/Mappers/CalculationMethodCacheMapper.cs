@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -43,7 +42,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public virtual void UpdateCalculationMethodCache(IWithCalculationMethods withCalculationMethods, SnapshotCalculationMethodCache snapshot)
       {
-         MapToModel(snapshot,withCalculationMethods.CalculationMethodCache);
+         MapToModel(snapshot, withCalculationMethods.CalculationMethodCache);
       }
 
       private void useCalculationMethodIn(ModelCalculationMethodCache calculationMethodCache, string calculationMethodName)
@@ -58,7 +57,5 @@ namespace PKSim.Core.Snapshots.Mappers
 
          calculationMethodCache.AddCalculationMethod(calculationMethod);
       }
-
-    
    }
 }
