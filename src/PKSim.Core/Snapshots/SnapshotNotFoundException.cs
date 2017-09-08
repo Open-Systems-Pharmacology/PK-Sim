@@ -9,4 +9,12 @@ namespace PKSim.Core.Snapshots
       {
       }
    }
+
+
+   public class SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext> : NotSupportedException
+   {
+      public SnapshotMapToModelNotSupportedNotSupportedException() : base(PKSimConstants.Error.MapToModelNotSupportedWithoutContext(typeof(TModel).Name, typeof(TContext).Name))
+      {
+      }
+   }
 }

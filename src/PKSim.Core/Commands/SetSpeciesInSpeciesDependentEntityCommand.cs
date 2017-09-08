@@ -1,6 +1,5 @@
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Events;
+using PKSim.Assets;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
@@ -10,7 +9,6 @@ namespace PKSim.Core.Commands
       private readonly string _entityId;
       private readonly Species _oldSpecies;
       private ISpeciesDependentEntity _entity;
-
       private Species _newSpecies;
 
       public SetSpeciesInSpeciesDependentEntityCommand(ISpeciesDependentEntity entity, Species species, IExecutionContext context)
@@ -24,6 +22,11 @@ namespace PKSim.Core.Commands
          _newSpecies = species;
          Description = PKSimConstants.Command.SetSpeciesInSpeciesDependentEntityDescription(context.TypeFor(_entity), entity.Name, _oldSpecies.Name, _newSpecies.Name);
          context.UpdateBuildinBlockProperties(this, context.BuildingBlockContaining(entity));
+      }
+
+      protected override void PerformExecuteWith(IExecutionContext context)
+      {
+         _entity.Species = _newSpecies;
       }
 
       public override void RestoreExecutionData(IExecutionContext context)
@@ -42,11 +45,6 @@ namespace PKSim.Core.Commands
       protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetSpeciesInSpeciesDependentEntityCommand(_entity, _oldSpecies, context).AsInverseFor(this);
-      }
-
-      protected override void PerformExecuteWith(IExecutionContext context)
-      {
-         _entity.Species = _newSpecies;
       }
    }
 }

@@ -240,7 +240,11 @@
     <Compile Include="Core\AddSchemaToProtocolCommandSpecs.cs" />
     <Compile Include="Core\AdvancedParameterFactorySpecs.cs" />
     <Compile Include="Core\AgingDataSpecs.cs" />
+    <Compile Include="Core\AlternativeMapperSpecs.cs" />
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />
+    <Compile Include="Core\CalculationMethodCacheMapperSpecs.cs" />
+    <Compile Include="Core\CompoundMapperSpecs.cs" />
+    <Compile Include="Core\CompoundProcessMapperSpecs.cs" />
     <Compile Include="Core\DistributedTableFormulaMapperSpecs.cs" />
     <Compile Include="Core\EventMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />

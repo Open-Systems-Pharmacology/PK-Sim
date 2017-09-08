@@ -69,7 +69,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_save_the_visible_event_parameters_only()
+      public void should_save_the_event_parameters_changed_by_the_user_only()
       {
          _snapshot.Parameters.Count.ShouldBeEqualTo(_event.AllVisibleParameters().Count());
          _snapshot.Parameters.ExistsByName(_parameter1.Name).ShouldBeTrue();
@@ -107,9 +107,9 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newEvent.Parameter(_parameter1.Name), _snapshot.Parameters.FindByName(_parameter1.Name))).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newEvent.Parameter(_parameter2.Name), _snapshot.Parameters.FindByName(_parameter2.Name))).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(A<IParameter>.That.Matches(x => x.IsNamed(_hiddenParameter.Name)), A<Parameter>._)).MustNotHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(_parameter1.Name),_newEvent.Parameter(_parameter1.Name))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(_parameter2.Name),_newEvent.Parameter(_parameter2.Name))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(A<Parameter>._, A<IParameter>.That.Matches(x => x.IsNamed(_hiddenParameter.Name)))).MustNotHaveHappened();
       }
    }
 }

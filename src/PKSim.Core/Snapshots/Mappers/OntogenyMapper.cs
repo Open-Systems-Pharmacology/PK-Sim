@@ -1,5 +1,4 @@
-﻿using System;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using SnapshotOntogeny = PKSim.Core.Snapshots.Ontogeny;
@@ -7,7 +6,7 @@ using ModelOntogeny = PKSim.Core.Model.Ontogeny;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class OntogenyMapper : SnapshotMapperBase<ModelOntogeny, SnapshotOntogeny>
+   public class OntogenyMapper : ObjectBaseSnapshotMapperBase<ModelOntogeny, SnapshotOntogeny, ISimulationSubject>
    {
       private readonly DistributedTableFormulaMapper _distributedTableFormulaMapper;
       private readonly IOntogenyRepository _ontogenyRepository;
@@ -33,12 +32,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override ModelOntogeny MapToModel(SnapshotOntogeny snapshot)
-      {
-         throw new NotSupportedException("Ontogeny should not be created from snapshot directly. Instead use the overload with simulationSubject");
-      }
-
-      public virtual ModelOntogeny MapToModel(SnapshotOntogeny snapshot, ISimulationSubject simulationSubject)
+      public override ModelOntogeny MapToModel(SnapshotOntogeny snapshot, ISimulationSubject simulationSubject)
       {
          if (snapshot == null)
             return new NullOntogeny();

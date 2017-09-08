@@ -151,10 +151,10 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newProtocol.Parameter(Constants.Parameters.START_TIME), _snapshot.Parameters.FindByName(Constants.Parameters.START_TIME))).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newProtocol.Parameter(Constants.Parameters.END_TIME), _snapshot.Parameters.FindByName(Constants.Parameters.END_TIME))).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newProtocol.Parameter(CoreConstants.Parameter.INPUT_DOSE), _snapshot.Parameters.FindByName(CoreConstants.Parameter.INPUT_DOSE))).MustHaveHappened();
-      }
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(Constants.Parameters.START_TIME), _newProtocol.Parameter(Constants.Parameters.START_TIME))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(Constants.Parameters.END_TIME), _newProtocol.Parameter(Constants.Parameters.END_TIME))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(CoreConstants.Parameter.INPUT_DOSE), _newProtocol.Parameter(CoreConstants.Parameter.INPUT_DOSE))).MustHaveHappened();
+     }
    }
 
    public class When_mapping_a_valid_protocol_snapshot_to_an_advanced_protocol : concern_for_ProtocolMapper
@@ -196,7 +196,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newProtocol.Parameter(_advancedProtocolParameter.Name), _snapshot.Parameters.FindByName(_advancedProtocolParameter.Name))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(_advancedProtocolParameter.Name), _newProtocol.Parameter(_advancedProtocolParameter.Name))).MustHaveHappened();
       }
    }
 

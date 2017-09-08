@@ -641,15 +641,12 @@ namespace PKSim.Assets
             return $"Could not find calculation method '{calculationMethod}' in category '{category}'.\nAvailable calculation methods are:\n\t{availableCategories.ToString("\n\t")}";
          }
 
-         public static string CalculationMethodIsNotDefinedForSpecies(string calculationMethod, string category, string species)
+         public static string CalculationMethodNotDefinedForSpecies(string calculationMethod, string category, string species)
          {
             return $"Calculation method '{calculationMethod}' in category '{category}' is not defined for species '{species}'.";
          }
 
-         public static string CalculationMethodIsNotFound(string calculationMethod)
-         {
-            return $"Calculation method '{calculationMethod}' was not found.";
-         }
+         public static string CalculationMethodNotFound(string calculationMethod) => $"Calculation method '{calculationMethod}' was not found.";
 
          public static string SimulationHasNoResultsAndCannotBeUsedInSummaryChart(string simulationName)
          {
@@ -851,10 +848,16 @@ namespace PKSim.Assets
          public static string MoleculeTypeNotSupported(string moleculeType) => $"Molecule type '{moleculeType}' not supported";
 
          public static string RelativeExpressionContainerNotFound(string containerName) => $"Relative expression container '{containerName}' not found";
+
+         public static string SnapshotProcessNameNotFound(string processName) => $"Snapshot process '{processName}' not found in the PK-Sim database";
+
+         public static string MapToModelNotSupportedWithoutContext(string modelType, string contextType)
+         {
+            return $"{modelType} should not be created from snapshot directly. Instead use the overload with {contextType}";
+         }
       }
    
-
-   public static class Information
+      public static class Information
       {
          public static readonly string Formula = "Formula";
          public static readonly string ParameterDescription = "Description";

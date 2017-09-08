@@ -29,7 +29,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var template = _formulationRepository.FormulationBy(snapshotFormulation.FormulationType);
          var formulation = _cloner.Clone(template);
          MapSnapshotPropertiesToModel(snapshotFormulation, formulation);
-         UpdateParametersFromSnapshot(formulation, snapshotFormulation, snapshotFormulation.FormulationType);
+         UpdateParametersFromSnapshot(snapshotFormulation, formulation, snapshotFormulation.FormulationType);
          return formulation;
       }
    }

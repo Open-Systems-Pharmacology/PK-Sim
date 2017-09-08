@@ -101,7 +101,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.UpdateParameterFromSnapshot(_parameter, _snapshotParameter);
+         sut.MapToModel(_snapshotParameter, _parameter);
       }
 
       [Observation]
@@ -137,7 +137,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.UpdateParameterFromSnapshot(_parameter, _snapshotParameter);
+         sut.MapToModel(_snapshotParameter, _parameter);
       }
 
       [Observation]
@@ -174,7 +174,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.UpdateParameterFromSnapshot(_parameter, _snapshotParameter);
+         sut.MapToModel(_snapshotParameter, _parameter);
       }
 
       [Observation]
@@ -202,7 +202,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.UpdateParameterFromSnapshot(_parameter, _snapshotParameter);
+         sut.MapToModel(_snapshotParameter, _parameter);
       }
 
       [Observation]

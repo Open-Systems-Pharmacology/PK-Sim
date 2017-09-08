@@ -119,18 +119,12 @@ namespace PKSim.UI.Views.Compounds
 
       public bool ShowFavorites
       {
-         set { _colFavorites.UpdateVisibility(value); }
+         set => _colFavorites.UpdateVisibility(value);
       }
 
-      public override bool HasError
-      {
-         get { return _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _gridViewBinder.HasError;
 
-      private ICompoundTypeGroupPresenter compoundTypeGroupPresenter
-      {
-         get { return _presenter.DowncastTo<ICompoundTypeGroupPresenter>(); }
-      }
+      private ICompoundTypeGroupPresenter compoundTypeGroupPresenter => _presenter.DowncastTo<ICompoundTypeGroupPresenter>();
 
       public void AdjustHeight()
       {
@@ -142,9 +136,6 @@ namespace PKSim.UI.Views.Compounds
          gridView.LayoutChanged();
       }
 
-      public int OptimalHeight
-      {
-         get { return gridView.OptimalHeight; }
-      }
+      public int OptimalHeight => gridView.OptimalHeight;
    }
 }

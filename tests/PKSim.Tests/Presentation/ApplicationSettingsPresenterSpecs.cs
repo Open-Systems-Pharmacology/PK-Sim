@@ -175,6 +175,11 @@ namespace PKSim.Presentation
          return objectBase.Description;
       }
 
+      public string DescriptionFor(RepresentationObjectType objectType, string objectName)
+      {
+         return objectName;
+      }
+
       public string DisplayNameFor(RepresentationObjectType objectType, string objectName)
       {
          return objectName;

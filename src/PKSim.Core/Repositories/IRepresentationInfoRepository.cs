@@ -15,6 +15,7 @@ namespace PKSim.Core.Repositories
       string DisplayNameFor(IObjectBase objectBase);
       string DisplayNameFor(StatisticalAggregation statisticalAggregation);
       string DescriptionFor(IObjectBase objectBase);
+      string DescriptionFor(RepresentationObjectType objectType, string objectName);
       string DisplayNameFor(RepresentationObjectType objectType, string objectName);
       bool ContainsInfoFor(IObjectBase objectBase);
    }

@@ -201,9 +201,9 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       {
          var table = new DataTable(groupDisplayName(CoreConstants.Groups.COMPOUND_PKA));
          table.AddColumns<string>(CoreConstants.Parameter.PARAMETER_PKA_BASE, CoreConstants.Parameter.ParameterCompoundTypeBase);
-         addCompoundTypePart(table, compound, CoreConstants.Parameter.ParameterPka1, CoreConstants.Parameter.COMPOUND_TYPE1);
-         addCompoundTypePart(table, compound, CoreConstants.Parameter.ParameterPka2, CoreConstants.Parameter.COMPOUND_TYPE2);
-         addCompoundTypePart(table, compound, CoreConstants.Parameter.ParameterPka3, CoreConstants.Parameter.COMPOUND_TYPE3);
+         addCompoundTypePart(table, compound, CoreConstants.Parameter.PARAMETER_PKA1, CoreConstants.Parameter.COMPOUND_TYPE1);
+         addCompoundTypePart(table, compound, CoreConstants.Parameter.PARAMETER_PKA2, CoreConstants.Parameter.COMPOUND_TYPE2);
+         addCompoundTypePart(table, compound, CoreConstants.Parameter.PARAMETER_PKA3, CoreConstants.Parameter.COMPOUND_TYPE3);
          if (table.Rows.Count == 0)
             return null;
 
@@ -214,11 +214,11 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       {
          var compoundType = compound.Parameter(parameterCompoundType1).Value;
 
-         if (compoundType == CoreConstants.Compound.CompoundTypeNeutral) return;
+         if (compoundType == CoreConstants.Compound.COMPOUND_TYPE_NEUTRAL) return;
          var pka = compound.Parameter(parameterPka1).Value;
 
          string compoundTypeDisplay;
-         if (compoundType == CoreConstants.Compound.CompoundTypeAcid)
+         if (compoundType == CoreConstants.Compound.COMPOUND_TYPE_ACID)
             compoundTypeDisplay = PKSimConstants.UI.CompoundTypeAcid;
          else
             compoundTypeDisplay = PKSimConstants.UI.CompoundTypeBase;

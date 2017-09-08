@@ -62,7 +62,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          if (flatProcess.GroupName == CoreConstants.Groups.SYSTEMIC_PROCESSES)
             return createSystemicProcess(flatProcess, typeFrom(flatProcess));
 
-         throw new ArgumentException(string.Format("Group '{0}' unknown for compound", flatProcess.GroupName));
+         throw new ArgumentException($"Group '{flatProcess.GroupName}' unknown for compound");
       }
 
       private SystemicProcess createSystemicProcess(FlatProcess flatProcess, SystemicProcessType processType)
@@ -94,7 +94,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          if (flatProcess.ProcessType == CoreConstants.ProcessType.METABOLIZATION)
             return SystemicProcessTypes.Hepatic;
 
-         throw new ArgumentException(string.Format("Systemic process type for process '{0}' of type '{1}' unknown.", flatProcess.Name, flatProcess.ProcessType));
+         throw new ArgumentException($"Systemic process type for process '{flatProcess.Name}' of type '{flatProcess.ProcessType}' unknown.");
       }
 
       private TProcess createProcessBaseOn<TProcess>(FlatProcess flatProcess) where TProcess : CompoundProcess

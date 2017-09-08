@@ -7,7 +7,7 @@ using ModelTableFormula = PKSim.Core.Model.DistributedTableFormula;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class DistributedTableFormulaMapper : SnapshotMapperBase<ModelTableFormula, SnapshotTableFormula>
+   public class DistributedTableFormulaMapper : ObjectBaseSnapshotMapperBase<ModelTableFormula, SnapshotTableFormula>
    {
       private readonly IFormulaFactory _formulaFactory;
       private readonly TableFormulaMapper _tableFormulaMapper;

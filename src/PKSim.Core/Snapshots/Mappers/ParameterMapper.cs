@@ -11,7 +11,7 @@ using ModelTableFormula = OSPSuite.Core.Domain.Formulas.TableFormula;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ParameterMapper : SnapshotMapperBase<IParameter, SnapshotParameter>
+   public class ParameterMapper : ObjectBaseSnapshotMapperBase<IParameter, SnapshotParameter, IParameter>
    {
       private readonly TableFormulaMapper _tableFormulaMapper;
       private readonly IEntityPathResolver _entityPathResolver;
@@ -40,26 +40,23 @@ namespace PKSim.Core.Snapshots.Mappers
          return parameter;
       }
 
-      public override IParameter MapToModel(SnapshotParameter snapshot)
+      public override IParameter MapToModel(SnapshotParameter snapshot, IParameter parameter)
       {
-         throw new NotSupportedException("Parameter should not be created from snapshot. Instead use the update method");
-      }
-
-      public virtual void UpdateParameterFromSnapshot(IParameter parameter, SnapshotParameter snapshotParameter)
-      {
-         parameter.ValueDescription = snapshotParameter.ValueDescription;
-         parameter.DisplayUnit = parameter.Dimension.Unit(UnitValueFor(snapshotParameter.Unit));
+         parameter.ValueDescription = snapshot.ValueDescription;
+         parameter.DisplayUnit = parameter.Dimension.Unit(UnitValueFor(snapshot.Unit));
 
          //only update formula if required
-         if (snapshotParameter.TableFormula != null)
-            parameter.Formula = _tableFormulaMapper.MapToModel(snapshotParameter.TableFormula);
+         if (snapshot.TableFormula != null)
+            parameter.Formula = _tableFormulaMapper.MapToModel(snapshot.TableFormula);
 
          //This needs to come AFTER formula update so that the base value is accurate
          var baseValue = parameter.Value;
-         var snapshotValueInBaseUnit = parameter.ConvertToBaseUnit(snapshotParameter.Value);
+         var snapshotValueInBaseUnit = parameter.ConvertToBaseUnit(snapshot.Value);
 
          if (!ValueComparer.AreValuesEqual(baseValue, snapshotValueInBaseUnit))
             parameter.Value = snapshotValueInBaseUnit;
+
+         return parameter;
       }
 
       private SnapshotTableFormula mapFormula(IFormula formula)

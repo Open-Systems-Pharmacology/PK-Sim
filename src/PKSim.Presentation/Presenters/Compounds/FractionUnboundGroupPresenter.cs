@@ -15,19 +15,14 @@ using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
-   public enum PlasmaProteinPartner
-   {
-      Glycoprotein = CoreConstants.Compound.BindingPartnerAgp,
-      Albumin = CoreConstants.Compound.BindingPartnerAlbumin,
-      Unknown = CoreConstants.Compound.BindingPartnerUnknown
-   }
+  
 
    public interface IFractionUnboundGroupPresenter : ICompoundParameterGroupWithAlternativePresenter
    {
       void SetFractionUnboundUnit(IParameterDTO fractionUnboundParameter, Unit newUnit);
       void SetFractionUnboundValue(FractionUnboundAlternativeDTO fractionUnboundAlternativeDTO, double newValue);
       void SetSpeciesValue(FractionUnboundAlternativeDTO fractionUnboundAlternativeDTO, Species species);
-      PlasmaProteinPartner PlasmaProteinPartner { get; set; }
+      PlasmaProteinBindingPartner PlasmaProteinBindingPartner { get; set; }
 
       /// <summary>
       ///    Returns all available species
@@ -70,10 +65,10 @@ namespace PKSim.Presentation.Presenters.Compounds
          AddCommand(_compoundAlternativeTask.SetSpeciesForAlternative(fractionUnboundAlternativeDTO.ParameterAlternative, species));
       }
 
-      public PlasmaProteinPartner PlasmaProteinPartner
+      public PlasmaProteinBindingPartner PlasmaProteinBindingPartner
       {
-         get { return (PlasmaProteinPartner) (_plasmaProteinPartner.Value); }
-         set { AddCommand(_parameterTask.SetParameterDisplayValue(_plasmaProteinPartner, value)); }
+         get => _compound.PlasmaProteinBindingPartner;
+         set => AddCommand(_parameterTask.SetParameterDisplayValue(_plasmaProteinPartner, value));
       }
 
       public IEnumerable<Species> AllSpecies()

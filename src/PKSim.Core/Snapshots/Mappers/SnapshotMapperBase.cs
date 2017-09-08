@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -14,33 +10,20 @@ namespace PKSim.Core.Snapshots.Mappers
 
    public abstract class SnapshotMapperBase<TModel, TSnapshot> : ISnapshotMapperSpecification
       where TSnapshot : ISnapshot, new()
-      where TModel : IObjectBase
    {
       public virtual object MapToSnapshot(object model) => MapToSnapshot(model.DowncastTo<TModel>());
 
       public virtual object MapToModel(object snapshot) => MapToModel(snapshot.DowncastTo<TSnapshot>());
 
-      public Type SnapshotTypeFor<T>() => typeof(TSnapshot);
-
       public abstract TSnapshot MapToSnapshot(TModel model);
 
       public abstract TModel MapToModel(TSnapshot snapshot);
 
+      public Type SnapshotTypeFor<T>() => typeof(TSnapshot);
+
       public virtual bool IsSatisfiedBy(Type item)
       {
          return item.IsAnImplementationOf<TModel>() || item.IsAnImplementationOf<TSnapshot>();
-      }
-
-      protected void MapModelPropertiesToSnapshot(TModel model, TSnapshot snapshot)
-      {
-         snapshot.Name = model.Name;
-         snapshot.Description = SnapshotValueFor(model.Description);
-      }
-
-      protected void MapSnapshotPropertiesToModel(TSnapshot snapshot, TModel model)
-      {
-         model.Name = snapshot.Name;
-         model.Description = snapshot.Description;
       }
 
       protected string SnapshotValueFor(string value) => !string.IsNullOrEmpty(value) ? value : null;
@@ -50,52 +33,19 @@ namespace PKSim.Core.Snapshots.Mappers
       protected virtual TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
       {
          var snapshot = new TSnapshot();
-         MapModelPropertiesToSnapshot(model, snapshot);
          configurationAction?.Invoke(snapshot);
          return snapshot;
       }
    }
 
-   public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot> : SnapshotMapperBase<TModel, TSnapshot>
-      where TModel : IContainer
-      where TSnapshot : ParameterContainerSnapshotBase, new()
+   public abstract class SnapshotMapperBase<TModel, TSnapshot, TContext> : SnapshotMapperBase<TModel, TSnapshot>
+      where TSnapshot : ISnapshot, new()
    {
-      protected readonly ParameterMapper _parameterMapper;
+      public abstract TModel MapToModel(TSnapshot snapshot, TContext context);
 
-      protected ParameterContainerSnapshotMapperBase(ParameterMapper parameterMapper)
+      public override TModel MapToModel(TSnapshot snapshot)
       {
-         _parameterMapper = parameterMapper;
-      }
-
-      protected Parameter ParameterSnapshotFor(IParameter parameter) => _parameterMapper.MapToSnapshot(parameter);
-
-      protected void MapVisibleParameters(IContainer container, TSnapshot snapshot) => MapParameters(container.AllVisibleParameters(), snapshot);
-
-      protected void MapParameters(IEnumerable<IParameter> parameters, TSnapshot snapshot)
-      {
-         snapshot.Parameters.AddRange(parameters.Select(ParameterSnapshotFor));
-      }
-
-      protected override TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
-      {
-         return base.SnapshotFrom(model, snapshot =>
-         {
-            MapVisibleParameters(model, snapshot);
-            configurationAction?.Invoke(snapshot);
-         });
-      }
-
-      protected void UpdateParametersFromSnapshot(IContainer container, TSnapshot snapshot, string containerDesciptor)
-      {
-         foreach (var snapshotParameter in snapshot.Parameters)
-         {
-            var modelParameter = container.Parameter(snapshotParameter.Name);
-
-            if (modelParameter == null)
-               throw new SnapshotParameterNotFoundException(snapshotParameter.Name, containerDesciptor);
-
-            _parameterMapper.UpdateParameterFromSnapshot(modelParameter, snapshotParameter);
-         }
+         throw new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>();
       }
    }
 }

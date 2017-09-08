@@ -24,8 +24,7 @@ namespace PKSim.Core.Model
          return CoreConstants.ProcessClasses.ENZYMATIC;
       }
    }
-
-
+   
    public class EnzymaticProcessWithSpecies : EnzymaticProcess, ISpeciesDependentCompoundProcess
    {
    }

@@ -102,7 +102,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.UpdateParameterFromSnapshot(_newSchema.Parameter(_parameter.Name), _snapshot.Parameters.FindByName(_parameter.Name))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(_parameter.Name), _newSchema.Parameter(_parameter.Name))).MustHaveHappened();
       }
 
       [Observation]

@@ -13,7 +13,7 @@ using ModelIndividual = PKSim.Core.Model.Individual;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class IndividualMapper : SnapshotMapperBase<ModelIndividual, SnapshotIndividual>
+   public class IndividualMapper : ObjectBaseSnapshotMapperBase<ModelIndividual, SnapshotIndividual>
    {
       private readonly ParameterMapper _parameterMapper;
       private readonly IDimensionRepository _dimensionRepository;
@@ -91,7 +91,7 @@ namespace PKSim.Core.Snapshots.Mappers
             if (parameter == null)
                throw new SnapshotParameterNotFoundException(snapshotParameter.Path, individual.Name);
 
-            _parameterMapper.UpdateParameterFromSnapshot(parameter, snapshotParameter);
+            _parameterMapper.MapToModel(snapshotParameter, parameter);
          });
       }
 
