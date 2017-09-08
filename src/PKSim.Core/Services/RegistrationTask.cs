@@ -1,6 +1,6 @@
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Services
 {
@@ -8,8 +8,8 @@ namespace PKSim.Core.Services
    {
       void Register(IWithId objectToRegister);
       void Unregister(IWithId objectToUnregister);
-      void RegisterProject(IPKSimProject project);
-      void UnregisterProject(IPKSimProject project);
+      void RegisterProject(PKSimProject project);
+      void UnregisterProject(PKSimProject project);
    }
 
    public class RegistrationTask : IRegistrationTask
@@ -33,14 +33,14 @@ namespace PKSim.Core.Services
          _unregisterObjectVisitor.Unregister(objectToUnregister);
       }
 
-      public void RegisterProject(IPKSimProject project)
+      public void RegisterProject(PKSimProject project)
       {
          if (project == null) return;
          Register(project);
          project.AllObservedData.Each(Register);
       }
 
-      public void UnregisterProject(IPKSimProject project)
+      public void UnregisterProject(PKSimProject project)
       {
          if (project == null) return;
          Unregister(project);

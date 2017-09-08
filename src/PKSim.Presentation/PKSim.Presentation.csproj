@@ -359,7 +359,6 @@
     <Compile Include="DTO\Individuals\ShowOntogenyDataDTO.cs" />
     <Compile Include="DTO\Individuals\TransportTypeDTO.cs" />
     <Compile Include="DTO\ObservedData\ObservedDataSelectionDTO.cs" />
-    <Compile Include="DTO\ObservedData\ObservedDataToCompoundMappingDTO.cs" />
     <Compile Include="DTO\Simulations\GlobalPKAnalysisDTO.cs" />
     <Compile Include="DTO\Compounds\CompoundTypeDTO.cs" />
     <Compile Include="DTO\Compounds\FractionUnboundAlternativeDTO.cs" />
@@ -474,7 +473,6 @@
     <Compile Include="Presenters\Events\EventParametersPresenter.cs" />
     <Compile Include="Presenters\Formulations\FormulationParametersPresenter.cs" />
     <Compile Include="Presenters\Individuals\ShowOntogenyDataPresenter.cs" />
-    <Compile Include="Presenters\ObservedDataToCompoundMappingPresenter.cs" />
     <Compile Include="Presenters\Parameters\EditTableParameterPresenter.cs" />
     <Compile Include="Presenters\Populations\CreatePopulationPresenter.cs" />
     <Compile Include="Presenters\Populations\EditImportPopulationPresenter.cs" />
@@ -500,6 +498,7 @@
     <Compile Include="Services\TemplateTask.cs" />
     <Compile Include="UICommands\CreatePopulationBasedOnIndividualCommand.cs" />
     <Compile Include="UICommands\DeleteBuildingBlocksUICommand.cs" />
+    <Compile Include="UICommands\ExportProjectToSnapshotCommand.cs" />
     <Compile Include="UICommands\ExportObservedDataToPkmlCommand.cs" />
     <Compile Include="UICommands\ExportPopulationSimulationPKAnalysesCommand.cs" />
     <Compile Include="UICommands\ExportSimulationResultsToCSVCommand.cs" />
@@ -866,7 +865,6 @@
     <Compile Include="Views\Compounds\ICompoundMoleculeTypeView.cs" />
     <Compile Include="Views\Formulations\ITableFormulationView.cs" />
     <Compile Include="Views\Individuals\IShowOntogenyDataView.cs" />
-    <Compile Include="Views\IObservedDataToCompoundMappingView.cs" />
     <Compile Include="Views\Parameters\IEditTableParameterView.cs" />
     <Compile Include="Views\Parameters\INoItemInSelectionView.cs" />
     <Compile Include="Views\Parameters\ITableParameterView.cs" />

@@ -17,7 +17,7 @@ using OSPSuite.Utility.FileLocker;
 
 namespace PKSim.Infrastructure
 {
-   public class Workspace : Workspace<IPKSimProject>, IWorkspace
+   public class Workspace : Workspace<PKSimProject>, IWorkspace
    {
       private readonly IEventPublisher _eventPublisher;
       private readonly IRegistrationTask _registrationTask;
@@ -113,9 +113,9 @@ namespace PKSim.Infrastructure
 
       public bool ProjectHasChanged => Project != null && Project.HasChanged && !ProjectIsReadOnly;
 
-      public IPKSimProject Project
+      public PKSimProject Project
       {
-         get { return _project; }
+         get => _project;
          set
          {
             //unregister first 

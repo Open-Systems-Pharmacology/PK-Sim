@@ -14,6 +14,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Core.Services;
 using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistableUpdater;
 
 namespace PKSim.Presentation
@@ -28,7 +29,7 @@ namespace PKSim.Presentation
       protected List<QuantitySelection> _selectedQuantities;
       protected IQuantitySelectionPresenter _quantitySelectionPresenter;
       protected ISimulationPersistableUpdater _simulationPersistableUpdater;
-      protected IProjectRetriever _projectRetriever;
+      protected IPKSimProjectRetriever _projectRetriever;
       protected IDialogCreator _dialogCreator;
       private IUserSettings _userSettings;
 
@@ -37,7 +38,7 @@ namespace PKSim.Presentation
          _view = A.Fake<IPopulationSimulationSettingsView>();
          _quantitySelectionPresenter = A.Fake<IQuantitySelectionPresenter>();
          _simulationPersistableUpdater = A.Fake<ISimulationPersistableUpdater>();
-         _projectRetriever = A.Fake<IProjectRetriever>();
+         _projectRetriever = A.Fake<IPKSimProjectRetriever>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _userSettings = A.Fake<IUserSettings>();
 
@@ -139,18 +140,18 @@ namespace PKSim.Presentation
 
    public class When_the_user_is_saving_the_current_edited_settings_to_the_project : concern_for_PopulationSimulationRunSettingsPresenter
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
       private OutputSelections _templateSettings;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _templateSettings = A.Fake<OutputSelections>();
          A.CallTo(() => _editedSettings.Clone()).Returns(_templateSettings);
 
          sut.CreateSettings(_populationSimulation);
-         A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
+         A.CallTo(() => _projectRetriever.Current).Returns(_project);
       }
 
       protected override void Because()

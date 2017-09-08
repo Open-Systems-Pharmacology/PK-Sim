@@ -22,7 +22,7 @@ namespace PKSim.Presentation
    {
       protected IDialogCreator _dialogCreator;
       protected IWorkspace _workspace;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IApplicationController _applicationController;
       protected IExecutionContext _executionContext;
       protected IHeavyWorkManager _heavyWorkManager;
@@ -35,7 +35,7 @@ namespace PKSim.Presentation
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _workspace = A.Fake<IWorkspace>();
          _executionContext = A.Fake<IExecutionContext>();

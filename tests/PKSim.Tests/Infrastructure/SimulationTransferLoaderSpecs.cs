@@ -23,7 +23,7 @@ namespace PKSim.Infrastructure
       private string _pkmlFile;
       protected SimulationTransfer _simulationTransfer;
       protected SimulationTransfer _result;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IJournalTask _journalTask;
       private ICloneManagerForModel _cloneManagerForModel;
 

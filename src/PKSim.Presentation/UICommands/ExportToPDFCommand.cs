@@ -12,6 +12,7 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Core;
 
 namespace PKSim.Presentation.UICommands
@@ -81,27 +82,27 @@ namespace PKSim.Presentation.UICommands
       }
    }
 
-   public class ExportProjectToPDFCommand : ExportToPDFCommand<IPKSimProject>
+   public class ExportProjectToPDFCommand : ExportToPDFCommand<PKSimProject>
    {
-      private readonly IProjectRetriever _projectRetriever;
+      private readonly IPKSimProjectRetriever _projectRetriever;
 
-      public ExportProjectToPDFCommand(IApplicationController applicationController, IProjectRetriever projectRetriever) : base(applicationController)
+      public ExportProjectToPDFCommand(IApplicationController applicationController, IPKSimProjectRetriever projectRetriever) : base(applicationController)
       {
          _projectRetriever = projectRetriever;
       }
 
       protected override void PerformExecute()
       {
-         Subject = _projectRetriever.CurrentProject.DowncastTo<IPKSimProject>();
+         Subject = _projectRetriever.Current;
          base.PerformExecute();
       }
    }
 
    public class ExportCollectionToPDFCommand<T> : ExportToPDFCommand<IReadOnlyCollection<T>>
    {
-      public ExportCollectionToPDFCommand(IApplicationController applicationController, IProjectRetriever projectRetriever) : base(applicationController)
+      public ExportCollectionToPDFCommand(IApplicationController applicationController, IPKSimProjectRetriever projectRetriever) : base(applicationController)
       {
-         var project = projectRetriever.CurrentProject.DowncastTo<IPKSimProject>();
+         var project = projectRetriever.Current;
          IEnumerable<T> all;
          if (typeof(T).IsAnImplementationOf<IPKSimBuildingBlock>())
             all = project.All<IPKSimBuildingBlock>().OfType<T>();

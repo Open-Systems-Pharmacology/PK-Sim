@@ -22,7 +22,7 @@ namespace PKSim.Presentation
    {
       protected IPKSimChartFactory _chartFactory;
       private IContainerTask _containerTask;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IObjectBaseFactory _objectBaseFactory;
       protected IApplicationController _applicationController;
       protected ISingleStartPresenterTask _singleStartPresenterTask;

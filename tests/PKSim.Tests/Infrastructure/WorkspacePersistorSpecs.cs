@@ -125,12 +125,12 @@ namespace PKSim.Infrastructure
 
    public class When_loading_a_workspace : concern_for_WorkspacePersistor
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          A.CallTo(() => _projectPersistor.Load(_session)).Returns(_project);
       }
 
@@ -190,7 +190,7 @@ namespace PKSim.Infrastructure
 
    public class When_loading_a_workspace_from_a_corrupted_file : concern_for_WorkspacePersistor
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
 
       protected override void Context()
       {

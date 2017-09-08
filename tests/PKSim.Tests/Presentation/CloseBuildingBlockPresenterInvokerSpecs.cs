@@ -12,7 +12,7 @@ namespace PKSim.Presentation
    public abstract class concern_for_CloseSubjectPresenterInvoker<TBuildingBlock> : ContextSpecification<ICloseSubjectPresenterInvoker> where TBuildingBlock : class, IPKSimBuildingBlock
    {
       protected TBuildingBlock _buildingBlock;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IApplicationController _applicationController;
 
       protected override void Context()
@@ -20,7 +20,7 @@ namespace PKSim.Presentation
          _applicationController = A.Fake<IApplicationController>();
          sut = new CloseSubjectPresenterInvoker(_applicationController);
 
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _buildingBlock = A.Fake<TBuildingBlock>();
       }
 

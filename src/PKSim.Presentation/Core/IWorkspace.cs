@@ -1,6 +1,6 @@
 using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Model;
 using OSPSuite.Presentation.Services;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Core
 {
@@ -9,7 +9,7 @@ namespace PKSim.Presentation.Core
       /// <summary>
       ///    Returns/sets the current project
       /// </summary>
-      IPKSimProject Project { get; set; }
+      PKSimProject Project { get; set; }
 
       /// <summary>
       ///    Returns/sets  the history manager
@@ -38,7 +38,6 @@ namespace PKSim.Presentation.Core
       /// </summary>
       bool ProjectLoaded { get; }
 
-     
       /// <summary>
       ///    Returns true if the project has changed and thus should be for instance saved otherwise false
       /// </summary>

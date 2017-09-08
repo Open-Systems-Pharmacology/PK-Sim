@@ -33,7 +33,7 @@ namespace PKSim.Presentation
       protected ITreeNodeFactory _treeNodeFactory;
       protected IRegion _region;
       protected ITreeNodeContextMenuFactory _contextMenuFactory;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected ITreeNode<RootNodeType> _compoundFolderNode;
       protected ITreeNode<RootNodeType> _individualFolderNode;
       protected ITreeNode<RootNodeType> _formulationFolderNode;

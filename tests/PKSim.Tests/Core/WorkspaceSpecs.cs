@@ -98,7 +98,7 @@ namespace PKSim.Core
    public class When_told_to_open_a_project_from_a_valid_project_file : concern_for_Workspace
    {
       private string _fileName;
-      private IPKSimProject _project;
+      private PKSimProject _project;
       private ProjectLoadingEvent _event;
       private ProjectLoadedEvent _event2;
 
@@ -106,7 +106,7 @@ namespace PKSim.Core
       {
          base.Context();
          _fileName = "toto";
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          sut.Project = _project;
 
          A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectLoadingEvent>.Ignored)).Invokes(
@@ -161,7 +161,7 @@ namespace PKSim.Core
    public class When_told_to_save_a_project : concern_for_Workspace
    {
       private string _fileName;
-      private IPKSimProject _project;
+      private PKSimProject _project;
       private ProjectSavingEvent _savingEvent;
       private ProjectSavedEvent _savedEvent;
 
@@ -169,7 +169,7 @@ namespace PKSim.Core
       {
          base.Context();
          _fileName = "toto";
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _project.HasChanged = true;
          sut.Project = _project;
          A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectSavingEvent>.Ignored)).Invokes(
@@ -246,12 +246,12 @@ namespace PKSim.Core
 
    public class When_told_to_close_a_project : concern_for_Workspace
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          sut.Project = _project;
          sut.HistoryManager = A.Fake<IHistoryManager>();
       }
@@ -307,12 +307,12 @@ namespace PKSim.Core
 
    public class When_told_to_close_a_project_that_was_open_as_readonly : concern_for_Workspace
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          sut.Project = _project;
          sut.HistoryManager = A.Fake<IHistoryManager>();
          sut.ProjectIsReadOnly = true;
@@ -341,13 +341,13 @@ namespace PKSim.Core
 
    public class When_setting_a_project : concern_for_Workspace
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
       private ProjectCreatedEvent _event;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectCreatedEvent>.Ignored)).Invokes(
             x => _event = x.GetArgument<ProjectCreatedEvent>(0));
       }

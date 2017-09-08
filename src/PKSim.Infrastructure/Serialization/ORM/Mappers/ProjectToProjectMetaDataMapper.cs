@@ -17,7 +17,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
    /// <summary>
    ///    Map a project to its meta data representation
    /// </summary>
-   public interface IProjectToProjectMetaDataMapper : IMapper<IPKSimProject, ProjectMetaData>
+   public interface IProjectToProjectMetaDataMapper : IMapper<PKSimProject, ProjectMetaData>
    {
    }
 
@@ -45,7 +45,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          _simulationMetaDataMapper = simulationMetaDataMapper;
       }
 
-      public ProjectMetaData MapFrom(IPKSimProject project)
+      public ProjectMetaData MapFrom(PKSimProject project)
       {
          var projectMetaData = new ProjectMetaData();
          project.All<IPKSimBuildingBlock>().Each(x => projectMetaData.AddBuildingBlock(mapFrom(x)));

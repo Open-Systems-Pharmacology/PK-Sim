@@ -1,18 +1,17 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
+using OSPSuite.Core.Converter.v5_4;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
-using OSPSuite.Core.Converter.v5_4;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_4
 {
-   public class Converter532To541 : IObjectConverter, 
-      IVisitor<IPKSimProject>,
+   public class Converter532To541 : IObjectConverter,
+      IVisitor<PKSimProject>,
       IVisitor<Simulation>,
       IVisitor<PopulationSimulation>
    {
@@ -41,7 +40,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_4
          return (ProjectVersions.V5_4_1, false);
       }
 
-      public void Visit(IPKSimProject project)
+      public void Visit(PKSimProject project)
       {
          foreach (var observedData in project.AllObservedData)
          {
@@ -56,7 +55,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_4
 
          foreach (var comparison in project.AllSimulationComparisons)
          {
-            project.AddClassifiable(new ClassifiableComparison { Subject = comparison });
+            project.AddClassifiable(new ClassifiableComparison {Subject = comparison});
          }
          _converted = true;
       }

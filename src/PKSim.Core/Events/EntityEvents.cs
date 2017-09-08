@@ -52,31 +52,31 @@ namespace PKSim.Core.Events
 
    public class AddBuildingBlockEvent<TBuildingBlock> where TBuildingBlock : IPKSimBuildingBlock
    {
-      public AddBuildingBlockEvent(TBuildingBlock buildingBlock, IPKSimProject project)
+      public AddBuildingBlockEvent(TBuildingBlock buildingBlock, PKSimProject project)
       {
          BuildingBlock = buildingBlock;
          Project = project;
       }
 
       public TBuildingBlock BuildingBlock { get; set; }
-      public IPKSimProject Project { get; set; }
+      public PKSimProject Project { get; set; }
    }
 
    public class RemoveBuildingBlockEvent<TBuildingBlock> where TBuildingBlock : IPKSimBuildingBlock
    {
-      public RemoveBuildingBlockEvent(TBuildingBlock buildingBlock, IPKSimProject project)
+      public RemoveBuildingBlockEvent(TBuildingBlock buildingBlock, PKSimProject project)
       {
          BuildingBlock = buildingBlock;
          Project = project;
       }
 
       public TBuildingBlock BuildingBlock { get; set; }
-      public IPKSimProject Project { get; set; }
+      public PKSimProject Project { get; set; }
    }
 
    public class BuildingBlockAddedEvent : AddBuildingBlockEvent<IPKSimBuildingBlock>
    {
-      public BuildingBlockAddedEvent(IPKSimBuildingBlock buildingBlock, IPKSimProject project) : base(buildingBlock, project)
+      public BuildingBlockAddedEvent(IPKSimBuildingBlock buildingBlock, PKSimProject project) : base(buildingBlock, project)
       {
       }
    }
@@ -85,11 +85,11 @@ namespace PKSim.Core.Events
    {
       public bool DueToSwap { get; private set; }
 
-      public BuildingBlockRemovedEvent(IPKSimBuildingBlock buildingBlock, IPKSimProject project) : this(buildingBlock, project, false)
+      public BuildingBlockRemovedEvent(IPKSimBuildingBlock buildingBlock, PKSimProject project) : this(buildingBlock, project, false)
       {
       }
 
-      public BuildingBlockRemovedEvent(IPKSimBuildingBlock buildingBlock, IPKSimProject project, bool dueToSwap)
+      public BuildingBlockRemovedEvent(IPKSimBuildingBlock buildingBlock, PKSimProject project, bool dueToSwap)
          : base(buildingBlock, project)
       {
          DueToSwap = dueToSwap;

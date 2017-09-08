@@ -124,7 +124,7 @@ namespace PKSim.BatchTool.Services
          _logger.AddInfo($"{simulationCount} simulations exported from project '{projectFile.FullName}' in {timeSpent.ToDisplay()}");
       }
 
-      private async Task<bool> exportSimulation(DirectoryInfo originalDirectory, DirectoryInfo afterConversionDirectory, DirectoryInfo newDirectory, DirectoryInfo pkmlOldDirectory, DirectoryInfo pkmlNewDirectory, IndividualSimulation simulation, IPKSimProject project)
+      private async Task<bool> exportSimulation(DirectoryInfo originalDirectory, DirectoryInfo afterConversionDirectory, DirectoryInfo newDirectory, DirectoryInfo pkmlOldDirectory, DirectoryInfo pkmlNewDirectory, IndividualSimulation simulation, PKSimProject project)
       {
          _lazyLoadTask.Load(simulation);
 
@@ -171,7 +171,7 @@ namespace PKSim.BatchTool.Services
          return _simulationEngine.RunAsync(simulation);
       }
 
-      private Task<IndividualSimulation> createNewSimulationBasedOn(IndividualSimulation individualSimulation, IPKSimProject project)
+      private Task<IndividualSimulation> createNewSimulationBasedOn(IndividualSimulation individualSimulation, PKSimProject project)
       {
          return Task.Run(() =>
          {
@@ -194,7 +194,7 @@ namespace PKSim.BatchTool.Services
          return false;
       }
 
-      private IReadOnlyList<T> allTemplateBuildingBlocksFor<T>(IndividualSimulation simulation, IPKSimProject project) where T : class, IPKSimBuildingBlock
+      private IReadOnlyList<T> allTemplateBuildingBlocksFor<T>(IndividualSimulation simulation, PKSimProject project) where T : class, IPKSimBuildingBlock
       {
          var buildingBlocks = simulation.UsedBuildingBlocksInSimulation<T>().Select(x => project.All<T>().FindById(x.TemplateId)).ToList();
          buildingBlocks.Each(_lazyLoadTask.Load);

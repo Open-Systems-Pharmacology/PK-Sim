@@ -16,7 +16,7 @@ namespace PKSim.IntegrationTests
       private SensitivityParameter _sensitivityParameter1;
       private ParameterSelection _parameterSelection1;
       private IndividualSimulation _sim1;
-      private IPKSimProject _project;
+      private PKSimProject _project;
       private SensitivityAnalysis _deserializedSensitivityAnalysis;
 
       public override void GlobalContext()
@@ -34,7 +34,7 @@ namespace PKSim.IntegrationTests
 
          var objectBaseRepository = IoC.Resolve<IWithIdRepository>();
          var workspace = IoC.Resolve<IWorkspace>();
-         _project = IoC.Resolve<IPKSimProject>();
+         _project = IoC.Resolve<PKSimProject>();
          workspace.Project = _project;
          objectBaseRepository.Register(_sim1);
          _project.AddBuildingBlock(_sim1);
