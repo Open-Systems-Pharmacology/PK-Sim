@@ -1,6 +1,5 @@
 using System;
 using OSPSuite.Core.Domain;
-using PKSim.Assets;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
