@@ -23,6 +23,9 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             snapshot.Individuals = mapBuildingBlocks<Individual>(project.All<Model.Individual>());
             snapshot.Compounds = mapBuildingBlocks<Compound>(project.All<Model.Compound>());
+            snapshot.Events = mapBuildingBlocks<Event>(project.All<Model.PKSimEvent>());
+            snapshot.Formulations = mapBuildingBlocks<Formulation>(project.All<Model.Formulation>());
+            snapshot.Protocols = mapBuildingBlocks<Protocol>(project.All<Model.Protocol>());
          });
       }
 
