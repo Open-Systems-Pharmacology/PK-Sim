@@ -40,7 +40,6 @@ namespace PKSim.IntegrationTests
          var workspace = A.Fake<IWorkspace>();
          _project = A.Fake<PKSimProject>();
          workspace.Project = _project;
-         A.CallTo(() => _project.AllObservedData).Returns(new List<DataRepository>());
          A.CallTo(() => _project.All(PKSimBuildingBlockType.Template)).Returns(_allBuildingBlocks);
          A.CallTo(() => _project.All<Simulation>()).Returns(new[] {_simulation});
          sut = IoC.Resolve<SimulationsReporter>();
