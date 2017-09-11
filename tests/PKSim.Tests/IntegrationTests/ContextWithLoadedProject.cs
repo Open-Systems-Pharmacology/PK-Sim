@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Utility.Container;
 
 namespace PKSim.IntegrationTests
 {
@@ -15,7 +15,7 @@ namespace PKSim.IntegrationTests
    public abstract class ContextWithLoadedProject<T> : ContextForIntegration<T>
    {
       protected ILazyLoadTask _lazyLoadTask;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IWorkspace _workspace;
 
       public void LoadProject(string projectFileName, bool isFullPath = false)

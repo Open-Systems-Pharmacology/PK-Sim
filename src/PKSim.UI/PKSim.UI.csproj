@@ -591,12 +591,6 @@
     <Compile Include="Views\Individuals\ShowOntogenyDataView.Designer.cs">
       <DependentUpon>ShowOntogenyDataView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\ObservedDataToCompoundMappingView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\ObservedDataToCompoundMappingView.Designer.cs">
-      <DependentUpon>ObservedDataToCompoundMappingView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\Parameters\EditTableParameterView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1541,9 +1535,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Individuals\ShowOntogenyDataView.resx">
       <DependentUpon>ShowOntogenyDataView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\ObservedDataToCompoundMappingView.resx">
-      <DependentUpon>ObservedDataToCompoundMappingView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Parameters\EditTableParameterView.resx">
       <DependentUpon>EditTableParameterView.cs</DependentUpon>

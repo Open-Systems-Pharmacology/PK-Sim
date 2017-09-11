@@ -26,11 +26,11 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void each_concrete_domain_model_object_should_have_a_defined_serializer_or_attribute_mapper()
       {
-         var domainModelAssembly = typeof (IPKSimProject).Assembly;
+         var domainModelAssembly = typeof (PKSimProject).Assembly;
 
          //in namespace domain model and not a test!
          var allModelType = from type in ReflectionHelper.GetConcreteTypesFromAssembly(domainModelAssembly, true)
-            where type.Namespace.StartsWith(typeof (IPKSimProject).Namespace)
+            where type.Namespace.StartsWith(typeof (PKSimProject).Namespace)
             where type.IsAnImplementationOf<StaticContextSpecification>() == false
             select type;
 

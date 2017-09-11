@@ -1,31 +1,30 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using FakeItEasy;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_swap_protocol_command : ContextSpecification<SwapProtocolCommand>
    {
       protected IExecutionContext _context;
-      protected  PKSim.Core.Model.Protocol _oldProtocol;
-      protected  PKSim.Core.Model.Protocol _newProtocol;
-      protected IPKSimProject _project;
+      protected Protocol _oldProtocol;
+      protected Protocol _newProtocol;
+      protected PKSimProject _project;
 
       protected override void Context()
       {
          _context = A.Fake<IExecutionContext>();
-         _oldProtocol =A.Fake< PKSim.Core.Model.Protocol>();
-         _newProtocol =A.Fake< PKSim.Core.Model.Protocol>();
-         _project = A.Fake<IPKSimProject>();
+         _oldProtocol = A.Fake<Protocol>();
+         _newProtocol = A.Fake<Protocol>();
+         _project = A.Fake<PKSimProject>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          sut = new SwapProtocolCommand(_oldProtocol, _newProtocol, _context);
       }
    }
 
-   
    public class When_executing_the_swap_protocol_command : concern_for_swap_protocol_command
    {
       protected override void Because()
@@ -46,7 +45,6 @@ namespace PKSim.Core
       }
    }
 
-   
    public class The_inverse_of_the_swap_protocol_command : concern_for_swap_protocol_command
    {
       private IReversibleCommand<IExecutionContext> _result;

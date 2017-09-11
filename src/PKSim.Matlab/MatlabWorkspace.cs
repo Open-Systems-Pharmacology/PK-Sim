@@ -20,7 +20,7 @@ namespace PKSim.Matlab
          return Enumerable.Empty<ICommand>();
       }
 
-      public IPKSimProject Project { get; set; }
+      public PKSimProject Project { get; set; }
       public void Clear()
       {
          /*nothing to do*/

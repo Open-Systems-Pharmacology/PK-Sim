@@ -1,19 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using NUnit.Framework;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation
 {
@@ -21,8 +19,8 @@ namespace PKSim.Presentation
    {
       protected IPopulationSimulationSettingsPresenter _populationSimulationSettingsPresenter;
       protected IApplicationController _applicationController;
-      private IProjectRetriever _projectRetriever;
-      protected IPKSimProject _project;
+      private IPKSimProjectRetriever _projectRetriever;
+      protected PKSimProject _project;
       protected PopulationSimulation _populationSimulation;
       protected IKeyPathMapper _keyPathMapper;
       protected IEntityPathResolver _entityPathResolver;
@@ -38,8 +36,8 @@ namespace PKSim.Presentation
       {
          _populationSimulationSettingsPresenter = A.Fake<IPopulationSimulationSettingsPresenter>();
          _applicationController = A.Fake<IApplicationController>();
-         _projectRetriever = A.Fake<IProjectRetriever>();
-         _project = A.Fake<IPKSimProject>();
+         _projectRetriever = A.Fake<IPKSimProjectRetriever>();
+         _project = A.Fake<PKSimProject>();
          _compound1 = A.Fake<Compound>();
          _individual = A.Fake<Individual>();
          _human = new Species().WithName(CoreConstants.Species.Human);
@@ -53,7 +51,7 @@ namespace PKSim.Presentation
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _userSettings = A.Fake<ICoreUserSettings>();
          _originalSettings = new OutputSelections();
-         A.CallTo(() => _populationSimulation.OutputSelections).Returns(_originalSettings); 
+         A.CallTo(() => _populationSimulation.OutputSelections).Returns(_originalSettings);
 
          _populationSimulation.Model = new Model();
          _populationSimulation.Model.Root = new Container();
@@ -76,7 +74,7 @@ namespace PKSim.Presentation
          _populationSimulation.Model.Root.Add(organism);
 
 
-         A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
+         A.CallTo(() => _projectRetriever.Current).Returns(_project);
          A.CallTo(() => _applicationController.Start<ISimulationOutputSelectionPresenter<PopulationSimulation>>()).Returns(_populationSimulationSettingsPresenter);
          sut = new SimulationSettingsRetriever(_applicationController, _projectRetriever, _entityPathResolver, _keyPathMapper, _userSettings);
 
@@ -235,7 +233,7 @@ namespace PKSim.Presentation
          var moleculeSelection1 = new QuantitySelection("PATH1", QuantityType.Drug);
          _defaultSettings.AddOutput(moleculeSelection1);
 
-         _allQuantities.AddRange(new[] {_q1,_q2});
+         _allQuantities.AddRange(new[] {_q1, _q2});
          _q1.QuantityType = QuantityType.Drug;
          _q2.QuantityType = QuantityType.Transporter;
          A.CallTo(() => _keyPathMapper.MapFrom(_q1)).Returns("KEY1");
@@ -317,6 +315,7 @@ namespace PKSim.Presentation
       {
          sut.CreatePKSimDefaults(_populationSimulation);
       }
+
       [Observation]
       public void should_select_venous_blood_plasma()
       {

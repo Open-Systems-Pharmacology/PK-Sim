@@ -13,7 +13,7 @@ using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Core
 {
-   public interface IExecutionContext : IOSPSuiteExecutionContext<IPKSimProject>
+   public interface IExecutionContext : IOSPSuiteExecutionContext<PKSimProject>
    {
       ICloneManager CloneManager { get; }
       void Load(ILazyLoadable lazyLoadable);
@@ -71,7 +71,7 @@ namespace PKSim.Core
          _parameterChangeUpdater = parameterChangeUpdater;
       }
 
-      public IPKSimProject CurrentProject => _projectRetriever.CurrentProject.DowncastTo<IPKSimProject>();
+      public PKSimProject CurrentProject => _projectRetriever.CurrentProject.DowncastTo<PKSimProject>();
 
       public T Get<T>(string id) where T : class, IWithId
       {

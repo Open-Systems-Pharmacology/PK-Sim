@@ -11,8 +11,6 @@ using PKSim.Core.Model;
 using PKSim.Infrastructure;
 using PKSim.Presentation.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Reporting;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting;
 using PKSim.Infrastructure.Reporting.TeX.Reporters;
@@ -22,7 +20,7 @@ namespace PKSim.IntegrationTests
    [Category("Reporting")]
    public abstract class concern_for_SimulationsReporter : ContextForSimulationIntegration<SimulationsReporter>
    {
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       private List<IPKSimBuildingBlock> _allBuildingBlocks;
 
       public override void GlobalContext()
@@ -38,9 +36,8 @@ namespace PKSim.IntegrationTests
       protected override void Context()
       {
          var workspace = A.Fake<IWorkspace>();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          workspace.Project = _project;
-         A.CallTo(() => _project.AllObservedData).Returns(new List<DataRepository>());
          A.CallTo(() => _project.All(PKSimBuildingBlockType.Template)).Returns(_allBuildingBlocks);
          A.CallTo(() => _project.All<Simulation>()).Returns(new[] {_simulation});
          sut = IoC.Resolve<SimulationsReporter>();

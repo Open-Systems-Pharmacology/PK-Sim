@@ -85,7 +85,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       protected override void AddRibbonPages()
       {
-         _view.AddApplicationMenu(_buttonGroupRepository.Find(ButtonGroupIds.File));
+         _view.AddApplicationMenu(_buttonGroupRepository.Find(ButtonGroupIds.Project));
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Create), PKSimConstants.RibbonPages.Modeling);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Compare), PKSimConstants.RibbonPages.Modeling);
@@ -322,6 +322,7 @@ namespace PKSim.Presentation.Presenters.Main
          updateSaveProjectButtons(enabled);
 
          _menuBarItemRepository[MenuBarItemIds.ProjectDescription].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.ExportProjectToSnapshot].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.CloseProject].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewIndividual].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadIndividual].Enabled = enabled;
@@ -409,7 +410,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       private bool compoundsAvailableIn(IProject project)
       {
-         return project != null && project.DowncastTo<IPKSimProject>().All<Compound>().Any();
+         return project != null && project.DowncastTo<PKSimProject>().All<Compound>().Any();
       }
 
       private struct SimulationState

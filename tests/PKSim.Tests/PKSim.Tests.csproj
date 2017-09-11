@@ -259,6 +259,7 @@
     <Compile Include="Core\ParameterMapperSpecs.cs" />
     <Compile Include="Core\PKValuesToPKAnalysisMapperSpecs.cs" />
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
+    <Compile Include="Core\ProjectMapperSpecs.cs" />
     <Compile Include="Core\SchemaItemMapperSpecs.cs" />
     <Compile Include="Core\SchemaMapperSpecs.cs" />
     <Compile Include="Core\SetRelativeExpressionFromNormalizedCommandSpecs.cs" />
@@ -547,6 +548,7 @@
     <Compile Include="Presentation\DynamicGroupExpanderSpecs.cs" />
     <Compile Include="Presentation\EnzymaticCompoundProcessPresenterSpecs.cs" />
     <Compile Include="Presentation\EnzymaticProcessToEnzymaticProcessDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\ExportProjectToSnapshotCommandSpecs.cs" />
     <Compile Include="Presentation\ExportSnapshotCommandSpecs.cs" />
     <Compile Include="Presentation\ExtractIndividualsFromPopulationPresenterSpecs.cs" />
     <Compile Include="Presentation\ExpressionContainerDTOSpecs.cs" />

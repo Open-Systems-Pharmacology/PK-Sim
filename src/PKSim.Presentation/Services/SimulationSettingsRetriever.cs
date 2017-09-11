@@ -16,12 +16,12 @@ namespace PKSim.Presentation.Services
    public class SimulationSettingsRetriever : ISimulationSettingsRetriever
    {
       private readonly IApplicationController _applicationController;
-      private readonly IProjectRetriever _projectRetriever;
+      private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly ICoreUserSettings _userSettings;
 
-      public SimulationSettingsRetriever(IApplicationController applicationController, IProjectRetriever projectRetriever,
+      public SimulationSettingsRetriever(IApplicationController applicationController, IPKSimProjectRetriever projectRetriever,
          IEntityPathResolver entityPathResolver, IKeyPathMapper keyPathMapper, ICoreUserSettings userSettings)
       {
          _applicationController = applicationController;
@@ -67,7 +67,7 @@ namespace PKSim.Presentation.Services
       private OutputSelections retrieveTemplateSettings()
       {
          return _userSettings.OutputSelections ??
-                _projectRetriever.CurrentProject.DowncastTo<IPKSimProject>().OutputSelections;
+                _projectRetriever.Current.OutputSelections;
       }
 
       private void updateSelectionFromTemplate(Simulation simulation, OutputSelections templateOutputSelections)

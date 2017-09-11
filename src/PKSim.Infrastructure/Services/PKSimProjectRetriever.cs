@@ -1,8 +1,8 @@
 ﻿using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -15,25 +15,13 @@ namespace PKSim.Infrastructure.Services
          _workspace = workspace;
       }
 
-      public IProject CurrentProject
-      {
-         get { return Current; }
-      }
+      public IProject CurrentProject => Current;
 
-      public string ProjectName
-      {
-         get { return Current.Name; }
-      }
+      public string ProjectName => Current.Name;
 
-      public string ProjectFullPath
-      {
-         get { return Current.FilePath; }
-      }
+      public string ProjectFullPath => Current.FilePath;
 
-      public IPKSimProject Current
-      {
-         get { return _workspace.Project; }
-      }
+      public PKSimProject Current => _workspace.Project;
 
       public void AddToHistory(ICommand command)
       {

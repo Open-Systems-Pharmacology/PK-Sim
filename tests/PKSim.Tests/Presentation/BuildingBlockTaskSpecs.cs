@@ -32,7 +32,7 @@ namespace PKSim.Presentation
       protected ICloneBuildingBlockPresenter _clonePresenter;
       protected IRenameObjectPresenter _renamePresenter;
       protected IDialogCreator _dialogCreator;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       protected IEntityTask _entityTask;
       protected ITemplateTaskQuery _templateTaskQuery;
@@ -45,7 +45,7 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _entityTask = A.Fake<IEntityTask>();
          _templateTaskQuery = A.Fake<ITemplateTaskQuery>();
          _executionContext = A.Fake<IExecutionContext>();

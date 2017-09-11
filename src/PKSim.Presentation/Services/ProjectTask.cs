@@ -16,6 +16,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Events;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Presentation.Services
 {
@@ -41,9 +42,15 @@ namespace PKSim.Presentation.Services
       private readonly IJournalTask _journalTask;
       private readonly IJournalRetriever _journalRetriever;
 
-      public ProjectTask(IWorkspace workspace, IApplicationController applicationController, IDialogCreator dialogCreator,
-         IExecutionContext executionContext, IHeavyWorkManager heavyWorkManager,
-         IWorkspaceLayoutUpdater workspaceLayoutUpdater, IUserSettings userSettings, IJournalTask journalTask, IJournalRetriever journalRetriever)
+      public ProjectTask(IWorkspace workspace, 
+         IApplicationController applicationController, 
+         IDialogCreator dialogCreator,
+         IExecutionContext executionContext, 
+         IHeavyWorkManager heavyWorkManager,
+         IWorkspaceLayoutUpdater workspaceLayoutUpdater, 
+         IUserSettings userSettings, 
+         IJournalTask journalTask, 
+         IJournalRetriever journalRetriever)
       {
          _workspace = workspace;
          _applicationController = applicationController;

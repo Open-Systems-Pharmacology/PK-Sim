@@ -35,7 +35,7 @@ namespace PKSim.Core.Commands
 
       protected override void ExecuteWith(IExecutionContext context)
       {
-         IPKSimProject project = context.CurrentProject;
+         var project = context.CurrentProject;
 
          project.RemoveBuildingBlock(_buildingBlockToRemove);
          Description = PKSimConstants.Command.RemoveEntityFromContainer(ObjectType, _buildingBlockToRemove.Name, context.TypeFor(project), project.Name);

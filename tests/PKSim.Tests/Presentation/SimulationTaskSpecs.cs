@@ -98,7 +98,7 @@ namespace PKSim.Presentation
    {
       private Simulation _simulation;
       private IPKSimBuildingBlock _templateBuildingBlock;
-      private IPKSimProject _project;
+      private PKSimProject _project;
       private UsedBuildingBlock _usedBuildingBlock;
 
       protected override void Context()
@@ -106,7 +106,7 @@ namespace PKSim.Presentation
          base.Context();
          _simulation = A.Fake<Simulation>();
          _templateBuildingBlock = A.Fake<IPKSimBuildingBlock>();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          A.CallTo(() => _executionContext.CurrentProject).Returns(_project);
          _usedBuildingBlock = A.Fake<UsedBuildingBlock>();
          A.CallTo(() => _simulationBuildingBlockUpdater.QuickUpdatePossibleFor(_templateBuildingBlock, _usedBuildingBlock)).Returns(false);

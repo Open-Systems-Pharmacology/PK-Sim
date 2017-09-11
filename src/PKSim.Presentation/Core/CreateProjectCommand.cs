@@ -9,10 +9,10 @@ namespace PKSim.Presentation.Core
 {
    public class CreateProjectCommand : PKSimCommand
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
       private IWorkspace _workspace;
 
-      public CreateProjectCommand(IWorkspace workspace, IPKSimProject project)
+      public CreateProjectCommand(IWorkspace workspace, PKSimProject project)
       {
          _workspace = workspace;
          _project = project;

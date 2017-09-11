@@ -24,7 +24,7 @@ namespace PKSim.Presentation
       private IProjectRetriever _projectRetriever;
       protected IExplorerPresenter _explorerPresenter;
       protected IApplicationController _applicationController;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected RootNode _simulationFolderNode;
       protected RootNode _observedDataFolderNode;
 

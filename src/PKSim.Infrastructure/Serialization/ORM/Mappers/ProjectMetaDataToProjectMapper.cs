@@ -16,7 +16,7 @@ using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 {
-   public interface IProjectMetaDataToProjectMapper : IMapper<ProjectMetaData, IPKSimProject>
+   public interface IProjectMetaDataToProjectMapper : IMapper<ProjectMetaData, PKSimProject>
    {
    }
 
@@ -44,7 +44,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          _serializationContextFactory = serializationContextFactory;
       }
 
-      public IPKSimProject MapFrom(ProjectMetaData projectMetaData)
+      public PKSimProject MapFrom(ProjectMetaData projectMetaData)
       {
          var project = new PKSimProject
          {
