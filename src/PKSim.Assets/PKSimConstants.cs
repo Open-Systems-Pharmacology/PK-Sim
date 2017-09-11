@@ -1028,7 +1028,8 @@ namespace PKSim.Assets
          public static readonly string About = "&About...";
          public static readonly string OpenProject = "&Open...";
          public static readonly string ProjectDescription = "&Description...";
-         public static readonly string ExportProjectToSnapshot = "&Export to Snapshot...";
+         public static readonly string ExportProjectToSnapshot = "Export to Snapshot";
+         public static readonly string ExportProjectToSnapshotMenu = $"&{ExportProjectToSnapshot}...";
          public static readonly string Clone = "Clone...";
          public static readonly string CloneMenu = "Clone";
          public static readonly string ActivateSimulation = "Set as Active Simulation";

@@ -11,8 +11,6 @@ using PKSim.Core.Model;
 using PKSim.Infrastructure;
 using PKSim.Presentation.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Reporting;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting;
 using PKSim.Infrastructure.Reporting.TeX.Reporters;

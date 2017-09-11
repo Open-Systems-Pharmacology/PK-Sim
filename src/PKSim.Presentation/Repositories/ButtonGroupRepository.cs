@@ -56,7 +56,10 @@ namespace PKSim.Presentation.Repositories
                .AsGroupStarter()
          )
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ProjectDescription)))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportProjectToSnapshot)))
+         .WithButton(
+            CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportProjectToSnapshot))
+               .WithCaption(PKSimConstants.MenuNames.ExportProjectToSnapshotMenu)
+         )
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SelectJournal)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.About)).AsGroupStarter())
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.Exit)).AsGroupStarter())
@@ -100,6 +103,7 @@ namespace PKSim.Presentation.Repositories
                .WithStyle(ItemStyle.Large)
          )
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ProjectReport)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportProjectToSnapshot)))
          .WithId(ButtonGroupIds.ExportProject);
 
       private IButtonGroup createButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.Create)
