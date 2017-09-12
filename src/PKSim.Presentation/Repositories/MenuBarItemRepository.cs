@@ -47,6 +47,12 @@ namespace PKSim.Presentation.Repositories
             .WithId(MenuBarItemIds.ExportProjectToSnapshot)
             .WithCommand<ExportProjectToSnapshotCommand>()
             .WithDescription(PKSimConstants.UI.ExportProjectToSnapshotDescription)
+            .WithIcon(ApplicationIcons.Save);
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadProjectFromSnapshot)
+            .WithId(MenuBarItemIds.LoadProjectFromSnahpshot)
+            .WithCommand< LoadProjectFromSnapshotCommand>()
+            .WithDescription(PKSimConstants.UI.LoadProjectFromSnapshotDescription)
             .WithIcon(ApplicationIcons.ProjectOpen);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.CloseProject)

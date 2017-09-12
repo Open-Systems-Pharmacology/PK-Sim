@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using PKSim.Core.Model;
@@ -52,6 +53,11 @@ namespace PKSim.Matlab
       }
 
       public void OpenProject(string fileFullPath)
+      {
+         /*nothing to do*/
+      }
+
+      public void LoadProject(Action projectLoadAction)
       {
          /*nothing to do*/
       }

@@ -1,3 +1,4 @@
+using System;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Presentation.Services;
 using PKSim.Core.Model;
@@ -28,10 +29,16 @@ namespace PKSim.Presentation.Core
       void SaveProject(string fileFullPath);
 
       /// <summary>
-      ///    Save the current project
+      ///    Opens the project located at <paramref name="fileFullPath"/>
       /// </summary>
-      /// <param name="fileFullPath">Full path of the file where the project should be saved</param>
+      /// <param name="fileFullPath">Full path of the file where the project is located</param>
       void OpenProject(string fileFullPath);
+
+      /// <summary>
+      ///    Opens the project using the <paramref name="projectLoadAction"/>. The <paramref name="projectLoadAction"/> is responsible to 
+      /// call <c>Workspace.Project = project</c>
+      /// </summary>
+      void LoadProject(Action projectLoadAction);
 
       /// <summary>
       ///    Returns true if the project has been defined

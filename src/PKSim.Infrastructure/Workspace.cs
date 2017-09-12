@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization;
@@ -14,6 +11,9 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.FileLocker;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Core;
 
 namespace PKSim.Infrastructure
 {
@@ -81,20 +81,31 @@ namespace PKSim.Infrastructure
 
       public void OpenProject(string fileFullPath)
       {
+         LoadProject(() =>
+         {
+            //retrieve project from file. This will load the project into the workbook itselfs
+            _workspacePersistor.LoadSession(this, fileFullPath);
+
+            if (_project == null)
+               return;
+
+            updateProjectPropertiesFrom(fileFullPath);
+         });
+      }
+
+      public void LoadProject(Action projectLoadAction)
+      {
          try
          {
             //notify the action loading project
             _eventPublisher.PublishEvent(new ProjectLoadingEvent());
 
-            //retrieve project from file
-            _workspacePersistor.LoadSession(this, fileFullPath);
-
-            if (_project == null) return;
-
-            updateProjectPropertiesFrom(fileFullPath);
+            projectLoadAction();
+            if (Project == null)
+               return;
 
             //notify event project loaded with the project
-            _eventPublisher.PublishEvent(new ProjectLoadedEvent(_project));
+            _eventPublisher.PublishEvent(new ProjectLoadedEvent(Project));
          }
          catch (Exception)
          {
@@ -104,11 +115,11 @@ namespace PKSim.Infrastructure
          }
          finally
          {
-            if (_project == null)
+            if (Project == null)
                ReleaseLock();
          }
       }
-    
+
       public bool ProjectLoaded => Project != null;
 
       public bool ProjectHasChanged => Project != null && Project.HasChanged && !ProjectIsReadOnly;

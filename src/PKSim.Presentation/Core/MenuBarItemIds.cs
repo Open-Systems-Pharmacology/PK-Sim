@@ -14,6 +14,7 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId SaveProject = createMenuBarItemId("SaveProject");
       public static MenuBarItemId SaveProjectAs = createMenuBarItemId("SaveProjectAs");
       public static MenuBarItemId ExportProjectToSnapshot = createMenuBarItemId("ExportProjectAsSnapshot");
+      public static MenuBarItemId LoadProjectFromSnahpshot = createMenuBarItemId("LoadProjectFromSnahpshot");
       public static MenuBarItemId CloseProject = createMenuBarItemId("CloseProject");
       public static MenuBarItemId NewIndividual = createMenuBarItemId("NewIndividual");
       public static MenuBarItemId LoadIndividual = createMenuBarItemId("LoadIndividual");

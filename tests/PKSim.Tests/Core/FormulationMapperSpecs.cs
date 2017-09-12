@@ -43,6 +43,7 @@ namespace PKSim.Core
 
          _formulation = new Formulation
          {
+            Name = "Form",
             FormulationType = "Weibul",
             Description = "Amazing formulation"
          };

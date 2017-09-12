@@ -9,16 +9,14 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       protected void MapModelPropertiesToSnapshot(TModel model, TSnapshot snapshot)
       {
-         snapshot.Name = model.Name;
+         snapshot.Name = SnapshotValueFor(model.Name);
          snapshot.Description = SnapshotValueFor(model.Description);
       }
 
       protected void MapSnapshotPropertiesToModel(TSnapshot snapshot, TModel model)
       {
          model.Name = snapshot.Name;
-
-         if (!string.IsNullOrEmpty(snapshot.Description))
-            model.Description = snapshot.Description;
+         model.Description = snapshot.Description;
       }
 
       protected override TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
