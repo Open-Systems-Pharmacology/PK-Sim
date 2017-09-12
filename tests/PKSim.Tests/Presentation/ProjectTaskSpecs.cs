@@ -1,11 +1,6 @@
 using System;
+using System.Linq;
 using FakeItEasy;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.UICommands;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -14,6 +9,13 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Snapshots.Services;
+using PKSim.Presentation.Core;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.UICommands;
 using IProjectTask = PKSim.Presentation.Services.IProjectTask;
 
 namespace PKSim.Presentation
@@ -31,11 +33,12 @@ namespace PKSim.Presentation
       protected IUserSettings _userSettings;
       protected IJournalTask _journalTask;
       protected IJournalRetriever _journalRetriever;
+      protected ISnapshotTask _snapshotTask;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _project = A.Fake<PKSimProject>();
+         _project = new PKSimProject();
          _dialogCreator = A.Fake<IDialogCreator>();
          _workspace = A.Fake<IWorkspace>();
          _executionContext = A.Fake<IExecutionContext>();
@@ -44,11 +47,16 @@ namespace PKSim.Presentation
          _userSettings = A.Fake<IUserSettings>();
          _journalTask = A.Fake<IJournalTask>();
          _journalRetriever = A.Fake<IJournalRetriever>();
+         _snapshotTask = A.Fake<ISnapshotTask>();
+
          _workspace.Project = _project;
          _workspace.WorkspaceLayout = new WorkspaceLayout();
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
+
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, _heavyWorkManager, _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever);
+            _executionContext, _heavyWorkManager, _workspaceLayoutUpdater, _userSettings,
+            _journalTask, _journalRetriever, _snapshotTask);
+
          _oldFileExitst = FileHelper.FileExists;
       }
 
@@ -238,7 +246,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -564,7 +572,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -789,6 +797,147 @@ namespace PKSim.Presentation
       public void should_warn_the_user_that_support_for_older_file_has_ended()
       {
          The.Action(() => sut.OpenProjectFrom(_oldFileName)).ShouldThrowAn<PKSimException>();
+      }
+   }
+
+   public class When_exporting_the_current_project_to_snapshot : concern_for_ProjectTask
+   {
+      protected override void Because()
+      {
+         sut.ExportCurrentProjectToSnapshot();
+      }
+
+      [Observation]
+      public void should_export_the_current_project_to_a_snapshot()
+      {
+         A.CallTo(() => _snapshotTask.ExportSnapshot(_project)).MustHaveHappened();
+      }
+   }
+
+   public class When_exporting_a_project_to_snapshot : concern_for_ProjectTask
+   {
+      private PKSimProject _projectToExport;
+
+      protected override void Context()
+      {
+         base.Context();
+         _projectToExport = new PKSimProject();
+      }
+
+      protected override void Because()
+      {
+         sut.ExportProjectToSnapshot(_projectToExport);
+      }
+
+      [Observation]
+      public void should_export_the_project_to_snapshot()
+      {
+         A.CallTo(() => _snapshotTask.ExportSnapshot(_projectToExport)).MustHaveHappened();
+      }
+   }
+
+   public class When_laoding_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_cancels_the_action_of_loading_the_snapshot : concern_for_ProjectTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.No);
+         A.CallTo(() => _snapshotTask.LoadFromSnapshot<PKSimProject>()).Returns(Enumerable.Empty<PKSimProject>());
+      }
+
+      protected override void Because()
+      {
+         sut.LoadProjectFromSnapshot();
+      }
+
+      [Observation]
+      public void should_not_close_the_current_projectn()
+      {
+         A.CallTo(() => _workspace.CloseProject()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_laoding_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_cancels_the_action : concern_for_ProjectTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Cancel);
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
+      }
+
+      protected override void Because()
+      {
+         sut.LoadProjectFromSnapshot();
+      }
+
+      [Observation]
+      public void should_not_close_the_current_projectn()
+      {
+         A.CallTo(() => _workspace.CloseProject()).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_load_the_project_from_snapshot()
+      {
+         A.CallTo(() => _snapshotTask.LoadFromSnapshot<PKSimProject>()).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_overwrite_the_current_project()
+      {
+         _workspace.Project.ShouldBeEqualTo(_project);
+      }
+   }
+
+   public class When_laoding_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_loads_a_real_snapshot_file : concern_for_ProjectTask
+   {
+      private PKSimProject _newProject;
+      private Action _loadAction;
+      private string _filename;
+
+      protected override void Context()
+      {
+         base.Context();
+         _newProject = new PKSimProject();
+         _filename = @"C:\test\SuperProject.json";
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_filename);
+
+         A.CallTo(() => _snapshotTask.LoadFromSnapshot<PKSimProject>(_filename)).Returns(new[] {_newProject});
+         A.CallTo(() => _workspace.LoadProject(A<Action>._)).Invokes(x => _loadAction = x.GetArgument<Action>(0));
+      }
+
+      protected override void Because()
+      {
+         sut.LoadProjectFromSnapshot();
+         _loadAction();
+      }
+
+      [Observation]
+      public void should_close_the_current_project()
+      {
+         A.CallTo(() => _workspace.CloseProject()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_close_all_presenters_effectively_open()
+      {
+         A.CallTo(() => _applicationController.CloseAll()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_overwrite_the_current_project()
+      {
+         _workspace.Project.ShouldBeEqualTo(_newProject);
+      }
+
+      [Observation]
+      public void should_set_the_properties_as_expected()
+      {
+         _newProject.Name.ShouldBeEqualTo("SuperProject");
+         _newProject.HasChanged.ShouldBeTrue();
       }
    }
 }

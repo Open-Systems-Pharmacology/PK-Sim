@@ -39,6 +39,7 @@ namespace PKSim.Core
 
          _event = new PKSimEvent
          {
+            Name = "Event",
             TemplateName = "TemplateEventName",
             Description = "Amazing event"
          };

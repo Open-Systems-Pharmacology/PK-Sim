@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
@@ -21,15 +20,16 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          return SnapshotFrom(project, snapshot =>
          {
-            snapshot.Individuals = mapBuildingBlocks<Individual>(project.All<Model.Individual>());
-            snapshot.Compounds = mapBuildingBlocks<Compound>(project.All<Model.Compound>());
-            snapshot.Events = mapBuildingBlocks<Event>(project.All<Model.PKSimEvent>());
-            snapshot.Formulations = mapBuildingBlocks<Formulation>(project.All<Model.Formulation>());
-            snapshot.Protocols = mapBuildingBlocks<Protocol>(project.All<Model.Protocol>());
+            snapshot.Individuals = mapBuildingBlocksToSnapshots<Individual>(project.All<Model.Individual>());
+            snapshot.Compounds = mapBuildingBlocksToSnapshots<Compound>(project.All<Model.Compound>());
+            snapshot.Events = mapBuildingBlocksToSnapshots<Event>(project.All<PKSimEvent>());
+            snapshot.Formulations = mapBuildingBlocksToSnapshots<Formulation>(project.All<Model.Formulation>());
+            snapshot.Protocols = mapBuildingBlocksToSnapshots<Protocol>(project.All<Model.Protocol>());
+            snapshot.Populations = mapBuildingBlocksToSnapshots<Population>(project.All<Model.Population>());
          });
       }
 
-      private List<T> mapBuildingBlocks<T>(IReadOnlyCollection<IPKSimBuildingBlock> buildingBlocks)
+      private List<T> mapBuildingBlocksToSnapshots<T>(IReadOnlyCollection<IPKSimBuildingBlock> buildingBlocks)
       {
          //required to load the snapshot mapper via execution context to avoid circular references
          var snapshotMapper = _executionContext.Resolve<ISnapshotMapper>();
@@ -44,7 +44,27 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override ModelProject MapToModel(SnapshotProject snapshot)
       {
-         throw new NotImplementedException();
+         var project = new ModelProject();
+         allBuidingBlocksFrom(snapshot).Each(project.AddBuildingBlock);
+         return project;
+      }
+
+      private IEnumerable<IPKSimBuildingBlock> allBuidingBlocksFrom(SnapshotProject snapshot)
+      {
+         var allBuildingBlocks = new List<IPKSimBuildingBlock>();
+         allBuildingBlocks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Individuals));
+         allBuildingBlocks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Compounds));
+         allBuildingBlocks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Events));
+         allBuildingBlocks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Formulations));
+         allBuildingBlocks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Protocols));
+         allBuildingBlocks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Populations));
+         return allBuildingBlocks;
+      }
+
+      private IEnumerable<IPKSimBuildingBlock> mapSnapshotsToBuildingBlocks(IEnumerable<object> snapshots)
+      {
+         var snapshotMapper = _executionContext.Resolve<ISnapshotMapper>();
+         return snapshots.Select(snapshotMapper.MapToModel).Cast<IPKSimBuildingBlock>();
       }
    }
 }

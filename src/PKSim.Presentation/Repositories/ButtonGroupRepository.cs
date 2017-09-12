@@ -60,6 +60,10 @@ namespace PKSim.Presentation.Repositories
             CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportProjectToSnapshot))
                .WithCaption(PKSimConstants.MenuNames.ExportProjectToSnapshotMenu)
          )
+         .WithButton(
+            CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadProjectFromSnahpshot))
+               .WithCaption(PKSimConstants.MenuNames.LoadProjectFromSnapshotMenu)
+         )
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SelectJournal)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.About)).AsGroupStarter())
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.Exit)).AsGroupStarter())

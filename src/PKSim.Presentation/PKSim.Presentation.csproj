@@ -513,6 +513,7 @@
     <Compile Include="UICommands\LoadObservedDataFromTemplateUICommand.cs" />
     <Compile Include="UICommands\LoadPopulationAnalysisWorkflowFromTemplateUICommand.cs" />
     <Compile Include="UICommands\LoadBuildingBlockFromSnapshotUICommand.cs" />
+    <Compile Include="UICommands\LoadProjectFromSnapshotCommand.cs" />
     <Compile Include="UICommands\NewImportIndividualSimulationCommand.cs" />
     <Compile Include="UICommands\NewImportPopulationSimulationCommand.cs" />
     <Compile Include="UICommands\RenameObjectUICommand.cs" />

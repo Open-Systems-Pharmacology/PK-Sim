@@ -176,6 +176,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.About].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.JournalView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.JournalDiagramView].Enabled = true;
+         _menuBarItemRepository[MenuBarItemIds.LoadProjectFromSnahpshot].Enabled = true;
       }
 
       public void Handle(ProjectCreatedEvent eventToHandle)
