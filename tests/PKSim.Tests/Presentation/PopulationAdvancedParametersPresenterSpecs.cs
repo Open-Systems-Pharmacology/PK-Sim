@@ -156,13 +156,13 @@ namespace PKSim.Presentation
    {
       private ITreeNode<IParameter> _treeNode;
       private IParameter _parameter;
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {
          base.Context();
          sut.EditPopulation(_population);
-         _advancedParameter =  A.Fake<IAdvancedParameter>();
+         _advancedParameter =  new  AdvancedParameter();
          _parameter = new PKSimParameter().WithName("tralala");
          _treeNode = new ObjectWithIdAndNameNode<IParameter>(_parameter);
          A.CallTo(() => _population.AdvancedParameterFor(_entityPathResolver, _parameter)).Returns(_advancedParameter);
@@ -289,13 +289,13 @@ namespace PKSim.Presentation
    public class When_the_presenter_is_being_notified_that_an_advanced_parameter_was_added_to_a_population_that_is_not_the_one_being_edited : concern_for_PopulationAdvancedParametersPresenter
    {
       private RandomPopulation _anotherPopulation;
-      private IAdvancedParameter _parameter;
+      private AdvancedParameter _parameter;
 
       protected override void Context()
       {
          base.Context();
          _anotherPopulation =  A.Fake<RandomPopulation>();
-         _parameter =  A.Fake<IAdvancedParameter>();
+         _parameter =  A.Fake<AdvancedParameter>();
          sut.EditPopulation(_population);
       }
 
@@ -319,12 +319,12 @@ namespace PKSim.Presentation
 
    public class When_the_presenter_is_being_notified_that_an_advanced_parameter_was_added_to_the_population_being_edited : concern_for_PopulationAdvancedParametersPresenter
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {
          base.Context();
-         _advancedParameter =  A.Fake<IAdvancedParameter>();
+         _advancedParameter =  A.Fake<AdvancedParameter>();
          //in this scenario, para1 was selected to become and advanced parameter
          _advancedParameter.ParameterPath = _pathPara1;
          sut.EditPopulation(_population);
@@ -351,13 +351,13 @@ namespace PKSim.Presentation
    public class When_the_presenter_is_being_notified_that_an_advanced_parameter_was_removed_from_a_population_that_is_not_the_one_being_edited : concern_for_PopulationAdvancedParametersPresenter
    {
       private RandomPopulation _anotherPopulation;
-      private IAdvancedParameter _parameter;
+      private AdvancedParameter _parameter;
 
       protected override void Context()
       {
          base.Context();
          _anotherPopulation =  A.Fake<RandomPopulation>();
-         _parameter =  A.Fake<IAdvancedParameter>();
+         _parameter = new AdvancedParameter();
          sut.EditPopulation(_population);
       }
 
@@ -381,12 +381,12 @@ namespace PKSim.Presentation
 
    public class When_the_presenter_is_being_notified_that_an_advanced_parameter_was_removed_from_the_population_being_edited : concern_for_PopulationAdvancedParametersPresenter
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {
          base.Context();
-         _advancedParameter =  A.Fake<IAdvancedParameter>();
+         _advancedParameter = new AdvancedParameter();
          //in this scenario, _advancedPara1 is being deleted from the advanced parameters
          _advancedParameter.ParameterPath = _pathAdvancedPara1;
          sut.EditPopulation(_population);
@@ -418,7 +418,7 @@ namespace PKSim.Presentation
 
    public class When_an_advanced_parameter_is_being_selected : concern_for_PopulationAdvancedParametersPresenter
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
       private ITreeNode<IParameter> _parameterNode;
       private IParameter _parameter;
 
@@ -428,7 +428,7 @@ namespace PKSim.Presentation
          _parameter =  A.Fake<IParameter>();
          _parameterNode =  A.Fake<ITreeNode<IParameter>>();
          A.CallTo(()=>_parameterNode.Tag).Returns(_parameter);
-         _advancedParameter =  A.Fake<IAdvancedParameter>();
+         _advancedParameter = new AdvancedParameter();
          sut.EditPopulation(_population);
          A.CallTo(() => _population.AdvancedParameterFor(_entityPathResolver, _parameter)).Returns(_advancedParameter);
       }
@@ -447,7 +447,7 @@ namespace PKSim.Presentation
 
    public class When_an_advanced_parameterg_group_is_being_selected : concern_for_PopulationAdvancedParametersPresenter
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
       private IParameter _parameter;
       private ITreeNode _node;
 
@@ -456,7 +456,7 @@ namespace PKSim.Presentation
          base.Context();
          _parameter =  A.Fake<IParameter>();
          _node =  A.Fake<ITreeNode>();
-         _advancedParameter =  A.Fake<IAdvancedParameter>();
+         _advancedParameter =  new AdvancedParameter();
          sut.EditPopulation(_population);
          A.CallTo(() => _population.AdvancedParameterFor(_entityPathResolver, _parameter)).Returns(_advancedParameter);
       }
@@ -476,14 +476,14 @@ namespace PKSim.Presentation
 
    public class When_the_presenter_is_being_notified_that_the_distribution_type_of_an_advanced_presenter_needs_to_be_changed : concern_for_PopulationAdvancedParametersPresenter
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
       private IPKSimCommand _command;
 
       protected override void Context()
       {
          base.Context();
          _command =  A.Fake<IPKSimCommand>();
-         _advancedParameter =  A.Fake<IAdvancedParameter>();
+         _advancedParameter =  new AdvancedParameter();
          _advancedParameter.ParameterPath = _pathAdvancedPara1;
          A.CallTo(() => _advancedParametersTask.SwitchDistributionTypeFor(_advancedPara1, _population, DistributionTypes.Normal)).Returns(_command);
          sut.EditPopulation(_population);

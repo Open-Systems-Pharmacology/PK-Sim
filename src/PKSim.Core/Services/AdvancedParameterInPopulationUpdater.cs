@@ -38,7 +38,7 @@ namespace PKSim.Core.Services
          if (advancedParameterContainer == null)
             throw new ArgumentException(PKSimConstants.Error.CouldNotFindAdvancedParameterContainerForParameter(parameter.Name));
 
-         var advancedParameter = parameter.ParentContainer.ParentContainer as IAdvancedParameter;
+         var advancedParameter = parameter.ParentContainer.ParentContainer as AdvancedParameter;
          if (advancedParameter == null)
             throw new ArgumentException(PKSimConstants.Error.CouldNotFindAdvancedParameterInContainerForParameter(advancedParameterContainer.Name, parameter.Name));
 

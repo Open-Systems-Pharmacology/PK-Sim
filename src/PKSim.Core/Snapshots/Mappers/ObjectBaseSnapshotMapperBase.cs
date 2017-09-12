@@ -5,7 +5,7 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public abstract class ObjectBaseSnapshotMapperBase<TModel, TSnapshot> : SnapshotMapperBase<TModel, TSnapshot>
       where TModel : IObjectBase
-      where TSnapshot : ISnapshot, new()
+      where TSnapshot : IWithName, IWithDescription, new()
    {
       protected void MapModelPropertiesToSnapshot(TModel model, TSnapshot snapshot)
       {
@@ -31,7 +31,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
    public abstract class ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TContext> : ObjectBaseSnapshotMapperBase<TModel, TSnapshot>
       where TModel : IObjectBase
-      where TSnapshot : ISnapshot, new()
+      where TSnapshot : IWithName, IWithDescription, new()
    {
       public abstract TModel MapToModel(TSnapshot snapshot, TContext context);
 

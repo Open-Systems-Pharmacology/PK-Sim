@@ -1,28 +1,15 @@
 using System.Collections.Generic;
-using PKSim.Assets;
-using OSPSuite.Utility.Reflection;
-using OSPSuite.Utility.Validation;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Reflection;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
    public class ParameterRange : Notifier, IValidatable, IUpdatable
    {
-      private readonly IBusinessRuleSet _rules;
-
-      public ParameterRange()
-      {
-         _rules = new BusinessRuleSet();
-         _rules.Add(AllRules.MinLessThanMax);
-         _rules.Add(AllRules.MaxGreaterThanMin);
-         _rules.Add(AllRules.MinGreaterThanDbMin);
-         _rules.Add(AllRules.MaxLessThanDbMax);
-         _rules.Add(AllRules.MinLessThanDbMax);
-         _rules.Add(AllRules.MaxGreaterThanDbMin);
-      }
-
       public string ParameterName { get; set; }
       public string ParameterDisplayName { get; set; }
       public double? DbMinValue { get; set; }
@@ -32,15 +19,20 @@ namespace PKSim.Core.Model
       public IDimension Dimension { get; set; }
       public Unit Unit { get; set; }
 
-      public bool IsConstant
+      public ParameterRange()
       {
-         get { return MinValue.HasValue && MaxValue.HasValue && MinValue.Value == MaxValue.Value; }
+         Rules = new BusinessRuleSet();
+         Rules.Add(AllRules.MinLessThanMax);
+         Rules.Add(AllRules.MaxGreaterThanMin);
+         Rules.Add(AllRules.MinGreaterThanDbMin);
+         Rules.Add(AllRules.MaxLessThanDbMax);
+         Rules.Add(AllRules.MinLessThanDbMax);
+         Rules.Add(AllRules.MaxGreaterThanDbMin);
       }
 
-      public IBusinessRuleSet Rules
-      {
-         get { return _rules; }
-      }
+      public bool IsConstant => MinValue.HasValue && MaxValue.HasValue && MinValue.Value == MaxValue.Value;
+
+      public IBusinessRuleSet Rules { get; }
 
       public bool IsValueInRange(double valueInBaseUnit)
       {
@@ -55,14 +47,14 @@ namespace PKSim.Core.Model
 
       public double? MinValueInDisplayUnit
       {
-         get { return displayValueFrom(MinValue); }
-         set { MinValue = baseValueFrom(value); }
+         get => displayValueFrom(MinValue);
+         set => MinValue = baseValueFrom(value);
       }
 
       public double? MaxValueInDisplayUnit
       {
-         get { return displayValueFrom(MaxValue); }
-         set { MaxValue = baseValueFrom(value); }
+         get => displayValueFrom(MaxValue);
+         set => MaxValue = baseValueFrom(value);
       }
 
       private double? baseValueFrom(double? displayValue)

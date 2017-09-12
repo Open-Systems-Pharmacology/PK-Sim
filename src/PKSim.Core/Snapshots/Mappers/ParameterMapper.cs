@@ -70,9 +70,11 @@ namespace PKSim.Core.Snapshots.Mappers
          if (parameterBaseValue == null)
             return null;
 
+         var displayUnitToUse = parameterDisplayUnit ?? dimension.BaseUnit.Name;
+
          return new SnapshotParameter
          {
-            Value = dimension.BaseUnitValueToUnitValue(dimension.Unit(parameterDisplayUnit), parameterBaseValue.Value),
+            Value = dimension.BaseUnitValueToUnitValue(dimension.Unit(displayUnitToUse), parameterBaseValue.Value),
             Unit = parameterDisplayUnit
          };
       }

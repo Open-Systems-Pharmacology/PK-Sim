@@ -329,7 +329,7 @@ namespace PKSim.Core
    public class When_updating_the_values_from_an_original_population_simulation : concern_for_PopulationSimulation
    {
       private PopulationSimulation _originalSimulation;
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
       private string _parameterPath;
 
       protected override void Context()
@@ -339,7 +339,7 @@ namespace PKSim.Core
          _originalSimulation = new PopulationSimulation();
          _originalSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("Pop",PKSimBuildingBlockType.Population){BuildingBlock = _population});
          _originalSimulation.Add(new AdvancedParameterCollection().WithName("AdvancedParameterCollection"));
-         _advancedParameter = A.Fake<IAdvancedParameter>();
+         _advancedParameter = A.Fake<AdvancedParameter>();
          _advancedParameter.ParameterPath=_parameterPath;
          A.CallTo(() => _advancedParameter.GenerateRandomValues(3)).Returns(new []
          {

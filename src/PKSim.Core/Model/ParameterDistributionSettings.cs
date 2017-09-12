@@ -10,10 +10,7 @@ namespace PKSim.Core.Model
       {
       }
 
-      public IEnumerable<ParameterDistributionSettings> AllParameterDistributions
-      {
-         get { return this; }
-      }
+      public IEnumerable<ParameterDistributionSettings> AllParameterDistributions => this;
 
       public virtual ParameterDistributionSettingsCache Clone()
       {
@@ -29,12 +26,7 @@ namespace PKSim.Core.Model
    public class ParameterDistributionSettings
    {
       public virtual string ParameterPath { get; set; }
-      public virtual DistributionSettings Settings { get; set; }
-
-      public ParameterDistributionSettings()
-      {
-         Settings = new DistributionSettings();
-      }
+      public virtual DistributionSettings Settings { get; set; } = new DistributionSettings();
 
       public ParameterDistributionSettings Clone()
       {
@@ -47,9 +39,8 @@ namespace PKSim.Core.Model
 
       public bool UseInReport
       {
-         get { return Settings.UseInReport; }
-         set { Settings.UseInReport = value; }
+         get => Settings.UseInReport;
+         set => Settings.UseInReport = value;
       }
-
    }
 }

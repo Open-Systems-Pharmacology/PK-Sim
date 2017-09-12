@@ -37,7 +37,7 @@ namespace PKSim.Core.Model
       public int Seed
       {
          get => _seed;
-         private set
+         set
          {
             _seed = value;
             _randomGenerator = new RandomGenerator(Seed);
@@ -94,7 +94,7 @@ namespace PKSim.Core.Model
          return IndividualPropertiesCache.AllParameterPaths().Select(p => allParameters[p]).Where(p => p != null);
       }
 
-      public virtual void GenerateRandomValuesFor(IAdvancedParameter advancedParameter)
+      public virtual void GenerateRandomValuesFor(AdvancedParameter advancedParameter)
       {
          IndividualPropertiesCache.SetValues(advancedParameter.ParameterPath, advancedParameter.GenerateRandomValues(NumberOfItems));
       }
@@ -178,31 +178,31 @@ namespace PKSim.Core.Model
          return AllVectorialParameters(entityPathResolver).Where(p => !p.IsChangedByCreateIndividual);
       }
 
-      public virtual void SetAdvancedParameters(IAdvancedParameterCollection advancedParameters)
+      public virtual void SetAdvancedParameters(AdvancedParameterCollection advancedParameters)
       {
          Add(advancedParameters);
       }
 
-      protected virtual IAdvancedParameterCollection AdvancedParameterCollection
+      protected virtual AdvancedParameterCollection AdvancedParameterCollection
       {
-         get { return this.GetSingleChild<IAdvancedParameterCollection>(x => true); }
+         get { return this.GetSingleChild<AdvancedParameterCollection>(x => true); }
       }
 
-      public virtual IEnumerable<IAdvancedParameter> AdvancedParameters => AdvancedParameterCollection.AdvancedParameters;
+      public virtual IEnumerable<AdvancedParameter> AdvancedParameters => AdvancedParameterCollection.AdvancedParameters;
 
-      public virtual IAdvancedParameter AdvancedParameterFor(IEntityPathResolver entityPathResolver, IParameter parameter)
+      public virtual AdvancedParameter AdvancedParameterFor(IEntityPathResolver entityPathResolver, IParameter parameter)
       {
          return AdvancedParameterCollection.AdvancedParameterFor(entityPathResolver, parameter);
       }
 
-      public virtual void AddAdvancedParameter(IAdvancedParameter advancedParameter, bool generateRandomValues = true)
+      public virtual void AddAdvancedParameter(AdvancedParameter advancedParameter, bool generateRandomValues = true)
       {
          AdvancedParameterCollection.AddAdvancedParameter(advancedParameter);
          if (generateRandomValues)
             GenerateRandomValuesFor(advancedParameter);
       }
 
-      public virtual void RemoveAdvancedParameter(IAdvancedParameter advancedParameter)
+      public virtual void RemoveAdvancedParameter(AdvancedParameter advancedParameter)
       {
          AdvancedParameterCollection.RemoveAdvancedParameter(advancedParameter);
          IndividualPropertiesCache.Remove(advancedParameter.ParameterPath);

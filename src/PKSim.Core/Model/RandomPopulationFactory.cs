@@ -138,7 +138,7 @@ namespace PKSim.Core.Model
          var randomPopulation = _objectBaseFactory.Create<RandomPopulation>();
          randomPopulation.Root = _objectBaseFactory.Create<IRootContainer>();
          randomPopulation.Settings = populationSettings;
-         randomPopulation.SetAdvancedParameters(_objectBaseFactory.Create<IAdvancedParameterCollection>());
+         randomPopulation.SetAdvancedParameters(_objectBaseFactory.Create<AdvancedParameterCollection>());
          return randomPopulation;
       }
 

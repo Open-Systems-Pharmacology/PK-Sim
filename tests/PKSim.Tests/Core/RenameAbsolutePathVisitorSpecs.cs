@@ -19,7 +19,7 @@ namespace PKSim.Core
    public class When_reanming_a_population_simulation_that_has_advanced_parameters : concern_for_RenameAbsolutePathVisitor
    {
       private PopulationSimulation _populationSimulation;
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {

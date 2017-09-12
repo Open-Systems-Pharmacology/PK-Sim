@@ -79,7 +79,7 @@ namespace PKSim.Core
       private Population _population;
       private PKSimMacroCommand _result;
       private IParameter _moleculeParameterAsAdvanced;
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {

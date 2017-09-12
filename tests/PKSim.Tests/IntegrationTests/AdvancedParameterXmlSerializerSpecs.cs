@@ -1,17 +1,17 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.IntegrationTests
 {
-   public class When_serializing_an_advanced_parameter : ContextForSerialization<IAdvancedParameter>
+   public class When_serializing_an_advanced_parameter : ContextForSerialization<AdvancedParameter>
    {
-      private IAdvancedParameter _advancedParameter;
-      private IAdvancedParameter _deserializedAdvancedParameter;
+      private AdvancedParameter _advancedParameter;
+      private AdvancedParameter _deserializedAdvancedParameter;
 
       protected override void Context()
       {

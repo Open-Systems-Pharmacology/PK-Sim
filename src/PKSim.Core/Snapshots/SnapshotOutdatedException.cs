@@ -1,5 +1,4 @@
-﻿using System;
-using OSPSuite.Utility.Exceptions;
+﻿using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 
 namespace PKSim.Core.Snapshots
