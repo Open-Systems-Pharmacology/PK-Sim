@@ -245,14 +245,19 @@
     <Compile Include="Core\CalculationMethodCacheMapperSpecs.cs" />
     <Compile Include="Core\CompoundMapperSpecs.cs" />
     <Compile Include="Core\CompoundProcessMapperSpecs.cs" />
+    <Compile Include="Core\DataColumnMapperSpecs.cs" />
+    <Compile Include="Core\DataInfoMapperSpecs.cs" />
     <Compile Include="Core\DistributedTableFormulaMapperSpecs.cs" />
     <Compile Include="Core\EventMapperSpecs.cs" />
+    <Compile Include="Core\ExtendedPropertiesMapperSpecs.cs" />
+    <Compile Include="Core\ExtendedPropertyMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />
     <Compile Include="Core\IndividualExtractionOptionsSpecs.cs" />
     <Compile Include="Core\IndividualExtractorSpecs.cs" />
     <Compile Include="Core\IndividualMapperSpecs.cs" />
     <Compile Include="Core\InteractionProcessRetrieverSpecs.cs" />
     <Compile Include="Core\MoleculeMapperSpecs.cs" />
+    <Compile Include="Core\ObservedDataMapperSpecs.cs" />
     <Compile Include="Core\OntogenyMapperSpecs.cs" />
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
@@ -260,6 +265,7 @@
     <Compile Include="Core\PKValuesToPKAnalysisMapperSpecs.cs" />
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
     <Compile Include="Core\ProjectMapperSpecs.cs" />
+    <Compile Include="Core\QuantityInfoMapperSpecs.cs" />
     <Compile Include="Core\SchemaItemMapperSpecs.cs" />
     <Compile Include="Core\SchemaMapperSpecs.cs" />
     <Compile Include="Core\SetRelativeExpressionFromNormalizedCommandSpecs.cs" />
