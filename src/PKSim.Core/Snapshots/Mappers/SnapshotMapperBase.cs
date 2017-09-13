@@ -9,7 +9,7 @@ namespace PKSim.Core.Snapshots.Mappers
    }
 
    public abstract class SnapshotMapperBase<TModel, TSnapshot> : ISnapshotMapperSpecification
-      where TSnapshot : ISnapshot, new()
+      where TSnapshot : new()
    {
       public virtual object MapToSnapshot(object model) => MapToSnapshot(model.DowncastTo<TModel>());
 
@@ -39,7 +39,7 @@ namespace PKSim.Core.Snapshots.Mappers
    }
 
    public abstract class SnapshotMapperBase<TModel, TSnapshot, TContext> : SnapshotMapperBase<TModel, TSnapshot>
-      where TSnapshot : ISnapshot, new()
+      where TSnapshot : new()
    {
       public abstract TModel MapToModel(TSnapshot snapshot, TContext context);
 

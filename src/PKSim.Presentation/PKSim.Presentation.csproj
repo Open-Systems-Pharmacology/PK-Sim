@@ -135,7 +135,6 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="BuildingBlockTaskRegistrationConvention.cs" />
-    <Compile Include="Core\CannotExecuteCommandWhileErrorNotCorrectedException.cs" />
     <Compile Include="Core\CloseSubjectPresenterInvoker.cs" />
     <Compile Include="Core\ButtonGroupIds.cs" />
     <Compile Include="Core\CreateProjectCommand.cs" />

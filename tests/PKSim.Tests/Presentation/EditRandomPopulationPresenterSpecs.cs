@@ -67,12 +67,12 @@ namespace PKSim.Presentation
 
    public class When_the_edit_random_population_presenter_is_being_notified_that_an_advanced_parameter_has_changed_for_the_edited_population : concern_for_EditRandomPopulationPresenter
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {
          base.Context();
-         _advancedParameter = A.Fake<IAdvancedParameter>();
+         _advancedParameter = new AdvancedParameter();
          sut.Edit(_randomPopulation);
       }
 
@@ -90,12 +90,12 @@ namespace PKSim.Presentation
 
    public class When_the_edit_random_population_presenter_is_being_notified_that_an_advanced_parameter_was_selected_for_the_edited_population : concern_for_EditRandomPopulationPresenter
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {
          base.Context();
-         _advancedParameter = A.Fake<IAdvancedParameter>();
+         _advancedParameter = new AdvancedParameter();
          sut.Edit(_randomPopulation);
       }
 
@@ -121,13 +121,13 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new AdvancedParameterDistributionChangedEvent(A.Fake<RandomPopulation>(), A.Fake<IAdvancedParameter>()));
+         sut.Handle(new AdvancedParameterDistributionChangedEvent(A.Fake<RandomPopulation>(), new AdvancedParameter()));
       }
 
       [Observation]
       public void should_not_change_the_distribution_presenter()
       {
-         A.CallTo(() => _popDistributionPresenter.Select(A<IAdvancedParameter>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _popDistributionPresenter.Select(A<AdvancedParameter>._)).MustNotHaveHappened();
       }
    }
 
@@ -141,24 +141,24 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new AdvancedParameteSelectedEvent(A.Fake<RandomPopulation>(), A.Fake<IAdvancedParameter>()));
+         sut.Handle(new AdvancedParameteSelectedEvent(A.Fake<RandomPopulation>(), new AdvancedParameter()));
       }
 
       [Observation]
       public void should_not_change_the_distribution_presenter()
       {
-         A.CallTo(() => _popDistributionPresenter.Select(A<IAdvancedParameter>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _popDistributionPresenter.Select(A<AdvancedParameter>._)).MustNotHaveHappened();
       }
    }
 
    public class When_the_edit_random_population_presenter_is_being_notified_that_an_advanced_parameter_has_been_added_to_the_edited_population : concern_for_EditRandomPopulationPresenter
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {
          base.Context();
-         _advancedParameter = A.Fake<IAdvancedParameter>();
+         _advancedParameter = new AdvancedParameter();
          A.CallTo(() => _popSettingsPresenter.Population).Returns(_randomPopulation);
       }
 
@@ -219,12 +219,12 @@ namespace PKSim.Presentation
 
    public class When_the_edit_random_population_presenter_is_being_notified_that_an_advanced_parameter_has_been_added_to_a_population_that_is_not_the_edited_population : concern_for_EditRandomPopulationPresenter
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {
          base.Context();
-         _advancedParameter = A.Fake<IAdvancedParameter>();
+         _advancedParameter = new AdvancedParameter();
          A.CallTo(() => _popSettingsPresenter.Population).Returns(_randomPopulation);
       }
 
@@ -236,18 +236,18 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_add_the_parameter_to_the_distribution_diagram()
       {
-         A.CallTo(() => _popDistributionPresenter.AddAdvancedParameter(A<IAdvancedParameter>._)).MustNotHaveHappened();
+         A.CallTo(() => _popDistributionPresenter.AddAdvancedParameter(A<AdvancedParameter>._)).MustNotHaveHappened();
       }
    }
 
    public class When_the_edit_random_population_presenter_is_being_notified_that_an_advanced_parameter_has_been_deleted_from_the_edited_population : concern_for_EditRandomPopulationPresenter
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {
          base.Context();
-         _advancedParameter = A.Fake<IAdvancedParameter>();
+         _advancedParameter = new AdvancedParameter();
          A.CallTo(() => _popSettingsPresenter.Population).Returns(_randomPopulation);
       }
 
@@ -279,7 +279,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_remove_the_parameter_from_the_distribution_diagram()
       {
-         A.CallTo(() => _popDistributionPresenter.RemoveAdvancedParameter(A<IAdvancedParameter>._)).MustNotHaveHappened();
+         A.CallTo(() => _popDistributionPresenter.RemoveAdvancedParameter(A<AdvancedParameter>._)).MustNotHaveHappened();
       }
    }
 }

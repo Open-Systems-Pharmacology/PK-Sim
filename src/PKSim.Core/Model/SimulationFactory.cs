@@ -195,7 +195,7 @@ namespace PKSim.Core.Model
       private PopulationSimulation createPopulationSimulation()
       {
          var simulation = create<PopulationSimulation>();
-         simulation.SetAdvancedParameters(_objectBaseFactory.Create<IAdvancedParameterCollection>());
+         simulation.SetAdvancedParameters(_objectBaseFactory.Create<AdvancedParameterCollection>());
          return simulation;
       }
 

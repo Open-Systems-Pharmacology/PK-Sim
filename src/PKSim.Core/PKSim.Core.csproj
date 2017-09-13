@@ -846,6 +846,7 @@
     <Compile Include="Model\Species.cs" />
     <Compile Include="Events\ProjectEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Snapshots\AdvancedParameter.cs" />
     <Compile Include="Snapshots\Alternative.cs" />
     <Compile Include="Snapshots\CalculationMethod.cs" />
     <Compile Include="Snapshots\Compound.cs" />
@@ -853,6 +854,7 @@
     <Compile Include="Snapshots\Event.cs" />
     <Compile Include="Snapshots\Formulation.cs" />
     <Compile Include="Snapshots\Individual.cs" />
+    <Compile Include="Snapshots\Mappers\AdvancedParameterMapper.cs" />
     <Compile Include="Snapshots\Mappers\AlternativeMapper.cs" />
     <Compile Include="Snapshots\Mappers\CalculationMethodCacheMapper.cs" />
     <Compile Include="Snapshots\Mappers\CompoundMapper.cs" />
@@ -867,6 +869,8 @@
     <Compile Include="Snapshots\Mappers\OntogenyMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterContainerSnapshotMapperBase.cs" />
     <Compile Include="Snapshots\Mappers\ParameterMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterRangeMapper.cs" />
+    <Compile Include="Snapshots\Mappers\PopulationMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProjectMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProtocolMapper.cs" />
     <Compile Include="Snapshots\Mappers\SchemaItemMapper.cs" />
@@ -877,6 +881,7 @@
     <Compile Include="Snapshots\Molecule.cs" />
     <Compile Include="Snapshots\Ontogeny.cs" />
     <Compile Include="Snapshots\Parameter.cs" />
+    <Compile Include="Snapshots\ParameterRange.cs" />
     <Compile Include="Snapshots\Point.cs" />
     <Compile Include="Snapshots\Population.cs" />
     <Compile Include="Snapshots\Project.cs" />

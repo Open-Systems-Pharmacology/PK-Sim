@@ -239,6 +239,7 @@
     <Compile Include="Core\AddSchemaItemToSchemaCommandSpecs.cs" />
     <Compile Include="Core\AddSchemaToProtocolCommandSpecs.cs" />
     <Compile Include="Core\AdvancedParameterFactorySpecs.cs" />
+    <Compile Include="Core\AdvancedParameterMapperSpecs.cs" />
     <Compile Include="Core\AgingDataSpecs.cs" />
     <Compile Include="Core\AlternativeMapperSpecs.cs" />
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
     <Compile Include="Core\ParameterMapperSpecs.cs" />
     <Compile Include="Core\PKValuesToPKAnalysisMapperSpecs.cs" />
+    <Compile Include="Core\PopulationMapperSpecs.cs" />
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
     <Compile Include="Core\ProjectMapperSpecs.cs" />
     <Compile Include="Core\SchemaItemMapperSpecs.cs" />

@@ -4,12 +4,7 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Snapshots
 {
-   public interface ISnapshot : IWithName, IWithDescription
-   {
-      
-   }
-
-   public abstract class SnapshotBase : ISnapshot
+   public abstract class SnapshotBase : IWithName, IWithDescription
    {
       //We want the name to be the first entry in the snapshot. Default value for order is -1 so set to -2
       [JsonProperty(Order = -2)]
@@ -20,6 +15,6 @@ namespace PKSim.Core.Snapshots
 
    public abstract class ParameterContainerSnapshotBase : SnapshotBase
    {
-      public List<Parameter> Parameters { get; set; } = new  List<Parameter>();
+      public List<Parameter> Parameters { get; set; } = new List<Parameter>();
    }
 }

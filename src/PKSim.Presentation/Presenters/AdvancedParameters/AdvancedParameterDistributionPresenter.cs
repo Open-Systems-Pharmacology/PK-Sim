@@ -45,11 +45,11 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       ///    Select the advanced parameter and display its distribution
       /// </summary>
       /// <param name="advancedParameter">Advanced parameter whose distribution should be displayed</param>
-      void Select(IAdvancedParameter advancedParameter);
+      void Select(AdvancedParameter advancedParameter);
 
-      void AddAdvancedParameter(IAdvancedParameter advancedParameter);
+      void AddAdvancedParameter(AdvancedParameter advancedParameter);
 
-      void RemoveAdvancedParameter(IAdvancedParameter advancedParameter);
+      void RemoveAdvancedParameter(AdvancedParameter advancedParameter);
 
       /// <summary>
       ///    Defines if the selected parameter should be displayed in a report
@@ -95,12 +95,12 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          activateNode(_parametersPresenter.SelectedNode);
       }
 
-      public void Select(IAdvancedParameter advancedParameter)
+      public void Select(AdvancedParameter advancedParameter)
       {
          _parametersPresenter.SelectParameter(_allParametersCache[advancedParameter.ParameterPath]);
       }
 
-      public void AddAdvancedParameter(IAdvancedParameter advancedParameter)
+      public void AddAdvancedParameter(AdvancedParameter advancedParameter)
       {
          var parameter = parameterFor(advancedParameter);
          if (parameter == null) return;
@@ -108,7 +108,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          _parametersPresenter.SelectParameter(parameter);
       }
 
-      public void RemoveAdvancedParameter(IAdvancedParameter advancedParameter)
+      public void RemoveAdvancedParameter(AdvancedParameter advancedParameter)
       {
          var parameter = parameterFor(advancedParameter);
          if (parameter == null) return;
@@ -116,7 +116,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          refresh();
       }
 
-      private IParameter parameterFor(IAdvancedParameter advancedParameter)
+      private IParameter parameterFor(AdvancedParameter advancedParameter)
       {
          return _allParametersCache[advancedParameter.ParameterPath];
       }

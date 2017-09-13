@@ -169,7 +169,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          return parameterFrom(eventToHandle.AdvancedParameter);
       }
 
-      private IParameter parameterFrom(IAdvancedParameter advancedParameter)
+      private IParameter parameterFrom(AdvancedParameter advancedParameter)
       {
          return _parameterCache[advancedParameter.ParameterPath];
       }

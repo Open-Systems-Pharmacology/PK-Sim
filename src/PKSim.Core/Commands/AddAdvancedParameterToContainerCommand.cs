@@ -5,14 +5,14 @@ using OSPSuite.Core.Commands.Core;
 
 namespace PKSim.Core.Commands
 {
-   public class AddAdvancedParameterToContainerCommand : AddEntityToContainerCommand<IAdvancedParameter, IAdvancedParameterContainer, AddAdvancedParameterToContainerEvent>
+   public class AddAdvancedParameterToContainerCommand : AddEntityToContainerCommand<AdvancedParameter, IAdvancedParameterContainer, AddAdvancedParameterToContainerEvent>
    {
-      public AddAdvancedParameterToContainerCommand(IAdvancedParameter entityToAdd, IAdvancedParameterContainer parentContainer, IExecutionContext context)
+      public AddAdvancedParameterToContainerCommand(AdvancedParameter entityToAdd, IAdvancedParameterContainer parentContainer, IExecutionContext context)
          : base(entityToAdd, parentContainer, context, addAdvancedParameter)
       {
       }
 
-      private static Action<IAdvancedParameter> addAdvancedParameter(IAdvancedParameterContainer advancedParameterContainer)
+      private static Action<AdvancedParameter> addAdvancedParameter(IAdvancedParameterContainer advancedParameterContainer)
       {
          return p => advancedParameterContainer.AddAdvancedParameter(p);
       }
