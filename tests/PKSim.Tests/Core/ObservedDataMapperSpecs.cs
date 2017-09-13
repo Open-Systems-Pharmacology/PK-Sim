@@ -51,7 +51,7 @@ namespace PKSim.Core
       [Observation]
       public void the_snapshot_properties_should_be_set_as_expected()
       {
-         _snapshot.Name.ShouldBeEqualTo(_dataRepository.Name);
+         _snapshot.Name.ShouldBeNull();
          _snapshot.Description.ShouldBeEqualTo(_dataRepository.Description);
       }
    }
