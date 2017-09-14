@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using ModelQuantityInfo = OSPSuite.Core.Domain.Data.QuantityInfo;
+﻿using ModelQuantityInfo = OSPSuite.Core.Domain.Data.QuantityInfo;
 using SnapshotQuantityInfo = PKSim.Core.Snapshots.QuantityInfo;
 
 namespace PKSim.Core.Snapshots.Mappers
@@ -11,7 +10,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return SnapshotFrom(quantityInfo, snapshot =>
          {
             snapshot.OrderIndex = quantityInfo.OrderIndex;
-            snapshot.Path = quantityInfo.Path.ToList();
+            snapshot.Path = quantityInfo.PathAsString;
             snapshot.Type = quantityInfo.Type.ToString();
             snapshot.Name = quantityInfo.Name;
          });

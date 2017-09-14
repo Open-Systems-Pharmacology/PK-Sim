@@ -6,7 +6,6 @@ namespace PKSim.Core.Snapshots
    {
       public string Origin { get; set; }
       public string AuxiliaryType { get; set; }
-      public string DisplayUnitName { get; set; }
       public DateTime Date { get; set; }
       public string Source { get; set; }
       public string Category { get; set; }

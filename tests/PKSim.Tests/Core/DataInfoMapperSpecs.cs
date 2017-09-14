@@ -51,7 +51,6 @@ namespace PKSim.Core
          _snapshot.Category.ShouldBeEqualTo(_dataInfo.Category);
          _snapshot.ComparisonThreshold.ShouldBeEqualTo(_dataInfo.ComparisonThreshold);
          _snapshot.Date.ShouldBeEqualTo(_dataInfo.Date);
-         _snapshot.DisplayUnitName.ShouldBeEqualTo("unitName");
          _snapshot.LLOQ.ShouldBeEqualTo(_dataInfo.LLOQ);
          _snapshot.MolWeight.ShouldBeEqualTo(_dataInfo.MolWeight);
          _snapshot.Origin.ShouldBeEqualTo(_dataInfo.Origin.ToString());

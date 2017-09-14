@@ -35,7 +35,7 @@ namespace PKSim.Core
       public void the_snapshot_should_have_properties_as_expected()
       {
          _snapshot.OrderIndex.ShouldBeEqualTo(_quantityInfo.OrderIndex);
-         _snapshot.Path.ShouldOnlyContainInOrder(_quantityInfo.Path);
+         _snapshot.Path.ShouldBeEqualTo(_quantityInfo.PathAsString);
          _snapshot.Type.ShouldBeEqualTo(_quantityInfo.Type.ToString());
          _snapshot.Name.ShouldBeEqualTo(_quantityInfo.Name);
       }

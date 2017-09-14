@@ -61,7 +61,7 @@ namespace PKSim.Core
       public void the_snapshot_has_properties_set_as_expected()
       {
          _snapshot.Name.ShouldBeEqualTo(_dataColumn.Name);
-         _snapshot.DisplayUnit.ShouldBeEqualTo(_dataColumn.DisplayUnit.ToString());
+         _snapshot.Unit.ShouldBeEqualTo(_dataColumn.DisplayUnit.ToString());
          _snapshot.Values.ShouldOnlyContainInOrder(_dataColumn.Values);
          _snapshot.RelatedColumns.Count.ShouldBeEqualTo(1);
       }

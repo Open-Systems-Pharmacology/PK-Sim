@@ -25,12 +25,11 @@ namespace PKSim.Core.Snapshots.Mappers
          return SnapshotFrom(dataColumn, snapshot =>
          {
             snapshot.Name = dataColumn.Name;
-            snapshot.Id = dataColumn.Id;
             snapshot.RelatedColumns = mapRelatedColumns(dataColumn.RelatedColumns);
             snapshot.DataInfo = mapDataInfo(dataColumn.DataInfo);
             snapshot.QuantityInfo = mapQuantityInfo(dataColumn.QuantityInfo);
             snapshot.Values = valuesInDisplayUnits(dataColumn);
-            snapshot.DisplayUnit = SnapshotValueFor(dataColumn.DisplayUnit.Name);
+            snapshot.Unit = SnapshotValueFor(dataColumn.DisplayUnit.Name);
          });
       }
 

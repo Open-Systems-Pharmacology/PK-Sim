@@ -25,7 +25,8 @@ namespace PKSim.Core.Snapshots.Mappers
          return SnapshotFrom(dataRepository, snapshot =>
          {
             snapshot.Name = SnapshotValueFor(dataRepository.Name);
-            snapshot.ExtendedProperties = mapExtendedProperties(dataRepository.ExtendedProperties);
+            var snapshotExtendedProperties = mapExtendedProperties(dataRepository.ExtendedProperties);
+            snapshot.ExtendedProperties = snapshotExtendedProperties.Any() ? snapshotExtendedProperties : null;
             snapshot.Columns = mapColumns(dataRepository.AllButBaseGrid().Where(column => !dataRepository.ColumnIsInRelatedColumns(column)));
             snapshot.BaseGrid = _dataColumnMapper.MapToSnapshot(dataRepository.BaseGrid);
          });
@@ -33,7 +34,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private List<DataColumn> mapColumns(IEnumerable<ModelDataColumn> dataRepositoryColumns)
       {
-         return dataRepositoryColumns.Select(dataColumn => _dataColumnMapper.MapToSnapshot(dataColumn)).ToList();
+         return dataRepositoryColumns.Select(_dataColumnMapper.MapToSnapshot).ToList();
       }
 
       private SnapshotExtendedProperties mapExtendedProperties(ModelExtendedProperties extendedProperties)

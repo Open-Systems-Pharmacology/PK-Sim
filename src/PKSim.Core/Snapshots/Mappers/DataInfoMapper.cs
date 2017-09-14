@@ -1,4 +1,5 @@
-﻿using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
+﻿using System.Linq;
+using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
 using ModelDataInfo = OSPSuite.Core.Domain.Data.DataInfo;
 using ModelExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
 using SnapshotExtendedProperties = PKSim.Core.Snapshots.ExtendedProperties;
@@ -22,8 +23,8 @@ namespace PKSim.Core.Snapshots.Mappers
             snapshot.Category = dataInfo.Category;
             snapshot.ComparisonThreshold = dataInfo.ComparisonThreshold;
             snapshot.Date = dataInfo.Date;
-            snapshot.DisplayUnitName = dataInfo.DisplayUnitName;
-            snapshot.ExtendedProperties = mapExtendedProperties(dataInfo.ExtendedProperties);
+            var snapshotExtendedProperties = mapExtendedProperties(dataInfo.ExtendedProperties);
+            snapshot.ExtendedProperties = snapshotExtendedProperties.Any() ? snapshotExtendedProperties : null;
             snapshot.LLOQ = dataInfo.LLOQ;
             snapshot.MolWeight = dataInfo.MolWeight;
             snapshot.Origin = dataInfo.Origin.ToString();

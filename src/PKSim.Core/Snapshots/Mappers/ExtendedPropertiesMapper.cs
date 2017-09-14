@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Utility.Extensions;
 using SnapshotExtendedProperties = PKSim.Core.Snapshots.ExtendedProperties;
 using ModelExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
 using SnapshotExtendedProperty = PKSim.Core.Snapshots.ExtendedProperty;
@@ -19,7 +20,11 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          return SnapshotFrom(extendedProperties, snapshot =>
          {
-            snapshot.ListOfExtendedProperties = mapExtendedPropertiesFrom(extendedProperties);
+            var snapshotExtendedProperties = mapExtendedPropertiesFrom(extendedProperties);
+            if (snapshotExtendedProperties == null)
+               return;
+
+            snapshotExtendedProperties.Each(snapshot.Add);
          });
       }
 
@@ -32,7 +37,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var extendedProperties = new ModelExtendedProperties();
 
-         extendedProperties.AddRange(snapshot.ListOfExtendedProperties.Select(propertySnapshot => _extendedPropertyMapper.MapToModel(propertySnapshot)));
+         extendedProperties.AddRange(snapshot.Select(_extendedPropertyMapper.MapToModel));
          return extendedProperties;
       }
    }

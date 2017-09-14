@@ -25,6 +25,13 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
+      private ExtendedProperty<T> addOptionsToExtendedProperty<T>(SnapshotExtendedProperty snapshot, Func<object, T> convertToTypeFunc)
+      {
+         var extendedProperty = new ExtendedProperty<T>();
+         addOptionsToList(snapshot.ListOfValues, option => extendedProperty.AddToListOfValues(convertToTypeFunc(option)));
+         return extendedProperty;
+      }
+
       public override ModelExtendedProperty MapToModel(SnapshotExtendedProperty snapshot)
       {
 
@@ -32,27 +39,19 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (snapshot.Type == typeof(string))
          {
-            var stringProperty = new ExtendedProperty<string>();
-            addOptionsToList(snapshot.ListOfValues, option => stringProperty.AddToListOfValues(option.ToString()));
-            property = stringProperty;
+            property = addOptionsToExtendedProperty(snapshot, option => option.ToString());
          }
          else if (snapshot.Type == typeof(double))
          {
-            var doubleProperty = new ExtendedProperty<double>();
-            addOptionsToList(snapshot.ListOfValues, option => doubleProperty.AddToListOfValues(double.Parse(option.ToString())));
-            property = doubleProperty;
+            property = addOptionsToExtendedProperty(snapshot, option => double.Parse(option.ToString()));
          }
          else if (snapshot.Type == typeof(bool))
          {
-            var booleanProperty = new ExtendedProperty<bool>();
-            addOptionsToList(snapshot.ListOfValues, option => booleanProperty.AddToListOfValues(bool.Parse(option.ToString())));
-            property = booleanProperty;
+            property = addOptionsToExtendedProperty(snapshot, option => bool.Parse(option.ToString()));
          }
          else
          {
-            var objectProperty = new ExtendedProperty<object>();
-            addOptionsToList(snapshot.ListOfValues, option => objectProperty.AddToListOfValues(option));
-            property = objectProperty;
+            property = addOptionsToExtendedProperty(snapshot, option => option);
          }
 
          property.Description = snapshot.Description;

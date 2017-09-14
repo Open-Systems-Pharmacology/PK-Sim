@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FakeItEasy;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Snapshots;
@@ -28,8 +27,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _extendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = "Value"};
-         _secondExtendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "FullName", Name = "SecondName", ReadOnly = true, Value = "Value"};
+         _extendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = "Value" };
+         _secondExtendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "FullName", Name = "SecondName", ReadOnly = true, Value = "Value" };
          _extendedProperties = new ExtendedProperties { _extendedProperty, _secondExtendedProperty };
       }
 
@@ -55,13 +54,11 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _firstExtendedProperty = new ExtendedProperty {Description = "Property Description", DisplayName = "Display Name", FullName = "First Full Name", Name = "First Name", ReadOnly = true, Type = typeof(string), Value = "Value"};
-         _secondExtendedProperty = new ExtendedProperty {Description = "Property Description", DisplayName = "Display Name", FullName = "Second Full Name", Name = "Second Name", ReadOnly = true, Type = typeof(string), Value = "Value"};
-         _snapshot = new Snapshots.ExtendedProperties {Description = "A Description", Name = "A Name", ListOfExtendedProperties = new List<ExtendedProperty>
-         {
-            _firstExtendedProperty,
-            _secondExtendedProperty
-         }};
+         _firstExtendedProperty = new ExtendedProperty { Description = "Property Description", DisplayName = "Display Name", FullName = "First Full Name", Name = "First Name", ReadOnly = true, Type = typeof(string), Value = "Value" };
+         _secondExtendedProperty = new ExtendedProperty { Description = "Property Description", DisplayName = "Display Name", FullName = "Second Full Name", Name = "Second Name", ReadOnly = true, Type = typeof(string), Value = "Value" };
+         _snapshot = new Snapshots.ExtendedProperties { Description = "A Description", Name = "A Name" };
+         _snapshot.Add(_firstExtendedProperty);
+         _snapshot.Add(_secondExtendedProperty);
 
          A.CallTo(() => _extendedPropertyMapper.MapToModel(_firstExtendedProperty)).Returns(A.Fake<IExtendedProperty>().WithName(_firstExtendedProperty.FullName));
          A.CallTo(() => _extendedPropertyMapper.MapToModel(_secondExtendedProperty)).Returns(A.Fake<IExtendedProperty>().WithName(_secondExtendedProperty.FullName));
