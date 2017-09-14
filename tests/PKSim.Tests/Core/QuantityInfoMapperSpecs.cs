@@ -1,4 +1,5 @@
-﻿using OSPSuite.BDDHelper;
+﻿using System.Threading.Tasks;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -7,11 +8,12 @@ using SnapshotQuantityInfo = PKSim.Core.Snapshots.QuantityInfo;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_QuantityInfoMapper : ContextSpecification<QuantityInfoMapper>
+   public abstract class concern_for_QuantityInfoMapper : ContextSpecificationAsync<QuantityInfoMapper>
    {
-      protected override void Context()
+      protected override Task Context()
       {
          sut = new QuantityInfoMapper();
+         return Task.FromResult(true);
       }
    }
 
@@ -20,15 +22,15 @@ namespace PKSim.Core
       private QuantityInfo _quantityInfo;
       private SnapshotQuantityInfo _snapshot;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _quantityInfo = new QuantityInfo("name", new[] { "the", "path" }, QuantityType.Time) { OrderIndex = 9 };
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_quantityInfo);
+         _snapshot = await sut.MapToSnapshot(_quantityInfo);
       }
 
       [Observation]

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -8,16 +9,17 @@ using SnapshotDataColumn = PKSim.Core.Snapshots.DataColumn;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_DataColumnMapper : ContextSpecification<DataColumnMapper>
+   public abstract class concern_for_DataColumnMapper : ContextSpecificationAsync<DataColumnMapper>
    {
       protected QuantityInfoMapper _quantityInfoMapper;
       protected DataInfoMapper _dataInfoMapper;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _quantityInfoMapper = A.Fake<QuantityInfoMapper>();
          _dataInfoMapper = A.Fake<DataInfoMapper>();
          sut = new DataColumnMapper(_dataInfoMapper, _quantityInfoMapper);
+         return Task.FromResult(true);
       }
    }
 
@@ -27,9 +29,9 @@ namespace PKSim.Core
       private SnapshotDataColumn _snapshot;
       private DataColumn _relatedColumn;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          var observedData = DomainHelperForSpecs.ObservedData();
          _dataColumn = observedData.ObservationColumns().First();
          _relatedColumn = new DataColumn("related", DomainHelperForSpecs.NoDimension(), observedData.BaseGrid)
@@ -40,9 +42,9 @@ namespace PKSim.Core
          _dataColumn.AddRelatedColumn(_relatedColumn);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_dataColumn);
+         _snapshot = await sut.MapToSnapshot(_dataColumn);
       }
 
       [Observation]
@@ -63,7 +65,7 @@ namespace PKSim.Core
          _snapshot.Name.ShouldBeEqualTo(_dataColumn.Name);
          _snapshot.Unit.ShouldBeEqualTo(_dataColumn.DisplayUnit.ToString());
          _snapshot.Values.ShouldOnlyContainInOrder(_dataColumn.Values);
-         _snapshot.RelatedColumns.Count.ShouldBeEqualTo(1);
+         _snapshot.RelatedColumns.Length.ShouldBeEqualTo(1);
       }
    }
 }

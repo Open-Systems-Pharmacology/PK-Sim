@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -9,14 +10,15 @@ using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_DataInfoMapper : ContextSpecification<DataInfoMapper>
+   public abstract class concern_for_DataInfoMapper : ContextSpecificationAsync<DataInfoMapper>
    {
       protected ExtendedPropertiesMapper _extendedPropertiesMapper;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _extendedPropertiesMapper = A.Fake<ExtendedPropertiesMapper>();
          sut = new DataInfoMapper(_extendedPropertiesMapper);
+         return Task.FromResult(true);
       }
    }
 
@@ -26,16 +28,16 @@ namespace PKSim.Core
       private SnapshotDataInfo _snapshot;
       private DateTime _dateTime;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _dateTime = DateTime.Parse("January 1, 2017");
          _dataInfo = new DataInfo(ColumnOrigins.Observation, AuxiliaryType.GeometricStdDev, "unitName", _dateTime, "source", "category", 2.3) {LLOQ = 0.4f};
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_dataInfo);
+         _snapshot = await sut.MapToSnapshot(_dataInfo);
       }
 
       [Observation]
