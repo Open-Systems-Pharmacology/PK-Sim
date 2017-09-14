@@ -45,6 +45,11 @@ namespace PKSim.Core.Extensions
             });
       }
 
+      public static bool ColumnIsInRelatedColumns(this DataRepository repository, DataColumn column)
+      {
+         return repository.SelectMany(x => x.RelatedColumns).Contains(column);
+      }
+
       private static string valueMapper(IEnumerable<IExtendedProperty> properties, IExtendedProperty value)
       {
          return valueMapper(properties, value.ValueAsObject.ToString());
