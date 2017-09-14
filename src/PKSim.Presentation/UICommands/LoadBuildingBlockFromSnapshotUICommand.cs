@@ -1,4 +1,5 @@
-﻿using OSPSuite.Presentation.MenuAndBars;
+﻿using OSPSuite.Core.Extensions;
+using OSPSuite.Presentation.MenuAndBars;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
@@ -14,9 +15,9 @@ namespace PKSim.Presentation.UICommands
          _buildingBlockTask = buildingBlockTask;
       }
 
-      public void Execute()
+      public async void Execute()
       {
-         _buildingBlockTask.LoadFromSnapshot();
+         await _buildingBlockTask.SecureAwait(x => x.LoadFromSnapshot());
       }
    }
 }

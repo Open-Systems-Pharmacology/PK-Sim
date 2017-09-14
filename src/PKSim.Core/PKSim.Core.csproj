@@ -883,6 +883,7 @@
     <Compile Include="Snapshots\Mappers\ProjectMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProtocolMapper.cs" />
     <Compile Include="Snapshots\Mappers\QuantityInfoMapper.cs" />
+    <Compile Include="Snapshots\Mappers\RandomPopulationSettingsMapper.cs" />
     <Compile Include="Snapshots\Mappers\SchemaItemMapper.cs" />
     <Compile Include="Snapshots\Mappers\SchemaMapper.cs" />
     <Compile Include="Snapshots\Mappers\SnapshotMapper.cs" />
@@ -894,6 +895,7 @@
     <Compile Include="Snapshots\ParameterRange.cs" />
     <Compile Include="Snapshots\Point.cs" />
     <Compile Include="Snapshots\Population.cs" />
+    <Compile Include="Snapshots\PopulationSettings.cs" />
     <Compile Include="Snapshots\Project.cs" />
     <Compile Include="Snapshots\QuantityInfo.cs" />
     <Compile Include="Snapshots\Schema.cs" />

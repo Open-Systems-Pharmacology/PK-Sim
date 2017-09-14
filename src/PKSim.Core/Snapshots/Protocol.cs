@@ -15,7 +15,7 @@ namespace PKSim.Core.Snapshots
       public bool IsSimple => !string.IsNullOrEmpty(ApplicationType) && !string.IsNullOrEmpty(DosingInterval);
 
       //Advanced protocol properties
-      public List<Schema> Schemas { get; set; }
+      public Schema[] Schemas { get; set; }
 
       public string TimeUnit { get; set; }
    }

@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -16,7 +17,7 @@ using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_IndividualMapper : ContextSpecification<IndividualMapper>
+   public abstract class concern_for_IndividualMapper : ContextSpecificationAsync<IndividualMapper>
    {
       protected ParameterMapper _parameterMapper;
       protected ModelIndividual _individual;
@@ -37,7 +38,7 @@ namespace PKSim.Core
       protected IOriginDataMapper _originDataMapper;
       protected IContainerTask _containerTask;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _moleculeMapper = A.Fake<MoleculeMapper>();
@@ -95,14 +96,15 @@ namespace PKSim.Core
 
          _localizedParameterKidney = new LocalizedParameter {Path = "Organism|Kidney|PKidney"};
          A.CallTo(() => _parameterMapper.LocalizedParameterFrom(_parameterKidney)).Returns(_localizedParameterKidney);
+         return Task.FromResult(true);
       }
    }
 
    public class When_mapping_an_individual_to_snapshot : concern_for_IndividualMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_individual);
+         _snapshot = await sut.MapToSnapshot(_individual);
       }
 
       [Observation]
@@ -146,10 +148,10 @@ namespace PKSim.Core
       private IndividualMolecule _molecule2;
       private Batch.OriginData _batchOriginData;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_individual);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_individual);
 
          A.CallTo(() => _originDataMapper.MapFrom(A<Batch.OriginData>._))
             .Invokes(x => _batchOriginData = x.GetArgument<Batch.OriginData>(0));
@@ -183,9 +185,9 @@ namespace PKSim.Core
          A.CallTo(() => _dimensionRepository.Length.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Height.Value)).Returns(30);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newIndividual = sut.MapToModel(_snapshot);
+         _newIndividual = await sut.MapToModel(_snapshot);
       }
 
       [Observation]

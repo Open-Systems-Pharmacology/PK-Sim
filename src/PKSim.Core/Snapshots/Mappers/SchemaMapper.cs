@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -19,19 +19,26 @@ namespace PKSim.Core.Snapshots.Mappers
          _schemaFactory = schemaFactory;
       }
 
-      public override SnapshotSchema MapToSnapshot(ModelSchema modelSchema)
+      public override async Task<SnapshotSchema> MapToSnapshot(ModelSchema modelSchema)
       {
-         return SnapshotFrom(modelSchema, snapshot => snapshot.SchemaItems.AddRange(snapshotSchemaItemsFrom(modelSchema)));
+         var snapshot = await SnapshotFrom(modelSchema);
+         snapshot.SchemaItems.AddRange(await snapshotSchemaItemsFrom(modelSchema));
+         return snapshot;
       }
 
-      private IEnumerable<SchemaItem> snapshotSchemaItemsFrom(ModelSchema modelSchema) => modelSchema.SchemaItems.Select(_schemaItemMapper.MapToSnapshot);
+      private Task<SchemaItem[]> snapshotSchemaItemsFrom(ModelSchema modelSchema)
+      {
+         var tasks = modelSchema.SchemaItems.Select(_schemaItemMapper.MapToSnapshot);
+         return Task.WhenAll(tasks);
+      }
 
-      public override ModelSchema MapToModel(SnapshotSchema snapshotSchema)
+      public override async Task<ModelSchema> MapToModel(SnapshotSchema snapshotSchema)
       {
          var schema = _schemaFactory.Create();
          MapSnapshotPropertiesToModel(snapshotSchema, schema);
-         UpdateParametersFromSnapshot(snapshotSchema, schema, PKSimConstants.ObjectTypes.Schema);
-         schema.AddChildren(snapshotSchema.SchemaItems.Select(_schemaItemMapper.MapToModel));
+         await UpdateParametersFromSnapshot(snapshotSchema, schema, PKSimConstants.ObjectTypes.Schema);
+         var tasks = snapshotSchema.SchemaItems.Select(_schemaItemMapper.MapToModel);
+         schema.AddChildren(await Task.WhenAll(tasks));
          return schema;
       }
    }

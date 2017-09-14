@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Domain;
+﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using SnapshotOntogeny = PKSim.Core.Snapshots.Ontogeny;
@@ -17,22 +18,23 @@ namespace PKSim.Core.Snapshots.Mappers
          _ontogenyRepository = ontogenyRepository;
       }
 
-      public override SnapshotOntogeny MapToSnapshot(ModelOntogeny ontogeny)
+      public override async Task<SnapshotOntogeny> MapToSnapshot(ModelOntogeny ontogeny)
       {
          if (ontogeny.IsUndefined())
             return null;
 
-         return SnapshotFrom(ontogeny, snapshot =>
-         {
-            if (ontogeny is UserDefinedOntogeny userDefinedOntogeny)
-               snapshot.Table = _distributedTableFormulaMapper.MapToSnapshot(userDefinedOntogeny.Table);
-            else
-               //we do not save database description
-               snapshot.Description = null;
-         });
+         var snapshot = await SnapshotFrom(ontogeny);
+
+         if (ontogeny is UserDefinedOntogeny userDefinedOntogeny)
+            snapshot.Table = await _distributedTableFormulaMapper.MapToSnapshot(userDefinedOntogeny.Table);
+         else
+            //we do not save database description
+            snapshot.Description = null;
+
+         return snapshot;
       }
 
-      public override ModelOntogeny MapToModel(SnapshotOntogeny snapshot, ISimulationSubject simulationSubject)
+      public override async Task<ModelOntogeny> MapToModel(SnapshotOntogeny snapshot, ISimulationSubject simulationSubject)
       {
          if (snapshot == null)
             return new NullOntogeny();
@@ -43,7 +45,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var ontogeny = new UserDefinedOntogeny
          {
-            Table = _distributedTableFormulaMapper.MapToModel(snapshot.Table),
+            Table = await _distributedTableFormulaMapper.MapToModel(snapshot.Table),
             SpeciesName = speciesName
          };
 

@@ -827,6 +827,8 @@ namespace PKSim.Assets
 
          public static string SnapshotParameterNotFoundInContainer(string parameterName, string container) => $"Snapshot parameter '{parameterName}' was not found in '{container}'.";
 
+         public static string SnapshotParameterNotFound(string parameterName) => $"Snapshot parameter '{parameterName}' was not found.";
+
          public const string SnapshotIsOutdated = "Snapshot is outdated and cannot be loaded.";
 
          public static string MoleculeTypeNotSupported(string moleculeType) => $"Molecule type '{moleculeType}' not supported.";

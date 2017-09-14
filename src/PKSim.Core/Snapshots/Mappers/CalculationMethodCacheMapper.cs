@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -19,9 +20,12 @@ namespace PKSim.Core.Snapshots.Mappers
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
       }
 
-      public override SnapshotCalculationMethodCache MapToSnapshot(ModelCalculationMethodCache model)
+      public override Task<SnapshotCalculationMethodCache> MapToSnapshot(ModelCalculationMethodCache model)
       {
-         return SnapshotFrom(model, snapshot => { addCalculationMethodsToSnapshot(snapshot, model); });
+         return SnapshotFrom(model, snapshot =>
+         {
+            addCalculationMethodsToSnapshot(snapshot, model);
+         });
       }
 
       private void addCalculationMethodsToSnapshot(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache model)
@@ -34,10 +38,10 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override ModelCalculationMethodCache MapToModel(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache calculationMethodCache)
+      public override Task<ModelCalculationMethodCache> MapToModel(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache calculationMethodCache)
       {
          snapshot.Each(cm => useCalculationMethodIn(calculationMethodCache, cm));
-         return calculationMethodCache;
+         return Task.FromResult(calculationMethodCache);
       }
 
       public virtual void UpdateCalculationMethodCache(IWithCalculationMethods withCalculationMethods, SnapshotCalculationMethodCache snapshot)

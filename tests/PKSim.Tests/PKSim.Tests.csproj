@@ -263,11 +263,13 @@
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
     <Compile Include="Core\ParameterMapperSpecs.cs" />
+    <Compile Include="Core\ParameterRangeMapperSpecs.cs" />
     <Compile Include="Core\PKValuesToPKAnalysisMapperSpecs.cs" />
     <Compile Include="Core\PopulationMapperSpecs.cs" />
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
     <Compile Include="Core\ProjectMapperSpecs.cs" />
     <Compile Include="Core\QuantityInfoMapperSpecs.cs" />
+    <Compile Include="Core\RandomPopulationSettingsMapperSpecs.cs" />
     <Compile Include="Core\SchemaItemMapperSpecs.cs" />
     <Compile Include="Core\SchemaMapperSpecs.cs" />
     <Compile Include="Core\SetRelativeExpressionFromNormalizedCommandSpecs.cs" />
@@ -278,6 +280,7 @@
     <Compile Include="Core\TableFormulaMapperSpecs.cs" />
     <Compile Include="Core\TablePartSpecs.cs" />
     <Compile Include="Core\TimeProfileAnalysisChartSpecs.cs" />
+    <Compile Include="Extensions\AsyncContextSpecification.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
     <Compile Include="Infrastructure\SimulationComparisonContentLoaderSpecs.cs" />
     <Compile Include="IntegrationTests\FlatOrganTypeRepositorySpecs.cs" />

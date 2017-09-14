@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -11,7 +12,7 @@ using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_CompoundProcessMapper : ContextSpecification<CompoundProcessMapper>
+   public abstract class concern_for_CompoundProcessMapper : ContextSpecificationAsync<CompoundProcessMapper>
    {
       protected ParameterMapper _parameterMapper;
       protected EnzymaticProcess _enzymaticProcess;
@@ -23,7 +24,7 @@ namespace PKSim.Core
       protected ISpeciesRepository _speciesRepository;
       protected ICompoundProcessTask _compoundProcessTask;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
@@ -56,14 +57,16 @@ namespace PKSim.Core
          };
 
          A.CallTo(() => _representationInfoRepository.DescriptionFor(RepresentationObjectType.PROCESS, _enzymaticProcessWithSpecies.InternalName)).Returns("Process description");
+
+         return Task.FromResult(true);
       }
    }
 
    public class When_mapping_an_enzymatic_process_to_snapshot : concern_for_CompoundProcessMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_enzymaticProcess);
+         _snapshot = await sut.MapToSnapshot(_enzymaticProcess);
       }
 
       [Observation]
@@ -91,9 +94,9 @@ namespace PKSim.Core
 
    public class When_mapping_an_species_dependent_enzymatic_process_to_snapshot : concern_for_CompoundProcessMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_enzymaticProcessWithSpecies);
+         _snapshot = await sut.MapToSnapshot(_enzymaticProcessWithSpecies);
       }
 
       [Observation]
@@ -121,10 +124,10 @@ namespace PKSim.Core
       private Parameter _snapshotParameter;
       private IParameter _processParameter;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_enzymaticProcess);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_enzymaticProcess);
          _templateProcess = new EnzymaticProcess();
          A.CallTo(() => _compoundProcessRepository.ProcessByName(_snapshot.InternalName)).Returns(_templateProcess);
          _cloneOfTemplate = new EnzymaticProcess();
@@ -144,9 +147,9 @@ namespace PKSim.Core
          _cloneOfTemplate.Add(_processParameter);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newEnzymaticProcess = sut.MapToModel(_snapshot) as EnzymaticProcess;
+         _newEnzymaticProcess = await sut.MapToModel(_snapshot) as EnzymaticProcess;
       }
 
       [Observation]
@@ -183,10 +186,10 @@ namespace PKSim.Core
       private EnzymaticProcessWithSpecies _templateProcess;
       private Species _species;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_enzymaticProcess);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_enzymaticProcess);
          _templateProcess = new EnzymaticProcessWithSpecies();
          A.CallTo(() => _compoundProcessRepository.ProcessByName(_snapshot.InternalName)).Returns(_templateProcess);
          A.CallTo(() => _cloner.Clone((Model.CompoundProcess)_templateProcess)).Returns(_templateProcess);
@@ -199,9 +202,9 @@ namespace PKSim.Core
          A.CallTo(() => _speciesRepository.All()).Returns(new[] {_species});
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newEnzymaticProcess = sut.MapToModel(_snapshot) as EnzymaticProcessWithSpecies;
+         _newEnzymaticProcess = await sut.MapToModel(_snapshot) as EnzymaticProcessWithSpecies;
       }
 
     [Observation]

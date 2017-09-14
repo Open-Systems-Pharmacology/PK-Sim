@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -9,13 +10,13 @@ using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_TableFormulaMapper : ContextSpecification<TableFormulaMapper>
+   public abstract class concern_for_TableFormulaMapper : ContextSpecificationAsync<TableFormulaMapper>
    {
       protected IFormulaFactory _formulaFactory;
       private IDimensionRepository _dimensionRepository;
       protected TableFormula _tableFormula;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _formulaFactory= A.Fake<IFormulaFactory>();  
          _dimensionRepository= A.Fake<IDimensionRepository>();
@@ -41,6 +42,8 @@ namespace PKSim.Core
 
          A.CallTo(() => _dimensionRepository.DimensionByName(_tableFormula.XDimension.Name)).Returns(_tableFormula.XDimension);
          A.CallTo(() => _dimensionRepository.DimensionByName(_tableFormula.Dimension.Name)).Returns(_tableFormula.Dimension);
+
+         return Task.FromResult(true);
       }
    }
 
@@ -48,9 +51,9 @@ namespace PKSim.Core
    {
       private Snapshots.TableFormula _snapshot;
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_tableFormula);
+         _snapshot = await sut.MapToSnapshot(_tableFormula);
       }
 
       [Observation]
@@ -79,16 +82,16 @@ namespace PKSim.Core
       private Snapshots.TableFormula _snapshot;
       private TableFormula _newTableFormula;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_tableFormula);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_tableFormula);
          A.CallTo(() => _formulaFactory.CreateTableFormula()).Returns(new TableFormula());
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newTableFormula = sut.MapToModel(_snapshot);
+         _newTableFormula = await sut.MapToModel(_snapshot);
       }
 
       [Observation]

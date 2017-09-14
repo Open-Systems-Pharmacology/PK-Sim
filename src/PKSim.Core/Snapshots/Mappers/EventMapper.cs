@@ -1,4 +1,5 @@
-﻿using PKSim.Core.Model;
+﻿using System.Threading.Tasks;
+using PKSim.Core.Model;
 using SnapshotEvent = PKSim.Core.Snapshots.Event;
 using ModelEvent = PKSim.Core.Model.PKSimEvent;
 
@@ -13,7 +14,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _eventFactory = eventFactory;
       }
 
-      public override SnapshotEvent MapToSnapshot(ModelEvent modelEvent)
+      public override Task<SnapshotEvent> MapToSnapshot(ModelEvent modelEvent)
       {
          return SnapshotFrom(modelEvent, snapshot =>
          {
@@ -21,11 +22,11 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override ModelEvent MapToModel(SnapshotEvent snapshotEvent)
+      public override async Task<ModelEvent> MapToModel(SnapshotEvent snapshotEvent)
       {
          var modelEvent = _eventFactory.Create(snapshotEvent.Template);
          MapSnapshotPropertiesToModel(snapshotEvent, modelEvent);
-         UpdateParametersFromSnapshot(snapshotEvent, modelEvent, snapshotEvent.Template);
+         await UpdateParametersFromSnapshot(snapshotEvent, modelEvent, snapshotEvent.Template);
          return modelEvent;
       }
    }

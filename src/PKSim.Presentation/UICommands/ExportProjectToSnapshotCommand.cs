@@ -1,4 +1,5 @@
-﻿using OSPSuite.Presentation.MenuAndBars;
+﻿using OSPSuite.Core.Extensions;
+using OSPSuite.Presentation.MenuAndBars;
 using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation.UICommands
@@ -12,9 +13,9 @@ namespace PKSim.Presentation.UICommands
          _projectTask = projectTask;
       }
 
-      public void Execute()
+      public async void Execute()
       {
-         _projectTask.ExportCurrentProjectToSnapshot();
+         await _projectTask.SecureAwait(x => x.ExportCurrentProjectToSnapshot());
       }
    }
 }

@@ -1,10 +1,11 @@
 ﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.UICommands;
 using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class ExportSnapshotCommand<T>  : ObjectUICommand<T> where T : class, IObjectBase
+   public class ExportSnapshotCommand<T> : ObjectUICommand<T> where T : class, IObjectBase
    {
       private readonly ISnapshotTask _snapshotTask;
 
@@ -13,9 +14,10 @@ namespace PKSim.Presentation.UICommands
          _snapshotTask = snapshotTask;
       }
 
-      protected override void PerformExecute()
+      protected override async void PerformExecute()
       {
-         _snapshotTask.ExportSnapshot(Subject);
+         await _snapshotTask.SecureAwait(x => x.ExportSnapshot(Subject));
       }
+
    }
 }

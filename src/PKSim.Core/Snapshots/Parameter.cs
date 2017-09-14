@@ -10,7 +10,7 @@
 
    public class LocalizedParameter : Parameter
    {
-      //Full path of parameter in container hierarchie
+      //Full path of parameter in container hierarchy
       public string Path { get; set; }
    }
 }

@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
@@ -6,7 +7,7 @@ using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_DistributedTableFormulaMapper : ContextSpecification<DistributedTableFormulaMapper>
+   public abstract class concern_for_DistributedTableFormulaMapper : ContextSpecificationAsync<DistributedTableFormulaMapper>
    {
       protected IFormulaFactory _formulaFactory;
       protected TableFormulaMapper _tableFormulaMapper;
@@ -15,9 +16,8 @@ namespace PKSim.Core
       protected DistributionMetaData _distributionMetaData1;
       protected DistributionMetaData _distributionMetaData2;
 
-      protected override void Context()
+      protected override Task Context()
       {
-         base.Context();
          _tableFormulaMapper = A.Fake<TableFormulaMapper>();
          _formulaFactory = A.Fake<IFormulaFactory>();
          sut = new DistributedTableFormulaMapper(_tableFormulaMapper, _formulaFactory);
@@ -44,14 +44,16 @@ namespace PKSim.Core
          _distributedTableFormula.AddDistributionMetaData(_distributionMetaData2);
 
          _distributedTableFormula.Percentile = 0.8;
+
+         return Task.FromResult(true);
       }
    }
 
    public class When_mapping_a_distributed_table_formula_to_snapshot : concern_for_DistributedTableFormulaMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_distributedTableFormula);
+         _snapshot = await sut.MapToSnapshot(_distributedTableFormula);
       }
 
       [Observation]
@@ -84,16 +86,16 @@ namespace PKSim.Core
    {
       private DistributedTableFormula _newFormula;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_distributedTableFormula);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_distributedTableFormula);
          A.CallTo(() => _formulaFactory.CreateDistributedTableFormula()).Returns(new DistributedTableFormula());
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newFormula = sut.MapToModel(_snapshot);
+         _newFormula = await sut.MapToModel(_snapshot);
       }
 
       [Observation]

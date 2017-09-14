@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Snapshots.Mappers
@@ -19,7 +20,7 @@ namespace PKSim.Core.Snapshots.Mappers
          model.Description = snapshot.Description;
       }
 
-      protected override TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
+      protected override Task<TSnapshot> SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
       {
          return base.SnapshotFrom(model, snapshot =>
          {
@@ -33,11 +34,11 @@ namespace PKSim.Core.Snapshots.Mappers
       where TModel : IObjectBase
       where TSnapshot : IWithName, IWithDescription, new()
    {
-      public abstract TModel MapToModel(TSnapshot snapshot, TContext context);
+      public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
 
-      public override TModel MapToModel(TSnapshot snapshot)
+      public override Task<TModel> MapToModel(TSnapshot snapshot)
       {
-         throw new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>();
+         return FromException<TModel>(new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>());
       }
    }
 }

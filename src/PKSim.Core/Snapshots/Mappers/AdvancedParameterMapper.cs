@@ -1,33 +1,45 @@
-﻿using System;
+﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
+using PKSim.Assets;
+using PKSim.Core.Model;
 using ModelAdvancedParameter = PKSim.Core.Model.AdvancedParameter;
 using SnapshotAdvancedParameter = PKSim.Core.Snapshots.AdvancedParameter;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class AdvancedParameterMapper : ParameterContainerSnapshotMapperBase<ModelAdvancedParameter, SnapshotAdvancedParameter>
+   public class AdvancedParameterMapper : ParameterContainerSnapshotMapperBase<ModelAdvancedParameter, SnapshotAdvancedParameter, PathCache<IParameter>>
    {
-      public AdvancedParameterMapper(ParameterMapper parameterMapper) : base(parameterMapper)
+      private readonly IAdvancedParameterFactory _advancedParameterFactory;
+
+      public AdvancedParameterMapper(ParameterMapper parameterMapper, IAdvancedParameterFactory advancedParameterFactory) : base(parameterMapper)
       {
+         _advancedParameterFactory = advancedParameterFactory;
       }
 
-      public override SnapshotAdvancedParameter MapToSnapshot(ModelAdvancedParameter advancedParameter)
+      public override Task<SnapshotAdvancedParameter> MapToSnapshot(ModelAdvancedParameter advancedParameter)
       {
          return SnapshotFrom(advancedParameter, snapshot =>
          {
-            //the parameter path is what identified the advanced parameter. The name is not used anywhere. We will use the path as key
-            snapshot.Name = advancedParameter.ParameterPath;   
+            //the parameter path is what identified the advanced parameter. The name is not used anywhere.
+            snapshot.Name = advancedParameter.ParameterPath;
             snapshot.DistributionType = advancedParameter.DistributionType.Id;
          });
       }
 
-      protected override void AddModelParametersToSnapshot(ModelAdvancedParameter model, SnapshotAdvancedParameter snapshot)
+      protected override Task AddModelParametersToSnapshot(ModelAdvancedParameter model, SnapshotAdvancedParameter snapshot)
       {
-         AddParametersToSnapshot(model.AllParameters, snapshot);
+         return AddParametersToSnapshot(model.AllParameters, snapshot);
       }
 
-      public override ModelAdvancedParameter MapToModel(SnapshotAdvancedParameter snapshot)
+      public override async Task<ModelAdvancedParameter> MapToModel(SnapshotAdvancedParameter snapshot, PathCache<IParameter> allParameters)
       {
-         throw new NotImplementedException();
+         var parameter = allParameters[snapshot.Name];
+         if (parameter == null)
+            throw new SnapshotOutdatedException(PKSimConstants.Error.SnapshotParameterNotFound(snapshot.Name));
+
+         var advancedParameter = _advancedParameterFactory.Create(parameter, DistributionTypes.ById(snapshot.DistributionType));
+         await UpdateParametersFromSnapshot(snapshot, advancedParameter.DistributedParameter, PKSimConstants.ObjectTypes.AdvancedParameter);
+         return advancedParameter;
       }
    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -32,53 +33,55 @@ namespace PKSim.Core.Snapshots.Mappers
          _compoundFactory = compoundFactory;
       }
 
-      public override SnapshotCompound MapToSnapshot(ModelCompound compound)
+      public override async Task<SnapshotCompound> MapToSnapshot(ModelCompound compound)
       {
-         return SnapshotFrom(compound, snapshot =>
-         {
-            snapshot.CalculationMethods = _calculationMethodCacheMapper.MapToSnapshot(compound.CalculationMethodCache);
-
-            snapshot.Lipophilicity = mapAlternatives(compound, COMPOUND_LIPOPHILICITY);
-            snapshot.FractionUnbound = mapAlternatives(compound, COMPOUND_FRACTION_UNBOUND);
-            snapshot.Solubility = mapAlternatives(compound, COMPOUND_SOLUBILITY);
-            snapshot.IntestinalPermeability = mapAlternatives(compound, COMPOUND_INTESTINAL_PERMEABILITY);
-            snapshot.Permeability = mapAlternatives(compound, COMPOUND_PERMEABILITY);
-
-            snapshot.PkaTypes = mapPkaTypes(compound);
-            snapshot.Processes = mapProcesses(compound);
-            snapshot.IsSmallMolecule = compound.IsSmallMolecule;
-            snapshot.PlasmaProteinBindingPartner = compound.PlasmaProteinBindingPartner.ToString();
-         });
+         var snapshot = await SnapshotFrom(compound);
+         snapshot.CalculationMethods = await _calculationMethodCacheMapper.MapToSnapshot(compound.CalculationMethodCache);
+         snapshot.Lipophilicity = await mapAlternatives(compound, COMPOUND_LIPOPHILICITY);
+         snapshot.FractionUnbound = await mapAlternatives(compound, COMPOUND_FRACTION_UNBOUND);
+         snapshot.Solubility = await mapAlternatives(compound, COMPOUND_SOLUBILITY);
+         snapshot.IntestinalPermeability = await mapAlternatives(compound, COMPOUND_INTESTINAL_PERMEABILITY);
+         snapshot.Permeability = await mapAlternatives(compound, COMPOUND_PERMEABILITY);
+         snapshot.PkaTypes = mapPkaTypes(compound);
+         snapshot.Processes = await mapProcesses(compound);
+         snapshot.IsSmallMolecule = compound.IsSmallMolecule;
+         snapshot.PlasmaProteinBindingPartner = compound.PlasmaProteinBindingPartner.ToString();
+         return snapshot;
       }
 
-      public override ModelCompound MapToModel(SnapshotCompound snapshot)
+      public override async Task<ModelCompound> MapToModel(SnapshotCompound snapshot)
       {
          var compound = _compoundFactory.Create();
          MapSnapshotPropertiesToModel(snapshot, compound);
          _calculationMethodCacheMapper.UpdateCalculationMethodCache(compound, snapshot.CalculationMethods);
-         
-         updateAlternatives(compound, snapshot.Lipophilicity, COMPOUND_LIPOPHILICITY);
-         updateAlternatives(compound, snapshot.FractionUnbound, COMPOUND_FRACTION_UNBOUND);
-         updateAlternatives(compound, snapshot.Solubility, COMPOUND_SOLUBILITY);
-         updateAlternatives(compound, snapshot.IntestinalPermeability, COMPOUND_INTESTINAL_PERMEABILITY);
-         updateAlternatives(compound, snapshot.Permeability, COMPOUND_PERMEABILITY);
+
+         await updateAlternatives(compound, snapshot.Lipophilicity, COMPOUND_LIPOPHILICITY);
+         await updateAlternatives(compound, snapshot.FractionUnbound, COMPOUND_FRACTION_UNBOUND);
+         await updateAlternatives(compound, snapshot.Solubility, COMPOUND_SOLUBILITY);
+         await updateAlternatives(compound, snapshot.IntestinalPermeability, COMPOUND_INTESTINAL_PERMEABILITY);
+         await updateAlternatives(compound, snapshot.Permeability, COMPOUND_PERMEABILITY);
 
          updatePkaTypes(compound, snapshot);
-         compound.AddChildren(snapshot.Processes.Select(_processMapper.MapToModel));
+
+         var tasks = snapshot.Processes.Select(_processMapper.MapToModel);
+         compound.AddChildren(await Task.WhenAll(tasks));
          compound.IsSmallMolecule = snapshot.IsSmallMolecule;
          compound.PlasmaProteinBindingPartner = EnumHelper.ParseValue<PlasmaProteinBindingPartner>(snapshot.PlasmaProteinBindingPartner);
-         UpdateParametersFromSnapshot(snapshot, compound, PKSimConstants.ObjectTypes.Compound);
+         await UpdateParametersFromSnapshot(snapshot, compound, PKSimConstants.ObjectTypes.Compound);
 
          return compound;
       }
 
-      private void updateAlternatives(ModelCompound compound, List<Alternative> snapshotAlternatives, string alternativeGroupName)
+      private async Task updateAlternatives(ModelCompound compound, Alternative[] snapshotAlternatives, string alternativeGroupName)
       {
          var alternativeGroup = compound.ParameterAlternativeGroup(alternativeGroupName);
 
          //Remove all alternatives except calculated ones
-         alternativeGroup.AllAlternatives.ToList().Where(x=>!x.IsCalculated).Each(alternativeGroup.RemoveAlternative);
-         alternativeGroup.AddChildren(snapshotAlternatives.Select(x=>_alternativeMapper.MapToModel(x, alternativeGroup)));
+         alternativeGroup.AllAlternatives.ToList().Where(x => !x.IsCalculated).Each(alternativeGroup.RemoveAlternative);
+
+         var tasks = snapshotAlternatives.Select(x => _alternativeMapper.MapToModel(x, alternativeGroup));
+
+         alternativeGroup.AddChildren(await Task.WhenAll(tasks));
       }
 
       private void updatePkaTypes(ModelCompound compound, SnapshotCompound snapshot)
@@ -91,12 +94,13 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      private List<CompoundProcess> mapProcesses(ModelCompound compound)
+      private Task<CompoundProcess[]> mapProcesses(ModelCompound compound)
       {
-         return compound.AllProcesses().Select(_processMapper.MapToSnapshot).ToList();
+         var tasks= compound.AllProcesses().Select(_processMapper.MapToSnapshot);
+         return Task.WhenAll(tasks);
       }
 
-      private List<PkaType> mapPkaTypes(ModelCompound compound)
+      private PkaType[] mapPkaTypes(ModelCompound compound)
       {
          var pkaTypes = new List<PkaType>();
 
@@ -111,13 +115,13 @@ namespace PKSim.Core.Snapshots.Mappers
             pkaTypes.Add(new PkaType {Pka = pkA, Type = compoundType.ToString()});
          }
 
-         return pkaTypes;
+         return pkaTypes.ToArray();
       }
 
-      protected override void AddModelParametersToSnapshot(ModelCompound compound, SnapshotCompound snapshot)
+      protected override Task AddModelParametersToSnapshot(ModelCompound compound, SnapshotCompound snapshot)
       {
          var parameters = parameterOverwrittenByUserIn(compound);
-         AddParametersToSnapshot(parameters, snapshot);
+         return AddParametersToSnapshot(parameters, snapshot);
       }
 
       private IReadOnlyList<IParameter> parameterOverwrittenByUserIn(ModelCompound compound)
@@ -139,11 +143,12 @@ namespace PKSim.Core.Snapshots.Mappers
             .Where(ParameterHasChanged);
       }
 
-      private List<Alternative> mapAlternatives(ModelCompound compound, string alternativeGroupName)
+      private async Task<Alternative[]> mapAlternatives(ModelCompound compound, string alternativeGroupName)
       {
          var alternativeGroup = compound.ParameterAlternativeGroup(alternativeGroupName);
-         return alternativeGroup.AllAlternatives.Select(_alternativeMapper.MapToSnapshot)
-            .Where(x => x != null).ToList();
+         var tasks = alternativeGroup.AllAlternatives.Select(_alternativeMapper.MapToSnapshot);
+         var alteratives = await Task.WhenAll(tasks);
+         return alteratives.Where(x => x != null).ToArray();
       }
    }
 }

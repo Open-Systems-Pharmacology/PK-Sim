@@ -1,45 +1,41 @@
-﻿using FakeItEasy;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using Individual = PKSim.Core.Snapshots.Individual;
-using ParameterRange = PKSim.Core.Model.ParameterRange;
+using PKSim.Extensions;
+using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
 using Population = PKSim.Core.Snapshots.Population;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_PopulationMapper : ContextSpecification<PopulationMapper>
+   public abstract class concern_for_PopulationMapper : ContextSpecificationAsync<PopulationMapper>
    {
       protected Population _snapshot;
-      protected IndividualMapper _individualMapper;
-      protected ParameterRangeMapper _parameterRangeMapper;
-      protected IGenderRepository _genderRepository;
-      protected Model.Individual _baseIndividual;
-      protected ParameterRange _ageParameterRange;
-      protected ParameterRange _weightParameterRange;
-      protected Snapshots.ParameterRange _ageRangeSnapshot;
-      protected Snapshots.ParameterRange _weightRangeSnapshot;
-      protected Individual _snapshotIndividual;
       protected AdvancedParameterMapper _advancedParameterMapper;
       private AdvancedParameterCollection _advancedParameters;
       private AdvancedParameter _advancedParameter;
       protected Snapshots.AdvancedParameter _advancedParameterSnapshot;
-      protected PopulationFile _populationFile1;
-      protected PopulationFile _populationFile2;
+      protected IRandomPopulationFactory _randomPopulationFactory;
+      protected RandomPopulationSettingsMapper _randomPopulationSettingsMapper;
+      protected PopulationSettings _settingsSnapshot;
+      protected RandomPopulation _population;
+      protected IParameterTask _parameterTask;
 
-      protected override void Context()
+      protected override Task Context()
       {
-         _individualMapper = A.Fake<IndividualMapper>();
-         _parameterRangeMapper = A.Fake<ParameterRangeMapper>();
          _advancedParameterMapper = A.Fake<AdvancedParameterMapper>();
-         _genderRepository = A.Fake<IGenderRepository>();
-
-         sut = new PopulationMapper(_individualMapper, _parameterRangeMapper, _advancedParameterMapper, _genderRepository);
-
-         _baseIndividual = new Model.Individual();
+         _randomPopulationFactory = A.Fake<IRandomPopulationFactory>();
+         _randomPopulationSettingsMapper = A.Fake<RandomPopulationSettingsMapper>();
+         _parameterTask = A.Fake<IParameterTask>();  
+         sut = new PopulationMapper(_advancedParameterMapper, _randomPopulationSettingsMapper, _randomPopulationFactory,_parameterTask);
 
          _advancedParameters = new AdvancedParameterCollection();
          _advancedParameter = new AdvancedParameter
@@ -48,34 +44,16 @@ namespace PKSim.Core
          };
 
          _advancedParameters.AddAdvancedParameter(_advancedParameter);
-
-
-         _ageParameterRange = new ConstrainedParameterRange {ParameterName = CoreConstants.Parameter.AGE};
-         _weightParameterRange = new ParameterRange {ParameterName = CoreConstants.Parameter.MEAN_WEIGHT};
-
-         A.CallTo(() => _parameterRangeMapper.MapToSnapshot(null)).Returns(null);
-         _ageRangeSnapshot = new Snapshots.ParameterRange();
-         A.CallTo(() => _parameterRangeMapper.MapToSnapshot(_ageParameterRange)).Returns(_ageRangeSnapshot);
-
-         _weightRangeSnapshot = new Snapshots.ParameterRange();
-         A.CallTo(() => _parameterRangeMapper.MapToSnapshot(_weightParameterRange)).Returns(_weightRangeSnapshot);
-
-         _snapshotIndividual = new Individual();
-         A.CallTo(() => _individualMapper.MapToSnapshot(_baseIndividual)).Returns(_snapshotIndividual);
-
          _advancedParameterSnapshot = new Snapshots.AdvancedParameter();
-         A.CallTo(() => _advancedParameterMapper.MapToSnapshot(_advancedParameter)).Returns(_advancedParameterSnapshot);
+         A.CallTo(() => _advancedParameterMapper.MapToSnapshot(_advancedParameter)).ReturnsAsync(_advancedParameterSnapshot);
 
-         _populationFile1 = new PopulationFile
-         {
-            FilePath = "Path1",
-            NumberOfIndividuals = 5
-         };
-         _populationFile2 = new PopulationFile
-         {
-            FilePath = "Path2",
-            NumberOfIndividuals = 10
-         };
+
+         _population = CreateRandomPopulation();
+
+         _settingsSnapshot = new PopulationSettings();
+         A.CallTo(() => _randomPopulationSettingsMapper.MapToSnapshot(_population.Settings)).ReturnsAsync(_settingsSnapshot);
+
+         return Task.FromResult(true);
       }
 
       protected RandomPopulation CreateRandomPopulation()
@@ -85,34 +63,19 @@ namespace PKSim.Core
             Name = "RandomPop",
             Description = "Random Pop description",
             Seed = 132,
-            Settings = new RandomPopulationSettings
-            {
-               NumberOfIndividuals = 10,
-               BaseIndividual = _baseIndividual
-            },
+            Settings = new RandomPopulationSettings()
          };
 
-
          randomPopulation.SetAdvancedParameters(_advancedParameters);
-         randomPopulation.Settings.AddParameterRange(_weightParameterRange);
-         randomPopulation.Settings.AddParameterRange(_ageParameterRange);
          return randomPopulation;
       }
    }
 
    public class When_mapping_a_random_population_to_snapshot : concern_for_PopulationMapper
    {
-      protected RandomPopulation _population;
-
-      protected override void Context()
+      protected override async Task Because()
       {
-         base.Context();
-         _population = CreateRandomPopulation();
-      }
-
-      protected override void Because()
-      {
-         _snapshot = sut.MapToSnapshot(_population);
+         _snapshot = await sut.MapToSnapshot(_population);
       }
 
       [Observation]
@@ -129,64 +92,88 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_save_the_base_individual()
-      {
-         _snapshot.Individual.ShouldBeEqualTo(_snapshotIndividual);
-      }
-
-      [Observation]
       public void should_save_all_advanced_parmaeters_to_snapshot()
       {
          _snapshot.AdvancedParameters.ShouldContain(_advancedParameterSnapshot);
       }
 
       [Observation]
-      public void should_save_the_available_ranges()
+      public void should_save_the_population_settings_into_the_snapshot()
       {
-         _snapshot.Age.ShouldBeEqualTo(_ageRangeSnapshot);
-         _snapshot.Weight.ShouldBeEqualTo(_weightRangeSnapshot);
+         _snapshot.Settings.ShouldBeEqualTo(_settingsSnapshot);
+      }
+   }
+
+   public class When_mapping_a_valid_population_snapshot_to_a_population : concern_for_PopulationMapper
+   {
+      private RandomPopulation _newPopulation;
+      private RandomPopulation _randomPopulation;
+      private RandomPopulationSettings _newPopulationSettings;
+      private PathCache<IParameter> _parameterCache;
+      private AdvancedParameter _newAdvancedParameter;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _randomPopulation = CreateRandomPopulation();
+         _newPopulationSettings = new RandomPopulationSettings();
+         _snapshot = await sut.MapToSnapshot(_randomPopulation);
+         A.CallTo(() => _randomPopulationSettingsMapper.MapToModel(_snapshot.Settings)).ReturnsAsync(_newPopulationSettings);
+         var mappedPopulation = A.Fake<RandomPopulation>();
+         mappedPopulation.SetAdvancedParameters(new AdvancedParameterCollection());
+         A.CallTo(() => _randomPopulationFactory.CreateFor(_newPopulationSettings, CancellationToken.None, _snapshot.Seed)).ReturnsAsync(mappedPopulation);
+         _newAdvancedParameter = new AdvancedParameter();
+         _parameterCache = new PathCacheForSpecs<IParameter>();
+         A.CallTo(_parameterTask).WithReturnType<PathCache<IParameter>>().Returns(_parameterCache);
+         A.CallTo(() => _advancedParameterMapper.MapToModel(_advancedParameterSnapshot, _parameterCache)).ReturnsAsync(_newAdvancedParameter);
+      }
+
+      protected override async Task Because()
+      {
+         _newPopulation = await sut.MapToModel(_snapshot) as RandomPopulation;
       }
 
       [Observation]
-      public void should_set_all_other_ranges_to_null()
+      public void should_use_the_snapshot_seed_and_seettings_to_create_the_population()
       {
-         _snapshot.Height.ShouldBeNull();
-         _snapshot.GestationalAge.ShouldBeNull();
-         _snapshot.BMI.ShouldBeNull();
+         A.CallTo(() => _randomPopulationFactory.CreateFor(_newPopulationSettings, CancellationToken.None, _snapshot.Seed)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_return_a_population_having_the_expected_properties()
+      {
+         _newPopulation.Name.ShouldBeEqualTo(_snapshot.Name);
+         _newPopulation.Description.ShouldBeEqualTo(_snapshot.Description);
+      }
+
+      [Observation]
+      public void should_clear_all_previous_advanced_parameters()
+      {
+         A.CallTo(() => _newPopulation.RemoveAllAdvancedParameters()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_add_new_advanced_parameters()
+      {
+         A.CallTo(() => _newPopulation.AddAdvancedParameter(_newAdvancedParameter, true)).MustHaveHappened();
       }
    }
 
    public class When_mapping_an_imported_population : concern_for_PopulationMapper
    {
-      protected ImportPopulation _population;
-
-      protected override void Context()
-      {
-         base.Context();
-         _population = new ImportPopulation();
-      }
-
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToSnapshot(_population)).ShouldThrowAn<OSPSuiteException>();
+         TheAsync.Action(() => sut.MapToSnapshot(new ImportPopulation())).ShouldThrowAnAsync<OSPSuiteException>();
       }
    }
 
    public class When_mapping_a_mobi_population : concern_for_PopulationMapper
    {
-      protected MoBiPopulation _population;
-
-      protected override void Context()
-      {
-         base.Context();
-         _population = new MoBiPopulation();
-      }
-
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToSnapshot(_population)).ShouldThrowAn<OSPSuiteException>();
+         TheAsync.Action(() => sut.MapToSnapshot(new MoBiPopulation())).ShouldThrowAnAsync<OSPSuiteException>();
       }
    }
 }

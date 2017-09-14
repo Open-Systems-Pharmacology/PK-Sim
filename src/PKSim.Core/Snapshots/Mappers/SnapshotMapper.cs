@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Utility.Collections;
 
 namespace PKSim.Core.Snapshots.Mappers
@@ -14,7 +15,7 @@ namespace PKSim.Core.Snapshots.Mappers
       ///    is thrown if a snapshot could not be found for the given
       ///    <paramref name="model" />
       /// </exception>
-      object MapToSnapshot(object model);
+      Task<object> MapToSnapshot(object model);
 
       /// <summary>
       ///    Given a <paramref name="snapshot" /> object, returns the corresponding model.
@@ -23,7 +24,7 @@ namespace PKSim.Core.Snapshots.Mappers
       ///    is thrown if a snapshot could not be found for the given
       ///    <paramref name="snapshot" />
       /// </exception>
-      object MapToModel(object snapshot);
+      Task<object> MapToModel(object snapshot);
 
       /// <summary>
       /// Returns the snapshot type for the model type <typeparamref name="T"/>
@@ -45,13 +46,13 @@ namespace PKSim.Core.Snapshots.Mappers
          _allMappers = snapshotMapperRepository.All().ToList();
       }
 
-      public object MapToSnapshot(object model)
+      public Task<object> MapToSnapshot(object model)
       {
          var modelType = model.GetType();
          return mapperFor(modelType).MapToSnapshot(model);
       }
 
-      public object MapToModel(object snapshot)
+      public Task<object> MapToModel(object snapshot)
       {
          var snapshotType = snapshot.GetType();
          return mapperFor(snapshotType).MapToModel(snapshot);

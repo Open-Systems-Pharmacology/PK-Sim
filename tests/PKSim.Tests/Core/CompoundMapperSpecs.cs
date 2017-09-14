@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -14,7 +15,7 @@ using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_CompoundMapper : ContextSpecification<CompoundMapper>
+   public abstract class concern_for_CompoundMapper : ContextSpecificationAsync<CompoundMapper>
    {
       protected AlternativeMapper _alternativeMapper;
       protected ParameterMapper _parameterMapper;
@@ -29,7 +30,7 @@ namespace PKSim.Core
       private SystemicProcess _systemicProcess;
       protected ICompoundFactory _compoundFactory;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _alternativeMapper = A.Fake<AlternativeMapper>();
          _parameterMapper = A.Fake<ParameterMapper>();
@@ -69,6 +70,8 @@ namespace PKSim.Core
          _snapshotProcess2 = new CompoundProcess();
          A.CallTo(() => _processMapper.MapToSnapshot(_partialProcess)).Returns(_snapshotProcess1);
          A.CallTo(() => _processMapper.MapToSnapshot(_systemicProcess)).Returns(_snapshotProcess2);
+
+         return Task.FromResult(true);
       }
 
       private void addPkAParameters(Model.Compound compound, int index, double pkA, CompoundType compoundType)
@@ -91,9 +94,9 @@ namespace PKSim.Core
 
    public class When_mapping_a_compound_to_snapshot : concern_for_CompoundMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_compound);
+         _snapshot = await sut.MapToSnapshot(_compound);
       }
 
       [Observation]
@@ -130,17 +133,17 @@ namespace PKSim.Core
       [Observation]
       public void should_have_saved_the_defined_alternative_into_the_snapshot()
       {
-         _snapshot.Lipophilicity.Count.ShouldBeEqualTo(1);
-         _snapshot.FractionUnbound.Count.ShouldBeEqualTo(1);
-         _snapshot.Solubility.Count.ShouldBeEqualTo(1);
-         _snapshot.IntestinalPermeability.Count.ShouldBeEqualTo(1);
-         _snapshot.Permeability.Count.ShouldBeEqualTo(1);
+         _snapshot.Lipophilicity.Length.ShouldBeEqualTo(1);
+         _snapshot.FractionUnbound.Length.ShouldBeEqualTo(1);
+         _snapshot.Solubility.Length.ShouldBeEqualTo(1);
+         _snapshot.IntestinalPermeability.Length.ShouldBeEqualTo(1);
+         _snapshot.Permeability.Length.ShouldBeEqualTo(1);
       }
 
       [Observation]
       public void should_export_all_pka_type_values_that_are_not_neutral()
       {
-         _snapshot.PkaTypes.Count.ShouldBeEqualTo(2);
+         _snapshot.PkaTypes.Length.ShouldBeEqualTo(2);
          _snapshot.PkaTypes[0].Pka.ShouldBeEqualTo(8);
          _snapshot.PkaTypes[0].Type.ShouldBeEqualTo(CompoundType.Base.ToString());
 
@@ -157,16 +160,16 @@ namespace PKSim.Core
       private Model.CompoundProcess _newProcess;
       private ParameterAlternativeGroup _fractionUnboundParameterGroup;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(() => _compoundFactory.Create()).Returns(_compound);
          clearCompound();
 
-         _snapshot = sut.MapToSnapshot(_compound);
+         _snapshot = await sut.MapToSnapshot(_compound);
          _snapshot.PlasmaProteinBindingPartner = PlasmaProteinBindingPartner.Albumin.ToString();
          _snapshot.IsSmallMolecule = false;
-         _snapshot.PkaTypes = new List<PkaType>()
+         _snapshot.PkaTypes = new[]
          {
             new PkaType {Pka = 1, Type = CompoundType.Acid.ToString()},
             new PkaType {Pka = 2, Type = CompoundType.Base.ToString()},
@@ -177,7 +180,7 @@ namespace PKSim.Core
          _fractionUnboundParameterGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
          A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], _fractionUnboundParameterGroup)).Returns(_alternative);
 
-         _snapshot.Processes = new List<CompoundProcess>{_snapshotProcess1};
+         _snapshot.Processes = new[]{_snapshotProcess1};
          _newProcess=new EnzymaticProcess();
          A.CallTo(() =>  _processMapper.MapToModel(_snapshotProcess1)).Returns(_newProcess);
       }
@@ -187,9 +190,9 @@ namespace PKSim.Core
          _compound.AllProcesses().ToList().Each(_compound.RemoveProcess);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newCompound = sut.MapToModel(_snapshot);
+         _newCompound = await sut.MapToModel(_snapshot);
       }
 
       [Observation]

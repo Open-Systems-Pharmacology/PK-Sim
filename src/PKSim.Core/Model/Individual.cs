@@ -20,7 +20,7 @@ namespace PKSim.Core.Model
 
       public Individual() : base(PKSimBuildingBlockType.Individual)
       {
-         GenerateSeed();
+         Seed = Environment.TickCount;
       }
 
 
@@ -33,14 +33,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual SpeciesPopulation Population => OriginData.SpeciesPopulation;
 
-      /// <summary>
-      ///    Create a new seed for the individual
-      /// </summary>
-      public virtual void GenerateSeed()
-      {
-         Seed = Environment.TickCount;
-      }
-
+ 
       /// <summary>
       ///    all available organs in the individual
       /// </summary>

@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -7,7 +8,7 @@ using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_SchemaItemMapper : ContextSpecification<SchemaItemMapper>
+   public abstract class concern_for_SchemaItemMapper : ContextSpecificationAsync<SchemaItemMapper>
    {
       protected ParameterMapper _parameterMapper;
       protected SchemaItem _schemaItem;
@@ -15,7 +16,7 @@ namespace PKSim.Core
       protected IParameter _parameter;
       protected ISchemaItemFactory _schemaItemFactory;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _schemaItemFactory = A.Fake<ISchemaItemFactory>();
@@ -36,14 +37,16 @@ namespace PKSim.Core
          _schemaItem.Add(_parameter);
 
          A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter)).Returns(new Snapshots.Parameter().WithName(_parameter.Name));
+
+         return Task.FromResult(true);
       }
    }
 
    public class When_mapping_a_model_schema_item_to_a_snapshot_schema_item : concern_for_SchemaItemMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_schemaItem);
+         _snapshot = await sut.MapToSnapshot(_schemaItem);
       }
 
       [Observation]
@@ -67,10 +70,10 @@ namespace PKSim.Core
    {
       private SchemaItem _newSchemaItem;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_schemaItem);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_schemaItem);
          A.CallTo(() => _schemaItemFactory.Create(_schemaItem.ApplicationType, null)).Returns(_schemaItem);
 
          _snapshot.Name = "New Schema Item";
@@ -80,9 +83,9 @@ namespace PKSim.Core
          _snapshot.TargetCompartment = "Titi";
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newSchemaItem = sut.MapToModel(_snapshot);
+         _newSchemaItem = await sut.MapToModel(_snapshot);
       }
 
       [Observation]

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility;
@@ -282,9 +283,9 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      public IReadOnlyList<TBuildingBlock> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
+      public async Task<IReadOnlyList<TBuildingBlock>> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         var buildingBlocks = _snapshotTask.LoadFromSnapshot<TBuildingBlock>();
+         var buildingBlocks = await _snapshotTask.LoadFromSnapshot<TBuildingBlock>();
          return addBuildingBlocksToProject(buildingBlocks).ToList();
       }
 
@@ -349,7 +350,7 @@ namespace PKSim.Presentation.Services
          return LoadFromTemplate(_buildingBlockType);
       }
 
-      public IReadOnlyList<TBuildingBlock> LoadFromSnapshot()
+      public Task<IReadOnlyList<TBuildingBlock>> LoadFromSnapshot()
       {
          return LoadFromSnapshot(_buildingBlockType);
       }
@@ -445,7 +446,7 @@ namespace PKSim.Presentation.Services
          return _buildingBlockTask.LoadFromTemplate<TBuildingBlock>(buildingBlockType);
       }
 
-      protected virtual IReadOnlyList<TBuildingBlock> LoadFromSnapshot(PKSimBuildingBlockType buildingBlockType)
+      protected virtual Task<IReadOnlyList<TBuildingBlock>> LoadFromSnapshot(PKSimBuildingBlockType buildingBlockType)
       {
          return _buildingBlockTask.LoadFromSnapshot<TBuildingBlock>(buildingBlockType);
       }

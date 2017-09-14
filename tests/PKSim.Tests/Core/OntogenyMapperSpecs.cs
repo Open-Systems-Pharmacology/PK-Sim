@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
@@ -7,7 +8,7 @@ using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_OntogenyMapper : ContextSpecification<OntogenyMapper>
+   public abstract class concern_for_OntogenyMapper : ContextSpecificationAsync<OntogenyMapper>
    {
       protected DistributedTableFormulaMapper _distributedTableFormulaMapper;
       protected Ontogeny _ontogeny;
@@ -16,28 +17,32 @@ namespace PKSim.Core
       protected ISimulationSubject _simulationSubject;
       private IOntogenyRepository _ontogenyRepository;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _distributedTableFormulaMapper = A.Fake<DistributedTableFormulaMapper>();
-         _ontogenyRepository= A.Fake<IOntogenyRepository>();
+         _ontogenyRepository = A.Fake<IOntogenyRepository>();
 
          sut = new OntogenyMapper(_distributedTableFormulaMapper, _ontogenyRepository);
 
          _distributedTableFormula = new DistributedTableFormula();
          _snapshotTable = new Snapshots.DistributedTableFormula();
          A.CallTo(() => _distributedTableFormulaMapper.MapToSnapshot(_distributedTableFormula)).Returns(_snapshotTable);
-         
-         _simulationSubject= A.Fake<ISimulationSubject>();
+
+         _simulationSubject = A.Fake<ISimulationSubject>();
+
+         return Task.FromResult(true);
       }
    }
 
    public class When_mapping_an_undefined_ontogeny_to_snapshot : concern_for_OntogenyMapper
    {
       [Observation]
-      public void should_return_null()
+      public async Task should_return_null()
       {
-         sut.MapToSnapshot(null).ShouldBeNull();
-         sut.MapToSnapshot(new NullOntogeny()).ShouldBeNull();
+         var snapshot = await sut.MapToSnapshot(null);
+         snapshot.ShouldBeNull();
+         snapshot = await sut.MapToSnapshot(new NullOntogeny());
+         snapshot.ShouldBeNull();
       }
    }
 
@@ -45,9 +50,9 @@ namespace PKSim.Core
    {
       private Snapshots.Ontogeny _snapshot;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _ontogeny = new DatabaseOntogeny
          {
             Name = "Database",
@@ -55,9 +60,9 @@ namespace PKSim.Core
          };
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_ontogeny);
+         _snapshot = await sut.MapToSnapshot(_ontogeny);
       }
 
       [Observation]
@@ -83,21 +88,20 @@ namespace PKSim.Core
    {
       private Snapshots.Ontogeny _snapshot;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _ontogeny = new UserDefinedOntogeny
          {
             Name = "UserDefined",
             Description = "UserDefined description",
             Table = _distributedTableFormula
          };
-
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_ontogeny);
+         _snapshot = await sut.MapToSnapshot(_ontogeny);
       }
 
       [Observation]
@@ -119,9 +123,9 @@ namespace PKSim.Core
       private Snapshots.Ontogeny _snapshot;
       private Ontogeny _newOntogeny;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _ontogeny = new UserDefinedOntogeny
          {
             Name = "UserDefined",
@@ -129,13 +133,13 @@ namespace PKSim.Core
             Table = _distributedTableFormula
          };
 
-         _snapshot = sut.MapToSnapshot(_ontogeny);
+         _snapshot = await sut.MapToSnapshot(_ontogeny);
          A.CallTo(() => _distributedTableFormulaMapper.MapToModel(_snapshotTable)).Returns(_distributedTableFormula);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newOntogeny = sut.MapToModel(_snapshot, _simulationSubject);
+         _newOntogeny = await sut.MapToModel(_snapshot, _simulationSubject);
       }
 
       [Observation]
