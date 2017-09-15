@@ -68,7 +68,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          OnStatusChanged();
       }
 
-      private void addEventMapping(IEventMapping eventMapping)
+      private void addEventMapping(EventMapping eventMapping)
       {
          _allEventsMappingDTO.Add(_eventMappingDTOMapper.MapFrom(eventMapping, _simulation));
       }

@@ -5,21 +5,21 @@ using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
-   public class UsedBuildingBlock : IVersionable, IVisitable<IVisitor>
+   public class UsedBuildingBlock : IVersionable, IVisitable<IVisitor>, IWithName
    {
       private IPKSimBuildingBlock _buildingBlock;
 
       /// <summary>
       ///    Type of the building block
       /// </summary>
-      public virtual PKSimBuildingBlockType BuildingBlockType { get; private set; }
+      public virtual PKSimBuildingBlockType BuildingBlockType { get; }
 
       /// <summary>
       ///    Id of the template building block used in the project (this is not the id of the buildingblock saved as member but
       ///    the id of the template
       ///    used to generate the building block (e.g. orign))
       /// </summary>
-      public virtual string TemplateId { get; private set; }
+      public virtual string TemplateId { get; }
 
       public virtual int Version { get; set; }
 
@@ -69,7 +69,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual IPKSimBuildingBlock BuildingBlock
       {
-         get { return _buildingBlock; }
+         get => _buildingBlock;
          set
          {
             _buildingBlock = value;
@@ -103,7 +103,7 @@ namespace PKSim.Core.Model
 
       public virtual bool IsLoaded
       {
-         get { return BuildingBlock?.IsLoaded ?? false; }
+         get => BuildingBlock?.IsLoaded ?? false;
          set
          {
             if (BuildingBlock != null)

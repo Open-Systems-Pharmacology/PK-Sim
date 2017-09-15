@@ -84,6 +84,8 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return ExportToPDFMenuFor(simulation);
 
          yield return AddToJournalMenuFor(simulation);
+
+         yield return ExportSnapshotMenuFor(simulation);
       }
    }
 

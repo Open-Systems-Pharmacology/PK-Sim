@@ -1,11 +1,10 @@
 ﻿using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Batch.Mapper
 {
@@ -24,8 +23,8 @@ namespace PKSim.Core.Batch.Mapper
       private readonly IBatchLogger _logger;
 
       public SimulationMapper(ICompoundMapper compoundMapper, IIndividualMapper individualMapper,
-                              IApplicationProtocolMapper protocolMapper, ISimulationConstructor simulationConstructor,
-                              IModelPropertiesMapper modelPropertiesMapper, IFormulationMapper formulationMapper, IBatchLogger logger)
+         IApplicationProtocolMapper protocolMapper, ISimulationConstructor simulationConstructor,
+         IModelPropertiesMapper modelPropertiesMapper, IFormulationMapper formulationMapper, IBatchLogger logger)
       {
          _compoundMapper = compoundMapper;
          _individualMapper = individualMapper;
@@ -47,13 +46,12 @@ namespace PKSim.Core.Batch.Mapper
          {
             var protocol = _protocolMapper.MapFrom(applicationProtocol);
             var compound = compounds.FindByName(applicationProtocol.CompoundName);
-            if(compound!=null)
+            if (compound != null)
                protocolForCompound.Add(compound, protocol);
-
          }
-      
+
          //if protocol for compound is not empty, that means that name were specified explictely in json file and we should use that
-         var protocolToUse  =protocolForCompound.Any() ? protocolForCompound.ToList() : protocols;
+         var protocolToUse = protocolForCompound.Any() ? protocolForCompound.ToList() : protocols;
 
          //a requirement is that compounds and protocols have the same length. Fill missing entries with null
          while (protocolToUse.Count < compounds.Count)
@@ -83,7 +81,7 @@ namespace PKSim.Core.Batch.Mapper
 
          var config = batchSimulation.Configuration;
          var interval = simulation.OutputSchema.Intervals.First();
-         
+
          //remove old ones
          foreach (var otherInterval in simulation.OutputSchema.Intervals.Skip(1).ToList())
          {

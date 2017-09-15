@@ -20,8 +20,9 @@ namespace OSPSuite.BDDHelper
       ///    The Global context of the test (e.g. TestFixtureSetUp). This function will be called only once
       /// </summary>
       [OneTimeSetUp]
-      public virtual void GlobalContext()
+      public virtual Task GlobalContext()
       {
+         return Task.FromResult(true);
       }
 
       /// <summary>calls the context and the because at once</summary>
@@ -32,26 +33,27 @@ namespace OSPSuite.BDDHelper
          await Because();
       }
 
-      /// <summary>The actual action tested in the specification</summary>
-      protected virtual Task Because()
-      {
-         return Task.FromResult(false);
-      }
-
       /// <summary>
       ///    The context of the test (e.g. SetUp). This function will be call for each observation
       /// </summary>
       protected virtual Task Context()
       {
-         return Task.FromResult(false);
+         return Task.FromResult(true);
+      }
+
+      /// <summary>The actual action tested in the specification</summary>
+      protected virtual Task Because()
+      {
+         return Task.FromResult(true);
       }
 
       /// <summary>
       ///    Cleanup function to release objects if necessary (e.g. TearDown). This function is called after each observation
       /// </summary>
       [TearDown]
-      public virtual void Cleanup()
+      public virtual Task Cleanup()
       {
+         return Task.FromResult(true);
       }
 
       /// <summary>
@@ -59,8 +61,9 @@ namespace OSPSuite.BDDHelper
       ///    after all observations were tested
       /// </summary>
       [OneTimeTearDown]
-      public virtual void GlobalCleanup()
+      public virtual Task GlobalCleanup()
       {
+         return Task.FromResult(true);
       }
    }
 

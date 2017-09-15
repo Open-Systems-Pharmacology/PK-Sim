@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -22,20 +23,33 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<SnapshotCalculationMethodCache> MapToSnapshot(ModelCalculationMethodCache model)
       {
-         return SnapshotFrom(model, snapshot =>
-         {
-            addCalculationMethodsToSnapshot(snapshot, model);
-         });
+         return SnapshotFrom(model, snapshot => { addCalculationMethodsToSnapshot(snapshot, model); });
       }
 
-      private void addCalculationMethodsToSnapshot(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache model)
+      private void addCalculationMethodsToSnapshot(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache calculationMethodCache)
       {
-         model.All().Each(cm =>
-         {
-            var category = _calculationMethodCategoryRepository.FindBy(cm.Category);
-            if (category.AllItems().Count() != 1)
-               snapshot.Add(cm.Name);
-         });
+         calculationMethodCache.All().Each(cm => addCalculationMethodToSnapshot(snapshot, cm));
+      }
+
+      private void addCalculationMethodToSnapshot(SnapshotCalculationMethodCache snapshot, CalculationMethod calculationMethod)
+      {
+         var category = _calculationMethodCategoryRepository.FindBy(calculationMethod.Category);
+
+         var allPossibleCalculationMethods = category.AllItems().ToList();
+
+         //only one CM in this category. Nothing to do
+         if (allPossibleCalculationMethods.Count <= 1)
+            return;
+
+         //all CM have the same name? they will never be displayed together
+         if(allPossibleCalculationMethods.Select(x=>x.DisplayName).Distinct().Count()==1)
+            return;
+
+         if (allPossibleCalculationMethods.Any(x => x.AllModels.Count == 1))
+            return;
+
+         //at least one CM that can be used in two models or different names. We may have a choice here. save it
+         snapshot.Add(calculationMethod.Name);
       }
 
       public override Task<ModelCalculationMethodCache> MapToModel(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache calculationMethodCache)

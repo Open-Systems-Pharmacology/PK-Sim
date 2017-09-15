@@ -5,7 +5,7 @@ using PKSim.Core.Repositories;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {
-   public class EventMappingReportBuilder : ReportBuilder<IEventMapping>
+   public class EventMappingReportBuilder : ReportBuilder<EventMapping>
    {
       private readonly IReportGenerator _reportGenerator;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
@@ -16,12 +16,12 @@ namespace PKSim.Infrastructure.Reporting.Summary
          _buildingBlockRepository = buildingBlockRepository;
       }
 
-      protected override void FillUpReport(IEventMapping eventMapping, ReportPart reportPart)
+      protected override void FillUpReport(EventMapping eventMapping, ReportPart reportPart)
       {
          var templateEvent = _buildingBlockRepository.FindById(eventMapping.TemplateEventId);
          if (templateEvent == null) return;
 
-         reportPart.AddToContent(string.Format("{0}, {1}", PKSimConstants.UI.ReportIs("Event", templateEvent.Name), _reportGenerator.StringReportFor(eventMapping.StartTime)));
+         reportPart.AddToContent($"{PKSimConstants.UI.ReportIs("Event", templateEvent.Name)}, {_reportGenerator.StringReportFor(eventMapping.StartTime)}");
       }
    }
 }

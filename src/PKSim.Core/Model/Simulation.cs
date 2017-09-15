@@ -304,7 +304,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual SimulationResults Results
       {
-         get { return _results; }
+         get => _results;
          set
          {
             _results = value ?? new NullSimulationResults();
@@ -448,7 +448,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual SimulationProperties Properties
       {
-         get { return _properties; }
+         get => _properties;
          set
          {
             _properties = value;
@@ -561,14 +561,14 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual bool AllowAging
       {
-         get { return Properties.AllowAging; }
-         set { Properties.AllowAging = value; }
+         get => Properties.AllowAging;
+         set => Properties.AllowAging = value;
       }
 
       public virtual Origin Origin
       {
-         get { return Properties.Origin; }
-         set { Properties.Origin = value; }
+         get => Properties.Origin;
+         set => Properties.Origin = value;
       }
 
       /// <summary>
@@ -581,8 +581,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual ModelProperties ModelProperties
       {
-         get { return Properties.ModelProperties; }
-         set { Properties.ModelProperties = value; }
+         get => Properties.ModelProperties;
+         set => Properties.ModelProperties = value;
       }
 
       /// <summary>
@@ -621,8 +621,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual ModelConfiguration ModelConfiguration
       {
-         get { return ModelProperties.ModelConfiguration; }
-         set { ModelProperties.ModelConfiguration = value; }
+         get => ModelProperties.ModelConfiguration;
+         set => ModelProperties.ModelConfiguration = value;
       }
 
       /// <summary>
@@ -630,8 +630,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual EventProperties EventProperties
       {
-         get { return Properties.EventProperties; }
-         set { Properties.EventProperties = value; }
+         get => Properties.EventProperties;
+         set => Properties.EventProperties = value;
       }
 
       /// <summary>
@@ -639,8 +639,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual InteractionProperties InteractionProperties
       {
-         get { return Properties.InteractionProperties; }
-         set { Properties.InteractionProperties = value; }
+         get => Properties.InteractionProperties;
+         set => Properties.InteractionProperties = value;
       }
 
       public virtual Individual Individual => BuildingBlock<Individual>();

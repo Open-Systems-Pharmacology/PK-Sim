@@ -246,6 +246,7 @@
     <Compile Include="Core\CalculationMethodCacheMapperSpecs.cs" />
     <Compile Include="Core\CompoundMapperSpecs.cs" />
     <Compile Include="Core\CompoundProcessMapperSpecs.cs" />
+    <Compile Include="Core\CompoundPropertiesMapperSpecs.cs" />
     <Compile Include="Core\DataColumnMapperSpecs.cs" />
     <Compile Include="Core\DataInfoMapperSpecs.cs" />
     <Compile Include="Core\DistributedTableFormulaMapperSpecs.cs" />
@@ -260,6 +261,9 @@
     <Compile Include="Core\MoleculeMapperSpecs.cs" />
     <Compile Include="Core\ObservedDataMapperSpecs.cs" />
     <Compile Include="Core\OntogenyMapperSpecs.cs" />
+    <Compile Include="Core\OutputIntervalMapperSpecs.cs" />
+    <Compile Include="Core\OutputSchemaMapperSpecs.cs" />
+    <Compile Include="Core\OutputSelectionsMapperSpecs.cs" />
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
     <Compile Include="Core\ParameterMapperSpecs.cs" />
@@ -275,8 +279,11 @@
     <Compile Include="Core\SetRelativeExpressionFromNormalizedCommandSpecs.cs" />
     <Compile Include="Core\ProtocolMapperSpecs.cs" />
     <Compile Include="Core\SimulationConfigurationValidatorSpecs.cs" />
+    <Compile Include="Core\SimulationMapperSpecs.cs" />
+    <Compile Include="Core\SimulationPropertiesMapperSpecs.cs" />
     <Compile Include="Core\SnapshotMapperSpecs.cs" />
     <Compile Include="Core\SnapshotTaskSpecs.cs" />
+    <Compile Include="Core\SolverSettingsMapperSpecs.cs" />
     <Compile Include="Core\TableFormulaMapperSpecs.cs" />
     <Compile Include="Core\TablePartSpecs.cs" />
     <Compile Include="Core\TimeProfileAnalysisChartSpecs.cs" />

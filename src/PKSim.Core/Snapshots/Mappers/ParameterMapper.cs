@@ -60,13 +60,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return parameter;
       }
 
-      private Task<SnapshotTableFormula> mapFormula(IFormula formula)
+      private async Task<SnapshotTableFormula> mapFormula(IFormula formula)
       {
          var tableFormula = formula as ModelTableFormula;
          if (tableFormula == null)
-            return Task.FromResult<SnapshotTableFormula>(null);
+            return null;
 
-         return _tableFormulaMapper.MapToSnapshot(tableFormula);
+         return await _tableFormulaMapper.MapToSnapshot(tableFormula);
       }
 
       public virtual SnapshotParameter ParameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension)
