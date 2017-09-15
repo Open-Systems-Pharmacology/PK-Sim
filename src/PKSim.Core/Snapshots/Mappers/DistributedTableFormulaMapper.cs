@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using SnapshotTableFormula = PKSim.Core.Snapshots.DistributedTableFormula;
@@ -18,7 +19,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _formulaFactory = formulaFactory;
       }
 
-      public override SnapshotTableFormula MapToSnapshot(ModelTableFormula tableFormula)
+      public override Task<SnapshotTableFormula> MapToSnapshot(ModelTableFormula tableFormula)
       {
          return SnapshotFrom(tableFormula, snapshot =>
          {
@@ -38,13 +39,13 @@ namespace PKSim.Core.Snapshots.Mappers
          }).ToList();
       }
 
-      public override ModelTableFormula MapToModel(SnapshotTableFormula snapshot)
+      public override Task<ModelTableFormula> MapToModel(SnapshotTableFormula snapshot)
       {
          var tableFormula = _formulaFactory.CreateDistributedTableFormula();
          _tableFormulaMapper.UpdateModelProperties(tableFormula, snapshot);
          tableFormula.Percentile = snapshot.Percentile;
          snapshot.DistributionMetaData.Select(modelDistributionDataFrom).Each(tableFormula.AddDistributionMetaData);
-         return tableFormula;
+         return Task.FromResult(tableFormula);
       }
 
       private Model.DistributionMetaData modelDistributionDataFrom(DistributionMetaData distributionMetaData)

@@ -190,6 +190,8 @@ namespace PKSim.Core.Model
 
       public virtual IEnumerable<AdvancedParameter> AdvancedParameters => AdvancedParameterCollection.AdvancedParameters;
 
+      public virtual void RemoveAllAdvancedParameters() => AdvancedParameterCollection.Clear();
+
       public virtual AdvancedParameter AdvancedParameterFor(IEntityPathResolver entityPathResolver, IParameter parameter)
       {
          return AdvancedParameterCollection.AdvancedParameterFor(entityPathResolver, parameter);

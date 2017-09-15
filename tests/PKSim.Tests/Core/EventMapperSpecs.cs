@@ -56,9 +56,9 @@ namespace PKSim.Core
 
    public class When_mapping_a_model_event_to_a_snapshot_event : concern_for_EventMapper
    {
-      protected override void Because()
+      protected override async void Because()
       {
-         _snapshot = sut.MapToSnapshot(_event);
+         _snapshot = await sut.MapToSnapshot(_event);
       }
 
       [Observation]
@@ -83,19 +83,19 @@ namespace PKSim.Core
    {
       private PKSimEvent _newEvent;
 
-      protected override void Context()
+      protected override async void Context()
       {
          base.Context();
-         _snapshot = sut.MapToSnapshot(_event);
+         _snapshot = await sut.MapToSnapshot(_event);
          A.CallTo(() => _eventFactory.Create(_snapshot.Template)).Returns(_event);
 
          _snapshot.Name = "New Event";
          _snapshot.Description = "The description that will be deserialized";
       }
 
-      protected override void Because()
+      protected override async void Because()
       {
-         _newEvent = sut.MapToModel(_snapshot);
+         _newEvent = await sut.MapToModel(_snapshot);
       }
 
       [Observation]

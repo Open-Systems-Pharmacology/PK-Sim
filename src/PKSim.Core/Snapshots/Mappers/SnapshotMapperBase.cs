@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 
@@ -11,13 +12,13 @@ namespace PKSim.Core.Snapshots.Mappers
    public abstract class SnapshotMapperBase<TModel, TSnapshot> : ISnapshotMapperSpecification
       where TSnapshot : new()
    {
-      public virtual object MapToSnapshot(object model) => MapToSnapshot(model.DowncastTo<TModel>());
+      public virtual async Task<object> MapToSnapshot(object model) => await MapToSnapshot(model.DowncastTo<TModel>());
 
-      public virtual object MapToModel(object snapshot) => MapToModel(snapshot.DowncastTo<TSnapshot>());
+      public virtual async Task<object> MapToModel(object snapshot) => await MapToModel(snapshot.DowncastTo<TSnapshot>());
 
-      public abstract TSnapshot MapToSnapshot(TModel model);
+      public abstract Task<TSnapshot> MapToSnapshot(TModel model);
 
-      public abstract TModel MapToModel(TSnapshot snapshot);
+      public abstract Task<TModel> MapToModel(TSnapshot snapshot);
 
       public Type SnapshotTypeFor<T>() => typeof(TSnapshot);
 
@@ -30,22 +31,36 @@ namespace PKSim.Core.Snapshots.Mappers
 
       protected string UnitValueFor(string unit) => unit ?? "";
 
-      protected virtual TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
+      protected virtual Task<TSnapshot> SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
       {
          var snapshot = new TSnapshot();
          configurationAction?.Invoke(snapshot);
-         return snapshot;
+         return Task.FromResult(snapshot);
+      }
+
+      public static Task<TResult> FromException<TResult>(Exception exc)
+      {
+         var tcs = new TaskCompletionSource<TResult>();
+         tcs.SetException(exc);
+         return tcs.Task;
+      }
+
+      public static Task FromException(Exception exc)
+      {
+         var tcs = new TaskCompletionSource<object>(null);
+         tcs.SetException(exc);
+         return tcs.Task;
       }
    }
 
    public abstract class SnapshotMapperBase<TModel, TSnapshot, TContext> : SnapshotMapperBase<TModel, TSnapshot>
       where TSnapshot : new()
    {
-      public abstract TModel MapToModel(TSnapshot snapshot, TContext context);
+      public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
 
-      public override TModel MapToModel(TSnapshot snapshot)
+      public override Task<TModel> MapToModel(TSnapshot snapshot)
       {
-         throw new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>();
+         return FromException<TModel>(new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>());
       }
    }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Model;
@@ -18,14 +19,15 @@ namespace PKSim.Core.Snapshots.Mappers
          _parameterMapper = parameterMapper;
       }
 
-      protected Parameter ParameterSnapshotFor(IParameter parameter) => _parameterMapper.MapToSnapshot(parameter);
+      protected Task<Parameter> ParameterSnapshotFor(IParameter parameter) => _parameterMapper.MapToSnapshot(parameter);
 
-      protected void AddParametersToSnapshot(IEnumerable<IParameter> parameters, TSnapshot snapshot)
+      protected async Task AddParametersToSnapshot(IEnumerable<IParameter> parameters, TSnapshot snapshot)
       {
-         snapshot.Parameters.AddRange(parameters.Select(ParameterSnapshotFor));
+         var tasks = parameters.Select(ParameterSnapshotFor);
+         snapshot.Parameters.AddRange(await Task.WhenAll(tasks));
       }
 
-      protected override TSnapshot SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
+      protected override Task<TSnapshot> SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
       {
          return base.SnapshotFrom(model, snapshot =>
          {
@@ -34,9 +36,9 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      protected virtual void AddModelParametersToSnapshot(TModel model, TSnapshot snapshot)
+      protected virtual Task AddModelParametersToSnapshot(TModel model, TSnapshot snapshot)
       {
-         AddParametersToSnapshot(model.AllParameters(ParameterHasChanged), snapshot);
+         return AddParametersToSnapshot(model.AllParameters(ParameterHasChanged), snapshot);
       }
 
       protected virtual bool ParameterHasChanged(IParameter parameter)
@@ -46,17 +48,20 @@ namespace PKSim.Core.Snapshots.Mappers
          return parameter.ValueDiffersFromDefault() || canBeEdited && parameter.Value != 0;
       }
 
-      protected void UpdateParametersFromSnapshot(TSnapshot snapshot, IContainer container, string containerDesciptor)
+      protected Task UpdateParametersFromSnapshot(TSnapshot snapshot, IContainer container, string containerDesciptor)
       {
+         var tasks = new List<Task>();
          foreach (var snapshotParameter in snapshot.Parameters)
          {
             var modelParameter = container.Parameter(snapshotParameter.Name);
 
             if (modelParameter == null)
-               throw new SnapshotParameterNotFoundException(snapshotParameter.Name, containerDesciptor);
+               return FromException(new SnapshotParameterNotFoundException(snapshotParameter.Name, containerDesciptor));
 
-            _parameterMapper.MapToModel(snapshotParameter, modelParameter);
+            tasks.Add(_parameterMapper.MapToModel(snapshotParameter, modelParameter));
          }
+
+         return Task.WhenAll(tasks);
       }
    }
 
@@ -68,11 +73,11 @@ namespace PKSim.Core.Snapshots.Mappers
       {
       }
 
-      public abstract TModel MapToModel(TSnapshot snapshot, TContext context);
+      public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
 
-      public override TModel MapToModel(TSnapshot snapshot)
+      public override Task<TModel> MapToModel(TSnapshot snapshot)
       {
-         throw new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>();
+         return FromException<TModel>(new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>());
       }
    }
 }

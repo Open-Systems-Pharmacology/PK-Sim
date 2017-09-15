@@ -1,18 +1,19 @@
-﻿using SnapshoParameterRange= PKSim.Core.Snapshots.ParameterRange;
-using ModelParameterRange= PKSim.Core.Model.ParameterRange;
+﻿using System.Threading.Tasks;
+using SnapshoParameterRange = PKSim.Core.Snapshots.ParameterRange;
+using ModelParameterRange = PKSim.Core.Model.ParameterRange;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ParameterRangeMapper: SnapshotMapperBase<ModelParameterRange, SnapshoParameterRange>
+   public class ParameterRangeMapper : SnapshotMapperBase<ModelParameterRange, SnapshoParameterRange, ModelParameterRange>
    {
-      public override SnapshoParameterRange MapToSnapshot(ModelParameterRange parameterRange)
+      public override Task<SnapshoParameterRange> MapToSnapshot(ModelParameterRange parameterRange)
       {
          if (parameterRange == null)
-            return null;
+            return Task.FromResult<SnapshoParameterRange>(null);
 
          //No range defined. No need to save this range
          if (parameterRange.MaxValueInDisplayUnit == null && parameterRange.MaxValueInDisplayUnit == null)
-            return null;
+            return Task.FromResult<SnapshoParameterRange>(null);
 
          return SnapshotFrom(parameterRange, snapshot =>
          {
@@ -22,9 +23,17 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override ModelParameterRange MapToModel(SnapshoParameterRange snapshot)
+      public override Task<ModelParameterRange> MapToModel(SnapshoParameterRange snapshot, ModelParameterRange parameterRange)
       {
-         throw new System.NotImplementedException();
+         //Range not available in population or snapshot range not defined. Nothing to do
+         if (parameterRange == null || snapshot == null)
+            return Task.FromResult(parameterRange);
+
+         parameterRange.Unit = parameterRange.Dimension.Unit(UnitValueFor(snapshot.Unit));
+         parameterRange.MaxValueInDisplayUnit = snapshot.Max;
+         parameterRange.MinValueInDisplayUnit = snapshot.Min;
+
+         return Task.FromResult(parameterRange);
       }
    }
 }

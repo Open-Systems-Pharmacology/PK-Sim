@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Snapshots;
@@ -7,14 +8,15 @@ using ExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ExtendedPropertiesMapper : ContextSpecification<ExtendedPropertiesMapper>
+   public abstract class concern_for_ExtendedPropertiesMapper : ContextSpecificationAsync<ExtendedPropertiesMapper>
    {
       protected ExtendedPropertyMapper _extendedPropertyMapper;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _extendedPropertyMapper = A.Fake<ExtendedPropertyMapper>();
          sut = new ExtendedPropertiesMapper(_extendedPropertyMapper);
+         return Task.FromResult(true);
       }
    }
 
@@ -24,17 +26,17 @@ namespace PKSim.Core
       private ExtendedProperty<string> _extendedProperty;
       private ExtendedProperty<string> _secondExtendedProperty;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _extendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = "Value" };
          _secondExtendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "FullName", Name = "SecondName", ReadOnly = true, Value = "Value" };
          _extendedProperties = new ExtendedProperties { _extendedProperty, _secondExtendedProperty };
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.MapToSnapshot(_extendedProperties);
+         await sut.MapToSnapshot(_extendedProperties);
       }
 
       [Observation]
@@ -51,9 +53,9 @@ namespace PKSim.Core
       private ExtendedProperty _firstExtendedProperty;
       private ExtendedProperty _secondExtendedProperty;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _firstExtendedProperty = new ExtendedProperty { Description = "Property Description", DisplayName = "Display Name", FullName = "First Full Name", Name = "First Name", ReadOnly = true, Type = typeof(string), Value = "Value" };
          _secondExtendedProperty = new ExtendedProperty { Description = "Property Description", DisplayName = "Display Name", FullName = "Second Full Name", Name = "Second Name", ReadOnly = true, Type = typeof(string), Value = "Value" };
          _snapshot = new Snapshots.ExtendedProperties { Description = "A Description", Name = "A Name" };
@@ -64,9 +66,9 @@ namespace PKSim.Core
          A.CallTo(() => _extendedPropertyMapper.MapToModel(_secondExtendedProperty)).Returns(A.Fake<IExtendedProperty>().WithName(_secondExtendedProperty.FullName));
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.MapToModel(_snapshot);
+         await sut.MapToModel(_snapshot);
       }
 
       [Observation]

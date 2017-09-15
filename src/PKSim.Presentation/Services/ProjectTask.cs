@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
@@ -30,8 +31,8 @@ namespace PKSim.Presentation.Services
       void OpenProject();
       void Run(StartOptions startOptions);
       void LoadProjectFromSnapshot();
-      void ExportCurrentProjectToSnapshot();
-      void ExportProjectToSnapshot(PKSimProject project);
+      Task ExportCurrentProjectToSnapshot();
+      Task ExportProjectToSnapshot(PKSimProject project);
    }
 
    public class ProjectTask : IProjectTask
@@ -226,11 +227,11 @@ namespace PKSim.Presentation.Services
          if (string.IsNullOrEmpty(fileName))
             return;
 
-         _heavyWorkManager.Start(() => _workspace.LoadProject(ProjectFromSnapshot), PKSimConstants.UI.LoadingProject);
+         _heavyWorkManager.Start(() => _workspace.LoadProject(async () => await ProjectFromSnapshot()), PKSimConstants.UI.LoadingProject);
 
-         void ProjectFromSnapshot()
+         async Task ProjectFromSnapshot()
          {
-            var project = _snapshotTask.LoadFromSnapshot<PKSimProject>(fileName).FirstOrDefault();
+            var project = (await _snapshotTask.LoadFromSnapshot<PKSimProject>(fileName)).FirstOrDefault();
             if (project == null)
                return;
 
@@ -239,12 +240,11 @@ namespace PKSim.Presentation.Services
             project.HasChanged = true;
             project.Name = FileHelper.FileNameFromFileFullPath(fileName);
          }
-
       }
 
-      public void ExportCurrentProjectToSnapshot() => ExportProjectToSnapshot(_workspace.Project);
+      public Task ExportCurrentProjectToSnapshot() => ExportProjectToSnapshot(_workspace.Project);
 
-      public void ExportProjectToSnapshot(PKSimProject project) => _snapshotTask.ExportSnapshot(project);
+      public Task ExportProjectToSnapshot(PKSimProject project) => _snapshotTask.ExportSnapshot(project);
 
       private void openSimulationForPopulationSimulation(string simulationFile)
       {

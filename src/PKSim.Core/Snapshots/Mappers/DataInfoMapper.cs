@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Threading.Tasks;
 using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
 using ModelDataInfo = OSPSuite.Core.Domain.Data.DataInfo;
 using ModelExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
@@ -15,31 +16,31 @@ namespace PKSim.Core.Snapshots.Mappers
          _extendedPropertiesMapper = extendedPropertiesMapper;
       }
 
-      public override SnapshotDataInfo MapToSnapshot(ModelDataInfo dataInfo)
+      public override async Task<SnapshotDataInfo> MapToSnapshot(ModelDataInfo dataInfo)
       {
-         return SnapshotFrom(dataInfo, snapshot =>
+         var snapshot = await SnapshotFrom(dataInfo, x =>
          {
-            snapshot.AuxiliaryType = dataInfo.AuxiliaryType.ToString();
-            snapshot.Category = dataInfo.Category;
-            snapshot.ComparisonThreshold = dataInfo.ComparisonThreshold;
-            snapshot.Date = dataInfo.Date;
-            var snapshotExtendedProperties = mapExtendedProperties(dataInfo.ExtendedProperties);
-            snapshot.ExtendedProperties = snapshotExtendedProperties.Any() ? snapshotExtendedProperties : null;
-            snapshot.LLOQ = dataInfo.LLOQ;
-            snapshot.MolWeight = dataInfo.MolWeight;
-            snapshot.Origin = dataInfo.Origin.ToString();
-            snapshot.Source = dataInfo.Source;
+            x.AuxiliaryType = dataInfo.AuxiliaryType.ToString();
+            x.Category = dataInfo.Category;
+            x.ComparisonThreshold = dataInfo.ComparisonThreshold;
+            x.Date = dataInfo.Date;
+            x.LLOQ = dataInfo.LLOQ;
+            x.MolWeight = dataInfo.MolWeight;
+            x.Origin = dataInfo.Origin.ToString();
+            x.Source = dataInfo.Source;
          });
+         snapshot.ExtendedProperties = await mapExtendedProperties(dataInfo.ExtendedProperties);
+         return snapshot;
       }
 
-      private SnapshotExtendedProperties mapExtendedProperties(ModelExtendedProperties extendedProperties)
+      private Task<SnapshotExtendedProperties> mapExtendedProperties(ModelExtendedProperties extendedProperties)
       {
          return _extendedPropertiesMapper.MapToSnapshot(extendedProperties);
       }
 
-      public override ModelDataInfo MapToModel(SnapshotDataInfo snapshot)
+      public override Task<ModelDataInfo> MapToModel(SnapshotDataInfo snapshot)
       {
-         throw new System.NotImplementedException();
+         throw new NotImplementedException();
       }
    }
 }

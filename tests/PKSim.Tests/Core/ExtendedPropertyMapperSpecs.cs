@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -8,12 +9,12 @@ using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ExtendedPropertyMapper : ContextSpecification<ExtendedPropertyMapper>
+   public abstract class concern_for_ExtendedPropertyMapper : ContextSpecificationAsync<ExtendedPropertyMapper>
    {
-
-      protected override void Context()
+      protected override Task Context()
       {
          sut = new ExtendedPropertyMapper();
+         return Task.FromResult(true);
       }
    }
 
@@ -24,15 +25,15 @@ namespace PKSim.Core
 
       protected abstract void CreateExtendedProperty();
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          CreateExtendedProperty();
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_extendedProperty);
+         _snapshot = await sut.MapToSnapshot(_extendedProperty);
       }
 
       [Observation]
@@ -51,7 +52,7 @@ namespace PKSim.Core
    {
       protected override void CreateExtendedProperty()
       {
-         _extendedProperty = new ExtendedProperty<bool> { Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = true };
+         _extendedProperty = new ExtendedProperty<bool> {Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = true};
          _extendedProperty.AddToListOfValues(true);
          _extendedProperty.AddToListOfValues(false);
       }
@@ -61,7 +62,7 @@ namespace PKSim.Core
    {
       protected override void CreateExtendedProperty()
       {
-         _extendedProperty = new ExtendedProperty<double> { Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = 5.5 };
+         _extendedProperty = new ExtendedProperty<double> {Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = 5.5};
          _extendedProperty.AddToListOfValues(6.5);
          _extendedProperty.AddToListOfValues(7.5);
       }
@@ -83,15 +84,15 @@ namespace PKSim.Core
       protected ExtendedProperty _snapshot;
       protected abstract void CreateSnapshot();
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          CreateSnapshot();
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _extendedProperty = sut.MapToModel(_snapshot);
+         _extendedProperty = await sut.MapToModel(_snapshot);
       }
 
       [Observation]
@@ -119,7 +120,7 @@ namespace PKSim.Core
    {
       protected override void CreateSnapshot()
       {
-         _snapshot = new ExtendedProperty { Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> { true, false }, Name = "Name", Type = typeof(bool), Value = false };
+         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {true, false}, Name = "Name", Type = typeof(bool), Value = false};
       }
    }
 
@@ -127,7 +128,7 @@ namespace PKSim.Core
    {
       protected override void CreateSnapshot()
       {
-         _snapshot = new ExtendedProperty { Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> { true, 6.5 }, Name = "Name", Type = typeof(object), Value = "string" };
+         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {true, 6.5}, Name = "Name", Type = typeof(object), Value = "string"};
       }
    }
 
@@ -135,7 +136,7 @@ namespace PKSim.Core
    {
       protected override void CreateSnapshot()
       {
-         _snapshot = new ExtendedProperty { Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> { 4.5, 6.5 }, Name = "Name", Type = typeof(double), Value = 5.5 };
+         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {4.5, 6.5}, Name = "Name", Type = typeof(double), Value = 5.5};
       }
    }
 }

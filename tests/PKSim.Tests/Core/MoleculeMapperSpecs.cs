@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -12,7 +13,7 @@ using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_MoleculeMapper : ContextSpecification<MoleculeMapper>
+   public abstract class concern_for_MoleculeMapper : ContextSpecificationAsync<MoleculeMapper>
    {
       protected ParameterMapper _parameterMapper;
       protected IndividualEnzyme _enzyme;
@@ -35,7 +36,7 @@ namespace PKSim.Core
       protected Ontogeny _ontogeny;
       protected Snapshots.Ontogeny _snapshotOntogeny;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _executionContext = A.Fake<IExecutionContext>();
@@ -98,14 +99,16 @@ namespace PKSim.Core
          _snapshotOntogeny = new Snapshots.Ontogeny();
          A.CallTo(() => _ontogenyMapper.MapToSnapshot(_ontogeny)).Returns(_snapshotOntogeny);
          _simulationSubject = A.Fake<ISimulationSubject>();
+
+         return Task.FromResult(true);
       }
    }
 
    public class When_mapping_an_individual_enzyme_to_snapshot : concern_for_MoleculeMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_enzyme);
+         _snapshot = await sut.MapToSnapshot(_enzyme);
       }
 
       [Observation]
@@ -139,9 +142,9 @@ namespace PKSim.Core
 
    public class When_mapping_an_individual_transporter_to_snapshot : concern_for_MoleculeMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_transporter);
+         _snapshot = await sut.MapToSnapshot(_transporter);
       }
 
       [Observation]
@@ -165,10 +168,10 @@ namespace PKSim.Core
    {
       private IndividualEnzyme _newMolecule;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_enzyme);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_enzyme);
 
          _snapshot.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial.ToString();
          _snapshot.MembraneLocation = MembraneLocation.BloodBrainBarrier.ToString();
@@ -186,9 +189,9 @@ namespace PKSim.Core
          A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, _simulationSubject)).Returns(_ontogeny);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newMolecule = sut.MapToModel(_snapshot, _simulationSubject) as IndividualEnzyme;
+         _newMolecule = await sut.MapToModel(_snapshot, _simulationSubject) as IndividualEnzyme;
       }  
 
       [Observation]
@@ -221,10 +224,10 @@ namespace PKSim.Core
 
    public class When_mapping_a_snapshot_containg_expression_for_an_unknow_target_container : concern_for_MoleculeMapper
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_enzyme);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_enzyme);
          _snapshot.Expression[0].Path = "Unknown";
          var enzymeFactory = A.Fake<IIndividualMoleculeFactory>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualEnzyme>()).Returns(enzymeFactory);
@@ -234,7 +237,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot, _simulationSubject)).ShouldThrowAn<SnapshotOutdatedException>();
+         TheAsync.Action(() => sut.MapToModel(_snapshot, _simulationSubject)).ShouldThrowAnAsync<SnapshotOutdatedException>();
       }
    }
 
@@ -242,10 +245,10 @@ namespace PKSim.Core
    {
       private IndividualTransporter _newTransporter;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_transporter);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_transporter);
 
          _snapshot.TransportType = TransportType.PgpLike.ToString();
          var transporterFactory = A.Fake<IIndividualMoleculeFactory>();
@@ -253,9 +256,9 @@ namespace PKSim.Core
          A.CallTo(() => transporterFactory.CreateFor(_simulationSubject)).Returns(_transporter);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newTransporter = sut.MapToModel(_snapshot, _simulationSubject) as IndividualTransporter;
+         _newTransporter = await sut.MapToModel(_snapshot, _simulationSubject) as IndividualTransporter;
       }
 
       [Observation]
@@ -275,19 +278,19 @@ namespace PKSim.Core
    {
       private IndividualOtherProtein _newOtherProtein;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_otherProtein);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_otherProtein);
 
          var individualOtherProteinFactory = A.Fake<IIndividualMoleculeFactory>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualOtherProtein>()).Returns(individualOtherProteinFactory);
          A.CallTo(() => individualOtherProteinFactory.CreateFor(_simulationSubject)).Returns(_otherProtein);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newOtherProtein = sut.MapToModel(_snapshot, _simulationSubject) as IndividualOtherProtein;
+         _newOtherProtein = await sut.MapToModel(_snapshot, _simulationSubject) as IndividualOtherProtein;
       }
 
       [Observation]

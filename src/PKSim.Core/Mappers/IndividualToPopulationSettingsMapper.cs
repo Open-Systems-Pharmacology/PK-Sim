@@ -23,7 +23,6 @@ namespace PKSim.Core.Mappers
 
       public RandomPopulationSettings MapFrom(Individual individual)
       {
-         //add age first
          var populationSettings = new RandomPopulationSettings();
          if (individual == null)
             return populationSettings;
@@ -31,6 +30,7 @@ namespace PKSim.Core.Mappers
          var population = individual.OriginData.SpeciesPopulation;
          populationSettings.BaseIndividual = individual;
          populationSettings.NumberOfIndividuals = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION;
+
          int genderCount = individual.AvailableGenders().Count();
          foreach (var gender in individual.AvailableGenders())
          {
@@ -87,10 +87,7 @@ namespace PKSim.Core.Mappers
          return parameterRange;
       }
 
-      private ParameterRange parameterRangeFrom(IParameter parameter)
-      {
-         return createParameterRange<ParameterRange>(parameter);
-      }
+      private ParameterRange parameterRangeFrom(IParameter parameter) => createParameterRange<ParameterRange>(parameter);
 
       private TParameterRangeDTO createParameterRange<TParameterRangeDTO>(IParameter parameter) where TParameterRangeDTO : ParameterRange, new()
       {

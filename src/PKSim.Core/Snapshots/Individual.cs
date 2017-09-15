@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace PKSim.Core.Snapshots
+﻿namespace PKSim.Core.Snapshots
 {
    public class Individual : SnapshotBase
    {
@@ -14,7 +12,7 @@ namespace PKSim.Core.Snapshots
       public Parameter Weight { get; set; }
       public Parameter Height { get; set; }
 
-      public List<LocalizedParameter> Parameters { get; set; } = new List<LocalizedParameter>();
-      public List<Molecule> Molecules { get; set; } = new List<Molecule>();
+      public LocalizedParameter[] Parameters { get; set; }
+      public Molecule[] Molecules { get; set; }
    }
 }

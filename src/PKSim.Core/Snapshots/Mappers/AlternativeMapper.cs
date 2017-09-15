@@ -1,4 +1,6 @@
-﻿using PKSim.Assets;
+﻿using System.Threading.Tasks;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
@@ -17,10 +19,10 @@ namespace PKSim.Core.Snapshots.Mappers
          _parameterAlternativeFactory = parameterAlternativeFactory;
       }
 
-      public override Alternative MapToSnapshot(ParameterAlternative parameterAlternative)
+      public override Task<Alternative> MapToSnapshot(ParameterAlternative parameterAlternative)
       {
          if (parameterAlternative.IsCalculated)
-            return null;
+            return Task.FromResult((Alternative)null);
 
          return SnapshotFrom(parameterAlternative, snapshot =>
          {
@@ -29,12 +31,12 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override ParameterAlternative MapToModel(Alternative snapshot, ParameterAlternativeGroup parameterAlternativeGroup)
+      public override async Task<ParameterAlternative> MapToModel(Alternative snapshot, ParameterAlternativeGroup parameterAlternativeGroup)
       {
          var alternative = _parameterAlternativeFactory.CreateAlternativeFor(parameterAlternativeGroup);
          alternative.IsDefault = snapshot.IsDefault;
          MapSnapshotPropertiesToModel(snapshot, alternative);
-         UpdateParametersFromSnapshot(snapshot, alternative, parameterAlternativeGroup.Name);
+         await UpdateParametersFromSnapshot(snapshot, alternative, parameterAlternativeGroup.Name);
 
          var alternativeWithSpecies = alternative as ParameterAlternativeWithSpecies;
          if (alternativeWithSpecies == null)

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -37,6 +38,12 @@ namespace PKSim.Core.Model
          var advancedParameterToRemove = advancedParameterForPath(advancedParameter.ParameterPath);
          if (advancedParameterToRemove == null) return;
          RemoveChild(advancedParameterToRemove);
+      }
+
+      public void Clear()
+      {
+         var allAdvancedParametrs = AdvancedParameters.ToList();
+         allAdvancedParametrs.Each(RemoveChild);
       }
    }
 }

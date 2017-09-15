@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -12,7 +13,7 @@ using Formulation = PKSim.Core.Model.Formulation;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_FormulationMapper : ContextSpecification<FormulationMapper>
+   public abstract class concern_for_FormulationMapper : ContextSpecificationAsync<FormulationMapper>
    {
       protected Formulation _formulation;
       protected Snapshots.Formulation _snapshot;
@@ -23,7 +24,7 @@ namespace PKSim.Core
       protected IFormulationRepository _formulationRepository;
       protected ICloner _cloner;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _formulationRepository = A.Fake<IFormulationRepository>();
@@ -55,14 +56,16 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(new Snapshots.Parameter().WithName(_parameter1.Name));
          A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter2)).Returns(new Snapshots.Parameter().WithName(_parameter2.Name));
          A.CallTo(() => _parameterMapper.MapToSnapshot(_hiddenParameter)).Returns(new Snapshots.Parameter().WithName(_hiddenParameter.Name));
+
+         return Task.FromResult(true);
       }
    }
 
    public class When_mapping_a_model_formulation_to_a_snapshot_formulation : concern_for_FormulationMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_formulation);
+         _snapshot = await sut.MapToSnapshot(_formulation);
       }
 
       [Observation]
@@ -87,10 +90,10 @@ namespace PKSim.Core
    {
       private Formulation _newFormulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_formulation);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_formulation);
          A.CallTo(() => _formulationRepository.FormulationBy(_snapshot.FormulationType)).Returns(_formulation);
          A.CallTo(() => _cloner.Clone(_formulation)).Returns(_formulation);
 
@@ -98,9 +101,9 @@ namespace PKSim.Core
          _snapshot.Description = "The description that will be deserialized";
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newFormulation = sut.MapToModel(_snapshot);
+         _newFormulation = await sut.MapToModel(_snapshot);
       }
 
       [Observation]
@@ -121,10 +124,10 @@ namespace PKSim.Core
 
    public class When_mapping_an_outdated_formulation_snapshot_to_a_formulation : concern_for_FormulationMapper
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_formulation);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_formulation);
          A.CallTo(() => _formulationRepository.FormulationBy(_snapshot.FormulationType)).Returns(_formulation);
          A.CallTo(() => _cloner.Clone(_formulation)).Returns(_formulation);
          _snapshot.Parameters[0].Name = "Unknown parameter";
@@ -133,7 +136,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_outdated_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<SnapshotParameterNotFoundException>();
+         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<SnapshotParameterNotFoundException>();
       }
    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using PKSim.Core.Extensions;
 using SnapshotDataRepository = PKSim.Core.Snapshots.DataRepository;
 using SnapshotExtendedProperties = PKSim.Core.Snapshots.ExtendedProperties;
@@ -20,29 +21,31 @@ namespace PKSim.Core.Snapshots.Mappers
          _dataColumnMapper = dataColumnMapper;
       }
 
-      public override SnapshotDataRepository MapToSnapshot(ModelDataRepository dataRepository)
+      public override async Task<SnapshotDataRepository> MapToSnapshot(ModelDataRepository dataRepository)
       {
-         return SnapshotFrom(dataRepository, snapshot =>
+         var snapshot= await SnapshotFrom(dataRepository, x =>
          {
-            snapshot.Name = SnapshotValueFor(dataRepository.Name);
-            var snapshotExtendedProperties = mapExtendedProperties(dataRepository.ExtendedProperties);
-            snapshot.ExtendedProperties = snapshotExtendedProperties.Any() ? snapshotExtendedProperties : null;
-            snapshot.Columns = mapColumns(dataRepository.AllButBaseGrid().Where(column => !dataRepository.ColumnIsInRelatedColumns(column)));
-            snapshot.BaseGrid = _dataColumnMapper.MapToSnapshot(dataRepository.BaseGrid);
+            x.Name = SnapshotValueFor(dataRepository.Name);
          });
+
+         snapshot.ExtendedProperties =await mapExtendedProperties(dataRepository.ExtendedProperties);
+         snapshot.Columns = await mapColumns(dataRepository.AllButBaseGrid().Where(column => !dataRepository.ColumnIsInRelatedColumns(column)));
+         snapshot.BaseGrid = await _dataColumnMapper.MapToSnapshot(dataRepository.BaseGrid);
+         return snapshot;
       }
 
-      private List<DataColumn> mapColumns(IEnumerable<ModelDataColumn> dataRepositoryColumns)
+      private Task<DataColumn[]> mapColumns(IEnumerable<ModelDataColumn> dataRepositoryColumns)
       {
-         return dataRepositoryColumns.Select(_dataColumnMapper.MapToSnapshot).ToList();
+         var tasks = dataRepositoryColumns.Select(_dataColumnMapper.MapToSnapshot);
+         return Task.WhenAll(tasks);
       }
 
-      private SnapshotExtendedProperties mapExtendedProperties(ModelExtendedProperties extendedProperties)
+      private Task<SnapshotExtendedProperties> mapExtendedProperties(ModelExtendedProperties extendedProperties)
       {
          return _extendedPropertiesMapper.MapToSnapshot(extendedProperties);
       }
 
-      public override ModelDataRepository MapToModel(SnapshotDataRepository snapshot)
+      public override Task<ModelDataRepository> MapToModel(SnapshotDataRepository snapshot)
       {
          throw new System.NotImplementedException();
       }

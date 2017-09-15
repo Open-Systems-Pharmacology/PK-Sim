@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Repositories;
@@ -19,16 +20,19 @@ namespace PKSim.Core.Snapshots.Mappers
          _dimensionRepository = dimensionRepository;
       }
 
-      public override SnapshotTableFormula MapToSnapshot(ModelTableFormula tableFormula)
+      public override Task<SnapshotTableFormula> MapToSnapshot(ModelTableFormula tableFormula)
       {
-         return SnapshotFrom(tableFormula, snapshot => { UpdateSnapshotProperties(snapshot, tableFormula); });
+         return SnapshotFrom(tableFormula, snapshot =>
+         {
+            UpdateSnapshotProperties(snapshot, tableFormula);
+         });
       }
 
-      public override ModelTableFormula MapToModel(SnapshotTableFormula snapshotTableFormula)
+      public override Task<ModelTableFormula> MapToModel(SnapshotTableFormula snapshotTableFormula)
       {
          var tableFormula = _formulaFactory.CreateTableFormula();
          UpdateModelProperties(tableFormula, snapshotTableFormula);
-         return tableFormula;
+         return Task.FromResult(tableFormula);
       }
 
       private ValuePoint valuePointFrom(ModelTableFormula tableFormula, Point point)

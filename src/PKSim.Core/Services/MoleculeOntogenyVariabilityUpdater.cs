@@ -120,17 +120,16 @@ namespace PKSim.Core.Services
 
       private void updatePlasmaProteinOntogenyFor(Population population, IReadOnlyList<double> allAges, IReadOnlyList<double> allGAs, string parameterName, string proteinName)
       {
-         var parameter = population.Organism.Parameter(parameterName);
-         if (parameter == null) return;
-         var plasmaProteinOntogenyPath = _entityPathResolver.PathFor(parameter);
-         var ontogenyFactors = new ParameterValues(plasmaProteinOntogenyPath);
+         var plasmaProteinOntogenyParameter = population.Organism.Parameter(parameterName);
+         if (plasmaProteinOntogenyParameter == null) return;
+         var ontogenyFactors = new ParameterValues(_entityPathResolver.PathFor(plasmaProteinOntogenyParameter));
 
          for (int i = 0; i < population.NumberOfItems; i++)
          {
             ontogenyFactors.Add(_ontogenyRepository.PlasmaProteinOntogenyFactor(proteinName, allAges[i], allGAs[i], population.Species.Name, population.RandomGenerator));
          }
 
-         population.IndividualPropertiesCache.Remove(plasmaProteinOntogenyPath);
+         population.IndividualPropertiesCache.Remove(ontogenyFactors.ParameterPath);
          population.IndividualPropertiesCache.Add(ontogenyFactors);
       }
 

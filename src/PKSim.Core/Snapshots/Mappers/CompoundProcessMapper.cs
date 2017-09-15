@@ -1,4 +1,5 @@
-﻿using OSPSuite.Utility.Extensions;
+﻿using System.Threading.Tasks;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -30,7 +31,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _compoundProcessTask = compoundProcessTask;
       }
 
-      public override SnapshotCompoundProcess MapToSnapshot(ModelCompoundProcess compoundProcess)
+      public override Task<SnapshotCompoundProcess> MapToSnapshot(ModelCompoundProcess compoundProcess)
       {
          return SnapshotFrom(compoundProcess, snapshot =>
          {
@@ -57,9 +58,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private string speciesNameFor(ModelCompoundProcess pro) => SnapshotValueFor((pro as ISpeciesDependentCompoundProcess)?.Species.Name);
 
-      public override ModelCompoundProcess MapToModel(SnapshotCompoundProcess snapshot)
+      public override async Task<ModelCompoundProcess> MapToModel(SnapshotCompoundProcess snapshot)
       {
-         var process = retrieveProcessFrom(snapshot);
+         var process = await retrieveProcessFrom(snapshot);
          if (!string.IsNullOrEmpty(snapshot.Description))
             process.Description = snapshot.Description;
 
@@ -81,7 +82,7 @@ namespace PKSim.Core.Snapshots.Mappers
             enzymaticProcess.MetaboliteName = snapshot.Metabolite;
       }
 
-      private ModelCompoundProcess retrieveProcessFrom(SnapshotCompoundProcess snapshot)
+      private async Task<ModelCompoundProcess> retrieveProcessFrom(SnapshotCompoundProcess snapshot)
       {
          var template = _compoundProcessRepository.ProcessByName(snapshot.InternalName);
          if (template == null)
@@ -93,7 +94,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (process.IsAnImplementationOf<ISpeciesDependentCompoundProcess>())
             updateSpeciesDependentParameter(process, snapshot);
 
-         UpdateParametersFromSnapshot(snapshot, process, process.InternalName);
+         await UpdateParametersFromSnapshot(snapshot, process, process.InternalName);
 
          return process;
       }

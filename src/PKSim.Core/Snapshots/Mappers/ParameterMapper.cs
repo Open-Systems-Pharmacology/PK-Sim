@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
@@ -22,32 +23,32 @@ namespace PKSim.Core.Snapshots.Mappers
          _entityPathResolver = entityPathResolver;
       }
 
-      public override SnapshotParameter MapToSnapshot(IParameter modelParameter)
+      public override Task<SnapshotParameter> MapToSnapshot(IParameter modelParameter)
       {
          return createFrom<SnapshotParameter>(modelParameter, x => { x.Name = modelParameter.Name; });
       }
 
-      private TSnapshotParameter createFrom<TSnapshotParameter>(IParameter modelParameter, Action<TSnapshotParameter> configurationAction) where TSnapshotParameter : SnapshotParameter, new()
+      private async Task<TSnapshotParameter> createFrom<TSnapshotParameter>(IParameter modelParameter, Action<TSnapshotParameter> configurationAction) where TSnapshotParameter : SnapshotParameter, new()
       {
          var parameter = new TSnapshotParameter
          {
             Value = modelParameter.ValueInDisplayUnit,
             Unit = SnapshotValueFor(modelParameter.DisplayUnit.Name),
             ValueDescription = SnapshotValueFor(modelParameter.ValueDescription),
-            TableFormula = mapFormula(modelParameter.Formula)
+            TableFormula = await mapFormula(modelParameter.Formula)
          };
          configurationAction(parameter);
          return parameter;
       }
 
-      public override IParameter MapToModel(SnapshotParameter snapshot, IParameter parameter)
+      public override async Task<IParameter> MapToModel(SnapshotParameter snapshot, IParameter parameter)
       {
          parameter.ValueDescription = snapshot.ValueDescription;
          parameter.DisplayUnit = parameter.Dimension.Unit(UnitValueFor(snapshot.Unit));
 
          //only update formula if required
          if (snapshot.TableFormula != null)
-            parameter.Formula = _tableFormulaMapper.MapToModel(snapshot.TableFormula);
+            parameter.Formula = await _tableFormulaMapper.MapToModel(snapshot.TableFormula);
 
          //This needs to come AFTER formula update so that the base value is accurate
          var baseValue = parameter.Value;
@@ -59,10 +60,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return parameter;
       }
 
-      private SnapshotTableFormula mapFormula(IFormula formula)
+      private Task<SnapshotTableFormula> mapFormula(IFormula formula)
       {
          var tableFormula = formula as ModelTableFormula;
-         return tableFormula == null ? null : _tableFormulaMapper.MapToSnapshot(tableFormula);
+         if (tableFormula == null)
+            return Task.FromResult<SnapshotTableFormula>(null);
+
+         return _tableFormulaMapper.MapToSnapshot(tableFormula);
       }
 
       public virtual SnapshotParameter ParameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension)
@@ -75,28 +79,30 @@ namespace PKSim.Core.Snapshots.Mappers
          return new SnapshotParameter
          {
             Value = dimension.BaseUnitValueToUnitValue(dimension.Unit(displayUnitToUse), parameterBaseValue.Value),
-            Unit = parameterDisplayUnit
+            Unit = displayUnitToUse
          };
       }
 
-      public virtual LocalizedParameter LocalizedParameterFrom(IParameter parameter)
+      public virtual Task<LocalizedParameter> LocalizedParameterFrom(IParameter parameter)
       {
          return LocalizedParameterFrom(parameter, _entityPathResolver.PathFor);
       }
 
-      public virtual LocalizedParameter LocalizedParameterFrom(IParameter parameter, Func<IParameter, string> pathResolverFunc)
+      public virtual Task<LocalizedParameter> LocalizedParameterFrom(IParameter parameter, Func<IParameter, string> pathResolverFunc)
       {
          return createFrom<LocalizedParameter>(parameter, x => { x.Path = pathResolverFunc(parameter); });
       }
 
-      public List<LocalizedParameter> LocalizedParametersFrom(IEnumerable<IParameter> parameters)
+      public Task<LocalizedParameter[]> LocalizedParametersFrom(IEnumerable<IParameter> parameters)
       {
-         return parameters.Select(LocalizedParameterFrom).ToList();
+         var tasks = parameters.Select(LocalizedParameterFrom);
+         return Task.WhenAll(tasks);
       }
 
-      public List<LocalizedParameter> LocalizedParametersFrom(IEnumerable<IParameter> parameters, Func<IParameter, string> pathResolverFunc)
+      public Task<LocalizedParameter[]> LocalizedParametersFrom(IEnumerable<IParameter> parameters, Func<IParameter, string> pathResolverFunc)
       {
-         return parameters.Select(x => LocalizedParameterFrom(x, pathResolverFunc)).ToList();
+         var tasks = parameters.Select(x => LocalizedParameterFrom(x, pathResolverFunc));
+         return Task.WhenAll(tasks);
       }
    }
 }

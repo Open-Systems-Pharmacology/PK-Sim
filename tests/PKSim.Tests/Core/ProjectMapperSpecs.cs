@@ -1,15 +1,17 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Extensions;
 using Event = PKSim.Core.Snapshots.Event;
 using Project = PKSim.Core.Snapshots.Project;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ProjectMapper : ContextSpecification<ProjectMapper>
+   public abstract class concern_for_ProjectMapper : ContextSpecificationAsync<ProjectMapper>
    {
       protected PKSimProject _project;
       protected Individual _individual;
@@ -29,7 +31,7 @@ namespace PKSim.Core
       protected Population _population;
       protected Snapshots.Population _populationSnapshot;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _executionContext = A.Fake<IExecutionContext>();
@@ -60,20 +62,22 @@ namespace PKSim.Core
          _protocolSnapshot = new Snapshots.Protocol();
          _populationSnapshot = new Snapshots.Population();
 
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_compound)).Returns(_compoundSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_individual)).Returns(_individualSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_event)).Returns(_eventSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_formulation)).Returns(_formulationSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).Returns(_protocolSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).Returns(_populationSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_compound)).ReturnsAsync(_compoundSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_individual)).ReturnsAsync(_individualSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_event)).ReturnsAsync(_eventSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_formulation)).ReturnsAsync(_formulationSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).ReturnsAsync(_protocolSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).ReturnsAsync(_populationSnapshot);
+
+         return Task.FromResult(true);
       }
    }
 
    public class When_exporting_a_project_to_snapshot : concern_for_ProjectMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_project);
+         _snapshot = await sut.MapToSnapshot(_project);
       }
 
       [Observation]
@@ -92,21 +96,21 @@ namespace PKSim.Core
    {
       private PKSimProject _newProject;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_project);
-         A.CallTo(() => _snapshotMapper.MapToModel(_compoundSnapshot)).Returns(_compound);
-         A.CallTo(() => _snapshotMapper.MapToModel(_individualSnapshot)).Returns(_individual);
-         A.CallTo(() => _snapshotMapper.MapToModel(_protocolSnapshot)).Returns(_protocol);
-         A.CallTo(() => _snapshotMapper.MapToModel(_formulationSnapshot)).Returns(_formulation);
-         A.CallTo(() => _snapshotMapper.MapToModel(_eventSnapshot)).Returns(_event);
-         A.CallTo(() => _snapshotMapper.MapToModel(_populationSnapshot)).Returns(_population);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_project);
+         A.CallTo(() => _snapshotMapper.MapToModel(_compoundSnapshot)).ReturnsAsync(_compound);
+         A.CallTo(() => _snapshotMapper.MapToModel(_individualSnapshot)).ReturnsAsync(_individual);
+         A.CallTo(() => _snapshotMapper.MapToModel(_protocolSnapshot)).ReturnsAsync(_protocol);
+         A.CallTo(() => _snapshotMapper.MapToModel(_formulationSnapshot)).ReturnsAsync(_formulation);
+         A.CallTo(() => _snapshotMapper.MapToModel(_eventSnapshot)).ReturnsAsync(_event);
+         A.CallTo(() => _snapshotMapper.MapToModel(_populationSnapshot)).ReturnsAsync(_population);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newProject = sut.MapToModel(_snapshot);
+         _newProject = await sut.MapToModel(_snapshot);
       }
 
       [Observation]

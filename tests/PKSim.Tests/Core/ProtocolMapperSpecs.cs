@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -12,7 +13,7 @@ using Protocol = PKSim.Core.Snapshots.Protocol;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ProtocolMapper : ContextSpecification<ProtocolMapper>
+   public abstract class concern_for_ProtocolMapper : ContextSpecificationAsync<ProtocolMapper>
    {
       protected ParameterMapper _parameterMapper;
       protected SimpleProtocol _simpleProtocol;
@@ -24,7 +25,7 @@ namespace PKSim.Core
       protected IParameter _advancedProtocolParameter;
       protected IDimensionRepository _dimensionRepository;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _schemaMapper = A.Fake<SchemaMapper>();
@@ -63,14 +64,16 @@ namespace PKSim.Core
          A.CallTo(() => _schemaMapper.MapToSnapshot(_schema)).Returns(new Snapshots.Schema().WithName(_schema.Name));
 
          A.CallTo(() => _dimensionRepository.Time).Returns(DomainHelperForSpecs.TimeDimensionForSpecs());
+
+         return Task.FromResult(true);
       }
    }
 
    public class When_mapping_a_simple_protocol_to_a_snapshot_protcol : concern_for_ProtocolMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_simpleProtocol);
+         _snapshot = await sut.MapToSnapshot(_simpleProtocol);
       }
 
       [Observation]
@@ -92,9 +95,9 @@ namespace PKSim.Core
 
    public class When_mapping_an_advanced_protocol_to_a_snapshot_protcol : concern_for_ProtocolMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_advancedProtocol);
+         _snapshot = await sut.MapToSnapshot(_advancedProtocol);
       }
 
       [Observation]
@@ -122,10 +125,10 @@ namespace PKSim.Core
    {
       private SimpleProtocol _newProtocol;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_simpleProtocol);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_simpleProtocol);
          A.CallTo(() => _protocolFactory.Create(ProtocolMode.Simple, _simpleProtocol.ApplicationType)).Returns(_simpleProtocol);
 
          _snapshot.Name = "New Protocol";
@@ -134,9 +137,9 @@ namespace PKSim.Core
          _snapshot.TargetCompartment = "Cells";
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newProtocol = sut.MapToModel(_snapshot).DowncastTo<SimpleProtocol>();
+         _newProtocol = (await sut.MapToModel(_snapshot)).DowncastTo<SimpleProtocol>();
       }
 
       [Observation]
@@ -162,10 +165,10 @@ namespace PKSim.Core
       private AdvancedProtocol _newProtocol;
       private Schema _newSchema;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_advancedProtocol);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_advancedProtocol);
          A.CallTo(() => _protocolFactory.Create(ProtocolMode.Advanced)).Returns(_advancedProtocol);
 
          _snapshot.Name = "New Advanced Protocol";
@@ -175,9 +178,9 @@ namespace PKSim.Core
          A.CallTo(() => _schemaMapper.MapToModel(_snapshot.Schemas.FindByName(_schema.Name))).Returns(_newSchema);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newProtocol = sut.MapToModel(_snapshot).DowncastTo<AdvancedProtocol>();
+         _newProtocol = (await sut.MapToModel(_snapshot)).DowncastTo<AdvancedProtocol>();
       }
 
       [Observation]

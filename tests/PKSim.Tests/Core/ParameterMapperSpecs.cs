@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -9,13 +10,13 @@ using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ParameterMapper : ContextSpecification<ParameterMapper>
+   public abstract class concern_for_ParameterMapper : ContextSpecificationAsync<ParameterMapper>
    {
       protected IParameter _parameter;
       protected TableFormulaMapper _tableFormulaMapper;
       protected IEntityPathResolver _entityPathResolver;
 
-      protected override void Context()
+      protected override  Task Context()
       {
          _tableFormulaMapper = A.Fake<TableFormulaMapper>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
@@ -29,6 +30,7 @@ namespace PKSim.Core
             .WithDimension(DomainHelperForSpecs.LengthDimensionForSpecs());
 
          _parameter.DisplayUnit = _parameter.Dimension.Unit("mm");
+         return Task.FromResult(true);
       }
    }
 
@@ -36,9 +38,9 @@ namespace PKSim.Core
    {
       private SnapshotParameter _snapshotParameter;
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshotParameter = sut.MapToSnapshot(_parameter);
+         _snapshotParameter = await sut.MapToSnapshot(_parameter);
       }
 
       [Observation]
@@ -66,18 +68,18 @@ namespace PKSim.Core
       private SnapshotParameter _snapshotParameter;
       private TableFormula _snapshotTableFormula;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          var tableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
          _parameter.Formula = tableFormula;
          _snapshotTableFormula = new TableFormula();
          A.CallTo(() => _tableFormulaMapper.MapToSnapshot(tableFormula)).Returns(_snapshotTableFormula);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshotParameter = sut.MapToSnapshot(_parameter);
+         _snapshotParameter = await sut.MapToSnapshot(_parameter);
       }
 
       [Observation]
@@ -91,17 +93,17 @@ namespace PKSim.Core
    {
       private SnapshotParameter _snapshotParameter;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshotParameter = sut.MapToSnapshot(_parameter);
+         await base.Context();
+         _snapshotParameter = await sut.MapToSnapshot(_parameter);
          _snapshotParameter.Value = 50; //50 mm
          _snapshotParameter.ValueDescription = "The value description for this value";
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, _parameter);
       }
 
       [Observation]
@@ -117,12 +119,12 @@ namespace PKSim.Core
       private SnapshotParameter _snapshotParameter;
       private double _parameterValue;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _parameterValue = 1500;
          _parameter.Value = _parameterValue;
-         _snapshotParameter = sut.MapToSnapshot(_parameter);
+         _snapshotParameter = await sut.MapToSnapshot(_parameter);
          _snapshotParameter.Value = _parameter.ValueInDisplayUnit;
          _snapshotParameter.TableFormula = new TableFormula();
          var modelTableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
@@ -135,9 +137,9 @@ namespace PKSim.Core
          _parameter.Value = 12345;
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, _parameter);
       }
 
       [Observation]
@@ -154,12 +156,12 @@ namespace PKSim.Core
       private SnapshotParameter _snapshotParameter;
       private double _parameterValue;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _parameterValue = 1500;
          _parameter.Value = _parameterValue;
-         _snapshotParameter = sut.MapToSnapshot(_parameter);
+         _snapshotParameter = await sut.MapToSnapshot(_parameter);
          _snapshotParameter.Value = _parameter.ValueInDisplayUnit;
          _snapshotParameter.TableFormula = new TableFormula();
          var modelTableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
@@ -172,9 +174,9 @@ namespace PKSim.Core
          _parameter.Value = 12345;
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, _parameter);
       }
 
       [Observation]
@@ -190,19 +192,19 @@ namespace PKSim.Core
    {
       private SnapshotParameter _snapshotParameter;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _parameter.Value = 1;
          _parameter.Dimension = Constants.Dimension.NO_DIMENSION;
          _parameter.DisplayUnit = Constants.Dimension.NO_DIMENSION.DefaultUnit;
-         _snapshotParameter = sut.MapToSnapshot(_parameter);
+         _snapshotParameter = await sut.MapToSnapshot(_parameter);
          _parameter.Value = 10;
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, _parameter);
       }
 
       [Observation]
@@ -216,9 +218,9 @@ namespace PKSim.Core
    {
       private LocalizedParameter _localParameter;
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _localParameter = sut.LocalizedParameterFrom(_parameter, x => $"Path is {x.Name}");
+         _localParameter = await sut.LocalizedParameterFrom(_parameter, x => $"Path is {x.Name}");
       }
 
       [Observation]

@@ -1,25 +1,52 @@
-﻿using FakeItEasy;
+﻿using System;
+using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Extensions;
+using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
+using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_AdvancedParameterMapper : ContextSpecification<AdvancedParameterMapper>
+   public abstract class concern_for_AdvancedParameterMapper : ContextSpecificationAsync<AdvancedParameterMapper>
    {
-      private ParameterMapper _parameterMapper;
+      protected ParameterMapper _parameterMapper;
       protected AdvancedParameter _advancedParameter;
+      protected IAdvancedParameterFactory _advancedParameterFactory;
+      protected Parameter _meanSnapshot;
+      protected Parameter _deviationSnapshot;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _parameterMapper= A.Fake<ParameterMapper>();
-         _advancedParameter = new AdvancedParameter();
-         _advancedParameter.DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter();
-         _advancedParameter.ParameterPath = "ParameterPath";
-         _advancedParameter.Name = "ParameterName";
+         _advancedParameterFactory = A.Fake<IAdvancedParameterFactory>();
 
-         sut = new AdvancedParameterMapper(_parameterMapper);
+         _advancedParameter = new AdvancedParameter
+         {
+            DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter(10,5),
+            ParameterPath = "ParameterPath",
+            Name = "ParameterName"
+         };
+         sut = new AdvancedParameterMapper(_parameterMapper, _advancedParameterFactory);
+
+         _meanSnapshot = new Parameter
+         {
+            Name = _advancedParameter.DistributedParameter.MeanParameter.Name,
+         };
+
+         _deviationSnapshot = new Parameter
+         {
+            Name = _advancedParameter.DistributedParameter.DeviationParameter.Name,
+         };
+
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_advancedParameter.DistributedParameter.MeanParameter)).ReturnsAsync(_meanSnapshot);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_advancedParameter.DistributedParameter.DeviationParameter)).ReturnsAsync(_deviationSnapshot);
+         return Task.FromResult(true);
       }
    }
 
@@ -27,9 +54,9 @@ namespace PKSim.Core
    {
       private Snapshots.AdvancedParameter _snapshot;
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_advancedParameter);
+         _snapshot = await sut.MapToSnapshot(_advancedParameter);
       }
 
       [Observation]
@@ -37,6 +64,80 @@ namespace PKSim.Core
       {
          _snapshot.Name.ShouldBeEqualTo(_advancedParameter.ParameterPath);
          _snapshot.DistributionType.ShouldBeEqualTo(_advancedParameter.DistributionType.Id); 
+      }
+   }
+
+   public class When_mapping_an_advanced_parameter_snapshot_to_snapshot_for_an_unknown_parameter : concern_for_AdvancedParameterMapper
+   {
+      private Snapshots.AdvancedParameter _snapshot;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_advancedParameter);
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         TheAsync.Action(()=>sut.MapToModel(_snapshot, new PathCacheForSpecs<IParameter>())).ShouldThrowAnAsync<SnapshotOutdatedException>();
+      }
+   }
+
+   public class When_mapping_an_advanced_parameter_snapshot_to_snapshot_usign_the_wrong_overload : concern_for_AdvancedParameterMapper
+   {
+      private Snapshots.AdvancedParameter _snapshot;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_advancedParameter);
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<NotSupportedException>();
+      }
+   }
+
+
+   public class When_mapping_an_advanced_parameter_snapshot_to_snapsho_for_a_well_defined_parameter: concern_for_AdvancedParameterMapper
+   {
+      private Snapshots.AdvancedParameter _snapshot;
+      private AdvancedParameter _newAdvancedParameter;
+      private PathCache<IParameter> _pathCache;
+      private IParameter _parameter;
+      private AdvancedParameter _mappedAdvancedParameter;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_advancedParameter);
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(5);
+         _mappedAdvancedParameter =new AdvancedParameter();
+         _mappedAdvancedParameter.DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter();
+         _pathCache = new PathCacheForSpecs<IParameter>();
+         _pathCache.Add(_advancedParameter.ParameterPath, _parameter);
+         A.CallTo(() => _advancedParameterFactory.Create(_parameter, DistributionTypes.ById(_snapshot.DistributionType))).Returns(_mappedAdvancedParameter);
+      }
+
+      protected override async Task Because()
+      {
+         _newAdvancedParameter = await sut.MapToModel(_snapshot, _pathCache);
+      }
+
+      [Observation]
+      public void should_return_the_expected_advanced_parameter_with_mapped_parameters()
+      {
+         _newAdvancedParameter.ShouldBeEqualTo(_mappedAdvancedParameter);
+      }
+
+      [Observation]
+      public void should_map_distribution_parameters_from_snapshot()
+      {
+         A.CallTo(() => _parameterMapper.MapToModel(_meanSnapshot,_newAdvancedParameter.DistributedParameter.MeanParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_deviationSnapshot,_newAdvancedParameter.DistributedParameter.DeviationParameter)).MustHaveHappened();
       }
    }
 }	

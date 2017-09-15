@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -14,7 +15,7 @@ using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_SnapshotTask : ContextSpecification<ISnapshotTask>
+   public abstract class concern_for_SnapshotTask : ContextSpecificationAsync<ISnapshotTask>
    {
       protected IDialogCreator _dialogCreator;
       protected IExecutionContext _executionContext;
@@ -25,7 +26,7 @@ namespace PKSim.Core
       protected ISnapshotMapper _snapshotMapper;
       protected IObjectTypeResolver _objectTypeResolver;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _dialogCreator = A.Fake<IDialogCreator>();
          _executionContext = A.Fake<IExecutionContext>();
@@ -40,20 +41,21 @@ namespace PKSim.Core
 
          _parameterSnapshot = new Parameter();
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_parameter)).Returns(_parameterSnapshot);
+         return Task.FromResult(true);
       }
    }
 
    public class When_exporting_a_subject_snapshot_to_file_and_the_user_cancels_the_action : concern_for_SnapshotTask
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(null);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.ExportSnapshot(_parameter);
+         await sut.ExportSnapshot(_parameter);
       }
 
       [Observation]
@@ -74,17 +76,17 @@ namespace PKSim.Core
       private readonly string _fileFullPath = "A FILE";
       private string _message;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(_dialogCreator).WithReturnType<string>()
             .Invokes(x => _message = x.GetArgument<string>(0))
             .Returns(_fileFullPath);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.ExportSnapshot(_parameter);
+         await sut.ExportSnapshot(_parameter);
       }
 
       [Observation]
@@ -123,9 +125,9 @@ namespace PKSim.Core
       private Formulation _formulation1;
       private Formulation _formulation2;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _snapshotType = typeof(Snapshots.Formulation);
          _snapshot1 = new Snapshots.Formulation();
          _snapshot2 = new Snapshots.Formulation();
@@ -139,9 +141,9 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToModel(_snapshot2)).Returns(_formulation2);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _formulations = sut.LoadFromSnapshot<Formulation>().ToList();
+         _formulations = (await sut.LoadFromSnapshot<Formulation>()).ToList();
       }
 
       [Observation]
@@ -161,15 +163,15 @@ namespace PKSim.Core
    {
       private List<Formulation> _formulations;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(null);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _formulations = sut.LoadFromSnapshot<Formulation>().ToList();
+         _formulations = (await sut.LoadFromSnapshot<Formulation>()).ToList();
       }
 
       [Observation]

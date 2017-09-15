@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -8,16 +9,17 @@ using SnapshotDataRepository = PKSim.Core.Snapshots.DataRepository;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ObservedDataMapper : ContextSpecification<ObservedDataMapper>
+   public abstract class concern_for_ObservedDataMapper : ContextSpecificationAsync<ObservedDataMapper>
    {
       protected DataColumnMapper _dataColumnMapper;
       protected ExtendedPropertiesMapper _extendedPropertiesMapper;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _dataColumnMapper = A.Fake<DataColumnMapper>();
          _extendedPropertiesMapper = A.Fake<ExtendedPropertiesMapper>();
          sut = new ObservedDataMapper(_extendedPropertiesMapper, _dataColumnMapper);
+         return Task.FromResult(true);
       }
    }
 
@@ -28,9 +30,9 @@ namespace PKSim.Core
       private DataColumn _dataColumn;
       private DataColumn _relatedColumn;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _dataRepository = DomainHelperForSpecs.ObservedData();
          _dataColumn = _dataRepository.ObservationColumns().First();
          _relatedColumn = new DataColumn("related", DomainHelperForSpecs.NoDimension(), _dataRepository.BaseGrid)
@@ -43,9 +45,9 @@ namespace PKSim.Core
          _dataRepository.Description = "description";
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_dataRepository);
+         _snapshot = await sut.MapToSnapshot(_dataRepository);
       }
 
       [Observation]

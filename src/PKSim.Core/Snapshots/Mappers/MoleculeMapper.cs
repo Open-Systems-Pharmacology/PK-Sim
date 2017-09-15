@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using PKSim.Assets;
@@ -26,18 +25,20 @@ namespace PKSim.Core.Snapshots.Mappers
          _ontogenyMapper = ontogenyMapper;
       }
 
-      public override Molecule MapToSnapshot(IndividualMolecule molecule)
+      public override async Task<Molecule> MapToSnapshot(IndividualMolecule molecule)
       {
-         return SnapshotFrom(molecule, snapshot =>
+         var snapshot = await SnapshotFrom(molecule, x =>
          {
-            updateMoleculeSpecificPropertiesToSnapshot(snapshot, molecule);
-            snapshot.Type = molecule.MoleculeType.ToString();
-            snapshot.Expression = allExpresionFrom(molecule);
-            snapshot.Ontogeny = _ontogenyMapper.MapToSnapshot(molecule.Ontogeny);
+            updateMoleculeSpecificPropertiesToSnapshot(x, molecule);
+            x.Type = molecule.MoleculeType.ToString();
          });
+
+         snapshot.Expression = await allExpresionFrom(molecule);
+         snapshot.Ontogeny = await _ontogenyMapper.MapToSnapshot(molecule.Ontogeny);
+         return snapshot;
       }
 
-      private List<LocalizedParameter> allExpresionFrom(IndividualMolecule molecule)
+      private Task<LocalizedParameter[]> allExpresionFrom(IndividualMolecule molecule)
       {
          var allSetExpressionParameters = molecule.AllExpressionsContainers()
             .Select(x => x.RelativeExpressionParameter)
@@ -76,18 +77,18 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-      public override IndividualMolecule MapToModel(Molecule snapshot, ISimulationSubject simulationSubject)
+      public override async Task<IndividualMolecule> MapToModel(Molecule snapshot, ISimulationSubject simulationSubject)
       {
          var molecule = createMoleculeFrom(snapshot, simulationSubject);
-         UpdateParametersFromSnapshot(snapshot, molecule, snapshot.Type);
+         await UpdateParametersFromSnapshot(snapshot, molecule, snapshot.Type);
          MapSnapshotPropertiesToModel(snapshot, molecule);
          updateMoleculePropertiesToMolecule(molecule, snapshot);
-         molecule.Ontogeny = _ontogenyMapper.MapToModel(snapshot.Ontogeny, simulationSubject);
-         updateExpression(snapshot, molecule);
+         molecule.Ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, simulationSubject);
+         await updateExpression(snapshot, molecule);
          return molecule;
       }
 
-      private void updateExpression(Molecule snapshot, IndividualMolecule molecule)
+      private async Task updateExpression(Molecule snapshot, IndividualMolecule molecule)
       {
          foreach (var expression in snapshot.Expression)
          {
@@ -95,7 +96,7 @@ namespace PKSim.Core.Snapshots.Mappers
             if (expressionParameter == null)
                throw new SnapshotOutdatedException(PKSimConstants.Error.MoleculeTypeNotSupported(expression.Path));
 
-            _parameterMapper.MapToModel(expression, expressionParameter);
+            await _parameterMapper.MapToModel(expression, expressionParameter);
          }
 
          //once expression have been set, we need to update normalized parameter

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -24,7 +24,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _dimensionRepository = dimensionRepository;
       }
 
-      public override SnapshotProtocol MapToSnapshot(ModelProtocol modelProtocol)
+      public override Task<SnapshotProtocol> MapToSnapshot(ModelProtocol modelProtocol)
       {
          switch (modelProtocol)
          {
@@ -37,17 +37,17 @@ namespace PKSim.Core.Snapshots.Mappers
          return null;
       }
 
-      private Schema snapshotSchemaFrom(Model.Schema schema) => _schemaMapper.MapToSnapshot(schema);
+      private Task<Schema> snapshotSchemaFrom(Model.Schema schema) => _schemaMapper.MapToSnapshot(schema);
 
-      public override ModelProtocol MapToModel(SnapshotProtocol snapshotProtocol)
+      public override async Task<ModelProtocol> MapToModel(SnapshotProtocol snapshotProtocol)
       {
-         var modelProtocol = createModelProtocolFrom(snapshotProtocol);
+         var modelProtocol = await createModelProtocolFrom(snapshotProtocol);
          MapSnapshotPropertiesToModel(snapshotProtocol, modelProtocol);
-         UpdateParametersFromSnapshot(snapshotProtocol, modelProtocol, PKSimConstants.ObjectTypes.AdministrationProtocol);
+         await UpdateParametersFromSnapshot(snapshotProtocol, modelProtocol, PKSimConstants.ObjectTypes.AdministrationProtocol);
          return modelProtocol;
       }
 
-      private ModelProtocol createModelProtocolFrom(SnapshotProtocol snapshotProtocol)
+      private Task<ModelProtocol> createModelProtocolFrom(SnapshotProtocol snapshotProtocol)
       {
          if (snapshotProtocol.IsSimple)
             return createSimpleProtocolFrom(snapshotProtocol);
@@ -55,27 +55,32 @@ namespace PKSim.Core.Snapshots.Mappers
          return createAdvancedProtocolFrom(snapshotProtocol);
       }
 
-      private SnapshotProtocol createSnapshotFromAdvancedProtocol(AdvancedProtocol advancedProtocol)
+      private async Task<SnapshotProtocol> createSnapshotFromAdvancedProtocol(AdvancedProtocol advancedProtocol)
       {
-         return SnapshotFrom(advancedProtocol, snapshot =>
+         var snapshot = await SnapshotFrom(advancedProtocol, x =>
          {
-            snapshot.Schemas = new List<Schema>(advancedProtocol.AllSchemas.Select(snapshotSchemaFrom));
-            snapshot.TimeUnit = advancedProtocol.TimeUnit.Name;
+            x.TimeUnit = advancedProtocol.TimeUnit.Name;
          });
+         snapshot.Schemas = await Task.WhenAll(advancedProtocol.AllSchemas.Select(snapshotSchemaFrom));
+         return snapshot;
       }
 
-      private AdvancedProtocol createAdvancedProtocolFrom(SnapshotProtocol snapshotProtocol)
+      private async Task<ModelProtocol> createAdvancedProtocolFrom(SnapshotProtocol snapshotProtocol)
       {
          var advancedProtocol = _protocolFactory.Create(ProtocolMode.Advanced).DowncastTo<AdvancedProtocol>();
          advancedProtocol.RemoveAllSchemas();
-         if (snapshotProtocol.Schemas != null)
-            advancedProtocol.AddChildren(snapshotProtocol.Schemas.Select(_schemaMapper.MapToModel));
-
          advancedProtocol.TimeUnit = _dimensionRepository.Time.UnitOrDefault(snapshotProtocol.TimeUnit);
+
+         if (snapshotProtocol.Schemas != null)
+         {
+            var tasks = snapshotProtocol.Schemas.Select(_schemaMapper.MapToModel);
+            advancedProtocol.AddChildren(await Task.WhenAll(tasks));
+         }
+
          return advancedProtocol;
       }
 
-      private SnapshotProtocol createSnapshotFromSimpleProtocol(SimpleProtocol simpleProtocol)
+      private Task<SnapshotProtocol> createSnapshotFromSimpleProtocol(SimpleProtocol simpleProtocol)
       {
          return SnapshotFrom(simpleProtocol, snapshot =>
          {
@@ -86,7 +91,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      private SimpleProtocol createSimpleProtocolFrom(SnapshotProtocol snapshotProtocol)
+      private Task<ModelProtocol> createSimpleProtocolFrom(SnapshotProtocol snapshotProtocol)
       {
          var applicationType = ApplicationTypes.ByName(snapshotProtocol.ApplicationType);
          var simpleProtocol = _protocolFactory.Create(ProtocolMode.Simple, applicationType).DowncastTo<SimpleProtocol>();
@@ -94,7 +99,7 @@ namespace PKSim.Core.Snapshots.Mappers
          simpleProtocol.DosingInterval = DosingIntervals.ById(dosingIntervalId);
          simpleProtocol.TargetOrgan = snapshotProtocol.TargetOrgan;
          simpleProtocol.TargetCompartment = snapshotProtocol.TargetCompartment;
-         return simpleProtocol;
+         return Task.FromResult<ModelProtocol>(simpleProtocol);
       }
    }
 }

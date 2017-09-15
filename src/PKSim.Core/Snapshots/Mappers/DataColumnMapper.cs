@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using SnapshotDataColumn = PKSim.Core.Snapshots.DataColumn;
 using SnapshotQuantityInfo = PKSim.Core.Snapshots.QuantityInfo;
@@ -20,17 +21,19 @@ namespace PKSim.Core.Snapshots.Mappers
          _quantityInfoMapper = quantityInfoMapper;
       }
 
-      public override SnapshotDataColumn MapToSnapshot(ModelDataColumn dataColumn)
+      public override async Task<SnapshotDataColumn> MapToSnapshot(ModelDataColumn dataColumn)
       {
-         return SnapshotFrom(dataColumn, snapshot =>
+         var snapshot= await SnapshotFrom(dataColumn, x =>
          {
-            snapshot.Name = dataColumn.Name;
-            snapshot.RelatedColumns = mapRelatedColumns(dataColumn.RelatedColumns);
-            snapshot.DataInfo = mapDataInfo(dataColumn.DataInfo);
-            snapshot.QuantityInfo = mapQuantityInfo(dataColumn.QuantityInfo);
-            snapshot.Values = valuesInDisplayUnits(dataColumn);
-            snapshot.Unit = SnapshotValueFor(dataColumn.DisplayUnit.Name);
+            x.Name = dataColumn.Name;
+            x.Values = valuesInDisplayUnits(dataColumn);
+            x.Unit = SnapshotValueFor(dataColumn.DisplayUnit.Name);
          });
+
+         snapshot.RelatedColumns = await mapRelatedColumns(dataColumn.RelatedColumns);
+         snapshot.DataInfo = await mapDataInfo(dataColumn.DataInfo);
+         snapshot.QuantityInfo = await mapQuantityInfo(dataColumn.QuantityInfo);
+         return snapshot;
       }
 
       private List<float> valuesInDisplayUnits(ModelDataColumn dataColumn)
@@ -38,22 +41,26 @@ namespace PKSim.Core.Snapshots.Mappers
          return dataColumn.ConvertToDisplayValues(dataColumn.Values).ToList();
       }
 
-      private SnapshotQuantityInfo mapQuantityInfo(ModelQuantityInfo quantityInfo)
+      private Task<SnapshotQuantityInfo> mapQuantityInfo(ModelQuantityInfo quantityInfo)
       {
          return _quantityInfoMapper.MapToSnapshot(quantityInfo);
       }
 
-      private DataInfo mapDataInfo(OSPSuite.Core.Domain.Data.DataInfo dataInfo)
+      private Task<DataInfo> mapDataInfo(OSPSuite.Core.Domain.Data.DataInfo dataInfo)
       {
          return _dataInfoMapper.MapToSnapshot(dataInfo);
       }
 
-      private List<SnapshotDataColumn> mapRelatedColumns(IReadOnlyCollection<ModelDataColumn> relatedColumns)
+      private async Task<SnapshotDataColumn[]> mapRelatedColumns(IReadOnlyCollection<ModelDataColumn> relatedColumns)
       {
-         return relatedColumns.Any() ? relatedColumns.Select(MapToSnapshot).ToList() : null;
+         if (!relatedColumns.Any())
+            return null;
+
+         var tasks = relatedColumns.Select(MapToSnapshot);
+         return await Task.WhenAll(tasks);
       }
 
-      public override ModelDataColumn MapToModel(SnapshotDataColumn snapshot)
+      public override Task<ModelDataColumn> MapToModel(SnapshotDataColumn snapshot)
       {
          throw new NotImplementedException();
       }

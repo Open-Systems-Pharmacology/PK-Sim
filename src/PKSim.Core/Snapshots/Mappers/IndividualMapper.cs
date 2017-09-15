@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -22,7 +22,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IOriginDataMapper _originDataMapper;
       private readonly IContainerTask _containerTask;
 
-      public IndividualMapper(ParameterMapper parameterMapper, IDimensionRepository dimensionRepository, MoleculeMapper moleculeMapper, 
+      public IndividualMapper(ParameterMapper parameterMapper, IDimensionRepository dimensionRepository, MoleculeMapper moleculeMapper,
          IIndividualFactory individualFactory, IOriginDataMapper originDataMapper, IContainerTask containerTask)
       {
          _parameterMapper = parameterMapper;
@@ -33,21 +33,23 @@ namespace PKSim.Core.Snapshots.Mappers
          _containerTask = containerTask;
       }
 
-      public override SnapshotIndividual MapToSnapshot(ModelIndividual individual)
+      public override async Task<SnapshotIndividual> MapToSnapshot(ModelIndividual individual)
       {
-         var snapshot = new SnapshotIndividual();
-         MapModelPropertiesToSnapshot(individual, snapshot);
-         mapOriginDataToSnapshot(snapshot, individual.OriginData);
-         snapshot.Seed = individual.Seed;
-         snapshot.Parameters = allParametersChangedByUserFrom(individual);
-         snapshot.Molecules = allMoleculesFrom(individual);
+         var snapshot = await SnapshotFrom(individual, x =>
+         {
+            mapOriginDataToSnapshot(x, individual.OriginData);
+            x.Seed = individual.Seed;
+         });
+
+         snapshot.Parameters = await allParametersChangedByUserFrom(individual);
+         snapshot.Molecules = await allMoleculesFrom(individual);
          return snapshot;
       }
 
-      private List<Molecule> allMoleculesFrom(ModelIndividual individual)
+      private Task<Molecule[]> allMoleculesFrom(ModelIndividual individual)
       {
-         var molecules = individual.AllDefinedMolecules();
-         return molecules.Select(_moleculeMapper.MapToSnapshot).ToList();
+         var tasks = individual.AllDefinedMolecules().Select(_moleculeMapper.MapToSnapshot);
+         return Task.WhenAll(tasks);
       }
 
       private void mapOriginDataToSnapshot(SnapshotIndividual snapshot, OriginData originData)
@@ -66,33 +68,37 @@ namespace PKSim.Core.Snapshots.Mappers
          return _parameterMapper.ParameterFrom(parameterBaseValue, parameterDisplayUnit, dimension);
       }
 
-      private List<LocalizedParameter> allParametersChangedByUserFrom(ModelIndividual individual)
+      private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelIndividual individual)
       {
          var changedParameters = individual.Organism.GetAllChildren<IParameter>(x => x.ValueDiffersFromDefault());
          return _parameterMapper.LocalizedParametersFrom(changedParameters);
       }
 
-      public override ModelIndividual MapToModel(SnapshotIndividual individualSnapshot)
+      public override async Task<ModelIndividual> MapToModel(SnapshotIndividual individualSnapshot)
       {
          var originData = createOriginDataFrom(individualSnapshot);
          var individual = _individualFactory.CreateAndOptimizeFor(originData, individualSnapshot.Seed);
          MapSnapshotPropertiesToModel(individualSnapshot, individual);
-         updateIndividualParameters(individualSnapshot, individual);
-         individual.AddChildren(individualSnapshot.Molecules.Select(x=>_moleculeMapper.MapToModel(x, individual)));
+         await updateIndividualParameters(individualSnapshot, individual);
+         var tasks = individualSnapshot.Molecules.Select(x => _moleculeMapper.MapToModel(x, individual));
+         individual.AddChildren(await Task.WhenAll(tasks));
          return individual;
       }
 
-      private void updateIndividualParameters(SnapshotIndividual individualSnapshot, ModelIndividual individual)
+      private Task updateIndividualParameters(SnapshotIndividual individualSnapshot, ModelIndividual individual)
       {
          var allParameters = _containerTask.CacheAllChildren<IParameter>(individual.Organism);
+         var tasks = new List<Task>();
          individualSnapshot.Parameters.Each(snapshotParameter =>
          {
             var parameter = allParameters[snapshotParameter.Path];
             if (parameter == null)
                throw new SnapshotParameterNotFoundException(snapshotParameter.Path, individual.Name);
 
-            _parameterMapper.MapToModel(snapshotParameter, parameter);
+            tasks.Add(_parameterMapper.MapToModel(snapshotParameter, parameter));
          });
+
+         return Task.WhenAll(tasks);
       }
 
       private OriginData createOriginDataFrom(Individual individualSnapshot)
@@ -116,7 +122,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (parameter == null)
             return double.NaN;
 
-         var unit = dimension.Unit(parameter.Unit);
+         var unit = dimension.Unit(UnitValueFor(parameter.Unit));
          return dimension.UnitValueToBaseUnitValue(unit, parameter.Value);
       }
    }

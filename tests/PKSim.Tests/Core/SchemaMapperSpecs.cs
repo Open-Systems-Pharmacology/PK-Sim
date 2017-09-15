@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -7,7 +8,7 @@ using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_SchemaMapper : ContextSpecification<SchemaMapper>
+   public abstract class concern_for_SchemaMapper : ContextSpecificationAsync<SchemaMapper>
    {
       protected ParameterMapper _parameterMapper;
       protected Schema _schema;
@@ -17,7 +18,7 @@ namespace PKSim.Core
       protected SchemaItemMapper _schemaItemMapper;
       protected ISchemaFactory _schemaFactory;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _schemaItemMapper = A.Fake<SchemaItemMapper>();
@@ -39,14 +40,16 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter)).Returns(new Snapshots.Parameter().WithName(_parameter.Name));
 
          A.CallTo(() => _schemaItemMapper.MapToSnapshot(_schemaItem)).Returns(new Snapshots.SchemaItem().WithName(_schemaItem.Name));
+
+         return Task.FromResult(true);
       }
    }
 
    public class When_mapping_a_model_schema_to_a_snapshot_schema : concern_for_SchemaMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_schema);
+         _snapshot = await sut.MapToSnapshot(_schema);
       }
 
       [Observation]
@@ -74,10 +77,10 @@ namespace PKSim.Core
       private Schema _newSchema;
       private SchemaItem _newSchemaItem;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_schema);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_schema);
          A.CallTo(() => _schemaFactory.Create(null)).Returns(_schema);
 
          _snapshot.Name = "New SChema";
@@ -87,9 +90,9 @@ namespace PKSim.Core
          A.CallTo(() => _schemaItemMapper.MapToModel(_snapshot.SchemaItems.FindByName(_schemaItem.Name))).Returns(_newSchemaItem);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _newSchema = sut.MapToModel(_snapshot);
+         _newSchema = await sut.MapToModel(_snapshot);
       }
 
       [Observation]

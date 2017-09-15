@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace PKSim.Core.Snapshots
+﻿namespace PKSim.Core.Snapshots
 {
    public class Molecule : ParameterContainerSnapshotBase
    {
       public string Type { get; set; }
+
       //Proteins only
       public string MembraneLocation { get; set; }
 
@@ -14,7 +13,7 @@ namespace PKSim.Core.Snapshots
       //Transporters only
       public string TransportType { get; set; }
 
-      public List<LocalizedParameter> Expression { get; set; } = new List<LocalizedParameter>();
+      public LocalizedParameter[] Expression { get; set; }
       public Ontogeny Ontogeny { get; set; }
    }
 }

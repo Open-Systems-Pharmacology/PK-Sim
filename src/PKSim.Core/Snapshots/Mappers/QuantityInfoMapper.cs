@@ -1,11 +1,12 @@
-﻿using ModelQuantityInfo = OSPSuite.Core.Domain.Data.QuantityInfo;
+﻿using System.Threading.Tasks;
+using ModelQuantityInfo = OSPSuite.Core.Domain.Data.QuantityInfo;
 using SnapshotQuantityInfo = PKSim.Core.Snapshots.QuantityInfo;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
    public class QuantityInfoMapper : SnapshotMapperBase<ModelQuantityInfo, SnapshotQuantityInfo>
    {
-      public override SnapshotQuantityInfo MapToSnapshot(ModelQuantityInfo quantityInfo)
+      public override Task<SnapshotQuantityInfo> MapToSnapshot(ModelQuantityInfo quantityInfo)
       {
          return SnapshotFrom(quantityInfo, snapshot =>
          {
@@ -16,7 +17,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override ModelQuantityInfo MapToModel(SnapshotQuantityInfo snapshot)
+      public override Task<ModelQuantityInfo> MapToModel(SnapshotQuantityInfo snapshot)
       {
          throw new System.NotImplementedException();
       }

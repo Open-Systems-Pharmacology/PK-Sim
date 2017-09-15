@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -60,7 +61,7 @@ namespace PKSim.Presentation.Services
          return _buildingBlockTask.LoadFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
       }
 
-      public IReadOnlyList<ISimulationSubject> LoadFromSnapshot()
+      public Task<IReadOnlyList<ISimulationSubject>> LoadFromSnapshot()
       {
          throw new NotSupportedException("Do not call LoadFromSnapshot for a simulation subject. Use the dedicated method instead");
       }

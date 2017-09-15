@@ -1,4 +1,5 @@
-﻿using PKSim.Core.Repositories;
+﻿using System.Threading.Tasks;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using SnapshotFormulation = PKSim.Core.Snapshots.Formulation;
 using ModelFormulation = PKSim.Core.Model.Formulation;
@@ -16,7 +17,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _cloner = cloner;
       }
 
-      public override SnapshotFormulation MapToSnapshot(ModelFormulation modelFormulation)
+      public override Task<SnapshotFormulation> MapToSnapshot(ModelFormulation modelFormulation)
       {
          return SnapshotFrom(modelFormulation, snapshot =>
          {
@@ -24,12 +25,12 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override ModelFormulation MapToModel(SnapshotFormulation snapshotFormulation)
+      public override async Task<ModelFormulation> MapToModel(SnapshotFormulation snapshotFormulation)
       {
          var template = _formulationRepository.FormulationBy(snapshotFormulation.FormulationType);
          var formulation = _cloner.Clone(template);
          MapSnapshotPropertiesToModel(snapshotFormulation, formulation);
-         UpdateParametersFromSnapshot(snapshotFormulation, formulation, snapshotFormulation.FormulationType);
+         await UpdateParametersFromSnapshot(snapshotFormulation, formulation, snapshotFormulation.FormulationType);
          return formulation;
       }
    }

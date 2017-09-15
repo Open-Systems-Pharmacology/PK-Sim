@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Utility.Extensions;
 using SnapshotExtendedProperties = PKSim.Core.Snapshots.ExtendedProperties;
 using ModelExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
@@ -16,28 +17,28 @@ namespace PKSim.Core.Snapshots.Mappers
          _extendedPropertyMapper = extendedPropertyMapper;
       }
 
-      public override SnapshotExtendedProperties MapToSnapshot(ModelExtendedProperties extendedProperties)
+      public override async Task<SnapshotExtendedProperties> MapToSnapshot(ModelExtendedProperties extendedProperties)
       {
-         return SnapshotFrom(extendedProperties, snapshot =>
-         {
-            var snapshotExtendedProperties = mapExtendedPropertiesFrom(extendedProperties);
-            if (snapshotExtendedProperties == null)
-               return;
+         if (!extendedProperties.Any())
+            return null;
 
-            snapshotExtendedProperties.Each(snapshot.Add);
-         });
+         var snapshot =  await SnapshotFrom(extendedProperties);
+         var snapshotExtendedProperties =await mapExtendedPropertiesFrom(extendedProperties);
+         snapshotExtendedProperties.Each(snapshot.Add);
+         return snapshot;
       }
 
-      private List<SnapshotExtendedProperty> mapExtendedPropertiesFrom(ModelExtendedProperties extendedProperties)
+      private Task<SnapshotExtendedProperty[]> mapExtendedPropertiesFrom(ModelExtendedProperties extendedProperties)
       {
-         return extendedProperties.Any() ? extendedProperties.Select(property => _extendedPropertyMapper.MapToSnapshot(property)).ToList() : null;
+         var tasks = extendedProperties.Select(_extendedPropertyMapper.MapToSnapshot);
+         return Task.WhenAll(tasks);
       }
 
-      public override ModelExtendedProperties MapToModel(SnapshotExtendedProperties snapshot)
+      public override async Task<ModelExtendedProperties> MapToModel(SnapshotExtendedProperties snapshot)
       {
          var extendedProperties = new ModelExtendedProperties();
-
-         extendedProperties.AddRange(snapshot.Select(_extendedPropertyMapper.MapToModel));
+         var tasks = snapshot.Select(_extendedPropertyMapper.MapToModel);
+         extendedProperties.AddRange(await Task.WhenAll(tasks));
          return extendedProperties;
       }
    }

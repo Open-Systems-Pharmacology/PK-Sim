@@ -122,7 +122,7 @@ namespace PKSim.Core.Model
       }
       
       /// <summary>
-      ///    Reset the genrator with the value of the seed.
+      ///    Reset the generator with the value of the seed.
       ///    This is necessary if we want to be able to generate the same sequence of random numbers
       /// </summary>
       public void ResetGenerator()

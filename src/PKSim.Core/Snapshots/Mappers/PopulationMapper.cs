@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using SnapshotPopulation = PKSim.Core.Snapshots.Population;
 using ModelPopulation = PKSim.Core.Model.Population;
 
@@ -12,78 +13,73 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class PopulationMapper : ObjectBaseSnapshotMapperBase<ModelPopulation, SnapshotPopulation>
    {
-      private readonly IndividualMapper _individualMapper;
-      private readonly ParameterRangeMapper _parameterRangeMapper;
       private readonly AdvancedParameterMapper _advancedParameterMapper;
-      private readonly IGenderRepository _genderRepository;
+      private readonly RandomPopulationSettingsMapper _randomPopulationSettingsMapper;
+      private readonly IRandomPopulationFactory _randomPopulationFactory;
+      private readonly IParameterTask _parameterTask;
 
-      public PopulationMapper(
-         IndividualMapper individualMapper,
-         ParameterRangeMapper parameterRangeMapper,
-         AdvancedParameterMapper advancedParameterMapper,
-         IGenderRepository genderRepository)
+      public PopulationMapper(AdvancedParameterMapper advancedParameterMapper,
+         RandomPopulationSettingsMapper randomPopulationSettingsMapper,
+         IRandomPopulationFactory randomPopulationFactory,
+         IParameterTask parameterTask)
       {
-         _individualMapper = individualMapper;
-         _parameterRangeMapper = parameterRangeMapper;
          _advancedParameterMapper = advancedParameterMapper;
-         _genderRepository = genderRepository;
+         _randomPopulationSettingsMapper = randomPopulationSettingsMapper;
+         _randomPopulationFactory = randomPopulationFactory;
+         _parameterTask = parameterTask;
       }
 
-      public override SnapshotPopulation MapToSnapshot(ModelPopulation population)
+      public override async Task<SnapshotPopulation> MapToSnapshot(ModelPopulation population)
       {
-         return SnapshotFrom(population, snapshot =>
-         {
-            snapshot.Seed = population.Seed;
-            mapPopulationProperties(snapshot, population);
-         });
+         var snapshot = await SnapshotFrom(population, x => { x.Seed = population.Seed; });
+         await mapPopulationProperties(snapshot, population);
+         return snapshot;
       }
 
-      private void mapPopulationProperties(SnapshotPopulation snapshot, ModelPopulation population)
+      private Task mapPopulationProperties(SnapshotPopulation snapshot, ModelPopulation population)
       {
          switch (population)
          {
             case RandomPopulation randomPopulation:
-               mapRandomPopulationProperties(snapshot, randomPopulation);
-               break;
+               return mapRandomPopulationProperties(snapshot, randomPopulation);
             default:
-               throw new OSPSuiteException(PKSimConstants.Error.PopulationSnapshotOnlySupportedForRandomPopulation);
+               return FromException(new OSPSuiteException(PKSimConstants.Error.PopulationSnapshotOnlySupportedForRandomPopulation));
          }
       }
 
-      private void mapRandomPopulationProperties(SnapshotPopulation snapshot, RandomPopulation randomPopulation)
+      private async Task mapRandomPopulationProperties(SnapshotPopulation snapshot, RandomPopulation randomPopulation)
       {
-         mapIndividualToSnapshot(snapshot, randomPopulation);
-         snapshot.NumberOfIndividuals = randomPopulation.Settings.NumberOfIndividuals;
-         snapshot.ProportionOfFemales = proportionOfFemalesFrom(randomPopulation.Settings);
-         snapshot.Age = snapshotRangeFor(randomPopulation.Settings, CoreConstants.Parameter.AGE);
-         snapshot.Weight = snapshotRangeFor(randomPopulation.Settings, CoreConstants.Parameter.MEAN_WEIGHT);
-         snapshot.Height = snapshotRangeFor(randomPopulation.Settings, CoreConstants.Parameter.MEAN_HEIGHT);
-         snapshot.GestationalAge = snapshotRangeFor(randomPopulation.Settings, CoreConstants.Parameter.GESTATIONAL_AGE);
-         snapshot.BMI = snapshotRangeFor(randomPopulation.Settings, CoreConstants.Parameter.BMI);
-         snapshot.AdvancedParameters = snapshotAdvancedParametersFrom(randomPopulation);
+         snapshot.Settings = await _randomPopulationSettingsMapper.MapToSnapshot(randomPopulation.Settings);
+         snapshot.AdvancedParameters = await snapshotAdvancedParametersFrom(randomPopulation);
       }
 
-      private List<AdvancedParameter> snapshotAdvancedParametersFrom(ModelPopulation population)
+      private Task<AdvancedParameter[]> snapshotAdvancedParametersFrom(ModelPopulation population)
       {
-         return population.AdvancedParameters.Select(_advancedParameterMapper.MapToSnapshot).ToList();
+         var tasks = population.AdvancedParameters.Select(_advancedParameterMapper.MapToSnapshot);
+         return Task.WhenAll(tasks);
       }
 
-      private ParameterRange snapshotRangeFor(RandomPopulationSettings randomPopulationSettings, string parameterName) => _parameterRangeMapper.MapToSnapshot(randomPopulationSettings.ParameterRange(parameterName));
-
-      private double? proportionOfFemalesFrom(RandomPopulationSettings randomPopulationSettings)
+      public override async Task<ModelPopulation> MapToModel(SnapshotPopulation snapshot)
       {
-         var female = _genderRepository.Female;
-         return randomPopulationSettings.GenderRatio(female)?.Ratio;
+         var randomPopulationSettings = await _randomPopulationSettingsMapper.MapToModel(snapshot.Settings);
+
+         var population = await _randomPopulationFactory.CreateFor(randomPopulationSettings, CancellationToken.None, snapshot.Seed);
+         MapSnapshotPropertiesToModel(snapshot, population);
+         await updateAdvancedParameters(population, snapshot.AdvancedParameters);
+         return population;
       }
 
-      private void mapIndividualToSnapshot(SnapshotPopulation snapshot, ModelPopulation population)
+      private async Task updateAdvancedParameters(RandomPopulation population, AdvancedParameter[] snapshotAdvancedParameters)
       {
-         snapshot.Individual = _individualMapper.MapToSnapshot(population.FirstIndividual);
-      }
+         if (snapshotAdvancedParameters == null)
+            return;
 
-      public override ModelPopulation MapToModel(SnapshotPopulation snapshot)
-      {
-         throw new NotImplementedException();
+         population.RemoveAllAdvancedParameters();
+         var parameterCache = _parameterTask.PathCacheFor(population.AllIndividualParameters());
+         var tasks = snapshotAdvancedParameters.Select(x => _advancedParameterMapper.MapToModel(x, parameterCache));
+         var advancedParameters = await Task.WhenAll(tasks);
+
+         advancedParameters.Each(x => population.AddAdvancedParameter(x, generateRandomValues: true));
       }
    }
 }

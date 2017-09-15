@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using ModelExtendedProperty = OSPSuite.Core.Domain.IExtendedProperty;
@@ -10,7 +11,7 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class ExtendedPropertyMapper : SnapshotMapperBase<ModelExtendedProperty, SnapshotExtendedProperty>
    {
-      public override SnapshotExtendedProperty MapToSnapshot(ModelExtendedProperty extendedProperty)
+      public override Task<SnapshotExtendedProperty> MapToSnapshot(ModelExtendedProperty extendedProperty)
       {
          return SnapshotFrom(extendedProperty, snapshot =>
          {
@@ -25,47 +26,34 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      private ExtendedProperty<T> addOptionsToExtendedProperty<T>(SnapshotExtendedProperty snapshot, Func<object, T> convertToTypeFunc)
+      private Task<ModelExtendedProperty> mapExtendedProperty<T>(SnapshotExtendedProperty snapshot, Func<object, T> convertToTypeFunc)
       {
-         var extendedProperty = new ExtendedProperty<T>();
+         var extendedProperty = new ExtendedProperty<T>
+         {
+            Description = snapshot.Description,
+            ReadOnly = snapshot.ReadOnly,
+            FullName = snapshot.FullName,
+            Name = snapshot.Name,
+            ValueAsObject = snapshot.Value
+         };
          addOptionsToList(snapshot.ListOfValues, option => extendedProperty.AddToListOfValues(convertToTypeFunc(option)));
-         return extendedProperty;
+         return Task.FromResult<ModelExtendedProperty>(extendedProperty);
       }
 
-      public override ModelExtendedProperty MapToModel(SnapshotExtendedProperty snapshot)
+      public override Task<ModelExtendedProperty> MapToModel(SnapshotExtendedProperty snapshot)
       {
-
-         ModelExtendedProperty property;
-
          if (snapshot.Type == typeof(string))
-         {
-            property = addOptionsToExtendedProperty(snapshot, option => option.ToString());
-         }
-         else if (snapshot.Type == typeof(double))
-         {
-            property = addOptionsToExtendedProperty(snapshot, option => double.Parse(option.ToString()));
-         }
-         else if (snapshot.Type == typeof(bool))
-         {
-            property = addOptionsToExtendedProperty(snapshot, option => bool.Parse(option.ToString()));
-         }
-         else
-         {
-            property = addOptionsToExtendedProperty(snapshot, option => option);
-         }
+            return mapExtendedProperty(snapshot, option => option.ToString());
 
-         property.Description = snapshot.Description;
-         property.ReadOnly = snapshot.ReadOnly;
-         property.FullName = snapshot.FullName;
-         property.Name = snapshot.Name;
-         property.ValueAsObject = snapshot.Value;
+         if (snapshot.Type == typeof(double))
+            return mapExtendedProperty(snapshot, option => double.Parse(option.ToString()));
 
-         return property;
+         if (snapshot.Type == typeof(bool))
+            return mapExtendedProperty(snapshot, option => bool.Parse(option.ToString()));
+
+         return mapExtendedProperty(snapshot, option => option);
       }
 
-      private void addOptionsToList(List<object> snapshotListOfValues, Action<object> action)
-      {
-         snapshotListOfValues.Each(action);
-      }
+      private void addOptionsToList(List<object> snapshotListOfValues, Action<object> action) => snapshotListOfValues.Each(action);
    }
 }

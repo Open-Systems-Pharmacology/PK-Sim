@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -11,7 +12,7 @@ using CalculationMethodCache = OSPSuite.Core.Domain.CalculationMethodCache;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_CalculationMethodCacheMapper : ContextSpecification<CalculationMethodCacheMapper>
+   public abstract class concern_for_CalculationMethodCacheMapper : ContextSpecificationAsync<CalculationMethodCacheMapper>
    {
       private ICalculationMethodRepository _calculationMethodRepository;
       private ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
@@ -23,7 +24,7 @@ namespace PKSim.Core
       protected CalculationMethodCategory _multipleCategory;
       protected CalculationMethod _anotherCalculationMethodInMultipleOptions;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _calculationMethodRepository = A.Fake<ICalculationMethodRepository>();
          _calculationMethodCategoryRepository = A.Fake<ICalculationMethodCategoryRepository>();
@@ -62,14 +63,16 @@ namespace PKSim.Core
 
          A.CallTo(() => _calculationMethodCategoryRepository.FindBy(_singleCategory.Name)).Returns(_singleCategory);
          A.CallTo(() => _calculationMethodCategoryRepository.FindBy(_multipleCategory.Name)).Returns(_multipleCategory);
+
+         return Task.FromResult(true);
       }
    }
 
    public class When_mapping_a_calculation_method_cache_to_snapshot : concern_for_CalculationMethodCacheMapper
    {
-      protected override void Because()
+      protected override async Task Because()
       {
-         _snapshot = sut.MapToSnapshot(_calculationMethodCache);
+         _snapshot = await sut.MapToSnapshot(_calculationMethodCache);
       }
 
       [Observation]
@@ -81,18 +84,18 @@ namespace PKSim.Core
 
    public class When_mapping_a_calculation_method_cache_snapshot_to_a_calculation_method_cache : concern_for_CalculationMethodCacheMapper
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_calculationMethodCache);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_calculationMethodCache);
          //Switch two calculation methods
          _calculationMethodCache.RemoveCalculationMethod(_calculationMethodWithMultipleOptions);
          _calculationMethodCache.AddCalculationMethod(_anotherCalculationMethodInMultipleOptions);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
-         sut.MapToModel(_snapshot,_calculationMethodCache);
+         return sut.MapToModel(_snapshot,_calculationMethodCache);
       }
 
       [Observation]
@@ -110,10 +113,10 @@ namespace PKSim.Core
 
    public class When_mapping_a_calculation_method_cache_snapshot_containing_an_unknow_calculation_method : concern_for_CalculationMethodCacheMapper
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _snapshot = sut.MapToSnapshot(_calculationMethodCache);
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_calculationMethodCache);
          _snapshot.Add("UNKNOW CM");
       }
 
