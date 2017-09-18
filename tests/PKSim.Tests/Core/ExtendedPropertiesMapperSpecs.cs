@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Extensions;
 using ExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
 
 namespace PKSim.Core
@@ -11,71 +13,80 @@ namespace PKSim.Core
    public abstract class concern_for_ExtendedPropertiesMapper : ContextSpecificationAsync<ExtendedPropertiesMapper>
    {
       protected ExtendedPropertyMapper _extendedPropertyMapper;
+      protected ExtendedProperty<string> _extendedProperty;
+      protected ExtendedProperty<string> _secondExtendedProperty;
+      protected ExtendedProperty _extendedPropertySnapshot;
+      protected ExtendedProperty _secondExtendedPropertySnapshot;
+      protected ExtendedProperties _extendedProperties;
 
       protected override Task Context()
       {
          _extendedPropertyMapper = A.Fake<ExtendedPropertyMapper>();
          sut = new ExtendedPropertiesMapper(_extendedPropertyMapper);
+         _extendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "FirstFullName", Name = "FirstName", ReadOnly = true, Value = "Value" };
+         _secondExtendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "SecondFullName", Name = "SecondName", ReadOnly = true, Value = "Value" };
+         _extendedProperties = new ExtendedProperties { _extendedProperty, _secondExtendedProperty };
+
+         _extendedPropertySnapshot = new ExtendedProperty{Name = "FirstName"};
+         _secondExtendedPropertySnapshot = new ExtendedProperty { Name = "SecondName" };
+
+         A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_extendedProperty)).ReturnsAsync(_extendedPropertySnapshot);
+         A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_secondExtendedProperty)).ReturnsAsync(_secondExtendedPropertySnapshot);
+
          return Task.FromResult(true);
+      }
+   }
+
+   public class When_mapping_a_snapshot_to_extended_properties : concern_for_ExtendedPropertiesMapper
+   {
+      private Snapshots.ExtendedProperties _snapshot;
+      private ExtendedProperties _result;
+      private ExtendedProperty<string> _modelExtendedProperty;
+      private ExtendedProperty<string> _secondModelExtendedProperty;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_extendedProperties);
+         _modelExtendedProperty = new ExtendedProperty<string> {Name = "FirstName"};
+         A.CallTo(() => _extendedPropertyMapper.MapToModel(_extendedPropertySnapshot)).ReturnsAsync(_modelExtendedProperty);
+         _secondModelExtendedProperty = new ExtendedProperty<string> { Name = "SecondName" };
+         A.CallTo(() => _extendedPropertyMapper.MapToModel(_secondExtendedPropertySnapshot)).ReturnsAsync(_secondModelExtendedProperty);
+      }
+
+      protected override async Task Because()
+      {
+         _result = await sut.MapToModel(_snapshot);
+      }
+
+      [Observation]
+      public void the_extended_properties_should_contain_matching_properties_from_original()
+      {
+         _result["FirstName"].ShouldBeEqualTo(_modelExtendedProperty);
+         _result["SecondName"].ShouldBeEqualTo(_secondModelExtendedProperty);
       }
    }
 
    public class When_mapping_an_extended_properties_to_snapshot : concern_for_ExtendedPropertiesMapper
    {
-      private ExtendedProperties _extendedProperties;
-      private ExtendedProperty<string> _extendedProperty;
-      private ExtendedProperty<string> _secondExtendedProperty;
+      
+      private Snapshots.ExtendedProperties _snapshot;
 
       protected override async Task Context()
       {
          await base.Context();
-         _extendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = "Value" };
-         _secondExtendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "FullName", Name = "SecondName", ReadOnly = true, Value = "Value" };
-         _extendedProperties = new ExtendedProperties { _extendedProperty, _secondExtendedProperty };
+
       }
 
       protected override async Task Because()
       {
-         await sut.MapToSnapshot(_extendedProperties);
+         _snapshot = await sut.MapToSnapshot(_extendedProperties);
       }
 
       [Observation]
       public void the_property_mapper_must_be_used_to_map_all_the_properties()
       {
-         A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_extendedProperty)).MustHaveHappened();
-         A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_secondExtendedProperty)).MustHaveHappened();
-      }
-   }
-
-   public class When_mapping_snapshot_to_extended_properties : concern_for_ExtendedPropertiesMapper
-   {
-      private Snapshots.ExtendedProperties _snapshot;
-      private ExtendedProperty _firstExtendedProperty;
-      private ExtendedProperty _secondExtendedProperty;
-
-      protected override async Task Context()
-      {
-         await base.Context();
-         _firstExtendedProperty = new ExtendedProperty { Description = "Property Description", DisplayName = "Display Name", FullName = "First Full Name", Name = "First Name", ReadOnly = true, Type = typeof(string), Value = "Value" };
-         _secondExtendedProperty = new ExtendedProperty { Description = "Property Description", DisplayName = "Display Name", FullName = "Second Full Name", Name = "Second Name", ReadOnly = true, Type = typeof(string), Value = "Value" };
-         _snapshot = new Snapshots.ExtendedProperties { Description = "A Description", Name = "A Name" };
-         _snapshot.Add(_firstExtendedProperty);
-         _snapshot.Add(_secondExtendedProperty);
-
-         A.CallTo(() => _extendedPropertyMapper.MapToModel(_firstExtendedProperty)).Returns(A.Fake<IExtendedProperty>().WithName(_firstExtendedProperty.FullName));
-         A.CallTo(() => _extendedPropertyMapper.MapToModel(_secondExtendedProperty)).Returns(A.Fake<IExtendedProperty>().WithName(_secondExtendedProperty.FullName));
-      }
-
-      protected override async Task Because()
-      {
-         await sut.MapToModel(_snapshot);
-      }
-
-      [Observation]
-      public void the_property_mapper_should_be_used_to_map_all_the_properties()
-      {
-         A.CallTo(() => _extendedPropertyMapper.MapToModel(_firstExtendedProperty)).MustHaveHappened();
-         A.CallTo(() => _extendedPropertyMapper.MapToModel(_secondExtendedProperty)).MustHaveHappened();
+         _snapshot.ShouldOnlyContain(_extendedPropertySnapshot, _secondExtendedPropertySnapshot);
       }
    }
 }

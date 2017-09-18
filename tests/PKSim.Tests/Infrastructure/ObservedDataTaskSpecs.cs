@@ -15,6 +15,8 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Services;
+using PKSim.Extensions;
 using PKSim.Infrastructure.Services;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using ObservedDataTask = PKSim.Infrastructure.Services.ObservedDataTask;
@@ -34,6 +36,7 @@ namespace PKSim.Infrastructure
       private IPKSimProjectRetriever _projectRetriever;
       protected IObservedDataPersistor _observedDataPersistor;
       private IObjectTypeResolver _objectTypeResolver;
+      protected ISnapshotTask _snapshotTask;
 
       protected override void Context()
       {
@@ -44,6 +47,7 @@ namespace PKSim.Infrastructure
          _dialogCreator = A.Fake<IDialogCreator>();
          _applicationController = A.Fake<IApplicationController>();
          _templateTask = A.Fake<ITemplateTask>();
+         _snapshotTask = A.Fake<ISnapshotTask>();
          _project = new PKSimProject();
          _observedDataPersistor = A.Fake<IObservedDataPersistor>();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
@@ -51,8 +55,31 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _executionContext.Project).Returns(_project);
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
-            _dataRepositoryTask, _templateTask, _containerTask, _observedDataPersistor, _objectTypeResolver);
+            _dataRepositoryTask, _templateTask, _containerTask, _observedDataPersistor, _objectTypeResolver, _snapshotTask);
       }
+   }
+
+   public class When_loading_observed_data_from_snapshot : concern_for_ObservedDataTask
+   {
+      private DataRepository _mappedObservedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _mappedObservedData = new DataRepository();
+         A.CallTo(() => _snapshotTask.LoadFromSnapshot<DataRepository>()).ReturnsAsync(new List<DataRepository> {_mappedObservedData});
+      }
+
+      protected override async void Because()
+      {
+         await sut.LoadFromSnapshot();
+      }
+
+      [Observation]
+      public void the_mapped_data_repository_should_be_added_to_the_project()
+      {
+         _project.AllObservedData.ShouldContain(_mappedObservedData);
+      }   
    }
 
    public class When_removing_some_observed_data_from_the_project : concern_for_ObservedDataTask

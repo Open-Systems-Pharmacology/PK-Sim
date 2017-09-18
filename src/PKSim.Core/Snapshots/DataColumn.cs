@@ -8,6 +8,8 @@ namespace PKSim.Core.Snapshots
       public QuantityInfo QuantityInfo { get; set; }
       public DataInfo DataInfo { get; set; }
       public List<float> Values { get; set; }
+      public string Dimension { get; set; }
       public string Unit { get; set; }
+      public bool IsBaseGrid { set; get; }
    }
 }

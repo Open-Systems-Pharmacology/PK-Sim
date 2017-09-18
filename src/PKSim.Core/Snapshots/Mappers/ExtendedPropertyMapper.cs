@@ -54,6 +54,6 @@ namespace PKSim.Core.Snapshots.Mappers
          return mapExtendedProperty(snapshot, option => option);
       }
 
-      private void addOptionsToList(List<object> snapshotListOfValues, Action<object> action) => snapshotListOfValues.Each(action);
+      private void addOptionsToList(List<object> snapshotListOfValues, Action<object> action) => snapshotListOfValues?.Each(action);
    }
 }

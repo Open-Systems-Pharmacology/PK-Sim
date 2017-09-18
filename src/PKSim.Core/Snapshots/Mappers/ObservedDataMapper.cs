@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Extensions;
 using SnapshotDataRepository = PKSim.Core.Snapshots.DataRepository;
 using SnapshotExtendedProperties = PKSim.Core.Snapshots.ExtendedProperties;
@@ -31,6 +32,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.ExtendedProperties =await mapExtendedProperties(dataRepository.ExtendedProperties);
          snapshot.Columns = await mapColumns(dataRepository.AllButBaseGrid().Where(column => !dataRepository.ColumnIsInRelatedColumns(column)));
          snapshot.BaseGrid = await _dataColumnMapper.MapToSnapshot(dataRepository.BaseGrid);
+         snapshot.BaseGrid.IsBaseGrid = true;
          return snapshot;
       }
 
@@ -45,9 +47,21 @@ namespace PKSim.Core.Snapshots.Mappers
          return _extendedPropertiesMapper.MapToSnapshot(extendedProperties);
       }
 
-      public override Task<ModelDataRepository> MapToModel(SnapshotDataRepository snapshot)
+      public override async Task<ModelDataRepository> MapToModel(SnapshotDataRepository snapshot)
       {
-         throw new System.NotImplementedException();
+         var dataRepository = new ModelDataRepository
+         {
+            Name = snapshot.Name,
+            Description = snapshot.Description
+         };
+
+         dataRepository.Add(await _dataColumnMapper.MapToModel(snapshot.BaseGrid, dataRepository));
+
+         snapshot.Columns.Each(async x => dataRepository.Add(await _dataColumnMapper.MapToModel(x, dataRepository)));
+         
+         dataRepository.ExtendedProperties.AddRange(await _extendedPropertiesMapper.MapToModel(snapshot.ExtendedProperties));
+
+         return dataRepository;
       }
    }
 }

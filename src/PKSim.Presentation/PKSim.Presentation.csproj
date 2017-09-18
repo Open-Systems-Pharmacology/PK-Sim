@@ -509,6 +509,7 @@
     <Compile Include="UICommands\ImportPKAnalysesCommand.cs" />
     <Compile Include="UICommands\ImportPopulationCommand.cs" />
     <Compile Include="UICommands\ImportSimulationResultsCommand.cs" />
+    <Compile Include="UICommands\LoadObservedDataFromSnapshotUICommand.cs" />
     <Compile Include="UICommands\LoadObservedDataFromTemplateUICommand.cs" />
     <Compile Include="UICommands\LoadPopulationAnalysisWorkflowFromTemplateUICommand.cs" />
     <Compile Include="UICommands\LoadBuildingBlockFromSnapshotUICommand.cs" />

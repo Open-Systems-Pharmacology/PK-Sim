@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
@@ -26,7 +27,16 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Formulations = await mapBuildingBlocksToSnapshots<Formulation>(project.All<Model.Formulation>());
          snapshot.Protocols = await mapBuildingBlocksToSnapshots<Protocol>(project.All<Model.Protocol>());
          snapshot.Populations = await mapBuildingBlocksToSnapshots<Population>(project.All<Model.Population>());
+         snapshot.ObservedData = await mapObservedDataToSnapshots(project.AllObservedData);
+
          return snapshot;
+      }
+
+      private async Task<DataRepository[]> mapObservedDataToSnapshots(IReadOnlyCollection<OSPSuite.Core.Domain.Data.DataRepository> allObservedData)
+      {
+         var snapshotMapper = _executionContext.Resolve<ObservedDataMapper>();
+         var tasks = allObservedData.Select(datarepository => snapshotMapper.MapToSnapshot(datarepository));
+         return await Task.WhenAll(tasks);
       }
 
       private async Task<T[]> mapBuildingBlocksToSnapshots<T>(IReadOnlyCollection<IPKSimBuildingBlock> buildingBlocks)
@@ -49,24 +59,40 @@ namespace PKSim.Core.Snapshots.Mappers
          var project = new ModelProject();
          var buildingBlocks = await allBuidingBlocksFrom(snapshot);
          buildingBlocks.Each(project.AddBuildingBlock);
+
+         var observedData = await observedDataFrom(snapshot);
+         observedData.Each(repository => addObservedDataToProject(project, repository));
+
          return project;
+      }
+
+      private static void addObservedDataToProject(ModelProject project, OSPSuite.Core.Domain.Data.DataRepository repository)
+      {
+         project.AddObservedData(repository);
+         project.GetOrCreateClassifiableFor<ClassifiableObservedData, OSPSuite.Core.Domain.Data.DataRepository>(repository);
+      }
+
+      private async Task<IEnumerable<OSPSuite.Core.Domain.Data.DataRepository>> observedDataFrom(SnapshotProject snapshot)
+      {
+         var dataRepositories = await Task.WhenAll(mapSnapshotsToModels(snapshot.ObservedData));
+         return dataRepositories.Cast<OSPSuite.Core.Domain.Data.DataRepository>();
       }
 
       private async Task<IEnumerable<IPKSimBuildingBlock>> allBuidingBlocksFrom(SnapshotProject snapshot)
       {
          var tasks = new List<Task<object>>();
-         tasks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Individuals));
-         tasks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Compounds));
-         tasks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Events));
-         tasks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Formulations));
-         tasks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Protocols));
-         tasks.AddRange(mapSnapshotsToBuildingBlocks(snapshot.Populations));
+         tasks.AddRange(mapSnapshotsToModels(snapshot.Individuals));
+         tasks.AddRange(mapSnapshotsToModels(snapshot.Compounds));
+         tasks.AddRange(mapSnapshotsToModels(snapshot.Events));
+         tasks.AddRange(mapSnapshotsToModels(snapshot.Formulations));
+         tasks.AddRange(mapSnapshotsToModels(snapshot.Protocols));
+         tasks.AddRange(mapSnapshotsToModels(snapshot.Populations));
 
          var buildingBlocks = await Task.WhenAll(tasks);
          return buildingBlocks.Cast<IPKSimBuildingBlock>();
       }
 
-      private IEnumerable<Task<object>> mapSnapshotsToBuildingBlocks(IEnumerable<object> snapshots)
+      private IEnumerable<Task<object>> mapSnapshotsToModels(IEnumerable<object> snapshots)
       {
          var snapshotMapper = _executionContext.Resolve<ISnapshotMapper>();
          return snapshots.Select(snapshotMapper.MapToModel);

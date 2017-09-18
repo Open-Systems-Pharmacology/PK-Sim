@@ -1,4 +1,7 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Utility;
 using ModelQuantityInfo = OSPSuite.Core.Domain.Data.QuantityInfo;
 using SnapshotQuantityInfo = PKSim.Core.Snapshots.QuantityInfo;
 
@@ -19,7 +22,12 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<ModelQuantityInfo> MapToModel(SnapshotQuantityInfo snapshot)
       {
-         throw new System.NotImplementedException();
+         var modelQuantityInfo = new ModelQuantityInfo(snapshot.Name, snapshot.Path.ToPathArray(), EnumHelper.ParseValue<QuantityType>(snapshot.Type))
+         {
+            OrderIndex = snapshot.OrderIndex
+         };
+
+         return Task.FromResult(modelQuantityInfo);
       }
    }
 }
