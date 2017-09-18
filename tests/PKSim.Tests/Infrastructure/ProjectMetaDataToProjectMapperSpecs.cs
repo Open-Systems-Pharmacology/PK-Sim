@@ -1,11 +1,11 @@
-using System;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.ORM.Mappers;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
-using FakeItEasy;
 using PKSim.Infrastructure.Services;
 
 namespace PKSim.Infrastructure
@@ -15,29 +15,62 @@ namespace PKSim.Infrastructure
       private ISimulationMetaDataToSimulationMapper _simulationMapper;
       private ICompressedSerializationManager _entitySerializer;
       private ISerializationContextFactory _serializationContextFactory;
+      protected IPKSimProject _project;
+      protected ProjectMetaData _projectMetaData;
+      protected IndividualSimulationComparisonMetaData _simulationComparisonMetaData;
 
       protected override void Context()
       {
          _simulationMapper = A.Fake<ISimulationMetaDataToSimulationMapper>();
          _entitySerializer = A.Fake<ICompressedSerializationManager>();
-         _serializationContextFactory= A.Fake<ISerializationContextFactory>();
-         sut = new ProjectMetaDataToProjectMapper(_simulationMapper,_entitySerializer, _serializationContextFactory);
+         _serializationContextFactory = A.Fake<ISerializationContextFactory>();
+         sut = new ProjectMetaDataToProjectMapper(_simulationMapper, _entitySerializer, _serializationContextFactory);
+
+         _projectMetaData = new ProjectMetaData();
+         _simulationComparisonMetaData = new IndividualSimulationComparisonMetaData {Id = "ComparisonData"};
       }
    }
 
-   
-   public class when_mapping_a_project_object : concern_for_ProjectMetaDataToProjectMapper
+   public class When_mapping_a_project_meta_data_to_project_with_version_current : concern_for_ProjectMetaDataToProjectMapper
    {
-      [Observation]
-      public void should_return_a_valid_meta_data_object_for_a_defined_entity_type()
+      protected override void Context()
       {
-         sut.MapFrom(new ProjectMetaData()).ShouldBeAnInstanceOf<PKSimProject>();
+         base.Context();
+         //this will trigger an update of the hasChanged flag to true
+         _projectMetaData.AddSimulationComparison(_simulationComparisonMetaData);
+         _projectMetaData.Version = ProjectVersions.Current;
+      }
+
+      protected override void Because()
+      {
+         _project = sut.MapFrom(_projectMetaData);
       }
 
       [Observation]
-      public void should_thrown_an_exception_for_an_unknown_type()
+      public void should_have_set_the_has_changed_flag_to_false()
       {
-         The.Action(() => sut.MapFrom(A<ProjectMetaData>.Ignored)).ShouldThrowAn<Exception>();
+         _project.HasChanged.ShouldBeFalse();
+      }
+   }
+
+   public class When_mapping_a_project_meta_data_to_project_with_an_older_version : concern_for_ProjectMetaDataToProjectMapper
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _projectMetaData.AddSimulationComparison(_simulationComparisonMetaData);
+         _projectMetaData.Version = ProjectVersions.V5_2_1;
+      }
+
+      protected override void Because()
+      {
+         _project = sut.MapFrom(_projectMetaData);
+      }
+
+      [Observation]
+      public void should_not_have_reset_the_changed_flag()
+      {
+         _project.HasChanged.ShouldBeTrue();
       }
    }
 }
