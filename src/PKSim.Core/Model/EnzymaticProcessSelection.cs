@@ -10,10 +10,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public string MetaboliteName { get; set; }
 
-      public bool IsSink
-      {
-         get { return string.IsNullOrEmpty(MetaboliteName); }
-      }
+      public bool IsSink => string.IsNullOrEmpty(MetaboliteName);
 
       public string ProductName()
       {

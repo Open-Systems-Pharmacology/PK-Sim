@@ -44,13 +44,13 @@ namespace PKSim.ProjectConverter.v5_6
       [Observation]
       public void should_have_removed_the_mapping_to_any_partial_process_using_an_old_inhibition_process()
       {
-         _S2.CompoundPropertiesFor(_compound.Name).AnyProcessesDefined().ShouldBeFalse();
+         _S2.CompoundPropertiesFor(_compound.Name).AnyProcessesDefined.ShouldBeFalse();
       }
 
       [Observation]
       public void should_have_not_removed_the_mapping_to_any_partial_process_that_was_not_an_old_inhibition()
       {
-         _S1.CompoundPropertiesFor(_compound.Name).AnyProcessesDefined().ShouldBeTrue();
+         _S1.CompoundPropertiesFor(_compound.Name).AnyProcessesDefined.ShouldBeTrue();
       }
    }
 }	

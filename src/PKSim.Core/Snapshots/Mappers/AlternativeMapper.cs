@@ -19,12 +19,12 @@ namespace PKSim.Core.Snapshots.Mappers
          _parameterAlternativeFactory = parameterAlternativeFactory;
       }
 
-      public override Task<Alternative> MapToSnapshot(ParameterAlternative parameterAlternative)
+      public override async Task<Alternative> MapToSnapshot(ParameterAlternative parameterAlternative)
       {
          if (parameterAlternative.IsCalculated)
-            return Task.FromResult((Alternative)null);
+            return null;
 
-         return SnapshotFrom(parameterAlternative, snapshot =>
+         return await SnapshotFrom(parameterAlternative, snapshot =>
          {
             snapshot.IsDefault = parameterAlternative.IsDefault;
             snapshot.Species = (parameterAlternative as ParameterAlternativeWithSpecies)?.Species.Name;

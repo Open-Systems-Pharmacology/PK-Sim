@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -25,6 +27,8 @@ namespace PKSim.Core.Snapshots.Mappers
             snapshot.DistributionType = advancedParameter.DistributionType.Id;
          });
       }
+
+      public Task<SnapshotAdvancedParameter[]> MapToSnapshot(IEnumerable<ModelAdvancedParameter> advancedParameters) => Task.WhenAll(advancedParameters.Select(MapToSnapshot));
 
       protected override Task AddModelParametersToSnapshot(ModelAdvancedParameter model, SnapshotAdvancedParameter snapshot)
       {

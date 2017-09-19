@@ -140,7 +140,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private IEnumerable<IParameter> changedGroupParameters(IContainer container, string groupName)
       {
          return container.AllParameters(x => string.Equals(x.GroupName, groupName))
-            .Where(ParameterHasChanged);
+            .Where(x=>x.ParameterHasChanged());
       }
 
       private async Task<Alternative[]> mapAlternatives(ModelCompound compound, string alternativeGroupName)

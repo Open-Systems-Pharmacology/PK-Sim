@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
    public class EventProperties
    {
-      private readonly IList<IEventMapping> _eventMappings = new List<IEventMapping>();
+      private readonly List<EventMapping> _eventMappings = new List<EventMapping>();
 
       public virtual EventProperties Clone(ICloneManager cloneManager)
       {
@@ -15,15 +15,12 @@ namespace PKSim.Core.Model
          return clone;
       }
 
-      public virtual void AddEventMapping(IEventMapping eventMapping)
+      public virtual void AddEventMapping(EventMapping eventMapping)
       {
          _eventMappings.Add(eventMapping);
       }
 
-      public virtual IEnumerable<IEventMapping> EventMappings
-      {
-         get { return _eventMappings; }
-      }
+      public virtual IReadOnlyList<EventMapping> EventMappings => _eventMappings;
 
       public virtual void ClearEventMapping()
       {

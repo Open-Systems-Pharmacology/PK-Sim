@@ -36,12 +36,14 @@ namespace PKSim.Core
          _calculationMethodWithMultipleOptions = new CalculationMethod
          {
             Name = "CM1",
+            DisplayName = "CM1",
             Category = _multipleCategory.Name
          };
 
          _calculationMethodWithSingleOption = new CalculationMethod
          {
             Name = "CM2",
+            DisplayName = "CM2",
             Category = _singleCategory.Name
          };
 

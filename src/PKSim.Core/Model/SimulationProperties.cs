@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
-
    public class SimulationProperties
    {
       private readonly List<CompoundProperties> _compoundPropertiesList;
@@ -19,9 +18,46 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Compound configuration such as group mapping, processes selection etc
       /// </summary>
-      public virtual IReadOnlyList<CompoundProperties> CompoundPropertiesList
+      public virtual IReadOnlyList<CompoundProperties> CompoundPropertiesList => _compoundPropertiesList;
+
+      /// <summary>
+      ///    Events configuration
+      /// </summary>
+      public virtual EventProperties EventProperties { get; set; }
+
+      /// <summary>
+      ///    Interaction configuration (Inhibition, Induction etc.)
+      /// </summary>
+      public virtual InteractionProperties InteractionProperties { get; set; }
+
+      /// <summary>
+      ///    Returns true if the subject should age during simulation otherwise false. Default is false
+      /// </summary>
+      public virtual bool AllowAging { get; set; }
+
+      public virtual Origin Origin { get; set; }
+
+      public SimulationProperties()
       {
-         get { return _compoundPropertiesList; }
+         ModelProperties = new ModelProperties();
+         _compoundPropertiesList = new List<CompoundProperties>();
+         EventProperties = new EventProperties();
+         InteractionProperties = new InteractionProperties();
+         AllowAging = false;
+         Origin = Origins.PKSim;
+      }
+
+      /// <summary>
+      ///    Reference to simulation with this properties
+      /// </summary>
+      public virtual Simulation Simulation
+      {
+         get => _simulation;
+         set
+         {
+            _simulation = value;
+            _compoundPropertiesList.Each(cp => cp.Simulation = Simulation);
+         }
       }
 
       public void AddCompoundProperties(CompoundProperties compoundProperties)
@@ -33,46 +69,6 @@ namespace PKSim.Core.Model
       public virtual void ClearCompoundPropertiesList()
       {
          _compoundPropertiesList.Clear();
-      }
-
-      /// <summary>
-      ///    Events configuration
-      /// </summary>
-      public virtual EventProperties EventProperties { get; set; }
-
-      /// <summary>
-      /// Interaction configuration (Inhibition, Induction etc.)
-      /// </summary>
-      public virtual InteractionProperties InteractionProperties { get; set; }
-
-      /// <summary>
-      ///    Returns true if the subject should age during simulation otherwise false. Default is false
-      /// </summary>
-      public virtual bool AllowAging { get; set; }
-
-      public virtual Origin Origin { get; set; }
-
-      /// <summary>
-      ///    Reference to simulation with this properties
-      /// </summary>
-      public virtual Simulation Simulation
-      {
-         get { return _simulation; }
-         set
-         {
-            _simulation = value;
-            _compoundPropertiesList.Each(cp => cp.Simulation = Simulation);
-         }
-      }
-
-      public SimulationProperties()
-      {
-         ModelProperties = new ModelProperties();
-         _compoundPropertiesList = new List<CompoundProperties>();
-         EventProperties = new EventProperties();
-         InteractionProperties = new InteractionProperties();
-         AllowAging = false;
-         Origin = Origins.PKSim;
       }
 
       /// <summary>

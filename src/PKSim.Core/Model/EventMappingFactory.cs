@@ -6,8 +6,8 @@ namespace PKSim.Core.Model
 {
    public interface IEventMappingFactory
    {
-      IEventMapping Create();
-      IEventMapping Create(PKSimEvent pkSimEvent);
+      EventMapping Create();
+      EventMapping Create(PKSimEvent pkSimEvent);
    }
 
    public class EventMappingFactory : IEventMappingFactory
@@ -21,17 +21,18 @@ namespace PKSim.Core.Model
          _parameterFactory = parameterFactory;
       }
 
-      public IEventMapping Create()
+      public EventMapping Create()
       {
          return Create(_buildingBlockRepository.All<PKSimEvent>().FirstOrDefault());
       }
 
-      public IEventMapping Create(PKSimEvent pkSimEvent)
+      public EventMapping Create(PKSimEvent pkSimEvent)
       {
-         var eventMapping = new EventMapping();
-         eventMapping.TemplateEventId = pkSimEvent == null ? string.Empty : pkSimEvent.Id;
-         eventMapping.StartTime = _parameterFactory.CreateFor(Constants.Parameters.START_TIME, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Event);
-         return eventMapping;
+         return new EventMapping
+         {
+            TemplateEventId = pkSimEvent == null ? string.Empty : pkSimEvent.Id,
+            StartTime = _parameterFactory.CreateFor(Constants.Parameters.START_TIME, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Event)
+         };
       }
    }
 }

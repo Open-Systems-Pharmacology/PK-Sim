@@ -50,14 +50,9 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task mapRandomPopulationProperties(SnapshotPopulation snapshot, RandomPopulation randomPopulation)
       {
          snapshot.Settings = await _randomPopulationSettingsMapper.MapToSnapshot(randomPopulation.Settings);
-         snapshot.AdvancedParameters = await snapshotAdvancedParametersFrom(randomPopulation);
+         snapshot.AdvancedParameters = await _advancedParameterMapper.MapToSnapshot(randomPopulation.AdvancedParameters);
       }
 
-      private Task<AdvancedParameter[]> snapshotAdvancedParametersFrom(ModelPopulation population)
-      {
-         var tasks = population.AdvancedParameters.Select(_advancedParameterMapper.MapToSnapshot);
-         return Task.WhenAll(tasks);
-      }
 
       public override async Task<ModelPopulation> MapToModel(SnapshotPopulation snapshot)
       {

@@ -14,15 +14,9 @@ namespace PKSim.Core.Model
       public virtual string SpeciesName { get; set; }
       public virtual string ModelName { get; set; }
 
-      public virtual string Id
-      {
-         get { return string.Format("{0}|{1}", ModelName, SpeciesName); }
-      }
+      public virtual string Id => $"{ModelName}|{SpeciesName}";
 
-      public virtual IEnumerable<CalculationMethodCategory> CalculationMethodCategories
-      {
-         get { return _cmCategories; }
-      }
+      public virtual IEnumerable<CalculationMethodCategory> CalculationMethodCategories => _cmCategories;
 
       public virtual void AddCalculationMethodCategory(CalculationMethodCategory calculationMethodCategory)
       {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
@@ -38,16 +37,10 @@ namespace PKSim.Core.Snapshots.Mappers
 
       protected virtual Task AddModelParametersToSnapshot(TModel model, TSnapshot snapshot)
       {
-         return AddParametersToSnapshot(model.AllParameters(ParameterHasChanged), snapshot);
+         return AddParametersToSnapshot(model.AllParameters(x=> x.ParameterHasChanged()), snapshot);
       }
 
-      protected virtual bool ParameterHasChanged(IParameter parameter)
-      {
-         //TODO Use ValueOrigin state when implemented. It should be != than PKSim default;
-         var canBeEdited = parameter.Visible && parameter.Editable && parameter.Formula.IsConstant();
-         return parameter.ValueDiffersFromDefault() || canBeEdited && parameter.Value != 0;
-      }
-
+    
       protected Task UpdateParametersFromSnapshot(TSnapshot snapshot, IContainer container, string containerDesciptor)
       {
          var tasks = new List<Task>();

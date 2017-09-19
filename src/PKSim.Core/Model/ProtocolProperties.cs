@@ -6,7 +6,7 @@ namespace PKSim.Core.Model
 {
    public class ProtocolProperties
    {
-      private readonly IList<FormulationMapping> _formulationMappings;
+      private readonly List<FormulationMapping> _formulationMappings;
       
       /// <summary>
       /// Reference to <see cref="Protocol"/> used in the simulation.
@@ -44,7 +44,7 @@ namespace PKSim.Core.Model
          return _formulationMappings.FirstOrDefault(x => string.Equals(x.FormulationKey, formulationKey));
       }
 
-      public virtual IEnumerable<FormulationMapping> FormulationMappings => _formulationMappings;
+      public virtual IReadOnlyList<FormulationMapping> FormulationMappings => _formulationMappings;
 
       public bool IsAdministered => Protocol != null;
    }
