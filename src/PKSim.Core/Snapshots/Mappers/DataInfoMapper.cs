@@ -1,5 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Utility;
 using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
 using ModelDataInfo = OSPSuite.Core.Domain.Data.DataInfo;
 using ModelExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
@@ -38,9 +39,28 @@ namespace PKSim.Core.Snapshots.Mappers
          return _extendedPropertiesMapper.MapToSnapshot(extendedProperties);
       }
 
-      public override Task<ModelDataInfo> MapToModel(SnapshotDataInfo snapshot)
+      public override async Task<ModelDataInfo> MapToModel(SnapshotDataInfo snapshot)
       {
-         throw new NotImplementedException();
+         var dataInfo = new ModelDataInfo(EnumHelper.ParseValue<ColumnOrigins>(snapshot.Origin))
+         {
+            AuxiliaryType = EnumHelper.ParseValue<AuxiliaryType>(snapshot.AuxiliaryType),
+            Category = snapshot.Category,
+            ComparisonThreshold = snapshot.ComparisonThreshold,
+            Date = snapshot.Date,
+            LLOQ = snapshot.LLOQ,
+            MolWeight = snapshot.MolWeight,
+            Source = snapshot.Source,
+         };
+
+         if(snapshot.ExtendedProperties != null)
+            dataInfo.ExtendedProperties.AddRange(await extendedPropertiesFrom(snapshot));
+
+         return dataInfo;
+      }
+
+      private Task<ModelExtendedProperties> extendedPropertiesFrom(SnapshotDataInfo snapshot)
+      {
+         return _extendedPropertiesMapper.MapToModel(snapshot.ExtendedProperties);
       }
    }
 }

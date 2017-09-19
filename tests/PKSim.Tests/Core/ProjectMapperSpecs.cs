@@ -3,6 +3,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
@@ -30,10 +31,14 @@ namespace PKSim.Core
       protected Snapshots.Protocol _protocolSnapshot;
       protected Population _population;
       protected Snapshots.Population _populationSnapshot;
+      protected DataRepository _observedData;
+      protected Snapshots.DataRepository _observedDataSnapshot;
+      private ObservedDataMapper _observedDataMapper;
 
       protected override Task Context()
       {
          _snapshotMapper = A.Fake<ISnapshotMapper>();
+         _observedDataMapper = A.Fake<ObservedDataMapper>();
          _executionContext = A.Fake<IExecutionContext>();
          sut = new ProjectMapper(_executionContext);
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
@@ -43,6 +48,7 @@ namespace PKSim.Core
          _formulation = new Formulation().WithName("FORM");
          _protocol = new SimpleProtocol().WithName("PROTO");
          _population = new RandomPopulation().WithName("POP");
+         _observedData = new DataRepository().WithName("OD");
 
          _simulation = new IndividualSimulation().WithName("IND_SIM");
 
@@ -53,6 +59,7 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_formulation);
          _project.AddBuildingBlock(_protocol);
          _project.AddBuildingBlock(_population);
+         _project.AddObservedData(_observedData);
          //         _project.AddBuildingBlock(_simulation);
 
          _compoundSnapshot = new Snapshots.Compound();
@@ -61,6 +68,7 @@ namespace PKSim.Core
          _formulationSnapshot = new Snapshots.Formulation();
          _protocolSnapshot = new Snapshots.Protocol();
          _populationSnapshot = new Snapshots.Population();
+         _observedDataSnapshot = new Snapshots.DataRepository();
 
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_compound)).ReturnsAsync(_compoundSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_individual)).ReturnsAsync(_individualSnapshot);
@@ -68,6 +76,8 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_formulation)).ReturnsAsync(_formulationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).ReturnsAsync(_protocolSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).ReturnsAsync(_populationSnapshot);
+         A.CallTo(() => _executionContext.Resolve<ObservedDataMapper>()).Returns(_observedDataMapper);
+         A.CallTo(() => _observedDataMapper.MapToSnapshot(_observedData)).ReturnsAsync(_observedDataSnapshot);
 
          return Task.FromResult(true);
       }
@@ -89,6 +99,7 @@ namespace PKSim.Core
          _snapshot.Formulations.ShouldContain(_formulationSnapshot);
          _snapshot.Events.ShouldContain(_eventSnapshot);
          _snapshot.Populations.ShouldContain(_populationSnapshot);
+         _snapshot.ObservedData.ShouldContain(_observedDataSnapshot);
       }
    }
 
@@ -106,6 +117,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToModel(_formulationSnapshot)).ReturnsAsync(_formulation);
          A.CallTo(() => _snapshotMapper.MapToModel(_eventSnapshot)).ReturnsAsync(_event);
          A.CallTo(() => _snapshotMapper.MapToModel(_populationSnapshot)).ReturnsAsync(_population);
+         A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).ReturnsAsync(_observedData);
       }
 
       protected override async Task Because()

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Utility.Extensions;
 using SnapshotExtendedProperties = PKSim.Core.Snapshots.ExtendedProperties;

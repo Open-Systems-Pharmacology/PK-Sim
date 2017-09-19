@@ -7,6 +7,17 @@ namespace PKSim.Core.Snapshots
    {
       private readonly List<ExtendedProperty> _extendedProperties = new List<ExtendedProperty>();
 
+      public ExtendedProperties()
+      {
+         
+      }
+
+      //This constructor is required for json deserialization
+      public ExtendedProperties(IEnumerable<ExtendedProperty> allExtendedProperties)
+      {
+         _extendedProperties.AddRange(allExtendedProperties);
+      }
+
       public IEnumerator<ExtendedProperty> GetEnumerator()
       {
          return _extendedProperties.GetEnumerator();
