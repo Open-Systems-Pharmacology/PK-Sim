@@ -7,9 +7,9 @@ namespace PKSim.Core.Snapshots.Mappers
    public class EventPropertiesMapper : SnapshotMapperBase<EventProperties, EventSelections, PKSimProject, PKSimProject>
    {
       private readonly ParameterMapper _parameterMapper;
-      private readonly EventMappingFactory _eventMappingFactory;
+      private readonly IEventMappingFactory _eventMappingFactory;
 
-      public EventPropertiesMapper(ParameterMapper parameterMapper, EventMappingFactory eventMappingFactory)
+      public EventPropertiesMapper(ParameterMapper parameterMapper, IEventMappingFactory eventMappingFactory)
       {
          _parameterMapper = parameterMapper;
          _eventMappingFactory = eventMappingFactory;

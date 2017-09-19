@@ -15,7 +15,7 @@ namespace PKSim.Core
    public abstract class concern_for_EventPropertiesMapper : ContextSpecificationAsync<EventPropertiesMapper>
    {
       private ParameterMapper _parameterMapper;
-      private EventMappingFactory _eventMappingFactory;
+      private IEventMappingFactory _eventMappingFactory;
       protected PKSimEvent _event;
       protected EventProperties _eventProperties;
       protected EventSelections _snapshot;
@@ -26,7 +26,7 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         _eventMappingFactory = A.Fake<EventMappingFactory>();
+         _eventMappingFactory = A.Fake<IEventMappingFactory>();
          sut = new EventPropertiesMapper(_parameterMapper, _eventMappingFactory);
 
 

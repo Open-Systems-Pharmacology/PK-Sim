@@ -133,7 +133,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _simulationBuildingBlockUpdater.UpdateProtocolsInSimulation(simulation);
          _simulationBuildingBlockUpdater.UpdateFormulationsInSimulation(simulation);
 
-         simulation.EventProperties = await eventPropertiesFrom(snapshot.Events, project);
+         simulation.EventProperties = await eventPropertiesFrom(snapshot.Events,simulation, project);
          _simulationModelCreator.CreateModelFor(simulation);
 
 //         simulation.Solver = await solverSettingsFrom(snapshot.Solver);
@@ -161,9 +161,12 @@ namespace PKSim.Core.Snapshots.Mappers
          throw new NotImplementedException();
       }
 
-      private Task<EventProperties> eventPropertiesFrom(EventSelections snapshotEvents, PKSimProject project)
+      private async Task<EventProperties> eventPropertiesFrom(EventSelections snapshotEvents, ModelSimulation simulation, PKSimProject project)
       {
-         return _eventPropertiesMapper.MapToModel(snapshotEvents, project);
+         var evnentProperties = await _eventPropertiesMapper.MapToModel(snapshotEvents, project);
+         var events = evnentProperties.EventMappings.Select(x => project.BuildingBlockById<PKSimEvent>(x.TemplateEventId));
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, events, PKSimBuildingBlockType.Event);
+         return evnentProperties;
       }
 
       protected override void MapSnapshotPropertiesToModel(SnapshotSimulation snapshot, ModelSimulation simulation)
