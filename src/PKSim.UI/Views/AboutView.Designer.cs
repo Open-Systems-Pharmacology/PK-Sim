@@ -91,24 +91,24 @@
          // 
          // linkSite
          // 
-         this.linkSite.EditValue = "www.systems-biology.com";
-         this.linkSite.Location = new System.Drawing.Point(579, 179);
+         this.linkSite.EditValue = "www.open-systems-pharmacology.org";
+         this.linkSite.Location = new System.Drawing.Point(531, 179);
          this.linkSite.Name = "linkSite";
          this.linkSite.Properties.Appearance.BackColor = System.Drawing.Color.Transparent;
          this.linkSite.Properties.Appearance.Options.UseBackColor = true;
          this.linkSite.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-         this.linkSite.Size = new System.Drawing.Size(138, 18);
+         this.linkSite.Size = new System.Drawing.Size(194, 18);
          this.linkSite.TabIndex = 7;
          // 
          // licenseAgreementLink
          // 
          this.licenseAgreementLink.EditValue = "licenseAgreementLink";
-         this.licenseAgreementLink.Location = new System.Drawing.Point(579, 203);
+         this.licenseAgreementLink.Location = new System.Drawing.Point(531, 203);
          this.licenseAgreementLink.Name = "licenseAgreementLink";
          this.licenseAgreementLink.Properties.Appearance.BackColor = System.Drawing.Color.Transparent;
          this.licenseAgreementLink.Properties.Appearance.Options.UseBackColor = true;
          this.licenseAgreementLink.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-         this.licenseAgreementLink.Size = new System.Drawing.Size(163, 18);
+         this.licenseAgreementLink.Size = new System.Drawing.Size(194, 18);
          this.licenseAgreementLink.TabIndex = 9;
          // 
          // lblProductInfo
