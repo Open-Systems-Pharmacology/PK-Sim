@@ -251,6 +251,7 @@
     <Compile Include="Core\DataInfoMapperSpecs.cs" />
     <Compile Include="Core\DistributedTableFormulaMapperSpecs.cs" />
     <Compile Include="Core\EventMapperSpecs.cs" />
+    <Compile Include="Core\EventPropertiesMapperSpec.cs" />
     <Compile Include="Core\ExtendedPropertiesMapperSpecs.cs" />
     <Compile Include="Core\ExtendedPropertyMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />

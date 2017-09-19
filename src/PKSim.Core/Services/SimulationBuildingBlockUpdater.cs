@@ -59,6 +59,11 @@ namespace PKSim.Core.Services
       void UpdateFormulationsInSimulation(Simulation simulation);
 
       bool BuildingBlockSupportsQuickUpdate(IPKSimBuildingBlock templateBuildingBlock);
+
+      /// <summary>
+      /// Adds the building block <paramref name="templateBuildingBlock"/> as used building block in the simulation
+      /// </summary>
+      void AddUsedBuildingBlockToSimulation(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock);
    }
 
    public class SimulationBuildingBlockUpdater : ISimulationBuildingBlockUpdater
@@ -108,10 +113,10 @@ namespace PKSim.Core.Services
             simulation.RemoveUsedBuildingBlock(usedBuildingBlock);
          }
 
-         allTemplates.Each(bb => addUsedBuildingBlockToSimulation(simulation, bb));
+         allTemplates.Each(bb => AddUsedBuildingBlockToSimulation(simulation, bb));
       }
 
-      private void addUsedBuildingBlockToSimulation(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock)
+      public void AddUsedBuildingBlockToSimulation(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock)
       {
          var previousUsedBuildingBlock = simulation.UsedBuildingBlockById(templateBuildingBlock.Id);
          var newUsedBuildingBlock = _buildingBlockMapper.MapFrom(templateBuildingBlock, previousUsedBuildingBlock);

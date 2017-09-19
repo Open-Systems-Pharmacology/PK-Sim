@@ -14,7 +14,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Description = SnapshotValueFor(model.Description);
       }
 
-      protected void MapSnapshotPropertiesToModel(TSnapshot snapshot, TModel model)
+      protected virtual void MapSnapshotPropertiesToModel(TSnapshot snapshot, TModel model)
       {
          model.Name = snapshot.Name;
          model.Description = snapshot.Description;
@@ -36,7 +36,7 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
 
-      public override Task<TModel> MapToModel(TSnapshot snapshot)
+      public sealed override Task<TModel> MapToModel(TSnapshot snapshot)
       {
          return FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
       }
@@ -48,7 +48,7 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       public abstract Task<TSnapshot> MapToSnapshot(TModel model, TSnapshotContext context);
 
-      public override Task<TSnapshot> MapToSnapshot(TModel model)
+      public sealed override Task<TSnapshot> MapToSnapshot(TModel model)
       {
          return FromException<TSnapshot>(new ModelMapToSnapshotNotSupportedException<TSnapshot, TSnapshotContext>());
       }

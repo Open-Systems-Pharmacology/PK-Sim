@@ -94,6 +94,11 @@ namespace PKSim.Core.Model
          return _allBuildingBlocks.FindById(templateBuildingBlockId) as T;
       }
 
+      public virtual T BuildingBlockByName<T>(string templateBuildingBlockName) where T : class, IPKSimBuildingBlock
+      {
+         return _allBuildingBlocks.OfType<T>().FindByName(templateBuildingBlockName);
+      }
+
       //TODO MOVE TO CORE
       public virtual DataRepository ObservedDataBy(UsedObservedData  usedObservedData) => ObservedDataBy(usedObservedData.Id);
 

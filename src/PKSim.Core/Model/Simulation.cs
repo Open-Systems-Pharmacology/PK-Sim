@@ -574,7 +574,11 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns the settings for the simulation
       /// </summary>
-      public virtual OutputSelections OutputSelections => SimulationSettings.OutputSelections;
+      public virtual OutputSelections OutputSelections
+      {
+         get => SimulationSettings.OutputSelections;
+         set => SimulationSettings.OutputSelections = value;
+      }
 
       /// <summary>
       ///    return the model properties used in the simulation configuration
@@ -588,12 +592,20 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns the <see cref="OSPSuite.Core.Domain.OutputSchema" /> defined in the settings
       /// </summary>
-      public virtual OutputSchema OutputSchema => SimulationSettings.OutputSchema;
+      public virtual OutputSchema OutputSchema
+      {
+         get => SimulationSettings.OutputSchema;
+         set => SimulationSettings.OutputSchema = value;
+      }
 
       /// <summary>
       ///    Returns the <see cref="Solver" />  defined in the settings
       /// </summary>
-      public virtual SolverSettings Solver => SimulationSettings.Solver;
+      public virtual SolverSettings Solver
+      {
+         get => SimulationSettings.Solver;
+         set => SimulationSettings.Solver = value;
+      }
 
       public virtual IReadOnlyList<Compound> Compounds => AllBuildingBlocks<Compound>().ToList();
 

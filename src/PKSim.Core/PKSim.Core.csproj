@@ -873,6 +873,7 @@
     <Compile Include="Snapshots\Mappers\DataInfoMapper.cs" />
     <Compile Include="Snapshots\Mappers\DistributedTableFormulaMapper.cs" />
     <Compile Include="Snapshots\Mappers\EventMapper.cs" />
+    <Compile Include="Snapshots\Mappers\EventPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\ExtendedPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\ExtendedPropertyMapper.cs" />
     <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />

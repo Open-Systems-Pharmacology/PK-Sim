@@ -4,12 +4,11 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using Compound = PKSim.Core.Model.Compound;
-using CompoundProperties = PKSim.Core.Model.CompoundProperties;
+using CompoundProperties = PKSim.Core.Snapshots.CompoundProperties;
 using Formulation = PKSim.Core.Model.Formulation;
 using Protocol = PKSim.Core.Model.Protocol;
 
@@ -18,9 +17,8 @@ namespace PKSim.Core
    public abstract class concern_for_CompoundPropertiesMapper : ContextSpecificationAsync<CompoundPropertiesMapper>
    {
       private CalculationMethodCacheMapper _calculationMethodCacheMapper;
-      private IBuildingBlockRepository _buildingBlockRepository;
-      protected Snapshots.CompoundProperties _snapshot;
-      protected CompoundProperties _compoundProperties;
+      protected CompoundProperties _snapshot;
+      protected Model.CompoundProperties _compoundProperties;
       private CompoundGroupSelection _compoungGroupSelectionOneAlternative;
       protected Compound _compound;
       protected CalculationMethodCache _calculationMethodSnapshot;
@@ -32,13 +30,14 @@ namespace PKSim.Core
       private ParameterAlternativeGroup _parameterAlternativeGroupWithOneAlternative;
       private ParameterAlternativeGroup _parameterAlternativeGroupWithTwoAlternatives;
       protected CompoundGroupSelection _compoungGroupSelectioTwoAlternatives;
+      protected PKSimProject _project;
 
       protected override Task Context()
       {
-         _calculationMethodCacheMapper= A.Fake<CalculationMethodCacheMapper>();
-         _buildingBlockRepository= A.Fake<IBuildingBlockRepository>();
-         _calculationMethodSnapshot=new CalculationMethodCache();
-         sut = new CompoundPropertiesMapper(_calculationMethodCacheMapper,_buildingBlockRepository);
+         _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
+         _project = new PKSimProject();
+         _calculationMethodSnapshot = new CalculationMethodCache();
+         sut = new CompoundPropertiesMapper(_calculationMethodCacheMapper);
 
          _compoungGroupSelectionOneAlternative = new CompoundGroupSelection
          {
@@ -65,13 +64,13 @@ namespace PKSim.Core
          _parameterAlternativeGroupWithOneAlternative = new ParameterAlternativeGroup {Name = _compoungGroupSelectionOneAlternative.GroupName};
          _parameterAlternativeGroupWithTwoAlternatives = new ParameterAlternativeGroup {Name = _compoungGroupSelectioTwoAlternatives.GroupName};
 
-         _parameterAlternativeGroupWithTwoAlternatives.AddAlternative(new ParameterAlternative{Name = "ALT1"});
-         _parameterAlternativeGroupWithTwoAlternatives.AddAlternative(new ParameterAlternative{Name = "ALT2"});
+         _parameterAlternativeGroupWithTwoAlternatives.AddAlternative(new ParameterAlternative {Name = "ALT1"});
+         _parameterAlternativeGroupWithTwoAlternatives.AddAlternative(new ParameterAlternative {Name = "ALT2"});
 
          _compound.AddParameterAlternativeGroup(_parameterAlternativeGroupWithOneAlternative);
          _compound.AddParameterAlternativeGroup(_parameterAlternativeGroupWithTwoAlternatives);
 
-         _compoundProperties = new CompoundProperties();
+         _compoundProperties = new Model.CompoundProperties();
 
          _compoundProperties.AddCompoundGroupSelection(_compoungGroupSelectionOneAlternative);
          _compoundProperties.AddCompoundGroupSelection(_compoungGroupSelectioTwoAlternatives);
@@ -104,7 +103,7 @@ namespace PKSim.Core
          _compoundProperties.Processes.TransportAndExcretionSelection.AddSystemicProcessSelection(_transportSystemicProcess);
 
 
-         _formulation = new Model.Formulation
+         _formulation = new Formulation
          {
             Id = "123456"
          };
@@ -115,7 +114,7 @@ namespace PKSim.Core
             TemplateFormulationId = _formulation.Id
          });
 
-         A.CallTo(() => _buildingBlockRepository.ById(_formulation.Id)).Returns(_formulation);
+         _project.AddBuildingBlock(_formulation);
          A.CallTo(() => _calculationMethodCacheMapper.MapToSnapshot(_compoundProperties.CalculationMethodCache)).ReturnsAsync(_calculationMethodSnapshot);
 
          return Task.FromResult(true);
@@ -126,7 +125,7 @@ namespace PKSim.Core
    {
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_compoundProperties);
+         _snapshot = await sut.MapToSnapshot(_compoundProperties, _project);
       }
 
       [Observation]
@@ -154,7 +153,7 @@ namespace PKSim.Core
       public void should_save_the_used_processes_to_snapshot()
       {
          _snapshot.Processes.Length.ShouldBeEqualTo(3);
-         var snapshotProcess= _snapshot.Processes.Find(x => x.Name == _metabolizationEnzymaticPartialProcess.ProcessName);
+         var snapshotProcess = _snapshot.Processes.Find(x => x.Name == _metabolizationEnzymaticPartialProcess.ProcessName);
          snapshotProcess.MoleculeName.ShouldBeEqualTo(_metabolizationEnzymaticPartialProcess.MoleculeName);
          snapshotProcess.MetaboliteName.ShouldBeEqualTo(_metabolizationEnzymaticPartialProcess.MetaboliteName);
 
@@ -175,4 +174,4 @@ namespace PKSim.Core
          _snapshot.Alternatives[0].GroupName.ShouldBeEqualTo(_compoungGroupSelectioTwoAlternatives.GroupName);
       }
    }
-}	
+}

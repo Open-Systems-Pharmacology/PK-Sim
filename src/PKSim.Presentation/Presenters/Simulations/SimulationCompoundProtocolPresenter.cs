@@ -93,8 +93,8 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public bool AllowEmptyProtocolSelection
       {
-         set { _view.AllowEmptyProtocolSelection = value; }
-         get { return _view.AllowEmptyProtocolSelection; }
+         set => _view.AllowEmptyProtocolSelection = value;
+         get => _view.AllowEmptyProtocolSelection;
       }
 
   

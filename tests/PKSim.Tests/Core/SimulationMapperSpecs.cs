@@ -5,10 +5,13 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using AdvancedParameter = PKSim.Core.Snapshots.AdvancedParameter;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using CompoundProperties = PKSim.Core.Model.CompoundProperties;
+using Individual = PKSim.Core.Model.Individual;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 
 namespace PKSim.Core
@@ -28,11 +31,14 @@ namespace PKSim.Core
       private CompoundPropertiesMapper _compoundPropertiesMapper;
       private CompoundProperties _compoundProperties;
       protected Snapshots.CompoundProperties _snaphotCompoundProperties;
-      protected PKSimEvent _event;
-      protected Parameter _snapshotEventStartTime1;
-      protected Parameter _snapshotEventStartTime2;
       protected AdvancedParameterMapper _advancedParameterMapper;
       protected PKSimProject _project;
+      private ISimulationFactory _simulationFactory;
+      private IExecutionContext _executionContext;
+      private ISimulationModelCreator _simulationModelCreator;
+      private ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
+      private EventPropertiesMapper _eventPropertiesMapper;
+      protected EventSelections _eventSelections;
 
       protected override Task Context()
       {
@@ -43,9 +49,14 @@ namespace PKSim.Core
          _parameterMapper = A.Fake<ParameterMapper>();
          _compoundPropertiesMapper = A.Fake<CompoundPropertiesMapper>();
          _advancedParameterMapper = A.Fake<AdvancedParameterMapper>();
-
+         _eventPropertiesMapper = A.Fake<EventPropertiesMapper>();
+         _simulationFactory = A.Fake<ISimulationFactory>();
+         _executionContext = A.Fake<IExecutionContext>();
+         _simulationModelCreator = A.Fake<ISimulationModelCreator>();
+         _simulationBuildingBlockUpdater = A.Fake<ISimulationBuildingBlockUpdater>();
          sut = new SimulationMapper(_simulationPropertiesMapper, _solverSettingsMapper, _outputSchemaMapper,
-            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,_advancedParameterMapper);
+            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper, _advancedParameterMapper, _eventPropertiesMapper,
+            _simulationFactory, _executionContext, _simulationModelCreator, _simulationBuildingBlockUpdater);
 
          _simulationProperties = new SimulationProperties();
          _settings = new SimulationSettings();
@@ -63,41 +74,22 @@ namespace PKSim.Core
             }
          };
 
+         _project = new PKSimProject();
+
          _compoundProperties = new CompoundProperties();
          _snaphotCompoundProperties = new Snapshots.CompoundProperties();
-         A.CallTo(() => _compoundPropertiesMapper.MapToSnapshot(_compoundProperties)).ReturnsAsync(_snaphotCompoundProperties);
+         A.CallTo(() => _compoundPropertiesMapper.MapToSnapshot(_compoundProperties, _project)).ReturnsAsync(_snaphotCompoundProperties);
          _individualSimulation.Properties.AddCompoundProperties(_compoundProperties);
 
+         _eventSelections = new EventSelections();
          _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
          {
             BuildingBlock = new Individual {Name = "IND"}
          });
 
-         _event = new PKSimEvent()
-            .WithName("E1")
-            .WithId("EventId");
 
-         _individualSimulation.EventProperties.AddEventMapping(new EventMapping
-         {
-            TemplateEventId = _event.Id,
-            StartTime = DomainHelperForSpecs.ConstantParameterWithValue(1)
-         });
-
-         _individualSimulation.EventProperties.AddEventMapping(new EventMapping
-         {
-            TemplateEventId = _event.Id,
-            StartTime = DomainHelperForSpecs.ConstantParameterWithValue(1)
-         });
-
-         _snapshotEventStartTime1 = new Parameter();
-         _snapshotEventStartTime2 = new Parameter();
-
-         _project = new PKSimProject();
-         _project.AddBuildingBlock(_event);
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_individualSimulation.EventProperties.EventMappings[0].StartTime)).ReturnsAsync(_snapshotEventStartTime1);
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_individualSimulation.EventProperties.EventMappings[1].StartTime)).ReturnsAsync(_snapshotEventStartTime2);
-
-
+ 
+         A.CallTo(() => _eventPropertiesMapper.MapToSnapshot(_individualSimulation.EventProperties, _project)).ReturnsAsync(_eventSelections);
          return Task.FromResult(true);
       }
    }
@@ -132,11 +124,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_used_events_to_snapshot()
       {
-         _snapshot.Events.Length.ShouldBeEqualTo(2);
-         _snapshot.Events[0].Name.ShouldBeEqualTo(_event.Name);
-         _snapshot.Events[0].StartTime.ShouldBeEqualTo(_snapshotEventStartTime1);
-         _snapshot.Events[1].Name.ShouldBeEqualTo(_event.Name);
-         _snapshot.Events[1].StartTime.ShouldBeEqualTo(_snapshotEventStartTime2);
+         _snapshot.Events.ShouldBeEqualTo(_eventSelections);
       }
 
       [Observation]
@@ -171,7 +159,7 @@ namespace PKSim.Core
          });
 
          _advancedParameter = new Model.AdvancedParameter();
-         _populationSimulation.SetAdvancedParameters(new AdvancedParameterCollection{_advancedParameter});
+         _populationSimulation.SetAdvancedParameters(new AdvancedParameterCollection {_advancedParameter});
          _snapshotAdvancedParameter = new AdvancedParameter();
          A.CallTo(() => _advancedParameterMapper.MapToSnapshot(_advancedParameter)).ReturnsAsync(_snapshotAdvancedParameter);
       }

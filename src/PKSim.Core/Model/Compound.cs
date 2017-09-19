@@ -98,9 +98,9 @@ namespace PKSim.Core.Model
          return GetChildren<SystemicProcess>(proc => proc.SystemicProcessType == systemicProcessType);
       }
 
-      public virtual TPartialProcess ProcessByName<TPartialProcess>(string processName) where TPartialProcess : CompoundProcess
+      public virtual TCompoundProcess ProcessByName<TCompoundProcess>(string processName) where TCompoundProcess : CompoundProcess
       {
-         return this.GetSingleChildByName<TPartialProcess>(processName);
+         return this.GetSingleChildByName<TCompoundProcess>(processName);
       }
 
       public virtual CompoundProcess ProcessByName(string processName) => ProcessByName<CompoundProcess>(processName);

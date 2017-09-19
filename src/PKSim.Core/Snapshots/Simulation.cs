@@ -11,7 +11,7 @@
       public string Individual { get; set; }
       public string Population { get; set; }
       public CompoundProperties[] Compounds { get; set; }
-      public EventSelection[] Events { get; set; }
+      public EventSelections Events { get; set; }
       public AdvancedParameter[] AdvancedParameters { get; set; }
 
    }

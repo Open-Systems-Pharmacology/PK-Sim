@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
@@ -29,6 +29,17 @@ namespace PKSim.Core.Model
             _systemicProcesses.Remove(systemicProcessSelection.ProcessType);
 
          _systemicProcesses.Add(systemicProcessSelection);
+      }
+
+      public void AddProcessSelection(IReactionMapping reactionMapping)
+      {
+         var systemicProcess = reactionMapping as SystemicProcessSelection;
+         if (systemicProcess != null)
+            AddSystemicProcessSelection(systemicProcess);
+
+         var partialProcess = reactionMapping as ProcessSelection;
+         if (partialProcess != null)
+            AddPartialProcessSelection(partialProcess);
       }
 
       public IEnumerable<IReactionMapping> AllEnabledProcesses()

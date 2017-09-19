@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 
@@ -12,10 +14,12 @@ namespace PKSim.Core
       protected SimulationProperties _simulationProperties;
       protected string _modelName = "MODE_NAME";
       protected SimulationConfiguration _snapshot;
+      private IModelPropertiesTask _modelPropertiesTask;
 
       protected override Task Context()
       {
-         sut = new SimulationPropertiesMapper();
+         _modelPropertiesTask= A.Fake<IModelPropertiesTask>();
+         sut = new SimulationPropertiesMapper(_modelPropertiesTask);
 
          _simulationProperties = new SimulationProperties
          {
