@@ -1947,7 +1947,7 @@ namespace PKSim.Assets
          public static readonly string UpdateAvailable = "Update available...";
          public static readonly string ReportCreationStarted = "Report creation started...";
          public static readonly string ReportCreationFinished = "Report created!";
-         public static readonly string CheckForUpdate = "Check for Update...";
+         public static readonly string CheckForUpdate = "Check for Update";
          public static readonly string Template = "Template";
          public static readonly string BuildingBlock = "Building Block";
          public static readonly string BuildingBlocks = "Building Blocks";
