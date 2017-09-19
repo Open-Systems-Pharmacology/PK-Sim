@@ -231,7 +231,7 @@ namespace PKSim.Presentation.Services
 
          async Task ProjectFromSnapshot()
          {
-            var project = (await _snapshotTask.LoadFromSnapshot<PKSimProject>(fileName)).FirstOrDefault();
+            var project = (await _snapshotTask.LoadModelFromSnapshot<PKSimProject>(fileName)).FirstOrDefault();
             if (project == null)
                return;
 
@@ -244,7 +244,7 @@ namespace PKSim.Presentation.Services
 
       public Task ExportCurrentProjectToSnapshot() => ExportProjectToSnapshot(_workspace.Project);
 
-      public Task ExportProjectToSnapshot(PKSimProject project) => _snapshotTask.ExportSnapshot(project);
+      public Task ExportProjectToSnapshot(PKSimProject project) => _snapshotTask.ExportModelToSnapshot(project);
 
       private void openSimulationForPopulationSimulation(string simulationFile)
       {

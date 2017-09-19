@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 
@@ -84,6 +85,17 @@ namespace PKSim.Core.Model
 
          return query.ToList();
       }
+
+
+      public virtual IPKSimBuildingBlock BuildingBlockById(string templateBuildingBlockId) => BuildingBlockById<IPKSimBuildingBlock>(templateBuildingBlockId);
+
+      public virtual T BuildingBlockById<T>(string templateBuildingBlockId) where T: class, IPKSimBuildingBlock
+      {
+         return _allBuildingBlocks.FindById(templateBuildingBlockId) as T;
+      }
+
+      //TODO MOVE TO CORE
+      public virtual DataRepository ObservedDataBy(UsedObservedData  usedObservedData) => ObservedDataBy(usedObservedData.Id);
 
       /// <summary>
       ///    Add a building block to the project

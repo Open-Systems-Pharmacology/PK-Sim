@@ -29,7 +29,15 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       public static IMenuBarItem ExportSnapshotMenuFor<T>(T objectToExport) where T : class, IObjectBase
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSnapshot)
-            .WithCommandFor<ExportSnapshotCommand<T>, T>(objectToExport)
+            .WithCommandFor<ExportSnapshotUICommand<T>, T>(objectToExport)
+            //TODO ICON
+            .WithIcon(ApplicationIcons.PDF);
+      }
+
+      public static IMenuBarItem ExportSnapshotMenuFor<T, TContext>(T objectToExport, TContext context) where T : class, IObjectBase
+      {
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSnapshot)
+            .WithCommandFor<ExportSnapshotUICommand<T>, T>(objectToExport)
             //TODO ICON
             .WithIcon(ApplicationIcons.PDF);
       }

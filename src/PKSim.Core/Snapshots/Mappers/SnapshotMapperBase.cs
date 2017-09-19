@@ -60,7 +60,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<TModel> MapToModel(TSnapshot snapshot)
       {
-         return FromException<TModel>(new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>());
+         return FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
       }
    }
 }

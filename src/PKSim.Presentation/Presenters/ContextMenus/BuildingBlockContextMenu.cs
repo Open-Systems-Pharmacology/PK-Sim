@@ -132,7 +132,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected IMenuBarItem ExportSnapshotMenuFor(TBuildingBlock buildingBlock)
       {
          return GenericMenu.ExportSnapshotMenuFor(buildingBlock);
-
       }
+
    }
 }

@@ -4,9 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Repositories;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using AdvancedParameter = PKSim.Core.Snapshots.AdvancedParameter;
@@ -22,36 +20,32 @@ namespace PKSim.Core
       protected ISimulationSettings _settings;
       protected Simulation _snapshot;
       protected SimulationPropertiesMapper _simulationPropertiesMapper;
-      protected IObservedDataRepository _observedDataRepository;
       protected SolverSettingsMapper _solverSettingsMapper;
       protected OutputSchemaMapper _outputSchemaMapper;
       protected OutputSelectionsMapper _outputSelectionMapper;
       protected ParameterMapper _parameterMapper;
       protected Container _rootContainer;
       private CompoundPropertiesMapper _compoundPropertiesMapper;
-      private IBuildingBlockRepository _buildingBlockRepository;
       private CompoundProperties _compoundProperties;
       protected Snapshots.CompoundProperties _snaphotCompoundProperties;
       protected PKSimEvent _event;
       protected Parameter _snapshotEventStartTime1;
       protected Parameter _snapshotEventStartTime2;
       protected AdvancedParameterMapper _advancedParameterMapper;
+      protected PKSimProject _project;
 
       protected override Task Context()
       {
          _simulationPropertiesMapper = A.Fake<SimulationPropertiesMapper>();
-         _observedDataRepository = A.Fake<IObservedDataRepository>();
          _solverSettingsMapper = A.Fake<SolverSettingsMapper>();
          _outputSchemaMapper = A.Fake<OutputSchemaMapper>();
          _outputSelectionMapper = A.Fake<OutputSelectionsMapper>();
          _parameterMapper = A.Fake<ParameterMapper>();
          _compoundPropertiesMapper = A.Fake<CompoundPropertiesMapper>();
-         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _advancedParameterMapper = A.Fake<AdvancedParameterMapper>();
 
          sut = new SimulationMapper(_simulationPropertiesMapper, _solverSettingsMapper, _outputSchemaMapper,
-            _outputSelectionMapper, _observedDataRepository, _compoundPropertiesMapper, _parameterMapper,
-            _buildingBlockRepository, _advancedParameterMapper);
+            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,_advancedParameterMapper);
 
          _simulationProperties = new SimulationProperties();
          _settings = new SimulationSettings();
@@ -68,7 +62,6 @@ namespace PKSim.Core
                Root = _rootContainer
             }
          };
-
 
          _compoundProperties = new CompoundProperties();
          _snaphotCompoundProperties = new Snapshots.CompoundProperties();
@@ -99,7 +92,8 @@ namespace PKSim.Core
          _snapshotEventStartTime1 = new Parameter();
          _snapshotEventStartTime2 = new Parameter();
 
-         A.CallTo(() => _buildingBlockRepository.ById(_event.Id)).Returns(_event);
+         _project = new PKSimProject();
+         _project.AddBuildingBlock(_event);
          A.CallTo(() => _parameterMapper.MapToSnapshot(_individualSimulation.EventProperties.EventMappings[0].StartTime)).ReturnsAsync(_snapshotEventStartTime1);
          A.CallTo(() => _parameterMapper.MapToSnapshot(_individualSimulation.EventProperties.EventMappings[1].StartTime)).ReturnsAsync(_snapshotEventStartTime2);
 
@@ -112,7 +106,7 @@ namespace PKSim.Core
    {
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_individualSimulation);
+         _snapshot = await sut.MapToSnapshot(_individualSimulation, _project);
       }
 
       [Observation]
@@ -184,7 +178,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_populationSimulation);
+         _snapshot = await sut.MapToSnapshot(_populationSimulation, _project);
       }
 
       [Observation]

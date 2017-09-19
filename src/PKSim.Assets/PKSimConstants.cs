@@ -842,6 +842,11 @@ namespace PKSim.Assets
             return $"{modelType} should not be created from snapshot directly. Instead use the overload with {contextType}.";
          }
 
+         public static string MapToSnapshotNotSupportedWithoutContext(string snapshotType, string contextType)
+         {
+            return $"{snapshotType} should not be created from model directly. Instead use the overload with {contextType}.";
+         }
+
          public const string PopulationSnapshotOnlySupportedForRandomPopulation = "Population snapshot can only be created for randomized population.";
       }
    

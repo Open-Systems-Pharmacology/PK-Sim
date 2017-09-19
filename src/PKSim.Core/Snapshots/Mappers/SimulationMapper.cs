@@ -2,25 +2,21 @@
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using SnapshotSimulation = PKSim.Core.Snapshots.Simulation;
 using ModelSimulation = PKSim.Core.Model.Simulation;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, PKSimProject>
+   public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, PKSimProject, PKSimProject>
    {
       private readonly SimulationPropertiesMapper _simulationPropertiesMapper;
       private readonly SolverSettingsMapper _solverSettingsMapper;
       private readonly OutputSchemaMapper _outputSchemaMapper;
       private readonly OutputSelectionsMapper _outputSelectionsMapper;
-      private readonly IObservedDataRepository _observedDataRepository;
       private readonly CompoundPropertiesMapper _compoundPropertiesMapper;
       private readonly ParameterMapper _parameterMapper;
-      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly AdvancedParameterMapper _advancedParameterMapper;
 
       public SimulationMapper(
@@ -28,24 +24,20 @@ namespace PKSim.Core.Snapshots.Mappers
          SolverSettingsMapper solverSettingsMapper,
          OutputSchemaMapper outputSchemaMapper,
          OutputSelectionsMapper outputSelectionsMapper,
-         IObservedDataRepository observedDataRepository,
          CompoundPropertiesMapper compoundPropertiesMapper,
          ParameterMapper parameterMapper,
-         IBuildingBlockRepository buildingBlockRepository,
          AdvancedParameterMapper advancedParameterMapper)
       {
          _simulationPropertiesMapper = simulationPropertiesMapper;
          _solverSettingsMapper = solverSettingsMapper;
          _outputSchemaMapper = outputSchemaMapper;
          _outputSelectionsMapper = outputSelectionsMapper;
-         _observedDataRepository = observedDataRepository;
          _compoundPropertiesMapper = compoundPropertiesMapper;
          _parameterMapper = parameterMapper;
-         _buildingBlockRepository = buildingBlockRepository;
          _advancedParameterMapper = advancedParameterMapper;
       }
 
-      public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation)
+      public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation, PKSimProject project)
       {
          var snapshot = await SnapshotFrom(simulation);
          snapshot.Configuration = await _simulationPropertiesMapper.MapToSnapshot(simulation.Properties);
@@ -56,8 +48,8 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Individual = usedSimulationSubject<Model.Individual>(simulation);
          snapshot.Population = usedSimulationSubject<Model.Population>(simulation);
          snapshot.Compounds = await usedCompoundsFrom(simulation);
-         snapshot.Events = await usedEventsFrom(simulation);
-         snapshot.ObservedData = usedObervedDataFrom(simulation);
+         snapshot.Events = await usedEventsFrom(simulation, project);
+         snapshot.ObservedData = usedObervedDataFrom(simulation, project);
          snapshot.AdvancedParameters = await advancedParametersFrom(simulation);
          return snapshot;
       }
@@ -71,19 +63,19 @@ namespace PKSim.Core.Snapshots.Mappers
          return await _advancedParameterMapper.MapToSnapshot(populationSimulation.AdvancedParameters);
       }
 
-      private async Task<EventSelection[]> usedEventsFrom(ModelSimulation simulation)
+      private async Task<EventSelection[]> usedEventsFrom(ModelSimulation simulation, PKSimProject project)
       {
          var eventMappings = simulation.EventProperties.EventMappings;
          if (!eventMappings.Any())
             return null;
 
-         var tasks = simulation.EventProperties.EventMappings.Select(eventSelectionFrom);
+         var tasks = simulation.EventProperties.EventMappings.Select(x => eventSelectionFrom(x, project));
          return await Task.WhenAll(tasks);
       }
 
-      private async Task<EventSelection> eventSelectionFrom(EventMapping eventMapping)
+      private async Task<EventSelection> eventSelectionFrom(EventMapping eventMapping, PKSimProject project)
       {
-         var eventBuildingBlock = _buildingBlockRepository.ById(eventMapping.TemplateEventId);
+         var eventBuildingBlock = project.BuildingBlockById(eventMapping.TemplateEventId);
          return new EventSelection
          {
             Name = eventBuildingBlock.Name,
@@ -103,10 +95,10 @@ namespace PKSim.Core.Snapshots.Mappers
          return _parameterMapper.LocalizedParametersFrom(changedParameters);
       }
 
-      private string[] usedObervedDataFrom(ModelSimulation simulation)
+      private string[] usedObervedDataFrom(ModelSimulation simulation, PKSimProject project)
       {
          return simulation.UsedObservedData
-            .Select(_observedDataRepository.FindFor)
+            .Select(project.ObservedDataBy)
             .Select(x => x.Name).ToArray();
       }
 

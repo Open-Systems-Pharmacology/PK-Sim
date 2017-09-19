@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
@@ -12,14 +13,21 @@ namespace PKSim.Core.Snapshots.Services
    public interface ISnapshotTask
    {
       /// <summary>
-      ///    Exports the given <paramref name="objectToExport" /> to snapshot. User will be ask to specify the file where the
+      ///    Exports the given <paramref name="modelToExport" /> to snapshot. User will be ask to specify the file where the
       ///    snapshot will be exported
       /// </summary>
-      Task ExportSnapshot<T>(T objectToExport) where T : class, IObjectBase;
+      Task ExportModelToSnapshot<T>(T modelToExport) where T : class, IObjectBase;
 
-      Task<IEnumerable<T>> LoadFromSnapshot<T>() where T : class, IObjectBase;
+      /// <summary>
+      ///    Exports the given <paramref name="snapshotObject" /> to file. <paramref name="snapshotObject"/> is already a snapshot object and won't be mapped to snapshot
+      /// </summary>
+      Task ExportSnapshot(IWithName snapshotObject);
 
-      Task<IEnumerable<T>> LoadFromSnapshot<T>(string fileName) where T : class, IObjectBase;
+      Task<IEnumerable<T>> LoadModelFromSnapshot<T>() where T : class, IObjectBase;
+
+      Task<IEnumerable<T>> LoadSnapshot<T>() where T : IWithName;
+
+      Task<IEnumerable<T>> LoadModelFromSnapshot<T>(string fileName) where T : class, IObjectBase;
    }
 
    public class SnapshotTask : ISnapshotTask
@@ -39,36 +47,67 @@ namespace PKSim.Core.Snapshots.Services
          _snapshotMapper = snapshotMapper;
       }
 
-      public async Task ExportSnapshot<T>(T objectToExport) where T : class, IObjectBase
+      public async Task ExportModelToSnapshot<T>(T modelToExport) where T : class, IObjectBase
       {
-         if (objectToExport == null)
+         if (modelToExport == null)
             return;
 
-         var message = PKSimConstants.UI.SelectSnapshotExportFile(objectToExport.Name, _objectTypeResolver.TypeFor(objectToExport));
-         var fileName = _dialogCreator.AskForFileToSave(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT, objectToExport.Name);
+         var fileName = fileNameForExport(modelToExport);
          if (string.IsNullOrEmpty(fileName))
             return;
 
-         _executionContext.Load(objectToExport);
+         _executionContext.Load(modelToExport);
 
-         await exportSnapshotFor(objectToExport, fileName);
+         await exportSnapshotFor(modelToExport, fileName);
       }
 
-      public Task<IEnumerable<T>> LoadFromSnapshot<T>() where T : class, IObjectBase
+      private string fileNameForExport(IWithName objectToExport) 
+      {
+         var message = PKSimConstants.UI.SelectSnapshotExportFile(objectToExport.Name, _objectTypeResolver.TypeFor(objectToExport));
+         return _dialogCreator.AskForFileToSave(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT, objectToExport.Name);
+      }
+
+      public async Task ExportSnapshot(IWithName snapshotObject)
+      {
+         var fileName = fileNameForExport(snapshotObject);
+         if (string.IsNullOrEmpty(fileName))
+            return;
+
+         await saveSnapshotToFile(snapshotObject, fileName);
+      }
+
+      public Task<IEnumerable<T>> LoadModelFromSnapshot<T>() where T : class, IObjectBase
+      {
+         var fileName = fileNameForSnapshotImport<T>();
+         return LoadModelFromSnapshot<T>(fileName);
+      }
+
+      private string fileNameForSnapshotImport<T>()
       {
          var message = PKSimConstants.UI.LoadFromSnapshotFile(_objectTypeResolver.TypeFor<T>());
-         var fileName = _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);
-         return LoadFromSnapshot<T>(fileName);
+         return _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);
       }
 
-      public async Task<IEnumerable<T>> LoadFromSnapshot<T>(string fileName) where T : class, IObjectBase
+      public async Task<IEnumerable<T>> LoadSnapshot<T>() where T : IWithName
+      {
+         var fileName = fileNameForSnapshotImport<T>();
+         var snapshots= await loadSnapshot(fileName, typeof(T));
+         return snapshots.OfType<T>();
+      }
+
+      private async Task<IEnumerable<object>> loadSnapshot(string fileName, Type snapshotType) 
       {
          if (string.IsNullOrEmpty(fileName))
-            return Enumerable.Empty<T>();
+            return Enumerable.Empty<object>();
+         
+         return await _snapshotSerializer.DeserializeAsArray(fileName, snapshotType);
+      }
 
+      public async Task<IEnumerable<T>> LoadModelFromSnapshot<T>(string fileName) where T : class, IObjectBase
+      {
          var snapshotType = _snapshotMapper.SnapshotTypeFor<T>();
+         var snapshots = await loadSnapshot(fileName, snapshotType);
 
-         var snapshots = _snapshotSerializer.DeserializeAsArray(fileName, snapshotType);
          if(snapshots==null)
             return Enumerable.Empty<T>();
 
@@ -80,7 +119,9 @@ namespace PKSim.Core.Snapshots.Services
       private async Task exportSnapshotFor<T>(T objectToExport, string fileName)
       {
          var snapshot = await _snapshotMapper.MapToSnapshot(objectToExport);
-         _snapshotSerializer.Serialize(snapshot, fileName);
+         await saveSnapshotToFile(snapshot, fileName);
       }
+
+      private Task saveSnapshotToFile(object snapshot, string fileName) => _snapshotSerializer.Serialize(snapshot, fileName);
    }
 }

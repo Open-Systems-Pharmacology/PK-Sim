@@ -501,7 +501,8 @@
     <Compile Include="UICommands\ExportObservedDataToPkmlCommand.cs" />
     <Compile Include="UICommands\ExportPopulationSimulationPKAnalysesCommand.cs" />
     <Compile Include="UICommands\ExportSimulationResultsToCSVCommand.cs" />
-    <Compile Include="UICommands\ExportSnapshotCommand.cs" />
+    <Compile Include="UICommands\ExportSimulationSnapshotUICommand.cs" />
+    <Compile Include="UICommands\ExportSnapshotUICommand.cs" />
     <Compile Include="UICommands\ExportToPDFCommand.cs" />
     <Compile Include="UICommands\ExtractIndividualsFromPopulationCommand.cs" />
     <Compile Include="UICommands\GenerateGroupsTemplateCommand.cs" />
@@ -514,6 +515,7 @@
     <Compile Include="UICommands\LoadPopulationAnalysisWorkflowFromTemplateUICommand.cs" />
     <Compile Include="UICommands\LoadBuildingBlockFromSnapshotUICommand.cs" />
     <Compile Include="UICommands\LoadProjectFromSnapshotCommand.cs" />
+    <Compile Include="UICommands\LoadSimulationFromSnapshotUICommand.cs" />
     <Compile Include="UICommands\NewImportIndividualSimulationCommand.cs" />
     <Compile Include="UICommands\NewImportPopulationSimulationCommand.cs" />
     <Compile Include="UICommands\RenameObjectUICommand.cs" />

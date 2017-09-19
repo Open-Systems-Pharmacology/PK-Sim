@@ -285,7 +285,7 @@ namespace PKSim.Presentation.Services
 
       public async Task<IReadOnlyList<TBuildingBlock>> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         var buildingBlocks = await _snapshotTask.LoadFromSnapshot<TBuildingBlock>();
+         var buildingBlocks = await _snapshotTask.LoadModelFromSnapshot<TBuildingBlock>();
          return addBuildingBlocksToProject(buildingBlocks).ToList();
       }
 
