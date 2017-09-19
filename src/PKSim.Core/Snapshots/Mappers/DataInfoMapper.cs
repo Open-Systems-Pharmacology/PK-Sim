@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using OSPSuite.Core.Domain;
+﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Utility;
 using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
@@ -60,9 +58,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return dataInfo;
       }
 
-      private async Task<IEnumerable<IExtendedProperty>> extendedPropertiesFrom(SnapshotDataInfo snapshot)
+      private Task<ModelExtendedProperties> extendedPropertiesFrom(SnapshotDataInfo snapshot)
       {
-         return await _extendedPropertiesMapper.MapToModel(snapshot.ExtendedProperties);
+         return _extendedPropertiesMapper.MapToModel(snapshot.ExtendedProperties);
       }
    }
 }

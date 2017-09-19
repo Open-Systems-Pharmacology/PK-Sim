@@ -33,7 +33,7 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             x.Name = dataColumn.Name;
             x.Values = valuesInDisplayUnits(dataColumn);
-            x.Dimension = dataColumn.Dimension.DisplayName;
+            x.Dimension = dataColumn.Dimension.Name;
             x.Unit = SnapshotValueFor(dataColumn.DisplayUnit.Name);
          });
 
@@ -81,7 +81,13 @@ namespace PKSim.Core.Snapshots.Mappers
          dataColumn.Values = valuesInBaseUnits(dataColumn, snapshot.Values);
          dataColumn.DataInfo = await _dataInfoMapper.MapToModel(snapshot.DataInfo);
          dataColumn.QuantityInfo = await _quantityInfoMapper.MapToModel(snapshot.QuantityInfo);
-         snapshot.RelatedColumns?.Each(async relatedColumn => dataColumn.AddRelatedColumn( await MapToModel(relatedColumn, dataRepository)));
+         var tasks = snapshot.RelatedColumns?.Select(relatedColumn => MapToModel(relatedColumn, dataRepository));
+
+         if (tasks == null)
+            return dataColumn;
+
+         var relatedColumns = await Task.WhenAll(tasks);
+         relatedColumns.Each(dataColumn.AddRelatedColumn);
 
          return dataColumn;
       }

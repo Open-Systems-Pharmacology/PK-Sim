@@ -32,11 +32,11 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      private async Task<DataRepository[]> mapObservedDataToSnapshots(IReadOnlyCollection<OSPSuite.Core.Domain.Data.DataRepository> allObservedData)
+      private Task<DataRepository[]> mapObservedDataToSnapshots(IReadOnlyCollection<OSPSuite.Core.Domain.Data.DataRepository> allObservedData)
       {
          var snapshotMapper = _executionContext.Resolve<ObservedDataMapper>();
          var tasks = allObservedData.Select(datarepository => snapshotMapper.MapToSnapshot(datarepository));
-         return await Task.WhenAll(tasks);
+         return Task.WhenAll(tasks);
       }
 
       private async Task<T[]> mapBuildingBlocksToSnapshots<T>(IReadOnlyCollection<IPKSimBuildingBlock> buildingBlocks)

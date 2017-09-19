@@ -49,16 +49,14 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelDataRepository> MapToModel(SnapshotDataRepository snapshot)
       {
-         var dataRepository = new ModelDataRepository
-         {
-            Name = snapshot.Name,
-            Description = snapshot.Description
-         };
+         var dataRepository = new ModelDataRepository();
+         MapSnapshotPropertiesToModel(snapshot, dataRepository);
 
          dataRepository.Add(await _dataColumnMapper.MapToModel(snapshot.BaseGrid, dataRepository));
 
-         snapshot.Columns.Each(async x => dataRepository.Add(await _dataColumnMapper.MapToModel(x, dataRepository)));
-         
+         var tasks = snapshot.Columns.Select(x => _dataColumnMapper.MapToModel(x, dataRepository));
+         dataRepository.AddColumns(await Task.WhenAll(tasks));
+
          dataRepository.ExtendedProperties.AddRange(await _extendedPropertiesMapper.MapToModel(snapshot.ExtendedProperties));
 
          return dataRepository;

@@ -34,6 +34,6 @@ namespace PKSim.Core.Services
       /// </summary>
       void ExportToPkml(DataRepository observedData);
 
-      Task<IReadOnlyList<DataRepository>> LoadFromSnapshot();
+      Task LoadFromSnapshot();
    }
 }

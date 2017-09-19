@@ -66,11 +66,10 @@ namespace PKSim.Infrastructure.Services
          _observedDataPersistor.Save(observedData, file);
       }
 
-      public async Task<IReadOnlyList<DataRepository>> LoadFromSnapshot()
+      public async Task LoadFromSnapshot()
       {
          var observedData = (await _snapshotTask.LoadFromSnapshot<DataRepository>()).ToList();
          observedData.Each(AddObservedDataToProject);
-         return observedData.ToList();
       }
 
       public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable)
