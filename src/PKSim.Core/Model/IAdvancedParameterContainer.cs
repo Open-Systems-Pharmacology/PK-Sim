@@ -17,6 +17,8 @@ namespace PKSim.Core.Model
 
       void RemoveAdvancedParameter(AdvancedParameter advancedParameter);
 
+      void RemoveAllAdvancedParameters();
+
       AdvancedParameter AdvancedParameterFor(IEntityPathResolver entityPathResolver, IParameter parameter);
 
       /// <summary>

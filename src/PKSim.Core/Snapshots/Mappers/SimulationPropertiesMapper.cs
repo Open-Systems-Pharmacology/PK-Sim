@@ -27,7 +27,7 @@ namespace PKSim.Core.Snapshots.Mappers
          throw new System.NotImplementedException();
       }
 
-      public ModelProperties ModelPropertiesFrom(SimulationConfiguration snapshot, ISimulationSubject simulationSubject)
+      public virtual ModelProperties ModelPropertiesFrom(SimulationConfiguration snapshot, ISimulationSubject simulationSubject)
       {
          return _modelPropertiesTask.DefaultFor(simulationSubject.OriginData, snapshot.Model);
       }

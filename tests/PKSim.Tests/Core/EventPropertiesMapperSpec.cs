@@ -14,8 +14,8 @@ namespace PKSim.Core
 {
    public abstract class concern_for_EventPropertiesMapper : ContextSpecificationAsync<EventPropertiesMapper>
    {
-      private ParameterMapper _parameterMapper;
-      private IEventMappingFactory _eventMappingFactory;
+      protected ParameterMapper _parameterMapper;
+      protected IEventMappingFactory _eventMappingFactory;
       protected PKSimEvent _event;
       protected EventProperties _eventProperties;
       protected EventSelections _snapshot;
@@ -75,6 +75,39 @@ namespace PKSim.Core
          _snapshot.ElementAt(0).StartTime.ShouldBeEqualTo(_snapshotEventStartTime1);
          _snapshot.ElementAt(1).Name.ShouldBeEqualTo(_event.Name);
          _snapshot.ElementAt(1).StartTime.ShouldBeEqualTo(_snapshotEventStartTime2);
+      }
+   }
+
+   public class When_mapping_a_snapshot_event_to_event_properties : concern_for_EventPropertiesMapper
+   {
+      private EventProperties _newEventProperties;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_eventProperties, _project);
+         A.CallTo(() => _eventMappingFactory.Create(_event)).ReturnsLazily(x => new EventMapping
+         {
+            StartTime = DomainHelperForSpecs.ConstantParameterWithValue(0)
+         });
+      }
+
+      protected override async Task Because()
+      {
+         _newEventProperties = await sut.MapToModel(_snapshot, _project);
+      }
+
+      [Observation]
+      public void should_return_event_properties_with_mapping_set_as_expected()
+      {
+         _newEventProperties.EventMappings.Count.ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void should_map_start_time_parameters_according_to_snapshot()
+      {
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.ElementAt(0).StartTime, _newEventProperties.EventMappings[0].StartTime)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.ElementAt(1).StartTime, _newEventProperties.EventMappings[1].StartTime)).MustHaveHappened();
       }
    }
 }

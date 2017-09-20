@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using ModelAdvancedParameter = PKSim.Core.Model.AdvancedParameter;
@@ -12,10 +14,12 @@ namespace PKSim.Core.Snapshots.Mappers
    public class AdvancedParameterMapper : ParameterContainerSnapshotMapperBase<ModelAdvancedParameter, SnapshotAdvancedParameter, PathCache<IParameter>>
    {
       private readonly IAdvancedParameterFactory _advancedParameterFactory;
+      private readonly IEntityPathResolver _entityPathResolver;
 
-      public AdvancedParameterMapper(ParameterMapper parameterMapper, IAdvancedParameterFactory advancedParameterFactory) : base(parameterMapper)
+      public AdvancedParameterMapper(ParameterMapper parameterMapper, IAdvancedParameterFactory advancedParameterFactory, IEntityPathResolver entityPathResolver) : base(parameterMapper)
       {
          _advancedParameterFactory = advancedParameterFactory;
+         _entityPathResolver = entityPathResolver;
       }
 
       public override Task<SnapshotAdvancedParameter> MapToSnapshot(ModelAdvancedParameter advancedParameter)
@@ -44,6 +48,19 @@ namespace PKSim.Core.Snapshots.Mappers
          var advancedParameter = _advancedParameterFactory.Create(parameter, DistributionTypes.ById(snapshot.DistributionType));
          await UpdateParametersFromSnapshot(snapshot, advancedParameter.DistributedParameter, PKSimConstants.ObjectTypes.AdvancedParameter);
          return advancedParameter;
+      }
+
+      public virtual async Task MapToModel(SnapshotAdvancedParameter[] snapshotAdvancedParameters, IAdvancedParameterContainer advancedParameterContainer)
+      {
+         if (snapshotAdvancedParameters == null)
+            return;
+
+         advancedParameterContainer.RemoveAllAdvancedParameters();
+         var parameterCache = advancedParameterContainer.AllParameters(_entityPathResolver);
+         var tasks = snapshotAdvancedParameters.Select(x => MapToModel(x, parameterCache));
+         var advancedParameters = await Task.WhenAll(tasks);
+
+         advancedParameters.Each(x => advancedParameterContainer.AddAdvancedParameter(x, generateRandomValues: true));
       }
    }
 }

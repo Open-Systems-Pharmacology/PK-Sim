@@ -714,7 +714,7 @@
     <Compile Include="Core\SimpleProtocolToSchemaMapperSpecs.cs" />
     <Compile Include="Core\SimulationBuildingBlockUpdaterSpecs.cs" />
     <Compile Include="Core\SimulationFactorySpecs.cs" />
-    <Compile Include="Core\SimulationIntervalFactorySpecs.cs" />
+    <Compile Include="Core\OutputIntervalFactorySpecs.cs" />
     <Compile Include="Core\SimulationRunnerSpecs.cs" />
     <Compile Include="Core\SimulationSettingsTaskSpecs.cs" />
     <Compile Include="Core\SimulationToModelCoreSimulationMapperSpecs.cs" />

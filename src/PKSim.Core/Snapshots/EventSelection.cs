@@ -32,5 +32,7 @@ namespace PKSim.Core.Snapshots
       {
          return GetEnumerator();
       }
+
+      public void AddEventSelection(EventSelection eventSelection) => _allEventSelections.Add(eventSelection);
    }
 }

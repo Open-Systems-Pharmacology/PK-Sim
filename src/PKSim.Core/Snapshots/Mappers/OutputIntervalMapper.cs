@@ -1,14 +1,18 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
+using IOutputIntervalFactory = PKSim.Core.Model.IOutputIntervalFactory;
 using SnapshotOutputInterval = PKSim.Core.Snapshots.OutputInterval;
 using ModelOutputInterval = OSPSuite.Core.Domain.OutputInterval;
 
-
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class OutputIntervalMapper : ParameterContainerSnapshotMapperBase<ModelOutputInterval, SnapshotOutputInterval>
+   public class OutputIntervalMapper : ParameterContainerSnapshotMapperBase<ModelOutputInterval, SnapshotOutputInterval, OSPSuite.Core.Domain.OutputSchema>
    {
-      public OutputIntervalMapper(ParameterMapper parameterMapper) : base(parameterMapper)
+      private readonly IOutputIntervalFactory _outputIntervalFactory;
+
+      public OutputIntervalMapper(ParameterMapper parameterMapper, IOutputIntervalFactory outputIntervalFactory) : base(parameterMapper)
       {
+         _outputIntervalFactory = outputIntervalFactory;
       }
 
       public override Task<SnapshotOutputInterval> MapToSnapshot(ModelOutputInterval outputInterval)
@@ -20,9 +24,11 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<ModelOutputInterval> MapToModel(SnapshotOutputInterval snapshot)
+      public override async Task<ModelOutputInterval> MapToModel(SnapshotOutputInterval snapshot, OSPSuite.Core.Domain.OutputSchema outputSchema)
       {
-         throw new System.NotImplementedException();
+         var outputInterval = _outputIntervalFactory.CreateDefaultFor(outputSchema);
+         await UpdateParametersFromSnapshot(snapshot, outputInterval, Constants.OUTPUT_INTERVAL);
+         return outputInterval;
       }
    }
 }

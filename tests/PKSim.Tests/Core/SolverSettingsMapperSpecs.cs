@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Snapshots.Mappers;
+using ISolverSettingsFactory = PKSim.Core.Model.ISolverSettingsFactory;
 
 namespace PKSim.Core
 {
@@ -10,10 +12,12 @@ namespace PKSim.Core
    {
       protected SolverSettings _solverSettings;
       protected Snapshots.SolverSettings _snapshot;
+      protected ISolverSettingsFactory _solverSettingsFactory;
 
       protected override Task Context()
       {
-         sut = new SolverSettingsMapper();
+         _solverSettingsFactory= A.Fake<ISolverSettingsFactory>(); 
+         sut = new SolverSettingsMapper(_solverSettingsFactory);
 
          _solverSettings = new SolverSettings
          {
@@ -47,6 +51,53 @@ namespace PKSim.Core
          _snapshot.HMin.ShouldBeEqualTo(_solverSettings.HMin);
          _snapshot.HMax.ShouldBeEqualTo(_solverSettings.HMax);
          _snapshot.H0.ShouldBeEqualTo(_solverSettings.H0);
+      }
    }
+
+   public class When_mapping_a_solver_setting_snapshot_to_solver_settings : concern_for_SolverSettingsMapper
+   {
+      private SolverSettings _newSolverSettings;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_solverSettings);
+
+         var solverSettings = A.Fake<SolverSettings>();
+         solverSettings.AbsTol = 1;
+         solverSettings.RelTol = 2;
+         solverSettings.MxStep = 3;
+         solverSettings.HMin = 4;
+         solverSettings.H0 = 5;
+         solverSettings.HMax = 6;
+         solverSettings.UseJacobian = false;
+         A.CallTo(() => _solverSettingsFactory.CreateDefault()).Returns(solverSettings);
+
+         _snapshot.H0 = null;
+         _snapshot.HMax = null;
+
+      }
+
+      protected override async Task Because()
+      {
+         _newSolverSettings = await sut.MapToModel(_snapshot);
+      }
+
+      [Observation]
+      public void should_update_values_that_were_set_in_the_snapshot()
+      {
+         _newSolverSettings.AbsTol.ShouldBeEqualTo(_snapshot.AbsTol);         
+         _newSolverSettings.RelTol.ShouldBeEqualTo(_snapshot.RelTol);         
+         _newSolverSettings.MxStep.ShouldBeEqualTo(_snapshot.MxStep.Value);         
+         _newSolverSettings.HMin.ShouldBeEqualTo(_snapshot.HMin.Value);         
+         _newSolverSettings.UseJacobian.ShouldBeEqualTo(_snapshot.UseJacobian.Value);         
+      }
+
+      [Observation]
+      public void should_leave_default_value_as_is()
+      {
+         _newSolverSettings.H0.ShouldBeEqualTo(5);
+         _newSolverSettings.HMax.ShouldBeEqualTo(6);
+      }
    }
 }

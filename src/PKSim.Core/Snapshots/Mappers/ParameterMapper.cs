@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
 using SnapshotTableFormula = PKSim.Core.Snapshots.TableFormula;
 using ModelTableFormula = OSPSuite.Core.Domain.Formulas.TableFormula;
@@ -102,6 +103,22 @@ namespace PKSim.Core.Snapshots.Mappers
       public Task<LocalizedParameter[]> LocalizedParametersFrom(IEnumerable<IParameter> parameters, Func<IParameter, string> pathResolverFunc)
       {
          var tasks = parameters.Select(x => LocalizedParameterFrom(x, pathResolverFunc));
+         return Task.WhenAll(tasks);
+      }
+
+      public virtual Task MapLocalizedParameters(IEnumerable<LocalizedParameter> localizedParameters, IContainer container)
+      {
+         var allParameters = new PathCache<IParameter>(_entityPathResolver).For(container.GetAllChildren<IParameter>());
+         var tasks = new List<Task>();
+         localizedParameters.Each(snapshotParameter =>
+         {
+            var parameter = allParameters[snapshotParameter.Path];
+            if (parameter == null)
+               throw new SnapshotParameterNotFoundException(snapshotParameter.Path, container.Name);
+
+            tasks.Add(MapToModel(snapshotParameter, parameter));
+         });
+
          return Task.WhenAll(tasks);
       }
    }

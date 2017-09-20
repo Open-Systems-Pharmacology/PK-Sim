@@ -1,28 +1,32 @@
 using PKSim.Assets;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
    public interface IOutputIntervalFactory
    {
-      OutputInterval CreateDefault();
+      OutputInterval CreateDefaultFor(OutputSchema outputSchema);
       OutputInterval Create(double startTimeInMinute, double endTimeInMinute, double resolutionInPtsPerHour);
    }
 
    public class OutputIntervalFactory : IOutputIntervalFactory
    {
       private readonly OSPSuite.Core.Domain.IOutputIntervalFactory _outputIntervalFactory;
+      private readonly IContainerTask _containerTask;
 
-      public OutputIntervalFactory(OSPSuite.Core.Domain.IOutputIntervalFactory outputIntervalFactory)
+      public OutputIntervalFactory(OSPSuite.Core.Domain.IOutputIntervalFactory outputIntervalFactory, IContainerTask containerTask)
       {
          _outputIntervalFactory = outputIntervalFactory;
+         _containerTask = containerTask;
       }
 
-      public OutputInterval CreateDefault()
+      public OutputInterval CreateDefaultFor(OutputSchema outputSchema)
       {
-         var defaultInterval = _outputIntervalFactory.CreateDefault();
-         return updated(defaultInterval);
+         var defaultInterval = updated(_outputIntervalFactory.CreateDefault());
+         defaultInterval.Name = _containerTask.CreateUniqueName(outputSchema, defaultInterval.Name);
+         return defaultInterval;
       }
 
       public OutputInterval Create(double startTimeInMinute, double endTimeInMinute, double resolutionInPtsPerHour)
@@ -34,7 +38,7 @@ namespace PKSim.Core.Model
       private OutputInterval updated(OutputInterval interval)
       {
          interval.Name = PKSimConstants.UI.SimulationInterval;
-         interval.GetChildren<IParameter>().Each(p => { p.BuildingBlockType = PKSimBuildingBlockType.Simulation; });
+         interval.AllParameters().Each(p => p.BuildingBlockType = PKSimBuildingBlockType.Simulation);
          return interval;
       }
    }
