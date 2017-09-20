@@ -29,7 +29,6 @@ namespace PKSim.Core
       protected SimulationProperties _simulationProperties;
       protected ISimulationSettings _settings;
       protected Simulation _snapshot;
-      protected SimulationPropertiesMapper _simulationPropertiesMapper;
       protected SolverSettingsMapper _solverSettingsMapper;
       protected OutputSchemaMapper _outputSchemaMapper;
       protected OutputSelectionsMapper _outputSelectionMapper;
@@ -55,10 +54,10 @@ namespace PKSim.Core
       protected OSPSuite.Core.Domain.Model _model;
       protected AdvancedParameterCollection _avancedParameterCollection;
       protected DataRepository _observedData;
+      protected IModelPropertiesTask _modelPropertiesTask;
 
       protected override Task Context()
       {
-         _simulationPropertiesMapper = A.Fake<SimulationPropertiesMapper>();
          _solverSettingsMapper = A.Fake<SolverSettingsMapper>();
          _outputSchemaMapper = A.Fake<OutputSchemaMapper>();
          _outputSelectionMapper = A.Fake<OutputSelectionsMapper>();
@@ -70,12 +69,20 @@ namespace PKSim.Core
          _executionContext = A.Fake<IExecutionContext>();
          _simulationModelCreator = A.Fake<ISimulationModelCreator>();
          _simulationBuildingBlockUpdater = A.Fake<ISimulationBuildingBlockUpdater>();
+         _modelPropertiesTask= A.Fake<IModelPropertiesTask>();
 
-         sut = new SimulationMapper(_simulationPropertiesMapper, _solverSettingsMapper, _outputSchemaMapper,
+         sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper, _advancedParameterMapper, _eventPropertiesMapper,
-            _simulationFactory, _executionContext, _simulationModelCreator, _simulationBuildingBlockUpdater);
+            _simulationFactory, _executionContext, _simulationModelCreator, _simulationBuildingBlockUpdater, _modelPropertiesTask);
 
-         _simulationProperties = new SimulationProperties();
+         _simulationProperties = new SimulationProperties
+         {
+            ModelProperties = new ModelProperties
+            {
+               ModelConfiguration = new ModelConfiguration {ModelName = "4Comp"}
+            }
+         };
+
          _settings = new SimulationSettings();
          _rootContainer = new Container().WithName("Sim");
          _model = new OSPSuite.Core.Domain.Model {Root = _rootContainer };
@@ -238,7 +245,7 @@ namespace PKSim.Core
          };
 
          _modelProperties = new ModelProperties();
-         A.CallTo(() => _simulationPropertiesMapper.ModelPropertiesFrom(_snapshot.Configuration, _individual)).Returns(_modelProperties);
+         A.CallTo(() => _modelPropertiesTask.DefaultFor(_individual.OriginData, _snapshot.Model)).Returns(_modelProperties);
          A.CallTo(() => _simulationFactory.CreateFrom(_individual, A<IReadOnlyList<Compound>>._, _modelProperties, null)).Returns(individualSimulation);
 
          _outputSelection = new OSPSuite.Core.Domain.OutputSelections();

@@ -11,13 +11,11 @@ namespace PKSim.Core
    public abstract class concern_for_SimulationBuildingBlockUpdater : ContextSpecification<ISimulationBuildingBlockUpdater>
    {
       protected IBuildingBlockToUsedBuildingBlockMapper _buildingBlockMapper;
-      protected IFormulationFromMappingRetriever _formulationMappingRetriever;
 
       protected override void Context()
       {
          _buildingBlockMapper = A.Fake<IBuildingBlockToUsedBuildingBlockMapper>();
-         _formulationMappingRetriever = A.Fake<IFormulationFromMappingRetriever>();
-         sut = new SimulationBuildingBlockUpdater(_buildingBlockMapper, _formulationMappingRetriever);
+         sut = new SimulationBuildingBlockUpdater(_buildingBlockMapper);
       }
    }
 

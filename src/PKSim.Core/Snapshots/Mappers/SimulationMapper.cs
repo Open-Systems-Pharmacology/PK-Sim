@@ -13,7 +13,6 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, PKSimProject, PKSimProject>
    {
-      private readonly SimulationPropertiesMapper _simulationPropertiesMapper;
       private readonly SolverSettingsMapper _solverSettingsMapper;
       private readonly OutputSchemaMapper _outputSchemaMapper;
       private readonly OutputSelectionsMapper _outputSelectionsMapper;
@@ -25,9 +24,9 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IExecutionContext _executionContext;
       private readonly ISimulationModelCreator _simulationModelCreator;
       private readonly ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
+      private readonly IModelPropertiesTask _modelPropertiesTask;
 
       public SimulationMapper(
-         SimulationPropertiesMapper simulationPropertiesMapper,
          SolverSettingsMapper solverSettingsMapper,
          OutputSchemaMapper outputSchemaMapper,
          OutputSelectionsMapper outputSelectionsMapper,
@@ -38,9 +37,10 @@ namespace PKSim.Core.Snapshots.Mappers
          ISimulationFactory simulationFactory,
          IExecutionContext executionContext,
          ISimulationModelCreator simulationModelCreator,
-         ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater)
+         ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
+         IModelPropertiesTask modelPropertiesTask
+         )
       {
-         _simulationPropertiesMapper = simulationPropertiesMapper;
          _solverSettingsMapper = solverSettingsMapper;
          _outputSchemaMapper = outputSchemaMapper;
          _outputSelectionsMapper = outputSelectionsMapper;
@@ -52,6 +52,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _executionContext = executionContext;
          _simulationModelCreator = simulationModelCreator;
          _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
+         _modelPropertiesTask = modelPropertiesTask;
       }
 
       public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation, PKSimProject project)
@@ -60,7 +61,8 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Individual = usedSimulationSubject<Model.Individual>(simulation);
          snapshot.Population = usedSimulationSubject<Model.Population>(simulation);
          snapshot.Compounds = await usedCompoundsFrom(simulation, project);
-         snapshot.Configuration = await _simulationPropertiesMapper.MapToSnapshot(simulation.Properties);
+         snapshot.Model = simulation.ModelConfiguration.ModelName;
+         snapshot.AllowAging = simulation.AllowAging;
          snapshot.Solver = await _solverSettingsMapper.MapToSnapshot(simulation.Solver);
          snapshot.OutputSchema = await _outputSchemaMapper.MapToSnapshot(simulation.OutputSchema);
          snapshot.OutputSelections = await _outputSelectionsMapper.MapToSnapshot(simulation.OutputSelections);
@@ -134,7 +136,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var simulationSubject = simulationSubjectFrom(snapshot, project);
          var compounds = compoundsFrom(snapshot.Compounds, project);
-         var modelProperties = modelPropertiesFrom(snapshot.Configuration, simulationSubject);
+         var modelProperties = modelPropertiesFrom(snapshot.Model, simulationSubject);
 
          var simulation = _simulationFactory.CreateFrom(simulationSubject, compounds, modelProperties);
          MapSnapshotPropertiesToModel(snapshot, simulation);
@@ -191,12 +193,12 @@ namespace PKSim.Core.Snapshots.Mappers
       protected override void MapSnapshotPropertiesToModel(SnapshotSimulation snapshot, ModelSimulation simulation)
       {
          base.MapSnapshotPropertiesToModel(snapshot, simulation);
-         simulation.AllowAging = snapshot.Configuration.AllowAging;
+         simulation.AllowAging = snapshot.AllowAging;
       }
 
-      private ModelProperties modelPropertiesFrom(SimulationConfiguration simulationConfiguration, ISimulationSubject simulationSubject)
+      private ModelProperties modelPropertiesFrom(string modelName, ISimulationSubject simulationSubject)
       {
-         return _simulationPropertiesMapper.ModelPropertiesFrom(simulationConfiguration, simulationSubject);
+         return _modelPropertiesTask.DefaultFor(simulationSubject.OriginData, modelName);
       }
 
       private IReadOnlyList<Model.Compound> compoundsFrom(CompoundProperties[] compounds, PKSimProject project)

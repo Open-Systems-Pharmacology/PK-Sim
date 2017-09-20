@@ -281,7 +281,6 @@
     <Compile Include="Core\ProtocolMapperSpecs.cs" />
     <Compile Include="Core\SimulationConfigurationValidatorSpecs.cs" />
     <Compile Include="Core\SimulationMapperSpecs.cs" />
-    <Compile Include="Core\SimulationPropertiesMapperSpecs.cs" />
     <Compile Include="Core\SnapshotMapperSpecs.cs" />
     <Compile Include="Core\SnapshotTaskSpecs.cs" />
     <Compile Include="Core\SolverSettingsMapperSpecs.cs" />

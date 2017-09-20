@@ -48,8 +48,8 @@ namespace PKSim.Core
             StartTime = DomainHelperForSpecs.ConstantParameterWithValue(2)
          });
 
-         _snapshotEventStartTime1 = new Parameter();
-         _snapshotEventStartTime2 = new Parameter();
+         _snapshotEventStartTime1 = new Parameter {Name = "P1"};
+         _snapshotEventStartTime2 = new Parameter { Name = "P2" };
 
          _project = new PKSimProject();
          _project.AddBuildingBlock(_event);
@@ -75,6 +75,13 @@ namespace PKSim.Core
          _snapshot.ElementAt(0).StartTime.ShouldBeEqualTo(_snapshotEventStartTime1);
          _snapshot.ElementAt(1).Name.ShouldBeEqualTo(_event.Name);
          _snapshot.ElementAt(1).StartTime.ShouldBeEqualTo(_snapshotEventStartTime2);
+      }
+
+      [Observation]
+      public void should_have_reset_the_start_time_parameter_name()
+      {
+         _snapshotEventStartTime1.Name.ShouldBeNull();
+         _snapshotEventStartTime2.Name.ShouldBeNull();
       }
    }
 

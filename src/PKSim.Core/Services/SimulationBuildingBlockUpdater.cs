@@ -60,21 +60,15 @@ namespace PKSim.Core.Services
 
       bool BuildingBlockSupportsQuickUpdate(IPKSimBuildingBlock templateBuildingBlock);
 
-      /// <summary>
-      /// Adds the building block <paramref name="templateBuildingBlock"/> as used building block in the simulation
-      /// </summary>
-      void AddUsedBuildingBlockToSimulation(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock);
    }
 
    public class SimulationBuildingBlockUpdater : ISimulationBuildingBlockUpdater
    {
       private readonly IBuildingBlockToUsedBuildingBlockMapper _buildingBlockMapper;
-      private readonly IFormulationFromMappingRetriever _formulationFromMappingRetriever;
 
-      public SimulationBuildingBlockUpdater(IBuildingBlockToUsedBuildingBlockMapper buildingBlockMapper, IFormulationFromMappingRetriever formulationFromMappingRetriever)
+      public SimulationBuildingBlockUpdater(IBuildingBlockToUsedBuildingBlockMapper buildingBlockMapper)
       {
          _buildingBlockMapper = buildingBlockMapper;
-         _formulationFromMappingRetriever = formulationFromMappingRetriever;
       }
 
       public void UpdateUsedBuildingBlockInSimulationFromTemplate(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock, PKSimBuildingBlockType buildingBlockType)
@@ -113,10 +107,10 @@ namespace PKSim.Core.Services
             simulation.RemoveUsedBuildingBlock(usedBuildingBlock);
          }
 
-         allTemplates.Each(bb => AddUsedBuildingBlockToSimulation(simulation, bb));
+         allTemplates.Each(bb => addUsedBuildingBlockToSimulation(simulation, bb));
       }
 
-      public void AddUsedBuildingBlockToSimulation(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock)
+      private void addUsedBuildingBlockToSimulation(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock)
       {
          var previousUsedBuildingBlock = simulation.UsedBuildingBlockById(templateBuildingBlock.Id);
          var newUsedBuildingBlock = _buildingBlockMapper.MapFrom(templateBuildingBlock, previousUsedBuildingBlock);

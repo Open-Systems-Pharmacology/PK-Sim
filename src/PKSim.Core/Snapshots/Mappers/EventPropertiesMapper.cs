@@ -28,11 +28,14 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task<EventSelection> eventSelectionFrom(EventMapping eventMapping, PKSimProject project)
       {
          var eventBuildingBlock = project.BuildingBlockById(eventMapping.TemplateEventId);
-         return new EventSelection
+         var eventSelection= new EventSelection
          {
             Name = eventBuildingBlock.Name,
             StartTime = await _parameterMapper.MapToSnapshot(eventMapping.StartTime)
          };
+         //reset name as name is clear from context already
+         eventSelection.StartTime.Name = null;
+         return eventSelection;
       }
 
       public override async Task<EventProperties> MapToModel(EventSelections snapshot, PKSimProject project)
