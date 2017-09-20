@@ -1,32 +1,28 @@
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
    public interface IOutputIntervalFactory
    {
-      OutputInterval CreateDefaultFor(OutputSchema outputSchema);
+      OutputInterval CreateDefault();
       OutputInterval Create(double startTimeInMinute, double endTimeInMinute, double resolutionInPtsPerHour);
    }
 
    public class OutputIntervalFactory : IOutputIntervalFactory
    {
       private readonly OSPSuite.Core.Domain.IOutputIntervalFactory _outputIntervalFactory;
-      private readonly IContainerTask _containerTask;
 
-      public OutputIntervalFactory(OSPSuite.Core.Domain.IOutputIntervalFactory outputIntervalFactory, IContainerTask containerTask)
+      public OutputIntervalFactory(OSPSuite.Core.Domain.IOutputIntervalFactory outputIntervalFactory)
       {
          _outputIntervalFactory = outputIntervalFactory;
-         _containerTask = containerTask;
       }
 
-      public OutputInterval CreateDefaultFor(OutputSchema outputSchema)
+      public OutputInterval CreateDefault()
       {
-         var defaultInterval = updated(_outputIntervalFactory.CreateDefault());
-         defaultInterval.Name = _containerTask.CreateUniqueName(outputSchema, defaultInterval.Name);
-         return defaultInterval;
+         var defaultInterval = _outputIntervalFactory.CreateDefault();
+         return updated(defaultInterval);
       }
 
       public OutputInterval Create(double startTimeInMinute, double endTimeInMinute, double resolutionInPtsPerHour)

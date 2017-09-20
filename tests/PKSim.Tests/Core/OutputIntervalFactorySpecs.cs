@@ -19,8 +19,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          _outputIntervalFactory = A.Fake<OSPSuite.Core.Domain.IOutputIntervalFactory>();
-         _containerTask = A.Fake<IContainerTask>();
-         sut = new OutputIntervalFactory(_outputIntervalFactory, _containerTask);
+         sut = new OutputIntervalFactory(_outputIntervalFactory);
       }
    }
 
@@ -33,14 +32,11 @@ namespace PKSim.Core
       private OutputInterval _defaultInterval;
       private IDimension _time;
       private IDimension _resolution;
-      private string _newName;
-      private OutputSchema _outputSchema;
 
       protected override void Context()
       {
          base.Context();
          _defaultInterval = new OutputInterval();
-         _outputSchema = new OutputSchema();
 
          A.CallTo(() => _outputIntervalFactory.CreateDefault()).Returns(_defaultInterval);
          _time = A.Fake<IDimension>();
@@ -54,14 +50,11 @@ namespace PKSim.Core
          _defaultInterval.Add(_startTimeParameter);
          _defaultInterval.Add(_endTimeParameter);
          _defaultInterval.Add(_numberOfTimePointParameter);
-
-         _newName = "Tralala";
-         A.CallTo(() => _containerTask.CreateUniqueName(_outputSchema, PKSimConstants.UI.SimulationInterval, false)).Returns(_newName);
       }
 
       protected override void Because()
       {
-         _simulationInterval = sut.CreateDefaultFor(_outputSchema);
+         _simulationInterval = sut.CreateDefault();
       }
 
       [Observation]
@@ -73,9 +66,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_set_the_name_of_the_interval_to_the_default_interval_name()
+      public void should_use_the_default_name()
       {
-         _simulationInterval.Name.ShouldBeEqualTo(_newName);
+         _simulationInterval.Name.ShouldBeEqualTo(PKSimConstants.UI.SimulationInterval);
       }
    }
 }

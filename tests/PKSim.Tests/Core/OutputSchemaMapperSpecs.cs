@@ -3,6 +3,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using IOutputSchemaFactory = PKSim.Core.Model.IOutputSchemaFactory;
@@ -17,12 +18,14 @@ namespace PKSim.Core
       protected Snapshots.OutputInterval _snapshotInterval;
       protected Snapshots.OutputSchema _snapshot;
       protected IOutputSchemaFactory _outputSchemaFactory;
+      protected IContainerTask _containerTask;
 
       protected override Task Context()
       {
          _outputIntervalMapper = A.Fake<OutputIntervalMapper>();
          _outputSchemaFactory= A.Fake<IOutputSchemaFactory>();
-         sut = new OutputSchemaMapper(_outputIntervalMapper, _outputSchemaFactory);
+         _containerTask= A.Fake<IContainerTask>();
+         sut = new OutputSchemaMapper(_outputIntervalMapper, _outputSchemaFactory,_containerTask);
 
          _outputSchema = new OutputSchema();
          _outputInterval = new OutputInterval().WithName("Interval");
@@ -51,6 +54,7 @@ namespace PKSim.Core
    {
       private OutputSchema _newOutputSchema;
       private OutputInterval _newInterval;
+      private string _newName = "UNIQUE_NAME";
 
       protected override async Task Context()
       {
@@ -59,8 +63,8 @@ namespace PKSim.Core
          _newInterval = new OutputInterval().WithName("Interval");
          A.CallTo(() => _outputSchemaFactory.CreateEmpty()).Returns(outputSchema);
          A.CallTo(() => _outputIntervalMapper.MapToModel(_snapshotInterval)).ReturnsAsync(_newInterval);
-
          _snapshot = await sut.MapToSnapshot(_outputSchema);
+         A.CallTo(() => _containerTask.CreateUniqueName(outputSchema, _newInterval.Name, false)).Returns(_newName);
       }
 
       protected override async Task Because()
@@ -72,6 +76,12 @@ namespace PKSim.Core
       public void should_contain_the_expected_intervals()
       {
          _newOutputSchema.Intervals.ShouldOnlyContain(_newInterval);
+      }
+
+      [Observation]
+      public void should_have_renamed_the_intervals_to_be_unique()
+      {
+         _newInterval.Name.ShouldBeEqualTo(_newName);
       }
    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using SnapshotOutputSchema = PKSim.Core.Snapshots.OutputSchema;
@@ -11,11 +12,13 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly OutputIntervalMapper _outputIntervalMapper;
       private readonly IOutputSchemaFactory _outputSchemaFactory;
+      private readonly IContainerTask _containerTask;
 
-      public OutputSchemaMapper(OutputIntervalMapper outputIntervalMapper, IOutputSchemaFactory outputSchemaFactory)
+      public OutputSchemaMapper(OutputIntervalMapper outputIntervalMapper, IOutputSchemaFactory outputSchemaFactory, IContainerTask _containerTask)
       {
          _outputIntervalMapper = outputIntervalMapper;
          _outputSchemaFactory = outputSchemaFactory;
+         this._containerTask = _containerTask;
       }
 
       public override async Task<SnapshotOutputSchema> MapToSnapshot(ModelOutputSchema outputSchema)
@@ -35,9 +38,13 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ModelOutputSchema> MapToModel(SnapshotOutputSchema snapshot)
       {
          var outputSchema = _outputSchemaFactory.CreateEmpty();
-         var tasks = snapshot.Select(_outputIntervalMapper.MapToModel);
+         var tasks = snapshot.Select(x=>_outputIntervalMapper.MapToModel(x));
          var intervals = await Task.WhenAll(tasks);
-         intervals.Each(outputSchema.AddInterval);
+         intervals.Each(interval =>
+         {
+            interval.Name = _containerTask.CreateUniqueName(outputSchema, interval.Name);
+            outputSchema.AddInterval(interval);
+         });
          return outputSchema;
       }
    }

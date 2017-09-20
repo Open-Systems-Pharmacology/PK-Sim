@@ -60,24 +60,21 @@ namespace PKSim.Core
 
    public class When_mapping_output_interval_snapshot_to_output_interval : concern_for_OutputIntervalMapper
    {
-      private OutputSchema _outputSchema;
-      private OutputInterval _newInterval;
       private IParameter _intervalParameter;
 
       protected override async Task Context()
       {
          await base.Context();
-         _outputSchema = new OutputSchema();
          _snapshot = await sut.MapToSnapshot(_outputInterval);
          _intervalParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P1");
          var interval = new OutputInterval {_intervalParameter};
 
-         A.CallTo(() => _outputIntervalFactory.CreateDefaultFor(_outputSchema)).Returns(interval);
+         A.CallTo(() => _outputIntervalFactory.CreateDefault()).Returns(interval);
       }
 
       protected override async Task Because()
       {
-         _newInterval = await sut.MapToModel(_snapshot, _outputSchema);
+         await sut.MapToModel(_snapshot);
       }
 
       [Observation]

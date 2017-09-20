@@ -14,6 +14,7 @@ using PKSim.Extensions;
 using AdvancedParameter = PKSim.Core.Snapshots.AdvancedParameter;
 using Compound = PKSim.Core.Model.Compound;
 using CompoundProperties = PKSim.Core.Model.CompoundProperties;
+using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Individual = PKSim.Core.Model.Individual;
 using OutputSchema = OSPSuite.Core.Domain.OutputSchema;
 using OutputSelections = PKSim.Core.Snapshots.OutputSelections;
@@ -53,6 +54,7 @@ namespace PKSim.Core
       protected PopulationSimulation _populationSimulation;
       protected OSPSuite.Core.Domain.Model _model;
       protected AdvancedParameterCollection _avancedParameterCollection;
+      protected DataRepository _observedData;
 
       protected override Task Context()
       {
@@ -102,11 +104,12 @@ namespace PKSim.Core
          _compound = new Compound {Name = "COMP"};
          _event = new PKSimEvent {Name = "Event"};
          _population = new RandomPopulation() {Name = "POP"};
+         _observedData = new DataRepository("OBS_ID").WithName("OBS");
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(_compound);
          _project.AddBuildingBlock(_event);
          _project.AddBuildingBlock(_population);
-
+         _project.AddObservedData(_observedData);
          _compoundProperties = new CompoundProperties();
          _snaphotCompoundProperties = new Snapshots.CompoundProperties {Name = _compound.Name};
          A.CallTo(() => _compoundPropertiesMapper.MapToSnapshot(_compoundProperties, _project)).ReturnsAsync(_snaphotCompoundProperties);
@@ -126,7 +129,7 @@ namespace PKSim.Core
          {
             BuildingBlock = _population
          });
-
+         _individualSimulation.AddUsedObservedData(_observedData);
 
          A.CallTo(() => _eventPropertiesMapper.MapToSnapshot(_individualSimulation.EventProperties, _project)).ReturnsAsync(_eventSelections);
 
@@ -173,6 +176,12 @@ namespace PKSim.Core
       public void should_not_save_any_advanced_parameters()
       {
          _snapshot.AdvancedParameters.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_save_used_observed_data()
+      {
+         _snapshot.ObservedData.ShouldContain(_observedData.Name);
       }
    }
 
@@ -279,6 +288,12 @@ namespace PKSim.Core
       public void should_have_updated_the_output_schema()
       {
          _simulation.OutputSchema.ShouldBeEqualTo(_outputSchema);
+      }
+
+      [Observation]
+      public void should_use_observed_data()
+      {
+         _simulation.UsesObservedData(_observedData).ShouldBeTrue();
       }
    }
 

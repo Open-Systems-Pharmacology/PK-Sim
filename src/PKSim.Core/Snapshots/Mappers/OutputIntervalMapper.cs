@@ -6,7 +6,7 @@ using ModelOutputInterval = OSPSuite.Core.Domain.OutputInterval;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class OutputIntervalMapper : ParameterContainerSnapshotMapperBase<ModelOutputInterval, SnapshotOutputInterval, OSPSuite.Core.Domain.OutputSchema>
+   public class OutputIntervalMapper : ParameterContainerSnapshotMapperBase<ModelOutputInterval, SnapshotOutputInterval>
    {
       private readonly IOutputIntervalFactory _outputIntervalFactory;
 
@@ -24,9 +24,9 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override async Task<ModelOutputInterval> MapToModel(SnapshotOutputInterval snapshot, OSPSuite.Core.Domain.OutputSchema outputSchema)
+      public override async Task<ModelOutputInterval> MapToModel(SnapshotOutputInterval snapshot)
       {
-         var outputInterval = _outputIntervalFactory.CreateDefaultFor(outputSchema);
+         var outputInterval = _outputIntervalFactory.CreateDefault();
          await UpdateParametersFromSnapshot(snapshot, outputInterval, Constants.OUTPUT_INTERVAL);
          return outputInterval;
       }

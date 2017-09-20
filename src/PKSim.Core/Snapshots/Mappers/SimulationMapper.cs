@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
@@ -95,6 +94,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private string[] usedObervedDataFrom(ModelSimulation simulation, PKSimProject project)
       {
+         if (!simulation.UsedObservedData.Any())
+            return null;
+
          return simulation.UsedObservedData
             .Select(project.ObservedDataBy)
             .Select(x => x.Name).ToArray();
@@ -117,11 +119,13 @@ namespace PKSim.Core.Snapshots.Mappers
          var simulation = await createSimulationFrom(snapshot, project);
 
          simulation.Solver = await _solverSettingsMapper.MapToModel(snapshot.Solver);
-         simulation.OutputSchema = await  _outputSchemaMapper.MapToModel(snapshot.OutputSchema);
+         simulation.OutputSchema = await _outputSchemaMapper.MapToModel(snapshot.OutputSchema);
          simulation.OutputSelections = await _outputSelectionsMapper.MapToModel(snapshot.OutputSelections, simulation);
 
          await updateParameters(simulation, snapshot.Parameters);
          await updateAdvancedParameters(simulation, snapshot.AdvancedParameters);
+
+         updateUsedObservedData(simulation, snapshot.ObservedData, project);
 
          return simulation;
       }
@@ -173,6 +177,15 @@ namespace PKSim.Core.Snapshots.Mappers
       private Task updateParameters(ModelSimulation simulation, LocalizedParameter[] snapshotParameters)
       {
          return _parameterMapper.MapLocalizedParameters(snapshotParameters, simulation.Model.Root);
+      }
+
+      private void updateUsedObservedData(ModelSimulation simulation, string[] snapshotObservedData, PKSimProject project)
+      {
+         snapshotObservedData?.Each(observedDataName=>
+         {
+            var observedData = project.AllObservedData.FindByName(observedDataName);
+            simulation.AddUsedObservedData(observedData);
+         });
       }
 
       protected override void MapSnapshotPropertiesToModel(SnapshotSimulation snapshot, ModelSimulation simulation)

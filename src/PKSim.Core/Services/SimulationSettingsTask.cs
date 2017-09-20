@@ -18,16 +18,19 @@ namespace PKSim.Core.Services
    {
       private readonly IExecutionContext _executionContext;
       private readonly IOutputIntervalFactory _outputIntervalFactory;
+      private readonly IContainerTask _containerTask;
 
-      public SimulationSettingsTask(IExecutionContext executionContext, IOutputIntervalFactory outputIntervalFactory)
+      public SimulationSettingsTask(IExecutionContext executionContext, IOutputIntervalFactory outputIntervalFactory, IContainerTask containerTask)
       {
          _executionContext = executionContext;
          _outputIntervalFactory = outputIntervalFactory;
+         _containerTask = containerTask;
       }
 
       public ICommand AddSimulationIntervalTo(OutputSchema outputSchema)
       {
-         var simulationInterval = _outputIntervalFactory.CreateDefaultFor(outputSchema);
+         var simulationInterval = _outputIntervalFactory.CreateDefault();
+         simulationInterval.Name = _containerTask.CreateUniqueName(outputSchema, simulationInterval.Name);
          return new AddSimulationIntervalToSimulationOutputCommand(simulationInterval, outputSchema, _executionContext).Run(_executionContext);
       }
 
