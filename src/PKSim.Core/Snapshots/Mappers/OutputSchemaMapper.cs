@@ -14,11 +14,11 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IOutputSchemaFactory _outputSchemaFactory;
       private readonly IContainerTask _containerTask;
 
-      public OutputSchemaMapper(OutputIntervalMapper outputIntervalMapper, IOutputSchemaFactory outputSchemaFactory, IContainerTask _containerTask)
+      public OutputSchemaMapper(OutputIntervalMapper outputIntervalMapper, IOutputSchemaFactory outputSchemaFactory, IContainerTask containerTask)
       {
          _outputIntervalMapper = outputIntervalMapper;
          _outputSchemaFactory = outputSchemaFactory;
-         this._containerTask = _containerTask;
+         _containerTask = containerTask;
       }
 
       public override async Task<SnapshotOutputSchema> MapToSnapshot(ModelOutputSchema outputSchema)

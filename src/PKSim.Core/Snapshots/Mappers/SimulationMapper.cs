@@ -144,7 +144,7 @@ namespace PKSim.Core.Snapshots.Mappers
          await mapCompoundProperties(snapshot.Compounds, project, simulation);
          simulation.EventProperties = await _eventPropertiesMapper.MapToModel(snapshot.Events, project);
 
-         //Once all used building blocks have been set, we need to ensure that they are also synchronized in the in the simulation
+         //Once all used building blocks have been set, we need to ensure that they are also synchronized in the  simulation
          updateUsedBuildingBlockInSimulation(simulation, project);
 
          _simulationModelCreator.CreateModelFor(simulation);
