@@ -1,16 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
 
 namespace PKSim.Core.Snapshots.Services
 {
    public interface ISnapshotSerializer
    {
-      void Serialize(object snapshot, string fileName);
-      object[] DeserializeAsArray(string fileName, Type snapshotType);
+      Task Serialize(object snapshot, string fileName);
+      Task<object[]> DeserializeAsArray(string fileName, Type snapshotType);
    }
 
    public class SnapshotSerializer : ISnapshotSerializer
@@ -23,15 +23,25 @@ namespace PKSim.Core.Snapshots.Services
          NullValueHandling = NullValueHandling.Ignore
       };
 
-      public void Serialize(object snapshot, string fileName)
+      public async Task Serialize(object snapshot, string fileName)
       {
-         File.WriteAllText(fileName, JsonConvert.SerializeObject(snapshot, Formatting.Indented, _settings));
+         var data = JsonConvert.SerializeObject(snapshot, Formatting.Indented, _settings);
+
+         using (var sw = new StreamWriter(fileName))
+         {
+            await sw.WriteAsync(data);
+         }
       }
 
-      public object[] DeserializeAsArray(string fileName, Type snapshotType)
+      public async Task<object[]> DeserializeAsArray(string fileName, Type snapshotType)
       {
-         var deserializedSnapshot = JsonConvert.DeserializeObject(File.ReadAllText(fileName), _settings);
+         string json;
+         using (var reader = new StreamReader(fileName))
+         {
+            json = await reader.ReadToEndAsync();
+         }
 
+         var deserializedSnapshot = JsonConvert.DeserializeObject(json, _settings);
          //TODO. We should validate that the json actually matches our type. If not, we could throw an explicit error
          //This should be done using  /jsonschema
          switch (deserializedSnapshot)

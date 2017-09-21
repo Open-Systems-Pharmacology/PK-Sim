@@ -4,6 +4,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
@@ -20,19 +21,20 @@ namespace PKSim.Core
       protected IAdvancedParameterFactory _advancedParameterFactory;
       protected Parameter _meanSnapshot;
       protected Parameter _deviationSnapshot;
+      protected IEntityPathResolver _entityPathResolver;
 
       protected override Task Context()
       {
-         _parameterMapper= A.Fake<ParameterMapper>();
+         _parameterMapper = A.Fake<ParameterMapper>();
          _advancedParameterFactory = A.Fake<IAdvancedParameterFactory>();
 
          _advancedParameter = new AdvancedParameter
          {
-            DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter(10,5),
+            DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter(10, 5),
             ParameterPath = "ParameterPath",
             Name = "ParameterName"
          };
-         sut = new AdvancedParameterMapper(_parameterMapper, _advancedParameterFactory);
+         sut = new AdvancedParameterMapper(_parameterMapper, _advancedParameterFactory, _entityPathResolver);
 
          _meanSnapshot = new Parameter
          {
@@ -63,7 +65,7 @@ namespace PKSim.Core
       public void should_return_a_snapshot_containing_the_expected_properties()
       {
          _snapshot.Name.ShouldBeEqualTo(_advancedParameter.ParameterPath);
-         _snapshot.DistributionType.ShouldBeEqualTo(_advancedParameter.DistributionType.Id); 
+         _snapshot.DistributionType.ShouldBeEqualTo(_advancedParameter.DistributionType.Id);
       }
    }
 
@@ -80,7 +82,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         TheAsync.Action(()=>sut.MapToModel(_snapshot, new PathCacheForSpecs<IParameter>())).ShouldThrowAnAsync<SnapshotOutdatedException>();
+         TheAsync.Action(() => sut.MapToModel(_snapshot, new PathCacheForSpecs<IParameter>())).ShouldThrowAnAsync<SnapshotOutdatedException>();
       }
    }
 
@@ -101,8 +103,7 @@ namespace PKSim.Core
       }
    }
 
-
-   public class When_mapping_an_advanced_parameter_snapshot_to_snapsho_for_a_well_defined_parameter: concern_for_AdvancedParameterMapper
+   public class When_mapping_an_advanced_parameter_snapshot_to_snapsho_for_a_well_defined_parameter : concern_for_AdvancedParameterMapper
    {
       private Snapshots.AdvancedParameter _snapshot;
       private AdvancedParameter _newAdvancedParameter;
@@ -115,10 +116,9 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_advancedParameter);
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(5);
-         _mappedAdvancedParameter =new AdvancedParameter();
+         _mappedAdvancedParameter = new AdvancedParameter();
          _mappedAdvancedParameter.DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter();
-         _pathCache = new PathCacheForSpecs<IParameter>();
-         _pathCache.Add(_advancedParameter.ParameterPath, _parameter);
+         _pathCache = new PathCacheForSpecs<IParameter> {{_advancedParameter.ParameterPath, _parameter}};
          A.CallTo(() => _advancedParameterFactory.Create(_parameter, DistributionTypes.ById(_snapshot.DistributionType))).Returns(_mappedAdvancedParameter);
       }
 
@@ -136,8 +136,47 @@ namespace PKSim.Core
       [Observation]
       public void should_map_distribution_parameters_from_snapshot()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_meanSnapshot,_newAdvancedParameter.DistributedParameter.MeanParameter)).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.MapToModel(_deviationSnapshot,_newAdvancedParameter.DistributedParameter.DeviationParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_meanSnapshot, _newAdvancedParameter.DistributedParameter.MeanParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_deviationSnapshot, _newAdvancedParameter.DistributedParameter.DeviationParameter)).MustHaveHappened();
       }
    }
-}	
+
+   public class When_mapping_all_advanced_parameters_snapshot_into_an_advanced_parameter_container : concern_for_AdvancedParameterMapper
+   {
+      private Snapshots.AdvancedParameter _snapshot;
+      private IAdvancedParameterContainer _advancedParameterContainer;
+      private IParameter _parameter;
+      private PathCache<IParameter> _pathCache;
+      private AdvancedParameter _mappedAdvancedParameter;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _advancedParameterContainer = A.Fake<IAdvancedParameterContainer>();
+         _snapshot = await sut.MapToSnapshot(_advancedParameter);
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(5);
+         _pathCache = new PathCacheForSpecs<IParameter> {{_advancedParameter.ParameterPath, _parameter}};
+
+         A.CallTo(() => _advancedParameterContainer.AllParameters(_entityPathResolver)).Returns(_pathCache);
+         _mappedAdvancedParameter = new AdvancedParameter {DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter()};
+         A.CallTo(() => _advancedParameterFactory.Create(_parameter, DistributionTypes.ById(_snapshot.DistributionType))).Returns(_mappedAdvancedParameter);
+      }
+
+      protected override async Task Because()
+      {
+         await sut.MapToModel(new[] {_snapshot}, _advancedParameterContainer);
+      }
+
+      [Observation]
+      public void should_remove_all_previously_defined_advanced_parameters()
+      {
+         A.CallTo(() => _advancedParameterContainer.RemoveAllAdvancedParameters()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_add_new_advanced_parameters()
+      {
+         A.CallTo(() => _advancedParameterContainer.AddAdvancedParameter(_mappedAdvancedParameter, true)).MustHaveHappened();
+      }
+   }
+}

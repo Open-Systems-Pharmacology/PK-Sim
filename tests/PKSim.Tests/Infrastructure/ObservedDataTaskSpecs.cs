@@ -67,7 +67,7 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          _mappedObservedData = new DataRepository();
-         A.CallTo(() => _snapshotTask.LoadFromSnapshot<DataRepository>()).ReturnsAsync(new List<DataRepository> {_mappedObservedData});
+         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<DataRepository>()).ReturnsAsync(new[] {_mappedObservedData});
       }
 
       protected override async void Because()
@@ -79,7 +79,7 @@ namespace PKSim.Infrastructure
       public void the_mapped_data_repository_should_be_added_to_the_project()
       {
          _project.AllObservedData.ShouldContain(_mappedObservedData);
-      }   
+      }
    }
 
    public class When_removing_some_observed_data_from_the_project : concern_for_ObservedDataTask

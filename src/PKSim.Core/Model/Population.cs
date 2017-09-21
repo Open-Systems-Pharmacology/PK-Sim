@@ -183,30 +183,30 @@ namespace PKSim.Core.Model
          Add(advancedParameters);
       }
 
-      protected virtual AdvancedParameterCollection AdvancedParameterCollection
+      private AdvancedParameterCollection advancedParameterCollection
       {
          get { return this.GetSingleChild<AdvancedParameterCollection>(x => true); }
       }
 
-      public virtual IEnumerable<AdvancedParameter> AdvancedParameters => AdvancedParameterCollection.AdvancedParameters;
+      public virtual IEnumerable<AdvancedParameter> AdvancedParameters => advancedParameterCollection.AdvancedParameters;
 
-      public virtual void RemoveAllAdvancedParameters() => AdvancedParameterCollection.Clear();
+      public virtual void RemoveAllAdvancedParameters() => advancedParameterCollection.Clear();
 
       public virtual AdvancedParameter AdvancedParameterFor(IEntityPathResolver entityPathResolver, IParameter parameter)
       {
-         return AdvancedParameterCollection.AdvancedParameterFor(entityPathResolver, parameter);
+         return advancedParameterCollection.AdvancedParameterFor(entityPathResolver, parameter);
       }
 
       public virtual void AddAdvancedParameter(AdvancedParameter advancedParameter, bool generateRandomValues = true)
       {
-         AdvancedParameterCollection.AddAdvancedParameter(advancedParameter);
+         advancedParameterCollection.AddAdvancedParameter(advancedParameter);
          if (generateRandomValues)
             GenerateRandomValuesFor(advancedParameter);
       }
 
       public virtual void RemoveAdvancedParameter(AdvancedParameter advancedParameter)
       {
-         AdvancedParameterCollection.RemoveAdvancedParameter(advancedParameter);
+         advancedParameterCollection.RemoveAdvancedParameter(advancedParameter);
          IndividualPropertiesCache.Remove(advancedParameter.ParameterPath);
       }
 

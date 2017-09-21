@@ -9,6 +9,7 @@ using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using Event = PKSim.Core.Snapshots.Event;
 using Project = PKSim.Core.Snapshots.Project;
+using Simulation = PKSim.Core.Snapshots.Simulation;
 
 namespace PKSim.Core
 {
@@ -33,14 +34,15 @@ namespace PKSim.Core
       protected Snapshots.Population _populationSnapshot;
       protected DataRepository _observedData;
       protected Snapshots.DataRepository _observedDataSnapshot;
-      private ObservedDataMapper _observedDataMapper;
+      protected SimulationMapper _simulationMapper;
+      protected Simulation _simulationSnapshot;
 
       protected override Task Context()
       {
          _snapshotMapper = A.Fake<ISnapshotMapper>();
-         _observedDataMapper = A.Fake<ObservedDataMapper>();
          _executionContext = A.Fake<IExecutionContext>();
-         sut = new ProjectMapper(_executionContext);
+         _simulationMapper= A.Fake<SimulationMapper>();
+         sut = new ProjectMapper(_executionContext, _simulationMapper);
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
          _individual = new Individual().WithName("IND");
          _compound = new Compound().WithName("COMP");
@@ -60,7 +62,7 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_protocol);
          _project.AddBuildingBlock(_population);
          _project.AddObservedData(_observedData);
-         //         _project.AddBuildingBlock(_simulation);
+         _project.AddBuildingBlock(_simulation);
 
          _compoundSnapshot = new Snapshots.Compound();
          _individualSnapshot = new Snapshots.Individual();
@@ -76,8 +78,9 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_formulation)).ReturnsAsync(_formulationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).ReturnsAsync(_protocolSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).ReturnsAsync(_populationSnapshot);
-         A.CallTo(() => _executionContext.Resolve<ObservedDataMapper>()).Returns(_observedDataMapper);
-         A.CallTo(() => _observedDataMapper.MapToSnapshot(_observedData)).ReturnsAsync(_observedDataSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).ReturnsAsync(_observedDataSnapshot);
+
+         A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation,_project)).ReturnsAsync(_simulationSnapshot);
 
          return Task.FromResult(true);
       }
@@ -99,7 +102,18 @@ namespace PKSim.Core
          _snapshot.Formulations.ShouldContain(_formulationSnapshot);
          _snapshot.Events.ShouldContain(_eventSnapshot);
          _snapshot.Populations.ShouldContain(_populationSnapshot);
+      }
+
+      [Observation]
+      public void should_retrieve_the_snapshot_for_all_used_observed_data()
+      {
          _snapshot.ObservedData.ShouldContain(_observedDataSnapshot);
+      }
+
+      [Observation]
+      public void should_retrieve_the_snapshot_for_all_simulations_used_in_the_project()
+      {
+         _snapshot.Simulations.ShouldContain(_simulationSnapshot);
       }
    }
 
@@ -118,6 +132,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToModel(_eventSnapshot)).ReturnsAsync(_event);
          A.CallTo(() => _snapshotMapper.MapToModel(_populationSnapshot)).ReturnsAsync(_population);
          A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).ReturnsAsync(_observedData);
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<PKSimProject>._)).ReturnsAsync(_simulation);
       }
 
       protected override async Task Because()
@@ -134,6 +149,19 @@ namespace PKSim.Core
          _newProject.All<Formulation>().ShouldContain(_formulation);
          _newProject.All<Protocol>().ShouldContain(_protocol);
          _newProject.All<Population>().ShouldContain(_population);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_observed_data()
+      {
+         _newProject.AllObservedData.ShouldContain(_observedData);
+      }
+
+
+      [Observation]
+      public void should_have_mapped_the_simulations()
+      {
+         _newProject.All<Model.Simulation>().ShouldContain(_simulation);
       }
    }
 }

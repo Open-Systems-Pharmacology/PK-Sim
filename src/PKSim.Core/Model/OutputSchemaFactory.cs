@@ -1,14 +1,13 @@
-using PKSim.Assets;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
+using PKSim.Assets;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Model
 {
    public interface IOutputSchemaFactory
    {
-      OutputSchema Create();
+      OutputSchema CreateEmpty();
       OutputSchema CreateFor(Simulation simulation);
    }
 
@@ -17,20 +16,17 @@ namespace PKSim.Core.Model
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IOutputIntervalFactory _outputIntervalFactory;
       private readonly IDimensionRepository _dimensionRepository;
-      private readonly IDisplayUnitRetriever _displayUnitRetriever;
 
-      public OutputSchemaFactory(IObjectBaseFactory objectBaseFactory, IOutputIntervalFactory outputIntervalFactory,
-         IDimensionRepository dimensionRepository, IDisplayUnitRetriever displayUnitRetriever)
+      public OutputSchemaFactory(IObjectBaseFactory objectBaseFactory, IOutputIntervalFactory outputIntervalFactory, IDimensionRepository dimensionRepository)
       {
          _objectBaseFactory = objectBaseFactory;
          _outputIntervalFactory = outputIntervalFactory;
          _dimensionRepository = dimensionRepository;
-         _displayUnitRetriever = displayUnitRetriever;
       }
 
-      public OutputSchema Create()
+      public OutputSchema CreateEmpty()
       {
-         return create(CoreConstants.DEFAULT_PROTOCOL_END_TIME_IN_MIN, _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.Time));
+         return _objectBaseFactory.Create<OutputSchema>();
       }
 
       public OutputSchema CreateFor(Simulation simulation)
@@ -50,7 +46,7 @@ namespace PKSim.Core.Model
 
       private OutputSchema create(double endTime, Unit timeDisplaUnit)
       {
-         var outputSchema = _objectBaseFactory.Create<OutputSchema>();
+         var outputSchema = CreateEmpty();
 
          var simIntervalHighResolution = _outputIntervalFactory.Create(0, CoreConstants.HIGH_RESOLUTION_END_TIME_IN_MIN, CoreConstants.HIGH_RESOLUTION_IN_PTS_PER_MIN)
             .WithName(PKSimConstants.UI.SimulationIntervalHighResolution);
@@ -67,10 +63,8 @@ namespace PKSim.Core.Model
          return outputSchema;
       }
 
-      private Protocol longestProtocolIn(Simulation simulation)
-      {
-         return simulation.AllBuildingBlocks<Protocol>().LongestProtocol();
-      }
+   
+      private Protocol longestProtocolIn(Simulation simulation) => simulation.AllBuildingBlocks<Protocol>().LongestProtocol();
 
       private bool protocolNeedsOffsetForEndTime(Protocol protocol)
       {

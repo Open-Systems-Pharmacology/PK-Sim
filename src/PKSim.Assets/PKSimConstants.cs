@@ -842,7 +842,18 @@ namespace PKSim.Assets
             return $"{modelType} should not be created from snapshot directly. Instead use the overload with {contextType}.";
          }
 
+         public static string MapToSnapshotNotSupportedWithoutContext(string snapshotType, string contextType)
+         {
+            return $"{snapshotType} should not be created from model directly. Instead use the overload with {contextType}.";
+         }
+
          public const string PopulationSnapshotOnlySupportedForRandomPopulation = "Population snapshot can only be created for randomized population.";
+
+         public const string SimulationSubjectUndefinedInSnapshot = "Simulation subject (Individual or Population) is not defined in snapshot.";
+
+         public static string SimulationTemplateBuildingBlocktNotFoundInProject(string buildingBlockName, string buildingBlockType) => $"{buildingBlockType} '{buildingBlockName} not found in project.";
+
+         public static string ProcessNotFoundInCompound(string processName, string compound) => $"Process '{processName}' was not found in compound '{compound}'";
       }
    
       public static class Information

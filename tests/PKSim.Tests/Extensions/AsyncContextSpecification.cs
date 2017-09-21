@@ -91,6 +91,10 @@ namespace OSPSuite.BDDHelper
             workToPerform().Wait();
             true.ShouldBeFalse("Exception not thrown as expected");
          }
+         catch (TException)
+         {
+            
+         }
          catch (AggregateException ex)
          {
             ex.InnerExceptions.Find(e => e.IsAnImplementationOf<TException>()).ShouldNotBeEqualTo(null, $"Exception of type {typeof(TException)} not found");

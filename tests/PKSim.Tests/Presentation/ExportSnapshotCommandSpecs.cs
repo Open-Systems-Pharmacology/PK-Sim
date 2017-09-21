@@ -6,7 +6,7 @@ using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_ExportSnapshotCommand : ContextSpecification<ExportSnapshotCommand<IParameter>>
+   public abstract class concern_for_ExportSnapshotCommand : ContextSpecification<ExportSnapshotUICommand<IParameter>>
    {
       protected ISnapshotTask _snapshotTask;
       protected IParameter _parameter;
@@ -15,7 +15,7 @@ namespace PKSim.Presentation
       {
          _parameter= A.Fake<IParameter>();
          _snapshotTask= A.Fake<ISnapshotTask>();
-         sut = new ExportSnapshotCommand<IParameter>(_snapshotTask) {Subject = _parameter};
+         sut = new ExportSnapshotUICommand<IParameter>(_snapshotTask) {Subject = _parameter};
       }
    }
 
@@ -29,7 +29,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_export_the_snapshot_for_the_given_subject()
       {
-         A.CallTo(() => _snapshotTask.ExportSnapshot(_parameter)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_parameter)).MustHaveHappened();
       }
    }
 }	

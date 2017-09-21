@@ -243,6 +243,8 @@ namespace PKSim.Core.Model
          return advancedParameterCollection.AdvancedParameterFor(entityPathResolver, parameter);
       }
 
+      public virtual void RemoveAllAdvancedParameters() => advancedParameterCollection.Clear();
+
       public virtual IEnumerable<AdvancedParameter> AdvancedParameters => advancedParameterCollection.AdvancedParameters;
 
       public virtual IReadOnlyList<Gender> AllGenders => Population.AllGenders;

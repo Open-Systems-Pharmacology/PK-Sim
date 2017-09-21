@@ -251,6 +251,7 @@
     <Compile Include="Core\DataInfoMapperSpecs.cs" />
     <Compile Include="Core\DistributedTableFormulaMapperSpecs.cs" />
     <Compile Include="Core\EventMapperSpecs.cs" />
+    <Compile Include="Core\EventPropertiesMapperSpec.cs" />
     <Compile Include="Core\ExtendedPropertiesMapperSpecs.cs" />
     <Compile Include="Core\ExtendedPropertyMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />
@@ -280,7 +281,6 @@
     <Compile Include="Core\ProtocolMapperSpecs.cs" />
     <Compile Include="Core\SimulationConfigurationValidatorSpecs.cs" />
     <Compile Include="Core\SimulationMapperSpecs.cs" />
-    <Compile Include="Core\SimulationPropertiesMapperSpecs.cs" />
     <Compile Include="Core\SnapshotMapperSpecs.cs" />
     <Compile Include="Core\SnapshotTaskSpecs.cs" />
     <Compile Include="Core\SolverSettingsMapperSpecs.cs" />
@@ -713,7 +713,7 @@
     <Compile Include="Core\SimpleProtocolToSchemaMapperSpecs.cs" />
     <Compile Include="Core\SimulationBuildingBlockUpdaterSpecs.cs" />
     <Compile Include="Core\SimulationFactorySpecs.cs" />
-    <Compile Include="Core\SimulationIntervalFactorySpecs.cs" />
+    <Compile Include="Core\OutputIntervalFactorySpecs.cs" />
     <Compile Include="Core\SimulationRunnerSpecs.cs" />
     <Compile Include="Core\SimulationSettingsTaskSpecs.cs" />
     <Compile Include="Core\SimulationToModelCoreSimulationMapperSpecs.cs" />

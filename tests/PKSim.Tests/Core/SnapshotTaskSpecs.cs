@@ -11,6 +11,7 @@ using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
+using PKSim.Extensions;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
@@ -37,7 +38,7 @@ namespace PKSim.Core
 
          _parameter = A.Fake<IParameter>();
          _parameter.Name = "Param";
-         A.CallTo(() => _objectTypeResolver.TypeFor(_parameter)).Returns(_parameterType);
+         A.CallTo(() => _objectTypeResolver.TypeFor((IWithName)_parameter)).Returns(_parameterType);
 
          _parameterSnapshot = new Parameter();
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_parameter)).Returns(_parameterSnapshot);
@@ -55,7 +56,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.ExportSnapshot(_parameter);
+         await sut.ExportModelToSnapshot(_parameter);
       }
 
       [Observation]
@@ -86,7 +87,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.ExportSnapshot(_parameter);
+         await sut.ExportModelToSnapshot(_parameter);
       }
 
       [Observation]
@@ -136,14 +137,14 @@ namespace PKSim.Core
 
          A.CallTo(() => _snapshotMapper.SnapshotTypeFor<Formulation>()).Returns(_snapshotType);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
-         A.CallTo(() => _snapshotSerializer.DeserializeAsArray(_fileName, _snapshotType)).Returns(new[] {_snapshot1, _snapshot2});
+         A.CallTo(() => _snapshotSerializer.DeserializeAsArray(_fileName, _snapshotType)).ReturnsAsync(new[] {_snapshot1, _snapshot2});
          A.CallTo(() => _snapshotMapper.MapToModel(_snapshot1)).Returns(_formulation1);
          A.CallTo(() => _snapshotMapper.MapToModel(_snapshot2)).Returns(_formulation2);
       }
 
       protected override async Task Because()
       {
-         _formulations = (await sut.LoadFromSnapshot<Formulation>()).ToList();
+         _formulations = (await sut.LoadModelFromSnapshot<Formulation>()).ToList();
       }
 
       [Observation]
@@ -171,7 +172,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _formulations = (await sut.LoadFromSnapshot<Formulation>()).ToList();
+         _formulations = (await sut.LoadModelFromSnapshot<Formulation>()).ToList();
       }
 
       [Observation]

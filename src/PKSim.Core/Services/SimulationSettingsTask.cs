@@ -10,7 +10,7 @@ namespace PKSim.Core.Services
 {
    public interface ISimulationSettingsTask
    {
-      ICommand AddSimulationIntervalTo(OutputSchema simulationOutput);
+      ICommand AddSimulationIntervalTo(OutputSchema outputSchema);
       ICommand RemoveSimulationIntervalFrom(OutputInterval simulationInterval, OutputSchema simulationOutput);
    }
 
@@ -27,11 +27,11 @@ namespace PKSim.Core.Services
          _containerTask = containerTask;
       }
 
-      public ICommand AddSimulationIntervalTo(OutputSchema simulationOutput)
+      public ICommand AddSimulationIntervalTo(OutputSchema outputSchema)
       {
          var simulationInterval = _outputIntervalFactory.CreateDefault();
-         simulationInterval.Name = _containerTask.CreateUniqueName(simulationOutput, simulationInterval.Name);
-         return new AddSimulationIntervalToSimulationOutputCommand(simulationInterval, simulationOutput, _executionContext).Run(_executionContext);
+         simulationInterval.Name = _containerTask.CreateUniqueName(outputSchema, simulationInterval.Name);
+         return new AddSimulationIntervalToSimulationOutputCommand(simulationInterval, outputSchema, _executionContext).Run(_executionContext);
       }
 
       public ICommand RemoveSimulationIntervalFrom(OutputInterval simulationInterval, OutputSchema simulationOutput)

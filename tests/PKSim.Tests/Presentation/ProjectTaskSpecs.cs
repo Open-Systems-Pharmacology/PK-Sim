@@ -810,7 +810,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_export_the_current_project_to_a_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportSnapshot(_project)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustHaveHappened();
       }
    }
 
@@ -832,7 +832,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_export_the_project_to_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportSnapshot(_projectToExport)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_projectToExport)).MustHaveHappened();
       }
    }
 
@@ -843,7 +843,7 @@ namespace PKSim.Presentation
          base.Context();
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.No);
-         A.CallTo(() => _snapshotTask.LoadFromSnapshot<PKSimProject>()).Returns(Enumerable.Empty<PKSimProject>());
+         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<PKSimProject>()).Returns(Enumerable.Empty<PKSimProject>());
       }
 
       protected override void Because()
@@ -882,7 +882,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_load_the_project_from_snapshot()
       {
-         A.CallTo(() => _snapshotTask.LoadFromSnapshot<PKSimProject>()).MustNotHaveHappened();
+         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<PKSimProject>()).MustNotHaveHappened();
       }
 
       [Observation]
@@ -905,7 +905,7 @@ namespace PKSim.Presentation
          _filename = @"C:\test\SuperProject.json";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_filename);
 
-         A.CallTo(() => _snapshotTask.LoadFromSnapshot<PKSimProject>(_filename)).Returns(new[] {_newProject});
+         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<PKSimProject>(_filename)).Returns(new[] {_newProject});
          A.CallTo(() => _workspace.LoadProject(A<Action>._)).Invokes(x => _loadAction = x.GetArgument<Action>(0));
       }
 

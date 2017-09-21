@@ -16,17 +16,14 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly AdvancedParameterMapper _advancedParameterMapper;
       private readonly RandomPopulationSettingsMapper _randomPopulationSettingsMapper;
       private readonly IRandomPopulationFactory _randomPopulationFactory;
-      private readonly IParameterTask _parameterTask;
 
       public PopulationMapper(AdvancedParameterMapper advancedParameterMapper,
          RandomPopulationSettingsMapper randomPopulationSettingsMapper,
-         IRandomPopulationFactory randomPopulationFactory,
-         IParameterTask parameterTask)
+         IRandomPopulationFactory randomPopulationFactory)
       {
          _advancedParameterMapper = advancedParameterMapper;
          _randomPopulationSettingsMapper = randomPopulationSettingsMapper;
          _randomPopulationFactory = randomPopulationFactory;
-         _parameterTask = parameterTask;
       }
 
       public override async Task<SnapshotPopulation> MapToSnapshot(ModelPopulation population)
@@ -60,21 +57,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var population = await _randomPopulationFactory.CreateFor(randomPopulationSettings, CancellationToken.None, snapshot.Seed);
          MapSnapshotPropertiesToModel(snapshot, population);
-         await updateAdvancedParameters(population, snapshot.AdvancedParameters);
+         await _advancedParameterMapper.MapToModel(snapshot.AdvancedParameters, population);
          return population;
-      }
-
-      private async Task updateAdvancedParameters(RandomPopulation population, AdvancedParameter[] snapshotAdvancedParameters)
-      {
-         if (snapshotAdvancedParameters == null)
-            return;
-
-         population.RemoveAllAdvancedParameters();
-         var parameterCache = _parameterTask.PathCacheFor(population.AllIndividualParameters());
-         var tasks = snapshotAdvancedParameters.Select(x => _advancedParameterMapper.MapToModel(x, parameterCache));
-         var advancedParameters = await Task.WhenAll(tasks);
-
-         advancedParameters.Each(x => population.AddAdvancedParameter(x, generateRandomValues: true));
       }
    }
 }

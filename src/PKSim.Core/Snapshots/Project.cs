@@ -9,5 +9,6 @@
       public Protocol[] Protocols { get; set; }
       public Event[] Events { get; set; }
       public DataRepository[] ObservedData { get; set; }
+      public Simulation[] Simulations { get; set; }
    }
 }

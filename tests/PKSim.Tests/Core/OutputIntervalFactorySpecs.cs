@@ -1,19 +1,20 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Assets;
 using PKSim.Core.Model;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
 using IOutputIntervalFactory = PKSim.Core.Model.IOutputIntervalFactory;
 using OutputIntervalFactory = PKSim.Core.Model.OutputIntervalFactory;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_SimulationIntervalFactory : ContextSpecification<IOutputIntervalFactory>
+   public abstract class concern_for_OutputIntervalFactory : ContextSpecification<IOutputIntervalFactory>
    {
       protected OSPSuite.Core.Domain.IOutputIntervalFactory _outputIntervalFactory;
+      protected IContainerTask _containerTask;
 
       protected override void Context()
       {
@@ -22,7 +23,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_creating_a_default_simulation_interval : concern_for_SimulationIntervalFactory
+   public class When_creating_a_default_simulation_interval : concern_for_OutputIntervalFactory
    {
       private OutputInterval _simulationInterval;
       private IParameter _startTimeParameter;
@@ -65,7 +66,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_set_the_name_of_the_interval_to_the_default_interval_name()
+      public void should_use_the_default_name()
       {
          _simulationInterval.Name.ShouldBeEqualTo(PKSimConstants.UI.SimulationInterval);
       }

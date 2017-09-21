@@ -873,6 +873,7 @@
     <Compile Include="Snapshots\Mappers\DataInfoMapper.cs" />
     <Compile Include="Snapshots\Mappers\DistributedTableFormulaMapper.cs" />
     <Compile Include="Snapshots\Mappers\EventMapper.cs" />
+    <Compile Include="Snapshots\Mappers\EventPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\ExtendedPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\ExtendedPropertyMapper.cs" />
     <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />
@@ -895,7 +896,6 @@
     <Compile Include="Snapshots\Mappers\SchemaItemMapper.cs" />
     <Compile Include="Snapshots\Mappers\SchemaMapper.cs" />
     <Compile Include="Snapshots\Mappers\SimulationMapper.cs" />
-    <Compile Include="Snapshots\Mappers\SimulationPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\SnapshotMapper.cs" />
     <Compile Include="Snapshots\Mappers\SnapshotMapperBase.cs" />
     <Compile Include="Snapshots\Mappers\SolverSettingsMapper.cs" />
@@ -919,7 +919,6 @@
     <Compile Include="Snapshots\Services\SnapshotTask.cs" />
     <Compile Include="Snapshots\Protocol.cs" />
     <Compile Include="Snapshots\Simulation.cs" />
-    <Compile Include="Snapshots\SimulationConfiguration.cs" />
     <Compile Include="Snapshots\SnapshotBase.cs" />
     <Compile Include="Snapshots\ExtendedProperty.cs" />
     <Compile Include="Snapshots\SnapshotNotFoundException.cs" />

@@ -1,63 +1,74 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using SnapshotSimulation = PKSim.Core.Snapshots.Simulation;
 using ModelSimulation = PKSim.Core.Model.Simulation;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, PKSimProject>
+   public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, PKSimProject, PKSimProject>
    {
-      private readonly SimulationPropertiesMapper _simulationPropertiesMapper;
       private readonly SolverSettingsMapper _solverSettingsMapper;
       private readonly OutputSchemaMapper _outputSchemaMapper;
       private readonly OutputSelectionsMapper _outputSelectionsMapper;
-      private readonly IObservedDataRepository _observedDataRepository;
       private readonly CompoundPropertiesMapper _compoundPropertiesMapper;
       private readonly ParameterMapper _parameterMapper;
-      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly AdvancedParameterMapper _advancedParameterMapper;
+      private readonly EventPropertiesMapper _eventPropertiesMapper;
+      private readonly ISimulationFactory _simulationFactory;
+      private readonly IExecutionContext _executionContext;
+      private readonly ISimulationModelCreator _simulationModelCreator;
+      private readonly ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
+      private readonly IModelPropertiesTask _modelPropertiesTask;
 
       public SimulationMapper(
-         SimulationPropertiesMapper simulationPropertiesMapper,
          SolverSettingsMapper solverSettingsMapper,
          OutputSchemaMapper outputSchemaMapper,
          OutputSelectionsMapper outputSelectionsMapper,
-         IObservedDataRepository observedDataRepository,
          CompoundPropertiesMapper compoundPropertiesMapper,
          ParameterMapper parameterMapper,
-         IBuildingBlockRepository buildingBlockRepository,
-         AdvancedParameterMapper advancedParameterMapper)
+         AdvancedParameterMapper advancedParameterMapper,
+         EventPropertiesMapper eventPropertiesMapper,
+         ISimulationFactory simulationFactory,
+         IExecutionContext executionContext,
+         ISimulationModelCreator simulationModelCreator,
+         ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
+         IModelPropertiesTask modelPropertiesTask
+         )
       {
-         _simulationPropertiesMapper = simulationPropertiesMapper;
          _solverSettingsMapper = solverSettingsMapper;
          _outputSchemaMapper = outputSchemaMapper;
          _outputSelectionsMapper = outputSelectionsMapper;
-         _observedDataRepository = observedDataRepository;
          _compoundPropertiesMapper = compoundPropertiesMapper;
          _parameterMapper = parameterMapper;
-         _buildingBlockRepository = buildingBlockRepository;
          _advancedParameterMapper = advancedParameterMapper;
+         _eventPropertiesMapper = eventPropertiesMapper;
+         _simulationFactory = simulationFactory;
+         _executionContext = executionContext;
+         _simulationModelCreator = simulationModelCreator;
+         _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
+         _modelPropertiesTask = modelPropertiesTask;
       }
 
-      public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation)
+      public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation, PKSimProject project)
       {
          var snapshot = await SnapshotFrom(simulation);
-         snapshot.Configuration = await _simulationPropertiesMapper.MapToSnapshot(simulation.Properties);
-         snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
+         snapshot.Individual = usedSimulationSubject<Model.Individual>(simulation);
+         snapshot.Population = usedSimulationSubject<Model.Population>(simulation);
+         snapshot.Compounds = await usedCompoundsFrom(simulation, project);
+         snapshot.Model = simulation.ModelConfiguration.ModelName;
+         snapshot.AllowAging = simulation.AllowAging;
          snapshot.Solver = await _solverSettingsMapper.MapToSnapshot(simulation.Solver);
          snapshot.OutputSchema = await _outputSchemaMapper.MapToSnapshot(simulation.OutputSchema);
          snapshot.OutputSelections = await _outputSelectionsMapper.MapToSnapshot(simulation.OutputSelections);
-         snapshot.Individual = usedSimulationSubject<Model.Individual>(simulation);
-         snapshot.Population = usedSimulationSubject<Model.Population>(simulation);
-         snapshot.Compounds = await usedCompoundsFrom(simulation);
-         snapshot.Events = await usedEventsFrom(simulation);
-         snapshot.ObservedData = usedObervedDataFrom(simulation);
+         snapshot.Events = await _eventPropertiesMapper.MapToSnapshot(simulation.EventProperties, project);
+         snapshot.ObservedData = usedObervedDataFrom(simulation, project);
+         snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
          snapshot.AdvancedParameters = await advancedParametersFrom(simulation);
          return snapshot;
       }
@@ -71,29 +82,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return await _advancedParameterMapper.MapToSnapshot(populationSimulation.AdvancedParameters);
       }
 
-      private async Task<EventSelection[]> usedEventsFrom(ModelSimulation simulation)
+      private Task<CompoundProperties[]> usedCompoundsFrom(ModelSimulation simulation, PKSimProject project)
       {
-         var eventMappings = simulation.EventProperties.EventMappings;
-         if (!eventMappings.Any())
-            return null;
-
-         var tasks = simulation.EventProperties.EventMappings.Select(eventSelectionFrom);
-         return await Task.WhenAll(tasks);
-      }
-
-      private async Task<EventSelection> eventSelectionFrom(EventMapping eventMapping)
-      {
-         var eventBuildingBlock = _buildingBlockRepository.ById(eventMapping.TemplateEventId);
-         return new EventSelection
-         {
-            Name = eventBuildingBlock.Name,
-            StartTime = await _parameterMapper.MapToSnapshot(eventMapping.StartTime)
-         };
-      }
-
-      private Task<CompoundProperties[]> usedCompoundsFrom(ModelSimulation simulation)
-      {
-         var tasks = simulation.CompoundPropertiesList.Select(_compoundPropertiesMapper.MapToSnapshot);
+         var tasks = simulation.CompoundPropertiesList.Select(x => _compoundPropertiesMapper.MapToSnapshot(x, project));
          return Task.WhenAll(tasks);
       }
 
@@ -103,10 +94,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return _parameterMapper.LocalizedParametersFrom(changedParameters);
       }
 
-      private string[] usedObervedDataFrom(ModelSimulation simulation)
+      private string[] usedObervedDataFrom(ModelSimulation simulation, PKSimProject project)
       {
+         if (!simulation.UsedObservedData.Any())
+            return null;
+
          return simulation.UsedObservedData
-            .Select(_observedDataRepository.FindFor)
+            .Select(project.ObservedDataBy)
             .Select(x => x.Name).ToArray();
       }
 
@@ -122,9 +116,115 @@ namespace PKSim.Core.Snapshots.Mappers
          return null;
       }
 
-      public override Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, PKSimProject project)
+      public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, PKSimProject project)
       {
-         throw new NotImplementedException();
+         var simulation = await createSimulationFrom(snapshot, project);
+
+         simulation.Solver = await _solverSettingsMapper.MapToModel(snapshot.Solver);
+         simulation.OutputSchema = await _outputSchemaMapper.MapToModel(snapshot.OutputSchema);
+         simulation.OutputSelections = await _outputSelectionsMapper.MapToModel(snapshot.OutputSelections, simulation);
+
+         await updateParameters(simulation, snapshot.Parameters);
+         await updateAdvancedParameters(simulation, snapshot.AdvancedParameters);
+
+         updateUsedObservedData(simulation, snapshot.ObservedData, project);
+
+         return simulation;
+      }
+
+      private async Task<ModelSimulation> createSimulationFrom(SnapshotSimulation snapshot, PKSimProject project)
+      {
+         var simulationSubject = simulationSubjectFrom(snapshot, project);
+         var compounds = compoundsFrom(snapshot.Compounds, project);
+         var modelProperties = modelPropertiesFrom(snapshot.Model, simulationSubject);
+
+         var simulation = _simulationFactory.CreateFrom(simulationSubject, compounds, modelProperties);
+         MapSnapshotPropertiesToModel(snapshot, simulation);
+
+         await mapCompoundProperties(snapshot.Compounds, project, simulation);
+         simulation.EventProperties = await _eventPropertiesMapper.MapToModel(snapshot.Events, project);
+
+         //Once all used building blocks have been set, we need to ensure that they are also synchronized in the  simulation
+         updateUsedBuildingBlockInSimulation(simulation, project);
+
+         _simulationModelCreator.CreateModelFor(simulation);
+         return simulation;
+      }
+
+      private void updateUsedBuildingBlockInSimulation(ModelSimulation simulation, PKSimProject project)
+      {
+         _simulationBuildingBlockUpdater.UpdateFormulationsInSimulation(simulation);
+         _simulationBuildingBlockUpdater.UpdateProtocolsInSimulation(simulation);
+
+         var events = simulation.EventProperties.EventMappings.Select(x => project.BuildingBlockById<PKSimEvent>(x.TemplateEventId));
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, events, PKSimBuildingBlockType.Event);
+      }
+
+      private async Task mapCompoundProperties(CompoundProperties[] snapshotCompoundProperties, PKSimProject project, ModelSimulation simulation)
+      {
+         var compoundPropertiesContext = new CompoundPropertiesContext(project, simulation);
+         var tasks = snapshotCompoundProperties.Select(x => _compoundPropertiesMapper.MapToModel(x, compoundPropertiesContext));
+         await Task.WhenAll(tasks);
+      }
+
+      private async Task updateAdvancedParameters(ModelSimulation simulation, AdvancedParameter[] snapshotAdvancedParameters)
+      {
+         var populationSimulation = simulation as PopulationSimulation;
+         if (populationSimulation == null)
+            return;
+
+         await _advancedParameterMapper.MapToModel(snapshotAdvancedParameters, populationSimulation);
+      }
+
+      private Task updateParameters(ModelSimulation simulation, LocalizedParameter[] snapshotParameters)
+      {
+         return _parameterMapper.MapLocalizedParameters(snapshotParameters, simulation.Model.Root);
+      }
+
+      private void updateUsedObservedData(ModelSimulation simulation, string[] snapshotObservedData, PKSimProject project)
+      {
+         snapshotObservedData?.Each(observedDataName=>
+         {
+            var observedData = project.AllObservedData.FindByName(observedDataName);
+            simulation.AddUsedObservedData(observedData);
+         });
+      }
+
+      protected override void MapSnapshotPropertiesToModel(SnapshotSimulation snapshot, ModelSimulation simulation)
+      {
+         base.MapSnapshotPropertiesToModel(snapshot, simulation);
+         simulation.AllowAging = snapshot.AllowAging;
+      }
+
+      private ModelProperties modelPropertiesFrom(string modelName, ISimulationSubject simulationSubject)
+      {
+         return _modelPropertiesTask.DefaultFor(simulationSubject.OriginData, modelName);
+      }
+
+      private IReadOnlyList<Model.Compound> compoundsFrom(CompoundProperties[] compounds, PKSimProject project)
+      {
+         return compounds.Select(x => findBuildingBlock<Model.Compound>(x.Name, project)).ToList();
+      }
+
+      private ISimulationSubject simulationSubjectFrom(SnapshotSimulation snapshot, PKSimProject project)
+      {
+         if (snapshot.Individual != null)
+            return findBuildingBlock<Model.Individual>(snapshot.Individual, project);
+
+         if (snapshot.Population != null)
+            return findBuildingBlock<Model.Population>(snapshot.Population, project);
+
+         throw new SnapshotOutdatedException(PKSimConstants.Error.SimulationSubjectUndefinedInSnapshot);
+      }
+
+      private T findBuildingBlock<T>(string name, PKSimProject project) where T : class, IPKSimBuildingBlock
+      {
+         var buildingBlock = project.BuildingBlockByName<T>(name);
+         if (buildingBlock == null)
+            throw new SnapshotOutdatedException(PKSimConstants.Error.SimulationTemplateBuildingBlocktNotFoundInProject(name, typeof(T).Name));
+
+         _executionContext.Load(buildingBlock);
+         return buildingBlock;
       }
    }
 }

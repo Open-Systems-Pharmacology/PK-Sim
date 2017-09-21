@@ -58,9 +58,20 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
 
-      public override Task<TModel> MapToModel(TSnapshot snapshot)
+      public sealed override Task<TModel> MapToModel(TSnapshot snapshot)
       {
-         return FromException<TModel>(new SnapshotMapToModelNotSupportedNotSupportedException<TModel, TContext>());
+         return FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
+      }
+   }
+
+   public abstract class SnapshotMapperBase<TModel, TSnapshot, TModelContext, TSnapshotContext> : SnapshotMapperBase<TModel, TSnapshot, TModelContext>
+      where TSnapshot : new()
+   {
+      public abstract Task<TSnapshot> MapToSnapshot(TModel model, TSnapshotContext context);
+
+      public sealed override Task<TSnapshot> MapToSnapshot(TModel model)
+      {
+         return FromException<TSnapshot>(new ModelMapToSnapshotNotSupportedException<TSnapshot, TSnapshotContext>());
       }
    }
 }

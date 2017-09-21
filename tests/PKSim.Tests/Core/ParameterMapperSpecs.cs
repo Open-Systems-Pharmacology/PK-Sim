@@ -241,4 +241,59 @@ namespace PKSim.Core
          _localParameter.Name.ShouldBeNull();
       }
    }
+
+   public class When_mapping_all_localized_parameters_defined_in_a_container : concern_for_ParameterMapper
+   {
+      private LocalizedParameter _localParameter;
+      private IContainer _container;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _container = new Container().WithName("ORG");
+         _container.Add(_parameter);
+
+         _localParameter = new LocalizedParameter
+         {
+            Path = "LOCALIZED_PATH",
+            Value = 5,
+            Unit = _parameter.DisplayUnit.Name
+         };
+         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns(_localParameter.Path);
+      }
+
+      protected override async Task Because()
+      {
+         await sut.MapLocalizedParameters(new[] {_localParameter}, _container);
+      }
+
+      [Observation]
+      public void should_map_the_matching_parameters()
+      {
+         _parameter.ValueInDisplayUnit.ShouldBeEqualTo(5);
+      }
+   }
+
+   public class When_mapping_all_localized_parameters_containing_an_unknown_parameter_by_path : concern_for_ParameterMapper
+   {
+      private LocalizedParameter _localParameter;
+      private IContainer _container;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _container = new Container().WithName("ORG");
+
+         _localParameter = new LocalizedParameter
+         {
+            Path = "UNKNOW_PATH",
+         };
+      }
+
+      [Observation]
+      public void should_thrown_an_exception()
+      {
+         TheAsync.Action( ()=> sut.MapLocalizedParameters(new[] { _localParameter }, _container)).ShouldThrowAnAsync<SnapshotOutdatedException>();
+      }
+   }
 }

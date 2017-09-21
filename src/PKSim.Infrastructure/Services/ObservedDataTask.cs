@@ -68,7 +68,7 @@ namespace PKSim.Infrastructure.Services
 
       public async Task LoadFromSnapshot()
       {
-         var observedData = (await _snapshotTask.LoadFromSnapshot<DataRepository>()).ToList();
+         var observedData = await _snapshotTask.LoadModelFromSnapshot<DataRepository>();
          observedData.Each(AddObservedDataToProject);
       }
 

@@ -117,8 +117,8 @@ namespace PKSim.Core
 
          _snapshot.ProportionOfFemales = _proportionOfFemale;
 
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age)).ReturnsAsync(_newAgeRange);
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight)).ReturnsAsync(_newWeightRange);
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, _newAgeRange)).ReturnsAsync(_newAgeRange);
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, _newWeightRange)).ReturnsAsync(_newWeightRange);
          A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual)).ReturnsAsync(_newIndividual);
 
          _mappedSettings = new RandomPopulationSettings();

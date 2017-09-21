@@ -36,7 +36,6 @@ namespace PKSim.Core
       protected LocalizedParameter _localizedParameterKidney;
       protected IIndividualFactory _individualFactory;
       protected IOriginDataMapper _originDataMapper;
-      protected IContainerTask _containerTask;
 
       protected override Task Context()
       {
@@ -45,9 +44,8 @@ namespace PKSim.Core
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _individualFactory = A.Fake<IIndividualFactory>();
          _originDataMapper = A.Fake<IOriginDataMapper>();
-         _containerTask = A.Fake<IContainerTask>();
 
-         sut = new IndividualMapper(_parameterMapper, _dimensionRepository, _moleculeMapper, _individualFactory, _originDataMapper, _containerTask);
+         sut = new IndividualMapper(_parameterMapper, _dimensionRepository, _moleculeMapper, _individualFactory, _originDataMapper);
 
          _individual = DomainHelperForSpecs.CreateIndividual();
          _individual.Name = "Ind";
@@ -176,9 +174,6 @@ namespace PKSim.Core
          A.CallTo(() => _moleculeMapper.MapToModel(_enzymeSnapshot, _individual)).Returns(_molecule1);
          A.CallTo(() => _moleculeMapper.MapToModel(_transporterSnapshot, _individual)).Returns(_molecule2);
 
-         var parameterCache = new PathCacheForSpecs<IParameter>();
-         A.CallTo(_containerTask).WithReturnType<PathCache<IParameter>>().Returns(parameterCache);
-         parameterCache.Add(_localizedParameterKidney.Path, _parameterKidney);
 
          A.CallTo(() => _dimensionRepository.Mass.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value)).Returns(10);
          A.CallTo(() => _dimensionRepository.AgeInYears.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Age.Value)).Returns(20);
@@ -219,7 +214,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_the_parameter_previously_set_by_the_user()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_localizedParameterKidney, _parameterKidney)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapLocalizedParameters(_snapshot.Parameters, _individual.Organism)).MustHaveHappened();
       }
    }
 }

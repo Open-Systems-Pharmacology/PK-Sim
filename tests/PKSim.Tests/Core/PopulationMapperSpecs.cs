@@ -27,15 +27,13 @@ namespace PKSim.Core
       protected RandomPopulationSettingsMapper _randomPopulationSettingsMapper;
       protected PopulationSettings _settingsSnapshot;
       protected RandomPopulation _population;
-      protected IParameterTask _parameterTask;
 
       protected override Task Context()
       {
          _advancedParameterMapper = A.Fake<AdvancedParameterMapper>();
          _randomPopulationFactory = A.Fake<IRandomPopulationFactory>();
          _randomPopulationSettingsMapper = A.Fake<RandomPopulationSettingsMapper>();
-         _parameterTask = A.Fake<IParameterTask>();  
-         sut = new PopulationMapper(_advancedParameterMapper, _randomPopulationSettingsMapper, _randomPopulationFactory,_parameterTask);
+         sut = new PopulationMapper(_advancedParameterMapper, _randomPopulationSettingsMapper, _randomPopulationFactory);
 
          _advancedParameters = new AdvancedParameterCollection();
          _advancedParameter = new AdvancedParameter
@@ -109,8 +107,6 @@ namespace PKSim.Core
       private RandomPopulation _newPopulation;
       private RandomPopulation _randomPopulation;
       private RandomPopulationSettings _newPopulationSettings;
-      private PathCache<IParameter> _parameterCache;
-      private AdvancedParameter _newAdvancedParameter;
 
       protected override async Task Context()
       {
@@ -122,10 +118,6 @@ namespace PKSim.Core
          var mappedPopulation = A.Fake<RandomPopulation>();
          mappedPopulation.SetAdvancedParameters(new AdvancedParameterCollection());
          A.CallTo(() => _randomPopulationFactory.CreateFor(_newPopulationSettings, CancellationToken.None, _snapshot.Seed)).ReturnsAsync(mappedPopulation);
-         _newAdvancedParameter = new AdvancedParameter();
-         _parameterCache = new PathCacheForSpecs<IParameter>();
-         A.CallTo(_parameterTask).WithReturnType<PathCache<IParameter>>().Returns(_parameterCache);
-         A.CallTo(() => _advancedParameterMapper.MapToModel(_advancedParameterSnapshot, _parameterCache)).ReturnsAsync(_newAdvancedParameter);
       }
 
       protected override async Task Because()
@@ -147,15 +139,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_clear_all_previous_advanced_parameters()
+      public void should_map_all_advanced_parmaeters()
       {
-         A.CallTo(() => _newPopulation.RemoveAllAdvancedParameters()).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_add_new_advanced_parameters()
-      {
-         A.CallTo(() => _newPopulation.AddAdvancedParameter(_newAdvancedParameter, true)).MustHaveHappened();
+         A.CallTo(() => _advancedParameterMapper.MapToModel(_snapshot.AdvancedParameters, _newPopulation)).MustHaveHappened();
       }
    }
 
