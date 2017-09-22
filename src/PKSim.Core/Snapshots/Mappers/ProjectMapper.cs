@@ -7,8 +7,9 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
 using ModelProject = PKSim.Core.Model.PKSimProject;
-using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
-using SnapshotDataRepository = PKSim.Core.Snapshots.DataRepository;
+using ModelObservedDataClassification = OSPSuite.Core.Domain.Classification;
+using SnapshotObservedDataClassifiable = PKSim.Core.Snapshots.ObservedDataClassifiable;
+using ModelObservedDataClassifiable = OSPSuite.Core.Domain.ClassifiableObservedData;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -17,11 +18,13 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IExecutionContext _executionContext;
       private readonly SimulationMapper _simulationMapper;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
+      private readonly ObservedDataClassificationMapper _observedDataClassificationMapper;
 
-      public ProjectMapper(IExecutionContext executionContext, SimulationMapper simulationMapper)
+      public ProjectMapper(IExecutionContext executionContext, SimulationMapper simulationMapper, ObservedDataClassificationMapper observedDataClassificationMapper)
       {
          _executionContext = executionContext;
          _simulationMapper = simulationMapper;
+         _observedDataClassificationMapper = observedDataClassificationMapper;
          //required to load the snapshot mapper via execution context to avoid circular references
          _snapshotMapper = new Lazy<ISnapshotMapper>(() => _executionContext.Resolve<ISnapshotMapper>());
       }
@@ -35,9 +38,43 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Formulations = await mapBuildingBlocksToSnapshots<Formulation>(project.All<Model.Formulation>());
          snapshot.Protocols = await mapBuildingBlocksToSnapshots<Protocol>(project.All<Model.Protocol>());
          snapshot.Populations = await mapBuildingBlocksToSnapshots<Population>(project.All<Model.Population>());
-         snapshot.ObservedData = await mapObservedDataToSnapshots(project.AllObservedData);
-         snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>(), project);
+         snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>(), project);         
+         snapshot.ObservedDataClassifiables = await mapObservedDataClassifiablesToSnapshots(observedDataClassifiablesFrom<ModelObservedDataClassifiable>(project.AllClassifiables));
+         snapshot.ObservedDataClassifications = await mapObservedDataClassificationsToSnapshots(
+            observedDataClassifiablesFrom<ModelObservedDataClassification>(project.AllClassifications), 
+            observedDataClassifiablesFrom<ModelObservedDataClassifiable>(project.AllClassifiables));
+
          return snapshot;
+      }
+
+      private Task<SnapshotObservedDataClassifiable[]> mapObservedDataClassifiablesToSnapshots(IReadOnlyCollection<ModelObservedDataClassifiable> observedDataClassifiables)
+      {
+         return mapModelsToSnapshot<ModelObservedDataClassifiable, SnapshotObservedDataClassifiable>(findRoots(observedDataClassifiables), snapshotMapper.MapToSnapshot);
+      }
+
+      private IEnumerable<T> findRoots<T>(IEnumerable<T> classifications) where T : IClassifiable
+      {
+         return classifications.Where(x => x.Parent == null);
+      }
+
+      private IReadOnlyList<T> observedDataClassifiablesFrom<T>(IEnumerable<IClassifiable> classifications) where T: IClassifiable
+      {
+         return classifications.Where(x => x.ClassificationType == ClassificationType.ObservedData).OfType<T>().ToList();
+      }
+
+      private Task<ObservedDataClassification[]> mapObservedDataClassificationsToSnapshots(IReadOnlyList<ModelObservedDataClassification> allClassifications, IReadOnlyList<ModelObservedDataClassifiable> allClassifiables)
+      {
+         var observedDataClassificationsContext = new ObservedDataClassificationContext
+         {
+            Classifications = allClassifications,
+            Classifiables = allClassifiables
+         };
+
+         var rootClassifications = findRoots(observedDataClassificationsContext.Classifications);
+
+         var tasks = rootClassifications.Select(x => _observedDataClassificationMapper.MapToSnapshot(x, observedDataClassificationsContext));
+
+         return Task.WhenAll(tasks);
       }
 
       private Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<Model.Simulation> allSimulations, ModelProject project)
@@ -50,11 +87,6 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          _executionContext.Load(simulation);
          return _simulationMapper.MapToSnapshot(simulation, project);
-      }
-
-      private Task<SnapshotDataRepository[]> mapObservedDataToSnapshots(IReadOnlyCollection<ModelDataRepository> allObservedData)
-      {
-         return mapModelsToSnapshot<ModelDataRepository, SnapshotDataRepository>(allObservedData, snapshotMapper.MapToSnapshot);
       }
 
       private Task<T[]> mapBuildingBlocksToSnapshots<T>(IReadOnlyCollection<IPKSimBuildingBlock> buildingBlocks)
@@ -82,9 +114,6 @@ namespace PKSim.Core.Snapshots.Mappers
          var buildingBlocks = await allBuidingBlocksFrom(snapshot);
          buildingBlocks.Each(project.AddBuildingBlock);
 
-         var observedData = await observedDataFrom(snapshot.ObservedData);
-         observedData.Each(repository => addObservedDataToProject(project, repository));
-
          var allSimulations = await allSmulationsFrom(snapshot.Simulations, project);
          allSimulations.Each(simulation => addSimulationToProject(project, simulation));
 
@@ -104,17 +133,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var tasks = snapshotSimulations.Select(x => _simulationMapper.MapToModel(x, project));
          return await Task.WhenAll(tasks);
-      }
-
-      private void addObservedDataToProject(ModelProject project, ModelDataRepository repository)
-      {
-         project.AddObservedData(repository);
-         project.GetOrCreateClassifiableFor<ClassifiableObservedData, ModelDataRepository>(repository);
-      }
-
-      private Task<IEnumerable<ModelDataRepository>> observedDataFrom(SnapshotDataRepository[] snapshotRepositories)
-      {
-         return awaitAs<ModelDataRepository>(mapSnapshotsToModels(snapshotRepositories));
       }
 
       private Task<IEnumerable<IPKSimBuildingBlock>> allBuidingBlocksFrom(SnapshotProject snapshot)

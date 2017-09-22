@@ -8,7 +8,8 @@
       public Formulation[] Formulations { get; set; }
       public Protocol[] Protocols { get; set; }
       public Event[] Events { get; set; }
-      public DataRepository[] ObservedData { get; set; }
       public Simulation[] Simulations { get; set; }
+      public ObservedDataClassifiable[] ObservedDataClassifiables { get; set; }
+      public ObservedDataClassification[] ObservedDataClassifications{ get; set; }
    }
 }
