@@ -853,7 +853,6 @@
     <Compile Include="Snapshots\Mappers\ClassifiableContext.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationContext.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationMapper.cs" />
-    <Compile Include="Snapshots\ObservedDataClassification.cs" />
     <Compile Include="Snapshots\Compound.cs" />
     <Compile Include="Snapshots\CompoundProcessSelection.cs" />
     <Compile Include="Snapshots\CompoundProperties.cs" />
