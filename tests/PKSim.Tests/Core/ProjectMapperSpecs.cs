@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using FakeItEasy;
-using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -8,6 +7,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
+using Classification = OSPSuite.Core.Domain.Classification;
 using Compound = PKSim.Core.Model.Compound;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Event = PKSim.Core.Snapshots.Event;
@@ -43,19 +43,18 @@ namespace PKSim.Core
       protected Snapshots.DataRepository _observedDataSnapshot;
       protected SimulationMapper _simulationMapper;
       protected Simulation _simulationSnapshot;
-      protected ObservedDataClassificationMapper _observedDataClassificationMapper;
+      protected ClassificationMapper _classificationMapper;
       protected ClassifiableObservedData _classifiableObservedData;
-      protected ObservedDataClassifiable _classifiableObservedDataSnapshot;
       protected Classification _classification;
       protected ObservedDataClassification _classificationSnapshot;
 
       protected override Task Context()
       {
-         _observedDataClassificationMapper = A.Fake<ObservedDataClassificationMapper>();
+         _classificationMapper = A.Fake<ClassificationMapper>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _executionContext = A.Fake<IExecutionContext>();
          _simulationMapper= A.Fake<SimulationMapper>();
-         sut = new ProjectMapper(_executionContext, _simulationMapper, _observedDataClassificationMapper);
+         sut = new ProjectMapper(_executionContext, _simulationMapper, _classificationMapper);
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
          _individual = new Individual().WithName("IND");
          _compound = new Compound().WithName("COMP");
@@ -88,7 +87,6 @@ namespace PKSim.Core
          _protocolSnapshot = new Snapshots.Protocol();
          _populationSnapshot = new Snapshots.Population();
          _observedDataSnapshot = new Snapshots.DataRepository();
-         _classifiableObservedDataSnapshot = new ObservedDataClassifiable();
          _classificationSnapshot = new ObservedDataClassification();
 
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_compound)).ReturnsAsync(_compoundSnapshot);
@@ -98,8 +96,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).ReturnsAsync(_protocolSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).ReturnsAsync(_populationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).ReturnsAsync(_observedDataSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_classifiableObservedData)).ReturnsAsync(_classifiableObservedDataSnapshot);
-         A.CallTo(() => _observedDataClassificationMapper.MapToSnapshot(_classification, A<ObservedDataClassificationContext>._)).ReturnsAsync(_classificationSnapshot);
+         A.CallTo(() => _classificationMapper.MapToSnapshot(_classification, A<ClassificationContext>._)).ReturnsAsync(_classificationSnapshot);
 
          A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation,_project)).ReturnsAsync(_simulationSnapshot);
 
@@ -123,7 +120,6 @@ namespace PKSim.Core
          _snapshot.Formulations.ShouldContain(_formulationSnapshot);
          _snapshot.Events.ShouldContain(_eventSnapshot);
          _snapshot.Populations.ShouldContain(_populationSnapshot);
-         _snapshot.ObservedDataClassifiables.ShouldContain(_classifiableObservedDataSnapshot);
          _snapshot.ObservedDataClassifications.ShouldContain(_classificationSnapshot);
       }
 
@@ -168,13 +164,10 @@ namespace PKSim.Core
          _newProject.All<Population>().ShouldContain(_population);
       }
 
-      // TODO ignoring this test until the classifications are implemented
-      [Observation, Ignore("To be re-implemented when classifications are mapped to models")]
       public void should_have_mapped_the_observed_data()
       {
          _newProject.AllObservedData.ShouldContain(_observedData);
       }
-
 
       [Observation]
       public void should_have_mapped_the_simulations()

@@ -849,10 +849,10 @@
     <Compile Include="Snapshots\AdvancedParameter.cs" />
     <Compile Include="Snapshots\Alternative.cs" />
     <Compile Include="Snapshots\CalculationMethod.cs" />
-    <Compile Include="Snapshots\ClassificationSnapshotBase.cs" />
-    <Compile Include="Snapshots\Mappers\BaseClassificationContext.cs" />
-    <Compile Include="Snapshots\Mappers\BaseClassificationMapper.cs" />
-    <Compile Include="Snapshots\ObservedDataClassifiable.cs" />
+    <Compile Include="Snapshots\Classification.cs" />
+    <Compile Include="Snapshots\Mappers\ClassifiableContext.cs" />
+    <Compile Include="Snapshots\Mappers\ClassificationContext.cs" />
+    <Compile Include="Snapshots\Mappers\ClassificationMapper.cs" />
     <Compile Include="Snapshots\ObservedDataClassification.cs" />
     <Compile Include="Snapshots\Compound.cs" />
     <Compile Include="Snapshots\CompoundProcessSelection.cs" />
@@ -870,7 +870,6 @@
     <Compile Include="Snapshots\Mappers\AdvancedParameterMapper.cs" />
     <Compile Include="Snapshots\Mappers\AlternativeMapper.cs" />
     <Compile Include="Snapshots\Mappers\CalculationMethodCacheMapper.cs" />
-    <Compile Include="Snapshots\Mappers\ObservedDataClassificationMapper.cs" />
     <Compile Include="Snapshots\Mappers\CompoundMapper.cs" />
     <Compile Include="Snapshots\CompoundProcess.cs" />
     <Compile Include="Snapshots\Mappers\CompoundProcessMapper.cs" />
@@ -886,7 +885,6 @@
     <Compile Include="Snapshots\Mappers\IndividualMapper.cs" />
     <Compile Include="Snapshots\Mappers\MoleculeMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObjectBaseSnapshotMapperBase.cs" />
-    <Compile Include="Snapshots\Mappers\ObservedDataClassifiableMappper.cs" />
     <Compile Include="Snapshots\Mappers\ObservedDataMapper.cs" />
     <Compile Include="Snapshots\Mappers\OntogenyMapper.cs" />
     <Compile Include="Snapshots\Mappers\OutputIntervalMapper.cs" />
