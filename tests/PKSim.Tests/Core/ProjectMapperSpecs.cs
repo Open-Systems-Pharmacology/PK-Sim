@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using Classification = OSPSuite.Core.Domain.Classification;
@@ -46,7 +45,7 @@ namespace PKSim.Core
       protected ClassificationMapper _classificationMapper;
       protected ClassifiableObservedData _classifiableObservedData;
       protected Classification _classification;
-      protected ObservedDataClassification _classificationSnapshot;
+      protected Snapshots.Classification _classificationSnapshot;
 
       protected override Task Context()
       {
@@ -87,7 +86,7 @@ namespace PKSim.Core
          _protocolSnapshot = new Snapshots.Protocol();
          _populationSnapshot = new Snapshots.Population();
          _observedDataSnapshot = new Snapshots.DataRepository();
-         _classificationSnapshot = new ObservedDataClassification();
+         _classificationSnapshot = new Snapshots.Classification();
 
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_compound)).ReturnsAsync(_compoundSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_individual)).ReturnsAsync(_individualSnapshot);
