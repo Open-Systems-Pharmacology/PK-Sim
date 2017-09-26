@@ -849,6 +849,9 @@
     <Compile Include="Snapshots\AdvancedParameter.cs" />
     <Compile Include="Snapshots\Alternative.cs" />
     <Compile Include="Snapshots\CalculationMethod.cs" />
+    <Compile Include="Snapshots\Classification.cs" />
+    <Compile Include="Snapshots\Mappers\ClassificationContext.cs" />
+    <Compile Include="Snapshots\Mappers\ClassificationMapper.cs" />
     <Compile Include="Snapshots\Compound.cs" />
     <Compile Include="Snapshots\CompoundProcessSelection.cs" />
     <Compile Include="Snapshots\CompoundProperties.cs" />

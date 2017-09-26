@@ -3,12 +3,18 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
+using Classification = OSPSuite.Core.Domain.Classification;
+using Compound = PKSim.Core.Model.Compound;
+using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Event = PKSim.Core.Snapshots.Event;
+using Formulation = PKSim.Core.Model.Formulation;
+using Individual = PKSim.Core.Model.Individual;
+using Population = PKSim.Core.Model.Population;
 using Project = PKSim.Core.Snapshots.Project;
+using Protocol = PKSim.Core.Model.Protocol;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 
 namespace PKSim.Core
@@ -36,13 +42,18 @@ namespace PKSim.Core
       protected Snapshots.DataRepository _observedDataSnapshot;
       protected SimulationMapper _simulationMapper;
       protected Simulation _simulationSnapshot;
+      protected ClassificationMapper _classificationMapper;
+      protected ClassifiableObservedData _classifiableObservedData;
+      protected Classification _classification;
+      protected Snapshots.Classification _classificationSnapshot;
 
       protected override Task Context()
       {
+         _classificationMapper = A.Fake<ClassificationMapper>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _executionContext = A.Fake<IExecutionContext>();
          _simulationMapper= A.Fake<SimulationMapper>();
-         sut = new ProjectMapper(_executionContext, _simulationMapper);
+         sut = new ProjectMapper(_executionContext, _simulationMapper, _classificationMapper);
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
          _individual = new Individual().WithName("IND");
          _compound = new Compound().WithName("COMP");
@@ -51,6 +62,8 @@ namespace PKSim.Core
          _protocol = new SimpleProtocol().WithName("PROTO");
          _population = new RandomPopulation().WithName("POP");
          _observedData = new DataRepository().WithName("OD");
+         _classifiableObservedData = new ClassifiableObservedData {Subject = _observedData};
+         _classification = new Classification{ClassificationType = ClassificationType.ObservedData};
 
          _simulation = new IndividualSimulation().WithName("IND_SIM");
 
@@ -63,6 +76,8 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_population);
          _project.AddObservedData(_observedData);
          _project.AddBuildingBlock(_simulation);
+         _project.AddClassifiable(_classifiableObservedData);
+         _project.AddClassification(_classification);
 
          _compoundSnapshot = new Snapshots.Compound();
          _individualSnapshot = new Snapshots.Individual();
@@ -71,6 +86,7 @@ namespace PKSim.Core
          _protocolSnapshot = new Snapshots.Protocol();
          _populationSnapshot = new Snapshots.Population();
          _observedDataSnapshot = new Snapshots.DataRepository();
+         _classificationSnapshot = new Snapshots.Classification();
 
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_compound)).ReturnsAsync(_compoundSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_individual)).ReturnsAsync(_individualSnapshot);
@@ -79,6 +95,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).ReturnsAsync(_protocolSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).ReturnsAsync(_populationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).ReturnsAsync(_observedDataSnapshot);
+         A.CallTo(() => _classificationMapper.MapToSnapshot(_classification, A<ClassificationContext>._)).ReturnsAsync(_classificationSnapshot);
 
          A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation,_project)).ReturnsAsync(_simulationSnapshot);
 
@@ -94,7 +111,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_retrieve_the_snapshot_for_all_underlying_building_blocks()
+      public void should_retrieve_the_snapshot_for_all_underlying_models()
       {
          _snapshot.Compounds.ShouldContain(_compoundSnapshot);
          _snapshot.Individuals.ShouldContain(_individualSnapshot);
@@ -102,12 +119,7 @@ namespace PKSim.Core
          _snapshot.Formulations.ShouldContain(_formulationSnapshot);
          _snapshot.Events.ShouldContain(_eventSnapshot);
          _snapshot.Populations.ShouldContain(_populationSnapshot);
-      }
-
-      [Observation]
-      public void should_retrieve_the_snapshot_for_all_used_observed_data()
-      {
-         _snapshot.ObservedData.ShouldContain(_observedDataSnapshot);
+         _snapshot.ObservedDataClassifications.ShouldContain(_classificationSnapshot);
       }
 
       [Observation]
@@ -151,12 +163,10 @@ namespace PKSim.Core
          _newProject.All<Population>().ShouldContain(_population);
       }
 
-      [Observation]
       public void should_have_mapped_the_observed_data()
       {
          _newProject.AllObservedData.ShouldContain(_observedData);
       }
-
 
       [Observation]
       public void should_have_mapped_the_simulations()
