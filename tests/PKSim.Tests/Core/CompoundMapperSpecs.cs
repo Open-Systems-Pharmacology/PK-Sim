@@ -121,7 +121,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_saved_the_plasma_protein_binding_partner()
       {
-         _snapshot.PlasmaProteinBindingPartner.ShouldBeEqualTo(_compound.PlasmaProteinBindingPartner.ToString());
+         _snapshot.PlasmaProteinBindingPartner.ShouldBeEqualTo(_compound.PlasmaProteinBindingPartner);
       }
 
       [Observation]
@@ -145,10 +145,10 @@ namespace PKSim.Core
       {
          _snapshot.PkaTypes.Length.ShouldBeEqualTo(2);
          _snapshot.PkaTypes[0].Pka.ShouldBeEqualTo(8);
-         _snapshot.PkaTypes[0].Type.ShouldBeEqualTo(CompoundType.Base.ToString());
+         _snapshot.PkaTypes[0].Type.ShouldBeEqualTo(CompoundType.Base);
 
          _snapshot.PkaTypes[1].Pka.ShouldBeEqualTo(4);
-         _snapshot.PkaTypes[1].Type.ShouldBeEqualTo(CompoundType.Acid.ToString());
+         _snapshot.PkaTypes[1].Type.ShouldBeEqualTo(CompoundType.Acid);
       }
    }
 
@@ -167,13 +167,13 @@ namespace PKSim.Core
          clearCompound();
 
          _snapshot = await sut.MapToSnapshot(_compound);
-         _snapshot.PlasmaProteinBindingPartner = PlasmaProteinBindingPartner.Albumin.ToString();
+         _snapshot.PlasmaProteinBindingPartner = PlasmaProteinBindingPartner.Albumin;
          _snapshot.IsSmallMolecule = false;
          _snapshot.PkaTypes = new[]
          {
-            new PkaType {Pka = 1, Type = CompoundType.Acid.ToString()},
-            new PkaType {Pka = 2, Type = CompoundType.Base.ToString()},
-            new PkaType {Pka = 3, Type = CompoundType.Acid.ToString()},
+            new PkaType {Pka = 1, Type = CompoundType.Acid},
+            new PkaType {Pka = 2, Type = CompoundType.Base},
+            new PkaType {Pka = 3, Type = CompoundType.Acid},
          };
 
          _alternative = new ParameterAlternative().WithName("Alternative");
@@ -240,9 +240,9 @@ namespace PKSim.Core
          _newCompound.Parameter(CoreConstants.Parameter.PARAMETER_PKA2).Value.ShouldBeEqualTo(_snapshot.PkaTypes[1].Pka);
          _newCompound.Parameter(CoreConstants.Parameter.PARAMETER_PKA3).Value.ShouldBeEqualTo(_snapshot.PkaTypes[2].Pka);
 
-         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int)EnumHelper.ParseValue<CompoundType>(_snapshot.PkaTypes[0].Type));
-         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE2).Value.ShouldBeEqualTo((int)EnumHelper.ParseValue<CompoundType>(_snapshot.PkaTypes[1].Type));
-         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int)EnumHelper.ParseValue<CompoundType>(_snapshot.PkaTypes[2].Type));
+         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int)_snapshot.PkaTypes[0].Type);
+         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE2).Value.ShouldBeEqualTo((int)_snapshot.PkaTypes[1].Type);
+         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int)_snapshot.PkaTypes[2].Type);
       }
    }
 } 

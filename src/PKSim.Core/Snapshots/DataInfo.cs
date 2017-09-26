@@ -1,11 +1,12 @@
 ﻿using System;
+using OSPSuite.Core.Domain.Data;
 
 namespace PKSim.Core.Snapshots
 {
    public class DataInfo : SnapshotBase
    {
-      public string Origin { get; set; }
-      public string AuxiliaryType { get; set; }
+      public ColumnOrigins Origin { get; set; }
+      public AuxiliaryType AuxiliaryType { get; set; }
       public DateTime Date { get; set; }
       public string Source { get; set; }
       public string Category { get; set; }

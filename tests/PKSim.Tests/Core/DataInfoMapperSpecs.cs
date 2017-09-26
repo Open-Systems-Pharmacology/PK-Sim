@@ -93,13 +93,13 @@ namespace PKSim.Core
       [Observation]
       public void the_snapshot_properties_are_set_as_expected()
       {
-         _snapshot.AuxiliaryType.ShouldBeEqualTo(_dataInfo.AuxiliaryType.ToString());
+         _snapshot.AuxiliaryType.ShouldBeEqualTo(_dataInfo.AuxiliaryType);
          _snapshot.Category.ShouldBeEqualTo(_dataInfo.Category);
          _snapshot.ComparisonThreshold.ShouldBeEqualTo(_dataInfo.ComparisonThreshold);
          _snapshot.Date.ShouldBeEqualTo(_dataInfo.Date);
          _snapshot.LLOQ.ShouldBeEqualTo(_dataInfo.LLOQ);
          _snapshot.MolWeight.ShouldBeEqualTo(_dataInfo.MolWeight);
-         _snapshot.Origin.ShouldBeEqualTo(_dataInfo.Origin.ToString());
+         _snapshot.Origin.ShouldBeEqualTo(_dataInfo.Origin);
          _snapshot.Source.ShouldBeEqualTo(_dataInfo.Source);
       }
    }

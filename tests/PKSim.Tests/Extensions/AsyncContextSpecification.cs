@@ -16,6 +16,8 @@ namespace OSPSuite.BDDHelper
       /// <summary>system under test</summary>
       protected T sut;
 
+      protected Task _completed = Task.FromResult(true);
+
       /// <summary>
       ///    The Global context of the test (e.g. TestFixtureSetUp). This function will be called only once
       /// </summary>

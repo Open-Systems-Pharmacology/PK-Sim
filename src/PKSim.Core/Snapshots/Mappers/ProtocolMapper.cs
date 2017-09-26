@@ -85,7 +85,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return SnapshotFrom(simpleProtocol, snapshot =>
          {
             snapshot.ApplicationType = simpleProtocol.ApplicationType.Name;
-            snapshot.DosingInterval = simpleProtocol.DosingInterval.Id.ToString();
+            snapshot.DosingInterval = simpleProtocol.DosingInterval.Id;
             snapshot.TargetOrgan = SnapshotValueFor(simpleProtocol.TargetOrgan);
             snapshot.TargetCompartment = SnapshotValueFor(simpleProtocol.TargetCompartment);
          });
@@ -95,8 +95,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var applicationType = ApplicationTypes.ByName(snapshotProtocol.ApplicationType);
          var simpleProtocol = _protocolFactory.Create(ProtocolMode.Simple, applicationType).DowncastTo<SimpleProtocol>();
-         var dosingIntervalId = EnumHelper.ParseValue<DosingIntervalId>(snapshotProtocol.DosingInterval);
-         simpleProtocol.DosingInterval = DosingIntervals.ById(dosingIntervalId);
+         simpleProtocol.DosingInterval = DosingIntervals.ById(snapshotProtocol.DosingInterval);
          simpleProtocol.TargetOrgan = snapshotProtocol.TargetOrgan;
          simpleProtocol.TargetCompartment = snapshotProtocol.TargetCompartment;
          return Task.FromResult<ModelProtocol>(simpleProtocol);

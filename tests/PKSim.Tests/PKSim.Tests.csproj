@@ -243,10 +243,13 @@
     <Compile Include="Core\AgingDataSpecs.cs" />
     <Compile Include="Core\AlternativeMapperSpecs.cs" />
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />
+    <Compile Include="Core\AxisMapperSpecs.cs" />
     <Compile Include="Core\CalculationMethodCacheMapperSpecs.cs" />
     <Compile Include="Core\CompoundMapperSpecs.cs" />
     <Compile Include="Core\CompoundProcessMapperSpecs.cs" />
     <Compile Include="Core\CompoundPropertiesMapperSpecs.cs" />
+    <Compile Include="Core\CurveChartMapperSpecs.cs" />
+    <Compile Include="Core\CurveMapperSpecs.cs" />
     <Compile Include="Core\DataColumnMapperSpecs.cs" />
     <Compile Include="Core\DataInfoMapperSpecs.cs" />
     <Compile Include="Core\DistributedTableFormulaMapperSpecs.cs" />

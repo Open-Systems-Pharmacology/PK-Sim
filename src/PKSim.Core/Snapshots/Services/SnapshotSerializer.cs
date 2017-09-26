@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace PKSim.Core.Snapshots.Services
 {
@@ -20,7 +23,12 @@ namespace PKSim.Core.Snapshots.Services
       private static JsonSerializerSettings createSerializerSettings() => new JsonSerializerSettings
       {
          TypeNameHandling = TypeNameHandling.Auto,
-         NullValueHandling = NullValueHandling.Ignore
+         NullValueHandling = NullValueHandling.Ignore,
+         Converters =
+         {
+            new StringEnumConverter()
+         },
+         ContractResolver = new WritablePropertiesOnlyResolver()
       };
 
       public async Task Serialize(object snapshot, string fileName)
@@ -52,6 +60,15 @@ namespace PKSim.Core.Snapshots.Services
                return array.Select(x => x.ToObject(snapshotType)).ToArray();
             default:
                return null;
+         }
+      }
+
+      class WritablePropertiesOnlyResolver : DefaultContractResolver
+      {
+         protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+         {
+            var props = base.CreateProperties(type, memberSerialization);
+            return props.Where(p => p.Writable).ToList();
          }
       }
    }

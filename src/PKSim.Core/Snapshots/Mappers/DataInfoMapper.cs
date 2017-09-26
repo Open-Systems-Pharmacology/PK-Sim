@@ -21,13 +21,13 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var snapshot = await SnapshotFrom(dataInfo, x =>
          {
-            x.AuxiliaryType = dataInfo.AuxiliaryType.ToString();
+            x.AuxiliaryType = dataInfo.AuxiliaryType;
             x.Category = dataInfo.Category;
             x.ComparisonThreshold = dataInfo.ComparisonThreshold;
             x.Date = dataInfo.Date;
             x.LLOQ = dataInfo.LLOQ;
             x.MolWeight = dataInfo.MolWeight;
-            x.Origin = dataInfo.Origin.ToString();
+            x.Origin = dataInfo.Origin;
             x.Source = dataInfo.Source;
          });
          snapshot.ExtendedProperties = await mapExtendedProperties(dataInfo.ExtendedProperties);
@@ -41,9 +41,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelDataInfo> MapToModel(SnapshotDataInfo snapshot)
       {
-         var dataInfo = new ModelDataInfo(EnumHelper.ParseValue<ColumnOrigins>(snapshot.Origin))
+         var dataInfo = new ModelDataInfo(snapshot.Origin)
          {
-            AuxiliaryType = EnumHelper.ParseValue<AuxiliaryType>(snapshot.AuxiliaryType),
+            AuxiliaryType = snapshot.AuxiliaryType,
             Category = snapshot.Category,
             ComparisonThreshold = snapshot.ComparisonThreshold,
             Date = snapshot.Date,

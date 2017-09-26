@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
@@ -55,6 +56,9 @@ namespace PKSim.Core
       protected AdvancedParameterCollection _avancedParameterCollection;
       protected DataRepository _observedData;
       protected IModelPropertiesTask _modelPropertiesTask;
+      protected CurveChartMapper _curveChartMapper;
+      private SimulationTimeProfileChart _simulationTimeProfile;
+      protected Snapshots.CurveChart _snapshotSimulationTimeProfile;
 
       protected override Task Context()
       {
@@ -65,6 +69,7 @@ namespace PKSim.Core
          _compoundPropertiesMapper = A.Fake<CompoundPropertiesMapper>();
          _advancedParameterMapper = A.Fake<AdvancedParameterMapper>();
          _eventPropertiesMapper = A.Fake<EventPropertiesMapper>();
+         _curveChartMapper= A.Fake<CurveChartMapper>();
          _simulationFactory = A.Fake<ISimulationFactory>();
          _executionContext = A.Fake<IExecutionContext>();
          _simulationModelCreator = A.Fake<ISimulationModelCreator>();
@@ -72,7 +77,7 @@ namespace PKSim.Core
          _modelPropertiesTask= A.Fake<IModelPropertiesTask>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
-            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper, _advancedParameterMapper, _eventPropertiesMapper,
+            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper, _advancedParameterMapper, _eventPropertiesMapper,_curveChartMapper,
             _simulationFactory, _executionContext, _simulationModelCreator, _simulationBuildingBlockUpdater, _modelPropertiesTask);
 
          _simulationProperties = new SimulationProperties
@@ -95,6 +100,11 @@ namespace PKSim.Core
             Description = "Simulation Description",
             Model = _model
          };
+
+         _simulationTimeProfile = new SimulationTimeProfileChart();
+         _snapshotSimulationTimeProfile =new CurveChart();
+         A.CallTo(() => _curveChartMapper.MapToSnapshot(_simulationTimeProfile)).ReturnsAsync(_snapshotSimulationTimeProfile);
+         _individualSimulation.AddAnalysis(_simulationTimeProfile);
 
          _populationSimulation = new PopulationSimulation
          {
@@ -189,6 +199,12 @@ namespace PKSim.Core
       public void should_save_used_observed_data()
       {
          _snapshot.ObservedData.ShouldContain(_observedData.Name);
+      }
+
+      [Observation]
+      public void should_save_analysis()
+      {
+         _snapshot.Charts.ShouldContain(_snapshotSimulationTimeProfile);
       }
    }
 

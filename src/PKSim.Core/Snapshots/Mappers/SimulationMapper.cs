@@ -20,6 +20,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ParameterMapper _parameterMapper;
       private readonly AdvancedParameterMapper _advancedParameterMapper;
       private readonly EventPropertiesMapper _eventPropertiesMapper;
+      private readonly CurveChartMapper _curveChartMapper;
       private readonly ISimulationFactory _simulationFactory;
       private readonly IExecutionContext _executionContext;
       private readonly ISimulationModelCreator _simulationModelCreator;
@@ -34,12 +35,13 @@ namespace PKSim.Core.Snapshots.Mappers
          ParameterMapper parameterMapper,
          AdvancedParameterMapper advancedParameterMapper,
          EventPropertiesMapper eventPropertiesMapper,
+         CurveChartMapper curveChartMapper,
          ISimulationFactory simulationFactory,
          IExecutionContext executionContext,
          ISimulationModelCreator simulationModelCreator,
          ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
          IModelPropertiesTask modelPropertiesTask
-         )
+      )
       {
          _solverSettingsMapper = solverSettingsMapper;
          _outputSchemaMapper = outputSchemaMapper;
@@ -48,6 +50,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _parameterMapper = parameterMapper;
          _advancedParameterMapper = advancedParameterMapper;
          _eventPropertiesMapper = eventPropertiesMapper;
+         _curveChartMapper = curveChartMapper;
          _simulationFactory = simulationFactory;
          _executionContext = executionContext;
          _simulationModelCreator = simulationModelCreator;
@@ -70,7 +73,17 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.ObservedData = usedObervedDataFrom(simulation, project);
          snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
          snapshot.AdvancedParameters = await advancedParametersFrom(simulation);
+         snapshot.Charts = await chartsFrom(simulation.Charts.ToList());
          return snapshot;
+      }
+
+      private async Task<CurveChart[]> chartsFrom(IReadOnlyList<OSPSuite.Core.Chart.CurveChart> simulationCharts)
+      {
+         if (!simulationCharts.Any())
+            return null;
+
+         var tasks = simulationCharts.Select(_curveChartMapper.MapToSnapshot);
+         return await Task.WhenAll(tasks);
       }
 
       private async Task<AdvancedParameter[]> advancedParametersFrom(ModelSimulation simulation)
@@ -183,7 +196,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void updateUsedObservedData(ModelSimulation simulation, string[] snapshotObservedData, PKSimProject project)
       {
-         snapshotObservedData?.Each(observedDataName=>
+         snapshotObservedData?.Each(observedDataName =>
          {
             var observedData = project.AllObservedData.FindByName(observedDataName);
             simulation.AddUsedObservedData(observedData);
