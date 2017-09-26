@@ -227,7 +227,12 @@ namespace PKSim.Presentation.Services
          if (string.IsNullOrEmpty(fileName))
             return;
 
-         _heavyWorkManager.Start(() => _workspace.LoadProject(async () => await ProjectFromSnapshot()), PKSimConstants.UI.LoadingProject);
+         _heavyWorkManager.Start(LoadSnapshotIntoWorkspace, PKSimConstants.UI.LoadingProject);
+
+         void LoadSnapshotIntoWorkspace()
+         {
+            _workspace.LoadProject(() => ProjectFromSnapshot().Wait());
+         }
 
          async Task ProjectFromSnapshot()
          {
