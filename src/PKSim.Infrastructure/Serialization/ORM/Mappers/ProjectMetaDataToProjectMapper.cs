@@ -1,4 +1,5 @@
 using System;
+using OSPSuite.Core;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
@@ -13,6 +14,7 @@ using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
+using PKSim.Core;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 {
@@ -69,6 +71,10 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
          //Once reference to dynamic meta data was added, deserialize the project itself
          _serializationManager.Deserialize(project, projectMetaData.Content.Data);
+
+         //if the project DB Version is the same as the current project, the project did not change
+         if (projectMetaData.Version == ProjectVersions.Current)
+            project.HasChanged = false;
 
          return project;
       }
