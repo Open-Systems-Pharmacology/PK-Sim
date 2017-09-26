@@ -7,7 +7,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
 using ModelProject = PKSim.Core.Model.PKSimProject;
-using ModelObservedDataClassification = OSPSuite.Core.Domain.Classification;
+using ModelClassification = OSPSuite.Core.Domain.Classification;
 using ModelObservedDataClassifiable = OSPSuite.Core.Domain.ClassifiableObservedData;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using SnapshotDataRepository = PKSim.Core.Snapshots.DataRepository;
@@ -41,9 +41,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Populations = await mapBuildingBlocksToSnapshots<Population>(project.All<Model.Population>());
          snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>(), project);
          snapshot.ObservedData = await mapObservedDataToSnapshots(project.AllObservedData);
-         snapshot.ObservedDataClassifications = await mapObservedDataClassificationsToSnapshots(
-            observedDataClassifiablesFrom<ModelObservedDataClassification>(project.AllClassifications),
-            observedDataClassifiablesFrom<ModelObservedDataClassifiable>(project.AllClassifiables));
+         snapshot.ObservedDataClassifications = await mapObservedDataClassificationsToSnapshots(project);
 
          return snapshot;
       }
@@ -74,12 +72,12 @@ namespace PKSim.Core.Snapshots.Mappers
          return classifications.Where(x => x.ClassificationType == ClassificationType.ObservedData).OfType<T>().ToList();
       }
 
-      private Task<Classification[]> mapObservedDataClassificationsToSnapshots(IReadOnlyList<ModelObservedDataClassification> allClassifications, IReadOnlyList<ModelObservedDataClassifiable> allClassifiables)
+      private Task<Classification[]> mapObservedDataClassificationsToSnapshots(ModelProject project)
       {
          var observedDataClassificationsContext = new ClassificationContext
          {
-            Classifications = allClassifications,
-            Classifiables = allClassifiables.Select(x => new ClassifiableContext {Name = x.Name, Parent = x.Parent}).ToList()
+            Classifications = observedDataClassifiablesFrom<ModelClassification>(project.AllClassifications),
+            Classifiables = observedDataClassifiablesFrom<IClassifiableWrapper>(project.AllClassifiables)
          };
 
          var rootClassifications = findRoots(observedDataClassificationsContext.Classifications);

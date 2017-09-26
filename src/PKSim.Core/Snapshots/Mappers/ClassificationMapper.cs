@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using ModelClassification = OSPSuite.Core.Domain.Classification;
 using SnapshotClassification = PKSim.Core.Snapshots.Classification;
 
@@ -14,47 +15,44 @@ namespace PKSim.Core.Snapshots.Mappers
          throw new NotImplementedException();
       }
 
-      protected async Task<SnapshotClassification> MapClassificationToSnapshot(ModelClassification model)
+      public override Task<SnapshotClassification> MapToSnapshot(ModelClassification model, ClassificationContext context)
       {
-         if (model == null)
-            return null;
+         return mapTreeFrom(model, context.Classifications, context.Classifiables);
+      }
 
-         var snapshot = await SnapshotFrom(model, x =>
+      private async Task<SnapshotClassification> mapClassificationToSnapshot(ModelClassification model)
+      {
+         return await SnapshotFrom(model, x =>
          {
             x.Name = model.Name;
          });
-         return snapshot;
       }
 
-      public override async Task<SnapshotClassification> MapToSnapshot(ModelClassification model, ClassificationContext context)
+      private async Task<SnapshotClassification> mapTreeFrom(ModelClassification classification, IReadOnlyList<ModelClassification> classifications, IReadOnlyList<IClassifiableWrapper> classifiables)
       {
-         return await MapTreeFrom(model, context.Classifications, context.Classifiables);
-      }
-
-      protected async Task<SnapshotClassification> MapTreeFrom(ModelClassification classification, IReadOnlyList<ModelClassification> classifications, IReadOnlyList<ClassifiableContext> classifiables)
-      {
-         var root = await MapClassificationToSnapshot(classification);
+         var root = await mapClassificationToSnapshot(classification);
 
          var childClassifications = childClassificationsFrom(classification, classifications);
-         await mapChildClassifications(classifications, classifiables, childClassifications, root);
+         root.Classifications = await mapChildClassifications(classifications, classifiables, childClassifications);
 
          root.Classifiables = childClassifiablesFrom(classification, classifiables).ToArray();
 
          return root;
       }
 
-      private IReadOnlyList<string> childClassifiablesFrom(ModelClassification classification, IReadOnlyList<ClassifiableContext> classifiables)
+      private IReadOnlyList<string> childClassifiablesFrom(ModelClassification classification, IReadOnlyList<IClassifiableWrapper> classifiables)
       {
-         return classifiables.Where(x => Equals(x.Parent, classification)).Select(x => x.Name).ToList();
+         return classifiables.Where(x => Equals(x.Parent, classification)).AllNames();
       }
 
-      private async Task mapChildClassifications(IReadOnlyList<ModelClassification> classifications, IReadOnlyList<ClassifiableContext> classifiables, IReadOnlyList<ModelClassification> childClassifications, Classification root)
+      private async Task<SnapshotClassification[]> mapChildClassifications(IReadOnlyList<ModelClassification> classifications, IReadOnlyList<IClassifiableWrapper> classifiables, IReadOnlyList<ModelClassification> childClassifications)
       {
          if (childClassifications.Any())
          {
-            var tasks = childClassifications.Select(x => MapTreeFrom(x, classifications, classifiables));
-            root.Classifications = await Task.WhenAll(tasks);
+            var tasks = childClassifications.Select(x => mapTreeFrom(x, classifications, classifiables));
+            return await Task.WhenAll(tasks);
          }
+         return null;
       }
 
       private static IReadOnlyList<ModelClassification> childClassificationsFrom(ModelClassification classification, IReadOnlyList<ModelClassification> classifications)

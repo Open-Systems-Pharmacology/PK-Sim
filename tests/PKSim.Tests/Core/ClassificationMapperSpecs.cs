@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Snapshots.Mappers;
 using Classification = PKSim.Core.Snapshots.Classification;
 
@@ -12,7 +13,7 @@ namespace PKSim.Core
    {
       protected OSPSuite.Core.Domain.Classification _classification, _subClassification, _subSubClassification;
       protected ClassificationContext _context;
-      protected ClassifiableContext _classifiable;
+      protected IClassifiableWrapper _classifiable;
 
       protected override Task Context()
       {
@@ -21,7 +22,7 @@ namespace PKSim.Core
          _classification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData };
          _subClassification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData, Parent = _classification };
          _subSubClassification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData, Parent = _subClassification };
-         _classifiable = new ClassifiableContext { Parent = _classification, Name = "classifiableName"};
+         _classifiable = new ClassifiableObservedData { Subject = new DataRepository().WithName("classifiableName"), Parent = _classification};
 
          _classification.Name = "A Name";
          _subClassification.Name = "Sub Name";
@@ -29,7 +30,7 @@ namespace PKSim.Core
 
          _context = new ClassificationContext
          {
-            Classifiables = new List<ClassifiableContext> { _classifiable },
+            Classifiables = new List<IClassifiableWrapper> { _classifiable },
             Classifications = new List<OSPSuite.Core.Domain.Classification> { _classification, _subClassification, _subSubClassification }
          };
 
