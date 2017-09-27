@@ -1,4 +1,6 @@
-﻿namespace PKSim.Core.Snapshots
+﻿using OSPSuite.Core.Chart;
+
+namespace PKSim.Core.Snapshots
 {
    public class Simulation : SnapshotBase
    {
@@ -14,6 +16,8 @@
       public CompoundProperties[] Compounds { get; set; }
       public EventSelections Events { get; set; }
       public AdvancedParameter[] AdvancedParameters { get; set; }
-
+      
+      //Individual charts
+      public CurveChart[] Charts { get; set; }
    }
 }

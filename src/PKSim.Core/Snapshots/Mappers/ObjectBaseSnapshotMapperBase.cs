@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain;
 namespace PKSim.Core.Snapshots.Mappers
 {
    public abstract class ObjectBaseSnapshotMapperBase<TModel, TSnapshot> : SnapshotMapperBase<TModel, TSnapshot>
-      where TModel : IObjectBase
+      where TModel : IWithName, IWithDescription
       where TSnapshot : IWithName, IWithDescription, new()
    {
       protected void MapModelPropertiesToSnapshot(TModel model, TSnapshot snapshot)

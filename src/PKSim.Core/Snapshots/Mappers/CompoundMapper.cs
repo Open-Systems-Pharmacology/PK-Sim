@@ -45,7 +45,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.PkaTypes = mapPkaTypes(compound);
          snapshot.Processes = await mapProcesses(compound);
          snapshot.IsSmallMolecule = compound.IsSmallMolecule;
-         snapshot.PlasmaProteinBindingPartner = compound.PlasmaProteinBindingPartner.ToString();
+         snapshot.PlasmaProteinBindingPartner = compound.PlasmaProteinBindingPartner;
          return snapshot;
       }
 
@@ -66,7 +66,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var tasks = snapshot.Processes.Select(_processMapper.MapToModel);
          compound.AddChildren(await Task.WhenAll(tasks));
          compound.IsSmallMolecule = snapshot.IsSmallMolecule;
-         compound.PlasmaProteinBindingPartner = EnumHelper.ParseValue<PlasmaProteinBindingPartner>(snapshot.PlasmaProteinBindingPartner);
+         compound.PlasmaProteinBindingPartner = snapshot.PlasmaProteinBindingPartner;
          await UpdateParametersFromSnapshot(snapshot, compound, PKSimConstants.ObjectTypes.Compound);
 
          return compound;
@@ -88,7 +88,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          snapshot.PkaTypes.Each((pkaType, i) =>
          {
-            var compoundType = EnumHelper.ParseValue<CompoundType>(pkaType.Type);
+            var compoundType = pkaType.Type;
             compound.Parameter(ParameterCompoundType(i)).Value = (int) compoundType;
             compound.Parameter(ParameterPKa(i)).Value = pkaType.Pka;
          });
@@ -112,7 +112,7 @@ namespace PKSim.Core.Snapshots.Mappers
             if (compoundType == CompoundType.Neutral)
                continue;
 
-            pkaTypes.Add(new PkaType {Pka = pkA, Type = compoundType.ToString()});
+            pkaTypes.Add(new PkaType {Pka = pkA, Type = compoundType});
          }
 
          return pkaTypes.ToArray();

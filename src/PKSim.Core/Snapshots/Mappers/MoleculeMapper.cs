@@ -30,7 +30,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var snapshot = await SnapshotFrom(molecule, x =>
          {
             updateMoleculeSpecificPropertiesToSnapshot(x, molecule);
-            x.Type = molecule.MoleculeType.ToString();
+            x.Type = molecule.MoleculeType;
          });
 
          snapshot.Expression = await allExpresionFrom(molecule);
@@ -52,12 +52,12 @@ namespace PKSim.Core.Snapshots.Mappers
          switch (molecule)
          {
             case IndividualProtein protein:
-               snapshot.IntracellularVascularEndoLocation = protein.IntracellularVascularEndoLocation.ToString();
-               snapshot.TissueLocation = protein.TissueLocation.ToString();
-               snapshot.MembraneLocation = protein.MembraneLocation.ToString();
+               snapshot.IntracellularVascularEndoLocation = protein.IntracellularVascularEndoLocation;
+               snapshot.TissueLocation = protein.TissueLocation;
+               snapshot.MembraneLocation = protein.MembraneLocation;
                break;
             case IndividualTransporter transporter:
-               snapshot.TransportType = transporter.TransportType.ToString();
+               snapshot.TransportType = transporter.TransportType;
                break;
          }
       }
@@ -67,12 +67,12 @@ namespace PKSim.Core.Snapshots.Mappers
          switch (molecule)
          {
             case IndividualProtein protein:
-               protein.IntracellularVascularEndoLocation = EnumHelper.ParseValue<IntracellularVascularEndoLocation>(snapshot.IntracellularVascularEndoLocation);
-               protein.TissueLocation = EnumHelper.ParseValue<TissueLocation>(snapshot.TissueLocation);
-               protein.MembraneLocation = EnumHelper.ParseValue<MembraneLocation>(snapshot.MembraneLocation);
+               protein.IntracellularVascularEndoLocation = snapshot.IntracellularVascularEndoLocation.Value;
+               protein.TissueLocation = snapshot.TissueLocation.Value;
+               protein.MembraneLocation = snapshot.MembraneLocation.Value;
                break;
             case IndividualTransporter transporter:
-               transporter.TransportType = EnumHelper.ParseValue<TransportType>(snapshot.TransportType);
+               transporter.TransportType = snapshot.TransportType.Value;
                break;
          }
       }
@@ -80,7 +80,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<IndividualMolecule> MapToModel(Molecule snapshot, ISimulationSubject simulationSubject)
       {
          var molecule = createMoleculeFrom(snapshot, simulationSubject);
-         await UpdateParametersFromSnapshot(snapshot, molecule, snapshot.Type);
+         await UpdateParametersFromSnapshot(snapshot, molecule, snapshot.Type.ToString());
          MapSnapshotPropertiesToModel(snapshot, molecule);
          updateMoleculePropertiesToMolecule(molecule, snapshot);
          molecule.Ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, simulationSubject);
@@ -111,7 +111,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private IIndividualMoleculeFactory factoryFor(Molecule molecule)
       {
-         var moleculeType = EnumHelper.ParseValue<QuantityType>(molecule.Type);
+         var moleculeType = molecule.Type;
          switch (moleculeType)
          {
             case QuantityType.Enzyme:

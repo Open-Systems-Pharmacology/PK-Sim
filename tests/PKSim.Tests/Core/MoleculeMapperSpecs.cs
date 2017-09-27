@@ -127,9 +127,9 @@ namespace PKSim.Core
       [Observation]
       public void should_have_saved_enzyme_specific_properties()
       {
-         _snapshot.IntracellularVascularEndoLocation.ShouldBeEqualTo(_enzyme.IntracellularVascularEndoLocation.ToString());
-         _snapshot.MembraneLocation.ShouldBeEqualTo(_enzyme.MembraneLocation.ToString());
-         _snapshot.TissueLocation.ShouldBeEqualTo(_enzyme.TissueLocation.ToString());
+         _snapshot.IntracellularVascularEndoLocation.ShouldBeEqualTo(_enzyme.IntracellularVascularEndoLocation);
+         _snapshot.MembraneLocation.ShouldBeEqualTo(_enzyme.MembraneLocation);
+         _snapshot.TissueLocation.ShouldBeEqualTo(_enzyme.TissueLocation);
          _snapshot.TransportType.ShouldBeNull();
       }
 
@@ -157,7 +157,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_saved_transporter_specific_properties()
       {
-         _snapshot.TransportType.ShouldBeEqualTo(_transporter.TransportType.ToString());
+         _snapshot.TransportType.ShouldBeEqualTo(_transporter.TransportType);
          _snapshot.MembraneLocation.ShouldBeNull();
          _snapshot.TissueLocation.ShouldBeNull();
          _snapshot.IntracellularVascularEndoLocation.ShouldBeNull();
@@ -173,9 +173,9 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_enzyme);
 
-         _snapshot.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial.ToString();
-         _snapshot.MembraneLocation = MembraneLocation.BloodBrainBarrier.ToString();
-         _snapshot.TissueLocation = TissueLocation.Interstitial.ToString();
+         _snapshot.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
+         _snapshot.MembraneLocation = MembraneLocation.BloodBrainBarrier;
+         _snapshot.TissueLocation = TissueLocation.Interstitial;
          var enzymeFactory = A.Fake<IIndividualMoleculeFactory>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualEnzyme>()).Returns(enzymeFactory);
          A.CallTo(() => enzymeFactory.CreateFor(_simulationSubject)).Returns(_enzyme);
@@ -250,7 +250,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_transporter);
 
-         _snapshot.TransportType = TransportType.PgpLike.ToString();
+         _snapshot.TransportType = TransportType.PgpLike;
          var transporterFactory = A.Fake<IIndividualMoleculeFactory>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualTransporter>()).Returns(transporterFactory);
          A.CallTo(() => transporterFactory.CreateFor(_simulationSubject)).Returns(_transporter);

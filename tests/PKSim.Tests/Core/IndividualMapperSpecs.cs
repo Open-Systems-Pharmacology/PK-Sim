@@ -87,9 +87,9 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.ParameterFrom(_individual.OriginData.Age, A<string>._, A<IDimension>._)).Returns(_ageSnapshotParameter);
          A.CallTo(() => _parameterMapper.ParameterFrom(_individual.OriginData.Height, A<string>._, A<IDimension>._)).Returns(_heightSnapshotParameter);
 
-         _enzymeSnapshot = new Molecule { Type = "Enzyme" };
+         _enzymeSnapshot = new Molecule { Type = QuantityType.Enzyme};
          A.CallTo(() => _moleculeMapper.MapToSnapshot(_enzyme)).Returns(_enzymeSnapshot);
-         _transporterSnapshot = new Molecule {Type = "Transporter"};
+         _transporterSnapshot = new Molecule {Type = QuantityType.Transporter};
          A.CallTo(() => _moleculeMapper.MapToSnapshot(_transporter)).Returns(_transporterSnapshot);
 
          _localizedParameterKidney = new LocalizedParameter {Path = "Organism|Kidney|PKidney"};

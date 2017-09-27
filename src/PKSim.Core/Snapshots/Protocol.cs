@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots
 {
@@ -7,12 +8,12 @@ namespace PKSim.Core.Snapshots
    {
       //Simple protocol properties
       public string ApplicationType { get; set; }
-      public string DosingInterval { get; set; }
+      public DosingIntervalId DosingInterval { get; set; }
       public string TargetOrgan { get; set; }
       public string TargetCompartment { get; internal set; }
 
       [JsonIgnore]
-      public bool IsSimple => !string.IsNullOrEmpty(ApplicationType) && !string.IsNullOrEmpty(DosingInterval);
+      public bool IsSimple => !string.IsNullOrEmpty(ApplicationType);
 
       //Advanced protocol properties
       public Schema[] Schemas { get; set; }

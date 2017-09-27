@@ -1,17 +1,19 @@
-﻿namespace PKSim.Core.Snapshots
+﻿using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
+
+namespace PKSim.Core.Snapshots
 {
    public class Molecule : ParameterContainerSnapshotBase
    {
-      public string Type { get; set; }
+      public QuantityType Type { get; set; }
 
       //Proteins only
-      public string MembraneLocation { get; set; }
-
-      public string TissueLocation { get; set; }
-      public string IntracellularVascularEndoLocation { get; set; }
+      public MembraneLocation? MembraneLocation { get; set; }
+      public TissueLocation? TissueLocation { get; set; }
+      public IntracellularVascularEndoLocation? IntracellularVascularEndoLocation { get; set; }
 
       //Transporters only
-      public string TransportType { get; set; }
+      public TransportType? TransportType { get; set; }
 
       public LocalizedParameter[] Expression { get; set; }
       public Ontogeny Ontogeny { get; set; }
