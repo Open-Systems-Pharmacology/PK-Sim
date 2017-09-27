@@ -12,6 +12,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
+using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;
 using IPKCalculationOptionsFactory = PKSim.Core.Services.IPKCalculationOptionsFactory;
 
 namespace PKSim.Core
@@ -23,7 +24,7 @@ namespace PKSim.Core
       protected IProtocolFactory _protocolFactory;
       protected IGlobalPKAnalysisRunner _globalPKAnalysisRunner;
       private IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
-      protected IPKAnalysisTask _pkAnalysisTask;
+      protected IPKAnalysesTask _pkAnalysisTask;
       private IVSSCalculator _vssCalculator;
       protected DataColumn _peripheralVenousBloodPlasma;
       protected DataColumn _venousBloodPlasma;
@@ -48,7 +49,7 @@ namespace PKSim.Core
          _protocolFactory = A.Fake<IProtocolFactory>();
          _globalPKAnalysisRunner = A.Fake<IGlobalPKAnalysisRunner>();
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
-         _pkAnalysisTask = A.Fake<IPKAnalysisTask>();
+         _pkAnalysisTask = A.Fake<IPKAnalysesTask>();
          _interactionTask = A.Fake<IInteractionTask>();
          _cloner = A.Fake<ICloner>();
          sut = new GlobalPKAnalysisTask(_parameterFactory, _protocolMapper, _protocolFactory, _globalPKAnalysisRunner,

@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
@@ -19,6 +20,7 @@ using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Individual = PKSim.Core.Model.Individual;
 using OutputSchema = OSPSuite.Core.Domain.OutputSchema;
 using OutputSelections = PKSim.Core.Snapshots.OutputSelections;
+using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
 
@@ -60,6 +62,9 @@ namespace PKSim.Core
       protected SimulationTimeProfileChart _simulationTimeProfile;
       protected CurveChart _snapshotSimulationTimeProfile;
       protected ISimulationRunner _simulationRunner;
+      private PopulationAnalysisChartMapper _populationAnalysisChartMapper;
+      private PopulationAnalysisChart _populationSimulationAnalysisChart;
+      private Snapshots.PopulationAnalysisChart _snapshotPopulationAnalysisChart;
 
       protected override Task Context()
       {
@@ -77,9 +82,10 @@ namespace PKSim.Core
          _simulationBuildingBlockUpdater = A.Fake<ISimulationBuildingBlockUpdater>();
          _modelPropertiesTask = A.Fake<IModelPropertiesTask>();
          _simulationRunner = A.Fake<ISimulationRunner>();
+         _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
-            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper, _advancedParameterMapper, _eventPropertiesMapper, _curveChartMapper,
+            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper, _advancedParameterMapper, _eventPropertiesMapper, _curveChartMapper, _populationAnalysisChartMapper,
             _simulationFactory, _executionContext, _simulationModelCreator, _simulationBuildingBlockUpdater, _modelPropertiesTask, _simulationRunner);
 
          _simulationProperties = new SimulationProperties
@@ -105,8 +111,14 @@ namespace PKSim.Core
 
          _simulationTimeProfile = new SimulationTimeProfileChart();
          _snapshotSimulationTimeProfile = new CurveChart();
-         A.CallTo(() => _curveChartMapper.MapToSnapshot(_simulationTimeProfile)).ReturnsAsync(_snapshotSimulationTimeProfile);
          _individualSimulation.AddAnalysis(_simulationTimeProfile);
+
+         A.CallTo(() => _curveChartMapper.MapToSnapshots(A<IEnumerable<SimulationTimeProfileChart>>.That.IsEmpty()))
+            .ReturnsAsync(null);
+
+         A.CallTo(() => _curveChartMapper.MapToSnapshots(A<IEnumerable<SimulationTimeProfileChart>>.That.Contains(_simulationTimeProfile)))
+            .ReturnsAsync(new[] {_snapshotSimulationTimeProfile});
+
 
          _populationSimulation = new PopulationSimulation
          {
@@ -116,7 +128,18 @@ namespace PKSim.Core
          };
 
          _avancedParameterCollection = new AdvancedParameterCollection();
+         _populationSimulationAnalysisChart = new BoxWhiskerAnalysisChart();
          _populationSimulation.SetAdvancedParameters(_avancedParameterCollection);
+         _populationSimulation.AddAnalysis(_populationSimulationAnalysisChart);
+         _snapshotPopulationAnalysisChart = new Snapshots.PopulationAnalysisChart();
+
+         A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshots(A<IEnumerable<PopulationAnalysisChart>>.That.IsEmpty()))
+            .ReturnsAsync(null);
+
+         A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshots(A<IEnumerable<PopulationAnalysisChart>>.That.Contains(_populationSimulationAnalysisChart)))
+            .ReturnsAsync(new[] {_snapshotPopulationAnalysisChart});
+
+         A.CallTo(() => _advancedParameterMapper.MapToSnapshots(null)).ReturnsAsync(null);
 
          _project = new PKSimProject();
          _individual = new Individual {Name = "IND"};
@@ -129,10 +152,11 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_event);
          _project.AddBuildingBlock(_population);
          _project.AddObservedData(_observedData);
+
          _compoundProperties = new CompoundProperties();
          _snaphotCompoundProperties = new Snapshots.CompoundProperties {Name = _compound.Name};
-         A.CallTo(() => _compoundPropertiesMapper.MapToSnapshot(_compoundProperties, _project)).ReturnsAsync(_snaphotCompoundProperties);
          _individualSimulation.Properties.AddCompoundProperties(_compoundProperties);
+         A.CallTo(() => _compoundPropertiesMapper.MapToSnapshots(_individualSimulation.CompoundPropertiesList, _project)).ReturnsAsync(new[] {_snaphotCompoundProperties});
 
          _eventSelections = new EventSelections();
          _eventSelections.AddEventSelection(new EventSelection
@@ -204,9 +228,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_save_analysis()
+      public void should_save_individual_analysis()
       {
-         _snapshot.Charts.ShouldContain(_snapshotSimulationTimeProfile);
+         _snapshot.IndividualAnalyses.ShouldContain(_snapshotSimulationTimeProfile);
+      }
+
+      [Observation]
+      public void should_set_population_analysis_to_null()
+      {
+         _snapshot.PopulationAnalyses.ShouldBeNull();
       }
    }
 
@@ -221,7 +251,7 @@ namespace PKSim.Core
          _advancedParameter = new Model.AdvancedParameter();
          _avancedParameterCollection.AddAdvancedParameter(_advancedParameter);
          _snapshotAdvancedParameter = new AdvancedParameter();
-         A.CallTo(() => _advancedParameterMapper.MapToSnapshot(_advancedParameter)).ReturnsAsync(_snapshotAdvancedParameter);
+         A.CallTo(() => _advancedParameterMapper.MapToSnapshots(A<IEnumerable<Model.AdvancedParameter>>.That.Contains(_advancedParameter))).ReturnsAsync(new[] {_snapshotAdvancedParameter});
       }
 
       protected override async Task Because()
@@ -278,19 +308,16 @@ namespace PKSim.Core
          _outputSchema = new OutputSchema();
          A.CallTo(() => _outputSchemaMapper.MapToModel(_snapshot.OutputSchema)).ReturnsAsync(_outputSchema);
 
-         A.CallTo(() => _curveChartMapper.MapToModel(_snapshotSimulationTimeProfile, A<CurveChartContext>._))
+         A.CallTo(() => _curveChartMapper.MapToModels(A<IEnumerable<CurveChart>>.That.Contains(_snapshotSimulationTimeProfile), A<CurveChartContext>._))
             .Invokes(x => _context = x.GetArgument<CurveChartContext>(1))
-            .ReturnsAsync(_simulationTimeProfile);
-      
+            .ReturnsAsync(new[] {_simulationTimeProfile});
+
          //ensure that run will be performed
          _snapshot.HasResults = true;
          _calculatedDataRepository = DomainHelperForSpecs.ObservedData("Calculated");
 
          A.CallTo(() => _simulationRunner.RunSimulation(individualSimulation, false, false))
-            .Invokes(x =>
-            {
-               individualSimulation.DataRepository = _calculatedDataRepository;
-            });
+            .Invokes(x => { individualSimulation.DataRepository = _calculatedDataRepository; });
       }
 
       protected override async Task Because()
@@ -340,7 +367,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_chart()
       {
-         _simulation.SimulationCharts.ShouldContain(_simulationTimeProfile);
+         _simulation.Analyses.ShouldContain(_simulationTimeProfile);
       }
 
       [Observation]

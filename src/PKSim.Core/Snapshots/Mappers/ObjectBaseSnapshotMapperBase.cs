@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 
@@ -36,6 +37,8 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
 
+      public virtual Task<TModel[]> MapToModels(IEnumerable<TSnapshot> snapshots, TContext context) => MapToModels(snapshots, s => MapToModel(s, context));
+
       public sealed override Task<TModel> MapToModel(TSnapshot snapshot)
       {
          return FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
@@ -47,6 +50,8 @@ namespace PKSim.Core.Snapshots.Mappers
       where TSnapshot : IWithName, IWithDescription, new()
    {
       public abstract Task<TSnapshot> MapToSnapshot(TModel model, TSnapshotContext context);
+
+      public virtual Task<TSnapshot[]> MapToSnapshots(IEnumerable<TModel> models, TSnapshotContext context) => MapToSnapshots(models, m => MapToSnapshot(m, context));
 
       public sealed override Task<TSnapshot> MapToSnapshot(TModel model)
       {

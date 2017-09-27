@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Extensions;
+using CalculationMethodCache = PKSim.Core.Snapshots.CalculationMethodCache;
 using Compound = PKSim.Core.Snapshots.Compound;
 using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
 
@@ -22,7 +22,7 @@ namespace PKSim.Core
       protected Compound _snapshot;
       protected Model.Compound _compound;
       protected CalculationMethodCacheMapper _calculationMethodCacheMapper;
-      protected Snapshots.CalculationMethodCache _calculationMethodCacheSnapshot;
+      protected CalculationMethodCache _calculationMethodCacheSnapshot;
       protected CompoundProcessMapper _processMapper;
       protected CompoundProcess _snapshotProcess1;
       protected CompoundProcess _snapshotProcess2;
@@ -36,8 +36,8 @@ namespace PKSim.Core
          _parameterMapper = A.Fake<ParameterMapper>();
          _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
          _processMapper = A.Fake<CompoundProcessMapper>();
-         _compoundFactory= A.Fake<ICompoundFactory>();
-         sut = new CompoundMapper(_parameterMapper, _alternativeMapper, _calculationMethodCacheMapper, _processMapper,_compoundFactory);
+         _compoundFactory = A.Fake<ICompoundFactory>();
+         sut = new CompoundMapper(_parameterMapper, _alternativeMapper, _calculationMethodCacheMapper, _processMapper, _compoundFactory);
 
          _compound = new Model.Compound
          {
@@ -56,17 +56,17 @@ namespace PKSim.Core
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_PERMEABILITY));
 
          _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.IS_SMALL_MOLECULE));
-         _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int)PlasmaProteinBindingPartner.Glycoprotein).WithName(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER));
+         _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int) PlasmaProteinBindingPartner.Glycoprotein).WithName(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER));
 
          _partialProcess = new EnzymaticProcess().WithName("EnzymaticProcess");
          _systemicProcess = new SystemicProcess().WithName("SystemicProcess");
          _compound.AddProcess(_partialProcess);
          _compound.AddProcess(_systemicProcess);
 
-         _calculationMethodCacheSnapshot = new Snapshots.CalculationMethodCache();
+         _calculationMethodCacheSnapshot = new CalculationMethodCache();
          A.CallTo(() => _calculationMethodCacheMapper.MapToSnapshot(_compound.CalculationMethodCache)).Returns(_calculationMethodCacheSnapshot);
 
-         _snapshotProcess1= new CompoundProcess();
+         _snapshotProcess1 = new CompoundProcess();
          _snapshotProcess2 = new CompoundProcess();
          A.CallTo(() => _processMapper.MapToSnapshot(_partialProcess)).Returns(_snapshotProcess1);
          A.CallTo(() => _processMapper.MapToSnapshot(_systemicProcess)).Returns(_snapshotProcess2);
@@ -152,7 +152,6 @@ namespace PKSim.Core
       }
    }
 
-
    public class When_mapping_a_valid_compound_snapshot_to_a_compound : concern_for_CompoundMapper
    {
       private Model.Compound _newCompound;
@@ -178,11 +177,11 @@ namespace PKSim.Core
 
          _alternative = new ParameterAlternative().WithName("Alternative");
          _fractionUnboundParameterGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
-         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], _fractionUnboundParameterGroup)).Returns(_alternative);
+         A.CallTo(() => _alternativeMapper.MapToModels(_snapshot.FractionUnbound, _fractionUnboundParameterGroup)).ReturnsAsync(new[] {_alternative});
 
-         _snapshot.Processes = new[]{_snapshotProcess1};
-         _newProcess=new EnzymaticProcess();
-         A.CallTo(() =>  _processMapper.MapToModel(_snapshotProcess1)).Returns(_newProcess);
+         _snapshot.Processes = new[] {_snapshotProcess1};
+         _newProcess = new EnzymaticProcess();
+         A.CallTo(() => _processMapper.MapToModel(_snapshotProcess1)).ReturnsAsync(_newProcess);
       }
 
       private void clearCompound()
@@ -206,7 +205,6 @@ namespace PKSim.Core
       public void should_load_the_calculation_methods()
       {
          A.CallTo(() => _calculationMethodCacheMapper.UpdateCalculationMethodCache(_newCompound, _snapshot.CalculationMethods)).MustHaveHappened();
-
       }
 
       [Observation]
@@ -240,9 +238,9 @@ namespace PKSim.Core
          _newCompound.Parameter(CoreConstants.Parameter.PARAMETER_PKA2).Value.ShouldBeEqualTo(_snapshot.PkaTypes[1].Pka);
          _newCompound.Parameter(CoreConstants.Parameter.PARAMETER_PKA3).Value.ShouldBeEqualTo(_snapshot.PkaTypes[2].Pka);
 
-         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int)_snapshot.PkaTypes[0].Type);
-         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE2).Value.ShouldBeEqualTo((int)_snapshot.PkaTypes[1].Type);
-         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int)_snapshot.PkaTypes[2].Type);
+         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[0].Type);
+         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE2).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[1].Type);
+         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[2].Type);
       }
    }
-} 
+}

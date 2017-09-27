@@ -1,6 +1,5 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Mappers;
@@ -15,22 +14,22 @@ namespace PKSim.Presentation
       protected IEditPopulationAnalysisGroupingFieldView _view;
       protected PopulationAnalysisGroupingField _groupingField;
       protected IPopulationDataCollector _populationDataCollector;
-      protected IGroupingDefinition _groupingDefinition;
+      protected GroupingDefinition _groupingDefinition;
       protected IGroupingDefinitionPresenter _groupingDefinitionPresenter;
       protected IPopulationAnalysisField _referenceField;
 
       protected override void Context()
       {
-         _view= A.Fake<IEditPopulationAnalysisGroupingFieldView>();
-         _groupingDefinition= A.Fake<IGroupingDefinition>();
-         _presenterMapper= A.Fake<IGroupingDefinitionToGroupingDefinitionPresenterMapper>();
+         _view = A.Fake<IEditPopulationAnalysisGroupingFieldView>();
+         _groupingDefinition = A.Fake<GroupingDefinition>();
+         _presenterMapper = A.Fake<IGroupingDefinitionToGroupingDefinitionPresenterMapper>();
          _groupingField = A.Fake<PopulationAnalysisGroupingField>();
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
-         _groupingDefinitionPresenter= A.Fake<IGroupingDefinitionPresenter>();
+         _groupingDefinitionPresenter = A.Fake<IGroupingDefinitionPresenter>();
          _groupingField.PopulationAnalysis = A.Fake<PopulationAnalysis>();
          _referenceField = A.Fake<IPopulationAnalysisField>();
          sut = new EditPopulationAnalysisGroupingFieldPresenter(_view, _presenterMapper);
-         
+
          A.CallTo(() => _groupingField.ReferencedFieldName).Returns("ParameterField");
          A.CallTo(() => _groupingField.GroupingDefinition).Returns(_groupingDefinition);
          A.CallTo(() => _presenterMapper.MapFrom(_groupingDefinition)).Returns(_groupingDefinitionPresenter);
@@ -77,6 +76,7 @@ namespace PKSim.Presentation
          base.Context();
          A.CallTo(() => _view.Canceled).Returns(false);
       }
+
       protected override void Because()
       {
          sut.Edit(_groupingField, _populationDataCollector);
@@ -89,13 +89,14 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_editing_a_grouping_field_and_the_cancels_the_action: concern_for_EditPopulationAnalysisGroupingFieldPresenter
+   public class When_editing_a_grouping_field_and_the_cancels_the_action : concern_for_EditPopulationAnalysisGroupingFieldPresenter
    {
       protected override void Context()
       {
          base.Context();
          A.CallTo(() => _view.Canceled).Returns(true);
       }
+
       protected override void Because()
       {
          sut.Edit(_groupingField, _populationDataCollector);
@@ -107,4 +108,4 @@ namespace PKSim.Presentation
          A.CallTo(() => _groupingDefinitionPresenter.UpdateGroupingDefinition()).MustNotHaveHappened();
       }
    }
-}	
+}

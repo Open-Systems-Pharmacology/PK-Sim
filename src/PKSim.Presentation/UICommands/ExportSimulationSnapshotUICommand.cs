@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.UICommands;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
@@ -13,15 +12,14 @@ namespace PKSim.Presentation.UICommands
    {
       private readonly SimulationMapper _simulationMapper;
       private readonly IPKSimProjectRetriever _projectRetriever;
-      private readonly IExecutionContext _context;
+      private readonly IBuildingBlockTask _buildingBlockTask;
       private readonly ISnapshotTask _snapshotTask;
 
-      public ExportSimulationSnapshotUICommand(SimulationMapper simulationMapper, IPKSimProjectRetriever projectRetriever, 
-         IExecutionContext context, ISnapshotTask snapshotTask)
+      public ExportSimulationSnapshotUICommand(SimulationMapper simulationMapper, IPKSimProjectRetriever projectRetriever, IBuildingBlockTask buildingBlockTask, ISnapshotTask snapshotTask)
       {
          _simulationMapper = simulationMapper;
          _projectRetriever = projectRetriever;
-         _context = context;
+         _buildingBlockTask = buildingBlockTask;
          _snapshotTask = snapshotTask;
       }
 
@@ -32,7 +30,7 @@ namespace PKSim.Presentation.UICommands
 
       private async Task exportSimulationToSnapshot()
       {
-         _context.Load(Subject);
+         _buildingBlockTask.LoadResults(Subject);
 
          var snapshotObject = await _simulationMapper.MapToSnapshot(Subject, _projectRetriever.Current);
 

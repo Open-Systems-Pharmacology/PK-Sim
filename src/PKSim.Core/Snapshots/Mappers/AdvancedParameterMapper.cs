@@ -32,8 +32,6 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public Task<SnapshotAdvancedParameter[]> MapToSnapshot(IEnumerable<ModelAdvancedParameter> advancedParameters) => Task.WhenAll(advancedParameters.Select(MapToSnapshot));
-
       protected override Task AddModelParametersToSnapshot(ModelAdvancedParameter model, SnapshotAdvancedParameter snapshot)
       {
          return AddParametersToSnapshot(model.AllParameters, snapshot);
@@ -57,8 +55,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          advancedParameterContainer.RemoveAllAdvancedParameters();
          var parameterCache = advancedParameterContainer.AllParameters(_entityPathResolver);
-         var tasks = snapshotAdvancedParameters.Select(x => MapToModel(x, parameterCache));
-         var advancedParameters = await Task.WhenAll(tasks);
+
+         var advancedParameters = await MapToModels(snapshotAdvancedParameters, parameterCache);
 
          advancedParameters.Each(x => advancedParameterContainer.AddAdvancedParameter(x, generateRandomValues: true));
       }

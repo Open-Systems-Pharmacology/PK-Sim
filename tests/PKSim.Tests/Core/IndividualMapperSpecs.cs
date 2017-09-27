@@ -10,6 +10,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Extensions;
 using IndividualMapper = PKSim.Core.Snapshots.Mappers.IndividualMapper;
 using SnapshotIndividual = PKSim.Core.Snapshots.Individual;
 using ModelIndividual = PKSim.Core.Model.Individual;
@@ -171,8 +172,7 @@ namespace PKSim.Core
          _molecule1 = new IndividualEnzyme().WithName("Mol1");
          _molecule2 = new IndividualEnzyme().WithName("Mol2");
 
-         A.CallTo(() => _moleculeMapper.MapToModel(_enzymeSnapshot, _individual)).Returns(_molecule1);
-         A.CallTo(() => _moleculeMapper.MapToModel(_transporterSnapshot, _individual)).Returns(_molecule2);
+         A.CallTo(() => _moleculeMapper.MapToModels(_snapshot.Molecules, _individual)).ReturnsAsync(new[] {_molecule1,_molecule2});
 
 
          A.CallTo(() => _dimensionRepository.Mass.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value)).Returns(10);

@@ -18,19 +18,19 @@ namespace PKSim.Presentation.Presenters.Simulations
 
    public class PopulationPKAnalysisPresenter : PKAnalysisPresenter<IPopulationPKAnalysisView, IPopulationPKAnalysisPresenter>, IPopulationPKAnalysisPresenter
    {
-      private readonly IPKAnalysisTask _pkAnalysisTask;
+      private readonly IPKAnalysesTask _pkAnalysesTask;
       private readonly IPKAnalysisExportTask _exportTask;
       private readonly List<PopulationPKAnalysis> _allAnalyses;
       private IEnumerable<PopulationPKAnalysis> _allPKAnalyses;
       private IPopulationDataCollector _populationDataCollector;
       private readonly IPopulationPKAnalysisToPKAnalysisDTOMapper _populationPKAnalysisToDTOMapper;
 
-      public PopulationPKAnalysisPresenter(IPopulationPKAnalysisView view, IPKAnalysisTask pkAnalysisTask, 
+      public PopulationPKAnalysisPresenter(IPopulationPKAnalysisView view, IPKAnalysesTask pkAnalysesTask, 
          IPKAnalysisExportTask exportTask, IPopulationPKAnalysisToPKAnalysisDTOMapper populationPKAnalysisToDTOMapper, 
          IPKParameterRepository pkParameterRepository, IPresentationSettingsTask presentationSettingsTask)
          : base(view, pkParameterRepository, presentationSettingsTask)
       {
-         _pkAnalysisTask = pkAnalysisTask;
+         _pkAnalysesTask = pkAnalysesTask;
          _exportTask = exportTask;
          _allAnalyses = new List<PopulationPKAnalysis>();
          _populationPKAnalysisToDTOMapper = populationPKAnalysisToDTOMapper;
@@ -40,7 +40,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          _allAnalyses.Clear();
          _populationDataCollector = populationDataCollector;
-         _allPKAnalyses = _pkAnalysisTask.CalculateFor(populationDataCollector, timeProfileChartData);
+         _allPKAnalyses = _pkAnalysesTask.CalculateFor(populationDataCollector, timeProfileChartData);
          _allAnalyses.AddRange(_allPKAnalyses);
          LoadPreferredUnitsForPKAnalysis();
          BindToPKAnalysis();

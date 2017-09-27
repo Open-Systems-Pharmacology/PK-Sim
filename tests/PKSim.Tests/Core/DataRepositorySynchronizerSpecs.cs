@@ -15,13 +15,13 @@ namespace PKSim.Core
 {
    public abstract class concern_for_DataRepositorySynchronizer : ContextSpecification<ISimulationResultsSynchronizer>
    {
-      protected IPopulationPKAnalysesTask _populationPKAnalysesTask;
+      protected IPKAnalysesTask _populationPKAnalysesTask;
       protected ISimulationResultsCreator _simulationResultsCreator;
       protected IDisplayUnitUpdater _displayUnitUpdater;
 
       protected override void Context()
       {
-         _populationPKAnalysesTask = A.Fake<IPopulationPKAnalysesTask>();
+         _populationPKAnalysesTask = A.Fake<IPKAnalysesTask>();
          _simulationResultsCreator= A.Fake<ISimulationResultsCreator>();
          _displayUnitUpdater= A.Fake<IDisplayUnitUpdater>();
 

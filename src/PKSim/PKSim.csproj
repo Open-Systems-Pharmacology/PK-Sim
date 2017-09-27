@@ -190,7 +190,7 @@
     </ProjectReference>
     <ProjectReference Include="..\PKSim.Assets\PKSim.Assets.csproj">
       <Project>{2FFDED35-4F46-4F0C-A5A7-4097B0C5F7AA}</Project>
-      <Name>PKSim.Resources</Name>
+      <Name>PKSim.Assets</Name>
     </ProjectReference>
     <ProjectReference Include="..\PKSim.UI\PKSim.UI.csproj">
       <Project>{19E2A5E5-2248-43AA-92E0-190B327D67A8}</Project>

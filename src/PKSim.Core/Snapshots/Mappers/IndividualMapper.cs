@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Batch.Mapper;
@@ -77,9 +75,9 @@ namespace PKSim.Core.Snapshots.Mappers
          var originData = createOriginDataFrom(individualSnapshot);
          var individual = _individualFactory.CreateAndOptimizeFor(originData, individualSnapshot.Seed);
          MapSnapshotPropertiesToModel(individualSnapshot, individual);
-         await  updateIndividualParameters(individualSnapshot, individual);
-         var tasks = individualSnapshot.Molecules.Select(x => _moleculeMapper.MapToModel(x, individual));
-         individual.AddChildren(await Task.WhenAll(tasks));
+         await updateIndividualParameters(individualSnapshot, individual);
+         var molecules = await _moleculeMapper.MapToModels(individualSnapshot.Molecules, individual);
+         molecules.Each(individual.AddMolecule);
          return individual;
       }
 
@@ -109,7 +107,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (parameter == null)
             return double.NaN;
 
-         var unit = dimension.Unit(UnitValueFor(parameter.Unit));
+         var unit = dimension.Unit(ModelValueFor(parameter.Unit));
          return dimension.UnitValueToBaseUnitValue(unit, parameter.Value);
       }
    }

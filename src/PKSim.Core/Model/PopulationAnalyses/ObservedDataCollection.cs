@@ -1,19 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model.Extensions;
-using OSPSuite.Core;
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model.PopulationAnalyses
 {
    /// <summary>
-   /// Represents a collection of <see cref="DataRepository"/> also containing <see cref="CurveOptions"/> for each observed data columns.
+   ///    Represents a collection of <see cref="DataRepository" /> also containing <see cref="ObservedDataCurveOptions" /> for
+   ///    each
+   ///    observed data columns.
    /// </summary>
    public class ObservedDataCollection : IWithObservedData, IUpdatable, IEnumerable<DataRepository>
    {

@@ -1,24 +1,32 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Validation;
-using PKSim.Core.Chart;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
-using PKSim.Core.Repositories;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
+using PKSim.Core.Chart;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Model.Extensions;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
-   public interface IPKAnalysisTask
+   public interface IPKAnalysesTask : OSPSuite.Core.Domain.Services.IPKAnalysesTask
    {
+      /// <summary>
+      ///    Calculates the PKAnalyses for the given <paramref name="populationSimulation" />. It does not delete the previous pk
+      ///    calculation from the <paramref name="populationSimulation" />
+      /// </summary>
+      /// <param name="populationSimulation">Population simulation for which pk parameters should be calculated</param>
+      /// <returns>The PopulationSimulationPKAnalyses containing all calculated values</returns>
+      PopulationSimulationPKAnalyses CalculateFor(PopulationSimulation populationSimulation);
+
       IEnumerable<PopulationPKAnalysis> CalculateFor(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData);
 
       /// <summary>
@@ -33,23 +41,51 @@ namespace PKSim.Core.Services
       PKValues CalculatePK(DataColumn column, PKCalculationOptions options);
    }
 
-   public class PKAnalysisTask : IPKAnalysisTask
+   public class PKAnalysesTask : OSPSuite.Core.Domain.Services.PKAnalysesTask, IPKAnalysesTask
    {
+      private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly IEntityPathResolver _entityPathResolver;
       private readonly IPKValuesCalculator _pkValuesCalculator;
       private readonly IPKValuesToPKAnalysisMapper _pkMapper;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
       private readonly IPKParameterRepository _pkParameterRepository;
 
-      public PKAnalysisTask(IPKValuesCalculator pkValuesCalculator, IPKValuesToPKAnalysisMapper pkMapper,
-         IDimensionRepository dimensionRepository, IPKCalculationOptionsFactory pkCalculationOptionsFactory,
-         IPKParameterRepository pkParameterRepository)
+      public PKAnalysesTask(ILazyLoadTask lazyLoadTask,
+         IPKValuesCalculator pkValuesCalculator,
+         IPKParameterRepository pkParameterRepository,
+         IPKCalculationOptionsFactory pkCalculationOptionsFactory,
+         IEntityPathResolver entityPathResolver,
+         IPKValuesToPKAnalysisMapper pkMapper,
+         IDimensionRepository dimensionRepository) : base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
       {
-         _pkValuesCalculator = pkValuesCalculator;
+         _lazyLoadTask = lazyLoadTask;
+         _entityPathResolver = entityPathResolver;
          _pkMapper = pkMapper;
          _dimensionRepository = dimensionRepository;
+         _pkValuesCalculator = pkValuesCalculator;
          _pkCalculationOptionsFactory = pkCalculationOptionsFactory;
          _pkParameterRepository = pkParameterRepository;
+      }
+
+      public PopulationSimulationPKAnalyses CalculateFor(PopulationSimulation populationSimulation)
+      {
+         _lazyLoadTask.LoadResults(populationSimulation);
+         if (!populationSimulation.HasResults)
+            return new NullPopulationSimulationPKAnalyses();
+
+         var bodyWeightParameter = populationSimulation.BodyWeight;
+         var bodyWeightParameterPath = bodyWeightParameterPathFrom(bodyWeightParameter);
+         var allBodyWeights = populationSimulation.AllValuesFor(bodyWeightParameterPath);
+
+         try
+         {
+            return base.CalculateFor(populationSimulation, populationSimulation.NumberOfItems, populationSimulation.Results, (individualId) => { updateBodyWeightFromCurrentIndividual(bodyWeightParameter, allBodyWeights, individualId); });
+         }
+         finally
+         {
+            bodyWeightParameter?.ResetToDefault();
+         }
       }
 
       public IEnumerable<PopulationPKAnalysis> CalculateFor(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData)
@@ -60,7 +96,7 @@ namespace PKSim.Core.Services
             return pkAnalyses; // there are no analyses to calculate
 
          var allColumns = timeProfileChartData.Panes.SelectMany(x => x.Curves).Select(x =>
-            new {curveData = x, column = columnFor(x, populationDataCollector)})
+               new {curveData = x, column = columnFor(x, populationDataCollector)})
             .Where(c => c.column != null)
             .Where(c => c.column.IsConcentration());
 
@@ -182,6 +218,19 @@ namespace PKSim.Core.Services
             .Property(item => item.Value)
             .WithRule((param, value) => false)
             .WithError((param, value) => warning);
+      }
+
+      private string bodyWeightParameterPathFrom(IParameter bodyWeightParameter)
+      {
+         return bodyWeightParameter != null ? _entityPathResolver.PathFor(bodyWeightParameter) : string.Empty;
+      }
+
+      private void updateBodyWeightFromCurrentIndividual(IParameter bodyWeightParameter, IReadOnlyList<double> allBodyWeights, int individualId)
+      {
+         if (bodyWeightParameter == null)
+            return;
+
+         bodyWeightParameter.Value = allBodyWeights.Count > individualId ? allBodyWeights[individualId] : double.NaN;
       }
    }
 }

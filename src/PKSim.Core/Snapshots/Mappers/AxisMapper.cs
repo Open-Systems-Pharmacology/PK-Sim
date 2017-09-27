@@ -19,7 +19,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return SnapshotFrom(axis, x =>
          {
             x.Dimension = axis.Dimension.Name;
-            x.Unit = UnitValueFor(axis.UnitName);
+            x.Unit = ModelValueFor(axis.UnitName);
             x.Caption = SnapshotValueFor(axis.Caption);
             x.Type = axis.AxisType;
             x.GridLines = axis.GridLines;
@@ -54,7 +54,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var axis = new ModelAxis(snapshot.Type)
          {
             Dimension = _dimensionFactory.Dimension(snapshot.Dimension),
-            UnitName = UnitValueFor(snapshot.Unit),
+            UnitName = ModelValueFor(snapshot.Unit),
             Caption = snapshot.Caption,
             GridLines = snapshot.GridLines,
             Visible = snapshot.Visible,

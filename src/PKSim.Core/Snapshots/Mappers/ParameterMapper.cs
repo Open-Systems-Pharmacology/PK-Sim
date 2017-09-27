@@ -45,7 +45,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<IParameter> MapToModel(SnapshotParameter snapshot, IParameter parameter)
       {
          parameter.ValueDescription = snapshot.ValueDescription;
-         parameter.DisplayUnit = parameter.Dimension.Unit(UnitValueFor(snapshot.Unit));
+         parameter.DisplayUnit = parameter.Dimension.Unit(ModelValueFor(snapshot.Unit));
 
          //only update formula if required
          if (snapshot.TableFormula != null)

@@ -20,13 +20,13 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
    public class IndividualPKAnalysesTeXBuilder : PresentableTeXBuilder<IndividualPKAnalyses, DefaultPresentationSettings>
    {
       private readonly IGlobalPKAnalysisTask _globalPKAnalysisTask;
-      private readonly IPKAnalysisTask _pkAnalysisTask;
+      private readonly IPKAnalysesTask _pkAnalysisTask;
       private readonly ITeXBuilderRepository _builderRepository;
       private readonly IGlobalPKAnalysisToDataTableMapper _globalPKAnalysisToDataTableMapper;
       private readonly IIndividualPKAnalysisToDataTableMapper _pkAnalysisToDataTableMapper;
 
       public IndividualPKAnalysesTeXBuilder(IGlobalPKAnalysisTask globalPKAnalysisTask,
-         IPKAnalysisTask pkAnalysisTask, ITeXBuilderRepository builderRepository, IGlobalPKAnalysisToDataTableMapper globalPKAnalysisToDataTableMapper,
+         IPKAnalysesTask pkAnalysisTask, ITeXBuilderRepository builderRepository, IGlobalPKAnalysisToDataTableMapper globalPKAnalysisToDataTableMapper,
          IIndividualPKAnalysisToDataTableMapper pkAnalysisToDataTableMapper, IPresentationSettingsTask presentationSettingsTask, IDisplayUnitRetriever displayUnitRetriever) : base(presentationSettingsTask, displayUnitRetriever)
       {
          _globalPKAnalysisTask = globalPKAnalysisTask;

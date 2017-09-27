@@ -24,7 +24,7 @@ namespace PKSim.Presentation
    public abstract class concern_for_PKAnalysisPresenter : ContextSpecification<IIndividualPKAnalysisPresenter>
    {
       protected IIndividualPKAnalysisView _view;
-      private IPKAnalysisTask _pkaAnalysisTask;
+      private IPKAnalysesTask _pkaAnalysesTask;
       protected IndividualSimulation _simulation;
       protected IList<Tuple<DataColumn, PKAnalysis>> _allPKAnalysis;
       protected PKAnalysis _pkAnalysis1;
@@ -51,7 +51,7 @@ namespace PKSim.Presentation
          _concentrationDim = A.Fake<IDimension>();
          _timeDim = A.Fake<IDimension>();
          _view = A.Fake<IIndividualPKAnalysisView>();
-         _pkaAnalysisTask = A.Fake<IPKAnalysisTask>();
+         _pkaAnalysesTask = A.Fake<IPKAnalysesTask>();
          _simulation = A.Fake<IndividualSimulation>();
          _simulations = new List<Simulation>();
          _simulations.Add(_simulation);
@@ -87,11 +87,11 @@ namespace PKSim.Presentation
          _allPKAnalysis.Add(new Tuple<DataColumn, PKAnalysis>(_col1, _pkAnalysis1));
          _allPKAnalysis.Add(new Tuple<DataColumn, PKAnalysis>(_col2, _pkAnalysis2));
          _allGlobalPKParameters = new List<IParameter>();
-         A.CallTo(_pkaAnalysisTask).WithReturnType<IEnumerable<Tuple<DataColumn, PKAnalysis>>>().Returns(_allPKAnalysis);
-         A.CallTo(_pkaAnalysisTask).WithReturnType<IEnumerable<IParameter>>().Returns(_allGlobalPKParameters);
+         A.CallTo(_pkaAnalysesTask).WithReturnType<IEnumerable<Tuple<DataColumn, PKAnalysis>>>().Returns(_allPKAnalysis);
+         A.CallTo(_pkaAnalysesTask).WithReturnType<IEnumerable<IParameter>>().Returns(_allGlobalPKParameters);
 
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
-         sut = new IndividualPKAnalysisPresenter(_view, _pkaAnalysisTask, _exportTask, _globalPKAnalysisPresenter,
+         sut = new IndividualPKAnalysisPresenter(_view, _pkaAnalysesTask, _exportTask, _globalPKAnalysisPresenter,
             _individualPKAnalysisToDTOMapper, _pkParameterRepository, _presenterSettingsTask);
       }
 

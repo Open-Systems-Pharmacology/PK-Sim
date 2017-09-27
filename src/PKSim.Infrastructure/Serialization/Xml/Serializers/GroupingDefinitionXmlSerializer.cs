@@ -1,12 +1,11 @@
 ﻿using System.Xml.Linq;
 using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Infrastructure.Serialization.Xml.Extensions;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Serialization.Xml.Extensions;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
-   public abstract class GroupingDefinitionXmlSerializer<TGrouping> : BaseXmlSerializer<TGrouping> where TGrouping : IGroupingDefinition
+   public abstract class GroupingDefinitionXmlSerializer<TGrouping> : BaseXmlSerializer<TGrouping> where TGrouping : GroupingDefinition
    {
       public override void PerformMapping()
       {

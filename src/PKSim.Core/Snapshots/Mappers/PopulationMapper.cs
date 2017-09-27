@@ -2,10 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Utility.Exceptions;
-using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using SnapshotPopulation = PKSim.Core.Snapshots.Population;
 using ModelPopulation = PKSim.Core.Model.Population;
 
@@ -47,9 +45,8 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task mapRandomPopulationProperties(SnapshotPopulation snapshot, RandomPopulation randomPopulation)
       {
          snapshot.Settings = await _randomPopulationSettingsMapper.MapToSnapshot(randomPopulation.Settings);
-         snapshot.AdvancedParameters = await _advancedParameterMapper.MapToSnapshot(randomPopulation.AdvancedParameters);
+         snapshot.AdvancedParameters = await _advancedParameterMapper.MapToSnapshots(randomPopulation.AdvancedParameters.ToList());
       }
-
 
       public override async Task<ModelPopulation> MapToModel(SnapshotPopulation snapshot)
       {

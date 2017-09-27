@@ -245,6 +245,7 @@
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />
     <Compile Include="Core\AxisMapperSpecs.cs" />
     <Compile Include="Core\CalculationMethodCacheMapperSpecs.cs" />
+    <Compile Include="Core\ChartMapperSpecs.cs" />
     <Compile Include="Core\CompoundMapperSpecs.cs" />
     <Compile Include="Core\CompoundProcessMapperSpecs.cs" />
     <Compile Include="Core\CompoundPropertiesMapperSpecs.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Core\ExtendedPropertiesMapperSpecs.cs" />
     <Compile Include="Core\ExtendedPropertyMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />
+    <Compile Include="Core\GroupingDefinitionMapperSpecs.cs" />
     <Compile Include="Core\IndividualExtractionOptionsSpecs.cs" />
     <Compile Include="Core\IndividualExtractorSpecs.cs" />
     <Compile Include="Core\IndividualMapperSpecs.cs" />
@@ -274,6 +276,9 @@
     <Compile Include="Core\ParameterMapperSpecs.cs" />
     <Compile Include="Core\ParameterRangeMapperSpecs.cs" />
     <Compile Include="Core\PKValuesToPKAnalysisMapperSpecs.cs" />
+    <Compile Include="Core\PopulationAnalysisChartMapperSpecs.cs" />
+    <Compile Include="Core\PopulationAnalysisFieldMapperSpecs.cs" />
+    <Compile Include="Core\PopulationAnalysisMapperSpecs.cs" />
     <Compile Include="Core\PopulationMapperSpecs.cs" />
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
     <Compile Include="Core\ProjectMapperSpecs.cs" />
@@ -407,7 +412,7 @@
     <Compile Include="Core\ParameterRangeSpecs.cs" />
     <Compile Include="Core\ParameterValuesSpecs.cs" />
     <Compile Include="Core\PKAnalysisHelperForSpecs.cs" />
-    <Compile Include="Core\PKAnalysisTaskSpecs.cs" />
+    <Compile Include="Core\PKAnalysesTaskSpecs.cs" />
     <Compile Include="Core\PKCalculationOptionsFactorySpecs.cs" />
     <Compile Include="Core\PKSimCalculationMethodsTaskSpecs.cs" />
     <Compile Include="Core\PopulationAnalysisChartFactorySpecs.cs" />

@@ -9,6 +9,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using SnapshotSimulation = PKSim.Core.Snapshots.Simulation;
 using ModelSimulation = PKSim.Core.Model.Simulation;
+using ModelPopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -22,6 +23,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly AdvancedParameterMapper _advancedParameterMapper;
       private readonly EventPropertiesMapper _eventPropertiesMapper;
       private readonly SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
+      private readonly PopulationAnalysisChartMapper _populationAnalysisChartMapper;
       private readonly ISimulationFactory _simulationFactory;
       private readonly IExecutionContext _executionContext;
       private readonly ISimulationModelCreator _simulationModelCreator;
@@ -38,6 +40,7 @@ namespace PKSim.Core.Snapshots.Mappers
          AdvancedParameterMapper advancedParameterMapper,
          EventPropertiesMapper eventPropertiesMapper,
          SimulationTimeProfileChartMapper simulationTimeProfileChartMapper,
+         PopulationAnalysisChartMapper populationAnalysisChartMapper,
          ISimulationFactory simulationFactory,
          IExecutionContext executionContext,
          ISimulationModelCreator simulationModelCreator,
@@ -54,6 +57,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _advancedParameterMapper = advancedParameterMapper;
          _eventPropertiesMapper = eventPropertiesMapper;
          _simulationTimeProfileChartMapper = simulationTimeProfileChartMapper;
+         _populationAnalysisChartMapper = populationAnalysisChartMapper;
          _simulationFactory = simulationFactory;
          _executionContext = executionContext;
          _simulationModelCreator = simulationModelCreator;
@@ -77,33 +81,21 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.ObservedData = usedObervedDataFrom(simulation, project);
          snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
          snapshot.AdvancedParameters = await advancedParametersFrom(simulation);
-         snapshot.Charts = await chartsFrom(simulation.SimulationCharts.ToList());
+         snapshot.IndividualAnalyses = await _simulationTimeProfileChartMapper.MapToSnapshots(simulation.AnalysesOfType<SimulationTimeProfileChart>());
+         snapshot.PopulationAnalyses = await _populationAnalysisChartMapper.MapToSnapshots(simulation.AnalysesOfType<ModelPopulationAnalysisChart>());
          snapshot.HasResults = simulation.HasResults;
          return snapshot;
       }
 
-      private async Task<CurveChart[]> chartsFrom(IReadOnlyList<SimulationTimeProfileChart> simulationCharts)
-      {
-         if (!simulationCharts.Any())
-            return null;
-
-         var tasks = simulationCharts.Select(_simulationTimeProfileChartMapper.MapToSnapshot);
-         return await Task.WhenAll(tasks);
-      }
-
-      private async Task<AdvancedParameter[]> advancedParametersFrom(ModelSimulation simulation)
+      private Task<AdvancedParameter[]> advancedParametersFrom(ModelSimulation simulation)
       {
          var populationSimulation = simulation as PopulationSimulation;
-         if (populationSimulation == null)
-            return null;
-
-         return await _advancedParameterMapper.MapToSnapshot(populationSimulation.AdvancedParameters);
+         return _advancedParameterMapper.MapToSnapshots(populationSimulation?.AdvancedParameters);
       }
 
       private Task<CompoundProperties[]> usedCompoundsFrom(ModelSimulation simulation, PKSimProject project)
       {
-         var tasks = simulation.CompoundPropertiesList.Select(x => _compoundPropertiesMapper.MapToSnapshot(x, project));
-         return Task.WhenAll(tasks);
+         return _compoundPropertiesMapper.MapToSnapshots(simulation.CompoundPropertiesList, project);
       }
 
       private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelSimulation simulation)
@@ -149,7 +141,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
          await runSimulation(snapshot, simulation);
 
-         simulation.AddAnalyses(await simulationChartFrom(simulation, snapshot.Charts, project));
+         simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, project));
+//         simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, project));
+
          return simulation;
       }
 
@@ -161,7 +155,7 @@ namespace PKSim.Core.Snapshots.Mappers
          await _simulationRunner.RunSimulation(simulation, createDefaultAnalysis: false);
       }
 
-      private async Task<IEnumerable<SimulationTimeProfileChart>> simulationChartFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, PKSimProject project)
+      private async Task<IEnumerable<SimulationTimeProfileChart>> individualAnalysesFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, PKSimProject project)
       {
          var individualSimulation = simulation as IndividualSimulation;
          if (individualSimulation == null || snapshotCharts == null)
@@ -170,8 +164,16 @@ namespace PKSim.Core.Snapshots.Mappers
          var curveChartContext = new CurveChartContext(project.AllObservedData);
          curveChartContext.AddDataRepository(individualSimulation.DataRepository);
 
-         var tasks = snapshotCharts.Select(x => _simulationTimeProfileChartMapper.MapToModel(x, curveChartContext));
-         return await Task.WhenAll(tasks);
+         return await _simulationTimeProfileChartMapper.MapToModels(snapshotCharts, curveChartContext);
+      }
+
+      private async Task<IEnumerable<ModelPopulationAnalysisChart>> populationAnalysesFrom(ModelSimulation simulation, PopulationAnalysisChart[] snapshotPopulationAnalyses, PKSimProject project)
+      {
+         var populationSimulation = simulation as PopulationSimulation;
+         if (populationSimulation == null || snapshotPopulationAnalyses == null)
+            return Enumerable.Empty<ModelPopulationAnalysisChart>();
+
+         return await _populationAnalysisChartMapper.MapToModels(snapshotPopulationAnalyses);
       }
 
       private async Task<ModelSimulation> createSimulationFrom(SnapshotSimulation snapshot, PKSimProject project)
@@ -202,11 +204,10 @@ namespace PKSim.Core.Snapshots.Mappers
          _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, events, PKSimBuildingBlockType.Event);
       }
 
-      private async Task mapCompoundProperties(CompoundProperties[] snapshotCompoundProperties, PKSimProject project, ModelSimulation simulation)
+      private Task mapCompoundProperties(CompoundProperties[] snapshotCompoundProperties, PKSimProject project, ModelSimulation simulation)
       {
          var compoundPropertiesContext = new CompoundPropertiesContext(project, simulation);
-         var tasks = snapshotCompoundProperties.Select(x => _compoundPropertiesMapper.MapToModel(x, compoundPropertiesContext));
-         await Task.WhenAll(tasks);
+         return _compoundPropertiesMapper.MapToModels(snapshotCompoundProperties, compoundPropertiesContext);
       }
 
       private async Task updateAdvancedParameters(ModelSimulation simulation, AdvancedParameter[] snapshotAdvancedParameters)
