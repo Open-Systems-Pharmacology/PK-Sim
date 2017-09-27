@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using SnapshotSimulation = PKSim.Core.Snapshots.Simulation;
@@ -20,12 +21,13 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ParameterMapper _parameterMapper;
       private readonly AdvancedParameterMapper _advancedParameterMapper;
       private readonly EventPropertiesMapper _eventPropertiesMapper;
-      private readonly CurveChartMapper _curveChartMapper;
+      private readonly SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
       private readonly ISimulationFactory _simulationFactory;
       private readonly IExecutionContext _executionContext;
       private readonly ISimulationModelCreator _simulationModelCreator;
       private readonly ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
       private readonly IModelPropertiesTask _modelPropertiesTask;
+      private readonly ISimulationRunner _simulationRunner;
 
       public SimulationMapper(
          SolverSettingsMapper solverSettingsMapper,
@@ -35,12 +37,13 @@ namespace PKSim.Core.Snapshots.Mappers
          ParameterMapper parameterMapper,
          AdvancedParameterMapper advancedParameterMapper,
          EventPropertiesMapper eventPropertiesMapper,
-         CurveChartMapper curveChartMapper,
+         SimulationTimeProfileChartMapper simulationTimeProfileChartMapper,
          ISimulationFactory simulationFactory,
          IExecutionContext executionContext,
          ISimulationModelCreator simulationModelCreator,
          ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
-         IModelPropertiesTask modelPropertiesTask
+         IModelPropertiesTask modelPropertiesTask,
+         ISimulationRunner simulationRunner
       )
       {
          _solverSettingsMapper = solverSettingsMapper;
@@ -50,12 +53,13 @@ namespace PKSim.Core.Snapshots.Mappers
          _parameterMapper = parameterMapper;
          _advancedParameterMapper = advancedParameterMapper;
          _eventPropertiesMapper = eventPropertiesMapper;
-         _curveChartMapper = curveChartMapper;
+         _simulationTimeProfileChartMapper = simulationTimeProfileChartMapper;
          _simulationFactory = simulationFactory;
          _executionContext = executionContext;
          _simulationModelCreator = simulationModelCreator;
          _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
          _modelPropertiesTask = modelPropertiesTask;
+         _simulationRunner = simulationRunner;
       }
 
       public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation, PKSimProject project)
@@ -73,16 +77,17 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.ObservedData = usedObervedDataFrom(simulation, project);
          snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
          snapshot.AdvancedParameters = await advancedParametersFrom(simulation);
-         snapshot.Charts = await chartsFrom(simulation.Charts.ToList());
+         snapshot.Charts = await chartsFrom(simulation.SimulationCharts.ToList());
+         snapshot.HasResults = simulation.HasResults;
          return snapshot;
       }
 
-      private async Task<CurveChart[]> chartsFrom(IReadOnlyList<OSPSuite.Core.Chart.CurveChart> simulationCharts)
+      private async Task<CurveChart[]> chartsFrom(IReadOnlyList<SimulationTimeProfileChart> simulationCharts)
       {
          if (!simulationCharts.Any())
             return null;
 
-         var tasks = simulationCharts.Select(_curveChartMapper.MapToSnapshot);
+         var tasks = simulationCharts.Select(_simulationTimeProfileChartMapper.MapToSnapshot);
          return await Task.WhenAll(tasks);
       }
 
@@ -142,7 +147,31 @@ namespace PKSim.Core.Snapshots.Mappers
 
          updateUsedObservedData(simulation, snapshot.ObservedData, project);
 
+         await runSimulation(snapshot, simulation);
+
+         simulation.AddAnalyses(await simulationChartFrom(simulation, snapshot.Charts, project));
          return simulation;
+      }
+
+      private async Task runSimulation(SnapshotSimulation snapshot, ModelSimulation simulation)
+      {
+         if (!snapshot.HasResults)
+            return;
+
+         await _simulationRunner.RunSimulation(simulation, createDefaultAnalysis: false);
+      }
+
+      private async Task<IEnumerable<SimulationTimeProfileChart>> simulationChartFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, PKSimProject project)
+      {
+         var individualSimulation = simulation as IndividualSimulation;
+         if (individualSimulation == null || snapshotCharts == null)
+            return Enumerable.Empty<SimulationTimeProfileChart>();
+
+         var curveChartContext = new CurveChartContext(project.AllObservedData);
+         curveChartContext.AddDataRepository(individualSimulation.DataRepository);
+
+         var tasks = snapshotCharts.Select(x => _simulationTimeProfileChartMapper.MapToModel(x, curveChartContext));
+         return await Task.WhenAll(tasks);
       }
 
       private async Task<ModelSimulation> createSimulationFrom(SnapshotSimulation snapshot, PKSimProject project)

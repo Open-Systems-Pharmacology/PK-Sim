@@ -16,8 +16,10 @@ namespace PKSim.Core.Snapshots
       public CompoundProperties[] Compounds { get; set; }
       public EventSelections Events { get; set; }
       public AdvancedParameter[] AdvancedParameters { get; set; }
-      
+      public bool HasResults { get; set; }
+
       //Individual charts
       public CurveChart[] Charts { get; set; }
+
    }
 }

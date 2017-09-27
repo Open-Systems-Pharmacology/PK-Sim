@@ -228,6 +228,11 @@ namespace PKSim.Core.Model
          HasChanged = true;
       }
 
+      public virtual void AddAnalyses(IEnumerable<ISimulationAnalysis> simulationAnalyses)
+      {
+         simulationAnalyses.Each(AddAnalysis);
+      }
+
       /// <summary>
       ///    Returns all used observed data in the simulation
       /// </summary>

@@ -222,14 +222,14 @@ namespace PKSim.Presentation.Repositories
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Run)
             .WithId(MenuBarItemIds.Run)
             .WithDescription(PKSimConstants.UI.RunDescription)
-            .WithCommand<RunActiveSimulationCommand>()
+            .WithCommand<RunSimulationCommand>()
             .WithIcon(ApplicationIcons.Run)
             .WithShortcut(Keys.F5);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.RunWithSettings)
             .WithId(MenuBarItemIds.RunWithSettings)
             .WithDescription(PKSimConstants.UI.RunWithSettingsDescription)
-            .WithCommand<RunActiveSimulationWithSettingsCommand>()
+            .WithCommand<RunSimulationWithSettingsCommand>()
             .WithIcon(ApplicationIcons.ConfigureAndRun);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Stop)

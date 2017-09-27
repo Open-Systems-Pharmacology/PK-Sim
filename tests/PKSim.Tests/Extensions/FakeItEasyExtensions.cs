@@ -6,7 +6,7 @@ namespace PKSim.Extensions
 {
    public static class FakeItEasyExtensions
    {
-      public static IAfterCallConfiguredWithOutAndRefParametersConfiguration<IReturnValueConfiguration<Task<TResult>>> ReturnsAsync<TResult>(this IReturnValueArgumentValidationConfiguration<Task<TResult>> valueConfiguration, TResult value)
+      public static IAfterCallConfiguredWithOutAndRefParametersConfiguration<IReturnValueConfiguration<Task<TResult>>> ReturnsAsync<TResult>(this IReturnValueConfiguration<Task<TResult>> valueConfiguration, TResult value)
       {
          return valueConfiguration.Returns(Task.FromResult(value));
       }
