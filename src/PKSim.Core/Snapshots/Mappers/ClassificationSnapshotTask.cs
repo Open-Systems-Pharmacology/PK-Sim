@@ -45,20 +45,20 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task updateProjectFor<TClassifiable, TSubject>(PKSimProject project, SnapshotClassification snapshot, IReadOnlyCollection<TSubject> subjects, ClassificationType classificationType, ModelClassification parent = null) 
          where TClassifiable : Classifiable<TSubject>, new() where TSubject : IObjectBase
       {
-         var model = await _classificationMapper.MapToModel(snapshot, classificationType);
-         model.Parent = parent;
-         project.AddClassification(model);
+         var classification = await _classificationMapper.MapToModel(snapshot, classificationType);
+         classification.Parent = parent;
+         project.AddClassification(classification);
 
          snapshot.Classifiables?.Each(snapshotClassifiable =>
          {
-            var subject = subjects.FirstOrDefault(x => string.Equals(x.Name, snapshotClassifiable));
+            var subject = subjects.FindByName(snapshotClassifiable);
             var classifiable = project.GetOrCreateClassifiableFor<TClassifiable, TSubject>(subject);
-            classifiable.Parent = model;
+            classifiable.Parent = classification;
          });
 
          if (snapshot.Classifications != null && snapshot.Classifications.Any())
          {
-            var tasks = snapshot.Classifications.Select(x => updateProjectFor<TClassifiable, TSubject>(project, x, subjects, classificationType, model));
+            var tasks = snapshot.Classifications.Select(x => updateProjectFor<TClassifiable, TSubject>(project, x, subjects, classificationType, classification));
             await Task.WhenAll(tasks);
          }
       }
@@ -72,10 +72,8 @@ namespace PKSim.Core.Snapshots.Mappers
          };
 
          var rootClassifications = findRoots(context.Classifications);
-         
-         var tasks = rootClassifications.Select(x => _classificationMapper.MapToSnapshot(x, context));
 
-         return Task.WhenAll(tasks);
+         return _classificationMapper.MapToSnapshots(rootClassifications, context);
       }
 
       private IEnumerable<T> findRoots<T>(IEnumerable<T> classifications) where T : IClassifiable

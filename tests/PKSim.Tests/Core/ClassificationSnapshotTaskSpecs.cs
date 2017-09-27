@@ -42,7 +42,7 @@ namespace PKSim.Core
          _snapshotClassification.Classifications = new[] { _subClassification };
 
          _classifications.Add(_modelClassification);
-         A.CallTo(() => _classificationMapper.MapToSnapshot(_modelClassification, A<ClassificationContext>._)).ReturnsAsync(_snapshotClassification);
+         A.CallTo(() => _classificationMapper.MapToSnapshots(A<IEnumerable<OSPSuite.Core.Domain.Classification>>.That.Contains(_modelClassification), A<ClassificationContext>._)).ReturnsAsync( new []{_snapshotClassification });
          A.CallTo(() => _classificationMapper.MapToModel(_snapshotClassification, ClassificationType.ObservedData)).ReturnsAsync(_modelClassification);
          A.CallTo(() => _classificationMapper.MapToModel(_subClassification, ClassificationType.ObservedData)).ReturnsAsync(_subModelClassification);
 

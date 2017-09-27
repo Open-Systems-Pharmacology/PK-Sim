@@ -1,10 +1,12 @@
 ﻿using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
 using GroupingDefinition = PKSim.Core.Snapshots.GroupingDefinition;
 
@@ -20,16 +22,19 @@ namespace PKSim.Core
       protected IDimension _dimension;
       protected Unit _unit;
       protected NumberOfBinsGroupingDefinition _numberOfBinsGrouping;
+      private IDimensionRepository _dimensionRepository;
 
       protected override Task Context()
       {
-         sut = new GroupingDefinitionMapper();
+         _dimensionRepository= A.Fake<IDimensionRepository>();   
+         sut = new GroupingDefinitionMapper(_dimensionRepository);
          _groupingItem1 = new GroupingItem();
          _groupingItem2 = new GroupingItem();
 
          _dimension = DomainHelperForSpecs.TimeDimensionForSpecs();
          _unit = _dimension.Unit("h");
 
+         A.CallTo(() => _dimensionRepository.DimensionByName(_dimension.Name)).Returns(_dimension);
          _valueMappingGrouping = new ValueMappingGroupingDefinition("F1");
          _valueMappingGrouping.AddValueLabel("Item1", _groupingItem1);
          _valueMappingGrouping.AddValueLabel("Item2", _groupingItem2);
@@ -157,4 +162,92 @@ namespace PKSim.Core
       }
    }
 
+   public class When_mapping_a_value_mapping_grouping_snapshot_to_grouping_definition : concern_for_GroupingDefinitionMapper
+   {
+      private ValueMappingGroupingDefinition _newValueMappingGrouping;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_valueMappingGrouping);
+      }
+
+      protected override async Task Because()
+      {
+         _newValueMappingGrouping = await sut.MapToModel(_snapshot) as ValueMappingGroupingDefinition;
+      }
+
+      [Observation]
+      public void should_return_a_value_mapping_grouping_definition_with_all_properties_set_as_expected()
+      {
+         _newValueMappingGrouping.ShouldNotBeNull();
+         _newValueMappingGrouping.FieldName.ShouldBeEqualTo(_valueMappingGrouping.FieldName);
+         _newValueMappingGrouping.Mapping.ShouldOnlyContainInOrder(_valueMappingGrouping.Mapping);
+         _newValueMappingGrouping.Labels.ShouldOnlyContainInOrder(_valueMappingGrouping.Labels);
+      }
+   }
+
+   public class When_mapping_a_fixed_limit_grouping_snapshot_to_grouping_definition : concern_for_GroupingDefinitionMapper
+   {
+      private FixedLimitsGroupingDefinition _newFixedLimitsGrouping;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_fixedLimitGrouping);
+      }
+
+      protected override async Task Because()
+      {
+         _newFixedLimitsGrouping = await sut.MapToModel(_snapshot) as FixedLimitsGroupingDefinition;
+      }
+
+      [Observation]
+      public void should_return_a_fixed_limit_grouping_definition_with_all_properties_set_as_expected()
+      {
+         _newFixedLimitsGrouping.ShouldNotBeNull();
+         _newFixedLimitsGrouping.FieldName.ShouldBeEqualTo(_fixedLimitGrouping.FieldName);
+         _newFixedLimitsGrouping.DisplayUnit.ShouldBeEqualTo(_unit);
+         _newFixedLimitsGrouping.Dimension.ShouldBeEqualTo(_dimension);
+         _newFixedLimitsGrouping.Labels.ShouldOnlyContainInOrder(_fixedLimitGrouping.Labels);
+      }
+
+      [Observation]
+      public void should_have_converted_limits_into_vase_unit()
+      {
+         _newFixedLimitsGrouping.Limits.ShouldOnlyContainInOrder(60, 120);
+      }
+   }
+
+   public class When_mapping_a_number_of_bins_grouping_snapshot_to_grouping_definition : concern_for_GroupingDefinitionMapper
+   {
+      private NumberOfBinsGroupingDefinition _newNumberOfBinsGrouping;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_numberOfBinsGrouping);
+      }
+
+      protected override async Task Because()
+      {
+         _newNumberOfBinsGrouping = await sut.MapToModel(_snapshot) as NumberOfBinsGroupingDefinition;
+      }
+
+      [Observation]
+      public void should_return_a_number_of_bins_grouping_definition_with_all_properties_set_as_expected()
+      {
+         _newNumberOfBinsGrouping.ShouldNotBeNull();
+         _newNumberOfBinsGrouping.FieldName.ShouldBeEqualTo(_numberOfBinsGrouping.FieldName);
+         _newNumberOfBinsGrouping.DisplayUnit.ShouldBeEqualTo(_unit);
+         _newNumberOfBinsGrouping.Dimension.ShouldBeEqualTo(_dimension);
+         _newNumberOfBinsGrouping.Labels.ShouldOnlyContainInOrder(_numberOfBinsGrouping.Labels);
+         _newNumberOfBinsGrouping.NamingPattern.ShouldOnlyContainInOrder(_numberOfBinsGrouping.NamingPattern);
+         _newNumberOfBinsGrouping.NumberOfBins.ShouldBeEqualTo(_numberOfBinsGrouping.NumberOfBins);
+         _newNumberOfBinsGrouping.StartColor.ShouldBeEqualTo(_numberOfBinsGrouping.StartColor);
+         _newNumberOfBinsGrouping.EndColor.ShouldBeEqualTo(_numberOfBinsGrouping.EndColor);
+         _newNumberOfBinsGrouping.Strategy.ShouldBeEqualTo(_numberOfBinsGrouping.Strategy);
+         _newNumberOfBinsGrouping.Items.ShouldOnlyContainInOrder(_numberOfBinsGrouping.Items);
+      }
+   }
 }

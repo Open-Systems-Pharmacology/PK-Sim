@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility;
 using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -67,12 +66,12 @@ namespace PKSim.Core.Snapshots.Mappers
          switch (molecule)
          {
             case IndividualProtein protein:
-               protein.IntracellularVascularEndoLocation = snapshot.IntracellularVascularEndoLocation.Value;
-               protein.TissueLocation = snapshot.TissueLocation.Value;
-               protein.MembraneLocation = snapshot.MembraneLocation.Value;
+               protein.IntracellularVascularEndoLocation = ModelValueFor(snapshot.IntracellularVascularEndoLocation);
+               protein.TissueLocation = ModelValueFor(snapshot.TissueLocation);
+               protein.MembraneLocation = ModelValueFor(snapshot.MembraneLocation);
                break;
             case IndividualTransporter transporter:
-               transporter.TransportType = snapshot.TransportType.Value;
+               transporter.TransportType = ModelValueFor(snapshot.TransportType);
                break;
          }
       }

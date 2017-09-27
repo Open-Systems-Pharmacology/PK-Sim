@@ -62,9 +62,9 @@ namespace PKSim.Core
       protected SimulationTimeProfileChart _simulationTimeProfile;
       protected CurveChart _snapshotSimulationTimeProfile;
       protected ISimulationRunner _simulationRunner;
-      private PopulationAnalysisChartMapper _populationAnalysisChartMapper;
-      private PopulationAnalysisChart _populationSimulationAnalysisChart;
-      private Snapshots.PopulationAnalysisChart _snapshotPopulationAnalysisChart;
+      protected PopulationAnalysisChartMapper _populationAnalysisChartMapper;
+      protected PopulationAnalysisChart _populationSimulationAnalysisChart;
+      protected Snapshots.PopulationAnalysisChart _snapshotPopulationAnalysisChart;
 
       protected override Task Context()
       {
@@ -271,6 +271,18 @@ namespace PKSim.Core
       {
          _snapshot.AdvancedParameters.ShouldContain(_snapshotAdvancedParameter);
       }
+
+      [Observation]
+      public void should_save_population_analysis()
+      {
+         _snapshot.PopulationAnalyses.ShouldContain(_snapshotPopulationAnalysisChart);
+      }
+
+      [Observation]
+      public void should_set_individual_analysis_to_null()
+      {
+         _snapshot.IndividualAnalyses.ShouldBeNull();
+      }
    }
 
    public class When_mapping_an_individual_simulation_snapshot_to_simulation : concern_for_SimulationMapper
@@ -280,7 +292,7 @@ namespace PKSim.Core
       private OSPSuite.Core.Domain.OutputSelections _outputSelection;
       private SolverSettings _solver;
       private OutputSchema _outputSchema;
-      private CurveChartContext _context;
+      private SimulationAnalysisContext _context;
       private DataRepository _calculatedDataRepository;
 
       protected override async Task Context()
@@ -308,8 +320,8 @@ namespace PKSim.Core
          _outputSchema = new OutputSchema();
          A.CallTo(() => _outputSchemaMapper.MapToModel(_snapshot.OutputSchema)).ReturnsAsync(_outputSchema);
 
-         A.CallTo(() => _curveChartMapper.MapToModels(A<IEnumerable<CurveChart>>.That.Contains(_snapshotSimulationTimeProfile), A<CurveChartContext>._))
-            .Invokes(x => _context = x.GetArgument<CurveChartContext>(1))
+         A.CallTo(() => _curveChartMapper.MapToModels(A<IEnumerable<CurveChart>>.That.Contains(_snapshotSimulationTimeProfile), A<SimulationAnalysisContext>._))
+            .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
             .ReturnsAsync(new[] {_simulationTimeProfile});
 
          //ensure that run will be performed
@@ -365,7 +377,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_update_chart()
+      public void should_update_analysis()
       {
          _simulation.Analyses.ShouldContain(_simulationTimeProfile);
       }
@@ -386,6 +398,7 @@ namespace PKSim.Core
    public class when_mapping_a_population_simulation_snapshot_to_simulation : concern_for_SimulationMapper
    {
       private Model.Simulation _simulation;
+      private SimulationAnalysisContext _context;
 
       protected override async Task Context()
       {
@@ -400,6 +413,10 @@ namespace PKSim.Core
          };
 
          A.CallTo(() => _simulationFactory.CreateFrom(_population, A<IReadOnlyList<Compound>>._, A<ModelProperties>._, null)).Returns(populationSimulation);
+
+         A.CallTo(() => _populationAnalysisChartMapper.MapToModels(A<IEnumerable<Snapshots.PopulationAnalysisChart>>.That.Contains(_snapshotPopulationAnalysisChart), A<SimulationAnalysisContext>._))
+            .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
+            .ReturnsAsync(new[] {_populationSimulationAnalysisChart,});
       }
 
       protected override async Task Because()
@@ -413,6 +430,12 @@ namespace PKSim.Core
          _simulation.ShouldBeAnInstanceOf<PopulationSimulation>();
          var populationSimulation = _simulation.DowncastTo<PopulationSimulation>();
          A.CallTo(() => _advancedParameterMapper.MapToModel(_snapshot.AdvancedParameters, populationSimulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_analysis()
+      {
+         _simulation.Analyses.ShouldContain(_populationSimulationAnalysisChart);
       }
    }
 }

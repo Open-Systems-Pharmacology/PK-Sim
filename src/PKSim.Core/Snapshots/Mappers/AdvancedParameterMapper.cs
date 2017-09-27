@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
@@ -50,7 +48,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public virtual async Task MapToModel(SnapshotAdvancedParameter[] snapshotAdvancedParameters, IAdvancedParameterContainer advancedParameterContainer)
       {
-         if (snapshotAdvancedParameters == null)
+         if (snapshotAdvancedParameters == null || advancedParameterContainer == null)
             return;
 
          advancedParameterContainer.RemoveAllAdvancedParameters();

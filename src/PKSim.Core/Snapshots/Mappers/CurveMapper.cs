@@ -12,7 +12,7 @@ using ModelDataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 namespace PKSim.Core.Snapshots.Mappers
 {
  
-   public class CurveMapper : SnapshotMapperBase<ModelCurve, SnapshotCurve, CurveChartContext>
+   public class CurveMapper : SnapshotMapperBase<ModelCurve, SnapshotCurve, SimulationAnalysisContext>
    {
       private readonly IDimensionFactory _dimensionFactory;
 
@@ -32,17 +32,17 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<ModelCurve> MapToModel(SnapshotCurve snapshot, CurveChartContext curveChartContext)
+      public override Task<ModelCurve> MapToModel(SnapshotCurve snapshot, SimulationAnalysisContext simulationAnalysisContext)
       {
          var curve = new ModelCurve {Name = snapshot.Name};
          curve.CurveOptions.UpdateFrom(snapshot.CurveOptions);
 
-         var yData = findCurveWithPath(snapshot.Y, curveChartContext.DataRepositories);
+         var yData = findCurveWithPath(snapshot.Y, simulationAnalysisContext.DataRepositories);
          curve.SetyData(yData, _dimensionFactory);
 
          ModelDataColumn xData = yData?.BaseGrid;
          if(!string.Equals(snapshot.X, xData?.Name))
-            xData = findCurveWithPath(snapshot.X, curveChartContext.DataRepositories);
+            xData = findCurveWithPath(snapshot.X, simulationAnalysisContext.DataRepositories);
 
          curve.SetxData(xData, _dimensionFactory);
          return Task.FromResult(curve);

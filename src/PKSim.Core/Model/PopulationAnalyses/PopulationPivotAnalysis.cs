@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model.PopulationAnalyses
 {
@@ -29,7 +29,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          _fieldPositions.Remove(populationAnalysisField);
       }
 
-      public virtual void SetPosition(string fieldName, PivotArea area, int index)
+      public virtual void SetPosition(string fieldName, PivotArea? area, int? index)
       {
          SetPosition(FieldByName(fieldName), area, index);
       }
@@ -50,14 +50,21 @@ namespace PKSim.Core.Model.PopulationAnalyses
          SetPosition(field, newPosition(area, AllFieldsOn(area).Count));
       }
 
-      public virtual void SetPosition(IPopulationAnalysisField field, PivotArea area, int index)
+      public virtual void SetPosition(IPopulationAnalysisField field, PivotArea? area, int? index)
       {
          SetPosition(field, newPosition(area, index));
       }
 
-      private static PivotPosition newPosition(PivotArea area, int index)
+      private static PivotPosition newPosition(PivotArea? area, int? index)
       {
-         return new PivotPosition {Area = area, Index = index};
+         var position = new PivotPosition();
+         if (area != null)
+            position.Area = area.Value;
+
+         if (index != null)
+            position.Index = index.Value;
+
+         return position;
       }
 
       public virtual PivotPosition GetPosition(string fieldName)
