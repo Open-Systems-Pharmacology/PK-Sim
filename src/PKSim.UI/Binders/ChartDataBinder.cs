@@ -28,8 +28,8 @@ namespace PKSim.UI.Binders
       private readonly bool _allowZoom;
       private readonly ISymbolToMarkerKindMapper _symbolMapper;
       private readonly ILineStyleToDashStyleMapper _lineStyleMapper;
-      private readonly DiagramZoomRectangleService _diagramZoomRectangleService;
       private ChartTitle _previewChartOrigin;
+      private DiagramZoomRectangleService _diagramZoomRectangleService;
       private const int DEFAULT_TICKS_FOR_LOG_SCALE = 8;
       private const int DEFAULT_TICKS_FOR_LIN_SCALE = 2;
 
@@ -40,9 +40,6 @@ namespace PKSim.UI.Binders
          _allowZoom = allowZoom;
          _symbolMapper = new SymbolToMarkerKindMapper();
          _lineStyleMapper = new LineStyleToDashStyleMapper();
-
-         if (_allowZoom)
-            _diagramZoomRectangleService = new DiagramZoomRectangleService(_view.Chart, zoomAction);
       }
 
       public void ClearPlot()
@@ -60,7 +57,7 @@ namespace PKSim.UI.Binders
          finally
          {
             collection.EndUpdate();
-         }         
+         }
       }
 
       public void Bind(ChartData<TX, TY> chartData, PopulationAnalysisChart analysisChart)
@@ -76,6 +73,10 @@ namespace PKSim.UI.Binders
          {
             var dummySeries = new Series("dummy", _viewType);
             _view.Chart.Series.Add(dummySeries);
+
+            //Requirs to be done when the diagram is initialized
+            if (_allowZoom)
+               _diagramZoomRectangleService = new DiagramZoomRectangleService(_view.Chart, zoomAction);
          }
 
          var diagram = _view.Diagram;
