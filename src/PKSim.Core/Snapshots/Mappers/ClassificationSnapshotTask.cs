@@ -9,7 +9,7 @@ using SnapshotClassification = PKSim.Core.Snapshots.Classification;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public interface IClassificationSnapshotService
+   public interface IClassificationSnapshotTask
    {
       /// <summary>
       /// Returns the Classifiable for the snapshots provided.
@@ -25,26 +25,26 @@ namespace PKSim.Core.Snapshots.Mappers
       Task<SnapshotClassification[]> MapClassificationsToSnapshots(IReadOnlyList<ModelClassification> classifications);
    }
 
-   public class ClassificationSnapshotService : IClassificationSnapshotService
+   public class ClassificationSnapshotTask : IClassificationSnapshotTask
    {
       private readonly ClassificationMapper _classificationMapper;
       private readonly IExecutionContext _executionContext;
 
-      public ClassificationSnapshotService(ClassificationMapper classificationMapper, IExecutionContext executionContext)
+      public ClassificationSnapshotTask(ClassificationMapper classificationMapper, IExecutionContext executionContext)
       {
          _classificationMapper = classificationMapper;
          _executionContext = executionContext;
       }
 
-      public async Task<ModelClassification[]> ClassificationsForSnapshots(SnapshotClassification[] snapshots)
+      public Task<ModelClassification[]> ClassificationsForSnapshots(SnapshotClassification[] snapshots)
       {
          var context = createClassificationContext(snapshots);
          var tasks = snapshots.SelectMany(x => leavesFrom(x).Select(classification => _classificationMapper.MapToModel(classification, context)));
 
-         return await Task.WhenAll(tasks);
+         return Task.WhenAll(tasks);
       }
 
-      public async Task<T[]> ClassifiablesForSnapshots<T>(Classifiable[] classifiables, IReadOnlyCollection<IObjectBase> subjects, IReadOnlyCollection<IClassification> classifications) where T : IClassifiableWrapper
+      public Task<T[]> ClassifiablesForSnapshots<T>(Classifiable[] classifiables, IReadOnlyCollection<IObjectBase> subjects, IReadOnlyCollection<IClassification> classifications) where T : IClassifiableWrapper
       {
          var classifiedSnapshots = classifiables.Where(x => x.ClassificationPath != null);
          var tasks = classifiedSnapshots.Select(x =>
@@ -54,7 +54,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return createModelForClassifiable<T>(x, subject, parentClassification);
          });
 
-         return await Task.WhenAll(tasks);
+         return Task.WhenAll(tasks);
       }
 
       public Task<SnapshotClassification[]> MapClassificationsToSnapshots(IReadOnlyList<ModelClassification> classifications)

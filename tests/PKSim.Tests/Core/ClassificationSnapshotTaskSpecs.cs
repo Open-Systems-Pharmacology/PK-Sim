@@ -12,7 +12,7 @@ using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ClassificationSnapshotService : ContextSpecificationAsync<ClassificationSnapshotService>
+   public abstract class concern_for_ClassificationSnapshotTask : ContextSpecificationAsync<ClassificationSnapshotTask>
    {
       private IExecutionContext _executionContext;
       protected ClassificationMapper _classificationMapper;
@@ -26,7 +26,7 @@ namespace PKSim.Core
          _executionContext = A.Fake<IExecutionContext>();
          _classificationMapper = A.Fake<ClassificationMapper>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
-         sut = new ClassificationSnapshotService(_classificationMapper, _executionContext);
+         sut = new ClassificationSnapshotTask(_classificationMapper, _executionContext);
 
          _classifications = new List<OSPSuite.Core.Domain.Classification>();
 
@@ -42,7 +42,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_classifiables_for_snapshots : concern_for_ClassificationSnapshotService
+   public class When_mapping_classifiables_for_snapshots : concern_for_ClassificationSnapshotTask
    {
       private ClassifiableObservedData[] _result;
       private Classifiable _snapshotClassifiable;
@@ -92,7 +92,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_snapshots_to_classifications : concern_for_ClassificationSnapshotService
+   public class When_mapping_snapshots_to_classifications : concern_for_ClassificationSnapshotTask
    {
       private OSPSuite.Core.Domain.Classification[] _result;
 
@@ -108,7 +108,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_classifications_to_snapshots : concern_for_ClassificationSnapshotService
+   public class When_mapping_classifications_to_snapshots : concern_for_ClassificationSnapshotTask
    {
       private Classification[] _result;
 

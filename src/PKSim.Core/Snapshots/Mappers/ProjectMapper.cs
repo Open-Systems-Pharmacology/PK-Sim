@@ -17,14 +17,14 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly IExecutionContext _executionContext;
       private readonly SimulationMapper _simulationMapper;
-      private readonly IClassificationSnapshotService _classificationSnapshotService;
+      private readonly IClassificationSnapshotTask _classificationSnapshotTask;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
 
-      public ProjectMapper(IExecutionContext executionContext, SimulationMapper simulationMapper, IClassificationSnapshotService classificationSnapshotService)
+      public ProjectMapper(IExecutionContext executionContext, SimulationMapper simulationMapper, IClassificationSnapshotTask classificationSnapshotTask)
       {
          _executionContext = executionContext;
          _simulationMapper = simulationMapper;
-         _classificationSnapshotService = classificationSnapshotService;
+         _classificationSnapshotTask = classificationSnapshotTask;
          //required to load the snapshot mapper via execution context to avoid circular references
          _snapshotMapper = new Lazy<ISnapshotMapper>(() => _executionContext.Resolve<ISnapshotMapper>());
       }
@@ -48,7 +48,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<Classification[]> mapObservedDataClassificationsToSnapshots(ModelProject project)
       {
-         return _classificationSnapshotService.MapClassificationsToSnapshots(observedDataClassificationsFrom(project));
+         return _classificationSnapshotTask.MapClassificationsToSnapshots(observedDataClassificationsFrom(project));
       }
 
       private static IReadOnlyList<OSPSuite.Core.Domain.Classification> observedDataClassificationsFrom(ModelProject project)
@@ -117,10 +117,10 @@ namespace PKSim.Core.Snapshots.Mappers
          var observedData = await observedDataFrom(snapshot.ObservedData);
          observedData.Each(repository => addObservedDataToProject(project, repository));
 
-         var observedDataClassificationLeaves = await _classificationSnapshotService.ClassificationsForSnapshots(snapshot.ObservedDataClassifications);
+         var observedDataClassificationLeaves = await _classificationSnapshotTask.ClassificationsForSnapshots(snapshot.ObservedDataClassifications);
          observedDataClassificationLeaves.Each(leaf => addBranch(leaf, project));
 
-         var observedDataClassifiables = await _classificationSnapshotService.ClassifiablesForSnapshots<ModelObservedDataClassifiable>(snapshot.ObservedDataClassifiables, 
+         var observedDataClassifiables = await _classificationSnapshotTask.ClassifiablesForSnapshots<ModelObservedDataClassifiable>(snapshot.ObservedDataClassifiables, 
             project.AllObservedData, 
             project.AllClassificationsByType(ClassificationType.ObservedData));
 

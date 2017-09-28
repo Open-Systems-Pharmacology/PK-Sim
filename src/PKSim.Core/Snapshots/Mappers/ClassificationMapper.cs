@@ -38,19 +38,12 @@ namespace PKSim.Core.Snapshots.Mappers
          });
 
          var childClassifications = childClassificationsFrom(classification, classifications);
-         root.Classifications = await mapChildClassifications(classifications, childClassifications);
+
+         root.Classifications = childClassifications.Any() ? await Task.WhenAll(childClassifications.Select(x => mapTreeFrom(x, classifications))) : null;
 
          root.ClassificationType = classification.ClassificationType;
 
          return root;
-      }
-
-      private async Task<SnapshotClassification[]> mapChildClassifications(IReadOnlyList<ModelClassification> classifications, IReadOnlyList<ModelClassification> childClassifications)
-      {
-         if (!childClassifications.Any()) return null;
-
-         var tasks = childClassifications.Select(x => mapTreeFrom(x, classifications));
-         return await Task.WhenAll(tasks);
       }
 
       private static IReadOnlyList<ModelClassification> childClassificationsFrom(ModelClassification classification, IReadOnlyList<ModelClassification> classifications)

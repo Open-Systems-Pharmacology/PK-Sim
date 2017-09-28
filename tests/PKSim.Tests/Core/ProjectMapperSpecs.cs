@@ -49,7 +49,7 @@ namespace PKSim.Core
       protected Classification _classification;
       protected Snapshots.Classification _classificationSnapshot;
       protected Classifiable _classifiableSnapshot;
-      protected IClassificationSnapshotService _classificationSnapshotService;
+      protected IClassificationSnapshotTask _classificationSnapshotTask;
 
       protected override Task Context()
       {
@@ -57,8 +57,8 @@ namespace PKSim.Core
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _executionContext = A.Fake<IExecutionContext>();
          _simulationMapper = A.Fake<SimulationMapper>();
-         _classificationSnapshotService = A.Fake<IClassificationSnapshotService>();
-         sut = new ProjectMapper(_executionContext, _simulationMapper, _classificationSnapshotService);
+         _classificationSnapshotTask = A.Fake<IClassificationSnapshotTask>();
+         sut = new ProjectMapper(_executionContext, _simulationMapper, _classificationSnapshotTask);
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
          _individual = new Individual().WithName("IND");
          _compound = new Compound().WithName("COMP");
@@ -101,7 +101,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).ReturnsAsync(_protocolSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).ReturnsAsync(_populationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).ReturnsAsync(_observedDataSnapshot);
-         A.CallTo(() => _classificationSnapshotService.MapClassificationsToSnapshots(A<IReadOnlyList<Classification>>.That.Contains(_classification))).ReturnsAsync(new[] { _classificationSnapshot });
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots(A<IReadOnlyList<Classification>>.That.Contains(_classification))).ReturnsAsync(new[] { _classificationSnapshot });
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_classifiableObservedData)).ReturnsAsync(_classifiableSnapshot);
 
          A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).ReturnsAsync(_simulationSnapshot);
