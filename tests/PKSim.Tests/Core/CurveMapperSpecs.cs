@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -15,24 +16,28 @@ namespace PKSim.Core
       protected Curve _curve;
       protected Snapshots.Curve _snapshot;
       protected IDimensionFactory _dimensionFactory;
-      private DataColumn _xColumn;
-      private DataColumn _yColumn;
+      protected DataColumn _xColumn;
+      protected DataColumn _yColumn;
+      protected DataRepository _dataRepository;
 
       protected override Task Context()
       {
-         _dimensionFactory= A.Fake<IDimensionFactory>();
-         var dataRepository = DomainHelperForSpecs.ObservedData();
-         sut = new CurveMapper();
+         _dimensionFactory = A.Fake<IDimensionFactory>();
+         _dataRepository = DomainHelperForSpecs.ObservedData();
+         sut = new CurveMapper(_dimensionFactory);
 
          _curve = new Curve
          {
             Name = "Hello",
          };
 
-         _xColumn = dataRepository.BaseGrid;
-         _yColumn = dataRepository.ObservationColumns().First();
+         _xColumn = _dataRepository.BaseGrid;
+         _yColumn = _dataRepository.ObservationColumns().First();
 
-         _curve.SetxData(_xColumn,_dimensionFactory);
+         _xColumn.QuantityInfo.Path = new[] {"A", "B"};
+         _yColumn.QuantityInfo.Path = new[] {"BaseGrid"};
+
+         _curve.SetxData(_xColumn, _dimensionFactory);
          _curve.SetyData(_yColumn, _dimensionFactory);
 
          return _completed;
@@ -62,7 +67,6 @@ namespace PKSim.Core
       {
          await base.Context();
          _curve.SetxData(null, _dimensionFactory);
-
       }
 
       protected override async Task Because()
@@ -75,5 +79,71 @@ namespace PKSim.Core
       {
          _snapshot.X.ShouldBeNull();
       }
+   }
+
+   public class When_mapping_a_snapshot_curve_to_curve_using_base_grid_as_x_axis : concern_for_CurveMapper
+   {
+      private CurveChartContext _context;
+      private Curve _newCurve;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_curve);
+         _context = new CurveChartContext(new[] {_dataRepository});
+         _snapshot.CurveOptions.Color = Color.Aqua;
+      }
+
+      protected override async Task Because()
+      {
+         _newCurve = await sut.MapToModel(_snapshot, _context);
+      }
+
+      [Observation]
+      public void should_return_a_curve_having_the_expected_properties()
+      {
+         _newCurve.Name.ShouldBeEqualTo(_snapshot.Name);
+         _newCurve.xData.ShouldBeEqualTo(_xColumn);
+         _newCurve.yData.ShouldBeEqualTo(_yColumn);
+      }
+
+      [Observation]
+      public void should_update_curve_option_properties()
+      {
+         _newCurve.Color.ShouldBeEqualTo(_snapshot.CurveOptions.Color);
+      }
+   }
+
+   public class When_mapping_a_snapshot_curve_to_curve_using_another_column_as_x_axis : concern_for_CurveMapper
+   {
+      private CurveChartContext _context;
+      private Curve _newCurve;
+      private DataRepository _anotherRepository;
+      private DataColumn _y2Column;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_curve);
+         _anotherRepository = DomainHelperForSpecs.ObservedData();
+         _y2Column = _anotherRepository.AllButBaseGrid().First();
+         _y2Column.QuantityInfo.Path = new[] {"D", "E", "F"};
+         _context = new CurveChartContext(new[] { _dataRepository, _anotherRepository,  });
+         _snapshot.CurveOptions.Color = Color.Aqua;
+         _snapshot.X = _y2Column.PathAsString;
+      }
+
+      protected override async Task Because()
+      {
+         _newCurve = await sut.MapToModel(_snapshot, _context);
+      }
+
+      [Observation]
+      public void should_map_the_expected_column_for_x_data()
+      {
+         _newCurve.xData.ShouldBeEqualTo(_y2Column);
+         _newCurve.yData.ShouldBeEqualTo(_yColumn);
+      }
+
    }
 }

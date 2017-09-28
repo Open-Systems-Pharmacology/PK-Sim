@@ -1,20 +1,20 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Exceptions;
-using FakeItEasy;
-using PKSim.Core.Chart;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using PKSim.Core.Chart;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using ISimulationAnalysisCreator = PKSim.Core.Services.ISimulationAnalysisCreator;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_SimulationRunner : ContextSpecification<ISimulationRunner>
+   public abstract class concern_for_SimulationRunner : ContextSpecificationAsync<ISimulationRunner>
    {
       protected ISimulationEngine<IndividualSimulation> _simulationEngine;
       protected ISimulationEngine<PopulationSimulation> _popSimulationEngine;
@@ -25,7 +25,7 @@ namespace PKSim.Core
       protected ISimulationSettingsRetriever _simulationSettingsRetriever;
       private ICloner _cloner;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _simulationEngine = A.Fake<ISimulationEngine<IndividualSimulation>>();
          _popSimulationEngine = A.Fake<ISimulationEngine<PopulationSimulation>>();
@@ -33,12 +33,13 @@ namespace PKSim.Core
          _simulationAnalysisCreator = A.Fake<ISimulationAnalysisCreator>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _entityTask = A.Fake<IEntityValidationTask>();
-         _cloner= A.Fake<ICloner>();
+         _cloner = A.Fake<ICloner>();
          _simulationSettingsRetriever = A.Fake<ISimulationSettingsRetriever>();
          A.CallTo(() => _simulationEngineFactory.Create<PopulationSimulation>()).Returns(_popSimulationEngine);
          A.CallTo(() => _simulationEngineFactory.Create<IndividualSimulation>()).Returns(_simulationEngine);
 
-         sut = new SimulationRunner(_simulationEngineFactory, _simulationAnalysisCreator, _lazyLoadTask, _entityTask, _simulationSettingsRetriever,_cloner);
+         sut = new SimulationRunner(_simulationEngineFactory, _simulationAnalysisCreator, _lazyLoadTask, _entityTask, _simulationSettingsRetriever, _cloner);
+         return _completed;
       }
    }
 
@@ -46,16 +47,16 @@ namespace PKSim.Core
    {
       private IndividualSimulation _simulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(() => _entityTask.Validate(_simulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
-         sut.RunSimulation(_simulation);
+         return sut.RunSimulation(_simulation);
       }
 
       [Observation]
@@ -75,17 +76,20 @@ namespace PKSim.Core
    {
       private IndividualSimulation _simulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(() => _simulation.Analyses).Returns(new List<ISimulationAnalysis>());
          A.CallTo(() => _simulation.HasResults).Returns(true);
+         A.CallTo(() => _entityTask.Validate(_simulation)).Returns(true);
+         await sut.RunSimulation(_simulation, createDefaultAnalysis: true);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Handle(new SimulationResultsUpdatedEvent(_simulation));
+         return _completed;
       }
 
       [Observation]
@@ -99,17 +103,20 @@ namespace PKSim.Core
    {
       private IndividualSimulation _simulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(() => _simulation.Analyses).Returns(new List<SimulationTimeProfileChart>());
          A.CallTo(() => _simulation.HasResults).Returns(false);
+         A.CallTo(() => _entityTask.Validate(_simulation)).Returns(true);
+         await sut.RunSimulation(_simulation, createDefaultAnalysis: true);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Handle(new SimulationResultsUpdatedEvent(_simulation));
+         return _completed;
       }
 
       [Observation]
@@ -123,17 +130,20 @@ namespace PKSim.Core
    {
       private IndividualSimulation _simulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
-         A.CallTo(() => _simulation.Analyses).Returns(new List<ISimulationAnalysis> { A.Fake<ISimulationAnalysis>() });
+         A.CallTo(() => _simulation.Analyses).Returns(new List<ISimulationAnalysis> {A.Fake<ISimulationAnalysis>()});
          A.CallTo(() => _simulation.HasResults).Returns(true);
+         A.CallTo(() => _entityTask.Validate(_simulation)).Returns(true);
+         await sut.RunSimulation(_simulation, createDefaultAnalysis: true);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Handle(new SimulationResultsUpdatedEvent(_simulation));
+         return _completed;
       }
 
       [Observation]
@@ -147,17 +157,18 @@ namespace PKSim.Core
    {
       private Simulation _activeSimulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _activeSimulation = A.Fake<IndividualSimulation>();
          A.CallTo(() => _entityTask.Validate(_activeSimulation)).Returns(true);
-         sut.RunSimulation(_activeSimulation);
+         await sut.RunSimulation(_activeSimulation);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.StopSimulation();
+         return _completed;
       }
 
       [Observation]
@@ -169,9 +180,10 @@ namespace PKSim.Core
 
    public class When_the_simulation_runner_is_told_to_stop_a_simulation_that_was_never_started : concern_for_SimulationRunner
    {
-      protected override void Because()
+      protected override Task Because()
       {
          sut.StopSimulation();
+         return _completed;
       }
 
       [Observation]
@@ -184,16 +196,16 @@ namespace PKSim.Core
    {
       private IndividualSimulation _simulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(() => _entityTask.Validate(_simulation)).Returns(false);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
-         sut.RunSimulation(_simulation);
+         return sut.RunSimulation(_simulation);
       }
 
       [Observation]
@@ -207,16 +219,16 @@ namespace PKSim.Core
    {
       private PopulationSimulation _populationSimulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _populationSimulation = A.Fake<PopulationSimulation>();
          A.CallTo(() => _entityTask.Validate(_populationSimulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
-         sut.RunSimulation(_populationSimulation);
+         return sut.RunSimulation(_populationSimulation);
       }
 
       [Observation]
@@ -230,17 +242,17 @@ namespace PKSim.Core
    {
       private PopulationSimulation _populationSimulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _populationSimulation = A.Fake<PopulationSimulation>();
          A.CallTo(() => _entityTask.Validate(_populationSimulation)).Returns(true);
          A.CallTo(() => _simulationSettingsRetriever.SettingsFor(_populationSimulation)).Returns(null);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
-         sut.RunSimulation(_populationSimulation);
+         return sut.RunSimulation(_populationSimulation);
       }
 
       [Observation]
@@ -261,18 +273,18 @@ namespace PKSim.Core
       private PopulationSimulation _populationSimulation;
       private OutputSelections _newPopulationSettings;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _newPopulationSettings = new OutputSelections();
          _populationSimulation = A.Fake<PopulationSimulation>();
          A.CallTo(() => _entityTask.Validate(_populationSimulation)).Returns(true);
          A.CallTo(() => _simulationSettingsRetriever.SettingsFor(_populationSimulation)).Returns(_newPopulationSettings);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
-         sut.RunSimulation(_populationSimulation);
+         return sut.RunSimulation(_populationSimulation);
       }
 
       [Observation]

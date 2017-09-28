@@ -1,16 +1,16 @@
 using System;
 using System.Threading.Tasks;
-using PKSim.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Exceptions;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.SimModel.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Exceptions;
+using PKSim.Assets;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -95,24 +95,34 @@ namespace PKSim.Core.Services
 
          return Task.Run(() =>
          {
-            var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(simulation, shouldCloneModel:false);
+            var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(simulation, shouldCloneModel: false);
             var simRunOptions = new SimulationRunOptions
             {
                SimModelExportMode = SimModelExportMode.Optimized,
                CheckForNegativeValues = checkForNegativeValues
             };
-               
+
             var simResults = _simModelManager.RunSimulation(modelCoreSimulation, simRunOptions);
 
             if (!simResults.Success)
                return;
 
             _simulationResultsSynchronizer.Synchronize(simulation, simResults.Results);
+            updateResultsName(simulation);
+
             simulation.ClearPKCache();
 
             if (raiseEvents)
                _eventPublisher.PublishEvent(new SimulationResultsUpdatedEvent(simulation));
          });
+      }
+
+      private void updateResultsName(IndividualSimulation simulation)
+      {
+         if (simulation.DataRepository == null)
+            return;
+
+         simulation.DataRepository.Name = simulation.Name;
       }
 
       public Task RunForBatch(IndividualSimulation individualSimulation, bool checkNegativeValues)

@@ -820,7 +820,6 @@
     <Compile Include="UICommands\ImportFractionDataCommand.cs" />
     <Compile Include="UICommands\NewEventCommand.cs" />
     <Compile Include="UICommands\DeleteSimulationComparisonsUICommand.cs" />
-    <Compile Include="UICommands\RunSimulationCommand.cs" />
     <Compile Include="UICommands\SaveSimulationToMoBiFileCommand.cs" />
     <Compile Include="UICommands\ImportConcentrationDataCommmand.cs" />
     <Compile Include="UICommands\LoadBuildingBlockFromTemplateUICommand.cs" />
@@ -845,7 +844,7 @@
     <Compile Include="UICommands\OpenMRUProjectCommand.cs" />
     <Compile Include="UICommands\OpenProjectCommand.cs" />
     <Compile Include="UICommands\RenameBuildingBlockUICommand.cs" />
-    <Compile Include="UICommands\RunActiveSimulationCommand.cs" />
+    <Compile Include="UICommands\RunSimulationCommand.cs" />
     <Compile Include="UICommands\SaveProjectCommand.cs" />
     <Compile Include="UICommands\SaveProjectAsCommand.cs" />
     <Compile Include="UICommands\ScaleIndividualCommand.cs" />

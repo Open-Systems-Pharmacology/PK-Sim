@@ -1,22 +1,19 @@
 using System.Linq;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core.Model;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Utility.Events;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
    public interface ISimulationRunner : IListener<SimulationResultsUpdatedEvent>
    {
-      void RunSimulation(Simulation simulation, bool defineSettings = false);
+      Task RunSimulation(Simulation simulation, bool defineSettings = false, bool createDefaultAnalysis = true);
       void StopSimulation();
    }
 
-   public class SimulationRunner : ISimulationRunner,
-                                   IStrictVisitor,
-                                   IVisitor<IndividualSimulation>,
-                                   IVisitor<PopulationSimulation>
+   public class SimulationRunner : ISimulationRunner
    {
       private readonly ISimulationEngineFactory _simulationEngineFactory;
       private readonly ISimulationAnalysisCreator _simulationAnalysisCreator;
@@ -26,9 +23,11 @@ namespace PKSim.Core.Services
       private readonly ICloner _cloner;
       private ISimulationEngine _simulationEngine;
       private bool _defineSettings;
+      private readonly Task _simulationDidNotRun = Task.FromResult(false);
+      private bool _createDefaultAnalysis;
 
       public SimulationRunner(ISimulationEngineFactory simulationEngineFactory, ISimulationAnalysisCreator simulationAnalysisCreator, ILazyLoadTask lazyLoadTask,
-                              IEntityValidationTask entityValidationTask,  ISimulationSettingsRetriever simulationSettingsRetriever, ICloner cloner)
+         IEntityValidationTask entityValidationTask, ISimulationSettingsRetriever simulationSettingsRetriever, ICloner cloner)
       {
          _simulationEngineFactory = simulationEngineFactory;
          _simulationAnalysisCreator = simulationAnalysisCreator;
@@ -38,12 +37,24 @@ namespace PKSim.Core.Services
          _cloner = cloner;
       }
 
-      public void RunSimulation(Simulation simulation, bool defineSettings = false)
+      public Task RunSimulation(Simulation simulation, bool defineSettings = false, bool createDefaultAnalysis = true)
       {
          _defineSettings = defineSettings;
+         _createDefaultAnalysis = createDefaultAnalysis;
          _lazyLoadTask.Load(simulation);
-         if (!_entityValidationTask.Validate(simulation)) return;
-         this.Visit(simulation);
+
+         if (!_entityValidationTask.Validate(simulation))
+            return _simulationDidNotRun;
+
+         switch (simulation)
+         {
+            case IndividualSimulation individualSimulation:
+               return runSimulation(individualSimulation);
+
+            case PopulationSimulation populationSimulation:
+               return runSimulation(populationSimulation);
+         }
+         return _simulationDidNotRun;
       }
 
       public void StopSimulation()
@@ -53,17 +64,7 @@ namespace PKSim.Core.Services
          _simulationEngine = null;
       }
 
-      public void Visit(IndividualSimulation simulation)
-      {
-         runSimulation(simulation);
-      }
-
-      public void Visit(PopulationSimulation populationSimulation)
-      {
-         runSimulation(populationSimulation);
-      }
-
-      private void runSimulation<TSimulation>(TSimulation simulation) where TSimulation : Simulation
+      private async Task runSimulation<TSimulation>(TSimulation simulation) where TSimulation : Simulation
       {
          if (settingsRequired(simulation))
          {
@@ -74,7 +75,7 @@ namespace PKSim.Core.Services
 
          var simulationEngine = _simulationEngineFactory.Create<TSimulation>();
          _simulationEngine = simulationEngine;
-         simulationEngine.RunAsync(simulation);
+         await simulationEngine.RunAsync(simulation);
          simulation.HasChanged = true;
       }
 
@@ -92,7 +93,7 @@ namespace PKSim.Core.Services
       public void Handle(SimulationResultsUpdatedEvent eventToHandle)
       {
          var simulation = eventToHandle.Simulation as Simulation;
-         if (simulation == null || !simulation.HasResults) return;
+         if (simulation == null || !simulation.HasResults || !_createDefaultAnalysis) return;
          if (simulation.Analyses.Count() != 0) return;
          _simulationAnalysisCreator.CreateAnalysisFor(simulation);
       }

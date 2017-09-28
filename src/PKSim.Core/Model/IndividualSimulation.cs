@@ -66,7 +66,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual DataRepository DataRepository
       {
-         get { return _dataRepository; }
+         get => _dataRepository;
          set
          {
             _dataRepository = value;
