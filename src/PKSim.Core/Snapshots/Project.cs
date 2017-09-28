@@ -11,5 +11,6 @@
       public Simulation[] Simulations { get; set; }
       public Classification[] ObservedDataClassifications{ get; set; }
       public DataRepository[] ObservedData { get; set; }
+      public Classifiable[] ObservedDataClassifiables { get; set; }
    }
 }

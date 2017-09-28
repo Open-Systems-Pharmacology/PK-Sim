@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using Classification = OSPSuite.Core.Domain.Classification;
@@ -46,14 +48,17 @@ namespace PKSim.Core
       protected ClassifiableObservedData _classifiableObservedData;
       protected Classification _classification;
       protected Snapshots.Classification _classificationSnapshot;
+      protected Classifiable _classifiableSnapshot;
+      protected IClassificationSnapshotService _classificationSnapshotService;
 
       protected override Task Context()
       {
          _classificationMapper = A.Fake<ClassificationMapper>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _executionContext = A.Fake<IExecutionContext>();
-         _simulationMapper= A.Fake<SimulationMapper>();
-         sut = new ProjectMapper(_executionContext, _simulationMapper, _classificationMapper);
+         _simulationMapper = A.Fake<SimulationMapper>();
+         _classificationSnapshotService = A.Fake<IClassificationSnapshotService>();
+         sut = new ProjectMapper(_executionContext, _simulationMapper, _classificationSnapshotService);
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
          _individual = new Individual().WithName("IND");
          _compound = new Compound().WithName("COMP");
@@ -62,8 +67,9 @@ namespace PKSim.Core
          _protocol = new SimpleProtocol().WithName("PROTO");
          _population = new RandomPopulation().WithName("POP");
          _observedData = new DataRepository().WithName("OD");
-         _classifiableObservedData = new ClassifiableObservedData {Subject = _observedData};
-         _classification = new Classification{ClassificationType = ClassificationType.ObservedData};
+         _classifiableObservedData = new ClassifiableObservedData { Subject = _observedData };
+         _classification = new Classification { ClassificationType = ClassificationType.ObservedData };
+         _classifiableSnapshot = new Classifiable();
 
          _simulation = new IndividualSimulation().WithName("IND_SIM");
 
@@ -95,9 +101,10 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).ReturnsAsync(_protocolSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).ReturnsAsync(_populationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).ReturnsAsync(_observedDataSnapshot);
-         A.CallTo(() => _classificationMapper.MapToSnapshot(_classification, A<ClassificationContext>._)).ReturnsAsync(_classificationSnapshot);
+         A.CallTo(() => _classificationSnapshotService.MapClassificationsToSnapshots(A<IReadOnlyList<Classification>>.That.Contains(_classification))).ReturnsAsync(new[] { _classificationSnapshot });
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_classifiableObservedData)).ReturnsAsync(_classifiableSnapshot);
 
-         A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation,_project)).ReturnsAsync(_simulationSnapshot);
+         A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).ReturnsAsync(_simulationSnapshot);
 
          return Task.FromResult(true);
       }
@@ -163,6 +170,7 @@ namespace PKSim.Core
          _newProject.All<Population>().ShouldContain(_population);
       }
 
+      [Observation]
       public void should_have_mapped_the_observed_data()
       {
          _newProject.AllObservedData.ShouldContain(_observedData);

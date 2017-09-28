@@ -3,17 +3,15 @@ using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Snapshots.Mappers;
 using Classification = PKSim.Core.Snapshots.Classification;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ObservedDataClassificationMapper : ContextSpecificationAsync<ClassificationMapper>
+   public abstract class concern_for_ClassificationMapper : ContextSpecificationAsync<ClassificationMapper>
    {
       protected OSPSuite.Core.Domain.Classification _classification, _subClassification, _subSubClassification;
       protected ClassificationContext _context;
-      protected IClassifiableWrapper _classifiable;
 
       protected override Task Context()
       {
@@ -22,7 +20,6 @@ namespace PKSim.Core
          _classification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData };
          _subClassification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData, Parent = _classification };
          _subSubClassification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData, Parent = _subClassification };
-         _classifiable = new ClassifiableObservedData { Subject = new DataRepository().WithName("classifiableName"), Parent = _classification};
 
          _classification.Name = "A Name";
          _subClassification.Name = "Sub Name";
@@ -30,7 +27,6 @@ namespace PKSim.Core
 
          _context = new ClassificationContext
          {
-            Classifiables = new List<IClassifiableWrapper> { _classifiable },
             Classifications = new List<OSPSuite.Core.Domain.Classification> { _classification, _subClassification, _subSubClassification }
          };
 
@@ -38,19 +34,51 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_classification_to_snapshot : concern_for_ObservedDataClassificationMapper
+   public class When_mapping_snapshot_to_classification : concern_for_ClassificationMapper
+   {
+      private OSPSuite.Core.Domain.Classification _result;
+      private SnapshotClassificationContext _snapshotContext;
+      private Classification _parent;
+      private Classification _child;
+
+      protected override Task Context()
+      {
+         base.Context();
+
+         _child = new Classification().WithName("child");
+         _parent = new Classification {Classifications = new[] {_child}}.WithName("parent");
+
+         _snapshotContext = new SnapshotClassificationContext();
+         _snapshotContext.AddClassificationWithParent(_child, _parent);
+
+         return _completed;
+      }
+
+      protected override async Task Because()
+      {
+         _result = await sut.MapToModel(_child, _snapshotContext);
+      }
+
+      [Observation]
+      public void the_result_should_have_parent_with_correct_properties()
+      {
+         _result.Parent.Name.ShouldBeEqualTo(_parent.Name);
+      }
+
+      [Observation]
+      public void the_result_should_have_correct_properties()
+      {
+         _result.Name.ShouldBeEqualTo(_child.Name);
+      }
+   }
+
+   public class When_mapping_classification_to_snapshot : concern_for_ClassificationMapper
    {
       private Classification _result;
 
       protected override async Task Because()
       {
          _result = await sut.MapToSnapshot(_classification, _context);
-      }
-
-      [Observation]
-      public void the_snapshot_should_contain_classifiable_snapshots_from_the_original_classification()
-      {
-         _result.Classifiables.ShouldOnlyContain(_classifiable.Name);
       }
 
       [Observation]

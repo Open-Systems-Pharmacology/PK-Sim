@@ -245,6 +245,7 @@
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />
     <Compile Include="Core\AxisMapperSpecs.cs" />
     <Compile Include="Core\CalculationMethodCacheMapperSpecs.cs" />
+    <Compile Include="Core\ClassificationSnapshotServiceSpecs.cs" />
     <Compile Include="Core\CompoundMapperSpecs.cs" />
     <Compile Include="Core\CompoundProcessMapperSpecs.cs" />
     <Compile Include="Core\CompoundPropertiesMapperSpecs.cs" />
@@ -264,6 +265,7 @@
     <Compile Include="Core\InteractionProcessRetrieverSpecs.cs" />
     <Compile Include="Core\MoleculeMapperSpecs.cs" />
     <Compile Include="Core\ClassificationMapperSpecs.cs" />
+    <Compile Include="Core\ObservedDataClassifiableMapperSpecs.cs" />
     <Compile Include="Core\ObservedDataMapperSpecs.cs" />
     <Compile Include="Core\OntogenyMapperSpecs.cs" />
     <Compile Include="Core\OutputIntervalMapperSpecs.cs" />
