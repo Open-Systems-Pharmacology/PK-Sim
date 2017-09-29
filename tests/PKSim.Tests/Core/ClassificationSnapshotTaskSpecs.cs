@@ -4,7 +4,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using PKSim.Core.Snapshots;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using Classification = PKSim.Core.Snapshots.Classification;
@@ -20,91 +20,69 @@ namespace PKSim.Core
       protected OSPSuite.Core.Domain.Classification _modelClassification;
       protected Classification _snapshotClassification;
       protected ISnapshotMapper _snapshotMapper;
+      private Classification _subClassification;
+      protected OSPSuite.Core.Domain.Classification _subModelClassification;
 
       protected override Task Context()
       {
          _executionContext = A.Fake<IExecutionContext>();
          _classificationMapper = A.Fake<ClassificationMapper>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
-         sut = new ClassificationSnapshotTask(_classificationMapper, _executionContext);
+         sut = new ClassificationSnapshotTask(_classificationMapper);
 
          _classifications = new List<OSPSuite.Core.Domain.Classification>();
 
-         _modelClassification = new OSPSuite.Core.Domain.Classification();
-         _snapshotClassification = new Classification();
+         _modelClassification = new OSPSuite.Core.Domain.Classification().WithName("classification");
+         _subModelClassification = new OSPSuite.Core.Domain.Classification().WithName("subModelClassification");
+         _modelClassification.ClassificationType = ClassificationType.ObservedData;
+         _subModelClassification.ClassificationType = ClassificationType.ObservedData;
+         _snapshotClassification = new Classification().WithName("classification");
+         _snapshotClassification.Classifiables = new[] { "subject" };
+         _subClassification = new Classification().WithName("subClassification");
+         _snapshotClassification.Classifications = new[] { _subClassification };
 
          _classifications.Add(_modelClassification);
          A.CallTo(() => _classificationMapper.MapToSnapshot(_modelClassification, A<ClassificationContext>._)).ReturnsAsync(_snapshotClassification);
-         A.CallTo(() => _classificationMapper.MapToModel(_snapshotClassification, A<SnapshotClassificationContext>._)).ReturnsAsync(_modelClassification);
+         A.CallTo(() => _classificationMapper.MapToModel(_snapshotClassification, ClassificationType.ObservedData)).ReturnsAsync(_modelClassification);
+         A.CallTo(() => _classificationMapper.MapToModel(_subClassification, ClassificationType.ObservedData)).ReturnsAsync(_subModelClassification);
+
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
 
          return _completed;
       }
    }
 
-   public class When_mapping_classifiables_for_snapshots : concern_for_ClassificationSnapshotTask
+   public class When_mapping_snapshots_to_classifications : concern_for_ClassificationSnapshotTask
    {
-      private ClassifiableObservedData[] _result;
-      private Classifiable _snapshotClassifiable;
-      private IReadOnlyCollection<IObjectBase> _subjects;
-      private IReadOnlyCollection<IClassification> _modelClassifications;
-      private ClassifiableObservedData _modelClassifiable;
-      private DataRepository _dataRepository;
-      private OSPSuite.Core.Domain.Classification _parentClassification;
+      private IReadOnlyCollection<DataRepository> _subjects;
+      private PKSimProject _project;
 
       protected override Task Context()
       {
          base.Context();
 
-         _snapshotClassifiable = new Classifiable {ClassificationPath = "hi", Name = "repositoryName"};
-         _dataRepository = DomainHelperForSpecs.ObservedData().WithName("repositoryName");
-         _subjects = new[] {_dataRepository};
-         _parentClassification = new OSPSuite.Core.Domain.Classification().WithName("hi");
-         _modelClassifications = new List<IClassification> {_parentClassification};
+         _project = new PKSimProject();
+         _subjects = new List<DataRepository> { DomainHelperForSpecs.ObservedData().WithName("subject") };
 
-         _modelClassifiable = new ClassifiableObservedData();
-
-         A.CallTo(() => _snapshotMapper.MapToModel(_snapshotClassifiable)).ReturnsAsync(_modelClassifiable);
          return _completed;
       }
 
       protected override async Task Because()
       {
-         _result = await sut.ClassifiablesForSnapshots<ClassifiableObservedData>(new[] {_snapshotClassifiable}, _subjects, _modelClassifications);
+         await sut.UpdateProjectClassifications<ClassifiableObservedData, DataRepository>(new[] { _snapshotClassification }, _project, _subjects, ClassificationType.ObservedData);
       }
 
       [Observation]
-      public void the_parent_classification_should_be_configured_correctly()
+      public void the_heirarchy_should_be_configured()
       {
-         _modelClassifiable.Parent.ShouldBeEqualTo(_parentClassification);
-      }
-
-      [Observation]
-      public void the_classifiable_subject_should_be_configured_correctly()
-      {
-         _modelClassifiable.Subject.ShouldBeEqualTo(_dataRepository);
-      }
-
-      [Observation]
-      public void the_result_must_contain_a_classifiable_with_subject()
-      {
-         _result.ShouldContain(_modelClassifiable);
-      }
-   }
-
-   public class When_mapping_snapshots_to_classifications : concern_for_ClassificationSnapshotTask
-   {
-      private OSPSuite.Core.Domain.Classification[] _result;
-
-      protected override async Task Because()
-      {
-         _result = await sut.ClassificationsForSnapshots(new[] { _snapshotClassification });
+         _subModelClassification.Parent.ShouldBeEqualTo(_modelClassification);
       }
 
       [Observation]
       public void the_snapshot_mapper_should_be_used_to_map_models()
       {
-         _result.ShouldContain(_modelClassification);
+         _project.AllClassificationsByType(ClassificationType.ObservedData).ShouldContain(_modelClassification);
+         _project.AllClassificationsByType(ClassificationType.ObservedData).ShouldContain(_subModelClassification);
       }
    }
 
@@ -114,7 +92,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapClassificationsToSnapshots(_classifications);
+         _result = await sut.MapClassificationsToSnapshots(_classifications, new List<IClassifiableWrapper>());
       }
 
       [Observation]

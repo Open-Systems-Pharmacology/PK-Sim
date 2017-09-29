@@ -5,7 +5,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using Classification = OSPSuite.Core.Domain.Classification;
@@ -48,7 +47,6 @@ namespace PKSim.Core
       protected ClassifiableObservedData _classifiableObservedData;
       protected Classification _classification;
       protected Snapshots.Classification _classificationSnapshot;
-      protected Classifiable _classifiableSnapshot;
       protected IClassificationSnapshotTask _classificationSnapshotTask;
 
       protected override Task Context()
@@ -68,8 +66,7 @@ namespace PKSim.Core
          _population = new RandomPopulation().WithName("POP");
          _observedData = new DataRepository().WithName("OD");
          _classifiableObservedData = new ClassifiableObservedData { Subject = _observedData };
-         _classification = new Classification { ClassificationType = ClassificationType.ObservedData };
-         _classifiableSnapshot = new Classifiable();
+         _classification = new Classification { ClassificationType = ClassificationType.ObservedData}.WithName("OD Classification");
 
          _simulation = new IndividualSimulation().WithName("IND_SIM");
 
@@ -101,8 +98,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).ReturnsAsync(_protocolSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).ReturnsAsync(_populationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).ReturnsAsync(_observedDataSnapshot);
-         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots(A<IReadOnlyList<Classification>>.That.Contains(_classification))).ReturnsAsync(new[] { _classificationSnapshot });
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_classifiableObservedData)).ReturnsAsync(_classifiableSnapshot);
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots(A<IReadOnlyList<Classification>>.That.Contains(_classification), A<IReadOnlyList<IClassifiableWrapper>>._)).ReturnsAsync(new[] { _classificationSnapshot });
 
          A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).ReturnsAsync(_simulationSnapshot);
 

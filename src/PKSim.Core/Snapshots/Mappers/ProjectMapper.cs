@@ -41,24 +41,23 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>(), project);
          snapshot.ObservedData = await mapObservedDataToSnapshots(project.AllObservedData);
          snapshot.ObservedDataClassifications = await mapObservedDataClassificationsToSnapshots(project);
-         snapshot.ObservedDataClassifiables = await mapObservedDataClassifiablesToSnapshots(project.AllClassifiablesByType<ModelObservedDataClassifiable>());
 
          return snapshot;
       }
 
       private Task<Classification[]> mapObservedDataClassificationsToSnapshots(ModelProject project)
       {
-         return _classificationSnapshotTask.MapClassificationsToSnapshots(observedDataClassificationsFrom(project));
+         return _classificationSnapshotTask.MapClassificationsToSnapshots(observedDataClassificationsFrom(project), observedDataClassifiablesFrom(project));
+      }
+
+      private static IReadOnlyList<ModelObservedDataClassifiable> observedDataClassifiablesFrom(ModelProject project)
+      {
+         return project.AllClassifiablesByType<ModelObservedDataClassifiable>().ToList();
       }
 
       private static IReadOnlyList<OSPSuite.Core.Domain.Classification> observedDataClassificationsFrom(ModelProject project)
       {
          return project.AllClassificationsByType(ClassificationType.ObservedData).OfType<OSPSuite.Core.Domain.Classification>().ToList();
-      }
-
-      private Task<Classifiable[]> mapObservedDataClassifiablesToSnapshots(IReadOnlyCollection<ModelObservedDataClassifiable> allObservedDataClassifiables)
-      {
-         return mapModelsToSnapshot<ModelObservedDataClassifiable, Classifiable>(allObservedDataClassifiables, snapshotMapper.MapToSnapshot);
       }
 
       private Task<SnapshotDataRepository[]> mapObservedDataToSnapshots(IReadOnlyCollection<ModelDataRepository> allObservedData)
@@ -117,36 +116,12 @@ namespace PKSim.Core.Snapshots.Mappers
          var observedData = await observedDataFrom(snapshot.ObservedData);
          observedData.Each(repository => addObservedDataToProject(project, repository));
 
-         var observedDataClassificationLeaves = await _classificationSnapshotTask.ClassificationsForSnapshots(snapshot.ObservedDataClassifications);
-         observedDataClassificationLeaves.Each(leaf => addBranch(leaf, project));
-
-         var observedDataClassifiables = await _classificationSnapshotTask.ClassifiablesForSnapshots<ModelObservedDataClassifiable>(snapshot.ObservedDataClassifiables, 
-            project.AllObservedData, 
-            project.AllClassificationsByType(ClassificationType.ObservedData));
-
-         observedDataClassifiables.Each(x => moveClassifiable(project, x));
+         await _classificationSnapshotTask.UpdateProjectClassifications<ModelObservedDataClassifiable, ModelDataRepository>(snapshot.ObservedDataClassifications, project, project.AllObservedData, ClassificationType.ObservedData);
 
          var allSimulations = await allSmulationsFrom(snapshot.Simulations, project);
          allSimulations.Each(simulation => addSimulationToProject(project, simulation));
 
          return project;
-      }
-
-      private void moveClassifiable(PKSimProject project, IClassifiableWrapper x)
-      {
-         var existing = project.AllClassifiables.FindById(x.Id);
-         if (existing != null)
-            project.RemoveClassifiable(existing);
-
-         project.AddClassifiable(x);
-      }
-
-      private void addBranch(IClassification node, PKSimProject project)
-      {
-         if (node.Parent != null)
-            addBranch(node.Parent, project);
-
-         project.AddClassification(node);
       }
 
       private void addSimulationToProject(ModelProject project, Model.Simulation simulation)

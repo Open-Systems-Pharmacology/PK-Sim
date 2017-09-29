@@ -850,9 +850,7 @@
     <Compile Include="Snapshots\Alternative.cs" />
     <Compile Include="Snapshots\Axis.cs" />
     <Compile Include="Snapshots\CalculationMethod.cs" />
-    <Compile Include="Snapshots\Classifiable.cs" />
     <Compile Include="Snapshots\Classification.cs" />
-    <Compile Include="Snapshots\Mappers\BaseClassifiableMapper.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationContext.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationMapper.cs" />
     <Compile Include="Snapshots\Compound.cs" />
@@ -892,7 +890,6 @@
     <Compile Include="Snapshots\Mappers\IndividualMapper.cs" />
     <Compile Include="Snapshots\Mappers\MoleculeMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObjectBaseSnapshotMapperBase.cs" />
-    <Compile Include="Snapshots\Mappers\ObservedDataClassifiableMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObservedDataMapper.cs" />
     <Compile Include="Snapshots\Mappers\OntogenyMapper.cs" />
     <Compile Include="Snapshots\Mappers\OutputIntervalMapper.cs" />
@@ -909,7 +906,6 @@
     <Compile Include="Snapshots\Mappers\SchemaItemMapper.cs" />
     <Compile Include="Snapshots\Mappers\SchemaMapper.cs" />
     <Compile Include="Snapshots\Mappers\SimulationMapper.cs" />
-    <Compile Include="Snapshots\Mappers\SnapshotClassificationContext.cs" />
     <Compile Include="Snapshots\Mappers\SnapshotMapper.cs" />
     <Compile Include="Snapshots\Mappers\SnapshotMapperBase.cs" />
     <Compile Include="Snapshots\Mappers\SolverSettingsMapper.cs" />

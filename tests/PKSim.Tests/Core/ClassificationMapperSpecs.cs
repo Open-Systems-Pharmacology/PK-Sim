@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Snapshots.Mappers;
 using Classification = PKSim.Core.Snapshots.Classification;
 
@@ -17,17 +18,14 @@ namespace PKSim.Core
       {
          sut = new ClassificationMapper();
 
-         _classification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData };
-         _subClassification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData, Parent = _classification };
-         _subSubClassification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData, Parent = _subClassification };
-
-         _classification.Name = "A Name";
-         _subClassification.Name = "Sub Name";
-         _subSubClassification.Name = "Sub Sub Name";
+         _classification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData }.WithName("A Name");
+         _subClassification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData, Parent = _classification }.WithName("Sub NAme");
+         _subSubClassification = new OSPSuite.Core.Domain.Classification { ClassificationType = ClassificationType.ObservedData, Parent = _subClassification }.WithName("Sub Sub Name");
 
          _context = new ClassificationContext
          {
-            Classifications = new List<OSPSuite.Core.Domain.Classification> { _classification, _subClassification, _subSubClassification }
+            Classifications = new List<OSPSuite.Core.Domain.Classification> { _classification, _subClassification, _subSubClassification },
+            Classifiables = new List<IClassifiableWrapper>()
          };
 
          return Task.FromResult(true);
@@ -37,32 +35,18 @@ namespace PKSim.Core
    public class When_mapping_snapshot_to_classification : concern_for_ClassificationMapper
    {
       private OSPSuite.Core.Domain.Classification _result;
-      private SnapshotClassificationContext _snapshotContext;
-      private Classification _parent;
       private Classification _child;
 
       protected override Task Context()
       {
          base.Context();
-
          _child = new Classification().WithName("child");
-         _parent = new Classification {Classifications = new[] {_child}}.WithName("parent");
-
-         _snapshotContext = new SnapshotClassificationContext();
-         _snapshotContext.AddClassificationWithParent(_child, _parent);
-
          return _completed;
       }
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_child, _snapshotContext);
-      }
-
-      [Observation]
-      public void the_result_should_have_parent_with_correct_properties()
-      {
-         _result.Parent.Name.ShouldBeEqualTo(_parent.Name);
+         _result = await sut.MapToModel(_child, ClassificationType.ObservedData);
       }
 
       [Observation]
@@ -75,10 +59,22 @@ namespace PKSim.Core
    public class When_mapping_classification_to_snapshot : concern_for_ClassificationMapper
    {
       private Classification _result;
+      protected override Task Context()
+      {
+         base.Context();
+         _context.Classifiables = new[] { new ClassifiableObservedData { Parent = _classification, Subject = new DataRepository().WithName("Classifiable") } };
+         return _completed;
+      }
 
       protected override async Task Because()
       {
          _result = await sut.MapToSnapshot(_classification, _context);
+      }
+
+      [Observation]
+      public void should_have_mapped_names_for_classifiables()
+      {
+         _result.Classifiables[0].ShouldBeEqualTo("Classifiable");
       }
 
       [Observation]
