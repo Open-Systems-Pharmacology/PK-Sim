@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
