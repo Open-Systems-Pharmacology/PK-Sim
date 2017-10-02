@@ -94,8 +94,6 @@ namespace PKSim.Core.Snapshots.Mappers
          updateModelFieldPositions(populationAnalysis, snapshot.Fields);
          mapIf<PopulationBoxWhiskerAnalysis>(snapshot, populationAnalysis, mapBowWiskerAnalysisToModel);
          mapIf<PopulationStatisticalAnalysis>(snapshot, populationAnalysis, mapStatisticalAnalysisToModel);
-
-
          return populationAnalysis;
       }
 

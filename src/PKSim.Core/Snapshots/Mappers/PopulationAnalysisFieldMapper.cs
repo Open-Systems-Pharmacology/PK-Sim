@@ -26,7 +26,6 @@ namespace PKSim.Core.Snapshots.Mappers
          mapIf<PopulationAnalysisPKParameterField>(snapshot, field, mapPKParameterFieldToSnapshot);
          mapIf<PopulationAnalysisCovariateField>(snapshot, field, mapCovariateField);
          await mapGroupingFieldProperties(snapshot, field as PopulationAnalysisGroupingField);
-
          return snapshot;
       }
 
@@ -38,7 +37,6 @@ namespace PKSim.Core.Snapshots.Mappers
          mapIf<PopulationAnalysisPKParameterField>(snapshot, populationAnalysisField, mapPKParameterFieldToModel);
          mapIf<PopulationAnalysisCovariateField>(snapshot, populationAnalysisField, mapCovariateFieldToModel);
          mapIf<PopulationAnalysisOutputField>(snapshot, populationAnalysisField, mapOutputFieldToModel);
-
          return populationAnalysisField;
       }
 
