@@ -6,26 +6,11 @@ using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model.PopulationAnalyses
 {
-   public interface IGroupingDefinition : IComparer<object>, IUpdatable
+   public abstract class GroupingDefinition : IComparer<object>, IUpdatable
    {
       /// <summary>
       ///    The name of the underlying field being referenced by the grouping definition
       /// </summary>
-      string FieldName { get; set; }
-
-      string GetExpression();
-
-      /// <summary>
-      ///    Returns true if the grouping definition can be defined for a field of type <paramref name="dataType" /> otherwise
-      ///    false
-      /// </summary>
-      bool CanBeUsedFor(Type dataType);
-
-      IReadOnlyList<GroupingItem> GroupingItems { get; }
-   }
-
-   public abstract class GroupingDefinition : IGroupingDefinition
-   {
       public string FieldName { get; set; }
 
       public virtual void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
@@ -36,14 +21,17 @@ namespace PKSim.Core.Model.PopulationAnalyses
       }
 
       public abstract string GetExpression();
+
+      /// <summary>
+      ///    Returns true if the grouping definition can be defined for a field of type <paramref name="dataType" /> otherwise
+      ///    false
+      /// </summary>
       public abstract bool CanBeUsedFor(Type dataType);
+
       public abstract int Compare(object x, object y);
 
       public abstract IReadOnlyList<GroupingItem> GroupingItems { get; }
 
-      public IReadOnlyList<string> Labels
-      {
-         get { return GroupingItems.Select(x => x.Label).ToList(); }
-      }
+      public virtual IReadOnlyList<string> Labels => GroupingItems.Select(x => x.Label).ToList();
    }
 }

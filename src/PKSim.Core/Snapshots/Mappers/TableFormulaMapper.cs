@@ -52,11 +52,11 @@ namespace PKSim.Core.Snapshots.Mappers
       public virtual void UpdateModelProperties(ModelTableFormula tableFormula, SnapshotTableFormula snapshotTableFormula)
       {
          tableFormula.XDimension = _dimensionRepository.DimensionByName(snapshotTableFormula.XDimension);
-         tableFormula.XDisplayUnit = tableFormula.XDimension.Unit(UnitValueFor(snapshotTableFormula.XUnit));
+         tableFormula.XDisplayUnit = tableFormula.XDimension.Unit(ModelValueFor(snapshotTableFormula.XUnit));
          tableFormula.XName = snapshotTableFormula.XName;
 
          tableFormula.Dimension = _dimensionRepository.DimensionByName(snapshotTableFormula.YDimension);
-         tableFormula.YDisplayUnit = tableFormula.Dimension.Unit(UnitValueFor(snapshotTableFormula.YUnit));
+         tableFormula.YDisplayUnit = tableFormula.Dimension.Unit(ModelValueFor(snapshotTableFormula.YUnit));
          tableFormula.YName = snapshotTableFormula.YName;
 
          snapshotTableFormula.UseDerivedValues = tableFormula.UseDerivedValues;

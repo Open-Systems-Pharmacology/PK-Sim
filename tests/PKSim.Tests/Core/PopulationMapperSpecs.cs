@@ -1,13 +1,11 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
@@ -43,7 +41,7 @@ namespace PKSim.Core
 
          _advancedParameters.AddAdvancedParameter(_advancedParameter);
          _advancedParameterSnapshot = new Snapshots.AdvancedParameter();
-         A.CallTo(() => _advancedParameterMapper.MapToSnapshot(_advancedParameter)).ReturnsAsync(_advancedParameterSnapshot);
+         A.CallTo(() => _advancedParameterMapper.MapToSnapshots(A<IEnumerable<AdvancedParameter>>.That.Contains(_advancedParameter))).ReturnsAsync(new[] {_advancedParameterSnapshot});
 
 
          _population = CreateRandomPopulation();
@@ -90,7 +88,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_save_all_advanced_parmaeters_to_snapshot()
+      public void should_save_all_advanced_parameters_to_snapshot()
       {
          _snapshot.AdvancedParameters.ShouldContain(_advancedParameterSnapshot);
       }

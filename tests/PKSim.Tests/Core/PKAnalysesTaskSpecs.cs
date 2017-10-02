@@ -12,30 +12,37 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
+using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
+using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;
 using IPKCalculationOptionsFactory = PKSim.Core.Services.IPKCalculationOptionsFactory;
+using PKAnalysesTask = PKSim.Core.Services.PKAnalysesTask;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_PKAnalysisTask : ContextSpecification<IPKAnalysisTask>
+   public abstract class concern_for_PKAnalysesTask : ContextSpecification<IPKAnalysesTask>
    {
       protected IPKValuesCalculator _pkCalculator;
       protected IPKValuesToPKAnalysisMapper _pkMapper;
       private IDimensionRepository _dimensionRepository;
       private IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
       private IPKParameterRepository _pkParameterRepository;
+      private ILazyLoadTask _lazyLoadTask;
+      private IEntityPathResolver _entityPathResolver;
 
       protected override void Context()
       {
+         _lazyLoadTask= A.Fake<ILazyLoadTask>(); 
          _pkCalculator = A.Fake<IPKValuesCalculator>();
          _pkMapper = A.Fake<IPKValuesToPKAnalysisMapper>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
-         sut = new PKAnalysisTask(_pkCalculator, _pkMapper, _dimensionRepository, _pkCalculationOptionsFactory, _pkParameterRepository);
+         _entityPathResolver= A.Fake<IEntityPathResolver>();
+         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator,_pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver, _pkMapper, _dimensionRepository);
       }
    }
 
-   public class When_creating_the_pk_analyses_for_a_given_population_simulation : concern_for_PKAnalysisTask
+   public class When_creating_the_pk_analyses_for_a_given_population_simulation : concern_for_PKAnalysesTask
    {
       private ChartData<TimeProfileXValue, TimeProfileYValue> _chartData;
       private IPopulationDataCollector _populationDataCollector;
@@ -98,7 +105,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_creating_the_pk_analyses_for_a_given_population_simulation_with_axis_not_in_concentration_unit : concern_for_PKAnalysisTask
+   public class When_creating_the_pk_analyses_for_a_given_population_simulation_with_axis_not_in_concentration_unit : concern_for_PKAnalysesTask
    {
       private ChartData<TimeProfileXValue, TimeProfileYValue> _chartData;
       private IPopulationDataCollector _populationDataCollector;
@@ -136,7 +143,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_pk_analyses_for_a_set_of_selected_data_and_simulations : concern_for_PKAnalysisTask
+   public class When_calculating_the_pk_analyses_for_a_set_of_selected_data_and_simulations : concern_for_PKAnalysesTask
    {
       private IEnumerable<IndividualPKAnalysis> _results;
       private IndividualSimulation _simulation;

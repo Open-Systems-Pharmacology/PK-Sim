@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Chart;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
+using CurveChart = PKSim.Core.Snapshots.CurveChart;
 
 namespace PKSim.Core
 {
@@ -20,13 +21,15 @@ namespace PKSim.Core
       protected Curve _curve;
       protected Snapshots.Axis _snapshotAxis;
       protected Snapshots.Curve _snapshotCurve;
-      protected Snapshots.CurveChart _snapshot;
+      protected CurveChart _snapshot;
+      protected ChartMapper _chartMapper;
 
       protected override Task Context()
       {
          _axisMapper = A.Fake<AxisMapper>();
          _curveMapper = A.Fake<CurveMapper>();
-         sut = new SimulationTimeProfileChartMapper(_axisMapper, _curveMapper);
+         _chartMapper = A.Fake<ChartMapper>();
+         sut = new SimulationTimeProfileChartMapper(_chartMapper, _axisMapper, _curveMapper);
 
          var dimensionFactory = A.Fake<IDimensionFactory>();
 
@@ -56,10 +59,10 @@ namespace PKSim.Core
          _curveChart.AddCurve(_curve);
 
          _snapshotAxis = new Snapshots.Axis();
-         A.CallTo(() => _axisMapper.MapToSnapshot(_axis)).ReturnsAsync(_snapshotAxis);
+         A.CallTo(() => _axisMapper.MapToSnapshots(_curveChart.Axes)).ReturnsAsync(new[] {_snapshotAxis});
 
          _snapshotCurve = new Snapshots.Curve();
-         A.CallTo(() => _curveMapper.MapToSnapshot(_curve)).ReturnsAsync(_snapshotCurve);
+         A.CallTo(() => _curveMapper.MapToSnapshots(_curveChart.Curves)).ReturnsAsync(new[] {_snapshotCurve});
 
          return Task.FromResult(true);
       }
@@ -73,10 +76,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_a_snapshot_with_the_expected_chart_properties()
+      public void should_save_the_basic_chart_properties()
       {
-         _snapshot.Name.ShouldBeEqualTo(_curveChart.Name);
-         _snapshot.Description.ShouldBeEqualTo(_curveChart.Description);
+         A.CallTo(() => _chartMapper.MapToSnapshot(_curveChart, _snapshot)).MustHaveHappened();
       }
 
       [Observation]
@@ -89,18 +91,6 @@ namespace PKSim.Core
       public void should_save_axes_to_snapshot()
       {
          _snapshot.Curves.ShouldOnlyContain(_snapshotCurve);
-      }
-
-      [Observation]
-      public void should_copy_chart_settings()
-      {
-         _snapshot.Settings.ShouldBeEqualTo(_curveChart.ChartSettings);
-      }
-
-      [Observation]
-      public void should_copy_font_and_size_properties()
-      {
-         _snapshot.FontAndSize.ShouldBeEqualTo(_curveChart.FontAndSize);
       }
    }
 
@@ -115,11 +105,9 @@ namespace PKSim.Core
          _context = new CurveChartContext();
          _snapshot = await sut.MapToSnapshot(_curveChart);
          _snapshot.Axes = new[] {_snapshotAxis,};
-         _snapshot.Settings.LegendPosition = LegendPositions.Right;
-         _snapshot.FontAndSize.ChartHeight = 150;
 
-         A.CallTo(() => _axisMapper.MapToModel(_snapshotAxis)).ReturnsAsync(_axis);
-         A.CallTo(() => _curveMapper.MapToModel(_snapshotCurve, _context)).ReturnsAsync(_curve);
+         A.CallTo(() => _axisMapper.MapToModels(_snapshot.Axes)).ReturnsAsync(new[] {_axis});
+         A.CallTo(() => _curveMapper.MapToModels(_snapshot.Curves, _context)).ReturnsAsync(new[] {_curve});
       }
 
       protected override async Task Because()
@@ -128,34 +116,17 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_a_chart_having_the_expected_properties()
+      public void should_update_the_basic_chart_properties()
       {
-         _newChart.Name.ShouldBeEqualTo(_snapshot.Name);
-         _newChart.Description.ShouldBeEqualTo(_snapshot.Description);
-         _newChart.Title.ShouldBeEqualTo(_snapshot.Title);
-         _newChart.OriginText.ShouldBeEqualTo(_snapshot.OriginText);
-         _newChart.IncludeOriginData.ShouldBeEqualTo(_snapshot.IncludeOriginData);
-         _newChart.PreviewSettings.ShouldBeEqualTo(_snapshot.PreviewSettings);
-      }
-
-      [Observation]
-      public void should_have_updated_chart_settings_properties()
-      {
-         _newChart.ChartSettings.LegendPosition.ShouldBeEqualTo(_snapshot.Settings.LegendPosition);
-      }
-
-      [Observation]
-      public void should_have_updated_size_and_fonts_properties()
-      {
-         _newChart.FontAndSize.ChartHeight.ShouldBeEqualTo(_snapshot.FontAndSize.ChartHeight);
+         A.CallTo(() => _chartMapper.MapToModel(_snapshot, _newChart)).MustHaveHappened();
       }
 
       [Observation]
       public void should_have_added_the_axis_from_snapshot()
       {
-         _newChart.Axes.ShouldContain(_axis);  
+         _newChart.Axes.ShouldContain(_axis);
       }
-      
+
       [Observation]
       public void should_have_added_the_curve_from_snapshot()
       {

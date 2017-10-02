@@ -29,7 +29,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (parameterRange == null || snapshot == null)
             return Task.FromResult(parameterRange);
 
-         parameterRange.Unit = parameterRange.Dimension.Unit(UnitValueFor(snapshot.Unit));
+         parameterRange.Unit = parameterRange.Dimension.Unit(ModelValueFor(snapshot.Unit));
          parameterRange.MaxValueInDisplayUnit = snapshot.Max;
          parameterRange.MinValueInDisplayUnit = snapshot.Min;
 

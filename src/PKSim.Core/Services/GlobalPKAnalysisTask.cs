@@ -37,21 +37,21 @@ namespace PKSim.Core.Services
       private readonly IProtocolToSchemaItemsMapper _protocolToSchemaItemsMapper;
       private readonly IProtocolFactory _protocolFactory;
       private readonly IGlobalPKAnalysisRunner _globalPKAnalysisRunner;
-      private readonly IPKAnalysisTask _pkAnalysisTask;
+      private readonly IPKAnalysesTask _pkAnalysisTask;
       private readonly IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
       private readonly IVSSCalculator _vssCalculator;
       private readonly IInteractionTask _interactionTask;
       private readonly ICloner _cloner;
 
       public GlobalPKAnalysisTask(IParameterFactory parameterFactory, IProtocolToSchemaItemsMapper protocolToSchemaItemsMapper,
-         IProtocolFactory protocolFactory, IGlobalPKAnalysisRunner globalPKAnalysisRunner, IPKAnalysisTask pkAnalysisTask,
+         IProtocolFactory protocolFactory, IGlobalPKAnalysisRunner globalPKAnalysisRunner, IPKAnalysesTask pkAnalysesTask,
          IPKCalculationOptionsFactory pkCalculationOptionsFactory, IVSSCalculator vssCalculator, IInteractionTask interactionTask, ICloner cloner)
       {
          _parameterFactory = parameterFactory;
          _protocolToSchemaItemsMapper = protocolToSchemaItemsMapper;
          _protocolFactory = protocolFactory;
          _globalPKAnalysisRunner = globalPKAnalysisRunner;
-         _pkAnalysisTask = pkAnalysisTask;
+         _pkAnalysisTask = pkAnalysesTask;
          _pkCalculationOptionsFactory = pkCalculationOptionsFactory;
          _vssCalculator = vssCalculator;
          _interactionTask = interactionTask;

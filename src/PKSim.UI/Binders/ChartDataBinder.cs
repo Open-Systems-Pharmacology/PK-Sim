@@ -159,7 +159,7 @@ namespace PKSim.UI.Binders
             return;
          }
 
-         if (!axisSettings.HasRange()) return;
+         if (!axisSettings.HasRange) return;
 
          axis.VisualRange.Auto = false;
          axis.VisualRange.SetMinMaxValues(axisSettings.Min, axisSettings.Max);

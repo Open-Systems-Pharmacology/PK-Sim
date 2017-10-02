@@ -1,11 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Events;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
-using FakeItEasy.Core;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
@@ -16,14 +22,6 @@ using PKSim.Presentation.Presenters.Charts;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Charts;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Events;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Presentation.Services;
 
 namespace PKSim.Presentation
 {
@@ -57,7 +55,7 @@ namespace PKSim.Presentation
          _colorGenerator = A.Fake<IColorGenerator>();
          _observedDataTask = A.Fake<IObservedDataTask>();
          _pkAnalysisPresenter = A.Fake<IPopulationPKAnalysisPresenter>();
-         _dimensionRepository= A.Fake<IDimensionRepository>();
+         _dimensionRepository = A.Fake<IDimensionRepository>();
 
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
          sut = new EditTimeProfileAnalysisChartPresenter(_view, _timeProfilerChartPresenter, _timeProfileChartDataCreator,
@@ -70,7 +68,7 @@ namespace PKSim.Presentation
          sut.InitializeAnalysis(_timeProfileAnalysisChart, _populationDataCollector);
 
          _observedDataRepository = DomainHelperForSpecs.ObservedData();
-         var data = new DragDropInfo(  
+         var data = new DragDropInfo(
             new List<ITreeNode> {new ObservedDataNode(new ClassifiableObservedData {Subject = _observedDataRepository})}
          );
 
@@ -78,12 +76,12 @@ namespace PKSim.Presentation
 
          _chartData = new ChartData<TimeProfileXValue, TimeProfileYValue>(null, null);
          var concentrationDimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
-         var yAxis = new AxisData(concentrationDimension, concentrationDimension.DefaultUnit,Scalings.Linear);
-         _paneData=new PaneData<TimeProfileXValue, TimeProfileYValue>(yAxis);
+         var yAxis = new AxisData(concentrationDimension, concentrationDimension.DefaultUnit, Scalings.Linear);
+         _paneData = new PaneData<TimeProfileXValue, TimeProfileYValue>(yAxis);
          _chartData.AddPane(_paneData);
          A.CallTo(_timeProfileChartDataCreator).WithReturnType<ChartData<TimeProfileXValue, TimeProfileYValue>>().Returns(_chartData);
 
-         var outputField = new PopulationAnalysisOutputField { Dimension = DomainHelperForSpecs.MassConcentrationDimensionForSpecs() };
+         var outputField = new PopulationAnalysisOutputField {Dimension = DomainHelperForSpecs.MassConcentrationDimensionForSpecs()};
          _populationStatisticalAnalysis.Add(outputField);
 
          A.CallTo(() => _dimensionRepository.MergedDimensionFor(A<NumericFieldContext>._)).Returns(concentrationDimension);
@@ -116,7 +114,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notified_that_observed_data_were_removed_for_the_current_population_data_collector  : concern_for_EditTimeProfileAnalysisChartPresenter
+   public class When_notified_that_observed_data_were_removed_for_the_current_population_data_collector : concern_for_EditTimeProfileAnalysisChartPresenter
    {
       protected override void Context()
       {
@@ -258,22 +256,19 @@ namespace PKSim.Presentation
          A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalysis(A<IPopulationDataCollector>._, A<ChartData<TimeProfileXValue, TimeProfileYValue>>._)).MustHaveHappened();
       }
    }
- 
+
    public class When_adding_some_observed_data_to_the_analysis_whose_dimension_does_not_match_the_dimension_of_the_output_being_displayed : concern_for_EditTimeProfileAnalysisChartPresenter
    {
       protected override void Context()
       {
          base.Context();
-         _observedDataRepository.ObservationColumns().Each(col =>
-         {
-            col.Dimension = DomainHelperForSpecs.LengthDimensionForSpecs();
-         });
+         _observedDataRepository.ObservationColumns().Each(col => { col.Dimension = DomainHelperForSpecs.LengthDimensionForSpecs(); });
       }
 
       [Observation]
       public void should_notify_the_user_that_the_action_cannot_be_performed()
       {
-         The.Action(()=>sut.AddObservedData( new []{_observedDataRepository })).ShouldThrowAn<PKSimException>();   
+         The.Action(() => sut.AddObservedData(new[] {_observedDataRepository})).ShouldThrowAn<PKSimException>();
       }
    }
 }

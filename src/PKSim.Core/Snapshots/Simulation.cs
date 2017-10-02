@@ -1,11 +1,9 @@
-﻿using OSPSuite.Core.Chart;
-
-namespace PKSim.Core.Snapshots
+﻿namespace PKSim.Core.Snapshots
 {
    public class Simulation : SnapshotBase
    {
-      public string Model{ get; set; }
-      public bool AllowAging{ get; set; }
+      public string Model { get; set; }
+      public bool AllowAging { get; set; }
       public string[] ObservedData { get; set; }
       public SolverSettings Solver { get; set; }
       public OutputSchema OutputSchema { get; set; }
@@ -18,8 +16,10 @@ namespace PKSim.Core.Snapshots
       public AdvancedParameter[] AdvancedParameters { get; set; }
       public bool HasResults { get; set; }
 
-      //Individual charts
-      public CurveChart[] Charts { get; set; }
+      //Individual charts (only set for individual simulation)
+      public CurveChart[] IndividualAnalyses { get; set; }
 
+      //Population analyses (only set for population simulation)
+      public PopulationAnalysisChart[] PopulationAnalyses { get; set; }
    }
 }

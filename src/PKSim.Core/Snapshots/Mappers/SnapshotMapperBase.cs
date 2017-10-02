@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -29,7 +31,15 @@ namespace PKSim.Core.Snapshots.Mappers
 
       protected string SnapshotValueFor(string value) => !string.IsNullOrEmpty(value) ? value : null;
 
-      protected string UnitValueFor(string unit) => unit ?? "";
+      protected T? SnapshotValueFor<T>(T value, T defaultValue = default(T)) where T : struct
+      {
+         if (Equals(value, defaultValue))
+            return null;
+
+         return value;
+      }
+
+      protected string ModelValueFor(string unit) => unit ?? "";
 
       protected virtual Task<TSnapshot> SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
       {
@@ -51,12 +61,35 @@ namespace PKSim.Core.Snapshots.Mappers
          tcs.SetException(exc);
          return tcs.Task;
       }
+
+      /// <summary>
+      ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
+      /// </summary>
+      public virtual Task<TSnapshot[]> MapToSnapshots(IEnumerable<TModel> models) => MapToSnapshots(models, MapToSnapshot);
+
+      protected virtual Task<TSnapshot[]> MapToSnapshots(IEnumerable<TModel> models, Func<TModel, Task<TSnapshot>> mapToSnapshotFunc) => MapTo(models, mapToSnapshotFunc);
+
+      public virtual Task<TModel[]> MapToModels(IEnumerable<TSnapshot> snapshots) => MapToModels(snapshots, MapToModel);
+
+      protected virtual Task<TModel[]> MapToModels(IEnumerable<TSnapshot> snapshots, Func<TSnapshot, Task<TModel>> mapToModelFunc) => MapTo(snapshots, mapToModelFunc);
+
+      protected virtual Task<TTarget[]> MapTo<TSource, TTarget>(IEnumerable<TSource> sources, Func<TSource, Task<TTarget>> mapToFunc)
+      {
+         var list = sources?.ToList();
+
+         if (list == null || !list.Any())
+            return Task.FromResult<TTarget[]>(null);
+
+         return Task.WhenAll(list.Select(mapToFunc));
+      }
    }
 
    public abstract class SnapshotMapperBase<TModel, TSnapshot, TContext> : SnapshotMapperBase<TModel, TSnapshot>
       where TSnapshot : new()
    {
       public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
+
+      public virtual Task<TModel[]> MapToModels(IEnumerable<TSnapshot> snapshots, TContext context) => MapToModels(snapshots, s => MapToModel(s, context));
 
       public sealed override Task<TModel> MapToModel(TSnapshot snapshot)
       {
@@ -68,6 +101,8 @@ namespace PKSim.Core.Snapshots.Mappers
       where TSnapshot : new()
    {
       public abstract Task<TSnapshot> MapToSnapshot(TModel model, TSnapshotContext context);
+
+      public virtual Task<TSnapshot[]> MapToSnapshots(IEnumerable<TModel> models, TSnapshotContext context) => MapToSnapshots(models, m => MapToSnapshot(m, context));
 
       public sealed override Task<TSnapshot> MapToSnapshot(TModel model)
       {

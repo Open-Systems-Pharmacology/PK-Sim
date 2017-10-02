@@ -20,10 +20,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          _statistics = new List<StatisticalAggregation>();
       }
 
-      public IReadOnlyList<StatisticalAggregation> Statistics
-      {
-         get { return _statistics; }
-      }
+      public IReadOnlyList<StatisticalAggregation> Statistics => _statistics;
 
       public void AddStatistic(StatisticalAggregation statisticalAggregation)
       {

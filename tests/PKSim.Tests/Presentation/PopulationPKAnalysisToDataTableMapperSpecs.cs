@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain.PKAnalyses;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Chart;
@@ -10,22 +11,18 @@ using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Presentation.Mappers;
-
-using OSPSuite.Core.Domain.PKAnalyses;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_PopulationPKAnalysisToDataTableMapper : ContextSpecification<PopulationPKAnalysisToDataTableMapper>
    {
-      protected IPKAnalysisTask _pkAnalysisTask;
       private IPKParameterRepository _pkParameterRepository;
       private IRepresentationInfoRepository _representationInfoRepository;
 
       protected override void Context()
       {
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
-         _representationInfoRepository= A.Fake<IRepresentationInfoRepository>();
+         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          sut = new PopulationPKAnalysisToDataTableMapper(_pkParameterRepository, _representationInfoRepository);
       }
 
@@ -44,7 +41,7 @@ namespace PKSim.Presentation
       {
          base.Context();
 
-         _allPKAnalysis = new List<PopulationPKAnalysis> { new PopulationPKAnalysis(generateCurveData(), GeneratePKAnalysis()), new PopulationPKAnalysis(generateCurveData(), GeneratePKAnalysis()) };
+         _allPKAnalysis = new List<PopulationPKAnalysis> {new PopulationPKAnalysis(generateCurveData(), GeneratePKAnalysis()), new PopulationPKAnalysis(generateCurveData(), GeneratePKAnalysis())};
       }
 
       private CurveData<TimeProfileXValue, TimeProfileYValue> generateCurveData()

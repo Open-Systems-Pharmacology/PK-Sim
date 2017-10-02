@@ -44,7 +44,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _binSizeGroupingDTO = new BinSizeGroupingDTO();
       }
 
-      public IGroupingDefinition GroupingDefinition
+      public GroupingDefinition GroupingDefinition
       {
          get
          {
@@ -81,7 +81,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _view.BindTo(_binSizeGroupingDTO);
       }
 
-      public void Edit(IGroupingDefinition groupingDefinition)
+      public void Edit(GroupingDefinition groupingDefinition)
       {
          _groupingDefinition = groupingDefinition.DowncastTo<NumberOfBinsGroupingDefinition>();
          _binSizeGroupingDTO.NumberOfBins = _groupingDefinition.NumberOfBins;

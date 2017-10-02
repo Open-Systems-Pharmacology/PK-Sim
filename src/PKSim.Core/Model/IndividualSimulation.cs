@@ -7,6 +7,7 @@ using OSPSuite.Utility.Visitor;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Chart;
 
 namespace PKSim.Core.Model
 {
@@ -19,6 +20,8 @@ namespace PKSim.Core.Model
       {
          _compoundPKCache = new Cache<string, CompoundPK>(x => x.CompoundName, x => new CompoundPK());
       }
+
+      public virtual IEnumerable<SimulationTimeProfileChart> TimeProfileAnalyses => Analyses.OfType<SimulationTimeProfileChart>();
 
       public void ClearPKCache()
       {

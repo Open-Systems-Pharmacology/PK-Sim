@@ -25,8 +25,8 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       ///    Start the use case of creating a grouping derived field for the field <paramref name="populationAnalysisField" />
       ///    and the simulation <paramref name="populationDataCollector" />
       /// </summary>
-      /// <returns>The <see cref="IGroupingDefinition" /> defined by the user or null if the action was cancelled</returns>
-      IGroupingDefinition CreateGrouping(IPopulationAnalysisField populationAnalysisField, IPopulationDataCollector populationDataCollector);
+      /// <returns>The <see cref="GroupingDefinition" /> defined by the user or null if the action was cancelled</returns>
+      GroupingDefinition CreateGrouping(IPopulationAnalysisField populationAnalysisField, IPopulationDataCollector populationDataCollector);
 
       /// <summary>
       ///    The list of all available <see cref="GroupingDefinitionItem" /> that the user can choose from
@@ -58,7 +58,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _presenterCache = new Cache<GroupingDefinitionItem, IGroupingDefinitionPresenter>();
       }
 
-      public IGroupingDefinition CreateGrouping(IPopulationAnalysisField populationAnalysisField, IPopulationDataCollector populationDataCollector)
+      public GroupingDefinition CreateGrouping(IPopulationAnalysisField populationAnalysisField, IPopulationDataCollector populationDataCollector)
       {
          _populationAnalysisField = populationAnalysisField;
          _populationDataCollector = populationDataCollector;

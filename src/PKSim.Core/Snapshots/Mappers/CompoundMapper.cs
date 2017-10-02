@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -79,9 +78,9 @@ namespace PKSim.Core.Snapshots.Mappers
          //Remove all alternatives except calculated ones
          alternativeGroup.AllAlternatives.ToList().Where(x => !x.IsCalculated).Each(alternativeGroup.RemoveAlternative);
 
-         var tasks = snapshotAlternatives.Select(x => _alternativeMapper.MapToModel(x, alternativeGroup));
+         var alternatives = await _alternativeMapper.MapToModels(snapshotAlternatives, alternativeGroup);
 
-         alternativeGroup.AddChildren(await Task.WhenAll(tasks));
+         alternatives.Each(alternativeGroup.AddAlternative);
       }
 
       private void updatePkaTypes(ModelCompound compound, SnapshotCompound snapshot)
@@ -96,7 +95,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<CompoundProcess[]> mapProcesses(ModelCompound compound)
       {
-         var tasks= compound.AllProcesses().Select(_processMapper.MapToSnapshot);
+         var tasks = compound.AllProcesses().Select(_processMapper.MapToSnapshot);
          return Task.WhenAll(tasks);
       }
 
@@ -140,7 +139,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private IEnumerable<IParameter> changedGroupParameters(IContainer container, string groupName)
       {
          return container.AllParameters(x => string.Equals(x.GroupName, groupName))
-            .Where(x=>x.ParameterHasChanged());
+            .Where(x => x.ParameterHasChanged());
       }
 
       private async Task<Alternative[]> mapAlternatives(ModelCompound compound, string alternativeGroupName)

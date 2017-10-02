@@ -24,9 +24,9 @@ namespace PKSim.Core.Model.PopulationAnalyses
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(source, cloneManager);
-         var binSizeGroupingDefinition = source as FixedLimitsGroupingDefinition;
-         if (binSizeGroupingDefinition == null) return;
-         Limits = binSizeGroupingDefinition.Limits.ToList();
+         var fixedLimitsGroupingDefinition = source as FixedLimitsGroupingDefinition;
+         if (fixedLimitsGroupingDefinition == null) return;
+         Limits = fixedLimitsGroupingDefinition.Limits.ToList();
       }
    }
 }

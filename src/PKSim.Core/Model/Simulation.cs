@@ -17,7 +17,7 @@ namespace PKSim.Core.Model
    {
       private readonly ICache<string, UsedBuildingBlock> _usedBuildingBlocks = new Cache<string, UsedBuildingBlock>(bb => bb.TemplateId);
       private readonly ICache<string, UsedObservedData> _usedObservedData = new Cache<string, UsedObservedData>(bb => bb.Id);
-      private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
+      private readonly List<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
       private SimulationProperties _properties;
       private SimulationResults _results;
 
@@ -241,14 +241,18 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    All analyses defined for the simulation
       /// </summary>
-      public virtual IEnumerable<ISimulationAnalysis> Analyses => _allSimulationAnalyses.All();
+      public virtual IEnumerable<ISimulationAnalysis> Analyses => _allSimulationAnalyses;
+
+
+      /// <summary>
+      ///    All analyses defined for the simulation
+      /// </summary>
+      public virtual IEnumerable<T> AnalysesOfType<T>() where T : ISimulationAnalysis => _allSimulationAnalyses.OfType<T>();
 
       /// <summary>
       ///    All charts defined for the simulation
       /// </summary>
-      public virtual IEnumerable<CurveChart> Charts => SimulationCharts;
-
-      public virtual IEnumerable<SimulationTimeProfileChart> SimulationCharts => _allSimulationAnalyses.OfType<SimulationTimeProfileChart>();
+      public virtual IEnumerable<CurveChart> Charts => _allSimulationAnalyses.OfType<CurveChart>();
 
       /// <summary>
       ///    remove the chart from the simulation

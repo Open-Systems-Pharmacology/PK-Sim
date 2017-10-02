@@ -39,8 +39,8 @@ namespace PKSim.Core.Model.PopulationAnalyses
 
    public class LabelGenerationStrategy
    {
-      public LabelGenerationStrategyId Id { get; private set; }
-      public string DisplayName { get; private set; }
+      public LabelGenerationStrategyId Id { get; }
+      public string DisplayName { get; }
 
       public LabelGenerationStrategy(LabelGenerationStrategyId id, string displayName)
       {

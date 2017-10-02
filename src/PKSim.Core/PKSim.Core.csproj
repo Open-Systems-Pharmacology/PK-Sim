@@ -186,6 +186,7 @@
     <Compile Include="Comparison\SimulationDiffBuilder.cs" />
     <Compile Include="Comparison\TransporterExpressionContainerDiffBuilder.cs" />
     <Compile Include="Comparison\UsedBuildingBlocksDiffBuilder.cs" />
+    <Compile Include="Extensions\CacheExtensions.cs" />
     <Compile Include="Extensions\CurveExtensions.cs" />
     <Compile Include="Extensions\DataRepositoryExtensions.cs" />
     <Compile Include="Extensions\DataSetExtensions.cs" />
@@ -282,7 +283,7 @@
     <Compile Include="Model\PopulationAnalyses\BinsGroupingDefinition.cs" />
     <Compile Include="Model\PopulationAnalyses\FixedLimitsGroupingDefinition.cs" />
     <Compile Include="Model\PopulationAnalyses\IntervalGroupingDefinition.cs" />
-    <Compile Include="Model\PopulationAnalyses\IGroupingDefinition.cs" />
+    <Compile Include="Model\PopulationAnalyses\GroupingDefinition.cs" />
     <Compile Include="Model\PopulationAnalyses\PopulationPivotAnalysis.cs" />
     <Compile Include="Model\PopulationAnalyses\PopulationAnalysisChart.cs" />
     <Compile Include="Model\PopulationAnalyses\PopulationAnalysisDerivedField.cs" />
@@ -496,7 +497,7 @@
     <Compile Include="Services\InvalidSimulationConfigurationException.cs" />
     <Compile Include="Services\ParticleApplicationCreator.cs" />
     <Compile Include="Services\PKCalculationOptionsFactory.cs" />
-    <Compile Include="Services\PopulationPKAnalysesTask.cs" />
+    <Compile Include="Services\PKAnalysesTask.cs" />
     <Compile Include="Services\SimulationPKParametersImportTask.cs" />
     <Compile Include="Services\SimulationResultsCreator.cs" />
     <Compile Include="Services\SimulationPersistableUpdater.cs" />
@@ -610,7 +611,6 @@
     <Compile Include="Services\NoBuildingBlockTemplateAvailableException.cs" />
     <Compile Include="Services\ObservedDataInSimulationManager.cs" />
     <Compile Include="Services\PKAnalysesMolarToMassConverter.cs" />
-    <Compile Include="Services\PKAnalysisTask.cs" />
     <Compile Include="Services\DataRepositoryFromResultsCreator.cs" />
     <Compile Include="Services\BuildingBlockInSimulationManager.cs" />
     <Compile Include="Services\RenameAbsolutePathVisitor.cs" />
@@ -850,7 +850,10 @@
     <Compile Include="Snapshots\Alternative.cs" />
     <Compile Include="Snapshots\Axis.cs" />
     <Compile Include="Snapshots\CalculationMethod.cs" />
+    <Compile Include="Snapshots\Chart.cs" />
     <Compile Include="Snapshots\Classification.cs" />
+    <Compile Include="Snapshots\GroupingDefinition.cs" />
+    <Compile Include="Snapshots\Mappers\ChartMapper.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationContext.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationMapper.cs" />
     <Compile Include="Snapshots\Compound.cs" />
@@ -887,6 +890,7 @@
     <Compile Include="Snapshots\Mappers\ExtendedPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\ExtendedPropertyMapper.cs" />
     <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />
+    <Compile Include="Snapshots\Mappers\GroupingDefinitionMapper.cs" />
     <Compile Include="Snapshots\Mappers\IndividualMapper.cs" />
     <Compile Include="Snapshots\Mappers\MoleculeMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObjectBaseSnapshotMapperBase.cs" />
@@ -898,6 +902,9 @@
     <Compile Include="Snapshots\Mappers\ParameterContainerSnapshotMapperBase.cs" />
     <Compile Include="Snapshots\Mappers\ParameterMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterRangeMapper.cs" />
+    <Compile Include="Snapshots\Mappers\PopulationAnalysisChartMapper.cs" />
+    <Compile Include="Snapshots\Mappers\PopulationAnalysisFieldMapper.cs" />
+    <Compile Include="Snapshots\Mappers\PopulationAnalysisMapper.cs" />
     <Compile Include="Snapshots\Mappers\PopulationMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProjectMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProtocolMapper.cs" />
@@ -919,6 +926,9 @@
     <Compile Include="Snapshots\ParameterRange.cs" />
     <Compile Include="Snapshots\Point.cs" />
     <Compile Include="Snapshots\Population.cs" />
+    <Compile Include="Snapshots\PopulationAnalysis.cs" />
+    <Compile Include="Snapshots\PopulationAnalysisChart.cs" />
+    <Compile Include="Snapshots\PopulationAnalysisField.cs" />
     <Compile Include="Snapshots\PopulationSettings.cs" />
     <Compile Include="Snapshots\Project.cs" />
     <Compile Include="Snapshots\ProtocolSelection.cs" />
@@ -934,6 +944,7 @@
     <Compile Include="Snapshots\SnapshotNotFoundException.cs" />
     <Compile Include="Snapshots\SnapshotOutdatedException.cs" />
     <Compile Include="Snapshots\SolverSettings.cs" />
+    <Compile Include="Snapshots\StatisticalAggregation.cs" />
     <Compile Include="Snapshots\TableFormula.cs" />
     <Compile Include="SpeciesDatabaseMap.cs" />
     <Compile Include="ICoreUserSettings.cs" />
@@ -951,8 +962,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Model\PopulationAnalyses\GroupingDefinition.cd" />
-    <None Include="Model\PopulationAnalyses\PopulationAnalysis.cd" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

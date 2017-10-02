@@ -22,11 +22,8 @@ namespace PKSim.Core.Model.PopulationAnalyses
          SetExpression(expression);
       }
 
-      public override string Expression
-      {
-         //ToArray required otherwise a runtime error is thrown..
-         get { return String.Format(_expressionPattern, _fields.ToArray()); }
-      }
+      //ToArray required otherwise a runtime error is thrown..
+      public override string Expression => String.Format(_expressionPattern, _fields.ToArray());
 
       public void SetExpression(string expression)
       {
@@ -39,7 +36,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          var expressionPattern = expression;
          foreach (var usedField in _fields)
          {
-            expressionPattern = expressionPattern.Replace(string.Format("[{0}]", usedField), string.Format("[{{{0}}}]", i++));
+            expressionPattern = expressionPattern.Replace($"[{usedField}]", $"[{{{i++}}}]");
          }
          _expressionPattern = expressionPattern;
       }
@@ -59,10 +56,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          return foundFields.ToArray();
       }
 
-      public override bool IsDerivedTypeFor(Type fieldType)
-      {
-         return false;
-      }
+      public override bool IsDerivedTypeFor(Type fieldType) => false;
 
       /// <summary>
       ///    This method renames a referenced field within the expression.
@@ -77,15 +71,9 @@ namespace PKSim.Core.Model.PopulationAnalyses
          }
       }
 
-      public override IReadOnlyCollection<string> ReferencedFieldNames
-      {
-         get { return _fields; }
-      }
+      public override IReadOnlyCollection<string> ReferencedFieldNames => _fields;
 
-      public override bool CanBeUsedFor(Type dataType)
-      {
-         return true;
-      }
+      public override bool CanBeUsedFor(Type dataType) => true;
 
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
