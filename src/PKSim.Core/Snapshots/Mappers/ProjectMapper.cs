@@ -7,7 +7,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
 using ModelProject = PKSim.Core.Model.PKSimProject;
-using ModelClassification = OSPSuite.Core.Domain.Classification;
 using ModelObservedDataClassifiable = OSPSuite.Core.Domain.ClassifiableObservedData;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using SnapshotDataRepository = PKSim.Core.Snapshots.DataRepository;
@@ -18,14 +17,14 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly IExecutionContext _executionContext;
       private readonly SimulationMapper _simulationMapper;
+      private readonly IClassificationSnapshotTask _classificationSnapshotTask;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
-      private readonly ClassificationMapper _classificationMapper;
 
-      public ProjectMapper(IExecutionContext executionContext, SimulationMapper simulationMapper, ClassificationMapper classificationMapper)
+      public ProjectMapper(IExecutionContext executionContext, SimulationMapper simulationMapper, IClassificationSnapshotTask classificationSnapshotTask)
       {
          _executionContext = executionContext;
          _simulationMapper = simulationMapper;
-         _classificationMapper = classificationMapper;
+         _classificationSnapshotTask = classificationSnapshotTask;
          //required to load the snapshot mapper via execution context to avoid circular references
          _snapshotMapper = new Lazy<ISnapshotMapper>(() => _executionContext.Resolve<ISnapshotMapper>());
       }
@@ -46,6 +45,21 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
+      private Task<Classification[]> mapObservedDataClassificationsToSnapshots(ModelProject project)
+      {
+         return _classificationSnapshotTask.MapClassificationsToSnapshots(observedDataClassificationsFrom(project), observedDataClassifiablesFrom(project));
+      }
+
+      private static IReadOnlyList<ModelObservedDataClassifiable> observedDataClassifiablesFrom(ModelProject project)
+      {
+         return project.AllClassifiablesByType<ModelObservedDataClassifiable>().ToList();
+      }
+
+      private static IReadOnlyList<OSPSuite.Core.Domain.Classification> observedDataClassificationsFrom(ModelProject project)
+      {
+         return project.AllClassificationsByType(ClassificationType.ObservedData).OfType<OSPSuite.Core.Domain.Classification>().ToList();
+      }
+
       private Task<SnapshotDataRepository[]> mapObservedDataToSnapshots(IReadOnlyCollection<ModelDataRepository> allObservedData)
       {
          return mapModelsToSnapshot<ModelDataRepository, SnapshotDataRepository>(allObservedData, snapshotMapper.MapToSnapshot);
@@ -60,31 +74,6 @@ namespace PKSim.Core.Snapshots.Mappers
       private Task<IEnumerable<ModelDataRepository>> observedDataFrom(SnapshotDataRepository[] snapshotRepositories)
       {
          return awaitAs<ModelDataRepository>(mapSnapshotsToModels(snapshotRepositories));
-      }
-
-      private IEnumerable<T> findRoots<T>(IEnumerable<T> classifications) where T : IClassifiable
-      {
-         return classifications.Where(x => x.Parent == null);
-      }
-
-      private IReadOnlyList<T> observedDataClassifiablesFrom<T>(IEnumerable<IClassifiable> classifications) where T : IClassifiable
-      {
-         return classifications.Where(x => x.ClassificationType == ClassificationType.ObservedData).OfType<T>().ToList();
-      }
-
-      private Task<Classification[]> mapObservedDataClassificationsToSnapshots(ModelProject project)
-      {
-         var observedDataClassificationsContext = new ClassificationContext
-         {
-            Classifications = observedDataClassifiablesFrom<ModelClassification>(project.AllClassifications),
-            Classifiables = observedDataClassifiablesFrom<IClassifiableWrapper>(project.AllClassifiables)
-         };
-
-         var rootClassifications = findRoots(observedDataClassificationsContext.Classifications);
-
-         var tasks = rootClassifications.Select(x => _classificationMapper.MapToSnapshot(x, observedDataClassificationsContext));
-
-         return Task.WhenAll(tasks);
       }
 
       private Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<Model.Simulation> allSimulations, ModelProject project)
@@ -127,6 +116,8 @@ namespace PKSim.Core.Snapshots.Mappers
          var observedData = await observedDataFrom(snapshot.ObservedData);
          observedData.Each(repository => addObservedDataToProject(project, repository));
 
+         await _classificationSnapshotTask.UpdateProjectClassifications<ModelObservedDataClassifiable, ModelDataRepository>(snapshot.ObservedDataClassifications, project, project.AllObservedData, ClassificationType.ObservedData);
+
          var allSimulations = await allSmulationsFrom(snapshot.Simulations, project);
          allSimulations.Each(simulation => addSimulationToProject(project, simulation));
 
@@ -139,7 +130,7 @@ namespace PKSim.Core.Snapshots.Mappers
          project.GetOrCreateClassifiableFor<ClassifiableSimulation, Model.Simulation>(simulation);
       }
 
-      private async Task<IEnumerable<Model.Simulation>> allSmulationsFrom(Simulation[] snapshotSimulations, PKSimProject project)
+      private async Task<IEnumerable<Model.Simulation>> allSmulationsFrom(Simulation[] snapshotSimulations, ModelProject project)
       {
          if (snapshotSimulations == null)
             return Enumerable.Empty<Model.Simulation>();

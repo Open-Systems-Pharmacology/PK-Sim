@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,56 +7,56 @@ using SnapshotClassification = PKSim.Core.Snapshots.Classification;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ClassificationMapper : SnapshotMapperBase<ModelClassification, SnapshotClassification, object, ClassificationContext> 
+   public class ClassificationMapper : SnapshotMapperBase<ModelClassification, SnapshotClassification, ClassificationType, ClassificationContext>
    {
-      public override Task<ModelClassification> MapToModel(SnapshotClassification snapshot, object context)
+      public override Task<ModelClassification> MapToModel(SnapshotClassification snapshot, ClassificationType classificationType)
       {
-         throw new NotImplementedException();
+         var classification = new ModelClassification
+         {
+            ClassificationType = classificationType,
+            Name = snapshot.Name
+         };
+
+         return Task.FromResult(classification);
       }
 
       public override Task<SnapshotClassification> MapToSnapshot(ModelClassification model, ClassificationContext context)
       {
-         return mapTreeFrom(model, context.Classifications, context.Classifiables);
+         return mapTreeFrom(model, context);
       }
 
-      private async Task<SnapshotClassification> mapClassificationToSnapshot(ModelClassification model)
+      private async Task<SnapshotClassification> mapTreeFrom(ModelClassification classification, ClassificationContext context)
       {
-         return await SnapshotFrom(model, x =>
+         var root = await SnapshotFrom(classification, x =>
          {
-            x.Name = model.Name;
+            x.Name = classification.Name;
          });
-      }
 
-      private async Task<SnapshotClassification> mapTreeFrom(ModelClassification classification, IReadOnlyList<ModelClassification> classifications, IReadOnlyList<IClassifiableWrapper> classifiables)
-      {
-         var root = await mapClassificationToSnapshot(classification);
+         var childClassifications = childClassificationsFrom(classification, context.Classifications);
+         var childClassifiables = childClassifiablesFrom(classification, context.Classifiables);
 
-         var childClassifications = childClassificationsFrom(classification, classifications);
-         root.Classifications = await mapChildClassifications(classifications, classifiables, childClassifications);
+         if(childClassifications.Any())
+            root.Classifications = await Task.WhenAll(childClassifications.Select(x => mapTreeFrom(x, context)));
 
-         root.Classifiables = childClassifiablesFrom(classification, classifiables).ToArray();
+         if(childClassifiables.Any())
+            root.Classifiables = childClassifiables.ToArray();
 
          return root;
       }
 
-      private IReadOnlyList<string> childClassifiablesFrom(ModelClassification classification, IReadOnlyList<IClassifiableWrapper> classifiables)
+      private string[] childClassifiablesFrom(ModelClassification classification, IReadOnlyList<IClassifiableWrapper> classifiables)
       {
-         return classifiables.Where(x => Equals(x.Parent, classification)).AllNames();
-      }
-
-      private async Task<SnapshotClassification[]> mapChildClassifications(IReadOnlyList<ModelClassification> classifications, IReadOnlyList<IClassifiableWrapper> classifiables, IReadOnlyList<ModelClassification> childClassifications)
-      {
-         if (childClassifications.Any())
-         {
-            var tasks = childClassifications.Select(x => mapTreeFrom(x, classifications, classifiables));
-            return await Task.WhenAll(tasks);
-         }
-         return null;
+         return childrenFrom(classification, classifiables).Select(x => x.Name).ToArray();
       }
 
       private static IReadOnlyList<ModelClassification> childClassificationsFrom(ModelClassification classification, IReadOnlyList<ModelClassification> classifications)
       {
-         return classifications.Where(x => Equals(x.Parent, classification)).ToList();
+         return childrenFrom(classification, classifications).ToList();
+      }
+
+      private static IEnumerable<T> childrenFrom<T>(ModelClassification classification, IReadOnlyList<T> classifications)  where T : IClassifiable
+      {
+         return classifications.Where(x => Equals(x.Parent, classification));
       }
    }
 }

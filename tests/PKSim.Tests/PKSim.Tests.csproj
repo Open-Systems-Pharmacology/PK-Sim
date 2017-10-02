@@ -246,6 +246,7 @@
     <Compile Include="Core\AxisMapperSpecs.cs" />
     <Compile Include="Core\CalculationMethodCacheMapperSpecs.cs" />
     <Compile Include="Core\ChartMapperSpecs.cs" />
+    <Compile Include="Core\ClassificationSnapshotTaskSpecs.cs" />
     <Compile Include="Core\CompoundMapperSpecs.cs" />
     <Compile Include="Core\CompoundProcessMapperSpecs.cs" />
     <Compile Include="Core\CompoundPropertiesMapperSpecs.cs" />

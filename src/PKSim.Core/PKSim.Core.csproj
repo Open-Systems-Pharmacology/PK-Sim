@@ -875,6 +875,7 @@
     <Compile Include="Snapshots\Mappers\AlternativeMapper.cs" />
     <Compile Include="Snapshots\Mappers\AxisMapper.cs" />
     <Compile Include="Snapshots\Mappers\CalculationMethodCacheMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ClassificationSnapshotTask.cs" />
     <Compile Include="Snapshots\Mappers\CompoundMapper.cs" />
     <Compile Include="Snapshots\CompoundProcess.cs" />
     <Compile Include="Snapshots\Mappers\CompoundProcessMapper.cs" />
