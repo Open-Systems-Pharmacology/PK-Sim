@@ -66,7 +66,7 @@ namespace PKSim.Core.Snapshots.Mappers
          allSimulationComparisons.Each(comparison => addComparisonToProject(project, comparison));
 
          //Map all classifications once project have been loaded
-         await updateProjectClassification(snapshot, project);
+         await updateProjectClassifications(snapshot, project);
 
          return project;
       }
@@ -140,7 +140,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshots.ToArray();
       }
 
-      private Task updateProjectClassification(SnapshotProject snapshot, ModelProject project)
+      private Task updateProjectClassifications(SnapshotProject snapshot, ModelProject project)
       {
          var tasks = new[]
          {
