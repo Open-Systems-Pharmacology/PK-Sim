@@ -75,7 +75,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_a_population_simulation_comparison_referencing_the_selected_simulations()
       {
-         _populationSimulationComparison.AllSimulations().ShouldOnlyContain(_sim1, _sim2);
+         _populationSimulationComparison.AllSimulations.ShouldOnlyContain(_sim1, _sim2);
       }
    }
 

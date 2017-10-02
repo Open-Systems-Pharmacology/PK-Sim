@@ -4,6 +4,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Chart;
 using PKSim.Core.Snapshots.Mappers;
@@ -23,14 +24,15 @@ namespace PKSim.Core
       protected Snapshots.Curve _snapshotCurve;
       protected CurveChart _snapshot;
       protected ChartMapper _chartMapper;
+      protected IIdGenerator _idGenerator;
 
       protected override Task Context()
       {
          _axisMapper = A.Fake<AxisMapper>();
          _curveMapper = A.Fake<CurveMapper>();
          _chartMapper = A.Fake<ChartMapper>();
-         sut = new SimulationTimeProfileChartMapper(_chartMapper, _axisMapper, _curveMapper);
-
+         _idGenerator = A.Fake<IIdGenerator>();
+         sut = new SimulationTimeProfileChartMapper(_chartMapper, _axisMapper, _curveMapper, _idGenerator);
          var dimensionFactory = A.Fake<IDimensionFactory>();
 
          _curveChart = new SimulationTimeProfileChart
@@ -98,6 +100,7 @@ namespace PKSim.Core
    {
       private SimulationAnalysisContext _context;
       private SimulationTimeProfileChart _newChart;
+      private string _newId = "NewChartId";
 
       protected override async Task Context()
       {
@@ -108,6 +111,8 @@ namespace PKSim.Core
 
          A.CallTo(() => _axisMapper.MapToModels(_snapshot.Axes)).ReturnsAsync(new[] {_axis});
          A.CallTo(() => _curveMapper.MapToModels(_snapshot.Curves, _context)).ReturnsAsync(new[] {_curve});
+
+         A.CallTo(() => _idGenerator.NewId()).Returns(_newId);
       }
 
       protected override async Task Because()
@@ -131,6 +136,12 @@ namespace PKSim.Core
       public void should_have_added_the_curve_from_snapshot()
       {
          _newChart.Curves.ShouldContain(_curve);
+      }
+
+      [Observation]
+      public void should_have_generated_a_new_if_for_the_chart()
+      {
+         _newChart.Id.ShouldBeEqualTo(_newId);
       }
    }
 }

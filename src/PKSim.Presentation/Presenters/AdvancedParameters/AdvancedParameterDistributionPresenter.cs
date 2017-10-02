@@ -69,7 +69,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       private IList<string> _genderSelection;
       private IVectorialParametersContainer _vectorialParametersContainer;
       private PathCache<IParameter> _allParametersCache;
-      private ParameterDistributionSettingsCache _selectedDistribution;
+      private ParameterDistributionSettingsCache _selectedDistributions;
 
       protected AdvancedParameterDistributionPresenter(IAdvancedParameterDistributionView view, IPopulationParameterGroupsPresenter parametersPresenter,
          IRepresentationInfoRepository representationInfoRepository, IEntityPathResolver entityPathResolver, IPopulationDistributionPresenter populationParameterDistributionPresenter,
@@ -132,7 +132,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       protected void EditParameterDistributionFor(IVectorialParametersContainer vectorialParametersContainer)
       {
          _vectorialParametersContainer = vectorialParametersContainer;
-         _selectedDistribution = _vectorialParametersContainer.SelectedDistributions;
+         _selectedDistributions = _vectorialParametersContainer.SelectedDistributions;
          _allParametersCache = vectorialParametersContainer.AllParameters(_entityPathResolver);
          _parametersPresenter.AddParameters(_vectorialParametersContainer.AllVectorialParameters(_entityPathResolver).Where(p => p.Visible), vectorialParametersContainer.DisplayParameterUsingGroupStructure);
          _genderSelection = genderSelectionsFrom(vectorialParametersContainer).ToList();
@@ -145,7 +145,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          _view.BarTypeVisible = _genderSelection.Count > 1;
          _view.GenderSelectionVisible = _genderSelection.Count > 1;
          _view.BindToPlotOptions(_defaultSettings);
-         _selectedDistribution.Each(d =>
+         _selectedDistributions.Each(d =>
          {
             d.UseInReport = true;
             updateNodeColor(d.ParameterPath);
@@ -160,9 +160,9 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
 
          var parameterPath = parameterPathFor(selectedParameter);
          if (!useInReport)
-            _selectedDistribution.Remove(parameterPath);
+            _selectedDistributions.Remove(parameterPath);
          else
-            _selectedDistribution.Add(createSettingsFor(parameterPath));
+            _selectedDistributions.Add(createSettingsFor(parameterPath));
 
          refresh();
          _defaultSettings.UseInReport = false;
@@ -188,7 +188,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       private ParameterDistributionSettings parameterDistributionSettingsFor(IParameter parameter)
       {
          var parameterPath = parameterPathFor(parameter);
-         return _selectedDistribution[parameterPath];
+         return _selectedDistributions[parameterPath];
       }
 
       private void activateNode(ITreeNode node)

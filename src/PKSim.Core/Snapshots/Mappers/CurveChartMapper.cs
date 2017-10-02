@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using ModelCurveChart = OSPSuite.Core.Chart.CurveChart;
@@ -12,12 +14,14 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ChartMapper _chartMapper;
       private readonly AxisMapper _axisMapper;
       private readonly CurveMapper _curveMapper;
+      private readonly IIdGenerator _idGenerator;
 
-      protected CurveChartMapper(ChartMapper chartMapper, AxisMapper axisMapper, CurveMapper curveMapper)
+      protected CurveChartMapper(ChartMapper chartMapper, AxisMapper axisMapper, CurveMapper curveMapper, IIdGenerator idGenerator)
       {
          _chartMapper = chartMapper;
          _axisMapper = axisMapper;
          _curveMapper = curveMapper;
+         _idGenerator = idGenerator;
       }
 
       public override async Task<SnapshotCurveChart> MapToSnapshot(TCurveChart curveChart)
@@ -31,7 +35,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<TCurveChart> MapToModel(SnapshotCurveChart snapshot, SimulationAnalysisContext simulationAnalysisContext)
       {
-         var curveChart = new TCurveChart();
+         var curveChart = new TCurveChart().WithId(_idGenerator.NewId());
          MapSnapshotPropertiesToModel(snapshot, curveChart);
          await _chartMapper.MapToModel(snapshot, curveChart);
          await updateChartAxes(curveChart, snapshot.Axes);
@@ -54,7 +58,14 @@ namespace PKSim.Core.Snapshots.Mappers
 
    public class SimulationTimeProfileChartMapper : CurveChartMapper<SimulationTimeProfileChart>
    {
-      public SimulationTimeProfileChartMapper(ChartMapper chartMapper, AxisMapper axisMapper, CurveMapper curveMapper) : base(chartMapper, axisMapper, curveMapper)
+      public SimulationTimeProfileChartMapper(ChartMapper chartMapper, AxisMapper axisMapper, CurveMapper curveMapper, IIdGenerator idGenerator) : base(chartMapper, axisMapper, curveMapper, idGenerator)
+      {
+      }
+   }
+
+   public class IndividualSimulationComparisonMapper : CurveChartMapper<IndividualSimulationComparison>
+   {
+      public IndividualSimulationComparisonMapper(ChartMapper chartMapper, AxisMapper axisMapper, CurveMapper curveMapper, IIdGenerator idGenerator) : base(chartMapper, axisMapper, curveMapper, idGenerator)
       {
       }
    }

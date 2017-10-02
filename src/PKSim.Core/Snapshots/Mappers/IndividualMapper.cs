@@ -44,8 +44,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<Molecule[]> allMoleculesFrom(ModelIndividual individual)
       {
-         var tasks = individual.AllDefinedMolecules().Select(_moleculeMapper.MapToSnapshot);
-         return Task.WhenAll(tasks);
+         return _moleculeMapper.MapToSnapshots(individual.AllDefinedMolecules());
       }
 
       private void mapOriginDataToSnapshot(SnapshotIndividual snapshot, OriginData originData)

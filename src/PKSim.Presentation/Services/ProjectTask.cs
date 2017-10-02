@@ -227,7 +227,9 @@ namespace PKSim.Presentation.Services
          if (string.IsNullOrEmpty(fileName))
             return;
 
-         _heavyWorkManager.Start(LoadSnapshotIntoWorkspace, PKSimConstants.UI.LoadingProject);
+         closeProject();
+
+         _heavyWorkManager.Start(LoadSnapshotIntoWorkspace, PKSimConstants.UI.LoadingSnapshot);
 
          void LoadSnapshotIntoWorkspace()
          {
@@ -240,7 +242,6 @@ namespace PKSim.Presentation.Services
             if (project == null)
                return;
 
-            closeProject();
             _workspace.Project = project;
             project.HasChanged = true;
             project.Name = FileHelper.FileNameFromFileFullPath(fileName);

@@ -31,8 +31,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<OutputInterval[]> allSnapshotIntervalsFor(ModelOutputSchema outputSchema)
       {
-         var tasks = outputSchema.Intervals.Select(_outputIntervalMapper.MapToSnapshot);
-         return Task.WhenAll(tasks);
+         return _outputIntervalMapper.MapToSnapshots(outputSchema.Intervals);
       }
 
       public override async Task<ModelOutputSchema> MapToModel(SnapshotOutputSchema snapshot)

@@ -23,17 +23,16 @@ namespace PKSim.Core
       {
          _extendedPropertyMapper = A.Fake<ExtendedPropertyMapper>();
          sut = new ExtendedPropertiesMapper(_extendedPropertyMapper);
-         _extendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "FirstFullName", Name = "FirstName", ReadOnly = true, Value = "Value" };
-         _secondExtendedProperty = new ExtendedProperty<string> { Description = "Description", FullName = "SecondFullName", Name = "SecondName", ReadOnly = true, Value = "Value" };
-         _extendedProperties = new ExtendedProperties { _extendedProperty, _secondExtendedProperty };
+         _extendedProperty = new ExtendedProperty<string> {Description = "Description", FullName = "FirstFullName", Name = "FirstName", ReadOnly = true, Value = "Value"};
+         _secondExtendedProperty = new ExtendedProperty<string> {Description = "Description", FullName = "SecondFullName", Name = "SecondName", ReadOnly = true, Value = "Value"};
+         _extendedProperties = new ExtendedProperties {_extendedProperty, _secondExtendedProperty};
 
-         _extendedPropertySnapshot = new ExtendedProperty{Name = "FirstName"};
-         _secondExtendedPropertySnapshot = new ExtendedProperty { Name = "SecondName" };
+         _extendedPropertySnapshot = new ExtendedProperty {Name = "FirstName"};
+         _secondExtendedPropertySnapshot = new ExtendedProperty {Name = "SecondName"};
 
-         A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_extendedProperty)).ReturnsAsync(_extendedPropertySnapshot);
-         A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_secondExtendedProperty)).ReturnsAsync(_secondExtendedPropertySnapshot);
+         A.CallTo(() => _extendedPropertyMapper.MapToSnapshots(_extendedProperties)).ReturnsAsync(new[] {_extendedPropertySnapshot, _secondExtendedPropertySnapshot});
 
-         return Task.FromResult(true);
+         return _completed;
       }
    }
 
@@ -49,9 +48,8 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_extendedProperties);
          _modelExtendedProperty = new ExtendedProperty<string> {Name = "FirstName"};
-         A.CallTo(() => _extendedPropertyMapper.MapToModel(_extendedPropertySnapshot)).ReturnsAsync(_modelExtendedProperty);
-         _secondModelExtendedProperty = new ExtendedProperty<string> { Name = "SecondName" };
-         A.CallTo(() => _extendedPropertyMapper.MapToModel(_secondExtendedPropertySnapshot)).ReturnsAsync(_secondModelExtendedProperty);
+         _secondModelExtendedProperty = new ExtendedProperty<string> {Name = "SecondName"};
+         A.CallTo(() => _extendedPropertyMapper.MapToModels(_snapshot)).ReturnsAsync(new[] {_modelExtendedProperty, _secondModelExtendedProperty,});
       }
 
       protected override async Task Because()
@@ -69,13 +67,11 @@ namespace PKSim.Core
 
    public class When_mapping_an_extended_properties_to_snapshot : concern_for_ExtendedPropertiesMapper
    {
-      
       private Snapshots.ExtendedProperties _snapshot;
 
       protected override async Task Context()
       {
          await base.Context();
-
       }
 
       protected override async Task Because()

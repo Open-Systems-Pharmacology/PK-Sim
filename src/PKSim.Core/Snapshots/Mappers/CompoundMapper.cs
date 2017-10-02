@@ -80,7 +80,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var alternatives = await _alternativeMapper.MapToModels(snapshotAlternatives, alternativeGroup);
 
-         alternatives.Each(alternativeGroup.AddAlternative);
+         alternatives?.Each(alternativeGroup.AddAlternative);
       }
 
       private void updatePkaTypes(ModelCompound compound, SnapshotCompound snapshot)

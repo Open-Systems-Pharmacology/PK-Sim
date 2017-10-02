@@ -57,7 +57,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Reporters
             dt.AddColumn<bool>(PKSimConstants.UI.ReferenceSimulation);
 
          dt.BeginLoadData();
-         foreach (var simulation in populationSimulationComparison.AllSimulations())
+         foreach (var simulation in populationSimulationComparison.AllSimulations)
          {
             var row = dt.NewRow();
             row[PKSimConstants.ObjectTypes.Simulation] = simulation.Name;
