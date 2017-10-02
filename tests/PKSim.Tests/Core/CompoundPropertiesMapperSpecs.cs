@@ -115,7 +115,7 @@ namespace PKSim.Core
          });
 
          _project.AddBuildingBlock(_formulation);
-         A.CallTo(() => _calculationMethodCacheMapper.MapToSnapshot(_compoundProperties.CalculationMethodCache)).ReturnsAsync(_calculationMethodSnapshot);
+         A.CallTo(() => _calculationMethodCacheMapper.MapToSnapshot(_compoundProperties.CalculationMethodCache)).Returns(_calculationMethodSnapshot);
 
          return Task.FromResult(true);
       }

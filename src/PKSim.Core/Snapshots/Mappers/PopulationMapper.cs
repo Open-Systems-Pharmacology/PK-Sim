@@ -52,7 +52,8 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var randomPopulationSettings = await _randomPopulationSettingsMapper.MapToModel(snapshot.Settings);
 
-         var population = await _randomPopulationFactory.CreateFor(randomPopulationSettings, CancellationToken.None, snapshot.Seed);
+         //Do not add default molecule variability as this will be loaded from snapshot
+         var population = await _randomPopulationFactory.CreateFor(randomPopulationSettings, CancellationToken.None, snapshot.Seed, addMoleculeParametersVariability:false);
          MapSnapshotPropertiesToModel(snapshot, population);
          await _advancedParameterMapper.MapToModel(snapshot.AdvancedParameters, population);
          return population;

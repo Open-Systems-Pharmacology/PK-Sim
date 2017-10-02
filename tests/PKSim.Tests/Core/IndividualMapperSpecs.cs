@@ -92,7 +92,7 @@ namespace PKSim.Core
          _enzymeSnapshot = new Molecule { Type = QuantityType.Enzyme};
          _transporterSnapshot = new Molecule {Type = QuantityType.Transporter};
 
-         A.CallTo(() => _moleculeMapper.MapToSnapshots(A<IEnumerable<IndividualMolecule>>._)).ReturnsAsync(new []{_enzymeSnapshot, _transporterSnapshot, });
+         A.CallTo(() => _moleculeMapper.MapToSnapshots(A<IEnumerable<IndividualMolecule>>._)).Returns(new []{_enzymeSnapshot, _transporterSnapshot, });
 
          _localizedParameterKidney = new LocalizedParameter {Path = "Organism|Kidney|PKidney"};
          A.CallTo(() => _parameterMapper.LocalizedParameterFrom(_parameterKidney)).Returns(_localizedParameterKidney);
@@ -173,7 +173,7 @@ namespace PKSim.Core
          _molecule1 = new IndividualEnzyme().WithName("Mol1");
          _molecule2 = new IndividualEnzyme().WithName("Mol2");
 
-         A.CallTo(() => _moleculeMapper.MapToModels(_snapshot.Molecules, _individual)).ReturnsAsync(new[] {_molecule1,_molecule2});
+         A.CallTo(() => _moleculeMapper.MapToModels(_snapshot.Molecules, _individual)).Returns(new[] {_molecule1,_molecule2});
 
 
          A.CallTo(() => _dimensionRepository.Mass.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value)).Returns(10);

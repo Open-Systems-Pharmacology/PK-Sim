@@ -18,11 +18,15 @@ namespace PKSim.Core.Model
    public interface IRandomPopulationFactory
    {
       /// <summary>
-      ///    Create a population using the specified <paramref name="populationSettings" />.
+      ///    Creates a random population using the specified <paramref name="populationSettings" />.
       ///    The <paramref name="cancellationToken" /> allows the caller to cancel the task. If the <paramref name="seed" /> is
       ///    provided, it will be set in the created population to generate random values
       /// </summary>
-      Task<RandomPopulation> CreateFor(RandomPopulationSettings populationSettings, CancellationToken cancellationToken, int? seed = null);
+      /// <param name="populationSettings">Population settings used to create the population</param>
+      /// <param name="cancellationToken">Allows the called to cancel the task</param>
+      /// <param name="seed">If provided, the seed will be used to generate random values and will overwrite the seed created in the population</param>
+      /// <param name="addMoleculeParametersVariability">If set to <c>true</c> (default), default parameter variability will be created for all molecules for which information is available in the database </param>
+      Task<RandomPopulation> CreateFor(RandomPopulationSettings populationSettings, CancellationToken cancellationToken, int? seed = null, bool addMoleculeParametersVariability = true);
    }
 
    public class RandomPopulationFactory : IRandomPopulationFactory
@@ -60,7 +64,7 @@ namespace PKSim.Core.Model
          _moleculeOntogenyVariabilityUpdater = moleculeOntogenyVariabilityUpdater;
       }
 
-      public Task<RandomPopulation> CreateFor(RandomPopulationSettings populationSettings, CancellationToken cancellationToken, int? seed = null)
+      public Task<RandomPopulation> CreateFor(RandomPopulationSettings populationSettings, CancellationToken cancellationToken, int? seed = null, bool addMoleculeParametersVariability = true)
       {
          return Task.Run(() =>
          {
@@ -115,19 +119,18 @@ namespace PKSim.Core.Model
                if (numberOfTry >= maxTotalIterations)
                   throw new CannotCreatePopulationWithConstraintsException(_reportGenerator.StringReportFor(populationSettings));
 
-               addUserDefinedVariabilityAndOntogenyForMolecules(randomPopulation);
+               if(addMoleculeParametersVariability)
+                  _moleculeParameterVariabilityCreator.AddVariabilityTo(randomPopulation);
+
+               _moleculeOntogenyVariabilityUpdater.UpdateAllOntogenies(randomPopulation);
+
                randomPopulation.IsLoaded = true;
                return randomPopulation;
             }
          }, cancellationToken);
       }
 
-      private void addUserDefinedVariabilityAndOntogenyForMolecules(RandomPopulation randomPopulation)
-      {
-         _moleculeParameterVariabilityCreator.AddVariabilityTo(randomPopulation);
-         _moleculeOntogenyVariabilityUpdater.UpdateAllOntogenies(randomPopulation);
-      }
-
+ 
       private RandomPopulation createPopulationFor(RandomPopulationSettings populationSettings, int? seed)
       {
          var randomPopulation = _objectBaseFactory.Create<RandomPopulation>();

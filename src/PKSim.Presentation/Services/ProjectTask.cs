@@ -32,7 +32,9 @@ namespace PKSim.Presentation.Services
       void Run(StartOptions startOptions);
       void LoadProjectFromSnapshot();
       Task ExportCurrentProjectToSnapshot();
-      Task ExportProjectToSnapshot(PKSimProject project);
+
+      Task ExportProjectToSnapshot(PKSimProject project, string snapshotFileFullPath);
+      Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath);
    }
 
    public class ProjectTask : IProjectTask
@@ -238,19 +240,29 @@ namespace PKSim.Presentation.Services
 
          async Task ProjectFromSnapshot()
          {
-            var project = (await _snapshotTask.LoadModelFromSnapshot<PKSimProject>(fileName)).FirstOrDefault();
+            var project = await LoadProjectFromSnapshotFile(fileName);
             if (project == null)
                return;
 
             _workspace.Project = project;
-            project.HasChanged = true;
-            project.Name = FileHelper.FileNameFromFileFullPath(fileName);
          }
       }
 
-      public Task ExportCurrentProjectToSnapshot() => ExportProjectToSnapshot(_workspace.Project);
+      public Task ExportCurrentProjectToSnapshot() => _snapshotTask.ExportModelToSnapshot(_workspace.Project);
 
-      public Task ExportProjectToSnapshot(PKSimProject project) => _snapshotTask.ExportModelToSnapshot(project);
+      public Task ExportProjectToSnapshot(PKSimProject project, string snapshotFileFullPath) => _snapshotTask.ExportModelToSnapshot(project, snapshotFileFullPath);
+
+      public async Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath)
+      {
+         var project =  (await _snapshotTask.LoadModelFromSnapshot<PKSimProject>(snapshotFileFullPath)).FirstOrDefault();
+
+         if (project == null)
+            return null;
+
+         project.HasChanged = true;
+         project.Name = FileHelper.FileNameFromFileFullPath(snapshotFileFullPath);
+         return project;
+      }
 
       private void openSimulationForPopulationSimulation(string simulationFile)
       {

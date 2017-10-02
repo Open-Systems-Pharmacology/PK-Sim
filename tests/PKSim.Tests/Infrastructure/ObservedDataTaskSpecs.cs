@@ -67,7 +67,7 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          _mappedObservedData = new DataRepository();
-         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<DataRepository>()).ReturnsAsync(new[] {_mappedObservedData});
+         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<DataRepository>()).Returns(new[] {_mappedObservedData});
       }
 
       protected override async void Because()

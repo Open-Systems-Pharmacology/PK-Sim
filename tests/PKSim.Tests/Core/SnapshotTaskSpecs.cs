@@ -137,7 +137,7 @@ namespace PKSim.Core
 
          A.CallTo(() => _snapshotMapper.SnapshotTypeFor<Formulation>()).Returns(_snapshotType);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
-         A.CallTo(() => _snapshotSerializer.DeserializeAsArray(_fileName, _snapshotType)).ReturnsAsync(new[] {_snapshot1, _snapshot2});
+         A.CallTo(() => _snapshotSerializer.DeserializeAsArray(_fileName, _snapshotType)).Returns(new[] {_snapshot1, _snapshot2});
          A.CallTo(() => _snapshotMapper.MapToModel(_snapshot1)).Returns(_formulation1);
          A.CallTo(() => _snapshotMapper.MapToModel(_snapshot2)).Returns(_formulation2);
       }

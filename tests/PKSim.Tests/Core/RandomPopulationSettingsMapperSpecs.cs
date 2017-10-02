@@ -7,7 +7,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using Individual = PKSim.Core.Model.Individual;
 using ParameterRange = PKSim.Core.Model.ParameterRange;
 
@@ -39,17 +38,17 @@ namespace PKSim.Core
          _ageParameterRange = new ConstrainedParameterRange {ParameterName = CoreConstants.Parameter.AGE};
          _weightParameterRange = new ParameterRange {ParameterName = CoreConstants.Parameter.MEAN_WEIGHT};
 
-         A.CallTo(() => _parameterRangeMapper.MapToSnapshot(null)).ReturnsAsync(null);
+         A.CallTo(() => _parameterRangeMapper.MapToSnapshot(null)).Returns((Snapshots.ParameterRange) null);
          _ageRangeSnapshot = new Snapshots.ParameterRange();
-         A.CallTo(() => _parameterRangeMapper.MapToSnapshot(_ageParameterRange)).ReturnsAsync(_ageRangeSnapshot);
+         A.CallTo(() => _parameterRangeMapper.MapToSnapshot(_ageParameterRange)).Returns(_ageRangeSnapshot);
 
          _weightRangeSnapshot = new Snapshots.ParameterRange();
-         A.CallTo(() => _parameterRangeMapper.MapToSnapshot(_weightParameterRange)).ReturnsAsync(_weightRangeSnapshot);
+         A.CallTo(() => _parameterRangeMapper.MapToSnapshot(_weightParameterRange)).Returns(_weightRangeSnapshot);
 
 
          _baseIndividual = new Individual();
          _snapshotIndividual = new Snapshots.Individual();
-         A.CallTo(() => _individualMapper.MapToSnapshot(_baseIndividual)).ReturnsAsync(_snapshotIndividual);
+         A.CallTo(() => _individualMapper.MapToSnapshot(_baseIndividual)).Returns(_snapshotIndividual);
 
          _randomPopulationSettings = new RandomPopulationSettings
          {
@@ -60,8 +59,8 @@ namespace PKSim.Core
          _randomPopulationSettings.AddParameterRange(_weightParameterRange);
          _randomPopulationSettings.AddParameterRange(_ageParameterRange);
 
-         A.CallTo(() => _genderRepository.Female).Returns(new Gender{Id="Female", Name = "Female"});
-         A.CallTo(() => _genderRepository.Male).Returns(new Gender{Id="Male", Name = "Male" });
+         A.CallTo(() => _genderRepository.Female).Returns(new Gender {Id = "Female", Name = "Female"});
+         A.CallTo(() => _genderRepository.Male).Returns(new Gender {Id = "Male", Name = "Male"});
          return Task.FromResult(true);
       }
    }
@@ -117,9 +116,9 @@ namespace PKSim.Core
 
          _snapshot.ProportionOfFemales = _proportionOfFemale;
 
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, _newAgeRange)).ReturnsAsync(_newAgeRange);
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, _newWeightRange)).ReturnsAsync(_newWeightRange);
-         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual)).ReturnsAsync(_newIndividual);
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, _newAgeRange)).Returns(_newAgeRange);
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, _newWeightRange)).Returns(_newWeightRange);
+         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual)).Returns(_newIndividual);
 
          _mappedSettings = new RandomPopulationSettings();
          A.CallTo(() => _populationSettingsMapper.MapFrom(_newIndividual)).Returns(_mappedSettings);
@@ -179,7 +178,7 @@ namespace PKSim.Core
 
          _snapshot = await sut.MapToSnapshot(_randomPopulationSettings);
          _snapshot.ProportionOfFemales = null;
-         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual)).ReturnsAsync(_newIndividual);
+         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual)).Returns(_newIndividual);
 
          _mappedSettings = new RandomPopulationSettings();
          A.CallTo(() => _populationSettingsMapper.MapFrom(_newIndividual)).Returns(_mappedSettings);

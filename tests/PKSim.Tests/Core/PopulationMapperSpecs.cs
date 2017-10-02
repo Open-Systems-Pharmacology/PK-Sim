@@ -41,13 +41,13 @@ namespace PKSim.Core
 
          _advancedParameters.AddAdvancedParameter(_advancedParameter);
          _advancedParameterSnapshot = new Snapshots.AdvancedParameter();
-         A.CallTo(() => _advancedParameterMapper.MapToSnapshots(A<IEnumerable<AdvancedParameter>>.That.Contains(_advancedParameter))).ReturnsAsync(new[] {_advancedParameterSnapshot});
+         A.CallTo(() => _advancedParameterMapper.MapToSnapshots(A<IEnumerable<AdvancedParameter>>.That.Contains(_advancedParameter))).Returns(new[] {_advancedParameterSnapshot});
 
 
          _population = CreateRandomPopulation();
 
          _settingsSnapshot = new PopulationSettings();
-         A.CallTo(() => _randomPopulationSettingsMapper.MapToSnapshot(_population.Settings)).ReturnsAsync(_settingsSnapshot);
+         A.CallTo(() => _randomPopulationSettingsMapper.MapToSnapshot(_population.Settings)).Returns(_settingsSnapshot);
 
          return Task.FromResult(true);
       }
@@ -112,10 +112,10 @@ namespace PKSim.Core
          _randomPopulation = CreateRandomPopulation();
          _newPopulationSettings = new RandomPopulationSettings();
          _snapshot = await sut.MapToSnapshot(_randomPopulation);
-         A.CallTo(() => _randomPopulationSettingsMapper.MapToModel(_snapshot.Settings)).ReturnsAsync(_newPopulationSettings);
+         A.CallTo(() => _randomPopulationSettingsMapper.MapToModel(_snapshot.Settings)).Returns(_newPopulationSettings);
          var mappedPopulation = A.Fake<RandomPopulation>();
          mappedPopulation.SetAdvancedParameters(new AdvancedParameterCollection());
-         A.CallTo(() => _randomPopulationFactory.CreateFor(_newPopulationSettings, CancellationToken.None, _snapshot.Seed)).ReturnsAsync(mappedPopulation);
+         A.CallTo(() => _randomPopulationFactory.CreateFor(_newPopulationSettings, CancellationToken.None, _snapshot.Seed, false)).Returns(mappedPopulation);
       }
 
       protected override async Task Because()
@@ -126,7 +126,7 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_snapshot_seed_and_seettings_to_create_the_population()
       {
-         A.CallTo(() => _randomPopulationFactory.CreateFor(_newPopulationSettings, CancellationToken.None, _snapshot.Seed)).MustHaveHappened();
+         A.CallTo(() => _randomPopulationFactory.CreateFor(_newPopulationSettings, CancellationToken.None, _snapshot.Seed,false)).MustHaveHappened();
       }
 
       [Observation]

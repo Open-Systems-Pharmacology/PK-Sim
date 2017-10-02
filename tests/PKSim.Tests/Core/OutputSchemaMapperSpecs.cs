@@ -32,7 +32,7 @@ namespace PKSim.Core
          _outputInterval = new OutputInterval().WithName("Interval");
          _outputSchema.AddInterval(_outputInterval);
          _snapshotInterval = new Snapshots.OutputInterval();
-         A.CallTo(() => _outputIntervalMapper.MapToSnapshots(A<IEnumerable<OutputInterval>>.That.Contains(_outputInterval))).ReturnsAsync(new []{_snapshotInterval });
+         A.CallTo(() => _outputIntervalMapper.MapToSnapshots(A<IEnumerable<OutputInterval>>.That.Contains(_outputInterval))).Returns(new []{_snapshotInterval });
          return _completed;
       }
    }
@@ -63,7 +63,7 @@ namespace PKSim.Core
          var outputSchema = new OutputSchema();
          _newInterval = new OutputInterval().WithName("Interval");
          A.CallTo(() => _outputSchemaFactory.CreateEmpty()).Returns(outputSchema);
-         A.CallTo(() => _outputIntervalMapper.MapToModel(_snapshotInterval)).ReturnsAsync(_newInterval);
+         A.CallTo(() => _outputIntervalMapper.MapToModel(_snapshotInterval)).Returns(_newInterval);
          _snapshot = await sut.MapToSnapshot(_outputSchema);
          A.CallTo(() => _containerTask.CreateUniqueName(outputSchema, _newInterval.Name, false)).Returns(_newName);
       }

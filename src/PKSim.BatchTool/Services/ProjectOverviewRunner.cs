@@ -29,7 +29,7 @@ namespace PKSim.BatchTool.Services
          _workspace = workspace;
       }
 
-      public Task RunBatch(ProjectOverviewOptions options)
+      public Task RunBatchAsync(ProjectOverviewOptions options)
       {
          return Task.Run(() =>
          {

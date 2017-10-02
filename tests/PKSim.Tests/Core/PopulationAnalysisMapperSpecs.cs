@@ -47,7 +47,7 @@ namespace PKSim.Core
          _snapshotField1 = new PopulationAnalysisField().WithName(_field1.Name);
          _snapshotField2 = new PopulationAnalysisField().WithName(_field2.Name);
 
-         A.CallTo(() => _fieldMapper.MapToSnapshots(_populationPivotAnalysis.AllFields)).ReturnsAsync(new[] {_snapshotField1, _snapshotField2});
+         A.CallTo(() => _fieldMapper.MapToSnapshots(_populationPivotAnalysis.AllFields)).Returns(new[] {_snapshotField1, _snapshotField2});
          return _completed;
       }
    }
@@ -128,7 +128,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_populationPivotAnalysis);
          _newPivotAnalysis = new PopulationPivotAnalysis();
 
-         A.CallTo(() => _fieldMapper.MapToModels(_snapshot.Fields)).ReturnsAsync(new[] {_field1, _field2,});
+         A.CallTo(() => _fieldMapper.MapToModels(_snapshot.Fields)).Returns(new[] {_field1, _field2,});
       }
 
       protected override async Task Because()

@@ -46,8 +46,8 @@ namespace PKSim.Core
             Name = _advancedParameter.DistributedParameter.DeviationParameter.Name,
          };
 
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_advancedParameter.DistributedParameter.MeanParameter)).ReturnsAsync(_meanSnapshot);
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_advancedParameter.DistributedParameter.DeviationParameter)).ReturnsAsync(_deviationSnapshot);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_advancedParameter.DistributedParameter.MeanParameter)).Returns(_meanSnapshot);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_advancedParameter.DistributedParameter.DeviationParameter)).Returns(_deviationSnapshot);
          return Task.FromResult(true);
       }
    }

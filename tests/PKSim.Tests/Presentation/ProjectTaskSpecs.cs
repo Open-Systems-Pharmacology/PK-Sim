@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -20,7 +21,7 @@ using IProjectTask = PKSim.Presentation.Services.IProjectTask;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_ProjectTask : ContextSpecification<IProjectTask>
+   public abstract class concern_for_ProjectTask : ContextSpecificationAsync<IProjectTask>
    {
       protected IDialogCreator _dialogCreator;
       protected IWorkspace _workspace;
@@ -35,9 +36,8 @@ namespace PKSim.Presentation
       protected IJournalRetriever _journalRetriever;
       protected ISnapshotTask _snapshotTask;
 
-      public override void GlobalContext()
+      public override Task GlobalContext()
       {
-         base.GlobalContext();
          _project = new PKSimProject();
          _dialogCreator = A.Fake<IDialogCreator>();
          _workspace = A.Fake<IWorkspace>();
@@ -58,11 +58,13 @@ namespace PKSim.Presentation
             _journalTask, _journalRetriever, _snapshotTask);
 
          _oldFileExitst = FileHelper.FileExists;
+
+         return _completed;
       }
 
-      public override void GlobalCleanup()
+      public override async Task GlobalCleanup()
       {
-         base.GlobalCleanup();
+         await base.GlobalCleanup();
          FileHelper.FileExists = _oldFileExitst;
       }
    }
@@ -73,9 +75,9 @@ namespace PKSim.Presentation
       private NewImportPopulationSimulationCommand _importPopulationSimlationCommand;
       private StartOptions _startOptions;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _importPopulationSimlationCommand = A.Fake<NewImportPopulationSimulationCommand>();
          FileHelper.FileExists = x => string.Equals(x, _simFile);
          A.CallTo(() => _executionContext.Resolve<NewImportPopulationSimulationCommand>()).Returns(_importPopulationSimlationCommand);
@@ -83,9 +85,10 @@ namespace PKSim.Presentation
          _startOptions.InitializeFrom(new[] {"/pop", _simFile});
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Run(_startOptions);
+         return _completed;
       }
 
       [Observation]
@@ -97,9 +100,10 @@ namespace PKSim.Presentation
 
    public class When_runnung_pk_sim_with_some_undefined_options : concern_for_ProjectTask
    {
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Run(null);
+         return _completed;
       }
 
       [Observation]
@@ -113,16 +117,17 @@ namespace PKSim.Presentation
    {
       private StartOptions _startOptions;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _startOptions = A.Fake<StartOptions>();
          A.CallTo(() => _startOptions.IsValid()).Returns(false);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Run(_startOptions);
+         return _completed;
       }
 
       [Observation]
@@ -134,14 +139,16 @@ namespace PKSim.Presentation
 
    public class When_asked_to_create_a_new_project_when_the_current_project_does_not_exist : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          _project.HasChanged = false;
+         return _completed;
       }
 
-      protected override void Because()
-      {
+      protected override Task Because()
+      { 
          sut.NewProject();
+         return _completed;
       }
 
       [Observation]
@@ -153,15 +160,17 @@ namespace PKSim.Presentation
 
    public class When_asked_to_create_a_new_project_with_an_existing_current_project_that_has_changed_and_the_user_canceling_the_action : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Cancel);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.NewProject();
+         return _completed;
       }
 
       [Observation]
@@ -173,14 +182,16 @@ namespace PKSim.Presentation
 
    public class When_asked_to_close_a_project_that_has_not_changed : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          _project.HasChanged = false;
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.CloseCurrentProject();
+         return _completed;
       }
 
       [Observation]
@@ -198,14 +209,16 @@ namespace PKSim.Presentation
 
    public class When_asked_to_close_a_project_that_has_changed : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.CloseCurrentProject();
+         return _completed;
       }
 
       [Observation]
@@ -217,15 +230,17 @@ namespace PKSim.Presentation
 
    public class When_the_user_decides_to_cancel_the_action_of_closing_a_project : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Cancel);
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.CloseCurrentProject();
+         return _completed;
       }
 
       [Observation]
@@ -243,7 +258,7 @@ namespace PKSim.Presentation
 
    public class When_asked_to_close_a_project_that_has_changed_and_the_save_action_is_not_successfull : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
             _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask);
@@ -251,11 +266,13 @@ namespace PKSim.Presentation
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Yes);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.CloseCurrentProject();
+         return _completed;
       }
 
       [Observation]
@@ -267,16 +284,18 @@ namespace PKSim.Presentation
 
    public class When_the_user_decides_to_save_a_project_that_was_never_saved_before_closing_it : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Yes);
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = string.Empty;
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.CloseCurrentProject();
+         return _completed;
       }
 
       [Observation]
@@ -288,17 +307,19 @@ namespace PKSim.Presentation
 
    public class When_the_user_decides_to_save_a_project_that_was_already_saved_before_closing_it : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Yes);
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = "tralala";
          _project.Name = "toto";
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.CloseCurrentProject();
+         return _completed;
       }
 
       [Observation]
@@ -316,15 +337,17 @@ namespace PKSim.Presentation
 
    public class When_saving_a_project_that_was_already_saved : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          _project.HasChanged = true;
          _project.FilePath = "tralala";
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.SaveCurrentProject();
+         return _completed;
       }
 
       [Observation]
@@ -336,15 +359,17 @@ namespace PKSim.Presentation
 
    public class When_saving_a_project_that_has_not_changed_and_that_was_already_saved : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          _project.HasChanged = false;
          _project.FilePath = "tralala";
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.SaveCurrentProject();
+         return _completed;
       }
 
       [Observation]
@@ -358,17 +383,19 @@ namespace PKSim.Presentation
    {
       private bool _result;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _project.HasChanged = true;
          _project.FilePath = string.Empty;
          _project.Name = "tralal";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns("tralaal");
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          _result = sut.SaveCurrentProject();
+         return _completed;
       }
 
       [Observation]
@@ -386,7 +413,7 @@ namespace PKSim.Presentation
 
    public class When_saving_a_project_under_another_path_and_a_journal_was_defined_for_the_project : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          _project.HasChanged = true;
          _project.FilePath = "OldPath";
@@ -395,11 +422,13 @@ namespace PKSim.Presentation
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns("NewPath");
          A.CallTo(() => _workspace.SaveProject("NewPath"))
             .Invokes(x => _project.FilePath = "NewPath");
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.SaveCurrentProjectAs();
+         return _completed;
       }
 
       [Observation]
@@ -411,7 +440,7 @@ namespace PKSim.Presentation
 
    public class When_saving_a_project_under_another_path_and_a_journal_was_not_defined_for_the_project : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          _project.HasChanged = true;
          _project.FilePath = "OldPath";
@@ -419,11 +448,13 @@ namespace PKSim.Presentation
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns("NewPath");
          A.CallTo(() => _workspace.SaveProject("NewPath"))
             .Invokes(x => _project.FilePath = "NewPath");
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.SaveCurrentProjectAs();
+         return _completed;
       }
 
       [Observation]
@@ -435,7 +466,7 @@ namespace PKSim.Presentation
 
    public class When_saving_a_project_under_the_same_path_and_a_journal_was_defined_for_the_project : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          _project.HasChanged = true;
          _project.FilePath = "OldPath";
@@ -443,11 +474,13 @@ namespace PKSim.Presentation
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns("NewPath");
          A.CallTo(() => _workspace.SaveProject("NewPath"))
             .Invokes(x => _project.FilePath = "NewPath");
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.SaveCurrentProjectAs();
+         return _completed;
       }
 
       [Observation]
@@ -461,16 +494,18 @@ namespace PKSim.Presentation
    {
       private bool _result;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _project.HasChanged = true;
          _project.FilePath = string.Empty;
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          _result = sut.SaveCurrentProject();
+         return _completed;
       }
 
       [Observation]
@@ -484,16 +519,18 @@ namespace PKSim.Presentation
    {
       private string _fileToOpen;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _fileToOpen = "toto.pksim5";
          FileHelper.FileExists = x => string.Equals(x, _fileToOpen);
          A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.OpenProjectTitle, CoreConstants.Filter.LOAD_PROJECT_FILTER, Constants.DirectoryKey.PROJECT, null, null)).Returns(_fileToOpen);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.OpenProject();
+         return _completed;
       }
 
       [Observation]
@@ -511,14 +548,16 @@ namespace PKSim.Presentation
 
    public class When_opening_a_project_and_the_user_cancel_the_action : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.OpenProject();
+         return _completed;
       }
 
       [Observation]
@@ -530,14 +569,16 @@ namespace PKSim.Presentation
 
    public class When_opening_a_project_while_a_current_project_that_has_changed_is_opened : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.OpenProject();
+         return _completed;
       }
 
       [Observation]
@@ -549,15 +590,17 @@ namespace PKSim.Presentation
 
    public class When_opening_a_project_while_a_current_project_that_has_changed_is_opened_and_the_user_cancel_the_save_action : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Cancel);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.OpenProject();
+         return _completed;
       }
 
       [Observation]
@@ -569,7 +612,7 @@ namespace PKSim.Presentation
 
    public class When_opening_a_project_while_a_current_project_that_has_changed_is_opened_and_the_saving_action_is_not_sucessful : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
             _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask);
@@ -577,11 +620,13 @@ namespace PKSim.Presentation
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Yes);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.OpenProject();
+         return _completed;
       }
 
       [Observation]
@@ -593,16 +638,18 @@ namespace PKSim.Presentation
 
    public class When_opening_a_project_with_a_current_project_that_the_user_does_not_want_to_save_but_the_action_of_opening_is_canceled : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override Task Context()
       {
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.No);
          A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.OpenProjectTitle, CoreConstants.Filter.LOAD_PROJECT_FILTER, Constants.DirectoryKey.PROJECT, null, null)).Returns(string.Empty);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.OpenProject();
+         return _completed;
       }
 
       [Observation]
@@ -616,7 +663,7 @@ namespace PKSim.Presentation
    {
       private string _fileToOpen;
 
-      protected override void Context()
+      protected override Task Context()
       {
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _fileToOpen = "toto.pksim5";
@@ -624,11 +671,13 @@ namespace PKSim.Presentation
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.No);
          A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.OpenProjectTitle, CoreConstants.Filter.LOAD_PROJECT_FILTER, Constants.DirectoryKey.PROJECT, null, null)).Returns(_fileToOpen);
          A.CallTo(() => _userSettings.ShouldRestoreWorkspaceLayout).Returns(true);
+         return _completed;
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.OpenProject();
+         return _completed;
       }
 
       [Observation]
@@ -654,9 +703,9 @@ namespace PKSim.Presentation
    {
       private string _fileToOpen;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _fileToOpen = "Tralala";
          FileHelper.FileExists = x => false;
       }
@@ -673,9 +722,9 @@ namespace PKSim.Presentation
       private string _fileToOpen;
       private string _message;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _fileToOpen = "toto.pksim5";
          FileHelper.FileExists = x => string.Equals(x, _fileToOpen);
          var cannotLockFileException = new CannotLockFileException(new Exception());
@@ -684,9 +733,10 @@ namespace PKSim.Presentation
          A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.OpenProjectTitle, CoreConstants.Filter.LOAD_PROJECT_FILTER, Constants.DirectoryKey.PROJECT, null, null)).Returns(_fileToOpen);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.OpenProject();
+         return _completed;
       }
 
       [Observation]
@@ -700,9 +750,9 @@ namespace PKSim.Presentation
    {
       private string _fileToOpen;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _fileToOpen = "toto.pksim5";
          FileHelper.FileExists = x => string.Equals(x, _fileToOpen);
          var cannotLockFileException = new CannotLockFileException(new Exception());
@@ -712,9 +762,10 @@ namespace PKSim.Presentation
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(message, PKSimConstants.UI.OpenAnyway, PKSimConstants.UI.CancelButton)).Returns(ViewResult.Yes);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.OpenProject();
+         return _completed;
       }
 
       [Observation]
@@ -734,9 +785,9 @@ namespace PKSim.Presentation
    {
       private string _fileToOpen;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _fileToOpen = "toto.pksim5";
          FileHelper.FileExists = x => string.Equals(x, _fileToOpen);
          A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.OpenProjectTitle, CoreConstants.Filter.LOAD_PROJECT_FILTER, Constants.DirectoryKey.PROJECT, null, null)).Returns(_fileToOpen);
@@ -746,9 +797,10 @@ namespace PKSim.Presentation
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(message, PKSimConstants.UI.OKButton, PKSimConstants.UI.CancelButton)).Returns(ViewResult.No);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.OpenProject();
+         return _completed;
       }
 
       [Observation]
@@ -768,9 +820,9 @@ namespace PKSim.Presentation
    {
       private string _wrongFileName;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          FileHelper.FileExists = x => string.Equals(x, _wrongFileName);
          _wrongFileName = "toto.xml";
       }
@@ -786,9 +838,9 @@ namespace PKSim.Presentation
    {
       private string _oldFileName;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          FileHelper.FileExists = x => string.Equals(x, _oldFileName);
          _oldFileName = "oldProject.pkprj";
       }
@@ -802,9 +854,10 @@ namespace PKSim.Presentation
 
    public class When_exporting_the_current_project_to_snapshot : concern_for_ProjectTask
    {
-      protected override void Because()
+      protected override Task Because()
       {
          sut.ExportCurrentProjectToSnapshot();
+         return _completed;
       }
 
       [Observation]
@@ -817,38 +870,40 @@ namespace PKSim.Presentation
    public class When_exporting_a_project_to_snapshot : concern_for_ProjectTask
    {
       private PKSimProject _projectToExport;
+      private readonly string _fileName = "HELLO";
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _projectToExport = new PKSimProject();
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
-         sut.ExportProjectToSnapshot(_projectToExport);
+         return sut.ExportProjectToSnapshot(_projectToExport, _fileName);
       }
 
       [Observation]
       public void should_export_the_project_to_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_projectToExport)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_projectToExport, _fileName)).MustHaveHappened();
       }
    }
 
    public class When_laoding_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_cancels_the_action_of_loading_the_snapshot : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.No);
          A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<PKSimProject>()).Returns(Enumerable.Empty<PKSimProject>());
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.LoadProjectFromSnapshot();
+         return _completed;
       }
 
       [Observation]
@@ -860,17 +915,18 @@ namespace PKSim.Presentation
 
    public class When_laoding_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_cancels_the_action : concern_for_ProjectTask
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Cancel);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.LoadProjectFromSnapshot();
+         return _completed;
       }
 
       [Observation]
@@ -898,9 +954,9 @@ namespace PKSim.Presentation
       private Action _loadAction;
       private string _filename;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _newProject = new PKSimProject();
          _filename = @"C:\test\SuperProject.json";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_filename);
@@ -909,10 +965,12 @@ namespace PKSim.Presentation
          A.CallTo(() => _workspace.LoadProject(A<Action>._)).Invokes(x => _loadAction = x.GetArgument<Action>(0));
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.LoadProjectFromSnapshot();
          _loadAction();
+         return _completed;
+
       }
 
       [Observation]
@@ -938,6 +996,34 @@ namespace PKSim.Presentation
       {
          _newProject.Name.ShouldBeEqualTo("SuperProject");
          _newProject.HasChanged.ShouldBeTrue();
+      }
+   }
+
+   public class When_loading_a_project_from_snapshot_file : concern_for_ProjectTask
+   {
+      private string _snapshotFile = "SnapshotFile.json";
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<PKSimProject>(_snapshotFile)).Returns(new []{_project});
+      }
+
+      protected override async Task Because()
+      {
+         _project = await sut.LoadProjectFromSnapshotFile(_snapshotFile);
+      }
+
+      [Observation]
+      public void should_return_a_project_with_the_name_set_to_the_name_of_the_file()
+      {
+         _project.Name.ShouldBeEqualTo("SnapshotFile");
+      }
+
+      [Observation]
+      public void should_have_marked_the_project_has_changed()
+      {
+         _project.HasChanged.ShouldBeTrue();
       }
    }
 }

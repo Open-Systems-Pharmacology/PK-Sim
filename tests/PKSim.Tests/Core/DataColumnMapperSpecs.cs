@@ -41,8 +41,8 @@ namespace PKSim.Core
 
          _quantityInfoSnapshot = new Snapshots.QuantityInfo();
          _dataInfoSnapshot = new Snapshots.DataInfo();
-         A.CallTo(() => _quantityInfoMapper.MapToSnapshot(_dataColumn.QuantityInfo)).ReturnsAsync(_quantityInfoSnapshot);
-         A.CallTo(() => _dataInfoMapper.MapToSnapshot(_dataColumn.DataInfo)).ReturnsAsync(_dataInfoSnapshot);
+         A.CallTo(() => _quantityInfoMapper.MapToSnapshot(_dataColumn.QuantityInfo)).Returns(_quantityInfoSnapshot);
+         A.CallTo(() => _dataInfoMapper.MapToSnapshot(_dataColumn.DataInfo)).Returns(_dataInfoSnapshot);
          A.CallTo(() => _dimensionRepository.DimensionByName(_dataColumn.Dimension.DisplayName)).Returns(_dataColumn.Dimension);
 
          return Task.FromResult(true);
@@ -64,8 +64,8 @@ namespace PKSim.Core
          _dataInfo = new DataInfo(ColumnOrigins.Observation);
          _quantityInfo = new QuantityInfo("quantityInfo", new []{"path"}, QuantityType.Undefined);
 
-         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo)).ReturnsAsync(_dataInfo);
-         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo)).ReturnsAsync(_quantityInfo);
+         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo)).Returns(_dataInfo);
+         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo)).Returns(_quantityInfo);
       }
 
       protected override async Task Because()

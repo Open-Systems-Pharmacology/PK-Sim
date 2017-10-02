@@ -46,13 +46,13 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task updateChartAxes(ModelCurveChart curveChart, IReadOnlyList<Axis> snapshotAxes)
       {
          var axes = await _axisMapper.MapToModels(snapshotAxes);
-         axes.Each(curveChart.AddAxis);
+         axes?.Each(curveChart.AddAxis);
       }
 
       private async Task updateChartCurves(ModelCurveChart curveChart, IReadOnlyList<Curve> snapshotCurves, SimulationAnalysisContext simulationAnalysisContext)
       {
          var curves = await _curveMapper.MapToModels(snapshotCurves, simulationAnalysisContext);
-         curves.Each(x => curveChart.AddCurve(x, useAxisDefault: false));
+         curves?.Each(x => curveChart.AddCurve(x, useAxisDefault: false));
       }
    }
 

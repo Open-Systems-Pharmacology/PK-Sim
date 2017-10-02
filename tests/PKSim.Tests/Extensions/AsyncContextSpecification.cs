@@ -24,7 +24,7 @@ namespace OSPSuite.BDDHelper
       [OneTimeSetUp]
       public virtual Task GlobalContext()
       {
-         return Task.FromResult(true);
+         return _completed;
       }
 
       /// <summary>calls the context and the because at once</summary>
@@ -40,13 +40,13 @@ namespace OSPSuite.BDDHelper
       /// </summary>
       protected virtual Task Context()
       {
-         return Task.FromResult(true);
+         return _completed;
       }
 
       /// <summary>The actual action tested in the specification</summary>
       protected virtual Task Because()
       {
-         return Task.FromResult(true);
+         return _completed;
       }
 
       /// <summary>
@@ -55,7 +55,7 @@ namespace OSPSuite.BDDHelper
       [TearDown]
       public virtual Task Cleanup()
       {
-         return Task.FromResult(true);
+         return _completed;
       }
 
       /// <summary>
@@ -65,7 +65,7 @@ namespace OSPSuite.BDDHelper
       [OneTimeTearDown]
       public virtual Task GlobalCleanup()
       {
-         return Task.FromResult(true);
+         return _completed;
       }
    }
 

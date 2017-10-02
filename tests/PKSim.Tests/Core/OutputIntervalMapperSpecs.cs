@@ -32,7 +32,7 @@ namespace PKSim.Core
          _parameter1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P1");
          _outputInterval.Add(_parameter1);
          _snapshotParameter = new Parameter().WithName(_parameter1.Name);
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).ReturnsAsync(_snapshotParameter);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(_snapshotParameter);
 
          return Task.FromResult(true);
       }

@@ -41,9 +41,9 @@ namespace PKSim.Core
          _snapshotClassification.Classifications = new[] {_subClassification};
 
          _classifications.Add(_modelClassification);
-         A.CallTo(() => _classificationMapper.MapToSnapshots(A<IEnumerable<Classification>>.That.Contains(_modelClassification), A<ClassificationContext>._)).ReturnsAsync(new[] {_snapshotClassification});
-         A.CallTo(() => _classificationMapper.MapToModel(_snapshotClassification, ClassificationType.ObservedData)).ReturnsAsync(_modelClassification);
-         A.CallTo(() => _classificationMapper.MapToModel(_subClassification, ClassificationType.ObservedData)).ReturnsAsync(_subModelClassification);
+         A.CallTo(() => _classificationMapper.MapToSnapshots(A<IEnumerable<Classification>>.That.Contains(_modelClassification), A<ClassificationContext>._)).Returns(new[] {_snapshotClassification});
+         A.CallTo(() => _classificationMapper.MapToModel(_snapshotClassification, ClassificationType.ObservedData)).Returns(_modelClassification);
+         A.CallTo(() => _classificationMapper.MapToModel(_subClassification, ClassificationType.ObservedData)).Returns(_subModelClassification);
 
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
 

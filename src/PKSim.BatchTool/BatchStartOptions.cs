@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Text;
+using CommandLine;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Validation;
@@ -19,6 +20,15 @@ namespace PKSim.BatchTool
 
    public interface IWithInputAndOutputFolders : IWithInputFolder, IWithOutputFolder
    {
+   }
+
+   public static class WithInputAndOutputFoldersExtensions 
+   {
+      public static void LogOption(this IWithInputAndOutputFolders option, StringBuilder sb)
+      {
+         sb.AppendLine($"Input Folder: {option.InputFolder}");
+         sb.AppendLine($"Output Folder: {option.OutputFolder}");
+      }
    }
 
    [Verb("comparison", HelpText = "Start project comparison by loading a set of projects, running all simulations and exporting old and new results")]
@@ -49,6 +59,13 @@ namespace PKSim.BatchTool
             OptionsRules.OutputFolderDefined,
          });
       }
+
+      public override string ToString()
+      {
+         var sb = new StringBuilder();
+         this.LogOption(sb);
+         return sb.ToString();
+      }
    }
 
    [Verb("overview", HelpText = "Generate project overview by loading a set of projects and exporting a file containing a description of all building blocks and observed data used")]
@@ -78,7 +95,7 @@ namespace PKSim.BatchTool
       private string _outputFolder;
       private string _inputFolder;
 
-      public BatchExportMode ExportMode { get; set; } 
+      public BatchExportMode ExportMode { get; set; }
 
       public NotificationType NotificationType { get; set; } = NotificationType.Info | NotificationType.Error;
 
@@ -165,6 +182,81 @@ namespace PKSim.BatchTool
             GenericRules.NonEmptyRule<JsonRunOptions>(x => x.LogFileFullPath)
          });
       }
+
+
+      public override string ToString()
+      {
+         var sb = new StringBuilder();
+         this.LogOption(sb);
+         sb.AppendLine($"Log file: {LogFileFullPath}");
+         sb.AppendLine($"Notification type: {NotificationType}");
+         sb.AppendLine($"Export mode: {ExportMode}");
+         return sb.ToString();
+      }
+   }
+
+   [Verb("snap", HelpText = "Start snapshot workflows by loading a set of project (or snapshot) files and creating the corresponding snapshot (or project) file automatically")]
+   public class SnapshotRunOptions : ValidatableDTO, IWithInputAndOutputFolders
+   {
+      private string _outputFolder;
+      private string _inputFolder;
+      public SnapshotExportMode ExportMode { get; set; } = SnapshotExportMode.Snapshot;
+
+      [Option('i', "input", Required = true, HelpText = "Input folder containing all project or snapshot files to load")]
+      public string InputFolder
+      {
+         get => _inputFolder;
+         set => SetProperty(ref _inputFolder, value);
+      }
+
+      [Option('o', "output", Required = true, HelpText = "Output folder where project or snapshot files will be exported")]
+      public string OutputFolder
+      {
+         get => _outputFolder;
+         set
+         {
+            SetProperty(ref _outputFolder, value);
+            if (string.IsNullOrEmpty(LogFileFullPath))
+            {
+               LogFileFullPath = CoreConstants.DefaultBatchLogFullPath(OutputFolder);
+            }
+         }
+      }
+
+      [Option('p', "project", HelpText = "Create project files from snapshot files")]
+      public bool ExportProject
+      {
+         set => ExportMode = SnapshotExportMode.Project;
+      }
+
+      [Option('s', "snapshot", HelpText = "Create snaphot files from project files")]
+      public bool ExportSnapshot
+      {
+         set => ExportMode = SnapshotExportMode.Snapshot;
+      }
+
+      [Option('l', "log", Required = false, HelpText = "Full path of log file where log output will be written. If not defined, it wil be exported in the output folder")]
+      public string LogFileFullPath { get; set; }
+
+      public SnapshotRunOptions()
+      {
+         Rules.AddRange(new[]
+         {
+            OptionsRules.InputFolderDefined,
+            OptionsRules.OutputFolderDefined,
+            GenericRules.NonEmptyRule<SnapshotRunOptions>(x => x.LogFileFullPath)
+         });
+      }
+
+
+      public override string ToString()
+      {
+         var sb = new StringBuilder();
+         this.LogOption(sb);
+         sb.AppendLine($"Log file: {LogFileFullPath}");
+         sb.AppendLine($"Export mode: {ExportMode}");
+         return sb.ToString();
+      }
    }
 
    [Verb("training", HelpText = "Generate training materials")]
@@ -178,7 +270,6 @@ namespace PKSim.BatchTool
          get => _outputFolder;
          set => SetProperty(ref _outputFolder, value);
       }
-
    }
 
    public static class OptionsRules

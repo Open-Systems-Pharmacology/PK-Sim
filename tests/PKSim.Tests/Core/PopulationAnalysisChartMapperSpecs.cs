@@ -36,7 +36,7 @@ namespace PKSim.Core
          _bowWiskerChart.AddSecondaryAxis(new AxisSettings());
 
          _snapshotPopulationAnalysis = new PopulationAnalysis();
-         A.CallTo(() => _populationAnalysisMapper.MapToSnapshot(_bowWiskerChart.BasePopulationAnalysis)).ReturnsAsync(_snapshotPopulationAnalysis);
+         A.CallTo(() => _populationAnalysisMapper.MapToSnapshot(_bowWiskerChart.BasePopulationAnalysis)).Returns(_snapshotPopulationAnalysis);
          return _completed;
       }
    }

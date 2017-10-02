@@ -4,6 +4,6 @@ namespace PKSim.BatchTool.Services
 {
    public interface IBatchRunner<TBatchOptions>
    {
-      Task RunBatch(TBatchOptions parameters);
+      Task RunBatchAsync(TBatchOptions batchOptions);
    }
 }

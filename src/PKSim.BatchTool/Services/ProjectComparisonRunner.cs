@@ -49,7 +49,7 @@ namespace PKSim.BatchTool.Services
          _simulationEngine = simulationEngineFactory.Create<IndividualSimulation>();
       }
 
-      public async Task RunBatch(ProjectComparisonOptions projectComparisonOptions)
+      public async Task RunBatchAsync(ProjectComparisonOptions projectComparisonOptions)
       {
          string inputFolder = projectComparisonOptions.InputFolder;
          string outputFolder = projectComparisonOptions.OutputFolder;
