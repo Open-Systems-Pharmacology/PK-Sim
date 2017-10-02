@@ -39,7 +39,12 @@ namespace PKSim.Core.Snapshots.Mappers
          return value;
       }
 
-      protected string ModelValueFor(string unit) => unit ?? "";
+      protected string ModelValueFor(string snapshotValue) => snapshotValue ?? "";
+
+      protected T ModelValueFor<T>(T? snapshotValue, T defaultValue = default(T)) where T:struct
+      {
+         return snapshotValue.GetValueOrDefault(defaultValue);
+      }
 
       protected virtual Task<TSnapshot> SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)
       {

@@ -4,32 +4,10 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using ModelCurveChart = OSPSuite.Core.Chart.CurveChart;
 using SnapshotCurveChart = PKSim.Core.Snapshots.CurveChart;
-using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class CurveChartContext
-   {
-      private readonly List<ModelDataRepository> _dataRepositories = new List<ModelDataRepository>();
-
-      public IReadOnlyList<ModelDataRepository> DataRepositories => _dataRepositories;
-
-      public CurveChartContext()
-      {
-      }
-
-      public CurveChartContext(IEnumerable<ModelDataRepository> dataRepositories)
-      {
-         _dataRepositories.AddRange(dataRepositories);
-      }
-
-      public void AddDataRepository(ModelDataRepository dataRepository)
-      {
-         _dataRepositories.Add(dataRepository);
-      }
-   }
-
-   public abstract class CurveChartMapper<TCurveChart> : ObjectBaseSnapshotMapperBase<TCurveChart, SnapshotCurveChart, CurveChartContext> where TCurveChart : ModelCurveChart, new()
+   public abstract class CurveChartMapper<TCurveChart> : ObjectBaseSnapshotMapperBase<TCurveChart, SnapshotCurveChart, SimulationAnalysisContext> where TCurveChart : ModelCurveChart, new()
    {
       private readonly ChartMapper _chartMapper;
       private readonly AxisMapper _axisMapper;
@@ -51,13 +29,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<TCurveChart> MapToModel(SnapshotCurveChart snapshot, CurveChartContext curveChartContext)
+      public override async Task<TCurveChart> MapToModel(SnapshotCurveChart snapshot, SimulationAnalysisContext simulationAnalysisContext)
       {
          var curveChart = new TCurveChart();
          MapSnapshotPropertiesToModel(snapshot, curveChart);
          await _chartMapper.MapToModel(snapshot, curveChart);
          await updateChartAxes(curveChart, snapshot.Axes);
-         await updateChartCurves(curveChart, snapshot.Curves, curveChartContext);
+         await updateChartCurves(curveChart, snapshot.Curves, simulationAnalysisContext);
          return curveChart;
       }
 
@@ -67,9 +45,9 @@ namespace PKSim.Core.Snapshots.Mappers
          axes.Each(curveChart.AddAxis);
       }
 
-      private async Task updateChartCurves(ModelCurveChart curveChart, IReadOnlyList<Curve> snapshotCurves, CurveChartContext curveChartContext)
+      private async Task updateChartCurves(ModelCurveChart curveChart, IReadOnlyList<Curve> snapshotCurves, SimulationAnalysisContext simulationAnalysisContext)
       {
-         var curves = await _curveMapper.MapToModels(snapshotCurves, curveChartContext);
+         var curves = await _curveMapper.MapToModels(snapshotCurves, simulationAnalysisContext);
          curves.Each(x => curveChart.AddCurve(x, useAxisDefault: false));
       }
    }

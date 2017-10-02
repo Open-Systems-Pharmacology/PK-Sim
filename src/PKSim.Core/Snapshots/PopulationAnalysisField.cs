@@ -18,7 +18,6 @@ namespace PKSim.Core.Snapshots
       public string PKParameter { get; set; }
       public string Covariate { get; set; }
       public GroupingItem[] GroupingItems { get; set; }
-      public GroupingItem ReferenceGroupingItem { get; set; }
       public GroupingDefinition GroupingDefinition { get; set; }
       public PivotArea? Area { get; set; }
       public int? Index { get; set; }

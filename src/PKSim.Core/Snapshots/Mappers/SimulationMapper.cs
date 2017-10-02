@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
@@ -142,7 +143,7 @@ namespace PKSim.Core.Snapshots.Mappers
          await runSimulation(snapshot, simulation);
 
          simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, project));
-//         simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, project));
+         simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, project));
 
          return simulation;
       }
@@ -155,25 +156,29 @@ namespace PKSim.Core.Snapshots.Mappers
          await _simulationRunner.RunSimulation(simulation, createDefaultAnalysis: false);
       }
 
-      private async Task<IEnumerable<SimulationTimeProfileChart>> individualAnalysesFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, PKSimProject project)
+      private Task<SimulationTimeProfileChart[]> individualAnalysesFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, PKSimProject project)
       {
-         var individualSimulation = simulation as IndividualSimulation;
-         if (individualSimulation == null || snapshotCharts == null)
-            return Enumerable.Empty<SimulationTimeProfileChart>();
-
-         var curveChartContext = new CurveChartContext(project.AllObservedData);
-         curveChartContext.AddDataRepository(individualSimulation.DataRepository);
-
-         return await _simulationTimeProfileChartMapper.MapToModels(snapshotCharts, curveChartContext);
+         return analysesFrom(simulation, snapshotCharts, project, _simulationTimeProfileChartMapper.MapToModels);
       }
 
-      private async Task<IEnumerable<ModelPopulationAnalysisChart>> populationAnalysesFrom(ModelSimulation simulation, PopulationAnalysisChart[] snapshotPopulationAnalyses, PKSimProject project)
+      private Task<ModelPopulationAnalysisChart[]> populationAnalysesFrom(ModelSimulation simulation, PopulationAnalysisChart[] snapshotPopulationAnalyses, PKSimProject project)
       {
-         var populationSimulation = simulation as PopulationSimulation;
-         if (populationSimulation == null || snapshotPopulationAnalyses == null)
-            return Enumerable.Empty<ModelPopulationAnalysisChart>();
+         return analysesFrom(simulation, snapshotPopulationAnalyses, project, _populationAnalysisChartMapper.MapToModels);
+      }
 
-         return await _populationAnalysisChartMapper.MapToModels(snapshotPopulationAnalyses);
+      private Task<TAnalysis[]> analysesFrom<TAnalysis, TSnapshotAnalysis>(ModelSimulation simulation, TSnapshotAnalysis[] snapshotAnalyses, PKSimProject project,
+         Func<TSnapshotAnalysis[], SimulationAnalysisContext, Task<TAnalysis[]>> mapFunc)
+      {
+         if (snapshotAnalyses == null)
+            return Task.FromResult(new List<TAnalysis>().ToArray());
+
+         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData);
+
+         var individualSimulation = simulation as IndividualSimulation;
+         if (individualSimulation != null)
+            curveChartContext.AddDataRepository(individualSimulation.DataRepository);
+
+         return mapFunc(snapshotAnalyses, curveChartContext);
       }
 
       private async Task<ModelSimulation> createSimulationFrom(SnapshotSimulation snapshot, PKSimProject project)
@@ -210,13 +215,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return _compoundPropertiesMapper.MapToModels(snapshotCompoundProperties, compoundPropertiesContext);
       }
 
-      private async Task updateAdvancedParameters(ModelSimulation simulation, AdvancedParameter[] snapshotAdvancedParameters)
+      private Task updateAdvancedParameters(ModelSimulation simulation, AdvancedParameter[] snapshotAdvancedParameters)
       {
-         var populationSimulation = simulation as PopulationSimulation;
-         if (populationSimulation == null)
-            return;
-
-         await _advancedParameterMapper.MapToModel(snapshotAdvancedParameters, populationSimulation);
+         return _advancedParameterMapper.MapToModel(snapshotAdvancedParameters, simulation as PopulationSimulation);
       }
 
       private Task updateParameters(ModelSimulation simulation, LocalizedParameter[] snapshotParameters)

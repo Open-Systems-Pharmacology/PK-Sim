@@ -96,13 +96,13 @@ namespace PKSim.Core
 
    public class When_mapping_a_curve_chart_snapshot_to_curve_chart : concern_for_CurveChartMapper
    {
-      private CurveChartContext _context;
+      private SimulationAnalysisContext _context;
       private SimulationTimeProfileChart _newChart;
 
       protected override async Task Context()
       {
          await base.Context();
-         _context = new CurveChartContext();
+         _context = new SimulationAnalysisContext();
          _snapshot = await sut.MapToSnapshot(_curveChart);
          _snapshot.Axes = new[] {_snapshotAxis,};
 

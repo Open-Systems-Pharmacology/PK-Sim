@@ -1,38 +1,55 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
-using ModelPopulationAnalysis = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysis;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class PopulationAnalysisFieldMapper : ObjectBaseSnapshotMapperBase<IPopulationAnalysisField, PopulationAnalysisField, ModelPopulationAnalysis, ModelPopulationAnalysis>
+   public class PopulationAnalysisFieldMapper : ObjectBaseSnapshotMapperBase<IPopulationAnalysisField, PopulationAnalysisField>
    {
       private readonly GroupingDefinitionMapper _groupingDefinitionMapper;
+      private readonly IDimensionFactory _dimensionFactory;
 
-      public PopulationAnalysisFieldMapper(GroupingDefinitionMapper groupingDefinitionMapper)
+      public PopulationAnalysisFieldMapper(GroupingDefinitionMapper groupingDefinitionMapper, IDimensionFactory dimensionFactory)
       {
          _groupingDefinitionMapper = groupingDefinitionMapper;
+         _dimensionFactory = dimensionFactory;
       }
 
-      public override async Task<PopulationAnalysisField> MapToSnapshot(IPopulationAnalysisField field, ModelPopulationAnalysis populationAnalysis)
+      public override async Task<PopulationAnalysisField> MapToSnapshot(IPopulationAnalysisField field)
       {
          var snapshot = await SnapshotFrom(field);
-         updatePositionFor(snapshot, field, populationAnalysis);
-         mapField<PopulationAnalysisOutputField>(snapshot, field, mapOutputField);
-         mapField<PopulationAnalysisParameterField>(snapshot, field, mapParameterField);
-         mapField<PopulationAnalysisPKParameterField>(snapshot, field, mapPKParameterField);
-         mapField<PopulationAnalysisCovariateField>(snapshot, field, mapCovariateField);
+         mapIf<PopulationAnalysisOutputField>(snapshot, field, mapOutputFieldToSnapshot);
+         mapIf<PopulationAnalysisParameterField>(snapshot, field, mapParameterFieldToSnapshot);
+         mapIf<PopulationAnalysisPKParameterField>(snapshot, field, mapPKParameterFieldToSnapshot);
+         mapIf<PopulationAnalysisCovariateField>(snapshot, field, mapCovariateField);
          await mapGroupingFieldProperties(snapshot, field as PopulationAnalysisGroupingField);
-
          return snapshot;
+      }
+
+      public override async Task<IPopulationAnalysisField> MapToModel(PopulationAnalysisField snapshot)
+      {
+         var populationAnalysisField = await createFieldFrom(snapshot);
+         MapSnapshotPropertiesToModel(snapshot, populationAnalysisField);
+         mapIf<PopulationAnalysisParameterField>(snapshot, populationAnalysisField, mapParameterFieldToModel);
+         mapIf<PopulationAnalysisPKParameterField>(snapshot, populationAnalysisField, mapPKParameterFieldToModel);
+         mapIf<PopulationAnalysisCovariateField>(snapshot, populationAnalysisField, mapCovariateFieldToModel);
+         mapIf<PopulationAnalysisOutputField>(snapshot, populationAnalysisField, mapOutputFieldToModel);
+         return populationAnalysisField;
       }
 
       private void mapCovariateField(PopulationAnalysisField snapshot, PopulationAnalysisCovariateField field)
       {
          snapshot.Covariate = field.Covariate;
-         snapshot.ReferenceGroupingItem = field.ReferenceGroupingItem;
          snapshot.GroupingItems = field.GroupingItems.ToArray();
+      }
+
+      private void mapCovariateFieldToModel(PopulationAnalysisField snapshot, PopulationAnalysisCovariateField field)
+      {
+         field.Covariate = snapshot.Covariate;
+         snapshot.GroupingItems?.Each(field.AddGroupingItem);
       }
 
       private async Task mapGroupingFieldProperties(PopulationAnalysisField snapshot, PopulationAnalysisGroupingField field)
@@ -40,54 +57,75 @@ namespace PKSim.Core.Snapshots.Mappers
          if (field == null)
             return;
 
-         snapshot.ReferenceGroupingItem = field.ReferenceGroupingItem;
          snapshot.GroupingDefinition = await _groupingDefinitionMapper.MapToSnapshot(field.GroupingDefinition);
       }
 
-      private void updatePositionFor(PopulationAnalysisField snapshot, IPopulationAnalysisField field, ModelPopulationAnalysis populationAnalysis)
+      private void mapPKParameterFieldToSnapshot(PopulationAnalysisField snapshot, PopulationAnalysisPKParameterField field)
       {
-         var pivotPopulatonAnalysis = populationAnalysis as PopulationPivotAnalysis;
-         var position = pivotPopulatonAnalysis?.GetPosition(field);
-         if (position == null)
-            return;
-
-         snapshot.Area = position.Area;
-         snapshot.Index = position.Index;
-      }
-
-      private void mapPKParameterField(PopulationAnalysisField snapshot, PopulationAnalysisPKParameterField field)
-      {
-         mapQuantityFieldProperties(snapshot, field);
+         mapQuantityFieldToSnapshot(snapshot, field);
          snapshot.PKParameter = field.PKParameter;
       }
 
-      private void mapParameterField(PopulationAnalysisField snapshot, PopulationAnalysisParameterField field)
+      private void mapPKParameterFieldToModel(PopulationAnalysisField snapshot, PopulationAnalysisPKParameterField field)
       {
-         mapNumericFieldProperties(snapshot, field);
+         mapQuantityFieldToModel(snapshot, field);
+         field.PKParameter = snapshot.PKParameter;
+      }
+
+      private void mapParameterFieldToSnapshot(PopulationAnalysisField snapshot, PopulationAnalysisParameterField field)
+      {
+         mapNumericFieldToSnapshot(snapshot, field);
          snapshot.ParameterPath = field.ParameterPath;
       }
 
-      private void mapOutputField(PopulationAnalysisField snapshot, PopulationAnalysisOutputField field)
+      private void mapParameterFieldToModel(PopulationAnalysisField snapshot, PopulationAnalysisParameterField field)
       {
-         mapQuantityFieldProperties(snapshot, field);
+         mapNumericFieldToModel(snapshot, field);
+         field.ParameterPath = snapshot.ParameterPath;
+      }
+
+      private void mapOutputFieldToSnapshot(PopulationAnalysisField snapshot, PopulationAnalysisOutputField field)
+      {
+         mapQuantityFieldToSnapshot(snapshot, field);
          snapshot.Color = field.Color;
       }
 
-      private void mapQuantityFieldProperties(PopulationAnalysisField snapshot, IQuantityField field)
+      private void mapOutputFieldToModel(PopulationAnalysisField snapshot, PopulationAnalysisOutputField field)
       {
-         mapNumericFieldProperties(snapshot, field);
+         mapQuantityFieldToModel(snapshot, field);
+         field.Color = ModelValueFor(snapshot.Color, field.Color);
+      }
+
+      private void mapQuantityFieldToSnapshot(PopulationAnalysisField snapshot, IQuantityField field)
+      {
+         mapNumericFieldToSnapshot(snapshot, field);
          snapshot.QuantityPath = field.QuantityPath;
          snapshot.QuantityType = field.QuantityType;
       }
 
-      private void mapNumericFieldProperties(PopulationAnalysisField snapshot, INumericValueField field)
+      private void mapQuantityFieldToModel(PopulationAnalysisField snapshot, IQuantityField field)
+      {
+         mapNumericFieldToModel(snapshot, field);
+         field.QuantityPath = snapshot.QuantityPath;
+         field.QuantityType = ModelValueFor(snapshot.QuantityType, field.QuantityType);
+      }
+
+      private void mapNumericFieldToSnapshot(PopulationAnalysisField snapshot, INumericValueField field)
       {
          snapshot.Dimension = field.Dimension.Name;
-         snapshot.Unit = field.DisplayUnit.Name;
+         snapshot.Unit = SnapshotValueFor(field.DisplayUnit.Name);
          snapshot.Scaling = field.Scaling;
       }
 
-      private void mapField<T>(PopulationAnalysisField snapshot, IPopulationAnalysisField populationAnalysisField, Action<PopulationAnalysisField, T> mapAction) where T : class, IPopulationAnalysisField
+      private void mapNumericFieldToModel(PopulationAnalysisField snapshot, INumericValueField field)
+      {
+         field.Dimension = _dimensionFactory.Dimension(snapshot.Dimension);
+         field.Dimension = _dimensionFactory.OptimalDimension(field.Dimension);
+         field.DisplayUnit = field.Dimension.Unit(ModelValueFor(snapshot.Unit));
+         field.Scaling = ModelValueFor(snapshot.Scaling, field.Scaling);
+      }
+
+      private void mapIf<T>(PopulationAnalysisField snapshot, IPopulationAnalysisField populationAnalysisField, Action<PopulationAnalysisField, T> mapAction) where T : class, IPopulationAnalysisField
       {
          var field = populationAnalysisField as T;
          if (field == null)
@@ -96,9 +134,24 @@ namespace PKSim.Core.Snapshots.Mappers
          mapAction(snapshot, field);
       }
 
-      public override Task<IPopulationAnalysisField> MapToModel(PopulationAnalysisField snapshot, ModelPopulationAnalysis populationAnalysis)
+      private async Task<IPopulationAnalysisField> createFieldFrom(PopulationAnalysisField snapshot)
       {
-         throw new NotImplementedException();
+         if (snapshot.ParameterPath != null)
+            return new PopulationAnalysisParameterField();
+
+         if (snapshot.PKParameter != null)
+            return new PopulationAnalysisPKParameterField();
+
+         if (snapshot.Covariate != null)
+            return new PopulationAnalysisCovariateField();
+
+         if (snapshot.GroupingDefinition != null)
+         {
+            var groupingDefintion = await _groupingDefinitionMapper.MapToModel(snapshot.GroupingDefinition);
+            return new PopulationAnalysisGroupingField(groupingDefintion);
+         }
+
+         return new PopulationAnalysisOutputField();
       }
    }
 }
