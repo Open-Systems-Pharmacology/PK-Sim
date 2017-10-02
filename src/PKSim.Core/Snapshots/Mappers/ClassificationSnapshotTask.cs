@@ -51,11 +51,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
          snapshot.Classifiables?.Each(snapshotClassifiable =>
          {
-            var dataRepository = subjects.FirstOrDefault(x => string.Equals(x.Name, snapshotClassifiable));
-            var classifiable = project.GetOrCreateClassifiableFor<TClassifiable, TSubject>(dataRepository);
-            project.RemoveClassifiable(classifiable);
+            var subject = subjects.FirstOrDefault(x => string.Equals(x.Name, snapshotClassifiable));
+            var classifiable = project.GetOrCreateClassifiableFor<TClassifiable, TSubject>(subject);
             classifiable.Parent = model;
-            project.AddClassifiable(classifiable);
          });
 
          if (snapshot.Classifications != null && snapshot.Classifications.Any())

@@ -35,15 +35,18 @@ namespace PKSim.Core.Snapshots.Mappers
          var childClassifications = childClassificationsFrom(classification, context.Classifications);
          var childClassifiables = childClassifiablesFrom(classification, context.Classifiables);
 
-         root.Classifications = childClassifications.Any() ? await Task.WhenAll(childClassifications.Select(x => mapTreeFrom(x, context))) : null;
-         root.Classifiables = childClassifiables.Any() ? childClassifiables.ToArray() : null;
+         if(childClassifications.Any())
+            root.Classifications = await Task.WhenAll(childClassifications.Select(x => mapTreeFrom(x, context)));
+
+         if(childClassifiables.Any())
+            root.Classifiables = childClassifiables.ToArray();
 
          return root;
       }
 
-      private IReadOnlyList<string> childClassifiablesFrom(ModelClassification classification, IReadOnlyList<IClassifiableWrapper> classifiables)
+      private string[] childClassifiablesFrom(ModelClassification classification, IReadOnlyList<IClassifiableWrapper> classifiables)
       {
-         return childrenFrom(classification, classifiables).Select(x => x.Name).ToList();
+         return childrenFrom(classification, classifiables).Select(x => x.Name).ToArray();
       }
 
       private static IReadOnlyList<ModelClassification> childClassificationsFrom(ModelClassification classification, IReadOnlyList<ModelClassification> classifications)
