@@ -74,7 +74,7 @@ namespace PKSim.Matlab
             MaxAge = 80,
             MinGestationalAge = 30,
             MaxGestationalAge = 35,
-            MinWeight = 70,
+            MaxWeight = 70,
             NumberOfIndividuals = 10,
             ProportionOfFemales = 70
          };

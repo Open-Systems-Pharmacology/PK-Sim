@@ -61,6 +61,7 @@ namespace PKSim.Core.Batch.Mapper
          
          if (originData.SpeciesPopulation.IsAgeDependent)
          {
+            originData.Age = 0;
             var meanAgeParameter = _individualModelTask.MeanAgeFor(originData);
             originData.Age = valueFrom(batchOriginData.Age, meanAgeParameter.Value);
             originData.AgeUnit = meanAgeParameter.Dimension.BaseUnit.Name;
