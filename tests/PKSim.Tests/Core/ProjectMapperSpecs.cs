@@ -4,7 +4,9 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Chart;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using Classification = OSPSuite.Core.Domain.Classification;
@@ -46,8 +48,13 @@ namespace PKSim.Core
       protected ClassificationMapper _classificationMapper;
       protected ClassifiableObservedData _classifiableObservedData;
       protected Classification _classification;
-      protected Snapshots.Classification _classificationSnapshot;
+      protected Snapshots.Classification _observedDataClassificationSnapshot;
       protected IClassificationSnapshotTask _classificationSnapshotTask;
+      protected SimulationComparison _simulationComparisonSnapshot;
+      protected ISimulationComparison _simulationComparison;
+      protected SimulationComparisonMapper _simulationComparisonMapper;
+      protected Snapshots.Classification _simulationClassificationSnapshot;
+      protected Snapshots.Classification _comparisonClassificationSnapshot;
 
       protected override Task Context()
       {
@@ -55,8 +62,9 @@ namespace PKSim.Core
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _executionContext = A.Fake<IExecutionContext>();
          _simulationMapper = A.Fake<SimulationMapper>();
+         _simulationComparisonMapper = A.Fake<SimulationComparisonMapper>();
          _classificationSnapshotTask = A.Fake<IClassificationSnapshotTask>();
-         sut = new ProjectMapper(_executionContext, _simulationMapper, _classificationSnapshotTask);
+         sut = new ProjectMapper(_simulationMapper, _simulationComparisonMapper, _executionContext, _classificationSnapshotTask);
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
          _individual = new Individual().WithName("IND");
          _compound = new Compound().WithName("COMP");
@@ -65,10 +73,10 @@ namespace PKSim.Core
          _protocol = new SimpleProtocol().WithName("PROTO");
          _population = new RandomPopulation().WithName("POP");
          _observedData = new DataRepository().WithName("OD");
-         _classifiableObservedData = new ClassifiableObservedData { Subject = _observedData };
-         _classification = new Classification { ClassificationType = ClassificationType.ObservedData}.WithName("OD Classification");
-
-         _simulation = new IndividualSimulation().WithName("IND_SIM");
+         _classifiableObservedData = new ClassifiableObservedData {Subject = _observedData};
+         _classification = new Classification {ClassificationType = ClassificationType.ObservedData}.WithName("OD Classification");
+         _simulationComparison = new IndividualSimulationComparison().WithName("COMP").WithId("SimComp");
+         _simulation = new IndividualSimulation().WithName("IND_SIM").WithId("IndSim");
 
          _project = new PKSimProject();
          _project.AddBuildingBlock(_individual);
@@ -81,6 +89,7 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_simulation);
          _project.AddClassifiable(_classifiableObservedData);
          _project.AddClassification(_classification);
+         _project.AddSimulationComparison(_simulationComparison);
 
          _compoundSnapshot = new Snapshots.Compound();
          _individualSnapshot = new Snapshots.Individual();
@@ -89,7 +98,10 @@ namespace PKSim.Core
          _protocolSnapshot = new Snapshots.Protocol();
          _populationSnapshot = new Snapshots.Population();
          _observedDataSnapshot = new Snapshots.DataRepository();
-         _classificationSnapshot = new Snapshots.Classification();
+         _observedDataClassificationSnapshot = new Snapshots.Classification();
+         _simulationComparisonSnapshot = new SimulationComparison();
+         _simulationClassificationSnapshot = new Snapshots.Classification();
+         _comparisonClassificationSnapshot = new Snapshots.Classification();
 
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_compound)).ReturnsAsync(_compoundSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_individual)).ReturnsAsync(_individualSnapshot);
@@ -98,7 +110,11 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).ReturnsAsync(_protocolSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).ReturnsAsync(_populationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).ReturnsAsync(_observedDataSnapshot);
-         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots(A<IReadOnlyList<Classification>>.That.Contains(_classification), A<IReadOnlyList<IClassifiableWrapper>>._)).ReturnsAsync(new[] { _classificationSnapshot });
+
+         A.CallTo(() => _simulationComparisonMapper.MapToSnapshot(_simulationComparison)).ReturnsAsync(_simulationComparisonSnapshot);
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableObservedData>(_project)).ReturnsAsync(new[] {_observedDataClassificationSnapshot});
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableSimulation>(_project)).ReturnsAsync(new[] {_simulationClassificationSnapshot});
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableComparison>(_project)).ReturnsAsync(new[] {_comparisonClassificationSnapshot});
 
          A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).ReturnsAsync(_simulationSnapshot);
 
@@ -122,13 +138,36 @@ namespace PKSim.Core
          _snapshot.Formulations.ShouldContain(_formulationSnapshot);
          _snapshot.Events.ShouldContain(_eventSnapshot);
          _snapshot.Populations.ShouldContain(_populationSnapshot);
-         _snapshot.ObservedDataClassifications.ShouldContain(_classificationSnapshot);
+      }
+
+      [Observation]
+      public void should_save_observed_data_classification()
+      {
+         _snapshot.ObservedDataClassifications.ShouldContain(_observedDataClassificationSnapshot);
+      }
+
+      [Observation]
+      public void should_save_simulation_classification()
+      {
+         _snapshot.SimulationClassifications.ShouldContain(_simulationClassificationSnapshot);
+      }
+
+      [Observation]
+      public void should_save_simulation_comparison_classification()
+      {
+         _snapshot.SimulationComparisonClassifications.ShouldContain(_comparisonClassificationSnapshot);
       }
 
       [Observation]
       public void should_retrieve_the_snapshot_for_all_simulations_used_in_the_project()
       {
          _snapshot.Simulations.ShouldContain(_simulationSnapshot);
+      }
+
+      [Observation]
+      public void should_retrieve_the_snapshot_for_all_comparison_used_in_the_project()
+      {
+         _snapshot.SimulationComparisons.ShouldContain(_simulationComparisonSnapshot);
       }
    }
 
@@ -147,7 +186,9 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToModel(_eventSnapshot)).ReturnsAsync(_event);
          A.CallTo(() => _snapshotMapper.MapToModel(_populationSnapshot)).ReturnsAsync(_population);
          A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).ReturnsAsync(_observedData);
-         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<PKSimProject>._)).ReturnsAsync(_simulation);
+
+         A.CallTo(() => _simulationMapper.MapToModels(A<IEnumerable<Simulation>>.That.Contains(_simulationSnapshot), A<PKSimProject>._)).ReturnsAsync(new Model.Simulation[] {_simulation});
+         A.CallTo(() => _simulationComparisonMapper.MapToModels(A<IEnumerable<SimulationComparison>>.That.Contains(_simulationComparisonSnapshot), A<PKSimProject>._)).ReturnsAsync(new[] {_simulationComparison});
       }
 
       protected override async Task Because()
@@ -173,9 +214,33 @@ namespace PKSim.Core
       }
 
       [Observation]
+      public void should_have_mapped_the_simulation_comparison()
+      {
+         _newProject.AllSimulationComparisons.ShouldContain(_simulationComparison);
+      }
+
+      [Observation]
       public void should_have_mapped_the_simulations()
       {
          _newProject.All<Model.Simulation>().ShouldContain(_simulation);
+      }
+
+      [Observation]
+      public void should_udpate_project_classification_for_observed_data()
+      {
+         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableObservedData, DataRepository>(_snapshot.ObservedDataClassifications, _newProject, _newProject.AllObservedData)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_udpate_project_classification_for_simulation()
+      {
+         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableSimulation, Model.Simulation>(_snapshot.SimulationClassifications, _newProject, A<IReadOnlyCollection<Model.Simulation>>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_udpate_project_classification_for_simulation_comparison()
+      {
+         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableComparison, ISimulationComparison>(_snapshot.SimulationComparisonClassifications, _newProject, _newProject.AllSimulationComparisons)).MustHaveHappened();
       }
    }
 }

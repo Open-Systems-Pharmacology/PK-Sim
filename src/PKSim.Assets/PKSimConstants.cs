@@ -1546,6 +1546,7 @@ namespace PKSim.Assets
          public static readonly string OpeningProjectDatabase = "Opening project database...";
          public static readonly string CreatingProjectDatabase = "Creating project database...";
          public static readonly string LoadingProject = "Loading project...";
+         public static readonly string LoadingSnapshot = "Loading snapshot...";
          public static readonly string SavingProject = "Saving project...";
          public static readonly string LoadingHistory = "Loading history...";
          public static readonly string LoadingMatlab = "Loading Matlab®...";

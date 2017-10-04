@@ -21,23 +21,22 @@ namespace PKSim.Core.Snapshots.Mappers
          if (!extendedProperties.Any())
             return null;
 
-         var snapshot =  await SnapshotFrom(extendedProperties);
-         var snapshotExtendedProperties =await mapExtendedPropertiesFrom(extendedProperties);
+         var snapshot = await SnapshotFrom(extendedProperties);
+         var snapshotExtendedProperties = await mapExtendedPropertiesFrom(extendedProperties);
          snapshotExtendedProperties.Each(snapshot.Add);
          return snapshot;
       }
 
       private Task<SnapshotExtendedProperty[]> mapExtendedPropertiesFrom(ModelExtendedProperties extendedProperties)
       {
-         var tasks = extendedProperties.Select(_extendedPropertyMapper.MapToSnapshot);
-         return Task.WhenAll(tasks);
+         return _extendedPropertyMapper.MapToSnapshots(extendedProperties);
       }
 
       public override async Task<ModelExtendedProperties> MapToModel(SnapshotExtendedProperties snapshot)
       {
          var extendedProperties = new ModelExtendedProperties();
-         var tasks = snapshot.Select(_extendedPropertyMapper.MapToModel);
-         extendedProperties.AddRange(await Task.WhenAll(tasks));
+         var properties = await _extendedPropertyMapper.MapToModels(snapshot);
+         extendedProperties.AddRange(properties);
          return extendedProperties;
       }
    }

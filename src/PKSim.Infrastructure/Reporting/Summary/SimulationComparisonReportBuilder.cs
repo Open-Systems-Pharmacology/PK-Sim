@@ -10,7 +10,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
       protected override void FillUpReport(T comparison, ReportPart reportPart)
       {
          reportPart.Title = PKSimConstants.UI.SimulationsUsedInComparison;
-         foreach (var simulation in comparison.AllSimulations())
+         foreach (var simulation in comparison.AllSimulations)
          {
             reportPart.AddToContent(simulation.Name);
          }

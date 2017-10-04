@@ -37,11 +37,10 @@ namespace PKSim.Core
       private OSPSuite.Core.Domain.Classification _result;
       private Classification _child;
 
-      protected override Task Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _child = new Classification().WithName("child");
-         return _completed;
       }
 
       protected override async Task Because()
@@ -59,11 +58,11 @@ namespace PKSim.Core
    public class When_mapping_classification_to_snapshot : concern_for_ClassificationMapper
    {
       private Classification _result;
-      protected override Task Context()
+
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _context.Classifiables = new[] { new ClassifiableObservedData { Parent = _classification, Subject = new DataRepository().WithName("Classifiable") } };
-         return _completed;
       }
 
       protected override async Task Because()

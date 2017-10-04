@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;

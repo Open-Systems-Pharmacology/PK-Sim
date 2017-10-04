@@ -46,7 +46,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_be_able_to_deserialize_the_comparison_and_retrieve_the_simulations_used_in_the_comparison()
       {
-         _deserialized.AllSimulations().ShouldOnlyContain(_popSim1, _popSim2);
+         _deserialized.AllSimulations.ShouldOnlyContain(_popSim1, _popSim2);
          _deserialized.ReferenceGroupingItem.Color.ShouldBeEqualTo(_groupingItem.Color);
          _deserialized.ReferenceGroupingItem.Label.ShouldBeEqualTo(_groupingItem.Label);
          _deserialized.ReferenceGroupingItem.Symbol.ShouldBeEqualTo(_groupingItem.Symbol);

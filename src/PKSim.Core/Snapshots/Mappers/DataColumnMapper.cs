@@ -29,7 +29,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<SnapshotDataColumn> MapToSnapshot(ModelDataColumn dataColumn)
       {
-         var snapshot= await SnapshotFrom(dataColumn, x =>
+         var snapshot = await SnapshotFrom(dataColumn, x =>
          {
             x.Name = dataColumn.Name;
             x.Values = valuesInDisplayUnits(dataColumn);

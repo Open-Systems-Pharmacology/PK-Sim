@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Utility;
 using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
 using ModelDataInfo = OSPSuite.Core.Domain.Data.DataInfo;
 using ModelExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
@@ -52,7 +50,7 @@ namespace PKSim.Core.Snapshots.Mappers
             Source = snapshot.Source,
          };
 
-         if(snapshot.ExtendedProperties != null)
+         if (snapshot.ExtendedProperties != null)
             dataInfo.ExtendedProperties.AddRange(await extendedPropertiesFrom(snapshot));
 
          return dataInfo;

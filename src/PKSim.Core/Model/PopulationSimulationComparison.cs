@@ -17,7 +17,7 @@ namespace PKSim.Core.Model
       public bool IsLoaded { get; set; }
       public virtual PopulationSimulation ReferenceSimulation { get; set; }
       public virtual GroupingItem ReferenceGroupingItem { get; set; }
-      public virtual ParameterDistributionSettingsCache SelectedDistributions { get; private set; }
+      public virtual ParameterDistributionSettingsCache SelectedDistributions { get; }
 
       public PopulationSimulationComparison()
       {
@@ -35,10 +35,9 @@ namespace PKSim.Core.Model
 
       public bool HasReference => ReferenceSimulation != null;
 
-      public virtual IEnumerable<PopulationSimulation> AllSimulations()
-      {
-         return _allSimulations;
-      }
+      public virtual IReadOnlyCollection<PopulationSimulation> AllSimulations =>_allSimulations;
+
+      public virtual IReadOnlyCollection<Simulation> AllBaseSimulations =>_allSimulations;
 
       public virtual bool HasSimulation(PopulationSimulation populationSimulation)
       {
@@ -134,28 +133,28 @@ namespace PKSim.Core.Model
 
       public virtual IEnumerable<IParameter> AllVectorialParameters(IEntityPathResolver entityPathResolver)
       {
-         return simulation.AllVectorialParameters(entityPathResolver);
+         return firstSimulation.AllVectorialParameters(entityPathResolver);
       }
 
       public virtual PathCache<IParameter> AllParameters(IEntityPathResolver entityPathResolver)
       {
-         return simulation.AllParameters(entityPathResolver);
+         return firstSimulation.AllParameters(entityPathResolver);
       }
 
       public virtual IParameter ParameterByPath(string parameterPath, IEntityPathResolver entityPathResolver)
       {
-         return simulation.ParameterByPath(parameterPath, entityPathResolver);
+         return firstSimulation.ParameterByPath(parameterPath, entityPathResolver);
       }
 
       public virtual IReadOnlyList<Gender> AllGenders => concatenateValues(x => x.AllGenders);
 
-      private PopulationSimulation simulation => _allSimulations.FirstOrDefault() ?? new PopulationSimulation();
+      private PopulationSimulation firstSimulation => _allSimulations.FirstOrDefault() ?? new PopulationSimulation();
 
-      public virtual bool ComesFromPKSim => simulation.ComesFromPKSim;
+      public virtual bool ComesFromPKSim => firstSimulation.ComesFromPKSim;
 
       public virtual QuantityPKParameter PKParameterFor(string quantityPath, string pkParameter)
       {
-         return simulation.PKParameterFor(quantityPath, pkParameter);
+         return firstSimulation.PKParameterFor(quantityPath, pkParameter);
       }
 
       public virtual IReadOnlyList<QuantityPKParameter> AllPKParametersFor(string quantityPath)
@@ -165,12 +164,12 @@ namespace PKSim.Core.Model
 
       public virtual bool HasPKParameterFor(string quantityPath, string pkParameter)
       {
-         return simulation.HasPKParameterFor(quantityPath, pkParameter);
+         return firstSimulation.HasPKParameterFor(quantityPath, pkParameter);
       }
 
       public virtual double? MolWeightFor(string quantityPath)
       {
-         var molWeights = AllSimulations().Select(x => x.MolWeightFor(quantityPath)).Distinct().ToList();
+         var molWeights = _allSimulations.Select(x => x.MolWeightFor(quantityPath)).Distinct().ToList();
          if (molWeights.Count != 1)
             return null;
 
@@ -179,10 +178,7 @@ namespace PKSim.Core.Model
 
       public virtual IReadOnlyList<string> AllSimulationNames => concatenateValues(x => x.AllSimulationNames);
 
-      public IReadOnlyList<Compound> Compounds
-      {
-         get { return _allSimulations.SelectMany(sim => sim.Compounds).ToList(); }
-      }
+      public IReadOnlyList<Compound> Compounds => _allSimulations.SelectMany(sim => sim.Compounds).ToList();
 
       private class QuantityPKParameterComparerByName : IEqualityComparer<QuantityPKParameter>
       {

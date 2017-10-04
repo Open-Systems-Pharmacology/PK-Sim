@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -31,8 +32,8 @@ namespace PKSim.Core
          _outputInterval = new OutputInterval().WithName("Interval");
          _outputSchema.AddInterval(_outputInterval);
          _snapshotInterval = new Snapshots.OutputInterval();
-         A.CallTo(() => _outputIntervalMapper.MapToSnapshot(_outputInterval)).ReturnsAsync(_snapshotInterval);
-         return Task.FromResult(true);
+         A.CallTo(() => _outputIntervalMapper.MapToSnapshots(A<IEnumerable<OutputInterval>>.That.Contains(_outputInterval))).ReturnsAsync(new []{_snapshotInterval });
+         return _completed;
       }
    }
 

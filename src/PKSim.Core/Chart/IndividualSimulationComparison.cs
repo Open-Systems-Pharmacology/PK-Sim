@@ -27,14 +27,13 @@ namespace PKSim.Core.Chart
          _allSimulations.Add(simulation);
       }
 
-      public IEnumerable<IndividualSimulation> AllSimulations()
-      {
-         return _allSimulations;
-      }
+      public IReadOnlyCollection<IndividualSimulation> AllSimulations => _allSimulations;
 
-      public bool HasSimulation(IndividualSimulation populationSimulation)
+      public IReadOnlyCollection<Simulation> AllBaseSimulations => _allSimulations;
+    
+      public bool HasSimulation(IndividualSimulation simulation)
       {
-         return _allSimulations.Contains(populationSimulation.Id);
+         return _allSimulations.Contains(simulation.Id);
       }
 
       public void RemoveSimulation(IndividualSimulation simulation)

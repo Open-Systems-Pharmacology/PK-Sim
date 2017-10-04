@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -89,9 +90,9 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.ParameterFrom(_individual.OriginData.Height, A<string>._, A<IDimension>._)).Returns(_heightSnapshotParameter);
 
          _enzymeSnapshot = new Molecule { Type = QuantityType.Enzyme};
-         A.CallTo(() => _moleculeMapper.MapToSnapshot(_enzyme)).Returns(_enzymeSnapshot);
          _transporterSnapshot = new Molecule {Type = QuantityType.Transporter};
-         A.CallTo(() => _moleculeMapper.MapToSnapshot(_transporter)).Returns(_transporterSnapshot);
+
+         A.CallTo(() => _moleculeMapper.MapToSnapshots(A<IEnumerable<IndividualMolecule>>._)).ReturnsAsync(new []{_enzymeSnapshot, _transporterSnapshot, });
 
          _localizedParameterKidney = new LocalizedParameter {Path = "Organism|Kidney|PKidney"};
          A.CallTo(() => _parameterMapper.LocalizedParameterFrom(_parameterKidney)).Returns(_localizedParameterKidney);

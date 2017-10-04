@@ -44,17 +44,17 @@ namespace PKSim.Core.Snapshots.Mappers
          return root;
       }
 
-      private string[] childClassifiablesFrom(ModelClassification classification, IReadOnlyList<IClassifiableWrapper> classifiables)
+      private string[] childClassifiablesFrom(ModelClassification classification, IReadOnlyCollection<IClassifiableWrapper> classifiables)
       {
-         return childrenFrom(classification, classifiables).Select(x => x.Name).ToArray();
+         return childrenFrom(classification, classifiables).AllNames().ToArray();
       }
 
-      private static IReadOnlyList<ModelClassification> childClassificationsFrom(ModelClassification classification, IReadOnlyList<ModelClassification> classifications)
+      private static IReadOnlyList<ModelClassification> childClassificationsFrom(ModelClassification classification, IReadOnlyCollection<ModelClassification> classifications)
       {
          return childrenFrom(classification, classifications).ToList();
       }
 
-      private static IEnumerable<T> childrenFrom<T>(ModelClassification classification, IReadOnlyList<T> classifications)  where T : IClassifiable
+      private static IEnumerable<T> childrenFrom<T>(ModelClassification classification, IReadOnlyCollection<T> classifications)  where T : IClassifiable
       {
          return classifications.Where(x => Equals(x.Parent, classification));
       }
