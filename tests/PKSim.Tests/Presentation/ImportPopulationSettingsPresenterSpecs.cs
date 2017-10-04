@@ -134,7 +134,7 @@ namespace PKSim.Presentation
 
 
          A.CallTo(() => _importPopulationFactory.CreateFor(A<IReadOnlyList<string>>._, _baseIndividual, A<CancellationToken>._))
-            .ReturnsAsync(_population);
+            .Returns(_population);
 
          sut.PopulationCreationFinished += (o, e) =>
          {

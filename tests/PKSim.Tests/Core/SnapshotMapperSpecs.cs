@@ -41,7 +41,7 @@ namespace PKSim.Core
          _snapshot = new Snapshots.Formulation();
          A.CallTo(() => _snapshotMapper1.IsSatisfiedBy(_model.GetType())).Returns(false);
          A.CallTo(() => _snapshotMapper2.IsSatisfiedBy(_model.GetType())).Returns(true);
-         A.CallTo(() => _snapshotMapper2.MapToSnapshot(_model)).ReturnsAsync(_snapshot);
+         A.CallTo(() => _snapshotMapper2.MapToSnapshot(_model)).Returns(_snapshot);
       }
 
       protected override async Task Because()

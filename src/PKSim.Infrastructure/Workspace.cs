@@ -24,22 +24,19 @@ namespace PKSim.Infrastructure
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly IMRUProvider _mruProvider;
       private readonly IHistoryManagerFactory _historyManagerFactory;
-      private readonly IProjectClassifiableUpdaterAfterDeserialization _projectClassifiableUpdaterAfterDeserialization;
 
       public IHistoryManager HistoryManager { get; set; }
       public IWorkspaceLayout WorkspaceLayout { get; set; }
 
       public Workspace(IEventPublisher eventPublisher, IRegistrationTask registrationTask,
          IWorkspacePersistor workspacePersistor, IMRUProvider mruProvider, IHistoryManagerFactory historyManagerFactory,
-         IFileLocker fileLocker, IProjectClassifiableUpdaterAfterDeserialization projectClassifiableUpdaterAfterDeserialization,
-         IJournalSession journalSession) : base(eventPublisher, journalSession, fileLocker)
+         IFileLocker fileLocker, IJournalSession journalSession) : base(eventPublisher, journalSession, fileLocker)
       {
          _eventPublisher = eventPublisher;
          _registrationTask = registrationTask;
          _workspacePersistor = workspacePersistor;
          _mruProvider = mruProvider;
          _historyManagerFactory = historyManagerFactory;
-         _projectClassifiableUpdaterAfterDeserialization = projectClassifiableUpdaterAfterDeserialization;
       }
 
       public void CloseProject()
@@ -104,7 +101,7 @@ namespace PKSim.Infrastructure
             if (Project == null)
                return;
 
-            //notify event project loaded with the project
+            _eventPublisher.PublishEvent(new ProjectCreatedEvent(Project));
             _eventPublisher.PublishEvent(new ProjectLoadedEvent(Project));
          }
          catch (Exception)
@@ -134,12 +131,9 @@ namespace PKSim.Infrastructure
             //save the new project and register it
             _project = value;
             _registrationTask.RegisterProject(_project);
-            _projectClassifiableUpdaterAfterDeserialization.Update(_project);
 
             if (HistoryManager == null)
                HistoryManager = _historyManagerFactory.Create();
-
-            _eventPublisher.PublishEvent(new ProjectCreatedEvent(_project));
          }
       }
 

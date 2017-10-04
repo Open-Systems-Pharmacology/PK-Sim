@@ -181,7 +181,18 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(ProjectCreatedEvent eventToHandle)
       {
-         updateProjectItems(isEnabled: true, observedDataEnabled: compoundsAvailableIn(eventToHandle.Project));
+         updateLoadedProjectItem(eventToHandle);
+      }
+
+      public override void Handle(ProjectLoadedEvent eventToHandle)
+      {
+         base.Handle(eventToHandle);
+         updateLoadedProjectItem(eventToHandle);
+      }
+
+      private void updateLoadedProjectItem(ProjectEvent projectEvent)
+      {
+         updateProjectItems(isEnabled: true, observedDataEnabled: compoundsAvailableIn(projectEvent.Project));
       }
 
       public void Handle(ProjectClosedEvent eventToHandle)

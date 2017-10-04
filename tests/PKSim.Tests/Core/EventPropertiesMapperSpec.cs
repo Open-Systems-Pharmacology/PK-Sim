@@ -53,8 +53,8 @@ namespace PKSim.Core
 
          _project = new PKSimProject();
          _project.AddBuildingBlock(_event);
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_eventProperties.EventMappings[0].StartTime)).ReturnsAsync(_snapshotEventStartTime1);
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_eventProperties.EventMappings[1].StartTime)).ReturnsAsync(_snapshotEventStartTime2);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_eventProperties.EventMappings[0].StartTime)).Returns(_snapshotEventStartTime1);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_eventProperties.EventMappings[1].StartTime)).Returns(_snapshotEventStartTime2);
 
 
          return Task.FromResult(true);

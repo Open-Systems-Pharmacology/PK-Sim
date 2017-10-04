@@ -4,8 +4,10 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
@@ -103,20 +105,20 @@ namespace PKSim.Core
          _simulationClassificationSnapshot = new Snapshots.Classification();
          _comparisonClassificationSnapshot = new Snapshots.Classification();
 
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_compound)).ReturnsAsync(_compoundSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_individual)).ReturnsAsync(_individualSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_event)).ReturnsAsync(_eventSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_formulation)).ReturnsAsync(_formulationSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).ReturnsAsync(_protocolSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).ReturnsAsync(_populationSnapshot);
-         A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).ReturnsAsync(_observedDataSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_compound)).Returns(_compoundSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_individual)).Returns(_individualSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_event)).Returns(_eventSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_formulation)).Returns(_formulationSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).Returns(_protocolSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).Returns(_populationSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).Returns(_observedDataSnapshot);
 
-         A.CallTo(() => _simulationComparisonMapper.MapToSnapshot(_simulationComparison)).ReturnsAsync(_simulationComparisonSnapshot);
-         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableObservedData>(_project)).ReturnsAsync(new[] {_observedDataClassificationSnapshot});
-         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableSimulation>(_project)).ReturnsAsync(new[] {_simulationClassificationSnapshot});
-         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableComparison>(_project)).ReturnsAsync(new[] {_comparisonClassificationSnapshot});
+         A.CallTo(() => _simulationComparisonMapper.MapToSnapshot(_simulationComparison)).Returns(_simulationComparisonSnapshot);
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableObservedData>(_project)).Returns(new[] {_observedDataClassificationSnapshot});
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableSimulation>(_project)).Returns(new[] {_simulationClassificationSnapshot});
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableComparison>(_project)).Returns(new[] {_comparisonClassificationSnapshot});
 
-         A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).ReturnsAsync(_simulationSnapshot);
+         A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).Returns(_simulationSnapshot);
 
          return Task.FromResult(true);
       }
@@ -169,6 +171,29 @@ namespace PKSim.Core
       {
          _snapshot.SimulationComparisons.ShouldContain(_simulationComparisonSnapshot);
       }
+
+      [Observation]
+      public void should_load_the_exported_building_blocks()
+      {
+         A.CallTo(() => _executionContext.Load(_compound)).MustHaveHappened();
+         A.CallTo(() => _executionContext.Load(_formulation)).MustHaveHappened();
+         A.CallTo(() => _executionContext.Load(_event)).MustHaveHappened();
+         A.CallTo(() => _executionContext.Load(_individual)).MustHaveHappened();
+         A.CallTo(() => _executionContext.Load(_population)).MustHaveHappened();
+         A.CallTo(() => _executionContext.Load(_protocol)).MustHaveHappened();
+      }                                                             
+
+      [Observation]
+      public void should_load_the_simulation_comparison_results()
+      {
+         A.CallTo(() => _executionContext.Load(_simulationComparison)).MustHaveHappened();
+      }
+
+      [Observation]  
+      public void should_load_the_exported_simulation_results()
+      {
+         A.CallTo(() => _executionContext.Load((Model.Simulation)_simulation)).MustHaveHappened();
+      }
    }
 
    public class When_converting_a_project_snapshot_to_project : concern_for_ProjectMapper
@@ -179,16 +204,16 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_project);
-         A.CallTo(() => _snapshotMapper.MapToModel(_compoundSnapshot)).ReturnsAsync(_compound);
-         A.CallTo(() => _snapshotMapper.MapToModel(_individualSnapshot)).ReturnsAsync(_individual);
-         A.CallTo(() => _snapshotMapper.MapToModel(_protocolSnapshot)).ReturnsAsync(_protocol);
-         A.CallTo(() => _snapshotMapper.MapToModel(_formulationSnapshot)).ReturnsAsync(_formulation);
-         A.CallTo(() => _snapshotMapper.MapToModel(_eventSnapshot)).ReturnsAsync(_event);
-         A.CallTo(() => _snapshotMapper.MapToModel(_populationSnapshot)).ReturnsAsync(_population);
-         A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).ReturnsAsync(_observedData);
+         A.CallTo(() => _snapshotMapper.MapToModel(_compoundSnapshot)).Returns(_compound);
+         A.CallTo(() => _snapshotMapper.MapToModel(_individualSnapshot)).Returns(_individual);
+         A.CallTo(() => _snapshotMapper.MapToModel(_protocolSnapshot)).Returns(_protocol);
+         A.CallTo(() => _snapshotMapper.MapToModel(_formulationSnapshot)).Returns(_formulation);
+         A.CallTo(() => _snapshotMapper.MapToModel(_eventSnapshot)).Returns(_event);
+         A.CallTo(() => _snapshotMapper.MapToModel(_populationSnapshot)).Returns(_population);
+         A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).Returns(_observedData);
 
-         A.CallTo(() => _simulationMapper.MapToModels(A<IEnumerable<Simulation>>.That.Contains(_simulationSnapshot), A<PKSimProject>._)).ReturnsAsync(new Model.Simulation[] {_simulation});
-         A.CallTo(() => _simulationComparisonMapper.MapToModels(A<IEnumerable<SimulationComparison>>.That.Contains(_simulationComparisonSnapshot), A<PKSimProject>._)).ReturnsAsync(new[] {_simulationComparison});
+         A.CallTo(() => _simulationMapper.MapToModels(A<IEnumerable<Simulation>>.That.Contains(_simulationSnapshot), A<PKSimProject>._)).Returns(new Model.Simulation[] {_simulation});
+         A.CallTo(() => _simulationComparisonMapper.MapToModels(A<IEnumerable<SimulationComparison>>.That.Contains(_simulationComparisonSnapshot), A<PKSimProject>._)).Returns(new[] {_simulationComparison});
       }
 
       protected override async Task Because()

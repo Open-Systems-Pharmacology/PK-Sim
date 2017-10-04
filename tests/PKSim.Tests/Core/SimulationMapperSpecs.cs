@@ -12,7 +12,6 @@ using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using AdvancedParameter = PKSim.Core.Snapshots.AdvancedParameter;
 using Compound = PKSim.Core.Model.Compound;
 using CompoundProperties = PKSim.Core.Model.CompoundProperties;
@@ -114,10 +113,10 @@ namespace PKSim.Core
          _individualSimulation.AddAnalysis(_simulationTimeProfile);
 
          A.CallTo(() => _curveChartMapper.MapToSnapshots(A<IEnumerable<SimulationTimeProfileChart>>.That.IsEmpty()))
-            .ReturnsAsync(null);
+            .Returns((CurveChart[]) null);
 
          A.CallTo(() => _curveChartMapper.MapToSnapshots(A<IEnumerable<SimulationTimeProfileChart>>.That.Contains(_simulationTimeProfile)))
-            .ReturnsAsync(new[] {_snapshotSimulationTimeProfile});
+            .Returns(new[] {_snapshotSimulationTimeProfile});
 
 
          _populationSimulation = new PopulationSimulation
@@ -134,12 +133,13 @@ namespace PKSim.Core
          _snapshotPopulationAnalysisChart = new Snapshots.PopulationAnalysisChart();
 
          A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshots(A<IEnumerable<PopulationAnalysisChart>>.That.IsEmpty()))
-            .ReturnsAsync(null);
+            .Returns((Snapshots.PopulationAnalysisChart[])null);
 
          A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshots(A<IEnumerable<PopulationAnalysisChart>>.That.Contains(_populationSimulationAnalysisChart)))
-            .ReturnsAsync(new[] {_snapshotPopulationAnalysisChart});
+            .Returns(new[] {_snapshotPopulationAnalysisChart});
 
-         A.CallTo(() => _advancedParameterMapper.MapToSnapshots(null)).ReturnsAsync(null);
+         A.CallTo(() => _advancedParameterMapper.MapToSnapshots(null))
+            .Returns((AdvancedParameter[])null);
 
          _project = new PKSimProject();
          _individual = new Individual {Name = "IND"};
@@ -156,7 +156,7 @@ namespace PKSim.Core
          _compoundProperties = new CompoundProperties();
          _snaphotCompoundProperties = new Snapshots.CompoundProperties {Name = _compound.Name};
          _individualSimulation.Properties.AddCompoundProperties(_compoundProperties);
-         A.CallTo(() => _compoundPropertiesMapper.MapToSnapshots(_individualSimulation.CompoundPropertiesList, _project)).ReturnsAsync(new[] {_snaphotCompoundProperties});
+         A.CallTo(() => _compoundPropertiesMapper.MapToSnapshots(_individualSimulation.CompoundPropertiesList, _project)).Returns(new[] {_snaphotCompoundProperties});
 
          _eventSelections = new EventSelections();
          _eventSelections.AddEventSelection(new EventSelection
@@ -174,10 +174,10 @@ namespace PKSim.Core
          });
          _individualSimulation.AddUsedObservedData(_observedData);
 
-         A.CallTo(() => _eventPropertiesMapper.MapToSnapshot(_individualSimulation.EventProperties, _project)).ReturnsAsync(_eventSelections);
+         A.CallTo(() => _eventPropertiesMapper.MapToSnapshot(_individualSimulation.EventProperties, _project)).Returns(_eventSelections);
 
          _outputSelectionSnapshot = new OutputSelections();
-         A.CallTo(() => _outputSelectionMapper.MapToSnapshot(_individualSimulation.OutputSelections)).ReturnsAsync(_outputSelectionSnapshot);
+         A.CallTo(() => _outputSelectionMapper.MapToSnapshot(_individualSimulation.OutputSelections)).Returns(_outputSelectionSnapshot);
          return Task.FromResult(true);
       }
    }
@@ -251,7 +251,7 @@ namespace PKSim.Core
          _advancedParameter = new Model.AdvancedParameter();
          _avancedParameterCollection.AddAdvancedParameter(_advancedParameter);
          _snapshotAdvancedParameter = new AdvancedParameter();
-         A.CallTo(() => _advancedParameterMapper.MapToSnapshots(A<IEnumerable<Model.AdvancedParameter>>.That.Contains(_advancedParameter))).ReturnsAsync(new[] {_snapshotAdvancedParameter});
+         A.CallTo(() => _advancedParameterMapper.MapToSnapshots(A<IEnumerable<Model.AdvancedParameter>>.That.Contains(_advancedParameter))).Returns(new[] {_snapshotAdvancedParameter});
       }
 
       protected override async Task Because()
@@ -312,17 +312,17 @@ namespace PKSim.Core
 
          _outputSelection = new OSPSuite.Core.Domain.OutputSelections();
          _outputSelection.AddOutput(new QuantitySelection("PATH", QuantityType.BaseGrid));
-         A.CallTo(() => _outputSelectionMapper.MapToModel(_snapshot.OutputSelections, individualSimulation)).ReturnsAsync(_outputSelection);
+         A.CallTo(() => _outputSelectionMapper.MapToModel(_snapshot.OutputSelections, individualSimulation)).Returns(_outputSelection);
 
          _solver = new SolverSettings();
-         A.CallTo(() => _solverSettingsMapper.MapToModel(_snapshot.Solver)).ReturnsAsync(_solver);
+         A.CallTo(() => _solverSettingsMapper.MapToModel(_snapshot.Solver)).Returns(_solver);
 
          _outputSchema = new OutputSchema();
-         A.CallTo(() => _outputSchemaMapper.MapToModel(_snapshot.OutputSchema)).ReturnsAsync(_outputSchema);
+         A.CallTo(() => _outputSchemaMapper.MapToModel(_snapshot.OutputSchema)).Returns(_outputSchema);
 
          A.CallTo(() => _curveChartMapper.MapToModels(A<IEnumerable<CurveChart>>.That.Contains(_snapshotSimulationTimeProfile), A<SimulationAnalysisContext>._))
             .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
-            .ReturnsAsync(new[] {_simulationTimeProfile});
+            .Returns(new[] {_simulationTimeProfile});
 
          //ensure that run will be performed
          _snapshot.HasResults = true;
@@ -416,7 +416,7 @@ namespace PKSim.Core
 
          A.CallTo(() => _populationAnalysisChartMapper.MapToModels(A<IEnumerable<Snapshots.PopulationAnalysisChart>>.That.Contains(_snapshotPopulationAnalysisChart), A<SimulationAnalysisContext>._))
             .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
-            .ReturnsAsync(new[] {_populationSimulationAnalysisChart,});
+            .Returns(new[] {_populationSimulationAnalysisChart,});
       }
 
       protected override async Task Because()

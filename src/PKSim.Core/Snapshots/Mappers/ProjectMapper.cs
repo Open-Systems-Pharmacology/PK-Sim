@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
 using ModelProject = PKSim.Core.Model.PKSimProject;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
@@ -20,7 +21,11 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IClassificationSnapshotTask _classificationSnapshotTask;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
 
-      public ProjectMapper(SimulationMapper simulationMapper, SimulationComparisonMapper simulationComparisonMapper, IExecutionContext executionContext, IClassificationSnapshotTask classificationSnapshotTask)
+      public ProjectMapper(
+         SimulationMapper simulationMapper, 
+         SimulationComparisonMapper simulationComparisonMapper, 
+         IExecutionContext executionContext, 
+         IClassificationSnapshotTask classificationSnapshotTask)
       {
          _executionContext = executionContext;
          _simulationMapper = simulationMapper;
@@ -39,10 +44,9 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Formulations = await mapBuildingBlocksToSnapshots<Formulation>(project.All<Model.Formulation>());
          snapshot.Protocols = await mapBuildingBlocksToSnapshots<Protocol>(project.All<Model.Protocol>());
          snapshot.Populations = await mapBuildingBlocksToSnapshots<Population>(project.All<Model.Population>());
-         snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>(), project);
          snapshot.ObservedData = await mapObservedDataToSnapshots(project.AllObservedData);
+         snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>(), project);
          snapshot.SimulationComparisons = await mapSimulationComparisonsToSnapshots(project.AllSimulationComparisons);
-
          snapshot.ObservedDataClassifications = await mapObservedDataClassificationsToSnapshots(project);
          snapshot.SimulationComparisonClassifications = await mapComparisonClassificationsToSnapshots(project);
          snapshot.SimulationClassifications = await mapSimulationClassificationToSnapshots(project);
@@ -57,13 +61,13 @@ namespace PKSim.Core.Snapshots.Mappers
          buildingBlocks.Each(project.AddBuildingBlock);
 
          var observedData = await observedDataFrom(snapshot.ObservedData);
-         observedData.Each(repository => addObservedDataToProject(project, repository));
+         observedData?.Each(repository => addObservedDataToProject(project, repository));
 
          var allSimulations = await allSmulationsFrom(snapshot.Simulations, project);
-         allSimulations.Each(simulation => addSimulationToProject(project, simulation));
+         allSimulations?.Each(simulation => addSimulationToProject(project, simulation));
 
          var allSimulationComparisons = await allSimulationComparisonsFrom(snapshot.SimulationComparisons, project);
-         allSimulationComparisons.Each(comparison => addComparisonToProject(project, comparison));
+         allSimulationComparisons?.Each(comparison => addComparisonToProject(project, comparison));
 
          //Map all classifications once project have been loaded
          await updateProjectClassifications(snapshot, project);

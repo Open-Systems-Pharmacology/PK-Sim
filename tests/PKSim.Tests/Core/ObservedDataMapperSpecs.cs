@@ -46,9 +46,9 @@ namespace PKSim.Core
          _dataColumnSnapshot = new Snapshots.DataColumn();
          _extendedPropertiesSnapshot = new Snapshots.ExtendedProperties();
          _baseGridSnapshot = new Snapshots.DataColumn();
-         A.CallTo(() => _dataColumnMapper.MapToSnapshot(_dataColumn)).ReturnsAsync(_dataColumnSnapshot);
-         A.CallTo(() => _extendedPropertiesMapper.MapToSnapshot(_dataRepository.ExtendedProperties)).ReturnsAsync(_extendedPropertiesSnapshot);
-         A.CallTo(() => _dataColumnMapper.MapToSnapshot(_dataRepository.BaseGrid)).ReturnsAsync(_baseGridSnapshot);
+         A.CallTo(() => _dataColumnMapper.MapToSnapshot(_dataColumn)).Returns(_dataColumnSnapshot);
+         A.CallTo(() => _extendedPropertiesMapper.MapToSnapshot(_dataRepository.ExtendedProperties)).Returns(_extendedPropertiesSnapshot);
+         A.CallTo(() => _dataColumnMapper.MapToSnapshot(_dataRepository.BaseGrid)).Returns(_baseGridSnapshot);
          
          return Task.FromResult(true);
       }
@@ -74,9 +74,9 @@ namespace PKSim.Core
          _mappedDataColumn.AddRelatedColumn(_mappedRelatedColumn);
          _extendedProperties = new ExtendedProperties{new ExtendedProperty<string>{Name = "extendedPropertyName", Value = "extendedPropertyValue"}};
 
-         A.CallTo(() => _dataColumnMapper.MapToModel(_snapshot.BaseGrid, A<DataRepository>._)).ReturnsAsync(_baseGrid);
-         A.CallTo(() => _dataColumnMapper.MapToModel(_snapshot.Columns.First(), A<DataRepository>._)).ReturnsAsync(_mappedDataColumn);
-         A.CallTo(() => _extendedPropertiesMapper.MapToModel(_snapshot.ExtendedProperties)).ReturnsAsync(_extendedProperties);
+         A.CallTo(() => _dataColumnMapper.MapToModel(_snapshot.BaseGrid, A<DataRepository>._)).Returns(_baseGrid);
+         A.CallTo(() => _dataColumnMapper.MapToModel(_snapshot.Columns.First(), A<DataRepository>._)).Returns(_mappedDataColumn);
+         A.CallTo(() => _extendedPropertiesMapper.MapToModel(_snapshot.ExtendedProperties)).Returns(_extendedProperties);
       }
 
       protected override async Task Because()

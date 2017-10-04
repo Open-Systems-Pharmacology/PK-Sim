@@ -72,9 +72,9 @@ namespace PKSim.Core
          _populationSimulationComparison.ReferenceSimulation = _referenceSimulation;
 
          _curveChart = new CurveChart();
-         A.CallTo(() => _individualSimulationComparisonMapper.MapToSnapshot(_individualSimulationComparison)).ReturnsAsync(_curveChart);
+         A.CallTo(() => _individualSimulationComparisonMapper.MapToSnapshot(_individualSimulationComparison)).Returns(_curveChart);
 
-         A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshots(A<IEnumerable<PopulationAnalysisChart>>.That.Contains(_populationSimulationAnalysis))).ReturnsAsync(new[] {_populationAnalysisChartSnapshot});
+         A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshots(A<IEnumerable<PopulationAnalysisChart>>.That.Contains(_populationSimulationAnalysis))).Returns(new[] {_populationAnalysisChartSnapshot});
 
 
          _project = new PKSimProject();
@@ -132,7 +132,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_individualSimulationComparison);
          var individualSimulationComparison = new IndividualSimulationComparison();
-         A.CallTo(() => _individualSimulationComparisonMapper.MapToModel(_snapshot.IndividualComparison, A<SimulationAnalysisContext>._)).ReturnsAsync(individualSimulationComparison);
+         A.CallTo(() => _individualSimulationComparisonMapper.MapToModel(_snapshot.IndividualComparison, A<SimulationAnalysisContext>._)).Returns(individualSimulationComparison);
       }
 
       protected override async Task Because()
@@ -199,7 +199,7 @@ namespace PKSim.Core
          var populationSimulationComparison = new PopulationSimulationComparison();
          A.CallTo(() => _objectBaseFactory.Create<PopulationSimulationComparison>()).Returns(populationSimulationComparison);
 
-         A.CallTo(() => _populationAnalysisChartMapper.MapToModels(_snapshot.PopulationComparisons, A<SimulationAnalysisContext>._)).ReturnsAsync(new []{ _populationSimulationAnalysis });
+         A.CallTo(() => _populationAnalysisChartMapper.MapToModels(_snapshot.PopulationComparisons, A<SimulationAnalysisContext>._)).Returns(new []{ _populationSimulationAnalysis });
       }
 
       protected override async Task Because()

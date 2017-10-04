@@ -10,6 +10,7 @@ namespace PKSim.BatchTool.Presenters
       void StartProjectComparison(ProjectComparisonOptions projectComparisonOptions = null);
       void GenerateTrainingMaterial(TrainingMaterialsOptions trainingMaterialsOptions = null);
       void GenerateProjectOverview(ProjectOverviewOptions projectOverviewOptions = null);
+      void StartSnapshotsRun(SnapshotRunOptions snapshotRunOptions = null);
    }
 
    public class BatchMainPresenter : AbstractPresenter<IBatchMainView, IBatchMainPresenter>, IBatchMainPresenter
@@ -39,6 +40,11 @@ namespace PKSim.BatchTool.Presenters
       public void GenerateProjectOverview(ProjectOverviewOptions projectOverviewOptions = null)
       {
          start<IGenerateProjectOverviewPresenter, ProjectOverviewOptions>(projectOverviewOptions);
+      }
+
+      public void StartSnapshotsRun(SnapshotRunOptions snapshotRunOptions = null)
+      {
+         start<ISnapshotsRunPresenter, SnapshotRunOptions>(snapshotRunOptions);
       }
 
       private T start<T, TStartOptions>(TStartOptions startOptions) where T : IBatchPresenter<TStartOptions>

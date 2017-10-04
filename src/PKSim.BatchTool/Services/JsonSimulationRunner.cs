@@ -37,7 +37,7 @@ namespace PKSim.BatchTool.Services
          _commandTask = commandTask;
       }
 
-      public async Task RunBatch(JsonRunOptions runOptions)
+      public async Task RunBatchAsync(JsonRunOptions runOptions)
       {
          var inputFolder = runOptions.InputFolder;
          var outputFolder = runOptions.OutputFolder;

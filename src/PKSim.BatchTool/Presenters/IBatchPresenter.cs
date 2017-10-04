@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 using PKSim.BatchTool.Services;
 using PKSim.BatchTool.Views;
@@ -62,7 +63,7 @@ namespace PKSim.BatchTool.Presenters
          }
          catch (Exception e)
          {
-            _batchLogger.AddError(e.FullMessage());
+            _batchLogger.AddError(e.ExceptionMessageWithStackTrace());
          }
 
          _isRunning = false;
@@ -82,7 +83,7 @@ namespace PKSim.BatchTool.Presenters
 
       protected virtual Task StartBatch()
       {
-         return _batchRunner.RunBatch(_startOptions);
+         return _batchRunner.RunBatchAsync(_startOptions);
       }
 
       public bool Exit()

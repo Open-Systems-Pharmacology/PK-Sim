@@ -42,11 +42,12 @@ namespace PKSim.BatchTool
                //starting batch tool with arguments
                var valid = true;
 
-               Parser.Default.ParseArguments<ProjectComparisonOptions, JsonRunOptions, ProjectOverviewOptions>(args)
+               Parser.Default.ParseArguments<ProjectComparisonOptions, JsonRunOptions, ProjectOverviewOptions, TrainingMaterialsOptions, SnapshotRunOptions>(args)
                   .WithParsed<ProjectComparisonOptions>(startProjectComparison)
                   .WithParsed<JsonRunOptions>(startJsonRun)
                   .WithParsed<ProjectOverviewOptions>(generateProjectOverviews)
                   .WithParsed<TrainingMaterialsOptions>(generateTrainingMaterials)
+                  .WithParsed<SnapshotRunOptions>(startSnapshotsRun)
                   .WithNotParsed(err => { valid = false; });
 
                if (!valid)
@@ -62,32 +63,38 @@ namespace PKSim.BatchTool
          }
       }
 
+      private static void startSnapshotsRun(SnapshotRunOptions snapshotRunOptions)
+      {
+         startCommand("Snapshot run", snapshotRunOptions, x => x.StartSnapshotsRun);
+      }
+
       private static void startJsonRun(JsonRunOptions jsonRunOptions)
       {
-         startCommand("Batch run", x => x.StartBatchRun(jsonRunOptions));
+         startCommand("Batch run", jsonRunOptions, x => x.StartBatchRun);
       }
 
       private static void startProjectComparison(ProjectComparisonOptions comparisonOptions)
       {
-         startCommand("Project comparison", x => x.StartProjectComparison(comparisonOptions));
+         startCommand("Project comparison", comparisonOptions, x => x.StartProjectComparison);
       }
 
       private static void generateProjectOverviews(ProjectOverviewOptions projectOverviewOptions)
       {
-         startCommand("Project overview", x => x.GenerateProjectOverview(projectOverviewOptions));
+         startCommand("Project overview", projectOverviewOptions, x => x.GenerateProjectOverview);
       }
 
       private static void generateTrainingMaterials(TrainingMaterialsOptions trainingMaterialsOptions)
       {
-         startCommand("Training materials", x => x.GenerateTrainingMaterial(trainingMaterialsOptions));
+         startCommand("Training materials", trainingMaterialsOptions, x => x.GenerateTrainingMaterial);
       }
 
-      private static void startCommand(string command,  Action<IBatchMainPresenter> commandAction)
+      private static void startCommand<TStartOptions>(string command, TStartOptions startOptions, Func<IBatchMainPresenter, Action<TStartOptions>> commandAction)
       {
-         Console.WriteLine($"Starting {command.ToLowerInvariant()}...");
+         Console.WriteLine($"Starting {command.ToLowerInvariant()} with arguments:");
+         Console.WriteLine(startOptions.ToString());
          BatchStarter.Start();
          var mainPresenter = IoC.Resolve<IBatchMainPresenter>();
-         commandAction(mainPresenter);
+         commandAction(mainPresenter)(startOptions);
          Application.Run(new ApplicationContext());
          Console.WriteLine($"{command} finished");
       }

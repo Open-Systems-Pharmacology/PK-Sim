@@ -30,7 +30,7 @@ namespace PKSim.Core
          _extendedPropertySnapshot = new ExtendedProperty {Name = "FirstName"};
          _secondExtendedPropertySnapshot = new ExtendedProperty {Name = "SecondName"};
 
-         A.CallTo(() => _extendedPropertyMapper.MapToSnapshots(_extendedProperties)).ReturnsAsync(new[] {_extendedPropertySnapshot, _secondExtendedPropertySnapshot});
+         A.CallTo(() => _extendedPropertyMapper.MapToSnapshots(_extendedProperties)).Returns(new[] {_extendedPropertySnapshot, _secondExtendedPropertySnapshot});
 
          return _completed;
       }
@@ -49,7 +49,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_extendedProperties);
          _modelExtendedProperty = new ExtendedProperty<string> {Name = "FirstName"};
          _secondModelExtendedProperty = new ExtendedProperty<string> {Name = "SecondName"};
-         A.CallTo(() => _extendedPropertyMapper.MapToModels(_snapshot)).ReturnsAsync(new[] {_modelExtendedProperty, _secondModelExtendedProperty,});
+         A.CallTo(() => _extendedPropertyMapper.MapToModels(_snapshot)).Returns(new[] {_modelExtendedProperty, _secondModelExtendedProperty,});
       }
 
       protected override async Task Because()

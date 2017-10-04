@@ -27,6 +27,7 @@ namespace PKSim.BatchTool.Views
          btnStartProjectComparison.Text = "Project Comparison";
          btnGenerateTrainingMaterial.Text = "Generate Training Material";
          btnGenerateProjectOverview.Text = "Generate Project Compound and Observed Data";
+         btnSnapshotsRun.Text = "Start Snapshots Run";
          Caption = CoreConstants.PRODUCT_NAME;
          ShowInTaskbar = true;
          StartPosition = FormStartPosition.CenterScreen;
@@ -40,6 +41,7 @@ namespace PKSim.BatchTool.Views
          btnStartProjectComparison.Click += (o, e) => OnEvent(() => _presenter.StartProjectComparison());
          btnGenerateTrainingMaterial.Click += (o, e) => OnEvent(() => _presenter.GenerateTrainingMaterial());
          btnGenerateProjectOverview.Click += (o, e) => OnEvent(() => _presenter.GenerateProjectOverview());
+         btnSnapshotsRun.Click += (o, e) => OnEvent(() => _presenter.StartSnapshotsRun());
       }
    }
 }

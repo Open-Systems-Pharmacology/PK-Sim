@@ -85,7 +85,7 @@ namespace PKSim.Core
          _covariateField.AddGroupingItem(_groupingItem1);
 
          _snapshotGroupingDefinition = new Snapshots.GroupingDefinition();
-         A.CallTo(() => _groupingDefinitionMapper.MapToSnapshot(_groupingDefinition)).ReturnsAsync(_snapshotGroupingDefinition);
+         A.CallTo(() => _groupingDefinitionMapper.MapToSnapshot(_groupingDefinition)).Returns(_snapshotGroupingDefinition);
 
          A.CallTo(() => _dimensionFactory.Dimension(_dimension.Name)).Returns(_dimension);
          A.CallTo(() => _dimensionFactory.MergedDimensionFor(A<DataColumn>._)).Returns(_dimension);
@@ -343,7 +343,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_groupingField);
          _newGroupingDefinition = A.Fake<GroupingDefinition>();
-         A.CallTo(() => _groupingDefinitionMapper.MapToModel(_snapshot.GroupingDefinition)).ReturnsAsync(_newGroupingDefinition);
+         A.CallTo(() => _groupingDefinitionMapper.MapToModel(_snapshot.GroupingDefinition)).Returns(_newGroupingDefinition);
       }
 
       protected override async Task Because()

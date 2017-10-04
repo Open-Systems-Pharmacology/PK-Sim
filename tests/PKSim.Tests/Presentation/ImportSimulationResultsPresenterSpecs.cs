@@ -42,7 +42,7 @@ namespace PKSim.Presentation
             .Invokes(x => _dto = x.GetArgument<ImportSimulationResultsDTO>(0));
 
          A.CallTo(() => _simulationResultsImportTask.ImportResults(_populationSimulation, A<IReadOnlyCollection<string>>._, A<CancellationToken>._))
-            .ReturnsAsync(_importedResults);
+            .Returns(_importedResults);
 
          A.CallTo(() => _importedResults.SimulationResults).Returns(_simulationResults);
          A.CallTo(() => _importedResults.SimulationResultsFiles).Returns(_simulationResultsFiles);

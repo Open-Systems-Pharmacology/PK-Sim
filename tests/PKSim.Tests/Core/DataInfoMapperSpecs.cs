@@ -30,7 +30,7 @@ namespace PKSim.Core
          _dateTime = DateTime.Parse("January 1, 2017");
          _dataInfo = new DataInfo(ColumnOrigins.Observation, AuxiliaryType.GeometricStdDev, "unitName", _dateTime, "source", "category", 2.3) { LLOQ = 0.4f };
 
-         A.CallTo(() => _extendedPropertiesMapper.MapToSnapshot(_dataInfo.ExtendedProperties)).ReturnsAsync(_extendedPropertiesSnapshot);
+         A.CallTo(() => _extendedPropertiesMapper.MapToSnapshot(_dataInfo.ExtendedProperties)).Returns(_extendedPropertiesSnapshot);
 
          return Task.FromResult(true);
       }
@@ -47,7 +47,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_dataInfo);
          _extendedProperties = new OSPSuite.Core.Domain.ExtendedProperties {new ExtendedProperty<string> {Name = "key"}};
-         A.CallTo(() => _extendedPropertiesMapper.MapToModel(_snapshot.ExtendedProperties)).ReturnsAsync(_extendedProperties);
+         A.CallTo(() => _extendedPropertiesMapper.MapToModel(_snapshot.ExtendedProperties)).Returns(_extendedProperties);
       }
 
       protected override async Task Because()

@@ -41,7 +41,7 @@ namespace PKSim.Core.Batch
          _entries = new List<string>();
          _eventPublisher = eventPublisher;
          _notificationType = NotificationType.All;
-      }
+      }  
 
       public void AddToLog(string message, NotificationType messageStatus = NotificationType.None)
       {

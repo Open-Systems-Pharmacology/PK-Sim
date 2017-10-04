@@ -177,11 +177,11 @@ namespace PKSim.Core
 
          _alternative = new ParameterAlternative().WithName("Alternative");
          _fractionUnboundParameterGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
-         A.CallTo(() => _alternativeMapper.MapToModels(_snapshot.FractionUnbound, _fractionUnboundParameterGroup)).ReturnsAsync(new[] {_alternative});
+         A.CallTo(() => _alternativeMapper.MapToModels(_snapshot.FractionUnbound, _fractionUnboundParameterGroup)).Returns(new[] {_alternative});
 
          _snapshot.Processes = new[] {_snapshotProcess1};
          _newProcess = new EnzymaticProcess();
-         A.CallTo(() => _processMapper.MapToModel(_snapshotProcess1)).ReturnsAsync(_newProcess);
+         A.CallTo(() => _processMapper.MapToModel(_snapshotProcess1)).Returns(_newProcess);
       }
 
       private void clearCompound()

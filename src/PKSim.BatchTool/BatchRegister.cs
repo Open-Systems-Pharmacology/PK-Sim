@@ -5,7 +5,6 @@ using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using PKSim.BatchTool.Mappers;
 using PKSim.BatchTool.Services;
-using PKSim.BatchTool.Services.TrainingMaterials;
 using PKSim.BatchTool.Views;
 using PKSim.Core;
 using PKSim.Presentation;
@@ -17,7 +16,6 @@ namespace PKSim.BatchTool
       public override void RegisterInContainer(IContainer container)
       {
          container.AddScanner(scan => scan.AssemblyContainingType<BatchRegister>());
-         container.AddRegister(x => x.FromType<TrainingMaterialsRegister>());
 
 
          container.Register<IUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, BatchUserSettings>(LifeStyle.Singleton);
@@ -27,8 +25,8 @@ namespace PKSim.BatchTool
 
          container.Register<JsonSimulationRunner, JsonSimulationRunner>();
          container.Register<ProjectComparisonRunner, ProjectComparisonRunner>();
-         container.Register<TrainingMaterialRunner, TrainingMaterialRunner>();
          container.Register<ProjectOverviewRunner, ProjectOverviewRunner>();
+         container.Register<SnapshotsRunner, SnapshotsRunner>();
 
          container.Register(typeof(IInputAndOutputBatchView<>), typeof(InputAndOutputBatchView<>));
       }
