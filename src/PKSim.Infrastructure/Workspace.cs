@@ -28,15 +28,21 @@ namespace PKSim.Infrastructure
       public IHistoryManager HistoryManager { get; set; }
       public IWorkspaceLayout WorkspaceLayout { get; set; }
 
-      public Workspace(IEventPublisher eventPublisher, IRegistrationTask registrationTask,
-         IWorkspacePersistor workspacePersistor, IMRUProvider mruProvider, IHistoryManagerFactory historyManagerFactory,
-         IFileLocker fileLocker, IJournalSession journalSession) : base(eventPublisher, journalSession, fileLocker)
+      public Workspace(
+         IEventPublisher eventPublisher, 
+         IJournalSession journalSession, 
+         IFileLocker fileLocker, 
+         IRegistrationTask registrationTask, 
+         IWorkspacePersistor workspacePersistor, 
+         IMRUProvider mruProvider, 
+         IHistoryManagerFactory historyManagerFactory) : base(eventPublisher, journalSession, fileLocker)
       {
          _eventPublisher = eventPublisher;
          _registrationTask = registrationTask;
          _workspacePersistor = workspacePersistor;
          _mruProvider = mruProvider;
          _historyManagerFactory = historyManagerFactory;
+         WorkspaceLayout = new WorkspaceLayout();
       }
 
       public void CloseProject()
@@ -145,14 +151,11 @@ namespace PKSim.Infrastructure
 
       public void AddCommand(ICommand command)
       {
-         //History manager can happen if some events were not released properly.
-         //Project was closed however so change should be take into consideration
+         //History manager null can happen if some events were not released properly.
+         //Project was closed however so change should not be taken into consideration
          HistoryManager?.AddToHistory(command);
       }
 
-      public IEnumerable<ICommand> All()
-      {
-         return HistoryManager.History.Select(x => x.Command);
-      }
+      public IEnumerable<ICommand> All() => HistoryManager.History.Select(x => x.Command);
    }
 }

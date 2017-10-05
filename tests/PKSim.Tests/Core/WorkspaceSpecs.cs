@@ -48,14 +48,22 @@ namespace PKSim.Core
          _fileLocker = A.Fake<IFileLocker>();
          _journalSession = A.Fake<IJournalSession>();
          A.CallTo(() => _historyManagerFactory.Create()).Returns(_historyManager);
-         sut = new Workspace(_eventPublisher, _registrationTask, _workspacePersisor, _mruProvider, _historyManagerFactory,
-            _fileLocker,  _journalSession);
+         sut = new Workspace(_eventPublisher,  _journalSession, _fileLocker, _registrationTask, _workspacePersisor, _mruProvider, _historyManagerFactory);
       }
 
       public override void GlobalCleanup()
       {
          base.GlobalCleanup();
          FileHelper.FileExists = _oldFileExitst;
+      }
+   }
+
+   public class When_creating_a_new_workspace : concern_for_Workspace
+   {
+      [Observation]
+      public void should_have_a_defined_workspace_layout()
+      {
+         sut.WorkspaceLayout.ShouldNotBeNull();
       }
    }
 
