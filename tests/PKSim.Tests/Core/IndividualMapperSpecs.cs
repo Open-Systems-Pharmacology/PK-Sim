@@ -95,7 +95,7 @@ namespace PKSim.Core
          A.CallTo(() => _moleculeMapper.MapToSnapshots(A<IEnumerable<IndividualMolecule>>._)).Returns(new []{_enzymeSnapshot, _transporterSnapshot, });
 
          _localizedParameterKidney = new LocalizedParameter {Path = "Organism|Kidney|PKidney"};
-         A.CallTo(() => _parameterMapper.LocalizedParameterFrom(_parameterKidney)).Returns(_localizedParameterKidney);
+         A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Contains(_parameterKidney))).Returns(new []{_localizedParameterKidney });
          return Task.FromResult(true);
       }
    }

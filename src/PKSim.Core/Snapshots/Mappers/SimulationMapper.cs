@@ -74,7 +74,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Population = usedSimulationSubject<Model.Population>(simulation);
          snapshot.Compounds = await usedCompoundsFrom(simulation, project);
          snapshot.Model = simulation.ModelConfiguration.ModelName;
-         snapshot.AllowAging = simulation.AllowAging;
+         snapshot.AllowAging = SnapshotValueFor(simulation.AllowAging, false);
          snapshot.Solver = await _solverSettingsMapper.MapToSnapshot(simulation.Solver);
          snapshot.OutputSchema = await _outputSchemaMapper.MapToSnapshot(simulation.OutputSchema);
          snapshot.OutputSelections = await _outputSelectionsMapper.MapToSnapshot(simulation.OutputSelections);
@@ -237,7 +237,7 @@ namespace PKSim.Core.Snapshots.Mappers
       protected override void MapSnapshotPropertiesToModel(SnapshotSimulation snapshot, ModelSimulation simulation)
       {
          base.MapSnapshotPropertiesToModel(snapshot, simulation);
-         simulation.AllowAging = snapshot.AllowAging;
+         simulation.AllowAging = ModelValueFor(snapshot.AllowAging, false);
       }
 
       private ModelProperties modelPropertiesFrom(string modelName, ISimulationSubject simulationSubject)

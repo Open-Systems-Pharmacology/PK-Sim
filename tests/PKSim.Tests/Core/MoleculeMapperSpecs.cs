@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -94,7 +95,7 @@ namespace PKSim.Core
             Value = _relativeExpressionParameter1.Value
          };
 
-         A.CallTo(() => _parameterMapper.LocalizedParameterFrom(_relativeExpressionParameter1, A<Func<IParameter, string>>._)).Returns(_relativeExpressionSnapshot1);
+         A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Contains(_relativeExpressionParameter1), A<Func<IParameter, string>>._)).Returns(new[]{ _relativeExpressionSnapshot1 });
 
          _snapshotOntogeny = new Snapshots.Ontogeny();
          A.CallTo(() => _ontogenyMapper.MapToSnapshot(_ontogeny)).Returns(_snapshotOntogeny);

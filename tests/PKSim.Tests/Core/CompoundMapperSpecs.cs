@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -8,7 +9,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using CalculationMethodCache = PKSim.Core.Snapshots.CalculationMethodCache;
 using Compound = PKSim.Core.Snapshots.Compound;
 using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
@@ -68,10 +68,10 @@ namespace PKSim.Core
 
          _snapshotProcess1 = new CompoundProcess();
          _snapshotProcess2 = new CompoundProcess();
-         A.CallTo(() => _processMapper.MapToSnapshot(_partialProcess)).Returns(_snapshotProcess1);
-         A.CallTo(() => _processMapper.MapToSnapshot(_systemicProcess)).Returns(_snapshotProcess2);
+         A.CallTo(() => _processMapper.MapToSnapshots(A<IEnumerable<Model.CompoundProcess>>._)).Returns(new[] {_snapshotProcess1, _snapshotProcess2,});
 
-         return Task.FromResult(true);
+         A.CallTo(() => _alternativeMapper.MapToSnapshots(A<IEnumerable<ParameterAlternative>>.That.Matches(x => x.Count() == 1))).Returns(new[] {new Alternative()});
+         return _completed;
       }
 
       private void addPkAParameters(Model.Compound compound, int index, double pkA, CompoundType compoundType)
@@ -113,9 +113,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_saved_the_is_small_molecule_flag()
+      public void should_have_saved_the_is_small_molecule_flag_when_different_from_the_default_value_true()
       {
-         _snapshot.IsSmallMolecule.ShouldBeTrue();
+         _snapshot.IsSmallMolecule.ShouldBeNull();
       }
 
       [Observation]
@@ -181,7 +181,7 @@ namespace PKSim.Core
 
          _snapshot.Processes = new[] {_snapshotProcess1};
          _newProcess = new EnzymaticProcess();
-         A.CallTo(() => _processMapper.MapToModel(_snapshotProcess1)).Returns(_newProcess);
+         A.CallTo(() => _processMapper.MapToModels(_snapshot.Processes)).Returns(new[]{_newProcess, });
       }
 
       private void clearCompound()

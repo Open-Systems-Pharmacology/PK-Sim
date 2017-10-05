@@ -19,12 +19,15 @@ namespace PKSim.Core
       protected DataColumn _xColumn;
       protected DataColumn _yColumn;
       protected DataRepository _dataRepository;
+      protected CurveOptionsMapper _curveOptionsMapper;
+      protected Snapshots.CurveOptions _snapshotCurveOptions;
 
       protected override Task Context()
       {
          _dimensionFactory = A.Fake<IDimensionFactory>();
+         _curveOptionsMapper = A.Fake<CurveOptionsMapper>();
          _dataRepository = DomainHelperForSpecs.ObservedData();
-         sut = new CurveMapper(_dimensionFactory);
+         sut = new CurveMapper(_curveOptionsMapper, _dimensionFactory);
 
          _curve = new Curve
          {
@@ -40,6 +43,8 @@ namespace PKSim.Core
          _curve.SetxData(_xColumn, _dimensionFactory);
          _curve.SetyData(_yColumn, _dimensionFactory);
 
+         _snapshotCurveOptions = new Snapshots.CurveOptions();
+         A.CallTo(() => _curveOptionsMapper.MapToSnapshot(_curve.CurveOptions)).Returns(_snapshotCurveOptions);
          return _completed;
       }
    }
@@ -54,7 +59,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_saved_all_curve_properties_in_the_snapshot()
       {
-         _snapshot.CurveOptions.ShouldBeEqualTo(_curve.CurveOptions);
+         _snapshot.CurveOptions.ShouldBeEqualTo(_snapshotCurveOptions);
          _snapshot.Name.ShouldBeEqualTo(_curve.Name);
          _snapshot.X.ShouldBeEqualTo(_curve.xData.PathAsString);
          _snapshot.Y.ShouldBeEqualTo(_curve.yData.PathAsString);
@@ -85,13 +90,15 @@ namespace PKSim.Core
    {
       private SimulationAnalysisContext _context;
       private Curve _newCurve;
+      private CurveOptions _newModelCurveOptions;
 
       protected override async Task Context()
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_curve);
          _context = new SimulationAnalysisContext(new[] {_dataRepository});
-         _snapshot.CurveOptions.Color = Color.Aqua;
+         _newModelCurveOptions = new CurveOptions {Color = Color.Aqua};
+         A.CallTo(() => _curveOptionsMapper.MapToModel(_snapshot.CurveOptions)).Returns(_newModelCurveOptions);
       }
 
       protected override async Task Because()
@@ -110,7 +117,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_curve_option_properties()
       {
-         _newCurve.Color.ShouldBeEqualTo(_snapshot.CurveOptions.Color);
+         _newCurve.Color.ShouldBeEqualTo(_newModelCurveOptions.Color);
       }
    }
 
@@ -128,7 +135,7 @@ namespace PKSim.Core
          _anotherRepository = DomainHelperForSpecs.ObservedData();
          _y2Column = _anotherRepository.AllButBaseGrid().First();
          _y2Column.QuantityInfo.Path = new[] {"D", "E", "F"};
-         _context = new SimulationAnalysisContext(new[] { _dataRepository, _anotherRepository,  });
+         _context = new SimulationAnalysisContext(new[] {_dataRepository, _anotherRepository,});
          _snapshot.CurveOptions.Color = Color.Aqua;
          _snapshot.X = _y2Column.PathAsString;
       }
@@ -144,6 +151,5 @@ namespace PKSim.Core
          _newCurve.xData.ShouldBeEqualTo(_y2Column);
          _newCurve.yData.ShouldBeEqualTo(_yColumn);
       }
-
    }
 }

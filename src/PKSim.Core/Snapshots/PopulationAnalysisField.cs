@@ -4,10 +4,8 @@ using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core.Snapshots
 {
-   public class PopulationAnalysisField : IWithName, IWithDescription
+   public class PopulationAnalysisField : SnapshotBase
    {
-      public string Name { get; set; }
-      public string Description { get; set; }
       public string Dimension { get; set; }
       public Scalings? Scaling { get; set; }
       public string Unit { get; set; }

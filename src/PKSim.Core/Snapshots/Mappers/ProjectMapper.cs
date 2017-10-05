@@ -15,24 +15,25 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class ProjectMapper : ObjectBaseSnapshotMapperBase<ModelProject, SnapshotProject>
    {
-      private readonly IExecutionContext _executionContext;
       private readonly SimulationMapper _simulationMapper;
       private readonly SimulationComparisonMapper _simulationComparisonMapper;
       private readonly IClassificationSnapshotTask _classificationSnapshotTask;
+      private readonly ILazyLoadTask _lazyLoadTask;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
 
       public ProjectMapper(
          SimulationMapper simulationMapper, 
          SimulationComparisonMapper simulationComparisonMapper, 
          IExecutionContext executionContext, 
-         IClassificationSnapshotTask classificationSnapshotTask)
+         IClassificationSnapshotTask classificationSnapshotTask, 
+         ILazyLoadTask lazyLoadTask)
       {
-         _executionContext = executionContext;
          _simulationMapper = simulationMapper;
          _simulationComparisonMapper = simulationComparisonMapper;
          _classificationSnapshotTask = classificationSnapshotTask;
+         _lazyLoadTask = lazyLoadTask;
          //required to load the snapshot mapper via execution context to avoid circular references
-         _snapshotMapper = new Lazy<ISnapshotMapper>(() => _executionContext.Resolve<ISnapshotMapper>());
+         _snapshotMapper = new Lazy<ISnapshotMapper>(executionContext.Resolve<ISnapshotMapper>);
       }
 
       public override async Task<SnapshotProject> MapToSnapshot(ModelProject project)
@@ -95,35 +96,37 @@ namespace PKSim.Core.Snapshots.Mappers
          return mapModelsToSnapshot<ModelDataRepository, SnapshotDataRepository>(allObservedData, snapshotMapper.MapToSnapshot);
       }
 
-      private Task<IEnumerable<ModelDataRepository>> observedDataFrom(SnapshotDataRepository[] snapshotRepositories)
+      private Task<ModelDataRepository[]> observedDataFrom(SnapshotDataRepository[] snapshotRepositories)
       {
          return awaitAs<ModelDataRepository>(mapSnapshotsToModels(snapshotRepositories));
       }
 
       private Task<ISimulationComparison[]> allSimulationComparisonsFrom(SimulationComparison[] snapshotSimulationComparisons, ModelProject project) => _simulationComparisonMapper.MapToModels(snapshotSimulationComparisons, project);
 
-      private Task<SimulationComparison[]> mapSimulationComparisonsToSnapshots(IReadOnlyCollection<ISimulationComparison> allSimulationComparisons)
+      private async Task<SimulationComparison[]> mapSimulationComparisonsToSnapshots(IReadOnlyCollection<ISimulationComparison> allSimulationComparisons)
       {
-         var tasks = allSimulationComparisons.Select(mapSimulationComparisonToSnapshot);
-         return Task.WhenAll(tasks);
+         if (!allSimulationComparisons.Any())
+            return null;
+
+         allSimulationComparisons.Each(load);
+         return await _simulationComparisonMapper.MapToSnapshots(allSimulationComparisons);
       }
 
-      private Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<Model.Simulation> allSimulations, ModelProject project)
+      private async Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<Model.Simulation> allSimulations, ModelProject project)
       {
-         var tasks = allSimulations.Select(x => mapSimulationToSnapshot(x, project));
-         return Task.WhenAll(tasks);
+         if (!allSimulations.Any())
+            return null;
+
+         allSimulations.Each(loadSimulation);
+         return await _simulationMapper.MapToSnapshots(allSimulations, project);
       }
 
-      private Task<Simulation> mapSimulationToSnapshot(Model.Simulation simulation, ModelProject project)
-      {
-         _executionContext.Load(simulation);
-         return _simulationMapper.MapToSnapshot(simulation, project);
-      }
+      private void load(ILazyLoadable lazyLoadable) => _lazyLoadTask.Load(lazyLoadable);
 
-      private Task<SimulationComparison> mapSimulationComparisonToSnapshot(ISimulationComparison simulationComparison)
+      private void loadSimulation(Model.Simulation simulation)
       {
-         _executionContext.Load(simulationComparison);
-         return _simulationComparisonMapper.MapToSnapshot(simulationComparison);
+         load(simulation);
+         _lazyLoadTask.LoadResults(simulation);
       }
 
       private Task<T[]> mapBuildingBlocksToSnapshots<T>(IReadOnlyCollection<IPKSimBuildingBlock> buildingBlocks)
@@ -133,15 +136,14 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<object> mapBuildingBlockToSnapshot(IPKSimBuildingBlock buildingBlock)
       {
-         _executionContext.Load(buildingBlock);
+         _lazyLoadTask.Load(buildingBlock);
          return snapshotMapper.MapToSnapshot(buildingBlock);
       }
 
-      private async Task<TSnapshot[]> mapModelsToSnapshot<TModel, TSnapshot>(IEnumerable<TModel> models, Func<TModel, Task<object>> mapFunc)
+      private Task<TSnapshot[]> mapModelsToSnapshot<TModel, TSnapshot>(IEnumerable<TModel> models, Func<TModel, Task<object>> mapFunc)
       {
          var tasks = models.Select(mapFunc);
-         var snapshots = await awaitAs<TSnapshot>(tasks);
-         return snapshots.ToArray();
+         return awaitAs<TSnapshot>(tasks);
       }
 
       private Task updateProjectClassifications(SnapshotProject snapshot, ModelProject project)
@@ -179,7 +181,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<Model.Simulation[]> allSmulationsFrom(Simulation[] snapshotSimulations, ModelProject project) => _simulationMapper.MapToModels(snapshotSimulations, project);
 
-      private Task<IEnumerable<IPKSimBuildingBlock>> allBuidingBlocksFrom(SnapshotProject snapshot)
+      private Task<IPKSimBuildingBlock[]> allBuidingBlocksFrom(SnapshotProject snapshot)
       {
          var tasks = new List<Task<object>>();
          tasks.AddRange(mapSnapshotsToModels(snapshot.Individuals));
@@ -191,10 +193,11 @@ namespace PKSim.Core.Snapshots.Mappers
          return awaitAs<IPKSimBuildingBlock>(tasks);
       }
 
-      private async Task<IEnumerable<T>> awaitAs<T>(IEnumerable<Task<object>> tasks)
+      private async Task<T[]> awaitAs<T>(IEnumerable<Task<object>> tasks)
       {
          var models = await Task.WhenAll(tasks);
-         return models.Cast<T>();
+         var array = models.OfType<T>().ToArray();
+         return array.Any() ? array : null;
       }
 
       private IEnumerable<Task<object>> mapSnapshotsToModels(IEnumerable<object> snapshots)

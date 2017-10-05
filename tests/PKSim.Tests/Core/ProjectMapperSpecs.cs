@@ -4,13 +4,11 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using Classification = OSPSuite.Core.Domain.Classification;
 using Compound = PKSim.Core.Model.Compound;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
@@ -57,16 +55,18 @@ namespace PKSim.Core
       protected SimulationComparisonMapper _simulationComparisonMapper;
       protected Snapshots.Classification _simulationClassificationSnapshot;
       protected Snapshots.Classification _comparisonClassificationSnapshot;
+      protected ILazyLoadTask _lazyLoadTask;
 
       protected override Task Context()
       {
          _classificationMapper = A.Fake<ClassificationMapper>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _executionContext = A.Fake<IExecutionContext>();
+         _lazyLoadTask= A.Fake<ILazyLoadTask>();
          _simulationMapper = A.Fake<SimulationMapper>();
          _simulationComparisonMapper = A.Fake<SimulationComparisonMapper>();
          _classificationSnapshotTask = A.Fake<IClassificationSnapshotTask>();
-         sut = new ProjectMapper(_simulationMapper, _simulationComparisonMapper, _executionContext, _classificationSnapshotTask);
+         sut = new ProjectMapper(_simulationMapper, _simulationComparisonMapper, _executionContext, _classificationSnapshotTask, _lazyLoadTask);
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
          _individual = new Individual().WithName("IND");
          _compound = new Compound().WithName("COMP");
@@ -113,14 +113,14 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).Returns(_populationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).Returns(_observedDataSnapshot);
 
-         A.CallTo(() => _simulationComparisonMapper.MapToSnapshot(_simulationComparison)).Returns(_simulationComparisonSnapshot);
+         A.CallTo(() => _simulationComparisonMapper.MapToSnapshots(_project.AllSimulationComparisons)).Returns(new []{ _simulationComparisonSnapshot });
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableObservedData>(_project)).Returns(new[] {_observedDataClassificationSnapshot});
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableSimulation>(_project)).Returns(new[] {_simulationClassificationSnapshot});
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableComparison>(_project)).Returns(new[] {_comparisonClassificationSnapshot});
 
-         A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).Returns(_simulationSnapshot);
+         A.CallTo(() => _simulationMapper.MapToSnapshots(A<IEnumerable<Model.Simulation>>.That.Contains(_simulation), _project)).Returns(new []{_simulationSnapshot });
 
-         return Task.FromResult(true);
+         return _completed;
       }
    }
 
@@ -175,24 +175,25 @@ namespace PKSim.Core
       [Observation]
       public void should_load_the_exported_building_blocks()
       {
-         A.CallTo(() => _executionContext.Load(_compound)).MustHaveHappened();
-         A.CallTo(() => _executionContext.Load(_formulation)).MustHaveHappened();
-         A.CallTo(() => _executionContext.Load(_event)).MustHaveHappened();
-         A.CallTo(() => _executionContext.Load(_individual)).MustHaveHappened();
-         A.CallTo(() => _executionContext.Load(_population)).MustHaveHappened();
-         A.CallTo(() => _executionContext.Load(_protocol)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_compound)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_formulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_event)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_individual)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_population)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_protocol)).MustHaveHappened();
       }                                                             
 
       [Observation]
       public void should_load_the_simulation_comparison_results()
       {
-         A.CallTo(() => _executionContext.Load(_simulationComparison)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable)_simulationComparison)).MustHaveHappened();
       }
 
       [Observation]  
       public void should_load_the_exported_simulation_results()
       {
-         A.CallTo(() => _executionContext.Load((Model.Simulation)_simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable)_simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.LoadResults((Model.Simulation)_simulation)).MustHaveHappened();
       }
    }
 
