@@ -3,7 +3,7 @@
    public class Simulation : SnapshotBase
    {
       public string Model { get; set; }
-      public bool AllowAging { get; set; }
+      public bool? AllowAging { get; set; }
       public string[] ObservedData { get; set; }
       public SolverSettings Solver { get; set; }
       public OutputSchema OutputSchema { get; set; }

@@ -19,14 +19,16 @@ namespace PKSim.Core
       protected PopulationAnalysis _snapshotPopulationAnalysis;
       protected PopulationAnalysisChart _snapshot;
       protected IPopulationAnalysisChartFactory _populationAnalysisChartFactory;
+      protected ObservedDataCollectionMappper _observedDataCollectionMapper;
 
       protected override Task Context()
       {
          _chartMapper = A.Fake<ChartMapper>();
          _populationAnalysisMapper = A.Fake<PopulationAnalysisMapper>();
          _populationAnalysisChartFactory = A.Fake<IPopulationAnalysisChartFactory>();
+         _observedDataCollectionMapper= A.Fake<ObservedDataCollectionMappper>();
 
-         sut = new PopulationAnalysisChartMapper(_chartMapper, _populationAnalysisMapper, _populationAnalysisChartFactory);
+         sut = new PopulationAnalysisChartMapper(_chartMapper, _populationAnalysisMapper, _observedDataCollectionMapper, _populationAnalysisChartFactory);
 
          _bowWiskerChart = new BoxWhiskerAnalysisChart
          {

@@ -11,8 +11,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
 {
    /// <summary>
    ///    Represents a collection of <see cref="DataRepository" /> also containing <see cref="ObservedDataCurveOptions" /> for
-   ///    each
-   ///    observed data columns.
+   ///    each observed data columns.
    /// </summary>
    public class ObservedDataCollection : IWithObservedData, IUpdatable, IEnumerable<DataRepository>
    {
@@ -27,7 +26,13 @@ namespace PKSim.Core.Model.PopulationAnalyses
 
       public void AddCurveOptions(ObservedDataCurveOptions curveOptions)
       {
-         _allCurveOptions[curveOptions.ColumnId] = curveOptions;
+         if (curveOptions != null)
+            _allCurveOptions[curveOptions.ColumnId] = curveOptions;
+      }
+
+      public virtual bool HasCurveOptionsFor(DataColumn dataColumn)
+      {
+         return _allCurveOptions.Contains(dataColumn.Id);
       }
 
       public ObservedDataCurveOptions ObservedDataCurveOptionsFor(DataColumn dataColumn)
@@ -85,6 +90,14 @@ namespace PKSim.Core.Model.PopulationAnalyses
          sourceObservedDataCollection.AllObservedData().Each(AddObservedData);
          sourceObservedDataCollection.ObservedDataCurveOptions().Each(AddCurveOptions);
          ApplyGroupingToObservedData = sourceObservedDataCollection.ApplyGroupingToObservedData;
+      }
+
+      public void UpdateFrom(ObservedDataCollection observedDataCollection)
+      {
+         if (observedDataCollection == null) return;
+         observedDataCollection.AllObservedData().Each(AddObservedData);
+         observedDataCollection.ObservedDataCurveOptions().Each(AddCurveOptions);
+         ApplyGroupingToObservedData = observedDataCollection.ApplyGroupingToObservedData;
       }
 
       public IEnumerator<DataRepository> GetEnumerator()

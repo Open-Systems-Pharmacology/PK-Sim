@@ -5,7 +5,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
    public class ObservedDataCurveOptions
    {
       public string ColumnId { get; set; }
-      public CurveOptions CurveOptions { get; private set; }
+      public CurveOptions CurveOptions { get; }
       public string Caption { get; set; }
 
       public ObservedDataCurveOptions()

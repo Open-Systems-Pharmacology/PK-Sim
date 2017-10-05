@@ -11,12 +11,14 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly ChartMapper _chartMapper;
       private readonly PopulationAnalysisMapper _populationAnalysisMapper;
+      private readonly ObservedDataCollectionMappper _observedDataCollectionMappper;
       private readonly IPopulationAnalysisChartFactory _populationAnalysisChartFactory;
 
-      public PopulationAnalysisChartMapper(ChartMapper chartMapper, PopulationAnalysisMapper populationAnalysisMapper, IPopulationAnalysisChartFactory populationAnalysisChartFactory)
+      public PopulationAnalysisChartMapper(ChartMapper chartMapper, PopulationAnalysisMapper populationAnalysisMapper, ObservedDataCollectionMappper observedDataCollectionMappper, IPopulationAnalysisChartFactory populationAnalysisChartFactory)
       {
          _chartMapper = chartMapper;
          _populationAnalysisMapper = populationAnalysisMapper;
+         _observedDataCollectionMappper = observedDataCollectionMappper;
          _populationAnalysisChartFactory = populationAnalysisChartFactory;
       }
 
@@ -32,6 +34,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          await _chartMapper.MapToSnapshot(populationAnalysisChart, snapshot);
          snapshot.Analysis = await _populationAnalysisMapper.MapToSnapshot(populationAnalysisChart.BasePopulationAnalysis);
+         snapshot.ObservedDataCollection = await _observedDataCollectionMappper.MapToSnapshot(populationAnalysisChart.ObservedDataCollection);
 
          return snapshot;
       }
@@ -45,9 +48,10 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.SecondaryYAxisSettings.Each(populationAnalysisChart.AddSecondaryAxis);
 
          await _chartMapper.MapToModel(snapshot, populationAnalysisChart);
-
          await _populationAnalysisMapper.MapToModel(snapshot.Analysis, populationAnalysisChart.BasePopulationAnalysis);
 
+         var observedDataCollection = await _observedDataCollectionMappper.MapToModel(snapshot.ObservedDataCollection, simulationAnalysisContext);
+         populationAnalysisChart.ObservedDataCollection.UpdateFrom(observedDataCollection);
          return populationAnalysisChart;
       }
    }

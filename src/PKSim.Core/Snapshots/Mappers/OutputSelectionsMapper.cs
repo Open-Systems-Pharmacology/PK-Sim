@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
@@ -21,6 +20,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<SnapshotOutputSelections> MapToSnapshot(ModelOutputSelections outputSelections)
       {
+         if (!outputSelections.HasSelection)
+            return null;
+
          var snapshot = await SnapshotFrom(outputSelections);
          snapshot.AddRange(outputSelections.AllOutputs.Select(x => x.Path));
          return snapshot;
@@ -28,8 +30,11 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<ModelOutputSelections> MapToModel(SnapshotOutputSelections snapshot, Model.Simulation simulation)
       {
-         var allQuantities = _entitiesInContainerRetriever.QuantitiesFrom(simulation);
          var outputSelections = new ModelOutputSelections();
+         if (snapshot == null)
+            return Task.FromResult(outputSelections);
+
+         var allQuantities = _entitiesInContainerRetriever.QuantitiesFrom(simulation);
 
          snapshot.Each(path =>
          {

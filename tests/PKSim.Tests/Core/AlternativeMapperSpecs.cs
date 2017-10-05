@@ -41,7 +41,7 @@ namespace PKSim.Core
          _alternativeWithSpecies = new ParameterAlternativeWithSpecies
          {
             Name = "Alternative2",
-            IsDefault = true,
+            IsDefault = false,
             Description = "Hello",
             Species = _species
          };
@@ -49,7 +49,7 @@ namespace PKSim.Core
          _parameterGroup.AddAlternative(_alternativeWithSpecies);
          A.CallTo(() => _speciesRepository.All()).Returns(new[] {_species});
 
-         return Task.FromResult(true);
+         return _completed;
       }
    }
 
@@ -86,7 +86,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_expected_properties()
       {
-         _snapshot.IsDefault.ShouldBeEqualTo(_alternative.IsDefault);
+         _snapshot.IsDefault.ShouldBeNull();
          _snapshot.Name.ShouldBeEqualTo(_alternative.Name);
          _snapshot.Description.ShouldBeEqualTo(_alternative.Description);
       }
@@ -137,7 +137,7 @@ namespace PKSim.Core
       {
          _newAlternativeWithSpecies.Name.ShouldBeEqualTo(_snapshot.Name);
          _newAlternativeWithSpecies.Description.ShouldBeEqualTo(_snapshot.Description);
-         _newAlternativeWithSpecies.IsDefault.ShouldBeEqualTo(_snapshot.IsDefault);
+         _newAlternativeWithSpecies.IsDefault.ShouldBeEqualTo(_alternativeWithSpecies.IsDefault);
          _alternativeWithSpecies.Species.ShouldBeEqualTo(_species);
       }
 

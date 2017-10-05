@@ -43,8 +43,8 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Permeability = await mapAlternatives(compound, COMPOUND_PERMEABILITY);
          snapshot.PkaTypes = mapPkaTypes(compound);
          snapshot.Processes = await mapProcesses(compound);
-         snapshot.IsSmallMolecule = compound.IsSmallMolecule;
-         snapshot.PlasmaProteinBindingPartner = compound.PlasmaProteinBindingPartner;
+         snapshot.IsSmallMolecule = SnapshotValueFor(compound.IsSmallMolecule, true);
+         snapshot.PlasmaProteinBindingPartner = SnapshotValueFor(compound.PlasmaProteinBindingPartner, PlasmaProteinBindingPartner.Unknown);
          return snapshot;
       }
 
@@ -62,17 +62,30 @@ namespace PKSim.Core.Snapshots.Mappers
 
          updatePkaTypes(compound, snapshot);
 
-         var tasks = snapshot.Processes.Select(_processMapper.MapToModel);
-         compound.AddChildren(await Task.WhenAll(tasks));
-         compound.IsSmallMolecule = snapshot.IsSmallMolecule;
-         compound.PlasmaProteinBindingPartner = snapshot.PlasmaProteinBindingPartner;
+         await updateProcesses(snapshot, compound);
          await UpdateParametersFromSnapshot(snapshot, compound, PKSimConstants.ObjectTypes.Compound);
 
          return compound;
       }
 
+      protected override void MapSnapshotPropertiesToModel(SnapshotCompound snapshot, ModelCompound compound)
+      {
+         base.MapSnapshotPropertiesToModel(snapshot, compound);
+         compound.IsSmallMolecule = ModelValueFor(snapshot.IsSmallMolecule, true);
+         compound.PlasmaProteinBindingPartner = ModelValueFor(snapshot.PlasmaProteinBindingPartner, PlasmaProteinBindingPartner.Unknown);
+      }
+
+      private async Task updateProcesses(SnapshotCompound snapshot, ModelCompound compound)
+      {
+         var proceses = await _processMapper.MapToModels(snapshot.Processes);
+         proceses?.Each(compound.AddProcess);
+      }
+
       private async Task updateAlternatives(ModelCompound compound, Alternative[] snapshotAlternatives, string alternativeGroupName)
       {
+         if (snapshotAlternatives == null)
+            return;
+
          var alternativeGroup = compound.ParameterAlternativeGroup(alternativeGroupName);
 
          //Remove all alternatives except calculated ones
@@ -85,7 +98,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void updatePkaTypes(ModelCompound compound, SnapshotCompound snapshot)
       {
-         snapshot.PkaTypes.Each((pkaType, i) =>
+         snapshot.PkaTypes?.Each((pkaType, i) =>
          {
             var compoundType = pkaType.Type;
             compound.Parameter(ParameterCompoundType(i)).Value = (int) compoundType;
@@ -93,11 +106,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      private Task<CompoundProcess[]> mapProcesses(ModelCompound compound)
-      {
-         var tasks = compound.AllProcesses().Select(_processMapper.MapToSnapshot);
-         return Task.WhenAll(tasks);
-      }
+      private Task<CompoundProcess[]> mapProcesses(ModelCompound compound) => _processMapper.MapToSnapshots(compound.AllProcesses());
 
       private PkaType[] mapPkaTypes(ModelCompound compound)
       {
@@ -114,7 +123,10 @@ namespace PKSim.Core.Snapshots.Mappers
             pkaTypes.Add(new PkaType {Pka = pkA, Type = compoundType});
          }
 
-         return pkaTypes.ToArray();
+         if (pkaTypes.Any())
+            return pkaTypes.ToArray();
+
+         return null;
       }
 
       protected override Task AddModelParametersToSnapshot(ModelCompound compound, SnapshotCompound snapshot)
@@ -145,9 +157,12 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task<Alternative[]> mapAlternatives(ModelCompound compound, string alternativeGroupName)
       {
          var alternativeGroup = compound.ParameterAlternativeGroup(alternativeGroupName);
-         var tasks = alternativeGroup.AllAlternatives.Select(_alternativeMapper.MapToSnapshot);
-         var alteratives = await Task.WhenAll(tasks);
-         return alteratives.Where(x => x != null).ToArray();
+         var alteratives = await _alternativeMapper.MapToSnapshots(alternativeGroup.AllAlternatives);
+         var definedAlternatives = alteratives?.Where(x => x != null).ToArray();
+         if (definedAlternatives == null || !definedAlternatives.Any())
+            return null;
+
+         return definedAlternatives;
       }
    }
 }

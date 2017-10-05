@@ -852,6 +852,7 @@
     <Compile Include="Snapshots\CalculationMethod.cs" />
     <Compile Include="Snapshots\Chart.cs" />
     <Compile Include="Snapshots\Classification.cs" />
+    <Compile Include="Snapshots\CurveOptions.cs" />
     <Compile Include="Snapshots\GroupingDefinition.cs" />
     <Compile Include="Snapshots\Mappers\ChartMapper.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationContext.cs" />
@@ -880,6 +881,8 @@
     <Compile Include="Snapshots\CompoundProcess.cs" />
     <Compile Include="Snapshots\Mappers\CompoundProcessMapper.cs" />
     <Compile Include="Snapshots\Mappers\CompoundPropertiesMapper.cs" />
+    <Compile Include="Snapshots\Mappers\CurveOptionsMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ObservedDataCollectionMappper.cs" />
     <Compile Include="Snapshots\Mappers\SimulationAnalysisContext.cs" />
     <Compile Include="Snapshots\Mappers\CurveChartMapper.cs" />
     <Compile Include="Snapshots\Mappers\CurveMapper.cs" />
@@ -920,6 +923,8 @@
     <Compile Include="Snapshots\Mappers\SolverSettingsMapper.cs" />
     <Compile Include="Snapshots\Mappers\TableFormulaMapper.cs" />
     <Compile Include="Snapshots\Molecule.cs" />
+    <Compile Include="Snapshots\ObservedDataCollection.cs" />
+    <Compile Include="Snapshots\ObservedDataCurveOptions.cs" />
     <Compile Include="Snapshots\Ontogeny.cs" />
     <Compile Include="Snapshots\OutputInterval.cs" />
     <Compile Include="Snapshots\OutputSchema.cs" />

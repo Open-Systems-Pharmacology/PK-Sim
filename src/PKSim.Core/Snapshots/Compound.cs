@@ -10,8 +10,8 @@ namespace PKSim.Core.Snapshots
 
    public class Compound : ParameterContainerSnapshotBase
    {
-      public bool IsSmallMolecule { get; set; }
-      public PlasmaProteinBindingPartner PlasmaProteinBindingPartner { get; set; }
+      public bool? IsSmallMolecule { get; set; }
+      public PlasmaProteinBindingPartner?PlasmaProteinBindingPartner { get; set; }
       public Alternative[] Lipophilicity { get; set; }
       public Alternative[] FractionUnbound { get; set; }
       public Alternative[] Solubility { get; set; }

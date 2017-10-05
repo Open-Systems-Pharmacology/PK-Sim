@@ -58,9 +58,11 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private CompoundProcessSelection[] snapshotProcessSelectionFrom(CompoundProcessesSelection compoundProcessesSelection)
       {
-         return compoundProcessesSelection.AllProcessSelectionGroups
+         var processSelection =  compoundProcessesSelection.AllProcessSelectionGroups
             .SelectMany(processSelectionsForGroup)
             .ToArray();
+
+         return processSelection.Any() ? processSelection : null;
       }
 
       private CompoundProcessSelection compoundProcessSelectionFor(IReactionMapping reactionMapping)

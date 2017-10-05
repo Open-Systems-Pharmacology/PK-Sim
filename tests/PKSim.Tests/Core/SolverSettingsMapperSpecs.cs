@@ -16,9 +16,8 @@ namespace PKSim.Core
 
       protected override Task Context()
       {
-         _solverSettingsFactory= A.Fake<ISolverSettingsFactory>(); 
-         sut = new SolverSettingsMapper(_solverSettingsFactory);
-
+         _solverSettingsFactory = A.Fake<ISolverSettingsFactory>();
+     
          _solverSettings = new SolverSettings
          {
             DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.USE_JACOBIAN),
@@ -29,13 +28,24 @@ namespace PKSim.Core
             DomainHelperForSpecs.ConstantParameterWithValue(1e-5).WithName(Constants.Parameters.REL_TOL),
             DomainHelperForSpecs.ConstantParameterWithValue(1e-7).WithName(Constants.Parameters.ABS_TOL)
          };
-         return Task.FromResult(true);
+
+         var solverSettings = A.Fake<SolverSettings>();
+         solverSettings.AbsTol = 1;
+         solverSettings.RelTol = 2;
+         solverSettings.MxStep = 3;
+         solverSettings.HMin = 4;
+         solverSettings.H0 = 5;
+         solverSettings.HMax = 6;
+         solverSettings.UseJacobian = false;
+         A.CallTo(() => _solverSettingsFactory.CreateDefault()).Returns(solverSettings);
+
+         sut = new SolverSettingsMapper(_solverSettingsFactory);
+         return _completed;
       }
    }
 
    public class When_mapping_the_solver_settings_to_snapshot : concern_for_SolverSettingsMapper
    {
-
       protected override async Task Because()
       {
          _snapshot = await sut.MapToSnapshot(_solverSettings);
@@ -63,19 +73,8 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_solverSettings);
 
-         var solverSettings = A.Fake<SolverSettings>();
-         solverSettings.AbsTol = 1;
-         solverSettings.RelTol = 2;
-         solverSettings.MxStep = 3;
-         solverSettings.HMin = 4;
-         solverSettings.H0 = 5;
-         solverSettings.HMax = 6;
-         solverSettings.UseJacobian = false;
-         A.CallTo(() => _solverSettingsFactory.CreateDefault()).Returns(solverSettings);
-
          _snapshot.H0 = null;
          _snapshot.HMax = null;
-
       }
 
       protected override async Task Because()
@@ -86,11 +85,11 @@ namespace PKSim.Core
       [Observation]
       public void should_update_values_that_were_set_in_the_snapshot()
       {
-         _newSolverSettings.AbsTol.ShouldBeEqualTo(_snapshot.AbsTol);         
-         _newSolverSettings.RelTol.ShouldBeEqualTo(_snapshot.RelTol);         
-         _newSolverSettings.MxStep.ShouldBeEqualTo(_snapshot.MxStep.Value);         
-         _newSolverSettings.HMin.ShouldBeEqualTo(_snapshot.HMin.Value);         
-         _newSolverSettings.UseJacobian.ShouldBeEqualTo(_snapshot.UseJacobian.Value);         
+         _newSolverSettings.AbsTol.ShouldBeEqualTo(_snapshot.AbsTol.Value);
+         _newSolverSettings.RelTol.ShouldBeEqualTo(_snapshot.RelTol.Value);
+         _newSolverSettings.MxStep.ShouldBeEqualTo(_snapshot.MxStep.Value);
+         _newSolverSettings.HMin.ShouldBeEqualTo(_snapshot.HMin.Value);
+         _newSolverSettings.UseJacobian.ShouldBeEqualTo(_snapshot.UseJacobian.Value);
       }
 
       [Observation]

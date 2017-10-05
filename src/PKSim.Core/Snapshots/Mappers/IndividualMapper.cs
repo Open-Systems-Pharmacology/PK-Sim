@@ -76,7 +76,7 @@ namespace PKSim.Core.Snapshots.Mappers
          MapSnapshotPropertiesToModel(individualSnapshot, individual);
          await updateIndividualParameters(individualSnapshot, individual);
          var molecules = await _moleculeMapper.MapToModels(individualSnapshot.Molecules, individual);
-         molecules.Each(individual.AddMolecule);
+         molecules?.Each(individual.AddMolecule);
          return individual;
       }
 
