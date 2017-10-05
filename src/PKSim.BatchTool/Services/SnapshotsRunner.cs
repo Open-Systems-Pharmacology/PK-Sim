@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
