@@ -921,6 +921,7 @@
     <Compile Include="Snapshots\Mappers\SimulationMapper.cs" />
     <Compile Include="Snapshots\Mappers\SnapshotMapper.cs" />
     <Compile Include="Snapshots\Mappers\SnapshotMapperBase.cs" />
+    <Compile Include="Snapshots\Mappers\SnapshotMapperBaseExtensions.cs" />
     <Compile Include="Snapshots\Mappers\SolverSettingsMapper.cs" />
     <Compile Include="Snapshots\Mappers\TableFormulaMapper.cs" />
     <Compile Include="Snapshots\Molecule.cs" />

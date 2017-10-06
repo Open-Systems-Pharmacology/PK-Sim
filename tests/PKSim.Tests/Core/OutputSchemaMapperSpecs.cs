@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using IOutputSchemaFactory = PKSim.Core.Model.IOutputSchemaFactory;
 
 namespace PKSim.Core
@@ -24,15 +22,15 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _outputIntervalMapper = A.Fake<OutputIntervalMapper>();
-         _outputSchemaFactory= A.Fake<IOutputSchemaFactory>();
-         _containerTask= A.Fake<IContainerTask>();
-         sut = new OutputSchemaMapper(_outputIntervalMapper, _outputSchemaFactory,_containerTask);
+         _outputSchemaFactory = A.Fake<IOutputSchemaFactory>();
+         _containerTask = A.Fake<IContainerTask>();
+         sut = new OutputSchemaMapper(_outputIntervalMapper, _outputSchemaFactory, _containerTask);
 
          _outputSchema = new OutputSchema();
          _outputInterval = new OutputInterval().WithName("Interval");
          _outputSchema.AddInterval(_outputInterval);
          _snapshotInterval = new Snapshots.OutputInterval();
-         A.CallTo(() => _outputIntervalMapper.MapToSnapshots(A<IEnumerable<OutputInterval>>.That.Contains(_outputInterval))).Returns(new []{_snapshotInterval });
+         A.CallTo(() => _outputIntervalMapper.MapToSnapshot(_outputInterval)).Returns(_snapshotInterval);
          return _completed;
       }
    }
@@ -55,7 +53,7 @@ namespace PKSim.Core
    {
       private OutputSchema _newOutputSchema;
       private OutputInterval _newInterval;
-      private string _newName = "UNIQUE_NAME";
+      private readonly string _newName = "UNIQUE_NAME";
 
       protected override async Task Context()
       {

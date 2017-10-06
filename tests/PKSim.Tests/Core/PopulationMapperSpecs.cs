@@ -41,7 +41,7 @@ namespace PKSim.Core
 
          _advancedParameters.AddAdvancedParameter(_advancedParameter);
          _advancedParameterSnapshot = new Snapshots.AdvancedParameter();
-         A.CallTo(() => _advancedParameterMapper.MapToSnapshots(A<IEnumerable<AdvancedParameter>>.That.Contains(_advancedParameter))).Returns(new[] {_advancedParameterSnapshot});
+         A.CallTo(() => _advancedParameterMapper.MapToSnapshot(_advancedParameter)).Returns(_advancedParameterSnapshot);
 
 
          _population = CreateRandomPopulation();

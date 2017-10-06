@@ -68,9 +68,9 @@ namespace PKSim.Core
 
          _snapshotProcess1 = new CompoundProcess();
          _snapshotProcess2 = new CompoundProcess();
-         A.CallTo(() => _processMapper.MapToSnapshots(A<IEnumerable<Model.CompoundProcess>>._)).Returns(new[] {_snapshotProcess1, _snapshotProcess2,});
+         A.CallTo(() => _processMapper.MapToSnapshot(_partialProcess)).Returns(_snapshotProcess1);
+         A.CallTo(() => _processMapper.MapToSnapshot(_systemicProcess)).Returns(_snapshotProcess2);
 
-         A.CallTo(() => _alternativeMapper.MapToSnapshots(A<IEnumerable<ParameterAlternative>>.That.Matches(x => x.Count() == 1))).Returns(new[] {new Alternative()});
          return _completed;
       }
 
@@ -177,11 +177,11 @@ namespace PKSim.Core
 
          _alternative = new ParameterAlternative().WithName("Alternative");
          _fractionUnboundParameterGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
-         A.CallTo(() => _alternativeMapper.MapToModels(_snapshot.FractionUnbound, _fractionUnboundParameterGroup)).Returns(new[] {_alternative});
+         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], _fractionUnboundParameterGroup)).Returns(_alternative);
 
          _snapshot.Processes = new[] {_snapshotProcess1};
          _newProcess = new EnzymaticProcess();
-         A.CallTo(() => _processMapper.MapToModels(_snapshot.Processes)).Returns(new[]{_newProcess, });
+         A.CallTo(() => _processMapper.MapToModel(_snapshotProcess1)).Returns(_newProcess);
       }
 
       private void clearCompound()

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots
@@ -8,6 +7,7 @@ namespace PKSim.Core.Snapshots
    {
       //Simple protocol properties
       public string ApplicationType { get; set; }
+
       public DosingIntervalId DosingInterval { get; set; }
       public string TargetOrgan { get; set; }
       public string TargetCompartment { get; internal set; }

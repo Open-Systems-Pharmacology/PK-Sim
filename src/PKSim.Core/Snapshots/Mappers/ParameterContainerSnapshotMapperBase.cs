@@ -39,8 +39,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          return AddParametersToSnapshot(model.AllParameters(x=> x.ParameterHasChanged()), snapshot);
       }
-
-    
+      
       protected Task UpdateParametersFromSnapshot(TSnapshot snapshot, IContainer container, string containerDesciptor)
       {
          var tasks = new List<Task>();
@@ -67,8 +66,6 @@ namespace PKSim.Core.Snapshots.Mappers
       }
 
       public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
-
-      public virtual Task<TModel[]> MapToModels(IEnumerable<TSnapshot> snapshots, TContext context) => MapToModels(snapshots, s => MapToModel(s, context));
 
       public override Task<TModel> MapToModel(TSnapshot snapshot)
       {

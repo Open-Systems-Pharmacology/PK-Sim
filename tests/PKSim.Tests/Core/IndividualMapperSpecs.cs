@@ -4,17 +4,16 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Batch.Mapper;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using IndividualMapper = PKSim.Core.Snapshots.Mappers.IndividualMapper;
 using SnapshotIndividual = PKSim.Core.Snapshots.Individual;
 using ModelIndividual = PKSim.Core.Model.Individual;
+using OriginData = PKSim.Core.Batch.OriginData;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
@@ -89,13 +88,14 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.ParameterFrom(_individual.OriginData.Age, A<string>._, A<IDimension>._)).Returns(_ageSnapshotParameter);
          A.CallTo(() => _parameterMapper.ParameterFrom(_individual.OriginData.Height, A<string>._, A<IDimension>._)).Returns(_heightSnapshotParameter);
 
-         _enzymeSnapshot = new Molecule { Type = QuantityType.Enzyme};
+         _enzymeSnapshot = new Molecule {Type = QuantityType.Enzyme};
          _transporterSnapshot = new Molecule {Type = QuantityType.Transporter};
 
-         A.CallTo(() => _moleculeMapper.MapToSnapshots(A<IEnumerable<IndividualMolecule>>._)).Returns(new []{_enzymeSnapshot, _transporterSnapshot, });
+         A.CallTo(() => _moleculeMapper.MapToSnapshot(_enzyme)).Returns(_enzymeSnapshot);
+         A.CallTo(() => _moleculeMapper.MapToSnapshot(_transporter)).Returns(_transporterSnapshot);
 
          _localizedParameterKidney = new LocalizedParameter {Path = "Organism|Kidney|PKidney"};
-         A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Contains(_parameterKidney))).Returns(new []{_localizedParameterKidney });
+         A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Contains(_parameterKidney))).Returns(new[] {_localizedParameterKidney});
          return Task.FromResult(true);
       }
    }
@@ -146,18 +146,18 @@ namespace PKSim.Core
       private ModelIndividual _newIndividual;
       private IndividualMolecule _molecule1;
       private IndividualMolecule _molecule2;
-      private Batch.OriginData _batchOriginData;
+      private OriginData _batchOriginData;
 
       protected override async Task Context()
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_individual);
 
-         A.CallTo(() => _originDataMapper.MapFrom(A<Batch.OriginData>._))
-            .Invokes(x => _batchOriginData = x.GetArgument<Batch.OriginData>(0));
-            
+         A.CallTo(() => _originDataMapper.MapFrom(A<OriginData>._))
+            .Invokes(x => _batchOriginData = x.GetArgument<OriginData>(0));
 
-         A.CallTo(() => _individualFactory.CreateAndOptimizeFor(A<OriginData>._, _snapshot.Seed))
+
+         A.CallTo(() => _individualFactory.CreateAndOptimizeFor(A<Model.OriginData>._, _snapshot.Seed))
             .Returns(_individual);
 
          _snapshot.Name = "New individual";
@@ -173,7 +173,8 @@ namespace PKSim.Core
          _molecule1 = new IndividualEnzyme().WithName("Mol1");
          _molecule2 = new IndividualEnzyme().WithName("Mol2");
 
-         A.CallTo(() => _moleculeMapper.MapToModels(_snapshot.Molecules, _individual)).Returns(new[] {_molecule1,_molecule2});
+         A.CallTo(() => _moleculeMapper.MapToModel(_enzymeSnapshot, _individual)).Returns(_molecule1);
+         A.CallTo(() => _moleculeMapper.MapToModel(_transporterSnapshot, _individual)).Returns(_molecule2);
 
 
          A.CallTo(() => _dimensionRepository.Mass.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value)).Returns(10);
@@ -197,8 +198,8 @@ namespace PKSim.Core
          _batchOriginData.Height.ShouldBeEqualTo(30);
 
          double.IsNaN(_batchOriginData.GestationalAge).ShouldBeTrue();
-
       }
+
       [Observation]
       public void should_have_created_an_event_with_the_expected_properties()
       {

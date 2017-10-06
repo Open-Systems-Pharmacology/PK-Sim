@@ -35,7 +35,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (pivotPopulatonAnalysis == null)
             return;
 
-         fields.Each(x =>
+         fields?.Each(x =>
          {
             var position = pivotPopulatonAnalysis.GetPosition(x.Name);
             x.Area = position.Area;
@@ -90,7 +90,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ModelPopulationAnalysis> MapToModel(SnapshotPopulationAnalysis snapshot, ModelPopulationAnalysis populationAnalysis)
       {
          var fields = await _populationAnalysisFieldMapper.MapToModels(snapshot.Fields);
-         fields.Each(populationAnalysis.Add);
+         fields?.Each(populationAnalysis.Add);
          updateModelFieldPositions(populationAnalysis, snapshot.Fields);
          mapIf<PopulationBoxWhiskerAnalysis>(snapshot, populationAnalysis, mapBowWiskerAnalysisToModel);
          mapIf<PopulationStatisticalAnalysis>(snapshot, populationAnalysis, mapStatisticalAnalysisToModel);
@@ -103,7 +103,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (pivotPopulatonAnalysis == null)
             return;
 
-         fields.Each(x => pivotPopulatonAnalysis.SetPosition(x.Name, x.Area, x.Index));
+         fields?.Each(x => pivotPopulatonAnalysis.SetPosition(x.Name, x.Area, x.Index));
       }
    }
 }

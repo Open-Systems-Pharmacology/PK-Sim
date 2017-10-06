@@ -113,12 +113,12 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).Returns(_populationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).Returns(_observedDataSnapshot);
 
-         A.CallTo(() => _simulationComparisonMapper.MapToSnapshots(_project.AllSimulationComparisons)).Returns(new []{ _simulationComparisonSnapshot });
+         A.CallTo(() => _simulationComparisonMapper.MapToSnapshot(_simulationComparison)).Returns(_simulationComparisonSnapshot);
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableObservedData>(_project)).Returns(new[] {_observedDataClassificationSnapshot});
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableSimulation>(_project)).Returns(new[] {_simulationClassificationSnapshot});
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableComparison>(_project)).Returns(new[] {_comparisonClassificationSnapshot});
 
-         A.CallTo(() => _simulationMapper.MapToSnapshots(A<IEnumerable<Model.Simulation>>.That.Contains(_simulation), _project)).Returns(new []{_simulationSnapshot });
+         A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).Returns(_simulationSnapshot);
 
          return _completed;
       }
@@ -213,8 +213,8 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToModel(_populationSnapshot)).Returns(_population);
          A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).Returns(_observedData);
 
-         A.CallTo(() => _simulationMapper.MapToModels(A<IEnumerable<Simulation>>.That.Contains(_simulationSnapshot), A<PKSimProject>._)).Returns(new Model.Simulation[] {_simulation});
-         A.CallTo(() => _simulationComparisonMapper.MapToModels(A<IEnumerable<SimulationComparison>>.That.Contains(_simulationComparisonSnapshot), A<PKSimProject>._)).Returns(new[] {_simulationComparison});
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<PKSimProject>._)).Returns(_simulation);
+         A.CallTo(() => _simulationComparisonMapper.MapToModel(_simulationComparisonSnapshot, A<PKSimProject>._)).Returns(_simulationComparison);
       }
 
       protected override async Task Because()
