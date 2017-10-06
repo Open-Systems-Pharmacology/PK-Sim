@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -24,6 +24,7 @@ namespace PKSim.Core
       protected Schema _schema;
       protected IParameter _advancedProtocolParameter;
       protected IDimensionRepository _dimensionRepository;
+      protected Snapshots.Schema _snapshotSchema;
 
       protected override Task Context()
       {
@@ -61,7 +62,8 @@ namespace PKSim.Core
          _advancedProtocol.Add(_advancedProtocolParameter);
          A.CallTo(() => _parameterMapper.MapToSnapshot(_advancedProtocolParameter)).Returns(new Parameter().WithName(_advancedProtocolParameter.Name));
 
-         A.CallTo(() => _schemaMapper.MapToSnapshot(_schema)).Returns(new Snapshots.Schema().WithName(_schema.Name));
+         _snapshotSchema = new Snapshots.Schema().WithName(_schema.Name);
+         A.CallTo(() => _schemaMapper.MapToSnapshot(_schema)).Returns(_snapshotSchema);
 
          A.CallTo(() => _dimensionRepository.Time).Returns(DomainHelperForSpecs.TimeDimensionForSpecs());
 
@@ -175,7 +177,7 @@ namespace PKSim.Core
          _snapshot.Description = "The description that will be deserialized";
 
          _newSchema = new Schema().WithName("I am a new schema");
-         A.CallTo(() => _schemaMapper.MapToModel(_snapshot.Schemas.FindByName(_schema.Name))).Returns(_newSchema);
+         A.CallTo(() => _schemaMapper.MapToModel(_snapshotSchema)).Returns(_newSchema);
       }
 
       protected override async Task Because()

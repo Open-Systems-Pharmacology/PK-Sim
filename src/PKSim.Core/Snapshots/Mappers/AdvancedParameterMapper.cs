@@ -54,7 +54,7 @@ namespace PKSim.Core.Snapshots.Mappers
          advancedParameterContainer.RemoveAllAdvancedParameters();
          var parameterCache = advancedParameterContainer.AllParameters(_entityPathResolver);
 
-         var advancedParameters = await MapToModels(snapshotAdvancedParameters, parameterCache);
+         var advancedParameters = await this.MapToModels(snapshotAdvancedParameters, parameterCache);
 
          advancedParameters.Each(x => advancedParameterContainer.AddAdvancedParameter(x, generateRandomValues: true));
       }

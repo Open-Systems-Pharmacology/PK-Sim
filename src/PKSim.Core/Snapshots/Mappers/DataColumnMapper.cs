@@ -37,9 +37,9 @@ namespace PKSim.Core.Snapshots.Mappers
             x.Unit = SnapshotValueFor(dataColumn.DisplayUnit.Name);
          });
 
-         snapshot.RelatedColumns = await mapRelatedColumns(dataColumn.RelatedColumns);
-         snapshot.DataInfo = await mapDataInfo(dataColumn.DataInfo);
-         snapshot.QuantityInfo = await mapQuantityInfo(dataColumn.QuantityInfo);
+         snapshot.RelatedColumns = await this.MapToSnapshots(dataColumn.RelatedColumns);
+         snapshot.DataInfo = await _dataInfoMapper.MapToSnapshot(dataColumn.DataInfo);
+         snapshot.QuantityInfo = await _quantityInfoMapper.MapToSnapshot(dataColumn.QuantityInfo);
          return snapshot;
       }
 
@@ -53,25 +53,6 @@ namespace PKSim.Core.Snapshots.Mappers
          return dataColumn.ConvertToDisplayValues(dataColumn.Values).ToList();
       }
 
-      private Task<SnapshotQuantityInfo> mapQuantityInfo(ModelQuantityInfo quantityInfo)
-      {
-         return _quantityInfoMapper.MapToSnapshot(quantityInfo);
-      }
-
-      private Task<DataInfo> mapDataInfo(OSPSuite.Core.Domain.Data.DataInfo dataInfo)
-      {
-         return _dataInfoMapper.MapToSnapshot(dataInfo);
-      }
-
-      private async Task<SnapshotDataColumn[]> mapRelatedColumns(IReadOnlyCollection<ModelDataColumn> relatedColumns)
-      {
-         if (!relatedColumns.Any())
-            return null;
-
-         var tasks = relatedColumns.Select(MapToSnapshot);
-         return await Task.WhenAll(tasks);
-      }
-
       public override async Task<ModelDataColumn> MapToModel(SnapshotDataColumn snapshot, ModelDataRepository dataRepository)
       {
          var dimension = dimensionFrom(snapshot);
@@ -81,13 +62,9 @@ namespace PKSim.Core.Snapshots.Mappers
          dataColumn.Values = valuesInBaseUnits(dataColumn, snapshot.Values);
          dataColumn.DataInfo = await _dataInfoMapper.MapToModel(snapshot.DataInfo);
          dataColumn.QuantityInfo = await _quantityInfoMapper.MapToModel(snapshot.QuantityInfo);
-         var tasks = snapshot.RelatedColumns?.Select(relatedColumn => MapToModel(relatedColumn, dataRepository));
 
-         if (tasks == null)
-            return dataColumn;
-
-         var relatedColumns = await Task.WhenAll(tasks);
-         relatedColumns.Each(dataColumn.AddRelatedColumn);
+         var relatedColumns = await this.MapToModels(snapshot.RelatedColumns, dataRepository);
+         relatedColumns?.Each(dataColumn.AddRelatedColumn);
 
          return dataColumn;
       }

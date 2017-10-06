@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -35,10 +34,7 @@ namespace PKSim.Core.Snapshots.Mappers
          }
          return null;
       }
-
-      private Task<Schema> snapshotSchemaFrom(Model.Schema schema) => _schemaMapper.MapToSnapshot(schema);
-
-      public override async Task<ModelProtocol> MapToModel(SnapshotProtocol snapshotProtocol)
+     public override async Task<ModelProtocol> MapToModel(SnapshotProtocol snapshotProtocol)
       {
          var modelProtocol = await createModelProtocolFrom(snapshotProtocol);
          MapSnapshotPropertiesToModel(snapshotProtocol, modelProtocol);
@@ -60,7 +56,7 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             x.TimeUnit = advancedProtocol.TimeUnit.Name;
          });
-         snapshot.Schemas = await Task.WhenAll(advancedProtocol.AllSchemas.Select(snapshotSchemaFrom));
+         snapshot.Schemas = await _schemaMapper.MapToSnapshots(advancedProtocol.AllSchemas);
          return snapshot;
       }
 
@@ -70,12 +66,10 @@ namespace PKSim.Core.Snapshots.Mappers
          advancedProtocol.RemoveAllSchemas();
          advancedProtocol.TimeUnit = _dimensionRepository.Time.UnitOrDefault(snapshotProtocol.TimeUnit);
 
-         if (snapshotProtocol.Schemas != null)
-         {
-            var tasks = snapshotProtocol.Schemas.Select(_schemaMapper.MapToModel);
-            advancedProtocol.AddChildren(await Task.WhenAll(tasks));
-         }
+         if (snapshotProtocol.Schemas == null)
+            return advancedProtocol;
 
+         advancedProtocol.AddChildren(await _schemaMapper.MapToModels(snapshotProtocol.Schemas));
          return advancedProtocol;
       }
 

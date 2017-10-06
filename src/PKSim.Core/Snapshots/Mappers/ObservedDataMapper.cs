@@ -34,8 +34,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<DataColumn[]> mapColumns(IEnumerable<ModelDataColumn> dataRepositoryColumns)
       {
-         var tasks = dataRepositoryColumns.Select(_dataColumnMapper.MapToSnapshot);
-         return Task.WhenAll(tasks);
+         return _dataColumnMapper.MapToSnapshots(dataRepositoryColumns);
       }
 
       private Task<SnapshotExtendedProperties> mapExtendedProperties(ModelExtendedProperties extendedProperties)
@@ -49,10 +48,7 @@ namespace PKSim.Core.Snapshots.Mappers
          MapSnapshotPropertiesToModel(snapshot, dataRepository);
 
          dataRepository.Add(await _dataColumnMapper.MapToModel(snapshot.BaseGrid, dataRepository));
-
-         var tasks = snapshot.Columns.Select(x => _dataColumnMapper.MapToModel(x, dataRepository));
-         dataRepository.AddColumns(await Task.WhenAll(tasks));
-
+         dataRepository.AddColumns(await _dataColumnMapper.MapToModels(snapshot.Columns, dataRepository) );
          dataRepository.ExtendedProperties.AddRange(await _extendedPropertiesMapper.MapToModel(snapshot.ExtendedProperties));
 
          return dataRepository;

@@ -74,7 +74,7 @@ namespace PKSim.Core
          _curveChart = new CurveChart();
          A.CallTo(() => _individualSimulationComparisonMapper.MapToSnapshot(_individualSimulationComparison)).Returns(_curveChart);
 
-         A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshots(A<IEnumerable<PopulationAnalysisChart>>.That.Contains(_populationSimulationAnalysis))).Returns(new[] {_populationAnalysisChartSnapshot});
+         A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshot(_populationSimulationAnalysis)).Returns(_populationAnalysisChartSnapshot);
 
 
          _project = new PKSimProject();
@@ -199,7 +199,7 @@ namespace PKSim.Core
          var populationSimulationComparison = new PopulationSimulationComparison();
          A.CallTo(() => _objectBaseFactory.Create<PopulationSimulationComparison>()).Returns(populationSimulationComparison);
 
-         A.CallTo(() => _populationAnalysisChartMapper.MapToModels(_snapshot.PopulationComparisons, A<SimulationAnalysisContext>._)).Returns(new []{ _populationSimulationAnalysis });
+         A.CallTo(() => _populationAnalysisChartMapper.MapToModel(_populationAnalysisChartSnapshot, A<SimulationAnalysisContext>._)).Returns(_populationSimulationAnalysis );
       }
 
       protected override async Task Because()

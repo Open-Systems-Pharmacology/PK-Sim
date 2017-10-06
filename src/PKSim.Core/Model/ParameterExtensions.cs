@@ -109,7 +109,7 @@ namespace PKSim.Core.Model
       // This is just a dymmy method for now to satisfy requalification project
       public static bool ParameterHasChanged(this IParameter parameter)
       {
-         var canBeEdited = parameter.Visible && parameter.Editable && parameter.Formula.IsConstant();
+         var canBeEdited = parameter.Visible && parameter.Formula.IsConstant();
          return parameter.ValueDiffersFromDefault() || canBeEdited && parameter.Value != 0;
       }
 

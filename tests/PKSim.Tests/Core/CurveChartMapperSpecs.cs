@@ -61,12 +61,12 @@ namespace PKSim.Core
          _curveChart.AddCurve(_curve);
 
          _snapshotAxis = new Snapshots.Axis();
-         A.CallTo(() => _axisMapper.MapToSnapshots(_curveChart.Axes)).Returns(new[] {_snapshotAxis});
+         A.CallTo(() => _axisMapper.MapToSnapshot(_axis)).Returns(_snapshotAxis);
 
          _snapshotCurve = new Snapshots.Curve();
-         A.CallTo(() => _curveMapper.MapToSnapshots(_curveChart.Curves)).Returns(new[] {_snapshotCurve});
+         A.CallTo(() => _curveMapper.MapToSnapshot(_curve)).Returns(_snapshotCurve);
 
-         return Task.FromResult(true);
+         return _completed;
       }
    }
 
@@ -109,8 +109,8 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_curveChart);
          _snapshot.Axes = new[] {_snapshotAxis,};
 
-         A.CallTo(() => _axisMapper.MapToModels(_snapshot.Axes)).Returns(new[] {_axis});
-         A.CallTo(() => _curveMapper.MapToModels(_snapshot.Curves, _context)).Returns(new[] {_curve});
+         A.CallTo(() => _axisMapper.MapToModel(_snapshotAxis)).Returns(_axis);
+         A.CallTo(() => _curveMapper.MapToModel(_snapshotCurve, _context)).Returns(_curve);
 
          A.CallTo(() => _idGenerator.NewId()).Returns(_newId);
       }
