@@ -3,7 +3,7 @@ namespace PKSim.Core.Model
    /// <summary>
    /// Defines the mapping of a <see cref="CompoundProcess"/> in a <see cref="Compound"/> and an <see cref="IndividualMolecule"/> in an <see cref="Individual"/>
    /// </summary>
-   public interface IPartialProcessMapping
+   public interface IProcessMapping
    {
       /// <summary>
       ///    Process name as defined in <see cref="Compound"/>
@@ -24,7 +24,7 @@ namespace PKSim.Core.Model
    /// <summary>
    /// Defines a reaction mapping resulting in the creation of a product
    /// </summary>
-   public interface IReactionMapping : IPartialProcessMapping
+   public interface IReactionMapping : IProcessMapping
    {
       /// <summary>
       ///    Returns the name of the product resulting of the reaction induced by the process and the drug

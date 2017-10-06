@@ -2,7 +2,7 @@
 
 namespace PKSim.Core.Model
 {
-   public class InteractionSelection : IPartialProcessMapping
+   public class InteractionSelection : IProcessMapping
    {
       public virtual string ProcessName { get; set; }
       public virtual string MoleculeName { get; set; }

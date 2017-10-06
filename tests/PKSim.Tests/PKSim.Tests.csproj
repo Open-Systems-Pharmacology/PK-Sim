@@ -283,6 +283,7 @@
     <Compile Include="Core\PopulationAnalysisMapperSpecs.cs" />
     <Compile Include="Core\PopulationMapperSpecs.cs" />
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
+    <Compile Include="Core\ProcessMappingMapperSpecs.cs" />
     <Compile Include="Core\ProjectMapperSpecs.cs" />
     <Compile Include="Core\QuantityInfoMapperSpecs.cs" />
     <Compile Include="Core\RandomPopulationSettingsMapperSpecs.cs" />

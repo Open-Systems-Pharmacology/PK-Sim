@@ -13,8 +13,8 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class CompoundPropertiesContext
    {
-      public PKSimProject Project { get;  }
-      public Model.Simulation Simulation { get;  }
+      public PKSimProject Project { get; }
+      public Model.Simulation Simulation { get; }
 
       public CompoundPropertiesContext(PKSimProject project, Model.Simulation simulation)
       {
@@ -26,21 +26,26 @@ namespace PKSim.Core.Snapshots.Mappers
    public class CompoundPropertiesMapper : SnapshotMapperBase<ModelCompoundProperties, SnapshotCompoundProperties, CompoundPropertiesContext, PKSimProject>
    {
       private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
+      private readonly ProcessMappingMapper _processMappingMapper;
 
-      public CompoundPropertiesMapper(CalculationMethodCacheMapper calculationMethodCacheMapper)
+      public CompoundPropertiesMapper(CalculationMethodCacheMapper calculationMethodCacheMapper, ProcessMappingMapper processMappingMapper)
       {
          _calculationMethodCacheMapper = calculationMethodCacheMapper;
+         _processMappingMapper = processMappingMapper;
       }
 
       public override async Task<SnapshotCompoundProperties> MapToSnapshot(ModelCompoundProperties modelCompoundProperties, PKSimProject project)
       {
          var compound = modelCompoundProperties.Compound;
-         var snapshot = await SnapshotFrom(modelCompoundProperties, x => { x.Name = compound.Name; });
+         var snapshot = await SnapshotFrom(modelCompoundProperties, x =>
+         {
+            x.Name = compound.Name;
+            x.Alternatives = alternativeSelectionsFrom(compound, modelCompoundProperties);
+            x.Protocol = protocolPropertiesFrom(modelCompoundProperties.ProtocolProperties, project);
+         });
 
          snapshot.CalculationMethods = await _calculationMethodCacheMapper.MapToSnapshot(modelCompoundProperties.CalculationMethodCache);
-         snapshot.Alternatives = alternativeSelectionsFrom(compound, modelCompoundProperties);
-         snapshot.Processes = snapshotProcessSelectionFrom(modelCompoundProperties.Processes);
-         snapshot.Protocol = protocolPropertiesFrom(modelCompoundProperties.ProtocolProperties, project);
+         snapshot.Processes = await snapshotProcessSelectionFrom(modelCompoundProperties.Processes);
          return snapshot;
       }
 
@@ -56,57 +61,9 @@ namespace PKSim.Core.Snapshots.Mappers
          };
       }
 
-      private CompoundProcessSelection[] snapshotProcessSelectionFrom(CompoundProcessesSelection compoundProcessesSelection)
+      private Task<CompoundProcessSelection[]> snapshotProcessSelectionFrom(CompoundProcessesSelection compoundProcessesSelection)
       {
-         var processSelection =  compoundProcessesSelection.AllProcessSelectionGroups
-            .SelectMany(processSelectionsForGroup)
-            .ToArray();
-
-         return processSelection.Any() ? processSelection : null;
-      }
-
-      private CompoundProcessSelection compoundProcessSelectionFor(IReactionMapping reactionMapping)
-      {
-         var compoundProcessSelection = new CompoundProcessSelection
-         {
-            Name = reactionMapping.ProcessName
-         };
-
-         switch (reactionMapping)
-         {
-            case EnzymaticProcessSelection enzymaticProcessSelection:
-               compoundProcessSelection.MoleculeName = SnapshotValueFor(enzymaticProcessSelection.MoleculeName);
-               compoundProcessSelection.MetaboliteName = SnapshotValueFor(enzymaticProcessSelection.MetaboliteName);
-               break;
-            case ProcessSelection processSelection:
-               compoundProcessSelection.MoleculeName = SnapshotValueFor(processSelection.MoleculeName);
-               break;
-         }
-
-         return compoundProcessSelection;
-      }
-
-      private IReactionMapping reactionMappingFrom(CompoundProcessSelection compoundProcessSelection, Model.CompoundProcess process)
-      {
-         switch (process)
-         {
-            case SystemicProcess systemicProcess:
-               return new SystemicProcessSelection
-               {
-                  ProcessType = systemicProcess.SystemicProcessType,
-               };
-            case EnzymaticProcess _:
-               return new EnzymaticProcessSelection
-               {
-                  MoleculeName = compoundProcessSelection.MoleculeName,
-                  MetaboliteName = compoundProcessSelection.MetaboliteName,
-               };
-            default:
-               return new ProcessSelection
-               {
-                  MoleculeName = compoundProcessSelection.MoleculeName,
-               };
-         }
+         return _processMappingMapper.MapToSnapshots(compoundProcessesSelection.AllEnabledProcesses());
       }
 
       private CompoundGroupSelection[] alternativeSelectionsFrom(Model.Compound compound, ModelCompoundProperties modelCompoundProperties)
@@ -120,11 +77,6 @@ namespace PKSim.Core.Snapshots.Mappers
          });
 
          return !alternativesSelections.Any() ? null : alternativesSelections.ToArray();
-      }
-
-      private IEnumerable<CompoundProcessSelection> processSelectionsForGroup(ProcessSelectionGroup processSelectionGroup)
-      {
-         return processSelectionGroup.AllEnabledProcesses().Select(compoundProcessSelectionFor);
       }
 
       private FormulationSelection[] formulationMappingFrom(IReadOnlyList<FormulationMapping> formulationMappings, PKSimProject project)
@@ -150,7 +102,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          await _calculationMethodCacheMapper.MapToModel(snapshot.CalculationMethods, compoundProperties.CalculationMethodCache);
          updateAlternativeSelections(snapshot.Alternatives, compoundProperties);
-         compoundProperties.Processes = modelProcessSelectionFrom(snapshot.Processes, compoundProperties.Compound);
+         compoundProperties.Processes = await modelProcessSelectionFrom(snapshot.Processes, compoundProperties.Compound);
          compoundProperties.ProtocolProperties = modelProtocolPropertiesFrom(snapshot.Protocol, simulation, context.Project);
 
          return compoundProperties;
@@ -159,7 +111,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private ProtocolProperties modelProtocolPropertiesFrom(ProtocolSelection snapshotProtocol, Model.Simulation simulation, PKSimProject project)
       {
          var protocolProperties = new ProtocolProperties();
-         if(snapshotProtocol==null)
+         if (snapshotProtocol == null)
             return protocolProperties;
 
          var protocol = project.BuildingBlockByName<Model.Protocol>(snapshotProtocol.Name);
@@ -183,32 +135,28 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      private CompoundProcessesSelection modelProcessSelectionFrom(CompoundProcessSelection[] snapshotProcesses, Model.Compound compound)
+      private async Task<CompoundProcessesSelection> modelProcessSelectionFrom(CompoundProcessSelection[] snapshotProcesses, Model.Compound compound)
       {
          var compoundProcessesSelection = new CompoundProcessesSelection();
-         snapshotProcesses?.Each(x =>
-         {
-            var process = compound.ProcessByName(x.Name);
-            if (process == null)
-               throw new SnapshotOutdatedException(PKSimConstants.Error.ProcessNotFoundInCompound(x.Name, compound.Name));
+         if (snapshotProcesses == null)
+            return null;
 
-            addProcessToProcessSelection(compoundProcessesSelection, x, process);
-         });
+         foreach (var snapshotProcess in snapshotProcesses)
+         {
+            var process = compound.ProcessByName(snapshotProcess.Name);
+            if (process == null)
+               throw new SnapshotOutdatedException(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotProcess.Name, compound.Name));
+
+            await addProcessToProcessSelection(compoundProcessesSelection, snapshotProcess, process);
+         }
 
          return compoundProcessesSelection;
       }
 
-      private void addProcessToProcessSelection(CompoundProcessesSelection compoundProcessesSelection, CompoundProcessSelection compoundProcessSelection, Model.CompoundProcess process)
+      private async Task addProcessToProcessSelection(CompoundProcessesSelection compoundProcessesSelection, CompoundProcessSelection compoundProcessSelection, Model.CompoundProcess process)
       {
          var processSelectionGroup = selectionGroupFor(compoundProcessesSelection, process);
-         addProcessToProcessSelectionGroup(processSelectionGroup, compoundProcessSelection, process);
-      }
-
-      private void addProcessToProcessSelectionGroup(ProcessSelectionGroup processSelectionGroup, CompoundProcessSelection compoundProcessSelection, Model.CompoundProcess process)
-      {
-         var reactionMapping = reactionMappingFrom(compoundProcessSelection, process);
-         reactionMapping.ProcessName = compoundProcessSelection.Name;
-         reactionMapping.CompoundName = process.ParentCompound.Name;
+         var reactionMapping = await _processMappingMapper.MapToModel(compoundProcessSelection, process);
          processSelectionGroup.AddProcessSelection(reactionMapping);
       }
 

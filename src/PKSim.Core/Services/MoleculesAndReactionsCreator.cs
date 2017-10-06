@@ -374,7 +374,7 @@ namespace PKSim.Core.Services
          _moleculeWithTurnoverReactions.Add(molecule);
       }
 
-      private void addTransportProcess(IMoleculeBuilder drug, IPartialProcessMapping compoundProcessMapping, CompoundProperties compoundProperties)
+      private void addTransportProcess(IMoleculeBuilder drug, IProcessMapping compoundProcessMapping, CompoundProperties compoundProperties)
       {
          var compound = compoundProperties.Compound;
          var process = compound.ProcessByName(compoundProcessMapping.ProcessName);
@@ -394,7 +394,7 @@ namespace PKSim.Core.Services
          drug.AddTransporterMoleculeContainer(transporterMoleculeContainer);
       }
 
-      private bool isRenalClearance(IPartialProcessMapping compoundProcessMapping)
+      private bool isRenalClearance(IProcessMapping compoundProcessMapping)
       {
          var systemicPocess = compoundProcessMapping as SystemicProcessSelection;
          if (systemicPocess == null) return false;

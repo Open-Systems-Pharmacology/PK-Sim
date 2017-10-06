@@ -1,12 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Castle.Core.Internal;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using Compound = PKSim.Core.Model.Compound;
 using CompoundProperties = PKSim.Core.Snapshots.CompoundProperties;
 using Formulation = PKSim.Core.Model.Formulation;
@@ -31,13 +33,18 @@ namespace PKSim.Core
       private ParameterAlternativeGroup _parameterAlternativeGroupWithTwoAlternatives;
       protected CompoundGroupSelection _compoungGroupSelectioTwoAlternatives;
       protected PKSimProject _project;
+      private ProcessMappingMapper _processMappingMapper;
+      protected CompoundProcessSelection _snapshotProcess1;
+      protected CompoundProcessSelection _snapshotProcess2;
+      protected CompoundProcessSelection _snapshotProcess3;
 
       protected override Task Context()
       {
          _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
+         _processMappingMapper = A.Fake<ProcessMappingMapper>();
          _project = new PKSimProject();
          _calculationMethodSnapshot = new CalculationMethodCache();
-         sut = new CompoundPropertiesMapper(_calculationMethodCacheMapper);
+         sut = new CompoundPropertiesMapper(_calculationMethodCacheMapper, _processMappingMapper);
 
          _compoungGroupSelectionOneAlternative = new CompoundGroupSelection
          {
@@ -76,32 +83,16 @@ namespace PKSim.Core
          _compoundProperties.AddCompoundGroupSelection(_compoungGroupSelectioTwoAlternatives);
          _compoundProperties.Compound = _compound;
 
-         _metabolizationEnzymaticPartialProcess = new EnzymaticProcessSelection
-         {
-            CompoundName = _compound.Name,
-            MetaboliteName = "META",
-            MoleculeName = "CYP",
-            ProcessName = "MetaProcess"
-         };
-
-         _specificBindingPartialProcess = new ProcessSelection
-         {
-            CompoundName = _compound.Name,
-            MoleculeName = "BINDER",
-            ProcessName = "BindingProcess"
-         };
-
-         _transportSystemicProcess = new SystemicProcessSelection
-         {
-            CompoundName = _compound.Name,
-            ProcessName = "SystemicTransport",
-            ProcessType = SystemicProcessTypes.Biliary
-         };
-
+         _metabolizationEnzymaticPartialProcess = new EnzymaticProcessSelection();
+         _specificBindingPartialProcess = new ProcessSelection();
+         _transportSystemicProcess = new SystemicProcessSelection {ProcessType = SystemicProcessTypes.Biliary};
          _compoundProperties.Processes.MetabolizationSelection.AddPartialProcessSelection(_metabolizationEnzymaticPartialProcess);
          _compoundProperties.Processes.SpecificBindingSelection.AddPartialProcessSelection(_specificBindingPartialProcess);
          _compoundProperties.Processes.TransportAndExcretionSelection.AddSystemicProcessSelection(_transportSystemicProcess);
 
+         _snapshotProcess1 =new CompoundProcessSelection();
+         _snapshotProcess2 =new CompoundProcessSelection();
+         _snapshotProcess3 =new CompoundProcessSelection();
 
          _formulation = new Formulation
          {
@@ -116,6 +107,8 @@ namespace PKSim.Core
 
          _project.AddBuildingBlock(_formulation);
          A.CallTo(() => _calculationMethodCacheMapper.MapToSnapshot(_compoundProperties.CalculationMethodCache)).Returns(_calculationMethodSnapshot);
+         A.CallTo(() => _processMappingMapper.MapToSnapshots(A<IEnumerable<IProcessMapping>>.That.Matches(x => x.ContainsAll(_compoundProperties.Processes.AllEnabledProcesses()))))
+            .Returns(new[] {_snapshotProcess1, _snapshotProcess2, _snapshotProcess3});
 
          return Task.FromResult(true);
       }
@@ -152,19 +145,8 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_used_processes_to_snapshot()
       {
-         _snapshot.Processes.Length.ShouldBeEqualTo(3);
-         var snapshotProcess = _snapshot.Processes.Find(x => x.Name == _metabolizationEnzymaticPartialProcess.ProcessName);
-         snapshotProcess.MoleculeName.ShouldBeEqualTo(_metabolizationEnzymaticPartialProcess.MoleculeName);
-         snapshotProcess.MetaboliteName.ShouldBeEqualTo(_metabolizationEnzymaticPartialProcess.MetaboliteName);
-
-         snapshotProcess = _snapshot.Processes.Find(x => x.Name == _specificBindingPartialProcess.ProcessName);
-         snapshotProcess.MoleculeName.ShouldBeEqualTo(_specificBindingPartialProcess.MoleculeName);
-         snapshotProcess.MetaboliteName.ShouldBeNull();
-
-         snapshotProcess = _snapshot.Processes.Find(x => x.Name == _transportSystemicProcess.ProcessName);
-         snapshotProcess.MoleculeName.ShouldBeNull();
-         snapshotProcess.MetaboliteName.ShouldBeNull();
-      }
+         _snapshot.Processes.ShouldOnlyContain(_snapshotProcess1, _snapshotProcess2, _snapshotProcess3);
+     }
 
       [Observation]
       public void should_save_alternatives_with_at_least_two_alternatives()

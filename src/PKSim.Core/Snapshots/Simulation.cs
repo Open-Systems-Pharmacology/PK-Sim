@@ -21,5 +21,7 @@
 
       //Population analyses (only set for population simulation)
       public PopulationAnalysisChart[] PopulationAnalyses { get; set; }
+
+      public CompoundProcessSelection[] Interactions { get; set; }
    }
 }
