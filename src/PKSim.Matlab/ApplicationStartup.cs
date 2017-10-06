@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using OSPSuite.Utility.Container;
+using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
@@ -43,6 +44,7 @@ namespace PKSim.Matlab
 
             //no computation required in matlab interface
             InfrastructureRegister.RegisterSerializationDependencies(registerSimModelSchema: false);
+            InfrastructureRegister.RegisterWorkspace<CLIWorkspace>();
          }
       }
 

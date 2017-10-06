@@ -4,7 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using PKSim.BatchTool.Services;
+using PKSim.CLI.Core.Services;
 using PKSim.Core.Batch;
 using PKSim.Core.Model;
 using PKSim.Core.Services;

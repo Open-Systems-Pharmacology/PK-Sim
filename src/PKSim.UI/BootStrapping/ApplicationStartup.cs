@@ -129,10 +129,7 @@ namespace PKSim.UI.BootStrapping
       /// </summary>
       private void finalizeRegistration(IContainer container)
       {
-         var workspace = container.Resolve<IWorkspace>();
-         container.RegisterImplementationOf<IWithWorkspaceLayout>(workspace);
-         container.RegisterImplementationOf<OSPSuite.Core.IWorkspace>(workspace);
-
+         InfrastructureRegister.RegisterWorkspace();
          //Create one instance of the invokers so that the object is available in the application 
          //since the object is not created anywhere and is only used as event listener
          container.Resolve<ICloseSubjectPresenterInvoker>();

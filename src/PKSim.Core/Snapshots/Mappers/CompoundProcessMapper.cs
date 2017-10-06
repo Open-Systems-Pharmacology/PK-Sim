@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -77,8 +79,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          partialProcess.MoleculeName = snapshot.Molecule;
 
-         var enzymaticProcess = partialProcess as EnzymaticProcess;
-         if (enzymaticProcess != null)
+         if (partialProcess is EnzymaticProcess enzymaticProcess)
             enzymaticProcess.MetaboliteName = snapshot.Metabolite;
       }
 
@@ -105,6 +106,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return;
 
          var species = _speciesRepository.FindByName(snapshot.Species);
+    
          _compoundProcessTask.SetSpeciesForProcess(process, species);
       }
    }

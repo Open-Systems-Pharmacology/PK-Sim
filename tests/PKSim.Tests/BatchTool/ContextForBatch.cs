@@ -1,5 +1,5 @@
 ﻿using OSPSuite.Utility.Container;
-using PKSim.BatchTool.Services;
+using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Batch;
 using PKSim.IntegrationTests;

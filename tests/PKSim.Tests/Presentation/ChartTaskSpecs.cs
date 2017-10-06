@@ -9,6 +9,7 @@ using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation
 {
@@ -17,12 +18,15 @@ namespace PKSim.Presentation
       protected IEventPublisher _eventPublisher;
       private IProjectRetriever _projectRetriever;
       protected ExportChartToPDFCommand _exportChartToPDFCommand;
+      private IContainer _container;
 
       protected override void Context()
       {
          _projectRetriever = A.Fake<IProjectRetriever>();
          _exportChartToPDFCommand = A.Fake<ExportChartToPDFCommand>();
-         sut = new ChartTask(_projectRetriever, _exportChartToPDFCommand);
+         _container = A.Fake<IContainer>();
+         A.CallTo(() => _container.Resolve<ExportChartToPDFCommand>()).Returns(_exportChartToPDFCommand);
+         sut = new ChartTask(_projectRetriever, _container);
       }
    }
 

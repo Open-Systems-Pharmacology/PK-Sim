@@ -35,7 +35,7 @@ namespace PKSim.BatchTool
          var compoundContainer = _simulation.Model.Root.GetSingleChildByName<IContainer>(compound.Name);
          compoundContainer.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value.ShouldBeEqualTo(3);
          compoundContainer.Parameter(CoreConstants.Parameter.FractionUnbound).Value.ShouldBeEqualTo(0.8);
-         compoundContainer.Parameter(Constants.Parameters.MOL_WEIGHT).ValueInDisplayUnit.ShouldBeEqualTo(400, 1e-2);
+         compoundContainer.Parameter(OSPSuite.Core.Domain.Constants.Parameters.MOL_WEIGHT).ValueInDisplayUnit.ShouldBeEqualTo(400, 1e-2);
          compoundContainer.Parameter(CoreConstants.Parameter.CL).Value.ShouldBeEqualTo(0);
          compoundContainer.Parameter(CoreConstants.Parameter.BR).Value.ShouldBeEqualTo(0);
          compoundContainer.Parameter(CoreConstants.Parameter.I).Value.ShouldBeEqualTo(0);

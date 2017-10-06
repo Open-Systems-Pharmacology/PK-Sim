@@ -161,7 +161,6 @@ namespace PKSim.Core.Batch.Mapper
                continue;
             }
             parameter.Value = parameterValue.Value;
-            _batchLogger.AddParameterValueToDebug(parameter);
          }
       }
 
@@ -169,7 +168,6 @@ namespace PKSim.Core.Batch.Mapper
       {
          var parameter = compound.Parameter(parameterName);
          parameter.Value = value;
-         _batchLogger.AddParameterValueToDebug(parameter);
       }
 
       private void setPka(ModelCompound compound, PkaType pkaType, int i)
@@ -184,7 +182,6 @@ namespace PKSim.Core.Batch.Mapper
          var alternative = compound.ParameterAlternativeGroup(alternativeName).DefaultAlternative;
          var parameter = alternative.Parameter(parameterName);
          parameter.Value = value;
-         _batchLogger.AddParameterValueToDebug(parameter);
       }
    }
 }

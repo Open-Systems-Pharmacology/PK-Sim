@@ -186,6 +186,7 @@
     <Compile Include="Comparison\SimulationDiffBuilder.cs" />
     <Compile Include="Comparison\TransporterExpressionContainerDiffBuilder.cs" />
     <Compile Include="Comparison\UsedBuildingBlocksDiffBuilder.cs" />
+    <Compile Include="CompositionBusinessRule.cs" />
     <Compile Include="Extensions\CacheExtensions.cs" />
     <Compile Include="Extensions\CurveExtensions.cs" />
     <Compile Include="Extensions\DataRepositoryExtensions.cs" />

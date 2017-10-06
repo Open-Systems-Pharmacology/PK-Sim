@@ -6,12 +6,13 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Validation;
-using PKSim.BatchTool.Services;
+using PKSim.CLI.Commands;
+using PKSim.CLI.Core;
+using PKSim.CLI.Core.Services;
 
 namespace PKSim.BatchTool
 {
-   public abstract class concern_for_JsonRunOptions : ContextSpecification<JsonRunOptions>
+   public abstract class concern_for_JsonRunOptions : ContextSpecification<JsonRunCommand>
    {
       protected List<string> _args = new List<string>();
 
@@ -35,7 +36,7 @@ namespace PKSim.BatchTool
 
       protected override void Because()
       {
-         Parser.Default.ParseArguments<JsonRunOptions>(_args)
+         Parser.Default.ParseArguments<JsonRunCommand>(_args)
             .WithParsed(opt=>sut=opt);
       }
 
@@ -43,12 +44,6 @@ namespace PKSim.BatchTool
       {
          base.GlobalCleanup();
          DirectoryHelper.DirectoryExists = _oldDirExists;
-      }
-
-      [Observation]
-      public void it_should_return_a_valid_state()
-      {
-         sut.IsValid().ShouldBeTrue(sut.Validate().Message);
       }
 
       [Observation]
@@ -171,7 +166,7 @@ namespace PKSim.BatchTool
       }
    }
 
-   public class When_parsing_invalid_arguments : ContextSpecification<JsonRunOptions>
+   public class When_parsing_invalid_arguments : ContextSpecification<JsonRunCommand>
    {
       protected List<string> _args = new List<string>();
 
@@ -186,7 +181,7 @@ namespace PKSim.BatchTool
 
       protected override void Because()
       {
-         Parser.Default.ParseArguments<JsonRunOptions>(_args)
+         Parser.Default.ParseArguments<JsonRunCommand>(_args)
             .WithParsed(opt => sut = opt);
       }
 

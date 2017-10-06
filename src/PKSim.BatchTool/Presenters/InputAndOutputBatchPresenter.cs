@@ -1,7 +1,8 @@
 ﻿using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
-using PKSim.BatchTool.Services;
 using PKSim.BatchTool.Views;
+using PKSim.CLI.Core.RunOptions;
+using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Batch;
 
@@ -13,11 +14,11 @@ namespace PKSim.BatchTool.Presenters
       bool SelectOutputFolder();
    }
 
-   public abstract class InputAndOutputBatchPresenter<TBatchRunner, TStartOptions> : BatchPresenter<IInputAndOutputBatchView<TStartOptions>, IInputAndOutputBatchPresenter, TBatchRunner, TStartOptions>, IInputAndOutputBatchPresenter
-      where TBatchRunner : IBatchRunner<TStartOptions>
-      where TStartOptions : IWithInputAndOutputFolders, new()
+   public abstract class InputAndOutputBatchPresenter<TBatchRunner, TRunOptions> : BatchPresenter<IInputAndOutputBatchView<TRunOptions>, IInputAndOutputBatchPresenter, TBatchRunner, TRunOptions>, IInputAndOutputBatchPresenter
+      where TBatchRunner : IBatchRunner<TRunOptions>
+      where TRunOptions : IWithInputAndOutputFolders, new()
    {
-      protected InputAndOutputBatchPresenter(IInputAndOutputBatchView<TStartOptions> view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger)
+      protected InputAndOutputBatchPresenter(IInputAndOutputBatchView<TRunOptions> view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger)
          : base(view, batchRunner, dialogCreator, logPresenter, batchLogger)
       {
       }
@@ -28,7 +29,7 @@ namespace PKSim.BatchTool.Presenters
          if (string.IsNullOrEmpty(inputFolder))
             return false;
 
-         _startOptions.InputFolder = inputFolder;
+         _runOptionsDTO.InputFolder = inputFolder;
          return true;
       }
 
@@ -38,7 +39,7 @@ namespace PKSim.BatchTool.Presenters
          if (string.IsNullOrEmpty(outputFolder))
             return false;
 
-         _startOptions.OutputFolder = outputFolder;
+         _runOptionsDTO.OutputFolder = outputFolder;
          return true;
       }
    }

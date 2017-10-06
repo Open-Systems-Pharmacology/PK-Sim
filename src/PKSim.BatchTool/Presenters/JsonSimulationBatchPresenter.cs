@@ -1,14 +1,15 @@
 ﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
-using PKSim.BatchTool.Services;
 using PKSim.BatchTool.Views;
+using PKSim.CLI.Core.RunOptions;
+using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Batch;
 
 namespace PKSim.BatchTool.Presenters
 {
-   public interface IJsonSimulationBatchPresenter : IBatchPresenter<JsonRunOptions>
+   public interface IJsonSimulationBatchPresenter : IBatchPresenter
    {
    }
 
@@ -18,8 +19,8 @@ namespace PKSim.BatchTool.Presenters
          base(view, batchRunner, dialogCreator, logPresenter, batchLogger)
       {
          view.Caption = "PK-Sim BatchTool: Batch runner for json based PK-Sim simulations";
-         _startOptions.ExportMode = BatchExportMode.All;
-         _startOptions.NotificationType = NotificationType.All;
+         _runOptionsDTO.ExportMode = BatchExportMode.All;
+         _runOptionsDTO.NotificationType = NotificationType.All;
       }
 
       public override bool SelectOutputFolder()
@@ -27,7 +28,7 @@ namespace PKSim.BatchTool.Presenters
          if (!base.SelectOutputFolder())
             return false;
 
-         _startOptions.LogFileFullPath = CoreConstants.DefaultBatchLogFullPath(_startOptions.OutputFolder);
+         _runOptionsDTO.LogFileFullPath = CoreConstants.DefaultBatchLogFullPath(_runOptionsDTO.OutputFolder);
          return true;
       }
    }

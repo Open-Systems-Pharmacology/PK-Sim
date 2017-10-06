@@ -38,7 +38,7 @@ namespace PKSim.Core
             .Where(t => t.IsInterface)
             .FirstOrDefault(t => t.Namespace != null && t.Namespace.StartsWith("PKSim"));
 
-         if(pkSimInterface!=null)
+         if (pkSimInterface != null)
             services.Add(pkSimInterface);
 
          services.Add(concreteType);

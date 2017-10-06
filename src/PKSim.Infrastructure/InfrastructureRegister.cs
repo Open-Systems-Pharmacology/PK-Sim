@@ -1,21 +1,5 @@
 using System.IO;
 using Castle.Facilities.TypedFactory;
-using PKSim.Core;
-using PKSim.Core.Reporting;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.ORM.Core;
-using PKSim.Infrastructure.ORM.Mappers;
-using PKSim.Infrastructure.ORM.Repositories;
-using PKSim.Infrastructure.ProjectConverter;
-using PKSim.Infrastructure.ProjectConverter.v5_3;
-using PKSim.Infrastructure.ProjectConverter.v6_2;
-using PKSim.Infrastructure.Reporting.Summary;
-using PKSim.Infrastructure.Serialization;
-using PKSim.Infrastructure.Serialization.Xml;
-using PKSim.Infrastructure.Serialization.Xml.Serializers;
-using PKSim.Infrastructure.Services;
-using PKSim.Presentation;
-using SimModelNET;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
@@ -29,6 +13,7 @@ using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
 using OSPSuite.Infrastructure.Services;
 using OSPSuite.Presentation.Serialization.Extensions;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Compression;
 using OSPSuite.Utility.Container;
@@ -36,8 +21,24 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using OSPSuite.Utility.Logging;
+using PKSim.Core;
+using PKSim.Core.Reporting;
+using PKSim.Core.Services;
+using PKSim.Infrastructure.ORM.Core;
+using PKSim.Infrastructure.ORM.Mappers;
+using PKSim.Infrastructure.ORM.Repositories;
+using PKSim.Infrastructure.ProjectConverter;
+using PKSim.Infrastructure.ProjectConverter.v5_3;
+using PKSim.Infrastructure.ProjectConverter.v6_2;
+using PKSim.Infrastructure.Reporting.Summary;
 using PKSim.Infrastructure.Reporting.TeX.Builders;
 using PKSim.Infrastructure.Reporting.TeX.Reporters;
+using PKSim.Infrastructure.Serialization;
+using PKSim.Infrastructure.Serialization.Xml;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
+using PKSim.Infrastructure.Services;
+using PKSim.Presentation;
+using SimModelNET;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using IWorkspace = PKSim.Presentation.Core.IWorkspace;
 
@@ -128,6 +129,17 @@ namespace PKSim.Infrastructure
             XMLSchemaCache.InitializeFromFile(pkSimConfiguration.SimModelSchemaFilePath);
       }
 
+      public static void RegisterWorkspace()
+      {
+         RegisterWorkspace<Workspace>();
+      }
+
+      public static void RegisterWorkspace<TWorkspace>() where TWorkspace : IWorkspace
+      {
+         var container = IoC.Container;
+         container.Register<IWorkspace, IWithWorkspaceLayout, OSPSuite.Core.IWorkspace, TWorkspace>(LifeStyle.Singleton);
+      }
+
       private void registerORMDependencies()
       {
          var container = IoC.Container;
@@ -188,7 +200,6 @@ namespace PKSim.Infrastructure
             scan.WithConvention<OSPSuiteRegistrationConvention>();
          });
 
-         container.Register<IWorkspace, Workspace>(LifeStyle.Singleton);
 
          registerConverters(container);
 

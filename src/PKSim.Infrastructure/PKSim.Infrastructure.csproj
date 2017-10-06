@@ -471,6 +471,9 @@
     <Compile Include="ORM\Repositories\RepresentationInfoRepository.cs" />
     <Compile Include="Serialization\DatabaseSchemaMigrator.cs" />
     <Compile Include="Serialization\InvalidProjectVersionException.cs" />
+    <Compile Include="Serialization\Json\PKSimJsonSerializerSetings.cs" />
+    <Compile Include="Serialization\Json\SnapshotSerializer.cs" />
+    <Compile Include="Serialization\Json\WritablePropertiesOnlyResolver.cs" />
     <Compile Include="Serialization\ORM\Mappers\SimulationMetaDataToSimulationMapper.cs" />
     <Compile Include="Serialization\ORM\Mappers\SimulationToSimulationMetaDataMapper.cs" />
     <Compile Include="Serialization\ORM\Mappers\WorkspaceLayoutMetaDataToWorkspaceLayoutMapper.cs" />

@@ -4,10 +4,12 @@ using PKSim.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Reflection;
+using OSPSuite.Utility.Validation;
 
 namespace PKSim.Presentation
 {
-   public interface IUserSettings : ICoreUserSettings, IPresentationUserSettings
+   public interface IUserSettings : ICoreUserSettings, IPresentationUserSettings, INotifier, IValidatable
    {
       /// <summary>
       ///    Number of decimal after the comma

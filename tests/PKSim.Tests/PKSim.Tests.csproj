@@ -227,6 +227,7 @@
     <Compile Include="BatchTool\StandardSpecs.cs" />
     <Compile Include="BatchTool\TransportSpecs.cs" />
     <Compile Include="BatchTool\TwoPoresSpecs.cs" />
+    <Compile Include="CLI\SnapshotRunnerSpecs.cs" />
     <Compile Include="ContextSpecificationWithLocalContainer.cs" />
     <Compile Include="CoreConstantsForSpecs.cs" />
     <Compile Include="Core\AddBuildingBlockToProjectCommandSpecs.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Core\CalculationMethodCacheMapperSpecs.cs" />
     <Compile Include="Core\ChartMapperSpecs.cs" />
     <Compile Include="Core\ClassificationSnapshotTaskSpecs.cs" />
+    <Compile Include="Core\CompositionBusinessRuleSpecs.cs" />
     <Compile Include="Core\CompoundMapperSpecs.cs" />
     <Compile Include="Core\CompoundProcessMapperSpecs.cs" />
     <Compile Include="Core\CompoundPropertiesMapperSpecs.cs" />
@@ -1049,6 +1051,14 @@
     <ProjectReference Include="..\..\src\PKSim.BatchTool\PKSim.BatchTool.csproj">
       <Project>{625D2DE8-F930-4D53-9576-4E3237A30814}</Project>
       <Name>PKSim.BatchTool</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\PKSim.CLI.Core\PKSim.CLI.Core.csproj">
+      <Project>{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}</Project>
+      <Name>PKSim.CLI.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\PKSim.CLI\PKSim.CLI.csproj">
+      <Project>{9BCFE7D4-F76C-453F-95CB-6F53F640C429}</Project>
+      <Name>PKSim.CLI</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\PKSim.Core\PKSim.Core.csproj">
       <Project>{CEF9367D-F2C4-4796-847B-42B090A601B5}</Project>

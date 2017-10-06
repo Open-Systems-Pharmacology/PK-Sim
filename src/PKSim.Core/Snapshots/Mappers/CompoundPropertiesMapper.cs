@@ -103,12 +103,12 @@ namespace PKSim.Core.Snapshots.Mappers
          await _calculationMethodCacheMapper.MapToModel(snapshot.CalculationMethods, compoundProperties.CalculationMethodCache);
          updateAlternativeSelections(snapshot.Alternatives, compoundProperties);
          compoundProperties.Processes = await modelProcessSelectionFrom(snapshot.Processes, compoundProperties.Compound);
-         compoundProperties.ProtocolProperties = modelProtocolPropertiesFrom(snapshot.Protocol, simulation, context.Project);
+         compoundProperties.ProtocolProperties = modelProtocolPropertiesFrom(snapshot.Protocol, context.Project);
 
          return compoundProperties;
       }
 
-      private ProtocolProperties modelProtocolPropertiesFrom(ProtocolSelection snapshotProtocol, Model.Simulation simulation, PKSimProject project)
+      private ProtocolProperties modelProtocolPropertiesFrom(ProtocolSelection snapshotProtocol, PKSimProject project)
       {
          var protocolProperties = new ProtocolProperties();
          if (snapshotProtocol == null)
@@ -139,7 +139,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var compoundProcessesSelection = new CompoundProcessesSelection();
          if (snapshotProcesses == null)
-            return null;
+            return compoundProcessesSelection;
 
          foreach (var snapshotProcess in snapshotProcesses)
          {

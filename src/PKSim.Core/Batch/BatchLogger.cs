@@ -11,8 +11,6 @@ namespace PKSim.Core.Batch
 {
    public interface IBatchLogger : ILogger
    {
-      void AddParameterValueToDebug(string parameterName, double value);
-      void AddParameterValueToDebug(IParameter parameter);
       IEnumerable<string> Entries { get; }
 
       /// <summary>
@@ -45,30 +43,21 @@ namespace PKSim.Core.Batch
 
       public void AddToLog(string message, NotificationType messageStatus = NotificationType.None)
       {
-         if (!messageStatus.Is(_notificationType))
-            return;
-
          var logEntry = new LogEntry(messageStatus, message);
          var entryDisplay = logEntry.Display;
          _entries.Add(entryDisplay);
          _eventPublisher.PublishEvent(new LogEntryEvent(logEntry));
-         addToStreamWriter(entryDisplay);
+
+         if(canAddToLogFile(messageStatus))
+            addToStreamWriter(entryDisplay);
       }
+
+      private bool canAddToLogFile(NotificationType messageStatus) => messageStatus.Is(_notificationType);
 
       private void addToStreamWriter(string entryDisplay)
       {
          _streamWriter?.WriteLine(entryDisplay);
          _streamWriter?.Flush();
-      }
-
-      public void AddParameterValueToDebug(string parameterName, double value)
-      {
-         this.AddDebug($"Parameter '{parameterName}' set to '{value}'");
-      }
-
-      public void AddParameterValueToDebug(IParameter parameter)
-      {
-         AddParameterValueToDebug(parameter.Name, parameter.Value);
       }
 
       public void InitializeWith(StreamWriter streamWriter, NotificationType notificationType)
@@ -91,20 +80,31 @@ namespace PKSim.Core.Batch
       public BatchLoggerDisposer(IBatchLogger batchLogger, string logFilePath, NotificationType notificationType)
       {
          ensureLogDirectoryExists(logFilePath);
-         _streamWriter = new StreamWriter(logFilePath, append: false);
+         _streamWriter = streamWriterFor(logFilePath);
          batchLogger.InitializeWith(_streamWriter, notificationType);
+      }
+
+      private static StreamWriter streamWriterFor(string logFilePath)
+      {
+         if (string.IsNullOrEmpty(logFilePath))
+            return null;
+
+         return new StreamWriter(logFilePath, append: false);
       }
 
       private void ensureLogDirectoryExists(string logFilePath)
       {
+         if (string.IsNullOrEmpty(logFilePath))
+            return;
+
          var directory = FileHelper.FolderFromFileFullPath(logFilePath);
          DirectoryHelper.CreateDirectory(directory);
       }
 
       protected virtual void Cleanup()
       {
-         _streamWriter.Close();
-         _streamWriter.Dispose();
+         _streamWriter?.Close();
+         _streamWriter?.Dispose();
       }
 
       #region Disposable properties

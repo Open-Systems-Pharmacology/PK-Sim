@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Events;
-using OSPSuite.Core.Serialization;
 using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;

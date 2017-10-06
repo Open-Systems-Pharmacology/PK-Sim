@@ -25,7 +25,7 @@ namespace PKSim.BatchTool
          formulation.Parameter(CoreConstants.Parameter.DISS_TIME80).Value.ShouldBeEqualTo(60);
          formulation.Parameter(CoreConstants.Parameter.LAG_TIME).Value.ShouldBeEqualTo(10);
 
-         var appContainer = _simulation.Model.Root.GetSingleChildByName<IContainer>(Constants.APPLICATIONS);
+         var appContainer = _simulation.Model.Root.GetSingleChildByName<IContainer>(OSPSuite.Core.Domain.Constants.APPLICATIONS);
          var formContainer = appContainer.GetAllChildren<IContainer>().FindByName(formulation.Name);
          formContainer.ShouldNotBeNull();
       }
