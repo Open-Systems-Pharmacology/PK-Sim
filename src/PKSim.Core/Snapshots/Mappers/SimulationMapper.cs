@@ -25,6 +25,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly EventPropertiesMapper _eventPropertiesMapper;
       private readonly SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
       private readonly PopulationAnalysisChartMapper _populationAnalysisChartMapper;
+      private readonly ProcessMappingMapper _processMappingMapper;
       private readonly ISimulationFactory _simulationFactory;
       private readonly IExecutionContext _executionContext;
       private readonly ISimulationModelCreator _simulationModelCreator;
@@ -42,6 +43,7 @@ namespace PKSim.Core.Snapshots.Mappers
          EventPropertiesMapper eventPropertiesMapper,
          SimulationTimeProfileChartMapper simulationTimeProfileChartMapper,
          PopulationAnalysisChartMapper populationAnalysisChartMapper,
+         ProcessMappingMapper processMappingMapper,
          ISimulationFactory simulationFactory,
          IExecutionContext executionContext,
          ISimulationModelCreator simulationModelCreator,
@@ -59,6 +61,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _eventPropertiesMapper = eventPropertiesMapper;
          _simulationTimeProfileChartMapper = simulationTimeProfileChartMapper;
          _populationAnalysisChartMapper = populationAnalysisChartMapper;
+         _processMappingMapper = processMappingMapper;
          _simulationFactory = simulationFactory;
          _executionContext = executionContext;
          _simulationModelCreator = simulationModelCreator;
@@ -81,11 +84,17 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Events = await _eventPropertiesMapper.MapToSnapshot(simulation.EventProperties, project);
          snapshot.ObservedData = usedObervedDataFrom(simulation, project);
          snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
+         snapshot.Interactions = await interactionSnapshotFrom(simulation.InteractionProperties);
          snapshot.AdvancedParameters = await advancedParametersFrom(simulation);
          snapshot.IndividualAnalyses = await _simulationTimeProfileChartMapper.MapToSnapshots(simulation.AnalysesOfType<SimulationTimeProfileChart>());
          snapshot.PopulationAnalyses = await _populationAnalysisChartMapper.MapToSnapshots(simulation.AnalysesOfType<ModelPopulationAnalysisChart>());
          snapshot.HasResults = simulation.HasResults;
          return snapshot;
+      }
+
+      private Task<CompoundProcessSelection[]> interactionSnapshotFrom(InteractionProperties simulationInteractionProperties)
+      {
+         return _processMappingMapper.MapToSnapshots(simulationInteractionProperties.Interactions);
       }
 
       private Task<AdvancedParameter[]> advancedParametersFrom(ModelSimulation simulation)
@@ -148,6 +157,34 @@ namespace PKSim.Core.Snapshots.Mappers
          return simulation;
       }
 
+      private async Task updateInteractonProperties(ModelSimulation simulation, CompoundProcessSelection[] snapshotInteractions, PKSimProject project)
+      {
+         if (snapshotInteractions == null)
+            return;
+
+         foreach (var snapshotInteraction in snapshotInteractions)
+         {
+            var interaction = await interactionSelectionFrom(snapshotInteraction, project);
+            simulation.InteractionProperties.AddInteraction(interaction);
+         }
+      }
+
+      private async Task<InteractionSelection> interactionSelectionFrom(CompoundProcessSelection snapshotInteraction, PKSimProject project)
+      {
+         var process = findProcess(project, snapshotInteraction);
+         if (process == null)
+            throw new SnapshotOutdatedException(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotInteraction.Name, snapshotInteraction.CompoundName));
+
+         var processSelection = await _processMappingMapper.MapToModel(snapshotInteraction, process);
+         return processSelection.DowncastTo<InteractionSelection>();
+      }
+
+      private Model.CompoundProcess findProcess(PKSimProject project, CompoundProcessSelection snapshotInteraction)
+      {
+         return project.BuildingBlockByName<Model.Compound>(snapshotInteraction.CompoundName)
+            ?.ProcessByName(snapshotInteraction.Name);
+      }
+
       private async Task runSimulation(SnapshotSimulation snapshot, ModelSimulation simulation)
       {
          if (!snapshot.HasResults)
@@ -190,8 +227,10 @@ namespace PKSim.Core.Snapshots.Mappers
          var simulation = _simulationFactory.CreateFrom(simulationSubject, compounds, modelProperties);
          MapSnapshotPropertiesToModel(snapshot, simulation);
 
-         await mapCompoundProperties(snapshot.Compounds, project, simulation);
+         await mapCompoundProperties(simulation, snapshot.Compounds, project);
          simulation.EventProperties = await _eventPropertiesMapper.MapToModel(snapshot.Events, project);
+
+         await updateInteractonProperties(simulation, snapshot.Interactions, project);
 
          //Once all used building blocks have been set, we need to ensure that they are also synchronized in the  simulation
          updateUsedBuildingBlockInSimulation(simulation, project);
@@ -209,7 +248,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, events, PKSimBuildingBlockType.Event);
       }
 
-      private Task mapCompoundProperties(CompoundProperties[] snapshotCompoundProperties, PKSimProject project, ModelSimulation simulation)
+      private Task mapCompoundProperties(ModelSimulation simulation, CompoundProperties[] snapshotCompoundProperties, PKSimProject project)
       {
          var compoundPropertiesContext = new CompoundPropertiesContext(project, simulation);
          return _compoundPropertiesMapper.MapToModels(snapshotCompoundProperties, compoundPropertiesContext);

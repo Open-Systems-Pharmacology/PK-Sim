@@ -94,11 +94,17 @@ namespace PKSim.Core.Snapshots.Mappers
          return createFrom<LocalizedParameter>(parameter, x => { x.Path = pathResolverFunc(parameter); });
       }
 
-      public virtual Task<LocalizedParameter[]> LocalizedParametersFrom(IEnumerable<IParameter> parameters) => MapTo(parameters, LocalizedParameterFrom);
+      public virtual Task<LocalizedParameter[]> LocalizedParametersFrom(IEnumerable<IParameter> parameters) => orderByPath(MapTo(parameters, LocalizedParameterFrom));
 
       public virtual Task<LocalizedParameter[]> LocalizedParametersFrom(IEnumerable<IParameter> parameters, Func<IParameter, string> pathResolverFunc)
       {
-         return MapTo(parameters, x => LocalizedParameterFrom(x, pathResolverFunc));
+         return orderByPath(MapTo(parameters, x => LocalizedParameterFrom(x, pathResolverFunc)));
+      }
+
+      private async Task<LocalizedParameter[]> orderByPath(Task<LocalizedParameter[]> localizedParametersTask)
+      {
+         var localizedParameters = await localizedParametersTask;
+         return localizedParameters?.OrderBy(x => x.Path).ToArray();
       }
 
       public virtual Task MapLocalizedParameters(IReadOnlyList<LocalizedParameter> localizedParameters, IContainer container)

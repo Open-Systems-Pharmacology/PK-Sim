@@ -18,7 +18,7 @@ namespace PKSim.Core.Services
       ///    if set to true, the default mapping logic will be used to create the simulation partial
       ///    process
       /// </param>
-      IReadOnlyList<SimulationPartialProcess> AllFor(Simulation simulation, IReadOnlyList<IPartialProcessMapping> processSelections, bool addDefaultPartialProcess);
+      IReadOnlyList<SimulationPartialProcess> AllFor(Simulation simulation, IReadOnlyList<IProcessMapping> processSelections, bool addDefaultPartialProcess);
 
       InteractionProcess NotSelectedInteractionProcess { get; set; }
    }
@@ -38,7 +38,7 @@ namespace PKSim.Core.Services
          _partialProcessRetriever = partialProcessRetriever;
       }
 
-      public IReadOnlyList<SimulationPartialProcess> AllFor(Simulation simulation, IReadOnlyList<IPartialProcessMapping> processSelections, bool addDefaultPartialProcess)
+      public IReadOnlyList<SimulationPartialProcess> AllFor(Simulation simulation, IReadOnlyList<IProcessMapping> processSelections, bool addDefaultPartialProcess)
       {
          var allSimulationPartialProcesses = new List<SimulationPartialProcess>();
          var allNoSelectionPartialProcesses = new List<SimulationPartialProcess>();
@@ -57,14 +57,14 @@ namespace PKSim.Core.Services
          return allSimulationPartialProcesses;
       }
 
-      private IReadOnlyList<SimulationPartialProcess> allPossibleInteractionProcessesFor(Simulation simulation, Compound compound, IReadOnlyList<IPartialProcessMapping> processSelections, bool addDefaultPartialProcess)
+      private IReadOnlyList<SimulationPartialProcess> allPossibleInteractionProcessesFor(Simulation simulation, Compound compound, IReadOnlyList<IProcessMapping> processSelections, bool addDefaultPartialProcess)
       {
          return _partialProcessRetriever.AllFor<IndividualMolecule, InhibitionProcess>(simulation, compound, processSelections, addDefaultPartialProcess)
             .Union(
                _partialProcessRetriever.AllFor<IndividualMolecule, InductionProcess>(simulation, compound, processSelections, addDefaultPartialProcess)).ToList();
       }
 
-      private IEnumerable<SimulationPartialProcess> addNotSelectedPartialProcessIfPreviouslySelected(IEnumerable<IPartialProcessMapping> processSelections,
+      private IEnumerable<SimulationPartialProcess> addNotSelectedPartialProcessIfPreviouslySelected(IEnumerable<IProcessMapping> processSelections,
          IEnumerable<SimulationPartialProcess> allNoSelectionPartialProcesses) 
       {
          var moleculesWithEmptySelections = processSelections.Where(x => string.IsNullOrEmpty(x.ProcessName))

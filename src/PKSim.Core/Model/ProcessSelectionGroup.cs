@@ -31,15 +31,17 @@ namespace PKSim.Core.Model
          _systemicProcesses.Add(systemicProcessSelection);
       }
 
-      public void AddProcessSelection(IReactionMapping reactionMapping)
+      public void AddProcessSelection(IProcessMapping processMapping)
       {
-         var systemicProcess = reactionMapping as SystemicProcessSelection;
-         if (systemicProcess != null)
-            AddSystemicProcessSelection(systemicProcess);
-
-         var partialProcess = reactionMapping as ProcessSelection;
-         if (partialProcess != null)
-            AddPartialProcessSelection(partialProcess);
+         switch (processMapping)
+         {
+            case SystemicProcessSelection systemicProcess:
+               AddSystemicProcessSelection(systemicProcess);
+               break;
+            case ProcessSelection partialProcess:
+               AddPartialProcessSelection(partialProcess);
+               break;
+         }
       }
 
       public IEnumerable<IReactionMapping> AllEnabledProcesses()

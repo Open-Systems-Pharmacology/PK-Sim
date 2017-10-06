@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -64,6 +65,10 @@ namespace PKSim.Core
       protected PopulationAnalysisChartMapper _populationAnalysisChartMapper;
       protected PopulationAnalysisChart _populationSimulationAnalysisChart;
       protected Snapshots.PopulationAnalysisChart _snapshotPopulationAnalysisChart;
+      protected ProcessMappingMapper _processMappingMapper;
+      protected InteractionSelection _intereactionSelection;
+      protected CompoundProcessSelection _snapshotInteraction;
+      protected InductionProcess _inductionProcess;
 
       protected override Task Context()
       {
@@ -75,6 +80,7 @@ namespace PKSim.Core
          _advancedParameterMapper = A.Fake<AdvancedParameterMapper>();
          _eventPropertiesMapper = A.Fake<EventPropertiesMapper>();
          _curveChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
+         _processMappingMapper= A.Fake<ProcessMappingMapper>();
          _simulationFactory = A.Fake<ISimulationFactory>();
          _executionContext = A.Fake<IExecutionContext>();
          _simulationModelCreator = A.Fake<ISimulationModelCreator>();
@@ -84,8 +90,27 @@ namespace PKSim.Core
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
-            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper, _advancedParameterMapper, _eventPropertiesMapper, _curveChartMapper, _populationAnalysisChartMapper,
-            _simulationFactory, _executionContext, _simulationModelCreator, _simulationBuildingBlockUpdater, _modelPropertiesTask, _simulationRunner);
+            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper, 
+            _advancedParameterMapper, _eventPropertiesMapper, _curveChartMapper, 
+            _populationAnalysisChartMapper, _processMappingMapper,
+            _simulationFactory, _executionContext, _simulationModelCreator,
+            _simulationBuildingBlockUpdater, _modelPropertiesTask, _simulationRunner);
+
+         _project = new PKSimProject();
+         _individual = new Individual { Name = "IND" };
+         _compound = new Compound { Name = "COMP" };
+         _inductionProcess = new InductionProcess().WithName("Interaction process");
+         _compound.AddProcess(_inductionProcess);
+
+
+         _event = new PKSimEvent { Name = "Event" };
+         _population = new RandomPopulation() { Name = "POP" };
+         _observedData = new DataRepository("OBS_ID").WithName("OBS");
+         _project.AddBuildingBlock(_individual);
+         _project.AddBuildingBlock(_compound);
+         _project.AddBuildingBlock(_event);
+         _project.AddBuildingBlock(_population);
+         _project.AddObservedData(_observedData);
 
          _simulationProperties = new SimulationProperties
          {
@@ -94,6 +119,8 @@ namespace PKSim.Core
                ModelConfiguration = new ModelConfiguration {ModelName = "4Comp"}
             }
          };
+         _intereactionSelection = new InteractionSelection {ProcessName = _inductionProcess.Name};
+         _simulationProperties.InteractionProperties.AddInteraction(_intereactionSelection);
 
          _settings = new SimulationSettings();
          _rootContainer = new Container().WithName("Sim");
@@ -131,7 +158,6 @@ namespace PKSim.Core
          _populationSimulation.SetAdvancedParameters(_avancedParameterCollection);
          _populationSimulation.AddAnalysis(_populationSimulationAnalysisChart);
          _snapshotPopulationAnalysisChart = new Snapshots.PopulationAnalysisChart();
-
          A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshots(A<IEnumerable<PopulationAnalysisChart>>.That.IsEmpty()))
             .Returns((Snapshots.PopulationAnalysisChart[])null);
 
@@ -141,17 +167,11 @@ namespace PKSim.Core
          A.CallTo(() => _advancedParameterMapper.MapToSnapshots(null))
             .Returns((AdvancedParameter[])null);
 
-         _project = new PKSimProject();
-         _individual = new Individual {Name = "IND"};
-         _compound = new Compound {Name = "COMP"};
-         _event = new PKSimEvent {Name = "Event"};
-         _population = new RandomPopulation() {Name = "POP"};
-         _observedData = new DataRepository("OBS_ID").WithName("OBS");
-         _project.AddBuildingBlock(_individual);
-         _project.AddBuildingBlock(_compound);
-         _project.AddBuildingBlock(_event);
-         _project.AddBuildingBlock(_population);
-         _project.AddObservedData(_observedData);
+         _snapshotInteraction = new CompoundProcessSelection();
+         A.CallTo(() => _processMappingMapper.MapToSnapshots(A<IEnumerable<IProcessMapping>>.That.Contains(_intereactionSelection)))
+            .Returns(new[]{ _snapshotInteraction });
+         _snapshotInteraction.CompoundName = _compound.Name;
+         _snapshotInteraction.Name = _inductionProcess.Name;
 
          _compoundProperties = new CompoundProperties();
          _snaphotCompoundProperties = new Snapshots.CompoundProperties {Name = _compound.Name};
@@ -178,6 +198,9 @@ namespace PKSim.Core
 
          _outputSelectionSnapshot = new OutputSelections();
          A.CallTo(() => _outputSelectionMapper.MapToSnapshot(_individualSimulation.OutputSelections)).Returns(_outputSelectionSnapshot);
+
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotInteraction, _inductionProcess)).Returns(_intereactionSelection);
+
          return Task.FromResult(true);
       }
    }
@@ -237,6 +260,12 @@ namespace PKSim.Core
       public void should_set_population_analysis_to_null()
       {
          _snapshot.PopulationAnalyses.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_save_interactions()
+      {
+         _snapshot.Interactions.ShouldContain(_snapshotInteraction);
       }
    }
 
@@ -324,6 +353,7 @@ namespace PKSim.Core
             .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
             .Returns(new[] {_simulationTimeProfile});
 
+
          //ensure that run will be performed
          _snapshot.HasResults = true;
          _calculatedDataRepository = DomainHelperForSpecs.ObservedData("Calculated");
@@ -392,6 +422,12 @@ namespace PKSim.Core
       public void should_have_added_the_observed_data_from_project_and_the_current_simulation_results_to_the_curve_context()
       {
          _context.DataRepositories.ShouldContain(_observedData, _calculatedDataRepository);
+      }
+
+      [Observation]
+      public void should_update_interactions()
+      {
+         _simulation.InteractionProperties.Interactions.ShouldContain(_intereactionSelection);
       }
    }
 

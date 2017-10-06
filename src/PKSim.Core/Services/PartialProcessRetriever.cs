@@ -30,7 +30,7 @@ namespace PKSim.Core.Services
       ///    process
       /// </param>
       IReadOnlyList<SimulationPartialProcess> AllFor<TIndividualMolecule, TPartialProcess>(Simulation simulation, Compound compound,
-         IReadOnlyList<IPartialProcessMapping> processSelections, bool addDefaultPartialProcess) where TIndividualMolecule : IndividualMolecule where TPartialProcess : PartialProcess;
+         IReadOnlyList<IProcessMapping> processSelections, bool addDefaultPartialProcess) where TIndividualMolecule : IndividualMolecule where TPartialProcess : PartialProcess;
 
       PartialProcess NotSelectedPartialProcess { get; set; }
    }
@@ -45,7 +45,7 @@ namespace PKSim.Core.Services
       }
 
       public IReadOnlyList<SimulationPartialProcess> AllFor<TIndividualMolecule, TPartialProcess>(Simulation simulation, Compound compound,
-         IReadOnlyList<IPartialProcessMapping> processSelections, bool addDefaultPartialProcess)
+         IReadOnlyList<IProcessMapping> processSelections, bool addDefaultPartialProcess)
          where TIndividualMolecule : IndividualMolecule
          where TPartialProcess : PartialProcess
       {
@@ -54,7 +54,7 @@ namespace PKSim.Core.Services
          var allIndividualMolecules = individual.AllMolecules<TIndividualMolecule>().Where(moleculeWasDefinedByUser).ToList();
          var allProcesses = compound.AllProcesses<TPartialProcess>().ToList();
 
-         var steps = new List<Func<TIndividualMolecule, IEnumerable<TPartialProcess>, IEnumerable<IPartialProcessMapping>, IEnumerable<SimulationPartialProcess>>> {addExistingProcessSelection};
+         var steps = new List<Func<TIndividualMolecule, IEnumerable<TPartialProcess>, IEnumerable<IProcessMapping>, IEnumerable<SimulationPartialProcess>>> {addExistingProcessSelection};
 
          if (addDefaultPartialProcess)
             steps.Add(addDefaultProcessForMolecule);
@@ -70,7 +70,7 @@ namespace PKSim.Core.Services
          return allSimulationPartialProcesses;
       }
 
-      private IEnumerable<SimulationPartialProcess> addNotSelectedPartialProcess<TIndividualMolecule>(TIndividualMolecule individualMolecule, IEnumerable<PartialProcess> allProcesses, IEnumerable<IPartialProcessMapping> processSelections)
+      private IEnumerable<SimulationPartialProcess> addNotSelectedPartialProcess<TIndividualMolecule>(TIndividualMolecule individualMolecule, IEnumerable<PartialProcess> allProcesses, IEnumerable<IProcessMapping> processSelections)
          where TIndividualMolecule : IndividualMolecule
       {
          if (allProcesses.Any())
@@ -83,7 +83,7 @@ namespace PKSim.Core.Services
          return newSimulationPartialProcess(individualMolecule, NotSelectedPartialProcess);
       }
 
-      private IEnumerable<SimulationPartialProcess> addDefaultProcessForMolecule<TIndividualMolecule, TPartialProcess>(TIndividualMolecule individualMolecule, IEnumerable<TPartialProcess> allProcesses, IEnumerable<IPartialProcessMapping> processSelections)
+      private IEnumerable<SimulationPartialProcess> addDefaultProcessForMolecule<TIndividualMolecule, TPartialProcess>(TIndividualMolecule individualMolecule, IEnumerable<TPartialProcess> allProcesses, IEnumerable<IProcessMapping> processSelections)
          where TIndividualMolecule : IndividualMolecule
          where TPartialProcess : PartialProcess
       {
@@ -92,7 +92,7 @@ namespace PKSim.Core.Services
             yield return newSimulationPartialProcess(individualMolecule, firstProcessForMolecule);
       }
 
-      private IEnumerable<SimulationPartialProcess> addExistingProcessSelection<TIndividualMolecule, TPartialProcess>(TIndividualMolecule individualMolecule, IEnumerable<TPartialProcess> allProcesses, IEnumerable<IPartialProcessMapping> processSelections)
+      private IEnumerable<SimulationPartialProcess> addExistingProcessSelection<TIndividualMolecule, TPartialProcess>(TIndividualMolecule individualMolecule, IEnumerable<TPartialProcess> allProcesses, IEnumerable<IProcessMapping> processSelections)
          where TIndividualMolecule : IndividualMolecule
          where TPartialProcess : PartialProcess
       {
@@ -111,12 +111,12 @@ namespace PKSim.Core.Services
          }
       }
 
-      private static bool isSelected<TPartialProcess>(TPartialProcess compoundProcess, IPartialProcessMapping mapping) where TPartialProcess : PartialProcess
+      private static bool isSelected<TPartialProcess>(TPartialProcess compoundProcess, IProcessMapping mapping) where TPartialProcess : PartialProcess
       {
          return compoundProcess != null && string.Equals(compoundProcess.ParentCompound.Name, mapping.CompoundName);
       }
 
-      private static SimulationPartialProcess newSimulationPartialProcess<TIndividualMolecule>(TIndividualMolecule individualMolecule, PartialProcess partialProcess, IPartialProcessMapping partialProcessMapping = null)
+      private static SimulationPartialProcess newSimulationPartialProcess<TIndividualMolecule>(TIndividualMolecule individualMolecule, PartialProcess partialProcess, IProcessMapping partialProcessMapping = null)
          where TIndividualMolecule : IndividualMolecule
       {
          return new SimulationPartialProcess { CompoundProcess = partialProcess, IndividualMolecule = individualMolecule, PartialProcessMapping = partialProcessMapping};
@@ -125,8 +125,8 @@ namespace PKSim.Core.Services
       private IReadOnlyList<SimulationPartialProcess> allPartialProcessesFor<TIndividualMolecule, TPartialProcess>(
          TIndividualMolecule individualMolecule,
          IReadOnlyList<TPartialProcess> allAvailablePartialProcesses,
-         IReadOnlyList<IPartialProcessMapping> processSelections,
-         IEnumerable<Func<TIndividualMolecule, IEnumerable<TPartialProcess>, IEnumerable<IPartialProcessMapping>, IEnumerable<SimulationPartialProcess>>> steps)
+         IReadOnlyList<IProcessMapping> processSelections,
+         IEnumerable<Func<TIndividualMolecule, IEnumerable<TPartialProcess>, IEnumerable<IProcessMapping>, IEnumerable<SimulationPartialProcess>>> steps)
          where TIndividualMolecule : IndividualMolecule
          where TPartialProcess : PartialProcess
       {

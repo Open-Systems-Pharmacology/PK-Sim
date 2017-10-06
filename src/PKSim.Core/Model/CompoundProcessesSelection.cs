@@ -27,10 +27,7 @@ namespace PKSim.Core.Model
          };
       }
 
-      public bool Any()
-      {
-         return AllProcessSelectionGroups.Any(x => x.AllEnabledProcesses().Any());
-      }
+      public bool Any() => AllEnabledProcesses().Any();
 
       /// <summary>
       ///    returns the name of all molecules that will be created due to the active processes defined for a given protein
@@ -47,6 +44,11 @@ namespace PKSim.Core.Model
       public virtual IEnumerable<string> AllEnablingMoleculeNames()
       {
          return AllProcessSelectionGroups.SelectMany(x => x.AllEnablingMoleculeNames()).Distinct();
+      }
+
+      public virtual IEnumerable<IReactionMapping> AllEnabledProcesses()
+      {
+         return AllProcessSelectionGroups.SelectMany(x => x.AllEnabledProcesses());
       }
 
       public virtual IEnumerable<ProcessSelectionGroup> AllProcessSelectionGroups

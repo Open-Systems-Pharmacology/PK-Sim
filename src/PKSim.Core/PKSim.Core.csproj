@@ -555,7 +555,7 @@
     <Compile Include="Model\EventMapping.cs" />
     <Compile Include="Model\EventMappingFactory.cs" />
     <Compile Include="Model\EventProperties.cs" />
-    <Compile Include="Model\IPartialProcessMapping.cs" />
+    <Compile Include="Model\IProcessMapping.cs" />
     <Compile Include="Model\OutputSchemaFactory.cs" />
     <Compile Include="Model\SolverSettingsFactory.cs" />
     <Compile Include="Model\SystemicProcessSelection.cs" />
@@ -883,6 +883,7 @@
     <Compile Include="Snapshots\Mappers\CompoundPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\CurveOptionsMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObservedDataCollectionMappper.cs" />
+    <Compile Include="Snapshots\Mappers\ProcessMappingMapper.cs" />
     <Compile Include="Snapshots\Mappers\SimulationAnalysisContext.cs" />
     <Compile Include="Snapshots\Mappers\CurveChartMapper.cs" />
     <Compile Include="Snapshots\Mappers\CurveMapper.cs" />
