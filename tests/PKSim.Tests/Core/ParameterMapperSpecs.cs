@@ -109,7 +109,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_standard_parameter_properties_from_the_parameter_snapshot()
       {
-         _parameter.ValueInDisplayUnit.ShouldBeEqualTo(_snapshotParameter.Value);
+         _parameter.ValueInDisplayUnit.ShouldBeEqualTo(_snapshotParameter.Value.Value);
          _parameter.ValueDescription.ShouldBeEqualTo(_snapshotParameter.ValueDescription);
       }
    }

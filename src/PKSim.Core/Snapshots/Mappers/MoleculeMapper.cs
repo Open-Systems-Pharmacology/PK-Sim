@@ -10,15 +10,20 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule, ISimulationSubject>
    {
+      private readonly ExpressionContainerMapper _expressionContainerMapper;
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IExecutionContext _executionContext;
       private readonly OntogenyMapper _ontogenyMapper;
 
-      public MoleculeMapper(ParameterMapper parameterMapper,
+      public MoleculeMapper(
+         ParameterMapper parameterMapper,
+         ExpressionContainerMapper expressionContainerMapper,
+         OntogenyMapper ontogenyMapper,
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
-         IExecutionContext executionContext,
-         OntogenyMapper ontogenyMapper) : base(parameterMapper)
+         IExecutionContext executionContext
+      ) : base(parameterMapper)
       {
+         _expressionContainerMapper = expressionContainerMapper;
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
          _executionContext = executionContext;
          _ontogenyMapper = ontogenyMapper;
@@ -32,18 +37,15 @@ namespace PKSim.Core.Snapshots.Mappers
             x.Type = molecule.MoleculeType;
          });
 
-         snapshot.Expression = await allExpresionFrom(molecule);
+         snapshot.Expression = await expressionFor(molecule);
          snapshot.Ontogeny = await _ontogenyMapper.MapToSnapshot(molecule.Ontogeny);
          return snapshot;
       }
 
-      private Task<LocalizedParameter[]> allExpresionFrom(IndividualMolecule molecule)
+      private async Task<ExpressionContainer[]> expressionFor(IndividualMolecule molecule)
       {
-         var allSetExpressionParameters = molecule.AllExpressionsContainers()
-            .Select(x => x.RelativeExpressionParameter)
-            .Where(x => x.Value != 0);
-
-         return _parameterMapper.LocalizedParametersFrom(allSetExpressionParameters, x => x.ParentContainer.Name);
+         var expression = await _expressionContainerMapper.MapToSnapshots(molecule.AllExpressionsContainers());
+         return expression?.Where(x => x != null).ToArray();
       }
 
       private void updateMoleculeSpecificPropertiesToSnapshot(Molecule snapshot, IndividualMolecule molecule)
@@ -83,23 +85,16 @@ namespace PKSim.Core.Snapshots.Mappers
          MapSnapshotPropertiesToModel(snapshot, molecule);
          updateMoleculePropertiesToMolecule(molecule, snapshot);
          molecule.Ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, simulationSubject);
-         await updateExpression(snapshot, molecule);
+         await updateExpression(snapshot, new ExpressionContainerMapperContext {Molecule = molecule, SimulationSubject = simulationSubject});
          return molecule;
       }
 
-      private async Task updateExpression(Molecule snapshot, IndividualMolecule molecule)
+      private async Task updateExpression(Molecule snapshot, ExpressionContainerMapperContext context)
       {
-         foreach (var expression in snapshot.Expression)
-         {
-            var expressionParameter = molecule.GetRelativeExpressionParameterFor(expression.Path);
-            if (expressionParameter == null)
-               throw new SnapshotOutdatedException(PKSimConstants.Error.MoleculeTypeNotSupported(expression.Path));
-
-            await _parameterMapper.MapToModel(expression, expressionParameter);
-         }
+         await _expressionContainerMapper.MapToModels(snapshot.Expression, context);
 
          //once expression have been set, we need to update normalized parameter
-         var normalizeExpressionCommand = new NormalizeRelativeExpressionCommand(molecule, _executionContext);
+         var normalizeExpressionCommand = new NormalizeRelativeExpressionCommand(context.Molecule, _executionContext);
          normalizeExpressionCommand.Execute(_executionContext);
       }
 

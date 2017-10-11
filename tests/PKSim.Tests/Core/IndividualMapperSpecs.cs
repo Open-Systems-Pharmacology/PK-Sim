@@ -32,6 +32,7 @@ namespace PKSim.Core
       protected MoleculeMapper _moleculeMapper;
       protected Parameter _ageSnapshotParameter;
       protected Parameter _heightSnapshotParameter;
+      protected Parameter _weightSnapshotParameter;
       protected Molecule _enzymeSnapshot;
       protected Molecule _transporterSnapshot;
       protected LocalizedParameter _localizedParameterKidney;
@@ -81,12 +82,14 @@ namespace PKSim.Core
 
          _individual.AddMolecule(_transporter);
 
-         _ageSnapshotParameter = new Parameter();
-         _heightSnapshotParameter = new Parameter();
+         _ageSnapshotParameter = new Parameter {Value = 1};
+         _heightSnapshotParameter = new Parameter {Value = 2};
+         _weightSnapshotParameter = new Parameter {Value = 3};
 
          A.CallTo(() => _parameterMapper.ParameterFrom(null, A<string>._, A<IDimension>._)).Returns(null);
          A.CallTo(() => _parameterMapper.ParameterFrom(_individual.OriginData.Age, A<string>._, A<IDimension>._)).Returns(_ageSnapshotParameter);
          A.CallTo(() => _parameterMapper.ParameterFrom(_individual.OriginData.Height, A<string>._, A<IDimension>._)).Returns(_heightSnapshotParameter);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_individual.OriginData.Weight, A<string>._, A<IDimension>._)).Returns(_weightSnapshotParameter);
 
          _enzymeSnapshot = new Molecule {Type = QuantityType.Enzyme};
          _transporterSnapshot = new Molecule {Type = QuantityType.Transporter};
@@ -177,9 +180,9 @@ namespace PKSim.Core
          A.CallTo(() => _moleculeMapper.MapToModel(_transporterSnapshot, _individual)).Returns(_molecule2);
 
 
-         A.CallTo(() => _dimensionRepository.Mass.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value)).Returns(10);
-         A.CallTo(() => _dimensionRepository.AgeInYears.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Age.Value)).Returns(20);
-         A.CallTo(() => _dimensionRepository.Length.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Height.Value)).Returns(30);
+         A.CallTo(() => _dimensionRepository.Mass.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(10);
+         A.CallTo(() => _dimensionRepository.AgeInYears.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Age.Value.Value)).Returns(20);
+         A.CallTo(() => _dimensionRepository.Length.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Height.Value.Value)).Returns(30);
       }
 
       protected override async Task Because()

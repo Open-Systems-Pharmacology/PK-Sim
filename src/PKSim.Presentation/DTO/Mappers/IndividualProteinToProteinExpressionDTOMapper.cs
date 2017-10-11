@@ -22,14 +22,14 @@ namespace PKSim.Presentation.DTO.Mappers
       {
          var proteinExpressionDTO = new ProteinExpressionDTO(protein);
 
-         foreach (var enzymeExpressionContainer in protein.GetChildren<IMoleculeExpressionContainer>())
+         foreach (var enzymeExpressionContainer in protein.AllExpressionsContainers())
          {
             addContainerExpression(proteinExpressionDTO, protein, enzymeExpressionContainer);
          }
          return proteinExpressionDTO;
       }
 
-      private void addContainerExpression(ProteinExpressionDTO proteinExpressionDTO, IndividualProtein protein, IMoleculeExpressionContainer moleculeExpressionContainer)
+      private void addContainerExpression(ProteinExpressionDTO proteinExpressionDTO, IndividualProtein protein, MoleculeExpressionContainer moleculeExpressionContainer)
       {
          var expressionDTO = new ExpressionContainerDTO {MoleculeName = protein.Name, ContainerName = moleculeExpressionContainer.Name};
          _expressionContainerDTOUpdater.UpdateProperties(expressionDTO, moleculeExpressionContainer);

@@ -15,7 +15,7 @@ namespace PKSim.Core.Snapshots
       //Transporters only
       public TransportType? TransportType { get; set; }
 
-      public LocalizedParameter[] Expression { get; set; }
+      public ExpressionContainer[] Expression { get; set; }
       public Ontogeny Ontogeny { get; set; }
    }
 }

@@ -164,7 +164,7 @@ namespace PKSim.Presentation.Services
          return command;
       }
 
-      public ICommand SetMembraneLocationFor(ITransporterExpressionContainer transporterContainer, TransportType transportType, MembraneLocation membraneLocation)
+      public ICommand SetMembraneLocationFor(TransporterExpressionContainer transporterContainer, TransportType transportType, MembraneLocation membraneLocation)
       {
          return new SetMembraneTypeCommand(transporterContainer, transportType, membraneLocation, _executionContext).Run(_executionContext);
       }
@@ -212,8 +212,7 @@ namespace PKSim.Presentation.Services
 
       private void setDefaultSettingsForTransporter(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)
       {
-         var transporter = molecule as IndividualTransporter;
-         if (transporter == null) return;
+         if (!(molecule is IndividualTransporter transporter)) return;
 
          _transportContainerUpdater.SetDefaultSettingsForTransporter(transporter, simulationSubject.Species.Name, moleculeName);
       }

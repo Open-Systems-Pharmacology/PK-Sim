@@ -3,7 +3,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
-   public abstract class IndividualProteinFactory<TProtein> : IndividualMoleculeFactory<TProtein, IMoleculeExpressionContainer> where TProtein : IndividualProtein
+   public abstract class IndividualProteinFactory<TProtein> : IndividualMoleculeFactory<TProtein, MoleculeExpressionContainer> where TProtein : IndividualProtein
    {
       protected IndividualProteinFactory(IObjectBaseFactory objectBaseFactory, IParameterFactory parameterFactory, IObjectPathFactory objectPathFactory, IEntityPathResolver entityPathResolver) : base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver)
       {

@@ -101,13 +101,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return _originDataMapper.MapFrom(batchOriginData);
       }
 
-      private double baseParameterValueFrom(Parameter parameter, IDimension dimension)
+      private double baseParameterValueFrom(Parameter snapshot, IDimension dimension)
       {
-         if (parameter == null)
+         if (snapshot?.Value == null)
             return double.NaN;
 
-         var unit = dimension.Unit(ModelValueFor(parameter.Unit));
-         return dimension.UnitValueToBaseUnitValue(unit, parameter.Value);
+         var unit = dimension.Unit(ModelValueFor(snapshot.Unit));
+         return dimension.UnitValueToBaseUnitValue(unit, snapshot.Value.Value);
       }
    }
 }

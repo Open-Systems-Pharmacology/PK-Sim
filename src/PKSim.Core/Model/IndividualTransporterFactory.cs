@@ -12,7 +12,7 @@ namespace PKSim.Core.Model
       IndividualTransporter UndefinedLiverTransporterFor(Individual individual);
    }
 
-   public class IndividualTransporterFactory : IndividualMoleculeFactory<IndividualTransporter, ITransporterExpressionContainer>, IIndividualTransporterFactory
+   public class IndividualTransporterFactory : IndividualMoleculeFactory<IndividualTransporter, TransporterExpressionContainer>, IIndividualTransporterFactory
    {
       private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
 
@@ -66,7 +66,7 @@ namespace PKSim.Core.Model
          transporterContainer.RelativeExpressionNorm = 1;
       }
 
-      protected override ITransporterExpressionContainer AddContainerExpression(ISimulationSubject simulationSubject, IndividualTransporter transporter, IContainer container, string groupeName)
+      protected override TransporterExpressionContainer AddContainerExpression(ISimulationSubject simulationSubject, IndividualTransporter transporter, IContainer container, string groupeName)
       {
          var availableTemplates = _transporterContainerTemplateRepository.TransportersFor(simulationSubject.Species.Name, container.Name)
             .Where(x => x.TransportType == transporter.TransportType).ToList();
@@ -77,7 +77,7 @@ namespace PKSim.Core.Model
          return addTransporterExpressionForContainer(simulationSubject, transporter, container, groupeName, availableTemplates.ElementAt(0));
       }
 
-      private ITransporterExpressionContainer addTransporterExpressionForContainer(ISimulationSubject simulationSubject, IndividualTransporter transporter, IContainer container, string groupeName, TransporterContainerTemplate transportTemplate)
+      private TransporterExpressionContainer addTransporterExpressionForContainer(ISimulationSubject simulationSubject, IndividualTransporter transporter, IContainer container, string groupeName, TransporterContainerTemplate transportTemplate)
       {
          var containerExpression = base.AddContainerExpression(simulationSubject, transporter, container, groupeName);
          containerExpression.UpdatePropertiesFrom(transportTemplate);

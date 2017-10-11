@@ -854,6 +854,7 @@
     <Compile Include="Snapshots\Chart.cs" />
     <Compile Include="Snapshots\Classification.cs" />
     <Compile Include="Snapshots\CurveOptions.cs" />
+    <Compile Include="Snapshots\ExpressionContainer.cs" />
     <Compile Include="Snapshots\GroupingDefinition.cs" />
     <Compile Include="Snapshots\Mappers\ChartMapper.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationContext.cs" />
@@ -883,6 +884,7 @@
     <Compile Include="Snapshots\Mappers\CompoundProcessMapper.cs" />
     <Compile Include="Snapshots\Mappers\CompoundPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\CurveOptionsMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ExpressionContainerMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObservedDataCollectionMappper.cs" />
     <Compile Include="Snapshots\Mappers\ProcessMappingMapper.cs" />
     <Compile Include="Snapshots\Mappers\SimulationAnalysisContext.cs" />

@@ -4,7 +4,7 @@ using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Mappers
 {
-   public interface IProteinExpressionContainerToExpressionContainerInfoMapper : IMapper<IMoleculeExpressionContainer, ExpressionContainerInfo>
+   public interface IProteinExpressionContainerToExpressionContainerInfoMapper : IMapper<MoleculeExpressionContainer, ExpressionContainerInfo>
    {
    }
 
@@ -17,7 +17,7 @@ namespace PKSim.Core.Mappers
          _representationInfoRepository = representationInfoRepository;
       }
 
-      public ExpressionContainerInfo MapFrom(IMoleculeExpressionContainer moleculeExpressionContainer)
+      public ExpressionContainerInfo MapFrom(MoleculeExpressionContainer moleculeExpressionContainer)
       {
          return new ExpressionContainerInfo(moleculeExpressionContainer.Name,
                                             _representationInfoRepository.DisplayNameFor(moleculeExpressionContainer),

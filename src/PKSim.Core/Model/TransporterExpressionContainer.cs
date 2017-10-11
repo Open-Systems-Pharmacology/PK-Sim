@@ -1,20 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
-   public interface ITransporterExpressionContainer : IMoleculeExpressionContainer, ITransporterContainer
-   {
-      string OrganName { get; }
-      string CompartmentName { get; set; }
-      bool HasPolarizedMembrane { get; }
-      void UpdatePropertiesFrom(TransporterContainerTemplate transporterContainerTemplate);
-   }
-
-   public class TransporterExpressionContainer : MoleculeExpressionContainer, ITransporterExpressionContainer
+   public class TransporterExpressionContainer : MoleculeExpressionContainer, ITransporterContainer
    {
       private MembraneLocation _membraneLocation;
       public string CompartmentName { get; set; }
@@ -67,8 +59,7 @@ namespace PKSim.Core.Model
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
-         var sourceTransporterContainer = sourceObject as ITransporterExpressionContainer;
-         if (sourceTransporterContainer == null) return;
+         if (!(sourceObject is TransporterExpressionContainer sourceTransporterContainer)) return;
          updatePropertiesFrom(sourceTransporterContainer);
          CompartmentName = sourceTransporterContainer.CompartmentName;
       }

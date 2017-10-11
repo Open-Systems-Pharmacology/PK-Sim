@@ -10,7 +10,7 @@ namespace PKSim.Presentation.DTO.Mappers
 {
    public interface IExpressionContainerDTOUpdater
    {
-      void UpdateProperties(ExpressionContainerDTO expressionDTO, IMoleculeExpressionContainer expressionContainer);
+      void UpdateProperties(ExpressionContainerDTO expressionDTO, MoleculeExpressionContainer expressionContainer);
    }
 
    public class ExpressionContainerDTOUpdater : IExpressionContainerDTOUpdater
@@ -26,7 +26,7 @@ namespace PKSim.Presentation.DTO.Mappers
          _groupRepository = groupRepository;
       }
 
-      public void UpdateProperties(ExpressionContainerDTO expressionDTO, IMoleculeExpressionContainer expressionContainer)
+      public void UpdateProperties(ExpressionContainerDTO expressionDTO, MoleculeExpressionContainer expressionContainer)
       {
          var group = _groupRepository.GroupByName(expressionContainer.GroupName);
          var groupInfo = _representationInfoRepository.InfoFor(RepresentationObjectType.GROUP, expressionContainer.GroupName);

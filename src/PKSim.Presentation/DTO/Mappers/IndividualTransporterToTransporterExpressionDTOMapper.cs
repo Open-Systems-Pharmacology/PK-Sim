@@ -21,14 +21,14 @@ namespace PKSim.Presentation.DTO.Mappers
       {
          var transporterExpressionDTO = new TransporterExpressionDTO(transporter);
 
-         foreach (var transporterExpressionContainer in transporter.GetChildren<ITransporterExpressionContainer>())
+         foreach (var transporterExpressionContainer in transporter.AllExpressionsContainers())
          {
             addContainerExpression(transporterExpressionDTO, transporter, transporterExpressionContainer);
          }
          return transporterExpressionDTO;
       }
 
-      private void addContainerExpression(TransporterExpressionDTO proteinExpressionDTO, IndividualTransporter transporter, ITransporterExpressionContainer transporterExpressionContainer)
+      private void addContainerExpression(TransporterExpressionDTO proteinExpressionDTO, IndividualTransporter transporter, TransporterExpressionContainer transporterExpressionContainer)
       {
          var expressionDTO = new TransporterExpressionContainerDTO(transporterExpressionContainer) {MoleculeName = transporter.Name, ContainerName = transporterExpressionContainer.Name};
          _expressionContainerDTOUpdater.UpdateProperties(expressionDTO, transporterExpressionContainer);

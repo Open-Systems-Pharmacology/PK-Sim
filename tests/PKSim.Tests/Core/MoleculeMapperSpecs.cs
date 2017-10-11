@@ -27,7 +27,8 @@ namespace PKSim.Core
       protected IParameter _relativeExpressionParameter1;
       private IParameter _relativeExpressionParameterNotSet;
       private MoleculeExpressionContainer _expressionContainer2;
-      protected LocalizedParameter _relativeExpressionSnapshot1;
+      protected ExpressionContainer _relativeExpressionContainerSnapshot1;
+      protected ExpressionContainer _relativeExpressionContainerSnapshot2;
       protected IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private IExecutionContext _executionContext;
       protected IParameter _relativeExpressionParameterNorm1;
@@ -36,15 +37,17 @@ namespace PKSim.Core
       protected OntogenyMapper _ontogenyMapper;
       protected Ontogeny _ontogeny;
       protected Snapshots.Ontogeny _snapshotOntogeny;
+      protected ExpressionContainerMapper _expressionContainerMapper;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
+         _expressionContainerMapper= A.Fake<ExpressionContainerMapper>();
          _executionContext = A.Fake<IExecutionContext>();
          _individualMoleculeFactoryResolver = A.Fake<IIndividualMoleculeFactoryResolver>();
          _ontogenyMapper= A.Fake<OntogenyMapper>();
 
-         sut = new MoleculeMapper(_parameterMapper, _individualMoleculeFactoryResolver, _executionContext, _ontogenyMapper);
+         sut = new MoleculeMapper(_parameterMapper,_expressionContainerMapper, _ontogenyMapper,_individualMoleculeFactoryResolver, _executionContext);
 
          _ontogeny = new DatabaseOntogeny
          {
@@ -76,7 +79,7 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.MapToSnapshot(_enzymeParameter)).Returns(_enzymeParameterSnapshot);
 
          _expressionContainer1 = new MoleculeExpressionContainer {Name = "Exp Container1"};
-         _expressionContainer2 = new MoleculeExpressionContainer {Name = "Exp Container2"};
+         _expressionContainer2 = new MoleculeExpressionContainer { Name = "Exp Container2"};
          _enzyme.AddChildren(_expressionContainer1, _expressionContainer2);
 
          _relativeExpressionParameter1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameter.REL_EXP);
@@ -89,19 +92,17 @@ namespace PKSim.Core
          _expressionContainer2.Add(_relativeExpressionParameterNotSet);
          _expressionContainer2.Add(_relativeExpressionParameterNotSetNorm);
 
-         _relativeExpressionSnapshot1 = new LocalizedParameter
-         {
-            Path = _expressionContainer1.Name,
-            Value = _relativeExpressionParameter1.Value
-         };
+         _relativeExpressionContainerSnapshot1 = new ExpressionContainer();
+         _relativeExpressionContainerSnapshot2 = new ExpressionContainer();
 
-         A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Contains(_relativeExpressionParameter1), A<Func<IParameter, string>>._)).Returns(new[]{ _relativeExpressionSnapshot1 });
+         A.CallTo(() => _expressionContainerMapper.MapToSnapshot(_expressionContainer1)).Returns(_relativeExpressionContainerSnapshot1);
+         A.CallTo(() => _expressionContainerMapper.MapToSnapshot(_expressionContainer2)).Returns(_relativeExpressionContainerSnapshot2);
 
          _snapshotOntogeny = new Snapshots.Ontogeny();
          A.CallTo(() => _ontogenyMapper.MapToSnapshot(_ontogeny)).Returns(_snapshotOntogeny);
          _simulationSubject = A.Fake<ISimulationSubject>();
 
-         return Task.FromResult(true);
+         return _completed;
       }
    }
 
@@ -122,7 +123,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_saved_the_relative_expression_parameters_values_that_are_set()
       {
-         _snapshot.Expression.ShouldOnlyContain(_relativeExpressionSnapshot1);
+         _snapshot.Expression.ShouldOnlyContain(_relativeExpressionContainerSnapshot1, _relativeExpressionContainerSnapshot2);
       }
 
       [Observation]
@@ -182,9 +183,9 @@ namespace PKSim.Core
          A.CallTo(() => enzymeFactory.CreateFor(_simulationSubject)).Returns(_enzyme);
          _relativeExpressionParameter1.Value = 0;
          _relativeExpressionParameterNorm1.Value = 0;
-
-         A.CallTo(() => _parameterMapper.MapToModel(_relativeExpressionSnapshot1, _relativeExpressionParameter1))
-            .Invokes(x => _relativeExpressionParameter1.Value = _relativeExpressionSnapshot1.Value);
+         _relativeExpressionContainerSnapshot1.Value = 0.5;
+         A.CallTo(() => _expressionContainerMapper.MapToModel(_relativeExpressionContainerSnapshot1, A<ExpressionContainerMapperContext>._))
+            .Invokes(x => _relativeExpressionParameter1.Value = _relativeExpressionContainerSnapshot1.Value.Value);
 
          _enzyme.Ontogeny = null;
          A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, _simulationSubject)).Returns(_ontogeny);
@@ -210,9 +211,8 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_update_the_relative_expression_parameters_and_recalculate_the_norm_parameters()
+      public void should_recalculate_the_norm_parameters()
       {
-         _relativeExpressionParameter1.Value.ShouldBeEqualTo(0.5);
          _relativeExpressionParameterNorm1.Value.ShouldBeEqualTo(1);
       }
 
@@ -223,24 +223,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_snapshot_containg_expression_for_an_unknow_target_container : concern_for_MoleculeMapper
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _snapshot = await sut.MapToSnapshot(_enzyme);
-         _snapshot.Expression[0].Path = "Unknown";
-         var enzymeFactory = A.Fake<IIndividualMoleculeFactory>();
-         A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualEnzyme>()).Returns(enzymeFactory);
-         A.CallTo(() => enzymeFactory.CreateFor(_simulationSubject)).Returns(_enzyme);
-      }
-
-      [Observation]
-      public void should_throw_an_exception()
-      {
-         TheAsync.Action(() => sut.MapToModel(_snapshot, _simulationSubject)).ShouldThrowAnAsync<SnapshotOutdatedException>();
-      }
-   }
 
    public class When_mapping_a_valid_transporter_molecule_snahpshot_to_a_molecule : concern_for_MoleculeMapper
    {
