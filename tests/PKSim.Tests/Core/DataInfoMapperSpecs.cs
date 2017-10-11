@@ -5,8 +5,9 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using DataInfo = OSPSuite.Core.Domain.Data.DataInfo;
 using ExtendedProperties = PKSim.Core.Snapshots.ExtendedProperties;
 using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
@@ -23,12 +24,18 @@ namespace PKSim.Core
 
       protected override Task Context()
       {
+         var molWeightDimension = A.Fake<IDimension>();
          _extendedPropertiesMapper = A.Fake<ExtendedPropertiesMapper>();
-         sut = new DataInfoMapper(_extendedPropertiesMapper);
+         var dimensionRepository = A.Fake<IDimensionRepository>();
+         A.CallTo(() => dimensionRepository.DimensionByName(Constants.Dimension.MOLECULAR_WEIGHT)).Returns(molWeightDimension);
+         sut = new DataInfoMapper(_extendedPropertiesMapper, dimensionRepository);
 
          _extendedPropertiesSnapshot = new ExtendedProperties();
          _dateTime = DateTime.Parse("January 1, 2017");
          _dataInfo = new DataInfo(ColumnOrigins.Observation, AuxiliaryType.GeometricStdDev, "unitName", _dateTime, "source", "category", 2.3) { LLOQ = 0.4f };
+
+         A.CallTo(() => molWeightDimension.BaseUnitValueToUnitValue(molWeightDimension.DefaultUnit, _dataInfo.MolWeight.Value)).Returns(5.0);
+         A.CallTo(() => molWeightDimension.UnitValueToBaseUnitValue(molWeightDimension.DefaultUnit, 5.0)).Returns(2.3);
 
          A.CallTo(() => _extendedPropertiesMapper.MapToSnapshot(_dataInfo.ExtendedProperties)).Returns(_extendedPropertiesSnapshot);
 
@@ -98,7 +105,7 @@ namespace PKSim.Core
          _snapshot.ComparisonThreshold.ShouldBeEqualTo(_dataInfo.ComparisonThreshold);
          _snapshot.Date.ShouldBeEqualTo(_dataInfo.Date);
          _snapshot.LLOQ.ShouldBeEqualTo(_dataInfo.LLOQ);
-         _snapshot.MolWeight.ShouldBeEqualTo(_dataInfo.MolWeight);
+         _snapshot.MolWeight.ShouldBeEqualTo(5.0);
          _snapshot.Origin.ShouldBeEqualTo(_dataInfo.Origin);
          _snapshot.Source.ShouldBeEqualTo(_dataInfo.Source);
       }
