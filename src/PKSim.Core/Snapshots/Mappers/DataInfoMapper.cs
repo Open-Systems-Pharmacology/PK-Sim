@@ -1,4 +1,7 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core.Repositories;
 using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
 using ModelDataInfo = OSPSuite.Core.Domain.Data.DataInfo;
 using ModelExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
@@ -9,9 +12,11 @@ namespace PKSim.Core.Snapshots.Mappers
    public class DataInfoMapper : SnapshotMapperBase<ModelDataInfo, SnapshotDataInfo>
    {
       private readonly ExtendedPropertiesMapper _extendedPropertiesMapper;
+      private readonly IDimension _molWeightDimension;
 
-      public DataInfoMapper(ExtendedPropertiesMapper extendedPropertiesMapper)
+      public DataInfoMapper(ExtendedPropertiesMapper extendedPropertiesMapper, IDimensionRepository dimensionRepository)
       {
+         _molWeightDimension = dimensionRepository.DimensionByName(Constants.Dimension.MOLECULAR_WEIGHT);
          _extendedPropertiesMapper = extendedPropertiesMapper;
       }
 
@@ -20,16 +25,23 @@ namespace PKSim.Core.Snapshots.Mappers
          var snapshot = await SnapshotFrom(dataInfo, x =>
          {
             x.AuxiliaryType = dataInfo.AuxiliaryType;
-            x.Category = dataInfo.Category;
+            x.Category = SnapshotValueFor(dataInfo.Category);
             x.ComparisonThreshold = dataInfo.ComparisonThreshold;
             x.Date = dataInfo.Date;
             x.LLOQ = dataInfo.LLOQ;
-            x.MolWeight = dataInfo.MolWeight;
+            x.MolWeight = molWeightToDisplayValue(dataInfo);
             x.Origin = dataInfo.Origin;
             x.Source = dataInfo.Source;
          });
          snapshot.ExtendedProperties = await mapExtendedProperties(dataInfo.ExtendedProperties);
          return snapshot;
+      }
+
+      private double? molWeightToDisplayValue(ModelDataInfo dataInfo)
+      {
+         if (dataInfo.MolWeight != null)
+            return _molWeightDimension.BaseUnitValueToUnitValue(_molWeightDimension.DefaultUnit, dataInfo.MolWeight.Value);
+         return null;
       }
 
       private Task<SnapshotExtendedProperties> mapExtendedProperties(ModelExtendedProperties extendedProperties)
@@ -46,7 +58,7 @@ namespace PKSim.Core.Snapshots.Mappers
             ComparisonThreshold = snapshot.ComparisonThreshold,
             Date = snapshot.Date,
             LLOQ = snapshot.LLOQ,
-            MolWeight = snapshot.MolWeight,
+            MolWeight = molWeightToBaseValue(snapshot),
             Source = snapshot.Source,
          };
 
@@ -54,6 +66,13 @@ namespace PKSim.Core.Snapshots.Mappers
             dataInfo.ExtendedProperties.AddRange(await extendedPropertiesFrom(snapshot));
 
          return dataInfo;
+      }
+
+      private double? molWeightToBaseValue(SnapshotDataInfo snapshot)
+      {
+         if (snapshot.MolWeight != null)
+            return _molWeightDimension.UnitValueToBaseUnitValue(_molWeightDimension.DefaultUnit, snapshot.MolWeight.Value);
+         return null;
       }
 
       private Task<ModelExtendedProperties> extendedPropertiesFrom(SnapshotDataInfo snapshot)
