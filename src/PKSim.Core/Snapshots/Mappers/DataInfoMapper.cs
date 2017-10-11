@@ -29,7 +29,7 @@ namespace PKSim.Core.Snapshots.Mappers
             x.ComparisonThreshold = dataInfo.ComparisonThreshold;
             x.Date = dataInfo.Date;
             x.LLOQ = dataInfo.LLOQ;
-            x.MolWeight = dataInfo.MolWeight.HasValue ? molWeightToDisplayValue(dataInfo) : null;
+            x.MolWeight = molWeightToDisplayValue(dataInfo);
             x.Origin = dataInfo.Origin;
             x.Source = dataInfo.Source;
          });
@@ -58,7 +58,7 @@ namespace PKSim.Core.Snapshots.Mappers
             ComparisonThreshold = snapshot.ComparisonThreshold,
             Date = snapshot.Date,
             LLOQ = snapshot.LLOQ,
-            MolWeight = snapshot.MolWeight.HasValue ? molWeightToBaseValue(snapshot) : null,
+            MolWeight = molWeightToBaseValue(snapshot),
             Source = snapshot.Source,
          };
 

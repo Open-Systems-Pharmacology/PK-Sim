@@ -32,10 +32,11 @@ namespace PKSim.Core
 
          _extendedPropertiesSnapshot = new ExtendedProperties();
          _dateTime = DateTime.Parse("January 1, 2017");
+
          _dataInfo = new DataInfo(ColumnOrigins.Observation, AuxiliaryType.GeometricStdDev, "unitName", _dateTime, "source", "category", 2.3) { LLOQ = 0.4f };
 
          A.CallTo(() => molWeightDimension.BaseUnitValueToUnitValue(molWeightDimension.DefaultUnit, _dataInfo.MolWeight.Value)).Returns(5.0);
-         A.CallTo(() => molWeightDimension.UnitValueToBaseUnitValue(molWeightDimension.DefaultUnit, 5.0)).Returns(2.3);
+         A.CallTo(() => molWeightDimension.UnitValueToBaseUnitValue(molWeightDimension.DefaultUnit, 5.0)).Returns(_dataInfo.MolWeight.Value);
 
          A.CallTo(() => _extendedPropertiesMapper.MapToSnapshot(_dataInfo.ExtendedProperties)).Returns(_extendedPropertiesSnapshot);
 
