@@ -90,7 +90,7 @@ namespace PKSim.Core
       }
    }
 
-   public abstract class When_mapping_snapshot_to_extended_property : concern_for_ExtendedPropertyMapper
+   public abstract class When_mapping_snapshot_to_extended_property<T> : concern_for_ExtendedPropertyMapper
    {
       protected IExtendedProperty _extendedProperty;
       protected ExtendedProperty _snapshot;
@@ -115,12 +115,13 @@ namespace PKSim.Core
          _extendedProperty.FullName.ShouldBeEqualTo(_snapshot.FullName);
          _extendedProperty.Name.ShouldBeEqualTo(_snapshot.Name);
          _extendedProperty.ValueAsObject.ShouldBeEqualTo(_snapshot.Value);
+         _extendedProperty.ShouldBeAnInstanceOf<ExtendedProperty<T>>();
 
          _snapshot.ListOfValues.Each(snapshotOption => _extendedProperty.ListOfValuesAsObjects.ShouldContain(snapshotOption));
       }
    }
 
-   public class When_mapping_snapshot_to_ExtendedProperty_string : When_mapping_snapshot_to_extended_property
+   public class When_mapping_snapshot_to_ExtendedProperty_string : When_mapping_snapshot_to_extended_property<string>
    {
       protected override void CreateSnapshot()
       {
@@ -128,7 +129,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_snapshot_to_extended_property_bool : When_mapping_snapshot_to_extended_property
+   public class When_mapping_snapshot_to_extended_property_bool : When_mapping_snapshot_to_extended_property<bool>
    {
       protected override void CreateSnapshot()
       {
@@ -136,7 +137,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_snapshot_to_extended_property_double : When_mapping_snapshot_to_extended_property
+   public class When_mapping_snapshot_to_extended_property_double : When_mapping_snapshot_to_extended_property<double>
    {
       protected override void CreateSnapshot()
       {
