@@ -10,6 +10,5 @@ namespace PKSim.Core.Snapshots
       public List<float> Values { get; set; }
       public string Dimension { get; set; }
       public string Unit { get; set; }
-      public bool IsBaseGrid { set; get; }
    }
 }
