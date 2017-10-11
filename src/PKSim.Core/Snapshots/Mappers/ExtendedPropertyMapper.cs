@@ -17,24 +17,22 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             snapshot.ListOfValues = extendedProperty.ListOfValuesAsObjects.Any() ? extendedProperty.ListOfValuesAsObjects.ToList() : null;
             snapshot.Value = extendedProperty.ValueAsObject;
-            snapshot.Type = extendedProperty.Type;
             snapshot.Description = SnapshotValueFor(extendedProperty.Description);
             snapshot.Name = extendedProperty.Name;
-            snapshot.FullName = extendedProperty.FullName;
-            snapshot.DisplayName = extendedProperty.DisplayName;
-            snapshot.ReadOnly = extendedProperty.ReadOnly;
+            snapshot.FullName = SnapshotValueFor(extendedProperty.FullName);
+            snapshot.ReadOnly = SnapshotValueFor(extendedProperty.ReadOnly);
          });
       }
 
-      private Task<ModelExtendedProperty> mapExtendedProperty<T>(SnapshotExtendedProperty snapshot, Func<object, T> convertToTypeFunc)
+      private Task<ModelExtendedProperty> mapExtendedProperty<T>(SnapshotExtendedProperty snapshot, Func<object, T> convertToTypeFunc, T propertyValue)
       {
          var extendedProperty = new ExtendedProperty<T>
          {
             Description = snapshot.Description,
-            ReadOnly = snapshot.ReadOnly,
+            ReadOnly = ModelValueFor(snapshot.ReadOnly),
             FullName = snapshot.FullName,
             Name = snapshot.Name,
-            ValueAsObject = snapshot.Value
+            Value = propertyValue
          };
          addOptionsToList(snapshot.ListOfValues, option => extendedProperty.AddToListOfValues(convertToTypeFunc(option)));
          return Task.FromResult<ModelExtendedProperty>(extendedProperty);
@@ -42,16 +40,14 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<ModelExtendedProperty> MapToModel(SnapshotExtendedProperty snapshot)
       {
-         if (snapshot.Type == typeof(string))
-            return mapExtendedProperty(snapshot, option => option.ToString());
+         if (double.TryParse(snapshot.Value.ToString(), out double doubleResult))
+            return mapExtendedProperty(snapshot, option => double.Parse(option.ToString()), doubleResult);
 
-         if (snapshot.Type == typeof(double))
-            return mapExtendedProperty(snapshot, option => double.Parse(option.ToString()));
+         if (bool.TryParse(snapshot.Value.ToString(), out bool boolResult))
+            return mapExtendedProperty(snapshot, option => bool.Parse(option.ToString()), boolResult);
 
-         if (snapshot.Type == typeof(bool))
-            return mapExtendedProperty(snapshot, option => bool.Parse(option.ToString()));
 
-         return mapExtendedProperty(snapshot, option => option);
+         return mapExtendedProperty(snapshot, option => option.ToString(), snapshot.Value.ToString());
       }
 
       private void addOptionsToList(List<object> snapshotListOfValues, Action<object> action) => snapshotListOfValues?.Each(action);
