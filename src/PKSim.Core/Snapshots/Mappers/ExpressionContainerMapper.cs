@@ -52,7 +52,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.MembraneLocation = SnapshotValueFor(transporterExpressionContainer.MembraneLocation, _defaultMembraneLocation);
       }
 
-      private static bool shouldMapContainer(IParameter expressionParameter, TransporterExpressionContainer transportedExpressionContainer)
+      private bool shouldMapContainer(IParameter expressionParameter, TransporterExpressionContainer transportedExpressionContainer)
       {
          if (expressionParameter.ParameterHasChanged())
             return true;
@@ -60,7 +60,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (transportedExpressionContainer == null)
             return false;
 
-         return transportedExpressionContainer.MembraneLocation != MembraneLocation.Basolateral;
+         return transportedExpressionContainer.MembraneLocation != _defaultMembraneLocation;
       }
 
       public override async Task<MoleculeExpressionContainer> MapToModel(ExpressionContainer snapshot, ExpressionContainerMapperContext context)
