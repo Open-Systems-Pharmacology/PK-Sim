@@ -28,7 +28,6 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.ExtendedProperties = await mapExtendedProperties(dataRepository.ExtendedProperties);
          snapshot.Columns = await mapColumns(dataRepository.AllButBaseGrid().Where(column => !dataRepository.ColumnIsInRelatedColumns(column)));
          snapshot.BaseGrid = await _dataColumnMapper.MapToSnapshot(dataRepository.BaseGrid);
-         snapshot.BaseGrid.IsBaseGrid = true;
          return snapshot;
       }
 

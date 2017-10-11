@@ -55,12 +55,13 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelDataColumn> MapToModel(SnapshotDataColumn snapshot, ModelDataRepository dataRepository)
       {
+         var dataInfo = await _dataInfoMapper.MapToModel(snapshot.DataInfo);
          var dimension = dimensionFrom(snapshot);
-         var dataColumn = snapshot.IsBaseGrid ? new BaseGrid(snapshot.Name, dimension) : new ModelDataColumn(snapshot.Name, dimension, dataRepository.BaseGrid);
+         var dataColumn = dataInfo.Origin == ColumnOrigins.BaseGrid ? new BaseGrid(snapshot.Name, dimension) : new ModelDataColumn(snapshot.Name, dimension, dataRepository.BaseGrid);
          dataColumn.DisplayUnit = displayUnitFor(dimension, snapshot.Unit);
-
          dataColumn.Values = valuesInBaseUnits(dataColumn, snapshot.Values);
-         dataColumn.DataInfo = await _dataInfoMapper.MapToModel(snapshot.DataInfo);
+         
+         dataColumn.DataInfo = dataInfo;
          dataColumn.QuantityInfo = await _quantityInfoMapper.MapToModel(snapshot.QuantityInfo);
 
          var relatedColumns = await this.MapToModels(snapshot.RelatedColumns, dataRepository);

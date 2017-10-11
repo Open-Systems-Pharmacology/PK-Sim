@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using SnapshotDataColumn = PKSim.Core.Snapshots.DataColumn;
 
 namespace PKSim.Core
@@ -22,6 +21,7 @@ namespace PKSim.Core
       protected Snapshots.QuantityInfo _quantityInfoSnapshot;
       protected Snapshots.DataInfo _dataInfoSnapshot;
       private IDimensionRepository _dimensionRepository;
+      protected BaseGrid _baseGrid;
 
       protected override Task Context()
       {
@@ -32,6 +32,7 @@ namespace PKSim.Core
 
          var observedData = DomainHelperForSpecs.ObservedData();
          _dataColumn = observedData.ObservationColumns().First();
+         _baseGrid = observedData.BaseGrid;
          _relatedColumn = new DataColumn("related", DomainHelperForSpecs.NoDimension(), observedData.BaseGrid)
          {
             Values = new[] { 0f, 0f, 0f },
@@ -43,9 +44,41 @@ namespace PKSim.Core
          _dataInfoSnapshot = new Snapshots.DataInfo();
          A.CallTo(() => _quantityInfoMapper.MapToSnapshot(_dataColumn.QuantityInfo)).Returns(_quantityInfoSnapshot);
          A.CallTo(() => _dataInfoMapper.MapToSnapshot(_dataColumn.DataInfo)).Returns(_dataInfoSnapshot);
-         A.CallTo(() => _dimensionRepository.DimensionByName(_dataColumn.Dimension.DisplayName)).Returns(_dataColumn.Dimension);
+         A.CallTo(() => _dimensionRepository.DimensionByName(_dataColumn.Dimension.Name)).Returns(_dataColumn.Dimension);
+         A.CallTo(() => _dimensionRepository.DimensionByName(_baseGrid.Dimension.Name)).Returns(_baseGrid.Dimension);
 
          return Task.FromResult(true);
+      }
+   }
+
+   public class When_mapping_snapshot_to_base_grid : concern_for_DataColumnMapper
+   {
+      private DataColumn _result;
+      private DataRepository _contextDataRepository;
+      private DataInfo _dataInfo;
+      private QuantityInfo _quantityInfo;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_baseGrid);
+         _contextDataRepository = DomainHelperForSpecs.ObservedData();
+         _dataInfo = new DataInfo(ColumnOrigins.BaseGrid);
+         _quantityInfo = new QuantityInfo("quantityInfo", new[] { "path" }, QuantityType.Undefined);
+
+         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo)).Returns(_dataInfo);
+         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo)).Returns(_quantityInfo);
+      }
+
+      protected override async Task Because()
+      {
+         _result = await sut.MapToModel(_snapshot, _contextDataRepository);
+      }
+
+      [Observation]
+      public void the_column_should_be_base_grid()
+      {
+         _result.ShouldBeAnInstanceOf<BaseGrid>();
       }
    }
 
@@ -62,7 +95,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_dataColumn);
          _contextDataRepository = DomainHelperForSpecs.ObservedData();
          _dataInfo = new DataInfo(ColumnOrigins.Observation);
-         _quantityInfo = new QuantityInfo("quantityInfo", new []{"path"}, QuantityType.Undefined);
+         _quantityInfo = new QuantityInfo("quantityInfo", new[] { "path" }, QuantityType.Undefined);
 
          A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo)).Returns(_dataInfo);
          A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo)).Returns(_quantityInfo);
@@ -83,6 +116,12 @@ namespace PKSim.Core
       public void the_column_contains_the_data_info()
       {
          _result.DataInfo.ShouldBeEqualTo(_dataInfo);
+      }
+
+      [Observation]
+      public void the_column_should_be_data_column()
+      {
+         _result.ShouldBeAnInstanceOf<DataColumn>();
       }
 
       [Observation]
