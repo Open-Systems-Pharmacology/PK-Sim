@@ -39,7 +39,7 @@ namespace PKSim.Core
       [Observation]
       public void the_snapshot_should_have_properties_set_as_expected()
       {
-         _snapshot.ReadOnly.ShouldBeEqualTo(_extendedProperty.ReadOnly);
+         _snapshot.ReadOnly.GetValueOrDefault().ShouldBeEqualTo(_extendedProperty.ReadOnly);
          _snapshot.Value.ShouldBeEqualTo(_extendedProperty.ValueAsObject);
          _snapshot.Name.ShouldBeEqualTo(_extendedProperty.Name);
          _snapshot.FullName.ShouldBeEqualTo(_extendedProperty.FullName);
@@ -52,9 +52,15 @@ namespace PKSim.Core
    {
       protected override void CreateExtendedProperty()
       {
-         _extendedProperty = new ExtendedProperty<bool> {Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = true};
+         _extendedProperty = new ExtendedProperty<bool> {Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = false, Value = true};
          _extendedProperty.AddToListOfValues(true);
          _extendedProperty.AddToListOfValues(false);
+      }
+
+      [Observation]
+      public void the_readonly_property_should_be_null()
+      {
+         _snapshot.ReadOnly.HasValue.ShouldBeFalse();
       }
    }
 
@@ -65,6 +71,12 @@ namespace PKSim.Core
          _extendedProperty = new ExtendedProperty<double> {Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = 5.5};
          _extendedProperty.AddToListOfValues(6.5);
          _extendedProperty.AddToListOfValues(7.5);
+      }
+
+      [Observation]
+      public void the_readonly_property_should_be_null()
+      {
+         _snapshot.ReadOnly.HasValue.ShouldBeTrue();
       }
    }
 
@@ -98,7 +110,7 @@ namespace PKSim.Core
       [Observation]
       public void the_model_should_have_properties_set_as_expected()
       {
-         _extendedProperty.ReadOnly.ShouldBeEqualTo(_snapshot.ReadOnly);
+         _extendedProperty.ReadOnly.ShouldBeEqualTo(_snapshot.ReadOnly.GetValueOrDefault());
          _extendedProperty.Description.ShouldBeEqualTo(_snapshot.Description);
          _extendedProperty.FullName.ShouldBeEqualTo(_snapshot.FullName);
          _extendedProperty.Name.ShouldBeEqualTo(_snapshot.Name);
@@ -112,7 +124,7 @@ namespace PKSim.Core
    {
       protected override void CreateSnapshot()
       {
-         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {"option 1", "option 2"}, Name = "Name", Type = typeof(string), Value = "Value"};
+         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {"option 1", "option 2"}, Name = "Name", Value = "Value"};
       }
    }
 
@@ -120,15 +132,7 @@ namespace PKSim.Core
    {
       protected override void CreateSnapshot()
       {
-         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {true, false}, Name = "Name", Type = typeof(bool), Value = false};
-      }
-   }
-
-   public class When_mapping_snapshot_to_extended_property_object : When_mapping_snapshot_to_extended_property
-   {
-      protected override void CreateSnapshot()
-      {
-         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {true, 6.5}, Name = "Name", Type = typeof(object), Value = "string"};
+         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {true, false}, Name = "Name", Value = false};
       }
    }
 
@@ -136,7 +140,7 @@ namespace PKSim.Core
    {
       protected override void CreateSnapshot()
       {
-         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {4.5, 6.5}, Name = "Name", Type = typeof(double), Value = 5.5};
+         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {4.5, 6.5}, Name = "Name", Value = 5.5};
       }
    }
 }
