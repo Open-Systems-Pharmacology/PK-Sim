@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Utility.Extensions;
-using PKSim.BatchTool.Services;
-using PKSim.BatchTool.Views;
-using PKSim.Core.Batch;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using PKSim.BatchTool.Views;
+using PKSim.CLI.Core.Services;
+using PKSim.Core.Batch;
 
 namespace PKSim.BatchTool.Presenters
 {
@@ -20,16 +18,11 @@ namespace PKSim.BatchTool.Presenters
       void InitializeForStandAloneStart();
    }
 
-   public interface IBatchPresenter<TStartOptions>: IBatchPresenter
-   {
-      Task InitializeForCommandLineRunWith(TStartOptions startOptions);
-   }
-
-   public abstract class BatchPresenter<TView, TPresenter, TBatchRunner, TStartOptions> : AbstractPresenter<TView, TPresenter>, IBatchPresenter<TStartOptions>
-      where TBatchRunner : IBatchRunner<TStartOptions>
-      where TView : IView<TPresenter>, IBatchView<TStartOptions>
+   public abstract class BatchPresenter<TView, TPresenter, TBatchRunner, TRunOptions> : AbstractPresenter<TView, TPresenter>, IBatchPresenter
+      where TBatchRunner : IBatchRunner<TRunOptions>
+      where TView : IView<TPresenter>, IBatchView<TRunOptions>
       where TPresenter : IPresenter
-      where TStartOptions:new()
+      where TRunOptions : new()
 
    {
       protected readonly TBatchRunner _batchRunner;
@@ -37,8 +30,7 @@ namespace PKSim.BatchTool.Presenters
       private readonly ILogPresenter _logPresenter;
       private readonly IBatchLogger _batchLogger;
       private bool _isRunning;
-      protected bool _startedFromCommandLine;
-      protected TStartOptions _startOptions = new TStartOptions();
+      protected TRunOptions _runOptionsDTO = new TRunOptions();
 
       protected BatchPresenter(TView view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger)
          : base(view)
@@ -48,6 +40,7 @@ namespace PKSim.BatchTool.Presenters
          _logPresenter = logPresenter;
          _batchLogger = batchLogger;
          _view.AddLogView(_logPresenter.View);
+         AddSubPresenters(_logPresenter);
       }
 
       public virtual async Task RunBatch()
@@ -68,22 +61,17 @@ namespace PKSim.BatchTool.Presenters
 
          _isRunning = false;
          _view.CalculateEnabled = true;
-
-         if (shouldClose)
-            Exit();
       }
 
       public virtual void InitializeForStandAloneStart()
       {
-         _startedFromCommandLine = false;
-         _view.BindTo(_startOptions);
-         _view.Display();
+         _view.BindTo(_runOptionsDTO);
+         _view.Show();
       }
-
 
       protected virtual Task StartBatch()
       {
-         return _batchRunner.RunBatchAsync(_startOptions);
+         return _batchRunner.RunBatchAsync(_runOptionsDTO);
       }
 
       public bool Exit()
@@ -97,15 +85,6 @@ namespace PKSim.BatchTool.Presenters
 
          Application.Exit();
          return true;
-      }
-
-      private bool shouldClose => _startedFromCommandLine;
-
-      public virtual async Task InitializeForCommandLineRunWith(TStartOptions startOptions)
-      {
-         _startOptions = startOptions;
-         _startedFromCommandLine = true;
-         await RunBatch();
       }
    }
 }

@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility;
 using PKSim.Assets;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Core.Snapshots.Services
@@ -19,7 +21,7 @@ namespace PKSim.Core.Snapshots.Services
       Task ExportModelToSnapshot<T>(T modelToExport) where T : class, IObjectBase;
 
       /// <summary>
-      ///    Exports the given <paramref name="modelToExport" /> to snapshot file <paramref name="fileFullPath"/>
+      ///    Exports the given <paramref name="modelToExport" /> to snapshot file <paramref name="fileFullPath" />
       /// </summary>
       Task ExportModelToSnapshot<T>(T modelToExport, string fileFullPath) where T : class, IObjectBase;
 
@@ -34,6 +36,8 @@ namespace PKSim.Core.Snapshots.Services
       Task<IEnumerable<T>> LoadSnapshot<T>() where T : IWithName;
 
       Task<IEnumerable<T>> LoadModelFromSnapshot<T>(string fileName) where T : class, IObjectBase;
+
+      Task<PKSimProject> LoadProjectFromSnapshot(string fileName);
    }
 
    public class SnapshotTask : ISnapshotTask
@@ -124,6 +128,18 @@ namespace PKSim.Core.Snapshots.Services
          var tasks = snapshots.Select(_snapshotMapper.MapToModel);
          var models = await Task.WhenAll(tasks);
          return models.OfType<T>();
+      }
+
+      public async Task<PKSimProject> LoadProjectFromSnapshot(string fileName)
+      {
+         var project = (await LoadModelFromSnapshot<PKSimProject>(fileName)).FirstOrDefault();
+
+         if (project == null)
+            return null;
+
+         project.HasChanged = true;
+         project.Name = FileHelper.FileNameFromFileFullPath(fileName);
+         return project;
       }
 
       private async Task exportSnapshotFor<T>(T objectToExport, string fileName)

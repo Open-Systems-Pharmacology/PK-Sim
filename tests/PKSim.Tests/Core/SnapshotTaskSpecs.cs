@@ -11,8 +11,8 @@ using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Extensions;
 using Parameter = PKSim.Core.Snapshots.Parameter;
+using Project = PKSim.Core.Snapshots.Project;
 
 namespace PKSim.Core
 {
@@ -38,7 +38,7 @@ namespace PKSim.Core
 
          _parameter = A.Fake<IParameter>();
          _parameter.Name = "Param";
-         A.CallTo(() => _objectTypeResolver.TypeFor((IWithName)_parameter)).Returns(_parameterType);
+         A.CallTo(() => _objectTypeResolver.TypeFor((IWithName) _parameter)).Returns(_parameterType);
 
          _parameterSnapshot = new Parameter();
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_parameter)).Returns(_parameterSnapshot);
@@ -185,6 +185,41 @@ namespace PKSim.Core
       public void should_return_an_empty_enumeration_of_model_being_loaded_from_snapshot()
       {
          _formulations.ShouldBeEmpty();
+      }
+   }
+
+   public class When_loading_a_project_from_snapshot_file : concern_for_SnapshotTask
+   {
+      private PKSimProject _project;
+      private readonly string _fileName = @"C:\test\SuperProject.json";
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         var snapshotType = typeof(PKSimProject);
+         var projectSnapshot = new Project();
+         var project = new PKSimProject();
+
+         A.CallTo(() => _snapshotMapper.SnapshotTypeFor<PKSimProject>()).Returns(snapshotType);
+         A.CallTo(() => _snapshotSerializer.DeserializeAsArray(_fileName, snapshotType)).Returns(new object[] {projectSnapshot,});
+         A.CallTo(() => _snapshotMapper.MapToModel(projectSnapshot)).Returns(project);
+      }
+
+      protected override async Task Because()
+      {
+         _project = await sut.LoadProjectFromSnapshot(_fileName);
+      }
+
+      [Observation]
+      public void should_return_a_project_with_the_name_set_to_the_name_of_the_file()
+      {
+         _project.Name.ShouldBeEqualTo("SuperProject");
+      }
+
+      [Observation]
+      public void should_have_marked_the_project_has_changed()
+      {
+         _project.HasChanged.ShouldBeTrue();
       }
    }
 }

@@ -8,7 +8,7 @@ using Simulation = PKSim.Core.Batch.Simulation;
 
 namespace PKSim.BatchTool
 {
-   public class When_exporting_a_simulation_to_json   : StaticContextSpecification
+   public class When_exporting_a_simulation_to_json : StaticContextSpecification
    {
       private Simulation _simulation;
       private Simulation _converted;
@@ -43,11 +43,11 @@ namespace PKSim.BatchTool
       {
          _simulation = BatchToolFactoryForSpecs.DefaultSimulation();
          var pv1 = new ParameterVariationSet {Name = "PV1"};
-         pv1.ParameterValues.Add(new ParameterValue("A|B|C",15,0.2));
-         pv1.ParameterValues.Add(new ParameterValue("A|B|C|D",20,0.6));
+         pv1.ParameterValues.Add(new ParameterValue("A|B|C", 15, 0.2));
+         pv1.ParameterValues.Add(new ParameterValue("A|B|C|D", 20, 0.6));
          _simulation.ParameterVariationSets.Add(pv1);
-         
-         _settings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+
+         _settings = new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore};
       }
 
       protected override void Because()
@@ -67,7 +67,6 @@ namespace PKSim.BatchTool
          pv.ParameterValues.ElementAt(0).Value.ShouldBeEqualTo(15);
          pv.ParameterValues.ElementAt(1).ParameterPath.ShouldBeEqualTo("A|B|C|D");
          pv.ParameterValues.ElementAt(1).Value.ShouldBeEqualTo(20);
-
       }
    }
-}	
+}

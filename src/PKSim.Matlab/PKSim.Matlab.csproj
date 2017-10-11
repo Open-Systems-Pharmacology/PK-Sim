@@ -65,19 +65,18 @@
     </Compile>
     <Compile Include="ApplicationStartup.cs" />
     <Compile Include="MatlabFullPathDisplayResolver.cs" />
-    <Compile Include="MatlabDisplayUnitRetriever.cs" />
-    <Compile Include="MatlabExceptionManager.cs" />
     <Compile Include="MatlabIndividualFactory.cs" />
-    <Compile Include="MatlabProgressUpdater.cs" />
     <Compile Include="MatlabRegister.cs" />
     <Compile Include="MatlabLazyLoadTask.cs" />
-    <Compile Include="MatlabUserSettings.cs" />
-    <Compile Include="MatlabWorkspace.cs" />
     <Compile Include="OntogenyFactorsRetriever.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MatlabPopulationFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj">
+      <Project>{62f91ef9-5720-449d-9ec8-e9a7d5ba09b0}</Project>
+      <Name>PKSim.CLI.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj">
       <Project>{CEF9367D-F2C4-4796-847B-42B090A601B5}</Project>
       <Name>PKSim.Core</Name>

@@ -611,7 +611,7 @@ namespace PKSim.IntegrationTests
       private IInteractionTask _interactionTask;
 
       protected abstract IEnumerable<PartialProcess> PartialProcesses { get; }
-      protected string InhibitionProcessName { get; private set; }
+      protected string InhibitionProcessName { get; }
 
       protected When_creating_an_individual_simulation_with_drug_and_inhibitor(string inhibitorProcessName)
       {

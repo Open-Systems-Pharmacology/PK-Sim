@@ -6,11 +6,8 @@ namespace PKSim.BatchTool.Presenters
 {
    public interface IBatchMainPresenter : IPresenter<IBatchMainView>
    {
-      void StartBatchRun(JsonRunOptions jsonRunOptions = null);
-      void StartProjectComparison(ProjectComparisonOptions projectComparisonOptions = null);
-      void GenerateTrainingMaterial(TrainingMaterialsOptions trainingMaterialsOptions = null);
-      void GenerateProjectOverview(ProjectOverviewOptions projectOverviewOptions = null);
-      void StartSnapshotsRun(SnapshotRunOptions snapshotRunOptions = null);
+      void StartBatchRun();
+      void StartSnapshotsRun();
    }
 
    public class BatchMainPresenter : AbstractPresenter<IBatchMainView, IBatchMainPresenter>, IBatchMainPresenter
@@ -22,40 +19,21 @@ namespace PKSim.BatchTool.Presenters
          _applicationController = applicationController;
       }
 
-      public void StartBatchRun(JsonRunOptions jsonRunOptions = null)
+      public void StartBatchRun()
       {
-         start<IJsonSimulationBatchPresenter, JsonRunOptions>(jsonRunOptions);
+         start<IJsonSimulationBatchPresenter>();
       }
 
-      public void StartProjectComparison(ProjectComparisonOptions projectComparisonOptions = null)
+      public void StartSnapshotsRun()
       {
-         start<IProjectComparisonPresenter, ProjectComparisonOptions>(projectComparisonOptions);
+         start<ISnapshotRunPresenter>();
       }
 
-      public void GenerateTrainingMaterial(TrainingMaterialsOptions trainingMaterialsOptions = null)
-      {
-         start<IGenerateTrainingMaterialPresenter, TrainingMaterialsOptions>(trainingMaterialsOptions);
-      }
-
-      public void GenerateProjectOverview(ProjectOverviewOptions projectOverviewOptions = null)
-      {
-         start<IGenerateProjectOverviewPresenter, ProjectOverviewOptions>(projectOverviewOptions);
-      }
-
-      public void StartSnapshotsRun(SnapshotRunOptions snapshotRunOptions = null)
-      {
-         start<ISnapshotsRunPresenter, SnapshotRunOptions>(snapshotRunOptions);
-      }
-
-      private T start<T, TStartOptions>(TStartOptions startOptions) where T : IBatchPresenter<TStartOptions>
+      private T start<T>() where T : IBatchPresenter
       {
          var presenter = _applicationController.Start<T>();
          View.Hide();
-         if(startOptions!=null)
-            presenter.InitializeForCommandLineRunWith(startOptions);
-         else
-            presenter.InitializeForStandAloneStart();
-
+         presenter.InitializeForStandAloneStart();
          return presenter;
       }
    }

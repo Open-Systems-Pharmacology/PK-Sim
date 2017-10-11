@@ -252,17 +252,7 @@ namespace PKSim.Presentation.Services
 
       public Task ExportProjectToSnapshot(PKSimProject project, string snapshotFileFullPath) => _snapshotTask.ExportModelToSnapshot(project, snapshotFileFullPath);
 
-      public async Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath)
-      {
-         var project =  (await _snapshotTask.LoadModelFromSnapshot<PKSimProject>(snapshotFileFullPath)).FirstOrDefault();
-
-         if (project == null)
-            return null;
-
-         project.HasChanged = true;
-         project.Name = FileHelper.FileNameFromFileFullPath(snapshotFileFullPath);
-         return project;
-      }
+      public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshot(snapshotFileFullPath);
 
       private void openSimulationForPopulationSimulation(string simulationFile)
       {

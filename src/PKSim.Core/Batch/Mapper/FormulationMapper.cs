@@ -42,7 +42,6 @@ namespace PKSim.Core.Batch.Mapper
             }
 
             parameter.Value = parameterValue.Value;
-            _batchLogger.AddParameterValueToDebug(parameter);
          }
 
          return formulation;

@@ -85,14 +85,11 @@ namespace PKSim.UI.Views.Protocols
          return _presenter.ShouldCancel;
       }
 
-      public override bool HasError
-      {
-         get { return _propertiesBinder.HasError; }
-      }
+      public override bool HasError => _propertiesBinder.HasError;
 
       public bool SimpleProtocolEnabled
       {
-         set { _radioButtonSimple.Enabled = value; }
+         set => _radioButtonSimple.Enabled = value;
       }
 
       public override void InitializeResources()

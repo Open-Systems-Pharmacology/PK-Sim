@@ -961,7 +961,7 @@ namespace PKSim.Presentation
          _filename = @"C:\test\SuperProject.json";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_filename);
 
-         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<PKSimProject>(_filename)).Returns(new[] {_newProject});
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_filename)).Returns(_newProject);
          A.CallTo(() => _workspace.LoadProject(A<Action>._)).Invokes(x => _loadAction = x.GetArgument<Action>(0));
       }
 
@@ -989,41 +989,6 @@ namespace PKSim.Presentation
       public void should_overwrite_the_current_project()
       {
          _workspace.Project.ShouldBeEqualTo(_newProject);
-      }
-
-      [Observation]
-      public void should_set_the_properties_as_expected()
-      {
-         _newProject.Name.ShouldBeEqualTo("SuperProject");
-         _newProject.HasChanged.ShouldBeTrue();
-      }
-   }
-
-   public class When_loading_a_project_from_snapshot_file : concern_for_ProjectTask
-   {
-      private string _snapshotFile = "SnapshotFile.json";
-
-      protected override async Task Context()
-      {
-         await base.Context();
-         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<PKSimProject>(_snapshotFile)).Returns(new []{_project});
-      }
-
-      protected override async Task Because()
-      {
-         _project = await sut.LoadProjectFromSnapshotFile(_snapshotFile);
-      }
-
-      [Observation]
-      public void should_return_a_project_with_the_name_set_to_the_name_of_the_file()
-      {
-         _project.Name.ShouldBeEqualTo("SnapshotFile");
-      }
-
-      [Observation]
-      public void should_have_marked_the_project_has_changed()
-      {
-         _project.HasChanged.ShouldBeTrue();
       }
    }
 }
