@@ -28,8 +28,8 @@ namespace PKSim.Core
    public class When_mapping_a_protein_expression_to_a_query_expression_setting : concern_for_MoleculeToQueryExpressionSettingsMapper
    {
       private double _proteinContent;
-      private IMoleculeExpressionContainer _exp1;
-      private IMoleculeExpressionContainer _exp2;
+      private MoleculeExpressionContainer _exp1;
+      private MoleculeExpressionContainer _exp2;
       private ExpressionContainerInfo _expInfo1;
       private ExpressionContainerInfo _expInfo2;
 
@@ -38,8 +38,8 @@ namespace PKSim.Core
          base.Context();
          _protein = A.Fake<IndividualProtein>();
          _protein.QueryConfiguration = "toto";
-         _exp1 = A.Fake<IMoleculeExpressionContainer>().WithName("exp1");
-         _exp2 = A.Fake<IMoleculeExpressionContainer>().WithName("exp2");
+         _exp1 = new MoleculeExpressionContainer().WithName("exp1");
+         _exp2 = new MoleculeExpressionContainer().WithName("exp2");
          _expInfo1 = A.Fake<ExpressionContainerInfo>();
          _expInfo2 = A.Fake<ExpressionContainerInfo>();
          A.CallTo(() => _protein.AllExpressionsContainers()).Returns(new[] {_exp1, _exp2});

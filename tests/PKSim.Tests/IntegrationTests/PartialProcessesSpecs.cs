@@ -3,7 +3,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
-using NUnit.Framework;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -563,7 +562,7 @@ namespace PKSim.IntegrationTests
             .FirstOrDefault(x => x.TransportType == TransportType.Influx);
 
          _transporter = _transporterFactory.CreateFor(_individual).DowncastTo<IndividualTransporter>().WithName("TRANS");
-         var transportContainer = _transporter.ExpressionContainer(CoreConstants.Organ.Brain).DowncastTo<ITransporterExpressionContainer>();
+         var transportContainer = _transporter.ExpressionContainer(CoreConstants.Organ.Brain).DowncastTo<TransporterExpressionContainer>();
          transportContainer.UpdatePropertiesFrom(influxBBB);
          _individual.AddMolecule(_transporter);
          _transportProcess = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_SPECIFIC_MM)

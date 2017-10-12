@@ -31,8 +31,8 @@ namespace PKSim.Presentation
       protected IProteinExpressionsPresenter _proteinExpressionPresenter;
       protected ISimpleMoleculePresenter _simpleMoleculePresenter;
       protected IndividualMolecule _molecule;
-      protected IMoleculeExpressionContainer _moleculeContainer1;
-      protected IMoleculeExpressionContainer _moleculeContainer2;
+      protected MoleculeExpressionContainer _moleculeContainer1;
+      protected MoleculeExpressionContainer _moleculeContainer2;
       protected IOntogenyRepository _ontogenyRepository;
       protected Ontogeny _ontogeny;
       private ITransportContainerUpdater _transportContainerUpdater;

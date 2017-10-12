@@ -9,8 +9,8 @@ namespace PKSim.Core
 {
    public abstract class concern_for_IndividualEnzyme : ContextSpecification<IndividualEnzyme>
    {
-      protected IMoleculeExpressionContainer _expressionContainer;
-      protected IMoleculeExpressionContainer _anotherContainer;
+      protected MoleculeExpressionContainer _expressionContainer;
+      protected MoleculeExpressionContainer _anotherContainer;
       protected IParameter _referenceConcentration;
 
       protected override void Context()

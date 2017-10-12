@@ -70,18 +70,12 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    All molecules defined in the individual
       /// </summary>
-      public virtual IEnumerable<IndividualMolecule> AllMolecules()
-      {
-         return AllMolecules<IndividualMolecule>();
-      }
+      public virtual IEnumerable<IndividualMolecule> AllMolecules() => AllMolecules<IndividualMolecule>();
 
       /// <summary>
       ///    All defined molecules defined in the individual
       /// </summary>
-      public virtual IEnumerable<IndividualMolecule> AllDefinedMolecules()
-      {
-         return AllMolecules().Where(x => !x.IsUndefinedMolecule());
-      }
+      public virtual IEnumerable<IndividualMolecule> AllDefinedMolecules() => AllMolecules().Where(x => !x.IsUndefinedMolecule());
 
       /// <summary>
       ///    All protein of type
@@ -89,20 +83,11 @@ namespace PKSim.Core.Model
       ///    in the individual
       /// </summary>
       /// <typeparam name="TMolecule"> Type of molecule to be retrieved </typeparam>
-      public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule
-      {
-         return GetChildren<TMolecule>();
-      }
+      public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule => GetChildren<TMolecule>();
 
-      public virtual void AddMolecule(IndividualMolecule molecule)
-      {
-         Add(molecule);
-      }
+      public virtual void AddMolecule(IndividualMolecule molecule) => Add(molecule);
 
-      public virtual void RemoveMolecule(IndividualMolecule molecule)
-      {
-         RemoveChild(molecule);
-      }
+      public virtual void RemoveMolecule(IndividualMolecule molecule) => RemoveChild(molecule);
 
       /// <summary>
       ///    Return the protein with the name <paramref name="name" /> if defined in the individual, otherwise null

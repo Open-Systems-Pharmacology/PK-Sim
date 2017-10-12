@@ -26,7 +26,7 @@ namespace PKSim.Core.Model
 
    public abstract class IndividualMoleculeFactory<TMolecule, TMoleculeExpressionContainer> : IIndividualMoleculeFactory
       where TMolecule : IndividualMolecule
-      where TMoleculeExpressionContainer : IMoleculeExpressionContainer
+      where TMoleculeExpressionContainer : MoleculeExpressionContainer
    {
       private readonly IEntityPathResolver _entityPathResolver;
       protected readonly IObjectBaseFactory _objectBaseFactory;

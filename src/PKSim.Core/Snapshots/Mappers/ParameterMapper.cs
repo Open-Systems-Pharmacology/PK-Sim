@@ -29,17 +29,20 @@ namespace PKSim.Core.Snapshots.Mappers
          return createFrom<SnapshotParameter>(modelParameter, x => { x.Name = modelParameter.Name; });
       }
 
-      private async Task<TSnapshotParameter> createFrom<TSnapshotParameter>(IParameter modelParameter, Action<TSnapshotParameter> configurationAction) where TSnapshotParameter : SnapshotParameter, new()
+      public virtual async Task UpdateSnapshotFromParameter(SnapshotParameter snapshot, IParameter parameter)
       {
-         var parameter = new TSnapshotParameter
-         {
-            Value = modelParameter.ValueInDisplayUnit,
-            Unit = SnapshotValueFor(modelParameter.DisplayUnit.Name),
-            ValueDescription = SnapshotValueFor(modelParameter.ValueDescription),
-            TableFormula = await mapFormula(modelParameter.Formula)
-         };
-         configurationAction(parameter);
-         return parameter;
+         snapshot.Value = parameter.ValueInDisplayUnit;
+         snapshot.Unit = SnapshotValueFor(parameter.DisplayUnit.Name);
+         snapshot.ValueDescription = SnapshotValueFor(parameter.ValueDescription);
+         snapshot.TableFormula = await mapFormula(parameter.Formula);
+      }
+
+      private async Task<TSnapshotParameter> createFrom<TSnapshotParameter>(IParameter parameter, Action<TSnapshotParameter> configurationAction) where TSnapshotParameter : SnapshotParameter, new()
+      {
+         var snapshot = new TSnapshotParameter();
+         await UpdateSnapshotFromParameter(snapshot, parameter);
+         configurationAction(snapshot);
+         return snapshot;
       }
 
       public override async Task<IParameter> MapToModel(SnapshotParameter snapshot, IParameter parameter)
@@ -50,6 +53,9 @@ namespace PKSim.Core.Snapshots.Mappers
          //only update formula if required
          if (snapshot.TableFormula != null)
             parameter.Formula = await _tableFormulaMapper.MapToModel(snapshot.TableFormula);
+
+         if (snapshot.Value == null)
+            return parameter;
 
          //This needs to come AFTER formula update so that the base value is accurate
          var baseValue = parameter.Value;
@@ -63,8 +69,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<SnapshotTableFormula> mapFormula(IFormula formula)
       {
-         var tableFormula = formula as ModelTableFormula;
-         if (tableFormula == null)
+         if (!(formula is ModelTableFormula tableFormula))
             return null;
 
          return await _tableFormulaMapper.MapToSnapshot(tableFormula);

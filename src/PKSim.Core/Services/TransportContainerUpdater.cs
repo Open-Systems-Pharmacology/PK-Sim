@@ -14,7 +14,7 @@ namespace PKSim.Core.Services
       /// Sets the default propertiess for a concrete transporter location <paramref name="transporterContainer"/> (i.e. Liver, Kidney) based on the default settings available in the database 
       /// for the <paramref name="membraneLocation"/> and the <paramref name="transportType"/>
       /// </summary>
-      void UpdateTransporterFromTemplate(ITransporterExpressionContainer transporterContainer, string species, MembraneLocation membraneLocation, TransportType transportType);
+      void UpdateTransporterFromTemplate(TransporterExpressionContainer transporterContainer, string species, MembraneLocation membraneLocation, TransportType transportType);
      
       
       /// <summary>
@@ -27,7 +27,7 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="transporterContainer">Concrete transporter location (i.e. Liver, Kidney) that will be updated</param>
       /// <param name="newTransportType">New transport type that was set in transporter</param>
-      MembraneLocation MembraneLocationToUse(ITransporterExpressionContainer transporterContainer, TransportType newTransportType);
+      MembraneLocation MembraneLocationToUse(TransporterExpressionContainer transporterContainer, TransportType newTransportType);
    }
 
    public class TransportContainerUpdater : ITransportContainerUpdater
@@ -41,7 +41,7 @@ namespace PKSim.Core.Services
          _eventPublisher = eventPublisher;
       }
 
-      public void UpdateTransporterFromTemplate(ITransporterExpressionContainer transporterContainer, string species, MembraneLocation membraneLocation, TransportType transportType)
+      public void UpdateTransporterFromTemplate(TransporterExpressionContainer transporterContainer, string species, MembraneLocation membraneLocation, TransportType transportType)
       {
          //we need to retrieve the process name for the given MembraneTupe/Process Type combo
          var templateToUse = _transporterContainerTemplateRepository.TransportersFor(species, transporterContainer.Name)
@@ -77,7 +77,7 @@ namespace PKSim.Core.Services
 
       }
 
-      public MembraneLocation MembraneLocationToUse(ITransporterExpressionContainer transporterContainer, TransportType newTransportType)
+      public MembraneLocation MembraneLocationToUse(TransporterExpressionContainer transporterContainer, TransportType newTransportType)
       {
          if (!transporterContainer.HasPolarizedMembrane)
             return transporterContainer.MembraneLocation;

@@ -26,9 +26,9 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns the organ container where the transporter mey be defined
       /// </summary>
-      public new IEnumerable<ITransporterExpressionContainer> AllExpressionsContainers()
+      public new IEnumerable<TransporterExpressionContainer> AllExpressionsContainers()
       {
-         return base.AllExpressionsContainers().Cast<ITransporterExpressionContainer>();
+         return base.AllExpressionsContainers().Cast<TransporterExpressionContainer>();
       }
 
       /// <summary>
@@ -64,8 +64,7 @@ namespace PKSim.Core.Model
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
-         var sourceTransporter = sourceObject as IndividualTransporter;
-         if (sourceTransporter == null) return;
+         if (!(sourceObject is IndividualTransporter sourceTransporter)) return;
          TransportType = sourceTransporter.TransportType;
       }
    }
