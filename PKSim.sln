@@ -9,7 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor-coverage.yml = appveyor-coverage.yml
 		appveyor-nightly.yml = appveyor-nightly.yml
 		appveyor.yml = appveyor.yml
-		log4net.config.xml = log4net.config.xml
 		postclean.bat = postclean.bat
 		rakefile.rb = rakefile.rb
 		README.md = README.md
@@ -100,8 +99,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		VisualSVNWorkingCopyRoot = 
 		SolutionGuid = {2673A133-1EB3-437B-81FD-7202F21F2B7F}
+		VisualSVNWorkingCopyRoot = 
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\PKSim.ndproj"
