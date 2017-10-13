@@ -34,7 +34,6 @@ namespace PKSim.Core
       public const double DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN = 23 * 60;
       public const double DEFAULT_MIN_PERCENTILE = 0.0001;
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
-      public const string DEFAULT_BATCH_LOG_FILE_NAME = "log.txt";
       public static readonly string DEFAULT_FORMULATION_KEY = "Formulation";
       public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
       public const int NUMBER_OF_PKA_PARAMETERS = 3;
@@ -94,11 +93,6 @@ namespace PKSim.Core
       public static IReadOnlyList<string> NamesFromCompositeName(string compositeName)
       {
          return compositeName.Split(COMPOSITE_SEPARATOR);
-      }
-
-      public static string DefaultBatchLogFullPath(string outputFolder)
-      {
-         return Path.Combine(outputFolder, DEFAULT_BATCH_LOG_FILE_NAME);
       }
 
       public static class DirectoryKey

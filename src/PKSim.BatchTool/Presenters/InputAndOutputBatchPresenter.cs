@@ -18,7 +18,7 @@ namespace PKSim.BatchTool.Presenters
       where TBatchRunner : IBatchRunner<TRunOptions>
       where TRunOptions : IWithInputAndOutputFolders, new()
    {
-      protected InputAndOutputBatchPresenter(IInputAndOutputBatchView<TRunOptions> view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger)
+      protected InputAndOutputBatchPresenter(IInputAndOutputBatchView<TRunOptions> view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, ILogger batchLogger)
          : base(view, batchRunner, dialogCreator, logPresenter, batchLogger)
       {
       }

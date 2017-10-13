@@ -14,9 +14,9 @@ namespace PKSim.Core.Batch.Mapper
    {
       private readonly IFormulationRepository _formulationRepository;
       private readonly ICloner _cloner;
-      private readonly IBatchLogger _batchLogger;
+      private readonly ILogger _batchLogger;
 
-      public FormulationMapper(IFormulationRepository formulationRepository, ICloner cloner, IBatchLogger batchLogger)
+      public FormulationMapper(IFormulationRepository formulationRepository, ICloner cloner, ILogger batchLogger)
       {
          _formulationRepository = formulationRepository;
          _cloner = cloner;

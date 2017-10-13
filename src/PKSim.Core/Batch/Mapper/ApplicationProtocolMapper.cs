@@ -12,9 +12,9 @@ namespace PKSim.Core.Batch.Mapper
    public class ApplicationProtocolMapper : IApplicationProtocolMapper
    {
       private readonly IProtocolFactory _protocolFactory;
-      private readonly IBatchLogger _logger;
+      private readonly ILogger _logger;
 
-      public ApplicationProtocolMapper(IProtocolFactory protocolFactory, IBatchLogger logger)
+      public ApplicationProtocolMapper(IProtocolFactory protocolFactory, ILogger logger)
       {
          _protocolFactory = protocolFactory;
          _logger = logger;

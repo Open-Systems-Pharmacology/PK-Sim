@@ -1,4 +1,5 @@
 using Castle.Facilities.TypedFactory;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
@@ -37,6 +38,7 @@ using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using SimModelNET;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using ILogger = OSPSuite.Core.Services.ILogger;
 using IWorkspace = PKSim.Presentation.Core.IWorkspace;
 
 namespace PKSim.Infrastructure
@@ -55,7 +57,16 @@ namespace PKSim.Infrastructure
 
          registerRunOptionsIn(container);
 
+         registerLogging(container);
+
          EnvironmentHelper.ApplicationName = () => "pksim";
+      }
+
+      private static void registerLogging(IContainer container)
+      {
+         var loggerFactory = new LoggerFactory();
+         container.RegisterImplementationOf((ILoggerFactory) loggerFactory);
+         container.Register<ILogger, PKSimLogger>(LifeStyle.Singleton);
       }
 
       private static void registerRunOptionsIn(IContainer container)
@@ -160,6 +171,7 @@ namespace PKSim.Infrastructure
             scan.ExcludeType<ModelDatabase>();
             scan.ExcludeType<VersionChecker>();
             scan.ExcludeType<Workspace>();
+            scan.ExcludeType<PKSimLogger>();
 
             //already registered
             scan.ExcludeType<PKSimXmlSerializerRepository>();

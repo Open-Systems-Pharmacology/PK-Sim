@@ -50,20 +50,6 @@ namespace PKSim.Core.Snapshots.Mappers
          configurationAction?.Invoke(snapshot);
          return Task.FromResult(snapshot);
       }
-
-      public static Task<TResult> FromException<TResult>(Exception exc)
-      {
-         var tcs = new TaskCompletionSource<TResult>();
-         tcs.SetException(exc);
-         return tcs.Task;
-      }
-
-      public static Task FromException(Exception exc)
-      {
-         var tcs = new TaskCompletionSource<object>(null);
-         tcs.SetException(exc);
-         return tcs.Task;
-      }
    }
 
    public abstract class SnapshotMapperBase<TModel, TSnapshot, TContext> : SnapshotMapperBase<TModel, TSnapshot>
@@ -73,7 +59,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public sealed override Task<TModel> MapToModel(TSnapshot snapshot)
       {
-         return FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
+         return Task.FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
       }
    }
 
@@ -84,7 +70,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public sealed override Task<TSnapshot> MapToSnapshot(TModel model)
       {
-         return FromException<TSnapshot>(new ModelMapToSnapshotNotSupportedException<TSnapshot, TSnapshotContext>());
+         return Task.FromException<TSnapshot>(new ModelMapToSnapshotNotSupportedException<TSnapshot, TSnapshotContext>());
       }
    }
 }

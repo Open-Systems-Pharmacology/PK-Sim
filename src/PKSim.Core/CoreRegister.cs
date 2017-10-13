@@ -40,7 +40,6 @@ namespace PKSim.Core
             scan.ExcludeType<DistributionFormulaFactory>();
             scan.ExcludeType<ApplicationSettings>();
             scan.ExcludeType<ProjectChangedNotifier>();
-            scan.ExcludeType<BatchLogger>();
             scan.ExcludeType<SimulationRunner>();
             scan.ExcludeType<SnapshotMapper>();
 
@@ -58,7 +57,6 @@ namespace PKSim.Core
             scan.IncludeType<DistributionFormulaFactory>();
             scan.IncludeType<ApplicationSettings>();
             scan.IncludeType<ProjectChangedNotifier>();
-            scan.IncludeType<BatchLogger>();
             scan.IncludeType<SimulationRunner>();
             scan.IncludeType<SnapshotMapper>();
 

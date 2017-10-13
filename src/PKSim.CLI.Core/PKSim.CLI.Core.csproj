@@ -123,10 +123,6 @@
       <Project>{cef9367d-f2c4-4796-847b-42b090a601b5}</Project>
       <Name>PKSim.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PKSim.Infrastructure\PKSim.Infrastructure.csproj">
-      <Project>{4a55e410-29a7-4bd7-a731-09a9f04bfefc}</Project>
-      <Name>PKSim.Infrastructure</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PKSim.Presentation\PKSim.Presentation.csproj">
       <Project>{0238e2f1-a931-4d3d-9c6e-88924cff9501}</Project>
       <Name>PKSim.Presentation</Name>

@@ -18,7 +18,7 @@ namespace PKSim.Core.Batch.Mapper
    {
       private readonly ICompoundFactory _compoundFactory;
       private readonly ICompoundProcessRepository _compoundProcessRepository;
-      private readonly IBatchLogger _batchLogger;
+      private readonly ILogger _batchLogger;
       private readonly ICloner _cloner;
       private readonly ICompoundCalculationMethodCategoryRepository _calculationMethodCategoryRepository;
       private readonly ICalculationMethodRepository _calculationMethodRepository;
@@ -26,7 +26,7 @@ namespace PKSim.Core.Batch.Mapper
       private readonly ISpeciesRepository _speciesRepository;
 
       public CompoundMapper(ICompoundFactory compoundFactory, ICompoundProcessRepository compoundProcessRepository,
-         IBatchLogger batchLogger, ICloner cloner,
+         ILogger batchLogger, ICloner cloner,
          ICompoundCalculationMethodCategoryRepository calculationMethodCategoryRepository, 
          ICalculationMethodRepository calculationMethodRepository, ICompoundProcessTask compoundProcessTask, ISpeciesRepository speciesRepository)
       {

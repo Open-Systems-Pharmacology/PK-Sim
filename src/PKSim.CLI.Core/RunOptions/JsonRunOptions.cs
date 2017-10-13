@@ -1,8 +1,6 @@
-﻿using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Reflection;
+﻿using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.Services;
-using PKSim.Core;
 
 namespace PKSim.CLI.Core.RunOptions
 {
@@ -12,8 +10,6 @@ namespace PKSim.CLI.Core.RunOptions
       private string _inputFolder;
       public IBusinessRuleSet Rules { get; } = new BusinessRuleSet();
       public BatchExportMode ExportMode { get; set; }
-      public NotificationType NotificationType { get; set; } = NotificationType.Info | NotificationType.Error;
-      public string LogFileFullPath { get; set; }
 
       public JsonRunOptions()
       {
@@ -21,7 +17,6 @@ namespace PKSim.CLI.Core.RunOptions
          {
             RunOptionsRules.InputFolderDefined,
             RunOptionsRules.OutputFolderDefined,
-            GenericRules.NonEmptyRule<JsonRunOptions>(x => x.LogFileFullPath)
          });
       }
 
@@ -34,14 +29,7 @@ namespace PKSim.CLI.Core.RunOptions
       public string OutputFolder
       {
          get => _outputFolder;
-         set
-         {
-            SetProperty(ref _outputFolder, value);
-            if (string.IsNullOrEmpty(LogFileFullPath))
-            {
-               LogFileFullPath = CoreConstants.DefaultBatchLogFullPath(OutputFolder);
-            }
-         }
+         set => SetProperty(ref _outputFolder, value);
       }
    }
 }

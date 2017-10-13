@@ -1,7 +1,9 @@
 ﻿using DevExpress.LookAndFeel;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
+using PKSim.BatchTool.Services;
 using PKSim.CLI.Core;
 using PKSim.Core;
 using PKSim.Infrastructure;
@@ -33,6 +35,15 @@ namespace PKSim.BatchTool
          var userSettings = container.Resolve<IPresentationUserSettings>();
          skinManager.ActivateSkin(userSettings, Constants.DEFAULT_SKIN);
 
+         initializeLogger();
+      }
+
+      private static void initializeLogger()
+      {
+         var loggerFactory = IoC.Resolve<ILoggerFactory>();
+
+         loggerFactory
+            .AddBatch();
       }
    }
 }

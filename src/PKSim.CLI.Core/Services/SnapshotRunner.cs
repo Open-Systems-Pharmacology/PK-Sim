@@ -11,7 +11,7 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
-using PKSim.Core.Batch;
+using PKSim.Core.Extensions;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
 
@@ -35,32 +35,29 @@ namespace PKSim.CLI.Core.Services
       private readonly IWorkspace _workspace;
       private readonly ISnapshotTask _snapshotTask;
       private readonly IWorkspacePersistor _workspacePersistor;
-      private readonly IBatchLogger _logger;
+      private readonly ILogger _logger;
 
       public SnapshotRunner(
          IWorkspace workspace,
          ISnapshotTask snapshotTask,
          IWorkspacePersistor workspacePersistor,
-         IBatchLogger logger)
+         ILogger logger)
       {
          _workspace = workspace;
          _snapshotTask = snapshotTask;
          _workspacePersistor = workspacePersistor;
          _logger = logger;
-      }
+      }  
 
       public async Task RunBatchAsync(SnapshotRunOptions runOptions)
       {
-         using (new BatchLoggerDisposer(_logger, runOptions.LogFileFullPath, runOptions.NotificationType))
-         {
-            _logger.AddInSeparator($"Starting snapshot run: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+         _logger.AddInSeparator($"Starting snapshot run: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
 
-            var allFilesToExports = allFilesToExportFrom(runOptions).ToList();
+         var allFilesToExports = allFilesToExportFrom(runOptions).ToList();
 
-            await Task.Run(() => startSnapshotRun(allFilesToExports, runOptions.ExportMode));
+         await Task.Run(() => startSnapshotRun(allFilesToExports, runOptions.ExportMode));
 
-            _logger.AddInSeparator($"Snapshot run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
-         }
+         _logger.AddInSeparator($"Snapshot run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
       }
 
       private Task startSnapshotRun(IReadOnlyList<FileMap> fileMaps, SnapshotExportMode exportMode)
@@ -82,7 +79,7 @@ namespace PKSim.CLI.Core.Services
             }
             catch (Exception e)
             {
-               _logger.AddError(e.ExceptionMessageWithStackTrace());
+               _logger.AddException(e);
             }
             finally
             {

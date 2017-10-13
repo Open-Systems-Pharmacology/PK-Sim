@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Journal;
@@ -21,18 +22,24 @@ namespace PKSim.CLI
 {
    public static class ApplicationStartup
    {
-      public static void Start()
+      public static void Initialize()
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-
+      
          InfrastructureRegister.Initialize();
+         var container = IoC.Container;
+         container.RegisterImplementationOf(new SynchronizationContext());
+         container.Register<IExceptionManager, CLIExceptionManager>(LifeStyle.Singleton);
+      }
+
+      public static void Start()
+      {
          var container = IoC.Container;
 
          using (container.OptimizeDependencyResolution())
          {
             container.RegisterImplementationOf(NumericFormatterOptions.Instance);
-            container.RegisterImplementationOf(new SynchronizationContext());
             container.Register<IApplicationController, ApplicationController>();
 
             registerCLITypes(container);
@@ -54,7 +61,6 @@ namespace PKSim.CLI
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
          container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
          container.Register<IDiagramModel, CLIDiagramModel>();
-         container.Register<IExceptionManager, CLIExceptionManager>(LifeStyle.Singleton);
          container.Register<IDiagramModelToXmlMapper, CLIDiagramModelToXmlMapper>(LifeStyle.Singleton);
          container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
          container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, CLIUserSettings>(LifeStyle.Singleton);
