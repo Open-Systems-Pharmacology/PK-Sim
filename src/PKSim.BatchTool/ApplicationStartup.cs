@@ -43,7 +43,7 @@ namespace PKSim.BatchTool
          var loggerFactory = IoC.Resolve<ILoggerFactory>();
 
          loggerFactory
-            .AddBatch();
+            .AddPresenter();
       }
    }
 }

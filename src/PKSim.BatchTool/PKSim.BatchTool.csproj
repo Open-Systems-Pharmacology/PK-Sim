@@ -350,9 +350,9 @@
     <Compile Include="Presenters\SingleFolderSnapshotPresenter.cs" />
     <Compile Include="Presenters\SnapshotRunPresenter.cs" />
     <Compile Include="Presenters\BatchMainPresenter.cs" />
-    <Compile Include="Services\BatchLogger.cs" />
-    <Compile Include="Services\BatchLoggerExtensions.cs" />
-    <Compile Include="Services\BatchLoggerProvider.cs" />
+    <Compile Include="Services\PresenterLogger.cs" />
+    <Compile Include="Services\PresenterLoggerExtensions.cs" />
+    <Compile Include="Services\PresenterLoggerProvider.cs" />
     <Compile Include="Views\BatchMainView.cs">
       <SubType>Form</SubType>
     </Compile>

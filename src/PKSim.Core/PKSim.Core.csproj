@@ -126,7 +126,6 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Batch\ApplicationProtocol.cs" />
-    <Compile Include="Batch\BatchLogger.cs" />
     <Compile Include="Batch\Compound.cs" />
     <Compile Include="Batch\CompoundProcess.cs" />
     <Compile Include="Batch\Event.cs" />

@@ -3,12 +3,12 @@ using Microsoft.Extensions.Logging;
 
 namespace PKSim.BatchTool.Services
 {
-   public class BatchLoggerProvider : ILoggerProvider
+   public class PresenterLoggerProvider : ILoggerProvider
    {
       private readonly LogLevel _logLevel;
-      private readonly ConcurrentDictionary<string, BatchLogger> _loggers = new ConcurrentDictionary<string, BatchLogger>();
+      private readonly ConcurrentDictionary<string, PresenterLogger> _loggers = new ConcurrentDictionary<string, PresenterLogger>();
 
-      public BatchLoggerProvider(LogLevel logLevel)
+      public PresenterLoggerProvider(LogLevel logLevel)
       {
          _logLevel = logLevel;
       }
@@ -18,9 +18,9 @@ namespace PKSim.BatchTool.Services
          return _loggers.GetOrAdd(categoryName, createLoggerImplementation);
       }
 
-      private BatchLogger createLoggerImplementation(string name)
+      private PresenterLogger createLoggerImplementation(string name)
       {
-         return new BatchLogger(name, _logLevel);
+         return new PresenterLogger(name, _logLevel);
       }
 
       public void Dispose()

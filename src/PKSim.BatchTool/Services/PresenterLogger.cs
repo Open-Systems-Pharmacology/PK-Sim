@@ -10,13 +10,13 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace PKSim.BatchTool.Services
 {
-   public class BatchLogger : ILogger
+   public class PresenterLogger : ILogger
    {
       private readonly IEventPublisher _eventPublisher;
       public string Name { get; }
       private readonly LogLevel _logLevel;
 
-      public BatchLogger(string name, LogLevel logLevel)
+      public PresenterLogger(string name, LogLevel logLevel)
       {
          _eventPublisher = IoC.Resolve<IEventPublisher>();
          _logLevel = logLevel;
