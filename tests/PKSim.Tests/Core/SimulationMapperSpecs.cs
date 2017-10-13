@@ -1,11 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
@@ -80,7 +80,7 @@ namespace PKSim.Core
          _advancedParameterMapper = A.Fake<AdvancedParameterMapper>();
          _eventPropertiesMapper = A.Fake<EventPropertiesMapper>();
          _curveChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
-         _processMappingMapper= A.Fake<ProcessMappingMapper>();
+         _processMappingMapper = A.Fake<ProcessMappingMapper>();
          _simulationFactory = A.Fake<ISimulationFactory>();
          _executionContext = A.Fake<IExecutionContext>();
          _simulationModelCreator = A.Fake<ISimulationModelCreator>();
@@ -90,21 +90,21 @@ namespace PKSim.Core
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
-            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper, 
-            _advancedParameterMapper, _eventPropertiesMapper, _curveChartMapper, 
+            _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
+            _advancedParameterMapper, _eventPropertiesMapper, _curveChartMapper,
             _populationAnalysisChartMapper, _processMappingMapper,
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask, _simulationRunner);
 
          _project = new PKSimProject();
-         _individual = new Individual { Name = "IND" };
-         _compound = new Compound { Name = "COMP" };
+         _individual = new Individual {Name = "IND"};
+         _compound = new Compound {Name = "COMP"};
          _inductionProcess = new InductionProcess().WithName("Interaction process");
          _compound.AddProcess(_inductionProcess);
 
 
-         _event = new PKSimEvent { Name = "Event" };
-         _population = new RandomPopulation() { Name = "POP" };
+         _event = new PKSimEvent {Name = "Event"};
+         _population = new RandomPopulation() {Name = "POP"};
          _observedData = new DataRepository("OBS_ID").WithName("OBS");
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(_compound);
@@ -139,7 +139,7 @@ namespace PKSim.Core
          _snapshotSimulationTimeProfile = new CurveChart();
          _individualSimulation.AddAnalysis(_simulationTimeProfile);
 
-        A.CallTo(() => _curveChartMapper.MapToSnapshot(_simulationTimeProfile)).Returns(_snapshotSimulationTimeProfile);
+         A.CallTo(() => _curveChartMapper.MapToSnapshot(_simulationTimeProfile)).Returns(_snapshotSimulationTimeProfile);
 
 
          _populationSimulation = new PopulationSimulation
@@ -154,7 +154,7 @@ namespace PKSim.Core
          _populationSimulation.SetAdvancedParameters(_avancedParameterCollection);
          _populationSimulation.AddAnalysis(_populationSimulationAnalysisChart);
          _snapshotPopulationAnalysisChart = new Snapshots.PopulationAnalysisChart();
-         
+
          A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshot(_populationSimulationAnalysisChart)).Returns(_snapshotPopulationAnalysisChart);
 
          _snapshotInteraction = new CompoundProcessSelection();
@@ -191,6 +191,23 @@ namespace PKSim.Core
          A.CallTo(() => _processMappingMapper.MapToModel(_snapshotInteraction, _inductionProcess)).Returns(_intereactionSelection);
 
          return _completed;
+      }
+   }
+
+   public class When_exporting_a_simulation_thatt_does_not_come_from_pksim_to_snapshot : concern_for_SimulationMapper
+   {
+      private Model.Simulation _mobiSimulation;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _mobiSimulation = new IndividualSimulation { Properties=  new  SimulationProperties{ Origin = Origins.MoBi}};
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         TheAsync.Action(() => sut.MapToSnapshot(_mobiSimulation, _project)).ShouldThrowAnAsync<OSPSuiteException>();
       }
    }
 
