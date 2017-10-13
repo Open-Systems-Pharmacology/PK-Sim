@@ -62,7 +62,7 @@ namespace PKSim.Core
          _classificationMapper = A.Fake<ClassificationMapper>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _executionContext = A.Fake<IExecutionContext>();
-         _lazyLoadTask= A.Fake<ILazyLoadTask>();
+         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _simulationMapper = A.Fake<SimulationMapper>();
          _simulationComparisonMapper = A.Fake<SimulationComparisonMapper>();
          _classificationSnapshotTask = A.Fake<IClassificationSnapshotTask>();
@@ -132,6 +132,12 @@ namespace PKSim.Core
       }
 
       [Observation]
+      public void should_save_the_current_project_version()
+      {
+         _snapshot.Version.ShouldBeEqualTo(ProjectVersions.Current);
+      }
+
+      [Observation]
       public void should_retrieve_the_snapshot_for_all_underlying_models()
       {
          _snapshot.Compounds.ShouldContain(_compoundSnapshot);
@@ -175,25 +181,25 @@ namespace PKSim.Core
       [Observation]
       public void should_load_the_exported_building_blocks()
       {
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_compound)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_formulation)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_event)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_individual)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_population)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_protocol)).MustHaveHappened();
-      }                                                             
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _compound)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _formulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _event)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _individual)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _population)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _protocol)).MustHaveHappened();
+      }
 
       [Observation]
       public void should_load_the_simulation_comparison_results()
       {
-         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable)_simulationComparison)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable) _simulationComparison)).MustHaveHappened();
       }
 
-      [Observation]  
+      [Observation]
       public void should_load_the_exported_simulation_results()
       {
-         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable)_simulation)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.LoadResults((Model.Simulation)_simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable) _simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.LoadResults((Model.Simulation) _simulation)).MustHaveHappened();
       }
    }
 
