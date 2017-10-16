@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
@@ -27,11 +26,6 @@ namespace PKSim.Core.Snapshots.Mappers
          var intervals = await _outputIntervalMapper.MapToSnapshots(outputSchema.Intervals);
          intervals?.Each(snapshot.Add);
          return snapshot;
-      }
-
-      private Task<OutputInterval[]> allSnapshotIntervalsFor(ModelOutputSchema outputSchema)
-      {
-         return _outputIntervalMapper.MapToSnapshots(outputSchema.Intervals);
       }
 
       public override async Task<ModelOutputSchema> MapToModel(SnapshotOutputSchema snapshot)

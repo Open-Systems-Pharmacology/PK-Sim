@@ -79,7 +79,6 @@ namespace PKSim.Core
          _classification = new Classification {ClassificationType = ClassificationType.ObservedData}.WithName("OD Classification");
          _simulationComparison = new IndividualSimulationComparison().WithName("COMP").WithId("SimComp");
          _simulation = new IndividualSimulation().WithName("IND_SIM").WithId("IndSim");
-
          _project = new PKSimProject();
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(_compound);
@@ -104,6 +103,7 @@ namespace PKSim.Core
          _simulationComparisonSnapshot = new SimulationComparison();
          _simulationClassificationSnapshot = new Snapshots.Classification();
          _comparisonClassificationSnapshot = new Snapshots.Classification();
+         _simulationSnapshot = new Simulation();
 
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_compound)).Returns(_compoundSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_individual)).Returns(_individualSnapshot);

@@ -136,8 +136,7 @@ namespace PKSim.Core
       [Observation]
       public void should_map_distribution_parameters_from_snapshot()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_meanSnapshot, _newAdvancedParameter.DistributedParameter.MeanParameter)).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.MapToModel(_deviationSnapshot, _newAdvancedParameter.DistributedParameter.DeviationParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newAdvancedParameter.DistributedParameter, _newAdvancedParameter.DistributedParameter.Name)).MustHaveHappened();
       }
    }
 

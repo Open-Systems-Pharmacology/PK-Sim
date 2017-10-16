@@ -616,6 +616,9 @@
     <Compile Include="Services\PKSimLogger.cs" />
     <Compile Include="Services\PopulationAnalysisTask.cs" />
     <Compile Include="Services\PopulationExportTask.cs" />
+    <Compile Include="Services\PresenterLogger.cs" />
+    <Compile Include="Services\PresenterLoggerExtensions.cs" />
+    <Compile Include="Services\PresenterLoggerProvider.cs" />
     <Compile Include="Services\ProteinExpressionDataHelper.cs" />
     <Compile Include="Services\ReflectionHelper.cs" />
     <Compile Include="Services\SensitivityAnalysisContentLoader.cs" />

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 
-namespace PKSim.BatchTool.Services
+namespace PKSim.Infrastructure.Services
 {
    public class PresenterLoggerProvider : ILoggerProvider
    {

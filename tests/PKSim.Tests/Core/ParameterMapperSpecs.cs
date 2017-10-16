@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
@@ -15,13 +16,15 @@ namespace PKSim.Core
       protected IParameter _parameter;
       protected TableFormulaMapper _tableFormulaMapper;
       protected IEntityPathResolver _entityPathResolver;
+      protected ILogger _logger;
 
-      protected override  Task Context()
+      protected override Task Context()
       {
          _tableFormulaMapper = A.Fake<TableFormulaMapper>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
+         _logger = A.Fake<ILogger>();
 
-         sut = new ParameterMapper(_tableFormulaMapper, _entityPathResolver);
+         sut = new ParameterMapper(_tableFormulaMapper, _entityPathResolver, _logger);
 
          //5 mm is the value
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10)
@@ -30,7 +33,8 @@ namespace PKSim.Core
             .WithDimension(DomainHelperForSpecs.LengthDimensionForSpecs());
 
          _parameter.DisplayUnit = _parameter.Dimension.Unit("mm");
-         return Task.FromResult(true);
+
+         return _completed;
       }
    }
 
@@ -290,10 +294,75 @@ namespace PKSim.Core
          };
       }
 
-      [Observation]
-      public void should_thrown_an_exception()
+      protected override Task Because()
       {
-         TheAsync.Action( ()=> sut.MapLocalizedParameters(new[] { _localParameter }, _container)).ShouldThrowAnAsync<SnapshotOutdatedException>();
+         return sut.MapLocalizedParameters(new[] {_localParameter}, _container);
+      }
+
+      [Observation]
+      public void should_warn_the_user_that_the_parameter_was_not_found_in_the_container()
+      {
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_localParameter.Path), NotificationType.Warning)).MustHaveHappened();
+      }
+   }
+
+   public class When_mapping_snapshot_parameters_defined_in_a_given_container : concern_for_ParameterMapper
+   {
+      private Container _container;
+      private SnapshotParameter _snapshot;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _container = new Container().WithName("ORG");
+         _container.Add(_parameter);
+
+         _snapshot = new SnapshotParameter
+         {
+            Name = _parameter.Name,
+            Value = 5,
+            Unit = _parameter.DisplayUnit.Name
+         };
+      }
+
+      protected override async Task Because()
+      {
+         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name);
+      }
+
+      [Observation]
+      public void should_map_the_matching_parameters()
+      {
+         _parameter.ValueInDisplayUnit.ShouldBeEqualTo(5);
+      }
+   }
+
+   public class When_mapping_a_snaphsot_parameter_by_name_that_is_not_found_in_the_container : concern_for_ParameterMapper
+   {
+      private Container _container;
+      private SnapshotParameter _snapshot;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _container = new Container().WithName("ORG");
+         _container.Add(_parameter);
+
+         _snapshot = new SnapshotParameter
+         {
+            Name = "NOT FOUND",
+         };
+      }
+
+      protected override async Task Because()
+      {
+         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name);
+      }
+
+      [Observation]
+      public void should_warn_the_user_that_the_parameter_was_not_found_in_the_container()
+      {
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_snapshot.Name), NotificationType.Warning)).MustHaveHappened();
       }
    }
 }

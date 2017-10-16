@@ -19,6 +19,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using PKSim.Core.Snapshots.Services;
+using PKSim.Presentation.Presenters.Snapshots;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.Services
@@ -283,14 +284,21 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      public async Task<IReadOnlyList<TBuildingBlock>> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
+      public  IReadOnlyList<TBuildingBlock> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         var buildingBlocks = await _snapshotTask.LoadModelFromSnapshot<TBuildingBlock>();
-         return addBuildingBlocksToProject(buildingBlocks).ToList();
+         using (var presenter = _applicationController.Start<ILoadFromSnapshotPresenter<TBuildingBlock>>())
+         {
+            var buildingBlocks = presenter.LoadModelFromSnapshot();
+            return addBuildingBlocksToProject(buildingBlocks).ToList();
+
+         }
       }
 
       private IEnumerable<TBuildingBlock> addBuildingBlocksToProject<TBuildingBlock>(IEnumerable<TBuildingBlock> buildingBlocks) where TBuildingBlock : class, IPKSimBuildingBlock
       {
+         if (buildingBlocks == null)
+            return Enumerable.Empty<TBuildingBlock>();
+
          return from bb in buildingBlocks
             let command = AddToProject(bb, editBuildingBlock: false)
             where !command.IsEmpty()
@@ -350,7 +358,7 @@ namespace PKSim.Presentation.Services
          return LoadFromTemplate(_buildingBlockType);
       }
 
-      public Task<IReadOnlyList<TBuildingBlock>> LoadFromSnapshot()
+      public IReadOnlyList<TBuildingBlock> LoadFromSnapshot()
       {
          return LoadFromSnapshot(_buildingBlockType);
       }
@@ -446,7 +454,7 @@ namespace PKSim.Presentation.Services
          return _buildingBlockTask.LoadFromTemplate<TBuildingBlock>(buildingBlockType);
       }
 
-      protected virtual Task<IReadOnlyList<TBuildingBlock>> LoadFromSnapshot(PKSimBuildingBlockType buildingBlockType)
+      protected virtual IReadOnlyList<TBuildingBlock> LoadFromSnapshot(PKSimBuildingBlockType buildingBlockType)
       {
          return _buildingBlockTask.LoadFromSnapshot<TBuildingBlock>(buildingBlockType);
       }

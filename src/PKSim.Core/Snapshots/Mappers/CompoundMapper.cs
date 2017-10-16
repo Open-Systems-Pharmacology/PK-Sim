@@ -63,7 +63,7 @@ namespace PKSim.Core.Snapshots.Mappers
          updatePkaTypes(compound, snapshot);
 
          await updateProcesses(snapshot, compound);
-         await UpdateParametersFromSnapshot(snapshot, compound, PKSimConstants.ObjectTypes.Compound);
+         await UpdateParametersFromSnapshot(snapshot, compound);
 
          return compound;
       }
@@ -158,7 +158,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var alternativeGroup = compound.ParameterAlternativeGroup(alternativeGroupName);
          var alteratives = await _alternativeMapper.MapToSnapshots(alternativeGroup.AllAlternatives);
-         var definedAlternatives = alteratives?.Where(x => x != null).ToArray();
+         var definedAlternatives = alteratives?.ToArray();
          if (definedAlternatives == null || !definedAlternatives.Any())
             return null;
 

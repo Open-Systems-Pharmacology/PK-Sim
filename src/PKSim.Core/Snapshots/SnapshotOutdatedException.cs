@@ -9,11 +9,4 @@ namespace PKSim.Core.Snapshots
       {
       }
    }
-
-   public class SnapshotParameterNotFoundException : SnapshotOutdatedException
-   {
-      public SnapshotParameterNotFoundException(string parameterName, string container) : base(PKSimConstants.Error.SnapshotParameterNotFoundInContainer(parameterName, container))
-      {
-      }
-   }
 }

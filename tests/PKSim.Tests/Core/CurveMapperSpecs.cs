@@ -7,6 +7,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Core
@@ -21,13 +22,15 @@ namespace PKSim.Core
       protected DataRepository _dataRepository;
       protected CurveOptionsMapper _curveOptionsMapper;
       protected Snapshots.CurveOptions _snapshotCurveOptions;
+      private ILogger _logger;
 
       protected override Task Context()
       {
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _curveOptionsMapper = A.Fake<CurveOptionsMapper>();
          _dataRepository = DomainHelperForSpecs.ObservedData();
-         sut = new CurveMapper(_curveOptionsMapper, _dimensionFactory);
+         _logger= A.Fake<ILogger>();
+         sut = new CurveMapper(_curveOptionsMapper, _dimensionFactory, _logger);
 
          _curve = new Curve
          {

@@ -83,14 +83,15 @@ namespace PKSim.Core.Snapshots.Mappers
          return MapToSnapshots(mapper, models, m => mapper.MapToSnapshot(m, snapshotContext));
       }
 
-      public static Task<TTarget[]> MapTo<TSource, TTarget>(IEnumerable<TSource> sources, Func<TSource, Task<TTarget>> mapToFunc)
+      public static async Task<TTarget[]> MapTo<TSource, TTarget>(IEnumerable<TSource> sources, Func<TSource, Task<TTarget>> mapToFunc)
       {
          var list = sources?.ToList();
 
          if (list == null || !list.Any())
-            return Task.FromResult<TTarget[]>(null);
+            return null;
 
-         return Task.WhenAll(list.Select(mapToFunc));
+         var targets = await Task.WhenAll(list.Select(mapToFunc));
+         return targets.Where(x => x != null).ToArray();
       }
    }
 }

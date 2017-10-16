@@ -28,12 +28,12 @@ namespace PKSim.Infrastructure
       public IWorkspaceLayout WorkspaceLayout { get; set; }
 
       public Workspace(
-         IEventPublisher eventPublisher, 
-         IJournalSession journalSession, 
-         IFileLocker fileLocker, 
-         IRegistrationTask registrationTask, 
-         IWorkspacePersistor workspacePersistor, 
-         IMRUProvider mruProvider, 
+         IEventPublisher eventPublisher,
+         IJournalSession journalSession,
+         IFileLocker fileLocker,
+         IRegistrationTask registrationTask,
+         IWorkspacePersistor workspacePersistor,
+         IMRUProvider mruProvider,
          IHistoryManagerFactory historyManagerFactory) : base(eventPublisher, journalSession, fileLocker)
       {
          _eventPublisher = eventPublisher;
@@ -88,7 +88,7 @@ namespace PKSim.Infrastructure
             //retrieve project from file. This will load the project into the workbook itselfs
             _workspacePersistor.LoadSession(this, fileFullPath);
 
-            if (_project == null)
+            if (Project == null)
                return;
 
             updateProjectPropertiesFrom(fileFullPath);
@@ -120,6 +120,11 @@ namespace PKSim.Infrastructure
             if (Project == null)
                ReleaseLock();
          }
+      }
+
+      public void LoadProject(PKSimProject project)
+      {
+         LoadProject(() => Project = project);
       }
 
       public bool ProjectLoaded => Project != null;

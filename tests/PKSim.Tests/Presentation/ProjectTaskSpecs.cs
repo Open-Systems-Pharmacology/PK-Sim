@@ -15,6 +15,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
+using PKSim.Presentation.Presenters.Snapshots;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
 using IProjectTask = PKSim.Presentation.Services.IProjectTask;
@@ -867,60 +868,18 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_exporting_a_project_to_snapshot : concern_for_ProjectTask
-   {
-      private PKSimProject _projectToExport;
-      private readonly string _fileName = "HELLO";
-
-      protected override async Task Context()
-      {
-         await base.Context();
-         _projectToExport = new PKSimProject();
-      }
-
-      protected override Task Because()
-      {
-         return sut.ExportProjectToSnapshot(_projectToExport, _fileName);
-      }
-
-      [Observation]
-      public void should_export_the_project_to_snapshot()
-      {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_projectToExport, _fileName)).MustHaveHappened();
-      }
-   }
-
-   public class When_laoding_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_cancels_the_action_of_loading_the_snapshot : concern_for_ProjectTask
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.No);
-         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<PKSimProject>()).Returns(Enumerable.Empty<PKSimProject>());
-      }
-
-      protected override Task Because()
-      {
-         sut.LoadProjectFromSnapshot();
-         return _completed;
-      }
-
-      [Observation]
-      public void should_not_close_the_current_projectn()
-      {
-         A.CallTo(() => _workspace.CloseProject()).MustNotHaveHappened();
-      }
-   }
-
    public class When_laoding_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_cancels_the_action : concern_for_ProjectTask
    {
+      private ILoadProjectFromSnapshotPresenter _loadSnapshotPresenter;
+
       protected override async Task Context()
       {
          await base.Context();
+         _loadSnapshotPresenter = A.Fake<ILoadProjectFromSnapshotPresenter>();
+         A.CallTo(() => _applicationController.Start<ILoadProjectFromSnapshotPresenter>()).Returns(_loadSnapshotPresenter);
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Cancel);
-         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
+         A.CallTo(() => _loadSnapshotPresenter.LoadProject()).Returns(null);
       }
 
       protected override Task Because()
@@ -930,7 +889,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_not_close_the_current_projectn()
+      public void should_not_close_the_current_project()
       {
          A.CallTo(() => _workspace.CloseProject()).MustNotHaveHappened();
       }
@@ -938,39 +897,29 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_load_the_project_from_snapshot()
       {
-         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<PKSimProject>()).MustNotHaveHappened();
-      }
-
-      [Observation]
-      public void should_not_overwrite_the_current_project()
-      {
-         _workspace.Project.ShouldBeEqualTo(_project);
+         A.CallTo(() => _workspace.LoadProject(A<PKSimProject>._)).MustNotHaveHappened();
       }
    }
 
-   public class When_laoding_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_loads_a_real_snapshot_file : concern_for_ProjectTask
+   public class When_laoding_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_loads_a_valid_snapshot : concern_for_ProjectTask
    {
       private PKSimProject _newProject;
-      private Action _loadAction;
-      private string _filename;
+      private ILoadProjectFromSnapshotPresenter _loadSnapshotPresenter;
 
       protected override async Task Context()
       {
          await base.Context();
          _newProject = new PKSimProject();
-         _filename = @"C:\test\SuperProject.json";
-         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_filename);
+         _loadSnapshotPresenter = A.Fake<ILoadProjectFromSnapshotPresenter>();
+         A.CallTo(() => _applicationController.Start<ILoadProjectFromSnapshotPresenter>()).Returns(_loadSnapshotPresenter);
 
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_filename)).Returns(_newProject);
-         A.CallTo(() => _workspace.LoadProject(A<Action>._)).Invokes(x => _loadAction = x.GetArgument<Action>(0));
+         A.CallTo(() => _loadSnapshotPresenter.LoadProject()).Returns(_newProject);
       }
 
       protected override Task Because()
       {
          sut.LoadProjectFromSnapshot();
-         _loadAction();
          return _completed;
-
       }
 
       [Observation]
@@ -988,7 +937,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_overwrite_the_current_project()
       {
-         _workspace.Project.ShouldBeEqualTo(_newProject);
+         A.CallTo(() => _workspace.LoadProject(_newProject)).MustHaveHappened();
       }
    }
 }

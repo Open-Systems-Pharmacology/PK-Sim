@@ -12,5 +12,10 @@
    {
       //Full path of parameter in container hierarchy
       public string Path { get; set; }
+
+      public override string ToString()
+      {
+         return Path;
+      }
    }
 }

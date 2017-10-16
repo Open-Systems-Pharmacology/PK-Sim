@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Services;
@@ -12,10 +13,12 @@ namespace PKSim.Core.Snapshots.Mappers
    public class OutputSelectionsMapper : SnapshotMapperBase<ModelOutputSelections, SnapshotOutputSelections, Model.Simulation>
    {
       private readonly IEntitiesInContainerRetriever _entitiesInContainerRetriever;
+      private readonly ILogger _logger;
 
-      public OutputSelectionsMapper(IEntitiesInContainerRetriever entitiesInContainerRetriever)
+      public OutputSelectionsMapper(IEntitiesInContainerRetriever entitiesInContainerRetriever, ILogger logger)
       {
          _entitiesInContainerRetriever = entitiesInContainerRetriever;
+         _logger = logger;
       }
 
       public override async Task<SnapshotOutputSelections> MapToSnapshot(ModelOutputSelections outputSelections)
@@ -40,9 +43,9 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             var quantity = allQuantities[path];
             if (quantity == null)
-               throw new SnapshotOutdatedException(PKSimConstants.Error.CouldNotFindQuantityWithPath(path));
-
-            outputSelections.AddOutput(new QuantitySelection(path, quantity.QuantityType));
+               _logger.AddWarning(PKSimConstants.Error.CouldNotFindQuantityWithPath(path));
+            else
+               outputSelections.AddOutput(new QuantitySelection(path, quantity.QuantityType));
          });
 
          return Task.FromResult(outputSelections);

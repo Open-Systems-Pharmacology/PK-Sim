@@ -35,10 +35,15 @@ namespace PKSim.Presentation.Core
       void OpenProject(string fileFullPath);
 
       /// <summary>
-      ///    Opens the project using the <paramref name="projectLoadAction"/>. The <paramref name="projectLoadAction"/> is responsible to 
+      ///    Loads the project using the <paramref name="projectLoadAction"/>. The <paramref name="projectLoadAction"/> is responsible to 
       /// call <c>Workspace.Project = project</c>
       /// </summary>
       void LoadProject(Action projectLoadAction);
+
+      /// <summary>
+      ///    Loads the project <paramref name="project"/> given as parameter
+      /// </summary>
+      void LoadProject(PKSimProject project);
 
       /// <summary>
       ///    Returns true if the project has been defined

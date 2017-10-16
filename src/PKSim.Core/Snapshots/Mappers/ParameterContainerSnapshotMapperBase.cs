@@ -37,23 +37,12 @@ namespace PKSim.Core.Snapshots.Mappers
 
       protected virtual Task AddModelParametersToSnapshot(TModel model, TSnapshot snapshot)
       {
-         return AddParametersToSnapshot(model.AllParameters(x=> x.ParameterHasChanged()), snapshot);
+         return AddParametersToSnapshot(model.AllParameters(x => x.ParameterHasChanged()), snapshot);
       }
-      
-      protected Task UpdateParametersFromSnapshot(TSnapshot snapshot, IContainer container, string containerDesciptor)
+
+      protected Task UpdateParametersFromSnapshot(TSnapshot snapshot, IContainer container, string containerDescriptor = null)
       {
-         var tasks = new List<Task>();
-         foreach (var snapshotParameter in snapshot.Parameters)
-         {
-            var modelParameter = container.Parameter(snapshotParameter.Name);
-
-            if (modelParameter == null)
-               return Task.FromException(new SnapshotParameterNotFoundException(snapshotParameter.Name, containerDesciptor));
-
-            tasks.Add(_parameterMapper.MapToModel(snapshotParameter, modelParameter));
-         }
-
-         return Task.WhenAll(tasks);
+         return _parameterMapper.MapParameters(snapshot.Parameters, container, containerDescriptor ?? container.Name);
       }
    }
 

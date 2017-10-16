@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using IOutputIntervalFactory = PKSim.Core.Model.IOutputIntervalFactory;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
@@ -34,7 +33,7 @@ namespace PKSim.Core
          _snapshotParameter = new Parameter().WithName(_parameter1.Name);
          A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(_snapshotParameter);
 
-         return Task.FromResult(true);
+         return _completed;
       }
    }
 
@@ -61,6 +60,7 @@ namespace PKSim.Core
    public class When_mapping_output_interval_snapshot_to_output_interval : concern_for_OutputIntervalMapper
    {
       private IParameter _intervalParameter;
+      private OutputInterval _newInteval;
 
       protected override async Task Context()
       {
@@ -74,13 +74,13 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot);
+        _newInteval= await sut.MapToModel(_snapshot);
       }
 
       [Observation]
       public void should_return_a_new_interval_with_updated_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshotParameter,_intervalParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newInteval, Constants.OUTPUT_INTERVAL)).MustHaveHappened();
       }
    }
 }

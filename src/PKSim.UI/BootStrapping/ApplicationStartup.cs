@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
@@ -20,6 +21,7 @@ using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Infrastructure;
+using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Services;
@@ -69,6 +71,16 @@ namespace PKSim.UI.BootStrapping
 
          container.Register<IConfigurableContainerLayoutView, AccordionLayoutView>(ViewLayouts.AccordionView.Id);
          container.Register<IConfigurableContainerLayoutView, TabbedLayoutView>(ViewLayouts.TabbedView.Id);
+
+         configureLogger(container);
+      }
+
+      private void configureLogger(IContainer container)
+      {
+         var loggerFactory = container.Resolve<ILoggerFactory>();
+         loggerFactory
+            .AddPresenter()
+            .AddDebug();
       }
 
       private static void updateGoDiagramKey()

@@ -144,7 +144,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_the_alternative_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshotParameter, _alternativeParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newAlternativeWithSpecies, _parameterGroup.Name)).MustHaveHappened();
       }
    }
 }

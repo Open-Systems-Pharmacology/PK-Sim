@@ -74,6 +74,7 @@ namespace PKSim.Core
          _curveChart = new CurveChart();
          A.CallTo(() => _individualSimulationComparisonMapper.MapToSnapshot(_individualSimulationComparison)).Returns(_curveChart);
 
+         _populationAnalysisChartSnapshot = new Snapshots.PopulationAnalysisChart();
          A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshot(_populationSimulationAnalysis)).Returns(_populationAnalysisChartSnapshot);
 
 

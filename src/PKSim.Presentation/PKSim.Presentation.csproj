@@ -183,6 +183,7 @@
     <Compile Include="DTO\Simulations\SimulationEnzymaticProcessSelectionDTO.cs" />
     <Compile Include="DTO\Simulations\SimulationInteractionProcessSelectionDTO.cs" />
     <Compile Include="DTO\Simulations\SimulationResultsFileSelectionDTO.cs" />
+    <Compile Include="DTO\Snapshots\LoadFromSnapshotDTO.cs" />
     <Compile Include="Extensions\QuantityPresenterExtensions.cs" />
     <Compile Include="IUserSettings.cs" />
     <Compile Include="Mappers\CompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper.cs" />
@@ -262,6 +263,8 @@
     <Compile Include="Presenters\Simulations\SimulationModelConfigurationItems.cs" />
     <Compile Include="Presenters\Simulations\SimulationModelConfigurationPresenter.cs" />
     <Compile Include="Presenters\Simulations\SimulationCompoundProcessSummaryCollectorPresenter.cs" />
+    <Compile Include="Presenters\Snapshots\LoadFromSnapshotPresenter.cs" />
+    <Compile Include="Presenters\Snapshots\LoadProjectFromSnapshotPresenter.cs" />
     <Compile Include="Presenters\UserDisplayUnitsPresenter.cs" />
     <Compile Include="Services\BuildingBlockSelectionDisplayer.cs" />
     <Compile Include="Services\DisplayNameProvider.cs" />
@@ -973,6 +976,7 @@
     <Compile Include="Views\Simulations\IEditOutputSchemaView.cs" />
     <Compile Include="Views\Simulations\ISimulationSubjectSelectionView.cs" />
     <Compile Include="Views\Simulations\ISimulationWizardView.cs" />
+    <Compile Include="Views\Snapshots\ILoadFromSnapshotView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PKSim.Assets\PKSim.Assets.csproj">
