@@ -1,9 +1,7 @@
-﻿using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
+﻿using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -14,7 +12,6 @@ namespace PKSim.Presentation.Presenters.Compounds
       ///    Edit the alternative defined in the compound to edit for the group
       /// </summary>
       void EditCompound(Compound compound);
-
    }
 
    public abstract class CompoundParameterGroupPresenter<TView> : AbstractSubPresenter<TView, ICompoundParameterGroupPresenter>, ICompoundParameterGroupPresenter where TView : ICompoundParameterGroupView
