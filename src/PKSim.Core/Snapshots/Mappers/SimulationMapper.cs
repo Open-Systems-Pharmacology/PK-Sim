@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
@@ -72,6 +73,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation, PKSimProject project)
       {
+         if (simulation.Origin != Origins.PKSim)
+            throw new OSPSuiteException(PKSimConstants.Error.OnlyPKSimSimulationCanBeExportedToSnapshot(simulation.Name, simulation.Origin.DisplayName));
+
          var snapshot = await SnapshotFrom(simulation);
          snapshot.Individual = usedSimulationSubject<Model.Individual>(simulation);
          snapshot.Population = usedSimulationSubject<Model.Population>(simulation);
