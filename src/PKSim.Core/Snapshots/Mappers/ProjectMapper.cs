@@ -39,6 +39,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<SnapshotProject> MapToSnapshot(ModelProject project)
       {
          var snapshot = await SnapshotFrom(project);
+         snapshot.Version = ProjectVersions.Current;
          snapshot.Individuals = await mapBuildingBlocksToSnapshots<Individual>(project.All<Model.Individual>());
          snapshot.Compounds = await mapBuildingBlocksToSnapshots<Compound>(project.All<Model.Compound>());
          snapshot.Events = await mapBuildingBlocksToSnapshots<Event>(project.All<PKSimEvent>());
