@@ -45,7 +45,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var yData = findCurveWithPath(snapshot.Y, simulationAnalysisContext.DataRepositories);
          if (yData == null)
          {
-            _logger.AddToLog(PKSimConstants.Error.CouldNotFindQuantityWithPath(snapshot.Y));
+            _logger.AddWarning(PKSimConstants.Error.CouldNotFindQuantityWithPath(snapshot.Y));
             return null;
          }
 
@@ -57,7 +57,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (xData == null)
          {
-            _logger.AddToLog(PKSimConstants.Error.CouldNotFindQuantityWithPath(snapshot.X));
+            _logger.AddWarning(PKSimConstants.Error.CouldNotFindQuantityWithPath(snapshot.X));
             return null;
          }
 
