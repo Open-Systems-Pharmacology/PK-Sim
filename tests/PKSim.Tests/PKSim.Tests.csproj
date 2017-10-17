@@ -301,6 +301,7 @@
     <Compile Include="Extensions\AsyncContextSpecification.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
     <Compile Include="Infrastructure\SimulationComparisonContentLoaderSpecs.cs" />
+    <Compile Include="Infrastructure\SnapshotSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\FlatOrganTypeRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\JacobianMatrixXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\OrganTypeRepositorySpecs.cs" />
