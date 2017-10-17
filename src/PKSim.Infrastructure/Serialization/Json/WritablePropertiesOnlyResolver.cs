@@ -14,4 +14,4 @@ namespace PKSim.Infrastructure.Serialization.Json
          return props.Where(p => p.Writable).ToList();
       }
    }
-}
+   }
