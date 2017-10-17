@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -67,7 +68,15 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private ModelDataColumn findCurveWithPath(string path, IReadOnlyList<ModelDataRepository> dataRepositories)
       {
-         return dataRepositories.SelectMany(x => x.Columns).FirstOrDefault(x => string.Equals(x.QuantityInfo.PathAsString, path));
+         try
+         {
+            return dataRepositories.SelectMany(x => x.Columns).FirstOrDefault(x => string.Equals(x.QuantityInfo.PathAsString, path));
+         }
+         catch (Exception e)
+         {
+            Console.WriteLine(e);
+            throw;
+         }
       }
    }
 }

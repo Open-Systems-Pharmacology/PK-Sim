@@ -1,4 +1,6 @@
-﻿namespace PKSim.Core.Snapshots
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PKSim.Core.Snapshots
 {
    public class Parameter : SnapshotBase
    {
@@ -11,6 +13,7 @@
    public class LocalizedParameter : Parameter
    {
       //Full path of parameter in container hierarchy
+      [Required]
       public string Path { get; set; }
 
       public override string ToString()

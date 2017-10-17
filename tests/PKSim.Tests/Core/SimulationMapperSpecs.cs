@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
@@ -46,8 +47,7 @@ namespace PKSim.Core
       private IExecutionContext _executionContext;
       private ISimulationModelCreator _simulationModelCreator;
       protected ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
-      private EventPropertiesMapper _eventPropertiesMapper;
-      protected EventSelections _eventSelections;
+      protected EventMappingMapper _eventMappingMapper;
       protected Individual _individual;
       protected Compound _compound;
       protected PKSimEvent _event;
@@ -69,6 +69,9 @@ namespace PKSim.Core
       protected InteractionSelection _intereactionSelection;
       protected CompoundProcessSelection _snapshotInteraction;
       protected InductionProcess _inductionProcess;
+      protected EventMapping _eventMapping;
+      protected EventSelection _eventSelection;
+      protected ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
 
       protected override Task Context()
       {
@@ -78,7 +81,7 @@ namespace PKSim.Core
          _parameterMapper = A.Fake<ParameterMapper>();
          _compoundPropertiesMapper = A.Fake<CompoundPropertiesMapper>();
          _advancedParameterMapper = A.Fake<AdvancedParameterMapper>();
-         _eventPropertiesMapper = A.Fake<EventPropertiesMapper>();
+         _eventMappingMapper = A.Fake<EventMappingMapper>();
          _curveChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
          _processMappingMapper = A.Fake<ProcessMappingMapper>();
          _simulationFactory = A.Fake<ISimulationFactory>();
@@ -88,13 +91,14 @@ namespace PKSim.Core
          _modelPropertiesTask = A.Fake<IModelPropertiesTask>();
          _simulationRunner = A.Fake<ISimulationRunner>();
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
+         _simulationParameterOriginIdUpdater= A.Fake<ISimulationParameterOriginIdUpdater>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
-            _advancedParameterMapper, _eventPropertiesMapper, _curveChartMapper,
+            _advancedParameterMapper, _eventMappingMapper, _curveChartMapper,
             _populationAnalysisChartMapper, _processMappingMapper,
             _simulationFactory, _executionContext, _simulationModelCreator,
-            _simulationBuildingBlockUpdater, _modelPropertiesTask, _simulationRunner);
+            _simulationBuildingBlockUpdater, _modelPropertiesTask, _simulationRunner, _simulationParameterOriginIdUpdater);
 
          _project = new PKSimProject();
          _individual = new Individual {Name = "IND"};
@@ -165,13 +169,16 @@ namespace PKSim.Core
          _compoundProperties = new CompoundProperties();
          _snaphotCompoundProperties = new Snapshots.CompoundProperties {Name = _compound.Name};
          _individualSimulation.Properties.AddCompoundProperties(_compoundProperties);
+
+         _eventMapping = new EventMapping();
+         _individualSimulation.EventProperties.AddEventMapping(_eventMapping);
          A.CallTo(() => _compoundPropertiesMapper.MapToSnapshot(_compoundProperties, _project)).Returns(_snaphotCompoundProperties);
 
-         _eventSelections = new EventSelections();
-         _eventSelections.AddEventSelection(new EventSelection
+
+         _eventSelection = new EventSelection
          {
             Name = _event.Name,
-         });
+         };
 
          _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
          {
@@ -183,7 +190,7 @@ namespace PKSim.Core
          });
          _individualSimulation.AddUsedObservedData(_observedData);
 
-         A.CallTo(() => _eventPropertiesMapper.MapToSnapshot(_individualSimulation.EventProperties, _project)).Returns(_eventSelections);
+         A.CallTo(() => _eventMappingMapper.MapToSnapshot(_eventMapping, _project)).Returns(_eventSelection);
 
          _outputSelectionSnapshot = new OutputSelections();
          A.CallTo(() => _outputSelectionMapper.MapToSnapshot(_individualSimulation.OutputSelections)).Returns(_outputSelectionSnapshot);
@@ -201,7 +208,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _mobiSimulation = new IndividualSimulation { Properties=  new  SimulationProperties{ Origin = Origins.MoBi}};
+         _mobiSimulation = new IndividualSimulation {Properties = new SimulationProperties {Origin = Origins.MoBi}};
       }
 
       [Observation]
@@ -241,7 +248,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_used_events_to_snapshot()
       {
-         _snapshot.Events.ShouldBeEqualTo(_eventSelections);
+         _snapshot.Events.ShouldContain(_eventSelection);
       }
 
       [Observation]
@@ -366,6 +373,8 @@ namespace PKSim.Core
 
          A.CallTo(() => _simulationRunner.RunSimulation(individualSimulation, false, false))
             .Invokes(x => { individualSimulation.DataRepository = _calculatedDataRepository; });
+
+         A.CallTo(() => _eventMappingMapper.MapToModel(_eventSelection, _project)).Returns(_eventMapping);
       }
 
       protected override async Task Because()
@@ -434,6 +443,18 @@ namespace PKSim.Core
       public void should_update_interactions()
       {
          _simulation.InteractionProperties.Interactions.ShouldContain(_intereactionSelection);
+      }
+
+      [Observation]
+      public void should_have_updated_the_event_mapping()
+      {
+         _simulation.EventProperties.EventMappings.ShouldContain(_eventMapping);
+      }
+
+      [Observation]
+      public void should_update_parameter_origin_from_simulation()
+      {
+         A.CallTo(() => _simulationParameterOriginIdUpdater.UpdateSimulationId(_simulation)).MustHaveHappened();
       }
    }
 

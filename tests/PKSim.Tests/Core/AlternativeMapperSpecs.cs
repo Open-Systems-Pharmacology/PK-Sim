@@ -124,7 +124,7 @@ namespace PKSim.Core
          _snapshotParameter = new Parameter {Name = "P1"};
          _alternativeParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(_snapshotParameter.Name);
          newAlternativeWithSpecies.Add(_alternativeParameter);
-         _snapshot.Parameters.Add(_snapshotParameter);
+         _snapshot.Parameters = new []{_snapshotParameter};
       }
 
       protected override async Task Because()

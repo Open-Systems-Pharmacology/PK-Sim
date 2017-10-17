@@ -15,7 +15,6 @@ namespace PKSim.Core
 {
    public abstract class concern_for_PopulationSimulationEngine : ContextSpecification<ISimulationEngine<PopulationSimulation>>
    {
-      private IExceptionManager _exceptionManager;
       private IEventPublisher _eventPubliser;
       protected IProgressUpdater _progressUpdater;
       private ISimulationResultsSynchronizer _simulationResultsSynchronizer;
@@ -30,7 +29,6 @@ namespace PKSim.Core
       protected override void Context()
       {
          _populationRunner = A.Fake<IPopulationRunner>();
-         _exceptionManager = A.Fake<IExceptionManager>();
          _eventPubliser = A.Fake<IEventPublisher>();
          _progressUpdater = A.Fake<IProgressUpdater>();
          _progressManager = A.Fake<IProgressManager>();
@@ -44,7 +42,6 @@ namespace PKSim.Core
          sut = new PopulationSimulationEngine(_populationRunner,
             _progressManager,
             _eventPubliser,
-            _exceptionManager,
             _simulationResultsSynchronizer,
             _popExportTask,
             _simMapper,

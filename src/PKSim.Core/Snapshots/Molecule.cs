@@ -1,10 +1,12 @@
-﻿using OSPSuite.Core.Domain;
+﻿using System.ComponentModel.DataAnnotations;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots
 {
    public class Molecule : ParameterContainerSnapshotBase
    {
+      [Required]
       public QuantityType Type { get; set; }
 
       //Proteins only

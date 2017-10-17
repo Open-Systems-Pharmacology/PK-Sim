@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using PKSim.Core.Model.PopulationAnalyses;
 
@@ -6,6 +7,7 @@ namespace PKSim.Core.Snapshots
 {
    public class GroupingDefinition
    {
+      [Required]
       public string FieldName { get; set; }
       public Dictionary<string, GroupingItem> Mapping { get; set; }
       public string Dimension { get; set; }

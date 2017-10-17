@@ -10,7 +10,9 @@ namespace PKSim.Core.Snapshots
       public Scalings? Scaling { get; set; }
       public string Unit { get; set; }
       public string QuantityPath { get; set; }
-      public QuantityType? QuantityType { get; set; }
+      
+      //use string for quantity type here as Json.net Schema validation does not support Flag
+      public string QuantityType { get; set; }
       public Color? Color { get; set; }
       public string ParameterPath { get; set; }
       public string PKParameter { get; set; }

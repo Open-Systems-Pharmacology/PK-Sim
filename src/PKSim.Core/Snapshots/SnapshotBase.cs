@@ -20,6 +20,6 @@ namespace PKSim.Core.Snapshots
 
    public abstract class ParameterContainerSnapshotBase : SnapshotBase
    {
-      public List<Parameter> Parameters { get; set; } = new List<Parameter>();
+      public Parameter[] Parameters { get; set; } 
    }
 }

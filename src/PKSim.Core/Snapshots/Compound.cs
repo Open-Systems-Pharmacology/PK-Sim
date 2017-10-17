@@ -1,17 +1,21 @@
 ﻿using PKSim.Core.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace PKSim.Core.Snapshots
 {
    public class PkaType
    {
+      [Required]
       public CompoundType Type { get; set; }
+
+      [Required]
       public double Pka { get; set; }
    }
 
    public class Compound : ParameterContainerSnapshotBase
    {
       public bool? IsSmallMolecule { get; set; }
-      public PlasmaProteinBindingPartner?PlasmaProteinBindingPartner { get; set; }
+      public PlasmaProteinBindingPartner? PlasmaProteinBindingPartner { get; set; }
       public Alternative[] Lipophilicity { get; set; }
       public Alternative[] FractionUnbound { get; set; }
       public Alternative[] Solubility { get; set; }

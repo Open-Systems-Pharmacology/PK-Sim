@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using PKSim.Core.Model;
+﻿using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots
 {
@@ -12,7 +11,6 @@ namespace PKSim.Core.Snapshots
       public string TargetOrgan { get; set; }
       public string TargetCompartment { get; internal set; }
 
-      [JsonIgnore]
       public bool IsSimple => !string.IsNullOrEmpty(ApplicationType);
 
       //Advanced protocol properties

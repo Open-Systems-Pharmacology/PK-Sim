@@ -1,8 +1,12 @@
-﻿namespace PKSim.Core.Snapshots
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PKSim.Core.Snapshots
 {
    public class Project : SnapshotBase
    {
+      [Required]
       public int Version { get; set; }
+
       public Individual[] Individuals { get; set; }
       public Population[] Populations { get; set; }
       public Compound[] Compounds { get; set; }

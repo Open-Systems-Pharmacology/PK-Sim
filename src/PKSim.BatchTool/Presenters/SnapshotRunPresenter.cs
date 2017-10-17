@@ -58,6 +58,6 @@ namespace PKSim.BatchTool.Presenters
 
       public override bool CanClose => _selectedPresenter?.CanClose ?? false;
 
-      private void updateView() => _view.CalculateEnabled = CanClose;
+      private void updateView() => _view.CalculateEnabled = CanClose && !_isRunning;
    }
 }

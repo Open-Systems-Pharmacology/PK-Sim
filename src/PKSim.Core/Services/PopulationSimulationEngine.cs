@@ -1,15 +1,13 @@
 using System;
 using System.Threading.Tasks;
-using PKSim.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Exceptions;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Events;
+using PKSim.Assets;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -19,7 +17,6 @@ namespace PKSim.Core.Services
       private readonly IProgressManager _progressManager;
       private IProgressUpdater _progressUpdater;
       private readonly IEventPublisher _eventPublisher;
-      private readonly IExceptionManager _exceptionManager;
       private readonly ISimulationResultsSynchronizer _simulationResultsSynchronizer;
       private readonly IPopulationExportTask _populationExporter;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
@@ -27,16 +24,20 @@ namespace PKSim.Core.Services
       private readonly ICoreUserSettings _userSettings;
       private readonly IPopulationSimulationAnalysisSynchronizer _populationSimulationAnalysisSynchronizer;
 
-      public PopulationSimulationEngine(IPopulationRunner populationRunner, IProgressManager progressManager,
-         IEventPublisher eventPublisher, IExceptionManager exceptionManager,
-         ISimulationResultsSynchronizer simulationResultsSynchronizer, IPopulationExportTask populationExporter,
-         ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper, ISimulationPersistableUpdater simulationPersistableUpdater, ICoreUserSettings userSettings,
+      public PopulationSimulationEngine(
+         IPopulationRunner populationRunner,
+         IProgressManager progressManager,
+         IEventPublisher eventPublisher,
+         ISimulationResultsSynchronizer simulationResultsSynchronizer,
+         IPopulationExportTask populationExporter,
+         ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
+         ISimulationPersistableUpdater simulationPersistableUpdater,
+         ICoreUserSettings userSettings,
          IPopulationSimulationAnalysisSynchronizer populationSimulationAnalysisSynchronizer)
       {
          _populationRunner = populationRunner;
          _progressManager = progressManager;
          _eventPublisher = eventPublisher;
-         _exceptionManager = exceptionManager;
          _simulationResultsSynchronizer = simulationResultsSynchronizer;
          _populationExporter = populationExporter;
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
@@ -53,8 +54,6 @@ namespace PKSim.Core.Services
          _progressUpdater.Initialize(populationSimulation.NumberOfItems, PKSimConstants.UI.Calculating);
          _populationRunner.NumberOfCoresToUse = _userSettings.MaximumNumberOfCoresToUse;
 
-         //make sure that thread methods always catch and handle any exception,
-         //otherwise we risk unplanned application termination
          var begin = SystemTime.UtcNow();
          try
          {
@@ -72,10 +71,10 @@ namespace PKSim.Core.Services
          {
             simulationTerminated();
          }
-         catch (Exception ex)
+         catch (Exception)
          {
-            _exceptionManager.LogException(ex);
             simulationTerminated();
+            throw;
          }
          finally
          {
@@ -113,11 +112,9 @@ namespace PKSim.Core.Services
          _populationRunner.StopSimulation();
       }
 
-      private void simulationProgress(object sender, PopulationSimulationProgressEventArgs eventArgs)
+      private void simulationProgress(object sender, PopulationSimulationProgressEventArgs e)
       {
-         _progressUpdater.ReportProgress(
-            eventArgs.NumberOfCalculatedSimulation,
-            string.Format(PKSimConstants.UI.CalculationPopulationSimulation,eventArgs.NumberOfCalculatedSimulation, eventArgs.NumberOfSimulations));
+         _progressUpdater.ReportProgress( e.NumberOfCalculatedSimulation, PKSimConstants.UI.CalculationPopulationSimulation(e.NumberOfCalculatedSimulation, e.NumberOfSimulations));
       }
    }
 }

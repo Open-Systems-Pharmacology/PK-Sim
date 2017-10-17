@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
@@ -18,12 +17,9 @@ namespace PKSim.Core.Snapshots.Mappers
          _parameterMapper = parameterMapper;
       }
 
-      protected Task<Parameter> ParameterSnapshotFor(IParameter parameter) => _parameterMapper.MapToSnapshot(parameter);
-
       protected async Task AddParametersToSnapshot(IEnumerable<IParameter> parameters, TSnapshot snapshot)
       {
-         var tasks = parameters.Select(ParameterSnapshotFor);
-         snapshot.Parameters.AddRange(await Task.WhenAll(tasks));
+         snapshot.Parameters = await _parameterMapper.MapToSnapshots(parameters);
       }
 
       protected override Task<TSnapshot> SnapshotFrom(TModel model, Action<TSnapshot> configurationAction = null)

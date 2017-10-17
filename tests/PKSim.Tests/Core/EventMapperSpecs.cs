@@ -72,7 +72,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_event_parameters_changed_by_the_user_only()
       {
-         _snapshot.Parameters.Count.ShouldBeEqualTo(_event.AllVisibleParameters().Count());
+         _snapshot.Parameters.Length.ShouldBeEqualTo(_event.AllVisibleParameters().Count());
          _snapshot.Parameters.ExistsByName(_parameter1.Name).ShouldBeTrue();
          _snapshot.Parameters.ExistsByName(_parameter2.Name).ShouldBeTrue();
          _snapshot.Parameters.ExistsByName(_hiddenParameter.Name).ShouldBeFalse();
