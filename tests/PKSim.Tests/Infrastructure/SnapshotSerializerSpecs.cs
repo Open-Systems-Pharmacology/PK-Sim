@@ -72,6 +72,21 @@ namespace PKSim.Infrastructure
       }
    }
 
+   public class When_serialziing_a_parameter_with_a_value_set_with_a_mantis_of_length_less_than_the_precision_using_exponent_notation : concern_for_SnapshotSerializer
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _parameter.Value = 1e-12;
+      }
+
+      [Observation]
+      public void should_not_round_the_number()
+      {
+         _deserialiedParameter.Value.ShouldBeEqualTo(_parameter.Value);
+      }
+   }
+
    public class When_serialziing_a_parameter_with_a_very_small_value_and_with_a_mantis_of_length_less_than_the_precision : concern_for_SnapshotSerializer
    {
       protected override async Task Context()
