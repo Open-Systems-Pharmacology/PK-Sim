@@ -16,10 +16,10 @@ namespace PKSim.Core.Batch.Mapper
       private readonly IIndividualFactory _individualFactory;
       private readonly IOriginDataMapper _originDataMapper;
       private readonly IIndividualMoleculeFactoryResolver _moleculeFactoryResolver;
-      private readonly IBatchLogger _batchLogger;
+      private readonly ILogger _batchLogger;
 
       public IndividualMapper(IIndividualFactory individualFactory, IOriginDataMapper originDataMapper,
-         IIndividualMoleculeFactoryResolver moleculeFactoryResolver, IBatchLogger batchLogger)
+         IIndividualMoleculeFactoryResolver moleculeFactoryResolver, ILogger batchLogger)
       {
          _individualFactory = individualFactory;
          _originDataMapper = originDataMapper;

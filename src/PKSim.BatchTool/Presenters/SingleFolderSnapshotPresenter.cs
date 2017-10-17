@@ -41,22 +41,14 @@ namespace PKSim.BatchTool.Presenters
             return;
 
          _dto.OutputFolder = outputFolder;
-         _dto.LogFileFullPath = CoreConstants.DefaultBatchLogFullPath(_dto.OutputFolder);
       }
 
-      public SnapshotRunOptions RunOptions
+      public SnapshotRunOptions RunOptions => new SnapshotRunOptions
       {
-         get
-         {
-            return new SnapshotRunOptions
-            {
-               InputFolder = _dto.InputFolder,
-               OutputFolder = _dto.OutputFolder,
-               LogFileFullPath = _dto.LogFileFullPath,
-               ExportMode = _dto.ExportMode
-            };
-         }
-      }
+         InputFolder = _dto.InputFolder,
+         OutputFolder = _dto.OutputFolder,
+         ExportMode = _dto.ExportMode
+      };
 
       public void AdjustViewHeight()
       {

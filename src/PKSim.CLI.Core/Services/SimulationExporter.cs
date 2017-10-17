@@ -28,12 +28,12 @@ namespace PKSim.CLI.Core.Services
    public class SimulationExporter : ISimulationExporter
    {
       private readonly ISimulationEngineFactory _simulationEngineFactory;
-      private readonly IBatchLogger _logger;
+      private readonly ILogger _logger;
       private readonly IParametersReportCreator _parametersReportCreator;
       private readonly ISimulationResultsExporter _simulationResultsExporter;
       private readonly ISimulationExportTask _simulationExportTask;
 
-      public SimulationExporter(ISimulationEngineFactory simulationEngineFactory, IBatchLogger logger, IParametersReportCreator parametersReportCreator,
+      public SimulationExporter(ISimulationEngineFactory simulationEngineFactory, ILogger logger, IParametersReportCreator parametersReportCreator,
          ISimulationResultsExporter simulationResultsExporter, ISimulationExportTask simulationExportTask)
       {
          _simulationEngineFactory = simulationEngineFactory;

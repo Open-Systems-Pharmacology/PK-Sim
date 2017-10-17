@@ -4,7 +4,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.Services;
-using PKSim.Core;
 
 namespace PKSim.CLI.Core.RunOptions
 {
@@ -16,7 +15,6 @@ namespace PKSim.CLI.Core.RunOptions
       public NotificationType NotificationType { get; set; } = NotificationType.Info | NotificationType.Error;
 
       public IBusinessRuleSet Rules { get; } = new BusinessRuleSet();
-      public string LogFileFullPath { get; set; }
 
       public string InputFolder
       {
@@ -27,14 +25,7 @@ namespace PKSim.CLI.Core.RunOptions
       public string OutputFolder
       {
          get => _outputFolder;
-         set
-         {
-            SetProperty(ref _outputFolder, value);
-            if (string.IsNullOrEmpty(LogFileFullPath))
-            {
-               LogFileFullPath = CoreConstants.DefaultBatchLogFullPath(OutputFolder);
-            }
-         }
+         set => SetProperty(ref _outputFolder, value);
       }
 
       public IReadOnlyList<string> Folders { get; set; }
@@ -46,7 +37,6 @@ namespace PKSim.CLI.Core.RunOptions
          {
             RunOptionsRules.InputFolderDefined,
             RunOptionsRules.OutputFolderDefined,
-            GenericRules.NonEmptyRule<SnapshotRunOptions>(x => x.LogFileFullPath)
          });
       }
 
@@ -54,7 +44,6 @@ namespace PKSim.CLI.Core.RunOptions
       {
          var sb = new StringBuilder();
          this.LogOption(sb);
-         sb.AppendLine($"Log file: {LogFileFullPath}");
          sb.AppendLine($"Export mode: {ExportMode}");
          return sb.ToString();
       }

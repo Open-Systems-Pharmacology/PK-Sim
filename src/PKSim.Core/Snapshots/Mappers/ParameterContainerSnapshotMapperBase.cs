@@ -48,7 +48,7 @@ namespace PKSim.Core.Snapshots.Mappers
             var modelParameter = container.Parameter(snapshotParameter.Name);
 
             if (modelParameter == null)
-               return FromException(new SnapshotParameterNotFoundException(snapshotParameter.Name, containerDesciptor));
+               return Task.FromException(new SnapshotParameterNotFoundException(snapshotParameter.Name, containerDesciptor));
 
             tasks.Add(_parameterMapper.MapToModel(snapshotParameter, modelParameter));
          }
@@ -69,7 +69,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<TModel> MapToModel(TSnapshot snapshot)
       {
-         return FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
+         return Task.FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
       }
    }
 }

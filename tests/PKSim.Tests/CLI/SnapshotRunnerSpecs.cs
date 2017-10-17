@@ -5,6 +5,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
@@ -21,7 +22,7 @@ namespace PKSim.CLI
       protected IWorkspace _workspace;
       protected ISnapshotTask _snapshotTask;
       protected IWorkspacePersistor _workspacePersistor;
-      protected IBatchLogger _logger;
+      protected ILogger _logger;
       protected SnapshotRunOptions _runOptions;
       protected string _directoryCreated;
       private Func<string, string> _oldCreateDirectory;
@@ -40,7 +41,7 @@ namespace PKSim.CLI
          _workspace = A.Fake<IWorkspace>();
          _snapshotTask = A.Fake<ISnapshotTask>();
          _workspacePersistor = A.Fake<IWorkspacePersistor>();
-         _logger = A.Fake<IBatchLogger>();
+         _logger = A.Fake<ILogger>();
          sut = new SnapshotRunner(_workspace, _snapshotTask, _workspacePersistor, _logger);
 
          _runOptions = new SnapshotRunOptions();
@@ -66,7 +67,6 @@ namespace PKSim.CLI
          _runOptions.ExportMode = SnapshotExportMode.Project;
          _runOptions.InputFolder = _inputFolder;
          _runOptions.OutputFolder = _outputFolder;
-         _runOptions.LogFileFullPath = null;
          _snapshotFile = Path.Combine(_inputFolder, $"{_fileName}{Constants.Filter.JSON_EXTENSION}");
          _projectFile = Path.Combine(_outputFolder, $"{_fileName}{CoreConstants.Filter.PROJECT_EXTENSION}");
          sut.AllFilesFrom = (folder, filter) => new[] {new FileInfo(_snapshotFile) };
@@ -108,7 +108,6 @@ namespace PKSim.CLI
          _runOptions.ExportMode = SnapshotExportMode.Snapshot;
          _runOptions.InputFolder = _inputFolder;
          _runOptions.OutputFolder = _outputFolder;
-         _runOptions.LogFileFullPath = null;
          _snapshotFile = Path.Combine(_outputFolder, $"{_fileName}{Constants.Filter.JSON_EXTENSION}");
          _projectFile = Path.Combine(_inputFolder, $"{_fileName}{CoreConstants.Filter.PROJECT_EXTENSION}");
 
@@ -150,7 +149,6 @@ namespace PKSim.CLI
          await base.Context();
          _runOptions.ExportMode = SnapshotExportMode.Project;
          _runOptions.Folders = new[] {_inputFolder};
-         _runOptions.LogFileFullPath = null;
          _snapshotFile = Path.Combine(_inputFolder, $"{_fileName}{Constants.Filter.JSON_EXTENSION}");
          _projectFile = Path.Combine(_inputFolder, $"{_fileName}{CoreConstants.Filter.PROJECT_EXTENSION}");
          sut.AllFilesFrom = (folder, filter) => new[] { new FileInfo(_snapshotFile) };

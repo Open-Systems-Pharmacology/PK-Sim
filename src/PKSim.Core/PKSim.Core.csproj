@@ -126,7 +126,6 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Batch\ApplicationProtocol.cs" />
-    <Compile Include="Batch\BatchLogger.cs" />
     <Compile Include="Batch\Compound.cs" />
     <Compile Include="Batch\CompoundProcess.cs" />
     <Compile Include="Batch\Event.cs" />
@@ -191,6 +190,7 @@
     <Compile Include="Extensions\CurveExtensions.cs" />
     <Compile Include="Extensions\DataRepositoryExtensions.cs" />
     <Compile Include="Extensions\DataSetExtensions.cs" />
+    <Compile Include="Extensions\LoggerExtensions.cs" />
     <Compile Include="Mappers\BasePKAnalysisToDataTableMapper.cs" />
     <Compile Include="Mappers\BoxWhiskerChartDataToDataTableMapper.cs" />
     <Compile Include="Mappers\ChartDataToDataTableMapper.cs" />

@@ -6,9 +6,21 @@ namespace PKSim.CLI.Core.MinimalImplementations
 {
    public class CLIDialogCreator : IDialogCreator
    {
+      private readonly ILogger _logger;
+
+      public CLIDialogCreator(ILogger logger)
+      {
+         _logger = logger;
+      }
+
       public void MessageBoxError(string message)
       {
-         throw new NotSupportedException();
+         _logger.AddError(message);
+      }
+
+      public void MessageBoxInfo(string message)
+      {
+         _logger.AddInfo(message);
       }
 
       public ViewResult MessageBoxYesNoCancel(string message)
@@ -27,11 +39,6 @@ namespace PKSim.CLI.Core.MinimalImplementations
       }
 
       public ViewResult MessageBoxYesNo(string message, string yes, string no)
-      {
-         throw new NotSupportedException();
-      }
-
-      public void MessageBoxInfo(string message)
       {
          throw new NotSupportedException();
       }

@@ -14,7 +14,7 @@ namespace PKSim.BatchTool
    public abstract class concern_for_SimulationExporter : ContextSpecification<ISimulationExporter>
    {
       private ISimulationEngineFactory _simulationEngineFactory;
-      private IBatchLogger _logger;
+      private ILogger _logger;
       protected IParametersReportCreator _parameterReportCreator;
       protected ISimulationResultsExporter _simulationResultsExporter;
       protected IndividualSimulation _simulation;
@@ -28,7 +28,7 @@ namespace PKSim.BatchTool
       protected override void Context()
       {
          _simulationEngineFactory = A.Fake<ISimulationEngineFactory>();
-         _logger = A.Fake<IBatchLogger>();
+         _logger = A.Fake<ILogger>();
          _parameterReportCreator = A.Fake<IParametersReportCreator>();
          _simulationResultsExporter = A.Fake<ISimulationResultsExporter>();
          _simulationExportTask = A.Fake<ISimulationExportTask>();

@@ -1,5 +1,5 @@
-using System.IO;
 using Castle.Facilities.TypedFactory;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure.Container.Castle;
-using OSPSuite.Infrastructure.Logging.Log4NetLogging;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
@@ -20,7 +19,6 @@ using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
-using OSPSuite.Utility.Logging;
 using PKSim.Core;
 using PKSim.Core.Reporting;
 using PKSim.Core.Services;
@@ -40,6 +38,7 @@ using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using SimModelNET;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using ILogger = OSPSuite.Core.Services.ILogger;
 using IWorkspace = PKSim.Presentation.Core.IWorkspace;
 
 namespace PKSim.Infrastructure
@@ -58,7 +57,16 @@ namespace PKSim.Infrastructure
 
          registerRunOptionsIn(container);
 
+         registerLogging(container);
+
          EnvironmentHelper.ApplicationName = () => "pksim";
+      }
+
+      private static void registerLogging(IContainer container)
+      {
+         var loggerFactory = new LoggerFactory();
+         container.RegisterImplementationOf((ILoggerFactory) loggerFactory);
+         container.Register<ILogger, PKSimLogger>(LifeStyle.Singleton);
       }
 
       private static void registerRunOptionsIn(IContainer container)
@@ -82,21 +90,12 @@ namespace PKSim.Infrastructure
          return container;
       }
 
-      private static void registerLoggerIn(IContainer container, IPKSimConfiguration configuration)
-      {
-         var log4NetLogFactory = new Log4NetLogFactory();
-         log4NetLogFactory.Configure(new FileInfo(configuration.LogConfigurationFile));
-         log4NetLogFactory.UpdateLogFileLocation(configuration.AllUsersFolderPath);
-         container.RegisterImplementationOf((ILogFactory) log4NetLogFactory);
-      }
-
       private static void registerConfigurationIn(IContainer container)
       {
          container.Register<IPKSimConfiguration, IApplicationConfiguration, PKSimConfiguration>(LifeStyle.Singleton);
 
          var configuration = container.Resolve<IPKSimConfiguration>();
          CoreConstants.ProductDisplayName = configuration.ProductDisplayName;
-         registerLoggerIn(container, configuration);
       }
 
       private static void registerFactoryIn(IContainer container)
@@ -172,6 +171,7 @@ namespace PKSim.Infrastructure
             scan.ExcludeType<ModelDatabase>();
             scan.ExcludeType<VersionChecker>();
             scan.ExcludeType<Workspace>();
+            scan.ExcludeType<PKSimLogger>();
 
             //already registered
             scan.ExcludeType<PKSimXmlSerializerRepository>();

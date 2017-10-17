@@ -35,8 +35,7 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		'dimensions/*.xml',
 		'pkparameters/*.xml',
 		'setup/setup.wxs',
-		'setup/**/*.{msm,rtf,bmp}',
-		'log4net.config.xml'
+		'setup/**/*.{msm,rtf,bmp}'
 	]
 
 	Rake::Task['setup:create'].execute(OpenStruct.new(
@@ -59,8 +58,7 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 		'documentation/*.pdf',
 		'dimensions/*.xml',
 		'pkparameters/*.xml',
-		'setup/**/*.{rtf}',
-		'log4net.config.xml',
+		'setup/**/*.{rtf}'
 	]
 
 	setup_folders = [

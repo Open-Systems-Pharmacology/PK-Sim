@@ -20,11 +20,11 @@ namespace PKSim.Core.Batch.Mapper
       private readonly ISimulationConstructor _simulationConstructor;
       private readonly IModelPropertiesMapper _modelPropertiesMapper;
       private readonly IFormulationMapper _formulationMapper;
-      private readonly IBatchLogger _logger;
+      private readonly ILogger _logger;
 
       public SimulationMapper(ICompoundMapper compoundMapper, IIndividualMapper individualMapper,
          IApplicationProtocolMapper protocolMapper, ISimulationConstructor simulationConstructor,
-         IModelPropertiesMapper modelPropertiesMapper, IFormulationMapper formulationMapper, IBatchLogger logger)
+         IModelPropertiesMapper modelPropertiesMapper, IFormulationMapper formulationMapper, ILogger logger)
       {
          _compoundMapper = compoundMapper;
          _individualMapper = individualMapper;

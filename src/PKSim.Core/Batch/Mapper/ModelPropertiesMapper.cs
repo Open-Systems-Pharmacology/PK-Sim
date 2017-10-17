@@ -13,9 +13,9 @@ namespace PKSim.Core.Batch.Mapper
    public class ModelPropertiesMapper : IModelPropertiesMapper
    {
       private readonly IModelPropertiesTask _modelPropertiesTask;
-      private readonly IBatchLogger _batchLogger;
+      private readonly ILogger _batchLogger;
 
-      public ModelPropertiesMapper(IModelPropertiesTask modelPropertiesTask,  IBatchLogger batchLogger)
+      public ModelPropertiesMapper(IModelPropertiesTask modelPropertiesTask, ILogger batchLogger)
       {
          _modelPropertiesTask = modelPropertiesTask;
          _batchLogger = batchLogger;

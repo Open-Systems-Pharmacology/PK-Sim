@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using CommandLine;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -159,10 +160,7 @@ namespace PKSim.BatchTool
       [Observation]
       public void should_export_to_the_expected_format()
       {
-         sut.NotificationType.HasFlag(NotificationType.Warning).ShouldBeTrue();
-         sut.NotificationType.HasFlag(NotificationType.Error).ShouldBeTrue();
-         sut.NotificationType.HasFlag(NotificationType.Info).ShouldBeTrue();
-         sut.NotificationType.HasFlag(NotificationType.Debug).ShouldBeFalse();
+         sut.LogLevel.ShouldBeEqualTo(LogLevel.Warning);
       }
    }
 

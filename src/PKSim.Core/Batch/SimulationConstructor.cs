@@ -41,10 +41,10 @@ namespace PKSim.Core.Batch
       private readonly ISimulationBuildingBlockUpdater _buildingBlockUpdater;
       private readonly ISimulationModelCreator _simulationModelCreator;
       private readonly IRegistrationTask _registrationTask;
-      private readonly IBatchLogger _batchLogger;
+      private readonly ILogger _batchLogger;
 
       public SimulationConstructor(ISimulationFactory simulationFactory, ISimulationBuildingBlockUpdater buildingBlockUpdater,
-         ISimulationModelCreator simulationModelCreator, IRegistrationTask registrationTask, IBatchLogger batchLogger)
+         ISimulationModelCreator simulationModelCreator, IRegistrationTask registrationTask, ILogger batchLogger)
       {
          _simulationFactory = simulationFactory;
          _buildingBlockUpdater = buildingBlockUpdater;

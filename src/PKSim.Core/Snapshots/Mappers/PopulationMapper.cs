@@ -38,7 +38,7 @@ namespace PKSim.Core.Snapshots.Mappers
             case RandomPopulation randomPopulation:
                return mapRandomPopulationProperties(snapshot, randomPopulation);
             default:
-               return FromException(new OSPSuiteException(PKSimConstants.Error.PopulationSnapshotOnlySupportedForRandomPopulation));
+               return Task.FromException(new OSPSuiteException(PKSimConstants.Error.PopulationSnapshotOnlySupportedForRandomPopulation));
          }
       }
 
