@@ -98,7 +98,7 @@ namespace PKSim.Core.Snapshots.Services
 
       private string fileNameForSnapshotImport<T>()
       {
-         var message = PKSimConstants.UI.LoadFromSnapshotFile(_objectTypeResolver.TypeFor<T>());
+         var message = PKSimConstants.UI.LoadObjectFromSnapshot(_objectTypeResolver.TypeFor<T>());
          return _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);
       }
 

@@ -6,7 +6,8 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.Core.Services;
+using PKSim.Assets;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
 using SnapshotTableFormula = PKSim.Core.Snapshots.TableFormula;
 using ModelTableFormula = OSPSuite.Core.Domain.Formulas.TableFormula;
@@ -17,11 +18,13 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly TableFormulaMapper _tableFormulaMapper;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly ILogger _logger;
 
-      public ParameterMapper(TableFormulaMapper tableFormulaMapper, IEntityPathResolver entityPathResolver)
+      public ParameterMapper(TableFormulaMapper tableFormulaMapper, IEntityPathResolver entityPathResolver, ILogger logger)
       {
          _tableFormulaMapper = tableFormulaMapper;
          _entityPathResolver = entityPathResolver;
+         _logger = logger;
       }
 
       public override Task<SnapshotParameter> MapToSnapshot(IParameter modelParameter)
@@ -31,10 +34,26 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public virtual async Task UpdateSnapshotFromParameter(SnapshotParameter snapshot, IParameter parameter)
       {
-         snapshot.Value = parameter.ValueInDisplayUnit;
-         snapshot.Unit = SnapshotValueFor(parameter.DisplayUnit.Name);
+         updateParameterValue(snapshot, parameter.Value, parameter.DisplayUnit.Name, parameter.Dimension);
          snapshot.ValueDescription = SnapshotValueFor(parameter.ValueDescription);
          snapshot.TableFormula = await mapFormula(parameter.Formula);
+      }
+
+      public virtual SnapshotParameter ParameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension)
+      {
+         if (parameterBaseValue == null)
+            return null;
+
+         var snapshot = new SnapshotParameter();
+         updateParameterValue(snapshot, parameterBaseValue.Value, parameterDisplayUnit, dimension);
+         return snapshot;
+      }
+
+      private void updateParameterValue(SnapshotParameter snapshot, double parameterBaseValue, string parameterDisplayUnit, IDimension dimension)
+      {
+         var unit = dimension.UnitOrDefault(parameterDisplayUnit);
+         snapshot.Unit = unit.Name;
+         snapshot.Value = dimension.BaseUnitValueToUnitValue(unit, parameterBaseValue);
       }
 
       private async Task<TSnapshotParameter> createFrom<TSnapshotParameter>(IParameter parameter, Action<TSnapshotParameter> configurationAction) where TSnapshotParameter : SnapshotParameter, new()
@@ -48,7 +67,6 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<IParameter> MapToModel(SnapshotParameter snapshot, IParameter parameter)
       {
          parameter.ValueDescription = snapshot.ValueDescription;
-         parameter.DisplayUnit = parameter.Dimension.Unit(ModelValueFor(snapshot.Unit));
 
          //only update formula if required
          if (snapshot.TableFormula != null)
@@ -56,6 +74,12 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (snapshot.Value == null)
             return parameter;
+
+         var displayUnit = ModelValueFor(snapshot.Unit);
+         if (!parameter.Dimension.HasUnit(displayUnit))
+            _logger.AddWarning(PKSimConstants.Warning.UnitNotFoundInDimensionForParameter(displayUnit, parameter.Dimension.Name, parameter.Name));
+
+         parameter.DisplayUnit = parameter.Dimension.UnitOrDefault(displayUnit);
 
          //This needs to come AFTER formula update so that the base value is accurate
          var baseValue = parameter.Value;
@@ -73,20 +97,6 @@ namespace PKSim.Core.Snapshots.Mappers
             return null;
 
          return await _tableFormulaMapper.MapToSnapshot(tableFormula);
-      }
-
-      public virtual SnapshotParameter ParameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension)
-      {
-         if (parameterBaseValue == null)
-            return null;
-
-         var displayUnitToUse = parameterDisplayUnit ?? dimension.BaseUnit.Name;
-
-         return new SnapshotParameter
-         {
-            Value = dimension.BaseUnitValueToUnitValue(dimension.Unit(displayUnitToUse), parameterBaseValue.Value),
-            Unit = displayUnitToUse
-         };
       }
 
       public virtual Task<LocalizedParameter> LocalizedParameterFrom(IParameter parameter)
@@ -118,15 +128,30 @@ namespace PKSim.Core.Snapshots.Mappers
             return Task.FromResult(false);
 
          var allParameters = new PathCache<IParameter>(_entityPathResolver).For(container.GetAllChildren<IParameter>());
-         var tasks = new List<Task>();
-         localizedParameters.Each(snapshotParameter =>
-         {
-            var parameter = allParameters[snapshotParameter.Path];
-            if (parameter == null)
-               throw new SnapshotParameterNotFoundException(snapshotParameter.Path, container.Name);
+         return mapParameters(localizedParameters, x => allParameters[x.Path], x => x.Path, container.Name);
+      }
 
-            tasks.Add(MapToModel(snapshotParameter, parameter));
-         });
+      public virtual Task MapParameters(IReadOnlyList<SnapshotParameter> snapshots, IContainer container, string containerDescriptor)
+      {
+         return mapParameters(snapshots, x => container.Parameter(x.Name), x => x.Name, containerDescriptor);
+      }
+
+      private Task mapParameters<T>(IReadOnlyList<T> snapshots, Func<T, IParameter> parameterRetrieverFunc, Func<T, string> parameterIdentifierFunc, string containerDescriptor) where T : SnapshotParameter
+      {
+         if (snapshots == null || !snapshots.Any())
+            return Task.FromResult(false);
+
+         var tasks = new List<Task>();
+
+         foreach (var snapshot in snapshots)
+         {
+            var parameter = parameterRetrieverFunc(snapshot);
+
+            if (parameter == null)
+               _logger.AddWarning(PKSimConstants.Error.SnapshotParameterNotFoundInContainer(parameterIdentifierFunc(snapshot), containerDescriptor));
+            else
+               tasks.Add(MapToModel(snapshot, parameter));
+         }
 
          return Task.WhenAll(tasks);
       }

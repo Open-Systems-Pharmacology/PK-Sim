@@ -78,7 +78,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var simulationComparisonContext = new SimulationAnalysisContext(project.AllObservedData);
          var allPopulationAnalysis = await _populationAnalysisChartMapper.MapToModels(snapshot.PopulationComparisons, simulationComparisonContext);
-         allPopulationAnalysis.Each(populationSimulationComparison.AddAnalysis);
+         allPopulationAnalysis?.Each(populationSimulationComparison.AddAnalysis);
          populationSimulationComparison.ReferenceGroupingItem = snapshot.ReferenceGroupingItem;
          populationSimulationComparison.ReferenceSimulation = project.BuildingBlockByName<PopulationSimulation>(snapshot.ReferenceSimulation);
       }

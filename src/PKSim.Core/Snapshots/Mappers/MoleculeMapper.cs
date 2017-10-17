@@ -45,7 +45,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task<ExpressionContainer[]> expressionFor(IndividualMolecule molecule)
       {
          var expression = await _expressionContainerMapper.MapToSnapshots(molecule.AllExpressionsContainers());
-         return expression?.Where(x => x != null).ToArray();
+         return expression?.ToArray();
       }
 
       private void updateMoleculeSpecificPropertiesToSnapshot(Molecule snapshot, IndividualMolecule molecule)

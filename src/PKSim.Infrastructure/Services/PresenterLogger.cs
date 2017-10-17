@@ -8,7 +8,7 @@ using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace PKSim.BatchTool.Services
+namespace PKSim.Infrastructure.Services
 {
    public class PresenterLogger : ILogger
    {

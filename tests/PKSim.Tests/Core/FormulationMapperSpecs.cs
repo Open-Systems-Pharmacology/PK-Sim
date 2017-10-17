@@ -7,9 +7,7 @@ using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using Formulation = PKSim.Core.Model.Formulation;
 
 namespace PKSim.Core
 {
@@ -116,27 +114,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(_parameter1.Name), _newFormulation.Parameter(_parameter1.Name))).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(_parameter2.Name), _newFormulation.Parameter(_parameter2.Name))).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.MapToModel(A<Snapshots.Parameter>._, A<IParameter>.That.Matches(x => x.IsNamed(_hiddenParameter.Name)))).MustNotHaveHappened();
-      }
-   }
-
-   public class When_mapping_an_outdated_formulation_snapshot_to_a_formulation : concern_for_FormulationMapper
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _snapshot = await sut.MapToSnapshot(_formulation);
-         A.CallTo(() => _formulationRepository.FormulationBy(_snapshot.FormulationType)).Returns(_formulation);
-         A.CallTo(() => _cloner.Clone(_formulation)).Returns(_formulation);
-         _snapshot.Parameters[0].Name = "Unknown parameter";
-      }
-
-      [Observation]
-      public void should_throw_an_outdated_exception()
-      {
-         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<SnapshotParameterNotFoundException>();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newFormulation, _newFormulation.Name)).MustHaveHappened();
       }
    }
 }

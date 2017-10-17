@@ -129,8 +129,10 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_enzymaticProcess);
          _templateProcess = new EnzymaticProcess();
+         _templateProcess.InternalName = _snapshot.InternalName;
          A.CallTo(() => _compoundProcessRepository.ProcessByName(_snapshot.InternalName)).Returns(_templateProcess);
          _cloneOfTemplate = new EnzymaticProcess();
+         _cloneOfTemplate.InternalName = _snapshot.InternalName;
          A.CallTo(() => _cloner.Clone((Model.CompoundProcess) _templateProcess)).Returns(_cloneOfTemplate);
 
 
@@ -176,7 +178,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_update_the_parameters_from_snapshot()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshotParameter,_processParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters , _newEnzymaticProcess, _snapshot.InternalName)).MustHaveHappened();
       }
    }
 

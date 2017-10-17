@@ -42,7 +42,7 @@ namespace PKSim.Core.Snapshots.Mappers
             throw new SnapshotOutdatedException(PKSimConstants.Error.SnapshotParameterNotFound(snapshot.Name));
 
          var advancedParameter = _advancedParameterFactory.Create(parameter, DistributionTypes.ById(snapshot.DistributionType));
-         await UpdateParametersFromSnapshot(snapshot, advancedParameter.DistributedParameter, PKSimConstants.ObjectTypes.AdvancedParameter);
+         await UpdateParametersFromSnapshot(snapshot, advancedParameter.DistributedParameter);
          return advancedParameter;
       }
 

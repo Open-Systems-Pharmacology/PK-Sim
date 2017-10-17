@@ -11,6 +11,11 @@ namespace PKSim.Core.Snapshots
       public string Name { get; set; }
 
       public string Description { get; set; }
+
+      public override string ToString()
+      {
+         return Name ?? base.ToString();
+      }
    }
 
    public abstract class ParameterContainerSnapshotBase : SnapshotBase

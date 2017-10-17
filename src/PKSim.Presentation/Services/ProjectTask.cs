@@ -18,6 +18,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
+using PKSim.Presentation.Presenters.Snapshots;
 using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Services
@@ -32,9 +33,6 @@ namespace PKSim.Presentation.Services
       void Run(StartOptions startOptions);
       void LoadProjectFromSnapshot();
       Task ExportCurrentProjectToSnapshot();
-
-      Task ExportProjectToSnapshot(PKSimProject project, string snapshotFileFullPath);
-      Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath);
    }
 
    public class ProjectTask : IProjectTask
@@ -224,33 +222,15 @@ namespace PKSim.Presentation.Services
       {
          if (!shouldCloseProject()) return;
 
-         var message = PKSimConstants.UI.LoadFromSnapshotFile(PKSimConstants.ObjectTypes.Project);
-         var fileName = _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);
-         if (string.IsNullOrEmpty(fileName))
-            return;
-
          closeProject();
 
-         _heavyWorkManager.Start(LoadSnapshotIntoWorkspace, PKSimConstants.UI.LoadingSnapshot);
-
-         void LoadSnapshotIntoWorkspace()
+         using (var presenter = _applicationController.Start<ILoadProjectFromSnapshotPresenter>())
          {
-            _workspace.LoadProject(() => ProjectFromSnapshot().Wait());
-         }
-
-         async Task ProjectFromSnapshot()
-         {
-            var project = await LoadProjectFromSnapshotFile(fileName);
-            if (project == null)
-               return;
-
-            _workspace.Project = project;
-         }
+            _workspace.LoadProject(presenter.LoadProject());
+         }        
       }
 
       public Task ExportCurrentProjectToSnapshot() => _snapshotTask.ExportModelToSnapshot(_workspace.Project);
-
-      public Task ExportProjectToSnapshot(PKSimProject project, string snapshotFileFullPath) => _snapshotTask.ExportModelToSnapshot(project, snapshotFileFullPath);
 
       public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshot(snapshotFileFullPath);
 

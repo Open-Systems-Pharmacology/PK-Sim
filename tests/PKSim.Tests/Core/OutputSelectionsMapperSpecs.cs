@@ -4,6 +4,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
@@ -22,11 +23,13 @@ namespace PKSim.Core
       protected IEntitiesInContainerRetriever _entitiesInContainerRetriever;
       protected IndividualSimulation _simulation;
       protected PathCache<IQuantity> _allQuantities;
+      protected ILogger _logger;
 
       protected override Task Context()
       {
          _entitiesInContainerRetriever = A.Fake<IEntitiesInContainerRetriever>();
-         sut = new OutputSelectionsMapper(_entitiesInContainerRetriever);
+         _logger= A.Fake<ILogger>();
+         sut = new OutputSelectionsMapper(_entitiesInContainerRetriever, _logger);
 
          _quantitySelection1 = new QuantitySelection("PATH1", QuantityType.Drug);
          _quantitySelection2 = new QuantitySelection("PATH2", QuantityType.Observer);
@@ -102,13 +105,18 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_outputSelections);
          _parameter1 = new Parameter();
 
-         _allQuantities.Add("PATH1", _parameter1);
+         _allQuantities.Add("PATH2", _parameter1);
+      }
+
+      protected override Task Because()
+      {
+         return sut.MapToModel(_snapshot, _simulation);
       }
 
       [Observation]
-      public void should_throw_an_exception()
+      public void should_warn_that_a_missing_output_was_not_found()
       {
-         TheAsync.Action(() => sut.MapToModel(_snapshot, _simulation)).ShouldThrowAnAsync<SnapshotOutdatedException>();
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains("PATH1"), NotificationType.Warning)).MustHaveHappened();
       }
    }
 }

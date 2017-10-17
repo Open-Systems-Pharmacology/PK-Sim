@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
+using PKSim.Assets;
 using SnapshotCurve = PKSim.Core.Snapshots.Curve;
 using ModelCurve = OSPSuite.Core.Chart.Curve;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
@@ -13,11 +15,13 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly CurveOptionsMapper _curveOptionsMapper;
       private readonly IDimensionFactory _dimensionFactory;
+      private readonly ILogger _logger;
 
-      public CurveMapper(CurveOptionsMapper curveOptionsMapper, IDimensionFactory dimensionFactory)
+      public CurveMapper(CurveOptionsMapper curveOptionsMapper, IDimensionFactory dimensionFactory, ILogger logger)
       {
          _curveOptionsMapper = curveOptionsMapper;
          _dimensionFactory = dimensionFactory;
+         _logger = logger;
       }
 
       public override async Task<SnapshotCurve> MapToSnapshot(ModelCurve curve)
@@ -39,11 +43,23 @@ namespace PKSim.Core.Snapshots.Mappers
          curve.CurveOptions.UpdateFrom(curveOptions);
 
          var yData = findCurveWithPath(snapshot.Y, simulationAnalysisContext.DataRepositories);
+         if (yData == null)
+         {
+            _logger.AddWarning(PKSimConstants.Error.CouldNotFindQuantityWithPath(snapshot.Y));
+            return null;
+         }
+
          curve.SetyData(yData, _dimensionFactory);
 
-         ModelDataColumn xData = yData?.BaseGrid;
+         ModelDataColumn xData = yData.BaseGrid;
          if (!string.Equals(snapshot.X, xData?.Name))
             xData = findCurveWithPath(snapshot.X, simulationAnalysisContext.DataRepositories);
+
+         if (xData == null)
+         {
+            _logger.AddWarning(PKSimConstants.Error.CouldNotFindQuantityWithPath(snapshot.X));
+            return null;
+         }
 
          curve.SetxData(xData, _dimensionFactory);
          return curve;

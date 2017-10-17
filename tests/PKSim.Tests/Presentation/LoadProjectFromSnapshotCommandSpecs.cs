@@ -1,6 +1,5 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
 
@@ -12,7 +11,7 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _projectTask= A.Fake<IProjectTask>();
+         _projectTask = A.Fake<IProjectTask>();
          sut = new LoadProjectFromSnapshotCommand(_projectTask);
       }
    }
@@ -27,8 +26,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_project_task_to_load_the_project_snapshot_in_the_current_project()
       {
-         A.CallTo(() => _projectTask.LoadProjectFromSnapshot()).MustHaveHappened();   
+         A.CallTo(() => _projectTask.LoadProjectFromSnapshot()).MustHaveHappened();
       }
    }
-
-}	
+}

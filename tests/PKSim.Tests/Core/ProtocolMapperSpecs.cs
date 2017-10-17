@@ -156,9 +156,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(Constants.Parameters.START_TIME), _newProtocol.Parameter(Constants.Parameters.START_TIME))).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(Constants.Parameters.END_TIME), _newProtocol.Parameter(Constants.Parameters.END_TIME))).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(CoreConstants.Parameter.INPUT_DOSE), _newProtocol.Parameter(CoreConstants.Parameter.INPUT_DOSE))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newProtocol, _newProtocol.Name)).MustHaveHappened();
      }
    }
 
@@ -201,7 +199,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(_advancedProtocolParameter.Name), _newProtocol.Parameter(_advancedProtocolParameter.Name))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newProtocol, _newProtocol.Name)).MustHaveHappened();
       }
    }
 

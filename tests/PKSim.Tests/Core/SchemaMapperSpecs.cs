@@ -3,6 +3,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 
@@ -105,7 +106,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.Parameters.FindByName(_parameter.Name), _newSchema.Parameter(_parameter.Name))).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newSchema, PKSimConstants.ObjectTypes.Schema)).MustHaveHappened();
       }
 
       [Observation]

@@ -83,6 +83,11 @@ namespace PKSim.Assets
             sb.AppendLine("Please check/adjust process mapping in the PROCESSES Tab of the Clone/Configure dialog if needed.");
             return sb.ToString();
          }
+
+         public static string UnitNotFoundInDimensionForParameter(string unit, string dimension, string parameterName)
+         {
+            return $"Unit '{unit}' not found for parameter {parameterName} with dimension '{dimension}";
+         }
       }
 
       public static class Command
@@ -993,10 +998,11 @@ namespace PKSim.Assets
             return $"{ObservedDataYAsTooltip(y)}\n{TimeProfileYAsTooltip(lowerValue, upperValue)}";
          }
 
-         public static string ObservedDataYAsTooltip(string y)
-         {
-            return ScatterYAsTooltip(y);
-         }
+         public static string ObservedDataYAsTooltip(string y) => ScatterYAsTooltip(y);
+
+         public static string LoadingSnapshot(string snapshotFile, string type) => $"Loading {type} from snapshot file '{snapshotFile}'";
+
+         public static string SnapshotLoaded(string typeToLoad) => $"{typeToLoad} loaded from snaphsot";
       }
 
       public static class MenuNames
@@ -1549,6 +1555,7 @@ namespace PKSim.Assets
          public static readonly string CreatingProjectDatabase = "Creating project database...";
          public static readonly string LoadingProject = "Loading project...";
          public static readonly string LoadingSnapshot = "Loading snapshot...";
+         public static readonly string SnapshotFile = "Select snapshot file";
          public static readonly string SavingProject = "Saving project...";
          public static readonly string LoadingHistory = "Loading history...";
          public static readonly string LoadingMatlab = "Loading Matlab®...";
@@ -2413,7 +2420,9 @@ namespace PKSim.Assets
 
          public static string  SelectSnapshotExportFile(string objectName, string ojectType) => $"Export snapshot for {ojectType.ToLowerInvariant()} '{objectName}'";
 
-         public static string  LoadFromSnapshotFile(string ojectType) => $"Load {ojectType.ToLowerInvariant()} from snapshot";
+         public static string  LoadObjectFromSnapshot(string ojectType) => $"Load {ojectType.ToLowerInvariant()} from snapshot";
+
+         public static string LoadFromSnapshot => "Load Snapshot";         
       }
 
       public static class Reporting

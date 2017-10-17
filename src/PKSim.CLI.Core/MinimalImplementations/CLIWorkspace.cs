@@ -79,6 +79,11 @@ namespace PKSim.CLI.Core.MinimalImplementations
       {
       }
 
+      public void LoadProject(PKSimProject project)
+      {
+         Project = project;
+      }
+
       public bool ProjectLoaded => Project != null;
       public bool ProjectHasChanged => Project?.HasChanged ?? false;
    }
