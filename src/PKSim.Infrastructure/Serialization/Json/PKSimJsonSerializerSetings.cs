@@ -11,6 +11,7 @@ namespace PKSim.Infrastructure.Serialization.Json
          NullValueHandling = NullValueHandling.Ignore;
          ContractResolver = new WritablePropertiesOnlyResolver();
          Converters.Add(new StringEnumConverter());
+         Converters.Add(new NullabeDoubleJsonConverter());
       }
    }
 }

@@ -947,7 +947,7 @@
     <Compile Include="Snapshots\QuantityInfo.cs" />
     <Compile Include="Snapshots\Schema.cs" />
     <Compile Include="Snapshots\SchemaItem.cs" />
-    <Compile Include="Snapshots\Services\SnapshotSerializer.cs" />
+    <Compile Include="Snapshots\Services\ISnapshotSerializer.cs" />
     <Compile Include="Snapshots\Services\SnapshotTask.cs" />
     <Compile Include="Snapshots\Protocol.cs" />
     <Compile Include="Snapshots\Simulation.cs" />
