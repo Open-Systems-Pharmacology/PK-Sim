@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility;
@@ -29,12 +30,6 @@ namespace PKSim.Infrastructure
          return _completed;
       }
 
-      protected override async Task Because()
-      {
-         await sut.Serialize(_parameter, _fileName);
-         _deserialiedParameter = (await sut.DeserializeAsArray(_fileName, typeof(Parameter))).Cast<Parameter>().First();
-      }
-
       public override async Task GlobalCleanup()
       {
          await base.GlobalCleanup();
@@ -42,111 +37,29 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_serializing_a_parameter_with_a_value_not_set : concern_for_SnapshotSerializer
+  
+   public class When_serializing_a_parameter_with_a_value_set: concern_for_SnapshotSerializer
    {
-      protected override async Task Context()
+      [TestCase(null)]
+      [TestCase(1.123456789)]
+      [TestCase(1e-12)]
+      [TestCase(0.0000000142)]
+      [TestCase(449.9999999996)]
+      [TestCase(449.9999999999991, 450)]
+      [TestCase(199.999998E-2)]
+      [TestCase(199.999999998E-2, 2d)]
+      public async Task should_serialized_the_number_using_the_expected_precision(double? originalValue, double? expectedValue=null)
       {
-         await base.Context();
-         _parameter.Value = null;
-      }
+         _parameter.Value = originalValue;
+         await sut.Serialize(_parameter, _fileName);
+         _deserialiedParameter = (await sut.DeserializeAsArray(_fileName, typeof(Parameter))).Cast<Parameter>().First();
 
-      [Observation]
-      public void should_deserialize_the_parmaeter_with_a_value_also_not_set()
-      {
-         _deserialiedParameter.Value.ShouldBeNull();
+         var expectedDeserializedValue = expectedValue ?? originalValue;
+         _deserialiedParameter.Value.ShouldBeEqualTo(expectedDeserializedValue);
       }
    }
 
-   public class When_serialziing_a_parameter_with_a_value_set_with_a_mantis_of_length_less_than_the_precision : concern_for_SnapshotSerializer
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _parameter.Value = 1.123456789;
-      }
 
-      [Observation]
-      public void should_not_round_the_number()
-      {
-         _deserialiedParameter.Value.ShouldBeEqualTo(_parameter.Value);
-      }
-   }
-
-   public class When_serialziing_a_parameter_with_a_value_set_with_a_mantis_of_length_less_than_the_precision_using_exponent_notation : concern_for_SnapshotSerializer
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _parameter.Value = 1e-12;
-      }
-
-      [Observation]
-      public void should_not_round_the_number()
-      {
-         _deserialiedParameter.Value.ShouldBeEqualTo(_parameter.Value);
-      }
-   }
-
-   public class When_serialziing_a_parameter_with_a_very_small_value_and_with_a_mantis_of_length_less_than_the_precision : concern_for_SnapshotSerializer
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _parameter.Value = 0.0000000142;
-      }
-
-      [Observation]
-      public void should_not_round_the_number()
-      {
-         _deserialiedParameter.Value.ShouldBeEqualTo(_parameter.Value);
-      }
-   }
-
-   public class When_serializing_a_parameter_whose_value_was_tainted_with_numerical_noise : concern_for_SnapshotSerializer
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _parameter.Value = 449.9999999999991;
-      }
-
-      [Observation]
-      public void should_round_the_value()
-      {
-         _deserialiedParameter.Value.ShouldBeEqualTo(450);
-      }
-   }
-   
-   public class When_serializing_a_parameter_whose_value_should_not_be_converted : concern_for_SnapshotSerializer
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _parameter.Value = 449.9999999996;
-      }
-
-      [Observation]
-      public void should_not_round_the_value()
-      {
-         _deserialiedParameter.Value.ShouldBeEqualTo(_parameter.Value);
-      }
-   }
-
-   public class When_serializing_a_parameter_whose_value_with_sientific_notation_and_long_mantis : concern_for_SnapshotSerializer
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _parameter.Value = 199.999999998E-2;
-      }
-
-      [Observation]
-      public void should_round_the_value()
-      {
-         _deserialiedParameter.Value.ShouldBeEqualTo(2d);
-      }
-   }
-   
    public class When_serializing_an_array_of_objects_to_json : concern_for_SnapshotSerializer
    {
       private IEnumerable<Parameter> _deserialiedParameters;
