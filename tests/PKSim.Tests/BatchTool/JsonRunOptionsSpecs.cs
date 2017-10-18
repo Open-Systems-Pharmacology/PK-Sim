@@ -39,8 +39,7 @@ namespace PKSim.BatchTool
       protected override void Because()
       {
          Parser.Default.ParseArguments<JsonRunCommand>(_args)
-            .WithParsed(opt => sut = opt)
-            .WithNotParsed(s => Console.WriteLine(s.Select(x => x.Tag)));
+            .WithParsed(opt => sut = opt);
       }
 
       public override void GlobalCleanup()
