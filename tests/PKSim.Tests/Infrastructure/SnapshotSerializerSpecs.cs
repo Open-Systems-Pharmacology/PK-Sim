@@ -116,7 +116,37 @@ namespace PKSim.Infrastructure
          _deserialiedParameter.Value.ShouldBeEqualTo(450);
       }
    }
+   
+   public class When_serializing_a_parameter_whose_value_should_not_be_converted : concern_for_SnapshotSerializer
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _parameter.Value = 449.9999999996;
+      }
 
+      [Observation]
+      public void should_not_round_the_value()
+      {
+         _deserialiedParameter.Value.ShouldBeEqualTo(_parameter.Value);
+      }
+   }
+
+   public class When_serializing_a_parameter_whose_value_with_sientific_notation_and_long_mantis : concern_for_SnapshotSerializer
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _parameter.Value = 199.999999998E-2;
+      }
+
+      [Observation]
+      public void should_round_the_value()
+      {
+         _deserialiedParameter.Value.ShouldBeEqualTo(2d);
+      }
+   }
+   
    public class When_serializing_an_array_of_objects_to_json : concern_for_SnapshotSerializer
    {
       private IEnumerable<Parameter> _deserialiedParameters;
