@@ -1,7 +1,7 @@
-﻿using PKSim.Core.Model;
+﻿using OSPSuite.Presentation.Presenters;
+using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
