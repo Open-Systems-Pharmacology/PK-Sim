@@ -1,7 +1,4 @@
-using System;
-using System.Linq;
-using OSPSuite.Serializer.Xml;
-using OSPSuite.Utility;
+using System.Collections.Generic;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Presentation;
@@ -9,45 +6,20 @@ using PKSim.Presentation.Services;
 
 namespace PKSim.Infrastructure.Services
 {
-   public class UserSettingsPersistor : IUserSettingsPersistor
+   public class UserSettingsPersistor : SettingsPersistor<IUserSettings>, IUserSettingsPersistor
    {
-      private readonly IStringSerializer _stringSerializer;
-      private readonly IUserSettings _defaultUserSettings;
-      private readonly IPKSimConfiguration _configuration;
-
       public UserSettingsPersistor(IStringSerializer stringSerializer, IUserSettings defaultUserSettings,
-         IPKSimConfiguration configuration)
+         IPKSimConfiguration configuration) : base(stringSerializer, defaultUserSettings, configuration)
       {
-         _stringSerializer = stringSerializer;
-         _defaultUserSettings = defaultUserSettings;
-         _configuration = configuration;
       }
 
-      public void Save(IUserSettings userSettings)
+      public override void Save(IUserSettings userSettings)
       {
          userSettings.SaveLayout();
-
-         var xmlContent = _stringSerializer.Serialize(userSettings);
-         XmlHelper.SaveXmlContentToFile(xmlContent, _configuration.UserSettingsFilePath);
+         base.Save(userSettings);
       }
 
-      public IUserSettings Load()
-      {
-         try
-         {
-            foreach (var filePath in _configuration.UserSettingsFilePaths.Where(FileHelper.FileExists))
-            {
-               var xmlContent = XmlHelper.XmlContentFromFile(filePath);
-               return _stringSerializer.Deserialize<IUserSettings>(xmlContent);
-            }
-         }
-         //We do not want to have a crash if the user has edited the configuration by hand
-         catch (Exception)
-         {
-            return _defaultUserSettings;
-         }
-
-         return _defaultUserSettings;
-      }
+      protected override string SettingsFilePath => _configuration.UserSettingsFilePath;
+      protected override IEnumerable<string> SettingsFilePaths => _configuration.UserSettingsFilePaths;
    }
 }

@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
-using PKSim.Assets;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters
 {
@@ -28,7 +28,8 @@ namespace PKSim.Presentation.Presenters
       private readonly ISpeciesDatabaseMapToSpeciesDatabaseMapDTOMapper _speciesMapper;
       private readonly IDialogCreator _dialogCreator;
       private readonly IApplicationSettingsPersitor _applicationSettingsPersitor;
-      private IEnumerable<SpeciesDatabaseMapDTO> _databaseMapDTOs;
+      private List<SpeciesDatabaseMapDTO> _databaseMapDTOs;
+      private readonly ApplicationSettingsDTO _applicationSettingsDTO;
 
       public ApplicationSettingsPresenter(IApplicationSettingsView view, IApplicationSettings applicationSettings,
          ISpeciesRepository speciesRepository, ISpeciesDatabaseMapToSpeciesDatabaseMapDTOMapper speciesMapper,
@@ -39,6 +40,17 @@ namespace PKSim.Presentation.Presenters
          _speciesMapper = speciesMapper;
          _dialogCreator = dialogCreator;
          _applicationSettingsPersitor = applicationSettingsPersitor;
+         _applicationSettingsDTO = mapFrom(applicationSettings);
+      }
+
+      private ApplicationSettingsDTO mapFrom(IApplicationSettings applicationSettings)
+      {
+         return new ApplicationSettingsDTO
+         {
+            UseWatermark = applicationSettings.UseWatermark.GetValueOrDefault(false),
+            WatermarkText = applicationSettings.WatermarkText,
+            MoBiPath = applicationSettings.MoBiPath
+         };
       }
 
       public void EditSettings()
@@ -46,9 +58,9 @@ namespace PKSim.Presentation.Presenters
          var definedMapping = _applicationSettings.SpeciesDataBaseMaps.ToList();
          addMissingSpeciesTo(definedMapping);
          removeUnlicensedSpeciesFrom(definedMapping);
-         _databaseMapDTOs = definedMapping.MapAllUsing(_speciesMapper).OrderBy(x => x.SpeciesDisplayName);
+         _databaseMapDTOs = definedMapping.MapAllUsing(_speciesMapper).OrderBy(x => x.SpeciesDisplayName).ToList();
          _view.BindTo(_databaseMapDTOs);
-         _view.BindTo(_applicationSettings);
+         _view.BindTo(_applicationSettingsDTO);
       }
 
       private void removeUnlicensedSpeciesFrom(List<SpeciesDatabaseMap> speciesMaps)
@@ -79,6 +91,10 @@ namespace PKSim.Presentation.Presenters
                _applicationSettings.SpeciesDatabaseMapsFor(speciesDatabaseMapDTO.SpeciesName).DatabaseFullPath = speciesDatabaseMapDTO.DatabaseFullPath;
          }
 
+         _applicationSettings.MoBiPath = _applicationSettingsDTO.MoBiPath;
+         _applicationSettings.WatermarkText = _applicationSettingsDTO.WatermarkText;
+         _applicationSettings.UseWatermark = _applicationSettingsDTO.UseWatermark;
+
          _applicationSettingsPersitor.Save(_applicationSettings);
       }
 
@@ -98,7 +114,7 @@ namespace PKSim.Presentation.Presenters
       {
          var mobiPath = _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectMoBiExecutablePath, CoreConstants.Filter.MOBI_FILE_FILTER, Constants.DirectoryKey.PROJECT);
          if (string.IsNullOrEmpty(mobiPath)) return;
-         _applicationSettings.MoBiPath = mobiPath;
+         _applicationSettingsDTO.MoBiPath = mobiPath;
       }
    }
 }

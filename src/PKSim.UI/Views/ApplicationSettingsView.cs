@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Assets;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.Assets;
 using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Controls;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views
 {
@@ -22,7 +21,7 @@ namespace PKSim.UI.Views
    {
       private IApplicationSettingsPresenter _presenter;
       private readonly GridViewBinder<SpeciesDatabaseMapDTO> _gridViewBinder;
-      private readonly ScreenBinder<IApplicationSettings> _screnBinder;
+      private readonly ScreenBinder<ApplicationSettingsDTO> _screenBinder = new ScreenBinder<ApplicationSettingsDTO>();
 
       public ApplicationSettingsView()
       {
@@ -30,7 +29,6 @@ namespace PKSim.UI.Views
          gridViewDatabasePath.AllowsFiltering = false;
          gridViewDatabasePath.EditorShowMode = EditorShowMode.Default;
          _gridViewBinder = new GridViewBinder<SpeciesDatabaseMapDTO>(gridViewDatabasePath);
-         _screnBinder = new ScreenBinder<IApplicationSettings>();
       }
 
       public void AttachPresenter(IApplicationSettingsPresenter presenter)
@@ -42,7 +40,9 @@ namespace PKSim.UI.Views
       {
          base.InitializeResources();
          Caption = PKSimConstants.UI.Application;
-         layoutItemMoBiPath.Text = PKSimConstants.UI.MoBiPath.FormatForLabel();
+         layoutItemMoBiPath.Text = PKSimConstants.UI.MoBiPath.FormatForLabel(checkCase: false);
+         layoutItemWatermarkText.Text = PKSimConstants.UI.WatermarkText.FormatForLabel();
+         layoutGroupWatermark.Text = PKSimConstants.UI.WatermarkProperties;
       }
 
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.SytemSettings;
@@ -61,13 +61,20 @@ namespace PKSim.UI.Views
 
          _gridViewBinder.Changed += notifyViewChanged;
 
-         _screnBinder.Bind(x => x.MoBiPath)
+         _screenBinder.Bind(x => x.MoBiPath)
             .To(buttonMoBiPath);
 
-         RegisterValidationFor(_screnBinder, statusChangedNotify: notifyViewChanged);
+         _screenBinder.Bind(x => x.UseWatermark)
+            .To(chkUseWatermark)
+            .WithCaption(PKSimConstants.UI.UseWatermark);
+
+         _screenBinder.Bind(x => x.WatermarkText)
+            .To(textWatermark);
+
+         RegisterValidationFor(_screenBinder, statusChangedNotify: notifyViewChanged);
+
          pathSelectionRepository.ButtonClick += (o, e) => OnEvent(buttonClicked, o, e);
          buttonMoBiPath.ButtonClick += (o, e) => OnEvent(_presenter.SelectMoBiPath);
-
       }
 
       private void notifyViewChanged() => _presenter.ViewChanged();
@@ -96,11 +103,11 @@ namespace PKSim.UI.Views
          _gridViewBinder.BindToSource(databaseMapDTOs);
       }
 
-      public void BindTo(IApplicationSettings applicationSettings)
+      public void BindTo(ApplicationSettingsDTO applicationSettings)
       {
-         _screnBinder.BindToSource(applicationSettings);
+         _screenBinder.BindToSource(applicationSettings);
       }
 
-       public override bool HasError => _gridViewBinder.HasError;
+      public override bool HasError => _gridViewBinder.HasError;
    }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.Core;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;

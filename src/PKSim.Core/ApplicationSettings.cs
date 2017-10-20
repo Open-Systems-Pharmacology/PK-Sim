@@ -25,11 +25,6 @@ namespace PKSim.Core
 
       private readonly Cache<string, SpeciesDatabaseMap> _allMaps = new Cache<string, SpeciesDatabaseMap>(x => x.Species);
 
-      public ApplicationSettings()
-      {
-         UseWatermark = true;
-      }
-
       public IEnumerable<SpeciesDatabaseMap> SpeciesDataBaseMaps => _allMaps;
 
       public void AddSpeciesDatabaseMap(SpeciesDatabaseMap speciesDatabaseMap)
