@@ -2,6 +2,7 @@
 using PKSim.Core.Chart;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using OSPSuite.Presentation.Views;
+using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Presentation.Views.PopulationAnalyses
 {
@@ -33,6 +34,7 @@ namespace PKSim.Presentation.Views.PopulationAnalyses
    public interface IChartWithSettings
    {
       void SetChartSettingsEditor(IView view);
+      void UpdateWatermark(PopulationAnalysisChart populationAnalysisChart,  bool showWatermark);
    }
 
    public interface IBoxWhiskerChartView : IPopulationAnalysisChartView<BoxWhiskerXValue, BoxWhiskerYValue, IBoxWhiskerChartPresenter>

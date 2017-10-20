@@ -1,14 +1,11 @@
 using System.Collections.Generic;
 using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Reflection;
 using PKSim.Core.Model;
 
 namespace PKSim.Core
 {
-   /// <summary>
-   ///    User independent settings
-   /// </summary>
-   public interface IApplicationSettings
+   /// <inheritdoc />
+   public interface IApplicationSettings : OSPSuite.Core.IApplicationSettings
    {
       IEnumerable<SpeciesDatabaseMap> SpeciesDataBaseMaps { get; }
       void AddSpeciesDatabaseMap(SpeciesDatabaseMap speciesDatabaseMap);
@@ -22,11 +19,16 @@ namespace PKSim.Core
       string MoBiPath { get; set; }
    }
 
-   public class ApplicationSettings : Notifier, IApplicationSettings
+   public class ApplicationSettings : OSPSuite.Core.ApplicationSettings, IApplicationSettings
    {
       private string _moBiPath;
 
       private readonly Cache<string, SpeciesDatabaseMap> _allMaps = new Cache<string, SpeciesDatabaseMap>(x => x.Species);
+
+      public ApplicationSettings()
+      {
+         UseWatermark = true;
+      }
 
       public IEnumerable<SpeciesDatabaseMap> SpeciesDataBaseMaps => _allMaps;
 

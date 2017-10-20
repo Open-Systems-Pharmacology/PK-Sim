@@ -14,6 +14,7 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Assets;
 using PKSim.Core.Chart;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
 
@@ -40,7 +41,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          InitializeComponent();
 
          _toolTipCreator = toolTipCreator;
-         Chart = new UxChartControl(useDefaultPopupMechanism: true, addCopyToClipboardMenu: false)
+         Chart = new UxChartControl(useDefaultPopupMechanism: true)
          {
             Images = imageListRetriever.AllImages16x16,
             CrosshairEnabled = DefaultBoolean.False
@@ -183,13 +184,18 @@ namespace PKSim.UI.Views.PopulationAnalyses
       public virtual void AddDynamicMenus(bool allowEdit = true)
       {
          Chart.AddPopupMenu(MenuNames.ResetZoom, ResetZoom, ApplicationIcons.Reset);
-         Chart.AddPopupMenu(MenuNames.CopyToClipboard, () => _presenter.AnalysisChart.CopyToClipboard(Chart), ApplicationIcons.Copy, beginGroup: true);
+         Chart.AddPopupMenu(MenuNames.CopyToClipboard, copyToClipboard, ApplicationIcons.Copy, beginGroup: true);
 
          if (allowEdit)
             Chart.AddPopupMenu(MenuNames.Edit, _presenter.Edit, ApplicationIcons.Edit);
 
          Chart.AddPopupMenu(MenuNames.ExportToExcel, _presenter.ExportDataToExcel, ApplicationIcons.Excel);
          Chart.AddPopupMenu(MenuNames.ExportToPDF, _presenter.ExportToPDF, ApplicationIcons.PDF);
+      }
+
+      private void copyToClipboard()
+      {
+         Chart.CopyToClipboard(_presenter.AnalysisChart, _presenter.Watermark);
       }
 
       protected virtual void ResetZoom()
@@ -225,5 +231,10 @@ namespace PKSim.UI.Views.PopulationAnalyses
       {
          Chart.Dock = dockStyle;
       }
-   }
+
+      public void UpdateWatermark(PopulationAnalysisChart populationAnalysisChart, bool showWatermark)
+      {
+         Chart.AddWatermark(populationAnalysisChart, showWatermark? _presenter.Watermark : null);
+      }
+   }  
 }
