@@ -27,19 +27,19 @@ namespace PKSim.Presentation.Presenters
       private readonly ISpeciesRepository _speciesRepository;
       private readonly ISpeciesDatabaseMapToSpeciesDatabaseMapDTOMapper _speciesMapper;
       private readonly IDialogCreator _dialogCreator;
-      private readonly IApplicationSettingsPersitor _applicationSettingsPersitor;
+      private readonly IApplicationSettingsPersistor _applicationSettingsPersistor;
       private List<SpeciesDatabaseMapDTO> _databaseMapDTOs;
       private readonly ApplicationSettingsDTO _applicationSettingsDTO;
 
       public ApplicationSettingsPresenter(IApplicationSettingsView view, IApplicationSettings applicationSettings,
          ISpeciesRepository speciesRepository, ISpeciesDatabaseMapToSpeciesDatabaseMapDTOMapper speciesMapper,
-         IDialogCreator dialogCreator, IApplicationSettingsPersitor applicationSettingsPersitor) : base(view)
+         IDialogCreator dialogCreator, IApplicationSettingsPersistor applicationSettingsPersistor) : base(view)
       {
          _applicationSettings = applicationSettings;
          _speciesRepository = speciesRepository;
          _speciesMapper = speciesMapper;
          _dialogCreator = dialogCreator;
-         _applicationSettingsPersitor = applicationSettingsPersitor;
+         _applicationSettingsPersistor = applicationSettingsPersistor;
          _applicationSettingsDTO = mapFrom(applicationSettings);
       }
 
@@ -95,7 +95,7 @@ namespace PKSim.Presentation.Presenters
          _applicationSettings.WatermarkText = _applicationSettingsDTO.WatermarkText;
          _applicationSettings.UseWatermark = _applicationSettingsDTO.UseWatermark;
 
-         _applicationSettingsPersitor.Save(_applicationSettings);
+         _applicationSettingsPersistor.Save(_applicationSettings);
       }
 
       public void SelectDatabasePathFor(SpeciesDatabaseMapDTO speciesDatabaseMapDTO)

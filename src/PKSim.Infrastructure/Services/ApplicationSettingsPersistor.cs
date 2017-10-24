@@ -4,9 +4,9 @@ using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
 {
-   public class ApplicationSettingsPersitor : SettingsPersistor<IApplicationSettings>, IApplicationSettingsPersitor
+   public class ApplicationSettingsPersistor : SettingsPersistor<IApplicationSettings>, IApplicationSettingsPersistor
    {
-      public ApplicationSettingsPersitor(IStringSerializer stringSerializer, IApplicationSettings defaultApplicationSettings, IPKSimConfiguration configuration)
+      public ApplicationSettingsPersistor(IStringSerializer stringSerializer, IApplicationSettings defaultApplicationSettings, IPKSimConfiguration configuration)
          : base(stringSerializer, defaultApplicationSettings, configuration)
       {
       }

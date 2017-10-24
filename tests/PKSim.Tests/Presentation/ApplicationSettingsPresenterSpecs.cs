@@ -26,7 +26,7 @@ namespace PKSim.Presentation
       protected IDialogCreator _dialogCreator;
       protected ISpeciesRepository _speciesRepository;
       protected ISpeciesDatabaseMapToSpeciesDatabaseMapDTOMapper _speciesDatabaseDTOMapper;
-      protected IApplicationSettingsPersitor _applicationSettingsPersistor;
+      protected IApplicationSettingsPersistor _applicationSettingsPersistor;
       protected ApplicationSettingsDTO _dto;
 
       protected override void Context()
@@ -43,7 +43,7 @@ namespace PKSim.Presentation
                                                                       new Species {Name = "Rat", Id = "Rat"}
                                                                    });
          _speciesDatabaseDTOMapper =new SpeciesDatabaseMapToSpeciesDatabaseMapDTOMapper(_speciesRepository, new RepresentationInfoRepositoryForSpecs());
-         _applicationSettingsPersistor =A.Fake<IApplicationSettingsPersitor>();
+         _applicationSettingsPersistor =A.Fake<IApplicationSettingsPersistor>();
 
          sut = new ApplicationSettingsPresenter(_view,_applicationSettings,_speciesRepository,_speciesDatabaseDTOMapper,_dialogCreator,_applicationSettingsPersistor);
 

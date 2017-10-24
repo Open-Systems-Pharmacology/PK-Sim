@@ -137,7 +137,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          return paneData?.ObservedCurveData.FirstOrDefault(o => string.Equals(o.Caption, caption));
       }
 
-      public string Watermark => _applicationSettings.WaternarkTextToUse;
+      public string Watermark => _applicationSettings.WatermarkTextToUse;
 
       public CurveData<TX, TY> CurveDataFor(string paneId, string seriesId)
       {

@@ -12,13 +12,13 @@ namespace PKSim.UI.Tests
    {
       protected IProjectTask _projectTask;
       protected IUserSettingsPersistor _userSettingsPersitor;
-      protected IApplicationSettingsPersitor _applicationSettingsPersistor;
+      protected IApplicationSettingsPersistor _applicationSettingsPersistor;
 
       protected override void Context()
       {
          _projectTask = A.Fake<IProjectTask>();
          _userSettingsPersitor = A.Fake<IUserSettingsPersistor>();
-         _applicationSettingsPersistor = A.Fake<IApplicationSettingsPersitor>();
+         _applicationSettingsPersistor = A.Fake<IApplicationSettingsPersistor>();
          sut = new ExitCommand(_projectTask, _userSettingsPersitor, _applicationSettingsPersistor);
       }
 

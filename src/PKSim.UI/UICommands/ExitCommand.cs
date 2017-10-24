@@ -9,17 +9,17 @@ namespace PKSim.UI.UICommands
    {
       private readonly IProjectTask _projectTask;
       private readonly IUserSettingsPersistor _userSettingsPersitor;
-      private readonly IApplicationSettingsPersitor _applicationSettingsPersitor;
+      private readonly IApplicationSettingsPersistor _applicationSettingsPersistor;
       public bool Canceled { get; private set; }
 
       public ExitCommand(IProjectTask projectTask,
          IUserSettingsPersistor userSettingsPersitor,
-         IApplicationSettingsPersitor applicationSettingsPersitor
+         IApplicationSettingsPersistor applicationSettingsPersistor
       )
       {
          _projectTask = projectTask;
          _userSettingsPersitor = userSettingsPersitor;
-         _applicationSettingsPersitor = applicationSettingsPersitor;
+         _applicationSettingsPersistor = applicationSettingsPersistor;
       }
 
       public void Execute()
@@ -28,7 +28,7 @@ namespace PKSim.UI.UICommands
          if (Canceled) return;
 
          _userSettingsPersitor.SaveCurrent();
-         _applicationSettingsPersitor.SaveCurrent();
+         _applicationSettingsPersistor.SaveCurrent();
 
          Application.Exit();
       }

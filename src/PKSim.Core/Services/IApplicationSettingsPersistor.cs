@@ -1,6 +1,6 @@
 namespace PKSim.Core.Services
 {
-   public interface IApplicationSettingsPersitor : IPersistor<IApplicationSettings>
+   public interface IApplicationSettingsPersistor : IPersistor<IApplicationSettings>
    {
       /// <summary>
       /// Saves current application settings
