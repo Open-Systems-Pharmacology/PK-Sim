@@ -13,7 +13,7 @@ namespace PKSim.Core
    public abstract class concern_for_SettingsLoader : ContextSpecification<SettingsLoader>
    {
       protected IUserSettingsPersistor _userSettingsPersistor;
-      protected IApplicationSettingsPersitor _applicationSettingsPersistor;
+      protected IApplicationSettingsPersistor _applicationSettingsPersistor;
       protected IPKSimConfiguration _configuration;
       protected IUserSettings _userSettings;
       private Func<string, bool> _oldFileExists;
@@ -28,7 +28,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          _userSettingsPersistor = A.Fake<IUserSettingsPersistor>();
-         _applicationSettingsPersistor = A.Fake<IApplicationSettingsPersitor>();
+         _applicationSettingsPersistor = A.Fake<IApplicationSettingsPersistor>();
          _configuration =A.Fake<IPKSimConfiguration>();
          _updateFile = FileHelper.GenerateTemporaryFileName();
          _userSettings = A.Fake<IUserSettings>();

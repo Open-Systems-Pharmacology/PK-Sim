@@ -21,15 +21,15 @@ namespace PKSim.Infrastructure
       public override string ProductNameWithTrademark { get; } = CoreConstants.PRODUCT_NAME_WITH_TRADEMARK;
       public override ApplicationIcon Icon { get; } = ApplicationIcons.PKSim;
       public override string UserSettingsFileName { get; } = "UserSettings.xml";
+      public override string ApplicationSettingsFileName { get; } = "ApplicationSettings.xml";
       public override string IssueTrackerUrl { get; } = CoreConstants.ISSUE_TRACKER_URL;
       protected override string[] LatestVersionWithOtherMajor { get; } = {"6.3", "5.6"};
-      public string ApplicationSettingsFilePath { get; }
+      public override string WatermarkOptionLocation { get; } = "Options -> Settings -> Application";
       public override string ApplicationFolderPathName { get; } = CoreConstants.APPLICATION_FOLDER_PATH;
 
       public PKSimConfiguration()
       {
          createDefaultSettingsFolder();
-         ApplicationSettingsFilePath = AllUsersFile("ApplicationSettings.xml");
          PKSimDbPath = AllUsersOrLocalPathForFile(CoreConstants.PK_SIM_DB_FILE);
          TemplateSystemDatabasePath = AllUsersOrLocalPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
          TemplateUserDatabaseTemplatePath = AllUsersOrLocalPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
@@ -60,8 +60,6 @@ namespace PKSim.Infrastructure
          }
       }
 
-      private string applicationSettingsFolderPathFor(string version) => Path.Combine(EnvironmentHelper.ApplicationDataFolder(), ApplicationFolderPathWithRevision(version));
-
-      public IEnumerable<string> ApplicationSettingsFilePaths => SettingsFilePaths(ApplicationSettingsFilePath, applicationSettingsFolderPathFor);
+    
    }
 }

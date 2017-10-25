@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using OSPSuite.Core;
+﻿using OSPSuite.Core;
 
 namespace PKSim.Core
 {
-   public interface IPKSimConfiguration: IApplicationConfiguration
+   public interface IPKSimConfiguration : IApplicationConfiguration
    {
       /// <summary>
       ///    Path of the PKSim Database
@@ -25,16 +24,6 @@ namespace PKSim.Core
       /// </summary>
       string DefaultTemplateUserDatabasePath { get; }
 
-      /// <summary>
-      ///    Path of the application specific settings file (for all users)
-      /// </summary>
-      string ApplicationSettingsFilePath { get; }
-
-      /// <summary>
-      /// Returns a possible enumeration containg the path of application settings that can be loaded. (Starting from the most recent one down to the first available one)
-      /// </summary>
-      IEnumerable<string> ApplicationSettingsFilePaths { get; } 
-   
       /// <summary>
       ///    Full path to MoBi application exe. This path is read from the registry entry
       /// </summary>

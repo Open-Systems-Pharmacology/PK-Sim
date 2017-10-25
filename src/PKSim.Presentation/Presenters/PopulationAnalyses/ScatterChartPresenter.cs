@@ -1,6 +1,7 @@
-﻿using PKSim.Core.Chart;
+﻿using OSPSuite.Presentation.Presenters;
+using PKSim.Core;
+using PKSim.Core.Chart;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -10,8 +11,8 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
    public class ScatterChartPresenter : PopulationAnalysisChartPresenter<IScatterChartView, IScatterChartPresenter, ScatterXValue, ScatterYValue>, IScatterChartPresenter
    {
-      public ScatterChartPresenter(IScatterChartView view, IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter)
-         : base(view, populationAnalysisChartSettingsPresenter)
+      public ScatterChartPresenter(IScatterChartView view, IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter, IApplicationSettings applicationSettings)
+         : base(view, populationAnalysisChartSettingsPresenter, applicationSettings)
       {
       }
    }

@@ -9,10 +9,13 @@ namespace PKSim.Infrastructure.Services
    public class SettingsLoader : IStartable
    {
       private readonly IUserSettingsPersistor _userSettingsPersistor;
-      private readonly IApplicationSettingsPersitor _applicationSettingsPersistor;
+      private readonly IApplicationSettingsPersistor _applicationSettingsPersistor;
       private readonly IPKSimConfiguration _configuration;
 
-      public SettingsLoader(IUserSettingsPersistor userSettingsPersistor, IApplicationSettingsPersitor applicationSettingsPersistor, IPKSimConfiguration configuration)
+      public SettingsLoader(
+         IUserSettingsPersistor userSettingsPersistor,
+         IApplicationSettingsPersistor applicationSettingsPersistor,
+         IPKSimConfiguration configuration)
       {
          _userSettingsPersistor = userSettingsPersistor;
          _applicationSettingsPersistor = applicationSettingsPersistor;
