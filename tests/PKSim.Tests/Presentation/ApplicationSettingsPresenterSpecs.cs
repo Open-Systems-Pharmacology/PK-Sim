@@ -26,7 +26,8 @@ namespace PKSim.Presentation
       protected IDialogCreator _dialogCreator;
       protected ISpeciesRepository _speciesRepository;
       protected ISpeciesDatabaseMapToSpeciesDatabaseMapDTOMapper _speciesDatabaseDTOMapper;
-      protected IApplicationSettingsPersitor _applicationSettingsPersistor;
+      protected IApplicationSettingsPersistor _applicationSettingsPersistor;
+      protected ApplicationSettingsDTO _dto;
 
       protected override void Context()
       {
@@ -42,9 +43,13 @@ namespace PKSim.Presentation
                                                                       new Species {Name = "Rat", Id = "Rat"}
                                                                    });
          _speciesDatabaseDTOMapper =new SpeciesDatabaseMapToSpeciesDatabaseMapDTOMapper(_speciesRepository, new RepresentationInfoRepositoryForSpecs());
-         _applicationSettingsPersistor =A.Fake<IApplicationSettingsPersitor>();
+         _applicationSettingsPersistor =A.Fake<IApplicationSettingsPersistor>();
 
          sut = new ApplicationSettingsPresenter(_view,_applicationSettings,_speciesRepository,_speciesDatabaseDTOMapper,_dialogCreator,_applicationSettingsPersistor);
+
+         A.CallTo(() => _view.BindTo(A<ApplicationSettingsDTO>._))
+            .Invokes(x => _dto = x.GetArgument<ApplicationSettingsDTO>(0));
+
       }
    }
 
@@ -53,7 +58,7 @@ namespace PKSim.Presentation
    {
       private SpeciesDatabaseMap _speciesMap1;
       private SpeciesDatabaseMap _speciesMap2;
-      private IEnumerable<SpeciesDatabaseMapDTO> _allDTOS;
+      private IEnumerable<SpeciesDatabaseMapDTO> _allSpeciesDatabaseMapDTOs;
 
       protected override void Context()
       {
@@ -62,8 +67,10 @@ namespace PKSim.Presentation
          _speciesMap2 = new SpeciesDatabaseMap {Species = "Human", DatabaseFullPath = "Path2"};
          _applicationSettings.AddSpeciesDatabaseMap(_speciesMap1);
          _applicationSettings.AddSpeciesDatabaseMap(_speciesMap2);
+
          A.CallTo(() => _view.BindTo(A<IEnumerable<SpeciesDatabaseMapDTO>>._))
-          .Invokes(x => _allDTOS = x.GetArgument<IEnumerable<SpeciesDatabaseMapDTO>>(0));
+          .Invokes(x => _allSpeciesDatabaseMapDTOs = x.GetArgument<IEnumerable<SpeciesDatabaseMapDTO>>(0));
+         _applicationSettings.UseWatermark = null;
       }
 
       protected override void Because()
@@ -75,15 +82,21 @@ namespace PKSim.Presentation
       public void should_retrieve_the_available_species_and_the_corresponding_path_in_the_settings()
       {
          //one for each species
-         _allDTOS.Single(x => x.SpeciesName == _speciesMap1.Species).DatabaseFullPath.ShouldBeEqualTo(_speciesMap1.DatabaseFullPath);
-         _allDTOS.Single(x => x.SpeciesName == _speciesMap2.Species).DatabaseFullPath.ShouldBeEqualTo(_speciesMap2.DatabaseFullPath);
+         _allSpeciesDatabaseMapDTOs.Single(x => x.SpeciesName == _speciesMap1.Species).DatabaseFullPath.ShouldBeEqualTo(_speciesMap1.DatabaseFullPath);
+         _allSpeciesDatabaseMapDTOs.Single(x => x.SpeciesName == _speciesMap2.Species).DatabaseFullPath.ShouldBeEqualTo(_speciesMap2.DatabaseFullPath);
       }
 
       [Observation]
       public void should_display_the_path_selection_for_the_available_species()
       {
          //one for each species
-         _allDTOS.Count().ShouldBeEqualTo(_speciesRepository.Count());
+         _allSpeciesDatabaseMapDTOs.Count().ShouldBeEqualTo(_speciesRepository.Count());
+      }
+
+      [Observation]
+      public void should_bound_the_use_watermark_to_false_if_not_defined()
+      {
+         _dto.UseWatermark.ShouldBeFalse();
       }
    }
 

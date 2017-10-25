@@ -1,5 +1,5 @@
 using System.Windows.Forms;
-using PKSim.Presentation;
+using PKSim.Core.Services;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
 
@@ -9,16 +9,17 @@ namespace PKSim.UI.UICommands
    {
       private readonly IProjectTask _projectTask;
       private readonly IUserSettingsPersistor _userSettingsPersitor;
-      private readonly IUserSettings _userSettings;
+      private readonly IApplicationSettingsPersistor _applicationSettingsPersistor;
       public bool Canceled { get; private set; }
-      public bool ShouldCloseApplication { get; set; }
 
-      public ExitCommand(IProjectTask projectTask, IUserSettingsPersistor userSettingsPersitor, IUserSettings userSettings)
+      public ExitCommand(IProjectTask projectTask,
+         IUserSettingsPersistor userSettingsPersitor,
+         IApplicationSettingsPersistor applicationSettingsPersistor
+      )
       {
          _projectTask = projectTask;
          _userSettingsPersitor = userSettingsPersitor;
-         _userSettings = userSettings;
-         ShouldCloseApplication = true;
+         _applicationSettingsPersistor = applicationSettingsPersistor;
       }
 
       public void Execute()
@@ -26,9 +27,8 @@ namespace PKSim.UI.UICommands
          Canceled = (_projectTask.CloseCurrentProject() == false);
          if (Canceled) return;
 
-         _userSettingsPersitor.Save(_userSettings);
-
-         if (!ShouldCloseApplication) return;
+         _userSettingsPersitor.SaveCurrent();
+         _applicationSettingsPersistor.SaveCurrent();
 
          Application.Exit();
       }

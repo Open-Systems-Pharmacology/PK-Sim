@@ -148,7 +148,7 @@ namespace PKSim.UI.Binders
          if (populationAnalysisChart.PreviewSettings)
             adjustDisplayForPreview(populationAnalysisChart);
          else
-            adjustDisplayForApplication();
+            adjustDisplayForApplication(populationAnalysisChart);
       }
 
       private static void applyAxisZoom(AxisSettings axisSettings, Axis axis)
@@ -165,11 +165,17 @@ namespace PKSim.UI.Binders
          axis.VisualRange.SetMinMaxValues(axisSettings.Min, axisSettings.Max);
       }
 
-      private void adjustDisplayForApplication()
+      private void adjustDisplayForApplication(PopulationAnalysisChart populationAnalysisChart)
       {
          _view.SetDockStyle(DockStyle.Fill);
          _view.Chart.SetFontAndSizeSettings(ChartFontAndSizeSettings.Default, _view.Chart.Size);
          clearOriginText();
+         updateWatermark(populationAnalysisChart, showWatermark:false);
+      }
+
+      private void updateWatermark(PopulationAnalysisChart populationAnalysisChart, bool showWatermark)
+      {
+         _view.UpdateWatermark(populationAnalysisChart, showWatermark);
       }
 
       private void clearOriginText()
@@ -183,13 +189,14 @@ namespace PKSim.UI.Binders
          _view.SetDockStyle(hasHeightAndWidth(populationAnalysisChart) ? DockStyle.None : DockStyle.Fill);
          _view.Chart.SetFontAndSizeSettings(populationAnalysisChart.FontAndSize, _view.Chart.Size);
          previewOriginText(populationAnalysisChart);
+         updateWatermark(populationAnalysisChart, showWatermark: true);
       }
 
       private void previewOriginText(PopulationAnalysisChart populationAnalysisChart)
       {
          clearOriginText();
          if (populationAnalysisChart.IncludeOriginData)
-            _previewChartOrigin = populationAnalysisChart.AddOriginData(_view.Chart);
+            _previewChartOrigin = _view.Chart.AddOriginData(populationAnalysisChart);
       }
 
       private bool hasHeightAndWidth(PopulationAnalysisChart chart)

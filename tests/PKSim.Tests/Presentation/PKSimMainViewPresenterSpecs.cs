@@ -23,6 +23,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Core.Services;
 using IContainer = System.ComponentModel.IContainer;
 
 namespace PKSim.Presentation
@@ -39,6 +40,7 @@ namespace PKSim.Presentation
       protected IVersionChecker _versionChecker;
       private ITabbedMdiChildViewContextMenuFactory _contextMenuFactory;
       protected IPKSimConfiguration _configuration;
+      protected IWatermarkStatusChecker _watermarkStatusChecker;
 
       protected override void Context()
       {
@@ -51,8 +53,9 @@ namespace PKSim.Presentation
          _versionChecker =A.Fake<IVersionChecker>();
          _contextMenuFactory = A.Fake<ITabbedMdiChildViewContextMenuFactory>();
          _configuration = A.Fake<IPKSimConfiguration>();
+         _watermarkStatusChecker= A.Fake<IWatermarkStatusChecker>(); 
          A.CallTo(() => _configuration.ProductDisplayName).Returns("AA");
-         sut = new PKSimMainViewPresenter(_view, _presenterRepository, _exitCommand, _eventPublisher,_userSettings,_projectTask,_versionChecker,_contextMenuFactory, _configuration);
+         sut = new PKSimMainViewPresenter(_view, _eventPublisher,_contextMenuFactory, _presenterRepository, _exitCommand, _userSettings, _projectTask, _versionChecker, _configuration, _watermarkStatusChecker);
       }
    }
 
@@ -348,6 +351,12 @@ namespace PKSim.Presentation
       public void should_run_them_through_the_project_task()
       {
          A.CallTo(() => _projectTask.Run(_startOptions)).MustHaveHappened();  
+      }
+
+      [Observation]
+      public void should_validate_the_watermark_usage()
+      {
+         A.CallTo(() => _watermarkStatusChecker.CheckWatermarkStatus()).MustHaveHappened();
       }
    }
    

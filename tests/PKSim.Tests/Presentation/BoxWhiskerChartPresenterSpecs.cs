@@ -23,6 +23,7 @@ namespace PKSim.Presentation
       private IObjectTypeResolver _objetTypeResolver;
       private ChartData<BoxWhiskerXValue, BoxWhiskerYValue> _chartData;
       protected BoxWhiskerAnalysisChart _boxWiskerAnalysisChart;
+      private IApplicationSettings _applicationSettings;
 
       protected override void Context()
       {
@@ -30,7 +31,8 @@ namespace PKSim.Presentation
          _chartSettingsPresenter = A.Fake<IPopulationAnalysisChartSettingsPresenter>();
          _individualExtractor = A.Fake<IIndividualExtractor>();
          _objetTypeResolver = A.Fake<IObjectTypeResolver>();
-         sut = new BoxWhiskerChartPresenter(_view, _chartSettingsPresenter, _individualExtractor, _objetTypeResolver);
+         _applicationSettings= A.Fake<IApplicationSettings>();
+         sut = new BoxWhiskerChartPresenter(_view, _chartSettingsPresenter, _applicationSettings, _individualExtractor, _objetTypeResolver);
 
          _chartData = A.Fake<ChartData<BoxWhiskerXValue, BoxWhiskerYValue>>();
          _boxWiskerAnalysisChart = new BoxWhiskerAnalysisChart();

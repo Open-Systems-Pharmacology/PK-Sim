@@ -93,15 +93,9 @@ namespace PKSim.Presentation.Presenters
          _view.BindTo(_userSettings);
       }
 
-      public IEnumerable<string> AvailableSkins
-      {
-         get { return _skinManager.All(); }
-      }
+      public IEnumerable<string> AvailableSkins => _skinManager.All();
 
-      public IEnumerable<IconSize> AvailableIconSizes
-      {
-         get { return IconSizes.All(); }
-      }
+      public IEnumerable<IconSize> AvailableIconSizes => IconSizes.All();
 
       public void SelectTemplateDatabase()
       {

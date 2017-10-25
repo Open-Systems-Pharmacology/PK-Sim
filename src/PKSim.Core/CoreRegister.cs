@@ -54,7 +54,6 @@ namespace PKSim.Core
             scan.IncludeType<ObjectTypeResolver>();
             scan.IncludeType<PKSimObjectBaseFactory>();
             scan.IncludeType<DistributionFormulaFactory>();
-            scan.IncludeType<ApplicationSettings>();
             scan.IncludeType<ProjectChangedNotifier>();
             scan.IncludeType<BatchLogger>();
             scan.IncludeType<SimulationRunner>();
@@ -79,6 +78,7 @@ namespace PKSim.Core
          container.RegisterFactory<IChartDataToTableMapperFactory>();
 
          container.Register<IPKSimDimensionFactory, IDimensionFactory, PKSimDimensionFactory>(LifeStyle.Singleton);
+         container.Register<IApplicationSettings, OSPSuite.Core.IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
 
          //Register opened types generics
          container.Register(typeof(IRepository<>), typeof(ImplementationRepository<>));
