@@ -35,15 +35,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _subPresenterManager.InitializeWith(this);
       }
 
-      public IChartSettingsPresenter ChartSettingsPresenter
-      {
-         get { return _chartSettingsPresenter; }
-      }
+      public IChartSettingsPresenter ChartSettingsPresenter => _chartSettingsPresenter;
 
-      public IChartExportSettingsPresenter ChartExportSettingsPresenter
-      {
-         get { return _chartExportSettingsPresenter; }
-      }
+      public IChartExportSettingsPresenter ChartExportSettingsPresenter => _chartExportSettingsPresenter;
 
       public void EditConfiguration()
       {

@@ -6,7 +6,7 @@ using FakeItEasy;
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_ApplicationSettingsPersitor : ContextSpecification<IApplicationSettingsPersitor>
+   public abstract class concern_for_ApplicationSettingsPersitor : ContextSpecification<IApplicationSettingsPersistor>
    {
       private IStringSerializer _serializationManager;
       private IApplicationSettings _defaultApplicationSettings;
@@ -17,7 +17,7 @@ namespace PKSim.Infrastructure
          _serializationManager =A.Fake<IStringSerializer>();
          _defaultApplicationSettings = A.Fake<IApplicationSettings>();
          _pkSimConfiguration = A.Fake<IPKSimConfiguration>();
-         sut = new ApplicationSettingsPersitor(_serializationManager,_defaultApplicationSettings, _pkSimConfiguration);
+         sut = new ApplicationSettingsPersistor(_serializationManager,_defaultApplicationSettings, _pkSimConfiguration);
       }
    }
 }	

@@ -31,7 +31,12 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly IIndividualExtractor _individualExtractor;
       private readonly IObjectTypeResolver _objectTypeResolver;
 
-      public BoxWhiskerChartPresenter(IBoxWhiskerChartView view, IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter, IIndividualExtractor individualExtractor, IObjectTypeResolver objectTypeResolver) : base(view, populationAnalysisChartSettingsPresenter)
+      public BoxWhiskerChartPresenter(
+         IBoxWhiskerChartView view, 
+         IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter,
+         IApplicationSettings applicationSettings,
+         IIndividualExtractor individualExtractor, 
+         IObjectTypeResolver objectTypeResolver) : base(view, populationAnalysisChartSettingsPresenter,applicationSettings)
       {
          _individualExtractor = individualExtractor;
          _objectTypeResolver = objectTypeResolver;
