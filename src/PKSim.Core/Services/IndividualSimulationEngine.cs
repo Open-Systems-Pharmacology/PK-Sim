@@ -7,7 +7,6 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -21,20 +20,18 @@ namespace PKSim.Core.Services
       private IProgressUpdater _progressUpdater;
       private readonly ISimulationResultsSynchronizer _simulationResultsSynchronizer;
       private readonly IEventPublisher _eventPublisher;
-      private readonly IExceptionManager _exceptionManager;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
 
       public IndividualSimulationEngine(ISimModelManager simModelManager, IProgressManager progressManager,
          ISimulationResultsSynchronizer simulationResultsSynchronizer,
-         IEventPublisher eventPublisher, IExceptionManager exceptionManager,
-         ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper, ISimulationPersistableUpdater simulationPersistableUpdater)
+         IEventPublisher eventPublisher, ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
+         ISimulationPersistableUpdater simulationPersistableUpdater)
       {
          _simModelManager = simModelManager;
          _progressManager = progressManager;
          _simulationResultsSynchronizer = simulationResultsSynchronizer;
          _eventPublisher = eventPublisher;
-         _exceptionManager = exceptionManager;
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
          _simulationPersistableUpdater = simulationPersistableUpdater;
          _simModelManager.Terminated += terminated;
@@ -65,10 +62,10 @@ namespace PKSim.Core.Services
             _eventPublisher.PublishEvent(new SimulationRunStartedEvent());
             await runSimulation(individualSimulation, exportAll: false, raiseEvents: true, checkForNegativeValues: true);
          }
-         catch (Exception ex)
+         catch (Exception)
          {
-            _exceptionManager.LogException(ex);
             terminated();
+            throw;
          }
          finally
          {

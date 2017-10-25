@@ -59,7 +59,6 @@ namespace PKSim.Infrastructure
       }
    }
 
-
    public class When_serializing_an_array_of_objects_to_json : concern_for_SnapshotSerializer
    {
       private IEnumerable<Parameter> _deserialiedParameters;

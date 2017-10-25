@@ -60,7 +60,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var project = new ModelProject();
 
          var buildingBlocks = await allBuidingBlocksFrom(snapshot);
-         buildingBlocks.Each(project.AddBuildingBlock);
+         buildingBlocks?.Each(project.AddBuildingBlock);
 
          var observedData = await observedDataFrom(snapshot.ObservedData);
          observedData?.Each(repository => addObservedDataToProject(project, repository));

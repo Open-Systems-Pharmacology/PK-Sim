@@ -143,7 +143,7 @@ namespace PKSim.Core
          _snapshot.DataSource = "Lab";
 
          _snapshotParameter = new Parameter().WithName("Km");
-         _snapshot.Parameters.Add(_snapshotParameter);
+         _snapshot.Parameters = new []{_snapshotParameter};
 
          _processParameter = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName("Km");
          _cloneOfTemplate.Add(_processParameter);

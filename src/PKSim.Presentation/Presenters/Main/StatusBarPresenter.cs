@@ -76,7 +76,6 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(ProjectLoadedEvent eventToHandle)
       {
          updateProjectInfo(eventToHandle.Project, enabled: true);
-         update(StatusBarElements.Status).WithCaption(string.Empty);
       }
 
       public void Handle(ProjectLoadingEvent eventToHandle)
@@ -106,6 +105,9 @@ namespace PKSim.Presentation.Presenters.Main
 
       private void updateProjectInfo(string projectName, string projectPath, bool enabled)
       {
+         update(StatusBarElements.Status)
+            .WithCaption(string.Empty);
+
          update(StatusBarElements.ProjectName)
             .WithCaption($"Project: {projectName}")
             .And.ToolTipText($"Project: {projectName}")

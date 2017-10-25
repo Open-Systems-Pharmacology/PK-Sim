@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using ModelSchema = PKSim.Core.Model.Schema;
@@ -21,16 +21,17 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<SnapshotSchema> MapToSnapshot(ModelSchema modelSchema)
       {
          var snapshot = await SnapshotFrom(modelSchema);
-         snapshot.SchemaItems.AddRange(await _schemaItemMapper.MapToSnapshots(modelSchema.SchemaItems));
+         snapshot.SchemaItems = await _schemaItemMapper.MapToSnapshots(modelSchema.SchemaItems);
          return snapshot;
       }
 
-      public override async Task<ModelSchema> MapToModel(SnapshotSchema snapshotSchema)
+      public override async Task<ModelSchema> MapToModel(SnapshotSchema snapshot)
       {
          var schema = _schemaFactory.Create();
-         MapSnapshotPropertiesToModel(snapshotSchema, schema);
-         await UpdateParametersFromSnapshot(snapshotSchema, schema, PKSimConstants.ObjectTypes.Schema);
-         schema.AddChildren(await _schemaItemMapper.MapToModels(snapshotSchema.SchemaItems));
+         MapSnapshotPropertiesToModel(snapshot, schema);
+         await UpdateParametersFromSnapshot(snapshot, schema, PKSimConstants.ObjectTypes.Schema);
+         var schemaItems = await _schemaItemMapper.MapToModels(snapshot.SchemaItems);
+         schemaItems?.Each(schema.AddSchemaItem);
          return schema;
       }
    }

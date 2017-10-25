@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CommandLine;
 using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
@@ -38,7 +39,7 @@ namespace PKSim.BatchTool
       protected override void Because()
       {
          Parser.Default.ParseArguments<JsonRunCommand>(_args)
-            .WithParsed(opt=>sut=opt);
+            .WithParsed(opt => sut = opt);
       }
 
       public override void GlobalCleanup()
@@ -148,13 +149,14 @@ namespace PKSim.BatchTool
       protected override void Context()
       {
          base.Context();
-         _args.Add("-w");
          _args.Add("--input");
          _args.Add(_inputFolderThatExists);
          _args.Add("-o");
          _args.Add(_outputFolder);
          _args.Add("--log");
          _args.Add(_logFileFullPath);
+         _args.Add("--logLevel");
+         _args.Add("Warning");
       }
 
       [Observation]
@@ -175,8 +177,7 @@ namespace PKSim.BatchTool
          _args.Add("--input");
          _args.Add("HELLO");
       }
-
-
+      
       protected override void Because()
       {
          Parser.Default.ParseArguments<JsonRunCommand>(_args)

@@ -118,7 +118,10 @@ namespace PKSim.Infrastructure
          finally
          {
             if (Project == null)
+            {
                ReleaseLock();
+               _eventPublisher.PublishEvent(new ProjectClosedEvent());
+            }
          }
       }
 

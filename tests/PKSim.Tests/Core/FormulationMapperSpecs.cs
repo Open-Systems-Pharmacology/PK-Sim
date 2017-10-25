@@ -77,7 +77,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_visible_formulation_parameters_only()
       {
-         _snapshot.Parameters.Count.ShouldBeEqualTo(_formulation.AllVisibleParameters().Count());
+         _snapshot.Parameters.Length.ShouldBeEqualTo(_formulation.AllVisibleParameters().Count());
          _snapshot.Parameters.ExistsByName(_parameter1.Name).ShouldBeTrue();
          _snapshot.Parameters.ExistsByName(_parameter2.Name).ShouldBeTrue();
          _snapshot.Parameters.ExistsByName(_hiddenParameter.Name).ShouldBeFalse();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -23,7 +24,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly CompoundPropertiesMapper _compoundPropertiesMapper;
       private readonly ParameterMapper _parameterMapper;
       private readonly AdvancedParameterMapper _advancedParameterMapper;
-      private readonly EventPropertiesMapper _eventPropertiesMapper;
+      private readonly EventMappingMapper _eventMappingMapper;
       private readonly SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
       private readonly PopulationAnalysisChartMapper _populationAnalysisChartMapper;
       private readonly ProcessMappingMapper _processMappingMapper;
@@ -33,6 +34,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
       private readonly IModelPropertiesTask _modelPropertiesTask;
       private readonly ISimulationRunner _simulationRunner;
+      private readonly ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
 
       public SimulationMapper(
          SolverSettingsMapper solverSettingsMapper,
@@ -41,7 +43,7 @@ namespace PKSim.Core.Snapshots.Mappers
          CompoundPropertiesMapper compoundPropertiesMapper,
          ParameterMapper parameterMapper,
          AdvancedParameterMapper advancedParameterMapper,
-         EventPropertiesMapper eventPropertiesMapper,
+         EventMappingMapper eventMappingMapper,
          SimulationTimeProfileChartMapper simulationTimeProfileChartMapper,
          PopulationAnalysisChartMapper populationAnalysisChartMapper,
          ProcessMappingMapper processMappingMapper,
@@ -50,7 +52,8 @@ namespace PKSim.Core.Snapshots.Mappers
          ISimulationModelCreator simulationModelCreator,
          ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
          IModelPropertiesTask modelPropertiesTask,
-         ISimulationRunner simulationRunner
+         ISimulationRunner simulationRunner,
+         ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater
       )
       {
          _solverSettingsMapper = solverSettingsMapper;
@@ -59,7 +62,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _compoundPropertiesMapper = compoundPropertiesMapper;
          _parameterMapper = parameterMapper;
          _advancedParameterMapper = advancedParameterMapper;
-         _eventPropertiesMapper = eventPropertiesMapper;
+         _eventMappingMapper = eventMappingMapper;
          _simulationTimeProfileChartMapper = simulationTimeProfileChartMapper;
          _populationAnalysisChartMapper = populationAnalysisChartMapper;
          _processMappingMapper = processMappingMapper;
@@ -69,6 +72,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
          _modelPropertiesTask = modelPropertiesTask;
          _simulationRunner = simulationRunner;
+         _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
       }
 
       public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation, PKSimProject project)
@@ -85,7 +89,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Solver = await _solverSettingsMapper.MapToSnapshot(simulation.Solver);
          snapshot.OutputSchema = await _outputSchemaMapper.MapToSnapshot(simulation.OutputSchema);
          snapshot.OutputSelections = await _outputSelectionsMapper.MapToSnapshot(simulation.OutputSelections);
-         snapshot.Events = await _eventPropertiesMapper.MapToSnapshot(simulation.EventProperties, project);
+         snapshot.Events = await _eventMappingMapper.MapToSnapshots(simulation.EventProperties.EventMappings, project);
          snapshot.ObservedData = usedObervedDataFrom(simulation, project);
          snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
          snapshot.Interactions = await interactionSnapshotFrom(simulation.InteractionProperties);
@@ -158,6 +162,7 @@ namespace PKSim.Core.Snapshots.Mappers
          simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, project));
          simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, project));
 
+         _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
          return simulation;
       }
 
@@ -216,7 +221,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var curveChartContext = new SimulationAnalysisContext(project.AllObservedData);
 
          var individualSimulation = simulation as IndividualSimulation;
-         if (individualSimulation != null)
+         if (individualSimulation?.DataRepository != null)
             curveChartContext.AddDataRepository(individualSimulation.DataRepository);
 
          return mapFunc(snapshotAnalyses, curveChartContext);
@@ -232,8 +237,7 @@ namespace PKSim.Core.Snapshots.Mappers
          MapSnapshotPropertiesToModel(snapshot, simulation);
 
          await mapCompoundProperties(simulation, snapshot.Compounds, project);
-         simulation.EventProperties = await _eventPropertiesMapper.MapToModel(snapshot.Events, project);
-
+         simulation.EventProperties = await mapEventProperties(snapshot.Events, project);
          await updateInteractonProperties(simulation, snapshot.Interactions, project);
 
          //Once all used building blocks have been set, we need to ensure that they are also synchronized in the  simulation
@@ -241,6 +245,14 @@ namespace PKSim.Core.Snapshots.Mappers
 
          _simulationModelCreator.CreateModelFor(simulation);
          return simulation;
+      }
+
+      private async Task<EventProperties> mapEventProperties(EventSelection[] snapshotEvents, PKSimProject project)
+      {
+         var eventProperties = new EventProperties();
+         var events = await _eventMappingMapper.MapToModels(snapshotEvents, project);
+         events?.Each(eventProperties.AddEventMapping);
+         return eventProperties;
       }
 
       private void updateUsedBuildingBlockInSimulation(ModelSimulation simulation, PKSimProject project)

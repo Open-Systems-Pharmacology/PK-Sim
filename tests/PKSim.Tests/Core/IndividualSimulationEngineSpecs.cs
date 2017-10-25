@@ -24,7 +24,6 @@ namespace PKSim.Core
       protected ISimModelManager _simModelManager;
       protected IProgressUpdater _progressUpdater;
       protected IEventPublisher _eventPublisher;
-      protected IExceptionManager _exceptionManager;
       protected ISimulationResultsSynchronizer _simulationResultsSynchronizer;
       protected ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       protected IProgressManager _progressManager;
@@ -36,13 +35,12 @@ namespace PKSim.Core
          _progressUpdater = A.Fake<IProgressUpdater>();
          _progressManager = A.Fake<IProgressManager>();
          _eventPublisher = A.Fake<IEventPublisher>();
-         _exceptionManager = A.Fake<IExceptionManager>();
          _simulationResultsSynchronizer = A.Fake<ISimulationResultsSynchronizer>();
          _modelCoreSimulationMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
          _simulationPersistableUpdater = A.Fake<ISimulationPersistableUpdater>();
 
          sut = new IndividualSimulationEngine(_simModelManager, _progressManager, _simulationResultsSynchronizer,
-            _eventPublisher, _exceptionManager, _modelCoreSimulationMapper, _simulationPersistableUpdater);
+            _eventPublisher, _modelCoreSimulationMapper, _simulationPersistableUpdater);
 
          A.CallTo(() => _progressManager.Create()).Returns(_progressUpdater);
          return _completed;

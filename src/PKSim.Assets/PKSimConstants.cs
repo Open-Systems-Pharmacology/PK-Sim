@@ -836,6 +836,7 @@ namespace PKSim.Assets
 
          public const string SnapshotIsOutdated = "Snapshot is outdated and cannot be loaded.";
 
+         
          public static string MoleculeTypeNotSupported(string moleculeType) => $"Molecule type '{moleculeType}' not supported.";
 
          public static string RelativeExpressionContainerNotFound(string containerName) => $"Relative expression container '{containerName}' not found.";
@@ -861,6 +862,8 @@ namespace PKSim.Assets
          public static string ProcessNotFoundInCompound(string processName, string compound) => $"Process '{processName}' was not found in compound '{compound}'";
 
          public static string OnlyPKSimSimulationCanBeExportedToSnapshot(string simulationName, string origin) => $"Snapshot export is not supported for {origin} simulation '{simulationName}'.";
+
+         public static string SnapshotFileMismatch(string desiredType) => $"Snapshot file cannot be used to load a {desiredType.ToLowerInvariant()}.";
       }
    
       public static class Information
@@ -1533,7 +1536,7 @@ namespace PKSim.Assets
          public static readonly string Simulation = "Simulation";
          public static readonly string OrganType = "Organ Type";
          public static readonly string Calculating = "Calculating...";
-         public static readonly string CalculationPopulationSimulation = "Simulation {0}/{1}...";
+         public static string CalculationPopulationSimulation(int number, int total) => $"Simulation {number}/{total}...";
          public static readonly string StartTime = "Start Time";
          public static readonly string EndTime = "End Time";
          public static readonly string NumberOfTimePoints = "Resolution";
