@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -80,6 +81,20 @@ namespace PKSim.Core.Model
          _parameterSetUpdater.UpdateValues(allIndividualParameter, allNeighborhoodParameters);
          _parameterIdUpdater.UpdateBuildingBlockId(allContainerParameters, individual);
          _parameterIdUpdater.UpdateBuildingBlockId(allNeighborhoodParameters, individual);
+
+         copyParameterTags(allIndividualParameter, allContainerParameters);
+         copyParameterTags(allIndividualParameter, allNeighborhoodParameters);
+      }
+
+      private void copyParameterTags(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters)
+      {
+         foreach (var sourceParameter in sourceParameters.KeyValues)
+         {
+            var targetParameter = targetParameters[sourceParameter.Key];
+            if (targetParameter == null) continue;
+
+            sourceParameter.Value.ParentContainer.Tags.Each(t=>targetParameter.AddTag(t.Value));
+         }
       }
 
       private void addNeighborhoods(ISpatialStructure spatialStructure, Organism organism, Individual individual, ModelProperties modelProperties, IFormulaCache formulaCache)
