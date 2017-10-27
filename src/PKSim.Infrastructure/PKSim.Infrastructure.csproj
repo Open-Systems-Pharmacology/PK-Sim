@@ -205,6 +205,7 @@
     <Compile Include="ORM\Repositories\ModelContainerMoleculeRepository.cs" />
     <Compile Include="ORM\Repositories\ModelPassiveTransportMoleculeNameRepository.cs" />
     <Compile Include="ORM\Repositories\MoleculeParameterRepository.cs" />
+    <Compile Include="ORM\Repositories\PopulationAgeRepository.cs" />
     <Compile Include="ORM\Repositories\StaticReactionRepository.cs" />
     <Compile Include="ORM\Repositories\FlatParameterMetaDataRepository.cs" />
     <Compile Include="ProjectConverter\IndividualUpdater.cs" />

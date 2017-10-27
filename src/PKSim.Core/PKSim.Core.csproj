@@ -207,12 +207,14 @@
     <Compile Include="Model\CompoundPK.cs" />
     <Compile Include="Model\GlobalPKAnalysis.cs" />
     <Compile Include="Model\ParameterValueVersion.cs" />
+    <Compile Include="Model\PopulationAgeSettings.cs" />
     <Compile Include="Model\PopulationAnalyses\AxisSettings.cs" />
     <Compile Include="Model\PopulationAnalyses\PopulationAnalysisChartFactory.cs" />
     <Compile Include="Model\SchemaItemExtensions.cs" />
     <Compile Include="Model\SimulationAnalysisWorkflow.cs" />
     <Compile Include="Repositories\CompoundCalculationMethodRepository.cs" />
     <Compile Include="Repositories\IOrganTypeRepository.cs" />
+    <Compile Include="Repositories\IPopulationAgeRepository.cs" />
     <Compile Include="Services\ApplicationDiscriminator.cs" />
     <Compile Include="Services\BuildingBlockInSimulationSynchronizer.cs" />
     <Compile Include="Services\IEntityTask.cs" />

@@ -1,5 +1,8 @@
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using System.Linq;
 
 namespace PKSim.Core.Services
 {
@@ -25,19 +28,26 @@ namespace PKSim.Core.Services
       private readonly ISpeciesContainerQuery _speciesContainerQuery;
       private readonly IBuildingBlockFinalizer _buildingBlockFinalizer;
       private readonly IFormulaFactory _formulaFactory;
+      private readonly IPopulationAgeRepository _populationAgeRepository;
 
       public IndividualModelTask(IParameterContainerTask parameterContainerTask, ISpeciesContainerQuery speciesContainerQuery,
-                                 IBuildingBlockFinalizer buildingBlockFinalizer, IFormulaFactory formulaFactory)
+                                 IBuildingBlockFinalizer buildingBlockFinalizer, IFormulaFactory formulaFactory,
+                                 IPopulationAgeRepository populationAgeRepository)
       {
          _parameterContainerTask = parameterContainerTask;
          _speciesContainerQuery = speciesContainerQuery;
          _buildingBlockFinalizer = buildingBlockFinalizer;
          _formulaFactory = formulaFactory;
+         _populationAgeRepository = populationAgeRepository;
       }
 
       public void CreateModelFor(Individual individual)
       {
          addModelStructureTo(individual.Organism, individual.OriginData,addParameter: true);
+         setAgeSettings(individual.Organism.Parameter(CoreConstants.Parameter.AGE), 
+                        individual.OriginData.SpeciesPopulation.Name, setValueAndDisplayUnit: false);
+         addWeightParameterTags(individual);
+
          addModelStructureTo(individual.Neighborhoods, individual.OriginData, addParameter: true);
 
          _buildingBlockFinalizer.Finalize(individual);
@@ -51,13 +61,46 @@ namespace PKSim.Core.Services
 
       public IParameter MeanAgeFor(OriginData originData)
       {
-         var parameter = MeanOrganismParameter(originData, CoreConstants.Parameter.AGE);
-         if (originData.SpeciesPopulation.IsPreterm)
-         {
-            parameter.Value = CoreConstants.PRETERM_DEFAULT_AGE;
-            parameter.DisplayUnit = parameter.Dimension.UnitOrDefault(CoreConstants.Units.Days);
-         }
-         return parameter;
+         var ageParameter = MeanOrganismParameter(originData, CoreConstants.Parameter.AGE);
+         setAgeSettings(ageParameter, originData.SpeciesPopulation.Name, setValueAndDisplayUnit: true);
+
+         return ageParameter;
+      }
+
+      //TODO workaround for body weight sum formula.
+      //need to find a better solution
+      private void addWeightParameterTags(Individual individual)
+      {
+         var allOrganWeightParameters = individual.Organism.GetAllChildren<Parameter>
+            (p => p.Name.Equals(CoreConstants.Parameter.WEIGHT_TISSUE)).ToList();
+
+         allOrganWeightParameters.Each(addParentTagsTo);
+      }
+
+      private void addParentTagsTo(Parameter parameter)
+      {
+         var parentContainer = parameter?.ParentContainer;
+         if (parentContainer == null)
+            return;
+
+         parentContainer.Tags.Each(t=>parameter.AddTag(t.Value));
+      }
+
+      private void setAgeSettings(IParameter ageParameter, string population, bool setValueAndDisplayUnit)
+      {
+         if (ageParameter == null)
+            return;
+
+         var populationAgeSettings = _populationAgeRepository.PopulationAgeSettingsFrom(population);
+
+         ageParameter.MinValue = populationAgeSettings.MinAge;
+         ageParameter.MaxValue = populationAgeSettings.MaxAge;
+
+         if (!setValueAndDisplayUnit)
+            return;
+
+         ageParameter.Value = populationAgeSettings.DefaultAge;
+         ageParameter.DisplayUnit = ageParameter.Dimension.UnitOrDefault(populationAgeSettings.DefaultAgeUnit);
       }
 
       public IParameter MeanGestationalAgeFor(OriginData originData)
