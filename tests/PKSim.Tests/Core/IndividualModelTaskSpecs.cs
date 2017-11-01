@@ -5,6 +5,7 @@ using FakeItEasy;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core
 {
@@ -17,6 +18,7 @@ namespace PKSim.Core
       protected Organism _organism;
       protected IBuildingBlockFinalizer _buildingBlockFinalizer;
       protected IFormulaFactory _formulaFactory;
+      protected IPopulationAgeRepository _populationAgeRepository;
 
       public override void GlobalContext()
       {
@@ -24,11 +26,12 @@ namespace PKSim.Core
          _parameterContainerTask = A.Fake<IParameterContainerTask>();
          _buildingBlockFinalizer = A.Fake<IBuildingBlockFinalizer>();
          _formulaFactory = A.Fake<IFormulaFactory>();
+         _populationAgeRepository = A.Fake<IPopulationAgeRepository>();
          _compartment =new Compartment().WithName("compartment");
          _organ = new Organ().WithName("organ");
          _organ.Name = "organ";
          _organism = new Organism().WithName("organism");
-         sut = new IndividualModelTask(_parameterContainerTask, _speciesContainerQuery, _buildingBlockFinalizer, _formulaFactory);
+         sut = new IndividualModelTask(_parameterContainerTask, _speciesContainerQuery, _buildingBlockFinalizer, _formulaFactory, _populationAgeRepository);
       }
    }
 
