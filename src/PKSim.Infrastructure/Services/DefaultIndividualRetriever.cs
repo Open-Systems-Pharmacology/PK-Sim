@@ -47,8 +47,6 @@ namespace PKSim.Infrastructure.Services
          if (!_indvidualCacheProSpecies.Contains(speciesPopulation))
          {
             var individualDTO = _individualDefaultValueRetriever.DefaultSettingFor(speciesPopulation);
-            individualDTO.SpeciesPopulation = speciesPopulation;
-            _individualDefaultValueRetriever.RetrieveDefaultValueFor(individualDTO);
             _indvidualCacheProSpecies[speciesPopulation] = _individualFactory.CreateStandardFor(_individualSettingsMapper.MapFrom(individualDTO));
          }
          return _indvidualCacheProSpecies[speciesPopulation];
