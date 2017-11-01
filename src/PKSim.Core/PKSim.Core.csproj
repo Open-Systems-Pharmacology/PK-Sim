@@ -76,11 +76,11 @@
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.2.0.76, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.76\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.77, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.77\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.2.0.76, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.76\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.77, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.77\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
@@ -207,12 +207,14 @@
     <Compile Include="Model\CompoundPK.cs" />
     <Compile Include="Model\GlobalPKAnalysis.cs" />
     <Compile Include="Model\ParameterValueVersion.cs" />
+    <Compile Include="Model\PopulationAgeSettings.cs" />
     <Compile Include="Model\PopulationAnalyses\AxisSettings.cs" />
     <Compile Include="Model\PopulationAnalyses\PopulationAnalysisChartFactory.cs" />
     <Compile Include="Model\SchemaItemExtensions.cs" />
     <Compile Include="Model\SimulationAnalysisWorkflow.cs" />
     <Compile Include="Repositories\CompoundCalculationMethodRepository.cs" />
     <Compile Include="Repositories\IOrganTypeRepository.cs" />
+    <Compile Include="Repositories\IPopulationAgeRepository.cs" />
     <Compile Include="Services\ApplicationDiscriminator.cs" />
     <Compile Include="Services\BuildingBlockInSimulationSynchronizer.cs" />
     <Compile Include="Services\IEntityTask.cs" />

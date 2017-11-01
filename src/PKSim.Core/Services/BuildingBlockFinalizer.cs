@@ -18,15 +18,19 @@ namespace PKSim.Core.Services
       private readonly INeighborhoodFinalizer _neighborhoodFinalizer;
       private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       private readonly IIndividualPathWithRootExpander _individualPathWithRootExpander;
+      private readonly IFormulaTask _formulaTask;
 
       public BuildingBlockFinalizer(IReferencesResolver referencesResolver, IKeywordReplacerTask keywordReplacerTask,
-         INeighborhoodFinalizer neighborhoodFinalizer, IBuildingBlockInSimulationManager buildingBlockInSimulationManager, IIndividualPathWithRootExpander individualPathWithRootExpander)
+         INeighborhoodFinalizer neighborhoodFinalizer, IBuildingBlockInSimulationManager buildingBlockInSimulationManager, 
+         IIndividualPathWithRootExpander individualPathWithRootExpander, 
+         IFormulaTask formulaTask)
       {
          _referencesResolver = referencesResolver;
          _keywordReplacerTask = keywordReplacerTask;
          _neighborhoodFinalizer = neighborhoodFinalizer;
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
          _individualPathWithRootExpander = individualPathWithRootExpander;
+         _formulaTask = formulaTask;
       }
 
       public void Finalize(IPKSimBuildingBlock buildingBlock)
@@ -57,6 +61,7 @@ namespace PKSim.Core.Services
          _neighborhoodFinalizer.SetNeighborsIn(individual);
          _individualPathWithRootExpander.AddRootToPathIn(individual);
          _keywordReplacerTask.ReplaceIn(individual);
+         _formulaTask.ExpandDynamicFormulaIn(individual);
          _referencesResolver.ResolveReferencesIn(individual);
       }
    }
