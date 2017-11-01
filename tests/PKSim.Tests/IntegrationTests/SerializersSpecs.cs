@@ -77,6 +77,7 @@ namespace PKSim.IntegrationTests
          if (type.Equals(typeof (PKSimContainerType))) return true;
          if (type.Equals(typeof (PivotArea))) return true;
          if (type.Equals(typeof (RandomValue))) return true;
+         if (type.Equals(typeof (PopulationAgeSettings))) return true;
          if (type.Equals(typeof (CompoundType))) return true;
          if (type.Equals(typeof (RateKey))) return true;
          if (type.Equals(typeof (CalculationMethodCategory))) return true;

@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
+﻿using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Repositories
 {

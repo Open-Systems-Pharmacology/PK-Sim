@@ -1,8 +1,8 @@
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using System.Linq;
 
 namespace PKSim.Core.Services
 {
@@ -31,8 +31,8 @@ namespace PKSim.Core.Services
       private readonly IPopulationAgeRepository _populationAgeRepository;
 
       public IndividualModelTask(IParameterContainerTask parameterContainerTask, ISpeciesContainerQuery speciesContainerQuery,
-                                 IBuildingBlockFinalizer buildingBlockFinalizer, IFormulaFactory formulaFactory,
-                                 IPopulationAgeRepository populationAgeRepository)
+         IBuildingBlockFinalizer buildingBlockFinalizer, IFormulaFactory formulaFactory,
+         IPopulationAgeRepository populationAgeRepository)
       {
          _parameterContainerTask = parameterContainerTask;
          _speciesContainerQuery = speciesContainerQuery;
@@ -43,9 +43,9 @@ namespace PKSim.Core.Services
 
       public void CreateModelFor(Individual individual)
       {
-         addModelStructureTo(individual.Organism, individual.OriginData,addParameter: true);
-         setAgeSettings(individual.Organism.Parameter(CoreConstants.Parameter.AGE), 
-                        individual.OriginData.SpeciesPopulation.Name, setValueAndDisplayUnit: false);
+         addModelStructureTo(individual.Organism, individual.OriginData, addParameter: true);
+         setAgeSettings(individual.Organism.Parameter(CoreConstants.Parameter.AGE),
+            individual.OriginData.SpeciesPopulation.Name, setValueAndDisplayUnit: false);
          addWeightParameterTags(individual);
 
          addModelStructureTo(individual.Neighborhoods, individual.OriginData, addParameter: true);
@@ -80,10 +80,7 @@ namespace PKSim.Core.Services
       private void addParentTagsTo(Parameter parameter)
       {
          var parentContainer = parameter?.ParentContainer;
-         if (parentContainer == null)
-            return;
-
-         parentContainer.Tags.Each(t=>parameter.AddTag(t.Value));
+         parentContainer?.Tags.Each(t => parameter.AddTag(t.Value));
       }
 
       private void setAgeSettings(IParameter ageParameter, string population, bool setValueAndDisplayUnit)
