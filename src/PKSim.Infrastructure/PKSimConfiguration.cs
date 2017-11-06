@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using Microsoft.Win32;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
@@ -32,9 +30,9 @@ namespace PKSim.Infrastructure
          createDefaultSettingsFolder();
          PKSimDbPath = AllUsersOrLocalPathForFile(CoreConstants.PK_SIM_DB_FILE);
          TemplateSystemDatabasePath = AllUsersOrLocalPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
-         TemplateUserDatabaseTemplatePath = AllUsersOrLocalPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
+         TemplateUserDatabaseTemplatePath = AllUsersOrLocalPathForFile(CoreConstants.TEMPLATE_USER_DATABASE_TEMPLATE);
          DefaultTemplateUserDatabasePath = CurrentUserFile(CoreConstants.TEMPLATE_USER_DATABASE);
-     }
+      }
 
       private void createDefaultSettingsFolder()
       {
@@ -44,7 +42,7 @@ namespace PKSim.Infrastructure
          if (!DirectoryHelper.DirectoryExists(AllUsersFolderPath))
             DirectoryHelper.CreateDirectory(AllUsersFolderPath);
       }
-
+         
       public string MoBiPath
       {
          get
@@ -59,7 +57,5 @@ namespace PKSim.Infrastructure
             }
          }
       }
-
-    
    }
 }
