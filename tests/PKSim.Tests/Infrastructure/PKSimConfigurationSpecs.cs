@@ -17,6 +17,15 @@ namespace PKSim.Infrastructure
       }
    }
 
+   public class When_the_pk_sim_configuration_is_being_instantiated : concern_for_PKSimConfiguration
+   {
+      [Observation]
+      public void should_return_the_expected_path_for_the_user_database_template()
+      {
+         sut.TemplateUserDatabaseTemplatePath.Contains(CoreConstants.TEMPLATE_USER_DATABASE_TEMPLATE).ShouldBeTrue();
+      }
+   }
+
    public class When_retrieving_the_full_version_of_the_assembly : concern_for_PKSimConfiguration
    {
       [Observation]
