@@ -45,7 +45,11 @@ namespace PKSim.Core.Services
          var schemaItems = protocols.SelectMany(x => _schemaItemsMapper.MapFrom(x)).ToList();
          var speciesPopulation = simulationSubject.OriginData.SpeciesPopulation;
          if (!speciesPopulation.IsBodySurfaceAreaDependent && schemaItems.Any(x => x.DoseIsPerBodySurfaceArea()))
-            throw new InvalidSimulationConfigurationException(PKSimConstants.Error.DosePerBodySurfaceAreaProtocolCannotBeUsedWithSpeciesPopulation(speciesPopulation.Name));
+            throw new InvalidSimulationConfigurationException(PKSimConstants.Error.DosePerBodySurfaceAreaProtocolCannotBeUsedWithSpeciesPopulation(speciesPopulation.DisplayName));
+
+         if(speciesPopulation.IsNamed(CoreConstants.Population.Pregnant))
+            throw new InvalidSimulationConfigurationException(PKSimConstants.Error.PregnantPopulationCanOnlyBeUsedWithMoBiModel(speciesPopulation.DisplayName));
+
       }
    }
 }

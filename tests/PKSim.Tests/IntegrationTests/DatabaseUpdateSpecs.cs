@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -47,24 +46,22 @@ namespace PKSim.IntegrationTests
       public void should_set_min_max_age_population_dependent()
       {
          var ageDependentPops = _populationRepository.All().Where(pop => pop.IsAgeDependent);
-         var ageParameters = _parameterDistributionRepository.All().Where(pd => pd.ParameterName.Equals(CoreConstants.Parameter.AGE)).ToList();
 
          //check [Min..Max] range of the Age parameter for every {Population, Gender}-combination
          foreach (var population in ageDependentPops)
          {
             foreach (var gender in population.Genders)
             {
-               checkPopulationAgeSettings(ageParameters, population.Name, gender.Name);
+               checkPopulationAgeSettings(population.Name, gender.Name);
             }
          }
       }
 
-      private void checkPopulationAgeSettings(IList<ParameterDistributionMetaData> ageParameters,
-                                              string populationName, string genderName)
+      private void checkPopulationAgeSettings(string populationName, string genderName)
       {
          //get age settings for the given population (currently gender-independent, might change in the future)
          var populationAgeSettings = _populationAgeRepository.PopulationAgeSettingsFrom(populationName);
-         (var minAge, var maxAge) = getAgeBoundsFor(populationName,genderName);
+         (var minAge, var maxAge) = getAgeBoundsFor(populationName, genderName);
 
          //---- min/max of the age should be set to min/max age available for this population
          populationAgeSettings.MinAge.ShouldBeEqualTo(minAge, $"Min age for {populationName}|{genderName}");
@@ -95,7 +92,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_set_the_body_surface_area_parameter_of_an_individual_to_can_be_varied_true_and_can_be_varied_in_population_false()
       {
-         var bsaParameter = _parameterRateRepository.All().First(p =>  string.Equals(p.ParameterName,CoreConstants.Parameter.BSA));
+         var bsaParameter = _parameterRateRepository.All().First(p => string.Equals(p.ParameterName, CoreConstants.Parameter.BSA));
 
          bsaParameter.CanBeVaried.ShouldBeTrue();
          bsaParameter.CanBeVariedInPopulation.ShouldBeFalse();
@@ -104,10 +101,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void only_the_species_human_should_have_the_flag_is_human()
       {
-         _flatSpeciesRepository.All().Each(species =>
-         {
-            species.IsHuman.ShouldBeEqualTo(string.Equals(species.Id, CoreConstants.Species.Human));
-         });
+         _flatSpeciesRepository.All().Each(species => { species.IsHuman.ShouldBeEqualTo(string.Equals(species.Id, CoreConstants.Species.Human)); });
       }
    }
 

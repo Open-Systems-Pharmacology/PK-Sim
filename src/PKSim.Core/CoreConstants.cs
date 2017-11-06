@@ -1182,6 +1182,7 @@ namespace PKSim.Core
          public const string TableParameterExport = "_TableParameters";
          public const string AgingDataTableName = "AgingData";
          public const string Japanese = "Japanese_Population";
+         public const string Pregnant = "Pregnant";
       }
 
       public static class Process
