@@ -108,6 +108,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
          individual.Organism.Add(_cloner.Clone(bsa));
 
          addBSACalculationMethod(individual);
+
+         addDynamicFormulaCalculationMethod(individual);
       }
 
       private void addBSAParameterValues(Population population)
@@ -144,6 +146,11 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
             return;
 
          individual.OriginData.AddCalculationMethod(_calculationMethodRepository.FindByName(ConverterConstants.CalculationMethod.BSA_DuBois));
+      }
+
+      private void addDynamicFormulaCalculationMethod(Individual individual)
+      {
+         individual.OriginData.AddCalculationMethod(_calculationMethodRepository.FindByName(ConverterConstants.CalculationMethod.DynamicSumFormulas));
       }
    }
 }
