@@ -74,7 +74,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
 
       public void Visit(Population population)
       {
-         convertIndividual(population.FirstIndividual);
+         Visit(population.FirstIndividual);
          addBSAParameterValues(population);
          _converted = true;
       }
