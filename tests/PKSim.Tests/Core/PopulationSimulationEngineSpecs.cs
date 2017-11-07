@@ -1,19 +1,18 @@
 using System.Data;
-using OSPSuite.BDDHelper;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Exceptions;
+using System.Threading.Tasks;
 using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Extensions;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
-using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistableUpdater;
+using OSPSuite.Utility.Events;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_PopulationSimulationEngine : ContextSpecification<ISimulationEngine<PopulationSimulation>>
+   public abstract class concern_for_PopulationSimulationEngine : ContextSpecificationAsync<ISimulationEngine<PopulationSimulation>>
    {
       private IEventPublisher _eventPubliser;
       protected IProgressUpdater _progressUpdater;
@@ -22,11 +21,10 @@ namespace PKSim.Core
       protected ISimulationToModelCoreSimulationMapper _simMapper;
       protected IPopulationRunner _populationRunner;
       private IProgressManager _progressManager;
-      private ISimulationPersistableUpdater _simulationPersistableUpdater;
       private ICoreUserSettings _userSettings;
       protected IPopulationSimulationAnalysisSynchronizer _populationSimulationAnalysisSynchronizer;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _populationRunner = A.Fake<IPopulationRunner>();
          _eventPubliser = A.Fake<IEventPublisher>();
@@ -35,7 +33,6 @@ namespace PKSim.Core
          _simulationResultsSynchronizer = A.Fake<ISimulationResultsSynchronizer>();
          _simMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
          _popExportTask = A.Fake<IPopulationExportTask>();
-         _simulationPersistableUpdater = A.Fake<ISimulationPersistableUpdater>();
          _userSettings = A.Fake<ICoreUserSettings>();
          _populationSimulationAnalysisSynchronizer = A.Fake<IPopulationSimulationAnalysisSynchronizer>();
 
@@ -45,11 +42,11 @@ namespace PKSim.Core
             _simulationResultsSynchronizer,
             _popExportTask,
             _simMapper,
-            _simulationPersistableUpdater,
             _userSettings,
             _populationSimulationAnalysisSynchronizer);
 
          A.CallTo(() => _progressManager.Create()).Returns(_progressUpdater);
+         return _completed;
       }
    }
 
@@ -59,22 +56,24 @@ namespace PKSim.Core
       private DataTable _populationData;
       private IModelCoreSimulation _modelSimulation;
       private PopulationRunResults _runResults;
+      private SimulationRunOptions _simulationRunOptions;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _populationSimulation = A.Fake<PopulationSimulation>();
          _modelSimulation = A.Fake<IModelCoreSimulation>();
          _populationData = A.Fake<DataTable>();
          _runResults = new PopulationRunResults();
+         _simulationRunOptions = new SimulationRunOptions();
          A.CallTo(() => _popExportTask.CreatePopulationDataFor(_populationSimulation, A<bool>._)).Returns(_populationData);
          A.CallTo(() => _simMapper.MapFrom(_populationSimulation, false)).Returns(_modelSimulation);
          A.CallTo(() => _populationRunner.RunPopulationAsync(_modelSimulation, _populationData, A<DataTable>._, A<DataTable>._)).Returns(_runResults);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
-         sut.Run(_populationSimulation);
+         return sut.RunAsync(_populationSimulation,_simulationRunOptions);
       }
 
       [Observation]

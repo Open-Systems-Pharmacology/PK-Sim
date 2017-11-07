@@ -45,7 +45,7 @@ namespace PKSim.Core
       public static readonly string TEMPLATE_USER_DATABASE = "PKSimTemplateDBUser.mdb";
       public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
       public static readonly string PK_SIM_DB_FILE = "PKSimDB.mdb";
-      public static readonly string PRODUCT_NAME = "PK-Sim";
+      public const string PRODUCT_NAME = "PK-Sim";
       public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
       public static readonly string ExpressionPassword = "rhcp!!06";
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
@@ -79,6 +79,13 @@ namespace PKSim.Core
          public static readonly string SAVE_PROJECT_FILTER = Constants.Filter.FileFilter($"{PRODUCT_NAME_WITH_TRADEMARK} Project", PROJECT_EXTENSION);
       }
 
+      public static string DefaultResultsExportNameFor(string simulationName) => $"{simulationName}-Results";
+
+      public static string DefaultPKAnalysesExportNameFor(string simulationName) => $"{simulationName}-PK-Analyses";
+
+      public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
+
+  
       public static string CompositeNameFor(params string[] names)
       {
          if (names == null || names.Length == 0)

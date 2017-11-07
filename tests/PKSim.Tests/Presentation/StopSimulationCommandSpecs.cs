@@ -7,11 +7,11 @@ namespace PKSim.Presentation
 {
    public abstract class concern_for_StopSimulationCommand : ContextSpecification<StopSimulationCommand> 
    {
-      protected ISimulationRunner _simulationRunner;
+      protected IInteractiveSimulationRunner _simulationRunner;
 
       protected override void Context()
       {
-         _simulationRunner = A.Fake<ISimulationRunner>();
+         _simulationRunner = A.Fake<IInteractiveSimulationRunner>();
          sut = new StopSimulationCommand(_simulationRunner);
       }
    }

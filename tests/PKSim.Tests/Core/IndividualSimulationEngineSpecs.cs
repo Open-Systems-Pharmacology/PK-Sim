@@ -9,13 +9,12 @@ using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using SimModelNET;
-using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistableUpdater;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.Core
 {
@@ -27,7 +26,7 @@ namespace PKSim.Core
       protected ISimulationResultsSynchronizer _simulationResultsSynchronizer;
       protected ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       protected IProgressManager _progressManager;
-      protected ISimulationPersistableUpdater _simulationPersistableUpdater;
+      protected SimulationRunOptions _simulationRunOption;
 
       protected override Task Context()
       {
@@ -37,12 +36,12 @@ namespace PKSim.Core
          _eventPublisher = A.Fake<IEventPublisher>();
          _simulationResultsSynchronizer = A.Fake<ISimulationResultsSynchronizer>();
          _modelCoreSimulationMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
-         _simulationPersistableUpdater = A.Fake<ISimulationPersistableUpdater>();
 
          sut = new IndividualSimulationEngine(_simModelManager, _progressManager, _simulationResultsSynchronizer,
-            _eventPublisher, _modelCoreSimulationMapper, _simulationPersistableUpdater);
+            _eventPublisher, _modelCoreSimulationMapper);
 
          A.CallTo(() => _progressManager.Create()).Returns(_progressUpdater);
+         _simulationRunOption = new SimulationRunOptions {RaiseEvents = true};
          return _completed;
       }
    }
@@ -63,7 +62,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.RunAsync(_simulation);
+         return sut.RunAsync(_simulation, _simulationRunOption);
       }
 
       [Observation]
@@ -107,7 +106,7 @@ namespace PKSim.Core
          await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<ISolverWarning>(), new DataRepository()));
-         await sut.RunAsync(_simulation);
+         await sut.RunAsync(_simulation, _simulationRunOption);
       }
 
       protected override Task Because()
@@ -131,13 +130,13 @@ namespace PKSim.Core
       {
          await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
+         _simulationRunOption.RaiseEvents = false;
          A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<ISolverWarning>(), new DataRepository()));
       }
 
       protected override Task Because()
       {
-         sut.Run(_simulation);
-         return _completed;
+         return sut.RunAsync(_simulation, _simulationRunOption);
       }
 
       [Observation]
@@ -158,7 +157,7 @@ namespace PKSim.Core
          _dataRepository = A.Fake<DataRepository>();
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(false, Enumerable.Empty<ISolverWarning>(), _dataRepository));
-         sut.Run(_simulation);
+         await sut.RunAsync(_simulation, _simulationRunOption);
       }
 
       [Observation]

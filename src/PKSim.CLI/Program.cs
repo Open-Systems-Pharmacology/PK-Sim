@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
-using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
 using PKSim.CLI.Services;
 using ILogger = OSPSuite.Core.Services.ILogger;
@@ -27,10 +26,11 @@ namespace PKSim.CLI
 
          ApplicationStartup.Initialize();
 
-         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand>(args)
-            .WithParsed<JsonRunCommand>(startJsonRun)
-            .WithParsed<SnapshotRunCommand>(startSnapshotsRun)
-            .WithNotParsed(err => { valid = false; });
+         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand>(args)
+            .WithParsed<JsonRunCommand>(startCommand)
+            .WithParsed<SnapshotRunCommand>(startCommand)
+            .WithParsed<ExportRunCommand>(startCommand)
+            .WithNotParsed(err => valid = false);
 
          if (!valid)
             return (int) ExitCodes.Error;
@@ -38,35 +38,25 @@ namespace PKSim.CLI
          return (int) ExitCodes.Success;
       }
 
-      private static void startSnapshotsRun(SnapshotRunCommand snapshotRunOptions)
+      private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)   
       {
-         startCommand<SnapshotRunner, SnapshotRunOptions>("Snapshot run", snapshotRunOptions);
-      }
-
-      private static void startJsonRun(JsonRunCommand jsonRunOptions)
-      {
-         startCommand<JsonSimulationRunner, JsonRunOptions>("Batch run", jsonRunOptions);
-      }
-
-      private static void startCommand<TBatchRunner, TRunOptions>(string command, RunCommand<TRunOptions> runCommand) where TBatchRunner : IBatchRunner<TRunOptions>
-      {
-         var logger = initializeLogger(runCommand);
-         logger.AddInfo($"Starting {command} with arguments:\n{runCommand}");
+         var logger = initializeLogger(command);
+         logger.AddInfo($"Starting {command.Name.ToLower()} run with arguments:\n{command}");
          ApplicationStartup.Start();
-         var runner = IoC.Resolve<TBatchRunner>();
-         runner.RunBatchAsync(runCommand.ToRunOptions()).Wait();
-         logger.AddInfo($"{command} finished");
+         var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
+         runner.RunBatchAsync(command.ToRunOptions()).Wait();
+         logger.AddInfo($"{command.Name} run finished");
       }
 
-      private static ILogger initializeLogger(RunCommand runCommand)
+      private static ILogger initializeLogger(CLICommand runCommand)
       {
          var loggerFactory = IoC.Resolve<ILoggerFactory>();
-     
+
          loggerFactory
             .AddConsole(runCommand.LogLevel);
 
-         if(!string.IsNullOrEmpty(runCommand.LogFileFullPath))
-            loggerFactory.AddFile(runCommand.LogFileFullPath);
+         if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
+            loggerFactory.AddFile(runCommand.LogFileFullPath, runCommand.LogLevel, runCommand.AppendToLog);
 
          return IoC.Resolve<ILogger>();
       }

@@ -110,7 +110,6 @@ namespace PKSim.CLI.Core.Services
       {
          _logger.AddInSeparator($"Starting snapshot export for '{file.ProjectFile}'", NotificationType.Info);
 
-         //need to suply registration task to workspace so that project will be registered when deserialized
          _workspacePersistor.LoadSession(_workspace, file.ProjectFile);
          _logger.AddDebug($"Project loaded successfuly from '{file.ProjectFile}'");
 

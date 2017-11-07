@@ -2413,12 +2413,6 @@ namespace PKSim.Assets
 
          public static string FilterAreaDragFieldMessage() => "Drag a field here to remove grouping";
 
-         public static string DefaultResultsExportNameFor(string simulationName) => $"{simulationName}-Results";
-
-         public static string DefaultPKAnalysesExportNameFor(string simulationName) => $"{simulationName}-PK-Analyses";
-
-         public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
-
          public static readonly string ChartYScale = "Chart Y Scale";
 
          public static string  SelectSnapshotExportFile(string objectName, string ojectType) => $"Export snapshot for {ojectType.ToLowerInvariant()} '{objectName}'";

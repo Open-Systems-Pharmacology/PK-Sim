@@ -20,6 +20,7 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core;
+using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
@@ -55,6 +56,7 @@ namespace PKSim.UI.BootStrapping
          InfrastructureRegister.Initialize();
          var container = IoC.Container;
          container.RegisterImplementationOf(getCurrentContext());
+
          container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
          container.Register<PKSimApplication, PKSimApplication>(LifeStyle.Singleton);
 
@@ -149,6 +151,10 @@ namespace PKSim.UI.BootStrapping
 
          var mainPresenter = container.Resolve<IMainViewPresenter>();
          container.RegisterImplementationOf((IChangePropagator) mainPresenter);
+
+         //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
+         container.Register<IInteractiveSimulationRunner,InteractiveSimulationRunner>(LifeStyle.Singleton);
+
       }
 
       private void startStartableObject(IContainer container)

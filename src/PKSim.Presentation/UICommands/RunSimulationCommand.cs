@@ -8,24 +8,24 @@ namespace PKSim.Presentation.UICommands
 {
    public class RunSimulationCommand : ActiveObjectUICommand<Simulation>
    {
-      private readonly ISimulationRunner _simulationRunner;
-      private readonly bool _defineSetting;
+      private readonly IInteractiveSimulationRunner _simulationRunner;
+      private readonly bool _selectOutput;
 
-      public RunSimulationCommand(ISimulationRunner simulationRunner, IActiveSubjectRetriever activeSubjectRetriever, bool defineSetting = false) : base(activeSubjectRetriever)
+      public RunSimulationCommand(IInteractiveSimulationRunner simulationRunner, IActiveSubjectRetriever activeSubjectRetriever, bool selectOutput = false) : base(activeSubjectRetriever)
       {
          _simulationRunner = simulationRunner;
-         _defineSetting = defineSetting;
+         _selectOutput = selectOutput;
       }
 
       protected override async void PerformExecute()
       {
-         await _simulationRunner.SecureAwait(x => x.RunSimulation(Subject, _defineSetting));
+         await _simulationRunner.SecureAwait(x => x.RunSimulation(Subject, _selectOutput));
       }
    }
 
    public class RunSimulationWithSettingsCommand : RunSimulationCommand
    {
-      public RunSimulationWithSettingsCommand(ISimulationRunner simulationRunner, IActiveSubjectRetriever activeSubjectRetriever) : base(simulationRunner, activeSubjectRetriever, true)
+      public RunSimulationWithSettingsCommand(IInteractiveSimulationRunner simulationRunner, IActiveSubjectRetriever activeSubjectRetriever) : base(simulationRunner, activeSubjectRetriever, true)
       {
       }
    }

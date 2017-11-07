@@ -142,8 +142,10 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="ApplicationStartup.cs" />
+    <Compile Include="Commands\ExportRunCommand.cs" />
     <Compile Include="Commands\JsonRunCommand.cs" />
-    <Compile Include="Commands\RunCommand.cs" />
+    <Compile Include="Commands\CLICommand.cs" />
+    <Compile Include="Commands\SimulationExportCommand.cs" />
     <Compile Include="Commands\SnapshotRunCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

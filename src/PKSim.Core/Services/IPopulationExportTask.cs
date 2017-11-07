@@ -6,9 +6,14 @@ namespace PKSim.Core.Services
    public interface IPopulationExportTask
    {
       /// <summary>
-      ///    Export the given <paramref name="population" /> to a csv file
+      ///    Export the given <paramref name="population" /> to a csv file to be selected by the user
       /// </summary>
       void ExportToCSV(Population population);
+
+      /// <summary>
+      ///    Export the given <paramref name="population" /> to <paramref name="fileFullPath"/>
+      /// </summary>
+      void ExportToCSV(Population population, string fileFullPath);
 
       /// <summary>
       ///    Returns a DataTable containing one row per variable parameter in the <paramref name="population" /> and one column per individual
@@ -19,9 +24,14 @@ namespace PKSim.Core.Services
       DataTable CreatePopulationDataFor(Population population, bool includeUnitsInHeader = false);
 
       /// <summary>
-      ///    Export the given <paramref name="populationSimulation" /> to a csv file
+      ///    Export the given <paramref name="populationSimulation" /> to a csv file to be selected by the user
       /// </summary>
       void ExportToCSV(PopulationSimulation populationSimulation);
+
+      /// <summary>
+      ///    Export the given <paramref name="populationSimulation" /> to <paramref name="fileFullPath"/>
+      /// </summary>
+      void ExportToCSV(PopulationSimulation populationSimulation, string fileFullPath);
 
       /// <summary>
       ///    Returns a DataTable containing one row per advanced parameter in the <paramref name="populationSimulation" /> as well as all

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
@@ -11,6 +12,7 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using OSPSuite.Core.Domain;
 using IContainer = OSPSuite.Core.Domain.IContainer;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.IntegrationTests
 {
@@ -24,6 +26,7 @@ namespace PKSim.IntegrationTests
       protected Individual _individual;
       protected Protocol _protocol;
       protected IParameter _alternativeIntestinalPermParam;
+      protected SimulationRunOptions _simulationRunOptions;
 
       public override void GlobalContext()
       {
@@ -42,6 +45,7 @@ namespace PKSim.IntegrationTests
          _intestinalPermeabilityCalcMethods = cmRepo.Where(cm => cm.Category.Equals(CoreConstants.Category.IntestinalPermeability)).ToList();
          _alternativeIntestinalPermParam = alternative.Parameter(CoreConstants.Parameter.SpecificIntestinalPermeability);
          _simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         _simulationRunOptions = new SimulationRunOptions();
       }
 
       protected IndividualSimulation CreateSimulationWithCalculatedSpecificPintFor(CalculationMethod intestinalPermeabilityMethod)
@@ -94,7 +98,7 @@ namespace PKSim.IntegrationTests
    public class When_creating_simulation_using_calculated_intestinal_permeability : concern_for_Mucosa_Permeability_Scaling
    {
       [Observation]
-      public void mucosa_permeability_scale_factor_should_be_equal_to_one_for_every_calculation_method_and_simulation_should_run()
+      public async Task mucosa_permeability_scale_factor_should_be_equal_to_one_for_every_calculation_method_and_simulation_should_run()
       {
          foreach (var intestinalPermeabilityCalcMethod in _intestinalPermeabilityCalcMethods)
          {
@@ -103,7 +107,7 @@ namespace PKSim.IntegrationTests
             var scaleFactor = MucosaPermeabilityFactorFor(simulation);
             scaleFactor.ShouldBeEqualTo(1, 1e-5);
 
-            _simulationEngine.Run(simulation);
+            await _simulationEngine.RunAsync(simulation, _simulationRunOptions);
             simulation.HasResults.ShouldBeTrue();
             Unregister(simulation);
          }
@@ -113,7 +117,7 @@ namespace PKSim.IntegrationTests
    public class When_creating_simulation_using_calculated_intestinal_permeability_and_overriding_intestinal_permeability_in_the_simulation : concern_for_Mucosa_Permeability_Scaling
    {
       [Observation]
-      public void mucosa_permeability_scale_factor_should_be_set_to_correct_value_for_every_calculation_method_and_simulation_should_run()
+      public async Task mucosa_permeability_scale_factor_should_be_set_to_correct_value_for_every_calculation_method_and_simulation_should_run()
       {
          const double intPermScaleFactor = 3;
 
@@ -127,7 +131,7 @@ namespace PKSim.IntegrationTests
             var scaleFactor = MucosaPermeabilityFactorFor(simulation);
             scaleFactor.ShouldBeEqualTo(intPermScaleFactor, 1e-5);
 
-            _simulationEngine.Run(simulation);
+            await _simulationEngine.RunAsync(simulation, _simulationRunOptions);
             simulation.HasResults.ShouldBeTrue();
             Unregister(simulation);
          }
@@ -137,7 +141,7 @@ namespace PKSim.IntegrationTests
    public class When_creating_simulation_using_non_calculated_intestinal_permeability : concern_for_Mucosa_Permeability_Scaling
    {
       [Observation]
-      public void mucosa_permeability_scale_factor_should_be_set_to_correct_value_for_every_calculation_method_and_simulation_should_run()
+      public async Task mucosa_permeability_scale_factor_should_be_set_to_correct_value_for_every_calculation_method_and_simulation_should_run()
       {
          foreach (var intestinalPermeabilityCalcMethod in _intestinalPermeabilityCalcMethods)
          {
@@ -157,7 +161,7 @@ namespace PKSim.IntegrationTests
             var scaleFactor = MucosaPermeabilityFactorFor(simulation);
             scaleFactor.ShouldBeEqualTo(intPermScaleFactor, 1e-5);
 
-            _simulationEngine.Run(simulation);
+            await _simulationEngine.RunAsync(simulation, _simulationRunOptions);
             simulation.HasResults.ShouldBeTrue();
             Unregister(simulation);
          }

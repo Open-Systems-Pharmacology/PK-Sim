@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using PKSim.CLI.Core.Services;
+using PKSim.Core;
 using PKSim.Core.Batch;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -13,7 +14,6 @@ namespace PKSim.BatchTool
 {
    public abstract class concern_for_SimulationExporter : ContextSpecification<ISimulationExporter>
    {
-      private ISimulationEngineFactory _simulationEngineFactory;
       private ILogger _logger;
       protected IParametersReportCreator _parameterReportCreator;
       protected ISimulationResultsExporter _simulationResultsExporter;
@@ -21,46 +21,51 @@ namespace PKSim.BatchTool
       protected string _outputFolder;
       protected string _exportName;
       protected SimulationConfiguration _configuration;
-      protected BatchExportMode _mode;
-      protected ISimulationEngine<IndividualSimulation> _simulationEngine;
+      protected SimulationExportMode _mode;
       protected ISimulationExportTask _simulationExportTask;
+      protected ISimulationRunner _simulationRunner;
+      protected SimulationRunOptions _simulationRunOptions;
+      private IPopulationExportTask _populationExportTask;
+      protected IMoBiExportTask _mobiExportTask;
 
       protected override void Context()
       {
-         _simulationEngineFactory = A.Fake<ISimulationEngineFactory>();
+         _simulationRunner= A.Fake<ISimulationRunner>();
          _logger = A.Fake<ILogger>();
          _parameterReportCreator = A.Fake<IParametersReportCreator>();
          _simulationResultsExporter = A.Fake<ISimulationResultsExporter>();
          _simulationExportTask = A.Fake<ISimulationExportTask>();
-         sut = new SimulationExporter(_simulationEngineFactory, _logger, _parameterReportCreator, _simulationResultsExporter, _simulationExportTask);
+         _populationExportTask= A.Fake<IPopulationExportTask>();
+         _mobiExportTask= A.Fake<IMoBiExportTask>();
 
+         sut = new SimulationExporter(_simulationRunner, _logger, _parameterReportCreator, _simulationResultsExporter, _simulationExportTask,_populationExportTask, _mobiExportTask);
+
+         _simulationRunOptions = new SimulationRunOptions();
          _simulation = new IndividualSimulation {DataRepository = new DataRepository("Rep")};
          _outputFolder = "OutputFolder";
          _exportName = "ExportName";
          _configuration = new SimulationConfiguration();
 
-         _simulationEngine = A.Fake<ISimulationEngine<IndividualSimulation>>();
-         A.CallTo(() => _simulationEngineFactory.Create<IndividualSimulation>()).Returns(_simulationEngine);
       }
 
       protected override void Because()
       {
-         sut.RunAndExport(_simulation, _outputFolder, _exportName, _configuration, _mode);
+         sut.RunAndExport(_simulation, _outputFolder, _exportName,_simulationRunOptions, _mode);
       }
    }
 
-   public class When_running_and_exporting_a_simulation_for_batch_run_to_csv_and_json_and_xml : concern_for_SimulationExporter
+   public class When_running_and_exporting_a_simulation_for_batch_run_to_csv_and_json_and_xml_and_pkml : concern_for_SimulationExporter
    {
       protected override void Context()
       {
          base.Context();
-         _mode = BatchExportMode.Csv | BatchExportMode.Json | BatchExportMode.All;
+         _mode = SimulationExportMode.Csv | SimulationExportMode.Json | SimulationExportMode.Pkml | SimulationExportMode.Xml;
       }
 
       [Observation]
       public void should_run_the_simulation()
       {
-         A.CallTo(() => _simulationEngine.RunForBatch(_simulation, _configuration.CheckForNegativeValues)).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(_simulation, _simulationRunOptions)).MustHaveHappened();
       }
 
       [Observation]
@@ -73,21 +78,28 @@ namespace PKSim.BatchTool
       [Observation]
       public void should_export_the_result_to_csv()
       {
-         var fileName = Path.Combine(_outputFolder, $"{_exportName}.csv");
-         A.CallTo(() => _simulationResultsExporter.ExportToCsvAsync(_simulation, _simulation.DataRepository, fileName)).MustHaveHappened();
+         var fileName = Path.Combine(_outputFolder, $"{CoreConstants.DefaultResultsExportNameFor(_exportName)}.csv");
+         A.CallTo(() => _simulationExportTask.ExportResultsToCSVAsync(_simulation,  fileName)).MustHaveHappened();
       }
 
       [Observation]
       public void should_export_the_simmodel_simulation_to_xml()
       {
-         var fileName = Path.Combine(_outputFolder, "Xml", $"{_exportName}.xml");
+         var fileName = Path.Combine(_outputFolder, $"{_exportName}.xml");
          A.CallTo(() => _simulationExportTask.ExportSimulationToSimModelXmlAsync(_simulation, fileName)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_export_the_simulation_to_pkml()
+      {
+         var fileName = Path.Combine(_outputFolder, $"{_exportName}.pkml");
+         A.CallTo(() => _mobiExportTask.SaveSimulationToFileAsync(_simulation, fileName)).MustHaveHappened();
       }
 
       [Observation]
       public void should_export_the_parameter_values_to_csv()
       {
-         var fileName = Path.Combine(_outputFolder, $"{_exportName}_parameters.csv");
+         var fileName = Path.Combine(_outputFolder, $"{_exportName}-parameters.csv");
          A.CallTo(() => _parameterReportCreator.ExportParametersTo(_simulation.Model, fileName)).MustHaveHappened();
       }
    }
@@ -97,13 +109,13 @@ namespace PKSim.BatchTool
       protected override void Context()
       {
          base.Context();
-         _mode = BatchExportMode.Csv;
+         _mode = SimulationExportMode.Csv;
       }
 
       [Observation]
       public void should_run_the_simulation()
       {
-         A.CallTo(() => _simulationEngine.RunForBatch(_simulation, _configuration.CheckForNegativeValues)).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(_simulation, _simulationRunOptions)).MustHaveHappened();
       }
 
       [Observation]
@@ -121,7 +133,7 @@ namespace PKSim.BatchTool
       [Observation]
       public void should_export_the_result_to_csv()
       {
-         A.CallTo(() => _simulationResultsExporter.ExportToCsvAsync(_simulation, _simulation.DataRepository, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _simulationExportTask.ExportResultsToCSVAsync(_simulation, A<string>._)).MustHaveHappened();
       }
 
       [Observation]
@@ -136,13 +148,13 @@ namespace PKSim.BatchTool
       protected override void Context()
       {
          base.Context();
-         _mode = BatchExportMode.Json;
+         _mode = SimulationExportMode.Json;
       }
 
       [Observation]
       public void should_run_the_simulation()
       {
-         A.CallTo(() => _simulationEngine.RunForBatch(_simulation, _configuration.CheckForNegativeValues)).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(_simulation, _simulationRunOptions)).MustHaveHappened();
       }
 
       [Observation]

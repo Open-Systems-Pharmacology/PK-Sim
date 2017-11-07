@@ -9,12 +9,12 @@ namespace PKSim.Presentation
 {
    public abstract class concern_for_RunActiveSimulationCommand : ContextSpecification<RunSimulationCommand>
    {
-      protected ISimulationRunner _simulationRunner;
+      protected IInteractiveSimulationRunner _simulationRunner;
       protected IActiveSubjectRetriever _activeSubjectRetriever;
 
       protected override void Context()
       {
-         _simulationRunner = A.Fake<ISimulationRunner>();
+         _simulationRunner = A.Fake<IInteractiveSimulationRunner>();
          _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
          sut = new RunSimulationCommand(_simulationRunner, _activeSubjectRetriever);
       }
@@ -39,7 +39,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_simulation_runner_and_tell_him_to_run_the_simulation()
       {
-         A.CallTo(() => _simulationRunner.RunSimulation(_activeSimulation, false, true)).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(_activeSimulation, false)).MustHaveHappened();
       }
    }
 }

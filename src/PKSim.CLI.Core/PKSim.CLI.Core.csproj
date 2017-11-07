@@ -93,6 +93,7 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="RunOptions\ExportRunOptions.cs" />
     <Compile Include="RunOptions\IWithInputAndOutputFolders.cs" />
     <Compile Include="CLIRegister.cs" />
     <Compile Include="MinimalImplementations\CLIDiagramModel.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="MinimalImplementations\CLIUserSettings.cs" />
     <Compile Include="MinimalImplementations\CLIWorkspace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ExportSimulationRunner.cs" />
     <Compile Include="Services\IBatchRunner.cs" />
     <Compile Include="RunOptions\JsonRunOptions.cs" />
     <Compile Include="Services\JsonSimulationRunner.cs" />

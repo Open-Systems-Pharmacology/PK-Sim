@@ -16,7 +16,7 @@ namespace PKSim.BatchTool.Presenters
          base(view, batchRunner, dialogCreator, logPresenter, batchLogger)
       {
          view.Caption = "PK-Sim BatchTool: Batch runner for json based PK-Sim simulations";
-         _runOptionsDTO.ExportMode = BatchExportMode.All;
+         _runOptionsDTO.ExportMode = SimulationExportMode.All;
       }
    }
 }

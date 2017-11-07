@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Journal;
@@ -26,7 +25,7 @@ namespace PKSim.CLI
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-      
+
          InfrastructureRegister.Initialize();
          var container = IoC.Container;
          container.RegisterImplementationOf(new SynchronizationContext());

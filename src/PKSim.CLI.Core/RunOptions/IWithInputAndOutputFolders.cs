@@ -18,10 +18,20 @@ namespace PKSim.CLI.Core.RunOptions
 
    public static class WithInputAndOutputFoldersExtensions
    {
-      public static void LogOption(this IWithInputAndOutputFolders option, StringBuilder sb)
+      public static void LogOption(this IWithInputFolder option, StringBuilder sb)
       {
          sb.AppendLine($"Input Folder: {option.InputFolder}");
+      }
+
+      public static void LogOption(this IWithOutputFolder option, StringBuilder sb)
+      {
          sb.AppendLine($"Output Folder: {option.OutputFolder}");
+      }
+
+      public static void LogOption(this IWithInputAndOutputFolders option, StringBuilder sb)
+      {
+         LogOption((IWithInputFolder) option, sb);
+         LogOption((IWithOutputFolder) option, sb);
       }
    }
 }

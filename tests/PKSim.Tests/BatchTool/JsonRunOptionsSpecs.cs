@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using CommandLine;
 using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using PKSim.CLI.Commands;
-using PKSim.CLI.Core;
 using PKSim.CLI.Core.Services;
 
 namespace PKSim.BatchTool
@@ -39,7 +36,11 @@ namespace PKSim.BatchTool
       protected override void Because()
       {
          Parser.Default.ParseArguments<JsonRunCommand>(_args)
-            .WithParsed(opt => sut = opt);
+            .WithParsed(opt => sut = opt)
+            .WithNotParsed(x =>
+            {
+               var s = x;
+            });
       }
 
       public override void GlobalCleanup()
@@ -138,9 +139,9 @@ namespace PKSim.BatchTool
       [Observation]
       public void should_export_to_the_expected_format()
       {
-         sut.ExportMode.HasFlag(BatchExportMode.Json).ShouldBeTrue();
-         sut.ExportMode.HasFlag(BatchExportMode.Xml).ShouldBeTrue();
-         sut.ExportMode.HasFlag(BatchExportMode.Csv).ShouldBeFalse();
+         sut.ExportMode.HasFlag(SimulationExportMode.Json).ShouldBeTrue();
+         sut.ExportMode.HasFlag(SimulationExportMode.Xml).ShouldBeTrue();
+         sut.ExportMode.HasFlag(SimulationExportMode.Csv).ShouldBeFalse();
       }
    }
 
@@ -177,7 +178,7 @@ namespace PKSim.BatchTool
          _args.Add("--input");
          _args.Add("HELLO");
       }
-      
+
       protected override void Because()
       {
          Parser.Default.ParseArguments<JsonRunCommand>(_args)
