@@ -164,6 +164,21 @@ namespace PKSim.Core
       }
    }
 
+   public class When_validating_the_configuration_of_a_simulation_using_an_individual_or_population_based_on_the_pregnant_population: concern_for_SimulationConfigurationValidator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _speciesPopulation.Name = CoreConstants.Population.Pregnant;
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.ValidateConfigurationFor(_simulation)).ShouldThrowAn<InvalidSimulationConfigurationException>();
+      }
+   }
+
    public class When_validating_the_configuration_of_a_simulation_using_a_simulation_that_is_not_surface_area_dependent_using_a_protocol_in_body_weight_dosing : concern_for_SimulationConfigurationValidator
    {
       protected override void Context()
