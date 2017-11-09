@@ -219,6 +219,7 @@
     <Compile Include="BatchTool\StandardSpecs.cs" />
     <Compile Include="BatchTool\TransportSpecs.cs" />
     <Compile Include="BatchTool\TwoPoresSpecs.cs" />
+    <Compile Include="CLI\ExportSimulationRunnerSpecs.cs" />
     <Compile Include="CLI\SnapshotRunnerSpecs.cs" />
     <Compile Include="ContextSpecificationWithLocalContainer.cs" />
     <Compile Include="CoreConstantsForSpecs.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="Core\IndividualExtractorSpecs.cs" />
     <Compile Include="Core\IndividualMapperSpecs.cs" />
     <Compile Include="Core\InteractionProcessRetrieverSpecs.cs" />
+    <Compile Include="Core\InteractiveSimulationRunnerSpecs.cs" />
     <Compile Include="Core\MoleculeMapperSpecs.cs" />
     <Compile Include="Core\ClassificationMapperSpecs.cs" />
     <Compile Include="Core\ObservedDataCollectionMappperSpecs.cs" />

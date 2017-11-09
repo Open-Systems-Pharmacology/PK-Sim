@@ -227,6 +227,7 @@
     <Compile Include="Services\IndividualExtractionOptions.cs" />
     <Compile Include="Services\IndividualExtractor.cs" />
     <Compile Include="Services\InteractionProcessRetriever.cs" />
+    <Compile Include="Services\InteractiveSimulationRunner.cs" />
     <Compile Include="Services\IParameterIdentificationContentLoader.cs" />
     <Compile Include="Services\IPopulationTask.cs" />
     <Compile Include="Services\IrreversibleInhibitionKineticUpdaterSpecification.cs" />
@@ -476,6 +477,7 @@
     <Compile Include="Services\ParameterAnalysableParameterSelector.cs" />
     <Compile Include="Services\PopulationSimulationAnalysisSynchronizer.cs" />
     <Compile Include="Services\SimulationConfigurationValidator.cs" />
+    <Compile Include="Services\SimulationRunOptions.cs" />
     <Compile Include="Services\SimulationSelector.cs" />
     <Compile Include="Services\PivotResultCreator.cs" />
     <Compile Include="Services\PopulationAnalysisFlatTableCreator.cs" />

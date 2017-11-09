@@ -1,46 +1,41 @@
-using System.Linq;
+using System;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Events;
-using OSPSuite.Utility.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public interface ISimulationRunner : IListener<SimulationResultsUpdatedEvent>
+   public interface ISimulationRunner
    {
-      Task RunSimulation(Simulation simulation, bool defineSettings = false, bool createDefaultAnalysis = true);
+      Task RunSimulation(Simulation simulation, SimulationRunOptions simulationRunOptions = null);
       void StopSimulation();
    }
 
    public class SimulationRunner : ISimulationRunner
    {
       private readonly ISimulationEngineFactory _simulationEngineFactory;
-      private readonly ISimulationAnalysisCreator _simulationAnalysisCreator;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IEntityValidationTask _entityValidationTask;
-      private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
-      private readonly ICloner _cloner;
+      private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
       private ISimulationEngine _simulationEngine;
-      private bool _defineSettings;
       private readonly Task _simulationDidNotRun = Task.FromResult(false);
-      private bool _createDefaultAnalysis;
+      private SimulationRunOptions _simulationRunOptions;
 
-      public SimulationRunner(ISimulationEngineFactory simulationEngineFactory, ISimulationAnalysisCreator simulationAnalysisCreator, ILazyLoadTask lazyLoadTask,
-         IEntityValidationTask entityValidationTask, ISimulationSettingsRetriever simulationSettingsRetriever, ICloner cloner)
+      public SimulationRunner(
+         ISimulationEngineFactory simulationEngineFactory,
+         ILazyLoadTask lazyLoadTask,
+         IEntityValidationTask entityValidationTask,
+         ISimulationPersistableUpdater simulationPersistableUpdater)
       {
          _simulationEngineFactory = simulationEngineFactory;
-         _simulationAnalysisCreator = simulationAnalysisCreator;
          _lazyLoadTask = lazyLoadTask;
          _entityValidationTask = entityValidationTask;
-         _simulationSettingsRetriever = simulationSettingsRetriever;
-         _cloner = cloner;
+         _simulationPersistableUpdater = simulationPersistableUpdater;
       }
 
-      public Task RunSimulation(Simulation simulation, bool defineSettings = false, bool createDefaultAnalysis = true)
+      public Task RunSimulation(Simulation simulation, SimulationRunOptions simulationRunOptions = null)
       {
-         _defineSettings = defineSettings;
-         _createDefaultAnalysis = createDefaultAnalysis;
+         _simulationRunOptions = simulationRunOptions ?? new SimulationRunOptions();
          _lazyLoadTask.Load(simulation);
 
          if (!_entityValidationTask.Validate(simulation))
@@ -49,10 +44,10 @@ namespace PKSim.Core.Services
          switch (simulation)
          {
             case IndividualSimulation individualSimulation:
-               return runSimulation(individualSimulation);
+               return runSimulation(individualSimulation, _simulationPersistableUpdater.UpdatePersistableFromSettings);
 
             case PopulationSimulation populationSimulation:
-               return runSimulation(populationSimulation);
+               return runSimulation(populationSimulation, _simulationPersistableUpdater.UpdatePersistableFromSettings);
          }
          return _simulationDidNotRun;
       }
@@ -64,38 +59,18 @@ namespace PKSim.Core.Services
          _simulationEngine = null;
       }
 
-      private async Task runSimulation<TSimulation>(TSimulation simulation) where TSimulation : Simulation
+      private async Task runSimulation<TSimulation>(TSimulation simulation, Action<TSimulation> updatePersistableFromSettings) where TSimulation : Simulation
       {
-         if (settingsRequired(simulation))
-         {
-            var outputSelections = _simulationSettingsRetriever.SettingsFor(simulation);
-            if (outputSelections == null) return;
-            simulation.OutputSelections.UpdatePropertiesFrom(outputSelections, _cloner);
-         }
-
          var simulationEngine = _simulationEngineFactory.Create<TSimulation>();
          _simulationEngine = simulationEngine;
-         await simulationEngine.RunAsync(simulation);
+
+         if (_simulationRunOptions.RunForAllOutputs)
+            _simulationPersistableUpdater.ResetPersistable(simulation);
+         else
+            updatePersistableFromSettings(simulation);
+
+         await simulationEngine.RunAsync(simulation, _simulationRunOptions);
          simulation.HasChanged = true;
-      }
-
-      private bool settingsRequired(Simulation simulation)
-      {
-         if (_defineSettings)
-            return true;
-
-         if (simulation.OutputSelections == null)
-            return true;
-
-         return !simulation.OutputSelections.HasSelection;
-      }
-
-      public void Handle(SimulationResultsUpdatedEvent eventToHandle)
-      {
-         var simulation = eventToHandle.Simulation as Simulation;
-         if (simulation == null || !simulation.HasResults || !_createDefaultAnalysis) return;
-         if (simulation.Analyses.Count() != 0) return;
-         _simulationAnalysisCreator.CreateAnalysisFor(simulation);
       }
    }
 }

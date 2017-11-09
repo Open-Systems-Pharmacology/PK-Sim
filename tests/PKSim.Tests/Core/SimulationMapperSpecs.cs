@@ -23,6 +23,7 @@ using OutputSchema = OSPSuite.Core.Domain.OutputSchema;
 using OutputSelections = PKSim.Core.Snapshots.OutputSelections;
 using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
 using Simulation = PKSim.Core.Snapshots.Simulation;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
 
 namespace PKSim.Core
@@ -371,7 +372,7 @@ namespace PKSim.Core
          _snapshot.HasResults = true;
          _calculatedDataRepository = DomainHelperForSpecs.ObservedData("Calculated");
 
-         A.CallTo(() => _simulationRunner.RunSimulation(individualSimulation, false, false))
+         A.CallTo(() => _simulationRunner.RunSimulation(individualSimulation, A<SimulationRunOptions>._))
             .Invokes(x => { individualSimulation.DataRepository = _calculatedDataRepository; });
 
          A.CallTo(() => _eventMappingMapper.MapToModel(_eventSelection, _project)).Returns(_eventMapping);
@@ -430,7 +431,7 @@ namespace PKSim.Core
       [Observation]
       public void should_run_the_simulation()
       {
-         A.CallTo(() => _simulationRunner.RunSimulation(_simulation, false, false)).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(_simulation, A<SimulationRunOptions>._)).MustHaveHappened();
       }
 
       [Observation]

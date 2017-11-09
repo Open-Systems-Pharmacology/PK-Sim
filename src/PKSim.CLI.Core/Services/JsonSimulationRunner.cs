@@ -15,6 +15,7 @@ using PKSim.Core.Batch;
 using PKSim.Core.Commands;
 using PKSim.Core.Extensions;
 using PKSim.Core.Services;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI.Core.Services
 {
@@ -28,8 +29,13 @@ namespace PKSim.CLI.Core.Services
       private readonly ICommandTask _commandTask;
       private readonly IList<string> _allSimulationNames = new List<string>();
 
-      public JsonSimulationRunner(ISimulationLoader simulationLoader, ISimulationExporter simulationExporter, ILogger logger,
-         IEntitiesInContainerRetriever entitiesInContainerRetriever, IExecutionContext executionContext, ICommandTask commandTask)
+      public JsonSimulationRunner(
+         ISimulationLoader simulationLoader, 
+         ISimulationExporter simulationExporter, 
+         ILogger logger,
+         IEntitiesInContainerRetriever entitiesInContainerRetriever, 
+         IExecutionContext executionContext, 
+         ICommandTask commandTask)
       {
          _simulationLoader = simulationLoader;
          _simulationExporter = simulationExporter;
@@ -93,9 +99,9 @@ namespace PKSim.CLI.Core.Services
          _allSimulationNames.Clear();
       }
 
-      private void createSummaryFilesIn(DirectoryInfo outputDirectory, BatchExportMode exportMode)
+      private void createSummaryFilesIn(DirectoryInfo outputDirectory, SimulationExportMode exportMode)
       {
-         if (!exportMode.HasFlag(BatchExportMode.Csv))
+         if (!exportMode.HasFlag(SimulationExportMode.Csv))
             return;
 
          var dataTable = new DataTable(outputDirectory.Name);
@@ -119,7 +125,7 @@ namespace PKSim.CLI.Core.Services
          dataTable.ExportToCSV(fileName);
       }
 
-      private async Task exportSimulationTo(FileInfo simulationFile, string outputFolder, BatchExportMode batchExportMode)
+      private async Task exportSimulationTo(FileInfo simulationFile, string outputFolder, SimulationExportMode simulationExportMode)
       {
          _logger.AddInSeparator($"Starting batch simulation for file '{simulationFile}'");
          try
@@ -132,13 +138,19 @@ namespace PKSim.CLI.Core.Services
 
             var defaultSimulationName = FileHelper.FileNameFromFileFullPath(simulationFile.FullName);
             var allParameters = _entitiesInContainerRetriever.ParametersFrom(simulation);
-            await _simulationExporter.RunAndExport(simulation, outputFolder, defaultSimulationName, simForBatch.Configuration, batchExportMode);
+            var simulationRunOptions = new SimulationRunOptions
+            {
+               CheckForNegativeValues = simForBatch.Configuration.CheckForNegativeValues,
+               RunForAllOutputs = true
+            };
+
+            await _simulationExporter.RunAndExport(simulation, outputFolder, defaultSimulationName, simulationRunOptions, simulationExportMode);
             _allSimulationNames.Add(defaultSimulationName);
             foreach (var parameterValueSet in simForBatch.ParameterVariationSets)
             {
                string currentName = $"{defaultSimulationName}_{parameterValueSet.Name}";
                var command = updateParameters(allParameters, parameterValueSet);
-               await _simulationExporter.RunAndExport(simulation, outputFolder, currentName, simForBatch.Configuration, batchExportMode);
+               await _simulationExporter.RunAndExport(simulation, outputFolder, currentName, simulationRunOptions, simulationExportMode);
                _allSimulationNames.Add(currentName);
                _commandTask.ResetChanges(command, _executionContext);
             }

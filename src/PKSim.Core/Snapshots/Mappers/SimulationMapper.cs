@@ -13,6 +13,7 @@ using PKSim.Core.Services;
 using SnapshotSimulation = PKSim.Core.Snapshots.Simulation;
 using ModelSimulation = PKSim.Core.Model.Simulation;
 using ModelPopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -199,7 +200,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (!snapshot.HasResults)
             return;
 
-         await _simulationRunner.RunSimulation(simulation, createDefaultAnalysis: false);
+         await _simulationRunner.RunSimulation(simulation);
       }
 
       private Task<SimulationTimeProfileChart[]> individualAnalysesFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, PKSimProject project)

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
@@ -12,6 +13,7 @@ using PKSim.Infrastructure.ProjectConverter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.IntegrationTests
 {
@@ -25,6 +27,7 @@ namespace PKSim.IntegrationTests
       protected Compound _metabolite;
       protected IndividualEnzyme _cyp3A4;
       private IndividualEnzyme _cyp2D6;
+      protected SimulationRunOptions _simulationRunOptions;
 
       public override void GlobalContext()
       {
@@ -39,6 +42,9 @@ namespace PKSim.IntegrationTests
 
          _cyp2D6 = AddEnzymeTo(_individual, "CYP2D6");
          _parentMetabolizationCYP2D6 = AddEnzymaticProcess(_compound, _cyp2D6);
+
+         _simulationRunOptions = new SimulationRunOptions {RaiseEvents = false};
+
       }
 
       protected EnzymaticProcess AddEnzymaticProcess(Compound compound, IndividualEnzyme enzyme)
@@ -129,10 +135,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_run_the_simulation()
+      public async Task should_be_able_to_run_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
 

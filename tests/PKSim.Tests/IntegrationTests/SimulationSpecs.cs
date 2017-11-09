@@ -1,10 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
-using NUnit.Framework;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
@@ -12,13 +17,9 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
-using PKSim.Spikes;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.IntegrationTests
 {
@@ -28,6 +29,7 @@ namespace PKSim.IntegrationTests
       protected Individual _individual;
       protected Protocol _protocol;
       protected IGlobalPKAnalysisTask _globalPKAnalysisTask;
+      protected SimulationRunOptions _simulationRunOptions;
 
       public override void GlobalContext()
       {
@@ -36,6 +38,7 @@ namespace PKSim.IntegrationTests
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
          _globalPKAnalysisTask = IoC.Resolve<IGlobalPKAnalysisTask>();
+         _simulationRunOptions = new SimulationRunOptions();
       }
    }
 
@@ -81,10 +84,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_simulate_the_simulation()
+      public async Task should_be_able_to_simulate_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
 
@@ -113,10 +116,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_simulate_the_simulation()
+      public async Task should_be_able_to_simulate_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
 
@@ -129,7 +132,7 @@ namespace PKSim.IntegrationTests
          foreach (var container in _simulation.Model.Root.GetAllChildren<IContainer>(x => x.IsNamed(compound)))
          {
             if (container.ContainerType != ContainerType.Molecule)
-               errorList.Add(string.Format("{0} {1}", container.ContainerType, pathResolver.PathFor(container)));
+               errorList.Add($"{container.ContainerType} {pathResolver.PathFor(container)}");
          }
 
          Assert.AreEqual(errorList.Count, 0, errorList.ToString("\n"));
@@ -149,12 +152,12 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_simulate_the_simulation()
+      public async Task should_be_able_to_simulate_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
          var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
          simSettingsRetriever.CreatePKSimDefaults(_simulation);
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
    }
@@ -172,12 +175,12 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_simulate_the_simulation()
+      public async Task should_be_able_to_simulate_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
          var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
          simSettingsRetriever.CreatePKSimDefaults(_simulation);
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
    }
@@ -217,8 +220,8 @@ namespace PKSim.IntegrationTests
       {
          var msv = _buildConfiguration.MoleculeStartValues;
          var moleculesWithAllowedNegativeValues = (from molecule in msv
-                                                   where molecule.NegativeValuesAllowed
-                                                   select molecule).ToList();
+            where molecule.NegativeValuesAllowed
+            select molecule).ToList();
          moleculesWithAllowedNegativeValues.Count.ShouldBeEqualTo(2);
       }
 
@@ -229,10 +232,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_simulate_the_simulation()
+      public async Task should_be_able_to_simulate_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
 
@@ -305,7 +308,7 @@ namespace PKSim.IntegrationTests
          }
 
          //check for ontogeny parameter
-         var simParameterOnto = _simulation.Model.Root.EntityAt<IParameter>(_enzymeName,(CoreConstants.Parameter.ONTOGENY_FACTOR));
+         var simParameterOnto = _simulation.Model.Root.EntityAt<IParameter>(_enzymeName, (CoreConstants.Parameter.ONTOGENY_FACTOR));
          checkOntogenyFactorIsDefinedAsTableFormula(simParameterOnto, errorList, CoreConstants.Parameter.ONTOGENY_FACTOR);
 
          Assert.IsTrue(errorList.Count == 0, errorList.ToString("\n"));
@@ -317,7 +320,7 @@ namespace PKSim.IntegrationTests
          //make sure table formula is exported in Non-Derivated mode!
          var tableFormula = formula.DowncastTo<TableFormula>();
          if (tableFormula.UseDerivedValues)
-            errorList.Add(string.Format("Parameter '{0}' was replaced with table formula in 'useDerivedValues' mode", parameterKey));
+            errorList.Add($"Parameter '{parameterKey}' was replaced with table formula in 'useDerivedValues' mode");
       }
 
       //check thet simulation parameter is table in nonderivedvalues-mode
@@ -325,7 +328,7 @@ namespace PKSim.IntegrationTests
       {
          var formula = simParameter.Formula;
          if (formula.IsAnImplementationOf<DistributedTableFormula>()) return;
-         errorList.Add(string.Format("Parameter '{0}' was not replaced with table formula (formula type is '{1})", parameterKey, simParameter.Formula.GetType().Name));
+         errorList.Add($"Parameter '{parameterKey}' was not replaced with table formula (formula type is '{simParameter.Formula.GetType().Name})");
       }
    }
 
@@ -347,10 +350,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_simulate_the_simulation()
+      public async Task should_be_able_to_simulate_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
    }
@@ -373,10 +376,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_simulate_the_simulation()
+      public async Task should_be_able_to_simulate_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
    }
@@ -596,10 +599,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_simulate_the_simulation()
+      public async Task should_be_able_to_simulate_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
    }
@@ -677,10 +680,10 @@ namespace PKSim.IntegrationTests
          _simulation.ShouldNotBeNull();
       }
 
-      protected void RunSimulationTest()
+      protected async Task RunSimulationTest()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         var simulationEngine = IoC.Resolve<ISimulationRunner>();
+         await simulationEngine.RunSimulation(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
 
@@ -701,9 +704,9 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_simulate_the_simulation()
+      public async Task should_be_able_to_simulate_the_simulation()
       {
-         RunSimulationTest();
+         await RunSimulationTest();
       }
 
       [Observation]
@@ -725,10 +728,7 @@ namespace PKSim.IntegrationTests
       {
       }
 
-      protected override IEnumerable<PartialProcess> PartialProcesses
-      {
-         get { return _compoundProcessRepo.All<EnzymaticProcess>(); }
-      }
+      protected override IEnumerable<PartialProcess> PartialProcesses => _compoundProcessRepo.All<EnzymaticProcess>();
    }
 
    public abstract class When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_active_transport_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor
@@ -737,10 +737,7 @@ namespace PKSim.IntegrationTests
       {
       }
 
-      protected override IEnumerable<PartialProcess> PartialProcesses
-      {
-         get { return _compoundProcessRepo.All<TransportPartialProcess>(); }
-      }
+      protected override IEnumerable<PartialProcess> PartialProcesses => _compoundProcessRepo.All<TransportPartialProcess>();
    }
 
    public class When_creating_an_individual_simulation_with_drug_and_competitiv_inhibitor_for_all_metabolic_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_metabolic_processes

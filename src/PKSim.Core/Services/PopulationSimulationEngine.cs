@@ -20,7 +20,6 @@ namespace PKSim.Core.Services
       private readonly ISimulationResultsSynchronizer _simulationResultsSynchronizer;
       private readonly IPopulationExportTask _populationExporter;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
-      private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
       private readonly ICoreUserSettings _userSettings;
       private readonly IPopulationSimulationAnalysisSynchronizer _populationSimulationAnalysisSynchronizer;
 
@@ -31,7 +30,6 @@ namespace PKSim.Core.Services
          ISimulationResultsSynchronizer simulationResultsSynchronizer,
          IPopulationExportTask populationExporter,
          ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
-         ISimulationPersistableUpdater simulationPersistableUpdater,
          ICoreUserSettings userSettings,
          IPopulationSimulationAnalysisSynchronizer populationSimulationAnalysisSynchronizer)
       {
@@ -41,14 +39,13 @@ namespace PKSim.Core.Services
          _simulationResultsSynchronizer = simulationResultsSynchronizer;
          _populationExporter = populationExporter;
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
-         _simulationPersistableUpdater = simulationPersistableUpdater;
          _userSettings = userSettings;
          _populationSimulationAnalysisSynchronizer = populationSimulationAnalysisSynchronizer;
          _populationRunner.Terminated += terminated;
          _populationRunner.SimulationProgress += simulationProgress;
       }
 
-      public async Task RunAsync(PopulationSimulation populationSimulation)
+      public async Task RunAsync(PopulationSimulation populationSimulation, SimulationRunOptions simulationRunOptions)
       {
          _progressUpdater = _progressManager.Create();
          _progressUpdater.Initialize(populationSimulation.NumberOfItems, PKSimConstants.UI.Calculating);
@@ -59,7 +56,6 @@ namespace PKSim.Core.Services
          {
             var populationData = _populationExporter.CreatePopulationDataFor(populationSimulation);
             var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(populationSimulation, shouldCloneModel: false);
-            _simulationPersistableUpdater.UpdatePersistableFromSettings(populationSimulation);
 
             _eventPublisher.PublishEvent(new SimulationRunStartedEvent());
             var populationRunResults = await _populationRunner.RunPopulationAsync(modelCoreSimulation, populationData, populationSimulation.AgingData.ToDataTable());
@@ -96,17 +92,6 @@ namespace PKSim.Core.Services
          _populationRunner.SimulationProgress -= simulationProgress;
       }
 
-      public void Run(PopulationSimulation simulation)
-      {
-         RunAsync(simulation).Wait();
-      }
-
-      public Task RunForBatch(PopulationSimulation populationSimulation, bool checkNegativeValues)
-      {
-         //no specific implementation for population run
-         return RunAsync(populationSimulation);
-      }
-
       public void Stop()
       {
          _populationRunner.StopSimulation();
@@ -114,7 +99,7 @@ namespace PKSim.Core.Services
 
       private void simulationProgress(object sender, PopulationSimulationProgressEventArgs e)
       {
-         _progressUpdater.ReportProgress( e.NumberOfCalculatedSimulation, PKSimConstants.UI.CalculationPopulationSimulation(e.NumberOfCalculatedSimulation, e.NumberOfSimulations));
+         _progressUpdater.ReportProgress(e.NumberOfCalculatedSimulation, PKSimConstants.UI.CalculationPopulationSimulation(e.NumberOfCalculatedSimulation, e.NumberOfSimulations));
       }
    }
 }

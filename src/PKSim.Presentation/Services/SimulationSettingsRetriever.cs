@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
 {
@@ -31,10 +31,23 @@ namespace PKSim.Presentation.Services
          _userSettings = userSettings;
       }
 
-      public OutputSelections SettingsFor<TSimulation>(TSimulation simulation) where TSimulation : Simulation
+      public OutputSelections SettingsFor(Simulation simulation)
       {
          updateDefaultSettings(simulation);
-         using (var presenter = _applicationController.Start<ISimulationOutputSelectionPresenter<TSimulation>>())
+         switch (simulation)
+         {
+            case IndividualSimulation individualSimulation:
+               return outputSelectionFor(individualSimulation);
+            case PopulationSimulation populationSimulation:
+               return outputSelectionFor(populationSimulation);
+            default:
+               return null;
+         }
+      }
+
+      private OutputSelections outputSelectionFor<T>(T simulation) where T : Simulation
+      {
+         using (var presenter = _applicationController.Start<ISimulationOutputSelectionPresenter<T>>())
          {
             return presenter.CreateSettings(simulation);
          }
@@ -92,7 +105,7 @@ namespace PKSim.Presentation.Services
             var key = _keyPathMapper.MapFrom(selectedQuantity);
             if (!quantityCache.Contains(key)) continue;
             var selectedQuantityType = selectedQuantity.QuantityType;
-            
+
             //we only select quantity that have the exact same type
             quantityCache[key].Where(q => q.QuantityType == selectedQuantityType)
                .Each(q => settings.AddOutput(selectionFrom(q)));

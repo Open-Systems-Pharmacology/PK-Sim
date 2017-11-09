@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
@@ -19,10 +20,10 @@ namespace PKSim.IntegrationTests
          sut = IoC.Resolve<IRenameBuildingBlockTask>();
       }
 
-      public void VerifySimulationCanRun(IndividualSimulation simulation)
+      public async Task VerifySimulationCanRun(IndividualSimulation simulation)
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(simulation);
+         await simulationEngine.RunAsync(simulation, new Core.Services.SimulationRunOptions());
          simulation.HasResults.ShouldBeTrue();
       }
    }
@@ -58,9 +59,9 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_run_the_simulation()
+      public async Task should_be_able_to_run_the_simulation()
       {
-         VerifySimulationCanRun(_simulation);
+         await VerifySimulationCanRun(_simulation);
       }
    }
 
@@ -97,11 +98,11 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_run_the_simulation()
+      public async Task should_be_able_to_run_the_simulation()
       {
-         VerifySimulationCanRun(_s1);
-         VerifySimulationCanRun(_s2);
-         VerifySimulationCanRun(_s3);
+         await VerifySimulationCanRun(_s1);
+         await VerifySimulationCanRun(_s2);
+         await VerifySimulationCanRun(_s3);
       }
    }
 }

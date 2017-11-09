@@ -9,7 +9,7 @@ namespace PKSim.CLI.Core.RunOptions
       private string _outputFolder;
       private string _inputFolder;
       public IBusinessRuleSet Rules { get; } = new BusinessRuleSet();
-      public BatchExportMode ExportMode { get; set; }
+      public SimulationExportMode ExportMode { get; set; }
 
       public JsonRunOptions()
       {

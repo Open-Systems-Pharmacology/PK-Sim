@@ -12,12 +12,12 @@ namespace PKSim.CLI.Services
       private readonly ConcurrentDictionary<string, FileLogger> _loggers = new ConcurrentDictionary<string, FileLogger>();
       private readonly StreamWriter _streamWriter;
 
-      public FileLoggerProvider(string logFileFullPath, LogLevel logLevel)
+      public FileLoggerProvider(string logFileFullPath, LogLevel logLevel, bool append)
       {
          _logLevel = logLevel;
          _logFileFullPath = logFileFullPath;
          ensureLogDirectoryExists();
-         _streamWriter = new StreamWriter(_logFileFullPath, append: false);
+         _streamWriter = new StreamWriter(_logFileFullPath, append);
       }
 
       public ILogger CreateLogger(string categoryName)
