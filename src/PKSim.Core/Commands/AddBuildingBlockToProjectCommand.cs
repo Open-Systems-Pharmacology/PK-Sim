@@ -23,6 +23,7 @@ namespace PKSim.Core.Commands
       {
          var project = context.CurrentProject;
          project.AddBuildingBlock(_buildingBlockToAdd);
+         _buildingBlockToAdd.HasChanged = true;
          Description = PKSimConstants.Command.AddEntityToContainer(ObjectType, _buildingBlockToAdd.Name, context.TypeFor(context.CurrentProject), project.Name);
          ExtendedDescription = context.ReportFor(_buildingBlockToAdd);
          context.Register(_buildingBlockToAdd);

@@ -1,22 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.Services
@@ -240,7 +240,7 @@ namespace PKSim.Presentation.Services
          return _buildingBlockRepository.All<TBuildingBlock>();
       }
 
-      public IPKSimCommand AddToProject<TBuildingBlock>(TBuildingBlock buildingBlock, bool editBuildingBlock = false, bool addToHistory=true) where TBuildingBlock : class, IPKSimBuildingBlock
+      public IPKSimCommand AddToProject<TBuildingBlock>(TBuildingBlock buildingBlock, bool editBuildingBlock = false, bool addToHistory = true) where TBuildingBlock : class, IPKSimBuildingBlock
       {
          if (!RenameBuildingBlockIfAlreadyUsed(buildingBlock))
             return new PKSimEmptyCommand();
@@ -248,7 +248,7 @@ namespace PKSim.Presentation.Services
          var addToProjectCommand = new AddBuildingBlockToProjectCommand(buildingBlock, _executionContext).Run(_executionContext);
          addToProjectCommand.ExtendedDescription = _executionContext.ReportFor(buildingBlock);
 
-         if(addToHistory)
+         if (addToHistory)
             AddCommandToHistory(addToProjectCommand);
 
          if (editBuildingBlock)
@@ -414,7 +414,7 @@ namespace PKSim.Presentation.Services
       /// <param name="buildingBlock">building block to add</param>
       /// <param name="editBuildingBlock">If set to <c>true</c>, the edit workflow is started automatically. Default is true</param>
       /// <param name="addToHistory">If set to <c>true</c>, the command is added to the history. Default is true</param>
-      public IPKSimCommand AddToProject(TBuildingBlock buildingBlock, bool editBuildingBlock = true, bool addToHistory=true)
+      public IPKSimCommand AddToProject(TBuildingBlock buildingBlock, bool editBuildingBlock = true, bool addToHistory = true)
       {
          return _buildingBlockTask.AddToProject(buildingBlock, editBuildingBlock, addToHistory);
       }
