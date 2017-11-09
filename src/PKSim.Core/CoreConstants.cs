@@ -1183,6 +1183,10 @@ namespace PKSim.Core
          public const string AgingDataTableName = "AgingData";
          public const string Japanese = "Japanese_Population";
          public const string Pregnant = "Pregnant";
+         public const string Asian_Tanaka_1996 = "Asian_Tanaka_1996";
+         public const string BlackAmerican_NHANES_1997 = "BlackAmerican_NHANES_1997";
+         public const string MexicanAmericanWhite_NHANES_1997 = "MexicanAmericanWhite_NHANES_1997";
+         public const string WhiteAmerican_NHANES_1997 = "WhiteAmerican_NHANES_1997";
       }
 
       public static class Process

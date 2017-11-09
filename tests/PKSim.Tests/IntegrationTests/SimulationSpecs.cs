@@ -136,13 +136,20 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_PopulationSimulation
+   public abstract class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_PopulationSimulation
    {
       private Population _population;
+      protected string PopulationName { get; }
+
+      protected When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus(string populationName)
+      {
+         PopulationName = populationName;
+      }
 
       public override void GlobalContext()
       {
          base.GlobalContext();
+         _individual = DomainFactoryForSpecs.CreateStandardIndividual(PopulationName);
          _protocol = DomainFactoryForSpecs.CreateStandardIVProtocol();
          _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_population, _compound, _protocol) as PopulationSimulation;
@@ -157,6 +164,54 @@ namespace PKSim.IntegrationTests
          simulationEngine.Run(_simulation);
          _simulation.HasResults.ShouldBeTrue();
       }
+   }
+
+   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Asian_Tanaka_1996 : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
+   {
+      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Asian_Tanaka_1996():
+         base(CoreConstants.Population.Asian_Tanaka_1996){}
+   }
+
+   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_BlackAmerican_NHANES_1997 : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
+   {
+      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_BlackAmerican_NHANES_1997() :
+         base(CoreConstants.Population.BlackAmerican_NHANES_1997)
+      { }
+   }
+
+   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_European_ICRP_2002 : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
+   {
+      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_European_ICRP_2002() :
+         base(CoreConstants.Population.ICRP)
+      { }
+   }
+
+   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Japanese : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
+   {
+      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Japanese() :
+         base(CoreConstants.Population.Japanese)
+      { }
+   }
+
+   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_MexicanAmericanWhite_NHANES_1997 : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
+   {
+      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_MexicanAmericanWhite_NHANES_1997() :
+         base(CoreConstants.Population.MexicanAmericanWhite_NHANES_1997)
+      { }
+   }
+
+   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Preterm : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
+   {
+      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Preterm() :
+         base(CoreConstants.Population.Preterm)
+      { }
+   }
+
+   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_WhiteAmerican_NHANES_1997 : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
+   {
+      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_WhiteAmerican_NHANES_1997() :
+         base(CoreConstants.Population.WhiteAmerican_NHANES_1997)
+      { }
    }
 
    public class When_creating_an_aging_population_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_PopulationSimulation
