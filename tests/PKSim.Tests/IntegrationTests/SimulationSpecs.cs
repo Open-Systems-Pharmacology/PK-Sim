@@ -19,6 +19,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
+using System;
 
 namespace PKSim.IntegrationTests
 {
@@ -136,82 +137,55 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public abstract class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_PopulationSimulation
+   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_for_all_populations : concern_for_PopulationSimulation
    {
-      private Population _population;
-      protected string PopulationName { get; }
-
-      protected When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus(string populationName)
-      {
-         PopulationName = populationName;
-      }
+      private IList<SpeciesPopulation> _allPopulations;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _individual = DomainFactoryForSpecs.CreateStandardIndividual(PopulationName);
          _protocol = DomainFactoryForSpecs.CreateStandardIVProtocol();
-         _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_population, _compound, _protocol) as PopulationSimulation;
+
+         var populationsRepo = IoC.Resolve<IPopulationRepository>();
+         _allPopulations = populationsRepo.All().ToList();
       }
 
       [Observation]
       public void should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
-         var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
-         simSettingsRetriever.CreatePKSimDefaults(_simulation);
-         simulationEngine.Run(_simulation);
-         _simulation.HasResults.ShouldBeTrue();
+         var errors = new List<string>();
+         foreach (var pop in _allPopulations)
+         {
+            //currently simulations with pregnant pop cannot be created
+            if (pop.Name.Equals(CoreConstants.Population.Pregnant))
+               continue; 
+
+            runPopulationSimulationFor(pop.Name, errors);
+         }
+
+         errors.Count.ShouldBeEqualTo(0, errors.ToString("\n"));
       }
-   }
 
-   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Asian_Tanaka_1996 : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
-   {
-      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Asian_Tanaka_1996():
-         base(CoreConstants.Population.Asian_Tanaka_1996){}
-   }
+      private void runPopulationSimulationFor(string populationName, List<string> errors)
+      {
+         try
+         {
+            var individual = DomainFactoryForSpecs.CreateStandardIndividual(populationName);
+            var population = DomainFactoryForSpecs.CreateDefaultPopulation(individual);
+            var simulation = DomainFactoryForSpecs.CreateSimulationWith(population, _compound, _protocol) as PopulationSimulation;
 
-   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_BlackAmerican_NHANES_1997 : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
-   {
-      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_BlackAmerican_NHANES_1997() :
-         base(CoreConstants.Population.BlackAmerican_NHANES_1997)
-      { }
-   }
-
-   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_European_ICRP_2002 : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
-   {
-      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_European_ICRP_2002() :
-         base(CoreConstants.Population.ICRP)
-      { }
-   }
-
-   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Japanese : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
-   {
-      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Japanese() :
-         base(CoreConstants.Population.Japanese)
-      { }
-   }
-
-   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_MexicanAmericanWhite_NHANES_1997 : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
-   {
-      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_MexicanAmericanWhite_NHANES_1997() :
-         base(CoreConstants.Population.MexicanAmericanWhite_NHANES_1997)
-      { }
-   }
-
-   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Preterm : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
-   {
-      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_Preterm() :
-         base(CoreConstants.Population.Preterm)
-      { }
-   }
-
-   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_WhiteAmerican_NHANES_1997 : When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus
-   {
-      public When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_WhiteAmerican_NHANES_1997() :
-         base(CoreConstants.Population.WhiteAmerican_NHANES_1997)
-      { }
+            var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
+            var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
+            simSettingsRetriever.CreatePKSimDefaults(simulation);
+            simulationEngine.Run(simulation);
+            simulation.HasResults.ShouldBeTrue();
+         }
+         catch(Exception ex)
+         {
+            var errorMsg = $"Population simulation for the population '{populationName}' failed: {ex.ToString()}";
+            errors.Add(errorMsg);
+         }
+      }
    }
 
    public class When_creating_an_aging_population_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_PopulationSimulation
