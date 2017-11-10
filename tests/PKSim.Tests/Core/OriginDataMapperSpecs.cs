@@ -1,13 +1,16 @@
 ﻿using System.Threading.Tasks;
 using FakeItEasy;
+using NHibernate.Util;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using OriginData = PKSim.Core.Model.OriginData;
+using OriginData = PKSim.Core.Snapshots.OriginData;
+using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
@@ -16,13 +19,16 @@ namespace PKSim.Core
       private ParameterMapper _parameterMapper;
       private IOriginDataTask _originDataTask;
       protected IDimensionRepository _dimensionRepository;
-      private IIndividualModelTask _individualModelTask;
+      protected IIndividualModelTask _individualModelTask;
       private ISpeciesRepository _speciesRepository;
-      protected PKSim.Core.Snapshots.OriginData _snapshot;
-      protected OriginData _originData;
+      protected OriginData _snapshot;
+      protected Model.OriginData _originData;
       protected Parameter _ageSnapshotParameter;
       protected Parameter _heightSnapshotParameter;
       protected Parameter _weightSnapshotParameter;
+      protected Species _species;
+      private SpeciesPopulation _speciesPopulation;
+      private Gender _gender;
 
       protected override Task Context()
       {
@@ -38,14 +44,25 @@ namespace PKSim.Core
          _heightSnapshotParameter = new Parameter {Value = 2};
          _weightSnapshotParameter = new Parameter {Value = 3};
 
-         _originData = new OriginData
+         _species = new Species {Name = "Human"};
+         _speciesPopulation = new SpeciesPopulation {Name = "SpeciesPopulation"};
+         _gender = new Gender {Name = "Unknown"};
+         _species.AddPopulation(_speciesPopulation);
+         _speciesPopulation.AddGender(_gender);
+         
+         A.CallTo(() => _speciesRepository.All()).Returns(new []{_species});
+
+         _originData = new Model.OriginData
          {
             Age = 35,
             AgeUnit = "years",
             Height = 17.8,
             HeightUnit = "m",
             Weight = 73,
-            WeightUnit = "kg"
+            WeightUnit = "kg",
+            Species = _species,
+            SpeciesPopulation = _speciesPopulation,
+            Gender = _gender,
          };
 
          A.CallTo(() => _parameterMapper.ParameterFrom(null, A<string>._, A<IDimension>._)).Returns(null);
@@ -59,7 +76,6 @@ namespace PKSim.Core
 
    public class When_mapping_an_origin_data_to_snapshot : concern_for_OriginDataMapper
    {
-
       protected override async Task Because()
       {
          _snapshot = await sut.MapToSnapshot(_originData);
@@ -78,22 +94,30 @@ namespace PKSim.Core
          //those parameters where not set in example
          _snapshot.GestationalAge.ShouldBeNull();
       }
-
    }
 
    public class When_mapping_snapshot_origin_data_to_origin_data : concern_for_OriginDataMapper
    {
-      private OriginData _newOriginData;
+      private Model.OriginData _newOriginData;
 
       protected override async Task Context()
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_originData);
-         A.CallTo(() => _dimensionRepository.Mass.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(10);
-         A.CallTo(() => _dimensionRepository.AgeInYears.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Age.Value.Value)).Returns(20);
-         A.CallTo(() => _dimensionRepository.Length.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Height.Value.Value)).Returns(30);
-      }
 
+         var meanWeightParameter = A.Fake<IParameter>();
+         A.CallTo(() => _individualModelTask.MeanWeightFor(A<Model.OriginData>._)).Returns(meanWeightParameter);
+         A.CallTo(() => meanWeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(_originData.Weight);
+
+         var meanHeightParameter = A.Fake<IParameter>();
+         A.CallTo(() => _individualModelTask.MeanHeightFor(A<Model.OriginData>._)).Returns(meanHeightParameter);
+         A.CallTo(() => meanHeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Height.Value.Value)).Returns(_originData.Height.Value);
+
+         var meanAgeParameter = A.Fake<IParameter>();
+         A.CallTo(() => _individualModelTask.MeanAgeFor(A<Model.OriginData>._)).Returns(meanAgeParameter);
+         A.CallTo(() => meanAgeParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Age.Value.Value)).Returns(_originData.Age.Value);
+      }
+      
       protected override async Task Because()
       {
          _newOriginData = await sut.MapToModel(_snapshot);
@@ -105,12 +129,10 @@ namespace PKSim.Core
          _newOriginData.Species.ShouldBeEqualTo(_originData.Species);
          _newOriginData.SpeciesPopulation.ShouldBeEqualTo(_originData.SpeciesPopulation);
          _newOriginData.Gender.ShouldBeEqualTo(_originData.Gender);
-         _newOriginData.Weight.ShouldBeEqualTo(10);
-         _newOriginData.Age.ShouldBeEqualTo(20);
-         _newOriginData.Height.ShouldBeEqualTo(30);
-
+         _newOriginData.Weight.ShouldBeEqualTo(_originData.Weight);
+         _newOriginData.Age.ShouldBeEqualTo(_originData.Age);
+         _newOriginData.Height.ShouldBeEqualTo(_originData.Height);
          _newOriginData.GestationalAge.ShouldBeEqualTo(_originData.GestationalAge);
       }
-
    }
 }

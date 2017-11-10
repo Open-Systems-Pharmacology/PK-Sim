@@ -230,13 +230,12 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<ModelSimulation> createSimulationFrom(SnapshotSimulation snapshot, PKSimProject project)
       {
-         var simulation = await CreateModelLessSimulationFrom(snapshot, project);
-
+         var simulation = await createModelLessSimulationFrom(snapshot, project);
          _simulationModelCreator.CreateModelFor(simulation);
          return simulation;
       }
 
-      public async Task<ModelSimulation> CreateModelLessSimulationFrom(SnapshotSimulation snapshot, PKSimProject project)
+      private async Task<ModelSimulation> createModelLessSimulationFrom(SnapshotSimulation snapshot, PKSimProject project)
       {
          var simulationSubject = simulationSubjectFrom(snapshot, project);
          var compounds = compoundsFrom(snapshot.Compounds, project);

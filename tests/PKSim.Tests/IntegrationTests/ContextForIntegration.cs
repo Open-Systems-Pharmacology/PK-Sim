@@ -43,6 +43,7 @@ namespace PKSim.IntegrationTests
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
             container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
             container.Register<IOntogenyFactorsRetriever, OntogenyFactorsRetriever>();
+            container.Register<ISimulationConstructor, SimulationConstructor>();
 
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
             container.RegisterImplementationOf(A.Fake<IDialogCreator>());

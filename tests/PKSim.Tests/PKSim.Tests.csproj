@@ -206,19 +206,6 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="BatchTool\JsonRunOptionsSpecs.cs" />
-    <Compile Include="BatchTool\BatchToolFactoryForSpecs.cs" />
-    <Compile Include="BatchTool\ContextForBatch.cs" />
-    <Compile Include="BatchTool\InteractionSpecs.cs" />
-    <Compile Include="BatchTool\JsonSerializationSpecs.cs" />
-    <Compile Include="BatchTool\OralSpecs.cs" />
-    <Compile Include="BatchTool\MetabolizationSpecs.cs" />
-    <Compile Include="BatchTool\SimulationExporterSpecs.cs" />
-    <Compile Include="BatchTool\SimulationExportSpecs.cs" />
-    <Compile Include="BatchTool\SpecificBindingSpecs.cs" />
-    <Compile Include="BatchTool\StandardSpecs.cs" />
-    <Compile Include="BatchTool\TransportSpecs.cs" />
-    <Compile Include="BatchTool\TwoPoresSpecs.cs" />
     <Compile Include="CLI\ExportSimulationRunnerSpecs.cs" />
     <Compile Include="CLI\SnapshotRunnerSpecs.cs" />
     <Compile Include="ContextSpecificationWithLocalContainer.cs" />
@@ -301,6 +288,7 @@
     <Compile Include="Extensions\AsyncContextSpecification.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
     <Compile Include="Infrastructure\SimulationComparisonContentLoaderSpecs.cs" />
+    <Compile Include="Infrastructure\SimulationConstructor.cs" />
     <Compile Include="Infrastructure\SnapshotSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\FlatOrganTypeRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\JacobianMatrixXmlSerializerSpecs.cs" />
@@ -557,7 +545,7 @@
     <Compile Include="IntegrationTests\PopulationSimulationSerializationSpecs.cs" />
     <Compile Include="IntegrationTests\ProjectXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\RenameBuildingBlockTaskSpecs.cs" />
-    <Compile Include="IntegrationTests\ReportingSpecs.cs" />
+    <Compile Include="Reporting\ReportingSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationsReporterSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\StringSerializerSpecs.cs" />
@@ -1087,7 +1075,6 @@
     <None Include="Data\515_UnitTest.pksim5" />
     <None Include="Data\6.3.2_GFR_TS.pksim5" />
     <None Include="Data\631_EnzymesOntogeny.pksim5" />
-    <None Include="Data\BatchFiles\interaction.json" />
     <None Include="Data\BuildingBlockRename_611.pksim5" />
     <None Include="Data\ChartTemplate_531.pksim5" />
     <None Include="Data\Individual_553.pksim5" />
@@ -1099,13 +1086,6 @@
     <None Include="Data\PartialProcess_554.pksim5" />
     <None Include="Data\PopSimTest.pksim5" />
     <None Include="Data\PopulationAnalysis_531.pksim5" />
-    <None Include="Data\BatchFiles\specific_binding.json" />
-    <None Include="Data\BatchFiles\transport.json" />
-    <None Include="Data\BatchFiles\oral.json" />
-    <None Include="Data\BatchFiles\two_pores.json" />
-    <None Include="Data\BatchFiles\metabolization.json" />
-    <None Include="Data\BatchFiles\two_parameter_sets.json" />
-    <None Include="Data\BatchFiles\standard.json" />
     <None Include="Data\EHC_Convert_Test_522.pksim5" />
     <None Include="Data\IntegrationTests\IntegrationTests_NonOral.pkprj" />
     <None Include="Data\IntegrationTests\IntegrationTests_NonOral_Export_42\01_Human_3Comp_IVSingle_42.xls" />

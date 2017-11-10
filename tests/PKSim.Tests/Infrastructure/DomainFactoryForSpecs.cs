@@ -31,7 +31,7 @@ namespace PKSim.Infrastructure
          var objectCreator = IoC.Resolve<ISnapshotObjectCreator>();
          var compoundMapper = IoC.Resolve<PKSim.Core.Snapshots.Mappers.CompoundMapper>();
 
-         var compoundSnapshot = objectCreator.StandardCompound(lipophilicity: -2, fractionUnbound: 0.8, molWeight: 4e-7, solubilityAtRefPh: 1e-7).Result;
+         var compoundSnapshot = objectCreator.StandardCompound(lipophilicity: -2, fractionUnbound: 0.8, molWeight: 400, solubilityAtRefPh: 1e-7).Result;
          return compoundMapper.MapToModel(compoundSnapshot).Result;
       }
 
@@ -90,14 +90,8 @@ namespace PKSim.Infrastructure
 
       public static void AddModelToSimulation(Simulation simulation)
       {
-         var simModelConstructor = IoC.Resolve<ISimulationModelCreator>();
-         simModelConstructor.CreateModelFor(simulation);
-         simulation.Solver.Parameter(Constants.Parameters.ABS_TOL).Value = CoreConstants.DEFAULT_ABS_TOL;
-         simulation.Solver.Parameter(Constants.Parameters.REL_TOL).Value = CoreConstants.DEFAULT_REL_TOL;
-
-         //TODO
-         var registrationTask = IoC.Resolve<IRegistrationTask>();
-         registrationTask.Register(simulation);
+         var simModelConstructor = IoC.Resolve<ISimulationConstructor>();
+         simModelConstructor.AddModelToSimulation(simulation);
       }
 
       public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject, Compound compound, Protocol protocol, bool allowAging = false)
@@ -128,8 +122,17 @@ namespace PKSim.Infrastructure
          ModelProperties modelProperties, 
          bool allowAging = false)
       {
-         var snapshotObjectCreator = IoC.Resolve<ISnapshotObjectCreator>();
-         return snapshotObjectCreator.CreateModelLessSimulationWith(simulationSubject, compounds, protocols, modelProperties, allowAging).Result;
+         var simModelConstructor = IoC.Resolve<ISimulationConstructor>();
+         var simulationConstruction = new SimulationConstruction
+         {
+            SimulationSubject = simulationSubject,
+            TemplateCompounds = compounds,
+            TemplateProtocols = protocols,
+            ModelProperties = modelProperties,
+            AllowAging = allowAging,
+            SimulationName = "simulation",
+         };
+         return simModelConstructor.CreateModelLessSimulationWith(simulationConstruction);
       }
 
       public static Population CreateDefaultPopulation(Individual individual)

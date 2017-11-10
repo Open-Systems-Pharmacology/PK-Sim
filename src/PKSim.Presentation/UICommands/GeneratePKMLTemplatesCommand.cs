@@ -51,7 +51,7 @@ namespace PKSim.Presentation.UICommands
          var individual = await _snapshotObjectCreator.DefaultIndividual();
          project.Individuals = new[] {individual};
 
-         var compound = await _snapshotObjectCreator.StandardCompound(lipophilicity: 3, fractionUnbound: 0.1, molWeight: 4e-7, name:"Standard Molecule");
+         var compound = await _snapshotObjectCreator.StandardCompound(lipophilicity: 3, fractionUnbound: 0.1, molWeight: 400, name:"Standard Molecule");
          compound.Name = "Standard Molecule";
          project.Compounds = new[] {compound};
 

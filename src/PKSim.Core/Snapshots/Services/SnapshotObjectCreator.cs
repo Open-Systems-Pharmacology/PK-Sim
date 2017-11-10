@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
@@ -25,29 +23,24 @@ namespace PKSim.Core.Snapshots.Services
       Task<Individual> DefaultIndividual(string name = "Ind");
       Task<Compound> StandardCompound(double lipophilicity, double fractionUnbound, double molWeight, double solubilityAtRefPh = 9999, double refPh = 7, string name = "Drug");
       Task<Protocol> SimpleProtocol(double dose, string doseUnit, ApplicationType applicationType, string name = "Protocol");
-
       Task<Simulation> SnapshotSimulationFor(SimulationConstruction simulationConstruction);
       Task<Model.Simulation> SimulationFor(SimulationConstruction simulationConstruction);
-      Task<Model.Simulation> CreateModelLessSimulationWith(ISimulationSubject simulationSubject, IReadOnlyList<Model.Compound> compounds, IReadOnlyList<Model.Protocol> protocols, ModelProperties modelProperties, bool allowAging);
    }
 
    public class SnapshotObjectCreator : ISnapshotObjectCreator
    {
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly IndividualMapper _individualMapper;
-      private readonly SimulationMapper _simulationMapper;
       private readonly ProjectMapper _projectMapper;
 
       public SnapshotObjectCreator(
          IDefaultIndividualRetriever defaultIndividualRetriever,
          IndividualMapper individualMapper,
-         SimulationMapper simulationMapper,
          ProjectMapper projectMapper
       )
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _individualMapper = individualMapper;
-         _simulationMapper = simulationMapper;
          _projectMapper = projectMapper;
       }
 
@@ -136,7 +129,8 @@ namespace PKSim.Core.Snapshots.Services
       {
          var project = new Project
          {
-            Individuals = new[] {simulationConstruction.Individual},
+            Individuals = simulationConstruction.Individual != null ? new[] {simulationConstruction.Individual} : null,
+            Populations = simulationConstruction.Population != null ? new[] {simulationConstruction.Population} : null,
             Compounds = simulationConstruction.Compounds,
             Protocols = simulationConstruction.Protocols,
          };
@@ -146,27 +140,6 @@ namespace PKSim.Core.Snapshots.Services
 
          var pksimProject = await _projectMapper.MapToModel(project);
          return pksimProject.BuildingBlockByName<Model.Simulation>(simulationConstruction.SimulationName);
-      }
-
-      public async Task<Model.Simulation> CreateModelLessSimulationWith(ISimulationSubject simulationSubject, IReadOnlyList<Model.Compound> compounds, IReadOnlyList<Model.Protocol> protocols, ModelProperties modelProperties, bool allowAging)
-      {
-         var pksimProject = new PKSimProject();
-         pksimProject.AddBuildingBlock(simulationSubject);
-         compounds.Each(pksimProject.AddBuildingBlock);
-         protocols.Each(pksimProject.AddBuildingBlock);
-
-         var simulationConstruction = new SimulationConstruction
-         {
-            AllowAging = allowAging,
-            ModelName = modelProperties.ModelConfiguration.ModelName,
-            Compounds = compounds.Select(x => new Compound {Name = x.Name}).ToArray(),
-            Protocols = protocols.Select(x => new Protocol {Name = x.Name}).ToArray(),
-            Individual = simulationSubject.IsAnImplementationOf<Model.Individual>() ? new Individual {Name = simulationSubject.Name} : null,
-            Population = simulationSubject.IsAnImplementationOf<Model.Population>() ? new Population {Name = simulationSubject.Name} : null,
-         };
-
-         var simulationSnapshot = await SnapshotSimulationFor(simulationConstruction);
-         return await _simulationMapper.CreateModelLessSimulationFrom(simulationSnapshot, pksimProject);
       }
    }
 }
