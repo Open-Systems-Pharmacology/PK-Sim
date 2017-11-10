@@ -86,7 +86,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
       private static void updateFractionUnboundParameterInContainer(IContainer container)
       {
-         container.Parameter(ConverterConstants.Parameter.FractionUnboundPlasma).Name = CoreConstants.Parameter.FractionUnbound;
+         container.Parameter(ConverterConstants.Parameter.FractionUnboundPlasma).Name = CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE;
       }
 
       public void UpdateGainPerChargeInAlternatives(Compound compound, bool updateValues = true)

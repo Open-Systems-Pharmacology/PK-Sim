@@ -187,12 +187,12 @@ namespace PKSim.Presentation
          _solValue = 100;
          _gainPerChargeValue = 1000;
          A.CallTo(() => _formulaFactory.CreateTableFormula()).Returns(new TableFormula());
-         var refPh = DomainHelperForSpecs.ConstantParameterWithValue(_refPhValue).WithName(CoreConstants.Parameter.RefpH).WithDimension(DomainHelperForSpecs.NoDimension());
-         var solubilty = DomainHelperForSpecs.ConstantParameterWithValue(_solValue).WithName(CoreConstants.Parameter.SolubilityAtRefpH).WithDimension(solDim);
+         var refPh = DomainHelperForSpecs.ConstantParameterWithValue(_refPhValue).WithName(CoreConstants.Parameter.REFERENCE_PH).WithDimension(DomainHelperForSpecs.NoDimension());
+         var solubilty = DomainHelperForSpecs.ConstantParameterWithValue(_solValue).WithName(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH).WithDimension(solDim);
          var gainPerCharge = DomainHelperForSpecs.ConstantParameterWithValue(_gainPerChargeValue).WithName(CoreConstants.Parameter.SolubilityGainPerCharge).WithDimension(DomainHelperForSpecs.NoDimension());
          _solubility_pKa_pH_Factor = new PKSimParameter().WithName(CoreConstants.Parameter.SOLUBILITY_P_KA__P_H_FACTOR);
          _solubility_pKa_pH_Factor.Formula = new ExplicitFormula("10 * (pH +1)");
-         _solubility_pKa_pH_Factor.Formula.AddObjectPath(new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, CoreConstants.Parameter.RefpH}).WithAlias("pH"));
+         _solubility_pKa_pH_Factor.Formula.AddObjectPath(new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, CoreConstants.Parameter.REFERENCE_PH}).WithAlias("pH"));
          _compound.Add(refPh);
          _compound.Add(solubilty);
          _compound.Add(gainPerCharge);

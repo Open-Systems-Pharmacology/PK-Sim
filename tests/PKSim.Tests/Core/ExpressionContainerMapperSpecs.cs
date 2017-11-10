@@ -41,7 +41,7 @@ namespace PKSim.Core
 
          _transporterExpressionContainer.Add(_transporterRelativeExpressionParameter);
 
-         _individual = new Individual {OriginData = new OriginData {Species = new Species().WithName("Human")}};
+         _individual = new Individual {OriginData = new  Model.OriginData {Species = new Species().WithName("Human")}};
 
          _expressionContainerMapperContext = new ExpressionContainerMapperContext
          {

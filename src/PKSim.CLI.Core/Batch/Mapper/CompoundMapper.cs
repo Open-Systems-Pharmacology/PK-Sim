@@ -48,7 +48,7 @@ namespace PKSim.Core.Batch.Mapper
             CoreConstants.Parameter.LIPOPHILICITY, batchCompound.Lipophilicity);
 
          setValue(compound, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND,
-            CoreConstants.Parameter.FractionUnbound, batchCompound.FractionUnbound);
+            CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE, batchCompound.FractionUnbound);
 
          setValue(compound, Constants.Parameters.MOL_WEIGHT, batchCompound.MolWeight);
 
@@ -63,10 +63,10 @@ namespace PKSim.Core.Batch.Mapper
          setValue(compound, CoreConstants.Parameter.IS_SMALL_MOLECULE, batchCompound.IsSmallMolecule ? 1 : 0);
 
          setValue(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY,
-            CoreConstants.Parameter.SolubilityAtRefpH, batchCompound.SolubilityAtRefpH);
+            CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH, batchCompound.SolubilityAtRefpH);
 
          setValue(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY,
-            CoreConstants.Parameter.RefpH, batchCompound.RefpH);
+            CoreConstants.Parameter.REFERENCE_PH, batchCompound.RefpH);
 
          for (int i = 0; i < batchCompound.PkaTypes.Count; i++)
          {

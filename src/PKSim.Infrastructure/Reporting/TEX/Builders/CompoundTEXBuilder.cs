@@ -240,8 +240,8 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
          Action<DataRow, ParameterAlternative> fillColumns = (row, alternative) =>
             {
-               setParameterValue(alternative.Parameter(CoreConstants.Parameter.RefpH), row, PKSimConstants.UI.RefpH);
-               setParameterValue(alternative.Parameter(CoreConstants.Parameter.SolubilityAtRefpH), row, PKSimConstants.UI.RefSolubility);
+               setParameterValue(alternative.Parameter(CoreConstants.Parameter.REFERENCE_PH), row, PKSimConstants.UI.RefpH);
+               setParameterValue(alternative.Parameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH), row, PKSimConstants.UI.RefSolubility);
                setParameterValue(alternative.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge), row, PKSimConstants.UI.SolubilityGainPerCharge);
             };
 
@@ -270,7 +270,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
          Action<DataRow, ParameterAlternativeWithSpecies> fillColumns = (row, alternative) =>
             {
-               setParameterValue(alternative.Parameter(CoreConstants.Parameter.FractionUnbound), row, PKSimConstants.UI.FractionUnbound);
+               setParameterValue(alternative.Parameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE), row, PKSimConstants.UI.FractionUnbound);
                row[PKSimConstants.UI.Species] = alternative.Species.DisplayName;
             };
 

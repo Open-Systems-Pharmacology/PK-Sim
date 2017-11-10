@@ -913,11 +913,11 @@ namespace PKSim.Core
          public const string ApplicationRate = "Application rate";
          public const string Permeability = "Permeability";
          public const string SpecificIntestinalPermeability = "Specific intestinal permeability (transcellular)";
-         public const string FractionUnbound = "Fraction unbound (plasma, reference value)";
-         public const string SolubilityAtRefpH = "Solubility at reference pH";
+         public const string FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE = "Fraction unbound (plasma, reference value)";
+         public const string SOLUBILITY_AT_REFERENCE_PH = "Solubility at reference pH";
          public const string SolubilityGainPerCharge = "Solubility gain per charge";
          public const string Solubility = "Solubility";
-         public const string RefpH = "Reference pH";
+         public const string REFERENCE_PH = "Reference pH";
          public const string UndefinedOntogeny = "Undefined";
          public const string TotalDrugMass = "Total drug mass";
          public const string Species = "Species";
@@ -1125,7 +1125,7 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyCollection<string> CompoundMustInputParameters = new[]
          {
-            LIPOPHILICITY, Constants.Parameters.MOL_WEIGHT, FractionUnbound
+            LIPOPHILICITY, Constants.Parameters.MOL_WEIGHT, FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE
          };
 
          public static readonly IReadOnlyCollection<string> Halogens = new[]

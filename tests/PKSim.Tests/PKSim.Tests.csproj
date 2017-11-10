@@ -267,6 +267,7 @@
     <Compile Include="Core\ObservedDataCollectionMappperSpecs.cs" />
     <Compile Include="Core\ObservedDataMapperSpecs.cs" />
     <Compile Include="Core\OntogenyMapperSpecs.cs" />
+    <Compile Include="Core\OriginDataMapperSpecs.cs" />
     <Compile Include="Core\OutputIntervalMapperSpecs.cs" />
     <Compile Include="Core\OutputSchemaMapperSpecs.cs" />
     <Compile Include="Core\OutputSelectionsMapperSpecs.cs" />

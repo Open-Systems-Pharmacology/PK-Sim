@@ -73,10 +73,10 @@ namespace PKSim.ProjectConverter.v5_2
          var fuGroup= _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
          foreach (var alternative in fuGroup.AllAlternatives)
          {
-            alternative.Parameter(CoreConstants.Parameter.FractionUnbound).ShouldNotBeNull();
+            alternative.Parameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).ShouldNotBeNull();
          }
 
-         _compound.Parameter(CoreConstants.Parameter.FractionUnbound).ShouldNotBeNull();
+         _compound.Parameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).ShouldNotBeNull();
       }
 
       [Observation]

@@ -34,14 +34,14 @@ namespace PKSim.BatchTool
          compound.Name.ShouldBeEqualTo("drug");
          var compoundContainer = _simulation.Model.Root.GetSingleChildByName<IContainer>(compound.Name);
          compoundContainer.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value.ShouldBeEqualTo(3);
-         compoundContainer.Parameter(CoreConstants.Parameter.FractionUnbound).Value.ShouldBeEqualTo(0.8);
+         compoundContainer.Parameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value.ShouldBeEqualTo(0.8);
          compoundContainer.Parameter(OSPSuite.Core.Domain.Constants.Parameters.MOL_WEIGHT).ValueInDisplayUnit.ShouldBeEqualTo(400, 1e-2);
          compoundContainer.Parameter(CoreConstants.Parameter.CL).Value.ShouldBeEqualTo(0);
          compoundContainer.Parameter(CoreConstants.Parameter.BR).Value.ShouldBeEqualTo(0);
          compoundContainer.Parameter(CoreConstants.Parameter.I).Value.ShouldBeEqualTo(0);
          compoundContainer.Parameter(CoreConstants.Parameter.F).Value.ShouldBeEqualTo(1);
-         compoundContainer.Parameter(CoreConstants.Parameter.SolubilityAtRefpH).Value.ShouldBeEqualTo(1e-7);
-         compoundContainer.Parameter(CoreConstants.Parameter.RefpH).Value.ShouldBeEqualTo(9);
+         compoundContainer.Parameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH).Value.ShouldBeEqualTo(1e-7);
+         compoundContainer.Parameter(CoreConstants.Parameter.REFERENCE_PH).Value.ShouldBeEqualTo(9);
          compoundContainer.Parameter(CoreConstants.Parameter.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int) CompoundType.Acid);
          compoundContainer.Parameter(CoreConstants.Parameter.PARAMETER_PKA1).Value.ShouldBeEqualTo(8);
       }

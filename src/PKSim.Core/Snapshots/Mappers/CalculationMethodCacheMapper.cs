@@ -54,7 +54,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<ModelCalculationMethodCache> MapToModel(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache calculationMethodCache)
       {
-         snapshot.Each(cm => useCalculationMethodIn(calculationMethodCache, cm));
+         snapshot?.Each(cm => useCalculationMethodIn(calculationMethodCache, cm));
          return Task.FromResult(calculationMethodCache);
       }
 

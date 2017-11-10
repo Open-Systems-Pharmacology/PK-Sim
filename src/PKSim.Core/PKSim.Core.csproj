@@ -126,29 +126,6 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="Batch\ApplicationProtocol.cs" />
-    <Compile Include="Batch\Compound.cs" />
-    <Compile Include="Batch\CompoundProcess.cs" />
-    <Compile Include="Batch\Event.cs" />
-    <Compile Include="Batch\Formulation.cs" />
-    <Compile Include="Batch\Individual.cs" />
-    <Compile Include="Batch\Mapper\ApplicationProtocolMapper.cs" />
-    <Compile Include="Batch\Mapper\BatchToCoreMapper.cs" />
-    <Compile Include="Batch\Mapper\CompoundMapper.cs" />
-    <Compile Include="Batch\Mapper\FormulationMapper.cs" />
-    <Compile Include="Batch\Mapper\IndividualMapper.cs" />
-    <Compile Include="Batch\Mapper\OriginDataMapper.cs" />
-    <Compile Include="Batch\Mapper\ModelPropertiesMapper.cs" />
-    <Compile Include="Batch\Mapper\PopulationSettingsMapper.cs" />
-    <Compile Include="Batch\Mapper\SimulationMapper.cs" />
-    <Compile Include="Batch\Molecule.cs" />
-    <Compile Include="Batch\OriginData.cs" />
-    <Compile Include="Batch\ParameterVariationSet.cs" />
-    <Compile Include="Batch\PopulationSettings.cs" />
-    <Compile Include="Batch\Simulation.cs" />
-    <Compile Include="Batch\SimulationConfiguration.cs" />
-    <Compile Include="Batch\SimulationConstructor.cs" />
-    <Compile Include="Batch\SimulationForBatch.cs" />
     <Compile Include="Chart\AxisData.cs" />
     <Compile Include="Chart\CurveDataExtensions.cs" />
     <Compile Include="Chart\ISimulationChart.cs" />
@@ -889,6 +866,7 @@
     <Compile Include="Snapshots\Mappers\CurveOptionsMapper.cs" />
     <Compile Include="Snapshots\Mappers\ExpressionContainerMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObservedDataCollectionMappper.cs" />
+    <Compile Include="Snapshots\Mappers\OriginDataMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProcessMappingMapper.cs" />
     <Compile Include="Snapshots\Mappers\SimulationAnalysisContext.cs" />
     <Compile Include="Snapshots\Mappers\CurveChartMapper.cs" />
@@ -934,6 +912,7 @@
     <Compile Include="Snapshots\ObservedDataCollection.cs" />
     <Compile Include="Snapshots\ObservedDataCurveOptions.cs" />
     <Compile Include="Snapshots\Ontogeny.cs" />
+    <Compile Include="Snapshots\OriginData.cs" />
     <Compile Include="Snapshots\OutputInterval.cs" />
     <Compile Include="Snapshots\OutputSchema.cs" />
     <Compile Include="Snapshots\OutputSelections.cs" />
@@ -951,6 +930,7 @@
     <Compile Include="Snapshots\Schema.cs" />
     <Compile Include="Snapshots\SchemaItem.cs" />
     <Compile Include="Snapshots\Services\ISnapshotSerializer.cs" />
+    <Compile Include="Snapshots\Services\SnapshotObjectCreator.cs" />
     <Compile Include="Snapshots\Services\SnapshotTask.cs" />
     <Compile Include="Snapshots\Protocol.cs" />
     <Compile Include="Snapshots\Simulation.cs" />
