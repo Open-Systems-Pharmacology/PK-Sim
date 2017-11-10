@@ -14,6 +14,7 @@ namespace PKSim.Core
       protected INeighborhoodFinalizer _neighborhoodFinalizer;
       protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       protected IIndividualPathWithRootExpander _individualPathWithRootExpander;
+      protected IFormulaTask _formulaTask;
 
       protected override void Context()
       {
@@ -22,7 +23,8 @@ namespace PKSim.Core
          _neighborhoodFinalizer = A.Fake<INeighborhoodFinalizer>();
          _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
          _individualPathWithRootExpander = A.Fake<IIndividualPathWithRootExpander>();
-         sut = new BuildingBlockFinalizer(_referenceResolver, _keywordReplacerTask, _neighborhoodFinalizer, _buildingBlockInSimulationManager, _individualPathWithRootExpander);
+         _formulaTask= A.Fake<IFormulaTask>();
+         sut = new BuildingBlockFinalizer(_referenceResolver, _keywordReplacerTask, _neighborhoodFinalizer, _buildingBlockInSimulationManager, _individualPathWithRootExpander, _formulaTask);
       }
    }
 
@@ -80,6 +82,12 @@ namespace PKSim.Core
       public void should_replace_the_keyword_used_in_the_individuals()
       {
          A.CallTo(() => _keywordReplacerTask.ReplaceIn(_individual)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_expand_all_dynamic_formulas_defined_in_the_individual()
+      {
+         A.CallTo(() => _formulaTask.ExpandDynamicFormulaIn(_individual)).MustHaveHappened();
       }
    }
 

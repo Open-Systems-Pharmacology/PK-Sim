@@ -6,6 +6,8 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.Repositories;
+using PKSim.Infrastructure;
+using System;
 
 namespace PKSim.IntegrationTests
 {
@@ -41,5 +43,29 @@ namespace PKSim.IntegrationTests
        {
           _result.Select(x=>x.Name).ShouldContain(CoreConstants.Population.Japanese);
        }
-    }
+
+      [Observation]
+      public void all_populations_should_be_creatable()
+      {
+         foreach (var pop in _result)
+         {
+            createPopulation(pop.Name).ShouldBeTrue($"Population {pop.Name} could not be created");
+         }
+      }
+
+      private bool createPopulation(string populationName)
+      {
+         try
+         {
+            var individual = DomainFactoryForSpecs.CreateStandardIndividual(populationName);
+            var population = DomainFactoryForSpecs.CreateDefaultPopulation(individual);
+
+            return true;
+         }
+         catch (Exception)
+         {
+            return false;
+         }
+      }
+   }
 }

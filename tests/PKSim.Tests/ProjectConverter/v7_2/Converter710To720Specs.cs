@@ -57,6 +57,15 @@ namespace PKSim.ProjectConverter.v7_2
       }
 
       [Observation]
+      public void should_have_added_the_dynamic_formula_calculation_method_to_the_individual()
+      {
+         foreach (var individual in _allHumanIndividuals)
+         {
+            individual.OriginData.CalculationMethodFor(ConverterConstants.Category.DynamicFormulas).Name.ShouldBeEqualTo(ConverterConstants.CalculationMethod.DynamicSumFormulas);
+         }
+      }
+
+      [Observation]
       public void should_have_converted_the_organ_types_in_all_organ()
       {
          var fristIndiviudal = First<Individual>();

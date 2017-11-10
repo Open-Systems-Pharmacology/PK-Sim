@@ -28,6 +28,7 @@ namespace PKSim.IntegrationTests
       private IRepresentationInfoRepository _representationInfoRepository;
       private IParameterRateRepository _parameterRateRepository;
       private IFlatSpeciesRepository _flatSpeciesRepository;
+      private IPopulationAgeRepository _populationAgeRepository;
 
       public override void GlobalContext()
       {
@@ -38,46 +39,44 @@ namespace PKSim.IntegrationTests
          _flatSpeciesRepository = IoC.Resolve<IFlatSpeciesRepository>();
          _parameterDistributionRepository = IoC.Resolve<IParameterDistributionRepository>();
          _populationRepository = IoC.Resolve<IPopulationRepository>();
+         _populationAgeRepository = IoC.Resolve<IPopulationAgeRepository>();
       }
 
       [Observation]
       public void should_set_min_max_age_population_dependent()
       {
          var ageDependentPops = _populationRepository.All().Where(pop => pop.IsAgeDependent);
-         var ageParameters = _parameterDistributionRepository.All().Where(pd => pd.ParameterName.Equals(CoreConstants.Parameter.AGE)).ToList();
 
          //check [Min..Max] range of the Age parameter for every {Population, Gender}-combination
          foreach (var population in ageDependentPops)
          {
             foreach (var gender in population.Genders)
             {
-               checkAgeParameterBoundsFor(ageParameters, population.Name, gender.Name);
+               checkPopulationAgeSettings(population.Name, gender.Name);
             }
          }
       }
 
-      private void checkAgeParameterBoundsFor(IList<ParameterDistributionMetaData> ageParameters,
-                                              string populationName, string genderName)
+      private void checkPopulationAgeSettings(string populationName, string genderName)
       {
-         var ageParameter = ageParameters.Where(p => p.Population.Equals(populationName) && 
-                                                     p.Gender.Equals(genderName)).First();
-         (var minAge, var maxAge) = getAgeBoundsFor(populationName,genderName);
+         //get age settings for the given population (currently gender-independent, might change in the future)
+         var populationAgeSettings = _populationAgeRepository.PopulationAgeSettingsFrom(populationName);
+         (var minAge, var maxAge) = getAgeBoundsFor(populationName, genderName);
 
-         //---- min/max of the age parameter should be set to min/max age available for this population
-         ageParameter.MinValue.ShouldBeEqualTo(minAge);
-         ageParameter.MinIsAllowed.ShouldBeTrue();
+         //---- min/max of the age should be set to min/max age available for this population
+         populationAgeSettings.MinAge.ShouldBeEqualTo(minAge, $"Min age for {populationName}|{genderName}");
+         populationAgeSettings.MaxAge.ShouldBeEqualTo(maxAge, $"Max age for {populationName}|{genderName}");
 
-         ageParameter.MaxValue.ShouldBeEqualTo(maxAge);
-         ageParameter.MaxIsAllowed.ShouldBeTrue();
+         //default age of the population should be between min and max age
+         populationAgeSettings.DefaultAge.ShouldBeGreaterThanOrEqualTo(minAge);
+         populationAgeSettings.DefaultAge.ShouldBeSmallerThanOrEqualTo(maxAge);
       }
 
       private (double minAge, double maxAge) getAgeBoundsFor(string populationName, string genderName)
       {
          //get all age dependent parameters for the population except the age parameter itself
          var ageDependentParams = _parameterDistributionRepository.All().Where(
-            pd => !pd.ParameterName.Equals(CoreConstants.Parameter.AGE) && 
-                   pd.Population.Equals(populationName) && 
-                   pd.Gender.Equals(genderName)).ToList();
+            pd => pd.Population.Equals(populationName) && pd.Gender.Equals(genderName)).ToList();
 
          var ageValues = (from p in ageDependentParams select p.Age).ToList();
 
@@ -93,7 +92,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_set_the_body_surface_area_parameter_of_an_individual_to_can_be_varied_true_and_can_be_varied_in_population_false()
       {
-         var bsaParameter = _parameterRateRepository.All().First(p =>  string.Equals(p.ParameterName,CoreConstants.Parameter.BSA));
+         var bsaParameter = _parameterRateRepository.All().First(p => string.Equals(p.ParameterName, CoreConstants.Parameter.BSA));
 
          bsaParameter.CanBeVaried.ShouldBeTrue();
          bsaParameter.CanBeVariedInPopulation.ShouldBeFalse();
@@ -102,10 +101,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void only_the_species_human_should_have_the_flag_is_human()
       {
-         _flatSpeciesRepository.All().Each(species =>
-         {
-            species.IsHuman.ShouldBeEqualTo(string.Equals(species.Id, CoreConstants.Species.Human));
-         });
+         _flatSpeciesRepository.All().Each(species => { species.IsHuman.ShouldBeEqualTo(string.Equals(species.Id, CoreConstants.Species.Human)); });
       }
    }
 

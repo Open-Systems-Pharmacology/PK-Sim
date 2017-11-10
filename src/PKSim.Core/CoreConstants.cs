@@ -669,6 +669,7 @@ namespace PKSim.Core
          public static readonly string ViewGroups = "VIEW_GROUPS";
          public static readonly string ViewPopulationGenders = "VIEW_POPULATION_GENDERS";
          public static readonly string ViewPopulations = "VIEW_POPULATIONS";
+         public static readonly string ViewPopulationAge = "VIEW_POPULATION_AGE";
          public static readonly string ViewGenders = "VIEW_GENDERS";
          public static readonly string ViewSpecies = "VIEW_SPECIES";
          public static readonly string ViewParameterValueVersions = "VIEW_PARAMETER_VALUE_VERSIONS";
@@ -1001,6 +1002,7 @@ namespace PKSim.Core
          public const string EMAX = "Emax";
          public const string EC50 = "EC50";
          public const string USE_AS_SUSPENSION = "Use as suspension";
+         public const string WEIGHT_TISSUE = "Weight (tissue)";
 
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
          {
@@ -1180,6 +1182,11 @@ namespace PKSim.Core
          public const string TableParameterExport = "_TableParameters";
          public const string AgingDataTableName = "AgingData";
          public const string Japanese = "Japanese_Population";
+         public const string Pregnant = "Pregnant";
+         public const string Asian_Tanaka_1996 = "Asian_Tanaka_1996";
+         public const string BlackAmerican_NHANES_1997 = "BlackAmerican_NHANES_1997";
+         public const string MexicanAmericanWhite_NHANES_1997 = "MexicanAmericanWhite_NHANES_1997";
+         public const string WhiteAmerican_NHANES_1997 = "WhiteAmerican_NHANES_1997";
       }
 
       public static class Process
