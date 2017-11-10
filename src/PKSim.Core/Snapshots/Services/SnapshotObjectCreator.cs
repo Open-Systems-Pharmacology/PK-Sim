@@ -1,42 +1,53 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Core.Snapshots.Services
 {
-   public class SnapshotConfiguration
+   public class SimulationConstruction
    {
       public Individual Individual { get; set; }
-      public Compound Compound { get; set; }
-      public Protocol Protocol { get; set; }
+      public Population Population { get; set; }
+      public Compound[] Compounds { get; set; }
+      public Protocol[] Protocols { get; set; }
       public string ModelName { get; set; } = CoreConstants.Model.FourComp;
       public string SimulationName { get; set; } = "S";
+      public bool AllowAging { get; set; }
    }
 
    public interface ISnapshotObjectCreator
    {
       Task<Individual> DefaultIndividual(string name = "Ind");
-      Task<Compound> StandardCompound(double lipophilicity, double fu, double molWeight, double solubilityAtRefPh = 9999, double refPh = 7, string name = "Drug");
+      Task<Compound> StandardCompound(double lipophilicity, double fractionUnbound, double molWeight, double solubilityAtRefPh = 9999, double refPh = 7, string name = "Drug");
       Task<Protocol> SimpleProtocol(double dose, string doseUnit, ApplicationType applicationType, string name = "Protocol");
-      Task<Simulation> SnapshotSimulationFor(SnapshotConfiguration snapshotConfiguration);
-      Task<Model.Simulation> SimulationFor(SnapshotConfiguration snapshotConfiguration);
+
+      Task<Simulation> SnapshotSimulationFor(SimulationConstruction simulationConstruction);
+      Task<Model.Simulation> SimulationFor(SimulationConstruction simulationConstruction);
+      Task<Model.Simulation> CreateModelLessSimulationWith(ISimulationSubject simulationSubject, IReadOnlyList<Model.Compound> compounds, IReadOnlyList<Model.Protocol> protocols, ModelProperties modelProperties, bool allowAging);
    }
 
    public class SnapshotObjectCreator : ISnapshotObjectCreator
    {
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly IndividualMapper _individualMapper;
+      private readonly SimulationMapper _simulationMapper;
       private readonly ProjectMapper _projectMapper;
 
       public SnapshotObjectCreator(
          IDefaultIndividualRetriever defaultIndividualRetriever,
          IndividualMapper individualMapper,
-         ProjectMapper projectMapper)
+         SimulationMapper simulationMapper,
+         ProjectMapper projectMapper
+      )
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _individualMapper = individualMapper;
+         _simulationMapper = simulationMapper;
          _projectMapper = projectMapper;
       }
 
@@ -46,17 +57,20 @@ namespace PKSim.Core.Snapshots.Services
          return _individualMapper.MapToSnapshot(individual);
       }
 
-      public Task<Compound> StandardCompound(double lipophilicity, double fu, double molWeight, double solubilityAtRefPh = 9999, double refPh = 7, string name = "Drug")
+      public Task<Compound> StandardCompound(double lipophilicity, double fractionUnbound, double molWeight, double solubilityAtRefPh = 9999, double refPh = 7, string name = "Drug")
       {
          var compound = new Compound
          {
             Name = name,
             Lipophilicity = new[] {createAlternative(CoreConstants.Groups.COMPOUND_LIPOPHILICITY, CoreConstants.Species.Human, createParameter(CoreConstants.Parameter.LIPOPHILICITY, lipophilicity))},
-            FractionUnbound = new[] {createAlternative(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, CoreConstants.Species.Human, createParameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE, fu))},
-            Solubility = new[] {createAlternative(CoreConstants.Groups.COMPOUND_SOLUBILITY, null, 
-               createParameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH, solubilityAtRefPh),
-               createParameter(CoreConstants.Parameter.REFERENCE_PH, refPh)
-               )},
+            FractionUnbound = new[] {createAlternative(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, CoreConstants.Species.Human, createParameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE, fractionUnbound))},
+            Solubility = new[]
+            {
+               createAlternative(CoreConstants.Groups.COMPOUND_SOLUBILITY, null,
+                  createParameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH, solubilityAtRefPh),
+                  createParameter(CoreConstants.Parameter.REFERENCE_PH, refPh)
+               )
+            },
             Parameters = new[]
             {
                createParameter(CoreConstants.Parameter.MOLECULAR_WEIGHT, molWeight),
@@ -95,44 +109,64 @@ namespace PKSim.Core.Snapshots.Services
          return Task.FromResult(protocol);
       }
 
-      public Task<Simulation> SnapshotSimulationFor(SnapshotConfiguration snapshotConfiguration)
+      public Task<Simulation> SnapshotSimulationFor(SimulationConstruction simulationConstruction)
       {
          var simulation = new Simulation
          {
-            Name = snapshotConfiguration.SimulationName,
-            Individual = snapshotConfiguration.Individual.Name,
-            Model = snapshotConfiguration.ModelName,
+            Name = simulationConstruction.SimulationName,
+            Individual = simulationConstruction.Individual?.Name,
+            Population = simulationConstruction.Population?.Name,
+            Model = simulationConstruction.ModelName,
+            AllowAging = simulationConstruction.AllowAging,
 
-            Compounds = new[]
+            Compounds = simulationConstruction.Compounds.Select((compound, index) => new CompoundProperties
             {
-               new CompoundProperties
+               Name = compound.Name,
+               Protocol = new ProtocolSelection
                {
-                  Name = snapshotConfiguration.Compound.Name,
-                  Protocol = new ProtocolSelection
-                  {
-                     Name = snapshotConfiguration.Protocol.Name
-                  }
+                  Name = simulationConstruction.Protocols[index].Name
                }
-            }
+            }).ToArray()
          };
 
          return Task.FromResult(simulation);
       }
 
-      public async Task<Model.Simulation> SimulationFor(SnapshotConfiguration snapshotConfiguration)
+      public async Task<Model.Simulation> SimulationFor(SimulationConstruction simulationConstruction)
       {
          var project = new Project
          {
-            Individuals = new[] {snapshotConfiguration.Individual},
-            Compounds = new[] {snapshotConfiguration.Compound},
-            Protocols = new[] {snapshotConfiguration.Protocol},
+            Individuals = new[] {simulationConstruction.Individual},
+            Compounds = simulationConstruction.Compounds,
+            Protocols = simulationConstruction.Protocols,
          };
 
-         var snapshotsimulation = await SnapshotSimulationFor(snapshotConfiguration);
+         var snapshotsimulation = await SnapshotSimulationFor(simulationConstruction);
          project.Simulations = new[] {snapshotsimulation};
 
          var pksimProject = await _projectMapper.MapToModel(project);
-         return pksimProject.BuildingBlockByName<Model.Simulation>(snapshotConfiguration.SimulationName);
+         return pksimProject.BuildingBlockByName<Model.Simulation>(simulationConstruction.SimulationName);
+      }
+
+      public async Task<Model.Simulation> CreateModelLessSimulationWith(ISimulationSubject simulationSubject, IReadOnlyList<Model.Compound> compounds, IReadOnlyList<Model.Protocol> protocols, ModelProperties modelProperties, bool allowAging)
+      {
+         var pksimProject = new PKSimProject();
+         pksimProject.AddBuildingBlock(simulationSubject);
+         compounds.Each(pksimProject.AddBuildingBlock);
+         protocols.Each(pksimProject.AddBuildingBlock);
+
+         var simulationConstruction = new SimulationConstruction
+         {
+            AllowAging = allowAging,
+            ModelName = modelProperties.ModelConfiguration.ModelName,
+            Compounds = compounds.Select(x => new Compound {Name = x.Name}).ToArray(),
+            Protocols = protocols.Select(x => new Protocol {Name = x.Name}).ToArray(),
+            Individual = simulationSubject.IsAnImplementationOf<Model.Individual>() ? new Individual {Name = simulationSubject.Name} : null,
+            Population = simulationSubject.IsAnImplementationOf<Model.Population>() ? new Population {Name = simulationSubject.Name} : null,
+         };
+
+         var simulationSnapshot = await SnapshotSimulationFor(simulationConstruction);
+         return await _simulationMapper.CreateModelLessSimulationFrom(simulationSnapshot, pksimProject);
       }
    }
 }

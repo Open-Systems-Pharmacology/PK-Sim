@@ -1,17 +1,16 @@
 ﻿using System.Linq;
-using PKSim.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.IntegrationTests
 {
@@ -32,7 +31,7 @@ namespace PKSim.IntegrationTests
          _individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.Preterm);
          _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
          _entityPathResolver = IoC.Resolve<IEntityPathResolver>();
-         _buildConfigurationTask= IoC.Resolve<IBuildConfigurationTask>();
+         _buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
       }
    }
 
@@ -41,7 +40,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_population, _compound, _iv, allowAging:true).DowncastTo<PopulationSimulation>();
+         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_population, _compound, _iv, allowAging: true).DowncastTo<PopulationSimulation>();
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
       }
 
@@ -95,7 +94,7 @@ namespace PKSim.IntegrationTests
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
          var age0Path = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameter.AGE_0));
          var minToYearFactorPath = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameter.MIN_TO_YEAR_FACTOR));
-         var buildConfiguration = _buildConfigurationTask.CreateFor(_simulation,shouldValidate:false, createAgingDataInSimulation: true);
+         var buildConfiguration = _buildConfigurationTask.CreateFor(_simulation, shouldValidate: false, createAgingDataInSimulation: true);
          var psv = buildConfiguration.ParameterStartValues;
          psv[age0Path].ShouldNotBeNull();
          psv[minToYearFactorPath].ShouldNotBeNull();

@@ -230,6 +230,14 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<ModelSimulation> createSimulationFrom(SnapshotSimulation snapshot, PKSimProject project)
       {
+         var simulation = await CreateModelLessSimulationFrom(snapshot, project);
+
+         _simulationModelCreator.CreateModelFor(simulation);
+         return simulation;
+      }
+
+      public async Task<ModelSimulation> CreateModelLessSimulationFrom(SnapshotSimulation snapshot, PKSimProject project)
+      {
          var simulationSubject = simulationSubjectFrom(snapshot, project);
          var compounds = compoundsFrom(snapshot.Compounds, project);
          var modelProperties = modelPropertiesFrom(snapshot.Model, simulationSubject);
@@ -243,8 +251,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
          //Once all used building blocks have been set, we need to ensure that they are also synchronized in the  simulation
          updateUsedBuildingBlockInSimulation(simulation, project);
-
-         _simulationModelCreator.CreateModelFor(simulation);
          return simulation;
       }
 

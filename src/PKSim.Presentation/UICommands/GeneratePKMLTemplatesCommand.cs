@@ -51,7 +51,7 @@ namespace PKSim.Presentation.UICommands
          var individual = await _snapshotObjectCreator.DefaultIndividual();
          project.Individuals = new[] {individual};
 
-         var compound = await _snapshotObjectCreator.StandardCompound(lipophilicity: 3, fu: 0.1, molWeight: 4e-7, name:"Standard Molecule");
+         var compound = await _snapshotObjectCreator.StandardCompound(lipophilicity: 3, fractionUnbound: 0.1, molWeight: 4e-7, name:"Standard Molecule");
          compound.Name = "Standard Molecule";
          project.Compounds = new[] {compound};
 
@@ -59,21 +59,20 @@ namespace PKSim.Presentation.UICommands
          var intrevanousBolusMg = await _snapshotObjectCreator.SimpleProtocol(dose: 1, doseUnit: "mg", applicationType: ApplicationTypes.IntravenousBolus);
          project.Protocols = new[] {intrevanousBolusMgPerKg, intrevanousBolusMg};
 
-         var snapshotConfiguration = new SnapshotConfiguration
+         var snapshotConfiguration = new SimulationConstruction
          {
             Individual = individual,
-            Compound = compound,
-            Protocol = intrevanousBolusMgPerKg,
+            Compounds = new[] {compound },
+            Protocols = new [] {intrevanousBolusMgPerKg },
             ModelName = CoreConstants.Model.FourComp,
          };
-
 
          var fourCompIvBolusMgPerKg = await configurationFrom(snapshotConfiguration);
 
          snapshotConfiguration.ModelName = CoreConstants.Model.TwoPores;
          var twoPore = await configurationFrom(snapshotConfiguration);
 
-         snapshotConfiguration.Protocol = intrevanousBolusMg;
+         snapshotConfiguration.Protocols = new[] { intrevanousBolusMg};
          snapshotConfiguration.ModelName = CoreConstants.Model.FourComp;
          var fourCompIvBolusMg = await configurationFrom(snapshotConfiguration);
 
@@ -114,9 +113,9 @@ namespace PKSim.Presentation.UICommands
          buildingBlocks.Each(bb => saveToPKML(bb, exportFolder));
       }
 
-      private async Task<IBuildConfiguration> configurationFrom(SnapshotConfiguration snapshotConfiguration)
+      private async Task<IBuildConfiguration> configurationFrom(SimulationConstruction simulationConstruction)
       {
-         var simulation = await _snapshotObjectCreator.SimulationFor(snapshotConfiguration);
+         var simulation = await _snapshotObjectCreator.SimulationFor(simulationConstruction);
 
          return _buildConfigurationTask.CreateFor(simulation, shouldValidate: false, createAgingDataInSimulation: false);
       }
