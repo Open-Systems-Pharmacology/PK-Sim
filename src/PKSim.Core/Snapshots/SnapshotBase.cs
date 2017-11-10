@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Snapshots
@@ -20,6 +19,6 @@ namespace PKSim.Core.Snapshots
 
    public abstract class ParameterContainerSnapshotBase : SnapshotBase
    {
-      public Parameter[] Parameters { get; set; } 
+      public Parameter[] Parameters { get; set; }
    }
 }

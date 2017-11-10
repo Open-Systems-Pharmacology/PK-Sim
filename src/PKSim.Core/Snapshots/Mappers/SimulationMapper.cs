@@ -13,7 +13,6 @@ using PKSim.Core.Services;
 using SnapshotSimulation = PKSim.Core.Snapshots.Simulation;
 using ModelSimulation = PKSim.Core.Model.Simulation;
 using ModelPopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
-using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

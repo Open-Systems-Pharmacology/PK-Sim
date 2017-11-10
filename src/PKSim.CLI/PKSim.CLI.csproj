@@ -142,6 +142,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="ApplicationStartup.cs" />
+    <Compile Include="Commands\BatchConverterCommand.cs" />
     <Compile Include="Commands\ExportRunCommand.cs" />
     <Compile Include="Commands\JsonRunCommand.cs" />
     <Compile Include="Commands\CLICommand.cs" />

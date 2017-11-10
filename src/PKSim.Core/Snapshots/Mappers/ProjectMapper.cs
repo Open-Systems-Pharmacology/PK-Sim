@@ -13,7 +13,7 @@ using SnapshotDataRepository = PKSim.Core.Snapshots.DataRepository;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ProjectMapper : ObjectBaseSnapshotMapperBase<ModelProject, SnapshotProject>
+   public class ProjectMapper : SnapshotMapperBase<ModelProject, SnapshotProject>
    {
       private readonly SimulationMapper _simulationMapper;
       private readonly SimulationComparisonMapper _simulationComparisonMapper;
@@ -38,8 +38,12 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<SnapshotProject> MapToSnapshot(ModelProject project)
       {
-         var snapshot = await SnapshotFrom(project);
-         snapshot.Version = ProjectVersions.Current;
+         var snapshot = await SnapshotFrom(project, x =>
+         {
+            x.Version = ProjectVersions.Current;
+            x.Description = SnapshotValueFor(project.Description);
+         });
+
          snapshot.Individuals = await mapBuildingBlocksToSnapshots<Individual>(project.All<Model.Individual>());
          snapshot.Compounds = await mapBuildingBlocksToSnapshots<Compound>(project.All<Model.Compound>());
          snapshot.Events = await mapBuildingBlocksToSnapshots<Event>(project.All<PKSimEvent>());
@@ -57,8 +61,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelProject> MapToModel(SnapshotProject snapshot)
       {
-         var project = new ModelProject();
-
+         var project = new ModelProject {Description = snapshot.Description};
+         
          var buildingBlocks = await allBuidingBlocksFrom(snapshot);
          buildingBlocks?.Each(project.AddBuildingBlock);
 

@@ -6,8 +6,8 @@ namespace PKSim.Core.Model
 {
    public class Species : ObjectBase
    {
-      private readonly IList<SpeciesPopulation> _allPopulations = new List<SpeciesPopulation>();
-      private readonly ICache<string, ParameterValueVersionCategory> _pvvCategories = new Cache<string, ParameterValueVersionCategory>(pvv => pvv.Name);
+      private readonly List<SpeciesPopulation> _allPopulations = new List<SpeciesPopulation>();
+      private readonly Cache<string, ParameterValueVersionCategory> _pvvCategories = new Cache<string, ParameterValueVersionCategory>(pvv => pvv.Name);
       public virtual string DisplayName { get; set; }
       public virtual bool IsHuman { get; set; }
 
@@ -16,14 +16,14 @@ namespace PKSim.Core.Model
          return _allPopulations.FindByName(name);
       }
 
-      public virtual IEnumerable<SpeciesPopulation> Populations => _allPopulations;
+      public virtual IReadOnlyList<SpeciesPopulation> Populations => _allPopulations;
 
       public virtual void AddPopulation(SpeciesPopulation speciesPopulation)
       {
          _allPopulations.Add(speciesPopulation);
       }
 
-      public virtual IEnumerable<ParameterValueVersionCategory> PVVCategories => _pvvCategories;
+      public virtual IReadOnlyCollection<ParameterValueVersionCategory> PVVCategories => _pvvCategories;
 
       public virtual void AddPVVCategory(ParameterValueVersionCategory pvvCategory)
       {

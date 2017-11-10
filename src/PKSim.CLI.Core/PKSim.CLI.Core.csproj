@@ -116,6 +116,7 @@
     <Compile Include="Batch\SimulationConfiguration.cs" />
     <Compile Include="Batch\SimulationConstructor.cs" />
     <Compile Include="Batch\SimulationForBatch.cs" />
+    <Compile Include="RunOptions\BatchConverterRunOptions.cs" />
     <Compile Include="RunOptions\ExportRunOptions.cs" />
     <Compile Include="RunOptions\IWithInputAndOutputFolders.cs" />
     <Compile Include="CLIRegister.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="MinimalImplementations\CLIUserSettings.cs" />
     <Compile Include="MinimalImplementations\CLIWorkspace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BatchConverterRunner.cs" />
     <Compile Include="Services\ExportSimulationRunner.cs" />
     <Compile Include="Services\IBatchRunner.cs" />
     <Compile Include="RunOptions\JsonRunOptions.cs" />

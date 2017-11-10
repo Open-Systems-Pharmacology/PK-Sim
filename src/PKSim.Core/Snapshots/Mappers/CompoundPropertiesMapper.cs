@@ -92,6 +92,9 @@ namespace PKSim.Core.Snapshots.Mappers
       private FormulationSelection formulationSelectionFrom(FormulationMapping formulationMapping, PKSimProject project)
       {
          var formulation = project.BuildingBlockById(formulationMapping.TemplateFormulationId);
+         if (formulation == null)
+            formulation = project.BuildingBlockByName<Model.Formulation>(formulationMapping.FormulationKey);
+
          return new FormulationSelection {Name = formulation.Name, Key = formulationMapping.FormulationKey};
       }
 

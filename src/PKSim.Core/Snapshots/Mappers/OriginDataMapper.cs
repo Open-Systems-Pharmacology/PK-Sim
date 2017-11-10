@@ -39,8 +39,8 @@ namespace PKSim.Core.Snapshots.Mappers
          return SnapshotFrom(originData, x =>
          {
             x.Species = originData.Species.Name;
-            x.Population = originData.SpeciesPopulation.Name;
-            x.Gender = originData.Gender.Name;
+            x.Population = originData.Species.Populations.Count > 1 ? originData.SpeciesPopulation.Name : null;
+            x.Gender = originData.SpeciesPopulation.Genders.Count > 1 ? originData.Gender.Name : null;
             x.Age = parameterFrom(originData.Age, originData.AgeUnit, _dimensionRepository.AgeInYears);
             x.GestationalAge = parameterFrom(originData.GestationalAge, originData.GestationalAgeUnit, _dimensionRepository.AgeInWeeks);
             x.Height = parameterFrom(originData.Height, originData.HeightUnit, _dimensionRepository.Length);
@@ -69,7 +69,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var meanWeightParameter = _individualModelTask.MeanWeightFor(originData);
          originData.Weight = baseParameterValueFrom(snapshot.Weight, meanWeightParameter.Dimension, meanWeightParameter.Value);
-         originData.WeightUnit = meanWeightParameter.Dimension.BaseUnit.Name;
+         originData.WeightUnit = meanWeightParameter.Dimension.UnitOrDefault(snapshot.Weight.Unit).Name;
       }
 
       private void updateHeightFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
@@ -79,7 +79,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var meanHeightParameter = _individualModelTask.MeanHeightFor(originData);
          originData.Height = baseParameterValueFrom(snapshot.Height, meanHeightParameter.Dimension, meanHeightParameter.Value);
-         originData.HeightUnit = meanHeightParameter.Dimension.BaseUnit.Name;
+         originData.HeightUnit = meanHeightParameter.Dimension.UnitOrDefault(snapshot.Height.Unit).Name;
       }
 
       private void updateCalculationMethodsFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
@@ -111,10 +111,11 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var meanAgeParameter = _individualModelTask.MeanAgeFor(originData);
          originData.Age = baseParameterValueFrom(snapshot.Age, meanAgeParameter.Dimension, meanAgeParameter.Value);
-         originData.AgeUnit = meanAgeParameter.Dimension.BaseUnit.Name;
+         originData.AgeUnit = meanAgeParameter.Dimension.UnitOrDefault(snapshot.Age.Unit).Name;
 
-         originData.GestationalAge = baseParameterValueFrom(snapshot.GestationalAge, _dimensionRepository.AgeInWeeks, CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS);
-         originData.GestationalAgeUnit = CoreConstants.Units.Weeks;
+         var meanGestationalAgeFor = _individualModelTask.MeanGestationalAgeFor(originData);
+         originData.GestationalAge = baseParameterValueFrom(snapshot.GestationalAge, meanGestationalAgeFor.Dimension, meanGestationalAgeFor.Value);
+         originData.AgeUnit = meanGestationalAgeFor.Dimension.UnitOrDefault(snapshot.GestationalAge.Unit).Name;
       }
 
       private Gender genderFrom(SnapshotOriginData snapshot, SpeciesPopulation speciesPopulation)

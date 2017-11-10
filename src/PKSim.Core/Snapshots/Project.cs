@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Snapshots
 {
-   public class Project : SnapshotBase
+   public class Project : IWithDescription
    {
       [Required]
       public int Version { get; set; }
+
+      public string Description { get; set; }
 
       public Individual[] Individuals { get; set; }
       public Population[] Populations { get; set; }

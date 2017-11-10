@@ -26,6 +26,7 @@ namespace PKSim.Core
       protected Parameter _ageSnapshotParameter;
       protected Parameter _heightSnapshotParameter;
       protected Parameter _weightSnapshotParameter;
+      protected Parameter _gestationalAgeSnapshotParameter;
       protected Species _species;
       private SpeciesPopulation _speciesPopulation;
       private Gender _gender;
@@ -43,12 +44,16 @@ namespace PKSim.Core
          _ageSnapshotParameter = new Parameter {Value = 1};
          _heightSnapshotParameter = new Parameter {Value = 2};
          _weightSnapshotParameter = new Parameter {Value = 3};
+         _gestationalAgeSnapshotParameter = new Parameter {Value = 4};
 
          _species = new Species {Name = "Human"};
-         _speciesPopulation = new SpeciesPopulation {Name = "SpeciesPopulation"};
+         _speciesPopulation = new SpeciesPopulation {Name = "SpeciesPopulation", IsHeightDependent = true, IsAgeDependent = true};
          _gender = new Gender {Name = "Unknown"};
          _species.AddPopulation(_speciesPopulation);
+         _species.AddPopulation(new SpeciesPopulation { Name = "Another species population", IsHeightDependent = true, IsAgeDependent = true });
+
          _speciesPopulation.AddGender(_gender);
+         _speciesPopulation.AddGender(new Gender { Name = "AnotherGender" });
          
          A.CallTo(() => _speciesRepository.All()).Returns(new []{_species});
 
@@ -56,6 +61,7 @@ namespace PKSim.Core
          {
             Age = 35,
             AgeUnit = "years",
+            GestationalAge = 40,
             Height = 17.8,
             HeightUnit = "m",
             Weight = 73,
@@ -69,6 +75,7 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Age, A<string>._, A<IDimension>._)).Returns(_ageSnapshotParameter);
          A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Height, A<string>._, A<IDimension>._)).Returns(_heightSnapshotParameter);
          A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Weight, A<string>._, A<IDimension>._)).Returns(_weightSnapshotParameter);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.GestationalAge, A<string>._, A<IDimension>._)).Returns(_gestationalAgeSnapshotParameter);
 
          return _completed;
       }
@@ -116,6 +123,10 @@ namespace PKSim.Core
          var meanAgeParameter = A.Fake<IParameter>();
          A.CallTo(() => _individualModelTask.MeanAgeFor(A<Model.OriginData>._)).Returns(meanAgeParameter);
          A.CallTo(() => meanAgeParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Age.Value.Value)).Returns(_originData.Age.Value);
+
+         var meanGestionalAgeParameter = A.Fake<IParameter>();
+         A.CallTo(() => _individualModelTask.MeanGestationalAgeFor(A<Model.OriginData>._)).Returns(meanGestionalAgeParameter);
+         A.CallTo(() => meanGestionalAgeParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.GestationalAge.Value.Value)).Returns(_originData.GestationalAge.Value);
       }
       
       protected override async Task Because()
@@ -130,8 +141,8 @@ namespace PKSim.Core
          _newOriginData.SpeciesPopulation.ShouldBeEqualTo(_originData.SpeciesPopulation);
          _newOriginData.Gender.ShouldBeEqualTo(_originData.Gender);
          _newOriginData.Weight.ShouldBeEqualTo(_originData.Weight);
-         _newOriginData.Age.ShouldBeEqualTo(_originData.Age);
          _newOriginData.Height.ShouldBeEqualTo(_originData.Height);
+         _newOriginData.Age.ShouldBeEqualTo(_originData.Age);
          _newOriginData.GestationalAge.ShouldBeEqualTo(_originData.GestationalAge);
       }
    }

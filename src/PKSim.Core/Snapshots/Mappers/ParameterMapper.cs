@@ -52,7 +52,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private void updateParameterValue(SnapshotParameter snapshot, double parameterBaseValue, string parameterDisplayUnit, IDimension dimension)
       {
          var unit = dimension.UnitOrDefault(parameterDisplayUnit);
-         snapshot.Unit = unit.Name;
+         snapshot.Unit = SnapshotValueFor(unit.Name);
          snapshot.Value = dimension.BaseUnitValueToUnitValue(unit, parameterBaseValue);
       }
 
