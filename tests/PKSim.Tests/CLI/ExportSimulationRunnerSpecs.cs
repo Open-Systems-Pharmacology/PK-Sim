@@ -128,8 +128,8 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_all_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder, _simulation1.Name, _exportRunOptions.ExportMode)).MustHaveHappened();
-         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder, _simulation2.Name, _exportRunOptions.ExportMode)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder, _exportRunOptions.ExportMode)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder, _exportRunOptions.ExportMode)).MustHaveHappened();
       }
 
       [Observation]
@@ -181,13 +181,13 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_the_selected_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder, _simulation1.Name, _exportRunOptions.ExportMode)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder,  _exportRunOptions.ExportMode)).MustHaveHappened();
       }
 
       [Observation]
       public void should_not_run_the_export_for_the_simulation_excluded_from_the_run()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder, _simulation2.Name, _exportRunOptions.ExportMode)).MustNotHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder,  _exportRunOptions.ExportMode)).MustNotHaveHappened();
       }
 
       [Observation]
@@ -235,7 +235,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_the_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.RunAndExport(_simulation1, _s1OutputFolder, _simulation1.Name, A<SimulationRunOptions>._, _exportRunOptions.ExportMode)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.RunAndExport(_simulation1, _s1OutputFolder,  A<SimulationRunOptions>._, _exportRunOptions.ExportMode)).MustHaveHappened();
       }
    }
 

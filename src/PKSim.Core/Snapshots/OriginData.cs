@@ -21,7 +21,6 @@ namespace PKSim.Core.Snapshots
       /// <summary>
       ///    Id of population (as defined in the database)
       /// </summary>
-      [Required]
       public string Population { get; set; }
 
       /// <summary>

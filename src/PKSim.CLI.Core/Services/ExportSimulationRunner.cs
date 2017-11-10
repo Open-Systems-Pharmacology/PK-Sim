@@ -97,10 +97,10 @@ namespace PKSim.CLI.Core.Services
          }
 
          if (exportRunOptions.RunSimulation)
-            await _simulationExporter.RunAndExport(simulation, outputFolder, simulation.Name, simulationRunOptions, exportRunOptions.ExportMode);
+            await _simulationExporter.RunAndExport(simulation, outputFolder, simulationRunOptions, exportRunOptions.ExportMode);
 
          else if (simulation.HasResults)
-            await _simulationExporter.Export(simulation, outputFolder, simulation.Name, exportRunOptions.ExportMode);
+            await _simulationExporter.Export(simulation, outputFolder, exportRunOptions.ExportMode);
 
          else
             _logger.AddWarning($"Simulation '{simulation.Name}' does not have any results and will not be exported");

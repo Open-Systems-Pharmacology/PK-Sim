@@ -3,46 +3,35 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Threading.Tasks;
-using OSPSuite.Core.Commands.Core;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.CLI.Core.RunOptions;
-using PKSim.Core;
-using PKSim.Core.Batch;
-using PKSim.Core.Commands;
 using PKSim.Core.Extensions;
-using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI.Core.Services
 {
    public class JsonSimulationRunner : IBatchRunner<JsonRunOptions>
    {
-      private readonly ISimulationLoader _simulationLoader;
       private readonly ISimulationExporter _simulationExporter;
       private readonly ILogger _logger;
-      private readonly IEntitiesInContainerRetriever _entitiesInContainerRetriever;
-      private readonly IExecutionContext _executionContext;
-      private readonly ICommandTask _commandTask;
+      private readonly ISnapshotTask _snapshotTask;
       private readonly IList<string> _allSimulationNames = new List<string>();
 
       public JsonSimulationRunner(
-         ISimulationLoader simulationLoader, 
          ISimulationExporter simulationExporter, 
          ILogger logger,
-         IEntitiesInContainerRetriever entitiesInContainerRetriever, 
-         IExecutionContext executionContext, 
-         ICommandTask commandTask)
+         ISnapshotTask snapshotTask
+)        
       {
-         _simulationLoader = simulationLoader;
          _simulationExporter = simulationExporter;
          _logger = logger;
-         _entitiesInContainerRetriever = entitiesInContainerRetriever;
-         _executionContext = executionContext;
-         _commandTask = commandTask;
+         _snapshotTask = snapshotTask;
       }
 
       public async Task RunBatchAsync(JsonRunOptions runOptions)
@@ -82,7 +71,7 @@ namespace PKSim.CLI.Core.Services
 
          foreach (var simulationFile in allSimulationFiles)
          {
-            await exportSimulationTo(simulationFile, outputFolder, exportMode);
+            await exportSimulationsFromProject(simulationFile, outputFolder, exportMode);
          }
 
          var end = DateTime.UtcNow;
@@ -125,71 +114,32 @@ namespace PKSim.CLI.Core.Services
          dataTable.ExportToCSV(fileName);
       }
 
-      private async Task exportSimulationTo(FileInfo simulationFile, string outputFolder, SimulationExportMode simulationExportMode)
+      private async Task exportSimulationsFromProject(FileInfo projectFile, string outputFolder, SimulationExportMode simulationExportMode)
       {
-         _logger.AddInSeparator($"Starting batch simulation for file '{simulationFile}'");
+         _logger.AddInSeparator($"Starting batch simulation for file '{projectFile}'");
          try
          {
-            var simForBatch = _simulationLoader.LoadSimulationFrom(simulationFile.FullName);
-            var simText = simForBatch.NumberOfSimulations > 1 ? "simulations" : "simulation";
-            _logger.AddInfo($"{simForBatch.NumberOfSimulations} {simText} found in file '{simulationFile}'");
+            var project = await _snapshotTask.LoadProjectFromSnapshot(projectFile.FullName);
+            var simulations = project.All<PKSim.Core.Model.Simulation>();
+            var numberOfSimulations = simulations.Count;
+            _logger.AddInfo($"{numberOfSimulations} {"simulation".PluralizeIf(numberOfSimulations)} found in file '{projectFile}'");
 
-            var simulation = simForBatch.Simulation;
-
-            var defaultSimulationName = FileHelper.FileNameFromFileFullPath(simulationFile.FullName);
-            var allParameters = _entitiesInContainerRetriever.ParametersFrom(simulation);
             var simulationRunOptions = new SimulationRunOptions
             {
-               CheckForNegativeValues = simForBatch.Configuration.CheckForNegativeValues,
+               CheckForNegativeValues = false,
                RunForAllOutputs = true
             };
 
-            await _simulationExporter.RunAndExport(simulation, outputFolder, defaultSimulationName, simulationRunOptions, simulationExportMode);
-            _allSimulationNames.Add(defaultSimulationName);
-            foreach (var parameterValueSet in simForBatch.ParameterVariationSets)
+            foreach (var simulation in simulations)
             {
-               string currentName = $"{defaultSimulationName}_{parameterValueSet.Name}";
-               var command = updateParameters(allParameters, parameterValueSet);
-               await _simulationExporter.RunAndExport(simulation, outputFolder, currentName, simulationRunOptions, simulationExportMode);
-               _allSimulationNames.Add(currentName);
-               _commandTask.ResetChanges(command, _executionContext);
+               await _simulationExporter.RunAndExport(simulation, outputFolder, simulationRunOptions, simulationExportMode);
+               _allSimulationNames.Add(simulation.Name);
             }
-
-            //when simulation is not used anymore, unregister simulation
-            _executionContext.Unregister(simulation);
          }
          catch (Exception e)
          {
             _logger.AddException(e);
          }
-      }
-
-      private IPKSimMacroCommand updateParameters(PathCache<IParameter> allParameters, ParameterVariationSet parameterVariationSet)
-      {
-         var macroCommand = new PKSimMacroCommand();
-
-         foreach (var parameterValue in parameterVariationSet.ParameterValues)
-         {
-            var parameterPath = parameterValue.ParameterPath;
-
-            var parameter = allParameters[parameterPath];
-            if (parameter == null)
-            {
-               //try with adding the name of the simulation at first
-               parameterPath = $"{Simulation.Name}{ObjectPath.PATH_DELIMITER}{parameterPath}";
-               parameter = allParameters[parameterPath];
-               if (parameter == null)
-               {
-                  _logger.AddWarning($"Parameter with path '{parameterValue.ParameterPath}' not found!");
-                  continue;
-               }
-            }
-
-            _logger.AddDebug($"Parameter '{parameterValue.ParameterPath}' value set from '{parameter.Value} to '{parameterValue.Value}'.");
-            macroCommand.Add(new SetParameterValueCommand(parameter, parameterValue.Value));
-         }
-
-         return macroCommand.Run(_executionContext);
       }
    }
 }
