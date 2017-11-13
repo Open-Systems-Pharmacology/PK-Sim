@@ -67,8 +67,9 @@ namespace PKSim.Core.Batch
             var simpleProtocol = simulationConstruction.TemplateProtocols[index] as SimpleProtocol;
             if (simpleProtocol != null && simpleProtocol.ApplicationType.NeedsFormulation && simulationConstruction.TemplateFormulation != null)
             {
-               simpleProtocol.FormulationKey = simulationConstruction.TemplateFormulation.Name;
-               compoundProperties.ProtocolProperties.AddFormulationMapping(new FormulationMapping {FormulationKey = simulationConstruction.TemplateFormulation.Name, TemplateFormulationId = simulationConstruction.TemplateFormulation.Id});
+               simpleProtocol.FormulationKey = CoreConstants.DEFAULT_FORMULATION_KEY;
+               simpleProtocol.FormulationKey = CoreConstants.DEFAULT_FORMULATION_KEY;
+               compoundProperties.ProtocolProperties.AddFormulationMapping(new FormulationMapping {FormulationKey = CoreConstants.DEFAULT_FORMULATION_KEY, TemplateFormulationId = simulationConstruction.TemplateFormulation.Id, Formulation = simulationConstruction.TemplateFormulation });
             }
 
             var processes = compoundProperties.Processes;

@@ -63,7 +63,7 @@ namespace PKSim.Core.Batch.Mapper
          {
             var meanAgeParameter = _individualModelTask.MeanAgeFor(originData);
             originData.Age = valueFrom(batchOriginData.Age, meanAgeParameter.Value);
-            originData.AgeUnit = meanAgeParameter.Dimension.BaseUnit.Name;
+            originData.AgeUnit = meanAgeParameter.Dimension.DefaultUnit.Name;
             originData.GestationalAge = valueFrom(batchOriginData.GestationalAge, CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS);
             originData.GestationalAgeUnit = CoreConstants.Units.Weeks;
          }
@@ -88,13 +88,13 @@ namespace PKSim.Core.Batch.Mapper
 
          var meanWeightParameter = _individualModelTask.MeanWeightFor(originData);
          originData.Weight = valueFrom(batchOriginData.Weight, meanWeightParameter.Value).Value;
-         originData.WeightUnit = meanWeightParameter.Dimension.BaseUnit.Name;
+         originData.WeightUnit = meanWeightParameter.Dimension.DefaultUnit.Name;
 
          if (originData.SpeciesPopulation.IsHeightDependent)
          {
             var meanHeightParameter = _individualModelTask.MeanHeightFor(originData);
             originData.Height = valueFrom(batchOriginData.Height, meanHeightParameter.Value);
-            originData.HeightUnit = meanHeightParameter.Dimension.BaseUnit.Name;
+            originData.HeightUnit = meanHeightParameter.Dimension.DefaultUnit.Name;
          }
        
          return originData;

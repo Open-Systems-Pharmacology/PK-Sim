@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
@@ -78,9 +77,9 @@ namespace PKSim.Core.Services
       {
          // group events by the event-building block they are using
          var eventBuildingBlockInfos = (from eventMapping in _simulation.EventProperties.EventMappings
-            let usedBuildingBlock = _simulation.UsedBuildingBlockByTemplateId(eventMapping.TemplateEventId)
-            let eventBuildingBlock = usedBuildingBlock.BuildingBlock.DowncastTo<PKSimEvent>()
-            select new {eventBuildingBlock.Id, eventBuildingBlock.TemplateName, eventBuildingBlock.Name})
+               let usedBuildingBlock = _simulation.UsedBuildingBlockByTemplateId(eventMapping.TemplateEventId)
+               let eventBuildingBlock = usedBuildingBlock.BuildingBlock.DowncastTo<PKSimEvent>()
+               select new {eventBuildingBlock.Id, eventBuildingBlock.TemplateName, eventBuildingBlock.Name})
             .Distinct();
 
          // create event groups for each used event-building block
@@ -226,7 +225,7 @@ namespace PKSim.Core.Services
          // second, set some parameters to not visible depending on settings
          var parameterNamesToBeInvisible = new List<string> {CoreConstants.Parameter.PARTICLE_DISPERSE_SYSTEM};
 
-         var numberOfBins =(int) formulationBuilder.Parameter(CoreConstants.Parameter.NUMBER_OF_BINS).Value;
+         var numberOfBins = (int) formulationBuilder.Parameter(CoreConstants.Parameter.NUMBER_OF_BINS).Value;
 
          if (numberOfBins == 1)
             parameterNamesToBeInvisible.AddRange(CoreConstants.Parameter.HiddenParameterForMonodisperse);
