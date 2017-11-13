@@ -21,16 +21,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
       private readonly ICloner _cloner;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IOrganTypeRepository _organTypeRepository;
-      private readonly ICalculationMethodsUpdater _calculationMethodsUpdater;
+      private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private bool _converted;
 
-      public Converter710To720(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IEntityPathResolver entityPathResolver, IOrganTypeRepository organTypeRepository, ICalculationMethodsUpdater calculationMethodsUpdater)
+      public Converter710To720(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IEntityPathResolver entityPathResolver, IOrganTypeRepository organTypeRepository, IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater)
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
          _entityPathResolver = entityPathResolver;
          _organTypeRepository = organTypeRepository;
-         _calculationMethodsUpdater = calculationMethodsUpdater;
+         _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V7_1_0;
@@ -107,7 +107,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
 
          individual.Organism.Add(_cloner.Clone(bsa));
 
-         _calculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
       }
 
       private void addBSAParameterValues(Population population)

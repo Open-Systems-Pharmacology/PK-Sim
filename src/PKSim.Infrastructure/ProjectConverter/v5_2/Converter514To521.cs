@@ -38,12 +38,12 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
       private readonly ICalculationMethodRepository _calculationMethodRepository;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
-      private readonly ICalculationMethodsUpdater _calculationMethodsUpdater;
+      private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
 
       public Converter514To521(IParameterValuesCacheConverter parameterValuesCacheConverter, IEntityPathResolver entityPathResolver, ICompoundConverter compoundConverter,
          IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IFormulaAndDimensionConverter formulaAndDimensionConverter,
          ICalculationMethodRepository calculationMethodRepository, IDimensionRepository dimensionRepository, ISimulationPersistableUpdater simulationPersistableUpdater,
-         ICalculationMethodsUpdater calculationMethodsUpdater)
+         IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater)
       {
          _parameterValuesCacheConverter = parameterValuesCacheConverter;
          _entityPathResolver = entityPathResolver;
@@ -54,7 +54,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          _calculationMethodRepository = calculationMethodRepository;
          _dimensionRepository = dimensionRepository;
          _simulationPersistableUpdater = simulationPersistableUpdater;
-         _calculationMethodsUpdater = calculationMethodsUpdater;
+         _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_1_4;
@@ -228,7 +228,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
       public void Visit(Individual individual)
       {
-         _calculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
 
          performCommonConversion(individual);
          Visit(individual.OriginData);

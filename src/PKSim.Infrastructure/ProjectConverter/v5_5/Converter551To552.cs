@@ -21,20 +21,20 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_5
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
       private readonly IEntityPathResolver _entityPathResolver;
-      private readonly ICalculationMethodsUpdater _calculationMethodsUpdater;
+      private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private readonly IIndividualUpdater _individualUpdater;
       private readonly Cache<Species, Individual> _defaultCache;
       private bool _converted;
 
       public Converter551To552(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, 
-                               IEntityPathResolver entityPathResolver, ICalculationMethodsUpdater calculationMethodsUpdater,
+                               IEntityPathResolver entityPathResolver, IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater,
                                IIndividualUpdater individualUpdater)
 
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
          _entityPathResolver = entityPathResolver;
-         _calculationMethodsUpdater = calculationMethodsUpdater;
+         _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
          _individualUpdater = individualUpdater;
          _defaultCache = new Cache<Species, Individual>(x => x.Species, x => null);
       }
@@ -70,7 +70,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_5
       {
          if (individual == null) return;
 
-         _calculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
          _individualUpdater.AddScalingExponentForFluidFlowTo(individual);
 
          addSurfaceAreaParametersTo(individual);

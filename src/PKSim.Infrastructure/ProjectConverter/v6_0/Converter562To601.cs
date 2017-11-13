@@ -21,13 +21,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
       IVisitor<IUserSettings>
    {
       private readonly Converter56To601 _coreConverter56To601;
-      private readonly ICalculationMethodsUpdater _calculationMethodsUpdater;
+      private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private bool _converted;
 
-      public Converter562To601(Converter56To601 coreConverter56To601, ICalculationMethodsUpdater calculationMethodsUpdater)
+      public Converter562To601(Converter56To601 coreConverter56To601, IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater)
       {
          _coreConverter56To601 = coreConverter56To601;
-         _calculationMethodsUpdater = calculationMethodsUpdater;
+         _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
       }
 
       public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
@@ -90,7 +90,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
       {
          if (individual == null) return;
 
-         _calculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
 
          individual.AllMolecules().SelectMany(m => m.AllExpressionsContainers())
             .Select(c => c.RelativeExpressionParameter)

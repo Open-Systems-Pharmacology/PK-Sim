@@ -4,17 +4,17 @@ using PKSim.Core.Repositories;
 
 namespace PKSim.Infrastructure.ProjectConverter
 {
-   public interface ICalculationMethodsUpdater
+   public interface IIndividualCalculationMethodsUpdater
    {
       void AddMissingCalculationMethodsTo(Individual individual);
       void AddMissingCalculationMethodsTo(Simulation simulation);
    }
 
-   public class CalculationMethodsUpdater : ICalculationMethodsUpdater
+   public class IndividualCalculationMethodsUpdater : IIndividualCalculationMethodsUpdater
    {
       private readonly ICalculationMethodRepository _calculationMethodRepository;
 
-      public CalculationMethodsUpdater(ICalculationMethodRepository calculationMethodRepository)
+      public IndividualCalculationMethodsUpdater(ICalculationMethodRepository calculationMethodRepository)
       {
          _calculationMethodRepository = calculationMethodRepository;
       }
@@ -24,9 +24,7 @@ namespace PKSim.Infrastructure.ProjectConverter
          if (individual == null)
             return;
 
-         addRenalAgingCalculationMethodTo(individual.OriginData, individual.IsHuman);
-         addDynamicFormulaCalculationMethodTo(individual.OriginData);
-         addBSACalculationMethodTo(individual.OriginData, individual.IsHuman);
+         addMissingCalculationMethods(individual.OriginData, individual.IsHuman);
       }
 
       public void AddMissingCalculationMethodsTo(Simulation simulation)
@@ -35,20 +33,27 @@ namespace PKSim.Infrastructure.ProjectConverter
          if (individual == null)
             return;
 
-         addRenalAgingCalculationMethodTo(simulation.ModelProperties, individual.IsHuman);
+         addMissingCalculationMethods(simulation.ModelProperties, individual.IsHuman);
       }
 
-      private void addBSACalculationMethodTo(OriginData originData, bool isHuman)
+      private void addMissingCalculationMethods(IWithCalculationMethods withCalculationMethods, bool isHuman)
+      {
+         addRenalAgingCalculationMethodTo(withCalculationMethods, isHuman);
+         addDynamicFormulaCalculationMethodTo(withCalculationMethods);
+         addBSACalculationMethodTo(withCalculationMethods, isHuman);
+      }
+
+      private void addBSACalculationMethodTo(IWithCalculationMethods withCalculationMethods, bool isHuman)
       {
          if (!isHuman)
             return;
 
-         addMissingCalulationMethodTo(originData, ConverterConstants.CalculationMethod.BSA_DuBois);
+         addMissingCalulationMethodTo(withCalculationMethods, ConverterConstants.CalculationMethod.BSA_DuBois);
       }
 
-      private void addDynamicFormulaCalculationMethodTo(OriginData originData)
+      private void addDynamicFormulaCalculationMethodTo(IWithCalculationMethods withCalculationMethods)
       {
-         addMissingCalulationMethodTo(originData, ConverterConstants.CalculationMethod.DynamicSumFormulas);
+         addMissingCalulationMethodTo(withCalculationMethods, ConverterConstants.CalculationMethod.DynamicSumFormulas);
       }
 
       private void addRenalAgingCalculationMethodTo(IWithCalculationMethods withCalculationMethods, bool isHuman)

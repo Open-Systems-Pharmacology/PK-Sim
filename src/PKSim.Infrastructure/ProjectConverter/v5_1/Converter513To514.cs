@@ -16,16 +16,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
    {
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
-      private readonly ICalculationMethodsUpdater _calculationMethodsUpdater;
+      private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private Species _currentSpecies;
       private readonly ICache<Species, Individual> _defaultCache;
       private bool _converted;
 
-      public Converter513To514(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, ICalculationMethodsUpdater calculationMethodsUpdater)
+      public Converter513To514(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater)
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
-         _calculationMethodsUpdater = calculationMethodsUpdater;
+         _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
          _defaultCache = new Cache<Species, Individual>(x => x.Species, x => null);
       }
 
@@ -47,7 +47,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
       {
          _currentSpecies = individual.Species;
          convertTransitTimeFor(individual);
-         _calculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
          _converted = true;
       }
 

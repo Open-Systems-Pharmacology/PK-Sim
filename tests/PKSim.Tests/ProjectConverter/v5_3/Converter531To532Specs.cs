@@ -10,12 +10,12 @@ namespace PKSim.ProjectConverter.v5_3
 {
    public abstract class concern_for_Converter531To532 : ContextSpecification<Converter531To532>
    {
-      private ICalculationMethodsUpdater _calculationMethodsUpdater;
+      private IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
 
       protected override void Context()
       {
-         _calculationMethodsUpdater = A.Fake<ICalculationMethodsUpdater>();
-         sut = new Converter531To532(_calculationMethodsUpdater);
+         _individualCalculationMethodsUpdater = A.Fake<IIndividualCalculationMethodsUpdater>();
+         sut = new Converter531To532(_individualCalculationMethodsUpdater);
       }
    }
 
