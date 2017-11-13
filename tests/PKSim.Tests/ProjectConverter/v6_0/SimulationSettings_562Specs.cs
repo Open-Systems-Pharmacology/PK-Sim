@@ -98,7 +98,7 @@ namespace PKSim.ProjectConverter.V6_0
 
       protected override void Context()
       {
-         sut = new Converter562To601(IoC.Resolve<Converter56To601>(), IoC.Resolve<ICalculationMethodUpdater>());
+         sut = new Converter562To601(IoC.Resolve<Converter56To601>(), IoC.Resolve<ICalculationMethodsUpdater>());
          _userSettings = A.Fake<IUserSettings>();
          _userSettings.AbsTol = ConverterConstants.OLD_DEFAULT_ABS_TOL;
          _userSettings.RelTol = ConverterConstants.OLD_DEFAULT_REL_TOL;
@@ -123,7 +123,7 @@ namespace PKSim.ProjectConverter.V6_0
 
       protected override void Context()
       {
-         sut = new Converter562To601(IoC.Resolve<Converter56To601>(), IoC.Resolve<ICalculationMethodUpdater>());
+         sut = new Converter562To601(IoC.Resolve<Converter56To601>(), IoC.Resolve<ICalculationMethodsUpdater>());
          _userSettings = A.Fake<IUserSettings>();
          _userSettings.AbsTol = 10;
          _userSettings.RelTol = ConverterConstants.OLD_DEFAULT_REL_TOL;

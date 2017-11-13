@@ -14,12 +14,12 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
       IVisitor<Individual>,
       IVisitor<Population>
    {
-      private readonly ICalculationMethodUpdater _calculationMethodUpdater;
+      private readonly ICalculationMethodsUpdater _calculationMethodsUpdater;
       private bool _converted;
 
-      public Converter531To532(ICalculationMethodUpdater calculationMethodUpdater)
+      public Converter531To532(ICalculationMethodsUpdater calculationMethodsUpdater)
       {
-         _calculationMethodUpdater = calculationMethodUpdater;
+         _calculationMethodsUpdater = calculationMethodsUpdater;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_3_1;
@@ -58,7 +58,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
 
       public void Visit(Individual individual)
       {
-         _calculationMethodUpdater.AddMissingCalculationMethodTo(individual);
+         _calculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
          updateVariableInPopulationFlag(individual);
          _converted = true;
       }

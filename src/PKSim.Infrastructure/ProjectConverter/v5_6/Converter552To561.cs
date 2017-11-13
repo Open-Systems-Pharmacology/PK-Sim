@@ -47,7 +47,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
       };
 
       private readonly IDialogCreator _dialogCreator;
-      private readonly ICalculationMethodUpdater _calculationMethodUpdater;
+      private readonly ICalculationMethodsUpdater _calculationMethodsUpdater;
       private readonly IIndividualUpdater _individualUpdater;
       private bool _converted;
 
@@ -55,7 +55,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
          ICloner cloner, INeighborhoodFinalizer neighborhoodFinalizer, IContainerTask containerTask,
          IPKSimXmlSerializerRepository serializerRepository, IReactionBuildingBlockCreator reactionBuildingBlockCreator,
          IDiagramModelFactory diagramModelFactory, ICompoundProcessRepository compoundProcessRepository, IParameterSetUpdater parameterSetUpdater, IDialogCreator dialogCreator,
-         ICalculationMethodUpdater calculationMethodUpdater,
+         ICalculationMethodsUpdater calculationMethodsUpdater,
          IIndividualUpdater individualUpdater)
       {
          _compoundCalculationMethodCategoryRepository = compoundCalculationMethodCategoryRepository;
@@ -69,7 +69,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
          _compoundProcessRepository = compoundProcessRepository;
          _parameterSetUpdater = parameterSetUpdater;
          _dialogCreator = dialogCreator;
-         _calculationMethodUpdater = calculationMethodUpdater;
+         _calculationMethodsUpdater = calculationMethodsUpdater;
          _individualUpdater = individualUpdater;
       }
 
@@ -384,7 +384,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
          //possible for imported simulation where individual is not defined
          if (individual == null) return;
 
-         _calculationMethodUpdater.AddMissingCalculationMethodTo(individual);
+         _calculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
          _individualUpdater.AddScalingExponentForFluidFlowTo(individual);
 
          updateLiverStructure(individual);

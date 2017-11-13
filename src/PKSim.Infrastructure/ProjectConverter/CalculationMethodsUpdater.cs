@@ -4,22 +4,22 @@ using PKSim.Core.Repositories;
 
 namespace PKSim.Infrastructure.ProjectConverter
 {
-   public interface ICalculationMethodUpdater
+   public interface ICalculationMethodsUpdater
    {
-      void AddMissingCalculationMethodTo(Individual individual);
-      void AddMissingCalculationMethodTo(Simulation simulation);
+      void AddMissingCalculationMethodsTo(Individual individual);
+      void AddMissingCalculationMethodsTo(Simulation simulation);
    }
 
-   public class CalculationMethodUpdater : ICalculationMethodUpdater
+   public class CalculationMethodsUpdater : ICalculationMethodsUpdater
    {
       private readonly ICalculationMethodRepository _calculationMethodRepository;
 
-      public CalculationMethodUpdater(ICalculationMethodRepository calculationMethodRepository)
+      public CalculationMethodsUpdater(ICalculationMethodRepository calculationMethodRepository)
       {
          _calculationMethodRepository = calculationMethodRepository;
       }
 
-      public void AddMissingCalculationMethodTo(Individual individual)
+      public void AddMissingCalculationMethodsTo(Individual individual)
       {
          if (individual == null)
             return;
@@ -27,6 +27,15 @@ namespace PKSim.Infrastructure.ProjectConverter
          addRenalAgingCalculationMethodTo(individual.OriginData, individual.IsHuman);
          addDynamicFormulaCalculationMethodTo(individual.OriginData);
          addBSACalculationMethodTo(individual.OriginData, individual.IsHuman);
+      }
+
+      public void AddMissingCalculationMethodsTo(Simulation simulation)
+      {
+         var individual = simulation?.BuildingBlock<Individual>();
+         if (individual == null)
+            return;
+
+         addRenalAgingCalculationMethodTo(simulation.ModelProperties, individual.IsHuman);
       }
 
       private void addBSACalculationMethodTo(OriginData originData, bool isHuman)
@@ -40,15 +49,6 @@ namespace PKSim.Infrastructure.ProjectConverter
       private void addDynamicFormulaCalculationMethodTo(OriginData originData)
       {
          addMissingCalulationMethodTo(originData, ConverterConstants.CalculationMethod.DynamicSumFormulas);
-      }
-
-      public void AddMissingCalculationMethodTo(Simulation simulation)
-      {
-         var individual = simulation?.BuildingBlock<Individual>();
-         if (individual == null)
-            return;
-
-         addRenalAgingCalculationMethodTo(simulation.ModelProperties, individual.IsHuman);
       }
 
       private void addRenalAgingCalculationMethodTo(IWithCalculationMethods withCalculationMethods, bool isHuman)
