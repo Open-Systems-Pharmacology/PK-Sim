@@ -43,6 +43,49 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
+      public void should_update_elderly_ICRP_organ_volumes()
+      {
+         var meanStdRatios = new[]
+         {
+            new {organ=CoreConstants.Organ.ArterialBlood, maleRatio=0.05, femaleRatio=0.05 },
+            new {organ=CoreConstants.Organ.Bone, maleRatio=0.011059, femaleRatio=0.01 },
+            new {organ=CoreConstants.Organ.Gonads, maleRatio=0.05, femaleRatio=0.05 },
+            new {organ=CoreConstants.Organ.Kidney, maleRatio=0.24628, femaleRatio=0.25 },
+            new {organ=CoreConstants.Organ.LargeIntestine, maleRatio=0.14, femaleRatio=0.14 },
+            new {organ=CoreConstants.Organ.Liver, maleRatio=0.25, femaleRatio=0.25 },
+            new {organ=CoreConstants.Organ.Pancreas, maleRatio=0.2689, femaleRatio=0.28 },
+            new {organ=CoreConstants.Organ.Skin, maleRatio=0.05, femaleRatio=0.05 },
+            new {organ=CoreConstants.Organ.VenousBlood, maleRatio=0.05, femaleRatio=0.05 }
+         };
+
+         foreach (var meanStdRatio in meanStdRatios)
+         {
+            var volumeParameters = _parameterDistributionRepository.All().Where(pd => isElderlyICRPVolumeParameterIn(pd, meanStdRatio.organ));
+
+            foreach (var volumeParameter in volumeParameters)
+            {
+               if (meanStdRatio.organ.Equals(CoreConstants.Organ.Liver) && volumeParameter.Gender.Equals(CoreConstants.Gender.Male))
+                  continue; //no update for this combination
+
+               var ratio = volumeParameter.Deviation / volumeParameter.Mean;
+               var expectedRatio = volumeParameter.Gender.Equals(CoreConstants.Gender.Male) ?
+                  meanStdRatio.maleRatio : meanStdRatio.femaleRatio;
+
+               ratio.ShouldBeEqualTo(expectedRatio, 1e-3, $"{meanStdRatio.organ}.{volumeParameter.Gender}.{volumeParameter.Age} years");
+            }
+         }
+      }
+
+      bool isElderlyICRPVolumeParameterIn(ParameterDistributionMetaData pd, string organ)
+      {
+         return pd.Population.Equals(CoreConstants.Population.ICRP) &&
+                pd.Age >= 40 &&
+                pd.ParameterName.Equals("Volume") &&
+                pd.ContainerType.Equals(CoreConstants.ContainerType.Organ) &&
+                pd.ContainerName.Equals(organ);
+      }
+
+      [Observation]
       public void should_set_min_max_age_population_dependent()
       {
          var ageDependentPops = _populationRepository.All().Where(pop => pop.IsAgeDependent);
