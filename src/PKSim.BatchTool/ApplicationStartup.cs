@@ -1,4 +1,5 @@
 ﻿using DevExpress.LookAndFeel;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
@@ -13,7 +14,7 @@ namespace PKSim.BatchTool
    {
       public static void Start()
       {
-         UI.BootStrapping.ApplicationStartup.Initialize();
+         UI.BootStrapping.ApplicationStartup.Initialize(LogLevel.Debug);
          var container = IoC.Container;
          using (container.OptimizeDependencyResolution())
          {

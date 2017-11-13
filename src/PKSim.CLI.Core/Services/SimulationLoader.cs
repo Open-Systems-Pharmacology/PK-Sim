@@ -6,7 +6,7 @@ using BatchSimulation = PKSim.Core.Batch.Simulation;
 
 namespace PKSim.CLI.Core.Services
 {
-   public interface ISimulationLoader
+   internal interface ISimulationLoader
    {
       /// <summary>
       ///    Load the simulation that will be run from the json file
@@ -16,7 +16,7 @@ namespace PKSim.CLI.Core.Services
       SimulationForBatch LoadSimulationFrom(string jsonFile);
    }
 
-   public class SimulationLoader : ISimulationLoader
+   internal class SimulationLoader : ISimulationLoader
    {
       private readonly ISimulationMapper _simulationMapper;
 

@@ -18,7 +18,7 @@ using Simulation = PKSim.Core.Batch.Simulation;
 
 namespace PKSim.CLI.Core.Services
 {
-   public class BatchConverterRunner : IBatchRunner<BatchConverterRunOptions>
+   internal class BatchConverterRunner : IBatchRunner<BatchConverterRunOptions>
    {
       private readonly ILogger _logger;
       private readonly ISimulationLoader _simulationLoader;

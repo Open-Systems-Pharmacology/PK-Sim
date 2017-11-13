@@ -38,7 +38,7 @@ namespace PKSim.Core.Services
          _simulationRunOptions = simulationRunOptions ?? new SimulationRunOptions();
          _lazyLoadTask.Load(simulation);
 
-         if (!_entityValidationTask.Validate(simulation))
+         if (_simulationRunOptions.Validate && !_entityValidationTask.Validate(simulation))
             return _simulationDidNotRun;
 
          switch (simulation)

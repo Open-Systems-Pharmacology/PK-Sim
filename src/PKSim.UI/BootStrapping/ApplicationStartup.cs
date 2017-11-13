@@ -35,9 +35,9 @@ namespace PKSim.UI.BootStrapping
 {
    public class ApplicationStartup
    {
-      public static void Initialize()
+      public static void Initialize(LogLevel logLevel = LogLevel.Information)
       {
-         new ApplicationStartup().InitializeForStartup();
+         new ApplicationStartup().InitializeForStartup(logLevel);
       }
 
       public void InitializeUserInterace()
@@ -46,7 +46,7 @@ namespace PKSim.UI.BootStrapping
          UserInterfaceRegister.InitializeForStartup(IoC.Container);
       }
 
-      public void InitializeForStartup()
+      public void InitializeForStartup(LogLevel logLevel)
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
@@ -74,15 +74,15 @@ namespace PKSim.UI.BootStrapping
          container.Register<IConfigurableContainerLayoutView, AccordionLayoutView>(ViewLayouts.AccordionView.Id);
          container.Register<IConfigurableContainerLayoutView, TabbedLayoutView>(ViewLayouts.TabbedView.Id);
 
-         configureLogger(container);
+         configureLogger(container, logLevel);
       }
 
-      private void configureLogger(IContainer container)
+      private void configureLogger(IContainer container, LogLevel logLevel)
       {
          var loggerFactory = container.Resolve<ILoggerFactory>();
          loggerFactory
-            .AddPresenter()
-            .AddDebug();
+            .AddPresenter(logLevel)
+            .AddDebug(logLevel);
       }
 
       private static void updateGoDiagramKey()

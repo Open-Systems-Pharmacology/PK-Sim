@@ -104,7 +104,8 @@ namespace PKSim.Core
 
       public static class DirectoryKey
       {
-         public static readonly string BATCH = "Batch";
+         public static readonly string BATCH_INPUT = "BatchInput";
+         public static readonly string BATCH_OUTPUT = "BatchOutput";
          public static readonly string DATABASE = "Database";
       }
 

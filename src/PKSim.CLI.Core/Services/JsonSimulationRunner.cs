@@ -11,6 +11,7 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core.Extensions;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
@@ -22,28 +23,42 @@ namespace PKSim.CLI.Core.Services
       private readonly ILogger _logger;
       private readonly ISnapshotTask _snapshotTask;
       private readonly IList<string> _allSimulationNames = new List<string>();
+      private readonly SimulationRunOptions _simulationRunOptions;
 
       public JsonSimulationRunner(
-         ISimulationExporter simulationExporter, 
+         ISimulationExporter simulationExporter,
          ILogger logger,
          ISnapshotTask snapshotTask
-)        
+      )
       {
          _simulationExporter = simulationExporter;
          _logger = logger;
          _snapshotTask = snapshotTask;
+         _simulationRunOptions = new SimulationRunOptions
+         {
+            Validate = false,
+            CheckForNegativeValues = false,
+            RunForAllOutputs = true
+         };
       }
 
       public async Task RunBatchAsync(JsonRunOptions runOptions)
+      {
+         _logger.AddInSeparator($"Starting batch run: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+
+         await Task.Run(() => startJsonSimulationRun(runOptions));
+
+         _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+      }
+
+      private async Task startJsonSimulationRun(JsonRunOptions runOptions)
       {
          var inputFolder = runOptions.InputFolder;
          var outputFolder = runOptions.OutputFolder;
          var exportMode = runOptions.ExportMode;
 
          clear();
-
-         _logger.AddInSeparator($"Starting batch run: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
-
+         
          var inputDirectory = new DirectoryInfo(inputFolder);
          if (!inputDirectory.Exists)
             throw new ArgumentException($"Input folder '{inputFolder}' does not exist");
@@ -71,7 +86,8 @@ namespace PKSim.CLI.Core.Services
 
          foreach (var simulationFile in allSimulationFiles)
          {
-            await exportSimulationsFromProject(simulationFile, outputFolder, exportMode);
+            await exportSimulationsFromProject(simulationFile, outputFolder, exportMode)
+               .ConfigureAwait(false);
          }
 
          var end = DateTime.UtcNow;
@@ -79,8 +95,6 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInSeparator($"{_allSimulationNames.Count} simulations calculated and exported in '{timeSpent.ToDisplay()}'", NotificationType.Info);
 
          createSummaryFilesIn(outputDirectory, exportMode);
-
-         _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
       }
 
       private void clear()
@@ -116,23 +130,19 @@ namespace PKSim.CLI.Core.Services
 
       private async Task exportSimulationsFromProject(FileInfo projectFile, string outputFolder, SimulationExportMode simulationExportMode)
       {
-         _logger.AddInSeparator($"Starting batch simulation for file '{projectFile}'");
+         _logger.AddInSeparator($"Starting batch simulation export for file '{projectFile}'", NotificationType.Info);
          try
          {
             var project = await _snapshotTask.LoadProjectFromSnapshot(projectFile.FullName);
-            var simulations = project.All<PKSim.Core.Model.Simulation>();
+            var simulations = project.All<Simulation>();
             var numberOfSimulations = simulations.Count;
             _logger.AddInfo($"{numberOfSimulations} {"simulation".PluralizeIf(numberOfSimulations)} found in file '{projectFile}'");
 
-            var simulationRunOptions = new SimulationRunOptions
-            {
-               CheckForNegativeValues = false,
-               RunForAllOutputs = true
-            };
-
             foreach (var simulation in simulations)
             {
-               await _simulationExporter.RunAndExport(simulation, outputFolder, simulationRunOptions, simulationExportMode);
+               _logger.AddDebug($"Starting batch simulation export for simulation '{simulation.Name}'");
+
+               await _simulationExporter.RunAndExport(simulation, outputFolder, _simulationRunOptions, simulationExportMode);
                _allSimulationNames.Add(simulation.Name);
             }
          }

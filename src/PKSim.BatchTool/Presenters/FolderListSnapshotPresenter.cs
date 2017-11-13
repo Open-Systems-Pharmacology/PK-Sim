@@ -70,7 +70,7 @@ namespace PKSim.BatchTool.Presenters
 
       public void ImportFolderList()
       {
-         var file = _dialogCreator.AskForFileToOpen("Open Folder List File", OSPSuite.Core.Domain.Constants.Filter.JSON_FILE_FILTER, CoreConstants.DirectoryKey.BATCH);
+         var file = _dialogCreator.AskForFileToOpen("Open Folder List File", OSPSuite.Core.Domain.Constants.Filter.JSON_FILE_FILTER, CoreConstants.DirectoryKey.BATCH_INPUT);
          if (string.IsNullOrEmpty(file))
             return;
 
@@ -82,7 +82,7 @@ namespace PKSim.BatchTool.Presenters
 
       public void ExportFolderList()
       {
-         var file = _dialogCreator.AskForFileToSave("Save Folder List File", OSPSuite.Core.Domain.Constants.Filter.JSON_FILE_FILTER, CoreConstants.DirectoryKey.BATCH);
+         var file = _dialogCreator.AskForFileToSave("Save Folder List File", OSPSuite.Core.Domain.Constants.Filter.JSON_FILE_FILTER, CoreConstants.DirectoryKey.BATCH_OUTPUT);
          if (string.IsNullOrEmpty(file))
             return;
 
@@ -92,7 +92,7 @@ namespace PKSim.BatchTool.Presenters
 
       public void SelectFolder()
       {
-         var folder = _dialogCreator.AskForFolder("Browse for folder", CoreConstants.DirectoryKey.BATCH);
+         var folder = _dialogCreator.AskForFolder("Browse for folder", CoreConstants.DirectoryKey.BATCH_INPUT);
          if (string.IsNullOrEmpty(folder))
             return;
 

@@ -27,7 +27,7 @@ namespace PKSim.BatchTool.Presenters
 
       public void SelectInputFolder()
       {
-         var inputFolder = _dialogCreator.AskForFolder("Select input folder", CoreConstants.DirectoryKey.BATCH);
+         var inputFolder = _dialogCreator.AskForFolder("Select input folder", CoreConstants.DirectoryKey.BATCH_INPUT);
          if (string.IsNullOrEmpty(inputFolder))
             return;
 
@@ -36,7 +36,7 @@ namespace PKSim.BatchTool.Presenters
 
       public void SelectOutputFolder()
       {
-         var outputFolder = _dialogCreator.AskForFolder("Select output folder where results will be exported", CoreConstants.DirectoryKey.BATCH);
+         var outputFolder = _dialogCreator.AskForFolder("Select output folder where results will be exported", CoreConstants.DirectoryKey.BATCH_OUTPUT);
          if (string.IsNullOrEmpty(outputFolder))
             return;
 
