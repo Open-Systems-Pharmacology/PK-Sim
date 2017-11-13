@@ -1,6 +1,6 @@
 ﻿namespace PKSim.Core.Batch
 {
-   public class SimulationConfiguration
+   internal class SimulationConfiguration
    {
       public string Model { get; set; }
       public double StartTime { get; set; }

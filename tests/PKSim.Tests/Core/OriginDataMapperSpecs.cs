@@ -16,11 +16,11 @@ namespace PKSim.Core
 {
    public abstract class concern_for_OriginDataMapper : ContextSpecificationAsync<OriginDataMapper>
    {
-      private ParameterMapper _parameterMapper;
+      protected ParameterMapper _parameterMapper;
       private IOriginDataTask _originDataTask;
       protected IDimensionRepository _dimensionRepository;
       protected IIndividualModelTask _individualModelTask;
-      private ISpeciesRepository _speciesRepository;
+      protected ISpeciesRepository _speciesRepository;
       protected OriginData _snapshot;
       protected Model.OriginData _originData;
       protected Parameter _ageSnapshotParameter;
@@ -28,8 +28,10 @@ namespace PKSim.Core
       protected Parameter _weightSnapshotParameter;
       protected Parameter _gestationalAgeSnapshotParameter;
       protected Species _species;
-      private SpeciesPopulation _speciesPopulation;
-      private Gender _gender;
+      protected SpeciesPopulation _speciesPopulation;
+      protected Gender _gender;
+      protected SpeciesPopulation _anotherPopulation;
+      protected Gender _anotherGender;
 
       protected override Task Context()
       {
@@ -46,14 +48,14 @@ namespace PKSim.Core
          _weightSnapshotParameter = new Parameter {Value = 3};
          _gestationalAgeSnapshotParameter = new Parameter {Value = 4};
 
-         _species = new Species {Name = "Human"};
          _speciesPopulation = new SpeciesPopulation {Name = "SpeciesPopulation", IsHeightDependent = true, IsAgeDependent = true};
          _gender = new Gender {Name = "Unknown"};
+         _species = new Species { Name = "Human" };
          _species.AddPopulation(_speciesPopulation);
-         _species.AddPopulation(new SpeciesPopulation { Name = "Another species population", IsHeightDependent = true, IsAgeDependent = true });
+         _anotherPopulation = new SpeciesPopulation { Name = "Another species population", IsHeightDependent = true, IsAgeDependent = true };
 
          _speciesPopulation.AddGender(_gender);
-         _speciesPopulation.AddGender(new Gender { Name = "AnotherGender" });
+          _anotherGender = new Gender { Name = "AnotherGender" };
          
          A.CallTo(() => _speciesRepository.All()).Returns(new []{_species});
 
@@ -61,7 +63,6 @@ namespace PKSim.Core
          {
             Age = 35,
             AgeUnit = "years",
-            GestationalAge = 40,
             Height = 17.8,
             HeightUnit = "m",
             Weight = 73,
@@ -69,6 +70,7 @@ namespace PKSim.Core
             Species = _species,
             SpeciesPopulation = _speciesPopulation,
             Gender = _gender,
+            GestationalAge = 40
          };
 
          A.CallTo(() => _parameterMapper.ParameterFrom(null, A<string>._, A<IDimension>._)).Returns(null);
@@ -83,6 +85,13 @@ namespace PKSim.Core
 
    public class When_mapping_an_origin_data_to_snapshot : concern_for_OriginDataMapper
    {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _species.AddPopulation(_anotherPopulation);
+         _speciesPopulation.AddGender(_anotherGender);
+      }
+
       protected override async Task Because()
       {
          _snapshot = await sut.MapToSnapshot(_originData);
@@ -97,11 +106,120 @@ namespace PKSim.Core
 
          _snapshot.Age.ShouldBeEqualTo(_ageSnapshotParameter);
          _snapshot.Height.ShouldBeEqualTo(_heightSnapshotParameter);
-
-         //those parameters where not set in example
-         _snapshot.GestationalAge.ShouldBeNull();
+         _snapshot.GestationalAge.ShouldBeEqualTo(_gestationalAgeSnapshotParameter);
       }
    }
+
+   public class When_mapping_an_origin_data_from_snapshot_where_the_species_is_not_defined : concern_for_OriginDataMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_originData);
+         _snapshot.Species = "toto";
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<PKSimException>();
+      }
+   }
+
+   public class When_mapping_an_origin_data_from_snapshot_where_the_species_is_empty_and_the_species_only_has_one_pop : concern_for_OriginDataMapper
+   {
+      private PKSim.Core.Model.OriginData _newOriginData;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_originData);
+         _snapshot.Population = "";
+      }
+
+      protected override async Task Because()
+      {
+         _newOriginData = await sut.MapToModel(_snapshot);
+      }
+
+      [Observation]
+      public void should_use_the_default_population()
+      {
+         _newOriginData.SpeciesPopulation.ShouldBeEqualTo(_speciesPopulation);
+      }
+   }
+
+   public class When_mapping_an_origin_data_from_snapshot_where_the_species_is_empty : concern_for_OriginDataMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_originData);
+         _snapshot.Species = "";
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<PKSimException>();
+      }
+   }
+
+   public class When_mapping_an_origin_data_from_snapshot_where_the_population_is_not_defined : concern_for_OriginDataMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_originData);
+         _snapshot.Population = "toto";
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<PKSimException>();
+      }
+   }
+
+   public class When_mapping_an_origin_data_from_snapshot_where_the_gender_is_not_defined : concern_for_OriginDataMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_originData);
+         _snapshot.Gender = "toto";
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<PKSimException>();
+      }
+   }
+
+   public class When_mapping_an_origin_data_from_snapshot_where_the_gender_is_empty_and_the_population_has_only_one_gender : concern_for_OriginDataMapper
+   {
+      private Model.OriginData _newOriginData;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_originData);
+         _snapshot.Gender = "";
+      }
+
+      protected override async Task Because()
+      {
+         _newOriginData = await sut.MapToModel(_snapshot);
+      }
+
+      [Observation]
+      public void should_use_the_default_gender()
+      {
+         _newOriginData.Gender.ShouldBeEqualTo(_gender);
+      }
+   }
+
 
    public class When_mapping_snapshot_origin_data_to_origin_data : concern_for_OriginDataMapper
    {
@@ -110,8 +228,9 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_originData);
 
+         _snapshot = await sut.MapToSnapshot(_originData);
+     
          var meanWeightParameter = A.Fake<IParameter>();
          A.CallTo(() => _individualModelTask.MeanWeightFor(A<Model.OriginData>._)).Returns(meanWeightParameter);
          A.CallTo(() => meanWeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(_originData.Weight);

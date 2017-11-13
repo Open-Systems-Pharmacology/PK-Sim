@@ -1,6 +1,6 @@
 ﻿namespace PKSim.Core.Batch
 {
-   public class ApplicationProtocol
+   internal class ApplicationProtocol
    {
       public string Name { get; set; }
       public string CompoundName { get; set; }

@@ -3,7 +3,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Batch
 {
-   public class Simulation
+   internal class Simulation
    {
       public static string Name = "Sim";
 

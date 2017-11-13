@@ -2,7 +2,7 @@
 
 namespace PKSim.Core.Batch
 {
-   public class Individual
+   internal class Individual
    {
       public string Species { get; set; }
       public string Population { get; set; }

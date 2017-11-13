@@ -9,7 +9,7 @@ using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Batch
 {
-   public class SimulationConstruction
+   internal class SimulationConstruction
    {
       public ISimulationSubject SimulationSubject { get; set; }
       public IReadOnlyList<Model.Compound> TemplateCompounds { get; set; }
@@ -28,14 +28,14 @@ namespace PKSim.Core.Batch
       }
    }
 
-   public interface ISimulationConstructor
+   internal interface ISimulationConstructor
    {
       Model.Simulation CreateModelLessSimulationWith(SimulationConstruction simulationConstruction);
       Model.Simulation CreateSimulation(SimulationConstruction simulationConstruction, Action<Model.Simulation> preModelCreationAction = null);
       void AddModelToSimulation(Model.Simulation simulation);
    }
 
-   public class SimulationConstructor : ISimulationConstructor
+   internal class SimulationConstructor : ISimulationConstructor
    {
       private readonly ISimulationFactory _simulationFactory;
       private readonly ISimulationBuildingBlockUpdater _buildingBlockUpdater;

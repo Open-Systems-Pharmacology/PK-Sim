@@ -6,11 +6,11 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Batch.Mapper
 {
-   public interface IFormulationMapper : IMapper<Formulation, Model.Formulation>
+   internal interface IFormulationMapper : IMapper<Formulation, Model.Formulation>
    {
    }
 
-   public class FormulationMapper : IFormulationMapper
+   internal class FormulationMapper : IFormulationMapper
    {
       private readonly IFormulationRepository _formulationRepository;
       private readonly ICloner _cloner;

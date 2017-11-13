@@ -1,13 +1,14 @@
 ﻿using System.Linq;
 using OSPSuite.Utility.Collections;
+using PKSim.Core;
 
-namespace PKSim.Core.Batch
+namespace PKSim.Matlab
 {
    /// <summary>
    ///    Should only be used from matlab or batch component to create a population based on user data.
    ///    This structure will then be converted into a Core Population Settings
    /// </summary>
-   internal class PopulationSettings
+   public class PopulationSettings
    {
       private readonly ICache<string, string> _cmCache;
 
@@ -116,7 +117,7 @@ namespace PKSim.Core.Batch
          MinGestationalAge = CoreConstants.PRETERM_RANGE.Min();
          MaxGestationalAge = CoreConstants.PRETERM_RANGE.Max();
          NumberOfIndividuals = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION;
-         _cmCache = new Cache<string, string> {OnMissingKey = x => string.Empty};
+         _cmCache = new Cache<string, string> { OnMissingKey = x => string.Empty };
          ProportionOfFemales = 50;
       }
    }

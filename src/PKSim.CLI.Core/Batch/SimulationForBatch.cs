@@ -3,7 +3,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Batch
 {
-   public class SimulationForBatch
+   internal class SimulationForBatch
    {
       public IndividualSimulation Simulation { get; set; }
       public SimulationConfiguration Configuration { get; set; }

@@ -8,11 +8,11 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Batch.Mapper
 {
-   public interface ISimulationMapper : IMapper<Simulation, SimulationForBatch>
+   internal interface ISimulationMapper : IMapper<Simulation, SimulationForBatch>
    {
    }
 
-   public class SimulationMapper : ISimulationMapper
+   internal class SimulationMapper : ISimulationMapper
    {
       private readonly ICompoundMapper _compoundMapper;
       private readonly IIndividualMapper _individualMapper;

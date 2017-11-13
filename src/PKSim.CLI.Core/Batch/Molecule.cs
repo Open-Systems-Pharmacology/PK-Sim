@@ -3,7 +3,7 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Batch
 {
-   public abstract class Molecule : IWithName
+   internal abstract class Molecule : IWithName
    {
       public string Name { get; set; }
       public double ReferenceConcentration { get; set; }
@@ -20,15 +20,15 @@ namespace PKSim.Core.Batch
       }
    }
 
-   public class Enzyme : Molecule
+   internal class Enzyme : Molecule
    {
    }
 
-   public class OtherProtein : Molecule
+   internal class OtherProtein : Molecule
    {
    }
 
-   public class Transporter : Molecule
+   internal class Transporter : Molecule
    {
       public string TransportType { get; set; }
 

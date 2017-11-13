@@ -100,7 +100,6 @@
     <Compile Include="Batch\Formulation.cs" />
     <Compile Include="Batch\Individual.cs" />
     <Compile Include="Batch\Mapper\ApplicationProtocolMapper.cs" />
-    <Compile Include="Batch\Mapper\BatchToCoreMapper.cs" />
     <Compile Include="Batch\Mapper\CompoundMapper.cs" />
     <Compile Include="Batch\Mapper\FormulationMapper.cs" />
     <Compile Include="Batch\Mapper\IndividualMapper.cs" />

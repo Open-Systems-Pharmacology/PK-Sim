@@ -5,12 +5,12 @@ using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Batch.Mapper
 {
-   public interface IModelPropertiesMapper
+   internal interface IModelPropertiesMapper
    {
       ModelProperties MapFrom(SimulationConfiguration configuration, Model.Individual individual);
    }
 
-   public class ModelPropertiesMapper : IModelPropertiesMapper
+   internal class ModelPropertiesMapper : IModelPropertiesMapper
    {
       private readonly IModelPropertiesTask _modelPropertiesTask;
       private readonly ILogger _batchLogger;

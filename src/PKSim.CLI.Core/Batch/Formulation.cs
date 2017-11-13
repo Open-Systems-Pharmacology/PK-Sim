@@ -3,7 +3,7 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Batch
 {
-   public class Formulation : IWithName
+   internal class Formulation : IWithName
    {
       public string Name { get; set; }
       public string FormulationType { get; set; }

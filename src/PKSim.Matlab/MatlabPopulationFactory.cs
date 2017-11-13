@@ -3,18 +3,18 @@ using System.Threading;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Batch.Mapper;
 using PKSim.Core.Model;
-using PopulationSettings = PKSim.Core.Batch.PopulationSettings;
+using PKSim.Matlab.Mappers;
 
 namespace PKSim.Matlab
 {
    public interface IMatlabPopulationFactory
    {
-      IParameterValueCache CreatePopulation(PopulationSettings batchPopulationSettings, IEnumerable<string> moleculeNames);
+      IParameterValueCache CreatePopulation(PopulationSettings matlabPopulationSettings, IEnumerable<string> moleculeNames);
    }
 
    public class MatlabPopulationFactory : IMatlabPopulationFactory
    {
-      private readonly IPopulationSettingsMapper _populationSettingsMapper;
+      private readonly IMatlabPopulationSettingsToPopulationSettingsMapper _populationSettingsMapper;
       private readonly IRandomPopulationFactory _randomPopulationFactory;
 
       static MatlabPopulationFactory()
@@ -22,19 +22,19 @@ namespace PKSim.Matlab
          ApplicationStartup.Initialize();
       }
 
-      public MatlabPopulationFactory() : this(IoC.Resolve<IPopulationSettingsMapper>(), IoC.Resolve<IRandomPopulationFactory>())
+      public MatlabPopulationFactory() : this(IoC.Resolve<IMatlabPopulationSettingsToPopulationSettingsMapper>(), IoC.Resolve<IRandomPopulationFactory>())
       {
       }
 
-      public MatlabPopulationFactory(IPopulationSettingsMapper populationSettingsMapper, IRandomPopulationFactory randomPopulationFactory)
+      public MatlabPopulationFactory(IMatlabPopulationSettingsToPopulationSettingsMapper populationSettingsMapper, IRandomPopulationFactory randomPopulationFactory)
       {
          _populationSettingsMapper = populationSettingsMapper;
          _randomPopulationFactory = randomPopulationFactory;
       }
 
-      public IParameterValueCache CreatePopulation(PopulationSettings batchPopulationSettings, IEnumerable<string> moleculeNames)
+      public IParameterValueCache CreatePopulation(PopulationSettings matlabPopulationSettings, IEnumerable<string> moleculeNames)
       {
-         var populationSettings = _populationSettingsMapper.MapFrom(batchPopulationSettings);
+         var populationSettings = _populationSettingsMapper.MapFrom(matlabPopulationSettings);
          var population = _randomPopulationFactory.CreateFor(populationSettings, new CancellationToken()).Result;
          return population.IndividualPropertiesCache;
       }

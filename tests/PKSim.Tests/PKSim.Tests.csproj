@@ -343,7 +343,7 @@
     <Compile Include="Core\PaneDataSpecs.cs" />
     <Compile Include="Core\ParameterChangeUpdaterSpecs.cs" />
     <Compile Include="Core\ParameterDistributionMetaDataExtensionsSpecs.cs" />
-    <Compile Include="Core\BatchPopulationSettingsToPopulationSettingsMapperSpecs.cs" />
+    <Compile Include="Matlab\MatlabPopulationSettingsToPopulationSettingsMapperSpecs.cs" />
     <Compile Include="Core\BuildConfigurationTaskSpecs.cs" />
     <Compile Include="Core\BuildingBlockChangeCommandExtensionsSpecs.cs" />
     <Compile Include="Core\BuildingBlockChangeCommandSpecs.cs" />
@@ -620,7 +620,7 @@
     <Compile Include="IntegrationTests\SystemicProcessSelectionXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQueryConversionSpecs.cs" />
     <Compile Include="Matlab\MatlabIndividualFactorySpecs.cs" />
-    <Compile Include="Core\BatchOriginDataToOriginDataMapperSpecs.cs" />
+    <Compile Include="Matlab\MatlabOriginDataToOriginDataMapperSpecs.cs" />
     <Compile Include="Matlab\MatlabPopulationFactorySpecs.cs" />
     <Compile Include="Matlab\OntogenyFactorsRetrieverSpecs.cs" />
     <Compile Include="Presentation\BinSizeGroupingDTOSpecs.cs" />

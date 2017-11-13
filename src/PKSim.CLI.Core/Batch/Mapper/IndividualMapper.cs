@@ -7,11 +7,11 @@ using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Batch.Mapper
 {
-   public interface IIndividualMapper : IMapper<Individual, Model.Individual>
+   internal interface IIndividualMapper : IMapper<Individual, Model.Individual>
    {
    }
 
-   public class IndividualMapper : IIndividualMapper
+   internal class IndividualMapper : IIndividualMapper
    {
       private readonly IIndividualFactory _individualFactory;
       private readonly IOriginDataMapper _originDataMapper;

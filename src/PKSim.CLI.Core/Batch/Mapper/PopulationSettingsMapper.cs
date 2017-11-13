@@ -8,11 +8,11 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Batch.Mapper
 {
-   public interface IPopulationSettingsMapper : IMapper<PopulationSettings, RandomPopulationSettings>
+   internal interface IPopulationSettingsMapper : IMapper<PopulationSettings, RandomPopulationSettings>
    {
    }
 
-   public class PopulationSettingsMapper : IPopulationSettingsMapper
+   internal class PopulationSettingsMapper : IPopulationSettingsMapper
    {
       private readonly IOriginDataMapper _originDataMapper;
       private readonly IIndividualFactory _individualFactory;

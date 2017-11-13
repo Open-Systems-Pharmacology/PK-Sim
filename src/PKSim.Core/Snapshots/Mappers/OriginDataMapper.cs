@@ -115,7 +115,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var meanGestationalAgeFor = _individualModelTask.MeanGestationalAgeFor(originData);
          originData.GestationalAge = baseParameterValueFrom(snapshot.GestationalAge, meanGestationalAgeFor.Dimension, meanGestationalAgeFor.Value);
-         originData.AgeUnit = meanGestationalAgeFor.Dimension.UnitOrDefault(snapshot.GestationalAge.Unit).Name;
+         originData.GestationalAgeUnit = meanGestationalAgeFor.Dimension.UnitOrDefault(snapshot.GestationalAge.Unit).Name;
       }
 
       private Gender genderFrom(SnapshotOriginData snapshot, SpeciesPopulation speciesPopulation)

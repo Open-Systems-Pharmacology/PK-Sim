@@ -3,7 +3,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Batch
 {
-   public class ParameterVariationSet
+   internal class ParameterVariationSet
    {
       public string Name { get; set; }
       public List<ParameterValue> ParameterValues { get; set; }

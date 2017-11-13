@@ -5,11 +5,11 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Batch.Mapper
 {
-   public interface IApplicationProtocolMapper : IMapper<ApplicationProtocol, Protocol>
+   internal interface IApplicationProtocolMapper : IMapper<ApplicationProtocol, Protocol>
    {
    }
 
-   public class ApplicationProtocolMapper : IApplicationProtocolMapper
+   internal class ApplicationProtocolMapper : IApplicationProtocolMapper
    {
       private readonly IProtocolFactory _protocolFactory;
       private readonly ILogger _logger;

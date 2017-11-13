@@ -2,7 +2,7 @@
 
 namespace PKSim.Core.Batch
 {
-   public abstract class CompoundProcess
+   internal abstract class CompoundProcess
    {
       public string InternalName { get; set; }
       public string DataSource { get; set; }
@@ -15,12 +15,12 @@ namespace PKSim.Core.Batch
       }
    }
 
-   public class SystemicProcess : CompoundProcess
+   internal class SystemicProcess : CompoundProcess
    {
       public string SystemicProcessType { get; set; }
    }
 
-   public class PartialProcess : CompoundProcess
+   internal class PartialProcess : CompoundProcess
    {
       public string MoleculeName { get; set; }
    }

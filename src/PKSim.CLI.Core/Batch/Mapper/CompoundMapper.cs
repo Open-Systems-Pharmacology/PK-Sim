@@ -10,11 +10,11 @@ using ModelCompound = PKSim.Core.Model.Compound;
 
 namespace PKSim.Core.Batch.Mapper
 {
-   public interface ICompoundMapper : IMapper<BatchCompound, ModelCompound>
+   internal interface ICompoundMapper : IMapper<BatchCompound, ModelCompound>
    {
    }
 
-   public class CompoundMapper : ICompoundMapper
+   internal class CompoundMapper : ICompoundMapper
    {
       private readonly ICompoundFactory _compoundFactory;
       private readonly ICompoundProcessRepository _compoundProcessRepository;

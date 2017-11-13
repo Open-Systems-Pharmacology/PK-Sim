@@ -2,13 +2,13 @@
 
 namespace PKSim.Core.Batch
 {
-   public class PkaType
+   internal class PkaType
    {
       public string Type { get; set; }
       public double Value { get; set; }
    }
 
-   public class Compound
+   internal class Compound
    {
       public string Name { get; set; }
       public bool IsSmallMolecule { get; set; }

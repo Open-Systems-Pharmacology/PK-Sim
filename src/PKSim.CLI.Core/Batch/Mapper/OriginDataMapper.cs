@@ -9,11 +9,11 @@ using BatchOriginData = PKSim.Core.Batch.OriginData;
 
 namespace PKSim.Core.Batch.Mapper
 {
-   public interface IOriginDataMapper : IMapper<BatchOriginData, Model.OriginData>
+   internal interface IOriginDataMapper : IMapper<BatchOriginData, Model.OriginData>
    {
    }
 
-   public class OriginDataMapper : IOriginDataMapper
+   internal class OriginDataMapper : IOriginDataMapper
    {
       private readonly ISpeciesRepository _speciesRepository;
       private readonly IOriginDataTask _originDataTask;
