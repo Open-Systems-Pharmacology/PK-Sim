@@ -16,15 +16,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
    {
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
-      private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
+      private readonly ICalculationMethodUpdater _calculationMethodUpdater;
       private readonly Cache<Species, Individual> _defaultCache;
       private bool _converted;
 
-      public Converter521To522(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater)
+      public Converter521To522(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, ICalculationMethodUpdater calculationMethodUpdater)
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
-         _renalAgingCalculationMethodUpdater = renalAgingCalculationMethodUpdater;
+         _calculationMethodUpdater = calculationMethodUpdater;
          _defaultCache = new Cache<Species, Individual>(x => x.Species, x => null);
       }
 
@@ -62,7 +62,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
       public void Visit(Individual individual)
       {
-         _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(individual);
+         _calculationMethodUpdater.AddMissingCalculationMethodTo(individual);
          addIndividualParameters(individual, individual.Species);
          _converted = true;
       }

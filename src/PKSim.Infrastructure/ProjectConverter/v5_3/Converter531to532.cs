@@ -14,12 +14,12 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
       IVisitor<Individual>,
       IVisitor<Population>
    {
-      private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
+      private readonly ICalculationMethodUpdater _calculationMethodUpdater;
       private bool _converted;
 
-      public Converter531To532(IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater)
+      public Converter531To532(ICalculationMethodUpdater calculationMethodUpdater)
       {
-         _renalAgingCalculationMethodUpdater = renalAgingCalculationMethodUpdater;
+         _calculationMethodUpdater = calculationMethodUpdater;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_3_1;
@@ -58,7 +58,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
 
       public void Visit(Individual individual)
       {
-         _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(individual);
+         _calculationMethodUpdater.AddMissingCalculationMethodTo(individual);
          updateVariableInPopulationFlag(individual);
          _converted = true;
       }

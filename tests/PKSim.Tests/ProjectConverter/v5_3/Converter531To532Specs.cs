@@ -10,12 +10,12 @@ namespace PKSim.ProjectConverter.v5_3
 {
    public abstract class concern_for_Converter531To532 : ContextSpecification<Converter531To532>
    {
-      private IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
+      private ICalculationMethodUpdater _calculationMethodUpdater;
 
       protected override void Context()
       {
-         _renalAgingCalculationMethodUpdater = A.Fake<IRenalAgingCalculationMethodUpdater>();
-         sut = new Converter531To532(_renalAgingCalculationMethodUpdater);
+         _calculationMethodUpdater = A.Fake<ICalculationMethodUpdater>();
+         sut = new Converter531To532(_calculationMethodUpdater);
       }
    }
 
