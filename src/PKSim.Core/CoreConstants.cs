@@ -267,6 +267,8 @@ namespace PKSim.Core
          public static readonly string BlackBox = "BlackBox_CalculationMethod";
          public static readonly string DynamicSumFormulas = "DynamicSumFormulas";
          public static readonly string RodgerAndRowland = "Cellular partition coefficient method - Rodgers and Rowland";
+         public static readonly string RenalAgingHuman = "Renal_Aging_Human";
+         public static readonly string RenalAgingAnimals = "Renal_Aging_Animals";
 
          public static readonly IEnumerable<string> ForProcesses = new List<string> {LinksCommon, SpecificClearance, DistributionInVitroPKSim};
 
@@ -286,8 +288,6 @@ namespace PKSim.Core
          public static readonly IEnumerable<string> ForFormulations = new List<string> {Formulation, FormulationParticles};
          public static readonly IEnumerable<string> ForSchemaItems = new List<string> {SchemaItemParameter};
          public static readonly IEnumerable<string> ForApplications = new List<string> {Formulation, ApplicationParameter, SchemaItemParameter, ApplicationParameter_Human};
-         public static readonly string RenalAgingHuman = "Renal_Aging_Human";
-         public static readonly string RenalAgingAnimals = "Renal_Aging_Animals";
       }
 
       public static class Compartment
@@ -303,7 +303,6 @@ namespace PKSim.Core
          public static readonly string Saliva = "Saliva";
          public static readonly string Periportal = "Periportal";
          public static readonly string Pericentral = "Pericentral";
-
          public static readonly string Stomach = "Stomach";
          public static readonly string Duodenum = "Duodenum";
          public static readonly string UpperJejunum = "UpperJejunum";
@@ -1181,12 +1180,7 @@ namespace PKSim.Core
          public const string Preterm = "Preterm";
          public const string TableParameterExport = "_TableParameters";
          public const string AgingDataTableName = "AgingData";
-         public const string Japanese = "Japanese_Population";
          public const string Pregnant = "Pregnant";
-         public const string Asian_Tanaka_1996 = "Asian_Tanaka_1996";
-         public const string BlackAmerican_NHANES_1997 = "BlackAmerican_NHANES_1997";
-         public const string MexicanAmericanWhite_NHANES_1997 = "MexicanAmericanWhite_NHANES_1997";
-         public const string WhiteAmerican_NHANES_1997 = "WhiteAmerican_NHANES_1997";
       }
 
       public static class Process

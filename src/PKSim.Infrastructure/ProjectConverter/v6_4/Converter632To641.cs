@@ -14,13 +14,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_4
       IVisitor<Simulation>
    {
       private readonly IParameterFactory _parameterFactory;
-      private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
+      private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private bool _converted;
 
-      public Converter632To641(IParameterFactory parameterFactory, IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater)
+      public Converter632To641(IParameterFactory parameterFactory, IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater)
       {
          _parameterFactory = parameterFactory;
-         _renalAgingCalculationMethodUpdater = renalAgingCalculationMethodUpdater;
+         _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V6_3_2;
@@ -58,7 +58,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_4
 
          kidney.Add(renalAgingParameter);
 
-         _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(individual);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
       }
 
       public void Visit(Population population)
@@ -70,7 +70,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_4
       public void Visit(Simulation simulation)
       {
          convertIndividual(simulation.BuildingBlock<Individual>());
-         _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(simulation);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(simulation);
          _converted = true;
       }
    }

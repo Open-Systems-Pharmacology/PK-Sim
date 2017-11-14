@@ -209,7 +209,7 @@
     <Compile Include="ORM\Repositories\StaticReactionRepository.cs" />
     <Compile Include="ORM\Repositories\FlatParameterMetaDataRepository.cs" />
     <Compile Include="ProjectConverter\IndividualUpdater.cs" />
-    <Compile Include="ProjectConverter\RenalAgingCalculationMethodUpdater.cs" />
+    <Compile Include="ProjectConverter\IndividualCalculationMethodsUpdater.cs" />
     <Compile Include="ProjectConverter\ProjectConverterLogger.cs" />
     <Compile Include="ProjectConverter\v5_1\Converter50To513.cs" />
     <Compile Include="ProjectConverter\IObjectConverter.cs" />

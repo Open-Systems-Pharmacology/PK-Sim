@@ -58,12 +58,6 @@ namespace PKSim.ProjectConverter.v5_1
       }
 
       [Observation]
-      public void should_have_added_the_dynamic_formula_calculation_method_in_the_simulation()
-      {
-         _simulation.ModelProperties.CalculationMethodFor(CoreConstants.Category.DynamicFormulas).ShouldNotBeNull();
-      }
-
-      [Observation]
       public void should_have_the_value_of_sink_condition_to_the_expected_values()
       {
          var lumen = _simulation.Model.Root.Container(Constants.ORGANISM)

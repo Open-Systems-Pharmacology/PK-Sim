@@ -19,18 +19,18 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
    {
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
-      private readonly ICalculationMethodRepository _calculationMethodRepository;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IOrganTypeRepository _organTypeRepository;
+      private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private bool _converted;
 
-      public Converter710To720(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, ICalculationMethodRepository calculationMethodRepository, IEntityPathResolver entityPathResolver, IOrganTypeRepository organTypeRepository)
+      public Converter710To720(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IEntityPathResolver entityPathResolver, IOrganTypeRepository organTypeRepository, IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater)
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
-         _calculationMethodRepository = calculationMethodRepository;
          _entityPathResolver = entityPathResolver;
          _organTypeRepository = organTypeRepository;
+         _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V7_1_0;
@@ -107,9 +107,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
 
          individual.Organism.Add(_cloner.Clone(bsa));
 
-         addBSACalculationMethod(individual);
-
-         addDynamicFormulaCalculationMethod(individual);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
       }
 
       private void addBSAParameterValues(Population population)
@@ -138,19 +136,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
          }
 
          population.IndividualPropertiesCache.Add(parameterValues);
-      }
-
-      private void addBSACalculationMethod(Individual individual)
-      {
-         if (!individual.Species.IsHuman)
-            return;
-
-         individual.OriginData.AddCalculationMethod(_calculationMethodRepository.FindByName(ConverterConstants.CalculationMethod.BSA_DuBois));
-      }
-
-      private void addDynamicFormulaCalculationMethod(Individual individual)
-      {
-         individual.OriginData.AddCalculationMethod(_calculationMethodRepository.FindByName(ConverterConstants.CalculationMethod.DynamicSumFormulas));
       }
    }
 }
