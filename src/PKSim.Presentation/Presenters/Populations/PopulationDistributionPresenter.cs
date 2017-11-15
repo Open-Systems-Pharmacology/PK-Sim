@@ -17,7 +17,9 @@ using DistributionSettings = PKSim.Core.Chart.DistributionSettings;
 
 namespace PKSim.Presentation.Presenters.Populations
 {
-   public interface IPopulationDistributionPresenter : IPresenter<IPopulationParameterDistributionView>
+   public interface IPopulationDistributionPresenter : 
+      IPresenter<IPopulationParameterDistributionView>, 
+      ICanCopyToClipboard
    {
       Color StartColorFor(string serie);
       Color EndColorFor(string serie);
@@ -39,17 +41,23 @@ namespace PKSim.Presentation.Presenters.Populations
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IPKParameterRepository _pkParameterRepository;
+      private readonly IApplicationSettings _applicationSettings;
 
-      public PopulationDistributionPresenter(IPopulationParameterDistributionView view,
+      public PopulationDistributionPresenter(
+         IPopulationParameterDistributionView view,
          IDistributionDataCreator distributionDataCreator, 
          IRepresentationInfoRepository representationInfoRepository, 
-         IDisplayUnitRetriever displayUnitRetriever, IPKParameterRepository pkParameterRepository)
+         IDisplayUnitRetriever displayUnitRetriever, 
+         IPKParameterRepository pkParameterRepository,
+         IApplicationSettings applicationSettings
+         )
          : base(view)
       {
          _distributionDataCreator = distributionDataCreator;
          _representationInfoRepository = representationInfoRepository;
          _displayUnitRetriever = displayUnitRetriever;
          _pkParameterRepository = pkParameterRepository;
+         _applicationSettings = applicationSettings;
       }
 
       public void Plot(IVectorialParametersContainer vectorialParametersContainer, IParameter parameter, DistributionSettings settings = null, IDimension dimension = null, Unit displayUnit = null)
@@ -150,6 +158,11 @@ namespace PKSim.Presentation.Presenters.Populations
       public void ResetPlot()
       {
          _view.ResetPlot();
+      }
+
+      public void CopyToClipboard()
+      {
+         View.CopyToClipboard(_applicationSettings.WatermarkTextToUse);
       }
    }
 }
