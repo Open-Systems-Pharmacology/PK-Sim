@@ -168,7 +168,7 @@ namespace PKSim.UI.Binders
       private void adjustDisplayForApplication(PopulationAnalysisChart populationAnalysisChart)
       {
          _view.SetDockStyle(DockStyle.Fill);
-         _view.Chart.SetFontAndSizeSettings(ChartFontAndSizeSettings.Default, _view.Chart.Size);
+         _view.Chart.SetFontAndSizeSettings(new ChartFontAndSizeSettings(), _view.Chart.Size);
          clearOriginText();
          updateWatermark(populationAnalysisChart, showWatermark:false);
       }

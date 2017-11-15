@@ -32,6 +32,7 @@ namespace PKSim.UI.Views.Protocols
       public void AttachPresenter(IProtocolChartPresenter presenter)
       {
          _presenter = presenter;
+         chart.AddCopyToClipboardPopupMenu(presenter);
       }
 
       public void Clear()
@@ -119,6 +120,11 @@ namespace PKSim.UI.Views.Protocols
       {
          e.Cancel = true;
          _toolTipController.HideHint();
+      }
+
+      public void CopyToClipboard(string watermark)
+      {
+         chart.CopyToClipboard(watermark);
       }
    }
 }

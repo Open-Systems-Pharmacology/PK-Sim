@@ -234,7 +234,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       public void UpdateWatermark(PopulationAnalysisChart populationAnalysisChart, bool showWatermark)
       {
-         Chart.AddWatermark(populationAnalysisChart, showWatermark? _presenter.Watermark : null);
+         Chart.AddWatermark(showWatermark? _presenter.Watermark : null, populationAnalysisChart);
       }
    }  
 }

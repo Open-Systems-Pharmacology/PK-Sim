@@ -1,22 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
+using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Views.Protocols;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Protocols
 {
-   public interface IProtocolChartPresenter : IPresenter<IProtocolChartView>
+   public interface IProtocolChartPresenter : 
+      IPresenter<IProtocolChartView>,
+      ICanCopyToClipboard 
    {
       void PlotProtocol(Protocol protocol);
       void PlotProtocols(ICache<Compound, Protocol> protocols);
@@ -30,15 +33,19 @@ namespace PKSim.Presentation.Presenters.Protocols
       private readonly ISchemaItemToSchemaItemDTOMapper _schemaItemDTOMapper;
       private readonly IDimensionRepository _dimensionRepository;
       private IProtocolChartData _protocolChartData;
+      private readonly IApplicationSettings _applicationSettings;
 
-      public ProtocolChartPresenter(IProtocolChartView view,
+      public ProtocolChartPresenter(
+         IProtocolChartView view,
          IProtocolToSchemaItemsMapper schemaItemsMapper,
          ISchemaItemToSchemaItemDTOMapper schemaItemDTOMapper,
-         IDimensionRepository dimensionRepository) : base(view)
+         IDimensionRepository dimensionRepository, 
+         IApplicationSettings applicationSettings) : base(view)
       {
          _schemaItemsMapper = schemaItemsMapper;
          _schemaItemDTOMapper = schemaItemDTOMapper;
          _dimensionRepository = dimensionRepository;
+         _applicationSettings = applicationSettings;
       }
 
       public void PlotProtocol(Protocol protocol)
@@ -96,6 +103,11 @@ namespace PKSim.Presentation.Presenters.Protocols
       private IReadOnlyList<SchemaItemDTO> schemaItemsDTOFrom(Protocol protocol)
       {
          return _schemaItemsMapper.MapFrom(protocol).MapAllUsing(_schemaItemDTOMapper);
+      }
+
+      public void CopyToClipboard()
+      {
+         View.CopyToClipboard(_applicationSettings.WatermarkTextToUse);
       }
    }
 }
