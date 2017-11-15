@@ -52,7 +52,7 @@ namespace PKSim.ProjectConverter.v7_2
       {
          foreach (var individual in _allHumanIndividuals)
          {
-            individual.OriginData.CalculationMethodFor(ConverterConstants.Category.BSA).Name.ShouldBeEqualTo(ConverterConstants.CalculationMethod.BSA_DuBois);
+            individual.OriginData.CalculationMethodFor(ConverterConstants.Category.BSA).Name.ShouldBeEqualTo(ConverterConstants.CalculationMethod.BSA_Mosteller);
          }
       }
 

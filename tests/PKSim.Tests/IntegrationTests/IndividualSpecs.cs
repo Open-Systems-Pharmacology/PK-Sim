@@ -48,9 +48,9 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void the_default_calculation_method_for_bsa_calculation_should_be_DuBois()
+      public void the_default_calculation_method_for_bsa_calculation_should_be_mosteller()
       {
-         sut.OriginData.CalculationMethodFor(ConverterConstants.Category.BSA).Name.ShouldBeEqualTo(ConverterConstants.CalculationMethod.BSA_DuBois);
+         sut.OriginData.CalculationMethodFor(ConverterConstants.Category.BSA).Name.ShouldBeEqualTo(ConverterConstants.CalculationMethod.BSA_Mosteller);
       }
    }
 

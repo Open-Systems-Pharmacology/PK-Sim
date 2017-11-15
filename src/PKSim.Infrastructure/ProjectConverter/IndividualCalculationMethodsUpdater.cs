@@ -48,7 +48,7 @@ namespace PKSim.Infrastructure.ProjectConverter
          if (!isHuman)
             return;
 
-         addMissingCalulationMethodTo(withCalculationMethods, ConverterConstants.CalculationMethod.BSA_DuBois);
+         addMissingCalulationMethodTo(withCalculationMethods, ConverterConstants.CalculationMethod.BSA_Mosteller);
       }
 
       private void addDynamicFormulaCalculationMethodTo(IWithCalculationMethods withCalculationMethods)
