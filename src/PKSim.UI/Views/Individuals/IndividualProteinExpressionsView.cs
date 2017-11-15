@@ -117,9 +117,8 @@ namespace PKSim.UI.Views.Individuals
 
       private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
       {
-         var containerReepository  = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
-         containerReepository.Items.Add(new ImageComboBoxItem(parameterPathDTO, _imageListRetriever.ImageIndex(parameterPathDTO.IconName)));
-         return containerReepository;
+         var containerRepository  = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
+         return containerRepository.AddItem(parameterPathDTO, parameterPathDTO.IconName);
       }
 
       public void BindTo(ProteinExpressionDTO proteinExpressionDTO)

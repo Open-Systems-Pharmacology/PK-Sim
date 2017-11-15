@@ -208,6 +208,11 @@
     </Reference>
     <Reference Include="OSPSuite.Core, Version=7.2.0.84, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.Core.7.2.0.84\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.82, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.82\lib\net452\OSPSuite.Assets.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.82, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.82\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.DataBinding, Version=2.1.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.DataBinding.2.1.0.5\lib\net452\OSPSuite.DataBinding.dll</HintPath>
@@ -220,6 +225,8 @@
     </Reference>
     <Reference Include="OSPSuite.Presentation, Version=7.2.0.84, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.84\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.2.0.82, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.82\lib\net452\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -232,6 +239,8 @@
     </Reference>
     <Reference Include="OSPSuite.UI, Version=7.2.0.84, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.UI.7.2.0.84\lib\net452\OSPSuite.UI.dll</HintPath>
+    <Reference Include="OSPSuite.UI, Version=7.2.0.82, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.UI.7.2.0.82\lib\net452\OSPSuite.UI.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Utility, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.2.0.1.4\lib\net452\OSPSuite.Utility.dll</HintPath>

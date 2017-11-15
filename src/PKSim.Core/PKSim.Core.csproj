@@ -81,6 +81,11 @@
     </Reference>
     <Reference Include="OSPSuite.Core, Version=7.2.0.84, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.Core.7.2.0.84\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.82, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.82\lib\net452\OSPSuite.Assets.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.82, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.82\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>

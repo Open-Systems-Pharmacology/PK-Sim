@@ -141,8 +141,7 @@ namespace PKSim.UI.Views.Simulations
       private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
       {
          var containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridViewParameters, _imageListRetriever);
-         containerDisplayNameRepository.Items.Add(new ImageComboBoxItem(parameterPathDTO, _imageListRetriever.ImageIndex(parameterPathDTO.IconName)));
-         return containerDisplayNameRepository;
+         return containerDisplayNameRepository.AddItem(parameterPathDTO, parameterPathDTO.IconName);
       }
 
       public override void InitializeResources()

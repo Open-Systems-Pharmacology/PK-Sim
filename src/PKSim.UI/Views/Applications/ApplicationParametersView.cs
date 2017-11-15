@@ -148,8 +148,7 @@ namespace PKSim.UI.Views.Applications
       private RepositoryItem applicationDisplay(ApplicationDTO applicationDTO)
       {
          var applicationRepository = new UxRepositoryItemImageComboBox(mainView, _imageListRetriever);
-         applicationRepository.Items.Add(new ImageComboBoxItem(applicationDTO.Name, _imageListRetriever.ImageIndex(applicationDTO.Icon)));
-         return applicationRepository;
+         return applicationRepository.AddItem(applicationDTO.Name, applicationDTO.Icon);
       }
 
       public void BindTo(IEnumerable<ApplicationDTO> allApplications)

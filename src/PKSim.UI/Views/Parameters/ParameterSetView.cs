@@ -1,12 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
@@ -16,18 +10,24 @@ using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.UI;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.UI.Extensions;
 using PKSim.UI.Views.Core;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -60,7 +60,7 @@ namespace PKSim.UI.Views.Parameters
          _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _toolTipController.Initialize(_imageListRetriever);
          PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImagesForContextMenu};
-         _stantdardParameterEditRepository.ConfigureWith(typeof (double));
+         _stantdardParameterEditRepository.ConfigureWith(typeof(double));
          _stantdardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
       }
@@ -100,7 +100,7 @@ namespace PKSim.UI.Views.Parameters
       protected void InitializeValueDescriptionBinding()
       {
          _columnValueDescription = _gridViewBinder.AutoBind(param => param.ValueDescription)
-            .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
+            .WithWidth(UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
             .WithCaption(PKSimConstants.UI.ValueDescription)
             .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
       }
@@ -141,7 +141,7 @@ namespace PKSim.UI.Views.Parameters
       {
          _columnFavorites = _gridViewBinder.Bind(x => x.IsFavorite)
             .WithCaption(PKSimConstants.UI.Favorites)
-            .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
+            .WithWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _favoriteRepository)
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
             .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
@@ -155,7 +155,7 @@ namespace PKSim.UI.Views.Parameters
 
       public bool FavoritesVisible
       {
-         set { _columnFavorites.UpdateVisibility(value); }
+         set => _columnFavorites.UpdateVisibility(value);
       }
 
       private void configureRepository(BaseEdit activeEditor, IParameterDTO parameter)
@@ -220,7 +220,7 @@ namespace PKSim.UI.Views.Parameters
       protected virtual SuperToolTip GetToolTipFor(IParameterDTO parameterDTO, GridHitInfo hi)
       {
          //don't show tooltips for value as it might contain error info that would be hidden
-         if(hi.Column == _columnValue.XtraColumn)
+         if (hi.Column == _columnValue.XtraColumn)
             return null;
 
          return _toolTipCreator.ToolTipFor(parameterDTO);
