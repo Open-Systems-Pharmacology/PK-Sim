@@ -132,8 +132,7 @@ namespace PKSim.UI.Views.Individuals
       private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
       {
          var containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
-         containerDisplayNameRepository.Items.Add(new ImageComboBoxItem(parameterPathDTO, _imageListRetriever.ImageIndex(parameterPathDTO.IconName)));
-         return containerDisplayNameRepository;
+         return containerDisplayNameRepository.AddItem(parameterPathDTO, parameterPathDTO.IconName);
       }
 
       private RepositoryItem getTransporterMembraneRepository(TransporterExpressionContainerDTO containerDTO)
@@ -147,6 +146,7 @@ namespace PKSim.UI.Views.Individuals
          var repositoryItemImageComboBox = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever) {ReadOnly = (allMembranesTypes.Count == 1), AllowDropDownWhenReadOnly = DefaultBoolean.False};
          if (repositoryItemImageComboBox.ReadOnly)
             repositoryItemImageComboBox.Buttons.Clear();
+
 
          var comboBoxItem = new ImageComboBoxItem(displayName, containerDTO.MembraneLocation, _imageListRetriever.ImageIndex(containerDTO.ContainerPathDTO.IconName));
          repositoryItemImageComboBox.Items.Add(comboBoxItem);

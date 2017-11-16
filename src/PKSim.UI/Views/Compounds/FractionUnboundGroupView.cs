@@ -39,10 +39,7 @@ namespace PKSim.UI.Views.Compounds
          _speciesRepository = new UxRepositoryItemImageComboBox(_gridView, imageListRetriever);
       }
 
-      private IFractionUnboundGroupPresenter fractionUnboundGroupPresenter
-      {
-         get { return _presenter.DowncastTo<IFractionUnboundGroupPresenter>(); }
-      }
+      private IFractionUnboundGroupPresenter fractionUnboundGroupPresenter => _presenter.DowncastTo<IFractionUnboundGroupPresenter>();
 
       public override void InitializeBinding()
       {
@@ -109,9 +106,6 @@ namespace PKSim.UI.Views.Compounds
          fractionUnboundGroupPresenter.PlasmaProteinPartner = (PlasmaProteinPartner) _rgPlasmaBindingPartner.Properties.Items[_rgPlasmaBindingPartner.SelectedIndex].Value;
       }
 
-      public override int OptimalHeight
-      {
-         get { return base.OptimalHeight + _layoutItemBindingMode.Height; }
-      }
+      public override int OptimalHeight => base.OptimalHeight + _layoutItemBindingMode.Height;
    }
 }
