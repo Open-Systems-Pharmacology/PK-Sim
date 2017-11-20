@@ -123,7 +123,9 @@ namespace PKSim.IntegrationTests
 
          var ageValues = (from p in ageDependentParams select p.Age).ToList();
 
-         return (ageValues.Min(), ageValues.Max());
+         var maxAge = populationName.Equals(CoreConstants.Population.Pregnant) ? 30.75 : ageValues.Max();
+
+         return (ageValues.Min(), maxAge);
       }
 
       [Observation]
