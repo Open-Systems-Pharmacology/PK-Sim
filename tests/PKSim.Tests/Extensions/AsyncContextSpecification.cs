@@ -11,7 +11,7 @@ namespace OSPSuite.BDDHelper
    ///    Defines a static context specification used for static class or extensions methods
    /// </summary>
    [TestFixture]
-   public class ContextSpecificationAsync<T>
+   public abstract class ContextSpecificationAsync<T>
    {
       /// <summary>system under test</summary>
       protected T sut;
