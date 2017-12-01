@@ -19,8 +19,6 @@ using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
-using OSPSuite.Utility.Logging;
-using OSPSuite.Utility.Logging.TextWriterLogging;
 using PKSim.Core;
 using PKSim.Core.Reporting;
 using PKSim.Core.Services;
@@ -69,8 +67,6 @@ namespace PKSim.Infrastructure
          var loggerFactory = new LoggerFactory();
          container.RegisterImplementationOf((ILoggerFactory) loggerFactory);
          container.Register<ILogger, PKSimLogger>(LifeStyle.Singleton);
-         //TODO REMOVE
-         container.Register<ILogFactory, TextWriterLogFactory>();
       }
 
       private static void registerRunOptionsIn(IContainer container)
