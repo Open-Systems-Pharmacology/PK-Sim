@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -18,9 +19,11 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ParameterMapper _parameterMapper;
       private readonly IOriginDataTask _originDataTask;
       private readonly IIndividualModelTask _individualModelTask;
+      private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
 
       public OriginDataMapper(
          ParameterMapper parameterMapper,
+         CalculationMethodCacheMapper calculationMethodCacheMapper,
          IOriginDataTask originDataTask,
          IDimensionRepository dimensionRepository,
          IIndividualModelTask individualModelTask,
@@ -32,20 +35,24 @@ namespace PKSim.Core.Snapshots.Mappers
          _parameterMapper = parameterMapper;
          _originDataTask = originDataTask;
          _individualModelTask = individualModelTask;
+         _calculationMethodCacheMapper = calculationMethodCacheMapper;
       }
 
-      public override Task<SnapshotOriginData> MapToSnapshot(ModelOriginData originData)
+      public override async Task<SnapshotOriginData> MapToSnapshot(ModelOriginData originData)
       {
-         return SnapshotFrom(originData, x =>
+         var snapshot = await SnapshotFrom(originData, x =>
          {
             x.Species = originData.Species.Name;
             x.Population = originData.Species.Populations.Count > 1 ? originData.SpeciesPopulation.Name : null;
             x.Gender = originData.SpeciesPopulation.Genders.Count > 1 ? originData.Gender.Name : null;
-            x.Age = parameterFrom(originData.Age, originData.AgeUnit, _dimensionRepository.AgeInYears);
-            x.GestationalAge = parameterFrom(originData.GestationalAge, originData.GestationalAgeUnit, _dimensionRepository.AgeInWeeks);
-            x.Height = parameterFrom(originData.Height, originData.HeightUnit, _dimensionRepository.Length);
+            x.Age = parameterFrom(originData.Age, originData.AgeUnit, _dimensionRepository.AgeInYears, originData.SpeciesPopulation.IsAgeDependent);
+            x.GestationalAge = parameterFrom(originData.GestationalAge, originData.GestationalAgeUnit, _dimensionRepository.AgeInWeeks, originData.SpeciesPopulation.IsAgeDependent);
+            x.Height = parameterFrom(originData.Height, originData.HeightUnit, _dimensionRepository.Length, originData.SpeciesPopulation.IsHeightDependent);
             x.Weight = parameterFrom(originData.Weight, originData.WeightUnit, _dimensionRepository.Mass);
          });
+
+         snapshot.CalculationMethods = await _calculationMethodCacheMapper.MapToSnapshot(originData.CalculationMethodCache, originData.Species.Name);
+         return snapshot;
       }
 
       public override Task<ModelOriginData> MapToModel(SnapshotOriginData snapshot)
@@ -84,25 +91,32 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void updateCalculationMethodsFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
       {
-         var calculationMethodCategoryForSpecies = _originDataTask.AllCalculationMethodCategoryFor(originData.Species);
-         foreach (var category in calculationMethodCategoryForSpecies)
-         {
-            string selectedCalculationMethod = snapshot.CalculationMethodFor(category.Name);
-            if (string.IsNullOrEmpty(selectedCalculationMethod))
-               originData.AddCalculationMethod(category.DefaultItemForSpecies(originData.Species));
-            else
-            {
-               var calculationMethod = category.AllItems().FindByName(selectedCalculationMethod);
-               if (calculationMethod == null)
-                  throw new PKSimException(PKSimConstants.Error.CouldNotFindCalculationMethodInCategory(selectedCalculationMethod, category.Name, category.AllItems().AllNames()));
+         var defaultCalculationMethodsForSpecs = _originDataTask.AllCalculationMethodCategoryFor(originData.Species)
+            .Select(x => x.DefaultItemForSpecies(originData.Species));
 
-               if (calculationMethod.AllSpecies.Contains(originData.Species.Name))
-                  originData.AddCalculationMethod(calculationMethod);
-               else
-                  throw new PKSimException(PKSimConstants.Error.CalculationMethodNotDefinedForSpecies(selectedCalculationMethod, category.Name, originData.Species.Name));
-            }
-         }
+         defaultCalculationMethodsForSpecs.Each(originData.AddCalculationMethod);
+
+         _calculationMethodCacheMapper.UpdateCalculationMethodCache(originData, snapshot.CalculationMethods);
       }
+
+//         foreach (var category in calculationMethodCategoryForSpecies)
+//         {
+//            string selectedCalculationMethod = snapshot.CalculationMethodFor(category.Name);
+//            if (string.IsNullOrEmpty(selectedCalculationMethod))
+//               originData.AddCalculationMethod(category.DefaultItemForSpecies(originData.Species));
+//            else
+//            {
+//               var calculationMethod = category.AllItems().FindByName(selectedCalculationMethod);
+//               if (calculationMethod == null)
+//                  throw new PKSimException(PKSimConstants.Error.CouldNotFindCalculationMethodInCategory(selectedCalculationMethod, category.Name, category.AllItems().AllNames()));
+//
+//               if (calculationMethod.AllSpecies.Contains(originData.Species.Name))
+//                  originData.AddCalculationMethod(calculationMethod);
+//               else
+//                  throw new PKSimException(PKSimConstants.Error.CalculationMethodNotDefinedForSpecies(selectedCalculationMethod, category.Name, originData.Species.Name));
+//            }
+//         }
+ //     }
 
       private void updateAgeFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
       {
@@ -113,9 +127,9 @@ namespace PKSim.Core.Snapshots.Mappers
          originData.Age = baseParameterValueFrom(snapshot.Age, meanAgeParameter.Dimension, meanAgeParameter.Value);
          originData.AgeUnit = meanAgeParameter.Dimension.UnitOrDefault(snapshot.Age.Unit).Name;
 
-         var meanGestationalAgeFor = _individualModelTask.MeanGestationalAgeFor(originData);
-         originData.GestationalAge = baseParameterValueFrom(snapshot.GestationalAge, meanGestationalAgeFor.Dimension, meanGestationalAgeFor.Value);
-         originData.GestationalAgeUnit = meanGestationalAgeFor.Dimension.UnitOrDefault(snapshot.GestationalAge.Unit).Name;
+         var meanGestationalAgeParameter = _individualModelTask.MeanGestationalAgeFor(originData);
+         originData.GestationalAge = baseParameterValueFrom(snapshot.GestationalAge, meanGestationalAgeParameter.Dimension, meanGestationalAgeParameter.Value);
+         originData.GestationalAgeUnit = meanGestationalAgeParameter.Dimension.UnitOrDefault(snapshot.GestationalAge.Unit).Name;
       }
 
       private Gender genderFrom(SnapshotOriginData snapshot, SpeciesPopulation speciesPopulation)
@@ -157,9 +171,12 @@ namespace PKSim.Core.Snapshots.Mappers
          return dimension.UnitValueToBaseUnitValue(unit, snapshot.Value.Value);
       }
 
-      private Parameter parameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension)
+      private Parameter parameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension, bool shouldCreateParameter = true)
       {
-         return _parameterMapper.ParameterFrom(parameterBaseValue, parameterDisplayUnit, dimension);
+         if(shouldCreateParameter)
+            return _parameterMapper.ParameterFrom(parameterBaseValue, parameterDisplayUnit, dimension);
+
+         return null;
       }
    }
 }

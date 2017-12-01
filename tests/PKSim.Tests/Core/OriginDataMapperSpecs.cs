@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using FakeItEasy;
-using NHibernate.Util;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -32,16 +31,18 @@ namespace PKSim.Core
       protected Gender _gender;
       protected SpeciesPopulation _anotherPopulation;
       protected Gender _anotherGender;
+      private CalculationMethodCacheMapper _calculationMethodCacheMapper;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
+         _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
          _originDataTask = A.Fake<IOriginDataTask>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _individualModelTask = A.Fake<IIndividualModelTask>();
          _speciesRepository = A.Fake<ISpeciesRepository>();
 
-         sut = new OriginDataMapper(_parameterMapper, _originDataTask, _dimensionRepository, _individualModelTask, _speciesRepository);
+         sut = new OriginDataMapper(_parameterMapper, _calculationMethodCacheMapper, _originDataTask, _dimensionRepository, _individualModelTask, _speciesRepository);
 
          _ageSnapshotParameter = new Parameter {Value = 1};
          _heightSnapshotParameter = new Parameter {Value = 2};
@@ -50,14 +51,14 @@ namespace PKSim.Core
 
          _speciesPopulation = new SpeciesPopulation {Name = "SpeciesPopulation", IsHeightDependent = true, IsAgeDependent = true};
          _gender = new Gender {Name = "Unknown"};
-         _species = new Species { Name = "Human" };
+         _species = new Species {Name = "Human"};
          _species.AddPopulation(_speciesPopulation);
-         _anotherPopulation = new SpeciesPopulation { Name = "Another species population", IsHeightDependent = true, IsAgeDependent = true };
+         _anotherPopulation = new SpeciesPopulation {Name = "Another species population", IsHeightDependent = true, IsAgeDependent = true};
 
          _speciesPopulation.AddGender(_gender);
-          _anotherGender = new Gender { Name = "AnotherGender" };
-         
-         A.CallTo(() => _speciesRepository.All()).Returns(new []{_species});
+         _anotherGender = new Gender {Name = "AnotherGender"};
+
+         A.CallTo(() => _speciesRepository.All()).Returns(new[] {_species});
 
          _originData = new Model.OriginData
          {
@@ -104,9 +105,35 @@ namespace PKSim.Core
          _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
          _snapshot.Gender.ShouldBeEqualTo(_originData.Gender.Name);
 
+         _snapshot.Weight.ShouldBeEqualTo(_weightSnapshotParameter);
          _snapshot.Age.ShouldBeEqualTo(_ageSnapshotParameter);
          _snapshot.Height.ShouldBeEqualTo(_heightSnapshotParameter);
          _snapshot.GestationalAge.ShouldBeEqualTo(_gestationalAgeSnapshotParameter);
+      }
+   }
+
+   public class When_mappping_an_origin_data_for_a_species_population_that_is_not_age_or_heigt_dependent_to_snapshot : concern_for_OriginDataMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _speciesPopulation.IsAgeDependent = false;
+         _speciesPopulation.IsHeightDependent = false;
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_originData);
+      }
+
+      [Observation]
+      public void should_not_generate_parameter_value_for_age_ga_and_height()
+      {
+         _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
+         _snapshot.Weight.ShouldBeEqualTo(_weightSnapshotParameter);
+         _snapshot.Age.ShouldBeNull();
+         _snapshot.Height.ShouldBeNull();
+         _snapshot.GestationalAge.ShouldBeNull();
       }
    }
 
@@ -128,7 +155,7 @@ namespace PKSim.Core
 
    public class When_mapping_an_origin_data_from_snapshot_where_the_species_is_empty_and_the_species_only_has_one_pop : concern_for_OriginDataMapper
    {
-      private PKSim.Core.Model.OriginData _newOriginData;
+      private Model.OriginData _newOriginData;
 
       protected override async Task Context()
       {
@@ -220,7 +247,6 @@ namespace PKSim.Core
       }
    }
 
-
    public class When_mapping_snapshot_origin_data_to_origin_data : concern_for_OriginDataMapper
    {
       private Model.OriginData _newOriginData;
@@ -230,7 +256,7 @@ namespace PKSim.Core
          await base.Context();
 
          _snapshot = await sut.MapToSnapshot(_originData);
-     
+
          var meanWeightParameter = A.Fake<IParameter>();
          A.CallTo(() => _individualModelTask.MeanWeightFor(A<Model.OriginData>._)).Returns(meanWeightParameter);
          A.CallTo(() => meanWeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(_originData.Weight);
@@ -247,7 +273,7 @@ namespace PKSim.Core
          A.CallTo(() => _individualModelTask.MeanGestationalAgeFor(A<Model.OriginData>._)).Returns(meanGestionalAgeParameter);
          A.CallTo(() => meanGestionalAgeParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.GestationalAge.Value.Value)).Returns(_originData.GestationalAge.Value);
       }
-      
+
       protected override async Task Because()
       {
          _newOriginData = await sut.MapToModel(_snapshot);

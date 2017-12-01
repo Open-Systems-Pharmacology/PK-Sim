@@ -130,7 +130,7 @@ namespace PKSim.Matlab
       {
          foreach (var cateogry in _matlabOriginData.AllCalculationMethods.Keys)
          {
-            _snapshotOriginData.CalculationMethodFor(cateogry).ShouldBeEqualTo(_matlabOriginData.CalculationMethodFor(cateogry));
+            _snapshotOriginData.CalculationMethods.ShouldContain(_matlabOriginData.CalculationMethodFor(cateogry));
          }
       }
    }
