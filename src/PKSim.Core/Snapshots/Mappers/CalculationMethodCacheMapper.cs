@@ -23,15 +23,28 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<SnapshotCalculationMethodCache> MapToSnapshot(ModelCalculationMethodCache model)
       {
-         return SnapshotFrom(model, snapshot => { addCalculationMethodsToSnapshot(snapshot, model); });
+         return mapCalculationMethodsToSnapshot(model);
       }
 
-      private void addCalculationMethodsToSnapshot(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache calculationMethodCache)
+      public virtual Task<SnapshotCalculationMethodCache> MapToSnapshot(ModelCalculationMethodCache model, string species)
       {
-         calculationMethodCache.All().Each(cm => addCalculationMethodToSnapshot(snapshot, cm));
+         return mapCalculationMethodsToSnapshot(model, species);
       }
 
-      private void addCalculationMethodToSnapshot(SnapshotCalculationMethodCache snapshot, CalculationMethod calculationMethod)
+      private Task<SnapshotCalculationMethodCache> mapCalculationMethodsToSnapshot(ModelCalculationMethodCache model, string species=null)
+      {
+         return SnapshotFrom(model, snapshot =>
+         {
+            addCalculationMethodsToSnapshot(snapshot, model, species);
+         });
+      }
+
+      private void addCalculationMethodsToSnapshot(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache calculationMethodCache, string species)
+      {
+         calculationMethodCache.All().Each(cm => addCalculationMethodToSnapshot(snapshot, cm, species));
+      }
+
+      private void addCalculationMethodToSnapshot(SnapshotCalculationMethodCache snapshot, CalculationMethod calculationMethod, string species)
       {
          var category = _calculationMethodCategoryRepository.FindBy(calculationMethod.Category);
 
@@ -45,7 +58,8 @@ namespace PKSim.Core.Snapshots.Mappers
          if(allPossibleCalculationMethods.Select(x=>x.DisplayName).Distinct().Count()==1)
             return;
 
-         if (allPossibleCalculationMethods.Any(x => x.AllModels.Count == 1))
+         //only one calculation method exists for the given species. Nothing to do
+         if (!string.IsNullOrEmpty(species) && allPossibleCalculationMethods.Count(x => x.AllSpecies.Contains(species)) == 1)
             return;
 
          //at least one CM that can be used in two models or different names. We may have a choice here. save it

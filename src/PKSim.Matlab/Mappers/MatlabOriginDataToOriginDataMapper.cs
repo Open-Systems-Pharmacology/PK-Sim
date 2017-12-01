@@ -38,7 +38,7 @@ namespace PKSim.Matlab.Mappers
             GestationalAge = parameterFrom(matlabOriginData.GestationalAge, _dimensionRepository.AgeInWeeks),
          };
 
-         matlabOriginData.AllCalculationMethods.KeyValues.Each(kv => snapshotOriginData.AddCalculationMethod(kv.Key, kv.Value));
+         snapshotOriginData.CalculationMethods = new CalculationMethodCache(matlabOriginData.AllCalculationMethods);
 
          return _originDataMapper.MapToModel(snapshotOriginData).Result;
       }
