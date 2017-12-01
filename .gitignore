@@ -138,6 +138,8 @@ DocProject/Help/html
 publish/
 
 setup/deploy/
+setup/PK-Sim*
+setup/*.zip
 
 # Publish Web Output
 *.[Pp]ublish.xml
@@ -261,3 +263,10 @@ paket-files/
 /src/Db/PKSimDB - Kopie.mdb
 /src/Db/Transfer.mdb
 /src/Db/Transfer.ldb
+/7.2_PKSim.exe.lnk
+/src/Db/01_PKSimDB_AgeUniform.mdb
+/src/Db/02_PKSimDB_AgePropertiesTable.7z
+/src/Db/02_PKSimDB_AgePropertiesTable.mdb
+/src/Db/03_PKSimDB_TissueAndBloodWeight.mdb
+/src/Db/7.2_PregnantWoman.xlsx
+/src/Db/PKSimDB.ldb

@@ -29,7 +29,7 @@ namespace PKSim.UI.Views.Compounds
 
          AddValueBinding(colValue);
          colValue.WithFormat(formatForAlternative);
-         colValue.OnValueSet += (x, e) => permeabilityGroupPresenter.SetPermabilityValue(x, e.NewValue);
+         colValue.OnValueUpdating += (x, e) => permeabilityGroupPresenter.SetPermabilityValue(x, e.NewValue);
          _colValue = colValue;
          _comboBoxUnit.ParameterUnitSet += (dto, unit) => OnEvent(() => permeabilityGroupPresenter.SetPermabilityUnit(dto, unit));
 

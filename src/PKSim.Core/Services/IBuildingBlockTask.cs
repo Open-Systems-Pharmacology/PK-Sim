@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Services
 {
@@ -39,10 +39,11 @@ namespace PKSim.Core.Services
 
       /// <summary>
       ///    Add the given building block to the project and returns the command resulting from the action.
-      /// if <paramref name="editBuildingBlock"/> is <c>true</c>, the edit action is started as well
-      /// 
       /// </summary>
-      IPKSimCommand AddToProject<TBuildingBlock>(TBuildingBlock buildingBlock, bool editBuildingBlock = false) where TBuildingBlock : class, IPKSimBuildingBlock;
+      /// <param name="buildingBlock">Building block to add to the project</param>
+      /// <param name="editBuildingBlock"> if set to <c>true</c>, the edit action is started as well. Default is false</param>
+      /// <param name="addToHistory">if set to <c>true</c>, the add command is also added to the history. Default is true</param>
+      IPKSimCommand AddToProject<TBuildingBlock>(TBuildingBlock buildingBlock, bool editBuildingBlock = false, bool addToHistory = true) where TBuildingBlock : class, IPKSimBuildingBlock;
 
       /// <summary>
       ///    Returns true if a <see cref="IPKSimBuildingBlock" /> with the same name and <see cref="PKSimBuildingBlockType" /> as
@@ -67,7 +68,7 @@ namespace PKSim.Core.Services
    public interface IBuildingBlockTask<TBuildingBlock> where TBuildingBlock : IPKSimBuildingBlock
    {
       TBuildingBlock AddToProject();
-      void AddToProject(TBuildingBlock buildingBlock, bool editBuildingBlock=true);
+      IPKSimCommand AddToProject(TBuildingBlock buildingBlock, bool editBuildingBlock = true, bool addToHistory = true);
       void Edit(TBuildingBlock buildingBlockToEdit);
       TBuildingBlock LoadSingleFromTemplate();
       IReadOnlyList<TBuildingBlock> LoadFromTemplate();

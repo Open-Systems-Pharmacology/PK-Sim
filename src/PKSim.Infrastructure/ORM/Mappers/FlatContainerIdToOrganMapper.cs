@@ -1,12 +1,23 @@
-﻿using PKSim.Core.Model;
+﻿using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.FlatObjects;
-using OSPSuite.Core.Domain;
-using OSPSuite.Utility;
+using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
    public class FlatContainerIdToOrganMapper : FlatContainerIdToContainerMapperBase<Organ>, IFlatContainerIdToContainerMapperSpecification
    {
+      private readonly IOrganTypeRepository _organTypeRepository;
+
+      public FlatContainerIdToOrganMapper(IObjectBaseFactory objectBaseFactory,
+         IFlatContainerRepository flatContainerRepository,
+         IFlatContainerTagRepository flatContainerTagRepository,
+         IOrganTypeRepository organTypeRepository) : base(objectBaseFactory, flatContainerRepository, flatContainerTagRepository)
+      {
+         _organTypeRepository = organTypeRepository;
+      }
+
       public IContainer MapFrom(FlatContainerId flatContainerId)
       {
          var organ = MapCommonPropertiesFrom(flatContainerId);
@@ -14,18 +25,8 @@ namespace PKSim.Infrastructure.ORM.Mappers
          return organ;
       }
 
-      public bool IsSatisfiedBy(PKSimContainerType item)
-      {
-         return item == PKSimContainerType.Organ;
-      }
+      public bool IsSatisfiedBy(PKSimContainerType containerType) => containerType == PKSimContainerType.Organ;
 
-      /// <summary>
-      ///    Return organ type from organ name
-      /// </summary>
-      /// <param name="organName">Name of organ</param>
-      private static OrganType organTypeFromName(string organName)
-      {
-         return EnumHelper.ParseValue<OrganType>(organName);
-      }
+      private OrganType organTypeFromName(string organName) => _organTypeRepository.OrganTypeFor(organName);
    }
 }

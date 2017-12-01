@@ -20,7 +20,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
       public abstract PopulationAnalysisType AnalysisType { get; }
       public ObservedDataCollection ObservedDataCollection { get; private set; }
       public string Title { set; get; }
-      public ChartFontAndSizeSettings FontAndSize { get; private set; }
+      public ChartFontAndSizeSettings FontAndSize { get; }
       public bool IncludeOriginData { get; set; }
       public bool PreviewSettings { get; set; }
       public string OriginText { get; set; }

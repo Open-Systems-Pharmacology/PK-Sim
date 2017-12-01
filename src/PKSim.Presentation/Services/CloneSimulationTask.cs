@@ -1,33 +1,31 @@
-﻿using PKSim.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
+﻿using OSPSuite.Core.Commands.Core;
+using OSPSuite.Presentation.Core;
+using PKSim.Assets;
 using PKSim.Core;
-using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
 {
    public class CloneSimulationTask : ICloneSimulationTask
    {
       private readonly IBuildingBlockTask _buildingBlockTask;
-      private readonly IExecutionContext _executionContext;
       private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly ISimulationResultsTask _simulationResultsTask;
       private readonly IApplicationController _applicationController;
+      private readonly IRenameBuildingBlockTask _renameBuildingBlockTask;
 
-      public CloneSimulationTask(IBuildingBlockTask buildingBlockTask, IExecutionContext executionContext, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
-         ISimulationSettingsRetriever simulationSettingsRetriever, ISimulationResultsTask simulationResultsTask, IApplicationController applicationController)
+      public CloneSimulationTask(IBuildingBlockTask buildingBlockTask, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         ISimulationSettingsRetriever simulationSettingsRetriever, ISimulationResultsTask simulationResultsTask, IApplicationController applicationController, IRenameBuildingBlockTask renameBuildingBlockTask)
       {
          _buildingBlockTask = buildingBlockTask;
-         _executionContext = executionContext;
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _simulationResultsTask = simulationResultsTask;
          _applicationController = applicationController;
+         _renameBuildingBlockTask = renameBuildingBlockTask;
       }
 
       public void Clone(Simulation simulationToClone)
@@ -46,15 +44,16 @@ namespace PKSim.Presentation.Services
             var clone = presenter.Simulation;
 
             _simulationResultsTask.CloneResults(simulationToClone, clone);
+
+            // The simulation must be renamed after results are added to the simulation
+            _renameBuildingBlockTask.RenameSimulation(clone, presenter.CloneName);
+
             clone.Creation.AsCloneOf(simulationToClone);
             _simulationSettingsRetriever.SynchronizeSettingsIn(clone);
 
-            var addCommand = new AddBuildingBlockToProjectCommand(clone, _executionContext).Run(_executionContext);
+            var addCommand = _buildingBlockTask.AddToProject(clone, editBuildingBlock: true, addToHistory: false);
             addCommand.Description = PKSimConstants.Command.CloneEntity(PKSimConstants.ObjectTypes.Simulation, simulationToClone.Name, clone.Name);
             _buildingBlockTask.AddCommandToHistory(addCommand);
-
-            //after clone => we go in edit mode
-            _buildingBlockTask.Edit(clone);
          }
       }
    }

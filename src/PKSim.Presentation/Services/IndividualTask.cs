@@ -11,19 +11,11 @@ using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
 {
-   public interface IIndividualTask : IBuildingBlockTask<Individual>
-   {
-      void ScaleIndividual(Individual individualToScale);
-   }
-
    public class IndividualTask : BuildingBlockTask<Individual>, IIndividualTask
    {
-      private readonly IApplicationController _applicationController;
-
       public IndividualTask(IExecutionContext executionContext, IBuildingBlockTask buildingBlockTask, IApplicationController applicationController) :
          base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Individual)
       {
-         _applicationController = applicationController;
       }
 
       public override Individual AddToProject()
@@ -52,16 +44,13 @@ namespace PKSim.Presentation.Services
                BuildingBlockType = PKSimConstants.ObjectTypes.Individual
             };
 
-            //indvidual was not scaled but cloned. Create a new individual
-            var addToProjectCommand = new AddBuildingBlockToProjectCommand(scaledIndividual, _executionContext).Run(_executionContext);
+            //Do not add to history as the add action should be part of the overall command
+            var addToProjectCommand = _buildingBlockTask.AddToProject(scaledIndividual, addToHistory: false);
             overallCommand.Add(addToProjectCommand);
 
             //these needs to be done afterwards in order to be able to undo the scaling action
             var macroCommand = scaleCommand as IPKSimMacroCommand;
-            if (macroCommand != null)
-            {
-               macroCommand.All().Each(overallCommand.Add);
-            }
+            macroCommand?.All().Each(overallCommand.Add);
             overallCommand.ReplaceNameTemplateWithName(scaledIndividual.Name);
             overallCommand.ReplaceTypeTemplateWithType(PKSimConstants.ObjectTypes.Individual);
 

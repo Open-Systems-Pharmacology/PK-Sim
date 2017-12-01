@@ -6,7 +6,7 @@ namespace PKSim.Core.Chart
 {
    public interface IPKSimChartFactory : IChartFactory
    {
-      IChartWithObservedData Create(Type chartType);
+      ChartWithObservedData Create(Type chartType);
       SimulationTimeProfileChart CreateChartFor(IndividualSimulation individualSimulation);
       ISimulationComparison CreateSummaryChart();
    }

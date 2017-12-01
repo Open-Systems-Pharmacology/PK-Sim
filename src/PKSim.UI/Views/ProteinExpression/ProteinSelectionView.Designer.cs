@@ -30,7 +30,7 @@
       {
          this.txtSearchCriteria = new DevExpress.XtraEditors.TextEdit();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.grdSelection = new DevExpress.XtraGrid.GridControl();
+         this.grdSelection = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView3 = new PKSim.UI.Views.Core.UxGridView();
          this.btnSearch = new DevExpress.XtraEditors.SimpleButton();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();

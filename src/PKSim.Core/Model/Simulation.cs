@@ -99,10 +99,7 @@ namespace PKSim.Core.Model
       public virtual TBuildingBlock BuildingBlockByTemplateId<TBuildingBlock>(string templateId) where TBuildingBlock : class, IPKSimBuildingBlock
       {
          var usedBuildingBlock = UsedBuildingBlockByTemplateId(templateId);
-         if (usedBuildingBlock == null)
-            return null;
-
-         return usedBuildingBlock.BuildingBlock as TBuildingBlock;
+         return usedBuildingBlock?.BuildingBlock as TBuildingBlock;
       }
 
       /// <summary>
@@ -244,7 +241,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    All charts defined for the simulation
       /// </summary>
-      public virtual IEnumerable<ICurveChart> Charts => SimulationCharts;
+      public virtual IEnumerable<CurveChart> Charts => SimulationCharts;
 
       public virtual IEnumerable<SimulationTimeProfileChart> SimulationCharts => _allSimulationAnalyses.OfType<SimulationTimeProfileChart>();
 
@@ -264,7 +261,7 @@ namespace PKSim.Core.Model
       }
 
       private IEnumerable<IWithObservedData> analysesWithObservedData => _allSimulationAnalyses.OfType<IWithObservedData>();
-      public virtual  IEnumerable<IChartWithObservedData> ChartWithObservedData => analysesWithObservedData.OfType<IChartWithObservedData>();
+      public virtual  IEnumerable<ChartWithObservedData> ChartWithObservedData => analysesWithObservedData.OfType<ChartWithObservedData>();
 
       public virtual void AddUsedObservedData(UsedObservedData usedObservedData)
       {
@@ -349,6 +346,25 @@ namespace PKSim.Core.Model
       {
          _allSimulationAnalyses.Clear();
          Results.Clear();
+      }
+
+      public override string Name
+      {
+         get => base.Name;
+         set
+         {
+            base.Name = value;
+            setName(Model, value);
+            setName(Model?.Root, value);
+            setName(Reactions, value);
+            setName(SimulationSettings, value);
+         }
+      }
+
+      private void setName(IWithName withName, string value)
+      {
+         if (withName != null)
+            withName.Name = value;
       }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
@@ -580,6 +596,8 @@ namespace PKSim.Core.Model
       public virtual SolverSettings Solver => SimulationSettings.Solver;
 
       public virtual IReadOnlyList<Compound> Compounds => AllBuildingBlocks<Compound>().ToList();
+
+      public virtual IReadOnlyList<Protocol> Protocols => AllBuildingBlocks<Protocol>().ToList();
 
       public virtual IReadOnlyList<string> CompoundNames => Compounds.AllNames().ToList();
 

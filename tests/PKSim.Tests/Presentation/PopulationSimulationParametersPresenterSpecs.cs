@@ -55,8 +55,8 @@ namespace PKSim.Presentation
          _eventParameter = create(PKSimBuildingBlockType.Event);
          _protocolParameter = create(PKSimBuildingBlockType.Protocol);
          _formulationParameter = create(PKSimBuildingBlockType.Formulation);
-         _volumeParameter = create(PKSimBuildingBlockType.Simulation).WithName(CoreConstants.Parameter.VOLUME);
-         _expressionParameter = create(PKSimBuildingBlockType.Simulation).WithName(CoreConstants.Parameter.RelExp);
+         _volumeParameter = create(PKSimBuildingBlockType.Simulation).WithName(Constants.Parameters.VOLUME);
+         _expressionParameter = create(PKSimBuildingBlockType.Simulation).WithName(CoreConstants.Parameter.REL_EXP);
 
          _allParameters.Add(_compoundParameter);
          _allParameters.Add(_simulationVariableParameter);

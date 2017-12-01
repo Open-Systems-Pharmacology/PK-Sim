@@ -4,7 +4,6 @@ using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.Core;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
@@ -42,7 +41,7 @@ namespace PKSim.Presentation.UICommands
       }
    }
 
-   public class ExportChartToPDFCommand : ExportToPDFCommand<ICurveChart>
+   public class ExportChartToPDFCommand : ExportToPDFCommand<CurveChart>
    {
       public ExportChartToPDFCommand(IApplicationController applicationController)
          : base(applicationController)

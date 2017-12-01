@@ -47,5 +47,10 @@
       {
          public static readonly string PERIPORTAL_CELL_GALLBLADDER = "Periportal_cell_Gallbladder";
       }
+
+      public static class Population
+      {
+         public const string Japanese = "Japanese_Population";
+      }
    }
 }

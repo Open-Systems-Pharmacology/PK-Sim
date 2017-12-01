@@ -4,7 +4,6 @@ using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
 using OSPSuite.Presentation.Core;
@@ -103,7 +102,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_a_command_to_the_history()
       {
-         A.CallTo(() => _buildingBlockTask.AddToProject(_individual, true)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockTask.AddToProject(_individual, true, true)).MustHaveHappened();
       }
    }
 

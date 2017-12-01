@@ -5,7 +5,7 @@ namespace PKSim.Infrastructure.ORM.Core
 {
    public abstract class AccessDatabase : Database
    {
-      protected AccessDatabase(string password=null) : base(password, CoreConstants.AccessUserName)
+      protected AccessDatabase(string password=null) : base(password, CoreConstants.ACCESS_USER_NAME)
       {
       }
 

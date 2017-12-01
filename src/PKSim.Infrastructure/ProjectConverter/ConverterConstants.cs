@@ -64,9 +64,14 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string Periportal_int_Periportal_cell = "Periportal_int_Periportal_cell";
       }
 
-      public static class Xml
+      public static class Serialization
       {
-         public static readonly string DataTableColumn = "DataTableColumn";
+         public static readonly string DATA_TABLE_COLUMN = "DataTableColumn";
+
+         public static class Attribute
+         {
+            public static readonly string ORGAN_TYPE = "organType";
+         }
       }
 
       public static class Parameter
@@ -167,8 +172,8 @@ namespace PKSim.Infrastructure.ProjectConverter
 
       public static class ContainerName
       {
-         public static readonly string IgG_Endosome = "IgG_Endosome";
-         public static readonly string EndosomalClearance = "EndosomalClearance";
+         public static readonly string IGG_ENDOSOME = "IgG_Endosome";
+         public static readonly string ENDOSOMAL_CLEARANCE = "EndosomalClearance";
       }
 
       public static class CalculationMethod
@@ -176,6 +181,14 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string RR = "Cellular partition coefficient method - Rodgers and Rowland";
          public static readonly string BER = "Cellular partition coefficient method - Berezhkovskiy";
          public static readonly string PKSim = "Cellular partition coefficient method - PK-Sim Standard";
+         public static readonly string BSA_Mosteller = "Body surface area - Mosteller";
+         public static readonly string DynamicSumFormulas = "DynamicSumFormulas";
+      }
+
+      public static class Category
+      {
+         public static readonly string BSA = "BSA";
+         public static readonly string DynamicFormulas = "DynamicFormulas";
       }
    }
 }

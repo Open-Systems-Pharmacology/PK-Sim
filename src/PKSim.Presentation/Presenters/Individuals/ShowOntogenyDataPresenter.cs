@@ -95,10 +95,10 @@ namespace PKSim.Presentation.Presenters.Individuals
          var xUnit = _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.AgeInYears);
          var yUnit = _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.Fraction);
          var chart = _simpleChartPresenter.Plot(dataForSelectedOntogeny(xUnit, yUnit), Scalings.Linear);
-         chart.Axes[AxisTypes.X].Caption = PKSimConstants.UI.PostMenstrualAge;
-         chart.Axes[AxisTypes.X].GridLines = true;
-         chart.Axes[AxisTypes.Y].Caption = PKSimConstants.UI.OntogenyFor(_dto.SelectedOntogeny.Name);
-         chart.Axes[AxisTypes.Y].GridLines = true;  
+         chart.AxisBy(AxisTypes.X).Caption = PKSimConstants.UI.PostMenstrualAge;
+         chart.AxisBy(AxisTypes.X).GridLines = true;
+         chart.AxisBy(AxisTypes.Y).Caption = PKSimConstants.UI.OntogenyFor(_dto.SelectedOntogeny.Name);
+         chart.AxisBy(AxisTypes.Y).GridLines = true;  
       }
 
       private DataRepository dataForSelectedOntogeny(Unit xUnit, Unit yUnit)

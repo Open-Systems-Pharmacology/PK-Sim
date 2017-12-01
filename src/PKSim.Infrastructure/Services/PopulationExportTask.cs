@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Presenters;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Mappers;
@@ -20,6 +11,14 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Core;
+using PKSim.Presentation.Presenters;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Infrastructure.Services
@@ -33,7 +32,6 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       private readonly IWorkspace _workspace;
       private readonly IPKSimConfiguration _configuration;
-
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly IDialogCreator _dialogCreator;
       private readonly ICloner _cloner;
@@ -50,7 +48,6 @@ namespace PKSim.Infrastructure.Services
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
          _workspace = workspace;
          _configuration = configuration;
-
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _dialogCreator = dialogCreator;
          _cloner = cloner;
@@ -58,12 +55,12 @@ namespace PKSim.Infrastructure.Services
 
       public void ExportToCSV(Population population)
       {
-         exportVectorialParametersContainerToCSV(population, CreatePopulationDataFor);
+         exportVectorialParametersContainerToCSV(population, x => CreatePopulationDataFor(x, includeUnitsInHeader:true));
       }
 
       public void ExportToCSV(PopulationSimulation populationSimulation)
       {
-         exportVectorialParametersContainerToCSV(populationSimulation, CreatePopulationDataFor);
+         exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, includeUnitsInHeader:true));
       }
 
       private void exportVectorialParametersContainerToCSV<T>(T advancedParameterContainer, Func<T, DataTable> createData) where T : IAdvancedParameterContainer
@@ -81,14 +78,14 @@ namespace PKSim.Infrastructure.Services
 
       private IReadOnlyList<string> getProjectMetaInfo(string description = null)
       {
-         var metaInfo = new List<string> {$"Project: {_workspace.Project.Name}", $"{CoreConstants.ProductName} version: {_configuration.FullVersion}"};
+         var metaInfo = new List<string> {$"Project: {_workspace.Project.Name}", $"{CoreConstants.PRODUCT_NAME} version: {_configuration.FullVersion}"};
          if (!string.IsNullOrEmpty(description))
             metaInfo.Add(description);
 
          return metaInfo;
       }
 
-      public DataTable CreatePopulationDataFor(Population population)
+      public DataTable CreatePopulationDataFor(Population population, bool includeUnitsInHeader = false)
       {
          _lazyLoadTask.Load(population);
          var dataTable = new DataTable(population.Name);
@@ -104,7 +101,7 @@ namespace PKSim.Infrastructure.Services
          //do not take the one that should never be exported
          parametersToExport = parametersToExport.Where(p => parameterShouldBeExported(p, allAdvancedParameters));
 
-         parametersToExport.Each(p => addParameterToTable(population, dataTable, p));
+         parametersToExport.Each(p => addParameterToTable(population, dataTable, p, includeUnitsInHeader));
          dataTable.EndLoadData();
          return dataTable;
       }
@@ -118,12 +115,12 @@ namespace PKSim.Infrastructure.Services
          addColumnValues(population, dataTable, Constants.Population.INDIVIDUAL_ID_COLUMN, individualIds);
 
          //and one column for each individual in the population
-         foreach (var covariate in population.AllCovariateNames())
+         foreach (var covariate in population.AllCovariateNames)
          {
             if (covariate == CoreConstants.Covariates.GENDER)
-               addColumnValues(population, dataTable, CoreConstants.Parameter.GENDER, population.AllGenders().Select(x => x.Index).ToList());
+               addColumnValues(population, dataTable, CoreConstants.Parameter.GENDER, population.AllGenders.Select(x => x.Index).ToList());
             else if (covariate == CoreConstants.Covariates.RACE)
-               addColumnValues(population, dataTable, CoreConstants.Parameter.RACE_INDEX, population.AllRaces().Select(x => x.RaceIndex).ToList());
+               addColumnValues(population, dataTable, CoreConstants.Parameter.RACE_INDEX, population.AllRaces.Select(x => x.RaceIndex).ToList());
             else
                addColumnValues(population, dataTable, covariate, population.AllCovariateValuesFor(covariate));
          }
@@ -140,10 +137,10 @@ namespace PKSim.Infrastructure.Services
 
       private bool parameterShouldBeExported(IParameter parameter, IEnumerable<IParameter> advancedParameters)
       {
-         //BMI and BodyWeight should always be exported (Mantis 2907)
+         //BMI and BodyWeight should always be exported
          if (parameter.NameIsOneOf(CoreConstants.Parameter.BMI, CoreConstants.Parameter.WEIGHT)) return true;
 
-         //BMI MeanHeight MeanWeight should never be exported (Mantis 2907)
+         //BMI MeanHeight MeanWeight should never be exported
          if (parameter.NameIsOneOf(CoreConstants.Parameter.MEAN_WEIGHT, CoreConstants.Parameter.MEAN_HEIGHT)) return false;
 
          //distribution parameter search as mean, std, gsd etc should not be exported
@@ -156,15 +153,15 @@ namespace PKSim.Infrastructure.Services
          return !parameter.Formula.IsExplicit();
       }
 
-      public DataTable CreatePopulationDataFor(PopulationSimulation populationSimulation)
+      public DataTable CreatePopulationDataFor(PopulationSimulation populationSimulation, bool includeUnitsInHeader = false)
       {
          _lazyLoadTask.Load(populationSimulation);
          var population = populationSimulation.Population;
          //retrieve table for population
-         var dataTable = CreatePopulationDataFor(population);
+         var dataTable = CreatePopulationDataFor(population, includeUnitsInHeader);
 
          //add advanced parameters
-         populationSimulation.AllAdvancedParameters(_entityPathResolver).Each(p => addParameterToTable(populationSimulation, dataTable, p));
+         populationSimulation.AllAdvancedParameters(_entityPathResolver).Each(p => addParameterToTable(populationSimulation, dataTable, p, includeUnitsInHeader));
 
          return dataTable;
       }
@@ -241,17 +238,21 @@ namespace PKSim.Infrastructure.Services
          return !simulation.OutputSelections.HasSelection;
       }
 
-      private void addParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, IParameter parameter)
+      private void addParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, IParameter parameter, bool includeUnitsInHeader)
       {
          //some path have changed and the parameter is not found anymore
          if (parameter == null) return;
 
-         addColumnForParameterToTable(parameterContainer, dataTable, _entityPathResolver.PathFor(parameter));
+         var parameterPath = _entityPathResolver.PathFor(parameter);
+
+         var columnName = includeUnitsInHeader ? Constants.NameWithUnitFor(parameterPath, parameter.Dimension.BaseUnit.Name) : parameterPath;
+
+         addColumnForParameterToTable(parameterContainer, dataTable, parameterPath, columnName);
       }
 
-      private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath)
+      private void addColumnForParameterToTable(IVectorialParametersContainer parameterContainer, DataTable dataTable, string parameterPath, string columnName)
       {
-         addColumnValues(parameterContainer, dataTable, parameterPath, parameterContainer.AllValuesFor(parameterPath));
+         addColumnValues(parameterContainer, dataTable, columnName, parameterContainer.AllValuesFor(parameterPath));
       }
    }
 }

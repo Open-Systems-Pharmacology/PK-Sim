@@ -79,7 +79,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       protected bool ShouldRefreshData
       {
-         get { return _shouldRefreshData; }
+         get => _shouldRefreshData;
          set
          {
             _shouldRefreshData = value;
@@ -87,10 +87,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          }
       }
 
-      protected TPopulationAnalysis PopulationAnalysis
-      {
-         get { return PopulationAnalysisChart.PopulationAnalysis; }
-      }
+      protected TPopulationAnalysis PopulationAnalysis => PopulationAnalysisChart.PopulationAnalysis;
 
       public bool Edit(IPopulationDataCollector populationDataCollector, PopulationAnalysisChart populationAnalysisChart)
       {
@@ -141,10 +138,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       protected abstract ISubPresenterItem<IPopulationAnalysisResultsPresenter> ResultsPresenterItem { get; }
 
-      protected IPopulationAnalysisResultsPresenter ResultsPresenter
-      {
-         get { return PresenterAt(ResultsPresenterItem); }
-      }
+      protected IPopulationAnalysisResultsPresenter ResultsPresenter => PresenterAt(ResultsPresenterItem);
 
       protected virtual void InitializeSubPresentersForAnalysis()
       {

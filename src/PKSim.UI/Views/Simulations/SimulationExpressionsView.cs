@@ -1,14 +1,20 @@
 ﻿using System.Windows.Forms;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Simulations;
@@ -17,11 +23,6 @@ using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Extensions;
 using PKSim.UI.Views.Core;
 using PKSim.UI.Views.Parameters;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.UI.Services;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -35,12 +36,10 @@ namespace PKSim.UI.Views.Simulations
       private readonly UxParameterDTOEdit _uxReferenceConcentration;
       private readonly UxParameterDTOEdit _uxHalfLifeLiver;
       private readonly UxParameterDTOEdit _uxHalfLifeIntestine;
-      private readonly UxRepositoryItemImageComboBox _containerDisplayNameRepository;
       private IGridViewColumn _colGrouping;
-      private readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar { Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true };
+      private readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
       private readonly RepositoryItem _favoriteRepository;
       private IGridViewColumn _columnValue;
-      private readonly ToolTipController _toolTipController;
 
       public SimulationExpressionsView(IImageListRetriever imageListRetriever, IToolTipCreator toolTipCreator)
       {
@@ -48,24 +47,23 @@ namespace PKSim.UI.Views.Simulations
          _toolTipCreator = toolTipCreator;
          InitializeComponent();
          InitializeWithGrid(gridViewParameters);
-         _toolTipController = new ToolTipController();
+         var toolTipController = new ToolTipController();
 
          _gridViewBinder = new GridViewBinder<ExpressionContainerDTO>(gridViewParameters)
-            {
-               BindingMode = BindingMode.OneWay
-            };
-          _screenBinder = new ScreenBinder<SimulationExpressionsDTO>();
+         {
+            BindingMode = BindingMode.OneWay
+         };
+         _screenBinder = new ScreenBinder<SimulationExpressionsDTO>();
          _favoriteRepository = new UxRepositoryItemCheckEdit(gridViewParameters);
          _uxReferenceConcentration = new UxParameterDTOEdit();
          _uxHalfLifeLiver = new UxParameterDTOEdit();
          _uxHalfLifeIntestine = new UxParameterDTOEdit();
-         _containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridViewParameters, _imageListRetriever);
          gridViewParameters.GroupFormat = "[#image]{1}";
          gridViewParameters.EndGrouping += (o, e) => gridViewParameters.ExpandAllGroups();
          gridViewParameters.AllowsFiltering = false;
          gridViewParameters.CustomColumnSort += customColumnSort;
-         gridViewParameters.GridControl.ToolTipController = _toolTipController;
-         _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
+         gridViewParameters.GridControl.ToolTipController = toolTipController;
+         toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
       }
 
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
@@ -104,7 +102,7 @@ namespace PKSim.UI.Views.Simulations
 
          _columnValue = _gridViewBinder.Bind(item => item.RelativeExpression)
             .WithCaption(PKSimConstants.UI.RelativeExpression)
-            .WithOnValueSet((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
+            .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
 
          var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
             .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
@@ -118,10 +116,10 @@ namespace PKSim.UI.Views.Simulations
 
          _gridViewBinder.Bind(x => x.IsFavorite)
             .WithCaption(PKSimConstants.UI.Favorites)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
+            .WithFixedWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _favoriteRepository)
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
 
 
          _screenBinder.Bind(x => x.ReferenceConcentration).To(_uxReferenceConcentration);
@@ -142,9 +140,8 @@ namespace PKSim.UI.Views.Simulations
 
       private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
       {
-         _containerDisplayNameRepository.Items.Clear();
-         _containerDisplayNameRepository.Items.Add(new ImageComboBoxItem(parameterPathDTO, _imageListRetriever.ImageIndex(parameterPathDTO.IconName)));
-         return _containerDisplayNameRepository;
+         var containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridViewParameters, _imageListRetriever);
+         return containerDisplayNameRepository.AddItem(parameterPathDTO, parameterPathDTO.IconName);
       }
 
       public override void InitializeResources()
@@ -158,7 +155,6 @@ namespace PKSim.UI.Views.Simulations
 
          panelHalfLifeIntestine.FillWith(_uxHalfLifeIntestine.DowncastTo<Control>());
          layoutItemHalfLifeIntestine.Text = PKSimConstants.UI.HalfLifeIntestine.FormatForLabel();
-
       }
 
       public void AttachPresenter(ISimulationExpressionsPresenter presenter)

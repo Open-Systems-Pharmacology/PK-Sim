@@ -1,11 +1,11 @@
-using OSPSuite.UI.Services;
 using DevExpress.Utils;
 using DevExpress.XtraCharts;
-using PKSim.Presentation.Presenters.Protocols;
-using PKSim.Presentation.Views.Protocols;
 using OSPSuite.Core.Chart;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
+using PKSim.Presentation.Presenters.Protocols;
+using PKSim.Presentation.Views.Protocols;
 
 namespace PKSim.UI.Views.Protocols
 {
@@ -32,6 +32,7 @@ namespace PKSim.UI.Views.Protocols
       public void AttachPresenter(IProtocolChartPresenter presenter)
       {
          _presenter = presenter;
+         chart.AddCopyToClipboardPopupMenu(presenter);
       }
 
       public void Clear()
@@ -54,9 +55,10 @@ namespace PKSim.UI.Views.Protocols
          chart.SeriesTemplate.ArgumentScaleType = ScaleType.Numerical;
          chart.SeriesTemplate.ArgumentDataMember = dataToPlot.XValue;
          chart.SeriesTemplate.ValueScaleType = ScaleType.Numerical;
-         chart.SeriesTemplate.ValueDataMembers.AddRange(new[] {dataToPlot.YValue});
+         chart.SeriesTemplate.ValueDataMembers.AddRange(dataToPlot.YValue);
          chart.SeriesTemplate.LabelsVisibility = DefaultBoolean.False;
-         chart.SeriesTemplate.View = new StackedBarSeriesView();
+         var stackedBarSeriesView = new StackedBarSeriesView {BarWidth = BarWidth};
+         chart.SeriesTemplate.View = stackedBarSeriesView;
          var diagram = (XYDiagram) chart.Diagram;
          ////// Access the type-specific options of the diagram.
          diagram.AxisX.Title.Text = XAxisTitle;
@@ -79,8 +81,7 @@ namespace PKSim.UI.Views.Protocols
 
          foreach (Series series in chart.Series)
          {
-            var view = ((BarSeriesView) series.View);
-            view.BarWidth = BarWidth;
+            var view = (BarSeriesView) series.View;
             if (dataToPlot.NeedsMultipleAxis)
             {
                if (dataToPlot.SeriesShouldBeOnSecondAxis(series.Name))
@@ -119,6 +120,11 @@ namespace PKSim.UI.Views.Protocols
       {
          e.Cancel = true;
          _toolTipController.HideHint();
+      }
+
+      public void CopyToClipboard(string watermark)
+      {
+         chart.CopyToClipboard(watermark);
       }
    }
 }

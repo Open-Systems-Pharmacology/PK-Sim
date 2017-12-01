@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 
@@ -10,12 +9,12 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Add the given observed data repository to the analysable. Curves will not be shown
       /// </summary>
-      void AddObservedDataToAnalysable(DataRepository observedData, IAnalysable analysable);
+      void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable);
 
       /// <summary>
       ///    Add the given observed data repository to the simulation. Curves be shown if the showData flat is set to true
       /// </summary>
-      void AddObservedDataToAnalysable(DataRepository observedData, IAnalysable analysable, bool showData);
+      void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable, bool showData);
 
       void RemoveUsedObservedDataFromSimulation(IReadOnlyList<UsedObservedData> observedDataList);
 
@@ -24,14 +23,13 @@ namespace PKSim.Core.Services
       /// </summary>
       void LoadObservedDataFromTemplate();
 
-
       /// <summary>
       ///    Saves the given <paramref name="observedData" /> to the template database
       /// </summary>
       void SaveToTemplate(DataRepository observedData);
 
       /// <summary>
-      /// Export observed data to pkml format
+      ///    Export observed data to pkml format
       /// </summary>
       void ExportToPkml(DataRepository observedData);
    }

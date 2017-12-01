@@ -1,11 +1,10 @@
 ﻿using System.Xml.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_1
 {
@@ -17,39 +16,39 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
    {
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
-      private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
+      private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private Species _currentSpecies;
       private readonly ICache<Species, Individual> _defaultCache;
+      private bool _converted;
 
-      public Converter513To514(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater)
+      public Converter513To514(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater)
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
-         _renalAgingCalculationMethodUpdater = renalAgingCalculationMethodUpdater;
+         _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
          _defaultCache = new Cache<Species, Individual>(x => x.Species, x => null);
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_1_3;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_1_3;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V5_1_4;
+         return (ProjectVersions.V5_1_4, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return ProjectVersions.V5_1_4;
+         return (ProjectVersions.V5_1_4, false);
       }
 
       public void Visit(Individual individual)
       {
          _currentSpecies = individual.Species;
          convertTransitTimeFor(individual);
-         _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(individual);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
+         _converted = true;
       }
 
       private void convertTransitTimeFor(IContainer individualToConvert)
@@ -70,8 +69,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
          var defaultLITT_factor_slope = largeIntestineIn(defaultIndividual).Parameter(ConverterConstants.Parameter.LITT_factor_slope);
          var defaultLITT_factor_intercept = largeIntestineIn(defaultIndividual).Parameter(ConverterConstants.Parameter.LITT_factor_intercept);
 
-         var defaultGET = GET(defaultIndividual);
-         var currentGET = GET(individualToConvert);
+         var defaultGET = gastricEmptyingTimeIn(defaultIndividual);
+         var currentGET = gastricEmptyingTimeIn(individualToConvert);
          currentGET.Info.MaxValue = defaultGET.MaxValue;
 
          var smallIntestine = smallIntestineIn(individualToConvert);
@@ -107,6 +106,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
          //removed unused parameters
          smallIntestine.RemoveChild(smallIntestine.Parameter(ConverterConstants.Parameter.ColonArrivalTime));
          largeIntestine.RemoveChild(largeIntestine.Parameter(ConverterConstants.Parameter.ExcretionTime));
+
+         _converted = true;
       }
 
       public void Visit(Simulation simulation)
@@ -115,6 +116,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
          Visit(individual);
          convertTransitTimeFor(simulation.Model.Root);
          updateParametersOrigin(individual, simulation.Model.Root);
+         _converted = true;
       }
 
       private void updateParametersOrigin(Individual individual, IContainer root)
@@ -144,25 +146,17 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
          simParameter.Origin.ParameterId = indParameter.Id;
       }
 
-      private IContainer smallIntestineIn(IContainer container)
-      {
-         return container.Container(Constants.ORGANISM).Container(CoreConstants.Organ.SmallIntestine);
-      }
+      private IContainer smallIntestineIn(IContainer container) => container.EntityAt<IContainer>(Constants.ORGANISM, CoreConstants.Organ.SmallIntestine);
 
-      private IContainer largeIntestineIn(IContainer container)
-      {
-         return container.Container(Constants.ORGANISM).Container(CoreConstants.Organ.LargeIntestine);
-      }
+      private IContainer largeIntestineIn(IContainer container) => container.EntityAt<IContainer>(Constants.ORGANISM, CoreConstants.Organ.LargeIntestine);
 
-      private IParameter GET(IContainer container)
-      {
-         return container.Container(Constants.ORGANISM)
-            .Container(CoreConstants.Organ.Lumen).Container(CoreConstants.Organ.Stomach).Parameter(ConverterConstants.Parameter.GastricEmptyingTime);
-      }
+      private IParameter gastricEmptyingTimeIn(IContainer container)
+         => container.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.Lumen, CoreConstants.Organ.Stomach, ConverterConstants.Parameter.GastricEmptyingTime);
 
       public void Visit(RandomPopulation randomPopulation)
       {
          Visit(randomPopulation.FirstIndividual);
+         _converted = true;
       }
    }
 }

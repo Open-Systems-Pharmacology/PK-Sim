@@ -101,9 +101,9 @@ namespace PKSim.Core
          base.Context();
          var organsim = new Container().WithName(Constants.ORGANISM);
          var kidney = new Container().WithName(CoreConstants.Organ.Kidney).WithParentContainer(organsim);
-         var urine = new Container().WithName(CoreConstants.Compartment.Urine).WithParentContainer(kidney);
+         var urine = new Container().WithName(CoreConstants.Compartment.URINE).WithParentContainer(kidney);
          var lumen = new Container().WithName(CoreConstants.Organ.Lumen).WithParentContainer(organsim);
-         var feces = new Container().WithName(CoreConstants.Compartment.Feces).WithParentContainer(lumen);
+         var feces = new Container().WithName(CoreConstants.Compartment.FECES).WithParentContainer(lumen);
          var gallBladder = new Container().WithName(CoreConstants.Organ.Gallbladder).WithParentContainer(organsim);
 
          _moleculeUrine = new MoleculeAmount().WithName("DRUG")

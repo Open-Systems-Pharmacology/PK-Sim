@@ -70,7 +70,7 @@ namespace PKSim.Core
          _modelSimulation = A.Fake<IModelCoreSimulation>();
          _populationData = A.Fake<DataTable>();
          _runResults = new PopulationRunResults();
-         A.CallTo(() => _popExportTask.CreatePopulationDataFor(_populationSimulation)).Returns(_populationData);
+         A.CallTo(() => _popExportTask.CreatePopulationDataFor(_populationSimulation, A<bool>._)).Returns(_populationData);
          A.CallTo(() => _simMapper.MapFrom(_populationSimulation, false)).Returns(_modelSimulation);
          A.CallTo(() => _populationRunner.RunPopulationAsync(_modelSimulation, _populationData, A<DataTable>._, A<DataTable>._)).ReturnsAsync(_runResults);
       }
@@ -83,7 +83,7 @@ namespace PKSim.Core
       [Observation]
       public void should_retrieve_the_data_for_the_pop_simulation_for_the_variable()
       {
-         A.CallTo(() => _popExportTask.CreatePopulationDataFor(_populationSimulation)).MustHaveHappened();
+         A.CallTo(() => _popExportTask.CreatePopulationDataFor(_populationSimulation, A<bool>._)).MustHaveHappened();
       }
 
       [Observation]

@@ -86,26 +86,26 @@ namespace PKSim.UI.Views.Protocols
             .To(cbApplicationType)
             .WithImages(x => _imageListRetriever.ImageIndex(x.IconName))
             .WithValues(x => _presenter.AllApplications())
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetApplicationType(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetApplicationType(e.NewValue));
 
          _screenBinder.Bind(x => x.DosingInterval)
             .To(cbDosingType)
             .WithValues(x => _presenter.AllDosingIntervals())
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetDosingInterval(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetDosingInterval(e.NewValue));
 
          _screenBinder.Bind(x => x.TargetOrgan)
             .To(cbTargetOrgan)
             .WithImages(o => _imageListRetriever.ImageIndex(o))
             .WithValues(dto => _presenter.AllOrgans())
             .AndDisplays(o => _presenter.DisplayFor(o))
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetTargetOrgan(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetTargetOrgan(e.NewValue));
 
          _screenBinder.Bind(x => x.TargetCompartment)
             .To(cbTargetCompartment)
             .WithImages(c => _imageListRetriever.ImageIndex(c))
             .WithValues(dto => _presenter.AllCompartmentsFor(dto.TargetOrgan))
             .AndDisplays(c => _presenter.DisplayFor(c))
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetTargetCompartment(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetTargetCompartment(e.NewValue));
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }

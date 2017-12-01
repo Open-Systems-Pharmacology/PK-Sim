@@ -5,7 +5,6 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
@@ -22,60 +21,61 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_5
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
       private readonly IEntityPathResolver _entityPathResolver;
-      private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
+      private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private readonly IIndividualUpdater _individualUpdater;
       private readonly Cache<Species, Individual> _defaultCache;
+      private bool _converted;
 
       public Converter551To552(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner, 
-                               IEntityPathResolver entityPathResolver, IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater,
+                               IEntityPathResolver entityPathResolver, IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater,
                                IIndividualUpdater individualUpdater)
 
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
          _entityPathResolver = entityPathResolver;
-         _renalAgingCalculationMethodUpdater = renalAgingCalculationMethodUpdater;
+         _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
          _individualUpdater = individualUpdater;
          _defaultCache = new Cache<Species, Individual>(x => x.Species, x => null);
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_5_1;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_5_1;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V5_5_2;
+         return (ProjectVersions.V5_5_2, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          //nothing to do here
-         return ProjectVersions.V5_5_2;
+         return (ProjectVersions.V5_5_2, false);
       }
 
       public void Visit(IndividualSimulation simulation)
       {
-         var individual = simulation.BuildingBlock<Individual>();
-         Visit(individual);
+         Visit(simulation.BuildingBlock<Individual>());
+         _converted = true;
       }
 
       public void Visit(PopulationSimulation simulation)
       {
          Visit(simulation.Population);
+         _converted = true;
       }
 
       public void Visit(Individual individual)
       {
          if (individual == null) return;
 
-         _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(individual);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
          _individualUpdater.AddScalingExponentForFluidFlowTo(individual);
 
          addSurfaceAreaParametersTo(individual);
          updateSurfaceAreaIntCellMucosa(individual);
+         _converted = true;
       }
 
       private void updateSurfaceAreaIntCellMucosa(Individual individual)
@@ -126,11 +126,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_5
          foreach (var segment in currentLumen.GetChildren<IContainer>())
          {
             var templateSegment = templateLumen.Container(segment.Name);
-            if (templateSegment == null) 
-               continue;
-            
-            var templateEffectiveSurfaceArea = templateSegment.Parameter(ConverterConstants.Parameter.EffectiveSurfaceArea);
-            if(templateEffectiveSurfaceArea==null)
+
+            var templateEffectiveSurfaceArea = templateSegment?.Parameter(ConverterConstants.Parameter.EffectiveSurfaceArea);
+            if(templateEffectiveSurfaceArea == null)
                continue;
 
             //clone surface area parameter

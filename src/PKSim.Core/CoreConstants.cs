@@ -1,22 +1,24 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core
 {
    public static class CoreConstants
    {
       public const int LAYOUT_VERSION = 38;
-      public const uint RESOLUTION_FOR_FORMULATION_PLOT = 20;
-      public const uint DEFAULT_DECIMAL_PLACE = 2;
       public const int DEFAULT_NUMBER_OF_BINS = 20;
       public const int DEFAULT_NUMBER_OF_INDIVIDUALS_PER_BIN = 100;
-      public const uint DEFAULT_MRU_LIST_ITEM_COUNT = 10;
       public const int MAX_NUMBER_OF_POINT_PER_INTERVAL = 1000;
       public const int DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION = 100;
+      public const int MAX_NUMBER_OF_CURVES_TO_SHOW_AT_ONCE = 10;
+
+      public const uint RESOLUTION_FOR_FORMULATION_PLOT = 20;
+      public const uint DEFAULT_DECIMAL_PLACE = 2;
+      public const uint DEFAULT_MRU_LIST_ITEM_COUNT = 10;
+
       public const double NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS = 40;
       public const double PRETERM_DEFAULT_AGE = 1 / 365.25; /*in years=>1 days*/
       public const double DEFAULT_PERCENTILE = 0.5;
@@ -26,51 +28,43 @@ namespace PKSim.Core
       public const double HIGH_RESOLUTION_IN_PTS_PER_MIN = 1.0 / 3; //20 pts per hours
       public const double LOW_RESOLUTION_IN_PTS_PER_MIN = 1.0 / 15; //4 pts per hours
       public const double DEFAULT_PROTOCOL_END_TIME_IN_MIN = 1440;
-      public const byte DEFAULT_ONTOGENY_FACTOR = 1;
-      public const int MAX_NUMBER_OF_CURVES_TO_SHOW_AT_ONCE = 10;
+      public const double DEFAULT_ONTOGENY_FACTOR = 1;
       public const double DEFAULT_REFERENCE_CONCENTRATION_VALUE = 1;
       public const double DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN = 36 * 60;
       public const double DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN = 23 * 60;
       public const double DEFAULT_MIN_PERCENTILE = 0.0001;
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
       public const string DEFAULT_BATCH_LOG_FILE_NAME = "log.txt";
-      
-      public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};
-      public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17);
+      public static readonly string DEFAULT_FORMULATION_KEY = "Formulation";
+      public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
 
-      public static readonly string ApplicationFolderPath = @"Open Systems Pharmacology\PK-Sim";
-      public static readonly string MoBiRegPath = @"Open Systems Pharmacology\MoBi\";
-      public static readonly string ChartLayoutFolderPathName = "ChartLayouts";
-      public static readonly string TEXTemplateFolderPathName = "TEXTemplates";
-      public static readonly string TemplateSystemDatabase = "PKSimTemplateDBSystem.mdb";
-      public static readonly string TemplateUserDatabase = "PKSimTemplateDBUser.mdb";
-      public static readonly string TemplateUserDatabaseTemplate = "PKSimTemplateDBUser.template";
-      public static readonly string PKSimDb = "PKSimDB.mdb";
-      public static readonly string SimModelSchema = "OSPSuite.SimModel.xsd";
-      public static readonly string DimensionFile = "OSPSuite.Dimensions.xml";
-      public static readonly string PKParametersFile = "OSPSuite.PKParameters.xml";
-      public static readonly string Log4NetConfigFile = "log4net.config.xml";
-      public static readonly string Value = "Value";
-      public static readonly string ProductName = "PK-Sim";
-      public static readonly string ProductNameWithTrademark = "PK-Sim®";
+      public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};
+      public static readonly IEnumerable<int> PRETERM_RANGE = Enumerable.Range(24, 17);
+
+      public static readonly string APPLICATION_FOLDER_PATH = @"Open Systems Pharmacology\PK-Sim";
+      public static readonly string TEMPLATE_SYSTEM_DATABASE = "PKSimTemplateDBSystem.mdb";
+      public static readonly string TEMPLATE_USER_DATABASE = "PKSimTemplateDBUser.mdb";
+      public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
+      public static readonly string PK_SIM_DB_FILE = "PKSimDB.mdb";
+      public static readonly string PRODUCT_NAME = "PK-Sim";
+      public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
       public static readonly string ExpressionPassword = "rhcp!!06";
-      public static readonly string DefaultSkin = "Office 2013 Light Gray";
-      public static readonly string AccessUserName = "Admin";
-      public static readonly string ProjectUndefined = "Undefined";
-      public static readonly string DefaultFormulationKey = "Formulation";
-      public static readonly string DefaultCalculationMethodsFileNameForMoBi = "AllCalculationMethods";
-      public static readonly string VersionFileUrl = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.xml";
-      public static readonly string IssueTrackerUrl = "http://www.open-systems-pharmacology.org/pk-sim/issues";
+      public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
+      public static readonly string ACCESS_USER_NAME = "Admin";
+      public static readonly string VALUE_PROPERTY_NAME = "Value";
+      public static readonly string PROJECT_UNDEFINED = "Undefined";
+      public static readonly string VERSION_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.xml";
+      public static readonly string ISSUE_TRACKER_URL = "http://www.open-systems-pharmacology.org/pk-sim/issues";
 
       public const string APPLICATION_NAME_TEMPLATE = "Application_";
 
       //tolerated precision to relativtely compare to double values 
       public const double DOUBLE_RELATIVE_EPSILON = 1e-2;
+
       public const char COMPOSITE_SEPARATOR = '-';
 
       //not as readonly as the text will be updated with the current version
-      public static string ProductDisplayName = ProductNameWithTrademark;
-
+      public static string ProductDisplayName = PRODUCT_NAME_WITH_TRADEMARK;
 
       public static class Filter
       {
@@ -78,15 +72,12 @@ namespace PKSim.Core
          public static readonly string PROJECT_OLD_EXTENSION = ".pkprj";
          public static readonly string MDB_EXTENSION = ".mdb";
          public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
-         public static readonly string JSON_FILTER = $"*{Constants.Filter.JSON_EXTENSION}";
          public static readonly string SIMULATION_RESULTS_FILTER = $"*{Constants.Filter.CSV_EXTENSION}";
          public static readonly string EXPRESSION_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Expression Database", MDB_EXTENSION);
          public static readonly string TEMPLATE_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Template Database", MDB_EXTENSION);
          public static readonly string MOBI_FILE_FILTER = Constants.Filter.FileFilter("MoBi", ".exe");
-         public static readonly string MATLAB_POPULATION_FILE_FILTER = string.Format("Matlab Population Files (*.{0};*{1})|*.{0};*{1})", Constants.Filter.CSV_EXTENSION, Constants.Filter.XML_EXTENSION);
-         public static readonly string LOAD_PROJECT_FILTER =  string.Format("{0} Project (*{1};*{2})|*{1};*{2}", ProductDisplayName, PROJECT_EXTENSION, PROJECT_OLD_EXTENSION);
-         public static readonly string SAVE_PROJECT_FILTER = Constants.Filter.FileFilter($"{ProductDisplayName} Project", PROJECT_EXTENSION);
-         public static readonly string LICENSE_FILE_FILTER = Constants.Filter.FileFilter($"{ProductDisplayName} License File", Constants.Filter.TEXT_EXTENSION);
+         public static readonly string LOAD_PROJECT_FILTER = string.Format("{0} Project (*{1};*{2})|*{1};*{2}", PRODUCT_NAME_WITH_TRADEMARK, PROJECT_EXTENSION, PROJECT_OLD_EXTENSION);
+         public static readonly string SAVE_PROJECT_FILTER = Constants.Filter.FileFilter($"{PRODUCT_NAME_WITH_TRADEMARK} Project", PROJECT_EXTENSION);
       }
 
       public static string CompositeNameFor(params string[] names)
@@ -119,15 +110,19 @@ namespace PKSim.Core
       public static class Units
       {
          public static readonly string LiterPerKg = "l/kg";
-         public static readonly string KgPerm2 = "kg/m²";
+         public static readonly string KgPerM2 = "kg/m²";
          public static readonly string Kg = "kg";
          public static readonly string cm = "cm";
+         public static readonly string mg = "mg";
          public static readonly string MicroMolPerLiter = "µmol/l";
          public static readonly string Percent = "%";
          public static readonly string Days = "day(s)";
          public static readonly string Weeks = "week(s)";
          public static readonly string Years = "year(s)";
-      }  
+         public static readonly string KgPerKg = "kg/kg";
+         public static readonly string MgPerKg = "mg/kg";
+         public static readonly string MgPerM2 = "mg/m²";
+      }
 
       public static class Observer
       {
@@ -154,9 +149,9 @@ namespace PKSim.Core
          public static readonly string CONCENTRATION_IN_LUMEN = "Concentration in lumen";
          public static readonly string CONCENTRATION_IN_FECES = "Concentration in feces";
 
-         public static IReadOnlyCollection<string> FractionObservers => new[] {FRACTION_EXCRETED, FRACTION_EXCRETED_TO_URINE, FRACTION_EXCRETED_TO_BILE, FRACTION_EXCRETED_TO_FECES, FRACTION_OF_DOSE, RECEPTOR_OCCUPANCY };
+         public static IReadOnlyCollection<string> FractionObservers => new[] {FRACTION_EXCRETED, FRACTION_EXCRETED_TO_URINE, FRACTION_EXCRETED_TO_BILE, FRACTION_EXCRETED_TO_FECES, FRACTION_OF_DOSE, RECEPTOR_OCCUPANCY};
 
-         public static IReadOnlyCollection<string> MoBiForAll => new[] { CONCENTRATION, FRACTION_EXCRETED_TO_URINE, TISSUE, PLASMA_PERIPHERAL_VENOUS_BLOOD, PLASMA_UNBOUND_PERIPHERAL_VENOUS_BLOOD };
+         public static IReadOnlyCollection<string> MoBiForAll => new[] {CONCENTRATION, FRACTION_EXCRETED_TO_URINE, TISSUE, PLASMA_PERIPHERAL_VENOUS_BLOOD, PLASMA_UNBOUND_PERIPHERAL_VENOUS_BLOOD};
 
          public static string ObserverNameFrom(string observerName, string compoundName)
          {
@@ -182,6 +177,8 @@ namespace PKSim.Core
          public static readonly string RelExpEndosomal = "RelExpEndosomal";
          public static readonly string RelExpOutFromNorm = "RelExpOutFromNorm";
          public static readonly string TableFormulaWithOffsetPrefix = "TableFormulaWithOffset_";
+         public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA = "PARAM_Application_DoseFromDosePerBodySurfaceArea";
+         public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT = "PARAM_Application_DoseFromDosePerBodyWeight";
       }
 
       public static class Alias
@@ -253,6 +250,7 @@ namespace PKSim.Core
          public static readonly string LinksCommon = "LinksCommon";
          public static readonly string DistributionInVitroPKSim = "DistributionInVitro_PKSim";
          public static readonly string ApplicationParameter = "ApplicationParameter";
+         public static readonly string ApplicationParameter_Human = "ApplicationParameter_Human";
          public static readonly string SchemaItemParameter = "SchemaItemParameter";
          public static readonly string CompoundCommon = "CompoundCommon";
          public static readonly string CompoundMWPKSim = "CompoundMW_PKSim";
@@ -269,6 +267,8 @@ namespace PKSim.Core
          public static readonly string BlackBox = "BlackBox_CalculationMethod";
          public static readonly string DynamicSumFormulas = "DynamicSumFormulas";
          public static readonly string RodgerAndRowland = "Cellular partition coefficient method - Rodgers and Rowland";
+         public static readonly string RenalAgingHuman = "Renal_Aging_Human";
+         public static readonly string RenalAgingAnimals = "Renal_Aging_Animals";
 
          public static readonly IEnumerable<string> ForProcesses = new List<string> {LinksCommon, SpecificClearance, DistributionInVitroPKSim};
 
@@ -287,9 +287,7 @@ namespace PKSim.Core
          public static readonly IEnumerable<string> ForEvents = new List<string> {Events};
          public static readonly IEnumerable<string> ForFormulations = new List<string> {Formulation, FormulationParticles};
          public static readonly IEnumerable<string> ForSchemaItems = new List<string> {SchemaItemParameter};
-         public static readonly IEnumerable<string> ForApplications = new List<string> {Formulation, ApplicationParameter, SchemaItemParameter};
-         public static readonly string RenalAgingHuman = "Renal_Aging_Human";
-         public static readonly string RenalAgingAnimals = "Renal_Aging_Animals";
+         public static readonly IEnumerable<string> ForApplications = new List<string> {Formulation, ApplicationParameter, SchemaItemParameter, ApplicationParameter_Human};
       }
 
       public static class Compartment
@@ -300,12 +298,11 @@ namespace PKSim.Core
          public static readonly string Plasma = "Plasma";
          public static readonly string Endosome = "Endosome";
          public static readonly string VascularEndothelium = "VascularEndothelium";
-         public static readonly string Urine = "Urine";
+         public static readonly string URINE = "Urine";
          public static readonly string Mucosa = "Mucosa";
          public static readonly string Saliva = "Saliva";
          public static readonly string Periportal = "Periportal";
          public static readonly string Pericentral = "Pericentral";
-
          public static readonly string Stomach = "Stomach";
          public static readonly string Duodenum = "Duodenum";
          public static readonly string UpperJejunum = "UpperJejunum";
@@ -318,7 +315,7 @@ namespace PKSim.Core
          public static readonly string ColonDescendens = "ColonDescendens";
          public static readonly string ColonSigmoid = "ColonSigmoid";
          public static readonly string Rectum = "Rectum";
-         public static readonly string Feces = "Feces";
+         public static readonly string FECES = "Feces";
 
          public static readonly IEnumerable<string> LiverZones = new List<string>
          {
@@ -367,6 +364,7 @@ namespace PKSim.Core
 
          //const are needed since the values are used in an enum
          public const int CompoundTypeAcid = -1;
+
          public const int CompoundTypeBase = 1;
          public const int CompoundTypeNeutral = 0;
 
@@ -670,10 +668,11 @@ namespace PKSim.Core
          public static readonly string ViewGroups = "VIEW_GROUPS";
          public static readonly string ViewPopulationGenders = "VIEW_POPULATION_GENDERS";
          public static readonly string ViewPopulations = "VIEW_POPULATIONS";
+         public static readonly string ViewPopulationAge = "VIEW_POPULATION_AGE";
          public static readonly string ViewGenders = "VIEW_GENDERS";
          public static readonly string ViewSpecies = "VIEW_SPECIES";
          public static readonly string ViewParameterValueVersions = "VIEW_PARAMETER_VALUE_VERSIONS";
-         public static readonly string ViewSpeciesContainers = "VIEW_SPECIES_CONTAINERS";
+         public static readonly string ViewPopulationContainers = "VIEW_POPULATION_CONTAINERS";
          public static readonly string ViewContainers = "VIEW_CONTAINERS";
          public static readonly string ViewRepresentationInfos = "VIEW_REPRESENTATION_DATA";
          public static readonly string ViewRateObjectPaths = "VIEW_RATE_OBJECT_PATHS";
@@ -702,6 +701,7 @@ namespace PKSim.Core
          public static readonly string ProcessMoleculeDirectionModifier = "MODIFIER";
          public static readonly string ViewModelObservers = "VIEW_MODEL_OBSERVERS";
          public static readonly string ViewFormulationRoutes = "VIEW_FORMULATION_ROUTES";
+         public static readonly string ViewOrganTypes = "VIEW_ORGAN_TYPES";
          public static readonly string ViewSpeciesCalculationMethods = "VIEW_SPECIES_CALCULATION_METHODS";
          public static readonly string ViewCompoundProcessParameterMappings = "VIEW_COMPOUND_PROCESS_PARAMETER_MAPPING";
          public static readonly string ViewMoleculeStartFormulas = "VIEW_MOLECULE_START_FORMULAS";
@@ -720,30 +720,29 @@ namespace PKSim.Core
 
       public static class Organ
       {
-         public static readonly string Lumen = "Lumen";
+         public static readonly string ArterialBlood = "ArterialBlood";
+         public static readonly string Bone = "Bone";
+         public static readonly string Brain = "Brain";
          public static readonly string Dummy = "Dummy";
+         public static readonly string EndogenousIgG = "EndogenousIgG";
+         public static readonly string Fat = "Fat";
+         public static readonly string Gallbladder = "Gallbladder";
          public static readonly string Gonads = "Gonads";
          public static readonly string Heart = "Heart";
          public static readonly string Kidney = "Kidney";
          public static readonly string LargeIntestine = "LargeIntestine";
+         public static readonly string Lumen = "Lumen";
+         public static readonly string Lung = "Lung";
          public static readonly string Liver = "Liver";
          public static readonly string Muscle = "Muscle";
          public static readonly string Pancreas = "Pancreas";
          public static readonly string PortalVein = "PortalVein";
          public static readonly string Saliva = "Saliva";
+         public static readonly string Skin = "Skin";
          public static readonly string SmallIntestine = "SmallIntestine";
          public static readonly string Spleen = "Spleen";
          public static readonly string Stomach = "Stomach";
          public static readonly string VenousBlood = "VenousBlood";
-         public static readonly string Bone = "Bone";
-         public static readonly string Fat = "Fat";
-         public static readonly string Brain = "Brain";
-         public static readonly string Skin = "Skin";
-         public static readonly string Lung = "Lung";
-         public static readonly string ArterialBlood = "ArterialBlood";
-         public static readonly string Gallbladder = "Gallbladder";
-         public static readonly string PlasmaMetabolization = "PlasmaMetabolization";
-         public static readonly string EndogenousIgG = "EndogenousIgG";
          public static readonly string PeripheralVenousBlood = "PeripheralVenousBlood";
 
          public static readonly IReadOnlyList<string> StandardOrgans = new List<string>
@@ -768,14 +767,7 @@ namespace PKSim.Core
             ArterialBlood
          };
 
-         public static readonly IReadOnlyList<string> GITractOrgans = new List<string>()
-         {
-            SmallIntestine,
-            LargeIntestine,
-            Stomach
-         };
-
-         public static IReadOnlyList<string> PolarizedMembraneOrgans = new List<string>()
+         public static IReadOnlyList<string> PolarizedMembraneOrgans = new[]
          {
             Brain,
             Kidney,
@@ -821,35 +813,35 @@ namespace PKSim.Core
 
       public static class Parameter
       {
-         public static readonly string Ph = "pH";
-         public static readonly string IsNeutral = "Is neutral";
+         public static readonly string PH = "pH";
+         public static readonly string IS_NEUTRAL = "Is neutral";
          public static readonly string HAS_HALOGENS = "Has halogens";
-         public static readonly string MolWeightEff = "Effective molecular weight";
-         public static readonly string Lipophilicity = "Lipophilicity";
+         public static readonly string EFFECTIVE_MOLECULAR_WEIGHT = "Effective molecular weight";
+         public static readonly string LIPOPHILICITY = "Lipophilicity";
          public static readonly string CONCENTRATION = "Concentration";
-         public static readonly string MolecularWeight = "Molecular weight";
+         public static readonly string MOLECULAR_WEIGHT = "Molecular weight";
          public static readonly string REFERENCE_CONCENTRATION = "Reference concentration";
-         public static readonly string RelExp = "Relative expression";
-         public static readonly string NormSuffix = " (normalized)";
-         public static readonly string RelExpBloodCell = "Relative expression in blood cells";
-         public static readonly string RelExpBloodCellNorm = NormParameterFor(RelExpBloodCell);
-         public static readonly string RelExpPlasma = "Relative expression in plasma";
-         public static readonly string RelExpPlasmaNorm = NormParameterFor(RelExpPlasma);
-         public static readonly string RelExpVascEndo = "Relative expression in vascular endothelium";
-         public static readonly string RelExpVascEndoNorm = NormParameterFor(RelExpVascEndo);
+         public static readonly string REL_EXP = "Relative expression";
+         public static readonly string NORM_SUFFIX = " (normalized)";
+         public static readonly string REL_EXP_BLOOD_CELL = "Relative expression in blood cells";
+         public static readonly string REL_EXP_BLOOD_CELL_NORM = NormParameterFor(REL_EXP_BLOOD_CELL);
+         public static readonly string REL_EXP_PLASMA = "Relative expression in plasma";
+         public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(REL_EXP_PLASMA);
+         public static readonly string REL_EXP_VASC_ENDO = "Relative expression in vascular endothelium";
+         public static readonly string REL_EXP_VASC_ENDO_NORM = NormParameterFor(REL_EXP_VASC_ENDO);
 
          public static IReadOnlyList<string> AllGlobalRelExpParameters = new[]
          {
-            RelExpBloodCell,
-            RelExpBloodCellNorm,
-            RelExpPlasma,
-            RelExpPlasmaNorm,
-            RelExpVascEndo,
-            RelExpVascEndoNorm
+            REL_EXP_BLOOD_CELL,
+            REL_EXP_BLOOD_CELL_NORM,
+            REL_EXP_PLASMA,
+            REL_EXP_PLASMA_NORM,
+            REL_EXP_VASC_ENDO,
+            REL_EXP_VASC_ENDO_NORM
          };
 
-         public static readonly string RelExpOut = "Relative expression out.";
-         public static readonly string RelExpNorm = NormParameterFor(RelExp);
+         public static readonly string REL_EXP_OUT = "Relative expression out.";
+         public static readonly string REL_EXP_NORM = NormParameterFor(REL_EXP);
          public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
          public static readonly string ONTOGENY_FACTOR_GI = "Ontogeny factor GI";
          public static readonly string PARTICLE_BIN_DRUG_MASS = "DrugMass of particle bin";
@@ -858,18 +850,19 @@ namespace PKSim.Core
          public static readonly string INPUT_DOSE = "InputDose";
          public static readonly string DOSE = "Dose";
          public static readonly string DOSE_PER_BODY_WEIGHT = "DosePerBodyWeight";
+         public static readonly string DOSE_PER_BODY_SURFACE_AREA = "DosePerBodySurfaceArea";
          public static readonly string AGE = "Age";
-         public static readonly string Age0 = "Age of individual at t=0";
+         public static readonly string AGE_0 = "Age of individual at t=0";
          public static readonly string GESTATIONAL_AGE = "Gestational age";
          public static readonly string PMA = "Postmenstrual age";
-         public static readonly string VOLUME = Constants.Parameters.VOLUME;
          public static readonly string WEIGHT = "Weight";
          public static readonly string HCT = "Hematocrit";
-         public static readonly string WeightInProcess = "Body weight";
+         public static readonly string WEIGHT_IN_PROCESS = "Body weight";
          public static readonly string MEAN_WEIGHT = "MeanBW";
          public static readonly string MEAN_HEIGHT = "MeanHeight";
          public static readonly string HEIGHT = "Height";
          public static readonly string BMI = "BMI";
+         public static readonly string BSA = "BSA";
          public static readonly string BLOOD_FLOW = "Blood flow rate";
          public static readonly string DENSITY = "Density (tissue)";
          public static readonly string DRUG = "DRUG";
@@ -878,7 +871,7 @@ namespace PKSim.Core
          public static readonly string GFR_SPEC = "GFR (specific)";
          public static readonly string MIN_TO_YEAR_FACTOR = "Minute to year unit conversion factor";
          public static readonly string GFR_FRACTION = "GFR fraction";
-         public static readonly string IntestinalPermeability = "Intestinal permeability (transcellular)";
+         public static readonly string INTESTINAL_PERMEABILITY = "Intestinal permeability (transcellular)";
          public static readonly string RACE_INDEX = "RaceIndex";
          public static readonly string GENDER = "Gender";
          public static readonly string VOLUME_MOUSE = "Organ volume mouse";
@@ -1005,23 +998,24 @@ namespace PKSim.Core
          public const string K_KINACT_HALF_INTERACTION_FACTOR = "K_kinact_half interaction factor";
          public const string KINACT_INTERACTION_FACTOR = "kinact interaction factor";
          public const string KINACT = "kinact";
-         public const string EMAX="Emax";
+         public const string EMAX = "Emax";
          public const string EC50 = "EC50";
          public const string USE_AS_SUSPENSION = "Use as suspension";
+         public const string WEIGHT_TISSUE = "Weight (tissue)";
 
-         public static readonly IEnumerable<string> OntogenyFactors = new[]
+         public static readonly IReadOnlyList<string> OntogenyFactors = new[]
          {
             ONTOGENY_FACTOR_GI,
             ONTOGENY_FACTOR
          };
 
-         public static readonly IEnumerable<string> AllPlasmaProteinOntogenyFactors = new []
+         public static readonly IReadOnlyList<string> AllPlasmaProteinOntogenyFactors = new[]
          {
             ONTOGENY_FACTOR_ALBUMIN,
             ONTOGENY_FACTOR_AGP
          };
 
-         public static readonly IEnumerable<string> HiddenParameterForMonodisperse = new []
+         public static readonly IReadOnlyList<string> HiddenParameterForMonodisperse = new[]
          {
             PARTICLE_SIZE_DISTRIBUTION,
             PARTICLE_RADIUS_MIN,
@@ -1032,20 +1026,19 @@ namespace PKSim.Core
             PARTICLE_LOG_VARIATION_COEFF
          };
 
-         public static readonly IEnumerable<string> HiddenParameterForPolydisperseNormal = new []
+         public static readonly IReadOnlyList<string> HiddenParameterForPolydisperseNormal = new[]
          {
             PARTICLE_LOG_DISTRIBUTION_MEAN,
             PARTICLE_LOG_VARIATION_COEFF
          };
 
-         public static readonly IEnumerable<string> HiddenParameterForPolydisperseLogNormal = new []
+         public static readonly IReadOnlyList<string> HiddenParameterForPolydisperseLogNormal = new[]
          {
             PARTICLE_RADIUS_MEAN,
             PARTICLE_RADIUS_STD_DEVIATION
          };
 
-
-         public static readonly IEnumerable<string> ParticleDistributionStructuralParameters = new []
+         public static readonly IReadOnlyList<string> ParticleDistributionStructuralParameters = new[]
          {
             PARTICLE_DISPERSE_SYSTEM,
             NUMBER_OF_BINS,
@@ -1058,25 +1051,24 @@ namespace PKSim.Core
             PARTICLE_LOG_VARIATION_COEFF
          };
 
+         public static readonly IReadOnlyList<string> VolumeFractionLipidsParameters = new[]
+         {
+            VolumeFractionLipids,
+            VolumeFractionNeutralLipid_PT,
+            VolumeFractionNeutralLipid_RR,
+            VolumeFractionNeutralLipid_WS,
+            VolumeFractionNeutralPhospholipid_RR,
+            VolumeFractionNeutralPhospholipid_WS,
+            VolumeFractionPhospholipid_PT
+         };
 
-         public static readonly IEnumerable<string> VolumeFractionLipidsParameters =new []
-            {
-               VolumeFractionLipids,
-               VolumeFractionNeutralLipid_PT,
-               VolumeFractionNeutralLipid_RR,
-               VolumeFractionNeutralLipid_WS,
-               VolumeFractionNeutralPhospholipid_RR,
-               VolumeFractionNeutralPhospholipid_WS,
-               VolumeFractionPhospholipid_PT
-            };
-
-         public static readonly IEnumerable<string> VolumeFractionProteinsParameters =new[]
+         public static readonly IReadOnlyList<string> VolumeFractionProteinsParameters = new[]
          {
             VolumeFractionProteins,
             VolumeFractionProteins_WS
          };
 
-         public static readonly IEnumerable<string> VolumeFractionWaterParameters = new []
+         public static readonly IReadOnlyList<string> VolumeFractionWaterParameters = new[]
          {
             VolumeFractionWater,
             VolumeFractionWater_PT,
@@ -1092,35 +1084,43 @@ namespace PKSim.Core
                    VolumeFractionWaterParameters.Contains(parameterName);
          }
 
-         public static readonly IEnumerable<string> StandardCreateIndividualParameters =new []
-            {
-               VOLUME,
-               AGE,
-               GESTATIONAL_AGE,
-               HEIGHT,
-               WEIGHT,
-               MEAN_WEIGHT,
-               MEAN_HEIGHT,
-               BMI
-            };
+         public static readonly IReadOnlyList<string> StandardCreateIndividualParameters = new[]
+         {
+            Constants.Parameters.VOLUME,
+            AGE,
+            GESTATIONAL_AGE,
+            HEIGHT,
+            WEIGHT,
+            MEAN_WEIGHT,
+            MEAN_HEIGHT,
+            BMI,
+            BSA
+         };
 
          /// <summary>
          ///    List of parameters that are indirectly varied by create individual (such as Blood Flow, GFR_spec etc.) and that
          ///    should be displayed in a distribution plot
          /// </summary>
          public static readonly IReadOnlyList<string> DerivedCreatedIndividualParameters = new[]
-         {
-            BLOOD_FLOW,
-            GFR_SPEC,
-            VOLUME_PLASMA,
-         }
+            {
+               BLOOD_FLOW,
+               GFR_SPEC,
+               VOLUME_PLASMA,
+            }
             .Union(OntogenyFactors)
             .Union(AllPlasmaProteinOntogenyFactors).ToList();
 
-         public static readonly IReadOnlyCollection<string> CompoundMustInputParameters = new List<string> {Lipophilicity, Constants.Parameters.MOL_WEIGHT, FractionUnbound};
-         public static readonly IReadOnlyCollection<string> Halogens = new List<string> {CL, BR, F, I};
+         public static readonly IReadOnlyCollection<string> CompoundMustInputParameters = new[]
+         {
+            LIPOPHILICITY, Constants.Parameters.MOL_WEIGHT, FractionUnbound
+         };
 
-         public static readonly IReadOnlyCollection<string> AllBooleanParameters = new List<string>
+         public static readonly IReadOnlyCollection<string> Halogens = new[]
+         {
+            CL, BR, F, I
+         };
+
+         public static readonly IReadOnlyCollection<string> AllBooleanParameters = new[]
          {
             Constants.Parameters.USE_JACOBIAN,
             HAS_HALOGENS,
@@ -1148,7 +1148,7 @@ namespace PKSim.Core
 
          public static string NormParameterFor(string parameter)
          {
-            return $"{parameter}{NormSuffix}";
+            return $"{parameter}{NORM_SUFFIX}";
          }
 
          public static readonly IReadOnlyCollection<string> AllDistributionParameters = new List<string>
@@ -1160,7 +1160,6 @@ namespace PKSim.Core
             Constants.Distribution.MINIMUM,
             Constants.Distribution.PERCENTILE,
          };
-
       }
 
       public static class SimulationResults
@@ -1181,7 +1180,7 @@ namespace PKSim.Core
          public const string Preterm = "Preterm";
          public const string TableParameterExport = "_TableParameters";
          public const string AgingDataTableName = "AgingData";
-         public const string Japanese = "Japanese_Population";
+         public const string Pregnant = "Pregnant";
       }
 
       public static class Process
@@ -1288,7 +1287,7 @@ namespace PKSim.Core
          public static string ParticlesApplicationWithNBins(int binIndex)
          {
             return $"ParticlesApplication_{binIndex}_Bins";
-         } 
+         }
       }
 
       public static class UI
@@ -1326,7 +1325,9 @@ namespace PKSim.Core
          {
             OSPSuite.Assets.ObservedData.ORGAN,
             OSPSuite.Assets.ObservedData.COMPARTMENT,
-            OSPSuite.Assets.ObservedData.MOLECULE, SPECIES, GENDER
+            OSPSuite.Assets.ObservedData.MOLECULE,
+            SPECIES,
+            GENDER
          };
       }
 

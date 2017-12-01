@@ -97,25 +97,25 @@ namespace PKSim.UI.Views.PopulationAnalyses
       public override void InitializeBinding()
       {
          _gridViewBinder.Bind(x => x.Name)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.FieldNameChanged(o, e.OldValue, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.FieldNameChanged(o, e.OldValue, e.NewValue)));
 
          _colUnit = _gridViewBinder.AutoBind(x => x.DisplayUnit)
             .WithCaption(PKSimConstants.UI.Unit)
             .WithRepository(repositoryItemForUnits)
             .WithEditorConfiguration(configureUnitsRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.FieldUnitChanged(o, e.OldValue, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.FieldUnitChanged(o, e.OldValue, e.NewValue)));
 
          _colScaling = _gridViewBinder.Bind(x => x.Scaling)
             .WithCaption(Captions.Scaling)
             .WithRepository(repositoryItemForScaling)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.FieldScalingChanged(o, e.OldValue, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.FieldScalingChanged(o, e.OldValue, e.NewValue)));
 
          _colColor = _gridViewBinder.Bind(x => x.Color)
             .WithCaption(PKSimConstants.UI.Color)
             .WithRepository(x => _colorRepository)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.FieldColorChanged(o, e.OldValue, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.FieldColorChanged(o, e.OldValue, e.NewValue)));
 
          _colDelete = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)

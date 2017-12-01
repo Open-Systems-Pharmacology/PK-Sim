@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -28,8 +28,8 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly ITimeProfileChartSettingsPresenter _timeProfileChartSettingsPresenter;
       public event Action ObservedDataSettingsChanged = delegate { };
 
-      public TimeProfileChartPresenter(ITimeProfileChartView view, ITimeProfileChartSettingsPresenter timeProfileChartSettingsPresenter)
-         : base(view, timeProfileChartSettingsPresenter)
+      public TimeProfileChartPresenter(ITimeProfileChartView view, ITimeProfileChartSettingsPresenter timeProfileChartSettingsPresenter, IApplicationSettings applicationSettings)
+         : base(view, timeProfileChartSettingsPresenter, applicationSettings)
       {
          view.DragDropEnabled = true;
          _timeProfileChartSettingsPresenter = timeProfileChartSettingsPresenter;
@@ -38,20 +38,20 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       public event DragEventHandler DragOver
       {
-         add { _view.DragOver += value; }
-         remove { _view.DragOver -= value; }
+         add => _view.DragOver += value;
+         remove => _view.DragOver -= value;
       }
 
       public event DragEventHandler DragDrop
       {
-         add { _view.DragDrop += value; }
-         remove { _view.DragDrop -= value; }
+         add => _view.DragDrop += value;
+         remove => _view.DragDrop -= value;
       }
 
       public override void Show(ChartData<TimeProfileXValue, TimeProfileYValue> chartsData, PopulationAnalysisChart populationAnalysisChart)
       {
          base.Show(chartsData, populationAnalysisChart);
-         _timeProfileChartSettingsPresenter.BindTo(populationAnalysisChart.DowncastTo<TimeProfileAnalysisChart>().ObservedDataCollection);
+         _timeProfileChartSettingsPresenter.BindTo(populationAnalysisChart.ObservedDataCollection);
       }
    }
 }

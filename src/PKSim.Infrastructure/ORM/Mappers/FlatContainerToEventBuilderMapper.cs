@@ -64,7 +64,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          foreach (var flatEventAssignment in _flatEventChangedObjectRepo.ChangedObjectsFor(flatEventContainer.Id))
          {
             var eventAssignment = _eventAssignmentBuilderMapper.MapFrom(flatEventAssignment);
-            eventAssignment.Name = string.Format("Assignment_{0}", eventBuilder.Assignments.Count() + 1);
+            eventAssignment.Name = $"Assignment_{eventBuilder.Assignments.Count() + 1}";
 
             eventBuilder.AddAssignment(eventAssignment);
          }

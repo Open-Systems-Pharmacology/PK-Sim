@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Data;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core.Services
 {
@@ -173,10 +172,11 @@ namespace PKSim.Core.Services
          series.LineStyle = statisticalAggregation.LineStyle;
 
          var colorField = _analysis.ColorField;
-         if (colorField == null) return;
 
-         var groupitem = colorField.GroupingByName(row[colorField.Name].ToString());
-         if (groupitem == null) return;
+         var groupitem = colorField?.GroupingByName(row[colorField.Name].ToString());
+         if (groupitem == null)
+            return;
+
          series.Color = groupitem.Color;
       }
 
@@ -193,7 +193,7 @@ namespace PKSim.Core.Services
       {
          var allValuesForQuantity = row[_aggreationName] as IReadOnlyList<QuantityValues>;
 
-         if (allValuesForQuantity ==null || allValuesForQuantity.Count == 0)
+         if (allValuesForQuantity == null || allValuesForQuantity.Count == 0)
             return emptyTimeAndValues();
 
          var firstQuantityValue = allValuesForQuantity.First();
@@ -232,16 +232,13 @@ namespace PKSim.Core.Services
          public Unit DisplayUnit { get; set; }
          public Scalings Scaling { get; set; }
 
-         public TimeField() : base(typeof (double))
+         public TimeField() : base(typeof(double))
          {
             Scaling = Scalings.Linear;
             Name = PKSimConstants.UI.Time;
          }
 
-         public override string Id
-         {
-            get { return string.Empty; }
-         }
+         public override string Id => string.Empty;
       }
 
       private IReadOnlyList<TimeProfileYValue> getResultsFor(StatisticalAggregation statisticalAggregation, FloatMatrix quantityResults)
@@ -265,7 +262,11 @@ namespace PKSim.Core.Services
 
       private IReadOnlyList<TimeProfileYValue> timeProfileRangeValues(IReadOnlyList<float> lowerValues, IReadOnlyList<float> upperValues)
       {
-         return lowerValues.Select((value, i) => new TimeProfileYValue {LowerValue = lowerValues[i], UpperValue = upperValues[i]}).ToList();
+         return lowerValues.Select((value, i) => new TimeProfileYValue
+         {
+            LowerValue = lowerValues[i],
+            UpperValue = upperValues[i]
+         }).ToList();
       }
    }
 }

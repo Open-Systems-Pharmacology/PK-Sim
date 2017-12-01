@@ -62,19 +62,23 @@ namespace PKSim.Infrastructure.Services
          _observedDataPersistor.Save(observedData, file);
       }
 
-      public void AddObservedDataToAnalysable(DataRepository observedData, IAnalysable analysable)
+      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable)
       {
          AddObservedDataToAnalysable(observedData, analysable, showData: false);
       }
 
-      public void AddObservedDataToAnalysable(DataRepository observedData, IAnalysable analysable, bool showData)
+      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable, bool showData)
       {
          var simulation = analysable as Simulation;
-         if (simulation == null) return;
+         if (simulation == null)
+            return;
 
-         if (simulation.UsesObservedData(observedData)) return;
-         simulation.AddUsedObservedData(observedData);
-         _executionContext.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, observedData, showData));
+         var observedDataToAdd = observedData.Where(x => !simulation.UsesObservedData(x)).ToList();
+         if (!observedDataToAdd.Any())
+            return;
+
+         observedDataToAdd.Each(simulation.AddUsedObservedData);
+         _executionContext.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, observedDataToAdd, showData));
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
 
@@ -121,15 +125,12 @@ namespace PKSim.Infrastructure.Services
          _executionContext.Load(simulation);
 
          var observedDataList = observedDataListFrom(usedObservedDatas);
-         observedDataList.Each(observedData =>
-         {
-            simulation.RemoveUsedObservedData(observedData);
-            _executionContext.PublishEvent(new ObservedDataRemovedFromAnalysableEvent(simulation, observedData));
-         });
+         observedDataList.Each(simulation.RemoveUsedObservedData);
+         _executionContext.PublishEvent(new ObservedDataRemovedFromAnalysableEvent(simulation, observedDataList));
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
 
-      private IEnumerable<DataRepository> observedDataListFrom(IEnumerable<UsedObservedData> usedObservedDatas)
+      private IReadOnlyList<DataRepository> observedDataListFrom(IEnumerable<UsedObservedData> usedObservedDatas)
       {
          return usedObservedDatas.Select(observedDataFrom).ToList();
       }

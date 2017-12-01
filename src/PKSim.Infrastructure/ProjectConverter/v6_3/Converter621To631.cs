@@ -13,21 +13,18 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_3
          _coreConverter = coreConverter;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V6_2_1;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V6_2_1;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
          _coreConverter.Convert(objectToConvert);
-         return ProjectVersions.V6_3_1;
+         return (ProjectVersions.V6_3_1, true);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          _coreConverter.ConvertXml(element);
-         return ProjectVersions.V6_3_1;
+         return (ProjectVersions.V6_3_1, true);
       }
    }
 }

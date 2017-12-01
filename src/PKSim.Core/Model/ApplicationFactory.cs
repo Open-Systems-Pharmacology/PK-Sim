@@ -1,22 +1,23 @@
 using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 
 namespace PKSim.Core.Model
 {
    /// <summary>
-   ///    Creates a new instance of application builder by cloning application template (given by {ApplicationType, FormulationType} combination) Formulation parameters collection is only required for particles dissolution
+   ///    Creates a new instance of application builder by cloning application template (given by {ApplicationType,
+   ///    FormulationType} combination) Formulation parameters collection is only required for particles dissolution
    /// </summary>
    public interface IApplicationFactory
    {
       IApplicationBuilder CreateFor(ISchemaItem schemaItem, string formulationType, string applicationName,
-                                    string compoundName, IEnumerable<IParameter> formulationParameters, IFormulaCache formulaCache);
+         string compoundName, IEnumerable<IParameter> formulationParameters, IFormulaCache formulaCache);
    }
 
    public class ApplicationFactory : IApplicationFactory
@@ -29,11 +30,12 @@ namespace PKSim.Core.Model
       private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IParticleApplicationCreator _particleApplicationCreator;
       private readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
+      private readonly IFormulaFactory _formulaFactory;
 
       public ApplicationFactory(IApplicationRepository applicationRepository, IObjectBaseFactory objectBaseFactory,
-                                IObjectPathFactory objectPathFactory, IParameterSetUpdater parameterSetUpdater,
-                                IDimensionRepository dimensionRepository, IParameterContainerTask parameterContainerTask,
-                                IParticleApplicationCreator particleApplicationCreator,ICloneManagerForBuildingBlock cloneManagerForBuildingBlock)
+         IObjectPathFactory objectPathFactory, IParameterSetUpdater parameterSetUpdater,
+         IDimensionRepository dimensionRepository, IParameterContainerTask parameterContainerTask,
+         IParticleApplicationCreator particleApplicationCreator, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock, IFormulaFactory formulaFactory)
       {
          _applicationRepository = applicationRepository;
          _objectBaseFactory = objectBaseFactory;
@@ -43,13 +45,14 @@ namespace PKSim.Core.Model
          _parameterContainerTask = parameterContainerTask;
          _particleApplicationCreator = particleApplicationCreator;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
+         _formulaFactory = formulaFactory;
       }
 
       public IApplicationBuilder CreateFor(ISchemaItem schemaItem, string formulationType, string applicationName,
-                                           string compoundName, IEnumerable<IParameter> formulationParameters, IFormulaCache formulaCache)
+         string compoundName, IEnumerable<IParameter> formulationParameters, IFormulaCache formulaCache)
       {
          // clone new application from template
-         _cloneManagerForBuildingBlock.FormulaCache =formulaCache;
+         _cloneManagerForBuildingBlock.FormulaCache = formulaCache;
          var application = _cloneManagerForBuildingBlock.Clone(_applicationRepository.ApplicationFrom(schemaItem.ApplicationType.Name, formulationType));
 
          var applicDbName = application.Name; //required for adding application transport parameters
@@ -57,7 +60,7 @@ namespace PKSim.Core.Model
          application.EventGroupType = schemaItem.ApplicationType.Name;
 
          // set protocol schema item values
-         copyParameterValues(schemaItem, application.ProtocolSchemaItemContainer());
+         copyParameterValues(schemaItem, application.ProtocolSchemaItemContainer(), formulaCache);
 
          // set name of compound (= molecule which will be transported by this application)
          application.MoleculeName = compoundName;
@@ -101,7 +104,8 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Add "condition" as descriptor criteria to every source/target descriptor conditions of given transports, which also contain "Application" condition
+      ///    Add "condition" as descriptor criteria to every source/target descriptor conditions of given transports, which also
+      ///    contain "Application" condition
       /// </summary>
       private void addApplicationProcessDescriptorCondition(ISchemaItem schemaItem, IEnumerable<ITransportBuilder> transports, string condition)
       {
@@ -144,60 +148,60 @@ namespace PKSim.Core.Model
       /// </summary>
       private void addDrugStartFormula(IApplicationBuilder applicationBuilder, IFormulaCache formulaCache)
       {
-         var appMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(applicationBuilder.Name);
-         appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(ObjectPath.PARENT_CONTAINER, applicationBuilder.Name);
-         appMoleculeBuilder.Formula = drugMassFormula(formulaCache);
-         applicationBuilder.AddMolecule(appMoleculeBuilder);
+         var applicationMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(applicationBuilder.Name);
+         applicationMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(ObjectPath.PARENT_CONTAINER, applicationBuilder.Name);
+         applicationMoleculeBuilder.Formula = _formulaFactory.DrugMassFormulaFor(formulaCache);
+         applicationBuilder.AddMolecule(applicationMoleculeBuilder);
       }
 
-      private IFormula drugMassFormula(IFormulaCache formulaCache)
-      {
-         if (formulaCache.ExistsByName(Constants.Parameters.DRUG_MASS))
-            return formulaCache.FindByName(Constants.Parameters.DRUG_MASS);
-
-         var startFormula = _objectBaseFactory.Create<ExplicitFormula>()
-            .WithFormulaString(Constants.Parameters.DRUG_MASS)
-            .WithDimension(_dimensionRepository.Amount)
-            .WithName(Constants.Parameters.DRUG_MASS);
-
-         var pathToDrugMass = _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, CoreConstants.ContainerName.ProtocolSchemaItem, Constants.Parameters.DRUG_MASS)
-            .WithAlias(Constants.Parameters.DRUG_MASS)
-            .WithDimension(_dimensionRepository.Amount);
-
-         startFormula.AddObjectPath(pathToDrugMass);
-         formulaCache.Add(startFormula);
-         return startFormula;
-      }
-
-      private void copyParameterValues(ISchemaItem schemaItem, IContainer targetContainer)
+      private void copyParameterValues(ISchemaItem schemaItem, IContainer targetContainer, IFormulaCache formulaCache)
       {
          _parameterSetUpdater.UpdateValuesByName(schemaItem, targetContainer);
 
+         updateDose(schemaItem, targetContainer, formulaCache);
+      }
+
+      private void updateDose(ISchemaItem schemaItem, IContainer targetContainer, IFormulaCache formulaCache)
+      {
          //now that parameter have been set, we need to update the dose by hand according to the selected unit 
-         var inputDose = schemaItem.Dose;
-         var doseDimension = _dimensionRepository.Mass;
+         var inputDose = schemaItem.Dose; 
+
          var dose = targetContainer.Parameter(CoreConstants.Parameter.DOSE);
          var dosePerBodyWeight = targetContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT);
-         //dose exists in the dose dimension=> we need to set the parameter dose in the target container
+         var dosePerBodySurfaceArea = targetContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_SURFACE_AREA);
 
-         //We have a dose in mg
-         if (doseDimension.GetUnitNames().Contains(inputDose.DisplayUnit.Name))
+         if (schemaItem.DoseIsInMass())
          {
             //we have to create a constant value for the dose parameter
-            dose.Formula = _objectBaseFactory.Create<ConstantFormula>().WithValue(inputDose.Value).WithDimension(_dimensionRepository.Mass);
-            _parameterSetUpdater.UpdateValue(inputDose, dose);
-            dose.Visible = true;
-            dosePerBodyWeight.Visible = false;
-            dosePerBodyWeight.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+            dose.Formula = _formulaFactory.ValueFor(inputDose.Value, _dimensionRepository.Mass);
+            updateDoseParameter(inputDose, dose, dosePerBodyWeight, dosePerBodySurfaceArea);
          }
-         else
+         else if (schemaItem.DoseIsPerBodyWeight())
          {
-            //in that case. We have a dose in mg/kg
-            _parameterSetUpdater.UpdateValue(inputDose, dosePerBodyWeight);
-            dosePerBodyWeight.Visible = true;
-            dose.Visible = false;
-            dose.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+            dose.Formula = _formulaFactory.DoseFromDosePerBodyWeightFor(formulaCache);
+            updateDoseParameter(inputDose, dosePerBodyWeight, dose, dosePerBodySurfaceArea);
          }
+         else if (schemaItem.DoseIsPerBodySurfaceArea())
+         {
+            dose.Formula = _formulaFactory.DoseFromDosePerBodySurfaceAreaFor(formulaCache);
+            updateDoseParameter(inputDose, dosePerBodySurfaceArea, dose, dosePerBodyWeight);
+         }
+      }
+
+      private void updateDoseParameter(IParameter inputDose, IParameter dose, params IParameter[] doseParametersToHide)
+      {
+         _parameterSetUpdater.UpdateValue(inputDose, dose);
+         dose.Visible = true;
+         doseParametersToHide.Each(hideDoseParameter);
+      }
+
+      private void hideDoseParameter(IParameter dose)
+      {
+         if (dose == null)
+            return;
+
+         dose.Visible = false;
+         dose.BuildingBlockType = PKSimBuildingBlockType.Simulation;
       }
    }
 }

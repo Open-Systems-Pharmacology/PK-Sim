@@ -15,22 +15,22 @@ namespace PKSim.Presentation
 {
    public abstract class concern_for_CloneSimulationTask : ContextSpecification<ICloneSimulationTask>
    {
-      protected IExecutionContext _executionContext;
       protected IBuildingBlockTask _buildingBlockTask;
       protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       protected ISimulationSettingsRetriever _simulationSettingsRetriever;
       protected ISimulationResultsTask _simulationResultsTask;
       protected IApplicationController _applicationController;
+      protected IRenameBuildingBlockTask _renameBuildingBlockTask;
 
       protected override void Context()
       {
-         _executionContext = A.Fake<IExecutionContext>();
          _buildingBlockTask = A.Fake<IBuildingBlockTask>();
          _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
          _simulationSettingsRetriever = A.Fake<ISimulationSettingsRetriever>();
          _simulationResultsTask = A.Fake<ISimulationResultsTask>();
          _applicationController= A.Fake<IApplicationController>();
-         sut = new CloneSimulationTask(_buildingBlockTask, _executionContext, _buildingBlockInSimulationManager, _simulationSettingsRetriever, _simulationResultsTask, _applicationController);
+         _renameBuildingBlockTask = A.Fake<IRenameBuildingBlockTask>();
+         sut = new CloneSimulationTask(_buildingBlockTask,  _buildingBlockInSimulationManager, _simulationSettingsRetriever, _simulationResultsTask, _applicationController, _renameBuildingBlockTask);
       }
    }
 
@@ -38,29 +38,33 @@ namespace PKSim.Presentation
    {
       private Simulation _simulationToClone;
       private ICloneSimulationPresenter _cloneSimulationPresenter;
-      private IPKSimProject _project;
       private Simulation _clonedSimulation;
       private IPKSimCommand _command;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
          _command = A.Fake<IPKSimCommand>();
          _simulationToClone = A.Fake<Simulation>().WithName("OLD");
          _clonedSimulation = A.Fake<Simulation>().WithName("NEW");
 
          _cloneSimulationPresenter = A.Fake<ICloneSimulationPresenter>();
          A.CallTo(() => _applicationController.Start<ICloneSimulationPresenter>()).Returns(_cloneSimulationPresenter);
-         A.CallTo(() => _executionContext.CurrentProject).Returns(_project);
          A.CallTo(() => _cloneSimulationPresenter.CloneSimulation(_simulationToClone)).Returns(_command);
          A.CallTo(() => _cloneSimulationPresenter.Simulation).Returns(_clonedSimulation);
          A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulationToClone)).Returns(BuildingBlockStatus.Green);
+         A.CallTo(() => _cloneSimulationPresenter.CloneName).Returns("NEW");
       }
 
       protected override void Because()
       {
          sut.Clone(_simulationToClone);
+      }
+
+      [Observation]
+      public void the_rename_task_is_used_to_rename_the_cloned_simulation()
+      {
+         A.CallTo(() => _renameBuildingBlockTask.RenameSimulation(_clonedSimulation, "NEW")).MustHaveHappened();
       }
 
       [Observation]
@@ -78,7 +82,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_the_new_simulation_to_the_project()
       {
-         A.CallTo(() => _project.AddBuildingBlock(_clonedSimulation)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockTask.AddToProject(_clonedSimulation,true, false )).MustHaveHappened();
       }
 
       [Observation]

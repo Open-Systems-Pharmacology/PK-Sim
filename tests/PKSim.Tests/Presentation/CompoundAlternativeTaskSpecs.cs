@@ -49,8 +49,8 @@ namespace PKSim.Presentation
          public Compound Create()
          {
             var compound = new Compound();
-            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameter.MolWeightEff));
-            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameter.Lipophilicity));
+            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT));
+            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameter.LIPOPHILICITY));
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(8).WithName(CoreConstants.Parameter.Permeability));
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.IS_SMALL_MOLECULE));
             return compound;
@@ -146,11 +146,11 @@ namespace PKSim.Presentation
          _compound = new CompoundFactoryForSpecs().Create();
          var lipoGroup = new ParameterAlternativeGroup().WithName(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
          _alternative1 = new ParameterAlternative().WithName("ALT1");
-         _alternative1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.Lipophilicity));
+         _alternative1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.LIPOPHILICITY));
          lipoGroup.AddAlternative(_alternative1);
 
          _alternative2 = new ParameterAlternative().WithName("ALT2");
-         _alternative2.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameter.Lipophilicity));
+         _alternative2.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameter.LIPOPHILICITY));
          lipoGroup.AddAlternative(_alternative2);
          _compound.AddParameterAlternativeGroup(lipoGroup);
       }
@@ -259,7 +259,7 @@ namespace PKSim.Presentation
          base.Context();
          var lipoGroup = new ParameterAlternativeGroup().WithName(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
          _alternative = new ParameterAlternative().WithName("ALT1");
-         _parameterInAlternative = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.Lipophilicity);
+         _parameterInAlternative = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.LIPOPHILICITY);
          _alternative.Add(_parameterInAlternative);
          lipoGroup.AddAlternative(_alternative);
          var simulation = A.Fake<Simulation>();
@@ -288,7 +288,7 @@ namespace PKSim.Presentation
          base.Context();
          var lipoGroup = new ParameterAlternativeGroup().WithName(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
          _alternative = new ParameterAlternative().WithName("ALT1");
-         _parameterInAlternative = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.Lipophilicity);
+         _parameterInAlternative = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.LIPOPHILICITY);
          _alternative.Add(_parameterInAlternative);
          lipoGroup.AddAlternative(_alternative);
          var simulation = new IndividualSimulation {Properties = new SimulationProperties()};

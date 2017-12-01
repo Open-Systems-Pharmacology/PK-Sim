@@ -187,7 +187,7 @@ namespace PKSim.Core.Services
             return string.Empty;
 
          var columnName = ShortGuid.NewGuid().ToString();
-         addDataField(comparison.AllSimulationNames(), typeof (string), columnName);
+         addDataField(comparison.AllSimulationNames, typeof (string), columnName);
 
          return columnName;
       }
@@ -202,11 +202,7 @@ namespace PKSim.Core.Services
 
       private string getReferenceExpression(string referenceSimulationName, string referenceLabel, string elseCase)
       {
-         return string.Format("iif([{0}]='{1}', '{2}', {3})",
-            _simulationNameColumnName,
-            referenceSimulationName,
-            referenceLabel,
-            elseCase);
+         return $"iif([{_simulationNameColumnName}]='{referenceSimulationName}', '{referenceLabel}', {elseCase})";
       }
 
       private void updateExpressionWithSimulationName(DataColumn column, PopulationSimulation referenceSimulation, GroupingItem referenceGroupingItem)

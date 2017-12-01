@@ -30,7 +30,7 @@ namespace PKSim.UI.Views.Simulations
       {
          _screenBinder.Bind(x => x.BuildingBlock)
             .To(_uxSimulationSubjectSelection)
-            .OnValueSet += (o, e) => _presenter.UpdateSelectedSubject(e.NewValue);
+            .OnValueUpdating += (o, e) => _presenter.UpdateSelectedSubject(e.NewValue);
 
          _screenBinder.Bind(x => x.AllowAging)
             .To(chkAllowAging);

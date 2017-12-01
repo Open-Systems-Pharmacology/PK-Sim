@@ -59,15 +59,15 @@ namespace PKSim.IntegrationTests
             var smallIntestine = individualForSpecies.Organism.Organ(CoreConstants.Organ.SmallIntestine);
             var largeIntestine = individualForSpecies.Organism.Organ(CoreConstants.Organ.LargeIntestine);
 
-            double siValue = smallIntestine.Parameter(CoreConstants.Parameter.VOLUME).Value;
-            double liValue = largeIntestine.Parameter(CoreConstants.Parameter.VOLUME).Value;
+            double siValue = smallIntestine.Parameter(Constants.Parameters.VOLUME).Value;
+            double liValue = largeIntestine.Parameter(Constants.Parameters.VOLUME).Value;
             double siDefaultValue = smallIntestine.Parameter(ConverterConstants.Parameter.Default_Volume).Value;
             double liDefaultValue = largeIntestine.Parameter(ConverterConstants.Parameter.Default_Volume).Value;
             if (siValue != siDefaultValue)
-               errorList.Add(string.Format("Small intestine value not equal to default value for '{0}'", species.Name));
+               errorList.Add($"Small intestine value not equal to default value for '{species.Name}'");
 
             if (liValue != liDefaultValue)
-               errorList.Add(string.Format("Large intestine value not equal to default value for '{0}'", species.Name));
+               errorList.Add($"Large intestine value not equal to default value for '{species.Name}'");
          }
          errorList.Count.ShouldBeEqualTo(0, errorList.ToString("\n"));
       }
@@ -94,8 +94,9 @@ namespace PKSim.IntegrationTests
                var mouseTissueOrgan = mouseTissueOrgans.FindByName(tissueOrgan.Name);
 
                if (tissueOrgan.Parameter(CoreConstants.Parameter.VOLUME_MOUSE).Value !=
-                   mouseTissueOrgan.Parameter(CoreConstants.Parameter.VOLUME).Value)
-               errorList.Add(string.Format("{0}.{1}.{2} is not equal to the corresponding mouse volume value", species.Name, tissueOrgan.Name, CoreConstants.Parameter.VOLUME));
+                   mouseTissueOrgan.Parameter(Constants.Parameters.VOLUME).Value)
+
+               errorList.Add($"{species.Name}.{tissueOrgan.Name}.{Constants.Parameters.VOLUME} is not equal to the corresponding mouse volume value");
             }
          }
 

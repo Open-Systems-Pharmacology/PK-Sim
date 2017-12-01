@@ -28,7 +28,7 @@ namespace PKSim.Presentation.UICommands
             var simulation = presenter.CreateImportPopulationSimulation(simulationFileName);
             if (simulation == null) return;
 
-            _simulationTask.AddToProject(simulation,true);
+            _simulationTask.AddToProject(simulation, editBuildingBlock: true);
          }
       }
    }

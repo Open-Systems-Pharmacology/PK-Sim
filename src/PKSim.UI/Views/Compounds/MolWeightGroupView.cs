@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Format;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
@@ -13,15 +8,21 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -98,7 +99,15 @@ namespace PKSim.UI.Views.Compounds
             .WithRepository(getRepository)
             .WithEditorConfiguration(configureRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueSet((o, e) => OnEvent(() => setParameterValue(o, e)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => setParameterValue(o, e)));
+
+         _comboBoxUnit.ParameterUnitSet += (o, e) => OnEvent(() => setParameterUnit(o, e));
+      }
+
+      private void setParameterUnit(IParameterDTO parameterDTO, Unit newUnit)
+      {
+         _gridView.CloseEditor();
+         molWeightGroupPresenter.SetParameterUnit(parameterDTO, newUnit);
       }
 
       protected override void OnValueColumnMouseDown(UxGridView gridView, GridColumn col, int rowHandle)

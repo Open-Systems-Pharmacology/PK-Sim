@@ -49,7 +49,7 @@ namespace PKSim.UI.Views.Simulations
          _columnValue.WithFormat(eventMappingDTO => eventMappingDTO.StartTimeParameter.ParameterFormatter())
             .WithCaption(PKSimConstants.UI.StartTime)
             .WithEditorConfiguration((activeEditor, eventMappingDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, eventMappingDTO.StartTimeParameter))
-            .OnValueSet += (dto, valueInGuiUnit) => setParameterValue(dto.StartTimeParameter, valueInGuiUnit.NewValue);
+            .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.StartTimeParameter, valueInGuiUnit.NewValue);
 
          _gridViewBinder.AutoBind(x => x.Event)
             .WithRepository(x => _eventRepository)

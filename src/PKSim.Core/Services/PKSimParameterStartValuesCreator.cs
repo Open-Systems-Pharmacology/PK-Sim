@@ -96,9 +96,9 @@ namespace PKSim.Core.Services
 
       private void updateProteinParametersValues(IndividualProtein protein)
       {
-         setGlobalParameterValue(protein, CoreConstants.Parameter.RelExpBloodCell, CoreConstants.Compartment.BloodCells);
-         setGlobalParameterValue(protein, CoreConstants.Parameter.RelExpPlasma, CoreConstants.Compartment.Plasma);
-         setGlobalParameterValue(protein, CoreConstants.Parameter.RelExpVascEndo, CoreConstants.Compartment.VascularEndothelium);
+         setGlobalParameterValue(protein, CoreConstants.Parameter.REL_EXP_BLOOD_CELL, CoreConstants.Compartment.BloodCells);
+         setGlobalParameterValue(protein, CoreConstants.Parameter.REL_EXP_PLASMA, CoreConstants.Compartment.Plasma);
+         setGlobalParameterValue(protein, CoreConstants.Parameter.REL_EXP_VASC_ENDO, CoreConstants.Compartment.VascularEndothelium);
 
          foreach (var expressionContainer in _expressionContainersRetriever.AllContainersFor(_spatialStructure, protein))
          {
@@ -276,17 +276,17 @@ namespace PKSim.Core.Services
 
       private IObjectPath relExpNormPathFor(IndividualMolecule molecule, IContainer expressionContainer)
       {
-         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameter.RelExpNorm);
+         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameter.REL_EXP_NORM);
       }
 
       private IObjectPath relExpOutPathFor(IndividualMolecule molecule, IContainer expressionContainer)
       {
-         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameter.RelExpOut);
+         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameter.REL_EXP_OUT);
       }
 
       private IObjectPath relExpPathFor(IndividualMolecule molecule, IContainer expressionContainer)
       {
-         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameter.RelExp);
+         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameter.REL_EXP);
       }
 
       private IObjectPath parameterPathFor(IndividualMolecule molecule, IContainer expressionContainer, string parameterName)

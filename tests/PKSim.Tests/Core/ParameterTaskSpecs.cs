@@ -1,20 +1,18 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Collections;
-using FakeItEasy;
-using PKSim.Core.Commands;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Repositories;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Collections;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
@@ -31,13 +29,93 @@ namespace PKSim.Core
          _executionContext = A.Fake<IExecutionContext>();
          _favoriteTask = A.Fake<IFavoriteTask>();
          _project = A.Fake<IProject>();
-         sut = new ParameterTask(new EntityPathResolver(new ObjectPathFactoryForSpecs()), _executionContext,_favoriteTask);
+         sut = new ParameterTask(new EntityPathResolver(new ObjectPathFactoryForSpecs()), _executionContext, _favoriteTask);
          var dimensionFactory = new DimensionFactory();
          _volumeDimension = dimensionFactory.AddDimension(new BaseDimensionRepresentation {LengthExponent = 3}, "Volume", "L");
          _volumeDimension.AddUnit("mL", 1e-3, 0);
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10);
          _parameter.Dimension = _volumeDimension;
          A.CallTo(() => _executionContext.BuildingBlockContaining(_parameter)).Returns(A.Fake<IPKSimBuildingBlock>());
+      }
+   }
+
+   public class When_setting_value_of_normalized_relative_expression_parameter : concern_for_ParameterTask
+   {
+      private Parameter _relativeExpressionParameter, _normalizedExpressionParameter;
+      private ICommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _executionContext.Resolve<IParameterTask>()).Returns(sut);
+         _relativeExpressionParameter = new Parameter
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            Formula = new ConstantFormula(0.0),
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            Name = CoreConstants.Parameter.REL_EXP
+         };
+
+         _normalizedExpressionParameter = new Parameter
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            Formula = new ConstantFormula(0.0),
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            Name = CoreConstants.Parameter.REL_EXP_NORM
+         };
+
+         var container = new Container { _relativeExpressionParameter, _normalizedExpressionParameter };
+      }
+
+      protected override void Because()
+      {
+         _command = sut.SetParameterValue(_normalizedExpressionParameter, 0.0);
+      }
+
+      [Observation]
+      public void the_command_used_should_be_correct_implementation()
+      {
+         _command.ShouldBeAnInstanceOf<SetRelativeExpressionFromNormalizedCommand>();
+      }
+   }
+
+   public class When_setting_value_of_relative_expression_parameter : concern_for_ParameterTask
+   {
+      private Parameter _relativeExpressionParameter, _normalizedExpressionParameter;
+      private ICommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _executionContext.Resolve<IParameterTask>()).Returns(sut);
+         _relativeExpressionParameter = new Parameter
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            Formula = new ConstantFormula(0.0),
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            Name = CoreConstants.Parameter.REL_EXP
+         };
+
+         _normalizedExpressionParameter = new Parameter
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            Formula = new ConstantFormula(0.0),
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            Name = CoreConstants.Parameter.REL_EXP_NORM
+         };
+
+         var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
+      }
+
+      protected override void Because()
+      {
+         _command = sut.SetParameterValue(_relativeExpressionParameter, 0.0);
+      }
+
+      [Observation]
+      public void the_command_used_should_be_correct_implementation()
+      {
+         _command.ShouldBeAnInstanceOf<SetRelativeExpressionInSimulationAndNormalizedCommand>();
       }
    }
 
@@ -146,6 +224,7 @@ namespace PKSim.Core
          _parameter.Origin.ParameterId = "Origin";
          A.CallTo(() => _executionContext.Get<IParameter>(_parameter.Origin.ParameterId)).Returns(_originParameter);
       }
+
       protected override void Because()
       {
          sut.SetParameterValueDescription(_parameter, "TEXT");
@@ -182,7 +261,6 @@ namespace PKSim.Core
       {
          _parameter.ValueDescription.ShouldBeEqualTo("TEXT");
       }
-
    }
 
    public class When_asked_to_set_a_percentile_for_a_distributed_parameter : concern_for_ParameterTask
@@ -315,7 +393,6 @@ namespace PKSim.Core
       }
    }
 
-
    public class When_asked_to_rename_a_parameter : concern_for_ParameterTask
    {
       private ICommand _result;
@@ -421,14 +498,14 @@ namespace PKSim.Core
          var kidney = new Container().WithName("Kidney").WithParentContainer(organism);
          var liver = new Container().WithName("Liver").WithParentContainer(organism);
          var bone = new Container().WithName("Bone").WithParentContainer(organism);
-         _relExpPlasma = new PKSimParameter().WithName(CoreConstants.Parameter.RelExpPlasma).WithParentContainer(organism);
-         _relExpPlasmaNorm = new PKSimParameter().WithName(CoreConstants.Parameter.RelExpPlasmaNorm).WithParentContainer(organism);
-         _relExpLiver = new PKSimParameter().WithName(CoreConstants.Parameter.RelExp).WithParentContainer(liver);
-         _relExpLiverNorm = new PKSimParameter().WithName(CoreConstants.Parameter.RelExpNorm).WithParentContainer(liver);
-         _relExpKidney = new PKSimParameter().WithName(CoreConstants.Parameter.RelExp).WithParentContainer(kidney);
-         _relExpKidneyNorm = new PKSimParameter().WithName(CoreConstants.Parameter.RelExpNorm).WithParentContainer(kidney);
+         _relExpPlasma = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_PLASMA).WithParentContainer(organism);
+         _relExpPlasmaNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_PLASMA_NORM).WithParentContainer(organism);
+         _relExpLiver = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(liver);
+         _relExpLiverNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_NORM).WithParentContainer(liver);
+         _relExpKidney = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(kidney);
+         _relExpKidneyNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_NORM).WithParentContainer(kidney);
          _anotherParameter = new PKSimParameter().WithName("not_a_rel_exp").WithParentContainer(kidney);
-         _relExpWithoutNorm = new PKSimParameter().WithName(CoreConstants.Parameter.RelExp).WithParentContainer(bone);
+         _relExpWithoutNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(bone);
       }
 
       protected override void Because()
@@ -474,7 +551,7 @@ namespace PKSim.Core
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _parameter = new PKSimParameter();
          _parameterPath = "TOTO";
-         sut = new ParameterTask(_entityPathResolver, _executionContext,_favoriteTask);
+         sut = new ParameterTask(_entityPathResolver, _executionContext, _favoriteTask);
          A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns(_parameterPath);
          A.CallTo(() => _executionContext.PublishEvent(A<AddParameterToFavoritesEvent>._))
             .Invokes(x => _event = x.GetArgument<AddParameterToFavoritesEvent>(0));
@@ -504,7 +581,7 @@ namespace PKSim.Core
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _parameter = new PKSimParameter();
          _parameterPath = "TRALALA";
-         sut = new ParameterTask(_entityPathResolver, _executionContext,_favoriteTask);
+         sut = new ParameterTask(_entityPathResolver, _executionContext, _favoriteTask);
          A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns(_parameterPath);
 
          A.CallTo(() => _executionContext.PublishEvent(A<RemoveParameterFromFavoritesEvent>._))
@@ -520,7 +597,6 @@ namespace PKSim.Core
       public void should_throw_the_event_specifing_that_the_parameter_was_remove_from_the_favorites()
       {
          A.CallTo(() => _favoriteTask.SetParameterFavorite(_parameter, false)).MustHaveHappened();
-         
       }
    }
 }

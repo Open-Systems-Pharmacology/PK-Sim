@@ -1,5 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Mappers;
 using OSPSuite.Utility;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -8,10 +12,6 @@ using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Extensions;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
@@ -28,10 +28,11 @@ namespace PKSim.Presentation.DTO.Mappers
       private readonly IParameterToParameterDTOMapper _parameterMapper;
       private readonly IFullPathDisplayResolver _fullPathDisplayResolver;
       private readonly IExecutionContext _executionContext;
+      private readonly IOrganTypeRepository _organTypeRepository;
 
       public ExpressionParametersToSimulationExpressionsDTOMapper(IParameterToParameterDTOInContainerMapper<ExpressionContainerDTO> containerParameterMapper, IRepresentationInfoRepository representationInfoRepository,
          IGroupRepository groupRepository, IParameterTask parameterTask, IParameterToParameterDTOMapper parameterMapper, IFullPathDisplayResolver fullPathDisplayResolver,
-         IExecutionContext executionContext)
+         IExecutionContext executionContext, IOrganTypeRepository organTypeRepository)
       {
          _containerParameterMapper = containerParameterMapper;
          _representationInfoRepository = representationInfoRepository;
@@ -40,6 +41,7 @@ namespace PKSim.Presentation.DTO.Mappers
          _parameterMapper = parameterMapper;
          _fullPathDisplayResolver = fullPathDisplayResolver;
          _executionContext = executionContext;
+         _organTypeRepository = organTypeRepository;
       }
 
       public SimulationExpressionsDTO MapFrom(IEnumerable<IParameter> expressionParameters)
@@ -62,7 +64,7 @@ namespace PKSim.Presentation.DTO.Mappers
          return _parameterMapper.MapFrom(globalParameter);
       }
 
-      private IEnumerable<ExpressionContainerDTO> relativeExpressionsFrom(IEnumerable<IParameter> allParamters)
+      private IEnumerable<ExpressionContainerDTO> relativeExpressionsFrom(IReadOnlyList<IParameter> allParamters)
       {
          var expressionsParameters = _parameterTask.GroupExpressionParameters(allParamters);
          return expressionsParameters.KeyValues.Select(relativeExpression => expressionContainerFor(relativeExpression.Key, relativeExpression.Value))
@@ -148,11 +150,7 @@ namespace PKSim.Presentation.DTO.Mappers
          if (container == null)
             return false;
 
-         var organ = container as Organ;
-         if (organ != null)
-            return (organ.OrganType & OrganType.GiTractOrgans) != 0;
-
-         return CoreConstants.Organ.GITractOrgans.Contains(container.Name);
+         return _organTypeRepository.OrganTypeFor(container) == OrganType.GiTractOrgans;
       }
 
       private IContainer expressionContainerFor(IEntity entity)
@@ -175,13 +173,13 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private string containerNameForGlobalExpression(string parameterName)
       {
-         if (string.Equals(parameterName, CoreConstants.Parameter.RelExpBloodCell))
+         if (string.Equals(parameterName, CoreConstants.Parameter.REL_EXP_BLOOD_CELL))
             return CoreConstants.Compartment.BloodCells;
 
-         if (string.Equals(parameterName, CoreConstants.Parameter.RelExpPlasma))
+         if (string.Equals(parameterName, CoreConstants.Parameter.REL_EXP_PLASMA))
             return CoreConstants.Compartment.Plasma;
 
-         if (string.Equals(parameterName, CoreConstants.Parameter.RelExpVascEndo))
+         if (string.Equals(parameterName, CoreConstants.Parameter.REL_EXP_VASC_ENDO))
             return CoreConstants.Compartment.VascularEndothelium;
 
          return parameterName;
@@ -189,9 +187,9 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private bool parameterIsGlobalExpression(IParameter relativeExpression)
       {
-         return relativeExpression.NameIsOneOf(CoreConstants.Parameter.RelExpBloodCell,
-            CoreConstants.Parameter.RelExpPlasma,
-            CoreConstants.Parameter.RelExpVascEndo);
+         return relativeExpression.NameIsOneOf(CoreConstants.Parameter.REL_EXP_BLOOD_CELL,
+            CoreConstants.Parameter.REL_EXP_PLASMA,
+            CoreConstants.Parameter.REL_EXP_VASC_ENDO);
       }
    }
 }

@@ -136,7 +136,7 @@ namespace PKSim.UI.Binders
             .WithPoints(CreateSeriesPoints(curveData, y => y.UpperWhisker));
 
          var outliers = createPointSeries(curveData, MarkerKind.Circle)
-            .WithPoints(CreateSeriesPoints(curveData, y => y.Outliers));
+            .WithPoints(CreateSeriesPoints(curveData, y => y.Outliers.Select(x=>x.Value)));
 
 
          return new[] {boxSeries, medianSeries, lowerWhisker, upperWhisker, outliers};

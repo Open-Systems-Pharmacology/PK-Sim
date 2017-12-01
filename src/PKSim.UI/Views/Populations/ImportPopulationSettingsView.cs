@@ -54,7 +54,7 @@ namespace PKSim.UI.Views.Populations
          layoutItemIndividual.FillWith(_uxIndividualSelection);
          _screenBinder.Bind(x => x.Individual)
             .To(_uxIndividualSelection)
-            .OnValueSet += (o, e) => OnEvent(_presenter.IndividualSelectionChanged, e.NewValue);
+            .OnValueUpdating += (o, e) => OnEvent(_presenter.IndividualSelectionChanged, e.NewValue);
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 

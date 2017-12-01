@@ -69,39 +69,33 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="MPFitLib, Version=1.1.0.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\csmpfit.1.1.0\lib\net20\MPFitLib.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.99\lib\net452\OSPSuite.Assets.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.86\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.99\lib\net452\OSPSuite.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.86\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Serializer">
-      <HintPath>..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
+    <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.SimModel.2.0.0.12\lib\net45\OSPSuite.SimModel.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\packages\OSPSuite.SimModel.2.2.0.6\lib\net45\OSPSuite.SimModel.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.TeXReporting, Version=2.0.0.6, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.0.6\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    <Reference Include="OSPSuite.TeXReporting, Version=2.0.1.7, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.1.7\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Utility, Version=2.0.0.5, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.5\lib\net45\OSPSuite.Utility.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Utility, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.2.0.1.4\lib\net452\OSPSuite.Utility.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -109,6 +103,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -167,6 +164,7 @@
     <Compile Include="Commands\SetOntogenyInMoleculeCommand.cs" />
     <Compile Include="Commands\SetOntogenyInMoleculeForPopulationCommand.cs" />
     <Compile Include="Commands\SetParameterUnitStructureChangeCommand.cs" />
+    <Compile Include="Commands\SetRelativeExpressionFromNormalizedCommand.cs" />
     <Compile Include="Comparison\AdvancedParameterDiffBuilder.cs" />
     <Compile Include="Comparison\CompoundDiffBuilder.cs" />
     <Compile Include="Comparison\GenderRatioDiffBuilder.cs" />
@@ -209,16 +207,24 @@
     <Compile Include="Model\CompoundPK.cs" />
     <Compile Include="Model\GlobalPKAnalysis.cs" />
     <Compile Include="Model\ParameterValueVersion.cs" />
+    <Compile Include="Model\PopulationAgeSettings.cs" />
     <Compile Include="Model\PopulationAnalyses\AxisSettings.cs" />
     <Compile Include="Model\PopulationAnalyses\PopulationAnalysisChartFactory.cs" />
+    <Compile Include="Model\SchemaItemExtensions.cs" />
     <Compile Include="Model\SimulationAnalysisWorkflow.cs" />
     <Compile Include="Repositories\CompoundCalculationMethodRepository.cs" />
+    <Compile Include="Repositories\IOrganTypeRepository.cs" />
+    <Compile Include="Repositories\IPopulationAgeRepository.cs" />
     <Compile Include="Services\ApplicationDiscriminator.cs" />
     <Compile Include="Services\BuildingBlockInSimulationSynchronizer.cs" />
     <Compile Include="Services\IEntityTask.cs" />
+    <Compile Include="Services\IIndividualTask.cs" />
     <Compile Include="Services\IndividualExpressionTask.cs" />
+    <Compile Include="Services\IndividualExtractionOptions.cs" />
+    <Compile Include="Services\IndividualExtractor.cs" />
     <Compile Include="Services\InteractionProcessRetriever.cs" />
     <Compile Include="Services\IParameterIdentificationContentLoader.cs" />
+    <Compile Include="Services\IPopulationTask.cs" />
     <Compile Include="Services\IrreversibleInhibitionKineticUpdaterSpecification.cs" />
     <Compile Include="Services\ISensitivityAnalysisContentLoader.cs" />
     <Compile Include="Services\ISimulationSubjectExpressionTask.cs" />
@@ -465,6 +471,7 @@
     <Compile Include="Services\ParameterChangeUpdater.cs" />
     <Compile Include="Services\ParameterAnalysableParameterSelector.cs" />
     <Compile Include="Services\PopulationSimulationAnalysisSynchronizer.cs" />
+    <Compile Include="Services\SimulationConfigurationValidator.cs" />
     <Compile Include="Services\SimulationSelector.cs" />
     <Compile Include="Services\PivotResultCreator.cs" />
     <Compile Include="Services\PopulationAnalysisFlatTableCreator.cs" />
@@ -589,7 +596,7 @@
     <Compile Include="Services\MassToMolarConcentrationDimensionConverter.cs" />
     <Compile Include="Services\MolarToMassConcentrationDimensionConverter.cs" />
     <Compile Include="Services\ExpressionContainersRetriever.cs" />
-    <Compile Include="Services\IApplicationSettingsPersitor.cs" />
+    <Compile Include="Services\IApplicationSettingsPersistor.cs" />
     <Compile Include="Services\ITemplateTaskQuery.cs" />
     <Compile Include="Services\ICompoundAlternativeTask.cs" />
     <Compile Include="Services\ICompoundProcessTask.cs" />

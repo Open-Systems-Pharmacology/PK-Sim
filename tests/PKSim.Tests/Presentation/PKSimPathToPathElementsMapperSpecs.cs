@@ -64,7 +64,7 @@ namespace PKSim.Presentation
          _kidney = new Organ().WithName(CoreConstants.Organ.Kidney).WithParentContainer(_organism);
          _liverInt = new Compartment().WithName(CoreConstants.Compartment.Interstitial).WithParentContainer(_liver);
          _liverCell = new Compartment().WithName(CoreConstants.Compartment.Intracellular).WithParentContainer(_liver);
-         _kidneyUrine = new Compartment().WithName(CoreConstants.Compartment.Urine).WithParentContainer(_kidney);
+         _kidneyUrine = new Compartment().WithName(CoreConstants.Compartment.URINE).WithParentContainer(_kidney);
          _gallBladder = new Organ().WithName(CoreConstants.Organ.Gallbladder).WithParentContainer(_organism);
          _lumen = new Organ().WithName(CoreConstants.Organ.Lumen).WithParentContainer(_organism);
          _peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PeripheralVenousBlood).WithParentContainer(_organism);
@@ -175,7 +175,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_keep_the_name_of_the_observer_as_name()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.Kidney, CoreConstants.Compartment.Urine, _drugName, CoreConstants.Observer.FRACTION_EXCRETED_TO_URINE);
+         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.Kidney, CoreConstants.Compartment.URINE, _drugName, CoreConstants.Observer.FRACTION_EXCRETED_TO_URINE);
       }
    }
 
@@ -213,7 +213,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_keep_the_name_of_the_observer_as_name()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.Kidney, CoreConstants.Compartment.Urine, _drugName, _observerName);
+         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.Kidney, CoreConstants.Compartment.URINE, _drugName, _observerName);
       }
    }
 

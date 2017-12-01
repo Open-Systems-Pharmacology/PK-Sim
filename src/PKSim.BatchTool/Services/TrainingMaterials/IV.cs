@@ -127,7 +127,7 @@ namespace PKSim.BatchTool.Services.TrainingMaterials
       private void createIV_5()
       {
          var observedData = _task.AddObservedDataToProject(OBSERVED_DATA_NAME);
-         _task.AddObservedDataToAnalysable(observedData, _task.Simulation("Diclofenac IV"));
+         _task.AddObservedDataToAnalysable(new []{observedData}, _task.Simulation("Diclofenac IV"));
          _task.SaveCurrentProjectUnder(_outputFolder, "IV_5");
       }
 
@@ -142,7 +142,7 @@ namespace PKSim.BatchTool.Services.TrainingMaterials
          simulation.OutputSchema.Intervals.Last().EndTime.Value = 360;
          _task.SelectDefaultOutputFor(simulation);
          _task.RunSimulation(simulation);
-         _task.AddObservedDataToAnalysable(_task.ObservedData(OBSERVED_DATA_NAME), simulation);
+         _task.AddObservedDataToAnalysable(new[] { _task.ObservedData(OBSERVED_DATA_NAME)}, simulation);
          _task.AddBuildingBlockToProjectAndSave(simulation, _outputFolder, "IV_End");
       }
 

@@ -44,7 +44,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual bool IsNeutral
       {
-         get { return this.Parameter(CoreConstants.Parameter.IsNeutral).Value == 1; }
+         get { return this.Parameter(CoreConstants.Parameter.IS_NEUTRAL).Value == 1; }
       }
 
       /// <summary>

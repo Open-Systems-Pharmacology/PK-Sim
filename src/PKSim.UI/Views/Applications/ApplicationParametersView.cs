@@ -112,19 +112,19 @@ namespace PKSim.UI.Views.Applications
             .WithCaption(PKSimConstants.UI.Value)
             .WithFormat(param => param.ParameterFormatter())
             .WithEditorConfiguration((activeEditor, param) => _comboBoxUnit.UpdateUnitsFor(activeEditor, param))
-            .WithOnValueSet((p, valueInGuiUnit) => OnEvent(() => _presenter.SetParameterValue(p, valueInGuiUnit.NewValue)));
+            .WithOnValueUpdating((p, valueInGuiUnit) => OnEvent(() => _presenter.SetParameterValue(p, valueInGuiUnit.NewValue)));
 
          parameterBinder.AutoBind(param => param.ValueDescription)
             .WithWidth(UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
             .WithCaption(PKSimConstants.UI.ValueDescription)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
 
          parameterBinder.Bind(x => x.IsFavorite)
             .WithCaption(PKSimConstants.UI.Favorites)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => new UxRepositoryItemCheckEdit(parameterBinder.GridView))
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
       }
 
       public void AttachPresenter(IApplicationParametersPresenter presenter)
@@ -134,11 +134,9 @@ namespace PKSim.UI.Views.Applications
 
       public override void InitializeBinding()
       {
-         var applicationRepository = new UxRepositoryItemImageComboBox(mainView, _imageListRetriever);
-         _gridApplicationsBinder = new GridViewBinder<ApplicationDTO>(mainView);
-         _gridApplicationsBinder.BindingMode = BindingMode.OneWay;
+         _gridApplicationsBinder = new GridViewBinder<ApplicationDTO>(mainView) {BindingMode = BindingMode.OneWay};
          _gridApplicationsBinder.Bind(x => x.Name)
-            .WithRepository(appDto => applicationDisplay(appDto, applicationRepository))
+            .WithRepository(applicationDisplay)
             .WithShowButton(ShowButtonModeEnum.ShowOnlyInEditor)
             .AsReadOnly();
 
@@ -147,11 +145,10 @@ namespace PKSim.UI.Views.Applications
          _comboBoxUnit.ParameterUnitSet += (p, unit) => OnEvent(() => _presenter.SetParameterUnit(p, unit));
       }
 
-      private RepositoryItem applicationDisplay(ApplicationDTO applicationDTO, UxRepositoryItemImageComboBox uxRepositoryImageComboEdit)
+      private RepositoryItem applicationDisplay(ApplicationDTO applicationDTO)
       {
-         uxRepositoryImageComboEdit.Items.Clear();
-         uxRepositoryImageComboEdit.Items.Add(new ImageComboBoxItem(applicationDTO.Name, _imageListRetriever.ImageIndex(applicationDTO.Icon)));
-         return uxRepositoryImageComboEdit;
+         var applicationRepository = new UxRepositoryItemImageComboBox(mainView, _imageListRetriever);
+         return applicationRepository.AddItem(applicationDTO.Name, applicationDTO.Icon);
       }
 
       public void BindTo(IEnumerable<ApplicationDTO> allApplications)

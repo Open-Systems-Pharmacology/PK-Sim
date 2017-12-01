@@ -15,6 +15,7 @@ namespace PKSim.IntegrationTests
    public class When_a_model_is_being_created_for_a_simulation : ContextForSimulationIntegration<ISimulationModelCreator>
    {
       private IndividualEnzyme _enzyme;
+      private IndividualEnzyme _protein;
 
       public override void GlobalContext()
       {
@@ -26,6 +27,12 @@ namespace PKSim.IntegrationTests
 
          _enzyme = enzymeFactory.CreateFor(templateIndividual).DowncastTo<IndividualEnzyme>().WithName("CYP");
          templateIndividual.AddMolecule(_enzyme);
+
+         _protein = enzymeFactory.CreateFor(templateIndividual).DowncastTo<IndividualEnzyme>().WithName("PROT");
+         templateIndividual.AddMolecule(_protein);
+
+         _protein.TissueLocation = TissueLocation.Intracellular;
+         _protein.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(templateIndividual, compound, protocol).DowncastTo<IndividualSimulation>();
 
@@ -57,10 +64,10 @@ namespace PKSim.IntegrationTests
          var allMoleculeAmounts = _simulation.All<IMoleculeAmount>();
          foreach (var moleculeAmount in allMoleculeAmounts)
          {
-            if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.Urine))
+            if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.URINE))
                continue;
 
-            if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.Feces))
+            if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.FECES))
                continue;
 
             if (moleculeAmount.HasAncestorNamed(CoreConstants.Organ.Gallbladder))
@@ -80,6 +87,16 @@ namespace PKSim.IntegrationTests
          var path = explicitFormula.FormulaUsablePathBy("M_0");
          path.ShouldNotBeNull();
          path.Last().ShouldBeEqualTo(CoreConstants.Parameter.START_AMOUNT);
+      }
+
+      [Observation]
+      public void should_hide_the_relative_expression_parameters_defined_in_interstitial_for_protein_defined_with_a_tissue_localization_in_cell_and_a_vascular_endothelium_localization_in_interstitial()
+      {
+         var protBoneInterstitial = _simulation.Model.Root.EntityAt<MoleculeAmount>(
+            Constants.ORGANISM, CoreConstants.Organ.Bone, CoreConstants.Compartment.Interstitial, _protein.Name);
+
+         protBoneInterstitial.Parameter(CoreConstants.Parameter.REL_EXP).Visible.ShouldBeFalse();
+         protBoneInterstitial.Parameter(CoreConstants.Parameter.REL_EXP_NORM).Visible.ShouldBeFalse();
       }
    }
 }

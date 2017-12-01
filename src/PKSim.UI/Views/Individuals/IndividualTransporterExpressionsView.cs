@@ -36,7 +36,6 @@ namespace PKSim.UI.Views.Individuals
       private IIndividualTransporterExpressionsPresenter _presenter;
       protected readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
       private IGridViewColumn _colGrouping;
-      private readonly UxRepositoryItemImageComboBox _containerDisplayNameRepository;
       private IGridViewColumn _colRelativeExpression;
 
       public IndividualTransporterExpressionsView(IImageListRetriever imageListRetriever, IToolTipCreator toolTipCreator)
@@ -47,7 +46,6 @@ namespace PKSim.UI.Views.Individuals
          _screenBinder = new ScreenBinder<TransporterExpressionDTO>();
          gridView.AllowsFiltering = false;
          _gridViewBinder = new GridViewBinder<TransporterExpressionContainerDTO>(gridView) {BindingMode = BindingMode.OneWay};
-         _containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridView, imageListRetriever);
 
 
          gridView.EndGrouping += (o, e) => gridView.ExpandAllGroups();
@@ -89,7 +87,7 @@ namespace PKSim.UI.Views.Individuals
             .WithImages(transporterIconIndex)
             .WithValues(x => _presenter.AllTransportTypes())
             .AndDisplays(x => _presenter.TransportTypeCaptionFor(x))
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.UpdateTransportType(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.UpdateTransportType(e.NewValue));
 
          _colGrouping = _gridViewBinder.AutoBind(item => item.GroupingPathDTO)
             .WithRepository(dto => configureContainerRepository(dto.GroupingPathDTO))
@@ -103,11 +101,11 @@ namespace PKSim.UI.Views.Individuals
             .WithEditorConfiguration(editTransporterMembraneTypeRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
-            .OnValueSet += (transporter, args) => _presenter.SetMembraneLocation(transporter, args.NewValue);
+            .OnValueUpdating += (transporter, args) => _presenter.SetMembraneLocation(transporter, args.NewValue);
 
          _colRelativeExpression = _gridViewBinder.Bind(item => item.RelativeExpression)
             .WithCaption(PKSimConstants.UI.RelativeExpression)
-            .WithOnValueSet((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
+            .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
 
          var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
             .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
@@ -128,14 +126,13 @@ namespace PKSim.UI.Views.Individuals
 
       private string membraneContainerDisplayName(MembraneLocation membraneLocation, TransporterExpressionContainerDTO containerDTO)
       {
-         return string.Format("{0} ({1})", containerDTO.ContainerPathDTO.DisplayName, membraneLocation);
+         return $"{containerDTO.ContainerPathDTO.DisplayName} ({membraneLocation})";
       }
 
       private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
       {
-         _containerDisplayNameRepository.Items.Clear();
-         _containerDisplayNameRepository.Items.Add(new ImageComboBoxItem(parameterPathDTO, _imageListRetriever.ImageIndex(parameterPathDTO.IconName)));
-         return _containerDisplayNameRepository;
+         var containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
+         return containerDisplayNameRepository.AddItem(parameterPathDTO, parameterPathDTO.IconName);
       }
 
       private RepositoryItem getTransporterMembraneRepository(TransporterExpressionContainerDTO containerDTO)
@@ -149,6 +146,7 @@ namespace PKSim.UI.Views.Individuals
          var repositoryItemImageComboBox = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever) {ReadOnly = (allMembranesTypes.Count == 1), AllowDropDownWhenReadOnly = DefaultBoolean.False};
          if (repositoryItemImageComboBox.ReadOnly)
             repositoryItemImageComboBox.Buttons.Clear();
+
 
          var comboBoxItem = new ImageComboBoxItem(displayName, containerDTO.MembraneLocation, _imageListRetriever.ImageIndex(containerDTO.ContainerPathDTO.IconName));
          repositoryItemImageComboBox.Items.Add(comboBoxItem);

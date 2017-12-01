@@ -23,7 +23,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         sut.ProductName = CoreConstants.ProductName;
+         sut.ProductName = CoreConstants.PRODUCT_NAME;
          sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version1.1.1.xml");
          sut.CurrentVersion = "1.0.0";
       }
@@ -53,7 +53,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         sut.ProductName = CoreConstants.ProductName;
+         sut.ProductName = CoreConstants.PRODUCT_NAME;
          sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version1.1.1.xml");
          sut.CurrentVersion = "1.1.1";
       }
@@ -75,7 +75,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         sut.ProductName = CoreConstants.ProductName;
+         sut.ProductName = CoreConstants.PRODUCT_NAME;
          sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version2.1.1corrupt.xml");
          sut.CurrentVersion = "1.1.1";
       }
@@ -93,7 +93,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         sut.ProductName = CoreConstants.ProductName;
+         sut.ProductName = CoreConstants.PRODUCT_NAME;
          sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version2.1.1.xml");
          sut.CurrentVersion = "1.1.1";
       }

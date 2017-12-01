@@ -5,7 +5,7 @@ namespace PKSim.Core.Model
 {
    public class ParameterValues
    {
-      public string ParameterPath { get; private set; }
+      public string ParameterPath { get; set; }
       public List<double> Values { get; set; }
       public List<double> Percentiles { get; set; }
 
@@ -32,10 +32,7 @@ namespace PKSim.Core.Model
          Percentiles.Add(percentile);
       }
 
-      public int Count
-      {
-         get { return Values.Count; }
-      }
+      public int Count => Values.Count;
 
       public ParameterValues Clone()
       {

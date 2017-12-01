@@ -179,8 +179,8 @@ namespace PKSim.Presentation.Services
          {
             var tempCompound = _compoundFactory.Create();
             tempCompound.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value = compound.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value;
-            tempCompound.Parameter(CoreConstants.Parameter.MolWeightEff).Value = compound.Parameter(CoreConstants.Parameter.MolWeightEff).Value;
-            tempCompound.Parameter(CoreConstants.Parameter.Lipophilicity).Value = alternative.Parameter(CoreConstants.Parameter.Lipophilicity).Value;
+            tempCompound.Parameter(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT).Value = compound.Parameter(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT).Value;
+            tempCompound.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value = alternative.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value;
             var permParameter = tempCompound.Parameter(permeabilityParameterName);
             permParameter.Editable = false;
             permParameter.Name = alternative.Name;

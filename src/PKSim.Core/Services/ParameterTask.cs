@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Collections;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Services
 {
@@ -167,8 +168,8 @@ namespace PKSim.Core.Services
       ///    Assuming that the given parameters represents all expression parameters, returns a cache containing
       ///    as key an expression parameter, and as value the corresponding expression parameter norm
       /// </summary>
-      /// <param name="allExpressionsParameters">all expression parameters</param>
-      ICache<IParameter, IParameter> GroupExpressionParameters(IEnumerable<IParameter> allExpressionsParameters);
+      /// <param name="allExpressionParameters">all expression parameters</param>
+      ICache<IParameter, IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters);
 
       /// <summary>
       ///    Adds the parameter to the favorite, or remove the parameter from the favorite
@@ -254,7 +255,7 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterDisplayValueAsStructureChange(IParameter parameter, double valueToSetInGuiUnit)
       {
-         return  SetParameterValueAsStructureChange(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit));
+         return SetParameterValueAsStructureChange(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit));
       }
 
       public ICommand SetParameterValueAsStructureChange(IParameter parameter, double value)
@@ -277,12 +278,20 @@ namespace PKSim.Core.Services
       public ICommand SetParameterValue(IParameter parameter, double value)
       {
          if (parameter.IsExpression())
-            return new SetRelativeExpressionInSimulationAndNormalizedCommand(parameter, value).Run(_executionContext);
+            return commandForRelativeExpressionParameter(parameter, value).Run(_executionContext);
 
          if (parameter.IsStructural())
             return SetParameterValueAsStructureChange(parameter, value);
 
          return setParameterValue(parameter, value, shouldChangeVersion: true);
+      }
+
+      private ICommand<IExecutionContext> commandForRelativeExpressionParameter(IParameter parameter, double value)
+      {
+         if (!parameter.IsExpressionNorm())
+            return new SetRelativeExpressionInSimulationAndNormalizedCommand(parameter, value);
+
+         return new SetRelativeExpressionFromNormalizedCommand(parameter, value);
       }
 
       public ICommand SetParameterValueDescription(IParameter parameter, string valueDescription)
@@ -363,21 +372,19 @@ namespace PKSim.Core.Services
          return new SetAdvancedParameterUnitCommand(parameter, displayUnit).Run(_executionContext);
       }
 
-      public ICache<IParameter, IParameter> GroupExpressionParameters(IEnumerable<IParameter> allExpressionsParameters)
+      public ICache<IParameter, IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters)
       {
-         var allExpressionsParametersList = allExpressionsParameters.ToList();
-         var normRelativeExpressionsParameters = allExpressionsParametersList.Where(x => x.Name.Contains(CoreConstants.Parameter.NormSuffix)).ToList();
-         var relativeExpressionsParameters = allExpressionsParametersList.Where(x => !normRelativeExpressionsParameters.Contains(x))
-            .Where(x => x.Name.StartsWith(CoreConstants.Parameter.RelExp));
+         var relativeExpressionsParameters = allExpressionParameters
+            .Where(x => !x.Name.Contains(CoreConstants.Parameter.NORM_SUFFIX))
+            .Where(x => x.Name.StartsWith(CoreConstants.Parameter.REL_EXP));
 
          var results = new Cache<IParameter, IParameter>();
-         var containerPaths = normRelativeExpressionsParameters.Select(x => _entityPathResolver.PathFor(x.ParentContainer)).ToList();
-         foreach (var parameter in relativeExpressionsParameters)
-         {
-            var normParameter = findNormParameterFor(parameter, normRelativeExpressionsParameters, containerPaths);
-            if (normParameter != null)
-               results.Add(parameter, normParameter);
-         }
+         var query = from parameter in relativeExpressionsParameters
+            let normParameter = findNormParameterFor(parameter)
+            where normParameter != null
+            select new {parameter, normParameter};
+
+         query.Each(x => results.Add(x.parameter, x.normParameter));
          return results;
       }
 
@@ -426,27 +433,9 @@ namespace PKSim.Core.Services
          return new UpdateDistributedTableFormulaPercentileCommand(tableParameter, distributedParameter.Percentile).Run(_executionContext);
       }
 
-      private IParameter findNormParameterFor(IParameter relativeExpression, IList<IParameter> allNormParameters, IList<string> normContainerParameterPath)
+      private IParameter findNormParameterFor(IParameter relativeExpression)
       {
-         if (parameterIsGlobalExpression(relativeExpression))
-            return globalNormParamterFor(relativeExpression, allNormParameters);
-
-         var parentPath = _entityPathResolver.PathFor(relativeExpression.ParentContainer);
-         var index = normContainerParameterPath.IndexOf(parentPath);
-         return index >= 0 ? allNormParameters[normContainerParameterPath.IndexOf(parentPath)] : null;
-      }
-
-      private IParameter globalNormParamterFor(IParameter relativeExpression, IEnumerable<IParameter> allNormParameters)
-      {
-         return allNormParameters.First(x => string.Equals(x.Name, CoreConstants.Parameter.NormParameterFor(relativeExpression.Name)));
-      }
-
-      private bool parameterIsGlobalExpression(IParameter relativeExpression)
-      {
-         return
-            string.Equals(relativeExpression.Name, CoreConstants.Parameter.RelExpBloodCell) ||
-            string.Equals(relativeExpression.Name, CoreConstants.Parameter.RelExpPlasma) ||
-            string.Equals(relativeExpression.Name, CoreConstants.Parameter.RelExpVascEndo);
+         return relativeExpression.ParentContainer.Parameter(CoreConstants.Parameter.NormParameterFor(relativeExpression.Name));
       }
 
       public ICommand SetParameterValue(IParameter parameter, double value, ISimulation simulation)

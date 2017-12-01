@@ -85,7 +85,7 @@ namespace PKSim.Infrastructure
       {
          var log4NetLogFactory = new Log4NetLogFactory();
          log4NetLogFactory.Configure(new FileInfo(configuration.LogConfigurationFile));
-         log4NetLogFactory.UpdateLogFileLocation(configuration.ApplicationSettingsFolderPath);
+         log4NetLogFactory.UpdateLogFileLocation(configuration.AllUsersFolderPath);
          container.RegisterImplementationOf((ILogFactory) log4NetLogFactory);
       }
 
@@ -94,8 +94,7 @@ namespace PKSim.Infrastructure
          container.Register<IPKSimConfiguration, IApplicationConfiguration, PKSimConfiguration>(LifeStyle.Singleton);
 
          var configuration = container.Resolve<IPKSimConfiguration>();
-         CoreConstants.ProductDisplayName = $"{CoreConstants.ProductNameWithTrademark} {configuration.MajorVersion}";
-
+         CoreConstants.ProductDisplayName = configuration.ProductDisplayName;
          registerLoggerIn(container, configuration);
       }
 
@@ -126,7 +125,7 @@ namespace PKSim.Infrastructure
          pKParameterLoader.Load(pkParameterRepository, pkSimConfiguration.PKParametersFilePath);
 
          if (registerSimModelSchema)
-            XMLSchemaCache.InitializeFromFile(pkSimConfiguration.SimModelSchemaPath);
+            XMLSchemaCache.InitializeFromFile(pkSimConfiguration.SimModelSchemaFilePath);
       }
 
       private void registerORMDependencies()
@@ -222,9 +221,9 @@ namespace PKSim.Infrastructure
 
          var configuration = container.Resolve<IPKSimConfiguration>();
          var versionChecker = container.Resolve<IVersionChecker>();
-         versionChecker.VersionFileUrl = CoreConstants.VersionFileUrl;
+         versionChecker.VersionFileUrl = CoreConstants.VERSION_FILE_URL;
          versionChecker.CurrentVersion = configuration.Version;
-         versionChecker.ProductName = CoreConstants.ProductName;
+         versionChecker.ProductName = CoreConstants.PRODUCT_NAME;
       }
 
       private static void registerReportBuilders(IContainer container)
@@ -234,9 +233,11 @@ namespace PKSim.Infrastructure
             scan.AssemblyContainingType<InfrastructureRegister>();
             scan.IncludeNamespaceContainingType<IReportBuilder>();
             scan.ExcludeType<ReportGenerator>();
-            scan.WithConvention<PKSimRegistrationConvention>();
+            scan.ExcludeType<ReportBuilderRepository>();
+            scan.WithConvention<RegisterTypeConvention<IReportBuilder>>();
          });
          container.Register<IReportGenerator, ReportGenerator>(LifeStyle.Singleton);
+         container.Register<IReportBuilderRepository, ReportBuilderRepository>(LifeStyle.Singleton);
       }
 
       private static void registerTexReporters(IContainer container)

@@ -13,12 +13,9 @@ namespace PKSim.Core.Model
 
       public virtual OrganType OrganType { get; set; }
 
-      public virtual IEnumerable<Compartment> Compartments
-      {
-         get { return GetChildren<Compartment>(); }
-      }
+      public virtual IEnumerable<Compartment> Compartments => GetChildren<Compartment>();
 
-      public virtual Compartment Compartment(string compartmentName)
+       public virtual Compartment Compartment(string compartmentName)
       {
          return this.GetSingleChildByName<Compartment>(compartmentName);
       }

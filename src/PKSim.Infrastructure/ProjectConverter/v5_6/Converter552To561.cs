@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using PKSim.Assets;
-using OSPSuite.Serializer.Xml.Extensions;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Serializer.Xml.Extensions;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_6
 {
@@ -47,14 +47,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
       };
 
       private readonly IDialogCreator _dialogCreator;
-      private readonly IRenalAgingCalculationMethodUpdater _renalAgingCalculationMethodUpdater;
+      private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private readonly IIndividualUpdater _individualUpdater;
+      private bool _converted;
 
       public Converter552To561(ICompoundCalculationMethodCategoryRepository compoundCalculationMethodCategoryRepository, IIndividualFactory individualFactory,
          ICloner cloner, INeighborhoodFinalizer neighborhoodFinalizer, IContainerTask containerTask,
          IPKSimXmlSerializerRepository serializerRepository, IReactionBuildingBlockCreator reactionBuildingBlockCreator,
          IDiagramModelFactory diagramModelFactory, ICompoundProcessRepository compoundProcessRepository, IParameterSetUpdater parameterSetUpdater, IDialogCreator dialogCreator,
-         IRenalAgingCalculationMethodUpdater renalAgingCalculationMethodUpdater,
+         IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater,
          IIndividualUpdater individualUpdater)
       {
          _compoundCalculationMethodCategoryRepository = compoundCalculationMethodCategoryRepository;
@@ -68,22 +69,20 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
          _compoundProcessRepository = compoundProcessRepository;
          _parameterSetUpdater = parameterSetUpdater;
          _dialogCreator = dialogCreator;
-         _renalAgingCalculationMethodUpdater = renalAgingCalculationMethodUpdater;
+         _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
          _individualUpdater = individualUpdater;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V5_5_2;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V5_5_2;
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V5_6_1;
+         return (ProjectVersions.V5_6_1, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          element.DescendantsAndSelfNamed(CoreConstants.Serialization.WorkspaceLayout).Each(removeEmptyPresenterSettings);
          element.DescendantsAndSelfNamed("OriginData").Each(convertOriginData);
@@ -92,7 +91,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
          element.DescendantsAndSelfNamed("IndividualSimulation").Each(convertIndividualSimulation);
          element.DescendantsAndSelfNamed("SummaryChart").Each(convertSummaryChart);
 
-         return ProjectVersions.V5_6_1;
+         return (ProjectVersions.V5_6_1, true);
       }
 
       private void convertSummaryChart(XElement element)
@@ -122,7 +121,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
          //are loaded
          var compoundPK = new CompoundPK {CompoundName = DUMMY_COMPOUND_NAME, AucIV = aucIVValue};
          var compoundPKSerializer = _serializerRepository.SerializerFor(compoundPK);
-         var compoundPKElement = compoundPKSerializer.Serialize(compoundPK,SerializationTransaction.Create());
+         var compoundPKElement = compoundPKSerializer.Serialize(compoundPK, SerializationTransaction.Create());
          allCompoundPKElement.Add(compoundPKElement);
       }
 
@@ -225,7 +224,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
       private void createReactionBuildingBlockAndDiagramFor(Simulation simulation)
       {
          simulation.ReactionDiagramModel = _diagramModelFactory.Create();
-         simulation.Reactions =_reactionBuildingBlockCreator.CreateFor(simulation);
+         simulation.Reactions = _reactionBuildingBlockCreator.CreateFor(simulation);
       }
 
       private void updateFractionUnboundGroup(Simulation simulation)
@@ -263,7 +262,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
          //only one compound and one compound properties. Just set the reference
          var compound = simulation.Compounds.FirstOrDefault();
          var protocol = simulation.AllBuildingBlocks<Protocol>().FirstOrDefault();
-  
+
          //possible for imported simulations
          if (compound == null)
          {
@@ -277,7 +276,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
 
          compoundProperties.Compound = compound;
          compoundProperties.ProtocolProperties.Protocol = protocol;
-         
+
          compoundProperties.Processes.AllProcessSelectionGroups.Each(x => updateCompoundNameInProcess(x, compound));
       }
 
@@ -291,6 +290,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
       {
          Visit((Simulation) individualSimulation);
          convertAucIVCache(individualSimulation);
+         _converted = true;
       }
 
       private void convertAucIVCache(IndividualSimulation individualSimulation)
@@ -308,11 +308,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
       public void Visit(Simulation simulation)
       {
          convertSimulation(simulation);
+         _converted = true;
       }
 
       public void Visit(Compound compound)
       {
          convertCompound(compound);
+         _converted = true;
       }
 
       private void convertCompound(Compound compound)
@@ -382,7 +384,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
          //possible for imported simulation where individual is not defined
          if (individual == null) return;
 
-         _renalAgingCalculationMethodUpdater.AddRenalAgingCalculationMethodTo(individual);
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
          _individualUpdater.AddScalingExponentForFluidFlowTo(individual);
 
          updateLiverStructure(individual);
@@ -535,11 +537,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
       public void Visit(Individual individual)
       {
          convertIndividual(individual);
+         _converted = true;
       }
 
       public void Visit(Population population)
       {
          convertIndividual(population.FirstIndividual);
+         _converted = true;
       }
    }
 }

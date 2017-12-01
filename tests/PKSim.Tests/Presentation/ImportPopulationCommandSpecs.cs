@@ -54,7 +54,7 @@ namespace PKSim.Presentation
       [Observation]
       public void it_should_add_the_created_population_to_the_project()
       {
-         A.CallTo(() => _buildingBlockTask.AddToProject(_population, true)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockTask.AddToProject(_population, true, true)).MustHaveHappened();
       }
    }
 
@@ -69,7 +69,7 @@ namespace PKSim.Presentation
       [Observation]
       public void it_should_not_add_the_population_to_the_history()
       {
-         A.CallTo(() => _buildingBlockTask.AddToProject(A<Population>._, true)).MustNotHaveHappened();
+         A.CallTo(() => _buildingBlockTask.AddToProject(A<Population>._, true, true)).MustNotHaveHappened();
       }
    }
 }

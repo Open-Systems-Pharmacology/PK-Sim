@@ -108,6 +108,7 @@ namespace PKSim.Core
          _fileName = "toto";
          _project = A.Fake<IPKSimProject>();
          sut.Project = _project;
+
          A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectLoadingEvent>.Ignored)).Invokes(
             x => _event = x.GetArgument<ProjectLoadingEvent>(0));
 
@@ -169,6 +170,7 @@ namespace PKSim.Core
          base.Context();
          _fileName = "toto";
          _project = A.Fake<IPKSimProject>();
+         _project.HasChanged = true;
          sut.Project = _project;
          A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectSavingEvent>.Ignored)).Invokes(
             x => _savingEvent = x.GetArgument<ProjectSavingEvent>(0));
@@ -203,6 +205,12 @@ namespace PKSim.Core
       public void should_update_the_list_of_most_recently_used_file()
       {
          A.CallTo(() => _mruProvider.Add(_fileName)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_saved_project_should_not_be_marked_as_changed_anymore()
+      {
+         _project.HasChanged.ShouldBeFalse();
       }
    }
 

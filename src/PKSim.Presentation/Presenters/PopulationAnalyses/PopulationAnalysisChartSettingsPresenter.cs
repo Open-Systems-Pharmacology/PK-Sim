@@ -35,15 +35,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _subPresenterManager.InitializeWith(this);
       }
 
-      public IChartSettingsPresenter ChartSettingsPresenter
-      {
-         get { return _chartSettingsPresenter; }
-      }
+      public IChartSettingsPresenter ChartSettingsPresenter => _chartSettingsPresenter;
 
-      public IChartExportSettingsPresenter ChartExportSettingsPresenter
-      {
-         get { return _chartExportSettingsPresenter; }
-      }
+      public IChartExportSettingsPresenter ChartExportSettingsPresenter => _chartExportSettingsPresenter;
 
       public void EditConfiguration()
       {
@@ -57,14 +51,14 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       public void Edit(PopulationAnalysisChart populationAnalysisChart)
       {
-         _chartExportSettingsPresenter.BindTo(populationAnalysisChart);
-         _chartSettingsPresenter.BindTo(populationAnalysisChart);
+         _chartExportSettingsPresenter.Edit(populationAnalysisChart);
+         _chartSettingsPresenter.Edit(populationAnalysisChart);
       }
 
       public bool AllowEdit
       {
-         get { return _view.AllowEditConfiguration; }
-         set { _view.AllowEditConfiguration = value; }
+         get => _view.AllowEditConfiguration;
+         set => _view.AllowEditConfiguration = value;
       }
    }
 }

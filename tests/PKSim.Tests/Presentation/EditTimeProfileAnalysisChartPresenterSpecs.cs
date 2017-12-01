@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Extensions;
 using FakeItEasy;
+using FakeItEasy.Core;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
@@ -93,7 +94,7 @@ namespace PKSim.Presentation
    {
       protected override void Because()
       {
-         _timeProfilerChartPresenter.DragDrop += Raise.With<DragEventHandler>(_timeProfilerChartPresenter,_dragEventArgs);
+         _timeProfilerChartPresenter.DragDrop += Raise.FreeForm.With(_timeProfilerChartPresenter, _dragEventArgs);
       }
 
       [Observation]
@@ -105,7 +106,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_the_observed_data_as_used_by_the_population_data_collector()
       {
-         A.CallTo(() => _observedDataTask.AddObservedDataToAnalysable(_observedDataRepository, _populationDataCollector)).MustHaveHappened();
+         A.CallTo(() => _observedDataTask.AddObservedDataToAnalysable(A<IReadOnlyList<DataRepository>>._, _populationDataCollector)).MustHaveHappened();
       }
 
       [Observation]
@@ -272,7 +273,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_notify_the_user_that_the_action_cannot_be_performed()
       {
-         The.Action(()=>sut.AddObservedData(_observedDataRepository)).ShouldThrowAn<PKSimException>();   
+         The.Action(()=>sut.AddObservedData( new []{_observedDataRepository })).ShouldThrowAn<PKSimException>();   
       }
    }
 }

@@ -16,6 +16,7 @@ namespace PKSim.Core
       {
          _executionContext = A.Fake<IExecutionContext>();
          _buildingBlock = A.Fake<IPKSimBuildingBlock>();
+         _buildingBlock.HasChanged = false;
          sut = new AddBuildingBlockToProjectCommand(_buildingBlock, _executionContext);
       }
    }
@@ -38,6 +39,12 @@ namespace PKSim.Core
       public void should_add_the_building_block_to_the_project()
       {
          A.CallTo(() => _executionContext.CurrentProject.AddBuildingBlock(_buildingBlock)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_mark_the_building_block_has_changed_to_ensure_that_it_will_be_saved()
+      {
+         _buildingBlock.HasChanged.ShouldBeTrue();
       }
    }
 

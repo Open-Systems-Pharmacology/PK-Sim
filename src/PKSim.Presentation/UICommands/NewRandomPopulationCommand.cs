@@ -1,5 +1,5 @@
 using PKSim.Core.Model;
-using PKSim.Presentation.Services;
+using PKSim.Core.Services;
 
 namespace PKSim.Presentation.UICommands
 {

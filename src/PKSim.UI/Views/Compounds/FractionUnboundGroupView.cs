@@ -39,10 +39,7 @@ namespace PKSim.UI.Views.Compounds
          _speciesRepository = new UxRepositoryItemImageComboBox(_gridView, imageListRetriever);
       }
 
-      private IFractionUnboundGroupPresenter fractionUnboundGroupPresenter
-      {
-         get { return _presenter.DowncastTo<IFractionUnboundGroupPresenter>(); }
-      }
+      private IFractionUnboundGroupPresenter fractionUnboundGroupPresenter => _presenter.DowncastTo<IFractionUnboundGroupPresenter>();
 
       public override void InitializeBinding()
       {
@@ -50,14 +47,14 @@ namespace PKSim.UI.Views.Compounds
             .WithCaption(PKSimConstants.UI.FractionUnbound)
             .WithFormat(dto => dto.FractionUnboundParameter.ParameterFormatter())
             .WithEditorConfiguration((editor, sol) => _comboBoxUnit.UpdateUnitsFor(editor, sol.FractionUnboundParameter))
-            .WithOnValueSet((dto, e) => OnEvent(() => fractionUnboundGroupPresenter.SetFractionUnboundValue(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => fractionUnboundGroupPresenter.SetFractionUnboundValue(dto, e.NewValue)));
 
          _comboBoxUnit.ParameterUnitSet += (dto, unit) => OnEvent(() => fractionUnboundGroupPresenter.SetFractionUnboundUnit(dto, unit));
 
          _gridViewBinder.Bind(x => x.Species)
             .WithRepository(dto => configureSpeciesRepository())
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueSet((dto, e) => OnEvent(() => fractionUnboundGroupPresenter.SetSpeciesValue(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => fractionUnboundGroupPresenter.SetSpeciesValue(dto, e.NewValue)));
 
          //to do at the end to respect order
          base.InitializeBinding();
@@ -109,9 +106,6 @@ namespace PKSim.UI.Views.Compounds
          fractionUnboundGroupPresenter.PlasmaProteinPartner = (PlasmaProteinPartner) _rgPlasmaBindingPartner.Properties.Items[_rgPlasmaBindingPartner.SelectedIndex].Value;
       }
 
-      public override int OptimalHeight
-      {
-         get { return base.OptimalHeight + _layoutItemBindingMode.Height; }
-      }
+      public override int OptimalHeight => base.OptimalHeight + _layoutItemBindingMode.Height;
    }
 }

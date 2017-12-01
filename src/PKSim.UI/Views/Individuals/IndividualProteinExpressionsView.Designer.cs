@@ -38,7 +38,7 @@ namespace PKSim.UI.Views.Individuals
          this.chkIntracellularVascularEndoLocation = new DevExpress.XtraEditors.ImageComboBoxEdit();
          this.cbLocationOnVascularEndo = new DevExpress.XtraEditors.ComboBoxEdit();
          this.cbLocalizationInTissue = new DevExpress.XtraEditors.ImageComboBoxEdit();
-         this.gridControl = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -272,7 +272,7 @@ namespace PKSim.UI.Views.Individuals
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControlMetabolism;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private UxGridControl gridControl;
+      private OSPSuite.UI.Controls.UxGridControl gridControl;
       protected UxGridView gridView;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
       private DevExpress.XtraEditors.ImageComboBoxEdit cbLocalizationInTissue;

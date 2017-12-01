@@ -82,7 +82,7 @@ namespace PKSim.IntegrationTests
 
       protected IParameter IntestinalPermeabilityParameter(Simulation simulation)
       {
-         return compoundContainer(simulation).Parameter(CoreConstants.Parameter.IntestinalPermeability);
+         return compoundContainer(simulation).Parameter(CoreConstants.Parameter.INTESTINAL_PERMEABILITY);
       }
 
       private IContainer compoundContainer(Simulation simulation)

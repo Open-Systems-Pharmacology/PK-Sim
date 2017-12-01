@@ -57,7 +57,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _applicationController.OpenedPresenters()).Returns(new[] {_presenter1, _presenter2});
 
          _existingWorkspaceLayout = A.Fake<IWorkspaceLayout>();
-         A.CallTo(() => _workspace.WorkspaceLayout).Returns(_existingWorkspaceLayout);
+         _workspace.WorkspaceLayout = _existingWorkspaceLayout;
          A.CallTo(() => _existingWorkspaceLayout.LayoutItems).Returns(new List<WorkspaceLayoutItem> {new WorkspaceLayoutItem()});
       }
 

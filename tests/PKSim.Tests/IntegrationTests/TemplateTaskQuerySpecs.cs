@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Container;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using PKSim.Spikes;
-using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
 
 namespace PKSim.IntegrationTests
 {
@@ -29,9 +27,8 @@ namespace PKSim.IntegrationTests
          var templateDatabasePath = DomainHelperForSpecs.UserTemplateDatabasePath();
          _tmpFile = FileHelper.GenerateTemporaryFileName();
          FileHelper.Copy(templateDatabasePath, _tmpFile);
-         userSettings.TemplateDatabasePath= _tmpFile;
+         userSettings.TemplateDatabasePath = _tmpFile;
          sut = IoC.Resolve<ITemplateTaskQuery>();
-
       }
 
       protected override void Context()
@@ -72,12 +69,9 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         var configuration = IoC.Resolve<IPKSimConfiguration>();
-         configuration.TemplateSystemDatabasePath = DomainHelperForSpecs.SystemTemplateDatabasePath();
+         var templates = sut.AllTemplatesFor(TemplateDatabaseType.System, TemplateType.Individual);
 
-         var templates= sut.AllTemplatesFor(TemplateDatabaseType.System, TemplateType.Individual);
-
-         _individuals=new List<Individual>();
+         _individuals = new List<Individual>();
          foreach (var template in templates)
          {
             _individuals.Add(sut.LoadTemplate<Individual>(template));
@@ -109,14 +103,14 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual().WithName("TOTO'");
 
-         _template = new Template { DatabaseType = TemplateDatabaseType.User, Name = _individual.Name,Object = _individual, TemplateType = TemplateType.Individual};
+         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _individual.Name, Object = _individual, TemplateType = TemplateType.Individual};
          sut.SaveToTemplate(_template);
       }
 
       [Observation]
       public void the_template_should_exist_by_name()
       {
-         sut.Exists(TemplateDatabaseType.User,_individual.Name, TemplateType.Individual).ShouldBeTrue();         
+         sut.Exists(TemplateDatabaseType.User, _individual.Name, TemplateType.Individual).ShouldBeTrue();
       }
 
       [Observation]
@@ -139,26 +133,26 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound().WithName("DRUG");
          _metabolite = DomainFactoryForSpecs.CreateStandardCompound().WithName("METABOLITE");
 
-         _template = new Template { DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, TemplateType = TemplateType.Compound };
-         _reference = new Template { DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, TemplateType = TemplateType.Compound };
+         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, TemplateType = TemplateType.Compound};
+         _reference = new Template {DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, TemplateType = TemplateType.Compound};
          _template.References.Add(_reference);
-         sut.SaveToTemplate(new[]{_template,_reference, });
+         sut.SaveToTemplate(new[] {_template, _reference,});
       }
 
       [Observation]
       public void the_template_should_exist_by_name()
       {
-         sut.Exists(TemplateDatabaseType.User, _compound.Name, TemplateType.Compound).ShouldBeTrue();         
+         sut.Exists(TemplateDatabaseType.User, _compound.Name, TemplateType.Compound).ShouldBeTrue();
       }
 
       [Observation]
       public void the_reference_should_exist_by_name()
       {
-         sut.Exists(TemplateDatabaseType.User, _metabolite.Name, TemplateType.Compound).ShouldBeTrue();         
+         sut.Exists(TemplateDatabaseType.User, _metabolite.Name, TemplateType.Compound).ShouldBeTrue();
       }
    }
 
-   public class When_deleting_the_reference_to_another_template: concern_for_TemplateTaskQuery
+   public class When_deleting_the_reference_to_another_template : concern_for_TemplateTaskQuery
    {
       private Compound _compound;
       private Template _template;
@@ -171,10 +165,10 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound().WithName("DRUG");
          _metabolite = DomainFactoryForSpecs.CreateStandardCompound().WithName("METABOLITE");
 
-         _template = new Template { DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, TemplateType = TemplateType.Compound };
-         _reference = new Template { DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, TemplateType = TemplateType.Compound };
+         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, TemplateType = TemplateType.Compound};
+         _reference = new Template {DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, TemplateType = TemplateType.Compound};
          _template.References.Add(_reference);
-         sut.SaveToTemplate(new[] { _template, _reference, });
+         sut.SaveToTemplate(new[] {_template, _reference,});
          sut.DeleteTemplate(_reference);
       }
 
@@ -185,4 +179,4 @@ namespace PKSim.IntegrationTests
          sut.Exists(TemplateDatabaseType.User, _metabolite.Name, TemplateType.Compound).ShouldBeFalse();
       }
    }
-}	
+}

@@ -71,7 +71,7 @@ namespace PKSim.Core
          Helper.ShouldBeEqual(curve_AUC_Male.XValues[0], "Thick", "Young", 3);
          Helper.ShouldBeEqual(curve_AUC_Male.XValues[1], "Normal", "Young", 1);
          Helper.ShouldBeEqual(curve_AUC_Male.XValues[2], "Normal", "Old", 2);
-         curve_AUC_Male.YValues[1].Median.ShouldBeEqualTo(121.3F);
+         curve_AUC_Male.YValues[1].Median.Value.ShouldBeEqualTo(121.3F);
 
          var curve_AUC_Female = sut.Panes["AUC"].Curves["Female"];
          Helper.ShouldBeEqual(curve_AUC_Female.XValues[0], "Normal", "Young", 1);

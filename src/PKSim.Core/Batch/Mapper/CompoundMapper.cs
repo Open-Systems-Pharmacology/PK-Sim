@@ -45,7 +45,7 @@ namespace PKSim.Core.Batch.Mapper
          var compound = _compoundFactory.Create();
          compound.Name = batchCompound.Name;
          setValue(compound, CoreConstants.Groups.COMPOUND_LIPOPHILICITY,
-            CoreConstants.Parameter.Lipophilicity, batchCompound.Lipophilicity);
+            CoreConstants.Parameter.LIPOPHILICITY, batchCompound.Lipophilicity);
 
          setValue(compound, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND,
             CoreConstants.Parameter.FractionUnbound, batchCompound.FractionUnbound);

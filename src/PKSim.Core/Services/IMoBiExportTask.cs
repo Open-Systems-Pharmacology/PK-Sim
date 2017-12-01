@@ -13,10 +13,10 @@ namespace PKSim.Core.Services
       void StartWith(Simulation simulation);
 
       /// <summary>
-      /// Starts Mobi with the content file as start parameter. The file contains binary data that should be
+      /// Starts MoBi with the content file as start parameter. The file contains binary data that should be
       /// decrypted by MoBi
       /// </summary>
-      void StartWithContentFile(string contentFile);
+      void StartWithContentFile(string contentFileFullPath);
 
       /// <summary>
       ///    Exports the simulation into a predefined file

@@ -37,7 +37,7 @@ namespace PKSim.Presentation.Views.Charts
          return Create<IndividualSimulationComparison>();
       }
 
-      public IChartWithObservedData Create(Type chartType)
+      public ChartWithObservedData Create(Type chartType)
       {
          if (chartType.IsAnImplementationOf<SimulationTimeProfileChart>())
             return Create<SimulationTimeProfileChart>();
@@ -45,7 +45,7 @@ namespace PKSim.Presentation.Views.Charts
          if (chartType.IsAnImplementationOf<IndividualSimulationComparison>())
             return Create<IndividualSimulationComparison>();
 
-         throw new ArgumentOutOfRangeException("chartType");
+         throw new ArgumentOutOfRangeException(nameof(chartType));
       }
    }
 }

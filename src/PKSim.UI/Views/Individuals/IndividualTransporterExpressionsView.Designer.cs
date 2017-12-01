@@ -36,7 +36,7 @@ namespace PKSim.UI.Views.Individuals
          this.panelWarning = new OSPSuite.UI.Controls.UxHintPanel();
          this.lblTransporterTypeDescription = new DevExpress.XtraEditors.LabelControl();
          this.cbTransporterType = new DevExpress.XtraEditors.ImageComboBoxEdit();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();

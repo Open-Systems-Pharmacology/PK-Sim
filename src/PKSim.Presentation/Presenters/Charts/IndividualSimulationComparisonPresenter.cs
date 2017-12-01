@@ -2,28 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using PKSim.Assets;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Events;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Charts;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Events;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Presenters.Charts;
-using OSPSuite.Presentation.Services.Charts;
 using IChartTemplatingTask = PKSim.Presentation.Services.IChartTemplatingTask;
-using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
-using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Presentation.Presenters.Charts
 {
@@ -49,8 +48,8 @@ namespace PKSim.Presentation.Presenters.Charts
 
       public event EventHandler Closing = delegate { };
 
-      public IndividualSimulationComparisonPresenter(IIndividualSimulationComparisonView view,  ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, ILazyLoadTask lazyLoadTask, IChartTemplatingTask chartTemplatingTask, IUserSettings userSettings) :
-         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, userSettings)
+      public IndividualSimulationComparisonPresenter(IIndividualSimulationComparisonView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, ILazyLoadTask lazyLoadTask, IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater) :
+         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdater)
       {
          _lazyLoadTask = lazyLoadTask;
          PresentationKey = PresenterConstants.PresenterKeys.IndividualSimulationComparisonPresenter;
@@ -94,7 +93,7 @@ namespace PKSim.Presentation.Presenters.Charts
          return treeNodes.OfType<SimulationNode>().Select(x => x.Simulation).OfType<IndividualSimulation>();
       }
 
-      public override void AddObservedData(DataRepository observedData, bool asResultOfDragAndDrop)
+      protected override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
       {
          base.AddObservedData(observedData, asResultOfDragAndDrop);
          showChartView();
@@ -117,12 +116,12 @@ namespace PKSim.Presentation.Presenters.Charts
 
       private void showChartView()
       {
-         _view.SetChartView(_chartPresenterContext.ChartEditorAndDisplayPresenter.BaseView);
+         _view.SetChartView(_chartPresenterContext.EditorAndDisplayPresenter.BaseView);
       }
 
       protected override string NameForColumn(DataColumn dataColumn)
       {
-         return _chartPresenterContext.QuantityDisplayPathMapper.DisplayPathAsStringFor(SimulationFor(dataColumn), dataColumn, addSimulationName: true);
+         return _chartPresenterContext.CurveNamer.CurveNameForColumn(SimulationFor(dataColumn), dataColumn);
       }
 
       private bool containsIndividualSimulationNodes(IEnumerable<ITreeNode> simulationNodes)
@@ -133,8 +132,9 @@ namespace PKSim.Presentation.Presenters.Charts
          return simulationNodes.OfType<SimulationNode>().Any(x => x.Simulation.IsAnImplementationOf<IndividualSimulation>());
       }
 
-      protected override void ConfigureEditor()
+      protected override void ConfigureColumns()
       {
+         base.ConfigureColumns();
          Column(BrowserColumns.RepositoryName).Visible = true;
          Column(BrowserColumns.RepositoryName).VisibleIndex = 1;
          Column(BrowserColumns.RepositoryName).GroupIndex = -1;
@@ -236,7 +236,7 @@ namespace PKSim.Presentation.Presenters.Charts
          var repo = DataRepositoryFor(simulation);
          if (repo == null) return;
          _repositoryCache.Remove(repo);
-         ChartEditorPresenter.RemoveDataRepository(repo);
+         ChartEditorPresenter.RemoveDataRepositories(new []{repo});
          Chart.RemoveSimulation(simulation);
       }
 

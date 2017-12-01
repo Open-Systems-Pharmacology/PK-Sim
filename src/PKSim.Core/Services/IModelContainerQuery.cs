@@ -6,6 +6,6 @@ namespace PKSim.Core.Services
 {
    public interface IModelContainerQuery
    {
-      IEnumerable<IContainer> SubContainersFor(Species species, ModelConfiguration modelConfiguration, IContainer parentContainer);
+      IReadOnlyList<IContainer> SubContainersFor(SpeciesPopulation population, ModelConfiguration modelConfiguration, IContainer parentContainer);
    }
 }

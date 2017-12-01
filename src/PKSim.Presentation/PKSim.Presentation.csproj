@@ -68,60 +68,55 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v16.2, Version=16.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.6\lib\net452\DevExpress.Data.v16.2.dll</HintPath>
+    <Reference Include="DevExpress.Data.v17.1, Version=17.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.17.1.5\lib\net45\DevExpress.Data.v17.1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DevExpress.Utils.v16.2, Version=16.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.6\lib\net452\DevExpress.Utils.v16.2.dll</HintPath>
+    <Reference Include="DevExpress.Utils.v17.1, Version=17.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.17.1.5\lib\net45\DevExpress.Utils.v17.1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="MPFitLib, Version=1.1.0.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\csmpfit.1.1.0\lib\net20\MPFitLib.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.99\lib\net452\OSPSuite.Assets.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.86\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.99\lib\net452\OSPSuite.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.86\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.99\lib\net452\OSPSuite.Presentation.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Presentation, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.86\lib\net452\OSPSuite.Presentation.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Serializer">
-      <HintPath>..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
+    <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.SimModel.2.0.0.12\lib\net45\OSPSuite.SimModel.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\packages\OSPSuite.SimModel.2.2.0.6\lib\net45\OSPSuite.SimModel.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.TeXReporting, Version=2.0.0.6, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.0.6\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    <Reference Include="OSPSuite.TeXReporting, Version=2.0.1.7, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.1.7\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Utility, Version=2.0.0.5, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.5\lib\net45\OSPSuite.Utility.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Utility, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.2.0.1.4\lib\net452\OSPSuite.Utility.dll</HintPath>
     </Reference>
-    <Reference Include="SX, Version=2.6.3.3, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.3.3\lib\net45\SX.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="SX, Version=2.6.5.7, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.5.7\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -149,6 +144,7 @@
     <Compile Include="Core\IWorkspace.cs" />
     <Compile Include="Core\IWorkspacePersistor.cs" />
     <Compile Include="Core\StatusBarElements.cs" />
+    <Compile Include="DTO\ApplicationSettingsDTO.cs" />
     <Compile Include="DTO\Compounds\EnzymaticProcessDTO.cs" />
     <Compile Include="DTO\Compounds\ProcessDTO.cs" />
     <Compile Include="DTO\Compounds\VSSValueDTO.cs" />
@@ -177,6 +173,7 @@
     <Compile Include="DTO\PopulationAnalyses\QuantityPKParameterDTO.cs" />
     <Compile Include="DTO\PopulationAnalyses\XandYFieldsSelectionDTO.cs" />
     <Compile Include="DTO\PopulationSimulationSelectionDTO.cs" />
+    <Compile Include="DTO\Populations\ExtractIndividualsDTO.cs" />
     <Compile Include="DTO\Populations\ImportPopulationSettingsDTO.cs" />
     <Compile Include="DTO\Populations\PopulationFileSelectionDTO.cs" />
     <Compile Include="DTO\SimulationComparisonSelectionDTO.cs" />
@@ -249,6 +246,7 @@
     <Compile Include="Presenters\Parameters\EditParameterPresenter.cs" />
     <Compile Include="Presenters\Parameters\ParameterGroupsPresenterSettings.cs" />
     <Compile Include="Presenters\Parameters\ParameterSetPresenter.cs" />
+    <Compile Include="Presenters\Populations\ExtractIndividualsFromPopulationPresenter.cs" />
     <Compile Include="Presenters\Populations\PopulationMoleculesPresenter.cs" />
     <Compile Include="Presenters\ProteinExpression\IProteinExpressionDataHelper.cs" />
     <Compile Include="Presenters\Simulations\EditSolverSettingsPresenter.cs" />
@@ -507,6 +505,7 @@
     <Compile Include="UICommands\ExportPopulationSimulationPKAnalysesCommand.cs" />
     <Compile Include="UICommands\ExportSimulationResultsToCSVCommand.cs" />
     <Compile Include="UICommands\ExportToPDFCommand.cs" />
+    <Compile Include="UICommands\ExtractIndividualsFromPopulationCommand.cs" />
     <Compile Include="UICommands\GenerateGroupsTemplateCommand.cs" />
     <Compile Include="UICommands\GeneratePKMLTemplatesCommand.cs" />
     <Compile Include="UICommands\ImportPKAnalysesCommand.cs" />
@@ -565,6 +564,7 @@
     <Compile Include="Views\PopulationAnalyses\IValueMappingGroupingView.cs" />
     <Compile Include="Views\PopulationAnalyses\IXAndYNumericFieldsView.cs" />
     <Compile Include="Views\Populations\IEditImportPopulationView.cs" />
+    <Compile Include="Views\Populations\IExtractIndividualsFromPopulationView.cs" />
     <Compile Include="Views\Populations\IImportPopulationSettingsView.cs" />
     <Compile Include="Views\Populations\IImportPopulationView.cs" />
     <Compile Include="Views\Populations\IPopulationParameterDistributionView.cs" />

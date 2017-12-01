@@ -95,9 +95,6 @@ namespace PKSim.Presentation.Presenters.Simulations
          _simulation.HasChanged = true;
       }
 
-      public bool ShouldCancel
-      {
-         get { return true; }
-      }
+      public bool ShouldCancel => true;
    }
 }

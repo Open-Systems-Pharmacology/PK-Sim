@@ -164,7 +164,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
       private void createFractionExcretedToUrineObserver(Simulation simulation, IObserverBuildingBlock observerBuildingBlock)
       {
-         createSimpleFractionObserver(simulation, observerBuildingBlock, CoreConstants.Observer.FRACTION_EXCRETED_TO_URINE, CoreConstants.Compartment.Urine);
+         createSimpleFractionObserver(simulation, observerBuildingBlock, CoreConstants.Observer.FRACTION_EXCRETED_TO_URINE, CoreConstants.Compartment.URINE);
       }
 
       private void createFractionOfDoseExcretedToBileObserver(Simulation simulation, IObserverBuildingBlock observerBuildingBlock)
@@ -174,7 +174,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
       private void createFractionOfDoseExcretedToFecesObserver(Simulation simulation, IObserverBuildingBlock observerBuildingBlock)
       {
-         createSimpleFractionObserver(simulation, observerBuildingBlock, CoreConstants.Observer.FRACTION_EXCRETED_TO_FECES, CoreConstants.Compartment.Feces);
+         createSimpleFractionObserver(simulation, observerBuildingBlock, CoreConstants.Observer.FRACTION_EXCRETED_TO_FECES, CoreConstants.Compartment.FECES);
       }
 
       private void createSimpleFractionObserver(Simulation simulation, IObserverBuildingBlock observerBuildingBlock, string observerName, string criteria)

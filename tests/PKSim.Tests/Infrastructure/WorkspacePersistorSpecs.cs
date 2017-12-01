@@ -55,8 +55,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _progressManager.Create()).Returns(A.Fake<IProgressUpdater>());
          A.CallTo(() => _historyManager.History).Returns(new[] {history1, history2});
          _workspace = A.Fake<IWorkspace>();
-         A.CallTo(() => _workspace.Project).Returns(A.Fake<IPKSimProject>());
-         A.CallTo(() => _workspace.HistoryManager).Returns(_historyManager);
+         _workspace.HistoryManager = _historyManager;
          _session = A.Fake<ISession>();
          _transaction = A.Fake<ITransaction>();
          A.CallTo(() => _session.BeginTransaction()).Returns(_transaction);

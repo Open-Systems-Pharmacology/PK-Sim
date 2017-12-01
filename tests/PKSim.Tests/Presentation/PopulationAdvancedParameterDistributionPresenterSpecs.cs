@@ -45,7 +45,7 @@ namespace PKSim.Presentation
 
          _gender1 = A.Fake<Gender>().WithName("Gender1");
          _gender2 = A.Fake<Gender>().WithName("Gender2");
-         A.CallTo(() => _population.AllGenders()).Returns(new[] {_gender1, _gender2});
+         A.CallTo(() => _population.AllGenders).Returns(new[] {_gender1, _gender2});
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_gender1)).Returns("Display1");
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_gender2)).Returns("Display2");
 
@@ -85,7 +85,7 @@ namespace PKSim.Presentation
          _p2 = A.Fake<IParameter>();
          _p3 = A.Fake<IParameter>();
          _allParameters.AddRange(new[] {_p1, _p2, _p3});
-         A.CallTo(() => _population.AllGenders()).Returns(new List<Gender>());
+         A.CallTo(() => _population.AllGenders).Returns(new List<Gender>());
       }
 
       protected override void Because()
@@ -191,7 +191,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _population.AllGenders()).Returns(new[] {_gender1});
+         A.CallTo(() => _population.AllGenders).Returns(new[] {_gender1});
          sut.EditPopulation(_population);
       }
 
@@ -281,8 +281,10 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _selectedDistribution = new ParameterDistributionSettingsCache();
-         _selectedDistribution.Add("PATH", new ParameterDistributionSettings {Settings = new DistributionSettings()});
+         _selectedDistribution = new ParameterDistributionSettingsCache
+         {
+            {"PATH", new ParameterDistributionSettings {Settings = new DistributionSettings()}}
+         };
          A.CallTo(() => _population.SelectedDistributions).Returns(_selectedDistribution);
          _parameter = A.Fake<IParameter>();
          A.CallTo(() => _parametersPresenter.SelectedParameter).Returns(_parameter);

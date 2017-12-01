@@ -29,7 +29,7 @@ namespace PKSim.Core.Commands
             Add(new SetSchemaItemFormulationKeyCommand(_schemaItem, string.Empty, context));
 
          else if (shouldSetDefaultFormulation())
-            Add(new SetSchemaItemFormulationKeyCommand(_schemaItem, CoreConstants.DefaultFormulationKey, context));
+            Add(new SetSchemaItemFormulationKeyCommand(_schemaItem, CoreConstants.DEFAULT_FORMULATION_KEY, context));
 
          //update parameters according to application
          var applicationParameterRetriever = context.Resolve<ISchemaItemParameterRetriever>();

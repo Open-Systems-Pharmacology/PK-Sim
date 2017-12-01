@@ -31,7 +31,7 @@
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnImportPoints = new DevExpress.XtraEditors.SimpleButton();
-         this.gridValuePoints = new PKSim.UI.Views.Core.UxGridControl();
+         this.gridValuePoints = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.lblImportDescription = new DevExpress.XtraEditors.LabelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -219,7 +219,7 @@
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       protected DevExpress.XtraEditors.LabelControl lblImportDescription;
       protected DevExpress.XtraEditors.SimpleButton btnImportPoints;
-      private PKSim.UI.Views.Core.UxGridControl gridValuePoints;
+      private OSPSuite.UI.Controls.UxGridControl gridValuePoints;
       private PKSim.UI.Views.Core.UxGridView gridView;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemTable;

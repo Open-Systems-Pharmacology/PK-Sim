@@ -37,7 +37,7 @@ namespace PKSim.UI.Views.Simulations
             .To(cbModel).WithValues(x => _presenter.AllModels())
             .AndDisplays(model => _presenter.DisplayFor(model));
 
-         modelConfiguration.OnValueSet += (o, e) => _presenter.ModelSelectionChanging(e.NewValue);
+         modelConfiguration.OnValueUpdating += (o, e) => _presenter.ModelSelectionChanging(e.NewValue);
          modelConfiguration.Changed += () => _presenter.ModelSelectionChanged();
 
          RegisterValidationFor(_modelBinder,statusChangedNotify:NotifyViewChanged);

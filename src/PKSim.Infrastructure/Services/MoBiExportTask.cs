@@ -1,14 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using PKSim.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Mappers;
@@ -16,8 +8,15 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
-using Process = System.Diagnostics.Process;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -33,11 +32,13 @@ namespace PKSim.Infrastructure.Services
       private readonly IProjectRetriever _projectRetriever;
       private readonly IObjectIdResetter _objectIdResetter;
       private readonly IJournalRetriever _journalRetriever;
+      private readonly IApplicationSettings _applicationSettings;
+      private readonly IStartableProcessFactory _startableProcessFactory;
 
       public MoBiExportTask(IBuildConfigurationTask buildConfigurationTask, ISimulationToModelCoreSimulationMapper simulationMapper,
          IRepresentationInfoRepository representationInfoRepository, IPKSimConfiguration configuration,
          ILazyLoadTask lazyLoadTask, IDialogCreator dialogCreator, ISimulationPersistor simulationPersistor, IProjectRetriever projectRetriever,
-         IObjectIdResetter objectIdResetter, IJournalRetriever journalRetriever)
+         IObjectIdResetter objectIdResetter, IJournalRetriever journalRetriever, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory)
       {
          _buildConfigurationTask = buildConfigurationTask;
          _simulationMapper = simulationMapper;
@@ -49,6 +50,8 @@ namespace PKSim.Infrastructure.Services
          _projectRetriever = projectRetriever;
          _objectIdResetter = objectIdResetter;
          _journalRetriever = journalRetriever;
+         _applicationSettings = applicationSettings;
+         _startableProcessFactory = startableProcessFactory;
       }
 
       public void StartWith(Simulation simulation)
@@ -58,23 +61,42 @@ namespace PKSim.Infrastructure.Services
             var moBiFile = FileHelper.GenerateTemporaryFileName();
             exportSimulationToFile(simulation, moBiFile);
             return moBiFile;
-         }, "s");
+         }, "-s");
       }
 
-      public void StartWithContentFile(string contentFile)
+      public void StartWithContentFile(string contentFileFullPath)
       {
-         startMoBiWithFile(() => contentFile, "b");
+         startMoBiWithFile(() => contentFileFullPath, "-b");
       }
 
-      private void startMoBiWithFile(Func<string> contentFileFunc, string option)
+      private void startMoBiWithFile(Func<string> contentFileFullPathFunc, string option)
       {
-         if (!FileHelper.FileExists(_configuration.MoBiPath))
-            throw new PKSimException(PKSimConstants.Error.MoBiNotFound);
-
-         var contentFile = contentFileFunc();
+         var moBiPath = retrieveMoBiExecutablePath();
+         var contentFile = contentFileFullPathFunc();
 
          //now start MoBi
-         this.DoWithinExceptionHandler(() => Process.Start(_configuration.MoBiPath, $"/{option} \"{contentFile}\""));
+         var args = new[]
+         {
+            option,
+            $"\"{contentFile}\""
+         };
+
+         this.DoWithinExceptionHandler(() =>
+         {
+            _startableProcessFactory.CreateStartableProcess(moBiPath, args).Start();
+         });
+      }
+
+      private string retrieveMoBiExecutablePath()
+      {
+         //Installed properly via Setup? return standard path
+         if (FileHelper.FileExists(_configuration.MoBiPath))
+            return _configuration.MoBiPath;
+
+         if (FileHelper.FileExists(_applicationSettings.MoBiPath))
+            return _applicationSettings.MoBiPath;
+
+         throw new PKSimException(PKSimConstants.Error.MoBiNotFound);
       }
 
       private void exportSimulationToFile(Simulation simulation, string moBiFile)

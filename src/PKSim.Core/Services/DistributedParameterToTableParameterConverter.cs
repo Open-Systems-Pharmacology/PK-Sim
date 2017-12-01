@@ -106,7 +106,7 @@ namespace PKSim.Core.Services
          var organism = spatialStructure.TopContainers.FindByName(Constants.ORGANISM);
          var ageParameter = organism.Parameter(CoreConstants.Parameter.AGE);
          var minToYearFactor = _timeDimension.BaseUnitValueToUnitValue(_yearUnit, 1);
-         var age0Parameter = _parameterFactory.CreateFor(CoreConstants.Parameter.Age0, ageParameter.Value, ageParameter.Dimension.Name, PKSimBuildingBlockType.Simulation);
+         var age0Parameter = _parameterFactory.CreateFor(CoreConstants.Parameter.AGE_0, ageParameter.Value, ageParameter.Dimension.Name, PKSimBuildingBlockType.Simulation);
          age0Parameter.DisplayUnit = ageParameter.DisplayUnit;
          age0Parameter.Visible = false;
 
@@ -298,7 +298,7 @@ namespace PKSim.Core.Services
          var allAges = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameter.AGE, _entityPathResolver);
          var allGAs = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameter.GESTATIONAL_AGE, _entityPathResolver);
          var allHeights = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameter.HEIGHT, _entityPathResolver);
-         var allGender = populationSimulation.AllGenders().ToList();
+         var allGender = populationSimulation.AllGenders.ToList();
          var allValues = populationSimulation.AllValuesFor(parameterPath).ToList();
          var allPercentiles = populationSimulation.AllPercentilesFor(parameterPath)
             .Select(x => x.CorrectedPercentileValue()).ToList();
@@ -477,7 +477,7 @@ namespace PKSim.Core.Services
          if (!originData.SpeciesPopulation.IsHeightDependent)
             return false;
 
-         if (!individualParameter.IsNamed(CoreConstants.Parameter.VOLUME))
+         if (!individualParameter.IsNamed(Constants.Parameters.VOLUME))
             return false;
 
          if (!individualParameter.ParentContainer.IsAnImplementationOf<Organ>())

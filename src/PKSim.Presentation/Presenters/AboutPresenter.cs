@@ -30,7 +30,7 @@ namespace PKSim.Presentation.Presenters
 
       public override void Initialize()
       {
-         _view.Product = CoreConstants.ProductDisplayName;
+         _view.Product = _configuration.ProductDisplayName;
          _view.VersionInformation = $"Version {_configuration.FullVersion}";
          _view.Display();
       }
@@ -40,7 +40,7 @@ namespace PKSim.Presentation.Presenters
          if (_versionChecker.NewVersionIsAvailable())
             _dialogCreator.MessageBoxInfo(PKSimConstants.Information.NewVersionIsAvailable(_versionChecker.LatestVersion, Constants.PRODUCT_SITE_DOWNLOAD).RemoveHtml());
          else
-            _dialogCreator.MessageBoxInfo(PKSimConstants.UI.ProductIsUptodate(CoreConstants.ProductNameWithTrademark));
+            _dialogCreator.MessageBoxInfo(PKSimConstants.UI.ProductIsUptodate(CoreConstants.PRODUCT_NAME_WITH_TRADEMARK));
       }
    }
 }

@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using IoC = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Infrastructure.ProjectConverter.v6_2
@@ -26,6 +26,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_2
       private readonly IObservedDataConvertor _observedDataConvertor;
       private readonly List<XElement> _projectObservedDataElementCache = new List<XElement>();
       private int _originalVersion;
+      private bool _converted;
 
       public Converter612To621(IoC container, IDimensionFactory dimensionFactory, IObservedDataConvertor observedDataConvertor)
       {
@@ -39,22 +40,30 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_2
          return version == ProjectVersions.V6_1_2;
       }
 
-      public int Convert(object objectToConvert, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
          _originalVersion = originalVersion;
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V6_2_1;
+         return (ProjectVersions.V6_2_1, _converted);
       }
 
-      public int ConvertXml(XElement element, int originalVersion)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
+         _converted = false;
          if (element.Name == "SimulationConcentrationChart")
+         {
             element.Name = "SimulationTimeProfileChart";
+            _converted = true;
+         }
 
          if (element.Name.IsOneOf("PKSimProject", "Project"))
+         {
             addObservedDataElementsToCache(element);
+            _converted = true;
+         }
 
-         return ProjectVersions.V6_2_1;
+         return (ProjectVersions.V6_2_1, _converted);
       }
 
       private void addObservedDataElementsToCache(XElement element)
@@ -92,19 +101,20 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_2
 
          _projectObservedDataElementCache.Clear();
 
-         project.AllObservedData.Each(x=> _observedDataConvertor.Convert(project, x, _originalVersion));
+         project.AllObservedData.Each(x => _observedDataConvertor.Convert(project, x, _originalVersion));
+         _converted = true;
       }
 
       private void convertCompound(Compound compound)
       {
          compound.Parameter(Constants.Parameters.MOL_WEIGHT).CanBeVaried = false;
+         _converted = true;
       }
 
       public void Visit(Compound compound)
       {
          convertCompound(compound);
       }
-
 
       public void Visit(Simulation simulation)
       {

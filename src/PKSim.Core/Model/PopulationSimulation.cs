@@ -201,18 +201,14 @@ namespace PKSim.Core.Model
       public double? MolWeightFor(string quantityPath)
       {
          var objectPath = new ObjectPath(quantityPath.ToPathArray());
-         bool found;
-         var quantity = objectPath.TryResolve<IQuantity>(Model.Root, out found);
+         var quantity = objectPath.TryResolve<IQuantity>(Model.Root, out bool found);
          if (!found)
             return null;
 
          return Model.MolWeightFor(quantity);
       }
 
-      public virtual IReadOnlyList<string> AllSimulationNames()
-      {
-         return new string[NumberOfItems].InitializeWith(Name);
-      }
+      public virtual IReadOnlyList<string> AllSimulationNames => new string[NumberOfItems].InitializeWith(Name);
 
       public virtual int NumberOfItems => Population.NumberOfItems;
 
@@ -249,28 +245,19 @@ namespace PKSim.Core.Model
 
       public virtual IEnumerable<IAdvancedParameter> AdvancedParameters => advancedParameterCollection.AdvancedParameters;
 
-      public virtual IReadOnlyList<Gender> AllGenders()
-      {
-         return Population.AllGenders();
-      }
+      public virtual IReadOnlyList<Gender> AllGenders => Population.AllGenders;
 
-      public virtual IReadOnlyList<SpeciesPopulation> AllRaces()
-      {
-         return Population.AllRaces();
-      }
+      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => Population.AllRaces;
 
       public virtual IReadOnlyList<string> AllCovariateValuesFor(string covariateName)
       {
          if (string.Equals(covariateName, CoreConstants.Covariates.SIMULATION_NAME))
-            return AllSimulationNames();
+            return AllSimulationNames;
 
          return Population.AllCovariateValuesFor(covariateName);
       }
 
-      public virtual IReadOnlyList<string> AllCovariateNames()
-      {
-         return Population.AllCovariateNames();
-      }
+      public virtual IReadOnlyList<string> AllCovariateNames => Population.AllCovariateNames;
 
       public bool DisplayParameterUsingGroupStructure => ComesFromPKSim;
 
@@ -293,8 +280,7 @@ namespace PKSim.Core.Model
       {
          base.UpdateFromOriginalSimulation(originalSimulation);
          var sourcePopSimulation = originalSimulation as PopulationSimulation;
-         if (sourcePopSimulation == null) return;
-         sourcePopSimulation.AdvancedParameters.Each(x => AddAdvancedParameter(x, generateRandomValues: true));
+         sourcePopSimulation?.AdvancedParameters.Each(x => AddAdvancedParameter(x, generateRandomValues: true));
       }
    }
 }

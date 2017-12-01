@@ -1,34 +1,25 @@
-using System.Linq;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.UICommands;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Infrastructure.Services
 {
    public class ChartTask : IChartTask
    {
-      private readonly IProjectChangedNotifier _projectChangedNotifier;
       private readonly IProjectRetriever _projectRetriever;
       private readonly ExportChartToPDFCommand _exportChartToPDFCommand;
 
-      public ChartTask(IProjectChangedNotifier projectChangedNotifier, IProjectRetriever projectRetriever, ExportChartToPDFCommand exportChartToPDFCommand)
+      public ChartTask(IProjectRetriever projectRetriever, ExportChartToPDFCommand exportChartToPDFCommand)
       {
-         _projectChangedNotifier = projectChangedNotifier;
          _projectRetriever = projectRetriever;
          _exportChartToPDFCommand = exportChartToPDFCommand;
       }
 
-      public void ProjectChanged()
-      {
-         _projectChangedNotifier.Changed();
-      }
-
-      public void ExportToPDF(ICurveChart chart)
+      public void ExportToPDF(CurveChart chart)
       {
          _exportChartToPDFCommand.Subject = chart;
          _exportChartToPDFCommand.Execute();
@@ -44,7 +35,7 @@ namespace PKSim.Infrastructure.Services
          simulation.ChartWithObservedData.Each(c => UpdateObservedDataInChartFor(simulation, c));
       }
 
-      public void UpdateObservedDataInChartFor(Simulation simulation, IChartWithObservedData chartWithObservedData)
+      public void UpdateObservedDataInChartFor(Simulation simulation, ChartWithObservedData chartWithObservedData)
       {
          foreach (var usedObservedData in simulation.UsedObservedData)
          {

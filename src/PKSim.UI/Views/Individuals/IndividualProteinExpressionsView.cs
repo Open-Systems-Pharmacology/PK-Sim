@@ -30,7 +30,6 @@ namespace PKSim.UI.Views.Individuals
       private readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
       private readonly ScreenBinder<ProteinExpressionDTO> _screenBinder;
       protected IIndividualProteinExpressionsPresenter _presenter;
-      private readonly UxRepositoryItemImageComboBox _containerDisplayNameRepository;
       private readonly GridViewBinder<ExpressionContainerDTO> _gridViewBinder;
       private IGridViewColumn _colGrouping;
       private IGridViewColumn _colRelativeExpression;
@@ -41,7 +40,6 @@ namespace PKSim.UI.Views.Individuals
          _imageListRetriever = imageListRetriever;
          _screenBinder = new ScreenBinder<ProteinExpressionDTO>();
          gridView.AllowsFiltering = false;
-         _containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridView, imageListRetriever);
          _gridViewBinder = new GridViewBinder<ExpressionContainerDTO>(gridView);
          gridView.EndGrouping += (o, e) => gridView.ExpandAllGroups();
          gridView.GroupFormat = "[#image]{1}";
@@ -81,9 +79,9 @@ namespace PKSim.UI.Views.Individuals
 
          _colRelativeExpression = _gridViewBinder.Bind(item => item.RelativeExpression)
             .WithCaption(PKSimConstants.UI.RelativeExpression)
-            .WithOnValueSet((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
+            .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
 
-         var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
+         var col = _gridViewBinder.AutoBind(item => item.RelativeExpressionNorm)
             .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
             .WithRepository(x => _progressBarRepository)
             .AsReadOnly();
@@ -97,17 +95,17 @@ namespace PKSim.UI.Views.Individuals
             .WithImages(x => _imageListRetriever.ImageIndex(_presenter.IconFor(x)))
             .WithValues(x => _presenter.AllTissueLocations())
             .AndDisplays(x => _presenter.DisplayFor(x))
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.TissueLocationChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.TissueLocationChanged(e.NewValue));
 
          _screenBinder.Bind(x => x.IntracellularVascularEndoLocation)
             .To(chkIntracellularVascularEndoLocation)
             .WithValues(x => _presenter.AllIntracellularVascularEndoLocations())
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.IntracellularLocationVascularEndoChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.IntracellularLocationVascularEndoChanged(e.NewValue));
 
          _screenBinder.Bind(x => x.MembraneLocation)
             .To(cbLocationOnVascularEndo)
             .WithValues(x => _presenter.AllMembraneLocation())
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.MembraneLocationChanged(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.MembraneLocationChanged(e.NewValue));
 
          RegisterValidationFor(_screenBinder,NotifyViewChanged);
       }
@@ -119,9 +117,8 @@ namespace PKSim.UI.Views.Individuals
 
       private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
       {
-         _containerDisplayNameRepository.Items.Clear();
-         _containerDisplayNameRepository.Items.Add(new ImageComboBoxItem(parameterPathDTO, _imageListRetriever.ImageIndex(parameterPathDTO.IconName)));
-         return _containerDisplayNameRepository;
+         var containerRepository  = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
+         return containerRepository.AddItem(parameterPathDTO, parameterPathDTO.IconName);
       }
 
       public void BindTo(ProteinExpressionDTO proteinExpressionDTO)
@@ -133,12 +130,12 @@ namespace PKSim.UI.Views.Individuals
 
       public bool IntracellularVascularEndoLocationVisible
       {
-         set { layoutItemIntracellularVascularEndoLocation.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
+         set => layoutItemIntracellularVascularEndoLocation.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
       public bool LocationOnVascularEndoVisible
       {
-         set { layoutItemLocalizationInVascularEndo.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
+         set => layoutItemLocalizationInVascularEndo.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
       public void Clear()
@@ -163,10 +160,7 @@ namespace PKSim.UI.Views.Individuals
          layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.Localization;
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError || _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError || _gridViewBinder.HasError;
 
       protected override int TopicId => HelpId.PKSim_Expression_Reference_Concentration;
    }

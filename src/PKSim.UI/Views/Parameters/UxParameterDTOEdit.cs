@@ -42,18 +42,18 @@ namespace PKSim.UI.Views.Parameters
          _valueElementBinder = _screenBinder.Bind(p => p.Value)
             .To(tbValue);
 
-         _valueElementBinder.OnValueSet += (o, e) => ValueChanged(o, e.NewValue);
+         _valueElementBinder.OnValueUpdating += (o, e) => ValueChanged(o, e.NewValue);
 
          _screenBinder.Bind(p => p.DisplayUnit).To(cbUnit)
             .WithValues(p => p.AllUnits)
-            .OnValueSet += (o, e) => UnitChanged(o, e.NewValue);
+            .OnValueUpdating += (o, e) => UnitChanged(o, e.NewValue);
 
          _discreteValueElementBinder = _screenBinder.Bind(p => p.Value)
             .To(cbDiscreteValue)
             .WithValues(p => p.ListOfValues.Keys)
             .AndDisplays(p => p.ListOfValues);
 
-         _discreteValueElementBinder.OnValueSet += (o, e) => ValueChanged(o, e.NewValue);
+         _discreteValueElementBinder.OnValueUpdating += (o, e) => ValueChanged(o, e.NewValue);
 
          _screenBinder.Changed += notifyChange;
          RegisterValidationFor(_screenBinder, () => Changing());

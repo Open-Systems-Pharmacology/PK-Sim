@@ -54,17 +54,17 @@ namespace PKSim.UI.Views.Compounds
             .WithCaption(PKSimConstants.UI.RefSolubility)
             .WithFormat(param => param.SolubilityParameter.ParameterFormatter())
             .WithEditorConfiguration((activeEditor, sol) => _comboBoxUnit.UpdateUnitsFor(activeEditor, sol.SolubilityParameter))
-            .WithOnValueSet((dto, e) => OnEvent(() => solubilityGroupPresenter.SetSolubilityValue(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => solubilityGroupPresenter.SetSolubilityValue(dto, e.NewValue)));
 
          _comboBoxUnit.ParameterUnitSet += (dto, unit) => OnEvent(() => solubilityGroupPresenter.SetSolubilityUnit(dto, unit));
 
          _colRefPh = _gridViewBinder.AutoBind(x => x.RefpH)
             .WithCaption(PKSimConstants.UI.RefpH)
-            .WithOnValueSet((dto, e) => OnEvent(() => solubilityGroupPresenter.SetRefpHValue(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => solubilityGroupPresenter.SetRefpHValue(dto, e.NewValue)));
 
          _colGainPerCharge = _gridViewBinder.AutoBind(x => x.GainPerCharge)
             .WithCaption(PKSimConstants.UI.SolubilityGainPerCharge)
-            .WithOnValueSet((dto, e) => OnEvent(() => solubilityGroupPresenter.SetGainPerChanrgeValue(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => solubilityGroupPresenter.SetGainPerChanrgeValue(dto, e.NewValue)));
 
          var col = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.pHDependentSolubility)

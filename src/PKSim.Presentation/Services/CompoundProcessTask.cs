@@ -173,7 +173,7 @@ namespace PKSim.Presentation.Services
       private void updateLipophilicity(CompoundProcess newProcess, Compound compound)
       {
          updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameter.LIPOPHILICITY_EXPERIMENT,
-                                                       CoreConstants.Parameter.Lipophilicity,
+                                                       CoreConstants.Parameter.LIPOPHILICITY,
                                                        CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
       }
 

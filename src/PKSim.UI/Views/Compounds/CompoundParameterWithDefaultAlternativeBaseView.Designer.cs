@@ -32,7 +32,7 @@ namespace PKSim.UI.Views.Compounds
       /// </summary>
       private void InitializeComponent()
       {
-         this._gridControl = new PKSim.UI.Views.Core.UxGridControl();
+         this._gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this._gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -121,7 +121,7 @@ namespace PKSim.UI.Views.Compounds
 
       #endregion
 
-      protected UxGridControl _gridControl;
+      protected OSPSuite.UI.Controls.UxGridControl _gridControl;
       protected UxGridView _gridView;
       protected OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;

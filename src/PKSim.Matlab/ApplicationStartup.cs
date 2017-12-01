@@ -14,36 +14,23 @@ namespace PKSim.Matlab
    {
       private static bool _initialized;
 
-      public static void Initialize(string dimensionFilePath = null, string databaseFilePath = null, string pkParameterFilePath = null)
+      public static void Initialize()
       {
          if (_initialized) return;
 
          redirectNHibernateAssembly();
 
-         new ApplicationStartup().initializeForMatlab(dimensionFilePath, databaseFilePath, pkParameterFilePath);
+         new ApplicationStartup().initializeForMatlab();
          _initialized = true;
       }
 
-      private void initializeForMatlab(string dimensionFilePath, string databaseFilePath, string pkParameterFilePath)
+      private void initializeForMatlab()
       {
          if (IoC.Container != null)
             return;
 
          InfrastructureRegister.Initialize();
          var container = IoC.Container;
-         var pksimConfiguration = container.Resolve<IPKSimConfiguration>();
-
-         //path was specified, update the default path
-         if (!string.IsNullOrEmpty(dimensionFilePath))
-            pksimConfiguration.DimensionFilePath = dimensionFilePath;
-
-         //path was specified, update the default path
-         if (!string.IsNullOrEmpty(databaseFilePath))
-            pksimConfiguration.PKSimDb = databaseFilePath;
-
-         //path was specified, update the default path
-         if (!string.IsNullOrEmpty(pkParameterFilePath))
-            pksimConfiguration.PKParametersFilePath = pkParameterFilePath;
 
          using (container.OptimizeDependencyResolution())
          {

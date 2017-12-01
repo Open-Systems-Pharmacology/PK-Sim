@@ -32,7 +32,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       protected override void DoStart()
       {
-         DataTable dt = _dbGateway.ExecuteStatementForDataTable(string.Format("SELECT * FROM {0}", _viewName));
+         var dt = _dbGateway.ExecuteStatementForDataTable($"SELECT * FROM {_viewName}");
          _allElements = new List<T>(_mapper.MapFrom(dt));
       }
 

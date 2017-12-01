@@ -12,6 +12,7 @@ using OSPSuite.TeXReporting.TeX.Converter;
 using OSPSuite.TeXReporting.TeX.PGFPlots;
 using OSPSuite.Utility.Data;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
@@ -321,7 +322,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          return new PlotOptions
          {
             ShadedErrorBars = shadedErrorBars,
-            Opacity = TEXHelper.GetOpacityFor(Constants.Population.STD_DEV_CURVE_TRANSPARENCY),
+            Opacity = TEXHelper.GetOpacityFor(Constants.RANGE_AREA_TRANSPARENCY),
             LineStyle = lineStyle,
             Marker = marker,
             MarkColor = color,

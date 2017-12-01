@@ -17,8 +17,8 @@ namespace PKSim.Presentation
    public abstract class concern_for_IndividualPKAnalysisToPKAnalysisDTOMapper : ContextSpecification<IndividualPKAnalysisToPKAnalysisDTOMapper>
    {
       protected IIndividualPKAnalysisToDataTableMapper _individualPKAnalysisToDataTableMapper;
-      protected IList<ICurve> _curves;
-      private ICurve _curve;
+      protected IList<Curve> _curves;
+      private Curve _curve;
       protected DataColumn _dataColumn;
 
       protected override void Context()
@@ -26,8 +26,8 @@ namespace PKSim.Presentation
          _individualPKAnalysisToDataTableMapper = A.Fake<IIndividualPKAnalysisToDataTableMapper>();
          sut = new IndividualPKAnalysisToPKAnalysisDTOMapper(_individualPKAnalysisToDataTableMapper);
 
-         _curve = A.Fake<ICurve>();
-         _curves = new List<ICurve> {_curve};
+         _curve = A.Fake<Curve>();
+         _curves = new List<Curve> {_curve};
       }
    }
 

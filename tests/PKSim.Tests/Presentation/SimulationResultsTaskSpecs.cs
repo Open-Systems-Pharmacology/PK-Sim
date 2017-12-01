@@ -1,11 +1,11 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
 
 namespace PKSim.Presentation
 {
@@ -26,7 +26,7 @@ namespace PKSim.Presentation
          _simulationResultsCreator = A.Fake<ISimulationResultsCreator>();
          _dataRepositoryCreator = A.Fake<IDataRepositoryFromResultsCreator>();
          _cloner = A.Fake<ICloner>();
-         sut = new SimulationResultsTask(_chartTemplatingTask, _renameBuildingBlockTask, _simulationResultsSynchronizer, _cloner, _simulationResultsCreator, _dataRepositoryCreator);
+         sut = new SimulationResultsTask(_chartTemplatingTask, _simulationResultsSynchronizer, _cloner, _simulationResultsCreator, _dataRepositoryCreator);
       }
    }
 
@@ -42,13 +42,13 @@ namespace PKSim.Presentation
          base.Context();
          _simulationToClone = A.Fake<IndividualSimulation>().WithName("OLD");
          _clonedSimulation = A.Fake<IndividualSimulation>().WithName("NEW");
-         var dataRepository= A.Fake<DataRepository>();
+         var dataRepository = A.Fake<DataRepository>();
          _newResults = new SimulationResults {Id = 1};
          _clonedDataRepository = new DataRepository("Clone");
          A.CallTo(() => _cloner.Clone(dataRepository)).Returns(_clonedDataRepository);
          _simulationToClone.DataRepository = dataRepository;
          _simulationToClone.ResultsVersion = 25;
-         A.CallTo(() => _simulationResultsCreator.CreateResultsFrom(dataRepository)).Returns(new SimulationResults{Id=2});
+         A.CallTo(() => _simulationResultsCreator.CreateResultsFrom(dataRepository)).Returns(new SimulationResults {Id = 2});
          A.CallTo(() => _simulationResultsCreator.CreateResultsFrom(_clonedDataRepository)).Returns(_newResults);
          A.CallTo(() => _dataRepositoryCreator.CreateResultsFor(_clonedSimulation)).Returns(_clonedDataRepository);
       }
@@ -59,7 +59,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_update_the_simulation_results_based_on_the_cloned_data_repository( )
+      public void should_update_the_simulation_results_based_on_the_cloned_data_repository()
       {
          //use id otherwise collection will be compared
          _clonedSimulation.Results.Id.ShouldBeEqualTo(_newResults.Id);
@@ -112,7 +112,6 @@ namespace PKSim.Presentation
          _newSimulation.ResultsVersion.ShouldBeEqualTo(_resultVersion);
       }
 
-
       [Observation]
       public void should_have_added_the_charts_to_the_simulation()
       {
@@ -129,9 +128,9 @@ namespace PKSim.Presentation
       {
          base.Context();
          _dataCollectorToClone = A.Fake<PopulationSimulation>().WithName("OLD");
-         A.CallTo(() => _dataCollectorToClone.CompoundNames).Returns(new[]{"C1"});
+         A.CallTo(() => _dataCollectorToClone.CompoundNames).Returns(new[] {"C1"});
          _clonedDataCollector = A.Fake<PopulationSimulation>().WithName("NEW");
-         A.CallTo(() => _clonedDataCollector.CompoundNames).Returns(new[] { "C2" });
+         A.CallTo(() => _clonedDataCollector.CompoundNames).Returns(new[] {"C2"});
          var results = A.Fake<SimulationResults>();
          _dataCollectorToClone.Results = results;
          _dataCollectorToClone.ResultsVersion = 25;

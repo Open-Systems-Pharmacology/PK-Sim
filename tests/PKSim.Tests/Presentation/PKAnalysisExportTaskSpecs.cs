@@ -2,23 +2,20 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
-using FakeItEasy;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Services;
-
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.Mappers;
+using OSPSuite.Core.Services;
+using PKSim.Assets;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Services;
 using DataColumnn = OSPSuite.Core.Domain.Data.DataColumn;
 
 namespace PKSim.Presentation
@@ -30,16 +27,18 @@ namespace PKSim.Presentation
       protected IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       protected IPKAnalysisTask _pkAnalysisTask;
       private IGlobalPKAnalysisToDataTableMapper _globalPKAnalysisMapper;
+      private IDimensionFactory _dimensionFactory;
 
       protected override void Context()
       {
          _dialogCreator = A.Fake<IDialogCreator>();
          _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
          _quantityDisplayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
-         _pkAnalysisTask= A.Fake<IPKAnalysisTask>();
-         _globalPKAnalysisMapper= A.Fake<IGlobalPKAnalysisToDataTableMapper>();
+         _pkAnalysisTask = A.Fake<IPKAnalysisTask>();
+         _globalPKAnalysisMapper = A.Fake<IGlobalPKAnalysisToDataTableMapper>();
+         _dimensionFactory= A.Fake<IDimensionFactory>();
 
-         sut = new PKAnalysisExportTask(_dialogCreator, _dataRepositoryTask, _quantityDisplayPathMapper, _globalPKAnalysisMapper);
+         sut = new PKAnalysisExportTask(_dialogCreator, _dataRepositoryTask, _quantityDisplayPathMapper, _globalPKAnalysisMapper, _dimensionFactory);
       }
    }
 
@@ -88,20 +87,20 @@ namespace PKSim.Presentation
          _sim1 = A.Fake<Simulation>().WithName("Sim");
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
 
-         A.CallTo(() => _dataRepositoryTask.ToDataTable(A<IEnumerable<DataColumnn>>._, A<Func<DataColumnn, string>>._,false)).Returns(new[] {_dataTable1, _dataTable2});
+         A.CallTo(_dataRepositoryTask).WithReturnType<IEnumerable<DataTable>>().Returns(new[] {_dataTable1, _dataTable2});
          A.CallTo(() => _dataRepositoryTask.ExportToExcel(A<IEnumerable<DataTable>>._, _fileName, true))
             .Invokes(x => _dataTables = x.GetArgument<IEnumerable<DataTable>>(0));
       }
 
       protected override void Because()
       {
-         sut.ExportToExcel(new[] {_col1, _col2}, _global, new DataTable(), new[]{_sim1});
+         sut.ExportToExcel(new[] {_col1, _col2}, _global, new DataTable(), new[] {_sim1});
       }
 
       [Observation]
       public void should_have_asked_the_user_to_select_the_file_where_the_data_should_be_exported()
       {
-         A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportPKAnalysesToExcelTitle, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, "Sim",null)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportPKAnalysesToExcelTitle, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, "Sim", null)).MustHaveHappened();
       }
 
       [Observation]

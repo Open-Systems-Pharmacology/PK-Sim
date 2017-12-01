@@ -180,7 +180,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          }
          var rootNode = node.ParentNode.DowncastTo<RootNode>();
          _activePresenter = presenterFor(rootNode);
-         _activePresenter.OntogenyVisible = _simulationSubject.IsHuman;
+         _activePresenter.OntogenyVisible = _simulationSubject.IsAgeDependent;
          _activePresenter.MoleculeParametersVisible = _simulationSubject.IsAnImplementationOf<Individual>();
          _activePresenter.ActivateMolecule(moleculeFrom(node));
          _view.ActivateView(_activePresenter.BaseView);

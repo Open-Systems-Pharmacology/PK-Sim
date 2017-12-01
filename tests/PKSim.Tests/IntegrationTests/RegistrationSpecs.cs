@@ -5,6 +5,7 @@ using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Comparison;
 using PKSim.Core.Model;
+using PKSim.Infrastructure.Reporting.Summary;
 
 namespace PKSim.IntegrationTests
 {
@@ -16,6 +17,14 @@ namespace PKSim.IntegrationTests
          var diffBuilderRepository = IoC.Resolve<IDiffBuilderRepository>();
          var simuationDiffBuilder  = diffBuilderRepository.BuilderFor(new IndividualSimulation());
          simuationDiffBuilder.ShouldBeAnInstanceOf<SimulationDiffBuilder>();
+      }
+
+      [Observation]
+      public void should_be_able_to_find_a_report_builder_for_an_individual()
+      {
+         var reportBuilderRepository = IoC.Resolve<IReportBuilderRepository>();
+         var reportBuilder = reportBuilderRepository.BuilderFor(new Individual());
+         reportBuilder.ShouldBeAnInstanceOf<IndividualReportBuilder>();
       }
    }
 }

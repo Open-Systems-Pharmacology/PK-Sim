@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
@@ -26,10 +25,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          Dimension = Constants.Dimension.NO_DIMENSION;
       }
 
-      public override string Id
-      {
-         get { return QuantityPath; }
-      }
+      public override string Id => QuantityPath;
 
       public override IReadOnlyList<QuantityValues> GetValues(IPopulationDataCollector populationDataCollector)
       {
@@ -41,14 +37,11 @@ namespace PKSim.Core.Model.PopulationAnalyses
       /// </summary>
       public virtual IDimension Dimension
       {
-         get { return _dimension; }
-         set { _dimension = this.UpdateDimension(value); }
+         get => _dimension;
+         set => _dimension = this.UpdateDimension(value);
       }
 
-      public override bool DerivedFieldAllowed
-      {
-         get { return false; }
-      }
+      public override bool DerivedFieldAllowed => false;
 
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
@@ -66,10 +59,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
 
    public class NullOutputField : PopulationAnalysisOutputField
    {
-      public override string Id
-      {
-         get { return string.Empty; }
-      }
+      public override string Id => string.Empty;
 
       public override IReadOnlyList<QuantityValues> GetValues(IPopulationDataCollector populationDataCollector)
       {

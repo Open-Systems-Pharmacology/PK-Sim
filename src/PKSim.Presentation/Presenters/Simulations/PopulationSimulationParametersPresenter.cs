@@ -42,7 +42,7 @@ namespace PKSim.Presentation.Presenters.Simulations
             return false;
 
          //Hide volume parmaeters defined as formula (of type Simulation)
-         if(p.IsNamed(CoreConstants.Parameter.VOLUME))
+         if(p.IsNamed(Constants.Parameters.VOLUME))
             return false;
 
          return !p.CanBeVariedInPopulation;

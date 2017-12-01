@@ -15,8 +15,8 @@ namespace PKSim.Presentation.DTO
    {
       public CalculationMethod CalculationMethod
       {
-         get { return CategoryItem as CalculationMethod; }
-         set { CategoryItem = value; }
+         get => CategoryItem as CalculationMethod;
+         set => CategoryItem = value;
       }
    }
 
@@ -24,8 +24,8 @@ namespace PKSim.Presentation.DTO
    {
       public ParameterValueVersion ParameterValueVersion
       {
-         get { return CategoryItem as ParameterValueVersion; }
-         set { CategoryItem = value; }
+         get => CategoryItem as ParameterValueVersion;
+         set => CategoryItem = value;
       }
    }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Services;
 
@@ -44,8 +45,8 @@ namespace PKSim.Infrastructure.Services
       {
          using (var wc = new WebClient())
          {
-            string contentItemXmlText = wc.DownloadString(VersionFileUrl);
-            XDocument doc = XDocument.Parse(contentItemXmlText);
+            var contentItemXmlText = wc.DownloadString(VersionFileUrl);
+            var doc = XDocument.Parse(contentItemXmlText);
             LatestVersion = retrieveVersionFrom(doc);
          }
       }
@@ -62,7 +63,7 @@ namespace PKSim.Infrastructure.Services
 
       private VersionInfo retrieveVersionFrom(XDocument xDocument)
       {
-         XElement applicationNode = xDocument.Descendants("application").FirstOrDefault(e => string.Equals(e.Attribute("name").Value, ProductName));
+         XElement applicationNode = xDocument.Descendants("application").FirstOrDefault(e => string.Equals(e.GetAttribute("name"), ProductName));
          if (applicationNode == null)
             throw new OSPSuiteException($"{ProductName} node not available");
 

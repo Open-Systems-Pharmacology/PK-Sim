@@ -48,7 +48,7 @@ namespace PKSim.Core
          _vectorialParameterContainers = A.Fake<IVectorialParametersContainer>();
          A.CallTo(() => _vectorialParameterContainers.AllValuesFor("Path")).Returns(new[] {0.77, 0.99, double.NaN});
          var gender = new Gender {Id = CoreConstants.Gender.Male, Name = CoreConstants.Gender.Male};
-         A.CallTo(() => _vectorialParameterContainers.AllGenders()).Returns(new[] {gender, gender, gender});
+         A.CallTo(() => _vectorialParameterContainers.AllGenders).Returns(new[] {gender, gender, gender});
       }
 
       protected override void Because()
@@ -89,7 +89,7 @@ namespace PKSim.Core
          _vectorialParameterContainers = A.Fake<IVectorialParametersContainer>();
          A.CallTo(() => _vectorialParameterContainers.AllValuesFor("Path")).Returns(new[] { 0.5, 0.5, 0.5});
          var gender = new Gender { Id = CoreConstants.Gender.Male, Name = CoreConstants.Gender.Male };
-         A.CallTo(() => _vectorialParameterContainers.AllGenders()).Returns(new[] { gender, gender, gender });
+         A.CallTo(() => _vectorialParameterContainers.AllGenders).Returns(new[] { gender, gender, gender });
       }
 
       protected override void Because()

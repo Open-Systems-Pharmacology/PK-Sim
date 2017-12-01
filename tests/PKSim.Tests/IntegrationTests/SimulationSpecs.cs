@@ -19,6 +19,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
+using System;
 
 namespace PKSim.IntegrationTests
 {
@@ -95,6 +96,12 @@ namespace PKSim.IntegrationTests
             .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId));
          allParameters.Count().ShouldBeEqualTo(0);
       }
+
+      [Observation]
+      public void should_have_a_bsa_parameter_set()
+      {
+         _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameter.BSA).ShouldNotBeNull();
+      }
    }
 
    public class When_creating_an_individual_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_IndividualSimulation
@@ -130,26 +137,54 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_PopulationSimulation
+   public class When_creating_a_population_simulation_with_the_standard_building_block_and_iv_bolus_for_all_populations : concern_for_PopulationSimulation
    {
-      private Population _population;
+      private IList<SpeciesPopulation> _allPopulations;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _protocol = DomainFactoryForSpecs.CreateStandardIVProtocol();
-         _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_population, _compound, _protocol) as PopulationSimulation;
+
+         var populationsRepo = IoC.Resolve<IPopulationRepository>();
+         _allPopulations = populationsRepo.All().ToList();
       }
 
       [Observation]
       public void should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
-         var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
-         simSettingsRetriever.CreatePKSimDefaults(_simulation);
-         simulationEngine.Run(_simulation);
-         _simulation.HasResults.ShouldBeTrue();
+         var errors = new List<string>();
+         foreach (var pop in _allPopulations)
+         {
+            //currently simulations with pregnant pop cannot be created
+            if (pop.Name.Equals(CoreConstants.Population.Pregnant))
+               continue; 
+
+            runPopulationSimulationFor(pop.Name, errors);
+         }
+
+         errors.Count.ShouldBeEqualTo(0, errors.ToString("\n"));
+      }
+
+      private void runPopulationSimulationFor(string populationName, List<string> errors)
+      {
+         try
+         {
+            var individual = DomainFactoryForSpecs.CreateStandardIndividual(populationName);
+            var population = DomainFactoryForSpecs.CreateDefaultPopulation(individual);
+            var simulation = DomainFactoryForSpecs.CreateSimulationWith(population, _compound, _protocol) as PopulationSimulation;
+
+            var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
+            var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
+            simSettingsRetriever.CreatePKSimDefaults(simulation);
+            simulationEngine.Run(simulation);
+            simulation.HasResults.ShouldBeTrue();
+         }
+         catch(Exception ex)
+         {
+            var errorMsg = $"Population simulation for the population '{populationName}' failed: {ex.ToString()}";
+            errors.Add(errorMsg);
+         }
       }
    }
 

@@ -1,10 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Collections;
-using FakeItEasy;
+using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Commands;
@@ -13,13 +19,6 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Services;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
-using OSPSuite.Utility.Exceptions;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation
@@ -521,8 +520,10 @@ namespace PKSim.Presentation
          base.Context();
          _compound = new Compound().WithId("Comp");
          _metabolite = new Compound().WithId("Met");
-         _cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>();
-         _cache[_compound] = new List<IPKSimBuildingBlock> {_metabolite};
+         _cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>
+         {
+            [_compound] = new List<IPKSimBuildingBlock> {_metabolite}
+         };
 
          A.CallTo(() => _templateTaskQuery.SaveToTemplate(A<IReadOnlyList<Template>>._))
             .Invokes(x => _allTemplateItems = x.GetArgument<IReadOnlyList<Template>>(0));
@@ -586,6 +587,38 @@ namespace PKSim.Presentation
       public void should_not_save_the_template_or_any_of_the_references()
       {
          _allTemplateItems.ShouldBeNull();
+      }
+   }
+
+   public class When_adding_a_building_block_to_the_project : concern_for_BuildingBlockTask
+   {
+      private IPKSimCommand _command;
+
+      protected override void Because()
+      {
+         _command = sut.AddToProject(_buildingBlock);
+      }
+
+      [Observation]
+      public void should_add_the_command_to_the_history()
+      {
+         A.CallTo(() => _executionContext.AddToHistory(_command)).MustHaveHappened();
+      }
+   }
+
+   public class When_adding_a_building_block_to_the_project_adn_the_resulting_command_should_not_be_added_to_the_history : concern_for_BuildingBlockTask
+   {
+      private IPKSimCommand _command;
+
+      protected override void Because()
+      {
+         _command = sut.AddToProject(_buildingBlock, addToHistory: false);
+      }
+
+      [Observation]
+      public void should_add_the_command_to_the_history()
+      {
+         A.CallTo(() => _executionContext.AddToHistory(_command)).MustNotHaveHappened();
       }
    }
 }

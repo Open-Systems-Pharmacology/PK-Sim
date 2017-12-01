@@ -1,16 +1,17 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Presentation.Presenters.Populations;
-using PKSim.Presentation.Views.Populations;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.Populations;
+using PKSim.Presentation.Views.Populations;
 using DistributionSettings = PKSim.Core.Chart.DistributionSettings;
 
 namespace PKSim.Presentation
@@ -22,6 +23,7 @@ namespace PKSim.Presentation
       private IRepresentationInfoRepository _representationInfoRepository;
       protected IDisplayUnitRetriever _displayUnitRetriever;
       protected IPKParameterRepository _pkParameterRepository;
+      protected IApplicationSettings _applicationSettings;
 
       protected override void Context()
       {
@@ -30,7 +32,8 @@ namespace PKSim.Presentation
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          _displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
-         sut = new PopulationDistributionPresenter(_view, _distributionDataCreator, _representationInfoRepository, _displayUnitRetriever, _pkParameterRepository);
+         _applicationSettings = A.Fake<IApplicationSettings>();
+         sut = new PopulationDistributionPresenter(_view, _distributionDataCreator, _representationInfoRepository, _displayUnitRetriever, _pkParameterRepository, _applicationSettings);
       }
    }
 
@@ -76,6 +79,26 @@ namespace PKSim.Presentation
       public void should_use_the_quantity_path_as_plot_title()
       {
          _settings.PlotCaption.ShouldBeEqualTo(_pkParameter.QuantityPath);
+      }
+   }
+
+   public class When_copying_the_population_distribution_to_clipboard : concern_for_PopulationParameterDistributionPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _applicationSettings.WatermarkTextToUse).Returns("HELLO");
+      }
+
+      protected override void Because()
+      {
+         sut.CopyToClipboard();
+      }
+
+      [Observation]
+      public void should_use_the_watermak_defined_in_the_application_settings()
+      {
+         A.CallTo(() => _view.CopyToClipboard(_applicationSettings.WatermarkTextToUse)).MustHaveHappened();
       }
    }
 }

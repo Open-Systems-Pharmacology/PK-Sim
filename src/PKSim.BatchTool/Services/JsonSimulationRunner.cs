@@ -55,7 +55,7 @@ namespace PKSim.BatchTool.Services
                if (!inputDirectory.Exists)
                   throw new ArgumentException($"Input folder '{inputFolder}' does not exist");
 
-               var allSimulationFiles = inputDirectory.GetFiles(CoreConstants.Filter.JSON_FILTER);
+               var allSimulationFiles = inputDirectory.GetFiles(Constants.Filter.JSON_FILTER);
                if (allSimulationFiles.Length == 0)
                   throw new ArgumentException($"No simulation json file found in '{inputFolder}'");
 

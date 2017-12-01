@@ -61,7 +61,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          //use autobind to enable automatic notification
          _colMinimum = _gridViewBinder.AutoBind(x => x.Minimum);
          _colMaximum = _gridViewBinder.AutoBind(x => x.Maximum)
-            .WithOnValueSet((o, e) => OnEvent(() => maximumValueChanged(o,e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => maximumValueChanged(o,e.NewValue)));
 
          _gridViewBinder.AutoBind(x => x.Label);
          _gridViewBinder.AutoBind(x => x.Color)

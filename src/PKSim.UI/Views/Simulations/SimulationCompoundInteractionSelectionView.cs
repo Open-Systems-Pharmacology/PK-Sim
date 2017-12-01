@@ -81,7 +81,7 @@ namespace PKSim.UI.Views.Simulations
             .WithRepository(repositoryItemForCompoundProcess)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithCaption(PKSimConstants.UI.InteractionProcessInCompound)
-            .WithOnValueSet((dto, e) => OnEvent(() => _presenter.CompoundProcessSelectionChanged(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => _presenter.CompoundProcessSelectionChanged(dto, e.NewValue)));
       }
 
       protected IGridViewColumn BindToPartialIndividualMolecule()
@@ -90,7 +90,7 @@ namespace PKSim.UI.Views.Simulations
             .WithRepository(repositoryItemForIndividualMolecules)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithCaption(PKSimConstants.UI.MoleculeInIndividual(PKSimConstants.UI.Molecule))
-            .WithOnValueSet((dto, e) => OnEvent(() => _presenter.IndividualMoleculeSelectionChanged(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => _presenter.IndividualMoleculeSelectionChanged(dto, e.NewValue)));
       }
 
       protected IGridViewColumn BindToDeleteInteraction()

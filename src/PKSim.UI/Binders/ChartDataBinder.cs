@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraCharts;
 using DevExpress.XtraCharts.Native;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.UI.Mappers;
 using PKSim.UI.Views.PopulationAnalyses;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Services;
 using Axis = DevExpress.XtraCharts.Axis;
 using Constants = OSPSuite.Core.Domain.Constants;
 
@@ -28,7 +28,6 @@ namespace PKSim.UI.Binders
       private readonly bool _allowZoom;
       private readonly ISymbolToMarkerKindMapper _symbolMapper;
       private readonly ILineStyleToDashStyleMapper _lineStyleMapper;
-      private readonly DiagramZoomRectangleService _diagramZoomRectangleService;
       private ChartTitle _previewChartOrigin;
       private const int DEFAULT_TICKS_FOR_LOG_SCALE = 8;
       private const int DEFAULT_TICKS_FOR_LIN_SCALE = 2;
@@ -40,9 +39,6 @@ namespace PKSim.UI.Binders
          _allowZoom = allowZoom;
          _symbolMapper = new SymbolToMarkerKindMapper();
          _lineStyleMapper = new LineStyleToDashStyleMapper();
-
-         if (_allowZoom)
-            _diagramZoomRectangleService = new DiagramZoomRectangleService(_view.Chart, zoomAction);
       }
 
       public void ClearPlot()
@@ -52,7 +48,15 @@ namespace PKSim.UI.Binders
 
       private void doUpdateOf(ChartCollectionBase collection, Action actionToPerform)
       {
-         _view.Chart.DoUpdateOf(collection, actionToPerform);
+         collection.BeginUpdate();
+         try
+         {
+            actionToPerform();
+         }
+         finally
+         {
+            collection.EndUpdate();
+         }
       }
 
       public void Bind(ChartData<TX, TY> chartData, PopulationAnalysisChart analysisChart)
@@ -68,6 +72,10 @@ namespace PKSim.UI.Binders
          {
             var dummySeries = new Series("dummy", _viewType);
             _view.Chart.Series.Add(dummySeries);
+
+            //Zoom initialization should be performed with an existing Diagram
+            if (_allowZoom)
+               new DiagramZoomRectangleService(_view.Chart, zoomAction);
          }
 
          var diagram = _view.Diagram;
@@ -91,9 +99,6 @@ namespace PKSim.UI.Binders
          // annotations must be placed at the end because otherwise they get removed for example when series are added.
          // this is a behavior of dev express.
          doUpdateOf(diagram.Panes, () => addPaneTitles(chartData, diagram));
-
-         if (_allowZoom)
-            _diagramZoomRectangleService.InitializeZoomFor(diagram);
 
          _view.Refresh();
       }
@@ -143,7 +148,7 @@ namespace PKSim.UI.Binders
          if (populationAnalysisChart.PreviewSettings)
             adjustDisplayForPreview(populationAnalysisChart);
          else
-            adjustDisplayForApplication();
+            adjustDisplayForApplication(populationAnalysisChart);
       }
 
       private static void applyAxisZoom(AxisSettings axisSettings, Axis axis)
@@ -160,11 +165,17 @@ namespace PKSim.UI.Binders
          axis.VisualRange.SetMinMaxValues(axisSettings.Min, axisSettings.Max);
       }
 
-      private void adjustDisplayForApplication()
+      private void adjustDisplayForApplication(PopulationAnalysisChart populationAnalysisChart)
       {
          _view.SetDockStyle(DockStyle.Fill);
-         _view.Chart.SetFontAndSizeSettings(ChartFontAndSizeSettings.Default, _view.Chart.Size);
+         _view.Chart.SetFontAndSizeSettings(new ChartFontAndSizeSettings(), _view.Chart.Size);
          clearOriginText();
+         updateWatermark(populationAnalysisChart, showWatermark:false);
+      }
+
+      private void updateWatermark(PopulationAnalysisChart populationAnalysisChart, bool showWatermark)
+      {
+         _view.UpdateWatermark(populationAnalysisChart, showWatermark);
       }
 
       private void clearOriginText()
@@ -178,13 +189,14 @@ namespace PKSim.UI.Binders
          _view.SetDockStyle(hasHeightAndWidth(populationAnalysisChart) ? DockStyle.None : DockStyle.Fill);
          _view.Chart.SetFontAndSizeSettings(populationAnalysisChart.FontAndSize, _view.Chart.Size);
          previewOriginText(populationAnalysisChart);
+         updateWatermark(populationAnalysisChart, showWatermark: true);
       }
 
       private void previewOriginText(PopulationAnalysisChart populationAnalysisChart)
       {
          clearOriginText();
          if (populationAnalysisChart.IncludeOriginData)
-            _previewChartOrigin = populationAnalysisChart.AddOriginData(_view.Chart);
+            _previewChartOrigin = _view.Chart.AddOriginData(populationAnalysisChart);
       }
 
       private bool hasHeightAndWidth(PopulationAnalysisChart chart)
@@ -231,7 +243,8 @@ namespace PKSim.UI.Binders
             var pane = getPaneFor(paneData.Id, diagram);
             if (isNoTitleNeededFor(paneData))
                continue;
-            _view.AddTitleTo(pane, paneData.Caption);
+
+            doUpdateOf(pane.Annotations, () => _view.AddTitleTo(pane, paneData.Caption));
          }
       }
 
@@ -381,7 +394,7 @@ namespace PKSim.UI.Binders
             ValueScaleType = ScaleType.Numerical,
             LabelsVisibility = DefaultBoolean.False,
             Visible = true,
-            View = { Color = curve.Color },
+            View = {Color = curve.Color},
          };
 
 
@@ -466,7 +479,7 @@ namespace PKSim.UI.Binders
             view.Marker1Visibility = DefaultBoolean.False;
             view.Marker2Visibility = DefaultBoolean.False;
             view.FillStyle.FillMode = FillMode.Solid;
-            view.Transparency = Constants.Population.STD_DEV_CURVE_TRANSPARENCY;
+            view.Transparency = Constants.RANGE_AREA_TRANSPARENCY;
          });
       }
 
@@ -492,7 +505,6 @@ namespace PKSim.UI.Binders
          updatePrimaryYAxisSettings(analysisChart);
 
          updateSecondaryYAxisSettings(analysisChart);
-
       }
 
       private void updateSecondaryYAxisSettings(PopulationAnalysisChart analysisChart)
@@ -519,7 +531,6 @@ namespace PKSim.UI.Binders
          var axisSettings = analysisChart.PrimaryXAxisSettings;
 
          updateAxisSettingsAndRanges(axis, axisSettings);
-
       }
 
       private void updateAxisSettingsAndRanges(Axis axis, AxisSettings axisSettings)

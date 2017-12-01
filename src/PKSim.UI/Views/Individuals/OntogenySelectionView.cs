@@ -44,7 +44,7 @@ namespace PKSim.UI.Views.Individuals
          _screenBinder.Bind(x => x.Ontogeny).To(cbOntogey)
             .WithValues(x => _presenter.AllOntogenies())
             .AndDisplays(x => x.DisplayName)
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SelectedOntogenyIs(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SelectedOntogenyIs(e.NewValue));
 
          btnShowOntogeny.Click += (o, e) => OnEvent(_presenter.ShowOntogeny);
          btnLoadOntogenyFromFile.Click += (o, e) => OnEvent(_presenter.LoadOntogeny);

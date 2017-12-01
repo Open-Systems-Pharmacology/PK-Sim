@@ -7,6 +7,7 @@ using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
 using PKSim.Presentation.Views.Main;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Events;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;
@@ -33,11 +34,21 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IUserSettings _userSettings;
       private readonly IProjectTask _projectTask;
       private readonly IVersionChecker _versionChecker;
+      private readonly IPKSimConfiguration _configuration;
+      private readonly IWatermarkStatusChecker _watermarkStatusChecker;
       public StartOptions StartOptions { get; set; }
 
-      public PKSimMainViewPresenter(IPKSimMainView mainView, IRepository<IMainViewItemPresenter> presenterRepository,
-         IExitCommand exitCommand, IEventPublisher eventPublisher, IUserSettings userSettings,
-         IProjectTask projectTask, IVersionChecker versionChecker, ITabbedMdiChildViewContextMenuFactory contextMenuFactory)
+      public PKSimMainViewPresenter(IPKSimMainView mainView, 
+         IEventPublisher eventPublisher, 
+         ITabbedMdiChildViewContextMenuFactory contextMenuFactory, 
+         IRepository<IMainViewItemPresenter> presenterRepository, 
+         IExitCommand exitCommand, 
+         IUserSettings userSettings, 
+         IProjectTask projectTask, 
+         IVersionChecker versionChecker, 
+         IPKSimConfiguration configuration,
+         IWatermarkStatusChecker watermarkStatusChecker
+         )
          : base(mainView, eventPublisher, contextMenuFactory)
       {
          _presenterRepository = presenterRepository;
@@ -45,12 +56,14 @@ namespace PKSim.Presentation.Presenters.Main
          _userSettings = userSettings;
          _projectTask = projectTask;
          _versionChecker = versionChecker;
+         _configuration = configuration;
+         _watermarkStatusChecker = watermarkStatusChecker;
       }
 
       public override void Initialize()
       {
          View.Initialize();
-         View.Caption = CoreConstants.ProductDisplayName;
+         View.Caption = _configuration.ProductDisplayName;
 
          //intialize all sub presenter defined in the user interface
          _presenterRepository.All().Each(presenter => presenter.Initialize());
@@ -58,9 +71,8 @@ namespace PKSim.Presentation.Presenters.Main
          //set the action to be performed when closing the main form
          View.Closing += (o, e) =>
          {
-            _exitCommand.ShouldCloseApplication = false;
             _exitCommand.ExecuteWithinExceptionHandler(_eventPublisher, this);
-            e.Cancel = _exitCommand.Canceled || !CanClose;
+            e.Cancel = _exitCommand.Canceled;
          };
 
          View.Loading += () => _userSettings.RestoreLayout();
@@ -71,11 +83,16 @@ namespace PKSim.Presentation.Presenters.Main
       public override void Run()
       {
          _projectTask.Run(StartOptions);
+
          showUpdateNotification();
+         _watermarkStatusChecker.CheckWatermarkStatus();
       }
 
       private async void showUpdateNotification()
       {
+         if (!_userSettings.ShowUpdateNotification)
+            return;
+
          try
          {
             var hasNewVersion = await _versionChecker.NewVersionIsAvailableAsync();
@@ -86,10 +103,7 @@ namespace PKSim.Presentation.Presenters.Main
             //no need to do anything if version cannot be returned
             return;
          }
-
-         if (!_userSettings.ShowUpdateNotification)
-            return;
-
+    
          if (string.Equals(_versionChecker.LatestVersion, _userSettings.LastIgnoredVersion))
             return;
 
