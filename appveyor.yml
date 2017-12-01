@@ -2,7 +2,7 @@ configuration: Debug
 image: Visual Studio 2017
 
 environment:
-  app_version: '7.2.0'
+  app_version: '7.3.0'
 
 version: '%app_version%.{build}'
 
