@@ -109,7 +109,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          return TransportTypes.By(transportType).DisplayName;
       }
 
-      private ITransporterExpressionContainer transporterContainerFrom(TransporterExpressionContainerDTO transporterExpressionContainerDTO)
+      private TransporterExpressionContainer transporterContainerFrom(TransporterExpressionContainerDTO transporterExpressionContainerDTO)
       {
          return _transporter.AllExpressionsContainers().FindByName(transporterExpressionContainerDTO.ContainerName);
       }
@@ -130,12 +130,12 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public bool OntogenyVisible
       {
-         set { _moleculePropertiesPresenter.OntogenyVisible = value; }
+         set => _moleculePropertiesPresenter.OntogenyVisible = value;
       }
 
       public bool MoleculeParametersVisible
       {
-         set { _moleculePropertiesPresenter.MoleculeParametersVisible = value; }
+         set => _moleculePropertiesPresenter.MoleculeParametersVisible = value;
       }
 
       public void ActivateMolecule(IndividualMolecule molecule)

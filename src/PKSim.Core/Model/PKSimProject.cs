@@ -2,60 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 
 namespace PKSim.Core.Model
 {
-   public interface IPKSimProject : IProject
-   {
-      /// <summary>
-      ///    Returns all the building block of a given type <paramref name="buildingBlockType" />
-      /// </summary>
-      IReadOnlyCollection<IPKSimBuildingBlock> All(PKSimBuildingBlockType buildingBlockType);
-
-      /// <summary>
-      ///    Returns all the building block of a given type <typeparamref name="T" /> matching a given predicate
-      /// </summary>
-      /// <typeparam name="T">Type if building block</typeparam>
-      IReadOnlyCollection<T> All<T>(Func<T, bool> predicate) where T : class;
-
-      /// <summary>
-      ///    Add a building block to the project
-      /// </summary>
-      void AddBuildingBlock(IPKSimBuildingBlock buildingBlockToAdd);
-
-      /// <summary>
-      ///    Remove a building block from the project
-      /// </summary>
-      void RemoveBuildingBlock(IPKSimBuildingBlock buildingBlockToRemove);
-
-      /// <summary>
-      ///    Returns all <see cref="ISimulationComparison" /> defined in the project
-      /// </summary>
-      IReadOnlyCollection<ISimulationComparison> AllSimulationComparisons { get; }
-
-      /// <summary>
-      ///    Adds the <paramref name="simulationComparison" /> to the project
-      /// </summary>
-      void AddSimulationComparison(ISimulationComparison simulationComparison);
-
-      /// <summary>
-      ///    Removes the <paramref name="simulationComparison" /> from the project
-      /// </summary>
-      void RemoveSimulationComparison(ISimulationComparison simulationComparison);
-
-      /// <summary>
-      ///    returns the default settings for the given settings type or null if not found
-      /// </summary>
-      OutputSelections OutputSelections { get; set; }
-   }
-
-   public class PKSimProject : Project, IPKSimProject
+   public class PKSimProject : Project
    {
       private readonly List<IPKSimBuildingBlock> _allBuildingBlocks = new List<IPKSimBuildingBlock>();
       private readonly List<ISimulationComparison> _simulationComparisons = new List<ISimulationComparison>();
 
+      /// <summary>
+      ///    returns the default settings for the given settings type or null if not found
+      /// </summary>
       public OutputSelections OutputSelections { get; set; }
 
       private bool _hasChanged;
@@ -73,15 +33,24 @@ namespace PKSim.Core.Model
 
       public override IEnumerable<IUsesObservedData> AllUsersOfObservedData => AllParameterAnalysables.OfType<IUsesObservedData>().Union(All<Simulation>()).Union(AllSimulationComparisons);
 
-      public IReadOnlyCollection<ISimulationComparison> AllSimulationComparisons => _simulationComparisons;
+      /// <summary>
+      ///    Returns all <see cref="ISimulationComparison" /> defined in the project
+      /// </summary>
+      public virtual IReadOnlyCollection<ISimulationComparison> AllSimulationComparisons => _simulationComparisons;
 
-      public void AddSimulationComparison(ISimulationComparison simulationComparison)
+      /// <summary>
+      ///    Adds the <paramref name="simulationComparison" /> to the project
+      /// </summary>
+      public virtual void AddSimulationComparison(ISimulationComparison simulationComparison)
       {
          _simulationComparisons.Add(simulationComparison);
          _hasChanged = true;
       }
 
-      public void RemoveSimulationComparison(ISimulationComparison simulationComparison)
+      /// <summary>
+      ///    Removes the <paramref name="simulationComparison" /> from the project
+      /// </summary>
+      public virtual void RemoveSimulationComparison(ISimulationComparison simulationComparison)
       {
          if (!_simulationComparisons.Contains(simulationComparison)) return;
          _simulationComparisons.Remove(simulationComparison);
@@ -94,12 +63,19 @@ namespace PKSim.Core.Model
          return All<T>(x => true);
       }
 
-      public IReadOnlyCollection<IPKSimBuildingBlock> All(PKSimBuildingBlockType buildingBlockType)
+      /// <summary>
+      ///    Returns all the building block of a given type <paramref name="buildingBlockType" />
+      /// </summary>
+      public virtual IReadOnlyCollection<IPKSimBuildingBlock> All(PKSimBuildingBlockType buildingBlockType)
       {
          return All<IPKSimBuildingBlock>(c => c.BuildingBlockType.Is(buildingBlockType));
       }
 
-      public IReadOnlyCollection<T> All<T>(Func<T, bool> predicate) where T : class
+      /// <summary>
+      ///    Returns all the building block of a given type <typeparamref name="T" /> matching a given predicate
+      /// </summary>
+      /// <typeparam name="T">Type if building block</typeparam>
+      public virtual IReadOnlyCollection<T> All<T>(Func<T, bool> predicate) where T : class
       {
          var query = from child in _allBuildingBlocks
             let castChild = child as T
@@ -110,7 +86,26 @@ namespace PKSim.Core.Model
          return query.ToList();
       }
 
-      public void AddBuildingBlock(IPKSimBuildingBlock buildingBlockToAdd)
+
+      public virtual IPKSimBuildingBlock BuildingBlockById(string templateBuildingBlockId) => BuildingBlockById<IPKSimBuildingBlock>(templateBuildingBlockId);
+
+      public virtual T BuildingBlockById<T>(string templateBuildingBlockId) where T: class, IPKSimBuildingBlock
+      {
+         return _allBuildingBlocks.FindById(templateBuildingBlockId) as T;
+      }
+
+      public virtual T BuildingBlockByName<T>(string templateBuildingBlockName) where T : class, IPKSimBuildingBlock
+      {
+         return _allBuildingBlocks.OfType<T>().FindByName(templateBuildingBlockName);
+      }
+
+      //TODO MOVE TO CORE
+      public virtual DataRepository ObservedDataBy(UsedObservedData  usedObservedData) => ObservedDataBy(usedObservedData.Id);
+
+      /// <summary>
+      ///    Add a building block to the project
+      /// </summary>
+      public virtual void AddBuildingBlock(IPKSimBuildingBlock buildingBlockToAdd)
       {
          //that should never happen. Just in case
          var bbWithTheSameName = All(buildingBlockToAdd.BuildingBlockType)
@@ -122,7 +117,10 @@ namespace PKSim.Core.Model
          _allBuildingBlocks.Add(buildingBlockToAdd);
       }
 
-      public void RemoveBuildingBlock(IPKSimBuildingBlock buildingBlockToRemove)
+      /// <summary>
+      ///    Remove a building block from the project
+      /// </summary>
+      public virtual void RemoveBuildingBlock(IPKSimBuildingBlock buildingBlockToRemove)
       {
          _allBuildingBlocks.Remove(buildingBlockToRemove);
          RemoveClassifiableForWrappedObject(buildingBlockToRemove);

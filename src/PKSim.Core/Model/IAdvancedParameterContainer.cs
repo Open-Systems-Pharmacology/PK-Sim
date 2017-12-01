@@ -11,18 +11,20 @@ namespace PKSim.Core.Model
       ///    true (default),
       ///    random values are also generated for the advanced paraneters
       /// </summary>
-      void AddAdvancedParameter(IAdvancedParameter advancedParameter, bool generateRandomValues = true);
+      void AddAdvancedParameter(AdvancedParameter advancedParameter, bool generateRandomValues = true);
 
-      IEnumerable<IAdvancedParameter> AdvancedParameters { get; }
+      IEnumerable<AdvancedParameter> AdvancedParameters { get; }
 
-      void RemoveAdvancedParameter(IAdvancedParameter advancedParameter);
+      void RemoveAdvancedParameter(AdvancedParameter advancedParameter);
 
-      IAdvancedParameter AdvancedParameterFor(IEntityPathResolver entityPathResolver, IParameter parameter);
+      void RemoveAllAdvancedParameters();
+
+      AdvancedParameter AdvancedParameterFor(IEntityPathResolver entityPathResolver, IParameter parameter);
 
       /// <summary>
       ///    Create a new set of random values for the advanced parameter
       /// </summary>
-      void GenerateRandomValuesFor(IAdvancedParameter advancedParameter);
+      void GenerateRandomValuesFor(AdvancedParameter advancedParameter);
 
       /// <summary>
       ///    Returns the parameters defined as advanced in the container
@@ -34,6 +36,6 @@ namespace PKSim.Core.Model
       /// </summary>
       IEnumerable<IParameter> AllConstantParameters(IEntityPathResolver entityPathResolver);
 
-      void SetAdvancedParameters(IAdvancedParameterCollection advancedParameterCollection);
+      void SetAdvancedParameters(AdvancedParameterCollection advancedParameterCollection);
    }
 }

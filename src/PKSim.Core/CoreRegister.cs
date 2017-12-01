@@ -9,14 +9,12 @@ using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Data;
-using PKSim.Core.Batch;
 using PKSim.Core.Comparison;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Mappers;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using Individual = PKSim.Core.Model.Individual;
-using Simulation = PKSim.Core.Model.Simulation;
 
 namespace PKSim.Core
 {
@@ -39,8 +37,10 @@ namespace PKSim.Core
             scan.ExcludeType<DistributionFormulaFactory>();
             scan.ExcludeType<ApplicationSettings>();
             scan.ExcludeType<ProjectChangedNotifier>();
-            scan.ExcludeType<BatchLogger>();
-            scan.ExcludeType<SimulationRunner>();
+            
+            //Do not register the InteractiveSimulationRunner as it should be registered only if needed
+            scan.ExcludeType<InteractiveSimulationRunner>();
+            scan.ExcludeType<SnapshotMapper>();
 
             scan.ExcludeNamespaceContainingType<IndividualDiffBuilder>();
             scan.WithConvention<PKSimRegistrationConvention>();
@@ -55,8 +55,7 @@ namespace PKSim.Core
             scan.IncludeType<PKSimObjectBaseFactory>();
             scan.IncludeType<DistributionFormulaFactory>();
             scan.IncludeType<ProjectChangedNotifier>();
-            scan.IncludeType<BatchLogger>();
-            scan.IncludeType<SimulationRunner>();
+            scan.IncludeType<SnapshotMapper>();
 
             scan.RegisterAs(LifeStyle.Singleton);
             scan.WithConvention<PKSimRegistrationConvention>();
@@ -90,6 +89,7 @@ namespace PKSim.Core
          container.Register<Protocol, SimpleProtocol>();
          container.Register<Simulation, IndividualSimulation>();
          container.Register<Population, RandomPopulation>();
+         container.Register<SchemaItem, SchemaItem>();
 
          //generic command registration
          container.Register<IOSPSuiteExecutionContext, ExecutionContext>();

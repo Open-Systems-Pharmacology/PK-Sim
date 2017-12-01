@@ -19,6 +19,8 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
+using PKSim.CLI.Core;
+using PKSim.CLI.Core.MinimalImplementations;
 
 namespace PKSim.IntegrationTests
 {
@@ -35,22 +37,17 @@ namespace PKSim.IntegrationTests
          var container = IoC.Container;
          using (container.OptimizeDependencyResolution())
          {
-            var configuration = container.Resolve<IPKSimConfiguration>();
-//            configuration.PKSimDb = DomainHelperForSpecs.DbFilePath;
-//            configuration.DimensionFilePath = DomainHelperForSpecs.DimensionFilePath;
-//            configuration.PKParametersFilePath = DomainHelperForSpecs.PKParametersFilePath;
-
             //need to register these serives for which the default implementation is in the UI
             container.RegisterImplementationOf(new SynchronizationContext());
             container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
-            container.Register<IDisplayUnitRetriever, MatlabDisplayUnitRetriever>();
+            container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
             container.Register<IOntogenyFactorsRetriever, OntogenyFactorsRetriever>();
+            container.Register<ISimulationConstructor, SimulationConstructor>();
 
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
             container.RegisterImplementationOf(A.Fake<IDialogCreator>());
             container.RegisterImplementationOf(A.Fake<IHistoryManager>());
-            container.RegisterImplementationOf(A.Fake<IWorkspace>());
             container.RegisterImplementationOf(A.Fake<OSPSuite.Core.IWorkspace>());
             container.RegisterImplementationOf(A.Fake<IHeavyWorkManager>());
             container.RegisterImplementationOf(A.Fake<IChartTemplatingTask>());
@@ -60,6 +57,7 @@ namespace PKSim.IntegrationTests
             container.AddRegister(x =>
             {
                x.FromInstance(new CoreRegister());
+               x.FromType<CLIRegister>();
                x.FromType<InfrastructureRegister>();
                x.FromType<PresenterRegister>();
                x.FromType<OSPSuite.Presentation.PresenterRegister>();
@@ -74,6 +72,7 @@ namespace PKSim.IntegrationTests
 
 
             InfrastructureRegister.RegisterSerializationDependencies();
+            InfrastructureRegister.RegisterWorkspace();
          }
          //Required for usage with nunit 3
          Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;

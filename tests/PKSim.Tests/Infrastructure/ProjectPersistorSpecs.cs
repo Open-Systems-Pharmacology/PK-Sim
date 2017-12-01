@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using NHibernate;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.Serialization;
 using PKSim.Infrastructure.Serialization.ORM.Mappers;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
-using OSPSuite.Core.Serialization;
 
 namespace PKSim.Infrastructure
 {
@@ -16,14 +15,14 @@ namespace PKSim.Infrastructure
    {
       protected IProjectMetaDataToProjectMapper _projectMetaDataToProjectMapper;
       protected IProjectToProjectMetaDataMapper _projectToProjectMetaDataMapper;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected ProjectMetaData _projectMetaData;
       protected ISession _session;
       protected IList<ProjectMetaData> _listOfProjectsInDatabase;
-      
+
       protected override void Context()
       {
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _session = A.Fake<ISession>();
          _projectMetaData = new ProjectMetaData {Id = 1};
          _listOfProjectsInDatabase = new List<ProjectMetaData>();
@@ -109,7 +108,6 @@ namespace PKSim.Infrastructure
          The.Action(() => sut.Load(_session)).ShouldThrowAn<InvalidProjectVersionException>();
       }
    }
-
 
    public class When_loading_a_project_from_a_corrupted_file : concern_for_ProjectPersistor
    {

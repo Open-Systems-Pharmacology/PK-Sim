@@ -79,7 +79,7 @@ namespace PKSim.Presentation.Presenters.Main
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.EventFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder));
 
-            var pksimProject = project.DowncastTo<IPKSimProject>();
+            var pksimProject = project.DowncastTo<PKSimProject>();
             pksimProject.All<Individual>().Each(bb => addIndividualToTree(bb));
             pksimProject.All<Compound>().Each(bb => addCompoundToTree(bb));
             pksimProject.All<Protocol>().Each(bb => addProtocolToTree(bb));

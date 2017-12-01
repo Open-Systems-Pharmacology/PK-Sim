@@ -25,7 +25,7 @@ namespace PKSim.Core.Services
       ///    (e.g one compartment unless the container is blood or plamsa. In that case, all available blood and plasma
       ///    compartment are retrieved)
       /// </summary>
-      IEnumerable<IContainer> AllContainersFor(Organism organism, IEnumerable<IContainer> allOrganismContainers, IndividualMolecule molecule, IMoleculeExpressionContainer expressionContainer);
+      IEnumerable<IContainer> AllContainersFor(Organism organism, IEnumerable<IContainer> allOrganismContainers, IndividualMolecule molecule, MoleculeExpressionContainer expressionContainer);
 
       /// <summary>
       ///    Returns the container in organsim where a molecule can possibly be defined
@@ -90,15 +90,15 @@ namespace PKSim.Core.Services
          return AllOrganismContainers(individual.Organism);
       }
 
-      public IEnumerable<IContainer> AllContainersFor(Organism organism, IEnumerable<IContainer> allOrganismContainers, IndividualMolecule molecule, IMoleculeExpressionContainer expressionContainer)
+      public IEnumerable<IContainer> AllContainersFor(Organism organism, IEnumerable<IContainer> allOrganismContainers, IndividualMolecule molecule, MoleculeExpressionContainer expressionContainer)
       {
          return allContainersFor(organism, molecule, allOrganismContainers, expressionContainer);
       }
 
-      private IEnumerable<IContainer> allContainersFor(Organism organism, IndividualMolecule molecule, IEnumerable<IContainer> allContainers, IMoleculeExpressionContainer expressionContainer)
+      private IEnumerable<IContainer> allContainersFor(Organism organism, IndividualMolecule molecule, IEnumerable<IContainer> allContainers, MoleculeExpressionContainer expressionContainer)
       {
          if (molecule.MoleculeType == QuantityType.Transporter)
-            return allContainersForTransporter(organism, molecule.DowncastTo<IndividualTransporter>(), allContainers, expressionContainer.DowncastTo<ITransporterExpressionContainer>());
+            return allContainersForTransporter(organism, molecule.DowncastTo<IndividualTransporter>(), allContainers, expressionContainer.DowncastTo<TransporterExpressionContainer>());
 
          var protein = molecule.DowncastTo<IndividualProtein>();
          //plasma always generated
@@ -166,7 +166,7 @@ namespace PKSim.Core.Services
          return relativeExpressionContainer.ParentContainer.Name;
       }
 
-      private IEnumerable<IContainer> compartmentFor(Organism organism, IMoleculeExpressionContainer expressionContainer, string defaultCompartment)
+      private IEnumerable<IContainer> compartmentFor(Organism organism, MoleculeExpressionContainer expressionContainer, string defaultCompartment)
       {
          var usedCompartment = expressionContainer.IsLumen ? expressionContainer.ContainerName : defaultCompartment;
          var compartment = expressionContainer.CompartmentPath(usedCompartment).Resolve<IContainer>(organism);
@@ -200,7 +200,7 @@ namespace PKSim.Core.Services
          return allContainers.Where(c => c.Name.Equals(name));
       }
 
-      private IEnumerable<IContainer> allContainersForTransporter(Organism organism, IndividualTransporter transporter, IEnumerable<IContainer> allContainers, ITransporterExpressionContainer expressionContainer)
+      private IEnumerable<IContainer> allContainersForTransporter(Organism organism, IndividualTransporter transporter, IEnumerable<IContainer> allContainers, TransporterExpressionContainer expressionContainer)
       {
          if (expressionContainer.IsSurrogate())
             return allCompartmentsOfNames(allContainers, expressionContainer.Name);

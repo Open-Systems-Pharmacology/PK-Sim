@@ -10,7 +10,7 @@ namespace PKSim.Presentation.Services
    public interface IEventTask : IBuildingBlockTask<PKSimEvent>
    {
       PKSimEvent CreateEvent();
-      IEventMapping CreateEventMapping();
+      EventMapping CreateEventMapping();
    }
 
    public class EventTask : BuildingBlockTask<PKSimEvent>, IEventTask
@@ -33,7 +33,7 @@ namespace PKSim.Presentation.Services
          return AddToProject<ICreateEventPresenter>();
       }
 
-      public IEventMapping CreateEventMapping()
+      public EventMapping CreateEventMapping()
       {
          return _eventMappingFactory.Create();
       }

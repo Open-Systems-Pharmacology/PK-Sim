@@ -104,7 +104,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _simulation.Name).Returns("toto");
          A.CallTo(() => _simulation.DataRepository).Returns(new DataRepository());
          _excelFile = "tralala";
-         A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, PKSimConstants.UI.DefaultResultsExportNameFor(_simulation.Name), null)).Returns(_excelFile);
+         A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, CoreConstants.DefaultResultsExportNameFor(_simulation.Name), null)).Returns(_excelFile);
          A.CallTo(() => _dataRepositoryTask.ToDataTable(_simulation.DataRepository, A<Func<DataColumn, string>>._, A<Func<DataColumn, IDimension>>._, false, true)).Returns(_dataTables);
       }
 
@@ -127,7 +127,7 @@ namespace PKSim.Infrastructure
          _simulation = A.Fake<Simulation>().WithName("Sim");
          A.CallTo(() => _simulation.HasResults).Returns(true);
          _fileFullPath = "file full path";
-         A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToCSV, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.REPORT, PKSimConstants.UI.DefaultResultsExportNameFor(_simulation.Name), null))
+         A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToCSV, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.REPORT, CoreConstants.DefaultResultsExportNameFor(_simulation.Name), null))
             .Returns(_fileFullPath);
       }
 

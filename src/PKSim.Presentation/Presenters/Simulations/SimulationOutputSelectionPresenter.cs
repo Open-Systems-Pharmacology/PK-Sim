@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Core.Services;
 using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistableUpdater;
 
 namespace PKSim.Presentation.Presenters.Simulations
@@ -34,7 +35,7 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       protected readonly IQuantitySelectionPresenter _quantitySelectionPresenter;
       private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
-      private readonly IProjectRetriever _projectRetriever;
+      private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IDialogCreator _dialogCreator;
       private readonly ICoreUserSettings _userSettings;
 
@@ -42,7 +43,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       protected TSimulation _simulation;
 
       protected SimulationOutputSelectionPresenter(TView view, IQuantitySelectionPresenter quantitySelectionPresenter,
-         ISimulationPersistableUpdater simulationPersistableUpdater, IProjectRetriever projectRetriever, IDialogCreator dialogCreator, ICoreUserSettings userSettings)
+         ISimulationPersistableUpdater simulationPersistableUpdater, IPKSimProjectRetriever projectRetriever, IDialogCreator dialogCreator, ICoreUserSettings userSettings)
          : base(view)
       {
          _quantitySelectionPresenter = quantitySelectionPresenter;
@@ -88,7 +89,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public virtual void SaveSettingsToProject()
       {
-         saveSettings(x => { _projectRetriever.CurrentProject.DowncastTo<IPKSimProject>().OutputSelections = x; }, PKSimConstants.UI.SaveSimulationSettingsToProject);
+         saveSettings(x => { _projectRetriever.Current.OutputSelections = x; }, PKSimConstants.UI.SaveSimulationSettingsToProject);
       }
 
       public void SaveSettingsToUserSettings()

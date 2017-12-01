@@ -23,7 +23,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Partial process mapping that was used. This is only set when loading a simulation and null otherwise
       /// </summary>
-      public virtual IPartialProcessMapping PartialProcessMapping { get; set; }
+      public virtual IProcessMapping PartialProcessMapping { get; set; }
 
       /// <summary>
       ///    Status of mapping

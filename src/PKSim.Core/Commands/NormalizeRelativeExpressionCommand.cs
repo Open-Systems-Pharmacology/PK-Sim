@@ -34,7 +34,7 @@ namespace PKSim.Core.Commands
       }
 
 
-      protected override void ClearReferences()
+      protected override void ClearReferences() 
       {
          _molecule = null;
       }
@@ -54,7 +54,8 @@ namespace PKSim.Core.Commands
       {
          //Retrieve building block id in execute only since molecule might have been added in a macro command and bbid was not available in constructor
          BuildingBlockId = context.BuildingBlockIdContaining(_molecule);
-         var allRelExpressionContainer = _molecule.AllExpressionsContainers().ToList();
+         var allRelExpressionContainer = _molecule.AllExpressionsContainers();
+         if (!allRelExpressionContainer.Any()) return;
          var max = allRelExpressionContainer.Select(x => x.RelativeExpression).Max();
          allRelExpressionContainer.Each(relExp => relExp.RelativeExpressionNorm = max == 0 ? 0 : relExp.RelativeExpression / max);
       }

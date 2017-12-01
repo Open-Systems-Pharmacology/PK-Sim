@@ -102,7 +102,7 @@ namespace PKSim.Core
       private readonly List<string> _allImportedParameters = new List<string>();
       private readonly PathCache<IParameter> _allParameters = new PathCache<IParameter>(new EntityPathResolverForSpecs());
       private readonly PathCache<IParameter> _allCreateIndividualParameters = new PathCache<IParameter>(new EntityPathResolverForSpecs());
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {

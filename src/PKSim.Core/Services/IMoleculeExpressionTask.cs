@@ -62,7 +62,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Updates the membrane type for the transporter container given as parameter
       /// </summary>
-      ICommand SetMembraneLocationFor(ITransporterExpressionContainer transporterContainer, TransportType transportType, MembraneLocation membraneLocation);
+      ICommand SetMembraneLocationFor(TransporterExpressionContainer transporterContainer, TransportType transportType, MembraneLocation membraneLocation);
 
       /// <summary>
       ///    Update the tissue location of the protein

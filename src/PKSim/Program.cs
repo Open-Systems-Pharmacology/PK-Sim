@@ -4,7 +4,6 @@ using DevExpress.LookAndFeel;
 using DevExpress.XtraEditors;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using PKSim.UI.BootStrapping;
 
 namespace PKSim
@@ -31,7 +30,6 @@ namespace PKSim
          catch (Exception e)
          {
             MessageBox.Show(e.ExceptionMessageWithStackTrace(), "Unhandled Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            e.LogError();
          }
       }
    }

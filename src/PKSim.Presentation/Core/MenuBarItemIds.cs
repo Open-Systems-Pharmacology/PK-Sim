@@ -13,6 +13,8 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId SaveGroup = createMenuBarItemId("SaveGroup");
       public static MenuBarItemId SaveProject = createMenuBarItemId("SaveProject");
       public static MenuBarItemId SaveProjectAs = createMenuBarItemId("SaveProjectAs");
+      public static MenuBarItemId ExportProjectToSnapshot = createMenuBarItemId("ExportProjectAsSnapshot");
+      public static MenuBarItemId LoadProjectFromSnahpshot = createMenuBarItemId("LoadProjectFromSnahpshot");
       public static MenuBarItemId CloseProject = createMenuBarItemId("CloseProject");
       public static MenuBarItemId NewIndividual = createMenuBarItemId("NewIndividual");
       public static MenuBarItemId LoadIndividual = createMenuBarItemId("LoadIndividual");
@@ -43,7 +45,7 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId NewProtocol = createMenuBarItemId("NewProtocol");
       public static MenuBarItemId LoadProtocol = createMenuBarItemId("LoadProtocol");
       public static MenuBarItemId NewFormulation = createMenuBarItemId("NewFormulation");
-      public static MenuBarItemId LoadFormulation = createMenuBarItemId("LoadFormulation");
+      public static MenuBarItemId LoadFormulationFromTemplate = createMenuBarItemId("LoadFormulationFromTemplate");
       public static MenuBarItemId ImportObservedData = createMenuBarItemId("ImportObservedData");
       public static MenuBarItemId ImportFractionData = createMenuBarItemId("ImportFractionData");
       public static MenuBarItemId ProjectReport = createMenuBarItemId("ProjectReport");

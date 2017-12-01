@@ -6,24 +6,16 @@ namespace PKSim.Core.Chart
 
       public virtual string SelectedGender
       {
-         get { return _selectedGender; }
-         set
-         {
-            _selectedGender = value;
-            OnPropertyChanged(() => SelectedGender);
-         }
+         get => _selectedGender;
+         set => SetProperty(ref _selectedGender, value);
       }
 
       private bool _useInReport;
 
       public virtual bool UseInReport
       {
-         get { return _useInReport; }
-         set
-         {
-            _useInReport = value;
-            OnPropertyChanged(() => UseInReport);
-         }
+         get => _useInReport;
+         set => SetProperty(ref _useInReport, value);
       }
 
       public DistributionSettings Clone()

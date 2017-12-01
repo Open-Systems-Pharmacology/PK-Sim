@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
@@ -25,6 +26,8 @@ namespace PKSim.Core.Services
       bool Delete<TBuildingBlock>(IReadOnlyList<TBuildingBlock> buildingBlocksToDelete) where TBuildingBlock : class, IPKSimBuildingBlock;
       void Rename<TBuildingBlock>(TBuildingBlock buildingBlockToRename) where TBuildingBlock : class, IPKSimBuildingBlock;
       IReadOnlyList<TBuildingBlock> LoadFromTemplate<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock;
+
+      IReadOnlyList<TBuildingBlock> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock;
 
       /// <summary>
       ///    Saves the building blocks defined as key in <paramref name="buildingBlocksWithReferenceToSave" /> and all their
@@ -72,6 +75,7 @@ namespace PKSim.Core.Services
       void Edit(TBuildingBlock buildingBlockToEdit);
       TBuildingBlock LoadSingleFromTemplate();
       IReadOnlyList<TBuildingBlock> LoadFromTemplate();
+      IReadOnlyList<TBuildingBlock> LoadFromSnapshot();
       void Load(TBuildingBlock buildingBlockToLoad);
       IEnumerable<TBuildingBlock> All();
       void SaveAsTemplate(TBuildingBlock buildingBlockToSave);

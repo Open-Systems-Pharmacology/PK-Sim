@@ -102,8 +102,7 @@ namespace PKSim.Core.Model
          var simulation = createSimulation(simulationSubject.GetType());
 
          //update the used building block in the simulation 
-         if (originalSimulation != null)
-            originalSimulation.UsedBuildingBlocks.Each(simulation.AddUsedBuildingBlock);
+         originalSimulation?.UsedBuildingBlocks.Each(simulation.AddUsedBuildingBlock);
 
          _simulationBuildingBlockUpdater.UpdateUsedBuildingBlockInSimulationFromTemplate(simulation, simulationSubject, PKSimBuildingBlockType.SimulationSubject);
          _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, compounds, PKSimBuildingBlockType.Compound);
@@ -149,10 +148,7 @@ namespace PKSim.Core.Model
          });
       }
 
-      private void updateCompoundProperties(Simulation simulation)
-      {
-         _compoundPropertiesUpdater.UpdateCompoundPropertiesIn(simulation);
-      }
+      private void updateCompoundProperties(Simulation simulation) => _compoundPropertiesUpdater.UpdateCompoundPropertiesIn(simulation);
 
       public TSimulation CreateBasedOn<TSimulation>(IModelCoreSimulation modelCoreSimulation) where TSimulation : Simulation
       {
@@ -195,7 +191,7 @@ namespace PKSim.Core.Model
       private PopulationSimulation createPopulationSimulation()
       {
          var simulation = create<PopulationSimulation>();
-         simulation.SetAdvancedParameters(_objectBaseFactory.Create<IAdvancedParameterCollection>());
+         simulation.SetAdvancedParameters(_objectBaseFactory.Create<AdvancedParameterCollection>());
          return simulation;
       }
 

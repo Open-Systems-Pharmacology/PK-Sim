@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using PKSim.Assets;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
@@ -9,15 +11,15 @@ namespace PKSim.Core.Model
    {
       /// <summary>
       /// Returns a new <see cref="ISchemaItem"/> with an application type set to <paramref name="applicationType"/>. Its name will be unique in the
-      /// <paramref name="container"/>
+      /// <paramref name="container"/> if defined
       /// </summary>
-      ISchemaItem Create(ApplicationType applicationType, IContainer container);
+      SchemaItem Create(ApplicationType applicationType, IContainer container=null);
 
       /// <summary>
       /// Returns an exact duplicate of the <paramref name="schemaItemToClone"/> and adjust its name to be unique in the
       /// <paramref name="container"/>
       /// </summary>
-      ISchemaItem CreateBasedOn(ISchemaItem schemaItemToClone, IContainer container);
+      SchemaItem CreateBasedOn(SchemaItem schemaItemToClone, IContainer container);
    }
 
    public class SchemaItemFactory : ISchemaItemFactory
@@ -36,10 +38,13 @@ namespace PKSim.Core.Model
          _cloner = cloner;
       }
 
-      public ISchemaItem Create(ApplicationType applicationType, IContainer container)
+      public SchemaItem Create(ApplicationType applicationType, IContainer container = null)
       {
-         var applicationSchemaItem = _objectBaseFactory.Create<ISchemaItem>();
-         applicationSchemaItem.Name = _containerTask.CreateUniqueName(container, PKSimConstants.UI.SchemaItem);
+         var applicationSchemaItem = _objectBaseFactory.Create<SchemaItem>().WithName(PKSimConstants.UI.SchemaItem);
+        
+         if (container != null)
+             applicationSchemaItem.Name = _containerTask.CreateUniqueName(container, PKSimConstants.UI.SchemaItem);
+
          applicationSchemaItem.ApplicationType = applicationType;
          applicationSchemaItem.FormulationKey = string.Empty;
 
@@ -50,7 +55,7 @@ namespace PKSim.Core.Model
          return applicationSchemaItem;
       }
 
-      public ISchemaItem CreateBasedOn(ISchemaItem schemaItemToClone, IContainer container)
+      public SchemaItem CreateBasedOn(SchemaItem schemaItemToClone, IContainer container)
       {
          return _cloner.Clone(schemaItemToClone)
             .WithName(_containerTask.CreateUniqueName(container, PKSimConstants.UI.SchemaItem));

@@ -8,7 +8,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Infrastructure.Reporting.TeX.Reporters
 {
-   public class ProjectReporter : OSPSuiteTeXReporter<IPKSimProject>
+   public class ProjectReporter : OSPSuiteTeXReporter<PKSimProject>
    {
       private readonly BuildingBlocksReporter _buildingBlocksReporter;
       private readonly SimulationsReporter _simulationsReporter;
@@ -23,7 +23,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Reporters
          _observedDataReporter = observedDataReporter;
       }
 
-      public override IReadOnlyCollection<object> Report(IPKSimProject project, OSPSuiteTracker tracker)
+      public override IReadOnlyCollection<object> Report(PKSimProject project, OSPSuiteTracker tracker)
       {
          var list = new List<object>();
          var buildingBlocks = project.All(PKSimBuildingBlockType.Template).ToList();

@@ -10,12 +10,9 @@ using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model.PopulationAnalyses
 {
-   /// <summary>
-   ///    This is a grouping by concrete values.
-   /// </summary>
-   public class ValueMappingGroupingDefinition : GroupingDefinition
+    public class ValueMappingGroupingDefinition : GroupingDefinition
    {
-      public Cache<string, GroupingItem> Mapping { get; private set; }
+      public Cache<string, GroupingItem> Mapping { get; }
 
       [Obsolete("For serialization")]
       public ValueMappingGroupingDefinition() : this(string.Empty)
@@ -59,10 +56,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          return dataType == typeof (string);
       }
 
-      public override IReadOnlyList<GroupingItem> GroupingItems
-      {
-         get { return Mapping.ToList(); }
-      }
+      public override IReadOnlyList<GroupingItem> GroupingItems => Mapping.ToList();
 
       public override int Compare(object value1, object value2)
       {
@@ -76,8 +70,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
       {
          base.UpdatePropertiesFrom(source, cloneManager);
          var valueMapping = source as ValueMappingGroupingDefinition;
-         if (valueMapping == null) return;
-         valueMapping.Mapping.KeyValues.Each(kv => Mapping.Add(kv.Key, cloneManager.Clone(kv.Value)));
+         valueMapping?.Mapping.KeyValues.Each(kv => Mapping.Add(kv.Key, cloneManager.Clone(kv.Value)));
       }
    }
 }

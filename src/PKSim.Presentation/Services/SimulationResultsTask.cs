@@ -66,7 +66,7 @@ namespace PKSim.Presentation.Services
          //Step 2 - update the data repository based on the results created above
          targetSimulation.DataRepository = _dataRepositoryCreator.CreateResultsFor(targetSimulation);
 
-         sourceSimulation.SimulationCharts.Each(c => targetSimulation.AddAnalysis(_chartTemplatingTask.CloneChart(c, targetSimulation)));
+         sourceSimulation.TimeProfileAnalyses.Each(c => targetSimulation.AddAnalysis(_chartTemplatingTask.CloneChart(c, targetSimulation)));
       }
 
       private void copyResultsForIndividualSimulation(IndividualSimulation sourceSimulation, IndividualSimulation targetSimulation)

@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Validation;
 using FakeItEasy;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
@@ -24,18 +25,16 @@ namespace PKSim.Presentation
    {
       private IndividualEnzyme _enzyme;
       private ProteinExpressionDTO _result;
-      private IMoleculeExpressionContainer _container1;
-      private IMoleculeExpressionContainer _container2;
+      private MoleculeExpressionContainer _container1;
+      private MoleculeExpressionContainer _container2;
 
       protected override void Context()
       {
          base.Context();
-         _enzyme = A.Fake<IndividualEnzyme>();
-         A.CallTo(() => _enzyme.Rules).Returns(A.Fake<IBusinessRuleSet>());
-         _enzyme.Name = "CYP";
-         _container1 = new MoleculeExpressionContainer();
-         _container2 = new MoleculeExpressionContainer();
-         A.CallTo(() => _enzyme.GetChildren<IMoleculeExpressionContainer>()).Returns(new[] {_container1, _container2});
+         _enzyme = new IndividualEnzyme {Name = "CYP"};
+         _container1 = new MoleculeExpressionContainer().WithName("EXP1");
+         _container2 = new MoleculeExpressionContainer().WithName("EXP2");
+         _enzyme.AddChildren(_container1,_container2);
       }
 
       protected override void Because()

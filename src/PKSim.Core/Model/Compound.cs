@@ -7,14 +7,21 @@ namespace PKSim.Core.Model
 {
    public enum CompoundType
    {
-      Acid = CoreConstants.Compound.CompoundTypeAcid,
-      Base = CoreConstants.Compound.CompoundTypeBase,
-      Neutral = CoreConstants.Compound.CompoundTypeNeutral
+      Acid = CoreConstants.Compound.COMPOUND_TYPE_ACID,
+      Base = CoreConstants.Compound.COMPOUND_TYPE_BASE,
+      Neutral = CoreConstants.Compound.COMPOUND_TYPE_NEUTRAL
+   }
+
+   public enum PlasmaProteinBindingPartner
+   {
+      Glycoprotein = CoreConstants.Compound.BINDING_PARTNER_AGP,
+      Albumin = CoreConstants.Compound.BINDING_PARTNER_ALBUMIN,
+      Unknown = CoreConstants.Compound.BINDING_PARTNER_UNKNOWN
    }
 
    public class Compound : PKSimBuildingBlock, IWithCalculationMethods
    {
-      public CalculationMethodCache CalculationMethodCache { get; private set; }
+      public CalculationMethodCache CalculationMethodCache { get; }
 
       public Compound() : base(PKSimBuildingBlockType.Compound)
       {
@@ -42,28 +49,26 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    returns true if the parameter is neutral otherwise false
       /// </summary>
-      public virtual bool IsNeutral
-      {
-         get { return this.Parameter(CoreConstants.Parameter.IS_NEUTRAL).Value == 1; }
-      }
+      public virtual bool IsNeutral => this.Parameter(CoreConstants.Parameter.IS_NEUTRAL).Value == 1;
 
       /// <summary>
       ///    returns true if the parameter is small molecule otherwise false
       /// </summary>
       public virtual bool IsSmallMolecule
       {
-         get { return this.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value == 1; }
+         get => this.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value == 1;
+         set => this.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value = value ? 1: 0;
       }
 
-      public virtual IEnumerable<ParameterAlternativeGroup> AllParameterAlternativeGroups()
+      public virtual PlasmaProteinBindingPartner PlasmaProteinBindingPartner
       {
-         return GetChildren<ParameterAlternativeGroup>();
+         get => (PlasmaProteinBindingPartner)this.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER).Value;
+         set => this.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER).Value = (int) value;
       }
 
-      public virtual void AddParameterAlternativeGroup(ParameterAlternativeGroup parameterAlternativeGroup)
-      {
-         Add(parameterAlternativeGroup);
-      }
+      public virtual IEnumerable<ParameterAlternativeGroup> AllParameterAlternativeGroups() => GetChildren<ParameterAlternativeGroup>();
+
+      public virtual void AddParameterAlternativeGroup(ParameterAlternativeGroup parameterAlternativeGroup) => Add(parameterAlternativeGroup);
 
       /// <summary>
       ///    Return a parameter group for which alternatives might be defined
@@ -74,51 +79,35 @@ namespace PKSim.Core.Model
          return this.GetSingleChildByName<ParameterAlternativeGroup>(parameterGroupName);
       }
 
-      public virtual IEnumerable<T> AllProcesses<T>() where T : CompoundProcess
-      {
-         return GetChildren<T>();
-      }
+      public virtual IEnumerable<T> AllProcesses<T>() where T : CompoundProcess => GetChildren<T>();
+
+      public virtual IEnumerable<CompoundProcess> AllProcesses() => AllProcesses<CompoundProcess>();
 
       /// <summary>
       ///    Returns <c>true</c> if at least one proces is defined in the compound otherwise false
       /// </summary>
-      public virtual bool HasProcesses()
-      {
-         return HasProcesses<CompoundProcess>(); 
-      }
+      public virtual bool HasProcesses() => HasProcesses<CompoundProcess>();
 
       /// <summary>
       ///    Returns <c>true</c> if at least one proces of type <typeparamref name="TCompoundProcess"/> is defined in the compound otherwise false
       /// </summary>
-      public virtual bool HasProcesses<TCompoundProcess>() where TCompoundProcess : CompoundProcess
-      {
-         return AllProcesses<TCompoundProcess>().Any();
-      }
-      
+      public virtual bool HasProcesses<TCompoundProcess>() where TCompoundProcess : CompoundProcess => AllProcesses<TCompoundProcess>().Any();
+
       public virtual IEnumerable<SystemicProcess> AllSystemicProcessesOfType(SystemicProcessType systemicProcessType)
       {
          return GetChildren<SystemicProcess>(proc => proc.SystemicProcessType == systemicProcessType);
       }
 
-      public virtual TPartialProcess ProcessByName<TPartialProcess>(string processName) where TPartialProcess : CompoundProcess
+      public virtual TCompoundProcess ProcessByName<TCompoundProcess>(string processName) where TCompoundProcess : CompoundProcess
       {
-         return this.GetSingleChildByName<TPartialProcess>(processName);
+         return this.GetSingleChildByName<TCompoundProcess>(processName);
       }
 
-      public virtual CompoundProcess ProcessByName(string processName)
-      {
-         return ProcessByName<CompoundProcess>(processName);
-      }
+      public virtual CompoundProcess ProcessByName(string processName) => ProcessByName<CompoundProcess>(processName);
 
-      public virtual bool ProcessExistsByName(string processName)
-      {
-         return ProcessByName(processName) != null;
-      }
+      public virtual bool ProcessExistsByName(string processName) => ProcessByName(processName) != null;
 
-      public virtual double MolWeight
-      {
-         get { return this.Parameter(Constants.Parameters.MOL_WEIGHT).Value; }
-      }
+      public virtual double MolWeight => this.Parameter(Constants.Parameters.MOL_WEIGHT).Value;
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {

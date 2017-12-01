@@ -110,15 +110,19 @@ namespace PKSim.Infrastructure.Services
          updateObserverForAllFlag(moBiSimulation);
          updateRepresentationInfo(moBiSimulation);
          updateFormulaIdIn(moBiSimulation);
-
-         var currentProject = _projectRetriever.CurrentProject;
+         
          var simulationTransfer = new SimulationTransfer
          {
             Simulation = moBiSimulation,
-            AllObservedData = simulation.UsedObservedData.Select(o => currentProject.ObservedDataBy(o.Id)).ToList(),
-            Favorites = currentProject.Favorites,
             JournalPath = _journalRetriever.JournalFullPath
          };
+
+         var currentProject = _projectRetriever.CurrentProject;
+         if (currentProject != null)
+         {
+            simulationTransfer.AllObservedData = simulation.UsedObservedData.Select(o => currentProject.ObservedDataBy(o.Id)).ToList();
+            simulationTransfer.Favorites = currentProject.Favorites;
+         }
 
          _simulationPersistor.Save(simulationTransfer, moBiFile);
       }

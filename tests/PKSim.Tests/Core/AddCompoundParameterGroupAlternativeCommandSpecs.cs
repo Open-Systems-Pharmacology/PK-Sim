@@ -14,7 +14,7 @@ namespace PKSim.Core
       protected IExecutionContext _executionContext;
       protected ParameterAlternative _alternativeToAdd;
       protected ParameterAlternative _alternative2;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
 
       protected override void Context()
       {

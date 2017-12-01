@@ -7,8 +7,8 @@ namespace PKSim.Core.Services
 {
    public interface ISchemaTask
    {
-      IPKSimCommand AddSchemaItemTo(Schema schema, ISchemaItem schemaItemToDupicate);
-      IPKSimCommand RemoveSchemaItemFrom(ISchemaItem schemaItemToDelete, Schema schema);
+      IPKSimCommand AddSchemaItemTo(Schema schema, SchemaItem schemaItemToDupicate);
+      IPKSimCommand RemoveSchemaItemFrom(SchemaItem schemaItemToDelete, Schema schema);
       IPKSimCommand AddSchemaTo(AdvancedProtocol protocol);
       IPKSimCommand RemoveSchemaFrom(Schema schemaToRemove, AdvancedProtocol protocol);
       IPKSimCommand SetDosingInterval(SimpleProtocol protocol, DosingInterval dosingInterval);
@@ -28,13 +28,13 @@ namespace PKSim.Core.Services
          _schemaItemFactory = schemaItemFactory;
       }
 
-      public IPKSimCommand AddSchemaItemTo(Schema schema, ISchemaItem schemaItemToDupicate)
+      public IPKSimCommand AddSchemaItemTo(Schema schema, SchemaItem schemaItemToDupicate)
       {
          var schemaItemToAdd = _schemaItemFactory.CreateBasedOn(schemaItemToDupicate, schema);
          return new AddSchemaItemToSchemaCommand(schemaItemToAdd, schema, _executionContext).Run(_executionContext);
       }
 
-      public IPKSimCommand RemoveSchemaItemFrom(ISchemaItem schemaItemToDelete, Schema schema)
+      public IPKSimCommand RemoveSchemaItemFrom(SchemaItem schemaItemToDelete, Schema schema)
       {
          if (schema.SchemaItems.Count() <= 1)
             throw new CannotDeleteSchemaItemException();

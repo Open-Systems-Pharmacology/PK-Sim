@@ -1,17 +1,12 @@
-﻿using PKSim.BatchTool.Presenters;
-using OSPSuite.Presentation.Views;
+﻿using OSPSuite.Presentation.Views;
 
 namespace PKSim.BatchTool.Views
 {
-   public interface IBatchView
+   public interface IBatchView<TStartOptions>
    {
       bool CalculateEnabled { set; }
-      void Display();
+      void Show();
       void AddLogView(IView view);
-   }
-
-   public interface IInputAndOutputBatchView : IView<IInputAndOutputBatchPresenter>, IBatchView
-   {
-      void BindTo(InputAndOutputBatchDTO batchDTO);
+      void BindTo(TStartOptions startOptions);
    }
 }

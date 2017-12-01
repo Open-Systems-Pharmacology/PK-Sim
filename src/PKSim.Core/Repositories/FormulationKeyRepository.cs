@@ -3,7 +3,7 @@ using System.Linq;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Repositories
 {
@@ -13,16 +13,16 @@ namespace PKSim.Core.Repositories
 
    public class FormulationKeyRepository : IFormulationKeyRepository
    {
-      private readonly IProjectRetriever _projectRetriever;
+      private readonly IPKSimProjectRetriever _projectRetriever;
 
-      public FormulationKeyRepository(IProjectRetriever projectRetriever)
+      public FormulationKeyRepository(IPKSimProjectRetriever projectRetriever)
       {
          _projectRetriever = projectRetriever;
       }
 
       public IEnumerable<string> All()
       {
-         return _projectRetriever.CurrentProject.DowncastTo<IPKSimProject>()
+         return _projectRetriever.CurrentProject
             .All<Protocol>()
             .Where(p => p.IsLoaded)
             .SelectMany(p => p.UsedFormulationKeys)

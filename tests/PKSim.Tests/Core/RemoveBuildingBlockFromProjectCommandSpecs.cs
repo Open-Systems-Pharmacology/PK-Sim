@@ -11,13 +11,13 @@ namespace PKSim.Core
    {
       protected IExecutionContext _executionContext;
       protected IPKSimBuildingBlock _buildingBlock;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
 
       protected override void Context()
       {
          _executionContext =A.Fake<IExecutionContext>();
          _buildingBlock = A.Fake<IPKSimBuildingBlock>();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          A.CallTo(() => _executionContext.CurrentProject).Returns(_project);
          sut = new RemoveBuildingBlockFromProjectCommand(_buildingBlock,_executionContext);
       }

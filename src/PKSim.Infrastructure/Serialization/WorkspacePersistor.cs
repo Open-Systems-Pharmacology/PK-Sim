@@ -7,6 +7,7 @@ using PKSim.Core;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation.Core;
 using OSPSuite.Core.Journal;
+using OSPSuite.Core.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Services;
 
@@ -20,14 +21,20 @@ namespace PKSim.Infrastructure.Serialization
       private readonly ISessionManager _sessionManager;
       private readonly IProgressManager _progressManager;
       private readonly IProjectFileCompressor _projectFileCompressor;
-
       private readonly IDatabaseSchemaMigrator _databaseSchemaMigrator;
       private readonly IJournalLoader _journalLoader;
+      private readonly IProjectClassifiableUpdaterAfterDeserialization _projectClassifiableUpdaterAfterDeserialization;
 
-      public WorkspacePersistor(IProjectPersistor projectPersistor, IHistoryManagerPersistor historyManagerPersistor,
-         IWorkspaceLayoutPersistor workspaceLayoutPersistor,
-         ISessionManager sessionManager, IProgressManager progressManager, IProjectFileCompressor projectFileCompressor,
-         IDatabaseSchemaMigrator databaseSchemaMigrator, IJournalLoader journalLoader)
+      public WorkspacePersistor(
+         IProjectPersistor projectPersistor, 
+         IHistoryManagerPersistor historyManagerPersistor, 
+         IWorkspaceLayoutPersistor workspaceLayoutPersistor, 
+         ISessionManager sessionManager, 
+         IProgressManager progressManager, 
+         IProjectFileCompressor projectFileCompressor, 
+         IDatabaseSchemaMigrator databaseSchemaMigrator, 
+         IJournalLoader journalLoader, 
+         IProjectClassifiableUpdaterAfterDeserialization projectClassifiableUpdaterAfterDeserialization)
       {
          _projectPersistor = projectPersistor;
          _historyManagerPersistor = historyManagerPersistor;
@@ -37,6 +44,8 @@ namespace PKSim.Infrastructure.Serialization
          _projectFileCompressor = projectFileCompressor;
          _databaseSchemaMigrator = databaseSchemaMigrator;
          _journalLoader = journalLoader;
+         _projectClassifiableUpdaterAfterDeserialization = projectClassifiableUpdaterAfterDeserialization;
+
       }
 
       public void SaveSession(IWorkspace workspace, string fileFullPath)
@@ -108,6 +117,8 @@ namespace PKSim.Infrastructure.Serialization
 
                   project.Name = FileHelper.FileNameFromFileFullPath(fileFullPath);
                   workspace.Project = project;
+
+                  _projectClassifiableUpdaterAfterDeserialization.Update(project);
 
                   progress.IncrementProgress(PKSimConstants.UI.LoadingWorkingJournal);
                   var journal  = _journalLoader.Load(project.JournalPath, fileFullPath);

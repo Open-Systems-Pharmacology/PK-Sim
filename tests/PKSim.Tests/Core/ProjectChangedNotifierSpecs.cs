@@ -24,12 +24,12 @@ namespace PKSim.Core
 
    public class When_the_project_changed_notifier_is_told_to_notify_a_change : concern_for_ProjectChangedNotifier
    {
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          A.CallTo(() => _workspace.CurrentProject).Returns(_project);
       }
 

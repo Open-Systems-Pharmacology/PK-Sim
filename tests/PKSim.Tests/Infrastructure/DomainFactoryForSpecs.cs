@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.Threading;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
-using PKSim.Core.Batch;
-using PKSim.Core.Batch.Mapper;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -11,6 +9,7 @@ using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Snapshots.Services;
 using Compound = PKSim.Core.Model.Compound;
 using Individual = PKSim.Core.Model.Individual;
 using Simulation = PKSim.Core.Model.Simulation;
@@ -29,17 +28,11 @@ namespace PKSim.Infrastructure
 
       public static Compound CreateStandardCompound()
       {
-         var compoundMapper = IoC.Resolve<ICompoundMapper>();
-         var batchCompound = new Core.Batch.Compound
-         {
-            Lipophilicity = -2,
-            FractionUnbound = 0.8,
-            SolubilityAtRefpH = 1E-7,
-            MolWeight = 4e-7,
-            Name = "Drug"
-         };
+         var objectCreator = IoC.Resolve<ISnapshotObjectCreator>();
+         var compoundMapper = IoC.Resolve<PKSim.Core.Snapshots.Mappers.CompoundMapper>();
 
-         return compoundMapper.MapFrom(batchCompound);
+         var compoundSnapshot = objectCreator.StandardCompound(lipophilicity: -2, fractionUnbound: 0.8, molWeight: 400, solubilityAtRefPh: 1e-7).Result;
+         return compoundMapper.MapToModel(compoundSnapshot).Result;
       }
 
       public static Protocol CreateStandardIVBolusProtocol()
@@ -122,21 +115,24 @@ namespace PKSim.Infrastructure
          return CreateModelLessSimulationWith(simulationSubject, new[] {compound}, new[] {protocol}, modelProperties, allowAging);
       }
 
-      public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject, IReadOnlyList<Compound> compounds, IReadOnlyList<Protocol> protocols
-         , ModelProperties modelProperties, bool allowAging = false)
+      public static Simulation CreateModelLessSimulationWith(
+         ISimulationSubject simulationSubject, 
+         IReadOnlyList<Compound> compounds, 
+         IReadOnlyList<Protocol> protocols, 
+         ModelProperties modelProperties, 
+         bool allowAging = false)
       {
-         var simConstructor = IoC.Resolve<ISimulationConstructor>();
+         var simModelConstructor = IoC.Resolve<ISimulationConstructor>();
          var simulationConstruction = new SimulationConstruction
          {
             SimulationSubject = simulationSubject,
             TemplateCompounds = compounds,
             TemplateProtocols = protocols,
             ModelProperties = modelProperties,
-            SimulationName = "simulation",
             AllowAging = allowAging,
+            SimulationName = "simulation",
          };
-
-         return simConstructor.CreateModelLessSimulationWith(simulationConstruction);
+         return simModelConstructor.CreateModelLessSimulationWith(simulationConstruction);
       }
 
       public static Population CreateDefaultPopulation(Individual individual)
@@ -144,7 +140,8 @@ namespace PKSim.Infrastructure
          var populationFactory = IoC.Resolve<IRandomPopulationFactory>();
          var populationSettings = IoC.Resolve<IIndividualToPopulationSettingsMapper>().MapFrom(individual);
          populationSettings.NumberOfIndividuals = 3;
-         return populationFactory.CreateFor(populationSettings, new CancellationToken()).Result;
+         var population = populationFactory.CreateFor(populationSettings, new CancellationToken()).Result;
+         return population.WithName("POP");
       }
    }
 }

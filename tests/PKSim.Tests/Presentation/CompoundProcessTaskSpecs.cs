@@ -149,7 +149,7 @@ namespace PKSim.Presentation
          _compound = new Compound();
          var fuGroup = new ParameterAlternativeGroup().WithName(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
          _fuAlternative = new ParameterAlternative().WithName("MyFu");
-         _fuAlternative.Add(DomainHelperForSpecs.ConstantParameterWithValue(0.2).WithName(CoreConstants.Parameter.FractionUnbound));
+         _fuAlternative.Add(DomainHelperForSpecs.ConstantParameterWithValue(0.2).WithName(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE));
          _fuAlternative.IsDefault = true;
          fuGroup.AddAlternative(_fuAlternative);
          _compound.AddParameterAlternativeGroup(fuGroup);
@@ -178,7 +178,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_have_set_the_compound_specific_parameter_using_the_defined_value_if_available()
       {
-         _result.Parameter(CoreConstants.Parameter.FRATION_UNBOUND_EXPERIMENT).Value.ShouldBeEqualTo(_fuAlternative.Parameter(CoreConstants.Parameter.FractionUnbound).Value);
+         _result.Parameter(CoreConstants.Parameter.FRATION_UNBOUND_EXPERIMENT).Value.ShouldBeEqualTo(_fuAlternative.Parameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value);
       }
    }
 }

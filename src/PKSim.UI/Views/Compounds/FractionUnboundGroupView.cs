@@ -17,6 +17,7 @@ using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using OSPSuite.Presentation.Extensions;
+using PKSim.Core.Model;
 using UIConstants = OSPSuite.UI.UIConstants;
 
 namespace PKSim.UI.Views.Compounds
@@ -63,7 +64,7 @@ namespace PKSim.UI.Views.Compounds
       public override void BindTo(IReadOnlyCollection<FractionUnboundAlternativeDTO> parameterAlternativeDtos)
       {
          base.BindTo(parameterAlternativeDtos);
-         _rgPlasmaBindingPartner.EditValue = fractionUnboundGroupPresenter.PlasmaProteinPartner;
+         _rgPlasmaBindingPartner.EditValue = fractionUnboundGroupPresenter.PlasmaProteinBindingPartner;
       }
 
       protected override bool ColumnIsValue(GridColumn gridColumn)
@@ -85,9 +86,9 @@ namespace PKSim.UI.Views.Compounds
          _rgPlasmaBindingPartner = new RadioGroup {Name = "rgPlasmaBindingPartner"};
          _rgPlasmaBindingPartner.Properties.Items.AddRange(new[]
          {
-            new RadioGroupItem(PlasmaProteinPartner.Albumin, PKSimConstants.UI.Albumin),
-            new RadioGroupItem(PlasmaProteinPartner.Glycoprotein, PKSimConstants.UI.Glycoprotein),
-            new RadioGroupItem(PlasmaProteinPartner.Unknown, PKSimConstants.UI.Unknown)
+            new RadioGroupItem(PlasmaProteinBindingPartner.Albumin, PKSimConstants.UI.Albumin),
+            new RadioGroupItem(PlasmaProteinBindingPartner.Glycoprotein, PKSimConstants.UI.Glycoprotein),
+            new RadioGroupItem(PlasmaProteinBindingPartner.Unknown, PKSimConstants.UI.Unknown)
          });
 
          _layoutItemBindingMode = new LayoutControlItem
@@ -103,7 +104,7 @@ namespace PKSim.UI.Views.Compounds
 
       private void bindingPartnerChanged()
       {
-         fractionUnboundGroupPresenter.PlasmaProteinPartner = (PlasmaProteinPartner) _rgPlasmaBindingPartner.Properties.Items[_rgPlasmaBindingPartner.SelectedIndex].Value;
+         fractionUnboundGroupPresenter.PlasmaProteinBindingPartner = (PlasmaProteinBindingPartner) _rgPlasmaBindingPartner.Properties.Items[_rgPlasmaBindingPartner.SelectedIndex].Value;
       }
 
       public override int OptimalHeight => base.OptimalHeight + _layoutItemBindingMode.Height;

@@ -1,6 +1,6 @@
-using PKSim.Assets;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
@@ -14,7 +14,7 @@ namespace PKSim.Core.Model
 
    public static class SystemicProcessTypes
    {
-      private static readonly ICache<SystemicProcessTypeId, SystemicProcessType> _allApplicationTypes = new Cache<SystemicProcessTypeId, SystemicProcessType>(proc => proc.SystemicProcessTypeId);
+      private static readonly Cache<SystemicProcessTypeId, SystemicProcessType> _allApplicationTypes = new Cache<SystemicProcessTypeId, SystemicProcessType>(proc => proc.SystemicProcessTypeId);
 
       public static SystemicProcessType Hepatic = create(SystemicProcessTypeId.Hepatic, CoreConstants.Organ.Liver, PKSimConstants.UI.TotalHepaticClearance);
       public static SystemicProcessType Renal = create(SystemicProcessTypeId.Renal, CoreConstants.Organ.Kidney, PKSimConstants.UI.RenalClearance);

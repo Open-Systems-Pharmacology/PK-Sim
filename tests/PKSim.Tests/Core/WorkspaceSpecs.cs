@@ -29,7 +29,6 @@ namespace PKSim.Core
       private IHistoryManagerFactory _historyManagerFactory;
       protected IFileLocker _fileLocker;
       private Func<string, bool> _oldFileExitst;
-      protected IProjectClassifiableUpdaterAfterDeserialization _projectClassifiableUpdaterAfterDeserialization;
       protected IJournalSession _journalSession;
 
       public override void GlobalContext()
@@ -47,17 +46,24 @@ namespace PKSim.Core
          _historyManagerFactory = A.Fake<IHistoryManagerFactory>();
          _historyManager = A.Fake<IHistoryManager>();
          _fileLocker = A.Fake<IFileLocker>();
-         _projectClassifiableUpdaterAfterDeserialization = A.Fake<IProjectClassifiableUpdaterAfterDeserialization>();
          _journalSession = A.Fake<IJournalSession>();
          A.CallTo(() => _historyManagerFactory.Create()).Returns(_historyManager);
-         sut = new Workspace(_eventPublisher, _registrationTask, _workspacePersisor, _mruProvider, _historyManagerFactory,
-            _fileLocker, _projectClassifiableUpdaterAfterDeserialization, _journalSession);
+         sut = new Workspace(_eventPublisher,  _journalSession, _fileLocker, _registrationTask, _workspacePersisor, _mruProvider, _historyManagerFactory);
       }
 
       public override void GlobalCleanup()
       {
          base.GlobalCleanup();
          FileHelper.FileExists = _oldFileExitst;
+      }
+   }
+
+   public class When_creating_a_new_workspace : concern_for_Workspace
+   {
+      [Observation]
+      public void should_have_a_defined_workspace_layout()
+      {
+         sut.WorkspaceLayout.ShouldNotBeNull();
       }
    }
 
@@ -98,22 +104,26 @@ namespace PKSim.Core
    public class When_told_to_open_a_project_from_a_valid_project_file : concern_for_Workspace
    {
       private string _fileName;
-      private IPKSimProject _project;
+      private PKSimProject _project;
       private ProjectLoadingEvent _event;
       private ProjectLoadedEvent _event2;
+      private ProjectCreatedEvent _event3;
 
       protected override void Context()
       {
          base.Context();
          _fileName = "toto";
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          sut.Project = _project;
 
-         A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectLoadingEvent>.Ignored)).Invokes(
+         A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectLoadingEvent>._)).Invokes(
             x => _event = x.GetArgument<ProjectLoadingEvent>(0));
 
-         A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectLoadedEvent>.Ignored)).Invokes(
+         A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectLoadedEvent>._)).Invokes(
             x => _event2 = x.GetArgument<ProjectLoadedEvent>(0));
+
+         A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectCreatedEvent>._)).Invokes(
+            x => _event3 = x.GetArgument<ProjectCreatedEvent>(0));
       }
 
       protected override void Because()
@@ -134,9 +144,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_update_the_project_after_deserialization()
+      public void should_notify_the_event_project_created_with_the_project()
       {
-         A.CallTo(() => _projectClassifiableUpdaterAfterDeserialization.Update(_project)).MustHaveHappened();
+         _event3.Project.ShouldBeEqualTo(_project);
       }
 
       [Observation]
@@ -161,7 +171,7 @@ namespace PKSim.Core
    public class When_told_to_save_a_project : concern_for_Workspace
    {
       private string _fileName;
-      private IPKSimProject _project;
+      private PKSimProject _project;
       private ProjectSavingEvent _savingEvent;
       private ProjectSavedEvent _savedEvent;
 
@@ -169,7 +179,7 @@ namespace PKSim.Core
       {
          base.Context();
          _fileName = "toto";
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _project.HasChanged = true;
          sut.Project = _project;
          A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectSavingEvent>.Ignored)).Invokes(
@@ -246,12 +256,12 @@ namespace PKSim.Core
 
    public class When_told_to_close_a_project : concern_for_Workspace
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          sut.Project = _project;
          sut.HistoryManager = A.Fake<IHistoryManager>();
       }
@@ -307,12 +317,12 @@ namespace PKSim.Core
 
    public class When_told_to_close_a_project_that_was_open_as_readonly : concern_for_Workspace
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          sut.Project = _project;
          sut.HistoryManager = A.Fake<IHistoryManager>();
          sut.ProjectIsReadOnly = true;
@@ -341,13 +351,13 @@ namespace PKSim.Core
 
    public class When_setting_a_project : concern_for_Workspace
    {
-      private IPKSimProject _project;
-      private ProjectCreatedEvent _event;
+      private PKSimProject _project;
+     private ProjectCreatedEvent _event;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          A.CallTo(() => _eventPublisher.PublishEvent(A<ProjectCreatedEvent>.Ignored)).Invokes(
             x => _event = x.GetArgument<ProjectCreatedEvent>(0));
       }
@@ -363,11 +373,7 @@ namespace PKSim.Core
          A.CallTo(() => _registrationTask.RegisterProject(_project)).MustHaveHappened();
       }
 
-      [Observation]
-      public void should_notify_the_event_project_created_with_the_project()
-      {
-         _event.Project.ShouldBeEqualTo(_project);
-      }
+ 
 
       [Observation]
       public void should_update_the_history_manager()

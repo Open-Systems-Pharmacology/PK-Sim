@@ -76,14 +76,14 @@ namespace PKSim.Presentation
    {
       private SchemaDTO _schemaDTO;
       private Schema _schema;
-      private ISchemaItem _schemaItem;
+      private SchemaItem _schemaItem;
       private SchemaItemDTO _schemaItemDTOToDuplicate;
 
       protected override void Context()
       {
          base.Context();
          _schemaDTO = A.Fake<SchemaDTO>();
-         _schemaItem = A.Fake<ISchemaItem>();
+         _schemaItem = A.Fake<SchemaItem>();
          _schema = A.Fake<Schema>();
 
          _allSchemas.Add(_schema);
@@ -111,15 +111,15 @@ namespace PKSim.Presentation
       private SchemaDTO _schemaDTO;
       private Schema _schema;
       private SchemaItemDTO _schemaItemDTOToDelete;
-      private ISchemaItem _schemaItem;
-      private ISchemaItem _schemaItemToDelete;
+      private SchemaItem _schemaItem;
+      private SchemaItem _schemaItemToDelete;
       private IPKSimCommand _deleteSchemaItemCommand;
 
       protected override void Context()
       {
          base.Context();
          _schemaDTO = A.Fake<SchemaDTO>();
-         _schemaItem = A.Fake<ISchemaItem>();
+         _schemaItem = A.Fake<SchemaItem>();
          _schema = A.Fake<Schema>();
          _deleteSchemaItemCommand = A.Fake<IPKSimCommand>();
          _schemaItemDTOToDelete = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous);
@@ -182,7 +182,7 @@ namespace PKSim.Presentation
    
    public class When_notifed_that_a_schema_item_was_added_to_a_schema_belonging_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
-      private ISchemaItem _schemaItem;
+      private SchemaItem _schemaItem;
       private Schema _schema;
       private SchemaDTO _schemaDTO;
       private SchemaItemDTO _schemaItemDTO;
@@ -217,14 +217,14 @@ namespace PKSim.Presentation
    
    public class When_notifed_that_a_schema_item_was_added_to_a_schema_that_does_not_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
-      private ISchemaItem _schemaItem;
+      private SchemaItem _schemaItem;
       private Schema _schema;
       private SchemaDTO _schemaDTO;
 
       protected override void Context()
       {
          base.Context();
-         _schemaItem = A.Fake<ISchemaItem>();
+         _schemaItem = A.Fake<SchemaItem>();
          _schema = A.Fake<Schema>();
          _schemaDTO = A.Fake<SchemaDTO>();
          A.CallTo(() => _schemaDTO.Schema).Returns(_schema);
@@ -249,14 +249,14 @@ namespace PKSim.Presentation
    
    public class When_notifed_that_a_schema_item_was_removed_from_a_schema_that_does_not_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
-      private ISchemaItem _schemaItem;
+      private SchemaItem _schemaItem;
       private Schema _schema;
       private SchemaDTO _schemaDTO;
 
       protected override void Context()
       {
          base.Context();
-         _schemaItem = A.Fake<ISchemaItem>();
+         _schemaItem = A.Fake<SchemaItem>();
          _schema = A.Fake<Schema>();
          _schemaDTO = A.Fake<SchemaDTO>();
          A.CallTo(() => _schemaDTO.Schema).Returns(_schema);
@@ -281,7 +281,7 @@ namespace PKSim.Presentation
    
    public class When_notifed_that_a_schema_item_was_removed_from_a_schema_that_does_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
-      private ISchemaItem _schemaItem;
+      private SchemaItem _schemaItem;
       private Schema _schema;
       private SchemaDTO _schemaDTO;
       private SchemaItemDTO _schemaItemDTO;
@@ -289,7 +289,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _schemaItem = A.Fake<ISchemaItem>();
+         _schemaItem = A.Fake<SchemaItem>();
          _schema = A.Fake<Schema>();
          _schemaDTO = A.Fake<SchemaDTO>();
          _schemaItemDTO = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous);
@@ -318,13 +318,13 @@ namespace PKSim.Presentation
    
    public class When_notifed_that_a_schema_item_was_removed_from_a_schema_for_a_presenter_that_was_not_initialized : concern_for_AdvancedProtocolPresenter
    {
-      private ISchemaItem _schemaItem;
+      private SchemaItem _schemaItem;
       private Schema _schema;
 
       protected override void Context()
       {
          base.Context();
-         _schemaItem = A.Fake<ISchemaItem>();
+         _schemaItem = A.Fake<SchemaItem>();
          _schema = A.Fake<Schema>();
       }
 
@@ -338,13 +338,13 @@ namespace PKSim.Presentation
    
    public class When_notifed_that_a_schema_item_was_added_to_a_schema_for_a_presenter_that_was_not_initialized : concern_for_AdvancedProtocolPresenter
    {
-      private ISchemaItem _schemaItem;
+      private SchemaItem _schemaItem;
       private Schema _schema;
 
       protected override void Context()
       {
          base.Context();
-         _schemaItem = A.Fake<ISchemaItem>();
+         _schemaItem = A.Fake<SchemaItem>();
          _schema = A.Fake<Schema>();
       }
 

@@ -10,6 +10,7 @@ using PKSim.Infrastructure.Serialization;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation.Core;
 using OSPSuite.Core.Journal;
+using OSPSuite.Core.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Services;
 
@@ -32,6 +33,7 @@ namespace PKSim.Infrastructure
       protected IProjectFileCompressor _projectFileCompressor;
       protected IDatabaseSchemaMigrator _databaseSchemaMigrator;
       private IJournalLoader _journalLoader;
+      protected IProjectClassifiableUpdaterAfterDeserialization _projectClassifiableUpdaterAfterDeserialization;
 
       protected override void Context()
       {
@@ -43,7 +45,7 @@ namespace PKSim.Infrastructure
          _projectFileCompressor = A.Fake<IProjectFileCompressor>();
          _databaseSchemaMigrator= A.Fake<IDatabaseSchemaMigrator>();
          _journalLoader= A.Fake<IJournalLoader>();
-
+         _projectClassifiableUpdaterAfterDeserialization= A.Fake<IProjectClassifiableUpdaterAfterDeserialization>();
          _command1 = A.Fake<IPKSimCommand>();
          _command2 = A.Fake<IPKSimCommand>();
          var history1 = A.Fake<IHistoryItem>();
@@ -63,7 +65,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _sessionManager.OpenSession()).Returns(_session);
          _fileName = "c:\\toto.txt";
          sut = new WorkspacePersistor(_projectPersistor, _historyManagerPersistor, _workspaceLayoutPersistor, _sessionManager, _progressManager,
-            _projectFileCompressor,_databaseSchemaMigrator,_journalLoader);
+            _projectFileCompressor,_databaseSchemaMigrator,_journalLoader, _projectClassifiableUpdaterAfterDeserialization);
       }
    }
 
@@ -121,16 +123,16 @@ namespace PKSim.Infrastructure
       {
          A.CallTo(() => _projectFileCompressor.Compress(_fileName)).MustHaveHappened();
       }
-   }
+  }
 
    public class When_loading_a_workspace : concern_for_WorkspacePersistor
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          A.CallTo(() => _projectPersistor.Load(_session)).Returns(_project);
       }
 
@@ -176,7 +178,7 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
-      public void should_load_the_workspace_layotu()
+      public void should_load_the_workspace_layout()
       {
          A.CallTo(() => _workspaceLayoutPersistor.Load(_session)).MustHaveHappened();
       }
@@ -186,11 +188,17 @@ namespace PKSim.Infrastructure
       {
          A.CallTo(() => _session.Dispose()).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_update_the_project_after_deserialization()
+      {
+         A.CallTo(() => _projectClassifiableUpdaterAfterDeserialization.Update(_project)).MustHaveHappened();
+      }
    }
 
    public class When_loading_a_workspace_from_a_corrupted_file : concern_for_WorkspacePersistor
    {
-      private IPKSimProject _project;
+      private PKSimProject _project;
 
       protected override void Context()
       {

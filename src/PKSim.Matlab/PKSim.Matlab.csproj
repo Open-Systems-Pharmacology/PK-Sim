@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PKSim.Matlab</RootNamespace>
     <AssemblyName>PKSim.Matlab</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -64,20 +64,24 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="ApplicationStartup.cs" />
+    <Compile Include="Mappers\MatlabOriginDataToOriginDataMapper.cs" />
+    <Compile Include="Mappers\MatlabParameterToSnapshotParameterMapper.cs" />
+    <Compile Include="Mappers\MatlabPopulationSettingsToPopulationSettingsMapper.cs" />
     <Compile Include="MatlabFullPathDisplayResolver.cs" />
-    <Compile Include="MatlabDisplayUnitRetriever.cs" />
-    <Compile Include="MatlabExceptionManager.cs" />
     <Compile Include="MatlabIndividualFactory.cs" />
-    <Compile Include="MatlabProgressUpdater.cs" />
+    <Compile Include="MatlabOriginData.cs" />
     <Compile Include="MatlabRegister.cs" />
     <Compile Include="MatlabLazyLoadTask.cs" />
-    <Compile Include="MatlabUserSettings.cs" />
-    <Compile Include="MatlabWorkspace.cs" />
     <Compile Include="OntogenyFactorsRetriever.cs" />
+    <Compile Include="PopulationSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MatlabPopulationFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj">
+      <Project>{62f91ef9-5720-449d-9ec8-e9a7d5ba09b0}</Project>
+      <Name>PKSim.CLI.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj">
       <Project>{CEF9367D-F2C4-4796-847B-42B090A601B5}</Project>
       <Name>PKSim.Core</Name>
@@ -105,15 +109,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Windsor">
+    <Reference Include="Castle.Windsor, Version=3.4.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Windsor.3.4.0\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Data.v17.1, Version=17.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
@@ -127,31 +129,41 @@
     <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.86\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.1, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.1\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.86\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.1, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.1\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.86\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.1, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.1\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
+    <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+    </Reference>
     <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.SimModel.2.2.0.6\lib\net45\OSPSuite.SimModel.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Utility, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Utility.2.0.1.4\lib\net452\OSPSuite.Utility.dll</HintPath>
+    <Reference Include="OSPSuite.TeXReporting, Version=2.0.1.7, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.1.7\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Utility, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.1\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
     <Reference Include="SX, Version=2.6.5.7, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.5.7\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -27,20 +27,20 @@ namespace PKSim.Matlab
       [Observation]
       public void should_return_that_no_factor_is_available()
       {
-         sut.FactorsFor(new OriginData{Species =new Species {Name = "Dog"}}, _moleculeNames).ShouldBeEmpty();
+         sut.FactorsFor(new Core.Model.OriginData {Species = new Species {Name = "Dog"}}, _moleculeNames).ShouldBeEmpty();
       }
    }
 
    public class When_retrieving_the_ontogeny_for_a_species_for_which_no_ontogeny_were_defined : concern_for_OntogenyFactorsRetriever
    {
-      private OriginData _originData;
+      private Core.Model.OriginData _originData;
 
       protected override void Context()
       {
          base.Context();
-         _originData = new OriginData {Species = new Species {Name = "Dog"}};
+         _originData = new Core.Model.OriginData {Species = new Species {Name = "Dog"}};
          A.CallTo(() => _ontogenyRepository.AllFor(_originData.Species.Name)).Returns(new List<Ontogeny>());
-         _moleculeNames.Add(new MoleculeOntogeny("CYP","CYP3A4"));
+         _moleculeNames.Add(new MoleculeOntogeny("CYP", "CYP3A4"));
       }
 
       [Observation]
@@ -52,14 +52,14 @@ namespace PKSim.Matlab
 
    public class When_retrieving_the_ontogeny_for_a_species_for_which_ontogeny_were_defined_but_not_for_the_given_molecule : concern_for_OntogenyFactorsRetriever
    {
-      private OriginData _originData;
+      private Core.Model.OriginData _originData;
       private Ontogeny _ontogeny;
 
       protected override void Context()
       {
          base.Context();
-         _ontogeny = new DatabaseOntogeny { SpeciesName = "Dog", Name = "UD6" };
-         _originData = new OriginData {Species = new Species {Name = "Dog"}};
+         _ontogeny = new DatabaseOntogeny {SpeciesName = "Dog", Name = "UD6"};
+         _originData = new Core.Model.OriginData {Species = new Species {Name = "Dog"}};
          A.CallTo(() => _ontogenyRepository.AllFor(_originData.Species.Name)).Returns(new[] {_ontogeny});
          _moleculeNames.Add(new MoleculeOntogeny("CYP", "CYP3A4"));
       }
@@ -73,17 +73,17 @@ namespace PKSim.Matlab
 
    public class When_retrieving_the_ontogeny_for_a_species_and_molecule_for_which_ontogeny_were_defined : concern_for_OntogenyFactorsRetriever
    {
-      private OriginData _originData;
+      private Core.Model.OriginData _originData;
       private Ontogeny _ontogeny;
       private IEnumerable<ParameterValue> _allFactors;
 
       protected override void Context()
       {
          base.Context();
-         _ontogeny = new DatabaseOntogeny { SpeciesName = "Dog", Name = "CYP3A4" };
-         _originData = new OriginData {Species = new Species {Name = "Dog"}};
+         _ontogeny = new DatabaseOntogeny {SpeciesName = "Dog", Name = "CYP3A4"};
+         _originData = new Core.Model.OriginData {Species = new Species {Name = "Dog"}};
          A.CallTo(() => _ontogenyRepository.AllFor(_originData.Species.Name)).Returns(new[] {_ontogeny});
-         A.CallTo(() => _ontogenyRepository.OntogenyFactorFor(_ontogeny,CoreConstants.Groups.ONTOGENY_LIVER, _originData, null)).Returns(0.5);
+         A.CallTo(() => _ontogenyRepository.OntogenyFactorFor(_ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, _originData, null)).Returns(0.5);
          _moleculeNames.Add(new MoleculeOntogeny("CYP", "CYP3A4"));
       }
 
@@ -103,17 +103,17 @@ namespace PKSim.Matlab
 
    public class When_retrieving_the_ontogenies_for_various_containers : concern_for_OntogenyFactorsRetriever
    {
-      private OriginData _originData;
+      private Core.Model.OriginData _originData;
       private IEnumerable<ParameterValue> _allFactors;
 
       protected override void Context()
       {
          base.Context();
-         var ontogeny1 = new DatabaseOntogeny { SpeciesName = "Dog", Name = "CYP3A1" };
-         var ontogeny2 = new DatabaseOntogeny { SpeciesName = "Dog", Name = "CYP3A2" };
-         var ontogeny3 = new DatabaseOntogeny { SpeciesName = "Dog", Name = "CYP3A3" };
+         var ontogeny1 = new DatabaseOntogeny {SpeciesName = "Dog", Name = "CYP3A1"};
+         var ontogeny2 = new DatabaseOntogeny {SpeciesName = "Dog", Name = "CYP3A2"};
+         var ontogeny3 = new DatabaseOntogeny {SpeciesName = "Dog", Name = "CYP3A3"};
 
-         _originData = new OriginData {Species = new Species {Name = "Dog"}};
+         _originData = new Core.Model.OriginData {Species = new Species {Name = "Dog"}};
          A.CallTo(() => _ontogenyRepository.AllFor(_originData.Species.Name)).Returns(new[] {ontogeny1, ontogeny2, ontogeny3});
          A.CallTo(() => _ontogenyRepository.OntogenyFactorFor(ontogeny1, CoreConstants.Groups.ONTOGENY_LIVER, _originData, null)).Returns(0.1);
          A.CallTo(() => _ontogenyRepository.OntogenyFactorFor(ontogeny2, CoreConstants.Groups.ONTOGENY_DUODENUM, _originData, null)).Returns(0.22);

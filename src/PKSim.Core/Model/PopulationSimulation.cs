@@ -69,7 +69,7 @@ namespace PKSim.Core.Model
          return AllValuesFor(parameterPath);
       }
 
-      public virtual void AddAdvancedParameter(IAdvancedParameter advancedParameter, bool generateRandomValues = true)
+      public virtual void AddAdvancedParameter(AdvancedParameter advancedParameter, bool generateRandomValues = true)
       {
          advancedParameterCollection.AddAdvancedParameter(advancedParameter);
          //force generation of parameters if no values was defined in the cache
@@ -77,13 +77,13 @@ namespace PKSim.Core.Model
             GenerateRandomValuesFor(advancedParameter);
       }
 
-      public virtual void RemoveAdvancedParameter(IAdvancedParameter advancedParameter)
+      public virtual void RemoveAdvancedParameter(AdvancedParameter advancedParameter)
       {
          advancedParameterCollection.RemoveAdvancedParameter(advancedParameter);
          ParameterValuesCache.Remove(advancedParameter.ParameterPath);
       }
 
-      public virtual void GenerateRandomValuesFor(IAdvancedParameter advancedParameter)
+      public virtual void GenerateRandomValuesFor(AdvancedParameter advancedParameter)
       {
          ParameterValuesCache.SetValues(advancedParameter.ParameterPath, advancedParameter.GenerateRandomValues(NumberOfItems));
       }
@@ -102,14 +102,14 @@ namespace PKSim.Core.Model
          return allParameters;
       }
 
-      public virtual void SetAdvancedParameters(IAdvancedParameterCollection advancedParameters)
+      public virtual void SetAdvancedParameters(AdvancedParameterCollection advancedParameters)
       {
          Add(advancedParameters);
       }
 
-      private IAdvancedParameterCollection advancedParameterCollection
+      private AdvancedParameterCollection advancedParameterCollection
       {
-         get { return this.GetSingleChild<IAdvancedParameterCollection>(x => true); }
+         get { return this.GetSingleChild<AdvancedParameterCollection>(x => true); }
       }
 
       public virtual IReadOnlyList<double> AllValuesFor(string parameterPath)
@@ -238,12 +238,14 @@ namespace PKSim.Core.Model
          return AllParameters(entityPathResolver)[parameterPath];
       }
 
-      public virtual IAdvancedParameter AdvancedParameterFor(IEntityPathResolver entityPathResolver, IParameter parameter)
+      public virtual AdvancedParameter AdvancedParameterFor(IEntityPathResolver entityPathResolver, IParameter parameter)
       {
          return advancedParameterCollection.AdvancedParameterFor(entityPathResolver, parameter);
       }
 
-      public virtual IEnumerable<IAdvancedParameter> AdvancedParameters => advancedParameterCollection.AdvancedParameters;
+      public virtual void RemoveAllAdvancedParameters() => advancedParameterCollection.Clear();
+
+      public virtual IEnumerable<AdvancedParameter> AdvancedParameters => advancedParameterCollection.AdvancedParameters;
 
       public virtual IReadOnlyList<Gender> AllGenders => Population.AllGenders;
 

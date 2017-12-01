@@ -72,7 +72,7 @@ namespace PKSim.Infrastructure.Services
          if (populationSimulationComparison == null)
             LoadResults(populationDataCollector as PopulationSimulation);
          else
-            populationSimulationComparison.AllSimulations().Each(LoadResults);
+            populationSimulationComparison.AllSimulations.Each(LoadResults);
       }
 
       private void loadObjectBase<T>(T objectToLoad) where T : IObjectBase

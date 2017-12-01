@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Model.PopulationAnalyses
 {
@@ -16,7 +15,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
       PopulationAnalysisParameterField CreateFor(IParameter parameter);
       PopulationAnalysisPKParameterField CreateFor(QuantityPKParameter pkParameter, QuantityType quantityType, string quantityDisplayPath);
       PopulationAnalysisCovariateField CreateFor(string covariate, IPopulationDataCollector populationDataCollector);
-      PopulationAnalysisGroupingField CreateGroupingField(IGroupingDefinition groupingDefiniton, IPopulationAnalysisField populationAnalysisField);
+      PopulationAnalysisGroupingField CreateGroupingField(GroupingDefinition groupingDefiniton, IPopulationAnalysisField populationAnalysisField);
       PopulationAnalysisOutputField CreateFor(IQuantity quantity, string defaultName);
    }
 
@@ -114,7 +113,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          groupingItem.Symbol = symbol;
       }
 
-      public PopulationAnalysisGroupingField CreateGroupingField(IGroupingDefinition groupingDefiniton, IPopulationAnalysisField populationAnalysisField)
+      public PopulationAnalysisGroupingField CreateGroupingField(GroupingDefinition groupingDefiniton, IPopulationAnalysisField populationAnalysisField)
       {
          var interval = groupingDefiniton as IntervalGroupingDefinition;
          var numericField = populationAnalysisField as INumericValueField;

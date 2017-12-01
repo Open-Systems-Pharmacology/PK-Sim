@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
@@ -19,7 +20,9 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core;
+using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Services;
@@ -32,9 +35,9 @@ namespace PKSim.UI.BootStrapping
 {
    public class ApplicationStartup
    {
-      public static void Initialize()
+      public static void Initialize(LogLevel logLevel = LogLevel.Information)
       {
-         new ApplicationStartup().InitializeForStartup();
+         new ApplicationStartup().InitializeForStartup(logLevel);
       }
 
       public void InitializeUserInterace()
@@ -43,7 +46,7 @@ namespace PKSim.UI.BootStrapping
          UserInterfaceRegister.InitializeForStartup(IoC.Container);
       }
 
-      public void InitializeForStartup()
+      public void InitializeForStartup(LogLevel logLevel)
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
@@ -53,6 +56,7 @@ namespace PKSim.UI.BootStrapping
          InfrastructureRegister.Initialize();
          var container = IoC.Container;
          container.RegisterImplementationOf(getCurrentContext());
+
          container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
          container.Register<PKSimApplication, PKSimApplication>(LifeStyle.Singleton);
 
@@ -69,6 +73,16 @@ namespace PKSim.UI.BootStrapping
 
          container.Register<IConfigurableContainerLayoutView, AccordionLayoutView>(ViewLayouts.AccordionView.Id);
          container.Register<IConfigurableContainerLayoutView, TabbedLayoutView>(ViewLayouts.TabbedView.Id);
+
+         configureLogger(container, logLevel);
+      }
+
+      private void configureLogger(IContainer container, LogLevel logLevel)
+      {
+         var loggerFactory = container.Resolve<ILoggerFactory>();
+         loggerFactory
+            .AddPresenter(logLevel)
+            .AddDebug(logLevel);
       }
 
       private static void updateGoDiagramKey()
@@ -129,10 +143,7 @@ namespace PKSim.UI.BootStrapping
       /// </summary>
       private void finalizeRegistration(IContainer container)
       {
-         var workspace = container.Resolve<IWorkspace>();
-         container.RegisterImplementationOf<IWithWorkspaceLayout>(workspace);
-         container.RegisterImplementationOf<OSPSuite.Core.IWorkspace>(workspace);
-
+         InfrastructureRegister.RegisterWorkspace();
          //Create one instance of the invokers so that the object is available in the application 
          //since the object is not created anywhere and is only used as event listener
          container.Resolve<ICloseSubjectPresenterInvoker>();
@@ -140,6 +151,10 @@ namespace PKSim.UI.BootStrapping
 
          var mainPresenter = container.Resolve<IMainViewPresenter>();
          container.RegisterImplementationOf((IChangePropagator) mainPresenter);
+
+         //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
+         container.Register<IInteractiveSimulationRunner,InteractiveSimulationRunner>(LifeStyle.Singleton);
+
       }
 
       private void startStartableObject(IContainer container)

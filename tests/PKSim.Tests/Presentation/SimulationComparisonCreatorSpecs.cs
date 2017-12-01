@@ -1,19 +1,18 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
 using ISimulationAnalysisCreator = PKSim.Core.Services.ISimulationAnalysisCreator;
 
 namespace PKSim.Presentation
@@ -22,7 +21,7 @@ namespace PKSim.Presentation
    {
       protected IPKSimChartFactory _chartFactory;
       private IContainerTask _containerTask;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IObjectBaseFactory _objectBaseFactory;
       protected IApplicationController _applicationController;
       protected ISingleStartPresenterTask _singleStartPresenterTask;
@@ -37,11 +36,11 @@ namespace PKSim.Presentation
          _project = new PKSimProject();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _singleStartPresenterTask = A.Fake<ISingleStartPresenterTask>();
-         _executionContext= A.Fake<IExecutionContext>();
-         _simulationAnalysisCreator= A.Fake<ISimulationAnalysisCreator>();
+         _executionContext = A.Fake<IExecutionContext>();
+         _simulationAnalysisCreator = A.Fake<ISimulationAnalysisCreator>();
          A.CallTo(() => _executionContext.CurrentProject).Returns(_project);
-         sut = new SimulationComparisonCreator(_chartFactory, _containerTask, _objectBaseFactory, 
-            _applicationController, _singleStartPresenterTask, _executionContext,_simulationAnalysisCreator);
+         sut = new SimulationComparisonCreator(_chartFactory, _containerTask, _objectBaseFactory,
+            _applicationController, _singleStartPresenterTask, _executionContext, _simulationAnalysisCreator);
       }
    }
 
@@ -89,7 +88,7 @@ namespace PKSim.Presentation
          base.Context();
          _selectionPresenter = A.Fake<ISimulationSelectionForComparisonPresenter>();
          A.CallTo(() => _applicationController.Start<ISimulationSelectionForComparisonPresenter>()).Returns(_selectionPresenter);
-          _populationSimulationComparison = new PopulationSimulationComparison();
+         _populationSimulationComparison = new PopulationSimulationComparison();
          A.CallTo(() => _objectBaseFactory.Create<PopulationSimulationComparison>()).Returns(_populationSimulationComparison);
          A.CallTo(() => _selectionPresenter.Edit(_populationSimulationComparison)).Returns(true);
       }
@@ -108,7 +107,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_the_created_comparison_to_the_project()
       {
-          _project.AllSimulationComparisons.ShouldContain(_populationSimulationComparison);
+         _project.AllSimulationComparisons.ShouldContain(_populationSimulationComparison);
       }
 
       [Observation]

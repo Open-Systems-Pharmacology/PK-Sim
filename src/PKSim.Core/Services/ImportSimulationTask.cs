@@ -92,7 +92,7 @@ namespace PKSim.Core.Services
       {
          var populationSimulationImport = populationSimulationImportFrom(simulationFile);
          var population = _objectBaseFactory.Create<MoBiPopulation>();
-         var advancedParameter = _objectBaseFactory.Create<IAdvancedParameter>();
+         var advancedParameter = _objectBaseFactory.Create<AdvancedParameter>();
          population.SetNumberOfItems(numberOfIndividuals);
 
          var populationSimulation = populationSimulationImport.PopulationSimulation;

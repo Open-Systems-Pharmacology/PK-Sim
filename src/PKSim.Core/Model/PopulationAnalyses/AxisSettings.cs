@@ -25,9 +25,6 @@ namespace PKSim.Core.Model.PopulationAnalyses
          AutoRange = sourceSettings.AutoRange;
       }
 
-      public bool HasRange()
-      {
-         return Max.HasValue && Min.HasValue;
-      }
+      public bool HasRange => Max.HasValue && Min.HasValue;
    }
 }

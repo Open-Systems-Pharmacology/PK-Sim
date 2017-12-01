@@ -202,7 +202,7 @@ namespace PKSim.Presentation.Presenters.Charts
 
       private void updateResultsInChart()
       {
-         Chart.AllSimulations().Each(s => UpdateAnalysisBasedOn(s, s.DataRepository));
+         Chart.AllSimulations.Each(s => UpdateAnalysisBasedOn(s, s.DataRepository));
       }
 
       public void Handle(SimulationResultsUpdatedEvent eventToHandle)

@@ -42,12 +42,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public string DataSource
       {
-         get { return _dataSource; }
-         set
-         {
-            _dataSource = value;
-            OnPropertyChanged(() => DataSource);
-         }
+         get => _dataSource;
+         set => SetProperty(ref _dataSource,value);
       }
 
       /// <summary>
@@ -67,12 +63,8 @@ namespace PKSim.Core.Model
 
       public Species Species
       {
-         get { return _species; }
-         set
-         {
-            _species = value;
-            OnPropertyChanged(() => Species);
-         }
+         get => _species;
+         set => SetProperty(ref _species, value);
       }
    }
 

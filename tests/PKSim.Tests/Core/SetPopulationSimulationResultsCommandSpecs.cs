@@ -35,7 +35,7 @@ namespace PKSim.Core
       private PathCache<IQuantity> _quantityCache;
       private IQuantity _quantity1;
       private IQuantity _quantity2;
-      private IPopulationPKAnalysesTask _populationAnalysisTask;
+      private IPKAnalysesTask _populationAnalysisTask;
       private PopulationSimulationPKAnalyses _pkAnalyses;
 
       protected override void Context()
@@ -43,7 +43,7 @@ namespace PKSim.Core
          base.Context();
          _context= A.Fake<IExecutionContext>();
          _quantityRetriever= A.Fake<IEntitiesInContainerRetriever>();
-         _populationAnalysisTask= A.Fake<IPopulationPKAnalysesTask>();
+         _populationAnalysisTask= A.Fake<IPKAnalysesTask>();
          _pkAnalyses= A.Fake<PopulationSimulationPKAnalyses>();
          _quantityCache= new PathCacheForSpecs<IQuantity>();
          _quantity1= new MoleculeAmount();
@@ -51,7 +51,7 @@ namespace PKSim.Core
          _quantityCache.Add("PATH1",_quantity1);
          _quantityCache.Add("PATH2",_quantity2);
          A.CallTo(() => _context.Resolve<IEntitiesInContainerRetriever>()).Returns(_quantityRetriever);
-         A.CallTo(() => _context.Resolve<IPopulationPKAnalysesTask>()).Returns(_populationAnalysisTask);
+         A.CallTo(() => _context.Resolve<IPKAnalysesTask>()).Returns(_populationAnalysisTask);
          A.CallTo(() => _quantityRetriever.QuantitiesFrom(_populationSimulation)).Returns(_quantityCache);
          A.CallTo(() => _populationAnalysisTask.CalculateFor(_populationSimulation)).Returns(_pkAnalyses);
          _allQuantityPaths = new List<string> {"PATH1", "PATH2"};

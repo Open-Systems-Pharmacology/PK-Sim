@@ -59,7 +59,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          chartElement.AddReferencedSimulations(chart, withIdRepository, lazyLoadTask);
 
          //necessary to add data repository that where loaded while laoding the simulations
-         chart.AllSimulations().Select(x => x.DataRepository).Each(serializationContext.AddRepository);
+         chart.AllSimulations.Select(x => x.DataRepository).Each(serializationContext.AddRepository);
          observedDataRepository.All().Each(serializationContext.AddRepository);
 
          base.TypedDeserialize(chart, chartElement, serializationContext);

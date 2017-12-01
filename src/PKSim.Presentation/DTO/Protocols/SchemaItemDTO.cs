@@ -6,12 +6,12 @@ namespace PKSim.Presentation.DTO.Protocols
 {
    public class SchemaItemDTO : DxValidatableDTO<ISchemaItem>
    {
-      public ISchemaItem SchemaItem { get; private set; }
+      public SchemaItem SchemaItem { get; private set; }
       public SchemaDTO ParentSchema { get; set; }
       public IParameterDTO StartTimeParameter { get; set; }
       public IParameterDTO DoseParameter { get; set; }
 
-      public SchemaItemDTO(ISchemaItem schemaItem) : base(schemaItem)
+      public SchemaItemDTO(SchemaItem schemaItem) : base(schemaItem)
       {
          SchemaItem = schemaItem;
       }

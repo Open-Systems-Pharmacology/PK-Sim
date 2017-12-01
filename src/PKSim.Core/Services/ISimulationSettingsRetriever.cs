@@ -10,7 +10,7 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="simulation">The simulation for which settings should be defined</param>
       /// <returns>The updated settings or null if user cancels</returns>
-      OutputSelections SettingsFor<TSimulation>(TSimulation simulation) where TSimulation : Simulation;
+      OutputSelections SettingsFor(Simulation simulation);
 
       /// <summary>
       ///    Makes sure that the settings used do match the simulation. They could have become out of sync after a clone or configuration

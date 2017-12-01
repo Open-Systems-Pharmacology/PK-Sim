@@ -17,6 +17,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
 using DataColumnn = OSPSuite.Core.Domain.Data.DataColumn;
+using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;
 
 namespace PKSim.Presentation
 {
@@ -25,7 +26,7 @@ namespace PKSim.Presentation
       protected IDataRepositoryTask _dataRepositoryTask;
       protected IDialogCreator _dialogCreator;
       protected IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
-      protected IPKAnalysisTask _pkAnalysisTask;
+      protected IPKAnalysesTask _pkAnalysesTask;
       private IGlobalPKAnalysisToDataTableMapper _globalPKAnalysisMapper;
       private IDimensionFactory _dimensionFactory;
 
@@ -34,7 +35,7 @@ namespace PKSim.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
          _quantityDisplayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
-         _pkAnalysisTask = A.Fake<IPKAnalysisTask>();
+         _pkAnalysesTask = A.Fake<IPKAnalysesTask>();
          _globalPKAnalysisMapper = A.Fake<IGlobalPKAnalysisToDataTableMapper>();
          _dimensionFactory= A.Fake<IDimensionFactory>();
 

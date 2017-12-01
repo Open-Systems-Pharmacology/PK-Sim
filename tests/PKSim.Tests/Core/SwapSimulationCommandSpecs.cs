@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -20,16 +21,16 @@ namespace PKSim.Core
       protected IExecutionContext _context;
       protected Simulation _oldSimulation;
       protected Simulation _newSimulation;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected ISimulationCommandDescriptionBuilder _simulationDifferenceBuilder;
       protected ISimulationReferenceUpdater _simulationReferenceUpdater;
 
       protected override void Context()
       {
          _context = A.Fake<IExecutionContext>();
-         _oldSimulation = A.Fake<Simulation>();
-         _newSimulation = A.Fake<Simulation>();
-         _project = A.Fake<IPKSimProject>();
+         _oldSimulation = new IndividualSimulation().WithName("Old");
+         _newSimulation = new IndividualSimulation().WithName("New");
+         _project =new PKSimProject();
          _simulationDifferenceBuilder = A.Fake<ISimulationCommandDescriptionBuilder>();
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -39,6 +40,8 @@ namespace PKSim.Core
          reportPart.AddToContent("toto");
          A.CallTo(() => _simulationDifferenceBuilder.BuildDifferenceBetween(_oldSimulation, _newSimulation)).Returns(reportPart);
          sut = new SwapSimulationCommand(_oldSimulation, _newSimulation, _context);
+
+         _project.AddBuildingBlock(_oldSimulation);
       }
    }
 
@@ -49,9 +52,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _sensitivityAnalysis = new SensitivityAnalysis();
-         _sensitivityAnalysis.Simulation = _oldSimulation;
-         A.CallTo(() => _project.AllSensitivityAnalyses).Returns(new[] { _sensitivityAnalysis });
+         _sensitivityAnalysis = new SensitivityAnalysis {Simulation = _oldSimulation};
+         _project.AddSensitivityAnalysis(_sensitivityAnalysis);
       }
 
       protected override void Because()
@@ -71,11 +73,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         var classifiables = new List<IClassifiable>
-         {
-            new Classification().WithId(_oldSimulation.Id)
-         };
-         A.CallTo(() => _context.CurrentProject.AllClassifiables).Returns(classifiables);
+         var classifiable = new Classification().WithId(_oldSimulation.Id);
+         _project.AddClassifiable(classifiable);
       }
 
       protected override void Because()
@@ -86,8 +85,7 @@ namespace PKSim.Core
       [Observation]
       public void the_project_must_be_updated_with_the_simulation_correctly_classified_according_to_the_old_simulation_classification()
       {
-         A.CallTo(() => _project.AddClassifiable(A<ClassifiableSimulation>._)).Invokes(x => x.GetArgument<ClassifiableSimulation>(0).Simulation.ShouldBeEqualTo(_newSimulation));
-         A.CallTo(() => _project.AddClassifiable(A<ClassifiableSimulation>._)).MustHaveHappened();
+         _project.AllClassifiables.OfType<ClassifiableSimulation>().Select(x=>x.Simulation).ShouldContain(_newSimulation);
       }
    }
 
@@ -99,7 +97,7 @@ namespace PKSim.Core
       {
          base.Context();
          _parameterIdentification = A.Fake<ParameterIdentification>();
-         A.CallTo(() => _project.AllParameterIdentifications).Returns(new[] { _parameterIdentification });
+         _project.AddParameterIdentification(_parameterIdentification);
          _parameterIdentification.IsLoaded = true;
          A.CallTo(() => _parameterIdentification.UsesSimulation(_oldSimulation)).Returns(true);
       }
@@ -118,13 +116,13 @@ namespace PKSim.Core
       [Observation]
       public void should_remove_the_old_simulation_from_the_project()
       {
-         A.CallTo(() => _project.RemoveBuildingBlock(_oldSimulation)).MustHaveHappened();
+         _project.All<Simulation>().ShouldNotContain(_oldSimulation);
       }
 
       [Observation]
       public void should_added_the_new_simulation_to_the_project()
       {
-         A.CallTo(() => _project.AddBuildingBlock(_newSimulation)).MustHaveHappened();
+         _project.All<Simulation>().ShouldContain(_newSimulation);
       }
 
       [Observation]

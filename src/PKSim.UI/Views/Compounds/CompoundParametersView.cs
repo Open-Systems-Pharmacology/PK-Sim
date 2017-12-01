@@ -5,6 +5,7 @@ using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Views.Core;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 
 namespace PKSim.UI.Views.Compounds
@@ -22,19 +23,14 @@ namespace PKSim.UI.Views.Compounds
          //nothing to do
       }
 
-      public override string Caption
-      {
-         get { return PKSimConstants.UI.BasicPharmacochemistry; }
-      }
+      public override string Caption => PKSimConstants.UI.BasicPharmacochemistry;
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.BasicPharmacochemistry; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.BasicPharmacochemistry;
 
       public void AddViewForGroup(ISubPresenterItem subPresenterItem, IView view)
       {
-         AddView(view);
+         var layoutControlItem = AddViewToLayout(view);
+         layoutControlItem.Text =  view.Caption.FormatForLabel(checkCase:false);
       }
    }
 }

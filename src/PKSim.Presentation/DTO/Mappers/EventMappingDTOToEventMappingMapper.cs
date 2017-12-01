@@ -1,16 +1,13 @@
-using System;
-using PKSim.Presentation.DTO.Simulations;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-
+using PKSim.Presentation.DTO.Simulations;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
    public interface IEventMappingDTOToEventMappingMapper
    {
-      IEventMapping MapFrom(EventMappingDTO eventMappingDTO,  PKSim.Core.Model.Simulation simulation);
-
+      EventMapping MapFrom(EventMappingDTO eventMappingDTO, Simulation simulation);
    }
 
    public class EventMappingDTOToEventMappingMapper : IEventMappingDTOToEventMappingMapper
@@ -22,7 +19,7 @@ namespace PKSim.Presentation.DTO.Mappers
          _buildingBlockRepository = buildingBlockRepository;
       }
 
-      public IEventMapping MapFrom(EventMappingDTO eventMappingDTO,  PKSim.Core.Model.Simulation simulation)
+      public EventMapping MapFrom(EventMappingDTO eventMappingDTO, Simulation simulation)
       {
          var templateEventId = eventMappingDTO.Event.Id;
          var templateEvent = _buildingBlockRepository.All().FindById(templateEventId);

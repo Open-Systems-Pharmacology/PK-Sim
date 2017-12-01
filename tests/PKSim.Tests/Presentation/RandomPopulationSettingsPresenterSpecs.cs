@@ -1,17 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Extensions;
 using PKSim.Presentation.DTO.Mappers;
-
 using PKSim.Presentation.DTO.Populations;
 using PKSim.Presentation.Presenters.Populations;
-
 using PKSim.Presentation.Views.Populations;
 
 namespace PKSim.Presentation
@@ -73,7 +70,6 @@ namespace PKSim.Presentation
          base.Context();
          _populationSettings = new RandomPopulationSettings();
          A.CallTo(_populationSettingsMapper).WithReturnType<RandomPopulationSettings>().Returns(_populationSettings);
-         A.CallTo(() => _randomPopulationFactory.CreateFor(_populationSettings, A<CancellationToken>._)).ReturnsAsync(A.Fake<RandomPopulation>());
          sut.PrepareForCreating(A.Fake<Individual>());
       }
 
@@ -85,7 +81,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_population_factory_to_create_a_population_base_on_the_settings()
       {
-         A.CallTo(() => _randomPopulationFactory.CreateFor(_populationSettings, A<CancellationToken>._)).MustHaveHappened();
+         A.CallTo(() => _randomPopulationFactory.CreateFor(_populationSettings, A<CancellationToken>._, null, true)).MustHaveHappened();
       }
 
       [Observation]
@@ -104,7 +100,7 @@ namespace PKSim.Presentation
          base.Context();
          _populationSettings = new RandomPopulationSettings();
          A.CallTo(_populationSettingsMapper).WithReturnType<RandomPopulationSettings>().Returns(_populationSettings);
-         A.CallTo(() => _randomPopulationFactory.CreateFor(_populationSettings, A<CancellationToken>._)).Throws<OperationCanceledException>();
+         A.CallTo(() => _randomPopulationFactory.CreateFor(_populationSettings, A<CancellationToken>._, null, true)).Throws<OperationCanceledException>();
          sut.PrepareForCreating(A.Fake<Individual>());
          sut.CreatePopulation();
       }
@@ -174,7 +170,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         sut.StatusChanged += (o,e) => _eventRaised = true;
+         sut.StatusChanged += (o, e) => _eventRaised = true;
       }
 
       protected override void Because()

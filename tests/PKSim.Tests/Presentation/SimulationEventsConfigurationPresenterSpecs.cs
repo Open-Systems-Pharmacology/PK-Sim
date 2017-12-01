@@ -39,7 +39,7 @@ namespace PKSim.Presentation
    {
       private Simulation _simulation;
       private EventProperties _eventProperties;
-      private IEventMapping _event1;
+      private EventMapping _event1;
       private EventMappingDTO _eventDTO;
       private IEnumerable<EventMappingDTO> _eventsDTO;
 

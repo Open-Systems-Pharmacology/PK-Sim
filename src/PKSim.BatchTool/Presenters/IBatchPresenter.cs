@@ -1,38 +1,38 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using OSPSuite.Utility.Extensions;
-using PKSim.BatchTool.Services;
-using PKSim.BatchTool.Views;
-using PKSim.Core.Batch;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using PKSim.BatchTool.Views;
+using PKSim.CLI.Core.Services;
+using PKSim.Core.Batch;
 
 namespace PKSim.BatchTool.Presenters
 {
-   public interface IBatchPresenter: IPresenter
+   public interface IBatchPresenter : IPresenter
    {
-      void Exit();
+      bool Exit();
       Task RunBatch();
-      Task InitializeWith(BatchStartOptions startOptions);
+      void InitializeForStandAloneStart();
    }
 
-   public abstract class BatchPresenter<TView, TPresenter, TBatchRunner> : AbstractPresenter<TView, TPresenter>, IBatchPresenter
-      where TBatchRunner : IBatchRunner
-      where TView : IView<TPresenter>, IBatchView 
+   public abstract class BatchPresenter<TView, TPresenter, TBatchRunner, TRunOptions> : AbstractPresenter<TView, TPresenter>, IBatchPresenter
+      where TBatchRunner : IBatchRunner<TRunOptions>
+      where TView : IView<TPresenter>, IBatchView<TRunOptions>
       where TPresenter : IPresenter
+      where TRunOptions : new()
 
    {
       protected readonly TBatchRunner _batchRunner;
       protected readonly IDialogCreator _dialogCreator;
       private readonly ILogPresenter _logPresenter;
-      private readonly IBatchLogger _batchLogger;
-      private bool _isRunning;
-      protected bool _startedFromCommandLine;
+      private readonly ILogger _batchLogger;
+      protected bool _isRunning;
+      protected TRunOptions _runOptionsDTO = new TRunOptions();
 
-      protected BatchPresenter(TView view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IBatchLogger batchLogger)
+      protected BatchPresenter(TView view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, ILogger batchLogger)
          : base(view)
       {
          _batchRunner = batchRunner;
@@ -40,6 +40,7 @@ namespace PKSim.BatchTool.Presenters
          _logPresenter = logPresenter;
          _batchLogger = batchLogger;
          _view.AddLogView(_logPresenter.View);
+         AddSubPresenters(_logPresenter);
       }
 
       public virtual async Task RunBatch()
@@ -55,34 +56,35 @@ namespace PKSim.BatchTool.Presenters
          }
          catch (Exception e)
          {
-            _batchLogger.AddError(e.FullMessage());
+            _batchLogger.AddError(e.ExceptionMessageWithStackTrace());
          }
 
          _isRunning = false;
          _view.CalculateEnabled = true;
-
-         if (shouldClose)
-            Exit();
       }
 
-      protected abstract Task StartBatch();
+      public virtual void InitializeForStandAloneStart()
+      {
+         _view.BindTo(_runOptionsDTO);
+         _view.Show();
+      }
 
-      public void Exit()
+      protected virtual Task StartBatch()
+      {
+         return _batchRunner.RunBatchAsync(_runOptionsDTO);
+      }
+
+      public bool Exit()
       {
          if (_isRunning)
          {
             var ans = _dialogCreator.MessageBoxYesNo("Batch is running. Really exit?");
-            if (ans == ViewResult.No) return;
+            if (ans == ViewResult.No)
+               return false;
          }
 
          Application.Exit();
-      }
-
-      private bool shouldClose => _startedFromCommandLine;
-
-      public virtual Task InitializeWith(BatchStartOptions startOptions)
-      {
-         return Task.FromResult(true);
+         return true;
       }
    }
 }

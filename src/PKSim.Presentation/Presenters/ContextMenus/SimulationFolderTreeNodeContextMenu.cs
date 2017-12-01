@@ -1,18 +1,19 @@
 ﻿using System.Linq;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Nodes;
-using PKSim.Presentation.Presenters.Main;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Presentation.Core;
+using PKSim.Presentation.Presenters.Main;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -31,6 +32,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          _view.AddMenuItem(SimulationClassificationCommonContextMenuItems.RemoveSimulationFolderMainMenu(treeNode, presenter).AsGroupStarter());
 
          _view.AddMenuItem(GenericMenu.ExportCollectionToPDFMenuFor<Simulation>().AsGroupStarter());
+
+         _view.AddMenuItem(loadSimulationFromSnapshot().AsGroupStarter());
+      }
+
+      private static IMenuBarItem loadSimulationFromSnapshot() 
+      {
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromSnapshot)
+            .WithCommand<LoadSimulationFromSnapshotUICommand>()
+            //TODO ICON
+            .WithIcon(ApplicationIcons.LoadFromTemplate);
       }
 
       private static IMenuBarSubMenu createGroupByMenu(ITreeNode<IClassification> treeNode, ISimulationExplorerPresenter presenter)

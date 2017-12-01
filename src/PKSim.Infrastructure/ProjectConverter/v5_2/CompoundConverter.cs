@@ -62,7 +62,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          var defaultCompound = _compoundFactory.Create();
 
          var plasmaProteinBindingPartner = _cloner.Clone(defaultCompound.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER));
-         plasmaProteinBindingPartner.Value = (int) PlasmaProteinPartner.Unknown;
+         plasmaProteinBindingPartner.Value = (int) PlasmaProteinBindingPartner.Unknown;
          compound.Add(plasmaProteinBindingPartner);
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.Kass_FcRn)));
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.Kd_FcRn_pls_int)));
@@ -86,7 +86,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
       private static void updateFractionUnboundParameterInContainer(IContainer container)
       {
-         container.Parameter(ConverterConstants.Parameter.FractionUnboundPlasma).Name = CoreConstants.Parameter.FractionUnbound;
+         container.Parameter(ConverterConstants.Parameter.FractionUnboundPlasma).Name = CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE;
       }
 
       public void UpdateGainPerChargeInAlternatives(Compound compound, bool updateValues = true)

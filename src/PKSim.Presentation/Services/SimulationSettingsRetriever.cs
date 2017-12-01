@@ -1,27 +1,27 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
 {
    public class SimulationSettingsRetriever : ISimulationSettingsRetriever
    {
       private readonly IApplicationController _applicationController;
-      private readonly IProjectRetriever _projectRetriever;
+      private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly ICoreUserSettings _userSettings;
 
-      public SimulationSettingsRetriever(IApplicationController applicationController, IProjectRetriever projectRetriever,
+      public SimulationSettingsRetriever(IApplicationController applicationController, IPKSimProjectRetriever projectRetriever,
          IEntityPathResolver entityPathResolver, IKeyPathMapper keyPathMapper, ICoreUserSettings userSettings)
       {
          _applicationController = applicationController;
@@ -31,10 +31,23 @@ namespace PKSim.Presentation.Services
          _userSettings = userSettings;
       }
 
-      public OutputSelections SettingsFor<TSimulation>(TSimulation simulation) where TSimulation : Simulation
+      public OutputSelections SettingsFor(Simulation simulation)
       {
          updateDefaultSettings(simulation);
-         using (var presenter = _applicationController.Start<ISimulationOutputSelectionPresenter<TSimulation>>())
+         switch (simulation)
+         {
+            case IndividualSimulation individualSimulation:
+               return outputSelectionFor(individualSimulation);
+            case PopulationSimulation populationSimulation:
+               return outputSelectionFor(populationSimulation);
+            default:
+               return null;
+         }
+      }
+
+      private OutputSelections outputSelectionFor<T>(T simulation) where T : Simulation
+      {
+         using (var presenter = _applicationController.Start<ISimulationOutputSelectionPresenter<T>>())
          {
             return presenter.CreateSettings(simulation);
          }
@@ -67,7 +80,7 @@ namespace PKSim.Presentation.Services
       private OutputSelections retrieveTemplateSettings()
       {
          return _userSettings.OutputSelections ??
-                _projectRetriever.CurrentProject.DowncastTo<IPKSimProject>().OutputSelections;
+                _projectRetriever.Current.OutputSelections;
       }
 
       private void updateSelectionFromTemplate(Simulation simulation, OutputSelections templateOutputSelections)
@@ -92,7 +105,7 @@ namespace PKSim.Presentation.Services
             var key = _keyPathMapper.MapFrom(selectedQuantity);
             if (!quantityCache.Contains(key)) continue;
             var selectedQuantityType = selectedQuantity.QuantityType;
-            
+
             //we only select quantity that have the exact same type
             quantityCache[key].Where(q => q.QuantityType == selectedQuantityType)
                .Each(q => settings.AddOutput(selectionFrom(q)));

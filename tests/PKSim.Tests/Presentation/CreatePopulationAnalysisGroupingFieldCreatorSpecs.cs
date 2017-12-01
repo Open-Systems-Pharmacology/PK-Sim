@@ -35,13 +35,13 @@ namespace PKSim.Presentation
    public class When_creating_a_grouping_field_for_a_given_analysis_field : concern_for_PopulationAnalysisGroupingFieldCreator
    {
       private PopulationAnalysisGroupingField _result;
-      private IGroupingDefinition _groupingDefinition;
+      private GroupingDefinition _groupingDefinition;
       private PopulationAnalysisGroupingField _populationAnalysisGroupingField;
 
       protected override void Context()
       {
          base.Context();
-         _groupingDefinition = A.Fake<IGroupingDefinition>();
+         _groupingDefinition = A.Fake<GroupingDefinition>();
          _populationAnalysisGroupingField = A.Fake<PopulationAnalysisGroupingField>();
          A.CallTo(() => _groupingFieldPresenter.CreateGrouping(_field, _populationDataCollector)).Returns(_groupingDefinition);
          A.CallTo(() => _populationAnalysisFieldFactory.CreateGroupingField(_groupingDefinition, _field)).Returns(_populationAnalysisGroupingField);

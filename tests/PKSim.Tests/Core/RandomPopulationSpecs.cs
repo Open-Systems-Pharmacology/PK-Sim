@@ -144,7 +144,7 @@ namespace PKSim.Core
 
    public class When_adding_an_advanced_parameter_to_the_population : concern_for_RandomPopulation
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
       private IParameter _parameter;
       private List<RandomValue> _randomValues;
 
@@ -152,7 +152,7 @@ namespace PKSim.Core
       {
          base.Context();
          _parameter = A.Fake<IParameter>();
-         _advancedParameter = A.Fake<IAdvancedParameter>();
+         _advancedParameter = A.Fake<AdvancedParameter>().WithId("Id");
          _advancedParameter.ParameterPath = "A NEW PARAMETER PATH";
          A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns(_advancedParameter.ParameterPath);
          _randomValues = new List<RandomValue>
@@ -171,7 +171,8 @@ namespace PKSim.Core
       [Observation]
       public void should_add_the_parameter_to_the_underlying_list_of_advanced_parameters()
       {
-         sut.AdvancedParameters.Contains(_advancedParameter).ShouldBeTrue();
+         var advParam = sut.AdvancedParameters.ElementAt(0);
+         advParam.ShouldBeEqualTo(_advancedParameter);
       }
 
       [Observation]
@@ -193,14 +194,13 @@ namespace PKSim.Core
 
    public class When_removing_an_advanced_parameter : concern_for_RandomPopulation
    {
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {
          base.Context();
-         _advancedParameter = A.Fake<IAdvancedParameter>();
+         _advancedParameter = A.Fake<AdvancedParameter>();
          _advancedParameter.ParameterPath = "A NEW PARAMETER PATH";
-         A.CallTo(() => _advancedParameter.GenerateRandomValues(sut.NumberOfItems)).Returns(new List<RandomValue>());
          sut.AddAdvancedParameter(_advancedParameter);
       }
 

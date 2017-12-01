@@ -8,7 +8,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
 {
    public class PopulationAnalysisGroupingField : PopulationAnalysisDerivedField, IStringValueField
    {
-      public virtual IGroupingDefinition GroupingDefinition { get; private set; }
+      public virtual GroupingDefinition GroupingDefinition { get; private set; }
       public virtual GroupingItem ReferenceGroupingItem { get; set; }
 
       [Obsolete("For serialization")]
@@ -16,7 +16,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
       {
       }
 
-      public PopulationAnalysisGroupingField(IGroupingDefinition groupingDefinition) : base(typeof (string))
+      public PopulationAnalysisGroupingField(GroupingDefinition groupingDefinition) : base(typeof (string))
       {
          GroupingDefinition = groupingDefinition;
       }
@@ -37,14 +37,11 @@ namespace PKSim.Core.Model.PopulationAnalyses
          int compare;
          if (this.CouldCompareValuesToReference(value1, value2, out compare))
             return compare;
-
+            
          return GroupingDefinition.Compare(value1, value2);
       }
 
-      public override string Expression
-      {
-         get { return GroupingDefinition.GetExpression(); }
-      }
+      public override string Expression => GroupingDefinition.GetExpression();
 
       public override void UpdateExpression(IPopulationDataCollector populationDataCollector)
       {
@@ -83,15 +80,9 @@ namespace PKSim.Core.Model.PopulationAnalyses
          GroupingDefinition.FieldName = newFieldName;
       }
 
-      public virtual string ReferencedFieldName
-      {
-         get { return GroupingDefinition.FieldName; }
-      }
+      public virtual string ReferencedFieldName => GroupingDefinition.FieldName;
 
-      public override IReadOnlyCollection<string> ReferencedFieldNames
-      {
-         get { return new[] {ReferencedFieldName}; }
-      }
+      public override IReadOnlyCollection<string> ReferencedFieldNames => new[] {ReferencedFieldName};
 
       public override bool CanBeUsedFor(Type dataType)
       {
@@ -114,9 +105,6 @@ namespace PKSim.Core.Model.PopulationAnalyses
          //ReferenceGroupingItem 
       }
 
-      public IReadOnlyList<GroupingItem> GroupingItems
-      {
-         get { return this.GroupingItemsWithReference(GroupingDefinition.GroupingItems); }
-      }
+      public IReadOnlyList<GroupingItem> GroupingItems => this.GroupingItemsWithReference(GroupingDefinition.GroupingItems);
    }
 }

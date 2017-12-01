@@ -14,7 +14,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Extensions
    {
       public static XElement CreateSimulationReferenceListElement<TSimulation>(this IXmlSerializerRepository<SerializationContext> serializerRepository, ISimulationComparison<TSimulation> simulationComparison) where TSimulation : Simulation
       {
-         return serializerRepository.CreateObjectReferenceListElement(simulationComparison, x => x.AllSimulations(), CoreConstants.Serialization.SimulationList, CoreConstants.Serialization.Simulation);
+         return serializerRepository.CreateObjectReferenceListElement(simulationComparison, x => x.AllSimulations, CoreConstants.Serialization.SimulationList, CoreConstants.Serialization.Simulation);
       }
 
       public static XElement CreateObservedDataReferenceListElement(this IXmlSerializerRepository<SerializationContext> serializerRepository, IWithObservedData withObservedData)

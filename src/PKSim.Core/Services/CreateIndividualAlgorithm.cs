@@ -28,7 +28,8 @@ namespace PKSim.Core.Services
       /// <param name="minWeight">minimal weight allowed for the randomized individual. Null means not constrained</param>
       /// <param name="maxWeight">maximal weight allowed for the randomized individual. Null means not constrained</param>
       /// <param name="allIndividualParameters">All individual parameters defined in the individual (optimization purpose only)</param>
-      void Randomize(Individual individual, IParameter weightParameter, double? minWeight, double? maxWeight, IEnumerable<IParameter> allIndividualParameters);
+      /// <param name="randomGenerator">Random generator used to create values</param>
+      void Randomize(Individual individual, IParameter weightParameter, double? minWeight, double? maxWeight, IEnumerable<IParameter> allIndividualParameters, RandomGenerator randomGenerator);
    }
 
    public class CreateIndividualAlgorithm : ICreateIndividualAlgorithm
@@ -52,11 +53,10 @@ namespace PKSim.Core.Services
       private double _objectiveWeight;
 
       //parameters only used during randomization
-      private RandomGenerator _randomGenerator;
       private double? _minWeight;
+
       private double? _maxWeight;
       private IParameter _weightParameter;
-
 
       public CreateIndividualAlgorithm(IContainerTask containerTask, IReportGenerator reportGenerator)
       {
@@ -66,13 +66,14 @@ namespace PKSim.Core.Services
 
       public void Optimize(Individual individual)
       {
+         var randomGenerator = new RandomGenerator(individual.Seed);
          if (individual.IsAgeDependent)
-            distributeParameterFor(individual, optimizeVolumes);
+            distributeParameterFor(individual, randomGenerator, optimizeVolumes);
          else
             scaleVolume(individual);
       }
 
-      public void Randomize(Individual individual, IParameter weightParameter, double? minWeight, double? maxWeight, IEnumerable<IParameter> allIndividualParameters)
+      public void Randomize(Individual individual, IParameter weightParameter, double? minWeight, double? maxWeight, IEnumerable<IParameter> allIndividualParameters, RandomGenerator randomGenerator)
       {
          _minWeight = minWeight;
          _maxWeight = maxWeight;
@@ -81,11 +82,11 @@ namespace PKSim.Core.Services
          try
          {
             if (individual.IsAgeDependent)
-               distributeParameterFor(individual, randomizeAgeDependentVolumes);
+               distributeParameterFor(individual, randomGenerator, randomizeAgeDependentVolumes);
             else
-               distributeParameterFor(individual, randomizeWeightAndScaleVolumes);
+               distributeParameterFor(individual, randomGenerator, randomizeWeightAndScaleVolumes);
 
-            randomizeDistributedParameterIn(individual);
+            randomizeDistributedParameterIn(individual, randomGenerator);
          }
          finally
          {
@@ -107,26 +108,25 @@ namespace PKSim.Core.Services
          setOrganVolumesTo(individual, volumes);
       }
 
-      private void randomizeDistributedParameterIn(Individual individual)
+      private void randomizeDistributedParameterIn(Individual individual, RandomGenerator randomGenerator)
       {
          //all distribued parameters in individual that are not standard parameters
-         var allDistributedParameer = _containerTask.CacheAllChildrenSatisfying<IDistributedParameter>(
+         var allDistributedParameters = _containerTask.CacheAllChildrenSatisfying<IDistributedParameter>(
             individual, p => !CoreConstants.Parameter.StandardCreateIndividualParameters.Contains(p.Name));
 
-         foreach (var parameter in allDistributedParameer)
+         foreach (var parameter in allDistributedParameters)
          {
-            parameter.Value = parameter.RandomDeviateIn(_randomGenerator);
+            parameter.Value = parameter.RandomDeviateIn(randomGenerator);
          }
       }
 
-      private void distributeParameterFor(Individual individual, Action<Individual> action)
+      private void distributeParameterFor(Individual individual, RandomGenerator randomGenerator, Action<Individual, RandomGenerator> action)
       {
          _muSigmas = new List<IMuSigma>();
 
          try
          {
             _meanBodyWeight = individual.MeanWeight;
-            _randomGenerator = new RandomGenerator(individual.Seed);
             double meanHeight = individual.MeanHeight;
 
             //relative height of the individual we wish to define
@@ -137,7 +137,7 @@ namespace PKSim.Core.Services
 
             initializeMusAndSigmas(individual);
 
-            action(individual);
+            action(individual, randomGenerator);
          }
          finally
          {
@@ -145,7 +145,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void optimizeVolumes(Individual individual)
+      private void optimizeVolumes(Individual individual, RandomGenerator randomGenerator)
       {
          //Initialization for optimizer
          double p = 0;
@@ -157,7 +157,7 @@ namespace PKSim.Core.Services
          while (p == 0)
          {
             //Random organ weight
-            organWeightsInit = organWeightsFrom(createRandomOrgansVolumesFrom(individual, getOrganVolumeForIndividual));
+            organWeightsInit = organWeightsFrom(createRandomOrgansVolumesFrom(individual, randomGenerator, getOrganVolumeForIndividual));
 
             //skale skin
             organWeightsInit[_skinIndex] = getDefaultSkinWeight(_muSigmas[_skinIndex]);
@@ -179,13 +179,13 @@ namespace PKSim.Core.Services
          setOrganVolumesTo(individual, organVolumesFrom(organWeights));
       }
 
-      private void randomizeWeightAndScaleVolumes(Individual individual)
+      private void randomizeWeightAndScaleVolumes(Individual individual, RandomGenerator randomGenerator)
       {
          //default volumes
-         var organVolumes = createRandomOrgansVolumesFrom(individual, getOrganVolumeForPopulation);
+         var organVolumes = createRandomOrgansVolumesFrom(individual, randomGenerator, getOrganVolumeForPopulation);
          var organWeights = organWeightsFrom(organVolumes);
          double currentWeight = organWeights.Sum();
-         double randomWeight = _weightParameter.RandomDeviateIn(_randomGenerator, _minWeight, _maxWeight);
+         double randomWeight = _weightParameter.RandomDeviateIn(randomGenerator, _minWeight, _maxWeight);
          var scaleFactor = randomWeight / currentWeight;
          for (int i = 0; i < organWeights.Length; i++)
          {
@@ -195,14 +195,14 @@ namespace PKSim.Core.Services
          setOrganVolumesTo(individual, organVolumesFrom(organWeights));
       }
 
-      private void randomizeAgeDependentVolumes(Individual individual)
+      private void randomizeAgeDependentVolumes(Individual individual, RandomGenerator randomGenerator)
       {
          bool success = false;
          uint numberOfTry = 0;
          do
          {
             numberOfTry++;
-            var organVolumes = createRandomOrgansVolumesFrom(individual, getOrganVolumeForPopulation);
+            var organVolumes = createRandomOrgansVolumesFrom(individual, randomGenerator, getOrganVolumeForPopulation);
             var organWeights = organWeightsFrom(organVolumes);
             var currentWeight = organWeights.Sum();
             if (!currentWeightCloseToTargetWeight(currentWeight)) continue;
@@ -322,8 +322,8 @@ namespace PKSim.Core.Services
 
       private SimplexConstant[] simplexConstantFrom(double[] values)
       {
-         var constants = new SimplexConstant[values.Count()];
-         for (int i = 0; i < values.Count(); i++)
+         var constants = new SimplexConstant[values.Length];
+         for (int i = 0; i < values.Length; i++)
          {
             constants[i] = new SimplexConstant(Math.Log10(values[i]), 1);
          }
@@ -364,7 +364,7 @@ namespace PKSim.Core.Services
          return p;
       }
 
-      private double[] createRandomOrgansVolumesFrom(Individual individual, Func<IMuSigma, double> generateVolumeFunction)
+      private double[] createRandomOrgansVolumesFrom(Individual individual, RandomGenerator randomGenerator, Func<IMuSigma, RandomGenerator, double> generateVolumeFunction)
       {
          var allOrgans = individual.AllOrgans().ToList();
          var organVolumes = new double[allOrgans.Count()];
@@ -375,7 +375,7 @@ namespace PKSim.Core.Services
          {
             var muSigma = _muSigmas[iOrganIndex];
             _organDensity[iOrganIndex] = organ.Parameter(CoreConstants.Parameter.DENSITY).Value;
-            organVolumes[iOrganIndex] = generateVolumeFunction(muSigma);
+            organVolumes[iOrganIndex] = generateVolumeFunction(muSigma, randomGenerator);
 
             if (organ.IsNamed(CoreConstants.Organ.Skin))
                _skinIndex = iOrganIndex;
@@ -387,7 +387,7 @@ namespace PKSim.Core.Services
          }
 
          //Scale skin
-         organVolumes[_skinIndex] = getSkinVolume(_muSigmas[_skinIndex], organVolumes, generateVolumeFunction);
+         organVolumes[_skinIndex] = getSkinVolume(_muSigmas[_skinIndex], organVolumes, randomGenerator, generateVolumeFunction);
 
          return organVolumes;
       }
@@ -461,7 +461,7 @@ namespace PKSim.Core.Services
          return Math.Pow(currentWeight / (_meanBodyWeight * Math.Pow(_hrel, 2)), 0.5);
       }
 
-      private double getSkinVolume(IMuSigma muSigmaSkin, double[] organVolumes, Func<IMuSigma, double> generateVolumeFunction)
+      private double getSkinVolume(IMuSigma muSigmaSkin, double[] organVolumes, RandomGenerator randomGenerator, Func<IMuSigma, RandomGenerator, double> generateVolumeFunction)
       {
          double skinScaleFactor = getSkinScaleFactor(organWeightsFrom(organVolumes).Sum());
          double mu = muSigmaSkin.Mean;
@@ -471,7 +471,7 @@ namespace PKSim.Core.Services
          {
             muSigmaSkin.Mean *= skinScaleFactor;
             muSigmaSkin.Deviation *= skinScaleFactor;
-            return generateVolumeFunction(muSigmaSkin);
+            return generateVolumeFunction(muSigmaSkin, randomGenerator);
          }
          finally
          {
@@ -480,14 +480,14 @@ namespace PKSim.Core.Services
          }
       }
 
-      private double getOrganVolumeForPopulation(IMuSigma muSigma)
+      private double getOrganVolumeForPopulation(IMuSigma muSigma, RandomGenerator randomGenerator)
       {
-         return muSigma.GenerateRandomValueForPopulation(_randomGenerator);
+         return muSigma.GenerateRandomValueForPopulation(randomGenerator);
       }
 
-      private double getOrganVolumeForIndividual(IMuSigma muSigma)
+      private double getOrganVolumeForIndividual(IMuSigma muSigma, RandomGenerator randomGenerator)
       {
-         return muSigma.GenerateRandomValueForIndividual(_randomGenerator);
+         return muSigma.GenerateRandomValueForIndividual(randomGenerator);
       }
    }
 }

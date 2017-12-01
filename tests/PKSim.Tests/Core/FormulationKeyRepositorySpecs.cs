@@ -1,20 +1,20 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_FormulationKeyRepository : ContextSpecification<IFormulationKeyRepository>
    {
-      protected IProjectRetriever _projectRetriever;
+      protected IPKSimProjectRetriever _projectRetriever;
 
       protected override void Context()
       {
-         _projectRetriever = A.Fake<IProjectRetriever>();
+         _projectRetriever = A.Fake<IPKSimProjectRetriever>();
          sut = new FormulationKeyRepository(_projectRetriever);
       }
    }

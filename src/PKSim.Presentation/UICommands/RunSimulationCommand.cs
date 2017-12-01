@@ -1,21 +1,32 @@
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.UICommands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Presentation.UICommands;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class RunSimulationCommand : ObjectUICommand<Simulation>
+   public class RunSimulationCommand : ActiveObjectUICommand<Simulation>
    {
-      private readonly ISimulationRunner _simulationRunner;
+      private readonly IInteractiveSimulationRunner _simulationRunner;
+      private readonly bool _selectOutput;
 
-      public RunSimulationCommand(ISimulationRunner simulationRunner)
+      public RunSimulationCommand(IInteractiveSimulationRunner simulationRunner, IActiveSubjectRetriever activeSubjectRetriever, bool selectOutput = false) : base(activeSubjectRetriever)
       {
          _simulationRunner = simulationRunner;
+         _selectOutput = selectOutput;
       }
 
-      protected override void PerformExecute()
+      protected override async void PerformExecute()
       {
-         _simulationRunner.RunSimulation(Subject);
+         await _simulationRunner.SecureAwait(x => x.RunSimulation(Subject, _selectOutput));
+      }
+   }
+
+   public class RunSimulationWithSettingsCommand : RunSimulationCommand
+   {
+      public RunSimulationWithSettingsCommand(IInteractiveSimulationRunner simulationRunner, IActiveSubjectRetriever activeSubjectRetriever) : base(simulationRunner, activeSubjectRetriever, true)
+      {
       }
    }
 }

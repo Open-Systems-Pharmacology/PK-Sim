@@ -108,9 +108,9 @@ namespace PKSim.Presentation.DTO.Mappers
          }
          else if (parameter.IsNamed(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER))
          {
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BindingPartnerAlbumin, PKSimConstants.UI.Albumin);
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BindingPartnerAgp, PKSimConstants.UI.Glycoprotein);
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BindingPartnerUnknown, PKSimConstants.UI.Unknown);
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_ALBUMIN, PKSimConstants.UI.Albumin);
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_AGP, PKSimConstants.UI.Glycoprotein);
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_UNKNOWN, PKSimConstants.UI.Unknown);
          }
          else if (parameter.IsNamed(CoreConstants.Parameter.NUMBER_OF_BINS))
          {
@@ -122,9 +122,9 @@ namespace PKSim.Presentation.DTO.Mappers
          }
          else if (parameter.Name.StartsWith(CoreConstants.Parameter.ParameterCompoundTypeBase))
          {
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.CompoundTypeAcid, CompoundType.Acid.ToString());
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.CompoundTypeNeutral, CompoundType.Neutral.ToString());
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.CompoundTypeBase, CompoundType.Base.ToString());
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_ACID, CompoundType.Acid.ToString());
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_NEUTRAL, CompoundType.Neutral.ToString());
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_BASE, CompoundType.Base.ToString());
          }
          else if (parameter.IsNamed(CoreConstants.Parameter.PARTICLE_DISPERSE_SYSTEM))
          {

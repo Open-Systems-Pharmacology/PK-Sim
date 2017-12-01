@@ -65,10 +65,7 @@ namespace PKSim.Presentation.Presenters.Main
          //nothing to do here
       }
 
-      public IView BaseView
-      {
-         get { return null; }
-      }
+      public IView BaseView => null;
 
       public void Handle(ProjectCreatedEvent eventToHandle)
       {
@@ -108,14 +105,17 @@ namespace PKSim.Presentation.Presenters.Main
 
       private void updateProjectInfo(string projectName, string projectPath, bool enabled)
       {
+         update(StatusBarElements.Status)
+            .WithCaption(string.Empty);
+
          update(StatusBarElements.ProjectName)
-            .WithCaption(string.Format("Project: {0}", projectName))
-            .And.ToolTipText(string.Format("Project: {0}", projectName))
+            .WithCaption($"Project: {projectName}")
+            .And.ToolTipText($"Project: {projectName}")
             .And.Enabled(enabled);
 
          update(StatusBarElements.ProjectPath)
             .WithCaption(projectPath)
-            .And.ToolTipText(string.Format("Project File: {0}", projectPath))
+            .And.ToolTipText($"Project File: {projectPath}")
             .And.Enabled(enabled);
       }
 
@@ -177,8 +177,8 @@ namespace PKSim.Presentation.Presenters.Main
       private void updateJournalInfo(string name, string path, bool enabled)
       {
          update(StatusBarElements.Journal)
-            .WithCaption(string.Format("Journal: {0}", name))
-            .And.ToolTipText(string.Format("Journal File: {0}", path))
+            .WithCaption($"Journal: {name}")
+            .And.ToolTipText($"Journal File: {path}")
             .And.Enabled(enabled);
       }
 
@@ -187,6 +187,7 @@ namespace PKSim.Presentation.Presenters.Main
          string caption = "";
          if (_numberOfReportsBeingCreated == 1)
             caption = "1 report is being created...";
+
          else if (_numberOfReportsBeingCreated > 1)
             caption = $"{_numberOfReportsBeingCreated} reports are being created...";
 
@@ -212,15 +213,9 @@ namespace PKSim.Presentation.Presenters.Main
             .And.ToolTipText(eventToHandle.Message);
       }
 
-      public bool CanClose
-      {
-         get { return true; }
-      }
+      public bool CanClose => true;
 
-      public string ErrorMessage
-      {
-         get { return string.Empty; }
-      }
+      public string ErrorMessage => string.Empty;
 
       public void ReleaseFrom(IEventPublisher eventPublisher)
       {

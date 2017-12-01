@@ -2,7 +2,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
-   public abstract class CompoundProcessMappingXmlSerializer<T> : BaseXmlSerializer<T> where T : IPartialProcessMapping
+   public abstract class CompoundProcessMappingXmlSerializer<T> : BaseXmlSerializer<T> where T : IProcessMapping
    {
       public override void PerformMapping()
       {

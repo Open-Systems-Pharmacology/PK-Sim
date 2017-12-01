@@ -18,7 +18,7 @@ namespace PKSim.Core
    public abstract class concern_for_ExecutionContext : ContextSpecification<IExecutionContext>
    {
       protected IPKSimProjectRetriever _projectRetriever;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IWithIdRepository _withIdRepository;
       protected IParameter _parameter;
       protected ILazyLoadTask _lazyLoadTask;
@@ -52,7 +52,7 @@ namespace PKSim.Core
          _cloneManager = A.Fake<ICloner>();
          _reportGenerator = A.Fake<IReportGenerator>();
          _fullPathDisplayResolver = A.Fake<IFullPathDisplayResolver>();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _idThatDoesNotExist = "tralalalal";
          _parameter = A.Fake<IParameter>();
          _parameterChangeUpdater= A.Fake<IParameterChangeUpdater>();

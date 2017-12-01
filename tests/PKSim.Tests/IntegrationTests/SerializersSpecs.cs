@@ -17,7 +17,6 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Services;
 using EntityRules = PKSim.Core.Model.EntityRules;
 
 namespace PKSim.IntegrationTests
@@ -27,11 +26,11 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void each_concrete_domain_model_object_should_have_a_defined_serializer_or_attribute_mapper()
       {
-         var domainModelAssembly = typeof (IPKSimProject).Assembly;
+         var domainModelAssembly = typeof (PKSimProject).Assembly;
 
          //in namespace domain model and not a test!
          var allModelType = from type in ReflectionHelper.GetConcreteTypesFromAssembly(domainModelAssembly, true)
-            where type.Namespace.StartsWith(typeof (IPKSimProject).Namespace)
+            where type.Namespace.StartsWith(typeof (PKSimProject).Namespace)
             where type.IsAnImplementationOf<StaticContextSpecification>() == false
             select type;
 
@@ -62,7 +61,7 @@ namespace PKSim.IntegrationTests
             //can we find an attribute?
             if (allPossibleTypeDefinedAsAttribute.Any(attributeType => modelType.IsAnImplementationOf(attributeType))) continue;
 
-            errorList.Add(string.Format("No serializer found for {0}", type));
+            errorList.Add($"No serializer found for {type}");
          }
 
          Assert.IsTrue(errorList.Count == 0, errorList.ToString("\n"));
@@ -75,6 +74,7 @@ namespace PKSim.IntegrationTests
          if (type.Name.Contains("Exception")) return true;
          if (type.Name.Contains("Factory")) return true;
          if (type.Equals(typeof (PKSimContainerType))) return true;
+         if (type.Equals(typeof (PlasmaProteinBindingPartner))) return true;
          if (type.Equals(typeof (PivotArea))) return true;
          if (type.Equals(typeof (RandomValue))) return true;
          if (type.Equals(typeof (PopulationAgeSettings))) return true;

@@ -22,7 +22,7 @@ namespace PKSim.Core
    
    public class When_mapping_a_protein_expression_container_to_an_expression_container_info : concern_for_protein_expression_to_expression_container_info_mapper
    {
-      private IMoleculeExpressionContainer _expressionContainer;
+      private MoleculeExpressionContainer _expressionContainer;
       private string _displayName;
       private ExpressionContainerInfo _result;
 
@@ -30,7 +30,8 @@ namespace PKSim.Core
       {
          base.Context();
          _displayName = "tutu";
-         _expressionContainer = A.Fake<IMoleculeExpressionContainer>().WithName("tralal");
+         _expressionContainer = new MoleculeExpressionContainer().WithName("tralal");
+         _expressionContainer.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameter.REL_EXP));
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_expressionContainer)).Returns(_displayName);
       }
 

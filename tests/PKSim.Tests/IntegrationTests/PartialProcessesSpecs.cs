@@ -1,9 +1,9 @@
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
-using NUnit.Framework;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -13,6 +13,7 @@ using PKSim.Infrastructure.ProjectConverter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.IntegrationTests
 {
@@ -33,6 +34,7 @@ namespace PKSim.IntegrationTests
       protected PartialProcess _metabolizationProcess;
       protected IModelPropertiesTask _modelPropertiesTask;
       protected IModelConfigurationRepository _modelConfigurationRepository;
+      protected SimulationRunOptions _simulationRunOptions;
       protected const double _relExpDuoNorm = 0.2;
       protected const double _relExpBoneNorm = 0.3;
       protected const double _relExpBone = 30;
@@ -60,6 +62,7 @@ namespace PKSim.IntegrationTests
          _metabolizationProcess.Name = "My Partial Process";
          _metabolizationProcess.Parameter(ConverterConstants.Parameter.CLspec).Value = 15;
          _compound.AddProcess(_metabolizationProcess);
+         _simulationRunOptions = new SimulationRunOptions{RaiseEvents = false};
       }
    }
 
@@ -563,7 +566,7 @@ namespace PKSim.IntegrationTests
             .FirstOrDefault(x => x.TransportType == TransportType.Influx);
 
          _transporter = _transporterFactory.CreateFor(_individual).DowncastTo<IndividualTransporter>().WithName("TRANS");
-         var transportContainer = _transporter.ExpressionContainer(CoreConstants.Organ.Brain).DowncastTo<ITransporterExpressionContainer>();
+         var transportContainer = _transporter.ExpressionContainer(CoreConstants.Organ.Brain).DowncastTo<TransporterExpressionContainer>();
          transportContainer.UpdatePropertiesFrom(influxBBB);
          _individual.AddMolecule(_transporter);
          _transportProcess = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_SPECIFIC_MM)
@@ -622,21 +625,14 @@ namespace PKSim.IntegrationTests
          _simulation.OutputSelections.AddOutput(quantitySelection);
       }
 
-      protected override void Because()
+      [Observation]
+      public async Task should_be_able_to_retrieve_the_fraction_metabolized_in_liver_intracellular()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
-      }
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
 
-      [Observation]
-      public void should_have_results()
-      {
          _simulation.HasResults.ShouldBeTrue();
-      }
 
-      [Observation]
-      public void should_be_able_to_retrieve_the_fraction_metabolized_in_liver_intracellular()
-      {
          var observerColumn = _simulation.DataRepository.Where(col => col.DataInfo.Origin == ColumnOrigins.Calculation)
             .Where(col => col.QuantityInfo.Type.Is(QuantityType.Metabolite))
             .Where(col => col.QuantityInfo.Path.Contains(CoreConstants.Organ.Liver))
@@ -677,10 +673,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_create_and_run_the_simulation()
+      public async Task should_be_able_to_create_and_run_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
    }
@@ -711,10 +707,10 @@ namespace PKSim.IntegrationTests
       }
        
       [Observation]
-      public void should_be_able_to_create_and_run_the_simulation()
+      public async Task should_be_able_to_create_and_run_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
    }
@@ -745,10 +741,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_create_and_run_the_simulation()
+      public async Task should_be_able_to_create_and_run_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
    }
