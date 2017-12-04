@@ -11,6 +11,7 @@
     <RootNamespace>PKSim.Presentation</RootNamespace>
     <AssemblyName>PKSim.Presentation</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>    
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>

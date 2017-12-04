@@ -101,12 +101,7 @@ namespace PKSim.Presentation
          _timeProfileAnalysisChart.AllObservedData().ShouldContain(_observedDataRepository);
       }
 
-      [Observation]
-      public void should_add_the_observed_data_as_used_by_the_population_data_collector()
-      {
-         A.CallTo(() => _observedDataTask.AddObservedDataToAnalysable(A<IReadOnlyList<DataRepository>>._, _populationDataCollector)).MustHaveHappened();
-      }
-
+   
       [Observation]
       public void should_refresh_the_chart()
       {
