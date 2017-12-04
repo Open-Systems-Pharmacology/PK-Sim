@@ -10,6 +10,8 @@
     <RootNamespace>PKSim.UI.Tests</RootNamespace>
     <AssemblyName>PKSim.UI.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -213,7 +215,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\SolutionInfo.cs">
+    <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="ChartDataBinderSpecs.cs" />
@@ -226,15 +228,15 @@
     <Compile Include="SimulationToSimulationReactionDiagramDTOMapperSpecs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\PKSim.Core\PKSim.Core.csproj">
+    <ProjectReference Include="..\..\src\PKSim.Core\PKSim.Core.csproj">
       <Project>{cef9367d-f2c4-4796-847b-42b090a601b5}</Project>
       <Name>PKSim.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\PKSim.Presentation\PKSim.Presentation.csproj">
+    <ProjectReference Include="..\..\src\PKSim.Presentation\PKSim.Presentation.csproj">
       <Project>{0238E2F1-A931-4D3D-9C6E-88924CFF9501}</Project>
       <Name>PKSim.Presentation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\PKSim.UI\PKSim.UI.csproj">
+    <ProjectReference Include="..\..\src\PKSim.UI\PKSim.UI.csproj">
       <Project>{19e2a5e5-2248-43aa-92e0-190b327d67a8}</Project>
       <Name>PKSim.UI</Name>
     </ProjectReference>
