@@ -1,12 +1,13 @@
 ﻿using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using ILogger = OSPSuite.Core.Services.ILogger;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
@@ -302,7 +303,7 @@ namespace PKSim.Core
       [Observation]
       public void should_warn_the_user_that_the_parameter_was_not_found_in_the_container()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_localParameter.Path), NotificationType.Warning)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_localParameter.Path), LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 
@@ -362,7 +363,7 @@ namespace PKSim.Core
       [Observation]
       public void should_warn_the_user_that_the_parameter_was_not_found_in_the_container()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_snapshot.Name), NotificationType.Warning)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_snapshot.Name), LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 }

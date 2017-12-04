@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -86,7 +87,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_added_some_log_info_explaining_why_the_file_is_corrupted()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>._, NotificationType.Error)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 
@@ -132,7 +133,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_added_some_log_info_explaining_why_the_file_is_corrupted()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>._, NotificationType.Error)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 

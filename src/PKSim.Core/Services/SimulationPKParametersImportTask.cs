@@ -36,7 +36,7 @@ namespace PKSim.Core.Services
          if (pkParameterImport.Status.Is(NotificationType.Error))
             return;
 
-         pkParameterImport.AddInSeparator(PKSimConstants.Information.FollowingPKParametersWereSuccessfulyImported);
+         pkParameterImport.AddInfo(PKSimConstants.Information.FollowingPKParametersWereSuccessfulyImported);
          foreach (var quantityPKParameter in pkParameterImport.PKParameters)
          {
             pkParameterImport.AddInfo(quantityPKParameter.ToString());

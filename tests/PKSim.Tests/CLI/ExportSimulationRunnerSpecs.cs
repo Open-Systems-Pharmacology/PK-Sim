@@ -2,11 +2,11 @@
 using System.IO;
 using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
@@ -16,6 +16,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;
+using ILogger = OSPSuite.Core.Services.ILogger;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI
@@ -257,7 +258,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_warn_the_user_that_the_simulation_to_export_does_not_have_any_output()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_simulation1Name), NotificationType.Warning)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_simulation1Name), LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 
@@ -279,7 +280,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_warn_the_user_that_the_simulation_to_export_does_not_have_any_results()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_simulation1Name), NotificationType.Warning)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_simulation1Name), LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 
@@ -301,7 +302,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_warn_the_user_that_the_simulation_to_export_does_not_have_any_output()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_simulation2Name), NotificationType.Warning)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_simulation2Name), LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 

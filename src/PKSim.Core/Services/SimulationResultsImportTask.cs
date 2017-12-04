@@ -87,7 +87,7 @@ namespace PKSim.Core.Services
          if (simulationResultsImport.Status.Is(NotificationType.Error))
             return;
 
-         simulationResultsImport.AddInSeparator(PKSimConstants.Information.FollowingOutputsWereSuccessfulyImported(simulationResultsImport.SimulationResults.Count));
+         simulationResultsImport.AddInfo(PKSimConstants.Information.FollowingOutputsWereSuccessfulyImported(simulationResultsImport.SimulationResults.Count));
          foreach (var quantityPath in simulationResultsImport.SimulationResults.AllQuantityPaths())
          {
             simulationResultsImport.AddInfo(quantityPath);

@@ -44,11 +44,11 @@ namespace PKSim.CLI.Core.Services
 
       public async Task RunBatchAsync(JsonRunOptions runOptions)
       {
-         _logger.AddInSeparator($"Starting batch run: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+         _logger.AddInfo($"Starting batch run: {DateTime.Now.ToIsoFormat()}");
 
          await Task.Run(() => startJsonSimulationRun(runOptions));
 
-         _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+         _logger.AddInfo($"Batch run finished: {DateTime.Now.ToIsoFormat()}");
       }
 
       private async Task startJsonSimulationRun(JsonRunOptions runOptions)
@@ -92,7 +92,7 @@ namespace PKSim.CLI.Core.Services
 
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
-         _logger.AddInSeparator($"{_allSimulationNames.Count} simulations calculated and exported in '{timeSpent.ToDisplay()}'", NotificationType.Info);
+         _logger.AddInfo($"{_allSimulationNames.Count} simulations calculated and exported in '{timeSpent.ToDisplay()}'");
 
          createSummaryFilesIn(outputDirectory, exportMode);
       }
@@ -130,7 +130,7 @@ namespace PKSim.CLI.Core.Services
 
       private async Task exportSimulationsFromProject(FileInfo projectFile, string outputFolder, SimulationExportMode simulationExportMode)
       {
-         _logger.AddInSeparator($"Starting batch simulation export for file '{projectFile}'", NotificationType.Info);
+         _logger.AddInfo($"Starting batch simulation export for file '{projectFile}'");
          try
          {
             var project = await _snapshotTask.LoadProjectFromSnapshot(projectFile.FullName);

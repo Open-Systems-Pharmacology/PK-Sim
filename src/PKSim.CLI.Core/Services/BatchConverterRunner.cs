@@ -40,9 +40,8 @@ namespace PKSim.CLI.Core.Services
       {
          var inputFolder = runOptions.InputFolder;
          var outputFolder = runOptions.OutputFolder;
-         var exportMode = runOptions.ExportMode;
 
-         _logger.AddInSeparator($"Starting batch converter run: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+         _logger.AddInfo($"Starting batch converter run: {DateTime.Now.ToIsoFormat()}");
 
          var inputDirectory = new DirectoryInfo(inputFolder);
          if (!inputDirectory.Exists)
@@ -71,12 +70,12 @@ namespace PKSim.CLI.Core.Services
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
 
-         _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+         _logger.AddInfo($"Batch run finished: {DateTime.Now.ToIsoFormat()}");
       }
 
       private async Task exportSimulationTo(FileInfo simulationFile, string outputFolder)
       {
-         _logger.AddInSeparator($"Starting batch simulation for file '{simulationFile}'");
+         _logger.AddDebug($"Starting batch simulation for file '{simulationFile}'");
          var outputFile = Path.Combine(outputFolder, simulationFile.Name);
          var project = new PKSimProject();
          try
