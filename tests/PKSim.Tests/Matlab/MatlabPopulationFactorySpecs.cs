@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using NUnit.Framework;
 using PKSim.Core;
-using PKSim.Core.Batch;
 using PKSim.Core.Model;
 
 namespace PKSim.Matlab
