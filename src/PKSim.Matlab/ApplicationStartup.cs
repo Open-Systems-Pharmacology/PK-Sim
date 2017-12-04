@@ -28,7 +28,12 @@ namespace PKSim.Matlab
       private void initializeForMatlab()
       {
          if (IoC.Container != null)
+         {
+            //Container already initialized? Add Matlab specific registration to the container.
+            // this is for tests only really
+            IoC.Container.AddRegister(x => x.FromType<MatlabRegister>());
             return;
+         }
 
          InfrastructureRegister.Initialize();
          var container = IoC.Container;
