@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -74,9 +75,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void updateWeightFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
       {
-         var meanWeightParameter = _individualModelTask.MeanWeightFor(originData);
-         originData.Weight = baseParameterValueFrom(snapshot.Weight, meanWeightParameter.Dimension, meanWeightParameter.Value);
-         originData.WeightUnit = meanWeightParameter.Dimension.UnitOrDefault(snapshot.Weight.Unit).Name;
+         (originData.Weight, originData.WeightUnit) = getOriginDataValues(originData, _individualModelTask.MeanWeightFor, snapshot.Weight);
       }
 
       private void updateHeightFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
@@ -84,9 +83,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (!originData.SpeciesPopulation.IsHeightDependent)
             return;
 
-         var meanHeightParameter = _individualModelTask.MeanHeightFor(originData);
-         originData.Height = baseParameterValueFrom(snapshot.Height, meanHeightParameter.Dimension, meanHeightParameter.Value);
-         originData.HeightUnit = meanHeightParameter.Dimension.UnitOrDefault(snapshot.Height.Unit).Name;
+         (originData.Height, originData.HeightUnit) = getOriginDataValues(originData, _individualModelTask.MeanHeightFor, snapshot.Height);
       }
 
       private void updateCalculationMethodsFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
@@ -99,37 +96,21 @@ namespace PKSim.Core.Snapshots.Mappers
          _calculationMethodCacheMapper.UpdateCalculationMethodCache(originData, snapshot.CalculationMethods);
       }
 
-//         foreach (var category in calculationMethodCategoryForSpecies)
-//         {
-//            string selectedCalculationMethod = snapshot.CalculationMethodFor(category.Name);
-//            if (string.IsNullOrEmpty(selectedCalculationMethod))
-//               originData.AddCalculationMethod(category.DefaultItemForSpecies(originData.Species));
-//            else
-//            {
-//               var calculationMethod = category.AllItems().FindByName(selectedCalculationMethod);
-//               if (calculationMethod == null)
-//                  throw new PKSimException(PKSimConstants.Error.CouldNotFindCalculationMethodInCategory(selectedCalculationMethod, category.Name, category.AllItems().AllNames()));
-//
-//               if (calculationMethod.AllSpecies.Contains(originData.Species.Name))
-//                  originData.AddCalculationMethod(calculationMethod);
-//               else
-//                  throw new PKSimException(PKSimConstants.Error.CalculationMethodNotDefinedForSpecies(selectedCalculationMethod, category.Name, originData.Species.Name));
-//            }
-//         }
- //     }
-
       private void updateAgeFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
       {
          if (!originData.SpeciesPopulation.IsAgeDependent)
             return;
 
-         var meanAgeParameter = _individualModelTask.MeanAgeFor(originData);
-         originData.Age = baseParameterValueFrom(snapshot.Age, meanAgeParameter.Dimension, meanAgeParameter.Value);
-         originData.AgeUnit = meanAgeParameter.Dimension.UnitOrDefault(snapshot.Age.Unit).Name;
+         (originData.Age, originData.AgeUnit) = getOriginDataValues(originData, _individualModelTask.MeanAgeFor, snapshot.Age);
+         (originData.GestationalAge, originData.GestationalAgeUnit) = getOriginDataValues(originData, _individualModelTask.MeanGestationalAgeFor, snapshot.GestationalAge);
+      }
 
-         var meanGestationalAgeParameter = _individualModelTask.MeanGestationalAgeFor(originData);
-         originData.GestationalAge = baseParameterValueFrom(snapshot.GestationalAge, meanGestationalAgeParameter.Dimension, meanGestationalAgeParameter.Value);
-         originData.GestationalAgeUnit = meanGestationalAgeParameter.Dimension.UnitOrDefault(snapshot.GestationalAge.Unit).Name;
+      private (double value, string unit) getOriginDataValues(ModelOriginData originData, Func<ModelOriginData, IParameter> meanParameterRetrieverFunc, Parameter snapshotParameter)
+      {
+         var meanParameter = meanParameterRetrieverFunc(originData);
+         var value = baseParameterValueFrom(snapshotParameter, meanParameter.Dimension, meanParameter.Value);
+         var unit = meanParameter.Dimension.UnitOrDefault(snapshotParameter?.Unit).Name;
+         return (value, unit);
       }
 
       private Gender genderFrom(SnapshotOriginData snapshot, SpeciesPopulation speciesPopulation)

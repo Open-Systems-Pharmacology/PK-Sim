@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using NUnit.Framework;
 using PKSim.Core;
 using PKSim.Core.Model;
-using OriginData = PKSim.Core.Batch.OriginData;
 
 namespace PKSim.Matlab
 {
@@ -13,6 +12,8 @@ namespace PKSim.Matlab
    [Category("Matlab")]
    public abstract class concern_for_MatlabIndividualFactory : ContextSpecification<IMatlabIndividualFactory>
    {
+      protected OriginData _matlabOriginData;
+
       public override void GlobalContext()
       {
          base.GlobalContext();
@@ -28,23 +29,24 @@ namespace PKSim.Matlab
    public class When_creating_an_individual_based_on_a_valid_origin_data : concern_for_MatlabIndividualFactory
    {
       private IEnumerable<ParameterValue> _results;
-      private OriginData _batchOriginData;
 
       protected override void Context()
       {
          base.Context();
-         _batchOriginData = new OriginData();
-         _batchOriginData.Species = CoreConstants.Species.Human;
-         _batchOriginData.Population = CoreConstants.Population.ICRP;
-         _batchOriginData.Age = 30;
-         _batchOriginData.Weight = 75;
-         _batchOriginData.Height = 17.5;
-         _batchOriginData.Gender = CoreConstants.Gender.Male;
+         _matlabOriginData = new OriginData
+         {
+            Species = CoreConstants.Species.Human,
+            Population = CoreConstants.Population.ICRP,
+            Age = 30,
+            Weight = 75,
+            Height = 17.5,
+            Gender = CoreConstants.Gender.Male
+         };
       }
 
       protected override void Because()
       {
-         _results = sut.CreateIndividual(_batchOriginData, new MoleculeOntogeny[]{});
+         _results = sut.CreateIndividual(_matlabOriginData, new MoleculeOntogeny[] { });
       }
 
       [Observation]
@@ -57,23 +59,24 @@ namespace PKSim.Matlab
    public class When_creating_an_individual_based_on_a_valid_origin_data_with_ontogeny_information : concern_for_MatlabIndividualFactory
    {
       private IEnumerable<ParameterValue> _results;
-      private OriginData _batchOriginData;
 
       protected override void Context()
       {
          base.Context();
-         _batchOriginData = new OriginData();
-         _batchOriginData.Species = CoreConstants.Species.Human;
-         _batchOriginData.Population = CoreConstants.Population.ICRP;
-         _batchOriginData.Age = 30;
-         _batchOriginData.Weight = 75;
-         _batchOriginData.Height = 17.5;
-         _batchOriginData.Gender = CoreConstants.Gender.Male;
+         _matlabOriginData = new OriginData
+         {
+            Species = CoreConstants.Species.Human,
+            Population = CoreConstants.Population.ICRP,
+            Age = 30,
+            Weight = 75,
+            Height = 17.5,
+            Gender = CoreConstants.Gender.Male
+         };
       }
 
       protected override void Because()
       {
-         _results = sut.CreateIndividual(_batchOriginData, new[] {new MoleculeOntogeny("CYP3A4","CYP3A4")});
+         _results = sut.CreateIndividual(_matlabOriginData, new[] {new MoleculeOntogeny("CYP3A4", "CYP3A4")});
       }
 
       [Observation]
@@ -86,24 +89,25 @@ namespace PKSim.Matlab
 
    public class When_retrieving_the_distributed_parmaeter_based_on_a_valid_origin_data : concern_for_MatlabIndividualFactory
    {
-      private OriginData _batchOriginData;
       private DistributedParameterValue[] _results;
 
       protected override void Context()
       {
          base.Context();
-         _batchOriginData = new OriginData();
-         _batchOriginData.Species = CoreConstants.Species.Human;
-         _batchOriginData.Population = CoreConstants.Population.ICRP;
-         _batchOriginData.Age = 30;
-         _batchOriginData.Weight = 75;
-         _batchOriginData.Height = 17.5;
-         _batchOriginData.Gender = CoreConstants.Gender.Male;
+         _matlabOriginData = new OriginData
+         {
+            Species = CoreConstants.Species.Human,
+            Population = CoreConstants.Population.ICRP,
+            Age = 30,
+            Weight = 75,
+            Height = 17.5,
+            Gender = CoreConstants.Gender.Male
+         };
       }
 
       protected override void Because()
       {
-         _results = sut.DistributionsFor(_batchOriginData,null);
+         _results = sut.DistributionsFor(_matlabOriginData, null);
       }
 
       [Observation]

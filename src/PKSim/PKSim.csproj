@@ -11,6 +11,7 @@
     <RootNamespace>PKSim</RootNamespace>
     <AssemblyName>PKSim</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>PKSim.ico</ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
