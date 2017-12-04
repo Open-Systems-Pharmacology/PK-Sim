@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -15,6 +16,7 @@ using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.DTO.Snapshots;
 using PKSim.Presentation.Presenters.Snapshots;
 using PKSim.Presentation.Views.Snapshots;
+using ILogger = OSPSuite.Core.Services.ILogger;
 
 namespace PKSim.Presentation
 {
@@ -181,7 +183,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_log_the_exception_into_the_logger()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>._, NotificationType.Error)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
       }
 
       [Observation]

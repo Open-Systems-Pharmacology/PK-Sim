@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using ILogger = OSPSuite.Core.Services.ILogger;
 
 namespace PKSim.Core.Model
 {
@@ -21,15 +23,12 @@ namespace PKSim.Core.Model
          _entries = new List<LogEntry>();
       }
 
-      public virtual void AddToLog(string message, NotificationType messageStatus = NotificationType.None)
+      public void AddToLog(string message, LogLevel logLevel, string categoryName)
       {
-         _entries.Add(new LogEntry(messageStatus, message));
+         _entries.Add(new LogEntry(logLevel, message));
       }
 
-      public virtual IEnumerable<LogEntry> Entries
-      {
-         get { return _entries; }
-      }
+      public virtual IEnumerable<LogEntry> Entries => _entries;
 
       public virtual IEnumerable<string> Log
       {
@@ -40,12 +39,12 @@ namespace PKSim.Core.Model
       {
          get
          {
-            var allStatus = _entries.Select(x => x.MessageStatus).Distinct().ToList();
+            var allStatus = _entries.Select(x => x.Level).Distinct().ToList();
 
-            if (allStatus.Contains(NotificationType.Error))
+            if (allStatus.Contains(LogLevel.Error) || allStatus.Contains(LogLevel.Critical))
                return NotificationType.Error;
 
-            if (allStatus.Contains(NotificationType.Warning))
+            if (allStatus.Contains(LogLevel.Warning))
                return NotificationType.Warning;
 
             return NotificationType.Info;

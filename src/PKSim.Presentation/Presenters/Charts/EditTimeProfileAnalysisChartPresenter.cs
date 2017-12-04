@@ -71,12 +71,12 @@ namespace PKSim.Presentation.Presenters.Charts
          return _chartDataCreator.CreateFor(PopulationAnalysisChart, AggregationFunctions.QuantityAggregation);
       }
 
-      protected virtual void OnDragOver(object sender, DragEventArgs e)
+      public virtual void OnDragOver(object sender, DragEventArgs e)
       {
          _observedDataDragDropBinder.PrepareDrag(e);
       }
 
-      protected virtual void OnDragDrop(object sender, DragEventArgs e)
+      public virtual void OnDragDrop(object sender, DragEventArgs e)
       {
          var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e);
          AddObservedData(droppedObservedData.ToList());

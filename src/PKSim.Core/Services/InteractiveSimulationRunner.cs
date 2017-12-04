@@ -2,12 +2,11 @@
 using System.Threading.Tasks;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.SimModel.Services;
-using OSPSuite.Utility.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public interface IInteractiveSimulationRunner : IListener<SimulationResultsUpdatedEvent>
+   public interface IInteractiveSimulationRunner
    {
       Task RunSimulation(Simulation simulation, bool selectOutput);
       void StopSimulation();
@@ -45,12 +44,16 @@ namespace PKSim.Core.Services
             var outputSelections = _simulationSettingsRetriever.SettingsFor(simulation);
             if (outputSelections == null)
                return;
+
             simulation.OutputSelections.UpdatePropertiesFrom(outputSelections, _cloner);
          }
 
          await _simulationRunner.RunSimulation(simulation, _simulationRunOptions);
+
+         addAnalysableToSimulationIfRequired(simulation);
       }
 
+     
       private bool outputSelectionRequired(Simulation simulation, bool selectOutput)
       {
          if (selectOutput)
@@ -67,9 +70,8 @@ namespace PKSim.Core.Services
          _simulationRunner.StopSimulation();
       }
 
-      public void Handle(SimulationResultsUpdatedEvent eventToHandle)
+      private void addAnalysableToSimulationIfRequired(Simulation simulation)
       {
-         var simulation = eventToHandle.Simulation as Simulation;
          if (simulation == null || !simulation.HasResults) return;
          if (simulation.Analyses.Count() != 0) return;
          _simulationAnalysisCreator.CreateAnalysisFor(simulation);

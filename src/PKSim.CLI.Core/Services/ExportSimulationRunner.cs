@@ -50,14 +50,14 @@ namespace PKSim.CLI.Core.Services
 
          DirectoryHelper.CreateDirectory(exportRunOptions.OutputFolder);
 
-         _logger.AddInSeparator($"Starting project export for '{projectFile}'", NotificationType.Info);
+         _logger.AddInfo($"Starting project export for '{projectFile}'");
 
          _workspacePersistor.LoadSession(_workspace, projectFile);
          _logger.AddDebug($"Project loaded successfuly from '{projectFile}'");
 
          await exportSimulations(_workspace.Project, exportRunOptions);
 
-         _logger.AddInSeparator($"Project export for '{projectFile}' terminated", NotificationType.Info);
+         _logger.AddInfo($"Project export for '{projectFile}' terminated");
       }
 
       private async Task exportSimulations(PKSimProject project, ExportRunOptions exportRunOptions)

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using OSPSuite.Core.Domain;
 using ILogger = OSPSuite.Core.Services.ILogger;
 
 namespace PKSim.Infrastructure.Services
@@ -7,31 +6,36 @@ namespace PKSim.Infrastructure.Services
    public class PKSimLogger : ILogger
    {
       private readonly ILoggerFactory _loggerFactory;
+      private const string DEFAULT_LOGGER_CATEGORY = "PK-Sim";
 
       public PKSimLogger(ILoggerFactory loggerFactory)
       {
          _loggerFactory = loggerFactory;
       }
 
-      public void AddToLog(string message, NotificationType messageStatus = NotificationType.None)
+      public void AddToLog(string message, LogLevel logLevel, string categoryName)
       {
-         var logger = _loggerFactory.CreateLogger("PK-Sim");
-         switch (messageStatus)
+         var logger = _loggerFactory.CreateLogger(string.IsNullOrEmpty(categoryName) ? DEFAULT_LOGGER_CATEGORY : categoryName);
+         switch (logLevel)
          {
-            case NotificationType.Warning:
-               logger.LogWarning(message);
+            case LogLevel.Trace:
+               logger.LogTrace(message);
                break;
-            case NotificationType.Error:
-               logger.LogError(message);
-               break;
-            case NotificationType.Info:
-               logger.LogInformation(message);
-               break;
-            case NotificationType.Debug:
+            case LogLevel.Debug:
                logger.LogDebug(message);
                break;
-            default:
-               return;
+            case LogLevel.Information:
+               logger.LogInformation(message);
+               break;
+            case LogLevel.Warning:
+               logger.LogWarning(message);
+               break;
+            case LogLevel.Error:
+               logger.LogError(message);
+               break;
+            case LogLevel.Critical:
+               logger.LogCritical(message);
+               break;
          }
       }
    }

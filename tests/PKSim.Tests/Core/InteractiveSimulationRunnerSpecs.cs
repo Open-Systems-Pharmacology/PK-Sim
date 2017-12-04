@@ -41,13 +41,11 @@ namespace PKSim.Core
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(() => _simulation.Analyses).Returns(new List<ISimulationAnalysis>());
          A.CallTo(() => _simulation.HasResults).Returns(true);
-         await sut.RunSimulation(_simulation, false);
       }
 
       protected override Task Because()
       {
-         sut.Handle(new SimulationResultsUpdatedEvent(_simulation));
-         return _completed;
+         return sut.RunSimulation(_simulation, false);
       }
 
       [Observation]
@@ -72,8 +70,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         sut.Handle(new SimulationResultsUpdatedEvent(_simulation));
-         return _completed;
+         return sut.RunSimulation(_simulation, false); ;
       }
 
       [Observation]
@@ -98,8 +95,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         sut.Handle(new SimulationResultsUpdatedEvent(_simulation));
-         return _completed;
+         return sut.RunSimulation(_simulation, false); 
       }
 
       [Observation]

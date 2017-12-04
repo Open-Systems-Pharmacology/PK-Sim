@@ -1,14 +1,15 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using ILogger = OSPSuite.Core.Services.ILogger;
 using OutputSelections = OSPSuite.Core.Domain.OutputSelections;
 using Parameter = OSPSuite.Core.Domain.Parameter;
 
@@ -116,7 +117,7 @@ namespace PKSim.Core
       [Observation]
       public void should_warn_that_a_missing_output_was_not_found()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains("PATH1"), NotificationType.Warning)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains("PATH1"), LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 }

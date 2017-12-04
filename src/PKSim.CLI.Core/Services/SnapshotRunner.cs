@@ -51,13 +51,13 @@ namespace PKSim.CLI.Core.Services
 
       public async Task RunBatchAsync(SnapshotRunOptions runOptions)
       {
-         _logger.AddInSeparator($"Starting snapshot run: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+         _logger.AddInfo($"Starting snapshot run: {DateTime.Now.ToIsoFormat()}");
 
          var allFilesToExports = allFilesToExportFrom(runOptions).ToList();
 
          await Task.Run(() => startSnapshotRun(allFilesToExports, runOptions.ExportMode));
 
-         _logger.AddInSeparator($"Snapshot run finished: {DateTime.Now.ToIsoFormat()}", NotificationType.Info);
+         _logger.AddInfo($"Snapshot run finished: {DateTime.Now.ToIsoFormat()}");
       }
 
       private Task startSnapshotRun(IReadOnlyList<FileMap> fileMaps, SnapshotExportMode exportMode)
@@ -95,7 +95,7 @@ namespace PKSim.CLI.Core.Services
 
       private async Task createProjectFromSnapshotFile(FileMap file)
       {
-         _logger.AddInSeparator($"Starting project export for '{file.SnapshotFile}'", NotificationType.Info);
+         _logger.AddInfo($"Starting project export for '{file.SnapshotFile}'");
          var project = await _snapshotTask.LoadProjectFromSnapshot(file.SnapshotFile);
          if (project == null)
             return;
@@ -108,7 +108,7 @@ namespace PKSim.CLI.Core.Services
 
       private async Task createSnapshotFromProjectFile(FileMap file)
       {
-         _logger.AddInSeparator($"Starting snapshot export for '{file.ProjectFile}'", NotificationType.Info);
+         _logger.AddInfo($"Starting snapshot export for '{file.ProjectFile}'");
 
          _workspacePersistor.LoadSession(_workspace, file.ProjectFile);
          _logger.AddDebug($"Project loaded successfuly from '{file.ProjectFile}'");

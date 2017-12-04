@@ -25,7 +25,7 @@ using PKSim.Presentation.Views.Charts;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_EditTimeProfileAnalysisChartPresenter : ContextSpecification<IEditTimeProfileAnalysisChartPresenter>
+   public abstract class concern_for_EditTimeProfileAnalysisChartPresenter : ContextSpecification<EditTimeProfileAnalysisChartPresenter>
    {
       protected IEditTimeProfileAnalysisChartView _view;
       protected ITimeProfileChartPresenter _timeProfilerChartPresenter;
@@ -92,7 +92,7 @@ namespace PKSim.Presentation
    {
       protected override void Because()
       {
-         _timeProfilerChartPresenter.DragDrop += Raise.FreeForm.With(_timeProfilerChartPresenter, _dragEventArgs);
+         sut.OnDragDrop(_timeProfilerChartPresenter, _dragEventArgs);
       }
 
       [Observation]

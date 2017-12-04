@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions.Internal;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
@@ -40,33 +39,13 @@ namespace PKSim.Infrastructure.Services
 
       private void writeMessage(LogLevel logLevel, string name, int eventIdId, string message, Exception exception)
       {
-         var messageStatus = notificationTypeFrom(logLevel);
-         var logEntry = new LogEntry(messageStatus, message);
+         var logEntry = new LogEntry(logLevel, message);
          _eventPublisher.PublishEvent(new LogEntryEvent(logEntry));
       }
 
       public bool IsEnabled(LogLevel logLevel)
       {
          return logLevel >= _logLevel;
-      }
-
-      private NotificationType notificationTypeFrom(LogLevel logLevel)
-      {
-         switch (logLevel)
-         {
-            case LogLevel.Trace:
-            case LogLevel.Debug:
-               return NotificationType.Debug;
-            case LogLevel.Information:
-               return NotificationType.Info;
-            case LogLevel.Warning:
-               return NotificationType.Warning;
-            case LogLevel.Error:
-            case LogLevel.Critical:
-               return NotificationType.Error;
-            default:
-               return NotificationType.None;
-         }
       }
 
       public IDisposable BeginScope<TState>(TState state)
