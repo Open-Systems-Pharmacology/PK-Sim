@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
@@ -7,7 +6,6 @@ using OSPSuite.Utility.Container;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Infrastructure;
-using PKSim.Presentation;
 
 namespace PKSim.Matlab
 {
@@ -28,12 +26,7 @@ namespace PKSim.Matlab
       private void initializeForMatlab()
       {
          if (IoC.Container != null)
-         {
-            //Container already initialized? Add Matlab specific registration to the container.
-            // this is for tests only really
-            IoC.Container.AddRegister(x => x.FromType<MatlabRegister>());
             return;
-         }
 
          InfrastructureRegister.Initialize();
          var container = IoC.Container;
@@ -42,10 +35,8 @@ namespace PKSim.Matlab
          {
             container.RegisterImplementationOf(new SynchronizationContext());
             container.AddRegister(x => x.FromType<MatlabRegister>());
-            container.AddRegister(x => x.FromType<PresenterRegister>());
             container.AddRegister(x => x.FromType<CoreRegister>());
             container.AddRegister(x => x.FromType<InfrastructureRegister>());
-            container.AddRegister(x => x.FromType<OSPSuite.Presentation.PresenterRegister>());
 
             //no computation required in matlab interface
             InfrastructureRegister.RegisterSerializationDependencies(registerSimModelSchema: false);

@@ -40,6 +40,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKSim.CLI", "src\PKSim.CLI\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKSim.CLI.Core", "src\PKSim.CLI.Core\PKSim.CLI.Core.csproj", "{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKSim.Matlab.Tests", "tests\PKSim.Matlab.Tests\PKSim.Matlab.Tests.csproj", "{A074308C-CB4B-4E6D-9C28-65124145E6B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,12 +96,15 @@ Global
 		{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A074308C-CB4B-4E6D-9C28-65124145E6B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A074308C-CB4B-4E6D-9C28-65124145E6B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A074308C-CB4B-4E6D-9C28-65124145E6B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A074308C-CB4B-4E6D-9C28-65124145E6B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {2673A133-1EB3-437B-81FD-7202F21F2B7F}
 		VisualSVNWorkingCopyRoot = 
 		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 	EndGlobalSection
