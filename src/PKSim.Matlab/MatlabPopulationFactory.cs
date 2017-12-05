@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using OSPSuite.Utility.Container;
-using PKSim.Core.Batch.Mapper;
 using PKSim.Core.Model;
 using PKSim.Matlab.Mappers;
 

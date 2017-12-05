@@ -12,7 +12,7 @@ using PKSim.Matlab.Mappers;
 
 namespace PKSim.Matlab
 {
-   internal abstract class concern_for_MatlabOriginDataToOriginDataMapper : ContextSpecification<IMatlabOriginDataToOriginDataMapper>
+   public abstract class concern_for_MatlabOriginDataToOriginDataMapper : ContextSpecification<IMatlabOriginDataToOriginDataMapper>
    {
       protected Species _human;
       protected SpeciesPopulation _icrp;
@@ -48,7 +48,7 @@ namespace PKSim.Matlab
       }
    }
 
-   internal class mapping_a_well_defined_matlab_origin_data_to_origin_data_from_matlab_to_a_core_matlab_origin_data_to_origin_data : concern_for_MatlabOriginDataToOriginDataMapper
+   public class mapping_a_well_defined_matlab_origin_data_to_origin_data_from_matlab_to_a_core_matlab_origin_data_to_origin_data : concern_for_MatlabOriginDataToOriginDataMapper
    {
       private Core.Model.OriginData _result;
       private Core.Snapshots.OriginData _snapshotOriginData;
