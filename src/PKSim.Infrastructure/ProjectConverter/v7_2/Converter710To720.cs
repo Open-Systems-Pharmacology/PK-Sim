@@ -96,6 +96,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
          if (individual == null)
             return;
 
+
+         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
+
          if (!individual.IsHuman)
             return;
 
@@ -106,8 +109,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
          var bsa = defaultHuman.Organism.Parameter(CoreConstants.Parameter.BSA);
 
          individual.Organism.Add(_cloner.Clone(bsa));
-
-         _individualCalculationMethodsUpdater.AddMissingCalculationMethodsTo(individual);
       }
 
       private void addBSAParameterValues(Population population)

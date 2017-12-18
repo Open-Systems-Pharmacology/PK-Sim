@@ -237,6 +237,7 @@
     <Compile Include="ProjectConverter\v6_4\Converter632To641.cs" />
     <Compile Include="ProjectConverter\v7_1\Converter641To710.cs" />
     <Compile Include="ProjectConverter\v7_2\Converter710To720.cs" />
+    <Compile Include="ProjectConverter\v7_2\Converter720To721.cs" />
     <Compile Include="Reporting\Extensions\DataTableExtensions.cs" />
     <Compile Include="Reporting\Extensions\SimpleProtocolExtensions.cs" />
     <Compile Include="Reporting\Summary\AdvancedProtocolReportBuilder.cs" />

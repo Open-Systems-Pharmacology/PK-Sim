@@ -29,7 +29,8 @@ namespace PKSim.Core
       public static readonly ProjectVersion V6_4_1 = addVersion(70, "6.4.1");
       public static readonly ProjectVersion V7_1_0 = addVersion(71, "7.1.0");
       public static readonly ProjectVersion V7_2_0 = addVersion(72, "7.2.0");
-      public static readonly ProjectVersion Current = V7_2_0;
+      public static readonly ProjectVersion V7_2_1 = addVersion(73, "7.2.1");
+      public static readonly ProjectVersion Current = V7_2_1;
 
       private static ProjectVersion addVersion(int versionNumber, string versionDisplay)
       {
