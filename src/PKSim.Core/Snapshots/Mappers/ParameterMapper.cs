@@ -35,7 +35,8 @@ namespace PKSim.Core.Snapshots.Mappers
       public virtual async Task UpdateSnapshotFromParameter(SnapshotParameter snapshot, IParameter parameter)
       {
          updateParameterValue(snapshot, parameter.Value, parameter.DisplayUnit.Name, parameter.Dimension);
-         snapshot.ValueDescription = SnapshotValueFor(parameter.ValueDescription);
+         snapshot.Reference = SnapshotValueFor(parameter.ValueOrigin.Description);
+         snapshot.Origin = SnapshotValueFor(parameter.ValueOrigin.Type.Id, ValueOriginTypeId.Database);
          snapshot.TableFormula = await mapFormula(parameter.Formula);
       }
 
@@ -66,7 +67,13 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<IParameter> MapToModel(SnapshotParameter snapshot, IParameter parameter)
       {
-         parameter.ValueDescription = snapshot.ValueDescription;
+         var snapshotValueOrigin = new ValueOrigin
+         {
+            Type = ValueOriginTypes.ById(ModelValueFor(snapshot.Origin, ValueOriginTypeId.Database)),
+            Description = ModelValueFor(snapshot.Reference)
+         };
+
+         parameter.ValueOrigin.UpdateFrom(snapshotValueOrigin);
 
          //only update formula if required
          if (snapshot.TableFormula != null)

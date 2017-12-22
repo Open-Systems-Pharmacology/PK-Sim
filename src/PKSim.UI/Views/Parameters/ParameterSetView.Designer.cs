@@ -19,6 +19,7 @@
          }
          _presenter = null;
          _gridViewBinder.Dispose();
+         _valueOriginBinder.Dispose();
          base.Dispose(disposing);
       }
 

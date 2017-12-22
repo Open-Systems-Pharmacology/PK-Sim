@@ -13,6 +13,7 @@ using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Parameters;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Binders;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -23,8 +24,8 @@ namespace PKSim.UI.Views.Parameters
       private IGridViewColumn _columnName;
       public bool Updating { get; private set; }
 
-      public ParametersByGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever)
-         : base(toolTipCreator, imageListRetriever)
+      public ParametersByGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, PKSim.UI.Binders.ValueOriginBinder<ParameterDTO> valueOriginBinder)
+         : base(toolTipCreator, imageListRetriever, valueOriginBinder)
       {
          InitializeComponent();
          Initialize(gridViewParameters);

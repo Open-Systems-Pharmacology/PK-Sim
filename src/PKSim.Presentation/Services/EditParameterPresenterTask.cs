@@ -12,7 +12,7 @@ namespace PKSim.Presentation.Services
       void SetParameterValue(IEditParameterPresenter presenter, IParameterDTO parameterDTO, double valueInGuiUnit);
       void SetParameterUnit(IEditParameterPresenter presenter, IParameterDTO parameterDTO, Unit displayUnit);
       void SetParameterPercentile(IEditParameterPresenter presenter, IParameterDTO parameterDTO, double percentileInPercent);
-      void SetParameterValueDescription(IEditParameterPresenter presenter, IParameterDTO parameterDTO, string valueDescription);
+      void SetParameterValueOrigin(IEditParameterPresenter presenter, IParameterDTO parameterDTO, ValueOrigin valueOrigin);
       void SetParameterName(IEditParameterPresenter presenter, IParameterDTO parameterDTO, string name);
       void EditTableFor(IEditParameterPresenter presenter, IParameterDTO parameterDTO);
       void SetParameterFavorite(IParameterDTO parameterDTO, bool isFavorite);
@@ -34,9 +34,9 @@ namespace PKSim.Presentation.Services
          presenter.AddCommand(_parameterTask.SetParameterPercentile(ParameterFrom(parameterDTO), percentileInPercent / 100));
       }
 
-      public void SetParameterValueDescription(IEditParameterPresenter presenter, IParameterDTO parameterDTO, string valueDescription)
+      public void SetParameterValueOrigin(IEditParameterPresenter presenter, IParameterDTO parameterDTO, ValueOrigin valueOrigin)
       {
-         presenter.AddCommand(_parameterTask.SetParameterValueDescription(ParameterFrom(parameterDTO), valueDescription));
+         presenter.AddCommand(_parameterTask.SetParameterValueOrigin(ParameterFrom(parameterDTO), valueOrigin));
       }
 
       public void SetParameterName(IEditParameterPresenter presenter, IParameterDTO parameterDTO, string name)

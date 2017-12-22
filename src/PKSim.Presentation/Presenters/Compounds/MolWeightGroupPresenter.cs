@@ -134,9 +134,9 @@ namespace PKSim.Presentation.Presenters.Compounds
          AddCommand(_parameterTask.SetParameterPercentile(parameterDTO.Parameter, percentileInPercent));
       }
 
-      public void SetParameterValueDescription(IParameterDTO parameterDTO, string valueDescription)
+      public void SetParameterValueOrigin(IParameterDTO parameterDTO, ValueOrigin valueOrigin)
       {
-         AddCommand(_parameterTask.SetParameterValueDescription(parameterDTO.Parameter, valueDescription));
+         AddCommand(_parameterTask.SetParameterValueOrigin(parameterDTO.Parameter, valueOrigin));
       }
 
       public void SetMolWeightValue(MolWeightDTO molWeightDTO, double newMolWeightValue)

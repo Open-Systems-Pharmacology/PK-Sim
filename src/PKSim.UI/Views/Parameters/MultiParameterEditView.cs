@@ -43,8 +43,8 @@ namespace PKSim.UI.Views.Parameters
       public bool UseAdvancedSortingMode { set; private get; }
       public bool CustomSortEnabled { set; private get; }
 
-      public MultiParameterEditView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, PathElementsBinder<ParameterDTO> pathElementsBinder)
-         : base(toolTipCreator, imageListRetriever)
+      public MultiParameterEditView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, PKSim.UI.Binders.ValueOriginBinder<ParameterDTO> valueOriginBinder, PathElementsBinder<ParameterDTO> pathElementsBinder)
+         : base(toolTipCreator, imageListRetriever, valueOriginBinder)
       {
          _pathElementsBinder = pathElementsBinder;
          InitializeComponent();
@@ -315,7 +315,7 @@ namespace PKSim.UI.Views.Parameters
       protected override bool ColumnIsAlwaysActive(GridColumn column)
       {
          if (column == null) return false;
-         return column.IsOneOf(_columnFavorites.XtraColumn, _columnValueDescription.XtraColumn);
+         return column.IsOneOf(_columnFavorites.XtraColumn, _columnValueDescription?.XtraColumn);
       }
    }
 }

@@ -216,10 +216,17 @@ namespace PKSim.Core
    public class When_setting_a_value_description_for_a_parameter_with_origin : concern_for_ParameterTask
    {
       private IParameter _originParameter;
+      private ValueOrigin _newValueOrigin;
 
       protected override void Context()
       {
          base.Context();
+         _newValueOrigin = new ValueOrigin
+         {
+            Description = "TEXT",
+            Type = ValueOriginTypes.ParameterIdentification
+         };
+
          _originParameter = A.Fake<IParameter>();
          _parameter.Origin.ParameterId = "Origin";
          A.CallTo(() => _executionContext.Get<IParameter>(_parameter.Origin.ParameterId)).Returns(_originParameter);
@@ -227,39 +234,50 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.SetParameterValueDescription(_parameter, "TEXT");
+         sut.SetParameterValueOrigin(_parameter,_newValueOrigin);
       }
 
       [Observation]
       public void should_update_the_value_description_of_this_parameter()
       {
-         _parameter.ValueDescription.ShouldBeEqualTo("TEXT");
+         _parameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
+         _parameter.ValueOrigin.Type.ShouldBeEqualTo(_newValueOrigin.Type);
       }
 
       [Observation]
       public void should_update_the_value_description_of_the_origin_parameter()
       {
-         _originParameter.ValueDescription.ShouldBeEqualTo("TEXT");
+         _originParameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
+         _originParameter.ValueOrigin.Type.ShouldBeEqualTo(_newValueOrigin.Type);
       }
    }
 
    public class When_setting_a_value_description_for_a_parameter_without_origin : concern_for_ParameterTask
    {
+      private ValueOrigin _newValueOrigin;
+
       protected override void Context()
       {
          base.Context();
+         _newValueOrigin = new ValueOrigin
+         {
+            Description = "TEXT",
+            Type = ValueOriginTypes.ParameterIdentification
+         };
+
          A.CallTo(() => _executionContext.Get<IParameter>(A<string>._)).Returns(null);
       }
 
       protected override void Because()
       {
-         sut.SetParameterValueDescription(_parameter, "TEXT");
+         sut.SetParameterValueOrigin(_parameter, _newValueOrigin);
       }
 
       [Observation]
       public void should_update_the_value_description_of_this_parameter()
       {
-         _parameter.ValueDescription.ShouldBeEqualTo("TEXT");
+         _parameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
+         _parameter.ValueOrigin.Type.ShouldBeEqualTo(_newValueOrigin.Type);
       }
    }
 

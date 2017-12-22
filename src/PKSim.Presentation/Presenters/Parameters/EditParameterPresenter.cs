@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
@@ -14,7 +14,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       void SetParameterValue(IParameterDTO parameterDTO, double valueInGuiUnit);
       void SetParameterUnit(IParameterDTO parameterDTO, Unit displayUnit);
       void SetParameterPercentile(IParameterDTO parameterDTO, double percentileInPercent);
-      void SetParameterValueDescription(IParameterDTO parameterDTO, string valueDescription);
+      void SetParameterValueOrigin(IParameterDTO parameterDTO, ValueOrigin valueOrigin);
    }
 
    public abstract class EditParameterPresenter<TView, TPresenter> : AbstractCommandCollectorPresenter<TView, TPresenter>, IEditParameterPresenter
@@ -33,9 +33,9 @@ namespace PKSim.Presentation.Presenters.Parameters
          _editParameterPresenterTask.SetParameterPercentile(this, parameterDTO, percentileInPercent);
       }
 
-      public void SetParameterValueDescription(IParameterDTO parameterDTO, string valueDescription)
+      public void SetParameterValueOrigin(IParameterDTO parameterDTO, ValueOrigin valueOrigin)
       {
-         _editParameterPresenterTask.SetParameterValueDescription(this, parameterDTO, valueDescription);
+         _editParameterPresenterTask.SetParameterValueOrigin(this, parameterDTO, valueOrigin);
       }
 
       public virtual void EditTableFor(IParameterDTO parameterDTO)

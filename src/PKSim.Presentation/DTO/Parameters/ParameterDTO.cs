@@ -112,9 +112,9 @@ namespace PKSim.Presentation.DTO.Parameters
          }
       }
 
-      public virtual string ValueDescription
+      public virtual ValueOrigin ValueOrigin
       {
-         get { return Parameter.ValueDescription; }
+         get { return Parameter.ValueOrigin; }
          set
          {
             /*nothing to do here since the ValueDescription should be set in the command*/

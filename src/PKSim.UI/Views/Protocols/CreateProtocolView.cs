@@ -80,10 +80,7 @@ namespace PKSim.UI.Views.Protocols
          _propertiesBinder.BindToSource(protocolPropertiesDTO);
       }
 
-      protected override bool ShouldCancel()
-      {
-         return _presenter.ShouldCancel;
-      }
+      protected override bool ShouldClose => _presenter.ShouldClose;
 
       public override bool HasError => _propertiesBinder.HasError;
 

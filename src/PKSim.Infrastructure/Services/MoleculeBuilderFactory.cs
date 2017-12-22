@@ -169,7 +169,11 @@ namespace PKSim.Infrastructure.Services
 
             //only update value description if the alternative contains one and one only parameter
             if (allParameters.Count == 1)
-               drugParameter.ValueDescription = alternative.Description;
+            {
+               //TODO MBD
+               drugParameter.ValueOrigin.Description = alternative.Description;
+
+            }
          }
       }
 
