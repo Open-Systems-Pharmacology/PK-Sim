@@ -19,7 +19,6 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI;
-using OSPSuite.UI.Binders;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
@@ -40,7 +39,6 @@ namespace PKSim.UI.Views.Parameters
       private UxGridView _gridView;
       protected GridViewBinder<ParameterDTO> _gridViewBinder;
       private ComboBoxUnitParameter _comboBoxUnit;
-      protected IGridViewColumn _columnValueDescription;
       protected IGridViewColumn _columnValue;
       private IParameterSetPresenter _presenter;
       private UxRepositoryItemImageComboBox _discreteParameterRepository;
@@ -51,7 +49,7 @@ namespace PKSim.UI.Views.Parameters
       private readonly ToolTipController _toolTipController;
       private RepositoryItem _favoriteRepository;
       protected IGridViewColumn _columnFavorites;
-      private readonly PKSim.UI.Binders.ValueOriginBinder<ParameterDTO> _valueOriginBinder;
+      protected readonly PKSim.UI.Binders.ValueOriginBinder<ParameterDTO> _valueOriginBinder;
 
       public ParameterSetView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, PKSim.UI.Binders.ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
@@ -271,10 +269,7 @@ namespace PKSim.UI.Views.Parameters
          //should be overriden if popup are required for given view
       }
 
-      public override bool HasError
-      {
-         get { return _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _gridViewBinder.HasError;
 
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
       {

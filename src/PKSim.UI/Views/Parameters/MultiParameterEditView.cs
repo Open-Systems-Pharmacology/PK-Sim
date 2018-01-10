@@ -166,19 +166,19 @@ namespace PKSim.UI.Views.Parameters
             if (value)
                _pathElementsBinder.ColumnAt(PathElement.Name).XtraColumn.VisibleIndex = 0;
          }
-         get { return _pathElementsBinder.ColumnAt(PathElement.Name).Visible; }
+         get => _pathElementsBinder.ColumnAt(PathElement.Name).Visible;
       }
 
       public bool DistributionVisible
       {
-         get { return _columnPercentile.Visible; }
-         set { _columnPercentile.UpdateVisibility(value); }
+         get => _columnPercentile.Visible;
+         set => _columnPercentile.UpdateVisibility(value);
       }
 
       public bool CategoryVisible
       {
-         get { return _columCategory.Visible; }
-         set { _columCategory.UpdateVisibility(value); }
+         get => _columCategory.Visible;
+         set => _columCategory.UpdateVisibility(value);
       }
 
       public void SetCaption(PathElement pathElement, string caption)
@@ -233,10 +233,7 @@ namespace PKSim.UI.Views.Parameters
          _columnValue.WithFixedWidth(parameterWitdh);
       }
 
-      public IEnumerable<ParameterDTO> SelectedParameters
-      {
-         get { return gridViewParameters.DataController.GetAllFilteredAndSortedRows().Cast<ParameterDTO>(); }
-      }
+      public IEnumerable<ParameterDTO> SelectedParameters => gridViewParameters.DataController.GetAllFilteredAndSortedRows().Cast<ParameterDTO>();
 
       public void SaveEditor()
       {
@@ -245,25 +242,25 @@ namespace PKSim.UI.Views.Parameters
 
       public bool ParameterPathVisible
       {
-         set { _pathElementsBinder.PathVisible = value; }
+         set => _pathElementsBinder.PathVisible = value;
       }
 
       public bool GroupingVisible
       {
-         set { gridViewParameters.AllowsFiltering = value; }
-         get { return gridViewParameters.AllowsFiltering; }
+         set => gridViewParameters.AllowsFiltering = value;
+         get => gridViewParameters.AllowsFiltering;
       }
 
       public bool HeaderVisible
       {
-         set { gridViewParameters.ShowColumnHeaders = value; }
-         get { return gridViewParameters.ShowColumnHeaders; }
+         set => gridViewParameters.ShowColumnHeaders = value;
+         get => gridViewParameters.ShowColumnHeaders;
       }
 
       public bool ShowRowIndicator
       {
-         set { gridViewParameters.ShowRowIndicator = value; }
-         get { return gridViewParameters.ShowRowIndicator; }
+         set => gridViewParameters.ShowRowIndicator = value;
+         get => gridViewParameters.ShowRowIndicator;
       }
 
       public bool ScalingVisible
@@ -273,7 +270,7 @@ namespace PKSim.UI.Views.Parameters
             layoutItemScaling.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
             emptySpaceItemForScaling.Visibility = layoutItemScaling.Visibility;
          }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemScaling.Visibility); }
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemScaling.Visibility);
       }
 
       public void SetScaleParameterView(IScaleParametersView view)
@@ -291,14 +288,11 @@ namespace PKSim.UI.Views.Parameters
          gridParameters.RefreshDataSource();
       }
 
-      public int OptimalHeight
-      {
-         get { return gridViewParameters.OptimalHeight + Padding.All + 2; }
-      }
+      public int OptimalHeight => gridViewParameters.OptimalHeight + Padding.All + 2;
 
       public bool AllowMultiSelect
       {
-         set { gridViewParameters.OptionsSelection.EnableAppearanceFocusedRow = value; }
+         set => gridViewParameters.OptionsSelection.EnableAppearanceFocusedRow = value;
       }
 
       public void AdjustHeight()
@@ -315,7 +309,7 @@ namespace PKSim.UI.Views.Parameters
       protected override bool ColumnIsAlwaysActive(GridColumn column)
       {
          if (column == null) return false;
-         return column.IsOneOf(_columnFavorites.XtraColumn, _columnValueDescription?.XtraColumn);
+         return column.IsOneOf(_columnFavorites.XtraColumn) || _valueOriginBinder.ColumnIsValueOrigin(column);
       }
    }
 }
