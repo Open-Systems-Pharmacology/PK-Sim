@@ -528,7 +528,7 @@
     <Compile Include="IntegrationTests\ModelStructureSpecs.cs" />
     <Compile Include="IntegrationTests\ModelWithActiveTransportersSpecs.cs" />
     <Compile Include="IntegrationTests\StaticReactionRepositorySpecs.cs" />
-    <Compile Include="IntegrationTests\ParameterFlagsSpecs.cs" />
+    <Compile Include="IntegrationTests\FlatParameterMetaDataRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\ParameterQuerySpecs.cs" />
     <Compile Include="IntegrationTests\ParameterValuesCacheConverterSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterValuesCacheXmlSerializerSpecs.cs" />
@@ -617,7 +617,6 @@
     <Compile Include="Core\ProteinToQueryExpressionSettingsMapperSpecs.cs" />
     <Compile Include="Core\ProtocolFactorySpecs.cs" />
     <Compile Include="Core\ProtocolTaskSpecs.cs" />
-    <Compile Include="IntegrationTests\OldCalculationMethodNameMappingRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\SystemicProcessSelectionXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQueryConversionSpecs.cs" />
     <Compile Include="Presentation\BinSizeGroupingDTOSpecs.cs" />

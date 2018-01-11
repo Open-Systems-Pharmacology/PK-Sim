@@ -722,8 +722,6 @@ namespace PKSim.Core
          public static readonly string ViewMoleculeStartFormulas = "VIEW_MOLECULE_START_FORMULAS";
          public static readonly string ViewOntogenies = "VIEW_ONTOGENIES";
          public static readonly string ViewCategory = "VIEW_CATEGORIES";
-         public static readonly string ViewOldParameterNameMappings = "VIEW_OLD_PARAMETER_NAME_MAPPING";
-         public static readonly string ViewOldCalculationMethodNameMappings = "VIEW_OLD_CALCULATION_METHOD_NAME_MAPPING";
          public static readonly string ViewCalculationMethodParameterRates = "VIEW_CALCULATION_METHOD_PARAMETER_RATES";
          public static readonly string ViewCalculationMethodParameterDescriptorConditions = "VIEW_CALCULATION_METHOD_PARAMETER_DESCRIPTOR_CONDITIONS";
          public static readonly string ViewDynamicFormulaCriteriaRepository = "VIEW_CALCULATION_METHOD_RATE_DESCRIPTOR_CONDITIONS";
@@ -731,6 +729,7 @@ namespace PKSim.Core
          public static readonly string ViewModelContainerMolecules = "VIEW_MODEL_CONTAINER_MOLECULES";
          public static readonly string ViewReactionPartners = "VIEW_REACTION_PARTNERS";
          public static readonly string ViewMoleculeParameters = "VIEW_MOLECULE_PARAMETERS";
+         public static readonly string ViewValueOrigin = "VIEW_VALUE_ORIGINS";
       }
 
       public static class Organ

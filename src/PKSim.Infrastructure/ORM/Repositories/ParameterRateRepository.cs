@@ -23,8 +23,13 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       private readonly IFlatParameterRHSRepository _flatParameterRHSRepository;
 
-      public ParameterRateRepository(IFlatParameterRateRepository flatParameterRateRepo,
-         IFlatContainerRepository flatContainerRepo, IFlatParameterRHSRepository flatParameterRHSRepository) : base(flatParameterRateRepo, flatContainerRepo)
+      public ParameterRateRepository(
+         IFlatParameterRateRepository flatParameterRateRepo,
+         IFlatContainerRepository flatContainerRepo,
+         IFlatParameterRHSRepository flatParameterRHSRepository,
+         IFlatValueOriginRepository flatValueOriginRepository,
+         IFlatValueOriginToValueOriginMapper valueOriginMapper) :
+         base(flatParameterRateRepo, flatContainerRepo, flatValueOriginRepository, valueOriginMapper)
       {
          _flatParameterRHSRepository = flatParameterRHSRepository;
       }

@@ -94,7 +94,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          if (errorList.Count == 0)
             return;
 
-         throw new ArgumentException(string.Format("{0} for type '{1}'", errorList.ToString("\n"), typeof(T).FullName));
+         throw new ArgumentException($"{errorList.ToString("\n")} for type '{typeof(T).FullName}'");
       }
    }
 }

@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -10,13 +12,21 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       private readonly IMetaDataRepository<TParameterMetaData> _flatParameterMetaDataRepository;
       private readonly IFlatContainerRepository _flatContainerRepository;
+      private readonly IFlatValueOriginRepository _flatValueOriginRepository;
+      private readonly IFlatValueOriginToValueOriginMapper _valueOriginMapper;
       protected IList<TParameterMetaData> _parameterMetaDataList;
       private readonly ICache<string, IList<TParameterMetaData>> _parameterMetaDataCache = new Cache<string, IList<TParameterMetaData>>(s => new List<TParameterMetaData>());
 
-      protected ParameterMetaDataRepository(IMetaDataRepository<TParameterMetaData> flatParameterMetaDataRepository, IFlatContainerRepository flatContainerRepository)
+      protected ParameterMetaDataRepository(
+         IMetaDataRepository<TParameterMetaData> flatParameterMetaDataRepository, 
+         IFlatContainerRepository flatContainerRepository, 
+         IFlatValueOriginRepository flatValueOriginRepository,
+         IFlatValueOriginToValueOriginMapper valueOriginMapper)
       {
          _flatParameterMetaDataRepository = flatParameterMetaDataRepository;
          _flatContainerRepository = flatContainerRepository;
+         _flatValueOriginRepository = flatValueOriginRepository;
+         _valueOriginMapper = valueOriginMapper;
       }
 
       public IEnumerable<TParameterMetaData> AllFor(string containerPath)
@@ -29,8 +39,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          _parameterMetaDataList = _flatParameterMetaDataRepository.All().ToList();
 
-         foreach (var parameterMetaData in _parameterMetaDataList)
+         _parameterMetaDataList.Each(parameterMetaData =>
+         {
             parameterMetaData.ParentContainerPath = _flatContainerRepository.ContainerPathFrom(parameterMetaData.ContainerId).ToString();
+            parameterMetaData.ValueOrigin = _valueOriginMapper.MapFrom(_flatValueOriginRepository.FindBy(parameterMetaData.ValueOriginId));
+         });
 
          //now cache the _parameter values
          foreach (var parameterValueMetaDataGroup in _parameterMetaDataList.GroupBy(x => x.ParentContainerPath))
