@@ -133,7 +133,7 @@
     </Reference>
     <Reference Include="OSPSuite.Presentation, Version=7.3.0.3, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.3\lib\net462\OSPSuite.Presentation.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.14\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -161,18 +161,6 @@
       <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Icons\AssumptionValueOrigin.ico" />
-    <Content Include="Icons\DatabaseValueOrigin.ico" />
-    <Content Include="Icons\DefaultValueOrigin.ico" />
-    <Content Include="Icons\InternetValueOrigin.ico" />
-    <Content Include="Icons\ManualFitValueOrigin.ico" />
-    <Content Include="Icons\OtherValueOrigin.ico" />
-    <Content Include="Icons\ParameterIdentificationValueOrigin.ico" />
-    <Content Include="Icons\PublicationValueOrigin.ico" />
-    <Content Include="Icons\ReportValueOrigin.ico" />
-    <Content Include="Icons\UnknownValueOrigin.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

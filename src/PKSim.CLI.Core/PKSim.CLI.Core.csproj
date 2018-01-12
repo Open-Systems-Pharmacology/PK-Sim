@@ -161,17 +161,5 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Icons\AssumptionValueOrigin.ico" />
-    <Content Include="Icons\DatabaseValueOrigin.ico" />
-    <Content Include="Icons\DefaultValueOrigin.ico" />
-    <Content Include="Icons\InternetValueOrigin.ico" />
-    <Content Include="Icons\ManualFitValueOrigin.ico" />
-    <Content Include="Icons\OtherValueOrigin.ico" />
-    <Content Include="Icons\ParameterIdentificationValueOrigin.ico" />
-    <Content Include="Icons\PublicationValueOrigin.ico" />
-    <Content Include="Icons\ReportValueOrigin.ico" />
-    <Content Include="Icons\UnknownValueOrigin.ico" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

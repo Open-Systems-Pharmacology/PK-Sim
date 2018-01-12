@@ -1214,16 +1214,6 @@
     <Content Include="Data\Version1.1.1.xml" />
     <Content Include="Data\Version2.1.1.xml" />
     <Content Include="Data\Version2.1.1corrupt.xml" />
-    <Content Include="Icons\AssumptionValueOrigin.ico" />
-    <Content Include="Icons\DatabaseValueOrigin.ico" />
-    <Content Include="Icons\DefaultValueOrigin.ico" />
-    <Content Include="Icons\InternetValueOrigin.ico" />
-    <Content Include="Icons\ManualFitValueOrigin.ico" />
-    <Content Include="Icons\OtherValueOrigin.ico" />
-    <Content Include="Icons\ParameterIdentificationValueOrigin.ico" />
-    <Content Include="Icons\PublicationValueOrigin.ico" />
-    <Content Include="Icons\ReportValueOrigin.ico" />
-    <Content Include="Icons\UnknownValueOrigin.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
