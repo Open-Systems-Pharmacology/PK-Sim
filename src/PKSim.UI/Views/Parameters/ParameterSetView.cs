@@ -11,6 +11,7 @@ using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
@@ -18,6 +19,7 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
@@ -38,7 +40,6 @@ namespace PKSim.UI.Views.Parameters
       private UxGridView _gridView;
       protected GridViewBinder<ParameterDTO> _gridViewBinder;
       private ComboBoxUnitParameter _comboBoxUnit;
-      protected IGridViewColumn _columnValueDescription;
       protected IGridViewColumn _columnValue;
       private IParameterSetPresenter _presenter;
       private UxRepositoryItemImageComboBox _discreteParameterRepository;
@@ -49,8 +50,9 @@ namespace PKSim.UI.Views.Parameters
       private readonly ToolTipController _toolTipController;
       private RepositoryItem _favoriteRepository;
       protected IGridViewColumn _columnFavorites;
+      protected readonly ValueOriginBinder<ParameterDTO> _valueOriginBinder;
 
-      public ParameterSetView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever)
+      public ParameterSetView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
          InitializeComponent();
          _imageListRetriever = imageListRetriever;
@@ -63,6 +65,7 @@ namespace PKSim.UI.Views.Parameters
          _stantdardParameterEditRepository.ConfigureWith(typeof(double));
          _stantdardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
+         _valueOriginBinder = valueOriginBinder;
       }
 
       public void Initialize(UxGridView gridView)
@@ -99,10 +102,17 @@ namespace PKSim.UI.Views.Parameters
 
       protected void InitializeValueDescriptionBinding()
       {
-         _columnValueDescription = _gridViewBinder.AutoBind(param => param.ValueDescription)
-            .WithWidth(UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
-            .WithCaption(PKSimConstants.UI.ValueDescription)
-            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
+         _valueOriginBinder.InitializeBinding(_gridViewBinder, updateValueOrigin);
+         //TODO MBD
+//         _columnValueDescription = _gridViewBinder.AutoBind(param => param.ValueDescription)
+//            .WithWidth(UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
+//            .WithCaption(PKSimConstants.UI.ValueDescription)
+//            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
+      }
+
+      private void updateValueOrigin(ParameterDTO parameterDTO , ValueOrigin newValueOrigin)
+      {
+         OnEvent(() => _presenter.SetParameterValueOrigin(parameterDTO, newValueOrigin));
       }
 
       protected void InitializeValueBinding()
@@ -260,10 +270,7 @@ namespace PKSim.UI.Views.Parameters
          //should be overriden if popup are required for given view
       }
 
-      public override bool HasError
-      {
-         get { return _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _gridViewBinder.HasError;
 
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
       {

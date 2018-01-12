@@ -45,7 +45,7 @@ namespace PKSim.Presentation
          ReleaseFrom(_subPresenterItemManager.EventPublisher);
       }
 
-      public virtual bool ShouldCancel => true;
+      public virtual bool ShouldClose => true;
 
       #region Disposable properties
 

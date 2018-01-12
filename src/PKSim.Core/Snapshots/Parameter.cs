@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Snapshots
 {
@@ -6,7 +7,9 @@ namespace PKSim.Core.Snapshots
    {
       public double? Value { get; set; }
       public string Unit { get; set; }
-      public string ValueDescription { get; set; }
+      public ValueOriginSourceId? Source { get; set; }
+      public ValueOriginDeterminationMethodId? Method { get; set; }
+      public string Reference { get; set; }
       public TableFormula TableFormula { get; set; }
    }
 

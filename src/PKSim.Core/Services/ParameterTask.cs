@@ -85,11 +85,11 @@ namespace PKSim.Core.Services
       ICommand SetParameterValueAsStructureChange(IParameter parameter, double value);
 
       /// <summary>
-      ///    Sets the value description in the parameter.
+      ///    Updates the value origin in the parameter.
       /// </summary>
       /// <param name="parameter">Parameter</param>
-      /// <param name="valueDescription">Value description</param>
-      ICommand SetParameterValueDescription(IParameter parameter, string valueDescription);
+      /// <param name="valueOrigin">Value origin</param>
+      ICommand SetParameterValueOrigin(IParameter parameter, ValueOrigin valueOrigin);
 
       /// <summary>
       ///    Sets the percentile in the parameter.
@@ -294,17 +294,6 @@ namespace PKSim.Core.Services
          return new SetRelativeExpressionFromNormalizedCommand(parameter, value);
       }
 
-      public ICommand SetParameterValueDescription(IParameter parameter, string valueDescription)
-      {
-         //no command required here
-         parameter.ValueDescription = valueDescription;
-         var originParameter = _executionContext.Get<IParameter>(parameter.Origin.ParameterId);
-         if (originParameter != null)
-            originParameter.ValueDescription = valueDescription;
-
-         return new PKSimEmptyCommand();
-      }
-
       private ICommand setParameterValue(IParameter parameter, double value, bool shouldChangeVersion)
       {
          return new SetParameterValueCommand(parameter, value) {ShouldChangeVersion = shouldChangeVersion}.Run(_executionContext);
@@ -441,6 +430,17 @@ namespace PKSim.Core.Services
       public ICommand SetParameterValue(IParameter parameter, double value, ISimulation simulation)
       {
          return SetParameterValue(parameter, value);
+      }
+
+      public ICommand SetParameterValueOrigin(IParameter parameter, ValueOrigin newValueOrigin)
+      {
+         //TODO MBD
+         //no command required here
+         parameter.ValueOrigin.UpdateFrom(newValueOrigin);
+         var originParameter = _executionContext.Get<IParameter>(parameter.Origin.ParameterId);
+         originParameter?.ValueOrigin.UpdateFrom(newValueOrigin);
+
+         return new PKSimEmptyCommand();
       }
    }
 }

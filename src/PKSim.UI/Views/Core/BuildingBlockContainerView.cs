@@ -34,10 +34,7 @@ namespace PKSim.UI.Views.Core
          RegisterValidationFor(_screenBinder);
       }
 
-      protected override bool ShouldCancel()
-      {
-         return _presenter.ShouldCancel;
-      }
+      protected override bool ShouldClose => _presenter.ShouldClose;
 
       public override bool HasError => _screenBinder.HasError;
 

@@ -61,9 +61,9 @@ namespace PKSim.Presentation.Presenters.Protocols
          AddCommand(_parameterTask.SetParameterPercentile(ParameterFrom(parameterDTO), percentileInPercent));
       }
 
-      public void SetParameterValueDescription(IParameterDTO parameterDTO, string valueDescription)
+      public void SetParameterValueOrigin(IParameterDTO parameterDTO, ValueOrigin valueOrigin)
       {
-         AddCommand(_parameterTask.SetParameterValueDescription(ParameterFrom(parameterDTO), valueDescription));
+         AddCommand(_parameterTask.SetParameterValueOrigin(ParameterFrom(parameterDTO), valueOrigin));
       }
 
       public abstract void EditProtocol(Protocol protocol);

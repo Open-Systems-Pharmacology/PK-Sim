@@ -56,10 +56,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          Edit(simulation);
       }
 
-      public ApplicationIcon Icon
-      {
-         get { return _view.ApplicationIcon; }
-      }
+      public ApplicationIcon Icon => _view.ApplicationIcon;
 
       protected override IDiagramOptions GetDiagramOptions()
       {
@@ -95,6 +92,6 @@ namespace PKSim.Presentation.Presenters.Simulations
          _simulation.HasChanged = true;
       }
 
-      public bool ShouldCancel => true;
+      public bool ShouldClose => true;
    }
 }

@@ -62,7 +62,7 @@ namespace PKSim.Core
          });
 
          container.Register<ICoreSimulationFactory, SimulationFactory>();
-         container.Register<ISetParameterTask, ParameterTask>();
+         container.Register<ISetParameterTask,  ParameterTask>(LifeStyle.Transient);
          container.Register<ITransferOptimizedParametersToSimulationsTask, TransferOptimizedParametersToSimulationsTask<IExecutionContext>>();
 
          //other singleton external to application

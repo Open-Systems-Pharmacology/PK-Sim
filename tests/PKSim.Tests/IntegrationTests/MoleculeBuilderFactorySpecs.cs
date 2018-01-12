@@ -199,7 +199,7 @@ namespace PKSim.IntegrationTests
       public void should_update_the_value_description_of_the_parameter_value_according_to_the_selected_alternative_for_alternative_with_only_one_parameter()
       {
          var lipoParameter = _molecule.Parameter(CoreConstants.Parameter.LIPOPHILICITY);
-         lipoParameter.ValueDescription.ShouldBeEqualTo(_alternativeLipo2.Description);
+         lipoParameter.ValueOrigin.Description.ShouldBeEqualTo(_alternativeLipo2.Description);
       }
    }
 

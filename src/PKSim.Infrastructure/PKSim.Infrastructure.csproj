@@ -129,20 +129,20 @@
       <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.3, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.3\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.14, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.14\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.3, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.3\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.14, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.14\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.3, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.3\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.14, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.14\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.3, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.3\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.14, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.14\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -199,8 +199,10 @@
     <Compile Include="ORM\FlatObjects\FlatProteinSynonym.cs" />
     <Compile Include="ORM\FlatObjects\FlatReactionPartnerBuilder.cs" />
     <Compile Include="ORM\FlatObjects\FlatOrganType.cs" />
+    <Compile Include="ORM\FlatObjects\FlatValueOrigin.cs" />
     <Compile Include="ORM\FlatObjects\ProcessActionType.cs" />
     <Compile Include="ORM\Mappers\FlatObjectPathToObjectPathMapper.cs" />
+    <Compile Include="ORM\Mappers\FlatValueOriginToValueOriginMapper.cs" />
     <Compile Include="ORM\Repositories\CompoundCalculationMethodCategoryRepository.cs" />
     <Compile Include="ORM\Repositories\FlatModelContainerMoleculeRepository.cs" />
     <Compile Include="ORM\Repositories\FlatModelPassiveTransportMoleculeNameRepository.cs" />
@@ -208,6 +210,7 @@
     <Compile Include="ORM\Repositories\DynamicFormulaCriteriaRepository.cs" />
     <Compile Include="ORM\Repositories\FlatDynamicFormulaCriteriaRepository.cs" />
     <Compile Include="ORM\Repositories\FlatMoleculeParameterRepository.cs" />
+    <Compile Include="ORM\Repositories\FlatValueOriginRepository.cs" />
     <Compile Include="ORM\Repositories\OrganTypeRepository.cs" />
     <Compile Include="ORM\Repositories\FlatProteinSynonymRepository.cs" />
     <Compile Include="ORM\Repositories\FlatReactionPartnerRepository.cs" />
@@ -351,17 +354,13 @@
     <Compile Include="ORM\FlatObjects\FlatCalculationMethodParameterRate.cs" />
     <Compile Include="ORM\FlatObjects\FlatCategory.cs" />
     <Compile Include="ORM\FlatObjects\FlatDescriptorConditionBase.cs" />
-    <Compile Include="ORM\FlatObjects\FlatOldNameMapping.cs" />
     <Compile Include="ORM\FlatObjects\FlatTransporterContainerTemplate.cs" />
     <Compile Include="ORM\Mappers\CalculationMethodToCoreCalculationMethodMapper.cs" />
     <Compile Include="ORM\Repositories\CoreCalculationMethodRepository.cs" />
     <Compile Include="ORM\Repositories\FlatCalculationMethodParameterDescriptorConditionRepository.cs" />
     <Compile Include="ORM\Repositories\FlatCalculationMethodParameterRateRepository.cs" />
     <Compile Include="ORM\Repositories\FlatCategoryRepository.cs" />
-    <Compile Include="ORM\Repositories\FlatOldCalculationMethodNameMappingRepository.cs" />
-    <Compile Include="ORM\Repositories\FlatOldParameterNameMappingRepository.cs" />
     <Compile Include="ORM\Repositories\FlatTransporterContainerTemplateRepository.cs" />
-    <Compile Include="ORM\Repositories\OldCalculationMethodNameMappingRepository.cs" />
     <Compile Include="ORM\Core\AccessDatabase.cs" />
     <Compile Include="ORM\Core\DatabaseDisposer.cs" />
     <Compile Include="ORM\Core\ModelDatabase.cs" />
@@ -784,7 +783,6 @@
     </None>
     <None Include="Reporting\TeX\ReportingTEX.cd" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

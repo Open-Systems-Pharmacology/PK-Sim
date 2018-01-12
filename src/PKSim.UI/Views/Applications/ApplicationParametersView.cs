@@ -17,6 +17,7 @@ using PKSim.Presentation.DTO.Applications;
 using PKSim.Presentation.Presenters.Applications;
 using PKSim.Presentation.Views.Applications;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
@@ -114,10 +115,11 @@ namespace PKSim.UI.Views.Applications
             .WithEditorConfiguration((activeEditor, param) => _comboBoxUnit.UpdateUnitsFor(activeEditor, param))
             .WithOnValueUpdating((p, valueInGuiUnit) => OnEvent(() => _presenter.SetParameterValue(p, valueInGuiUnit.NewValue)));
 
-         parameterBinder.AutoBind(param => param.ValueDescription)
-            .WithWidth(UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
-            .WithCaption(PKSimConstants.UI.ValueDescription)
-            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
+         //TODO MBD
+//         parameterBinder.AutoBind(param => param.ValueDescription)
+//            .WithWidth(UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
+//            .WithCaption(PKSimConstants.UI.ValueDescription)
+//            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
 
          parameterBinder.Bind(x => x.IsFavorite)
             .WithCaption(PKSimConstants.UI.Favorites)

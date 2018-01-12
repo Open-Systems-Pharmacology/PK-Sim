@@ -146,7 +146,7 @@ namespace PKSim.Core.Services
       public ICommand UpdateValue(IParameter sourceParameter, IParameter targetParameter)
       {
          _parameterIdUpdater.UpdateParameterId(sourceParameter, targetParameter);
-         targetParameter.ValueDescription = sourceParameter.ValueDescription;
+         targetParameter.ValueOrigin.UpdateFrom(sourceParameter.ValueOrigin);
          return _parameterUpdater.UpdateValue(sourceParameter, targetParameter);
       }
    }
