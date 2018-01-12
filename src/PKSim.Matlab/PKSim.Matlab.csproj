@@ -125,11 +125,11 @@
     <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.11, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.11\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.14, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.14\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.11, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.11\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.14, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.14\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Presentation, Version=7.3.0.3, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -168,7 +168,9 @@
     <Content Include="Icons\DefaultValueOrigin.ico" />
     <Content Include="Icons\InternetValueOrigin.ico" />
     <Content Include="Icons\ManualFitValueOrigin.ico" />
+    <Content Include="Icons\OtherValueOrigin.ico" />
     <Content Include="Icons\ParameterIdentificationValueOrigin.ico" />
+    <Content Include="Icons\PublicationValueOrigin.ico" />
     <Content Include="Icons\ReportValueOrigin.ico" />
     <Content Include="Icons\UnknownValueOrigin.ico" />
   </ItemGroup>

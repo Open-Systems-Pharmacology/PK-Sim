@@ -80,15 +80,15 @@ namespace PKSim.Core.Model
 
       public IParameter CreateFor(ParameterRateMetaData parameterRateDefinition, IFormulaCache formulaCache)
       {
-         var param = _objectBaseFactory.CreateParameter();
-         param.Formula = _formulaFactory.RateFor(parameterRateDefinition, formulaCache);
+         var parameter = _objectBaseFactory.CreateParameter();
+         parameter.Formula = _formulaFactory.RateFor(parameterRateDefinition, formulaCache);
 
          if (!string.IsNullOrEmpty(parameterRateDefinition.RHSRate))
-            param.RHSFormula = _formulaFactory.RHSRateFor(parameterRateDefinition, formulaCache);
+            parameter.RHSFormula = _formulaFactory.RHSRateFor(parameterRateDefinition, formulaCache);
 
-         setParameterProperties(param, parameterRateDefinition);
-         updateDefaultValueFor(param);
-         return param;
+         setParameterProperties(parameter, parameterRateDefinition);
+         updateDefaultValueFor(parameter);
+         return parameter;
       }
 
       public IParameter CreateFor(string parameterName, PKSimBuildingBlockType buildingBlockType)
@@ -116,11 +116,11 @@ namespace PKSim.Core.Model
 
       public IParameter CreateFor(ParameterValueMetaData parameterValueDefinition)
       {
-         var param = _objectBaseFactory.CreateParameter();
-         param.Formula = _formulaFactory.ValueFor(parameterValueDefinition);
-         setParameterProperties(param, parameterValueDefinition);
-         updateDefaultValueFor(param);
-         return param;
+         var parameter = _objectBaseFactory.CreateParameter();
+         parameter.Formula = _formulaFactory.ValueFor(parameterValueDefinition);
+         setParameterProperties(parameter, parameterValueDefinition);
+         updateDefaultValueFor(parameter);
+         return parameter;
       }
 
       public IDistributedParameter CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, OriginData originData)
@@ -136,12 +136,12 @@ namespace PKSim.Core.Model
 
       private IDistributedParameter create(ParameterDistributionMetaData distributionMetaData, Func<IDistributedParameter, IDistributionFormula> createFormula)
       {
-         var param = _objectBaseFactory.CreateDistributedParameter();
-         setParameterProperties(param, distributionMetaData);
-         addParametersToDistributedParameter(param, distributionMetaData);
-         param.Formula = createFormula(param);
-         updateDefaultValueFor(param);
-         return param;
+         var parameter = _objectBaseFactory.CreateDistributedParameter();
+         setParameterProperties(parameter, distributionMetaData);
+         addParametersToDistributedParameter(parameter, distributionMetaData);
+         parameter.Formula = createFormula(parameter);
+         updateDefaultValueFor(parameter);
+         return parameter;
       }
 
       private void updateDefaultValueFor(IParameter parameter)
@@ -221,7 +221,8 @@ namespace PKSim.Core.Model
          parameter.BuildMode = parameterMetaData.BuildMode;
          parameter.Info = parameterMetaData.Clone();
          parameter.Dimension = _dimensionRepository.DimensionByName(parameterMetaData.Dimension);
-         
+         parameter.ValueOrigin.UpdateFrom(parameterMetaData.ValueOrigin);
+
          if (!string.IsNullOrEmpty(parameterMetaData.DefaultUnit))
             parameter.DisplayUnit = parameter.Dimension.Unit(parameterMetaData.DefaultUnit);
 

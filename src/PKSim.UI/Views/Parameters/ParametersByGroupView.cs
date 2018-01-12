@@ -24,7 +24,7 @@ namespace PKSim.UI.Views.Parameters
       private IGridViewColumn _columnName;
       public bool Updating { get; private set; }
 
-      public ParametersByGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, PKSim.UI.Binders.ValueOriginBinder<ParameterDTO> valueOriginBinder)
+      public ParametersByGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<ParameterDTO> valueOriginBinder)
          : base(toolTipCreator, imageListRetriever, valueOriginBinder)
       {
          InitializeComponent();

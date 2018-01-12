@@ -22,8 +22,7 @@ namespace PKSim.Core.Commands
 
       protected override void UpdateParameter(IParameter parameter, IExecutionContext context)
       {
-         if (parameter == null) return;
-         parameter.ResetToDefault();
+         parameter?.ResetToDefault();
       }
 
       protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)

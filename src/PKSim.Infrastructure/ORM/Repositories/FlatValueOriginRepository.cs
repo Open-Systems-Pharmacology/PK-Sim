@@ -1,4 +1,5 @@
-﻿using OSPSuite.Utility.Collections;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Infrastructure.ORM.Core;
@@ -14,7 +15,12 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
    public class FlatValueOriginRepository : MetaDataRepository<FlatValueOrigin>, IFlatValueOriginRepository
    {
-      private static readonly FlatValueOrigin _defaultValueOrigin = new FlatValueOrigin();
+      private static readonly FlatValueOrigin _defaultValueOrigin = new FlatValueOrigin
+      {
+         Method = ValueOriginDeterminationMethodId.Undefined,
+         Source = ValueOriginSourceId.Undefined,
+      };
+
       private readonly Cache<int, FlatValueOrigin> _flatValueOriginCache = new Cache<int, FlatValueOrigin>(x => x.Id);
 
       public FlatValueOriginRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatValueOrigin> mapper)

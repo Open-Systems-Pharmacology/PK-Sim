@@ -224,7 +224,8 @@ namespace PKSim.Core
          _newValueOrigin = new ValueOrigin
          {
             Description = "TEXT",
-            Type = ValueOriginTypes.ParameterIdentification
+            Source = ValueOriginSources.ParameterIdentification,
+            Method = ValueOriginDeterminationMethods.ManualFit,
          };
 
          _originParameter = A.Fake<IParameter>();
@@ -241,14 +242,15 @@ namespace PKSim.Core
       public void should_update_the_value_description_of_this_parameter()
       {
          _parameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
-         _parameter.ValueOrigin.Type.ShouldBeEqualTo(_newValueOrigin.Type);
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(_newValueOrigin.Source);
+         _parameter.ValueOrigin.Method.ShouldBeEqualTo(_newValueOrigin.Method);
       }
 
       [Observation]
       public void should_update_the_value_description_of_the_origin_parameter()
       {
          _originParameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
-         _originParameter.ValueOrigin.Type.ShouldBeEqualTo(_newValueOrigin.Type);
+         _originParameter.ValueOrigin.Source.ShouldBeEqualTo(_newValueOrigin.Source);
       }
    }
 
@@ -262,7 +264,8 @@ namespace PKSim.Core
          _newValueOrigin = new ValueOrigin
          {
             Description = "TEXT",
-            Type = ValueOriginTypes.ParameterIdentification
+            Source = ValueOriginSources.ParameterIdentification,
+            Method = ValueOriginDeterminationMethods.ManualFit,
          };
 
          A.CallTo(() => _executionContext.Get<IParameter>(A<string>._)).Returns(null);
@@ -277,7 +280,8 @@ namespace PKSim.Core
       public void should_update_the_value_description_of_this_parameter()
       {
          _parameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
-         _parameter.ValueOrigin.Type.ShouldBeEqualTo(_newValueOrigin.Type);
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(_newValueOrigin.Source);
+         _parameter.ValueOrigin.Method.ShouldBeEqualTo(_newValueOrigin.Method);
       }
    }
 

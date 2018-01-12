@@ -19,6 +19,7 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
@@ -49,9 +50,9 @@ namespace PKSim.UI.Views.Parameters
       private readonly ToolTipController _toolTipController;
       private RepositoryItem _favoriteRepository;
       protected IGridViewColumn _columnFavorites;
-      protected readonly PKSim.UI.Binders.ValueOriginBinder<ParameterDTO> _valueOriginBinder;
+      protected readonly ValueOriginBinder<ParameterDTO> _valueOriginBinder;
 
-      public ParameterSetView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, PKSim.UI.Binders.ValueOriginBinder<ParameterDTO> valueOriginBinder)
+      public ParameterSetView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
          InitializeComponent();
          _imageListRetriever = imageListRetriever;

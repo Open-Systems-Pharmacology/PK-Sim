@@ -105,7 +105,8 @@ namespace PKSim.Core
          _targetContainer = new Container();
          _sourcePara1 = new PKSimParameter().WithName("_para1");
          _sourcePara1.ValueOrigin.Description = "XXX";
-         _sourcePara1.ValueOrigin.Type = ValueOriginTypes.ParameterIdentification;
+         _sourcePara1.ValueOrigin.Source =ValueOriginSources.ParameterIdentification;
+         _sourcePara1.ValueOrigin.Method =ValueOriginDeterminationMethods.InVitroAssay;
          _sourcePara2 = new PKSimParameter().WithName("_sourcePara2");
          _targetPara1 = new PKSimParameter().WithName("_para1");
          _sourceContainer.Add(_sourcePara1);
@@ -131,7 +132,8 @@ namespace PKSim.Core
       public void should_update_the_value_origins_of_identical_parameters()
       {
          _targetPara1.ValueOrigin.Description.ShouldBeEqualTo(_sourcePara1.ValueOrigin.Description);
-         _targetPara1.ValueOrigin.Type.ShouldBeEqualTo(_sourcePara1.ValueOrigin.Type);
+         _targetPara1.ValueOrigin.Source.ShouldBeEqualTo(_sourcePara1.ValueOrigin.Source);
+         _targetPara1.ValueOrigin.Method.ShouldBeEqualTo(_sourcePara1.ValueOrigin.Method);
 
       }
 

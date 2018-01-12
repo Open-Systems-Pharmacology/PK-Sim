@@ -36,7 +36,8 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          updateParameterValue(snapshot, parameter.Value, parameter.DisplayUnit.Name, parameter.Dimension);
          snapshot.Reference = SnapshotValueFor(parameter.ValueOrigin.Description);
-         snapshot.Origin = SnapshotValueFor(parameter.ValueOrigin.Type.Id, ValueOriginTypeId.Database);
+         snapshot.Source = SnapshotValueFor(parameter.ValueOrigin.Source.Id, ValueOriginSourceId.Undefined);
+         snapshot.Method = SnapshotValueFor(parameter.ValueOrigin.Method.Id, ValueOriginDeterminationMethodId.Undefined);
          snapshot.TableFormula = await mapFormula(parameter.Formula);
       }
 
@@ -69,7 +70,8 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var snapshotValueOrigin = new ValueOrigin
          {
-            Type = ValueOriginTypes.ById(ModelValueFor(snapshot.Origin, ValueOriginTypeId.Database)),
+            Source = ValueOriginSources.ById(ModelValueFor(snapshot.Source, ValueOriginSourceId.Undefined)),
+            Method = ValueOriginDeterminationMethods.ById(ModelValueFor(snapshot.Method, ValueOriginDeterminationMethodId.Undefined)),
             Description = ModelValueFor(snapshot.Reference)
          };
 

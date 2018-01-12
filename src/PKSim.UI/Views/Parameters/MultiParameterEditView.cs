@@ -43,7 +43,7 @@ namespace PKSim.UI.Views.Parameters
       public bool UseAdvancedSortingMode { set; private get; }
       public bool CustomSortEnabled { set; private get; }
 
-      public MultiParameterEditView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, PKSim.UI.Binders.ValueOriginBinder<ParameterDTO> valueOriginBinder, PathElementsBinder<ParameterDTO> pathElementsBinder)
+      public MultiParameterEditView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<ParameterDTO> valueOriginBinder, PathElementsBinder<ParameterDTO> pathElementsBinder)
          : base(toolTipCreator, imageListRetriever, valueOriginBinder)
       {
          _pathElementsBinder = pathElementsBinder;

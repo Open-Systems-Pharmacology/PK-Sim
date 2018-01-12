@@ -103,7 +103,8 @@ namespace PKSim.Core
          await base.Context();
          _snapshotParameter = await sut.MapToSnapshot(_parameter);
          _snapshotParameter.Value = 50; //50 mm
-         _snapshotParameter.Origin = ValueOriginTypeId.Database;
+         _snapshotParameter.Source = ValueOriginSourceId.Database;
+         _snapshotParameter.Method = ValueOriginDeterminationMethodId.InVitroAssay;
          _snapshotParameter.Reference = "The value description for this value";
       }
 
@@ -117,7 +118,8 @@ namespace PKSim.Core
       {
          _parameter.ValueInDisplayUnit.ShouldBeEqualTo(_snapshotParameter.Value.Value);
          _parameter.ValueOrigin.Description.ShouldBeEqualTo(_snapshotParameter.Reference);
-         _parameter.ValueOrigin.Type.ShouldBeEqualTo(ValueOriginTypes.Database);
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Database);
+         _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.InVitroAssay);
       }
    }
 
