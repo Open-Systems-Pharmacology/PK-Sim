@@ -1,7 +1,7 @@
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Commands
 {
@@ -35,10 +35,8 @@ namespace PKSim.Core.Commands
 
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
-         var bbParameter = OriginParameterFor(_parameter, context);
          _serializationStream = context.Serialize(_parameter.Formula);
-         UpdateParameter(_parameter, context);
-         UpdateParameter(bbParameter, context);
+         UpdateParameter(context);
          Description = ParameterMessages.UpdateTableParameterFormula(context.DisplayNameFor(_parameter));
       }
 

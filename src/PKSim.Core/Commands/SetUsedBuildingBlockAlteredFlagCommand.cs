@@ -32,7 +32,7 @@ namespace PKSim.Core.Commands
             context.TypeFor(buildingBlock), usedBuildingBlock.Name,
             _altered, _simulation.Name);
 
-         context.UpdateBuildinBlockProperties(this, _simulation);
+         context.UpdateBuildinBlockPropertiesInCommand(this, _simulation);
       }
 
       protected override void ExecuteWith(IExecutionContext context)

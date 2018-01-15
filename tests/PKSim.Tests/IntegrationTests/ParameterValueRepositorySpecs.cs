@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.IntegrationTests
 {
@@ -12,7 +11,6 @@ namespace PKSim.IntegrationTests
    {
    }
 
-   
    public class When_retrieving_all_parameter_values_from_the_repository : concern_for_ParameterValueRepository
    {
       private IEnumerable<ParameterValueMetaData> _result;
@@ -27,6 +25,24 @@ namespace PKSim.IntegrationTests
       public void should_return_at_least_one_element()
       {
          _result.Count().ShouldBeGreaterThan(0);
+      }
+
+      [Observation]
+      public void should_have_updated_the_value_origin_of_all_parameters_defined_in_the_repository()
+      {
+         foreach (var parameterValueMetaData in _result)
+         {
+            parameterValueMetaData.ValueOrigin.ShouldNotBeNull();
+         }
+      }
+
+      [Observation]
+      public void should_have_set_the_default_flag_to_the_opposite_of_the_input_flag()
+      {
+         foreach (var parameterValueMetaData in _result)
+         {
+            parameterValueMetaData.ValueOrigin.Default.ShouldBeEqualTo(!parameterValueMetaData.IsInput);
+         }
       }
    }
 }

@@ -1,7 +1,7 @@
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Commands
 {
@@ -15,16 +15,13 @@ namespace PKSim.Core.Commands
          _percentile = percentile;
       }
 
-      private IDistributedParameter distributedParameter
-      {
-         get { return _parameter.DowncastTo<IDistributedParameter>(); }
-      }
+      private IDistributedParameter distributedParameter => _parameter.DowncastTo<IDistributedParameter>();
 
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
          _oldPercentile = distributedParameter.Percentile;
-         UpdateParameter(_parameter, context);
-         UpdateParameter(OriginParameterFor(_parameter, context), context);
+
+         UpdateParameter(context);
          Description = ParameterMessages.SetParameterPercentile(context.DisplayNameFor(_parameter), _oldPercentile, _percentile);
       }
 
@@ -37,9 +34,7 @@ namespace PKSim.Core.Commands
 
       protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-         SetParameterPercentileCommand inverseCommand = new SetParameterPercentileCommand(distributedParameter, _oldPercentile).AsInverseFor(this);
-         inverseCommand.AlteredOn = AlteredOn;
-         return inverseCommand;
+         return new SetParameterPercentileCommand(distributedParameter, _oldPercentile).AsInverseFor(this);
       }
    }
 }

@@ -50,7 +50,7 @@ namespace PKSim.Core.Services
                macroCommand.AddCommand(new RemoveAdvancedParameterFromContainerCommand(advancedParameter, population, _executionContext).Run(_executionContext));
          }
 
-         _executionContext.UpdateBuildinBlockProperties(macroCommand, population);
+         _executionContext.UpdateBuildinBlockPropertiesInCommand(macroCommand, population);
          return macroCommand;
       }
 
@@ -93,7 +93,7 @@ namespace PKSim.Core.Services
          };
 
          macroCommand.AddRange(commands);
-         _executionContext.UpdateBuildinBlockProperties(macroCommand, population);
+         _executionContext.UpdateBuildinBlockPropertiesInCommand(macroCommand, population);
          return macroCommand;
       }
    }

@@ -21,7 +21,7 @@ namespace PKSim.Core.Commands
          _partialProcess = partialProcess;
          ObjectType = PKSimConstants.ObjectTypes.PartialProcess;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         context.UpdateBuildinBlockProperties(this, context.BuildingBlockContaining(partialProcess));
+         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(partialProcess));
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)

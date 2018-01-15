@@ -21,7 +21,7 @@ namespace PKSim.Core.Commands
          _newProtocolMode = newProtocolMode;
          ObjectType = PKSimConstants.ObjectTypes.AdministrationProtocol;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         context.UpdateBuildinBlockProperties(this, _protocol);
+         context.UpdateBuildinBlockPropertiesInCommand(this, _protocol);
 
          Visible = false;
       }

@@ -434,13 +434,7 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterValueOrigin(IParameter parameter, ValueOrigin newValueOrigin)
       {
-         //TODO MBD
-         //no command required here
-         parameter.ValueOrigin.UpdateFrom(newValueOrigin);
-         var originParameter = _executionContext.Get<IParameter>(parameter.Origin.ParameterId);
-         originParameter?.ValueOrigin.UpdateFrom(newValueOrigin);
-
-         return new PKSimEmptyCommand();
+         return new UpdateParameterValueOriginCommand(parameter, newValueOrigin).Run(_executionContext);
       }
    }
 }

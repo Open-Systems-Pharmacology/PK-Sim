@@ -36,7 +36,7 @@ namespace PKSim.Core.Commands
          ObjectType = context.TypeFor(entityToAdd);
          CommandType = PKSimConstants.Command.CommandTypeAdd;
          var buildingBlock = context.BuildingBlockContaining(parentContainer);
-         context.UpdateBuildinBlockProperties(this, buildingBlock);
+         context.UpdateBuildinBlockPropertiesInCommand(this, buildingBlock);
          string containerName = string.IsNullOrEmpty(parentContainer.Name) ? CoreConstants.ContainerName.NameTemplate : parentContainer.Name;
          Description = PKSimConstants.Command.AddEntityToContainer(ObjectType, entityToAdd.Name, context.TypeFor(parentContainer), containerName);
       }

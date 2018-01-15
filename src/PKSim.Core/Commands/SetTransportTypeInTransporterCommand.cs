@@ -22,7 +22,7 @@ namespace PKSim.Core.Commands
          _transporterId = _individualTransporter.Id;
          ObjectType = PKSimConstants.ObjectTypes.Transporter;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         context.UpdateBuildinBlockProperties(this, individual);
+         context.UpdateBuildinBlockPropertiesInCommand(this, individual);
       }
 
       protected override void ClearReferences()

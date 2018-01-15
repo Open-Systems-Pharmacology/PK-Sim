@@ -22,7 +22,7 @@ namespace PKSim.Core.Commands
          var oldApplicationType = _schemaItem.ApplicationType;
 
          Description = PKSimConstants.Command.SetApplicationSchemaItemApplicationTypeDescription(oldApplicationType.ToString(), _newApplicationType.ToString());
-         context.UpdateBuildinBlockProperties(this, context.BuildingBlockContaining(_schemaItem));
+         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(_schemaItem));
          Add(new ChangeApplicationTypeCommand(_schemaItem, _newApplicationType, context));
 
          if (shouldResetFormulation(oldApplicationType))

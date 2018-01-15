@@ -31,20 +31,14 @@ namespace PKSim.Presentation.Presenters.Formulations
          _view.Display();
       }
 
-      public override object Subject
-      {
-         get { return _formulation; }
-      }
+      public override object Subject => _formulation;
 
       protected override void UpdateCaption()
       {
          _view.Caption = PKSimConstants.UI.EditFormulation(_formulation.Name);
       }
 
-      private IFormulationSettingsPresenter formulationSettingsPresenter
-      {
-         get { return PresenterAt(FormulationItems.Settings); }
-      }
+      private IFormulationSettingsPresenter formulationSettingsPresenter => PresenterAt(FormulationItems.Settings);
 
       public void Handle(BuildingBlockUpdatedEvent eventToHandle)
       {

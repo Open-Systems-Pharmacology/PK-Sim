@@ -22,7 +22,7 @@ namespace PKSim.Core.Commands
          if (entity != null)
          {
             _buildingBlockId = context.BuildingBlockIdContaining(entity);
-            context.UpdateBuildinBlockProperties(this, context.BuildingBlockContaining(entity));
+            context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(entity));
          }
 
          ObjectType = context.TypeFor(objectBase);
