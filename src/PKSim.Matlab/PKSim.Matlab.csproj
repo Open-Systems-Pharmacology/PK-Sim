@@ -131,9 +131,9 @@
     <Reference Include="OSPSuite.Core, Version=7.3.0.16, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.Core.7.3.0.16\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.3, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.14, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.14\lib\net462\OSPSuite.Presentation.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.16\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
