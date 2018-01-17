@@ -1,19 +1,17 @@
-using System.Linq;
-using OSPSuite.BDDHelper;
+﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
-using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation.Core;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_BuildingBlockParametersToSimulationUpdater : ContextForSimulationIntegration<IBuildingBlockParametersToSimulationUpdater>
+   public abstract class concern_for_SimulationParametersToBuildingBlockUpdater : ContextForSimulationIntegration<ISimulationParametersToBuildingBlockUpdater>
    {
       protected Individual _templateIndividual;
       private IWorkspace _workspace;
@@ -35,32 +33,35 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_updating_the_parameter_values_from_a_template_building_block_in_a_simulation_building_block : concern_for_BuildingBlockParametersToSimulationUpdater
+   public class When_updating_the_parameter_values_from_a_simulation_building_block_in_the_template_building_block : concern_for_SimulationParametersToBuildingBlockUpdater
    {
       private ICommand _result;
+      private IParameter _templateParameter;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var templateParameter = _templateIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameter.ALLOMETRIC_SCALE_FACTOR);
-         templateParameter.Value = 3;
+         var parameterInSimulation = _simulation.Individual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameter.BLOOD_FLOW);
+         _templateParameter = _templateIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameter.BLOOD_FLOW);
+
+         parameterInSimulation.Value = 3;
       }
 
       protected override void Because()
       {
-         _result = sut.UpdateParametersFromBuildingBlockInSimulation(_templateIndividual, _simulation);
+         _result = sut.UpdateParametersFromSimulationInBuildingBlock(_simulation, _templateIndividual);
       }
 
       [Observation]
-      public void should_have_updated_the_parameter_values_in_the_simulation_and_in_the_simulation_building_block_according_to_the_value_in_the_template()
+      public void should_have_updated_the_parameter_values_in_the_building_block_according_to_the_value_in_the_simulation()
       {
-         var simIndividual = _simulation.Individual;
-         var parameter = simIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameter.ALLOMETRIC_SCALE_FACTOR);
-         parameter.Value.ShouldBeEqualTo(3);
+         _templateParameter.Value.ShouldBeEqualTo(3);
+      }
 
-         //now parameter in simulation
-         var simParameter = _simulation.All<IParameter>().First(x => string.Equals(x.Origin.ParameterId, parameter.Id));
-         simParameter.Value.ShouldBeEqualTo(3);
+      [Observation]
+      public void should_not_update_the_parameter_id_of_the_template_parameter ()
+      {
+         string.IsNullOrEmpty(_templateParameter.Origin.ParameterId).ShouldBeTrue();
       }
 
       [Observation]

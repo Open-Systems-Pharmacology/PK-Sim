@@ -30,7 +30,7 @@ namespace PKSim.Core.Commands
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          Description = string.Format(PKSimConstants.Command.SetUsedBuildingBlockVersionCommandDescription,
             context.TypeFor(buildingBlock), usedBuildingBlock.Name, _version, _simulation.Name);
-         context.UpdateBuildinBlockProperties(this, _simulation);
+         context.UpdateBuildinBlockPropertiesInCommand(this, _simulation);
       }
 
       protected override void ExecuteWith(IExecutionContext context)

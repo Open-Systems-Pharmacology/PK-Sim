@@ -1,12 +1,13 @@
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Commands;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Commands;
+using PKSim.Core.Extensions;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -73,18 +74,40 @@ namespace PKSim.Core.Services
       private ICommand setTableFormulaValue(IParameter sourceParameter, IParameter targetParameter)
       {
          //target formula is alwyays a table:
+         var targetTableFormula = targetParameter.Formula as DistributedTableFormula;
 
          //updating a table formula from a distributed parameter? only for distributedTableFormula
-         var targetTableFormula = targetParameter.Formula as DistributedTableFormula;
          var sourceDistributedParameter = sourceParameter as IDistributedParameter;
+
          if (targetTableFormula != null && sourceDistributedParameter != null)
-            return _parameterTask.UpdateDistributedTableFormula(targetParameter, sourceDistributedParameter);
+            return updateDistributedTableFormula(targetParameter, sourceDistributedParameter);
 
          //if source parameter as a constant formula, nothing to update as it is a simple growth table
          if (!sourceParameter.Formula.IsTable())
             return null;
 
-         return _parameterTask.UpdateTableFormula(targetParameter, sourceParameter.Formula.DowncastTo<TableFormula>());
+         return updateTableFormula(sourceParameter, targetParameter);
+      }
+
+      private ICommand updateTableFormula(IParameter sourceParameter, IParameter targetParameter)
+      {
+         return withUpdatedValueOrigin(_parameterTask.UpdateTableFormula(targetParameter, sourceParameter.Formula.DowncastTo<TableFormula>()), sourceParameter, targetParameter);
+      }
+
+      private ICommand updateDistributedTableFormula(IParameter targetParameter, IDistributedParameter sourceDistributedParameter)
+      {
+         return withUpdatedValueOrigin(_parameterTask.UpdateDistributedTableFormula(targetParameter, sourceDistributedParameter), sourceDistributedParameter, targetParameter);
+      }
+
+      private ICommand withUpdatedValueOrigin(ICommand command, IParameter sourceParameter, IParameter targetParameter)
+      {
+         if (sourceParameter.ValueOrigin.IsIdenticalTo(targetParameter.ValueOrigin))
+            return command;
+
+         var macroCommand = new PKSimMacroCommand {CommandType = command.CommandType, ObjectType = command.ObjectType, Description = command.Description};
+         macroCommand.Add(command);
+         macroCommand.Add(_parameterTask.SetParameterValueOrigin(targetParameter, sourceParameter.ValueOrigin));
+         return macroCommand;
       }
 
       private ICommand setDistributionValue(IParameter sourceParameter, IDistributedParameter targetParameter)
@@ -100,8 +123,7 @@ namespace PKSim.Core.Services
          if (tableFormula == null)
             return setParameterValue(sourceParameter, targetParameter, false);
 
-         //only update if percentiles are not equals
-         return _parameterTask.SetParameterPercentile(targetParameter, tableFormula.Percentile);
+         return withUpdatedValueOrigin(_parameterTask.SetParameterPercentile(targetParameter, tableFormula.Percentile), sourceParameter, targetParameter);
       }
 
       private ICommand resetParameterValue(IParameter targetParameter)
@@ -116,20 +138,21 @@ namespace PKSim.Core.Services
          if (!forceUpdate && areValuesEqual(targetParameter, sourceParameter))
          {
             //same value but not same display unit, simply update the display unit
-            if ( sourceParameter.DisplayUnit == targetParameter.DisplayUnit)
+            if (sourceParameter.DisplayUnit == targetParameter.DisplayUnit)
                return null;
 
             return _parameterTask.SetParameterDisplayUnit(targetParameter, sourceParameter.DisplayUnit);
          }
 
-         var setValueCommand = _parameterTask.SetParameterValue(targetParameter, sourceParameter.Value);
+         var setValueCommand = withUpdatedValueOrigin(_parameterTask.SetParameterValue(targetParameter, sourceParameter.Value), sourceParameter, targetParameter);
+
          //Only value differs
          if (sourceParameter.DisplayUnit == targetParameter.DisplayUnit)
             return setValueCommand;
 
          //in that case, we create a macro command that updates value and unit
          var setDisplayUnitCommand = _parameterTask.SetParameterDisplayUnit(targetParameter, sourceParameter.DisplayUnit);
-         var macroCommand = new PKSimMacroCommand { CommandType = setValueCommand.CommandType, ObjectType = setValueCommand.ObjectType, Description = PKSimConstants.Command.SetParameterValueAndDisplayUnitDescription };
+         var macroCommand = new PKSimMacroCommand {CommandType = setValueCommand.CommandType, ObjectType = setValueCommand.ObjectType, Description = PKSimConstants.Command.SetParameterValueAndDisplayUnitDescription};
          macroCommand.Add(setValueCommand);
          macroCommand.Add(setDisplayUnitCommand);
          return macroCommand;

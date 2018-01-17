@@ -16,7 +16,7 @@ namespace PKSim.Core.Commands
 
    public interface IPKSimMacroCommand : IPKSimReversibleCommand, IMacroCommand<IExecutionContext>
    {
-      new IEnumerable<IPKSimCommand> All();
+      new IEnumerable<IOSPSuiteCommand> All();
    }
 
    public abstract class PKSimCommand : OSPSuiteCommand<IExecutionContext>, IPKSimCommand
@@ -42,9 +42,9 @@ namespace PKSim.Core.Commands
          subCommands.Each(Add);
       }
 
-      public new IEnumerable<IPKSimCommand> All()
+      public new IEnumerable<IOSPSuiteCommand> All()
       {
-         return base.All().Select(command => command.DowncastTo<IPKSimCommand>());
+         return base.All().Select(command => command.DowncastTo<IOSPSuiteCommand>());
       }
    }
 }

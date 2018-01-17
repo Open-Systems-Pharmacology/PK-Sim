@@ -1,22 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
    public interface IParameterIdUpdater
    {
       /// <summary>
-      /// Resets the parameter origin in all <paramref name="parameters"/>
+      ///    Resets the parameter origin in all <paramref name="parameters" />
       /// </summary>
       void ResetParameterOrigin(IEnumerable<IParameter> parameters);
 
-
       /// <summary>
-      /// Resets the <paramref name="parameterOrigin"/>
+      ///    Resets the <paramref name="parameterOrigin" />
       /// </summary>
       void ResetParameterOrigin(ParameterOrigin parameterOrigin);
 
@@ -45,7 +44,8 @@ namespace PKSim.Core.Services
       void UpdateBuildingBlockId(IEnumerable<IParameter> allParameters, IPKSimBuildingBlock buildingBlock);
 
       /// <summary>
-      ///    Update the building block if of all parameters defined in the container and its sub container to the id of the building block given as parameter
+      ///    Update the building block if of all parameters defined in the container and its sub container to the id of the
+      ///    building block given as parameter
       /// </summary>
       void UpdateBuildingBlockId(IContainer container, IPKSimBuildingBlock buildingBlock);
 
@@ -64,11 +64,10 @@ namespace PKSim.Core.Services
       public void UpdateParameterId(IParameter sourceParameter, IParameter targetParameter)
       {
          string originalId = targetParameter.Origin.ParameterId;
+
          if (string.IsNullOrEmpty(originalId))
             targetParameter.Origin.ParameterId = sourceParameter.Id;
       }
-
-
 
       public void UpdateParameterIds(IContainer sourceContainer, IContainer targetContainer)
       {
@@ -114,6 +113,9 @@ namespace PKSim.Core.Services
       public void UpdateSimulationId(Simulation simulation)
       {
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
+
+         //also need to update in all buildign blocks of the simulation
+         simulation.UsedBuildingBlocks.Each(bb => { bb.BuildingBlock.GetAllChildren<IParameter>().Each(p => p.Origin.SimulationId = simulation.Id); });
       }
    }
 }

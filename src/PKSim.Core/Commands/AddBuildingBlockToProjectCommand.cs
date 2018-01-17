@@ -16,7 +16,7 @@ namespace PKSim.Core.Commands
          _buildingBlockToAddId = _buildingBlockToAdd.Id;
          CommandType = PKSimConstants.Command.CommandTypeAdd;
          ObjectType = context.TypeFor(buildingBlock);
-         context.UpdateBuildinBlockProperties(this, buildingBlock);
+         context.UpdateBuildinBlockPropertiesInCommand(this, buildingBlock);
       }
 
       protected override void ExecuteWith(IExecutionContext context)

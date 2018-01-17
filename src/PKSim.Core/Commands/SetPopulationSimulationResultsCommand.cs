@@ -46,7 +46,7 @@ namespace PKSim.Core.Commands
          var populationPKAnalysesTask = context.Resolve<IPKAnalysesTask>();
          _populationSimulation.PKAnalyses = populationPKAnalysesTask.CalculateFor(_populationSimulation);
 
-         context.UpdateBuildinBlockProperties(this, _populationSimulation);
+         context.UpdateBuildinBlockPropertiesInCommand(this, _populationSimulation);
          context.PublishEvent(new SimulationResultsUpdatedEvent(_populationSimulation));
       }
 

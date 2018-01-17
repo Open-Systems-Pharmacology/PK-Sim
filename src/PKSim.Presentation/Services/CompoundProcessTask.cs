@@ -122,7 +122,7 @@ namespace PKSim.Presentation.Services
 
             //create + add command are added as one action into the history
             var overallCommand = new PKSimMacroCommand {CommandType = PKSimConstants.Command.CommandTypeAdd};
-            _executionContext.UpdateBuildinBlockProperties(overallCommand, compound);
+            _executionContext.UpdateBuildinBlockPropertiesInCommand(overallCommand, compound);
 
             //First add process to compound so that it will be available for later rollbacks
             var addProcessToCompound = new AddProcessToCompoundCommand(process, compound, _executionContext).Run(_executionContext);
@@ -130,7 +130,7 @@ namespace PKSim.Presentation.Services
             overallCommand.Description = addProcessToCompound.Description;
             overallCommand.ObjectType = addProcessToCompound.ObjectType;
 
-            _executionContext.UpdateBuildinBlockProperties(editCommands, compound);
+            _executionContext.UpdateBuildinBlockPropertiesInCommand(editCommands, compound);
 
             var macroCommand = editCommands as IPKSimMacroCommand;
             if (macroCommand != null)

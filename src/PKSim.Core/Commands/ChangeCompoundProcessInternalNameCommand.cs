@@ -18,7 +18,7 @@ namespace PKSim.Core.Commands
          _oldInternalName = _compoundProcess.InternalName;
          BuildingBlockId = context.BuildingBlockIdContaining(_compoundProcess);
          //This command is necessary to insure consitency but does not need to be seen
-         context.UpdateBuildinBlockProperties(this, context.BuildingBlockContaining(_compoundProcess));
+         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(_compoundProcess));
          Visible = false;
       }
 

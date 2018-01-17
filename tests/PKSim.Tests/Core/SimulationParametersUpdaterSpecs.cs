@@ -72,7 +72,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_all_parameters_from_the_source_simulation_into_the_target_simulation()
       {
-         A.CallTo(() => _parameterSetUpdater.UpdateValues(A<PathCache<IParameter>>._,A<PathCache<IParameter>>._)).MustHaveHappened();  
+         A.CallTo(() => _parameterSetUpdater.UpdateValues(A<PathCache<IParameter>>._,A<PathCache<IParameter>>._, true)).MustHaveHappened();  
       }
 
       [Observation]

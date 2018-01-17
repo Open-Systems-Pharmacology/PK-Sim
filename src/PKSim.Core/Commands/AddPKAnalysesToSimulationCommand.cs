@@ -31,7 +31,7 @@ namespace PKSim.Core.Commands
             _populationSimulation.PKAnalyses.AddPKAnalysis(pkParameter);
          }
 
-         context.UpdateBuildinBlockProperties(this, _populationSimulation);
+         context.UpdateBuildinBlockPropertiesInCommand(this, _populationSimulation);
          context.PublishEvent(new SimulationResultsUpdatedEvent(_populationSimulation));
       }
 

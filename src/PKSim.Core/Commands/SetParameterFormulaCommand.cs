@@ -35,10 +35,8 @@ namespace PKSim.Core.Commands
 
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
-         var bbParameter = OriginParameterFor(_parameter, context);
          _serializationStream = context.Serialize(_parameter.Formula);
-         UpdateParameter(_parameter, context);
-         UpdateParameter(bbParameter, context);
+         UpdateParameter(context);
          Description = ParameterMessages.SetParameterFormula(context.DisplayNameFor(_parameter));
       }
 

@@ -28,7 +28,7 @@ namespace PKSim.Core.Commands
          _oldTransportType = oldTransportType;
          ObjectType = PKSimConstants.ObjectTypes.Transporter;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         context.UpdateBuildinBlockProperties(this, _individual);
+         context.UpdateBuildinBlockPropertiesInCommand(this, _individual);
          Visible = false;
       }
 

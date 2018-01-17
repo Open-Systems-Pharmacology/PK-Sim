@@ -19,7 +19,7 @@ namespace PKSim.Core.Commands
          ObjectType = PKSimConstants.ObjectTypes.Protein;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          _proteinId = _protein.Id;
-         context.UpdateBuildinBlockProperties(this, context.BuildingBlockContaining(_protein));
+         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(_protein));
       }
 
       public override void RestoreExecutionData(IExecutionContext context)

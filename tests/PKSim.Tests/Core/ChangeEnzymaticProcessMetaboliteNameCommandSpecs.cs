@@ -57,7 +57,7 @@ namespace PKSim.Core
       [Observation]
       public void command_descriptive_properties_are_set()
       {
-         A.CallTo(() => _context.UpdateBuildinBlockProperties(sut, A<IPKSimBuildingBlock>._)).MustHaveHappened();
+         A.CallTo(() => _context.UpdateBuildinBlockPropertiesInCommand(sut, A<IPKSimBuildingBlock>._)).MustHaveHappened();
          sut.CommandType.ShouldBeEqualTo(PKSimConstants.Command.CommandTypeEdit);
          sut.Description.ShouldNotBeNull();
          sut.ObjectType.ShouldBeEqualTo(PKSimConstants.ObjectTypes.MetabolizingEnzyme);

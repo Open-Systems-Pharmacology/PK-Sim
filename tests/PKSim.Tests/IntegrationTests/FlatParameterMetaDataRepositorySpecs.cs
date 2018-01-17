@@ -7,22 +7,23 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ORM.Repositories;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Repositories;
 
 namespace PKSim.IntegrationTests
 {
    //This tests ensure that the flags defined in the database for parameters are consistent
-   public abstract class concern_for_FlatParameterMetaDataRepository : ContextForIntegration<IFlatParameterMetaDataRepository>
+   public abstract class concern_for_FlatParameterMetaDataRepository : ContextForIntegration<IParametersInContainerRepository>
    {
       protected List<ParameterMetaData> _allParameters;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         sut = IoC.Resolve<IFlatParameterMetaDataRepository>();
+         sut = IoC.Resolve<IParametersInContainerRepository>();
          _allParameters = sut.All().ToList();
       }
 
-      protected string ErrorMessageFor(List<ParameterMetaData> parameters)
+      protected string ErrorMessageFor(IEnumerable<ParameterMetaData> parameters)
       {
          return parameters.Select(p => p.ToString()).ToString("\n");
       }
@@ -62,5 +63,23 @@ namespace PKSim.IntegrationTests
 
          parameters.Any().ShouldBeFalse(ErrorMessageFor(parameters));
       }
+
+      [Observation]
+      public void all_readonly_parameter_should_be_marked_as_non_input()
+      {
+         var parameters = _allParameters.Where(x => x.ReadOnly)
+            .Where(x => x.IsInput).ToList();
+
+         parameters.Any().ShouldBeFalse(ErrorMessageFor(parameters));
+      }
+      [Observation]
+      public void all_hidden_parameter_should_be_marked_as_non_input()
+      {
+         var parameters = _allParameters.Where(x => !x.Visible)
+            .Where(x => x.IsInput).ToList();
+
+         parameters.Any().ShouldBeFalse(ErrorMessageFor(parameters));
+      }
+
    }
 }
