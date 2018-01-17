@@ -64,7 +64,7 @@ namespace PKSim.Core
             Name = CoreConstants.Parameter.REL_EXP_NORM
          };
 
-         var container = new Container { _relativeExpressionParameter, _normalizedExpressionParameter };
+         var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
       }
 
       protected override void Because()
@@ -215,7 +215,6 @@ namespace PKSim.Core
 
    public class When_setting_a_value_description_for_a_parameter_with_origin : concern_for_ParameterTask
    {
-      private IParameter _originParameter;
       private ValueOrigin _newValueOrigin;
 
       protected override void Context()
@@ -228,14 +227,12 @@ namespace PKSim.Core
             Method = ValueOriginDeterminationMethods.ManualFit,
          };
 
-         _originParameter = A.Fake<IParameter>();
          _parameter.Origin.ParameterId = "Origin";
-         A.CallTo(() => _executionContext.Get<IParameter>(_parameter.Origin.ParameterId)).Returns(_originParameter);
       }
 
       protected override void Because()
       {
-         sut.SetParameterValueOrigin(_parameter,_newValueOrigin);
+         sut.SetParameterValueOrigin(_parameter, _newValueOrigin);
       }
 
       [Observation]
@@ -244,13 +241,6 @@ namespace PKSim.Core
          _parameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
          _parameter.ValueOrigin.Source.ShouldBeEqualTo(_newValueOrigin.Source);
          _parameter.ValueOrigin.Method.ShouldBeEqualTo(_newValueOrigin.Method);
-      }
-
-      [Observation]
-      public void should_update_the_value_description_of_the_origin_parameter()
-      {
-         _originParameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
-         _originParameter.ValueOrigin.Source.ShouldBeEqualTo(_newValueOrigin.Source);
       }
    }
 

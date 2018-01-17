@@ -1,40 +1,27 @@
 ﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Infrastructure.ORM.Core;
-using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
-   public interface IFlatParameterInContainsRepository : IMetaDataRepository<ParameterMetaData>
+   public class ParametersInContainerRepository : IParametersInContainerRepository
    {
-   }
-
-   public class FlatParameterInContainsRepository : MetaDataRepository<ParameterMetaData>, IFlatParameterInContainsRepository
-   {
-      public FlatParameterInContainsRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<ParameterMetaData> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewParametersInContainers)
-      {
-      }
-   }
-
-   public class ParametersInContainerRepository : ParameterMetaDataRepository<ParameterMetaData>, IParametersInContainerRepository
-   {
+      private readonly IParameterValueRepository _parameterValueRepository;
+      private readonly IParameterDistributionRepository _parameterDistributionRepository;
+      private readonly IParameterRateRepository _parameterRateRepository;
       private readonly IEntityPathResolver _entityPathResolver;
-      private readonly Cache<string, ParameterMetaData> _parameterMetaDataCache = new Cache<string, ParameterMetaData>(onMissingKey: x => null);
 
       public ParametersInContainerRepository(
-         IFlatParameterInContainsRepository flatParameterInContainsRepository,
-         IFlatContainerRepository flatContainerRepository,
-         IFlatValueOriginRepository flatValueOriginRepository,
-         IFlatValueOriginToValueOriginMapper valueOriginMapper,
+         IParameterValueRepository parameterValueRepository,
+         IParameterDistributionRepository parameterDistributionRepository,
+         IParameterRateRepository parameterRateRepository,
          IEntityPathResolver entityPathResolver)
-         : base(flatParameterInContainsRepository, flatContainerRepository, flatValueOriginRepository, valueOriginMapper)
       {
+         _parameterValueRepository = parameterValueRepository;
+         _parameterDistributionRepository = parameterDistributionRepository;
+         _parameterRateRepository = parameterRateRepository;
          _entityPathResolver = entityPathResolver;
       }
 
@@ -43,19 +30,23 @@ namespace PKSim.Infrastructure.ORM.Repositories
          if (parameter == null)
             return null;
 
-         return ParameterMetaDataFor(_entityPathResolver.PathFor(parameter));
+         if (parameter.IsDistributed())
+            return parameterMetaDataFrom(_parameterDistributionRepository, parameter);
+
+         if (!parameter.Formula.IsConstant())
+            return parameterMetaDataFrom(_parameterRateRepository, parameter);
+
+         return parameterMetaDataFrom(_parameterValueRepository, parameter);
       }
 
-      protected override void DoStart()
+      private ParameterMetaData parameterMetaDataFrom<TParameterMetaData>(IParameterMetaDataRepository<TParameterMetaData> parameterMetaDataRepository, IParameter parameter) where TParameterMetaData : ParameterMetaData
       {
-         base.DoStart();
-         _parameterMetaDataList.Each(x => _parameterMetaDataCache.Add($"{x.ParentContainerPath}{ObjectPath.PATH_DELIMITER}{x.ParameterName}", x));
-      }
+         var container = parameter.ParentContainer;
+         if (container == null)
+            return null;
 
-      public ParameterMetaData ParameterMetaDataFor(string parameterPath)
-      {
-         Start();
-         return _parameterMetaDataCache[parameterPath];
+         var containerPath = _entityPathResolver.PathFor(container);
+         return parameterMetaDataRepository.ParameterMetaDataFor(containerPath, parameter.Name);
       }
    }
 }

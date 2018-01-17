@@ -20,7 +20,6 @@ namespace PKSim.Core.Commands
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
          _oldPercentile = distributedParameter.Percentile;
-
          UpdateParameter(context);
          Description = ParameterMessages.SetParameterPercentile(context.DisplayNameFor(_parameter), _oldPercentile, _percentile);
       }

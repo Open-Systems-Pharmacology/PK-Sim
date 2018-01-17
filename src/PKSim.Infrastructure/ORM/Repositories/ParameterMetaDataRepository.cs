@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
@@ -30,10 +31,15 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _valueOriginMapper = valueOriginMapper;
       }
 
-      public IEnumerable<TParameterMetaData> AllFor(string containerPath)
+      public IReadOnlyList<TParameterMetaData> AllFor(string containerPath)
       {
          Start();
          return _parameterMetaDataCacheByContainer[containerPath];
+      }
+
+      public TParameterMetaData ParameterMetaDataFor(string containerPath, string parameterName)
+      {
+         return AllFor(containerPath).Find(x => string.Equals(x.ParameterName, parameterName));
       }
 
       protected override void DoStart()

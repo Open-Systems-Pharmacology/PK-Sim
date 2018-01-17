@@ -531,7 +531,7 @@
     <Compile Include="IntegrationTests\ModelStructureSpecs.cs" />
     <Compile Include="IntegrationTests\ModelWithActiveTransportersSpecs.cs" />
     <Compile Include="IntegrationTests\StaticReactionRepositorySpecs.cs" />
-    <Compile Include="IntegrationTests\FlatParameterMetaDataRepositorySpecs.cs" />
+    <Compile Include="IntegrationTests\FlatParameterInContainsRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\ParameterQuerySpecs.cs" />
     <Compile Include="IntegrationTests\ParameterValuesCacheConverterSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterValuesCacheXmlSerializerSpecs.cs" />

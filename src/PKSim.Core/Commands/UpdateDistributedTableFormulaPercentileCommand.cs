@@ -25,9 +25,7 @@ namespace PKSim.Core.Commands
 
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
-         var bbParameter = OriginParameterFor(_parameter, context);
-         UpdateParameter(_parameter, context);
-         UpdateParameter(bbParameter, context);
+         UpdateParameter(context);
          Description = ParameterMessages.UpdateTableParameterFormula(context.DisplayNameFor(_parameter));
       }
 

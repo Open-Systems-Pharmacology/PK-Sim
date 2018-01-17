@@ -1,6 +1,5 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
@@ -17,8 +16,10 @@ namespace PKSim.Core.Commands
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
          _oldValue = _parameter.Value;
-         UpdateParameter(_parameter, context);
-         UpdateParameter(OriginParameterFor(_parameter, context), context);
+         SaveValueOriginFor(_parameter);
+
+         //do not update value origin automatically when resetting a parameter
+         UpdateParameter(context, updateValueOrigin: false);
          Description = ParameterMessages.ResetParameterValue(_parameter, context.DisplayNameFor(_parameter), _oldValue);
       }
 
@@ -26,12 +27,12 @@ namespace PKSim.Core.Commands
       {
          if (parameter == null) return;
          parameter.ResetToDefault();
-         SaveValueOriginFor(parameter);
          resetValueOriginForDefaultParameter(parameter, context);
       }
 
       private void resetValueOriginForDefaultParameter(IParameter parameter, IExecutionContext context)
       {
+         //TODO MBD: That does not work quite yet
          var parametersInContainerRepository = context.Resolve<IParametersInContainerRepository>();
 
          var parameterMetaData = parametersInContainerRepository.ParameterMetaDataFor(parameter);
