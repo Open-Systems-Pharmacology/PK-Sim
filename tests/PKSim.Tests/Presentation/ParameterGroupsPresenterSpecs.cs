@@ -9,16 +9,13 @@ using FakeItEasy;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Presenters.Parameters.Mappers;
 using PKSim.Presentation.Services;
-
 using PKSim.Presentation.Views.Parameters;
-
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Services;
@@ -563,4 +560,72 @@ namespace PKSim.Presentation
          _parameters.ShouldOnlyContain(_visibleParameter);
       }
    }
+
+   public class When_the_user_defined_group_node_is_being_activated : concern_for_ParameterGroupsPresenter
+   {
+      private ICustomParametersPresenter _validPresenter;
+      private IParameter _visibleParameter;
+      private IEnumerable<IParameter> _parameters;
+
+      protected override void Context()
+      {
+         base.Context();
+         CreateSutForSettings(ParameterGroupingModeId.Advanced);
+
+         _validPresenter = A.Fake<ICustomParametersPresenter>();
+         _visibleParameter = A.Fake<IParameter>();
+         _visibleParameter.Visible = true;
+         var hiddenParameter = A.Fake<IParameter>();
+         hiddenParameter.Visible = false;
+         _allParameters.Add(_visibleParameter);
+         _allParameters.Add(hiddenParameter);
+         A.CallTo(() => _parameterPresenterMapper.MapFrom(_groupUserDefinedNode)).Returns(_validPresenter);
+         A.CallTo(() => _validPresenter.Edit(A<IEnumerable<IParameter>>.Ignored)).Invokes(x => _parameters = x.GetArgument<IEnumerable<IParameter>>(0));
+         sut.InitializeWith(_organism, _allParameters);                                       
+         sut.ParameterGroupingMode = ParameterGroupingModes.Advanced;
+      }
+
+      protected override void Because()
+      {
+         sut.ActivateNode(_groupUserDefinedNode);
+      }
+
+      [Observation]
+      public void should_edit_all_parameters()
+      {
+         _parameters.ShouldOnlyContain(_visibleParameter);
+      }
+   }
+
+   public class When_a_customer_parameter_presenter_that_requires_constant_refresh_is_being_activated_a_second_time : concern_for_ParameterGroupsPresenter
+   {
+      private ICustomParametersPresenter _alwaysRefreshPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         CreateSutForSettings(ParameterGroupingModeId.Advanced);
+         _alwaysRefreshPresenter = A.Fake<ICustomParametersPresenter>();
+         A.CallTo(() => _alwaysRefreshPresenter.AlwaysRefresh).Returns(true);
+         A.CallTo(() => _parameterPresenterMapper.MapFrom(_groupUserDefinedNode)).Returns(_alwaysRefreshPresenter);
+         var visibleParameter = A.Fake<IParameter>();
+         visibleParameter.Visible = true;
+         _allParameters.Add(visibleParameter);
+
+         sut.InitializeWith(_organism, _allParameters);
+      }
+
+      protected override void Because()
+      {
+         sut.ActivateNode(_groupUserDefinedNode);
+         sut.ActivateNode(_groupUserDefinedNode);
+      }
+
+      [Observation]
+      public void should_edit_the_parameters_again()
+      {
+         A.CallTo(() => _alwaysRefreshPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappened(Repeated.Exactly.Twice);
+      }
+   }
+
 }
