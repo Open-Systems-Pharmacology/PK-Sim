@@ -43,6 +43,7 @@ namespace PKSim.Presentation
       protected ITreeNodeFactory _treeNodeFactory;
       protected ITreeNode<IGroup> _groupAllNode;
       protected ITreeNode<IGroup> _groupFavoritesNode;
+      protected ITreeNode<IGroup> _groupUserDefinedNode;
       protected IGroupRepository _groupRepository;
       protected IUserSettings _userSettings;
       protected INoItemInSelectionPresenter _noItemInSelectionPresenter;
@@ -74,17 +75,20 @@ namespace PKSim.Presentation
          A.CallTo(() => _containerNode.Children).Returns(new List<ITreeNode>());
          _groupAllNode = A.Fake<ITreeNode<IGroup>>();
          _groupFavoritesNode = A.Fake<ITreeNode<IGroup>>();
+         _groupUserDefinedNode = A.Fake<ITreeNode<IGroup>>();
          A.CallTo(() => _treeNodeFactory.CreateGroupAll()).Returns(_groupAllNode);
          A.CallTo(() => _treeNodeFactory.CreateGroupFavorites()).Returns(_groupFavoritesNode);
+         A.CallTo(() => _treeNodeFactory.CreateGroupUserDefined()).Returns(_groupUserDefinedNode);
          A.CallTo(() => _noItemInSelectionPresenter.BaseView).Returns(A.Fake<IView>());
       }
 
       protected void CreateSutForSettings(ParameterGroupingModeId parameterGroupingModeId)
       {
          A.CallTo(() => _userSettings.DefaultParameterGroupingMode).Returns(parameterGroupingModeId);
-         var settings=new ParameterGroupsPresenterSettings();
-         settings.DefaultParameterGroupingModeId =parameterGroupingModeId;
+         var settings = new ParameterGroupsPresenterSettings {DefaultParameterGroupingModeId = parameterGroupingModeId};
+
          A.CallTo(_presenterSettingsTask).WithReturnType<ParameterGroupsPresenterSettings>().Returns(settings);
+
          sut = new ParameterGroupsPresenter(_view, _parameterGroupTask, _groupNodeCreator, _containerNodeMapper,
                                             _parameterPresenterMapper, _noItemInSelectionPresenter, _treeNodeFactory, _groupRepository, _userSettings,
                                             _presenterSettingsTask, _treeNodeContextMenuFactory);
@@ -137,6 +141,12 @@ namespace PKSim.Presentation
       {
          _nodes.ShouldNotContain(_groupFavoritesNode);
       }
+
+      [Observation]
+      public void shouold_not_contain_changed()
+      {
+         _nodes.ShouldNotContain(_groupUserDefinedNode);
+      }
    }
 
    public class When_setting_the_grouping_mode_to_simple_for_parameters : When_setting_the_grouping_mode_for_parameters
@@ -151,6 +161,12 @@ namespace PKSim.Presentation
       {
          _nodes.First().ShouldBeEqualTo(_groupFavoritesNode);
       }
+
+      [Observation]
+      public void Must_insert_changed_at_second_position()
+      {
+         _nodes.ElementAt(1).ShouldBeEqualTo(_groupUserDefinedNode);
+      }
    }
 
    public class When_setting_the_grouping_mode_to_advanced_for_parameters : When_setting_the_grouping_mode_for_parameters
@@ -164,6 +180,13 @@ namespace PKSim.Presentation
       public void Must_insert_favourites_at_the_top()
       {
          _nodes.First().ShouldBeEqualTo(_groupFavoritesNode);
+      }
+
+
+      [Observation]
+      public void Must_insert_changed_at_second_position()
+      {
+         _nodes.ElementAt(1).ShouldBeEqualTo(_groupUserDefinedNode);
       }
    }
 
@@ -247,7 +270,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_tell_the_view_to_display_one_node_in_the_tree_view_for_each_visible_parameter_groups_and_the_all_and_favoritegroup()
       {
-         _nodes.ShouldOnlyContain(_nodeGroup1, _nodeGroup2, _groupAllNode, _groupFavoritesNode);
+         _nodes.ShouldOnlyContain(_nodeGroup1, _nodeGroup2, _groupAllNode, _groupFavoritesNode, _groupUserDefinedNode);
       }
    }
 
@@ -300,7 +323,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_tell_the_view_to_display_one_node_in_the_tree_view_for_each_visible_parameter_groups_and_the_favorite_group()
       {
-         _nodes.ShouldOnlyContain(_nodeGroup1, _nodeGroup2, _groupFavoritesNode);
+         _nodes.ShouldOnlyContain(_nodeGroup1, _nodeGroup2, _groupFavoritesNode, _groupUserDefinedNode);
       }
    }
 

@@ -105,7 +105,9 @@ namespace PKSim.Presentation.Presenters.Simulations
          EditSettingsFor(_context.Get<Simulation>(firstParameter.Origin.SimulationId));
       }
 
-      public bool ForcesDisplay => false;
+      public bool ForcesDisplay { get; } = false;
+      public bool AlwaysRefresh { get; } = false;
+
 
       public IEnumerable<IParameter> EditedParameters => Enumerable.Empty<IParameter>();
 

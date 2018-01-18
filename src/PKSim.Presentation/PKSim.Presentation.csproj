@@ -247,6 +247,7 @@
     <Compile Include="Presenters\Diagrams\ReactionDiagramModalPresenter.cs" />
     <Compile Include="Presenters\ConfigurableLayoutPresenter.cs" />
     <Compile Include="Presenters\CalculationMethodsSelectionPresenter.cs" />
+    <Compile Include="Presenters\Parameters\UserDefinedParametersPresenter.cs" />
     <Compile Include="Presenters\Parameters\EditParameterPresenter.cs" />
     <Compile Include="Presenters\Parameters\ParameterGroupsPresenterSettings.cs" />
     <Compile Include="Presenters\Parameters\ParameterSetPresenter.cs" />

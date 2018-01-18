@@ -78,6 +78,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       protected PathCache<IParameter> _pathCache;
       protected List<ParameterDTO> AllParametersDTO { get; } = new List<ParameterDTO>();
       protected IReadOnlyList<IParameter> _visibleParameters;
+      public virtual bool AlwaysRefresh { get; } = false;
 
       protected ParameterSetPresenter(TView view, IEditParameterPresenterTask editParameterTask, IParameterTask parameterTask)
          : base(view, editParameterTask)
