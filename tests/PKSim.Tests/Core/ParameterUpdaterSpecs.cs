@@ -71,7 +71,6 @@ namespace PKSim.Core
       {
          base.Context();
          _sourceParameter.Value = 10;
-         _sourceParameter.ValueOrigin.Method = ValueOriginDeterminationMethods.InVitroAssay;
          _targetParameter.Value = 15;
          A.CallTo(() => _formulaTypeMapper.MapFrom(_targetParameter)).Returns(FormulaType.Constant);
       }
@@ -80,12 +79,6 @@ namespace PKSim.Core
       public void should_update_the_value_of_the_parameter_with_the_value_if_the_value_has_changed()
       {
          _targetParameter.Value.ShouldBeEqualTo(_sourceParameter.Value);
-      }
-
-      [Observation]
-      public void should_also_update_the_parameter_value_origin_if_required()
-      {
-         _targetParameter.ValueOrigin.IsIdenticalTo(_sourceParameter.ValueOrigin).ShouldBeTrue();
       }
    }
 

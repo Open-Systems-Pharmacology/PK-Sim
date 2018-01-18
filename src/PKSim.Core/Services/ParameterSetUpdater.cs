@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using PKSim.Assets;
 using PKSim.Core.Commands;
+using PKSim.Core.Extensions;
 
 namespace PKSim.Core.Services
 {
@@ -83,12 +84,14 @@ namespace PKSim.Core.Services
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IParameterUpdater _parameterUpdater;
       private readonly IParameterIdUpdater _parameterIdUpdater;
+      private readonly IParameterTask _parameterTask;
 
-      public ParameterSetUpdater(IEntityPathResolver entityPathResolver, IParameterUpdater parameterUpdater, IParameterIdUpdater parameterIdUpdater)
+      public ParameterSetUpdater(IEntityPathResolver entityPathResolver, IParameterUpdater parameterUpdater, IParameterIdUpdater parameterIdUpdater, IParameterTask parameterTask)
       {
          _entityPathResolver = entityPathResolver;
          _parameterUpdater = parameterUpdater;
          _parameterIdUpdater = parameterIdUpdater;
+         _parameterTask = parameterTask;
       }
 
       public ICommand UpdateValues(IContainer sourceContainer, IContainer targetContainer)
@@ -150,16 +153,27 @@ namespace PKSim.Core.Services
          return updateCommands;
       }
 
-      public ICommand UpdateValue(IParameter sourceParameter, IParameter targetParameter, bool updateParameterOriginId=true)
+      public ICommand UpdateValue(IParameter sourceParameter, IParameter targetParameter, bool updateParameterOriginId = true)
       {
-         if(updateParameterOriginId)
+         if (updateParameterOriginId)
             _parameterIdUpdater.UpdateParameterId(sourceParameter, targetParameter);
 
-         var command = _parameterUpdater.UpdateValue(sourceParameter, targetParameter);
+         return withUpdatedValueOrigin(_parameterUpdater.UpdateValue(sourceParameter, targetParameter), sourceParameter, targetParameter);
+      }
 
-         //this line ensure that value origin is updated for all parameters, even the one for which the value were not changed
-         targetParameter.ValueOrigin.UpdateFrom(sourceParameter.ValueOrigin);
-         return command;
+      private ICommand withUpdatedValueOrigin(ICommand command, IParameter sourceParameter, IParameter targetParameter)
+      {
+         if (sourceParameter.ValueOrigin.IsIdenticalTo(targetParameter.ValueOrigin))
+            return command;
+
+         var updateValueOriginCommand = _parameterTask.SetParameterValueOrigin(targetParameter, sourceParameter.ValueOrigin);
+         if (command == null)
+            return updateValueOriginCommand;
+
+         var macroCommand = new PKSimMacroCommand {CommandType = command.CommandType, ObjectType = command.ObjectType, Description = command.Description};
+         macroCommand.Add(command);
+         macroCommand.Add(updateValueOriginCommand);
+         return macroCommand;
       }
    }
 }

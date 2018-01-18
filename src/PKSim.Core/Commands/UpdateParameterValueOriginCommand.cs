@@ -1,46 +1,39 @@
-﻿using OSPSuite.Core.Commands;
+﻿using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
+using Command = OSPSuite.Assets.Command;
 
 namespace PKSim.Core.Commands
 {
-   public class UpdateParameterValueOriginCommand : PKSimMacroCommand
+   public class UpdateParameterValueOriginCommand : EditParameterCommand
    {
-      private IParameter _parameter;
       private ValueOrigin _valueOrigin;
 
-      public UpdateParameterValueOriginCommand(IParameter parameter, ValueOrigin valueOrigin)
+      public UpdateParameterValueOriginCommand(IParameter parameter, ValueOrigin valueOrigin) : base(parameter)
       {
-         _parameter = parameter;
          _valueOrigin = valueOrigin;
       }
 
-      public override void Execute(IExecutionContext context)
+      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-         var updateValueOriginCommand = new UpdateValueOriginCommand(_valueOrigin, _parameter, context);
-         Add(updateValueOriginCommand);
+         return new UpdateParameterValueOriginCommand(_parameter, _oldValueOrigin).AsInverseFor(this);
+      }
 
-         var originParameter = context.Get<IParameter>(_parameter.Origin.ParameterId);
-         if (originParameter != null)
-            Add(new UpdateValueOriginCommand(_valueOrigin, originParameter, context) {Visible = false});
+      protected override void ExecuteUpdateParameter(IExecutionContext context)
+      {
+         SaveValueOriginFor(_parameter);
+         //do not update value origin automatically since this is what this command is doing
+         UpdateParameter(context, updateValueOrigin: false);
+         Description = Command.UpdateValueOriginFrom(_oldValueOrigin.ToString(), _valueOrigin.ToString());
+      }
 
-         var parentBuildingBlock = context.BuildingBlockContaining(_parameter) ?? context.Get<IPKSimBuildingBlock>(_parameter.Origin.SimulationId);
-         context.UpdateBuildinBlockPropertiesInCommand(this, parentBuildingBlock);
+      protected override void UpdateParameter(IParameter parameter, IExecutionContext context)
+      {
+         parameter?.ValueOrigin.UpdateFrom(_valueOrigin);
+      }
 
-         //update building block properties in sub commands
-         All().Each(x => x.UpdatePropertiesFrom(this));
-
-         //now execute all commands
-         base.Execute(context);
-
-         //Update properties after execute so that all properties are set 
-         ObjectType = updateValueOriginCommand.ObjectType;
-         CommandType = updateValueOriginCommand.CommandType;
-         Description = updateValueOriginCommand.Description;
-
-         //clear references
-         _parameter = null;
+      protected override void ClearReferences()
+      {
+         base.ClearReferences();
          _valueOrigin = null;
       }
    }

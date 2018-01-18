@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -9,7 +10,6 @@ namespace PKSim.Core.Commands
    {
       protected IParameter _parameter;
       protected ValueOrigin _oldValueOrigin;
-
       public string ParameterId { get; }
       public bool AlteredOn { get; protected set; }
       public string SimulationId { get; protected set; }
@@ -73,13 +73,12 @@ namespace PKSim.Core.Commands
          if (string.IsNullOrEmpty(parameter.Origin.BuilingBlockId))
             return false;
 
-         //The simulation id is not set. The parameter is defined in a building block
-         if (string.IsNullOrEmpty(parameter.Origin.SimulationId))
+         //THIS SHOULD NOT HAPPEN and should be deleted
+         if (string.IsNullOrEmpty(parameter.Origin.SimulationId) || parameter.BuildingBlockType == PKSimBuildingBlockType.Simulation)
+         {
+            Debug.Print($"This should not happen for parameter {parameter.Name}");
             return false;
-
-         //a parameter defined in a simulation? Not a building block parameter in a  simulation
-         if (parameter.BuildingBlockType == PKSimBuildingBlockType.Simulation)
-            return false;
+         }
 
          return true;
       }
@@ -87,7 +86,8 @@ namespace PKSim.Core.Commands
       private void setBuildingBlockAlteredFlag(IExecutionContext context)
       {
          //altered flag is only relevant for parameter changed in simulation, that are not simulation parameters
-         if (!isBuildingBlockParameterInSimulation(_parameter)) return;
+         if (!isBuildingBlockParameterInSimulation(_parameter))
+            return;
 
          var simulation = context.Get<Simulation>(SimulationId);
 
@@ -101,12 +101,12 @@ namespace PKSim.Core.Commands
             if (altered == false)
                AlteredOn = true;
 
-            simulation.SetAltered(_parameter.Origin.BuilingBlockId, true);
+            simulation.SetAltered(_parameter.Origin.BuilingBlockId, altered: true);
          }
          //this is an inverse command
          else
          {
-            simulation.SetAltered(_parameter.Origin.BuilingBlockId, false);
+            simulation.SetAltered(_parameter.Origin.BuilingBlockId, altered: false);
             AlteredOn = false;
          }
       }
@@ -116,12 +116,14 @@ namespace PKSim.Core.Commands
          _oldValueOrigin = parameter.ValueOrigin.Clone();
       }
 
-      protected virtual void UpdateParameter(IExecutionContext context)
+      protected virtual void UpdateParameter(IExecutionContext context, bool updateValueOrigin = true)
       {
          var bbParameter = OriginParameterFor(_parameter, context);
          UpdateParameter(_parameter, context);
          UpdateParameter(bbParameter, context);
-         UpdateValueOriginInParameters(_parameter, bbParameter);
+
+         if (updateValueOrigin)
+            UpdateValueOriginInParameters(_parameter, bbParameter);
       }
 
       protected virtual void UpdateValueOriginInParameters(IParameter parameter, IParameter buildingBlockParameter)

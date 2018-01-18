@@ -30,15 +30,15 @@ namespace PKSim.Core.Commands
 
    public abstract class BuildingBlockChangeCommand : PKSimReversibleCommand, IBuildingBlockChangeCommand
    {
+      public bool IncrementVersion { get; set; }
+      public string BuildingBlockId { get; protected set; }
+      public bool ShouldChangeVersion { get; set; }
+
       protected BuildingBlockChangeCommand()
       {
          IncrementVersion = true;
          ShouldChangeVersion = true;
       }
-
-      public bool IncrementVersion { get; set; }
-      public string BuildingBlockId { get; protected set; }
-      public bool ShouldChangeVersion { get; set; }
 
       /// <summary>
       ///    Allows the inverse command to be updated with some internal parameter of the original command
@@ -64,11 +64,11 @@ namespace PKSim.Core.Commands
       protected abstract void PerformExecuteWith(IExecutionContext context);
    }
 
-
    public abstract class BuildingBlockChangeCommand<T> : BuildingBlockChangeCommand
       where T : class, IPKSimBuildingBlock
    {
       protected T _buildingBlock;
+
       protected BuildingBlockChangeCommand(T buildingBlock)
       {
          BuildingBlockId = buildingBlock.Id;
@@ -92,5 +92,4 @@ namespace PKSim.Core.Commands
          _buildingBlock = context.Get<T>(BuildingBlockId);
       }
    }
-
 }

@@ -5,7 +5,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Commands;
-using PKSim.Core.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 
@@ -91,23 +90,12 @@ namespace PKSim.Core.Services
 
       private ICommand updateTableFormula(IParameter sourceParameter, IParameter targetParameter)
       {
-         return withUpdatedValueOrigin(_parameterTask.UpdateTableFormula(targetParameter, sourceParameter.Formula.DowncastTo<TableFormula>()), sourceParameter, targetParameter);
+         return _parameterTask.UpdateTableFormula(targetParameter, sourceParameter.Formula.DowncastTo<TableFormula>());
       }
 
       private ICommand updateDistributedTableFormula(IParameter targetParameter, IDistributedParameter sourceDistributedParameter)
       {
-         return withUpdatedValueOrigin(_parameterTask.UpdateDistributedTableFormula(targetParameter, sourceDistributedParameter), sourceDistributedParameter, targetParameter);
-      }
-
-      private ICommand withUpdatedValueOrigin(ICommand command, IParameter sourceParameter, IParameter targetParameter)
-      {
-         if (sourceParameter.ValueOrigin.IsIdenticalTo(targetParameter.ValueOrigin))
-            return command;
-
-         var macroCommand = new PKSimMacroCommand {CommandType = command.CommandType, ObjectType = command.ObjectType, Description = command.Description};
-         macroCommand.Add(command);
-         macroCommand.Add(_parameterTask.SetParameterValueOrigin(targetParameter, sourceParameter.ValueOrigin));
-         return macroCommand;
+         return _parameterTask.UpdateDistributedTableFormula(targetParameter, sourceDistributedParameter);
       }
 
       private ICommand setDistributionValue(IParameter sourceParameter, IDistributedParameter targetParameter)
@@ -123,7 +111,7 @@ namespace PKSim.Core.Services
          if (tableFormula == null)
             return setParameterValue(sourceParameter, targetParameter, false);
 
-         return withUpdatedValueOrigin(_parameterTask.SetParameterPercentile(targetParameter, tableFormula.Percentile), sourceParameter, targetParameter);
+         return _parameterTask.SetParameterPercentile(targetParameter, tableFormula.Percentile);
       }
 
       private ICommand resetParameterValue(IParameter targetParameter)
@@ -144,7 +132,7 @@ namespace PKSim.Core.Services
             return _parameterTask.SetParameterDisplayUnit(targetParameter, sourceParameter.DisplayUnit);
          }
 
-         var setValueCommand = withUpdatedValueOrigin(_parameterTask.SetParameterValue(targetParameter, sourceParameter.Value), sourceParameter, targetParameter);
+         var setValueCommand = _parameterTask.SetParameterValue(targetParameter, sourceParameter.Value);
 
          //Only value differs
          if (sourceParameter.DisplayUnit == targetParameter.DisplayUnit)

@@ -210,6 +210,7 @@
     <Compile Include="ORM\Repositories\DynamicFormulaCriteriaRepository.cs" />
     <Compile Include="ORM\Repositories\FlatDynamicFormulaCriteriaRepository.cs" />
     <Compile Include="ORM\Repositories\FlatMoleculeParameterRepository.cs" />
+    <Compile Include="ORM\Repositories\FlatParameterInContainsRepository.cs" />
     <Compile Include="ORM\Repositories\FlatValueOriginRepository.cs" />
     <Compile Include="ORM\Repositories\OrganTypeRepository.cs" />
     <Compile Include="ORM\Repositories\FlatProteinSynonymRepository.cs" />
