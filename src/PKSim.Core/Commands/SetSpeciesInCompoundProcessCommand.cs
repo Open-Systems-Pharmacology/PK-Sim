@@ -1,8 +1,8 @@
 using System.Linq;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Commands
 {
@@ -25,14 +25,22 @@ namespace PKSim.Core.Commands
          var defaultIndividual = defaultIndividualRetriever.DefaultIndividualFor(_species);
          var compoundProcessParameterMappingRepository = context.Resolve<ICompoundProcessParameterMappingRepository>();
 
-         foreach (var parameter in _process.AllParameters().Where(p => compoundProcessParameterMappingRepository.HasMappedParameterFor(_process.InternalName, p.Name)))
+         var allProcessParametersWithDefaultValueInIndividual = _process.AllParameters()
+            .Where(p => compoundProcessParameterMappingRepository.HasMappedParameterFor(_process.InternalName, p.Name)).ToList();
+
+         foreach (var parameter in allProcessParametersWithDefaultValueInIndividual)
          {
             var objectPath = compoundProcessParameterMappingRepository.MappedParameterPathFor(_process.InternalName, parameter.Name);
             var individualParameter = objectPath.Resolve<IParameter>(defaultIndividual);
+
             Add(new SetParameterValueCommand(parameter, individualParameter.Value) {Visible = false});
+      
+            //Parameter updated from default indiviudal should have the default value origin
+            Add(new UpdateParameterValueOriginCommand(parameter, individualParameter.ValueOrigin) { Visible = false });
          }
 
          base.Execute(context);
+
 
          _process = null;
          _species = null;

@@ -8,6 +8,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using Parameter = PKSim.Core.Snapshots.Parameter;
+using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
 
 namespace PKSim.Core
 {
@@ -21,12 +22,14 @@ namespace PKSim.Core
       protected Alternative _snapshot;
       protected ParameterAlternativeWithSpecies _alternativeWithSpecies;
       protected Species _species;
+      protected ValueOrigin _snapshotValueOrigin;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _parameterAlternativeFactory = A.Fake<IParameterAlternativeFactory>();
          _speciesRepository = A.Fake<ISpeciesRepository>();
+
          sut = new AlternativeMapper(_parameterMapper, _parameterAlternativeFactory, _speciesRepository);
 
          _parameterGroup = new ParameterAlternativeGroup {Name = "ParameterGroup"};
@@ -48,6 +51,7 @@ namespace PKSim.Core
 
          _parameterGroup.AddAlternative(_alternativeWithSpecies);
          A.CallTo(() => _speciesRepository.All()).Returns(new[] {_species});
+
 
          return _completed;
       }
@@ -88,11 +92,11 @@ namespace PKSim.Core
       {
          _snapshot.IsDefault.ShouldBeNull();
          _snapshot.Name.ShouldBeEqualTo(_alternative.Name);
-         _snapshot.Description.ShouldBeEqualTo(_alternative.Description);
       }
+
    }
 
-   public class When_mapping_a_compound_alternative__with_species_to_snapshot : concern_for_AlternativeMapper
+   public class When_mapping_a_compound_alternative_with_species_to_snapshot : concern_for_AlternativeMapper
    {
       protected override async Task Because()
       {
@@ -124,7 +128,7 @@ namespace PKSim.Core
          _snapshotParameter = new Parameter {Name = "P1"};
          _alternativeParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(_snapshotParameter.Name);
          newAlternativeWithSpecies.Add(_alternativeParameter);
-         _snapshot.Parameters = new []{_snapshotParameter};
+         _snapshot.Parameters = new[] {_snapshotParameter};
       }
 
       protected override async Task Because()
@@ -140,6 +144,7 @@ namespace PKSim.Core
          _newAlternativeWithSpecies.IsDefault.ShouldBeEqualTo(_alternativeWithSpecies.IsDefault);
          _alternativeWithSpecies.Species.ShouldBeEqualTo(_species);
       }
+
 
       [Observation]
       public void should_have_updated_the_alternative_parameters()

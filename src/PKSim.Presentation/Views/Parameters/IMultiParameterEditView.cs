@@ -10,6 +10,7 @@ namespace PKSim.Presentation.Views.Parameters
    {
       void BindTo(IEnumerable<ParameterDTO> parameters);
       bool DistributionVisible { get; set; }
+      bool ValueOriginVisible { get; set; }
       bool ParameterNameVisible { get; set; }
       void SetVisibility(PathElement pathElement, bool visible);
       void SetCaption(PathElement pathElement, string caption);

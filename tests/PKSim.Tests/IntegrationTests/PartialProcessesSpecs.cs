@@ -223,8 +223,8 @@ namespace PKSim.IntegrationTests
          {
             var relExpOut = enzyme.Parameter(CoreConstants.Parameter.REL_EXP_OUT);
             var relExpNorm = enzyme.Parameter(CoreConstants.Parameter.REL_EXP_NORM).Value;
-            var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FractionIntracellular).Value;
-            var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FractionInterstitial).Value;
+            var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FRACTION_INTRACELLULAR).Value;
+            var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FRACTION_INTERSTITIAL).Value;
             var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
             var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameter.VolumeVascularEndothelium).Value;
             relExpOut.Value.ShouldBeEqualTo(relExpNorm * f_cell / f_int + v_vasend / v_int * _relExpVascEndo, 1e-6);
@@ -478,8 +478,8 @@ namespace PKSim.IntegrationTests
             var relExpNorm = enzyme.Parameter(CoreConstants.Parameter.REL_EXP_NORM).Value;
             var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
             var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameter.VolumeVascularEndothelium).Value;
-            var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FractionIntracellular).Value;
-            var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FractionInterstitial).Value;
+            var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FRACTION_INTRACELLULAR).Value;
+            var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FRACTION_INTERSTITIAL).Value;
 
             relExpOut.Value.ShouldBeEqualTo(relExpNorm * f_cell / f_int + v_vasend / v_int * _relExpVascEndo, 1e-6);
          }

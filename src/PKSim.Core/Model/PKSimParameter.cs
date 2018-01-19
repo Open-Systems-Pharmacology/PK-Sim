@@ -59,7 +59,7 @@ namespace PKSim.Core.Model
                return true;
 
             //formula parameter indirectly changed by create individual 
-            if (string.Equals(CoreConstants.Parameter.FractionIntracellular, Name) && isInFatOrMuscle())
+            if (string.Equals(CoreConstants.Parameter.FRACTION_INTRACELLULAR, Name) && isInFatOrMuscle())
                return true;
 
             if (CoreConstants.Parameter.VolumeFractionLipidsParameters.Contains(Name) && isInFat())

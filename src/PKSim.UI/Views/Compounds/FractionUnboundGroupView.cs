@@ -17,6 +17,7 @@ using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Binders;
 using PKSim.Core.Model;
 using UIConstants = OSPSuite.UI.UIConstants;
 
@@ -34,7 +35,8 @@ namespace PKSim.UI.Views.Compounds
          InitializeComponent();
       }
 
-      public FractionUnboundGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever) : base(toolTipCreator, imageListRetriever)
+      public FractionUnboundGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<FractionUnboundAlternativeDTO> valueOriginBinder) : 
+         base(toolTipCreator, imageListRetriever, valueOriginBinder)
       {
          InitializeComponent();
          _speciesRepository = new UxRepositoryItemImageComboBox(_gridView, imageListRetriever);

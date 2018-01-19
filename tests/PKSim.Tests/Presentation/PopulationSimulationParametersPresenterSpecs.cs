@@ -131,7 +131,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_not_display_simulation_parmaeters_named_volume()
+      public void should_not_display_simulation_parameters_named_volume()
       {
          _displayedParameters.Contains(_volumeParameter).ShouldBeFalse();
       }

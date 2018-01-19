@@ -352,7 +352,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_leverage_the_parmaeter_task_to_add_the_parameter_to_the_favorites()
+      public void should_leverage_the_parameter_task_to_add_the_parameter_to_the_favorites()
       {
          A.CallTo(() => _editParameterPresenterTask.SetParameterFavorite(_parameterDTO, true)).MustHaveHappened();
       }
@@ -373,13 +373,13 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_leverage_the_parmaeter_task_to_remove_the_parameter_from_the_favorites()
+      public void should_leverage_the_parameter_task_to_remove_the_parameter_from_the_favorites()
       {
          A.CallTo(() => _editParameterPresenterTask.SetParameterFavorite(_parameterDTO, false)).MustHaveHappened();
       }
    }
 
-   public class When_the_multi_parmaeter_edit_presenter_is_being_released : concern_for_MultiParameterEditPresenter
+   public class When_the_multi_parameter_edit_presenter_is_being_released : concern_for_MultiParameterEditPresenter
    {
       protected override void Context()
       {

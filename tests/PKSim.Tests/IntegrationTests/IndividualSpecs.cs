@@ -80,13 +80,13 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         sut = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Species.Rabbit);
+         sut = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Species.RABBIT);
       }
 
       [Observation]
       public void individual_species_should_be_rabbit()
       {
-         sut.Population.Species.ShouldBeEqualTo(CoreConstants.Species.Rabbit);
+         sut.Population.Species.ShouldBeEqualTo(CoreConstants.Species.RABBIT);
       }
 
       [Observation]

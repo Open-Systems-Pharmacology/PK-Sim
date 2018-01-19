@@ -123,7 +123,7 @@ namespace PKSim.IntegrationTests
 
          var ageValues = (from p in ageDependentParams select p.Age).ToList();
 
-         var maxAge = populationName.Equals(CoreConstants.Population.Pregnant) ? 30.75 : ageValues.Max();
+         var maxAge = populationName.Equals(CoreConstants.Population.PREGNANT) ? 30.75 : ageValues.Max();
 
          return (ageValues.Min(), maxAge);
       }
@@ -146,7 +146,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void only_the_species_human_should_have_the_flag_is_human()
       {
-         _flatSpeciesRepository.All().Each(species => { species.IsHuman.ShouldBeEqualTo(string.Equals(species.Id, CoreConstants.Species.Human)); });
+         _flatSpeciesRepository.All().Each(species => { species.IsHuman.ShouldBeEqualTo(string.Equals(species.Id, CoreConstants.Species.HUMAN)); });
       }
    }
 

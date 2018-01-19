@@ -29,7 +29,7 @@ namespace PKSim.Presentation
          _ontogenyTask = A.Fake<IOntogenyTask<Individual>>();
          _commandRegister = A.Fake<ICommandCollector>();
          _allOntogenies = new List<Ontogeny>();
-         A.CallTo(() => _ontogenyRepository.AllFor(CoreConstants.Species.Human)).Returns(_allOntogenies);
+         A.CallTo(() => _ontogenyRepository.AllFor(CoreConstants.Species.HUMAN)).Returns(_allOntogenies);
          sut = new OntogenySelectionPresenter<Individual>(_view, _ontogenyRepository, _ontogenyTask);
          sut.InitializeWith(_commandRegister);
       }

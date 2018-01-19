@@ -94,7 +94,7 @@ namespace PKSim.Core.Services
          double vss = 0;
          foreach (var organ in organism.OrgansByType(OrganType.Tissue))
          {
-            var f_vas = organ.Parameter(CoreConstants.Parameter.FractionVascular).Value;
+            var f_vas = organ.Parameter(CoreConstants.Parameter.FRACTION_VASCULAR).Value;
             var volume = organ.Parameter(Constants.Parameters.VOLUME).Value;
             var k_cell_pls = getParameterFromNeighborhoodFor(organ, allPartitionCoefficients);
             vss += (k_cell_pls + f_vas * (1 - hct)) * volume;

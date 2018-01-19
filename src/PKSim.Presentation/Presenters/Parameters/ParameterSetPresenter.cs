@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views;
+using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
@@ -67,6 +68,8 @@ namespace PKSim.Presentation.Presenters.Parameters
       ///    Returns true if the parameter can be edited otherwise false
       /// </summary>
       bool CanEditParameter(IParameterDTO parameterDTO);
+
+      bool CanEditValueOrigin(IParameterDTO parameterDTO);
    }
 
    public abstract class ParameterSetPresenter<TView, TPresenter> : EditParameterPresenter<TView, TPresenter>, IParameterSetPresenter
@@ -97,6 +100,21 @@ namespace PKSim.Presentation.Presenters.Parameters
          return parameterDTO.FormulaType == FormulaType.Table;
       }
 
+      public virtual bool CanEditValueOrigin(IParameterDTO parameterDTO)
+      {
+         if (!CanEditParameter(parameterDTO))
+            return false;
+
+         return parameterIsSingleInstance(parameterDTO);
+      }
+
+      private bool parameterIsSingleInstance(IParameterDTO parameterDTO)
+      {
+         if (!parameterDTO.Parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Compound, PKSimBuildingBlockType.Protocol))
+            return true;
+
+         return !parameterDTO.NameIsOneOf(CoreConstants.Parameter.AllParametersWithLockedValueOriginInSimulation);
+      }
       protected abstract IEnumerable<IParameterDTO> SelectedParameters();
 
       public void ResetParameters()

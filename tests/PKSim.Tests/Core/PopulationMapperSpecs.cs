@@ -137,7 +137,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_map_all_advanced_parmaeters()
+      public void should_map_all_advanced_parameters()
       {
          A.CallTo(() => _advancedParameterMapper.MapToModel(_snapshot.AdvancedParameters, _newPopulation)).MustHaveHappened();
       }

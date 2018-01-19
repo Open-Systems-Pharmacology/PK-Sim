@@ -22,16 +22,18 @@ namespace PKSim.Presentation.Presenters.Compounds
          _representationInfoRepository = representationInfoRepository;
       }
 
-      protected override void InitializeResourcesFor(ParameterAlternativeGroup compoundParamGroup)
+      protected override void InitializeResourcesFor(ParameterAlternativeGroup parameterAlternativeGroup)
       {
-         var parameterGroupDisplayName = _representationInfoRepository.DisplayNameFor(RepresentationObjectType.GROUP, compoundParamGroup.Name);
+         var parameterGroupDisplayName = _representationInfoRepository.DisplayNameFor(RepresentationObjectType.GROUP, parameterAlternativeGroup.Name);
          _view.Caption = PKSimConstants.UI.CreateGroupParameterAlternativeCaption(parameterGroupDisplayName);
+         _view.NameDescription = PKSimConstants.UI.Name;
+         _view.DescriptionVisible = false;
       }
 
-      protected override ObjectBaseDTO CreateDTOFor(ParameterAlternativeGroup compoundParamGroup)
+      protected override ObjectBaseDTO CreateDTOFor(ParameterAlternativeGroup parameterAlternativeGroup)
       {
          var dto = new ObjectBaseDTO();
-         dto.AddUsedNames(compoundParamGroup.Children.Select(x => x.Name));
+         dto.AddUsedNames(parameterAlternativeGroup.Children.Select(x => x.Name));
          return dto;
       }
    }

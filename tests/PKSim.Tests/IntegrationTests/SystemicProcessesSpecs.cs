@@ -192,7 +192,7 @@ namespace PKSim.IntegrationTests
          var liver_periportal = _simulation.Model.Root.EntityAt<Container>(Constants.ORGANISM, CoreConstants.Organ.Liver, CoreConstants.Compartment.Periportal);
          var startConcentration = liver_periportal.EntityAt<IParameter>(CoreConstants.Compartment.Intracellular, CoreConstants.Molecule.UndefinedLiver, CoreConstants.Parameter.CONCENTRATION);
 
-         var f_cell = liver_periportal.EntityAt<IParameter>(CoreConstants.Parameter.FractionIntracellular);
+         var f_cell = liver_periportal.EntityAt<IParameter>(CoreConstants.Parameter.FRACTION_INTRACELLULAR);
          startConcentration.Value.ShouldBeEqualTo(1 / f_cell.Value);
       }
 

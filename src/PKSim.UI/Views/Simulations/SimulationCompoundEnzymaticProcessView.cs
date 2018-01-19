@@ -4,6 +4,7 @@ using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.UI.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Simulations;
@@ -49,10 +50,7 @@ namespace PKSim.UI.Views.Simulations
          return RepositoryItemFor(enzymaticProcessPresenter.AllMetabolitesFor(dto), _metabolitesRepository);
       }
 
-      private ISimulationCompoundEnzymaticProcessPresenter enzymaticProcessPresenter
-      {
-         get { return _presenter.DowncastTo<ISimulationCompoundEnzymaticProcessPresenter>(); }
-      }
+      private ISimulationCompoundEnzymaticProcessPresenter enzymaticProcessPresenter => _presenter.DowncastTo<ISimulationCompoundEnzymaticProcessPresenter>();
 
       public void HideMetaboliteColumn()
       {

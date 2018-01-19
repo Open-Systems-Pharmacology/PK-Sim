@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -8,10 +12,6 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.Mappers;
 using PKSim.Infrastructure.ORM.Repositories;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Assets;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
@@ -161,19 +161,11 @@ namespace PKSim.Infrastructure.Services
             if (!alternativeParameter.Formula.IsConstant())
                drugParameter.Editable = false;
 
-            //target parameter is a rate and source parmaeter is constant
+            //target parameter is a rate and source parameter is constant
             else if (!drugParameter.Formula.IsConstant())
                drugParameter.Formula = _objectBaseFactory.Create<ConstantFormula>().WithValue(alternativeParameter.Value);
 
             _parameterSetUpdater.UpdateValue(alternativeParameter, drugParameter);
-
-            //only update value description if the alternative contains one and one only parameter
-            if (allParameters.Count == 1)
-            {
-               //TODO MBD
-               drugParameter.ValueOrigin.Description = alternative.Description;
-
-            }
          }
       }
 

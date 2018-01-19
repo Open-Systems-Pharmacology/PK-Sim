@@ -34,7 +34,7 @@ namespace PKSim.Infrastructure.Services
 
       public Individual DefaultHuman()
       {
-         return DefaultIndividualFor(_speciesRepository.FindByName(CoreConstants.Species.Human));
+         return DefaultIndividualFor(_speciesRepository.FindByName(CoreConstants.Species.HUMAN));
       }
 
       public Individual DefaultIndividualFor(Species species)

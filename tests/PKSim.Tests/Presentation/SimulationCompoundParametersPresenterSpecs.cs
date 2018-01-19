@@ -22,7 +22,7 @@ namespace PKSim.Presentation
       protected IMultiParameterEditView _view;
       private IScaleParametersPresenter _scaleParametersPresenter;
       private IEditParameterPresenterTask _editParameterPresenterTask;
-      private IParameterTask _parmaeterTask;
+      private IParameterTask _parameterTask;
       protected IParameterToParameterDTOMapper _parameterDTOMapper;
       private IParameterContextMenuFactory _contextMenuFactory;
       protected IWithIdRepository _withIdRepository;
@@ -38,7 +38,7 @@ namespace PKSim.Presentation
          _view = A.Fake<IMultiParameterEditView>();
          _scaleParametersPresenter = A.Fake<IScaleParametersPresenter>();
          _editParameterPresenterTask = A.Fake<IEditParameterPresenterTask>();
-         _parmaeterTask = A.Fake<IParameterTask>();
+         _parameterTask = A.Fake<IParameterTask>();
          _parameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
          _contextMenuFactory = A.Fake<IParameterContextMenuFactory>();
          _withIdRepository = A.Fake<IWithIdRepository>();
@@ -55,7 +55,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _parameterDTOMapper.MapFrom(_parameter3)).Returns(_parameterDTO3);
 
 
-         sut = new SimulationCompoundParametersPresenter(_view, _scaleParametersPresenter, _editParameterPresenterTask, _parmaeterTask, _parameterDTOMapper, _contextMenuFactory, _withIdRepository);
+         sut = new SimulationCompoundParametersPresenter(_view, _scaleParametersPresenter, _editParameterPresenterTask, _parameterTask, _parameterDTOMapper, _contextMenuFactory, _withIdRepository);
       }
    }
 

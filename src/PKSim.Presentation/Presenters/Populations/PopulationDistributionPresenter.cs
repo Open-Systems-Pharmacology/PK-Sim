@@ -124,7 +124,7 @@ namespace PKSim.Presentation.Presenters.Populations
             settings.YAxisTitle = settings.AxisCountMode.ToString();
 
          if (string.IsNullOrEmpty(settings.SelectedGender))
-            settings.SelectedGender = CoreConstants.Population.AllGender;
+            settings.SelectedGender = CoreConstants.Population.ALL_GENDER;
       }
 
       private string getTitleFor(IParameter parameter, Unit displayUnit)

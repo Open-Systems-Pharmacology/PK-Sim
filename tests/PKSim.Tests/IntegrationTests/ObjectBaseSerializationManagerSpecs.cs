@@ -66,7 +66,7 @@ namespace PKSim.IntegrationTests
 
             if (!ValueComparer.AreValuesEqual(tryGetValue(sourceParameter), tryGetValue(targetParameter)))
             {
-               errorList.Add($"For parmaeter '{sourceKeyValue.Key}'. source value ({sourceParameter.Value}) is not equal target value ({targetParameter.Value}),");
+               errorList.Add($"For parameter '{sourceKeyValue.Key}'. source value ({sourceParameter.Value}) is not equal target value ({targetParameter.Value}),");
                continue;
             }
          }

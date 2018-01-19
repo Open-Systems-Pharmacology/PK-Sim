@@ -15,6 +15,9 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Commands;
+using PKSim.Core.Extensions;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation
@@ -23,7 +26,7 @@ namespace PKSim.Presentation
    {
       protected IParameterAlternativeFactory _parameterAlternativeFactory;
       protected IApplicationController _applicationController;
-      private IExecutionContext _executionContext;
+      protected IExecutionContext _executionContext;
       protected ICompoundFactory _compoundFactory;
       protected IEntityTask _entityTask;
       protected IFormulaFactory _formulaFactory;
@@ -51,7 +54,7 @@ namespace PKSim.Presentation
             var compound = new Compound();
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT));
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameter.LIPOPHILICITY));
-            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(8).WithName(CoreConstants.Parameter.Permeability));
+            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(8).WithName(CoreConstants.Parameter.PERMEABILITY));
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.IS_SMALL_MOLECULE));
             return compound;
          }
@@ -73,7 +76,6 @@ namespace PKSim.Presentation
          _parameterAlternativePresenter = A.Fake<IParameterAlternativeNamePresenter>();
          A.CallTo(() => _parameterAlternativePresenter.Edit(_group)).Returns(true);
          A.CallTo(() => _parameterAlternativePresenter.Name).Returns("new name");
-         A.CallTo(() => _parameterAlternativePresenter.Description).Returns("new description");
          A.CallTo(() => _applicationController.Start<IParameterAlternativeNamePresenter>()).Returns(_parameterAlternativePresenter);
       }
 
@@ -86,7 +88,6 @@ namespace PKSim.Presentation
       public void should_set_the_name_and_the_description_of_the_new_alternative_according_to_the_value_entered_by_the_user()
       {
          _newAlternative.Name.ShouldBeEqualTo("new name");
-         _newAlternative.Description.ShouldBeEqualTo("new description");
       }
    }
 
@@ -189,7 +190,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _formulaFactory.CreateTableFormula()).Returns(new TableFormula());
          var refPh = DomainHelperForSpecs.ConstantParameterWithValue(_refPhValue).WithName(CoreConstants.Parameter.REFERENCE_PH).WithDimension(DomainHelperForSpecs.NoDimension());
          var solubilty = DomainHelperForSpecs.ConstantParameterWithValue(_solValue).WithName(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH).WithDimension(solDim);
-         var gainPerCharge = DomainHelperForSpecs.ConstantParameterWithValue(_gainPerChargeValue).WithName(CoreConstants.Parameter.SolubilityGainPerCharge).WithDimension(DomainHelperForSpecs.NoDimension());
+         var gainPerCharge = DomainHelperForSpecs.ConstantParameterWithValue(_gainPerChargeValue).WithName(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE).WithDimension(DomainHelperForSpecs.NoDimension());
          _solubility_pKa_pH_Factor = new PKSimParameter().WithName(CoreConstants.Parameter.SOLUBILITY_P_KA__P_H_FACTOR);
          _solubility_pKa_pH_Factor.Formula = new ExplicitFormula("10 * (pH +1)");
          _solubility_pKa_pH_Factor.Formula.AddObjectPath(new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, CoreConstants.Parameter.REFERENCE_PH}).WithAlias("pH"));
@@ -332,4 +333,112 @@ namespace PKSim.Presentation
          A.CallTo(() => _entityTask.StructuralRename(_alternative)).MustHaveHappened();
       }
    }
+
+   public class When_updating_the_value_origin_of_a_compound_parameter_group_alternative_that_is_used_in_a_simulation : concern_for_CompoundAlternativeTask
+   {
+      private ParameterAlternative _parameterAlternative;
+      private ValueOrigin _newValueOrigin;
+      private IParameter _parameter1;
+      private IParameter _parameter2;
+      private IParameter _parameter3;
+      private PKSimMacroCommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _parameter1 = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName("P1");
+         _parameter1.IsDefault = false;
+         _parameter2 = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName("P2");
+         _parameter2.IsDefault = true;
+         _parameter3 = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName("P3");
+         _parameter3.IsDefault = false;
+
+         var alternativeGroup = new ParameterAlternativeGroup().WithName("Gr");
+         _parameterAlternative = new ParameterAlternative {_parameter1, _parameter2, _parameter3};
+         _parameterAlternative.Name = "Alt";
+         alternativeGroup.AddAlternative(_parameterAlternative);
+
+         _newValueOrigin = new ValueOrigin
+         {
+            Method = ValueOriginDeterminationMethods.InVivo,
+            Source = ValueOriginSources.Database
+         };
+
+         var simulation = new IndividualSimulation { Properties = new SimulationProperties() };
+         A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new[] { simulation });
+
+         var compoundProperties = new CompoundProperties();
+         simulation.Properties.AddCompoundProperties(compoundProperties);
+         compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection { AlternativeName = _parameterAlternative.Name, GroupName = alternativeGroup.Name });
+
+      }
+
+      protected override void Because()
+      {
+         _command= sut.UpdateValueOrigin(_parameterAlternative, _newValueOrigin) as PKSimMacroCommand;
+      }
+
+      [Observation]
+      public void should_update_the_value_origin_of_all_non_default_parameters_defined_in_the_alternative()
+      {
+         _parameter1.ValueOrigin.IsIdenticalTo(_newValueOrigin).ShouldBeTrue();
+         _parameter2.ValueOrigin.IsIdenticalTo(_newValueOrigin).ShouldBeFalse();
+         _parameter3.ValueOrigin.IsIdenticalTo(_newValueOrigin).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_update_the_building_block_version()
+      {
+         _command.All().OfType<BuildingBlockChangeCommand>().Each(x=>x.ShouldChangeVersion.ShouldBeTrue());
+      }
+   }
+
+   public class When_updating_the_value_origin_of_a_compound_parameter_group_alternative_that_is_not_used_in_a_simulation : concern_for_CompoundAlternativeTask
+   {
+      private ParameterAlternative _parameterAlternative;
+      private ValueOrigin _newValueOrigin;
+      private IParameter _parameter1;
+      private PKSimMacroCommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _parameter1 = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName("P1");
+         _parameter1.IsDefault = false;
+
+         var alternativeGroup = new ParameterAlternativeGroup().WithName("Gr");
+         _parameterAlternative = new ParameterAlternative { _parameter1};
+         _parameterAlternative.Name = "Alt";
+         alternativeGroup.AddAlternative(_parameterAlternative);
+
+         _newValueOrigin = new ValueOrigin
+         {
+            Method = ValueOriginDeterminationMethods.InVivo,
+            Source = ValueOriginSources.Database
+         };
+
+         var simulation = new IndividualSimulation { Properties = new SimulationProperties() };
+         A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new[] { simulation });
+      }
+
+      protected override void Because()
+      {
+         _command = sut.UpdateValueOrigin(_parameterAlternative, _newValueOrigin) as PKSimMacroCommand;
+      }
+
+      [Observation]
+      public void should_update_the_value_origin_of_all_non_default_parameters_defined_in_the_alternative()
+      {
+         _parameter1.ValueOrigin.IsIdenticalTo(_newValueOrigin).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_not_update_the_building_block_version()
+      {
+         _command.All().OfType<BuildingBlockChangeCommand>().Each(x => x.ShouldChangeVersion.ShouldBeFalse());
+      }
+   }
+
 }

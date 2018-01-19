@@ -21,7 +21,7 @@ namespace PKSim.Core
          sut.Model = A.Fake<IModel>();
          sut.Model.Root = new Container().WithName(sut.Name);
          var drugContainer = new Container().WithName("DRUG");
-         drugContainer.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.TotalDrugMass));
+         drugContainer.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.TOTAL_DRUG_MASS));
 
          sut.Model.Root.Add(drugContainer);
          _liver = new Container().WithName("Liver");

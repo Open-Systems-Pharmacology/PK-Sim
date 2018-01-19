@@ -27,14 +27,14 @@ namespace PKSim.Core
          _valueOrigin = new ValueOrigin
          {
             Description = "Hello",
-            Method = ValueOriginDeterminationMethods.InVitroAssay,
+            Method = ValueOriginDeterminationMethods.InVitro,
             Source = ValueOriginSources.Other
          };
 
          _previousValueOrigin = new ValueOrigin
          {
             Description = "OldValueOrigin",
-            Method = ValueOriginDeterminationMethods.Measurement,
+            Method = ValueOriginDeterminationMethods.InVivo,
             Source = ValueOriginSources.ParameterIdentification
          };
 

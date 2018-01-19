@@ -911,39 +911,37 @@ namespace PKSim.Core
          public static readonly string COMPOUND_TYPE2 = ParameterCompoundType(1);
          public static readonly string COMPOUND_TYPE3 = ParameterCompoundType(NUMBER_OF_PKA_PARAMETERS - 1);
 
-         public const string ApplicationRate = "Application rate";
-         public const string Permeability = "Permeability";
-         public const string SpecificIntestinalPermeability = "Specific intestinal permeability (transcellular)";
+         public const string APPLICATION_RATE = "Application rate";
+         public const string PERMEABILITY = "Permeability";
+         public const string SPECIFIC_INTESTINAL_PERMEABILITY = "Specific intestinal permeability (transcellular)";
          public const string FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE = "Fraction unbound (plasma, reference value)";
          public const string SOLUBILITY_AT_REFERENCE_PH = "Solubility at reference pH";
-         public const string SolubilityGainPerCharge = "Solubility gain per charge";
-         public const string Solubility = "Solubility";
+         public const string SOLUBILITY_GAIN_PER_CHARGE = "Solubility gain per charge";
          public const string REFERENCE_PH = "Reference pH";
-         public const string UndefinedOntogeny = "Undefined";
-         public const string TotalDrugMass = "Total drug mass";
-         public const string Species = "Species";
-         public const string VolumeFractionLipids = "Vf (lipid)";
-         public const string VolumeFractionNeutralLipid_PT = "Vf (neutral lipid)-PT";
-         public const string VolumeFractionNeutralLipid_RR = "Vf (neutral lipid)-RR";
-         public const string VolumeFractionNeutralLipid_WS = "Vf (neutral lipid)-WS";
-         public const string VolumeFractionNeutralPhospholipid_RR = "Vf (neutral phospholipid)-RR";
-         public const string VolumeFractionNeutralPhospholipid_WS = "Vf (neutral phospholipid, plasma)-WS";
-         public const string VolumeFractionPhospholipid_PT = "Vf (phospholipid)-PT";
-         public const string VolumeFractionProteins = "Vf (protein)";
-         public const string VolumeFractionProteins_WS = "Vf (protein)-WS";
-         public const string VolumeFractionWater = "Vf (water)";
-         public const string VolumeFractionWater_PT = "Vf (water)-PT";
-         public const string VolumeFractionWater_WS = "Vf (water)-WS";
-         public const string VolumeFractionWaterExtra_RR = "Vf (extracellular water)-RR";
-         public const string VolumeFractionWaterIntra_RR = "Vf (intracellular water)-RR";
-         public const string VolumeFractionLipidsScaleFactor = "Volume fraction lipids scale factor";
-         public const string VolumeFractionProteinsScaleFactor = "Volume fraction proteins scale factor";
-         public const string VolumeFractionWaterScaleFactor = "Volume fraction water scale factor";
-         public const string FractionIntracellular = "Fraction intracellular";
-         public const string FractionInterstitial = "Fraction interstitial";
-         public const string FractionVascular = "Fraction vascular";
-         public const string NumberOfParticlesFactor = "Number_Of_Particles_Factor";
-         public const string StartParticleRadius = "Particle radius (at t=0)";
+         public const string UNDEFINED_ONTOGENY = "Undefined";
+         public const string TOTAL_DRUG_MASS = "Total drug mass";
+         public const string VOLUME_FRACTION_LIPIDS = "Vf (lipid)";
+         public const string VOLUME_FRACTION_NEUTRAL_LIPID_PT = "Vf (neutral lipid)-PT";
+         public const string VOLUME_FRACTION_NEUTRAL_LIPID_RR = "Vf (neutral lipid)-RR";
+         public const string VOLUME_FRACTION_NEUTRAL_LIPID_WS = "Vf (neutral lipid)-WS";
+         public const string VOLUME_FRACTION_NEUTRAL_PHOSPHOLIPID_RR = "Vf (neutral phospholipid)-RR";
+         public const string VOLUME_FRACTION_NEUTRAL_PHOSPHOLIPID_WS = "Vf (neutral phospholipid, plasma)-WS";
+         public const string VOLUME_FRACTION_PHOSPHOLIPID_PT = "Vf (phospholipid)-PT";
+         public const string VOLUME_FRACTION_PROTEINS = "Vf (protein)";
+         public const string VOLUME_FRACTION_PROTEINS_WS = "Vf (protein)-WS";
+         public const string VOLUME_FRACTION_WATER = "Vf (water)";
+         public const string VOLUME_FRACTION_WATER_PT = "Vf (water)-PT";
+         public const string VOLUME_FRACTION_WATER_WS = "Vf (water)-WS";
+         public const string VOLUME_FRACTION_WATER_EXTRA_RR = "Vf (extracellular water)-RR";
+         public const string VOLUME_FRACTION_WATER_INTRA_RR = "Vf (intracellular water)-RR";
+         public const string VOLUME_FRACTION_LIPIDS_SCALE_FACTOR = "Volume fraction lipids scale factor";
+         public const string VOLUME_FRACTION_PROTEINS_SCALE_FACTOR = "Volume fraction proteins scale factor";
+         public const string VOLUME_FRACTION_WATER_SCALE_FACTOR = "Volume fraction water scale factor";
+         public const string FRACTION_INTRACELLULAR = "Fraction intracellular";
+         public const string FRACTION_INTERSTITIAL = "Fraction interstitial";
+         public const string FRACTION_VASCULAR = "Fraction vascular";
+         public const string NUMBER_OF_PARTICLES_FACTOR = "Number_Of_Particles_Factor";
+         public const string START_PARTICLE_RADIUS = "Particle radius (at t=0)";
          public const string PRECIPITATED_DRUG_SOLUBLE = "Treat precipitated drug as";
          public const string PARTICLE_DISPERSE_SYSTEM = "Type of particle size distribution";
          public const string PARTICLE_SIZE_DISTRIBUTION = "Particle size distribution";
@@ -1068,28 +1066,28 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyList<string> VolumeFractionLipidsParameters = new[]
          {
-            VolumeFractionLipids,
-            VolumeFractionNeutralLipid_PT,
-            VolumeFractionNeutralLipid_RR,
-            VolumeFractionNeutralLipid_WS,
-            VolumeFractionNeutralPhospholipid_RR,
-            VolumeFractionNeutralPhospholipid_WS,
-            VolumeFractionPhospholipid_PT
+            VOLUME_FRACTION_LIPIDS,
+            VOLUME_FRACTION_NEUTRAL_LIPID_PT,
+            VOLUME_FRACTION_NEUTRAL_LIPID_RR,
+            VOLUME_FRACTION_NEUTRAL_LIPID_WS,
+            VOLUME_FRACTION_NEUTRAL_PHOSPHOLIPID_RR,
+            VOLUME_FRACTION_NEUTRAL_PHOSPHOLIPID_WS,
+            VOLUME_FRACTION_PHOSPHOLIPID_PT
          };
 
          public static readonly IReadOnlyList<string> VolumeFractionProteinsParameters = new[]
          {
-            VolumeFractionProteins,
-            VolumeFractionProteins_WS
+            VOLUME_FRACTION_PROTEINS,
+            VOLUME_FRACTION_PROTEINS_WS
          };
 
          public static readonly IReadOnlyList<string> VolumeFractionWaterParameters = new[]
          {
-            VolumeFractionWater,
-            VolumeFractionWater_PT,
-            VolumeFractionWater_WS,
-            VolumeFractionWaterExtra_RR,
-            VolumeFractionWaterIntra_RR
+            VOLUME_FRACTION_WATER,
+            VOLUME_FRACTION_WATER_PT,
+            VOLUME_FRACTION_WATER_WS,
+            VOLUME_FRACTION_WATER_EXTRA_RR,
+            VOLUME_FRACTION_WATER_INTRA_RR
          };
 
          public static bool IsVolumeFraction(string parameterName)
@@ -1161,6 +1159,23 @@ namespace PKSim.Core
             PLASMA_PROTEIN_BINDING_PARTNER
          };
 
+         public static readonly IReadOnlyCollection<string> AllParametersWithLockedValueOriginInSimulation = new List<string>(Halogens)
+         {
+            Constants.Parameters.MOL_WEIGHT,
+            EFFECTIVE_MOLECULAR_WEIGHT,
+            COMPOUND_TYPE1,
+            COMPOUND_TYPE2,
+            COMPOUND_TYPE3,
+            PARAMETER_PKA1,
+            PARAMETER_PKA2,
+            PARAMETER_PKA3,
+            REFERENCE_PH,
+            SOLUBILITY_AT_REFERENCE_PH,
+            SOLUBILITY_GAIN_PER_CHARGE,
+            Constants.Parameters.START_TIME,
+            DOSE,
+         };
+
          public static string NormParameterFor(string parameter)
          {
             return $"{parameter}{NORM_SUFFIX}";
@@ -1179,23 +1194,23 @@ namespace PKSim.Core
 
       public static class SimulationResults
       {
-         public const string IndividualId = "IndividualId";
-         public const string Time = "Time";
-         public const string QuantityPath = "Quantity Path";
-         public const string Parameter = "Parameter";
-         public const string Value = "Value";
-         public const string Unit = "Unit";
+         public const string INDIVIDUAL_ID = "IndividualId";
+         public const string TIME = "Time";
+         public const string QUANTITY_PATH = "Quantity Path";
+         public const string PARAMETER = "Parameter";
+         public const string VALUE = "Value";
+         public const string UNIT = "Unit";
       }
 
       public static class Population
       {
-         public const string OutputDefinitionExport = "_Outputs";
-         public const string AllGender = "AllGender";
+         public const string OUTPUT_DEFINITION_EXPORT = "_Outputs";
+         public const string ALL_GENDER = "AllGender";
          public const string ICRP = "European_ICRP_2002";
-         public const string Preterm = "Preterm";
-         public const string TableParameterExport = "_TableParameters";
-         public const string AgingDataTableName = "AgingData";
-         public const string Pregnant = "Pregnant";
+         public const string PRETERM = "Preterm";
+         public const string TABLE_PARAMETER_EXPORT = "_TableParameters";
+         public const string AGING_DATA_TABLE_NAME = "AgingData";
+         public const string PREGNANT = "Pregnant";
       }
 
       public static class Process
@@ -1279,15 +1294,15 @@ namespace PKSim.Core
 
       public static class Species
       {
-         public static readonly string Human = "Human";
-         public static readonly string Rat = "Rat";
-         public static readonly string Mouse = "Mouse";
-         public static readonly string Rabbit = "Rabbit";
+         public static readonly string HUMAN = "Human";
+         public static readonly string RAT = "Rat";
+         public static readonly string MOUSE = "Mouse";
+         public static readonly string RABBIT = "Rabbit";
 
          public static IEnumerable<string> SpeciesUsingVenousBlood = new List<string>
          {
-            Mouse,
-            Rat,
+            MOUSE,
+            RAT,
          };
       }
 
@@ -1297,7 +1312,7 @@ namespace PKSim.Core
          public static readonly string APPLICATION = "Application";
          public static readonly string APPLICATION_ROOT = "ApplicationRoot";
          public static readonly string MOLECULE = "MOLECULE";
-         public static readonly string LumenSegment = "LumenSegment";
+         public static readonly string LUMEN_SEGMENT = "LumenSegment";
 
          public static string ParticlesApplicationWithNBins(int binIndex)
          {
@@ -1309,7 +1324,7 @@ namespace PKSim.Core
       {
          public static readonly int BUILDING_BLOCK_SELECTION_SIZE = 32;
          public static readonly int PARAMETER_WITDH = 110;
-         public static readonly int DataSourceWidth = 180;
+         public static readonly int DATA_SOURCE_WIDTH = 180;
          public const int SIMULATION_SETTINGS_WITDH = 750;
          public const int SIMULATION_SETTINGS_HEIGHT = 650;
          public const int SIMULATION_VIEW_WITDH = 700;

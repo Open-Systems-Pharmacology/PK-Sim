@@ -104,12 +104,12 @@ namespace PKSim.Core.Model
       IFormula DrugMassFormulaFor(IFormulaCache formulaCache);
 
       /// <summary>
-      ///    Returns the Dose Formula as a function of the DosePerBodyWeight Parmaeter;
+      ///    Returns the Dose Formula as a function of the DosePerBodyWeight parameter;
       /// </summary>
       IFormula DoseFromDosePerBodyWeightFor(IFormulaCache formulaCache);
 
       /// <summary>
-      ///    Returns the Dose Formula as a function of the DosePerBodyWeight Parmaeter;
+      ///    Returns the Dose Formula as a function of the DosePerBodyWeight parameter;
       /// </summary>
       IFormula DoseFromDosePerBodySurfaceAreaFor(IFormulaCache formulaCache);
    }

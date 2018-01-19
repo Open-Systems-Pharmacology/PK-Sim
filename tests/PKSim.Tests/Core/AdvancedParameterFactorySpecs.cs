@@ -29,7 +29,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_creating_a_uniform_advanced_parameter_for_a_parmaeter_that_has_no_max_values : concern_for_AdvancedParameterFactory
+   public class When_creating_a_uniform_advanced_parameter_for_a_parameter_that_has_no_max_values : concern_for_AdvancedParameterFactory
    {
       private AdvancedParameter _advancedParameter;
       private IParameter _parameter;

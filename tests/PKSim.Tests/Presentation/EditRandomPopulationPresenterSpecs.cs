@@ -111,7 +111,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_edit_random_population_presenter_is_being_notified_that_an_advanced_parmaeter_has_changed_for_a_population_that_is_not_the_one_being_edited : concern_for_EditRandomPopulationPresenter
+   public class When_the_edit_random_population_presenter_is_being_notified_that_an_advanced_parameter_has_changed_for_a_population_that_is_not_the_one_being_edited : concern_for_EditRandomPopulationPresenter
    {
       protected override void Context()
       {
@@ -131,7 +131,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_edit_random_population_presenter_is_being_notified_that_an_advanced_parmaeter_was_selected_for_a_population_that_is_not_the_one_being_edited : concern_for_EditRandomPopulationPresenter
+   public class When_the_edit_random_population_presenter_is_being_notified_that_an_advanced_parameter_was_selected_for_a_population_that_is_not_the_one_being_edited : concern_for_EditRandomPopulationPresenter
    {
       protected override void Context()
       {

@@ -27,7 +27,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual DataTable ToDataTable()
       {
-         var dataTable = new DataTable(CoreConstants.Population.AgingDataTableName);
+         var dataTable = new DataTable(CoreConstants.Population.AGING_DATA_TABLE_NAME);
 
          //Create one column for the parameter path
          dataTable.AddColumn<int>(Constants.Population.INDIVIDUAL_ID_COLUMN);

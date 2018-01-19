@@ -93,7 +93,7 @@ namespace PKSim.ProjectConverter.v5_3
          var simulation = First<Simulation>();
          var applications = simulation.Model.Root.Container(Constants.APPLICATIONS);
          applications.Parameter(ConverterConstants.Parameter.TotalDrugMass).ShouldBeNull();
-         applications.Parameter(CoreConstants.Parameter.TotalDrugMass).ShouldBeNull();
+         applications.Parameter(CoreConstants.Parameter.TOTAL_DRUG_MASS).ShouldBeNull();
       }
 
       [Observation]
@@ -111,7 +111,7 @@ namespace PKSim.ProjectConverter.v5_3
          var compound = First<Compound>();
          var observer = simulation.All<IObserver>().FindByName(CoreConstants.Observer.FRACTION_EXCRETED_TO_BILE);
          var objectPath = observer.Formula.ObjectPaths.First(x => x.Alias == ConverterConstants.Parameter.TotalDrugMass);
-         objectPath.ShouldOnlyContainInOrder(simulation.Name, compound.Name, CoreConstants.Parameter.TotalDrugMass);
+         objectPath.ShouldOnlyContainInOrder(simulation.Name, compound.Name, CoreConstants.Parameter.TOTAL_DRUG_MASS);
       }
    }
 

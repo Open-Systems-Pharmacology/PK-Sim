@@ -34,7 +34,7 @@ namespace PKSim.Matlab
          base.Context();
          _settings = new PopulationSettings
          {
-            Species = CoreConstants.Species.Human,
+            Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
             MinAge = 0,
             MaxAge = 80,
@@ -67,8 +67,8 @@ namespace PKSim.Matlab
          base.Context();
          _settings = new PopulationSettings
          {
-            Species = CoreConstants.Species.Human,
-            Population = CoreConstants.Population.Preterm,
+            Species = CoreConstants.Species.HUMAN,
+            Population = CoreConstants.Population.PRETERM,
             MinAge = 0,
             MaxAge = 80,
             MinGestationalAge = 30,

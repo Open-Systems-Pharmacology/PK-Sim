@@ -167,6 +167,11 @@ namespace PKSim.UI.Views.Compounds
          _popupControl.FillWith(view);
       }
 
+      public void AddValueOriginView(IView view)
+      {
+         AddViewTo(layoutItemValueOrigin, view);
+      }
+
       public void RefreshData()
       {
          gridControl.RefreshDataSource();
@@ -176,12 +181,8 @@ namespace PKSim.UI.Views.Compounds
 
       public void AdjustHeight()
       {
-         HeightChanged(this, new ViewResizedEventArgs(calculateHeight()));
-      }
-
-      private int calculateHeight()
-      {
-         return _gridView.OptimalHeight;
+         layoutItemMolWeight.AdjustControlHeight(_gridView.OptimalHeight);
+         HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
       public void Repaint()
@@ -189,10 +190,7 @@ namespace PKSim.UI.Views.Compounds
          _gridView.LayoutChanged();
       }
 
-      public int OptimalHeight
-      {
-         get { return calculateHeight(); }
-      }
+      public int OptimalHeight => layoutControlGroup.Height;
 
       private void onShowingEditor(object sender, CancelEventArgs e)
       {

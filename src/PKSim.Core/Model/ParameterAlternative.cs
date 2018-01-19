@@ -11,14 +11,13 @@ namespace PKSim.Core.Model
    public class ParameterAlternative : Container
    {
       private bool _isDefault;
+      public virtual string GroupName => ParentParameterGroup.Name;
 
       public virtual bool IsDefault
       {
          get => _isDefault;
          set => SetProperty(ref _isDefault, value);
       }
-
-      public virtual string GroupName => ParentParameterGroup.Name;
 
       public virtual ParameterAlternativeGroup ParentParameterGroup => ParentContainer as ParameterAlternativeGroup;
 
@@ -30,6 +29,8 @@ namespace PKSim.Core.Model
          IsDefault = sourceAlternative.IsDefault;
       }
 
-      public virtual bool IsCalculated => this.IsNamed(PKSimConstants.UI.CalculatedAlernative) && CoreConstants.Groups.GroupsWithCalculatedAlternative.Contains(GroupName);
+      public virtual bool IsCalculated =>
+         this.IsNamed(PKSimConstants.UI.CalculatedAlernative) &&
+         CoreConstants.Groups.GroupsWithCalculatedAlternative.Contains(GroupName);
    }
 }

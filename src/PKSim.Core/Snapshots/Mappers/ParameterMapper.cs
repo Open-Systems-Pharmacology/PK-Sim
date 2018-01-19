@@ -17,12 +17,14 @@ namespace PKSim.Core.Snapshots.Mappers
    public class ParameterMapper : ObjectBaseSnapshotMapperBase<IParameter, SnapshotParameter, IParameter>
    {
       private readonly TableFormulaMapper _tableFormulaMapper;
+      private readonly ValueOriginMapper _valueOriginMapper;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly ILogger _logger;
 
-      public ParameterMapper(TableFormulaMapper tableFormulaMapper, IEntityPathResolver entityPathResolver, ILogger logger)
+      public ParameterMapper(TableFormulaMapper tableFormulaMapper, ValueOriginMapper valueOriginMapper, IEntityPathResolver entityPathResolver, ILogger logger)
       {
          _tableFormulaMapper = tableFormulaMapper;
+         _valueOriginMapper = valueOriginMapper;
          _entityPathResolver = entityPathResolver;
          _logger = logger;
       }
@@ -35,9 +37,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public virtual async Task UpdateSnapshotFromParameter(SnapshotParameter snapshot, IParameter parameter)
       {
          updateParameterValue(snapshot, parameter.Value, parameter.DisplayUnit.Name, parameter.Dimension);
-         snapshot.Reference = SnapshotValueFor(parameter.ValueOrigin.Description);
-         snapshot.Source = SnapshotValueFor(parameter.ValueOrigin.Source.Id, ValueOriginSourceId.Undefined);
-         snapshot.Method = SnapshotValueFor(parameter.ValueOrigin.Method.Id, ValueOriginDeterminationMethodId.Undefined);
+         snapshot.ValueOrigin = await _valueOriginMapper.MapToSnapshot(parameter.ValueOrigin);
          snapshot.TableFormula = await mapFormula(parameter.Formula);
       }
 
@@ -68,14 +68,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<IParameter> MapToModel(SnapshotParameter snapshot, IParameter parameter)
       {
-         var snapshotValueOrigin = new ValueOrigin
-         {
-            Source = ValueOriginSources.ById(ModelValueFor(snapshot.Source, ValueOriginSourceId.Undefined)),
-            Method = ValueOriginDeterminationMethods.ById(ModelValueFor(snapshot.Method, ValueOriginDeterminationMethodId.Undefined)),
-            Description = ModelValueFor(snapshot.Reference)
-         };
-
-         parameter.ValueOrigin.UpdateFrom(snapshotValueOrigin);
+         _valueOriginMapper.UpdateValueOrigin(parameter.ValueOrigin, snapshot.ValueOrigin);
 
          //only update formula if required
          if (snapshot.TableFormula != null)

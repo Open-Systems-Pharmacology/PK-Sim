@@ -25,6 +25,7 @@ namespace PKSim.Core.Services
       private readonly IPKSimMoleculeStartValuesCreator _moleculeStartValuesCreator;
       private readonly IMoleculeCalculationRetriever _moleculeCalculationRetriever;
       private readonly IDistributedParameterToTableParameterConverter _distributedParameterToTableParameterConverter;
+      private readonly IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
       private readonly IModelObserverQuery _modelObserverQuery;
       private readonly IModelPassiveTransportQuery _modelPassiveTransportQuery;
       private readonly IMoleculesAndReactionsCreator _moleculesAndReactionsCreator;
@@ -35,10 +36,12 @@ namespace PKSim.Core.Services
                                     IModelPassiveTransportQuery modelPassiveTransportQuery, IPKSimParameterStartValuesCreator parameterStartValuesCreator,
                                     IMoleculesAndReactionsCreator moleculesAndReactionsCreator, IEventBuildingBlockCreator eventBuildingBlockCreator,
                                     IPKSimMoleculeStartValuesCreator moleculeStartValuesCreator, IMoleculeCalculationRetriever moleculeCalculationRetriever,
-                                    IDistributedParameterToTableParameterConverter distributedParameterToTableParameterConverter)
+                                    IDistributedParameterToTableParameterConverter distributedParameterToTableParameterConverter,
+                                    IParameterDefaultStateUpdater parameterDefaultStateUpdater)
       {
          _moleculeCalculationRetriever = moleculeCalculationRetriever;
          _distributedParameterToTableParameterConverter = distributedParameterToTableParameterConverter;
+         _parameterDefaultStateUpdater = parameterDefaultStateUpdater;
          _spatialStructureFactory = spatialStructureFactory;
          _modelObserverQuery = modelObserverQuery;
          _modelPassiveTransportQuery = modelPassiveTransportQuery;
@@ -56,6 +59,7 @@ namespace PKSim.Core.Services
 
          //STEP1: Create spatial structure
          buildConfiguration.SpatialStructure = _spatialStructureFactory.CreateFor(individual, simulation);
+         _parameterDefaultStateUpdater.UpdateDefaultFor(buildConfiguration.SpatialStructure);
 
          //STEP2: add used calculation method to the build configuration
          _moleculeCalculationRetriever.AllMoleculeCalculationMethodsUsedBy(simulation).Each(buildConfiguration.AddCalculationMethod);
@@ -69,6 +73,7 @@ namespace PKSim.Core.Services
 
          //STEP5 Add Application, Formulation and events
          buildConfiguration.EventGroups = _eventBuildingBlockCreator.CreateFor(simulation);
+         _parameterDefaultStateUpdater.UpdateDefaultFor(buildConfiguration.EventGroups);
 
          //STEP6: Add Observers
          buildConfiguration.Observers = _modelObserverQuery.AllObserversFor(buildConfiguration.Molecules, simulation);

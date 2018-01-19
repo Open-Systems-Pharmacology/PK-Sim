@@ -26,14 +26,12 @@ namespace PKSim.Core.Commands
       {
          _oldValue = retrieveValue();
 
-
          if (_parameter.IsFixedValue && _fixedValueSetHere)
          {
             //Inverse command need to reset the value as it was before the execution
             var bbParameter = OriginParameterFor(_parameter, context);
             ResetParameter(_parameter);
             ResetParameter(bbParameter);
-            UpdateValueOriginInParameters(_parameter, bbParameter);
             _fixedValueSetHere = false;
          }
          else
@@ -74,7 +72,6 @@ namespace PKSim.Core.Commands
 
          parameter.IsFixedValue = true;
       }
-
 
       protected virtual void ResetParameter(IParameter parameter)
       {

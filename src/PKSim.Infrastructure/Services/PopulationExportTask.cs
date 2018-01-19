@@ -214,8 +214,8 @@ namespace PKSim.Infrastructure.Services
 
          var fileName = populationSimulation.Name;
          var modelFileFullPath = Path.Combine(populationFolder, $"{fileName}.xml");
-         var agingFileFullPath = Path.Combine(populationFolder, $"{fileName}{CoreConstants.Population.TableParameterExport}.csv");
-         var outputDefinitionFileFullPath = Path.Combine(populationFolder, $"{fileName}{CoreConstants.Population.OutputDefinitionExport}.csv");
+         var agingFileFullPath = Path.Combine(populationFolder, $"{fileName}{CoreConstants.Population.TABLE_PARAMETER_EXPORT}.csv");
+         var outputDefinitionFileFullPath = Path.Combine(populationFolder, $"{fileName}{CoreConstants.Population.OUTPUT_DEFINITION_EXPORT}.csv");
 
          //Model
          _simModelExporter.Export(_modelCoreSimulationMapper.MapFrom(populationSimulation, shouldCloneModel: false), modelFileFullPath);

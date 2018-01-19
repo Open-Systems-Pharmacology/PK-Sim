@@ -55,8 +55,8 @@ namespace PKSim.Core.Snapshots.Services
          var compound = new Compound
          {
             Name = name,
-            Lipophilicity = new[] {createAlternative(CoreConstants.Groups.COMPOUND_LIPOPHILICITY, CoreConstants.Species.Human, createParameter(CoreConstants.Parameter.LIPOPHILICITY, lipophilicity))},
-            FractionUnbound = new[] {createAlternative(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, CoreConstants.Species.Human, createParameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE, fractionUnbound))},
+            Lipophilicity = new[] {createAlternative(CoreConstants.Groups.COMPOUND_LIPOPHILICITY, CoreConstants.Species.HUMAN, createParameter(CoreConstants.Parameter.LIPOPHILICITY, lipophilicity))},
+            FractionUnbound = new[] {createAlternative(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, CoreConstants.Species.HUMAN, createParameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE, fractionUnbound))},
             Solubility = new[]
             {
                createAlternative(CoreConstants.Groups.COMPOUND_SOLUBILITY, null,

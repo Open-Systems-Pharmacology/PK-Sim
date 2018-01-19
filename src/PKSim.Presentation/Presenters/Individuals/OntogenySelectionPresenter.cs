@@ -48,7 +48,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          : base(view)
       {
          _ontogenyTask = ontogenyTask;
-         _allOntogenies = ontogenyRepository.AllFor(CoreConstants.Species.Human);
+         _allOntogenies = ontogenyRepository.AllFor(CoreConstants.Species.HUMAN);
       }
 
       public void Edit(IndividualMolecule individualMolecule, TSimulationSubject simulationSubject)

@@ -47,7 +47,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_renamed_the_object_path_referencing_all_sub_parameters()
       {
-         var totalDrugMass = _simulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameter.TotalDrugMass)).First();
+         var totalDrugMass = _simulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameter.TOTAL_DRUG_MASS)).First();
          totalDrugMass.Formula.ObjectPaths.Each(path => path.PathAsString.Contains(_oldName).ShouldBeFalse());
          totalDrugMass.Formula.ObjectPaths.Any(path => path.PathAsString.Contains(_formulation.Name)).ShouldBeTrue();
       }

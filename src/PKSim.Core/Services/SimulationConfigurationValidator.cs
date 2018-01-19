@@ -47,7 +47,7 @@ namespace PKSim.Core.Services
          if (!speciesPopulation.IsBodySurfaceAreaDependent && schemaItems.Any(x => x.DoseIsPerBodySurfaceArea()))
             throw new InvalidSimulationConfigurationException(PKSimConstants.Error.DosePerBodySurfaceAreaProtocolCannotBeUsedWithSpeciesPopulation(speciesPopulation.DisplayName));
 
-         if(speciesPopulation.IsNamed(CoreConstants.Population.Pregnant))
+         if(speciesPopulation.IsNamed(CoreConstants.Population.PREGNANT))
             throw new InvalidSimulationConfigurationException(PKSimConstants.Error.PregnantPopulationCanOnlyBeUsedWithMoBiModel(speciesPopulation.DisplayName));
 
       }

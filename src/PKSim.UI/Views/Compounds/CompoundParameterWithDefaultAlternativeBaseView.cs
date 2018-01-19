@@ -1,29 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.Core.Domain;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI;
+using OSPSuite.UI.Binders;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Extensions;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Views;
-using UIConstants = OSPSuite.UI.UIConstants;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -32,6 +33,7 @@ namespace PKSim.UI.Views.Compounds
    {
       private readonly IToolTipCreator _toolTipCreator;
       protected readonly IImageListRetriever _imageListRetriever;
+      private readonly ValueOriginBinder<TParameterAlternativeDTO> _valueOriginBinder;
       protected ICompoundParameterGroupWithAlternativePresenter _presenter;
       private IGridViewBoundColumn _colName;
       private readonly UxRepositoryItemCheckEdit _isDefaultRepository;
@@ -49,10 +51,11 @@ namespace PKSim.UI.Views.Compounds
          InitializeComponent();
       }
 
-      public CompoundParameterWithDefaultAlternativeBaseView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever) : this()
+      public CompoundParameterWithDefaultAlternativeBaseView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<TParameterAlternativeDTO> valueOriginBinder) : this()
       {
          _toolTipCreator = toolTipCreator;
          _imageListRetriever = imageListRetriever;
+         _valueOriginBinder = valueOriginBinder;
          _gridView.HiddenEditor += (o, e) => OnEvent(hideEditor);
          _gridView.AllowsFiltering = false;
          _gridView.ShowColumnChooser = false;
@@ -62,9 +65,6 @@ namespace PKSim.UI.Views.Compounds
          _gridControl.ToolTipController.GetActiveObjectInfo += (o, e) => OnEvent(onToolTipControllerGetActiveObjectInfo, o, e);
          _nameRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Ellipsis) {TextEditStyle = TextEditStyles.DisableTextEditor};
          _nameRepository.Buttons[0].ToolTip = PKSimConstants.UI.Rename;
-         _nameRepository.AddButton(ButtonPredefines.Glyph);
-         _nameRepository.Buttons[1].ToolTip = PKSimConstants.UI.EditValueDescription;
-         _nameRepository.Buttons[1].Image = ApplicationIcons.Description.ToImage(IconSizes.Size16x16);
          _gridViewBinder = new GridViewBinder<TParameterAlternativeDTO>(_gridView) {BindingMode = BindingMode.OneWay};
          InitializeWithGrid(_gridView);
       }
@@ -81,7 +81,9 @@ namespace PKSim.UI.Views.Compounds
             .WithRepository(dto => _nameRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
-         _nameRepository.ButtonClick += (o, e) => OnEvent(() => nameButtonsClick(e.Button, _gridViewBinder.FocusedElement));
+         _nameRepository.ButtonClick += (o, e) => OnEvent(() => nameButtonsClick(_gridViewBinder.FocusedElement));
+
+         _valueOriginBinder.InitializeBinding(_gridViewBinder, updateValueOrigin);
 
          var colDefault = _gridViewBinder.Bind(x => x.IsDefault)
             .WithCaption(PKSimConstants.UI.IsDefault)
@@ -104,18 +106,17 @@ namespace PKSim.UI.Views.Compounds
          _colName.XtraColumn.VisibleIndex = 0;
       }
 
-      private void nameButtonsClick(EditorButton button, TParameterAlternativeDTO parameterAlternativeDTO)
+      private void updateValueOrigin(TParameterAlternativeDTO parameterAlternativeDTO, ValueOrigin newValueOrigin)
       {
-         if (button.Index == 0)
-            _presenter.RenameAlternative(parameterAlternativeDTO);
-         else
-            _presenter.EditValueDescriptionFor(parameterAlternativeDTO);
+         _presenter.UpdateValueOriginFor(parameterAlternativeDTO, newValueOrigin);
       }
 
-      public override bool HasError
+      private void nameButtonsClick(TParameterAlternativeDTO parameterAlternativeDTO)
       {
-         get { return _gridViewBinder.HasError; }
+         _presenter.RenameAlternative(parameterAlternativeDTO);
       }
+
+      public override bool HasError => _gridViewBinder.HasError;
 
       public virtual void BindTo(IReadOnlyCollection<TParameterAlternativeDTO> parameterAlternativeDtos)
       {
@@ -170,10 +171,7 @@ namespace PKSim.UI.Views.Compounds
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
-      public virtual int OptimalHeight
-      {
-         get { return _gridView.OptimalHeight + layoutItemGrid.Padding.Height; }
-      }
+      public virtual int OptimalHeight => _gridView.OptimalHeight + layoutItemGrid.Padding.Height;
 
       public virtual void Repaint()
       {

@@ -28,19 +28,13 @@ namespace PKSim.Presentation.Presenters.Events
          _view.Display();
       }
 
-      public override object Subject
-      {
-         get { return _event; }
-      }
+      public override object Subject => _event;
 
       protected override void UpdateCaption()
       {
          _view.Caption = PKSimConstants.UI.EditEvent(_event.Name);
       }
 
-      private IEventSettingsPresenter eventSettingsPresenter
-      {
-         get { return PresenterAt(EventItems.Settings); }
-      }
+      private IEventSettingsPresenter eventSettingsPresenter => PresenterAt(EventItems.Settings);
    }
 }

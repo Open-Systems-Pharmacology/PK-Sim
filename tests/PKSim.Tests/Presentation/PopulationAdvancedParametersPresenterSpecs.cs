@@ -120,7 +120,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_retrieve_the_advanced_parmaeters_from_the_population_and_display_them_in_the_advanced_parameters_section()
+      public void should_retrieve_the_advanced_parameters_from_the_population_and_display_them_in_the_advanced_parameters_section()
       {
          A.CallTo(() => _advancedParameterGroupsPresenter.AddParameters(A<IEnumerable<IParameter>>._, true)).MustHaveHappened();
       }
@@ -410,7 +410,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_remove_the_advanced_parameter_selection_if_the_parmaeter_was_selected()
+      public void should_remove_the_advanced_parameter_selection_if_the_parameter_was_selected()
       {
          A.CallTo(() => _advancedParameterPresenter.RemoveSelectionFor(_advancedParameter)).MustHaveHappened();
       }

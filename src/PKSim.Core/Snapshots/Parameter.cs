@@ -7,9 +7,7 @@ namespace PKSim.Core.Snapshots
    {
       public double? Value { get; set; }
       public string Unit { get; set; }
-      public ValueOriginSourceId? Source { get; set; }
-      public ValueOriginDeterminationMethodId? Method { get; set; }
-      public string Reference { get; set; }
+      public ValueOrigin ValueOrigin { get; set; }
       public TableFormula TableFormula { get; set; }
    }
 

@@ -11,7 +11,7 @@ namespace PKSim.Core.Model
 
       public UserDefinedOntogeny()
       {
-         SpeciesName = CoreConstants.Species.Human;
+         SpeciesName = CoreConstants.Species.HUMAN;
       }
 
       public override string DisplayName

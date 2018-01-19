@@ -15,6 +15,7 @@ using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Extensions;
 
 namespace PKSim.UI.Views.Compounds
@@ -28,7 +29,8 @@ namespace PKSim.UI.Views.Compounds
       private readonly PopupContainerControl _popupControl = new PopupContainerControl();
       private readonly RepositoryItemPopupContainerEdit _repositoryItemPopupContainerEdit = new RepositoryItemPopupContainerEdit();
 
-      public SolubilityGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever) : base(toolTipCreator, imageListRetriever)
+      public SolubilityGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<SolubilityAlternativeDTO> valueOriginBinder) : 
+         base(toolTipCreator, imageListRetriever, valueOriginBinder)
       {
          InitializeComponent();
          _repositoryItemPopupContainerEdit.Buttons[0].Kind = ButtonPredefines.Combo;

@@ -242,7 +242,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             {
                setParameterValue(alternative.Parameter(CoreConstants.Parameter.REFERENCE_PH), row, PKSimConstants.UI.RefpH);
                setParameterValue(alternative.Parameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH), row, PKSimConstants.UI.RefSolubility);
-               setParameterValue(alternative.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge), row, PKSimConstants.UI.SolubilityGainPerCharge);
+               setParameterValue(alternative.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE), row, PKSimConstants.UI.SolubilityGainPerCharge);
             };
 
          return createAlternatives(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY, createColumns, fillColumns, PKSimConstants.Reporting.SolubilityDescription);
@@ -251,13 +251,13 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       private IEnumerable<object> intestinalPermeabilityAlternatives(Compound compound)
       {
          return calculatedAlternatives(compound, CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY, PKSimConstants.UI.Permeability,
-                                       CoreConstants.Parameter.SpecificIntestinalPermeability, PKSimConstants.Reporting.IntestinalPermeabilityDescription, x => x.IntestinalPermeabilityValuesFor);
+                                       CoreConstants.Parameter.SPECIFIC_INTESTINAL_PERMEABILITY, PKSimConstants.Reporting.IntestinalPermeabilityDescription, x => x.IntestinalPermeabilityValuesFor);
       }
 
       private IEnumerable<object> permeabilityAlternatives(Compound compound)
       {
          return calculatedAlternatives(compound, CoreConstants.Groups.COMPOUND_PERMEABILITY, PKSimConstants.UI.Permeability,
-                                       CoreConstants.Parameter.Permeability, PKSimConstants.Reporting.PermeabilityDescription, x => x.PermeabilityValuesFor);
+                                       CoreConstants.Parameter.PERMEABILITY, PKSimConstants.Reporting.PermeabilityDescription, x => x.PermeabilityValuesFor);
       }
 
       private IEnumerable<object> fractionUnboundAlternatives(Compound compound)

@@ -114,10 +114,10 @@ namespace PKSim.Core.Services
       }
 
       private void updateKcatLikeFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, 
-         string activatedMolecule, Simulation simulation, IFormulaCache formulaCache, string kcatLikeParmaeterName)
+         string activatedMolecule, Simulation simulation, IFormulaCache formulaCache, string kcatLikeParameterName)
       {
          updateInteractionFactor(processParameterContainer, moleculeName, allUpdatingKinetics, formulaCache,
-            kcatLikeParmaeterName, kcatLikeFactor =>
+            kcatLikeParameterName, kcatLikeFactor =>
             {
                var formulaStringDenominator = new List<string>();
 

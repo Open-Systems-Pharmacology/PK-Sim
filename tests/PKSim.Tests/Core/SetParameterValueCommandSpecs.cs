@@ -66,42 +66,6 @@ namespace PKSim.Core
       }
    }
 
-   public class when_executing_the_set_parameter_value_command_for_a_default_parameter_that_has_unchanged_method_and_source : concern_for_SetParameterValueCommand
-   {
-      protected override void Context()
-      {
-         base.Context();
-         _parameter.ValueOrigin.Default = true;
-         _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Undefined;
-         _parameter.ValueOrigin.Source = ValueOriginSources.Undefined;
-      }
-
-      protected override void Because()
-      {
-         sut.Execute(_executionContext);
-      }
-
-      [Observation]
-      public void should_set_the_default_flag_to_false()
-      {
-         _parameter.ValueOrigin.Default.ShouldBeFalse();
-      }
-
-
-      [Observation]
-      public void should_set_the_value_origin_method_to_undefined()
-      {
-         _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.Undefined);
-      }
-
-      [Observation]
-      public void should_set_the_value_origin_source_to_unknown()
-      {
-         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Unknown);
-      }
-
-   }
-
    public class When_executing_the_set_parameter_value_command_for_a_constant_parameter_of_type_simulation : concern_for_SetParameterValueCommand
    {
       protected override void Context()
@@ -197,86 +161,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_executing_the_reverse_command_of_a_set_parameter_value_inverse_command_for_a_parameter_that_is_a_default_parameter_with_changed_method_or_source :
-      concern_for_SetParameterValueCommand
-   {
-      private IReversibleCommand<IExecutionContext> _reverseCommand;
-
-      protected override void Context()
-      {
-         base.Context();
-         _parameter.ValueOrigin.Default = true;
-         _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.InVitroAssay;
-         _parameter.ValueOrigin.Source = ValueOriginSources.Internet;
-
-         sut.Execute(_executionContext); //=> Default should be false and value origin set to unknown
-         //Inverse Command_should reset the value origin to default
-         var command = sut.InvokeInverse(_executionContext);
-
-         //Inverse of Inverse command = first command
-         command.RestoreExecutionData(_executionContext);
-         _reverseCommand = command.InverseCommand(_executionContext);
-      }
-
-      protected override void Because()
-      {
-         _reverseCommand.Execute(_executionContext);
-      }
-
-      [Observation]
-      public void should_mark_the_parameter_as_set_by_the_user()
-      {
-         _parameter.ValueOrigin.Default.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_not_have_updated_the_value_method_and_source()
-      {
-         _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.InVitroAssay); ;
-         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Internet); 
-      }
-   }
-
-   public class When_executing_the_reverse_command_of_a_set_parameter_value_inverse_command_for_a_parameter_that_is_a_default_parameter_with_undefined_method_and_source :
-      concern_for_SetParameterValueCommand
-   {
-      private IReversibleCommand<IExecutionContext> _reverseCommand;
-
-      protected override void Context()
-      {
-         base.Context();
-         _parameter.ValueOrigin.Default = true;
-         _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Undefined;
-         _parameter.ValueOrigin.Source = ValueOriginSources.Undefined;
-
-         sut.Execute(_executionContext); //=> Default should be false and value origin set to unknown
-         //Inverse Command_should reset the value origin to default
-         var command = sut.InvokeInverse(_executionContext);
-
-         //Inverse of Inverse command = first command
-         command.RestoreExecutionData(_executionContext);
-         _reverseCommand = command.InverseCommand(_executionContext);
-      }
-
-      protected override void Because()
-      {
-         _reverseCommand.Execute(_executionContext);
-      }
-
-      [Observation]
-      public void should_mark_the_parameter_as_set_by_the_user()
-      {
-         _parameter.ValueOrigin.Default.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_have_updated_the_value_method_and_source()
-      {
-         _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.Undefined); ;
-         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Unknown);
-      }
-   }
-
 
    public class When_setting_the_value_for_a_parameter_whose_formula_cannot_be_evaluated : concern_for_SetParameterValueCommand
    {
@@ -342,7 +226,7 @@ namespace PKSim.Core
             .WithDimension(_dimension)
             .WithName("P1");
 
-         _parameter.ValueOrigin.Default = false;
+         _parameter.IsDefault = false;
       }
 
       protected override void Because()
@@ -353,7 +237,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_reset_the_flag_to_default_when_inversing_the_command()
       {
-         _parameter.ValueOrigin.Default.ShouldBeFalse();
+         _parameter.IsDefault.ShouldBeFalse();
       }
    }
 
@@ -367,7 +251,7 @@ namespace PKSim.Core
             .WithDimension(_dimension)
             .WithName("P1");
 
-         _parameter.ValueOrigin.Default = true;
+         _parameter.IsDefault = true;
          _parameter.ValueOrigin.Source = ValueOriginSources.Database;
          _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.ManualFit;
       }
@@ -380,7 +264,7 @@ namespace PKSim.Core
       [Observation]
       public void should_reset_the_default_flag_to_true()
       {
-         _parameter.ValueOrigin.Default.ShouldBeTrue();
+         _parameter.IsDefault.ShouldBeTrue();
          _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Database);
          _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.ManualFit);
       }

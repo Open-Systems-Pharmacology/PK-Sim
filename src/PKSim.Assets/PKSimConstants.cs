@@ -386,6 +386,11 @@ namespace PKSim.Assets
          {
             return $"Extracting individuals from population '{populationName}'";
          }
+
+         public static string SetParameterDefaultStateFrom(string parameterDisplayName, bool oldIsDefault, bool newIsDefault)
+         {
+            return $"Updating default state for '{parameterDisplayName}' from {oldIsDefault} to {newIsDefault}";
+         }
       }
 
       public static class Error

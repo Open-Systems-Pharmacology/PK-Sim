@@ -53,7 +53,7 @@ namespace PKSim.IntegrationTests
          base.Context();
          _enzyme = new IndividualEnzyme();
          var ontogenyRepo = IoC.Resolve<IOntogenyRepository>();
-         _enzyme.Ontogeny = ontogenyRepo.AllFor(CoreConstants.Species.Human).First();
+         _enzyme.Ontogeny = ontogenyRepo.AllFor(CoreConstants.Species.HUMAN).First();
       }
 
       protected override void Because()

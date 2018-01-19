@@ -28,7 +28,7 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          _iv = DomainFactoryForSpecs.CreateStandardIVProtocol();
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
-         _individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.Preterm);
+         _individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.PRETERM);
          _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
          _entityPathResolver = IoC.Resolve<IEntityPathResolver>();
          _buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();

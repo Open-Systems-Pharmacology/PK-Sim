@@ -23,11 +23,13 @@ namespace PKSim.Core.Snapshots.Mappers
          if (parameterAlternative.IsCalculated)
             return null;
 
-         return await SnapshotFrom(parameterAlternative, snapshot =>
+         var snapshot =  await SnapshotFrom(parameterAlternative, x =>
          {
-            snapshot.IsDefault = SnapshotValueFor(parameterAlternative.IsDefault, true);
-            snapshot.Species = (parameterAlternative as ParameterAlternativeWithSpecies)?.Species.Name;
+            x.IsDefault = SnapshotValueFor(parameterAlternative.IsDefault, true);
+            x.Species = (parameterAlternative as ParameterAlternativeWithSpecies)?.Species.Name;
          });
+
+         return snapshot;
       }
 
       public override async Task<ParameterAlternative> MapToModel(Alternative snapshot, ParameterAlternativeGroup parameterAlternativeGroup)
@@ -35,6 +37,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var alternative = _parameterAlternativeFactory.CreateAlternativeFor(parameterAlternativeGroup);
          alternative.IsDefault = ModelValueFor(snapshot.IsDefault, true);
          MapSnapshotPropertiesToModel(snapshot, alternative);
+
          await UpdateParametersFromSnapshot(snapshot, alternative, parameterAlternativeGroup.Name);
 
          var alternativeWithSpecies = alternative as ParameterAlternativeWithSpecies;

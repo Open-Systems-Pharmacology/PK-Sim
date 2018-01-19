@@ -26,6 +26,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.DefaultValue).WithMappingName(CoreConstants.Serialization.Attribute.DefaultValue);
          Map(x => x.Dimension).WithMappingName(Constants.Serialization.Attribute.Dimension);
          Map(x => x.ValueOrigin);
+         Map(x => x.IsDefault);
          //fixed value will be saved in deserialized
 
          Map(x => x.BuildMode).WithMappingName(CoreConstants.Serialization.Attribute.Mode);

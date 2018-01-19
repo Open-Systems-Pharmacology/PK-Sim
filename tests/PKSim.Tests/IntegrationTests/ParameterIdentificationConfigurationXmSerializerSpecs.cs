@@ -39,7 +39,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_serializing_a_parmaeter_identificaiton_configuration_with_categorial_run_mode : When_serializing_a_parameter_identification_configuration
+   public class When_serializing_a_parameter_identificaiton_configuration_with_categorial_run_mode : When_serializing_a_parameter_identification_configuration
    {
       private CategorialParameterIdentificationRunMode _categorialRunMode;
       private CalculationMethodCache _calculationMethodCache1;

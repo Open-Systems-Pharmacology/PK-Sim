@@ -31,22 +31,21 @@ namespace PKSim.Core.Services
       ICommand RenameParameterAlternative(ParameterAlternative parameterAlternative);
 
       /// <summary>
-      ///    Set the value of the parmaeter. If the alternative containing the parameter is not used in any simulation,
+      ///    Set the value of the parameter. If the alternative containing the parameter is not used in any simulation,
       ///    the command will not update the building block version of the compound
       /// </summary>
       ICommand SetAlternativeParameterValue(IParameter parameter, double valueInDisplayUnit);
 
       /// <summary>
-      ///    Set the unit of the parmaeter. If the alternative containing the parameter is not used in any simulation,
+      ///    Set the unit of the parameter. If the alternative containing the parameter is not used in any simulation,
       ///    the command will not update the building block version of the compound
       /// </summary>
       ICommand SetAlternativeParameterUnit(IParameter parameter, Unit newUnit);
-
   
       /// <summary>
-      ///    Rename the given <paramref name="parameterAlternative" />
+      ///    Edit the value origin for the given <paramref name="parameterAlternative" />
       /// </summary>
-      ICommand EditValueDescriptionFor(ParameterAlternative parameterAlternative);
+      ICommand UpdateValueOrigin(ParameterAlternative parameterAlternative, ValueOrigin newValueOrigin);
 
       /// <summary>
       ///    Returns the possible parameters for the permeability depending on the different alternatives defined for Lipophilicty
@@ -61,7 +60,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Set the given parameter alternative as default alternative in the parameter group
       /// </summary>
-      /// <param name="parameterGroup">Parmaeter group containing the alternative</param>
+      /// <param name="parameterGroup">Parameter group containing the alternative</param>
       /// <param name="parameterAlternative">Parameter alternative that will be set as default</param>
       ICommand SetDefaultAlternativeFor(ParameterAlternativeGroup parameterGroup, ParameterAlternative parameterAlternative);
 

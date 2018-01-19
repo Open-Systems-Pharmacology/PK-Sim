@@ -3,6 +3,7 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 using DevExpress.XtraGrid.Columns;
+using OSPSuite.UI.Binders;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
@@ -15,7 +16,7 @@ namespace PKSim.UI.Views.Compounds
    {
       private IGridViewColumn _colValue;
 
-      public LipophilicityGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever) : base(toolTipCreator, imageListRetriever)
+      public LipophilicityGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<LipophilictyAlternativeDTO> valueOriginBinder) : base(toolTipCreator, imageListRetriever, valueOriginBinder)
       {
          InitializeComponent();
       }
@@ -38,9 +39,6 @@ namespace PKSim.UI.Views.Compounds
          return _colValue.XtraColumn == gridColumn;
       }
 
-      private ILipophilicityGroupPresenter lipophilicityGroupPresenter
-      {
-         get { return _presenter.DowncastTo<ILipophilicityGroupPresenter>(); }
-      }
+      private ILipophilicityGroupPresenter lipophilicityGroupPresenter => _presenter.DowncastTo<ILipophilicityGroupPresenter>();
    }
 }

@@ -113,7 +113,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_have_updated_the_id_of_all_parmaeters_in_the_new_simulation()
+      public void should_have_updated_the_id_of_all_parameters_in_the_new_simulation()
       {
          A.CallTo(() => _parameterIdUpdater.UpdateSimulationId(_newSimulation)).MustHaveHappened();
       }

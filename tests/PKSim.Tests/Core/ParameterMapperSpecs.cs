@@ -9,6 +9,7 @@ using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using ILogger = OSPSuite.Core.Services.ILogger;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
+using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
 
 namespace PKSim.Core
 {
@@ -18,14 +19,17 @@ namespace PKSim.Core
       protected TableFormulaMapper _tableFormulaMapper;
       protected IEntityPathResolver _entityPathResolver;
       protected ILogger _logger;
+      protected ValueOriginMapper _valueOriginMapper;
+      protected ValueOrigin _snapshotValueOrigin;
 
       protected override Task Context()
       {
          _tableFormulaMapper = A.Fake<TableFormulaMapper>();
+         _valueOriginMapper = A.Fake<ValueOriginMapper>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _logger = A.Fake<ILogger>();
 
-         sut = new ParameterMapper(_tableFormulaMapper, _entityPathResolver, _logger);
+         sut = new ParameterMapper(_tableFormulaMapper, _valueOriginMapper, _entityPathResolver, _logger);
 
          //5 mm is the value
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10)
@@ -34,7 +38,9 @@ namespace PKSim.Core
             .WithDimension(DomainHelperForSpecs.LengthDimensionForSpecs());
 
          _parameter.DisplayUnit = _parameter.Dimension.Unit("mm");
+         _snapshotValueOrigin = new ValueOrigin();
 
+         A.CallTo(() => _valueOriginMapper.MapToSnapshot(_parameter.ValueOrigin)).Returns(_snapshotValueOrigin);
          return _completed;
       }
    }
@@ -65,6 +71,12 @@ namespace PKSim.Core
       public void should_have_set_the_value_in_display_unit()
       {
          _snapshotParameter.Value.ShouldBeEqualTo(_parameter.ValueInDisplayUnit);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_value_origin()
+      {
+         _snapshotParameter.ValueOrigin.ShouldBeEqualTo(_snapshotValueOrigin);
       }
    }
 
@@ -103,10 +115,8 @@ namespace PKSim.Core
          await base.Context();
          _snapshotParameter = await sut.MapToSnapshot(_parameter);
          _snapshotParameter.Value = 50; //50 mm
-         _snapshotParameter.Source = ValueOriginSourceId.Database;
-         _snapshotParameter.Method = ValueOriginDeterminationMethodId.InVitroAssay;
-         _snapshotParameter.Reference = "The value description for this value";
       }
+   
 
       protected override async Task Because()
       {
@@ -117,9 +127,13 @@ namespace PKSim.Core
       public void should_update_the_standard_parameter_properties_from_the_parameter_snapshot()
       {
          _parameter.ValueInDisplayUnit.ShouldBeEqualTo(_snapshotParameter.Value.Value);
-         _parameter.ValueOrigin.Description.ShouldBeEqualTo(_snapshotParameter.Reference);
-         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Database);
-         _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.InVitroAssay);
+      }
+
+
+      [Observation]
+      public void should_update_the_value_origin()
+      {
+         A.CallTo(() => _valueOriginMapper.UpdateValueOrigin(_parameter.ValueOrigin, _snapshotValueOrigin)).MustHaveHappened();
       }
    }
 

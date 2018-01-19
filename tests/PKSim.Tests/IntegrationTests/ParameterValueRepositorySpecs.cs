@@ -35,14 +35,5 @@ namespace PKSim.IntegrationTests
             parameterValueMetaData.ValueOrigin.ShouldNotBeNull();
          }
       }
-
-      [Observation]
-      public void should_have_set_the_default_flag_to_the_opposite_of_the_input_flag()
-      {
-         foreach (var parameterValueMetaData in _result)
-         {
-            parameterValueMetaData.ValueOrigin.Default.ShouldBeEqualTo(!parameterValueMetaData.IsInput);
-         }
-      }
    }
 }
