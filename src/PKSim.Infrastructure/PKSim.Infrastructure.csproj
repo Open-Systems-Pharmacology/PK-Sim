@@ -220,7 +220,7 @@
     <Compile Include="ORM\Repositories\MoleculeParameterRepository.cs" />
     <Compile Include="ORM\Repositories\PopulationAgeRepository.cs" />
     <Compile Include="ORM\Repositories\StaticReactionRepository.cs" />
-    <Compile Include="ORM\Repositories\ParametersInContainerRepository.cs" />
+    <Compile Include="ORM\Repositories\ValueOriginRepository.cs" />
     <Compile Include="ProjectConverter\IndividualUpdater.cs" />
     <Compile Include="ProjectConverter\IndividualCalculationMethodsUpdater.cs" />
     <Compile Include="ProjectConverter\ProjectConverterLogger.cs" />

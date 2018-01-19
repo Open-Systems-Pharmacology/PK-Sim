@@ -17,7 +17,7 @@ namespace PKSim.Core
       protected IExecutionContext _executionContext;
       protected double _originValue;
       private IDimension _dimension;
-      protected IParametersInContainerRepository _parameterInContainerRepository;
+      protected IValueOriginRepository _parameterInContainerRepository;
 
       protected override void Context()
       {
@@ -36,8 +36,8 @@ namespace PKSim.Core
          A.CallTo(() => _executionContext.Get<IParameter>(_parameterToReset.Id)).Returns(_parameterToReset);
          A.CallTo(() => _executionContext.BuildingBlockContaining(_parameterToReset)).Returns(A.Fake<IPKSimBuildingBlock>());
 
-         _parameterInContainerRepository = A.Fake<IParametersInContainerRepository>();
-         A.CallTo(() => _executionContext.Resolve<IParametersInContainerRepository>()).Returns(_parameterInContainerRepository);
+         _parameterInContainerRepository = A.Fake<IValueOriginRepository>();
+         A.CallTo(() => _executionContext.Resolve<IValueOriginRepository>()).Returns(_parameterInContainerRepository);
 
          sut = new ResetParameterCommand(_parameterToReset);
       }
@@ -51,8 +51,13 @@ namespace PKSim.Core
          _parameterToReset.Value = 25;
          _parameterToReset.ValueOrigin.Method = ValueOriginDeterminationMethods.ManualFit;
          _parameterToReset.ValueOrigin.Source = ValueOriginSources.ParameterIdentification;
-         var parameterMetaData = new ParameterMetaData {ValueOrigin = new ValueOrigin {Default = false}};
-         A.CallTo(() => _parameterInContainerRepository.ParameterMetaDataFor(_parameterToReset)).Returns(parameterMetaData);
+         var valueOrigin = new ValueOrigin
+         {
+            Method = ValueOriginDeterminationMethods.Assumption,
+            Source = ValueOriginSources.Internet,
+         };
+
+         A.CallTo(() => _parameterInContainerRepository.ValueOriginFor(_parameterToReset)).Returns(valueOrigin);
       }
 
       protected override void Because()
@@ -73,16 +78,17 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_leave_the_parameter_value_origin_as_set()
+      public void should_reset_the_parameter_value_origin()
       {
-         _parameterToReset.ValueOrigin.Default.ShouldBeFalse();
-         _parameterToReset.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.ManualFit);
-         _parameterToReset.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.ParameterIdentification);
+         _parameterToReset.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.Assumption);
+         _parameterToReset.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Internet);
       }
    }
 
    public class When_executing_the_reset_command_for_a_default_parameter : concern_for_ResetParameterCommand
    {
+      private ValueOrigin _databaseValueOrigin;
+
       protected override void Context()
       {
          base.Context();
@@ -91,17 +97,15 @@ namespace PKSim.Core
          _parameterToReset.ValueOrigin.Method = ValueOriginDeterminationMethods.ManualFit;
          _parameterToReset.ValueOrigin.Source = ValueOriginSources.ParameterIdentification;
 
-         var parameterMetaData = new ParameterMetaData
+         _databaseValueOrigin = new ValueOrigin
          {
-            ValueOrigin = new ValueOrigin
-            {
-               Default = true,
-               Method = ValueOriginDeterminationMethods.Measurement,
-               Source = ValueOriginSources.Database
-            }
+            Default = true,
+            Method = ValueOriginDeterminationMethods.Measurement,
+            Source = ValueOriginSources.Database
          };
+         
 
-         A.CallTo(() => _parameterInContainerRepository.ParameterMetaDataFor(_parameterToReset)).Returns(parameterMetaData);
+         A.CallTo(() => _parameterInContainerRepository.ValueOriginFor(_parameterToReset)).Returns(_databaseValueOrigin);
       }
 
       protected override void Because()

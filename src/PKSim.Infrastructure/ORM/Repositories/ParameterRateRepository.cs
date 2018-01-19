@@ -27,9 +27,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
          IFlatParameterRateRepository flatParameterRateRepo,
          IFlatContainerRepository flatContainerRepo,
          IFlatParameterRHSRepository flatParameterRHSRepository,
-         IFlatValueOriginRepository flatValueOriginRepository,
-         IFlatValueOriginToValueOriginMapper valueOriginMapper) :
-         base(flatParameterRateRepo, flatContainerRepo, flatValueOriginRepository, valueOriginMapper)
+         IValueOriginRepository valueOriginRepository) :
+         base(flatParameterRateRepo, flatContainerRepo, valueOriginRepository)
       {
          _flatParameterRHSRepository = flatParameterRHSRepository;
       }

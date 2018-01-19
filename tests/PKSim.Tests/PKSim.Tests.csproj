@@ -473,6 +473,7 @@
     <Compile Include="IntegrationTests\SimulationParametersToBuildingBlockUpdaterSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationTransferLoaderSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQuerySpecs.cs" />
+    <Compile Include="IntegrationTests\ValueOriginRepositorySpecs.cs" />
     <Compile Include="Presentation\AdvancedParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\BoxWhiskerChartPresenterSpecs.cs" />
     <Compile Include="Presentation\BoxWhiskerNumericFieldsPresenterSpecs.cs" />

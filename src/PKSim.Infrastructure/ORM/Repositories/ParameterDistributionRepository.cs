@@ -23,9 +23,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
       public ParameterDistributionRepository(
          IFlatParameterDistributionRepository flatParameterDistributionRepo,
          IFlatContainerRepository flatContainerRepository,
-         IFlatValueOriginRepository flatValueOriginRepository,
-         IFlatValueOriginToValueOriginMapper valueOriginMapper) : 
-         base(flatParameterDistributionRepo, flatContainerRepository, flatValueOriginRepository, valueOriginMapper)
+         IValueOriginRepository valueOriginRepository) :
+         base(flatParameterDistributionRepo, flatContainerRepository, valueOriginRepository)
       {
       }
    }

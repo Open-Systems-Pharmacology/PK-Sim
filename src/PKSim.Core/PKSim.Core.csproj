@@ -202,7 +202,7 @@
     <Compile Include="Model\SimulationAnalysisWorkflow.cs" />
     <Compile Include="Repositories\CompoundCalculationMethodRepository.cs" />
     <Compile Include="Repositories\IOrganTypeRepository.cs" />
-    <Compile Include="Repositories\IParametersInContainerRepository.cs" />
+    <Compile Include="Repositories\IValueOriginRepository.cs" />
     <Compile Include="Repositories\IPopulationAgeRepository.cs" />
     <Compile Include="Services\ApplicationDiscriminator.cs" />
     <Compile Include="Services\BuildingBlockInSimulationSynchronizer.cs" />

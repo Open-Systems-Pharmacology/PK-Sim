@@ -9,9 +9,7 @@ namespace PKSim.IntegrationTests
 {
    public abstract class concern_for_FlatProteinPropertyRepository : ContextForIntegration<IFlatMoleculeParameterRepository>
    {
-     
    }
-
 
    public class When_resolving_all_protein_properties_definied_as_a_flat_table : concern_for_FlatProteinPropertyRepository
    {
@@ -34,4 +32,4 @@ namespace PKSim.IntegrationTests
          firstElement.DistributionType.ShouldNotBeNull();
       }
    }
-}	
+}

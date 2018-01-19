@@ -6,6 +6,7 @@ using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Services;
+using OSPSuite.TeXReporting.Items;
 
 namespace PKSim.Core.Model
 {
@@ -222,6 +223,7 @@ namespace PKSim.Core.Model
          parameter.Info = parameterMetaData.Clone();
          parameter.Dimension = _dimensionRepository.DimensionByName(parameterMetaData.Dimension);
          parameter.ValueOrigin.UpdateFrom(parameterMetaData.ValueOrigin);
+         parameter.ValueOrigin.Id = parameterMetaData.ValueOriginId;
 
          if (!string.IsNullOrEmpty(parameterMetaData.DefaultUnit))
             parameter.DisplayUnit = parameter.Dimension.Unit(parameterMetaData.DefaultUnit);

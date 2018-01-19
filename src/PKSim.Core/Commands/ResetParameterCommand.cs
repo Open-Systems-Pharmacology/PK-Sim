@@ -32,18 +32,13 @@ namespace PKSim.Core.Commands
 
       private void resetValueOriginForDefaultParameter(IParameter parameter, IExecutionContext context)
       {
-         //TODO MBD: That does not work quite yet
-         var parametersInContainerRepository = context.Resolve<IParametersInContainerRepository>();
+         var valueOriginRepository = context.Resolve<IValueOriginRepository>();
 
-         var parameterMetaData = parametersInContainerRepository.ParameterMetaDataFor(parameter);
+         var valueOrigin = valueOriginRepository.ValueOriginFor(parameter);
+         parameter.ValueOrigin.UpdateFrom(valueOrigin);
 
-         if (parameterMetaData?.ValueOrigin == null)
-            return;
-
-         if (!parameterMetaData.ValueOrigin.Default)
-            return;
-
-         parameter.ValueOrigin.UpdateFrom(parameterMetaData.ValueOrigin);
+         //reset only available for trully default parameter with a default value
+         parameter.ValueOrigin.Default = true;
       }
 
       protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
