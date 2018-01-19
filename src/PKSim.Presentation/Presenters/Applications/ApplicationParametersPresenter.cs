@@ -19,7 +19,9 @@ namespace PKSim.Presentation.Presenters.Applications
    {
       private readonly IContainerToApplicationDTOMapper _applicationDTOMapper;
       public string Description { get; set; }
-      public bool ForcesDisplay => false;
+      public bool ForcesDisplay { get; } = false;
+      public bool AlwaysRefresh { get; } = false;
+
       public IEnumerable<IParameter> EditedParameters => Enumerable.Empty<IParameter>();
 
       public ApplicationParametersPresenter(IApplicationParametersView view, IContainerToApplicationDTOMapper applicationDTOMapper,

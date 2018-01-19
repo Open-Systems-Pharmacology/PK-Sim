@@ -576,6 +576,7 @@ namespace PKSim.Core
          public static readonly string INTESTINAL_SOLUBILITY = "INTESTINAL_SOLUBILITY";
          public static readonly string FRACTION_UNBOUND_PLASMA = "FRACTION_UNBOUND_PLASMA";
          public static readonly string ONTOGENY_FACTOR = "ONTOGENY_FACTOR";
+         public static readonly string USER_DEFINED = "USER_DEFFINED";
 
          public static readonly IReadOnlyList<string> GroupsWithCalculatedAlternative = new[]
          {

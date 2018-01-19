@@ -14,6 +14,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
       {
          return new ValueOrigin
          {
+            Id = flatValueOrigin.Id,
             Description = flatValueOrigin.Description,
             Source = ValueOriginSources.ById(flatValueOrigin.Source),
             Method = ValueOriginDeterminationMethods.ById(flatValueOrigin.Method),

@@ -147,23 +147,23 @@
     <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.16\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.17\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.BDDHelper, Version=2.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.BDDHelper.2.0.0.1\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.16\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.17\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.16\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.17\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.16\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.17\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -473,6 +473,7 @@
     <Compile Include="IntegrationTests\SimulationParametersToBuildingBlockUpdaterSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationTransferLoaderSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQuerySpecs.cs" />
+    <Compile Include="IntegrationTests\ValueOriginRepositorySpecs.cs" />
     <Compile Include="Presentation\AdvancedParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\BoxWhiskerChartPresenterSpecs.cs" />
     <Compile Include="Presentation\BoxWhiskerNumericFieldsPresenterSpecs.cs" />
@@ -549,6 +550,7 @@
     <Compile Include="IntegrationTests\PopulationSimulationSerializationSpecs.cs" />
     <Compile Include="IntegrationTests\ProjectXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\RenameBuildingBlockTaskSpecs.cs" />
+    <Compile Include="Presentation\UserDefinedParametersPresenterSpecs.cs" />
     <Compile Include="Reporting\ReportingSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationsReporterSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationXmlSerializerSpecs.cs" />

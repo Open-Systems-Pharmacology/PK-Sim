@@ -26,6 +26,8 @@ namespace PKSim.Presentation.Presenters.Compounds
       private List<IParameter> _allParameters;
       public string Description { get; set; }
       public bool ForcesDisplay => true;
+      public bool AlwaysRefresh { get; } = false;
+
       public IEnumerable<IParameter> EditedParameters => _allParameters;
 
       public CompoundInSimulationPresenter(ICompoundInSimulationView view, IMolWeightGroupPresenter molWeightGroupPresenter,

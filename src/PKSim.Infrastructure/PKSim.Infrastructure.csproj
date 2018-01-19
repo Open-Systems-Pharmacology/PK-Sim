@@ -129,20 +129,20 @@
       <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.16\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.17\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.16\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.17\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.16\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.17\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.16, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.16\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.17, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.17\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -220,7 +220,7 @@
     <Compile Include="ORM\Repositories\MoleculeParameterRepository.cs" />
     <Compile Include="ORM\Repositories\PopulationAgeRepository.cs" />
     <Compile Include="ORM\Repositories\StaticReactionRepository.cs" />
-    <Compile Include="ORM\Repositories\ParametersInContainerRepository.cs" />
+    <Compile Include="ORM\Repositories\ValueOriginRepository.cs" />
     <Compile Include="ProjectConverter\IndividualUpdater.cs" />
     <Compile Include="ProjectConverter\IndividualCalculationMethodsUpdater.cs" />
     <Compile Include="ProjectConverter\ProjectConverterLogger.cs" />

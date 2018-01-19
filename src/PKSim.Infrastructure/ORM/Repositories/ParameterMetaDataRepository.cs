@@ -5,30 +5,26 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
-   public abstract class ParameterMetaDataRepository<TParameterMetaData> : StartableRepository<TParameterMetaData>, IParameterMetaDataRepository<TParameterMetaData> 
+   public abstract class ParameterMetaDataRepository<TParameterMetaData> : StartableRepository<TParameterMetaData>, IParameterMetaDataRepository<TParameterMetaData>
       where TParameterMetaData : ParameterMetaData
    {
       private readonly IMetaDataRepository<TParameterMetaData> _flatParameterMetaDataRepository;
       private readonly IFlatContainerRepository _flatContainerRepository;
-      private readonly IFlatValueOriginRepository _flatValueOriginRepository;
-      private readonly IFlatValueOriginToValueOriginMapper _valueOriginMapper;
+      protected readonly IValueOriginRepository _valueOriginRepository;
       protected IList<TParameterMetaData> _parameterMetaDataList;
       private readonly ICache<string, List<TParameterMetaData>> _parameterMetaDataCacheByContainer = new Cache<string, List<TParameterMetaData>>(s => new List<TParameterMetaData>());
 
       protected ParameterMetaDataRepository(
-         IMetaDataRepository<TParameterMetaData> flatParameterMetaDataRepository, 
-         IFlatContainerRepository flatContainerRepository, 
-         IFlatValueOriginRepository flatValueOriginRepository,
-         IFlatValueOriginToValueOriginMapper valueOriginMapper)
+         IMetaDataRepository<TParameterMetaData> flatParameterMetaDataRepository,
+         IFlatContainerRepository flatContainerRepository,
+         IValueOriginRepository valueOriginRepository)
       {
          _flatParameterMetaDataRepository = flatParameterMetaDataRepository;
          _flatContainerRepository = flatContainerRepository;
-         _flatValueOriginRepository = flatValueOriginRepository;
-         _valueOriginMapper = valueOriginMapper;
+         _valueOriginRepository = valueOriginRepository;
       }
 
       public IReadOnlyList<TParameterMetaData> AllFor(string containerPath)
@@ -49,8 +45,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _parameterMetaDataList.Each(parameterMetaData =>
          {
             parameterMetaData.ParentContainerPath = _flatContainerRepository.ContainerPathFrom(parameterMetaData.ContainerId).ToString();
-            parameterMetaData.ValueOrigin = _valueOriginMapper.MapFrom(_flatValueOriginRepository.FindBy(parameterMetaData.ValueOriginId));
-            parameterMetaData.ValueOrigin.Default = !parameterMetaData.IsInput;
+            //Use clone here so that we do not change the default flag 
+            var valueOrigin = _valueOriginRepository.FindBy(parameterMetaData.ValueOriginId).Clone();
+            valueOrigin.Default = !parameterMetaData.IsInput;
+            parameterMetaData.ValueOrigin = valueOrigin;
          });
 
          //now cache the parameter meta data by container path

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Presentation.Views.Parameters;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Presentation.Views.Parameters;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
@@ -19,8 +19,8 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public string Description
       {
-         set { _view.Description = value; }
-         get { return _view.Description; }
+         set => _view.Description = value;
+         get => _view.Description;
       }
 
       public void Edit(IEnumerable<IParameter> parameters)
@@ -28,7 +28,9 @@ namespace PKSim.Presentation.Presenters.Parameters
          /*nothing to do here*/
       }
 
-      public bool ForcesDisplay => false;
+      public bool ForcesDisplay { get; } = false;
+      public bool AlwaysRefresh { get; } = false;
+
       public IEnumerable<IParameter> EditedParameters => Enumerable.Empty<IParameter>();
 
       public INoItemInSelectionPresenter WithDescription(string description)

@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Presentation.Services;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Repositories;
-using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Presentation.Services;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.Nodes
 {
@@ -27,10 +27,10 @@ namespace PKSim.Presentation.Nodes
       ITreeNode CreateFor(SystemicProcessNodeType rootNode);
       CovariateNode CreateCovariateNode(string covariateName);
       ITreeNode<IGroup> CreateGroupAll();
+      ITreeNode<IGroup> CreateGroupUserDefined();
       ITreeNode<IGroup> CreateDynamicGroup(string key, string containerName, IEnumerable<IParameter> allParametersInDynamicGroup);
       ITreeNode<IGroup> CreateGroupFavorites();
       ITreeNode CreateFor(CompoundParameterNodeType compoundParameterNodeType);
-
    }
 
    public class TreeNodeFactory : OSPSuite.Presentation.Nodes.TreeNodeFactory, ITreeNodeFactory
@@ -51,37 +51,21 @@ namespace PKSim.Presentation.Nodes
          return node;
       }
 
-      public ITreeNode CreateFor(ClassifiableComparison classifiableComparison)
-      {
-         return new ComparisonNode(classifiableComparison);
-      }
+      public ITreeNode CreateFor(ClassifiableComparison classifiableComparison) => new ComparisonNode(classifiableComparison);
 
-      public ITreeNode CreateFor(ClassifiableSimulation simulation)
-      {
-         //for a simulation node, we only need the info defined in the sim properties
-         return new SimulationNode(simulation);
-      }
+      public ITreeNode CreateFor(ClassifiableSimulation simulation) => new SimulationNode(simulation);
 
       public ITreeNode CreateFor(Simulation simulation, UsedBuildingBlock usedBuildingBlock)
       {
          var templateBuildingBlock = _buildingBlockRetriever.BuildingBlockWithId(usedBuildingBlock.TemplateId);
          return new UsedBuildingBlockInSimulationNode(simulation, usedBuildingBlock, templateBuildingBlock) {ToolTip = _toolTipPartCreator.ToolTipFor(usedBuildingBlock)};
-      }    
-
-      public ITreeNode CreateFor(PartialProcess partialProcess)
-      {
-         return new CompoundProcessNode(partialProcess);
       }
 
-      public ITreeNode CreateFor(SystemicProcess systemicProcess)
-      {
-         return new CompoundProcessNode(systemicProcess);
-      }
+      public ITreeNode CreateFor(PartialProcess partialProcess) => new CompoundProcessNode(partialProcess);
 
-      public ITreeNode CreateFor(CompoundParameterNodeType compoundParameterNodeType)
-      {
-         return new CompoundParameterNode(compoundParameterNodeType);
-      }
+      public ITreeNode CreateFor(SystemicProcess systemicProcess) => new CompoundProcessNode(systemicProcess);
+
+      public ITreeNode CreateFor(CompoundParameterNodeType compoundParameterNodeType) => new CompoundParameterNode(compoundParameterNodeType);
 
       public ITreeNode CreateFor(ModelProperties modelProperties)
       {
@@ -94,41 +78,29 @@ namespace PKSim.Presentation.Nodes
          return node;
       }
 
-      public ITreeNode CreateFor(PartialProcess partialProcess, string proteinName)
-      {
-         return new PartialProcessMoleculeNode(proteinName, partialProcess);
-      }
+      public ITreeNode CreateFor(PartialProcess partialProcess, string proteinName) => new PartialProcessMoleculeNode(proteinName, partialProcess);
 
-    
-      public ITreeNode<RootNodeType> CreateFor(RootNodeType rootNode)
-      {
-         return new RootNode(rootNode);
-      }
+      public ITreeNode<RootNodeType> CreateFor(RootNodeType rootNode) => new RootNode(rootNode);
 
-      public ITreeNode CreateFor(SystemicProcessNodeType systemicProcessNodeType)
-      {
-         return new SystemProcessRootNode(systemicProcessNodeType);
-      }
+      public ITreeNode CreateFor(SystemicProcessNodeType systemicProcessNodeType) => new SystemProcessRootNode(systemicProcessNodeType);
 
-      public CovariateNode CreateCovariateNode(string covariateName)
-      {
-         return new CovariateNode(covariateName);
-      }
+      public CovariateNode CreateCovariateNode(string covariateName) => new CovariateNode(covariateName);
 
-      public ITreeNode<IGroup> CreateGroupAll()
-      {
-         return new GroupNode(new Group {Name = CoreConstants.Groups.ALL, DisplayName = PKSimConstants.UI.All});
-      }
+      public ITreeNode<IGroup> CreateGroupAll() => createStaticGroup(CoreConstants.Groups.ALL, PKSimConstants.UI.All);
 
+      public ITreeNode<IGroup> CreateGroupUserDefined() => createStaticGroup(CoreConstants.Groups.USER_DEFINED, PKSimConstants.UI.UserDefined, ApplicationIcons.UserDefinedVariability);
+
+      public ITreeNode<IGroup> CreateGroupFavorites() => createStaticGroup(CoreConstants.Groups.FAVORITES, PKSimConstants.UI.Favorites, ApplicationIcons.Favorites);
+
+      private GroupNode createStaticGroup(string groupName, string groupDisplayName, ApplicationIcon groupIcon= null)
+      {
+         var group = new Group {Name = groupName, DisplayName = groupDisplayName};
+         return new GroupNode(group) {Icon = groupIcon};
+
+      }
       public ITreeNode<IGroup> CreateDynamicGroup(string key, string containerName, IEnumerable<IParameter> allParametersInDynamicGroup)
       {
          return new GroupNode(new DynamicGroup(allParametersInDynamicGroup) {Name = key, DisplayName = containerName});
-      }
-
-      public ITreeNode<IGroup> CreateGroupFavorites()
-      {
-         var favoritesGroup = new Group {Name = CoreConstants.Groups.FAVORITES, DisplayName = PKSimConstants.UI.Favorites};
-         return new GroupNode(favoritesGroup) {Icon = ApplicationIcons.Favorites};
       }
    }
 }

@@ -48,6 +48,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       private void updateParameters()
       {
          base.Edit(allFavoriteParameters());
+         //this needs to be done after the Edit to override whatever settings was updated in the Edit method
          _view.ParameterNameVisible = true;
          _view.DistributionVisible = false;
       }

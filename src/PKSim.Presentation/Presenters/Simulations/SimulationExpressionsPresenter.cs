@@ -33,7 +33,9 @@ namespace PKSim.Presentation.Presenters.Simulations
       private SimulationExpressionsDTO _simulationExpressionsDTO;
       private PathCache<IParameter> _pathCache;
       public string Description { get; set; }
-      public bool ForcesDisplay => false;
+      public bool ForcesDisplay { get; } =  false;
+      public bool AlwaysRefresh { get; } = false;
+
       public IEnumerable<IParameter> EditedParameters => _pathCache;
 
       public SimulationExpressionsPresenter(ISimulationExpressionsView view, IExpressionParametersToSimulationExpressionsDTOMapper mapper,
