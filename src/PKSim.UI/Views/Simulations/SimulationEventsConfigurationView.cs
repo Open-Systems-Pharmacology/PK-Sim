@@ -121,7 +121,7 @@ namespace PKSim.UI.Views.Simulations
       public override void InitializeResources()
       {
          base.InitializeResources();
-         btnAddEvent.Text = PKSimConstants.UI.AddEvent;
+         btnAddEvent.InitWithImage(ApplicationIcons.Add, PKSimConstants.UI.AddEvent);
          layoutItemAddEvent.AdjustButtonSize();
       }
 
@@ -130,24 +130,15 @@ namespace PKSim.UI.Views.Simulations
          _presenter = presenter;
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.Event; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Event;
 
-      public override string Caption
-      {
-         get { return PKSimConstants.UI.SimulationEventsConfiguration; }
-      }
+      public override string Caption => PKSimConstants.UI.SimulationEventsConfiguration;
 
       public void BindTo(IEnumerable<EventMappingDTO> allEventsMappingDTO)
       {
          _gridViewBinder.BindToSource(allEventsMappingDTO);
       }
 
-      public override bool HasError
-      {
-         get { return _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _gridViewBinder.HasError;
    }
 }

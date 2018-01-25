@@ -28,7 +28,6 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
-using PKSim.UI.Extensions;
 using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.Parameters
@@ -110,7 +109,7 @@ namespace PKSim.UI.Views.Parameters
          return _presenter.CanEditValueOrigin(parameterDTO);
       }
 
-      private void updateValueOrigin(ParameterDTO parameterDTO , ValueOrigin newValueOrigin)
+      private void updateValueOrigin(ParameterDTO parameterDTO, ValueOrigin newValueOrigin)
       {
          OnEvent(() => _presenter.SetParameterValueOrigin(parameterDTO, newValueOrigin));
       }
