@@ -277,6 +277,7 @@
     <Compile Include="Core\RandomPopulationSettingsMapperSpecs.cs" />
     <Compile Include="Core\SchemaItemMapperSpecs.cs" />
     <Compile Include="Core\SchemaMapperSpecs.cs" />
+    <Compile Include="Core\SetParameterDefaultStateCommandSpecs.cs" />
     <Compile Include="Core\SetRelativeExpressionFromNormalizedCommandSpecs.cs" />
     <Compile Include="Core\ProtocolMapperSpecs.cs" />
     <Compile Include="Core\SimulationComparisonMapperSpecs.cs" />

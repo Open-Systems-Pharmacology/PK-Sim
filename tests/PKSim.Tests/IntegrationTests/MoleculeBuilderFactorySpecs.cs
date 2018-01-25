@@ -1,13 +1,13 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
 
 namespace PKSim.IntegrationTests
@@ -169,7 +169,6 @@ namespace PKSim.IntegrationTests
          _compoundProperties = new CompoundProperties();
          _interactionProperties = new InteractionProperties();
          _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection {AlternativeName = _alternativeLipo2.Name, GroupName = CoreConstants.Groups.COMPOUND_LIPOPHILICITY});
-         _alternativeLipo2.Description = "ABCD";
          _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection {AlternativeName = _alternativePerm1.Name, GroupName = CoreConstants.Groups.COMPOUND_PERMEABILITY});
       }
 
@@ -193,13 +192,6 @@ namespace PKSim.IntegrationTests
          var lipoParameter = _molecule.Parameter(CoreConstants.Parameter.LIPOPHILICITY);
          lipoParameter.IsFixedValue.ShouldBeFalse();
          lipoParameter.Value.ShouldBeEqualTo(_alternativeLipo2.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value);
-      }
-
-      [Observation]
-      public void should_update_the_value_description_of_the_parameter_value_according_to_the_selected_alternative_for_alternative_with_only_one_parameter()
-      {
-         var lipoParameter = _molecule.Parameter(CoreConstants.Parameter.LIPOPHILICITY);
-         lipoParameter.ValueOrigin.Description.ShouldBeEqualTo(_alternativeLipo2.Description);
       }
    }
 
