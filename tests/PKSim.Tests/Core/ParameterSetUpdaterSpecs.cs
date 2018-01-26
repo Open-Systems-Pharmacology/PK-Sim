@@ -57,7 +57,7 @@ namespace PKSim.Core
          _sourcePara2 = new PKSimParameter().WithName("_sourcePara2");
          _sourcePara3 = new PKSimParameter().WithName("_sourcePara3");
          _sourcePara4 = new PKSimParameter().WithName("_sourcePara4");
-         _sourcePara4.ValueOrigin.Method = ValueOriginDeterminationMethods.Measurement;
+         _sourcePara4.ValueOrigin.Method = ValueOriginDeterminationMethods.InVivo;
          _sourcePara5 = new PKSimParameter().WithName("_sourcePara5");
 
          _targetPara1 = new PKSimParameter().WithName("_targetPara1");
@@ -139,7 +139,7 @@ namespace PKSim.Core
          _sourcePara1 = new PKSimParameter().WithName("_para1");
          _sourcePara1.ValueOrigin.Description = "XXX";
          _sourcePara1.ValueOrigin.Source = ValueOriginSources.ParameterIdentification;
-         _sourcePara1.ValueOrigin.Method = ValueOriginDeterminationMethods.InVitroAssay;
+         _sourcePara1.ValueOrigin.Method = ValueOriginDeterminationMethods.InVitro;
          _sourcePara2 = new PKSimParameter().WithName("_sourcePara2");
          _targetPara1 = new PKSimParameter().WithName("_para1");
          _sourceContainer.Add(_sourcePara1);

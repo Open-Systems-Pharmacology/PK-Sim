@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -10,6 +11,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -33,9 +35,11 @@ namespace PKSim.Core
          var dimensionFactory = new DimensionFactory();
          _volumeDimension = dimensionFactory.AddDimension(new BaseDimensionRepresentation {LengthExponent = 3}, "Volume", "L");
          _volumeDimension.AddUnit("mL", 1e-3, 0);
-         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10);
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithId("ID");
          _parameter.Dimension = _volumeDimension;
          A.CallTo(() => _executionContext.BuildingBlockContaining(_parameter)).Returns(A.Fake<IPKSimBuildingBlock>());
+
+         A.CallTo(() => _executionContext.Get<IParameter>(_parameter.Id)).Returns(_parameter);
       }
    }
 
@@ -609,6 +613,153 @@ namespace PKSim.Core
       public void should_throw_the_event_specifing_that_the_parameter_was_remove_from_the_favorites()
       {
          A.CallTo(() => _favoriteTask.SetParameterFavorite(_parameter, false)).MustHaveHappened();
+      }
+   }
+
+   public class When_updating_the_value_of_a_default_parameter_with_undefined_value_origin : concern_for_ParameterTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.IsDefault = true;
+      }
+
+      protected override void Because()
+      {
+         sut.SetParameterValue(_parameter, 10);
+      }
+
+      [Observation]
+      public void should_set_the_default_flag_to_false()
+      {
+         _parameter.IsDefault.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_set_the_value_origin_to_unknwon()
+      {
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Unknown);
+      }
+   }
+
+   public class When_updating_the_value_of_a_default_parameter_with_defined_value_origin : concern_for_ParameterTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.IsDefault = true;
+         _parameter.ValueOrigin.Source = ValueOriginSources.Internet;
+      }
+
+      protected override void Because()
+      {
+         sut.SetParameterValue(_parameter, 10);
+      }
+
+      [Observation]
+      public void should_set_the_default_flag_to_false()
+      {
+         _parameter.IsDefault.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_not_set_the_value_origin_to_unknwon()
+      {
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Internet);
+      }
+   }
+
+   public class When_executing_the_inverse_of_the_set_parameter_value_command_for_a_default_parameter_with_defined_value_origin : concern_for_ParameterTask
+   {
+      private IPKSimReversibleCommand _setCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.IsDefault = true;
+         _parameter.ValueOrigin.Source = ValueOriginSources.Internet;
+         _setCommand = sut.SetParameterValue(_parameter, 10).DowncastTo<IPKSimReversibleCommand>();
+      }
+
+      protected override void Because()
+      {
+         _setCommand.InvokeInverse(_executionContext);
+      }
+
+      [Observation]
+      public void should_reset_the_default_flag()
+      {
+         _parameter.IsDefault.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_not_touch_the_value_origin()
+      {
+         _parameter.ValueOrigin.Source = ValueOriginSources.Internet;
+      }
+   }
+
+   public class When_executing_the_inverse_of_the_set_parameter_value_command_for_a_default_parameter_with_undefined_value_origin : concern_for_ParameterTask
+   {
+      private IPKSimReversibleCommand _setCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.IsDefault = true;
+         _setCommand = sut.SetParameterValue(_parameter, 10).DowncastTo<IPKSimReversibleCommand>();
+      }
+
+      protected override void Because()
+      {
+         _setCommand.InvokeInverse(_executionContext);
+      }
+
+      [Observation]
+      public void should_reset_the_default_flag()
+      {
+         _parameter.IsDefault.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_reset_the_value_origin_to_undefined()
+      {
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Undefined);
+      }
+   }
+
+   public class When_executing_the_set_parameter_value_command_for_a_default_parameter_with_undefined_value_origin : concern_for_ParameterTask
+   {
+      private PKSimMacroCommand _setCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.IsDefault = true;
+      }
+
+      protected override void Because()
+      {
+         _setCommand = sut.SetParameterValue(_parameter, 10) as PKSimMacroCommand;
+      }
+
+      [Observation]
+      public void should_return_a_macro_command_with_three_command()
+      {
+         _setCommand.ShouldNotBeNull();
+         _setCommand.Count.ShouldBeEqualTo(3);
+      }
+
+      [Observation]
+      public void should_hide_the_set_default_flag_command()
+      {
+         _setCommand.All().First(x => x.IsAnImplementationOf<SetParameterDefaultStateCommand>()).Visible.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_hide_the_set_value_origin_command()
+      {
+         _setCommand.All().First(x => x.IsAnImplementationOf<UpdateParameterValueOriginCommand>()).Visible.ShouldBeFalse();
       }
    }
 }

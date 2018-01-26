@@ -151,7 +151,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         var species = new Species {Name = CoreConstants.Species.Human, Id = CoreConstants.Species.Human};
+         var species = new Species {Name = CoreConstants.Species.HUMAN, Id = CoreConstants.Species.HUMAN};
          species.AddPopulation(new SpeciesPopulation {Name = CoreConstants.Population.ICRP});
          A.CallTo(() => _speciesRepository.All()).Returns(new[] {species});
          _individual = new Individual();

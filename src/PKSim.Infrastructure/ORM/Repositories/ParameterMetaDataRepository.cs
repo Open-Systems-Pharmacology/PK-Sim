@@ -47,7 +47,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
             parameterMetaData.ParentContainerPath = _flatContainerRepository.ContainerPathFrom(parameterMetaData.ContainerId).ToString();
             //Use clone here so that we do not change the default flag 
             var valueOrigin = _valueOriginRepository.FindBy(parameterMetaData.ValueOriginId).Clone();
-            valueOrigin.Default = !parameterMetaData.IsInput;
             parameterMetaData.ValueOrigin = valueOrigin;
          });
 

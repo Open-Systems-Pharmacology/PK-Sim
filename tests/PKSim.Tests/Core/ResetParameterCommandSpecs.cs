@@ -93,14 +93,12 @@ namespace PKSim.Core
       {
          base.Context();
          _parameterToReset.Value = 25;
-         _parameterToReset.ValueOrigin.Default = false;
          _parameterToReset.ValueOrigin.Method = ValueOriginDeterminationMethods.ManualFit;
          _parameterToReset.ValueOrigin.Source = ValueOriginSources.ParameterIdentification;
 
          _databaseValueOrigin = new ValueOrigin
          {
-            Default = true,
-            Method = ValueOriginDeterminationMethods.Measurement,
+            Method = ValueOriginDeterminationMethods.InVivo,
             Source = ValueOriginSources.Database
          };
          
@@ -128,8 +126,8 @@ namespace PKSim.Core
       [Observation]
       public void should_reset_the_parameter_default_state_to_true()
       {
-         _parameterToReset.ValueOrigin.Default.ShouldBeTrue();
-         _parameterToReset.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.Measurement);
+         _parameterToReset.IsDefault.ShouldBeTrue();
+         _parameterToReset.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.InVivo);
          _parameterToReset.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Database);
       }
    }

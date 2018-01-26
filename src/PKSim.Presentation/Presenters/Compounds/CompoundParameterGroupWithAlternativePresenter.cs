@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
@@ -38,9 +39,9 @@ namespace PKSim.Presentation.Presenters.Compounds
       void RenameAlternative(ParameterAlternativeDTO parameterAlternativeDTO);
 
       /// <summary>
-      ///    Edit the description for the given alternative
+      ///    Edit the value origin for the given alternative
       /// </summary>
-      void EditValueDescriptionFor(ParameterAlternativeDTO parameterAlternativeDTO);
+      void UpdateValueOriginFor(ParameterAlternativeDTO parameterAlternativeDTO, ValueOrigin newValueOrigin);
    }
 
    public interface ICompoundParameterGroupWithCalculatedDefaultPresenter : ICompoundParameterGroupWithAlternativePresenter
@@ -119,9 +120,9 @@ namespace PKSim.Presentation.Presenters.Compounds
          AddCommand(_compoundAlternativeTask.RenameParameterAlternative(ParameterAlternativeFrom(parameterAlternativeDTO)));
       }
 
-      public void EditValueDescriptionFor(ParameterAlternativeDTO parameterAlternativeDTO)
+      public void UpdateValueOriginFor(ParameterAlternativeDTO parameterAlternativeDTO, ValueOrigin newValueOrigin)
       {
-         AddCommand(_compoundAlternativeTask.EditValueDescriptionFor(ParameterAlternativeFrom(parameterAlternativeDTO)));
+         AddCommand(_compoundAlternativeTask.UpdateValueOrigin(ParameterAlternativeFrom(parameterAlternativeDTO), newValueOrigin));
       }
 
       public void Handle(AddCompoundParameterGroupAlternativeEvent eventToHandle)

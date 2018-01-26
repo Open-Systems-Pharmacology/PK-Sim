@@ -38,14 +38,14 @@ namespace PKSim.UI.Views.Individuals
 
       public string NameDescription
       {
-         set { layoutItemName.Text = value.FormatForLabel(); }
-         get { return layoutItemName.Text; }
+         set => layoutItemName.Text = value.FormatForLabel();
+         get => layoutItemName.Text;
       }
 
       public bool NameDescriptionVisible
       {
-         get { return layoutItemName.TextVisible; }
-         set { layoutItemName.TextVisible = value; }
+         get => layoutItemName.TextVisible;
+         set => layoutItemName.TextVisible = value;
       }
 
       public void BindTo(ObjectBaseDTO dto)
@@ -53,14 +53,11 @@ namespace PKSim.UI.Views.Individuals
          _screenBinder.BindToSource(dto);
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
 
       public IEnumerable<string> AvailableProteins
       {
-         set { cbProteinName.FillWith(value); }
+         set => cbProteinName.FillWith(value);
       }
 
       protected override void SetActiveControl()

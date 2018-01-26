@@ -102,12 +102,12 @@ namespace PKSim.UI.Views.Parameters
 
       protected void InitializeValueDescriptionBinding()
       {
-         _valueOriginBinder.InitializeBinding(_gridViewBinder, updateValueOrigin);
-         //TODO MBD
-//         _columnValueDescription = _gridViewBinder.AutoBind(param => param.ValueDescription)
-//            .WithWidth(UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
-//            .WithCaption(PKSimConstants.UI.ValueDescription)
-//            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValueDescription(o, e.NewValue)));
+         _valueOriginBinder.InitializeBinding(_gridViewBinder, updateValueOrigin, IsValueOriginEditable);
+      }
+
+      protected virtual bool IsValueOriginEditable(ParameterDTO parameterDTO)
+      {
+         return _presenter.CanEditValueOrigin(parameterDTO);
       }
 
       private void updateValueOrigin(ParameterDTO parameterDTO , ValueOrigin newValueOrigin)

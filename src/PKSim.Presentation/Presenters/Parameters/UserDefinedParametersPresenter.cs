@@ -31,7 +31,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       private bool isUserDefinedParameter(IParameter parameter)
       {
-         return !parameter.ValueOrigin.Default;
+         return !parameter.IsDefault;
       }
    }
 }

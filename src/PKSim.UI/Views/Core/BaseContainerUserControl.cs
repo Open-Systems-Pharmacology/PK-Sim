@@ -69,7 +69,7 @@ namespace PKSim.UI.Views.Core
          }
          finally
          {
-            layoutControlItem.Owner.EndUpdate();
+            layoutControlItem.Owner.EndUpdate();   
          }
       }
 

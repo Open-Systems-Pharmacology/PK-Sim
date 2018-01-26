@@ -74,7 +74,7 @@ namespace PKSim.Core
          _humanCategory = new CalculationMethodCategory { CategoryType = CategoryType.Individual };
          _dogCategory = new CalculationMethodCategory { CategoryType = CategoryType.Individual };
          _cmHuman = new CalculationMethod();
-         _cmHuman.AddSpecies(CoreConstants.Species.Human);
+         _cmHuman.AddSpecies(CoreConstants.Species.HUMAN);
          _humanCategory.Add(_cmHuman);
          _cmDog = new CalculationMethod();
          _cmDog.AddSpecies("Dog");
@@ -82,7 +82,7 @@ namespace PKSim.Core
          _allCategories.Add(_notIndividualCategory);
          _allCategories.Add(_humanCategory);
          _allCategories.Add(_dogCategory);
-         _species = new Species {Name = CoreConstants.Species.Human};
+         _species = new Species {Name = CoreConstants.Species.HUMAN};
       }
 
       protected override void Because()

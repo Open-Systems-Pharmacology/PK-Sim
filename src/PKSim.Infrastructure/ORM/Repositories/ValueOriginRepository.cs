@@ -14,7 +14,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private static readonly ValueOrigin _defaultValueOrigin = new ValueOrigin
       {
-         Default = false,
          Method = ValueOriginDeterminationMethods.Undefined,
          Source = ValueOriginSources.Undefined
       };

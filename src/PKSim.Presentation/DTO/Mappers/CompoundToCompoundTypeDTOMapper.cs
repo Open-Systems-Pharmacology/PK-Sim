@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility;
-using PKSim.Presentation.DTO.Compounds;
 using OSPSuite.Core.Domain;
-using PKSim.Core;
-using PKSim.Core.Model;
 using OSPSuite.Presentation.Mappers;
+using OSPSuite.Utility;
+using PKSim.Core;
+using PKSim.Presentation.DTO.Compounds;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
@@ -13,7 +12,7 @@ namespace PKSim.Presentation.DTO.Mappers
    {
    }
 
-   public class CompoundToCompoundTypeDTOMapper :  ICompoundToCompoundTypeDTOMapper
+   public class CompoundToCompoundTypeDTOMapper : ICompoundToCompoundTypeDTOMapper
    {
       private readonly IParameterToParameterDTOInContainerMapper<TypePKaDTO> _parameterMapper;
 
@@ -27,20 +26,20 @@ namespace PKSim.Presentation.DTO.Mappers
          var allCompoundParameters = compoundParameters.ToList();
          var compoundTypeAlternativeDTO = new CompoundTypeDTO();
 
-         addTypePKaFor(compoundTypeAlternativeDTO, allCompoundParameters, CoreConstants.Parameter.PARAMETER_PKA1, CoreConstants.Parameter.COMPOUND_TYPE1);
-         addTypePKaFor(compoundTypeAlternativeDTO, allCompoundParameters, CoreConstants.Parameter.PARAMETER_PKA2, CoreConstants.Parameter.COMPOUND_TYPE2);
-         addTypePKaFor(compoundTypeAlternativeDTO, allCompoundParameters, CoreConstants.Parameter.PARAMETER_PKA3, CoreConstants.Parameter.COMPOUND_TYPE3);
+         compoundTypeAlternativeDTO.AddTypePKa(typePKaFor(allCompoundParameters, CoreConstants.Parameter.PARAMETER_PKA1, CoreConstants.Parameter.COMPOUND_TYPE1));
+         compoundTypeAlternativeDTO.AddTypePKa(typePKaFor(allCompoundParameters, CoreConstants.Parameter.PARAMETER_PKA2, CoreConstants.Parameter.COMPOUND_TYPE2));
+         compoundTypeAlternativeDTO.AddTypePKa(typePKaFor(allCompoundParameters, CoreConstants.Parameter.PARAMETER_PKA3, CoreConstants.Parameter.COMPOUND_TYPE3));
          return compoundTypeAlternativeDTO;
       }
 
-      private void addTypePKaFor(CompoundTypeDTO compoundTypeDTO, IList<IParameter> compoundParameters, string parameterPka1, string parameterCompoundType1)
+      private TypePKaDTO typePKaFor(IList<IParameter> compoundParameters, string parameterPka1, string parameterCompoundType1)
       {
          var pKaParameter = compoundParameters.FindByName(parameterPka1);
          var compoundTypeParameter = compoundParameters.FindByName(parameterCompoundType1);
-         var typePKaDTO = new TypePKaDTO();
-         typePKaDTO.CompoundTypeParameter = _parameterMapper.MapFrom(compoundTypeParameter, typePKaDTO, x => x.CompoundTypeValue, x => x.CompoundTypeParameter);
-         typePKaDTO.PKaParameter = _parameterMapper.MapFrom(pKaParameter, typePKaDTO, x => x.PKa, x => x.PKaParameter);
-         compoundTypeDTO.AddTypePKa(typePKaDTO);
+         var dto = new TypePKaDTO();
+         dto.CompoundTypeParameter = _parameterMapper.MapFrom(compoundTypeParameter, dto, x => x.CompoundTypeValue, x => x.CompoundTypeParameter);
+         dto.PKaParameter = _parameterMapper.MapFrom(pKaParameter, dto, x => x.PKa, x => x.PKaParameter);
+         return dto;
       }
    }
 }

@@ -28,10 +28,7 @@ namespace PKSim.Presentation.Presenters.Compounds
          _view.Display();
       }
 
-      public override object Subject
-      {
-         get { return _compound; }
-      }
+      public override object Subject => _compound;
 
       protected override void UpdateCaption()
       {

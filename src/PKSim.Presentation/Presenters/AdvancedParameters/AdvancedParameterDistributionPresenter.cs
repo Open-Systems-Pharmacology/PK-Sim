@@ -251,7 +251,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
 
       public string GenderDisplayFor(string genderId)
       {
-         if (string.Equals(genderId, CoreConstants.Population.AllGender))
+         if (string.Equals(genderId, CoreConstants.Population.ALL_GENDER))
             return PKSimConstants.UI.AllGender;
 
          var gender = _vectorialParametersContainer.AllGenders.Distinct().FindByName(genderId);
@@ -265,7 +265,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
             yield return allGenders[0].Name;
          else
          {
-            yield return CoreConstants.Population.AllGender;
+            yield return CoreConstants.Population.ALL_GENDER;
             foreach (var gender in allGenders)
                yield return gender.Name;
          }

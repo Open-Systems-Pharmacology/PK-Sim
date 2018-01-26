@@ -158,6 +158,12 @@ namespace PKSim.UI.Views.Parameters
          _presenter.CreatePopupMenuFor(parameterDTO).At(location);
       }
 
+      public bool ValueOriginVisible
+      {
+         get => _valueOriginBinder.ValueOriginVisible;
+         set => _valueOriginBinder.ValueOriginVisible = value;
+      }
+
       public bool ParameterNameVisible
       {
          set

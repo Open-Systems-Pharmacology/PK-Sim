@@ -222,9 +222,8 @@ namespace PKSim.Core.Model
          parameter.BuildMode = parameterMetaData.BuildMode;
          parameter.Info = parameterMetaData.Clone();
          parameter.Dimension = _dimensionRepository.DimensionByName(parameterMetaData.Dimension);
-         parameter.ValueOrigin.UpdateFrom(parameterMetaData.ValueOrigin);
-         //Update from does not update the Id of the ValueOrigin. We have to set it by hand based on the meta data values
-         parameter.ValueOrigin.Id = parameterMetaData.ValueOriginId;
+         parameter.IsDefault = !parameterMetaData.IsInput;
+         parameter.ValueOrigin.UpdateAllFrom(parameterMetaData.ValueOrigin);
 
          if (!string.IsNullOrEmpty(parameterMetaData.DefaultUnit))
             parameter.DisplayUnit = parameter.Dimension.Unit(parameterMetaData.DefaultUnit);

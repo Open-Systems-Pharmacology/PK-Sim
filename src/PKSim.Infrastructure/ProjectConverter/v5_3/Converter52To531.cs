@@ -218,7 +218,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
          var totalDrugMassParameter = applications.EntityAt<IParameter>(ConverterConstants.Parameter.TotalDrugMass);
          var globalCompoundParameter = root.Container(compoundName);
 
-         totalDrugMassParameter.Name = CoreConstants.Parameter.TotalDrugMass;
+         totalDrugMassParameter.Name = CoreConstants.Parameter.TOTAL_DRUG_MASS;
          globalCompoundParameter.Add(totalDrugMassParameter);
          applications.RemoveChild(totalDrugMassParameter);
          foreach (var path in totalDrugMassParameter.Formula.ObjectPaths)
@@ -235,7 +235,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
          foreach (var path in simulation.All<IObserver>().SelectMany(pathReferencingTotalDrugMass))
          {
             path.Replace(Constants.APPLICATIONS, compoundName);
-            path.Replace(ConverterConstants.Parameter.TotalDrugMass, CoreConstants.Parameter.TotalDrugMass);
+            path.Replace(ConverterConstants.Parameter.TotalDrugMass, CoreConstants.Parameter.TOTAL_DRUG_MASS);
          }
       }
 

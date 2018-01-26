@@ -174,10 +174,10 @@ namespace PKSim.Core.Services
          var binName = binContainerName(binIndex);
          var binContainer = applicBuilder.GetSingleChildByName<IContainer>(binName);
 
-         var numberOfParticlesFactor = binContainer.Parameter(CoreConstants.Parameter.NumberOfParticlesFactor);
+         var numberOfParticlesFactor = binContainer.Parameter(CoreConstants.Parameter.NUMBER_OF_PARTICLES_FACTOR);
          numberOfParticlesFactor.Value = binNumberOfParticlesFactor;
 
-         var particleRadius = binContainer.Parameter(CoreConstants.Parameter.StartParticleRadius);
+         var particleRadius = binContainer.Parameter(CoreConstants.Parameter.START_PARTICLE_RADIUS);
          particleRadius.Value = binRadius;
 
          // add application molecule in particle bin and set its formula

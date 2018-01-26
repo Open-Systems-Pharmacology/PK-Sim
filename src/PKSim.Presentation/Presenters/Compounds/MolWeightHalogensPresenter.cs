@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Core;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -54,9 +54,12 @@ namespace PKSim.Presentation.Presenters.Compounds
       private bool isHalogens(IParameter parameter)
       {
          if (parameter.GroupName != CoreConstants.Groups.COMPOUND_MW) return false;
-         if (string.Equals(parameter.Name, Constants.Parameters.MOL_WEIGHT)) return false;
-         if (string.Equals(parameter.Name, CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT)) return false;
-         if (string.Equals(parameter.Name, CoreConstants.Parameter.HAS_HALOGENS)) return false;
+         if (parameter.NameIsOneOf(
+            Constants.Parameters.MOL_WEIGHT, 
+            CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT, 
+            CoreConstants.Parameter.HAS_HALOGENS))
+            return false;
+
          return true;
       }
    }

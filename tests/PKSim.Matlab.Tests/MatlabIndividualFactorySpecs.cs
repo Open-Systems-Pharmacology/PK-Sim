@@ -35,7 +35,7 @@ namespace PKSim.Matlab
          base.Context();
          _matlabOriginData = new OriginData
          {
-            Species = CoreConstants.Species.Human,
+            Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
             Age = 30,
             Weight = 75,
@@ -65,7 +65,7 @@ namespace PKSim.Matlab
          base.Context();
          _matlabOriginData = new OriginData
          {
-            Species = CoreConstants.Species.Human,
+            Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
             Age = 30,
             Weight = 75,
@@ -87,7 +87,7 @@ namespace PKSim.Matlab
       }
    }
 
-   public class When_retrieving_the_distributed_parmaeter_based_on_a_valid_origin_data : concern_for_MatlabIndividualFactory
+   public class When_retrieving_the_distributed_parameter_based_on_a_valid_origin_data : concern_for_MatlabIndividualFactory
    {
       private DistributedParameterValue[] _results;
 
@@ -96,7 +96,7 @@ namespace PKSim.Matlab
          base.Context();
          _matlabOriginData = new OriginData
          {
-            Species = CoreConstants.Species.Human,
+            Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
             Age = 30,
             Weight = 75,

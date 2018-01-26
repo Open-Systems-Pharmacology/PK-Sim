@@ -36,7 +36,7 @@ namespace PKSim.IntegrationTests
       public void the_value_for_mean_body_weight_for_all_species_but_human_should_be_equal_to_the_weight_value()
       {
          var errorList = new List<string>();
-         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.Human))
+         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.HUMAN))
          {
             var individualForSpecies = _individualRetriever.DefaultIndividualFor(species);
             double meanWeight = individualForSpecies.MeanWeight;
@@ -53,7 +53,7 @@ namespace PKSim.IntegrationTests
       public void the_value_for_small_and_large_intestine_volume_should_be_equal_to_the_default_volume()
       {
          var errorList = new List<string>();
-         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.Human))
+         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.HUMAN))
          {
             var individualForSpecies = _individualRetriever.DefaultIndividualFor(species);
             var smallIntestine = individualForSpecies.Organism.Organ(CoreConstants.Organ.SmallIntestine);
@@ -78,12 +78,12 @@ namespace PKSim.IntegrationTests
          var errorList = new List<string>();
 
          var mouse = _individualRetriever.DefaultIndividualFor(
-            _speciesRepository.All().FindByName(CoreConstants.Species.Mouse));
+            _speciesRepository.All().FindByName(CoreConstants.Species.MOUSE));
          var mouseTissueOrgans = mouse.Organism.OrgansByType(OrganType.Tissue).ToList();
 
-         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.Human))
+         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.HUMAN))
          {
-            var individualForSpecies = species.Name.Equals(CoreConstants.Species.Mouse)
+            var individualForSpecies = species.Name.Equals(CoreConstants.Species.MOUSE)
                ? mouse
                : _individualRetriever.DefaultIndividualFor(species);
 

@@ -169,7 +169,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _speciesPopulation.Name = CoreConstants.Population.Pregnant;
+         _speciesPopulation.Name = CoreConstants.Population.PREGNANT;
       }
 
       [Observation]

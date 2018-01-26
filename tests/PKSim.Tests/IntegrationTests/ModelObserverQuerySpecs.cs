@@ -115,7 +115,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void concentration_in_lumen_observer_should_be_defined_in_all_lumen_segments_except_feces()
       {
-         var tags = new Tags {new Tag(CoreConstants.Tags.LumenSegment)};
+         var tags = new Tags {new Tag(CoreConstants.Tags.LUMEN_SEGMENT)};
 
          var lumenSegment = A.Fake<IContainer>().WithName("Whatever, just not feces");
          A.CallTo(() => lumenSegment.Tags).Returns(tags);

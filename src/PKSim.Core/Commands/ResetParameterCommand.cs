@@ -16,10 +16,7 @@ namespace PKSim.Core.Commands
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
          _oldValue = _parameter.Value;
-         SaveValueOriginFor(_parameter);
-
-         //do not update value origin automatically when resetting a parameter
-         UpdateParameter(context, updateValueOrigin: false);
+         UpdateParameter(context);
          Description = ParameterMessages.ResetParameterValue(_parameter, context.DisplayNameFor(_parameter), _oldValue);
       }
 
@@ -38,7 +35,7 @@ namespace PKSim.Core.Commands
          parameter.ValueOrigin.UpdateFrom(valueOrigin);
 
          //reset only available for trully default parameter with a default value
-         parameter.ValueOrigin.Default = true;
+         parameter.IsDefault = true;
       }
 
       protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)

@@ -54,7 +54,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_compound_advance_parmaeter_presenter_is_editing_a_compound : concern_for_CompoundAdvancedParametersPresenter
+   public class When_the_compound_advance_parameter_presenter_is_editing_a_compound : concern_for_CompoundAdvancedParametersPresenter
    {
       private Compound _compound;
 

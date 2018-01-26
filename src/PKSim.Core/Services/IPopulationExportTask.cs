@@ -35,7 +35,7 @@ namespace PKSim.Core.Services
 
       /// <summary>
       ///    Returns a DataTable containing one row per advanced parameter in the <paramref name="populationSimulation" /> as well as all
-      ///    variable parmaeters defined in the underlying population. One column is created per individual
+      ///    variable parameters defined in the underlying population. One column is created per individual
       ///    The First Columns contains the consolidated path (Starting with Organism for instance) of the parameter.
       ///   <param name="populationSimulation">The simulation using the population to export</param>
       ///   <param name="includeUnitsInHeader">If true, then the column header will include the parameter base unit</param>

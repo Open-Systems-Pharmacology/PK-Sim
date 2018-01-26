@@ -14,6 +14,7 @@ using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using OSPSuite.Core.Domain;
+using PKSim.Presentation.Presenters;
 
 namespace PKSim.Presentation
 {
@@ -25,6 +26,7 @@ namespace PKSim.Presentation
       protected IParameterTask _parameterTask;
       protected ICommandCollector _commandRegister;
       protected IRepresentationInfoRepository _representationInfoRepository;
+      protected IEditValueOriginPresenter _editValueOriginPresenter;
 
       protected override void Context()
       {
@@ -34,7 +36,8 @@ namespace PKSim.Presentation
          _molWeightsHalogenPresenters = A.Fake<IMolWeightHalogensPresenter>();
          _molWeightDTOMapper = A.Fake<ICompoundToMolWeightDTOMapper>();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
-         sut = new MolWeightGroupPresenter(_view, _representationInfoRepository, _molWeightDTOMapper, _molWeightsHalogenPresenters, _parameterTask);
+         _editValueOriginPresenter= A.Fake<IEditValueOriginPresenter>();   
+         sut = new MolWeightGroupPresenter(_view, _representationInfoRepository, _molWeightDTOMapper, _molWeightsHalogenPresenters, _parameterTask, _editValueOriginPresenter);
          sut.InitializeWith(_commandRegister);
       }
    }
@@ -47,9 +50,9 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_intitialize_the_halogens_presenter_as_well()
+      public void should_intitialize_all_sub_presenters_halogens_presenter_as_well()
       {
-         A.CallTo(() => _molWeightsHalogenPresenters.InitializeWith(_commandRegister)).MustHaveHappened();
+         A.CallTo(() => _molWeightsHalogenPresenters.InitializeWith(sut)).MustHaveHappened();
       }
    }
 

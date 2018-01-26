@@ -93,7 +93,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void all_parmaeters_defined_in_a_template_building_blocks_should_have_an_origin_parameter_id_set()
+      public void all_parameters_defined_in_a_template_building_blocks_should_have_an_origin_parameter_id_set()
       {
          var allParameters = _simulation.ParametersOfType(PKSimBuildingBlockType.Template)
             .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId));
@@ -162,7 +162,7 @@ namespace PKSim.IntegrationTests
          foreach (var pop in _allPopulations)
          {
             //currently simulations with pregnant pop cannot be created
-            if (pop.Name.Equals(CoreConstants.Population.Pregnant))
+            if (pop.Name.Equals(CoreConstants.Population.PREGNANT))
                continue; 
 
             await runPopulationSimulationFor(pop.Name, errors);
@@ -271,7 +271,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void all_parmaeters_defined_in_a_template_building_blocks_should_have_an_origin_parameter_id_set()
+      public void all_parameters_defined_in_a_template_building_blocks_should_have_an_origin_parameter_id_set()
       {
          var allParameters = _simulation.ParametersOfType(PKSimBuildingBlockType.Template)
             .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId));

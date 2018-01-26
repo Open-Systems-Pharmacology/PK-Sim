@@ -57,7 +57,7 @@ namespace PKSim.Core.Model
 
       public Individual CreateParameterLessIndividual()
       {
-         var species = _speciesRepository.FindByName(CoreConstants.Species.Human);
+         var species = _speciesRepository.FindByName(CoreConstants.Species.HUMAN);
          var originData = new OriginData
          {
             Species = species,

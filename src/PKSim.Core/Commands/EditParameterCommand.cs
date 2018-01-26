@@ -9,9 +9,10 @@ namespace PKSim.Core.Commands
    public abstract class EditParameterCommand : BuildingBlockChangeCommand
    {
       protected IParameter _parameter;
-      protected ValueOrigin _oldValueOrigin;
+
       public string ParameterId { get; }
-      public bool AlteredOn { get; protected set; }
+      private bool _alteredOn;
+
       public string SimulationId { get; protected set; }
 
       protected EditParameterCommand(IParameter parameter)
@@ -95,11 +96,11 @@ namespace PKSim.Core.Commands
          bool altered = simulation.GetAltered(_parameter.Origin.BuilingBlockId);
 
          //this is a direct command
-         if (AlteredOn == false)
+         if (_alteredOn == false)
          {
             //this is the command where altered was switch from false to true => alteredOn = true
             if (altered == false)
-               AlteredOn = true;
+               _alteredOn = true;
 
             simulation.SetAltered(_parameter.Origin.BuilingBlockId, altered: true);
          }
@@ -107,68 +108,15 @@ namespace PKSim.Core.Commands
          else
          {
             simulation.SetAltered(_parameter.Origin.BuilingBlockId, altered: false);
-            AlteredOn = false;
+            _alteredOn = false;
          }
       }
 
-      protected void SaveValueOriginFor(IParameter parameter)
-      {
-         _oldValueOrigin = parameter.ValueOrigin.Clone();
-      }
-
-      protected virtual void UpdateParameter(IExecutionContext context, bool updateValueOrigin = true)
+      protected virtual void UpdateParameter(IExecutionContext context)
       {
          var bbParameter = OriginParameterFor(_parameter, context);
          UpdateParameter(_parameter, context);
          UpdateParameter(bbParameter, context);
-
-         if (updateValueOrigin)
-            UpdateValueOriginInParameters(_parameter, bbParameter);
-      }
-
-      protected virtual void UpdateValueOriginInParameters(IParameter parameter, IParameter buildingBlockParameter)
-      {
-         //This is an undo command
-         if (_oldValueOrigin != null)
-         {
-            //Simply reset the parameter value origin
-            var currentValueOrigin = parameter.ValueOrigin.Clone();
-            updateValueOriginIn(parameter, _oldValueOrigin);
-            updateValueOriginIn(buildingBlockParameter, _oldValueOrigin);
-            _oldValueOrigin = currentValueOrigin;
-            return;
-         }
-
-         //This is a value being set directly: Only save the ValueOrigin for default parameter
-         if (!parameter.ValueOrigin.Default)
-            return;
-
-         SaveValueOriginFor(parameter);
-         markDefaultValueOriginAsChanged(parameter.ValueOrigin);
-      }
-
-      private static bool valueOriginShouldBeUpdatedAutomatically(ValueOrigin valueOrigin)
-      {
-         return valueOrigin.Source == ValueOriginSources.Undefined &&
-                valueOrigin.Method == ValueOriginDeterminationMethods.Undefined;
-      }
-
-      private void updateValueOriginIn(IParameter parameter, ValueOrigin valueOrigin)
-      {
-         if (parameter == null || valueOrigin == null)
-            return;
-
-         parameter.ValueOrigin.UpdateFrom(valueOrigin);
-      }
-
-      private static void markDefaultValueOriginAsChanged(ValueOrigin valueOrigin)
-      {
-         valueOrigin.Default = false;
-         if (!valueOriginShouldBeUpdatedAutomatically(valueOrigin))
-            return;
-
-         valueOrigin.Source = ValueOriginSources.Unknown;
-         valueOrigin.Method = ValueOriginDeterminationMethods.Undefined;
       }
 
       public override void RestoreExecutionData(IExecutionContext context)
@@ -187,8 +135,7 @@ namespace PKSim.Core.Commands
       {
          base.UpdateInternalFrom(originalCommand);
          var editChangeCommand = originalCommand.DowncastTo<EditParameterCommand>();
-         AlteredOn = editChangeCommand.AlteredOn;
-         _oldValueOrigin = editChangeCommand._oldValueOrigin;
+         _alteredOn = editChangeCommand._alteredOn;
       }
    }
 }

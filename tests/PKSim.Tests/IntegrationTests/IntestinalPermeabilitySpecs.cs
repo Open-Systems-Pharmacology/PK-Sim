@@ -43,7 +43,7 @@ namespace PKSim.IntegrationTests
          intestinalPermGroup.AddAlternative(alternative);
 
          _intestinalPermeabilityCalcMethods = cmRepo.Where(cm => cm.Category.Equals(CoreConstants.Category.IntestinalPermeability)).ToList();
-         _alternativeIntestinalPermParam = alternative.Parameter(CoreConstants.Parameter.SpecificIntestinalPermeability);
+         _alternativeIntestinalPermParam = alternative.Parameter(CoreConstants.Parameter.SPECIFIC_INTESTINAL_PERMEABILITY);
          _simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
          _simulationRunOptions = new SimulationRunOptions();
       }

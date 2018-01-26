@@ -27,7 +27,7 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          _flatValueOrigin.Description = "Hello";
-         _flatValueOrigin.Method = ValueOriginDeterminationMethodId.InVitroAssay;
+         _flatValueOrigin.Method = ValueOriginDeterminationMethodId.InVitro;
          _flatValueOrigin.Source = ValueOriginSourceId.Internet;
       }
 
@@ -40,7 +40,7 @@ namespace PKSim.Infrastructure
       public void should_return_a_value_origin_having_the_expected_properties()
       {
          _valueOrigin.Description.ShouldBeEqualTo(_flatValueOrigin.Description);
-         _valueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.InVitroAssay);
+         _valueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.InVitro);
          _valueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Internet);
       }
    }

@@ -40,9 +40,9 @@ namespace PKSim.Presentation
          _project = A.Fake<PKSimProject>();
          _compound1 = A.Fake<Compound>();
          _individual = A.Fake<Individual>();
-         _human = new Species().WithName(CoreConstants.Species.Human);
-         _rat = new Species().WithName(CoreConstants.Species.Rat);
-         _mouse = new Species().WithName(CoreConstants.Species.Mouse);
+         _human = new Species().WithName(CoreConstants.Species.HUMAN);
+         _rat = new Species().WithName(CoreConstants.Species.RAT);
+         _mouse = new Species().WithName(CoreConstants.Species.MOUSE);
          A.CallTo(() => _individual.Species).Returns(_human);
          _populationSimulation = A.Fake<PopulationSimulation>();
          A.CallTo(() => _populationSimulation.Compounds).Returns(new[] {_compound1});

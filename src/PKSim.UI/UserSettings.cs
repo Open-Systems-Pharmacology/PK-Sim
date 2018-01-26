@@ -101,7 +101,7 @@ namespace PKSim.UI
          ActiveSkin = CoreConstants.DEFAULT_SKIN;
          NumberOfBins = CoreConstants.DEFAULT_NUMBER_OF_BINS;
          NumberOfIndividualsPerBin = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_PER_BIN;
-         DefaultSpecies = CoreConstants.Species.Human;
+         DefaultSpecies = CoreConstants.Species.HUMAN;
          DefaultPopulation = CoreConstants.Population.ICRP;
          DefaultParameterGroupingMode = ParameterGroupingModeId.Simple;
          LayoutVersion = CoreConstants.LAYOUT_VERSION;

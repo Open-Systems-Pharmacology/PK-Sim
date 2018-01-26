@@ -91,13 +91,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
       public void UpdateGainPerChargeInAlternatives(Compound compound, bool updateValues = true)
       {
-         var gainPerCharge = compound.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge);
+         var gainPerCharge = compound.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE);
          gainPerCharge.GroupName = CoreConstants.Groups.COMPOUND_SOLUBILITY;
 
          var solGroup = compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_SOLUBILITY);
          foreach (var alternative in solGroup.AllAlternatives)
          {
-            var alternativeParameter = alternative.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge);
+            var alternativeParameter = alternative.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE);
             if (alternativeParameter != null)
             {
                if (updateValues)

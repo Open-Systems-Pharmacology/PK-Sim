@@ -25,50 +25,57 @@ namespace PKSim.Presentation.Presenters.Parameters
       IPresenterWithContextMenu<IParameterDTO>
    {
       /// <summary>
-      ///    Returns true if the parmaeter is distributed otherwise false
+      ///    Returns <c>true</c> if the parameter is distributed otherwise <c>false</c>
       /// </summary>
       bool ParameterIsDistributed(IParameterDTO parameterDTO);
 
       /// <summary>
       ///    Is the grouping panel visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool GroupingVisible { set; }
 
       /// <summary>
       ///    Is the scaling panel visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool ScalingVisible { set; }
 
       /// <summary>
       ///    Is the header panel visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool HeaderVisible { set; }
 
       /// <summary>
       ///    Is the row indicator visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool RowIndicatorVisible { set; }
 
       /// <summary>
       ///    Are the container names visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool ContainerVisible { set; }
 
       /// <summary>
       ///    Is the distribution column visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool DistributionVisible { set; }
+
+
+      /// <summary>
+      ///    Is the value origin column visible?
+      ///    Default is <c>true</c>
+      /// </summary>
+      bool ValueOriginVisible { set; }
 
       /// <summary>
       ///    Configure the editor to display the most simple view possible
       ///    Grouping, scaling, headers will be hidden and the favorite column as well
-      ///    Default is false
+      ///    Default is <c>false</c>
       /// </summary>
       bool IsSimpleEditor { set; }
 
@@ -84,7 +91,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       /// <summary>
       ///    True if multiple parameter can be selected.
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool AllowMultiSelect { set; }
 
@@ -115,7 +122,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       /// <summary>
       ///    if set to true, parameter will be compared for sort only if sharing the same hiearchy of visible groups
-      ///    It is useful for events, default is false
+      ///    It is useful for events, default is <c>false</c>
       /// </summary>
       bool UseAdvancedSortingMode { set; }
    }
@@ -173,7 +180,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public override bool ShowFavorites
       {
-         set { _view.FavoritesVisible = value; }
+         set => _view.FavoritesVisible = value;
       }
 
       protected bool AllParametersHaveTheSameDisplayName
@@ -223,17 +230,17 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool ScalingVisible
       {
-         set { _view.ScalingVisible = value; }
+         set => _view.ScalingVisible = value;
       }
 
       public bool AllowMultiSelect
       {
-         set { _view.AllowMultiSelect = value; }
+         set => _view.AllowMultiSelect = value;
       }
 
       public string Caption
       {
-         set { _view.Caption = value; }
+         set => _view.Caption = value;
       }
 
       public int OptimalHeight => _view.OptimalHeight;
@@ -245,17 +252,17 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool HeaderVisible
       {
-         set { _view.HeaderVisible = value; }
+         set => _view.HeaderVisible = value;
       }
 
       public bool RowIndicatorVisible
       {
-         set { _view.ShowRowIndicator = value; }
+         set => _view.ShowRowIndicator = value;
       }
 
       public bool ContainerVisible
       {
-         set { _view.SetVisibility(PathElement.Container, value); }
+         set => _view.SetVisibility(PathElement.Container, value);
       }
 
       public void SaveEditor()
@@ -265,12 +272,17 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool UseAdvancedSortingMode
       {
-         set { _view.UseAdvancedSortingMode = value; }
+         set => _view.UseAdvancedSortingMode = value;
       }
 
       public bool DistributionVisible
       {
-         set { _view.DistributionVisible = value; }
+         set => _view.DistributionVisible = value;
+      }
+
+      public bool ValueOriginVisible
+      {
+         set => _view.ValueOriginVisible = value;
       }
 
       public bool IsSimpleEditor
@@ -284,6 +296,7 @@ namespace PKSim.Presentation.Presenters.Parameters
             ContainerVisible = !value;
             AllowMultiSelect = !value;
             ShowFavorites = !value;
+            ValueOriginVisible = !value;
             Description = string.Empty;
          }
       }
@@ -300,7 +313,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool GroupingVisible
       {
-         set { _view.GroupingVisible = value; }
+         set => _view.GroupingVisible = value;
       }
 
       protected override IEnumerable<IParameterDTO> SelectedParameters()

@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views.Compounds;
@@ -23,8 +21,8 @@ namespace PKSim.Presentation.Presenters.Compounds
       private IReadOnlyList<LipophilictyAlternativeDTO> _lipophilicityDTOs;
 
       public LipophilicityGroupPresenter(ILipophilicityGroupView view, ICompoundAlternativeTask compoundAlternativeTask,
-                                         IRepresentationInfoRepository representationRepo, 
-                                         IParameterGroupAlternativeToLipophilicityAlternativeDTOMapper lipophilicityAlternativeDTOMapper, IDialogCreator dialogCreator) :
+         IRepresentationInfoRepository representationRepo,
+         IParameterGroupAlternativeToLipophilicityAlternativeDTOMapper lipophilicityAlternativeDTOMapper, IDialogCreator dialogCreator) :
          base(view, representationRepo, compoundAlternativeTask, dialogCreator, CoreConstants.Groups.COMPOUND_LIPOPHILICITY)
       {
          _lipophilicityAlternativeDTOMapper = lipophilicityAlternativeDTOMapper;
@@ -32,7 +30,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void SetLipophilicityValue(LipophilictyAlternativeDTO lipophilictyAlternativeDTO, double newValue)
       {
-        AddCommand(_compoundAlternativeTask.SetAlternativeParameterValue(lipophilictyAlternativeDTO.LipophilictyParameter.Parameter, newValue));
+         AddCommand(_compoundAlternativeTask.SetAlternativeParameterValue(lipophilictyAlternativeDTO.LipophilictyParameter.Parameter, newValue));
       }
 
       protected override IEnumerable<ParameterAlternativeDTO> FillUpParameterGroupAlternatives()

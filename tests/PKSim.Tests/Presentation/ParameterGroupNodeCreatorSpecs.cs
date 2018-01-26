@@ -26,7 +26,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_resolving_the_parameter_group_node_for_a_group_containing_sub_groups_without_parmaeters : concern_for_ParameterGroupNodeCreator
+   public class When_resolving_the_parameter_group_node_for_a_group_containing_sub_groups_without_parameters : concern_for_ParameterGroupNodeCreator
    {
       private ITreeNode _rootNode;
       private ITreeNode _topNode;

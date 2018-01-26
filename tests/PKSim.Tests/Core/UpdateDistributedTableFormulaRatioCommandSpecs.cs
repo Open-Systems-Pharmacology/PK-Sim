@@ -26,7 +26,7 @@ namespace PKSim.Core
    }
 
    
-   public class When_updating_the_value_of_a_distributed_parmaeter_table_using_the_ratio_command : concern_for_UpdateDiscreteDistributedParameterTableFormulaCommand
+   public class When_updating_the_value_of_a_distributed_parameter_table_using_the_ratio_command : concern_for_UpdateDiscreteDistributedParameterTableFormulaCommand
    {
       protected override void Context()
       {

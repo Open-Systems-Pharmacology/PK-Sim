@@ -17,7 +17,7 @@ namespace PKSim.IntegrationTests
       {
          _originData=new OriginData();
          _originData.Species=new Species();
-         _originData.Species.Name = CoreConstants.Species.Human;
+         _originData.Species.Name = CoreConstants.Species.HUMAN;
 
          sut = IoC.Resolve<IModelPropertiesTask>();
 

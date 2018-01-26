@@ -84,7 +84,7 @@ namespace PKSim.UI
 
       public SuperToolTip ToolTipFor(ParameterAlternativeDTO parameterAlternativeDTO)
       {
-         return CreateToolTip(parameterAlternativeDTO.Description);
+         return ToolTipFor(parameterAlternativeDTO.ValueOrigin);
       }
 
       public SuperToolTip ToolTipFor(IEnumerable<ToolTipPart> toolTipParts)

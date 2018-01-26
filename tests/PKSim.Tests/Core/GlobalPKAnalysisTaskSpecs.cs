@@ -122,7 +122,7 @@ namespace PKSim.Core
          base.Context();
          var protocol = A.Fake<Protocol>();
          _compoundProperties.ProtocolProperties.Protocol = protocol;
-         _species.Name = CoreConstants.Species.Human;
+         _species.Name = CoreConstants.Species.HUMAN;
 
 
          var schemaItem = new SchemaItem {ApplicationType = ApplicationTypes.Intravenous};
@@ -158,7 +158,7 @@ namespace PKSim.Core
          base.Context();
          var protocol = A.Fake<Protocol>();
          _compoundProperties.ProtocolProperties.Protocol = protocol;
-         _species.Name = CoreConstants.Species.Human;
+         _species.Name = CoreConstants.Species.HUMAN;
 
 
          var schemaItem = new SchemaItem {ApplicationType = ApplicationTypes.Oral};
@@ -194,7 +194,7 @@ namespace PKSim.Core
          base.Context();
          var protocol = A.Fake<Protocol>();
          _compoundProperties.ProtocolProperties.Protocol = protocol;
-         _species.Name = CoreConstants.Species.Human;
+         _species.Name = CoreConstants.Species.HUMAN;
          _simulation.CompoundPKFor(_compoundName).AucIV = 5;
          _bioaValue = _venousBloodPK[Constants.PKParameters.AUC_inf].Value / _simulation.AucIVFor(_compoundName).Value;
 
@@ -228,7 +228,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _species.Name = CoreConstants.Species.Mouse;
+         _species.Name = CoreConstants.Species.MOUSE;
          var protocol = A.Fake<Protocol>();
          _compoundProperties.ProtocolProperties.Protocol = protocol;
 

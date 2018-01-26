@@ -12,8 +12,7 @@ namespace PKSim.Core.Extensions
 
       public static bool IsIdenticalTo(this ValueOrigin valueOrigin, ValueOrigin otherValueOrigin)
       {
-         return valueOrigin.Default == otherValueOrigin.Default &&
-                valueOrigin.Source == otherValueOrigin.Source &&
+         return valueOrigin.Source == otherValueOrigin.Source &&
                 valueOrigin.Method == otherValueOrigin.Method &&
                 string.Equals(valueOrigin.Description, otherValueOrigin.Description);
       }

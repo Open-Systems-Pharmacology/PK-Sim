@@ -5,6 +5,7 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Columns;
+using OSPSuite.UI.Binders;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
@@ -17,7 +18,8 @@ namespace PKSim.UI.Views.Compounds
    {
       private IGridViewColumn _colValue;
 
-      public PermeabilityGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever) : base(toolTipCreator, imageListRetriever)
+      public PermeabilityGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<PermeabilityAlternativeDTO> valueOriginBinder) : 
+         base(toolTipCreator, imageListRetriever, valueOriginBinder)
       {
          InitializeComponent();
       }
@@ -54,9 +56,6 @@ namespace PKSim.UI.Views.Compounds
          return _colValue.XtraColumn == gridColumn;
       }
 
-      private IPermeabilityGroupPresenter permeabilityGroupPresenter
-      {
-         get { return _presenter.DowncastTo<IPermeabilityGroupPresenter>(); }
-      }
+      private IPermeabilityGroupPresenter permeabilityGroupPresenter => _presenter.DowncastTo<IPermeabilityGroupPresenter>();
    }
 }

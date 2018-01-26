@@ -45,11 +45,11 @@ namespace PKSim.Infrastructure.Services
             return dataTable;
 
          var pkAnalyses = populationSimulation.PKAnalyses;
-         dataTable.AddColumn<int>(CoreConstants.SimulationResults.IndividualId);
-         dataTable.AddColumn<string>(CoreConstants.SimulationResults.QuantityPath);
-         dataTable.AddColumn<string>(CoreConstants.SimulationResults.Parameter);
-         dataTable.AddColumn<string>(CoreConstants.SimulationResults.Value);
-         dataTable.AddColumn<string>(CoreConstants.SimulationResults.Unit);
+         dataTable.AddColumn<int>(CoreConstants.SimulationResults.INDIVIDUAL_ID);
+         dataTable.AddColumn<string>(CoreConstants.SimulationResults.QUANTITY_PATH);
+         dataTable.AddColumn<string>(CoreConstants.SimulationResults.PARAMETER);
+         dataTable.AddColumn<string>(CoreConstants.SimulationResults.VALUE);
+         dataTable.AddColumn<string>(CoreConstants.SimulationResults.UNIT);
 
          dataTable.BeginLoadData();
          foreach (var pkParameter in pkAnalyses.All())
@@ -59,11 +59,11 @@ namespace PKSim.Infrastructure.Services
             parameter.Values.Each((value, index) =>
             {
                var row = dataTable.NewRow();
-               row[CoreConstants.SimulationResults.IndividualId] = index;
-               row[CoreConstants.SimulationResults.QuantityPath] = parameter.QuantityPath;
-               row[CoreConstants.SimulationResults.Parameter] = parameter.Name;
-               row[CoreConstants.SimulationResults.Value] = parameter.ConvertToUnit(value, unit).ConvertedTo<string>();
-               row[CoreConstants.SimulationResults.Unit] = unit.Name;
+               row[CoreConstants.SimulationResults.INDIVIDUAL_ID] = index;
+               row[CoreConstants.SimulationResults.QUANTITY_PATH] = parameter.QuantityPath;
+               row[CoreConstants.SimulationResults.PARAMETER] = parameter.Name;
+               row[CoreConstants.SimulationResults.VALUE] = parameter.ConvertToUnit(value, unit).ConvertedTo<string>();
+               row[CoreConstants.SimulationResults.UNIT] = unit.Name;
                dataTable.Rows.Add(row);
             });
          }
@@ -81,9 +81,9 @@ namespace PKSim.Infrastructure.Services
          var simulationResults = simulation.Results;
 
          var allQuantities = _quantityRetriever.QuantitiesFrom(simulation);
-         var timeColumnName = Constants.NameWithUnitFor(CoreConstants.SimulationResults.Time, _timeDimension.BaseUnit);
+         var timeColumnName = Constants.NameWithUnitFor(CoreConstants.SimulationResults.TIME, _timeDimension.BaseUnit);
          var quantityPathCache = new Cache<string, string>();
-         dataTable.AddColumn<int>(CoreConstants.SimulationResults.IndividualId);
+         dataTable.AddColumn<int>(CoreConstants.SimulationResults.INDIVIDUAL_ID);
          dataTable.AddColumn<string>(timeColumnName);
 
          var allQuantityPaths = simulationResults.AllQuantityPaths();
@@ -108,7 +108,7 @@ namespace PKSim.Infrastructure.Services
             for (int i = 0; i < numberOfValues; i++)
             {
                var row = dataTable.NewRow();
-               row[CoreConstants.SimulationResults.IndividualId] = individualResults.IndividualId;
+               row[CoreConstants.SimulationResults.INDIVIDUAL_ID] = individualResults.IndividualId;
                row[timeColumnName] = simulationResults.Time[i].ConvertedTo<string>();
 
                foreach (var quantityPath in allQuantityPaths)

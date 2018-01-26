@@ -15,7 +15,7 @@ namespace PKSim.Core.Model
       public virtual int RaceIndex { get; set; }
       public virtual int Sequence { get; set; }
 
-      public virtual bool IsPreterm => string.Equals(Name, CoreConstants.Population.Preterm);
+      public virtual bool IsPreterm => string.Equals(Name, CoreConstants.Population.PRETERM);
 
       public virtual void AddGender(Gender gender)
       {

@@ -75,7 +75,7 @@ namespace PKSim.Presentation.DTO.Mappers
          parameterDTO.Sequence = parameter.Sequence;
          parameterDTO.PathElements = _parameterDisplayPathMapper.MapFrom(parameter);
 
-         //now create special list of values for parmaeter for our discrete parameters 
+         //now create special list of values for parameter for our discrete parameters 
          updateListOfValues(parameterDTO, parameter);
       }
 

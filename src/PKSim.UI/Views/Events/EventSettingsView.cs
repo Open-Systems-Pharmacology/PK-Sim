@@ -1,13 +1,12 @@
-﻿using OSPSuite.DataBinding;
+﻿using DevExpress.XtraLayout.Utils;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
-using DevExpress.XtraLayout.Utils;
-
 using PKSim.Presentation.DTO.Events;
 using PKSim.Presentation.Presenters.Events;
 using PKSim.Presentation.Views.Events;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Events
 {
@@ -57,8 +56,8 @@ namespace PKSim.UI.Views.Events
 
       public bool EventTemplateVisible
       {
-         set { layoutItemTemplate.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemTemplate.Visibility); }
+         set => layoutItemTemplate.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemTemplate.Visibility);
       }
    }
 }

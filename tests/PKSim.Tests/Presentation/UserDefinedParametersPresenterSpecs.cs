@@ -20,7 +20,7 @@ namespace PKSim.Presentation
       protected IParameterTask _parameterTask;
       protected IEditParameterPresenterTask _editParameterTask;
       protected IParameterToParameterDTOMapper _parameterDTOMapper;
-      protected IParameterContextMenuFactory _parmaeterContextMenuFactory;
+      protected IParameterContextMenuFactory _parameterContextMenuFactory;
 
       protected override void Context()
       {
@@ -29,9 +29,9 @@ namespace PKSim.Presentation
          _parameterTask = A.Fake<IParameterTask>();
          _editParameterTask = A.Fake<IEditParameterPresenterTask>();
          _parameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
-         _parmaeterContextMenuFactory = A.Fake<IParameterContextMenuFactory>();
+         _parameterContextMenuFactory = A.Fake<IParameterContextMenuFactory>();
 
-         sut = new UserDefinedParametersPresenter(_view, _scaleParameterPresenter, _editParameterTask, _parameterTask, _parameterDTOMapper, _parmaeterContextMenuFactory);
+         sut = new UserDefinedParametersPresenter(_view, _scaleParameterPresenter, _editParameterTask, _parameterTask, _parameterDTOMapper, _parameterContextMenuFactory);
 
          A.CallTo(() => _parameterDTOMapper.MapFrom(A<IParameter>._)).ReturnsLazily(x => new ParameterDTO(x.GetArgument<IParameter>(0)));
       }
@@ -52,9 +52,9 @@ namespace PKSim.Presentation
          _parameter3 = DomainHelperForSpecs.ConstantParameterWithValue(30);
          _parameters = new List<IParameter>(new[] {_parameter1, _parameter2, _parameter3});
 
-         _parameter1.ValueOrigin.Default = false;
-         _parameter2.ValueOrigin.Default = true;
-         _parameter3.ValueOrigin.Default = false;
+         _parameter1.IsDefault = false;
+         _parameter2.IsDefault = true;
+         _parameter3.IsDefault = false;
       }
 
       protected override void Because()

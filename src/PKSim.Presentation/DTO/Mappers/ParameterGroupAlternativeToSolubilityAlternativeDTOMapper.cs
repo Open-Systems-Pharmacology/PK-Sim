@@ -26,7 +26,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
          var solubility = parameterAlternative.Parameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH);
          var refPh = parameterAlternative.Parameter(CoreConstants.Parameter.REFERENCE_PH);
-         var gainPerCharge = parameterAlternative.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge);
+         var gainPerCharge = parameterAlternative.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE);
          solubilityAlternativeDTO.SolubilityParameter = _parameterDTOMapper.MapFrom(solubility, solubilityAlternativeDTO, dto => dto.Solubility, dto => dto.SolubilityParameter);
          solubilityAlternativeDTO.RefpHParameter = _parameterDTOMapper.MapFrom(refPh, solubilityAlternativeDTO, dto => dto.RefpH, dto => dto.RefpHParameter);
          solubilityAlternativeDTO.GainPerChargeParameter = _parameterDTOMapper.MapFrom(gainPerCharge, solubilityAlternativeDTO, dto => dto.GainPerCharge, dto => dto.GainPerChargeParameter);

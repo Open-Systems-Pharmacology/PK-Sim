@@ -30,7 +30,7 @@ namespace PKSim.Matlab
       {
          _male = new Gender().WithName(CoreConstants.Gender.Male);
          _female = new Gender().WithName(CoreConstants.Gender.Female);
-         _human = new Species().WithName(CoreConstants.Species.Human);
+         _human = new Species().WithName(CoreConstants.Species.HUMAN);
          _icrp = new SpeciesPopulation {IsHeightDependent = true, IsAgeDependent = true}.WithName(CoreConstants.Population.ICRP);
          _anotherPop = new SpeciesPopulation().WithName("Another Pop");
          _cmForHuman = new CalculationMethod();

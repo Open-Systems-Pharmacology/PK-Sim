@@ -41,14 +41,14 @@ namespace PKSim.ProjectConverter.v5_2
          var solGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_SOLUBILITY);
          foreach (var alternative in solGroup.AllAlternatives)
          {
-            alternative.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge).Value.ShouldBeEqualTo(1000);
+            alternative.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE).Value.ShouldBeEqualTo(1000);
          }
       }
 
       [Observation]
       public void should_have_added_the_gain_per_charge_parameter_to_the_compound()
       {
-         var solubilityParameter = _compound.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge);
+         var solubilityParameter = _compound.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE);
          solubilityParameter.ShouldNotBeNull();
          solubilityParameter.GroupName.ShouldBeEqualTo(CoreConstants.Groups.COMPOUND_SOLUBILITY);
       }

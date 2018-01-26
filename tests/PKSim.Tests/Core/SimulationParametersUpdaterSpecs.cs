@@ -24,7 +24,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_starting_the_reconciliation_of_parmaeters_in_a_simulation : concern_for_SimulationParametersUpdater
+   public class When_starting_the_reconciliation_of_parameters_in_a_simulation : concern_for_SimulationParametersUpdater
    {
       private Simulation _sourceSimulation;
       private Simulation _targetSimulation;

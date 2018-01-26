@@ -476,7 +476,7 @@ namespace PKSim.Core.Model
       public virtual double? TotalDrugMassFor(string compoundName)
       {
          //total drug mass is a parameter defined under the compound molecule global property
-         var totalDrugMassParameter = Model.Root.EntityAt<IParameter>(compoundName, CoreConstants.Parameter.TotalDrugMass);
+         var totalDrugMassParameter = Model.Root.EntityAt<IParameter>(compoundName, CoreConstants.Parameter.TOTAL_DRUG_MASS);
          return totalDrugMassParameter?.Value;
       }
 

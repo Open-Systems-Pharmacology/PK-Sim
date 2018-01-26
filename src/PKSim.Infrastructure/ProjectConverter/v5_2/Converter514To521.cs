@@ -192,7 +192,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
          if (applications != null)
          {
-            var allParticleFactors = applications.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameter.NumberOfParticlesFactor));
+            var allParticleFactors = applications.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameter.NUMBER_OF_PARTICLES_FACTOR));
             foreach (var allParticleFactor in allParticleFactors)
             {
                allParticleFactor.Value *= 1000;

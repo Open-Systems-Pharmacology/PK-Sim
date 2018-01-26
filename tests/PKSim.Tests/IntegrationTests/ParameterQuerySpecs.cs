@@ -19,7 +19,7 @@ namespace PKSim.IntegrationTests
       {
          base.Context();
          _originData = new OriginData();
-         _originData.Species = new Species().WithName(CoreConstants.Species.Human);
+         _originData.Species = new Species().WithName(CoreConstants.Species.HUMAN);
          _originData.SpeciesPopulation = new SpeciesPopulation().WithName(CoreConstants.Population.ICRP);
          _originData.Age = 25;
          _originData.Gender = new Gender().WithName(CoreConstants.Gender.Male);

@@ -44,7 +44,7 @@ namespace PKSim.Presentation.Services
 
       public ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup)
       {
-         var newParamGroupAlternative = _parameterAlternativeFactory.CreateAlternativeFor(compoundParameterGroup);
+         var newAlternative = _parameterAlternativeFactory.CreateAlternativeFor(compoundParameterGroup);
 
          using (var presenter = _applicationController.Start<IParameterAlternativeNamePresenter>())
          {
@@ -52,10 +52,9 @@ namespace PKSim.Presentation.Services
             if (!presenter.Edit(compoundParameterGroup))
                return new PKSimEmptyCommand();
 
-            newParamGroupAlternative.Name = presenter.Name;
-            newParamGroupAlternative.Description = presenter.Description;
+            newAlternative.Name = presenter.Name;
 
-            return AddParameterGroupAlternativeTo(compoundParameterGroup, newParamGroupAlternative);
+            return AddParameterGroupAlternativeTo(compoundParameterGroup, newAlternative);
          }
       }
 
@@ -99,28 +98,38 @@ namespace PKSim.Presentation.Services
       private bool simulationsAreUsingAlternativeContaining(IParameter parameter)
       {
          var alternative = parameter.ParentContainer as ParameterAlternative;
-         if (alternative == null) return false;
+         return alternative != null && simulationsAreUsingAlternative(alternative);
+      }
 
+      private bool simulationsAreUsingAlternative(ParameterAlternative alternative)
+      {
          var allCompoundGroupSelectionForAlternativeGroup = _buildingBlockRepository.All<Simulation>()
             .SelectMany(x => x.CompoundPropertiesList)
-            .SelectMany(x => x.CompoundGroupSelections.Where(groupSel => string.Equals(groupSel.GroupName, alternative.GroupName)));
+            .SelectMany(x => x.CompoundGroupSelections
+               .Where(groupSel => string.Equals(groupSel.GroupName, alternative.GroupName))
+            );
 
          return allCompoundGroupSelectionForAlternativeGroup.Any(x => string.Equals(x.AlternativeName, alternative.Name));
       }
 
-      public ICommand EditValueDescriptionFor(ParameterAlternative parameterAlternative)
+      public ICommand UpdateValueOrigin(ParameterAlternative parameterAlternative, ValueOrigin newValueOrigin)
       {
-         return _entityTask.EditDescription(parameterAlternative, PKSimConstants.UI.EditValueDescription);
+         var allNonDefaultParameters = parameterAlternative.AllParameters(x => !x.IsDefault);
+
+         var shouldChangeBuildingBlockVersion = simulationsAreUsingAlternative(parameterAlternative);
+         var updateValueOriginCommand = new UpdateParametersValueOriginCommand(allNonDefaultParameters, newValueOrigin, shouldChangeBuildingBlockVersion);
+
+         return updateValueOriginCommand.Run(_executionContext);
       }
 
       public IEnumerable<IParameter> PermeabilityValuesFor(Compound compound)
       {
-         return permeabilityParametersFor(compound, CoreConstants.Parameter.Permeability);
+         return permeabilityParametersFor(compound, CoreConstants.Parameter.PERMEABILITY);
       }
 
       public IEnumerable<IParameter> IntestinalPermeabilityValuesFor(Compound compound)
       {
-         return permeabilityParametersFor(compound, CoreConstants.Parameter.SpecificIntestinalPermeability);
+         return permeabilityParametersFor(compound, CoreConstants.Parameter.SPECIFIC_INTESTINAL_PERMEABILITY);
       }
 
       public ICommand SetDefaultAlternativeFor(ParameterAlternativeGroup parameterGroup, ParameterAlternative parameterAlternative)
@@ -140,7 +149,7 @@ namespace PKSim.Presentation.Services
 
          var refPh = solubilityAlternative.Parameter(CoreConstants.Parameter.REFERENCE_PH);
          var refSolubility = solubilityAlternative.Parameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH);
-         var gainPerCharge = solubilityAlternative.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge);
+         var gainPerCharge = solubilityAlternative.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE);
          var refSolubilityValue = refSolubility.Value;
 
          var formula = _formulaFactory.CreateTableFormula()
@@ -148,7 +157,7 @@ namespace PKSim.Presentation.Services
             .InitializedWith(PKSimConstants.UI.pH, PKSimConstants.UI.Solubility, refPh.Dimension, refSolubility.Dimension);
 
          compound.Parameter(CoreConstants.Parameter.REFERENCE_PH).Value = refPh.Value;
-         compound.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge).Value = gainPerCharge.Value;
+         compound.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE).Value = gainPerCharge.Value;
 
          double solFactorRefpH = compound.Parameter(CoreConstants.Parameter.SOLUBILITY_P_KA__P_H_FACTOR).Value;
          var allPh = new List<double>();
