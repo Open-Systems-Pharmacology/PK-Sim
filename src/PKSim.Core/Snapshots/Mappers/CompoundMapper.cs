@@ -6,7 +6,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using static PKSim.Core.CoreConstants.Groups;
-using static PKSim.Core.CoreConstants.Parameter;
+using static PKSim.Core.CoreConstants.Parameters;
 using SnapshotCompound = PKSim.Core.Snapshots.Compound;
 using ModelCompound = PKSim.Core.Model.Compound;
 

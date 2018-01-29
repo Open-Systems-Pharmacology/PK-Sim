@@ -55,19 +55,19 @@ namespace PKSim.IntegrationTests
          var brain = new Organ().WithName(CoreConstants.Organ.Brain);
          var brain_pls = new Compartment().WithName(CoreConstants.Compartment.Plasma).WithParentContainer(brain);
          var brain_pls_trans = new Container().WithName(_transporter.Name).WithParentContainer(brain_pls);
-         var relExp2ParamNorm = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.REL_EXP_NORM).WithParentContainer(brain_pls_trans);
-         var relExp2Param = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(brain_pls_trans);
+         var relExp2ParamNorm = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP_NORM).WithParentContainer(brain_pls_trans);
+         var relExp2Param = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(brain_pls_trans);
          relExp2Param.Origin.SimulationId = "Sim";
 
          var liver = new Organ().WithName(CoreConstants.Organ.Liver);
          var liver_enz = new Container().WithName(_enzyme.Name).WithParentContainer(liver);
-         var relExp1ParamNorm = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.REL_EXP_NORM).WithParentContainer(liver_enz);
-         var relExp1Param = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(liver_enz);
+         var relExp1ParamNorm = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP_NORM).WithParentContainer(liver_enz);
+         var relExp1Param = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(liver_enz);
          relExp1Param.Origin.SimulationId = "Sim";
 
-         _referenceConcentrationParam = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.REFERENCE_CONCENTRATION);
-         _halfLifeLiverParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.HALF_LIFE_LIVER);
-         _halfLifeLiverIntestineParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.HALF_LIFE_INTESTINE);
+         _referenceConcentrationParam = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
+         _halfLifeLiverParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.HALF_LIFE_LIVER);
+         _halfLifeLiverIntestineParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.HALF_LIFE_INTESTINE);
          
          _parameters.AddRange(new[] { _halfLifeLiverParameter, _halfLifeLiverIntestineParameter,_referenceConcentrationParam, relExp1Param, relExp2Param, relExp1ParamNorm, relExp2ParamNorm });
 

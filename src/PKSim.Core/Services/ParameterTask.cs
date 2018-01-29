@@ -405,8 +405,8 @@ namespace PKSim.Core.Services
       public ICache<IParameter, IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters)
       {
          var relativeExpressionsParameters = allExpressionParameters
-            .Where(x => !x.Name.Contains(CoreConstants.Parameter.NORM_SUFFIX))
-            .Where(x => x.Name.StartsWith(CoreConstants.Parameter.REL_EXP));
+            .Where(x => !x.Name.Contains(CoreConstants.Parameters.NORM_SUFFIX))
+            .Where(x => x.Name.StartsWith(CoreConstants.Parameters.REL_EXP));
 
          var results = new Cache<IParameter, IParameter>();
          var query = from parameter in relativeExpressionsParameters
@@ -465,7 +465,7 @@ namespace PKSim.Core.Services
 
       private IParameter findNormParameterFor(IParameter relativeExpression)
       {
-         return relativeExpression.ParentContainer.Parameter(CoreConstants.Parameter.NormParameterFor(relativeExpression.Name));
+         return relativeExpression.ParentContainer.Parameter(CoreConstants.Parameters.NormParameterFor(relativeExpression.Name));
       }
 
       public ICommand SetParameterValue(IParameter parameter, double value, ISimulation simulation)

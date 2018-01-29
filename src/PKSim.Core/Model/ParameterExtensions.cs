@@ -30,8 +30,8 @@ namespace PKSim.Core.Model
          if (parameter.IsExpressionNorm())
             return true;
 
-         return parameter.NameIsOneOf(CoreConstants.Parameter.REL_EXP, CoreConstants.Parameter.REL_EXP_BLOOD_CELL,
-            CoreConstants.Parameter.REL_EXP_PLASMA, CoreConstants.Parameter.REL_EXP_VASC_ENDO);
+         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP, CoreConstants.Parameters.REL_EXP_BLOOD_CELL,
+            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
 
       public static bool IsIndividualMolecule(this IParameter parameter)
@@ -39,10 +39,10 @@ namespace PKSim.Core.Model
          if (parameter.IsExpression())
             return true;
 
-         if (CoreConstants.Parameter.OntogenyFactors.Contains(parameter.Name))
+         if (CoreConstants.Parameters.OntogenyFactors.Contains(parameter.Name))
             return true;
 
-         if (parameter.IsNamed(CoreConstants.Parameter.REFERENCE_CONCENTRATION))
+         if (parameter.IsNamed(CoreConstants.Parameters.REFERENCE_CONCENTRATION))
             return true;
 
          return false;
@@ -50,14 +50,14 @@ namespace PKSim.Core.Model
 
       public static bool IsStructural(this IParameter parameter)
       {
-         return CoreConstants.Parameter.ParticleDistributionStructuralParameters.Contains(parameter.Name);
+         return CoreConstants.Parameters.ParticleDistributionStructuralParameters.Contains(parameter.Name);
       }
 
       public static bool IsExpressionNorm(this IParameter parameter)
       {
          if (parameter == null) return false;
-         return parameter.NameIsOneOf(CoreConstants.Parameter.REL_EXP_NORM, CoreConstants.Parameter.REL_EXP_BLOOD_CELL_NORM,
-            CoreConstants.Parameter.REL_EXP_PLASMA_NORM, CoreConstants.Parameter.REL_EXP_VASC_ENDO_NORM);
+         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP_NORM, CoreConstants.Parameters.REL_EXP_BLOOD_CELL_NORM,
+            CoreConstants.Parameters.REL_EXP_PLASMA_NORM, CoreConstants.Parameters.REL_EXP_VASC_ENDO_NORM);
       }
 
       public static bool IsOrganVolume(this IParameter parameter)
@@ -79,7 +79,7 @@ namespace PKSim.Core.Model
 
       public static bool NeedsDefault(this IParameter parameter)
       {
-         if (parameter.NameIsOneOf(CoreConstants.Parameter.AllDistributionParameters))
+         if (parameter.NameIsOneOf(CoreConstants.Parameters.AllDistributionParameters))
             return false;
 
          if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population, PKSimBuildingBlockType.Simulation))

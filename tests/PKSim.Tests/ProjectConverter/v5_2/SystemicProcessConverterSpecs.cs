@@ -30,7 +30,7 @@ namespace PKSim.ProjectConverter.v5_2
          liverProcess.Parameter(ConverterConstants.Parameter.SpecificClearance).Value.ShouldBeEqualTo(135,1e-2);
 
          //should have renamed lipo to lipo experiment 
-         liverProcess.Parameter(CoreConstants.Parameter.LIPOPHILICITY_EXPERIMENT).Value.ShouldBeEqualTo(4.4);
+         liverProcess.Parameter(CoreConstants.Parameters.LIPOPHILICITY_EXPERIMENT).Value.ShouldBeEqualTo(4.4);
          liverProcess.Parameter(ConverterConstants.Parameter.Lipophilicity).ShouldBeNull();
       }
    }

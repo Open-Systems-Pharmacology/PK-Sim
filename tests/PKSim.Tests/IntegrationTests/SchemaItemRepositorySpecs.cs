@@ -42,7 +42,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void schema_item_should_contain_dose_parameter()
       {
-         _schemaItems.ShouldContainParameter(CoreConstants.Parameter.INPUT_DOSE);
+         _schemaItems.ShouldContainParameter(CoreConstants.Parameters.INPUT_DOSE);
       }
 
       [Observation]
@@ -71,7 +71,7 @@ namespace PKSim.IntegrationTests
          _schemaItems.Each(si=>
                               {
                                  si.Parameter(Constants.Parameters.START_TIME).BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Protocol);
-                                 si.Parameter(CoreConstants.Parameter.INPUT_DOSE).BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Protocol);
+                                 si.Parameter(CoreConstants.Parameters.INPUT_DOSE).BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Protocol);
                               }
 
             );

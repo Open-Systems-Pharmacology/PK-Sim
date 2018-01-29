@@ -208,7 +208,7 @@ namespace PKSim.Core.Model
 
       public IParameter CreateConcentrationParameterIn(IFormulaCache formulaCache)
       {
-         var parameter = CreateFor(CoreConstants.Parameter.CONCENTRATION, PKSimBuildingBlockType.Simulation);
+         var parameter = CreateFor(CoreConstants.Parameters.CONCENTRATION, PKSimBuildingBlockType.Simulation);
          parameter.BuildMode = ParameterBuildMode.Local;
          parameter.Info.Visible = false;
          parameter.Formula = _formulaFactory.ConcentrationFormulaFor(formulaCache);

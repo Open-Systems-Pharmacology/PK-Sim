@@ -62,18 +62,18 @@ namespace PKSim.Presentation
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
          var proteinFactory = A.Fake<IIndividualMoleculeFactory>();
          _moleculeContainer1 = new MoleculeExpressionContainer().WithName("C1");
-         _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameter.REL_EXP));
-         _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.REL_EXP_NORM));
+         _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
+         _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.REL_EXP_NORM));
          _moleculeContainer2 = new MoleculeExpressionContainer().WithName("C2");
-         _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameter.REL_EXP));
-         _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.REL_EXP_NORM));
+         _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
+         _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.REL_EXP_NORM));
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualProtein>()).Returns(proteinFactory);
          A.CallTo(() => proteinFactory.CreateFor(_individual)).Returns(_molecule);
          _molecule.Add(_moleculeContainer1);
          _molecule.Add(_moleculeContainer2);
-         _molecule.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.REFERENCE_CONCENTRATION));
-         _molecule.Add(DomainHelperForSpecs.ConstantParameterWithValue(20).WithName(CoreConstants.Parameter.HALF_LIFE_LIVER));
-         _molecule.Add(DomainHelperForSpecs.ConstantParameterWithValue(30).WithName(CoreConstants.Parameter.HALF_LIFE_INTESTINE));
+         _molecule.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION));
+         _molecule.Add(DomainHelperForSpecs.ConstantParameterWithValue(20).WithName(CoreConstants.Parameters.HALF_LIFE_LIVER));
+         _molecule.Add(DomainHelperForSpecs.ConstantParameterWithValue(30).WithName(CoreConstants.Parameters.HALF_LIFE_INTESTINE));
 
          A.CallTo(() => _ontogenyRepository.AllFor(_individual.Species.Name)).Returns(new[] {_ontogeny, new DatabaseOntogeny {Name = "tralala"},});
          A.CallTo(() => _executionContext.Resolve<IOntogenyRepository>()).Returns(_ontogenyRepository);
@@ -170,9 +170,9 @@ namespace PKSim.Presentation
          base.Context();
          A.CallTo(() => _simpleMoleculePresenter.CreateMoleculeFor<IndividualProtein>(_individual)).Returns(true);
          A.CallTo(() => _simpleMoleculePresenter.MoleculeName).Returns("MOLECULE");
-         A.CallTo(() => _moleculeParameterRepository.ParameterValueFor("MOLECULE", CoreConstants.Parameter.REFERENCE_CONCENTRATION, A<double?>._, null)).Returns(10);
-         A.CallTo(() => _moleculeParameterRepository.ParameterValueFor("MOLECULE", CoreConstants.Parameter.HALF_LIFE_LIVER, A<double?>._, null)).Returns(20);
-         A.CallTo(() => _moleculeParameterRepository.ParameterValueFor("MOLECULE", CoreConstants.Parameter.HALF_LIFE_INTESTINE, A<double?>._, null)).Returns(40);
+         A.CallTo(() => _moleculeParameterRepository.ParameterValueFor("MOLECULE", CoreConstants.Parameters.REFERENCE_CONCENTRATION, A<double?>._, null)).Returns(10);
+         A.CallTo(() => _moleculeParameterRepository.ParameterValueFor("MOLECULE", CoreConstants.Parameters.HALF_LIFE_LIVER, A<double?>._, null)).Returns(20);
+         A.CallTo(() => _moleculeParameterRepository.ParameterValueFor("MOLECULE", CoreConstants.Parameters.HALF_LIFE_INTESTINE, A<double?>._, null)).Returns(40);
       }
 
       protected override void Because()

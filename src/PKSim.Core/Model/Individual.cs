@@ -135,7 +135,7 @@ namespace PKSim.Core.Model
                return double.NaN;
 
             if (OriginData.SpeciesPopulation.IsHeightDependent)
-               return Organism.Parameter(CoreConstants.Parameter.MEAN_HEIGHT).Value;
+               return Organism.Parameter(CoreConstants.Parameters.MEAN_HEIGHT).Value;
 
             return double.NaN;
          }
@@ -145,12 +145,12 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Mean weight as defined in the databse for the organism
       /// </summary>
-      public virtual double MeanWeight => Organism.Parameter(CoreConstants.Parameter.MEAN_WEIGHT).Value;
+      public virtual double MeanWeight => Organism.Parameter(CoreConstants.Parameters.MEAN_WEIGHT).Value;
 
       /// <summary>
       ///    Actual weight of the individual (might differ from input weight and mean weight if volumina were changed)
       /// </summary>
-      public virtual IParameter WeightParameter => Organism.Parameter(CoreConstants.Parameter.WEIGHT);
+      public virtual IParameter WeightParameter => Organism.Parameter(CoreConstants.Parameters.WEIGHT);
 
       /// <summary>
       ///    Returns <c>true</c> if at least one molecule is defined in the individual otherwise false

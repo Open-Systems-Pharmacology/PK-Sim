@@ -20,8 +20,8 @@ namespace PKSim.Core
       {
          _molecule = new IndividualEnzyme
          {
-            DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.ONTOGENY_FACTOR),
-            DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.ONTOGENY_FACTOR_GI)
+            DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.ONTOGENY_FACTOR),
+            DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.ONTOGENY_FACTOR_GI)
          };
 
          _ontogeny = new DatabaseOntogeny();
@@ -68,9 +68,9 @@ namespace PKSim.Core
          var organism = new Organism();
          _individual.Add(organism);
 
-         var ageParameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.AGE);
+         var ageParameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.AGE);
          organism.Add(ageParameter);
-         var gaParameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.GESTATIONAL_AGE);
+         var gaParameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.GESTATIONAL_AGE);
          organism.Add(gaParameter);
 
          var ageValues = new ParameterValues(_entityPathResolver.PathFor(ageParameter));

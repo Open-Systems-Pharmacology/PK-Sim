@@ -170,7 +170,7 @@ namespace PKSim.Core
          inibitorPath.ShouldOnlyContainInOrder(ObjectPath.PARENT_CONTAINER, ObjectPath.PARENT_CONTAINER, _compound2.Name, Constants.Parameters.CONCENTRATION);
 
          var kiPath = _kmFactor.Formula.FormulaUsablePathBy("KcTDI1");
-         kiPath.ShouldOnlyContainInOrder(_compound2.Name, _irreversibleInhibition2.Name, CoreConstants.Parameter.KI);
+         kiPath.ShouldOnlyContainInOrder(_compound2.Name, _irreversibleInhibition2.Name, CoreConstants.Parameters.KI);
       }
 
       [Observation]
@@ -212,7 +212,7 @@ namespace PKSim.Core
          inibitorPath.ShouldOnlyContainInOrder(ObjectPath.PARENT_CONTAINER, ObjectPath.PARENT_CONTAINER, _compound2.Name, Constants.Parameters.CONCENTRATION);
 
          var kiPath = _clSpecFactor.Formula.FormulaUsablePathBy("KcTDI1");
-         kiPath.ShouldOnlyContainInOrder(_compound2.Name, _irreversibleInhibition2.Name, CoreConstants.Parameter.KI);
+         kiPath.ShouldOnlyContainInOrder(_compound2.Name, _irreversibleInhibition2.Name, CoreConstants.Parameters.KI);
       }
 
       [Observation]
@@ -254,7 +254,7 @@ namespace PKSim.Core
          inibitorPath.ShouldOnlyContainInOrder(ObjectPathKeywords.SOURCE, _compound2.Name, Constants.Parameters.CONCENTRATION);
 
          var kiPath = _clSpecFactor.Formula.FormulaUsablePathBy("KcTDI1");
-         kiPath.ShouldOnlyContainInOrder(_compound2.Name, _irreversibleInhibition2.Name, CoreConstants.Parameter.KI);
+         kiPath.ShouldOnlyContainInOrder(_compound2.Name, _irreversibleInhibition2.Name, CoreConstants.Parameters.KI);
       }
 
       [Observation]

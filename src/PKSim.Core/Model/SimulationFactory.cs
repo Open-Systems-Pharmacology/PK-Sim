@@ -224,14 +224,14 @@ namespace PKSim.Core.Model
 
       private double disabledDDIValueFor(string parameterName)
       {
-         if (parameterName.IsOneOf(CoreConstants.Parameter.EC50, CoreConstants.Parameter.K_KINACT_HALF))
+         if (parameterName.IsOneOf(CoreConstants.Parameters.EC50, CoreConstants.Parameters.K_KINACT_HALF))
             return 1;
 
-         if (parameterName.IsOneOf(CoreConstants.Parameter.KINACT, CoreConstants.Parameter.EMAX))
+         if (parameterName.IsOneOf(CoreConstants.Parameters.KINACT, CoreConstants.Parameters.EMAX))
             return 0;
 
-         if (parameterName.IsOneOf(CoreConstants.Parameter.KI, CoreConstants.Parameter.KI_U,
-                                   CoreConstants.Parameter.KI_C))
+         if (parameterName.IsOneOf(CoreConstants.Parameters.KI, CoreConstants.Parameters.KI_U,
+                                   CoreConstants.Parameters.KI_C))
             return double.PositiveInfinity;
 
          //if we add any new parameters, the exception will be thrown per default, until we explicitely define

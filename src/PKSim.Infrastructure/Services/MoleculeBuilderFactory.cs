@@ -85,7 +85,7 @@ namespace PKSim.Infrastructure.Services
 
       private void removeGlobalExpressionsParameterFor(IMoleculeBuilder molecule)
       {
-         CoreConstants.Parameter.AllGlobalRelExpParameters.Each(parameterName =>
+         CoreConstants.Parameters.AllGlobalRelExpParameters.Each(parameterName =>
          {
             var parameter = molecule.Parameter(parameterName);
             if (parameter != null)
@@ -242,12 +242,12 @@ namespace PKSim.Infrastructure.Services
          setDefaultParameterValues(molecule);
 
          //default value for floating in lumen should be 0
-         molecule.Parameter(CoreConstants.Parameter.IS_FLOATING_IN_LUMEN).Value = 0;
+         molecule.Parameter(CoreConstants.Parameters.IS_FLOATING_IN_LUMEN).Value = 0;
       }
 
       private void setDefaultParameterValues(IMoleculeBuilder molecule)
       {
-         var parameters = molecule.AllParameters().Where(parameter => CoreConstants.Parameter.CompoundMustInputParameters.Contains(parameter.Name));
+         var parameters = molecule.AllParameters().Where(parameter => CoreConstants.Parameters.CompoundMustInputParameters.Contains(parameter.Name));
          parameters.Each(p => p.Value = double.NaN);
       }
    }

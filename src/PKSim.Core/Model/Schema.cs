@@ -41,9 +41,9 @@ namespace PKSim.Core.Model
 
       public virtual IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
 
-      public virtual IParameter TimeBetweenRepetitions => this.Parameter(CoreConstants.Parameter.TIME_BETWEEN_REPETITIONS);
+      public virtual IParameter TimeBetweenRepetitions => this.Parameter(CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS);
 
-      public virtual IParameter NumberOfRepetitions => this.Parameter(CoreConstants.Parameter.NUMBER_OF_REPETITIONS);
+      public virtual IParameter NumberOfRepetitions => this.Parameter(CoreConstants.Parameters.NUMBER_OF_REPETITIONS);
 
       public virtual void AddSchemaItem(SchemaItem schemaItem) => Add(schemaItem);
 

@@ -49,7 +49,7 @@ namespace PKSim.ProjectConverter.v5_2
          var simProtocol = _simulation.BuildingBlock<SimpleProtocol>();
          simProtocol.Dose.Value.ShouldBeEqualTo(1e-6);
          var simApp = _simulation.Model.Root.Container(Constants.APPLICATIONS)
-            .GetAllChildren<IParameter>().First(x => x.IsNamed(CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT));
+            .GetAllChildren<IParameter>().First(x => x.IsNamed(CoreConstants.Parameters.DOSE_PER_BODY_WEIGHT));
          simApp.Value.ShouldBeEqualTo(1e-6);
       }
 

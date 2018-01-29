@@ -102,11 +102,11 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
          if (!individual.IsHuman)
             return;
 
-         if (individual.Organism.Parameter(CoreConstants.Parameter.BSA) != null)
+         if (individual.Organism.Parameter(CoreConstants.Parameters.BSA) != null)
             return;
 
          var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
-         var bsa = defaultHuman.Organism.Parameter(CoreConstants.Parameter.BSA);
+         var bsa = defaultHuman.Organism.Parameter(CoreConstants.Parameters.BSA);
 
          individual.Organism.Add(_cloner.Clone(bsa));
       }
@@ -118,9 +118,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
 
          var defaultHuman = _cloner.Clone(_defaultIndividualRetriever.DefaultHuman());
 
-         var heightParameter = defaultHuman.Organism.Parameter(CoreConstants.Parameter.HEIGHT);
-         var weightParameter = defaultHuman.Organism.Parameter(CoreConstants.Parameter.WEIGHT);
-         var bsaParameter = defaultHuman.Organism.Parameter(CoreConstants.Parameter.BSA);
+         var heightParameter = defaultHuman.Organism.Parameter(CoreConstants.Parameters.HEIGHT);
+         var weightParameter = defaultHuman.Organism.Parameter(CoreConstants.Parameters.WEIGHT);
+         var bsaParameter = defaultHuman.Organism.Parameter(CoreConstants.Parameters.BSA);
 
          var allWeights = population.AllOrganismValuesFor(weightParameter.Name, _entityPathResolver);
          var allHeights = population.AllOrganismValuesFor(heightParameter.Name, _entityPathResolver);

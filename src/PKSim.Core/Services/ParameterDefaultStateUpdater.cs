@@ -24,9 +24,9 @@ namespace PKSim.Core.Services
       {
          var parameterNames = new[]
          {
-            CoreConstants.Parameter.AGE,
+            CoreConstants.Parameters.AGE,
             Constants.Parameters.GESTATIONAL_AGE,
-            CoreConstants.Parameter.HEIGHT
+            CoreConstants.Parameters.HEIGHT
          };
 
          parameterNames
@@ -44,9 +44,9 @@ namespace PKSim.Core.Services
       {
          var parameterNames = new[]
          {
-            CoreConstants.Parameter.DOSE,
-            CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT,
-            CoreConstants.Parameter.DOSE_PER_BODY_SURFACE_AREA,
+            CoreConstants.Parameters.DOSE,
+            CoreConstants.Parameters.DOSE_PER_BODY_WEIGHT,
+            CoreConstants.Parameters.DOSE_PER_BODY_SURFACE_AREA,
             Constants.Parameters.START_TIME
          };
 

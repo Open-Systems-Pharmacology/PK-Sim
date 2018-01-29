@@ -220,23 +220,23 @@ namespace PKSim.Core.Services
       private static void setParticleRadiusDistributionParametersToLockedAndInvisible(IContainer formulationBuilder)
       {
          // first, set all parameteres responsible for particle size distribution to locked
-         CoreConstants.Parameter.ParticleDistributionStructuralParameters.Each(paramName => formulationBuilder.Parameter(paramName).Editable = false);
+         CoreConstants.Parameters.ParticleDistributionStructuralParameters.Each(paramName => formulationBuilder.Parameter(paramName).Editable = false);
 
          // second, set some parameters to not visible depending on settings
-         var parameterNamesToBeInvisible = new List<string> {CoreConstants.Parameter.PARTICLE_DISPERSE_SYSTEM};
+         var parameterNamesToBeInvisible = new List<string> {CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM};
 
-         var numberOfBins = (int) formulationBuilder.Parameter(CoreConstants.Parameter.NUMBER_OF_BINS).Value;
+         var numberOfBins = (int) formulationBuilder.Parameter(CoreConstants.Parameters.NUMBER_OF_BINS).Value;
 
          if (numberOfBins == 1)
-            parameterNamesToBeInvisible.AddRange(CoreConstants.Parameter.HiddenParameterForMonodisperse);
+            parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForMonodisperse);
          else
          {
-            var particlesDistributionType = (int) formulationBuilder.Parameter(CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION).Value;
+            var particlesDistributionType = (int) formulationBuilder.Parameter(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value;
 
-            if (particlesDistributionType == CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
-               parameterNamesToBeInvisible.AddRange(CoreConstants.Parameter.HiddenParameterForPolydisperseNormal);
+            if (particlesDistributionType == CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
+               parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseNormal);
             else
-               parameterNamesToBeInvisible.AddRange(CoreConstants.Parameter.HiddenParameterForPolydisperseLogNormal);
+               parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseLogNormal);
          }
 
          parameterNamesToBeInvisible.Each(paramName => formulationBuilder.Parameter(paramName).Visible = false);

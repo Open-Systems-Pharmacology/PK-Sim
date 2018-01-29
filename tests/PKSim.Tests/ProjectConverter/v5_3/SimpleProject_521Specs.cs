@@ -23,7 +23,7 @@ namespace PKSim.ProjectConverter.v5_3
          var individual = First<Individual>();
          var compound = First<Compound>();
          _liverVolume = individual.Organism.EntityAt<IParameter>(CoreConstants.Organ.Liver, Constants.Parameters.VOLUME);
-         _fractionUnbound = compound.Parameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE);
+         _fractionUnbound = compound.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE);
       }
 
       [Observation]
@@ -68,13 +68,13 @@ namespace PKSim.ProjectConverter.v5_3
       public void should_have_set_the_has_halogen_parameter_to_visible()
       {
          var compound = First<Compound>();
-         compound.Parameter(CoreConstants.Parameter.HAS_HALOGENS).Visible.ShouldBeTrue();
+         compound.Parameter(CoreConstants.Parameters.HAS_HALOGENS).Visible.ShouldBeTrue();
 
          var simulation = First<Simulation>();
          var simCompound = simulation.BuildingBlock<Compound>();
-         simCompound.Parameter(CoreConstants.Parameter.HAS_HALOGENS).Visible.ShouldBeTrue();
+         simCompound.Parameter(CoreConstants.Parameters.HAS_HALOGENS).Visible.ShouldBeTrue();
 
-         var simParameter = simulation.Model.Root.Container(compound.Name).Parameter(CoreConstants.Parameter.HAS_HALOGENS);
+         var simParameter = simulation.Model.Root.Container(compound.Name).Parameter(CoreConstants.Parameters.HAS_HALOGENS);
          simParameter.Visible.ShouldBeTrue();
       }
 
@@ -93,7 +93,7 @@ namespace PKSim.ProjectConverter.v5_3
          var simulation = First<Simulation>();
          var applications = simulation.Model.Root.Container(Constants.APPLICATIONS);
          applications.Parameter(ConverterConstants.Parameter.TotalDrugMass).ShouldBeNull();
-         applications.Parameter(CoreConstants.Parameter.TOTAL_DRUG_MASS).ShouldBeNull();
+         applications.Parameter(CoreConstants.Parameters.TOTAL_DRUG_MASS).ShouldBeNull();
       }
 
       [Observation]
@@ -111,7 +111,7 @@ namespace PKSim.ProjectConverter.v5_3
          var compound = First<Compound>();
          var observer = simulation.All<IObserver>().FindByName(CoreConstants.Observer.FRACTION_EXCRETED_TO_BILE);
          var objectPath = observer.Formula.ObjectPaths.First(x => x.Alias == ConverterConstants.Parameter.TotalDrugMass);
-         objectPath.ShouldOnlyContainInOrder(simulation.Name, compound.Name, CoreConstants.Parameter.TOTAL_DRUG_MASS);
+         objectPath.ShouldOnlyContainInOrder(simulation.Name, compound.Name, CoreConstants.Parameters.TOTAL_DRUG_MASS);
       }
    }
 

@@ -47,7 +47,7 @@ namespace PKSim.Core.Services
 
       public TableFormula TableValueFor(Formulation formulation)
       {
-         var tableFormula = _formulaFactory.CreateTableFormula().WithName(CoreConstants.Parameter.FRACTION_DOSE);
+         var tableFormula = _formulaFactory.CreateTableFormula().WithName(CoreConstants.Parameters.FRACTION_DOSE);
          CacheParameterValueFor(formulation);
          foreach (var time in createTimeArrayInMinutes())
          {

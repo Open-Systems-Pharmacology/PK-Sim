@@ -24,7 +24,7 @@ namespace PKSim.Presentation.DTO.Mappers
       {
          var lipophilictyAlternativeDTO = new LipophilictyAlternativeDTO(parameterAlternative);
 
-         var lipophilicity = parameterAlternative.Parameter(CoreConstants.Parameter.LIPOPHILICITY);
+         var lipophilicity = parameterAlternative.Parameter(CoreConstants.Parameters.LIPOPHILICITY);
          lipophilictyAlternativeDTO.LipophilictyParameter = _parameterDTOMapper.MapFrom(lipophilicity, lipophilictyAlternativeDTO, dto => dto.Lipophilicty, dto => dto.LipophilictyParameter);
 
          return lipophilictyAlternativeDTO;

@@ -327,7 +327,7 @@ namespace PKSim.Core
       {
          var schemaItemDTO = new SchemaItemDTO(new SchemaItem {ApplicationType = applicationType})
          {
-            DoseParameter = new ParameterDTO(ConstantParameterWithValue(doseValue.GetValueOrDefault(1)).WithName(CoreConstants.Parameter.INPUT_DOSE)),
+            DoseParameter = new ParameterDTO(ConstantParameterWithValue(doseValue.GetValueOrDefault(1)).WithName(CoreConstants.Parameters.INPUT_DOSE)),
             StartTimeParameter = new ParameterDTO(ConstantParameterWithValue(startTimeValue.GetValueOrDefault(0)).WithName(Constants.Parameters.START_TIME))
          };
 
@@ -341,9 +341,9 @@ namespace PKSim.Core
       {
          return new IndividualEnzyme
          {
-            ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.REFERENCE_CONCENTRATION),
-            ConstantParameterWithValue(20).WithName(CoreConstants.Parameter.HALF_LIFE_LIVER),
-            ConstantParameterWithValue(30).WithName(CoreConstants.Parameter.HALF_LIFE_INTESTINE)
+            ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION),
+            ConstantParameterWithValue(20).WithName(CoreConstants.Parameters.HALF_LIFE_LIVER),
+            ConstantParameterWithValue(30).WithName(CoreConstants.Parameters.HALF_LIFE_INTESTINE)
          };
       }
    }

@@ -46,10 +46,10 @@ namespace PKSim.Core.Commands
          if (!parameter.Editable)
             return false;
 
-         if (CoreConstants.Parameter.AllBooleanParameters.Contains(parameter.Name))
+         if (CoreConstants.Parameters.AllBooleanParameters.Contains(parameter.Name))
             return false;
 
-         if (CoreConstants.Parameter.AllWithListOfValues.Contains(parameter.Name))
+         if (CoreConstants.Parameters.AllWithListOfValues.Contains(parameter.Name))
             return false;
 
          return true;

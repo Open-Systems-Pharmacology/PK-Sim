@@ -52,7 +52,7 @@ namespace PKSim.Core.Model
 
       public virtual IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
 
-      public virtual IParameter Dose => this.Parameter(CoreConstants.Parameter.INPUT_DOSE);
+      public virtual IParameter Dose => this.Parameter(CoreConstants.Parameters.INPUT_DOSE);
 
       public virtual IParameter EndTimeParameter => this.Parameter(Constants.Parameters.END_TIME);
 

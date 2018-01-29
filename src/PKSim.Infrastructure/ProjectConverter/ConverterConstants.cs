@@ -145,7 +145,7 @@ namespace PKSim.Infrastructure.ProjectConverter
                {
                   BloodPlasmaConcentrationRatio,
                   PartitionCoefficientWwaterProtein,
-                  CoreConstants.Parameter.USE_PENALTY_FACTOR,
+                  CoreConstants.Parameters.USE_PENALTY_FACTOR,
                };
             }
          }

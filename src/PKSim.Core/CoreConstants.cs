@@ -826,7 +826,7 @@ namespace PKSim.Core
          public const string TwoPores = "TwoPores";
       }
 
-      public static class Parameter
+      public static class Parameters
       {
          public static readonly string PH = "pH";
          public static readonly string IS_NEUTRAL = "Is neutral";

@@ -156,41 +156,41 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_for_an_height_parameter()
       {
-         _parameter.WithName(CoreConstants.Parameter.HEIGHT).IsChangedByCreateIndividual.ShouldBeTrue();
-         _parameter.WithName(CoreConstants.Parameter.MEAN_HEIGHT).IsChangedByCreateIndividual.ShouldBeTrue();
+         _parameter.WithName(CoreConstants.Parameters.HEIGHT).IsChangedByCreateIndividual.ShouldBeTrue();
+         _parameter.WithName(CoreConstants.Parameters.MEAN_HEIGHT).IsChangedByCreateIndividual.ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_true_for_a_weight_parameter()
       {
-         _parameter.WithName(CoreConstants.Parameter.WEIGHT).IsChangedByCreateIndividual.ShouldBeTrue();
-         _parameter.WithName(CoreConstants.Parameter.MEAN_WEIGHT).IsChangedByCreateIndividual.ShouldBeTrue();
+         _parameter.WithName(CoreConstants.Parameters.WEIGHT).IsChangedByCreateIndividual.ShouldBeTrue();
+         _parameter.WithName(CoreConstants.Parameters.MEAN_WEIGHT).IsChangedByCreateIndividual.ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_true_for_a_bmi_parameter()
       {
-         _parameter.WithName(CoreConstants.Parameter.BMI).IsChangedByCreateIndividual.ShouldBeTrue();
+         _parameter.WithName(CoreConstants.Parameters.BMI).IsChangedByCreateIndividual.ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_true_for_an_age_parameter()
       {
-         _parameter.WithName(CoreConstants.Parameter.AGE).IsChangedByCreateIndividual.ShouldBeTrue();
+         _parameter.WithName(CoreConstants.Parameters.AGE).IsChangedByCreateIndividual.ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_true_for_an_ontogeny_parameter_defined_in_liver_or_duodenum()
       {
 
-         _parameter.WithName(CoreConstants.Parameter.ONTOGENY_FACTOR).IsChangedByCreateIndividual.ShouldBeTrue();
-         _parameter.WithName(CoreConstants.Parameter.ONTOGENY_FACTOR_GI).IsChangedByCreateIndividual.ShouldBeTrue();
+         _parameter.WithName(CoreConstants.Parameters.ONTOGENY_FACTOR).IsChangedByCreateIndividual.ShouldBeTrue();
+         _parameter.WithName(CoreConstants.Parameters.ONTOGENY_FACTOR_GI).IsChangedByCreateIndividual.ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_true_for_a_volume_fraction_lipid_parameters_defined_in_fat()
       {
-         foreach (var name in CoreConstants.Parameter.VolumeFractionLipidsParameters)
+         foreach (var name in CoreConstants.Parameters.VolumeFractionLipidsParameters)
          {
             _parameter.WithParentContainer(_fat).WithName(name).IsChangedByCreateIndividual.ShouldBeTrue();
          }
@@ -199,7 +199,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_for_a_volume_fraction_lipid_parameters_defined_in_muscle()
       {
-         foreach (var name in CoreConstants.Parameter.VolumeFractionLipidsParameters)
+         foreach (var name in CoreConstants.Parameters.VolumeFractionLipidsParameters)
          {
             _parameter.WithParentContainer(_muscle).WithName(name).IsChangedByCreateIndividual.ShouldBeFalse();
          }
@@ -208,7 +208,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_for_a_volume_fraction_lipid_parameters_not_defined_in_muscle()
       {
-         foreach (var name in CoreConstants.Parameter.VolumeFractionLipidsParameters)
+         foreach (var name in CoreConstants.Parameters.VolumeFractionLipidsParameters)
          {
             _parameter.WithParentContainer(_liver).WithName(name).IsChangedByCreateIndividual.ShouldBeFalse();
          }
@@ -217,7 +217,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_for_a_volume_fraction_protein_parameters_defined_in_muscle()
       {
-         foreach (var name in CoreConstants.Parameter.VolumeFractionProteinsParameters)
+         foreach (var name in CoreConstants.Parameters.VolumeFractionProteinsParameters)
          {
             _parameter.WithParentContainer(_muscle).WithName(name).IsChangedByCreateIndividual.ShouldBeTrue();
          }
@@ -226,7 +226,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_for_a_volume_fraction_protein_parameters_defined_in_fat()
       {
-         foreach (var name in CoreConstants.Parameter.VolumeFractionProteinsParameters)
+         foreach (var name in CoreConstants.Parameters.VolumeFractionProteinsParameters)
          {
             _parameter.WithParentContainer(_fat).WithName(name).IsChangedByCreateIndividual.ShouldBeFalse();
          }
@@ -235,7 +235,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_for_a_volume_fraction_protein_parameters_not_defined_in_fat()
       {
-         foreach (var name in CoreConstants.Parameter.VolumeFractionProteinsParameters)
+         foreach (var name in CoreConstants.Parameters.VolumeFractionProteinsParameters)
          {
             _parameter.WithParentContainer(_liver).WithName(name).IsChangedByCreateIndividual.ShouldBeFalse();
          }
@@ -244,7 +244,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_for_a_volume_fraction_water_parameters_defined_in_fat_or_muscle()
       {
-         foreach (var name in CoreConstants.Parameter.VolumeFractionWaterParameters)
+         foreach (var name in CoreConstants.Parameters.VolumeFractionWaterParameters)
          {
             _parameter.WithParentContainer(_fat).WithName(name).IsChangedByCreateIndividual.ShouldBeTrue();
             _parameter.WithParentContainer(_muscle).WithName(name).IsChangedByCreateIndividual.ShouldBeTrue();
@@ -254,7 +254,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_for_a_volume_fraction_water_parameters_defined_in_an_organ_that_is_not_fat_or_muscle()
       {
-         foreach (var name in CoreConstants.Parameter.VolumeFractionWaterParameters)
+         foreach (var name in CoreConstants.Parameters.VolumeFractionWaterParameters)
          {
             _parameter.WithParentContainer(_liver).WithName(name).IsChangedByCreateIndividual.ShouldBeFalse();
          }

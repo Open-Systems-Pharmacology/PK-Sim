@@ -31,8 +31,8 @@ namespace PKSim.ProjectConverter.v5_2
       [Observation]
       public void should_have_added_the_plasma_protein_binding_partner_parameter()
       {
-         _compound.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER).ShouldNotBeNull();
-         _compound.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER).Value.ShouldBeEqualTo((double) PlasmaProteinBindingPartner.Unknown);
+         _compound.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).ShouldNotBeNull();
+         _compound.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).Value.ShouldBeEqualTo((double) PlasmaProteinBindingPartner.Unknown);
       }
 
       [Observation]
@@ -41,14 +41,14 @@ namespace PKSim.ProjectConverter.v5_2
          var solGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_SOLUBILITY);
          foreach (var alternative in solGroup.AllAlternatives)
          {
-            alternative.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE).Value.ShouldBeEqualTo(1000);
+            alternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE).Value.ShouldBeEqualTo(1000);
          }
       }
 
       [Observation]
       public void should_have_added_the_gain_per_charge_parameter_to_the_compound()
       {
-         var solubilityParameter = _compound.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE);
+         var solubilityParameter = _compound.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
          solubilityParameter.ShouldNotBeNull();
          solubilityParameter.GroupName.ShouldBeEqualTo(CoreConstants.Groups.COMPOUND_SOLUBILITY);
       }
@@ -73,10 +73,10 @@ namespace PKSim.ProjectConverter.v5_2
          var fuGroup= _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
          foreach (var alternative in fuGroup.AllAlternatives)
          {
-            alternative.Parameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).ShouldNotBeNull();
+            alternative.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).ShouldNotBeNull();
          }
 
-         _compound.Parameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).ShouldNotBeNull();
+         _compound.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).ShouldNotBeNull();
       }
 
       [Observation]

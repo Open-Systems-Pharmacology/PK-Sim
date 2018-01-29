@@ -16,11 +16,11 @@ namespace PKSim.Core
       protected override void Context()
       {
          _expressionContainer = new MoleculeExpressionContainer().WithName("tralal");
-         _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameter.REL_EXP));
-         _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameter.REL_EXP_NORM));
+         _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP));
+         _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP_NORM));
          _anotherContainer = new MoleculeExpressionContainer().WithName("AnotherContainer");
          sut = new IndividualEnzyme();
-         _referenceConcentration = A.Fake<IParameter>().WithName(CoreConstants.Parameter.REFERENCE_CONCENTRATION);
+         _referenceConcentration = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
          sut.Add(_referenceConcentration);
          sut.Add(_expressionContainer);
          sut.Add(_anotherContainer);

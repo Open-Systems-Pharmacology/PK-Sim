@@ -116,8 +116,8 @@ namespace PKSim.Core.Services
          var globalMoleculeContainer = simulation.Model.Root
             .GetSingleChildByName<IContainer>(molecule.Name);
 
-         hideParameter(globalMoleculeContainer.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR_GI));
-         hideParameter(globalMoleculeContainer.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR));
+         hideParameter(globalMoleculeContainer.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI));
+         hideParameter(globalMoleculeContainer.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR));
 
          hideGlobalParametersForUndefinedMolecule(globalMoleculeContainer);
 
@@ -154,8 +154,8 @@ namespace PKSim.Core.Services
             var amount = amountFor(interstitial, molecule, moleculeAmountPath);
             if (amount == null) continue;
 
-            hideParameter(amount.Parameter(CoreConstants.Parameter.REL_EXP));
-            hideParameter(amount.Parameter(CoreConstants.Parameter.REL_EXP_NORM));
+            hideParameter(amount.Parameter(CoreConstants.Parameters.REL_EXP));
+            hideParameter(amount.Parameter(CoreConstants.Parameters.REL_EXP_NORM));
          }
       }
 
@@ -176,8 +176,8 @@ namespace PKSim.Core.Services
             var amount = amountFor(container, molecule, moleculeAmountPath);
             if (amount == null) continue;
 
-            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameter.REL_EXP), expressionContainer.RelativeExpressionParameter, individual, molecule);
-            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameter.REL_EXP_NORM), expressionContainer.RelativeExpressionNormParameter, individual, molecule);
+            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameters.REL_EXP), expressionContainer.RelativeExpressionParameter, individual, molecule);
+            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameters.REL_EXP_NORM), expressionContainer.RelativeExpressionNormParameter, individual, molecule);
          }
       }
 
@@ -191,15 +191,15 @@ namespace PKSim.Core.Services
       {
          string relExpName;
          if (expressionContainer.IsBloodCell())
-            relExpName = CoreConstants.Parameter.REL_EXP_BLOOD_CELL;
+            relExpName = CoreConstants.Parameters.REL_EXP_BLOOD_CELL;
          else if (expressionContainer.IsPlasma())
-            relExpName = CoreConstants.Parameter.REL_EXP_PLASMA;
+            relExpName = CoreConstants.Parameters.REL_EXP_PLASMA;
          else if (expressionContainer.IsVascularEndothelium())
-            relExpName = CoreConstants.Parameter.REL_EXP_VASC_ENDO;
+            relExpName = CoreConstants.Parameters.REL_EXP_VASC_ENDO;
          else
             return;
 
-         var relExpNormName = CoreConstants.Parameter.NormParameterFor(relExpName);
+         var relExpNormName = CoreConstants.Parameters.NormParameterFor(relExpName);
          updateFromIndividualParameter(globalMoleculeContainer.Parameter(relExpName), expressionContainer.RelativeExpressionParameter, individual, molecule);
          updateFromIndividualParameter(globalMoleculeContainer.Parameter(relExpNormName), expressionContainer.RelativeExpressionNormParameter, individual, molecule);
       }

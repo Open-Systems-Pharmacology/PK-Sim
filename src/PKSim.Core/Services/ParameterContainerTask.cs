@@ -114,7 +114,7 @@ namespace PKSim.Core.Services
       {
          addParametersTo(container, null, CoreConstants.CalculationMethod.ForApplications);
          //parameter input dose should not be added to the container 
-         var inputDose = container.Parameter(CoreConstants.Parameter.INPUT_DOSE);
+         var inputDose = container.Parameter(CoreConstants.Parameters.INPUT_DOSE);
          if (inputDose != null)
             container.RemoveChild(inputDose);
       }

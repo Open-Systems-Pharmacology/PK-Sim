@@ -76,9 +76,9 @@ namespace PKSim.ProjectConverter.v5_2
 
       private void assertOntogenieParametersAreAvailable(Individual individual)
       {
-         individual.Organism.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR_ALBUMIN).Value.ShouldBeEqualTo(1);
-         individual.Organism.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR_AGP).Value.ShouldBeEqualTo(1);
-         individual.Organism.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_SCALE_FACTOR).Value.ShouldBeEqualTo(1);
+         individual.Organism.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN).Value.ShouldBeEqualTo(1);
+         individual.Organism.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP).Value.ShouldBeEqualTo(1);
+         individual.Organism.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_SCALE_FACTOR).Value.ShouldBeEqualTo(1);
       }
 
       private void assertTransporterHaveTheRightTransportName(Individual individual)
@@ -113,7 +113,7 @@ namespace PKSim.ProjectConverter.v5_2
       [Observation]
       public void should_have_converted_the_BMI_according_to_its_original_value()
       {
-         var bmi = _individual.Organism.Parameter(CoreConstants.Parameter.BMI).ValueInDisplayUnit;
+         var bmi = _individual.Organism.Parameter(CoreConstants.Parameters.BMI).ValueInDisplayUnit;
          bmi.ShouldBeSmallerThan(30);
       }
 

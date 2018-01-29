@@ -55,8 +55,8 @@ namespace PKSim.Core
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY));
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_PERMEABILITY));
 
-         _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.IS_SMALL_MOLECULE));
-         _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int) PlasmaProteinBindingPartner.Glycoprotein).WithName(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER));
+         _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.IS_SMALL_MOLECULE));
+         _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int) PlasmaProteinBindingPartner.Glycoprotein).WithName(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER));
 
          _partialProcess = new EnzymaticProcess().WithName("EnzymaticProcess");
          _systemicProcess = new SystemicProcess().WithName("SystemicProcess");
@@ -76,8 +76,8 @@ namespace PKSim.Core
 
       private void addPkAParameters(Model.Compound compound, int index, double pkA, CompoundType compoundType)
       {
-         compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(pkA).WithName(CoreConstants.Parameter.ParameterPKa(index)));
-         compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int) compoundType).WithName(CoreConstants.Parameter.ParameterCompoundType(index)));
+         compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(pkA).WithName(CoreConstants.Parameters.ParameterPKa(index)));
+         compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int) compoundType).WithName(CoreConstants.Parameters.ParameterCompoundType(index)));
       }
 
       private ParameterAlternativeGroup createParameterAlternativeGroup(string parameterAlternativeGroupName)
@@ -234,13 +234,13 @@ namespace PKSim.Core
       [Observation]
       public void should_have_loaded_the_expected_pka_type_values()
       {
-         _newCompound.Parameter(CoreConstants.Parameter.PARAMETER_PKA1).Value.ShouldBeEqualTo(_snapshot.PkaTypes[0].Pka);
-         _newCompound.Parameter(CoreConstants.Parameter.PARAMETER_PKA2).Value.ShouldBeEqualTo(_snapshot.PkaTypes[1].Pka);
-         _newCompound.Parameter(CoreConstants.Parameter.PARAMETER_PKA3).Value.ShouldBeEqualTo(_snapshot.PkaTypes[2].Pka);
+         _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA1).Value.ShouldBeEqualTo(_snapshot.PkaTypes[0].Pka);
+         _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA2).Value.ShouldBeEqualTo(_snapshot.PkaTypes[1].Pka);
+         _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA3).Value.ShouldBeEqualTo(_snapshot.PkaTypes[2].Pka);
 
-         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[0].Type);
-         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE2).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[1].Type);
-         _newCompound.Parameter(CoreConstants.Parameter.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[2].Type);
+         _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[0].Type);
+         _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE2).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[1].Type);
+         _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[2].Type);
       }
    }
 }

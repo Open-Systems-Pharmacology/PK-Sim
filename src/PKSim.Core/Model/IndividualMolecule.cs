@@ -23,7 +23,7 @@ namespace PKSim.Core.Model
          set => OntogenyFactorParameter.Value = value;
       }
 
-      public IParameter OntogenyFactorParameter => this.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR);
+      public IParameter OntogenyFactorParameter => this.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR);
 
       public virtual double OntogenyFactorGI
       {
@@ -31,7 +31,7 @@ namespace PKSim.Core.Model
          set => OntogenyFactorGIParameter.Value = value;
       }
 
-      public IParameter OntogenyFactorGIParameter => this.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR_GI);
+      public IParameter OntogenyFactorGIParameter => this.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI);
 
       public virtual bool HasContainerNamed(string expressionContainerName)
       {
@@ -50,11 +50,11 @@ namespace PKSim.Core.Model
 
       public virtual IReadOnlyList<MoleculeExpressionContainer> AllExpressionsContainers() => GetAllChildren<MoleculeExpressionContainer>();
 
-      public virtual IParameter ReferenceConcentration => this.Parameter(CoreConstants.Parameter.REFERENCE_CONCENTRATION);
+      public virtual IParameter ReferenceConcentration => this.Parameter(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
 
-      public virtual IParameter HalfLifeLiver => this.Parameter(CoreConstants.Parameter.HALF_LIFE_LIVER);
+      public virtual IParameter HalfLifeLiver => this.Parameter(CoreConstants.Parameters.HALF_LIFE_LIVER);
 
-      public virtual IParameter HalfLifeIntestine => this.Parameter(CoreConstants.Parameter.HALF_LIFE_INTESTINE);
+      public virtual IParameter HalfLifeIntestine => this.Parameter(CoreConstants.Parameters.HALF_LIFE_INTESTINE);
 
       public virtual IParameter GetRelativeExpressionParameterFor(string expressionContainerName)
       {

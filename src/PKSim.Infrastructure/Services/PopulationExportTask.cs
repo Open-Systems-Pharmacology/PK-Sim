@@ -133,9 +133,9 @@ namespace PKSim.Infrastructure.Services
          foreach (var covariate in population.AllCovariateNames)
          {
             if (covariate == CoreConstants.Covariates.GENDER)
-               addColumnValues(population, dataTable, CoreConstants.Parameter.GENDER, population.AllGenders.Select(x => x.Index).ToList());
+               addColumnValues(population, dataTable, CoreConstants.Parameters.GENDER, population.AllGenders.Select(x => x.Index).ToList());
             else if (covariate == CoreConstants.Covariates.RACE)
-               addColumnValues(population, dataTable, CoreConstants.Parameter.RACE_INDEX, population.AllRaces.Select(x => x.RaceIndex).ToList());
+               addColumnValues(population, dataTable, CoreConstants.Parameters.RACE_INDEX, population.AllRaces.Select(x => x.RaceIndex).ToList());
             else
                addColumnValues(population, dataTable, covariate, population.AllCovariateValuesFor(covariate));
          }
@@ -153,13 +153,13 @@ namespace PKSim.Infrastructure.Services
       private bool parameterShouldBeExported(IParameter parameter, IEnumerable<IParameter> advancedParameters)
       {
          //BMI and BodyWeight should always be exported
-         if (parameter.NameIsOneOf(CoreConstants.Parameter.BMI, CoreConstants.Parameter.WEIGHT)) return true;
+         if (parameter.NameIsOneOf(CoreConstants.Parameters.BMI, CoreConstants.Parameters.WEIGHT)) return true;
 
          //BMI MeanHeight MeanWeight should never be exported
-         if (parameter.NameIsOneOf(CoreConstants.Parameter.MEAN_WEIGHT, CoreConstants.Parameter.MEAN_HEIGHT)) return false;
+         if (parameter.NameIsOneOf(CoreConstants.Parameters.MEAN_WEIGHT, CoreConstants.Parameters.MEAN_HEIGHT)) return false;
 
          //distribution parameter search as mean, std, gsd etc should not be exported
-         if (CoreConstants.Parameter.AllDistributionParameters.Contains(parameter.Name)) return false;
+         if (CoreConstants.Parameters.AllDistributionParameters.Contains(parameter.Name)) return false;
 
          //advanced parameters should always be exported
          if (advancedParameters.Contains(parameter))

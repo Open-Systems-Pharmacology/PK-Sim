@@ -92,7 +92,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          if (string.IsNullOrEmpty(parameterPath))
             return parameterPath;
 
-         if (!parameterPath.Contains(CoreConstants.Parameter.ONTOGENY_FACTOR))
+         if (!parameterPath.Contains(CoreConstants.Parameters.ONTOGENY_FACTOR))
             return parameterPath;
       
          if (parameterPath.Contains("Lumen-Duodenum"))
@@ -111,7 +111,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          if (parameterPath.Contains("Duodenum"))
          {
             var newPath = parameterPath.Replace("Duodenum|", "");
-            newPath = newPath.Replace(CoreConstants.Parameter.ONTOGENY_FACTOR, CoreConstants.Parameter.ONTOGENY_FACTOR_GI);
+            newPath = newPath.Replace(CoreConstants.Parameters.ONTOGENY_FACTOR, CoreConstants.Parameters.ONTOGENY_FACTOR_GI);
             parameterCache.RenamePath(parameterPath, newPath);
             return newPath;
          }
@@ -122,7 +122,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
       private void addAgeDependentPercentileValues(ParameterValues parameterValues, RandomPopulation randomPopulation, IDistributedParameter parameter, Individual individual)
       {
          var originData = individual.OriginData.Clone();
-         var allAges = randomPopulation.AllValuesFor(_entityPathResolver.PathFor(individual.Organism.Parameter(CoreConstants.Parameter.AGE))).ToList();
+         var allAges = randomPopulation.AllValuesFor(_entityPathResolver.PathFor(individual.Organism.Parameter(CoreConstants.Parameters.AGE))).ToList();
          var allGender = randomPopulation.AllGenders.ToList();
          var allValues = randomPopulation.AllValuesFor(_entityPathResolver.PathFor(parameter)).ToList();
          var allPercentiles = new double[allValues.Count].InitializeWith(0);

@@ -162,7 +162,7 @@ namespace PKSim.Core.Services
 
       private IFormulaUsablePath kwaterPath(Compound inhibitor, string kwaterAlias, IContainer processParameterContainer)
       {
-         return localInibitorParameterPath(inhibitor, CoreConstants.Parameter.K_WATER, kwaterAlias, processParameterContainer, _dimensionRepository.NoDimension);
+         return localInibitorParameterPath(inhibitor, CoreConstants.Parameters.K_WATER, kwaterAlias, processParameterContainer, _dimensionRepository.NoDimension);
       }
 
       private IFormulaUsablePath localInibitorParameterPath(Compound inhibitor, string parameterName, string parametrAlias, IContainer processParameterContainer, IDimension dimension)

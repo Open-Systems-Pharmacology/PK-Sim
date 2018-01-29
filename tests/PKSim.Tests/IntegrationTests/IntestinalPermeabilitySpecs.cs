@@ -43,7 +43,7 @@ namespace PKSim.IntegrationTests
          intestinalPermGroup.AddAlternative(alternative);
 
          _intestinalPermeabilityCalcMethods = cmRepo.Where(cm => cm.Category.Equals(CoreConstants.Category.IntestinalPermeability)).ToList();
-         _alternativeIntestinalPermParam = alternative.Parameter(CoreConstants.Parameter.SPECIFIC_INTESTINAL_PERMEABILITY);
+         _alternativeIntestinalPermParam = alternative.Parameter(CoreConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY);
          _simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
          _simulationRunOptions = new SimulationRunOptions();
       }
@@ -81,12 +81,12 @@ namespace PKSim.IntegrationTests
    
       protected double MucosaPermeabilityFactorFor(Simulation simulation)
       {
-         return compoundContainer(simulation).Parameter(CoreConstants.Parameter.MUCOSA_PERMEABILITY_SCALE_FACTOR).Value;
+         return compoundContainer(simulation).Parameter(CoreConstants.Parameters.MUCOSA_PERMEABILITY_SCALE_FACTOR).Value;
       }
 
       protected IParameter IntestinalPermeabilityParameter(Simulation simulation)
       {
-         return compoundContainer(simulation).Parameter(CoreConstants.Parameter.INTESTINAL_PERMEABILITY);
+         return compoundContainer(simulation).Parameter(CoreConstants.Parameters.INTESTINAL_PERMEABILITY);
       }
 
       private IContainer compoundContainer(Simulation simulation)

@@ -43,8 +43,8 @@ namespace PKSim.Core.Model
             schema.Name = _containerTask.CreateUniqueName(container, PKSimConstants.UI.Schema);
 
          schema.Add(_parameterFactory.CreateFor(Constants.Parameters.START_TIME, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol));
-         schema.Add(_parameterFactory.CreateFor(CoreConstants.Parameter.NUMBER_OF_REPETITIONS, 1, PKSimBuildingBlockType.Protocol));
-         schema.Add(_parameterFactory.CreateFor(CoreConstants.Parameter.TIME_BETWEEN_REPETITIONS, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol));
+         schema.Add(_parameterFactory.CreateFor(CoreConstants.Parameters.NUMBER_OF_REPETITIONS, 1, PKSimBuildingBlockType.Protocol));
+         schema.Add(_parameterFactory.CreateFor(CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol));
 
          return schema;
       }

@@ -24,13 +24,13 @@ namespace PKSim.ProjectConverter.v6_3
          {
             _lazyLoadTask.Load(simulation);
 
-            var ontogenyFactorsGI = simulation.Model.Root.GetAllChildren<IParameter>(p=>p.Name.Equals(CoreConstants.Parameter.ONTOGENY_FACTOR_GI));
+            var ontogenyFactorsGI = simulation.Model.Root.GetAllChildren<IParameter>(p=>p.Name.Equals(CoreConstants.Parameters.ONTOGENY_FACTOR_GI));
             ontogenyFactorsGI.Count.ShouldBeGreaterThan(0);
 
             foreach (var ontogenyFactorGI in ontogenyFactorsGI)
             {
                ontogenyFactorGI.CanBeVaried.ShouldBeTrue();
-               ontogenyFactorGI.ParentContainer.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR).CanBeVaried.ShouldBeTrue();
+               ontogenyFactorGI.ParentContainer.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR).CanBeVaried.ShouldBeTrue();
             }
          }
 

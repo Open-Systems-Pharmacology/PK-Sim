@@ -165,15 +165,15 @@ namespace PKSim.Presentation.Services
 
       private void updateFractionUnbound(CompoundProcess newProcess, Compound compound)
       {
-         updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameter.FRATION_UNBOUND_EXPERIMENT,
-                                                       CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE,
+         updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameters.FRATION_UNBOUND_EXPERIMENT,
+                                                       CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE,
                                                        CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
       }
 
       private void updateLipophilicity(CompoundProcess newProcess, Compound compound)
       {
-         updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameter.LIPOPHILICITY_EXPERIMENT,
-                                                       CoreConstants.Parameter.LIPOPHILICITY,
+         updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameters.LIPOPHILICITY_EXPERIMENT,
+                                                       CoreConstants.Parameters.LIPOPHILICITY,
                                                        CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
       }
 

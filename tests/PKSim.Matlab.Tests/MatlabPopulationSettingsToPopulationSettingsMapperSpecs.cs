@@ -60,10 +60,10 @@ namespace PKSim.Matlab
          _batchPopSettings.MaxBMI = double.NaN;
          _batchPopSettings.NumberOfIndividuals = 2589;
          _batchPopSettings.ProportionOfFemales = 40;
-         _populationSettings.AddParameterRange(new ParameterRange {ParameterName = CoreConstants.Parameter.BMI});
-         _populationSettings.AddParameterRange(new ParameterRange {ParameterName = CoreConstants.Parameter.AGE});
-         _populationSettings.AddParameterRange(new ParameterRange {ParameterName = CoreConstants.Parameter.MEAN_HEIGHT});
-         _populationSettings.AddParameterRange(new ParameterRange {ParameterName = CoreConstants.Parameter.MEAN_WEIGHT});
+         _populationSettings.AddParameterRange(new ParameterRange {ParameterName = CoreConstants.Parameters.BMI});
+         _populationSettings.AddParameterRange(new ParameterRange {ParameterName = CoreConstants.Parameters.AGE});
+         _populationSettings.AddParameterRange(new ParameterRange {ParameterName = CoreConstants.Parameters.MEAN_HEIGHT});
+         _populationSettings.AddParameterRange(new ParameterRange {ParameterName = CoreConstants.Parameters.MEAN_WEIGHT});
          _populationSettings.AddGenderRatio(new GenderRatio {Gender = _genderRepository.Male});
          _populationSettings.AddGenderRatio(new GenderRatio {Gender = _genderRepository.Female});
          A.CallTo(() => _individualFactory.CreateStandardFor(A<Core.Model.OriginData>._)).Returns(_individual);
@@ -90,37 +90,37 @@ namespace PKSim.Matlab
       [Observation]
       public void should_update_the_min_max_for_height()
       {
-         _result.ParameterRange(CoreConstants.Parameter.MEAN_HEIGHT).MinValue.ShouldBeEqualTo(_batchPopSettings.MinHeight);
-         _result.ParameterRange(CoreConstants.Parameter.MEAN_HEIGHT).MaxValue.ShouldBeEqualTo(_batchPopSettings.MaxHeight);
+         _result.ParameterRange(CoreConstants.Parameters.MEAN_HEIGHT).MinValue.ShouldBeEqualTo(_batchPopSettings.MinHeight);
+         _result.ParameterRange(CoreConstants.Parameters.MEAN_HEIGHT).MaxValue.ShouldBeEqualTo(_batchPopSettings.MaxHeight);
       }
 
       [Observation]
       public void should_update_the_min_max_for_weight()
       {
-         _result.ParameterRange(CoreConstants.Parameter.MEAN_WEIGHT).MinValue.ShouldBeNull();
-         _result.ParameterRange(CoreConstants.Parameter.MEAN_WEIGHT).MaxValue.ShouldBeEqualTo(_batchPopSettings.MaxWeight);
+         _result.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT).MinValue.ShouldBeNull();
+         _result.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT).MaxValue.ShouldBeEqualTo(_batchPopSettings.MaxWeight);
       }
 
       [Observation]
       public void should_update_the_min_max_for_age()
       {
-         _result.ParameterRange(CoreConstants.Parameter.AGE).MinValue.ShouldBeEqualTo(_batchPopSettings.MinAge);
-         _result.ParameterRange(CoreConstants.Parameter.AGE).MaxValue.ShouldBeEqualTo(_batchPopSettings.MaxAge);
+         _result.ParameterRange(CoreConstants.Parameters.AGE).MinValue.ShouldBeEqualTo(_batchPopSettings.MinAge);
+         _result.ParameterRange(CoreConstants.Parameters.AGE).MaxValue.ShouldBeEqualTo(_batchPopSettings.MaxAge);
       }
 
       public void should_update_the_min_max_for_gestational_age()
       {
-         _result.ParameterRange(CoreConstants.Parameter.GESTATIONAL_AGE).MinValue.ShouldBeEqualTo(_batchPopSettings.MinGestationalAge);
+         _result.ParameterRange(CoreConstants.Parameters.GESTATIONAL_AGE).MinValue.ShouldBeEqualTo(_batchPopSettings.MinGestationalAge);
 
          //because not explicitely set: max_GA should be equal to the max of the range
-         _result.ParameterRange(CoreConstants.Parameter.GESTATIONAL_AGE).MaxValue.ShouldBeEqualTo(CoreConstants.PRETERM_RANGE.Max());
+         _result.ParameterRange(CoreConstants.Parameters.GESTATIONAL_AGE).MaxValue.ShouldBeEqualTo(CoreConstants.PRETERM_RANGE.Max());
       }
 
       [Observation]
       public void should_update_the_min_max_for_bmi()
       {
-         _result.ParameterRange(CoreConstants.Parameter.BMI).MinValue.ShouldBeEqualTo(_batchPopSettings.MinBMI);
-         _result.ParameterRange(CoreConstants.Parameter.BMI).MaxValue.ShouldBeNull();
+         _result.ParameterRange(CoreConstants.Parameters.BMI).MinValue.ShouldBeEqualTo(_batchPopSettings.MinBMI);
+         _result.ParameterRange(CoreConstants.Parameters.BMI).MaxValue.ShouldBeNull();
       }
 
       [Observation]

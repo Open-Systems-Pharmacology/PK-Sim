@@ -96,9 +96,9 @@ namespace PKSim.Core.Services
 
       private void updateProteinParametersValues(IndividualProtein protein)
       {
-         setGlobalParameterValue(protein, CoreConstants.Parameter.REL_EXP_BLOOD_CELL, CoreConstants.Compartment.BloodCells);
-         setGlobalParameterValue(protein, CoreConstants.Parameter.REL_EXP_PLASMA, CoreConstants.Compartment.Plasma);
-         setGlobalParameterValue(protein, CoreConstants.Parameter.REL_EXP_VASC_ENDO, CoreConstants.Compartment.VascularEndothelium);
+         setGlobalParameterValue(protein, CoreConstants.Parameters.REL_EXP_BLOOD_CELL, CoreConstants.Compartment.BloodCells);
+         setGlobalParameterValue(protein, CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Compartment.Plasma);
+         setGlobalParameterValue(protein, CoreConstants.Parameters.REL_EXP_VASC_ENDO, CoreConstants.Compartment.VascularEndothelium);
 
          foreach (var expressionContainer in _expressionContainersRetriever.AllContainersFor(_spatialStructure, protein))
          {
@@ -260,7 +260,7 @@ namespace PKSim.Core.Services
       private void setGlobalParameterValue(IndividualMolecule molecule, string expressionName, string containerName)
       {
          if (!molecule.HasContainerNamed(containerName)) return;
-         trySetValue(moleculeGlobalPathFor(molecule.Name).AndAdd(CoreConstants.Parameter.NormParameterFor(expressionName)), molecule.GetRelativeExpressionNormParameterFor(containerName));
+         trySetValue(moleculeGlobalPathFor(molecule.Name).AndAdd(CoreConstants.Parameters.NormParameterFor(expressionName)), molecule.GetRelativeExpressionNormParameterFor(containerName));
          trySetValue(moleculeGlobalPathFor(molecule.Name).AndAdd(expressionName), molecule.GetRelativeExpressionParameterFor(containerName));
       }
 
@@ -276,17 +276,17 @@ namespace PKSim.Core.Services
 
       private IObjectPath relExpNormPathFor(IndividualMolecule molecule, IContainer expressionContainer)
       {
-         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameter.REL_EXP_NORM);
+         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameters.REL_EXP_NORM);
       }
 
       private IObjectPath relExpOutPathFor(IndividualMolecule molecule, IContainer expressionContainer)
       {
-         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameter.REL_EXP_OUT);
+         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameters.REL_EXP_OUT);
       }
 
       private IObjectPath relExpPathFor(IndividualMolecule molecule, IContainer expressionContainer)
       {
-         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameter.REL_EXP);
+         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameters.REL_EXP);
       }
 
       private IObjectPath parameterPathFor(IndividualMolecule molecule, IContainer expressionContainer, string parameterName)

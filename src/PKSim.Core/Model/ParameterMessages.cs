@@ -76,7 +76,7 @@ namespace PKSim.Core.Model
 
       private static string displayFor(IParameter parameter, double value, bool numericalDisplayOnly)
       {
-         if (parameter.NameIsOneOf(CoreConstants.Parameter.AllBooleanParameters))
+         if (parameter.NameIsOneOf(CoreConstants.Parameters.AllBooleanParameters))
          {
             if (numericalDisplayOnly)
                return value.ToString(CultureInfo.InvariantCulture);

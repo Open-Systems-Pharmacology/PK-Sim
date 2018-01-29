@@ -49,21 +49,21 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    returns true if the parameter is neutral otherwise false
       /// </summary>
-      public virtual bool IsNeutral => this.Parameter(CoreConstants.Parameter.IS_NEUTRAL).Value == 1;
+      public virtual bool IsNeutral => this.Parameter(CoreConstants.Parameters.IS_NEUTRAL).Value == 1;
 
       /// <summary>
       ///    returns true if the parameter is small molecule otherwise false
       /// </summary>
       public virtual bool IsSmallMolecule
       {
-         get => this.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value == 1;
-         set => this.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value = value ? 1: 0;
+         get => this.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value == 1;
+         set => this.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = value ? 1: 0;
       }
 
       public virtual PlasmaProteinBindingPartner PlasmaProteinBindingPartner
       {
-         get => (PlasmaProteinBindingPartner)this.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER).Value;
-         set => this.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER).Value = (int) value;
+         get => (PlasmaProteinBindingPartner)this.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).Value;
+         set => this.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).Value = (int) value;
       }
 
       public virtual IEnumerable<ParameterAlternativeGroup> AllParameterAlternativeGroups() => GetChildren<ParameterAlternativeGroup>();

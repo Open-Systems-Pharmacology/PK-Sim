@@ -41,7 +41,7 @@ namespace PKSim.ProjectConverter.v7_2
       {
          foreach (var individual in _allHumanIndividuals)
          {
-            var bsaParameter = individual.Organism.Parameter(CoreConstants.Parameter.BSA);
+            var bsaParameter = individual.Organism.Parameter(CoreConstants.Parameters.BSA);
             bsaParameter.ShouldNotBeNull();
             bsaParameter.Formula.IsExplicit().ShouldBeTrue();
          }
@@ -78,7 +78,7 @@ namespace PKSim.ProjectConverter.v7_2
       public void should_have_addded_the_bsa_values_to_the_population()
       {
          var population = First<Population>();
-         var bsaParameterPath = _entityPathResolver.PathFor(population.Organism.Parameter(CoreConstants.Parameter.BSA));
+         var bsaParameterPath = _entityPathResolver.PathFor(population.Organism.Parameter(CoreConstants.Parameters.BSA));
          population.IndividualPropertiesCache.Has(bsaParameterPath).ShouldBeTrue();
       }
    }

@@ -40,7 +40,7 @@ namespace PKSim.IntegrationTests
          {
             var individualForSpecies = _individualRetriever.DefaultIndividualFor(species);
             double meanWeight = individualForSpecies.MeanWeight;
-            double bodyWeight = individualForSpecies.Organism.Parameter(CoreConstants.Parameter.WEIGHT).Value;
+            double bodyWeight = individualForSpecies.Organism.Parameter(CoreConstants.Parameters.WEIGHT).Value;
             if (!ValueComparer.AreValuesEqual(meanWeight, bodyWeight, 1e-2))
                errorList.Add(string.Format("Mean Body weight not equal to weight for '{0}': MeanWeight = {1}, BodyWeight={2}", species.Name, meanWeight, bodyWeight));
          }
@@ -93,7 +93,7 @@ namespace PKSim.IntegrationTests
             {
                var mouseTissueOrgan = mouseTissueOrgans.FindByName(tissueOrgan.Name);
 
-               if (tissueOrgan.Parameter(CoreConstants.Parameter.VOLUME_MOUSE).Value !=
+               if (tissueOrgan.Parameter(CoreConstants.Parameters.VOLUME_MOUSE).Value !=
                    mouseTissueOrgan.Parameter(Constants.Parameters.VOLUME).Value)
 
                errorList.Add($"{species.Name}.{tissueOrgan.Name}.{Constants.Parameters.VOLUME} is not equal to the corresponding mouse volume value");

@@ -49,9 +49,9 @@ namespace PKSim.Presentation.DTO.Mappers
          var dto = new SimulationExpressionsDTO();
          var allParameters = expressionParameters.ToList();
 
-         dto.ReferenceConcentration = updateGlobalParameter(allParameters, CoreConstants.Parameter.REFERENCE_CONCENTRATION);
-         dto.HalfLifeLiver = updateGlobalParameter(allParameters, CoreConstants.Parameter.HALF_LIFE_LIVER);
-         dto.HalfLifeIntestine = updateGlobalParameter(allParameters, CoreConstants.Parameter.HALF_LIFE_INTESTINE);
+         dto.ReferenceConcentration = updateGlobalParameter(allParameters, CoreConstants.Parameters.REFERENCE_CONCENTRATION);
+         dto.HalfLifeLiver = updateGlobalParameter(allParameters, CoreConstants.Parameters.HALF_LIFE_LIVER);
+         dto.HalfLifeIntestine = updateGlobalParameter(allParameters, CoreConstants.Parameters.HALF_LIFE_INTESTINE);
 
          dto.RelativeExpressions = relativeExpressionsFrom(allParameters).ToList();
          return dto;
@@ -173,13 +173,13 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private string containerNameForGlobalExpression(string parameterName)
       {
-         if (string.Equals(parameterName, CoreConstants.Parameter.REL_EXP_BLOOD_CELL))
+         if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_BLOOD_CELL))
             return CoreConstants.Compartment.BloodCells;
 
-         if (string.Equals(parameterName, CoreConstants.Parameter.REL_EXP_PLASMA))
+         if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_PLASMA))
             return CoreConstants.Compartment.Plasma;
 
-         if (string.Equals(parameterName, CoreConstants.Parameter.REL_EXP_VASC_ENDO))
+         if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_VASC_ENDO))
             return CoreConstants.Compartment.VascularEndothelium;
 
          return parameterName;
@@ -187,9 +187,9 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private bool parameterIsGlobalExpression(IParameter relativeExpression)
       {
-         return relativeExpression.NameIsOneOf(CoreConstants.Parameter.REL_EXP_BLOOD_CELL,
-            CoreConstants.Parameter.REL_EXP_PLASMA,
-            CoreConstants.Parameter.REL_EXP_VASC_ENDO);
+         return relativeExpression.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELL,
+            CoreConstants.Parameters.REL_EXP_PLASMA,
+            CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
    }
 }

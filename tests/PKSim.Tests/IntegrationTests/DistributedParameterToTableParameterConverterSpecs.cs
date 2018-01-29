@@ -54,7 +54,7 @@ namespace PKSim.IntegrationTests
       public void should_have_replaced_the_plasma_protein_ontogeny_factor_with_a_table_formula()
       {
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         foreach (var parameterName in CoreConstants.Parameter.AllPlasmaProteinOntogenyFactors)
+         foreach (var parameterName in CoreConstants.Parameters.AllPlasmaProteinOntogenyFactors)
          {
             organism.Parameter(parameterName).Formula.ShouldBeAnInstanceOf<TableFormula>();
             organism.Parameter(parameterName).IsFixedValue.ShouldBeFalse();
@@ -65,7 +65,7 @@ namespace PKSim.IntegrationTests
       public void should_have_named_the_X_name_in_the_table_formula_to_simulation_time()
       {
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         foreach (var parameterName in CoreConstants.Parameter.AllPlasmaProteinOntogenyFactors)
+         foreach (var parameterName in CoreConstants.Parameters.AllPlasmaProteinOntogenyFactors)
          {
             var tableFormula = organism.Parameter(parameterName).Formula.DowncastTo<TableFormula>();
             tableFormula.XName.ShouldBeEqualTo(PKSimConstants.UI.SimulationTime);
@@ -76,24 +76,24 @@ namespace PKSim.IntegrationTests
       public void should_have_changed_the_age_formula_to_an_explicit_formula_using_the_simulation_time()
       {
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         organism.Parameter(CoreConstants.Parameter.AGE).Formula.IsExplicit().ShouldBeTrue();
-         organism.Parameter(CoreConstants.Parameter.AGE).IsFixedValue.ShouldBeFalse();
+         organism.Parameter(CoreConstants.Parameters.AGE).Formula.IsExplicit().ShouldBeTrue();
+         organism.Parameter(CoreConstants.Parameters.AGE).IsFixedValue.ShouldBeFalse();
       }
 
       [Observation]
       public void should_have_added_the_age_0_parameter_and_the_min_to_year_conversion_factor_to_the_organism()
       {
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         organism.Parameter(CoreConstants.Parameter.AGE_0).ShouldNotBeNull();
-         organism.Parameter(CoreConstants.Parameter.MIN_TO_YEAR_FACTOR).ShouldNotBeNull();
+         organism.Parameter(CoreConstants.Parameters.AGE_0).ShouldNotBeNull();
+         organism.Parameter(CoreConstants.Parameters.MIN_TO_YEAR_FACTOR).ShouldNotBeNull();
       }
 
       [Observation]
       public void should_have_added_the_age_0_parameter_and_the_min_to_year_conversion_factor_to_the_parameter_start_values()
       {
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         var age0Path = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameter.AGE_0));
-         var minToYearFactorPath = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameter.MIN_TO_YEAR_FACTOR));
+         var age0Path = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameters.AGE_0));
+         var minToYearFactorPath = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameters.MIN_TO_YEAR_FACTOR));
          var buildConfiguration = _buildConfigurationTask.CreateFor(_simulation, shouldValidate: false, createAgingDataInSimulation: true);
          var psv = buildConfiguration.ParameterStartValues;
          psv[age0Path].ShouldNotBeNull();
@@ -117,7 +117,7 @@ namespace PKSim.IntegrationTests
       public void should_not_have_replaced_the_plasma_protein_ontogeny_factor_with_a_table_formula()
       {
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         foreach (var parameterName in CoreConstants.Parameter.AllPlasmaProteinOntogenyFactors)
+         foreach (var parameterName in CoreConstants.Parameters.AllPlasmaProteinOntogenyFactors)
          {
             organism.Parameter(parameterName).Formula.ShouldBeAnInstanceOf<ConstantFormula>();
          }

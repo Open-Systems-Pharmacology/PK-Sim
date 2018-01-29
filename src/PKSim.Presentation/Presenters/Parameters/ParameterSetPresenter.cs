@@ -113,7 +113,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          if (!parameterDTO.Parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Compound, PKSimBuildingBlockType.Protocol))
             return true;
 
-         return !parameterDTO.NameIsOneOf(CoreConstants.Parameter.AllParametersWithLockedValueOriginInSimulation);
+         return !parameterDTO.NameIsOneOf(CoreConstants.Parameters.AllParametersWithLockedValueOriginInSimulation);
       }
       protected abstract IEnumerable<IParameterDTO> SelectedParameters();
 

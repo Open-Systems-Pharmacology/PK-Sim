@@ -52,10 +52,10 @@ namespace PKSim.Presentation
          public Compound Create()
          {
             var compound = new Compound();
-            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT));
-            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameter.LIPOPHILICITY));
-            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(8).WithName(CoreConstants.Parameter.PERMEABILITY));
-            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.IS_SMALL_MOLECULE));
+            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT));
+            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameters.LIPOPHILICITY));
+            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(8).WithName(CoreConstants.Parameters.PERMEABILITY));
+            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.IS_SMALL_MOLECULE));
             return compound;
          }
       }
@@ -147,11 +147,11 @@ namespace PKSim.Presentation
          _compound = new CompoundFactoryForSpecs().Create();
          var lipoGroup = new ParameterAlternativeGroup().WithName(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
          _alternative1 = new ParameterAlternative().WithName("ALT1");
-         _alternative1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.LIPOPHILICITY));
+         _alternative1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.LIPOPHILICITY));
          lipoGroup.AddAlternative(_alternative1);
 
          _alternative2 = new ParameterAlternative().WithName("ALT2");
-         _alternative2.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameter.LIPOPHILICITY));
+         _alternative2.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameters.LIPOPHILICITY));
          lipoGroup.AddAlternative(_alternative2);
          _compound.AddParameterAlternativeGroup(lipoGroup);
       }
@@ -188,12 +188,12 @@ namespace PKSim.Presentation
          _solValue = 100;
          _gainPerChargeValue = 1000;
          A.CallTo(() => _formulaFactory.CreateTableFormula()).Returns(new TableFormula());
-         var refPh = DomainHelperForSpecs.ConstantParameterWithValue(_refPhValue).WithName(CoreConstants.Parameter.REFERENCE_PH).WithDimension(DomainHelperForSpecs.NoDimension());
-         var solubilty = DomainHelperForSpecs.ConstantParameterWithValue(_solValue).WithName(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH).WithDimension(solDim);
-         var gainPerCharge = DomainHelperForSpecs.ConstantParameterWithValue(_gainPerChargeValue).WithName(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE).WithDimension(DomainHelperForSpecs.NoDimension());
-         _solubility_pKa_pH_Factor = new PKSimParameter().WithName(CoreConstants.Parameter.SOLUBILITY_P_KA__P_H_FACTOR);
+         var refPh = DomainHelperForSpecs.ConstantParameterWithValue(_refPhValue).WithName(CoreConstants.Parameters.REFERENCE_PH).WithDimension(DomainHelperForSpecs.NoDimension());
+         var solubilty = DomainHelperForSpecs.ConstantParameterWithValue(_solValue).WithName(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH).WithDimension(solDim);
+         var gainPerCharge = DomainHelperForSpecs.ConstantParameterWithValue(_gainPerChargeValue).WithName(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE).WithDimension(DomainHelperForSpecs.NoDimension());
+         _solubility_pKa_pH_Factor = new PKSimParameter().WithName(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR);
          _solubility_pKa_pH_Factor.Formula = new ExplicitFormula("10 * (pH +1)");
-         _solubility_pKa_pH_Factor.Formula.AddObjectPath(new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, CoreConstants.Parameter.REFERENCE_PH}).WithAlias("pH"));
+         _solubility_pKa_pH_Factor.Formula.AddObjectPath(new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, CoreConstants.Parameters.REFERENCE_PH}).WithAlias("pH"));
          _compound.Add(refPh);
          _compound.Add(solubilty);
          _compound.Add(gainPerCharge);
@@ -260,7 +260,7 @@ namespace PKSim.Presentation
          base.Context();
          var lipoGroup = new ParameterAlternativeGroup().WithName(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
          _alternative = new ParameterAlternative().WithName("ALT1");
-         _parameterInAlternative = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.LIPOPHILICITY);
+         _parameterInAlternative = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.LIPOPHILICITY);
          _alternative.Add(_parameterInAlternative);
          lipoGroup.AddAlternative(_alternative);
          var simulation = A.Fake<Simulation>();
@@ -289,7 +289,7 @@ namespace PKSim.Presentation
          base.Context();
          var lipoGroup = new ParameterAlternativeGroup().WithName(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
          _alternative = new ParameterAlternative().WithName("ALT1");
-         _parameterInAlternative = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.LIPOPHILICITY);
+         _parameterInAlternative = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.LIPOPHILICITY);
          _alternative.Add(_parameterInAlternative);
          lipoGroup.AddAlternative(_alternative);
          var simulation = new IndividualSimulation {Properties = new SimulationProperties()};

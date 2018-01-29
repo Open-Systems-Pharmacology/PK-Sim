@@ -31,7 +31,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       protected override IEnumerable<PermeabilityAlternativeDTO> GetPermeabilityDTOs()
       {
-         return _parameterGroup.AllAlternatives.Select(alternative => _permeabilityAlternativeDTOMapper.MapFrom(alternative, CoreConstants.Parameter.SPECIFIC_INTESTINAL_PERMEABILITY));
+         return _parameterGroup.AllAlternatives.Select(alternative => _permeabilityAlternativeDTOMapper.MapFrom(alternative, CoreConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY));
       }
    }
 }

@@ -57,7 +57,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.REL_EXP
+            Name = CoreConstants.Parameters.REL_EXP
          };
 
          _normalizedExpressionParameter = new Parameter
@@ -65,7 +65,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.REL_EXP_NORM
+            Name = CoreConstants.Parameters.REL_EXP_NORM
          };
 
          var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
@@ -97,7 +97,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.REL_EXP
+            Name = CoreConstants.Parameters.REL_EXP
          };
 
          _normalizedExpressionParameter = new Parameter
@@ -105,7 +105,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.REL_EXP_NORM
+            Name = CoreConstants.Parameters.REL_EXP_NORM
          };
 
          var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
@@ -379,7 +379,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _parameter.Name = CoreConstants.Parameter.PARTICLE_RADIUS_MAX;
+         _parameter.Name = CoreConstants.Parameters.PARTICLE_RADIUS_MAX;
          _parameter.Value = 10; //in L
          _parameter.DisplayUnit = _volumeDimension.DefaultUnit; //L
          _unitToSet = _volumeDimension.Unit("mL");
@@ -514,14 +514,14 @@ namespace PKSim.Core
          var kidney = new Container().WithName("Kidney").WithParentContainer(organism);
          var liver = new Container().WithName("Liver").WithParentContainer(organism);
          var bone = new Container().WithName("Bone").WithParentContainer(organism);
-         _relExpPlasma = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_PLASMA).WithParentContainer(organism);
-         _relExpPlasmaNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_PLASMA_NORM).WithParentContainer(organism);
-         _relExpLiver = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(liver);
-         _relExpLiverNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_NORM).WithParentContainer(liver);
-         _relExpKidney = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(kidney);
-         _relExpKidneyNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_NORM).WithParentContainer(kidney);
+         _relExpPlasma = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_PLASMA).WithParentContainer(organism);
+         _relExpPlasmaNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_PLASMA_NORM).WithParentContainer(organism);
+         _relExpLiver = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(liver);
+         _relExpLiverNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_NORM).WithParentContainer(liver);
+         _relExpKidney = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(kidney);
+         _relExpKidneyNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_NORM).WithParentContainer(kidney);
          _anotherParameter = new PKSimParameter().WithName("not_a_rel_exp").WithParentContainer(kidney);
-         _relExpWithoutNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(bone);
+         _relExpWithoutNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(bone);
       }
 
       protected override void Because()

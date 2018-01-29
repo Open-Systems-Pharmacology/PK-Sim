@@ -57,7 +57,7 @@ namespace PKSim.IntegrationTests
          _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.BloodCells).Value = _relExpNormBloodCells;
          _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.VascularEndothelium).Value = _relExpVascEndo;
          _individual.AddMolecule(_enzyme);
-         _hct = _individual.Organism.Parameter(CoreConstants.Parameter.HCT).Value;
+         _hct = _individual.Organism.Parameter(CoreConstants.Parameters.HCT).Value;
          _metabolizationProcess = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.METABOLIZATION_SPECIFIC_FIRST_ORDER).DowncastTo<PartialProcess>());
          _metabolizationProcess.Name = "My Partial Process";
          _metabolizationProcess.Parameter(ConverterConstants.Parameter.CLspec).Value = 15;
@@ -100,7 +100,7 @@ namespace PKSim.IntegrationTests
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Plasma))
             .Where(x => x.ParentContainer.ParentContainer.IsBloodOrgan())
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP_OUT));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
 
          foreach (var parameter in allRelExpOutParameters)
          {
@@ -119,7 +119,7 @@ namespace PKSim.IntegrationTests
 
          foreach (var enzyme in allEnzymeInTissuePlasma)
          {
-            var relExpOut = enzyme.Parameter(CoreConstants.Parameter.REL_EXP_OUT);
+            var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
             var v_pls = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
             var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameter.VolumeVascularEndothelium).Value;
             relExpOut.Value.ShouldBeEqualTo(_relExpNormPls + (_hct) / (1 - _hct) * _relExpNormBloodCells + v_vasend / v_pls * _relExpVascEndo, 1e-6);
@@ -164,7 +164,7 @@ namespace PKSim.IntegrationTests
          var allRelExpNorm = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Interstitial))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP_NORM));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_NORM));
 
          foreach (var parameter in allRelExpNorm)
          {
@@ -183,7 +183,7 @@ namespace PKSim.IntegrationTests
          var allRelExp = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Interstitial))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExp)
          {
@@ -202,7 +202,7 @@ namespace PKSim.IntegrationTests
          var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Plasma))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP_OUT));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
 
          foreach (var parameter in allRelExpOutParameters)
          {
@@ -221,10 +221,10 @@ namespace PKSim.IntegrationTests
 
          foreach (var enzyme in allEnzymeInTissueInterstitial)
          {
-            var relExpOut = enzyme.Parameter(CoreConstants.Parameter.REL_EXP_OUT);
-            var relExpNorm = enzyme.Parameter(CoreConstants.Parameter.REL_EXP_NORM).Value;
-            var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FRACTION_INTRACELLULAR).Value;
-            var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FRACTION_INTERSTITIAL).Value;
+            var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
+            var relExpNorm = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_NORM).Value;
+            var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTRACELLULAR).Value;
+            var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTERSTITIAL).Value;
             var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
             var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameter.VolumeVascularEndothelium).Value;
             relExpOut.Value.ShouldBeEqualTo(relExpNorm * f_cell / f_int + v_vasend / v_int * _relExpVascEndo, 1e-6);
@@ -234,7 +234,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_reference_concentration_parameter_should_be_marked_as_can_be_varied_in_the_simulation()
       {
-         var refConc = _simulation.Model.Root.Container("CYP").Parameter(CoreConstants.Parameter.REFERENCE_CONCENTRATION);
+         var refConc = _simulation.Model.Root.Container("CYP").Parameter(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
          refConc.CanBeVaried.ShouldBeTrue();
          refConc.CanBeVariedInPopulation.ShouldBeTrue();
       }
@@ -269,7 +269,7 @@ namespace PKSim.IntegrationTests
          var allRelExpNorm = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP_NORM));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_NORM));
 
          foreach (var parameter in allRelExpNorm)
          {
@@ -288,7 +288,7 @@ namespace PKSim.IntegrationTests
          var allRelExp = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExp)
          {
@@ -307,7 +307,7 @@ namespace PKSim.IntegrationTests
          var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Plasma))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP_OUT));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
 
          foreach (var parameter in allRelExpOutParameters)
          {
@@ -321,7 +321,7 @@ namespace PKSim.IntegrationTests
          var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.BloodCells))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP_OUT));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
 
          foreach (var parameter in allRelExpOutParameters)
          {
@@ -340,7 +340,7 @@ namespace PKSim.IntegrationTests
 
          foreach (var enzyme in allEnzymeInTissueInterstitial)
          {
-            var relExpOut = enzyme.Parameter(CoreConstants.Parameter.REL_EXP_OUT);
+            var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
             var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
             var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameter.VolumeVascularEndothelium).Value;
             relExpOut.Value.ShouldBeEqualTo(v_vasend / v_int * _relExpVascEndo, 1e-6);
@@ -353,7 +353,7 @@ namespace PKSim.IntegrationTests
          var allRelExp = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP_OUT));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
 
          foreach (var parameter in allRelExp)
          {
@@ -403,7 +403,7 @@ namespace PKSim.IntegrationTests
          var allRelExpNorm = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP_NORM));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_NORM));
 
          foreach (var parameter in allRelExpNorm)
          {
@@ -422,7 +422,7 @@ namespace PKSim.IntegrationTests
          var allRelExp = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExp)
          {
@@ -441,7 +441,7 @@ namespace PKSim.IntegrationTests
          var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Plasma))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP_OUT));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
 
          foreach (var parameter in allRelExpOutParameters)
          {
@@ -455,7 +455,7 @@ namespace PKSim.IntegrationTests
          var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.BloodCells))
-            .Select(x => x.Parameter(CoreConstants.Parameter.REL_EXP_OUT));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
 
          foreach (var parameter in allRelExpOutParameters)
          {
@@ -474,12 +474,12 @@ namespace PKSim.IntegrationTests
 
          foreach (var enzyme in allEnzymeInTissueInterstitial)
          {
-            var relExpOut = enzyme.Parameter(CoreConstants.Parameter.REL_EXP_OUT);
-            var relExpNorm = enzyme.Parameter(CoreConstants.Parameter.REL_EXP_NORM).Value;
+            var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
+            var relExpNorm = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_NORM).Value;
             var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
             var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameter.VolumeVascularEndothelium).Value;
-            var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FRACTION_INTRACELLULAR).Value;
-            var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameter.FRACTION_INTERSTITIAL).Value;
+            var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTRACELLULAR).Value;
+            var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTERSTITIAL).Value;
 
             relExpOut.Value.ShouldBeEqualTo(relExpNorm * f_cell / f_int + v_vasend / v_int * _relExpVascEndo, 1e-6);
          }
@@ -498,7 +498,7 @@ namespace PKSim.IntegrationTests
          var modelConfig = _modelConfigurationRepository.AllFor(_individual.Species).First(x => x.ModelName == CoreConstants.Model.TwoPores);
          var twoPoreModelProperties = _modelPropertiesTask.DefaultFor(modelConfig, _individual.OriginData);
 
-         _compound.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value = 0;
+         _compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = 0;
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol, twoPoreModelProperties)
             .DowncastTo<IndividualSimulation>();
 
@@ -529,7 +529,7 @@ namespace PKSim.IntegrationTests
 
          var modelConfig = _modelConfigurationRepository.AllFor(_individual.Species).First(x => x.ModelName == CoreConstants.Model.TwoPores);
          var twoPoreModelProperties = _modelPropertiesTask.DefaultFor(modelConfig, _individual.OriginData);
-         _compound.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value = 0;
+         _compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = 0;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol, twoPoreModelProperties)
             .DowncastTo<IndividualSimulation>();

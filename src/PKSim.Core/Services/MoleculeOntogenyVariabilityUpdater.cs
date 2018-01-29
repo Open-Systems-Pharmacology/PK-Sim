@@ -135,12 +135,12 @@ namespace PKSim.Core.Services
 
       private IReadOnlyList<double> allGAsIn(Population population)
       {
-         return population.AllOrganismValuesFor(CoreConstants.Parameter.GESTATIONAL_AGE, _entityPathResolver);
+         return population.AllOrganismValuesFor(CoreConstants.Parameters.GESTATIONAL_AGE, _entityPathResolver);
       }
 
       private IReadOnlyList<double> allAgesIn(Population population)
       {
-         return population.AllOrganismValuesFor(CoreConstants.Parameter.AGE, _entityPathResolver);
+         return population.AllOrganismValuesFor(CoreConstants.Parameters.AGE, _entityPathResolver);
       }
    }
 }

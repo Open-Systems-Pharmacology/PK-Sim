@@ -186,8 +186,8 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _resultRandom = sut.AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(CoreConstants.Parameter.ONTOGENY_FACTOR_ALBUMIN, _originData, _randomGenerator);
-         _resultMean = sut.AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(CoreConstants.Parameter.ONTOGENY_FACTOR_ALBUMIN, _originData);
+         _resultRandom = sut.AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN, _originData, _randomGenerator);
+         _resultMean = sut.AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN, _originData);
       }
 
       [Observation]

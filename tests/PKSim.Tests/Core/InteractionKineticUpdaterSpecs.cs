@@ -52,8 +52,8 @@ namespace PKSim.Core
          A.CallTo(() => _simulation.InteractionProperties).Returns(_interactionProperties);
 
 
-         _kmFactor = new PKSimParameter().WithName(CoreConstants.Parameter.KM_INTERACTION_FACTOR).WithFormula(new ExplicitFormula("1"));
-         _vmaxFactor = new PKSimParameter().WithName(CoreConstants.Parameter.KCAT_INTERACTION_FACTOR).WithFormula(new ExplicitFormula("1"));
+         _kmFactor = new PKSimParameter().WithName(CoreConstants.Parameters.KM_INTERACTION_FACTOR).WithFormula(new ExplicitFormula("1"));
+         _vmaxFactor = new PKSimParameter().WithName(CoreConstants.Parameters.KCAT_INTERACTION_FACTOR).WithFormula(new ExplicitFormula("1"));
 
          _reaction.Add(_kmFactor);
          _reaction.Add(_vmaxFactor);

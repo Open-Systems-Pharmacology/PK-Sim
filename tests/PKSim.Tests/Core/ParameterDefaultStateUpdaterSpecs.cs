@@ -36,8 +36,8 @@ namespace PKSim.Core
          _spatialStructure.AddTopContainer(_anotherTopContainer);
 
          _ga = DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.GESTATIONAL_AGE);
-         _age = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameter.AGE);
-         _height = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameter.HEIGHT);
+         _age = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.AGE);
+         _height = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.HEIGHT);
 
          _p1 = DomainHelperForSpecs.ConstantParameterWithValue().WithName("P1");
          _p2 = DomainHelperForSpecs.ConstantParameterWithValue().WithName("P2");
@@ -92,8 +92,8 @@ namespace PKSim.Core
 
          _startTime1 = DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.START_TIME);
          _startTime2 = DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.START_TIME);
-         _dose = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameter.DOSE);
-         _dosePerBodyWeight = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT);
+         _dose = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.DOSE);
+         _dosePerBodyWeight = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.DOSE_PER_BODY_WEIGHT);
 
          _p1 = DomainHelperForSpecs.ConstantParameterWithValue().WithName("P1");
          _p2 = DomainHelperForSpecs.ConstantParameterWithValue().WithName("P2");

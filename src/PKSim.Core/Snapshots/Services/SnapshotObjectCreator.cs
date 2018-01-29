@@ -55,18 +55,18 @@ namespace PKSim.Core.Snapshots.Services
          var compound = new Compound
          {
             Name = name,
-            Lipophilicity = new[] {createAlternative(CoreConstants.Groups.COMPOUND_LIPOPHILICITY, CoreConstants.Species.HUMAN, createParameter(CoreConstants.Parameter.LIPOPHILICITY, lipophilicity))},
-            FractionUnbound = new[] {createAlternative(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, CoreConstants.Species.HUMAN, createParameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE, fractionUnbound))},
+            Lipophilicity = new[] {createAlternative(CoreConstants.Groups.COMPOUND_LIPOPHILICITY, CoreConstants.Species.HUMAN, createParameter(CoreConstants.Parameters.LIPOPHILICITY, lipophilicity))},
+            FractionUnbound = new[] {createAlternative(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, CoreConstants.Species.HUMAN, createParameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE, fractionUnbound))},
             Solubility = new[]
             {
                createAlternative(CoreConstants.Groups.COMPOUND_SOLUBILITY, null,
-                  createParameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH, solubilityAtRefPh),
-                  createParameter(CoreConstants.Parameter.REFERENCE_PH, refPh)
+                  createParameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH, solubilityAtRefPh),
+                  createParameter(CoreConstants.Parameters.REFERENCE_PH, refPh)
                )
             },
             Parameters = new[]
             {
-               createParameter(CoreConstants.Parameter.MOLECULAR_WEIGHT, molWeight),
+               createParameter(CoreConstants.Parameters.MOLECULAR_WEIGHT, molWeight),
             }
          };
 
@@ -95,7 +95,7 @@ namespace PKSim.Core.Snapshots.Services
             ApplicationType = applicationType.Name,
             Parameters = new[]
             {
-               createParameter(CoreConstants.Parameter.INPUT_DOSE, dose, doseUnit)
+               createParameter(CoreConstants.Parameters.INPUT_DOSE, dose, doseUnit)
             }
          };
 
