@@ -51,12 +51,12 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Parameter representing the relative expression value for this container
       /// </summary>
-      public IParameter RelativeExpressionParameter => this.Parameter(CoreConstants.Parameter.REL_EXP);
+      public IParameter RelativeExpressionParameter => this.Parameter(CoreConstants.Parameters.REL_EXP);
 
       /// <summary>
       ///    Parameter representing the relative expression normalized value for this container
       /// </summary>
-      public IParameter RelativeExpressionNormParameter => this.Parameter(CoreConstants.Parameter.REL_EXP_NORM);
+      public IParameter RelativeExpressionNormParameter => this.Parameter(CoreConstants.Parameters.REL_EXP_NORM);
 
       /// <summary>
       ///    Return the path of the compartment where the protein will be defined

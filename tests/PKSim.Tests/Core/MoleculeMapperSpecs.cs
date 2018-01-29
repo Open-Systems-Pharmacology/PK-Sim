@@ -82,13 +82,13 @@ namespace PKSim.Core
          _expressionContainer2 = new MoleculeExpressionContainer { Name = "Exp Container2"};
          _enzyme.AddChildren(_expressionContainer1, _expressionContainer2);
 
-         _relativeExpressionParameter1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameter.REL_EXP);
-         _relativeExpressionParameterNorm1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.REL_EXP_NORM);
+         _relativeExpressionParameter1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.REL_EXP);
+         _relativeExpressionParameterNorm1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.REL_EXP_NORM);
          _expressionContainer1.Add(_relativeExpressionParameter1);
          _expressionContainer1.Add(_relativeExpressionParameterNorm1);
 
-         _relativeExpressionParameterNotSet = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.REL_EXP);
-         _relativeExpressionParameterNotSetNorm = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.REL_EXP_NORM);
+         _relativeExpressionParameterNotSet = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP);
+         _relativeExpressionParameterNotSetNorm = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP_NORM);
          _expressionContainer2.Add(_relativeExpressionParameterNotSet);
          _expressionContainer2.Add(_relativeExpressionParameterNotSetNorm);
 

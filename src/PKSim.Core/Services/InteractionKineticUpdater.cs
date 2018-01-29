@@ -75,12 +75,12 @@ namespace PKSim.Core.Services
 
       private void updateKmFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, string activatedMolecule, Simulation simulation, IFormulaCache formulaCache)
       {
-         updateKmLikeFactor(processParameterContainer, allUpdatingKinetics, moleculeName, activatedMolecule, simulation, formulaCache, CoreConstants.Parameter.KM_INTERACTION_FACTOR);
+         updateKmLikeFactor(processParameterContainer, allUpdatingKinetics, moleculeName, activatedMolecule, simulation, formulaCache, CoreConstants.Parameters.KM_INTERACTION_FACTOR);
       }
 
       private void updateKKinactHalfFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, string activatedMolecule, Simulation simulation, IFormulaCache formulaCache)
       {
-         updateKmLikeFactor(processParameterContainer, allUpdatingKinetics, moleculeName, activatedMolecule, simulation, formulaCache, CoreConstants.Parameter.K_KINACT_HALF_INTERACTION_FACTOR);
+         updateKmLikeFactor(processParameterContainer, allUpdatingKinetics, moleculeName, activatedMolecule, simulation, formulaCache, CoreConstants.Parameters.K_KINACT_HALF_INTERACTION_FACTOR);
       }
 
       private void updateKmLikeFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, 
@@ -105,12 +105,12 @@ namespace PKSim.Core.Services
 
       private void updateKcatFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, string activatedMolecule, Simulation simulation, IFormulaCache formulaCache)
       {
-         updateKcatLikeFactor(processParameterContainer, allUpdatingKinetics, moleculeName, activatedMolecule, simulation, formulaCache, CoreConstants.Parameter.KCAT_INTERACTION_FACTOR);
+         updateKcatLikeFactor(processParameterContainer, allUpdatingKinetics, moleculeName, activatedMolecule, simulation, formulaCache, CoreConstants.Parameters.KCAT_INTERACTION_FACTOR);
       }
 
       private void updateKinactFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, string activatedMolecule, Simulation simulation, IFormulaCache formulaCache)
       {
-         updateKcatLikeFactor(processParameterContainer, allUpdatingKinetics, moleculeName, activatedMolecule, simulation, formulaCache, CoreConstants.Parameter.KINACT_INTERACTION_FACTOR);
+         updateKcatLikeFactor(processParameterContainer, allUpdatingKinetics, moleculeName, activatedMolecule, simulation, formulaCache, CoreConstants.Parameters.KINACT_INTERACTION_FACTOR);
       }
 
       private void updateKcatLikeFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, 
@@ -134,7 +134,7 @@ namespace PKSim.Core.Services
       private void updateCLSpecFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, string activatedMolecule, Simulation simulation, IFormulaCache formulaCache)
       {
          updateInteractionFactor(processParameterContainer, moleculeName, allUpdatingKinetics, formulaCache,
-            CoreConstants.Parameter.CL_SPEC_PER_ENZYME_INTERACTION_FACTOR, CL_spec_factor =>
+            CoreConstants.Parameters.CL_SPEC_PER_ENZYME_INTERACTION_FACTOR, CL_spec_factor =>
             {
                var formulaStringDenominator = new List<string>();
                allUpdatingKinetics.Each(x =>

@@ -129,11 +129,11 @@ namespace PKSim.Core.Services
       private static void updateOriginDataFromIndividual(Individual individual, OriginData originData)
       {
          var organism = individual.Organism;
-         originData.Age = organism.Parameter(CoreConstants.Parameter.AGE)?.Value;
-         originData.GestationalAge = organism.Parameter(CoreConstants.Parameter.GESTATIONAL_AGE)?.Value;
-         originData.Height = organism.Parameter(CoreConstants.Parameter.HEIGHT)?.Value;
-         originData.BMI = organism.Parameter(CoreConstants.Parameter.BMI)?.Value;
-         originData.Weight = organism.Parameter(CoreConstants.Parameter.WEIGHT).Value;
+         originData.Age = organism.Parameter(CoreConstants.Parameters.AGE)?.Value;
+         originData.GestationalAge = organism.Parameter(CoreConstants.Parameters.GESTATIONAL_AGE)?.Value;
+         originData.Height = organism.Parameter(CoreConstants.Parameters.HEIGHT)?.Value;
+         originData.BMI = organism.Parameter(CoreConstants.Parameters.BMI)?.Value;
+         originData.Weight = organism.Parameter(CoreConstants.Parameters.WEIGHT).Value;
       }
 
       private void updateParameterValue(Population population, int individualId, IParameter parameter, PathCache<IParameter> exctractedIndividualParameterCache)

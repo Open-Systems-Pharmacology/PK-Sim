@@ -124,12 +124,12 @@ namespace PKSim.Presentation.Services
 
       public IEnumerable<IParameter> PermeabilityValuesFor(Compound compound)
       {
-         return permeabilityParametersFor(compound, CoreConstants.Parameter.PERMEABILITY);
+         return permeabilityParametersFor(compound, CoreConstants.Parameters.PERMEABILITY);
       }
 
       public IEnumerable<IParameter> IntestinalPermeabilityValuesFor(Compound compound)
       {
-         return permeabilityParametersFor(compound, CoreConstants.Parameter.SPECIFIC_INTESTINAL_PERMEABILITY);
+         return permeabilityParametersFor(compound, CoreConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY);
       }
 
       public ICommand SetDefaultAlternativeFor(ParameterAlternativeGroup parameterGroup, ParameterAlternative parameterAlternative)
@@ -147,19 +147,19 @@ namespace PKSim.Presentation.Services
          //Sol(pH) = ref_Solubility * Solubility_Factor (ref_pH) / Solubility_Factor(pH) 
          //Solubility_pKa_pH_Factor
 
-         var refPh = solubilityAlternative.Parameter(CoreConstants.Parameter.REFERENCE_PH);
-         var refSolubility = solubilityAlternative.Parameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH);
-         var gainPerCharge = solubilityAlternative.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE);
+         var refPh = solubilityAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
+         var refSolubility = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
+         var gainPerCharge = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
          var refSolubilityValue = refSolubility.Value;
 
          var formula = _formulaFactory.CreateTableFormula()
             .WithName(PKSimConstants.UI.Solubility)
             .InitializedWith(PKSimConstants.UI.pH, PKSimConstants.UI.Solubility, refPh.Dimension, refSolubility.Dimension);
 
-         compound.Parameter(CoreConstants.Parameter.REFERENCE_PH).Value = refPh.Value;
-         compound.Parameter(CoreConstants.Parameter.SOLUBILITY_GAIN_PER_CHARGE).Value = gainPerCharge.Value;
+         compound.Parameter(CoreConstants.Parameters.REFERENCE_PH).Value = refPh.Value;
+         compound.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE).Value = gainPerCharge.Value;
 
-         double solFactorRefpH = compound.Parameter(CoreConstants.Parameter.SOLUBILITY_P_KA__P_H_FACTOR).Value;
+         double solFactorRefpH = compound.Parameter(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR).Value;
          var allPh = new List<double>();
          int ph = 0;
          while (ph <= 13)
@@ -170,8 +170,8 @@ namespace PKSim.Presentation.Services
          allPh.Add(14);
          foreach (var pH in allPh)
          {
-            compound.Parameter(CoreConstants.Parameter.REFERENCE_PH).Value = pH;
-            double solFactorAtpH = compound.Parameter(CoreConstants.Parameter.SOLUBILITY_P_KA__P_H_FACTOR).Value;
+            compound.Parameter(CoreConstants.Parameters.REFERENCE_PH).Value = pH;
+            double solFactorAtpH = compound.Parameter(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR).Value;
             formula.AddPoint(pH, refSolubilityValue * solFactorRefpH / solFactorAtpH);
          }
 
@@ -186,9 +186,9 @@ namespace PKSim.Presentation.Services
          foreach (var alternative in lipophilictyGroup.AllAlternatives)
          {
             var tempCompound = _compoundFactory.Create();
-            tempCompound.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value = compound.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value;
-            tempCompound.Parameter(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT).Value = compound.Parameter(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT).Value;
-            tempCompound.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value = alternative.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value;
+            tempCompound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value;
+            tempCompound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT).Value = compound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT).Value;
+            tempCompound.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value = alternative.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value;
             var permParameter = tempCompound.Parameter(permeabilityParameterName);
             permParameter.Editable = false;
             permParameter.Name = alternative.Name;

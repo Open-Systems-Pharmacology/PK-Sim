@@ -12,9 +12,9 @@ namespace PKSim.Core.Services
       public IrreversibleInhibitionKineticUpdaterSpecification(IObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask) :
          base(objectPathFactory, dimensionRepository, interactionTask, InteractionType.IrreversibleInhibition,
             kiNumeratorAlias: CoreConstants.Alias.IRREVERSIBLE_INHIBITION_KI,
-            kiNumeratorParameter: CoreConstants.Parameter.KI,
+            kiNumeratorParameter: CoreConstants.Parameters.KI,
             kiDenominatorAlias: CoreConstants.Alias.IRREVERSIBLE_INHIBITION_KI,
-            kiDenominatorParameter: CoreConstants.Parameter.KI,
+            kiDenominatorParameter: CoreConstants.Parameters.KI,
             inhibitorAlias: CoreConstants.Alias.IRREVERSIBLE_INHIBITION_I)
       {
       }

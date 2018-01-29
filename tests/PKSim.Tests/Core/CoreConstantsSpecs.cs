@@ -14,7 +14,7 @@ namespace PKSim.Core
       [Observation]
       public void should_contain_the_parameter_if_liver_zonated()
       {
-         CoreConstants.Parameter.AllBooleanParameters.ShouldContain(CoreConstants.Parameter.IS_LIVER_ZONATED);
+         CoreConstants.Parameters.AllBooleanParameters.ShouldContain(CoreConstants.Parameters.IS_LIVER_ZONATED);
       }
    }
 }	

@@ -59,7 +59,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
-         _bodyWeight = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameter.WEIGHT).Value;
+         _bodyWeight = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.WEIGHT).Value;
          _simulation.Individual.WeightParameter.Value = 0.0;
       }
 
@@ -103,7 +103,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_a_bsa_parameter_set()
       {
-         _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameter.BSA).ShouldNotBeNull();
+         _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.BSA).ShouldNotBeNull();
       }
    }
 
@@ -221,14 +221,14 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _individual.Organism.Parameter(CoreConstants.Parameter.HCT).Value = 0.6;
+         _individual.Organism.Parameter(CoreConstants.Parameters.HCT).Value = 0.6;
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
       }
 
       [Observation]
       public void should_transfer_the_value_in_the_simulation_parameter()
       {
-         var hct = _simulation.All<IParameter>().FindByName(CoreConstants.Parameter.HCT);
+         var hct = _simulation.All<IParameter>().FindByName(CoreConstants.Parameters.HCT);
          hct.Value.ShouldBeEqualTo(0.6);
       }
    }
@@ -240,7 +240,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _compound.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE).Value = 0;
+         _compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = 0;
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TwoPores) as IndividualSimulation;
          var buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
          _buildConfiguration = buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
@@ -323,7 +323,7 @@ namespace PKSim.IntegrationTests
          foreach (var parameter in _allDistributedParameter.KeyValues)
          {
             //these parameters are not converted
-            if (parameter.Value.NameIsOneOf(CoreConstants.Parameter.MEAN_HEIGHT, CoreConstants.Parameter.MEAN_WEIGHT))
+            if (parameter.Value.NameIsOneOf(CoreConstants.Parameters.MEAN_HEIGHT, CoreConstants.Parameters.MEAN_WEIGHT))
                continue;
 
             if (parameter.Value.Formula.DistributionType() == DistributionTypes.Discrete)
@@ -339,8 +339,8 @@ namespace PKSim.IntegrationTests
          }
 
          //check for ontogeny parameter
-         var simParameterOnto = _simulation.Model.Root.EntityAt<IParameter>(_enzymeName, (CoreConstants.Parameter.ONTOGENY_FACTOR));
-         checkOntogenyFactorIsDefinedAsTableFormula(simParameterOnto, errorList, CoreConstants.Parameter.ONTOGENY_FACTOR);
+         var simParameterOnto = _simulation.Model.Root.EntityAt<IParameter>(_enzymeName, (CoreConstants.Parameters.ONTOGENY_FACTOR));
+         checkOntogenyFactorIsDefinedAsTableFormula(simParameterOnto, errorList, CoreConstants.Parameters.ONTOGENY_FACTOR);
 
          Assert.IsTrue(errorList.Count == 0, errorList.ToString("\n"));
       }

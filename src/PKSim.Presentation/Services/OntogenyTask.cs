@@ -98,7 +98,7 @@ namespace PKSim.Presentation.Services
          }
 
          var formula = _formulaFactory.CreateDistributedTableFormula().WithName(dataRepository.Name);
-         formula.InitializedWith(CoreConstants.Parameter.PMA, dataRepository.Name, baseGrid.Dimension, meanColumn.Dimension);
+         formula.InitializedWith(CoreConstants.Parameters.PMA, dataRepository.Name, baseGrid.Dimension, meanColumn.Dimension);
          formula.XDisplayUnit = baseGrid.Dimension.Unit(baseGrid.DataInfo.DisplayUnitName);
          formula.YDisplayUnit = meanColumn.Dimension.Unit(meanColumn.DataInfo.DisplayUnitName);
 

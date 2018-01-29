@@ -45,28 +45,28 @@ namespace PKSim.Core.Batch.Mapper
          var compound = _compoundFactory.Create();
          compound.Name = batchCompound.Name;
          setValue(compound, CoreConstants.Groups.COMPOUND_LIPOPHILICITY,
-            CoreConstants.Parameter.LIPOPHILICITY, batchCompound.Lipophilicity);
+            CoreConstants.Parameters.LIPOPHILICITY, batchCompound.Lipophilicity);
 
          setValue(compound, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND,
-            CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE, batchCompound.FractionUnbound);
+            CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE, batchCompound.FractionUnbound);
 
          setValue(compound, Constants.Parameters.MOL_WEIGHT, batchCompound.MolWeight);
 
-         setValue(compound, CoreConstants.Parameter.CL, batchCompound.Cl);
+         setValue(compound, CoreConstants.Parameters.CL, batchCompound.Cl);
 
-         setValue(compound, CoreConstants.Parameter.F, batchCompound.F);
+         setValue(compound, CoreConstants.Parameters.F, batchCompound.F);
 
-         setValue(compound, CoreConstants.Parameter.BR, batchCompound.Br);
+         setValue(compound, CoreConstants.Parameters.BR, batchCompound.Br);
 
-         setValue(compound, CoreConstants.Parameter.I, batchCompound.I);
+         setValue(compound, CoreConstants.Parameters.I, batchCompound.I);
 
-         setValue(compound, CoreConstants.Parameter.IS_SMALL_MOLECULE, batchCompound.IsSmallMolecule ? 1 : 0);
-
-         setValue(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY,
-            CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH, batchCompound.SolubilityAtRefpH);
+         setValue(compound, CoreConstants.Parameters.IS_SMALL_MOLECULE, batchCompound.IsSmallMolecule ? 1 : 0);
 
          setValue(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY,
-            CoreConstants.Parameter.REFERENCE_PH, batchCompound.RefpH);
+            CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH, batchCompound.SolubilityAtRefpH);
+
+         setValue(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY,
+            CoreConstants.Parameters.REFERENCE_PH, batchCompound.RefpH);
 
          for (int i = 0; i < batchCompound.PkaTypes.Count; i++)
          {
@@ -173,8 +173,8 @@ namespace PKSim.Core.Batch.Mapper
       private void setPka(ModelCompound compound, PkaType pkaType, int i)
       {
          var type = EnumHelper.ParseValue<CompoundType>(pkaType.Type);
-         setValue(compound, CoreConstants.Parameter.ParameterCompoundType(i), (int) type);
-         setValue(compound, CoreConstants.Parameter.ParameterPKa(i), pkaType.Value);
+         setValue(compound, CoreConstants.Parameters.ParameterCompoundType(i), (int) type);
+         setValue(compound, CoreConstants.Parameters.ParameterPKa(i), pkaType.Value);
       }
 
       private void setValue(ModelCompound compound, string alternativeName, string parameterName, double value)

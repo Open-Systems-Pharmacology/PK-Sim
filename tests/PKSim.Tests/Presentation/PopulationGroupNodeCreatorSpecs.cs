@@ -221,7 +221,7 @@ namespace PKSim.Presentation
          _allParameters.Add(_para1);
          _individual = new Individual().WithName("toto");
          _individualMolecule = new IndividualEnzyme();
-         _para1.Name = CoreConstants.Parameter.REFERENCE_CONCENTRATION;
+         _para1.Name = CoreConstants.Parameters.REFERENCE_CONCENTRATION;
          _individualMolecule.Add(_para1);
          _individualMolecule.Name = "CYP3A4";
          _individual.AddMolecule(_individualMolecule);
@@ -236,7 +236,7 @@ namespace PKSim.Presentation
       public void should_display_the_name_of_the_parent_protein_as_container()
       {
          var containerNode = _subGroupNode.Children.ElementAt(0);
-         containerNode.Text.ShouldBeEqualTo(CoreConstants.Parameter.REFERENCE_CONCENTRATION);
+         containerNode.Text.ShouldBeEqualTo(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
       }
    }
 

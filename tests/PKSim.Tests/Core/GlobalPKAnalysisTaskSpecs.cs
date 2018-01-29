@@ -300,7 +300,7 @@ namespace PKSim.Core
 
          A.CallTo(() => _protocolFactory.Create(ProtocolMode.Simple, ApplicationTypes.Intravenous)).Returns(_protocol);
          _protocol.AddParameter(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.INFUSION_TIME));
-         _protocol.AddParameter(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         _protocol.AddParameter(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.INPUT_DOSE));
          _protocol.AddParameter(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.START_TIME));
 
          //single dosing
@@ -332,7 +332,7 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_same_input_dose_as_the_original_simulation()
       {
-         _protocol.Parameter(CoreConstants.Parameter.INPUT_DOSE).Value.ShouldBeEqualTo(10);
+         _protocol.Parameter(CoreConstants.Parameters.INPUT_DOSE).Value.ShouldBeEqualTo(10);
       }
 
       [Observation]

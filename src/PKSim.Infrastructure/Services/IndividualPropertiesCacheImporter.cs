@@ -123,7 +123,7 @@ namespace PKSim.Infrastructure.Services
       {
          foreach (var covariate in covariateCache.KeyValues)
          {
-            if (covariate.Key.IsOneOf(CoreConstants.Parameter.RACE_INDEX, CoreConstants.Parameter.GENDER))
+            if (covariate.Key.IsOneOf(CoreConstants.Parameters.RACE_INDEX, CoreConstants.Parameters.GENDER))
                addCovariates(individualPropertiesCache, covariate.Key, covariate.Value.Select(x => double.Parse(x, NumberFormatInfo.InvariantInfo)));
             else
                individualPropertiesCache.AddConvariate(covariate.Key, covariate.Value);
@@ -158,16 +158,16 @@ namespace PKSim.Infrastructure.Services
 
       private void addCovariates(IndividualPropertiesCache individualPropertiesCache, string parameterPath, IEnumerable<double> values)
       {
-         if (string.Equals(parameterPath, CoreConstants.Parameter.RACE_INDEX))
+         if (string.Equals(parameterPath, CoreConstants.Parameters.RACE_INDEX))
             individualPropertiesCache.AddPopulations(values.Select(index => _populationRepository.FindByIndex((int) index)).ToList());
 
-         else if (string.Equals(parameterPath, CoreConstants.Parameter.GENDER))
+         else if (string.Equals(parameterPath, CoreConstants.Parameters.GENDER))
             individualPropertiesCache.AddGenders(values.Select(index => _genderRepository.FindByIndex((int) index)).ToList());
       }
 
       private bool entryRepresentsParameter(string parameterPath)
       {
-         if (parameterPath.IsOneOf(CoreConstants.Parameter.RACE_INDEX, CoreConstants.Parameter.GENDER))
+         if (parameterPath.IsOneOf(CoreConstants.Parameters.RACE_INDEX, CoreConstants.Parameters.GENDER))
             return false;
 
          return parameterPath.Contains(ObjectPath.PATH_DELIMITER);

@@ -58,8 +58,8 @@ namespace PKSim.Matlab
             var ontogeny = allOntogeniesForSpecies.FindByName(moleculeOntogeny.Ontogeny);
             if (ontogeny == null) continue;
 
-            allOntogenyFactors.Add(ontogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Parameter.ONTOGENY_FACTOR, CoreConstants.Groups.ONTOGENY_LIVER));
-            allOntogenyFactors.Add(ontogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Parameter.ONTOGENY_FACTOR_GI, CoreConstants.Groups.ONTOGENY_DUODENUM));
+            allOntogenyFactors.Add(ontogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Parameters.ONTOGENY_FACTOR, CoreConstants.Groups.ONTOGENY_LIVER));
+            allOntogenyFactors.Add(ontogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Parameters.ONTOGENY_FACTOR_GI, CoreConstants.Groups.ONTOGENY_DUODENUM));
          }
 
          return allOntogenyFactors;

@@ -86,11 +86,11 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _para1 = DomainHelperForSpecs.ConstantParameterWithValue(_value1).WithName(CoreConstants.Parameter.EHC_ENABLED).WithDimension(A.Fake<IDimension>());
+         _para1 = DomainHelperForSpecs.ConstantParameterWithValue(_value1).WithName(CoreConstants.Parameters.EHC_ENABLED).WithDimension(A.Fake<IDimension>());
          _para1.Editable = true;
          _para2 = DomainHelperForSpecs.ConstantParameterWithValue(_value2).WithName("para2").WithDimension(A.Fake<IDimension>());
          _para2.Editable = true;
-         _para3 = DomainHelperForSpecs.ConstantParameterWithValue(_value3).WithName(CoreConstants.Parameter.PARTICLE_DISPERSE_SYSTEM).WithDimension(A.Fake<IDimension>());
+         _para3 = DomainHelperForSpecs.ConstantParameterWithValue(_value3).WithName(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM).WithDimension(A.Fake<IDimension>());
          _para3.Editable = true;
          A.CallTo(_executionContext).WithReturnType<IPKSimBuildingBlock>().Returns(A.Fake<IPKSimBuildingBlock>());
          _parameterToScale.Add(_para1);

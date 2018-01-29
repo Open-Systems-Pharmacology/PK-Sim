@@ -31,11 +31,11 @@ namespace PKSim.Core
          _transportContainerUpdater = A.Fake<ITransportContainerUpdater>();
          sut = new ExpressionContainerMapper(_parameterMapper, _transportContainerUpdater);
 
-         _relativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.REL_EXP);
+         _relativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP);
          _moleculeExpressionContainer = new MoleculeExpressionContainer().WithName("EXP");
          _moleculeExpressionContainer.Add(_relativeExpressionParameter);
 
-         _transporterRelativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.REL_EXP);
+         _transporterRelativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP);
          _transporterExpressionContainer = new TransporterExpressionContainer().WithName("TRANS");
          _transporterExpressionContainer.MembraneLocation = MembraneLocation.Apical;
 

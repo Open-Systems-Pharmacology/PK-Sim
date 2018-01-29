@@ -156,18 +156,18 @@ namespace PKSim.Presentation.Presenters.Formulations
          cache.AddRange(_formulationDTO.Parameters);
          cache.Each(p => p.Visible = true);
 
-         var particleDisperseSystem = cache[CoreConstants.Parameter.PARTICLE_DISPERSE_SYSTEM];
-         var particleDistribution = cache[CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION];
+         var particleDisperseSystem = cache[CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM];
+         var particleDistribution = cache[CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION];
          var parameterToHide = new List<string>();
 
-         if (particleDisperseSystem.Value == CoreConstants.Parameter.MONODISPERSE)
-            parameterToHide.AddRange(CoreConstants.Parameter.HiddenParameterForMonodisperse);
+         if (particleDisperseSystem.Value == CoreConstants.Parameters.MONODISPERSE)
+            parameterToHide.AddRange(CoreConstants.Parameters.HiddenParameterForMonodisperse);
 
-         else if (particleDistribution.Value == CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
-            parameterToHide.AddRange(CoreConstants.Parameter.HiddenParameterForPolydisperseNormal);
+         else if (particleDistribution.Value == CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
+            parameterToHide.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseNormal);
 
          else
-            parameterToHide.AddRange(CoreConstants.Parameter.HiddenParameterForPolydisperseLogNormal);
+            parameterToHide.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseLogNormal);
 
          parameterToHide.Each(p => cache[p].Visible = false);
       }
@@ -176,7 +176,7 @@ namespace PKSim.Presentation.Presenters.Formulations
       {
          updatePlot();
 
-         if (!parameter.NameIsOneOf(CoreConstants.Parameter.PARTICLE_DISPERSE_SYSTEM, CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION))
+         if (!parameter.NameIsOneOf(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM, CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
             return;
 
          adjustParameterVisibility();

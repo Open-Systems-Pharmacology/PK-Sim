@@ -36,7 +36,7 @@ namespace PKSim.Core
          {
             var schemaItem = new SchemaItem().WithName(Guid.NewGuid().ToString());
             schemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.START_TIME));
-            schemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.INPUT_DOSE));
+            schemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.INPUT_DOSE));
             return schemaItem;
          }
 
@@ -66,8 +66,8 @@ namespace PKSim.Core
          {
             var schema = new Schema().WithName(Guid.NewGuid().ToString());
             schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.START_TIME));
-            schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.TIME_BETWEEN_REPETITIONS));
-            schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.NUMBER_OF_REPETITIONS));
+            schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS));
+            schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.NUMBER_OF_REPETITIONS));
             return schema;
          }
       }
@@ -86,7 +86,7 @@ namespace PKSim.Core
             ApplicationType = ApplicationTypes.Intravenous,
             DosingInterval = DosingIntervals.Single
          };
-         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.INPUT_DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.END_TIME));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(3).WithName(Constants.Parameters.START_TIME));
       }
@@ -123,7 +123,7 @@ namespace PKSim.Core
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.ApplicationType = ApplicationTypes.Intravenous;
          _simpleProtocol.DosingInterval = DosingIntervals.DI_12_12;
-         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.INPUT_DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(2880).WithName(Constants.Parameters.END_TIME));
       }
 
@@ -159,7 +159,7 @@ namespace PKSim.Core
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.ApplicationType = ApplicationTypes.Intravenous;
          _simpleProtocol.DosingInterval = DosingIntervals.DI_6_6_12;
-         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.INPUT_DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(3600).WithName(Constants.Parameters.END_TIME)); //2.5 day
       }
 

@@ -22,7 +22,7 @@ namespace PKSim.Core
 
       protected override void Context()
       {
-         _dose = A.Fake<IParameter>().WithName(CoreConstants.Parameter.INPUT_DOSE);
+         _dose = A.Fake<IParameter>().WithName(CoreConstants.Parameters.INPUT_DOSE);
          _startTime = A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME);
          _endTime = A.Fake<IParameter>().WithName(Constants.Parameters.END_TIME);
          _ivParam = A.Fake<IParameter>().WithName(Constants.Parameters.INFUSION_TIME);

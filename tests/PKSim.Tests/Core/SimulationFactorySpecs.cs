@@ -454,7 +454,7 @@ namespace PKSim.Core
          A.CallTo(() => _cloner.Clone(_originalSimulation)).Returns(_clonedSimulation);
          _pkSimulation = A.Fake<IndividualSimulation>().WithId("Clone");
          var interactionContainer = new Container();
-         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.KI);
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.KI);
          interactionContainer.Add(_parameter);
          A.CallTo(() => _interactionTask.AllInteractionContainers(_pkSimulation)).Returns(new[] { interactionContainer });
          A.CallTo(() => _objectBaseFactory.Create<IndividualSimulation>()).Returns(_pkSimulation);

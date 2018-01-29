@@ -83,13 +83,13 @@ namespace PKSim.Core.Model
          createAction(_individualModelTask)(individual);
 
          //Update parameters defined in origin data and also in individual
-         setParameter(individual, CoreConstants.Parameter.AGE, originData.Age, originData.AgeUnit);
-         setParameter(individual, CoreConstants.Parameter.GESTATIONAL_AGE, originData.GestationalAge, originData.GestationalAgeUnit, individual.IsPreterm);
-         setParameter(individual, CoreConstants.Parameter.HEIGHT, originData.Height, originData.HeightUnit);
+         setParameter(individual, CoreConstants.Parameters.AGE, originData.Age, originData.AgeUnit);
+         setParameter(individual, CoreConstants.Parameters.GESTATIONAL_AGE, originData.GestationalAge, originData.GestationalAgeUnit, individual.IsPreterm);
+         setParameter(individual, CoreConstants.Parameters.HEIGHT, originData.Height, originData.HeightUnit);
 
          //Do not update value for BMI and weight in individual as this parameter are defined as formula parameter
-         setParameterDisplayUnit(individual, CoreConstants.Parameter.BMI, originData.BMIUnit);
-         setParameterDisplayUnit(individual, CoreConstants.Parameter.WEIGHT, originData.WeightUnit);
+         setParameterDisplayUnit(individual, CoreConstants.Parameters.BMI, originData.BMIUnit);
+         setParameterDisplayUnit(individual, CoreConstants.Parameters.WEIGHT, originData.WeightUnit);
 
          _ontogenyVariabilityUpdater.UpdatePlasmaProteinsOntogenyFor(individual);
 

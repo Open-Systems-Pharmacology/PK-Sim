@@ -37,11 +37,11 @@ namespace PKSim.Presentation.DTO.Mappers
             CalculationMethods = individual.OriginData.AllCalculationMethods().MapAllUsing(_calculationMethodDTOMapper)
          };
 
-         individualDTO.SetDefaultParameters(_parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameter.AGE)),
-            _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameter.HEIGHT)),
-            _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameter.WEIGHT)),
-            _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameter.BMI)),
-            _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameter.GESTATIONAL_AGE)));
+         individualDTO.SetDefaultParameters(_parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.AGE)),
+            _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.HEIGHT)),
+            _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.WEIGHT)),
+            _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.BMI)),
+            _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.GESTATIONAL_AGE)));
 
 
          return individualDTO;

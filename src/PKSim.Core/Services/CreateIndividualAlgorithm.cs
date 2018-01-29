@@ -112,7 +112,7 @@ namespace PKSim.Core.Services
       {
          //all distribued parameters in individual that are not standard parameters
          var allDistributedParameters = _containerTask.CacheAllChildrenSatisfying<IDistributedParameter>(
-            individual, p => !CoreConstants.Parameter.StandardCreateIndividualParameters.Contains(p.Name));
+            individual, p => !CoreConstants.Parameters.StandardCreateIndividualParameters.Contains(p.Name));
 
          foreach (var parameter in allDistributedParameters)
          {
@@ -374,7 +374,7 @@ namespace PKSim.Core.Services
          foreach (var organ in allOrgans)
          {
             var muSigma = _muSigmas[iOrganIndex];
-            _organDensity[iOrganIndex] = organ.Parameter(CoreConstants.Parameter.DENSITY).Value;
+            _organDensity[iOrganIndex] = organ.Parameter(CoreConstants.Parameters.DENSITY).Value;
             organVolumes[iOrganIndex] = generateVolumeFunction(muSigma, randomGenerator);
 
             if (organ.IsNamed(CoreConstants.Organ.Skin))
@@ -401,7 +401,7 @@ namespace PKSim.Core.Services
          int iOrganIndex = 0;
          foreach (var organ in allOrgans)
          {
-            _organDensity[iOrganIndex] = organ.Parameter(CoreConstants.Parameter.DENSITY).Value;
+            _organDensity[iOrganIndex] = organ.Parameter(CoreConstants.Parameters.DENSITY).Value;
             organVolumes[iOrganIndex] = organ.Parameter(Constants.Parameters.VOLUME).Value;
 
 
@@ -423,7 +423,7 @@ namespace PKSim.Core.Services
          foreach (var organ in individual.AllOrgans())
          {
             var volumeParameter = organ.Parameter(Constants.Parameters.VOLUME);
-            var allometricScaleFactor = volumeParameter.ParentContainer.Parameter(CoreConstants.Parameter.ALLOMETRIC_SCALE_FACTOR).Value;
+            var allometricScaleFactor = volumeParameter.ParentContainer.Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR).Value;
             var musSigma = MuSigma.From(volumeParameter);
             musSigma.ScaleWith(_hrel, allometricScaleFactor);
             _muSigmas.Add(musSigma);

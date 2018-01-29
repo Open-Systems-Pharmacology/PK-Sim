@@ -41,8 +41,8 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var parameterInSimulation = _simulation.Individual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameter.BLOOD_FLOW);
-         _templateParameter = _templateIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameter.BLOOD_FLOW);
+         var parameterInSimulation = _simulation.Individual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameters.BLOOD_FLOW);
+         _templateParameter = _templateIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameters.BLOOD_FLOW);
 
          parameterInSimulation.Value = 3;
       }

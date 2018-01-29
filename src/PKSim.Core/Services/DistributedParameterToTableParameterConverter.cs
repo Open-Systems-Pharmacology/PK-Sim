@@ -84,7 +84,7 @@ namespace PKSim.Core.Services
             _createAgindDataInSimulation = createAgindDataInSimulation;
             _baseIndividual = simulation.Individual;
             _baseOriginData = _baseIndividual.OriginData;
-            var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.SpeciesPopulation, _baseOriginData.SubPopulation, CoreConstants.Parameter.MEAN_HEIGHT);
+            var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.SpeciesPopulation, _baseOriginData.SubPopulation, CoreConstants.Parameters.MEAN_HEIGHT);
             _allHeightDistributionMaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.Male).ToList();
             _allHeightDistributionFemaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.Female).ToList();
             createSpatialStructureTableParameters(buildConfiguration);
@@ -104,13 +104,13 @@ namespace PKSim.Core.Services
       {
          var spatialStructure = buildConfiguration.SpatialStructure;
          var organism = spatialStructure.TopContainers.FindByName(Constants.ORGANISM);
-         var ageParameter = organism.Parameter(CoreConstants.Parameter.AGE);
+         var ageParameter = organism.Parameter(CoreConstants.Parameters.AGE);
          var minToYearFactor = _timeDimension.BaseUnitValueToUnitValue(_yearUnit, 1);
-         var age0Parameter = _parameterFactory.CreateFor(CoreConstants.Parameter.AGE_0, ageParameter.Value, ageParameter.Dimension.Name, PKSimBuildingBlockType.Simulation);
+         var age0Parameter = _parameterFactory.CreateFor(CoreConstants.Parameters.AGE_0, ageParameter.Value, ageParameter.Dimension.Name, PKSimBuildingBlockType.Simulation);
          age0Parameter.DisplayUnit = ageParameter.DisplayUnit;
          age0Parameter.Visible = false;
 
-         var minToYearFactorParameter = _parameterFactory.CreateFor(CoreConstants.Parameter.MIN_TO_YEAR_FACTOR, minToYearFactor, PKSimBuildingBlockType.Simulation);
+         var minToYearFactorParameter = _parameterFactory.CreateFor(CoreConstants.Parameters.MIN_TO_YEAR_FACTOR, minToYearFactor, PKSimBuildingBlockType.Simulation);
          minToYearFactorParameter.Visible = false;
 
          organism.Add(age0Parameter);
@@ -185,7 +185,7 @@ namespace PKSim.Core.Services
       {
          var spatialStructure = buildConfiguration.SpatialStructure;
          var organism = spatialStructure.TopContainers.FindByName(Constants.ORGANISM);
-         foreach (var ontogenyParameterName in CoreConstants.Parameter.AllPlasmaProteinOntogenyFactors)
+         foreach (var ontogenyParameterName in CoreConstants.Parameters.AllPlasmaProteinOntogenyFactors)
          {
             var parameter = organism.Parameter(ontogenyParameterName);
             var formula = createPlasmaProteinOntogenyTableFormulaFrom(parameter, _baseOriginData);
@@ -243,7 +243,7 @@ namespace PKSim.Core.Services
 
       private static string containerNameForOntogenyFactor(IParameter ontogenyFactor)
       {
-         if (ontogenyFactor.IsNamed(CoreConstants.Parameter.ONTOGENY_FACTOR_GI))
+         if (ontogenyFactor.IsNamed(CoreConstants.Parameters.ONTOGENY_FACTOR_GI))
             return CoreConstants.Groups.ONTOGENY_DUODENUM;
 
          return CoreConstants.Groups.ONTOGENY_LIVER;
@@ -257,7 +257,7 @@ namespace PKSim.Core.Services
 
       private bool parameterShouldBeDefinedAsTable(IDistributedParameter parameter)
       {
-         return !parameter.NameIsOneOf(CoreConstants.Parameter.MEAN_HEIGHT, CoreConstants.Parameter.MEAN_WEIGHT);
+         return !parameter.NameIsOneOf(CoreConstants.Parameters.MEAN_HEIGHT, CoreConstants.Parameters.MEAN_WEIGHT);
       }
 
       private void createPopulationTableParameter(KeyValuePair<string, IDistributedParameter> individualParameter, PopulationSimulation populationSimulation,
@@ -295,9 +295,9 @@ namespace PKSim.Core.Services
          if (populationSimulation == null || !_createAgindDataInSimulation) return;
 
          var originData = _baseOriginData.Clone();
-         var allAges = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameter.AGE, _entityPathResolver);
-         var allGAs = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameter.GESTATIONAL_AGE, _entityPathResolver);
-         var allHeights = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameter.HEIGHT, _entityPathResolver);
+         var allAges = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameters.AGE, _entityPathResolver);
+         var allGAs = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameters.GESTATIONAL_AGE, _entityPathResolver);
+         var allHeights = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameters.HEIGHT, _entityPathResolver);
          var allGender = populationSimulation.AllGenders.ToList();
          var allValues = populationSimulation.AllValuesFor(parameterPath).ToList();
          var allPercentiles = populationSimulation.AllPercentilesFor(parameterPath)
@@ -429,7 +429,7 @@ namespace PKSim.Core.Services
 
          //is used in order to retrieve the percentile 
          double currentPercentile = heigthDistributionFormula.CalculatePercentileForValue(currentHeight);
-         double alpha = individualParameter.ParentContainer.Parameter(CoreConstants.Parameter.ALLOMETRIC_SCALE_FACTOR).Value;
+         double alpha = individualParameter.ParentContainer.Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR).Value;
 
          var currentOriginData = originData.Clone();
          var scaledParameterDistributionMetaData = new List<ParameterDistributionMetaData>();

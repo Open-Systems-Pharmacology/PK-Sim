@@ -56,7 +56,7 @@ namespace PKSim.Core
 
       protected override void Context()
       {
-         _expressionParameter = A.Fake<IParameter>().WithName(CoreConstants.Parameter.REL_EXP);
+         _expressionParameter = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP);
          _otherParamter = A.Fake<IParameter>().WithName("toto");
       }
 

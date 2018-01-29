@@ -37,7 +37,7 @@ namespace PKSim.IntegrationTests
          {
             return
                x.BuildingBlockType == PKSimBuildingBlockType.Compound &&
-               x.ParameterName == CoreConstants.Parameter.LIPOPHILICITY;
+               x.ParameterName == CoreConstants.Parameters.LIPOPHILICITY;
          });
 
          lipophilicityParameter.IsInput.ShouldBeTrue();

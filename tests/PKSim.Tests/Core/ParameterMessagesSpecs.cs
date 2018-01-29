@@ -50,7 +50,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _parameter = new PKSimParameter().WithFormula(new ConstantFormula(1)).WithName(CoreConstants.Parameter.EHC_ENABLED);
+         _parameter = new PKSimParameter().WithFormula(new ConstantFormula(1)).WithName(CoreConstants.Parameters.EHC_ENABLED);
       }
 
       [Observation]

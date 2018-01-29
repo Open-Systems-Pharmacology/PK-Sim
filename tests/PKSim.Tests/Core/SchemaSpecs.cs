@@ -22,19 +22,19 @@ namespace PKSim.Core
          //2 hours delay
          sut.Add(DomainHelperForSpecs.ConstantParameterWithValue(120).WithName(Constants.Parameters.START_TIME));
          //6hours between repetitions
-         sut.Add(DomainHelperForSpecs.ConstantParameterWithValue(360).WithName(CoreConstants.Parameter.TIME_BETWEEN_REPETITIONS));
+         sut.Add(DomainHelperForSpecs.ConstantParameterWithValue(360).WithName(CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS));
          //repeat the schema 4 times
-         sut.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameter.NUMBER_OF_REPETITIONS));
+         sut.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameters.NUMBER_OF_REPETITIONS));
 
 
          var schemaItem1 = new SchemaItem().WithName("SchemaItem1");
          schemaItem1.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.START_TIME));
-         schemaItem1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         schemaItem1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.INPUT_DOSE));
          schemaItem1.ApplicationType = ApplicationTypes.Intravenous;
 
          var schemaItem2 = new SchemaItem().WithName("SchemaItem2");
          schemaItem2.Add(DomainHelperForSpecs.ConstantParameterWithValue(180).WithName(Constants.Parameters.START_TIME));
-         schemaItem2.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         schemaItem2.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameters.INPUT_DOSE));
          schemaItem2.ApplicationType = ApplicationTypes.Intravenous;
 
 
@@ -52,7 +52,7 @@ namespace PKSim.Core
             var cloneSchemaItem = new SchemaItem().WithName(Guid.NewGuid().ToString());
             cloneSchemaItem.FormulationKey = schemaItem.FormulationKey;
             cloneSchemaItem.ApplicationType = schemaItem.ApplicationType;
-            cloneSchemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(schemaItem.Dose.Value).WithName(CoreConstants.Parameter.INPUT_DOSE));
+            cloneSchemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(schemaItem.Dose.Value).WithName(CoreConstants.Parameters.INPUT_DOSE));
             cloneSchemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(schemaItem.StartTime.Value).WithName(Constants.Parameters.START_TIME));
             return cloneSchemaItem.DowncastTo<T>();
          }

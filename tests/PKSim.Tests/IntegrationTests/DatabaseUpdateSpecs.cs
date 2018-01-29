@@ -137,7 +137,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_set_the_body_surface_area_parameter_of_an_individual_to_can_be_varied_true_and_can_be_varied_in_population_false()
       {
-         var bsaParameter = _parameterRateRepository.All().First(p => string.Equals(p.ParameterName, CoreConstants.Parameter.BSA));
+         var bsaParameter = _parameterRateRepository.All().First(p => string.Equals(p.ParameterName, CoreConstants.Parameters.BSA));
 
          bsaParameter.CanBeVaried.ShouldBeTrue();
          bsaParameter.CanBeVariedInPopulation.ShouldBeFalse();
@@ -177,8 +177,8 @@ namespace PKSim.IntegrationTests
       {
          var nhanesParams = _parameterDistributionRepository.All().Where(pd => pd.Population.EndsWith("NHANES_1997")).ToList();
 
-         var bwParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.MEAN_WEIGHT)).ToList();
-         var heightParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.MEAN_HEIGHT)).ToList();
+         var bwParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameters.MEAN_WEIGHT)).ToList();
+         var heightParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameters.MEAN_HEIGHT)).ToList();
          var volumeParams = nhanesParams.Where(p => p.ParameterName.Equals(Constants.Parameters.VOLUME)).ToList();
 
          //check number of new bw/height/volume parameters
@@ -219,15 +219,15 @@ namespace PKSim.IntegrationTests
       private bool isChangedFluidRecircFlowParameter(ParameterRateMetaData parameterRateMetaData)
       {
          return isChangedFlowParameter(parameterRateMetaData,
-            CoreConstants.Parameter.RECIRCULATION_FLOW,
-            CoreConstants.Parameter.RECIRCULATION_FLOW_INCL_MUCOSA);
+            CoreConstants.Parameters.RECIRCULATION_FLOW,
+            CoreConstants.Parameters.RECIRCULATION_FLOW_INCL_MUCOSA);
       }
 
       private bool isChangedLymphFlowParameter(ParameterRateMetaData parameterRateMetaData)
       {
          return isChangedFlowParameter(parameterRateMetaData,
-            CoreConstants.Parameter.LYMPH_FLOW,
-            CoreConstants.Parameter.LYMPH_FLOW_INCL_MUCOSA);
+            CoreConstants.Parameters.LYMPH_FLOW,
+            CoreConstants.Parameters.LYMPH_FLOW_INCL_MUCOSA);
       }
 
       private bool isChangedFlowParameter(ParameterRateMetaData parameterRateMetaData,
@@ -408,10 +408,10 @@ namespace PKSim.IntegrationTests
       {
          var paramValueRepo = IoC.Resolve<IParameterRateRepository>();
 
-         var ontogenyFactory = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameter.ONTOGENY_FACTOR) && p.ContainerName == "PROTEIN");
+         var ontogenyFactory = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameters.ONTOGENY_FACTOR) && p.ContainerName == "PROTEIN");
          ontogenyFactory.BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Individual);
 
-         var ontogenyFactoryGI = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameter.ONTOGENY_FACTOR_GI) && p.ContainerName == "PROTEIN");
+         var ontogenyFactoryGI = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameters.ONTOGENY_FACTOR_GI) && p.ContainerName == "PROTEIN");
          ontogenyFactoryGI.BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Individual);
       }
    }
@@ -433,7 +433,7 @@ namespace PKSim.IntegrationTests
       public void should_set_plasma_protein_scale_factor_variable_in_population()
       {
          var paramValueRepo = IoC.Resolve<IParameterValueRepository>();
-         var plasmaProteinScaleFactor = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameter.PLASMA_PROTEIN_SCALE_FACTOR));
+         var plasmaProteinScaleFactor = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameters.PLASMA_PROTEIN_SCALE_FACTOR));
 
          plasmaProteinScaleFactor.CanBeVariedInPopulation.ShouldBeTrue();
       }
@@ -466,8 +466,8 @@ namespace PKSim.IntegrationTests
 
          var protein = flatMoleculeMapper.MapFrom(flatMoleculesRepo.FindBy(QuantityType.Protein), new FormulaCache());
 
-         protein.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR_GI).CanBeVaried.ShouldBeTrue();
-         protein.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR).CanBeVaried.ShouldBeTrue();
+         protein.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI).CanBeVaried.ShouldBeTrue();
+         protein.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR).CanBeVaried.ShouldBeTrue();
       }
    }
 
@@ -497,7 +497,7 @@ namespace PKSim.IntegrationTests
       {
          return (from moleculeParameter in _allMoleculeParameters
             where moleculeParameter.MoleculeName.Equals(moleculeName)
-            where moleculeParameter.Parameter.Name.Equals(CoreConstants.Parameter.HALF_LIFE_LIVER)
+            where moleculeParameter.Parameter.Name.Equals(CoreConstants.Parameters.HALF_LIFE_LIVER)
             select moleculeParameter.Parameter as DistributedParameter).FirstOrDefault();
       }
 
@@ -507,7 +507,7 @@ namespace PKSim.IntegrationTests
          foreach (var moleculeParameter in _allMoleculeParameters)
          {
             var param = moleculeParameter.Parameter;
-            if (!param.Name.Equals(CoreConstants.Parameter.REFERENCE_CONCENTRATION))
+            if (!param.Name.Equals(CoreConstants.Parameters.REFERENCE_CONCENTRATION))
                continue;
 
             var refConcParam = param as DistributedParameter;
@@ -568,7 +568,7 @@ namespace PKSim.IntegrationTests
             .First(x => x.InteractionType == InteractionType.IrreversibleInhibition);
 
          inhibitionProcess.ShouldNotBeNull();
-         inhibitionProcess.Parameter(CoreConstants.Parameter.KI).ShouldNotBeNull();
+         inhibitionProcess.Parameter(CoreConstants.Parameters.KI).ShouldNotBeNull();
          inhibitionProcess.Parameter(CoreConstantsForSpecs.Parameter.KINACT).ShouldNotBeNull();
       }
 
@@ -579,7 +579,7 @@ namespace PKSim.IntegrationTests
          foreach (var moleculeParameter in moleculeParams.All())
          {
             var param = moleculeParameter.Parameter;
-            if (!param.Name.Equals(CoreConstants.Parameter.HALF_LIFE_INTESTINE))
+            if (!param.Name.Equals(CoreConstants.Parameters.HALF_LIFE_INTESTINE))
                continue;
 
             param.Value.ShouldBeEqualTo(23 * 60, 1e-5);
@@ -597,7 +597,7 @@ namespace PKSim.IntegrationTests
          {
             var someMolecule = moleculeBuilderFactory.Create(moleculeType, new FormulaCache());
 
-            var halfLifeParam = someMolecule.Parameter(CoreConstants.Parameter.HALF_LIFE_INTESTINE);
+            var halfLifeParam = someMolecule.Parameter(CoreConstants.Parameters.HALF_LIFE_INTESTINE);
             halfLifeParam.Value.ShouldBeEqualTo(23 * 60, 1e-5);
          }
       }

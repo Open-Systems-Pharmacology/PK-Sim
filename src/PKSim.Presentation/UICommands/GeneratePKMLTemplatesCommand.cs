@@ -91,10 +91,10 @@ namespace PKSim.Presentation.UICommands
 
          var defaultCompound = fourCompIvBolusMgPerKg.Molecules.First();
          defaultCompound.Name = string.Empty;
-         defaultCompound.Parameter(CoreConstants.Parameter.LIPOPHILICITY).Value = double.NaN;
-         defaultCompound.Parameter(CoreConstants.Parameter.MOLECULAR_WEIGHT).Value = double.NaN;
-         defaultCompound.Parameter(CoreConstants.Parameter.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value = double.NaN;
-         defaultCompound.Parameter(CoreConstants.Parameter.SOLUBILITY_AT_REFERENCE_PH).Value = double.NaN;
+         defaultCompound.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value = double.NaN;
+         defaultCompound.Parameter(CoreConstants.Parameters.MOLECULAR_WEIGHT).Value = double.NaN;
+         defaultCompound.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value = double.NaN;
+         defaultCompound.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH).Value = double.NaN;
 
          _moBiExportTask.UpdateObserverForAllFlag(fourCompIvBolusMgPerKg.Observers);
 

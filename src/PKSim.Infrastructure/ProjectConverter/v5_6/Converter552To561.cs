@@ -397,7 +397,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
 
       private void removeVolumePlasmaParameter(IContainer container)
       {
-         var parameter = container.Parameter(CoreConstants.Parameter.VOLUME_PLASMA);
+         var parameter = container.Parameter(CoreConstants.Parameters.VOLUME_PLASMA);
          if (parameter == null) return;
 
          container.RemoveChild(parameter);
@@ -405,7 +405,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
 
       private void updateOntogenyFactorVisibility(Individual individual)
       {
-         foreach (var plasmaOntogenyFactoryName in CoreConstants.Parameter.AllPlasmaProteinOntogenyFactors)
+         foreach (var plasmaOntogenyFactoryName in CoreConstants.Parameters.AllPlasmaProteinOntogenyFactors)
          {
             individual.Organism.Parameter(plasmaOntogenyFactoryName).Visible = true;
          }
@@ -447,7 +447,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
       private void updateIsLiverZonatedValue(Individual individual)
       {
          var liver = liverIn(individual);
-         liver.Parameter(CoreConstants.Parameter.IS_LIVER_ZONATED).Value = 0;
+         liver.Parameter(CoreConstants.Parameters.IS_LIVER_ZONATED).Value = 0;
       }
 
       private void updateLiverStructure(Individual individual)

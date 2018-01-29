@@ -25,7 +25,7 @@ namespace PKSim.ProjectConverter.v5_6
          var volume = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.Liver, Constants.Parameters.VOLUME);
          volume.Value.ShouldBeEqualTo(0.187,1e-2);
 
-         var bloodFlow = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.Liver, CoreConstants.Parameter.BLOOD_FLOW);
+         var bloodFlow = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.Liver, CoreConstants.Parameters.BLOOD_FLOW);
          bloodFlow.Value.ShouldBeEqualTo(0.03944, 1e-2);
       }
    }

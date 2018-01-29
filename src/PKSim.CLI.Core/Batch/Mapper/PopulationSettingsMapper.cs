@@ -36,13 +36,13 @@ namespace PKSim.Core.Batch.Mapper
          var populationSettings = _individualToPopulationSettingsMapper.MapFrom(individual);
          populationSettings.NumberOfIndividuals = batchPopulationSettings.NumberOfIndividuals;
 
-         setRange(populationSettings, CoreConstants.Parameter.AGE, batchPopulationSettings.MinAge, batchPopulationSettings.MaxAge);
-         setRange(populationSettings, CoreConstants.Parameter.MEAN_HEIGHT, batchPopulationSettings.MinHeight, batchPopulationSettings.MaxHeight);
-         setRange(populationSettings, CoreConstants.Parameter.MEAN_WEIGHT, batchPopulationSettings.MinWeight, batchPopulationSettings.MaxWeight);
-         setRange(populationSettings, CoreConstants.Parameter.BMI, batchPopulationSettings.MinBMI, batchPopulationSettings.MaxBMI);
+         setRange(populationSettings, CoreConstants.Parameters.AGE, batchPopulationSettings.MinAge, batchPopulationSettings.MaxAge);
+         setRange(populationSettings, CoreConstants.Parameters.MEAN_HEIGHT, batchPopulationSettings.MinHeight, batchPopulationSettings.MaxHeight);
+         setRange(populationSettings, CoreConstants.Parameters.MEAN_WEIGHT, batchPopulationSettings.MinWeight, batchPopulationSettings.MaxWeight);
+         setRange(populationSettings, CoreConstants.Parameters.BMI, batchPopulationSettings.MinBMI, batchPopulationSettings.MaxBMI);
 
-         if(populationSettings.ContainsParameterRangeFor(CoreConstants.Parameter.GESTATIONAL_AGE))
-            setRange(populationSettings, CoreConstants.Parameter.GESTATIONAL_AGE, batchPopulationSettings.MinGestationalAge, batchPopulationSettings.MaxGestationalAge);
+         if(populationSettings.ContainsParameterRangeFor(CoreConstants.Parameters.GESTATIONAL_AGE))
+            setRange(populationSettings, CoreConstants.Parameters.GESTATIONAL_AGE, batchPopulationSettings.MinGestationalAge, batchPopulationSettings.MaxGestationalAge);
 
          //in case of multiple gender, adjust the ration according to the feamales proportion
          if (individual.AvailableGenders().Count() > 1)

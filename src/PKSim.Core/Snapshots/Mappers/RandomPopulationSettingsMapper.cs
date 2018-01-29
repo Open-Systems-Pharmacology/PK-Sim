@@ -30,11 +30,11 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Individual = await _individualMapper.MapToSnapshot(randomPopulationSettings.BaseIndividual);
          snapshot.NumberOfIndividuals = randomPopulationSettings.NumberOfIndividuals;
          snapshot.ProportionOfFemales = proportionOfFemalesFrom(randomPopulationSettings);
-         snapshot.Age = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameter.AGE);
-         snapshot.Weight = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameter.MEAN_WEIGHT);
-         snapshot.Height = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameter.MEAN_HEIGHT);
-         snapshot.GestationalAge = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameter.GESTATIONAL_AGE);
-         snapshot.BMI = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameter.BMI);
+         snapshot.Age = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.AGE);
+         snapshot.Weight = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.MEAN_WEIGHT);
+         snapshot.Height = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.MEAN_HEIGHT);
+         snapshot.GestationalAge = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.GESTATIONAL_AGE);
+         snapshot.BMI = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.BMI);
          return snapshot;
       }
 
@@ -54,11 +54,11 @@ namespace PKSim.Core.Snapshots.Mappers
          var settings = _populationSettingsMapper.MapFrom(individual);
          settings.NumberOfIndividuals = snapshot.NumberOfIndividuals;
          updateGenderRatios(settings, snapshot);
-         await updateModelRange(settings, CoreConstants.Parameter.AGE, snapshot.Age);
-         await updateModelRange(settings, CoreConstants.Parameter.MEAN_WEIGHT, snapshot.Weight);
-         await updateModelRange(settings, CoreConstants.Parameter.MEAN_HEIGHT, snapshot.Height);
-         await updateModelRange(settings, CoreConstants.Parameter.GESTATIONAL_AGE, snapshot.GestationalAge);
-         await updateModelRange(settings, CoreConstants.Parameter.BMI, snapshot.BMI);
+         await updateModelRange(settings, CoreConstants.Parameters.AGE, snapshot.Age);
+         await updateModelRange(settings, CoreConstants.Parameters.MEAN_WEIGHT, snapshot.Weight);
+         await updateModelRange(settings, CoreConstants.Parameters.MEAN_HEIGHT, snapshot.Height);
+         await updateModelRange(settings, CoreConstants.Parameters.GESTATIONAL_AGE, snapshot.GestationalAge);
+         await updateModelRange(settings, CoreConstants.Parameters.BMI, snapshot.BMI);
          return settings;
       }
 

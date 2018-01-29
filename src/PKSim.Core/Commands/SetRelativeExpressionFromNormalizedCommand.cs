@@ -45,7 +45,7 @@ namespace PKSim.Core.Commands
 
       private IParameter getRelativeExpressionFrom(IParameter normalizedParameter)
       {
-         var nonNormalizedParameterName = normalizedParameter.Name.Replace(CoreConstants.Parameter.NORM_SUFFIX, string.Empty);
+         var nonNormalizedParameterName = normalizedParameter.Name.Replace(CoreConstants.Parameters.NORM_SUFFIX, string.Empty);
          return normalizedParameter.ParentContainer.Parameter(nonNormalizedParameterName);
       }
    }

@@ -468,7 +468,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns the Body weight <see cref="IParameter" /> if available in the simulation otherwise null.
       /// </summary>
-      public virtual IParameter BodyWeight => Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameter.WEIGHT);
+      public virtual IParameter BodyWeight => Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.WEIGHT);
 
       /// <summary>
       ///    Returns the total drug mass defined in the simulation.
@@ -476,7 +476,7 @@ namespace PKSim.Core.Model
       public virtual double? TotalDrugMassFor(string compoundName)
       {
          //total drug mass is a parameter defined under the compound molecule global property
-         var totalDrugMassParameter = Model.Root.EntityAt<IParameter>(compoundName, CoreConstants.Parameter.TOTAL_DRUG_MASS);
+         var totalDrugMassParameter = Model.Root.EntityAt<IParameter>(compoundName, CoreConstants.Parameters.TOTAL_DRUG_MASS);
          return totalDrugMassParameter?.Value;
       }
 

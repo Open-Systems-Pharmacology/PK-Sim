@@ -67,7 +67,7 @@ namespace PKSim.Core.Services
          if (!parameter.Visible) return false;
 
          //expression parameters as well
-         if (parameter.IsIndividualMolecule() || parameter.NameIsOneOf(CoreConstants.Parameter.ONTOGENY_FACTOR_AGP, CoreConstants.Parameter.ONTOGENY_FACTOR_ALBUMIN)) 
+         if (parameter.IsIndividualMolecule() || parameter.NameIsOneOf(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP, CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN)) 
             return false;
 
          //other conditions

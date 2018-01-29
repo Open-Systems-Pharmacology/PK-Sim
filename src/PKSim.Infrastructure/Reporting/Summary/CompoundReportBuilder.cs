@@ -20,19 +20,19 @@ namespace PKSim.Infrastructure.Reporting.Summary
 
          reportPart.AddPart(_reportGenerator.ReportFor(compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY)));
          reportPart.AddToContent(_reportGenerator.ReportFor(compound.Parameter(Constants.Parameters.MOL_WEIGHT)));
-         reportPart.AddToContent(_reportGenerator.ReportFor(compound.Parameter(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT)));
-         reportPart.AddToContent(_reportGenerator.ReportFor(compound.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE)));
+         reportPart.AddToContent(_reportGenerator.ReportFor(compound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT)));
+         reportPart.AddToContent(_reportGenerator.ReportFor(compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE)));
 
          if(compound.IsNeutral)
             reportPart.AddToContent(PKSimConstants.UI.CompoundTypeNeutral);
          else
          {
-            addCompoundTypePart(reportPart, compound, CoreConstants.Parameter.PARAMETER_PKA1, CoreConstants.Parameter.COMPOUND_TYPE1);
-            addCompoundTypePart(reportPart, compound, CoreConstants.Parameter.PARAMETER_PKA2, CoreConstants.Parameter.COMPOUND_TYPE2);
-            addCompoundTypePart(reportPart, compound, CoreConstants.Parameter.PARAMETER_PKA3, CoreConstants.Parameter.COMPOUND_TYPE3);
+            addCompoundTypePart(reportPart, compound, CoreConstants.Parameters.PARAMETER_PKA1, CoreConstants.Parameters.COMPOUND_TYPE1);
+            addCompoundTypePart(reportPart, compound, CoreConstants.Parameters.PARAMETER_PKA2, CoreConstants.Parameters.COMPOUND_TYPE2);
+            addCompoundTypePart(reportPart, compound, CoreConstants.Parameters.PARAMETER_PKA3, CoreConstants.Parameters.COMPOUND_TYPE3);
          }
          var fractionUnboundReport = _reportGenerator.ReportFor(compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND));
-         fractionUnboundReport.AddToContent(_reportGenerator.ReportFor(compound.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER)));
+         fractionUnboundReport.AddToContent(_reportGenerator.ReportFor(compound.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER)));
          reportPart.AddPart(fractionUnboundReport);
       }
 

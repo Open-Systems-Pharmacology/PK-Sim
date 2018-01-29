@@ -39,13 +39,13 @@ namespace PKSim.Matlab.Mappers
          var populationSettings = _individualToPopulationSettingsMapper.MapFrom(individual);
          populationSettings.NumberOfIndividuals = matlabPopulationSettings.NumberOfIndividuals;
 
-         setRange(populationSettings, CoreConstants.Parameter.AGE, matlabPopulationSettings.MinAge, matlabPopulationSettings.MaxAge);
-         setRange(populationSettings, CoreConstants.Parameter.MEAN_HEIGHT, matlabPopulationSettings.MinHeight, matlabPopulationSettings.MaxHeight);
-         setRange(populationSettings, CoreConstants.Parameter.MEAN_WEIGHT, matlabPopulationSettings.MinWeight, matlabPopulationSettings.MaxWeight);
-         setRange(populationSettings, CoreConstants.Parameter.BMI, matlabPopulationSettings.MinBMI, matlabPopulationSettings.MaxBMI);
+         setRange(populationSettings, CoreConstants.Parameters.AGE, matlabPopulationSettings.MinAge, matlabPopulationSettings.MaxAge);
+         setRange(populationSettings, CoreConstants.Parameters.MEAN_HEIGHT, matlabPopulationSettings.MinHeight, matlabPopulationSettings.MaxHeight);
+         setRange(populationSettings, CoreConstants.Parameters.MEAN_WEIGHT, matlabPopulationSettings.MinWeight, matlabPopulationSettings.MaxWeight);
+         setRange(populationSettings, CoreConstants.Parameters.BMI, matlabPopulationSettings.MinBMI, matlabPopulationSettings.MaxBMI);
 
-         if (populationSettings.ContainsParameterRangeFor(CoreConstants.Parameter.GESTATIONAL_AGE))
-            setRange(populationSettings, CoreConstants.Parameter.GESTATIONAL_AGE, matlabPopulationSettings.MinGestationalAge, matlabPopulationSettings.MaxGestationalAge);
+         if (populationSettings.ContainsParameterRangeFor(CoreConstants.Parameters.GESTATIONAL_AGE))
+            setRange(populationSettings, CoreConstants.Parameters.GESTATIONAL_AGE, matlabPopulationSettings.MinGestationalAge, matlabPopulationSettings.MaxGestationalAge);
 
          //in case of multiple gender, adjust the ration according to the feamales proportion
          if (individual.AvailableGenders().Count() > 1)

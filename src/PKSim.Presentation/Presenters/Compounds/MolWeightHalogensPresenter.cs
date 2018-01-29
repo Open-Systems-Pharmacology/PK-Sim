@@ -56,8 +56,8 @@ namespace PKSim.Presentation.Presenters.Compounds
          if (parameter.GroupName != CoreConstants.Groups.COMPOUND_MW) return false;
          if (parameter.NameIsOneOf(
             Constants.Parameters.MOL_WEIGHT, 
-            CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT, 
-            CoreConstants.Parameter.HAS_HALOGENS))
+            CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT, 
+            CoreConstants.Parameters.HAS_HALOGENS))
             return false;
 
          return true;

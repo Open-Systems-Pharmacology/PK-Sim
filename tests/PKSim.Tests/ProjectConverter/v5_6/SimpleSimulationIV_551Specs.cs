@@ -88,7 +88,7 @@ namespace PKSim.ProjectConverter.v5_6
       [Observation]
       public void should_have_removed_the_volume_plasma_parameter_from_the_individual()
       {
-         _individual.Organism.Parameter(CoreConstants.Parameter.VOLUME_PLASMA).ShouldBeNull();
+         _individual.Organism.Parameter(CoreConstants.Parameters.VOLUME_PLASMA).ShouldBeNull();
       }
 
       [Observation]

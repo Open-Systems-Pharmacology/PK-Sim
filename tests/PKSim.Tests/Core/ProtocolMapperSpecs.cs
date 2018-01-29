@@ -43,7 +43,7 @@ namespace PKSim.Core
             Description = "Simple Protocol description",
          };
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(3).WithName(Constants.Parameters.START_TIME));
-         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameters.INPUT_DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.END_TIME));
 
          A.CallTo(() => _parameterMapper.MapToSnapshot(_simpleProtocol.StartTime)).Returns(new Parameter().WithName(_simpleProtocol.StartTime.Name));
@@ -90,7 +90,7 @@ namespace PKSim.Core
       public void should_save_all_protocol_parameters()
       {
          _snapshot.Parameters.ExistsByName(Constants.Parameters.START_TIME).ShouldBeTrue();
-         _snapshot.Parameters.ExistsByName(CoreConstants.Parameter.INPUT_DOSE).ShouldBeTrue();
+         _snapshot.Parameters.ExistsByName(CoreConstants.Parameters.INPUT_DOSE).ShouldBeTrue();
          _snapshot.Parameters.ExistsByName(Constants.Parameters.END_TIME).ShouldBeTrue();
       }
    }

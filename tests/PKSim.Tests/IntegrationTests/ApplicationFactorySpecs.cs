@@ -107,38 +107,38 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_define_the_dose_parameter_as_a_constant_formula()
       {
-         var dose = ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE);
+         var dose = ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE);
          dose.Formula.IsConstant().ShouldBeTrue();
       }
 
       [Observation]
       public void should_hide_the_dose_per_body_surface_area_parameter()
       {
-         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_SURFACE_AREA));
+         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_SURFACE_AREA));
       }
 
       [Observation]
       public void should_hide_the_dose_per_body_weight_parameter()
       {
-         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT));
+         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_WEIGHT));
       }
 
       [Observation]
       public void should_update_the_dose_parameter_value()
       {
-         ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE).Value.ShouldBeEqualTo(_schemaItemIV.Dose.Value);
+         ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE).Value.ShouldBeEqualTo(_schemaItemIV.Dose.Value);
       }
 
       [Observation]
       public void the_value_of_dose_per_body_weight_should_be_zero()
       {
-         ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT).Value.ShouldBeEqualTo(0);
+         ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_WEIGHT).Value.ShouldBeEqualTo(0);
       }
 
       [Observation]
       public void the_value_of_dose_per_body_surface_aera__should_be_zero()
       {
-         ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_SURFACE_AREA).Value.ShouldBeEqualTo(0);
+         ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_SURFACE_AREA).Value.ShouldBeEqualTo(0);
       }
    }
 
@@ -154,33 +154,33 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_define_the_dose_parameter_as_a_function_of_body_surface_area_and_dose_per_body_surface_area()
       {
-         var dose = ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE);
+         var dose = ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE);
          dose.Formula.IsExplicit().ShouldBeTrue();
-         dose.Formula.ObjectPaths.Select(x=>x.Alias).ShouldContain(CoreConstants.Parameter.BSA, CoreConstants.Parameter.DOSE_PER_BODY_SURFACE_AREA);
+         dose.Formula.ObjectPaths.Select(x=>x.Alias).ShouldContain(CoreConstants.Parameters.BSA, CoreConstants.Parameters.DOSE_PER_BODY_SURFACE_AREA);
       }
 
       [Observation]
       public void should_hide_the_dose_parameter()
       {
-         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE));
+         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE));
       }
 
       [Observation]
       public void should_hide_the_dose_per_body_weight_parameter()
       {
-         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT));
+         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_WEIGHT));
       }
 
       [Observation]
       public void should_update_the_dose_per_body_surface_parameter_value()
       {
-         ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_SURFACE_AREA).Value.ShouldBeEqualTo(_schemaItemIV.Dose.Value);
+         ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_SURFACE_AREA).Value.ShouldBeEqualTo(_schemaItemIV.Dose.Value);
       }
 
       [Observation]
       public void the_value_of_dose_per_body_weight_should_be_zero()
       {
-         ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT).Value.ShouldBeEqualTo(0);
+         ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_WEIGHT).Value.ShouldBeEqualTo(0);
       }
    }
 
@@ -196,33 +196,33 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_define_the_dose_parameter_as_a_function_of_body_weight_and_dose_per_body_weight()
       {
-         var dose = ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE);
+         var dose = ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE);
          dose.Formula.IsExplicit().ShouldBeTrue();
-         dose.Formula.ObjectPaths.Select(x => x.Alias).ShouldContain("BW", CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT);
+         dose.Formula.ObjectPaths.Select(x => x.Alias).ShouldContain("BW", CoreConstants.Parameters.DOSE_PER_BODY_WEIGHT);
       }
 
       [Observation]
       public void should_hide_the_dose_parameter()
       {
-         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE));
+         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE));
       }
 
       [Observation]
       public void should_hide_the_dose_per_body_surface_area_parameter()
       {
-         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_SURFACE_AREA));
+         DoseParameterShouldBeHidden(ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_SURFACE_AREA));
       }
 
       [Observation]
       public void should_update_the_dose_per_body_weight_parameter_value()
       {
-         ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT).Value.ShouldBeEqualTo(_schemaItemIV.Dose.Value);
+         ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_WEIGHT).Value.ShouldBeEqualTo(_schemaItemIV.Dose.Value);
       }
 
       [Observation]
       public void the_value_of_dose_per_body_surface_area_should_be_zero()
       {
-         ApplicationParameterContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_SURFACE_AREA).Value.ShouldBeEqualTo(0);
+         ApplicationParameterContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_SURFACE_AREA).Value.ShouldBeEqualTo(0);
       }
 
    }

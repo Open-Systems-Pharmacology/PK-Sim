@@ -148,16 +148,16 @@ namespace PKSim.Core.Model
       {
          try
          {
-            var bodyWeightRange = populationSettings.ParameterRange(CoreConstants.Parameter.MEAN_WEIGHT);
-            var bodyWeightParameter = _individualModelTask.MeanOrganismParameter(individual.OriginData, CoreConstants.Parameter.MEAN_WEIGHT);
+            var bodyWeightRange = populationSettings.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT);
+            var bodyWeightParameter = _individualModelTask.MeanOrganismParameter(individual.OriginData, CoreConstants.Parameters.MEAN_WEIGHT);
             _createIndividualAlgorithm.Randomize(individual, bodyWeightParameter, bodyWeightRange.MinValue, bodyWeightRange.MaxValue, allIndividualParameters, randomGenerator);
 
             if (!individual.OriginData.SpeciesPopulation.IsHeightDependent)
                return true;
 
             //last: Check if the value for the bmi is in the interval
-            var bmi = individual.Organism.Parameter(CoreConstants.Parameter.BMI).Value;
-            var bmiRange = populationSettings.ParameterRange(CoreConstants.Parameter.BMI);
+            var bmi = individual.Organism.Parameter(CoreConstants.Parameters.BMI).Value;
+            var bmiRange = populationSettings.ParameterRange(CoreConstants.Parameters.BMI);
             return bmiRange.IsValueInRange(bmi);
          }
          catch (CannotCreateIndividualWithConstraintsException)
@@ -225,23 +225,23 @@ namespace PKSim.Core.Model
             //first create a new age value if necessary
             if (originData.SpeciesPopulation.IsAgeDependent)
             {
-               originData.Age = createRandomValueFor(originData, populationSettings, CoreConstants.Parameter.AGE, randomGenerator, out success);
-               currentIndividual.Organism.Parameter(CoreConstants.Parameter.AGE).Value = originData.Age.Value;
+               originData.Age = createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.AGE, randomGenerator, out success);
+               currentIndividual.Organism.Parameter(CoreConstants.Parameters.AGE).Value = originData.Age.Value;
                if (!success) continue;
             }
 
             if (originData.SpeciesPopulation.IsPreterm)
             {
-               originData.GestationalAge = createDiscreteRandomValueFor(populationSettings, CoreConstants.Parameter.GESTATIONAL_AGE, randomGenerator, out success);
-               currentIndividual.Organism.Parameter(CoreConstants.Parameter.GESTATIONAL_AGE).Value = originData.GestationalAge.Value;
+               originData.GestationalAge = createDiscreteRandomValueFor(populationSettings, CoreConstants.Parameters.GESTATIONAL_AGE, randomGenerator, out success);
+               currentIndividual.Organism.Parameter(CoreConstants.Parameters.GESTATIONAL_AGE).Value = originData.GestationalAge.Value;
                if (!success) continue;
             }
 
             //Then define gender depending on selecting proportions
             if (originData.SpeciesPopulation.IsHeightDependent)
             {
-               originData.Height = createRandomValueFor(originData, populationSettings, CoreConstants.Parameter.MEAN_HEIGHT, randomGenerator, out success);
-               currentIndividual.Organism.Parameter(CoreConstants.Parameter.HEIGHT).Value = originData.Height.Value;
+               originData.Height = createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.MEAN_HEIGHT, randomGenerator, out success);
+               currentIndividual.Organism.Parameter(CoreConstants.Parameters.HEIGHT).Value = originData.Height.Value;
             }
          } while (!success && numberOfTry < _maxIterations);
 

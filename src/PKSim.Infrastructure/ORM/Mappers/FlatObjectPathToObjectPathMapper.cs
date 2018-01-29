@@ -49,7 +49,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          // replace 'DRUG' with reference to the concentration parameter
 
          if (rateObjectName == CoreConstants.Molecule.Drug)
-            return CoreConstants.Parameter.CONCENTRATION;
+            return CoreConstants.Parameters.CONCENTRATION;
 
          return rateObjectName;
       }

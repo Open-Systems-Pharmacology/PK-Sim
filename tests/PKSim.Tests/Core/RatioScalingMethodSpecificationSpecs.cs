@@ -34,7 +34,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _enzymeExpressionParameter = A.Fake<IParameter>().WithName(CoreConstants.Parameter.REL_EXP);
+         _enzymeExpressionParameter = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP);
         
          _parameterWithDefaultValueZero = A.Fake<IParameter>();
          _parameterWithDefaultValueZero.Value = 0;

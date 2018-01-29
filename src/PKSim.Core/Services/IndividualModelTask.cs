@@ -44,7 +44,7 @@ namespace PKSim.Core.Services
       public void CreateModelFor(Individual individual)
       {
          addModelStructureTo(individual.Organism, individual.OriginData, addParameter: true);
-         setAgeSettings(individual.Organism.Parameter(CoreConstants.Parameter.AGE),
+         setAgeSettings(individual.Organism.Parameter(CoreConstants.Parameters.AGE),
             individual.OriginData.SpeciesPopulation.Name, setValueAndDisplayUnit: false);
          addWeightParameterTags(individual);
 
@@ -61,7 +61,7 @@ namespace PKSim.Core.Services
 
       public IParameter MeanAgeFor(OriginData originData)
       {
-         var ageParameter = MeanOrganismParameter(originData, CoreConstants.Parameter.AGE);
+         var ageParameter = MeanOrganismParameter(originData, CoreConstants.Parameters.AGE);
          setAgeSettings(ageParameter, originData.SpeciesPopulation.Name, setValueAndDisplayUnit: true);
 
          return ageParameter;
@@ -72,7 +72,7 @@ namespace PKSim.Core.Services
       private void addWeightParameterTags(Individual individual)
       {
          var allOrganWeightParameters = individual.Organism.GetAllChildren<Parameter>
-            (p => p.Name.Equals(CoreConstants.Parameter.WEIGHT_TISSUE)).ToList();
+            (p => p.Name.Equals(CoreConstants.Parameters.WEIGHT_TISSUE)).ToList();
 
          allOrganWeightParameters.Each(addParentTagsTo);
       }
@@ -102,7 +102,7 @@ namespace PKSim.Core.Services
 
       public IParameter MeanGestationalAgeFor(OriginData originData)
       {
-         var param = MeanOrganismParameter(originData, CoreConstants.Parameter.GESTATIONAL_AGE);
+         var param = MeanOrganismParameter(originData, CoreConstants.Parameters.GESTATIONAL_AGE);
          //for population not preterm where the parameter is actually defined, the value of the parameter should be set to another default
          if (param != null && !originData.SpeciesPopulation.IsPreterm)
             param.Value = CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
@@ -111,12 +111,12 @@ namespace PKSim.Core.Services
 
       public IParameter MeanWeightFor(OriginData originData)
       {
-         return MeanOrganismParameter(originData, CoreConstants.Parameter.MEAN_WEIGHT);
+         return MeanOrganismParameter(originData, CoreConstants.Parameters.MEAN_WEIGHT);
       }
 
       public IParameter MeanHeightFor(OriginData originData)
       {
-         return MeanOrganismParameter(originData, CoreConstants.Parameter.MEAN_HEIGHT);
+         return MeanOrganismParameter(originData, CoreConstants.Parameters.MEAN_HEIGHT);
       }
 
       public IParameter MeanOrganismParameter(OriginData originData, string parameterName)
@@ -128,7 +128,7 @@ namespace PKSim.Core.Services
 
       public IParameter BMIBasedOn(OriginData originData, IParameter parameterWeight, IParameter parameterHeight)
       {
-         var standardBMI = MeanOrganismParameter(originData, CoreConstants.Parameter.BMI);
+         var standardBMI = MeanOrganismParameter(originData, CoreConstants.Parameters.BMI);
          if (standardBMI == null) return null;
 
          var organism = new Container().WithName(Constants.ORGANISM);

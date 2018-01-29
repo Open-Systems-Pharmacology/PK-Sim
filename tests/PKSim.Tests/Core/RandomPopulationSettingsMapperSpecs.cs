@@ -35,8 +35,8 @@ namespace PKSim.Core
          _populationSettingsMapper = A.Fake<IIndividualToPopulationSettingsMapper>();
          sut = new RandomPopulationSettingsMapper(_parameterRangeMapper, _individualMapper, _populationSettingsMapper, _genderRepository);
 
-         _ageParameterRange = new ConstrainedParameterRange {ParameterName = CoreConstants.Parameter.AGE};
-         _weightParameterRange = new ParameterRange {ParameterName = CoreConstants.Parameter.MEAN_WEIGHT};
+         _ageParameterRange = new ConstrainedParameterRange {ParameterName = CoreConstants.Parameters.AGE};
+         _weightParameterRange = new ParameterRange {ParameterName = CoreConstants.Parameters.MEAN_WEIGHT};
 
          A.CallTo(() => _parameterRangeMapper.MapToSnapshot(null)).Returns((Snapshots.ParameterRange) null);
          _ageRangeSnapshot = new Snapshots.ParameterRange();
@@ -109,8 +109,8 @@ namespace PKSim.Core
       {
          await base.Context();
          _newIndividual = new Individual();
-         _newAgeRange = new ParameterRange {ParameterName = CoreConstants.Parameter.AGE};
-         _newWeightRange = new ParameterRange {ParameterName = CoreConstants.Parameter.MEAN_WEIGHT};
+         _newAgeRange = new ParameterRange {ParameterName = CoreConstants.Parameters.AGE};
+         _newWeightRange = new ParameterRange {ParameterName = CoreConstants.Parameters.MEAN_WEIGHT};
 
          _snapshot = await sut.MapToSnapshot(_randomPopulationSettings);
 
@@ -159,8 +159,8 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_the_parameter_as_expected()
       {
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, _newSettings.ParameterRange(CoreConstants.Parameter.AGE))).MustHaveHappened();
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Height, _newSettings.ParameterRange(CoreConstants.Parameter.MEAN_WEIGHT))).MustHaveHappened();
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, _newSettings.ParameterRange(CoreConstants.Parameters.AGE))).MustHaveHappened();
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Height, _newSettings.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT))).MustHaveHappened();
       }
    }
 
