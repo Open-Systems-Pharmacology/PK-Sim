@@ -25,6 +25,9 @@ namespace PKSim.Core
       private IParameter _height;
       private IParameter _p1;
       private IParameter _p2;
+      private IParameter _mean;
+      private IParameter _deviation;
+      private IDistributedParameter _distributedParameter;
 
       protected override void Context()
       {
@@ -39,6 +42,7 @@ namespace PKSim.Core
          _age = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.AGE);
          _height = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.HEIGHT);
 
+         _distributedParameter = DomainHelperForSpecs.NormalDistributedParameter(isDefault: false, distributionParameterIsDefault: false).WithName("Distributed");
          _p1 = DomainHelperForSpecs.ConstantParameterWithValue().WithName("P1");
          _p2 = DomainHelperForSpecs.ConstantParameterWithValue().WithName("P2");
          _organism.Add(_ga);
@@ -46,6 +50,9 @@ namespace PKSim.Core
          _organism.Add(_height);
          _organism.Add(_p1);
          _anotherTopContainer.Add(_p2);
+         _organism.Add(_distributedParameter);
+         _mean = _distributedParameter.Parameter(Constants.Distribution.MEAN);
+         _deviation = _distributedParameter.Parameter(Constants.Distribution.DEVIATION);
       }
 
       protected override void Because()
@@ -62,10 +69,18 @@ namespace PKSim.Core
       }
 
       [Observation]
+      public void should_update_the_distribution_parameters_of_distributed_parameters()
+      {
+         _mean.IsDefault.ShouldBeTrue();
+         _deviation.IsDefault.ShouldBeTrue();
+      }
+
+      [Observation]
       public void should_not_reset_other_parameters()
       {
          _p1.IsDefault.ShouldBeFalse();
          _p2.IsDefault.ShouldBeFalse();
+         _distributedParameter.IsDefault.ShouldBeFalse();
       }
    }
 
