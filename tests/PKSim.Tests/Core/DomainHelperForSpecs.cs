@@ -130,15 +130,19 @@ namespace PKSim.Core
          return parameter;
       }
 
-      public static IDistributedParameter NormalDistributedParameter(double defaultMean = 0, double defaultDeviation = 1, double defaultPercentile = 0.5)
+      public static IDistributedParameter NormalDistributedParameter(double defaultMean = 0, double defaultDeviation = 1, double defaultPercentile = 0.5, bool isDefault=false, bool distributionParameterIsDefault = true)
       {
          var parameter = new PKSimDistributedParameter().WithId("P1");
+         parameter.IsDefault = isDefault;
          var pathFactory = new ObjectPathFactoryForSpecs();
          var meanParameter = new PKSimParameter {Name = Constants.Distribution.MEAN}.WithFormula(new ConstantFormula(defaultMean).WithId("MeanFormula")).WithId("Mean");
+         meanParameter.IsDefault = distributionParameterIsDefault;
          addDimensionTo(meanParameter);
          var stdParameter = new PKSimParameter {Name = Constants.Distribution.DEVIATION}.WithFormula(new ConstantFormula(defaultDeviation).WithId("DeviationFormula")).WithId("Deviation");
+         stdParameter.IsDefault = distributionParameterIsDefault;
          addDimensionTo(stdParameter);
          var percentileParameter = new PKSimParameter {Name = Constants.Distribution.PERCENTILE}.WithFormula(new ConstantFormula(defaultPercentile).WithId("PercentileFormula")).WithId("Percentile");
+         percentileParameter.IsDefault = distributionParameterIsDefault;
          addDimensionTo(percentileParameter);
          parameter.Add(meanParameter);
          parameter.Add(stdParameter);

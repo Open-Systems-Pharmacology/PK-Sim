@@ -22,17 +22,29 @@ namespace PKSim.Core.Services
 
       private void updateDefaultStateForOriginDataParameters(IContainer organism)
       {
-         var parameterNames = new[]
+         var organismParameters = new[]
          {
             CoreConstants.Parameters.AGE,
             Constants.Parameters.GESTATIONAL_AGE,
             CoreConstants.Parameters.HEIGHT
          };
 
-         parameterNames
+         organismParameters
             .Select(organism.Parameter)
             .Where(p => p != null)
             .Each(resetDefault);
+
+         var distributionParameters = new[]
+         {
+            Constants.Distribution.DEVIATION,
+            Constants.Distribution.GEOMETRIC_DEVIATION,
+            Constants.Distribution.MAXIMUM,
+            Constants.Distribution.MEAN,
+            Constants.Distribution.MINIMUM,
+            Constants.Distribution.PERCENTILE,
+         };
+
+         organism.GetAllChildren<IParameter>(x=>x.NameIsOneOf(distributionParameters)).Each(resetDefault);
       }
 
       public void UpdateDefaultFor(IEventGroupBuildingBlock eventGroupBuildingBlock)

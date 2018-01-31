@@ -23,7 +23,6 @@ namespace PKSim.Core.Commands
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
          _oldValueOrigin = _parameter.ValueOrigin.Clone();
-         //do not update value origin automatically since this is what this command is doing
          UpdateParameter(context);
          Description = Command.UpdateValueOriginFrom(_oldValueOrigin.ToString(), _valueOrigin.ToString());
       }
