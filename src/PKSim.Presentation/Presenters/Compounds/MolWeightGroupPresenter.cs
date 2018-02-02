@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Core;
 using PKSim.Core.Model;

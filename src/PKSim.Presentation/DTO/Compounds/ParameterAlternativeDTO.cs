@@ -7,13 +7,13 @@ namespace PKSim.Presentation.DTO.Compounds
 {
    public class ParameterAlternativeDTO : DxValidatableDTO<ParameterAlternative>, IWithValueOrigin
    {
-      private ValueOrigin _valueOrigin;
       public ParameterAlternative ParameterAlternative { get; }
+      public ValueOrigin ValueOrigin { get; }
 
       public ParameterAlternativeDTO(ParameterAlternative parameterAlternative) : base(parameterAlternative)
       {
          ParameterAlternative = parameterAlternative;
-         _valueOrigin = ParameterAlternative.AllParameters().FirstOrDefault()?.ValueOrigin ?? new ValueOrigin();
+         ValueOrigin = ParameterAlternative.AllParameters().FirstOrDefault()?.ValueOrigin ?? new ValueOrigin();
       }
 
       public string Name
@@ -28,6 +28,10 @@ namespace PKSim.Presentation.DTO.Compounds
          set => ParameterAlternative.IsDefault = value;
       }
 
-      public ValueOrigin ValueOrigin => _valueOrigin;
+      public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
+      {
+         ValueOrigin.UpdateFrom(sourceValueOrigin);
+      }
+
    }
 }

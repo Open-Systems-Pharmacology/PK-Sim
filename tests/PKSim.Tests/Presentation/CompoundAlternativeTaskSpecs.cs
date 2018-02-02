@@ -382,9 +382,9 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_value_origin_of_all_non_default_parameters_defined_in_the_alternative()
       {
-         _parameter1.ValueOrigin.IsIdenticalTo(_newValueOrigin).ShouldBeTrue();
-         _parameter2.ValueOrigin.IsIdenticalTo(_newValueOrigin).ShouldBeFalse();
-         _parameter3.ValueOrigin.IsIdenticalTo(_newValueOrigin).ShouldBeTrue();
+         _parameter1.ValueOrigin.ShouldBeEqualTo(_newValueOrigin);
+         _parameter2.ValueOrigin.ShouldNotBeEqualTo(_newValueOrigin);
+         _parameter3.ValueOrigin.ShouldBeEqualTo(_newValueOrigin);
       }
 
       [Observation]
@@ -431,7 +431,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_value_origin_of_all_non_default_parameters_defined_in_the_alternative()
       {
-         _parameter1.ValueOrigin.IsIdenticalTo(_newValueOrigin).ShouldBeTrue();
+         _parameter1.ValueOrigin.ShouldBeEqualTo(_newValueOrigin);
       }
 
       [Observation]

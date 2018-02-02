@@ -32,7 +32,7 @@ namespace PKSim.Core.Commands
          var valueOriginRepository = context.Resolve<IValueOriginRepository>();
 
          var valueOrigin = valueOriginRepository.ValueOriginFor(parameter);
-         parameter.ValueOrigin.UpdateFrom(valueOrigin);
+         parameter.UpdateValueOriginFrom(valueOrigin);
 
          //reset only available for trully default parameter with a default value
          parameter.IsDefault = true;

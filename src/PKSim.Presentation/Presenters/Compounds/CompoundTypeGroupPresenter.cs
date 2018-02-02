@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using PKSim.Core;

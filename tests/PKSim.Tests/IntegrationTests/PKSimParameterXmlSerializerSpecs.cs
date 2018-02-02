@@ -56,7 +56,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_serialize_the_value_origin()
       {
-         _deserializedParameter.ValueOrigin.IsIdenticalTo(_parameter.ValueOrigin).ShouldBeTrue();
+         _deserializedParameter.ValueOrigin.ShouldBeEqualTo(_parameter.ValueOrigin);
       }
    }
 

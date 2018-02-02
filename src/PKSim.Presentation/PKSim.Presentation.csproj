@@ -86,17 +86,17 @@
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.26\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.27, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.27\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.26\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.27, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.27\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.26\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.27, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.27\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -187,7 +187,6 @@
     <Compile Include="DTO\Simulations\SimulationInteractionProcessSelectionDTO.cs" />
     <Compile Include="DTO\Simulations\SimulationResultsFileSelectionDTO.cs" />
     <Compile Include="DTO\Snapshots\LoadFromSnapshotDTO.cs" />
-    <Compile Include="DTO\ValueOriginDTO.cs" />
     <Compile Include="Extensions\QuantityPresenterExtensions.cs" />
     <Compile Include="IUserSettings.cs" />
     <Compile Include="Mappers\CompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper.cs" />
@@ -227,7 +226,6 @@
     <Compile Include="Presenters\ContextMenus\SensitivityAnalysisContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\SimulationFavoritesNodeContextMenu.cs" />
     <Compile Include="Presenters\Formulations\TableFormulationParameterPresenter.cs" />
-    <Compile Include="Presenters\EditValueOriginPresenter.cs" />
     <Compile Include="Presenters\Individuals\IndividualMoleculePropertiesPresenter.cs" />
     <Compile Include="Presenters\ContextMenus\MultipleSimulationNodeContextMenuFactory.cs" />
     <Compile Include="Presenters\ContextMenus\MultipleUsedBuildingBlockNodeContextMenuFactory.cs" />
@@ -545,7 +543,6 @@
     <Compile Include="Views\Diagrams\IReactionDiagramView.cs" />
     <Compile Include="Views\IConfigurableContainerLayoutView.cs" />
     <Compile Include="Views\IConfigurableLayoutView.cs" />
-    <Compile Include="Views\IEditValueOriginView.cs" />
     <Compile Include="Views\IMultiplePanelView.cs" />
     <Compile Include="Views\Individuals\IIndividualMoleculePropertiesView.cs" />
     <Compile Include="Views\IUserDisplayUnitsView.cs" />
