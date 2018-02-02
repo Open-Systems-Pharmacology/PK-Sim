@@ -19,10 +19,7 @@ namespace PKSim.Presentation.DTO.Individuals
          _protein = protein;
       }
 
-      public IEnumerable<ExpressionContainerDTO> AllContainerExpressions
-      {
-         get { return _allContainerExpressions; }
-      }
+      public IEnumerable<ExpressionContainerDTO> AllContainerExpressions => _allContainerExpressions;
 
       public void AddProteinExpression(ExpressionContainerDTO expressionContainerDTO)
       {
@@ -31,20 +28,20 @@ namespace PKSim.Presentation.DTO.Individuals
 
       public TissueLocation TissueLocation
       {
-         get { return _protein.TissueLocation; }
-         set { _protein.TissueLocation = value; }
+         get => _protein.TissueLocation;
+         set => _protein.TissueLocation = value;
       }
 
       public IntracellularVascularEndoLocation IntracellularVascularEndoLocation
       {
-         get { return _protein.IntracellularVascularEndoLocation; }
-         set { _protein.IntracellularVascularEndoLocation = value; }
+         get => _protein.IntracellularVascularEndoLocation;
+         set => _protein.IntracellularVascularEndoLocation = value;
       }
 
       public MembraneLocation MembraneLocation
       {
-         get { return _protein.MembraneLocation; }
-         set { _protein.MembraneLocation = value; }
+         get => _protein.MembraneLocation;
+         set => _protein.MembraneLocation = value;
       }
 
       //this code should be necessary. But it seems that a issue in dev express hold a reference top the dto=>hence we need to clear references to domain by hand
