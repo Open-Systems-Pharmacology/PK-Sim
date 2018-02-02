@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
@@ -294,7 +296,7 @@ namespace PKSim.Core.Services
          return setParameterValue(parameter, value, shouldChangeVersion: true);
       }
 
-      private ICommand<IExecutionContext> commandForRelativeExpressionParameter(IParameter parameter, double value)
+      private IPKSimCommand commandForRelativeExpressionParameter(IParameter parameter, double value)
       {
          if (!parameter.IsExpressionNorm())
             return new SetRelativeExpressionInSimulationAndNormalizedCommand(parameter, value);
@@ -312,7 +314,7 @@ namespace PKSim.Core.Services
          return withUpdatedDefaultStateAndValue(new SetParameterDisplayUnitCommand(parameter, displayUnit).Run(_executionContext), parameter);
       }
 
-      private ICommand withUpdatedDefaultStateAndValue(ICommand command, IParameter parameter, bool shouldChangeVersion = true)
+      private ICommand withUpdatedDefaultStateAndValue(IOSPSuiteCommand command, IParameter parameter, bool shouldChangeVersion = true)
       {
          if (!parameter.IsDefault)
             return command;
@@ -320,11 +322,11 @@ namespace PKSim.Core.Services
          if (command.IsEmpty())
             return command;
 
-         var macroCommand = new PKSimMacroCommand {CommandType = command.CommandType, ObjectType = command.ObjectType, Description = command.Description};
+         var macroCommand = new PKSimMacroCommand().WithHistoryEntriesFrom(command);
          macroCommand.Add(command);
-         macroCommand.Add(new SetParameterDefaultStateCommand(parameter, isDefault: false) {ShouldChangeVersion = shouldChangeVersion, Visible = false}.Run(_executionContext));
+         macroCommand.Add(new SetParameterDefaultStateCommand(parameter, isDefault: false) {ShouldChangeVersion = shouldChangeVersion}.Run(_executionContext).AsHidden());
 
-         if (!valueOriginShouldBeUpdatedAutomatically(parameter.ValueOrigin))
+         if (!parameter.ValueOrigin.IsUndefined)
             return macroCommand;
 
          var undefinedValueOrigin = new ValueOrigin
@@ -333,17 +335,11 @@ namespace PKSim.Core.Services
             Method = ValueOriginDeterminationMethods.Undefined
          };
 
-         var setValueOriginCommand = setParameterValueOrigin(parameter, undefinedValueOrigin, shouldChangeVersion);
-         setValueOriginCommand.Visible = false;
+         var setValueOriginCommand = setParameterValueOrigin(parameter, undefinedValueOrigin, shouldChangeVersion).AsHidden();
          macroCommand.Add(setValueOriginCommand);
          return macroCommand;
       }
 
-      private static bool valueOriginShouldBeUpdatedAutomatically(ValueOrigin valueOrigin)
-      {
-         return valueOrigin.Source == ValueOriginSources.Undefined &&
-                valueOrigin.Method == ValueOriginDeterminationMethods.Undefined;
-      }
 
       public ICommand SetParameterPercentile(IParameter parameter, double percentile)
       {
@@ -471,6 +467,11 @@ namespace PKSim.Core.Services
       public ICommand SetParameterValue(IParameter parameter, double value, ISimulation simulation)
       {
          return SetParameterValue(parameter, value);
+      }
+
+      public ICommand UpdateParameterValueOrigin(IParameter parameter, ValueOrigin valueOrigin, ISimulation simulation)
+      {
+         return SetParameterValueOrigin(parameter, valueOrigin);
       }
 
       public ICommand SetParameterValueOrigin(IParameter parameter, ValueOrigin newValueOrigin)

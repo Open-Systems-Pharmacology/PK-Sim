@@ -163,7 +163,7 @@ namespace PKSim.Core.Services
 
       private ICommand withUpdatedValueOrigin(ICommand command, IParameter sourceParameter, IParameter targetParameter)
       {
-         if (sourceParameter.ValueOrigin.IsIdenticalTo(targetParameter.ValueOrigin))
+         if (Equals(sourceParameter.ValueOrigin, targetParameter.ValueOrigin))
             return command;
 
          var updateValueOriginCommand = _parameterTask.SetParameterValueOrigin(targetParameter, sourceParameter.ValueOrigin);

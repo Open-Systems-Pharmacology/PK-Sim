@@ -12,7 +12,6 @@ namespace PKSim.Core.Commands
       public UpdateParameterValueOriginCommand(IParameter parameter, ValueOrigin valueOrigin) : base(parameter)
       {
          _valueOrigin = valueOrigin;
-         
       }
 
       protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
@@ -24,12 +23,12 @@ namespace PKSim.Core.Commands
       {
          _oldValueOrigin = _parameter.ValueOrigin.Clone();
          UpdateParameter(context);
-         Description = Command.UpdateValueOriginFrom(_oldValueOrigin.ToString(), _valueOrigin.ToString());
+         Description = Command.UpdateValueOriginFrom(_oldValueOrigin.ToString(), _valueOrigin.ToString(), ObjectType, context.DisplayNameFor(_parameter), BuildingBlockType, BuildingBlockName);
       }
 
       protected override void UpdateParameter(IParameter parameter, IExecutionContext context)
       {
-         parameter?.ValueOrigin.UpdateFrom(_valueOrigin);
+         parameter?.UpdateValueOriginFrom(_valueOrigin);
       }
 
       protected override void ClearReferences()

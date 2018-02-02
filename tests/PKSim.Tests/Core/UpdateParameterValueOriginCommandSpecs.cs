@@ -61,13 +61,13 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_value_origin_of_the_parameter()
       {
-         _parameter.ValueOrigin.IsIdenticalTo(_valueOrigin).ShouldBeTrue();
+         _parameter.ValueOrigin.ShouldBeEqualTo(_valueOrigin);
       }
 
       [Observation]
       public void should_update_the_value_origin_of_the_associated_building_block_parameter_if_available()
       {
-         _buildingBlockParameter.ValueOrigin.IsIdenticalTo(_valueOrigin).ShouldBeTrue();
+         _buildingBlockParameter.ValueOrigin.ShouldBeEqualTo(_valueOrigin);
       }
 
       [Observation]
@@ -87,13 +87,13 @@ namespace PKSim.Core
       [Observation]
       public void should_have_reset_the_value_origin_to_its_original_value()
       {
-         _parameter.ValueOrigin.IsIdenticalTo(_previousValueOrigin).ShouldBeTrue();
+         _parameter.ValueOrigin.ShouldBeEqualTo(_previousValueOrigin);
       }
 
       [Observation]
       public void should_have_reset_the_value_origin_of_the_associated_building_block_parameter_if_available()
       {
-         _buildingBlockParameter.ValueOrigin.IsIdenticalTo(_previousValueOrigin).ShouldBeTrue();
+         _buildingBlockParameter.ValueOrigin.ShouldBeEqualTo(_previousValueOrigin);
       }
    }
 }

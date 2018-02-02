@@ -53,8 +53,8 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_value_origin_for_all_parameters()
       {
-         _parameter1.ValueOrigin.IsIdenticalTo(_valueOrigin).ShouldBeTrue();
-         _parameter2.ValueOrigin.IsIdenticalTo(_valueOrigin).ShouldBeTrue();
+         _parameter1.ValueOrigin.ShouldBeEqualTo(_valueOrigin);
+         _parameter2.ValueOrigin.ShouldBeEqualTo(_valueOrigin);
       }
 
       [Observation]

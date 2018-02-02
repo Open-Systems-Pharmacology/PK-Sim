@@ -1,20 +1,18 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Commands.Core;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
-
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Domain;
-using PKSim.Presentation.Presenters;
 
 namespace PKSim.Presentation
 {
@@ -36,7 +34,7 @@ namespace PKSim.Presentation
          _molWeightsHalogenPresenters = A.Fake<IMolWeightHalogensPresenter>();
          _molWeightDTOMapper = A.Fake<ICompoundToMolWeightDTOMapper>();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
-         _editValueOriginPresenter= A.Fake<IEditValueOriginPresenter>();   
+         _editValueOriginPresenter = A.Fake<IEditValueOriginPresenter>();
          sut = new MolWeightGroupPresenter(_view, _representationInfoRepository, _molWeightDTOMapper, _molWeightsHalogenPresenters, _parameterTask, _editValueOriginPresenter);
          sut.InitializeWith(_commandRegister);
       }

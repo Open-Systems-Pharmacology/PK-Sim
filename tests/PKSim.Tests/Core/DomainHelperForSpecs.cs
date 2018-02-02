@@ -126,7 +126,7 @@ namespace PKSim.Core
          parameter.Visible = true;
          addDimensionTo(parameter);
          parameter.IsFixedValue = true;
-         parameter.IsDefault = false;
+         parameter.IsDefault = isDefault;
          return parameter;
       }
 
