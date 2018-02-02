@@ -82,10 +82,7 @@ namespace PKSim.UI.Views.Parameters
          _screenBinder.BindToSource(parameterDTO);
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
 
       public void ValidateControl()
       {
@@ -94,7 +91,7 @@ namespace PKSim.UI.Views.Parameters
 
       public string ToolTip
       {
-         set { tbValue.ToolTip = value; }
+         set => tbValue.ToolTip = value;
          get { return tbValue.ToolTip; }
       }
 

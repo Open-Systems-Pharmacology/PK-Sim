@@ -64,12 +64,12 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public bool OntogenyVisible
       {
-         set { _moleculePropertiesPresenter.OntogenyVisible = value; }
+         set => _moleculePropertiesPresenter.OntogenyVisible = value;
       }
 
       public bool MoleculeParametersVisible
       {
-         set { _moleculePropertiesPresenter.MoleculeParametersVisible = value; }
+         set => _moleculePropertiesPresenter.MoleculeParametersVisible = value;
       }
 
       public void ActivateMolecule(IndividualMolecule molecule)
@@ -144,8 +144,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          if (_protein != null)
             _protein.Changed -= _updateViewHandler;
 
-         if (_proteinExpressionDTO != null)
-            _proteinExpressionDTO.ClearReferences();
+         _proteinExpressionDTO?.ClearReferences();
       }
 
       private void updateView()
