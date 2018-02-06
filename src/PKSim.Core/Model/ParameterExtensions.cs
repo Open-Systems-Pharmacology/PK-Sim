@@ -105,7 +105,7 @@ namespace PKSim.Core.Model
          return !ValueComparer.AreValuesEqual(parameter.Value, parameter.DefaultValue.Value, CoreConstants.DOUBLE_RELATIVE_EPSILON);
       }
 
-      public static bool ParameterHasChanged(this IParameter parameter) => parameter.Visible && parameter.IsDefault == false;
+      public static bool ParameterHasChanged(this IParameter parameter) => parameter.IsDefault == false;
 
       /// <summary>
       ///    Returns the factor with which the value was changed from current vlaue
