@@ -27,13 +27,13 @@ namespace PKSim.Core
 
          sut = new EventMapper(_parameterMapper, _eventFactory);
 
-         _parameter1 = DomainHelperForSpecs.ConstantParameterWithValue(5)
+         _parameter1 = DomainHelperForSpecs.ConstantParameterWithValue(5, isDefault:false)
             .WithName("Param1");
 
-         _parameter2 = DomainHelperForSpecs.ConstantParameterWithValue(5)
+         _parameter2 = DomainHelperForSpecs.ConstantParameterWithValue(5, isDefault: true)
             .WithName("Param2");
 
-         _hiddenParameter = DomainHelperForSpecs.ConstantParameterWithValue(5)
+         _hiddenParameter = DomainHelperForSpecs.ConstantParameterWithValue(5, isDefault: false)
             .WithName("Param3");
          _hiddenParameter.Visible = false;
 
@@ -72,10 +72,9 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_event_parameters_changed_by_the_user_only()
       {
-         _snapshot.Parameters.Length.ShouldBeEqualTo(_event.AllVisibleParameters().Count());
          _snapshot.Parameters.ExistsByName(_parameter1.Name).ShouldBeTrue();
-         _snapshot.Parameters.ExistsByName(_parameter2.Name).ShouldBeTrue();
-         _snapshot.Parameters.ExistsByName(_hiddenParameter.Name).ShouldBeFalse();
+         _snapshot.Parameters.ExistsByName(_parameter2.Name).ShouldBeFalse();
+         _snapshot.Parameters.ExistsByName(_hiddenParameter.Name).ShouldBeTrue();
       }
    }
 

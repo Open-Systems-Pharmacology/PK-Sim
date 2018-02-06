@@ -202,7 +202,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_exporting_a_simulation_thatt_does_not_come_from_pksim_to_snapshot : concern_for_SimulationMapper
+   public class When_exporting_a_simulation_that_does_not_come_from_pksim_to_snapshot : concern_for_SimulationMapper
    {
       private Model.Simulation _mobiSimulation;
 
