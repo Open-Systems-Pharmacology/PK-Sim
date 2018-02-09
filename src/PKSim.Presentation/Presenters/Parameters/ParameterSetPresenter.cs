@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Parameters;
-using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.DTO.Parameters;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
@@ -115,6 +115,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
          return !parameterDTO.NameIsOneOf(CoreConstants.Parameters.AllParametersWithLockedValueOriginInSimulation);
       }
+
       protected abstract IEnumerable<IParameterDTO> SelectedParameters();
 
       public void ResetParameters()
@@ -149,8 +150,15 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public virtual void Edit(IEnumerable<IParameter> parameters)
       {
-         _visibleParameters = parameters.Where(x => x.Visible).ToList();
+         _visibleParameters = parameters.Where(shouldShowParameter).ToList();
          _pathCache = _parameterTask.PathCacheFor(_visibleParameters);
+      }
+
+      private bool shouldShowParameter(IParameter parameter)
+      {
+         return parameter.Visible ||
+                parameter.IsFixedValue ||
+                !parameter.IsDefault;
       }
 
       public virtual bool ForcesDisplay => false;

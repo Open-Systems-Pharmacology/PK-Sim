@@ -1,11 +1,13 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Validation;
-using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -15,10 +17,6 @@ using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Parameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation
 {
@@ -250,6 +248,59 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_editing_a_set_of_parameters : concern_for_MultiParameterEditPresenter
+   {
+      private IParameter _visibleParameter;
+      private IParameter _hiddenUnchangedParameter;
+      private IParameter _hiddenIsFixedParameter;
+      private IParameter _hiddenIsNotDefaultParameter;
+      private List<ParameterDTO> _allParameterDTO;
+      private List<IParameter> _displayedParameters;
+
+      protected override void Context()
+      {
+         base.Context();
+         _visibleParameter = new PKSimParameter {Visible = true};
+         _hiddenUnchangedParameter = new PKSimParameter {Visible = false, IsDefault = true};
+         _hiddenIsFixedParameter = new PKSimParameter {Visible = false, IsFixedValue = true};
+         _hiddenIsNotDefaultParameter = new PKSimParameter {Visible = false, IsDefault = false};
+
+         _parameterList.Add(_visibleParameter);
+         _parameterList.Add(_hiddenUnchangedParameter);
+         _parameterList.Add(_hiddenIsFixedParameter);
+         _parameterList.Add(_hiddenIsNotDefaultParameter);
+
+         A.CallTo(() => _mapper.MapFrom(A<IParameter>._)).ReturnsLazily(x => new ParameterDTO(x.GetArgument<IParameter>(0)));
+
+         A.CallTo(() => _view.BindTo(A<IEnumerable<ParameterDTO>>._))
+            .Invokes(x => _allParameterDTO = x.GetArgument<IEnumerable<ParameterDTO>>(0).ToList());
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_parameterList);
+         _displayedParameters = _allParameterDTO.Select(x => x.Parameter).ToList();
+      }
+
+      [Observation]
+      public void should_show_all_visible_parameters()
+      {
+         _displayedParameters.ShouldContain(_visibleParameter);
+      }
+
+      [Observation]
+      public void should_show_all_hidden_parameter_that_were_changed_by_the_user()
+      {
+         _displayedParameters.ShouldContain(_hiddenIsFixedParameter, _hiddenIsNotDefaultParameter);
+      }
+
+      [Observation]
+      public void should_not_show_hidden_parameters_that_were_not_changed_by_the_user()
+      {
+         _displayedParameters.ShouldNotContain(_hiddenUnchangedParameter);
+      }
+   }
+
    public class When_asked_to_reset_all_the_parameters_to_their_original_values : concern_for_MultiParameterEditPresenter
    {
       private IPKSimCommand _resetParameterCommand;
@@ -261,7 +312,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _para1 = new PKSimParameter {Visible = true};
-         _para2 = new PKSimParameter {Visible = false};
+         _para2 = new PKSimParameter {Visible = false, IsDefault = true};
          _resetParameterCommand = A.Fake<IPKSimCommand>();
          _parameterList.Add(_para1);
          _parameterList.Add(_para2);
@@ -307,7 +358,7 @@ namespace PKSim.Presentation
          _para1 = new PKSimParameter {Visible = true};
          _scaleParameterCommand = A.Fake<IPKSimCommand>();
          _parameterList.Add(_para1);
-         _parameterList.Add(new PKSimParameter {Visible = false});
+         _parameterList.Add(new PKSimParameter {Visible = false, IsDefault = true});
          var parameterDTO = new ParameterDTO(_para1);
          A.CallTo(() => _mapper.MapFrom(_para1)).Returns(parameterDTO);
          A.CallTo(() => _view.SelectedParameters).Returns(new[] {parameterDTO});
