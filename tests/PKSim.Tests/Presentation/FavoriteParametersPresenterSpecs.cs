@@ -67,7 +67,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_editing_a_set_of_parameters : concern_for_FavoriteParametersPresenter
+   public class When_the_favorite_parameters_presenter_is_editing_a_set_of_parameters : concern_for_FavoriteParametersPresenter
    {
       private IEnumerable<IParameterDTO> _parameterDTOs;
 
