@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Parameters;
@@ -24,6 +25,7 @@ namespace PKSim.Presentation
       protected IList<string> _favorites;
       protected IMultiParameterEditPresenter _multiParameterEditPresenter;
       protected IEnumerable<IParameter> _allEditedParameters;
+      protected IFavoriteTask _favoriteTask;
 
       protected override void Context()
       {
@@ -31,8 +33,9 @@ namespace PKSim.Presentation
          _parameterTask = A.Fake<IParameterTask>();
          _favoriteRepository = A.Fake<IFavoriteRepository>();
          _multiParameterEditPresenter = A.Fake<IMultiParameterEditPresenter>();
+         _favoriteTask = A.Fake<IFavoriteTask>();
 
-         sut = new FavoriteParametersPresenter(_view, _multiParameterEditPresenter, _parameterTask, _favoriteRepository);
+         sut = new FavoriteParametersPresenter(_view, _multiParameterEditPresenter, _parameterTask, _favoriteRepository, _favoriteTask);
 
          _par1 = new PKSimParameter().WithName("par1");
          _par2 = new PKSimParameter().WithName("par2");
@@ -202,7 +205,7 @@ namespace PKSim.Presentation
          _selectedParameters = new[] {_parameter1, _parameter2};
          A.CallTo(() => _multiParameterEditPresenter.SelectedParameters).Returns(_selectedParameters);
 
-         A.CallTo(() => _favoriteRepository.Favorites.MoveUp(A<IEnumerable<string>>._))
+         A.CallTo(() => _favoriteTask.MoveUp(A<IEnumerable<string>>._))
             .Invokes(x => _movedParameters = x.GetArgument<IEnumerable<string>>(0));
       }
 
@@ -218,15 +221,23 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_refresh_the_view()
-      {
-         A.CallTo(() => _multiParameterEditPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappened();
-      }
-
-      [Observation]
       public void should_update_the_parameter_selection()
       {
          _multiParameterEditPresenter.SelectedParameters.ShouldBeEqualTo(_selectedParameters);
+      }
+   }
+
+   public class When_the_favorite_parameters_presenter_is_notified_that_the_order_of_favorites_was_updated : concern_for_FavoriteParametersPresenter
+   {
+      protected override void Because()
+      {
+         sut.Handle(new FavoritesOrderChangedEvent());
+      }
+
+      [Observation]
+      public void should_refresh_the_edited_parameters()
+      {
+         A.CallTo(() => _multiParameterEditPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappened();
       }
    }
 }

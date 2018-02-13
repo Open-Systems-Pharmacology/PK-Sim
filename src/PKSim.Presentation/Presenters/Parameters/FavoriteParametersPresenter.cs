@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Services;
@@ -14,10 +15,18 @@ namespace PKSim.Presentation.Presenters.Parameters
    public interface IFavoriteParametersPresenter : ICustomParametersPresenter,
       IListener<AddParameterToFavoritesEvent>,
       IListener<RemoveParameterFromFavoritesEvent>,
-      IListener<FavoritesLoadedEvent>
+      IListener<FavoritesLoadedEvent>,
+      IListener<FavoritesOrderChangedEvent>
 
    {
+      /// <summary>
+      ///    Moves the selected parameter up once
+      /// </summary>
       void MoveUp();
+
+      /// <summary>
+      ///    Moves the selected parameter down once
+      /// </summary>
       void MoveDown();
    }
 
@@ -26,6 +35,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       private readonly IMultiParameterEditPresenter _multiParameterEditPresenter;
       private readonly IParameterTask _parameterTask;
       private readonly IFavoriteRepository _favoriteRepository;
+      private readonly IFavoriteTask _favoriteTask;
       private PathCache<IParameter> _allParameterCache;
       public string Description { get; set; } = string.Empty;
       public bool ForcesDisplay { get; } = false;
@@ -35,11 +45,13 @@ namespace PKSim.Presentation.Presenters.Parameters
          IFavoriteParametersView view,
          IMultiParameterEditPresenter multiParameterEditPresenter,
          IParameterTask parameterTask,
-         IFavoriteRepository favoriteRepository) : base(view)
+         IFavoriteRepository favoriteRepository,
+         IFavoriteTask favoriteTask) : base(view)
       {
          _multiParameterEditPresenter = multiParameterEditPresenter;
          _parameterTask = parameterTask;
          _favoriteRepository = favoriteRepository;
+         _favoriteTask = favoriteTask;
          _allParameterCache = _parameterTask.PathCacheFor(Enumerable.Empty<IParameter>());
          _view.AddParametersView(_multiParameterEditPresenter.BaseView);
          AddSubPresenters(_multiParameterEditPresenter);
@@ -91,17 +103,18 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public void Handle(FavoritesLoadedEvent eventToHandle) => updateParameters();
 
+      public void Handle(FavoritesOrderChangedEvent eventToHandle) => updateParameters();
+
       public void MoveUp() => moveFavorites(x => x.MoveUp);
 
       public void MoveDown() => moveFavorites(x => x.MoveDown);
 
-      private void moveFavorites(Func<Favorites, Action<IEnumerable<string>>> moveActionFunc)
+      private void moveFavorites(Func<IFavoriteTask, Action<IEnumerable<string>>> moveActionFunc)
       {
          var selectedParameters = _multiParameterEditPresenter.SelectedParameters;
-         var moveAction = moveActionFunc(_favoriteRepository.Favorites);
+         var moveAction = moveActionFunc(_favoriteTask);
          moveAction(selectedParameters.Select(_parameterTask.PathFor));
-         updateParameters();
          _multiParameterEditPresenter.SelectedParameters = selectedParameters;
       }
-   }  
+   }
 }
