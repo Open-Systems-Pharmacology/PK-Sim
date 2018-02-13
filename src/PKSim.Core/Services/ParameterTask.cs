@@ -194,6 +194,11 @@ namespace PKSim.Core.Services
       PathCache<IParameter> PathCacheFor(IEnumerable<IParameter> parameters);
 
       /// <summary>
+      /// Returns the full path of the <paramref name="parameter"/>
+      /// </summary>
+      string PathFor(IParameter parameter);
+
+      /// <summary>
       ///    sets the given formula as formula in the parameter
       /// </summary>
       ICommand SetParameterFomula(IParameter parameter, IFormula formula);
@@ -428,6 +433,8 @@ namespace PKSim.Core.Services
       {
          return new PathCache<IParameter>(_entityPathResolver).For(parameters);
       }
+
+      public string PathFor(IParameter parameter) => _entityPathResolver.PathFor(parameter);
 
       public ICommand SetParameterFomula(IParameter parameter, IFormula formula)
       {

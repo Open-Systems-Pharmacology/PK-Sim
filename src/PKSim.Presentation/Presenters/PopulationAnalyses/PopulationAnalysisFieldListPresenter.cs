@@ -52,14 +52,14 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       public PivotArea Area
       {
-         get { return _dragDropBinder.Area; }
-         set { _dragDropBinder.Area = value; }
+         get => _dragDropBinder.Area;
+         set => _dragDropBinder.Area = value;
       }
 
       public int? MaximNumberOfAllowedFields
       {
-         get { return _dragDropBinder.MaximNumberOfAllowedFields; }
-         set{_dragDropBinder.MaximNumberOfAllowedFields = value;}
+         get => _dragDropBinder.MaximNumberOfAllowedFields;
+         set => _dragDropBinder.MaximNumberOfAllowedFields = value;
       }
 
       public void StartAnalysis(IPopulationDataCollector populationDataCollector, PopulationAnalysis populationAnalysis)

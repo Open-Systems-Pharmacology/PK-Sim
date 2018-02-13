@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
@@ -12,15 +17,11 @@ using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Parameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
-   public interface IMultiParameterEditPresenter : IPresenter<IMultiParameterEditView>,
+   public interface IMultiParameterEditPresenter :
+      IPresenter<IMultiParameterEditView>,
       IParameterSetPresenter,
       IPresenterWithContextMenu<IParameterDTO>
    {
@@ -65,12 +66,16 @@ namespace PKSim.Presentation.Presenters.Parameters
       /// </summary>
       bool DistributionVisible { set; }
 
-
       /// <summary>
       ///    Is the value origin column visible?
       ///    Default is <c>true</c>
       /// </summary>
       bool ValueOriginVisible { set; }
+
+      /// <summary>
+      ///    Forces the name column to be always visible. This should be called after the Edit method
+      /// </summary>
+      bool ParameterNameVisible { set; }
 
       /// <summary>
       ///    Configure the editor to display the most simple view possible
@@ -121,10 +126,22 @@ namespace PKSim.Presentation.Presenters.Parameters
       void SaveEditor();
 
       /// <summary>
+      ///    Typically called from the view, this method will raised the <see cref="OnSelectedParametersChanged" /> event
+      /// </summary>
+      void SelectedParametersChanged();
+
+      /// <summary>
       ///    if set to true, parameter will be compared for sort only if sharing the same hiearchy of visible groups
       ///    It is useful for events, default is <c>false</c>
       /// </summary>
       bool UseAdvancedSortingMode { set; }
+
+      IReadOnlyList<IParameter> SelectedParameters { get; set; }
+
+      /// <summary>
+      ///    Event is raised whenever the selection of parameters in the UI has changed
+      /// </summary>
+      event Action OnSelectedParametersChanged;
    }
 
    public class MultiParameterEditPresenter : ParameterSetPresenter<IMultiParameterEditView, IMultiParameterEditPresenter>, IMultiParameterEditPresenter
@@ -133,6 +150,8 @@ namespace PKSim.Presentation.Presenters.Parameters
       private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
       private readonly IParameterContextMenuFactory _contextMenuFactory;
       public event Action<IParameter> ParameterChanged = delegate { };
+      public event Action OnSelectedParametersChanged = delegate { };
+
       protected const int NO_COLUMN = -1;
 
       public MultiParameterEditPresenter(IMultiParameterEditView view, IScaleParametersPresenter scaleParametersPresenter,
@@ -170,7 +189,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       protected virtual void PerformDefaultGrouping(IReadOnlyList<IParameter> parameters)
       {
          bool parameterNameVisible = !AllParametersHaveTheSameDisplayName || _visibleParameters.Count == 1;
-         _view.ParameterNameVisible = parameterNameVisible;
+         ParameterNameVisible = parameterNameVisible;
 
          if (parameterNameVisible) return;
 
@@ -270,6 +289,8 @@ namespace PKSim.Presentation.Presenters.Parameters
          _view.SaveEditor();
       }
 
+      public void SelectedParametersChanged() => OnSelectedParametersChanged();
+
       public bool UseAdvancedSortingMode
       {
          set => _view.UseAdvancedSortingMode = value;
@@ -283,6 +304,11 @@ namespace PKSim.Presentation.Presenters.Parameters
       public bool ValueOriginVisible
       {
          set => _view.ValueOriginVisible = value;
+      }
+
+      public bool ParameterNameVisible
+      {
+         set => _view.ParameterNameVisible = value;
       }
 
       public bool IsSimpleEditor
@@ -316,9 +342,18 @@ namespace PKSim.Presentation.Presenters.Parameters
          set => _view.GroupingVisible = value;
       }
 
-      protected override IEnumerable<IParameterDTO> SelectedParameters()
+      protected override IEnumerable<IParameterDTO> AllVisibleParameterDTOs => _view.AllVisibleParameters;
+
+      public virtual IReadOnlyList<IParameter> SelectedParameters
       {
-         return _view.SelectedParameters;
+         get => ParametersFrom(_view.SelectedParameters).ToList();
+         set
+         {
+            if (value == null)
+               return;
+
+            _view.SelectedParameters = AllParametersDTO.Where(x => value.Contains(x.Parameter)).ToList();
+         }
       }
 
       public override void AddCommand(ICommand command)

@@ -15,7 +15,8 @@ using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
-   public interface IParameterSetPresenter : IEditParameterPresenter,
+   public interface IParameterSetPresenter : 
+      IEditParameterPresenter,
       ICustomParametersPresenter,
       IListener<AddParameterToFavoritesEvent>,
       IListener<RemoveParameterFromFavoritesEvent>
@@ -69,6 +70,10 @@ namespace PKSim.Presentation.Presenters.Parameters
       /// </summary>
       bool CanEditParameter(IParameterDTO parameterDTO);
 
+
+      /// <summary>
+      ///    Returns true if the value origin can be edited otherwise false
+      /// </summary>
       bool CanEditValueOrigin(IParameterDTO parameterDTO);
    }
 
@@ -116,16 +121,18 @@ namespace PKSim.Presentation.Presenters.Parameters
          return !parameterDTO.NameIsOneOf(CoreConstants.Parameters.AllParametersWithLockedValueOriginInSimulation);
       }
 
-      protected abstract IEnumerable<IParameterDTO> SelectedParameters();
+      protected abstract IEnumerable<IParameterDTO> AllVisibleParameterDTOs { get; }
+
+      public virtual IEnumerable<IParameter> AllVisibleParameters => ParametersFrom(AllVisibleParameterDTOs);
 
       public void ResetParameters()
       {
-         AddCommand(_parameterTask.ResetParameters(ParametersFrom(SelectedParameters())));
+         AddCommand(_parameterTask.ResetParameters(AllVisibleParameters));
       }
 
       public void ScaleParametersWith(double factor)
       {
-         AddCommand(_parameterTask.ScaleParameters(ParametersFrom(SelectedParameters()), factor));
+         AddCommand(_parameterTask.ScaleParameters(AllVisibleParameters, factor));
       }
 
       public void ResetParameter(IParameterDTO parameterDTO)

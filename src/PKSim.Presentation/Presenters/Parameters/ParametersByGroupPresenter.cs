@@ -18,8 +18,10 @@ using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
-   public interface IParametersByGroupPresenter : IPresenter<IParametersByGroupView>,
-      IBatchUpdatable, IPresenterWithContextMenu<IParameterDTO>,
+   public interface IParametersByGroupPresenter : 
+      IPresenter<IParametersByGroupView>,
+      IBatchUpdatable, 
+      IPresenterWithContextMenu<IParameterDTO>,
       IParameterSetPresenter
 
    {
@@ -72,7 +74,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public override bool ShowFavorites
       {
-         set { _view.FavoritesVisible = value; }
+         set => _view.FavoritesVisible = value;
       }
 
       public override void AddCommand(ICommand command)
@@ -90,7 +92,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool HeaderVisible
       {
-         set { _view.HeaderVisible = value; }
+         set => _view.HeaderVisible = value;
       }
 
       public void BeginUpdate()
@@ -111,10 +113,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          contextMenu.Show(_view, popupLocation);
       }
 
-      protected override IEnumerable<IParameterDTO> SelectedParameters()
-      {
-         return AllParametersDTO;
-      }
+      protected override IEnumerable<IParameterDTO> AllVisibleParameterDTOs => AllParametersDTO;
 
       public override void Edit(IEnumerable<IParameter> parameters)
       {

@@ -43,10 +43,7 @@ namespace PKSim.Presentation
             set { ; }
          }
 
-         protected override IEnumerable<IParameterDTO> SelectedParameters()
-         {
-            return Enumerable.Empty<IParameterDTO>();
-         }
+         protected override IEnumerable<IParameterDTO> AllVisibleParameterDTOs => Enumerable.Empty<IParameterDTO>();
 
          public override void Edit(IEnumerable<IParameter> parameters)
          {
