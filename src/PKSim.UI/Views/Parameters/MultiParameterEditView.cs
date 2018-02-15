@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
@@ -14,17 +10,20 @@ using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using DevExpress.XtraLayout.Utils;
 using OSPSuite.Core.Domain;
-using PKSim.Assets;
-using PKSim.Presentation.DTO.Parameters;
-using PKSim.Presentation.Presenters.Parameters;
-using PKSim.Presentation.Views.Parameters;
-using PKSim.UI.Extensions;
 using OSPSuite.Core.Extensions;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Presentation.DTO.Parameters;
+using PKSim.Presentation.Presenters.Parameters;
+using PKSim.Presentation.Views.Parameters;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -48,14 +47,15 @@ namespace PKSim.UI.Views.Parameters
       {
          _pathElementsBinder = pathElementsBinder;
          InitializeComponent();
-         Initialize(gridViewParameters);
+         Initialize(gridView);
          initRepositories();
          //Allow cell selection
-         gridViewParameters.OptionsSelection.EnableAppearanceFocusedRow = true;
-         gridViewParameters.EditorShowMode = EditorShowMode.MouseUp;
-         gridViewParameters.CustomColumnSort += customColumnSort;
-         gridViewParameters.EndGrouping += updateGrouping;
+         gridView.OptionsSelection.EnableAppearanceFocusedRow = true;
+         gridView.EditorShowMode = EditorShowMode.MouseUp;
+         gridView.CustomColumnSort += customColumnSort;
+         gridView.EndGrouping += updateGrouping;
          CustomSortEnabled = true;
+         gridView.SelectionChanged += (o, e) => OnEvent(_presenter.SelectedParametersChanged);
       }
 
       private void updateGrouping(object sender, EventArgs e)
@@ -149,7 +149,7 @@ namespace PKSim.UI.Views.Parameters
          //necessary to bind to binding list to enable automatic update from value since we are 
          //using the autobind property from devexpress which only (!!) reacts to IBindingList properties.
          _gridViewBinder.BindToSource(parameters.ToBindingList());
-         gridViewParameters.BestFitColumns();
+         gridView.BestFitColumns();
          AdjustHeight();
       }
 
@@ -217,9 +217,9 @@ namespace PKSim.UI.Views.Parameters
             gridViewColumn.XtraColumn.SortMode = ColumnSortMode.Custom;
 
          //set the first row visible
-         int rowHandle = gridViewParameters.GetVisibleRowHandle(0);
-         gridViewParameters.FocusedRowHandle = rowHandle;
-         gridViewParameters.ExpandAllGroups();
+         int rowHandle = gridView.GetVisibleRowHandle(0);
+         gridView.FocusedRowHandle = rowHandle;
+         gridView.ExpandAllGroups();
       }
 
       private IList<PathElement> indexOfGroupByColumns()
@@ -239,11 +239,32 @@ namespace PKSim.UI.Views.Parameters
          _columnValue.WithFixedWidth(parameterWitdh);
       }
 
-      public IEnumerable<ParameterDTO> SelectedParameters => gridViewParameters.DataController.GetAllFilteredAndSortedRows().Cast<ParameterDTO>();
+      public IEnumerable<ParameterDTO> AllVisibleParameters => gridView.DataController.GetAllFilteredAndSortedRows().Cast<ParameterDTO>();
+
+         public IReadOnlyList<ParameterDTO> SelectedParameters
+         {
+            get { return gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
+            set
+            {
+               if (!value.Any())
+                  return;
+
+               //Need to clear selection before setting another one programatically. Otherwise they overlap
+               gridView.ClearSelection();
+
+               var firstRowHandle = _gridViewBinder.RowHandleFor(value.First());
+               var lastRowHandle = _gridViewBinder.RowHandleFor(value.Last());
+               gridView.SelectRows(firstRowHandle, lastRowHandle);
+
+               //Required to ensure that the background is still selected
+               if (firstRowHandle == lastRowHandle)
+                  gridView.FocusedRowHandle = firstRowHandle;
+            }
+         }
 
       public void SaveEditor()
       {
-         gridViewParameters.PostEditor();
+         gridView.PostEditor();
       }
 
       public bool ParameterPathVisible
@@ -253,20 +274,20 @@ namespace PKSim.UI.Views.Parameters
 
       public bool GroupingVisible
       {
-         set => gridViewParameters.AllowsFiltering = value;
-         get => gridViewParameters.AllowsFiltering;
+         set => gridView.AllowsFiltering = value;
+         get => gridView.AllowsFiltering;
       }
 
       public bool HeaderVisible
       {
-         set => gridViewParameters.ShowColumnHeaders = value;
-         get => gridViewParameters.ShowColumnHeaders;
+         set => gridView.ShowColumnHeaders = value;
+         get => gridView.ShowColumnHeaders;
       }
 
       public bool ShowRowIndicator
       {
-         set => gridViewParameters.ShowRowIndicator = value;
-         get => gridViewParameters.ShowRowIndicator;
+         set => gridView.ShowRowIndicator = value;
+         get => gridView.ShowRowIndicator;
       }
 
       public bool ScalingVisible
@@ -294,11 +315,11 @@ namespace PKSim.UI.Views.Parameters
          gridParameters.RefreshDataSource();
       }
 
-      public int OptimalHeight => gridViewParameters.OptimalHeight + Padding.All + 2  ;
+      public int OptimalHeight => gridView.OptimalHeight + Padding.All + 2;
 
       public bool AllowMultiSelect
       {
-         set => gridViewParameters.OptionsSelection.EnableAppearanceFocusedRow = value;
+         set => gridView.OptionsSelection.EnableAppearanceFocusedRow = value;
       }
 
       public void AdjustHeight()
@@ -309,7 +330,7 @@ namespace PKSim.UI.Views.Parameters
 
       public void Repaint()
       {
-         gridViewParameters.LayoutChanged();
+         gridView.LayoutChanged();
       }
 
       protected override bool ColumnIsAlwaysActive(GridColumn column)

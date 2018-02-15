@@ -1,15 +1,14 @@
 ﻿using System;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
-
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -49,7 +48,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public event EventHandler<CovariateFieldSelectedEventArgs> CovariateFieldSelected = delegate { };
 
       public PopulationAnalysisParameterFieldsPresenter(IPopulationAnalysisFieldsView view, IPopulationAnalysesContextMenuFactory contextMenuFactory, IEntitiesInContainerRetriever parametersRetriever, IPopulationAnalysisFieldFactory populationAnalysisFieldFactory, IEventPublisher eventPublisher, IPopulationAnalysisGroupingFieldCreator populationAnalysisGroupingFieldCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IDialogCreator dialogCreator, IPopulationAnalysisFieldToPopulationAnalysisFieldDTOMapper fieldDTOMapper)
-         : base(view, new[] {typeof (PopulationAnalysisParameterField), typeof (PopulationAnalysisCovariateField)}, contextMenuFactory, populationAnalysisFieldFactory, eventPublisher, populationAnalysisGroupingFieldCreator, populationAnalysisTemplateTask, dialogCreator, fieldDTOMapper)
+         : base(view, new[] {typeof(PopulationAnalysisParameterField), typeof(PopulationAnalysisCovariateField)}, contextMenuFactory, populationAnalysisFieldFactory, eventPublisher, populationAnalysisGroupingFieldCreator, populationAnalysisTemplateTask, dialogCreator, fieldDTOMapper)
       {
          _parametersRetriever = parametersRetriever;
          EmptySelectionMessage = PKSimConstants.UI.ChooseParametersToDisplay;
@@ -74,25 +73,18 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public override void FieldSelected(IPopulationAnalysisField populationAnalysisField)
       {
          base.FieldSelected(populationAnalysisField);
-         var parameterField = populationAnalysisField as PopulationAnalysisParameterField;
-         if (parameterField != null)
+         switch (populationAnalysisField)
          {
-            ParameterFieldSelected(this, new ParameterFieldSelectedEventArgs(parameterFromField(parameterField), parameterField));
-            return;
-         }
-
-         var covariateField = populationAnalysisField as PopulationAnalysisCovariateField;
-         if (covariateField != null)
-         {
-            CovariateFieldSelected(this, new CovariateFieldSelectedEventArgs(covariateField.Covariate, covariateField));
-            return;
+            case PopulationAnalysisParameterField parameterField:
+               ParameterFieldSelected(this, new ParameterFieldSelectedEventArgs(parameterFromField(parameterField), parameterField));
+               return;
+            case PopulationAnalysisCovariateField covariateField:
+               CovariateFieldSelected(this, new CovariateFieldSelectedEventArgs(covariateField.Covariate, covariateField));
+               return;
          }
       }
 
-      public IParameter SelectedParameter
-      {
-         get { return parameterFromField(SelectedField<PopulationAnalysisParameterField>()); }
-      }
+      public IParameter SelectedParameter => parameterFromField(SelectedField<PopulationAnalysisParameterField>());
 
       private IParameter parameterFromField(PopulationAnalysisParameterField field)
       {

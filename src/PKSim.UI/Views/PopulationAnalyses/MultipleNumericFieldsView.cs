@@ -58,20 +58,20 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       public bool UpEnabled
       {
-         get { return btnMoveUp.Enabled; }
-         set { btnMoveUp.Enabled = value; }
+         get => btnMoveUp.Enabled;
+         set => btnMoveUp.Enabled = value;
       }
 
       public bool DownEnabled
       {
-         get { return btnMoveDown.Enabled; }
-         set { btnMoveDown.Enabled = value; }
+         get => btnMoveDown.Enabled;
+         set => btnMoveDown.Enabled = value;
       }
 
       public FieldSelectionDTO SelectedItem
       {
-         get { return _gridViewBinder.FocusedElement; }
-         set { gridView.FocusedRowHandle = _gridViewBinder.RowHandleFor(value); }
+         get => _gridViewBinder.FocusedElement;
+         set => gridView.FocusedRowHandle = _gridViewBinder.RowHandleFor(value);
       }
 
       public override void InitializeResources()

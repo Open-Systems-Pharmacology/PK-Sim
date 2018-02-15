@@ -31,7 +31,7 @@ namespace PKSim.UI.Views.Parameters
       private void InitializeComponent()
       {
          this.gridParameters = new OSPSuite.UI.Controls.UxGridControl();
-         this.gridViewParameters = new PKSim.UI.Views.Core.UxGridView();
+         this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlParameters = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelScaling = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -40,7 +40,7 @@ namespace PKSim.UI.Views.Parameters
          this.emptySpaceItemForScaling = new DevExpress.XtraLayout.EmptySpaceItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridViewParameters)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlParameters)).BeginInit();
          this.layoutControlParameters.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelScaling)).BeginInit();
@@ -53,23 +53,23 @@ namespace PKSim.UI.Views.Parameters
          // gridParameters
          // 
          this.gridParameters.Location = new System.Drawing.Point(0, 27);
-         this.gridParameters.MainView = this.gridViewParameters;
+         this.gridParameters.MainView = this.gridView;
          this.gridParameters.Name = "gridParameters";
          this.gridParameters.Size = new System.Drawing.Size(526, 347);
          this.gridParameters.TabIndex = 4;
          this.gridParameters.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridViewParameters});
+            this.gridView});
          // 
          // gridViewParameters
          // 
-         this.gridViewParameters.AllowsFiltering = true;
-         this.gridViewParameters.EnableColumnContextMenu = true;
-         this.gridViewParameters.GridControl = this.gridParameters;
-         this.gridViewParameters.MultiSelect = true;
-         this.gridViewParameters.Name = "gridViewParameters";
-         this.gridViewParameters.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
-         this.gridViewParameters.OptionsSelection.EnableAppearanceFocusedCell = false;
-         this.gridViewParameters.OptionsSelection.EnableAppearanceFocusedRow = false;
+         this.gridView.AllowsFiltering = true;
+         this.gridView.EnableColumnContextMenu = true;
+         this.gridView.GridControl = this.gridParameters;
+         this.gridView.MultiSelect = true;
+         this.gridView.Name = "gridView";
+         this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
+         this.gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
+         this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
          // 
          // layoutControlParameters
          // 
@@ -156,7 +156,7 @@ namespace PKSim.UI.Views.Parameters
          this.Size = new System.Drawing.Size(526, 374);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridViewParameters)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlParameters)).EndInit();
          this.layoutControlParameters.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.panelScaling)).EndInit();
@@ -171,7 +171,7 @@ namespace PKSim.UI.Views.Parameters
       #endregion
 
       private OSPSuite.UI.Controls.UxGridControl gridParameters;
-      private UxGridView gridViewParameters;
+      private UxGridView gridView;
       private DevExpress.XtraEditors.PanelControl panelScaling;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemParameters;

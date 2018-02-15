@@ -86,17 +86,17 @@
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.27, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.27\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.30, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.30\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.27, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.27\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.30, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.30\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.27, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.27\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.30, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.30\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -110,8 +110,8 @@
     <Reference Include="OSPSuite.Utility, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.1\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
-    <Reference Include="SX, Version=2.6.6.0, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.6\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.6.6.4, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.6.4\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -548,6 +548,7 @@
     <Compile Include="Views\IUserDisplayUnitsView.cs" />
     <Compile Include="Views\Main\IPKSimMainView.cs" />
     <Compile Include="Views\ISelectFileView.cs" />
+    <Compile Include="Views\Parameters\IFavoriteParametersView.cs" />
     <Compile Include="Views\PopulationAnalyses\IBoxWhiskerNumericFieldsView.cs" />
     <Compile Include="Views\PopulationAnalyses\IMultipleNumericFieldsView.cs" />
     <Compile Include="Views\PopulationAnalyses\IEditPopulationAnalysisGroupingFieldView.cs" />

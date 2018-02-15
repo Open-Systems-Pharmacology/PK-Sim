@@ -319,7 +319,7 @@ namespace PKSim.Presentation
          var parameterDTO = new ParameterDTO(_para1);
 
          A.CallTo(() => _mapper.MapFrom(_para1)).Returns(parameterDTO);
-         A.CallTo(() => _view.SelectedParameters).Returns(new[] {parameterDTO});
+         A.CallTo(() => _view.AllVisibleParameters).Returns(new[] {parameterDTO});
 
          A.CallTo(() => _parameterTask.ResetParameters(A<IEnumerable<IParameter>>._))
             .Invokes(x => _parameters = x.GetArgument<IEnumerable<IParameter>>(0))
@@ -361,7 +361,7 @@ namespace PKSim.Presentation
          _parameterList.Add(new PKSimParameter {Visible = false, IsDefault = true});
          var parameterDTO = new ParameterDTO(_para1);
          A.CallTo(() => _mapper.MapFrom(_para1)).Returns(parameterDTO);
-         A.CallTo(() => _view.SelectedParameters).Returns(new[] {parameterDTO});
+         A.CallTo(() => _view.AllVisibleParameters).Returns(new[] {parameterDTO});
 
          A.CallTo(() => _parameterTask.ScaleParameters(A<IEnumerable<IParameter>>._, 10))
             .Invokes(x => _parameters = x.GetArgument<IEnumerable<IParameter>>(0))
@@ -452,6 +452,112 @@ namespace PKSim.Presentation
       public void should_also_release_all_parameter_dto_explicitely()
       {
          A.CallTo(() => _parameterDTO.Release()).MustHaveHappened();
+      }
+   }
+
+   public class When_the_multi_parameter_edit_presenter_is_returning_the_selected_parameters : concern_for_MultiParameterEditPresenter
+   {
+      private IReadOnlyList<IParameter> _result;
+
+      private PKSimParameter _parameter1;
+      private PKSimParameter _parameter2;
+      private PKSimParameter _parameter3;
+      private PKSimParameter _parameter4;
+      private List<ParameterDTO> _allParameterDTO;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter1 = new PKSimParameter().WithName("P1");
+         _parameter2 = new PKSimParameter().WithName("P2");
+         _parameter3 = new PKSimParameter().WithName("P3");
+         _parameter4 = new PKSimParameter().WithName("P4");
+
+         _parameterList.Add(_parameter1);
+         _parameterList.Add(_parameter2);
+         _parameterList.Add(_parameter3);
+         _parameterList.Add(_parameter4);
+
+         A.CallTo(() => _mapper.MapFrom(A<IParameter>._)).ReturnsLazily(x => new ParameterDTO(x.GetArgument<IParameter>(0)));
+         A.CallTo(() => _view.BindTo(A<IEnumerable<ParameterDTO>>._))
+            .Invokes(x => _allParameterDTO = x.GetArgument<IEnumerable<ParameterDTO>>(0).ToList());
+
+         sut.Edit(_parameterList);
+
+         A.CallTo(() => _view.SelectedParameters).Returns(new[] {_allParameterDTO[0], _allParameterDTO[3]});
+      }
+
+      protected override void Because()
+      {
+         _result = sut.SelectedParameters;
+      }
+
+      [Observation]
+      public void should_return_the_parameter_selected_in_the_view()
+      {
+         _result.ShouldOnlyContainInOrder(_parameter1, _parameter4);
+      }
+   }
+
+   public class When_the_multi_parameter_edit_presenter_is_selecting_some_parameters : concern_for_MultiParameterEditPresenter
+   {
+      private PKSimParameter _parameter1;
+      private PKSimParameter _parameter2;
+      private PKSimParameter _parameter3;
+      private PKSimParameter _parameter4;
+      private PKSimParameter _parameterNotDisplayed;
+      private List<ParameterDTO> _allParameterDTO;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter1 = new PKSimParameter().WithName("P1");
+         _parameter2 = new PKSimParameter().WithName("P2");
+         _parameter3 = new PKSimParameter().WithName("P3");
+         _parameter4 = new PKSimParameter().WithName("P4");
+         _parameterNotDisplayed = new PKSimParameter().WithName("P4");
+
+         _parameterList.Add(_parameter1);
+         _parameterList.Add(_parameter2);
+         _parameterList.Add(_parameter3);
+         _parameterList.Add(_parameter4);
+
+         A.CallTo(() => _mapper.MapFrom(A<IParameter>._)).ReturnsLazily(x => new ParameterDTO(x.GetArgument<IParameter>(0)));
+         A.CallTo(() => _view.BindTo(A<IEnumerable<ParameterDTO>>._))
+            .Invokes(x => _allParameterDTO = x.GetArgument<IEnumerable<ParameterDTO>>(0).ToList());
+
+         sut.Edit(_parameterList);
+      }
+
+      protected override void Because()
+      {
+         sut.SelectedParameters = new[] {_parameter1, _parameter4, _parameterNotDisplayed};
+      }
+
+      [Observation]
+      public void should_select_only_available_parameters_in_the_view()
+      {
+         _view.SelectedParameters.ShouldOnlyContainInOrder(_allParameterDTO[0], _allParameterDTO[3]);
+      }
+   }
+
+   public class When_the_multi_parameter_edit_presenter_is_selecting_an_invalid_list_of_parameters : concern_for_MultiParameterEditPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _view.SelectedParameters = new[] {_parameterDTO,};
+      }
+
+      protected override void Because()
+      {
+         sut.SelectedParameters = null;
+      }
+
+      [Observation]
+      public void should_not_update_the_selection()
+      {
+         _view.SelectedParameters.ShouldOnlyContainInOrder(_parameterDTO);
       }
    }
 }
