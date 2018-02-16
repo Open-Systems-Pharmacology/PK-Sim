@@ -70,6 +70,7 @@ namespace PKSim.UI.Views.Snapshots
          layoutItemStartButton.AdjustLongButtonSize();
          buttonStart.InitWithImage(ApplicationIcons.Run, PKSimConstants.UI.StartImport);
          layoutItemButtonSelectSnapshot.Text = PKSimConstants.UI.SnapshotFile.FormatForLabel();
+         Icon = ApplicationIcons.Snapshot;
       }
 
       public override bool HasError => _screenBinder.HasError;

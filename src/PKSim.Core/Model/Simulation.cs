@@ -3,7 +3,6 @@ using System.Linq;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
-using PKSim.Core.Chart;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;

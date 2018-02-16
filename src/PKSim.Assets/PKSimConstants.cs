@@ -872,8 +872,10 @@ namespace PKSim.Assets
          public static string OnlyPKSimSimulationCanBeExportedToSnapshot(string simulationName, string origin) => $"Snapshot export is not supported for {origin} simulation '{simulationName}'.";
 
          public static string SnapshotFileMismatch(string desiredType) => $"Snapshot file cannot be used to load a {desiredType.ToLowerInvariant()}.";
+
+         public static string CannotLoadRelatedItemAsObjectAlreadyExistInProject(string objectType, string objectName) => $"Cannot load related item into project. A {objectType.ToLower()} named '{objectName}' already exists.";
       }
-   
+
       public static class Information
       {
          public static readonly string Formula = "Formula";

@@ -54,6 +54,8 @@ namespace PKSim.Infrastructure.Services
                .Where(s => s.HasResults)
                .Select(s => s.DataRepository)
                .Union(project.AllObservedData));
+
+            project.All<ISimulation>().Each(withIdRepository.Register);
          }
 
          if (dataRepositories != null)

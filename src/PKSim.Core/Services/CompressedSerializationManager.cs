@@ -1,6 +1,6 @@
 using System;
-using OSPSuite.Utility.Compression;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Utility.Compression;
 
 namespace PKSim.Core.Services
 {
@@ -25,12 +25,12 @@ namespace PKSim.Core.Services
          return _compression.Compress(_serializationManager.Serialize(objectToSerialize));
       }
 
-      public TObject Deserialize<TObject>(byte[] serializationBytes, SerializationContext serializationContext)
+      public TObject Deserialize<TObject>(byte[] serializationBytes, SerializationContext serializationContext = null)
       {
          return _serializationManager.Deserialize<TObject>(decompressedByte(serializationBytes), serializationContext);
       }
 
-      public void Deserialize<TObject>(TObject objectToDeserialize, byte[] serializationBytes, SerializationContext serializationContext)
+      public void Deserialize<TObject>(TObject objectToDeserialize, byte[] serializationBytes, SerializationContext serializationContext = null)
       {
          byte[] bytes;
          try
@@ -44,6 +44,7 @@ namespace PKSim.Core.Services
             //the stream was not compressed
             bytes = serializationBytes;
          }
+
          _serializationManager.Deserialize(objectToDeserialize, bytes, serializationContext);
       }
 

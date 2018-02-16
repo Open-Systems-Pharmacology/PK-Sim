@@ -1,4 +1,5 @@
-﻿using OSPSuite.Utility.Visitor;
+﻿using System;
+using OSPSuite.Utility.Visitor;
 using PKSim.Core.Model;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
@@ -10,6 +11,8 @@ using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services.SensitivityAnalyses;
+using OSPSuite.Utility.Exceptions;
+using PKSim.Assets;
 
 namespace PKSim.Core.Services
 {
@@ -51,9 +54,18 @@ namespace PKSim.Core.Services
 
       protected override void LoadOwnContent(RelatedItem relatedItem)
       {
-         var relatedItemObject = _relatedItemSerializer.Deserialize(relatedItem);
-         resetObjectIdIfRequired(relatedItemObject);
-         this.Visit(relatedItemObject);
+         try
+         {
+            var relatedItemObject = _relatedItemSerializer.Deserialize(relatedItem);
+            resetObjectIdIfRequired(relatedItemObject);
+            this.Visit(relatedItemObject);
+         }
+         catch (NotUniqueIdException)
+         {
+            //Probably trying to load an object that was already loaded. Show a message to the user
+            throw new OSPSuiteException(PKSimConstants.Error.CannotLoadRelatedItemAsObjectAlreadyExistInProject(relatedItem.ItemType, relatedItem.ItemType));
+
+         }
       }
 
       protected override bool RelatedItemCanBeLaunchedBySisterApplication(RelatedItem relatedItem)

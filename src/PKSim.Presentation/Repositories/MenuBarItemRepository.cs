@@ -42,18 +42,17 @@ namespace PKSim.Presentation.Repositories
             .WithIcon(ApplicationIcons.ProjectOpen)
             .WithShortcut(Keys.Control | Keys.D);
 
-         //TODO UPDATE ICON
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportProjectToSnapshot)
             .WithId(MenuBarItemIds.ExportProjectToSnapshot)
             .WithCommand<ExportProjectToSnapshotCommand>()
             .WithDescription(PKSimConstants.UI.ExportProjectToSnapshotDescription)
-            .WithIcon(ApplicationIcons.Save);
+            .WithIcon(ApplicationIcons.SnapshotExport);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadProjectFromSnapshot)
             .WithId(MenuBarItemIds.LoadProjectFromSnahpshot)
             .WithCommand< LoadProjectFromSnapshotCommand>()
             .WithDescription(PKSimConstants.UI.LoadProjectFromSnapshotDescription)
-            .WithIcon(ApplicationIcons.ProjectOpen);
+            .WithIcon(ApplicationIcons.SnapshotImport);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.CloseProject)
             .WithId(MenuBarItemIds.CloseProject)

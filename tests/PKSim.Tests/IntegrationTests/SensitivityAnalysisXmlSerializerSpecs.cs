@@ -57,7 +57,7 @@ namespace PKSim.IntegrationTests
       {
          var stream = _serializationManager.Serialize(sensitivityAnalysis);
          var serializationContectFactory = IoC.Resolve<ISerializationContextFactory>();
-         using (var context = serializationContectFactory.Create(externalReferences: _project.All<ISimulation>()))
+         using (var context = serializationContectFactory.Create())
          {
             return _serializationManager.Deserialize<SensitivityAnalysis>(stream, context);
          }

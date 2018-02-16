@@ -77,7 +77,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         _result = sut.Serialize(_individual);
+         _result = sut.Serialize(_individual);  
       }
 
       [Observation]
