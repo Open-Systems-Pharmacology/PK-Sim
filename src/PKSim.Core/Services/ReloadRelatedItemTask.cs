@@ -63,7 +63,7 @@ namespace PKSim.Core.Services
          catch (NotUniqueIdException)
          {
             //Probably trying to load an object that was already loaded. Show a message to the user
-            throw new OSPSuiteException(PKSimConstants.Error.CannotLoadRelatedItemAsObjectAlreadyExistInProject(relatedItem.ItemType, relatedItem.ItemType));
+            throw new OSPSuiteException(PKSimConstants.Error.CannotLoadRelatedItemAsObjectAlreadyExistInProject(relatedItem.ItemType, relatedItem.Name));
 
          }
       }
