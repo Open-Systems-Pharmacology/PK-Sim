@@ -14,6 +14,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services.SensitivityAnalyses;
+using OSPSuite.Utility.Exceptions;
 using IContentLoader = OSPSuite.Core.Journal.IContentLoader;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using ReloadRelatedItemTask = PKSim.Core.Services.ReloadRelatedItemTask;
@@ -195,4 +196,28 @@ namespace PKSim.Core
          A.CallTo(() => _observedDataTask.AddObservedDataToProject(_relatedObject)).MustHaveHappened();
       }
    }
+
+   public class When_reloading_an_object_whose_deserialization_process_results_in_an_not_unique_id_exception_being_thrown : concern_for_ReloadRelatedItemTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _relatedItem.Origin = Origins.PKSim;
+         _relatedItem.ItemType = "Simulation";
+         _relatedItem.Name = "MySim";
+         A.CallTo(() => _relatedItemSerializer.Deserialize(_relatedItem)).Throws(new NotUniqueIdException("id"));
+      }
+
+      protected override void Because()
+      {
+         //override because of exception
+      }
+
+      [Observation]
+      public void should_throw_an_information_exception_explaining_to_the_user_that_the_object_cannot_be_loaeder()
+      {
+         The.Action(() => sut.Load(_relatedItem)).ShouldThrowAn<OSPSuiteException>();
+      }
+   }
+
 }
