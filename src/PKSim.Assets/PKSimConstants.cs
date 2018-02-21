@@ -874,6 +874,8 @@ namespace PKSim.Assets
          public static string SnapshotFileMismatch(string desiredType) => $"Snapshot file cannot be used to load a {desiredType.ToLowerInvariant()}.";
 
          public static string CannotLoadRelatedItemAsObjectAlreadyExistInProject(string objectType, string objectName) => $"Cannot load related item into project. A {objectType.ToLower()} named '{objectName}' already exists.";
+
+         public static string CompoundGroupNotFoundFor(string compoundGroup, string compoundName) => $"Cannot find compound group '{compoundGroup}' for compound '{compoundName}'";
       }
 
       public static class Information
@@ -1486,7 +1488,6 @@ namespace PKSim.Assets
          public static readonly string EventFolder = Events;
          public static readonly string AdministrationProtocolFolder = "Administration Protocols";
          public const string Value = "Value";
-         public const string ValueDescription = "Value Description";
          public static readonly string Percentage = "Percentage";
          public static readonly string Container = "Container";
          public static readonly string Percentile = "Percentile";

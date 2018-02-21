@@ -88,7 +88,10 @@ namespace PKSim.Core.Snapshots.Mappers
          var snapshotValueInBaseUnit = parameter.ConvertToBaseUnit(snapshot.Value);
 
          if (!ValueComparer.AreValuesEqual(baseValue, snapshotValueInBaseUnit))
+         {
             parameter.Value = snapshotValueInBaseUnit;
+            parameter.IsDefault = false;
+         }
 
          return parameter;
       }

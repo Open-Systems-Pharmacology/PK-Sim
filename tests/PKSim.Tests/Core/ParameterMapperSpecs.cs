@@ -113,6 +113,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
+         _parameter.IsDefault = true;
          _snapshotParameter = await sut.MapToSnapshot(_parameter);
          _snapshotParameter.Value = 50; //50 mm
       }
@@ -129,6 +130,11 @@ namespace PKSim.Core
          _parameter.ValueInDisplayUnit.ShouldBeEqualTo(_snapshotParameter.Value.Value);
       }
 
+      [Observation]
+      public void should_set_the_is_default_flag_to_false_for_updated_parameters()
+      {
+         _parameter.IsDefault.ShouldBeFalse();
+      }
 
       [Observation]
       public void should_update_the_value_origin()

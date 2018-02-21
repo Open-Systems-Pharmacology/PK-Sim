@@ -2,7 +2,6 @@
 using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Batch;
-using PKSim.Core.Batch.Mapper;
 
 namespace PKSim.CLI.Core
 {

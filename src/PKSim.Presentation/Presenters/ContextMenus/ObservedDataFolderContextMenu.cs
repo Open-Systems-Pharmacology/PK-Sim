@@ -51,8 +51,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromSnapshot)
             .WithCommand<LoadObservedDataFromSnapshotUICommand>()
-            //TODO ICON
-            .WithIcon(ApplicationIcons.LoadFromTemplate));
+            .WithIcon(ApplicationIcons.SnapshotImport));
 
          if (treeNode.AllLeafNodes.OfType<ObservedDataNode>().Any())
             _view.AddMenuItem(ObservedDataClassificationCommonContextMenuItems.CreateEditMultipleMetaDataMenuButton(treeNode).AsGroupStarter());

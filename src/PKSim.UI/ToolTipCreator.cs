@@ -61,8 +61,7 @@ namespace PKSim.UI
       public SuperToolTip ToolTipFor(IParameterDTO parameterDTO)
       {
          var toolTip = CreateToolTip(parameterDTO.Description, PKSimConstants.Information.ParameterDescription);
-         //TODO MBD
-//         addValueDescriptionToolTip(toolTip, parameterDTO);
+         addValueDescriptionToolTip(toolTip, parameterDTO);
          addFormulaToolTipTo(toolTip, parameterDTO);
          return toolTip;
       }
@@ -174,14 +173,16 @@ namespace PKSim.UI
          return CreateToolTip(content, string.Empty);
       }
 
-//      private void addValueDescriptionToolTip(SuperToolTip toolTip, IParameterDTO parameterDTO)
-//      {
-//         if (string.IsNullOrEmpty(parameterDTO.ValueDescription))
-//            return;
-//         toolTip.Items.AddSeparator();
-//         toolTip.WithTitle(PKSimConstants.UI.ValueDescription);
-//         toolTip.WithText(parameterDTO.ValueDescription);
-//      }
+      private void addValueDescriptionToolTip(SuperToolTip toolTip, IParameterDTO parameterDTO)
+      {
+         var valueOriginAsString = parameterDTO.ValueOrigin.Display;
+         if (string.IsNullOrEmpty(valueOriginAsString))
+            return;
+
+         toolTip.Items.AddSeparator();
+         toolTip.WithTitle(Captions.ValueOrigin);
+         toolTip.WithText(valueOriginAsString);
+      }
 
       private void addFormulaToolTipTo(SuperToolTip toolTip, IParameterDTO parameterDTO)
       {

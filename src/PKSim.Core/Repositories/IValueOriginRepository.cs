@@ -11,7 +11,7 @@ namespace PKSim.Core.Repositories
       ValueOrigin ValueOriginFor(IParameter parameter);
 
       /// <summary>
-      /// Returns the <see cref="ValueOrigin"/> defined in the database with the given <paramref name="id"/>or a default <see cref="ValueOrigin"/> if not found
+      /// Returns the <see cref="ValueOrigin"/> defined in the database with the given <paramref name="id"/> or a default <see cref="ValueOrigin"/> if not found
       /// </summary>
       ValueOrigin FindBy(int? id);
    }
