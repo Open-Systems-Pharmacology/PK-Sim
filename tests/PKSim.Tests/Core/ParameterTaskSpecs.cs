@@ -220,6 +220,7 @@ namespace PKSim.Core
    public class When_setting_a_value_description_for_a_parameter_with_origin : concern_for_ParameterTask
    {
       private ValueOrigin _newValueOrigin;
+      private BuildingBlockChangeCommand _result;
 
       protected override void Context()
       {
@@ -236,7 +237,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.SetParameterValueOrigin(_parameter, _newValueOrigin);
+         _result = sut.SetParameterValueOrigin(_parameter, _newValueOrigin) as BuildingBlockChangeCommand;
       }
 
       [Observation]
@@ -245,6 +246,12 @@ namespace PKSim.Core
          _parameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
          _parameter.ValueOrigin.Source.ShouldBeEqualTo(_newValueOrigin.Source);
          _parameter.ValueOrigin.Method.ShouldBeEqualTo(_newValueOrigin.Method);
+      }
+
+      [Observation]
+      public void should_change_the_building_block_versions()
+      {
+         _result.ShouldChangeVersion.ShouldBeTrue();
       }
    }
 

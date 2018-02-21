@@ -483,7 +483,7 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterValueOrigin(IParameter parameter, ValueOrigin newValueOrigin)
       {
-         return setParameterValueOrigin(parameter, newValueOrigin, shouldChangeVersion: false);
+         return setParameterValueOrigin(parameter, newValueOrigin, shouldChangeVersion: true);
       }
 
       private ICommand setParameterValueOrigin(IParameter parameter, ValueOrigin newValueOrigin, bool shouldChangeVersion)
