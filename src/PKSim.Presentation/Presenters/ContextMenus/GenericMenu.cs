@@ -30,16 +30,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSnapshot)
             .WithCommandFor<ExportSnapshotUICommand<T>, T>(objectToExport)
-            //TODO ICON
-            .WithIcon(ApplicationIcons.PDF);
+            .WithIcon(ApplicationIcons.SnapshotExport);
       }
 
       public static IMenuBarItem ExportSnapshotMenuFor<T, TContext>(T objectToExport, TContext context) where T : class, IObjectBase
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSnapshot)
             .WithCommandFor<ExportSnapshotUICommand<T>, T>(objectToExport)
-            //TODO ICON
-            .WithIcon(ApplicationIcons.PDF);
+            .WithIcon(ApplicationIcons.SnapshotImport);
       }
 
       public static IMenuBarItem ExportCollectionToPDFMenuFor<T>()
@@ -53,8 +51,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromSnapshot)
             .WithCommand<LoadBuildingBlockFromSnapshotUICommand<T>>()
-            //TODO ICON
-            .WithIcon(ApplicationIcons.LoadFromTemplate);
+            .WithIcon(ApplicationIcons.SnapshotImport);
       }
 
       public static IMenuBarItem EditMenuFor<TCommand, T>(T objectToEdit) where T : class where TCommand : IObjectUICommand<T>

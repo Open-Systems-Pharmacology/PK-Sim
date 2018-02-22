@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Repositories;
 using ModelValueOrigin = OSPSuite.Core.Domain.ValueOrigin;
 using SnapshotValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
 
@@ -7,9 +8,16 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class ValueOriginMapper : SnapshotMapperBase<ModelValueOrigin, SnapshotValueOrigin>
    {
+      private readonly IValueOriginRepository _valueOriginRepository;
+
+      public ValueOriginMapper(IValueOriginRepository valueOriginRepository)
+      {
+         _valueOriginRepository = valueOriginRepository;
+      }
+
       public override Task<SnapshotValueOrigin> MapToSnapshot(ModelValueOrigin valueOrigin)
       {
-         if (valueOrigin.Source == ValueOriginSources.Undefined)
+         if(valueOriginComesFromDb(valueOrigin))
             return Task.FromResult<SnapshotValueOrigin>(null);
 
          return SnapshotFrom(valueOrigin, x =>
@@ -19,6 +27,12 @@ namespace PKSim.Core.Snapshots.Mappers
             x.Source = SnapshotValueFor(valueOrigin.Source.Id, ValueOriginSourceId.Undefined);
             x.Method = SnapshotValueFor(valueOrigin.Method.Id, ValueOriginDeterminationMethodId.Undefined);
          });
+      }
+
+      private bool valueOriginComesFromDb(ModelValueOrigin valueOrigin)
+      {
+         var dbValueOrigin = _valueOriginRepository.FindBy(valueOrigin.Id);
+         return dbValueOrigin.Equals(valueOrigin);
       }
 
       public override Task<ModelValueOrigin> MapToModel(SnapshotValueOrigin snapshot)

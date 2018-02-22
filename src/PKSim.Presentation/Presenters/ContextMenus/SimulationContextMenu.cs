@@ -87,8 +87,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSnapshot)
             .WithCommandFor<ExportSimulationSnapshotUICommand, Simulation>(simulation)
-            //TODO ICON
-            .WithIcon(ApplicationIcons.PDF);
+            .WithIcon(ApplicationIcons.SnapshotExport);
       }
    }
 

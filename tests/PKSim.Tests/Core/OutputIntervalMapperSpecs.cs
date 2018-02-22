@@ -13,10 +13,12 @@ namespace PKSim.Core
    {
       protected ParameterMapper _parameterMapper;
       protected OutputInterval _outputInterval;
-      private IParameter _parameter1;
+      private IParameter _endTimeParameter;
       protected Snapshots.OutputInterval _snapshot;
-      protected Parameter _snapshotParameter;
+      protected Parameter _endTimeSnapshotParameter;
+      protected Parameter _anotherSnapshotParameter;
       protected IOutputIntervalFactory _outputIntervalFactory;
+      private IParameter _anotherParameter;
 
       protected override Task Context()
       {
@@ -28,10 +30,15 @@ namespace PKSim.Core
          {
             Name = "Interval"
          };
-         _parameter1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P1");
-         _outputInterval.Add(_parameter1);
-         _snapshotParameter = new Parameter().WithName(_parameter1.Name);
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(_snapshotParameter);
+         _endTimeParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault:true).WithName(Constants.Parameters.END_TIME);
+         _anotherParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault:false).WithName("Another");
+         _outputInterval.Add(_endTimeParameter);
+         _outputInterval.Add(_anotherParameter);
+
+         _endTimeSnapshotParameter = new Parameter().WithName(_endTimeParameter.Name);
+         _anotherSnapshotParameter = new Parameter().WithName(_anotherParameter.Name);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_endTimeParameter)).Returns(_endTimeSnapshotParameter);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_anotherParameter)).Returns(_anotherSnapshotParameter);
 
          return _completed;
       }
@@ -45,9 +52,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_a_snapshot_with_all_parameters_mapped_as_expected()
+      public void should_return_a_snapshot_with_all_changed_parameters_mapped_as_expected()
       {
-         _snapshot.Parameters.ShouldContain(_snapshotParameter);
+         _snapshot.Parameters.ShouldContain(_anotherSnapshotParameter);
+      }
+
+      [Observation]
+      public void should_return_a_snapshot_with_all_start_time_and_end_time_parameter_exported()
+      {
+         _snapshot.Parameters.ShouldContain(_endTimeSnapshotParameter);
       }
 
       [Observation]

@@ -40,8 +40,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromSnapshot)
             .WithCommand<LoadSimulationFromSnapshotUICommand>()
-            //TODO ICON
-            .WithIcon(ApplicationIcons.LoadFromTemplate);
+            .WithIcon(ApplicationIcons.SnapshotImport);
       }
 
       private static IMenuBarSubMenu createGroupByMenu(ITreeNode<IClassification> treeNode, ISimulationExplorerPresenter presenter)

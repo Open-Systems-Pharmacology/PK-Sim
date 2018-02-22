@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
@@ -9,12 +12,13 @@ using Compound = PKSim.Core.Model.Compound;
 using CompoundProperties = PKSim.Core.Snapshots.CompoundProperties;
 using Formulation = PKSim.Core.Model.Formulation;
 using Protocol = PKSim.Core.Model.Protocol;
+using Simulation = PKSim.Core.Model.Simulation;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_CompoundPropertiesMapper : ContextSpecificationAsync<CompoundPropertiesMapper>
    {
-      private CalculationMethodCacheMapper _calculationMethodCacheMapper;
+      protected CalculationMethodCacheMapper _calculationMethodCacheMapper;
       protected CompoundProperties _snapshot;
       protected Model.CompoundProperties _compoundProperties;
       private CompoundGroupSelection _compoungGroupSelectionOneAlternative;
@@ -36,14 +40,16 @@ namespace PKSim.Core
       protected EnzymaticProcess _enzymaticProcess;
       protected SpecificBindingPartialProcess _specificBindingProcess;
       protected SystemicProcess _transportProcess;
+      protected ILogger _logger;
 
       protected override Task Context()
       {
          _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
          _processMappingMapper = A.Fake<ProcessMappingMapper>();
+         _logger= A.Fake<ILogger>();
          _project = new PKSimProject();
          _calculationMethodSnapshot = new CalculationMethodCache();
-         sut = new CompoundPropertiesMapper(_calculationMethodCacheMapper, _processMappingMapper);
+         sut = new CompoundPropertiesMapper(_calculationMethodCacheMapper, _processMappingMapper, _logger);
 
          _compoungGroupSelectionOneAlternative = new CompoundGroupSelection
          {
@@ -95,9 +101,9 @@ namespace PKSim.Core
          _compoundProperties.Processes.SpecificBindingSelection.AddPartialProcessSelection(_specificBindingPartialProcessSelection);
          _compoundProperties.Processes.TransportAndExcretionSelection.AddSystemicProcessSelection(_transportSystemicProcessSelection);
 
-         _snapshotProcess1 = new CompoundProcessSelection();
-         _snapshotProcess2 = new CompoundProcessSelection();
-         _snapshotProcess3 = new CompoundProcessSelection();
+         _snapshotProcess1 = new CompoundProcessSelection {Name = _enzymaticPartialProcessSelection.ProcessName};
+         _snapshotProcess2 = new CompoundProcessSelection {Name = _specificBindingPartialProcessSelection.ProcessName};
+         _snapshotProcess3 = new CompoundProcessSelection { Name = _transportSystemicProcessSelection.ProcessName };
 
          _formulation = new Formulation
          {
@@ -115,6 +121,10 @@ namespace PKSim.Core
          A.CallTo(() => _processMappingMapper.MapToSnapshot(_enzymaticPartialProcessSelection)).Returns(_snapshotProcess1);
          A.CallTo(() => _processMappingMapper.MapToSnapshot(_specificBindingPartialProcessSelection)).Returns(_snapshotProcess2);
          A.CallTo(() => _processMappingMapper.MapToSnapshot(_transportSystemicProcessSelection)).Returns(_snapshotProcess3);
+
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess1, _enzymaticProcess)).Returns(_enzymaticPartialProcessSelection);
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess2, _specificBindingProcess)).Returns(_specificBindingPartialProcessSelection);
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess3, _transportProcess)).Returns(_transportSystemicProcessSelection);
 
          return _completed;
       }
@@ -160,6 +170,45 @@ namespace PKSim.Core
          _snapshot.Alternatives.Length.ShouldBeEqualTo(1);
          _snapshot.Alternatives[0].AlternativeName.ShouldBeEqualTo(_compoungGroupSelectioTwoAlternatives.AlternativeName);
          _snapshot.Alternatives[0].GroupName.ShouldBeEqualTo(_compoungGroupSelectioTwoAlternatives.GroupName);
+      }
+   }
+
+
+   public class When_mapping_a_compound_property_snapshot_to_model : concern_for_CompoundPropertiesMapper
+   {
+      private CompoundPropertiesContext _context;
+      private Simulation _simulation;
+      private Model.CompoundProperties _mappedCompoundProperties;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_compoundProperties, _project);
+         _simulation = A.Fake<Simulation>();
+
+         var newModelCompoundProperties = new Model.CompoundProperties {Compound = _compoundProperties.Compound};
+         _compoundProperties.CompoundGroupSelections.Each(newModelCompoundProperties.AddCompoundGroupSelection);
+
+         A.CallTo(() => _simulation.CompoundPropertiesFor(_snapshot.Name)).Returns(newModelCompoundProperties);
+         _context =new CompoundPropertiesContext(_project, _simulation);
+      }
+
+
+      protected override async Task Because()
+      {
+         _mappedCompoundProperties = await sut.MapToModel(_snapshot, _context);
+      }
+
+      [Observation]
+      public void should_map_used_processes()
+      {
+         _mappedCompoundProperties.Processes.AllEnabledProcesses().Count().ShouldBeEqualTo(3);
+      }
+
+      [Observation]
+      public void should_map_calculation_method_used_in_the_snapshot()
+      {
+         A.CallTo(() => _calculationMethodCacheMapper.MapToModel(_snapshot.CalculationMethods, _mappedCompoundProperties.CalculationMethodCache)).MustHaveHappened();
       }
    }
 }

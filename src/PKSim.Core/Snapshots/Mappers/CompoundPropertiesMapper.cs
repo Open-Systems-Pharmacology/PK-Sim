@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -27,11 +28,13 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
       private readonly ProcessMappingMapper _processMappingMapper;
+      private readonly ILogger _logger;
 
-      public CompoundPropertiesMapper(CalculationMethodCacheMapper calculationMethodCacheMapper, ProcessMappingMapper processMappingMapper)
+      public CompoundPropertiesMapper(CalculationMethodCacheMapper calculationMethodCacheMapper, ProcessMappingMapper processMappingMapper, ILogger logger)
       {
          _calculationMethodCacheMapper = calculationMethodCacheMapper;
          _processMappingMapper = processMappingMapper;
+         _logger = logger;
       }
 
       public override async Task<SnapshotCompoundProperties> MapToSnapshot(ModelCompoundProperties modelCompoundProperties, PKSimProject project)
@@ -91,10 +94,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private FormulationSelection formulationSelectionFrom(FormulationMapping formulationMapping, PKSimProject project)
       {
-         var formulation = project.BuildingBlockById(formulationMapping.TemplateFormulationId);
-         if (formulation == null)
-            formulation = formulationMapping.Formulation;
-
+         var formulation = project.BuildingBlockById(formulationMapping.TemplateFormulationId) ?? formulationMapping.Formulation;
          return new FormulationSelection {Name = formulation.Name, Key = formulationMapping.FormulationKey};
       }
 
@@ -159,8 +159,8 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task addProcessToProcessSelection(CompoundProcessesSelection compoundProcessesSelection, CompoundProcessSelection compoundProcessSelection, Model.CompoundProcess process)
       {
          var processSelectionGroup = selectionGroupFor(compoundProcessesSelection, process);
-         var reactionMapping = await _processMappingMapper.MapToModel(compoundProcessSelection, process);
-         processSelectionGroup.AddProcessSelection(reactionMapping);
+         var processSelection = await _processMappingMapper.MapToModel(compoundProcessSelection, process);
+         processSelectionGroup.AddProcessSelection(processSelection);
       }
 
       private ProcessSelectionGroup selectionGroupFor(CompoundProcessesSelection compoundProcessesSelection, Model.CompoundProcess process)
@@ -192,12 +192,14 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void updateAlternativeSelection(CompoundGroupSelection snapshotCompoundGroupSelection, ModelCompoundProperties compoundProperties)
       {
-         var modelGroupSelection = compoundProperties.CompoundGroupSelections.Find(x => x.GroupName == snapshotCompoundGroupSelection.GroupName);
-         //TODO throw?
-         if (modelGroupSelection == null)
+         var compoundGroupSelection = compoundProperties.CompoundGroupSelections.Find(x => x.GroupName == snapshotCompoundGroupSelection.GroupName);
+         if (compoundGroupSelection == null)
+         {
+            _logger.AddWarning(PKSimConstants.Error.CompoundGroupNotFoundFor(snapshotCompoundGroupSelection.GroupName, compoundProperties.Compound.Name));
             return;
+         }
 
-         modelGroupSelection.AlternativeName = snapshotCompoundGroupSelection.AlternativeName;
+         compoundGroupSelection.AlternativeName = snapshotCompoundGroupSelection.AlternativeName;
       }
    }
 }
