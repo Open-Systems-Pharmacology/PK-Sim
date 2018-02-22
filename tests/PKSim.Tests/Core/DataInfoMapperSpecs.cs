@@ -7,38 +7,40 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Repositories;
+using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using DataInfo = OSPSuite.Core.Domain.Data.DataInfo;
-using ExtendedProperties = PKSim.Core.Snapshots.ExtendedProperties;
 using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
-
 
 namespace PKSim.Core
 {
    public abstract class concern_for_DataInfoMapper : ContextSpecificationAsync<DataInfoMapper>
    {
-      protected ExtendedPropertiesMapper _extendedPropertiesMapper;
-      protected ExtendedProperties _extendedPropertiesSnapshot;
+      protected ExtendedPropertyMapper _extendedPropertyMapper;
+      protected ExtendedProperty _extendedPropertySnapshot;
       protected DataInfo _dataInfo;
       protected DateTime _dateTime;
+      protected IExtendedProperty _extendedProperty;
 
       protected override Task Context()
       {
          var molWeightDimension = A.Fake<IDimension>();
-         _extendedPropertiesMapper = A.Fake<ExtendedPropertiesMapper>();
+         _extendedPropertyMapper = A.Fake<ExtendedPropertyMapper>();
          var dimensionRepository = A.Fake<IDimensionRepository>();
          A.CallTo(() => dimensionRepository.DimensionByName(Constants.Dimension.MOLECULAR_WEIGHT)).Returns(molWeightDimension);
-         sut = new DataInfoMapper(_extendedPropertiesMapper, dimensionRepository);
+         sut = new DataInfoMapper(_extendedPropertyMapper, dimensionRepository);
 
-         _extendedPropertiesSnapshot = new ExtendedProperties();
+         _extendedPropertySnapshot = new ExtendedProperty();
          _dateTime = DateTime.Parse("January 1, 2017");
 
-         _dataInfo = new DataInfo(ColumnOrigins.Observation, AuxiliaryType.GeometricStdDev, "unitName", _dateTime, "source", "category", 2.3) { LLOQ = 0.4f };
-
+         _dataInfo = new DataInfo(ColumnOrigins.Observation, AuxiliaryType.GeometricStdDev, "unitName", _dateTime, "source", "category", 2.3) {LLOQ = 0.4f};
+         _extendedProperty = new ExtendedProperty<string> {Name = "Hello"};
+         _dataInfo.ExtendedProperties.Add(_extendedProperty);
          A.CallTo(() => molWeightDimension.BaseUnitValueToUnitValue(molWeightDimension.DefaultUnit, _dataInfo.MolWeight.Value)).Returns(5.0);
          A.CallTo(() => molWeightDimension.UnitValueToBaseUnitValue(molWeightDimension.DefaultUnit, 5.0)).Returns(_dataInfo.MolWeight.Value);
 
-         A.CallTo(() => _extendedPropertiesMapper.MapToSnapshot(_dataInfo.ExtendedProperties)).Returns(_extendedPropertiesSnapshot);
+         A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_extendedProperty)).Returns(_extendedPropertySnapshot);
+         A.CallTo(() => _extendedPropertyMapper.MapToModel(_extendedPropertySnapshot)).Returns(_extendedProperty);
 
          return Task.FromResult(true);
       }
@@ -48,14 +50,11 @@ namespace PKSim.Core
    {
       private SnapshotDataInfo _snapshot;
       private DataInfo _result;
-      private OSPSuite.Core.Domain.ExtendedProperties _extendedProperties;
 
       protected override async Task Context()
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_dataInfo);
-         _extendedProperties = new OSPSuite.Core.Domain.ExtendedProperties {new ExtendedProperty<string> {Name = "key"}};
-         A.CallTo(() => _extendedPropertiesMapper.MapToModel(_snapshot.ExtendedProperties)).Returns(_extendedProperties);
       }
 
       protected override async Task Because()
@@ -66,7 +65,7 @@ namespace PKSim.Core
       [Observation]
       public void the_extended_properties_should_match()
       {
-         _result.ExtendedProperties.ShouldOnlyContain(_extendedProperties);
+         _result.ExtendedProperties.ShouldOnlyContain(_extendedProperty);
       }
 
       [Observation]
@@ -95,7 +94,7 @@ namespace PKSim.Core
       [Observation]
       public void the_snapshot_includes_the_extended_properties_snapshot()
       {
-         _snapshot.ExtendedProperties.ShouldBeEqualTo(_extendedPropertiesSnapshot);
+         _snapshot.ExtendedProperties.ShouldContain(_extendedPropertySnapshot);
       }
 
       [Observation]

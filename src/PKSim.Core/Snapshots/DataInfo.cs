@@ -11,7 +11,7 @@ namespace PKSim.Core.Snapshots
       public string Source { get; set; }
       public string Category { get; set; }
       public double? MolWeight { get; set; }
-      public ExtendedProperties ExtendedProperties { get; set; }
+      public ExtendedProperty[] ExtendedProperties { get; set; }
       public float? LLOQ { get; set; }
       public float? ComparisonThreshold { get; set; }
    }

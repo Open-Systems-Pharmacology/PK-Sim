@@ -242,7 +242,6 @@
     <Compile Include="Core\EventMapperSpecs.cs" />
     <Compile Include="Core\EventPropertiesMapperSpec.cs" />
     <Compile Include="Core\ExpressionContainerMapperSpecs.cs" />
-    <Compile Include="Core\ExtendedPropertiesMapperSpecs.cs" />
     <Compile Include="Core\ExtendedPropertyMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />
     <Compile Include="Core\GroupingDefinitionMapperSpecs.cs" />
@@ -262,6 +261,8 @@
     <Compile Include="Core\OutputSelectionsMapperSpecs.cs" />
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterDefaultStateUpdaterSpecs.cs" />
+    <Compile Include="Core\ParameterIdentificationConfigurationMapperSpecs.cs" />
+    <Compile Include="Core\ParameterIdentificationMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
     <Compile Include="Core\ParameterMapperSpecs.cs" />
     <Compile Include="Core\ParameterRangeMapperSpecs.cs" />

@@ -860,7 +860,6 @@
     <Compile Include="Snapshots\DistributionMetaData.cs" />
     <Compile Include="Snapshots\Event.cs" />
     <Compile Include="Snapshots\EventSelection.cs" />
-    <Compile Include="Snapshots\ExtendedProperties.cs" />
     <Compile Include="Snapshots\Formulation.cs" />
     <Compile Include="Snapshots\FormulationSelection.cs" />
     <Compile Include="Snapshots\Individual.cs" />
@@ -877,6 +876,9 @@
     <Compile Include="Snapshots\Mappers\ExpressionContainerMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObservedDataCollectionMappper.cs" />
     <Compile Include="Snapshots\Mappers\OriginDataMapper.cs" />
+    <Compile Include="Snapshots\Mappers\OutputMappingMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationConfigurationMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProcessMappingMapper.cs" />
     <Compile Include="Snapshots\Mappers\SimulationAnalysisContext.cs" />
     <Compile Include="Snapshots\Mappers\CurveChartMapper.cs" />
@@ -886,7 +888,6 @@
     <Compile Include="Snapshots\Mappers\DistributedTableFormulaMapper.cs" />
     <Compile Include="Snapshots\Mappers\EventMapper.cs" />
     <Compile Include="Snapshots\Mappers\EventMappingMapper.cs" />
-    <Compile Include="Snapshots\Mappers\ExtendedPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\ExtendedPropertyMapper.cs" />
     <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />
     <Compile Include="Snapshots\Mappers\GroupingDefinitionMapper.cs" />
@@ -925,9 +926,12 @@
     <Compile Include="Snapshots\Ontogeny.cs" />
     <Compile Include="Snapshots\OriginData.cs" />
     <Compile Include="Snapshots\OutputInterval.cs" />
+    <Compile Include="Snapshots\OutputMapping.cs" />
     <Compile Include="Snapshots\OutputSchema.cs" />
     <Compile Include="Snapshots\OutputSelections.cs" />
     <Compile Include="Snapshots\Parameter.cs" />
+    <Compile Include="Snapshots\ParameterIdentification.cs" />
+    <Compile Include="Snapshots\ParameterIdentificationConfiguration.cs" />
     <Compile Include="Snapshots\ParameterRange.cs" />
     <Compile Include="Snapshots\Point.cs" />
     <Compile Include="Snapshots\Population.cs" />
