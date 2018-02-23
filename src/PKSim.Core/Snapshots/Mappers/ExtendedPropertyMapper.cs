@@ -51,5 +51,15 @@ namespace PKSim.Core.Snapshots.Mappers
       }
 
       private void addOptionsToList(List<object> snapshotListOfValues, Action<object> action) => snapshotListOfValues?.Each(action);
+
+      public void ClearDatabaseProperties(SnapshotExtendedProperty extendedProperty)
+      {
+         if (extendedProperty == null)
+            return;
+
+         extendedProperty.Description = null;
+         extendedProperty.FullName = null;
+
+      }
    }
 }

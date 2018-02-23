@@ -31,12 +31,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return mapCalculationMethodsToSnapshot(model, species);
       }
 
-      private Task<SnapshotCalculationMethodCache> mapCalculationMethodsToSnapshot(ModelCalculationMethodCache model, string species=null)
+      private Task<SnapshotCalculationMethodCache> mapCalculationMethodsToSnapshot(ModelCalculationMethodCache model, string species = null)
       {
-         return SnapshotFrom(model, snapshot =>
-         {
-            addCalculationMethodsToSnapshot(snapshot, model, species);
-         });
+         return SnapshotFrom(model, snapshot => { addCalculationMethodsToSnapshot(snapshot, model, species); });
       }
 
       private void addCalculationMethodsToSnapshot(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache calculationMethodCache, string species)
@@ -55,7 +52,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return;
 
          //all CM have the same name? they will never be displayed together
-         if(allPossibleCalculationMethods.Select(x=>x.DisplayName).Distinct().Count()==1)
+         if (allPossibleCalculationMethods.Select(x => x.DisplayName).Distinct().Count() == 1)
             return;
 
          //only one calculation method exists for the given species. Nothing to do

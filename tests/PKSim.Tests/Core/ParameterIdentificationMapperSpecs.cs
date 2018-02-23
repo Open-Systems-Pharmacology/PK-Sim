@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using IdentificationParameter = OSPSuite.Core.Domain.ParameterIdentifications.IdentificationParameter;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using OutputMapping = OSPSuite.Core.Domain.ParameterIdentifications.OutputMapping;
 using Simulation = PKSim.Core.Model.Simulation;
@@ -24,28 +25,39 @@ namespace PKSim.Core
       protected OutputMappingMapper _outputMappingMapper;
       protected OutputMapping _outputMapping;
       protected Snapshots.OutputMapping _snapshotOutputMapping;
+      private IdentificationParameterMapper _identificationParameterMapper;
+      private IdentificationParameter _identificationParameter;
+      protected Snapshots.IdentificationParameter _snapshotIdentificationParameter;
 
       protected override Task Context()
       {
+         _parameterIdentificationConfigurationMapper = A.Fake<ParameterIdentificationConfigurationMapper>();
+         _outputMappingMapper = A.Fake<OutputMappingMapper>();
+         _identificationParameterMapper = A.Fake<IdentificationParameterMapper>();
+
+
          _project = new PKSimProject();
          _simulation = new IndividualSimulation().WithName("S1");
          _project.AddBuildingBlock(_simulation);
-         _parameterIdentificationConfigurationMapper = A.Fake<ParameterIdentificationConfigurationMapper>();
-         _outputMappingMapper= A.Fake<OutputMappingMapper>();
 
          _parameterIdentification = new ModelParameterIdentification();
          _snapshotParameterIndentificationConfiguration = new ParameterIdentificationConfiguration();
          _snapshotOutputMapping = new Snapshots.OutputMapping();
          _outputMapping = new OutputMapping();
-
          _parameterIdentification.AddSimulation(_simulation);
          _parameterIdentification.AddOutputMapping(_outputMapping);
 
-         sut = new ParameterIdentificationMapper(_parameterIdentificationConfigurationMapper, _outputMappingMapper);
+         _identificationParameter = new IdentificationParameter {Name = "IP"};
+         _parameterIdentification.AddIdentificationParameter(_identificationParameter);
+
+         _snapshotIdentificationParameter = new Snapshots.IdentificationParameter();
+
+         sut = new ParameterIdentificationMapper(_parameterIdentificationConfigurationMapper, _outputMappingMapper, _identificationParameterMapper);
 
 
          A.CallTo(() => _parameterIdentificationConfigurationMapper.MapToSnapshot(_parameterIdentification.Configuration)).Returns(_snapshotParameterIndentificationConfiguration);
          A.CallTo(() => _outputMappingMapper.MapToSnapshot(_outputMapping)).Returns(_snapshotOutputMapping);
+         A.CallTo(() => _identificationParameterMapper.MapToSnapshot(_identificationParameter)).Returns(_snapshotIdentificationParameter);
          return _completed;
       }
    }
@@ -73,6 +85,12 @@ namespace PKSim.Core
       public void should_have_mapped_the_output_mappings()
       {
          _snapshot.OutputMappings.ShouldContain(_snapshotOutputMapping);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_identification_parameters()
+      {
+         _snapshot.IdentificationParameters.ShouldContain(_snapshotIdentificationParameter);
       }
    }
 }

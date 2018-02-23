@@ -245,6 +245,7 @@
     <Compile Include="Core\ExtendedPropertyMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />
     <Compile Include="Core\GroupingDefinitionMapperSpecs.cs" />
+    <Compile Include="Core\IdentificationParameterMapperSpecs.cs" />
     <Compile Include="Core\IndividualExtractionOptionsSpecs.cs" />
     <Compile Include="Core\IndividualExtractorSpecs.cs" />
     <Compile Include="Core\IndividualMapperSpecs.cs" />
@@ -257,12 +258,15 @@
     <Compile Include="Core\OntogenyMapperSpecs.cs" />
     <Compile Include="Core\OriginDataMapperSpecs.cs" />
     <Compile Include="Core\OutputIntervalMapperSpecs.cs" />
+    <Compile Include="Core\OutputMappingMapperSpecs.cs" />
     <Compile Include="Core\OutputSchemaMapperSpecs.cs" />
     <Compile Include="Core\OutputSelectionsMapperSpecs.cs" />
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterDefaultStateUpdaterSpecs.cs" />
+    <Compile Include="Core\ParameterIdentificationAlgorithmMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationConfigurationMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationMapperSpecs.cs" />
+    <Compile Include="Core\ParameterIdentificationRunModeMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
     <Compile Include="Core\ParameterMapperSpecs.cs" />
     <Compile Include="Core\ParameterRangeMapperSpecs.cs" />

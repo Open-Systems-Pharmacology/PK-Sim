@@ -37,6 +37,14 @@ namespace PKSim.Core.Snapshots.Mappers
          return value;
       }
 
+      protected T? SnapshotValueFor<T>(T? value, T defaultValue = default(T)) where T : struct
+      {
+         if (value == null)
+            return null;
+
+         return SnapshotValueFor(value.Value, defaultValue);
+      }
+
       protected string ModelValueFor(string snapshotValue) => snapshotValue ?? "";
 
       protected T ModelValueFor<T>(T? snapshotValue, T defaultValue = default(T)) where T : struct

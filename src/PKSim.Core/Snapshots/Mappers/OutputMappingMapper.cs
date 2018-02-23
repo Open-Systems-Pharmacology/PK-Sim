@@ -11,21 +11,16 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class OutputMappingMapper : SnapshotMapperBase<ModelOutputMapping, SnapshotOutputMapping>
    {
-      public override async Task<SnapshotOutputMapping> MapToSnapshot(ModelOutputMapping outputMapping)
+      public override Task<SnapshotOutputMapping> MapToSnapshot(ModelOutputMapping outputMapping)
       {
-         var snapshot = await SnapshotFrom(outputMapping, x =>
+         return SnapshotFrom(outputMapping, x =>
          {
             x.Scaling = outputMapping.Scaling;
             x.Weight = SnapshotValueFor(outputMapping.Weight, Constants.DEFAULT_WEIGHT);
-            x.Simulation = outputMapping.Simulation?.Name;
-            x.Path = outputMapping.OutputPath;
+            x.Path = outputMapping.FullOutputPath;
             x.ObservedData = outputMapping.WeightedObservedData?.Name;
             x.Weights = weightsFrom(outputMapping.WeightedObservedData);
-            x.QuantityType = outputMapping.OutputSelection?.QuantitySelection?.QuantityType;
          });
-
-
-         return snapshot;
       }
 
       private float[] weightsFrom(WeightedObservedData weightedObservedData)
@@ -34,7 +29,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (weights == null)
             return null;
 
-         if (weights.All(x => ValueComparer.AreValuesEqual(x,Constants.DEFAULT_WEIGHT)))
+         if (weights.All(x => ValueComparer.AreValuesEqual(x, Constants.DEFAULT_WEIGHT)))
             return null;
 
          return weights;

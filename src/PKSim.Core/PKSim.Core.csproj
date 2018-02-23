@@ -846,6 +846,7 @@
     <Compile Include="Snapshots\CurveOptions.cs" />
     <Compile Include="Snapshots\ExpressionContainer.cs" />
     <Compile Include="Snapshots\GroupingDefinition.cs" />
+    <Compile Include="Snapshots\IdentificationParameter.cs" />
     <Compile Include="Snapshots\Mappers\ChartMapper.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationContext.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationMapper.cs" />
@@ -874,11 +875,14 @@
     <Compile Include="Snapshots\Mappers\CompoundPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\CurveOptionsMapper.cs" />
     <Compile Include="Snapshots\Mappers\ExpressionContainerMapper.cs" />
+    <Compile Include="Snapshots\Mappers\IdentificationParameterMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObservedDataCollectionMappper.cs" />
     <Compile Include="Snapshots\Mappers\OriginDataMapper.cs" />
     <Compile Include="Snapshots\Mappers\OutputMappingMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationAlgorithmMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationConfigurationMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationRunModeMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProcessMappingMapper.cs" />
     <Compile Include="Snapshots\Mappers\SimulationAnalysisContext.cs" />
     <Compile Include="Snapshots\Mappers\CurveChartMapper.cs" />
@@ -924,6 +928,7 @@
     <Compile Include="Snapshots\ObservedDataCollection.cs" />
     <Compile Include="Snapshots\ObservedDataCurveOptions.cs" />
     <Compile Include="Snapshots\Ontogeny.cs" />
+    <Compile Include="Snapshots\OptimizationAlgorithm.cs" />
     <Compile Include="Snapshots\OriginData.cs" />
     <Compile Include="Snapshots\OutputInterval.cs" />
     <Compile Include="Snapshots\OutputMapping.cs" />
@@ -932,6 +937,7 @@
     <Compile Include="Snapshots\Parameter.cs" />
     <Compile Include="Snapshots\ParameterIdentification.cs" />
     <Compile Include="Snapshots\ParameterIdentificationConfiguration.cs" />
+    <Compile Include="Snapshots\ParameterIdentificationRunMode.cs" />
     <Compile Include="Snapshots\ParameterRange.cs" />
     <Compile Include="Snapshots\Point.cs" />
     <Compile Include="Snapshots\Population.cs" />

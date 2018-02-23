@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using ModelParameterIdentificationConfiguration =  OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentificationConfiguration;
 using SnapshotParameterIdentificationConfiguration = PKSim.Core.Snapshots.ParameterIdentificationConfiguration;
 
@@ -7,11 +6,15 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class ParameterIdentificationConfigurationMapper : SnapshotMapperBase<ModelParameterIdentificationConfiguration, SnapshotParameterIdentificationConfiguration>
    {
-      private readonly ExtendedPropertyMapper _extendedPropertyMapper;
+      private readonly ParameterIdentificationRunModeMapper _parameterIdentificationRunModeMapper;
+      private readonly ParameterIdentificationAlgorithmMapper _parameterIdentificationAlgorithmMapper;
 
-      public ParameterIdentificationConfigurationMapper(ExtendedPropertyMapper extendedPropertyMapper)
+      public ParameterIdentificationConfigurationMapper(
+         ParameterIdentificationRunModeMapper parameterIdentificationRunModeMapper,
+         ParameterIdentificationAlgorithmMapper parameterIdentificationAlgorithmMapper)
       {
-         _extendedPropertyMapper = extendedPropertyMapper;
+         _parameterIdentificationRunModeMapper = parameterIdentificationRunModeMapper;
+         _parameterIdentificationAlgorithmMapper = parameterIdentificationAlgorithmMapper;
       }
 
       public override async Task<SnapshotParameterIdentificationConfiguration> MapToSnapshot(ModelParameterIdentificationConfiguration configuration)
@@ -23,20 +26,11 @@ namespace PKSim.Core.Snapshots.Mappers
             x.CalculateJacobian = configuration.CalculateJacobian;
          });
 
-         await mapAlgoritmProperties(snapshot, configuration.AlgorithmProperties);
-         return snapshot;
-         
+         snapshot.RunMode = await _parameterIdentificationRunModeMapper.MapToSnapshot(configuration.RunMode);
+         snapshot.Algorithm = await _parameterIdentificationAlgorithmMapper.MapToSnapshot(configuration.AlgorithmProperties);
+
+         return snapshot;         
       }
-
-      private async Task mapAlgoritmProperties(SnapshotParameterIdentificationConfiguration snapshot, OptimizationAlgorithmProperties configurationAlgorithmProperties)
-      {
-         if (configurationAlgorithmProperties == null)
-            return;
-
-         snapshot.Name = configurationAlgorithmProperties.Name;
-         snapshot.Properties = await _extendedPropertyMapper.MapToSnapshots(configurationAlgorithmProperties);
-      }
-
       public override Task<ModelParameterIdentificationConfiguration> MapToModel(SnapshotParameterIdentificationConfiguration snapshot)
       {
          throw new System.NotImplementedException();
