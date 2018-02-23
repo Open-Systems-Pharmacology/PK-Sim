@@ -157,6 +157,24 @@ namespace PKSim.Core
       }
    }
 
+   public class When_updating_a_relative_expression_parameters_with_different_values : concern_for_ParameterUpdater
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _formulaTypeMapper.MapFrom(_sourceParameter)).Returns(FormulaType.Constant);
+         A.CallTo(() => _formulaTypeMapper.MapFrom(_targetParameter)).Returns(FormulaType.Constant);
+         _sourceParameter.Name = CoreConstants.Parameter.REL_EXP;
+         _targetParameter.Name = CoreConstants.Parameter.REL_EXP;
+      }
+
+      [Observation]
+      public void should_return_a_simple_parmaeter_set_value_and_not_a_relative_expression_set_value_command()
+      {
+         _result.ShouldBeAnInstanceOf<SetParameterValueCommand>();
+      }
+   }
+
    public class When_updating_the_value_of_an_unchanged_rate_parameter_from_a_parameter_whose_value_was_set_by_the_user : concern_for_ParameterUpdater
    {
       protected override void Context()
