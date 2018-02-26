@@ -70,11 +70,13 @@ namespace PKSim.Core.Services
       ICommand SetParameterDisplayUnit(IParameter parameter, Unit displayUnit);
 
       /// <summary>
-      ///    Sets the value in the parameter. Value will be take as is
+      ///    Sets the value in the parameter. Value will be take as is. If <paramref name="scaleRelatedParameters"/> is set to <c>true</c>, related parameters will also be adjusted. 
+      ///    This is typically the case when the parameter is updated by the user
       /// </summary>
       /// <param name="parameter">Parameter</param>
       /// <param name="value">Value in kernel unit</param>
-      ICommand SetParameterValue(IParameter parameter, double value);
+      /// <param name="scaleRelatedParameters">If <c>true</c>, depending parameters will also be adjusted (for example relative expression norms).</param>
+      ICommand SetParameterValue(IParameter parameter, double value, bool scaleRelatedParameters = true);
 
       /// <summary>
       ///    Sets the value in the parameter. Value will be taken as is
@@ -275,9 +277,9 @@ namespace PKSim.Core.Services
          return setParameterValue(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit), shouldChangeVersion: false);
       }
 
-      public ICommand SetParameterValue(IParameter parameter, double value)
+      public ICommand SetParameterValue(IParameter parameter, double value, bool scaleRelatedParameters = true)
       {
-         if (parameter.IsExpression())
+         if (scaleRelatedParameters && parameter.IsExpression() )
             return commandForRelativeExpressionParameter(parameter, value).Run(_executionContext);
 
          if (parameter.IsStructural())

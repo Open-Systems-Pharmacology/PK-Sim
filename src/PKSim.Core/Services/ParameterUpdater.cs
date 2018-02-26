@@ -92,13 +92,13 @@ namespace PKSim.Core.Services
          //distributed to distributed
          var sourceDistributedParameter = sourceParameter as IDistributedParameter;
          if (sourceDistributedParameter != null)
-            return setParameterValue(sourceParameter, targetParameter, false);
+            return setParameterValue(sourceParameter, targetParameter, forceUpdate: false);
 
          //source parameter it not distributed. Is the formula a table paramter? In that case, we are most likely
          //updating from simulation table parameter to distributed parameter in individual
          var tableFormula = sourceParameter.Formula as DistributedTableFormula;
          if (tableFormula == null)
-            return setParameterValue(sourceParameter, targetParameter, false);
+            return setParameterValue(sourceParameter, targetParameter, forceUpdate: false);
 
          //only update if percentiles are not equals
          return _parameterTask.SetParameterPercentile(targetParameter, tableFormula.Percentile);
@@ -116,15 +116,17 @@ namespace PKSim.Core.Services
          if (!forceUpdate && areValuesEqual(targetParameter, sourceParameter))
          {
             //same value but not same display unit, simply update the display unit
-            if ( sourceParameter.DisplayUnit == targetParameter.DisplayUnit)
+            if (haveSameDisplayUnit(sourceParameter,targetParameter))
                return null;
 
             return _parameterTask.SetParameterDisplayUnit(targetParameter, sourceParameter.DisplayUnit);
          }
 
-         var setValueCommand = _parameterTask.SetParameterValue(targetParameter, sourceParameter.Value);
+         //Do not scale related parameter in this case as related parameter wil be updated separately
+         var setValueCommand = _parameterTask.SetParameterValue(targetParameter, sourceParameter.Value, scaleRelatedParameters: false);
+
          //Only value differs
-         if (sourceParameter.DisplayUnit == targetParameter.DisplayUnit)
+         if (haveSameDisplayUnit(sourceParameter, targetParameter))
             return setValueCommand;
 
          //in that case, we create a macro command that updates value and unit
@@ -135,9 +137,8 @@ namespace PKSim.Core.Services
          return macroCommand;
       }
 
-      private bool areValuesEqual(IParameter targetParameter, IParameter sourceParameter)
-      {
-         return ValueComparer.AreValuesEqual(targetParameter, sourceParameter);
-      }
+      private bool areValuesEqual(IParameter parameter1, IParameter parameter2) => ValueComparer.AreValuesEqual(parameter1, parameter2);
+
+      private bool haveSameDisplayUnit(IParameter parameter1, IParameter parameter2) => parameter1.DisplayUnit == parameter2.DisplayUnit;
    }
 }
