@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
+using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 
@@ -17,15 +18,16 @@ namespace PKSim.Core
       private ISimulation _simulation;
       private IObserver _output;
       private DataRepository _dataRepository;
+      private ILogger _logger;
 
       protected override Task Context()
       {
-         sut = new OutputMappingMapper();
+         sut = new OutputMappingMapper(_logger);
 
          _simulation = A.Fake<Simulation>().WithName("S");
          _output = new Observer().WithName("OBS");
          _simulation.Model.Root = new Container {_output};
-
+         _logger= A.Fake<ILogger>();
          _dataRepository = DomainHelperForSpecs.ObservedData("OBS_DATA");
          _outputMapping = new OutputMapping
          {

@@ -65,24 +65,32 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<ModelCalculationMethodCache> MapToModel(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache calculationMethodCache)
       {
-         snapshot?.Each(cm => useCalculationMethodIn(calculationMethodCache, cm));
+         UpdateCalculationMethodCache(calculationMethodCache, snapshot);
          return Task.FromResult(calculationMethodCache);
       }
 
       public virtual void UpdateCalculationMethodCache(IWithCalculationMethods withCalculationMethods, SnapshotCalculationMethodCache snapshot)
       {
-         MapToModel(snapshot, withCalculationMethods.CalculationMethodCache);
+         UpdateCalculationMethodCache(withCalculationMethods.CalculationMethodCache, snapshot);
+      }
+      
+      public virtual void UpdateCalculationMethodCache(ModelCalculationMethodCache calculationMethodCache, SnapshotCalculationMethodCache snapshot, bool oneCalculationMethodPerCategory = true)
+      {
+         snapshot?.Each(cm => useCalculationMethodIn(calculationMethodCache, cm, oneCalculationMethodPerCategory));
       }
 
-      private void useCalculationMethodIn(ModelCalculationMethodCache calculationMethodCache, string calculationMethodName)
+      private void useCalculationMethodIn(ModelCalculationMethodCache calculationMethodCache, string calculationMethodName, bool oneCalculationMethodPerCategory)
       {
          var calculationMethod = _calculationMethodRepository.FindByName(calculationMethodName);
          if (calculationMethod == null)
             throw new SnapshotOutdatedException(PKSimConstants.Error.CalculationMethodNotFound(calculationMethodName));
 
-         var existingCalculationMethod = calculationMethodCache.CalculationMethodFor(calculationMethod.Category);
-         if (existingCalculationMethod != null)
-            calculationMethodCache.RemoveCalculationMethod(existingCalculationMethod);
+         if(oneCalculationMethodPerCategory)
+         {
+            var existingCalculationMethod = calculationMethodCache.CalculationMethodFor(calculationMethod.Category);
+            if (existingCalculationMethod != null)
+               calculationMethodCache.RemoveCalculationMethod(existingCalculationMethod);
+         }
 
          calculationMethodCache.AddCalculationMethod(calculationMethod);
       }

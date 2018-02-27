@@ -1,17 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
+using PKSim.Assets;
+using PKSim.Core.Model;
 using ModelIdentificationParameter = OSPSuite.Core.Domain.ParameterIdentifications.IdentificationParameter;
 using SnapshotIdentificationParameter = PKSim.Core.Snapshots.IdentificationParameter;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class IdentificationParameterMapper : ParameterContainerSnapshotMapperBase<ModelIdentificationParameter, SnapshotIdentificationParameter>
+   public class IdentificationParameterMapper : ParameterContainerSnapshotMapperBase<ModelIdentificationParameter, SnapshotIdentificationParameter, ParameterIdentificationContext>
    {
-      public IdentificationParameterMapper(ParameterMapper parameterMapper) : base(parameterMapper)
+      private readonly IIdentificationParameterFactory _identificationParameterFactory;
+      private readonly ILogger _logger;
+
+      public IdentificationParameterMapper(
+         ParameterMapper parameterMapper,
+         IIdentificationParameterFactory identificationParameterFactory,
+         ILogger logger
+      ) : base(parameterMapper)
       {
+         _identificationParameterFactory = identificationParameterFactory;
+         _logger = logger;
       }
 
       public override Task<SnapshotIdentificationParameter> MapToSnapshot(ModelIdentificationParameter identificationParameter)
@@ -30,9 +43,39 @@ namespace PKSim.Core.Snapshots.Mappers
          return !linkedParameters.Any() ? null : linkedParameters.Select(x => x.FullQuantityPath).ToArray();
       }
 
-      public override Task<ModelIdentificationParameter> MapToModel(SnapshotIdentificationParameter snapshot)
+      public override async Task<ModelIdentificationParameter> MapToModel(SnapshotIdentificationParameter snapshot, ParameterIdentificationContext context)
       {
-         throw new NotImplementedException();
+         if (snapshot.LinkedParameters == null || !snapshot.LinkedParameters.Any())
+            return null;
+
+         var parameterSelections = snapshot.LinkedParameters.Select(x => parameterSelectionFrom(x, context.Project)).ToList();
+
+         var identificationParameter = _identificationParameterFactory.CreateFor(parameterSelections, context.ParameterIdentification);
+         identificationParameter.IsFixed = ModelValueFor(snapshot.IsFixed);
+         identificationParameter.UseAsFactor = ModelValueFor(snapshot.UseAsFactor);
+         identificationParameter.Scaling = snapshot.Scaling;
+         
+         await UpdateParametersFromSnapshot(snapshot, identificationParameter);
+
+         return identificationParameter;
+      }
+
+      private ParameterSelection parameterSelectionFrom(string parameterFullPath, PKSimProject project)
+      {
+         var parameterPath = new ObjectPath(parameterFullPath.ToPathArray());
+         if (parameterPath.Count == 0)
+            return null;
+
+         var simulationName = parameterPath[0];
+         var simulation = project.All<Model.Simulation>().FindByName(simulationName);
+         if (simulation == null)
+         {
+            _logger.AddWarning(PKSimConstants.Error.CouldNotFindSimulation(simulationName));
+            return null;
+         }
+
+         parameterPath.RemoveAt(0);
+         return new ParameterSelection(simulation, parameterPath);
       }
    }
 }

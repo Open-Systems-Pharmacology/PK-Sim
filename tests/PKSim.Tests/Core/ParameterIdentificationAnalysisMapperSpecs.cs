@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
@@ -19,12 +20,14 @@ namespace PKSim.Core
       protected CurveChart _chartSnapshot;
       protected DataRepository _localRepository;
       protected Snapshots.DataRepository _snapshotLocalRepository;
+      private IIdGenerator _idGenerator;
 
       protected override Task Context()
       {
          _parameterIdentificationAnalysisChartMapper = A.Fake<ParameterIdentificationAnalysisChartMapper>();
          _dataRepositoryMapper = A.Fake<DataRepositoryMapper>();
-         sut = new ParameterIdentificationAnalysisMapper(_parameterIdentificationAnalysisChartMapper, _dataRepositoryMapper);
+         _idGenerator= A.Fake<IIdGenerator>();
+         sut = new ParameterIdentificationAnalysisMapper(_parameterIdentificationAnalysisChartMapper, _dataRepositoryMapper, _idGenerator);
 
          _parameterIdentificationAnalysis = new T().WithName("Chart");
          _chartSnapshot = new CurveChart();

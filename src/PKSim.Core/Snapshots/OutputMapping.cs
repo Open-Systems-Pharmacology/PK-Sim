@@ -9,6 +9,5 @@ namespace PKSim.Core.Snapshots
       public string Path { get; set; }
       public string ObservedData { get; set; }
       public  float[] Weights { get; set; }
-      public QuantityType? QuantityType { get; set; }
    }
 }

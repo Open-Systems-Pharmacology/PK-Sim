@@ -882,6 +882,7 @@
     <Compile Include="Snapshots\Mappers\ParameterIdentificationAlgorithmMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationAnalysisMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationConfigurationMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationContext.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationRunModeMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProcessMappingMapper.cs" />

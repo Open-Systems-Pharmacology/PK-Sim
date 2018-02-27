@@ -1,23 +1,28 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ParameterIdentificationAnalysisMapper : ObjectBaseSnapshotMapperBase<ISimulationAnalysis, ParameterIdentificationAnalysis>
+   public class ParameterIdentificationAnalysisMapper : ObjectBaseSnapshotMapperBase<ISimulationAnalysis, ParameterIdentificationAnalysis, ParameterIdentificationContext>
    {
       private readonly ParameterIdentificationAnalysisChartMapper _parameterIdentificationAnalysisChartMapper;
       private readonly DataRepositoryMapper _dataRepositoryMapper;
+      private readonly IIdGenerator _idGenerator;
 
       public ParameterIdentificationAnalysisMapper(
          ParameterIdentificationAnalysisChartMapper parameterIdentificationAnalysisChartMapper,
-         DataRepositoryMapper dataRepositoryMapper 
+         DataRepositoryMapper dataRepositoryMapper,
+         IIdGenerator idGenerator
       )
       {
          _parameterIdentificationAnalysisChartMapper = parameterIdentificationAnalysisChartMapper;
          _dataRepositoryMapper = dataRepositoryMapper;
+         _idGenerator = idGenerator;
       }
 
       public override async Task<ParameterIdentificationAnalysis> MapToSnapshot(ISimulationAnalysis simulationAnalysis)
@@ -41,13 +46,55 @@ namespace PKSim.Core.Snapshots.Mappers
          if (parameterIdentificationAnalysisChart == null)
             return Task.FromResult<CurveChart>(null);
 
-
          return _parameterIdentificationAnalysisChartMapper.MapToSnapshot(parameterIdentificationAnalysisChart);
       }
 
-      public override Task<ISimulationAnalysis> MapToModel(ParameterIdentificationAnalysis snapshot)
+      public override async Task<ISimulationAnalysis> MapToModel(ParameterIdentificationAnalysis snapshot, ParameterIdentificationContext context)
       {
-         throw new NotImplementedException();
+         var simulationAnalysis = createAnalysisFrom(snapshot.Type);
+         _parameterIdentificationAnalysisChartMapper.ChartFactoryFunc = () => createChartFrom(snapshot.Type);
+
+         if (simulationAnalysis != null)
+            simulationAnalysis.Id = _idGenerator.NewId();
+         else
+         {
+            var localDataRepositories = await _dataRepositoryMapper.MapToModels(snapshot.DataRepositories);
+            var simulationAnalysisContext = new SimulationAnalysisContext(localDataRepositories);
+            simulationAnalysisContext.AddDataRepositories(context.Project.AllDataRepositories());
+            simulationAnalysis = await _parameterIdentificationAnalysisChartMapper.MapToModel(snapshot.Chart, simulationAnalysisContext);
+         }
+
+         MapSnapshotPropertiesToModel(snapshot, simulationAnalysis);
+         return simulationAnalysis;
+      }
+
+      private ISimulationAnalysis createAnalysisFrom(string type)
+      {
+         return
+            createSimulationAnalysisIf<ParameterIdentificationCorrelationMatrix>(type) ??
+            createSimulationAnalysisIf<ParameterIdentificationCovarianceMatrix>(type) ??
+            createSimulationAnalysisIf<ParameterIdentificationResidualHistogram>(type);
+      }
+
+      private ParameterIdentificationAnalysisChart createChartFrom(string type)
+      {
+         return
+            createIf<ParameterIdentificationTimeProfileChart>(type) ??
+            createIf<ParameterIdentificationPredictedVsObservedChart>(type) ??
+            createIf<ParameterIdentificationTimeProfileConfidenceIntervalChart>(type) ??
+            createIf<ParameterIdentificationTimeProfileVPCIntervalChart>(type) ??
+            createIf<ParameterIdentificationTimeProfilePredictionIntervalChart>(type) ??
+            createIf<ParameterIdentificationResidualVsTimeChart>(type);
+      }
+
+      private ParameterIdentificationAnalysisChart createIf<T>(string parameterIdentificationAnalysisType) where T : ParameterIdentificationAnalysisChart, new()
+      {
+         return string.Equals(typeof(T).Name, parameterIdentificationAnalysisType) ? new T() : null;
+      }
+
+      private ISimulationAnalysis createSimulationAnalysisIf<T>(string parameterIdentificationAnalysisType) where T : class, ISimulationAnalysis, new()
+      {
+         return string.Equals(typeof(T).Name, parameterIdentificationAnalysisType) ? new T() : null;
       }
    }
 

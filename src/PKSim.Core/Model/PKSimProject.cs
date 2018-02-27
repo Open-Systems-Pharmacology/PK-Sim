@@ -86,10 +86,9 @@ namespace PKSim.Core.Model
          return query.ToList();
       }
 
-
       public virtual IPKSimBuildingBlock BuildingBlockById(string templateBuildingBlockId) => BuildingBlockById<IPKSimBuildingBlock>(templateBuildingBlockId);
 
-      public virtual T BuildingBlockById<T>(string templateBuildingBlockId) where T: class, IPKSimBuildingBlock
+      public virtual T BuildingBlockById<T>(string templateBuildingBlockId) where T : class, IPKSimBuildingBlock
       {
          return _allBuildingBlocks.FindById(templateBuildingBlockId) as T;
       }
@@ -100,7 +99,7 @@ namespace PKSim.Core.Model
       }
 
       //TODO MOVE TO CORE
-      public virtual DataRepository ObservedDataBy(UsedObservedData  usedObservedData) => ObservedDataBy(usedObservedData.Id);
+      public virtual DataRepository ObservedDataBy(UsedObservedData usedObservedData) => ObservedDataBy(usedObservedData.Id);
 
       /// <summary>
       ///    Add a building block to the project
@@ -131,6 +130,17 @@ namespace PKSim.Core.Model
          base.AcceptVisitor(visitor);
          _allBuildingBlocks.ToList().Each(x => x.AcceptVisitor(visitor));
          _simulationComparisons.ToList().Each(x => x.AcceptVisitor(visitor));
+      }
+
+      /// <summary>
+      /// Returns all <see cref="DataRepository"/> defined in the project. They are collected from all <see cref="IndividualSimulation"/> having results and all ObservedData defined in the project
+      /// </summary>
+      public IEnumerable<DataRepository> AllDataRepositories()
+      {
+         return All<IndividualSimulation>()
+            .Where(s => s.HasResults)
+            .Select(s => s.DataRepository)
+            .Union(AllObservedData);
       }
    }
 }

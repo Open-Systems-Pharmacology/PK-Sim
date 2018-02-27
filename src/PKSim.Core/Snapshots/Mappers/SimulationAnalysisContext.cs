@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.Utility.Extensions;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 
 namespace PKSim.Core.Snapshots.Mappers
@@ -15,12 +16,18 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public SimulationAnalysisContext(IEnumerable<ModelDataRepository> dataRepositories)
       {
-         _dataRepositories.AddRange(dataRepositories);
+         AddDataRepositories(dataRepositories);
+      }
+
+      public void AddDataRepositories(IEnumerable<ModelDataRepository> dataRepositories)
+      {
+         dataRepositories?.Each(AddDataRepository);
       }
 
       public void AddDataRepository(ModelDataRepository dataRepository)
       {
-         _dataRepositories.Add(dataRepository);
+         if(dataRepository!=null)
+            _dataRepositories.Add(dataRepository);
       }
    }
 }

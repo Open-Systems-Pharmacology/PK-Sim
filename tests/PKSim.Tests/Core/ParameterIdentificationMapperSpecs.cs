@@ -1,12 +1,15 @@
 ﻿using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using IdentificationParameter = OSPSuite.Core.Domain.ParameterIdentifications.IdentificationParameter;
+using ILogger = OSPSuite.Core.Services.ILogger;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using OutputMapping = OSPSuite.Core.Domain.ParameterIdentifications.OutputMapping;
 using Simulation = PKSim.Core.Model.Simulation;
@@ -20,24 +23,28 @@ namespace PKSim.Core
       protected ModelParameterIdentification _parameterIdentification;
       protected PKSimProject _project;
       protected Simulation _simulation;
-      private ParameterIdentificationConfigurationMapper _parameterIdentificationConfigurationMapper;
+      protected ParameterIdentificationConfigurationMapper _parameterIdentificationConfigurationMapper;
       protected ParameterIdentificationConfiguration _snapshotParameterIndentificationConfiguration;
       protected OutputMappingMapper _outputMappingMapper;
       protected OutputMapping _outputMapping;
       protected Snapshots.OutputMapping _snapshotOutputMapping;
-      private IdentificationParameterMapper _identificationParameterMapper;
-      private IdentificationParameter _identificationParameter;
+      protected IdentificationParameterMapper _identificationParameterMapper;
+      protected IdentificationParameter _identificationParameter;
       protected Snapshots.IdentificationParameter _snapshotIdentificationParameter;
-      private ParameterIdentificationAnalysisMapper _parameterIdentificationAnalysisMapper;
-      private ISimulationAnalysis _parameterIdentificationAnalysis;
+      protected ParameterIdentificationAnalysisMapper _parameterIdentificationAnalysisMapper;
+      protected ISimulationAnalysis _parameterIdentificationAnalysis;
       protected ParameterIdentificationAnalysis _snapshotParameterIdentificationAnalysis;
+      protected IObjectBaseFactory _objectBaseFactory;
+      protected ILogger _logger;
 
       protected override Task Context()
       {
          _parameterIdentificationConfigurationMapper = A.Fake<ParameterIdentificationConfigurationMapper>();
          _outputMappingMapper = A.Fake<OutputMappingMapper>();
          _identificationParameterMapper = A.Fake<IdentificationParameterMapper>();
-         _parameterIdentificationAnalysisMapper= A.Fake<ParameterIdentificationAnalysisMapper>();
+         _parameterIdentificationAnalysisMapper = A.Fake<ParameterIdentificationAnalysisMapper>();
+         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         _logger = A.Fake<ILogger>();
 
          _project = new PKSimProject();
          _simulation = new IndividualSimulation().WithName("S1");
@@ -59,7 +66,14 @@ namespace PKSim.Core
          _parameterIdentification.AddAnalysis(_parameterIdentificationAnalysis);
 
 
-         sut = new ParameterIdentificationMapper(_parameterIdentificationConfigurationMapper, _outputMappingMapper, _identificationParameterMapper,_parameterIdentificationAnalysisMapper);
+         sut = new ParameterIdentificationMapper(
+            _parameterIdentificationConfigurationMapper,
+            _outputMappingMapper,
+            _identificationParameterMapper,
+            _parameterIdentificationAnalysisMapper,
+            _objectBaseFactory,
+            _logger
+         );
 
 
          A.CallTo(() => _parameterIdentificationConfigurationMapper.MapToSnapshot(_parameterIdentification.Configuration)).Returns(_snapshotParameterIndentificationConfiguration);
@@ -106,6 +120,81 @@ namespace PKSim.Core
       public void should_have_mapped_the_parameter_identificaiton_analysis()
       {
          _snapshot.Analyses.ShouldContain(_snapshotParameterIdentificationAnalysis);
+      }
+   }
+
+   public class When_mapping_a_parameter_identification_snapshot_to_parameter_identification : concern_for_ParameterIdentificationMapper
+   {
+      private ModelParameterIdentification _newParameterIdentification;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_parameterIdentification, _project);
+         A.CallTo(() => _outputMappingMapper.MapToModel(_snapshotOutputMapping, A<ParameterIdentificationContext>._)).Returns(_outputMapping);
+         A.CallTo(() => _identificationParameterMapper.MapToModel(_snapshotIdentificationParameter, A<ParameterIdentificationContext>._)).Returns(_identificationParameter);
+         A.CallTo(() => _parameterIdentificationAnalysisMapper.MapToModel(_snapshotParameterIdentificationAnalysis, A<ParameterIdentificationContext>._)).Returns(_parameterIdentificationAnalysis);
+
+         A.CallTo(() => _objectBaseFactory.Create<ModelParameterIdentification>()).Returns(new ModelParameterIdentification());
+      }
+
+      protected override async Task Because()
+      {
+         _newParameterIdentification = await sut.MapToModel(_snapshot, _project);
+      }
+
+      [Observation]
+      public void should_reference_the_used_simulation_defined_in_the_project()
+      {
+         _newParameterIdentification.AllSimulations.ShouldContain(_simulation);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_parameter_identification_configuration()
+      {
+         A.CallTo(() => _parameterIdentificationConfigurationMapper.MapToModel(_snapshot.Configuration, _newParameterIdentification.Configuration)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_have_mapped_the_output_mappings()
+      {
+         _newParameterIdentification.OutputMappings.All.ShouldContain(_outputMapping);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_identification_parameters()
+      {
+         _newParameterIdentification.AllIdentificationParameters.ShouldContain(_identificationParameter);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_parameter_identificaiton_analysis()
+      {
+         _newParameterIdentification.Analyses.ShouldContain(_parameterIdentificationAnalysis);
+      }
+   }
+
+   public class When_mapping_a_parameter_identification_snapshot_referencing_an_unknown_simulation_to_parameter_identification : concern_for_ParameterIdentificationMapper
+   {
+      private string _unkownSimulation;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_parameterIdentification, _project);
+         _unkownSimulation = "UNKOWN";
+         _snapshot.Simulations = new[] {_unkownSimulation};
+      }
+
+      protected override Task Because()
+      {
+         return sut.MapToModel(_snapshot, _project);
+      }
+
+      [Observation]
+      public void should_log_the_fact_that_a_simulation_is_unknown()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.Error.CouldNotFindSimulation(_unkownSimulation), LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 }

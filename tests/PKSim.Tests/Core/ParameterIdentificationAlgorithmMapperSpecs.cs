@@ -20,7 +20,7 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _extendedPropertyMapper = A.Fake<ExtendedPropertyMapper>();
-         _property1 = new ExtendedProperty<string> {Name = "Hello", Value = "Val"};
+         _property1 = new ExtendedProperty<string> {Name = "Hello", Value = "Val", FullName = "This is full", Description = "Description"};
          _algoProperties = new OptimizationAlgorithmProperties("PROP") {_property1};
 
          sut = new ParameterIdentificationAlgorithmMapper(_extendedPropertyMapper);
@@ -56,6 +56,33 @@ namespace PKSim.Core
       {
          _snapshotExtendedProperty.Description.ShouldBeNull();
          _snapshotExtendedProperty.FullName.ShouldBeNull();
+      }
+   }
+
+   public class When_mapping_a_parameter_identification_algorithm_snapshot_to_algoritm_properties : concern_for_ParameterIdentificationAlgorithmMapper
+   {
+      private OptimizationAlgorithmProperties _newAlgorithmProperties;
+      private IExtendedProperty _newExtendedProperties;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_algoProperties);
+         _newExtendedProperties = new ExtendedProperty<string> { Name = "Hello", Value = "Val", FullName = "This is full", Description = "Description" };
+
+         A.CallTo(() => _extendedPropertyMapper.MapToModel(_snapshotExtendedProperty)).Returns(_newExtendedProperties);
+      }
+
+      protected override async Task Because()
+      {
+         _newAlgorithmProperties = await sut.MapToModel(_snapshot);
+      }
+
+      [Observation]
+      public void should_return_an_algorithm_properties_object_with_the_expected_properties()
+      {
+         _newAlgorithmProperties.Name.ShouldBeEqualTo(_algoProperties.Name);
+         _newAlgorithmProperties.ShouldContain(_newExtendedProperties);
       }
    }
 }

@@ -2,7 +2,7 @@
 
 namespace PKSim.Core.Snapshots
 {
-   public class ParameterIdentificationRunMode : SnapshotBase
+   public class ParameterIdentificationRunMode 
    {
       public int? NumberOfRuns { get; set; }
       public CalculationMethodCache AllTheSameSelection { get; set; }
