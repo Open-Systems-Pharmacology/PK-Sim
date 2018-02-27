@@ -6,16 +6,15 @@ using PKSim.Core.Extensions;
 using SnapshotDataRepository = PKSim.Core.Snapshots.DataRepository;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using ModelDataColumn = OSPSuite.Core.Domain.Data.DataColumn;
-using ModelExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ObservedDataMapper : ObjectBaseSnapshotMapperBase<ModelDataRepository, SnapshotDataRepository>
+   public class DataRepositoryMapper : ObjectBaseSnapshotMapperBase<ModelDataRepository, SnapshotDataRepository>
    {
       private readonly ExtendedPropertyMapper _extendedPropertyMapper;
       private readonly DataColumnMapper _dataColumnMapper;
 
-      public ObservedDataMapper(ExtendedPropertyMapper extendedPropertyMapper, DataColumnMapper dataColumnMapper)
+      public DataRepositoryMapper(ExtendedPropertyMapper extendedPropertyMapper, DataColumnMapper dataColumnMapper)
       {
          _extendedPropertyMapper = extendedPropertyMapper;
          _dataColumnMapper = dataColumnMapper;

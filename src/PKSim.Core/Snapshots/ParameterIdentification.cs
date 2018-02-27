@@ -6,5 +6,6 @@
       public ParameterIdentificationConfiguration Configuration { get; set; }
       public OutputMapping[] OutputMappings { get; set; }
       public IdentificationParameter[] IdentificationParameters { get; set; }
+      public ParameterIdentificationAnalysis[] Analyses { get; set; }
    }
 }

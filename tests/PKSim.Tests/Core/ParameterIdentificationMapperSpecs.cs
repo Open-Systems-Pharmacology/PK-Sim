@@ -28,13 +28,16 @@ namespace PKSim.Core
       private IdentificationParameterMapper _identificationParameterMapper;
       private IdentificationParameter _identificationParameter;
       protected Snapshots.IdentificationParameter _snapshotIdentificationParameter;
+      private ParameterIdentificationAnalysisMapper _parameterIdentificationAnalysisMapper;
+      private ISimulationAnalysis _parameterIdentificationAnalysis;
+      protected ParameterIdentificationAnalysis _snapshotParameterIdentificationAnalysis;
 
       protected override Task Context()
       {
          _parameterIdentificationConfigurationMapper = A.Fake<ParameterIdentificationConfigurationMapper>();
          _outputMappingMapper = A.Fake<OutputMappingMapper>();
          _identificationParameterMapper = A.Fake<IdentificationParameterMapper>();
-
+         _parameterIdentificationAnalysisMapper= A.Fake<ParameterIdentificationAnalysisMapper>();
 
          _project = new PKSimProject();
          _simulation = new IndividualSimulation().WithName("S1");
@@ -51,13 +54,19 @@ namespace PKSim.Core
          _parameterIdentification.AddIdentificationParameter(_identificationParameter);
 
          _snapshotIdentificationParameter = new Snapshots.IdentificationParameter();
+         _snapshotParameterIdentificationAnalysis = new ParameterIdentificationAnalysis();
+         _parameterIdentificationAnalysis = A.Fake<ISimulationAnalysis>();
+         _parameterIdentification.AddAnalysis(_parameterIdentificationAnalysis);
 
-         sut = new ParameterIdentificationMapper(_parameterIdentificationConfigurationMapper, _outputMappingMapper, _identificationParameterMapper);
+
+         sut = new ParameterIdentificationMapper(_parameterIdentificationConfigurationMapper, _outputMappingMapper, _identificationParameterMapper,_parameterIdentificationAnalysisMapper);
 
 
          A.CallTo(() => _parameterIdentificationConfigurationMapper.MapToSnapshot(_parameterIdentification.Configuration)).Returns(_snapshotParameterIndentificationConfiguration);
          A.CallTo(() => _outputMappingMapper.MapToSnapshot(_outputMapping)).Returns(_snapshotOutputMapping);
          A.CallTo(() => _identificationParameterMapper.MapToSnapshot(_identificationParameter)).Returns(_snapshotIdentificationParameter);
+         A.CallTo(() => _parameterIdentificationAnalysisMapper.MapToSnapshot(_parameterIdentificationAnalysis)).Returns(_snapshotParameterIdentificationAnalysis);
+
          return _completed;
       }
    }
@@ -91,6 +100,12 @@ namespace PKSim.Core
       public void should_have_mapped_the_identification_parameters()
       {
          _snapshot.IdentificationParameters.ShouldContain(_snapshotIdentificationParameter);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_parameter_identificaiton_analysis()
+      {
+         _snapshot.Analyses.ShouldContain(_snapshotParameterIdentificationAnalysis);
       }
    }
 }

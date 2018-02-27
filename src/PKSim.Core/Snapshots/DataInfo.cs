@@ -5,7 +5,7 @@ namespace PKSim.Core.Snapshots
 {
    public class DataInfo : SnapshotBase
    {
-      public ColumnOrigins Origin { get; set; }
+      public ColumnOrigins? Origin { get; set; }
       public AuxiliaryType AuxiliaryType { get; set; }
       public DateTime Date { get; set; }
       public string Source { get; set; }

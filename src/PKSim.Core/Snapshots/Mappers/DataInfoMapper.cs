@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Repositories;
 using SnapshotDataInfo = PKSim.Core.Snapshots.DataInfo;
 using ModelDataInfo = OSPSuite.Core.Domain.Data.DataInfo;
-using ModelExtendedProperties = OSPSuite.Core.Domain.ExtendedProperties;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -30,8 +30,8 @@ namespace PKSim.Core.Snapshots.Mappers
             x.Date = dataInfo.Date;
             x.LLOQ = dataInfo.LLOQ;
             x.MolWeight = molWeightToDisplayValue(dataInfo);
-            x.Origin = dataInfo.Origin;
-            x.Source = dataInfo.Source;
+            x.Origin = SnapshotValueFor(dataInfo.Origin, ColumnOrigins.Undefined);
+            x.Source = SnapshotValueFor(dataInfo.Source);
          });
          snapshot.ExtendedProperties = await _extendedPropertyMapper.MapToSnapshots(dataInfo.ExtendedProperties);
          return snapshot;
@@ -46,7 +46,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelDataInfo> MapToModel(SnapshotDataInfo snapshot)
       {
-         var dataInfo = new ModelDataInfo(snapshot.Origin)
+         var origin = ModelValueFor(snapshot.Origin, ColumnOrigins.Undefined);
+         var dataInfo = new ModelDataInfo(origin)
          {
             AuxiliaryType = snapshot.AuxiliaryType,
             Category = snapshot.Category,
@@ -54,7 +55,7 @@ namespace PKSim.Core.Snapshots.Mappers
             Date = snapshot.Date,
             LLOQ = snapshot.LLOQ,
             MolWeight = molWeightToBaseValue(snapshot),
-            Source = snapshot.Source,
+            Source = ModelValueFor(snapshot.Source)
          };
 
          var extendedProperties = await _extendedPropertyMapper.MapToModels(snapshot.ExtendedProperties);

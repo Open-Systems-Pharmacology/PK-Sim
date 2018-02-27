@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using ModelQuantityInfo = OSPSuite.Core.Domain.Data.QuantityInfo;
 using SnapshotQuantityInfo = PKSim.Core.Snapshots.QuantityInfo;
@@ -11,21 +12,25 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          return SnapshotFrom(quantityInfo, snapshot =>
          {
-            snapshot.OrderIndex = quantityInfo.OrderIndex;
-            snapshot.Path = quantityInfo.PathAsString;
-            snapshot.Type = quantityInfo.Type;
-            snapshot.Name = quantityInfo.Name;
+            snapshot.OrderIndex = SnapshotValueFor(quantityInfo.OrderIndex);
+            snapshot.Path = SnapshotValueFor(quantityInfo.PathAsString);
+            snapshot.Type = SnapshotValueFor(quantityInfo.Type, QuantityType.Undefined);
+            snapshot.Name = SnapshotValueFor(quantityInfo.Name);
          });
       }
 
       public override Task<ModelQuantityInfo> MapToModel(SnapshotQuantityInfo snapshot)
       {
-         var modelQuantityInfo = new ModelQuantityInfo(snapshot.Name, snapshot.Path.ToPathArray(), snapshot.Type)
+         var name = ModelValueFor(snapshot.Name);
+         var type = ModelValueFor(snapshot.Type, QuantityType.Undefined);
+         var path = ModelValueFor(snapshot.Path);
+
+         var quantityInfo = new ModelQuantityInfo(name, path.ToPathArray(), type)
          {
-            OrderIndex = snapshot.OrderIndex
+            OrderIndex = ModelValueFor(snapshot.OrderIndex)
          };
 
-         return Task.FromResult(modelQuantityInfo);
+         return Task.FromResult(quantityInfo);
       }
    }
 }

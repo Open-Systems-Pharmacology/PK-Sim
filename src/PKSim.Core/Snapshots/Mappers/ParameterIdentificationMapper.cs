@@ -13,16 +13,19 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ParameterIdentificationConfigurationMapper _parameterIdentificationConfigurationMapper;
       private readonly OutputMappingMapper _outputMappingMapper;
       private readonly IdentificationParameterMapper _identificationParameterMapper;
+      private readonly ParameterIdentificationAnalysisMapper _parameterIdentificationAnalysisMapper;
 
       public ParameterIdentificationMapper(
          ParameterIdentificationConfigurationMapper parameterIdentificationConfigurationMapper,
          OutputMappingMapper outputMappingMapper,
-         IdentificationParameterMapper identificationParameterMapper
+         IdentificationParameterMapper identificationParameterMapper,
+         ParameterIdentificationAnalysisMapper parameterIdentificationAnalysisMapper
       )
       {
          _parameterIdentificationConfigurationMapper = parameterIdentificationConfigurationMapper;
          _outputMappingMapper = outputMappingMapper;
          _identificationParameterMapper = identificationParameterMapper;
+         _parameterIdentificationAnalysisMapper = parameterIdentificationAnalysisMapper;
       }
 
       public override async Task<SnapshotParameterIdentification> MapToSnapshot(ModelParameterIdentification parameterIdentification, PKSimProject context)
@@ -31,6 +34,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Configuration = await _parameterIdentificationConfigurationMapper.MapToSnapshot(parameterIdentification.Configuration);
          snapshot.OutputMappings = await _outputMappingMapper.MapToSnapshots(parameterIdentification.AllOutputMappings);
          snapshot.IdentificationParameters = await _identificationParameterMapper.MapToSnapshots(parameterIdentification.AllIdentificationParameters);
+         snapshot.Analyses = await _parameterIdentificationAnalysisMapper.MapToSnapshots(parameterIdentification.Analyses);
          return snapshot;
       }
 

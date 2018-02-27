@@ -264,6 +264,7 @@
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterDefaultStateUpdaterSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationAlgorithmMapperSpecs.cs" />
+    <Compile Include="Core\ParameterIdentificationAnalysisMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationConfigurationMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationRunModeMapperSpecs.cs" />

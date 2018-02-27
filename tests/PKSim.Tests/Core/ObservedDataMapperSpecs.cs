@@ -12,7 +12,7 @@ using SnapshotDataRepository = PKSim.Core.Snapshots.DataRepository;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ObservedDataMapper : ContextSpecificationAsync<ObservedDataMapper>
+   public abstract class concern_for_ObservedDataMapper : ContextSpecificationAsync<DataRepositoryMapper>
    {
       protected DataColumnMapper _dataColumnMapper;
       protected ExtendedPropertyMapper _extendedPropertyMapper;
@@ -29,7 +29,7 @@ namespace PKSim.Core
       {
          _dataColumnMapper = A.Fake<DataColumnMapper>();
          _extendedPropertyMapper = A.Fake<ExtendedPropertyMapper>();
-         sut = new ObservedDataMapper(_extendedPropertyMapper, _dataColumnMapper);
+         sut = new DataRepositoryMapper(_extendedPropertyMapper, _dataColumnMapper);
 
          _dataRepository = DomainHelperForSpecs.ObservedData();
          _dataColumn = _dataRepository.ObservationColumns().First();

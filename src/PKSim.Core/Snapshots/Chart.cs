@@ -13,6 +13,5 @@ namespace PKSim.Core.Snapshots
       public string OriginText { get; set; }
       public bool? IncludeOriginData { get; set; }
       public bool? PreviewSettings { get; set; }
-
    }
 }

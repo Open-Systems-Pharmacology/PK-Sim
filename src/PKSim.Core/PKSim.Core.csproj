@@ -880,6 +880,7 @@
     <Compile Include="Snapshots\Mappers\OriginDataMapper.cs" />
     <Compile Include="Snapshots\Mappers\OutputMappingMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationAlgorithmMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationAnalysisMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationConfigurationMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationRunModeMapper.cs" />
@@ -898,7 +899,7 @@
     <Compile Include="Snapshots\Mappers\IndividualMapper.cs" />
     <Compile Include="Snapshots\Mappers\MoleculeMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObjectBaseSnapshotMapperBase.cs" />
-    <Compile Include="Snapshots\Mappers\ObservedDataMapper.cs" />
+    <Compile Include="Snapshots\Mappers\DataRepositoryMapper.cs" />
     <Compile Include="Snapshots\Mappers\OntogenyMapper.cs" />
     <Compile Include="Snapshots\Mappers\OutputIntervalMapper.cs" />
     <Compile Include="Snapshots\Mappers\OutputSchemaMapper.cs" />
@@ -936,6 +937,7 @@
     <Compile Include="Snapshots\OutputSelections.cs" />
     <Compile Include="Snapshots\Parameter.cs" />
     <Compile Include="Snapshots\ParameterIdentification.cs" />
+    <Compile Include="Snapshots\ParameterIdentificationAnalysis.cs" />
     <Compile Include="Snapshots\ParameterIdentificationConfiguration.cs" />
     <Compile Include="Snapshots\ParameterIdentificationRunMode.cs" />
     <Compile Include="Snapshots\ParameterRange.cs" />
