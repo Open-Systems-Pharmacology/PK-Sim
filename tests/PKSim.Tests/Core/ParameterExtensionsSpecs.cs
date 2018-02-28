@@ -205,4 +205,47 @@ namespace PKSim.Core
          _parameter.ValueDiffersFromDefault().ShouldBeTrue();
       }
    }
+
+   public class When_checking_if_a_parameter_should_be_exported_to_snapshot : StaticContextSpecification
+   {
+      private IParameter _parameter;
+
+      protected override void Context()
+      {
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue();
+      }
+
+      [Observation]
+      public void should_return_false_if_the_parameter_is_a_default_parmaeter()
+      {
+         _parameter.IsDefault = true;
+         _parameter.ShouldExportToSnapshot().ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_false_if_the_parameter_formula_cannot_be_evaluated()
+      {
+         _parameter.IsDefault = false;
+         _parameter.Formula = new ExplicitFormula("P1+P2");
+         _parameter.IsFixedValue = false;
+         _parameter.ShouldExportToSnapshot().ShouldBeFalse();
+      }
+      
+      [Observation]
+      public void should_return_false_if_the_parameter_value_is_NaN()
+      {
+         _parameter.IsDefault = false;
+         _parameter.Value = double.NaN;
+         _parameter.ShouldExportToSnapshot().ShouldBeFalse();
+      }
+
+
+      [Observation]
+      public void should_return_true_otherwise()
+      {
+         _parameter.IsDefault = false;
+         _parameter.Value = 10;
+         _parameter.ShouldExportToSnapshot().ShouldBeTrue();
+      }
+   }
 }

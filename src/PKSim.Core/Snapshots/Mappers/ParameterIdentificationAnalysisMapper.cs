@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -52,7 +49,6 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ISimulationAnalysis> MapToModel(ParameterIdentificationAnalysis snapshot, ParameterIdentificationContext context)
       {
          var simulationAnalysis = createAnalysisFrom(snapshot.Type);
-         _parameterIdentificationAnalysisChartMapper.ChartFactoryFunc = () => createChartFrom(snapshot.Type);
 
          if (simulationAnalysis != null)
             simulationAnalysis.Id = _idGenerator.NewId();
@@ -61,6 +57,7 @@ namespace PKSim.Core.Snapshots.Mappers
             var localDataRepositories = await _dataRepositoryMapper.MapToModels(snapshot.DataRepositories);
             var simulationAnalysisContext = new SimulationAnalysisContext(localDataRepositories);
             simulationAnalysisContext.AddDataRepositories(context.Project.AllDataRepositories());
+            _parameterIdentificationAnalysisChartMapper.ChartFactoryFunc = () => createChartFrom(snapshot.Type);
             simulationAnalysis = await _parameterIdentificationAnalysisChartMapper.MapToModel(snapshot.Chart, simulationAnalysisContext);
          }
 

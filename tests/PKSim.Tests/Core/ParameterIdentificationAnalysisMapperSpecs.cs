@@ -5,9 +5,11 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
+using ParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 
 namespace PKSim.Core
 {
@@ -21,12 +23,15 @@ namespace PKSim.Core
       protected DataRepository _localRepository;
       protected Snapshots.DataRepository _snapshotLocalRepository;
       private IIdGenerator _idGenerator;
+      protected ParameterIdentificationContext _parameterIdentificationContext;
+      private ParameterIdentification _parameterIdentification;
+      private PKSimProject _project;
 
       protected override Task Context()
       {
          _parameterIdentificationAnalysisChartMapper = A.Fake<ParameterIdentificationAnalysisChartMapper>();
          _dataRepositoryMapper = A.Fake<DataRepositoryMapper>();
-         _idGenerator= A.Fake<IIdGenerator>();
+         _idGenerator = A.Fake<IIdGenerator>();
          sut = new ParameterIdentificationAnalysisMapper(_parameterIdentificationAnalysisChartMapper, _dataRepositoryMapper, _idGenerator);
 
          _parameterIdentificationAnalysis = new T().WithName("Chart");
@@ -34,6 +39,10 @@ namespace PKSim.Core
          _localRepository = DomainHelperForSpecs.ObservedData();
          _snapshotLocalRepository = new Snapshots.DataRepository();
          A.CallTo(() => _dataRepositoryMapper.MapToSnapshot(_localRepository)).Returns(_snapshotLocalRepository);
+
+         _parameterIdentification = new ParameterIdentification();
+         _project = new PKSimProject();
+         _parameterIdentificationContext = new ParameterIdentificationContext(_parameterIdentification, _project);
          return _completed;
       }
    }
@@ -62,6 +71,28 @@ namespace PKSim.Core
       {
          _snapshot.Chart.ShouldBeNull();
          _snapshot.DataRepositories.ShouldBeNull();
+      }
+   }
+
+   public class When_mapping_a_parameter_identification_residual_histogram_snapshot_tp_analysis : concern_for_ParameterIdentificationAnalysisMapper<ParameterIdentificationResidualHistogram>
+   {
+      private ISimulationAnalysis _newAnalysis;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_parameterIdentificationAnalysis);
+      }
+
+      protected override async Task Because()
+      {
+         _newAnalysis = await sut.MapToModel(_snapshot, _parameterIdentificationContext);
+      }
+
+      [Observation]
+      public void should_return_the_expected_analysis()
+      {
+         _newAnalysis.ShouldBeAnInstanceOf<ParameterIdentificationResidualHistogram>();
       }
    }
 
@@ -100,6 +131,36 @@ namespace PKSim.Core
       public void should_set_the_other_properties_to_null()
       {
          _snapshot.DataRepositories.ShouldBeNull();
+      }
+   }
+
+   public class When_mapping_a_parameter_identification_time_profile_analysis_snapshot_to_analysis : concern_for_ParameterIdentificationAnalysisMapper<ParameterIdentificationTimeProfileChart>
+   {
+      private ISimulationAnalysis _newAnalysis;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _parameterIdentificationAnalysisChartMapper.MapToSnapshot(_parameterIdentificationAnalysis)).Returns(_chartSnapshot);
+         A.CallTo(() => _parameterIdentificationAnalysisChartMapper.MapToModel(_chartSnapshot, A<SimulationAnalysisContext>._)).Returns(new ParameterIdentificationTimeProfileChart());
+         _snapshot = await sut.MapToSnapshot(_parameterIdentificationAnalysis);
+      }
+
+      protected override async Task Because()
+      {
+         _newAnalysis = await sut.MapToModel(_snapshot, _parameterIdentificationContext);
+      }
+
+      [Observation]
+      public void should_return_the_expected_analysis()
+      {
+         _newAnalysis.ShouldBeAnInstanceOf<ParameterIdentificationTimeProfileChart>();
+      }
+
+      [Observation]
+      public void should_ensure_that_the_factory_method_returns_the_expected_chart()
+      {
+         _parameterIdentificationAnalysisChartMapper.ChartFactoryFunc().ShouldBeAnInstanceOf<ParameterIdentificationTimeProfileChart>();
       }
    }
 

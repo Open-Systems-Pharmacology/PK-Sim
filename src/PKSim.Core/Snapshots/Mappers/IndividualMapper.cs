@@ -45,7 +45,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelIndividual individual)
       {
-         var changedParameters = individual.Organism.GetAllChildren<IParameter>(x => x.ParameterHasChanged());
+         var changedParameters = individual.Organism.GetAllChildren<IParameter>(x => x.ShouldExportToSnapshot());
          return _parameterMapper.LocalizedParametersFrom(changedParameters);
       }
 

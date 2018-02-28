@@ -98,9 +98,6 @@ namespace PKSim.Core.Model
          return _allBuildingBlocks.OfType<T>().FindByName(templateBuildingBlockName);
       }
 
-      //TODO MOVE TO CORE
-      public virtual DataRepository ObservedDataBy(UsedObservedData usedObservedData) => ObservedDataBy(usedObservedData.Id);
-
       /// <summary>
       ///    Add a building block to the project
       /// </summary>

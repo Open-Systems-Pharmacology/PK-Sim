@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using DevExpress.LookAndFeel;
 using DevExpress.XtraEditors;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
 using PKSim.UI.BootStrapping;
@@ -24,7 +25,7 @@ namespace PKSim
 
          try
          {
-            ApplicationStartup.Initialize();
+            ApplicationStartup.Initialize(LogLevel.Debug);
             IoC.Resolve<PKSimApplication>().Run(args);
          }
          catch (Exception e)

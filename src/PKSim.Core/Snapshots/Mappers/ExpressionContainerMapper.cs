@@ -36,7 +36,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var snapshot = await SnapshotFrom(expressionContainer, x => { x.Name = expressionContainer.Name; });
 
-         if (expressionParameter.ParameterHasChanged())
+         if (expressionParameter.ShouldExportToSnapshot())
             await _parameterMapper.UpdateSnapshotFromParameter(snapshot, expressionParameter);
 
          mapTransporterExpressionProperties(snapshot, transportedExpressionContainer);
@@ -54,7 +54,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private bool shouldMapContainer(IParameter expressionParameter, TransporterExpressionContainer transportedExpressionContainer)
       {
-         if (expressionParameter.ParameterHasChanged())
+         if (expressionParameter.ShouldExportToSnapshot())
             return true;
 
          if (transportedExpressionContainer == null)

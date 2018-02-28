@@ -160,13 +160,11 @@ namespace PKSim.Core
       private CategorialParameterIdentificationRunMode _categorialParameterIdentificationRunMode;
       private CalculationMethodCache _calculationMethodSnapshot;
       private CategorialParameterIdentificationRunMode _newCategorialParameterIdentificationRunMode;
-      private OSPSuite.Core.Domain.CalculationMethodCache _newCalculationMethodAllTheSame;
 
       protected override async Task Context()
       {
          await base.Context();
          _calculationMethodSnapshot = new CalculationMethodCache();
-         _newCalculationMethodAllTheSame = new OSPSuite.Core.Domain.CalculationMethodCache();
          _categorialParameterIdentificationRunMode = new CategorialParameterIdentificationRunMode {AllTheSame = true};
          A.CallTo(() => _calculationMethodMapper.MapToSnapshot(_categorialParameterIdentificationRunMode.AllTheSameSelection)).Returns(_calculationMethodSnapshot);
          _snapshot = await sut.MapToSnapshot(_categorialParameterIdentificationRunMode);

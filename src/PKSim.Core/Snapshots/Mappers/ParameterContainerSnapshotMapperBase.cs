@@ -36,7 +36,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return AddParametersToSnapshot(model.AllParameters(ShouldExportParameterToSnapshot), snapshot);
       }
 
-      protected virtual bool ShouldExportParameterToSnapshot(IParameter parameter) => parameter.ParameterHasChanged();
+      protected virtual bool ShouldExportParameterToSnapshot(IParameter parameter) => parameter.ShouldExportToSnapshot();
 
       protected Task UpdateParametersFromSnapshot(TSnapshot snapshot, IContainer container, string containerDescriptor = null)
       {

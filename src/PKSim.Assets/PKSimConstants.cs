@@ -1022,6 +1022,8 @@ namespace PKSim.Assets
          public static string LoadingSnapshot(string snapshotFile, string type) => $"Loading {type} from snapshot file '{snapshotFile}'";
 
          public static string SnapshotLoaded(string typeToLoad) => $"{typeToLoad} loaded from snaphsot";
+
+         public static string LoadingSimulation(string simulationName) => $"Loading simulation {simulationName}...";
       }
 
       public static class MenuNames

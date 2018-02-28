@@ -35,7 +35,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelParameterIdentificationConfiguration> MapToModel(SnapshotParameterIdentificationConfiguration snapshot, ModelParameterIdentificationConfiguration parameterIdentificationConfiguration)
       {
-         parameterIdentificationConfiguration.LLOQMode = (LLOQMode)LLOQModes.ByName(snapshot.LLOQMode); //TODO remove cast 
+         parameterIdentificationConfiguration.LLOQMode = LLOQModes.ByName(snapshot.LLOQMode); 
          parameterIdentificationConfiguration.RemoveLLOQMode = RemoveLLOQModes.ByName(snapshot.RemoveLLOQMode);
          parameterIdentificationConfiguration.CalculateJacobian = snapshot.CalculateJacobian;
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.TeXReporting.Items;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -91,7 +90,6 @@ namespace PKSim.Core.Snapshots.Mappers
          return project;
       }
 
-  
       private Task<Classification[]> mapClassifications<TClassifiable>(ModelProject project) where TClassifiable : class, IClassifiableWrapper, new()
       {
          return _classificationSnapshotTask.MapClassificationsToSnapshots<TClassifiable>(project);
@@ -107,12 +105,11 @@ namespace PKSim.Core.Snapshots.Mappers
          return awaitAs<ModelDataRepository>(mapSnapshotsToModels(snapshotRepositories));
       }
 
-      private Task<ISimulationComparison[]> allSimulationComparisonsFrom(SimulationComparison[] snapshotSimulationComparisons, ModelProject project) 
+      private Task<ISimulationComparison[]> allSimulationComparisonsFrom(SimulationComparison[] snapshotSimulationComparisons, ModelProject project)
          => _simulationComparisonMapper.MapToModels(snapshotSimulationComparisons, project);
 
-      private Task<ModelParameterIdentification[]> allParameterIdentificationsFrom(ParameterIdentification[] snapshotParameterIdentifications, ModelProject project) 
+      private Task<ModelParameterIdentification[]> allParameterIdentificationsFrom(ParameterIdentification[] snapshotParameterIdentifications, ModelProject project)
          => _parameterIdentificationMapper.MapToModels(snapshotParameterIdentifications, project);
-      
 
       private async Task<SimulationComparison[]> mapSimulationComparisonsToSnapshots(IReadOnlyCollection<ISimulationComparison> allSimulationComparisons)
       {
