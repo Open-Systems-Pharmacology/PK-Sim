@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
@@ -19,6 +20,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly SimulationMapper _simulationMapper;
       private readonly SimulationComparisonMapper _simulationComparisonMapper;
       private readonly ParameterIdentificationMapper _parameterIdentificationMapper;
+      private readonly QualificationPlanMapper _qualificationPlanMapper;
       private readonly IClassificationSnapshotTask _classificationSnapshotTask;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
@@ -27,6 +29,7 @@ namespace PKSim.Core.Snapshots.Mappers
          SimulationMapper simulationMapper,
          SimulationComparisonMapper simulationComparisonMapper,
          ParameterIdentificationMapper parameterIdentificationMapper,
+         QualificationPlanMapper qualificationPlanMapper,
          IExecutionContext executionContext,
          IClassificationSnapshotTask classificationSnapshotTask,
          ILazyLoadTask lazyLoadTask)
@@ -34,6 +37,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _simulationMapper = simulationMapper;
          _simulationComparisonMapper = simulationComparisonMapper;
          _parameterIdentificationMapper = parameterIdentificationMapper;
+         _qualificationPlanMapper = qualificationPlanMapper;
          _classificationSnapshotTask = classificationSnapshotTask;
          _lazyLoadTask = lazyLoadTask;
          //required to load the snapshot mapper via execution context to avoid circular references
@@ -58,6 +62,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>(), project);
          snapshot.ParameterIdentifications = await mapParameterIdentificationToSnapshots(project.AllParameterIdentifications, project);
          snapshot.SimulationComparisons = await mapSimulationComparisonsToSnapshots(project.AllSimulationComparisons);
+         snapshot.QualificationPlans = await mapQualificationPlansToSnapshots(project.AllQualificationPlans);
          snapshot.ObservedDataClassifications = await mapClassifications<ClassifiableObservedData>(project);
          snapshot.SimulationComparisonClassifications = await mapClassifications<ClassifiableComparison>(project);
          snapshot.SimulationClassifications = await mapClassifications<ClassifiableSimulation>(project);
@@ -84,11 +89,15 @@ namespace PKSim.Core.Snapshots.Mappers
          var allParameterIdentifications = await allParameterIdentificationsFrom(snapshot.ParameterIdentifications, project);
          allParameterIdentifications?.Each(parameterIdentification => addParameterIdentificationToProject(project, parameterIdentification));
 
+         var allQualificationPlans = await allQualificationPlansFrom(snapshot.QualificationPlans, project);
+         allQualificationPlans?.Each(qualificationPlan => addQualificationPlanToProject(project, qualificationPlan));
+
          //Map all classifications once project is loaded
          await updateProjectClassifications(snapshot, project);
 
          return project;
       }
+
 
       private Task<Classification[]> mapClassifications<TClassifiable>(ModelProject project) where TClassifiable : class, IClassifiableWrapper, new()
       {
@@ -111,6 +120,9 @@ namespace PKSim.Core.Snapshots.Mappers
       private Task<ModelParameterIdentification[]> allParameterIdentificationsFrom(ParameterIdentification[] snapshotParameterIdentifications, ModelProject project)
          => _parameterIdentificationMapper.MapToModels(snapshotParameterIdentifications, project);
 
+      private Task<Model.QualificationPlan[]> allQualificationPlansFrom(QualificationPlan[] qualificationPlans, ModelProject project)
+         => _qualificationPlanMapper.MapToModels(qualificationPlans, project);
+
       private async Task<SimulationComparison[]> mapSimulationComparisonsToSnapshots(IReadOnlyCollection<ISimulationComparison> allSimulationComparisons)
       {
          if (!allSimulationComparisons.Any())
@@ -122,18 +134,17 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<Model.Simulation> allSimulations, ModelProject project)
       {
-         if (!allSimulations.Any())
-            return null;
-
          allSimulations.Each(loadSimulation);
          return await _simulationMapper.MapToSnapshots(allSimulations, project);
       }
 
+      private async Task<QualificationPlan[]> mapQualificationPlansToSnapshots(IReadOnlyCollection<Model.QualificationPlan> allQualificationPlans)
+      {
+         return await _qualificationPlanMapper.MapToSnapshots(allQualificationPlans);
+      }
+
       private async Task<ParameterIdentification[]> mapParameterIdentificationToSnapshots(IReadOnlyCollection<ModelParameterIdentification> allParameterIdentifications, ModelProject project)
       {
-         if (!allParameterIdentifications.Any())
-            return null;
-
          allParameterIdentifications.Each(load);
          return await _parameterIdentificationMapper.MapToSnapshots(allParameterIdentifications, project);
       }
@@ -194,6 +205,12 @@ namespace PKSim.Core.Snapshots.Mappers
       private void addParameterIdentificationToProject(ModelProject project, ModelParameterIdentification parameterIdentification)
       {
          addClassifiableToProject<ClassifiableParameterIdentification, ModelParameterIdentification>(project, parameterIdentification, project.AddParameterIdentification);
+      }
+
+      private void addQualificationPlanToProject(ModelProject project, Model.QualificationPlan qualificationPlan)
+      {
+         //TODO when classifiable available
+         project.AddQualificationPlan(qualificationPlan);
       }
 
       private void addClassifiableToProject<TClassifiableWrapper, TSubject>(ModelProject project, TSubject subject, Action<TSubject> addToProjectAction) where TClassifiableWrapper : Classifiable<TSubject>, new() where TSubject : IWithId, IWithName

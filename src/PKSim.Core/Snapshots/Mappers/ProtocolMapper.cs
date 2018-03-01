@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using ModelProtocol = PKSim.Core.Model.Protocol;
@@ -32,9 +31,11 @@ namespace PKSim.Core.Snapshots.Mappers
             case AdvancedProtocol advancedProtocol:
                return createSnapshotFromAdvancedProtocol(advancedProtocol);
          }
+
          return null;
       }
-     public override async Task<ModelProtocol> MapToModel(SnapshotProtocol snapshotProtocol)
+
+      public override async Task<ModelProtocol> MapToModel(SnapshotProtocol snapshotProtocol)
       {
          var modelProtocol = await createModelProtocolFrom(snapshotProtocol);
          MapSnapshotPropertiesToModel(snapshotProtocol, modelProtocol);
@@ -52,10 +53,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<SnapshotProtocol> createSnapshotFromAdvancedProtocol(AdvancedProtocol advancedProtocol)
       {
-         var snapshot = await SnapshotFrom(advancedProtocol, x =>
-         {
-            x.TimeUnit = advancedProtocol.TimeUnit.Name;
-         });
+         var snapshot = await SnapshotFrom(advancedProtocol, x => { x.TimeUnit = advancedProtocol.TimeUnit.Name; });
          snapshot.Schemas = await _schemaMapper.MapToSnapshots(advancedProtocol.AllSchemas);
          return snapshot;
       }

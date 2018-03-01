@@ -167,6 +167,11 @@ namespace PKSim.IntegrationTests
          if (type.Equals(typeof(ClassificationType))) return true;
          if (type.Equals(typeof(PopulationAnalysisType))) return true;
 
+         //TODO not serialized yet
+         if (type.Equals(typeof(QualificationPlan))) return true;
+         if (type.Equals(typeof(RunParameterIdentificationQualificationStep))) return true;
+         if (type.Equals(typeof(RunSimulationQualificationStep))) return true;
+
          return false;
       }
 

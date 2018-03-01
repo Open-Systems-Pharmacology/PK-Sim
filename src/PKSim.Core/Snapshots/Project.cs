@@ -20,6 +20,7 @@ namespace PKSim.Core.Snapshots
       public ParameterIdentification[] ParameterIdentifications { get; set; }
       public DataRepository[] ObservedData { get; set; }
       public SimulationComparison[] SimulationComparisons { get; set; }
+      public QualificationPlan[] QualificationPlans { get; set; }
       public Classification[] ObservedDataClassifications { get; set; }
       public Classification[] SimulationComparisonClassifications { get; set; }
       public Classification[] SimulationClassifications { get; set; }

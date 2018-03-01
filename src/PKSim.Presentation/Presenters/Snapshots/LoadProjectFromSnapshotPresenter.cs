@@ -6,6 +6,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Views.Snapshots;
 
@@ -18,8 +19,21 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
    public class LoadProjectFromSnapshotPresenter : LoadFromSnapshotPresenter<PKSimProject>, ILoadProjectFromSnapshotPresenter
    {
-      public LoadProjectFromSnapshotPresenter(ILoadFromSnapshotView view, ILogPresenter logPresenter, ISnapshotTask snapshotTask, IDialogCreator dialogCreator, IObjectTypeResolver objectTypeResolver, ILogger logger, IEventPublisher eventPublisher) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher)
+      private readonly IQualiticationPlanRunner _qualificationPlanRunner;
+      private readonly IRegistrationTask _registrationTask;
+
+      public LoadProjectFromSnapshotPresenter(ILoadFromSnapshotView view, 
+         ILogPresenter logPresenter, 
+         ISnapshotTask snapshotTask, 
+         IDialogCreator dialogCreator, 
+         IObjectTypeResolver objectTypeResolver, 
+         ILogger logger, 
+         IEventPublisher eventPublisher,
+         IQualiticationPlanRunner qualificationPlanRunner,
+         IRegistrationTask registrationTask) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher)
       {
+         _qualificationPlanRunner = qualificationPlanRunner;
+         _registrationTask = registrationTask;
       }
 
       public PKSimProject LoadProject()
@@ -31,7 +45,27 @@ namespace PKSim.Presentation.Presenters.Snapshots
       protected override async Task<IEnumerable<PKSimProject>> LoadModelAsync(string snapshotFile)
       {
          var project = await _snapshotTask.LoadProjectFromSnapshot(snapshotFile);
-         return new[] {project};
+         _registrationTask.RegisterProject(project);
+         await runQualificationPlans(project);
+         return new[] { project };
+      }
+
+      protected override void ClearModel(IEnumerable<PKSimProject> model)
+      {
+         var projects = model?.ToList();
+         base.ClearModel(projects);
+         _registrationTask.UnregisterProject(projectFrom(projects));
+      }
+
+      private PKSimProject projectFrom(IEnumerable<PKSimProject> projects) => projects?.FirstOrDefault();
+
+      private async Task runQualificationPlans(PKSimProject project)
+      {
+         //needs to be done sequentially
+         foreach (var qualificationPlan in project.AllQualificationPlans)
+         {
+            await _qualificationPlanRunner.RunAsync(qualificationPlan);
+         }
       }
    }
 }

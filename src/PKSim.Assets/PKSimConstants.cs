@@ -460,9 +460,16 @@ namespace PKSim.Assets
 
          public static string PregnantPopulationCanOnlyBeUsedWithMoBiModel(string speciesPopulation) => $"Population based on '{speciesPopulation}' can only be used with pregnancy models imported from MoBi.";
 
-         public static string CouldNotFindSimulation(string simulationName) => $"Cannot find simulation '{simulationName}";
 
-         public static string CouldNotFindOutputInSimulation(string outputFullPath, string simulationName) => $"Cannot find output '{outputFullPath}' in simulation '{simulationName}";
+         public static string CouldNotFindOutputInSimulation(string outputFullPath, string simulationName) => $"Cannot find output '{outputFullPath}' in simulation '{simulationName}'";
+
+         public static string CouldNotFind(string objectType, string objectName) => $"Cannot find {objectType.ToLower()} '{objectName}'";
+
+         public static string CouldNotFindParameterIdentification(string parameterIdentificationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.ParameterIdentification, parameterIdentificationName);
+
+         public static string CouldNotFindQualificationStep(string qualificationStepType) => CouldNotFind(ObjectTypes.QualificationStep, qualificationStepType);
+
+         public static string CouldNotFindSimulation(string simulationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
 
          public static string SimulationResultsFileDoesNotHaveTheExpectedFormat
          {
@@ -846,8 +853,7 @@ namespace PKSim.Assets
 
          public static string SnapshotParameterNotFound(string parameterName) => $"Snapshot parameter '{parameterName}' was not found.";
 
-         public const string SnapshotIsOutdated = "Snapshot is outdated and cannot be loaded.";
-
+         public const string SnapshotIsOutdated = "Snapshot is outdated and cannot be loaded for the following reason: ";
          
          public static string MoleculeTypeNotSupported(string moleculeType) => $"Molecule type '{moleculeType}' not supported.";
 
@@ -880,6 +886,8 @@ namespace PKSim.Assets
          public static string CannotLoadRelatedItemAsObjectAlreadyExistInProject(string objectType, string objectName) => $"Cannot load related item into project. A {objectType.ToLower()} named '{objectName}' already exists.";
 
          public static string CompoundGroupNotFoundFor(string compoundGroup, string compoundName) => $"Cannot find compound group '{compoundGroup}' for compound '{compoundName}'";
+
+         public static string UnableToFindAQualificationStepRunnderFor(string qualificationStep) => $"Cannot find {ObjectTypes.QualificationStep} runnder for '{qualificationStep}'";
       }
 
       public static class Information
@@ -1017,13 +1025,19 @@ namespace PKSim.Assets
             return $"{ObservedDataYAsTooltip(y)}\n{TimeProfileYAsTooltip(lowerValue, upperValue)}";
          }
 
+         public static string Starting(string type, string name) => $"Starting {type.ToLower()} '{name}'...";
+
          public static string ObservedDataYAsTooltip(string y) => ScatterYAsTooltip(y);
 
-         public static string LoadingSnapshot(string snapshotFile, string type) => $"Loading {type} from snapshot file '{snapshotFile}'";
+         public static string LoadingSnapshot(string snapshotFile, string type) => $"Loading {type} from {ObjectTypes.Snapshot.ToLower()} file '{snapshotFile}'";
 
-         public static string SnapshotLoaded(string typeToLoad) => $"{typeToLoad} loaded from snaphsot";
+         public static string SnapshotLoaded(string typeToLoad) => $"{typeToLoad} loaded from {ObjectTypes.Snapshot.ToLower()}";
 
-         public static string LoadingSimulation(string simulationName) => $"Loading simulation {simulationName}...";
+         public static string LoadingSimulation(string simulationName) => $"Loading simulation '{simulationName}'...";
+
+         public static string StartingQualificationPlan(string qualificationPlan) => Starting(ObjectTypes.QualificationPlan, qualificationPlan);
+
+         public static string StartingQualificationStep(string qualificationStep) => Starting(ObjectTypes.QualificationStep, qualificationStep);
       }
 
       public static class MenuNames
@@ -1171,6 +1185,15 @@ namespace PKSim.Assets
          }
       }
 
+      public static class QualificationSteps
+      {
+         public static string RunParameterIdentification(string parameterIdentificationName) => $"Run {OSPSuite.Assets.ObjectTypes.ParameterIdentification.ToLower()} {parameterIdentificationName}";
+
+         public static string RunSimulation(string simulationName) => $"Run {OSPSuite.Assets.ObjectTypes.Simulation.ToLower()} {simulationName}";
+
+         public static string ParameterIdentificationResultsTransferredToSimulations(string parameterIdentificationName) => OSPSuite.Assets.Captions.ParameterIdentification.ParameterIdentificationTransferredToSimulations(parameterIdentificationName);
+      }
+
       public static class ObjectTypes
       {
          public static readonly string Transporter = "Transporter";
@@ -1222,6 +1245,9 @@ namespace PKSim.Assets
          public static readonly string Species = "Species";
          public static readonly string SimulationAnalysisWorkflow = "Analysis";
          public static readonly string IndividualOrPopulation = $"{Individual} or {Population}";
+         public static readonly string QualificationStep = "Qualification Step";
+         public static readonly string QualificationPlan = "Qualification Plan";
+         public static readonly string Snapshot = "Snapshot";
       }
 
       public static class ProteinExpressions

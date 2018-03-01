@@ -279,6 +279,8 @@
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
     <Compile Include="Core\ProcessMappingMapperSpecs.cs" />
     <Compile Include="Core\ProjectMapperSpecs.cs" />
+    <Compile Include="Core\QualificationPlanMapperSpecs.cs" />
+    <Compile Include="Core\QualificationStepMapperSpecs.cs" />
     <Compile Include="Core\QuantityInfoMapperSpecs.cs" />
     <Compile Include="Core\RandomPopulationSettingsMapperSpecs.cs" />
     <Compile Include="Core\SchemaItemMapperSpecs.cs" />
@@ -563,6 +565,10 @@
     <Compile Include="IntegrationTests\RenameBuildingBlockTaskSpecs.cs" />
     <Compile Include="Presentation\EditValueOriginPresenterSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeNamePresenterSpecs.cs" />
+    <Compile Include="Presentation\QualificationStepRunnerFactorySpecs.cs" />
+    <Compile Include="Presentation\QualiticationPlanRunnerSpecs.cs" />
+    <Compile Include="Presentation\RunParameterIdentificationQualificationStepRunnerSpecs.cs" />
+    <Compile Include="Presentation\RunSimulationQualificationStepRunnerSpecs.cs" />
     <Compile Include="Presentation\UserDefinedParametersPresenterSpecs.cs" />
     <Compile Include="Reporting\ReportingSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationsReporterSpecs.cs" />
