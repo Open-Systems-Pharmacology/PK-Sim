@@ -12,4 +12,9 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
    {
       
    }
+
+   public class ClassifiableQualificationPlanXmlSerializer : ClassifiableXmlSerializer<ClassifiableQualificationPlan, QualificationPlan>, IPKSimXmlSerializer
+   {
+
+   }
 }

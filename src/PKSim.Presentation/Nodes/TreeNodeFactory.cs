@@ -22,6 +22,7 @@ namespace PKSim.Presentation.Nodes
       ITreeNode CreateFor(SystemicProcess systemicProcess);
       ITreeNode CreateFor(ModelProperties modelProperties);
       ITreeNode CreateFor(ClassifiableComparison classifiableComparison);
+      ITreeNode CreateFor(ClassifiableQualificationPlan classifiableQualificationPlan);
       ITreeNode CreateFor(PartialProcess partialProcess, string proteinName);
       ITreeNode<RootNodeType> CreateFor(RootNodeType rootNode);
       ITreeNode CreateFor(SystemicProcessNodeType rootNode);
@@ -52,6 +53,8 @@ namespace PKSim.Presentation.Nodes
       }
 
       public ITreeNode CreateFor(ClassifiableComparison classifiableComparison) => new ComparisonNode(classifiableComparison);
+
+      public ITreeNode CreateFor(ClassifiableQualificationPlan classifiableQualificationPlan) => new QualificationPlanNode(classifiableQualificationPlan);
 
       public ITreeNode CreateFor(ClassifiableSimulation simulation) => new SimulationNode(simulation);
 

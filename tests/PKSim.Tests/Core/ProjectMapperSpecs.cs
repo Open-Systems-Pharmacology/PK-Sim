@@ -58,6 +58,7 @@ namespace PKSim.Core
       protected Snapshots.Classification _simulationClassificationSnapshot;
       protected Snapshots.Classification _comparisonClassificationSnapshot;
       protected Snapshots.Classification _parameterIdentificationClassificationSnapshot;
+      protected Snapshots.Classification _qualificationPlanClassificationSnapshot;
       protected ILazyLoadTask _lazyLoadTask;
       protected ParameterIdentificationMapper _parameterIdentificationMapper;
       protected OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification _parameterIdentification;
@@ -96,12 +97,12 @@ namespace PKSim.Core
          _protocol = new SimpleProtocol().WithName("PROTO");
          _population = new RandomPopulation().WithName("POP");
          _observedData = new DataRepository().WithName("OD");
-         _parameterIdentification = new OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification().WithName("PI");
+         _parameterIdentification = new OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification().WithName("PI").WithId("PI_ID");
          _classifiableObservedData = new ClassifiableObservedData {Subject = _observedData};
          _classification = new Classification {ClassificationType = ClassificationType.ObservedData}.WithName("OD Classification");
          _simulationComparison = new IndividualSimulationComparison().WithName("COMP").WithId("SimComp");
          _simulation = new IndividualSimulation().WithName("IND_SIM").WithId("IndSim");
-         _qualificationPlan = new QualificationPlan().WithName("QP");
+         _qualificationPlan = new QualificationPlan().WithName("QP").WithId("QP_ID");
          _project = new PKSimProject();
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(_compound);
@@ -130,6 +131,7 @@ namespace PKSim.Core
          _simulationClassificationSnapshot = new Snapshots.Classification();
          _comparisonClassificationSnapshot = new Snapshots.Classification();
          _parameterIdentificationClassificationSnapshot = new Snapshots.Classification();
+         _qualificationPlanClassificationSnapshot = new Snapshots.Classification();
          _qualificationPlanSnapshot = new Snapshots.QualificationPlan();
          _simulationSnapshot = new Simulation();
 
@@ -150,7 +152,7 @@ namespace PKSim.Core
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableSimulation>(_project)).Returns(new[] {_simulationClassificationSnapshot});
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableComparison>(_project)).Returns(new[] {_comparisonClassificationSnapshot});
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableParameterIdentification>(_project)).Returns(new[] {_parameterIdentificationClassificationSnapshot});
-
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableQualificationPlan>(_project)).Returns(new[] {_qualificationPlanClassificationSnapshot});
 
          return _completed;
       }
@@ -202,6 +204,12 @@ namespace PKSim.Core
       public void should_save_simulation_comparison_classification()
       {
          _snapshot.SimulationComparisonClassifications.ShouldContain(_comparisonClassificationSnapshot);
+      }
+
+      [Observation]
+      public void should_save_qualification_plan_classification()
+      {
+         _snapshot.QualificationPlanClassifications.ShouldContain(_qualificationPlanClassificationSnapshot);
       }
 
       [Observation]
@@ -343,6 +351,12 @@ namespace PKSim.Core
       public void should_udpate_project_classification_for_simulation_comparison()
       {
          A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableComparison, ISimulationComparison>(_snapshot.SimulationComparisonClassifications, _newProject, _newProject.AllSimulationComparisons)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_udpate_project_classification_for_qualification_plan()
+      {
+         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableQualificationPlan, QualificationPlan>(_snapshot.QualificationPlanClassifications, _newProject, _newProject.AllQualificationPlans)).MustHaveHappened();
       }
 
       [Observation]

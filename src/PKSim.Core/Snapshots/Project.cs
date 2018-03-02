@@ -25,5 +25,6 @@ namespace PKSim.Core.Snapshots
       public Classification[] SimulationComparisonClassifications { get; set; }
       public Classification[] SimulationClassifications { get; set; }
       public Classification[] ParameterIdentificationClassifications { get; set; }
+      public Classification[] QualificationPlanClassifications { get; set; }
    }
 }

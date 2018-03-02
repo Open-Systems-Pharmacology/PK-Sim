@@ -67,6 +67,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.SimulationComparisonClassifications = await mapClassifications<ClassifiableComparison>(project);
          snapshot.SimulationClassifications = await mapClassifications<ClassifiableSimulation>(project);
          snapshot.ParameterIdentificationClassifications = await mapClassifications<ClassifiableParameterIdentification>(project);
+         snapshot.QualificationPlanClassifications = await mapClassifications<ClassifiableQualificationPlan>(project);
          return snapshot;
       }
 
@@ -182,6 +183,7 @@ namespace PKSim.Core.Snapshots.Mappers
             _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableSimulation, Model.Simulation>(snapshot.SimulationClassifications, project, project.All<Model.Simulation>()),
             _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableComparison, ISimulationComparison>(snapshot.SimulationComparisonClassifications, project, project.AllSimulationComparisons),
             _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableParameterIdentification, ModelParameterIdentification>(snapshot.ParameterIdentificationClassifications, project, project.AllParameterIdentifications),
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableQualificationPlan, Model.QualificationPlan>(snapshot.QualificationPlanClassifications, project, project.AllQualificationPlans),
          };
 
          return Task.WhenAll(tasks);
@@ -209,8 +211,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void addQualificationPlanToProject(ModelProject project, Model.QualificationPlan qualificationPlan)
       {
-         //TODO when classifiable available
-         project.AddQualificationPlan(qualificationPlan);
+         addClassifiableToProject<ClassifiableQualificationPlan, Model.QualificationPlan>(project, qualificationPlan, project.AddQualificationPlan);
       }
 
       private void addClassifiableToProject<TClassifiableWrapper, TSubject>(ModelProject project, TSubject subject, Action<TSubject> addToProjectAction) where TClassifiableWrapper : Classifiable<TSubject>, new() where TSubject : IWithId, IWithName
