@@ -14,7 +14,7 @@ namespace PKSim.Core
       protected override Task Context()
       {
          sut = new ExtendedPropertyMapper();
-         return Task.FromResult(true);
+         return _completed;
       }
    }
 

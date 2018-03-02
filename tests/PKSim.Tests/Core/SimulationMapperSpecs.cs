@@ -73,6 +73,7 @@ namespace PKSim.Core
       protected EventMapping _eventMapping;
       protected EventSelection _eventSelection;
       protected ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
+      private ILogger _logger;
 
       protected override Task Context()
       {
@@ -93,13 +94,17 @@ namespace PKSim.Core
          _simulationRunner = A.Fake<ISimulationRunner>();
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
          _simulationParameterOriginIdUpdater= A.Fake<ISimulationParameterOriginIdUpdater>();
+         _logger= A.Fake<ILogger>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
             _advancedParameterMapper, _eventMappingMapper, _curveChartMapper,
             _populationAnalysisChartMapper, _processMappingMapper,
             _simulationFactory, _executionContext, _simulationModelCreator,
-            _simulationBuildingBlockUpdater, _modelPropertiesTask, _simulationRunner, _simulationParameterOriginIdUpdater);
+            _simulationBuildingBlockUpdater, _modelPropertiesTask,
+            _simulationRunner, _simulationParameterOriginIdUpdater,
+            _logger
+            );
 
          _project = new PKSimProject();
          _individual = new Individual {Name = "IND"};

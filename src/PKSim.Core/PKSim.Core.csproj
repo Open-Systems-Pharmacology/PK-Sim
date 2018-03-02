@@ -80,11 +80,11 @@
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.38, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.38\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.43, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.43\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.38, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.38\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.43, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.43\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
@@ -846,6 +846,7 @@
     <Compile Include="Snapshots\CurveOptions.cs" />
     <Compile Include="Snapshots\ExpressionContainer.cs" />
     <Compile Include="Snapshots\GroupingDefinition.cs" />
+    <Compile Include="Snapshots\IdentificationParameter.cs" />
     <Compile Include="Snapshots\Mappers\ChartMapper.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationContext.cs" />
     <Compile Include="Snapshots\Mappers\ClassificationMapper.cs" />
@@ -860,7 +861,6 @@
     <Compile Include="Snapshots\DistributionMetaData.cs" />
     <Compile Include="Snapshots\Event.cs" />
     <Compile Include="Snapshots\EventSelection.cs" />
-    <Compile Include="Snapshots\ExtendedProperties.cs" />
     <Compile Include="Snapshots\Formulation.cs" />
     <Compile Include="Snapshots\FormulationSelection.cs" />
     <Compile Include="Snapshots\Individual.cs" />
@@ -875,8 +875,16 @@
     <Compile Include="Snapshots\Mappers\CompoundPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\CurveOptionsMapper.cs" />
     <Compile Include="Snapshots\Mappers\ExpressionContainerMapper.cs" />
+    <Compile Include="Snapshots\Mappers\IdentificationParameterMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObservedDataCollectionMappper.cs" />
     <Compile Include="Snapshots\Mappers\OriginDataMapper.cs" />
+    <Compile Include="Snapshots\Mappers\OutputMappingMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationAlgorithmMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationAnalysisMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationConfigurationMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationContext.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationMapper.cs" />
+    <Compile Include="Snapshots\Mappers\ParameterIdentificationRunModeMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProcessMappingMapper.cs" />
     <Compile Include="Snapshots\Mappers\SimulationAnalysisContext.cs" />
     <Compile Include="Snapshots\Mappers\CurveChartMapper.cs" />
@@ -886,14 +894,13 @@
     <Compile Include="Snapshots\Mappers\DistributedTableFormulaMapper.cs" />
     <Compile Include="Snapshots\Mappers\EventMapper.cs" />
     <Compile Include="Snapshots\Mappers\EventMappingMapper.cs" />
-    <Compile Include="Snapshots\Mappers\ExtendedPropertiesMapper.cs" />
     <Compile Include="Snapshots\Mappers\ExtendedPropertyMapper.cs" />
     <Compile Include="Snapshots\Mappers\FormulationMapper.cs" />
     <Compile Include="Snapshots\Mappers\GroupingDefinitionMapper.cs" />
     <Compile Include="Snapshots\Mappers\IndividualMapper.cs" />
     <Compile Include="Snapshots\Mappers\MoleculeMapper.cs" />
     <Compile Include="Snapshots\Mappers\ObjectBaseSnapshotMapperBase.cs" />
-    <Compile Include="Snapshots\Mappers\ObservedDataMapper.cs" />
+    <Compile Include="Snapshots\Mappers\DataRepositoryMapper.cs" />
     <Compile Include="Snapshots\Mappers\OntogenyMapper.cs" />
     <Compile Include="Snapshots\Mappers\OutputIntervalMapper.cs" />
     <Compile Include="Snapshots\Mappers\OutputSchemaMapper.cs" />
@@ -923,11 +930,17 @@
     <Compile Include="Snapshots\ObservedDataCollection.cs" />
     <Compile Include="Snapshots\ObservedDataCurveOptions.cs" />
     <Compile Include="Snapshots\Ontogeny.cs" />
+    <Compile Include="Snapshots\OptimizationAlgorithm.cs" />
     <Compile Include="Snapshots\OriginData.cs" />
     <Compile Include="Snapshots\OutputInterval.cs" />
+    <Compile Include="Snapshots\OutputMapping.cs" />
     <Compile Include="Snapshots\OutputSchema.cs" />
     <Compile Include="Snapshots\OutputSelections.cs" />
     <Compile Include="Snapshots\Parameter.cs" />
+    <Compile Include="Snapshots\ParameterIdentification.cs" />
+    <Compile Include="Snapshots\ParameterIdentificationAnalysis.cs" />
+    <Compile Include="Snapshots\ParameterIdentificationConfiguration.cs" />
+    <Compile Include="Snapshots\ParameterIdentificationRunMode.cs" />
     <Compile Include="Snapshots\ParameterRange.cs" />
     <Compile Include="Snapshots\Point.cs" />
     <Compile Include="Snapshots\Population.cs" />

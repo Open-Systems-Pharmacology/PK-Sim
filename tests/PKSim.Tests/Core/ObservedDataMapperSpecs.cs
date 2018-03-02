@@ -6,30 +6,30 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using SnapshotDataRepository = PKSim.Core.Snapshots.DataRepository;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ObservedDataMapper : ContextSpecificationAsync<ObservedDataMapper>
+   public abstract class concern_for_ObservedDataMapper : ContextSpecificationAsync<DataRepositoryMapper>
    {
       protected DataColumnMapper _dataColumnMapper;
-      protected ExtendedPropertiesMapper _extendedPropertiesMapper;
+      protected ExtendedPropertyMapper _extendedPropertyMapper;
       protected Snapshots.DataColumn _dataColumnSnapshot;
       protected DataRepository _dataRepository;
       
       protected DataColumn _dataColumn;
       protected DataColumn _relatedColumn;
-      protected Snapshots.ExtendedProperties _extendedPropertiesSnapshot;
+      protected Snapshots.ExtendedProperty _extendedPropertySnapshot;
       protected Snapshots.DataColumn _baseGridSnapshot;
+      protected IExtendedProperty _extendedProperty;
 
       protected override Task Context()
       {
          _dataColumnMapper = A.Fake<DataColumnMapper>();
-         _extendedPropertiesMapper = A.Fake<ExtendedPropertiesMapper>();
-         sut = new ObservedDataMapper(_extendedPropertiesMapper, _dataColumnMapper);
+         _extendedPropertyMapper = A.Fake<ExtendedPropertyMapper>();
+         sut = new DataRepositoryMapper(_extendedPropertyMapper, _dataColumnMapper);
 
          _dataRepository = DomainHelperForSpecs.ObservedData();
          _dataColumn = _dataRepository.ObservationColumns().First();
@@ -42,12 +42,14 @@ namespace PKSim.Core
          _dataRepository.Add(_relatedColumn);
          _dataRepository.Description = "description";
          _dataRepository.Name = "thename";
-
+         _extendedProperty = new ExtendedProperty<string>{Name = "Name"};
+         _dataRepository.ExtendedProperties.Add(_extendedProperty);
          _dataColumnSnapshot = new Snapshots.DataColumn();
-         _extendedPropertiesSnapshot = new Snapshots.ExtendedProperties();
+         _extendedPropertySnapshot = new Snapshots.ExtendedProperty();
          _baseGridSnapshot = new Snapshots.DataColumn();
          A.CallTo(() => _dataColumnMapper.MapToSnapshot(_dataColumn)).Returns(_dataColumnSnapshot);
-         A.CallTo(() => _extendedPropertiesMapper.MapToSnapshot(_dataRepository.ExtendedProperties)).Returns(_extendedPropertiesSnapshot);
+         A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_extendedProperty)).Returns(_extendedPropertySnapshot);
+         A.CallTo(() => _extendedPropertyMapper.MapToModel(_extendedPropertySnapshot)).Returns(_extendedProperty);
          A.CallTo(() => _dataColumnMapper.MapToSnapshot(_dataRepository.BaseGrid)).Returns(_baseGridSnapshot);
          
          return Task.FromResult(true);
@@ -61,7 +63,6 @@ namespace PKSim.Core
       private BaseGrid _baseGrid;
       private DataColumn _mappedDataColumn;
       private DataColumn _mappedRelatedColumn;
-      private ExtendedProperties _extendedProperties;
 
       protected override async Task Context()
       {
@@ -72,11 +73,9 @@ namespace PKSim.Core
          _mappedDataColumn = new DataColumn("DataColumn", DomainHelperForSpecs.ConcentrationDimensionForSpecs(), _baseGrid);
          _mappedRelatedColumn = new DataColumn("RelatedColumn", DomainHelperForSpecs.ConcentrationDimensionForSpecs(), _baseGrid);
          _mappedDataColumn.AddRelatedColumn(_mappedRelatedColumn);
-         _extendedProperties = new ExtendedProperties{new ExtendedProperty<string>{Name = "extendedPropertyName", Value = "extendedPropertyValue"}};
 
          A.CallTo(() => _dataColumnMapper.MapToModel(_snapshot.BaseGrid, A<DataRepository>._)).Returns(_baseGrid);
          A.CallTo(() => _dataColumnMapper.MapToModel(_snapshot.Columns.First(), A<DataRepository>._)).Returns(_mappedDataColumn);
-         A.CallTo(() => _extendedPropertiesMapper.MapToModel(_snapshot.ExtendedProperties)).Returns(_extendedProperties);
       }
 
       protected override async Task Because()
@@ -91,7 +90,7 @@ namespace PKSim.Core
          _result.Description.ShouldBeEqualTo(_dataRepository.Description);
          _result.BaseGrid.ShouldBeEqualTo(_baseGrid);
          _result.Columns.ShouldOnlyContain(_mappedDataColumn, _baseGrid, _mappedRelatedColumn);
-         _result.ExtendedPropertyValueFor("extendedPropertyName").ShouldBeEqualTo("extendedPropertyValue");
+         _result.ExtendedProperties.ShouldContain(_extendedProperty);
       }
    }
 
@@ -126,7 +125,7 @@ namespace PKSim.Core
       {
          //should not contain the basegrid or related column
          _snapshot.Columns.ShouldOnlyContain(_dataColumnSnapshot);
-         _snapshot.ExtendedProperties.ShouldBeEqualTo(_extendedPropertiesSnapshot);
+         _snapshot.ExtendedProperties.ShouldContain(_extendedPropertySnapshot);
       }
    }
 }

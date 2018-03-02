@@ -58,7 +58,7 @@ namespace PKSim.Presentation.DTO.Parameters
       public virtual string Name
       {
          get => Parameter.Name;
-         set { Parameter.Name = value; }
+         set => Parameter.Name = value;
       }
 
       /// <summary>

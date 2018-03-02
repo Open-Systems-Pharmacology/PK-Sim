@@ -35,6 +35,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IModelPropertiesTask _modelPropertiesTask;
       private readonly ISimulationRunner _simulationRunner;
       private readonly ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
+      private readonly ILogger _logger;
 
       public SimulationMapper(
          SolverSettingsMapper solverSettingsMapper,
@@ -53,7 +54,8 @@ namespace PKSim.Core.Snapshots.Mappers
          ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
          IModelPropertiesTask modelPropertiesTask,
          ISimulationRunner simulationRunner,
-         ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater
+         ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater,
+         ILogger logger
       )
       {
          _solverSettingsMapper = solverSettingsMapper;
@@ -73,6 +75,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _modelPropertiesTask = modelPropertiesTask;
          _simulationRunner = simulationRunner;
          _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
+         _logger = logger;
       }
 
       public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation, PKSimProject project)
@@ -118,7 +121,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelSimulation simulation)
       {
-         var changedParameters = simulation.Model.Root.GetAllChildren<IParameter>(x => x.ParameterHasChanged());
+         var changedParameters = simulation.Model.Root.GetAllChildren<IParameter>(x => x.ShouldExportToSnapshot());
          return _parameterMapper.LocalizedParametersFrom(changedParameters);
       }
 
@@ -146,6 +149,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, PKSimProject project)
       {
+         _logger.AddDebug(PKSimConstants.Information.LoadingSimulation(snapshot.Name));
+
          var simulation = await createSimulationFrom(snapshot, project);
 
          simulation.Solver = await _solverSettingsMapper.MapToModel(snapshot.Solver);

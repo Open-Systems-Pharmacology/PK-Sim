@@ -147,23 +147,23 @@
     <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.38, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.38\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.43, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.43\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.BDDHelper, Version=2.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.BDDHelper.2.0.0.1\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.38, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.38\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.43, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.43\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.38, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.38\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.43, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.43\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.38, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.38\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.43, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.43\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -242,10 +242,10 @@
     <Compile Include="Core\EventMapperSpecs.cs" />
     <Compile Include="Core\EventPropertiesMapperSpec.cs" />
     <Compile Include="Core\ExpressionContainerMapperSpecs.cs" />
-    <Compile Include="Core\ExtendedPropertiesMapperSpecs.cs" />
     <Compile Include="Core\ExtendedPropertyMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />
     <Compile Include="Core\GroupingDefinitionMapperSpecs.cs" />
+    <Compile Include="Core\IdentificationParameterMapperSpecs.cs" />
     <Compile Include="Core\IndividualExtractionOptionsSpecs.cs" />
     <Compile Include="Core\IndividualExtractorSpecs.cs" />
     <Compile Include="Core\IndividualMapperSpecs.cs" />
@@ -258,10 +258,16 @@
     <Compile Include="Core\OntogenyMapperSpecs.cs" />
     <Compile Include="Core\OriginDataMapperSpecs.cs" />
     <Compile Include="Core\OutputIntervalMapperSpecs.cs" />
+    <Compile Include="Core\OutputMappingMapperSpecs.cs" />
     <Compile Include="Core\OutputSchemaMapperSpecs.cs" />
     <Compile Include="Core\OutputSelectionsMapperSpecs.cs" />
     <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ParameterDefaultStateUpdaterSpecs.cs" />
+    <Compile Include="Core\ParameterIdentificationAlgorithmMapperSpecs.cs" />
+    <Compile Include="Core\ParameterIdentificationAnalysisMapperSpecs.cs" />
+    <Compile Include="Core\ParameterIdentificationConfigurationMapperSpecs.cs" />
+    <Compile Include="Core\ParameterIdentificationMapperSpecs.cs" />
+    <Compile Include="Core\ParameterIdentificationRunModeMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
     <Compile Include="Core\ParameterMapperSpecs.cs" />
     <Compile Include="Core\ParameterRangeMapperSpecs.cs" />
@@ -618,7 +624,7 @@
     <Compile Include="Core\PKSimContainerSpecs.cs" />
     <Compile Include="Core\PKSimDistributedParameterSpecs.cs" />
     <Compile Include="Core\PKSimObjectBaseFactorySpecs.cs" />
-    <Compile Include="Core\PKSimParameterExtensionsSpecs.cs" />
+    <Compile Include="Core\ParameterExtensionsSpecs.cs" />
     <Compile Include="Core\PKSimParameterSpecs.cs" />
     <Compile Include="Core\PKSimSpatialStructureSpecs.cs" />
     <Compile Include="Core\PopulationSimulationEngineSpecs.cs" />

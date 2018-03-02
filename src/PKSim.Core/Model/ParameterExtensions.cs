@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
@@ -105,7 +106,22 @@ namespace PKSim.Core.Model
          return !ValueComparer.AreValuesEqual(parameter.Value, parameter.DefaultValue.Value, CoreConstants.DOUBLE_RELATIVE_EPSILON);
       }
 
-      public static bool ParameterHasChanged(this IParameter parameter) => parameter.IsDefault == false;
+      public static bool ShouldExportToSnapshot(this IParameter parameter)
+      {
+         if (parameter.IsDefault)
+            return false;
+
+         try
+         {
+            var v = parameter.Value;
+            return !double.IsNaN(v);
+         }
+         catch (Exception)
+         {
+            //this is a parameter that cannot be evaluated and should not be exported
+            return false;
+         }
+      }
 
       /// <summary>
       ///    Returns the factor with which the value was changed from current vlaue

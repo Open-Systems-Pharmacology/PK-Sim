@@ -50,11 +50,7 @@ namespace PKSim.Infrastructure.Services
          var allRepositories = new List<DataRepository>();
          if (project != null)
          {
-            allRepositories.AddRange(project.All<IndividualSimulation>()
-               .Where(s => s.HasResults)
-               .Select(s => s.DataRepository)
-               .Union(project.AllObservedData));
-
+            allRepositories.AddRange(project.AllDataRepositories());
             project.All<ISimulation>().Each(withIdRepository.Register);
          }
 

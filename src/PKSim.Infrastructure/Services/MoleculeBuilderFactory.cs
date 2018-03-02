@@ -248,7 +248,11 @@ namespace PKSim.Infrastructure.Services
       private void setDefaultParameterValues(IMoleculeBuilder molecule)
       {
          var parameters = molecule.AllParameters().Where(parameter => CoreConstants.Parameters.CompoundMustInputParameters.Contains(parameter.Name));
-         parameters.Each(p => p.Value = double.NaN);
+         parameters.Each(p =>
+         {
+            p.Value = double.NaN;
+            p.IsDefault = true;
+         });
       }
    }
 }
