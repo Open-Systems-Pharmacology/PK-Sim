@@ -74,6 +74,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
                runSimulationQualificationStep.Simulation = simulation;
                break;
+            default:
+               throw new ArgumentException(PKSimConstants.Error.NotMappingDefinedForQualificationStep(qualificationStep.GetType().Name));
          }
       }
 

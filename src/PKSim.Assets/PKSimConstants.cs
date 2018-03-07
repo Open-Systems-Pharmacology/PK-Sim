@@ -460,7 +460,6 @@ namespace PKSim.Assets
 
          public static string PregnantPopulationCanOnlyBeUsedWithMoBiModel(string speciesPopulation) => $"Population based on '{speciesPopulation}' can only be used with pregnancy models imported from MoBi.";
 
-
          public static string CouldNotFindOutputInSimulation(string outputFullPath, string simulationName) => $"Cannot find output '{outputFullPath}' in simulation '{simulationName}'";
 
          public static string CouldNotFind(string objectType, string objectName) => $"Cannot find {objectType.ToLower()} '{objectName}'";
@@ -468,6 +467,8 @@ namespace PKSim.Assets
          public static string CouldNotFindParameterIdentification(string parameterIdentificationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.ParameterIdentification, parameterIdentificationName);
 
          public static string CouldNotFindQualificationStep(string qualificationStepType) => CouldNotFind(ObjectTypes.QualificationStep, qualificationStepType);
+
+         public static string NotMappingDefinedForQualificationStep(string qualificationStepType) => $"No mapping defined for {ObjectTypes.QualificationStep.ToLower()} 'qualificationStepType'";
 
          public static string CouldNotFindSimulation(string simulationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
 
