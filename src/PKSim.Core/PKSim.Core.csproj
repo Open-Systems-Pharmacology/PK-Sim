@@ -80,11 +80,11 @@
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.43, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.43\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.46, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.46\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.43, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.43\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.46, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.46\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
@@ -193,8 +193,15 @@
     <Compile Include="Chart\CurveData.cs" />
     <Compile Include="Chart\DistributionSettings.cs" />
     <Compile Include="Model\BasePKAnalysis.cs" />
+    <Compile Include="Model\ClassifiableQualificationPlan.cs" />
     <Compile Include="Model\CompoundPK.cs" />
     <Compile Include="Model\GlobalPKAnalysis.cs" />
+    <Compile Include="Model\IQualificationStep.cs" />
+    <Compile Include="Model\QualificationPlan.cs" />
+    <Compile Include="Model\RunParameterIdentificationQualificationStep.cs" />
+    <Compile Include="Model\RunSimulationQualificationStep.cs" />
+    <Compile Include="Services\IQualificationStepRunner.cs" />
+    <Compile Include="Services\QualificationStepRunnerFactory.cs" />
     <Compile Include="Services\ParameterDefaultStateUpdater.cs" />
     <Compile Include="Model\ParameterValueVersion.cs" />
     <Compile Include="Model\PopulationAgeSettings.cs" />
@@ -463,6 +470,9 @@
     <Compile Include="Services\ParameterChangeUpdater.cs" />
     <Compile Include="Services\ParameterAnalysableParameterSelector.cs" />
     <Compile Include="Services\PopulationSimulationAnalysisSynchronizer.cs" />
+    <Compile Include="Services\QualiticationPlanRunner.cs" />
+    <Compile Include="Services\RunParameterIdentificationQualificationStepRunner.cs" />
+    <Compile Include="Services\RunSimulationQualificationStepRunner.cs" />
     <Compile Include="Services\SimulationConfigurationValidator.cs" />
     <Compile Include="Services\SimulationRunOptions.cs" />
     <Compile Include="Services\SimulationSelector.cs" />
@@ -886,6 +896,8 @@
     <Compile Include="Snapshots\Mappers\ParameterIdentificationMapper.cs" />
     <Compile Include="Snapshots\Mappers\ParameterIdentificationRunModeMapper.cs" />
     <Compile Include="Snapshots\Mappers\ProcessMappingMapper.cs" />
+    <Compile Include="Snapshots\Mappers\QualificationPlanMapper.cs" />
+    <Compile Include="Snapshots\Mappers\QualificationStepMapper.cs" />
     <Compile Include="Snapshots\Mappers\SimulationAnalysisContext.cs" />
     <Compile Include="Snapshots\Mappers\CurveChartMapper.cs" />
     <Compile Include="Snapshots\Mappers\CurveMapper.cs" />
@@ -950,6 +962,8 @@
     <Compile Include="Snapshots\PopulationSettings.cs" />
     <Compile Include="Snapshots\Project.cs" />
     <Compile Include="Snapshots\ProtocolSelection.cs" />
+    <Compile Include="Snapshots\QualificationPlan.cs" />
+    <Compile Include="Snapshots\QualificationStep.cs" />
     <Compile Include="Snapshots\QuantityInfo.cs" />
     <Compile Include="Snapshots\Schema.cs" />
     <Compile Include="Snapshots\SchemaItem.cs" />

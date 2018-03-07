@@ -8,9 +8,6 @@ namespace PKSim.Core.Model
       {
       }
 
-      public Simulation Simulation
-      {
-         get { return Subject; }
-      }
+      public Simulation Simulation => Subject;
    }
 }

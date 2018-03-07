@@ -7,7 +7,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
-using PKSim.Core.Extensions;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.DTO.Snapshots;
 using PKSim.Presentation.Views.Snapshots;
@@ -61,6 +60,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
       public IEnumerable<T> LoadModelFromSnapshot()
       {
          _view.Display();
+         ClearModel(_model);
          return _view.Canceled ? null : _model;
       }
 
@@ -82,7 +82,6 @@ namespace PKSim.Presentation.Presenters.Snapshots
          {
             _logPresenter.ClearLog();
             _view.EnableButtons(false);
-            _model = null;
             _logger.AddInfo(PKSimConstants.Information.LoadingSnapshot(_loadFromSnapshotDTO.SnapshotFile, typeToLoad));
             await Task.Run(() => PerformLoad(_loadFromSnapshotDTO.SnapshotFile));
             _logger.AddInfo(PKSimConstants.Information.SnapshotLoaded(typeToLoad));
@@ -101,7 +100,13 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       protected async Task PerformLoad(string snapshotFile)
       {
+         ClearModel(_model);
          _model = await LoadModelAsync(snapshotFile);
+      }
+
+      protected virtual void ClearModel(IEnumerable<T> model)
+      {
+         /*override if something needs to be done for specific loading case*/
       }
 
       protected virtual Task<IEnumerable<T>> LoadModelAsync(string snapshotFile)

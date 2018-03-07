@@ -12,6 +12,7 @@ namespace PKSim.Core.Model
    {
       private readonly List<IPKSimBuildingBlock> _allBuildingBlocks = new List<IPKSimBuildingBlock>();
       private readonly List<ISimulationComparison> _simulationComparisons = new List<ISimulationComparison>();
+      private readonly List<QualificationPlan> _qualificationPlans = new List<QualificationPlan>();
 
       /// <summary>
       ///    returns the default settings for the given settings type or null if not found
@@ -38,6 +39,13 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual IReadOnlyCollection<ISimulationComparison> AllSimulationComparisons => _simulationComparisons;
 
+
+      /// <summary>
+      ///    Returns all <see cref="QualificationPlan" /> defined in the project
+      /// </summary>
+      public virtual IReadOnlyCollection<QualificationPlan> AllQualificationPlans => _qualificationPlans;   
+
+      
       /// <summary>
       ///    Adds the <paramref name="simulationComparison" /> to the project
       /// </summary>
@@ -48,11 +56,23 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
+      ///    Adds the <paramref name="qualificationPlan" /> to the project
+      /// </summary>
+      public virtual void AddQualificationPlan(QualificationPlan qualificationPlan)
+      {
+         _qualificationPlans.Add(qualificationPlan);
+         _hasChanged = true;
+      }
+
+
+      /// <summary>
       ///    Removes the <paramref name="simulationComparison" /> from the project
       /// </summary>
       public virtual void RemoveSimulationComparison(ISimulationComparison simulationComparison)
       {
-         if (!_simulationComparisons.Contains(simulationComparison)) return;
+         if (!_simulationComparisons.Contains(simulationComparison))
+            return;
+
          _simulationComparisons.Remove(simulationComparison);
          RemoveClassifiableForWrappedObject(simulationComparison);
          _hasChanged = true;

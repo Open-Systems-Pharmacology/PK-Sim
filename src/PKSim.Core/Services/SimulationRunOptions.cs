@@ -6,8 +6,8 @@ namespace PKSim.Core.Services
    public class SimulationRunOptions : OSPSuite.Core.Domain.SimulationRunOptions
    {
       /// <summary>
-      ///    Set to true, the <see cref="OutputSelections" /> will be effectively ignored and all default quantities will be
-      ///    exproted
+      ///    Set to <c>true</c>, the <see cref="OutputSelections" /> will be effectively ignored and all default quantities will be
+      ///    exproted. .Default is <c>false</c>
       /// </summary>
       public bool RunForAllOutputs { get; set; } = false;
 
