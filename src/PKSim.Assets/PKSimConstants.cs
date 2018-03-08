@@ -468,7 +468,7 @@ namespace PKSim.Assets
 
          public static string CouldNotFindQualificationStep(string qualificationStepType) => CouldNotFind(ObjectTypes.QualificationStep, qualificationStepType);
 
-         public static string NotMappingDefinedForQualificationStep(string qualificationStepType) => $"No mapping defined for {ObjectTypes.QualificationStep.ToLower()} 'qualificationStepType'";
+         public static string NotMappingDefinedForQualificationStep(string qualificationStepType) => $"No mapping defined for {ObjectTypes.QualificationStep.ToLower()} '{qualificationStepType}'";
 
          public static string CouldNotFindSimulation(string simulationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
 
