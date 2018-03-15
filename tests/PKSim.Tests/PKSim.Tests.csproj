@@ -575,7 +575,6 @@
     <Compile Include="Core\ProteinToQueryExpressionSettingsMapperSpecs.cs" />
     <Compile Include="Core\ProtocolFactorySpecs.cs" />
     <Compile Include="Core\ProtocolTaskSpecs.cs" />
-    <Compile Include="IntegrationTests\OldCalculationMethodNameMappingRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\SystemicProcessSelectionXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQueryConversionSpecs.cs" />
     <Compile Include="Matlab\MatlabIndividualFactorySpecs.cs" />
