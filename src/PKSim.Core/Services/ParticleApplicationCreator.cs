@@ -77,6 +77,12 @@ namespace PKSim.Core.Services
             setupParticleBin(applicationBuilder, i, binRadius[i - 1], binNumberOfParticlesFactor[i - 1], formulaCache);
          }
 
+         //// add insoluble molecule for particle bin
+         //var appMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(insolubleMoleculeName(0)); //TODO replace insolubleMoleculeName(0) with const string
+         //appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(CoreConstants.ContainerName.InsolubleDrug);
+         //appMoleculeBuilder.Formula = insolubleDrugStartFormula(formulaCache);
+         //applicationBuilder.AddMolecule(appMoleculeBuilder);
+
          // add "ParticleApplication"-Tag required for Fraction Solid/Dissolved/Insoluble observer
          applicationBuilder.AddTag(CoreConstants.Tags.ParticlesApplicationWithNBins(numberOfBins));
       }
