@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using PKSim.Assets;
 using OSPSuite.Core.Maths.Statistics;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
@@ -77,11 +75,11 @@ namespace PKSim.Core.Services
             setupParticleBin(applicationBuilder, i, binRadius[i - 1], binNumberOfParticlesFactor[i - 1], formulaCache);
          }
 
-         //// add insoluble molecule for particle bin
-         //var appMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(insolubleMoleculeName(0)); //TODO replace insolubleMoleculeName(0) with const string
-         //appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(CoreConstants.ContainerName.InsolubleDrug);
-         //appMoleculeBuilder.Formula = insolubleDrugStartFormula(formulaCache);
-         //applicationBuilder.AddMolecule(appMoleculeBuilder);
+         // add insoluble molecule for particle bin
+         var appMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(insolubleMoleculeName(0)); //TODO replace insolubleMoleculeName(0) with const string
+         appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(CoreConstants.ContainerName.InsolubleDrug);
+         appMoleculeBuilder.Formula = insolubleDrugStartFormula(formulaCache);
+         applicationBuilder.AddMolecule(appMoleculeBuilder);
 
          // add "ParticleApplication"-Tag required for Fraction Solid/Dissolved/Insoluble observer
          applicationBuilder.AddTag(CoreConstants.Tags.ParticlesApplicationWithNBins(numberOfBins));
@@ -192,11 +190,11 @@ namespace PKSim.Core.Services
          appMoleculeBuilder.Formula = particleDrugMassFormula(formulaCache);
          applicBuilder.AddMolecule(appMoleculeBuilder);
 
-         // add insoluble molecule for particle bin
-         appMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(insolubleMoleculeName(binIndex));
-         appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(binName, CoreConstants.ContainerName.InsolubleDrug);
-         appMoleculeBuilder.Formula = insolubleDrugStartFormula(formulaCache);
-         applicBuilder.AddMolecule(appMoleculeBuilder);
+         //// add insoluble molecule for particle bin
+         //appMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(insolubleMoleculeName(binIndex));
+         //appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(binName, CoreConstants.ContainerName.InsolubleDrug);
+         //appMoleculeBuilder.Formula = insolubleDrugStartFormula(formulaCache);
+         //applicBuilder.AddMolecule(appMoleculeBuilder);
       }
 
       private IFormula insolubleDrugStartFormula(IFormulaCache formulaCache)
