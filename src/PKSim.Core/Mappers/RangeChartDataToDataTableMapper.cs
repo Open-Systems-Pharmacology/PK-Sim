@@ -2,7 +2,7 @@
 using System.Data;
 using PKSim.Assets;
 using PKSim.Core.Chart;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Mappers
 {

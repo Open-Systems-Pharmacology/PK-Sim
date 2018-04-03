@@ -9,6 +9,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Mappers;
 using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.UI.Tests
 {
@@ -39,7 +40,7 @@ namespace PKSim.UI.Tests
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_pivotGrid.Cells, s => string.Format("{0} [{1}]", s, "ml"));
+         _result = sut.MapFrom(_pivotGrid.Cells, s => $"{s} [ml]");
       }
 
       private DataTable generateSourceDataTable()

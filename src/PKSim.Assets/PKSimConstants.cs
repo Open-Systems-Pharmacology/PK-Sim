@@ -16,7 +16,7 @@ namespace PKSim.Assets
          public const string ThisItNotATemplateBuildingBlock = "This is not the template building block!";
          public const string FractionAbsorbedAndEHC = "Please note that, e.g. in the case of enterohepatic circulation, the calculated fraction of dose absorbed may exceed 1";
          public const string BioAvailabilityAndFractionAbsorbed = "For proper calculation of the AUCinf (PO) it is recommended to simulate as long as total gastrointestinal transit takes.";
-         public const string PopulationFileIsUsingOldFormatAndWontBeSupportedInTheNextVersion = "Population file is using an old format that will not be supported in future version";
+         public const string PopulationFileFormatIsNotSupported = "Population file format is not supported.";
          public const string InhibitorClearanceMustBeDefinedSeparately = "Please note that for the mechanism-based inactivator no clearance process is defined via the inactivation process by default. In theory, for every inactivated target molecule, also one inactivator molecule is cleared; this must be separately defined by the user in form of additional clearance processes for the inhibitor.";
          public const string FractionAbsorbedSmallerThanOne = "Absorption seems to be incomplete or absorption process is not finished. Vd, Vss (or Vd/F and Vss/F), t1/2, MRT and AUC_inf should be compared with respective PK-parameters from an IV simulation.";
 

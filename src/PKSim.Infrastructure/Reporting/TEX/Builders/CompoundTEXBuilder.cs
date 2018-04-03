@@ -8,6 +8,7 @@ using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting.Builder;
 using OSPSuite.TeXReporting.Data;
 using OSPSuite.TeXReporting.Items;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Extensions;
@@ -231,21 +232,21 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       private IEnumerable<object> solubilityAlternatives(Compound compound)
       {
-         Action<DataTable> createColumns = t =>
-            {
-               t.AddColumn<double>(PKSimConstants.UI.RefpH);
-               t.AddColumn<double>(PKSimConstants.UI.RefSolubility);
-               t.AddColumn<double>(PKSimConstants.UI.SolubilityGainPerCharge);
-            };
+         void CreateColumns(DataTable t)
+         {
+            t.AddColumn<double>(PKSimConstants.UI.RefpH);
+            t.AddColumn<double>(PKSimConstants.UI.RefSolubility);
+            t.AddColumn<double>(PKSimConstants.UI.SolubilityGainPerCharge);
+         }
 
-         Action<DataRow, ParameterAlternative> fillColumns = (row, alternative) =>
-            {
-               setParameterValue(alternative.Parameter(CoreConstants.Parameters.REFERENCE_PH), row, PKSimConstants.UI.RefpH);
-               setParameterValue(alternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH), row, PKSimConstants.UI.RefSolubility);
-               setParameterValue(alternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE), row, PKSimConstants.UI.SolubilityGainPerCharge);
-            };
+         void FillColumns(DataRow row, ParameterAlternative alternative)
+         {
+            setParameterValue(alternative.Parameter(CoreConstants.Parameters.REFERENCE_PH), row, PKSimConstants.UI.RefpH);
+            setParameterValue(alternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH), row, PKSimConstants.UI.RefSolubility);
+            setParameterValue(alternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE), row, PKSimConstants.UI.SolubilityGainPerCharge);
+         }
 
-         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY, createColumns, fillColumns, PKSimConstants.Reporting.SolubilityDescription);
+         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY, CreateColumns, (Action<DataRow, ParameterAlternative>) FillColumns, PKSimConstants.Reporting.SolubilityDescription);
       }
 
       private IEnumerable<object> intestinalPermeabilityAlternatives(Compound compound)
@@ -262,19 +263,19 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       private IEnumerable<object> fractionUnboundAlternatives(Compound compound)
       {
-         Action<DataTable> createColumns = t =>
-            {
-               t.AddColumn<double>(PKSimConstants.UI.FractionUnbound);
-               t.AddColumn(PKSimConstants.UI.Species);
-            };
+         void CreateColumns(DataTable t)
+         {
+            t.AddColumn<double>(PKSimConstants.UI.FractionUnbound);
+            t.AddColumn(PKSimConstants.UI.Species);
+         }
 
-         Action<DataRow, ParameterAlternativeWithSpecies> fillColumns = (row, alternative) =>
-            {
-               setParameterValue(alternative.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE), row, PKSimConstants.UI.FractionUnbound);
-               row[PKSimConstants.UI.Species] = alternative.Species.DisplayName;
-            };
+         void FillColumns(DataRow row, ParameterAlternativeWithSpecies alternative)
+         {
+            setParameterValue(alternative.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE), row, PKSimConstants.UI.FractionUnbound);
+            row[PKSimConstants.UI.Species] = alternative.Species.DisplayName;
+         }
 
-         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, createColumns, fillColumns, PKSimConstants.Reporting.FractionUnboundDescription);
+         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, CreateColumns, (Action<DataRow, ParameterAlternativeWithSpecies>) FillColumns, PKSimConstants.Reporting.FractionUnboundDescription);
       }
 
       private IEnumerable<object> lipophilicyAlternatives(Compound compound)
@@ -299,19 +300,17 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          if (needsDescription)
             table.AddColumn(PKSimConstants.UI.Description);
 
-         Func<ParameterAlternative, DataRow> createDefaultRow = alternative =>
-            {
-               var row = table.NewRow();
-               row[PKSimConstants.UI.Experiment] = alternative.Name;
+         DataRow CreateDefaultRow(ParameterAlternative alternative)
+         {
+            var row = table.NewRow();
+            row[PKSimConstants.UI.Experiment] = alternative.Name;
 
-               if (needsDefault)
-                  row[PKSimConstants.UI.IsDefault] = alternative.IsDefault;
+            if (needsDefault) row[PKSimConstants.UI.IsDefault] = alternative.IsDefault;
 
-               if (needsDescription)
-                  row[PKSimConstants.UI.Description] = alternative.Description;
+            if (needsDescription) row[PKSimConstants.UI.Description] = alternative.Description;
 
-               return row;
-            };
+            return row;
+         }
 
          foreach (var alternative in parameterGroup.AllAlternatives)
          {
@@ -319,7 +318,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             {
                foreach (var parameter in calculatedParameters(_compoundAlternativeTask)(compound))
                {
-                  var row = createDefaultRow(alternative);
+                  var row = CreateDefaultRow(alternative);
                   row[PKSimConstants.UI.Lipophilicity] = parameter.Name;
                   setParameterValue(parameter, row, columnName);
                   table.Rows.Add(row);
@@ -327,7 +326,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             }
             else
             {
-               var row = createDefaultRow(alternative);
+               var row = CreateDefaultRow(alternative);
                setParameterValue(alternative.Parameter(parameterName), row, columnName);
                table.Rows.Add(row);
             }
@@ -337,11 +336,11 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       private IEnumerable<object> simpleAlternatives(Compound compound, string groupName, string parameterName, string columnName, string description)
       {
-         Action<DataTable> createColumns = t => t.AddColumn<double>(columnName);
+         void CreateColumns(DataTable t) => t.AddColumn<double>(columnName);
 
-         Action<DataRow, ParameterAlternative> fillColumns = (row, alternative) => setParameterValue(alternative.Parameter(parameterName), row, columnName);
+         void FillColumns(DataRow row, ParameterAlternative alternative) => setParameterValue(alternative.Parameter(parameterName), row, columnName);
 
-         return createAlternatives(compound, groupName, createColumns, fillColumns, description);
+         return createAlternatives(compound, groupName, CreateColumns, (Action<DataRow, ParameterAlternative>) FillColumns, description);
       }
 
       private void setParameterValue(IParameter parameter, DataRow row, string columnName)

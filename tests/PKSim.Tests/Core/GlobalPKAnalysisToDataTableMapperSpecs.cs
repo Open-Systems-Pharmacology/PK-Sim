@@ -8,7 +8,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core
 {

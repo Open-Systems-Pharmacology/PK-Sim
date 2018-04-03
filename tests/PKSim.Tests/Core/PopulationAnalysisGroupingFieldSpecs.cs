@@ -8,7 +8,7 @@ using FakeItEasy;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core
 {

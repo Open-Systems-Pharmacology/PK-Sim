@@ -4,9 +4,8 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core
 {
@@ -73,9 +72,7 @@ namespace PKSim.Core
       {
          _dataTable.Rows.Count.ShouldBeEqualTo(3);
          _dataTable.AllValuesInColumn<float>(_xAxis.Caption).ShouldOnlyContain(1, 2, 3);
-         ;
          _dataTable.AllValuesInColumn<float>(_yAxis.Caption).ShouldOnlyContain(10, 20, 30);
-         ;
       }
    }
 }

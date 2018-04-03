@@ -5,10 +5,8 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
-
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core
 {

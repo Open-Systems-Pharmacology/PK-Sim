@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using OSPSuite.TeXReporting.Data;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Infrastructure.Reporting.Extensions
 {
