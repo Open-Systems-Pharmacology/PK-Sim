@@ -3,7 +3,7 @@ using PKSim.Assets;
 using OSPSuite.Utility.Validation;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Mappers
 {

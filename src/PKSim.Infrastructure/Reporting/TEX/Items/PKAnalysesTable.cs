@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 
 namespace PKSim.Infrastructure.Reporting.TeX.Items

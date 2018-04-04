@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using LumenWorks.Framework.IO.Csv;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using LumenWorks.Framework.IO.Csv;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Extensions;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -28,21 +28,22 @@ namespace PKSim.Infrastructure.Services
          _populationRepository = populationRepository;
       }
 
-      private const int PARAMETER_PATH = 0;
-      private readonly Char[] _allowedDelimiters = {';', '\t'};
+      private static readonly Char[] ALLOWED_DELIMITERS = {',', ';', '\t'};
 
       public IndividualPropertiesCache ImportFrom(string fileFullPath, IImportLogger logger)
       {
          try
          {
-            foreach (var delimiter in _allowedDelimiters)
+            foreach (var delimiter in ALLOWED_DELIMITERS)
             {
-               var individualPropertyCache = individualPropertiesCacheFrom(fileFullPath, logger, delimiter);
+               var individualPropertyCache = individualPropertiesCacheFrom(fileFullPath, delimiter);
                //we found at least one individual, this is a valid file for the delimiter and we can exit
-               if (individualPropertyCache.Count > 0)
+               if (individualPropertyCache?.Count > 0)
                   return individualPropertyCache;
             }
 
+            //no match. Log 
+            logger.AddError(PKSimConstants.Warning.PopulationFileFormatIsNotSupported);
             return new IndividualPropertiesCache();
          }
          catch (Exception e)
@@ -52,28 +53,23 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      private IndividualPropertiesCache individualPropertiesCacheFrom(string fileFullPath, IImportLogger logger, char delimiter)
+      private IndividualPropertiesCache individualPropertiesCacheFrom(string fileFullPath, char delimiter)
       {
-         var individualPropertiesCache = new IndividualPropertiesCache();
-
          using (var reader = new CsvReaderDisposer(fileFullPath, delimiter))
          {
             var csv = reader.Csv;
             var headers = csv.GetFieldHeaders();
             if (headers.Contains(Constants.Population.INDIVIDUAL_ID_COLUMN))
-               loadNewCSVFormat(individualPropertiesCache, csv, headers);
-            else
-            {
-               loadOldCSVFormat(individualPropertiesCache, csv);
-               logger.AddWarning(PKSimConstants.Warning.PopulationFileIsUsingOldFormatAndWontBeSupportedInTheNextVersion);
-            }
+               return createIndividualPropertiesFromCSV(csv, headers);
          }
 
-         return individualPropertiesCache;
+         return null;
       }
 
-      private void loadNewCSVFormat(IndividualPropertiesCache individualPropertiesCache, CsvReader csv, string[] headers)
+      private IndividualPropertiesCache createIndividualPropertiesFromCSV(CsvReader csv, string[] headers)
       {
+         var individualPropertiesCache = new IndividualPropertiesCache();
+
          //first create a cache of all possible values
          var covariateCache = new Cache<string, List<string>>();
          var parameterValues = new Cache<string, List<double>>();
@@ -117,6 +113,8 @@ namespace PKSim.Infrastructure.Services
          {
             individualPropertiesCache.SetValues(parameterValue.Key, parameterValue.Value);
          }
+
+         return individualPropertiesCache;
       }
 
       private void addCovariates(IndividualPropertiesCache individualPropertiesCache, Cache<string, List<string>> covariateCache)
@@ -128,32 +126,6 @@ namespace PKSim.Infrastructure.Services
             else
                individualPropertiesCache.AddConvariate(covariate.Key, covariate.Value);
          }
-      }
-
-      private void loadOldCSVFormat(IndividualPropertiesCache individualPropertiesCache, CsvReader csv)
-      {
-         int fieldCount = csv.FieldCount;
-
-         while (csv.ReadNextRecord())
-         {
-            var parameterPath = csv[PARAMETER_PATH];
-            var values = getValuesFrom(csv, fieldCount);
-
-            if (entryRepresentsParameter(parameterPath))
-            {
-               ensureCovariatesAreDefined(individualPropertiesCache);
-               individualPropertiesCache.SetValues(parameterPath, values);
-            }
-            else
-               addCovariates(individualPropertiesCache, parameterPath, values);
-         }
-      }
-
-      private void ensureCovariatesAreDefined(IndividualPropertiesCache individualPropertiesCache)
-      {
-         //this should ensure that the covariates were defined for the population. If not, the file does not have the accurate structure
-         if (!individualPropertiesCache.AllCovariates.Any())
-            throw new PKSimException(PKSimConstants.Error.GenderAndOrPopulationMissingFromFile);
       }
 
       private void addCovariates(IndividualPropertiesCache individualPropertiesCache, string parameterPath, IEnumerable<double> values)
@@ -171,16 +143,6 @@ namespace PKSim.Infrastructure.Services
             return false;
 
          return parameterPath.Contains(ObjectPath.PATH_DELIMITER);
-      }
-
-      private IEnumerable<double> getValuesFrom(CsvReader csv, int fieldCount)
-      {
-         var values = new List<double>();
-         for (int i = PARAMETER_PATH + 1; i < fieldCount; i++)
-         {
-            values.Add(csv.DoubleAt(i));
-         }
-         return values;
       }
    }
 }

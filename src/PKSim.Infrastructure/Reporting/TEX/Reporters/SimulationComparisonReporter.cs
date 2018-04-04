@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting.Items;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
