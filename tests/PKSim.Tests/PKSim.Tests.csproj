@@ -1170,6 +1170,7 @@
     <None Include="Data\PopulationFiles\pop_10_semi_colon.csv" />
     <None Include="Data\PopulationFiles\pop_3.csv" />
     <None Include="Data\PopulationFiles\pop_3_advanced_parameter.csv" />
+    <None Include="Data\PopulationFiles\pop_3_duplicated_column.csv" />
     <None Include="Data\PopulationFiles\unknown_3.csv" />
     <None Include="Data\PopulationRange_565.pksim5" />
     <None Include="Data\Population_515.pksim5" />

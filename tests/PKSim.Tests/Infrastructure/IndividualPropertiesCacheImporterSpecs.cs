@@ -60,7 +60,6 @@ namespace PKSim.Infrastructure
       }
    }
 
-
    public class When_importing_a_population_from_a_file_that_is_using_the_old_format_with_semi_colon : concern_for_IndividualPropertiesCacheImporter
    {
       private IndividualPropertiesCache _results;
