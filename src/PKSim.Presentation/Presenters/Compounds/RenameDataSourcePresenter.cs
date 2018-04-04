@@ -42,9 +42,6 @@ namespace PKSim.Presentation.Presenters.Compounds
          return _compoundProcessDTO;
       }
 
-      public string DataSource
-      {
-         get { return _compoundProcessDTO.DataSource; }
-      }
+      public string DataSource => _compoundProcessDTO.DataSource;
    }
 }

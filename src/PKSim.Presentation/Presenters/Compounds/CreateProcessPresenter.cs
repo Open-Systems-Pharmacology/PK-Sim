@@ -1,28 +1,26 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
    public interface ICreateProcessPresenter : IDisposablePresenter
    {
-      IPKSimCommand CreateProcess(PKSim.Core.Model.Compound compound, IEnumerable<CompoundProcess> allProcessTemplates);
+      IPKSimCommand CreateProcess(Compound compound, IEnumerable<CompoundProcess> allProcessTemplates);
       void ChangeProcessType(CompoundProcessDTO compoundProcessDTO);
       IEnumerable<Species> AllSpecies();
       void SpeciesChanged(Species newSpecies);
@@ -32,7 +30,7 @@ namespace PKSim.Presentation.Presenters.Compounds
    }
 
    public abstract class CreateProcessPresenter<TProcess, TView, TPresenter> : AbstractDisposablePresenter<TView, TPresenter>, ICreateProcessPresenter
-      where TProcess : CompoundProcess 
+      where TProcess : CompoundProcess
       where TView : IView<TPresenter>, ICreateProcessView where TPresenter : IDisposablePresenter
    {
       private readonly IParametersByGroupPresenter _parametersPresenter;
@@ -64,7 +62,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       {
          _processTemplates = allProcessTemplates.ToList();
          if (!_processTemplates.Any()) //should never happen
-            throw new PKSimException(PKSimConstants.Error.NoPartialTemplateProcessFound(typeof (TProcess).ToString()));
+            throw new PKSimException(PKSimConstants.Error.NoPartialTemplateProcessFound(typeof(TProcess).ToString()));
 
          _compound = compound;
          _createdProcess = createProcessFromTemplate(_processTemplates[0]);
@@ -93,10 +91,7 @@ namespace PKSim.Presentation.Presenters.Compounds
          return _editCommands;
       }
 
-      public CompoundProcess Process
-      {
-         get { return _createdProcess; }
-      }
+      public CompoundProcess Process => _createdProcess;
 
       private TProcess createProcessFromTemplate(CompoundProcess templateProcess)
       {
@@ -106,8 +101,8 @@ namespace PKSim.Presentation.Presenters.Compounds
          return createdProcess;
       }
 
-      protected abstract void EditProcess(TProcess process, PKSim.Core.Model.Compound compound);
-      protected abstract void Rebind(TProcess process, PKSim.Core.Model.Compound compound);
+      protected abstract void EditProcess(TProcess process, Compound compound);
+      protected abstract void Rebind(TProcess process, Compound compound);
       protected abstract void UpdateProperties(TProcess process);
 
       public void ChangeProcessType(CompoundProcessDTO compoundProcessDTO)
@@ -162,9 +157,6 @@ namespace PKSim.Presentation.Presenters.Compounds
          _editCommands.Add(commandToAdd.DowncastTo<IPKSimCommand>());
       }
 
-      public override bool CanClose
-      {
-         get { return base.CanClose && _parametersPresenter.CanClose; }
-      }
+      public override bool CanClose => base.CanClose && _parametersPresenter.CanClose;
    }
 }

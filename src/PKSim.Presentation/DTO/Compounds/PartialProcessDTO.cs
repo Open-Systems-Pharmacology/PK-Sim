@@ -19,7 +19,7 @@ namespace PKSim.Presentation.DTO.Compounds
 
       public virtual string MoleculeName
       {
-         get { return _moleculeName; }
+         get => _moleculeName;
          set
          {
             _moleculeName = value.TrimmedValue();
@@ -27,10 +27,7 @@ namespace PKSim.Presentation.DTO.Compounds
          }
       }
 
-      public override string Name
-      {
-         get { return createName(MoleculeName, DataSource); }
-      }
+      public override string Name => createName(MoleculeName, DataSource);
 
       private string createName(string proteinName, string dataSource)
       {
@@ -41,7 +38,7 @@ namespace PKSim.Presentation.DTO.Compounds
 
       private static class PartialProcessRules
       {
-         private static IBusinessRule proteinNotEmpty
+         private static IBusinessRule moleculeNotEmpty
          {
             get { return GenericRules.NonEmptyRule<PartialProcessDTO>(x => x.MoleculeName, PKSimConstants.Error.MoleculeIsRequired); }
          }
@@ -51,7 +48,7 @@ namespace PKSim.Presentation.DTO.Compounds
             get { return GenericRules.NonEmptyRule<PartialProcessDTO>(x => x.DataSource, PKSimConstants.Error.DataSourceIsRequired); }
          }
 
-         private static IBusinessRule proteinNameValid
+         private static IBusinessRule moleculeNameValid
          {
             get
             {
@@ -75,16 +72,16 @@ namespace PKSim.Presentation.DTO.Compounds
 
          internal static IEnumerable<IBusinessRule> All()
          {
-            yield return proteinNotEmpty;
-            yield return proteinNameValid;
+            yield return moleculeNotEmpty;
+            yield return moleculeNameValid;
             yield return dataSourceNotEmpty;
             yield return dataSourceValid;
          }
       }
 
-      private bool proteinDataSourceValid(string proteinName, string dataSource)
+      private bool proteinDataSourceValid(string moleculeName, string dataSource)
       {
-         return !Compound.ProcessExistsByName(createName(proteinName, dataSource));
+         return !Compound.ProcessExistsByName(createName(moleculeName, dataSource));
       }
    }
 }
