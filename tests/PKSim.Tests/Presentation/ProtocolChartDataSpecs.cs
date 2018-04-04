@@ -11,7 +11,6 @@ using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
 
 namespace PKSim.Presentation
 {
@@ -65,7 +64,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_creating_the_chard_data_for_schema_items_having_the_same_application_type_and_the_same_start_time_and_dose_unit : concern_for_ProtocolChartData
+   public class When_creating_the_chart_data_for_schema_items_having_the_same_application_type_and_the_same_start_time_and_dose_unit : concern_for_ProtocolChartData
    {
       protected override void Context()
       {
@@ -101,7 +100,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_creating_the_chard_data_for_schema_items_having_the_same_application_type_and_the_same_unit_but_different_start_time : concern_for_ProtocolChartData
+   public class When_creating_the_chart_data_for_schema_items_having_the_same_application_type_and_the_same_unit_but_different_start_time : concern_for_ProtocolChartData
    {
       protected override void Context()
       {
@@ -118,7 +117,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_creating_the_chard_data_for_schema_items_having_the_same_application_type_and_the_start_time_but_different_does_unit : concern_for_ProtocolChartData
+   public class When_creating_the_chart_data_for_schema_items_having_the_same_application_type_and_the_start_time_but_different_does_unit : concern_for_ProtocolChartData
    {
       protected override void Context()
       {
@@ -132,6 +131,21 @@ namespace PKSim.Presentation
       public void should_not_aggreagate_the_value_for_dose()
       {
          _data.AllValuesInColumn<double>(sut.YValue).ShouldOnlyContain(1, 2);
+      }
+   }
+
+   public class When_creating_the_chart_data_for_schema_items_for_an_invalid_protocol : concern_for_ProtocolChartData
+   {
+      protected override void Context()
+      {
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new List<SchemaItemDTO>());
+         base.Context();
+      }
+
+      [Observation]
+      public void should_not_return_any_data_to_plot()
+      {
+         _data.Rows.Count.ShouldBeEqualTo(0);   
       }
    }
 }
