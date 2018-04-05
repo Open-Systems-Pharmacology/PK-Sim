@@ -12,12 +12,8 @@ namespace PKSim.Presentation.DTO.Compounds
 
       public string Metabolite
       {
-         get { return _metabolite; }
-         set
-         {
-            _metabolite = value;
-            OnPropertyChanged(() => Metabolite);
-         }
+         get => _metabolite;
+         set => SetProperty(ref _metabolite, value);
       }
    }
 }

@@ -39,6 +39,11 @@ namespace PKSim.UI.Views.Compounds
          _comboBox.FillWith(availableCompoundNames);
       }
 
+      public void BindTo(EnzymaticProcessDTO enzymaticProcessDTO)
+      {
+         _screenBinder.BindToSource(enzymaticProcessDTO);
+      }
+
       public override void InitializeBinding()
       {
          base.InitializeBinding();

@@ -17,6 +17,7 @@ namespace PKSim.Presentation.Views.Compounds
    public interface ICreateEnzymaticProcessView : ICreatePartialProcessView<ICreateEnzymaticProcessPresenter>
    {
       void UpdateAvailableCompounds(IEnumerable<string> availableCompoundNames);
+      void BindTo(EnzymaticProcessDTO enzymaticProcessDTO);
    }
 
    public interface ICreatePartialProcessView : ICreatePartialProcessView<ICreatePartialProcessPresenter>

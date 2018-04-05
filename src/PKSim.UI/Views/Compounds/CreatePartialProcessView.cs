@@ -57,12 +57,12 @@ namespace PKSim.UI.Views.Compounds
       }
 
       public string MoleculeCaption {
-         set { ProteinCaption = value; }
+         set => ProteinCaption = value;
       }
 
       public IEnumerable<string> AllAvailableProteins
       {
-         set { cbProteinName.FillWith(value); }
+         set => cbProteinName.FillWith(value);
       }
 
       protected override void SetActiveControl()
@@ -75,10 +75,6 @@ namespace PKSim.UI.Views.Compounds
          _propertiesBinder.BindToSource(partialProcessDTO);
       }
 
-      public override bool HasError
-      {
-         get { return _propertiesBinder.HasError || base.HasError; }
-      }
-
+      public override bool HasError => _propertiesBinder.HasError || base.HasError;
    }
 }
