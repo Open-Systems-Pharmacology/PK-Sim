@@ -423,13 +423,13 @@
     <Compile Include="IntegrationTests\ParameterIdentificationConfigurationXmSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationResultXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationXmlSerializerSpecs.cs" />
-    <Compile Include="IntegrationTests\SimulationWithParticlesFormulation.cs" />
     <Compile Include="IntegrationTests\PKSimParameterStartValuesCreatorSpecs.cs" />
     <Compile Include="IntegrationTests\RegistrationSpecs.cs" />
     <Compile Include="IntegrationTests\SchemaItemExtensionsSpecs.cs" />
     <Compile Include="IntegrationTests\SensitivityAnalysisXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationAnalysisWorkflowXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationTransferLoaderSpecs.cs" />
+    <Compile Include="IntegrationTests\SimulationWithParticlesFormulationSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQuerySpecs.cs" />
     <Compile Include="Presentation\AdvancedParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\BoxWhiskerChartPresenterSpecs.cs" />

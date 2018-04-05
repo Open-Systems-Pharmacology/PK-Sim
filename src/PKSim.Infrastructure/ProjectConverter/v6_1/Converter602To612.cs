@@ -127,7 +127,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
 
       public void Visit(Formulation formulation)
       {
-         if (!formulation.FormulationType.IsOneOf(CoreConstants.Formulation.Weibull, CoreConstants.Formulation.Lint80, CoreConstants.Formulation.Particles, CoreConstants.Formulation.Table))
+         if (!formulation.FormulationType.IsOneOf(CoreConstants.Formulation.Weibull, CoreConstants.Formulation.Lint80, CoreConstants.Formulation.Table))
             return;
 
          var templateFormulation = _formulationRepository.FormulationBy(formulation.FormulationType);

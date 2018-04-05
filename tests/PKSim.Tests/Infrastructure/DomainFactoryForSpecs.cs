@@ -116,7 +116,7 @@ namespace PKSim.Infrastructure
       public static Simulation CreateSimulationWith(ISimulationSubject simulationSubject, Compound compound, 
                                                     Protocol protocol, Formulation formulation, bool allowAging = false)
       {
-         var simulation = CreateModelLessSimulationWith(simulationSubject, compound, protocol, allowAging);
+         var simulation = CreateModelLessSimulationWith(simulationSubject, compound, protocol, allowAging, formulation);
          AddModelToSimulation(simulation);
          return simulation;
       }
@@ -131,15 +131,15 @@ namespace PKSim.Infrastructure
                                                              Compound compound, Protocol protocol, 
                                                              bool allowAging = false, Formulation formulation = null)
       {
-         return CreateModelLessSimulationWith(simulationSubject, compound, protocol, CreateDefaultModelPropertiesFor(simulationSubject), allowAging);
+         return CreateModelLessSimulationWith(simulationSubject, compound, protocol, CreateDefaultModelPropertiesFor(simulationSubject), allowAging, formulation);
       }
 
       public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject, 
                                                              IReadOnlyList<Compound> compounds, 
                                                              IReadOnlyList<Protocol> protocols, 
-                                                             bool allowAging = false)
+                                                             bool allowAging = false, Formulation formulation = null)
       {
-         return CreateModelLessSimulationWith(simulationSubject, compounds, protocols, CreateDefaultModelPropertiesFor(simulationSubject), allowAging);
+         return CreateModelLessSimulationWith(simulationSubject, compounds, protocols, CreateDefaultModelPropertiesFor(simulationSubject), allowAging, formulation);
       }
 
       public static ModelProperties CreateDefaultModelPropertiesFor(ISimulationSubject simulationSubject)
