@@ -349,10 +349,7 @@
     <Compile Include="ORM\Repositories\FlatCalculationMethodParameterDescriptorConditionRepository.cs" />
     <Compile Include="ORM\Repositories\FlatCalculationMethodParameterRateRepository.cs" />
     <Compile Include="ORM\Repositories\FlatCategoryRepository.cs" />
-    <Compile Include="ORM\Repositories\FlatOldCalculationMethodNameMappingRepository.cs" />
-    <Compile Include="ORM\Repositories\FlatOldParameterNameMappingRepository.cs" />
     <Compile Include="ORM\Repositories\FlatTransporterContainerTemplateRepository.cs" />
-    <Compile Include="ORM\Repositories\OldCalculationMethodNameMappingRepository.cs" />
     <Compile Include="ORM\Core\AccessDatabase.cs" />
     <Compile Include="ORM\Core\DatabaseDisposer.cs" />
     <Compile Include="ORM\Core\ModelDatabase.cs" />

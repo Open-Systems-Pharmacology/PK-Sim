@@ -429,6 +429,7 @@
     <Compile Include="IntegrationTests\SensitivityAnalysisXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationAnalysisWorkflowXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationTransferLoaderSpecs.cs" />
+    <Compile Include="IntegrationTests\SimulationWithParticlesFormulationSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQuerySpecs.cs" />
     <Compile Include="Presentation\AdvancedParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\BoxWhiskerChartPresenterSpecs.cs" />
@@ -575,7 +576,6 @@
     <Compile Include="Core\ProteinToQueryExpressionSettingsMapperSpecs.cs" />
     <Compile Include="Core\ProtocolFactorySpecs.cs" />
     <Compile Include="Core\ProtocolTaskSpecs.cs" />
-    <Compile Include="IntegrationTests\OldCalculationMethodNameMappingRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\SystemicProcessSelectionXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQueryConversionSpecs.cs" />
     <Compile Include="Matlab\MatlabIndividualFactorySpecs.cs" />

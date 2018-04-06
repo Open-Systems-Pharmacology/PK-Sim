@@ -9,6 +9,8 @@ namespace PKSim.Core.Model
       public string ContainerType { get; set; }
       public string ContainerName { get; set; }
       public ParameterBuildMode BuildMode { get; set; }
+      public int? ValueOriginId { get; set; }
+      public bool IsInput { get; set; }
 
       private string _dimension;
       public string Dimension

@@ -57,4 +57,24 @@ namespace PKSim.ProjectConverter.v6_1
          simulation.Model.Root.GetAllChildren<IMoleculeAmount>().Each(x => x.NegativeValuesAllowed.ShouldBeTrue());
       }
    }
+
+   public class When_converting_603_project_with_particles_formulation : ContextWithLoadedProject<Converter602To612>
+   {
+      private Formulation _formulation;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadProject("6.0.3_ParticlesFormulation");
+
+         _formulation = First<Formulation>();
+      }
+
+      [Observation]
+      public void should_not_add_use_as_suspension_parameter()
+      {
+         _formulation.FormulationType.ShouldBeEqualTo(CoreConstants.Formulation.Particles);
+         _formulation.Parameter(CoreConstants.Parameter.USE_AS_SUSPENSION).ShouldBeNull();
+      }
+   }
 }

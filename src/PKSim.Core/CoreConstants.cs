@@ -355,7 +355,7 @@ namespace PKSim.Core
             Rectum
          };
 
-         public static readonly IEnumerable<string> LumenSegmentsStomachToRectum = new List<string>(LumenSegmentsDuodenumToRectum) {Stomach};
+         public static readonly IEnumerable<string> LumenSegmentsStomachToRectum = new List<string>{Stomach}.Concat(LumenSegmentsDuodenumToRectum);
       }
 
       public static class Compound
@@ -707,8 +707,6 @@ namespace PKSim.Core
          public static readonly string ViewMoleculeStartFormulas = "VIEW_MOLECULE_START_FORMULAS";
          public static readonly string ViewOntogenies = "VIEW_ONTOGENIES";
          public static readonly string ViewCategory = "VIEW_CATEGORIES";
-         public static readonly string ViewOldParameterNameMappings = "VIEW_OLD_PARAMETER_NAME_MAPPING";
-         public static readonly string ViewOldCalculationMethodNameMappings = "VIEW_OLD_CALCULATION_METHOD_NAME_MAPPING";
          public static readonly string ViewCalculationMethodParameterRates = "VIEW_CALCULATION_METHOD_PARAMETER_RATES";
          public static readonly string ViewCalculationMethodParameterDescriptorConditions = "VIEW_CALCULATION_METHOD_PARAMETER_DESCRIPTOR_CONDITIONS";
          public static readonly string ViewDynamicFormulaCriteriaRepository = "VIEW_CALCULATION_METHOD_RATE_DESCRIPTOR_CONDITIONS";
