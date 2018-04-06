@@ -6,6 +6,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -38,7 +39,6 @@ namespace PKSim.UI.Views.Compounds
       private IGridViewBoundColumn _colName;
       private readonly UxRepositoryItemCheckEdit _isDefaultRepository;
       private IGridViewColumn _colDefault;
-
       protected readonly RepositoryItemButtonEdit _addAndRemoveButtonRepository = new UxAddAndRemoveButtonRepository();
       protected readonly RepositoryItemButtonEdit _addButtonRepository = new UxAddAndDisabledRemoveButtonRepository();
       private readonly UxRepositoryItemButtonEdit _nameRepository;
@@ -104,6 +104,21 @@ namespace PKSim.UI.Views.Compounds
 
          //last but not least: Set the column for name as the first column in the grid view
          _colName.XtraColumn.VisibleIndex = 0;
+      }
+
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         UpdateButtonImage(0, _addButtonRepository, ApplicationIcons.Add);
+         UpdateButtonImage(1, _addButtonRepository, ApplicationIcons.Remove);
+         UpdateButtonImage(0, _addAndRemoveButtonRepository, ApplicationIcons.Add);
+         UpdateButtonImage(1, _addAndRemoveButtonRepository, ApplicationIcons.Remove);
+      }
+
+      protected void UpdateButtonImage(int buttonIndex, RepositoryItemButtonEdit repositoryItemButtonEdit, ApplicationIcon image)
+      {
+         repositoryItemButtonEdit.Buttons[buttonIndex].Kind = ButtonPredefines.Glyph;
+         repositoryItemButtonEdit.Buttons[buttonIndex].Image = image;
       }
 
       private void updateValueOrigin(TParameterAlternativeDTO parameterAlternativeDTO, ValueOrigin newValueOrigin)

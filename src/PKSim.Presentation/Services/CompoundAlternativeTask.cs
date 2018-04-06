@@ -44,17 +44,45 @@ namespace PKSim.Presentation.Services
 
       public ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup)
       {
+         ParameterAlternative parameterAlternative = null;
+         if (compoundParameterGroup.IsNamed(CoreConstants.Groups.COMPOUND_SOLUBILITY))
+            parameterAlternative = createSolubilityCompoundAlternativeFor(compoundParameterGroup);
+         else
+            parameterAlternative = createStandardParmaeterAlternativeFor(compoundParameterGroup);
+
+         if (parameterAlternative == null)
+            return new PKSimEmptyCommand();
+
+         return AddParameterGroupAlternativeTo(compoundParameterGroup, parameterAlternative);
+      }
+
+      private ParameterAlternative createStandardParmaeterAlternativeFor(ParameterAlternativeGroup compoundParameterGroup)
+      {
          var newAlternative = _parameterAlternativeFactory.CreateAlternativeFor(compoundParameterGroup);
 
          using (var presenter = _applicationController.Start<IParameterAlternativeNamePresenter>())
          {
             //canceled by user - nothing to do
             if (!presenter.Edit(compoundParameterGroup))
-               return new PKSimEmptyCommand();
+               return null;
 
             newAlternative.Name = presenter.Name;
+            return newAlternative;
+         }
+      }
 
-            return AddParameterGroupAlternativeTo(compoundParameterGroup, newAlternative);
+      private ParameterAlternative createSolubilityCompoundAlternativeFor(ParameterAlternativeGroup solubilityAlternativeGroup)
+      {
+         var newAlternative = _parameterAlternativeFactory.CreateAlternativeFor(solubilityAlternativeGroup);
+
+         using (var presenter = _applicationController.Start<ISolubilityAlternativeNamePresenter>())
+         {
+            //canceled by user - nothing to do
+            if (!presenter.Edit(solubilityAlternativeGroup))
+               return null;
+
+            newAlternative.Name = presenter.Name;
+            return newAlternative;
          }
       }
 
@@ -167,6 +195,7 @@ namespace PKSim.Presentation.Services
             allPh.AddRange(new[] {ph, ph + 0.5});
             ph++;
          }
+
          allPh.Add(14);
          foreach (var pH in allPh)
          {

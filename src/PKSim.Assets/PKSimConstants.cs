@@ -2157,6 +2157,7 @@ namespace PKSim.Assets
          public static readonly string UseWatermark = "Use watermark in charts when exporting to clipboard?";
          public static readonly string WatermarkText = "Text";
          public static readonly string WatermarkProperties = "Watermark Properties";
+         public static readonly string CreateTableSolubilityAlternative = "Create as pH-Sol table";
 
          public static string NumberOfIndividualsToExtract(int count, string populationName) => $"{count} {"individual".PluralizeIf(count)} will be extracted from population {populationName}.";
 

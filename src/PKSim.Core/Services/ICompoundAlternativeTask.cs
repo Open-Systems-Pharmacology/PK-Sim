@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
    public interface ICompoundAlternativeTask
    {
       /// <summary>
-      ///    Creates an alternative and adds it to the given <paramref name="compoundParameterGroup"/>
+      ///    Creates an alternative and adds it to the given <paramref name="compoundParameterGroup" />
       /// </summary>
       ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup);
 
       /// <summary>
-      ///    Adds the given <paramref name="parameterAlternative"/> to the given <paramref name="compoundParameterGroup"/>
+      ///    Adds the given <paramref name="parameterAlternative" /> to the given <paramref name="compoundParameterGroup" />
       /// </summary>
       ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup, ParameterAlternative parameterAlternative);
 
@@ -41,19 +40,21 @@ namespace PKSim.Core.Services
       ///    the command will not update the building block version of the compound
       /// </summary>
       ICommand SetAlternativeParameterUnit(IParameter parameter, Unit newUnit);
-  
+
       /// <summary>
       ///    Edit the value origin for the given <paramref name="parameterAlternative" />
       /// </summary>
       ICommand UpdateValueOrigin(ParameterAlternative parameterAlternative, ValueOrigin newValueOrigin);
 
       /// <summary>
-      ///    Returns the possible parameters for the permeability depending on the different alternatives defined for Lipophilicty
+      ///    Returns the possible parameters for the permeability depending on the different alternatives defined for
+      ///    Lipophilicty
       /// </summary>
       IEnumerable<IParameter> PermeabilityValuesFor(Compound compound);
 
       /// <summary>
-      ///    Returns the possible parameters for the intestinal permeability depending on the different alternatives defined for Lipophilicty
+      ///    Returns the possible parameters for the intestinal permeability depending on the different alternatives defined for
+      ///    Lipophilicty
       /// </summary>
       IEnumerable<IParameter> IntestinalPermeabilityValuesFor(Compound compound);
 

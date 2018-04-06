@@ -1,22 +1,22 @@
 ﻿using System;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.Core.Extensions;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Binders;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Binders;
-using OSPSuite.UI.Extensions;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -29,7 +29,8 @@ namespace PKSim.UI.Views.Compounds
       private readonly PopupContainerControl _popupControl = new PopupContainerControl();
       private readonly RepositoryItemPopupContainerEdit _repositoryItemPopupContainerEdit = new RepositoryItemPopupContainerEdit();
 
-      public SolubilityGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<SolubilityAlternativeDTO> valueOriginBinder) : 
+
+      public SolubilityGroupView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<SolubilityAlternativeDTO> valueOriginBinder) :
          base(toolTipCreator, imageListRetriever, valueOriginBinder)
       {
          InitializeComponent();
@@ -40,6 +41,7 @@ namespace PKSim.UI.Views.Compounds
          _repositoryItemPopupContainerEdit.EditValueChanged += editValueChanged;
       }
 
+    
       private void editValueChanged(object sender, EventArgs e)
       {
          _gridView.PostEditor();
@@ -76,6 +78,7 @@ namespace PKSim.UI.Views.Compounds
 
          col.XtraColumn.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Far;
 
+
          //to do at the end to respect order
          base.InitializeBinding();
       }
@@ -106,6 +109,6 @@ namespace PKSim.UI.Views.Compounds
          _popupControl.FillWith(view);
       }
 
-      private ISolubilityGroupPresenter solubilityGroupPresenter => _presenter.DowncastTo<ISolubilityGroupPresenter>();
+    private ISolubilityGroupPresenter solubilityGroupPresenter => _presenter.DowncastTo<ISolubilityGroupPresenter>();
    }
 }

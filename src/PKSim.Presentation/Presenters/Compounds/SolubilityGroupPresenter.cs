@@ -1,5 +1,10 @@
 using System.Collections.Generic;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Repositories;
@@ -7,11 +12,6 @@ using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters.Charts;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
