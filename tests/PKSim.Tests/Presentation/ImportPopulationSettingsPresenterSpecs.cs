@@ -69,7 +69,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _newFile = "new file path";
-         A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectPopulationFileToImport, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.POPULATION, null, null))
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectPopulationFileToImport, CoreConstants.Filter.POPULATION_FILE_FILTER, Constants.DirectoryKey.POPULATION, null, null))
             .Returns(_newFile);
       }
 
@@ -90,7 +90,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectPopulationFileToImport, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.POPULATION, null, null))
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectPopulationFileToImport, CoreConstants.Filter.POPULATION_FILE_FILTER, Constants.DirectoryKey.POPULATION, null, null))
             .Returns(string.Empty);
       }
 
