@@ -359,7 +359,7 @@ namespace PKSim.Core
             Rectum
          };
 
-         public static readonly IEnumerable<string> LumenSegmentsStomachToRectum = new List<string>(LumenSegmentsDuodenumToRectum) {Stomach};
+         public static readonly IEnumerable<string> LumenSegmentsStomachToRectum = new List<string>{Stomach}.Concat(LumenSegmentsDuodenumToRectum);
       }
 
       public static class Compound

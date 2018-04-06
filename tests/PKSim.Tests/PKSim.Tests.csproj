@@ -489,6 +489,7 @@
     <Compile Include="IntegrationTests\SimulationAnalysisWorkflowXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationParametersToBuildingBlockUpdaterSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationTransferLoaderSpecs.cs" />
+    <Compile Include="IntegrationTests\SimulationWithParticlesFormulationSpecs.cs" />
     <Compile Include="IntegrationTests\TemplateTaskQuerySpecs.cs" />
     <Compile Include="IntegrationTests\ValueOriginRepositorySpecs.cs" />
     <Compile Include="Presentation\AdvancedParameterPresenterSpecs.cs" />
