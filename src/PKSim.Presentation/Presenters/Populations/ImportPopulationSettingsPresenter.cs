@@ -12,6 +12,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
+using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters.Populations
 {
@@ -107,7 +108,7 @@ namespace PKSim.Presentation.Presenters.Populations
 
       private string getNewFile()
       {
-         return _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectPopulationFileToImport, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.POPULATION);
+         return _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectPopulationFileToImport, CoreConstants.Filter.POPULATION_FILE_FILTER, Constants.DirectoryKey.POPULATION);
       }
 
       public void RemoveFile(PopulationFileSelectionDTO fileSelectionDTO)
