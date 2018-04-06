@@ -1,3 +1,4 @@
+using OSPSuite.Core.Commands.Core;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Parameters;
 using OSPSuite.Core.Domain;
@@ -9,12 +10,12 @@ namespace PKSim.Presentation.Services
 {
    public interface IEditParameterPresenterTask
    {
-      void SetParameterValue(IEditParameterPresenter presenter, IParameterDTO parameterDTO, double valueInGuiUnit);
-      void SetParameterUnit(IEditParameterPresenter presenter, IParameterDTO parameterDTO, Unit displayUnit);
-      void SetParameterPercentile(IEditParameterPresenter presenter, IParameterDTO parameterDTO, double percentileInPercent);
-      void SetParameterValueOrigin(IEditParameterPresenter presenter, IParameterDTO parameterDTO, ValueOrigin valueOrigin);
-      void SetParameterName(IEditParameterPresenter presenter, IParameterDTO parameterDTO, string name);
-      void EditTableFor(IEditParameterPresenter presenter, IParameterDTO parameterDTO);
+      void SetParameterValue(ICommandCollector presenter, IParameterDTO parameterDTO, double valueInGuiUnit);
+      void SetParameterUnit(ICommandCollector presenter, IParameterDTO parameterDTO, Unit displayUnit);
+      void SetParameterPercentile(ICommandCollector presenter, IParameterDTO parameterDTO, double percentileInPercent);
+      void SetParameterValueOrigin(ICommandCollector presenter, IParameterDTO parameterDTO, ValueOrigin valueOrigin);
+      void SetParameterName(ICommandCollector presenter, IParameterDTO parameterDTO, string name);
+      void EditTableFor(ICommandCollector presenter, IParameterDTO parameterDTO);
       void SetParameterFavorite(IParameterDTO parameterDTO, bool isFavorite);
    }
 
@@ -29,22 +30,22 @@ namespace PKSim.Presentation.Services
          _applicationController = applicationController;
       }
 
-      public virtual void SetParameterPercentile(IEditParameterPresenter presenter, IParameterDTO parameterDTO, double percentileInPercent)
+      public virtual void SetParameterPercentile(ICommandCollector presenter, IParameterDTO parameterDTO, double percentileInPercent)
       {
          presenter.AddCommand(_parameterTask.SetParameterPercentile(ParameterFrom(parameterDTO), percentileInPercent / 100));
       }
 
-      public void SetParameterValueOrigin(IEditParameterPresenter presenter, IParameterDTO parameterDTO, ValueOrigin valueOrigin)
+      public void SetParameterValueOrigin(ICommandCollector presenter, IParameterDTO parameterDTO, ValueOrigin valueOrigin)
       {
          presenter.AddCommand(_parameterTask.SetParameterValueOrigin(ParameterFrom(parameterDTO), valueOrigin));
       }
 
-      public void SetParameterName(IEditParameterPresenter presenter, IParameterDTO parameterDTO, string name)
+      public void SetParameterName(ICommandCollector presenter, IParameterDTO parameterDTO, string name)
       {
          presenter.AddCommand(_parameterTask.SetParameterName(ParameterFrom(parameterDTO), name));
       }
 
-      public void EditTableFor(IEditParameterPresenter presenter, IParameterDTO parameterDTO)
+      public void EditTableFor(ICommandCollector presenter, IParameterDTO parameterDTO)
       {
          using (var tablePresenter = _applicationController.Start<IEditTableParameterPresenter>())
          {
@@ -62,12 +63,12 @@ namespace PKSim.Presentation.Services
          _parameterTask.SetParameterFavorite(ParameterFrom(parameterDTO), isFavorite);
       }
 
-      public virtual void SetParameterValue(IEditParameterPresenter presenter, IParameterDTO parameterDTO, double valueInGuiUnit)
+      public virtual void SetParameterValue(ICommandCollector presenter, IParameterDTO parameterDTO, double valueInGuiUnit)
       {
          presenter.AddCommand(_parameterTask.SetParameterDisplayValue(ParameterFrom(parameterDTO), valueInGuiUnit));
       }
 
-      public virtual void SetParameterUnit(IEditParameterPresenter presenter, IParameterDTO parameterDTO, Unit displayUnit)
+      public virtual void SetParameterUnit(ICommandCollector presenter, IParameterDTO parameterDTO, Unit displayUnit)
       {
          presenter.AddCommand(_parameterTask.SetParameterUnit(ParameterFrom(parameterDTO), displayUnit));
       }

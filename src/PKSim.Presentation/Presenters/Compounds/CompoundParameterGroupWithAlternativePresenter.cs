@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
-using PKSim.Assets;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {

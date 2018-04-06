@@ -72,12 +72,12 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public string Description
       {
-         set { View.Description = value; }
+         set => View.Description = value;
       }
 
       public string ImportToolTip
       {
-         set { View.ImportToolTip = value; }
+         set => View.ImportToolTip = value;
       }
 
       public TableFormula EditedFormula
@@ -148,7 +148,11 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public void ImportTable()
       {
-         editFormula(_importTableFormula());
+         var importedFormula = _importTableFormula();
+         if (importedFormula == null)
+            return;
+
+         editFormula(importedFormula);
          ViewChanged();
       }
 

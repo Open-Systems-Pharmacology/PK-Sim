@@ -76,5 +76,14 @@ namespace PKSim.Core.Services
       ///    Returns a table formula containg the solubiltiy as a function of ph for the given solubility alternative
       /// </summary>
       TableFormula SolubilityTableForPh(ParameterAlternative solubilityAlternative, Compound compound);
+
+
+      /// <summary>
+      /// Imports a solubility table from file and returns the imported table
+      /// </summary>
+      TableFormula ImportSolubilityTableFormula();
+
+
+      ICommand EditSolubilityTableFor(IParameter parameter);
    }
 }

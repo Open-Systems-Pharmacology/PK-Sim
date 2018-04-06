@@ -13,12 +13,15 @@ using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Importer;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Extensions;
+using Dimension = OSPSuite.Core.Domain.UnitSystem.Dimension;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
+using Unit = OSPSuite.Core.Domain.UnitSystem.Unit;
 
 namespace PKSim.Presentation
 {
@@ -32,6 +35,8 @@ namespace PKSim.Presentation
       protected IFormulaFactory _formulaFactory;
       protected IParameterTask _parameterTask;
       protected IBuildingBlockRepository _buildingBlockRepository;
+      private IDimensionRepository _dimensionRepository;
+      private IDataImporter _dataImporter;
 
       protected override void Context()
       {
@@ -42,9 +47,11 @@ namespace PKSim.Presentation
          _formulaFactory = A.Fake<IFormulaFactory>();
          _parameterTask = A.Fake<IParameterTask>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         _dimensionRepository= A.Fake<IDimensionRepository>();
+         _dataImporter= A.Fake<IDataImporter>();
          _compoundFactory = new CompoundFactoryForSpecs();
          sut = new CompoundAlternativeTask(_parameterAlternativeFactory, _applicationController,
-            _executionContext, _compoundFactory, _entityTask, _formulaFactory, _parameterTask, _buildingBlockRepository);
+            _executionContext, _compoundFactory, _entityTask, _formulaFactory, _parameterTask, _buildingBlockRepository,_dimensionRepository, _dataImporter);
       }
 
       protected class CompoundFactoryForSpecs : ICompoundFactory

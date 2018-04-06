@@ -8,6 +8,7 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core
 {
@@ -19,6 +20,7 @@ namespace PKSim.Core
       protected Compound _compound;
       protected ParameterAlternativeGroup _compoundParameterGroup;
       protected ICoreUserSettings _userSettings;
+      protected IFormulaFactory _formulaFactory;
 
       protected override void Context()
       {
@@ -30,7 +32,8 @@ namespace PKSim.Core
          _compoundParameterGroup = new ParameterAlternativeGroup();
          _compound.AddParameterAlternativeGroup(_compoundParameterGroup);
          _userSettings = A.Fake<ICoreUserSettings>();
-         sut = new ParameterAlternativeFactory(_objectBaseFactory, _cloner, _speciesRepository, _userSettings);
+         _formulaFactory= A.Fake<IFormulaFactory>();
+         sut = new ParameterAlternativeFactory(_objectBaseFactory, _cloner, _speciesRepository, _userSettings,_formulaFactory);
       }
    }
 

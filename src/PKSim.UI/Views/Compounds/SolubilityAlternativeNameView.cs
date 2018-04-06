@@ -1,6 +1,8 @@
 ﻿using System.Windows.Forms;
 using DevExpress.LookAndFeel;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
@@ -14,8 +16,8 @@ namespace PKSim.UI.Views.Compounds
    public partial class SolubilityAlternativeNameView : ObjectBaseView, ISolubilityAlternativeNameView
    {
       private readonly UserLookAndFeel _lookAndFeel;
-      private ISolubilityAlternativeNamePresenter _presenter;
       private readonly UxCheckEdit _createTableAlternative = new UxCheckEdit();
+      private readonly ScreenBinder<ISolubilityAlternativeNamePresenter> _screenBinder = new ScreenBinder<ISolubilityAlternativeNamePresenter>();
 
       public SolubilityAlternativeNameView()
       {
@@ -29,14 +31,20 @@ namespace PKSim.UI.Views.Compounds
 
       public void AttachPresenter(ISolubilityAlternativeNamePresenter presenter)
       {
-         base.AttachPresenter(presenter);
-         _presenter = presenter;
+         _screenBinder.BindToSource(presenter);
+      }
+
+      public override void InitializeBinding()
+      {
+         base.InitializeBinding();
+         _screenBinder.Bind(x => x.CreateAsTable)
+            .To(_createTableAlternative)
+            .WithCaption(PKSimConstants.UI.CreateTableSolubilityAlternative);
       }
 
       public override void InitializeResources()
       {
          base.InitializeResources();
-         _createTableAlternative.Text = PKSimConstants.UI.CreateTableSolubilityAlternative;
          insertControlAtTop(_createTableAlternative);
       }
 

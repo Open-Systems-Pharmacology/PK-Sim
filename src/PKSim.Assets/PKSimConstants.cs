@@ -1951,6 +1951,7 @@ namespace PKSim.Assets
          public static readonly string AnatomyAndPhysiologyText = "All anatomical and physiological parameters are set according to selected species, (population,) gender, age, weight and height except the manually changed parameters listed in {0}.";
          public static readonly string Experiment = "Experiment";
          public static readonly string ImportFormulation = "Import Formulation";
+         public static readonly string ImportSolubilityTable = "Import Solubility Table";
          public static readonly string AddPoint = "Add Point";
          public static readonly string Filter = "Filter";
          public static readonly string SaveSimulationToXmlFile = "Save Simulation to xml File (PKSim Format)";

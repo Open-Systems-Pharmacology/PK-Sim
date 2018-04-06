@@ -11,6 +11,12 @@ namespace PKSim.Core.Model
    public interface IParameterAlternativeFactory
    {
       ParameterAlternative CreateAlternativeFor(ParameterAlternativeGroup compoundParameterGroup);
+
+      /// <summary>
+      /// Creates an alternatuve with only one parameter <paramref name="tableParameterName"/> whose formula was replaced with a default <see cref="TableFormula"/>
+      /// </summary>
+      ParameterAlternative CreateTableAlternativeFor(ParameterAlternativeGroup compoundParameterGroup, string tableParameterName);
+
       ParameterAlternative CreateDefaultAlternativeFor(ParameterAlternativeGroup compoundParameterGroup);
    }
 
@@ -20,14 +26,20 @@ namespace PKSim.Core.Model
       private readonly ICloner _cloner;
       private readonly ISpeciesRepository _speciesRepository;
       private readonly ICoreUserSettings _userSettings;
+      private readonly IFormulaFactory _formulaFactory;
 
-      public ParameterAlternativeFactory(IObjectBaseFactory objectBaseFactory, ICloner cloner,
-         ISpeciesRepository speciesRepository, ICoreUserSettings userSettings)
+      public ParameterAlternativeFactory(
+         IObjectBaseFactory objectBaseFactory, 
+         ICloner cloner,
+         ISpeciesRepository speciesRepository, 
+         ICoreUserSettings userSettings, 
+         IFormulaFactory formulaFactory)
       {
          _objectBaseFactory = objectBaseFactory;
          _cloner = cloner;
          _speciesRepository = speciesRepository;
          _userSettings = userSettings;
+         _formulaFactory = formulaFactory;
       }
 
       public ParameterAlternative CreateAlternativeFor(ParameterAlternativeGroup compoundParameterGroup)
@@ -42,6 +54,23 @@ namespace PKSim.Core.Model
          return alternative;
       }
 
+      public ParameterAlternative CreateTableAlternativeFor(ParameterAlternativeGroup compoundParameterGroup, string tableParameterName)
+      {
+         var alternative = _objectBaseFactory.Create<ParameterAlternative>();
+
+         var parameter = compoundParameterGroup.TemplateParameters.FindByName(tableParameterName);
+         var tableParameter = _cloner.Clone(parameter);
+         var tableFormula = _formulaFactory.CreateTableFormula();
+
+         tableParameter.Formula = tableFormula;
+         tableFormula.YName = tableParameterName;
+         tableFormula.Dimension = parameter.Dimension;
+
+         alternative.Add(tableParameter);
+
+         return alternative;
+      }
+
       public ParameterAlternative CreateDefaultAlternativeFor(ParameterAlternativeGroup compoundParameterGroup)
       {
          var alternative = createAlternativeFor(compoundParameterGroup);
@@ -49,6 +78,7 @@ namespace PKSim.Core.Model
          alternative.Name = groupHasCalculatedAlternative(compoundParameterGroup)
             ? PKSimConstants.UI.CalculatedAlernative
             : defaultAlternativeNameFor(compoundParameterGroup);
+
          alternative.IsDefault = true;
          return alternative;
       }
@@ -90,14 +120,8 @@ namespace PKSim.Core.Model
          return alternative;
       }
 
-      private bool groupHasCalculatedAlternative(ParameterAlternativeGroup group)
-      {
-         return CoreConstants.Groups.GroupsWithCalculatedAlternative.Contains(group.Name);
-      }
-
-      private bool groupHasAlternativeWithSpecies(ParameterAlternativeGroup group)
-      {
-         return CoreConstants.Groups.GroupsWithAlternativeAndSpecies.Contains(group.Name);
-      }
+      private bool groupHasCalculatedAlternative(ParameterAlternativeGroup group) => CoreConstants.Groups.GroupsWithCalculatedAlternative.Contains(group.Name);
+   
+      private bool groupHasAlternativeWithSpecies(ParameterAlternativeGroup group) => CoreConstants.Groups.GroupsWithAlternativeAndSpecies.Contains(group.Name);
    }
 }

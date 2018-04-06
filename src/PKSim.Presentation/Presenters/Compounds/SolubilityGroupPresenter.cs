@@ -11,6 +11,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
 
 namespace PKSim.Presentation.Presenters.Compounds
@@ -22,6 +23,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       void SetRefpHValue(SolubilityAlternativeDTO solubilityAlternativeDTO, double newValue);
       void SetGainPerChanrgeValue(SolubilityAlternativeDTO solubilityAlternativeDTO, double newValue);
       void UpdateSolubilityChart(SolubilityAlternativeDTO solubilityAlternativeDTO);
+      void EditSolubilityTable(SolubilityAlternativeDTO solubilityAlternativeDTO);
    }
 
    public class SolubilityGroupPresenter : CompoundParameterGroupWithAlternativePresenter<ISolubilityGroupView>, ISolubilityGroupPresenter
@@ -30,9 +32,12 @@ namespace PKSim.Presentation.Presenters.Compounds
       private readonly ISimpleChartPresenter _simpleChartPresenter;
       private IReadOnlyList<SolubilityAlternativeDTO> _solubilityDTOs;
 
-      public SolubilityGroupPresenter(ISolubilityGroupView view, IRepresentationInfoRepository representationRepository,
+      public SolubilityGroupPresenter(
+         ISolubilityGroupView view, 
+         IRepresentationInfoRepository representationRepository,
          ICompoundAlternativeTask compoundAlternativeTask,
-         IParameterGroupAlternativeToSolubilityAlternativeDTOMapper solubilityAlternativeDTOMapper, IDialogCreator dialogCreator,
+         IParameterGroupAlternativeToSolubilityAlternativeDTOMapper solubilityAlternativeDTOMapper, 
+         IDialogCreator dialogCreator,
          ISimpleChartPresenter simpleChartPresenter)
          : base(view, representationRepository, compoundAlternativeTask, dialogCreator, CoreConstants.Groups.COMPOUND_SOLUBILITY)
       {
@@ -67,6 +72,11 @@ namespace PKSim.Presentation.Presenters.Compounds
          var chart = _simpleChartPresenter.Plot(_compoundAlternativeTask.SolubilityTableForPh(solubilityAlternativeDTO.ParameterAlternative, _compound));
          //log scaling for solubility chart is more appropriate
          chart.AxisBy(AxisTypes.Y).Scaling = Scalings.Log;
+      }
+
+      public void EditSolubilityTable(SolubilityAlternativeDTO solubilityAlternativeDTO)
+      {
+         AddCommand(_compoundAlternativeTask.EditSolubilityTableFor(solubilityAlternativeDTO.SolubilityParameter.Parameter));
       }
 
       protected override IEnumerable<ParameterAlternativeDTO> FillUpParameterGroupAlternatives()

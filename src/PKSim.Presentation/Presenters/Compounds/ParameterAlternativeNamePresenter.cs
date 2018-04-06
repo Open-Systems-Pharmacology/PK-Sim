@@ -1,10 +1,10 @@
 ﻿using System.Linq;
-using PKSim.Assets;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -12,11 +12,11 @@ namespace PKSim.Presentation.Presenters.Compounds
    {
    }
 
-   public class ParameterAlternativeNamePresenter : ObjectBasePresenter<ParameterAlternativeGroup>, IParameterAlternativeNamePresenter
+   public abstract class ParameterAlternativeNamePresenter<TView> : ObjectBasePresenter<ParameterAlternativeGroup>, IParameterAlternativeNamePresenter where TView : IObjectBaseView
    {
       private readonly IRepresentationInfoRepository _representationInfoRepository;
 
-      public ParameterAlternativeNamePresenter(IObjectBaseView view, IRepresentationInfoRepository representationInfoRepository)
+      protected ParameterAlternativeNamePresenter(TView view, IRepresentationInfoRepository representationInfoRepository)
          : base(view, true)
       {
          _representationInfoRepository = representationInfoRepository;
@@ -35,6 +35,13 @@ namespace PKSim.Presentation.Presenters.Compounds
          var dto = new ObjectBaseDTO();
          dto.AddUsedNames(parameterAlternativeGroup.Children.Select(x => x.Name));
          return dto;
+      }
+   }
+
+   public class ParameterAlternativeNamePresenter : ParameterAlternativeNamePresenter<IObjectBaseView>
+   {
+      public ParameterAlternativeNamePresenter(IObjectBaseView view, IRepresentationInfoRepository representationInfoRepository) : base(view, representationInfoRepository)
+      {
       }
    }
 }

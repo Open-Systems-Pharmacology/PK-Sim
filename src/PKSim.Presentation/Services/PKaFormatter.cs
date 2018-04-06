@@ -18,6 +18,7 @@ namespace PKSim.Presentation.Services
       {
          if (_typePkaDTO.CompoundType == CompoundType.Neutral)
             return PKSimConstants.UI.None;
+
          return base.Format(valueToFormat);
       }
    }

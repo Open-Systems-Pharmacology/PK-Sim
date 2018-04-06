@@ -17,6 +17,7 @@
          {
             components.Dispose();
          }
+         _screenBinder.Dispose();
          base.Dispose(disposing);
       }
 
