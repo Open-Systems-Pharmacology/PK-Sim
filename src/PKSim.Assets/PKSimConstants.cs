@@ -2235,7 +2235,7 @@ namespace PKSim.Assets
             {
                var sb = new StringBuilder();
                sb.AppendLine("The Excel table for formulation import should have a format of two colums.");
-               sb.AppendLine("The first column represents the Time (unit Time e.g. in years).");
+               sb.AppendLine("The first column represents the Time (unit Time e.g. in hours).");
                sb.AppendLine("The second column represents the fraction of the dose released at t.");
                return sb.ToString();               
             }
