@@ -1400,7 +1400,7 @@ namespace PKSim.Assets
             public static readonly string MaxGreaterThanMin = "Maximum value should be greater than minimum value.";
             public static readonly string StartTimeLessThanOrEqualToEndTime = "Start time value should be less than end time value.";
             public static readonly string EndTimeGreaterThanOrEqualToStartTime = "End time value should be greater than start time value.";
-            public static readonly string TimeValueShouldBeGreaterThanOrEqualToZero = "Time value should be greater than or equal to 0.";
+            public static string ValueShouldBeGreaterThanOrEqualToZero(string parameterName) => $"{parameterName} value should be greater than or equal to 0.";
 
             public static string MinGreaterThanDbMinValue(double? dbMinValue, string unit)
             {
