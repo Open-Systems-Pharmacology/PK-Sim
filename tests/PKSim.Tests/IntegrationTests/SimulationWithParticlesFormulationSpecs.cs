@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -10,7 +9,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using static System.Math;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace PKSim.IntegrationTests
@@ -47,9 +45,8 @@ namespace PKSim.IntegrationTests
          IntestinalTransitRateFor(CoreConstants.Compartment.Rectum).Value = 0;
 
          //store initial drug mass
-         _appliedDrugMass = _simulation.Model.Root.Container("Applications").Container(_protocol.Name)
-            .Container(_formulation.Name).Container("Application_1").Container(CoreConstants.ContainerName.ProtocolSchemaItem)
-            .Parameter(CoreConstantsForSpecs.Parameter.DRUG_MASS).Value.ToFloat();
+         _appliedDrugMass = Application.Container(CoreConstants.ContainerName.ProtocolSchemaItem)
+                            .Parameter(CoreConstantsForSpecs.Parameter.DRUG_MASS).Value.ToFloat();
 
          //Get paths for output quantities of interest
          (var lumenPaths, var binSolidDrugPaths, var binInsolubleDrugPaths,
@@ -63,6 +60,19 @@ namespace PKSim.IntegrationTests
 
          //fill simulation output times and values required for all further tests
          fillSimulationOutputs(lumenPaths, binSolidDrugPaths, binInsolubleDrugPaths, binSolidDrugPerSegmentPaths, binParticlesFractionPerSegmentPaths);
+      }
+
+      protected IContainer Application => _simulation.Model.Root.Container("Applications").Container(_protocol.Name)
+                                          .Container(_formulation.Name).Container("Application_1");
+
+      protected IContainer ParticleBin(int binIndex)
+      {
+         return Application.Container($"ParticleBin_{binIndex + 1}"); //in the model bin inexation starts with 1
+      }
+
+      protected IParameter StartParticleRadius(int binIndex)
+      {
+         return ParticleBin(binIndex).Parameter(CoreConstants.Parameter.StartParticleRadius);
       }
 
       protected IContainer Lumen => _simulation.Model.Root.Container("Organism").Container(CoreConstants.Organ.Lumen);
@@ -240,6 +250,35 @@ namespace PKSim.IntegrationTests
          exporter.SaveSimulationToFile(_simulation, @"C:\Temp\IntegrationTestSim.pkml");
       }
 
+      /// <summary>
+      /// Set solubility in stomach  = high
+      /// set solubility in "segment" = 0
+      /// set transit rate from "segment" to the next segment (e.g. from duodenum to upper jejunum) = 0
+      /// set threshold for particles radius immediately dissolved = 0 (dissolution process never stops)
+      /// </summary>
+      protected void SetSolubilitySchema1WithStopIn(string segment)
+      {
+         Solubility(CoreConstants.Compartment.Stomach).Value = 1e-3; //[kg/l]
+         Solubility(CoreConstants.Compartment.Duodenum).Value = 0;
+         ParticleRadiusDissolved = 0;
+         IntestinalTransitRateFor(CoreConstants.Compartment.Duodenum).Value = 0;
+      }
+
+      /// <summary>
+      /// additionally to schema 1:
+      ///  - set solubility in all segments after stomach and before "segment" = high
+      ///  - set flow rate "stomach=>duodenum" = "slow"
+      /// </summary>
+      protected void SetSolubilitySchema2WithStopIn(string segment)
+      {
+         var stopSegmentIdx = Array.IndexOf(_lumenSegments, segment);
+         for (var segmentIdx = 1; segmentIdx < stopSegmentIdx; segmentIdx++)
+            Solubility(_lumenSegments[segmentIdx]).Value = 100;
+
+         IntestinalTransitRateFor(CoreConstants.Compartment.Stomach).Value = 1e-3;
+         SetSolubilitySchema1WithStopIn(segment);
+      }
+
       //--------------------------------------------------------------------------------------------
       // Test routins called by observations in all derived classes
       //--------------------------------------------------------------------------------------------
@@ -270,6 +309,36 @@ namespace PKSim.IntegrationTests
             _binInsolubleDrug[binIdx].Min().ShouldBeEqualTo(0,ComparisonTolerance);
             _binInsolubleDrug[binIdx].Max().ShouldBeEqualTo(0, ComparisonTolerance);
          }
+      }
+
+      protected void CheckPrecipitation()
+      {
+         TotalPrecipitatedDrug.ShouldBeGreaterThan(0);
+      }
+
+      /// <summary>
+      /// Precipitated drug at the end of simulation
+      /// </summary>
+      protected float TotalPrecipitatedDrug => totalDrug(_binInsolubleDrug);
+
+      /// <summary>
+      /// Solid drug at the end of simulation
+      /// </summary>
+      protected float TotalSolidDrug => totalDrug(_binSolidDrug);
+
+
+      /// <summary>
+      /// solid or precipitated drug at the end of simulation
+      /// </summary>
+      /// <param name="drugValues"></param>
+      private float totalDrug(float[][] drugValues)
+      {
+         float totalDrug = 0;
+
+         for (int binIdx = 0; binIdx < NumberOfBins; binIdx++)
+            totalDrug += drugValues[binIdx][NumberOfSimulatedtimePoints - 1];
+
+         return totalDrug;
       }
 
       /// <summary>
@@ -328,29 +397,53 @@ namespace PKSim.IntegrationTests
          checkSolidDrugMonotonous(segment, checkDecreasing: true);
       }
 
+      protected void CheckInsolubleDrugIncreasing()
+      {
+         for (int binIdx = 0; binIdx < NumberOfBins; binIdx++)
+         {
+            checkValuesMonotonous(_binInsolubleDrug[binIdx], checkDecreasing: false);
+         }
+      }
+
       private void checkSolidDrugMonotonous(string segment, bool checkDecreasing)
       {
-         var comparisonTolerance = _simulation.Solver.AbsTol;
-
          var segmentIdx = Array.IndexOf(_lumenSegments,segment);
 
          for (int binIdx = 0; binIdx < NumberOfBins; binIdx++)
          {
             var solidDrugSegmentValues = _binSolidDrugPerSegment[binIdx][segmentIdx];
-            for (var timeIdx = 1; timeIdx < NumberOfSimulatedtimePoints; timeIdx++)
+            checkValuesMonotonous(solidDrugSegmentValues, checkDecreasing);
+         }
+      }
+
+      protected void CheckSolidDrugZeroForTimeGreaterThanZero()
+      {
+         for (int timeIdx = 1; timeIdx < NumberOfSimulatedtimePoints; timeIdx++)
+         {
+            for (int binIdx = 0; binIdx < NumberOfBins; binIdx++)
             {
-               var previousValue = solidDrugSegmentValues[timeIdx - 1];
-               var currentValue = solidDrugSegmentValues[timeIdx];
-
-               if(previousValue < comparisonTolerance || currentValue < comparisonTolerance)
-                  continue;
-
-               var diff = currentValue - previousValue;
-               if (checkDecreasing)
-                  diff *= -1;
-
-               diff.ShouldBeGreaterThanOrEqualTo(0);
+               _binSolidDrug[binIdx][timeIdx].ShouldBeEqualTo(0);
             }
+         }
+      }
+
+      private void checkValuesMonotonous(float[] values, bool checkDecreasing)
+      {
+         var comparisonTolerance = _simulation.Solver.AbsTol;
+
+         for (var timeIdx = 1; timeIdx < NumberOfSimulatedtimePoints; timeIdx++)
+         {
+            var previousValue = values[timeIdx - 1];
+            var currentValue = values[timeIdx];
+
+            if (previousValue < comparisonTolerance || currentValue < comparisonTolerance)
+               continue;
+
+            var diff = currentValue - previousValue;
+            if (checkDecreasing)
+               diff *= -1;
+
+            diff.ShouldBeGreaterThanOrEqualTo(0);
          }
       }
    }
@@ -390,8 +483,11 @@ namespace PKSim.IntegrationTests
 
       protected override void SetupSimulation()
       {
-         //disable precipitation
+         //enable precipitation
          PrecipitatedDrugSoluble = false;
+
+         //set low solubility in duodenum to assure precipitation
+         Solubility(CoreConstants.Compartment.Duodenum).Value = 1e-12;
       }
 
       [Observation]
@@ -401,16 +497,22 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      [Ignore("not implemented yet")]
       public void precipitation_should_occur()
       {
-         //CheckNoPrecipitation();
+         CheckPrecipitation();
       }
 
       [Observation]
       public void mass_balance_of_drug_should_be_correct()
       {
          CheckMassBalance();
+      }
+
+
+      [Observation]
+      public void amount_of_precipitated_drug_must_be_increasing()
+      {
+         CheckInsolubleDrugIncreasing();
       }
    }
 
@@ -443,6 +545,44 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class when_running_particles_simulation_with_one_bin_with_precipitation : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 1;
+
+      protected override void SetupSimulation()
+      {
+         //enable precipitation
+         PrecipitatedDrugSoluble = false;
+
+         //set low solubility in duodenum to assure precipitation
+         Solubility(CoreConstants.Compartment.Duodenum).Value = 1e-12;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_occur()
+      {
+         CheckPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+
+      [Observation]
+      public void amount_of_precipitated_drug_must_be_increasing()
+      {
+         CheckInsolubleDrugIncreasing();
+      }
+   }
+
    public class when_running_particles_simulation_with_two_bins_without_precipitation_solubility_schema_1 : concern_for_SimulationWithParticlesFormulation
    {
       protected override int NumberOfBins => 2;
@@ -452,28 +592,24 @@ namespace PKSim.IntegrationTests
          //disable precipitation
          PrecipitatedDrugSoluble = true;
 
-         //set solubility in stomach  = high 
-         //set solubility in duodenum = 0
-         //set transit rate from duodenum to upper jejunum=0
-         //set threshold for particles radius immediately dissolved = 0 (=>dissolution process never stops)
-         Solubility(CoreConstants.Compartment.Stomach).Value = 1e-3; //[kg/l]
-         Solubility(CoreConstants.Compartment.Duodenum).Value = 0;
-         ParticleRadiusDissolved = 0;
-         IntestinalTransitRateFor(CoreConstants.Compartment.Duodenum).Value = 0;
+         //following this schema, most of drug will be dissolved in the stomach
+         //in duodenum the drug will be accumulated and nearly all drug will turn into solid form again
+         SetSolubilitySchema1WithStopIn(CoreConstants.Compartment.Duodenum);
       }
 
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         ExportSimulation();
          CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
       }
 
       [Observation]
       public void solid_drug_in_duodenum_should_be_monotonically_increasing()
       {
+         //due to solubility=0 and flow to the next segment=0 solid drug must increase over time
          CheckSolidDrugIncreasing(CoreConstants.Compartment.Duodenum);
       }
+
       [Observation]
       public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
       {
@@ -489,8 +625,248 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void mass_balance_of_drug_should_be_correct()
       {
-//         ExportSimulation();
          CheckMassBalance();
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_with_precipitation_solubility_schema_1 : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = false;
+
+         //following this schema, nearly all drug will be dissolved in the stomach
+         //in duodenum the drug will be accumulated and nearly all drug will turn into insoluble (precipitated) form
+         SetSolubilitySchema1WithStopIn(CoreConstants.Compartment.Duodenum);
+      }
+
+      [Observation]
+      public void solid_drug_in_stomach_should_be_monotonically_decreasing()
+      {
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+      }
+
+      [Observation]
+      public void amount_of_precipitated_drug_must_be_increasing()
+      {
+         CheckInsolubleDrugIncreasing();
+      }
+
+      [Observation]
+      public void solid_drug_in_duodenum_should_be_monotonically_increasing()
+      {
+         CheckSolidDrugIncreasing(CoreConstants.Compartment.Duodenum);
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_occur()
+      {
+         CheckPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_without_precipitation_solubility_schema_2 : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = true;
+
+         _simulation.SimulationSettings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //5days
+
+         //following this schema, most of the drug will be dissolved in the stomach
+         //in rectum the drug will be accumulated and most of the drug will turn into insoluble (precipitated) form
+         SetSolubilitySchema2WithStopIn(CoreConstants.Compartment.Rectum);
+      }
+
+      [Observation]
+      public void solid_drug_in_stomach_should_be_monotonically_decreasing()
+      {
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+      }
+
+      [Observation]
+      public void solid_drug_in_rectum_should_be_monotonically_increasing()
+      {
+         //due to solubility=0 and flow to the next segment=0 solid drug must increase over time
+         CheckSolidDrugIncreasing(CoreConstants.Compartment.Rectum);
+      }
+
+      [Observation]
+      public void solid_drug_in_duodenum_should_be_monotonically_increasing()
+      {
+         CheckSolidDrugIncreasing(CoreConstants.Compartment.Duodenum);
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_not_occur()
+      {
+         CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+
+      [Observation]
+      public void nearly_all_drug_must_be_solid_after_long_simulation()
+      {
+         TotalSolidDrug.ShouldBeGreaterThan(0.99f * _appliedDrugMass);
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_with_precipitation_solubility_schema_2 : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = false;
+
+         _simulation.SimulationSettings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //5days
+
+         //following this schema, most of the drug will be dissolved in the stomach
+         //in rectum the drug will be accumulated and most of the drug will turn into insoluble (precipitated) form
+         SetSolubilitySchema2WithStopIn(CoreConstants.Compartment.Rectum);
+      }
+
+      [Observation]
+      public void solid_drug_in_stomach_should_be_monotonically_decreasing()
+      {
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+      }
+
+      [Observation]
+      public void amount_of_precipitated_drug_must_be_increasing()
+      {
+         CheckInsolubleDrugIncreasing();
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_occur()
+      {
+         CheckPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+
+      [Observation]
+      public void nearly_all_drug_must_be_precipitated_after_long_simulation()
+      {
+         TotalPrecipitatedDrug.ShouldBeGreaterThan(0.99f*_appliedDrugMass);
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_without_precipitation_and_high_particle_radius_dissolved : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = true;
+
+         //set particle radius dissolved > particle radius in all bins
+         ParticleRadiusDissolved = Math.Max(StartParticleRadius(0).Value, StartParticleRadius(1).Value) + 1;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_not_occur()
+      {
+         CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+
+      [Observation]
+      public void amount_of_solid_drug_should_be_zero_for_time_greater_than_zero()
+      {
+         CheckSolidDrugZeroForTimeGreaterThanZero();
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_with_precipitation_and_high_particle_radius_dissolved : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = false;
+
+         //set particle radius dissolved > particle radius in all bins
+         ParticleRadiusDissolved = Math.Max(StartParticleRadius(0).Value, StartParticleRadius(1).Value) + 1;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_not_occur()
+      {
+         //due to the fact that the whole drug is immediately considered as dissolved, no precipitation should occur
+         CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+
+      [Observation]
+      public void amount_of_solid_drug_should_be_zero_for_time_greater_than_zero()
+      {
+         CheckSolidDrugZeroForTimeGreaterThanZero();
       }
    }
 }	
