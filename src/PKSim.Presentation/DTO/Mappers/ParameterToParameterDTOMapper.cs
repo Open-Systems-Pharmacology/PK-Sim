@@ -138,7 +138,7 @@ namespace PKSim.Presentation.DTO.Mappers
          }
          else if (parameter.IsNamed(CoreConstants.Parameters.GESTATIONAL_AGE))
          {
-            addNumericListOfValues(parameterDTO, CoreConstants.PRETERM_RANGE.Min(), CoreConstants.PRETERM_RANGE.Max());
+            addNumericListOfValues(parameterDTO, CoreConstants.PretermRange.Min(), CoreConstants.PretermRange.Max());
          }
          else if (CoreConstants.Parameters.AllBooleanParameters.Contains(parameter.Name))
          {
