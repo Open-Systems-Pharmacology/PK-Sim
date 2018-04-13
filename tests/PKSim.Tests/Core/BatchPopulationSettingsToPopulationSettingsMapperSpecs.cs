@@ -113,7 +113,7 @@ namespace PKSim.Core
          _result.ParameterRange(CoreConstants.Parameter.GESTATIONAL_AGE).MinValue.ShouldBeEqualTo(_batchPopSettings.MinGestationalAge);
          
          //because not explicitely set: max_GA should be equal to the max of the range
-         _result.ParameterRange(CoreConstants.Parameter.GESTATIONAL_AGE).MaxValue.ShouldBeEqualTo(CoreConstants.PRETERM_RANGE.Max()); 
+         _result.ParameterRange(CoreConstants.Parameter.GESTATIONAL_AGE).MaxValue.ShouldBeEqualTo(CoreConstants.PretermRange.Max()); 
       }
 
       [Observation]
