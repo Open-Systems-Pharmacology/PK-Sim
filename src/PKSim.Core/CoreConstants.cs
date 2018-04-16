@@ -188,6 +188,7 @@ namespace PKSim.Core
       public static class Alias
       {
          public static readonly string TABLE = "Table";
+         public static readonly string XREF = "XRef";
          public static readonly string OFFSET = "Offset";
          public static readonly string COMPETIVE_INHIBITION_KI = "KcI";
          public static readonly string UNCOMPETIVE_INHIBITION_KI = "KuI";

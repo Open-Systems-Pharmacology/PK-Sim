@@ -56,12 +56,6 @@ namespace PKSim.Core.Model
          //STEP1: Add all parameters defined for the compound from the database
          _parameterContainerTask.AddCompoundParametersTo(compound);
 
-         //TODO ZTMSE Remove when parameter available in Database
-         var solubility = compound.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
-         var solubilityTable = _cloner.Clone(solubility).WithName(CoreConstants.Parameters.SOLUBILITY_TABLE);
-         solubilityTable.Value = 0;
-         compound.Add(solubilityTable);
-
          foreach (var group in _parameterGroupTask.GroupsUsedBy(compound.AllParameters().ToList()).Where(groupNeedsAlterntive))
          {
             // create and add new compound parameter group

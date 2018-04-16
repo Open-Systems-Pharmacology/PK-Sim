@@ -16,8 +16,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       protected readonly IValueOriginRepository _valueOriginRepository;
       protected IList<TParameterMetaData> _parameterMetaDataList;
 
-      //TODO ZTMSE: Back to private
-      protected readonly ICache<string, List<TParameterMetaData>> _parameterMetaDataCacheByContainer = new Cache<string, List<TParameterMetaData>>(s => new List<TParameterMetaData>());
+      private readonly ICache<string, List<TParameterMetaData>> _parameterMetaDataCacheByContainer = new Cache<string, List<TParameterMetaData>>(s => new List<TParameterMetaData>());
 
       protected ParameterMetaDataRepository(
          IMetaDataRepository<TParameterMetaData> flatParameterMetaDataRepository,

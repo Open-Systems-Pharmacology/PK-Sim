@@ -43,15 +43,6 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
          _parameterContainerTask.AddMoleculeParametersTo(molecule, formulaCache);
 
-         if (flatMolecule.Id == "DRUG")
-         {
-
-            //TODO ZTMSE Remove when parameter available in Database
-            var solubility = molecule.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
-            var solubilityTable = _cloner.Clone(solubility).WithName(CoreConstants.Parameters.SOLUBILITY_TABLE);
-            molecule.Add(solubilityTable);
-
-         }
          return molecule;
       }
    }

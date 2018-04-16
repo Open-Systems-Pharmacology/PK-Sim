@@ -517,6 +517,8 @@ namespace PKSim.Assets
 
          public static string TableFormulaWithOffsetMissingRefs(string rateKey, string ref1, string ref2) => $"Table formula with offset '{rateKey}' must contain references to '{ref1}' and '{ref2}'.";
 
+         public static string TableFormulaWithXReferenceMissingRefs(string rateKey, string ref1, string ref2) => $"Table formula with X-Reference '{rateKey}' must contain references to '{ref1}' and '{ref2}'.";
+
          public static string ModelContainerNotAvailable(string containerName) => $"Model container '{containerName}' not available.";
 
          public static string ProjectFileIsReadOnlyAndCannotBeRead(string fileFullPath)

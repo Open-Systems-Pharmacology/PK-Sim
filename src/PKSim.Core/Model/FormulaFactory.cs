@@ -355,31 +355,26 @@ namespace PKSim.Core.Model
 
       private IFormula createTableFormulaWithArgument(RateKey rateKey)
       {
-         var formula = _objectBaseFactory.Create<TableFormulaWithXArgument>()
-            .WithId(rateKey)
-            .WithName(rateKey.Rate);
-
-         //TODO
-         var dummykey = new RateKey("Lumen_PKSim", "PARAM_IntestinalSolubility");
-         var tableObjectPath = _rateObjectPathsRepository.PathWithAlias(dummykey, "Solubility");
-         var offsetObjectPath = _rateObjectPathsRepository.PathWithAlias(dummykey, "Solubility_pKa_pH_Factor");
-
-         var phParameter = offsetObjectPath.Clone<IFormulaUsablePath>();
-         phParameter.Alias = "pH";
-         phParameter[phParameter.Count -1] = "pH";
-         phParameter.AddAtFront(ObjectPath.PARENT_CONTAINER);
-
-         var solubilityTableObjectPath = tableObjectPath.Clone<IFormulaUsablePath>();
-         solubilityTableObjectPath[solubilityTableObjectPath.Count -1] = CoreConstants.Parameters.SOLUBILITY_TABLE;
-
-         formula.AddTableObjectPath(solubilityTableObjectPath);
-         formula.AddXArgumentObjectPath(phParameter);
-
-         //Table formula with offest has the same dimension as its referenced table object
-         formula.Dimension = tableObjectPath.Dimension;
-
-         return formula;
+         return new ExplicitFormula("1+2");
+//         var formula = _objectBaseFactory.Create<TableFormulaWithXArgument>()
+//            .WithId(rateKey)
+//            .WithName(rateKey.Rate);
+//
+//         var tableObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.TABLE);
+//         var referenceObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.XREF);
+//
+//         if (tableObjectPath == null || referenceObjectPath == null)
+//            throw new ArgumentException(PKSimConstants.Error.TableFormulaWithXReferenceMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.XREF));
+//         
+//         formula.AddTableObjectPath(tableObjectPath);
+//         formula.AddXArgumentObjectPath(referenceObjectPath);
+//
+//         //Table formula with reference has the same dimension as its referenced table object
+//         formula.Dimension = tableObjectPath.Dimension;
+//
+//         return formula;
       }
+
       private IFormula createTableFormulaWithOffset(RateKey rateKey)
       {
          var formula = _objectBaseFactory.Create<TableFormulaWithOffset>()
@@ -389,9 +384,8 @@ namespace PKSim.Core.Model
          var tableObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.TABLE);
          var offsetObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.OFFSET);
 
-         if ((tableObjectPath == null) || (offsetObjectPath == null))
-            throw new ArgumentException(
-               PKSimConstants.Error.TableFormulaWithOffsetMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.OFFSET));
+         if (tableObjectPath == null || offsetObjectPath == null)
+            throw new ArgumentException(PKSimConstants.Error.TableFormulaWithOffsetMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.OFFSET));
 
          formula.AddTableObjectPath(tableObjectPath.Clone<IFormulaUsablePath>());
          formula.AddOffsetObjectPath(offsetObjectPath.Clone<IFormulaUsablePath>());
