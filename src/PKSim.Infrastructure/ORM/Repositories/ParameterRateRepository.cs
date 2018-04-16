@@ -1,4 +1,5 @@
 using System.Linq;
+using FluentNHibernate.Utils;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -39,6 +40,22 @@ namespace PKSim.Infrastructure.ORM.Repositories
          {
             setRHSFor(parameterRateMetaData);
          }
+
+         //TODO ZTMSE DELETE
+         foreach (var key in _parameterMetaDataCacheByContainer.Keys)
+         {
+            if (key.Contains("Lumen") && key.Contains("MoleculeProperties") && key.Contains("Organism"))
+            {
+               var list = _parameterMetaDataCacheByContainer[key];
+               var solubilityParameter = list.Find(x => x.Rate == "PARAM_IntestinalSolubility");
+               var solubilityTableParameter = solubilityParameter.DoClone();
+               solubilityTableParameter.ParameterName = CoreConstants.Parameters.SOLUBILITY_TABLE;
+               solubilityTableParameter.Rate = $"{CoreConstants.Rate.TableFormulaWithXArgumentPrefix}_PARAM_IntestinalSolubility";
+               list.Add(solubilityTableParameter);
+            }
+
+         }
+
       }
 
       private void setRHSFor(ParameterRateMetaData parameterRateMetaData)

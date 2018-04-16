@@ -77,13 +77,14 @@ namespace PKSim.Core.Services
       /// </summary>
       TableFormula SolubilityTableForPh(ParameterAlternative solubilityAlternative, Compound compound);
 
-
       /// <summary>
       /// Imports a solubility table from file and returns the imported table
       /// </summary>
       TableFormula ImportSolubilityTableFormula();
 
-
+      /// <summary>
+      /// Edits the solubility talbe for the given <paramref name="parameter"/> 
+      /// </summary>
       ICommand EditSolubilityTableFor(IParameter parameter);
    }
 }

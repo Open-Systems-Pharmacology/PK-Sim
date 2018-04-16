@@ -15,7 +15,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IFlatContainerRepository _flatContainerRepository;
       protected readonly IValueOriginRepository _valueOriginRepository;
       protected IList<TParameterMetaData> _parameterMetaDataList;
-      private readonly ICache<string, List<TParameterMetaData>> _parameterMetaDataCacheByContainer = new Cache<string, List<TParameterMetaData>>(s => new List<TParameterMetaData>());
+
+      //TODO ZTMSE: Back to private
+      protected readonly ICache<string, List<TParameterMetaData>> _parameterMetaDataCacheByContainer = new Cache<string, List<TParameterMetaData>>(s => new List<TParameterMetaData>());
 
       protected ParameterMetaDataRepository(
          IMetaDataRepository<TParameterMetaData> flatParameterMetaDataRepository,
@@ -53,8 +55,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
          //now cache the parameter meta data by container path
          foreach (var parameterValueMetaDataGroup in _parameterMetaDataList.GroupBy(x => x.ParentContainerPath))
          {
-            _parameterMetaDataCacheByContainer.Add(parameterValueMetaDataGroup.Key, new List<TParameterMetaData>(parameterValueMetaDataGroup));
+            _parameterMetaDataCacheByContainer.Add(parameterValueMetaDataGroup.Key, new List<TParameterMetaData>(parameterValueMetaDataGroup));            
          }
+
+
       }
 
       public override IEnumerable<TParameterMetaData> All()

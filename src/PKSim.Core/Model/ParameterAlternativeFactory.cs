@@ -5,6 +5,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility;
 
 namespace PKSim.Core.Model
 {
@@ -56,17 +57,14 @@ namespace PKSim.Core.Model
 
       public ParameterAlternative CreateTableAlternativeFor(ParameterAlternativeGroup compoundParameterGroup, string tableParameterName)
       {
-         var alternative = _objectBaseFactory.Create<ParameterAlternative>();
+         var alternative = CreateAlternativeFor(compoundParameterGroup);
 
-         var parameter = compoundParameterGroup.TemplateParameters.FindByName(tableParameterName);
-         var tableParameter = _cloner.Clone(parameter);
+         var tableParameter = alternative.Parameter(tableParameterName);
          var tableFormula = _formulaFactory.CreateTableFormula();
 
          tableParameter.Formula = tableFormula;
          tableFormula.YName = tableParameterName;
-         tableFormula.Dimension = parameter.Dimension;
-
-         alternative.Add(tableParameter);
+         tableFormula.Dimension = tableParameter.Dimension;
 
          return alternative;
       }

@@ -180,6 +180,7 @@ namespace PKSim.Core
          public static readonly string RelExpEndosomal = "RelExpEndosomal";
          public static readonly string RelExpOutFromNorm = "RelExpOutFromNorm";
          public static readonly string TableFormulaWithOffsetPrefix = "TableFormulaWithOffset_";
+         public static readonly string TableFormulaWithXArgumentPrefix = "TableFormulaWithXArgument_";
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA = "PARAM_Application_DoseFromDosePerBodySurfaceArea";
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT = "PARAM_Application_DoseFromDosePerBodyWeight";
       }
@@ -917,6 +918,7 @@ namespace PKSim.Core
          public const string SPECIFIC_INTESTINAL_PERMEABILITY = "Specific intestinal permeability (transcellular)";
          public const string FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE = "Fraction unbound (plasma, reference value)";
          public const string SOLUBILITY_AT_REFERENCE_PH = "Solubility at reference pH";
+         public const string SOLUBILITY_TABLE = "Solubility table";
          public const string SOLUBILITY_GAIN_PER_CHARGE = "Solubility gain per charge";
          public const string REFERENCE_PH = "Reference pH";
          public const string UNDEFINED_ONTOGENY = "Undefined";

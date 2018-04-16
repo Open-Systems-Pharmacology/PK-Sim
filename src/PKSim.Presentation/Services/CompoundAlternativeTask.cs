@@ -102,10 +102,13 @@ namespace PKSim.Presentation.Services
 
       private ParameterAlternative createSolubilityTableAlternativeFor(ParameterAlternativeGroup solubilityAlternativeGroup, string name)
       {
-         var tableAlternative = _parameterAlternativeFactory.CreateTableAlternativeFor(solubilityAlternativeGroup, CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH)
+         var tableAlternative = _parameterAlternativeFactory.CreateTableAlternativeFor(solubilityAlternativeGroup, CoreConstants.Parameters.SOLUBILITY_TABLE)
             .WithName(name);
 
-         var tableParameter = tableAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
+         var solubilityAtRefPhParameter = tableAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
+         solubilityAtRefPhParameter.Value = 0;
+
+         var tableParameter = tableAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
          var phParameter = solubilityAlternativeGroup.TemplateParameters.FindByName(CoreConstants.Parameters.REFERENCE_PH);
 
          initializeSolubiltyTableFormula(tableParameter.Formula.DowncastTo<TableFormula>(), phParameter.Dimension, tableParameter.Dimension);
@@ -272,13 +275,14 @@ namespace PKSim.Presentation.Services
       public TableFormula SolubilityTableForPh(ParameterAlternative solubilityAlternative, Compound compound)
       {
           //Already a table formula. Use as IS!
-         var refSolubility = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
-         if (refSolubility.Formula.IsTable())
-            return refSolubility.Formula.DowncastTo<TableFormula>();
+         var tableSolubility = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
+         if (tableSolubility.Formula.IsTable())
+            return tableSolubility.Formula.DowncastTo<TableFormula>();
 
          //Sol(pH) = ref_Solubility * Solubility_Factor (ref_pH) / Solubility_Factor(pH) 
          //Solubility_pKa_pH_Factor
 
+         var refSolubility = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
          var refPh = solubilityAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
          var gainPerCharge = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
          var refSolubilityValue = refSolubility.Value;

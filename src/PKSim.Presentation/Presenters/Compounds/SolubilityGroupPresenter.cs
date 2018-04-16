@@ -11,7 +11,6 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
 
 namespace PKSim.Presentation.Presenters.Compounds

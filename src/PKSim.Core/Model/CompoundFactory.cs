@@ -18,19 +18,22 @@ namespace PKSim.Core.Model
       private readonly IParameterAlternativeFactory _parameterAlternativeFactory;
       private readonly IParameterGroupTask _parameterGroupTask;
       private readonly ICompoundCalculationMethodCategoryRepository _compoundCalculationMethodCategoryRepository;
+      private readonly ICloner _cloner;
 
       public CompoundFactory(
          IObjectBaseFactory objectBaseFactory,
          IParameterContainerTask parameterContainerTask,
          IParameterAlternativeFactory parameterAlternativeFactory,
          IParameterGroupTask parameterGroupTask,
-         ICompoundCalculationMethodCategoryRepository compoundCalculationMethodCategoryRepository)
+         ICompoundCalculationMethodCategoryRepository compoundCalculationMethodCategoryRepository,
+         ICloner cloner)
       {
          _objectBaseFactory = objectBaseFactory;
          _parameterContainerTask = parameterContainerTask;
          _parameterAlternativeFactory = parameterAlternativeFactory;
          _parameterGroupTask = parameterGroupTask;
          _compoundCalculationMethodCategoryRepository = compoundCalculationMethodCategoryRepository;
+         _cloner = cloner;
       }
 
       public Compound Create()
@@ -51,8 +54,13 @@ namespace PKSim.Core.Model
       private void readCompoundFromTemplate(Compound compound)
       {
          //STEP1: Add all parameters defined for the compound from the database
-         //need to set the name of the compound to drug in order to load parameter from database
          _parameterContainerTask.AddCompoundParametersTo(compound);
+
+         //TODO ZTMSE Remove when parameter available in Database
+         var solubility = compound.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
+         var solubilityTable = _cloner.Clone(solubility).WithName(CoreConstants.Parameters.SOLUBILITY_TABLE);
+         solubilityTable.Value = 0;
+         compound.Add(solubilityTable);
 
          foreach (var group in _parameterGroupTask.GroupsUsedBy(compound.AllParameters().ToList()).Where(groupNeedsAlterntive))
          {

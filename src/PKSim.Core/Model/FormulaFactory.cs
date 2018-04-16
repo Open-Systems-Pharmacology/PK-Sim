@@ -254,7 +254,9 @@ namespace PKSim.Core.Model
             if (formula.IsConstant())
                return formula;
 
-            formulaCache.Add(formula);
+            //formulaCache.Add(formula);
+            //TODO Remove when add method is adjusted for new type of formula
+            formulaCache[formula.Id] = formula;
          }
 
          return formulaCache[rateKey];
@@ -311,6 +313,9 @@ namespace PKSim.Core.Model
          if (rateKey.IsTableWithOffsetFormula)
             return createTableFormulaWithOffset(rateKey);
 
+         if (rateKey.IsTableWithXArgumentFormula)
+            return createTableFormulaWithArgument(rateKey);
+
          //now it can be either dynamic formula or explicit formula
          FormulaWithFormulaString formula;
 
@@ -348,6 +353,33 @@ namespace PKSim.Core.Model
          return constantFormula(formula.Calculate(null)).WithDimension(dimension);
       }
 
+      private IFormula createTableFormulaWithArgument(RateKey rateKey)
+      {
+         var formula = _objectBaseFactory.Create<TableFormulaWithXArgument>()
+            .WithId(rateKey)
+            .WithName(rateKey.Rate);
+
+         //TODO
+         var dummykey = new RateKey("Lumen_PKSim", "PARAM_IntestinalSolubility");
+         var tableObjectPath = _rateObjectPathsRepository.PathWithAlias(dummykey, "Solubility");
+         var offsetObjectPath = _rateObjectPathsRepository.PathWithAlias(dummykey, "Solubility_pKa_pH_Factor");
+
+         var phParameter = offsetObjectPath.Clone<IFormulaUsablePath>();
+         phParameter.Alias = "pH";
+         phParameter[phParameter.Count -1] = "pH";
+         phParameter.AddAtFront(ObjectPath.PARENT_CONTAINER);
+
+         var solubilityTableObjectPath = tableObjectPath.Clone<IFormulaUsablePath>();
+         solubilityTableObjectPath[solubilityTableObjectPath.Count -1] = CoreConstants.Parameters.SOLUBILITY_TABLE;
+
+         formula.AddTableObjectPath(solubilityTableObjectPath);
+         formula.AddXArgumentObjectPath(phParameter);
+
+         //Table formula with offest has the same dimension as its referenced table object
+         formula.Dimension = tableObjectPath.Dimension;
+
+         return formula;
+      }
       private IFormula createTableFormulaWithOffset(RateKey rateKey)
       {
          var formula = _objectBaseFactory.Create<TableFormulaWithOffset>()

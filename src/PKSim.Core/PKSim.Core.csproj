@@ -200,6 +200,7 @@
     <Compile Include="Model\GlobalPKAnalysis.cs" />
     <Compile Include="Model\IQualificationStep.cs" />
     <Compile Include="Model\QualificationPlan.cs" />
+    <Compile Include="Model\RefTableFormula.cs" />
     <Compile Include="Model\RunParameterIdentificationQualificationStep.cs" />
     <Compile Include="Model\RunSimulationQualificationStep.cs" />
     <Compile Include="Services\IQualificationStepRunner.cs" />
