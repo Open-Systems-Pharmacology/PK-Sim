@@ -18,7 +18,7 @@ namespace PKSim.Presentation.Presenters.Parameters
    public abstract class EditTableParameterPresenter<T> : 
       AbstractDisposablePresenter<IEditTableParameterView, IEditTableParameterPresenter>, IEditTableParameterPresenter where T : ITableParameterPresenter
    {
-      private readonly ITableParameterPresenter _tableParameterPresenter;
+      private readonly T _tableParameterPresenter;
       private readonly IFullPathDisplayResolver _fullPathDisplayResolver;
       private readonly ISimpleChartPresenter _chartPresenter;
 
@@ -33,6 +33,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          _chartPresenter = chartPresenter;
          _view.AddView(tableParameterPresenter.BaseView);
          _view.AddChart(_chartPresenter.BaseView);
+         AddSubPresenters(chartPresenter, tableParameterPresenter);
          _tableParameterPresenter.StatusChanged += tableFormulaChanged;
       }
 
@@ -50,6 +51,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       private void tableFormulaChanged(object sender, EventArgs eventArgs)
       {
          plotTable();
+         View.OkEnabled = CanClose;
       }
 
       private void plotTable()

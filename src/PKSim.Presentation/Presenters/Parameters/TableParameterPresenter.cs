@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Extensions;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Views.Parameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Presentation.Presenters;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation.Presenters.Parameters
@@ -119,7 +120,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          _allPoints = new NotifyList<ValuePointDTO>();
          _editedFormula.AllPoints().Each(p => _allPoints.Add(new ValuePointDTO(_tableParameter, _editedFormula, p)));
 
-         string yName = string.IsNullOrEmpty(_editedFormula.YName) ? _tableParameter.Name : _editedFormula.YName;
+         var yName = string.IsNullOrEmpty(_editedFormula.YName) ? _tableParameter.Name : _editedFormula.YName;
          _view.XCaption = Constants.NameWithUnitFor(_editedFormula.XName, _editedFormula.XDisplayUnit);
          _view.YCaption = Constants.NameWithUnitFor(yName, _editedFormula.YDisplayUnit);
 
@@ -144,6 +145,17 @@ namespace PKSim.Presentation.Presenters.Parameters
       private void notifyChange(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
       {
          ViewChanged();
+      }
+
+      public override bool CanClose
+      {
+         get
+         {
+            if (_editedFormula == null)
+               return base.CanClose;
+
+            return base.CanClose && _editedFormula.AllPoints().Any();
+         }
       }
 
       public void ImportTable()
@@ -180,6 +192,7 @@ namespace PKSim.Presentation.Presenters.Parameters
             _allPoints.Remove(newPoint);
             throw;
          }
+
          _view.EditPoint(newPoint);
       }
 

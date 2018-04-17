@@ -14,7 +14,7 @@ namespace PKSim.Core.Model
       ParameterAlternative CreateAlternativeFor(ParameterAlternativeGroup compoundParameterGroup);
 
       /// <summary>
-      /// Creates an alternatuve with only one parameter <paramref name="tableParameterName"/> whose formula was replaced with a default <see cref="TableFormula"/>
+      /// Creates an alternatuve with parameter <paramref name="tableParameterName"/> formula set to a default <see cref="TableFormula"/>
       /// </summary>
       ParameterAlternative CreateTableAlternativeFor(ParameterAlternativeGroup compoundParameterGroup, string tableParameterName);
 
@@ -61,7 +61,6 @@ namespace PKSim.Core.Model
 
          var tableParameter = alternative.Parameter(tableParameterName);
          var tableFormula = _formulaFactory.CreateTableFormula();
-
          tableParameter.Formula = tableFormula;
          tableFormula.YName = tableParameterName;
          tableFormula.Dimension = tableParameter.Dimension;

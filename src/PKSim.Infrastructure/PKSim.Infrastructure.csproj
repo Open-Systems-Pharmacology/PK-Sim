@@ -252,6 +252,7 @@
     <Compile Include="ProjectConverter\v7_1\Converter641To710.cs" />
     <Compile Include="ProjectConverter\v7_2\Converter710To720.cs" />
     <Compile Include="ProjectConverter\v7_2\Converter720To721.cs" />
+    <Compile Include="ProjectConverter\v7_3\Converter721To730.cs" />
     <Compile Include="Reporting\Extensions\DataTableExtensions.cs" />
     <Compile Include="Reporting\Extensions\SimpleProtocolExtensions.cs" />
     <Compile Include="Reporting\Summary\AdvancedProtocolReportBuilder.cs" />
@@ -785,6 +786,7 @@
     </None>
     <None Include="Reporting\TeX\ReportingTEX.cd" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

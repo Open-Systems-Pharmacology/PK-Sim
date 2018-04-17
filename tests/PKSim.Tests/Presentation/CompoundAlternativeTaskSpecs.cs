@@ -1,24 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using NUnit.Framework;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Importer;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Importer;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Commands;
-using PKSim.Core.Extensions;
 using Dimension = OSPSuite.Core.Domain.UnitSystem.Dimension;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using Unit = OSPSuite.Core.Domain.UnitSystem.Unit;
@@ -47,11 +46,11 @@ namespace PKSim.Presentation
          _formulaFactory = A.Fake<IFormulaFactory>();
          _parameterTask = A.Fake<IParameterTask>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
-         _dimensionRepository= A.Fake<IDimensionRepository>();
-         _dataImporter= A.Fake<IDataImporter>();
+         _dimensionRepository = A.Fake<IDimensionRepository>();
+         _dataImporter = A.Fake<IDataImporter>();
          _compoundFactory = new CompoundFactoryForSpecs();
          sut = new CompoundAlternativeTask(_parameterAlternativeFactory, _applicationController,
-            _executionContext, _compoundFactory, _entityTask, _formulaFactory, _parameterTask, _buildingBlockRepository,_dimensionRepository, _dataImporter);
+            _executionContext, _compoundFactory, _entityTask, _formulaFactory, _parameterTask, _buildingBlockRepository, _dimensionRepository, _dataImporter);
       }
 
       protected class CompoundFactoryForSpecs : ICompoundFactory
@@ -95,6 +94,144 @@ namespace PKSim.Presentation
       public void should_set_the_name_and_the_description_of_the_new_alternative_according_to_the_value_entered_by_the_user()
       {
          _newAlternative.Name.ShouldBeEqualTo("new name");
+      }
+
+      [Observation]
+      public void should_add_the_alternative_to_the_group()
+      {
+         _group.AllAlternatives.ShouldContain(_newAlternative);
+      }
+   }
+
+   public class When_an_alternative_for_solubility_is_being_added_and_the_user_decides_to_create_a_normal_solubilty : concern_for_CompoundAlternativeTask
+   {
+      private ParameterAlternativeGroup _solubilityGroup;
+      private ISolubilityAlternativeNamePresenter _solubilityAlternativeNameParameter;
+      private ParameterAlternative _newAlternative;
+
+      protected override void Context()
+      {
+         base.Context();
+         _solubilityAlternativeNameParameter = A.Fake<ISolubilityAlternativeNamePresenter>();
+         _solubilityGroup = new ParameterAlternativeGroup {Name = CoreConstants.Groups.COMPOUND_SOLUBILITY};
+         A.CallTo(() => _applicationController.Start<ISolubilityAlternativeNamePresenter>()).Returns(_solubilityAlternativeNameParameter);
+         A.CallTo(() => _solubilityAlternativeNameParameter.Edit(_solubilityGroup)).Returns(true);
+         A.CallTo(() => _solubilityAlternativeNameParameter.Name).Returns("new name");
+         _solubilityAlternativeNameParameter.CreateAsTable = false;
+         _newAlternative = new ParameterAlternative();
+         A.CallTo(() => _parameterAlternativeFactory.CreateAlternativeFor(_solubilityGroup)).Returns(_newAlternative);
+      }
+
+      protected override void Because()
+      {
+         sut.AddParameterGroupAlternativeTo(_solubilityGroup);
+      }
+
+      [Observation]
+      public void the_user_should_be_presented_with_the_option_to_add_a_table_alternative()
+      {
+         A.CallTo(() => _applicationController.Start<ISolubilityAlternativeNamePresenter>()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_set_the_name_and_the_description_of_the_new_alternative_according_to_the_value_entered_by_the_user()
+      {
+         _newAlternative.Name.ShouldBeEqualTo("new name");
+      }
+
+      [Observation]
+      public void should_add_the_alternative_to_the_group()
+      {
+         _solubilityGroup.AllAlternatives.ShouldContain(_newAlternative);
+      }
+   }
+
+   public class When_an_alternative_for_solubility_is_being_added_and_the_user_decides_to_create_a_table_solubilty : concern_for_CompoundAlternativeTask
+   {
+      private ParameterAlternativeGroup _solubilityGroup;
+      private ISolubilityAlternativeNamePresenter _solubilityAlternativeNameParameter;
+      private ParameterAlternative _newTableAlternative;
+      private IParameter _solubilityRefPh;
+      private IParameter _solubilityTable;
+      private IParameter _refPhParameter;
+      private TableFormula _solubilityTableFormula;
+      private IParameter _solubilityGainParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _solubilityGroup = new ParameterAlternativeGroup { Name = CoreConstants.Groups.COMPOUND_SOLUBILITY };
+         _refPhParameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.REFERENCE_PH);
+         _solubilityRefPh = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
+         _solubilityTable = DomainHelperForSpecs.ConstantParameterWithValue(20).WithName(CoreConstants.Parameters.SOLUBILITY_TABLE);
+         _solubilityGainParameter = DomainHelperForSpecs.ConstantParameterWithValue(20).WithName(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
+
+         var compound = new Compound();
+         _solubilityAlternativeNameParameter = A.Fake<ISolubilityAlternativeNamePresenter>();
+         A.CallTo(() => _applicationController.Start<ISolubilityAlternativeNamePresenter>()).Returns(_solubilityAlternativeNameParameter);
+         A.CallTo(() => _solubilityAlternativeNameParameter.Edit(_solubilityGroup)).Returns(true);
+         A.CallTo(() => _solubilityAlternativeNameParameter.Name).Returns("new name");
+         _solubilityAlternativeNameParameter.CreateAsTable = true;
+
+         _newTableAlternative = new ParameterAlternative {_solubilityRefPh, _solubilityTable, _refPhParameter, _solubilityGainParameter };
+
+         A.CallTo(() => _parameterAlternativeFactory.CreateTableAlternativeFor(_solubilityGroup, CoreConstants.Parameters.SOLUBILITY_TABLE)).Returns(_newTableAlternative);
+
+         compound.Add(_solubilityGroup);
+
+         _solubilityTableFormula = new TableFormula();
+         _solubilityTable.Formula = _solubilityTableFormula;
+      }
+
+      protected override void Because()
+      {
+         sut.AddParameterGroupAlternativeTo(_solubilityGroup);
+      }
+
+      [Observation]
+      public void the_user_should_be_presented_with_the_option_to_add_a_table_alternative()
+      {
+         A.CallTo(() => _applicationController.Start<ISolubilityAlternativeNamePresenter>()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_set_the_name_and_the_description_of_the_new_alternative_according_to_the_value_entered_by_the_user()
+      {
+         _newTableAlternative.Name.ShouldBeEqualTo("new name");
+      }
+
+      [Observation]
+      public void should_add_the_alternative_to_the_group()
+      {
+         _solubilityGroup.AllAlternatives.ShouldContain(_newTableAlternative);
+      }
+
+      [Observation]
+      public void should_set_the_value_of_the_solubility_parameter_to_zero()
+      {
+         _solubilityRefPh.Value.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void should_hide_the_solubility_parameters()
+      {
+         _solubilityRefPh.Visible.ShouldBeFalse();
+         _refPhParameter.Visible.ShouldBeFalse();
+         _solubilityGainParameter.Visible.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_show_the_solubility_table_parameter()
+      {
+         _solubilityTable.Visible.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_have_initialized_the_solubility_table_formula()
+      {
+         _solubilityTableFormula.Name.ShouldBeEqualTo(PKSimConstants.UI.Solubility);
+         _solubilityTableFormula.XName.ShouldBeEqualTo(PKSimConstants.UI.pH);
+         _solubilityTableFormula.YName.ShouldBeEqualTo(PKSimConstants.UI.Solubility);
       }
    }
 
@@ -195,6 +332,7 @@ namespace PKSim.Presentation
          _solValue = 100;
          _gainPerChargeValue = 1000;
          A.CallTo(() => _formulaFactory.CreateTableFormula()).Returns(new TableFormula());
+         var solubilityTable = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.SOLUBILITY_TABLE).WithDimension(solDim);
          var refPh = DomainHelperForSpecs.ConstantParameterWithValue(_refPhValue).WithName(CoreConstants.Parameters.REFERENCE_PH).WithDimension(DomainHelperForSpecs.NoDimension());
          var solubilty = DomainHelperForSpecs.ConstantParameterWithValue(_solValue).WithName(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH).WithDimension(solDim);
          var gainPerCharge = DomainHelperForSpecs.ConstantParameterWithValue(_gainPerChargeValue).WithName(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE).WithDimension(DomainHelperForSpecs.NoDimension());
@@ -209,6 +347,7 @@ namespace PKSim.Presentation
          _solubilityAlternative.Add(refPh);
          _solubilityAlternative.Add(solubilty);
          _solubilityAlternative.Add(gainPerCharge);
+         _solubilityAlternative.Add(solubilityTable);
 
          var solubilityAlternativeGroup = new ParameterAlternativeGroup();
          solubilityAlternativeGroup.AddAlternative(_solubilityAlternative);
@@ -254,6 +393,42 @@ namespace PKSim.Presentation
       private double factorFor(double pH)
       {
          return 10 * (pH + 1);
+      }
+   }
+
+   public class When_retrieving_the_table_formula_for_a_solubility_alternative_that_is_using_a_table_already : concern_for_CompoundAlternativeTask
+   {
+      private ParameterAlternative _solubilityAlternative;
+      private Compound _compound;
+      private TableFormula _tableFormula;
+      private IFormula _solubilityTableFormula;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound = new Compound();
+         var solDim = new Dimension(new BaseDimensionRepresentation(), "Solubility", "m");
+         solDim.AddUnit(new Unit("cm", 0.01, 0));
+         _solubilityTableFormula = new TableFormula();
+         var solubilityTable = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.SOLUBILITY_TABLE).WithDimension(solDim);
+         solubilityTable.Formula = _solubilityTableFormula;
+         _solubilityAlternative = new ParameterAlternative {solubilityTable};
+
+         var solubilityAlternativeGroup = new ParameterAlternativeGroup();
+         solubilityAlternativeGroup.AddAlternative(_solubilityAlternative);
+
+         _compound.AddParameterAlternativeGroup(solubilityAlternativeGroup);
+      }
+
+      protected override void Because()
+      {
+         _tableFormula = sut.SolubilityTableForPh(_solubilityAlternative, _compound);
+      }
+
+      [Observation]
+      public void should_return_the_table_formula_from_the_table_solubility()
+      {
+         _tableFormula.ShouldBeEqualTo(_solubilityTableFormula);
       }
    }
 
@@ -372,18 +547,17 @@ namespace PKSim.Presentation
             Source = ValueOriginSources.Database
          };
 
-         var simulation = new IndividualSimulation { Properties = new SimulationProperties() };
-         A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new[] { simulation });
+         var simulation = new IndividualSimulation {Properties = new SimulationProperties()};
+         A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new[] {simulation});
 
          var compoundProperties = new CompoundProperties();
          simulation.Properties.AddCompoundProperties(compoundProperties);
-         compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection { AlternativeName = _parameterAlternative.Name, GroupName = alternativeGroup.Name });
-
+         compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection {AlternativeName = _parameterAlternative.Name, GroupName = alternativeGroup.Name});
       }
 
       protected override void Because()
       {
-         _command= sut.UpdateValueOrigin(_parameterAlternative, _newValueOrigin) as PKSimMacroCommand;
+         _command = sut.UpdateValueOrigin(_parameterAlternative, _newValueOrigin) as PKSimMacroCommand;
       }
 
       [Observation]
@@ -397,7 +571,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_building_block_version()
       {
-         _command.All().OfType<BuildingBlockChangeCommand>().Each(x=>x.ShouldChangeVersion.ShouldBeTrue());
+         _command.All().OfType<BuildingBlockChangeCommand>().Each(x => x.ShouldChangeVersion.ShouldBeTrue());
       }
    }
 
@@ -416,7 +590,7 @@ namespace PKSim.Presentation
          _parameter1.IsDefault = false;
 
          var alternativeGroup = new ParameterAlternativeGroup().WithName("Gr");
-         _parameterAlternative = new ParameterAlternative { _parameter1};
+         _parameterAlternative = new ParameterAlternative {_parameter1};
          _parameterAlternative.Name = "Alt";
          alternativeGroup.AddAlternative(_parameterAlternative);
 
@@ -426,8 +600,8 @@ namespace PKSim.Presentation
             Source = ValueOriginSources.Database
          };
 
-         var simulation = new IndividualSimulation { Properties = new SimulationProperties() };
-         A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new[] { simulation });
+         var simulation = new IndividualSimulation {Properties = new SimulationProperties()};
+         A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new[] {simulation});
       }
 
       protected override void Because()
@@ -447,5 +621,4 @@ namespace PKSim.Presentation
          _command.All().OfType<BuildingBlockChangeCommand>().Each(x => x.ShouldChangeVersion.ShouldBeFalse());
       }
    }
-
 }

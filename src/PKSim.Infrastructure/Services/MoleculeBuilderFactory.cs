@@ -30,14 +30,14 @@ namespace PKSim.Infrastructure.Services
       private readonly IParameterFactory _parameterFactory;
 
       public MoleculeBuilderFactory(
-         IParameterFactory parameterFactory, 
+         IParameterFactory parameterFactory,
          IParameterSetUpdater parameterSetUpdater,
-         IObjectBaseFactory objectBaseFactory, 
+         IObjectBaseFactory objectBaseFactory,
          IParameterIdUpdater parameterIdUpdater,
-         IFlatMoleculeRepository flatMoleculeRepository, 
+         IFlatMoleculeRepository flatMoleculeRepository,
          IParameterContainerTask parameterContainerTask,
-         IFlatMoleculeToMoleculeBuilderMapper moleculeMapper, 
-         IDimensionRepository dimensionRepository, 
+         IFlatMoleculeToMoleculeBuilderMapper moleculeMapper,
+         IDimensionRepository dimensionRepository,
          ICloner cloner)
       {
          _parameterFactory = parameterFactory;
@@ -180,6 +180,7 @@ namespace PKSim.Infrastructure.Services
             else if (!drugParameter.Formula.IsConstant())
                drugParameter.Formula = _objectBaseFactory.Create<ConstantFormula>().WithValue(alternativeParameter.Value);
 
+            drugParameter.Visible = alternativeParameter.Visible;
             _parameterSetUpdater.UpdateValue(alternativeParameter, drugParameter);
          }
       }
