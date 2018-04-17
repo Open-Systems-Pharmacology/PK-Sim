@@ -254,9 +254,7 @@ namespace PKSim.Core.Model
             if (formula.IsConstant())
                return formula;
 
-            //formulaCache.Add(formula);
-            //TODO Remove when add method is adjusted for new type of formula
-            formulaCache[formula.Id] = formula;
+            formulaCache.Add(formula);
          }
 
          return formulaCache[rateKey];
@@ -355,24 +353,23 @@ namespace PKSim.Core.Model
 
       private IFormula createTableFormulaWithArgument(RateKey rateKey)
       {
-         return new ExplicitFormula("1+2");
-//         var formula = _objectBaseFactory.Create<TableFormulaWithXArgument>()
-//            .WithId(rateKey)
-//            .WithName(rateKey.Rate);
-//
-//         var tableObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.TABLE);
-//         var referenceObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.XREF);
-//
-//         if (tableObjectPath == null || referenceObjectPath == null)
-//            throw new ArgumentException(PKSimConstants.Error.TableFormulaWithXReferenceMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.XREF));
-//         
-//         formula.AddTableObjectPath(tableObjectPath);
-//         formula.AddXArgumentObjectPath(referenceObjectPath);
-//
-//         //Table formula with reference has the same dimension as its referenced table object
-//         formula.Dimension = tableObjectPath.Dimension;
-//
-//         return formula;
+         var formula = _objectBaseFactory.Create<TableFormulaWithXArgument>()
+            .WithId(rateKey)
+            .WithName(rateKey.Rate);
+
+         var tableObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.TABLE);
+         var referenceObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.XREF);
+
+         if (tableObjectPath == null || referenceObjectPath == null)
+            throw new ArgumentException(PKSimConstants.Error.TableFormulaWithXReferenceMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.XREF));
+         
+         formula.AddTableObjectPath(tableObjectPath);
+         formula.AddXArgumentObjectPath(referenceObjectPath);
+
+         //Table formula with reference has the same dimension as its referenced table object
+         formula.Dimension = tableObjectPath.Dimension;
+
+         return formula;
       }
 
       private IFormula createTableFormulaWithOffset(RateKey rateKey)
