@@ -1,8 +1,8 @@
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Presentation.Services
 {
@@ -19,15 +19,19 @@ namespace PKSim.Presentation.Services
 
       public string FullPathFor(IObjectBase objectBase, bool addSimulationName = false)
       {
-         var quantity = objectBase as IQuantity;
-         if (quantity != null)
-            return _quantityDisplayPathMapper.DisplayPathAsStringFor(quantity, addSimulationName);
+         switch (objectBase)
+         {
+            case IQuantity quantity:
+               return _quantityDisplayPathMapper.DisplayPathAsStringFor(quantity, addSimulationName);
+            case ParameterAlternativeGroup parameterAlternativeGroup:
+               return displayFor(parameterAlternativeGroup);
+            case IEntity entity:
+               return entity.EntityPath();
+         }
 
-         var entity = objectBase as IEntity;
-         if (entity != null)
-            return entity.EntityPath();
-
-         return _representationInfoRepository.DisplayNameFor(objectBase);
+         return displayFor(objectBase);
       }
+
+      private string displayFor(IObjectBase objectBase) => _representationInfoRepository.DisplayNameFor(objectBase);
    }
 }

@@ -43,15 +43,15 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private void setRHSFor(ParameterRateMetaData parameterRateMetaData)
       {
-         var rhsItems = from rhs in _flatParameterRHSRepository.All()
+         var rhsItems = (from rhs in _flatParameterRHSRepository.All()
             where rhs.Id == parameterRateMetaData.ContainerId
             where rhs.ParameterName.Equals(parameterRateMetaData.ParameterName)
             where rhs.CalculationMethod.Equals(parameterRateMetaData.CalculationMethod)
-            select rhs;
+            select rhs).ToList();
 
-         rhsItems = rhsItems.ToList();
+         //nor RHS for given parameter available
          if (!rhsItems.Any())
-            return; //nor RHS for given parameter available
+            return; 
 
          //set name of RHS rate
          parameterRateMetaData.RHSRate = rhsItems.ElementAt(0).Rate;

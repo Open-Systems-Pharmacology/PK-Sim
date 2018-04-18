@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Compounds;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
 {
@@ -23,18 +23,19 @@ namespace PKSim.Presentation.Services
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IDialogCreator _dialogCreator;
 
-      public CompoundTask(IExecutionContext executionContext, IBuildingBlockTask buildingBlockTask, IApplicationController applicationController,
-         IBuildingBlockRepository buildingBlockRepository, IDialogCreator dialogCreator)
+      public CompoundTask(
+         IExecutionContext executionContext,
+         IBuildingBlockTask buildingBlockTask,
+         IApplicationController applicationController,
+         IBuildingBlockRepository buildingBlockRepository,
+         IDialogCreator dialogCreator)
          : base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Compound)
       {
          _buildingBlockRepository = buildingBlockRepository;
          _dialogCreator = dialogCreator;
       }
 
-      public override Compound AddToProject()
-      {
-         return AddToProject<ICreateCompoundPresenter>();
-      }
+      public override Compound AddToProject() => AddToProject<ICreateCompoundPresenter>();
 
       protected override IReadOnlyList<Compound> LoadFromTemplate(PKSimBuildingBlockType buildingBlockType)
       {
@@ -51,7 +52,7 @@ namespace PKSim.Presentation.Services
       private void warnUserIfMetabolitesDoNotMatch(IReadOnlyList<Compound> loadedCompounds)
       {
          var allMetabolites = allMetabolitesFrom(loadedCompounds);
-         
+
          //by convention, the selected compound is always the first one
          if (loadedCompounds.Skip(1).All(x => allMetabolites.Contains(x)))
             return;
@@ -94,7 +95,7 @@ namespace PKSim.Presentation.Services
 
       private void addMetaboliteForCompoundTo(Compound compound, ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> cache)
       {
-         if(cache.Contains(compound))
+         if (cache.Contains(compound))
             return;
 
          var metabolites = retrieveAllMetabolitesFor(compound);

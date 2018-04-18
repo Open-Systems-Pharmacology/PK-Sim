@@ -86,7 +86,7 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_tableFormula);
-         A.CallTo(() => _formulaFactory.CreateTableFormula()).Returns(new TableFormula());
+         A.CallTo(_formulaFactory).WithReturnType<TableFormula>().Returns(new TableFormula());
       }
 
       protected override async Task Because()

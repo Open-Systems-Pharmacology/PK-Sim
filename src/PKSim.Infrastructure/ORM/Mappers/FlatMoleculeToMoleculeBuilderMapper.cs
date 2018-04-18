@@ -3,6 +3,7 @@ using PKSim.Infrastructure.ORM.FlatObjects;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using PKSim.Core;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Infrastructure.ORM.Mappers
@@ -14,16 +15,21 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
    public class FlatMoleculeToMoleculeBuilderMapper : IFlatMoleculeToMoleculeBuilderMapper
    {
-      private readonly IParameterContainerTask _paramContainerTask;
+      private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IFormulaFactory _formulaFactory;
+      private readonly ICloner _cloner;
 
-      public FlatMoleculeToMoleculeBuilderMapper(IParameterContainerTask paramContainerTask, IObjectBaseFactory objectBaseFactory,
-         IFormulaFactory formulaFactory)
+      public FlatMoleculeToMoleculeBuilderMapper(
+         IParameterContainerTask parameterContainerTask, 
+         IObjectBaseFactory objectBaseFactory,
+         IFormulaFactory formulaFactory, 
+         ICloner cloner)
       {
-         _paramContainerTask = paramContainerTask;
+         _parameterContainerTask = parameterContainerTask;
          _objectBaseFactory = objectBaseFactory;
          _formulaFactory = formulaFactory;
+         _cloner = cloner;
       }
 
       public IMoleculeBuilder MapFrom(FlatMolecule flatMolecule, IFormulaCache formulaCache)
@@ -35,7 +41,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          molecule.QuantityType = flatMolecule.MoleculeType;
          molecule.DefaultStartFormula = _formulaFactory.RateFor(flatMolecule, new FormulaCache());
 
-         _paramContainerTask.AddMoleculeParametersTo(molecule, formulaCache);
+         _parameterContainerTask.AddMoleculeParametersTo(molecule, formulaCache);
 
          return molecule;
       }

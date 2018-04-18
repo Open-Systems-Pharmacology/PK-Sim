@@ -151,6 +151,22 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_checking_if_an_edited_table_paramaeter_is_valid : concern_for_TableParameterPresenter
+   {
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(_parameter);
+      }
+
+      [Observation]
+      public void should_return_false_if_the_edited_parameter_formula_has_no_points()
+      {
+         sut.CanClose.ShouldBeFalse();
+      }
+   }
+
    public class When_told_to_import_a_table : concern_for_TableParameterPresenter
    {
       private TableFormula _formula;

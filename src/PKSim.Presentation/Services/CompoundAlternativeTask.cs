@@ -1,10 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Importer;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Commands;
@@ -14,6 +19,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Compounds;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
+using Unit = OSPSuite.Core.Domain.UnitSystem.Unit;
 
 namespace PKSim.Presentation.Services
 {
@@ -27,10 +33,20 @@ namespace PKSim.Presentation.Services
       private readonly IFormulaFactory _formulaFactory;
       private readonly IParameterTask _parameterTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IDimensionRepository _dimensionRepository;
+      private readonly IDataImporter _dataImporter;
 
-      public CompoundAlternativeTask(IParameterAlternativeFactory parameterAlternativeFactory, IApplicationController applicationController,
-         IExecutionContext executionContext, ICompoundFactory compoundFactory, IEntityTask entityTask,
-         IFormulaFactory formulaFactory, IParameterTask parameterTask, IBuildingBlockRepository buildingBlockRepository)
+      public CompoundAlternativeTask(
+         IParameterAlternativeFactory parameterAlternativeFactory,
+         IApplicationController applicationController,
+         IExecutionContext executionContext,
+         ICompoundFactory compoundFactory,
+         IEntityTask entityTask,
+         IFormulaFactory formulaFactory,
+         IParameterTask parameterTask,
+         IBuildingBlockRepository buildingBlockRepository,
+         IDimensionRepository dimensionRepository,
+         IDataImporter dataImporter)
       {
          _parameterAlternativeFactory = parameterAlternativeFactory;
          _applicationController = applicationController;
@@ -40,23 +56,87 @@ namespace PKSim.Presentation.Services
          _formulaFactory = formulaFactory;
          _parameterTask = parameterTask;
          _buildingBlockRepository = buildingBlockRepository;
+         _dimensionRepository = dimensionRepository;
+         _dataImporter = dataImporter;
       }
 
       public ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup)
       {
-         var newAlternative = _parameterAlternativeFactory.CreateAlternativeFor(compoundParameterGroup);
+         var parameterAlternative = compoundParameterGroup.IsNamed(CoreConstants.Groups.COMPOUND_SOLUBILITY) ? 
+            createSolubilityCompoundAlternativeFor(compoundParameterGroup) : 
+            createStandardParameterAlternativeFor(compoundParameterGroup);
 
+         if (parameterAlternative == null)
+            return new PKSimEmptyCommand();
+
+         return AddParameterGroupAlternativeTo(compoundParameterGroup, parameterAlternative);
+      }
+
+      private ParameterAlternative createStandardParameterAlternativeFor(ParameterAlternativeGroup compoundParameterGroup)
+      {
          using (var presenter = _applicationController.Start<IParameterAlternativeNamePresenter>())
          {
             //canceled by user - nothing to do
             if (!presenter.Edit(compoundParameterGroup))
-               return new PKSimEmptyCommand();
+               return null;
 
-            newAlternative.Name = presenter.Name;
-
-            return AddParameterGroupAlternativeTo(compoundParameterGroup, newAlternative);
+            return createAlternative(compoundParameterGroup, presenter.Name);
          }
       }
+
+      private ParameterAlternative createSolubilityCompoundAlternativeFor(ParameterAlternativeGroup solubilityAlternativeGroup)
+      {
+         using (var presenter = _applicationController.Start<ISolubilityAlternativeNamePresenter>())
+         {
+            //canceled by user - nothing to do
+            if (!presenter.Edit(solubilityAlternativeGroup))
+               return null;
+
+            if (presenter.CreateAsTable)
+               return createSolubilityTableAlternativeFor(solubilityAlternativeGroup, presenter.Name);
+
+            return createAlternative(solubilityAlternativeGroup, presenter.Name);
+         }
+      }
+
+      private ParameterAlternative createSolubilityTableAlternativeFor(ParameterAlternativeGroup solubilityAlternativeGroup, string name)
+      {
+         var tableAlternative = _parameterAlternativeFactory.CreateTableAlternativeFor(solubilityAlternativeGroup, CoreConstants.Parameters.SOLUBILITY_TABLE)
+            .WithName(name);
+
+         PrepareSolubilityAlternativeForTableSolubility(tableAlternative);
+    
+         var tableParameter = tableAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
+         var phParameter = tableAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
+
+         var tableFormula = tableParameter.Formula.DowncastTo<TableFormula>();
+         initializeSolubiltyTableFormula(tableFormula, phParameter.Dimension, tableParameter.Dimension);
+        
+         tableFormula.AddPoint(0, 0);
+         return tableAlternative;
+      }
+
+
+      public void PrepareSolubilityAlternativeForTableSolubility(ParameterAlternative solubilityAlternative)
+      {
+         var solubilityAtRefPhParameter = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
+         var phParameter = solubilityAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
+         var solubilityGainParameter = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
+         resetParameters(solubilityGainParameter, solubilityAtRefPhParameter, phParameter);
+         solubilityAtRefPhParameter.Value = 0;
+
+         var tableParameter = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
+         tableParameter.Visible = true;
+         tableParameter.IsDefault = false;
+      }
+
+      private static void resetParameters(params IParameter[] parameters) => parameters.Each(p=>
+      {
+         p.IsDefault = true;
+         p.Visible = false;
+      });
+
+      private ParameterAlternative createAlternative(ParameterAlternativeGroup compoundParameterGroup, string name) => _parameterAlternativeFactory.CreateAlternativeFor(compoundParameterGroup).WithName(name);
 
       public ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup, ParameterAlternative parameterAlternative)
       {
@@ -142,20 +222,93 @@ namespace PKSim.Presentation.Services
          return new SetSpeciesInSpeciesDependentEntityCommand(parameterAlternative, species, _executionContext).Run(_executionContext);
       }
 
+      public TableFormula ImportSolubilityTableFormula()
+      {
+         var dataImporterSettings = new DataImporterSettings
+         {
+            Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportSolubilityTable}",
+            Icon = ApplicationIcons.Compound
+         };
+
+         var importedFormula = _dataImporter.ImportDataSet(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings);
+         return importedFormula == null ? null : formulaFrom(importedFormula);
+      }
+
+      public ICommand EditSolubilityTableFor(IParameter parameter)
+      {
+         using (var tablePresenter = _applicationController.Start<IEditTableSolubilityParameterPresenter>())
+         {
+            if (!tablePresenter.Edit(parameter))
+               return new PKSimEmptyCommand();
+
+            return _parameterTask.SetParameterFomula(parameter, tablePresenter.EditedFormula);
+         }
+      }
+
+      private TableFormula formulaFrom(DataRepository dataRepository)
+      {
+         var baseGrid = dataRepository.BaseGrid;
+         var valueColumn = dataRepository.AllButBaseGrid().Single();
+         var formula = _formulaFactory.CreateTableFormula().WithName(dataRepository.Name);
+         initializeSolubiltyTableFormula(formula, baseGrid.Dimension, valueColumn.Dimension);
+         formula.XDisplayUnit = baseGrid.Dimension.Unit(baseGrid.DataInfo.DisplayUnitName);
+         formula.YDisplayUnit = valueColumn.Dimension.Unit(valueColumn.DataInfo.DisplayUnitName);
+
+         foreach (var timeValue in baseGrid.Values)
+         {
+            formula.AddPoint(timeValue, valueColumn.GetValue(timeValue).ToDouble());
+         }
+
+         return formula;
+      }
+
+      private IReadOnlyList<ColumnInfo> getColumnInfos()
+      {
+         var columns = new List<ColumnInfo>();
+
+         var phColumn = new ColumnInfo
+         {
+            DefaultDimension = _dimensionRepository.NoDimension,
+            Name = PKSimConstants.UI.pH,
+            IsMandatory = true,
+            NullValuesHandling = NullValuesHandlingType.DeleteRow,
+         };
+
+
+         phColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.NoDimension, IsMainDimension = true});
+         columns.Add(phColumn);
+
+         var solubilityColumn = new ColumnInfo
+         {
+            DefaultDimension = _dimensionRepository.MassConcentration,
+            Name = PKSimConstants.UI.Solubility,
+            IsMandatory = true,
+            NullValuesHandling = NullValuesHandlingType.DeleteRow,
+            BaseGridName = phColumn.Name,
+         };
+
+         solubilityColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.MassConcentration, IsMainDimension = true});
+         columns.Add(solubilityColumn);
+
+         return columns;
+      }
+
       public TableFormula SolubilityTableForPh(ParameterAlternative solubilityAlternative, Compound compound)
       {
+         //Already a table formula. Use as IS!
+         var tableSolubility = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
+         if (tableSolubility.Formula.IsTable())
+            return tableSolubility.Formula.DowncastTo<TableFormula>();
+
          //Sol(pH) = ref_Solubility * Solubility_Factor (ref_pH) / Solubility_Factor(pH) 
          //Solubility_pKa_pH_Factor
 
-         var refPh = solubilityAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
          var refSolubility = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
+         var refPh = solubilityAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
          var gainPerCharge = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
          var refSolubilityValue = refSolubility.Value;
 
-         var formula = _formulaFactory.CreateTableFormula()
-            .WithName(PKSimConstants.UI.Solubility)
-            .InitializedWith(PKSimConstants.UI.pH, PKSimConstants.UI.Solubility, refPh.Dimension, refSolubility.Dimension);
-
+         var formula = initializeSolubiltyTableFormula(_formulaFactory.CreateTableFormula(), refPh.Dimension, refSolubility.Dimension);
          compound.Parameter(CoreConstants.Parameters.REFERENCE_PH).Value = refPh.Value;
          compound.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE).Value = gainPerCharge.Value;
 
@@ -167,6 +320,7 @@ namespace PKSim.Presentation.Services
             allPh.AddRange(new[] {ph, ph + 0.5});
             ph++;
          }
+
          allPh.Add(14);
          foreach (var pH in allPh)
          {
@@ -176,6 +330,13 @@ namespace PKSim.Presentation.Services
          }
 
          return formula;
+      }
+
+      private TableFormula initializeSolubiltyTableFormula(TableFormula tableFormula, IDimension xDimension, IDimension yDimension)
+      {
+         return tableFormula
+            .WithName(PKSimConstants.UI.Solubility)
+            .InitializedWith(PKSimConstants.UI.pH, PKSimConstants.UI.Solubility, xDimension, yDimension);
       }
 
       private IEnumerable<IParameter> permeabilityParametersFor(Compound compound, string permeabilityParameterName)

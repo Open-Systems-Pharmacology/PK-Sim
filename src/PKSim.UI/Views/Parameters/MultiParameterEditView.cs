@@ -149,7 +149,6 @@ namespace PKSim.UI.Views.Parameters
          //necessary to bind to binding list to enable automatic update from value since we are 
          //using the autobind property from devexpress which only (!!) reacts to IBindingList properties.
          _gridViewBinder.BindToSource(parameters.ToBindingList());
-         gridView.BestFitColumns();
          AdjustHeight();
       }
 

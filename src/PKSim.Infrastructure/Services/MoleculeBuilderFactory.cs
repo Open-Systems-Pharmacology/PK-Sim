@@ -26,12 +26,19 @@ namespace PKSim.Infrastructure.Services
       private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IFlatMoleculeToMoleculeBuilderMapper _moleculeMapper;
       private readonly IDimensionRepository _dimensionRepository;
+      private readonly ICloner _cloner;
       private readonly IParameterFactory _parameterFactory;
 
-      public MoleculeBuilderFactory(IParameterFactory parameterFactory, IParameterSetUpdater parameterSetUpdater,
-         IObjectBaseFactory objectBaseFactory, IParameterIdUpdater parameterIdUpdater,
-         IFlatMoleculeRepository flatMoleculeRepository, IParameterContainerTask parameterContainerTask,
-         IFlatMoleculeToMoleculeBuilderMapper moleculeMapper, IDimensionRepository dimensionRepository)
+      public MoleculeBuilderFactory(
+         IParameterFactory parameterFactory,
+         IParameterSetUpdater parameterSetUpdater,
+         IObjectBaseFactory objectBaseFactory,
+         IParameterIdUpdater parameterIdUpdater,
+         IFlatMoleculeRepository flatMoleculeRepository,
+         IParameterContainerTask parameterContainerTask,
+         IFlatMoleculeToMoleculeBuilderMapper moleculeMapper,
+         IDimensionRepository dimensionRepository,
+         ICloner cloner)
       {
          _parameterFactory = parameterFactory;
          _parameterSetUpdater = parameterSetUpdater;
@@ -41,6 +48,7 @@ namespace PKSim.Infrastructure.Services
          _parameterContainerTask = parameterContainerTask;
          _moleculeMapper = moleculeMapper;
          _dimensionRepository = dimensionRepository;
+         _cloner = cloner;
       }
 
       public IMoleculeBuilder Create(QuantityType moleculeType, IFormulaCache formulaCache)
@@ -110,7 +118,7 @@ namespace PKSim.Infrastructure.Services
          _parameterSetUpdater.UpdateValuesByName(allSimpleParametersFrom(compound), drug.AllParameters());
 
          //once simple parameters have been set, set the alternative parameters
-         updateAlternativeParameters(compound, compoundProperties, drug);
+         updateAlternativeParameters(compound, compoundProperties, drug, formulaCache);
 
          //add interaction parameters
          addInteractionParameters(compound, drug, interactionProperties);
@@ -143,12 +151,12 @@ namespace PKSim.Infrastructure.Services
          return interactionProperties.Uses(interactionProcess);
       }
 
-      private void updateAlternativeParameters(Compound compound, CompoundProperties compoundProperties, IMoleculeBuilder drug)
+      private void updateAlternativeParameters(Compound compound, CompoundProperties compoundProperties, IMoleculeBuilder drug, IFormulaCache formulaCache)
       {
-         selectedAlternativesFor(compound, compoundProperties).Each(alternative => updateAlternativeParameters(alternative, drug));
+         selectedAlternativesFor(compound, compoundProperties).Each(alternative => updateAlternativeParameters(alternative, drug, formulaCache));
       }
 
-      private void updateAlternativeParameters(ParameterAlternative alternative, IMoleculeBuilder drug)
+      private void updateAlternativeParameters(ParameterAlternative alternative, IMoleculeBuilder drug, IFormulaCache formulaCache)
       {
          var allParameters = alternative.AllParameters().ToList();
          foreach (var alternativeParameter in allParameters)
@@ -157,8 +165,15 @@ namespace PKSim.Infrastructure.Services
             var drugParameter = drug.Parameter(alternativeParameter.Name);
             if (drugParameter == null) continue;
 
+            if (alternativeParameter.Formula.IsTable())
+            {
+               var tableFormula = _cloner.Clone(alternativeParameter.Formula);
+               formulaCache.Add(tableFormula);
+               drugParameter.Formula = tableFormula;
+            }
+
             //parameter is a rate. parameter in molecule should be readonly
-            if (!alternativeParameter.Formula.IsConstant())
+            else if (!alternativeParameter.Formula.IsConstant())
                drugParameter.Editable = false;
 
             //target parameter is a rate and source parameter is constant
@@ -166,6 +181,10 @@ namespace PKSim.Infrastructure.Services
                drugParameter.Formula = _objectBaseFactory.Create<ConstantFormula>().WithValue(alternativeParameter.Value);
 
             _parameterSetUpdater.UpdateValue(alternativeParameter, drugParameter);
+
+            //Default parameter Default and visible may not match database default and need to be set according to alternative parameter
+            drugParameter.IsDefault = alternativeParameter.IsDefault;
+            drugParameter.Visible = alternativeParameter.Visible;
          }
       }
 

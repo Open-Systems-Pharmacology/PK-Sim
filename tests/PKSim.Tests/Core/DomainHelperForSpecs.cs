@@ -120,10 +120,10 @@ namespace PKSim.Core
          return individual;
       }
 
-      public static IParameter ConstantParameterWithValue(double value=10, bool isDefault = false)
+      public static IParameter ConstantParameterWithValue(double value=10, bool isDefault = false, bool visible = true)
       {
          var parameter = new PKSimParameter().WithFormula(new ConstantFormula(value).WithId("constantFormulaId"));
-         parameter.Visible = true;
+         parameter.Visible = visible;
          addDimensionTo(parameter);
          parameter.IsFixedValue = true;
          parameter.IsDefault = isDefault;

@@ -63,9 +63,6 @@ namespace PKSim.Presentation.Presenters.Formulations
          _tableParameterPresenter.Edit(fractionOfDose);
       }
 
-      public TableFormula EditedFormula
-      {
-         get { return _tableParameterPresenter.EditedFormula; }
-      }
+      public TableFormula EditedFormula => _tableParameterPresenter.EditedFormula;
    }
 }

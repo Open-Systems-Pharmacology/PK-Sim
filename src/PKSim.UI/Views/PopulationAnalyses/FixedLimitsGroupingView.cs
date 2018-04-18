@@ -140,9 +140,6 @@ namespace PKSim.UI.Views.PopulationAnalyses
          return _disableRemoveButtonRepository;
       }
 
-      public override bool HasError
-      {
-         get { return _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _gridViewBinder.HasError;
    }
 }

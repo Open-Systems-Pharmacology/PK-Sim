@@ -1,13 +1,13 @@
-﻿using PKSim.Assets;
-using OSPSuite.Core.Commands.Core;
+﻿using OSPSuite.Core.Commands.Core;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public class AddParameterAlternativeCommand : AddEntityToContainerCommand<PKSim.Core.Model.ParameterAlternative, PKSim.Core.Model.ParameterAlternativeGroup, AddCompoundParameterGroupAlternativeEvent>
+   public class AddParameterAlternativeCommand : AddEntityToContainerCommand<ParameterAlternative, ParameterAlternativeGroup, AddCompoundParameterGroupAlternativeEvent>
    {
-      public AddParameterAlternativeCommand(PKSim.Core.Model.ParameterAlternative parameterAlternative, PKSim.Core.Model.ParameterAlternativeGroup parameterGroup, IExecutionContext context)
+      public AddParameterAlternativeCommand(ParameterAlternative parameterAlternative, ParameterAlternativeGroup parameterGroup, IExecutionContext context)
          : base(parameterAlternative, parameterGroup, context)
       {
          Description = PKSimConstants.Command.AddCompoundParameterGroupAlternativeDescription(parameterAlternative.Name, context.DisplayNameFor(parameterGroup));

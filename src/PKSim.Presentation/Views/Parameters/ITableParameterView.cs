@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using OSPSuite.Presentation.Views;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters.Parameters;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.Parameters
 {
@@ -14,7 +14,7 @@ namespace PKSim.Presentation.Views.Parameters
       string YCaption { set; }
       string XCaption { set; }
       bool Editable { get; set; }
-      string Description { set; }
-      string ImportToolTip { set; }
+      string Description { get; set; }
+      string ImportToolTip { get; set; }
    }
 }

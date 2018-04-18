@@ -517,6 +517,8 @@ namespace PKSim.Assets
 
          public static string TableFormulaWithOffsetMissingRefs(string rateKey, string ref1, string ref2) => $"Table formula with offset '{rateKey}' must contain references to '{ref1}' and '{ref2}'.";
 
+         public static string TableFormulaWithXReferenceMissingRefs(string rateKey, string ref1, string ref2) => $"Table formula with X-Reference '{rateKey}' must contain references to '{ref1}' and '{ref2}'.";
+
          public static string ModelContainerNotAvailable(string containerName) => $"Model container '{containerName}' not available.";
 
          public static string ProjectFileIsReadOnlyAndCannotBeRead(string fileFullPath)
@@ -1400,7 +1402,7 @@ namespace PKSim.Assets
             public static readonly string MaxGreaterThanMin = "Maximum value should be greater than minimum value.";
             public static readonly string StartTimeLessThanOrEqualToEndTime = "Start time value should be less than end time value.";
             public static readonly string EndTimeGreaterThanOrEqualToStartTime = "End time value should be greater than start time value.";
-            public static readonly string TimeValueShouldBeGreaterThanOrEqualToZero = "Time value should be greater than or equal to 0.";
+            public static string ValueShouldBeGreaterThanOrEqualToZero(string parameterName) => $"{parameterName} value should be greater than or equal to 0.";
 
             public static string MinGreaterThanDbMinValue(double? dbMinValue, string unit)
             {
@@ -1951,6 +1953,7 @@ namespace PKSim.Assets
          public static readonly string AnatomyAndPhysiologyText = "All anatomical and physiological parameters are set according to selected species, (population,) gender, age, weight and height except the manually changed parameters listed in {0}.";
          public static readonly string Experiment = "Experiment";
          public static readonly string ImportFormulation = "Import Formulation";
+         public static readonly string ImportSolubilityTable = "Import Solubility Table";
          public static readonly string AddPoint = "Add Point";
          public static readonly string Filter = "Filter";
          public static readonly string SaveSimulationToXmlFile = "Save Simulation to xml File (PKSim Format)";
@@ -2157,6 +2160,7 @@ namespace PKSim.Assets
          public static readonly string UseWatermark = "Use watermark in charts when exporting to clipboard?";
          public static readonly string WatermarkText = "Text";
          public static readonly string WatermarkProperties = "Watermark Properties";
+         public static readonly string CreateTableSolubilityAlternative = "Create as pH-Solubility table";
 
          public static string NumberOfIndividualsToExtract(int count, string populationName) => $"{count} {"individual".PluralizeIf(count)} will be extracted from population {populationName}.";
 
@@ -2234,13 +2238,25 @@ namespace PKSim.Assets
             get
             {
                var sb = new StringBuilder();
-               sb.AppendLine("The Excel table for formulation import should have a format of two colums.");
-               sb.AppendLine("The first column represents the Time (unit Time e.g. in years).");
-               sb.AppendLine("The second column represents the fraction of the dose released at t.");
+               sb.AppendLine("The Excel table for formulation import should have <b>two colums</b>.");
+               sb.AppendLine(" -  The first column represents the Time (unit Time e.g. in hours).");
+               sb.AppendLine(" -  The second column represents the fraction of the dose released at t.");
                return sb.ToString();               
             }
-         } 
-         
+         }
+
+         public static string ImportSolubilityTableDescription
+         {
+            get
+            {
+               var sb = new StringBuilder();
+               sb.AppendLine("The Excel table for solubility import should have <b>two colums</b>.");
+               sb.AppendLine(" -  The first column represents the pH.");
+               sb.AppendLine(" -  The second column represents the solubility value at pH.");
+               return sb.ToString();
+            }
+         }
+
          public static string ListOf(string item) => $"List of {item}";
 
          public static string AddProteinExpression(string moleculeType) => $"Add {moleculeType} Expression...";

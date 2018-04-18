@@ -363,6 +363,36 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_creating_an_individual_simulation_with_a_solubility_defined_as_table : concern_for_IndividualSimulation
+   {
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         var solubilityAlternative = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_SOLUBILITY).AllAlternatives.First();
+         var solubilityTable = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
+         var solubilityTableFormula = new TableFormula();
+         solubilityTableFormula.AddPoint(5, 50);
+         solubilityTableFormula.AddPoint(12, 100);
+
+         solubilityTable.Formula= solubilityTableFormula;
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
+      }
+
+      [Observation]
+      public void should_be_able_to_create_the_simulation()
+      {
+         _simulation.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public async Task should_be_able_to_simulate_the_simulation()
+      {
+         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
+         _simulation.HasResults.ShouldBeTrue();
+      }
+   }
+
    public class When_creating_an_individual_simulation_with_rat_4comp : concern_for_IndividualSimulation
    {
       private Individual _rat;
