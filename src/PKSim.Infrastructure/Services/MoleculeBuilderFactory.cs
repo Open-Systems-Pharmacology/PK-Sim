@@ -180,8 +180,11 @@ namespace PKSim.Infrastructure.Services
             else if (!drugParameter.Formula.IsConstant())
                drugParameter.Formula = _objectBaseFactory.Create<ConstantFormula>().WithValue(alternativeParameter.Value);
 
-            drugParameter.Visible = alternativeParameter.Visible;
             _parameterSetUpdater.UpdateValue(alternativeParameter, drugParameter);
+
+            //Default parameter Default and visible may not match database default and need to be set according to alternative parameter
+            drugParameter.IsDefault = alternativeParameter.IsDefault;
+            drugParameter.Visible = alternativeParameter.Visible;
          }
       }
 
