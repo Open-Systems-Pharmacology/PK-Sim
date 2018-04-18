@@ -19,10 +19,6 @@ namespace PKSim.UI.Views.Compounds
       private readonly UxCheckEdit _createTableAlternative = new UxCheckEdit();
       private readonly ScreenBinder<ISolubilityAlternativeNamePresenter> _screenBinder = new ScreenBinder<ISolubilityAlternativeNamePresenter>();
 
-      public SolubilityAlternativeNameView()
-      {
-      }
-
       public SolubilityAlternativeNameView(IShell shell, UserLookAndFeel lookAndFeel) : base(shell)
       {
          _lookAndFeel = lookAndFeel;

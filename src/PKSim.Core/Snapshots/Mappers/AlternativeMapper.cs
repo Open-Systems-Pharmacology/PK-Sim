@@ -64,7 +64,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private void updateSolubilityAlternative(ParameterAlternative solubilityAlternative)
       {
          var solubilityTable = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
-         //default structure, nothing to chage
+         //default structure, nothing to change
          if (!solubilityTable.Formula.IsTable())
             return;
 
