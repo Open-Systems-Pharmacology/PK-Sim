@@ -358,13 +358,13 @@ namespace PKSim.Core.Model
             .WithName(rateKey.Rate);
 
          var tableObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.TABLE);
-         var referenceObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.XREF);
+         var xArgument = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.XARG);
 
-         if (tableObjectPath == null || referenceObjectPath == null)
-            throw new ArgumentException(PKSimConstants.Error.TableFormulaWithXReferenceMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.XREF));
+         if (tableObjectPath == null || xArgument == null)
+            throw new ArgumentException(PKSimConstants.Error.TableFormulaWithXReferenceMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.XARG));
          
          formula.AddTableObjectPath(tableObjectPath);
-         formula.AddXArgumentObjectPath(referenceObjectPath);
+         formula.AddXArgumentObjectPath(xArgument);
 
          //Table formula with reference has the same dimension as its referenced table object
          formula.Dimension = tableObjectPath.Dimension;
