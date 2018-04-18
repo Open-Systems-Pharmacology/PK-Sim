@@ -566,6 +566,7 @@
     <Compile Include="IntegrationTests\PopulationSimulationSerializationSpecs.cs" />
     <Compile Include="IntegrationTests\ProjectXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\RenameBuildingBlockTaskSpecs.cs" />
+    <Compile Include="Presentation\EditTableSolubilityParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\EditValueOriginPresenterSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeNamePresenterSpecs.cs" />
     <Compile Include="Presentation\QualificationStepRunnerFactorySpecs.cs" />

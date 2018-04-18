@@ -32,9 +32,9 @@ namespace PKSim.Presentation.Presenters.Parameters
       /// </summary>
       Action<TableFormula> ConfigureCreatedTableAction { get; set; }
 
-      string Description { set; }
+      string Description { get; set; }
 
-      string ImportToolTip { set; }
+      string ImportToolTip { get; set; }
    }
 
    public abstract class TableParameterPresenter<TView> : AbstractCommandCollectorPresenter<TView, ITableParameterPresenter>, ITableParameterPresenter
@@ -74,11 +74,13 @@ namespace PKSim.Presentation.Presenters.Parameters
       public string Description
       {
          set => View.Description = value;
+         get => View.Description;
       }
 
       public string ImportToolTip
       {
          set => View.ImportToolTip = value;
+         get => View.ImportToolTip;
       }
 
       public TableFormula EditedFormula
@@ -205,7 +207,7 @@ namespace PKSim.Presentation.Presenters.Parameters
    public class TableParameterPresenter : TableParameterPresenter<ITableParameterView>
    {
       public TableParameterPresenter(ITableParameterView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner) :
-         base(view, parameterTask, formulaFactory, cloner, formulaFactory.CreateTableFormula)
+         base(view, parameterTask, formulaFactory, cloner, () => formulaFactory.CreateTableFormula())
       {
          //default import function disabled when context is not specified
          view.ImportVisible = false;

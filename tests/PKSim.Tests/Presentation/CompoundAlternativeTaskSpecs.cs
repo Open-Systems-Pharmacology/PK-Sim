@@ -331,7 +331,7 @@ namespace PKSim.Presentation
          _refPhValue = 7;
          _solValue = 100;
          _gainPerChargeValue = 1000;
-         A.CallTo(() => _formulaFactory.CreateTableFormula()).Returns(new TableFormula());
+         A.CallTo(_formulaFactory).WithReturnType<TableFormula>().Returns(new TableFormula());
          var solubilityTable = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.SOLUBILITY_TABLE).WithDimension(solDim);
          var refPh = DomainHelperForSpecs.ConstantParameterWithValue(_refPhValue).WithName(CoreConstants.Parameters.REFERENCE_PH).WithDimension(DomainHelperForSpecs.NoDimension());
          var solubilty = DomainHelperForSpecs.ConstantParameterWithValue(_solValue).WithName(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH).WithDimension(solDim);
@@ -364,12 +364,6 @@ namespace PKSim.Presentation
       public void should_return_a_table_formula_containing_a_solubility_for_each_half_ph()
       {
          _tableFormula.AllPoints().Count().ShouldBeEqualTo(14 * 2 + 1);
-      }
-
-      [Observation]
-      public void should_leverage_the_formula_factory_to_create_a_new_table_formula()
-      {
-         A.CallTo(() => _formulaFactory.CreateTableFormula()).MustHaveHappened();
       }
 
       [Observation]

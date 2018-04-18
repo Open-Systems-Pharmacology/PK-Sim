@@ -59,11 +59,10 @@ namespace PKSim.Core.Model
          var alternative = CreateAlternativeFor(compoundParameterGroup);
 
          var tableParameter = alternative.Parameter(tableParameterName);
-         var tableFormula = _formulaFactory.CreateTableFormula();
+         var tableFormula = _formulaFactory.CreateTableFormula(useDerivedValues:false);
          tableParameter.Formula = tableFormula;
          tableFormula.YName = tableParameterName;
          tableFormula.Dimension = tableParameter.Dimension;
-
          return alternative;
       }
 

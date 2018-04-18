@@ -147,7 +147,7 @@ namespace PKSim.Core
          _compoundParameterGroup.ParentContainer = compound;
 
          _tableFormula =new TableFormula();
-         A.CallTo(() => _formulaFactory.CreateTableFormula()).Returns(_tableFormula);
+         A.CallTo(() => _formulaFactory.CreateTableFormula(false)).Returns(_tableFormula);
       }
 
       protected override void Because()
@@ -162,7 +162,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_set_the_formula_of_the_given_parameter_to_a_table_parameter()
+      public void should_have_set_the_formula_of_the_given_parameter_to_a_table_formula_not_using_derived_values()
       {
          _solubilityTable.Formula.ShouldBeAnInstanceOf<TableFormula>();
       }

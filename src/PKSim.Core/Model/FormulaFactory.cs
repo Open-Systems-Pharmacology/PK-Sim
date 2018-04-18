@@ -49,7 +49,7 @@ namespace PKSim.Core.Model
       IFormula ValueFor(ParameterValueMetaData valueDefinition);
 
       /// <summary>
-      ///    Creates and returns a constant formula based on the <paramref name="valueDefinition" />
+      ///    Creates and returns a constant formula with <paramref name="value"/> and <paramref name="dimension"/>
       /// </summary>
       IFormula ValueFor(double value, IDimension dimension);
 
@@ -59,9 +59,10 @@ namespace PKSim.Core.Model
       IFormula RateFor(RateKey rateKey, IFormulaCache formulaCache);
 
       /// <summary>
-      ///    creates and returns a table formula
+      ///    Creates and returns a table formula
       /// </summary>
-      TableFormula CreateTableFormula();
+      /// <param name="useDerivedValues">Indicates of derived values of the table should be used when solving the ODE system. Default is <c>true</c></param>
+      TableFormula CreateTableFormula(bool useDerivedValues = true);
 
       /// <summary>
       ///    creates and returns a distributed table formula
@@ -260,9 +261,10 @@ namespace PKSim.Core.Model
          return formulaCache[rateKey];
       }
 
-      public TableFormula CreateTableFormula()
+      public TableFormula CreateTableFormula(bool useDerivedValues = true)
       {
          var tableFormula = _objectBaseFactory.Create<TableFormula>().WithName(CoreConstants.Formula.TableFormula);
+         tableFormula.UseDerivedValues = useDerivedValues;
          setupDefaultFor(tableFormula);
          return tableFormula;
       }

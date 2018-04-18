@@ -2160,7 +2160,7 @@ namespace PKSim.Assets
          public static readonly string UseWatermark = "Use watermark in charts when exporting to clipboard?";
          public static readonly string WatermarkText = "Text";
          public static readonly string WatermarkProperties = "Watermark Properties";
-         public static readonly string CreateTableSolubilityAlternative = "Create as pH-Sol table";
+         public static readonly string CreateTableSolubilityAlternative = "Create as pH-Solubility table";
 
          public static string NumberOfIndividualsToExtract(int count, string populationName) => $"{count} {"individual".PluralizeIf(count)} will be extracted from population {populationName}.";
 
@@ -2238,13 +2238,25 @@ namespace PKSim.Assets
             get
             {
                var sb = new StringBuilder();
-               sb.AppendLine("The Excel table for formulation import should have a format of two colums.");
-               sb.AppendLine("The first column represents the Time (unit Time e.g. in hours).");
-               sb.AppendLine("The second column represents the fraction of the dose released at t.");
+               sb.AppendLine("The Excel table for formulation import should have <b>two colums</b>.");
+               sb.AppendLine(" -  The first column represents the Time (unit Time e.g. in hours).");
+               sb.AppendLine(" -  The second column represents the fraction of the dose released at t.");
                return sb.ToString();               
             }
-         } 
-         
+         }
+
+         public static string ImportSolubilityTableDescription
+         {
+            get
+            {
+               var sb = new StringBuilder();
+               sb.AppendLine("The Excel table for solubility import should have <b>two colums</b>.");
+               sb.AppendLine(" -  The first column represents the pH.");
+               sb.AppendLine(" -  The second column represents the solubility value at pH.");
+               return sb.ToString();
+            }
+         }
+
          public static string ListOf(string item) => $"List of {item}";
 
          public static string AddProteinExpression(string moleculeType) => $"Add {moleculeType} Expression...";
