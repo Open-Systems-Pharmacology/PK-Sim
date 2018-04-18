@@ -86,5 +86,11 @@ namespace PKSim.Core.Services
       /// Edits the solubility talbe for the given <paramref name="parameter"/> 
       /// </summary>
       ICommand EditSolubilityTableFor(IParameter parameter);
+
+            /// <summary>
+      /// Performs initalization steps for a brand new solubility alternative that should behave as a Table alternative
+      /// </summary>
+      /// <param name="solubilityAlternative"></param>
+      void PrepareSolubilityAlternativeForTableSolubility(ParameterAlternative solubilityAlternative);
    }
 }

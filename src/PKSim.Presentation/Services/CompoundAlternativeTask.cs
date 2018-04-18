@@ -104,24 +104,37 @@ namespace PKSim.Presentation.Services
          var tableAlternative = _parameterAlternativeFactory.CreateTableAlternativeFor(solubilityAlternativeGroup, CoreConstants.Parameters.SOLUBILITY_TABLE)
             .WithName(name);
 
-         var solubilityAtRefPhParameter = tableAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
-         var phParameter = tableAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
-         var solubilityGainParameter = tableAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
-         hide(solubilityGainParameter, solubilityAtRefPhParameter, phParameter);
-         solubilityAtRefPhParameter.Value = 0;
+         PrepareSolubilityAlternativeForTableSolubility(tableAlternative);
     
          var tableParameter = tableAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
-         tableParameter.Visible = true;
+         var phParameter = tableAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
 
          var tableFormula = tableParameter.Formula.DowncastTo<TableFormula>();
          initializeSolubiltyTableFormula(tableFormula, phParameter.Dimension, tableParameter.Dimension);
-
         
          tableFormula.AddPoint(0, 0);
          return tableAlternative;
       }
-      
-      private static void hide(params IParameter[] parameters) => parameters.Each(p=>p.Visible = false);
+
+
+      public void PrepareSolubilityAlternativeForTableSolubility(ParameterAlternative solubilityAlternative)
+      {
+         var solubilityAtRefPhParameter = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
+         var phParameter = solubilityAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
+         var solubilityGainParameter = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
+         resetParameters(solubilityGainParameter, solubilityAtRefPhParameter, phParameter);
+         solubilityAtRefPhParameter.Value = 0;
+
+         var tableParameter = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
+         tableParameter.Visible = true;
+         tableParameter.IsDefault = false;
+      }
+
+      private static void resetParameters(params IParameter[] parameters) => parameters.Each(p=>
+      {
+         p.IsDefault = true;
+         p.Visible = false;
+      });
 
       private ParameterAlternative createAlternative(ParameterAlternativeGroup compoundParameterGroup, string name) => _parameterAlternativeFactory.CreateAlternativeFor(compoundParameterGroup).WithName(name);
 
