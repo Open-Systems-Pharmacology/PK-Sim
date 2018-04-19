@@ -3,10 +3,12 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using IContainer = OSPSuite.Core.Domain.IContainer;
@@ -15,6 +17,7 @@ namespace PKSim.IntegrationTests
 {
    public abstract class concern_for_SimulationWithParticlesFormulation : concern_for_IndividualSimulation
    {
+      protected ISimulationEngine<IndividualSimulation> _simulationEngine;
       protected Formulation _formulation;
       protected string[] _lumenSegments = CoreConstants.Compartment.LumenSegmentsStomachToRectum.ToArray();
 
@@ -35,14 +38,27 @@ namespace PKSim.IntegrationTests
 
          _protocol = DomainFactoryForSpecs.CreateStandardOralProtocol();
          _formulation = DomainFactoryForSpecs.CreateParticlesFormulation(NumberOfBins);
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, _formulation) as IndividualSimulation;
 
-         //user defined actions, different for every test scenario
+         //user defined actions in the building blocks
+         SetupBuildingBlocks();
+
+         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(
+            _individual, _compound, _protocol, allowAging:false, formulation: _formulation) as IndividualSimulation;
+
+         //setup compound processes
+         SetupProcesses();
+
+         DomainFactoryForSpecs.AddModelToSimulation(_simulation);
+
+         //user defined actions in simulations, different for every test scenario
          SetupSimulation();
 
-         //disable intestinal absorption and luminal flow to feces for easier mass balance checks
-         moleculeProperties.Parameter(CoreConstants.Parameter.INTESTINAL_PERMEABILITY).Value = 0;
-         IntestinalTransitRateFor(CoreConstants.Compartment.Rectum).Value = 0;
+         if (DisableIntestinalAbsorptionAndLuminalFlow)
+         {
+            //disable intestinal absorption and luminal flow to feces for easier mass balance checks
+            MoleculeProperties(CoreConstants.Parameter.INTESTINAL_PERMEABILITY).Value = 0;
+            IntestinalTransitRateFor(CoreConstants.Compartment.Rectum).Value = 0;
+         }
 
          //store initial drug mass
          _appliedDrugMass = Application.Container(CoreConstants.ContainerName.ProtocolSchemaItem)
@@ -54,13 +70,15 @@ namespace PKSim.IntegrationTests
 
          //add quantities of interest to the simulation outputs
          addOutputs(lumenPaths, binSolidDrugPaths, binInsolubleDrugPaths, binSolidDrugPerSegmentPaths, binParticlesFractionPerSegmentPaths);
-        
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+
+         _simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         _simulationEngine.Run(_simulation);
 
          //fill simulation output times and values required for all further tests
          fillSimulationOutputs(lumenPaths, binSolidDrugPaths, binInsolubleDrugPaths, binSolidDrugPerSegmentPaths, binParticlesFractionPerSegmentPaths);
       }
+
+      protected virtual bool DisableIntestinalAbsorptionAndLuminalFlow => true;
 
       protected IContainer Application => _simulation.Model.Root.Container("Applications").Container(_protocol.Name)
                                           .Container(_formulation.Name).Container("Application_1");
@@ -83,16 +101,20 @@ namespace PKSim.IntegrationTests
 
       protected abstract void SetupSimulation();
 
+      protected virtual void SetupBuildingBlocks() { }
+
+      protected virtual void SetupProcesses() { }
+
       protected bool PrecipitatedDrugSoluble
       {
-         get => moleculeProperties.Parameter(CoreConstants.Parameter.PRECIPITATED_DRUG_SOLUBLE).Value == 1;
-         set => moleculeProperties.Parameter(CoreConstants.Parameter.PRECIPITATED_DRUG_SOLUBLE).Value = value ? 1 : 0;
+         get => MoleculeProperties(CoreConstants.Parameter.PRECIPITATED_DRUG_SOLUBLE).Value == 1;
+         set => MoleculeProperties(CoreConstants.Parameter.PRECIPITATED_DRUG_SOLUBLE).Value = value ? 1 : 0;
       }
 
       protected double ParticleRadiusDissolved
       {
-         get => moleculeProperties.Parameter(CoreConstantsForSpecs.Parameter.PARTICLE_RADIUS_DISSOLVED).Value;
-         set => moleculeProperties.Parameter(CoreConstantsForSpecs.Parameter.PARTICLE_RADIUS_DISSOLVED).Value=value;
+         get => MoleculeProperties(CoreConstantsForSpecs.Parameter.PARTICLE_RADIUS_DISSOLVED).Value;
+         set => MoleculeProperties(CoreConstantsForSpecs.Parameter.PARTICLE_RADIUS_DISSOLVED).Value=value;
       }
 
       protected IParameter IntestinalTransitRateFor(string segment)
@@ -118,7 +140,7 @@ namespace PKSim.IntegrationTests
 
       protected int NumberOfSimulatedtimePoints => _times.Length;
 
-      protected double ComparisonTolerance => 1e-5;
+      protected virtual double ComparisonTolerance => 1e-5;
 
       private void fillSimulationOutputs(string[] lumenPaths, string[] binSolidDrugPaths, string[] binInsolubleDrugPaths,
                                          string[][] binSolidDrugPerSegmentPaths, string[][] binParticlesFractionPerSegmentPaths)
@@ -150,7 +172,9 @@ namespace PKSim.IntegrationTests
          }
       }
 
-      private float[] valuesFor(string outputQuantityPath)=> _simulation.Results.AllValuesFor(outputQuantityPath)[0].Values;
+      private float[] valuesFor(string outputQuantityPath) => ValuesFor(_simulation, outputQuantityPath);
+
+      protected float[] ValuesFor(IndividualSimulation sim, string outputQuantityPath) => sim.Results.AllValuesFor(outputQuantityPath)[0].Values;
 
       private void addOutputs(string[] lumenPaths, string[] binSolidDrugPaths, string[] binInsolubleDrugPaths, 
                               string[][] binSolidDrugPerSegmentPaths, string[][] binParticlesFractionPerSegmentPaths)
@@ -168,8 +192,13 @@ namespace PKSim.IntegrationTests
             if (path.Contains("Number of particles fraction"))
                quantityType = QuantityType.Parameter;
 
-            _simulation.SimulationSettings.OutputSelections.AddOutput(new QuantitySelection(path, quantityType));
+            AddOutputTo(_simulation, path, quantityType);
          }
+      }
+
+      protected void AddOutputTo(IndividualSimulation simulation, string path, QuantityType quantityType = QuantityType.Drug)
+      {
+         simulation.SimulationSettings.OutputSelections.AddOutput(new QuantitySelection(path, quantityType));
       }
 
       /// <summary>
@@ -199,8 +228,7 @@ namespace PKSim.IntegrationTests
       {
          var compoundName = _compound.Name;
 
-         var lumenPaths = (from segment in _lumenSegments
-                           select $"Organism|Lumen|{segment}|{compoundName}").ToArray();
+         var lumenPaths = LumenPaths(compoundName);
 
          var binPaths = new string[numberOfBins];
          var binSolidDrugPaths = new string[numberOfBins];
@@ -221,6 +249,11 @@ namespace PKSim.IntegrationTests
                  binSolidDrugPerSegmentPaths, binParticlesFractionPerSegmentPaths);
       }
 
+      protected string[] LumenPaths(string compoundName)
+      {
+         return (from segment in _lumenSegments select $"Organism|Lumen|{segment}|{compoundName}").ToArray();
+      }
+
       private string applicationPath => $"Applications|{_protocol.Name}|{_formulation.Name}|Application_1";
 
       private string binPathFor(int binNumber) => $"{applicationPath}|ParticleBin_{binNumber+1}";
@@ -239,15 +272,18 @@ namespace PKSim.IntegrationTests
                  select $"{binSolidDrugPath}|ParticlesDrugRelease{segment}|{parameter}").ToArray();
       }
 
-      private IContainer moleculeProperties => _simulation.Model.Root.Container(_compound.Name);
+      protected IParameter MoleculeProperties(string parameterName)
+      {
+         return _simulation.Model.Root.Container(_compound.Name).Parameter(parameterName);
+      }
 
       /// <summary>
       /// for debug purposes only
       /// </summary>
-      protected void ExportSimulation()
+      protected void ExportSimulation(IndividualSimulation simulation, string file)
       {
          var exporter = IoC.Resolve<IMoBiExportTask>();
-         exporter.SaveSimulationToFile(_simulation, @"C:\Temp\IntegrationTestSim.pkml");
+         exporter.SaveSimulationToFile(simulation, file);
       }
 
       /// <summary>
@@ -445,6 +481,160 @@ namespace PKSim.IntegrationTests
 
             diff.ShouldBeGreaterThanOrEqualTo(0);
          }
+      }
+   }
+
+   public class when_comparing_with_prototype_simulation_in_mobi : concern_for_SimulationWithParticlesFormulation
+   {
+      private float[][] _prototypeSimulationDissolvedDrugLumen; //dissolved drug[lumen segment][time] in the prototype simulation
+      private float[] _fractionAbsorbed, _prototypeSimulationFractionAbsorbed;
+      private float[] _peripheralVenousbloodPls, _prototypeSimulationPeripheralVenousbloodPls;
+
+      private IndividualSimulation _prototypeSimulation;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+
+         //load protoype simulation
+         var importSimulationTask = IoC.Resolve<IImportSimulationTask>();
+         var pkmlFilePrototypeSimulation = DomainHelperForSpecs.DataFilePathFor("PrototypeParticlesDissolution_722.pkml");
+         _prototypeSimulation = importSimulationTask.ImportIndividualSimulation(pkmlFilePrototypeSimulation);
+
+         //add output paths
+         var compoundName = _compound.Name;
+         var lumenPaths = LumenPaths(compoundName);
+         addOutputs(_prototypeSimulation, lumenPaths);
+
+         _simulationEngine.Run(_prototypeSimulation);
+
+         //fill simulation output times and values required for all further tests
+         fillSimulationOutputs(lumenPaths);
+      }
+
+      private void fillSimulationOutputs(string[] lumenPaths)
+      {
+         _prototypeSimulationDissolvedDrugLumen = new float[NumberOfLumenSegments][];
+         for (var segmentIdx = 0; segmentIdx < NumberOfLumenSegments; segmentIdx++)
+            _prototypeSimulationDissolvedDrugLumen[segmentIdx] = ValuesFor(_prototypeSimulation, lumenPaths[segmentIdx]);
+
+         _fractionAbsorbed = ValuesFor(_simulation, fractionAbsorbedPath);
+         _prototypeSimulationFractionAbsorbed = ValuesFor(_prototypeSimulation, fractionAbsorbedPath);
+
+         _peripheralVenousbloodPls = ValuesFor(_simulation, peripheralVenPlsPath);
+         _prototypeSimulationPeripheralVenousbloodPls = ValuesFor(_prototypeSimulation, peripheralVenPlsPath);
+      }
+
+      private void addOutputs(IndividualSimulation prototypeSimulation, string[] lumenPaths)
+      {
+         foreach (var path in lumenPaths)
+         {
+            AddOutputTo(prototypeSimulation, path);
+         }
+
+         var allPaths = new[] {fractionAbsorbedPath, peripheralVenPlsPath};
+         foreach (var path in allPaths)
+         {
+            AddOutputTo(_simulation,path,QuantityType.Observer);
+            AddOutputTo(_prototypeSimulation, path, QuantityType.Observer);
+         }
+      }
+
+      private string fractionAbsorbedPath => $"Organism|Lumen|{_compound.Name}|Fraction of oral drug mass absorbed into mucosa";
+
+      private string peripheralVenPlsPath => $"Organism|PeripheralVenousBlood|{_compound.Name}|Plasma (Peripheral Venous Blood)";
+
+      protected override double ComparisonTolerance => 1e-1;
+
+      protected override int NumberOfBins => 1;
+
+      protected override bool DisableIntestinalAbsorptionAndLuminalFlow => false;
+
+      protected override void SetupBuildingBlocks()
+      {
+         _compound.Name = "Aciclovir";
+         _formulation.Name = "IR tablet";
+         _protocol.Name = "5mg tablet";
+
+         var cloneManager = IoC.Resolve<ICloneManager>();
+         var compoundProcessRepository = IoC.Resolve<ICompoundProcessRepository>();
+
+         var transportProcess = cloneManager.Clone(compoundProcessRepository.ProcessByName("TubularSecretion_FirstOrder"))
+            .WithName("Renal Clearances-Literatur TS");
+         transportProcess.Parameter("Volume (kidney)").Value = 0.4377;
+         transportProcess.Parameter("Tubular secretion").Value = 0.412;
+         _compound.AddProcess(transportProcess);
+
+         transportProcess = cloneManager.Clone(compoundProcessRepository.ProcessByName("GlomerularFiltration"))
+            .WithName("Glomerular Filtration-Literature GFR");
+         transportProcess.Parameter("GFR fraction").Value = 1;
+         _compound.AddProcess(transportProcess);
+
+         _formulation.Parameter("Particle radius (mean)").Value = 0.0001;
+      }
+
+      protected override void SetupProcesses()
+      {
+         foreach (var process in _compound.AllProcesses<SystemicProcess>())
+         {
+            var interactionSelection = new InteractionSelection { CompoundName = _compound.Name, ProcessName = process.Name };
+            _simulation.InteractionProperties.AddInteraction(interactionSelection);
+         }
+      }
+
+      protected override void SetupSimulation()
+      {
+         PrecipitatedDrugSoluble = true;
+
+         MoleculeProperties(CoreConstants.Parameter.LIPOPHILICITY).Value = -0.097;
+         MoleculeProperties(CoreConstants.Parameter.FractionUnbound).Value = 0.85;
+         MoleculeProperties(CoreConstants.Parameter.MOLECULAR_WEIGHT).Value = 2.2521E-07;
+         MoleculeProperties(CoreConstants.Parameter.ParameterPka1).Value = 9.20;
+         MoleculeProperties(CoreConstants.Parameter.COMPOUND_TYPE1).Value = CoreConstants.Compound.CompoundTypeAcid;
+         MoleculeProperties(CoreConstants.Parameter.ParameterPka2).Value = 2.20;
+         MoleculeProperties(CoreConstants.Parameter.COMPOUND_TYPE2).Value = CoreConstants.Compound.CompoundTypeBase;
+         MoleculeProperties(CoreConstants.Parameter.SolubilityAtRefpH).Value = 1E-05;
+         MoleculeProperties("Reference pH").Value = 7;
+
+         Application.Container(CoreConstants.ContainerName.ProtocolSchemaItem)
+            .Parameter(CoreConstantsForSpecs.Parameter.DRUG_MASS).Value = 22.2015;
+      }
+
+      private void compareSimulatedValues(float[] newValues, float[] prototypeValues, string location)
+      {
+         var threshold = 100*_simulation.Solver.AbsTol;
+
+         for (var timeIdx = 0; timeIdx < NumberOfSimulatedtimePoints; timeIdx++)
+         {
+            var newValue = newValues[timeIdx];
+            var prototypeValue = prototypeValues[timeIdx];
+
+            if (newValue < threshold || prototypeValue < threshold)
+               continue;
+
+            newValue.ShouldBeEqualTo(prototypeValue, ComparisonTolerance,$"At Times[{timeIdx}]={_times[timeIdx]}: {location}");
+         }
+      }
+
+      [Observation]
+      public void values_in_lumen_segments_should_be_equal()
+      {
+         for (var segmentIdx = 0; segmentIdx < NumberOfLumenSegments; segmentIdx++)
+         {
+            compareSimulatedValues(_dissolvedDrugLumen[segmentIdx], _prototypeSimulationDissolvedDrugLumen[segmentIdx], $"dissolved drug in {_lumenSegments[segmentIdx]}");
+         }
+      }
+
+      [Observation]
+      public void fraction_absorbed_values_should_be_equal()
+      {
+         compareSimulatedValues(_fractionAbsorbed, _prototypeSimulationFractionAbsorbed, "fraction absorbed into mucosa");
+      }
+
+      [Observation]
+      public void peripheral_venous_blood_plasma_values_should_be_equal()
+      {
+         compareSimulatedValues(_peripheralVenousbloodPls, _prototypeSimulationPeripheralVenousbloodPls, "peripheral venous blood (plasma)");
       }
    }
 
@@ -689,7 +879,7 @@ namespace PKSim.IntegrationTests
          //disable precipitation
          PrecipitatedDrugSoluble = true;
 
-         _simulation.SimulationSettings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //5days
+         _simulation.SimulationSettings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //10 days
 
          //following this schema, most of the drug will be dissolved in the stomach
          //in rectum the drug will be accumulated and most of the drug will turn into insoluble (precipitated) form
@@ -749,7 +939,7 @@ namespace PKSim.IntegrationTests
          //disable precipitation
          PrecipitatedDrugSoluble = false;
 
-         _simulation.SimulationSettings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //5days
+         _simulation.SimulationSettings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //10 days
 
          //following this schema, most of the drug will be dissolved in the stomach
          //in rectum the drug will be accumulated and most of the drug will turn into insoluble (precipitated) form
