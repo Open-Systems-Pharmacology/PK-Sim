@@ -78,6 +78,7 @@ namespace PKSim.Core.Model
          rootContainer.Add(_objectBaseFactory.Create<IContainer>()
             .WithName(Constants.NEIGHBORHOODS)
             .WithMode(ContainerMode.Logical));
+
          individual.Root = rootContainer;
 
          createAction(_individualModelTask)(individual);
@@ -91,10 +92,11 @@ namespace PKSim.Core.Model
          setParameterDisplayUnit(individual, CoreConstants.Parameters.BMI, originData.BMIUnit);
          setParameterDisplayUnit(individual, CoreConstants.Parameters.WEIGHT, originData.WeightUnit);
 
+         //update ontogeny parameters 
          _ontogenyVariabilityUpdater.UpdatePlasmaProteinsOntogenyFor(individual);
 
-         //update ontogeny parameters 
          validate(individual);
+
          individual.IsLoaded = true;
          return individual;
       }

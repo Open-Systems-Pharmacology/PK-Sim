@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots;
 
 namespace PKSim.Matlab
 {
@@ -12,7 +13,7 @@ namespace PKSim.Matlab
    [Category("Matlab")]
    public abstract class concern_for_MatlabIndividualFactory : ContextSpecification<IMatlabIndividualFactory>
    {
-      protected OriginData _matlabOriginData;
+      protected Core.Snapshots.OriginData _matlabOriginData;
 
       public override void GlobalContext()
       {
@@ -33,13 +34,22 @@ namespace PKSim.Matlab
       protected override void Context()
       {
          base.Context();
-         _matlabOriginData = new OriginData
+         _matlabOriginData = new Core.Snapshots.OriginData
          {
             Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
-            Age = 30,
-            Weight = 75,
-            Height = 17.5,
+            Age = new Parameter
+            {
+               Value = 30
+            },
+            Weight = new Parameter
+            {
+               Value = 75
+            },
+            Height = new Parameter
+            {
+               Value = 175
+            },
             Gender = CoreConstants.Gender.Male
          };
       }
@@ -63,14 +73,24 @@ namespace PKSim.Matlab
       protected override void Context()
       {
          base.Context();
-         _matlabOriginData = new OriginData
+         _matlabOriginData = new Core.Snapshots.OriginData
          {
             Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
-            Age = 30,
-            Weight = 75,
-            Height = 17.5,
-            Gender = CoreConstants.Gender.Male
+            Age = new Parameter
+            {
+               Value = 30
+            },
+            Weight = new Parameter
+            {
+               Value = 75
+            },
+            Height = new Parameter
+            {
+               Value = 17.5,
+               Unit = "dm",
+            },
+            Gender = CoreConstants.Gender.Female
          };
       }
 
@@ -94,13 +114,22 @@ namespace PKSim.Matlab
       protected override void Context()
       {
          base.Context();
-         _matlabOriginData = new OriginData
+         _matlabOriginData = new Core.Snapshots.OriginData
          {
             Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
-            Age = 30,
-            Weight = 75,
-            Height = 17.5,
+            Age = new Parameter
+            {
+               Value = 30
+            },
+            Weight = new Parameter
+            {
+               Value = 75
+            },
+            Height = new Parameter
+            {
+               Value = 175
+            },
             Gender = CoreConstants.Gender.Male
          };
       }

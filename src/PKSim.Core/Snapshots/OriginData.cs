@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Snapshots
 {
@@ -42,5 +43,14 @@ namespace PKSim.Core.Snapshots
       ///    Height of individual to create in. This is a mandatory input for height dependent species. 
       /// </summary>
       public Parameter Height { get; set; }
+
+
+      public void AddCalculationMethods(params string[] calculationMethods)
+      {
+         if (CalculationMethods == null)
+            CalculationMethods = new CalculationMethodCache();
+
+         calculationMethods?.Each(CalculationMethods.Add);
+      }
    }
 }

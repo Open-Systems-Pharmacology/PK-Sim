@@ -66,15 +66,12 @@
     </Compile>
     <Compile Include="ApplicationStartup.cs" />
     <Compile Include="Mappers\MatlabOriginDataToOriginDataMapper.cs" />
-    <Compile Include="Mappers\MatlabParameterToSnapshotParameterMapper.cs" />
     <Compile Include="Mappers\MatlabPopulationSettingsToPopulationSettingsMapper.cs" />
     <Compile Include="MatlabFullPathDisplayResolver.cs" />
     <Compile Include="MatlabIndividualFactory.cs" />
-    <Compile Include="MatlabOriginData.cs" />
     <Compile Include="MatlabRegister.cs" />
     <Compile Include="MatlabLazyLoadTask.cs" />
     <Compile Include="OntogenyFactorsRetriever.cs" />
-    <Compile Include="PopulationSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MatlabPopulationFactory.cs" />
   </ItemGroup>

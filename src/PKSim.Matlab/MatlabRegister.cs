@@ -21,7 +21,6 @@ namespace PKSim.Matlab
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
          container.Register<IFullPathDisplayResolver, MatlabFullPathDisplayResolver>();
          container.Register<IMatlabOriginDataToOriginDataMapper, MatlabOriginDataToOriginDataMapper>();
-         container.Register<IMatlabParameterToSnapshotParameterMapper, MatlabParameterToSnapshotParameterMapper>();
          container.Register<IMatlabPopulationSettingsToPopulationSettingsMapper, MatlabPopulationSettingsToPopulationSettingsMapper>();
          container.Register<ILazyLoadTask, MatlabLazyLoadTask>(LifeStyle.Singleton);
       }

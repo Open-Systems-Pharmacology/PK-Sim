@@ -5,6 +5,10 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots;
+using Individual = PKSim.Core.Snapshots.Individual;
+using OriginData = PKSim.Core.Snapshots.OriginData;
+using ParameterRange = PKSim.Core.Snapshots.ParameterRange;
 
 namespace PKSim.Matlab
 {
@@ -32,17 +36,32 @@ namespace PKSim.Matlab
       protected override void Context()
       {
          base.Context();
-         _settings = new PopulationSettings
+         var originData = new OriginData
          {
             Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
-            MinAge = 0,
-            MaxAge = 80,
-            MinWeight = 70,
+         };
+
+         originData.AddCalculationMethods("SurfaceAreaPlsInt_VAR1");
+
+         _settings = new PopulationSettings
+         {
+            Individual = new Individual
+            {
+               OriginData = originData
+            },
+            Age = new ParameterRange
+            {
+               Min = 0,
+               Max = 80,
+            },
+            Weight = new ParameterRange
+            {
+               Min = 70,
+            },
             NumberOfIndividuals = 10,
             ProportionOfFemales = 70
          };
-         _settings.AddCalculationMethod("SurfaceAreaPlsInt", "SurfaceAreaPlsInt_VAR1");
       }
 
       protected override void Because()
@@ -65,19 +84,39 @@ namespace PKSim.Matlab
       protected override void Context()
       {
          base.Context();
-         _settings = new PopulationSettings
+
+         var originData = new OriginData
          {
             Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.PRETERM,
-            MinAge = 0,
-            MaxAge = 80,
-            MinGestationalAge = 30,
-            MaxGestationalAge = 35,
-            MaxWeight = 70,
+         };
+
+         originData.AddCalculationMethods("SurfaceAreaPlsInt_VAR1");
+
+         _settings = new PopulationSettings
+         {
+            Individual = new Individual
+            {
+               OriginData = originData
+            },
+            Age = new ParameterRange
+            {
+               Min = 0,
+               Max = 80,
+            },
+            Weight = new ParameterRange
+            {
+               Min = 70,
+            },
+            GestationalAge = new ParameterRange
+            {
+               Min = 30,
+               Max = 35,
+            },
+
             NumberOfIndividuals = 10,
             ProportionOfFemales = 70
          };
-         _settings.AddCalculationMethod("SurfaceAreaPlsInt", "SurfaceAreaPlsInt_VAR1");
       }
 
       protected override void Because()

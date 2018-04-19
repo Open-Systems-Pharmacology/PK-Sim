@@ -12,12 +12,12 @@ namespace PKSim.Matlab
       /// <summary>
       ///    Name of the molecule being used in the model
       /// </summary>
-      public string Molecule { get; private set; }
+      public string Molecule { get; }
 
       /// <summary>
       ///    Name of the ontogeny associated with the molecule
       /// </summary>
-      public string Ontogeny { get; private set; }
+      public string Ontogeny { get; }
 
       public MoleculeOntogeny(string moleculeName, string ontogenyName)
       {
@@ -32,7 +32,7 @@ namespace PKSim.Matlab
       ///    returns an enumeration containing the ontogeny factor for each molecule
       ///    For instance, for CYP3A4, the call will return CYP3A4|Ontogeny Factor and CYP3A4|Ontogeny Factor GI
       /// </summary>
-      IEnumerable<ParameterValue> FactorsFor(Core.Model.OriginData originData, IEnumerable<MoleculeOntogeny> moleculeOntogenies);
+      IEnumerable<ParameterValue> FactorsFor(OriginData originData, IEnumerable<MoleculeOntogeny> moleculeOntogenies);
    }
 
    public class OntogenyFactorsRetriever : IOntogenyFactorsRetriever
@@ -44,7 +44,7 @@ namespace PKSim.Matlab
          _ontogenyRepository = ontogenyRepository;
       }
 
-      public IEnumerable<ParameterValue> FactorsFor(Core.Model.OriginData originData, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
+      public IEnumerable<ParameterValue> FactorsFor(OriginData originData, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
       {
          var allOntogenyFactors = new List<ParameterValue>();
 
@@ -65,7 +65,7 @@ namespace PKSim.Matlab
          return allOntogenyFactors;
       }
 
-      private ParameterValue ontogenyFactorFor(Ontogeny ontogeny, string moleculeName, Core.Model.OriginData originData, string parameterName, string ontogenyLocation)
+      private ParameterValue ontogenyFactorFor(Ontogeny ontogeny, string moleculeName, OriginData originData, string parameterName, string ontogenyLocation)
       {
          var path = new ObjectPath {moleculeName, parameterName};
          double factor = _ontogenyRepository.OntogenyFactorFor(ontogeny, ontogenyLocation, originData);
