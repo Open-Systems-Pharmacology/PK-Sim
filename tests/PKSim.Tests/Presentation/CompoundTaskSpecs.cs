@@ -1,18 +1,16 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Collections;
-using FakeItEasy;
-using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation
 {
@@ -139,63 +137,6 @@ namespace PKSim.Presentation
       {
          _cache.Contains(_subMetabolite).ShouldBeTrue();
          _cache[_subMetabolite].ShouldContain(_compound);
-      }
-   }
-
-   public class When_loading_a_compound_from_the_template_database_with_its_metabolite_and_none_of_them_was_renamed : concern_for_CompoundTask
-   {
-      private Compound _metabolite;
-      private Compound _subMetabolite;
-
-      protected override void Context()
-      {
-         base.Context();
-         _metabolite = new Compound().WithName("METABOLITE");
-         _subMetabolite = new Compound().WithName("SUB_METABOLITE");
-         _compound.AddProcess(new EnzymaticProcess {MetaboliteName = _metabolite.Name});
-         _metabolite.AddProcess(new EnzymaticProcess {MetaboliteName = _subMetabolite.Name});
-         A.CallTo(() => _buildingBlockRepository.All<Compound>()).Returns(new[] {_compound, _metabolite, _subMetabolite});
-
-         A.CallTo(() => _buildingBlockTask.LoadFromTemplate<Compound>(PKSimBuildingBlockType.Compound)).Returns(new[] {_compound, _metabolite, _subMetabolite});
-      }
-
-      protected override void Because()
-      {
-         sut.LoadFromTemplate();
-      }
-
-      [Observation]
-      public void should_not_show_a_warning_to_the_user()
-      {
-         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._)).MustNotHaveHappened();
-      }
-   }
-
-   public class When_loading_a_compound_from_the_template_database_with_its_metabolite_and_one_of_them_was_renamed : concern_for_CompoundTask
-   {
-      private Compound _metabolite;
-      private Compound _metabolite2;
-
-      protected override void Context()
-      {
-         base.Context();
-         _metabolite = new Compound().WithName("METABOLITE");
-         _metabolite2 = new Compound().WithName("METABOLITE");
-         _compound.AddProcess(new EnzymaticProcess {MetaboliteName = _metabolite.Name});
-         A.CallTo(() => _buildingBlockRepository.All<Compound>()).Returns(new[] {_compound, _metabolite, _metabolite2});
-
-         A.CallTo(() => _buildingBlockTask.LoadFromTemplate<Compound>(PKSimBuildingBlockType.Compound)).Returns(new[] {_compound, _metabolite2});
-      }
-
-      protected override void Because()
-      {
-         sut.LoadFromTemplate();
-      }
-
-      [Observation]
-      public void should_show_a_warning_to_the_user()
-      {
-         A.CallTo(() => _dialogCreator.MessageBoxInfo(PKSimConstants.Warning.OneMetaboliteWasRenamed(_compound.Name))).MustHaveHappened();
       }
    }
 }

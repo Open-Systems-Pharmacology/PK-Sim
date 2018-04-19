@@ -20,11 +20,6 @@ namespace PKSim.Assets
          public const string InhibitorClearanceMustBeDefinedSeparately = "Please note that for the mechanism-based inactivator no clearance process is defined via the inactivation process by default. In theory, for every inactivated target molecule, also one inactivator molecule is cleared; this must be separately defined by the user in form of additional clearance processes for the inhibitor.";
          public const string FractionAbsorbedSmallerThanOne = "Absorption seems to be incomplete or absorption process is not finished. Vd, Vss (or Vd/F and Vss/F), t1/2, MRT and AUC_inf should be compared with respective PK-parameters from an IV simulation.";
 
-         public static string OneMetaboliteWasRenamed(string parentCompound)
-         {
-            return $"At least one metabolite was renamed.\nThe default metabolite name (found in the metabolism process) associated with the parent compound '{parentCompound}' will remain unchanged.";
-         }
-
          public static string SystemicProcessAvailableInCompoundButWasNotSelected(string systemicProcessType)
          {
             return $"{systemicProcessType} is available in compound but was not activated.";

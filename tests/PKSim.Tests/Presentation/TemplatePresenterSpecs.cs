@@ -1,11 +1,7 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Presenters;
-using PKSim.Presentation.Views;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -13,7 +9,11 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using PKSim.Assets;
-using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Nodes;
+using PKSim.Presentation.Presenters;
+using PKSim.Presentation.Views;
 
 namespace PKSim.Presentation
 {
@@ -86,16 +86,16 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _compound1= new Compound();
+         _compound1 = new Compound();
          _compound2 = new Compound();
 
          _template1 = new Template {Name = "Template1", Id = "Id1"};
-         _template2 = new Template { Name = "Template2", Id = "Id2" };
+         _template2 = new Template {Name = "Template2", Id = "Id2"};
          _template1.References.Add(_template2);
          _template2.References.Add(_template1);
          _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
-         sut.ActivateNodes(new[] {new ObjectWithIdAndNameNode<Template>(_template1) });
+         sut.ActivateNodes(new[] {new ObjectWithIdAndNameNode<Template>(_template1)});
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
@@ -109,7 +109,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_load_thee_same_reference_twice()
       {
-         _allTemplates.ShouldOnlyContain(_compound1,_compound2);
+         _allTemplates.ShouldOnlyContain(_compound1, _compound2);
       }
    }
 
@@ -121,7 +121,7 @@ namespace PKSim.Presentation
       private Template _template2;
       private Compound _compound1;
       private Compound _compound2;
-      private string _templateType = "TEMPLATE TYPE";
+      private readonly string _templateType = "TEMPLATE TYPE";
 
       protected override void Context()
       {
@@ -129,13 +129,13 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new Template { Name = "Template1", Id = "Id1" };
-         _template2 = new Template { Name = "Template2", Id = "Id2" };
+         _template1 = new Template {Name = "Template1", Id = "Id1"};
+         _template2 = new Template {Name = "Template2", Id = "Id2"};
 
-         A.CallTo(() => _objectTypeResolver.TypeFor(_compound1)).Returns(_templateType);
-         _templates = new List<Template> { _template1, _template2 };
+         A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
+         _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
-         sut.ActivateNodes(new[] { new ObjectWithIdAndNameNode<Template>(_template1), new ObjectWithIdAndNameNode<Template>(_template2) });
+         sut.ActivateNodes(new[] {new ObjectWithIdAndNameNode<Template>(_template1), new ObjectWithIdAndNameNode<Template>(_template2)});
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
@@ -158,5 +158,4 @@ namespace PKSim.Presentation
          _view.Description.ShouldBeEqualTo(PKSimConstants.UI.NumberOfTemplatesSelectedIs(2, _templateType));
       }
    }
-
 }

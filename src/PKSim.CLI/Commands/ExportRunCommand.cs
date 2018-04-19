@@ -8,7 +8,7 @@ using PKSim.CLI.Core.RunOptions;
 
 namespace PKSim.CLI.Commands
 {
-   [Verb("export", HelpText = "Start project export by loading the given project file and exported all or selected simulations to the output folder.")]
+   [Verb("export", HelpText = "Start project export by loading the given project file and export all or selected simulations to the output folder.")]
    public class ExportRunCommand : SimulationExportCommand<ExportRunOptions>, IWithOutputFolder
    {
       public override string Name { get; } = "Export";
