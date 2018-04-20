@@ -1,4 +1,5 @@
-﻿using PKSim.Core.Model;
+﻿using System.Collections.Generic;
+using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Presentation.UICommands;
 
@@ -16,6 +17,21 @@ namespace PKSim.Presentation.UICommands
       protected override void PerformExecute()
       {
          _buildingBlockTask.SaveAsSystemTemplate(Subject);
+      }
+   }
+
+   public class SaveBuildingBlocksAsSystemTemplateCommand<TBuildingBlock> : ObjectUICommand<IReadOnlyList<TBuildingBlock>> where TBuildingBlock : class, IPKSimBuildingBlock
+   {
+      private readonly IBuildingBlockTask _buildingBlockTask;
+
+      public SaveBuildingBlocksAsSystemTemplateCommand(IBuildingBlockTask buildingBlockTask)
+      {
+         _buildingBlockTask = buildingBlockTask;
+      }
+
+      protected override void PerformExecute()
+      {
+         _buildingBlockTask.SaveAsTemplate(Subject, TemplateDatabaseType.System);
       }
    }
 }

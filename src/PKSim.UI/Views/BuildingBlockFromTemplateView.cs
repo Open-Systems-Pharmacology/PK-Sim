@@ -37,6 +37,12 @@ namespace PKSim.UI.Views
       {
          if (e.Button == MouseButtons.Right)
          {
+            treeView.Selection.Clear();
+
+            //Ensure we only have one node selected for context menu
+            treeView.FocusedNode = treeView.NodeFrom(selectedNode);
+            treeView.Selection.Add(treeView.FocusedNode);
+
             _presenter.CreatePopupMenuFor(selectedNode).At(e.Location);
          }
          else

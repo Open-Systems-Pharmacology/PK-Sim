@@ -29,6 +29,10 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
       {
+         yield return SaveAsUserTemplateMenuFor(buildingBlocks);
+
+         yield return SaveAsSystemTemplateMenuFor(buildingBlocks);
+
          yield return CompareBuidlingBlocks(buildingBlocks, executionContext);
 
          yield return AddToJournal(buildingBlocks);
@@ -45,8 +49,25 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          if (canStartComparisonFor(buildingBlockList, executionContext))
             return ComparisonCommonContextMenuItems.CompareObjectsMenu(objectBaseList, buildingBlockNames, executionContext);
-         else
-            return comparisonNotPossibleMenu(buildingBlockList, executionContext);
+
+         return comparisonNotPossibleMenu(buildingBlockList, executionContext);
+      }
+
+      protected IMenuBarItem SaveAsUserTemplateMenuFor(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks)
+      {
+         var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsTemplate)
+            .WithCommandFor<SaveBuildingBlocksAsTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList)
+            .WithIcon(ApplicationIcons.SaveAsTemplate);
+      }
+
+      protected IMenuBarItem SaveAsSystemTemplateMenuFor(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks)
+      {
+         var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsSytemTemplate)
+            .WithCommandFor<SaveBuildingBlocksAsSystemTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList)
+            .WithIcon(ApplicationIcons.SaveAsTemplate)
+            .ForDeveloper();
       }
 
       protected static IMenuBarItem AddToJournal(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks)
@@ -80,7 +101,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          var buiildingBlockType = executionContext.TypeFor(buildingBlocks[0]);
          return CreateMenuButton.WithCaption(MenuNames.CompareObjects(executionContext.TypeFor(buildingBlocks[0])))
             .WithIcon(ApplicationIcons.Comparison)
-            .WithActionCommand(() => { throw new PKSimException(PKSimConstants.Error.ComparisonBetweenBuildingBLocksNotSupportedForBuildingBlockOfType(buiildingBlockType)); });
+            .WithActionCommand(() => throw new PKSimException(PKSimConstants.Error.ComparisonBetweenBuildingBLocksNotSupportedForBuildingBlockOfType(buiildingBlockType)));
       }
    }
 

@@ -41,7 +41,6 @@ namespace PKSim.Presentation
       protected ILazyLoadTask _lazyLoadTask;
       protected ISimulationReferenceUpdater _simulationReferenceUpdater;
       protected IPresentationSettingsTask _presenterSettingsTask;
-      protected ISnapshotTask _snapshotTask;
 
       protected override void Context()
       {
@@ -60,7 +59,6 @@ namespace PKSim.Presentation
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
-         _snapshotTask= A.Fake<ISnapshotTask>();
 
          sut = new BuildingBlockTask(
             _executionContext,
@@ -73,8 +71,7 @@ namespace PKSim.Presentation
             _buildingBlockRepository, 
             _lazyLoadTask, 
             _presenterSettingsTask,
-            _simulationReferenceUpdater, 
-            _snapshotTask);
+            _simulationReferenceUpdater);
 
          A.CallTo(() => _applicationController.Start<ICloneBuildingBlockPresenter>()).Returns(_clonePresenter);
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renamePresenter);
@@ -602,6 +599,32 @@ namespace PKSim.Presentation
       public void should_not_save_the_template_or_any_of_the_references()
       {
          _allTemplateItems.ShouldBeNull();
+      }
+   }
+
+   public class When_saving_multiple_building_blocks_to_the_database : When_saving_building_blocks_to_the_user_template_database
+   {
+      private List<IPKSimBuildingBlock> _buildingBlocks;
+      private IPKSimBuildingBlock _anotherBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _anotherBuildingBlock= A.Fake<IPKSimBuildingBlock>();
+         _buildingBlocks = new List<IPKSimBuildingBlock> {_buildingBlock, _anotherBuildingBlock};
+      }
+
+      protected override void Because()
+      {
+         sut.SaveAsTemplate(_buildingBlocks, TemplateDatabaseType.User);
+      }
+
+      [Observation]
+      public void should_save_each_template_to_the_template_database()
+      {
+         _allTemplateItems.Count.ShouldBeEqualTo(2);
+         _allTemplateItems[0].Object.ShouldBeEqualTo(_buildingBlock);
+         _allTemplateItems[1].Object.ShouldBeEqualTo(_anotherBuildingBlock);
       }
    }
 

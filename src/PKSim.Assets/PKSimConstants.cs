@@ -2132,7 +2132,7 @@ namespace PKSim.Assets
          public static readonly string CalculateVSSValues = "Calculate VSS Values";
          public static readonly string PossibleVSSValuesForDefaultSpecies = "TODO PossibleVSSValuesForDefaultSpecies";
          public static readonly string DoYouWantToSaveCompoundMetaboliteAsTemplate = "Do you also want to save the metabolite(s) of this compound?";
-         public static readonly string DoYouWantToLoadReferencedTemplateAsWell = "Do you also want to load the metabolite(s) of this compound?";
+         public static string DoYouWantToLoadReferencedTemplateAsWell(int numberOfSelectedCompound) => $"Do you also want to load the metabolite(s) of the selected {"compound".PluralizeIf(numberOfSelectedCompound)}?";
          public static readonly string LowerPercentile = "Lower Percentile";
          public static readonly string UpperPercentile = "Upper Percentile";
          public static readonly string LowerValue= "Lower Value";

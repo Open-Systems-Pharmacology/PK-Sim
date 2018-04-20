@@ -118,7 +118,7 @@ namespace PKSim.Presentation.Presenters
          if (!_selectedTemplates.Any(x => x.HasReferences))
             return false;
 
-         return _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.DoYouWantToLoadReferencedTemplateAsWell) == ViewResult.Yes;
+         return _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.DoYouWantToLoadReferencedTemplateAsWell(_selectedTemplates.Count)) == ViewResult.Yes;
       }
 
       private IReadOnlyList<T> loadMultipleTemplate<T>()
