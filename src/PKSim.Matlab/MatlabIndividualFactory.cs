@@ -7,6 +7,7 @@ using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
 using PKSim.Matlab.Mappers;
+using OriginData = PKSim.Core.Snapshots.OriginData;
 
 namespace PKSim.Matlab
 {
@@ -86,6 +87,7 @@ namespace PKSim.Matlab
             p1 = parameter.Parameter(Constants.Distribution.MINIMUM).Value;
             p2 = parameter.Parameter(Constants.Distribution.MAXIMUM).Value;
          }
+
          return new DistributedParameterValue(parameterPath, parameter.Value, parameter.Percentile, p1, p2, distributionType);
       }
    }

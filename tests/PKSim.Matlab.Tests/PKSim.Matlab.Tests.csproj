@@ -90,9 +90,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="MatlabIndividualFactorySpecs.cs" />
-    <Compile Include="MatlabOriginDataToOriginDataMapperSpecs.cs" />
     <Compile Include="MatlabPopulationFactorySpecs.cs" />
-    <Compile Include="MatlabPopulationSettingsToPopulationSettingsMapperSpecs.cs" />
     <Compile Include="OntogenyFactorsRetrieverSpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

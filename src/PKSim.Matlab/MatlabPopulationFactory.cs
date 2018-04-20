@@ -2,6 +2,7 @@
 using System.Threading;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots;
 using PKSim.Matlab.Mappers;
 
 namespace PKSim.Matlab

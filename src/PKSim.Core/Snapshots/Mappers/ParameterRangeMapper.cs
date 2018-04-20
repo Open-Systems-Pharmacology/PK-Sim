@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Assets;
 using SnapshoParameterRange = PKSim.Core.Snapshots.ParameterRange;
 using ModelParameterRange = PKSim.Core.Model.ParameterRange;
 
