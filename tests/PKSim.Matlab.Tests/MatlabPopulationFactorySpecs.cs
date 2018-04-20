@@ -54,10 +54,12 @@ namespace PKSim.Matlab
             {
                Min = 0,
                Max = 80,
+               Unit = "year(s)",
             },
             Weight = new ParameterRange
             {
                Min = 70,
+               Unit = "kg",
             },
             NumberOfIndividuals = 10,
             ProportionOfFemales = 70
@@ -103,15 +105,18 @@ namespace PKSim.Matlab
             {
                Min = 0,
                Max = 80,
+               Unit = "year(s)",
             },
             Weight = new ParameterRange
             {
                Min = 70,
+               Unit = "kg",
             },
             GestationalAge = new ParameterRange
             {
                Min = 30,
                Max = 35,
+               Unit = "week(s)",
             },
 
             NumberOfIndividuals = 10,

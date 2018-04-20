@@ -40,15 +40,18 @@ namespace PKSim.Matlab
             Population = CoreConstants.Population.ICRP,
             Age = new Parameter
             {
-               Value = 30
+               Value = 30,
+               Unit = "year(s)",
             },
             Weight = new Parameter
             {
-               Value = 75
+               Value = 75,
+               Unit = "kg",
             },
             Height = new Parameter
             {
-               Value = 175
+               Value = 175,
+               Unit = "cm",
             },
             Gender = CoreConstants.Gender.Male
          };
@@ -79,11 +82,13 @@ namespace PKSim.Matlab
             Population = CoreConstants.Population.ICRP,
             Age = new Parameter
             {
-               Value = 30
+               Value = 30,
+               Unit = "year(s)",
             },
             Weight = new Parameter
             {
-               Value = 75
+               Value = 75,
+               Unit = "kg",
             },
             Height = new Parameter
             {
@@ -120,15 +125,18 @@ namespace PKSim.Matlab
             Population = CoreConstants.Population.ICRP,
             Age = new Parameter
             {
-               Value = 30
+               Value = 30,
+               Unit = "year(s)",
             },
             Weight = new Parameter
             {
-               Value = 75
+               Value = 75,
+               Unit = "kg",
             },
             Height = new Parameter
             {
-               Value = 175
+               Value = 175,
+               Unit = "cm",
             },
             Gender = CoreConstants.Gender.Male
          };

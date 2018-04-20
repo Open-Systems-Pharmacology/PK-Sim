@@ -148,7 +148,11 @@ namespace PKSim.Core.Snapshots.Mappers
          if (snapshot?.Value == null)
             return defaultValue;
 
-         var unit = dimension.UnitOrDefault(ModelValueFor(snapshot.Unit));
+         var unitName = ModelValueFor(snapshot.Unit);
+         if (!dimension.HasUnit(unitName))
+            throw new PKSimException(PKSimConstants.Error.CannotFindUnitInDimensionFor(unitName, dimension.DisplayName, snapshot.Name));
+
+         var unit = dimension.Unit(unitName);
          return dimension.UnitValueToBaseUnitValue(unit, snapshot.Value.Value);
       }
 

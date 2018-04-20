@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using PKSim.Assets;
 using SnapshoParameterRange = PKSim.Core.Snapshots.ParameterRange;
 using ModelParameterRange = PKSim.Core.Model.ParameterRange;
 
@@ -29,7 +30,13 @@ namespace PKSim.Core.Snapshots.Mappers
          if (parameterRange == null || snapshot == null)
             return Task.FromResult(parameterRange);
 
-         parameterRange.Unit = parameterRange.Dimension.UnitOrDefault(ModelValueFor(snapshot.Unit));
+         var dimension = parameterRange.Dimension;
+         var unitName = ModelValueFor(snapshot.Unit);
+         if (!dimension.HasUnit(unitName))
+            throw new PKSimException(PKSimConstants.Error.CannotFindUnitInDimensionFor(unitName, dimension.DisplayName, parameterRange.ParameterDisplayName));
+
+         parameterRange.Unit = dimension.Unit(unitName);
+
          parameterRange.MaxValueInDisplayUnit = snapshot.Max;
          parameterRange.MinValueInDisplayUnit = snapshot.Min;
 

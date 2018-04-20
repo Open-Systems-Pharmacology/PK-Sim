@@ -642,6 +642,11 @@ namespace PKSim.Assets
             return $"'{processName}' cannot be selected more than once.";
          }
 
+         public static string CannotFindUnitInDimensionFor(string unit, string dimension, string entity)
+         {
+            return $"Cannot not find unit '{unit}' in dimension '{dimension}' for '{entity}'";
+         }
+
          public static string CouldNotFindSpecies(string species, IEnumerable<string> availableSpecies)
          {
             return $"Could not find species '{species}'.\nAvailable species are:\n{availableSpecies.ToString("\n")}";
