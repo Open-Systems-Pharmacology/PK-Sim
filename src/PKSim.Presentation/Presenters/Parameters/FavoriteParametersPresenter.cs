@@ -37,6 +37,8 @@ namespace PKSim.Presentation.Presenters.Parameters
       private readonly IFavoriteRepository _favoriteRepository;
       private readonly IFavoriteTask _favoriteTask;
       private PathCache<IParameter> _allParameterCache;
+      private readonly List<IParameter> _allFavorites = new List<IParameter>();
+
       public string Description { get; set; } = string.Empty;
       public bool ForcesDisplay { get; } = false;
       public bool AlwaysRefresh { get; } = false;
@@ -70,7 +72,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          updateParameters();
       }
 
-      public IEnumerable<IParameter> EditedParameters => _allParameterCache;
+      public IEnumerable<IParameter> EditedParameters => _allFavorites;
 
       private IEnumerable<IParameter> allFavoriteParameters()
       {
@@ -81,14 +83,15 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       private void updateParameters()
       {
-         var allFavorites = allFavoriteParameters().ToList();
-         _multiParameterEditPresenter.Edit(allFavorites);
+         _allFavorites.Clear();
+         _allFavorites.AddRange(allFavoriteParameters());
+         _multiParameterEditPresenter.Edit(_allFavorites);
 
          //this needs to be done after the Edit to override whatever settings was updated in the Edit method
          _multiParameterEditPresenter.DistributionVisible = false;
          _multiParameterEditPresenter.ParameterNameVisible = true;
 
-         updateMoveButtonsEnableState(allFavorites.Any());
+         updateMoveButtonsEnableState(_allFavorites.Any());
       }
 
       private void updateMoveButtonsEnableState(bool enable)
