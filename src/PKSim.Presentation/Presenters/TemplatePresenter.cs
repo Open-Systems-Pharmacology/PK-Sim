@@ -1,21 +1,22 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Core;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Views;
-using OSPSuite.Core;
-using OSPSuite.Assets;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.Views;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters
@@ -36,9 +37,9 @@ namespace PKSim.Presentation.Presenters
       IEnumerable<Template> AllTemplates();
 
       /// <summary>
-      ///    This method is called whenever a node is being selected in the view
+      ///    This method is called whenever a nodes are being selected in the view
       /// </summary>
-      void ActivateNode(ITreeNode node);
+      void ActivateNodes(IReadOnlyList<ITreeNode> treeNodes);
 
       /// <summary>
       ///    Rename the building block template given as parameter
@@ -67,9 +68,10 @@ namespace PKSim.Presentation.Presenters
       private readonly IApplicationController _applicationController;
       private readonly IDialogCreator _dialogCreator;
       private IEnumerable<Template> _availableBuildingBlocks;
-      private Template _selectedTemplate;
+      private readonly List<Template> _selectedTemplates = new List<Template>();
       private bool _shouldAddItemIcons;
       private readonly IStartOptions _startOptions;
+      private string _buildingBlockTypeString = string.Empty;
 
       public TemplatePresenter(IBuildingBlockFromTemplateView view, ITemplateTaskQuery templateTaskQuery,
          IObjectTypeResolver objectTypeResolver, ITreeNodeFactory treeNodeFactory,
@@ -87,16 +89,15 @@ namespace PKSim.Presentation.Presenters
 
       public IReadOnlyList<T> LoadFromTemplate<T>(TemplateType templateType)
       {
-         var allTemplates = new List<T>();
-         string buildingBlockTypeString = _objectTypeResolver.TypeFor<T>();
-         _view.Caption = PKSimConstants.UI.LoadBuildingBlockFromTemplate(buildingBlockTypeString);
+         _buildingBlockTypeString = _objectTypeResolver.TypeFor<T>();
+         _view.Caption = PKSimConstants.UI.LoadBuildingBlockFromTemplate(_buildingBlockTypeString);
          _shouldAddItemIcons = !_templateTaskQuery.IsPrimitiveType(templateType);
 
          updateIcon(templateType);
 
          _availableBuildingBlocks = _templateTaskQuery.AllTemplatesFor(templateType);
          if (!_availableBuildingBlocks.Any())
-            throw new NoBuildingBlockTemplateAvailableException(buildingBlockTypeString);
+            throw new NoBuildingBlockTemplateAvailableException(_buildingBlockTypeString);
 
          var userTemplateNode = _treeNodeFactory.CreateFor(PKSimRootNodeTypes.UserTemplates);
          var systemTemplateNode = _treeNodeFactory.CreateFor(PKSimRootNodeTypes.SystemTemplates);
@@ -107,28 +108,29 @@ namespace PKSim.Presentation.Presenters
          _view.Display();
 
          if (_view.Canceled)
-            return allTemplates;
+            return new List<T>();
 
-         if (_selectedTemplate.HasReferences)
-         {
-            if (_dialogCreator.MessageBoxYesNo(PKSimConstants.UI.DoYouWantToLoadReferencedTemplateAsWell) == ViewResult.Yes)
-               return loadMultipleTemplate<T>();
-         }
+         return shouldLoadTemplateWithReferences() ? loadMultipleTemplate<T>() : loadSingleTemplate<T>();
+      }
 
-         allTemplates.Add(loadSingleTemplate<T>());
-         return allTemplates;
+      private bool shouldLoadTemplateWithReferences()
+      {
+         if (!_selectedTemplates.Any(x => x.HasReferences))
+            return false;
+
+         return _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.DoYouWantToLoadReferencedTemplateAsWell) == ViewResult.Yes;
       }
 
       private IReadOnlyList<T> loadMultipleTemplate<T>()
       {
          var allTemplates = new Cache<string, T>();
-         loadTemplateWithReferences(allTemplates, _selectedTemplate);
+         _selectedTemplates.Each(template => loadTemplateWithReferences(allTemplates, template));
          return allTemplates.ToList();
       }
 
       private void loadTemplateWithReferences<T>(Cache<string, T> allTemplates, Template template)
       {
-         if(allTemplates.Contains(template.Name))
+         if (allTemplates.Contains(template.Name))
             return;
 
          allTemplates.Add(template.Name, loadTemplate<T>(template));
@@ -138,9 +140,9 @@ namespace PKSim.Presentation.Presenters
          }
       }
 
-      private T loadSingleTemplate<T>()
+      private IReadOnlyList<T> loadSingleTemplate<T>()
       {
-         return loadTemplate<T>(_selectedTemplate);
+         return _selectedTemplates.Select(loadTemplate<T>).ToList();
       }
 
       private T loadTemplate<T>(Template template)
@@ -159,18 +161,24 @@ namespace PKSim.Presentation.Presenters
 
       private void updateView()
       {
-         _view.OkEnabled = (_selectedTemplate != null);
-         _view.Description = _selectedTemplate == null ? string.Empty : _selectedTemplate.Description;
+         var numberOfTemplateSelected = _selectedTemplates.Count;
+         _view.OkEnabled = numberOfTemplateSelected > 0;
+
+         _view.Description =
+            numberOfTemplateSelected == 0 ? string.Empty :
+            numberOfTemplateSelected == 1 ? _selectedTemplates[0].Description :
+            PKSimConstants.UI.NumberOfTemplatesSelectedIs(numberOfTemplateSelected, _buildingBlockTypeString);
       }
 
       private void addTemplatesTo(ITreeNode rootNode, TemplateDatabaseType templateDatabaseType)
       {
-         foreach (var bb in _availableBuildingBlocks.Where(x => x.DatabaseType == templateDatabaseType).OrderBy(x=>x.Name))
+         foreach (var bb in _availableBuildingBlocks.Where(x => x.DatabaseType == templateDatabaseType).OrderBy(x => x.Name))
          {
             var node = _treeNodeFactory.CreateFor(bb).Under(rootNode);
             if (_shouldAddItemIcons)
                node.WithIcon(ApplicationIcons.IconByName(bb.TemplateType.ToString()));
          }
+
          _view.AddNode(rootNode);
       }
 
@@ -179,9 +187,11 @@ namespace PKSim.Presentation.Presenters
          return _availableBuildingBlocks;
       }
 
-      public void ActivateNode(ITreeNode node)
+      public void ActivateNodes(IReadOnlyList<ITreeNode> treeNodes)
       {
-         _selectedTemplate = node.TagAsObject as Template;
+         _selectedTemplates.Clear();
+         var templates = treeNodes.Select(x => x.TagAsObject).OfType<Template>();
+         _selectedTemplates.AddRange(templates);
          updateView();
       }
 
