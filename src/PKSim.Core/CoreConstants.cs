@@ -39,7 +39,7 @@ namespace PKSim.Core
       public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
 
       public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};
-      public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17);
+      public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17); //DO NOT rename this constant (otherwise Matlab-Toolbox must be adjusted)
 
       public static readonly string APPLICATION_FOLDER_PATH = @"Open Systems Pharmacology\PK-Sim";
       public static readonly string TEMPLATE_SYSTEM_DATABASE = "PKSimTemplateDBSystem.mdb";
