@@ -36,6 +36,11 @@ namespace PKSim.Core.Services
       /// </summary>
       void SaveAsTemplate(ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> buildingBlocksWithReferenceToSave, TemplateDatabaseType templateDatabaseType);
 
+      /// <summary>
+      ///    Saves the building blocks defined in <paramref name="buildingBlocks"/>. References won't be saved
+      /// </summary>
+      void SaveAsTemplate(IReadOnlyList<IPKSimBuildingBlock> buildingBlocks, TemplateDatabaseType templateDatabaseType);
+
       void EditDescription(IPKSimBuildingBlock buildingBlock);
       string TypeFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IPKSimBuildingBlock;
       IEnumerable<TBuildingBlock> All<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock;
@@ -78,7 +83,7 @@ namespace PKSim.Core.Services
       IReadOnlyList<TBuildingBlock> LoadFromSnapshot();
       void Load(TBuildingBlock buildingBlockToLoad);
       IEnumerable<TBuildingBlock> All();
-      void SaveAsTemplate(TBuildingBlock buildingBlockToSave);
-      void SaveAsSystemTemplate(TBuildingBlock buildingBlockToSave);
+      void SaveAsTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave);
+      void SaveAsSystemTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave);
    }
 }

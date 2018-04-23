@@ -98,6 +98,23 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_retrieving_the_list_of_favorite_parameters : concern_for_FavoriteParametersPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _favorites.Add(PathFor("par1"));
+         sut.Edit(_parameters);
+         sut.Handle(new FavoritesLoadedEvent());
+      }
+
+      [Observation]
+      public void should_return_only_favorite_parameters()
+      {
+         sut.EditedParameters.ShouldOnlyContain(_par1);
+      }
+   }
+
    public class When_notify_that_the_favorites_where_loaded : concern_for_FavoriteParametersPresenter
    {
       protected override void Context()

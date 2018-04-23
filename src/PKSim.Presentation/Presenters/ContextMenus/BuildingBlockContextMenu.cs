@@ -100,14 +100,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected IMenuBarItem SaveAsUserTemplateMenuFor(TBuildingBlock buildingBlock)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsTemplate)
-            .WithCommandFor<SaveBuildingBlockAsTemplateCommand<TBuildingBlock>, TBuildingBlock>(buildingBlock)
+            .WithCommandFor<SaveBuildingBlockAsTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(new []{buildingBlock, })
             .WithIcon(ApplicationIcons.SaveAsTemplate);
       }
 
       protected IMenuBarItem SaveAsSystemTemplateMenuFor(TBuildingBlock buildingBlock)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsSytemTemplate)
-            .WithCommandFor<SaveBuildingBlockAsSystemTemplateCommand<TBuildingBlock>, TBuildingBlock>(buildingBlock)
+            .WithCommandFor<SaveBuildingBlockAsSystemTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(new[] { buildingBlock, })
             .WithIcon(ApplicationIcons.SaveAsTemplate)
             .ForDeveloper();
       }

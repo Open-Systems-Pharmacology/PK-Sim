@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using OSPSuite.UI.Services;
 using OSPSuite.Assets;
@@ -11,6 +12,7 @@ using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using PKSim.Core.Model;
 
 namespace PKSim.UI.Views
 {
@@ -37,6 +39,7 @@ namespace PKSim.UI.Views
       {
          if (e.Button == MouseButtons.Right)
          {
+            selectNode(selectedNode);
             _presenter.CreatePopupMenuFor(selectedNode).At(e.Location);
          }
          else
@@ -44,6 +47,18 @@ namespace PKSim.UI.Views
             var treeNodes = treeView.Selection.Select(treeView.NodeFrom).ToList();
             _presenter.ActivateNodes(treeNodes);
          }
+      }
+
+      private void selectNode(ITreeNode nodeToSelect)
+      {
+         treeView.Selection.Clear();
+
+         if (nodeToSelect == null)
+            return;
+
+         //Ensure we only have one node selected for context menu
+         treeView.FocusedNode = treeView.NodeFrom(nodeToSelect);
+         treeView.Selection.Add(treeView.FocusedNode);
       }
 
       public void AttachPresenter(ITemplatePresenter presenter)
@@ -68,6 +83,12 @@ namespace PKSim.UI.Views
       {
          set => tbDescription.Text = value;
          get => tbDescription.Text;
+      }
+
+      public void SelectTemplate(Template template)
+      {
+         var node = treeView.NodeById(template.Id);
+         treeView.SelectNode(node);
       }
 
       public BarManager PopupBarManager { get; }
