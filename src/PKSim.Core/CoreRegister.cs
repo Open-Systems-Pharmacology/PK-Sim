@@ -113,6 +113,8 @@ namespace PKSim.Core
             scan.IncludeNamespaceContainingType<IndividualDiffBuilder>();
             scan.WithConvention<RegisterTypeConvention<IDiffBuilder>>();
          });
+
+         ParameterDiffBuilder.ShouldCompareParametersIn = PKSimParameterDiffBuilder.ShouldCompareParametersIn;
       }
    }
 }
