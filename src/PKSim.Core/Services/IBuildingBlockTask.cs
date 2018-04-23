@@ -83,7 +83,7 @@ namespace PKSim.Core.Services
       IReadOnlyList<TBuildingBlock> LoadFromSnapshot();
       void Load(TBuildingBlock buildingBlockToLoad);
       IEnumerable<TBuildingBlock> All();
-      void SaveAsTemplate(TBuildingBlock buildingBlockToSave);
-      void SaveAsSystemTemplate(TBuildingBlock buildingBlockToSave);
+      void SaveAsTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave);
+      void SaveAsSystemTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave);
    }
 }

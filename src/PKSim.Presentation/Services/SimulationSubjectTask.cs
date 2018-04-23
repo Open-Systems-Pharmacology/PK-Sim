@@ -80,12 +80,12 @@ namespace PKSim.Presentation.Services
          return _buildingBlockTask.All<ISimulationSubject>();
       }
 
-      public void SaveAsTemplate(ISimulationSubject buildingBlockToSave)
+      public void SaveAsTemplate(IReadOnlyList<ISimulationSubject> buildingBlocksToSave)
       {
          throw new NotSupportedException("Do not call SaveAsTemplate for a simulation subject. Use the dedicated method instead");
       }
 
-      public void SaveAsSystemTemplate(ISimulationSubject buildingBlockToSave)
+      public void SaveAsSystemTemplate(IReadOnlyList<ISimulationSubject> buildingBlocksToSave)
       {
          throw new NotSupportedException("Do not call SaveAsSystemTemplate for a simulation subject. Use the dedicated method instead");
       }

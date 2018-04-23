@@ -37,23 +37,24 @@ namespace PKSim.Presentation.Services
 
       public override Compound AddToProject() => AddToProject<ICreateCompoundPresenter>();
 
-      protected override void SaveAsTemplate(Compound compound, TemplateDatabaseType templateDatabaseType)
+      protected override void SaveAsTemplate(IReadOnlyList<Compound> compounds, TemplateDatabaseType templateDatabaseType)
       {
-         var allMetabolitesForCompound = retrieveAllMetabolitesFor(compound);
+         var possibleMetabolites = new HashSet<Compound>();
+         compounds.SelectMany(retrieveAllMetabolitesFor).Each(x => possibleMetabolites.Add(x));
+
          bool saveMetabolites = false;
-         if (allMetabolitesForCompound.Any())
+         if (possibleMetabolites.Any())
             saveMetabolites = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.DoYouWantToSaveCompoundMetaboliteAsTemplate) == ViewResult.Yes;
 
          if (!saveMetabolites)
          {
-            base.SaveAsTemplate(compound, templateDatabaseType);
+            base.SaveAsTemplate(compounds, templateDatabaseType);
             return;
          }
 
          //cache of compound and their possible references
          var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>();
-         addMetaboliteForCompoundTo(compound, cache);
-
+         compounds.Each(compound => addMetaboliteForCompoundTo(compound, cache));
          _buildingBlockTask.SaveAsTemplate(cache, templateDatabaseType);
       }
 

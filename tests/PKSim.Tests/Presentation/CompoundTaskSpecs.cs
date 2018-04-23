@@ -57,7 +57,7 @@ namespace PKSim.Presentation
    {
       protected override void Because()
       {
-         sut.SaveAsTemplate(_compound);
+         sut.SaveAsTemplate(new []{_compound });
       }
 
       [Observation]
@@ -85,7 +85,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.SaveAsTemplate(_compound);
+         sut.SaveAsTemplate(new[] { _compound });
       }
 
       [Observation]
@@ -115,7 +115,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.SaveAsTemplate(_compound);
+         sut.SaveAsTemplate(new[] { _compound });
       }
 
       [Observation]
@@ -139,4 +139,49 @@ namespace PKSim.Presentation
          _cache[_subMetabolite].ShouldContain(_compound);
       }
    }
+
+   public class When_saving_multiple_compound_to_the_template_database_with_defined_metabolites_and_the_user_wants_to_save_the_metabolites : concern_for_CompoundTask
+   {
+      private Compound _metabolite;
+      private Compound _subMetabolite;
+
+      protected override void Context()
+      {
+         base.Context();
+         _metabolite = new Compound().WithName("METABOLITE");
+         _subMetabolite = new Compound().WithName("SUB_METABOLITE");
+         _compound.AddProcess(new EnzymaticProcess { MetaboliteName = _metabolite.Name });
+         _metabolite.AddProcess(new EnzymaticProcess { MetaboliteName = _subMetabolite.Name });
+         _subMetabolite.AddProcess(new EnzymaticProcess { MetaboliteName = _compound.Name });
+         A.CallTo(() => _buildingBlockRepository.All<Compound>()).Returns(new[] { _compound, _metabolite, _subMetabolite });
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.SaveAsTemplate(new[] { _compound, _subMetabolite, _metabolite });
+      }
+
+      [Observation]
+      public void should_save_the_compound_with_its_metabolite()
+      {
+         _cache.Contains(_compound).ShouldBeTrue();
+         _cache[_compound].ShouldContain(_metabolite);
+      }
+
+      [Observation]
+      public void should_also_save_the_metabolite_of_the_metabolite()
+      {
+         _cache.Contains(_metabolite).ShouldBeTrue();
+         _cache[_metabolite].ShouldContain(_subMetabolite);
+      }
+
+      [Observation]
+      public void should_also_save_the_metabolite_of_the_submetabolite()
+      {
+         _cache.Contains(_subMetabolite).ShouldBeTrue();
+         _cache[_subMetabolite].ShouldContain(_compound);
+      }
+   }
+
 }

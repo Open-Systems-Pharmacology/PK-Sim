@@ -1,15 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
+   public class MultipleUsedBuildingBlockNodeContextMenu : MultipleBuildingBlockNodeContextMenu<IPKSimBuildingBlock>
+   {
+      public MultipleUsedBuildingBlockNodeContextMenu(IReadOnlyList<IPKSimBuildingBlock> buildingBlocks, IExecutionContext executionContext) : base(buildingBlocks, executionContext)
+      {
+      }
+
+      public MultipleUsedBuildingBlockNodeContextMenu(IReadOnlyList<NamedBuildingBlock<IPKSimBuildingBlock>> buildingBlocks, IExecutionContext executionContext) : base(buildingBlocks, executionContext)
+      {
+      }
+
+      protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<NamedBuildingBlock<IPKSimBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
+      {
+         yield return CompareBuidlingBlocks(buildingBlocks, executionContext);
+
+         yield return AddToJournal(buildingBlocks);
+
+         yield return DeleteSelectedBuildingBlockMenuItem(buildingBlocks);
+      }
+   }
+
    public class MultipleUsedBuildingBlockNodeContextMenuFactory : MultipleNodeContextMenuFactory<UsedBuildingBlock>
    {
       private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
@@ -24,7 +44,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected override IContextMenu CreateFor(IReadOnlyList<UsedBuildingBlock> usedBuildingBlock, IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> presenter)
       {
          var buildingBlocks = loadedBuildingBlocksBasedOn(usedBuildingBlock);
-         return new MultipleBuildingBlockNodeContextMenu(buildingBlocks, _executionContext);
+         return new MultipleUsedBuildingBlockNodeContextMenu(buildingBlocks, _executionContext);
       }
 
       private IReadOnlyList<NamedBuildingBlock<IPKSimBuildingBlock>> loadedBuildingBlocksBasedOn(IEnumerable<UsedBuildingBlock> usedBuildingBlocks)

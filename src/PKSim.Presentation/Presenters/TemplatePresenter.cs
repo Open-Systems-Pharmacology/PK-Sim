@@ -209,9 +209,18 @@ namespace PKSim.Presentation.Presenters
       public void Delete(Template template)
       {
          var result = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteTemplate(template.Name));
-         if (result == ViewResult.No) return;
+         if (result == ViewResult.No)
+            return;
+
          _templateTaskQuery.DeleteTemplate(template);
          _view.DestroyNode(template.Id);
+         _selectedTemplates.Remove(template);
+
+         var nextSelectedTemplate = _selectedTemplates.FirstOrDefault();
+         if(nextSelectedTemplate!=null)
+            _view.SelectTemplate(nextSelectedTemplate);
+
+         updateView();
       }
 
       public bool CanEdit(Template template)

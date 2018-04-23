@@ -225,6 +225,12 @@
     <Compile Include="Presenters\Compounds\IntestinalPermeabilityWithCalculationMethodPresenter.cs" />
     <Compile Include="Presenters\ContextMenus\InductionProcessFolderContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\MultipleComparisonNodeContextMenu.cs" />
+    <Compile Include="Presenters\ContextMenus\MultipleCompoundNodeContextMenuFactory.cs" />
+    <Compile Include="Presenters\ContextMenus\MultipleEventNodeContextMenu.cs" />
+    <Compile Include="Presenters\ContextMenus\MultipleFormulationNodeContextMenu.cs" />
+    <Compile Include="Presenters\ContextMenus\MultipleIndividualNodeContextMenu.cs" />
+    <Compile Include="Presenters\ContextMenus\MultiplePopulationNodeContextMenu.cs" />
+    <Compile Include="Presenters\ContextMenus\MultipleProtocolNodeContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\MultipleUsedObservedDataContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\NamedBuildingBlock.cs" />
     <Compile Include="Presenters\ContextMenus\ParameterIdentificationContextMenu.cs" />

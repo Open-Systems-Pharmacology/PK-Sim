@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DevExpress.Data.Helpers;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -17,7 +16,6 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Presenters.Snapshots;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
@@ -171,7 +169,6 @@ namespace PKSim.Presentation.Services
          AddCommandToHistory(_entityTask.Rename(buildingBlockToRename));
       }
 
-
       public void SaveAsTemplate(IReadOnlyList<IPKSimBuildingBlock> buildingBlocks, TemplateDatabaseType templateDatabaseType)
       {
          var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>();
@@ -205,7 +202,6 @@ namespace PKSim.Presentation.Services
          _templateTaskQuery.SaveToTemplate(templates.ToList());
          _dialogCreator.MessageBoxInfo(PKSimConstants.UI.TemplatesSuccessfullySaved(templates.Select(x => x.Name).ToList()));
       }
-
 
       private Template templateItemFor(IPKSimBuildingBlock buildingBlockToSave, TemplateDatabaseType templateDatabaseType)
       {
@@ -379,19 +375,20 @@ namespace PKSim.Presentation.Services
          return _buildingBlockTask.All<TBuildingBlock>();
       }
 
-      public void SaveAsTemplate(TBuildingBlock buildingBlockToSave)
+      public void SaveAsTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave)
       {
-         SaveAsTemplate(buildingBlockToSave, TemplateDatabaseType.User);
+         SaveAsTemplate(buildingBlocksToSave, TemplateDatabaseType.User);
       }
 
-      public void SaveAsSystemTemplate(TBuildingBlock buildingBlockToSave)
+      public void SaveAsSystemTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave)
       {
-         SaveAsTemplate(buildingBlockToSave, TemplateDatabaseType.System);
+         SaveAsTemplate(buildingBlocksToSave, TemplateDatabaseType.System);
       }
 
-      protected virtual void SaveAsTemplate(TBuildingBlock buildingBlockToSave, TemplateDatabaseType templateDatabaseType)
+      protected virtual void SaveAsTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave, TemplateDatabaseType templateDatabaseType)
       {
-         var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> {[buildingBlockToSave] = new List<IPKSimBuildingBlock>()};
+         var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>();
+         buildingBlocksToSave.Each(buildingBlockToSave => cache[buildingBlockToSave] = new List<IPKSimBuildingBlock>());
          _buildingBlockTask.SaveAsTemplate(cache, templateDatabaseType);
       }
 

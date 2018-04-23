@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.UICommands;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -40,7 +38,8 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return DeleteSelectedBuildingBlockMenuItem(buildingBlocks);
       }
 
-      public static IMenuBarItem CompareBuidlingBlocks(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
+
+      protected static IMenuBarItem CompareBuidlingBlocks(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
       {
          var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
          var objectBaseList = buildingBlockList.Cast<IObjectBase>().ToList();
@@ -57,7 +56,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsTemplate)
-            .WithCommandFor<SaveBuildingBlocksAsTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList)
+            .WithCommandFor<SaveBuildingBlockAsTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList)
             .WithIcon(ApplicationIcons.SaveAsTemplate);
       }
 
@@ -65,14 +64,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsSytemTemplate)
-            .WithCommandFor<SaveBuildingBlocksAsSystemTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList)
+            .WithCommandFor<SaveBuildingBlockAsSystemTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList)
             .WithIcon(ApplicationIcons.SaveAsTemplate)
             .ForDeveloper();
       }
 
       protected static IMenuBarItem AddToJournal(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks)
       {
-         var objectBaseList = buildingBlocks.Select(x=>x.BuildingBlock).Cast<IObjectBase>().ToList();
+         var objectBaseList = buildingBlocks.Select(x => x.BuildingBlock).Cast<IObjectBase>().ToList();
 
          return ObjectBaseCommonContextMenuItems.AddToJournal(objectBaseList);
       }
@@ -96,40 +95,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          return simulationBuildingBlockUpdater.BuildingBlockSupportsQuickUpdate(buildingBlocks[0]);
       }
 
-      private static IMenuBarButton comparisonNotPossibleMenu(IReadOnlyList<TBuildingBlock> buildingBlocks,IExecutionContext executionContext)
+      private static IMenuBarButton comparisonNotPossibleMenu(IReadOnlyList<TBuildingBlock> buildingBlocks, IExecutionContext executionContext)
       {
          var buiildingBlockType = executionContext.TypeFor(buildingBlocks[0]);
          return CreateMenuButton.WithCaption(MenuNames.CompareObjects(executionContext.TypeFor(buildingBlocks[0])))
             .WithIcon(ApplicationIcons.Comparison)
             .WithActionCommand(() => throw new PKSimException(PKSimConstants.Error.ComparisonBetweenBuildingBLocksNotSupportedForBuildingBlockOfType(buiildingBlockType)));
-      }
-   }
-
-   public class MultipleBuildingBlockNodeContextMenu : MultipleBuildingBlockNodeContextMenu<IPKSimBuildingBlock>
-   {
-      public MultipleBuildingBlockNodeContextMenu(IReadOnlyList<IPKSimBuildingBlock> buildingBlocks, IExecutionContext executionContext)
-         : base(buildingBlocks, executionContext)
-      {
-      }
-
-      public MultipleBuildingBlockNodeContextMenu(IReadOnlyList<NamedBuildingBlock<IPKSimBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
-         : base(buildingBlocks, executionContext)
-      {
-      }
-   }
-
-   public class MultipleBuildingBlockNodeContextMenuFactory : MultipleNodeContextMenuFactory<IPKSimBuildingBlock>
-   {
-      private readonly IExecutionContext _executionContext;
-
-      public MultipleBuildingBlockNodeContextMenuFactory(IExecutionContext executionContext)
-      {
-         _executionContext = executionContext;
-      }
-
-      protected override IContextMenu CreateFor(IReadOnlyList<IPKSimBuildingBlock> buildingBlocks, IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> presenter)
-      {
-         return new MultipleBuildingBlockNodeContextMenu(buildingBlocks, _executionContext);
       }
    }
 }
