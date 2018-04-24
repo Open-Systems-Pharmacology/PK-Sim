@@ -186,7 +186,6 @@ namespace PKSim.Presentation
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
       }
 
-      [Observation]
       protected override void Because()
       {
          sut.Delete(_template1);
@@ -226,7 +225,6 @@ namespace PKSim.Presentation
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
       
-      [Observation]
       protected override void Because()
       {
          sut.Delete(_template1);

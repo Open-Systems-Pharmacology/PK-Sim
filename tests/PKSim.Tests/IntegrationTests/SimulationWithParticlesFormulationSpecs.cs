@@ -56,7 +56,7 @@ namespace PKSim.IntegrationTests
          if (DisableIntestinalAbsorptionAndLuminalFlow)
          {
             //disable intestinal absorption and luminal flow to feces for easier mass balance checks
-            MoleculeProperties(CoreConstants.Parameter.INTESTINAL_PERMEABILITY).Value = 0;
+            MoleculeProperties(CoreConstants.Parameters.INTESTINAL_PERMEABILITY).Value = 0;
             IntestinalTransitRateFor(CoreConstants.Compartment.Rectum).Value = 0;
          }
 
@@ -72,7 +72,7 @@ namespace PKSim.IntegrationTests
          addOutputs(lumenPaths, binSolidDrugPaths, binInsolubleDrugPaths, binSolidDrugPerSegmentPaths, binParticlesFractionPerSegmentPaths);
 
          _simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         _simulationEngine.Run(_simulation);
+         _simulationEngine.RunAsync(_simulation, _simulationRunOptions).Wait();
 
          //fill simulation output times and values required for all further tests
          fillSimulationOutputs(lumenPaths, binSolidDrugPaths, binInsolubleDrugPaths, binSolidDrugPerSegmentPaths, binParticlesFractionPerSegmentPaths);
@@ -90,12 +90,12 @@ namespace PKSim.IntegrationTests
 
       protected IParameter StartParticleRadius(int binIndex)
       {
-         return ParticleBin(binIndex).Parameter(CoreConstants.Parameter.StartParticleRadius);
+         return ParticleBin(binIndex).Parameter(CoreConstants.Parameters.START_PARTICLE_RADIUS);
       }
 
       protected IContainer Lumen => _simulation.Model.Root.Container("Organism").Container(CoreConstants.Organ.Lumen);
 
-      protected IParameter Solubility(string segment) => Lumen.Container(segment).Container(_compound.Name).Parameter(CoreConstants.Parameter.Solubility);
+      protected IParameter Solubility(string segment) => Lumen.Container(segment).Container(_compound.Name).Parameter(CoreConstants.Parameters.SOLUBILITY);
 
       protected abstract int NumberOfBins { get; }
 
@@ -107,8 +107,8 @@ namespace PKSim.IntegrationTests
 
       protected bool PrecipitatedDrugSoluble
       {
-         get => MoleculeProperties(CoreConstants.Parameter.PRECIPITATED_DRUG_SOLUBLE).Value == 1;
-         set => MoleculeProperties(CoreConstants.Parameter.PRECIPITATED_DRUG_SOLUBLE).Value = value ? 1 : 0;
+         get => MoleculeProperties(CoreConstants.Parameters.PRECIPITATED_DRUG_SOLUBLE).Value == 1;
+         set => MoleculeProperties(CoreConstants.Parameters.PRECIPITATED_DRUG_SOLUBLE).Value = value ? 1 : 0;
       }
 
       protected double ParticleRadiusDissolved
@@ -506,7 +506,7 @@ namespace PKSim.IntegrationTests
          var lumenPaths = LumenPaths(compoundName);
          addOutputs(_prototypeSimulation, lumenPaths);
 
-         _simulationEngine.Run(_prototypeSimulation);
+         _simulationEngine.RunAsync(_prototypeSimulation, _simulationRunOptions).Wait();
 
          //fill simulation output times and values required for all further tests
          fillSimulationOutputs(lumenPaths);
@@ -586,14 +586,14 @@ namespace PKSim.IntegrationTests
       {
          PrecipitatedDrugSoluble = true;
 
-         MoleculeProperties(CoreConstants.Parameter.LIPOPHILICITY).Value = -0.097;
-         MoleculeProperties(CoreConstants.Parameter.FractionUnbound).Value = 0.85;
-         MoleculeProperties(CoreConstants.Parameter.MOLECULAR_WEIGHT).Value = 2.2521E-07;
-         MoleculeProperties(CoreConstants.Parameter.ParameterPka1).Value = 9.20;
-         MoleculeProperties(CoreConstants.Parameter.COMPOUND_TYPE1).Value = CoreConstants.Compound.CompoundTypeAcid;
-         MoleculeProperties(CoreConstants.Parameter.ParameterPka2).Value = 2.20;
-         MoleculeProperties(CoreConstants.Parameter.COMPOUND_TYPE2).Value = CoreConstants.Compound.CompoundTypeBase;
-         MoleculeProperties(CoreConstants.Parameter.SolubilityAtRefpH).Value = 1E-05;
+         MoleculeProperties(CoreConstants.Parameters.LIPOPHILICITY).Value = -0.097;
+         MoleculeProperties(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value = 0.85;
+         MoleculeProperties(CoreConstants.Parameters.MOLECULAR_WEIGHT).Value = 2.2521E-07;
+         MoleculeProperties(CoreConstants.Parameters.PARAMETER_PKA1).Value = 9.20;
+         MoleculeProperties(CoreConstants.Parameters.COMPOUND_TYPE1).Value = CoreConstants.Compound.COMPOUND_TYPE_ACID;
+         MoleculeProperties(CoreConstants.Parameters.PARAMETER_PKA2).Value = 2.20;
+         MoleculeProperties(CoreConstants.Parameters.COMPOUND_TYPE2).Value = CoreConstants.Compound.COMPOUND_TYPE_BASE;
+         MoleculeProperties(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH).Value = 1E-05;
          MoleculeProperties("Reference pH").Value = 7;
 
          Application.Container(CoreConstants.ContainerName.ProtocolSchemaItem)

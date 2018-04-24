@@ -621,7 +621,7 @@ namespace PKSim.IntegrationTests
          var refConcParameters = moleculeParameterRepo.All().Where(mp => mp.Parameter.Name.StartsWith("Reference")).ToList();
 
          refConcParameters.Count.ShouldBeGreaterThan(0);
-         refConcParameters.Each(mp=>mp.Parameter.Name.ShouldBeEqualTo(CoreConstants.Parameter.REFERENCE_CONCENTRATION));
+         refConcParameters.Each(mp=>mp.Parameter.Name.ShouldBeEqualTo(CoreConstants.Parameters.REFERENCE_CONCENTRATION));
       }
    }
 }

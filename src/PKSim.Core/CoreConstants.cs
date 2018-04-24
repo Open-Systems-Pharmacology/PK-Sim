@@ -918,6 +918,7 @@ namespace PKSim.Core
          public const string SPECIFIC_INTESTINAL_PERMEABILITY = "Specific intestinal permeability (transcellular)";
          public const string FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE = "Fraction unbound (plasma, reference value)";
          public const string SOLUBILITY_AT_REFERENCE_PH = "Solubility at reference pH";
+         public const string SOLUBILITY = "Solubility";
          public const string SOLUBILITY_TABLE = "Solubility table";
          public const string SOLUBILITY_GAIN_PER_CHARGE = "Solubility gain per charge";
          public const string REFERENCE_PH = "Reference pH";
