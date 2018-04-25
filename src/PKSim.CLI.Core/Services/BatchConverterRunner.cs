@@ -70,7 +70,7 @@ namespace PKSim.CLI.Core.Services
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
 
-         _logger.AddInfo($"Batch convertion finished: {DateTime.Now.ToIsoFormat()}");
+         _logger.AddInfo($"Batch conversion finished: {DateTime.Now.ToIsoFormat()}");
       }
 
       private async Task exportSimulationTo(FileInfo simulationFile, string outputFolder)
