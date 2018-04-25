@@ -61,7 +61,7 @@ namespace PKSim.Infrastructure
          formulation.Parameter(CoreConstants.Parameters.NUMBER_OF_BINS).Value = numberOfBins;
          
          //set mono/polydisperse property (0=mono, 1=poly).
-         formulation.Parameter(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value = (numberOfBins > 1) ? 1 : 0;
+         formulation.Parameter(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value = (numberOfBins > 1) ? CoreConstants.Parameters.POLYDISPERSE : CoreConstants.Parameters.MONODISPERSE;
 
          return formulation;
       }
