@@ -46,7 +46,6 @@ namespace PKSim.Core
       public static readonly string PK_SIM_DB_FILE = "PKSimDB.mdb";
       public const string PRODUCT_NAME = "PK-Sim";
       public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
-      public static readonly string ExpressionPassword = "rhcp!!06";
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
       public static readonly string ACCESS_USER_NAME = "Admin";
       public static readonly string VALUE_PROPERTY_NAME = "Value";

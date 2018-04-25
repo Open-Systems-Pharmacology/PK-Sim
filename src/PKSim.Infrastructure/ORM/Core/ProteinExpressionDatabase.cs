@@ -1,6 +1,4 @@
-﻿using PKSim.Core;
-
-namespace PKSim.Infrastructure.ORM.Core
+﻿namespace PKSim.Infrastructure.ORM.Core
 {
    public interface IProteinExpressionDatabase : IDatabase
    {
@@ -8,8 +6,5 @@ namespace PKSim.Infrastructure.ORM.Core
 
    public class ProteinExpressionDatabase : AccessDatabase, IProteinExpressionDatabase
    {
-      public ProteinExpressionDatabase(): base(CoreConstants.ExpressionPassword)
-      {
-      }
    }
 }
