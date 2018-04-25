@@ -179,7 +179,8 @@ namespace PKSim.Core.Snapshots.Mappers
          foreach (var snapshotInteraction in snapshotInteractions)
          {
             var interaction = await interactionSelectionFrom(snapshotInteraction, project);
-            simulation.InteractionProperties.AddInteraction(interaction);
+            if(interaction!=null)
+               simulation.InteractionProperties.AddInteraction(interaction);
          }
       }
 
@@ -187,7 +188,10 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var process = findProcess(project, snapshotInteraction);
          if (process == null)
-            throw new SnapshotOutdatedException(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotInteraction.Name, snapshotInteraction.CompoundName));
+         {
+            _logger.AddWarning(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotInteraction.Name, snapshotInteraction.CompoundName));
+            return null;
+         }
 
          var processSelection = await _processMappingMapper.MapToModel(snapshotInteraction, process);
          return processSelection.DowncastTo<InteractionSelection>();

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -13,11 +14,17 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly IAdvancedParameterFactory _advancedParameterFactory;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly ILogger _logger;
 
-      public AdvancedParameterMapper(ParameterMapper parameterMapper, IAdvancedParameterFactory advancedParameterFactory, IEntityPathResolver entityPathResolver) : base(parameterMapper)
+      public AdvancedParameterMapper(
+         ParameterMapper parameterMapper, 
+         IAdvancedParameterFactory advancedParameterFactory, 
+         IEntityPathResolver entityPathResolver, 
+         ILogger logger) : base(parameterMapper)
       {
          _advancedParameterFactory = advancedParameterFactory;
          _entityPathResolver = entityPathResolver;
+         _logger = logger;
       }
 
       public override Task<SnapshotAdvancedParameter> MapToSnapshot(ModelAdvancedParameter advancedParameter)
@@ -39,7 +46,10 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var parameter = allParameters[snapshot.Name];
          if (parameter == null)
-            throw new SnapshotOutdatedException(PKSimConstants.Error.SnapshotParameterNotFound(snapshot.Name));
+         {
+            _logger.AddWarning(PKSimConstants.Error.SnapshotParameterNotFound(snapshot.Name));
+            return null;
+         }
 
          var advancedParameter = _advancedParameterFactory.Create(parameter, DistributionTypes.ById(snapshot.DistributionType));
          await UpdateParametersFromSnapshot(snapshot, advancedParameter.DistributedParameter);

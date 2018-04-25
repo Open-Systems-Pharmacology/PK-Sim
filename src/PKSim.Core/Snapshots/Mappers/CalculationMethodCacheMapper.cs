@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -14,11 +15,16 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly ICalculationMethodRepository _calculationMethodRepository;
       private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
+      private readonly ILogger _logger;
 
-      public CalculationMethodCacheMapper(ICalculationMethodRepository calculationMethodRepository, ICalculationMethodCategoryRepository calculationMethodCategoryRepository)
+      public CalculationMethodCacheMapper(
+         ICalculationMethodRepository calculationMethodRepository, 
+         ICalculationMethodCategoryRepository calculationMethodCategoryRepository,
+         ILogger logger)
       {
          _calculationMethodRepository = calculationMethodRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
+         _logger = logger;
       }
 
       public override Task<SnapshotCalculationMethodCache> MapToSnapshot(ModelCalculationMethodCache model)
@@ -83,7 +89,10 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var calculationMethod = _calculationMethodRepository.FindByName(calculationMethodName);
          if (calculationMethod == null)
-            throw new SnapshotOutdatedException(PKSimConstants.Error.CalculationMethodNotFound(calculationMethodName));
+         {
+            _logger.AddWarning(PKSimConstants.Error.CalculationMethodNotFound(calculationMethodName));
+            return;
+         }
 
          if(oneCalculationMethodPerCategory)
          {

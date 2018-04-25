@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
+using ILogger = OSPSuite.Core.Services.ILogger;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
@@ -22,11 +25,13 @@ namespace PKSim.Core
       protected Parameter _meanSnapshot;
       protected Parameter _deviationSnapshot;
       protected IEntityPathResolver _entityPathResolver;
+      protected ILogger _logger;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _advancedParameterFactory = A.Fake<IAdvancedParameterFactory>();
+         _logger= A.Fake<ILogger>();
 
          _advancedParameter = new AdvancedParameter
          {
@@ -34,7 +39,7 @@ namespace PKSim.Core
             ParameterPath = "ParameterPath",
             Name = "ParameterName"
          };
-         sut = new AdvancedParameterMapper(_parameterMapper, _advancedParameterFactory, _entityPathResolver);
+         sut = new AdvancedParameterMapper(_parameterMapper, _advancedParameterFactory, _entityPathResolver, _logger);
 
          _meanSnapshot = new Parameter
          {
@@ -72,6 +77,7 @@ namespace PKSim.Core
    public class When_mapping_an_advanced_parameter_snapshot_to_snapshot_for_an_unknown_parameter : concern_for_AdvancedParameterMapper
    {
       private Snapshots.AdvancedParameter _snapshot;
+      private AdvancedParameter _result;
 
       protected override async Task Context()
       {
@@ -79,10 +85,21 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_advancedParameter);
       }
 
-      [Observation]
-      public void should_throw_an_exception()
+      protected override async Task Because()
       {
-         TheAsync.Action(() => sut.MapToModel(_snapshot, new PathCacheForSpecs<IParameter>())).ShouldThrowAnAsync<SnapshotOutdatedException>();
+         _result = await sut.MapToModel(_snapshot, new PathCacheForSpecs<IParameter>());
+      }
+
+      [Observation]
+      public void should_warn_the_user_that_a_snapshot_parameter_was_not_found()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.Error.SnapshotParameterNotFound(_snapshot.Name), LogLevel.Warning, A<string>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_return_null()
+      {
+         _result.ShouldBeNull();
       }
    }
 
@@ -103,7 +120,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_an_advanced_parameter_snapshot_to_snapsho_for_a_well_defined_parameter : concern_for_AdvancedParameterMapper
+   public class When_mapping_an_advanced_parameter_snapshot_to_snapshot_for_a_well_defined_parameter : concern_for_AdvancedParameterMapper
    {
       private Snapshots.AdvancedParameter _snapshot;
       private AdvancedParameter _newAdvancedParameter;
@@ -116,8 +133,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_advancedParameter);
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(5);
-         _mappedAdvancedParameter = new AdvancedParameter();
-         _mappedAdvancedParameter.DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter();
+         _mappedAdvancedParameter = new AdvancedParameter {DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter()};
          _pathCache = new PathCacheForSpecs<IParameter> {{_advancedParameter.ParameterPath, _parameter}};
          A.CallTo(() => _advancedParameterFactory.Create(_parameter, DistributionTypes.ById(_snapshot.DistributionType))).Returns(_mappedAdvancedParameter);
       }

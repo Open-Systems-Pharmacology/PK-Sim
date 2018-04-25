@@ -66,10 +66,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
       public CompoundProcess ProcessByName(string processTemplateName)
       {
          Start();
-
-         if (!this.ExistsByName(processTemplateName))
-            throw new ArgumentOutOfRangeException("processTemplateName", PKSimConstants.Error.CompoundProcessNotExists(processTemplateName));
-
          return All().FindByName(processTemplateName);
       }
 

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -17,12 +18,17 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly ParameterMapper _parameterMapper;
       private readonly ITransportContainerUpdater _transportContainerUpdater;
+      private readonly ILogger _logger;
       private readonly MembraneLocation _defaultMembraneLocation;
 
-      public ExpressionContainerMapper(ParameterMapper parameterMapper, ITransportContainerUpdater transportContainerUpdater)
+      public ExpressionContainerMapper(
+         ParameterMapper parameterMapper, 
+         ITransportContainerUpdater transportContainerUpdater, 
+         ILogger logger)
       {
          _parameterMapper = parameterMapper;
          _transportContainerUpdater = transportContainerUpdater;
+         _logger = logger;
          _defaultMembraneLocation = MembraneLocation.Basolateral;
       }
 
@@ -72,10 +78,13 @@ namespace PKSim.Core.Snapshots.Mappers
          var individual = context.SimulationSubject;
 
          var expressionContainer = molecule.ExpressionContainer(snapshot.Name);
-         var expressionParameter = expressionContainer.RelativeExpressionParameter;
-         if (expressionParameter == null)
-            throw new SnapshotOutdatedException(PKSimConstants.Error.RelativeExpressionContainerNotFound(snapshot.Name));
+         if (expressionContainer == null)
+         {
+            _logger.AddWarning(PKSimConstants.Error.RelativeExpressionContainerNotFound(snapshot.Name));
+            return null;
+         }
 
+         var expressionParameter = expressionContainer.RelativeExpressionParameter;
          await _parameterMapper.MapToModel(snapshot, expressionParameter);
 
          if (!(molecule is IndividualTransporter transporter))

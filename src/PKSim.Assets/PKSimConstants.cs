@@ -393,7 +393,6 @@ namespace PKSim.Assets
          public const string ValueIsRequired = "Value is required.";
          public const string DescriptionIsRequired = "Description is required.";
          public const string UnknownObserverBuilderType = "Observer builer type unknown.";
-         public static string CompoundProcessNotExists(string processName) => $"Compound process {processName} does not exist.";
          public static string UnableToCreateIndividual(string constraints) => $"Could not create individuals with given constraint:\n{constraints}";
          public static string UnableToCreatePopulation(string constraints) => $"Could not create population with given constraint:\n{constraints}";
          public const string FactorShouldBeBiggerThanZero = "Factor should be bigger than 0.";

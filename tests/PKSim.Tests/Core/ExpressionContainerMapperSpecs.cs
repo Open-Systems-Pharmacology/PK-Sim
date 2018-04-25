@@ -3,6 +3,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
@@ -24,12 +25,15 @@ namespace PKSim.Core
       protected ITransportContainerUpdater _transportContainerUpdater;
       protected Individual _individual;
       protected ExpressionContainerMapperContext _expressionContainerMapperContext;
+      protected ILogger _logger;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _transportContainerUpdater = A.Fake<ITransportContainerUpdater>();
-         sut = new ExpressionContainerMapper(_parameterMapper, _transportContainerUpdater);
+         _logger= A.Fake<ILogger>();
+
+         sut = new ExpressionContainerMapper(_parameterMapper, _transportContainerUpdater, _logger);
 
          _relativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault:true).WithName(CoreConstants.Parameters.REL_EXP);
          _moleculeExpressionContainer = new MoleculeExpressionContainer().WithName("EXP");
