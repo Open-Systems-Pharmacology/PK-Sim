@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ORM.Repositories;
 
@@ -33,7 +34,11 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void all_hidden_parameters_should_be_read_only()
       {
-         var parameters = _allParameters.Where(x => !x.Visible).Where(x => !x.ReadOnly).ToList();
+         var parameters = _allParameters.Where(x => !x.Visible)
+            .Where(x => !x.ReadOnly)
+            .Where(x => x.ParameterName != CoreConstants.Parameters.SOLUBILITY_TABLE)
+            .ToList();
+
          parameters.Any().ShouldBeFalse(ErrorMessageFor(parameters));
       }
 

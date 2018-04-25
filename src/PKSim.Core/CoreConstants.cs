@@ -37,7 +37,7 @@ namespace PKSim.Core
       public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
       public const int NUMBER_OF_PKA_PARAMETERS = 3;
       public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};
-      public static readonly IEnumerable<int> PRETERM_RANGE = Enumerable.Range(24, 17);
+      public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17); //DO NOT rename this constant (otherwise Matlab-Toolbox must be adjusted)
 
       public static readonly string APPLICATION_FOLDER_PATH = @"Open Systems Pharmacology\PK-Sim";
       public static readonly string TEMPLATE_SYSTEM_DATABASE = "PKSimTemplateDBSystem.mdb";
@@ -359,7 +359,7 @@ namespace PKSim.Core
             Rectum
          };
 
-         public static readonly IEnumerable<string> LumenSegmentsStomachToRectum = new List<string>(LumenSegmentsDuodenumToRectum) {Stomach};
+         public static readonly IEnumerable<string> LumenSegmentsStomachToRectum = new List<string>{Stomach}.Concat(LumenSegmentsDuodenumToRectum);
       }
 
       public static class Compound
@@ -918,6 +918,7 @@ namespace PKSim.Core
          public const string SPECIFIC_INTESTINAL_PERMEABILITY = "Specific intestinal permeability (transcellular)";
          public const string FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE = "Fraction unbound (plasma, reference value)";
          public const string SOLUBILITY_AT_REFERENCE_PH = "Solubility at reference pH";
+         public const string SOLUBILITY = "Solubility";
          public const string SOLUBILITY_TABLE = "Solubility table";
          public const string SOLUBILITY_GAIN_PER_CHARGE = "Solubility gain per charge";
          public const string REFERENCE_PH = "Reference pH";

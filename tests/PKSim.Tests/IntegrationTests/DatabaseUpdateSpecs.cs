@@ -602,4 +602,26 @@ namespace PKSim.IntegrationTests
          }
       }
    }
+
+   public class When_checking_the_changes_in_the_database_for_version_7_2_2 : concern_for_DatabaseUpdate
+   {
+      [Observation]
+      public void should_set_characteristics_of_individual_group_mode_to_simple()
+      {
+         var groupsRepo = IoC.Resolve<IGroupRepository>();
+         var group = groupsRepo.GroupByName(CoreConstants.Groups.INDIVIDUAL_CHARACTERISTICS);
+
+         group.IsAdvanced.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_fix_reference_concentration_parameter_name_in_tab_molecule_parameters()
+      {
+         var moleculeParameterRepo = IoC.Resolve<IMoleculeParameterRepository>();
+         var refConcParameters = moleculeParameterRepo.All().Where(mp => mp.Parameter.Name.StartsWith("Reference")).ToList();
+
+         refConcParameters.Count.ShouldBeGreaterThan(0);
+         refConcParameters.Each(mp=>mp.Parameter.Name.ShouldBeEqualTo(CoreConstants.Parameters.REFERENCE_CONCENTRATION));
+      }
+   }
 }
