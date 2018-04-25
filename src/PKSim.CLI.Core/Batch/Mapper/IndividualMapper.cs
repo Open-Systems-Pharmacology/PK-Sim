@@ -60,21 +60,31 @@ namespace PKSim.Core.Batch.Mapper
          var proteinFactory = _moleculeFactoryResolver.FactoryFor<TMolecule>();
          var newMolecule = proteinFactory.CreateFor(individual);
          newMolecule.ReferenceConcentration.Value = molecule.ReferenceConcentration;
+         newMolecule.ReferenceConcentration.IsDefault = false;
          newMolecule.HalfLifeLiver.Value = molecule.HalfLifeLiver;
+         newMolecule.HalfLifeLiver.IsDefault = false;
          newMolecule.HalfLifeIntestine.Value = molecule.HalfLifeIntestine;
+         newMolecule.HalfLifeIntestine.IsDefault = false;
          newMolecule.Name = molecule.Name;
          individual.AddMolecule(newMolecule);
 
          foreach (var expression in molecule.Expressions)
          {
-            var expressionParameter = newMolecule.GetRelativeExpressionNormParameterFor(expression.Key);
-            if (expressionParameter == null)
+            var expressionParameterNorm = newMolecule.GetRelativeExpressionNormParameterFor(expression.Key);
+            var expressionParameter = newMolecule.GetRelativeExpressionParameterFor(expression.Key);
+
+            if (expressionParameterNorm == null)
             {
                _batchLogger.AddWarning($"Relative Expression container '{expression.Key}' not found for '{molecule.Name}'");
                continue;
             }
 
+            expressionParameterNorm.Value = expression.Value;
+            expressionParameterNorm.IsDefault = false;
+
             expressionParameter.Value = expression.Value;
+            expressionParameter.IsDefault = false;
+
             _batchLogger.AddDebug($"Relative Expression norm for container '{expression.Key}' set to {expression.Value}");
          }
          return newMolecule.DowncastTo<TMolecule>();

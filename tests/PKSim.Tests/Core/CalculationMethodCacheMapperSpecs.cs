@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using CalculationMethodCache = OSPSuite.Core.Domain.CalculationMethodCache;
+using ILogger = OSPSuite.Core.Services.ILogger;
 
 namespace PKSim.Core
 {
@@ -23,12 +26,15 @@ namespace PKSim.Core
       protected CalculationMethodCategory _singleCategory;
       protected CalculationMethodCategory _multipleCategory;
       protected CalculationMethod _anotherCalculationMethodInMultipleOptions;
+      protected ILogger _logger;
 
       protected override Task Context()
       {
          _calculationMethodRepository = A.Fake<ICalculationMethodRepository>();
          _calculationMethodCategoryRepository = A.Fake<ICalculationMethodCategoryRepository>();
-         sut = new CalculationMethodCacheMapper(_calculationMethodRepository, _calculationMethodCategoryRepository);
+         _logger= A.Fake<ILogger>();
+
+         sut = new CalculationMethodCacheMapper(_calculationMethodRepository, _calculationMethodCategoryRepository,_logger);
          _singleCategory = new CalculationMethodCategory {Name = "Multiple"};
          _multipleCategory = new CalculationMethodCategory {Name = "Single"};
 
@@ -122,11 +128,15 @@ namespace PKSim.Core
          _snapshot.Add("UNKNOW CM");
       }
 
-      [Observation]
-      public void should_throw_an_exception()
+      protected override Task Because()
       {
-         The.Action(() => sut.MapToModel(_snapshot, _calculationMethodCache))
-            .ShouldThrowAn<SnapshotOutdatedException>();  
+         return sut.MapToModel(_snapshot, _calculationMethodCache);
+      }
+
+      [Observation]
+      public void should_warn_the_user_that_the_calculation_method_is_unknown()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.Error.CalculationMethodNotFound("UNKNOW CM"), LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 }

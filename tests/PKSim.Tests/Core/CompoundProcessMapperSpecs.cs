@@ -3,6 +3,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -23,6 +24,7 @@ namespace PKSim.Core
       protected ICloner _cloner;
       protected ISpeciesRepository _speciesRepository;
       protected ICompoundProcessTask _compoundProcessTask;
+      protected ILogger _logger;
 
       protected override Task Context()
       {
@@ -32,8 +34,10 @@ namespace PKSim.Core
          _cloner = A.Fake<ICloner>();
          _speciesRepository = A.Fake<ISpeciesRepository>();
          _compoundProcessTask = A.Fake<ICompoundProcessTask>();
+         _logger= A.Fake<ILogger>();
 
-         sut = new CompoundProcessMapper(_parameterMapper, _representationInfoRepository, _compoundProcessRepository, _cloner, _speciesRepository, _compoundProcessTask);
+
+         sut = new CompoundProcessMapper(_parameterMapper, _representationInfoRepository, _compoundProcessRepository, _cloner, _speciesRepository, _compoundProcessTask, _logger);
 
          _enzymaticProcess = new EnzymaticProcess
          {

@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
-using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -18,19 +17,24 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ICloner _cloner;
       private readonly ISpeciesRepository _speciesRepository;
       private readonly ICompoundProcessTask _compoundProcessTask;
+      private readonly ILogger _logger;
 
-      public CompoundProcessMapper(ParameterMapper parameterMapper,
+      public CompoundProcessMapper(
+         ParameterMapper parameterMapper,
          IRepresentationInfoRepository representationInfoRepository,
          ICompoundProcessRepository compoundProcessRepository,
          ICloner cloner,
          ISpeciesRepository speciesRepository,
-         ICompoundProcessTask compoundProcessTask) : base(parameterMapper)
+         ICompoundProcessTask compoundProcessTask,
+         ILogger logger
+      ) : base(parameterMapper)
       {
          _representationInfoRepository = representationInfoRepository;
          _compoundProcessRepository = compoundProcessRepository;
          _cloner = cloner;
          _speciesRepository = speciesRepository;
          _compoundProcessTask = compoundProcessTask;
+         _logger = logger;
       }
 
       public override Task<SnapshotCompoundProcess> MapToSnapshot(ModelCompoundProcess compoundProcess)
@@ -58,11 +62,14 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private string moleculeNameFor(ModelCompoundProcess process) => SnapshotValueFor((process as PartialProcess)?.MoleculeName);
 
-      private string speciesNameFor(ModelCompoundProcess pro) => SnapshotValueFor((pro as ISpeciesDependentCompoundProcess)?.Species.Name);
+      private string speciesNameFor(ModelCompoundProcess process) => SnapshotValueFor((process as ISpeciesDependentCompoundProcess)?.Species.Name);
 
       public override async Task<ModelCompoundProcess> MapToModel(SnapshotCompoundProcess snapshot)
       {
          var process = await retrieveProcessFrom(snapshot);
+         if (process == null)
+            return null;
+
          if (!string.IsNullOrEmpty(snapshot.Description))
             process.Description = snapshot.Description;
 
@@ -87,7 +94,10 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var template = _compoundProcessRepository.ProcessByName(snapshot.InternalName);
          if (template == null)
-            throw new SnapshotOutdatedException(PKSimConstants.Error.SnapshotProcessNameNotFound(snapshot.InternalName));
+         {
+            _logger.AddError(PKSimConstants.Error.SnapshotProcessNameNotFound(snapshot.InternalName));
+            return null;
+         }
 
          var process = _cloner.Clone(template);
          process.DataSource = snapshot.DataSource;
@@ -106,7 +116,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return;
 
          var species = _speciesRepository.FindByName(snapshot.Species);
-    
+
          _compoundProcessTask.SetSpeciesForProcess(process, species);
       }
    }

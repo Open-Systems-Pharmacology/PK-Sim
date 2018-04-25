@@ -148,9 +148,9 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             var process = compound.ProcessByName(snapshotProcess.Name);
             if (process == null)
-               throw new SnapshotOutdatedException(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotProcess.Name, compound.Name));
-
-            await addProcessToProcessSelection(compoundProcessesSelection, snapshotProcess, process);
+               _logger.AddWarning(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotProcess.Name, compound.Name));
+            else
+               await addProcessToProcessSelection(compoundProcessesSelection, snapshotProcess, process);
          }
 
          return compoundProcessesSelection;
