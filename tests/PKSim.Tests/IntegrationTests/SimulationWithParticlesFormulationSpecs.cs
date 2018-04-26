@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -12,12 +13,12 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using IContainer = OSPSuite.Core.Domain.IContainer;
+using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistableUpdater;
 
 namespace PKSim.IntegrationTests
 {
    public abstract class concern_for_SimulationWithParticlesFormulation : concern_for_IndividualSimulation
    {
-      protected ISimulationEngine<IndividualSimulation> _simulationEngine;
       protected Formulation _formulation;
       protected string[] _lumenSegments = CoreConstants.Compartment.LumenSegmentsStomachToRectum.ToArray();
 
@@ -71,11 +72,19 @@ namespace PKSim.IntegrationTests
          //add quantities of interest to the simulation outputs
          addOutputs(lumenPaths, binSolidDrugPaths, binInsolubleDrugPaths, binSolidDrugPerSegmentPaths, binParticlesFractionPerSegmentPaths);
 
-         _simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         _simulationEngine.RunAsync(_simulation, _simulationRunOptions).Wait();
+         RunSimulation(_simulation).Wait();
 
          //fill simulation output times and values required for all further tests
          fillSimulationOutputs(lumenPaths, binSolidDrugPaths, binInsolubleDrugPaths, binSolidDrugPerSegmentPaths, binParticlesFractionPerSegmentPaths);
+      }
+
+      protected Task RunSimulation(IndividualSimulation individualSimulation)
+      {
+         var simulationPersistableUpdater = IoC.Resolve<ISimulationPersistableUpdater>();
+         simulationPersistableUpdater.UpdatePersistableFromSettings(individualSimulation);
+
+         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         return simulationEngine.RunAsync(individualSimulation, _simulationRunOptions);
       }
 
       protected virtual bool DisableIntestinalAbsorptionAndLuminalFlow => true;
@@ -506,7 +515,7 @@ namespace PKSim.IntegrationTests
          var lumenPaths = LumenPaths(compoundName);
          addOutputs(_prototypeSimulation, lumenPaths);
 
-         _simulationEngine.RunAsync(_prototypeSimulation, _simulationRunOptions).Wait();
+         RunSimulation(_prototypeSimulation).Wait();
 
          //fill simulation output times and values required for all further tests
          fillSimulationOutputs(lumenPaths);
