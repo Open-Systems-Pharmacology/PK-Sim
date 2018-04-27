@@ -488,6 +488,8 @@ namespace PKSim.IntegrationTests
             if (checkDecreasing)
                diff *= -1;
 
+            diff += (100 * _simulation.Solver.AbsTol).ToFloat(); //ignore "small" negative differences
+
             diff.ShouldBeGreaterThanOrEqualTo(0);
          }
       }
