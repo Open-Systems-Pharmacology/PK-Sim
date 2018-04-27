@@ -10,7 +10,6 @@ using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
 using PKSim.Core.Batch;
 using PKSim.Core.Commands;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;

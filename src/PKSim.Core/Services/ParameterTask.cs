@@ -69,14 +69,22 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="parameter">Parameter</param>
       /// <param name="displayUnit">displayUnit</param>
-      ICommand SetParameterDisplayUnit(IParameter parameter, Unit displayUnit);
+      /// <param name="shouldUpdateDefaultStateAndValueOriginForDefaultParameter">
+      ///    If set to <c>true</c> default, default state
+      ///    and value origin of parameter will be updated as well
+      /// </param>
+      ICommand SetParameterDisplayUnit(IParameter parameter, Unit displayUnit, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true);
 
       /// <summary>
       ///    Sets the value in the parameter. Value will be take as is
       /// </summary>
       /// <param name="parameter">Parameter</param>
       /// <param name="value">Value in kernel unit</param>
-      ICommand SetParameterValue(IParameter parameter, double value);
+      /// <param name="shouldUpdateDefaultStateAndValueOriginForDefaultParameter">
+      ///    If set to <c>true</c> default, default state
+      ///    and value origin of parameter will be updated as well
+      /// </param>
+      ICommand SetParameterValue(IParameter parameter, double value, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true);
 
       /// <summary>
       ///    Sets the value in the parameter. Value will be taken as is
@@ -84,7 +92,11 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="parameter">Parameter</param>
       /// <param name="value">Value in kernel unit</param>
-      ICommand SetParameterValueAsStructureChange(IParameter parameter, double value);
+      /// <param name="shouldUpdateDefaultStateAndValueOrigin">
+      ///    If set to <c>true</c> default, default state and value origin of
+      ///    parameter will be updated as well
+      /// </param>
+      ICommand SetParameterValueAsStructureChange(IParameter parameter, double value, bool shouldUpdateDefaultStateAndValueOrigin = true);
 
       /// <summary>
       ///    Updates the value origin in the parameter. The default flag will be updated
@@ -194,7 +206,7 @@ namespace PKSim.Core.Services
       PathCache<IParameter> PathCacheFor(IEnumerable<IParameter> parameters);
 
       /// <summary>
-      /// Returns the full path of the <paramref name="parameter"/>
+      ///    Returns the full path of the <paramref name="parameter" />
       /// </summary>
       string PathFor(IParameter parameter);
 
@@ -273,9 +285,9 @@ namespace PKSim.Core.Services
          return SetParameterValueAsStructureChange(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit));
       }
 
-      public ICommand SetParameterValueAsStructureChange(IParameter parameter, double value)
+      public ICommand SetParameterValueAsStructureChange(IParameter parameter, double value, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
       {
-         return withUpdatedDefaultStateAndValue(new SetParameterValueStructureChangeCommand(parameter, value).Run(_executionContext), parameter);
+         return withUpdatedDefaultStateAndValue(new SetParameterValueStructureChangeCommand(parameter, value).Run(_executionContext), parameter, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
       public ICommand SetParameterDisplayValueAsStructureChange(IParameter parameter, bool value)
@@ -287,18 +299,20 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterDisplayValueWithoutBuildingBlockChange(IParameter parameter, double valueToSetInGuiUnit)
       {
-         return setParameterValue(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit), shouldChangeVersion: false);
+         return setParameterValue(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit), shouldChangeVersion:false, shouldUpdateDefaultStateAndValueOriginForDefaultParameter:true );
       }
 
-      public ICommand SetParameterValue(IParameter parameter, double value)
+      public ICommand SetParameterValue(IParameter parameter, double value, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
       {
+         var shouldChangeVersion = true;
+
          if (parameter.IsExpression())
-            return withUpdatedDefaultStateAndValue(commandForRelativeExpressionParameter(parameter, value).Run(_executionContext), parameter);
+            return withUpdatedDefaultStateAndValue(commandForRelativeExpressionParameter(parameter, value).Run(_executionContext), parameter, shouldChangeVersion, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
 
          if (parameter.IsStructural())
-            return SetParameterValueAsStructureChange(parameter, value);
+            return SetParameterValueAsStructureChange(parameter, value, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
 
-         return setParameterValue(parameter, value, shouldChangeVersion: true);
+         return setParameterValue(parameter, value, shouldChangeVersion, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
       private IPKSimCommand commandForRelativeExpressionParameter(IParameter parameter, double value)
@@ -309,18 +323,25 @@ namespace PKSim.Core.Services
          return new SetRelativeExpressionFromNormalizedCommand(parameter, value);
       }
 
-      private ICommand setParameterValue(IParameter parameter, double value, bool shouldChangeVersion)
+      private ICommand setParameterValue(IParameter parameter, double value, bool shouldChangeVersion, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
       {
-         return withUpdatedDefaultStateAndValue(new SetParameterValueCommand(parameter, value) {ShouldChangeVersion = shouldChangeVersion}.Run(_executionContext), parameter);
+         return withUpdatedDefaultStateAndValue(
+            new SetParameterValueCommand(parameter, value) {ShouldChangeVersion = shouldChangeVersion}.Run(_executionContext),
+            parameter,
+            shouldChangeVersion,
+            shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
-      public ICommand SetParameterDisplayUnit(IParameter parameter, Unit displayUnit)
+      public ICommand SetParameterDisplayUnit(IParameter parameter, Unit displayUnit, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
       {
-         return withUpdatedDefaultStateAndValue(new SetParameterDisplayUnitCommand(parameter, displayUnit).Run(_executionContext), parameter);
+         return withUpdatedDefaultStateAndValue(new SetParameterDisplayUnitCommand(parameter, displayUnit).Run(_executionContext), parameter, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
-      private ICommand withUpdatedDefaultStateAndValue(IOSPSuiteCommand command, IParameter parameter, bool shouldChangeVersion = true)
+      private ICommand withUpdatedDefaultStateAndValue(IOSPSuiteCommand command, IParameter parameter, bool shouldChangeVersion = true, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
       {
+         if (!shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
+            return command;
+
          if (!parameter.IsDefault)
             return command;
 
@@ -344,7 +365,6 @@ namespace PKSim.Core.Services
          macroCommand.Add(setValueOriginCommand);
          return macroCommand;
       }
-
 
       public ICommand SetParameterPercentile(IParameter parameter, double percentile)
       {

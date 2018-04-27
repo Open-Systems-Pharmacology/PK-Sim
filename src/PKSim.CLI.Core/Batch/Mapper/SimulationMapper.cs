@@ -88,11 +88,11 @@ namespace PKSim.Core.Batch.Mapper
             simulation.OutputSchema.RemoveInterval(otherInterval);
          }
 
-         interval.StartTime.Value = config.StartTime;
-         interval.EndTime.Value = config.EndTime;
-         interval.Resolution.Value = config.Resolution;
-         simulation.Solver.AbsTol = config.AbsTol;
-         simulation.Solver.RelTol = config.RelTol;
+         setParameter(interval.StartTime,config.StartTime);
+         setParameter(interval.EndTime, config.EndTime);
+         setParameter(interval.Resolution, config.Resolution);
+         setParameter(simulation.Solver.Parameter(Constants.Parameters.ABS_TOL), config.AbsTol);
+         setParameter(simulation.Solver.Parameter(Constants.Parameters.REL_TOL), config.RelTol);
 
          _logger.AddDebug($"Start Time = {config.StartTime}");
          _logger.AddDebug($"End Time = {config.EndTime}");
@@ -109,6 +109,12 @@ namespace PKSim.Core.Batch.Mapper
          simForBatch.ParameterVariationSets.AddRange(batchSimulation.ParameterVariationSets);
 
          return simForBatch;
+      }
+
+      private void setParameter(IParameter parameter, double value)
+      {
+         parameter.Value = value;
+         parameter.IsDefault = false;
       }
    }
 }
