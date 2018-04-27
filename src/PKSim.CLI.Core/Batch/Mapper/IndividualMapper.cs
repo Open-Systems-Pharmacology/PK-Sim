@@ -3,6 +3,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Batch.Mapper
@@ -59,12 +60,9 @@ namespace PKSim.Core.Batch.Mapper
       {
          var proteinFactory = _moleculeFactoryResolver.FactoryFor<TMolecule>();
          var newMolecule = proteinFactory.CreateFor(individual);
-         newMolecule.ReferenceConcentration.Value = molecule.ReferenceConcentration;
-         newMolecule.ReferenceConcentration.IsDefault = false;
-         newMolecule.HalfLifeLiver.Value = molecule.HalfLifeLiver;
-         newMolecule.HalfLifeLiver.IsDefault = false;
-         newMolecule.HalfLifeIntestine.Value = molecule.HalfLifeIntestine;
-         newMolecule.HalfLifeIntestine.IsDefault = false;
+         setValue(newMolecule.ReferenceConcentration, molecule.ReferenceConcentration);
+         setValue(newMolecule.HalfLifeLiver, molecule.HalfLifeLiver);
+         setValue(newMolecule.HalfLifeIntestine, molecule.HalfLifeIntestine);
          newMolecule.Name = molecule.Name;
          individual.AddMolecule(newMolecule);
 
@@ -79,15 +77,22 @@ namespace PKSim.Core.Batch.Mapper
                continue;
             }
 
-            expressionParameterNorm.Value = expression.Value;
-            expressionParameterNorm.IsDefault = false;
-
-            expressionParameter.Value = expression.Value;
-            expressionParameter.IsDefault = false;
+            setValue(expressionParameterNorm, expression.Value);
+            setValue(expressionParameter, expression.Value);
 
             _batchLogger.AddDebug($"Relative Expression norm for container '{expression.Key}' set to {expression.Value}");
          }
          return newMolecule.DowncastTo<TMolecule>();
+      }
+
+
+      private void setValue(IParameter parameter, double value)
+      {
+         if (ValueComparer.AreValuesEqual(parameter.Value, value))
+            return;
+
+         parameter.Value = value;
+         parameter.IsDefault = false;
       }
    }
 }

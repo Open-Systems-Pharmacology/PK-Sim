@@ -27,6 +27,7 @@ namespace PKSim.Core.Batch.Mapper
          var simpleProtocol = _protocolFactory.Create(ProtocolMode.Simple, applicationType).DowncastTo<SimpleProtocol>();
          simpleProtocol.Name = batchProtocol.Name ?? "Protocol";
          simpleProtocol.EndTimeParameter.Value = batchProtocol.EndTime;
+         simpleProtocol.EndTimeParameter.IsDefault = false;
          simpleProtocol.Dose.DisplayUnit = simpleProtocol.Dose.Dimension.Unit(batchProtocol.DoseUnit);
          simpleProtocol.Dose.Value = simpleProtocol.Dose.Dimension.UnitValueToBaseUnitValue(simpleProtocol.Dose.DisplayUnit, batchProtocol.Dose);
          simpleProtocol.Dose.IsDefault = false;

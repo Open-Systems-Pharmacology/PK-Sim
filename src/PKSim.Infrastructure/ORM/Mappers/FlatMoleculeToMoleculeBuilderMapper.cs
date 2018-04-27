@@ -1,9 +1,8 @@
-﻿using PKSim.Core.Services;
-using PKSim.Infrastructure.ORM.FlatObjects;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using PKSim.Core;
+using PKSim.Core.Services;
+using PKSim.Infrastructure.ORM.FlatObjects;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Infrastructure.ORM.Mappers
@@ -18,18 +17,15 @@ namespace PKSim.Infrastructure.ORM.Mappers
       private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IFormulaFactory _formulaFactory;
-      private readonly ICloner _cloner;
 
       public FlatMoleculeToMoleculeBuilderMapper(
-         IParameterContainerTask parameterContainerTask, 
+         IParameterContainerTask parameterContainerTask,
          IObjectBaseFactory objectBaseFactory,
-         IFormulaFactory formulaFactory, 
-         ICloner cloner)
+         IFormulaFactory formulaFactory)
       {
          _parameterContainerTask = parameterContainerTask;
          _objectBaseFactory = objectBaseFactory;
          _formulaFactory = formulaFactory;
-         _cloner = cloner;
       }
 
       public IMoleculeBuilder MapFrom(FlatMolecule flatMolecule, IFormulaCache formulaCache)

@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
@@ -73,7 +74,9 @@ namespace PKSim.Core
       protected EventMapping _eventMapping;
       protected EventSelection _eventSelection;
       protected ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
-      private ILogger _logger;
+      protected ILogger _logger;
+      protected IContainerTask _containerTask;
+      protected IEntityPathResolver _entityPathResolver;
 
       protected override Task Context()
       {
@@ -95,6 +98,8 @@ namespace PKSim.Core
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
          _simulationParameterOriginIdUpdater= A.Fake<ISimulationParameterOriginIdUpdater>();
          _logger= A.Fake<ILogger>();
+         _containerTask= A.Fake<IContainerTask>();
+         _entityPathResolver= A.Fake<IEntityPathResolver>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
@@ -103,7 +108,7 @@ namespace PKSim.Core
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask,
             _simulationRunner, _simulationParameterOriginIdUpdater,
-            _logger
+            _logger,_containerTask,_entityPathResolver
             );
 
          _project = new PKSimProject();

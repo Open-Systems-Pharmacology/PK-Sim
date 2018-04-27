@@ -1,4 +1,5 @@
 ﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using PKSim.Core.Repositories;
@@ -41,10 +42,19 @@ namespace PKSim.Core.Batch.Mapper
                continue;
             }
 
-            parameter.Value = parameterValue.Value;
+            setValue(parameter, parameterValue.Value);
          }
 
          return formulation;
+      }
+
+      private void setValue(IParameter parameter, double value)
+      {
+         if (ValueComparer.AreValuesEqual(parameter.Value, value))
+            return;
+
+         parameter.Value = value;
+         parameter.IsDefault = false;
       }
    }
 }

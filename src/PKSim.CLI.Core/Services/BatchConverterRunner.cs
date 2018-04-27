@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -74,7 +75,7 @@ namespace PKSim.CLI.Core.Services
 
       private async Task exportSimulationTo(FileInfo simulationFile, string outputFolder)
       {
-         _logger.AddDebug($"Starting batch simulation for file '{simulationFile}'");
+        _logger.AddDebug($"Starting batch simulation for file '{simulationFile}'");
          var outputFile = Path.Combine(outputFolder, simulationFile.Name);
          var project = new PKSimProject();
          try
@@ -93,9 +94,9 @@ namespace PKSim.CLI.Core.Services
             foreach (var parameterValueSet in simForBatch.ParameterVariationSets)
             {
                var newSimulationBatch = _simulationLoader.LoadSimulationFrom(simulationFile.FullName);
-               var allParameters = _entitiesInContainerRetriever.ParametersFrom(simulation);
-               string currentName = $"{defaultSimulationName}_{parameterValueSet.Name}";
                var newSimulation = newSimulationBatch.Simulation;
+               var allParameters = _entitiesInContainerRetriever.ParametersFrom(newSimulation);
+               string currentName = $"{defaultSimulationName}_{parameterValueSet.Name}";
                newSimulation.Name = currentName;
                updateParameters(allParameters, parameterValueSet);
                project.AddBuildingBlock(newSimulation);
@@ -109,10 +110,8 @@ namespace PKSim.CLI.Core.Services
          }
       }
 
-      private IPKSimMacroCommand updateParameters(PathCache<IParameter> allParameters, ParameterVariationSet parameterVariationSet)
+      private void updateParameters(PathCache<IParameter> allParameters, ParameterVariationSet parameterVariationSet)
       {
-         var macroCommand = new PKSimMacroCommand();
-
          foreach (var parameterValue in parameterVariationSet.ParameterValues)
          {
             var parameterPath = parameterValue.ParameterPath;
@@ -131,10 +130,17 @@ namespace PKSim.CLI.Core.Services
             }
 
             _logger.AddDebug($"Parameter '{parameterValue.ParameterPath}' value set from '{parameter.Value} to '{parameterValue.Value}'.");
-            macroCommand.Add(new SetParameterValueCommand(parameter, parameterValue.Value));
+            setValue(parameter, parameterValue.Value);
          }
+      }
 
-         return macroCommand.Run(_executionContext);
+      private void setValue(IParameter parameter, double value)
+      {
+         if (ValueComparer.AreValuesEqual(parameter.Value, value))
+            return;
+
+         parameter.Value = value;
+         parameter.IsDefault = false;
       }
    }
 }

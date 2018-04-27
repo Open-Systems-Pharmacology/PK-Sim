@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
@@ -36,6 +37,8 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ISimulationRunner _simulationRunner;
       private readonly ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
       private readonly ILogger _logger;
+      private readonly IContainerTask _containerTask;
+      private readonly IEntityPathResolver _entityPathResolver;
 
       public SimulationMapper(
          SolverSettingsMapper solverSettingsMapper,
@@ -55,7 +58,9 @@ namespace PKSim.Core.Snapshots.Mappers
          IModelPropertiesTask modelPropertiesTask,
          ISimulationRunner simulationRunner,
          ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater,
-         ILogger logger
+         ILogger logger,
+         IContainerTask containerTask,
+         IEntityPathResolver entityPathResolver
       )
       {
          _solverSettingsMapper = solverSettingsMapper;
@@ -76,6 +81,8 @@ namespace PKSim.Core.Snapshots.Mappers
          _simulationRunner = simulationRunner;
          _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
          _logger = logger;
+         _containerTask = containerTask;
+         _entityPathResolver = entityPathResolver;
       }
 
       public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation, PKSimProject project)
@@ -94,7 +101,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.OutputSelections = await _outputSelectionsMapper.MapToSnapshot(simulation.OutputSelections);
          snapshot.Events = await _eventMappingMapper.MapToSnapshots(simulation.EventProperties.EventMappings, project);
          snapshot.ObservedData = usedObervedDataFrom(simulation, project);
-         snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
+         snapshot.Parameters = await allParametersChangedByUserFrom(simulation, project);
          snapshot.Interactions = await interactionSnapshotFrom(simulation.InteractionProperties);
          snapshot.AdvancedParameters = await advancedParametersFrom(simulation);
          snapshot.IndividualAnalyses = await _simulationTimeProfileChartMapper.MapToSnapshots(simulation.AnalysesOfType<SimulationTimeProfileChart>());
@@ -119,10 +126,72 @@ namespace PKSim.Core.Snapshots.Mappers
          return _compoundPropertiesMapper.MapToSnapshots(simulation.CompoundPropertiesList, project);
       }
 
-      private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelSimulation simulation)
+      private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelSimulation simulation, PKSimProject project)
       {
-         var changedParameters = simulation.Model.Root.GetAllChildren<IParameter>(x => x.ShouldExportToSnapshot());
-         return _parameterMapper.LocalizedParametersFrom(changedParameters);
+         var allPotentialParametersToExport = simulation.Model.Root.GetAllChildren<IParameter>(p => p.ShouldExportToSnapshot()).GroupBy(x => x.BuildingBlockType);
+         var allParametersToExport = new List<IParameter>();
+         foreach (var parametersByBuildingBlockType in allPotentialParametersToExport)
+         {
+            var onlyChangedParameters = canFilterUnchangedParameters(parametersByBuildingBlockType.Key);
+            allParametersToExport.AddRange(onlyChangedParameters ? parametersChangedFromBuildingBlock(parametersByBuildingBlockType, simulation, project) : parametersByBuildingBlockType);
+         }
+
+         return _parameterMapper.LocalizedParametersFrom(allParametersToExport);
+      }
+
+      private static bool canFilterUnchangedParameters(PKSimBuildingBlockType buildingBlockType)
+      {
+         return buildingBlockType.IsOneOf(PKSimBuildingBlockType.Compound, PKSimBuildingBlockType.Formulation, PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Event);
+      }
+
+      private IEnumerable<IParameter> parametersChangedFromBuildingBlock(IGrouping<PKSimBuildingBlockType, IParameter> parametersByBuildingBlockType, ModelSimulation simulation, PKSimProject project)
+      {
+         var parametersToExport = new List<IParameter>();
+         var parametersByBuildingBlock = parametersByBuildingBlockType.GroupBy(x => x.Origin.BuilingBlockId);
+         foreach (var parametersByBuildingBlockId in parametersByBuildingBlock)
+         {
+            var templateBuildingBlock = templateBuildingBlockFor(simulation, parametersByBuildingBlockId.Key, project);
+            if (templateBuildingBlock == null)
+            {
+               parametersToExport.AddRange(parametersByBuildingBlockId);
+               continue;
+            }
+
+            var templateBuildingblockParameters = _containerTask.CacheAllChildren<IParameter>(templateBuildingBlock);
+
+            foreach (var parameter in parametersByBuildingBlockId)
+            {
+               var templateBuildinglockParameter = templateParameterFor(parameter, templateBuildingblockParameters);
+
+               if (parameterDiffersFromTemplate(templateBuildinglockParameter, parameter))
+               {
+                  parametersToExport.Add(parameter);
+               }
+            }
+         }
+
+         return parametersToExport;
+      }
+
+      private static bool parameterDiffersFromTemplate(IParameter templateBuildinglockParameter, IParameter parameter)
+      {
+         return templateBuildinglockParameter == null || !ValueComparer.AreValuesEqual(parameter, templateBuildinglockParameter);
+      }
+
+      private IParameter templateParameterFor(IParameter parameter, PathCache<IParameter> templateParameters)
+      {
+         var buildingBlockParameter = _executionContext.Get<IParameter>(parameter.Origin.ParameterId);
+         if (buildingBlockParameter == null)
+            return null;
+
+         var buildingBlockParameterPath = _entityPathResolver.PathFor(buildingBlockParameter);
+         return templateParameters[buildingBlockParameterPath];
+      }
+
+      private IPKSimBuildingBlock templateBuildingBlockFor(ModelSimulation simulation, string simulationBuildingBlockId, PKSimProject project)
+      {
+         var usedBuildingBlock = simulation.UsedBuildingBlockById(simulationBuildingBlockId);
+         return usedBuildingBlock == null ? null : project.BuildingBlockById(usedBuildingBlock.TemplateId);
       }
 
       private string[] usedObervedDataFrom(ModelSimulation simulation, PKSimProject project)
@@ -179,7 +248,7 @@ namespace PKSim.Core.Snapshots.Mappers
          foreach (var snapshotInteraction in snapshotInteractions)
          {
             var interaction = await interactionSelectionFrom(snapshotInteraction, project);
-            if(interaction!=null)
+            if (interaction != null)
                simulation.InteractionProperties.AddInteraction(interaction);
          }
       }
