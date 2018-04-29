@@ -125,8 +125,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _buildingBlockInSimulationManager.SimulationUsing(_usedIndividual1)).Returns(_simulation1);
          A.CallTo(() => _buildingBlockInSimulationManager.SimulationUsing(_usedIndividual2)).Returns(_simulation2);
 
-         A.CallTo(() => _simulationBuildingBlockUpdater.BuildingBlockSupportsQuickUpdate(_buildingBlock1)).Returns(false);
-
+         A.CallTo(() => _buildingBlock1.BuildingBlockType).Returns(PKSimBuildingBlockType.Population);
       }
 
       protected override void Because()
