@@ -6,8 +6,9 @@ namespace PKSim.Core.Services
    public class SimulationRunOptions : OSPSuite.Core.Domain.SimulationRunOptions
    {
       /// <summary>
-      ///    Set to <c>true</c>, the <see cref="OutputSelections" /> will be effectively ignored and all default quantities will be
-      ///    exproted. .Default is <c>false</c>
+      ///    Set to <c>true</c>, the <see cref="OutputSelections" /> will be effectively ignored and all default quantities will
+      ///    be
+      ///    exported. Default is <c>false</c>
       /// </summary>
       public bool RunForAllOutputs { get; set; } = false;
 
@@ -18,7 +19,8 @@ namespace PKSim.Core.Services
       public bool RaiseEvents { get; set; } = false;
 
       /// <summary>
-      /// Set to <c>true</c> (default) to validate the simulation before running it. Typically set to <c>false</c> when running batch calculations
+      ///    Set to <c>true</c> (default) to validate the simulation before running it. Typically set to <c>false</c> when
+      ///    running batch calculations
       /// </summary>
       public bool Validate { get; set; } = true;
 

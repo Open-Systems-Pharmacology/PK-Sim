@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
@@ -88,11 +89,11 @@ namespace PKSim.Core.Batch.Mapper
             simulation.OutputSchema.RemoveInterval(otherInterval);
          }
 
-         interval.StartTime.Value = config.StartTime;
-         interval.EndTime.Value = config.EndTime;
-         interval.Resolution.Value = config.Resolution;
-         simulation.Solver.AbsTol = config.AbsTol;
-         simulation.Solver.RelTol = config.RelTol;
+         setValue(interval.StartTime,config.StartTime);
+         setValue(interval.EndTime, config.EndTime);
+         setValue(interval.Resolution, config.Resolution);
+         setValue(simulation.Solver.Parameter(Constants.Parameters.ABS_TOL), config.AbsTol);
+         setValue(simulation.Solver.Parameter(Constants.Parameters.REL_TOL), config.RelTol);
 
          _logger.AddDebug($"Start Time = {config.StartTime}");
          _logger.AddDebug($"End Time = {config.EndTime}");
@@ -109,6 +110,15 @@ namespace PKSim.Core.Batch.Mapper
          simForBatch.ParameterVariationSets.AddRange(batchSimulation.ParameterVariationSets);
 
          return simForBatch;
+      }
+
+      private void setValue(IParameter parameter, double value)
+      {
+         if (ValueComparer.AreValuesEqual(parameter.Value, value))
+            return;
+
+         parameter.Value = value;
+         parameter.IsDefault = false;
       }
    }
 }

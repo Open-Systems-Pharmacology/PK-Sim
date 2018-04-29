@@ -1,10 +1,11 @@
-﻿using OSPSuite.Utility;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
 using BatchCompound = PKSim.Core.Batch.Compound;
 using ModelCompound = PKSim.Core.Model.Compound;
 
@@ -27,7 +28,7 @@ namespace PKSim.Core.Batch.Mapper
 
       public CompoundMapper(ICompoundFactory compoundFactory, ICompoundProcessRepository compoundProcessRepository,
          ILogger batchLogger, ICloner cloner,
-         ICompoundCalculationMethodCategoryRepository calculationMethodCategoryRepository, 
+         ICompoundCalculationMethodCategoryRepository calculationMethodCategoryRepository,
          ICalculationMethodRepository calculationMethodRepository, ICompoundProcessTask compoundProcessTask, ISpeciesRepository speciesRepository)
       {
          _compoundFactory = compoundFactory;
@@ -131,6 +132,7 @@ namespace PKSim.Core.Batch.Mapper
             _batchLogger.AddWarning($"Could not find process named '{batchCompoundProcess.InternalName}' in database");
             return null;
          }
+
          var process = _cloner.Clone(template);
          process.DataSource = batchCompoundProcess.DataSource;
          if (template.IsAnImplementationOf<ISpeciesDependentCompoundProcess>())
@@ -156,18 +158,16 @@ namespace PKSim.Core.Batch.Mapper
          {
             var parameter = compoundProcess.Parameter(parameterValue.Key);
             if (parameter == null)
-            {
-               _batchLogger.AddWarning($"Parameter '{parameterValue.Key}' not found in process '{compoundProcess.InternalName}'");
                continue;
-            }
-            parameter.Value = parameterValue.Value;
+
+            setValue(parameter, parameterValue.Value);
          }
       }
 
       private void setValue(ModelCompound compound, string parameterName, double value)
       {
          var parameter = compound.Parameter(parameterName);
-         parameter.Value = value;
+         setValue(parameter, value);
       }
 
       private void setPka(ModelCompound compound, PkaType pkaType, int i)
@@ -181,7 +181,16 @@ namespace PKSim.Core.Batch.Mapper
       {
          var alternative = compound.ParameterAlternativeGroup(alternativeName).DefaultAlternative;
          var parameter = alternative.Parameter(parameterName);
+         setValue(parameter, value);
+      }
+
+      private void setValue(IParameter parameter, double value)
+      {
+         if (ValueComparer.AreValuesEqual(parameter.Value, value))
+            return;
+
          parameter.Value = value;
+         parameter.IsDefault = false;
       }
    }
 }

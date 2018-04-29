@@ -254,6 +254,7 @@ namespace PKSim.Infrastructure.Services
          {
             parameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
             parameter.Visible = false;
+            parameter.IsDefault = true;
             parameter.CanBeVariedInPopulation = false;
             molecule.Add(parameter);
          }

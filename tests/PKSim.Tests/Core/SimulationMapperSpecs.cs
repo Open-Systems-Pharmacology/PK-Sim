@@ -5,6 +5,8 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
@@ -22,6 +24,7 @@ using Individual = PKSim.Core.Model.Individual;
 using OutputSchema = OSPSuite.Core.Domain.OutputSchema;
 using OutputSelections = PKSim.Core.Snapshots.OutputSelections;
 using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
+using Protocol = PKSim.Core.Model.Protocol;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
@@ -45,12 +48,13 @@ namespace PKSim.Core
       protected AdvancedParameterMapper _advancedParameterMapper;
       protected PKSimProject _project;
       protected ISimulationFactory _simulationFactory;
-      private IExecutionContext _executionContext;
+      protected IExecutionContext _executionContext;
       private ISimulationModelCreator _simulationModelCreator;
       protected ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
       protected EventMappingMapper _eventMappingMapper;
       protected Individual _individual;
       protected Compound _compound;
+      protected Protocol _protocol;
       protected PKSimEvent _event;
       private OutputSelections _outputSelectionSnapshot;
       protected RandomPopulation _population;
@@ -73,7 +77,9 @@ namespace PKSim.Core
       protected EventMapping _eventMapping;
       protected EventSelection _eventSelection;
       protected ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
-      private ILogger _logger;
+      protected ILogger _logger;
+      protected IContainerTask _containerTask;
+      protected IEntityPathResolver _entityPathResolver;
 
       protected override Task Context()
       {
@@ -95,6 +101,8 @@ namespace PKSim.Core
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
          _simulationParameterOriginIdUpdater= A.Fake<ISimulationParameterOriginIdUpdater>();
          _logger= A.Fake<ILogger>();
+         _containerTask= A.Fake<IContainerTask>();
+         _entityPathResolver= A.Fake<IEntityPathResolver>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
@@ -103,12 +111,13 @@ namespace PKSim.Core
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask,
             _simulationRunner, _simulationParameterOriginIdUpdater,
-            _logger
+            _logger,_containerTask,_entityPathResolver
             );
 
          _project = new PKSimProject();
-         _individual = new Individual {Name = "IND"};
-         _compound = new Compound {Name = "COMP"};
+         _individual = new Individual {Name = "IND", Id = "IND"};
+         _compound = new Compound {Name = "COMP", Id="COMP"};
+         _protocol = new SimpleProtocol {Name = "PROT", Id="PROT"};
          _inductionProcess = new InductionProcess().WithName("Interaction process");
          _compound.AddProcess(_inductionProcess);
 
@@ -190,6 +199,17 @@ namespace PKSim.Core
          {
             BuildingBlock = _individual
          });
+
+         _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompTemplateId", PKSimBuildingBlockType.Compound)
+         {
+            BuildingBlock = _compound
+         });
+
+         _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("ProtTemplateId", PKSimBuildingBlockType.Protocol)
+         {
+            BuildingBlock = _protocol
+         });
+
          _populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("PopTemplateId", PKSimBuildingBlockType.Population)
          {
             BuildingBlock = _population
@@ -226,6 +246,73 @@ namespace PKSim.Core
 
    public class When_mapping_an_individual_simulation_to_snapshot : concern_for_SimulationMapper
    {
+      private readonly LocalizedParameter _simulationParameterSnapshot = new LocalizedParameter();
+      private readonly LocalizedParameter _individualChangedParameterSnapshot = new LocalizedParameter();
+      private readonly LocalizedParameter _protocolParameterSnapshot = new LocalizedParameter();
+
+      private IParameter _individualParameter;
+      private IParameter _individualParameterTemplate;
+
+      private IParameter _individualParameterChanged;
+      private IParameter _individualParameterChangedTemplate;
+
+      private IParameter _simulationParameter;
+      
+      private IParameter _protocolParameter;
+      
+      private LocalizedParameter[] _localizedParamters;
+      private Individual _individualTemplateBuildingBlock;
+      private Protocol _protocolTemplateBuildingBlock;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _individualParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("IndParam");
+         _individualParameterTemplate  = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("IndParam");
+         _individualParameter.BuildingBlockType = PKSimBuildingBlockType.Individual;
+         _individualParameter.Origin.BuilingBlockId = _individual.Id;
+         _individualParameter.Origin.ParameterId = "IndParamTemplateId";
+
+         _individualParameterChanged = DomainHelperForSpecs.ConstantParameterWithValue(2).WithName("IndParamChanged");
+         _individualParameterChangedTemplate = DomainHelperForSpecs.ConstantParameterWithValue(10000).WithName("IndParamChanged");
+         _individualParameterChanged.BuildingBlockType = PKSimBuildingBlockType.Individual;
+         _individualParameterChanged.Origin.BuilingBlockId = _individual.Id;
+         _individualParameterChanged.Origin.ParameterId = "IndParamChangedTemplateId";
+
+         _simulationParameter = DomainHelperForSpecs.ConstantParameterWithValue(2).WithName("SimParam");
+         _simulationParameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+
+         _protocolParameter = DomainHelperForSpecs.ConstantParameterWithValue(2).WithName("ProtocolParam");
+         _protocolParameter.BuildingBlockType = PKSimBuildingBlockType.Protocol;
+         _protocolParameter.Origin.BuilingBlockId = _protocol.Id;
+         _protocolParameter.Origin.ParameterId = "ProtocolParamTemplateId";
+
+         _rootContainer.Add(_individualParameter);
+         _rootContainer.Add(_individualParameterChanged);
+         _rootContainer.Add(_simulationParameter);
+         _rootContainer.Add(_protocolParameter);
+
+         _localizedParamters = new[] {_individualChangedParameterSnapshot, _simulationParameterSnapshot, _protocolParameterSnapshot};
+
+         A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Matches(x => x.ContainsAll(new[] {_individualParameterChanged, _simulationParameter, _protocolParameter}))))
+            .Returns(_localizedParamters);
+
+         _individualTemplateBuildingBlock = new Individual {Id = "IndTemplateId"};
+         _project.AddBuildingBlock(_individualTemplateBuildingBlock);
+         A.CallTo(() => _executionContext.Get<IParameter>(_individualParameterChanged.Origin.ParameterId)).Returns(_individualParameterChangedTemplate);
+         A.CallTo(() => _executionContext.Get<IParameter>(_individualParameter.Origin.ParameterId)).Returns(_individualParameterTemplate);
+
+         _protocolTemplateBuildingBlock = new SimpleProtocol {Id = "ProtTemplateId"};
+         _project.AddBuildingBlock(_protocolTemplateBuildingBlock);
+
+         var allIndividualTemplateParameters = new  PathCacheForSpecs<IParameter>();
+         A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(_individualTemplateBuildingBlock)).Returns(allIndividualTemplateParameters);
+         allIndividualTemplateParameters.Add(_individualParameterTemplate.Name, _individualParameterTemplate);
+         allIndividualTemplateParameters.Add(_individualParameterChangedTemplate.Name, _individualParameterChangedTemplate);
+
+         A.CallTo(() => _entityPathResolver.PathFor(_individualParameterTemplate)).Returns(_individualParameterTemplate.Name);
+         A.CallTo(() => _entityPathResolver.PathFor(_individualParameterChangedTemplate)).Returns(_individualParameterChangedTemplate.Name);
+      }
       protected override async Task Because()
       {
          _snapshot = await sut.MapToSnapshot(_individualSimulation, _project);
@@ -285,6 +372,12 @@ namespace PKSim.Core
       public void should_save_interactions()
       {
          _snapshot.Interactions.ShouldContain(_snapshotInteraction);
+      }
+
+      [Observation]
+      public void should_only_export_building_block_parameters_that_have_changed_from_their_original_value_in_template_building_block()
+      {
+         _snapshot.Parameters.ShouldOnlyContain(_simulationParameterSnapshot, _individualChangedParameterSnapshot, _protocolParameterSnapshot);
       }
    }
 
