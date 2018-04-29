@@ -141,7 +141,13 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private static bool canFilterUnchangedParameters(PKSimBuildingBlockType buildingBlockType)
       {
-         return buildingBlockType.IsOneOf(PKSimBuildingBlockType.Compound, PKSimBuildingBlockType.Formulation, PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Event);
+         //Exclude Protocol for now becaus of the 1to n relationship between building block parameters and simulation parameters
+         return buildingBlockType.IsOneOf(
+            PKSimBuildingBlockType.Compound, 
+            PKSimBuildingBlockType.Formulation, 
+            PKSimBuildingBlockType.Individual, 
+            PKSimBuildingBlockType.Event,
+            PKSimBuildingBlockType.Population);
       }
 
       private IEnumerable<IParameter> parametersChangedFromBuildingBlock(IGrouping<PKSimBuildingBlockType, IParameter> parametersByBuildingBlockType, ModelSimulation simulation, PKSimProject project)
