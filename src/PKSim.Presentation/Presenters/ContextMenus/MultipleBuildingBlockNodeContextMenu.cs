@@ -8,7 +8,6 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
@@ -38,7 +37,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return DeleteSelectedBuildingBlockMenuItem(buildingBlocks);
       }
 
-
       protected static IMenuBarItem CompareBuidlingBlocks(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
       {
          var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
@@ -46,7 +44,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          var buildingBlockNames = buildingBlocks.Select(x => x.Name).ToList();
 
-         if (canStartComparisonFor(buildingBlockList, executionContext))
+         if (canStartComparisonFor(buildingBlockList))
             return ComparisonCommonContextMenuItems.CompareObjectsMenu(objectBaseList, buildingBlockNames, executionContext);
 
          return comparisonNotPossibleMenu(buildingBlockList, executionContext);
@@ -86,13 +84,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .AsGroupStarter();
       }
 
-      private static bool canStartComparisonFor(IReadOnlyList<TBuildingBlock> buildingBlocks, IExecutionContext context)
+      private static bool canStartComparisonFor(IReadOnlyList<TBuildingBlock> buildingBlocks)
       {
          if (buildingBlocks.Count != 2)
             return false;
 
-         var simulationBuildingBlockUpdater = context.Resolve<ISimulationBuildingBlockUpdater>();
-         return simulationBuildingBlockUpdater.BuildingBlockSupportsQuickUpdate(buildingBlocks[0]);
+         return buildingBlocks[0].BuildingBlockType != PKSimBuildingBlockType.Population;
       }
 
       private static IMenuBarButton comparisonNotPossibleMenu(IReadOnlyList<TBuildingBlock> buildingBlocks, IExecutionContext executionContext)
