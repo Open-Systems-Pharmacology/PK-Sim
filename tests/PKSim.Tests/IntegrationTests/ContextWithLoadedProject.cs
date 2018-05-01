@@ -74,6 +74,7 @@ namespace PKSim.IntegrationTests
       {
          var registrationTask = IoC.Resolve<IRegistrationTask>();
          registrationTask.UnregisterProject(_project);
+         _workspace.Project = null;
       }
    }
 }
