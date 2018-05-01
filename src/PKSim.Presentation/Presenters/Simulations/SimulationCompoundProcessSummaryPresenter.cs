@@ -42,10 +42,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          AllSimulationProcessPresenters.Each(p => p.SaveConfiguration());
       }
 
-      protected IEnumerable<ISimulationCompoundProcessPresenter> AllSimulationProcessPresenters
-      {
-         get { return base.AllSubPresenters.OfType<ISimulationCompoundProcessPresenter>(); }
-      }
+      protected IEnumerable<ISimulationCompoundProcessPresenter> AllSimulationProcessPresenters => base.AllSubPresenters.OfType<ISimulationCompoundProcessPresenter>();
 
       public bool HasProcessesDefined
       {

@@ -111,6 +111,11 @@ namespace PKSim.Core.Model
          if (parameter.IsDefault)
             return false;
 
+         return parameter.ValueIsDefined();
+      }
+
+      public static bool ValueIsDefined(this IParameter parameter)
+      {
          try
          {
             var v = parameter.Value;

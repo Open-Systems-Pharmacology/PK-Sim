@@ -113,7 +113,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _command = sut.SetParameterValue(_relativeExpressionParameter, 0.0);
+         _command = sut.SetParameterValue(_relativeExpressionParameter, 3);
       }
 
       [Observation]

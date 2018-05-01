@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraLayout;
+﻿using System;
+using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
@@ -10,9 +11,10 @@ using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.UI.Views.Individuals
 {
-   public partial class IndividualMoleculePropertiesView : BaseResizableUserControl, IIndividualMoleculePropertiesView
+   public partial class IndividualMoleculePropertiesView : BaseContainerUserControl, IIndividualMoleculePropertiesView
    {
       private IResizableView _view;
+      public event EventHandler<ViewResizedEventArgs> HeightChanged = delegate { };
 
       public IndividualMoleculePropertiesView()
       {
@@ -35,11 +37,6 @@ namespace PKSim.UI.Views.Individuals
          AddViewTo(layoutItemMoleculeParameters, view);
       }
 
-      public void AddViewTo(LayoutControlItem layoutControlItem, IView view)
-      {
-         layoutControlItem.Control.FillWith(view);
-      }
-
       public bool OntogenyVisible
       {
          set => layoutItemOntogeny.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
@@ -58,17 +55,17 @@ namespace PKSim.UI.Views.Individuals
          OntogenyVisible = false;
       }
 
-      public override void AdjustHeight()
+      public void AdjustHeight()
       {
-         layoutItemMoleculeParameters.AdjustControlHeight(_view.OptimalHeight);
-         base.AdjustHeight();
+         _view.AdjustHeight();
+         HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
-      public override void Repaint()
+      public void Repaint()
       {
          layoutControl.Refresh();
       }
 
-      public override int OptimalHeight => layoutControlGroup.Height;
+      public int OptimalHeight => layoutControlGroup.Height;
    }
 }

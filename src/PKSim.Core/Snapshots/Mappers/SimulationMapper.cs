@@ -181,7 +181,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private static bool parameterDiffersFromTemplate(IParameter templateBuildinglockParameter, IParameter parameter)
       {
-         return templateBuildinglockParameter == null || !ValueComparer.AreValuesEqual(parameter, templateBuildinglockParameter);
+         return templateBuildinglockParameter == null || 
+                !templateBuildinglockParameter.ValueIsDefined() ||
+                !ValueComparer.AreValuesEqual(parameter, templateBuildinglockParameter);
       }
 
       private IParameter templateParameterFor(IParameter parameter, PathCache<IParameter> templateParameters)

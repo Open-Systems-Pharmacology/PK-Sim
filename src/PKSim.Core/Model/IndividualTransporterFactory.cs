@@ -10,6 +10,7 @@ namespace PKSim.Core.Model
    public interface IIndividualTransporterFactory : IIndividualMoleculeFactory
    {
       IndividualTransporter UndefinedLiverTransporterFor(Individual individual);
+      IndividualMolecule CreateFor(ISimulationSubject simulationSubject, TransportType transporterType);
    }
 
    public class IndividualTransporterFactory : IndividualMoleculeFactory<IndividualTransporter, TransporterExpressionContainer>, IIndividualTransporterFactory
@@ -25,14 +26,8 @@ namespace PKSim.Core.Model
 
       public override IndividualMolecule CreateFor(ISimulationSubject simulationSubject)
       {
-         var transporter = CreateEmptyMolecule();
-         //default transporter type
-         transporter.TransportType = TransportType.Efflux;
-
-         AddTissueOrgansExpression(simulationSubject, transporter);
-         AddMucosaExpression(simulationSubject, transporter);
-
-         return transporter;
+         //default transporter type is Efflux
+         return CreateFor(simulationSubject, TransportType.Efflux);
       }
 
       protected override ApplicationIcon Icon => ApplicationIcons.Transporter;
@@ -43,6 +38,18 @@ namespace PKSim.Core.Model
          transporter.TransportType = TransportType.Efflux;
 
          CoreConstants.Compartment.LiverZones.Each(z => addLiverZoneExpression(individual, transporter, z));
+
+         return transporter;
+      }
+
+      public IndividualMolecule CreateFor(ISimulationSubject simulationSubject, TransportType transporterType)
+      {
+         var transporter = CreateEmptyMolecule();
+         //default transporter type
+         transporter.TransportType = transporterType;
+
+         AddTissueOrgansExpression(simulationSubject, transporter);
+         AddMucosaExpression(simulationSubject, transporter);
 
          return transporter;
       }

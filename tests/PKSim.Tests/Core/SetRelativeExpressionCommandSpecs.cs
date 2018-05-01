@@ -11,15 +11,12 @@ namespace PKSim.Core
    public abstract class concern_for_SetRelativeExpressionCommand : ContextSpecification<SetRelativeExpressionCommand>
    {
       protected IExecutionContext _context;
-      private IndividualEnzyme _enzyme;
-      protected double _value;
+      protected double _value = 5;
       protected IParameter _parameterExpression;
 
       protected override void Context()
       {
          _context = A.Fake<IExecutionContext>();
-         _enzyme = A.Fake<IndividualEnzyme>();
-         _value = 5;
          _parameterExpression = DomainHelperForSpecs.ConstantParameterWithValue(2);
          A.CallTo(() => _context.BuildingBlockContaining(_parameterExpression)).Returns(A.Fake<IPKSimBuildingBlock>());
          sut = new SetRelativeExpressionCommand(_parameterExpression,_value);
@@ -29,6 +26,12 @@ namespace PKSim.Core
    
    public class When_executing_the_set_relative_expression_command : concern_for_SetRelativeExpressionCommand
    {
+      protected override void Context()
+      {
+         base.Context();
+         _parameterExpression.IsDefault = true;
+      }
+
       protected override void Because()
       {
          sut.Execute(_context);
@@ -39,9 +42,41 @@ namespace PKSim.Core
       {
          _parameterExpression.Value.ShouldBeEqualTo(_value);
       }
+
+      [Observation]
+      public void should_have_set_the_is_default_parameter_to_false_if_the_value_is_different_from_zero()
+      {
+         _parameterExpression.IsDefault.ShouldBeFalse();
+      }
    }
 
-   
+   public class When_setting_the_relative_expression_value_to_zero : concern_for_SetRelativeExpressionCommand
+   {
+      protected override void Context()
+      {
+         _value = 0;
+         base.Context();
+         _parameterExpression.IsDefault = false;
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void should_change_the_value_of_the_expression()
+      {
+         _parameterExpression.Value.ShouldBeEqualTo(_value);
+      }
+
+      [Observation]
+      public void should_have_set_the_is_default_parameter_to_true()
+      {
+         _parameterExpression.IsDefault.ShouldBeTrue();
+      }
+   }
+
    public class The_inverse_of_the_set_relative_expression_command : concern_for_SetRelativeExpressionCommand
    {
       private IReversibleCommand<IExecutionContext> _result;
