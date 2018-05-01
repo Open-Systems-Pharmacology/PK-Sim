@@ -80,10 +80,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_an_expression_container_containing_only_the_membrane_location()
+      public void should_return_null()
       {
-         _snapshot.Value.ShouldBeNull();
-         _snapshot.MembraneLocation.ShouldBeEqualTo(_transporterExpressionContainer.MembraneLocation);
+         _snapshot.ShouldBeNull();
       }
    }
 
@@ -156,6 +155,8 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
+         _transporterRelativeExpressionParameter.Value = 5;
+         _transporterRelativeExpressionParameter.IsDefault = false;
          _snapshot = await sut.MapToSnapshot(_transporterExpressionContainer);
          _snapshot.MembraneLocation = MembraneLocation.Basolateral;
          _expressionContainerMapperContext.Molecule = _transporter;
