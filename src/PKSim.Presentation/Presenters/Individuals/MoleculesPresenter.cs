@@ -184,6 +184,9 @@ namespace PKSim.Presentation.Presenters.Individuals
          _activePresenter.MoleculeParametersVisible = _simulationSubject.IsAnImplementationOf<Individual>();
          _activePresenter.ActivateMolecule(moleculeFrom(node));
          _view.ActivateView(_activePresenter.BaseView);
+
+         //needs to be done onec the view has been activated to ensure propery display
+         _activePresenter.RefreshView();
       }
 
       public void NodeDoubleClicked(ITreeNode node)

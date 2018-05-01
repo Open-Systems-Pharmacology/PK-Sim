@@ -44,10 +44,7 @@ namespace PKSim.UI.Views.Simulations
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
-      public int OptimalHeight
-      {
-         get { return layoutMainGroup.Height; }
-      }
+      public int OptimalHeight => layoutMainGroup.Height;
 
       public void AdjustHeight()
       {

@@ -234,9 +234,9 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_transporter);
 
          _snapshot.TransportType = TransportType.PgpLike;
-         var transporterFactory = A.Fake<IIndividualMoleculeFactory>();
+         var transporterFactory = A.Fake<IIndividualTransporterFactory>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualTransporter>()).Returns(transporterFactory);
-         A.CallTo(() => transporterFactory.CreateFor(_simulationSubject)).Returns(_transporter);
+         A.CallTo(() => transporterFactory.CreateFor(_simulationSubject, TransportType.PgpLike)).Returns(_transporter);
       }
 
       protected override async Task Because()
@@ -251,7 +251,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_the_expected_molecule_with_the_matching_properties()
+      public void should_return_the_expected_transporter_with_the_matching_properties()
       {
          _newTransporter.TransportType.ShouldBeEqualTo(TransportType.PgpLike);
       }

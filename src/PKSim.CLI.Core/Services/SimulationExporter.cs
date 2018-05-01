@@ -114,11 +114,6 @@ namespace PKSim.CLI.Core.Services
       private async Task exporIndividualSimulationToCsvAsync(IndividualSimulation simulation, string outputFolder)
       {
          await exportSimulationResultsToCsv(simulation, outputFolder);
-
-//         var fileName = csvPathUnder(outputFolder, exportFileName);
-//         await _simulationResultsExporter.ExportToCsvAsync(simulation, simulation.DataRepository, fileName);
-//
-//         _logger.AddDebug($"Exporting simulation results to '{fileName}'");
          exportParameters(outputFolder, simulation);
       }
 
@@ -137,15 +132,14 @@ namespace PKSim.CLI.Core.Services
 
       private async Task exportSimulationResultsToCsv(Simulation simulation, string outputFolder)
       {
-         var simulationResultFile = CoreConstants.DefaultResultsExportNameFor(simulation.Name);
-         var simulationResultFileFullPath = csvPathUnder(outputFolder, simulationResultFile);
+         var simulationResultFileFullPath = csvPathUnder(outputFolder, simulation.Name);
          await _simulationExportTask.ExportResultsToCSVAsync(simulation, simulationResultFileFullPath);
          _logger.AddDebug($"Exporting simulation results to '{simulationResultFileFullPath}'");
       }
 
       private void exportParameters(string outputFolder, IndividualSimulation individualSimulation)
       {
-         var parameterReportFileName = csvPathUnder(outputFolder, $"{individualSimulation.Name}-parameters");
+         var parameterReportFileName = csvPathUnder(outputFolder, $"{individualSimulation.Name}_parameters");
          _parametersReportCreator.ExportParametersTo(individualSimulation.Model, parameterReportFileName);
          _logger.AddDebug($"Exporting simulation parameters to '{parameterReportFileName}'");
       }

@@ -151,6 +151,11 @@ namespace PKSim.Presentation.Presenters.Individuals
          AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_transporter, expressionContainerDTO.ContainerName, value));
       }
 
+      public void RefreshView()
+      {
+         _moleculePropertiesPresenter.RefreshView();
+      }
+
       public void Handle(NoTranporterTemplateAvailableEvent eventToHandle)
       {
          if (!Equals(_transporter, eventToHandle.Transporter))

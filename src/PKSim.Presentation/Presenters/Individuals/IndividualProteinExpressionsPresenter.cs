@@ -21,6 +21,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       ISimulationSubject SimulationSubject { get; set; }
       void ActivateMolecule(IndividualMolecule molecule);
       void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value);
+      void RefreshView();
    }
 
    public interface IIndividualProteinExpressionsPresenter : IIndividualMoleculeExpressionsPresenter
@@ -44,7 +45,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IIndividualMoleculePropertiesPresenter<TSimulationSubject> _moleculePropertiesPresenter;
       protected TProtein _protein;
-      private readonly Action<Object> _updateViewHandler;
+      private readonly Action<Object> _updateLocationVisibilityHandler;
       private ProteinExpressionDTO _proteinExpressionDTO;
       public ISimulationSubject SimulationSubject { get; set; }
 
@@ -58,7 +59,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _representationInfoRepository = representationInfoRepository;
          _moleculePropertiesPresenter = moleculePropertiesPresenter;
          AddSubPresenters(_moleculePropertiesPresenter);
-         _updateViewHandler = o => updateView();
+         _updateLocationVisibilityHandler = o => updateLocationSelectionVisibility();
          view.AddMoleculePropertiesView(_moleculePropertiesPresenter.View);
       }
 
@@ -86,6 +87,17 @@ namespace PKSim.Presentation.Presenters.Individuals
       public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
       {
          AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_protein, expressionContainerDTO.ContainerName, value));
+      }
+
+      public void RefreshView()
+      {
+         _moleculePropertiesPresenter.RefreshView();
+      }
+
+      private void updateLocationSelectionVisibility()
+      {
+         _view.IntracellularVascularEndoLocationVisible = (_protein.TissueLocation == TissueLocation.Intracellular);
+         _view.LocationOnVascularEndoVisible = (_protein.TissueLocation == TissueLocation.ExtracellularMembrane);
       }
 
       public IEnumerable<TissueLocation> AllTissueLocations()
@@ -135,23 +147,16 @@ namespace PKSim.Presentation.Presenters.Individuals
          _proteinExpressionDTO = _proteinExpressionDTOMapper.MapFrom(protein);
          _view.BindTo(_proteinExpressionDTO);
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
-         _protein.Changed += _updateViewHandler;
-         updateView();
+         _protein.Changed += _updateLocationVisibilityHandler;
+         RefreshView();
       }
 
       private void clearReferences()
       {
          if (_protein != null)
-            _protein.Changed -= _updateViewHandler;
+            _protein.Changed -= _updateLocationVisibilityHandler;
 
          _proteinExpressionDTO?.ClearReferences();
-      }
-
-      private void updateView()
-      {
-         _view.IntracellularVascularEndoLocationVisible = (_protein.TissueLocation == TissueLocation.Intracellular);
-         _view.LocationOnVascularEndoVisible = (_protein.TissueLocation == TissueLocation.ExtracellularMembrane);
-         _moleculePropertiesPresenter.RefreshView();
       }
 
       public void ClearSelection()

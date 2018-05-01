@@ -100,7 +100,12 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private IndividualMolecule createMoleculeFrom(Molecule molecule, ISimulationSubject simulationSubject)
       {
-         return factoryFor(molecule).CreateFor(simulationSubject);
+         var moleculeFactory = factoryFor(molecule);
+         var transporterFactory = moleculeFactory as IIndividualTransporterFactory;
+         if (transporterFactory == null || molecule.TransportType == null)
+            return moleculeFactory.CreateFor(simulationSubject);
+
+         return transporterFactory.CreateFor(simulationSubject, molecule.TransportType.Value);
       }
 
       private IIndividualMoleculeFactory factoryFor(Molecule molecule)

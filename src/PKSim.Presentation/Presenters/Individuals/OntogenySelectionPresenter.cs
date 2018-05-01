@@ -78,10 +78,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          return allOntogenies.Union(_allOntogenies);
       }
 
-      private Ontogeny selectedOntogeny
-      {
-         get { return _individualMolecule.Ontogeny; }
-      }
+      private Ontogeny selectedOntogeny => _individualMolecule.Ontogeny;
 
       public void ShowOntogeny()
       {

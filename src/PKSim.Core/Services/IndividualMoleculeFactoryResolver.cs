@@ -21,7 +21,7 @@ namespace PKSim.Core.Services
 
       public IIndividualMoleculeFactory FactoryFor<TIndividualMolecule>()
       {
-         return FactoryFor(typeof (TIndividualMolecule));
+         return FactoryFor(typeof(TIndividualMolecule));
       }
 
       public IIndividualMoleculeFactory FactoryFor(Type individualMoleculeType)
