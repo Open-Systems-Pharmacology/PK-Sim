@@ -26,11 +26,10 @@ namespace PKSim.CLI
 
          ApplicationStartup.Initialize();
 
-         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, BatchConverterCommand>(args)
+         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand>(args)
             .WithParsed<JsonRunCommand>(startCommand)
             .WithParsed<SnapshotRunCommand>(startCommand)
             .WithParsed<ExportRunCommand>(startCommand)
-            .WithParsed<BatchConverterCommand>(startCommand)
             .WithNotParsed(err => valid = false);
 
          if (!valid)

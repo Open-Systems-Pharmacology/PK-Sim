@@ -4,7 +4,6 @@ using OSPSuite.Presentation.Presenters;
 using PKSim.BatchTool.Views;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
-using PKSim.Core.Batch;
 
 namespace PKSim.BatchTool.Presenters
 {
