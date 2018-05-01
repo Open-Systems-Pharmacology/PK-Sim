@@ -10,7 +10,6 @@ using OSPSuite.Utility;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
 using PKSim.Core;
-using PKSim.Core.Batch;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;

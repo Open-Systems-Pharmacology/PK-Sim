@@ -98,29 +98,6 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="Batch\ApplicationProtocol.cs" />
-    <Compile Include="Batch\Compound.cs" />
-    <Compile Include="Batch\CompoundProcess.cs" />
-    <Compile Include="Batch\Event.cs" />
-    <Compile Include="Batch\Formulation.cs" />
-    <Compile Include="Batch\Individual.cs" />
-    <Compile Include="Batch\Mapper\ApplicationProtocolMapper.cs" />
-    <Compile Include="Batch\Mapper\CompoundMapper.cs" />
-    <Compile Include="Batch\Mapper\FormulationMapper.cs" />
-    <Compile Include="Batch\Mapper\IndividualMapper.cs" />
-    <Compile Include="Batch\Mapper\ModelPropertiesMapper.cs" />
-    <Compile Include="Batch\Mapper\OriginDataMapper.cs" />
-    <Compile Include="Batch\Mapper\PopulationSettingsMapper.cs" />
-    <Compile Include="Batch\Mapper\SimulationMapper.cs" />
-    <Compile Include="Batch\Molecule.cs" />
-    <Compile Include="Batch\OriginData.cs" />
-    <Compile Include="Batch\ParameterVariationSet.cs" />
-    <Compile Include="Batch\PopulationSettings.cs" />
-    <Compile Include="Batch\Simulation.cs" />
-    <Compile Include="Batch\SimulationConfiguration.cs" />
-    <Compile Include="Batch\SimulationConstructor.cs" />
-    <Compile Include="Batch\SimulationForBatch.cs" />
-    <Compile Include="RunOptions\BatchConverterRunOptions.cs" />
     <Compile Include="RunOptions\ExportRunOptions.cs" />
     <Compile Include="RunOptions\IWithInputAndOutputFolders.cs" />
     <Compile Include="CLIRegister.cs" />
@@ -134,14 +111,12 @@
     <Compile Include="MinimalImplementations\CLIUserSettings.cs" />
     <Compile Include="MinimalImplementations\CLIWorkspace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\BatchConverterRunner.cs" />
     <Compile Include="Services\ExportSimulationRunner.cs" />
     <Compile Include="Services\IBatchRunner.cs" />
     <Compile Include="RunOptions\JsonRunOptions.cs" />
     <Compile Include="Services\JsonSimulationRunner.cs" />
     <Compile Include="RunOptions\RunOptionsRules.cs" />
     <Compile Include="Services\SimulationExporter.cs" />
-    <Compile Include="Services\SimulationLoader.cs" />
     <Compile Include="RunOptions\SnapshotRunOptions.cs" />
     <Compile Include="Services\SnapshotRunner.cs" />
   </ItemGroup>
