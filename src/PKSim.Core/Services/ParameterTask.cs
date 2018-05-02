@@ -211,8 +211,11 @@ namespace PKSim.Core.Services
       string PathFor(IParameter parameter);
 
       /// <summary>
-      ///    sets the given formula as formula in the parameter
+      ///    Sets the given formula as formula in the parameter. 
       /// </summary>
+      /// <remarks>
+      /// This should not be used with building block parameters defined in simulation as a reference will be saved in both simulation parameters and used building block
+      /// </remarks>
       ICommand SetParameterFomula(IParameter parameter, IFormula formula);
 
       /// <summary>

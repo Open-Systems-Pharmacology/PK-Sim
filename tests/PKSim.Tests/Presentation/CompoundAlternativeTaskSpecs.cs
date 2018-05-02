@@ -4,6 +4,7 @@ using FakeItEasy;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -160,7 +161,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _solubilityGroup = new ParameterAlternativeGroup { Name = CoreConstants.Groups.COMPOUND_SOLUBILITY };
+         _solubilityGroup = new ParameterAlternativeGroup {Name = CoreConstants.Groups.COMPOUND_SOLUBILITY};
          _refPhParameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.REFERENCE_PH);
          _solubilityRefPh = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
          _solubilityTable = DomainHelperForSpecs.ConstantParameterWithValue(20).WithName(CoreConstants.Parameters.SOLUBILITY_TABLE);
@@ -173,7 +174,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _solubilityAlternativeNameParameter.Name).Returns("new name");
          _solubilityAlternativeNameParameter.CreateAsTable = true;
 
-         _newTableAlternative = new ParameterAlternative {_solubilityRefPh, _solubilityTable, _refPhParameter, _solubilityGainParameter };
+         _newTableAlternative = new ParameterAlternative {_solubilityRefPh, _solubilityTable, _refPhParameter, _solubilityGainParameter};
 
          A.CallTo(() => _parameterAlternativeFactory.CreateTableAlternativeFor(_solubilityGroup, CoreConstants.Parameters.SOLUBILITY_TABLE)).Returns(_newTableAlternative);
 
@@ -613,6 +614,47 @@ namespace PKSim.Presentation
       public void should_not_update_the_building_block_version()
       {
          _command.All().OfType<BuildingBlockChangeCommand>().Each(x => x.ShouldChangeVersion.ShouldBeFalse());
+      }
+   }
+
+   public class When_editing_the_solubility_table_for_a_solubility_parameter : concern_for_CompoundAlternativeTask
+   {
+      private IParameter _parameter;
+      private ICommand _result;
+      private IEditTableSolubilityParameterPresenter _editSolubilityParameterPresenter;
+      private TableFormula _editedTableFormula;
+      private ICommand _updateTableFormulaCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _updateTableFormulaCommand = A.Fake<ICommand>();
+         _editedTableFormula = new TableFormula();
+         _editSolubilityParameterPresenter = A.Fake<IEditTableSolubilityParameterPresenter>();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue();
+         A.CallTo(() => _applicationController.Start<IEditTableSolubilityParameterPresenter>()).Returns(_editSolubilityParameterPresenter);
+
+         A.CallTo(() => _editSolubilityParameterPresenter.Edit(_parameter)).Returns(true);
+         A.CallTo(() => _editSolubilityParameterPresenter.EditedFormula).Returns(_editedTableFormula);
+
+         A.CallTo(() => _parameterTask.UpdateTableFormula(_parameter, _editedTableFormula)).Returns(_updateTableFormulaCommand);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.EditSolubilityTableFor(_parameter);
+      }
+
+      [Observation]
+      public void should_retrieve_the_edit_solubility_parameter_table()
+      {
+         A.CallTo(() => _editSolubilityParameterPresenter.Edit(_parameter)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_the_table_formula_and_return_the_edited_command()
+      {
+         _result.ShouldBeEqualTo(_updateTableFormulaCommand);
       }
    }
 }

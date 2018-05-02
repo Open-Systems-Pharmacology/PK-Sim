@@ -77,7 +77,7 @@ namespace PKSim.Presentation.Presenters.Formulations
 
       public bool CanEditFormulationType
       {
-         set { _view.FormulationTypeVisible = value; }
+         set => _view.FormulationTypeVisible = value;
       }
 
       public void EditFormulationFor(string applicationRoute)

@@ -241,7 +241,7 @@ namespace PKSim.Presentation.Services
             if (!tablePresenter.Edit(parameter))
                return new PKSimEmptyCommand();
 
-            return _parameterTask.SetParameterFomula(parameter, tablePresenter.EditedFormula);
+            return _parameterTask.UpdateTableFormula(parameter, tablePresenter.EditedFormula);
          }
       }
 

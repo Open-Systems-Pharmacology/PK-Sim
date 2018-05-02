@@ -53,7 +53,7 @@ namespace PKSim.Presentation.Services
             if (!tablePresenter.Edit(parameter))
                return;
 
-            presenter.AddCommand(_parameterTask.SetParameterFomula(parameter, tablePresenter.EditedFormula));
+            presenter.AddCommand(_parameterTask.UpdateTableFormula(parameter, tablePresenter.EditedFormula));
          }
       }
 
