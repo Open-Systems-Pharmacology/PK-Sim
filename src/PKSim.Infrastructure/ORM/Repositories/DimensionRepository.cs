@@ -28,6 +28,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _pkSimConfiguration = pkSimConfiguration;
       }
 
+      public IDimension OptimalDimensionFor(IDimension dimension) => _dimensionFactory.OptimalDimension(dimension);
+
       public IDimension DosePerBodyWeight => DimensionByName(CoreConstants.Dimension.DosePerBodyWeight);
 
       public IDimension InputDose => DimensionByName(CoreConstants.Dimension.InputDose);
