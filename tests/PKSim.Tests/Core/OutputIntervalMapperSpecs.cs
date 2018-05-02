@@ -17,8 +17,10 @@ namespace PKSim.Core
       protected Snapshots.OutputInterval _snapshot;
       protected Parameter _endTimeSnapshotParameter;
       protected Parameter _anotherSnapshotParameter;
+      protected Parameter _resolutionSnapshotParameter;
       protected IOutputIntervalFactory _outputIntervalFactory;
       private IParameter _anotherParameter;
+      private IParameter _resolutionParameter;
 
       protected override Task Context()
       {
@@ -31,14 +33,18 @@ namespace PKSim.Core
             Name = "Interval"
          };
          _endTimeParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault:true).WithName(Constants.Parameters.END_TIME);
+         _resolutionParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault:true).WithName(Constants.Parameters.RESOLUTION);
          _anotherParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault:false).WithName("Another");
          _outputInterval.Add(_endTimeParameter);
          _outputInterval.Add(_anotherParameter);
+         _outputInterval.Add(_resolutionParameter);
 
          _endTimeSnapshotParameter = new Parameter().WithName(_endTimeParameter.Name);
          _anotherSnapshotParameter = new Parameter().WithName(_anotherParameter.Name);
+         _resolutionSnapshotParameter = new Parameter().WithName(_resolutionParameter.Name);
          A.CallTo(() => _parameterMapper.MapToSnapshot(_endTimeParameter)).Returns(_endTimeSnapshotParameter);
          A.CallTo(() => _parameterMapper.MapToSnapshot(_anotherParameter)).Returns(_anotherSnapshotParameter);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_resolutionParameter)).Returns(_resolutionSnapshotParameter);
 
          return _completed;
       }
@@ -58,9 +64,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_a_snapshot_with_all_start_time_and_end_time_parameter_exported()
+      public void should_return_a_snapshot_with_all_start_time_end_time_parameter_and_resolution_exported()
       {
-         _snapshot.Parameters.ShouldContain(_endTimeSnapshotParameter);
+         _snapshot.Parameters.ShouldContain(_endTimeSnapshotParameter, _resolutionSnapshotParameter);
       }
 
       [Observation]

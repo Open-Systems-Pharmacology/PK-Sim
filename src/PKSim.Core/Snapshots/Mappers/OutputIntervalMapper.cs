@@ -27,7 +27,7 @@ namespace PKSim.Core.Snapshots.Mappers
       protected override bool ShouldExportParameterToSnapshot(IParameter parameter)
       {
          //we want to ensure that start time and end time are always exported
-         return parameter.NameIsOneOf(Constants.Parameters.START_TIME, Constants.Parameters.END_TIME) || base.ShouldExportParameterToSnapshot(parameter);
+         return parameter.NameIsOneOf(Constants.Parameters.START_TIME, Constants.Parameters.END_TIME, Constants.Parameters.RESOLUTION) || base.ShouldExportParameterToSnapshot(parameter);
       }
 
       public override async Task<ModelOutputInterval> MapToModel(SnapshotOutputInterval snapshot)
