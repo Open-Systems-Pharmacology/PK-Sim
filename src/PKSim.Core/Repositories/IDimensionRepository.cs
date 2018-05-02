@@ -7,6 +7,7 @@ namespace PKSim.Core.Repositories
    public interface IDimensionRepository : IStartableRepository<IDimension>
    {
       IDimension DimensionByName(string dimensionName);
+      IDimension OptimalDimensionFor(IDimension dimension);
       IDimension DosePerBodyWeight { get; }
       IDimension InputDose { get; }
       IDimension Time { get; }

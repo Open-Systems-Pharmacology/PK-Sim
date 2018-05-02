@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core.Repositories;
 using ModelAxis = OSPSuite.Core.Chart.Axis;
 using SnashotAxis = PKSim.Core.Snapshots.Axis;
 
@@ -7,18 +7,18 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class AxisMapper : SnapshotMapperBase<ModelAxis, SnashotAxis>
    {
-      private readonly IDimensionFactory _dimensionFactory;
+      private readonly IDimensionRepository _dimensionRepository;
 
-      public AxisMapper(IDimensionFactory dimensionFactory)
+      public AxisMapper(IDimensionRepository dimensionRepository)
       {
-         _dimensionFactory = dimensionFactory;
+         _dimensionRepository = dimensionRepository;
       }
 
       public override Task<SnashotAxis> MapToSnapshot(ModelAxis axis)
       {
          return SnapshotFrom(axis, x =>
          {
-            x.Dimension = axis.Dimension.Name;
+            x.Dimension = axis.Dimension?.Name;
             x.Unit = ModelValueFor(axis.UnitName);
             x.Caption = SnapshotValueFor(axis.Caption);
             x.Type = axis.AxisType;
@@ -38,6 +38,9 @@ namespace PKSim.Core.Snapshots.Mappers
          if (baseValue == null)
             return null;
 
+         if (axis.Dimension == null)
+            return baseValue;
+
          return (float) axis.Dimension.BaseUnitValueToUnitValue(axis.Unit, baseValue.Value);
       }
 
@@ -46,6 +49,9 @@ namespace PKSim.Core.Snapshots.Mappers
          if (displayValue == null)
             return null;
 
+         if (axis.Dimension == null)
+            return displayValue;
+
          return (float) axis.Dimension.UnitValueToBaseUnitValue(axis.Unit, displayValue.Value);
       }
 
@@ -53,7 +59,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var axis = new ModelAxis(snapshot.Type)
          {
-            Dimension = _dimensionFactory.Dimension(snapshot.Dimension),
+            Dimension = _dimensionRepository.DimensionByName(snapshot.Dimension),
             UnitName = ModelValueFor(snapshot.Unit),
             Caption = snapshot.Caption,
             GridLines = snapshot.GridLines,
@@ -64,7 +70,7 @@ namespace PKSim.Core.Snapshots.Mappers
             NumberMode = snapshot.NumberMode
          };
 
-         axis.Dimension = _dimensionFactory.OptimalDimension(axis.Dimension);
+         axis.Dimension = _dimensionRepository.OptimalDimensionFor(axis.Dimension);
          axis.Min = baseValueFor(axis, snapshot.Min);
          axis.Max = baseValueFor(axis, snapshot.Max);
 

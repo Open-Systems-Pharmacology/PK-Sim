@@ -4,8 +4,8 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Core
@@ -15,12 +15,12 @@ namespace PKSim.Core
       protected Axis _axis;
       protected Snapshots.Axis _snapshot;
       protected IDimension _dimension;
-      protected IDimensionFactory _dimensionFactory;
+      protected IDimensionRepository _dimensionRepository;
 
       protected override Task Context()
       {
-         _dimensionFactory = A.Fake<IDimensionFactory>();
-         sut = new AxisMapper(_dimensionFactory);
+         _dimensionRepository = A.Fake<IDimensionRepository>();
+         sut = new AxisMapper(_dimensionRepository);
          _dimension = DomainHelperForSpecs.TimeDimensionForSpecs();
 
          _axis = new Axis(AxisTypes.Y)
@@ -36,7 +36,7 @@ namespace PKSim.Core
             DefaultLineStyle = LineStyles.Solid
          };
 
-         A.CallTo(() => _dimensionFactory.Dimension(_dimension.Name)).Returns(_dimension);
+         A.CallTo(() => _dimensionRepository.DimensionByName(_dimension.Name)).Returns(_dimension);
 
          return _completed;
       }
@@ -66,6 +66,26 @@ namespace PKSim.Core
       {
          _snapshot.Min.ShouldBeEqualTo(1);
          _snapshot.Max.ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_mapping_an_axis_to_snapshot_that_does_not_have_a_dimension : concern_for_AxisMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _axis.Dimension = null;
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_axis);
+      }
+
+      [Observation]
+      public void should_return_a_snapshot_with_an_empty_dimension()
+      {
+         _snapshot.Dimension.ShouldBeNull();
       }
    }
 
@@ -100,7 +120,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_axis);
          _optimalDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
-         A.CallTo(() => _dimensionFactory.MergedDimensionFor(A<DataColumn>._)).Returns(_optimalDimension);
+         A.CallTo(() => _dimensionRepository.OptimalDimensionFor(_dimension)).Returns(_optimalDimension);
       }
 
       protected override async Task Because()
