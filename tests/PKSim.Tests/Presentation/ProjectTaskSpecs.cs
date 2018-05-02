@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -932,6 +934,12 @@ namespace PKSim.Presentation
       public void should_close_all_presenters_effectively_open()
       {
          A.CallTo(() => _applicationController.CloseAll()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_have_added_a_command_to_the_history()
+      {
+         A.CallTo(() => _workspace.AddCommand(A<ICommand>.That.Matches(x=>x.IsAnImplementationOf<LoadProjectFromSnapshotCommand>()))).MustHaveHappened();   
       }
 
       [Observation]

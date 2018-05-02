@@ -18,6 +18,12 @@ namespace PKSim.Presentation.Presenters.Snapshots
       void SelectFile();
       Task Start();
       bool ModelIsDefined { get; }
+
+      /// <summary>
+      /// File selected by the user containing the snapshot being loaded. 
+      /// </summary>
+      string SnapshotFile { get; }
+
    }
 
    public interface ILoadFromSnapshotPresenter<T> : ILoadFromSnapshotPresenter where T : class, IObjectBase
@@ -97,6 +103,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
       }
 
       public bool ModelIsDefined => _model != null;
+
+      public string SnapshotFile => _loadFromSnapshotDTO.SnapshotFile;
 
       protected async Task PerformLoad(string snapshotFile)
       {

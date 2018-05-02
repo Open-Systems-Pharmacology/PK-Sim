@@ -25,7 +25,7 @@ namespace PKSim.Infrastructure
       private readonly IHistoryManagerFactory _historyManagerFactory;
 
       public IHistoryManager HistoryManager { get; set; }
-      public IWorkspaceLayout WorkspaceLayout { get; set; }
+      public IWorkspaceLayout WorkspaceLayout { get; set; } = new WorkspaceLayout();
 
       public Workspace(
          IEventPublisher eventPublisher,
@@ -41,7 +41,6 @@ namespace PKSim.Infrastructure
          _workspacePersistor = workspacePersistor;
          _mruProvider = mruProvider;
          _historyManagerFactory = historyManagerFactory;
-         WorkspaceLayout = new WorkspaceLayout();
       }
 
       public void CloseProject()
@@ -51,6 +50,7 @@ namespace PKSim.Infrastructure
          _eventPublisher.PublishEvent(new ProjectClosingEvent());
          _registrationTask.UnregisterProject(_project);
          HistoryManager = null;
+         WorkspaceLayout = new WorkspaceLayout();
          _workspacePersistor.CloseSession();
          Clear();
          _eventPublisher.PublishEvent(new ProjectClosedEvent());

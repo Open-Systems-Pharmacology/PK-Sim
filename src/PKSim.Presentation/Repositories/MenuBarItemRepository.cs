@@ -50,7 +50,7 @@ namespace PKSim.Presentation.Repositories
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadProjectFromSnapshot)
             .WithId(MenuBarItemIds.LoadProjectFromSnahpshot)
-            .WithCommand< LoadProjectFromSnapshotCommand>()
+            .WithCommand< LoadProjectFromSnapshotUICommand>()
             .WithDescription(PKSimConstants.UI.LoadProjectFromSnapshotDescription)
             .WithIcon(ApplicationIcons.SnapshotImport);
 
