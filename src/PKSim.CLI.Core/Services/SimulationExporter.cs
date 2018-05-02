@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -24,9 +25,9 @@ namespace PKSim.CLI.Core.Services
 
    public interface ISimulationExporter
    {
-      Task RunAndExport(Simulation simulation, string outputFolder,  SimulationRunOptions simulationRunOptions, SimulationExportMode simulationExportMode);
+      Task RunAndExport(Simulation simulation, string outputFolder, SimulationRunOptions simulationRunOptions, SimulationExportMode simulationExportMode);
 
-      Task Export(Simulation simulation, string outputFolder,  SimulationExportMode simulationExportMode);
+      Task Export(Simulation simulation, string outputFolder, SimulationExportMode simulationExportMode);
    }
 
    public class SimulationExporter : ISimulationExporter
@@ -58,7 +59,7 @@ namespace PKSim.CLI.Core.Services
          _moBiExportTask = moBiExportTask;
       }
 
-      public async Task RunAndExport(Simulation simulation, string outputFolder,  SimulationRunOptions simulationRunOptions, SimulationExportMode simulationExportMode)
+      public async Task RunAndExport(Simulation simulation, string outputFolder, SimulationRunOptions simulationRunOptions, SimulationExportMode simulationExportMode)
       {
          _logger.AddDebug($"Running simulation '{simulation.Name}'");
          await _simulationRunner.RunSimulation(simulation, simulationRunOptions);
@@ -92,21 +93,21 @@ namespace PKSim.CLI.Core.Services
 
       private async Task exportSimulationPkmlAsync(Simulation simulation, string outputFolder)
       {
-         var fileName = Path.Combine(outputFolder, $"{simulation.Name}{Constants.Filter.PKML_EXTENSION}");
+         var fileName = pathUnder(outputFolder, simulation.Name, Constants.Filter.PKML_EXTENSION);
          await _moBiExportTask.SaveSimulationToFileAsync(simulation, fileName);
          _logger.AddDebug($"Exporting simulation pkml to '{fileName}'");
       }
 
       private async Task exportSimModelXmlAsync(Simulation simulation, string outputFolder)
       {
-         var fileName = Path.Combine(outputFolder, $"{simulation.Name}{Constants.Filter.XML_EXTENSION}");
+         var fileName = pathUnder(outputFolder, simulation.Name, Constants.Filter.XML_EXTENSION);
          await _simulationExportTask.ExportSimulationToSimModelXmlAsync(simulation, fileName);
          _logger.AddDebug($"Exporting simulation SimModel xml to '{fileName}'");
       }
 
       private async Task exportResultsToJsonAsync(IndividualSimulation simulation, string outputFolder)
       {
-         var fileName = Path.Combine(outputFolder, $"{simulation.Name}{Constants.Filter.JSON_EXTENSION}");
+         var fileName = pathUnder(outputFolder, simulation.Name, Constants.Filter.JSON_EXTENSION);
          await _simulationResultsExporter.ExportToJsonAsync(simulation, simulation.DataRepository, fileName);
          _logger.AddDebug($"Exporting simulation results to '{fileName}'");
       }
@@ -144,9 +145,11 @@ namespace PKSim.CLI.Core.Services
          _logger.AddDebug($"Exporting simulation parameters to '{parameterReportFileName}'");
       }
 
-      private string csvPathUnder(string outputFolder, string fileNameWithoutExtension)
+      private string csvPathUnder(string outputFolder, string fileNameWithoutExtension) => pathUnder(outputFolder, fileNameWithoutExtension, Constants.Filter.CSV_EXTENSION);
+
+      private string pathUnder(string outputFolder, string fileName, string extension)
       {
-         return Path.Combine(outputFolder, $"{fileNameWithoutExtension}{Constants.Filter.CSV_EXTENSION}");
+         return Path.Combine(outputFolder, $"{FileHelper.RemoveIllegalCharactersFrom(fileName)}{extension}");
       }
    }
 }
