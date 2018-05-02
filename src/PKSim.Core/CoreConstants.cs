@@ -81,11 +81,10 @@ namespace PKSim.Core
       public static string DefaultResultsExportNameFor(string simulationName) => $"{simulationName}-Results";
 
       public static string DefaultPKAnalysesExportNameFor(string simulationName) => $"{simulationName}-PK-Analyses";
-         
+
       public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
 
-  
-      public static string CompositeNameFor(params string[] names)
+     public static string CompositeNameFor(params string[] names)
       {
          if (names == null || names.Length == 0)
             return string.Empty;
@@ -358,7 +357,7 @@ namespace PKSim.Core
             Rectum
          };
 
-         public static readonly IEnumerable<string> LumenSegmentsStomachToRectum = new List<string>{Stomach}.Concat(LumenSegmentsDuodenumToRectum);
+         public static readonly IEnumerable<string> LumenSegmentsStomachToRectum = new List<string> {Stomach}.Concat(LumenSegmentsDuodenumToRectum);
       }
 
       public static class Compound
@@ -597,7 +596,7 @@ namespace PKSim.Core
             COMPOUND_FRACTION_UNBOUND
          };
 
-         public static IReadOnlyList<string> AllSimulationCompoundGroups = new []
+         public static IReadOnlyList<string> AllSimulationCompoundGroups = new[]
          {
             DISTRIBUTION,
             PARTITION_COEFFICIENT,
