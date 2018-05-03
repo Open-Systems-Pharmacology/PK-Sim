@@ -29,9 +29,9 @@ namespace PKSim.Infrastructure
    public class When_retrieving_the_full_version_of_the_assembly : concern_for_PKSimConfiguration
    {
       [Observation]
-      public void should_return_a_string_containing_the_revison_number()
+      public void should_return_a_string_containing_the_revison_number_or_the_info_number()
       {
-         sut.FullVersion.Contains("Build").ShouldBeTrue();
+         sut.FullVersion.StartsWith($"{sut.Version}").ShouldBeTrue();
       }
    }
 

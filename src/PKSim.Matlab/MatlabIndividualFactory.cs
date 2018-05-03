@@ -6,7 +6,7 @@ using OSPSuite.Utility.Container;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
-using PKSim.Matlab.Mappers;
+using PKSim.Core.Snapshots.Mappers;
 using OriginData = PKSim.Core.Snapshots.OriginData;
 
 namespace PKSim.Matlab
@@ -19,7 +19,7 @@ namespace PKSim.Matlab
 
    public class MatlabIndividualFactory : IMatlabIndividualFactory
    {
-      private readonly IMatlabOriginDataToOriginDataMapper _originDataMapper;
+      private readonly OriginDataMapper _originDataMapper;
       private readonly IIndividualFactory _individualFactory;
       private readonly IIndividualToIndividualPropertiesMapper _individualPropertiesMapper;
       private readonly IOntogenyFactorsRetriever _ontogenyFactorsRetriever;
@@ -32,7 +32,7 @@ namespace PKSim.Matlab
 
       public MatlabIndividualFactory()
          : this(
-            IoC.Resolve<IMatlabOriginDataToOriginDataMapper>(),
+            IoC.Resolve<OriginDataMapper>(),
             IoC.Resolve<IIndividualFactory>(),
             IoC.Resolve<IIndividualToIndividualPropertiesMapper>(),
             IoC.Resolve<IOntogenyFactorsRetriever>(),
@@ -42,7 +42,7 @@ namespace PKSim.Matlab
       }
 
       internal MatlabIndividualFactory(
-         IMatlabOriginDataToOriginDataMapper originDataMapper,
+         OriginDataMapper originDataMapper,
          IIndividualFactory individualFactory,
          IIndividualToIndividualPropertiesMapper individualPropertiesMapper,
          IOntogenyFactorsRetriever ontogenyFactorsRetriever,
@@ -57,7 +57,7 @@ namespace PKSim.Matlab
 
       public ParameterValue[] CreateIndividual(OriginData matlabOriginData, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
       {
-         var originData = _originDataMapper.MapFrom(matlabOriginData);
+         var originData = originDataFrom(matlabOriginData);
          var individual = _individualFactory.CreateAndOptimizeFor(originData);
          var individualProperties = _individualPropertiesMapper.MapFrom(individual);
          var allIndividualParameters = individualProperties.ParameterValues.ToList();
@@ -67,10 +67,12 @@ namespace PKSim.Matlab
 
       public DistributedParameterValue[] DistributionsFor(OriginData matlabOriginData, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
       {
-         var originData = _originDataMapper.MapFrom(matlabOriginData);
+         var originData = originDataFrom(matlabOriginData);
          var individual = _individualFactory.CreateAndOptimizeFor(originData);
          return individual.GetAllChildren<IDistributedParameter>().Select(distributedParameterValueFrom).ToArray();
       }
+
+      private Core.Model.OriginData originDataFrom(OriginData matlabOriginData) => _originDataMapper.MapToModel(matlabOriginData).Result;
 
       private DistributedParameterValue distributedParameterValueFrom(IDistributedParameter parameter)
       {

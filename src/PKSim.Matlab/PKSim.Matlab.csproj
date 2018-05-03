@@ -65,9 +65,9 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="ApplicationStartup.cs" />
-    <Compile Include="Mappers\MatlabOriginDataToOriginDataMapper.cs" />
     <Compile Include="Mappers\MatlabPopulationSettingsToPopulationSettingsMapper.cs" />
     <Compile Include="MatlabFullPathDisplayResolver.cs" />
+    <Compile Include="MatlabHelper.cs" />
     <Compile Include="MatlabIndividualFactory.cs" />
     <Compile Include="MatlabRegister.cs" />
     <Compile Include="MatlabLazyLoadTask.cs" />

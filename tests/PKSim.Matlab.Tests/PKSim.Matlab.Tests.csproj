@@ -89,6 +89,7 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="MatlabHelperSpecs.cs" />
     <Compile Include="MatlabIndividualFactorySpecs.cs" />
     <Compile Include="MatlabPopulationFactorySpecs.cs" />
     <Compile Include="OntogenyFactorsRetrieverSpecs.cs" />
@@ -106,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Data\S1_concentrBased.pkml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
