@@ -175,6 +175,25 @@ namespace PKSim.Presentation.Services
          return _parameterTask.SetParameterUnitWithoutBuildingBlockChange(parameter, newUnit);
       }
 
+      public ICommand SetAlternativeParameterTable(IParameter parameter, TableFormula formula)
+      {
+         if (simulationsAreUsingAlternativeContaining(parameter))
+            return _parameterTask.UpdateTableFormula(parameter, formula);
+
+         return _parameterTask.UpdateTableFormulaWithoutBuildingBlockChange(parameter, formula);
+      }
+
+      public ICommand EditSolubilityTableFor(IParameter parameter)
+      {
+         using (var tablePresenter = _applicationController.Start<IEditTableSolubilityParameterPresenter>())
+         {
+            if (!tablePresenter.Edit(parameter))
+               return new PKSimEmptyCommand();
+
+            return SetAlternativeParameterTable(parameter, tablePresenter.EditedFormula);
+         }
+      }
+
       private bool simulationsAreUsingAlternativeContaining(IParameter parameter)
       {
          var alternative = parameter.ParentContainer as ParameterAlternative;
@@ -234,16 +253,7 @@ namespace PKSim.Presentation.Services
          return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 
-      public ICommand EditSolubilityTableFor(IParameter parameter)
-      {
-         using (var tablePresenter = _applicationController.Start<IEditTableSolubilityParameterPresenter>())
-         {
-            if (!tablePresenter.Edit(parameter))
-               return new PKSimEmptyCommand();
-
-            return _parameterTask.UpdateTableFormula(parameter, tablePresenter.EditedFormula);
-         }
-      }
+  
 
       private TableFormula formulaFrom(DataRepository dataRepository)
       {

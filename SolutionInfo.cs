@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: AssemblyVersion("7.3.0.0")]
 [assembly: AssemblyFileVersion("7.3.0.0")]
-[assembly: AssemblyInformationalVersion("7.3.0.0")]
+[assembly: AssemblyInformationalVersion("7.3.0.0 Beta")]
 
 [assembly: InternalsVisibleTo("PKSim.Tests")]
 [assembly: InternalsVisibleTo("PKSim.UI.Tests")]

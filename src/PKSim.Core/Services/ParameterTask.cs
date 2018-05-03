@@ -211,24 +211,34 @@ namespace PKSim.Core.Services
       string PathFor(IParameter parameter);
 
       /// <summary>
-      ///    Sets the given formula as formula in the parameter. 
+      ///    Sets the given formula as formula in the parameter.
       /// </summary>
       /// <remarks>
-      /// This should not be used with building block parameters defined in simulation as a reference will be saved in both simulation parameters and used building block
+      ///    This should not be used with building block parameters defined in simulation as a reference will be saved in both
+      ///    simulation parameters and used building block
       /// </remarks>
       ICommand SetParameterFomula(IParameter parameter, IFormula formula);
 
       /// <summary>
       ///    Updates the table formula defined in the tableParameter with the valus of the tableFormula! This implicitely
-      ///    performs
-      ///    a clone of the table formula and does not update the references in the tableParameter
+      ///    performs a clone of the table formula and does not update the references in the tableParameter
       /// </summary>
       /// <param name="tableParameter">
-      ///    Parameter whose formula should be updated. It is assumed that the formula is a
-      ///    TableFormula
+      ///    Parameter whose formula should be updated. It is assumed that its formula is a TableFormula
       /// </param>
       /// <param name="tableFormula">TableFormula from which the value will be take</param>
       ICommand UpdateTableFormula(IParameter tableParameter, TableFormula tableFormula);
+
+      /// <summary>
+      ///    Updates the table formula defined in the tableParameter with the valus of the tableFormula! This implicitely
+      ///    performs a clone of the table formula and does not update the references in the tableParameter. The version of the
+      ///    building block containing the parameter will not be changed
+      /// </summary>
+      /// <param name="tableParameter">
+      ///    Parameter whose formula should be updated. It is assumed that its formula is a TableFormula
+      /// </param>
+      /// <param name="tableFormula">TableFormula from which the value will be take</param>
+      ICommand UpdateTableFormulaWithoutBuildingBlockChange(IParameter tableParameter, TableFormula tableFormula);
 
       /// <summary>
       ///    Updates the distributed table formula defines in the <paramref name="tableParameter" /> using the percentile of the
@@ -302,7 +312,7 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterDisplayValueWithoutBuildingBlockChange(IParameter parameter, double valueToSetInGuiUnit)
       {
-         return setParameterValue(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit), shouldChangeVersion:false, shouldUpdateDefaultStateAndValueOriginForDefaultParameter:true );
+         return setParameterValue(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit), shouldChangeVersion: false, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: true);
       }
 
       public ICommand SetParameterValue(IParameter parameter, double value, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
@@ -396,6 +406,16 @@ namespace PKSim.Core.Services
          return withUpdatedDefaultStateAndValue(new SetParameterUnitCommand(parameter, displayUnit) {ShouldChangeVersion = false}.Run(_executionContext), parameter, shouldChangeVersion: false);
       }
 
+      public ICommand UpdateTableFormula(IParameter tableParameter, TableFormula tableFormula)
+      {
+         return withUpdatedDefaultStateAndValue(new UpdateParameterTableFormulaCommand(tableParameter, tableFormula).Run(_executionContext), tableParameter);
+      }
+
+      public ICommand UpdateTableFormulaWithoutBuildingBlockChange(IParameter tableParameter, TableFormula tableFormula)
+      {
+         return withUpdatedDefaultStateAndValue(new UpdateParameterTableFormulaCommand(tableParameter, tableFormula) { ShouldChangeVersion = false }.Run(_executionContext), tableParameter, shouldChangeVersion: false);
+      }
+
       public ICommand SetParameterName(IParameter parameter, string name)
       {
          return new RenameEntityCommand(parameter, name, _executionContext).Run(_executionContext);
@@ -464,12 +484,7 @@ namespace PKSim.Core.Services
          return withUpdatedDefaultStateAndValue(new SetParameterFormulaCommand(parameter, formula).Run(_executionContext), parameter);
       }
 
-      public ICommand UpdateTableFormula(IParameter tableParameter, TableFormula tableFormula)
-      {
-         return withUpdatedDefaultStateAndValue(new UpdateParameterTableFormulaCommand(tableParameter, tableFormula).Run(_executionContext), tableParameter);
-      }
-
-      public ICommand UpdateDistributedTableFormula(IParameter tableParameter, IDistributedParameter distributedParameter)
+    public ICommand UpdateDistributedTableFormula(IParameter tableParameter, IDistributedParameter distributedParameter)
       {
          var distributedTableFormula = tableParameter.Formula as DistributedTableFormula;
          if (distributedTableFormula == null)
