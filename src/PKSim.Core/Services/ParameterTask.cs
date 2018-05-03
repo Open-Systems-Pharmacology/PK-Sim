@@ -211,24 +211,34 @@ namespace PKSim.Core.Services
       string PathFor(IParameter parameter);
 
       /// <summary>
-      ///    Sets the given formula as formula in the parameter. 
+      ///    Sets the given formula as formula in the parameter.
       /// </summary>
       /// <remarks>
-      /// This should not be used with building block parameters defined in simulation as a reference will be saved in both simulation parameters and used building block
+      ///    This should not be used with building block parameters defined in simulation as a reference will be saved in both
+      ///    simulation parameters and used building block
       /// </remarks>
       ICommand SetParameterFomula(IParameter parameter, IFormula formula);
 
       /// <summary>
       ///    Updates the table formula defined in the tableParameter with the valus of the tableFormula! This implicitely
-      ///    performs
-      ///    a clone of the table formula and does not update the references in the tableParameter
+      ///    performs a clone of the table formula and does not update the references in the tableParameter
       /// </summary>
       /// <param name="tableParameter">
-      ///    Parameter whose formula should be updated. It is assumed that the formula is a
-      ///    TableFormula
+      ///    Parameter whose formula should be updated. It is assumed that its formula is a TableFormula
       /// </param>
       /// <param name="tableFormula">TableFormula from which the value will be take</param>
       ICommand UpdateTableFormula(IParameter tableParameter, TableFormula tableFormula);
+
+      /// <summary>
+      ///    Updates the table formula defined in the tableParameter with the valus of the tableFormula! This implicitely
+      ///    performs a clone of the table formula and does not update the references in the tableParameter. The version of the
+      ///    building block containing the parameter will not be changed
+      /// </summary>
+      /// <param name="tableParameter">
+      ///    Parameter whose formula should be updated. It is assumed that its formula is a TableFormula
+      /// </param>
+      /// <param name="tableFormula">TableFormula from which the value will be take</param>
+      ICommand UpdateTableFormulaWithoutBuildingBlockChange(IParameter tableParameter, TableFormula tableFormula);
 
       /// <summary>
       ///    Updates the distributed table formula defines in the <paramref name="tableParameter" /> using the percentile of the
@@ -290,7 +300,7 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterValueAsStructureChange(IParameter parameter, double value, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
       {
-         return withUpdatedDefaultStateAndValue(new SetParameterValueStructureChangeCommand(parameter, value).Run(_executionContext), parameter, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
+         return executeAndUpdatedDefaultStateAndValue(new SetParameterValueStructureChangeCommand(parameter, value), parameter, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
       public ICommand SetParameterDisplayValueAsStructureChange(IParameter parameter, bool value)
@@ -302,7 +312,7 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterDisplayValueWithoutBuildingBlockChange(IParameter parameter, double valueToSetInGuiUnit)
       {
-         return setParameterValue(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit), shouldChangeVersion:false, shouldUpdateDefaultStateAndValueOriginForDefaultParameter:true );
+         return setParameterValue(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit), shouldChangeVersion: false, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: true);
       }
 
       public ICommand SetParameterValue(IParameter parameter, double value, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
@@ -328,8 +338,8 @@ namespace PKSim.Core.Services
 
       private ICommand setParameterValue(IParameter parameter, double value, bool shouldChangeVersion, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
       {
-         return withUpdatedDefaultStateAndValue(
-            new SetParameterValueCommand(parameter, value) {ShouldChangeVersion = shouldChangeVersion}.Run(_executionContext),
+         return executeAndUpdatedDefaultStateAndValue(
+            new SetParameterValueCommand(parameter, value),
             parameter,
             shouldChangeVersion,
             shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
@@ -337,22 +347,28 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterDisplayUnit(IParameter parameter, Unit displayUnit, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
       {
-         return withUpdatedDefaultStateAndValue(new SetParameterDisplayUnitCommand(parameter, displayUnit).Run(_executionContext), parameter, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
+         return executeAndUpdatedDefaultStateAndValue(new SetParameterDisplayUnitCommand(parameter, displayUnit), parameter, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
-      private ICommand withUpdatedDefaultStateAndValue(IOSPSuiteCommand command, IParameter parameter, bool shouldChangeVersion = true, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
+      private ICommand executeAndUpdatedDefaultStateAndValue(BuildingBlockChangeCommand commandToExecute, IParameter parameter, bool shouldChangeVersion = true, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
+      {
+         commandToExecute.ShouldChangeVersion = shouldChangeVersion;
+         return withUpdatedDefaultStateAndValue(commandToExecute.Run(_executionContext), parameter, shouldChangeVersion, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
+      }
+
+      private ICommand withUpdatedDefaultStateAndValue(IOSPSuiteCommand executedCommand, IParameter parameter, bool shouldChangeVersion = true, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
       {
          if (!shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
-            return command;
+            return executedCommand;
 
          if (!parameter.IsDefault)
-            return command;
+            return executedCommand;
 
-         if (command.IsEmpty())
-            return command;
+         if (executedCommand.IsEmpty())
+            return executedCommand;
 
-         var macroCommand = new PKSimMacroCommand().WithHistoryEntriesFrom(command);
-         macroCommand.Add(command);
+         var macroCommand = new PKSimMacroCommand().WithHistoryEntriesFrom(executedCommand);
+         macroCommand.Add(executedCommand);
          macroCommand.Add(new SetParameterDefaultStateCommand(parameter, isDefault: false) {ShouldChangeVersion = shouldChangeVersion}.Run(_executionContext).AsHidden());
 
          if (!parameter.ValueOrigin.IsUndefined)
@@ -375,7 +391,7 @@ namespace PKSim.Core.Services
          if (distributedParameter == null || ValueComparer.ArePercentilesEqual(distributedParameter.Percentile, percentile))
             return new PKSimEmptyCommand();
 
-         return withUpdatedDefaultStateAndValue(new SetParameterPercentileCommand(distributedParameter, percentile).Run(_executionContext), distributedParameter);
+         return executeAndUpdatedDefaultStateAndValue(new SetParameterPercentileCommand(distributedParameter, percentile), distributedParameter);
       }
 
       public ICommand SetParameterUnit(IParameter parameter, Unit displayUnit)
@@ -383,17 +399,27 @@ namespace PKSim.Core.Services
          if (parameter.IsStructural())
             return SetParameterUnitAsStructuralChange(parameter, displayUnit);
 
-         return withUpdatedDefaultStateAndValue(new SetParameterUnitCommand(parameter, displayUnit).Run(_executionContext), parameter);
+         return executeAndUpdatedDefaultStateAndValue(new SetParameterUnitCommand(parameter, displayUnit), parameter);
       }
 
       public ICommand SetParameterUnitAsStructuralChange(IParameter parameter, Unit displayUnit)
       {
-         return withUpdatedDefaultStateAndValue(new SetParameterUnitStructureChangeCommand(parameter, displayUnit).Run(_executionContext), parameter);
+         return executeAndUpdatedDefaultStateAndValue(new SetParameterUnitStructureChangeCommand(parameter, displayUnit), parameter);
       }
 
       public ICommand SetParameterUnitWithoutBuildingBlockChange(IParameter parameter, Unit displayUnit)
       {
-         return withUpdatedDefaultStateAndValue(new SetParameterUnitCommand(parameter, displayUnit) {ShouldChangeVersion = false}.Run(_executionContext), parameter, shouldChangeVersion: false);
+         return executeAndUpdatedDefaultStateAndValue(new SetParameterUnitCommand(parameter, displayUnit), parameter, shouldChangeVersion: false);
+      }
+
+      public ICommand UpdateTableFormula(IParameter tableParameter, TableFormula tableFormula)
+      {
+         return executeAndUpdatedDefaultStateAndValue(new UpdateParameterTableFormulaCommand(tableParameter, tableFormula), tableParameter);
+      }
+
+      public ICommand UpdateTableFormulaWithoutBuildingBlockChange(IParameter tableParameter, TableFormula tableFormula)
+      {
+         return executeAndUpdatedDefaultStateAndValue(new UpdateParameterTableFormulaCommand(tableParameter, tableFormula) , tableParameter, shouldChangeVersion: false);
       }
 
       public ICommand SetParameterName(IParameter parameter, string name)
@@ -418,12 +444,12 @@ namespace PKSim.Core.Services
 
       public ICommand SetAdvancedParameterDisplayValue(IParameter parameter, double valueToSetInGuiUnit)
       {
-         return withUpdatedDefaultStateAndValue(new SetAdvancedParameterValueCommand(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit)).Run(_executionContext), parameter);
+         return executeAndUpdatedDefaultStateAndValue(new SetAdvancedParameterValueCommand(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit)), parameter);
       }
 
       public ICommand SetAdvancedParameterUnit(IParameter parameter, Unit displayUnit)
       {
-         return withUpdatedDefaultStateAndValue(new SetAdvancedParameterUnitCommand(parameter, displayUnit).Run(_executionContext), parameter);
+         return executeAndUpdatedDefaultStateAndValue(new SetAdvancedParameterUnitCommand(parameter, displayUnit), parameter);
       }
 
       public ICache<IParameter, IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters)
@@ -449,7 +475,7 @@ namespace PKSim.Core.Services
 
       public ICommand SetCompoundType(IParameter compountTypeParameter, CompoundType newCompoundType)
       {
-         return withUpdatedDefaultStateAndValue(new SetCompoundTypeParameterCommand(compountTypeParameter, newCompoundType).Run(_executionContext), compountTypeParameter);
+         return executeAndUpdatedDefaultStateAndValue(new SetCompoundTypeParameterCommand(compountTypeParameter, newCompoundType), compountTypeParameter);
       }
 
       public PathCache<IParameter> PathCacheFor(IEnumerable<IParameter> parameters)
@@ -461,15 +487,10 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterFomula(IParameter parameter, IFormula formula)
       {
-         return withUpdatedDefaultStateAndValue(new SetParameterFormulaCommand(parameter, formula).Run(_executionContext), parameter);
+         return executeAndUpdatedDefaultStateAndValue(new SetParameterFormulaCommand(parameter, formula), parameter);
       }
 
-      public ICommand UpdateTableFormula(IParameter tableParameter, TableFormula tableFormula)
-      {
-         return withUpdatedDefaultStateAndValue(new UpdateParameterTableFormulaCommand(tableParameter, tableFormula).Run(_executionContext), tableParameter);
-      }
-
-      public ICommand UpdateDistributedTableFormula(IParameter tableParameter, IDistributedParameter distributedParameter)
+    public ICommand UpdateDistributedTableFormula(IParameter tableParameter, IDistributedParameter distributedParameter)
       {
          var distributedTableFormula = tableParameter.Formula as DistributedTableFormula;
          if (distributedTableFormula == null)
@@ -480,13 +501,13 @@ namespace PKSim.Core.Services
             if (ValueComparer.AreValuesEqual(distributedParameter.Value, tableParameter.Value, CoreConstants.DOUBLE_RELATIVE_EPSILON))
                return new PKSimEmptyCommand();
 
-            return withUpdatedDefaultStateAndValue(new UpdateDistributedTableFormulaRatioCommand(tableParameter, distributedParameter.Value / tableParameter.Value).Run(_executionContext), tableParameter);
+            return executeAndUpdatedDefaultStateAndValue(new UpdateDistributedTableFormulaRatioCommand(tableParameter, distributedParameter.Value / tableParameter.Value), tableParameter);
          }
 
          if (ValueComparer.ArePercentilesEqual(distributedTableFormula.Percentile, distributedParameter.Percentile))
             return new PKSimEmptyCommand();
 
-         return withUpdatedDefaultStateAndValue(new UpdateDistributedTableFormulaPercentileCommand(tableParameter, distributedParameter.Percentile).Run(_executionContext), tableParameter);
+         return executeAndUpdatedDefaultStateAndValue(new UpdateDistributedTableFormulaPercentileCommand(tableParameter, distributedParameter.Percentile), tableParameter);
       }
 
       private IParameter findNormParameterFor(IParameter relativeExpression)

@@ -20,29 +20,35 @@ namespace PKSim.Core.Services
       ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup, ParameterAlternative parameterAlternative);
 
       /// <summary>
-      ///    Remove the  <paramref name="parameterAlternative" /> from the <paramref name="parameterGroup" />
+      ///    Removes the  <paramref name="parameterAlternative" /> from the <paramref name="parameterGroup" />
       /// </summary>
       ICommand RemoveParameterGroupAlternative(ParameterAlternativeGroup parameterGroup, ParameterAlternative parameterAlternative);
 
       /// <summary>
-      ///    Rename the given <paramref name="parameterAlternative" />
+      ///    Renames the given <paramref name="parameterAlternative" />
       /// </summary>
       ICommand RenameParameterAlternative(ParameterAlternative parameterAlternative);
 
       /// <summary>
-      ///    Set the value of the parameter. If the alternative containing the parameter is not used in any simulation,
+      ///    Sets the value of the parameter. If the alternative containing the parameter is not used in any simulation,
       ///    the command will not update the building block version of the compound
       /// </summary>
       ICommand SetAlternativeParameterValue(IParameter parameter, double valueInDisplayUnit);
 
       /// <summary>
-      ///    Set the unit of the parameter. If the alternative containing the parameter is not used in any simulation,
+      ///    Sets the unit of the parameter. If the alternative containing the parameter is not used in any simulation,
       ///    the command will not update the building block version of the compound
       /// </summary>
       ICommand SetAlternativeParameterUnit(IParameter parameter, Unit newUnit);
 
       /// <summary>
-      ///    Edit the value origin for the given <paramref name="parameterAlternative" />
+      ///    Updates the table formula in <paramref name="parameter" /> with the <paramref name="formula" />.  If the alternative
+      ///    containing the parameter is not used in any simulation,the command will not update the building block version of the compound
+      /// </summary>
+      ICommand SetAlternativeParameterTable(IParameter parameter, TableFormula formula);
+
+      /// <summary>
+      ///    Edits the value origin for the given <paramref name="parameterAlternative" />
       /// </summary>
       ICommand UpdateValueOrigin(ParameterAlternative parameterAlternative, ValueOrigin newValueOrigin);
 
@@ -59,14 +65,14 @@ namespace PKSim.Core.Services
       IEnumerable<IParameter> IntestinalPermeabilityValuesFor(Compound compound);
 
       /// <summary>
-      ///    Set the given parameter alternative as default alternative in the parameter group
+      ///    Sets the given parameter alternative as default alternative in the parameter group
       /// </summary>
       /// <param name="parameterGroup">Parameter group containing the alternative</param>
       /// <param name="parameterAlternative">Parameter alternative that will be set as default</param>
       ICommand SetDefaultAlternativeFor(ParameterAlternativeGroup parameterGroup, ParameterAlternative parameterAlternative);
 
       /// <summary>
-      ///    set the given <paramref name="species" /> as species describing the value entered for the given alternative
+      ///    Sets the given <paramref name="species" /> as species describing the value entered for the given alternative
       /// </summary>
       /// <param name="parameterAlternative">Parameter alternative whose species should be set</param>
       /// <param name="species">Species to be set in the alternative</param>
@@ -78,17 +84,17 @@ namespace PKSim.Core.Services
       TableFormula SolubilityTableForPh(ParameterAlternative solubilityAlternative, Compound compound);
 
       /// <summary>
-      /// Imports a solubility table from file and returns the imported table
+      ///    Imports a solubility table from file and returns the imported table
       /// </summary>
       TableFormula ImportSolubilityTableFormula();
 
       /// <summary>
-      /// Edits the solubility talbe for the given <paramref name="parameter"/> 
+      ///    Edits the solubility talbe for the given <paramref name="parameter" />
       /// </summary>
       ICommand EditSolubilityTableFor(IParameter parameter);
 
-            /// <summary>
-      /// Performs initalization steps for a brand new solubility alternative that should behave as a Table alternative
+      /// <summary>
+      ///    Performs initalization steps for a brand new solubility alternative that should behave as a Table alternative
       /// </summary>
       /// <param name="solubilityAlternative"></param>
       void PrepareSolubilityAlternativeForTableSolubility(ParameterAlternative solubilityAlternative);

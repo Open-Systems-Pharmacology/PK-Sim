@@ -617,7 +617,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_editing_the_solubility_table_for_a_solubility_parameter : concern_for_CompoundAlternativeTask
+   public class When_editing_the_solubility_table_for_a_solubility_parameter_for_an_alternative_that_is_not_used_anywhere_in_a_simulation : concern_for_CompoundAlternativeTask
    {
       private IParameter _parameter;
       private ICommand _result;
@@ -637,7 +637,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _editSolubilityParameterPresenter.Edit(_parameter)).Returns(true);
          A.CallTo(() => _editSolubilityParameterPresenter.EditedFormula).Returns(_editedTableFormula);
 
-         A.CallTo(() => _parameterTask.UpdateTableFormula(_parameter, _editedTableFormula)).Returns(_updateTableFormulaCommand);
+         A.CallTo(() => _parameterTask.UpdateTableFormulaWithoutBuildingBlockChange(_parameter, _editedTableFormula)).Returns(_updateTableFormulaCommand);
       }
 
       protected override void Because()
@@ -657,4 +657,59 @@ namespace PKSim.Presentation
          _result.ShouldBeEqualTo(_updateTableFormulaCommand);
       }
    }
+
+   public class When_editing_the_solubility_table_for_a_solubility_parameter_for_an_alternative_that_is_used_in_a_simulation : concern_for_CompoundAlternativeTask
+   {
+      private IParameter _parameter;
+      private ICommand _result;
+      private IEditTableSolubilityParameterPresenter _editSolubilityParameterPresenter;
+      private TableFormula _editedTableFormula;
+      private ICommand _updateTableFormulaCommand;
+      private ParameterAlternative _alternative;
+
+      protected override void Context()
+      {
+         base.Context();
+         _updateTableFormulaCommand = A.Fake<ICommand>();
+         _editedTableFormula = new TableFormula();
+         _editSolubilityParameterPresenter = A.Fake<IEditTableSolubilityParameterPresenter>();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue().WithName("SOL");
+         A.CallTo(() => _applicationController.Start<IEditTableSolubilityParameterPresenter>()).Returns(_editSolubilityParameterPresenter);
+
+         A.CallTo(() => _editSolubilityParameterPresenter.Edit(_parameter)).Returns(true);
+         A.CallTo(() => _editSolubilityParameterPresenter.EditedFormula).Returns(_editedTableFormula);
+
+         A.CallTo(() => _parameterTask.UpdateTableFormula(_parameter, _editedTableFormula)).Returns(_updateTableFormulaCommand);
+
+
+         var solGroup = new ParameterAlternativeGroup().WithName(CoreConstants.Groups.COMPOUND_SOLUBILITY);
+         _alternative = new ParameterAlternative().WithName("ALT1");
+         _alternative.Add(_parameter);
+         solGroup.AddAlternative(_alternative);
+         var simulation = new IndividualSimulation { Properties = new SimulationProperties() };
+         A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new[] { simulation });
+
+         var compoundProperties = new CompoundProperties();
+         simulation.Properties.AddCompoundProperties(compoundProperties);
+         compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection { AlternativeName = _alternative.Name, GroupName = solGroup.Name });
+      }
+
+      protected override void Because()
+      {
+         _result = sut.EditSolubilityTableFor(_parameter);
+      }
+
+      [Observation]
+      public void should_retrieve_the_edit_solubility_parameter_table()
+      {
+         A.CallTo(() => _editSolubilityParameterPresenter.Edit(_parameter)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_the_table_formula_and_return_the_edited_command()
+      {
+         _result.ShouldBeEqualTo(_updateTableFormulaCommand);
+      }
+   }
+
 }

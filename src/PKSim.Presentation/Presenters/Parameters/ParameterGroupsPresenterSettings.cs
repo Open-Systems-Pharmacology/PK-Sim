@@ -13,14 +13,14 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public virtual ParameterGroupingMode ParameterGroupingMode
       {
-         get { return groupingModeFrom(GetSetting(PARAMETER_GROUPING_MODE_ID_SETTING, DefaultParameterGroupingModeId)); }
-         set { SetSetting(PARAMETER_GROUPING_MODE_ID_SETTING, value.Id); }
+         get => groupingModeFrom(GetSetting(PARAMETER_GROUPING_MODE_ID_SETTING, DefaultParameterGroupingModeId));
+         set => SetSetting(PARAMETER_GROUPING_MODE_ID_SETTING, value.Id);
       }
 
       public virtual string SelectedNodeId
       {
-         get { return GetSetting<string>(SELECTED_NODE_ID); }
-         set { SetSetting(SELECTED_NODE_ID, value); }
+         get => GetSetting<string>(SELECTED_NODE_ID);
+         set => SetSetting(SELECTED_NODE_ID, value);
       }
 
       private ParameterGroupingMode groupingModeFrom(ParameterGroupingModeId parameterGroupingModeId)
