@@ -62,10 +62,10 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_converted_min_and_max_to_display_unit()
+      public void should_have_saved_the_min_and_max_as_is_as_they_are_already_saved_in_display_unit()
       {
-         _snapshot.Min.ShouldBeEqualTo(1);
-         _snapshot.Max.ShouldBeEqualTo(2);
+         _snapshot.Min.ShouldBeEqualTo(60);
+         _snapshot.Max.ShouldBeEqualTo(120);
       }
    }
 
@@ -105,7 +105,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_set_any_min_or_max_into_the_snapshot()
       {
-         _snapshot.Min.ShouldBeEqualTo(1);
+         _snapshot.Min.ShouldBeEqualTo(60);
          _snapshot.Max.ShouldBeNull();
       }
    }
@@ -146,7 +146,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_converted_min_and_max_to_base_unit()
+      public void should_have_loaded_the_min_and_max_from_snapshot_as_is()
       {
          _newAxis.Min.ShouldBeEqualTo(60);
          _newAxis.Max.ShouldBeEqualTo(120);
