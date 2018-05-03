@@ -14,7 +14,11 @@ namespace PKSim.Presentation.Presenters.Snapshots
 {
    public interface ILoadProjectFromSnapshotPresenter : ILoadFromSnapshotPresenter<PKSimProject>
    {
+      /// <summary>
+      /// Project loaded from selected snapshot file. It is null if the user cancels the action or if the file was not loaded properly
+      /// </summary>
       PKSimProject LoadProject();
+
    }
 
    public class LoadProjectFromSnapshotPresenter : LoadFromSnapshotPresenter<PKSimProject>, ILoadProjectFromSnapshotPresenter

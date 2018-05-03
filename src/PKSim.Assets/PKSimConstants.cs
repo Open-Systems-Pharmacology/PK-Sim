@@ -386,6 +386,11 @@ namespace PKSim.Assets
          {
             return $"Updating default state for '{parameterDisplayName}' from {oldIsDefault} to {newIsDefault}";
          }
+
+         public static string LoadProjectFromSnapshotDescription(string snapshotFile, string version)
+         {
+            return $"Project loaded from snapshot file '{snapshotFile}' with version {version}";
+         }
       }
 
       public static class Error

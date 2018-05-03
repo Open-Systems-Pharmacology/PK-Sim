@@ -226,8 +226,12 @@ namespace PKSim.Presentation.Services
 
          using (var presenter = _applicationController.Start<ILoadProjectFromSnapshotPresenter>())
          {
-            _workspace.LoadProject(presenter.LoadProject());
-         }        
+            var project = presenter.LoadProject();
+            if (project == null)
+               return;
+
+            _workspace.AddCommand(new LoadProjectFromSnapshotCommand(_workspace, project, presenter.SnapshotFile).Run(_executionContext));
+         }
       }
 
       public Task ExportCurrentProjectToSnapshot() => _snapshotTask.ExportModelToSnapshot(_workspace.Project);

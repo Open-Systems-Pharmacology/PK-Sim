@@ -5,14 +5,14 @@ using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_LoadProjectFromSnapshotCommand : ContextSpecification<LoadProjectFromSnapshotCommand>
+   public abstract class concern_for_LoadProjectFromSnapshotCommand : ContextSpecification<LoadProjectFromSnapshotUICommand>
    {
       protected IProjectTask _projectTask;
 
       protected override void Context()
       {
          _projectTask = A.Fake<IProjectTask>();
-         sut = new LoadProjectFromSnapshotCommand(_projectTask);
+         sut = new LoadProjectFromSnapshotUICommand(_projectTask);
       }
    }
 

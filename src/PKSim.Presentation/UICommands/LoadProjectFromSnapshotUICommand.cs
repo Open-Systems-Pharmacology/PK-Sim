@@ -3,11 +3,11 @@ using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class LoadProjectFromSnapshotCommand : IUICommand
+   public class LoadProjectFromSnapshotUICommand : IUICommand
    {
       private readonly IProjectTask _projectTask;
 
-      public LoadProjectFromSnapshotCommand(IProjectTask projectTask)
+      public LoadProjectFromSnapshotUICommand(IProjectTask projectTask)
       {
          _projectTask = projectTask;
       }

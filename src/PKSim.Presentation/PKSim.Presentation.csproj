@@ -148,6 +148,7 @@
     <Compile Include="Core\FileSelection.cs" />
     <Compile Include="Core\IWorkspace.cs" />
     <Compile Include="Core\IWorkspacePersistor.cs" />
+    <Compile Include="Core\LoadProjectFromSnapshotCommand.cs" />
     <Compile Include="Core\StatusBarElements.cs" />
     <Compile Include="DTO\ApplicationSettingsDTO.cs" />
     <Compile Include="DTO\Compounds\EnzymaticProcessDTO.cs" />
@@ -534,7 +535,7 @@
     <Compile Include="UICommands\LoadObservedDataFromTemplateUICommand.cs" />
     <Compile Include="UICommands\LoadPopulationAnalysisWorkflowFromTemplateUICommand.cs" />
     <Compile Include="UICommands\LoadBuildingBlockFromSnapshotUICommand.cs" />
-    <Compile Include="UICommands\LoadProjectFromSnapshotCommand.cs" />
+    <Compile Include="UICommands\LoadProjectFromSnapshotUICommand.cs" />
     <Compile Include="UICommands\LoadSimulationFromSnapshotUICommand.cs" />
     <Compile Include="UICommands\NewImportIndividualSimulationCommand.cs" />
     <Compile Include="UICommands\NewImportPopulationSimulationCommand.cs" />
