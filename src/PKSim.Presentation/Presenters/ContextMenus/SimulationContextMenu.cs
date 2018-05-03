@@ -84,10 +84,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return ExportToPDFMenuFor(simulation);
 
          yield return AddToJournalMenuFor(simulation);
-
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSnapshot)
-            .WithCommandFor<ExportSimulationSnapshotUICommand, Simulation>(simulation)
-            .WithIcon(ApplicationIcons.SnapshotExport);
       }
    }
 

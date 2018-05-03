@@ -36,11 +36,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          _view.AddMenuItem(loadSimulationFromSnapshot().AsGroupStarter());
       }
 
-      private static IMenuBarItem loadSimulationFromSnapshot() 
+      private static IMenuBarItem loadSimulationFromSnapshot()
       {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromSnapshot)
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Load from Snapshot"))
             .WithCommand<LoadSimulationFromSnapshotUICommand>()
-            .WithIcon(ApplicationIcons.SnapshotImport);
+            .WithIcon(ApplicationIcons.SnapshotImport)
+            .ForDeveloper();
       }
 
       private static IMenuBarSubMenu createGroupByMenu(ITreeNode<IClassification> treeNode, ISimulationExplorerPresenter presenter)
