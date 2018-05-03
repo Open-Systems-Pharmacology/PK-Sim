@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
@@ -15,12 +16,13 @@ namespace PKSim.Matlab
       public override void RegisterInContainer(IContainer container)
       {
          container.Register<IOntogenyFactorsRetriever, OntogenyFactorsRetriever>(LifeStyle.Singleton);
-         container.Register<ICoreUserSettings, CLIUserSettings>(LifeStyle.Singleton);
-         container.Register<IExceptionManager, CLIExceptionManager>(LifeStyle.Singleton);
+         container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
+         container.Register<IDialogCreator, CLIDialogCreator>();
+         container.Register<ICoreUserSettings, CLIUserSettings>();
+         container.Register<IExceptionManager, CLIExceptionManager>();
          container.Register<IProgressUpdater, CLIProgressUpdater>();
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
          container.Register<IFullPathDisplayResolver, MatlabFullPathDisplayResolver>();
-         container.Register<IMatlabOriginDataToOriginDataMapper, MatlabOriginDataToOriginDataMapper>();
          container.Register<IMatlabPopulationSettingsToPopulationSettingsMapper, MatlabPopulationSettingsToPopulationSettingsMapper>();
          container.Register<ILazyLoadTask, MatlabLazyLoadTask>(LifeStyle.Singleton);
       }
