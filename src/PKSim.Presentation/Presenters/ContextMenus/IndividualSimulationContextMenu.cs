@@ -51,18 +51,24 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> DebugMenuFor(IndividualSimulation simulation)
       {
-         yield return CreateMenuButton.WithCaption("Parameter Ids Export (Developer only)")
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Parameter Ids Export"))
             .WithCommandFor<ParameterExportForDebugCommand, Simulation>(simulation)
             .AsGroupStarter()
             .ForDeveloper();
 
-         yield return CreateMenuButton.WithCaption("Simulation Xml Export (Developer only)")
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Simulation Xml Export"))
             .WithCommandFor<SimulationXmlExportCommand, Simulation>(simulation)
             .ForDeveloper();
 
-         yield return CreateMenuButton.WithCaption("Simulation Parameter Export To CSV (Developer only)")
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Simulation Parameter Export To CSV"))
             .WithCommandFor<SimulationParameterExportToCsvCommand, Simulation>(simulation)
             .ForDeveloper();
+
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Save Snapshot"))
+            .WithCommandFor<ExportSimulationSnapshotUICommand, Simulation>(simulation)
+            .WithIcon(ApplicationIcons.SnapshotExport);
+
       }
 
       protected IMenuBarItem CreateParameterIdentificationMenuItemFor(IndividualSimulation simulation)

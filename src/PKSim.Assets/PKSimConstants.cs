@@ -1160,6 +1160,8 @@ namespace PKSim.Assets
          public static readonly string ExportSnapshot = "Save Snapshot...";
          public static readonly string LoadFromSnapshot = "Load from Snapshot...";
 
+         public static string DevOnlyMenuNameFor(string menuName) => $"{menuName} (Developer only)";
+
          public static string CompareBuildingBlocks(string buildingBlockType)
          {
             return $"Compare {buildingBlockType}s";  
