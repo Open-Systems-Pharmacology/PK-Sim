@@ -28,31 +28,9 @@ namespace PKSim.Core.Snapshots.Mappers
             x.NumberMode = axis.NumberMode;
             x.DefaultColor = axis.DefaultColor;
             x.DefaultLineStyle = axis.DefaultLineStyle;
-            x.Min = displayValueFor(axis, axis.Min);
-            x.Max = displayValueFor(axis, axis.Max);
+            x.Min = axis.Min;
+            x.Max = axis.Max;
          });
-      }
-
-      private float? displayValueFor(ModelAxis axis, float? baseValue)
-      {
-         if (baseValue == null)
-            return null;
-
-         if (axis.Dimension == null)
-            return baseValue;
-
-         return (float) axis.Dimension.BaseUnitValueToUnitValue(axis.Unit, baseValue.Value);
-      }
-
-      private float? baseValueFor(ModelAxis axis, float? displayValue)
-      {
-         if (displayValue == null)
-            return null;
-
-         if (axis.Dimension == null)
-            return displayValue;
-
-         return (float) axis.Dimension.UnitValueToBaseUnitValue(axis.Unit, displayValue.Value);
       }
 
       public override Task<ModelAxis> MapToModel(SnashotAxis snapshot)
@@ -60,7 +38,6 @@ namespace PKSim.Core.Snapshots.Mappers
          var axis = new ModelAxis(snapshot.Type)
          {
             Dimension = _dimensionRepository.DimensionByName(snapshot.Dimension),
-            UnitName = ModelValueFor(snapshot.Unit),
             Caption = snapshot.Caption,
             GridLines = snapshot.GridLines,
             Visible = snapshot.Visible,
@@ -71,8 +48,9 @@ namespace PKSim.Core.Snapshots.Mappers
          };
 
          axis.Dimension = _dimensionRepository.OptimalDimensionFor(axis.Dimension);
-         axis.Min = baseValueFor(axis, snapshot.Min);
-         axis.Max = baseValueFor(axis, snapshot.Max);
+         axis.UnitName = ModelValueFor(snapshot.Unit);
+         axis.Min = snapshot.Min;
+         axis.Max = snapshot.Max;
 
          return Task.FromResult(axis);
       }
