@@ -22,6 +22,8 @@ namespace PKSim.Presentation.Presenters.Compounds
       {
          _multiParameterEditPresenter = multiParameterEditPresenter;
          _multiParameterEditPresenter.IsSimpleEditor = true;
+         _multiParameterEditPresenter.ValueOriginVisible = false;
+         _multiParameterEditPresenter.HeaderVisible = false;
 
          _view.SetParameterView(_multiParameterEditPresenter.BaseView);
       }

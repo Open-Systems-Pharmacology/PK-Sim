@@ -51,7 +51,6 @@ namespace PKSim.Presentation.Presenters.Parameters
          _representationInfoRepository = representationInfoRepository;
          _contextMenuFactory = contextMenuFactory;
          ShowFavorites = false;
-         HeaderVisible = false;
       }
 
       public void EditParameters(IEnumerable<IParameter> parameters)
