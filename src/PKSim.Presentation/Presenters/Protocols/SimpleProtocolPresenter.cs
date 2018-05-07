@@ -46,6 +46,8 @@ namespace PKSim.Presentation.Presenters.Protocols
          _representationInfoRepository = representationInfoRepository;
          _dynamicParameterPresenter = dynamicParameterPresenter;
          _dynamicParameterPresenter.IsSimpleEditor = true;
+         _dynamicParameterPresenter.ValueOriginVisible = false;
+         _dynamicParameterPresenter.HeaderVisible = false;
          _view.AddDynamicParameterView(_dynamicParameterPresenter.View);
          _defaultIndivdual = individualFactory.CreateParameterLessIndividual();
       }

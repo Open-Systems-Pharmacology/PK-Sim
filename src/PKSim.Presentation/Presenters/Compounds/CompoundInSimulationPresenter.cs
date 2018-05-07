@@ -79,8 +79,6 @@ namespace PKSim.Presentation.Presenters.Compounds
       private void initializeParametersPresenter(IMultiParameterEditPresenter multiParameterEditPresenter)
       {
          multiParameterEditPresenter.IsSimpleEditor = true;
-         multiParameterEditPresenter.HeaderVisible = true;
-         multiParameterEditPresenter.ValueOriginVisible = true;
          multiParameterEditPresenter.ShowFavorites = true;
       }
 

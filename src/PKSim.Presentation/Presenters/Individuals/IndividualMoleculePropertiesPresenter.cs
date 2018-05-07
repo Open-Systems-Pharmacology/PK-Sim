@@ -33,8 +33,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          _ontogenySelectionPresenter = ontogenySelectionPresenter;
          _moleculeParametersPresenter = moleculeParametersPresenter;
          _moleculeParametersPresenter.IsSimpleEditor = true;
-         _moleculeParametersPresenter.ValueOriginVisible = true;
-         _moleculeParametersPresenter.HeaderVisible = true;
 
          AddSubPresenters(_ontogenySelectionPresenter, _moleculeParametersPresenter);
 

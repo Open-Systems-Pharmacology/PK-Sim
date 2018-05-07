@@ -79,7 +79,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       /// <summary>
       ///    Configure the editor to display the most simple view possible
-      ///    Grouping, scaling, headers will be hidden and the favorite column as well
+      ///    Grouping, scaling, favorite will be hidden 
       ///    Default is <c>false</c>
       /// </summary>
       bool IsSimpleEditor { set; }
@@ -316,13 +316,11 @@ namespace PKSim.Presentation.Presenters.Parameters
          set
          {
             ScalingVisible = !value;
-            HeaderVisible = !value;
             GroupingVisible = !value;
             DistributionVisible = !value;
             ContainerVisible = !value;
             AllowMultiSelect = !value;
             ShowFavorites = !value;
-            ValueOriginVisible = !value;
             Description = string.Empty;
          }
       }

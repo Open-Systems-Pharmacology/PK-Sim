@@ -18,37 +18,39 @@ namespace PKSim.Presentation.Presenters.Compounds
 
    public class MolWeightHalogensPresenter : AbstractCommandCollectorPresenter<IMolWeightHalogensView, IMolWeightHalogensPresenter>, IMolWeightHalogensPresenter
    {
-      private readonly IMultiParameterEditPresenter _paramEditPresenter;
+      private readonly IMultiParameterEditPresenter _parameterEditPresenter;
 
-      public MolWeightHalogensPresenter(IMolWeightHalogensView view, IMultiParameterEditPresenter paramEditPresenter) : base(view)
+      public MolWeightHalogensPresenter(IMolWeightHalogensView view, IMultiParameterEditPresenter parameterEditPresenter) : base(view)
       {
-         _paramEditPresenter = paramEditPresenter;
-         _paramEditPresenter.IsSimpleEditor = true;
-         _paramEditPresenter.StatusChanged += OnStatusChanged;
-         view.FillWithParameterView(paramEditPresenter.View);
+         _parameterEditPresenter = parameterEditPresenter;
+         _parameterEditPresenter.IsSimpleEditor = true;
+         _parameterEditPresenter.ValueOriginVisible = false;
+         _parameterEditPresenter.HeaderVisible = false;
+         _parameterEditPresenter.StatusChanged += OnStatusChanged;
+         view.FillWithParameterView(parameterEditPresenter.View);
       }
 
       public override void InitializeWith(ICommandCollector commandCollector)
       {
          base.InitializeWith(commandCollector);
-         _paramEditPresenter.InitializeWith(commandCollector);
+         _parameterEditPresenter.InitializeWith(commandCollector);
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
          base.ReleaseFrom(eventPublisher);
-         _paramEditPresenter.ReleaseFrom(eventPublisher);
-         _paramEditPresenter.StatusChanged -= OnStatusChanged;
+         _parameterEditPresenter.ReleaseFrom(eventPublisher);
+         _parameterEditPresenter.StatusChanged -= OnStatusChanged;
       }
 
       public void EditHalogens(IEnumerable<IParameter> compoundParameters)
       {
-         _paramEditPresenter.Edit(compoundParameters.Where(isHalogens));
+         _parameterEditPresenter.Edit(compoundParameters.Where(isHalogens));
       }
 
       public void SaveHalogens()
       {
-         _paramEditPresenter.SaveEditor();
+         _parameterEditPresenter.SaveEditor();
       }
 
       private bool isHalogens(IParameter parameter)
