@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
@@ -22,6 +24,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly QualificationPlanMapper _qualificationPlanMapper;
       private readonly IClassificationSnapshotTask _classificationSnapshotTask;
       private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly ILogger _logger;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
 
       public ProjectMapper(
@@ -31,7 +34,8 @@ namespace PKSim.Core.Snapshots.Mappers
          QualificationPlanMapper qualificationPlanMapper,
          IExecutionContext executionContext,
          IClassificationSnapshotTask classificationSnapshotTask,
-         ILazyLoadTask lazyLoadTask)
+         ILazyLoadTask lazyLoadTask, 
+         ILogger logger)
       {
          _simulationMapper = simulationMapper;
          _simulationComparisonMapper = simulationComparisonMapper;
@@ -39,6 +43,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _qualificationPlanMapper = qualificationPlanMapper;
          _classificationSnapshotTask = classificationSnapshotTask;
          _lazyLoadTask = lazyLoadTask;
+         _logger = logger;
          //required to load the snapshot mapper via execution context to avoid circular references
          _snapshotMapper = new Lazy<ISnapshotMapper>(executionContext.Resolve<ISnapshotMapper>);
       }
@@ -218,7 +223,31 @@ namespace PKSim.Core.Snapshots.Mappers
          project.GetOrCreateClassifiableFor<TClassifiableWrapper, TSubject>(subject);
       }
 
-      private Task<Model.Simulation[]> allSmulationsFrom(Simulation[] snapshotSimulations, ModelProject project) => _simulationMapper.MapToModels(snapshotSimulations, project);
+      private async Task<IEnumerable<Model.Simulation>> allSmulationsFrom(Simulation[] snapshots, ModelProject project)
+      {
+         var simulations = new List<Model.Simulation>();
+
+         if (snapshots == null)
+            return simulations;
+         
+         //do not run tasks in parallel as the same mapper instance may be used concurrently to load two different snapshots
+         foreach (var snapshot in snapshots)
+         {
+            try
+            {
+               var simulation = await _simulationMapper.MapToModel(snapshot, project);
+               simulations.Add(simulation);
+            }
+            catch (Exception e)
+            {
+               _logger.AddException(e);
+               _logger.AddError(PKSimConstants.Error.CannotLoadSimulation(snapshot.Name));
+            }
+
+         }
+
+         return simulations;
+      }
 
       private async Task<IEnumerable<IPKSimBuildingBlock>> allBuidingBlocksFrom(SnapshotProject snapshot)
       {
@@ -251,19 +280,19 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<IEnumerable<IPKSimBuildingBlock>> mapSnapshotToBuildingBlocks<TSnapshot>(IEnumerable<TSnapshot> snapshots)
       {
-         var models = new List<IPKSimBuildingBlock>();
+         var buildingBlocks = new List<IPKSimBuildingBlock>();
 
          if (snapshots == null)
-            return models;
+            return buildingBlocks;
 
          //do not run tasks in parallel as the same mapper instance may be used concurrently to load two different snapshots
          foreach (var snapshot in snapshots)
          {
             var buildingBlock = await snapshotMapper.MapToModel(snapshot);
-            models.Add(buildingBlock.DowncastTo<IPKSimBuildingBlock>());
+            buildingBlocks.Add(buildingBlock.DowncastTo<IPKSimBuildingBlock>());
          }
 
-         return models;
+         return buildingBlocks;
       }
 
       private ISnapshotMapper snapshotMapper => _snapshotMapper.Value;

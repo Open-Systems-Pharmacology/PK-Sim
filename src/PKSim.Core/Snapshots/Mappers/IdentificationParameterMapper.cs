@@ -15,15 +15,18 @@ namespace PKSim.Core.Snapshots.Mappers
    public class IdentificationParameterMapper : ParameterContainerSnapshotMapperBase<ModelIdentificationParameter, SnapshotIdentificationParameter, ParameterIdentificationContext>
    {
       private readonly IIdentificationParameterFactory _identificationParameterFactory;
+      private readonly IIdentificationParameterTask _identificationParameterTask;
       private readonly ILogger _logger;
 
       public IdentificationParameterMapper(
          ParameterMapper parameterMapper,
          IIdentificationParameterFactory identificationParameterFactory,
+         IIdentificationParameterTask identificationParameterTask,
          ILogger logger
       ) : base(parameterMapper)
       {
          _identificationParameterFactory = identificationParameterFactory;
+         _identificationParameterTask = identificationParameterTask;
          _logger = logger;
       }
 
@@ -55,6 +58,9 @@ namespace PKSim.Core.Snapshots.Mappers
          identificationParameter.UseAsFactor = ModelValueFor(snapshot.UseAsFactor);
          identificationParameter.Scaling = snapshot.Scaling;
          
+         if(identificationParameter.UseAsFactor)
+            _identificationParameterTask.UpdateParameterRange(identificationParameter);
+
          await UpdateParametersFromSnapshot(snapshot, identificationParameter);
 
          return identificationParameter;

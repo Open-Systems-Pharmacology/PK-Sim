@@ -199,6 +199,19 @@ namespace PKSim.Core.Snapshots.Mappers
             return;
          }
 
+         var alternativeGroup = compoundProperties.Compound.ParameterAlternativeGroup(snapshotCompoundGroupSelection.GroupName);
+         if (alternativeGroup == null)
+         {
+            _logger.AddWarning(PKSimConstants.Error.CompoundGroupNotFoundFor(snapshotCompoundGroupSelection.GroupName, compoundProperties.Compound.Name));
+            return;
+         }
+
+         var alternative = alternativeGroup.AlternativeByName(snapshotCompoundGroupSelection.AlternativeName);
+         if (alternative == null)
+         {
+            _logger.AddWarning(PKSimConstants.Error.CompoundAlternativeNotFoundFor(snapshotCompoundGroupSelection.AlternativeName, alternativeGroup.DefaultAlternative?.Name, snapshotCompoundGroupSelection.GroupName, compoundProperties.Compound.Name));
+            return;
+         }
          compoundGroupSelection.AlternativeName = snapshotCompoundGroupSelection.AlternativeName;
       }
    }

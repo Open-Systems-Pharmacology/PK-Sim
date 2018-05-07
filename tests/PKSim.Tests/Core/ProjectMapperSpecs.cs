@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -14,6 +17,7 @@ using Compound = PKSim.Core.Model.Compound;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Event = PKSim.Core.Snapshots.Event;
 using Formulation = PKSim.Core.Model.Formulation;
+using ILogger = OSPSuite.Core.Services.ILogger;
 using Individual = PKSim.Core.Model.Individual;
 using Population = PKSim.Core.Model.Population;
 using Project = PKSim.Core.Snapshots.Project;
@@ -65,6 +69,7 @@ namespace PKSim.Core
       protected QualificationPlanMapper _qualificationPlanMapper;
       protected QualificationPlan _qualificationPlan;
       protected Snapshots.QualificationPlan _qualificationPlanSnapshot;
+      protected ILogger _logger;
 
       protected override Task Context()
       {
@@ -77,7 +82,7 @@ namespace PKSim.Core
          _parameterIdentificationMapper = A.Fake<ParameterIdentificationMapper>();
          _classificationSnapshotTask = A.Fake<IClassificationSnapshotTask>();
          _qualificationPlanMapper = A.Fake<QualificationPlanMapper>();
-
+         _logger= A.Fake<ILogger>();
 
          sut = new ProjectMapper(
             _simulationMapper,
@@ -86,7 +91,8 @@ namespace PKSim.Core
             _qualificationPlanMapper,
             _executionContext,
             _classificationSnapshotTask,
-            _lazyLoadTask);
+            _lazyLoadTask,
+            _logger);
 
 
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
@@ -270,11 +276,14 @@ namespace PKSim.Core
    public class When_converting_a_project_snapshot_to_project : concern_for_ProjectMapper
    {
       private PKSimProject _newProject;
+      private Simulation _corruptedSimulationSnapshot;
 
       protected override async Task Context()
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_project);
+         _corruptedSimulationSnapshot = new Simulation();
+         _snapshot.Simulations = new[] {_snapshot.Simulations[0], _corruptedSimulationSnapshot,};
          A.CallTo(() => _snapshotMapper.MapToModel(_compoundSnapshot)).Returns(_compound);
          A.CallTo(() => _snapshotMapper.MapToModel(_individualSnapshot)).Returns(_individual);
          A.CallTo(() => _snapshotMapper.MapToModel(_protocolSnapshot)).Returns(_protocol);
@@ -284,6 +293,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).Returns(_observedData);
 
          A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<PKSimProject>._)).Returns(_simulation);
+         A.CallTo(() => _simulationMapper.MapToModel(_corruptedSimulationSnapshot, A<PKSimProject>._)).Throws(new Exception());
          A.CallTo(() => _simulationComparisonMapper.MapToModel(_simulationComparisonSnapshot, A<PKSimProject>._)).Returns(_simulationComparison);
          A.CallTo(() => _parameterIdentificationMapper.MapToModel(_parameterIdentificationSnapshot, A<PKSimProject>._)).Returns(_parameterIdentification);
          A.CallTo(() => _qualificationPlanMapper.MapToModel(_qualificationPlanSnapshot, A<PKSimProject>._)).Returns(_qualificationPlan);
@@ -363,6 +373,12 @@ namespace PKSim.Core
       public void should_udpate_project_classification_for_parameter_identification()
       {
          A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableParameterIdentification, OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification>(_snapshot.ParameterIdentificationClassifications, _newProject, _newProject.AllParameterIdentifications)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_log_an_error_for_simulation_that_could_not_be_loaded_from_snapshot()
+      {
+         A.CallTo(() => _logger.AddToLog(A<string>._,LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 }
