@@ -37,6 +37,11 @@ namespace PKSim.CLI.Core.Services
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly ILogger _logger;
 
+      //For testing purposes only
+      public Func<string, string, FileInfo[]> AllFilesFrom { get; set; }
+
+
+
       public SnapshotRunner(
          IWorkspace workspace,
          ISnapshotTask snapshotTask,
@@ -47,6 +52,7 @@ namespace PKSim.CLI.Core.Services
          _snapshotTask = snapshotTask;
          _workspacePersistor = workspacePersistor;
          _logger = logger;
+         AllFilesFrom = allFilesFrom;
       }  
 
       public async Task RunBatchAsync(SnapshotRunOptions runOptions)
@@ -164,12 +170,14 @@ namespace PKSim.CLI.Core.Services
          }
       }
 
-      //For testing purposes only
-      public Func<string, string, FileInfo[]> AllFilesFrom = allFilesFrom;
-
-      private static FileInfo[] allFilesFrom(string folder, string filter)
+      private FileInfo[] allFilesFrom(string folder, string filter)
       {
          var directory = new DirectoryInfo(folder);
+         if (!directory.Exists)
+         {
+            _logger.AddError($"Folder '{folder}' does not exist!");
+            return Enumerable.Empty<FileInfo>().ToArray();
+         }
          return directory.GetFiles(filter);
       }
 
