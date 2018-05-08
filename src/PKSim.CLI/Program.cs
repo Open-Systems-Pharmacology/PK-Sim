@@ -51,7 +51,7 @@ namespace PKSim.CLI
          }
          catch (Exception e)
          {
-            logger.AddError(e.ExceptionMessage());
+            logger.AddException(e);
          }
 
          logger.AddInfo($"{command.Name} run finished");
