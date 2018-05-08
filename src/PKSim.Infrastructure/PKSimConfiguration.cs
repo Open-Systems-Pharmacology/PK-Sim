@@ -15,6 +15,7 @@ namespace PKSim.Infrastructure
       public string TemplateUserDatabaseTemplatePath { get; }
       public string DefaultTemplateUserDatabasePath { get; }
       public override string ProductName { get; } = CoreConstants.PRODUCT_NAME;
+      public override int InternalVersion { get; } = ProjectVersions.Current;
       public override Origin Product { get; } = Origins.PKSim;
       public override string ProductNameWithTrademark { get; } = CoreConstants.PRODUCT_NAME_WITH_TRADEMARK;
       public override ApplicationIcon Icon { get; } = ApplicationIcons.PKSim;
@@ -42,7 +43,7 @@ namespace PKSim.Infrastructure
          if (!DirectoryHelper.DirectoryExists(AllUsersFolderPath))
             DirectoryHelper.CreateDirectory(AllUsersFolderPath);
       }
-         
+
       public string MoBiPath
       {
          get

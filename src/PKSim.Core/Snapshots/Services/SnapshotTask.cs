@@ -38,6 +38,11 @@ namespace PKSim.Core.Snapshots.Services
       Task<IEnumerable<T>> LoadModelFromSnapshot<T>(string fileName) where T : class, IObjectBase;
 
       Task<PKSimProject> LoadProjectFromSnapshot(string fileName);
+
+      /// <summary>
+      /// Returns <c>true</c> if <paramref name="objectToExport"/> was created with a version of PK-Sim fully supporting snaphsot (7.3 and higher) otherwise <c>false</c>
+      /// </summary>
+      bool IsVersionCompatibleWithSnapshotExport<T>(T objectToExport) where T : class, IWithCreationMetaData;
    }
 
    public class SnapshotTask : ISnapshotTask
@@ -140,6 +145,15 @@ namespace PKSim.Core.Snapshots.Services
          project.HasChanged = true;
          project.Name = FileHelper.FileNameFromFileFullPath(fileName);
          return project;
+      }
+
+      public bool IsVersionCompatibleWithSnapshotExport<T>(T objectToExport) where T : class, IWithCreationMetaData
+      {
+         var projectCreationVersion = objectToExport?.Creation.InternalVersion;
+         if (projectCreationVersion == null)
+            return false;
+
+         return projectCreationVersion >= ProjectVersions.V7_3_0;
       }
 
       private async Task exportSnapshotFor<T>(T objectToExport, string fileName)

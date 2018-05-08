@@ -867,6 +867,7 @@ namespace PKSim.Presentation
       {
          await base.Context();
          A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Green);
+         A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(true);
       }
 
       protected override Task Because()
@@ -887,6 +888,7 @@ namespace PKSim.Presentation
       {
          await base.Context();
          A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(true);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
 
@@ -908,6 +910,94 @@ namespace PKSim.Presentation
       {
          await base.Context();
          A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(true);
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
+      }
+
+      protected override Task Because()
+      {
+         return sut.ExportCurrentProjectToSnapshot();
+      }
+
+      [Observation]
+      public void should_not_export_the_current_project_to_a_snapshot()
+      {
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_exporting_the_current_project_with_an_older_version_to_snapshot_and_the_user_cancels_export : concern_for_ProjectTask
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(false);
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
+      }
+
+      protected override Task Because()
+      {
+         return sut.ExportCurrentProjectToSnapshot();
+      }
+
+      [Observation]
+      public void should_not_export_the_current_project_to_a_snapshot()
+      {
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_exporting_the_current_project_with_an_older_version_to_snapshot_and_the_user_proceeds_with_export : concern_for_ProjectTask
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Green);
+         A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(false);
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+      }
+
+      protected override Task Because()
+      {
+         return sut.ExportCurrentProjectToSnapshot();
+      }
+
+      [Observation]
+      public void should_export_the_current_project_to_a_snapshot()
+      {
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustHaveHappened();
+      }
+   }
+
+   public class When_exporting_the_current_project_with_an_older_version_to_snapshot_and_changed_simulation_and_the_user_proceeds_with_export : concern_for_ProjectTask
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(false);
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+      }
+
+      protected override Task Because()
+      {
+         return sut.ExportCurrentProjectToSnapshot();
+      }
+
+      [Observation]
+      public void should_export_the_current_project_to_a_snapshot()
+      {
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustHaveHappened();
+      }
+   }
+
+   public class When_exporting_the_current_project_with_an_older_version_to_snapshot_and_changed_simulation_and_the_user_cancels_export : concern_for_ProjectTask
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(false);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
       }
 

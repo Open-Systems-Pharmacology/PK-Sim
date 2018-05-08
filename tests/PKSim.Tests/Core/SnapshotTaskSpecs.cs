@@ -222,4 +222,29 @@ namespace PKSim.Core
          _project.HasChanged.ShouldBeTrue();
       }
    }
+
+   public class When_checking_if_an_object_with_meta_data_is_fully_compatible_with_snapshot_creation : concern_for_SnapshotTask
+   {
+      private PKSimProject _oldProject;
+      private PKSimProject _newProject;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _oldProject = new PKSimProject {Creation = {InternalVersion = ProjectVersions.V5_2_1}};
+         _newProject = new PKSimProject {Creation = {InternalVersion = ProjectVersions.V7_3_0}};
+      }
+
+      [Observation]
+      public void should_return_true_if_the_version_of_the_object_is_7_3_or_higher()
+      {
+         sut.IsVersionCompatibleWithSnapshotExport(_newProject).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_false_if_the_version_of_the_object_is_string_lower_than_7_2()
+      {
+         sut.IsVersionCompatibleWithSnapshotExport(_oldProject).ShouldBeFalse();
+      }
+   }
 }

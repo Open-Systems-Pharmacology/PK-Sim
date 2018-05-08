@@ -1,11 +1,11 @@
-using OSPSuite.Utility.Collections;
 using OSPSuite.Core;
+using OSPSuite.Utility.Collections;
 
 namespace PKSim.Core
 {
    public static class ProjectVersions
    {
-      private static readonly Cache<int, ProjectVersion> _knownVersions = new Cache<int, ProjectVersion>(x=>x.Version);
+      private static readonly Cache<int, ProjectVersion> _knownVersions = new Cache<int, ProjectVersion>(x => x.Version, null);
 
       public static readonly ProjectVersion V5_0_1 = addVersion(20, "5.0.1");
       public static readonly ProjectVersion V5_1_3 = addVersion(21, "5.1.3");
@@ -46,7 +46,7 @@ namespace PKSim.Core
       {
          return (projectVersion <= Current.Version) && _knownVersions.Contains(projectVersion);
       }
-         
+
       public static ProjectVersion FindBy(int version)
       {
          return _knownVersions[version];

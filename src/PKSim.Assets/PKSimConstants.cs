@@ -2166,7 +2166,15 @@ namespace PKSim.Assets
          public static readonly string WatermarkText = "Text";
          public static readonly string WatermarkProperties = "Watermark Properties";
          public static readonly string CreateTableSolubilityAlternative = "Create as pH-Solubility table";
-         public static readonly string DoYouWantToProceedWithExportToSnapshotWithChangedSimulation = "WARNING: Some simulations are in a changed state (red icon) and may not be re-imported correctly.\nDo you wish to continue?";
+
+         public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
+
+         private static readonly string _snapshotOfProjectWithChangedSimulationText = "Some simulations are in a changed state (red icon) and may not be re-imported correctly.";
+         private static readonly string _snapshotOfProjectCreatedWithEarlierVersionText = "Project was created with an older version of PK-Sim (earlier than 7.3.0). Export to snapshot will create a file with a lot of noise.";
+
+         public static readonly string SnapshotOfProjectWithChangedSimulation = DoYouWantToProceed(_snapshotOfProjectWithChangedSimulationText);
+         public static readonly string SnapshotOfProjectCreatedWithEarlierVersion = DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText);
+         public static readonly string SnapshotOfProjectCreatedWithEarlierVersionAndWithChangedSimulation = DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText, _snapshotOfProjectWithChangedSimulationText);
 
          public static string NumberOfIndividualsToExtract(int count, string populationName) => $"{count} {"individual".PluralizeIf(count)} will be extracted from population {populationName}.";
 

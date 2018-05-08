@@ -79,14 +79,14 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
-      public void should_return_the_path_in_the_application_folder_if_the_file_does_not_exists_in_the_application_folder_and_does_not_exists_locally()
+      public void should_return_the_path_in_local_folder_if_the_file_does_not_exists_in_the_application_folder_and_does_not_exists_locally()
       {
          doWhilePreservingFileExists(() =>
          {
-            var appDataFile = Path.Combine(sut.AllUsersFolderPath, CoreConstants.PK_SIM_DB_FILE);
+            var localFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CoreConstants.PK_SIM_DB_FILE);
             FileHelper.FileExists = s => false;
             sut = new PKSimConfiguration();
-            sut.PKSimDbPath.ShouldBeEqualTo(appDataFile);
+            sut.PKSimDbPath.ShouldBeEqualTo(localFile);
          });
       }
 
