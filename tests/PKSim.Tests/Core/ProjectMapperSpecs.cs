@@ -70,6 +70,7 @@ namespace PKSim.Core
       protected QualificationPlan _qualificationPlan;
       protected Snapshots.QualificationPlan _qualificationPlanSnapshot;
       protected ILogger _logger;
+      protected ICreationMetaDataFactory _creationMetaDataFactory;
 
       protected override Task Context()
       {
@@ -82,7 +83,8 @@ namespace PKSim.Core
          _parameterIdentificationMapper = A.Fake<ParameterIdentificationMapper>();
          _classificationSnapshotTask = A.Fake<IClassificationSnapshotTask>();
          _qualificationPlanMapper = A.Fake<QualificationPlanMapper>();
-         _logger= A.Fake<ILogger>();
+         _creationMetaDataFactory= A.Fake<ICreationMetaDataFactory>();
+         _logger = A.Fake<ILogger>();
 
          sut = new ProjectMapper(
             _simulationMapper,
@@ -92,6 +94,7 @@ namespace PKSim.Core
             _executionContext,
             _classificationSnapshotTask,
             _lazyLoadTask,
+            _creationMetaDataFactory,
             _logger);
 
 
@@ -277,11 +280,15 @@ namespace PKSim.Core
    {
       private PKSimProject _newProject;
       private Simulation _corruptedSimulationSnapshot;
+      private CreationMetaData _creationMetaData;
 
       protected override async Task Context()
       {
          await base.Context();
+         _creationMetaData=new CreationMetaData();
+         A.CallTo(() => _creationMetaDataFactory.Create()).Returns(_creationMetaData);
          _snapshot = await sut.MapToSnapshot(_project);
+         _snapshot.Version = ProjectVersions.V7_1_0;
          _corruptedSimulationSnapshot = new Simulation();
          _snapshot.Simulations = new[] {_snapshot.Simulations[0], _corruptedSimulationSnapshot,};
          A.CallTo(() => _snapshotMapper.MapToModel(_compoundSnapshot)).Returns(_compound);
@@ -313,6 +320,14 @@ namespace PKSim.Core
          _newProject.All<Formulation>().ShouldContain(_formulation);
          _newProject.All<Protocol>().ShouldContain(_protocol);
          _newProject.All<Population>().ShouldContain(_population);
+      }
+
+      [Observation]
+      public void should_have_created_a_new_meta_data_updating_the_version_to_the_internal_version()
+      {
+         _newProject.Creation.ShouldBeEqualTo(_creationMetaData);
+         _newProject.Creation.Version.ShouldBeEqualTo(ProjectVersions.V7_1_0.VersionDisplay);
+         _newProject.Creation.InternalVersion.ShouldBeEqualTo(_snapshot.Version);
       }
 
       [Observation]

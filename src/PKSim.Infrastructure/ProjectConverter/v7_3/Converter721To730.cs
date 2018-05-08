@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 using FluentNHibernate.Utils;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Visitor;
@@ -10,19 +11,22 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
 {
    public class Converter721To730 : IObjectConverter,
       IVisitor<Compound>,
-      IVisitor<Simulation>
+      IVisitor<Simulation>,
+      IVisitor<PKSimProject>
 
    {
       private readonly ICompoundFactory _compoundFactory;
       private readonly ICloner _cloner;
+      private readonly ICreationMetaDataFactory _creationMetaDataFactory;
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V7_2_1;
 
       private bool _converted;
 
-      public Converter721To730(ICompoundFactory compoundFactory, ICloner cloner)
+      public Converter721To730(ICompoundFactory compoundFactory, ICloner cloner, ICreationMetaDataFactory creationMetaDataFactory)
       {
          _compoundFactory = compoundFactory;
          _cloner = cloner;
+         _creationMetaDataFactory = creationMetaDataFactory;
       }
 
       public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
@@ -48,6 +52,20 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          simulation.Compounds.Each(convertCompound);
       }
 
+      public void Visit(PKSimProject project)
+      {
+         convertProject(project);
+      }
+
+      private void convertProject(PKSimProject project)
+      {
+         //We do not know when the project was really created so we simply set the internal version to null
+         project.Creation = _creationMetaDataFactory.Create();
+         project.Creation.Version = string.Empty;
+         project.Creation.InternalVersion = null;
+         _converted = true;
+      }
+
       private void convertCompound(Compound compound)
       {
          var templateCompound = _compoundFactory.Create();
@@ -60,5 +78,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
 
          _converted = true;
       }
+
    }
 }

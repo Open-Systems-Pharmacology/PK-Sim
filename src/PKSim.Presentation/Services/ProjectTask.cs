@@ -85,7 +85,7 @@ namespace PKSim.Presentation.Services
 
       private void createNewProject()
       {
-         _workspace.AddCommand(new CreateProjectCommand(_workspace, new PKSimProject()).Run(_executionContext));
+         _workspace.AddCommand(new CreateProjectCommand(_workspace).Run(_executionContext));
          _workspace.Project.HasChanged = false;
       }
 
@@ -241,16 +241,30 @@ namespace PKSim.Presentation.Services
 
       public Task ExportCurrentProjectToSnapshot()
       {
-         var anySimulationInChangedState = _workspace.Project.All<Simulation>().Any(x => _buildingBlockInSimulationManager.StatusFor(x) == BuildingBlockStatus.Red);
-         if (anySimulationInChangedState)
-         {
-            var proceed = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.DoYouWantToProceedWithExportToSnapshotWithChangedSimulation);
-            if (proceed == ViewResult.No)
-               return Task.CompletedTask;
-         }
+         var project = _workspace.Project;
+         var anySimulationInChangedState = project.All<Simulation>().Any(x => _buildingBlockInSimulationManager.StatusFor(x) == BuildingBlockStatus.Red);
+         var projectExportWillCreateNoise = !_snapshotTask.IsVersionCompatibleWithSnapshotExport(project);
 
-         return _snapshotTask.ExportModelToSnapshot(_workspace.Project);
-      } 
+         if (exitIf(anySimulationInChangedState && projectExportWillCreateNoise, PKSimConstants.UI.SnapshotOfProjectCreatedWithEarlierVersionAndWithChangedSimulation))
+            return Task.CompletedTask;
+
+         if (exitIf(anySimulationInChangedState && !projectExportWillCreateNoise, PKSimConstants.UI.SnapshotOfProjectWithChangedSimulation))
+            return Task.CompletedTask;
+
+         if (exitIf(!anySimulationInChangedState && projectExportWillCreateNoise, PKSimConstants.UI.SnapshotOfProjectCreatedWithEarlierVersion))
+            return Task.CompletedTask;
+
+         return _snapshotTask.ExportModelToSnapshot(project);
+      }
+
+      private bool exitIf(bool condition, string message)
+      {
+         if (!condition)
+            return false;
+
+         var proceed = _dialogCreator.MessageBoxYesNo(message);
+         return (proceed == ViewResult.No);
+      }
 
       public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshot(snapshotFileFullPath);
 

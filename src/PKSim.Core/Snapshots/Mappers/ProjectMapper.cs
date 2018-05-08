@@ -24,6 +24,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly QualificationPlanMapper _qualificationPlanMapper;
       private readonly IClassificationSnapshotTask _classificationSnapshotTask;
       private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly ICreationMetaDataFactory _creationMetaDataFactory;
       private readonly ILogger _logger;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
 
@@ -35,6 +36,7 @@ namespace PKSim.Core.Snapshots.Mappers
          IExecutionContext executionContext,
          IClassificationSnapshotTask classificationSnapshotTask,
          ILazyLoadTask lazyLoadTask, 
+         ICreationMetaDataFactory creationMetaDataFactory,
          ILogger logger)
       {
          _simulationMapper = simulationMapper;
@@ -43,6 +45,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _qualificationPlanMapper = qualificationPlanMapper;
          _classificationSnapshotTask = classificationSnapshotTask;
          _lazyLoadTask = lazyLoadTask;
+         _creationMetaDataFactory = creationMetaDataFactory;
          _logger = logger;
          //required to load the snapshot mapper via execution context to avoid circular references
          _snapshotMapper = new Lazy<ISnapshotMapper>(executionContext.Resolve<ISnapshotMapper>);
@@ -77,7 +80,13 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelProject> MapToModel(SnapshotProject snapshot)
       {
-         var project = new ModelProject {Description = snapshot.Description};
+         var project = new ModelProject
+         {
+            Description = snapshot.Description,
+            Creation = _creationMetaDataFactory.Create()
+         };
+         project.Creation.InternalVersion = snapshot.Version;
+         project.Creation.Version = ProjectVersions.FindBy(snapshot.Version)?.VersionDisplay;
 
          var buildingBlocks = await allBuidingBlocksFrom(snapshot);
          buildingBlocks?.Each(project.AddBuildingBlock);
