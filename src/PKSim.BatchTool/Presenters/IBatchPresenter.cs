@@ -55,7 +55,7 @@ namespace PKSim.BatchTool.Presenters
          }
          catch (Exception e)
          {
-            _batchLogger.AddError(e.ExceptionMessageWithStackTrace());
+            _batchLogger.AddException(e);
          }
 
          _isRunning = false;

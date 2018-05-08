@@ -8,9 +8,10 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.RunOptions;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
@@ -61,11 +62,11 @@ namespace PKSim.CLI.Core.Services
          
          var inputDirectory = new DirectoryInfo(inputFolder);
          if (!inputDirectory.Exists)
-            throw new ArgumentException($"Input folder '{inputFolder}' does not exist");
+            throw new OSPSuiteException($"Input folder '{inputFolder}' does not exist");
 
          var allSimulationFiles = inputDirectory.GetFiles(Constants.Filter.JSON_FILTER);
          if (allSimulationFiles.Length == 0)
-            throw new ArgumentException($"No simulation json file found in '{inputFolder}'");
+            throw new OSPSuiteException($"No simulation json file found in '{inputFolder}'");
 
          var outputDirectory = new DirectoryInfo(outputFolder);
          if (!outputDirectory.Exists)

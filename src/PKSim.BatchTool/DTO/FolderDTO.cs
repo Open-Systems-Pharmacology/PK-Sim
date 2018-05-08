@@ -22,18 +22,18 @@ namespace PKSim.BatchTool.DTO
 
       public FolderDTO()
       {
+         Rules.Add(AllRules.FolderDefined);
          Rules.Add(AllRules.FolderExists);
-         Rules.Add(AllRules.FolderWellFormed);
       }
 
       private static class AllRules
       {
-         public static IBusinessRule FolderExists
+         public static IBusinessRule FolderDefined
          {
             get { return GenericRules.NonEmptyRule<FolderDTO>(x => x.Folder); }
          }
 
-         public static IBusinessRule FolderWellFormed
+         public static IBusinessRule FolderExists
          {
             get
             {

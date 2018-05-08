@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -42,20 +43,20 @@ namespace PKSim.CLI.Core.Services
          return Task.Run(() => exportProject(runOptions));
       }
 
-      private async Task exportProject(ExportRunOptions exportRunOptions)
+      private async Task exportProject(ExportRunOptions runOptions)
       {
-         var projectFile = exportRunOptions.ProjectFile;
+         var projectFile = runOptions.ProjectFile;
          if (!FileHelper.FileExists(projectFile))
             throw new OSPSuiteException($"Project file '{projectFile}' does not exist.");
 
-         DirectoryHelper.CreateDirectory(exportRunOptions.OutputFolder);
+         DirectoryHelper.CreateDirectory(runOptions.OutputFolder);
 
          _logger.AddInfo($"Starting project export for '{projectFile}'");
 
          _workspacePersistor.LoadSession(_workspace, projectFile);
          _logger.AddDebug($"Project loaded successfuly from '{projectFile}'");
 
-         await exportSimulations(_workspace.Project, exportRunOptions);
+         await exportSimulations(_workspace.Project, runOptions);
 
          _logger.AddInfo($"Project export for '{projectFile}' terminated");
       }

@@ -1,6 +1,7 @@
 ﻿using System;
 using CommandLine;
 using Microsoft.Extensions.Logging;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
@@ -38,13 +39,21 @@ namespace PKSim.CLI
          return (int) ExitCodes.Success;
       }
 
-      private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)   
+      private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
       {
          var logger = initializeLogger(command);
          logger.AddInfo($"Starting {command.Name.ToLower()} run with arguments:\n{command}");
          ApplicationStartup.Start();
          var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
-         runner.RunBatchAsync(command.ToRunOptions()).Wait();
+         try
+         {
+            runner.RunBatchAsync(command.ToRunOptions()).Wait();
+         }
+         catch (Exception e)
+         {
+            logger.AddException(e);
+         }
+
          logger.AddInfo($"{command.Name} run finished");
       }
 
