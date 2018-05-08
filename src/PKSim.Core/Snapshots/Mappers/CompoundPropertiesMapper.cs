@@ -195,10 +195,23 @@ namespace PKSim.Core.Snapshots.Mappers
          var compoundGroupSelection = compoundProperties.CompoundGroupSelections.Find(x => x.GroupName == snapshotCompoundGroupSelection.GroupName);
          if (compoundGroupSelection == null)
          {
-            _logger.AddWarning(PKSimConstants.Error.CompoundGroupNotFoundFor(snapshotCompoundGroupSelection.GroupName, compoundProperties.Compound.Name));
+            _logger.AddError(PKSimConstants.Error.CompoundGroupNotFoundFor(snapshotCompoundGroupSelection.GroupName, compoundProperties.Compound.Name));
             return;
          }
 
+         var alternativeGroup = compoundProperties.Compound.ParameterAlternativeGroup(snapshotCompoundGroupSelection.GroupName);
+         if (alternativeGroup == null)
+         {
+            _logger.AddError(PKSimConstants.Error.CompoundGroupNotFoundFor(snapshotCompoundGroupSelection.GroupName, compoundProperties.Compound.Name));
+            return;
+         }
+
+         var alternative = alternativeGroup.AlternativeByName(snapshotCompoundGroupSelection.AlternativeName);
+         if (alternative == null)
+         {
+            _logger.AddError(PKSimConstants.Error.CompoundAlternativeNotFoundFor(snapshotCompoundGroupSelection.AlternativeName, alternativeGroup.DefaultAlternative?.Name, snapshotCompoundGroupSelection.GroupName, compoundProperties.Compound.Name));
+            return;
+         }
          compoundGroupSelection.AlternativeName = snapshotCompoundGroupSelection.AlternativeName;
       }
    }

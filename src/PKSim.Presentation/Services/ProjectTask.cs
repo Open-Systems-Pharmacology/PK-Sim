@@ -16,6 +16,7 @@ using OSPSuite.Utility;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Snapshots;
@@ -47,6 +48,7 @@ namespace PKSim.Presentation.Services
       private readonly IJournalTask _journalTask;
       private readonly IJournalRetriever _journalRetriever;
       private readonly ISnapshotTask _snapshotTask;
+      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
 
       public ProjectTask(IWorkspace workspace,
          IApplicationController applicationController,
@@ -57,7 +59,9 @@ namespace PKSim.Presentation.Services
          IUserSettings userSettings,
          IJournalTask journalTask,
          IJournalRetriever journalRetriever,
-         ISnapshotTask snapshotTask)
+         ISnapshotTask snapshotTask,
+         IBuildingBlockInSimulationManager buildingBlockInSimulationManager
+         )
       {
          _workspace = workspace;
          _applicationController = applicationController;
@@ -69,6 +73,7 @@ namespace PKSim.Presentation.Services
          _journalTask = journalTask;
          _journalRetriever = journalRetriever;
          _snapshotTask = snapshotTask;
+         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
       }
 
       public void NewProject()
@@ -234,7 +239,18 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      public Task ExportCurrentProjectToSnapshot() => _snapshotTask.ExportModelToSnapshot(_workspace.Project);
+      public Task ExportCurrentProjectToSnapshot()
+      {
+         var anySimulationInChangedState = _workspace.Project.All<Simulation>().Any(x => _buildingBlockInSimulationManager.StatusFor(x) == BuildingBlockStatus.Red);
+         if (anySimulationInChangedState)
+         {
+            var proceed = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.DoYouWantToProceedWithExportToSnapshotWithChangedSimulation);
+            if (proceed == ViewResult.No)
+               return Task.CompletedTask;
+         }
+
+         return _snapshotTask.ExportModelToSnapshot(_workspace.Project);
+      } 
 
       public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshot(snapshotFileFullPath);
 

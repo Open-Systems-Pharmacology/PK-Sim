@@ -30,13 +30,15 @@ namespace PKSim.Core
       protected ParameterIdentificationContext _parameterIdentificationContext;
       private ParameterIdentification _parameterIdentification;
       private PKSimProject _project;
+      protected IIdentificationParameterTask _identificationParameterTask;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _identificationParameterFactory= A.Fake<IIdentificationParameterFactory>();
          _logger= A.Fake<ILogger>();
-         sut = new IdentificationParameterMapper(_parameterMapper, _identificationParameterFactory, _logger);
+         _identificationParameterTask = A.Fake<IIdentificationParameterTask>();
+         sut = new IdentificationParameterMapper(_parameterMapper, _identificationParameterFactory, _identificationParameterTask,  _logger);
 
          _identificationParameter = new IdentificationParameter
          {
@@ -122,6 +124,12 @@ namespace PKSim.Core
          _newParameterIdentification.IsFixed.ShouldBeEqualTo(_identificationParameter.IsFixed);
          _newParameterIdentification.UseAsFactor.ShouldBeEqualTo(_identificationParameter.UseAsFactor);
          _newParameterIdentification.Scaling.ShouldBeEqualTo(_identificationParameter.Scaling);
+      }
+
+      [Observation]
+      public void should_call_the_update_range_method_if_the_identification_parameter_is_using_factor()
+      {
+         A.CallTo(() => _identificationParameterTask.UpdateParameterRange(_newParameterIdentification)).MustHaveHappened();
       }
    }
 }

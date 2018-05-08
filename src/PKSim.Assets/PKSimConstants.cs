@@ -81,7 +81,7 @@ namespace PKSim.Assets
 
          public static string UnitNotFoundInDimensionForParameter(string unit, string dimension, string parameterName)
          {
-            return $"Unit '{unit}' not found for parameter {parameterName} with dimension '{dimension}";
+            return $"Unit '{unit}' not found for parameter {parameterName} with dimension '{dimension}'";
          }
       }
 
@@ -889,7 +889,11 @@ namespace PKSim.Assets
 
          public static string CompoundGroupNotFoundFor(string compoundGroup, string compoundName) => $"Cannot find compound group '{compoundGroup}' for compound '{compoundName}'";
 
-         public static string UnableToFindAQualificationStepRunnderFor(string qualificationStep) => $"Cannot find {ObjectTypes.QualificationStep} runnder for '{qualificationStep}'";
+         public static string CompoundAlternativeNotFoundFor(string alternativeName, string defaultAlternativeName, string compoundGroup, string compoundName) => $"Cannot find alternative '{alternativeName}' in compound group '{compoundGroup}' for compound '{compoundName}'. Default alternative '{defaultAlternativeName}' will be used instead";
+
+         public static string UnableToFindAQualificationStepRunnderFor(string qualificationStep) => $"Cannot find {ObjectTypes.QualificationStep} runner for '{qualificationStep}'";
+
+         public static string CannotLoadSimulation(string simulationName) => $"Cannot load {ObjectTypes.Simulation} '{simulationName}'";
       }
 
       public static class Information
@@ -2162,6 +2166,7 @@ namespace PKSim.Assets
          public static readonly string WatermarkText = "Text";
          public static readonly string WatermarkProperties = "Watermark Properties";
          public static readonly string CreateTableSolubilityAlternative = "Create as pH-Solubility table";
+         public static readonly string DoYouWantToProceedWithExportToSnapshotWithChangedSimulation = "WARNING: Some simulations are in a changed state (red icon) and may not be re-imported correctly.\nDo you wish to continue?";
 
          public static string NumberOfIndividualsToExtract(int count, string populationName) => $"{count} {"individual".PluralizeIf(count)} will be extracted from population {populationName}.";
 
