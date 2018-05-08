@@ -42,6 +42,7 @@ namespace PKSim.Core
       protected SpecificBindingPartialProcess _specificBindingProcess;
       protected SystemicProcess _transportProcess;
       protected ILogger _logger;
+      protected Model.CompoundProperties _mappedCompoundProperties;
 
       protected override Task Context()
       {
@@ -178,7 +179,6 @@ namespace PKSim.Core
    {
       private CompoundPropertiesContext _context;
       private Simulation _simulation;
-      private Model.CompoundProperties _mappedCompoundProperties;
 
       protected override async Task Context()
       {
@@ -215,7 +215,6 @@ namespace PKSim.Core
    {
       private CompoundPropertiesContext _context;
       private Simulation _simulation;
-      private Model.CompoundProperties _mappedCompoundProperties;
 
       protected override async Task Context()
       {
@@ -240,7 +239,7 @@ namespace PKSim.Core
       [Observation]
       public void should_warn_the_user_that_the_group_is_not_found()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains("UNKNOWN"), LogLevel.Warning, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains("UNKNOWN"), LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 
@@ -248,7 +247,6 @@ namespace PKSim.Core
    {
       private CompoundPropertiesContext _context;
       private Simulation _simulation;
-      private Model.CompoundProperties _mappedCompoundProperties;
 
       protected override async Task Context()
       {
@@ -273,7 +271,7 @@ namespace PKSim.Core
       [Observation]
       public void should_warn_the_user_that_the_group_is_not_found()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Warning, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 
@@ -281,7 +279,6 @@ namespace PKSim.Core
    {
       private CompoundPropertiesContext _context;
       private Simulation _simulation;
-      private Model.CompoundProperties _mappedCompoundProperties;
 
       protected override async Task Context()
       {
@@ -306,7 +303,7 @@ namespace PKSim.Core
       [Observation]
       public void should_warn_the_user_that_the_group_is_not_found()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains("UNKNOWN"), LogLevel.Warning, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains("UNKNOWN"), LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 

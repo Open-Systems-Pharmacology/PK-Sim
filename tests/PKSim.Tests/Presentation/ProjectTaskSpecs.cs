@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -15,6 +14,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Snapshots;
@@ -38,6 +38,8 @@ namespace PKSim.Presentation
       protected IJournalTask _journalTask;
       protected IJournalRetriever _journalRetriever;
       protected ISnapshotTask _snapshotTask;
+      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected Simulation _simulation;
 
       public override Task GlobalContext()
       {
@@ -51,14 +53,18 @@ namespace PKSim.Presentation
          _journalTask = A.Fake<IJournalTask>();
          _journalRetriever = A.Fake<IJournalRetriever>();
          _snapshotTask = A.Fake<ISnapshotTask>();
-
+         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
          _workspace.Project = _project;
          _workspace.WorkspaceLayout = new WorkspaceLayout();
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
 
+         _simulation = new IndividualSimulation();
+
+         _project.AddBuildingBlock(_simulation);
+
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
             _executionContext, _heavyWorkManager, _workspaceLayoutUpdater, _userSettings,
-            _journalTask, _journalRetriever, _snapshotTask);
+            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager);
 
          _oldFileExitst = FileHelper.FileExists;
 
@@ -149,7 +155,7 @@ namespace PKSim.Presentation
       }
 
       protected override Task Because()
-      { 
+      {
          sut.NewProject();
          return _completed;
       }
@@ -264,7 +270,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -618,7 +624,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -855,18 +861,65 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_exporting_the_current_project_to_snapshot : concern_for_ProjectTask
+   public class When_exporting_the_current_project_without_simulation_changed_to_snapshot : concern_for_ProjectTask
    {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Green);
+      }
+
       protected override Task Because()
       {
-         sut.ExportCurrentProjectToSnapshot();
-         return _completed;
+         return sut.ExportCurrentProjectToSnapshot();
       }
 
       [Observation]
       public void should_export_the_current_project_to_a_snapshot()
       {
          A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustHaveHappened();
+      }
+   }
+
+   public class When_exporting_the_current_project_with_changed_simulations_to_snapshot_and_the_user_wants_to_proceed_with_export : concern_for_ProjectTask
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+      }
+
+      protected override Task Because()
+      {
+         return sut.ExportCurrentProjectToSnapshot();
+      }
+
+      [Observation]
+      public void should_export_the_current_project_to_a_snapshot()
+      {
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustHaveHappened();
+      }
+   }
+
+   public class When_exporting_the_current_project_with_changed_simulations_to_snapshot_and_the_user_cancels_export : concern_for_ProjectTask
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
+      }
+
+      protected override Task Because()
+      {
+         return sut.ExportCurrentProjectToSnapshot();
+      }
+
+      [Observation]
+      public void should_not_export_the_current_project_to_a_snapshot()
+      {
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustNotHaveHappened();
       }
    }
 
@@ -939,7 +992,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_have_added_a_command_to_the_history()
       {
-         A.CallTo(() => _workspace.AddCommand(A<ICommand>.That.Matches(x=>x.IsAnImplementationOf<LoadProjectFromSnapshotCommand>()))).MustHaveHappened();   
+         A.CallTo(() => _workspace.AddCommand(A<ICommand>.That.Matches(x => x.IsAnImplementationOf<LoadProjectFromSnapshotCommand>()))).MustHaveHappened();
       }
 
       [Observation]
