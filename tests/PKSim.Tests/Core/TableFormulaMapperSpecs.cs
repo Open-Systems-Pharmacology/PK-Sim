@@ -86,7 +86,8 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_tableFormula);
-         A.CallTo(_formulaFactory).WithReturnType<TableFormula>().Returns(new TableFormula());
+         _snapshot.UseDerivedValues = false;
+         A.CallTo(_formulaFactory).WithReturnType<TableFormula>().Returns(new TableFormula{UseDerivedValues = true});
       }
 
       protected override async Task Because()
@@ -105,7 +106,7 @@ namespace PKSim.Core
          _newTableFormula.YDisplayUnit.Name.ShouldBeEqualTo(_snapshot.YUnit);
          _newTableFormula.Dimension.Name.ShouldBeEqualTo(_snapshot.YDimension);
 
-         _newTableFormula.UseDerivedValues.ShouldBeEqualTo(_snapshot.UseDerivedValues);
+         _newTableFormula.UseDerivedValues.ShouldBeFalse();
       }
 
       [Observation]

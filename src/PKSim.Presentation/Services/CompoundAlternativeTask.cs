@@ -62,9 +62,7 @@ namespace PKSim.Presentation.Services
 
       public ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup)
       {
-         var parameterAlternative = compoundParameterGroup.IsNamed(CoreConstants.Groups.COMPOUND_SOLUBILITY) ? 
-            createSolubilityCompoundAlternativeFor(compoundParameterGroup) : 
-            createStandardParameterAlternativeFor(compoundParameterGroup);
+         var parameterAlternative = compoundParameterGroup.IsNamed(CoreConstants.Groups.COMPOUND_SOLUBILITY) ? createSolubilityCompoundAlternativeFor(compoundParameterGroup) : createStandardParameterAlternativeFor(compoundParameterGroup);
 
          if (parameterAlternative == null)
             return new PKSimEmptyCommand();
@@ -105,17 +103,16 @@ namespace PKSim.Presentation.Services
             .WithName(name);
 
          PrepareSolubilityAlternativeForTableSolubility(tableAlternative);
-    
+
          var tableParameter = tableAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
          var phParameter = tableAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
 
          var tableFormula = tableParameter.Formula.DowncastTo<TableFormula>();
          initializeSolubiltyTableFormula(tableFormula, phParameter.Dimension, tableParameter.Dimension);
-        
+
          tableFormula.AddPoint(0, 0);
          return tableAlternative;
       }
-
 
       public void PrepareSolubilityAlternativeForTableSolubility(ParameterAlternative solubilityAlternative)
       {
@@ -130,7 +127,7 @@ namespace PKSim.Presentation.Services
          tableParameter.IsDefault = false;
       }
 
-      private static void resetParameters(params IParameter[] parameters) => parameters.Each(p=>
+      private static void resetParameters(params IParameter[] parameters) => parameters.Each(p =>
       {
          p.IsDefault = true;
          p.Visible = false;
@@ -253,13 +250,11 @@ namespace PKSim.Presentation.Services
          return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 
-  
-
       private TableFormula formulaFrom(DataRepository dataRepository)
       {
          var baseGrid = dataRepository.BaseGrid;
          var valueColumn = dataRepository.AllButBaseGrid().Single();
-         var formula = _formulaFactory.CreateTableFormula().WithName(dataRepository.Name);
+         var formula = _formulaFactory.CreateTableFormula(useDerivedValues: false);
          initializeSolubiltyTableFormula(formula, baseGrid.Dimension, valueColumn.Dimension);
          formula.XDisplayUnit = baseGrid.Dimension.Unit(baseGrid.DataInfo.DisplayUnitName);
          formula.YDisplayUnit = valueColumn.Dimension.Unit(valueColumn.DataInfo.DisplayUnitName);
@@ -344,6 +339,8 @@ namespace PKSim.Presentation.Services
 
       private TableFormula initializeSolubiltyTableFormula(TableFormula tableFormula, IDimension xDimension, IDimension yDimension)
       {
+         tableFormula.UseDerivedValues = false;
+
          return tableFormula
             .WithName(PKSimConstants.UI.Solubility)
             .InitializedWith(PKSimConstants.UI.pH, PKSimConstants.UI.Solubility, xDimension, yDimension);
