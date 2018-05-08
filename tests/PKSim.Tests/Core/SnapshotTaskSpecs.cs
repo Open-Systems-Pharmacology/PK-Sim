@@ -244,7 +244,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_if_the_version_of_the_object_is_string_lower_than_7_2()
       {
-         sut.IsVersionCompatibleWithSnapshotExport(_newProject).ShouldBeFalse();
+         sut.IsVersionCompatibleWithSnapshotExport(_oldProject).ShouldBeFalse();
       }
    }
 }
