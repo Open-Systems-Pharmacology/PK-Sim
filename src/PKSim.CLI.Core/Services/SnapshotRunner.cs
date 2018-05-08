@@ -8,7 +8,9 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
 using PKSim.Core.Extensions;
@@ -174,10 +176,8 @@ namespace PKSim.CLI.Core.Services
       {
          var directory = new DirectoryInfo(folder);
          if (!directory.Exists)
-         {
-            _logger.AddError($"Folder '{folder}' does not exist!");
-            return Enumerable.Empty<FileInfo>().ToArray();
-         }
+            throw new OSPSuiteException($"Folder '{folder}' does not exist!");
+
          return directory.GetFiles(filter);
       }
 

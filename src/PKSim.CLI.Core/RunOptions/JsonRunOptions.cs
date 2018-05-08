@@ -16,6 +16,7 @@ namespace PKSim.CLI.Core.RunOptions
          Rules.AddRange(new[]
          {
             RunOptionsRules.InputFolderDefined,
+            RunOptionsRules.InputFolderDefined,
             RunOptionsRules.OutputFolderDefined,
          });
       }
