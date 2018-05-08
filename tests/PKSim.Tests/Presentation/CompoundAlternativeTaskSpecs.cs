@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Importer;
@@ -36,7 +37,7 @@ namespace PKSim.Presentation
       protected IParameterTask _parameterTask;
       protected IBuildingBlockRepository _buildingBlockRepository;
       private IDimensionRepository _dimensionRepository;
-      private IDataImporter _dataImporter;
+      protected IDataImporter _dataImporter;
 
       protected override void Context()
       {
@@ -686,12 +687,12 @@ namespace PKSim.Presentation
          _alternative = new ParameterAlternative().WithName("ALT1");
          _alternative.Add(_parameter);
          solGroup.AddAlternative(_alternative);
-         var simulation = new IndividualSimulation { Properties = new SimulationProperties() };
-         A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new[] { simulation });
+         var simulation = new IndividualSimulation {Properties = new SimulationProperties()};
+         A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new[] {simulation});
 
          var compoundProperties = new CompoundProperties();
          simulation.Properties.AddCompoundProperties(compoundProperties);
-         compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection { AlternativeName = _alternative.Name, GroupName = solGroup.Name });
+         compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection {AlternativeName = _alternative.Name, GroupName = solGroup.Name});
       }
 
       protected override void Because()
@@ -712,4 +713,28 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_importing_a_solubility_table_from_file : concern_for_CompoundAlternativeTask
+   {
+      private TableFormula _tableFormula;
+      private DataRepository _solubilityDataRepository;
+
+      protected override void Context()
+      {
+         base.Context();
+         _solubilityDataRepository = DomainHelperForSpecs.ObservedData("SolubilityTable");
+         A.CallTo(() => _formulaFactory.CreateTableFormula(A<bool>._)).Returns(new TableFormula{UseDerivedValues = true});
+         A.CallTo(_dataImporter).WithReturnType<DataRepository>().Returns(_solubilityDataRepository);
+      }
+
+      protected override void Because()
+      {
+         _tableFormula = sut.ImportSolubilityTableFormula();
+      }
+
+      [Observation]
+      public void should_return_a_solubility_table_that_is_set_to_not_use_derived_values()
+      {
+         _tableFormula.UseDerivedValues.ShouldBeFalse();
+      }
+   }
 }

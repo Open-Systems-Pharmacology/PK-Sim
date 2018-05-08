@@ -8,7 +8,6 @@ namespace PKSim.Presentation.Presenters.Compounds
 {
    public interface IEditTableSolubilityParameterPresenter : IEditTableParameterPresenter
    {
-
    }
 
    public class EditTableSolubilityParameterPresenter : EditTableParameterPresenter<ITableSolubilityParameterPresenter>, IEditTableSolubilityParameterPresenter

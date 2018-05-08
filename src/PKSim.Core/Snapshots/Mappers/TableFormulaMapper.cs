@@ -59,7 +59,7 @@ namespace PKSim.Core.Snapshots.Mappers
          tableFormula.YDisplayUnit = tableFormula.Dimension.Unit(ModelValueFor(snapshotTableFormula.YUnit));
          tableFormula.YName = snapshotTableFormula.YName;
 
-         snapshotTableFormula.UseDerivedValues = tableFormula.UseDerivedValues;
+         tableFormula.UseDerivedValues = snapshotTableFormula.UseDerivedValues;
 
          snapshotTableFormula.Points.Each(p => tableFormula.AddPoint(valuePointFrom(tableFormula, p)));
       }
