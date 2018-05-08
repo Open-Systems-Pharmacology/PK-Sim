@@ -62,7 +62,9 @@ namespace PKSim.Presentation.Services
 
       public ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup)
       {
-         var parameterAlternative = compoundParameterGroup.IsNamed(CoreConstants.Groups.COMPOUND_SOLUBILITY) ? createSolubilityCompoundAlternativeFor(compoundParameterGroup) : createStandardParameterAlternativeFor(compoundParameterGroup);
+         var parameterAlternative = compoundParameterGroup.IsNamed(CoreConstants.Groups.COMPOUND_SOLUBILITY) ? 
+            createSolubilityCompoundAlternativeFor(compoundParameterGroup) : 
+            createStandardParameterAlternativeFor(compoundParameterGroup);
 
          if (parameterAlternative == null)
             return new PKSimEmptyCommand();
