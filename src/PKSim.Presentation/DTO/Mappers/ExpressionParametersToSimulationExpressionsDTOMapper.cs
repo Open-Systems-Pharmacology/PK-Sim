@@ -76,7 +76,7 @@ namespace PKSim.Presentation.DTO.Mappers
          var expressionContainerDTO = new ExpressionContainerDTO();
          var moleculeName = relativeExpression.ParentContainer.Name;
          var simulation = _executionContext.Get<Simulation>(relativeExpression.Origin.SimulationId);
-         var molecule = simulation.Individual.MoleculeByName<IndividualMolecule>(moleculeName);
+         var molecule = simulation.Individual?.MoleculeByName<IndividualMolecule>(moleculeName);
          var isTransporter = moleculeIsTransporter(molecule);
 
          expressionContainerDTO.RelativeExpressionParameter = _containerParameterMapper.MapFrom(relativeExpression, expressionContainerDTO, x => x.RelativeExpression, x => x.RelativeExpressionParameter);
@@ -124,7 +124,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private bool moleculeIsTransporter(IndividualMolecule molecule)
       {
-         return molecule.MoleculeType == QuantityType.Transporter;
+         return molecule?.MoleculeType == QuantityType.Transporter;
       }
 
       private bool expressionShouldBeTreatedAsGlobal(IParameter relativeExpression, bool isTransporter)
