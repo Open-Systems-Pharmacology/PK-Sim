@@ -624,4 +624,20 @@ namespace PKSim.IntegrationTests
          refConcParameters.Each(mp=>mp.Parameter.Name.ShouldBeEqualTo(CoreConstants.Parameters.REFERENCE_CONCENTRATION));
       }
    }
+
+   public class When_checking_the_changes_in_the_database_for_version_7_3 : concern_for_DatabaseUpdate
+   {
+      [Observation]
+      public void should_retrieve_new_agp_ontogeny()
+      {
+         var ontogenyRepo = IoC.Resolve<IOntogenyRepository>();
+         var ontogeny = new DatabaseOntogeny { Name = CoreConstants.Molecule.AGP, SpeciesName = CoreConstants.Species.HUMAN};
+
+         var agpOntogenies = ontogenyRepo.AllValuesFor(ontogeny).OrderBy(onto=>onto.PostmenstrualAge).ToArray();
+         agpOntogenies.Length.ShouldBeEqualTo(19);
+
+         agpOntogenies[0].PostmenstrualAge.ShouldBeEqualTo(0.76, 1e-2);
+         agpOntogenies[agpOntogenies.Length-1].PostmenstrualAge.ShouldBeEqualTo(90.45, 1e-2);
+      }
+   }
 }
