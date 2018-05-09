@@ -119,6 +119,9 @@ namespace PKSim.IntegrationTests
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
          foreach (var parameterName in CoreConstants.Parameters.AllPlasmaProteinOntogenyFactors)
          {
+            if (parameterName.Equals(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP))
+               continue; //new ontogeny is defined up to 90 years, so the table will not be replaced by const
+
             organism.Parameter(parameterName).Formula.ShouldBeAnInstanceOf<ConstantFormula>();
          }
       }
