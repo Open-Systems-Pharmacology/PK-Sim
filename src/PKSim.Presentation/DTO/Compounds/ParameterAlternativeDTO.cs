@@ -13,7 +13,7 @@ namespace PKSim.Presentation.DTO.Compounds
       public ParameterAlternativeDTO(ParameterAlternative parameterAlternative) : base(parameterAlternative)
       {
          ParameterAlternative = parameterAlternative;
-         ValueOrigin = ParameterAlternative.AllParameters().FirstOrDefault()?.ValueOrigin ?? new ValueOrigin();
+         ValueOrigin = ParameterAlternative.AllParameters(x => !x.IsDefault).FirstOrDefault()?.ValueOrigin ?? new ValueOrigin();
       }
 
       public string Name
@@ -32,6 +32,5 @@ namespace PKSim.Presentation.DTO.Compounds
       {
          ValueOrigin.UpdateFrom(sourceValueOrigin);
       }
-
    }
 }
