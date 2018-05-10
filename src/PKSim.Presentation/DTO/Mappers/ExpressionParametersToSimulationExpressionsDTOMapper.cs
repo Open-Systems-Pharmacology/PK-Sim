@@ -46,15 +46,14 @@ namespace PKSim.Presentation.DTO.Mappers
 
       public SimulationExpressionsDTO MapFrom(IEnumerable<IParameter> expressionParameters)
       {
-         var dto = new SimulationExpressionsDTO();
          var allParameters = expressionParameters.ToList();
 
-         dto.ReferenceConcentration = updateGlobalParameter(allParameters, CoreConstants.Parameters.REFERENCE_CONCENTRATION);
-         dto.HalfLifeLiver = updateGlobalParameter(allParameters, CoreConstants.Parameters.HALF_LIFE_LIVER);
-         dto.HalfLifeIntestine = updateGlobalParameter(allParameters, CoreConstants.Parameters.HALF_LIFE_INTESTINE);
-
-         dto.RelativeExpressions = relativeExpressionsFrom(allParameters).ToList();
-         return dto;
+         return new SimulationExpressionsDTO(
+            updateGlobalParameter(allParameters, CoreConstants.Parameters.REFERENCE_CONCENTRATION),
+            updateGlobalParameter(allParameters, CoreConstants.Parameters.HALF_LIFE_LIVER),
+            updateGlobalParameter(allParameters, CoreConstants.Parameters.HALF_LIFE_INTESTINE),
+            relativeExpressionsFrom(allParameters).ToList()
+         );
       }
 
       private IParameterDTO updateGlobalParameter(List<IParameter> allParameters, string globalParameterName)

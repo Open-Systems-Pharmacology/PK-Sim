@@ -122,13 +122,13 @@ namespace PKSim.Core.Model
          }
       }
 
-      private void setParameterDisplayUnit(Individual individual, string parameterName, string unit, ValueOrigin valueOrigin=null)
+      private void setParameterDisplayUnit(Individual individual, string parameterName, string unit, ValueOrigin valueOrigin = null)
       {
          var parameter = individual.Organism.Parameter(parameterName);
          if (parameter == null || unit == null)
             return;
 
-         if(valueOrigin!=null)
+         if (valueOrigin != null)
             parameter.UpdateValueOriginFrom(valueOrigin);
 
          parameter.DisplayUnit = parameter.Dimension.UnitOrDefault(unit);
@@ -138,7 +138,7 @@ namespace PKSim.Core.Model
       {
          if (!value.HasValue)
             return;
-         
+
          var parameter = individual.Organism.Parameter(parameterName);
          if (parameter == null)
             return;

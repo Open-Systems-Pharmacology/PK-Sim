@@ -91,6 +91,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       private void valueOriginUpdated(ValueOrigin valueOrigin)
       {
          _individualSettingsDTO.ValueOrigin.UpdateFrom(valueOrigin);
+         ViewChanged();
       }
 
       public IEnumerable<CalculationMethod> AllCalculationMethodsFor(string category)

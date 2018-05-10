@@ -37,7 +37,7 @@ namespace PKSim.Core.Model
 
       public virtual OriginData Clone()
       {
-         return new OriginData
+         var clone = new OriginData
          {
             Age = Age,
             AgeUnit = AgeUnit,
@@ -55,6 +55,9 @@ namespace PKSim.Core.Model
             GestationalAge = GestationalAge,
             CalculationMethodCache = CalculationMethodCache.Clone()
          };
+
+         clone.UpdateValueOriginFrom(ValueOrigin);
+         return clone;
       }
 
       public override string ToString()

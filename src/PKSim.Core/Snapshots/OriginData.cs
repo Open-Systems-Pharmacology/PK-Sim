@@ -45,6 +45,8 @@ namespace PKSim.Core.Snapshots
       public Parameter Height { get; set; }
 
 
+      public ValueOrigin ValueOrigin { get; set; }
+
       public void AddCalculationMethods(params string[] calculationMethods)
       {
          if (CalculationMethods == null)
