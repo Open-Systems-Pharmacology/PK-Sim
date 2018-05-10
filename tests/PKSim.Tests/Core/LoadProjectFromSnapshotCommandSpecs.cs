@@ -22,7 +22,7 @@ namespace PKSim.Core
          _context= A.Fake<IExecutionContext>();
          _workspace = A.Fake<IWorkspace>();
          _configuration= A.Fake<IApplicationConfiguration>();
-         _project =new PKSimProject();
+         _project = new PKSimProject {Creation = {Version = "CreationVersion"}};
          A.CallTo(() => _context.Resolve<IApplicationConfiguration>()).Returns(_configuration);
          A.CallTo(() => _configuration.Version).Returns("1.2.3");
          sut = new LoadProjectFromSnapshotCommand(_workspace,_project, _snapshotFile);
@@ -46,7 +46,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_command_description_to_use_the_file_name_and_the_current_project_version()
       {
-         sut.Description.ShouldBeEqualTo(PKSimConstants.Command.LoadProjectFromSnapshotDescription(_snapshotFile, _configuration.Version));
+         sut.Description.ShouldBeEqualTo(PKSimConstants.Command.LoadProjectFromSnapshotDescription(_snapshotFile, _configuration.Version, _project.Creation.Version));
       }
    }
 }	

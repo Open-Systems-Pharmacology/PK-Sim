@@ -34,6 +34,23 @@ namespace PKSim.ProjectConverter.v7_3
       }
 
       [Observation]
+      public void should_have_set_the_standard_input_parameter_to_non_default()
+      {
+         foreach (var compound in _allCompounds)
+         {
+            checkIsDefaultFlagIn(compound);
+         }
+      }
+
+      private void checkIsDefaultFlagIn(Compound compound)
+      {
+         compound.Parameter(CoreConstants.Parameters.MOLECULAR_WEIGHT).IsDefault.ShouldBeFalse();
+         var lipoGroup = compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
+         var parameters = lipoGroup.AllAlternatives.Select(x => x.Parameter(CoreConstants.Parameters.LIPOPHILICITY));
+         parameters.Each(p => p.IsDefault.ShouldBeFalse());
+      }
+
+      [Observation]
       public void should_have_added_a_solubility_table_in_all_compound_as_direct_child()
       {
          foreach (var compound in _allCompounds)
@@ -45,7 +62,7 @@ namespace PKSim.ProjectConverter.v7_3
       [Observation]
       public void should_have_added_a_solubility_table_in_all_solubility_alternatives()
       {
-         foreach (var solubilityAlternative in _allCompounds.Select(x => x.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_SOLUBILITY)).SelectMany(x=>x.AllAlternatives))
+         foreach (var solubilityAlternative in _allCompounds.Select(x => x.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_SOLUBILITY)).SelectMany(x => x.AllAlternatives))
          {
             checkSolubilityTableInContainer(solubilityAlternative);
          }
@@ -54,7 +71,7 @@ namespace PKSim.ProjectConverter.v7_3
       [Observation]
       public void should_have_added_a_solubility_table_in_all_compound_building_block_defined_in_simulation()
       {
-         foreach (var compound in _allSimulations.SelectMany(x=>x.Compounds))
+         foreach (var compound in _allSimulations.SelectMany(x => x.Compounds))
          {
             checkSolubilityTableInContainer(compound);
          }
