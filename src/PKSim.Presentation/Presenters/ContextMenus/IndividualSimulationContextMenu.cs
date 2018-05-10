@@ -67,7 +67,8 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Save Snapshot"))
             .WithCommandFor<ExportSimulationSnapshotUICommand, Simulation>(simulation)
-            .WithIcon(ApplicationIcons.SnapshotExport);
+            .WithIcon(ApplicationIcons.SnapshotExport)
+            .ForDeveloper();
 
       }
 
