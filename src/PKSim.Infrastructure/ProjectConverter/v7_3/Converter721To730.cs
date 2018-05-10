@@ -127,7 +127,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
             return;
 
          var templateFormulation = _formulationRepository.FormulationBy(formulation.FormulationType);
-         updateIsInputStateByName(formulation, templateFormulation);
+         updateIsInputStateByNameAndValue(formulation, templateFormulation);
       }
 
       private void convertEvent(PKSimEvent pkSimEvent)
@@ -136,14 +136,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
             return;
 
          var templateEvent = _eventGroupRepository.FindByName(pkSimEvent.TemplateName);
-         updateIsInputStateByName(pkSimEvent, templateEvent);
+         updateIsInputStateByNameAndValue(pkSimEvent, templateEvent);
       }
 
-      private void updateIsInputStateByName(IContainer containerToUpdate, IContainer templateContainer)
+      private void updateIsInputStateByNameAndValue(IContainer containerToUpdate, IContainer templateContainer)
       {
-         foreach (var templateParameter in templateContainer.AllParameters(x => !x.IsDefault))
+         foreach (var templateParameter in templateContainer.AllParameters(x => x.Visible && x.Editable && x.ValueIsDefined()))
          {
-            setAsInput(containerToUpdate.Parameter(templateParameter.Name));
+            var parameter = containerToUpdate.Parameter(templateParameter.Name);
+            if (parameter != null && !ValueComparer.AreValuesEqual(parameter, templateParameter))
+               setAsInput(parameter);
          }
       }
 
@@ -174,7 +176,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
             var compoundGroup = compound.ParameterAlternativeGroup(templateAlternativeGroup.Name);
             foreach (var alternative in compoundGroup.AllAlternatives)
             {
-               updateIsInputStateByName(alternative, templateAlternative);
+               updateIsInputStateByNameAndValue(alternative, templateAlternative);
             }
          }
 
