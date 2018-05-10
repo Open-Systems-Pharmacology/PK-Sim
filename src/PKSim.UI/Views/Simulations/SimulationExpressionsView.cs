@@ -10,6 +10,7 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
@@ -138,23 +139,16 @@ namespace PKSim.UI.Views.Simulations
          return _columnValue.XtraColumn == gridColumn;
       }
 
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         layoutGroupMoleculeParameters.Text = PKSimConstants.UI.Properties;
+      }
+
       private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
       {
          var containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridViewParameters, _imageListRetriever);
          return containerDisplayNameRepository.AddItem(parameterPathDTO, parameterPathDTO.IconName);
-      }
-
-      public override void InitializeResources()
-      {
-         base.InitializeResources();
-         panelReferenceConcentration.FillWith(_uxReferenceConcentration.DowncastTo<Control>());
-         layoutItemReferenceConcentration.Text = PKSimConstants.UI.ReferenceConcentration.FormatForLabel();
-
-         panelHalfLifeLiver.FillWith(_uxHalfLifeLiver.DowncastTo<Control>());
-         layoutItemHalfLifeLiver.Text = PKSimConstants.UI.HalfLifeLiver.FormatForLabel();
-
-         panelHalfLifeIntestine.FillWith(_uxHalfLifeIntestine.DowncastTo<Control>());
-         layoutItemHalfLifeIntestine.Text = PKSimConstants.UI.HalfLifeIntestine.FormatForLabel();
       }
 
       public void AttachPresenter(ISimulationExpressionsPresenter presenter)
@@ -167,6 +161,11 @@ namespace PKSim.UI.Views.Simulations
          _screenBinder.BindToSource(simulationExpressionsDTO);
          _gridViewBinder.BindToSource(simulationExpressionsDTO.RelativeExpressions.ToBindingList());
          _colGrouping.XtraColumn.GroupIndex = 0;
+      }
+
+      public void AddMoleculeParametersView(IView view)
+      {
+         AddViewTo(layoutItemMoleculeParameters, view);
       }
    }
 }
