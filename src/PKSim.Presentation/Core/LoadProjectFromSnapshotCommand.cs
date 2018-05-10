@@ -26,7 +26,7 @@ namespace PKSim.Presentation.Core
       {
          _workspace.LoadProject(_project);
          var configuration = context.Resolve<IApplicationConfiguration>();
-         Description = PKSimConstants.Command.LoadProjectFromSnapshotDescription(_snapshotFile, configuration.Version);
+         Description = PKSimConstants.Command.LoadProjectFromSnapshotDescription(_snapshotFile, configuration.Version, _project.Creation.Version);
       }
 
       protected override void ClearReferences()

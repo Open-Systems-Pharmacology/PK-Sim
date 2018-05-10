@@ -387,9 +387,9 @@ namespace PKSim.Assets
             return $"Updating default state for '{parameterDisplayName}' from {oldIsDefault} to {newIsDefault}";
          }
 
-         public static string LoadProjectFromSnapshotDescription(string snapshotFile, string version)
+         public static string LoadProjectFromSnapshotDescription(string snapshotFile, string version, string snapshotVersion)
          {
-            return $"Project loaded from snapshot file '{snapshotFile}' with version {version}";
+            return $"Project loaded from snapshot file '{snapshotFile}' which was created with version {snapshotVersion}. Project version is now {version}.";
          }
       }
 
