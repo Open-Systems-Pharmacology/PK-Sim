@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.ProjectConverter.v7_3
@@ -14,6 +15,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
    public class Converter721To730 : IObjectConverter,
       IVisitor<Compound>,
       IVisitor<Simulation>,
+      IVisitor<Formulation>,
+      IVisitor<PKSimEvent>,
       IVisitor<IPKSimBuildingBlock>,
       IVisitor<PKSimProject>
 
@@ -22,6 +25,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
       private readonly ICloner _cloner;
       private readonly ICreationMetaDataFactory _creationMetaDataFactory;
       private readonly IContainerTask _containerTask;
+      private readonly IFormulationRepository _formulationRepository;
+      private readonly IEventGroupRepository _eventGroupRepository;
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V7_2_1;
 
       private bool _converted;
@@ -30,12 +35,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          ICompoundFactory compoundFactory,
          ICloner cloner,
          ICreationMetaDataFactory creationMetaDataFactory,
-         IContainerTask containerTask)
+         IContainerTask containerTask,
+         IFormulationRepository formulationRepository,
+         IEventGroupRepository eventGroupRepository)
       {
          _compoundFactory = compoundFactory;
          _cloner = cloner;
          _creationMetaDataFactory = creationMetaDataFactory;
          _containerTask = containerTask;
+         _formulationRepository = formulationRepository;
+         _eventGroupRepository = eventGroupRepository;
       }
 
       public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
@@ -69,9 +78,21 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          convertProject(project);
       }
 
+      public void Visit(Formulation formulation)
+      {
+         adjustDefaultStateOfAllParametersIn(formulation);
+         convertFormulation(formulation);
+      }
+
       public void Visit(IPKSimBuildingBlock buildingBlock)
       {
          adjustDefaultStateOfAllParametersIn(buildingBlock);
+      }
+
+      public void Visit(PKSimEvent pkSimEvent)
+      {
+         adjustDefaultStateOfAllParametersIn(pkSimEvent);
+         convertEvent(pkSimEvent);
       }
 
       private void adjustDefaultStateOfAllParametersIn(IContainer container)
@@ -100,6 +121,32 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          _converted = true;
       }
 
+      private void convertFormulation(Formulation formulation)
+      {
+         if (formulation == null)
+            return;
+
+         var templateFormulation = _formulationRepository.FormulationBy(formulation.FormulationType);
+         updateIsInputStateByName(formulation, templateFormulation);
+      }
+
+      private void convertEvent(PKSimEvent pkSimEvent)
+      {
+         if (pkSimEvent == null)
+            return;
+
+         var templateEvent = _eventGroupRepository.FindByName(pkSimEvent.TemplateName);
+         updateIsInputStateByName(pkSimEvent, templateEvent);
+      }
+
+      private void updateIsInputStateByName(IContainer containerToUpdate, IContainer templateContainer)
+      {
+         foreach (var templateParameter in templateContainer.AllParameters(x => !x.IsDefault))
+         {
+            setAsInput(containerToUpdate.Parameter(templateParameter.Name));
+         }
+      }
+
       private void convertCompound(Compound compound)
       {
          if (compound == null)
@@ -121,15 +168,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
             setAsInput(compoundParameterCache[parameterPath]);
          }
 
-
          foreach (var templateAlternativeGroup in templateCompound.AllParameterAlternativeGroups())
          {
-            var alternative = templateAlternativeGroup.AllAlternatives.First();
+            var templateAlternative = templateAlternativeGroup.AllAlternatives.First();
             var compoundGroup = compound.ParameterAlternativeGroup(templateAlternativeGroup.Name);
-            foreach (var parameter in alternative.AllParameters(x => !x.IsDefault))
+            foreach (var alternative in compoundGroup.AllAlternatives)
             {
-               var compoundParameters = compoundGroup.AllAlternatives.Select(x => x.Parameter(parameter.Name));
-               compoundParameters.Each(setAsInput);
+               updateIsInputStateByName(alternative, templateAlternative);
             }
          }
 
