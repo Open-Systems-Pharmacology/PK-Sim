@@ -577,6 +577,7 @@
     <Compile Include="Presentation\QualiticationPlanRunnerSpecs.cs" />
     <Compile Include="Presentation\RunParameterIdentificationQualificationStepRunnerSpecs.cs" />
     <Compile Include="Presentation\RunSimulationQualificationStepRunnerSpecs.cs" />
+    <Compile Include="Presentation\SimulationExpressionsPresenterSpecs.cs" />
     <Compile Include="Presentation\UserDefinedParametersPresenterSpecs.cs" />
     <Compile Include="ProjectConverter\v7_3\Converter721To730Specs.cs" />
     <Compile Include="Reporting\ReportingSpecs.cs" />

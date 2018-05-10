@@ -34,6 +34,7 @@ namespace PKSim.Presentation.DTO.Mappers
                                 BMIUnit = displayUnit(individualSettingsDTO.ParameterBMI),
                              };
 
+         originData.UpdateValueOriginFrom(individualSettingsDTO.ValueOrigin);
          individualSettingsDTO.CalculationMethods.Select(cm => cm.CalculationMethod).Each(originData.AddCalculationMethod);
 
          return originData;

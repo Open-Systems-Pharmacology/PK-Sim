@@ -21,10 +21,12 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IOriginDataTask _originDataTask;
       private readonly IIndividualModelTask _individualModelTask;
       private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
+      private readonly ValueOriginMapper _valueOriginMapper;
 
       public OriginDataMapper(
          ParameterMapper parameterMapper,
          CalculationMethodCacheMapper calculationMethodCacheMapper,
+         ValueOriginMapper valueOriginMapper,
          IOriginDataTask originDataTask,
          IDimensionRepository dimensionRepository,
          IIndividualModelTask individualModelTask,
@@ -37,6 +39,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _originDataTask = originDataTask;
          _individualModelTask = individualModelTask;
          _calculationMethodCacheMapper = calculationMethodCacheMapper;
+         _valueOriginMapper = valueOriginMapper;
       }
 
       public override async Task<SnapshotOriginData> MapToSnapshot(ModelOriginData originData)
@@ -50,8 +53,10 @@ namespace PKSim.Core.Snapshots.Mappers
             x.GestationalAge = parameterFrom(originData.GestationalAge, originData.GestationalAgeUnit, _dimensionRepository.AgeInWeeks, originData.SpeciesPopulation.IsAgeDependent);
             x.Height = parameterFrom(originData.Height, originData.HeightUnit, _dimensionRepository.Length, originData.SpeciesPopulation.IsHeightDependent);
             x.Weight = parameterFrom(originData.Weight, originData.WeightUnit, _dimensionRepository.Mass);
+
          });
 
+         snapshot.ValueOrigin = await _valueOriginMapper.MapToSnapshot(originData.ValueOrigin);
          snapshot.CalculationMethods = await _calculationMethodCacheMapper.MapToSnapshot(originData.CalculationMethodCache, originData.Species.Name);
          return snapshot;
       }
@@ -63,6 +68,8 @@ namespace PKSim.Core.Snapshots.Mappers
          originData.SpeciesPopulation = speciesPopulationFrom(snapshot, originData.Species);
          originData.Gender = genderFrom(snapshot, originData.SpeciesPopulation);
          originData.SubPopulation = _originDataTask.DefaultSubPopulationFor(originData.Species);
+
+         _valueOriginMapper.UpdateValueOrigin(originData.ValueOrigin, snapshot.ValueOrigin);
 
          updateAgeFromSnapshot(snapshot, originData);
          updateCalculationMethodsFromSnapshot(snapshot, originData);

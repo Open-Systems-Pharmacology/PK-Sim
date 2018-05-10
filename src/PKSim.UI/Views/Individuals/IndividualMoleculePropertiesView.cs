@@ -1,10 +1,8 @@
 ﻿using System;
-using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;

@@ -10,6 +10,7 @@ using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using OriginData = PKSim.Core.Snapshots.OriginData;
 using Parameter = PKSim.Core.Snapshots.Parameter;
+using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
 
 namespace PKSim.Core
 {
@@ -32,6 +33,8 @@ namespace PKSim.Core
       protected SpeciesPopulation _anotherPopulation;
       protected Gender _anotherGender;
       private CalculationMethodCacheMapper _calculationMethodCacheMapper;
+      protected ValueOriginMapper _valueOriginMapper;
+      protected ValueOrigin _valueOriginSnapshot;
 
       protected override Task Context()
       {
@@ -41,8 +44,9 @@ namespace PKSim.Core
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _individualModelTask = A.Fake<IIndividualModelTask>();
          _speciesRepository = A.Fake<ISpeciesRepository>();
+         _valueOriginMapper= A.Fake<ValueOriginMapper>();
 
-         sut = new OriginDataMapper(_parameterMapper, _calculationMethodCacheMapper, _originDataTask, _dimensionRepository, _individualModelTask, _speciesRepository);
+         sut = new OriginDataMapper(_parameterMapper, _calculationMethodCacheMapper,_valueOriginMapper, _originDataTask, _dimensionRepository, _individualModelTask, _speciesRepository);
 
          _ageSnapshotParameter = new Parameter {Value = 1};
          _heightSnapshotParameter = new Parameter {Value = 2};
@@ -59,7 +63,7 @@ namespace PKSim.Core
          _anotherGender = new Gender {Name = "AnotherGender"};
 
          A.CallTo(() => _speciesRepository.All()).Returns(new[] {_species});
-
+         
          _originData = new Model.OriginData
          {
             Age = 35,
@@ -80,6 +84,9 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Weight, A<string>._, A<IDimension>._)).Returns(_weightSnapshotParameter);
          A.CallTo(() => _parameterMapper.ParameterFrom(_originData.GestationalAge, A<string>._, A<IDimension>._)).Returns(_gestationalAgeSnapshotParameter);
 
+
+         _valueOriginSnapshot = new ValueOrigin();
+         A.CallTo(() => _valueOriginMapper.MapToSnapshot(_originData.ValueOrigin)).Returns(_valueOriginSnapshot);
          return _completed;
       }
    }
@@ -109,6 +116,12 @@ namespace PKSim.Core
          _snapshot.Age.ShouldBeEqualTo(_ageSnapshotParameter);
          _snapshot.Height.ShouldBeEqualTo(_heightSnapshotParameter);
          _snapshot.GestationalAge.ShouldBeEqualTo(_gestationalAgeSnapshotParameter);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_value_origin()
+      {
+         _snapshot.ValueOrigin.ShouldBeEqualTo(_valueOriginSnapshot);
       }
    }
 
@@ -289,6 +302,12 @@ namespace PKSim.Core
          _newOriginData.Height.ShouldBeEqualTo(_originData.Height);
          _newOriginData.Age.ShouldBeEqualTo(_originData.Age);
          _newOriginData.GestationalAge.ShouldBeEqualTo(_originData.GestationalAge);
+      }
+
+      [Observation]
+      public void should_have_updated_the_value_origin()
+      {
+         A.CallTo(() => _valueOriginMapper.UpdateValueOrigin(_newOriginData.ValueOrigin, _valueOriginSnapshot)).MustHaveHappened();
       }
    }
 }

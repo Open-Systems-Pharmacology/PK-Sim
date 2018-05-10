@@ -22,6 +22,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.WeightUnit);
          Map(x => x.Comment);
          Map(x => x.CalculationMethodCache);
+         Map(x => x.ValueOrigin);
       }
    }
 }

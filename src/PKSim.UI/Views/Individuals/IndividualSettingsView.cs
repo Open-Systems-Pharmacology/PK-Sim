@@ -13,6 +13,7 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
@@ -27,7 +28,7 @@ using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.Individuals
 {
-   public partial class IndividualSettingsView : BaseUserControl, IIndividualSettingsView
+   public partial class IndividualSettingsView : BaseContainerUserControl, IIndividualSettingsView
    {
       private readonly IImageListRetriever _imageListRetriever;
       private readonly IToolTipCreator _toolTipCreator;
@@ -230,6 +231,11 @@ namespace PKSim.UI.Views.Individuals
          get => LayoutVisibilityConvertor.ToBoolean(layoutItemGestationalAge.Visibility);
       }
 
+      public void AddValueOriginView(IView view)
+      {
+         AddViewTo(layoutItemValueOrigin, view);
+      }
+
       public bool HeightAndBMIVisible
       {
          set
@@ -287,6 +293,7 @@ namespace PKSim.UI.Views.Individuals
          layoutItemCalculationMethods.Text = PKSimConstants.UI.CalculationMethods.FormatForLabel();
          layoutControlGroupPopulationParameters.Text = PKSimConstants.UI.IndividualParameters;
          layoutControlGroupPopulationProperties.Text = PKSimConstants.UI.PopulationProperties;
+         layoutItemValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
          btnMeanValues.Text = PKSimConstants.UI.MeanValues;
          layoutControl.InitializeDisabledColors(_lookAndFeel);
          uxBMI.Enabled = false;

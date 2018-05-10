@@ -1,28 +1,27 @@
 using OSPSuite.Utility;
 using PKSim.Core.Model;
-
 using PKSim.Presentation.DTO.Individuals;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
-   public interface IIndividualSettingsDTOToIndividualMapper : IMapper<IndividualSettingsDTO, PKSim.Core.Model.Individual>
+   public interface IIndividualSettingsDTOToIndividualMapper : IMapper<IndividualSettingsDTO, Individual>
    {
    }
 
    public class IndividualSettingsDTOToIndividualMapper : IIndividualSettingsDTOToIndividualMapper
    {
       private readonly IIndividualFactory _individualFactory;
-      private readonly IIndividualSettingsDTOToOriginDataMapper _mapper;
+      private readonly IIndividualSettingsDTOToOriginDataMapper _originDataMapper;
 
-      public IndividualSettingsDTOToIndividualMapper(IIndividualFactory individualFactory, IIndividualSettingsDTOToOriginDataMapper mapper)
+      public IndividualSettingsDTOToIndividualMapper(IIndividualFactory individualFactory, IIndividualSettingsDTOToOriginDataMapper originDataMapper)
       {
          _individualFactory = individualFactory;
-         _mapper = mapper;
+         _originDataMapper = originDataMapper;
       }
 
-      public PKSim.Core.Model.Individual MapFrom(IndividualSettingsDTO individualSettingsDTO)
+      public Individual MapFrom(IndividualSettingsDTO individualSettingsDTO)
       {
-         return _individualFactory.CreateAndOptimizeFor(_mapper.MapFrom(individualSettingsDTO));
+         return _individualFactory.CreateAndOptimizeFor(_originDataMapper.MapFrom(individualSettingsDTO));
       }
    }
 }
