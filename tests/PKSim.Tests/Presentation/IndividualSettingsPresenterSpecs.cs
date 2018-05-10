@@ -13,6 +13,8 @@ using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
+using PKSim.Core.Services;
 
 namespace PKSim.Presentation
 {
@@ -34,6 +36,7 @@ namespace PKSim.Presentation
       private IEnumerable<CategoryParameterValueVersionDTO> _subPopulation;
       protected CalculationMethodCategory _cmCat1;
       protected CalculationMethodCategory _cmCat2;
+      private IEditValueOriginPresenter _editValueOriginPresenter;
 
       protected override void Context()
       {
@@ -44,7 +47,7 @@ namespace PKSim.Presentation
          _individualMapper = A.Fake<IIndividualSettingsDTOToIndividualMapper>();
          _calculationMethodRepository = A.Fake<ICalculationMethodCategoryRepository>();
          _subPopulation = A.Fake<IEnumerable<CategoryParameterValueVersionDTO>>();
-
+         _editValueOriginPresenter= A.Fake<IEditValueOriginPresenter>();
          _individualSettingsDTO = new IndividualSettingsDTO();
          _individualPropertiesDTO = new ObjectBaseDTO();
 
@@ -65,7 +68,7 @@ namespace PKSim.Presentation
          _individualSettingsDTO.SubPopulation = _subPopulation;
          _parentPresenter = A.Fake<IIndividualPresenter>();
          sut = new IndividualSettingsPresenter(_view, _speciesRepository, _calculationMethodRepository, _defaultValueRetriever,
-                                               _individualSettingsDTOMapper, _individualMapper);
+                                               _individualSettingsDTOMapper, _individualMapper, _editValueOriginPresenter);
          sut.InitializeWith(_parentPresenter);
       }
    }

@@ -111,7 +111,7 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="parameters">Parameters</param>
       /// <param name="valueOrigin">Value origin</param>
-      ICommand SetParametersValueOrigin(IReadOnlyList<IParameter> parameters, ValueOrigin valueOrigin);
+      ICommand SetParametersValueOrigin(IEnumerable<IParameter> parameters, ValueOrigin valueOrigin);
 
       /// <summary>
       ///    Sets the percentile in the parameter.
@@ -535,7 +535,7 @@ namespace PKSim.Core.Services
          return new UpdateParameterValueOriginCommand(parameter, newValueOrigin) {ShouldChangeVersion = shouldChangeVersion}.Run(_executionContext);
       }
 
-      public ICommand SetParametersValueOrigin(IReadOnlyList<IParameter> parameters, ValueOrigin valueOrigin)
+      public ICommand SetParametersValueOrigin(IEnumerable<IParameter> parameters, ValueOrigin valueOrigin)
       {
          return new UpdateParametersValueOriginCommand(parameters, valueOrigin).Run(_executionContext);
       }

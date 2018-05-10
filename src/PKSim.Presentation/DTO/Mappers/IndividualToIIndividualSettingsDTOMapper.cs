@@ -34,8 +34,10 @@ namespace PKSim.Presentation.DTO.Mappers
             SpeciesPopulation = individual.OriginData.SpeciesPopulation,
             SubPopulation = _subPopulationDTOMapper.MapFrom(individual.OriginData.SubPopulation),
             Gender = individual.OriginData.Gender,
-            CalculationMethods = individual.OriginData.AllCalculationMethods().MapAllUsing(_calculationMethodDTOMapper)
+            CalculationMethods = individual.OriginData.AllCalculationMethods().MapAllUsing(_calculationMethodDTOMapper),
          };
+
+         individualDTO.UpdateValueOriginFrom(individual.OriginData.ValueOrigin);
 
          individualDTO.SetDefaultParameters(_parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.AGE)),
             _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.HEIGHT)),
