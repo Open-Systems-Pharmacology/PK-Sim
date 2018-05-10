@@ -53,15 +53,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
 
       public void Visit(Compound compound)
       {
-         resetAllParametersToIsDefaultIn(compound);
+         adjustDefaultStateOfAllParametersIn(compound);
          convertCompound(compound);
       }
 
       public void Visit(Simulation simulation)
       {
-         simulation.AllBuildingBlocks<IPKSimBuildingBlock>().Each(resetAllParametersToIsDefaultIn);
+         simulation.AllBuildingBlocks<IPKSimBuildingBlock>().Each(adjustDefaultStateOfAllParametersIn);
          simulation.Compounds.Each(convertCompound);
-         resetAllParametersToIsDefault(simulation.All<IParameter>());
+         adjustDefaultStateOfAllParameters(simulation.All<IParameter>());
       }
 
       public void Visit(PKSimProject project)
@@ -71,15 +71,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
 
       public void Visit(IPKSimBuildingBlock buildingBlock)
       {
-         resetAllParametersToIsDefaultIn(buildingBlock);
+         adjustDefaultStateOfAllParametersIn(buildingBlock);
       }
 
-      private void resetAllParametersToIsDefaultIn(IContainer container)
+      private void adjustDefaultStateOfAllParametersIn(IContainer container)
       {
-         resetAllParametersToIsDefault(container.GetAllChildren<IParameter>());
+         adjustDefaultStateOfAllParameters(container.GetAllChildren<IParameter>());
       }
 
-      private void resetAllParametersToIsDefault(IEnumerable<IParameter> allParameters)
+      private void adjustDefaultStateOfAllParameters(IEnumerable<IParameter> allParameters)
       {
          allParameters.Each(p =>
          {
