@@ -65,7 +65,7 @@ namespace PKSim.Core
       {
          _snapshot.OrderIndex.ShouldBeEqualTo(_quantityInfo.OrderIndex);
          _snapshot.Path.ShouldBeEqualTo(_quantityInfo.PathAsString);
-         _snapshot.Type.ShouldBeEqualTo(_quantityInfo.Type.ToString());
+         _snapshot.Type.ShouldBeEqualTo(_quantityInfo.Type);
          _snapshot.Name.ShouldBeEqualTo(_quantityInfo.Name);
       }
    }

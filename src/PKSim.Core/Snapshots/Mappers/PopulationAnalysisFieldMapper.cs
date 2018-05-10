@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
 
@@ -102,7 +100,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          mapNumericFieldToSnapshot(snapshot, field);
          snapshot.QuantityPath = field.QuantityPath;
-         snapshot.QuantityType = field.QuantityType.ToString();
+         snapshot.QuantityType = field.QuantityType;
       }
 
       private void mapQuantityFieldToModel(PopulationAnalysisField snapshot, IQuantityField field)
@@ -110,7 +108,7 @@ namespace PKSim.Core.Snapshots.Mappers
          mapNumericFieldToModel(snapshot, field);
          field.QuantityPath = snapshot.QuantityPath;
          if (snapshot.QuantityType != null)
-            field.QuantityType = EnumHelper.ParseValue<QuantityType>(snapshot.QuantityType);
+            field.QuantityType = snapshot.QuantityType.Value;
       }
 
       private void mapNumericFieldToSnapshot(PopulationAnalysisField snapshot, INumericValueField field)

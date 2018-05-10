@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Services;
 
@@ -16,7 +17,7 @@ namespace PKSim.Infrastructure.Serialization.Json
    public class SnapshotSerializer : ISnapshotSerializer
    {
       private readonly JsonSerializerSettings _settings = new PKSimJsonSerializerSetings();
-      
+
       //Defines a static field as the free license only allows for a limited number of schema generation per hour
       private static readonly ConcurrentDictionary<Type, JSchema> _schemas = new ConcurrentDictionary<Type, JSchema>();
 
@@ -55,10 +56,18 @@ namespace PKSim.Infrastructure.Serialization.Json
 
       private object validatedObject(JToken jToken, JSchema schema, Type snapshotType)
       {
+         if (!requiresSchemaValidation(snapshotType))
+            return jToken.ToObject(snapshotType);
+
          if (jToken.IsValid(schema, out IList<string> errorMessages))
             return jToken.ToObject(snapshotType);
 
          throw new SnapshotFileMismatchException(snapshotType.Name, errorMessages);
+      }
+
+      private bool requiresSchemaValidation(Type snapshotType)
+      {
+         return snapshotType.IsAnImplementationOf<Compound>();
       }
 
       private JSchema validateSnapshot(Type snapshotType)

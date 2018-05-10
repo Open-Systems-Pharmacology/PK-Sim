@@ -133,7 +133,7 @@ namespace PKSim.Core
       {
          _snapshot.PKParameter.ShouldBeEqualTo(_pkParameterField.PKParameter);
          _snapshot.QuantityPath.ShouldBeEqualTo(_pkParameterField.QuantityPath);
-         _snapshot.QuantityType.ShouldBeEqualTo(_pkParameterField.QuantityType.ToString());
+         _snapshot.QuantityType.ShouldBeEqualTo(_pkParameterField.QuantityType);
          _snapshot.Dimension.ShouldBeEqualTo(_dimension.Name);
          _snapshot.Unit.ShouldBeEqualTo(_unit.Name);
       }
@@ -188,7 +188,7 @@ namespace PKSim.Core
          _snapshot.Dimension.ShouldBeEqualTo(_dimension.Name);
          _snapshot.Unit.ShouldBeEqualTo(_unit.Name);
          _snapshot.QuantityPath.ShouldBeEqualTo(_outputField.QuantityPath);
-         _snapshot.QuantityType.ShouldBeEqualTo(_outputField.QuantityType.ToString());
+         _snapshot.QuantityType.ShouldBeEqualTo(_outputField.QuantityType);
          _snapshot.Color.ShouldBeEqualTo(_outputField.Color);
       }
 

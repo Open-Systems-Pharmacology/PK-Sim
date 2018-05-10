@@ -1,11 +1,11 @@
+using OSPSuite.Core.Domain;
+
 namespace PKSim.Core.Snapshots
 {
    public class QuantityInfo : SnapshotBase
    {
-      public string Path { set; get; }
-
-      //Cannot use QuantityType here as Snapshot validation will fail for composed Type such as "Drug, Observer"
-      public string Type { set; get; }
-      public int? OrderIndex { set; get; }
+      public string Path { get; set; }
+      public QuantityType? Type { get; set; }
+      public int? OrderIndex { get; set; }
    }
 }
