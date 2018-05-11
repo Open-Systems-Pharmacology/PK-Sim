@@ -101,11 +101,15 @@ namespace PKSim.Core
    public class When_creating_an_alternative_for_a_parameter_group_containing_already_a_default_calculated_alternative : concern_for_ParameterAlternativeFactory
    {
       private ParameterAlternative _result;
+      private IParameter _alternativeParameter;
 
       protected override void Context()
       {
          base.Context();
-         var alternative = new ParameterAlternative {new PKSimParameter().WithName("toto").WithFormula(new ExplicitFormula("2*3"))};
+         var parameter= new PKSimParameter{IsDefault = true}.WithName("toto").WithFormula(new ExplicitFormula("2*3"));
+         parameter.ValueOrigin.Id = 5;
+         parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.InVitro;
+         var alternative = new ParameterAlternative { parameter };
          A.CallTo(() => _objectBaseFactory.Create<ParameterAlternative>()).Returns(alternative);
          A.CallTo(() => _objectBaseFactory.Create<ConstantFormula>()).Returns(new ConstantFormula());
          _compoundParameterGroup.Name = CoreConstants.Groups.COMPOUND_PERMEABILITY;
@@ -114,12 +118,29 @@ namespace PKSim.Core
       protected override void Because()
       {
          _result = sut.CreateAlternativeFor(_compoundParameterGroup);
+         _alternativeParameter = _result.Parameter("toto");
       }
 
       [Observation]
       public void should_reset_all_the_parameter_of_the_alternative_to_a_constant_value()
       {
-         _result.Parameter("toto").Formula.ShouldBeAnInstanceOf<ConstantFormula>();
+         _alternativeParameter.Formula.ShouldBeAnInstanceOf<ConstantFormula>();
+         _alternativeParameter.Value.ShouldBeEqualTo(double.NaN);
+      }
+
+      [Observation]
+      public void should_set_the_parameter_as_being_an_input_paraemter()
+      {
+         _alternativeParameter.IsDefault.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_reset_the_value_origin_of_the_parameter()
+      {
+         _alternativeParameter.ValueOrigin.Id.ShouldBeNull();
+         _alternativeParameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.Undefined);
+         _alternativeParameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Undefined);
+         string.IsNullOrEmpty(_alternativeParameter.ValueOrigin.Description).ShouldBeTrue();
       }
    }
 

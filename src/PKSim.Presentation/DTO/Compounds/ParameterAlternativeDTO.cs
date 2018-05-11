@@ -1,4 +1,3 @@
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
 using PKSim.Core.Model;
@@ -8,7 +7,7 @@ namespace PKSim.Presentation.DTO.Compounds
    public class ParameterAlternativeDTO : DxValidatableDTO<ParameterAlternative>, IWithValueOrigin
    {
       public ParameterAlternative ParameterAlternative { get; }
-      public ValueOrigin ValueOrigin { get; set; }
+      public ValueOrigin ValueOrigin { get; }
 
       public ParameterAlternativeDTO(ParameterAlternative parameterAlternative, ValueOrigin valueOrigin) : base(parameterAlternative)
       {
