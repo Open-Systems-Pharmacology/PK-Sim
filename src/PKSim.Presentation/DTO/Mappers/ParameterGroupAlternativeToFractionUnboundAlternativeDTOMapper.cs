@@ -23,11 +23,9 @@ namespace PKSim.Presentation.DTO.Mappers
 
       public FractionUnboundAlternativeDTO MapFrom(ParameterAlternativeWithSpecies parameterAlternative)
       {
-         var fractionUnboundAlternativeDTO = new FractionUnboundAlternativeDTO(parameterAlternative);
-
-         var lipophilicity = parameterAlternative.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE);
-         fractionUnboundAlternativeDTO.FractionUnboundParameter = _parameterDTOMapper.MapFrom(lipophilicity, fractionUnboundAlternativeDTO, dto => dto.FractionUnbound, dto => dto.FractionUnboundParameter);
-
+         var fractionUnbound = parameterAlternative.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE);
+         var fractionUnboundAlternativeDTO = new FractionUnboundAlternativeDTO(parameterAlternative, fractionUnbound.ValueOrigin);
+         fractionUnboundAlternativeDTO.FractionUnboundParameter = _parameterDTOMapper.MapFrom(fractionUnbound, fractionUnboundAlternativeDTO, dto => dto.FractionUnbound, dto => dto.FractionUnboundParameter);
          return fractionUnboundAlternativeDTO;
       }
    }

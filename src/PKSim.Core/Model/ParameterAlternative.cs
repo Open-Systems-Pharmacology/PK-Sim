@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Assets;
@@ -27,6 +28,21 @@ namespace PKSim.Core.Model
          var sourceAlternative = sourceObject as ParameterAlternative;
          if (sourceAlternative == null) return;
          IsDefault = sourceAlternative.IsDefault;
+      }
+
+      public virtual IEnumerable<IParameter> AlllParametersWithSameValueOrigin
+      {
+         get
+         {
+            if (IsCalculated)
+               return this.AllParameters();
+
+            var allInputParameters = this.AllParameters(x => !x.IsDefault).ToList();
+            if (allInputParameters.Any())
+               return allInputParameters;
+            
+            return this.AllParameters();
+         }
       }
 
       public virtual bool IsCalculated =>
