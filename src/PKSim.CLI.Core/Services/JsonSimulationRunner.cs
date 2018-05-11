@@ -64,9 +64,9 @@ namespace PKSim.CLI.Core.Services
          if (!inputDirectory.Exists)
             throw new OSPSuiteException($"Input folder '{inputFolder}' does not exist");
 
-         var allSimulationFiles = inputDirectory.GetFiles(Constants.Filter.JSON_FILTER);
-         if (allSimulationFiles.Length == 0)
-            throw new OSPSuiteException($"No simulation json file found in '{inputFolder}'");
+         var allSnapshsotFiles = inputDirectory.GetFiles(Constants.Filter.JSON_FILTER);
+         if (allSnapshsotFiles.Length == 0)
+            throw new OSPSuiteException($"No snapshot file found in '{inputFolder}'");
 
          var outputDirectory = new DirectoryInfo(outputFolder);
          if (!outputDirectory.Exists)
@@ -83,11 +83,11 @@ namespace PKSim.CLI.Core.Services
          });
 
          var begin = DateTime.UtcNow;
-         _logger.AddInfo($"Found {allSimulationFiles.Length} files in '{inputFolder}'");
+         _logger.AddInfo($"Found {allSnapshsotFiles.Length} files in '{inputFolder}'");
 
-         foreach (var simulationFile in allSimulationFiles)
+         foreach (var snapshotFile in allSnapshsotFiles)
          {
-            await exportSimulationsFromProject(simulationFile, outputFolder, exportMode)
+            await runAndExportSimulationsInSnapshotFile(snapshotFile, outputFolder, exportMode)
                .ConfigureAwait(false);
          }
 
@@ -129,7 +129,7 @@ namespace PKSim.CLI.Core.Services
          dataTable.ExportToCSV(fileName);
       }
 
-      private async Task exportSimulationsFromProject(FileInfo projectFile, string outputFolder, SimulationExportMode simulationExportMode)
+      private async Task runAndExportSimulationsInSnapshotFile(FileInfo projectFile, string outputFolder, SimulationExportMode simulationExportMode)
       {
          _logger.AddInfo($"Starting batch simulation export for file '{projectFile}'");
          try
@@ -143,7 +143,7 @@ namespace PKSim.CLI.Core.Services
             {
                _logger.AddDebug($"Starting batch simulation export for simulation '{simulation.Name}'");
 
-               await _simulationExporter.RunAndExport(simulation, outputFolder, _simulationRunOptions, simulationExportMode);
+               await _simulationExporter.RunAndExport(simulation, outputFolder, _simulationRunOptions, simulationExportMode, FileHelper.FileNameFromFileFullPath(projectFile.FullName));
                _allSimulationNames.Add(simulation.Name);
             }
          }
