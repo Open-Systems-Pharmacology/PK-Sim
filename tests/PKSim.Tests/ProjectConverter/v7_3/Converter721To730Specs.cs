@@ -85,4 +85,48 @@ namespace PKSim.ProjectConverter.v7_3
          solubilityTable.Value.ShouldBeEqualTo(0);
       }
    }
+
+   public class When_converting_the_is_default_conversion_722_project : ContextWithLoadedProject<Converter721To730>
+   {
+      private Compound _compound;
+      private Formulation _formulation;
+      private PKSimEvent _event;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadProject("IsDefaultConversion_722");
+         _compound = First<Compound>();
+         _formulation = First<Formulation>();
+         _event = First<PKSimEvent>();
+      }
+
+      [Observation]
+      public void should_have_set_the_default_flag_in_compound_parameters()
+      {
+         checkIsDefaultFlagIn(_compound);
+      }
+
+      [Observation]
+      public void should_have_set_the_default_flag_in_formulation_parameters()
+      {
+         //one parameter was changed by user
+         _formulation.AllParameters(x => !x.IsDefault).Count().ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_have_set_the_default_flag_in_event_parameters()
+      {
+         //one parameter was changed by user
+         _event.AllParameters(x => !x.IsDefault).Count().ShouldBeEqualTo(1);
+      }
+
+      private void checkIsDefaultFlagIn(Compound compound)
+      {
+         compound.Parameter(CoreConstants.Parameters.MOLECULAR_WEIGHT).IsDefault.ShouldBeFalse();
+         var lipoGroup = compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
+         var parameters = lipoGroup.AllAlternatives.Select(x => x.Parameter(CoreConstants.Parameters.LIPOPHILICITY));
+         parameters.Each(p => p.IsDefault.ShouldBeFalse());
+      }
+   }
 }
