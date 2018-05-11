@@ -1,3 +1,6 @@
+using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -24,9 +27,20 @@ namespace PKSim.Core.Services
          {
             var newMolecule = _cloner.Clone(molecule);
             targetIndividual.AddMolecule(newMolecule);
-            //we have to reset the new ontogeny for the molecule
+
+            //Make sure parameters that user defined parameters are reset to default to ensure proper scaling
+            resetMoleculeParametersToDefault(newMolecule);
+
+            //we have to reset the ontogeny for the molecule based on the target individual properties
             _ontogenyTask.SetOntogenyForMolecule(newMolecule, newMolecule.Ontogeny, targetIndividual);
          }
+      }
+
+      private void resetMoleculeParametersToDefault(IndividualMolecule molecule)
+      {
+         molecule.AllParameters()
+            .Where(x => x.ValueDiffersFromDefault())
+            .Each(x => x.ResetToDefault());
       }
    }
 }

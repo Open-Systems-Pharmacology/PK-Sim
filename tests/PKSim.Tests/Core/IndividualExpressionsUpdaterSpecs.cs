@@ -33,14 +33,22 @@ namespace PKSim.Core
       private IndividualMolecule _enzymeExpression2;
       private IndividualMolecule _enzymeExpressionClone1;
       private IndividualMolecule _enzymeExpressionClone2;
+      private IParameter _userDefinedParameter;
+      private double _defaultValue = 20;
 
       protected override void Context()
       {
          base.Context();
-         _enzymeExpression1 = A.Fake<IndividualMolecule>().WithName("meta1");
-         _enzymeExpression2 = A.Fake<IndividualMolecule>().WithName("meta2");
-         _enzymeExpressionClone1 = A.Fake<IndividualMolecule>().WithName("meta1");
-         _enzymeExpressionClone2 = A.Fake<IndividualMolecule>().WithName("meta2");
+         _enzymeExpression1 = new IndividualEnzyme().WithName("meta1");
+         _enzymeExpression2 = new IndividualEnzyme().WithName("meta2");
+         _enzymeExpressionClone1 = new IndividualEnzyme().WithName("meta1");
+
+         //Create a parameter that changed!
+         _userDefinedParameter = DomainHelperForSpecs.ConstantParameterWithValue(10);
+         _userDefinedParameter.DefaultValue = _defaultValue;
+
+         _enzymeExpressionClone1.Add(_userDefinedParameter);
+         _enzymeExpressionClone2 = new IndividualEnzyme().WithName("meta2");
          _enzymeExpressionClone1.Ontogeny = new DatabaseOntogeny();
          _enzymeExpressionClone2.Ontogeny = new DatabaseOntogeny();
          _allEnzymesExpression = new List<IndividualMolecule> {_enzymeExpression1, _enzymeExpression2};
@@ -67,6 +75,12 @@ namespace PKSim.Core
       {
          A.CallTo(() => _ontogenyTask.SetOntogenyForMolecule(_enzymeExpressionClone1, _enzymeExpressionClone1.Ontogeny, _targetIndividual)).MustHaveHappened();
          A.CallTo(() => _ontogenyTask.SetOntogenyForMolecule(_enzymeExpressionClone2, _enzymeExpressionClone2.Ontogeny, _targetIndividual)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_reset_all_molecule_user_defined_parmaeters_to_their_default_value()
+      {
+         _userDefinedParameter.Value.ShouldBeEqualTo(_defaultValue);
       }
    }
 }
