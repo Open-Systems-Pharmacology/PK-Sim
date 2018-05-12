@@ -212,10 +212,8 @@ namespace PKSim.Presentation.Services
 
       public ICommand UpdateValueOrigin(ParameterAlternative parameterAlternative, ValueOrigin newValueOrigin)
       {
-         var allNonDefaultParameters = parameterAlternative.AllParameters(x => !x.IsDefault);
-
          var shouldChangeBuildingBlockVersion = simulationsAreUsingAlternative(parameterAlternative);
-         var updateValueOriginCommand = new UpdateParametersValueOriginCommand(allNonDefaultParameters, newValueOrigin, shouldChangeBuildingBlockVersion);
+         var updateValueOriginCommand = new UpdateParametersValueOriginCommand(parameterAlternative.AlllParametersWithSameValueOrigin, newValueOrigin, shouldChangeBuildingBlockVersion);
 
          return updateValueOriginCommand.Run(_executionContext);
       }

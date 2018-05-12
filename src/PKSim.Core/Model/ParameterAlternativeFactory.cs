@@ -46,12 +46,18 @@ namespace PKSim.Core.Model
       {
          var alternative = createAlternativeFor(compoundParameterGroup);
 
-         //for alternative that are not the default one, and if the groups requires it, we reset the formula to a constant value
+         //For groups with calculated alternative, we need to reset parameters to constant parameters
          if (groupHasCalculatedAlternative(compoundParameterGroup))
-         {
-            alternative.AllParameters().Each(p => p.Formula = _objectBaseFactory.Create<ConstantFormula>().WithValue(0));
-         }
+            alternative.AllParameters().Each(resetParameterToInput);
+
          return alternative;
+      }
+
+      private void resetParameterToInput(IParameter parameter)
+      {
+         parameter.IsDefault = false;
+         parameter.ValueOrigin.UpdateFrom(new ValueOrigin(), updateId:true);
+         parameter.Formula = _objectBaseFactory.Create<ConstantFormula>().WithValue(double.NaN);
       }
 
       public ParameterAlternative CreateTableAlternativeFor(ParameterAlternativeGroup compoundParameterGroup, string tableParameterName)

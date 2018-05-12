@@ -1,12 +1,12 @@
-
-using PKSim.Presentation.DTO.Parameters;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Compounds
 {
    public class PermeabilityAlternativeDTO : ParameterAlternativeDTO
    {
-      public PermeabilityAlternativeDTO(PKSim.Core.Model.ParameterAlternative parameterAlternative) : base(parameterAlternative)
+      public PermeabilityAlternativeDTO(ParameterAlternative parameterAlternative, ValueOrigin valueOrigin) : base(parameterAlternative, valueOrigin)
       {
       }
 
@@ -14,8 +14,8 @@ namespace PKSim.Presentation.DTO.Compounds
 
       public double Permeability
       {
-         get { return PermeabilityParameter.Value; }
-         set { PermeabilityParameter.Value = value; }
+         get => PermeabilityParameter.Value;
+         set => PermeabilityParameter.Value = value;
       }
    }
 }

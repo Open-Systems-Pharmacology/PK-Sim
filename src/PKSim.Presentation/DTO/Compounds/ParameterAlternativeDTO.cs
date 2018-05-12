@@ -1,4 +1,3 @@
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
 using PKSim.Core.Model;
@@ -10,10 +9,10 @@ namespace PKSim.Presentation.DTO.Compounds
       public ParameterAlternative ParameterAlternative { get; }
       public ValueOrigin ValueOrigin { get; }
 
-      public ParameterAlternativeDTO(ParameterAlternative parameterAlternative) : base(parameterAlternative)
+      public ParameterAlternativeDTO(ParameterAlternative parameterAlternative, ValueOrigin valueOrigin) : base(parameterAlternative)
       {
          ParameterAlternative = parameterAlternative;
-         ValueOrigin = ParameterAlternative.AllParameters(x => !x.IsDefault).FirstOrDefault()?.ValueOrigin ?? new ValueOrigin();
+         ValueOrigin = valueOrigin;
       }
 
       public string Name
