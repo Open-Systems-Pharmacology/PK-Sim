@@ -89,6 +89,7 @@ namespace PKSim.Core.Model
 
          setParameterProperties(parameter, parameterRateDefinition);
          updateDefaultValueFor(parameter);
+         synchronizeFormulaDimension(parameter);
          return parameter;
       }
 
@@ -121,6 +122,7 @@ namespace PKSim.Core.Model
          parameter.Formula = _formulaFactory.ValueFor(parameterValueDefinition);
          setParameterProperties(parameter, parameterValueDefinition);
          updateDefaultValueFor(parameter);
+         synchronizeFormulaDimension(parameter);
          return parameter;
       }
 
@@ -142,6 +144,7 @@ namespace PKSim.Core.Model
          addParametersToDistributedParameter(parameter, distributionMetaData);
          parameter.Formula = createFormula(parameter);
          updateDefaultValueFor(parameter);
+         synchronizeFormulaDimension(parameter);
          return parameter;
       }
 
@@ -151,6 +154,14 @@ namespace PKSim.Core.Model
             return;
 
          parameter.DefaultValue = parameter.Value;
+      }
+
+      private void synchronizeFormulaDimension(IParameter parameter)
+      {
+         if (parameter.Formula == null)
+            return;
+
+         parameter.Formula.Dimension = parameter.Dimension;
       }
 
       private void addParametersToDistributedParameter(IDistributedParameter param, ParameterDistributionMetaData distributionMetaData)
