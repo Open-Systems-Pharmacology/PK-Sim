@@ -1,14 +1,14 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using IDistributionFormulaFactory = PKSim.Core.Model.IDistributionFormulaFactory;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
@@ -52,7 +52,7 @@ namespace PKSim.Core
          _parameterValueDefinition.ParameterName = "tralal";
          _valueFormula = A.Fake<IFormula>();
          _parameter = A.Fake<IParameter>();
-         _displayUnit= A.Fake<Unit>();
+         _displayUnit = A.Fake<Unit>();
          A.CallTo(() => _formulaFactory.ValueFor(_parameterValueDefinition)).Returns(_valueFormula);
          A.CallTo(() => _objectBaseFactory.CreateParameter()).Returns(_parameter);
          A.CallTo(() => _dimensionRepository.DimensionByName(_parameterValueDefinition.Dimension)).Returns(_dimension);
@@ -75,7 +75,7 @@ namespace PKSim.Core
       {
          _result.Dimension.ShouldBeEqualTo(_dimension);
       }
-      
+
       [Observation]
       public void should_use_the_display_unit_using_the_default_display_unit_defined_for_the_parameter()
       {
@@ -95,8 +95,7 @@ namespace PKSim.Core
       {
          base.Context();
          _formulaCache = A.Fake<IFormulaCache>();
-         _parameterRateDefinition = new ParameterRateMetaData();
-         _parameterRateDefinition.ParameterName = "Tralal";
+         _parameterRateDefinition = new ParameterRateMetaData {ParameterName = "Tralal"};
          _rateFormula = A.Fake<IFormula>();
          _parameter = A.Fake<IParameter>();
          A.CallTo(() => _formulaFactory.RateFor(_parameterRateDefinition, _formulaCache)).Returns(_rateFormula);
@@ -119,6 +118,12 @@ namespace PKSim.Core
       public void should_leverage_the_formula_factory_to_set_the_accurate_rate_to_the_parameter()
       {
          _result.Formula.ShouldBeEqualTo(_rateFormula);
+      }
+
+      [Observation]
+      public void should_update_the_formula_dimension_to_be_the_one_of_the_parameter()
+      {
+         _rateFormula.Dimension.ShouldBeEqualTo(_parameter.Dimension);
       }
    }
 
