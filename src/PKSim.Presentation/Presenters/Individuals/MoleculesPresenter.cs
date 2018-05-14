@@ -144,10 +144,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          contextMenu.Show(_view, popupLocation);
       }
 
-      public bool QueryConfigurationEnabled
-      {
-         get { return _moleculeExpressionTask.CanQueryProteinExpressionsFor(_simulationSubject); }
-      }
+      public bool QueryConfigurationEnabled => _moleculeExpressionTask.CanQueryProteinExpressionsFor(_simulationSubject);
 
       public bool EditConfigurationEnabledFor(IndividualMolecule molecule)
       {
@@ -185,8 +182,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          _activePresenter.OntogenyVisible = _simulationSubject.IsAgeDependent;
          _activePresenter.MoleculeParametersVisible = _simulationSubject.IsAnImplementationOf<Individual>();
          _activePresenter.ActivateMolecule(moleculeFrom(node));
-      
-//         _activePresenter.RefreshView();
       }
 
       public void NodeDoubleClicked(ITreeNode node)

@@ -144,6 +144,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.HideWarning();
          _view.BindTo(_transporterExpressionDTOMapper.MapFrom(_transporter));
          _moleculePropertiesPresenter.Edit(molecule,SimulationSubject.DowncastTo<TSimulationSubject>());
+         RefreshView();
       }
 
       public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
