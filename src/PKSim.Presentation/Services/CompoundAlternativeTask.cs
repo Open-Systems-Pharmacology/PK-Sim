@@ -313,11 +313,12 @@ namespace PKSim.Presentation.Services
          var gainPerCharge = solubilityAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
          var refSolubilityValue = refSolubility.Value;
 
+         var compoundForCalculation = _executionContext.Clone(compound);
          var formula = initializeSolubiltyTableFormula(_formulaFactory.CreateTableFormula(), refPh.Dimension, refSolubility.Dimension);
-         compound.Parameter(CoreConstants.Parameters.REFERENCE_PH).Value = refPh.Value;
-         compound.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE).Value = gainPerCharge.Value;
+         compoundForCalculation.Parameter(CoreConstants.Parameters.REFERENCE_PH).Value = refPh.Value;
+         compoundForCalculation.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE).Value = gainPerCharge.Value;
 
-         double solFactorRefpH = compound.Parameter(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR).Value;
+         double solFactorRefpH = compoundForCalculation.Parameter(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR).Value;
          var allPh = new List<double>();
          int ph = 0;
          while (ph <= 13)
@@ -329,8 +330,8 @@ namespace PKSim.Presentation.Services
          allPh.Add(14);
          foreach (var pH in allPh)
          {
-            compound.Parameter(CoreConstants.Parameters.REFERENCE_PH).Value = pH;
-            double solFactorAtpH = compound.Parameter(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR).Value;
+            compoundForCalculation.Parameter(CoreConstants.Parameters.REFERENCE_PH).Value = pH;
+            double solFactorAtpH = compoundForCalculation.Parameter(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR).Value;
             formula.AddPoint(pH, refSolubilityValue * solFactorRefpH / solFactorAtpH);
          }
 
