@@ -301,6 +301,7 @@
     <Compile Include="Core\SnapshotMapperSpecs.cs" />
     <Compile Include="Core\SnapshotTaskSpecs.cs" />
     <Compile Include="Core\SolverSettingsMapperSpecs.cs" />
+    <Compile Include="Core\SpeciesSpecs.cs" />
     <Compile Include="Core\TableFormulaMapperSpecs.cs" />
     <Compile Include="Core\TablePartSpecs.cs" />
     <Compile Include="Core\TimeProfileAnalysisChartSpecs.cs" />
@@ -308,6 +309,7 @@
     <Compile Include="Core\UpdateParameterValueOriginCommandSpecs.cs" />
     <Compile Include="Core\ValueOriginMapperSpecs.cs" />
     <Compile Include="Extensions\AsyncContextSpecification.cs" />
+    <Compile Include="Infrastructure\DefaultIndividualRetrieverSpecs.cs" />
     <Compile Include="Infrastructure\FlatValueOriginToValueOriginMapperSpecs.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
     <Compile Include="Infrastructure\SerializationContextFactorySpecs.cs" />

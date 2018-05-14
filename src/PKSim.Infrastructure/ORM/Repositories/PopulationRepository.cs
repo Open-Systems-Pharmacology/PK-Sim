@@ -50,7 +50,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public SpeciesPopulation DefaultPopulationFor(Species species)
       {
-         return species.Populations.FindByName(_userSettings.DefaultPopulation) ?? species.Populations.ElementAt(0);
+         return species.Populations.FindByName(_userSettings.DefaultPopulation) ?? species.DefaultPopulation;
       }
 
       public SpeciesPopulation FindByIndex(int raceIndex)
