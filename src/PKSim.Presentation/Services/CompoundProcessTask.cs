@@ -165,7 +165,7 @@ namespace PKSim.Presentation.Services
 
       private void updateFractionUnbound(CompoundProcess newProcess, Compound compound)
       {
-         updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameters.FRATION_UNBOUND_EXPERIMENT,
+         updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT,
                                                        CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE,
                                                        CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
       }
