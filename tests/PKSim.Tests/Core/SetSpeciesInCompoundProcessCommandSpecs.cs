@@ -76,9 +76,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_updated_the_is_default_flag_to_false_for_those_parameters()
+      public void should_not_update_the_is_default_flag_to_false_for_those_parameters()
       {
-         _matchingIndividualParameter.IsDefault.ShouldBeFalse();
+         _matchingIndividualParameter.IsDefault.ShouldBeTrue();
       }
 
       [Observation]
