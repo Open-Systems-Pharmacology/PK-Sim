@@ -5,14 +5,16 @@ using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using ModelIndividual = PKSim.Core.Model.Individual;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule, ISimulationSubject>
+   public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule, ModelIndividual>
    {
       private readonly ExpressionContainerMapper _expressionContainerMapper;
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IExecutionContext _executionContext;
+      private readonly IOntogenyTask<ModelIndividual> _ontogenyTask;
       private readonly OntogenyMapper _ontogenyMapper;
 
       public MoleculeMapper(
@@ -20,12 +22,14 @@ namespace PKSim.Core.Snapshots.Mappers
          ExpressionContainerMapper expressionContainerMapper,
          OntogenyMapper ontogenyMapper,
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
-         IExecutionContext executionContext
+         IExecutionContext executionContext,
+         IOntogenyTask<ModelIndividual> ontogenyTask
       ) : base(parameterMapper)
       {
          _expressionContainerMapper = expressionContainerMapper;
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
          _executionContext = executionContext;
+         _ontogenyTask = ontogenyTask;
          _ontogenyMapper = ontogenyMapper;
       }
 
@@ -78,14 +82,16 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-      public override async Task<IndividualMolecule> MapToModel(Molecule snapshot, ISimulationSubject simulationSubject)
+      public override async Task<IndividualMolecule> MapToModel(Molecule snapshot, ModelIndividual individual)
       {
-         var molecule = createMoleculeFrom(snapshot, simulationSubject);
+         var molecule = createMoleculeFrom(snapshot, individual);
          await UpdateParametersFromSnapshot(snapshot, molecule, snapshot.Type.ToString());
          MapSnapshotPropertiesToModel(snapshot, molecule);
          updateMoleculePropertiesToMolecule(molecule, snapshot);
-         molecule.Ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, simulationSubject);
-         await updateExpression(snapshot, new ExpressionContainerMapperContext {Molecule = molecule, SimulationSubject = simulationSubject});
+         var ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, individual);
+         _ontogenyTask.SetOntogenyForMolecule(molecule, ontogeny, individual);
+
+         await updateExpression(snapshot, new ExpressionContainerMapperContext {Molecule = molecule, SimulationSubject = individual});
          return molecule;
       }
 

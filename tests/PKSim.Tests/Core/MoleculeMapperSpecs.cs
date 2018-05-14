@@ -9,6 +9,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using Individual = PKSim.Core.Model.Individual;
 using Ontogeny = PKSim.Core.Model.Ontogeny;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
@@ -33,11 +34,12 @@ namespace PKSim.Core
       private IExecutionContext _executionContext;
       protected IParameter _relativeExpressionParameterNorm1;
       private IParameter _relativeExpressionParameterNotSetNorm;
-      protected ISimulationSubject _simulationSubject;
+      protected Individual _individual;
       protected OntogenyMapper _ontogenyMapper;
       protected Ontogeny _ontogeny;
       protected Snapshots.Ontogeny _snapshotOntogeny;
       protected ExpressionContainerMapper _expressionContainerMapper;
+      protected IOntogenyTask<Individual> _ontogenyTask;
 
       protected override Task Context()
       {
@@ -46,8 +48,9 @@ namespace PKSim.Core
          _executionContext = A.Fake<IExecutionContext>();
          _individualMoleculeFactoryResolver = A.Fake<IIndividualMoleculeFactoryResolver>();
          _ontogenyMapper= A.Fake<OntogenyMapper>();
+         _ontogenyTask= A.Fake<IOntogenyTask<Individual>>();
 
-         sut = new MoleculeMapper(_parameterMapper,_expressionContainerMapper, _ontogenyMapper,_individualMoleculeFactoryResolver, _executionContext);
+         sut = new MoleculeMapper(_parameterMapper,_expressionContainerMapper, _ontogenyMapper,_individualMoleculeFactoryResolver, _executionContext, _ontogenyTask);
 
          _ontogeny = new DatabaseOntogeny
          {
@@ -100,7 +103,7 @@ namespace PKSim.Core
 
          _snapshotOntogeny = new Snapshots.Ontogeny();
          A.CallTo(() => _ontogenyMapper.MapToSnapshot(_ontogeny)).Returns(_snapshotOntogeny);
-         _simulationSubject = A.Fake<ISimulationSubject>();
+         _individual =new Individual();
 
          return _completed;
       }
@@ -180,7 +183,7 @@ namespace PKSim.Core
          _snapshot.TissueLocation = TissueLocation.Interstitial;
          var enzymeFactory = A.Fake<IIndividualMoleculeFactory>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualEnzyme>()).Returns(enzymeFactory);
-         A.CallTo(() => enzymeFactory.CreateFor(_simulationSubject)).Returns(_enzyme);
+         A.CallTo(() => enzymeFactory.CreateFor(_individual)).Returns(_enzyme);
          _relativeExpressionParameter1.Value = 0;
          _relativeExpressionParameterNorm1.Value = 0;
          _relativeExpressionContainerSnapshot1.Value = 0.5;
@@ -188,12 +191,12 @@ namespace PKSim.Core
             .Invokes(x => _relativeExpressionParameter1.Value = _relativeExpressionContainerSnapshot1.Value.Value);
 
          _enzyme.Ontogeny = null;
-         A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, _simulationSubject)).Returns(_ontogeny);
+         A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, _individual)).Returns(_ontogeny);
       }
 
       protected override async Task Because()
       {
-         _newMolecule = await sut.MapToModel(_snapshot, _simulationSubject) as IndividualEnzyme;
+         _newMolecule = await sut.MapToModel(_snapshot, _individual) as IndividualEnzyme;
       }  
 
       [Observation]
@@ -219,7 +222,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_restored_the_ontogeny()
       {
-         _enzyme.Ontogeny.ShouldBeEqualTo(_ontogeny);
+         A.CallTo(() => _ontogenyTask.SetOntogenyForMolecule(_newMolecule, _ontogeny, _individual)).MustHaveHappened();
       }
    }
 
@@ -236,12 +239,12 @@ namespace PKSim.Core
          _snapshot.TransportType = TransportType.PgpLike;
          var transporterFactory = A.Fake<IIndividualTransporterFactory>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualTransporter>()).Returns(transporterFactory);
-         A.CallTo(() => transporterFactory.CreateFor(_simulationSubject, TransportType.PgpLike)).Returns(_transporter);
+         A.CallTo(() => transporterFactory.CreateFor(_individual, TransportType.PgpLike)).Returns(_transporter);
       }
 
       protected override async Task Because()
       {
-         _newTransporter = await sut.MapToModel(_snapshot, _simulationSubject) as IndividualTransporter;
+         _newTransporter = await sut.MapToModel(_snapshot, _individual) as IndividualTransporter;
       }
 
       [Observation]
@@ -268,12 +271,12 @@ namespace PKSim.Core
 
          var individualOtherProteinFactory = A.Fake<IIndividualMoleculeFactory>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualOtherProtein>()).Returns(individualOtherProteinFactory);
-         A.CallTo(() => individualOtherProteinFactory.CreateFor(_simulationSubject)).Returns(_otherProtein);
+         A.CallTo(() => individualOtherProteinFactory.CreateFor(_individual)).Returns(_otherProtein);
       }
 
       protected override async Task Because()
       {
-         _newOtherProtein = await sut.MapToModel(_snapshot, _simulationSubject) as IndividualOtherProtein;
+         _newOtherProtein = await sut.MapToModel(_snapshot, _individual) as IndividualOtherProtein;
       }
 
       [Observation]
