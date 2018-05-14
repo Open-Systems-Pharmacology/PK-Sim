@@ -52,7 +52,8 @@ namespace PKSim.Presentation
          _dataImporter = A.Fake<IDataImporter>();
          _compoundFactory = new CompoundFactoryForSpecs();
          sut = new CompoundAlternativeTask(_parameterAlternativeFactory, _applicationController,
-            _executionContext, _compoundFactory, _entityTask, _formulaFactory, _parameterTask, _buildingBlockRepository, _dimensionRepository, _dataImporter);
+            _executionContext, _compoundFactory, _entityTask, _formulaFactory, _parameterTask, 
+            _buildingBlockRepository, _dimensionRepository, _dataImporter);
       }
 
       protected class CompoundFactoryForSpecs : ICompoundFactory
@@ -323,12 +324,13 @@ namespace PKSim.Presentation
       private double _refPhValue;
       private double _solValue;
       private double _gainPerChargeValue;
+      private Compound _compoundForCalculation;
+      private IParameter _originalRefPh;
 
       protected override void Context()
       {
          base.Context();
-         _compound = new Compound();
-         var solDim = new Dimension(new BaseDimensionRepresentation(), "Solubility", "m");
+          var solDim = new Dimension(new BaseDimensionRepresentation(), "Solubility", "m");
          solDim.AddUnit(new Unit("cm", 0.01, 0));
          _refPhValue = 7;
          _solValue = 100;
@@ -341,20 +343,20 @@ namespace PKSim.Presentation
          _solubility_pKa_pH_Factor = new PKSimParameter().WithName(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR);
          _solubility_pKa_pH_Factor.Formula = new ExplicitFormula("10 * (pH +1)");
          _solubility_pKa_pH_Factor.Formula.AddObjectPath(new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, CoreConstants.Parameters.REFERENCE_PH}).WithAlias("pH"));
-         _compound.Add(refPh);
-         _compound.Add(solubilty);
-         _compound.Add(gainPerCharge);
-         _compound.Add(_solubility_pKa_pH_Factor);
-         _solubilityAlternative = new ParameterAlternative();
-         _solubilityAlternative.Add(refPh);
-         _solubilityAlternative.Add(solubilty);
-         _solubilityAlternative.Add(gainPerCharge);
-         _solubilityAlternative.Add(solubilityTable);
+
+         _compoundForCalculation = new Compound {refPh, solubilty, gainPerCharge, _solubility_pKa_pH_Factor};
+         _solubilityAlternative = new ParameterAlternative {refPh, solubilty, gainPerCharge, solubilityTable};
 
          var solubilityAlternativeGroup = new ParameterAlternativeGroup();
          solubilityAlternativeGroup.AddAlternative(_solubilityAlternative);
 
+
+         _originalRefPh = DomainHelperForSpecs.ConstantParameterWithValue(_refPhValue).WithName(CoreConstants.Parameters.REFERENCE_PH).WithDimension(DomainHelperForSpecs.NoDimension());
+         _originalRefPh.Value = 4;
+         _compound = new Compound {_originalRefPh};
          _compound.AddParameterAlternativeGroup(solubilityAlternativeGroup);
+
+         A.CallTo(() => _executionContext.Clone(_compound)).Returns(_compoundForCalculation);
       }
 
       protected override void Because()
@@ -372,6 +374,13 @@ namespace PKSim.Presentation
       public void the_value_at_ref_ph_should_be_equal_to_the_ref_sol_value()
       {
          _tableFormula.ValueAt(_refPhValue).ShouldBeEqualTo(_solValue);
+      }
+
+      [Observation]
+      public void should_have_used_a_clone_of_the_given_compound_to_perform_solubility_calculation()
+      {
+         //ensure that value was not updated during calculation
+         _originalRefPh.Value.ShouldBeEqualTo(4);
       }
 
       [Observation]
