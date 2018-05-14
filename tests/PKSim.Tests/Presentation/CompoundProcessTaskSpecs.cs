@@ -142,6 +142,7 @@ namespace PKSim.Presentation
       private IParameter _p1;
       private IParameter _p2;
       private ParameterAlternative _fuAlternative;
+      private string _anotherParameter = "TOTO";
 
       protected override void Context()
       {
@@ -154,12 +155,11 @@ namespace PKSim.Presentation
          fuGroup.AddAlternative(_fuAlternative);
          _compound.AddParameterAlternativeGroup(fuGroup);
          _template = new SystemicProcess();
-         _p1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT);
-         _p2 = DomainHelperForSpecs.ConstantParameterWithValue(0.9).WithName("toto");
+         _p1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5,isDefault:true).WithName(CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT);
+         _p2 = DomainHelperForSpecs.ConstantParameterWithValue(0.9,isDefault: true).WithName(_anotherParameter);
          _template.Add(_p1);
          _template.Add(_p2);
-         _clone = new SystemicProcess();
-         _clone.Add(DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT));
+         _clone = new SystemicProcess {DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT)};
 
          A.CallTo(() => _executionContext.Clone(_template)).Returns(_clone);
       }
@@ -179,6 +179,12 @@ namespace PKSim.Presentation
       public void should_have_set_the_compound_specific_parameter_using_the_defined_value_if_available()
       {
          _result.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT).Value.ShouldBeEqualTo(_fuAlternative.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value);
+      }
+
+      [Observation]
+      public void should_have_set_the_is_default_flag_for_updated_parameters_to_false()
+      {
+         _result.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT).IsDefault.ShouldBeFalse();
       }
    }
 }

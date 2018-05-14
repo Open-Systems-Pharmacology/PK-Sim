@@ -180,10 +180,15 @@ namespace PKSim.Presentation.Services
       private void updateProcessParameterFromDefaultAleternative(CompoundProcess newProcess, Compound compound, string processParameterName, string compoundParameterName, string groupName)
       {
          var processParameter = newProcess.Parameter(processParameterName);
-         if (processParameter == null) return;
+         if (processParameter == null)
+            return;
+
          var parameterAlternative = compound.ParameterAlternativeGroup(groupName).DefaultAlternative;
-         if (parameterAlternative == null) return;
+         if (parameterAlternative == null)
+            return;
+
          processParameter.Value = parameterAlternative.Parameter(compoundParameterName).Value;
+         processParameter.IsDefault = false;
       }
 
       public IPKSimCommand RenameDataSource(CompoundProcess compoundProcess)

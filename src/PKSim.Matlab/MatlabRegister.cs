@@ -6,6 +6,8 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Matlab.Mappers;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
@@ -25,6 +27,7 @@ namespace PKSim.Matlab
          container.Register<IFullPathDisplayResolver, MatlabFullPathDisplayResolver>();
          container.Register<IMatlabPopulationSettingsToPopulationSettingsMapper, MatlabPopulationSettingsToPopulationSettingsMapper>();
          container.Register<ILazyLoadTask, MatlabLazyLoadTask>(LifeStyle.Singleton);
+         container.Register<IOntogenyTask<Individual>, MatlabIndividualOntogenyTask>();
       }
    }
 }

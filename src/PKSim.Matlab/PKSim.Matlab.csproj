@@ -69,6 +69,7 @@
     <Compile Include="MatlabFullPathDisplayResolver.cs" />
     <Compile Include="MatlabHelper.cs" />
     <Compile Include="MatlabIndividualFactory.cs" />
+    <Compile Include="MatlabIndividualOntogenyTask.cs" />
     <Compile Include="MatlabRegister.cs" />
     <Compile Include="MatlabLazyLoadTask.cs" />
     <Compile Include="OntogenyFactorsRetriever.cs" />
