@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using FluentNHibernate.Conventions.AcceptanceCriteria;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -101,113 +101,171 @@ namespace PKSim.IntegrationTests
             parametersWithWrongIsInputFlag.Add(parameter);
       }
 
-      [Observation]
-      public void should_set_is_input_flag_according_to_specification()
+      private void checkIsInput(Action<List<ParameterMetaData>> checkIsInputAction)
       {
          var parametersWithWrongIsInputFlag = new List<ParameterMetaData>();
+         checkIsInputAction(parametersWithWrongIsInputFlag);
+         parametersWithWrongIsInputFlag.Any().ShouldBeFalse(ErrorMessageFor(parametersWithWrongIsInputFlag));
+      }
 
-         foreach (var parameter in _allParameters)
+      private void checkIsInputForSomeReadOnlyParameters(List<ParameterMetaData> parametersWithWrongIsInputFlag)
+      {
+         foreach (var parameter in _allParameters.Where(p => isOneOfReadOnlyAndIsInputParameters(p.ParameterName)))
          {
-            if (parameter.ReadOnly)
+            checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
+         }
+      }
+
+      private void checkIsInputForEditableFormulationParameters(List<ParameterMetaData> parametersWithWrongIsInputFlag)
+      {
+         foreach (var parameter in _allParameters
+            .Where(p=>p.ContainerType == CoreConstants.ContainerType.Formulation)
+            .Where(p=>!p.ReadOnly))
+         {
+            //all editable formulation parameters with exception of "Thickness (unstirred water layer)" must be input
+            if (!parameter.ReadOnly && parameter.ParameterName != CoreConstantsForSpecs.Parameter.THICKNESS_WATER_LAYER)
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
+            else
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
+         }
+      }
+
+      private void checkIsInputForCompoundParameters(List<ParameterMetaData> parametersWithWrongIsInputFlag)
+      {
+         foreach (var parameter in _allParameters.Where(p => p.ContainerType == CoreConstants.ContainerType.Compound))
+         {
+            if (parameter.ParameterName.IsOneOf(
+               CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE,
+               CoreConstants.Parameters.IS_SMALL_MOLECULE,
+               CoreConstants.Parameters.LIPOPHILICITY,
+               CoreConstants.Parameters.MOLECULAR_WEIGHT,
+               CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER,
+               CoreConstants.Parameters.REFERENCE_PH,
+               CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH))
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
+            else
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
+         }
+      }
+
+      private void checkIsInputForGeneralParameters(List<ParameterMetaData> parametersWithWrongIsInputFlag)
+      {
+         foreach (var parameter in _allParameters.Where(p=>p.ContainerType == CoreConstants.ContainerType.General))
+         {
+            //few application parameters which are input
+            if (parameter.ParameterName.IsOneOf(
+               CoreConstants.Parameters.INPUT_DOSE,
+               CoreConstantsForSpecs.Parameter.INFUSION_TIME,
+               CoreConstantsForSpecs.Parameter.START_TIME,
+               CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT))
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
+            else
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
+         }
+      }
+
+      private void checkIsInputForEditableProcessParameters(List<ParameterMetaData> parametersWithWrongIsInputFlag)
+      {
+         foreach (var parameter in _allParameters
+            .Where(p => p.ContainerType == CoreConstants.ContainerType.Process)
+            .Where(p=> !p.ReadOnly))
+         {
+            checkIsInputForProcessParameter(parameter, parametersWithWrongIsInputFlag);
+         }
+      }
+
+      private void checkIsInputForProcessParameter(ParameterMetaData parameter, List<ParameterMetaData> parametersWithWrongIsInputFlag)
+      {
+         if (parameter.GroupName == CoreConstants.Groups.COMPOUNDPROCESS_SIMULATION_PARAMETERS)
+         {
+            if (parameter.ParameterName == CoreConstants.Parameters.KI)
             {
-               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, 
-                  isInputShouldBe: isOneOfReadOnlyAndIsInputParameters(parameter.ParameterName));
-               continue;
+               //Ki is defined as formula for irreversible inhibition => not an input;
+               //for all other processes: input
+               bool kiShouldBeInput = parameter.ContainerName != CoreConstantsForSpecs.ContainerName.IRREVERSIBLE_INHIBITION;
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: kiShouldBeInput);
+               return;
             }
 
-            if (parameter.ContainerType.Equals(CoreConstants.ContainerType.Formulation))
-            {
-               //all editable formulation parameters with exception of "Thickness (unstirred water layer)" must be input
-               if (!parameter.ReadOnly && !parameter.ParameterName.Equals(CoreConstantsForSpecs.Parameter.THICKNESS_WATER_LAYER))
-                  checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
-               else
-                  checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
-               continue;
-            }
+            if (parameter.ParameterName.IsOneOf(CoreConstants.Parameters.EC50, CoreConstants.Parameters.EMAX,
+               CoreConstants.Parameters.GFR_FRACTION, CoreConstantsForSpecs.Parameter.HILL_COEFFICIENT,
+               CoreConstants.Parameters.K_KINACT_HALF, CoreConstantsForSpecs.Parameter.KD,
+               CoreConstants.Parameters.KI_C, CoreConstants.Parameters.KI_U,
+               CoreConstants.Parameters.KINACT, CoreConstantsForSpecs.Parameter.KM,
+               CoreConstantsForSpecs.Parameter.KOFF))
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
+            else
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
+            return;
+         }
 
-            if (parameter.ContainerType.Equals(CoreConstants.ContainerType.Compound))
-            {
-               if (parameter.ParameterName.IsOneOf(
-                  CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE,
-                  CoreConstants.Parameters.IS_SMALL_MOLECULE,
-                  CoreConstants.Parameters.LIPOPHILICITY,
-                  CoreConstants.Parameters.MOLECULAR_WEIGHT,
-                  CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER,
-                  CoreConstants.Parameters.REFERENCE_PH,
-                  CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH))
-                  checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
-               else
-                  checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
-               continue;
-            }
+         if (parameter.GroupName == CoreConstants.Groups.COMPOUNDPROCESS_CALCULATION_PARAMETERS)
+         {
+            if (parameter.ParameterName.IsOneOf(CoreConstantsForSpecs.Parameter.ENZYME_CONCENTRATION,
+               CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT,
+               CoreConstantsForSpecs.Parameter.IN_VITRO_CL_FOR_LIVER_MICROSOMES,
+               CoreConstantsForSpecs.Parameter.IN_VITRO_CL_FOR_RECOMBINANT_ENZYMES,
+               CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_LIVER_MICROSOMES,
+               CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_RECOMBINANT_ENZYMES,
+               CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_TRANSPORTER,
+               CoreConstantsForSpecs.Parameter.INTRINSIC_CLEARANCE,
+               CoreConstants.Parameters.LIPOPHILICITY_EXPERIMENT, CoreConstantsForSpecs.Parameter.MEASURING_TIME,
+               CoreConstantsForSpecs.Parameter.PLASMA_CLEARANCE, CoreConstants.Parameters.SPECIFIC_CLEARANCE,
+               CoreConstantsForSpecs.Parameter.HALF_LIFE_HEPATOCYTE_ASSAY, CoreConstantsForSpecs.Parameter.HALF_LIFE_MICROSOMAL_ASSAY,
+               CoreConstantsForSpecs.Parameter.TRANSPORTER_CONCENTRATION,
+               CoreConstantsForSpecs.Parameter.TS_MAX, CoreConstantsForSpecs.Parameter.TUBULAR_SECRETION,
+               CoreConstantsForSpecs.Parameter.VMAX, CoreConstantsForSpecs.Parameter.VMAX_LIVER_TISSUE))
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
+            else
+               checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
+         }
+      }
 
-            if (parameter.ContainerType.Equals(CoreConstants.ContainerType.General))
-            {
-               //few application parameters which are input
-               if (parameter.ParameterName.IsOneOf(
-                  CoreConstants.Parameters.INPUT_DOSE,
-                  CoreConstantsForSpecs.Parameter.INFUSION_TIME,
-                  CoreConstantsForSpecs.Parameter.START_TIME,
-                  CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT))
-                  checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
-               else
-                  checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
-               continue;
-            }
-
-            if (parameter.ContainerType.Equals(CoreConstants.ContainerType.Process))
-            {
-               if (parameter.GroupName.Equals(CoreConstants.Groups.COMPOUNDPROCESS_SIMULATION_PARAMETERS))
-               {
-                  if (parameter.ParameterName.Equals(CoreConstants.Parameters.KI))
-                  {
-                     //Ki is defined as formula for irreversible inhibition => not an input;
-                     //for all other processes: input
-                     bool kiShouldBeInput = !parameter.ContainerName.Equals(CoreConstantsForSpecs.ContainerName.IRREVERSIBLE_INHIBITION);
-                     checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: kiShouldBeInput);
-                     continue;
-                  }
-                     
-                  if (parameter.ParameterName.IsOneOf(CoreConstants.Parameters.EC50, CoreConstants.Parameters.EMAX,
-                     CoreConstants.Parameters.GFR_FRACTION, CoreConstantsForSpecs.Parameter.HILL_COEFFICIENT,
-                     CoreConstants.Parameters.K_KINACT_HALF, CoreConstantsForSpecs.Parameter.KD, 
-                     CoreConstants.Parameters.KI_C, CoreConstants.Parameters.KI_U, 
-                     CoreConstants.Parameters.KINACT, CoreConstantsForSpecs.Parameter.KM,
-                     CoreConstantsForSpecs.Parameter.KOFF))
-                     checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
-                  else
-                     checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
-                  continue;
-               }
-
-               if (parameter.GroupName.Equals(CoreConstants.Groups.COMPOUNDPROCESS_CALCULATION_PARAMETERS))
-               {
-                  if (parameter.ParameterName.IsOneOf(CoreConstantsForSpecs.Parameter.ENZYME_CONCENTRATION, 
-                     CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT,
-                     CoreConstantsForSpecs.Parameter.IN_VITRO_CL_FOR_LIVER_MICROSOMES,
-                     CoreConstantsForSpecs.Parameter.IN_VITRO_CL_FOR_RECOMBINANT_ENZYMES,
-                     CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_LIVER_MICROSOMES,
-                     CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_RECOMBINANT_ENZYMES,
-                     CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_TRANSPORTER,
-                     CoreConstantsForSpecs.Parameter.INTRINSIC_CLEARANCE, 
-                     CoreConstants.Parameters.LIPOPHILICITY_EXPERIMENT, CoreConstantsForSpecs.Parameter.MEASURING_TIME,
-                     CoreConstantsForSpecs.Parameter.PLASMA_CLEARANCE, CoreConstants.Parameters.SPECIFIC_CLEARANCE, 
-                     CoreConstantsForSpecs.Parameter.HALF_LIFE_HEPATOCYTE_ASSAY, CoreConstantsForSpecs.Parameter.HALF_LIFE_MICROSOMAL_ASSAY,
-                     CoreConstantsForSpecs.Parameter.TRANSPORTER_CONCENTRATION,
-                     CoreConstantsForSpecs.Parameter.TS_MAX, CoreConstantsForSpecs.Parameter.TUBULAR_SECRETION,
-                     CoreConstantsForSpecs.Parameter.VMAX, CoreConstantsForSpecs.Parameter.VMAX_LIVER_TISSUE))
-                     checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
-                  else
-                     checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
-                  continue;
-               }
-            }
-
+      private void checkIsInputForOtherContainerTypes(List<ParameterMetaData> parametersWithWrongIsInputFlag)
+      {
+         foreach (var parameter in _allParameters.Where(p => !p.ContainerType.IsOneOf(CoreConstants.ContainerType.Formulation,
+            CoreConstants.ContainerType.Compound, CoreConstants.ContainerType.General, CoreConstants.ContainerType.Process)))
+         {
             //all other parameters should be not an input
             checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
          }
-
-         parametersWithWrongIsInputFlag.Any().ShouldBeFalse(ErrorMessageFor(parametersWithWrongIsInputFlag));
       }
+
+      [Observation]
+      public void should_set_is_input_flag_for_some_readonly_parameters()
+      {
+         checkIsInput(checkIsInputForSomeReadOnlyParameters);
+      }
+
+      [Observation]
+      public void should_set_is_input_flag_for_editable_formulation_parameters_according_to_specification()
+      {
+         checkIsInput(checkIsInputForEditableFormulationParameters);
+      }
+
+      [Observation]
+      public void should_set_is_input_flag_for_compound_parameters_according_to_specification()
+      {
+         checkIsInput(checkIsInputForCompoundParameters);
+      }
+
+      [Observation]
+      public void should_set_is_input_flag_for_general_parameters_according_to_specification()
+      {
+         checkIsInput(checkIsInputForGeneralParameters);
+      }
+
+      [Observation]
+      public void should_set_is_input_flag_for_editable_process_parameters_according_to_specification()
+      {
+         checkIsInput(checkIsInputForEditableProcessParameters);
+      }
+
+      [Observation]
+      public void should_set_is_input_flag_for_other_parameters_according_to_specification()
+      {
+         checkIsInput(checkIsInputForOtherContainerTypes);
+      }
+
    }
 }
