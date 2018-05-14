@@ -35,6 +35,9 @@ namespace PKSim.Core.Commands
 
             Add(new SetParameterValueCommand(parameter, individualParameter.Value) {Visible = false});
       
+            //Ensure that parameter is not marked as default as it was changed from default value defined in DB
+            Add(new SetParameterDefaultStateCommand(parameter, isDefault: false) { Visible = false });
+
             //Parameter updated from default indiviudal should have the default value origin
             Add(new UpdateParameterValueOriginCommand(parameter, individualParameter.ValueOrigin) { Visible = false });
          }

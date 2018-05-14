@@ -294,6 +294,7 @@
     <Compile Include="Core\SetParameterDefaultStateCommandSpecs.cs" />
     <Compile Include="Core\SetRelativeExpressionFromNormalizedCommandSpecs.cs" />
     <Compile Include="Core\ProtocolMapperSpecs.cs" />
+    <Compile Include="Core\SetSpeciesInCompoundProcessCommandSpecs.cs" />
     <Compile Include="Core\SimulationComparisonMapperSpecs.cs" />
     <Compile Include="Core\SimulationConfigurationValidatorSpecs.cs" />
     <Compile Include="Core\SimulationMapperSpecs.cs" />
