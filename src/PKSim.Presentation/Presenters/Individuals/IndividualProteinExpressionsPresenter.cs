@@ -21,7 +21,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       ISimulationSubject SimulationSubject { get; set; }
       void ActivateMolecule(IndividualMolecule molecule);
       void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value);
-      void RefreshView();
    }
 
    public interface IIndividualProteinExpressionsPresenter : IIndividualMoleculeExpressionsPresenter
@@ -37,7 +36,7 @@ namespace PKSim.Presentation.Presenters.Individuals
    }
 
    public abstract class IndividualProteinExpressionsPresenter<TProtein, TSimulationSubject> : EditParameterPresenter<IIndividualProteinExpressionsView, IIndividualProteinExpressionsPresenter>, IIndividualProteinExpressionsPresenter
-      where TProtein : IndividualProtein 
+      where TProtein : IndividualProtein
       where TSimulationSubject : ISimulationSubject
    {
       protected readonly IMoleculeExpressionTask<TSimulationSubject> _moleculeExpressionTask;
@@ -87,11 +86,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
       {
          AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_protein, expressionContainerDTO.ContainerName, value));
-      }
-
-      public void RefreshView()
-      {
-         _moleculePropertiesPresenter.RefreshView();
       }
 
       private void updateLocationSelectionVisibility()
@@ -148,7 +142,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.BindTo(_proteinExpressionDTO);
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
          _protein.Changed += _updateLocationVisibilityHandler;
-         RefreshView();
+         _moleculePropertiesPresenter.RefreshView();
       }
 
       private void clearReferences()
@@ -157,11 +151,6 @@ namespace PKSim.Presentation.Presenters.Individuals
             _protein.Changed -= _updateLocationVisibilityHandler;
 
          _proteinExpressionDTO?.ClearReferences();
-      }
-
-      public void ClearSelection()
-      {
-         View.Clear();
       }
    }
 }
