@@ -428,6 +428,7 @@ namespace PKSim.Core
          public static readonly string Event = "EVENT";
          public static readonly string Process = "PROCESS";
          public static readonly string EventGroup = "EVENTGROUP";
+         public static readonly string Compound = "COMPOUND";
       }
 
       public static class Dimension
@@ -577,6 +578,8 @@ namespace PKSim.Core
          public static readonly string FRACTION_UNBOUND_PLASMA = "FRACTION_UNBOUND_PLASMA";
          public static readonly string ONTOGENY_FACTOR = "ONTOGENY_FACTOR";
          public static readonly string USER_DEFINED = "USER_DEFFINED";
+         public static readonly string COMPOUNDPROCESS_SIMULATION_PARAMETERS = "COMPOUNDPROCESS_SIMULATION_PARAMETERS";
+         public static readonly string COMPOUNDPROCESS_CALCULATION_PARAMETERS = "COMPOUNDPROCESS_CALCULATION_PARAMETERS";
 
          public static readonly IReadOnlyList<string> GroupsWithCalculatedAlternative = new[]
          {
@@ -972,7 +975,7 @@ namespace PKSim.Core
          public const int SINK_CONDITION = 1;
          public const int NO_SINK_CONDITION = 0;
          public const string IS_FLOATING_IN_LUMEN = "Is floating in lumen";
-         public const string FRATION_UNBOUND_EXPERIMENT = "Fraction unbound (experiment)";
+         public const string FRACTION_UNBOUND_EXPERIMENT = "Fraction unbound (experiment)";
          public const string LIPOPHILICITY_EXPERIMENT = "Lipophilicity (experiment)";
          public const string PARA_ABSORBTION_SINK = "Paracellular absorption sink condition";
          public const string TRANS_ABSORBTION_SINK = "Transcellular absorption sink condition";
