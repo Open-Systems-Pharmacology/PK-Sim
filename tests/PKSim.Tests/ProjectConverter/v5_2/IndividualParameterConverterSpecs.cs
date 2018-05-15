@@ -77,7 +77,7 @@ namespace PKSim.ProjectConverter.v5_2
       private void assertOntogenieParametersAreAvailable(Individual individual)
       {
          individual.Organism.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN).Value.ShouldBeEqualTo(1);
-         individual.Organism.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP).Value.ShouldBeEqualTo(1);
+         individual.Organism.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP).Value.ShouldBeEqualTo(1,1e-10);
          individual.Organism.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_SCALE_FACTOR).Value.ShouldBeEqualTo(1);
       }
 
