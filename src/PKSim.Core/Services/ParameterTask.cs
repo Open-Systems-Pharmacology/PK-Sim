@@ -371,16 +371,7 @@ namespace PKSim.Core.Services
          macroCommand.Add(executedCommand);
          macroCommand.Add(new SetParameterDefaultStateCommand(parameter, isDefault: false) {ShouldChangeVersion = shouldChangeVersion}.Run(_executionContext).AsHidden());
 
-         if (!parameter.ValueOrigin.IsUndefined)
-            return macroCommand;
-
-         var undefinedValueOrigin = new ValueOrigin
-         {
-            Source = ValueOriginSources.Unknown,
-            Method = ValueOriginDeterminationMethods.Undefined
-         };
-
-         var setValueOriginCommand = setParameterValueOrigin(parameter, undefinedValueOrigin, shouldChangeVersion).AsHidden();
+         var setValueOriginCommand = setParameterValueOrigin(parameter, ValueOrigin.Unknown, shouldChangeVersion).AsHidden();
          macroCommand.Add(setValueOriginCommand);
          return macroCommand;
       }

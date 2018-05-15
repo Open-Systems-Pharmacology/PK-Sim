@@ -656,6 +656,8 @@ namespace PKSim.Core
          base.Context();
          _parameter.IsDefault = true;
          _parameter.ValueOrigin.Source = ValueOriginSources.Internet;
+         _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Assumption;
+         _parameter.ValueOrigin.Description = "THIS IS A TEST";
       }
 
       protected override void Because()
@@ -670,9 +672,11 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_not_set_the_value_origin_to_unknwon()
+      public void should_set_the_value_origin_to_unknwon()
       {
-         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Internet);
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Unknown);
+         _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.Undefined);
+         string.IsNullOrEmpty(_parameter.ValueOrigin.Description).ShouldBeTrue();
       }
    }
 
