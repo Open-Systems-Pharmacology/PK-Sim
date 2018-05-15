@@ -240,7 +240,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         TheAsync.Action(() => sut.MapToSnapshot(_mobiSimulation, _project)).ShouldThrowAnAsync<OSPSuiteException>();
+         The.Action(() => sut.MapToSnapshot(_mobiSimulation, _project)).ShouldThrowAn<OSPSuiteException>();
       }
    }
 

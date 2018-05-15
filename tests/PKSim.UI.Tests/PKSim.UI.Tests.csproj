@@ -193,8 +193,8 @@
     <Reference Include="OSPSuite.Assets, Version=7.3.0.73, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.73\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.BDDHelper, Version=2.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.BDDHelper.2.0.0.1\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
+    <Reference Include="OSPSuite.BDDHelper, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.BDDHelper.2.0.1.4\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Core, Version=7.3.0.73, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.Core.7.3.0.73\lib\net462\OSPSuite.Core.dll</HintPath>

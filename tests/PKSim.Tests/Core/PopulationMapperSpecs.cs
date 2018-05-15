@@ -148,7 +148,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         TheAsync.Action(() => sut.MapToSnapshot(new ImportPopulation())).ShouldThrowAnAsync<OSPSuiteException>();
+         The.Action(() => sut.MapToSnapshot(new ImportPopulation())).ShouldThrowAn<OSPSuiteException>();
       }
    }
 
@@ -157,7 +157,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         TheAsync.Action(() => sut.MapToSnapshot(new MoBiPopulation())).ShouldThrowAnAsync<OSPSuiteException>();
+         The.Action(() => sut.MapToSnapshot(new MoBiPopulation())).ShouldThrowAn<OSPSuiteException>();
       }
    }
 }

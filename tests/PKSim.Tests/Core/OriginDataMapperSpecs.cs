@@ -162,7 +162,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -201,7 +201,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -217,7 +217,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -233,7 +233,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         TheAsync.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAnAsync<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
       }
    }
 

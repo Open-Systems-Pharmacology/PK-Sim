@@ -317,7 +317,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_throw_an_exception()
       {
-         TheAsync.Action(() => sut.RunBatchAsync(_exportRunOptions)).ShouldThrowAnAsync<OSPSuiteException>();
+         The.Action(() => sut.RunBatchAsync(_exportRunOptions)).ShouldThrowAn<OSPSuiteException>();
       }
    }
 }
