@@ -209,9 +209,8 @@ namespace PKSim.IntegrationTests
                CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_RECOMBINANT_ENZYMES,
                CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_TRANSPORTER,
                CoreConstantsForSpecs.Parameter.INTRINSIC_CLEARANCE,
-               CoreConstants.Parameters.LIPOPHILICITY_EXPERIMENT, CoreConstantsForSpecs.Parameter.MEASURING_TIME,
+               CoreConstants.Parameters.LIPOPHILICITY_EXPERIMENT, 
                CoreConstantsForSpecs.Parameter.PLASMA_CLEARANCE, CoreConstants.Parameters.SPECIFIC_CLEARANCE,
-               CoreConstantsForSpecs.Parameter.HALF_LIFE_HEPATOCYTE_ASSAY, CoreConstantsForSpecs.Parameter.HALF_LIFE_MICROSOMAL_ASSAY,
                CoreConstantsForSpecs.Parameter.TRANSPORTER_CONCENTRATION,
                CoreConstantsForSpecs.Parameter.TS_MAX, CoreConstantsForSpecs.Parameter.TUBULAR_SECRETION,
                CoreConstantsForSpecs.Parameter.VMAX, CoreConstantsForSpecs.Parameter.VMAX_LIVER_TISSUE))
