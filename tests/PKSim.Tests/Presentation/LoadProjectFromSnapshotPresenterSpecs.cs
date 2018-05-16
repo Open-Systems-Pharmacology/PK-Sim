@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -45,6 +46,7 @@ namespace PKSim.Presentation
       private PKSimProject _project;
       private PKSimProject _newProject;
       private QualificationPlan _qualificationPlan;
+      private readonly string _fileName = "PROJECT.json";
 
       protected override void Context()
       {
@@ -52,13 +54,21 @@ namespace PKSim.Presentation
          _newProject = new PKSimProject();
          _qualificationPlan = new QualificationPlan();
          _newProject.AddQualificationPlan(_qualificationPlan);
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(A<string>._)).Returns(_newProject);
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_fileName)).Returns(_newProject);
+         A.CallTo(() => _view.Display())
+            .Invokes(x => sut.Start().Wait());
       }
 
       protected override void Because()
       {
-         sut.Start().Wait();
          _project = sut.LoadProject();
+      }
+
+      [Observation]
+      public void should_start_the_file_selection_immeditately()
+      {
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT, null, null)).MustHaveHappened();
       }
 
       [Observation]
@@ -73,6 +83,39 @@ namespace PKSim.Presentation
          A.CallTo(() => _registrationTask.RegisterProject(_newProject)).MustHaveHappened()
             .Then(A.CallTo(() => _qualificationPlanRunner.RunAsync(_qualificationPlan)).MustHaveHappened())
             .Then(A.CallTo(() => _registrationTask.UnregisterProject(_newProject)).MustHaveHappened());
+      }
+   }
+
+   public class When_loading_a_project_from_snapshot_and_the_user_cancels_file_selection : concern_for_LoadProjectFromSnapshotPresenter
+   {
+      private PKSimProject _project;
+      private PKSimProject _newProject;
+      private QualificationPlan _qualificationPlan;
+
+      protected override void Context()
+      {
+         base.Context();
+         _newProject = new PKSimProject();
+         _qualificationPlan = new QualificationPlan();
+         _newProject.AddQualificationPlan(_qualificationPlan);
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(null);
+      }
+
+      protected override void Because()
+      {
+         _project = sut.LoadProject();
+      }
+
+      [Observation]
+      public void should_return_null()
+      {
+         _project.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_not_display_the_view()
+      {
+         A.CallTo(() => _view.Display()).MustNotHaveHappened();
       }
    }
 }

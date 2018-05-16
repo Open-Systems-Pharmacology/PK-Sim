@@ -15,15 +15,19 @@ namespace PKSim.Presentation.Presenters.Snapshots
 {
    public interface ILoadFromSnapshotPresenter : IPresenter<ILoadFromSnapshotView>, IDisposablePresenter
    {
-      void SelectFile();
+      /// <summary>
+      /// Starts the snapshot file selection process. Returns <c>true</c> if a file was selected of <c>false</c> if the selection was canceled
+      /// </summary>
+      bool SelectFile();
+
       Task Start();
+
       bool ModelIsDefined { get; }
 
       /// <summary>
-      /// File selected by the user containing the snapshot being loaded. 
+      ///    File selected by the user containing the snapshot being loaded.
       /// </summary>
       string SnapshotFile { get; }
-
    }
 
    public interface ILoadFromSnapshotPresenter<T> : ILoadFromSnapshotPresenter where T : class, IObjectBase
@@ -65,19 +69,28 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       public IEnumerable<T> LoadModelFromSnapshot()
       {
+         if (!SelectFile())
+            return null;
+
          _view.Display();
          ClearModel(_model);
          return _view.Canceled ? null : _model;
       }
 
-      public void SelectFile()
+      public bool SelectFile()
       {
-         var message = PKSimConstants.UI.LoadObjectFromSnapshot(typeToLoad);
-         var fileName = _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);
+         var fileName = selectSnapshotFile();
          if (string.IsNullOrEmpty(fileName))
-            return;
+            return false;
 
          _loadFromSnapshotDTO.SnapshotFile = fileName;
+         return true;
+      }
+
+      private string selectSnapshotFile()
+      {
+         var message = PKSimConstants.UI.LoadObjectFromSnapshot(typeToLoad);
+         return _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);
       }
 
       private string typeToLoad => _objectTypeResolver.TypeFor<T>();

@@ -1040,9 +1040,35 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_not_load_the_project_from_snapshot()
+      public void should_not_create_a_new_empty_project()
       {
          A.CallTo(() => _workspace.LoadProject(A<PKSimProject>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_loading_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_cancels_the_load_action : concern_for_ProjectTask
+   {
+      private ILoadProjectFromSnapshotPresenter _loadSnapshotPresenter;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _loadSnapshotPresenter = A.Fake<ILoadProjectFromSnapshotPresenter>();
+         A.CallTo(() => _applicationController.Start<ILoadProjectFromSnapshotPresenter>()).Returns(_loadSnapshotPresenter);
+         A.CallTo(() => _workspace.ProjectHasChanged).Returns(false);
+         A.CallTo(() => _loadSnapshotPresenter.LoadProject()).Returns(null);
+      }
+
+      protected override Task Because()
+      {
+         sut.LoadProjectFromSnapshot();
+         return _completed;
+      }
+
+      [Observation]
+      public void should_create_a_new_empty_project()
+      {
+         A.CallTo(() => _workspace.AddCommand(A<CreateProjectCommand>._)).MustHaveHappened();
       }
    }
 
