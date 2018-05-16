@@ -4,13 +4,11 @@ using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.DTO.Snapshots;
@@ -122,13 +120,15 @@ namespace PKSim.Presentation
          _individual = new Individual();
          A.CallTo(() => _view.Canceled).Returns(false);
          var snapshotFile = "SnapshotFile";
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(snapshotFile);
          _loadFromSnapshotDTO.SnapshotFile = snapshotFile;
          A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<Individual>(snapshotFile)).Returns(new[] {_individual});
+         A.CallTo(() => _view.Display())
+            .Invokes(x => sut.Start().Wait());
       }
 
       protected override void Because()
       {
-         sut.Start().Wait();
          _individuals = sut.LoadModelFromSnapshot();
       }
 
@@ -147,7 +147,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_returns_that_a_model_is_defined()
       {
-         sut.ModelIsDefined.ShouldBeTrue();  
+         sut.ModelIsDefined.ShouldBeTrue();
       }
 
       [Observation]

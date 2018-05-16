@@ -28,7 +28,7 @@ namespace PKSim.UI.Views.Snapshots
          _screenBinder.Bind(x => x.SnapshotFile)
             .To(buttonEditSelectSnapshot);
 
-         buttonEditSelectSnapshot.ButtonClick += (o, e) => OnEvent(_presenter.SelectFile);
+         buttonEditSelectSnapshot.ButtonClick += (o, e) => OnEvent(()=>_presenter.SelectFile());
          buttonStart.Click += (o, e) => OnEvent(() => _presenter.Start());
 
          RegisterValidationFor(_screenBinder);

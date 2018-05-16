@@ -233,7 +233,10 @@ namespace PKSim.Presentation.Services
          {
             var project = presenter.LoadProject();
             if (project == null)
+            {
+               createNewProject();
                return;
+            }
 
             _workspace.AddCommand(new LoadProjectFromSnapshotCommand(_workspace, project, presenter.SnapshotFile).Run(_executionContext));
          }
