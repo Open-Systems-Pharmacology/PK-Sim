@@ -44,9 +44,9 @@ namespace PKSim.Core
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _individualModelTask = A.Fake<IIndividualModelTask>();
          _speciesRepository = A.Fake<ISpeciesRepository>();
-         _valueOriginMapper= A.Fake<ValueOriginMapper>();
+         _valueOriginMapper = A.Fake<ValueOriginMapper>();
 
-         sut = new OriginDataMapper(_parameterMapper, _calculationMethodCacheMapper,_valueOriginMapper, _originDataTask, _dimensionRepository, _individualModelTask, _speciesRepository);
+         sut = new OriginDataMapper(_parameterMapper, _calculationMethodCacheMapper, _valueOriginMapper, _originDataTask, _dimensionRepository, _individualModelTask, _speciesRepository);
 
          _ageSnapshotParameter = new Parameter {Value = 1};
          _heightSnapshotParameter = new Parameter {Value = 2};
@@ -63,7 +63,7 @@ namespace PKSim.Core
          _anotherGender = new Gender {Name = "AnotherGender"};
 
          A.CallTo(() => _speciesRepository.All()).Returns(new[] {_species});
-         
+
          _originData = new Model.OriginData
          {
             Age = 35,
@@ -122,6 +122,75 @@ namespace PKSim.Core
       public void should_have_mapped_the_value_origin()
       {
          _snapshot.ValueOrigin.ShouldBeEqualTo(_valueOriginSnapshot);
+      }
+   }
+
+   public class When_mapping_an_origin_data_to_snapshot_where_age_and_weight_are_equal_to_the_default_value : concern_for_OriginDataMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _species.AddPopulation(_anotherPopulation);
+         _speciesPopulation.AddGender(_anotherGender);
+
+         A.CallTo(() => _individualModelTask.MeanAgeFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Age.Value));
+         A.CallTo(() => _individualModelTask.MeanWeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Weight));
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_originData);
+      }
+
+      [Observation]
+      public void should_save_the_value_for_height_and_gestational_age()
+      {
+         _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
+         _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
+         _snapshot.Gender.ShouldBeEqualTo(_originData.Gender.Name);
+
+         _snapshot.Height.ShouldBeEqualTo(_heightSnapshotParameter);
+         _snapshot.GestationalAge.ShouldBeEqualTo(_gestationalAgeSnapshotParameter);
+      }
+
+      [Observation]
+      public void should_not_save_the_value_for_age_and_weight()
+      {
+         _snapshot.Age.ShouldBeNull();
+         _snapshot.Weight.ShouldBeNull();
+      }
+   }
+
+   public class When_mapping_an_origin_data_to_snapshot_where_age_ga_height_and_weight_are_equal_to_default_value : concern_for_OriginDataMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _species.AddPopulation(_anotherPopulation);
+         _speciesPopulation.AddGender(_anotherGender);
+
+         A.CallTo(() => _individualModelTask.MeanAgeFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Age.Value));
+         A.CallTo(() => _individualModelTask.MeanWeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Weight));
+         A.CallTo(() => _individualModelTask.MeanGestationalAgeFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.GestationalAge.Value));
+         A.CallTo(() => _individualModelTask.MeanHeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Height.Value));
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_originData);
+      }
+
+      [Observation]
+      public void should_not_save_any_default_parameters()
+      {
+         _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
+         _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
+         _snapshot.Gender.ShouldBeEqualTo(_originData.Gender.Name);
+
+         _snapshot.Age.ShouldBeNull();
+         _snapshot.Height.ShouldBeNull();
+         _snapshot.GestationalAge.ShouldBeNull();
+         _snapshot.Weight.ShouldBeNull();
       }
    }
 
