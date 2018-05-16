@@ -176,12 +176,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return dimension.UnitValueToBaseUnitValue(unit, snapshot.Value.Value);
       }
 
-      private Parameter parameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension, bool shouldCreateParameter = true)
+      private Parameter parameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension)
       {
-         if (shouldCreateParameter)
-            return _parameterMapper.ParameterFrom(parameterBaseValue, parameterDisplayUnit, dimension);
-
-         return null;
+         return _parameterMapper.ParameterFrom(parameterBaseValue, parameterDisplayUnit, dimension);
       }
    }
 }
