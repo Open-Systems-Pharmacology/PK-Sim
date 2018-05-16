@@ -28,7 +28,8 @@ namespace PKSim.Core
             XName = "pH",
             YName = "Value",
             XDimension = DomainHelperForSpecs.TimeDimensionForSpecs(),
-            Dimension = DomainHelperForSpecs.LengthDimensionForSpecs()
+            Dimension = DomainHelperForSpecs.LengthDimensionForSpecs(),
+            Name = "SUPER_FORMULA"
          };
 
          _tableFormula.XDisplayUnit = _tableFormula.XDimension.Unit("h");
@@ -61,7 +62,7 @@ namespace PKSim.Core
       {
          _snapshot.XName.ShouldBeEqualTo(_tableFormula.XName);
          _snapshot.YName.ShouldBeEqualTo(_tableFormula.YName);
-
+         _snapshot.Name.ShouldBeEqualTo(_tableFormula.Name);
          _snapshot.UseDerivedValues.ShouldBeEqualTo(_tableFormula.UseDerivedValues);
       }
 
@@ -98,6 +99,7 @@ namespace PKSim.Core
       [Observation]
       public void should_create_a_new_table_formula_and_set_its_properties_based_on_the_snapshot_values()
       {
+         _newTableFormula.Name.ShouldBeEqualTo(_tableFormula.Name);
          _newTableFormula.XName.ShouldBeEqualTo(_snapshot.XName);
          _newTableFormula.XDisplayUnit.Name.ShouldBeEqualTo(_snapshot.XUnit);
          _newTableFormula.XDimension.Name.ShouldBeEqualTo(_snapshot.XDimension);

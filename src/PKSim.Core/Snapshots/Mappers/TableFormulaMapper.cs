@@ -31,6 +31,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override Task<ModelTableFormula> MapToModel(SnapshotTableFormula snapshotTableFormula)
       {
          var tableFormula = _formulaFactory.CreateTableFormula();
+         MapSnapshotPropertiesToModel(snapshotTableFormula, tableFormula);
          UpdateModelProperties(tableFormula, snapshotTableFormula);
          return Task.FromResult(tableFormula);
       }
