@@ -43,7 +43,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Permeability = await mapAlternatives(compound, COMPOUND_PERMEABILITY);
          snapshot.PkaTypes = mapPkaTypes(compound);
          snapshot.Processes = await mapProcesses(compound);
-         snapshot.IsSmallMolecule = SnapshotValueFor(compound.IsSmallMolecule, true);
+         snapshot.IsSmallMolecule = compound.IsSmallMolecule;
          snapshot.PlasmaProteinBindingPartner = SnapshotValueFor(compound.PlasmaProteinBindingPartner, PlasmaProteinBindingPartner.Unknown);
          return snapshot;
       }

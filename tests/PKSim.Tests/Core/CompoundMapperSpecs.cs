@@ -113,9 +113,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_saved_the_is_small_molecule_flag_when_different_from_the_default_value_true()
+      public void should_have_saved_the_is_small_molecule_flag_even_for_a_small_molecule()
       {
-         _snapshot.IsSmallMolecule.ShouldBeNull();
+         _snapshot.IsSmallMolecule.ShouldBeEqualTo(true);
       }
 
       [Observation]
