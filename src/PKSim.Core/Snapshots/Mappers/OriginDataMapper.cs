@@ -54,7 +54,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (originData.SpeciesPopulation.IsAgeDependent)
          {
-            snapshot.Age = originDataParameterFor(originData, _individualModelTask.MeanAgeFor, originData.Age, originData.AgeUnit, _dimensionRepository.AgeInYears);
+            //Always generate age for Age dependent species
+            snapshot.Age = parameterFrom(originData.Age, originData.AgeUnit, _dimensionRepository.AgeInYears);
             snapshot.GestationalAge = originDataParameterFor(originData, _individualModelTask.MeanGestationalAgeFor, originData.GestationalAge, originData.GestationalAgeUnit, _dimensionRepository.AgeInWeeks);
          }
 

@@ -143,7 +143,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_save_the_value_for_height_and_gestational_age()
+      public void should_save_the_value_for_height_and_gestational_ag()
       {
          _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
          _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
@@ -154,10 +154,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_not_save_the_value_for_age_and_weight()
+      public void should_not_save_the_value_for_weight()
       {
-         _snapshot.Age.ShouldBeNull();
          _snapshot.Weight.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_always_save_the_value_for_age_for_an_age_dependent_species()
+      {
+         _snapshot.Age.ShouldBeEqualTo(_ageSnapshotParameter);
       }
    }
 
@@ -181,17 +186,23 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_not_save_any_default_parameters()
+      public void should_not_save_any_default_parameters_except_age()
       {
          _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
          _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
          _snapshot.Gender.ShouldBeEqualTo(_originData.Gender.Name);
 
-         _snapshot.Age.ShouldBeNull();
          _snapshot.Height.ShouldBeNull();
          _snapshot.GestationalAge.ShouldBeNull();
          _snapshot.Weight.ShouldBeNull();
       }
+
+      [Observation]
+      public void should_always_save_the_value_for_age_for_an_age_dependent_species()
+      {
+         _snapshot.Age.ShouldBeEqualTo(_ageSnapshotParameter);
+      }
+
    }
 
    public class When_mappping_an_origin_data_for_a_species_population_that_is_not_age_or_heigt_dependent_to_snapshot : concern_for_OriginDataMapper
