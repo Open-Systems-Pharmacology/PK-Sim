@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -49,16 +50,33 @@ namespace PKSim.Core.Snapshots.Mappers
             x.Species = originData.Species.Name;
             x.Population = originData.Species.Populations.Count > 1 ? originData.SpeciesPopulation.Name : null;
             x.Gender = originData.SpeciesPopulation.Genders.Count > 1 ? originData.Gender.Name : null;
-            x.Age = parameterFrom(originData.Age, originData.AgeUnit, _dimensionRepository.AgeInYears, originData.SpeciesPopulation.IsAgeDependent);
-            x.GestationalAge = parameterFrom(originData.GestationalAge, originData.GestationalAgeUnit, _dimensionRepository.AgeInWeeks, originData.SpeciesPopulation.IsAgeDependent);
-            x.Height = parameterFrom(originData.Height, originData.HeightUnit, _dimensionRepository.Length, originData.SpeciesPopulation.IsHeightDependent);
-            x.Weight = parameterFrom(originData.Weight, originData.WeightUnit, _dimensionRepository.Mass);
-
          });
+
+         if (originData.SpeciesPopulation.IsAgeDependent)
+         {
+            //Always generate age for Age dependent species
+            snapshot.Age = parameterFrom(originData.Age, originData.AgeUnit, _dimensionRepository.AgeInYears);
+            snapshot.GestationalAge = originDataParameterFor(originData, _individualModelTask.MeanGestationalAgeFor, originData.GestationalAge, originData.GestationalAgeUnit, _dimensionRepository.AgeInWeeks);
+         }
+
+         snapshot.Weight = originDataParameterFor(originData, _individualModelTask.MeanWeightFor, originData.Weight, originData.WeightUnit, _dimensionRepository.Mass);
+
+         if (originData.SpeciesPopulation.IsHeightDependent)
+            snapshot.Height = originDataParameterFor(originData, _individualModelTask.MeanHeightFor, originData.Height, originData.HeightUnit, _dimensionRepository.Length);
 
          snapshot.ValueOrigin = await _valueOriginMapper.MapToSnapshot(originData.ValueOrigin);
          snapshot.CalculationMethods = await _calculationMethodCacheMapper.MapToSnapshot(originData.CalculationMethodCache, originData.Species.Name);
          return snapshot;
+      }
+
+      private Parameter originDataParameterFor(ModelOriginData originData, Func<ModelOriginData, IParameter> meanParameterRetrieverFunc, double? value, string unit, IDimension dimension)
+      {
+         var meanParameter = meanParameterRetrieverFunc(originData);
+
+         if (value == null || ValueComparer.AreValuesEqual(meanParameter.Value, value.Value))
+            return null;
+
+         return parameterFrom(value, unit, dimension);
       }
 
       public override Task<ModelOriginData> MapToModel(SnapshotOriginData snapshot)
@@ -159,12 +177,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return dimension.UnitValueToBaseUnitValue(unit, snapshot.Value.Value);
       }
 
-      private Parameter parameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension, bool shouldCreateParameter = true)
+      private Parameter parameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension)
       {
-         if(shouldCreateParameter)
-            return _parameterMapper.ParameterFrom(parameterBaseValue, parameterDisplayUnit, dimension);
-
-         return null;
+         return _parameterMapper.ParameterFrom(parameterBaseValue, parameterDisplayUnit, dimension);
       }
    }
 }

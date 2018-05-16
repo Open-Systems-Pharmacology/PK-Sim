@@ -34,13 +34,12 @@ namespace PKSim.Core.Snapshots
       public Parameter GestationalAge { get; set; }
 
       /// <summary>
-      ///    Weight of individual to create. This is a mandatory input for all species
+      ///    Weight of individual to create. 
       /// </summary>
-      [Required]
       public Parameter Weight { get; set; }
 
       /// <summary>
-      ///    Height of individual to create in. This is a mandatory input for height dependent species. 
+      ///    Height of individual to create in. 
       /// </summary>
       public Parameter Height { get; set; }
 
