@@ -37,8 +37,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          yield return DeleteMenuFor(buildingBlock)
             .AsGroupStarter();
-
-         yield return ParameterValueDebugMenuFor(buildingBlock);
       }
 
       protected IEnumerable<IMenuBarItem> DebugContextMenusFor(TBuildingBlock buildingBlock)
