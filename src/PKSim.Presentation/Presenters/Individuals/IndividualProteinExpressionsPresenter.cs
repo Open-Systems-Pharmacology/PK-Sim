@@ -142,6 +142,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.BindTo(_proteinExpressionDTO);
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
          _protein.Changed += _updateLocationVisibilityHandler;
+         updateLocationSelectionVisibility();
          _moleculePropertiesPresenter.RefreshView();
       }
 
