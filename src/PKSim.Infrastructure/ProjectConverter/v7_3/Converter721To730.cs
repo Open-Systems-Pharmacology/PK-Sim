@@ -141,7 +141,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
 
       private void updateIsInputStateByNameAndValue(IContainer containerToUpdate, IContainer templateContainer)
       {
-         foreach (var templateParameter in templateContainer.AllParameters(x => x.Visible && x.Editable && x.ValueIsDefined()))
+         foreach (var templateParameter in templateContainer.AllParameters(x => x.Visible && x.Editable && x.ValueIsComputable()))
          {
             var parameter = containerToUpdate.Parameter(templateParameter.Name);
             if (parameter != null && !ValueComparer.AreValuesEqual(parameter, templateParameter))

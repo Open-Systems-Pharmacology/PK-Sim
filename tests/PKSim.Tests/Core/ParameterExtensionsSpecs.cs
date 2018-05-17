@@ -1,9 +1,9 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using PKSim.Core.Model;
 
 namespace PKSim.Core
 {
@@ -230,7 +230,7 @@ namespace PKSim.Core
          _parameter.IsFixedValue = false;
          _parameter.ShouldExportToSnapshot().ShouldBeFalse();
       }
-      
+
       [Observation]
       public void should_return_false_if_the_parameter_value_is_NaN()
       {
@@ -239,13 +239,44 @@ namespace PKSim.Core
          _parameter.ShouldExportToSnapshot().ShouldBeFalse();
       }
 
-
       [Observation]
       public void should_return_true_otherwise()
       {
          _parameter.IsDefault = false;
          _parameter.Value = 10;
          _parameter.ShouldExportToSnapshot().ShouldBeTrue();
+      }
+   }
+
+   public class When_checking_if_a_parameter_value_is_computable : StaticContextSpecification
+   {
+      private IParameter _parameter;
+
+      protected override void Context()
+      {
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue();
+      }
+
+      [Observation]
+      public void should_return_true_if_the_formula_is_valid()
+      {
+         _parameter.Formula = new ExplicitFormula("1+2");
+         _parameter.IsFixedValue = false;
+         _parameter.ValueIsComputable().ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_true_if_the_formula_is_constant()
+      {
+         _parameter.ValueIsComputable().ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_false_if_the_formula_is_missing_some_references()
+      {
+         _parameter.Formula = new ExplicitFormula("P1+P2");
+         _parameter.IsFixedValue = false;
+         _parameter.ValueIsComputable().ShouldBeFalse();
       }
    }
 }
