@@ -40,6 +40,7 @@ namespace PKSim.Core
       protected Snapshots.Ontogeny _snapshotOntogeny;
       protected ExpressionContainerMapper _expressionContainerMapper;
       protected IOntogenyTask<Individual> _ontogenyTask;
+      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
 
       protected override Task Context()
       {
@@ -49,8 +50,10 @@ namespace PKSim.Core
          _individualMoleculeFactoryResolver = A.Fake<IIndividualMoleculeFactoryResolver>();
          _ontogenyMapper= A.Fake<OntogenyMapper>();
          _ontogenyTask= A.Fake<IOntogenyTask<Individual>>();
+         _moleculeExpressionTask= A.Fake<IMoleculeExpressionTask<Individual>>();
 
-         sut = new MoleculeMapper(_parameterMapper,_expressionContainerMapper, _ontogenyMapper,_individualMoleculeFactoryResolver, _executionContext, _ontogenyTask);
+         sut = new MoleculeMapper(_parameterMapper,_expressionContainerMapper, 
+            _ontogenyMapper,_individualMoleculeFactoryResolver, _executionContext, _ontogenyTask,_moleculeExpressionTask);
 
          _ontogeny = new DatabaseOntogeny
          {
@@ -122,6 +125,7 @@ namespace PKSim.Core
          _snapshot.Name.ShouldBeEqualTo(_enzyme.Name);
          _snapshot.Description.ShouldBeEqualTo(_enzyme.Description);
       }
+
 
       [Observation]
       public void should_have_saved_the_relative_expression_parameters_values_that_are_set()
@@ -197,7 +201,14 @@ namespace PKSim.Core
       protected override async Task Because()
       {
          _newMolecule = await sut.MapToModel(_snapshot, _individual) as IndividualEnzyme;
-      }  
+      }
+
+
+      [Observation]
+      public void should_have_updated_the_molecule_default_parameters()
+      {
+         A.CallTo(() => _moleculeExpressionTask.SetDefaulMoleculeParameters(_newMolecule, null)).MustHaveHappened();
+      }
 
       [Observation]
       public void should_return_a_molecule_having_the_expected_type()
