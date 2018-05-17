@@ -1,5 +1,8 @@
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.Core;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Mappers;
@@ -7,9 +10,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.ProteinExpression;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
 {
@@ -193,14 +193,15 @@ namespace PKSim.Presentation.Services
       {
          setDefaultSettingsForTransporter(molecule, simulationSubject, moleculeName);
          setDefaultOntogeny(molecule, simulationSubject, moleculeName);
-         setDefaulParameters(molecule, moleculeName);
+         SetDefaulMoleculeParameters(molecule, moleculeName);
       }
 
-      private void setDefaulParameters(IndividualMolecule molecule, string moleculeName)
+      public void SetDefaulMoleculeParameters(IndividualMolecule molecule, string moleculeName = null)
       {
-         setDefaultParameter(moleculeName, molecule.ReferenceConcentration);
-         setDefaultParameter(moleculeName, molecule.HalfLifeLiver);
-         setDefaultParameter(moleculeName, molecule.HalfLifeIntestine);
+         var name = moleculeName ?? molecule.Name;
+         setDefaultParameter(name, molecule.ReferenceConcentration);
+         setDefaultParameter(name, molecule.HalfLifeLiver);
+         setDefaultParameter(name, molecule.HalfLifeIntestine);
       }
 
       private void setDefaultParameter(string moleculeName, IParameter parameter)

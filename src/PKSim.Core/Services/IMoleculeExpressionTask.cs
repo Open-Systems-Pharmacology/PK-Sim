@@ -78,5 +78,12 @@ namespace PKSim.Core.Services
       ICommand SetMembraneLocationFor(IndividualProtein individualProteinOrEnzyme, MembraneLocation membraneLocation);
 
       ICommand SetIntracellularVascularEndoLocation(IndividualProtein protein, IntracellularVascularEndoLocation vascularEndoLocation);
+
+      /// <summary>
+      /// Updates the default global molecule parameters in the molecule based on the values defined in the database
+      /// </summary>
+      /// <param name="molecule">Molecule containig the parameters to update</param>
+      /// <param name="moleculeName">Name of molecule to use to retrieve the default parameters. If not set, <paramref name="molecule"/> name will be used instead</param>
+      void SetDefaulMoleculeParameters(IndividualMolecule molecule, string moleculeName = null);
    }
 }

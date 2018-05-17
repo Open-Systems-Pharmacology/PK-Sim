@@ -15,6 +15,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IExecutionContext _executionContext;
       private readonly IOntogenyTask<ModelIndividual> _ontogenyTask;
+      private readonly IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
       private readonly OntogenyMapper _ontogenyMapper;
 
       public MoleculeMapper(
@@ -23,13 +24,15 @@ namespace PKSim.Core.Snapshots.Mappers
          OntogenyMapper ontogenyMapper,
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
          IExecutionContext executionContext,
-         IOntogenyTask<ModelIndividual> ontogenyTask
+         IOntogenyTask<ModelIndividual> ontogenyTask,
+         IMoleculeExpressionTask<ModelIndividual> moleculeExpressionTask
       ) : base(parameterMapper)
       {
          _expressionContainerMapper = expressionContainerMapper;
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
          _executionContext = executionContext;
          _ontogenyTask = ontogenyTask;
+         _moleculeExpressionTask = moleculeExpressionTask;
          _ontogenyMapper = ontogenyMapper;
       }
 
@@ -85,9 +88,16 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<IndividualMolecule> MapToModel(Molecule snapshot, ModelIndividual individual)
       {
          var molecule = createMoleculeFrom(snapshot, individual);
-         await UpdateParametersFromSnapshot(snapshot, molecule, snapshot.Type.ToString());
          MapSnapshotPropertiesToModel(snapshot, molecule);
+
+         //This call should happen before updating parameters from snapshot to ensure that default molecule 
+         //parameters that were updated by the user are taking precedence.
+         _moleculeExpressionTask.SetDefaulMoleculeParameters(molecule);
+
+         await UpdateParametersFromSnapshot(snapshot, molecule, snapshot.Type.ToString());
+
          updateMoleculePropertiesToMolecule(molecule, snapshot);
+
          var ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, individual);
          _ontogenyTask.SetOntogenyForMolecule(molecule, ontogeny, individual);
 
