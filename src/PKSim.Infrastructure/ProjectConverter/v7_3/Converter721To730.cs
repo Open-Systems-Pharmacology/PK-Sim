@@ -64,9 +64,10 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
 
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return _coreConverter.ConvertXml(element);
+         var (_, converted) = _coreConverter.ConvertXml(element);
+         return (ProjectVersions.V7_3_0, converted);
       }
-
+   
       public void Visit(Compound compound)
       {
          adjustDefaultStateOfAllParametersIn(compound);
