@@ -89,6 +89,9 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var molecule = createMoleculeFrom(snapshot, individual);
          MapSnapshotPropertiesToModel(snapshot, molecule);
+
+         //This call should happen before updating parameters from snapshot to ensure that default molecule 
+         //parameters that were updated by the user are taking precedence.
          _moleculeExpressionTask.SetDefaulMoleculeParameters(molecule);
 
          await UpdateParametersFromSnapshot(snapshot, molecule, snapshot.Type.ToString());
