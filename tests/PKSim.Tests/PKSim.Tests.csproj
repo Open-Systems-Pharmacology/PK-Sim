@@ -574,6 +574,7 @@
     <Compile Include="IntegrationTests\RenameBuildingBlockTaskSpecs.cs" />
     <Compile Include="Presentation\EditTableSolubilityParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\EditValueOriginPresenterSpecs.cs" />
+    <Compile Include="Presentation\MoleculeParameterTaskSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeDTOSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeNamePresenterSpecs.cs" />
     <Compile Include="Presentation\QualificationStepRunnerFactorySpecs.cs" />

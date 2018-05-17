@@ -91,6 +91,7 @@ namespace PKSim.ProjectConverter.v7_3
       private Compound _compound;
       private Formulation _formulation;
       private PKSimEvent _event;
+      private CompoundProcess _tubularSecretionProcess;
 
       public override void GlobalContext()
       {
@@ -99,12 +100,27 @@ namespace PKSim.ProjectConverter.v7_3
          _compound = First<Compound>();
          _formulation = First<Formulation>();
          _event = First<PKSimEvent>();
+         _tubularSecretionProcess = _compound.AllProcesses().FirstOrDefault();
       }
 
       [Observation]
       public void should_have_set_the_default_flag_in_compound_parameters()
       {
          checkIsDefaultFlagIn(_compound);
+      }
+
+      [Observation]
+      public void should_have_updated_the_value_origin_to_use_the_value_description_of_previous_parameters()
+      {
+         var tubularSecretion = _tubularSecretionProcess.Parameter(CoreConstantsForSpecs.Parameter.TUBULAR_SECRETION);
+         string.IsNullOrEmpty(tubularSecretion.ValueOrigin.Description).ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_have_set_the_is_input_value_to_true_for_process_parameters_changed_by_the_user()
+      {
+         var tubularSecretion = _tubularSecretionProcess.Parameter(CoreConstantsForSpecs.Parameter.TUBULAR_SECRETION);
+         tubularSecretion.IsDefault.ShouldBeFalse();
       }
 
       [Observation]
