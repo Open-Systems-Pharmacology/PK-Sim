@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 using FluentNHibernate.Utils;
+using OSPSuite.Core.Converter.v7_3;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Visitor;
@@ -27,6 +28,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
       private readonly IContainerTask _containerTask;
       private readonly IFormulationRepository _formulationRepository;
       private readonly IEventGroupRepository _eventGroupRepository;
+      private readonly Converter710To730 _coreConverter;
+      private readonly ICompoundProcessRepository _compoundProcessRepository;
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V7_2_1;
 
       private bool _converted;
@@ -37,7 +40,10 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          ICreationMetaDataFactory creationMetaDataFactory,
          IContainerTask containerTask,
          IFormulationRepository formulationRepository,
-         IEventGroupRepository eventGroupRepository)
+         IEventGroupRepository eventGroupRepository,
+         Converter710To730 coreConverter,
+         ICompoundProcessRepository compoundProcessRepository
+      )
       {
          _compoundFactory = compoundFactory;
          _cloner = cloner;
@@ -45,6 +51,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          _containerTask = containerTask;
          _formulationRepository = formulationRepository;
          _eventGroupRepository = eventGroupRepository;
+         _coreConverter = coreConverter;
+         _compoundProcessRepository = compoundProcessRepository;
       }
 
       public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
@@ -56,8 +64,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
 
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         //nothing to do here
-         return (ProjectVersions.V7_3_0, false);
+         return _coreConverter.ConvertXml(element);
       }
 
       public void Visit(Compound compound)
@@ -141,6 +148,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
 
       private void updateIsInputStateByNameAndValue(IContainer containerToUpdate, IContainer templateContainer)
       {
+         if (templateContainer == null)
+            return;
+
          foreach (var templateParameter in templateContainer.AllParameters(x => x.Visible && x.Editable && x.ValueIsComputable()))
          {
             var parameter = containerToUpdate.Parameter(templateParameter.Name);
@@ -178,6 +188,12 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
             {
                updateIsInputStateByNameAndValue(alternative, templateAlternative);
             }
+         }
+
+         foreach (var process in compound.AllProcesses())
+         {
+            var templateProcess = _compoundProcessRepository.ProcessByName(process.InternalName);
+            updateIsInputStateByNameAndValue(process, templateProcess);
          }
 
          _converted = true;

@@ -203,7 +203,6 @@ namespace PKSim.Core
          _newMolecule = await sut.MapToModel(_snapshot, _individual) as IndividualEnzyme;
       }
 
-
       [Observation]
       public void should_have_updated_the_molecule_default_parameters()
       {
