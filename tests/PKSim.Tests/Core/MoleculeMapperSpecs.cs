@@ -40,7 +40,7 @@ namespace PKSim.Core
       protected Snapshots.Ontogeny _snapshotOntogeny;
       protected ExpressionContainerMapper _expressionContainerMapper;
       protected IOntogenyTask<Individual> _ontogenyTask;
-      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
+      protected IMoleculeParameterTask _individualMoleculeParametersTask;
 
       protected override Task Context()
       {
@@ -50,10 +50,10 @@ namespace PKSim.Core
          _individualMoleculeFactoryResolver = A.Fake<IIndividualMoleculeFactoryResolver>();
          _ontogenyMapper= A.Fake<OntogenyMapper>();
          _ontogenyTask= A.Fake<IOntogenyTask<Individual>>();
-         _moleculeExpressionTask= A.Fake<IMoleculeExpressionTask<Individual>>();
+         _individualMoleculeParametersTask= A.Fake<IMoleculeParameterTask>();
 
          sut = new MoleculeMapper(_parameterMapper,_expressionContainerMapper, 
-            _ontogenyMapper,_individualMoleculeFactoryResolver, _executionContext, _ontogenyTask,_moleculeExpressionTask);
+            _ontogenyMapper,_individualMoleculeFactoryResolver, _executionContext, _ontogenyTask,_individualMoleculeParametersTask);
 
          _ontogeny = new DatabaseOntogeny
          {
@@ -206,7 +206,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_the_molecule_default_parameters()
       {
-         A.CallTo(() => _moleculeExpressionTask.SetDefaulMoleculeParameters(_newMolecule, null)).MustHaveHappened();
+         A.CallTo(() => _individualMoleculeParametersTask.SetDefaulMoleculeParameters(_newMolecule, null)).MustHaveHappened();
       }
 
       [Observation]

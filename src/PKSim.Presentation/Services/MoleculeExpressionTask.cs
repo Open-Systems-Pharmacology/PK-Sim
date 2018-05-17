@@ -23,9 +23,9 @@ namespace PKSim.Presentation.Services
       private readonly IMoleculeToQueryExpressionSettingsMapper _queryExpressionSettingsMapper;
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly ITransportContainerUpdater _transportContainerUpdater;
-      private readonly IMoleculeParameterRepository _moleculeParameterRepository;
       private readonly ISimulationSubjectExpressionTask<TSimulationSubject> _simulationSubjectExpressionTask;
       private readonly IOntogenyTask<TSimulationSubject> _ontogenyTask;
+      private readonly IMoleculeParameterTask _moleculeParameterTask;
 
       public MoleculeExpressionTask(IApplicationController applicationController, IExecutionContext executionContext,
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
@@ -34,9 +34,9 @@ namespace PKSim.Presentation.Services
          IProteinExpressionsDatabasePathManager proteinExpressionsDatabasePathManager,
          IOntogenyRepository ontogenyRepository,
          ITransportContainerUpdater transportContainerUpdater,
-         IMoleculeParameterRepository moleculeParameterRepository,
          ISimulationSubjectExpressionTask<TSimulationSubject> simulationSubjectExpressionTask,
-         IOntogenyTask<TSimulationSubject> ontogenyTask)
+         IOntogenyTask<TSimulationSubject> ontogenyTask,
+         IMoleculeParameterTask moleculeParameterTask)
       {
          _applicationController = applicationController;
          _executionContext = executionContext;
@@ -46,9 +46,9 @@ namespace PKSim.Presentation.Services
          _proteinExpressionsDatabasePathManager = proteinExpressionsDatabasePathManager;
          _ontogenyRepository = ontogenyRepository;
          _transportContainerUpdater = transportContainerUpdater;
-         _moleculeParameterRepository = moleculeParameterRepository;
          _simulationSubjectExpressionTask = simulationSubjectExpressionTask;
          _ontogenyTask = ontogenyTask;
+         _moleculeParameterTask = moleculeParameterTask;
       }
 
       public ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
@@ -193,22 +193,7 @@ namespace PKSim.Presentation.Services
       {
          setDefaultSettingsForTransporter(molecule, simulationSubject, moleculeName);
          setDefaultOntogeny(molecule, simulationSubject, moleculeName);
-         SetDefaulMoleculeParameters(molecule, moleculeName);
-      }
-
-      public void SetDefaulMoleculeParameters(IndividualMolecule molecule, string moleculeName = null)
-      {
-         var name = moleculeName ?? molecule.Name;
-         setDefaultParameter(name, molecule.ReferenceConcentration);
-         setDefaultParameter(name, molecule.HalfLifeLiver);
-         setDefaultParameter(name, molecule.HalfLifeIntestine);
-      }
-
-      private void setDefaultParameter(string moleculeName, IParameter parameter)
-      {
-         var value = _moleculeParameterRepository.ParameterValueFor(moleculeName, parameter.Name, parameter.DefaultValue);
-         parameter.DefaultValue = value;
-         parameter.Value = value;
+         _moleculeParameterTask.SetDefaulMoleculeParameters(molecule, moleculeName);
       }
 
       private void setDefaultSettingsForTransporter(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)

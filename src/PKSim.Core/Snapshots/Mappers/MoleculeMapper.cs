@@ -15,7 +15,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IExecutionContext _executionContext;
       private readonly IOntogenyTask<ModelIndividual> _ontogenyTask;
-      private readonly IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
+      private readonly IMoleculeParameterTask _moleculeExpressionTask;
       private readonly OntogenyMapper _ontogenyMapper;
 
       public MoleculeMapper(
@@ -25,7 +25,7 @@ namespace PKSim.Core.Snapshots.Mappers
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
          IExecutionContext executionContext,
          IOntogenyTask<ModelIndividual> ontogenyTask,
-         IMoleculeExpressionTask<ModelIndividual> moleculeExpressionTask
+         IMoleculeParameterTask moleculeExpressionTask
       ) : base(parameterMapper)
       {
          _expressionContainerMapper = expressionContainerMapper;
