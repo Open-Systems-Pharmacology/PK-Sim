@@ -17,5 +17,11 @@ namespace PKSim.Core
       {
          ProjectVersions.CanLoadVersion(35).ShouldBeFalse();
       }
+
+      [Observation]
+      public void should_return_null_if_a_version_number_is_not_found()
+      {
+         ProjectVersions.FindBy(-50).ShouldBeNull();
+      }
    }
 }	

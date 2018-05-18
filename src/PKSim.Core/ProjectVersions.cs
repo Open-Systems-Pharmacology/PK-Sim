@@ -5,7 +5,7 @@ namespace PKSim.Core
 {
    public static class ProjectVersions
    {
-      private static readonly Cache<int, ProjectVersion> _knownVersions = new Cache<int, ProjectVersion>(x => x.Version, null);
+      private static readonly Cache<int, ProjectVersion> _knownVersions = new Cache<int, ProjectVersion>(x => x.Version, x => null);
 
       public static readonly ProjectVersion V5_0_1 = addVersion(20, "5.0.1");
       public static readonly ProjectVersion V5_1_3 = addVersion(21, "5.1.3");
