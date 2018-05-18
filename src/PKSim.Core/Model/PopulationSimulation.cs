@@ -58,7 +58,8 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns all parameters that could potentially be defined as advanced parameters in a simulation 
       /// </summary>
-      public virtual IEnumerable<IParameter> AllPotentialAdvancedParameters => ParametersOfType(PKSimBuildingBlockType.Simulation | PKSimBuildingBlockType.Compound | PKSimBuildingBlockType.Event | PKSimBuildingBlockType.Formulation);
+      public virtual IEnumerable<IParameter> AllPotentialAdvancedParameters => 
+         ParametersOfType(PKSimBuildingBlockType.Simulation | PKSimBuildingBlockType.Compound | PKSimBuildingBlockType.Event | PKSimBuildingBlockType.Formulation | PKSimBuildingBlockType.Protocol);
 
       /// <summary>
       ///    Returns all values defined for the organism parameter names <paramref name="parameterName" />

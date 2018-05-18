@@ -171,6 +171,7 @@ namespace PKSim.Core
          sut.Model.Root.Add(new PKSimParameter {Name = "P3", BuildingBlockType = PKSimBuildingBlockType.Event});
          sut.Model.Root.Add(new PKSimParameter {Name = "P4", BuildingBlockType = PKSimBuildingBlockType.Formulation});
          sut.Model.Root.Add(new PKSimParameter {Name = "P5", BuildingBlockType = PKSimBuildingBlockType.Individual});
+         sut.Model.Root.Add(new PKSimParameter {Name = "P6", BuildingBlockType = PKSimBuildingBlockType.Protocol});
       }
 
       protected override void Because()
@@ -200,6 +201,13 @@ namespace PKSim.Core
       public void should_return_all_formulation_parameters()
       {
          _allParameters.Contains("P4").ShouldBeTrue();
+      }
+
+
+      [Observation]
+      public void should_return_all_protcol_parameters()
+      {
+         _allParameters.Contains("P6").ShouldBeTrue();
       }
 
       [Observation]
