@@ -18,22 +18,20 @@ namespace PKSim.Core.Model
       private readonly IParameterAlternativeFactory _parameterAlternativeFactory;
       private readonly IParameterGroupTask _parameterGroupTask;
       private readonly ICompoundCalculationMethodCategoryRepository _compoundCalculationMethodCategoryRepository;
-      private readonly ICloner _cloner;
 
       public CompoundFactory(
          IObjectBaseFactory objectBaseFactory,
          IParameterContainerTask parameterContainerTask,
          IParameterAlternativeFactory parameterAlternativeFactory,
          IParameterGroupTask parameterGroupTask,
-         ICompoundCalculationMethodCategoryRepository compoundCalculationMethodCategoryRepository,
-         ICloner cloner)
+         ICompoundCalculationMethodCategoryRepository compoundCalculationMethodCategoryRepository
+      )
       {
          _objectBaseFactory = objectBaseFactory;
          _parameterContainerTask = parameterContainerTask;
          _parameterAlternativeFactory = parameterAlternativeFactory;
          _parameterGroupTask = parameterGroupTask;
          _compoundCalculationMethodCategoryRepository = compoundCalculationMethodCategoryRepository;
-         _cloner = cloner;
       }
 
       public Compound Create()
