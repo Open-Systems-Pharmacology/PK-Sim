@@ -70,6 +70,7 @@ namespace PKSim.Core
    public class When_mapping_a_valid_schema_item_snapshot_to_a_schema_item : concern_for_SchemaItemMapper
    {
       private SchemaItem _newSchemaItem;
+      private string _newName = "New Schema Item";
 
       protected override async Task Context()
       {
@@ -77,7 +78,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_schemaItem);
          A.CallTo(() => _schemaItemFactory.Create(_schemaItem.ApplicationType, null)).Returns(_schemaItem);
 
-         _snapshot.Name = "New Schema Item";
+         _snapshot.Name = _newName;
          _snapshot.Description = "The description that will be deserialized";
          _snapshot.FormulationKey = "Toto";
          _snapshot.TargetOrgan = "Tata";
@@ -92,7 +93,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_created_a_schema_item_with_the_expected_properties()
       {
-         _newSchemaItem.Name.ShouldBeEqualTo(_snapshot.Name);
+         _newSchemaItem.Name.ShouldBeEqualTo(_newName);
          _newSchemaItem.Description.ShouldBeEqualTo(_snapshot.Description);
          _newSchemaItem.FormulationKey.ShouldBeEqualTo(_snapshot.FormulationKey);
          _newSchemaItem.TargetOrgan.ShouldBeEqualTo(_snapshot.TargetOrgan);
