@@ -1,12 +1,12 @@
 using System.Data;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -30,11 +30,11 @@ namespace PKSim.Presentation.Presenters.Simulations
          _view.Caption = $"All Parameters for Simulation with Id {simulation.Id}";
 
          var parameterIdTable = new DataTable("Parameter Id");
-         parameterIdTable.Columns.Add("Parameter Path", typeof (string));
-         parameterIdTable.Columns.Add("Building block Type", typeof (string));
-         parameterIdTable.Columns.Add("Building block Id", typeof (string));
-         parameterIdTable.Columns.Add("Parameter Id", typeof (string));
-         parameterIdTable.Columns.Add("Simulation Id", typeof (string));
+         parameterIdTable.AddColumn("Parameter Path");
+         parameterIdTable.AddColumn("Building block Type");
+         parameterIdTable.AddColumn("Building block Id");
+         parameterIdTable.AddColumn("Parameter Id");
+         parameterIdTable.AddColumn("Simulation Id");
 
          foreach (var parameter in allParameters)
          {

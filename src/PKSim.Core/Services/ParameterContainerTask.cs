@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
@@ -48,7 +48,7 @@ namespace PKSim.Core.Services
       public void AddInvididualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, string parameterName) where TContainer : IContainer
       {
          addParametersTo(parameterContainer, originData, originData.AllCalculationMethods().Select(cm => cm.Name),
-                         param => param.BuildingBlockType == PKSimBuildingBlockType.Individual && string.Equals(param.ParameterName, parameterName));
+            param => param.BuildingBlockType == PKSimBuildingBlockType.Individual && string.Equals(param.ParameterName, parameterName));
       }
 
       public void AddModelParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache) where TContainer : IContainer
@@ -134,13 +134,8 @@ namespace PKSim.Core.Services
          //reset compound name
          string oldName = compound.Root.Name;
          compound.Root.Name = CoreConstants.ContainerName.Drug;
-         addParametersTo(compound.Root, null, CoreConstants.CalculationMethod.ForCompounds);
+         addParametersTo(compound.Root, null, CoreConstants.CalculationMethod.ForCompounds, x => x.BuildingBlockType == PKSimBuildingBlockType.Compound);
          compound.Root.Name = oldName;
-      }
-
-      private void addParametersTo<T>(T parameterContainer, OriginData originData, IEnumerable<string> calculationMethods, Func<ParameterMetaData, bool> predicate) where T : IContainer
-      {
-         addParametersTo(parameterContainer, originData, calculationMethods, predicate, null);
       }
 
       private void addParametersTo<T>(T parameterContainer, OriginData originData, IEnumerable<string> calculationMethods) where T : IContainer
@@ -148,7 +143,7 @@ namespace PKSim.Core.Services
          addParametersTo(parameterContainer, originData, calculationMethods, x => true);
       }
 
-      private void addParametersTo<T>(T parameterContainer, OriginData originData, IEnumerable<string> calculationMethods, Func<ParameterMetaData, bool> predicate, IFormulaCache formulaCache)
+      private void addParametersTo<T>(T parameterContainer, OriginData originData, IEnumerable<string> calculationMethods, Func<ParameterMetaData, bool> predicate, IFormulaCache formulaCache = null)
          where T : IContainer
       {
          //RATE PARAMETERS
