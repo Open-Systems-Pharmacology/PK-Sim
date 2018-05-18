@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using FluentNHibernate.Utils;
@@ -19,6 +20,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
       IVisitor<Formulation>,
       IVisitor<PKSimEvent>,
       IVisitor<IPKSimBuildingBlock>,
+      IVisitor<SimpleProtocol>,
+      IVisitor<AdvancedProtocol>,
       IVisitor<PKSimProject>
 
    {
@@ -30,6 +33,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
       private readonly IEventGroupRepository _eventGroupRepository;
       private readonly Converter710To730 _coreConverter;
       private readonly ICompoundProcessRepository _compoundProcessRepository;
+      private readonly ISchemaItemRepository _schemaItemRepository;
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V7_2_1;
 
       private bool _converted;
@@ -42,7 +46,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          IFormulationRepository formulationRepository,
          IEventGroupRepository eventGroupRepository,
          Converter710To730 coreConverter,
-         ICompoundProcessRepository compoundProcessRepository
+         ICompoundProcessRepository compoundProcessRepository,
+         ISchemaItemRepository schemaItemRepository
       )
       {
          _compoundFactory = compoundFactory;
@@ -53,6 +58,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          _eventGroupRepository = eventGroupRepository;
          _coreConverter = coreConverter;
          _compoundProcessRepository = compoundProcessRepository;
+         _schemaItemRepository = schemaItemRepository;
       }
 
       public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
@@ -67,7 +73,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          var (_, converted) = _coreConverter.ConvertXml(element);
          return (ProjectVersions.V7_3_0, converted);
       }
-   
+
       public void Visit(Compound compound)
       {
          adjustDefaultStateOfAllParametersIn(compound);
@@ -90,6 +96,37 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
       {
          adjustDefaultStateOfAllParametersIn(formulation);
          convertFormulation(formulation);
+      }
+
+      public void Visit(SimpleProtocol protocol)
+      {
+         adjustDefaultStateOfAllParametersIn(protocol);
+         convertSchemaItem(protocol);
+      }
+
+      public void Visit(AdvancedProtocol protocol)
+      {
+         adjustDefaultStateOfAllParametersIn(protocol);
+         protocol.AllSchemas.Each(convertSchema);
+      }
+
+      private void convertSchema(Schema schema)
+      {
+         schema.NumberOfRepetitions.IsDefault = false;
+         schema.TimeBetweenRepetitions.IsDefault = false;
+         schema.StartTime.IsDefault = false;
+         convertSchemaItems(schema.SchemaItems);
+      }
+
+      private void convertSchemaItems(IEnumerable<ISchemaItem> schemaItems) => schemaItems.Each(convertSchemaItem);
+
+      private void convertSchemaItem(ISchemaItem schemaItem)
+      {
+         if(schemaItem==null)
+            return;
+
+         var templateSchemaItem = _schemaItemRepository.SchemaItemBy(schemaItem.ApplicationType);
+         updateIsInputStateByNameAndValue(schemaItem, templateSchemaItem);
       }
 
       public void Visit(IPKSimBuildingBlock buildingBlock)
@@ -152,7 +189,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          if (templateContainer == null)
             return;
 
-         foreach (var templateParameter in templateContainer.AllParameters(x => x.Visible && x.Editable && x.ValueIsComputable()))
+         foreach (var templateParameter in templateContainer.AllParameters(x => x.Visible && x.ValueIsComputable()))
          {
             var parameter = containerToUpdate.Parameter(templateParameter.Name);
             if (parameter != null && !ValueComparer.AreValuesEqual(parameter, templateParameter))

@@ -2170,7 +2170,7 @@ namespace PKSim.Assets
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 
          private static readonly string _snapshotOfProjectWithChangedSimulationText = "Some simulations are in a changed state (red icon) and may not be re-imported correctly.";
-         private static readonly string _snapshotOfProjectCreatedWithEarlierVersionText = "Project was created with an older version of PK-Sim (earlier than 7.3.0). Export to snapshot will create a file with a lot of noise.";
+         private static readonly string _snapshotOfProjectCreatedWithEarlierVersionText = "Project was created with an older version of PK-Sim (earlier than 7.3.0). The created snapshot file will likely be incomplete. Only use if you know what you are doing!";
 
          public static readonly string SnapshotOfProjectWithChangedSimulation = DoYouWantToProceed(_snapshotOfProjectWithChangedSimulationText);
          public static readonly string SnapshotOfProjectCreatedWithEarlierVersion = DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText);

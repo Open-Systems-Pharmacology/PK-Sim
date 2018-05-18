@@ -92,6 +92,8 @@ namespace PKSim.ProjectConverter.v7_3
       private Formulation _formulation;
       private PKSimEvent _event;
       private CompoundProcess _tubularSecretionProcess;
+      private SimpleProtocol _simpleProtocol;
+      private AdvancedProtocol _advancedProtocol;
 
       public override void GlobalContext()
       {
@@ -100,7 +102,38 @@ namespace PKSim.ProjectConverter.v7_3
          _compound = First<Compound>();
          _formulation = First<Formulation>();
          _event = First<PKSimEvent>();
+         _simpleProtocol = First<SimpleProtocol>();
+         _advancedProtocol = First<AdvancedProtocol>();
          _tubularSecretionProcess = _compound.AllProcesses().FirstOrDefault();
+      }
+
+      [Observation]
+      public void should_have_set_the_input_dose_of_the_simple_protocol_to_changed()
+      {
+         _simpleProtocol.Dose.IsDefault.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_have_set_the_input_dose_of_the_advanced_protocol_to_changed()
+      {
+         _advancedProtocol.AllSchemas.SelectMany(x=>x.SchemaItems).Each(x=>x.Dose.IsDefault.ShouldBeFalse());
+      }
+
+      [Observation]
+      public void should_have_set_start_tome_of_the_advanced_protocol_to_changed()
+      {
+         _advancedProtocol.AllSchemas.SelectMany(x => x.SchemaItems).Each(x => x.StartTime.IsDefault.ShouldBeFalse());
+      }
+
+      [Observation]
+      public void should_have_set_the_schema_of_the_advanced_protocol_to_changed()
+      {
+         _advancedProtocol.AllSchemas.Each(x =>
+         {
+            x.NumberOfRepetitions.IsDefault.ShouldBeFalse();
+            x.StartTime.IsDefault.ShouldBeFalse();
+            x.TimeBetweenRepetitions.IsDefault.ShouldBeFalse();
+         });
       }
 
       [Observation]
