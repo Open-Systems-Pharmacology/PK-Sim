@@ -1,3 +1,4 @@
+using System;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -102,6 +103,7 @@ namespace PKSim.Core
    {
       private ParameterAlternative _result;
       private IParameter _alternativeParameter;
+      private IFormula _nanConstantFormula;
 
       protected override void Context()
       {
@@ -110,8 +112,9 @@ namespace PKSim.Core
          parameter.ValueOrigin.Id = 5;
          parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.InVitro;
          var alternative = new ParameterAlternative { parameter };
+         _nanConstantFormula=new ConstantFormula();
          A.CallTo(() => _objectBaseFactory.Create<ParameterAlternative>()).Returns(alternative);
-         A.CallTo(() => _objectBaseFactory.Create<ConstantFormula>()).Returns(new ConstantFormula());
+         A.CallTo(() => _formulaFactory.ValueFor(double.NaN, parameter.Dimension)).Returns(_nanConstantFormula);
          _compoundParameterGroup.Name = CoreConstants.Groups.COMPOUND_PERMEABILITY;
       }
 
@@ -122,10 +125,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_reset_all_the_parameter_of_the_alternative_to_a_constant_value()
+      public void should_reset_all_the_parameter_of_the_alternative_to_a_constant_value_equal_to_nan_and_with_the_dimension_of_the_parameter()
       {
-         _alternativeParameter.Formula.ShouldBeAnInstanceOf<ConstantFormula>();
-         _alternativeParameter.Value.ShouldBeEqualTo(double.NaN);
+         _alternativeParameter.Formula.ShouldBeEqualTo(_nanConstantFormula);
       }
 
       [Observation]
