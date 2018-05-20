@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -11,9 +14,6 @@ using PKSim.Presentation.DTO.Formulations;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Formulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.Charts;
 
 namespace PKSim.Presentation.Presenters.Formulations
 {
@@ -100,6 +100,7 @@ namespace PKSim.Presentation.Presenters.Formulations
          Formulation = formulation;
          _formulationDTO = _formulationDTOMapper.MapFrom(formulation);
          adjustParameterVisibility();
+
          if (Formulation.IsTable)
          {
             _view.AddParameterView(_tableFormulationPresenter.BaseView);
@@ -110,6 +111,7 @@ namespace PKSim.Presentation.Presenters.Formulations
             _formulationParametersPresenter.Edit(_formulationDTO.Parameters);
             _view.AddParameterView(_formulationParametersPresenter.View);
          }
+
          updatePlot();
          _view.BindTo(_formulationDTO);
       }
@@ -152,9 +154,9 @@ namespace PKSim.Presentation.Presenters.Formulations
          if (!Formulation.IsParticleDissolution)
             return;
 
-         var cache = new Cache<string, IParameter>(p => p.Name);
+         var cache = new Cache<string, IParameter>(p => p.Name, x => null);
          cache.AddRange(_formulationDTO.Parameters);
-         cache.Each(p => p.Visible = true);
+         cache.Each(showParticleParameter);
 
          var particleDisperseSystem = cache[CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM];
          var particleDistribution = cache[CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION];
@@ -169,7 +171,20 @@ namespace PKSim.Presentation.Presenters.Formulations
          else
             parameterToHide.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseLogNormal);
 
-         parameterToHide.Each(p => cache[p].Visible = false);
+         parameterToHide.Each(p => hideParticleParameter(cache[p]));
+      }
+
+      private void showParticleParameter(IParameter parameter) => updateParticleParameterVisibility(parameter, visible: true);
+
+      private void hideParticleParameter(IParameter parameter) => updateParticleParameterVisibility(parameter, visible: false);
+
+      private void updateParticleParameterVisibility(IParameter parameter, bool visible)
+      {
+         if (parameter == null)
+            return;
+
+         parameter.Visible = visible;
+         parameter.IsDefault = !visible;
       }
 
       private void parameterChanged(IParameter parameter)

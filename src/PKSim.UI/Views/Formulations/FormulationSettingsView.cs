@@ -56,14 +56,14 @@ namespace PKSim.UI.Views.Formulations
 
       public bool FormulationTypeVisible
       {
-         set { layoutItemFormulationType.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemFormulationType.Visibility); }
+         set => layoutItemFormulationType.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemFormulationType.Visibility);
       }
 
       public bool ChartVisible
       {
-         set { splitControl.PanelVisibility = value ? SplitPanelVisibility.Both : SplitPanelVisibility.Panel1; }
-         get { return splitControl.PanelVisibility == SplitPanelVisibility.Both; }
+         set => splitControl.PanelVisibility = value ? SplitPanelVisibility.Both : SplitPanelVisibility.Panel1;
+         get => splitControl.PanelVisibility == SplitPanelVisibility.Both;
       }
    }
 }
