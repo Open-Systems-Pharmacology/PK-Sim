@@ -5,7 +5,6 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
-using ICoreFormulaFactory = OSPSuite.Core.Domain.Formulas.IFormulaFactory;
 
 namespace PKSim.Core.Model
 {
