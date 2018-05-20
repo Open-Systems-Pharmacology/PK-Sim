@@ -5,6 +5,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using ICoreFormulaFactory = OSPSuite.Core.Domain.Formulas.IFormulaFactory;
 
 namespace PKSim.Core.Model
 {
@@ -33,7 +34,8 @@ namespace PKSim.Core.Model
          ICloner cloner,
          ISpeciesRepository speciesRepository, 
          ICoreUserSettings userSettings, 
-         IFormulaFactory formulaFactory)
+         IFormulaFactory formulaFactory
+         )
       {
          _objectBaseFactory = objectBaseFactory;
          _cloner = cloner;
@@ -57,7 +59,7 @@ namespace PKSim.Core.Model
       {
          parameter.IsDefault = false;
          parameter.ValueOrigin.UpdateFrom(new ValueOrigin(), updateId:true);
-         parameter.Formula = _objectBaseFactory.Create<ConstantFormula>().WithValue(double.NaN);
+         parameter.Formula = _formulaFactory.ValueFor(double.NaN, parameter.Dimension);
       }
 
       public ParameterAlternative CreateTableAlternativeFor(ParameterAlternativeGroup compoundParameterGroup, string tableParameterName)
