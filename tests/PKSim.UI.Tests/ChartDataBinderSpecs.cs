@@ -1,14 +1,18 @@
-﻿using FakeItEasy;
+﻿using DevExpress.Utils;
+using FakeItEasy;
+using NUnit.Framework;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.UI.Binders;
 using PKSim.UI.Views.PopulationAnalyses;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.UI.Services;
+using PKSim.Core.Chart;
+using PKSim.Presentation.Presenters.PopulationAnalyses;
 
 namespace PKSim.UI.Tests
 {
-   public abstract class concern_for_ChartDataBinder : ContextSpecification<BoxWhiskerChartDataBinder>
+   public abstract class concern_for_ChartDataBinder : ContextSpecification<IChartsDataBinder<BoxWhiskerXValue, BoxWhiskerYValue>>
    {
       protected BoxWhiskerChartView _view;
       private IImageListRetriever _imageListRetriever;
@@ -18,8 +22,9 @@ namespace PKSim.UI.Tests
       {
          _imageListRetriever = A.Fake<IImageListRetriever>();
          _toolTipCreator = A.Fake<IToolTipCreator>();
+         A.CallTo(() => _imageListRetriever.AllImages16x16).Returns(new ImageCollection());
          _view = new BoxWhiskerChartView(_imageListRetriever, _toolTipCreator);
-         sut = new BoxWhiskerChartDataBinder(_view);
+         sut = _view.ChartsDataBinder;
       }
    }
 
@@ -30,7 +35,7 @@ namespace PKSim.UI.Tests
          sut.Bind(null, new TimeProfileAnalysisChart());
       }
 
-      [Observation]
+      [Test]
       public void should_clear_the_series()
       {
          _view.Chart.Series.Count.ShouldBeEqualTo(0);
