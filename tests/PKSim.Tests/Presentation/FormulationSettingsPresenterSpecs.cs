@@ -287,21 +287,13 @@ namespace PKSim.Presentation
    {
       private Formulation _formulation;
       private FormulationDTO _formulationDTO;
-      private List<IParameter> _parameters;
-      private IParameter _particleSizeDistribution;
       private IParameter _particleDisperseSystem;
 
       protected override void Context()
       {
          base.Context();
-         _particleSizeDistribution = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL, visible: true, isDefault: false).WithName(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
          _particleDisperseSystem = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.MONODISPERSE).WithName(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM);
-         _parameters = new List<IParameter>
-         {
-            _particleDisperseSystem,
-            _particleSizeDistribution
-         };
-         _formulationDTO = new FormulationDTO(_parameters);
+         _formulationDTO = new FormulationDTO(new List<IParameter>());
 
          _formulation = A.Fake<Formulation>();
          A.CallTo(() => _formulation.IsParticleDissolution).Returns(true);
@@ -319,8 +311,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_set_the_visibility_of_monodisperse_parameter_to_false_and_the_default_state_to_true()
       {
-         _particleSizeDistribution.Visible.ShouldBeFalse();
-         _particleSizeDistribution.IsDefault.ShouldBeTrue();
+         A.CallTo(() => _formulation.UpdateParticleParametersVisibility()).MustHaveHappened();
       }
    }
 
@@ -328,27 +319,16 @@ namespace PKSim.Presentation
    {
       private Formulation _formulation;
       private FormulationDTO _formulationDTO;
-      private List<IParameter> _parameters;
       private IParameter _particleSizeDistribution;
-      private IParameter _particleDisperseSystem;
-      private IParameter _particleRadiusMean;
 
       protected override void Context()
       {
          base.Context();
          _particleSizeDistribution = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL).WithName(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
-         _particleDisperseSystem = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.POLYDISPERSE).WithName(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM);
-         _particleRadiusMean = DomainHelperForSpecs.ConstantParameterWithValue(0, visible: true, isDefault: false).WithName(CoreConstants.Parameters.PARTICLE_RADIUS_MEAN);
-         _parameters = new List<IParameter>
-         {
-            _particleDisperseSystem,
-            _particleSizeDistribution,
-            _particleRadiusMean
-         };
-         _formulationDTO = new FormulationDTO(_parameters);
+     
+         _formulationDTO = new FormulationDTO(new List<IParameter>());
 
          _formulation = A.Fake<Formulation>();
-         A.CallTo(() => _formulation.IsParticleDissolution).Returns(true);
          A.CallTo(() => _formulationDTOMapper.MapFrom(_formulation)).Returns(_formulationDTO);
 
 
@@ -363,8 +343,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_set_the_visibility_of_monodisperse_parameter_to_false_and_the_default_state_to_true()
       {
-         _particleRadiusMean.Visible.ShouldBeFalse();
-         _particleRadiusMean.IsDefault.ShouldBeTrue();
+         A.CallTo(() => _formulation.UpdateParticleParametersVisibility()).MustHaveHappened();
       }
    }
 }
