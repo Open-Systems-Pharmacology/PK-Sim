@@ -69,7 +69,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.BP_AGP)));
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.BP_ALBUMIN)));
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.BP_UNKNOWN)));
-         compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.CalculatedSpecificIntestinalPermeability)));
 
          var oldKdFCRn = compound.Parameter("Kd (FcRn)");
          oldKdFCRn.Name = ConverterConstants.Parameter.Kd_FcRn_Endo;

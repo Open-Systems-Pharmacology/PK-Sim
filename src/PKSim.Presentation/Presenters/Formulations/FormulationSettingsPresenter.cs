@@ -4,8 +4,6 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Charts;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -151,40 +149,7 @@ namespace PKSim.Presentation.Presenters.Formulations
 
       private void adjustParameterVisibility()
       {
-         if (!Formulation.IsParticleDissolution)
-            return;
-
-         var cache = new Cache<string, IParameter>(p => p.Name, x => null);
-         cache.AddRange(_formulationDTO.Parameters);
-         cache.Each(showParticleParameter);
-
-         var particleDisperseSystem = cache[CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM];
-         var particleDistribution = cache[CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION];
-         var parameterToHide = new List<string>();
-
-         if (particleDisperseSystem.Value == CoreConstants.Parameters.MONODISPERSE)
-            parameterToHide.AddRange(CoreConstants.Parameters.HiddenParameterForMonodisperse);
-
-         else if (particleDistribution.Value == CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
-            parameterToHide.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseNormal);
-
-         else
-            parameterToHide.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseLogNormal);
-
-         parameterToHide.Each(p => hideParticleParameter(cache[p]));
-      }
-
-      private void showParticleParameter(IParameter parameter) => updateParticleParameterVisibility(parameter, visible: true);
-
-      private void hideParticleParameter(IParameter parameter) => updateParticleParameterVisibility(parameter, visible: false);
-
-      private void updateParticleParameterVisibility(IParameter parameter, bool visible)
-      {
-         if (parameter == null)
-            return;
-
-         parameter.Visible = visible;
-         parameter.IsDefault = !visible;
+         Formulation.UpdateParticleParametersVisibility();
       }
 
       private void parameterChanged(IParameter parameter)

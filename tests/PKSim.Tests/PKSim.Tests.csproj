@@ -247,6 +247,7 @@
     <Compile Include="Core\ExpressionContainerMapperSpecs.cs" />
     <Compile Include="Core\ExtendedPropertyMapperSpecs.cs" />
     <Compile Include="Core\FormulationMapperSpecs.cs" />
+    <Compile Include="Core\FormulationSpecs.cs" />
     <Compile Include="Core\GroupingDefinitionMapperSpecs.cs" />
     <Compile Include="Core\IdentificationParameterMapperSpecs.cs" />
     <Compile Include="Core\IndividualExtractionOptionsSpecs.cs" />

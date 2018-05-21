@@ -90,11 +90,8 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string SITT_factor = "Small intestinal transit time factor";
          public static readonly string SITT_factor_intercept = "Small intestinal transit time factor intercept";
          public static readonly string SITT_factor_slope = "Small intestinal transit time factor slope";
-         public static readonly string k_Liquid_trans = "Transcellular absorption sink condition";
-         public static readonly string k_Liquid_para = "Paracellular absorption sink condition";
          public static readonly string P_endothelial = "P (plasma<->interstitial)";
          public static readonly string CLspec = "Specific clearance";
-         public static readonly string CLspecPerEnzyme = "CLspec/[Enzyme]";
          public static readonly string ParticleRadiusDissolved = "Immediately dissolve particles smaller than";
          public static readonly string VolumeVascularEndothelium = "Volume (endothelium)";
          public static readonly string GFRspec = "GFR (specific)";
@@ -122,7 +119,6 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string BP_ALBUMIN = "BP_ALBUMIN";
          public static readonly string BP_UNKNOWN = "BP_UNKNOWN";
          public static readonly string FractionUnboundPlasma = "Fraction unbound (plasma)";
-         public static readonly string CalculatedSpecificIntestinalPermeability = "Calculated specific intestinal permeability (transcellular)";
          public static readonly string GET_Alpha_variability_factor = "GET_alpha (Weibull function) variability factor";
          public static readonly string GET_Beta_variability_factor = "GET_beta (Weibull function) variability factor";
          public static readonly string Lipophilicity = "Lipophilicity";
@@ -132,42 +128,28 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string Gallbladder_emptying_active = "Gallbladder emptying active";
          public static readonly string EffectiveSurfaceAreaVariabilityFactor = "Effective surface area variability factor";
          public static readonly string EffectiveSurfaceArea = "Effective surface area";
-         public static readonly string GeometricSurfaceArea = "Geometric surface area";
          public static readonly string RenalAgingScaleFactor = "Renal aging scaling factor";
          public static readonly string RESIDUAL_FRACTION = "Residual fraction";
          public static readonly string ScalingExponentForFluidRecircFlowRate = "Scaling exponent for fluid recirculation flow rate";
 
-         public static IList<string> AllCompoundGlobalParameters
+         public static IList<string> AllCompoundGlobalParameters => new List<string>
          {
-            get
-            {
-               return new List<string>
-               {
-                  BloodPlasmaConcentrationRatio,
-                  PartitionCoefficientWwaterProtein,
-                  CoreConstants.Parameters.USE_PENALTY_FACTOR,
-               };
-            }
-         }
+            BloodPlasmaConcentrationRatio,
+            PartitionCoefficientWwaterProtein,
+            CoreConstants.Parameters.USE_PENALTY_FACTOR,
+         };
 
-         public static IList<string> DistributedParametersWithOnlyOneSupportingPoint
+         public static IList<string> DistributedParametersWithOnlyOneSupportingPoint => new List<string>
          {
-            get
-            {
-               return new List<string>
-               {
-                  Hill,
-                  TM50,
-                  GFRmat,
-                  GET_Alpha_Variability,
-                  GET_Beta_Variability,
-                  GastricEmptyingTime,
-                  SITT,
-                  EffectiveSurfaceAreaVariabilityFactor
-               };
-            }
-         }
-
+            Hill,
+            TM50,
+            GFRmat,
+            GET_Alpha_Variability,
+            GET_Beta_Variability,
+            GastricEmptyingTime,
+            SITT,
+            EffectiveSurfaceAreaVariabilityFactor
+         };
       }
 
       public static class ContainerName

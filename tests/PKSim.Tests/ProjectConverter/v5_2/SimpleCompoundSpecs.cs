@@ -61,13 +61,7 @@ namespace PKSim.ProjectConverter.v5_2
          _compound.Parameter(ConverterConstants.Parameter.BP_UNKNOWN).ShouldNotBeNull();
       }
 
-      [Observation]
-      public void should_have_added_the_new_specific_parameter_for_permeability()
-      {
-         _compound.Parameter(ConverterConstants.Parameter.CalculatedSpecificIntestinalPermeability).ShouldNotBeNull();
-      }
-
-      [Observation]
+    [Observation]
       public void should_have_renamed_the_fu_parameter_to_fu_relative()
       {
          var fuGroup= _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
