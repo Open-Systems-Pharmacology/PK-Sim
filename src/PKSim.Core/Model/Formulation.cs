@@ -50,17 +50,17 @@ namespace PKSim.Core.Model
       /// <summary>
       /// Returns <c>true</c> if the formulation is particle formulation using polydisperse system otherwise <c>false</c>
       /// </summary>
-      public bool IsPolydispserse => isParticleDisperseSystem(CoreConstants.Parameters.POLYDISPERSE);
+      public bool IsPolydisperse => isParticleDisperseSystem(CoreConstants.Parameters.POLYDISPERSE);
 
       /// <summary>
       /// Returns <c>true</c> if the formulation is a poly disperse particle formulation using a normal distribution for particle size otherwise <c>false</c>
       /// </summary>
-      public bool IsPolydisperseNormal => isPolydispserseWithDistribution(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL);
+      public bool IsPolydisperseNormal => isPolydisperseWithDistribution(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL);
 
       /// <summary>
       /// Returns <c>true</c> if the formulation is a poly disperse particle formulation using a lognormal distribution for particle size otherwise <c>false</c>
       /// </summary>
-      public bool IsPolydisperseLogNormal => isPolydispserseWithDistribution(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL);
+      public bool IsPolydisperseLogNormal => isPolydisperseWithDistribution(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL);
 
       /// <summary>
       ///    add a route to the list of routes where the formula can be used
@@ -125,10 +125,8 @@ namespace PKSim.Core.Model
 
       private bool isParticleDisperseSystem(int particleDisperseSystem) => IsParticleDissolution && this.Parameter(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value == particleDisperseSystem;
 
-      private bool isPolydispserseWithDistribution(int particleSizeDistribution) => IsPolydispserse && this.Parameter(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value == particleSizeDistribution;
+      private bool isPolydisperseWithDistribution(int particleSizeDistribution) => IsPolydisperse && this.Parameter(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value == particleSizeDistribution;
 
-
-      
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);

@@ -55,7 +55,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_if_the_formulation_is_not_particle_dissolution()
       {
-         sut.IsPolydispserse.ShouldBeFalse();
+         sut.IsPolydisperse.ShouldBeFalse();
       }
 
       [Observation]
@@ -63,7 +63,7 @@ namespace PKSim.Core
       {
          sut.FormulationType = CoreConstants.Formulation.Particles;
          _particleDisperseSystem.Value = CoreConstants.Parameters.MONODISPERSE;
-         sut.IsPolydispserse.ShouldBeFalse();
+         sut.IsPolydisperse.ShouldBeFalse();
       }
 
       [Observation]
@@ -71,7 +71,7 @@ namespace PKSim.Core
       {
          sut.FormulationType = CoreConstants.Formulation.Particles;
          _particleDisperseSystem.Value = CoreConstants.Parameters.POLYDISPERSE;
-         sut.IsPolydispserse.ShouldBeTrue();
+         sut.IsPolydisperse.ShouldBeTrue();
       }
    }
 
