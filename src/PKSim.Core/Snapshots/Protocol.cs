@@ -9,7 +9,7 @@ namespace PKSim.Core.Snapshots
 
       public DosingIntervalId DosingInterval { get; set; }
       public string TargetOrgan { get; set; }
-      public string TargetCompartment { get; internal set; }
+      public string TargetCompartment { get; set; }
 
       public bool IsSimple => !string.IsNullOrEmpty(ApplicationType);
 
