@@ -51,7 +51,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Generates a new random value based on the distribution type and the defined distribution parameters
       /// </summary>
-      public double GenerateRandomValue => DistributedParameter.RandomDeviateIn(_randomGenerator);
+      private double generateRandomValue => DistributedParameter.RandomDeviateIn(_randomGenerator);
 
       /// <summary>
       ///    Returns the percentile corresponding to the generated value
@@ -66,13 +66,13 @@ namespace PKSim.Core.Model
       ///    Generates an array of random values. The dimension of the array is equal to numberOfValues
       /// </summary>
       /// <param name="numberOfValues">Number of values to generate</param>
-      public virtual IEnumerable<RandomValue> GenerateRandomValues(int numberOfValues)
+      public virtual IReadOnlyList<RandomValue> GenerateRandomValues(int numberOfValues)
       {
          ResetGenerator();
          var randomValues = new List<RandomValue>();
          for (int i = 0; i < numberOfValues; i++)
          {
-            var randomValue = new RandomValue {Value = GenerateRandomValue};
+            var randomValue = new RandomValue {Value = generateRandomValue};
             randomValue.Percentile = GetPercentileForValue(randomValue.Value);
             randomValues.Add(randomValue);
          }

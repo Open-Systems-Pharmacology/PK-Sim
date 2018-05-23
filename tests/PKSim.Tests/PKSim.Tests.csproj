@@ -226,6 +226,7 @@
     <Compile Include="Core\AddSchemaToProtocolCommandSpecs.cs" />
     <Compile Include="Core\AdvancedParameterFactorySpecs.cs" />
     <Compile Include="Core\AdvancedParameterMapperSpecs.cs" />
+    <Compile Include="Core\AdvancedParameterSpecs.cs" />
     <Compile Include="Core\AgingDataSpecs.cs" />
     <Compile Include="Core\AlternativeMapperSpecs.cs" />
     <Compile Include="Core\ApplicationDiscriminatorSpecs.cs" />

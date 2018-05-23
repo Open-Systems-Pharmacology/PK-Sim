@@ -8,9 +8,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
 using ILogger = OSPSuite.Core.Services.ILogger;
 using Parameter = PKSim.Core.Snapshots.Parameter;
@@ -26,12 +24,13 @@ namespace PKSim.Core
       protected Parameter _deviationSnapshot;
       protected IEntityPathResolver _entityPathResolver;
       protected ILogger _logger;
+      protected int _originalSeed;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _advancedParameterFactory = A.Fake<IAdvancedParameterFactory>();
-         _logger= A.Fake<ILogger>();
+         _logger = A.Fake<ILogger>();
 
          _advancedParameter = new AdvancedParameter
          {
@@ -39,6 +38,8 @@ namespace PKSim.Core
             ParameterPath = "ParameterPath",
             Name = "ParameterName"
          };
+
+         _originalSeed = _advancedParameter.Seed;
          sut = new AdvancedParameterMapper(_parameterMapper, _advancedParameterFactory, _entityPathResolver, _logger);
 
          _meanSnapshot = new Parameter
@@ -71,6 +72,7 @@ namespace PKSim.Core
       {
          _snapshot.Name.ShouldBeEqualTo(_advancedParameter.ParameterPath);
          _snapshot.DistributionType.ShouldBeEqualTo(_advancedParameter.DistributionType.Id);
+         _snapshot.Seed.ShouldBeEqualTo(_originalSeed);
       }
    }
 
@@ -147,6 +149,12 @@ namespace PKSim.Core
       public void should_return_the_expected_advanced_parameter_with_mapped_parameters()
       {
          _newAdvancedParameter.ShouldBeEqualTo(_mappedAdvancedParameter);
+      }
+
+      [Observation]
+      public void should_have_updated_the_original_seed_defined_in_the_snapshot()
+      {
+         _newAdvancedParameter.Seed.ShouldBeEqualTo(_originalSeed);
       }
 
       [Observation]
