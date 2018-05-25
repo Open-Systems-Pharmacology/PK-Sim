@@ -282,6 +282,7 @@
     <Compile Include="Presenters\Simulations\SimulationCompoundProcessSummaryCollectorPresenter.cs" />
     <Compile Include="Presenters\Snapshots\LoadFromSnapshotPresenter.cs" />
     <Compile Include="Presenters\Snapshots\LoadProjectFromSnapshotPresenter.cs" />
+    <Compile Include="Presenters\Snapshots\LoadSimulationFromSnapshotPresenter.cs" />
     <Compile Include="Presenters\UserDisplayUnitsPresenter.cs" />
     <Compile Include="Services\BuildingBlockSelectionDisplayer.cs" />
     <Compile Include="Services\DisplayNameProvider.cs" />
