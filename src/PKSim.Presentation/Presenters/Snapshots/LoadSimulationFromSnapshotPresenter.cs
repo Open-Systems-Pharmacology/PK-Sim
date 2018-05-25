@@ -51,7 +51,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       protected override async Task<IEnumerable<Simulation>> LoadModelAsync(string snapshotFile)
       {
-         var snapshots = await _snapshotTask.LoadSnapshot<PKSim.Core.Snapshots.Simulation>();
+         var snapshots = await _snapshotTask.LoadSnapshot<PKSim.Core.Snapshots.Simulation>(snapshotFile);
          var tasks = snapshots.Select(x => _simulationMapper.MapToModel(x, _projectRetriever.Current));
          return await Task.WhenAll(tasks);
       }
