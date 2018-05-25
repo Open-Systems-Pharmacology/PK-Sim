@@ -1,5 +1,4 @@
-﻿using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.MenuAndBars;
+﻿using OSPSuite.Presentation.MenuAndBars;
 using PKSim.Core.Services;
 
 namespace PKSim.Presentation.UICommands
@@ -12,9 +11,10 @@ namespace PKSim.Presentation.UICommands
       {
          _observedDataTask = observedDataTask;
       }
-      public async void Execute()
+
+      public void Execute()
       {
-         await _observedDataTask.SecureAwait(x => x.LoadFromSnapshot());
+         _observedDataTask.LoadFromSnapshot();
       }
    }
 }

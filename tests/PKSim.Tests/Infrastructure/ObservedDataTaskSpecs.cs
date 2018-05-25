@@ -18,6 +18,7 @@ using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Extensions;
 using PKSim.Infrastructure.Services;
+using PKSim.Presentation.Presenters.Snapshots;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using ObservedDataTask = PKSim.Infrastructure.Services.ObservedDataTask;
 
@@ -27,7 +28,7 @@ namespace PKSim.Infrastructure
    {
       protected IExecutionContext _executionContext;
       protected IDialogCreator _dialogCreator;
-      private IApplicationController _applicationController;
+      protected IApplicationController _applicationController;
       protected IObservedDataInSimulationManager _observedDataInSimulationManager;
       private IDataRepositoryTask _dataRepositoryTask;
       protected IContainerTask _containerTask;
@@ -67,12 +68,14 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          _mappedObservedData = new DataRepository();
-         A.CallTo(() => _snapshotTask.LoadModelFromSnapshot<DataRepository>()).Returns(new[] {_mappedObservedData});
+         var loadFromSnapshotPresenter= A.Fake<ILoadFromSnapshotPresenter<DataRepository>>();
+         A.CallTo(() => _applicationController.Start<ILoadFromSnapshotPresenter<DataRepository>>()).Returns(loadFromSnapshotPresenter);
+         A.CallTo(() => loadFromSnapshotPresenter.LoadModelFromSnapshot()).Returns(new[] {_mappedObservedData});
       }
 
-      protected override async void Because()
+      protected override void Because()
       {
-         await sut.LoadFromSnapshot();
+         sut.LoadFromSnapshot();
       }
 
       [Observation]

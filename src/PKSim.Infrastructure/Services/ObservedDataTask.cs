@@ -1,23 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Presenters;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
-using OSPSuite.Core.Commands;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
+using PKSim.Presentation.Presenters;
+using PKSim.Presentation.Presenters.Snapshots;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure.Services
@@ -31,7 +31,7 @@ namespace PKSim.Infrastructure.Services
       private readonly IObservedDataPersistor _observedDataPersistor;
       private readonly ISnapshotTask _snapshotTask;
 
-      public ObservedDataTask(IPKSimProjectRetriever projectRetriever, IExecutionContext executionContext, IDialogCreator dialogCreator, IApplicationController applicationController,IDataRepositoryTask dataRepositoryTask,
+      public ObservedDataTask(IPKSimProjectRetriever projectRetriever, IExecutionContext executionContext, IDialogCreator dialogCreator, IApplicationController applicationController, IDataRepositoryTask dataRepositoryTask,
          ITemplateTask templateTask, IContainerTask containerTask, IObservedDataPersistor observedDataPersistor, IObjectTypeResolver objectTypeResolver, ISnapshotTask snapshotTask) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _projectRetriever = projectRetriever;
@@ -66,10 +66,13 @@ namespace PKSim.Infrastructure.Services
          _observedDataPersistor.Save(observedData, file);
       }
 
-      public async Task LoadFromSnapshot()
+      public void LoadFromSnapshot()
       {
-         var observedData = await _snapshotTask.LoadModelFromSnapshot<DataRepository>();
-         observedData.Each(AddObservedDataToProject);
+         using (var presenter = _applicationController.Start<ILoadFromSnapshotPresenter<DataRepository>>())
+         {
+            var observedData = presenter.LoadModelFromSnapshot();
+            observedData.Each(AddObservedDataToProject);
+         }
       }
 
       public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable)
@@ -120,10 +123,10 @@ namespace PKSim.Infrastructure.Services
          var simulation = usedObservedData.Simulation;
 
          return from parameterIdentification in allParameterIdentifications()
-                let outputMappings = parameterIdentification.AllOutputMappingsFor(simulation)
-                where outputMappings.Any(x => x.UsesObservedData(observedData))
-                select parameterIdentification;
-      }   
+            let outputMappings = parameterIdentification.AllOutputMappingsFor(simulation)
+            where outputMappings.Any(x => x.UsesObservedData(observedData))
+            select parameterIdentification;
+      }
 
       private IReadOnlyCollection<ParameterIdentification> allParameterIdentifications()
       {
