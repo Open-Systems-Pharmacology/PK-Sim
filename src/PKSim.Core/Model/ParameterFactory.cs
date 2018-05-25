@@ -224,6 +224,7 @@ namespace PKSim.Core.Model
          parameter.Info.Visible = false;
          parameter.Formula = _formulaFactory.ConcentrationFormulaFor(formulaCache);
          parameter.Dimension = _dimensionRepository.MolarConcentration;
+         parameter.DisplayUnit = _displayUnitRetriever.PreferredUnitFor(parameter);
          return parameter;
       }
 
