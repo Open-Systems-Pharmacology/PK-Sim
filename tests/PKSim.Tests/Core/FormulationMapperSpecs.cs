@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -8,6 +7,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
+using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
@@ -51,9 +51,9 @@ namespace PKSim.Core
          _formulation.Add(_parameter2);
          _formulation.Add(_hiddenParameter);
 
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(new Snapshots.Parameter().WithName(_parameter1.Name));
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter2)).Returns(new Snapshots.Parameter().WithName(_parameter2.Name));
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_hiddenParameter)).Returns(new Snapshots.Parameter().WithName(_hiddenParameter.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(new Parameter().WithName(_parameter1.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter2)).Returns(new Parameter().WithName(_parameter2.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_hiddenParameter)).Returns(new Parameter().WithName(_hiddenParameter.Name));
 
          return Task.FromResult(true);
       }
@@ -91,11 +91,14 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_formulation);
-         A.CallTo(() => _formulationRepository.FormulationBy(_snapshot.FormulationType)).Returns(_formulation);
-         A.CallTo(() => _cloner.Clone(_formulation)).Returns(_formulation);
+         var newFormulation = A.Fake<Formulation>();
+         A.CallTo(() => _formulationRepository.FormulationBy(_snapshot.FormulationType)).Returns(newFormulation);
+         A.CallTo(() => _cloner.Clone(newFormulation)).Returns(newFormulation);
 
          _snapshot.Name = "New Formulation";
          _snapshot.Description = "The description that will be deserialized";
+
+         _parameter1.Visible = false;
       }
 
       protected override async Task Because()
@@ -111,9 +114,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_updated_all_visible_parameters()
+      public void should_have_updated_all_parameters()
       {
          A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newFormulation, _newFormulation.Name)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_have_updated_parameter_visibility()
+      {
+         A.CallTo(() => _newFormulation.UpdateParticleParametersVisibility()).MustHaveHappened();
       }
    }
 }

@@ -31,6 +31,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var formulation = _cloner.Clone(template);
          MapSnapshotPropertiesToModel(snapshotFormulation, formulation);
          await UpdateParametersFromSnapshot(snapshotFormulation, formulation);
+         formulation.UpdateParticleParametersVisibility();
          return formulation;
       }
    }
