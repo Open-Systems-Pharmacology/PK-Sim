@@ -33,7 +33,7 @@ namespace PKSim.Core.Snapshots.Services
 
       Task<IEnumerable<T>> LoadModelFromSnapshot<T>() where T : class, IObjectBase;
 
-      Task<IEnumerable<T>> LoadSnapshot<T>() where T : IWithName;
+      Task<IEnumerable<T>> LoadSnapshot<T>(string fileName) where T : IWithName;
 
       Task<IEnumerable<T>> LoadModelFromSnapshot<T>(string fileName) where T : class, IObjectBase;
 
@@ -107,9 +107,8 @@ namespace PKSim.Core.Snapshots.Services
          return _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);
       }
 
-      public async Task<IEnumerable<T>> LoadSnapshot<T>() where T : IWithName
+      public async Task<IEnumerable<T>> LoadSnapshot<T>(string fileName) where T : IWithName
       {
-         var fileName = fileNameForSnapshotImport<T>();
          var snapshots = await loadSnapshot(fileName, typeof(T));
          return snapshots.OfType<T>();
       }
