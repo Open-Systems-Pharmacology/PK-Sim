@@ -27,7 +27,7 @@ namespace PKSim.Core.Services
       ///    Starts the load from template workflows allowing the user to select one template for the given
       ///    <paramref name="templateType" />
       /// </summary>
-      /// <returns>Returns the selected template or an emoty list if the action was cancelled by the user</returns>
+      /// <returns>Returns the selected template or an empty list if the action was cancelled by the user</returns>
       IReadOnlyList<T> LoadFromTemplate<T>(TemplateType templateType) where T : class;
    }
 }
