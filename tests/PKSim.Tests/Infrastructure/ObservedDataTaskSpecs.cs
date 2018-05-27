@@ -142,7 +142,7 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          _newObservedData = new DataRepository("toto");
-         A.CallTo(_templateTask).WithReturnType<DataRepository>().Returns(_newObservedData);
+         A.CallTo(_templateTask).WithReturnType<IReadOnlyList<DataRepository>>().Returns(new []{_newObservedData });
          A.CallTo(() => _containerTask.CreateUniqueName(_project.AllObservedData, _newObservedData.Name, true)).Returns("TOTO");
          A.CallTo(() => _executionContext.AddToHistory(A<ICommand>._))
             .Invokes(x => _command = x.GetArgument<ICommand>(0));

@@ -57,7 +57,7 @@ namespace PKSim.Presentation.Services
 
       public void LoadPopulationAnalysisWorkflowInto(IPopulationDataCollector populationDataCollector)
       {
-         var populationAnalysisWorkflow = _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow);
+         var populationAnalysisWorkflow = _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow).FirstOrDefault();
          if (populationAnalysisWorkflow == null)
             return;
 
@@ -80,7 +80,7 @@ namespace PKSim.Presentation.Services
 
       public PopulationAnalysisDerivedField LoadDerivedFieldFor(PopulationAnalysis populationAnalysis, PopulationAnalysisDataField populationAnalysisDataField)
       {
-         var field = _templateTask.LoadFromTemplate<PopulationAnalysisDerivedField>(TemplateType.PopulationAnalysisField);
+         var field = _templateTask.LoadFromTemplate<PopulationAnalysisDerivedField>(TemplateType.PopulationAnalysisField).FirstOrDefault();
          if (field == null)
             return null;
 
@@ -131,7 +131,7 @@ namespace PKSim.Presentation.Services
       public TPopulationAnalysis LoadPopulationAnalysisFor<TPopulationAnalysis>(IPopulationDataCollector populationDataCollector) where TPopulationAnalysis : PopulationAnalysis, new()
       {
          //first load the template as basic population analysis.
-         var populationAnalysis = _templateTask.LoadFromTemplate<PopulationAnalysis>(TemplateType.PopulationAnalysis);
+         var populationAnalysis = _templateTask.LoadFromTemplate<PopulationAnalysis>(TemplateType.PopulationAnalysis).FirstOrDefault();
          if (populationAnalysis == null)
             return null;
 

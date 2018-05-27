@@ -155,10 +155,8 @@ namespace PKSim.Infrastructure.Services
 
       public void LoadObservedDataFromTemplate()
       {
-         var observedData = _templateTask.LoadFromTemplate<DataRepository>(TemplateType.ObservedData);
-         if (observedData == null) return;
-
-         AddObservedDataToProject(observedData);
+         var observedDataList = _templateTask.LoadFromTemplate<DataRepository>(TemplateType.ObservedData);
+         observedDataList.Each(AddObservedDataToProject);
       }
    }
 }

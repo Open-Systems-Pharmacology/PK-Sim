@@ -78,7 +78,7 @@ namespace PKSim.Presentation
          base.Context();
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
          _templatePopulationAnalysis = new PopulationPivotAnalysis();
-         A.CallTo(_templateTask).WithReturnType<PopulationAnalysis>().Returns(_templatePopulationAnalysis);
+         A.CallTo(_templateTask).WithReturnType<IReadOnlyList<PopulationAnalysis>>().Returns(new[] { _templatePopulationAnalysis });
       }
 
       protected override void Because()
@@ -109,7 +109,7 @@ namespace PKSim.Presentation
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
          _templatePopulationAnalysis = A.Fake<PopulationAnalysis>();
          A.CallTo(() => _templatePopulationAnalysis.AllFields).Returns(new[] {_field1, _field2});
-         A.CallTo(_templateTask).WithReturnType<PopulationAnalysis>().Returns(_templatePopulationAnalysis);
+         A.CallTo(_templateTask).WithReturnType<IReadOnlyList<PopulationAnalysis>>().Returns(new[] { _templatePopulationAnalysis });
       }
 
       protected override void Because()
@@ -140,7 +140,7 @@ namespace PKSim.Presentation
          _quantity2 = A.Fake<IQuantity>();
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
          _templatePopulationAnalysis = A.Fake<PopulationAnalysis>();
-         A.CallTo(_templateTask).WithReturnType<PopulationAnalysis>().Returns(_templatePopulationAnalysis);
+         A.CallTo(_templateTask).WithReturnType<IReadOnlyList<PopulationAnalysis>>().Returns(new[] { _templatePopulationAnalysis });
          _pathCacheQuantity = new PathCacheForSpecs<IQuantity> { { "Path1", _quantity1 }, { "Path2", _quantity2 } };
 
          A.CallTo(() => _entitiesInContainerRetriever.OutputsFrom(_populationDataCollector)).Returns(_pathCacheQuantity);
@@ -183,7 +183,7 @@ namespace PKSim.Presentation
 
          _cache = new PathCacheForSpecs<IParameter> {{"P1", new PKSimParameter()}};
 
-         A.CallTo(_templateTask).WithReturnType<PopulationAnalysis>().Returns(_templatePopulationAnalysis);
+         A.CallTo(_templateTask).WithReturnType<IReadOnlyList<PopulationAnalysis>>().Returns(new[] { _templatePopulationAnalysis });
 
          A.CallTo(() => _entitiesInContainerRetriever.ParametersFrom(_populationDataCollector)).Returns(_cache);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
@@ -227,7 +227,7 @@ namespace PKSim.Presentation
          _templatePopulationAnalysis.Add(_covariateFound);
          _templatePopulationAnalysis.Add(_covariateNotFound);
 
-         A.CallTo(_templateTask).WithReturnType<PopulationAnalysis>().Returns(_templatePopulationAnalysis);
+         A.CallTo(_templateTask).WithReturnType<IReadOnlyList<PopulationAnalysis>>().Returns(new[] { _templatePopulationAnalysis });
 
          A.CallTo(() => _populationDataCollector.AllCovariateNames).Returns(new List<string> {_covariateFound.Covariate});
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
@@ -286,7 +286,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _populationDataCollector.HasPKParameterFor("P2", "AUC")).Returns(false);
          A.CallTo(() => _populationDataCollector.HasPKParameterFor("P3", "AUC")).Returns(false);
 
-         A.CallTo(_templateTask).WithReturnType<PopulationAnalysis>().Returns(_templatePopulationAnalysis);
+         A.CallTo(_templateTask).WithReturnType<IReadOnlyList<PopulationAnalysis>>().Returns(new []{_templatePopulationAnalysis });
 
          A.CallTo(() => _entitiesInContainerRetriever.OutputsFrom(_populationDataCollector)).Returns(_cache);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
@@ -327,7 +327,7 @@ namespace PKSim.Presentation
          _dataField = A.Fake<PopulationAnalysisDataField>().WithName("DATA");
          _derivedField = A.Fake<PopulationAnalysisDerivedField>().WithName("DERIVED");
 
-         A.CallTo(_templateTask).WithReturnType<PopulationAnalysisDerivedField>().Returns(_derivedField);
+         A.CallTo(_templateTask).WithReturnType<IReadOnlyList<PopulationAnalysisDerivedField>>().Returns(new []{_derivedField });
          _populationAnalysis.Add(_dataField);
       }
    }
@@ -385,7 +385,7 @@ namespace PKSim.Presentation
          _derivedField = groupingField;
          A.CallTo(() => _derivedField.CanBeUsedFor(_dataField.DataType)).Returns(true);
          A.CallTo(() => groupingField.ReferencedFieldName).Returns("ANOTHER NAME");
-         A.CallTo(_templateTask).WithReturnType<PopulationAnalysisDerivedField>().Returns(_derivedField);
+         A.CallTo(_templateTask).WithReturnType<IReadOnlyList<PopulationAnalysisDerivedField>>().Returns(new[]{ _derivedField });
       }
 
       [Observation]
@@ -421,7 +421,7 @@ namespace PKSim.Presentation
          base.Context();
          _populationSimulation = new PopulationSimulation();
 
-         A.CallTo(() => _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow)).Returns(null);
+         A.CallTo(() => _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow)).Returns(new List<SimulationAnalysisWorkflow>());
       }
 
       protected override void Because()
@@ -452,7 +452,7 @@ namespace PKSim.Presentation
          _workflow.Add(_analysis1);
          _workflow.Add(_analysis2);
          _populationSimulation = A.Fake<PopulationSimulation>();
-         A.CallTo(() => _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow)).Returns(_workflow);
+         A.CallTo(() => _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow)).Returns(new[]{ _workflow });
       }
 
       protected override void Because()
