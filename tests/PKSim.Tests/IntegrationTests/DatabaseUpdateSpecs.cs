@@ -638,6 +638,12 @@ namespace PKSim.IntegrationTests
 
          agpOntogenies[0].PostmenstrualAge.ShouldBeEqualTo(0.76, 1e-2);
          agpOntogenies[agpOntogenies.Length-1].PostmenstrualAge.ShouldBeEqualTo(90.45, 1e-2);
+
+         foreach (var agpOntogeny in agpOntogenies)
+         {
+            agpOntogeny.Deviation.ShouldBeGreaterThan(1.44);
+            agpOntogeny.Deviation.ShouldBeSmallerThan(1.89);
+         }
       }
    }
 }
