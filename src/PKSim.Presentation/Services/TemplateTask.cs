@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -50,11 +51,11 @@ namespace PKSim.Presentation.Services
          SaveToTemplate(objectToSave, templateType, objectToSave.Name);
       }
 
-      public T LoadFromTemplate<T>(TemplateType templateType) where T : class
+      public IReadOnlyList<T> LoadFromTemplate<T>(TemplateType templateType) where T : class
       {
          using (var presenter = _applicationController.Start<ITemplatePresenter>())
          {
-            return presenter.LoadFromTemplate<T>(templateType).FirstOrDefault();
+            return presenter.LoadFromTemplate<T>(templateType);
          }
       }
    }

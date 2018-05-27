@@ -1,4 +1,5 @@
-﻿using PKSim.Core.Model;
+﻿using System.Collections.Generic;
+using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Services
@@ -26,7 +27,7 @@ namespace PKSim.Core.Services
       ///    Starts the load from template workflows allowing the user to select one template for the given
       ///    <paramref name="templateType" />
       /// </summary>
-      /// <returns>Returns the selected template or null if the action was cancelled by the user</returns>
-      T LoadFromTemplate<T>(TemplateType templateType) where T : class;
+      /// <returns>Returns the selected template or an empty list if the action was cancelled by the user</returns>
+      IReadOnlyList<T> LoadFromTemplate<T>(TemplateType templateType) where T : class;
    }
 }

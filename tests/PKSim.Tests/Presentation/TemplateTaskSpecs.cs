@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
@@ -47,7 +48,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _field = sut.LoadFromTemplate<IPopulationAnalysisField>(TemplateType.PopulationAnalysisField);
+         _field = sut.LoadFromTemplate<IPopulationAnalysisField>(TemplateType.PopulationAnalysisField).FirstOrDefault();
       }
 
       [Observation]
