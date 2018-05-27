@@ -4,6 +4,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
@@ -12,6 +13,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Services;
+using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistableUpdater;
 
 namespace PKSim.Presentation
 {
@@ -31,12 +33,14 @@ namespace PKSim.Presentation
       private Species _human;
       protected Species _rat;
       protected Species _mouse;
+      protected ISimulationPersistableUpdater _simulationPersistableUpdater;
 
       protected override void Context()
       {
          _populationSimulationSettingsPresenter = A.Fake<IPopulationSimulationSettingsPresenter>();
          _applicationController = A.Fake<IApplicationController>();
          _projectRetriever = A.Fake<IPKSimProjectRetriever>();
+         _simulationPersistableUpdater= A.Fake<ISimulationPersistableUpdater>();
          _project = A.Fake<PKSimProject>();
          _compound1 = A.Fake<Compound>();
          _individual = A.Fake<Individual>();
@@ -76,7 +80,7 @@ namespace PKSim.Presentation
 
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
          A.CallTo(() => _applicationController.Start<ISimulationOutputSelectionPresenter<PopulationSimulation>>()).Returns(_populationSimulationSettingsPresenter);
-         sut = new SimulationSettingsRetriever(_applicationController, _projectRetriever, _entityPathResolver, _keyPathMapper, _userSettings);
+         sut = new SimulationSettingsRetriever(_applicationController, _projectRetriever, _entityPathResolver, _keyPathMapper, _userSettings, _simulationPersistableUpdater);
 
          A.CallTo(() => _entityPathResolver.PathFor(periperhalVenousBloodObserver)).Returns("PERIPHERAL_OBSERVER");
          A.CallTo(() => _entityPathResolver.PathFor(venousBloodObserver)).Returns("VENOUS_BLOOD_OBSERVER");
@@ -373,6 +377,51 @@ namespace PKSim.Presentation
          _outputSelection.AllOutputs.Count().ShouldBeEqualTo(1);
          var output = _outputSelection.AllOutputs.ElementAt(0);
          output.Path.ShouldBeEqualTo("PERIPHERAL_OBSERVER");
+      }
+   }
+
+   public class When_synchronizing_the_settings_for_an_individual_simulation : concern_for_SimulationSettingsRetriever
+   {
+      private IndividualSimulation _individualSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualSimulation = A.Fake<IndividualSimulation>();
+         _individualSimulation.OutputSelections = new OutputSelections();
+      }
+
+      protected override void Because()
+      {
+         sut.SynchronizeSettingsIn(_individualSimulation);
+      }
+
+      [Observation]
+      public void should_also_update_persistable_in_the_simulation()
+      {
+         A.CallTo(() => _simulationPersistableUpdater.UpdatePersistableFromSettings(_individualSimulation)).MustHaveHappened();   
+      }
+   }
+
+   public class When_synchronizing_the_settings_for_a_population_simulation : concern_for_SimulationSettingsRetriever
+   {
+
+      protected override void Context()
+      {
+         base.Context();
+         _populationSimulation = A.Fake<PopulationSimulation>();
+         _populationSimulation.OutputSelections = new OutputSelections();
+      }
+
+      protected override void Because()
+      {
+         sut.SynchronizeSettingsIn(_populationSimulation);
+      }
+
+      [Observation]
+      public void should_also_update_persistable_in_the_simulation()
+      {
+         A.CallTo(() => _simulationPersistableUpdater.UpdatePersistableFromSettings(_populationSimulation)).MustHaveHappened();
       }
    }
 }
