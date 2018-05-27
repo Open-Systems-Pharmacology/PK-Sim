@@ -10,6 +10,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
+using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistableUpdater;
 
 namespace PKSim.Presentation.Services
 {
@@ -20,15 +21,22 @@ namespace PKSim.Presentation.Services
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly ICoreUserSettings _userSettings;
+      private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
 
-      public SimulationSettingsRetriever(IApplicationController applicationController, IPKSimProjectRetriever projectRetriever,
-         IEntityPathResolver entityPathResolver, IKeyPathMapper keyPathMapper, ICoreUserSettings userSettings)
+      public SimulationSettingsRetriever(
+         IApplicationController applicationController,
+         IPKSimProjectRetriever projectRetriever,
+         IEntityPathResolver entityPathResolver,
+         IKeyPathMapper keyPathMapper,
+         ICoreUserSettings userSettings,
+         ISimulationPersistableUpdater simulationPersistableUpdater)
       {
          _applicationController = applicationController;
          _projectRetriever = projectRetriever;
          _entityPathResolver = entityPathResolver;
          _keyPathMapper = keyPathMapper;
          _userSettings = userSettings;
+         _simulationPersistableUpdater = simulationPersistableUpdater;
       }
 
       public OutputSelections SettingsFor(Simulation simulation)
@@ -58,6 +66,20 @@ namespace PKSim.Presentation.Services
          if (simulation.OutputSelections == null) return;
          var clone = simulation.OutputSelections.Clone();
          updateSelectionFromTemplate(simulation, clone);
+         updatePersistable(simulation);
+      }
+
+      private void updatePersistable(Simulation simulation)
+      {
+         switch (simulation)
+         {
+            case IndividualSimulation individualSimulation:
+               _simulationPersistableUpdater.UpdatePersistableFromSettings(individualSimulation);
+               break;
+            case PopulationSimulation populationSimulation:
+               _simulationPersistableUpdater.UpdatePersistableFromSettings(populationSimulation);
+               break;
+         }
       }
 
       private void updateDefaultSettings(Simulation simulation)
