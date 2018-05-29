@@ -164,7 +164,7 @@ namespace PKSim.Core.Services
          //DISTRIBUTION PARAMETERS
          foreach (var distributionGroup in _parameterQuery.ParameterDistributionsFor(parameterContainer, originData, predicate).GroupBy(dist => dist.ParameterName))
          {
-            var parameter = _parameterFactory.CreateFor(distributionGroup, originData);
+            var parameter = _parameterFactory.CreateFor(distributionGroup.ToList(), originData);
 
             //Parameter might be distributed only for a few species
             if (parameterContainer.ContainsName(parameter.Name))

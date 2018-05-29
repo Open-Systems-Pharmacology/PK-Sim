@@ -15,8 +15,8 @@ namespace PKSim.Core.Model
 
       public DistributionType Distribution
       {
-         get { return DistributionTypes.ById(DistributionType); }
-         set { DistributionType = value.Id; }
+         get => DistributionTypes.ById(DistributionType);
+         set => DistributionType = value.Id;
       }
 
       public static ParameterDistributionMetaData From(ParameterDistributionMetaData source)

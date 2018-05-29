@@ -151,7 +151,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          addPercentileValues(parameterValues, allPercentiles);
       }
 
-      private double percentileFrom(IEnumerable<ParameterDistributionMetaData> allDistributionsForParameter, OriginData originData, double parameterValue)
+      private double percentileFrom(IReadOnlyList<ParameterDistributionMetaData> allDistributionsForParameter, OriginData originData, double parameterValue)
       {
          var parameter = _parameterFactory.CreateFor(allDistributionsForParameter, originData);
          parameter.Value = parameterValue;
