@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -19,11 +20,11 @@ namespace PKSim.Core
    public abstract class concern_for_ParameterFactory : ContextSpecification<IParameterFactory>
    {
       protected IPKSimObjectBaseFactory _objectBaseFactory;
-      protected IDistributionFormulaFactory _distributionFactory;
       protected IFormulaFactory _formulaFactory;
       protected IDimensionRepository _dimensionRepository;
       protected IDimension _dimension;
       protected IDisplayUnitRetriever _displayUnitRetriever;
+      protected IInterpolation _interpolation;
 
       protected override void Context()
       {
@@ -33,7 +34,8 @@ namespace PKSim.Core
          _formulaFactory = A.Fake<IFormulaFactory>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
-         sut = new ParameterFactory(_objectBaseFactory, _formulaFactory, _dimensionRepository, _displayUnitRetriever);
+         _interpolation= new LinearInterpolation();
+         sut = new ParameterFactory(_objectBaseFactory, _formulaFactory, _dimensionRepository, _displayUnitRetriever, _interpolation);
       }
    }
 
@@ -133,17 +135,23 @@ namespace PKSim.Core
       private IDistributionFormula _distributionFormula;
       private IDistributedParameter _parameter;
       private OriginData _originData;
-      private readonly IList<ParameterDistributionMetaData> _distributions = new List<ParameterDistributionMetaData>();
+      private readonly List<ParameterDistributionMetaData> _distributions = new List<ParameterDistributionMetaData>();
       private IParameter _subParameter;
+      private ValueOrigin _valueOrigin1;
+      private ValueOrigin _valueOrigin2;
 
       protected override void Context()
       {
          base.Context();
+         _valueOrigin1 = new ValueOrigin {Method = ValueOriginDeterminationMethods.Assumption};
+         _valueOrigin2 = new ValueOrigin {Method = ValueOriginDeterminationMethods.Other};
+
          _distributionFormula = A.Fake<IDistributionFormula>();
          _parameter = A.Fake<IDistributedParameter>();
          _subParameter = A.Fake<IParameter>();
-         _originData = new OriginData();
-         _distributions.Add(new ParameterDistributionMetaData {DistributionType = CoreConstants.Distribution.Normal});
+         _originData = new OriginData {Age = 40};
+         _distributions.Add(new ParameterDistributionMetaData {DistributionType = CoreConstants.Distribution.Normal, Age = 20, ValueOrigin = _valueOrigin1});
+         _distributions.Add(new ParameterDistributionMetaData {DistributionType = CoreConstants.Distribution.Normal, Age = 50, ValueOrigin = _valueOrigin2 });
          A.CallTo(() => _formulaFactory.DistributionFor(A<IEnumerable<ParameterDistributionMetaData>>._, _parameter, _originData)).Returns(_distributionFormula);
          A.CallTo(() => _objectBaseFactory.CreateDistributedParameter()).Returns(_parameter);
          A.CallTo(() => _objectBaseFactory.CreateParameter()).Returns(_subParameter);
@@ -160,6 +168,12 @@ namespace PKSim.Core
       public void should_leverage_the_entity_factory_to_create_a_new_parameter()
       {
          _result.ShouldBeEqualTo(_parameter);
+      }
+
+      [Observation]
+      public void should_leverage_the_interpolation_to_get_the_distribution_meta_data_that_is_the_closest_to_the_origin_data()
+      {
+         _result.ValueOrigin.ShouldBeEqualTo(_valueOrigin2);
       }
 
       [Observation]
