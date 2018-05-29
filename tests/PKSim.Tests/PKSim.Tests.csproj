@@ -581,6 +581,7 @@
     <Compile Include="Presentation\ParameterAlternativeNamePresenterSpecs.cs" />
     <Compile Include="Presentation\QualificationStepRunnerFactorySpecs.cs" />
     <Compile Include="Presentation\QualiticationPlanRunnerSpecs.cs" />
+    <Compile Include="Presentation\RenameSubjectUICommandSpecs.cs" />
     <Compile Include="Presentation\RunParameterIdentificationQualificationStepRunnerSpecs.cs" />
     <Compile Include="Presentation\RunSimulationQualificationStepRunnerSpecs.cs" />
     <Compile Include="Presentation\SimulationExpressionsPresenterSpecs.cs" />
