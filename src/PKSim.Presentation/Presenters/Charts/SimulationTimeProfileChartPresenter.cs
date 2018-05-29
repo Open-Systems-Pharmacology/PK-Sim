@@ -23,6 +23,7 @@ namespace PKSim.Presentation.Presenters.Charts
    public interface ISimulationTimeProfileChartPresenter : IChartPresenter<SimulationTimeProfileChart>,
       ISimulationAnalysisPresenter,
       IPKAnalysisWithChartPresenter,
+      IListener<RenamedEvent>,
       IListener<ObservedDataAddedToAnalysableEvent>,
       IListener<ObservedDataRemovedFromAnalysableEvent>,
       IListener<SimulationResultsUpdatedEvent>
@@ -30,8 +31,9 @@ namespace PKSim.Presentation.Presenters.Charts
    }
 
    public class SimulationTimeProfileChartPresenter : ChartPresenter<SimulationTimeProfileChart, ISimulationTimeProfileChartView, ISimulationTimeProfileChartPresenter>,
-      ISimulationTimeProfileChartPresenter,
-      ISimulationAnalysisPresenter<IndividualSimulation>
+      ISimulationAnalysisPresenter<IndividualSimulation>,
+      ISimulationTimeProfileChartPresenter
+    
    {
       public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdateTask) :
          base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask)
@@ -129,6 +131,14 @@ namespace PKSim.Presentation.Presenters.Charts
 
          Column(BrowserColumns.Used).Visible = true;
          Column(BrowserColumns.Used).VisibleIndex = 5;
+      }
+
+      public void Handle(RenamedEvent eventToHandle)
+      {
+         if (!Equals(eventToHandle.RenamedObject, Chart))
+            return;
+
+         ChartChanged();
       }
    }
 }
