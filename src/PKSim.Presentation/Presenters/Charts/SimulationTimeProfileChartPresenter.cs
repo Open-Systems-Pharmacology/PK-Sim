@@ -31,9 +31,9 @@ namespace PKSim.Presentation.Presenters.Charts
    }
 
    public class SimulationTimeProfileChartPresenter : ChartPresenter<SimulationTimeProfileChart, ISimulationTimeProfileChartView, ISimulationTimeProfileChartPresenter>,
-      ISimulationAnalysisPresenter<IndividualSimulation>,
-      ISimulationTimeProfileChartPresenter
-    
+      ISimulationTimeProfileChartPresenter,
+      ISimulationAnalysisPresenter<IndividualSimulation>
+
    {
       public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdateTask) :
          base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask)
