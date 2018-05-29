@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Assets;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
 using PKSim.Assets;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
 using PKSim.UI.Views.Core;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.PopulationAnalyses
 {
@@ -19,7 +19,6 @@ namespace PKSim.UI.Views.PopulationAnalyses
    {
       private IPopulationAnalysisStatisticsSelectionPresenter _presenter;
       private readonly GridViewBinder<StatisticalAggregation> _gridViewBinder;
-      private readonly RepositoryItem _editRepository;
       private readonly RepositoryItem _lineStyleRepository;
       private readonly UxRepositoryItemCheckEdit _selectionRepository;
 
@@ -28,7 +27,6 @@ namespace PKSim.UI.Views.PopulationAnalyses
          InitializeComponent();
          gridView.AllowsFiltering = false;
          _gridViewBinder = new GridViewBinder<StatisticalAggregation>(gridView);
-         _editRepository = new RepositoryItemTextEdit();
          _lineStyleRepository = new UxLineStylesComboBoxRepository(gridView, removeLineStyleNone: true);
          _selectionRepository = new UxRepositoryItemCheckEdit(gridView);
       }
@@ -56,11 +54,10 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _gridViewBinder.Changed += NotifyViewChanged;
       }
 
-      private RepositoryItem editRepository(StatisticalAggregation statisticalAggregation)
+      private RepositoryItem editRepository(StatisticalAggregation statisticalAggregation) => new RepositoryItemTextEdit
       {
-         _editRepository.NullText = _presenter.DisplayNameFor(statisticalAggregation);
-         return _editRepository;
-      }
+         NullText = _presenter.DisplayNameFor(statisticalAggregation)
+      };
 
       public void BindTo(IEnumerable<StatisticalAggregation> selection)
       {
