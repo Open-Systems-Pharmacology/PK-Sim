@@ -1,4 +1,5 @@
-﻿using OSPSuite.BDDHelper;
+﻿using System.Linq;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Repositories;
@@ -38,8 +39,9 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_default_value_origin()
       {
-         var valueOrigin = sut.FindBy(1);
-         valueOrigin.IsUndefined.ShouldBeTrue();
+         var valueOriginWhichIsSupposedToBePublication = sut.All().First(vo => vo.Description!= null && vo.Description.Contains("Thelen"));
+         var valueOriginById = sut.FindBy(valueOriginWhichIsSupposedToBePublication.Id);
+         valueOriginById.Source.Id.ShouldBeEqualTo(ValueOriginSourceId.Publication);
       }
    }
 }
