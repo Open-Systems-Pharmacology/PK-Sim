@@ -33,13 +33,13 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_return_the_expected_value_origin_repository_for_an_existing_id : concern_for_ValueOriginRepository
+   public class When_return_the_expected_value_origin_for_an_existing_id : concern_for_ValueOriginRepository
    {
       [Observation]
       public void should_return_the_default_value_origin()
       {
          var valueOrigin = sut.FindBy(1);
-         valueOrigin.Source.ShouldNotBeEqualTo(ValueOriginSources.Undefined);
+         valueOrigin.IsUndefined.ShouldBeTrue();
       }
    }
 }
