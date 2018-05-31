@@ -627,6 +627,46 @@ namespace PKSim.IntegrationTests
 
    public class When_checking_the_changes_in_the_database_for_version_7_3 : concern_for_DatabaseUpdate
    {
+      private IValueOriginRepository _valueOriginsRepository;
+      private IParameterDistributionRepository _parameterDistributionRepository;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _valueOriginsRepository = IoC.Resolve<IValueOriginRepository>();
+         _parameterDistributionRepository = IoC.Resolve<IParameterDistributionRepository>();
+      }
+
+      [Observation]
+      public void value_origins_with_nonempty_description_should_not_be_undefined()
+      {
+         foreach (var valueOrigin in _valueOriginsRepository.All().Where(vo=>!string.IsNullOrEmpty(vo.Description)))
+         {
+            (valueOrigin.Source.Id==ValueOriginSourceId.Undefined).ShouldBeFalse(valueOrigin.Description);
+         }
+      }
+
+      [Observation]
+      public void should_properly_set_some_value_origins()
+      {
+         var agesWithFilledValueOrigins = new double[] {0, 1, 5, 10, 15, 30, 40, 50, 60, 70, 80, 90, 100};
+         var icrpParams = _parameterDistributionRepository.All()
+            .Where(p => p.Population.Equals(CoreConstants.Population.ICRP))
+            .Where(p=>p.ParameterName.IsOneOf(
+               CoreConstantsForSpecs.Parameter.VOLUME,
+               CoreConstants.Parameters.BLOOD_FLOW)).ToList();
+
+         icrpParams.Count.ShouldBeGreaterThanOrEqualTo(agesWithFilledValueOrigins.Length*2*2); //2 Genders * 2 parameters per age
+
+         foreach (var param in icrpParams)
+         {
+            if(param.Age.IsOneOf(agesWithFilledValueOrigins))
+               param.ValueOrigin.IsUndefined.ShouldBeFalse();
+            else
+               param.ValueOrigin.IsUndefined.ShouldBeTrue();
+         } 
+      }
+
       [Observation]
       public void should_retrieve_new_agp_ontogeny()
       {
