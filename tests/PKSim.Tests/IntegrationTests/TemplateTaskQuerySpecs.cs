@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
@@ -12,6 +13,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using ICoreUserSettings = PKSim.Core.ICoreUserSettings;
 
 namespace PKSim.IntegrationTests
 {
@@ -61,21 +63,35 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_loading_individuals_from_system_templates : concern_for_TemplateTaskQuery
+   public class When_loading_building_blocks_from_system_templates : concern_for_TemplateTaskQuery
    {
       private IList<Individual> _individuals;
+      private IList<Compound> _compounds;
+      private IList<Formulation> _formulations;
+      private IList<Protocol> _protocols;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
 
-         var templates = sut.AllTemplatesFor(TemplateDatabaseType.System, TemplateType.Individual);
+         _individuals = loadSystemTemplates<Individual>(TemplateType.Individual);
+         _compounds = loadSystemTemplates<Compound>(TemplateType.Compound);
+         _formulations = loadSystemTemplates<Formulation>(TemplateType.Formulation);
+         _protocols = loadSystemTemplates<Protocol>(TemplateType.Protocol);
+      }
 
-         _individuals = new List<Individual>();
+      private IList<T> loadSystemTemplates<T>(TemplateType templateType)
+         where T: PKSimBuildingBlock
+      {
+         var templates = sut.AllTemplatesFor(TemplateDatabaseType.System, templateType);
+
+         IList<T> buildingBlocks = new List<T>();
          foreach (var template in templates)
          {
-            _individuals.Add(sut.LoadTemplate<Individual>(template));
+            buildingBlocks.Add(sut.LoadTemplate<T>(template));
          }
+
+         return buildingBlocks;
       }
 
       private void checkNewProteinModelStructure(Individual individual)
@@ -85,11 +101,60 @@ namespace PKSim.IntegrationTests
             .AllParameters().Count(p => p.Name.EndsWith("flow proportionality factor")).ShouldBeEqualTo(2);
       }
 
+      private void checkThatAllTemplatesAreCreatedAtLeastWithVersion(IEnumerable<PKSimBuildingBlock> buildingBlocks, ProjectVersion minVersion)
+      {
+         foreach (var buildingBlock in buildingBlocks)
+         {
+            var internalVersion = buildingBlock.Creation.InternalVersion;
+            internalVersion.HasValue.ShouldBeTrue();
+            internalVersion?.ShouldBeGreaterThanOrEqualTo(minVersion.Version);
+         }
+      }
+
       [Observation]
       public void loaded_individuals_should_have_updated_protein_model_structure()
       {
          _individuals.Count.ShouldBeGreaterThan(0);
          _individuals.Each(checkNewProteinModelStructure);
+      }
+
+      [Observation]
+      public void all_individual_templates_should_be_created_with_at_least_version_7_3()
+      {
+         checkThatAllTemplatesAreCreatedAtLeastWithVersion(_individuals, ProjectVersions.V7_3_0);
+      }
+
+      [Observation]
+      public void all_compound_templates_should_be_created_with_at_least_version_7_3()
+      {
+         checkThatAllTemplatesAreCreatedAtLeastWithVersion(_compounds, ProjectVersions.V7_3_0);
+      }
+
+      [Observation]
+      public void all_formulation_templates_should_be_created_with_at_least_version_7_3()
+      {
+         checkThatAllTemplatesAreCreatedAtLeastWithVersion(_formulations, ProjectVersions.V7_3_0);
+      }
+
+      [Observation]
+      public void all_protocol_templates_should_be_created_with_at_least_version_7_3()
+      {
+         checkThatAllTemplatesAreCreatedAtLeastWithVersion(_protocols, ProjectVersions.V7_3_0);
+      }
+
+      [Observation]
+      public void system_database_should_contain_expected_number_of_templates()
+      {
+         _individuals.Count.ShouldBeEqualTo(1);
+         _compounds.Count.ShouldBeEqualTo(14);
+         _formulations.Count.ShouldBeEqualTo(1);
+         _protocols.Count.ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void system_database_should_contain_new_templates()
+      {
+         _compounds.FindByName("Digoxin").ShouldNotBeNull();
       }
    }
 
