@@ -69,7 +69,7 @@ means either the Program or any derivative work under copyright law:
 that is to say, a work containing the Program or a portion of it, 
 either verbatim or with modifications and/or translated into another 
 language. (Hereinafter, translation is included without limitation in 
-the term “modifi-cation”.) Each licensee is addressed as “you”.
+the term “modification”.) Each licensee is addressed as “you”.
 
 Activities other than copying, distribution and modification are not 
 covered by this License; they are outside its scope. The act of 
@@ -144,7 +144,7 @@ source code, which must be distributed under the terms of Sections
 b) Accompany it with a written offer, valid for at least three 
 years, to give any third party, for a charge no more than your 
 cost of physically performing source distribution, a complete 
-ma-chine-readable copy of the corresponding source code, to be 
+machine-readable copy of the corresponding source code, to be 
 distributed under the terms of Sections 1 and 2 above on a medium
 customarily used for software interchange; or,
 
@@ -152,7 +152,7 @@ c) Accompany it with the information you received as to the offer
 to distribute corresponding source code. (This alternative is 
 allowed only for noncommercial distribution and only if you 
 received the program in object code or executable form with such 
-an offer, in accord with Sub-section b above.)
+an offer, in accord with Subsection b above.)
 
 The source code for a work means the preferred form of the work for 
 making modifications to it. For an executable work, complete source 
@@ -190,10 +190,10 @@ the Program or works based on it.
 
 6. Each time you redistribute the Program (or any work based on the 
 Program), the recipient automatically receives a license from the 
-original licensor to copy, distribute or modify the Pro-gram subject to 
+original licensor to copy, distribute or modify the Program subject to 
 these terms and conditions. You may not impose any further 
 restrictions on the recipients' exercise of the rights granted herein. 
-You are not responsible for enforcing compli-ance by third parties to 
+You are not responsible for enforcing compliance by third parties to 
 this License.
 
 7. If, as a consequence of a court judgment or allegation of patent 
@@ -237,12 +237,12 @@ countries not thus excluded. In such case, this License incorporates
 the limitation as if written in the body of this License.
 
 9. The Free Software Foundation may publish revised and/or new versions 
-of the General Pub-lic License from time to time. Such new versions will 
+of the General Public License from time to time. Such new versions will 
 be similar in spirit to the present version, but may differ in detail to 
 address new problems or concerns.
 
 Each version is given a distinguishing version number. If the Program
-specifies a version num-ber of this License which applies to it and “any 
+specifies a version number of this License which applies to it and “any 
 later version”, you have the option of following the terms and conditions 
 either of that version or of any later version published by the Free 
 Software Foundation. If the Program does not specify a version number of 
@@ -251,7 +251,7 @@ Foundation.
 
 10. If you wish to incorporate parts of the Program into other free 
 programs whose distribution conditions are different, write to the author 
-to ask for permission. For software which is copy-righted by the Free 
+to ask for permission. For software which is copyrighted by the Free 
 Software Foundation, write to the Free Software Foundation; we sometimes 
 make exceptions for this. Our decision will be guided by the two goals 
 of preserving the free status of all derivatives of our free software and 
@@ -288,7 +288,7 @@ B. CLARIFYING ADDENDUM
 The following limitation of liability applies for Germany.
 
 The liability of the copyright holder is subject to the law relating to gifts. 
-Thereunder, the copy-right holder is subject to a limitation of liability in 
+Thereunder, the copyright holder is subject to a limitation of liability in 
 accordance with Sec. 521, 523, 524, 526 of the German Civil Code (Bürgerliches 
 Gesetzbuch – BGB), with the effect that they are only liable for defects which 
 have been maliciously concealed from the user or which the copyright holder has 
@@ -320,7 +320,7 @@ liability is excluded to the widest possible extent permitted by law.
 
 The GPLv2 contains a strong copyleft clause which requires the licensing of 
 any software you distribute (“your software”) which makes use of software 
-licensed under the GPL (“GPL soft-ware”) also to be licensed under the GPL. 
+licensed under the GPL (“GPL software”) also to be licensed under the GPL. 
 If you distribute your software (i) containing any of the code of GPL software 
 within it, or (ii) linked to the GPL software, or (iii) otherwise combined with 
 GPL software, note that the copyleft effect will take effect and require the 
@@ -329,7 +329,7 @@ licensing of the program under the GPLv2.
 3. Intellectual Property Rights
 
 With the granting of usage rights under the GPLv2, it is not intended to grant 
-any other intellec-tual property rights such as rights to use trademarks or 
+any other intellectual property rights such as rights to use trademarks or 
 trade names. The GPLv2 does not mandate the granting of such rights, based on 
 our interpretation of its license conditions and of respective case law (c.f. 
 Judgment of the Düsseldorf Higher Regional Court of the 28th September 2010 – 
