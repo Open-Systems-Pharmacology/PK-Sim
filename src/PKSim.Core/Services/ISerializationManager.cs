@@ -12,7 +12,7 @@ namespace PKSim.Core.Services
    public interface ISerializationManager
    {
       byte[] Serialize<TObject>(TObject objectToSerialize);
-      TObject Deserialize<TObject>(byte[] serializationBytes, SerializationContext serializationContext=null);
+      TObject Deserialize<TObject>(byte[] serializationBytes, SerializationContext serializationContext = null);
       void Deserialize<TObject>(TObject objectToDeserialize, byte[] serializationBytes, SerializationContext serializationContext = null);
    }
 }

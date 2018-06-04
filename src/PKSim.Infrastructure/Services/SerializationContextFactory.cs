@@ -1,21 +1,27 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Services;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Infrastructure.Services
 {
    public interface ISerializationContextFactory
    {
-      SerializationContext Create(IEnumerable<DataRepository> dataRepositories = null, IEnumerable<IWithId> externalReferences = null);
+      /// <summary>
+      /// Returns a new <see cref="SerializationContext"/> to be used in serialization or deserialization
+      /// </summary>
+      /// <param name="dataRepositories">Optional dataRepositories that will be available when deserializing an object. This is required to resolve references</param>
+      /// <param name="externalReferences">Optional references that will be available when deserializing an object. This is required to resolve references to those objects</param>
+      /// <param name="addProjectSimulations">If a project is defined, should references to simulations defined in the project be added to the contect? Default is <c>true</c></param>
+      /// <param name="addProjectObservedData">If a project is defined, should references to observed data defined in the project be added to the contect? Default is <c>true</c></param>
+      /// <returns></returns>
+      SerializationContext Create(IEnumerable<DataRepository> dataRepositories = null, IEnumerable<IWithId> externalReferences = null, bool addProjectSimulations = true, bool addProjectObservedData = true);
    }
 
    public class SerializationContextFactory : ISerializationContextFactory
@@ -26,8 +32,8 @@ namespace PKSim.Infrastructure.Services
       private readonly ICloneManagerForModel _cloneManagerForModel;
 
       public SerializationContextFactory(
-         ISerializationDimensionFactory dimensionFactory, 
-         IObjectBaseFactory objectBaseFactory, 
+         ISerializationDimensionFactory dimensionFactory,
+         IObjectBaseFactory objectBaseFactory,
          IContainer container,
          ICloneManagerForModel cloneManagerForModel)
       {
@@ -37,7 +43,7 @@ namespace PKSim.Infrastructure.Services
          _cloneManagerForModel = cloneManagerForModel;
       }
 
-      public SerializationContext Create(IEnumerable<DataRepository> dataRepositories = null, IEnumerable<IWithId> externalReferences = null)
+      public SerializationContext Create(IEnumerable<DataRepository> dataRepositories = null, IEnumerable<IWithId> externalReferences = null, bool addProjectSimulations = true, bool addProjectObservedData = true)
       {
          var projectRetriever = _container.Resolve<IPKSimProjectRetriever>();
          var project = projectRetriever.Current;
@@ -48,10 +54,14 @@ namespace PKSim.Infrastructure.Services
          externalReferences?.Each(withIdRepository.Register);
 
          var allRepositories = new List<DataRepository>();
+
          if (project != null)
          {
-            allRepositories.AddRange(project.AllDataRepositories());
-            project.All<ISimulation>().Each(withIdRepository.Register);
+            if(addProjectObservedData)
+               allRepositories.AddRange(project.AllDataRepositories());
+
+            if(addProjectSimulations)
+               project.All<ISimulation>().Each(withIdRepository.Register);
          }
 
          if (dataRepositories != null)

@@ -1,25 +1,20 @@
-using System.Globalization;
 using System.Text;
 using System.Xml.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Serializer.Xml;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility.Events;
-using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ProjectConverter;
-using PKSim.Infrastructure.Serialization;
 using PKSim.Infrastructure.Serialization.Xml;
-using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using PKSim.Infrastructure.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization.Xml;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Infrastructure
@@ -43,23 +38,23 @@ namespace PKSim.Infrastructure
       {
          _individual = new Individual();
          _container = A.Fake<IContainer>();
-         _serializationContextFactory= A.Fake<ISerializationContextFactory>();
-         _simulationUpdater= A.Fake<ISimulationUpdaterAfterDeserialization>();
-         _eventPublisher= A.Fake<IEventPublisher>();  
+         _serializationContextFactory = A.Fake<ISerializationContextFactory>();
+         _simulationUpdater = A.Fake<ISimulationUpdaterAfterDeserialization>();
+         _eventPublisher = A.Fake<IEventPublisher>();
          _xmlReaderIndividual = A.Fake<IXmlReader<Individual>>();
          _xmlWriterIndividual = A.Fake<IXmlWriter<Individual>>();
          _xmlReaderSimulation = A.Fake<IXmlReader<Simulation>>();
          _xmlWriterSimulation = A.Fake<IXmlWriter<Simulation>>();
          _objectConverterFinder = A.Fake<IObjectConverterFinder>();
-         _serializationContext= A.Fake<SerializationContext>();
+         _serializationContext = A.Fake<SerializationContext>();
          A.CallTo(() => _container.Resolve<IXmlReader<Individual>>()).Returns(_xmlReaderIndividual);
          A.CallTo(() => _container.Resolve<IXmlWriter<Individual>>()).Returns(_xmlWriterIndividual);
          A.CallTo(() => _container.Resolve<IXmlReader<Simulation>>()).Returns(_xmlReaderSimulation);
          A.CallTo(() => _container.Resolve<IXmlWriter<Simulation>>()).Returns(_xmlWriterSimulation);
 
          _referenceResolver = A.Fake<IReferencesResolver>();
-         sut = new XmlSerializationManager(_referenceResolver, _container, _objectConverterFinder,_simulationUpdater,_eventPublisher,_serializationContextFactory);
-         A.CallTo(() => _serializationContextFactory.Create(null, null)).Returns(_serializationContext);
+         sut = new XmlSerializationManager(_referenceResolver, _container, _objectConverterFinder, _simulationUpdater, _eventPublisher, _serializationContextFactory);
+         A.CallTo(_serializationContextFactory).WithReturnType<SerializationContext>().Returns(_serializationContext);
       }
    }
 
@@ -77,7 +72,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         _result = sut.Serialize(_individual);  
+         _result = sut.Serialize(_individual);
       }
 
       [Observation]
@@ -133,6 +128,12 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
+      public void should_create_a_serialization_context_that_does_not_reference_project_simulations()
+      {
+         A.CallTo(() => _serializationContextFactory.Create(null, null, false, true)).MustHaveHappened();
+      }
+
+      [Observation]
       public void should_resolve_the_references_of_formula_defined_in_the_simulation()
       {
          A.CallTo(() => _simulationUpdater.UpdateSimulation(_simulation)).MustHaveHappened();
@@ -153,8 +154,8 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _objectConverterFinder.FindConverterFor(ProjectVersions.V5_0_1)).Returns(_converter);
          _element = new XElement("Individual");
          _element.AddAttribute(CoreConstants.Serialization.Attribute.XmlVersion, ProjectVersions.V5_0_1.VersionAsString);
-          A.CallTo(() =>_converter.Convert(_individual, ProjectVersions.V5_0_1)).Returns((ProjectVersions.Current, true));
-          A.CallTo(() => _converter.ConvertXml(A<XElement>._, ProjectVersions.V5_0_1)).Returns((ProjectVersions.Current, true));
+         A.CallTo(() => _converter.Convert(_individual, ProjectVersions.V5_0_1)).Returns((ProjectVersions.Current, true));
+         A.CallTo(() => _converter.ConvertXml(A<XElement>._, ProjectVersions.V5_0_1)).Returns((ProjectVersions.Current, true));
       }
 
       protected override void Because()
