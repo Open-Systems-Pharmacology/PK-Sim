@@ -190,7 +190,7 @@ namespace PKSim.UI.Views.Compounds
          _gridView.LayoutChanged();
       }
 
-      public int OptimalHeight => layoutControlGroup.Height;
+      public int OptimalHeight => layoutControlGroup.Height + layoutControl.Margin.All;
 
       private void onShowingEditor(object sender, CancelEventArgs e)
       {

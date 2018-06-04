@@ -141,6 +141,6 @@ namespace PKSim.UI.Views.Compounds
          gridView.LayoutChanged();
       }
 
-      public int OptimalHeight => layoutControlGroup.Height;
+      public int OptimalHeight => layoutControlGroup.Height + layoutControl.Margin.All;
    }
 }
