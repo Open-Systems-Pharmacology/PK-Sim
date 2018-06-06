@@ -14,11 +14,12 @@ task :cover do
 end
 
 task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
-	update_smart_xls(args)
+	#update_smart_xls(args)
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
 		'PKSim.exe',
+		'PKSimDB.mdb',
 		'PKSimTemplateDBSystem.mdb'
 	]
 
@@ -28,8 +29,6 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		'packages/**/OSPSuite.TeXReporting/**/*.*',
 		'examples/**/*.{wxs,pksim5}',
 		'src/PKSim.Assets/Resources/*.ico',
-		'src/Db/PKSimDB.mdb',
-		'src/Db/TemplateDB/PKSimTemplateDBSystem.mdb',
 		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
 		'dimensions/*.xml',
