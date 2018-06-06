@@ -14,7 +14,7 @@ task :cover do
 end
 
 task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
-	#update_smart_xls(args)
+	update_smart_xls(args)
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
