@@ -685,5 +685,25 @@ namespace PKSim.IntegrationTests
             agpOntogeny.Deviation.ShouldBeSmallerThan(1.89);
          }
       }
+
+      [Observation]
+      public void first_human_population_returned_from_the_database_should_be_ICRP()
+      {
+         var populationsRepo = IoC.Resolve<IPopulationRepository>();
+         var populationsOrderedBySequence = populationsRepo.All().OrderBy(pop => pop.Sequence);
+         var firstPopulation = populationsOrderedBySequence.First(pop=>pop.Species.Equals(CoreConstants.Species.HUMAN));
+
+         firstPopulation.Name.ShouldBeEqualTo(CoreConstants.Population.ICRP);
+      }
+
+      [Observation]
+      public void first_population_gender_returned_from_the_database_should_be_ICRP_male()
+      {
+         var populationGenderRepo = IoC.Resolve<IFlatPopulationGenderRepository>();
+         var firstPopulationGender = populationGenderRepo.All().First();
+
+         firstPopulationGender.Population.ShouldBeEqualTo(CoreConstants.Population.ICRP);
+         firstPopulationGender.GenderName.ShouldBeEqualTo(CoreConstants.Gender.Male);
+      }
    }
 }
