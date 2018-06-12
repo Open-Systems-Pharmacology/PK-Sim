@@ -30,12 +30,12 @@ namespace PKSim.Core.Commands
          _dueToSwap = dueToSwap;
          CommandType = PKSimConstants.Command.CommandTypeDelete;
          ObjectType = context.TypeFor(buildingBlock);
-         context.UpdateBuildinBlockProperties(this, buildingBlock);
+         context.UpdateBuildinBlockPropertiesInCommand(this, buildingBlock);
       }
 
       protected override void ExecuteWith(IExecutionContext context)
       {
-         IPKSimProject project = context.CurrentProject;
+         var project = context.CurrentProject;
 
          project.RemoveBuildingBlock(_buildingBlockToRemove);
          Description = PKSimConstants.Command.RemoveEntityFromContainer(ObjectType, _buildingBlockToRemove.Name, context.TypeFor(project), project.Name);

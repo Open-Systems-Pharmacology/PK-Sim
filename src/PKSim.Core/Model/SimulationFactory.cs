@@ -102,8 +102,7 @@ namespace PKSim.Core.Model
          var simulation = createSimulation(simulationSubject.GetType());
 
          //update the used building block in the simulation 
-         if (originalSimulation != null)
-            originalSimulation.UsedBuildingBlocks.Each(simulation.AddUsedBuildingBlock);
+         originalSimulation?.UsedBuildingBlocks.Each(simulation.AddUsedBuildingBlock);
 
          _simulationBuildingBlockUpdater.UpdateUsedBuildingBlockInSimulationFromTemplate(simulation, simulationSubject, PKSimBuildingBlockType.SimulationSubject);
          _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, compounds, PKSimBuildingBlockType.Compound);
@@ -149,10 +148,7 @@ namespace PKSim.Core.Model
          });
       }
 
-      private void updateCompoundProperties(Simulation simulation)
-      {
-         _compoundPropertiesUpdater.UpdateCompoundPropertiesIn(simulation);
-      }
+      private void updateCompoundProperties(Simulation simulation) => _compoundPropertiesUpdater.UpdateCompoundPropertiesIn(simulation);
 
       public TSimulation CreateBasedOn<TSimulation>(IModelCoreSimulation modelCoreSimulation) where TSimulation : Simulation
       {
@@ -195,7 +191,7 @@ namespace PKSim.Core.Model
       private PopulationSimulation createPopulationSimulation()
       {
          var simulation = create<PopulationSimulation>();
-         simulation.SetAdvancedParameters(_objectBaseFactory.Create<IAdvancedParameterCollection>());
+         simulation.SetAdvancedParameters(_objectBaseFactory.Create<AdvancedParameterCollection>());
          return simulation;
       }
 
@@ -228,14 +224,14 @@ namespace PKSim.Core.Model
 
       private double disabledDDIValueFor(string parameterName)
       {
-         if (parameterName.IsOneOf(CoreConstants.Parameter.EC50, CoreConstants.Parameter.K_KINACT_HALF))
+         if (parameterName.IsOneOf(CoreConstants.Parameters.EC50, CoreConstants.Parameters.K_KINACT_HALF))
             return 1;
 
-         if (parameterName.IsOneOf(CoreConstants.Parameter.KINACT, CoreConstants.Parameter.EMAX))
+         if (parameterName.IsOneOf(CoreConstants.Parameters.KINACT, CoreConstants.Parameters.EMAX))
             return 0;
 
-         if (parameterName.IsOneOf(CoreConstants.Parameter.KI, CoreConstants.Parameter.KI_U,
-                                   CoreConstants.Parameter.KI_C))
+         if (parameterName.IsOneOf(CoreConstants.Parameters.KI, CoreConstants.Parameters.KI_U,
+                                   CoreConstants.Parameters.KI_C))
             return double.PositiveInfinity;
 
          //if we add any new parameters, the exception will be thrown per default, until we explicitely define

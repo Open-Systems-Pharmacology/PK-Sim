@@ -9,12 +9,8 @@ namespace PKSim.Core.Model
 
       public virtual Species Species
       {
-         get { return _species; }
-         set
-         {
-            _species = value;
-            OnPropertyChanged(() => Species);
-         }
+         get => _species;
+         set => SetProperty(ref _species, value);
       }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)

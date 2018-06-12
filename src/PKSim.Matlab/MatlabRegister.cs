@@ -1,10 +1,14 @@
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Journal;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
+using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
-using PKSim.Presentation.Core;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Matlab.Mappers;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Matlab
@@ -13,14 +17,17 @@ namespace PKSim.Matlab
    {
       public override void RegisterInContainer(IContainer container)
       {
-         container.Register<ICoreUserSettings, MatlabUserSettings>(LifeStyle.Singleton);
-         container.Register<IExceptionManager, MatlabExceptionManager>(LifeStyle.Singleton);
          container.Register<IOntogenyFactorsRetriever, OntogenyFactorsRetriever>(LifeStyle.Singleton);
-         container.Register<IWorkspace, MatlabWorkspace>(LifeStyle.Singleton);
-         container.Register<IProgressUpdater, MatlabProgressUpdater>();
-         container.Register<IDisplayUnitRetriever, MatlabDisplayUnitRetriever>();
+         container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
+         container.Register<IDialogCreator, CLIDialogCreator>();
+         container.Register<ICoreUserSettings, CLIUserSettings>();
+         container.Register<IExceptionManager, CLIExceptionManager>();
+         container.Register<IProgressUpdater, CLIProgressUpdater>();
+         container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
          container.Register<IFullPathDisplayResolver, MatlabFullPathDisplayResolver>();
+         container.Register<IMatlabPopulationSettingsToPopulationSettingsMapper, MatlabPopulationSettingsToPopulationSettingsMapper>();
          container.Register<ILazyLoadTask, MatlabLazyLoadTask>(LifeStyle.Singleton);
+         container.Register<IOntogenyTask<Individual>, MatlabIndividualOntogenyTask>();
       }
    }
 }

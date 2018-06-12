@@ -29,9 +29,9 @@ namespace PKSim.Infrastructure
    public class When_retrieving_the_full_version_of_the_assembly : concern_for_PKSimConfiguration
    {
       [Observation]
-      public void should_return_a_string_containing_the_revison_number()
+      public void should_return_a_string_containing_the_revison_number_or_the_info_number()
       {
-         sut.FullVersion.Contains("Build").ShouldBeTrue();
+         sut.FullVersion.StartsWith($"{sut.Version}").ShouldBeTrue();
       }
    }
 
@@ -79,14 +79,14 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
-      public void should_return_the_path_in_the_application_folder_if_the_file_does_not_exists_in_the_application_folder_and_does_not_exists_locally()
+      public void should_return_the_path_in_local_folder_if_the_file_does_not_exists_in_the_application_folder_and_does_not_exists_locally()
       {
          doWhilePreservingFileExists(() =>
          {
-            var appDataFile = Path.Combine(sut.AllUsersFolderPath, CoreConstants.PK_SIM_DB_FILE);
+            var localFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CoreConstants.PK_SIM_DB_FILE);
             FileHelper.FileExists = s => false;
             sut = new PKSimConfiguration();
-            sut.PKSimDbPath.ShouldBeEqualTo(appDataFile);
+            sut.PKSimDbPath.ShouldBeEqualTo(localFile);
          });
       }
 

@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
-using PKSim.UI.Extensions;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -46,7 +45,7 @@ namespace PKSim.UI.Views.Compounds
          };
 
          _compoundTypeRepository = new UxRepositoryItemComboBox(gridView);
-         _parameterEditRepository.ConfigureWith(typeof (double));
+         _parameterEditRepository.ConfigureWith(typeof(double));
          _parameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
 
          _favoriteRepository = new UxRepositoryItemCheckEdit(gridView);
@@ -119,21 +118,21 @@ namespace PKSim.UI.Views.Compounds
 
       public bool ShowFavorites
       {
-         set { _colFavorites.UpdateVisibility(value); }
+         set => _colFavorites.UpdateVisibility(value);
       }
 
-      public override bool HasError
+      public void AddValueOriginView(IView view)
       {
-         get { return _gridViewBinder.HasError; }
+         AddViewTo(layoutItemValueOrigin, view);
       }
 
-      private ICompoundTypeGroupPresenter compoundTypeGroupPresenter
-      {
-         get { return _presenter.DowncastTo<ICompoundTypeGroupPresenter>(); }
-      }
+      public override bool HasError => _gridViewBinder.HasError;
+
+      private ICompoundTypeGroupPresenter compoundTypeGroupPresenter => _presenter.DowncastTo<ICompoundTypeGroupPresenter>();
 
       public void AdjustHeight()
       {
+         layoutItemCompoundTypes.AdjustControlHeight(gridView.OptimalHeight);
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
@@ -142,9 +141,6 @@ namespace PKSim.UI.Views.Compounds
          gridView.LayoutChanged();
       }
 
-      public int OptimalHeight
-      {
-         get { return gridView.OptimalHeight; }
-      }
+      public int OptimalHeight => layoutControlGroup.Height + layoutControl.Margin.All;
    }
 }

@@ -17,6 +17,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters;
+using PKSim.Presentation.Presenters.Snapshots;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.Services
@@ -35,11 +36,17 @@ namespace PKSim.Presentation.Services
       private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       private readonly ISimulationReferenceUpdater _simulationReferenceUpdater;
 
-      public BuildingBlockTask(IExecutionContext executionContext, IApplicationController applicationController,
-         IDialogCreator dialogCreator, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
-         IEntityTask entityTask, ITemplateTaskQuery templateTaskQuery,
-         ISingleStartPresenterTask singleStartPresenterTask, IBuildingBlockRepository buildingBlockRepository,
-         ILazyLoadTask lazyLoadTask, IPresentationSettingsTask presentationSettingsTask, ISimulationReferenceUpdater simulationReferenceUpdater)
+      public BuildingBlockTask(IExecutionContext executionContext,
+         IApplicationController applicationController,
+         IDialogCreator dialogCreator,
+         IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         IEntityTask entityTask,
+         ITemplateTaskQuery templateTaskQuery,
+         ISingleStartPresenterTask singleStartPresenterTask,
+         IBuildingBlockRepository buildingBlockRepository,
+         ILazyLoadTask lazyLoadTask,
+         IPresentationSettingsTask presentationSettingsTask,
+         ISimulationReferenceUpdater simulationReferenceUpdater)
       {
          _executionContext = executionContext;
          _applicationController = applicationController;
@@ -162,6 +169,13 @@ namespace PKSim.Presentation.Services
          AddCommandToHistory(_entityTask.Rename(buildingBlockToRename));
       }
 
+      public void SaveAsTemplate(IReadOnlyList<IPKSimBuildingBlock> buildingBlocks, TemplateDatabaseType templateDatabaseType)
+      {
+         var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>();
+         buildingBlocks.Each(buildingBlock => cache[buildingBlock] = new List<IPKSimBuildingBlock>());
+         SaveAsTemplate(cache, templateDatabaseType);
+      }
+
       public void SaveAsTemplate(ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> buildingBlocksWithReferenceToSave, TemplateDatabaseType templateDatabaseType)
       {
          var templates = new Cache<IPKSimBuildingBlock, Template>();
@@ -213,6 +227,7 @@ namespace PKSim.Presentation.Services
                   return null;
             }
          }
+
          Load(buildingBlockToSave);
          return new Template
          {
@@ -264,20 +279,32 @@ namespace PKSim.Presentation.Services
 
       public IReadOnlyList<TBuildingBlock> LoadFromTemplate<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         var loadedBuildingBlocks = new List<TBuildingBlock>();
          using (var presenter = _applicationController.Start<ITemplatePresenter>())
          {
             var buildingBlocks = presenter.LoadFromTemplate<TBuildingBlock>(typeFrom(buildingBlockType));
 
-            buildingBlocks.Each(bb =>
-            {
-               var command = AddToProject(bb, editBuildingBlock: false);
-               if (!command.IsEmpty())
-                  loadedBuildingBlocks.Add(bb);
-            });
-
-            return loadedBuildingBlocks;
+            return addBuildingBlocksToProject(buildingBlocks).ToList();
          }
+      }
+
+      public IReadOnlyList<TBuildingBlock> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
+      {
+         using (var presenter = _applicationController.Start<ILoadFromSnapshotPresenter<TBuildingBlock>>())
+         {
+            var buildingBlocks = presenter.LoadModelFromSnapshot();
+            return addBuildingBlocksToProject(buildingBlocks).ToList();
+         }
+      }
+
+      private IEnumerable<TBuildingBlock> addBuildingBlocksToProject<TBuildingBlock>(IEnumerable<TBuildingBlock> buildingBlocks) where TBuildingBlock : class, IPKSimBuildingBlock
+      {
+         if (buildingBlocks == null)
+            return Enumerable.Empty<TBuildingBlock>();
+
+         return from bb in buildingBlocks
+            let command = AddToProject(bb, editBuildingBlock: false)
+            where !command.IsEmpty()
+            select bb;
       }
 
       public bool BuildingBlockNameIsAlreadyUsed(IPKSimBuildingBlock buildingBlock)
@@ -333,6 +360,11 @@ namespace PKSim.Presentation.Services
          return LoadFromTemplate(_buildingBlockType);
       }
 
+      public IReadOnlyList<TBuildingBlock> LoadFromSnapshot()
+      {
+         return LoadFromSnapshot(_buildingBlockType);
+      }
+
       public void Load(TBuildingBlock buildingBlockToLoad)
       {
          _buildingBlockTask.Load(buildingBlockToLoad);
@@ -343,19 +375,20 @@ namespace PKSim.Presentation.Services
          return _buildingBlockTask.All<TBuildingBlock>();
       }
 
-      public void SaveAsTemplate(TBuildingBlock buildingBlockToSave)
+      public void SaveAsTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave)
       {
-         SaveAsTemplate(buildingBlockToSave, TemplateDatabaseType.User);
+         SaveAsTemplate(buildingBlocksToSave, TemplateDatabaseType.User);
       }
 
-      public void SaveAsSystemTemplate(TBuildingBlock buildingBlockToSave)
+      public void SaveAsSystemTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave)
       {
-         SaveAsTemplate(buildingBlockToSave, TemplateDatabaseType.System);
+         SaveAsTemplate(buildingBlocksToSave, TemplateDatabaseType.System);
       }
 
-      protected virtual void SaveAsTemplate(TBuildingBlock buildingBlockToSave, TemplateDatabaseType templateDatabaseType)
+      protected virtual void SaveAsTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave, TemplateDatabaseType templateDatabaseType)
       {
-         var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> {[buildingBlockToSave] = new List<IPKSimBuildingBlock>()};
+         var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>();
+         buildingBlocksToSave.Each(buildingBlockToSave => cache[buildingBlockToSave] = new List<IPKSimBuildingBlock>());
          _buildingBlockTask.SaveAsTemplate(cache, templateDatabaseType);
       }
 
@@ -422,6 +455,11 @@ namespace PKSim.Presentation.Services
       protected virtual IReadOnlyList<TBuildingBlock> LoadFromTemplate(PKSimBuildingBlockType buildingBlockType)
       {
          return _buildingBlockTask.LoadFromTemplate<TBuildingBlock>(buildingBlockType);
+      }
+
+      protected virtual IReadOnlyList<TBuildingBlock> LoadFromSnapshot(PKSimBuildingBlockType buildingBlockType)
+      {
+         return _buildingBlockTask.LoadFromSnapshot<TBuildingBlock>(buildingBlockType);
       }
    }
 }

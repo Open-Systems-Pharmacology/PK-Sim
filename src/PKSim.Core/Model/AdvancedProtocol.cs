@@ -8,15 +8,9 @@ namespace PKSim.Core.Model
    {
       public override Unit TimeUnit { get; set; }
 
-      public virtual IEnumerable<Schema> AllSchemas
-      {
-         get { return GetChildren<Schema>(); }
-      }
+      public virtual IEnumerable<Schema> AllSchemas => GetChildren<Schema>();
 
-      public virtual void AddSchema(Schema schema)
-      {
-         Add(schema);
-      }
+      public virtual void AddSchema(Schema schema) => Add(schema);
 
       public virtual void RemoveAllSchemas()
       {
@@ -26,25 +20,12 @@ namespace PKSim.Core.Model
          }
       }
 
-      public virtual bool Contains(Schema schema)
-      {
-         return AllSchemas.Contains(schema);
-      }
+      public virtual bool Contains(Schema schema) => AllSchemas.Contains(schema);
 
-      public virtual void RemoveSchema(Schema schema)
-      {
-         RemoveChild(schema);
-      }
+      public virtual void RemoveSchema(Schema schema) => RemoveChild(schema);
 
-      public override IEnumerable<string> UsedFormulationKeys
-      {
-         get
-         {
-            return (from allSchema in AllSchemas
-                    from item in allSchema.SchemaItems
-                    select item.FormulationKey).Distinct();
-         }
-      }
+      public override IEnumerable<string> UsedFormulationKeys => 
+         AllSchemas.SelectMany(x => x.SchemaItems, (schema, item) => item.FormulationKey).Distinct();
 
       public override ApplicationType ApplicationTypeUsing(string formulationKey)
       {
@@ -54,9 +35,6 @@ namespace PKSim.Core.Model
                  select item.ApplicationType).First();
       }
 
-      public override double EndTime
-      {
-         get { return AllSchemas.Max(x => x.EndTime); }
-      }
+      public override double EndTime => AllSchemas.Max(x => x.EndTime);
    }
 }

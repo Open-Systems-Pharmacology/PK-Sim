@@ -14,17 +14,18 @@ namespace PKSim.Infrastructure.Services
       private readonly IIndividualFactory _individualFactory;
       private readonly IIndividualSettingsDTOToOriginDataMapper _individualSettingsMapper;
       private readonly IIndividualDefaultValueRetriever _individualDefaultValueRetriever;
-      private readonly IPopulationRepository _populationRepository;
       private readonly ICache<SpeciesPopulation, Individual> _indvidualCacheProSpecies = new Cache<SpeciesPopulation, Individual>();
 
-      public DefaultIndividualRetriever(ISpeciesRepository speciesRepository, IIndividualFactory individualFactory, IIndividualSettingsDTOToOriginDataMapper individualSettingsMapper,
-         IIndividualDefaultValueRetriever individualDefaultValueRetriever, IPopulationRepository populationRepository)
+      public DefaultIndividualRetriever(
+         ISpeciesRepository speciesRepository,
+         IIndividualFactory individualFactory,
+         IIndividualSettingsDTOToOriginDataMapper individualSettingsMapper,
+         IIndividualDefaultValueRetriever individualDefaultValueRetriever)
       {
          _speciesRepository = speciesRepository;
          _individualFactory = individualFactory;
          _individualSettingsMapper = individualSettingsMapper;
          _individualDefaultValueRetriever = individualDefaultValueRetriever;
-         _populationRepository = populationRepository;
       }
 
       public Individual DefaultIndividual()
@@ -34,12 +35,12 @@ namespace PKSim.Infrastructure.Services
 
       public Individual DefaultHuman()
       {
-         return DefaultIndividualFor(_speciesRepository.FindByName(CoreConstants.Species.Human));
+         return DefaultIndividualFor(_speciesRepository.FindByName(CoreConstants.Species.HUMAN));
       }
 
       public Individual DefaultIndividualFor(Species species)
       {
-         return DefaultIndividualFor(_populationRepository.DefaultPopulationFor(species));
+         return DefaultIndividualFor(species.DefaultPopulation);
       }
 
       public Individual DefaultIndividualFor(SpeciesPopulation speciesPopulation)
@@ -49,6 +50,7 @@ namespace PKSim.Infrastructure.Services
             var individualDTO = _individualDefaultValueRetriever.DefaultSettingFor(speciesPopulation);
             _indvidualCacheProSpecies[speciesPopulation] = _individualFactory.CreateStandardFor(_individualSettingsMapper.MapFrom(individualDTO));
          }
+
          return _indvidualCacheProSpecies[speciesPopulation];
       }
    }

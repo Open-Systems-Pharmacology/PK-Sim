@@ -67,9 +67,9 @@ namespace PKSim.Presentation
          _origin.AddCalculationMethod(cm1);
          _origin.Gender = new Gender();
          _subPopulationDTO = A.Fake<IEnumerable<CategoryParameterValueVersionDTO>>();
-         _parameterAge = A.Fake<IParameter>().WithName(CoreConstants.Parameter.AGE);
-         _parameterHeight = A.Fake<IParameter>().WithName(CoreConstants.Parameter.HEIGHT);
-         _parameterWeight = A.Fake<IParameter>().WithName(CoreConstants.Parameter.WEIGHT);
+         _parameterAge = A.Fake<IParameter>().WithName(CoreConstants.Parameters.AGE);
+         _parameterHeight = A.Fake<IParameter>().WithName(CoreConstants.Parameters.HEIGHT);
+         _parameterWeight = A.Fake<IParameter>().WithName(CoreConstants.Parameters.WEIGHT);
          _parameterAgeDTO = A.Fake<ParameterDTO>();
          _parameterHeightDTO = A.Fake<ParameterDTO>();
          _parameterWeightDTO = A.Fake<ParameterDTO>();

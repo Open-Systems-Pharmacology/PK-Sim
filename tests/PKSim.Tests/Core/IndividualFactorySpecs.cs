@@ -19,6 +19,11 @@ namespace PKSim.Core
       protected IEntityValidator _entityValidator;
       private IReportGenerator _reportGenerator;
       private IMoleculeOntogenyVariabilityUpdater _moleculeOntogenyVariabilityUpdater;
+      protected IParameter _age;
+      protected IParameter _gestationalAge;
+      protected IParameter _height;
+      protected IParameter _weight;
+      protected IParameter _bmi;
 
       protected override void Context()
       {
@@ -30,6 +35,12 @@ namespace PKSim.Core
          _reportGenerator = A.Fake<IReportGenerator>();
          _moleculeOntogenyVariabilityUpdater = A.Fake<IMoleculeOntogenyVariabilityUpdater>();
          sut = new IndividualFactory(_individualModelTask, _entityBaseFactory, _createIndvidualAlgorithm, _speciesRepository, _entityValidator, _reportGenerator, _moleculeOntogenyVariabilityUpdater);
+
+         _age = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.AGE);
+         _gestationalAge = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.GESTATIONAL_AGE);
+         _height = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.HEIGHT);
+         _weight = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.WEIGHT);
+         _bmi = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.BMI);
       }
    }
 
@@ -41,19 +52,43 @@ namespace PKSim.Core
       private Organism _organism;
       private IContainer _neighborhoods;
       private IRootContainer _rootContainer;
+      private ValueOrigin _valueOrigin;
 
       protected override void Context()
       {
          base.Context();
          _originData = new OriginData {Species = A.Fake<Species>().WithName("toto"), SpeciesPopulation = A.Fake<SpeciesPopulation>()};
          _individual = new Individual();
-         _organism = A.Fake<Organism>();
+         _organism = new Organism();
          _neighborhoods = A.Fake<IContainer>();
          _rootContainer = new RootContainer();
          A.CallTo(() => _entityBaseFactory.Create<IRootContainer>()).Returns(_rootContainer);
          A.CallTo(() => _entityBaseFactory.Create<Individual>()).Returns(_individual);
          A.CallTo(() => _entityBaseFactory.Create<Organism>()).Returns(_organism);
          A.CallTo(() => _entityBaseFactory.Create<IContainer>()).Returns(_neighborhoods);
+
+         _valueOrigin = new ValueOrigin {Method = ValueOriginDeterminationMethods.InVitro, Source = ValueOriginSources.Database};
+         _originData.UpdateValueOriginFrom(_valueOrigin);
+
+         _originData.Age = 10;
+         _originData.AgeUnit = _age.DisplayUnit.Name;
+         _organism.Add(_age);
+
+         _originData.GestationalAge = 40;
+         _originData.GestationalAgeUnit = _gestationalAge.DisplayUnit.Name;
+         _organism.Add(_gestationalAge);
+
+         _originData.Height = 170;
+         _originData.HeightUnit = _height.DisplayUnit.Name;
+         _organism.Add(_height);
+
+         _originData.Weight = 170;
+         _originData.WeightUnit = _weight.DisplayUnit.Name;
+         _organism.Add(_weight);
+
+         _originData.BMI = 170;
+         _originData.BMIUnit = _bmi.DisplayUnit.Name;
+         _organism.Add(_bmi);
       }
 
       protected override void Because()
@@ -105,6 +140,21 @@ namespace PKSim.Core
       {
          A.CallTo(() => _entityValidator.Validate(_individual)).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_have_updated_the_value_origin_of_all_input_parameters_to_the_one_entered_by_the_user()
+      {
+         _age.ValueOrigin.ShouldBeEqualTo(_valueOrigin);
+         _gestationalAge.ValueOrigin.ShouldBeEqualTo(_valueOrigin);
+         _height.ValueOrigin.ShouldBeEqualTo(_valueOrigin);
+         _weight.ValueOrigin.ShouldBeEqualTo(_valueOrigin);
+      }
+
+      [Observation]
+      public void should_have_let_the_bmi_value_origin_as_is()
+      {
+         _bmi.ValueOrigin.ShouldNotBeEqualTo(_valueOrigin);
+      }
    }
 
    public class When_creating_an_individual_for_the_predefined_origine_data_with_a_predefined_seed : concern_for_IndividualFactory
@@ -151,7 +201,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         var species = new Species {Name = CoreConstants.Species.Human, Id = CoreConstants.Species.Human};
+         var species = new Species {Name = CoreConstants.Species.HUMAN, Id = CoreConstants.Species.HUMAN};
          species.AddPopulation(new SpeciesPopulation {Name = CoreConstants.Population.ICRP});
          A.CallTo(() => _speciesRepository.All()).Returns(new[] {species});
          _individual = new Individual();

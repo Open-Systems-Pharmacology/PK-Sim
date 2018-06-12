@@ -67,10 +67,10 @@ namespace PKSim.IntegrationTests
          var irrerverisbleInhibition = sut.ProcessByName<InhibitionProcess>(CoreConstantsForSpecs.Process.IRREVERSIBLE_INHIBITION);
          irrerverisbleInhibition.AllParameters().Count().ShouldBeEqualTo(3);
       
-         var K_kinact_half = irrerverisbleInhibition.Parameter(CoreConstants.Parameter.K_KINACT_HALF);
+         var K_kinact_half = irrerverisbleInhibition.Parameter(CoreConstants.Parameters.K_KINACT_HALF);
          K_kinact_half.Value = 5;
 
-         var Ki = irrerverisbleInhibition.Parameter(CoreConstants.Parameter.KI);
+         var Ki = irrerverisbleInhibition.Parameter(CoreConstants.Parameters.KI);
          Ki.Value.ShouldBeEqualTo(5);
       }
    }

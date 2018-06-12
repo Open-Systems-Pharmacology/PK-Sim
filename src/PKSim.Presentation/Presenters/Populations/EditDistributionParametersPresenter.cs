@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
@@ -19,6 +22,13 @@ namespace PKSim.Presentation.Presenters.Populations
          : base(view, scaleParametersPresenter, editParameterPresenterTask, parameterTask, parameterDTOMapper, contextMenuFactory)
       {
          IsSimpleEditor = true;
+         _view.HeaderVisible = false;
+      }
+
+      public override void Edit(IEnumerable<IParameter> parameters)
+      {
+         base.Edit(parameters);
+         _view.HeaderVisible = true;
       }
 
       public override void SetParameterValue(IParameterDTO parameterDTO, double valueInGuiUnit)

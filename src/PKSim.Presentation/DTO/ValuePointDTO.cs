@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using PKSim.Assets;
-using OSPSuite.Utility.Validation;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
 
 namespace PKSim.Presentation.DTO
 {
@@ -12,28 +12,23 @@ namespace PKSim.Presentation.DTO
    {
       private readonly IParameter _parameter;
       private readonly TableFormula _tableFormula;
+
       private double _x;
+
       //x value in display unit of the table formula
       public double X
       {
-         get { return _x; }
-         set
-         {
-            _x = value;
-            OnPropertyChanged(() => X);
-         }
+         get => _x;
+         set => SetProperty(ref _x, value);
       }
 
       private double _y;
-      //z value in display unit of the table formula
+
+      //y value in display unit of the table formula
       public double Y
       {
-         get { return _y; }
-         set
-         {
-            _y = value;
-            OnPropertyChanged(() => Y);
-         }
+         get => _y;
+         set => SetProperty(ref _y, value);
       }
 
       public ValuePointDTO(IParameter parameter, TableFormula tableFormula, ValuePoint point)
@@ -64,27 +59,15 @@ namespace PKSim.Presentation.DTO
 
       private static class AllRules
       {
-         private static IBusinessRule yValueShouldBeValidAccordingToParameter
-         {
-            get
-            {
-               return CreateRule.For<ValuePointDTO>()
-                  .Property(point => point.Y)
-                  .WithRule((point, valueInDisplayUnit) => point.validateYValue(valueInDisplayUnit))
-                  .WithError((point, valueInDisplayUnit) => point.errorMessageForYValue(valueInDisplayUnit));
-            }
-         }
+         private static IBusinessRule yValueShouldBeValidAccordingToParameter { get; } = CreateRule.For<ValuePointDTO>()
+            .Property(point => point.Y)
+            .WithRule((point, valueInDisplayUnit) => point.validateYValue(valueInDisplayUnit))
+            .WithError((point, valueInDisplayUnit) => point.errorMessageForYValue(valueInDisplayUnit));
 
-         private static IBusinessRule xValueShouldBeGreatherOrEqualThanZero
-         {
-            get
-            {
-               return CreateRule.For<ValuePointDTO>()
-                  .Property(point => point.X)
-                  .WithRule((point, value) => value >= 0)
-                  .WithError((point, value) => PKSimConstants.Rules.Parameter.TimeValueShouldBeGreaterThanOrEqualToZero);
-            }
-         }
+         private static IBusinessRule xValueShouldBeGreatherOrEqualThanZero { get; } = CreateRule.For<ValuePointDTO>()
+            .Property(point => point.X)
+            .WithRule((point, value) => value >= 0)
+            .WithError((point, value) => PKSimConstants.Rules.Parameter.ValueShouldBeGreaterThanOrEqualToZero(point._tableFormula.XName));
 
          public static IEnumerable<IBusinessRule> All()
          {

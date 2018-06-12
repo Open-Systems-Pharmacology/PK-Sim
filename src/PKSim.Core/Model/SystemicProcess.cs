@@ -1,6 +1,6 @@
-using PKSim.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
@@ -17,12 +17,8 @@ namespace PKSim.Core.Model
 
       public bool IsDefault
       {
-         get { return _isDefault; }
-         set
-         {
-            _isDefault = value;
-            OnPropertyChanged(() => IsDefault);
-         }
+         get => _isDefault;
+         set => SetProperty(ref _isDefault, value);
       }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)

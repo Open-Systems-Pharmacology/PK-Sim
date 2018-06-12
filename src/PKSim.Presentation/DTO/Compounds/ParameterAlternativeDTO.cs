@@ -1,34 +1,35 @@
-using PKSim.Core.Model;
-using PKSim.Presentation.DTO.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Compounds
 {
-   public class ParameterAlternativeDTO : DxValidatableDTO<ParameterAlternative>
+   public class ParameterAlternativeDTO : DxValidatableDTO<ParameterAlternative>, IWithValueOrigin
    {
-      public ParameterAlternative ParameterAlternative { get; private set; }
+      public ParameterAlternative ParameterAlternative { get; }
+      public ValueOrigin ValueOrigin { get; }
 
-      public ParameterAlternativeDTO(ParameterAlternative parameterAlternative) : base(parameterAlternative)
+      public ParameterAlternativeDTO(ParameterAlternative parameterAlternative, ValueOrigin valueOrigin) : base(parameterAlternative)
       {
          ParameterAlternative = parameterAlternative;
+         ValueOrigin = valueOrigin;
       }
 
       public string Name
       {
-         get { return ParameterAlternative.Name; }
-         set { ParameterAlternative.Name = value; }
+         get => ParameterAlternative.Name;
+         set => ParameterAlternative.Name = value;
       }
 
       public bool IsDefault
       {
-         get { return ParameterAlternative.IsDefault; }
-         set { ParameterAlternative.IsDefault = value; }
+         get => ParameterAlternative.IsDefault;
+         set => ParameterAlternative.IsDefault = value;
       }
 
-      public string Description
+      public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
       {
-         get { return ParameterAlternative.Description; }
-         set { ParameterAlternative.Description = value; }
+         ValueOrigin.UpdateFrom(sourceValueOrigin);
       }
    }
 }

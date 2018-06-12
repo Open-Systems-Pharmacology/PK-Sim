@@ -55,25 +55,40 @@ namespace PKSim.Infrastructure.Services
 
       public void ExportToCSV(Population population)
       {
-         exportVectorialParametersContainerToCSV(population, x => CreatePopulationDataFor(x, includeUnitsInHeader:true));
+         exportVectorialParametersContainerToCSV(population, x => CreatePopulationDataFor(x, includeUnitsInHeader: true));
+      }
+
+      public void ExportToCSV(Population population, string fileFullPath)
+      {
+         exportVectorialParametersContainerToCSV(population, x => CreatePopulationDataFor(x, includeUnitsInHeader: true), fileFullPath);
       }
 
       public void ExportToCSV(PopulationSimulation populationSimulation)
       {
-         exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, includeUnitsInHeader:true));
+         exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, includeUnitsInHeader: true));
+      }
+
+      public void ExportToCSV(PopulationSimulation populationSimulation, string fileFullPath)
+      {
+         exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, includeUnitsInHeader: true), fileFullPath);
       }
 
       private void exportVectorialParametersContainerToCSV<T>(T advancedParameterContainer, Func<T, DataTable> createData) where T : IAdvancedParameterContainer
       {
          using (var presenter = _applicationController.Start<ISelectFilePresenter>())
          {
-            var populationFile = presenter.SelectFile(PKSimConstants.UI.ExportPopulationToCSVTitle, Constants.Filter.CSV_FILE_FILTER, PKSimConstants.UI.DefaultPopulationExportNameFor(advancedParameterContainer.Name), Constants.DirectoryKey.POPULATION);
+            var populationFile = presenter.SelectFile(PKSimConstants.UI.ExportPopulationToCSVTitle, Constants.Filter.CSV_FILE_FILTER, CoreConstants.DefaultPopulationExportNameFor(advancedParameterContainer.Name), Constants.DirectoryKey.POPULATION);
             if (populationFile == null)
                return;
 
-            var dataTable = createData(advancedParameterContainer);
-            dataTable.ExportToCSV(populationFile.FilePath, comments: getProjectMetaInfo(populationFile.Description));
+            exportVectorialParametersContainerToCSV(advancedParameterContainer, createData, populationFile.FilePath, populationFile.Description);
          }
+      }
+
+      private void exportVectorialParametersContainerToCSV<T>(T advancedParameterContainer, Func<T, DataTable> createData, string fileFullPath, string fileDescription = null) where T : IAdvancedParameterContainer
+      {
+         var dataTable = createData(advancedParameterContainer);
+         dataTable.ExportToCSV(fileFullPath, comments: getProjectMetaInfo(fileDescription));
       }
 
       private IReadOnlyList<string> getProjectMetaInfo(string description = null)
@@ -118,9 +133,9 @@ namespace PKSim.Infrastructure.Services
          foreach (var covariate in population.AllCovariateNames)
          {
             if (covariate == CoreConstants.Covariates.GENDER)
-               addColumnValues(population, dataTable, CoreConstants.Parameter.GENDER, population.AllGenders.Select(x => x.Index).ToList());
+               addColumnValues(population, dataTable, CoreConstants.Parameters.GENDER, population.AllGenders.Select(x => x.Index).ToList());
             else if (covariate == CoreConstants.Covariates.RACE)
-               addColumnValues(population, dataTable, CoreConstants.Parameter.RACE_INDEX, population.AllRaces.Select(x => x.RaceIndex).ToList());
+               addColumnValues(population, dataTable, CoreConstants.Parameters.RACE_INDEX, population.AllRaces.Select(x => x.RaceIndex).ToList());
             else
                addColumnValues(population, dataTable, covariate, population.AllCovariateValuesFor(covariate));
          }
@@ -138,13 +153,13 @@ namespace PKSim.Infrastructure.Services
       private bool parameterShouldBeExported(IParameter parameter, IEnumerable<IParameter> advancedParameters)
       {
          //BMI and BodyWeight should always be exported
-         if (parameter.NameIsOneOf(CoreConstants.Parameter.BMI, CoreConstants.Parameter.WEIGHT)) return true;
+         if (parameter.NameIsOneOf(CoreConstants.Parameters.BMI, CoreConstants.Parameters.WEIGHT)) return true;
 
          //BMI MeanHeight MeanWeight should never be exported
-         if (parameter.NameIsOneOf(CoreConstants.Parameter.MEAN_WEIGHT, CoreConstants.Parameter.MEAN_HEIGHT)) return false;
+         if (parameter.NameIsOneOf(CoreConstants.Parameters.MEAN_WEIGHT, CoreConstants.Parameters.MEAN_HEIGHT)) return false;
 
          //distribution parameter search as mean, std, gsd etc should not be exported
-         if (CoreConstants.Parameter.AllDistributionParameters.Contains(parameter.Name)) return false;
+         if (CoreConstants.Parameters.AllDistributionParameters.Contains(parameter.Name)) return false;
 
          //advanced parameters should always be exported
          if (advancedParameters.Contains(parameter))
@@ -199,8 +214,8 @@ namespace PKSim.Infrastructure.Services
 
          var fileName = populationSimulation.Name;
          var modelFileFullPath = Path.Combine(populationFolder, $"{fileName}.xml");
-         var agingFileFullPath = Path.Combine(populationFolder, $"{fileName}{CoreConstants.Population.TableParameterExport}.csv");
-         var outputDeffinitionFileFullPath = Path.Combine(populationFolder, $"{fileName}{CoreConstants.Population.OutputDefinitionExport}.csv");
+         var agingFileFullPath = Path.Combine(populationFolder, $"{fileName}{CoreConstants.Population.TABLE_PARAMETER_EXPORT}.csv");
+         var outputDefinitionFileFullPath = Path.Combine(populationFolder, $"{fileName}{CoreConstants.Population.OUTPUT_DEFINITION_EXPORT}.csv");
 
          //Model
          _simModelExporter.Export(_modelCoreSimulationMapper.MapFrom(populationSimulation, shouldCloneModel: false), modelFileFullPath);
@@ -208,7 +223,7 @@ namespace PKSim.Infrastructure.Services
 
          var outputSelection = populationSimulation.OutputSelections;
 
-         exportOutputDefiniton(outputSelection, outputDeffinitionFileFullPath);
+         exportOutputDefiniton(outputSelection, outputDefinitionFileFullPath);
 
          //all values
          var dataTable = CreatePopulationDataFor(populationSimulation);
@@ -220,9 +235,9 @@ namespace PKSim.Infrastructure.Services
             agingData.ExportToCSV(agingFileFullPath, comments: getProjectMetaInfo(populationExport.Description));
       }
 
-      private void exportOutputDefiniton(OutputSelections outputSelections, string outputDeffinitionFileFullPath)
+      private void exportOutputDefiniton(OutputSelections outputSelections, string outputDefinitionFileFullPath)
       {
-         using (var sw = new StreamWriter(outputDeffinitionFileFullPath, false))
+         using (var sw = new StreamWriter(outputDefinitionFileFullPath, false))
          {
             // Add Simulation Name to paths for sim model
             outputSelections.AllOutputs.Each(sq => sw.WriteLine("{0}{1}", sq.Path, ';'));

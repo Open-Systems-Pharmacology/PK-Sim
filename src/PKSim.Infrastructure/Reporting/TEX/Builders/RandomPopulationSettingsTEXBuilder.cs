@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting.Builder;
 using OSPSuite.TeXReporting.Items;
+using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -63,7 +63,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       private IEnumerable<object> reportFor(GenderRatio genderRatio)
       {
-         yield return this.ReportValue(_infoRepository.DisplayNameFor(genderRatio.Gender),string.Format("{0}%", _formatter.Format(genderRatio.Ratio)));
+         yield return this.ReportValue(_infoRepository.DisplayNameFor(genderRatio.Gender), $"{_formatter.Format(genderRatio.Ratio)}%");
       }
    }
 }

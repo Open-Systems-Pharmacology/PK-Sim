@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
    public class FlatParameterValueRepository : MetaDataRepository<ParameterValueMetaData>, IFlatParameterValueRepository
    {
-      public FlatParameterValueRepository(IDbGateway dbGateway,IDataTableToMetaDataMapper<ParameterValueMetaData> mapper)
+      public FlatParameterValueRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<ParameterValueMetaData> mapper)
          : base(dbGateway, mapper, CoreConstants.ORM.ViewParameterValues)
       {
       }
@@ -20,8 +20,12 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
    public class ParameterValueRepository : ParameterMetaDataRepository<ParameterValueMetaData>, IParameterValueRepository
    {
-      public ParameterValueRepository(IFlatParameterValueRepository flatParameterValueRepo, IFlatContainerRepository flatContainerRepo) :
-         base(flatParameterValueRepo, flatContainerRepo)
+      public ParameterValueRepository(
+         IFlatParameterValueRepository flatParameterValueRepo,
+         IFlatContainerRepository flatContainerRepo,
+         IValueOriginRepository valueOriginRepository
+         ) :
+         base(flatParameterValueRepo, flatContainerRepo,valueOriginRepository)
       {
       }
    }

@@ -1,11 +1,11 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Services
 {
@@ -47,7 +47,7 @@ namespace PKSim.Core.Services
          //First Update the parameters in the template building block (the parameter in the used building block are synchronized with the one used in the simulation)
          var updateTemplateParametersCommand = updateParameterValues(usedBuildingBlockParameters, templateParameters);
          updateTemplateParametersCommand.Description = PKSimConstants.Command.UpdateTemplateParameterCommandDescription(templateBuildingBlock.Name, buildingBlockType, simulation.Name);
-         _executionContext.UpdateBuildinBlockProperties(updateTemplateParametersCommand, templateBuildingBlock);
+         _executionContext.UpdateBuildinBlockPropertiesInCommand(updateTemplateParametersCommand, templateBuildingBlock);
 
          updateCommands.Add(updateTemplateParametersCommand);
 
@@ -59,17 +59,16 @@ namespace PKSim.Core.Services
          updateCommands.BuildingBlockName = templateBuildingBlock.Name;
          updateCommands.CommandType = PKSimConstants.Command.CommandTypeUpdate;
          updateCommands.Description = PKSimConstants.Command.UpdateTemplateBuildingBlockCommandDescription(buildingBlockType, templateBuildingBlock.Name, simulation.Name);
-         _executionContext.UpdateBuildinBlockProperties(updateCommands, templateBuildingBlock);
+         _executionContext.UpdateBuildinBlockPropertiesInCommand(updateCommands, templateBuildingBlock);
 
          _executionContext.PublishEvent(new BuildingBlockUpdatedEvent(templateBuildingBlock));
          return updateCommands;
       }
 
-
-
-      private IPKSimCommand updateParameterValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters)
+      private IOSPSuiteCommand updateParameterValues(PathCache<IParameter> simulationParameters, PathCache<IParameter> templateParameters)
       {
-         return _parameterSetUpdater.UpdateValues(sourceParameters, targetParameters).DowncastTo<IPKSimCommand>();
+         //we do not want to update parameter origin id here since we are updateing building block parameters
+         return _parameterSetUpdater.UpdateValues(simulationParameters, templateParameters, updateParameterOriginId: false);
       }
    }
 }

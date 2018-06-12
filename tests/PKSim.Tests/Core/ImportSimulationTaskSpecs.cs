@@ -160,7 +160,7 @@ namespace PKSim.Core
       private readonly ParameterValues _value2 = new ParameterValues("Path2");
       private readonly ParameterValues _value3 = new ParameterValues("PathAdvanced");
       private PathCache<IParameter> _patchCache;
-      private IAdvancedParameter _advancedParameterContainer;
+      private AdvancedParameter _advancedParameterContainer;
       private const string _populationFile = "PopulationFile";
 
       protected override void Context()
@@ -190,7 +190,7 @@ namespace PKSim.Core
          A.CallTo(() => _individualPropertiesCacheImporter.ImportFrom(_populationFile, A<IImportLogger>._)).Returns(_individualPropertiesCache);
          A.CallTo(() => _parameterRetriever.ParametersFrom(_populationSimulation)).Returns(_patchCache);
 
-         _advancedParameterContainer= A.Fake<IAdvancedParameter>();
+         _advancedParameterContainer= new AdvancedParameter();
          A.CallTo(() => _advancedParameterFactory.Create(advancedParameter, DistributionTypes.Unknown)).Returns(_advancedParameterContainer);
       }
 
@@ -240,8 +240,7 @@ namespace PKSim.Core
       private MoBiPopulation _mobiPopulation;
       private PathCache<IParameter> _distributedParameters;
       private IDistributedParameter _parameter;
-      private IAdvancedParameter _advancedParameter;
-      private IEnumerable<RandomValue> _randomValues;
+      private AdvancedParameter _advancedParameter;
       private const int _size = 10;
       private ParameterValuesCache _parameterValueCache;
 
@@ -252,15 +251,13 @@ namespace PKSim.Core
          _distributedParameters=new PathCacheForSpecs<IParameter> {{"P1", _parameter}};
          _populationSimulation = A.Fake<PopulationSimulation>();
          _mobiPopulation = A.Fake<MoBiPopulation>();
-         _advancedParameter= A.Fake<IAdvancedParameter>();
-         _randomValues=new List<RandomValue>();
+         _advancedParameter= new AdvancedParameter();
          _parameterValueCache = A.Fake<ParameterValuesCache>();
          A.CallTo(() => _populationSimulation.ParameterValuesCache).Returns(_parameterValueCache);
          A.CallTo(_simulationFactory).WithReturnType<PopulationSimulation>().Returns(_populationSimulation);
          A.CallTo(() => _objectBaseFactory.Create<MoBiPopulation>()).Returns(_mobiPopulation);
-         A.CallTo(() => _objectBaseFactory.Create<IAdvancedParameter>()).Returns(_advancedParameter);
+         A.CallTo(() => _objectBaseFactory.Create<AdvancedParameter>()).Returns(_advancedParameter);
          A.CallTo(_parameterRetriever).WithReturnType<PathCache<IParameter>>().Returns(_distributedParameters);
-         A.CallTo(_advancedParameter).WithReturnType<IEnumerable<RandomValue>>().Returns(_randomValues);
       }
 
       protected override void Because()
@@ -289,7 +286,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_created_some_random_values_for_each_distributed_parameters_defined_in_the_simulation()
       {
-         A.CallTo(() => _parameterValueCache.SetValues("P1",_randomValues)).MustHaveHappened();
+         A.CallTo(() => _parameterValueCache.SetValues("P1",A<IEnumerable<RandomValue>>._)).MustHaveHappened();
       }
    }
 }	

@@ -23,11 +23,11 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_3
       {
          foreach (var container in simulation.Model.Root.GetChildren<IContainer>(c=>c.ContainerType==ContainerType.Molecule))
          {
-            var ontogenyFactor = container.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR);
+            var ontogenyFactor = container.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR);
             if (ontogenyFactor != null)
                ontogenyFactor.CanBeVaried = true;
 
-            var ontogenyFactorGI = container.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR_GI);
+            var ontogenyFactorGI = container.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI);
             if (ontogenyFactorGI != null)
                ontogenyFactorGI.CanBeVaried = true;
          }

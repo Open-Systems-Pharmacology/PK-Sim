@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using FakeItEasy;
 
 namespace PKSim.Core
 {
@@ -25,30 +24,30 @@ namespace PKSim.Core
       {
          _schemaFactory = new SchemaFactoryForTest();
          _schemaItemFactory = new SchemaItemFactoryForTest();
-         _schemaItemRepo=A.Fake<ISchemaItemRepository>();
+         _schemaItemRepo = A.Fake<ISchemaItemRepository>();
          _cloner = A.Fake<ICloner>();
          _schemaItemParameterRetriever = new SchemaItemParameterRetriever(_schemaItemRepo, _cloner);
-         sut = new SimpleProtocolToSchemaMapper(_schemaFactory, _schemaItemFactory,_schemaItemParameterRetriever);
+         sut = new SimpleProtocolToSchemaMapper(_schemaFactory, _schemaItemFactory, _schemaItemParameterRetriever);
       }
 
       internal class SchemaItemFactoryForTest : ISchemaItemFactory
       {
-         public ISchemaItem Create()
+         public SchemaItem Create()
          {
             var schemaItem = new SchemaItem().WithName(Guid.NewGuid().ToString());
             schemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.START_TIME));
-            schemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.INPUT_DOSE));
+            schemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.INPUT_DOSE));
             return schemaItem;
          }
 
-         public ISchemaItem Create(ApplicationType applicationType, IContainer container)
+         public SchemaItem Create(ApplicationType applicationType, IContainer container)
          {
             var schemaItem = Create();
             schemaItem.ApplicationType = applicationType;
             return schemaItem;
          }
 
-         public ISchemaItem CreateBasedOn(ISchemaItem schemaItemToClone, IContainer container)
+         public SchemaItem CreateBasedOn(SchemaItem schemaItemToClone, IContainer container)
          {
             return Create(schemaItemToClone.ApplicationType, container);
          }
@@ -67,17 +66,16 @@ namespace PKSim.Core
          {
             var schema = new Schema().WithName(Guid.NewGuid().ToString());
             schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.START_TIME));
-            schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.TIME_BETWEEN_REPETITIONS));
-            schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameter.NUMBER_OF_REPETITIONS));
+            schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS));
+            schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.NUMBER_OF_REPETITIONS));
             return schema;
          }
       }
    }
 
-   
    public class When_mapping_a_simple_protocol_with_a_single_dosing_application : concern_for_SimpleProtocolToSchemaMapper
    {
-      private  PKSim.Core.Model.SimpleProtocol _simpleProtocol;
+      private SimpleProtocol _simpleProtocol;
       private IEnumerable<Schema> _result;
 
       protected override void Context()
@@ -88,7 +86,7 @@ namespace PKSim.Core
             ApplicationType = ApplicationTypes.Intravenous,
             DosingInterval = DosingIntervals.Single
          };
-         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.INPUT_DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.END_TIME));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(3).WithName(Constants.Parameters.START_TIME));
       }
@@ -114,10 +112,9 @@ namespace PKSim.Core
       }
    }
 
-   
    public class When_mapping_a_simple_protocol_with_a_bidaily_dosing_interval_matching_exatly_the_end_time : concern_for_SimpleProtocolToSchemaMapper
    {
-      private  PKSim.Core.Model.SimpleProtocol _simpleProtocol;
+      private SimpleProtocol _simpleProtocol;
       private IEnumerable<Schema> _result;
 
       protected override void Context()
@@ -126,7 +123,7 @@ namespace PKSim.Core
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.ApplicationType = ApplicationTypes.Intravenous;
          _simpleProtocol.DosingInterval = DosingIntervals.DI_12_12;
-         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.INPUT_DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(2880).WithName(Constants.Parameters.END_TIME));
       }
 
@@ -151,10 +148,9 @@ namespace PKSim.Core
       }
    }
 
-   
    public class When_mapping_a_simple_protocol_with_a_6_6_12_dosing_interval_which_does_not_match_exatly_the_end_time_but_contains_at_least_one_full_repetition : concern_for_SimpleProtocolToSchemaMapper
    {
-      private  PKSim.Core.Model.SimpleProtocol _simpleProtocol;
+      private SimpleProtocol _simpleProtocol;
       private IEnumerable<Schema> _result;
 
       protected override void Context()
@@ -163,7 +159,7 @@ namespace PKSim.Core
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.ApplicationType = ApplicationTypes.Intravenous;
          _simpleProtocol.DosingInterval = DosingIntervals.DI_6_6_12;
-         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.INPUT_DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(3600).WithName(Constants.Parameters.END_TIME)); //2.5 day
       }
 
@@ -189,10 +185,6 @@ namespace PKSim.Core
          var schemaSingular = _result.ElementAt(1);
          schemaSingular.NumberOfRepetitions.Value.ShouldBeEqualTo(1);
          schemaSingular.StartTime.Value.ShouldBeEqualTo(2880);
-
       }
    }
-
-  
-
 }

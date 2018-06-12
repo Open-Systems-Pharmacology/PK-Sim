@@ -4,11 +4,7 @@ namespace PKSim.Core.Model
 {
    public class SystemicProcessSelection : IReactionMapping
    {
-      /// <summary>
-      ///    Clearance type
-      /// </summary>
       public SystemicProcessType ProcessType { get; set; }
-
       public string ProcessName { get; set; }
       public string CompoundName { get; set; }
 
@@ -19,7 +15,7 @@ namespace PKSim.Core.Model
 
       public string ProductName(string productNameTemplate)
       {
-         return string.Format("{0}-{1} {2}", CompoundName, MoleculeName, productNameTemplate);
+         return $"{CompoundName}-{MoleculeName} {productNameTemplate}";
       }
 
       public string MoleculeName

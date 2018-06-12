@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
@@ -30,8 +31,8 @@ namespace PKSim.Core.Model
          if (parameter.IsExpressionNorm())
             return true;
 
-         return parameter.NameIsOneOf(CoreConstants.Parameter.REL_EXP, CoreConstants.Parameter.REL_EXP_BLOOD_CELL,
-            CoreConstants.Parameter.REL_EXP_PLASMA, CoreConstants.Parameter.REL_EXP_VASC_ENDO);
+         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP, CoreConstants.Parameters.REL_EXP_BLOOD_CELL,
+            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
 
       public static bool IsIndividualMolecule(this IParameter parameter)
@@ -39,10 +40,10 @@ namespace PKSim.Core.Model
          if (parameter.IsExpression())
             return true;
 
-         if (CoreConstants.Parameter.OntogenyFactors.Contains(parameter.Name))
+         if (CoreConstants.Parameters.OntogenyFactors.Contains(parameter.Name))
             return true;
 
-         if (parameter.IsNamed(CoreConstants.Parameter.REFERENCE_CONCENTRATION))
+         if (parameter.IsNamed(CoreConstants.Parameters.REFERENCE_CONCENTRATION))
             return true;
 
          return false;
@@ -50,14 +51,14 @@ namespace PKSim.Core.Model
 
       public static bool IsStructural(this IParameter parameter)
       {
-         return CoreConstants.Parameter.ParticleDistributionStructuralParameters.Contains(parameter.Name);
+         return CoreConstants.Parameters.ParticleDistributionStructuralParameters.Contains(parameter.Name);
       }
 
       public static bool IsExpressionNorm(this IParameter parameter)
       {
          if (parameter == null) return false;
-         return parameter.NameIsOneOf(CoreConstants.Parameter.REL_EXP_NORM, CoreConstants.Parameter.REL_EXP_BLOOD_CELL_NORM,
-            CoreConstants.Parameter.REL_EXP_PLASMA_NORM, CoreConstants.Parameter.REL_EXP_VASC_ENDO_NORM);
+         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP_NORM, CoreConstants.Parameters.REL_EXP_BLOOD_CELL_NORM,
+            CoreConstants.Parameters.REL_EXP_PLASMA_NORM, CoreConstants.Parameters.REL_EXP_VASC_ENDO_NORM);
       }
 
       public static bool IsOrganVolume(this IParameter parameter)
@@ -79,7 +80,7 @@ namespace PKSim.Core.Model
 
       public static bool NeedsDefault(this IParameter parameter)
       {
-         if (parameter.NameIsOneOf(CoreConstants.Parameter.AllDistributionParameters))
+         if (parameter.NameIsOneOf(CoreConstants.Parameters.AllDistributionParameters))
             return false;
 
          if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population, PKSimBuildingBlockType.Simulation))
@@ -103,6 +104,43 @@ namespace PKSim.Core.Model
             return false;
 
          return !ValueComparer.AreValuesEqual(parameter.Value, parameter.DefaultValue.Value, CoreConstants.DOUBLE_RELATIVE_EPSILON);
+      }
+
+      public static bool ShouldExportToSnapshot(this IParameter parameter)
+      {
+         if (parameter.IsDefault)
+            return false;
+
+         return parameter.ValueIsDefined();
+      }
+
+      /// <summary>
+      /// Returns <c>true</c> if the value can be computed and is not NaN otherwise <c>false</c>
+      /// </summary>
+      public static bool ValueIsDefined(this IParameter parameter)
+      {
+         if (!ValueIsComputable(parameter))
+            return false;
+
+         return !double.IsNaN(parameter.Value);
+      }
+
+      /// <summary>
+      /// Returns <c>true</c> if the value can be computed otherwise <c>false</c>
+      /// </summary>
+      public static bool ValueIsComputable(this IParameter parameter)
+      {
+         try
+         {
+            //let's compute the value. Exception will be thrown if value cannot be calculated
+            var v = parameter.Value;
+            return true;
+         }
+         catch (Exception)
+         {
+            //this is a parameter that cannot be evaluated and should not be exported
+            return false;
+         }
       }
 
       /// <summary>

@@ -15,8 +15,8 @@ namespace PKSim.Core.Services
 
       protected override void CacheParameterValueFor(Formulation formulation)
       {
-         _lagTime = formulation.Parameter(CoreConstants.Parameter.LAG_TIME).Value;
-         _dissTime80 = formulation.Parameter(CoreConstants.Parameter.DISS_TIME80).Value;
+         _lagTime = formulation.Parameter(CoreConstants.Parameters.LAG_TIME).Value;
+         _dissTime80 = formulation.Parameter(CoreConstants.Parameters.DISS_TIME80).Value;
       }
 
       protected override double ValueFor(Formulation formulation, double time)

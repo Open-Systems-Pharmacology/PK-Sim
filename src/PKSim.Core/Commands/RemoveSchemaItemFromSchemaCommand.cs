@@ -4,9 +4,9 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public class RemoveSchemaItemFromSchemaCommand : RemoveEntityFromContainerCommand<ISchemaItem, Schema, RemoveSchemaItemFromSchemaEvent>
+   public class RemoveSchemaItemFromSchemaCommand : RemoveEntityFromContainerCommand<SchemaItem, Schema, RemoveSchemaItemFromSchemaEvent>
    {
-      public RemoveSchemaItemFromSchemaCommand(ISchemaItem entityToRemove, Schema parentContainer, IExecutionContext context)
+      public RemoveSchemaItemFromSchemaCommand(SchemaItem entityToRemove, Schema parentContainer, IExecutionContext context)
          : base(entityToRemove, parentContainer, context)
       {
       }

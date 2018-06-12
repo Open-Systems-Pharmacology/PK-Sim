@@ -1,9 +1,7 @@
-using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -14,9 +12,11 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="simulation">Simulation used to create a building block configuration</param>
       /// <param name="shouldValidate">True if validation should be performed otherwise false</param>
-      /// <param name="createAgingDataInSimulation">True if aging data should be created in the simulation. False if they should stay as is (typically for MoBi Export)</param>
+      /// <param name="createAgingDataInSimulation">
+      ///    True if aging data should be created in the simulation. False if they should
+      ///    stay as is (typically for MoBi Export)
+      /// </param>
       IBuildConfiguration CreateFor(Simulation simulation, bool shouldValidate, bool createAgingDataInSimulation);
-
    }
 
    public class BuildConfigurationTask : IBuildConfigurationTask
@@ -25,6 +25,7 @@ namespace PKSim.Core.Services
       private readonly IPKSimMoleculeStartValuesCreator _moleculeStartValuesCreator;
       private readonly IMoleculeCalculationRetriever _moleculeCalculationRetriever;
       private readonly IDistributedParameterToTableParameterConverter _distributedParameterToTableParameterConverter;
+      private readonly IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
       private readonly IModelObserverQuery _modelObserverQuery;
       private readonly IModelPassiveTransportQuery _modelPassiveTransportQuery;
       private readonly IMoleculesAndReactionsCreator _moleculesAndReactionsCreator;
@@ -32,13 +33,15 @@ namespace PKSim.Core.Services
       private readonly IPKSimSpatialStructureFactory _spatialStructureFactory;
 
       public BuildConfigurationTask(IPKSimSpatialStructureFactory spatialStructureFactory, IModelObserverQuery modelObserverQuery,
-                                    IModelPassiveTransportQuery modelPassiveTransportQuery, IPKSimParameterStartValuesCreator parameterStartValuesCreator,
-                                    IMoleculesAndReactionsCreator moleculesAndReactionsCreator, IEventBuildingBlockCreator eventBuildingBlockCreator,
-                                    IPKSimMoleculeStartValuesCreator moleculeStartValuesCreator, IMoleculeCalculationRetriever moleculeCalculationRetriever,
-                                    IDistributedParameterToTableParameterConverter distributedParameterToTableParameterConverter)
+         IModelPassiveTransportQuery modelPassiveTransportQuery, IPKSimParameterStartValuesCreator parameterStartValuesCreator,
+         IMoleculesAndReactionsCreator moleculesAndReactionsCreator, IEventBuildingBlockCreator eventBuildingBlockCreator,
+         IPKSimMoleculeStartValuesCreator moleculeStartValuesCreator, IMoleculeCalculationRetriever moleculeCalculationRetriever,
+         IDistributedParameterToTableParameterConverter distributedParameterToTableParameterConverter,
+         IParameterDefaultStateUpdater parameterDefaultStateUpdater)
       {
          _moleculeCalculationRetriever = moleculeCalculationRetriever;
          _distributedParameterToTableParameterConverter = distributedParameterToTableParameterConverter;
+         _parameterDefaultStateUpdater = parameterDefaultStateUpdater;
          _spatialStructureFactory = spatialStructureFactory;
          _modelObserverQuery = modelObserverQuery;
          _modelPassiveTransportQuery = modelPassiveTransportQuery;
@@ -56,12 +59,13 @@ namespace PKSim.Core.Services
 
          //STEP1: Create spatial structure
          buildConfiguration.SpatialStructure = _spatialStructureFactory.CreateFor(individual, simulation);
+         _parameterDefaultStateUpdater.UpdateDefaultFor(buildConfiguration.SpatialStructure);
 
          //STEP2: add used calculation method to the build configuration
          _moleculeCalculationRetriever.AllMoleculeCalculationMethodsUsedBy(simulation).Each(buildConfiguration.AddCalculationMethod);
 
          //STEP3: Add Passive Transports 
-         buildConfiguration.PassiveTransports =_modelPassiveTransportQuery.AllPassiveTransportsFor(simulation)
+         buildConfiguration.PassiveTransports = _modelPassiveTransportQuery.AllPassiveTransportsFor(simulation)
             .WithName(simulation.Name);
 
          //STEP4 : Molecules, and Molecule Start and reactions are generated in one go from the molecule and reaction creator
@@ -69,6 +73,7 @@ namespace PKSim.Core.Services
 
          //STEP5 Add Application, Formulation and events
          buildConfiguration.EventGroups = _eventBuildingBlockCreator.CreateFor(simulation);
+         _parameterDefaultStateUpdater.UpdateDefaultFor(buildConfiguration.EventGroups);
 
          //STEP6: Add Observers
          buildConfiguration.Observers = _modelObserverQuery.AllObserversFor(buildConfiguration.Molecules, simulation);

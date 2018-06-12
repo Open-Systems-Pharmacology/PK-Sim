@@ -18,7 +18,7 @@ namespace PKSim.Core.Commands
          ObjectType = PKSimConstants.ObjectTypes.Protein;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          _proteinId = _protein.Id;
-         context.UpdateBuildinBlockProperties(this, context.BuildingBlockContaining(protein));
+         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(protein));
       }
 
       public TissueLocation OldTissuleLocation { get; private set; }

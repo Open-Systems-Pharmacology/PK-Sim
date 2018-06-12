@@ -168,7 +168,7 @@ namespace PKSim.Core
          inibitorPath.ShouldOnlyContainInOrder(ObjectPath.PARENT_CONTAINER, ObjectPath.PARENT_CONTAINER, _compound2.Name, Constants.Parameters.CONCENTRATION);
 
          var kmPath = _kmFactor.Formula.FormulaUsablePathBy("KcI1");
-         kmPath.ShouldOnlyContainInOrder(_compound2.Name, _competitiveInhibition2.Name, CoreConstants.Parameter.KI);
+         kmPath.ShouldOnlyContainInOrder(_compound2.Name, _competitiveInhibition2.Name, CoreConstants.Parameters.KI);
       }
 
       [Observation]
@@ -210,7 +210,7 @@ namespace PKSim.Core
          inibitorPath.ShouldOnlyContainInOrder(ObjectPath.PARENT_CONTAINER, ObjectPath.PARENT_CONTAINER, _compound2.Name, Constants.Parameters.CONCENTRATION);
 
          var kmPath = _clSpecFactor.Formula.FormulaUsablePathBy("KcI1");
-         kmPath.ShouldOnlyContainInOrder(_compound2.Name, _competitiveInhibition2.Name, CoreConstants.Parameter.KI);
+         kmPath.ShouldOnlyContainInOrder(_compound2.Name, _competitiveInhibition2.Name, CoreConstants.Parameters.KI);
       }
 
       [Observation]
@@ -252,7 +252,7 @@ namespace PKSim.Core
          inibitorPath.ShouldOnlyContainInOrder(ObjectPathKeywords.SOURCE, _compound2.Name, Constants.Parameters.CONCENTRATION);
 
          var kmPath = _clSpecFactor.Formula.FormulaUsablePathBy("KcI1");
-         kmPath.ShouldOnlyContainInOrder(_compound2.Name, _competitiveInhibition2.Name, CoreConstants.Parameter.KI);
+         kmPath.ShouldOnlyContainInOrder(_compound2.Name, _competitiveInhibition2.Name, CoreConstants.Parameters.KI);
       }
 
       [Observation]

@@ -8,6 +8,7 @@ using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Compounds;
 using OSPSuite.Assets;
+using PKSim.Presentation.DTO.Compounds;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -19,6 +20,7 @@ namespace PKSim.Presentation.Presenters.Compounds
    public class CreateEnzymaticProcessPresenter : CreatePartialProcessPresenter<EnzymaticProcess, ICreateEnzymaticProcessView, ICreateEnzymaticProcessPresenter>, ICreateEnzymaticProcessPresenter
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private EnzymaticProcessDTO _enzymaticProcessDTO;
 
       public CreateEnzymaticProcessPresenter(
          ICreateEnzymaticProcessView view, 
@@ -42,16 +44,33 @@ namespace PKSim.Presentation.Presenters.Compounds
          return _buildingBlockRepository.All<Compound>()
             .OrderBy(x => x.Name);
       }
+      
+      protected override void Rebind(EnzymaticProcess enzymaticProcess, Compound compound)
+      {
+         var previousMetaboliteName = _enzymaticProcessDTO.Metabolite;
+         enzymaticProcess.MetaboliteName = previousMetaboliteName;
+         _enzymaticProcessDTO = dtoFrom(enzymaticProcess);
+         base.Rebind(enzymaticProcess, compound);
+      }
 
-      protected override void EditProcess(EnzymaticProcess partialProcess, Compound compound)
+      protected override void BindToView()
+      {
+         base.BindToView();
+         _view.BindTo(_enzymaticProcessDTO);
+      }
+
+      protected override void EditProcess(EnzymaticProcess enzymaticProcess, Compound compound)
       {
          _view.UpdateAvailableCompounds(allPossibleMetabolites().Where(x => !Equals(x, compound)).Select(x => x.Name));
-         base.EditProcess(partialProcess, compound);
+         _enzymaticProcessDTO = dtoFrom(enzymaticProcess);
+         base.EditProcess(enzymaticProcess, compound);
       }
 
       public void MetaboliteChanged(string newMetabolite)
       {
          AddCommand(_compoundProcessTask.SetMetaboliteForEnzymaticProcess(_createdProcess, newMetabolite));
       }
+
+      private EnzymaticProcessDTO dtoFrom(EnzymaticProcess enzymaticProcess) => new EnzymaticProcessDTO(enzymaticProcess) {Metabolite = enzymaticProcess.MetaboliteName};
    }
 }

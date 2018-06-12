@@ -141,10 +141,7 @@ namespace PKSim.UI.Views.Populations
          return _stantdardParameterEditRepository;
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.Population; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Population;
 
       public void BindTo(PopulationSettingsDTO populationSettingsDTO)
       {
@@ -163,13 +160,13 @@ namespace PKSim.UI.Views.Populations
             layoutGroupIndividualSelection.Enabled = layoutGroupParameterRanges.Enabled;
             layoutItemStop.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
          }
-         get { return !layoutGroupParameterRanges.Enabled; }
+         get => !layoutGroupParameterRanges.Enabled;
       }
 
       public bool GenderSelectionVisible
       {
-         set { layoutItemProportionOfFemales.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemProportionOfFemales.Visibility); }
+         set => layoutItemProportionOfFemales.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemProportionOfFemales.Visibility);
       }
 
       public void AttachPresenter(IRandomPopulationSettingsPresenter presenter)
@@ -190,14 +187,11 @@ namespace PKSim.UI.Views.Populations
 
       public string Population
       {
-         set { lblPopulation.Text = string.Format("{0} {1}", PKSimConstants.UI.Population.FormatForLabel(), value); }
-         get { return lblPopulation.Text; }
+         set => lblPopulation.Text = $"{PKSimConstants.UI.Population.FormatForLabel()} {value}";
+         get => lblPopulation.Text;
       }
 
-      public override bool HasError
-      {
-         get { return _settingsBinder.HasError || _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _settingsBinder.HasError || _gridViewBinder.HasError;
 
       public override void InitializeResources()
       {

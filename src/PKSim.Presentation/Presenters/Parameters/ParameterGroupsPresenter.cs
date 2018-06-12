@@ -2,22 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Mappers;
-using PKSim.Presentation.Nodes;
-using PKSim.Presentation.Presenters.Parameters.Mappers;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.Views.Parameters;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Mappers;
+using PKSim.Presentation.Presenters.Parameters.Mappers;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.Views.Parameters;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters.Parameters
@@ -48,7 +47,6 @@ namespace PKSim.Presentation.Presenters.Parameters
       /// <param name="container">root container</param>
       /// <param name="allParameters">Parameters to display</param>
       void InitializeWith(IContainer container, IEnumerable<IParameter> allParameters);
-
 
       /// <summary>
       ///    Caption to dissplay when no group is being selected
@@ -83,6 +81,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       private IReadOnlyCollection<IParameter> _allVisibleParameters;
       private readonly ITreeNode _allGroupNode;
       private readonly ITreeNode _favoriteNode;
+      private readonly ITreeNode _userDefinedNode;
       private readonly ICache<ParameterGroupingMode, IEnumerable<ITreeNode>> _nodesCache;
       private ParameterGroupsPresenterSettings _settings;
       public string NoSelectionCaption { get; set; }
@@ -109,6 +108,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          _nodesCache = new Cache<ParameterGroupingMode, IEnumerable<ITreeNode>>();
          _allGroupNode = treeNodeFactory.CreateGroupAll();
          _favoriteNode = treeNodeFactory.CreateGroupFavorites();
+         _userDefinedNode = treeNodeFactory.CreateGroupUserDefined();
       }
 
       public void ActivateNode(ITreeNode node)
@@ -117,14 +117,14 @@ namespace PKSim.Presentation.Presenters.Parameters
 
          _view.GroupCaption = node.FullPath(PKSimConstants.UI.DisplayPathSeparator);
 
-         bool alreadyLoaded = _parameterPresenterCache.Contains(node);
+         var alreadyLoaded = _parameterPresenterCache.Contains(node);
          _activePresenter = presenterFor(node);
          _settings.SelectedNodeId = node.Id;
 
          //this needs to be done before editing the parameters
          _view.ActivateView(_activePresenter.BaseView);
 
-         if (alreadyLoaded) return;
+         if (alreadyLoaded && !_activePresenter.AlwaysRefresh) return;
 
          _activePresenter.Edit(allVisibleParametersIn(node));
       }
@@ -172,15 +172,18 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       private IEnumerable<IParameter> allParametersIn(ITreeNode node)
       {
-         var container = containerFrom(node);
-         if (container != null)
-            return container.AllVisibleParameters();
-
          if (node == _favoriteNode)
+            return _allVisibleParameters;
+
+         if (node == _userDefinedNode)
             return _allVisibleParameters;
 
          if (node == _allGroupNode)
             return _allVisibleParameters.Where(parameter => parameter.CanBeDisplayedInAllView());
+
+         var container = containerFrom(node);
+         if (container != null)
+            return container.AllVisibleParameters();
 
          return _parameterGroupTask.ParametersIn(parameterGroupFrom(node), _allVisibleParameters);
       }
@@ -222,7 +225,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public ParameterGroupingMode ParameterGroupingMode
       {
-         get { return _parameterGroupingMode; }
+         get => _parameterGroupingMode;
          set
          {
             _parameterGroupingMode = value;
@@ -254,8 +257,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       {
          if (_nodesCache.Contains(ParameterGroupingModes.Advanced)) return;
 
-         var allTopNodes = parameterGroupsFor(_allVisibleParameters);
-         allTopNodes.Insert(0, _favoriteNode);
+         var allTopNodes = defaultNodesFor(_allVisibleParameters);
          allTopNodes.Add(_allGroupNode);
 
          _nodesCache[ParameterGroupingModes.Advanced] = allTopNodes;
@@ -266,10 +268,16 @@ namespace PKSim.Presentation.Presenters.Parameters
          if (_nodesCache.Contains(ParameterGroupingModes.Simple)) return;
 
          var allSimpleParameters = _allVisibleParameters.Where(x => !_groupRepository.GroupByName(x.GroupName).IsAdvanced);
-         var allTopNodes = parameterGroupsFor(allSimpleParameters);
-         allTopNodes.Insert(0, _favoriteNode);
-
+         var allTopNodes = defaultNodesFor(allSimpleParameters);
          _nodesCache[ParameterGroupingModes.Simple] = allTopNodes;
+      }
+
+      private List<ITreeNode> defaultNodesFor(IEnumerable<IParameter> parameters)
+      {
+         var allTopNodes = parameterGroupsFor(parameters);
+         allTopNodes.Insert(0, _favoriteNode);
+         allTopNodes.Insert(1, _userDefinedNode);
+         return allTopNodes;
       }
 
       //visible parameters can either be all parameters defined in the top container or only the one not in advanced groups

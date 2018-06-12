@@ -17,14 +17,14 @@ namespace PKSim.Presentation
       protected IBuildingBlockTask _buildingBlockTask;
       protected IExecutionContext _executionContext;
       protected RandomPopulation _population;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IApplicationController _applicationController;
 
       protected override void Context()
       {
          _buildingBlockTask = A.Fake<IBuildingBlockTask>();
          _executionContext = A.Fake<IExecutionContext>();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _population = A.Fake<RandomPopulation>();
          _randomPopulationPresenter = A.Fake<ICreateRandomPopulationPresenter>();
          _applicationController = A.Fake<IApplicationController>();

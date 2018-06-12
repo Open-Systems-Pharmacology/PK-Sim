@@ -25,7 +25,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       protected override string ExpressionContainerDisplayNameFor(IParameter parameter)
       {
-         var container = parameter.ParentContainer.DowncastTo<ITransporterExpressionContainer>();
+         var container = parameter.ParentContainer.DowncastTo<TransporterExpressionContainer>();
          var displayName = _representationInfoRepository.DisplayNameFor(container);
          if (container.HasPolarizedMembrane)
             displayName = $"{displayName} ({container.MembraneLocation})";

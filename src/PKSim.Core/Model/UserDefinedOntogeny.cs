@@ -11,13 +11,13 @@ namespace PKSim.Core.Model
 
       public UserDefinedOntogeny()
       {
-         SpeciesName = CoreConstants.Species.Human;
+         SpeciesName = CoreConstants.Species.HUMAN;
       }
 
       public override string DisplayName
       {
-         get { return Name; }
-         set { Name = value; }
+         get => Name;
+         set => Name = value;
       }
 
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)

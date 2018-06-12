@@ -3,6 +3,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting.Builder;
 using OSPSuite.TeXReporting.Items;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Reporting;
 
 namespace PKSim.Infrastructure.Reporting.TeX.Builders

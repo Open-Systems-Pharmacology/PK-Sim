@@ -1,24 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Assets;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
 using PKSim.Assets;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Parameters;
-using PKSim.UI.Extensions;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -31,6 +30,7 @@ namespace PKSim.UI.Views.Parameters
       private readonly UxRepositoryItemButtonEdit _removePointRepository = new UxRemoveButtonRepository();
       private IGridViewColumn _removeColumn;
       private bool _editable;
+      private string _importDescription;
 
       public TableParameterView()
       {
@@ -112,17 +112,17 @@ namespace PKSim.UI.Views.Parameters
 
       public bool ImportVisible
       {
-         set { layoutItemImportPoints.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
+         set => layoutItemImportPoints.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
       public string YCaption
       {
-         set { _columnY.Caption = value; }
+         set => _columnY.Caption = value;
       }
 
       public string XCaption
       {
-         set { _columnX.Caption = value; }
+         set => _columnX.Caption = value;
       }
 
       public bool Editable
@@ -135,22 +135,25 @@ namespace PKSim.UI.Views.Parameters
             gridView.MultiSelect = !value;
             _removeColumn.UpdateVisibility(value);
          }
-         get { return _editable; }
+         get => _editable;
       }
 
       public string Description
       {
-         set { lblImportDescription.Text = value.FormatForDescription(); }
+         get => _importDescription;
+         set
+         {
+            _importDescription = value;
+            lblImportDescription.Text = _importDescription.FormatForDescription();
+         }
       }
 
       public string ImportToolTip
       {
-         set { btnImportPoints.ToolTip = value; }
+         get => btnImportPoints.ToolTip;
+         set => btnImportPoints.ToolTip = value;
       }
 
-      public override bool HasError
-      {
-         get { return _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _gridViewBinder.HasError;
    }
 }

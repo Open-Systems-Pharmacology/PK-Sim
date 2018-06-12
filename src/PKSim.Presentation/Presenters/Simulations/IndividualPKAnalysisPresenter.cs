@@ -24,7 +24,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
    public class IndividualPKAnalysisPresenter : PKAnalysisPresenter<IIndividualPKAnalysisView, IIndividualPKAnalysisPresenter>, IIndividualPKAnalysisPresenter
    {
-      private readonly IPKAnalysisTask _pkAnalysisTask;
+      private readonly IPKAnalysesTask _pkAnalysesTask;
       private readonly IPKAnalysisExportTask _exportTask;
       private List<IndividualPKAnalysis> _allPKAnalysis;
       private IReadOnlyList<Simulation> _simulations;
@@ -33,11 +33,11 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
       private readonly IIndividualPKAnalysisToPKAnalysisDTOMapper _pKAnalysisToDTOMapper;
 
-      public IndividualPKAnalysisPresenter(IIndividualPKAnalysisView view, IPKAnalysisTask pkAnalysisTask, IPKAnalysisExportTask exportTask,
+      public IndividualPKAnalysisPresenter(IIndividualPKAnalysisView view, IPKAnalysesTask pkAnalysesTask, IPKAnalysisExportTask exportTask,
          IGlobalPKAnalysisPresenter globalPKAnalysisPresenter, IIndividualPKAnalysisToPKAnalysisDTOMapper pKAnalysisToDTOMapper,
          IPKParameterRepository pkParameterRepository, IPresentationSettingsTask presentationSettingsTask) : base(view, pkParameterRepository, presentationSettingsTask)
       {
-         _pkAnalysisTask = pkAnalysisTask;
+         _pkAnalysesTask = pkAnalysesTask;
          _globalPKAnalysisPresenter = globalPKAnalysisPresenter;
          _exportTask = exportTask;
          _view.ShowControls = false;
@@ -60,7 +60,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
          createColumnsWithPKAnalysesFrom(curveList);
          _allColumns = _curveCache.Keys.ToList();
-         _allPKAnalysis = _pkAnalysisTask.CalculateFor(_simulations, _allColumns, globalPKAnalysis).ToList();
+         _allPKAnalysis = _pkAnalysesTask.CalculateFor(_simulations, _allColumns, globalPKAnalysis).ToList();
          
          _view.GlobalPKVisible = _globalPKAnalysisPresenter.HasParameters();
 

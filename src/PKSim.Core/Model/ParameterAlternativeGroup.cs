@@ -13,25 +13,13 @@ namespace PKSim.Core.Model
       ///    All available alternative definitions for current group.
       ///    One alternative contains all group parameters
       /// </summary>
-      public virtual IEnumerable<ParameterAlternative> AllAlternatives
-      {
-         get { return GetChildren<ParameterAlternative>(); }
-      }
+      public virtual IEnumerable<ParameterAlternative> AllAlternatives => GetChildren<ParameterAlternative>();
 
-      public virtual void AddAlternative(ParameterAlternative parameterAlternative)
-      {
-         Add(parameterAlternative);
-      }
+      public virtual void AddAlternative(ParameterAlternative parameterAlternative) => Add(parameterAlternative);
 
-      public virtual void RemoveAlternative(ParameterAlternative parameterAlternative)
-      {
-         RemoveChild(parameterAlternative);
-      }
+      public virtual void RemoveAlternative(ParameterAlternative parameterAlternative) => RemoveChild(parameterAlternative);
 
-      public virtual ParameterAlternative DefaultAlternative
-      {
-         get { return AllAlternatives.FirstOrDefault(x => x.IsDefault); }
-      }
+      public virtual ParameterAlternative DefaultAlternative => AllAlternatives.FirstOrDefault(x => x.IsDefault);
 
       /// <summary>
       ///    Template parameters for current group (usually read fro DB)
@@ -45,5 +33,6 @@ namespace PKSim.Core.Model
       {
          return this.GetSingleChildByName<ParameterAlternative>(alternativeName);
       }
+
    }
 }

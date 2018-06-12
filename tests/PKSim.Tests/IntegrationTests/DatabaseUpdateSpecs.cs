@@ -123,7 +123,7 @@ namespace PKSim.IntegrationTests
 
          var ageValues = (from p in ageDependentParams select p.Age).ToList();
 
-         var maxAge = populationName.Equals(CoreConstants.Population.Pregnant) ? 30.75 : ageValues.Max();
+         var maxAge = populationName.Equals(CoreConstants.Population.PREGNANT) ? 30.75 : ageValues.Max();
 
          return (ageValues.Min(), maxAge);
       }
@@ -137,7 +137,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_set_the_body_surface_area_parameter_of_an_individual_to_can_be_varied_true_and_can_be_varied_in_population_false()
       {
-         var bsaParameter = _parameterRateRepository.All().First(p => string.Equals(p.ParameterName, CoreConstants.Parameter.BSA));
+         var bsaParameter = _parameterRateRepository.All().First(p => string.Equals(p.ParameterName, CoreConstants.Parameters.BSA));
 
          bsaParameter.CanBeVaried.ShouldBeTrue();
          bsaParameter.CanBeVariedInPopulation.ShouldBeFalse();
@@ -146,7 +146,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void only_the_species_human_should_have_the_flag_is_human()
       {
-         _flatSpeciesRepository.All().Each(species => { species.IsHuman.ShouldBeEqualTo(string.Equals(species.Id, CoreConstants.Species.Human)); });
+         _flatSpeciesRepository.All().Each(species => { species.IsHuman.ShouldBeEqualTo(string.Equals(species.Id, CoreConstants.Species.HUMAN)); });
       }
    }
 
@@ -177,8 +177,8 @@ namespace PKSim.IntegrationTests
       {
          var nhanesParams = _parameterDistributionRepository.All().Where(pd => pd.Population.EndsWith("NHANES_1997")).ToList();
 
-         var bwParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.MEAN_WEIGHT)).ToList();
-         var heightParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameter.MEAN_HEIGHT)).ToList();
+         var bwParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameters.MEAN_WEIGHT)).ToList();
+         var heightParams = nhanesParams.Where(p => p.ParameterName.Equals(CoreConstants.Parameters.MEAN_HEIGHT)).ToList();
          var volumeParams = nhanesParams.Where(p => p.ParameterName.Equals(Constants.Parameters.VOLUME)).ToList();
 
          //check number of new bw/height/volume parameters
@@ -219,15 +219,15 @@ namespace PKSim.IntegrationTests
       private bool isChangedFluidRecircFlowParameter(ParameterRateMetaData parameterRateMetaData)
       {
          return isChangedFlowParameter(parameterRateMetaData,
-            CoreConstants.Parameter.RECIRCULATION_FLOW,
-            CoreConstants.Parameter.RECIRCULATION_FLOW_INCL_MUCOSA);
+            CoreConstants.Parameters.RECIRCULATION_FLOW,
+            CoreConstants.Parameters.RECIRCULATION_FLOW_INCL_MUCOSA);
       }
 
       private bool isChangedLymphFlowParameter(ParameterRateMetaData parameterRateMetaData)
       {
          return isChangedFlowParameter(parameterRateMetaData,
-            CoreConstants.Parameter.LYMPH_FLOW,
-            CoreConstants.Parameter.LYMPH_FLOW_INCL_MUCOSA);
+            CoreConstants.Parameters.LYMPH_FLOW,
+            CoreConstants.Parameters.LYMPH_FLOW_INCL_MUCOSA);
       }
 
       private bool isChangedFlowParameter(ParameterRateMetaData parameterRateMetaData,
@@ -408,10 +408,10 @@ namespace PKSim.IntegrationTests
       {
          var paramValueRepo = IoC.Resolve<IParameterRateRepository>();
 
-         var ontogenyFactory = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameter.ONTOGENY_FACTOR) && p.ContainerName == "PROTEIN");
+         var ontogenyFactory = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameters.ONTOGENY_FACTOR) && p.ContainerName == "PROTEIN");
          ontogenyFactory.BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Individual);
 
-         var ontogenyFactoryGI = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameter.ONTOGENY_FACTOR_GI) && p.ContainerName == "PROTEIN");
+         var ontogenyFactoryGI = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameters.ONTOGENY_FACTOR_GI) && p.ContainerName == "PROTEIN");
          ontogenyFactoryGI.BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Individual);
       }
    }
@@ -433,7 +433,7 @@ namespace PKSim.IntegrationTests
       public void should_set_plasma_protein_scale_factor_variable_in_population()
       {
          var paramValueRepo = IoC.Resolve<IParameterValueRepository>();
-         var plasmaProteinScaleFactor = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameter.PLASMA_PROTEIN_SCALE_FACTOR));
+         var plasmaProteinScaleFactor = paramValueRepo.All().First(p => p.ParameterName.Equals(CoreConstants.Parameters.PLASMA_PROTEIN_SCALE_FACTOR));
 
          plasmaProteinScaleFactor.CanBeVariedInPopulation.ShouldBeTrue();
       }
@@ -466,8 +466,8 @@ namespace PKSim.IntegrationTests
 
          var protein = flatMoleculeMapper.MapFrom(flatMoleculesRepo.FindBy(QuantityType.Protein), new FormulaCache());
 
-         protein.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR_GI).CanBeVaried.ShouldBeTrue();
-         protein.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR).CanBeVaried.ShouldBeTrue();
+         protein.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI).CanBeVaried.ShouldBeTrue();
+         protein.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR).CanBeVaried.ShouldBeTrue();
       }
    }
 
@@ -497,7 +497,7 @@ namespace PKSim.IntegrationTests
       {
          return (from moleculeParameter in _allMoleculeParameters
             where moleculeParameter.MoleculeName.Equals(moleculeName)
-            where moleculeParameter.Parameter.Name.Equals(CoreConstants.Parameter.HALF_LIFE_LIVER)
+            where moleculeParameter.Parameter.Name.Equals(CoreConstants.Parameters.HALF_LIFE_LIVER)
             select moleculeParameter.Parameter as DistributedParameter).FirstOrDefault();
       }
 
@@ -507,7 +507,7 @@ namespace PKSim.IntegrationTests
          foreach (var moleculeParameter in _allMoleculeParameters)
          {
             var param = moleculeParameter.Parameter;
-            if (!param.Name.Equals(CoreConstants.Parameter.REFERENCE_CONCENTRATION))
+            if (!param.Name.Equals(CoreConstants.Parameters.REFERENCE_CONCENTRATION))
                continue;
 
             var refConcParam = param as DistributedParameter;
@@ -568,7 +568,7 @@ namespace PKSim.IntegrationTests
             .First(x => x.InteractionType == InteractionType.IrreversibleInhibition);
 
          inhibitionProcess.ShouldNotBeNull();
-         inhibitionProcess.Parameter(CoreConstants.Parameter.KI).ShouldNotBeNull();
+         inhibitionProcess.Parameter(CoreConstants.Parameters.KI).ShouldNotBeNull();
          inhibitionProcess.Parameter(CoreConstantsForSpecs.Parameter.KINACT).ShouldNotBeNull();
       }
 
@@ -579,7 +579,7 @@ namespace PKSim.IntegrationTests
          foreach (var moleculeParameter in moleculeParams.All())
          {
             var param = moleculeParameter.Parameter;
-            if (!param.Name.Equals(CoreConstants.Parameter.HALF_LIFE_INTESTINE))
+            if (!param.Name.Equals(CoreConstants.Parameters.HALF_LIFE_INTESTINE))
                continue;
 
             param.Value.ShouldBeEqualTo(23 * 60, 1e-5);
@@ -597,9 +597,113 @@ namespace PKSim.IntegrationTests
          {
             var someMolecule = moleculeBuilderFactory.Create(moleculeType, new FormulaCache());
 
-            var halfLifeParam = someMolecule.Parameter(CoreConstants.Parameter.HALF_LIFE_INTESTINE);
+            var halfLifeParam = someMolecule.Parameter(CoreConstants.Parameters.HALF_LIFE_INTESTINE);
             halfLifeParam.Value.ShouldBeEqualTo(23 * 60, 1e-5);
          }
+      }
+   }
+
+   public class When_checking_the_changes_in_the_database_for_version_7_2_2 : concern_for_DatabaseUpdate
+   {
+      [Observation]
+      public void should_set_characteristics_of_individual_group_mode_to_simple()
+      {
+         var groupsRepo = IoC.Resolve<IGroupRepository>();
+         var group = groupsRepo.GroupByName(CoreConstants.Groups.INDIVIDUAL_CHARACTERISTICS);
+
+         group.IsAdvanced.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_fix_reference_concentration_parameter_name_in_tab_molecule_parameters()
+      {
+         var moleculeParameterRepo = IoC.Resolve<IMoleculeParameterRepository>();
+         var refConcParameters = moleculeParameterRepo.All().Where(mp => mp.Parameter.Name.StartsWith("Reference")).ToList();
+
+         refConcParameters.Count.ShouldBeGreaterThan(0);
+         refConcParameters.Each(mp=>mp.Parameter.Name.ShouldBeEqualTo(CoreConstants.Parameters.REFERENCE_CONCENTRATION));
+      }
+   }
+
+   public class When_checking_the_changes_in_the_database_for_version_7_3 : concern_for_DatabaseUpdate
+   {
+      private IValueOriginRepository _valueOriginsRepository;
+      private IParameterDistributionRepository _parameterDistributionRepository;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _valueOriginsRepository = IoC.Resolve<IValueOriginRepository>();
+         _parameterDistributionRepository = IoC.Resolve<IParameterDistributionRepository>();
+      }
+
+      [Observation]
+      public void value_origins_with_nonempty_description_should_not_be_undefined()
+      {
+         foreach (var valueOrigin in _valueOriginsRepository.All().Where(vo=>!string.IsNullOrEmpty(vo.Description)))
+         {
+            (valueOrigin.Source.Id==ValueOriginSourceId.Undefined).ShouldBeFalse(valueOrigin.Description);
+         }
+      }
+
+      [Observation]
+      public void should_properly_set_some_value_origins()
+      {
+         var agesWithFilledValueOrigins = new double[] {0, 1, 5, 10, 15, 30, 40, 50, 60, 70, 80, 90, 100};
+         var icrpParams = _parameterDistributionRepository.All()
+            .Where(p => p.Population.Equals(CoreConstants.Population.ICRP))
+            .Where(p=>p.ParameterName.IsOneOf(
+               CoreConstantsForSpecs.Parameter.VOLUME,
+               CoreConstants.Parameters.BLOOD_FLOW)).ToList();
+
+         icrpParams.Count.ShouldBeGreaterThanOrEqualTo(agesWithFilledValueOrigins.Length*2*2); //2 Genders * 2 parameters per age
+
+         foreach (var param in icrpParams)
+         {
+            if(param.Age.IsOneOf(agesWithFilledValueOrigins))
+               param.ValueOrigin.IsUndefined.ShouldBeFalse();
+            else
+               param.ValueOrigin.IsUndefined.ShouldBeTrue();
+         } 
+      }
+
+      [Observation]
+      public void should_retrieve_new_agp_ontogeny()
+      {
+         var ontogenyRepo = IoC.Resolve<IOntogenyRepository>();
+         var ontogeny = new DatabaseOntogeny { Name = CoreConstants.Molecule.AGP, SpeciesName = CoreConstants.Species.HUMAN};
+
+         var agpOntogenies = ontogenyRepo.AllValuesFor(ontogeny).OrderBy(onto=>onto.PostmenstrualAge).ToArray();
+         agpOntogenies.Length.ShouldBeEqualTo(19);
+
+         agpOntogenies[0].PostmenstrualAge.ShouldBeEqualTo(0.76, 1e-2);
+         agpOntogenies[agpOntogenies.Length-1].PostmenstrualAge.ShouldBeEqualTo(90.45, 1e-2);
+
+         foreach (var agpOntogeny in agpOntogenies)
+         {
+            agpOntogeny.Deviation.ShouldBeGreaterThan(1.44);
+            agpOntogeny.Deviation.ShouldBeSmallerThan(1.89);
+         }
+      }
+
+      [Observation]
+      public void first_human_population_returned_from_the_database_should_be_ICRP()
+      {
+         var populationsRepo = IoC.Resolve<IPopulationRepository>();
+         var populationsOrderedBySequence = populationsRepo.All().OrderBy(pop => pop.Sequence);
+         var firstPopulation = populationsOrderedBySequence.First(pop=>pop.Species.Equals(CoreConstants.Species.HUMAN));
+
+         firstPopulation.Name.ShouldBeEqualTo(CoreConstants.Population.ICRP);
+      }
+
+      [Observation]
+      public void first_population_gender_returned_from_the_database_should_be_ICRP_male()
+      {
+         var populationGenderRepo = IoC.Resolve<IFlatPopulationGenderRepository>();
+         var firstPopulationGender = populationGenderRepo.All().First();
+
+         firstPopulationGender.Population.ShouldBeEqualTo(CoreConstants.Population.ICRP);
+         firstPopulationGender.GenderName.ShouldBeEqualTo(CoreConstants.Gender.Male);
       }
    }
 }

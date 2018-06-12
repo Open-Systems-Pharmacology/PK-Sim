@@ -79,7 +79,7 @@ namespace PKSim.Core.Services
 
       public double Mean
       {
-         get { return _meanParameter.Value; }
+         get => _meanParameter.Value;
          set
          {
             if (_meanParameter.Value == value) return;
@@ -89,7 +89,7 @@ namespace PKSim.Core.Services
 
       public double Deviation
       {
-         get { return _deviationParameter.Value; }
+         get => _deviationParameter.Value;
          set
          {
             if (_deviationParameter.Value == value) return;
@@ -97,19 +97,9 @@ namespace PKSim.Core.Services
          }
       }
 
-      public DistributionType DistributionType
-      {
-         get { return _parameter.Formula.DistributionType(); }
-      }
+      public DistributionType DistributionType => _parameter.Formula.DistributionType();
 
-      public double DefaultValue
-      {
-         get
-         {
-            //return a value without any perturbation
-            return generateValue(0);
-         }
-      }
+      public double DefaultValue => generateValue(0);
 
       public double GenerateRandomValueForIndividual(RandomGenerator randomGenerator)
       {
@@ -159,10 +149,7 @@ namespace PKSim.Core.Services
          _value = value;
       }
 
-      public double DefaultValue
-      {
-         get { return _value; }
-      }
+      public double DefaultValue => _value;
 
       public double GenerateRandomValueForIndividual(RandomGenerator randomGenerator)
       {

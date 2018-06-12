@@ -21,7 +21,7 @@ namespace PKSim.Core.Commands
          Description = PKSimConstants.Command.SetMetaboliteForProcess(_newMetabolite, process.Name, process.MetaboliteName);
          ObjectType = PKSimConstants.ObjectTypes.MetabolizingEnzyme;
 
-         context.UpdateBuildinBlockProperties(this, context.BuildingBlockContaining(_process));
+         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(_process));
       }
 
       public override void RestoreExecutionData(IExecutionContext context)

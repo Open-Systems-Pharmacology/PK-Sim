@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Maths.Interpolations;
 
 namespace PKSim.Core.Model
 {
@@ -11,8 +11,9 @@ namespace PKSim.Core.Model
       private readonly IInterpolation _interpolation;
       private readonly OSPSuite.Core.Domain.Formulas.IDistributionFormulaFactory _distributionFormulaFactory;
 
-      public UniformDistributionFormulaSpecificationFactory(IInterpolation interpolation,
-                                                            OSPSuite.Core.Domain.Formulas.IDistributionFormulaFactory distributionFormulaFactory)
+      public UniformDistributionFormulaSpecificationFactory(
+         IInterpolation interpolation,
+         OSPSuite.Core.Domain.Formulas.IDistributionFormulaFactory distributionFormulaFactory)
       {
          _interpolation = interpolation;
          _distributionFormulaFactory = distributionFormulaFactory;
@@ -34,17 +35,18 @@ namespace PKSim.Core.Model
             minParameter.Value = distributionMetaData.MinValue.Value;
             maxParameter.Value = distributionMetaData.MaxValue.Value;
          }
+
          return _distributionFormulaFactory.CreateUniformDistributionFormulaFor(parameter, minParameter, maxParameter);
       }
 
       public void UpdateDistributionBasedOn(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, IDistributedParameter baseParameter, OriginData originData)
       {
          var knownSamples = from distribution in distributions
-                            select new
-                               {
-                                  Min = new Sample(distribution.Age, distribution.MinValue.Value),
-                                  Max = new Sample(distribution.Age, distribution.MaxValue.Value),
-                               };
+            select new
+            {
+               Min = new Sample(distribution.Age, distribution.MinValue.Value),
+               Max = new Sample(distribution.Age, distribution.MaxValue.Value),
+            };
 
          knownSamples = knownSamples.ToList();
          parameter.Parameter(Constants.Distribution.MINIMUM).Value = _interpolation.Interpolate(knownSamples.Select(item => item.Min), originData.Age.Value);

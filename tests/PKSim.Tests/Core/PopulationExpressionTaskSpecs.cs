@@ -79,7 +79,7 @@ namespace PKSim.Core
       private Population _population;
       private PKSimMacroCommand _result;
       private IParameter _moleculeParameterAsAdvanced;
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
 
       protected override void Context()
       {
@@ -120,8 +120,8 @@ namespace PKSim.Core
       {
          _result.Count.ShouldBeEqualTo(2);
          _result.All().ElementAt(0).ShouldBeAnInstanceOf<PKSimMacroCommand>();
-         var removeAdvancedParmaeterCommand = _result.All().ElementAt(0).DowncastTo<PKSimMacroCommand>();
-         removeAdvancedParmaeterCommand.All().First().ShouldBeAnInstanceOf<RemoveAdvancedParameterFromContainerCommand>();
+         var removeAdvancedParameterCommand = _result.All().ElementAt(0).DowncastTo<PKSimMacroCommand>();
+         removeAdvancedParameterCommand.All().First().ShouldBeAnInstanceOf<RemoveAdvancedParameterFromContainerCommand>();
          _result.All().ElementAt(1).ShouldBeAnInstanceOf<RemoveMoleculeFromPopulationCommand>();
       }
    }

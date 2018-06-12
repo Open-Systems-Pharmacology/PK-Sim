@@ -47,7 +47,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       protected DataTable ExpressionLevelParameters(TMolecule molecule)
       {
          var dataTable = new DataTable {TableName = PKSimConstants.UI.NormalizedExpressionLevels};
-         var parameterColumn = _representationInfoRepository.DisplayNameFor(RepresentationObjectType.PARAMETER, CoreConstants.Parameter.REL_EXP_NORM);
+         var parameterColumn = _representationInfoRepository.DisplayNameFor(RepresentationObjectType.PARAMETER, CoreConstants.Parameters.REL_EXP_NORM);
          dataTable.Columns.Add(parameterColumn, typeof (string));
          dataTable.Columns.Add(PKSimConstants.UI.Value, typeof (string));
          dataTable.Columns.Add(PKSimConstants.UI.Percentage, typeof (string));

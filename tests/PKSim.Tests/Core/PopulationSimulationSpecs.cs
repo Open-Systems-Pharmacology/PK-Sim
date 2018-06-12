@@ -21,7 +21,7 @@ namespace PKSim.Core
          sut.Model = A.Fake<IModel>();
          sut.Model.Root = new Container().WithName(sut.Name);
          var drugContainer = new Container().WithName("DRUG");
-         drugContainer.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.TotalDrugMass));
+         drugContainer.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.TOTAL_DRUG_MASS));
 
          sut.Model.Root.Add(drugContainer);
          _liver = new Container().WithName("Liver");
@@ -171,6 +171,7 @@ namespace PKSim.Core
          sut.Model.Root.Add(new PKSimParameter {Name = "P3", BuildingBlockType = PKSimBuildingBlockType.Event});
          sut.Model.Root.Add(new PKSimParameter {Name = "P4", BuildingBlockType = PKSimBuildingBlockType.Formulation});
          sut.Model.Root.Add(new PKSimParameter {Name = "P5", BuildingBlockType = PKSimBuildingBlockType.Individual});
+         sut.Model.Root.Add(new PKSimParameter {Name = "P6", BuildingBlockType = PKSimBuildingBlockType.Protocol});
       }
 
       protected override void Because()
@@ -200,6 +201,13 @@ namespace PKSim.Core
       public void should_return_all_formulation_parameters()
       {
          _allParameters.Contains("P4").ShouldBeTrue();
+      }
+
+
+      [Observation]
+      public void should_return_all_protcol_parameters()
+      {
+         _allParameters.Contains("P6").ShouldBeTrue();
       }
 
       [Observation]
@@ -329,7 +337,7 @@ namespace PKSim.Core
    public class When_updating_the_values_from_an_original_population_simulation : concern_for_PopulationSimulation
    {
       private PopulationSimulation _originalSimulation;
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
       private string _parameterPath;
 
       protected override void Context()
@@ -339,7 +347,7 @@ namespace PKSim.Core
          _originalSimulation = new PopulationSimulation();
          _originalSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("Pop",PKSimBuildingBlockType.Population){BuildingBlock = _population});
          _originalSimulation.Add(new AdvancedParameterCollection().WithName("AdvancedParameterCollection"));
-         _advancedParameter = A.Fake<IAdvancedParameter>();
+         _advancedParameter = A.Fake<AdvancedParameter>();
          _advancedParameter.ParameterPath=_parameterPath;
          A.CallTo(() => _advancedParameter.GenerateRandomValues(3)).Returns(new []
          {

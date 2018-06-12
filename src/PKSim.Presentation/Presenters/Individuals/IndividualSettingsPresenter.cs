@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -41,36 +42,32 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly IIndividualDefaultValueRetriever _defaultValueRetriever;
       private readonly IIndividualToIIndividualSettingsDTOMapper _individualSettingsDTOMapper;
       private readonly IIndividualSettingsDTOToIndividualMapper _individualMapper;
+      private readonly IEditValueOriginPresenter _editValueOriginPresenter;
+
       public bool IndividualCreated { get; private set; }
-
-      public bool SpeciesVisible
-      {
-         set { _view.SpeciesVisible = value; }
-      }
-
-      public void AgeChanged()
-      {
-         RetrieveMeanValues();
-      }
-
-      public void GestationalAgeChanged()
-      {
-         RetrieveMeanValues();
-      }
 
       private bool _isUpdating;
       private IndividualSettingsDTO _individualSettingsDTO;
-      private Individual _individual;
 
-      public IndividualSettingsPresenter(IIndividualSettingsView view, ISpeciesRepository speciesRepository, ICalculationMethodCategoryRepository calculationMethodCategoryRepository,
-         IIndividualDefaultValueRetriever defaultValueRetriever, IIndividualToIIndividualSettingsDTOMapper individualSettingsDTOMapper,
-         IIndividualSettingsDTOToIndividualMapper individualMapper) : base(view)
+      public IndividualSettingsPresenter(
+         IIndividualSettingsView view,
+         ISpeciesRepository speciesRepository,
+         ICalculationMethodCategoryRepository calculationMethodCategoryRepository,
+         IIndividualDefaultValueRetriever defaultValueRetriever,
+         IIndividualToIIndividualSettingsDTOMapper individualSettingsDTOMapper,
+         IIndividualSettingsDTOToIndividualMapper individualMapper,
+         IEditValueOriginPresenter editValueOriginPresenter) : base(view)
       {
          _speciesRepository = speciesRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
          _defaultValueRetriever = defaultValueRetriever;
          _individualSettingsDTOMapper = individualSettingsDTOMapper;
          _individualMapper = individualMapper;
+         _editValueOriginPresenter = editValueOriginPresenter;
+         _editValueOriginPresenter.ShowCaption = false;
+         AddSubPresenters(_editValueOriginPresenter);
+         _view.AddValueOriginView(_editValueOriginPresenter.View);
+         _editValueOriginPresenter.ValueOriginUpdated = valueOriginUpdated;
       }
 
       private void loadFromIndividual(Individual individual)
@@ -79,15 +76,22 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.BindToSettings(_individualSettingsDTO);
          _view.BindToParameters(_individualSettingsDTO);
          _view.BindToSubPopulation(_individualSettingsDTO.SubPopulation);
+         _editValueOriginPresenter.Edit(_individualSettingsDTO);
          updatePopulationControls();
       }
 
       public virtual void EditIndividual(Individual individualToEdit)
       {
          loadFromIndividual(individualToEdit);
-         _individual = individualToEdit;
+         Individual = individualToEdit;
          IndividualCreated = true;
          _view.IsReadOnly = true;
+      }
+
+      private void valueOriginUpdated(ValueOrigin valueOrigin)
+      {
+         _individualSettingsDTO.ValueOrigin.UpdateFrom(valueOrigin);
+         ViewChanged();
       }
 
       public IEnumerable<CalculationMethod> AllCalculationMethodsFor(string category)
@@ -102,12 +106,22 @@ namespace PKSim.Presentation.Presenters.Individuals
 
          updatePopulationControls();
          retrieveDefaultValues();
+         _editValueOriginPresenter.Edit(_individualSettingsDTO);
       }
 
       public void PrepareForScaling(Individual individualToScale)
       {
          loadFromIndividual(individualToScale);
       }
+
+      public bool SpeciesVisible
+      {
+         set => _view.SpeciesVisible = value;
+      }
+
+      public void AgeChanged() => RetrieveMeanValues();
+
+      public void GestationalAgeChanged() => RetrieveMeanValues();
 
       public void SpeciesChanged()
       {
@@ -202,15 +216,12 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          this.DoWithinExceptionHandler(() =>
          {
-            _individual = null;
-            _individual = _individualMapper.MapFrom(_individualSettingsDTO);
+            Individual = null;
+            Individual = _individualMapper.MapFrom(_individualSettingsDTO);
             IndividualCreated = true;
          });
       }
 
-      public Individual Individual
-      {
-         get { return _individual; }
-      }
+      public Individual Individual { get; private set; }
    }
 }

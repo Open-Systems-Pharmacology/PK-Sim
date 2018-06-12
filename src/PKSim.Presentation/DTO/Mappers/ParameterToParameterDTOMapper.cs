@@ -40,7 +40,7 @@ namespace PKSim.Presentation.DTO.Mappers
          _parameterDisplayPathMapper = parameterDisplayPathMapper;
          _favoriteRepository = favoriteRepository;
          _entityPathResolver = entityPathResolver;
-         _parameterNameWithListOfValues = new List<string>(CoreConstants.Parameter.AllWithListOfValues);
+         _parameterNameWithListOfValues = new List<string>(CoreConstants.Parameters.AllWithListOfValues);
       }
 
       public IParameterDTO MapFrom(IParameter parameter)
@@ -75,7 +75,7 @@ namespace PKSim.Presentation.DTO.Mappers
          parameterDTO.Sequence = parameter.Sequence;
          parameterDTO.PathElements = _parameterDisplayPathMapper.MapFrom(parameter);
 
-         //now create special list of values for parmaeter for our discrete parameters 
+         //now create special list of values for parameter for our discrete parameters 
          updateListOfValues(parameterDTO, parameter);
       }
 
@@ -84,10 +84,10 @@ namespace PKSim.Presentation.DTO.Mappers
          var allVisibleUnits = parameter.Dimension.VisibleUnits();
 
          //WORKAROUND to remove nano units
-         if (parameter.IsNamed(CoreConstants.Parameter.MEAN_WEIGHT))
+         if (parameter.IsNamed(CoreConstants.Parameters.MEAN_WEIGHT))
             return pruneUnits(allVisibleUnits, "kg", "g");
 
-         if (parameter.IsNamed(CoreConstants.Parameter.MEAN_HEIGHT))
+         if (parameter.IsNamed(CoreConstants.Parameters.MEAN_HEIGHT))
             return pruneUnits(allVisibleUnits, "m", "cm");
 
          return allVisibleUnits;
@@ -101,54 +101,54 @@ namespace PKSim.Presentation.DTO.Mappers
       private void updateListOfValues(ParameterDTO parameterDTO, IParameter parameter)
       {
          if (!_parameterNameWithListOfValues.Contains(parameter.Name)) return;
-         if (parameter.IsNamed(CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION))
+         if (parameter.IsNamed(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
          {
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION_NORMAL, PKSimConstants.UI.Normal);
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL, PKSimConstants.UI.LogNormal);
+            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL, PKSimConstants.UI.Normal);
+            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL, PKSimConstants.UI.LogNormal);
          }
-         else if (parameter.IsNamed(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER))
+         else if (parameter.IsNamed(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER))
          {
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BindingPartnerAlbumin, PKSimConstants.UI.Albumin);
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BindingPartnerAgp, PKSimConstants.UI.Glycoprotein);
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BindingPartnerUnknown, PKSimConstants.UI.Unknown);
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_ALBUMIN, PKSimConstants.UI.Albumin);
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_AGP, PKSimConstants.UI.Glycoprotein);
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_UNKNOWN, PKSimConstants.UI.Unknown);
          }
-         else if (parameter.IsNamed(CoreConstants.Parameter.NUMBER_OF_BINS))
+         else if (parameter.IsNamed(CoreConstants.Parameters.NUMBER_OF_BINS))
          {
-            addNumericListOfValues(parameterDTO, 1, CoreConstants.Parameter.MAX_NUMBER_OF_BINS);
+            addNumericListOfValues(parameterDTO, 1, CoreConstants.Parameters.MAX_NUMBER_OF_BINS);
          }
-         else if (parameter.NameIsOneOf(CoreConstants.Parameter.Halogens))
+         else if (parameter.NameIsOneOf(CoreConstants.Parameters.Halogens))
          {
-            addNumericListOfValues(parameterDTO, 0, CoreConstants.Parameter.MAX_NUMBER_OF_HALOGENS);
+            addNumericListOfValues(parameterDTO, 0, CoreConstants.Parameters.MAX_NUMBER_OF_HALOGENS);
          }
-         else if (parameter.Name.StartsWith(CoreConstants.Parameter.ParameterCompoundTypeBase))
+         else if (parameter.Name.StartsWith(CoreConstants.Parameters.ParameterCompoundTypeBase))
          {
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.CompoundTypeAcid, CompoundType.Acid.ToString());
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.CompoundTypeNeutral, CompoundType.Neutral.ToString());
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.CompoundTypeBase, CompoundType.Base.ToString());
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_ACID, CompoundType.Acid.ToString());
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_NEUTRAL, CompoundType.Neutral.ToString());
+            parameterDTO.ListOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_BASE, CompoundType.Base.ToString());
          }
-         else if (parameter.IsNamed(CoreConstants.Parameter.PARTICLE_DISPERSE_SYSTEM))
+         else if (parameter.IsNamed(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM))
          {
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameter.MONODISPERSE, PKSimConstants.UI.Monodisperse);
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameter.POLYDISPERSE, PKSimConstants.UI.Polydisperse);
+            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.MONODISPERSE, PKSimConstants.UI.Monodisperse);
+            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.POLYDISPERSE, PKSimConstants.UI.Polydisperse);
          }
-         else if (parameter.IsNamed(CoreConstants.Parameter.PRECIPITATED_DRUG_SOLUBLE))
+         else if (parameter.IsNamed(CoreConstants.Parameters.PRECIPITATED_DRUG_SOLUBLE))
          {
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameter.SOLUBLE, PKSimConstants.UI.Soluble);
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameter.INSOLUBLE, PKSimConstants.UI.Insoluble);
+            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.SOLUBLE, PKSimConstants.UI.Soluble);
+            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.INSOLUBLE, PKSimConstants.UI.Insoluble);
          }
-         else if (parameter.IsNamed(CoreConstants.Parameter.GESTATIONAL_AGE))
+         else if (parameter.IsNamed(CoreConstants.Parameters.GESTATIONAL_AGE))
          {
-            addNumericListOfValues(parameterDTO, CoreConstants.PRETERM_RANGE.Min(), CoreConstants.PRETERM_RANGE.Max());
+            addNumericListOfValues(parameterDTO, CoreConstants.PretermRange.Min(), CoreConstants.PretermRange.Max());
          }
-         else if (CoreConstants.Parameter.AllBooleanParameters.Contains(parameter.Name))
+         else if (CoreConstants.Parameters.AllBooleanParameters.Contains(parameter.Name))
          {
             parameterDTO.ListOfValues.Add(1, PKSimConstants.UI.Yes);
             parameterDTO.ListOfValues.Add(0, PKSimConstants.UI.No);
          }
-         else if (parameter.NameIsOneOf(CoreConstants.Parameter.PARA_ABSORBTION_SINK, CoreConstants.Parameter.TRANS_ABSORBTION_SINK))
+         else if (parameter.NameIsOneOf(CoreConstants.Parameters.PARA_ABSORBTION_SINK, CoreConstants.Parameters.TRANS_ABSORBTION_SINK))
          {
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameter.SINK_CONDITION, PKSimConstants.UI.SinkCondition);
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameter.NO_SINK_CONDITION, PKSimConstants.UI.NoSinkCondition);
+            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.SINK_CONDITION, PKSimConstants.UI.SinkCondition);
+            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.NO_SINK_CONDITION, PKSimConstants.UI.NoSinkCondition);
          }
          else
             throw new ArgumentException("Cannot create list of values", parameter.Name);

@@ -42,5 +42,11 @@ namespace PKSim.Core.Services
       ///    Exports simulation pk-analyses to csv file
       /// </summary>
       Task ExportPKAnalysesToCSVAsync(PopulationSimulation populationSimulation);
+
+      /// <summary>
+      ///    Exports simulation pk-analyses to csv file
+      /// </summary>
+      Task ExportPKAnalysesToCSVAsync(PopulationSimulation populationSimulation, string fileName);
+         
    }
 }

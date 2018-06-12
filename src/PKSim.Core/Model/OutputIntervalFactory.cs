@@ -1,6 +1,6 @@
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
@@ -34,7 +34,7 @@ namespace PKSim.Core.Model
       private OutputInterval updated(OutputInterval interval)
       {
          interval.Name = PKSimConstants.UI.SimulationInterval;
-         interval.GetChildren<IParameter>().Each(p => { p.BuildingBlockType = PKSimBuildingBlockType.Simulation; });
+         interval.AllParameters().Each(p => p.BuildingBlockType = PKSimBuildingBlockType.Simulation);
          return interval;
       }
    }

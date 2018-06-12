@@ -9,7 +9,7 @@ namespace PKSim.Core.Model
    {
       public override double Value
       {
-         get { return base.Value; }
+         get => base.Value;
          set
          {
             if (Formula == null || !Formula.IsConstant())
@@ -39,33 +39,33 @@ namespace PKSim.Core.Model
             if (!this.IsOfType(PKSimBuildingBlockType.Individual))
                return false;
 
-            if (CoreConstants.Parameter.StandardCreateIndividualParameters.Contains(Name))
+            if (CoreConstants.Parameters.StandardCreateIndividualParameters.Contains(Name))
                return true;
 
-            if (CoreConstants.Parameter.DerivedCreatedIndividualParameters.Contains(Name))
+            if (CoreConstants.Parameters.DerivedCreatedIndividualParameters.Contains(Name))
                return true;
 
-            if (CoreConstants.Parameter.OntogenyFactors.Contains(Name))
+            if (CoreConstants.Parameters.OntogenyFactors.Contains(Name))
                return true;
 
-            if (this.NameIsOneOf(CoreConstants.Parameter.ONTOGENY_FACTOR_AGP, CoreConstants.Parameter.ONTOGENY_FACTOR_ALBUMIN))
+            if (this.NameIsOneOf(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP, CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN))
                return true;
 
             //only parameter in these 4 organs needs to be treated specially
             if (!isInFatOrMuscleOrLungOrPortailVein())
                return false;
 
-            if (CoreConstants.Parameter.VolumeFractionWaterParameters.Contains(Name) && isInFatOrMuscle())
+            if (CoreConstants.Parameters.VolumeFractionWaterParameters.Contains(Name) && isInFatOrMuscle())
                return true;
 
             //formula parameter indirectly changed by create individual 
-            if (string.Equals(CoreConstants.Parameter.FractionIntracellular, Name) && isInFatOrMuscle())
+            if (string.Equals(CoreConstants.Parameters.FRACTION_INTRACELLULAR, Name) && isInFatOrMuscle())
                return true;
 
-            if (CoreConstants.Parameter.VolumeFractionLipidsParameters.Contains(Name) && isInFat())
+            if (CoreConstants.Parameters.VolumeFractionLipidsParameters.Contains(Name) && isInFat())
                return true;
 
-            if (CoreConstants.Parameter.VolumeFractionProteinsParameters.Contains(Name) && isInMuscle())
+            if (CoreConstants.Parameters.VolumeFractionProteinsParameters.Contains(Name) && isInMuscle())
                return true;
 
             return false;

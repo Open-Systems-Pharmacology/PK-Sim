@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -8,10 +12,6 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.Mappers;
 using PKSim.Infrastructure.ORM.Repositories;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Assets;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
@@ -26,12 +26,19 @@ namespace PKSim.Infrastructure.Services
       private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IFlatMoleculeToMoleculeBuilderMapper _moleculeMapper;
       private readonly IDimensionRepository _dimensionRepository;
+      private readonly ICloner _cloner;
       private readonly IParameterFactory _parameterFactory;
 
-      public MoleculeBuilderFactory(IParameterFactory parameterFactory, IParameterSetUpdater parameterSetUpdater,
-         IObjectBaseFactory objectBaseFactory, IParameterIdUpdater parameterIdUpdater,
-         IFlatMoleculeRepository flatMoleculeRepository, IParameterContainerTask parameterContainerTask,
-         IFlatMoleculeToMoleculeBuilderMapper moleculeMapper, IDimensionRepository dimensionRepository)
+      public MoleculeBuilderFactory(
+         IParameterFactory parameterFactory,
+         IParameterSetUpdater parameterSetUpdater,
+         IObjectBaseFactory objectBaseFactory,
+         IParameterIdUpdater parameterIdUpdater,
+         IFlatMoleculeRepository flatMoleculeRepository,
+         IParameterContainerTask parameterContainerTask,
+         IFlatMoleculeToMoleculeBuilderMapper moleculeMapper,
+         IDimensionRepository dimensionRepository,
+         ICloner cloner)
       {
          _parameterFactory = parameterFactory;
          _parameterSetUpdater = parameterSetUpdater;
@@ -41,6 +48,7 @@ namespace PKSim.Infrastructure.Services
          _parameterContainerTask = parameterContainerTask;
          _moleculeMapper = moleculeMapper;
          _dimensionRepository = dimensionRepository;
+         _cloner = cloner;
       }
 
       public IMoleculeBuilder Create(QuantityType moleculeType, IFormulaCache formulaCache)
@@ -85,7 +93,7 @@ namespace PKSim.Infrastructure.Services
 
       private void removeGlobalExpressionsParameterFor(IMoleculeBuilder molecule)
       {
-         CoreConstants.Parameter.AllGlobalRelExpParameters.Each(parameterName =>
+         CoreConstants.Parameters.AllGlobalRelExpParameters.Each(parameterName =>
          {
             var parameter = molecule.Parameter(parameterName);
             if (parameter != null)
@@ -110,7 +118,7 @@ namespace PKSim.Infrastructure.Services
          _parameterSetUpdater.UpdateValuesByName(allSimpleParametersFrom(compound), drug.AllParameters());
 
          //once simple parameters have been set, set the alternative parameters
-         updateAlternativeParameters(compound, compoundProperties, drug);
+         updateAlternativeParameters(compound, compoundProperties, drug, formulaCache);
 
          //add interaction parameters
          addInteractionParameters(compound, drug, interactionProperties);
@@ -143,12 +151,12 @@ namespace PKSim.Infrastructure.Services
          return interactionProperties.Uses(interactionProcess);
       }
 
-      private void updateAlternativeParameters(Compound compound, CompoundProperties compoundProperties, IMoleculeBuilder drug)
+      private void updateAlternativeParameters(Compound compound, CompoundProperties compoundProperties, IMoleculeBuilder drug, IFormulaCache formulaCache)
       {
-         selectedAlternativesFor(compound, compoundProperties).Each(alternative => updateAlternativeParameters(alternative, drug));
+         selectedAlternativesFor(compound, compoundProperties).Each(alternative => updateAlternativeParameters(alternative, drug, formulaCache));
       }
 
-      private void updateAlternativeParameters(ParameterAlternative alternative, IMoleculeBuilder drug)
+      private void updateAlternativeParameters(ParameterAlternative alternative, IMoleculeBuilder drug, IFormulaCache formulaCache)
       {
          var allParameters = alternative.AllParameters().ToList();
          foreach (var alternativeParameter in allParameters)
@@ -157,19 +165,26 @@ namespace PKSim.Infrastructure.Services
             var drugParameter = drug.Parameter(alternativeParameter.Name);
             if (drugParameter == null) continue;
 
+            if (alternativeParameter.Formula.IsTable())
+            {
+               var tableFormula = _cloner.Clone(alternativeParameter.Formula);
+               formulaCache.Add(tableFormula);
+               drugParameter.Formula = tableFormula;
+            }
+
             //parameter is a rate. parameter in molecule should be readonly
-            if (!alternativeParameter.Formula.IsConstant())
+            else if (!alternativeParameter.Formula.IsConstant())
                drugParameter.Editable = false;
 
-            //target parameter is a rate and source parmaeter is constant
+            //target parameter is a rate and source parameter is constant
             else if (!drugParameter.Formula.IsConstant())
                drugParameter.Formula = _objectBaseFactory.Create<ConstantFormula>().WithValue(alternativeParameter.Value);
 
             _parameterSetUpdater.UpdateValue(alternativeParameter, drugParameter);
 
-            //only update value description if the alternative contains one and one only parameter
-            if (allParameters.Count == 1)
-               drugParameter.ValueDescription = alternative.Description;
+            //Default parameter Default and visible may not match database default and need to be set according to alternative parameter
+            drugParameter.IsDefault = alternativeParameter.IsDefault;
+            drugParameter.Visible = alternativeParameter.Visible;
          }
       }
 
@@ -239,6 +254,7 @@ namespace PKSim.Infrastructure.Services
          {
             parameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
             parameter.Visible = false;
+            parameter.IsDefault = true;
             parameter.CanBeVariedInPopulation = false;
             molecule.Add(parameter);
          }
@@ -246,13 +262,17 @@ namespace PKSim.Infrastructure.Services
          setDefaultParameterValues(molecule);
 
          //default value for floating in lumen should be 0
-         molecule.Parameter(CoreConstants.Parameter.IS_FLOATING_IN_LUMEN).Value = 0;
+         molecule.Parameter(CoreConstants.Parameters.IS_FLOATING_IN_LUMEN).Value = 0;
       }
 
       private void setDefaultParameterValues(IMoleculeBuilder molecule)
       {
-         var parameters = molecule.AllParameters().Where(parameter => CoreConstants.Parameter.CompoundMustInputParameters.Contains(parameter.Name));
-         parameters.Each(p => p.Value = double.NaN);
+         var parameters = molecule.AllParameters().Where(parameter => CoreConstants.Parameters.CompoundMustInputParameters.Contains(parameter.Name));
+         parameters.Each(p =>
+         {
+            p.Value = double.NaN;
+            p.IsDefault = true;
+         });
       }
    }
 }

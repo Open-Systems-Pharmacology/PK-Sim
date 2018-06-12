@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using PKSim.Core.Model;
-using PKSim.Presentation.Presenters.Parameters;
-using PKSim.Presentation.Views.Compounds;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
+using PKSim.Presentation.Presenters.Parameters;
+using PKSim.Presentation.Views.Compounds;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -23,6 +22,8 @@ namespace PKSim.Presentation.Presenters.Compounds
       {
          _multiParameterEditPresenter = multiParameterEditPresenter;
          _multiParameterEditPresenter.IsSimpleEditor = true;
+         _multiParameterEditPresenter.ValueOriginVisible = false;
+         _multiParameterEditPresenter.HeaderVisible = false;
 
          _view.SetParameterView(_multiParameterEditPresenter.BaseView);
       }
@@ -46,7 +47,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public string Description
       {
-         set { _view.Description = value; }
+         set => _view.Description = value;
       }
    }
 }

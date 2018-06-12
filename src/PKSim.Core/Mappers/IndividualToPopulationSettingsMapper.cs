@@ -23,7 +23,6 @@ namespace PKSim.Core.Mappers
 
       public RandomPopulationSettings MapFrom(Individual individual)
       {
-         //add age first
          var populationSettings = new RandomPopulationSettings();
          if (individual == null)
             return populationSettings;
@@ -31,6 +30,7 @@ namespace PKSim.Core.Mappers
          var population = individual.OriginData.SpeciesPopulation;
          populationSettings.BaseIndividual = individual;
          populationSettings.NumberOfIndividuals = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION;
+
          int genderCount = individual.AvailableGenders().Count();
          foreach (var gender in individual.AvailableGenders())
          {
@@ -39,23 +39,23 @@ namespace PKSim.Core.Mappers
 
          if (individual.IsAgeDependent)
          {
-            var ageParameter = individual.Organism.Parameter(CoreConstants.Parameter.AGE);
+            var ageParameter = individual.Organism.Parameter(CoreConstants.Parameters.AGE);
             populationSettings.AddParameterRange(constrainedParameterRangeFrom(ageParameter));
          }
 
          if (individual.IsPreterm)
          {
-            var gestationalAgeParameter = individual.Organism.Parameter(CoreConstants.Parameter.GESTATIONAL_AGE);
+            var gestationalAgeParameter = individual.Organism.Parameter(CoreConstants.Parameters.GESTATIONAL_AGE);
             populationSettings.AddParameterRange(discretedParameterRangeFrom(gestationalAgeParameter, numericListOfValues(gestationalAgeParameter)));
          }
 
          if (population.IsHeightDependent)
          {
-            var heightParameter = individual.Organism.Parameter(CoreConstants.Parameter.MEAN_HEIGHT);
+            var heightParameter = individual.Organism.Parameter(CoreConstants.Parameters.MEAN_HEIGHT);
             populationSettings.AddParameterRange(parameterRangeFrom(heightParameter));
          }
 
-         var weightParameter = individual.Organism.Parameter(CoreConstants.Parameter.MEAN_WEIGHT);
+         var weightParameter = individual.Organism.Parameter(CoreConstants.Parameters.MEAN_WEIGHT);
 
          if (population.IsAgeDependent)
             populationSettings.AddParameterRange(parameterRangeFrom(weightParameter));
@@ -64,7 +64,7 @@ namespace PKSim.Core.Mappers
 
          if (population.IsHeightDependent)
          {
-            var bmiParameter = individual.Organism.Parameter(CoreConstants.Parameter.BMI);
+            var bmiParameter = individual.Organism.Parameter(CoreConstants.Parameters.BMI);
             populationSettings.AddParameterRange(parameterRangeFrom(bmiParameter));
          }
          return populationSettings;
@@ -87,10 +87,7 @@ namespace PKSim.Core.Mappers
          return parameterRange;
       }
 
-      private ParameterRange parameterRangeFrom(IParameter parameter)
-      {
-         return createParameterRange<ParameterRange>(parameter);
-      }
+      private ParameterRange parameterRangeFrom(IParameter parameter) => createParameterRange<ParameterRange>(parameter);
 
       private TParameterRangeDTO createParameterRange<TParameterRangeDTO>(IParameter parameter) where TParameterRangeDTO : ParameterRange, new()
       {

@@ -83,10 +83,10 @@ namespace PKSim.Core.Services
          var individual = simulation.Individual;
          var organism = individual.Organism;
          var bodyweight = individual.WeightParameter.Value;
-         var hct = organism.Parameter(CoreConstants.Parameter.HCT).Value;
+         var hct = organism.Parameter(CoreConstants.Parameters.HCT).Value;
 
          var allPartitionCoefficients = simulation.Model.Neighborhoods
-            .GetAllChildren<IParameter>(p => p.IsNamed(CoreConstants.Parameter.K_CELL_PLS))
+            .GetAllChildren<IParameter>(p => p.IsNamed(CoreConstants.Parameters.K_CELL_PLS))
             .Where(p => p.ParentContainer.IsNamed(compoundName)).ToList();
 
 
@@ -94,7 +94,7 @@ namespace PKSim.Core.Services
          double vss = 0;
          foreach (var organ in organism.OrgansByType(OrganType.Tissue))
          {
-            var f_vas = organ.Parameter(CoreConstants.Parameter.FractionVascular).Value;
+            var f_vas = organ.Parameter(CoreConstants.Parameters.FRACTION_VASCULAR).Value;
             var volume = organ.Parameter(Constants.Parameters.VOLUME).Value;
             var k_cell_pls = getParameterFromNeighborhoodFor(organ, allPartitionCoefficients);
             vss += (k_cell_pls + f_vas * (1 - hct)) * volume;

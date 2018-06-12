@@ -1,22 +1,25 @@
-
-using PKSim.Presentation.DTO.Parameters;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Compounds
 {
    public class SolubilityAlternativeDTO : ParameterAlternativeDTO
    {
-      public SolubilityAlternativeDTO(PKSim.Core.Model.ParameterAlternative parameterAlternative) : base(parameterAlternative)
-      {
-      }
-
       public IParameterDTO SolubilityParameter { get; set; }
       public IParameterDTO RefpHParameter { get; set; }
       public IParameterDTO GainPerChargeParameter { get; set; }
 
+      public SolubilityAlternativeDTO(ParameterAlternative parameterAlternative, ValueOrigin valueOrigin) : base(parameterAlternative, valueOrigin)
+      {
+      }
+
+      public bool IsTable => SolubilityParameter?.FormulaType == FormulaType.Table;
+
       public double Solubility
       {
-         get { return SolubilityParameter.Value; }
+         get => SolubilityParameter.Value;
          set
          {
             /*nothing to do here*/
@@ -25,7 +28,7 @@ namespace PKSim.Presentation.DTO.Compounds
 
       public double RefpH
       {
-         get { return RefpHParameter.Value; }
+         get => RefpHParameter.Value;
          set
          {
             /*nothing to do here*/
@@ -34,7 +37,7 @@ namespace PKSim.Presentation.DTO.Compounds
 
       public double GainPerCharge
       {
-         get { return GainPerChargeParameter.Value; }
+         get => GainPerChargeParameter.Value;
          set
          {
             /*nothing to do here*/

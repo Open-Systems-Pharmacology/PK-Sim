@@ -25,7 +25,7 @@ namespace PKSim.Presentation
 
    public class When_mapping_a_schema_item_to_a_schema_item_dto : concern_for_SchemaItemToSchemaItemDTOMapper
    {
-      private ISchemaItem _schemaItem;
+      private SchemaItem _schemaItem;
       private SchemaItemDTO _schemaItemDTO;
       private ParameterDTO _doseParameterDTO;
       private ParameterDTO _startTimeParameterDTO;
@@ -33,7 +33,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _schemaItem = A.Fake<ISchemaItem>();
+         _schemaItem = A.Fake<SchemaItem>();
          _doseParameterDTO = A.Fake<ParameterDTO>();
          _startTimeParameterDTO = A.Fake<ParameterDTO>();
 

@@ -16,6 +16,7 @@ namespace PKSim.Presentation.Services
       ApplicationIcon IconFor(ISimulationComparison simulationComparison);
       ApplicationIcon IconFor(ParameterIdentification parameterIdentification);
       ApplicationIcon IconFor(SensitivityAnalysis sensitivityAnalysis);
+      ApplicationIcon IconFor(QualificationPlan qualificationPlan);
    }
 
    public class BuildingBlockIconRetriever : IBuildingBlockIconRetriever
@@ -38,7 +39,7 @@ namespace PKSim.Presentation.Services
             iconName = ApplicationIcons.PopulationSimulation.IconName;
 
          if (simulation.AllowAging)
-            iconName = string.Format("Aging{0}", iconName);
+            iconName = $"Aging{iconName}";
 
          return retrieveIconForStatus(iconName, _buildingBlockInSimulationManager.StatusFor(simulation));
       }
@@ -60,15 +61,11 @@ namespace PKSim.Presentation.Services
          return ApplicationIcons.IndividualSimulationComparison;
       }
 
-      public ApplicationIcon IconFor(ParameterIdentification parameterIdentification)
-      {
-         return ApplicationIcons.ParameterIdentification;
-      }
+      public ApplicationIcon IconFor(ParameterIdentification parameterIdentification) => ApplicationIcons.ParameterIdentification;
 
-      public ApplicationIcon IconFor(SensitivityAnalysis sensitivityAnalysis)
-      {
-         return ApplicationIcons.SensitivityAnalysis;
-      }
+      public ApplicationIcon IconFor(SensitivityAnalysis sensitivityAnalysis) => ApplicationIcons.SensitivityAnalysis;
+
+      public ApplicationIcon IconFor(QualificationPlan qualificationPlan) => ApplicationIcons.Formula;
 
       private string speciesNameFrom(UsedBuildingBlock usedBuildingBlock)
       {
@@ -76,9 +73,6 @@ namespace PKSim.Presentation.Services
          return individual == null ? usedBuildingBlock.BuildingBlockType.ToString() : individual.Species.Name;
       }
 
-      private ApplicationIcon retrieveIconForStatus(string iconName, BuildingBlockStatus status)
-      {
-         return ApplicationIcons.IconByName(string.Format("{0}{1}", iconName, status));
-      }
+      private ApplicationIcon retrieveIconForStatus(string iconName, BuildingBlockStatus status) => ApplicationIcons.IconByName($"{iconName}{status}");
    }
 }

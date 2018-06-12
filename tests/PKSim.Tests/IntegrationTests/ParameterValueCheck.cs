@@ -36,11 +36,11 @@ namespace PKSim.IntegrationTests
       public void the_value_for_mean_body_weight_for_all_species_but_human_should_be_equal_to_the_weight_value()
       {
          var errorList = new List<string>();
-         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.Human))
+         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.HUMAN))
          {
             var individualForSpecies = _individualRetriever.DefaultIndividualFor(species);
             double meanWeight = individualForSpecies.MeanWeight;
-            double bodyWeight = individualForSpecies.Organism.Parameter(CoreConstants.Parameter.WEIGHT).Value;
+            double bodyWeight = individualForSpecies.Organism.Parameter(CoreConstants.Parameters.WEIGHT).Value;
             if (!ValueComparer.AreValuesEqual(meanWeight, bodyWeight, 1e-2))
                errorList.Add(string.Format("Mean Body weight not equal to weight for '{0}': MeanWeight = {1}, BodyWeight={2}", species.Name, meanWeight, bodyWeight));
          }
@@ -53,7 +53,7 @@ namespace PKSim.IntegrationTests
       public void the_value_for_small_and_large_intestine_volume_should_be_equal_to_the_default_volume()
       {
          var errorList = new List<string>();
-         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.Human))
+         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.HUMAN))
          {
             var individualForSpecies = _individualRetriever.DefaultIndividualFor(species);
             var smallIntestine = individualForSpecies.Organism.Organ(CoreConstants.Organ.SmallIntestine);
@@ -78,12 +78,12 @@ namespace PKSim.IntegrationTests
          var errorList = new List<string>();
 
          var mouse = _individualRetriever.DefaultIndividualFor(
-            _speciesRepository.All().FindByName(CoreConstants.Species.Mouse));
+            _speciesRepository.All().FindByName(CoreConstants.Species.MOUSE));
          var mouseTissueOrgans = mouse.Organism.OrgansByType(OrganType.Tissue).ToList();
 
-         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.Human))
+         foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.HUMAN))
          {
-            var individualForSpecies = species.Name.Equals(CoreConstants.Species.Mouse)
+            var individualForSpecies = species.Name.Equals(CoreConstants.Species.MOUSE)
                ? mouse
                : _individualRetriever.DefaultIndividualFor(species);
 
@@ -93,7 +93,7 @@ namespace PKSim.IntegrationTests
             {
                var mouseTissueOrgan = mouseTissueOrgans.FindByName(tissueOrgan.Name);
 
-               if (tissueOrgan.Parameter(CoreConstants.Parameter.VOLUME_MOUSE).Value !=
+               if (tissueOrgan.Parameter(CoreConstants.Parameters.VOLUME_MOUSE).Value !=
                    mouseTissueOrgan.Parameter(Constants.Parameters.VOLUME).Value)
 
                errorList.Add($"{species.Name}.{tissueOrgan.Name}.{Constants.Parameters.VOLUME} is not equal to the corresponding mouse volume value");

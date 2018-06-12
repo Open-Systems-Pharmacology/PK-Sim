@@ -7,6 +7,11 @@ namespace PKSim.Presentation.DTO.Formulations
    {
       public FormulationTypeDTO Type { get; set; }
       public string Description { get; set; }
-      public IEnumerable<IParameter> Parameters { get; set; }
+      public IReadOnlyList<IParameter> Parameters { get; }
+
+      public FormulationDTO(IReadOnlyList<IParameter> parameters)
+      {
+         Parameters = parameters;
+      }
    }
 }

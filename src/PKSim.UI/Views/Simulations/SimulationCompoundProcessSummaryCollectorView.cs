@@ -29,7 +29,7 @@ namespace PKSim.UI.Views.Simulations
 
       public bool ShowInteractionView
       {
-         get { return layoutGroupInhibitionSelection.Visible; }
+         get => layoutGroupInhibitionSelection.Visible;
          set
          {
             layoutGroupInhibitionSelection.Visibility=LayoutVisibility.Never;

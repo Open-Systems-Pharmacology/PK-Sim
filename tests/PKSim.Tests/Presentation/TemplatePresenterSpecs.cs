@@ -1,26 +1,27 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Presenters;
-using PKSim.Presentation.Views;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
-using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Nodes;
+using PKSim.Presentation.Presenters;
+using PKSim.Presentation.Views;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_TemplatePresenter : ContextSpecification<ITemplatePresenter>
    {
       protected ITemplateTaskQuery _templateTaskQuery;
-      private IBuildingBlockFromTemplateView _view;
-      private IObjectTypeResolver _objectTypeResolver;
+      protected IBuildingBlockFromTemplateView _view;
+      protected IObjectTypeResolver _objectTypeResolver;
       private ITreeNodeFactory _treeNodeFactory;
       private ITreeNodeContextMenuFactory _contextMenuFactory;
       private IApplicationController _applicationController;
@@ -85,16 +86,16 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _compound1= new Compound();
+         _compound1 = new Compound();
          _compound2 = new Compound();
 
          _template1 = new Template {Name = "Template1", Id = "Id1"};
-         _template2 = new Template { Name = "Template2", Id = "Id2" };
+         _template2 = new Template {Name = "Template2", Id = "Id2"};
          _template1.References.Add(_template2);
          _template2.References.Add(_template1);
          _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
-         sut.ActivateNode(new ObjectWithIdAndNameNode<Template>(_template1));
+         sut.ActivateNodes(new[] {new ObjectWithIdAndNameNode<Template>(_template1)});
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
@@ -108,7 +109,138 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_load_thee_same_reference_twice()
       {
-         _allTemplates.ShouldOnlyContain(_compound1,_compound2);
+         _allTemplates.ShouldOnlyContain(_compound1, _compound2);
       }
    }
+
+   public class When_selecting_multiple_templates_at_the_same_time : concern_for_TemplatePresenter
+   {
+      private IReadOnlyList<Compound> _allTemplates;
+      private List<Template> _templates;
+      private Template _template1;
+      private Template _template2;
+      private Compound _compound1;
+      private Compound _compound2;
+      private readonly string _templateType = "TEMPLATE TYPE";
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound1 = new Compound();
+         _compound2 = new Compound();
+
+         _template1 = new Template {Name = "Template1", Id = "Id1"};
+         _template2 = new Template {Name = "Template2", Id = "Id2"};
+
+         A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
+         _templates = new List<Template> {_template1, _template2};
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
+         sut.ActivateNodes(new[] {new ObjectWithIdAndNameNode<Template>(_template1), new ObjectWithIdAndNameNode<Template>(_template2)});
+         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         _allTemplates = sut.LoadFromTemplate<Compound>(TemplateType.Compound);
+      }
+
+      [Observation]
+      public void should_load_all_selected_templates()
+      {
+         _allTemplates.ShouldOnlyContain(_compound1, _compound2);
+      }
+
+      [Observation]
+      public void should_have_update_the_view_with_the_number_of_selected_templates()
+      {
+         _view.Description.ShouldBeEqualTo(PKSimConstants.UI.NumberOfTemplatesSelectedIs(2, _templateType));
+      }
+   }
+
+   public class When_deleting_the_selected_template_and_the_user_decided_to_not_delete_the_template_after_all : concern_for_TemplatePresenter
+   {
+      private List<Template> _templates;
+      private Template _template1;
+      private Template _template2;
+      private Compound _compound1;
+      private Compound _compound2;
+      private readonly string _templateType = "TEMPLATE TYPE";
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound1 = new Compound();
+         _compound2 = new Compound();
+
+         _template1 = new Template {Name = "Template1", Id = "Id1"};
+         _template2 = new Template {Name = "Template2", Id = "Id2"};
+
+         A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
+         _templates = new List<Template> {_template1, _template2};
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
+         sut.ActivateNodes(new[] {new ObjectWithIdAndNameNode<Template>(_template1), new ObjectWithIdAndNameNode<Template>(_template2)});
+         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
+      }
+
+      protected override void Because()
+      {
+         sut.Delete(_template1);
+      }
+
+      [Observation]
+      public void should_not_delete_the_template_from_the_database()
+      {
+         A.CallTo(() => _templateTaskQuery.DeleteTemplate(_template1)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_deleting_the_selected_template_and_the_user_confirms_deletion : concern_for_TemplatePresenter
+   {
+      private List<Template> _templates;
+      private Template _template1;
+      private Template _template2;
+      private Compound _compound1;
+      private Compound _compound2;
+      private readonly string _templateType = "TEMPLATE TYPE";
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound1 = new Compound();
+         _compound2 = new Compound();
+
+         _template1 = new Template { Name = "Template1", Id = "Id1" };
+         _template2 = new Template { Name = "Template2", Id = "Id2" };
+
+         A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
+         _templates = new List<Template> { _template1, _template2 };
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
+         sut.ActivateNodes(new[] { new ObjectWithIdAndNameNode<Template>(_template1), new ObjectWithIdAndNameNode<Template>(_template2) });
+         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+      }
+      
+      protected override void Because()
+      {
+         sut.Delete(_template1);
+      }
+
+      [Observation]
+      public void should_delete_the_template_from_the_database()
+      {
+         A.CallTo(() => _templateTaskQuery.DeleteTemplate(_template1)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_refresh_the_selected_node_from_the_view()
+      {
+         A.CallTo(() => _view.SelectTemplate(_template2)).MustHaveHappened();
+      }
+   }
+
 }

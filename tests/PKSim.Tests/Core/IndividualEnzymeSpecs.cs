@@ -9,18 +9,18 @@ namespace PKSim.Core
 {
    public abstract class concern_for_IndividualEnzyme : ContextSpecification<IndividualEnzyme>
    {
-      protected IMoleculeExpressionContainer _expressionContainer;
-      protected IMoleculeExpressionContainer _anotherContainer;
+      protected MoleculeExpressionContainer _expressionContainer;
+      protected MoleculeExpressionContainer _anotherContainer;
       protected IParameter _referenceConcentration;
 
       protected override void Context()
       {
          _expressionContainer = new MoleculeExpressionContainer().WithName("tralal");
-         _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameter.REL_EXP));
-         _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameter.REL_EXP_NORM));
+         _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP));
+         _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP_NORM));
          _anotherContainer = new MoleculeExpressionContainer().WithName("AnotherContainer");
          sut = new IndividualEnzyme();
-         _referenceConcentration = A.Fake<IParameter>().WithName(CoreConstants.Parameter.REFERENCE_CONCENTRATION);
+         _referenceConcentration = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
          sut.Add(_referenceConcentration);
          sut.Add(_expressionContainer);
          sut.Add(_anotherContainer);

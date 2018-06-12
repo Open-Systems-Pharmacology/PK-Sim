@@ -1,18 +1,20 @@
 using System;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
    public interface IIndividualFactory
    {
       /// <summary>
-      /// Create an individual an optimize the volume if required. if the <paramref name="seed"/> parameter is defined, it will be used as seed in the created individual
+      ///    Create an individual an optimize the volume if required. if the <paramref name="seed" /> parameter is defined, it
+      ///    will be used as seed in the created individual
       /// </summary>
-      Individual CreateAndOptimizeFor(OriginData originData, int? seed=null);
+      Individual CreateAndOptimizeFor(OriginData originData, int? seed = null);
+
       Individual CreateStandardFor(OriginData originData);
       Individual CreateParameterLessIndividual();
    }
@@ -57,7 +59,7 @@ namespace PKSim.Core.Model
 
       public Individual CreateParameterLessIndividual()
       {
-         var species = _speciesRepository.FindByName(CoreConstants.Species.Human);
+         var species = _speciesRepository.FindByName(CoreConstants.Species.HUMAN);
          var originData = new OriginData
          {
             Species = species,
@@ -78,23 +80,27 @@ namespace PKSim.Core.Model
          rootContainer.Add(_objectBaseFactory.Create<IContainer>()
             .WithName(Constants.NEIGHBORHOODS)
             .WithMode(ContainerMode.Logical));
+
          individual.Root = rootContainer;
 
          createAction(_individualModelTask)(individual);
 
          //Update parameters defined in origin data and also in individual
-         setParameter(individual, CoreConstants.Parameter.AGE, originData.Age, originData.AgeUnit);
-         setParameter(individual, CoreConstants.Parameter.GESTATIONAL_AGE, originData.GestationalAge, originData.GestationalAgeUnit, individual.IsPreterm);
-         setParameter(individual, CoreConstants.Parameter.HEIGHT, originData.Height, originData.HeightUnit);
+         setParameter(individual, CoreConstants.Parameters.AGE, originData.Age, originData.AgeUnit);
+         setParameter(individual, CoreConstants.Parameters.GESTATIONAL_AGE, originData.GestationalAge, originData.GestationalAgeUnit, individual.IsPreterm);
+         setParameter(individual, CoreConstants.Parameters.HEIGHT, originData.Height, originData.HeightUnit);
 
          //Do not update value for BMI and weight in individual as this parameter are defined as formula parameter
-         setParameterDisplayUnit(individual, CoreConstants.Parameter.BMI, originData.BMIUnit);
-         setParameterDisplayUnit(individual, CoreConstants.Parameter.WEIGHT, originData.WeightUnit);
+         setParameterDisplayUnit(individual, CoreConstants.Parameters.WEIGHT, originData.WeightUnit, originData.ValueOrigin);
 
-         _ontogenyVariabilityUpdater.UpdatePlasmaProteinsOntogenyFor(individual);
+         //Do not uddate valuye origin for BMI as this is not an input from the user
+         setParameterDisplayUnit(individual, CoreConstants.Parameters.BMI, originData.BMIUnit);
 
          //update ontogeny parameters 
+         _ontogenyVariabilityUpdater.UpdatePlasmaProteinsOntogenyFor(individual);
+
          validate(individual);
+
          individual.IsLoaded = true;
          return individual;
       }
@@ -102,7 +108,7 @@ namespace PKSim.Core.Model
       private void validate(Individual individual)
       {
          //make sure we set a name before validations
-         string originalName = individual.Name;
+         var originalName = individual.Name;
          try
          {
             individual.Name = "Individual";
@@ -116,19 +122,32 @@ namespace PKSim.Core.Model
          }
       }
 
-      private void setParameterDisplayUnit(Individual individual, string parameterName, string unit)
+      private void setParameterDisplayUnit(Individual individual, string parameterName, string unit, ValueOrigin valueOrigin = null)
       {
          var parameter = individual.Organism.Parameter(parameterName);
-         if (parameter == null || unit == null) return;
+         if (parameter == null || unit == null)
+            return;
+
+         if (valueOrigin != null)
+            parameter.UpdateValueOriginFrom(valueOrigin);
+
          parameter.DisplayUnit = parameter.Dimension.UnitOrDefault(unit);
       }
 
       private void setParameter(Individual individual, string parameterName, double? value, string unit = null, bool visible = true)
       {
-         if (!value.HasValue) return;
+         if (!value.HasValue)
+            return;
+
          var parameter = individual.Organism.Parameter(parameterName);
-         if (parameter == null) return;
+         if (parameter == null)
+            return;
+
+         var valueOrigin = individual.OriginData.ValueOrigin;
+
          parameter.Value = value.Value;
+         parameter.UpdateValueOriginFrom(valueOrigin);
+
          setParameterDisplayUnit(individual, parameterName, unit);
          parameter.Visible = visible;
       }

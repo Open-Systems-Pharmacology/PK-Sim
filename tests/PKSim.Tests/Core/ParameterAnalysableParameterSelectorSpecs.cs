@@ -1,17 +1,23 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Presentation;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_ParameterAnalysableParameterSelector : ContextSpecification<IParameterAnalysableParameterSelector>
    {
+      protected IUserSettings _userSettings;
+
       protected override void Context()
       {
-         sut = new ParameterAnalysableParameterSelector();
+         _userSettings = A.Fake<IUserSettings>();
+         _userSettings.DefaultParameterGroupingMode = ParameterGroupingModeId.Advanced;
+         sut = new ParameterAnalysableParameterSelector(_userSettings);
       }
    }
 
@@ -57,7 +63,6 @@ namespace PKSim.Core
          sut.CanUseParameter(_parameter).ShouldBeFalse();
       }
 
-
       [Observation]
       public void should_return_false_if_the_parameter_is_hidden()
       {
@@ -65,4 +70,24 @@ namespace PKSim.Core
          sut.CanUseParameter(_parameter).ShouldBeFalse();
       }
    }
-}	
+
+   public class When_retrieving_the_default_parameter_selection_mode : concern_for_ParameterAnalysableParameterSelector
+   {
+      [Observation]
+      public void should_return_the_grouping_mode_from_the_user_settings_for_simple_or_advanced()
+      {
+         _userSettings.DefaultParameterGroupingMode = ParameterGroupingModeId.Advanced;
+         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModes.Advanced);
+
+         _userSettings.DefaultParameterGroupingMode = ParameterGroupingModeId.Simple;
+         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModes.Simple);
+      }
+
+      [Observation]
+      public void should_return_simple_if_the_default_selection_is_hierarchical()
+      {
+         _userSettings.DefaultParameterGroupingMode = ParameterGroupingModeId.Hierarchical;
+         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModes.Simple);
+      }
+   }
+}

@@ -50,13 +50,13 @@ namespace PKSim.Presentation
       private IConfigureSimulationPresenter _configurePresenter;
       private Simulation _newSimulation;
       private IPKSimCommand _pkSimCommand;
-      private IPKSimProject _project;
+      private PKSimProject _project;
 
       protected override void Context()
       {
          base.Context();
          _pkSimCommand = A.Fake<IPKSimCommand>();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _configurePresenter = A.Fake<IConfigureSimulationPresenter>();
          _simulationToConfigure = new IndividualSimulation().WithId("oldSim");
          _newSimulation = new IndividualSimulation().WithId("newSim");
@@ -113,7 +113,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_have_updated_the_id_of_all_parmaeters_in_the_new_simulation()
+      public void should_have_updated_the_id_of_all_parameters_in_the_new_simulation()
       {
          A.CallTo(() => _parameterIdUpdater.UpdateSimulationId(_newSimulation)).MustHaveHappened();
       }

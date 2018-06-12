@@ -25,9 +25,6 @@ namespace PKSim.UI.Views.Events
          this.FillWith(viewToAdd);
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.Event; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Event;
    }
 }

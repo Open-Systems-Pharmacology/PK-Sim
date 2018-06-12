@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -15,10 +15,10 @@ namespace PKSim.Core.Services
    }
 
    public class RenameAbsolutePathVisitor : IRenameAbsolutePathVisitor,
-                                            IVisitor<IUsingFormula>,
-                                            IVisitor<IEventAssignment>,
-                                            IVisitor<IParameter>,
-                                            IVisitor<PopulationSimulation>
+      IVisitor<IUsingFormula>,
+      IVisitor<IEventAssignment>,
+      IVisitor<IParameter>,
+      IVisitor<PopulationSimulation>
    {
       private string _oldName;
       private string _newName;
@@ -45,7 +45,9 @@ namespace PKSim.Core.Services
 
       private void renameAbsolutePathIn(IFormula formula)
       {
-         if (formula == null || !formula.IsExplicit()) return;
+         if (formula == null || formula.IsConstant())
+            return;
+
          formula.ObjectPaths.Where(isAbsolutePath).Each(renameObjectPath);
       }
 
@@ -79,7 +81,7 @@ namespace PKSim.Core.Services
             populationSimulation.ParameterValuesCache.RenamePath(parameterPath, newPath);
          }
 
-         foreach (var advancedParameter in populationSimulation.AdvancedParameters.Where(x=>isAbsolutePath(x.ParameterPath)))
+         foreach (var advancedParameter in populationSimulation.AdvancedParameters.Where(x => isAbsolutePath(x.ParameterPath)))
          {
             advancedParameter.ParameterPath = advancedParameter.ParameterPath.Replace(_oldName, _newName);
          }

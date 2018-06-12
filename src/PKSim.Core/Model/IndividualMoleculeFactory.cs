@@ -26,7 +26,7 @@ namespace PKSim.Core.Model
 
    public abstract class IndividualMoleculeFactory<TMolecule, TMoleculeExpressionContainer> : IIndividualMoleculeFactory
       where TMolecule : IndividualMolecule
-      where TMoleculeExpressionContainer : IMoleculeExpressionContainer
+      where TMoleculeExpressionContainer : MoleculeExpressionContainer
    {
       private readonly IEntityPathResolver _entityPathResolver;
       protected readonly IObjectBaseFactory _objectBaseFactory;
@@ -71,11 +71,11 @@ namespace PKSim.Core.Model
       protected TMolecule CreateEmptyMolecule()
       {
          var molecule = _objectBaseFactory.Create<TMolecule>().WithIcon(Icon.IconName);
-         createMoleculeParameterIn(molecule, CoreConstants.Parameter.REFERENCE_CONCENTRATION, CoreConstants.DEFAULT_REFERENCE_CONCENTRATION_VALUE, Constants.Dimension.MOLAR_CONCENTRATION);
-         createMoleculeParameterIn(molecule, CoreConstants.Parameter.HALF_LIFE_LIVER, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN, Constants.Dimension.TIME);
-         createMoleculeParameterIn(molecule, CoreConstants.Parameter.HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN, Constants.Dimension.TIME);
+         createMoleculeParameterIn(molecule, CoreConstants.Parameters.REFERENCE_CONCENTRATION, CoreConstants.DEFAULT_REFERENCE_CONCENTRATION_VALUE, Constants.Dimension.MOLAR_CONCENTRATION);
+         createMoleculeParameterIn(molecule, CoreConstants.Parameters.HALF_LIFE_LIVER, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN, Constants.Dimension.TIME);
+         createMoleculeParameterIn(molecule, CoreConstants.Parameters.HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN, Constants.Dimension.TIME);
 
-         foreach (var parameterName in CoreConstants.Parameter.OntogenyFactors)
+         foreach (var parameterName in CoreConstants.Parameters.OntogenyFactors)
          {
             createMoleculeParameterIn(molecule, parameterName, 1, Constants.Dimension.DIMENSIONLESS, CoreConstants.Groups.ONTOGENY_FACTOR, canBeVariedInPopulation: false);
          }
@@ -148,8 +148,8 @@ namespace PKSim.Core.Model
          var expressionContainer = createContainerExpressionFor(protein, containerName);
          expressionContainer.GroupName = groupingName;
          expressionContainer.ContainerName = containerName;
-         createMoleculeParameterIn(expressionContainer, CoreConstants.Parameter.REL_EXP, 0, Constants.Dimension.DIMENSIONLESS);
-         createMoleculeParameterIn(expressionContainer, CoreConstants.Parameter.REL_EXP_NORM, 0, CoreConstants.Dimension.Fraction);
+         createMoleculeParameterIn(expressionContainer, CoreConstants.Parameters.REL_EXP, 0, Constants.Dimension.DIMENSIONLESS);
+         createMoleculeParameterIn(expressionContainer, CoreConstants.Parameters.REL_EXP_NORM, 0, CoreConstants.Dimension.Fraction);
          return expressionContainer;
       }
 

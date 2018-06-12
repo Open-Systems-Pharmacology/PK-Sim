@@ -7,13 +7,13 @@ using OSPSuite.Infrastructure.Serialization;
 
 namespace PKSim.Infrastructure.Serialization
 {
-   public interface IProjectPersistor : ISessionPersistor<IPKSimProject>
+   public interface IProjectPersistor : ISessionPersistor<PKSimProject>
    {
       /// <summary>
       ///    After successful serialization, some flags can be reseted to avoid saving values that were already saved in the
       ///    database
       /// </summary>
-      void UpdateProjectAfterSave(IPKSimProject project);
+      void UpdateProjectAfterSave(PKSimProject project);
    }
 
    public class ProjectPersistor : IProjectPersistor
@@ -28,7 +28,7 @@ namespace PKSim.Infrastructure.Serialization
          _projectMetaDataToProjectMapper = projectMetaDataToProjectMapper;
       }
 
-      public void Save(IPKSimProject projectToSave, ISession session)
+      public void Save(PKSimProject projectToSave, ISession session)
       {
          var projectMetaData = projectMetaDataFrom(projectToSave);
          var projectFromDb = projectFromDatabase(session);
@@ -44,7 +44,7 @@ namespace PKSim.Infrastructure.Serialization
          session.Save(projectMetaData);
       }
 
-      public IPKSimProject Load(ISession session)
+      public PKSimProject Load(ISession session)
       {
          var projectFromDb = projectFromDatabase(session);
          if (projectFromDb == null)
@@ -57,7 +57,7 @@ namespace PKSim.Infrastructure.Serialization
          throw new InvalidProjectVersionException(projectFromDb.Version);
       }
 
-      public void UpdateProjectAfterSave(IPKSimProject project)
+      public void UpdateProjectAfterSave(PKSimProject project)
       {
          foreach (var simulation in project.All<Simulation>())
          {
@@ -76,12 +76,12 @@ namespace PKSim.Infrastructure.Serialization
          return projectsFromDb[0];
       }
 
-      private ProjectMetaData projectMetaDataFrom(IPKSimProject project)
+      private ProjectMetaData projectMetaDataFrom(PKSimProject project)
       {
          return _projectToProjectMetaDataMapper.MapFrom(project);
       }
 
-      private IPKSimProject projectFrom(ProjectMetaData projectMetaData)
+      private PKSimProject projectFrom(ProjectMetaData projectMetaData)
       {
          return _projectMetaDataToProjectMapper.MapFrom(projectMetaData);
 

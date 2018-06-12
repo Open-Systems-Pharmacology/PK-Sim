@@ -4,9 +4,9 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public class AddSchemaItemToSchemaCommand : AddEntityToContainerCommand<ISchemaItem, Schema, AddSchemaItemToSchemaEvent>
+   public class AddSchemaItemToSchemaCommand : AddEntityToContainerCommand<SchemaItem, Schema, AddSchemaItemToSchemaEvent>
    {
-      public AddSchemaItemToSchemaCommand(ISchemaItem schemaItemToAdd, Schema schema, IExecutionContext context) : base(schemaItemToAdd, schema, context)
+      public AddSchemaItemToSchemaCommand(SchemaItem schemaItemToAdd, Schema schema, IExecutionContext context) : base(schemaItemToAdd, schema, context)
       {
       }
 

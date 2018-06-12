@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
@@ -75,7 +76,7 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          _processGFR = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.GLOMERULAR_FILTRATION).DowncastTo<SystemicProcess>());
          _processGFR.Name = "My GFR Process";
-         _processGFR.Parameter(CoreConstants.Parameter.GFR_FRACTION).Value = 0.8;
+         _processGFR.Parameter(CoreConstants.Parameters.GFR_FRACTION).Value = 0.8;
          _compound.AddProcess(_processGFR);
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol).DowncastTo<IndividualSimulation>();
          _simulation.CompoundPropertiesList.First()
@@ -92,7 +93,7 @@ namespace PKSim.IntegrationTests
          var allProcessParameters = _parameterGroupTask.ParametersInTopGroup(CoreConstants.Groups.COMPOUND_PROCESSES, _simulation.All<IParameter>());
          allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(_processGFR.Name);
 
-         allProcessParameters.FindByName(CoreConstants.Parameter.GFR_FRACTION).Value.ShouldBeEqualTo(_processGFR.Parameter(CoreConstants.Parameter.GFR_FRACTION).Value);
+         allProcessParameters.FindByName(CoreConstants.Parameters.GFR_FRACTION).Value.ShouldBeEqualTo(_processGFR.Parameter(CoreConstants.Parameters.GFR_FRACTION).Value);
       }
    }
 
@@ -189,9 +190,9 @@ namespace PKSim.IntegrationTests
       public void the_created_process_kinetic_should_reference_an_undefined_enzyme_in_liver_whose_start_concentration_is_set_to_1_by_f_cell()
       {
          var liver_periportal = _simulation.Model.Root.EntityAt<Container>(Constants.ORGANISM, CoreConstants.Organ.Liver, CoreConstants.Compartment.Periportal);
-         var startConcentration = liver_periportal.EntityAt<IParameter>(CoreConstants.Compartment.Intracellular, CoreConstants.Molecule.UndefinedLiver, CoreConstants.Parameter.CONCENTRATION);
+         var startConcentration = liver_periportal.EntityAt<IParameter>(CoreConstants.Compartment.Intracellular, CoreConstants.Molecule.UndefinedLiver, CoreConstants.Parameters.CONCENTRATION);
 
-         var f_cell = liver_periportal.EntityAt<IParameter>(CoreConstants.Parameter.FractionIntracellular);
+         var f_cell = liver_periportal.EntityAt<IParameter>(CoreConstants.Parameters.FRACTION_INTRACELLULAR);
          startConcentration.Value.ShouldBeEqualTo(1 / f_cell.Value);
       }
 
@@ -203,7 +204,7 @@ namespace PKSim.IntegrationTests
          processContainer.Parameter(CoreConstantsForSpecs.Parameter.ENZYME_CONCENTRATION).Value.ShouldBeEqualTo(1);
          processContainer.Parameter(CoreConstantsForSpecs.Parameter.ENZYME_CONCENTRATION).Visible.ShouldBeFalse();
 
-         processContainer.Parameter(CoreConstantsForSpecs.Parameter.CL_SPEC_PER_ENZYME).Value.ShouldBeEqualTo(processContainer.Parameter(CoreConstants.Parameter.SPECIFIC_CLEARANCE).Value);
+         processContainer.Parameter(CoreConstantsForSpecs.Parameter.CL_SPEC_PER_ENZYME).Value.ShouldBeEqualTo(processContainer.Parameter(CoreConstants.Parameters.SPECIFIC_CLEARANCE).Value);
          processContainer.Parameter(CoreConstantsForSpecs.Parameter.CL_SPEC_PER_ENZYME).Visible.ShouldBeFalse();
       }
 
@@ -257,10 +258,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_create_and_run_the_simulation()
+      public async Task should_be_able_to_create_and_run_the_simulation()
       {
          var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
-         simulationEngine.Run(_simulation);
+         await simulationEngine.RunAsync(_simulation, new Core.Services.SimulationRunOptions());
          _simulation.HasResults.ShouldBeTrue();
       }
 
@@ -306,10 +307,7 @@ namespace PKSim.IntegrationTests
          CheckProcess();
       }
 
-      protected override string ProcessName
-      {
-         get { return CoreConstantsForSpecs.Process.HEPATOCYTESHALFTIME; }
-      }
+      protected override string ProcessName => CoreConstantsForSpecs.Process.HEPATOCYTESHALFTIME;
    }
 
    public class When_creating_a_simulation_with_an_InVitro_Hepatocytes_ResidualFraction_process_defined_in_the_compound : When_creating_a_simulation_with_an_inVitro_process_defined_in_the_compound
@@ -320,10 +318,7 @@ namespace PKSim.IntegrationTests
          CheckProcess();
       }
 
-      protected override string ProcessName
-      {
-         get { return CoreConstantsForSpecs.Process.HEPATOCYTESRES; }
-      }
+      protected override string ProcessName => CoreConstantsForSpecs.Process.HEPATOCYTESRES;
    }
 
    public class When_creating_a_simulation_with_an_InVitro_Microsomes_tHalf_process_defined_in_the_compound : When_creating_a_simulation_with_an_inVitro_process_defined_in_the_compound
@@ -334,10 +329,7 @@ namespace PKSim.IntegrationTests
          CheckProcess();
       }
 
-      protected override string ProcessName
-      {
-         get { return CoreConstantsForSpecs.Process.LIVERMICROSOMEHALFTIME; }
-      }
+      protected override string ProcessName => CoreConstantsForSpecs.Process.LIVERMICROSOMEHALFTIME;
    }
 
    public class When_creating_a_simulation_with_an_InVitro_Microsomes_ResidualFraction_process_defined_in_the_compound : When_creating_a_simulation_with_an_inVitro_process_defined_in_the_compound
@@ -348,10 +340,7 @@ namespace PKSim.IntegrationTests
          CheckProcess();
       }
 
-      protected override string ProcessName
-      {
-         get { return CoreConstantsForSpecs.Process.LIVERMICROSOMERES; }
-      }
+      protected override string ProcessName => CoreConstantsForSpecs.Process.LIVERMICROSOMERES;
    }
 
 }

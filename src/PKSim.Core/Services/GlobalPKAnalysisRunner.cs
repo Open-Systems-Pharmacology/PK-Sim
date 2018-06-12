@@ -24,13 +24,13 @@ namespace PKSim.Core.Services
 
    public class GlobalPKAnalysisRunner : IGlobalPKAnalysisRunner
    {
-      private readonly ISimulationEngine<IndividualSimulation> _simulationEngine;
+      private readonly ISimulationRunner _simulationRunner;
       private readonly ISimulationFactory _simulationFactory;
       private readonly IRegistrationTask _registrationTask;
 
-      public GlobalPKAnalysisRunner(ISimulationEngine<IndividualSimulation> simulationEngine, ISimulationFactory simulationFactory, IRegistrationTask registrationTask)
+      public GlobalPKAnalysisRunner(ISimulationRunner simulationRunner, ISimulationFactory simulationFactory, IRegistrationTask registrationTask)
       {
-         _simulationEngine = simulationEngine;
+         _simulationRunner = simulationRunner;
          _simulationFactory = simulationFactory;
          _registrationTask = registrationTask;
       }
@@ -51,7 +51,7 @@ namespace PKSim.Core.Services
          try
          {
             _registrationTask.Register(individualSimulation);
-            _simulationEngine.Run(individualSimulation);
+            _simulationRunner.RunSimulation(individualSimulation).Wait();
          }
          finally
          {

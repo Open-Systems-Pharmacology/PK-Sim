@@ -12,10 +12,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
 
       public string Covariate { get; set; }
 
-      public override string Id
-      {
-         get { return Covariate; }
-      }
+      public override string Id => Covariate;
 
       public override IReadOnlyList<string> GetValues(IPopulationDataCollector populationDataCollector)
       {
@@ -31,10 +28,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          covariateField.GroupingItems.Each(x => AddGroupingItem(cloneManager.Clone(x)));
       }
 
-      public virtual IReadOnlyList<GroupingItem> GroupingItems
-      {
-         get { return this.GroupingItemsWithReference(_groupingItems); }
-      }
+      public virtual IReadOnlyList<GroupingItem> GroupingItems => this.GroupingItemsWithReference(_groupingItems);
 
       public virtual void AddGroupingItem(GroupingItem groupingItem)
       {

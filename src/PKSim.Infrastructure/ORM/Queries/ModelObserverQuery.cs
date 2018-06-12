@@ -275,7 +275,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
       private IFormulaUsablePath createTotalDrugMassObjectPath(string pathToDrugMass)
       {
-         return _objectPathFactory.CreateFormulaUsablePathFrom(pathToDrugMass, CoreConstants.Parameter.TotalDrugMass)
+         return _objectPathFactory.CreateFormulaUsablePathFrom(pathToDrugMass, CoreConstants.Parameters.TOTAL_DRUG_MASS)
             .WithAlias(TOTAL_DRUG_MASS_ALIAS)
             .WithDimension(_dimensionRepository.Amount);
       }

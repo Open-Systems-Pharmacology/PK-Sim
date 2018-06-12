@@ -57,8 +57,8 @@ namespace PKSim.Presentation.DTO.Parameters
 
       public virtual string Name
       {
-         get { return Parameter.Name; }
-         set { Parameter.Name = value; }
+         get => Parameter.Name;
+         set => Parameter.Name = value;
       }
 
       /// <summary>
@@ -66,7 +66,7 @@ namespace PKSim.Presentation.DTO.Parameters
       /// </summary>
       public virtual double Percentile
       {
-         get { return Parameter.GetPercentile() * 100; }
+         get => Parameter.GetPercentile() * 100;
          set
          {
             /*nothing to do here since the percentile should be set in the command*/
@@ -96,7 +96,7 @@ namespace PKSim.Presentation.DTO.Parameters
 
       public virtual Unit DisplayUnit
       {
-         get { return Parameter.DisplayUnit; }
+         get => Parameter.DisplayUnit;
          set
          {
             /*nothing to do here since the unit should be set in the command*/
@@ -105,20 +105,27 @@ namespace PKSim.Presentation.DTO.Parameters
 
       public virtual IDimension Dimension
       {
-         get { return Parameter.Dimension; }
+         get => Parameter.Dimension;
          set
          {
             /*nothing to do here since the dimension should be set in the command*/
          }
       }
 
-      public virtual string ValueDescription
+
+      public virtual ValueOrigin ValueOrigin
       {
-         get { return Parameter.ValueDescription; }
+         get => Parameter.ValueOrigin;
          set
          {
             /*nothing to do here since the ValueDescription should be set in the command*/
          }
+      }
+
+
+      public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
+      {
+         Parameter.UpdateValueOriginFrom(sourceValueOrigin);
       }
 
       public virtual double KernelValue => Parameter.Value;
@@ -193,7 +200,7 @@ namespace PKSim.Presentation.DTO.Parameters
 
       public virtual bool IsFavorite
       {
-         get { return _isFavorite; }
+         get => _isFavorite;
          set
          {
             _isFavorite = value;
@@ -232,12 +239,12 @@ namespace PKSim.Presentation.DTO.Parameters
 
       public override double Value
       {
-         set { Parameter.ValueInDisplayUnit = value; }
+         set => Parameter.ValueInDisplayUnit = value;
       }
 
       public override double Percentile
       {
-         set { Parameter.SetPercentile(value / 100); }
+         set => Parameter.SetPercentile(value / 100);
       }
    }
 

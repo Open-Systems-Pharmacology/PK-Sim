@@ -235,7 +235,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       public PopulationAnalysisFieldDTO SelectedField
       {
-         get { return _gridViewBinder.FocusedElement; }
+         get => _gridViewBinder.FocusedElement;
          set
          {
             var rowHandle = _gridViewBinder.RowHandleFor(value);
@@ -245,19 +245,19 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       public bool CreateGroupingButtonEnabled
       {
-         get { return btnCreateDerivedField.Enabled; }
-         set { btnCreateDerivedField.Enabled = value; }
+         get => btnCreateDerivedField.Enabled;
+         set => btnCreateDerivedField.Enabled = value;
       }
 
       public bool ScalingVisible
       {
-         get { return _colScaling.Visible; }
-         set { _colScaling.UpdateVisibility(value); }
+         get => _colScaling.Visible;
+         set => _colScaling.UpdateVisibility(value);
       }
 
       public bool CreateGroupingButtonVisible
       {
-         get { return layoutItemCreatedDerivedField.Visible; }
+         get => layoutItemCreatedDerivedField.Visible;
          set
          {
             layoutItemCreatedDerivedField.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
@@ -267,8 +267,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       public bool ColorSelectionVisible
       {
-         get { return _colColor.Visible; }
-         set { _colColor.UpdateVisibility(value); }
+         get => _colColor.Visible;
+         set => _colColor.UpdateVisibility(value);
       }
 
       public override void InitializeResources()

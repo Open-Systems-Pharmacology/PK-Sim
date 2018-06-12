@@ -213,7 +213,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_the_available_genders_and_have_added_the_generic_gender_to_the_genders()
       {
-         sut.AllGenders().ShouldOnlyContainInOrder(CoreConstants.Population.AllGender, _gender1.Name, _gender2.Name);
+         sut.AllGenders().ShouldOnlyContainInOrder(CoreConstants.Population.ALL_GENDER, _gender1.Name, _gender2.Name);
       }
    }
 
@@ -228,7 +228,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_the_all_gender_name_if_the_selected_gender_is_the_all_gender()
       {
-         sut.GenderDisplayFor(CoreConstants.Population.AllGender).ShouldBeEqualTo(PKSimConstants.UI.AllGender);
+         sut.GenderDisplayFor(CoreConstants.Population.ALL_GENDER).ShouldBeEqualTo(PKSimConstants.UI.AllGender);
       }
 
       [Observation]

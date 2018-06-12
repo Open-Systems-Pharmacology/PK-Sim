@@ -1,5 +1,4 @@
 ﻿using System.Data.SQLite;
-using PKSim.Core.Extensions;
 using OSPSuite.Core.Extensions;
 
 namespace PKSim.Infrastructure.Services
@@ -14,7 +13,7 @@ namespace PKSim.Infrastructure.Services
       public void Compress(string projectFile)
       {
          string file = projectFile.ToUNCPath();
-         using (var sqlLite = new SQLiteConnection(string.Format("Data Source={0}", file)))
+         using (var sqlLite = new SQLiteConnection($"Data Source={file}"))
          {
             sqlLite.Open();
             vacuum(sqlLite);

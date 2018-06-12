@@ -12,9 +12,9 @@ namespace PKSim.Core.Services
       public MixedInhibitionKineticUpdaterSpecification(IObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask) :
          base(objectPathFactory, dimensionRepository, interactionTask, InteractionType.MixedInhibition,
             kiNumeratorAlias: CoreConstants.Alias.MIXED_COMPETITIVE_INHIBITION_KI,
-            kiNumeratorParameter: CoreConstants.Parameter.KI_C,
+            kiNumeratorParameter: CoreConstants.Parameters.KI_C,
             kiDenominatorAlias: CoreConstants.Alias.MIXED_UNCOMPETITIVE_INHIBITION_KI,
-            kiDenominatorParameter: CoreConstants.Parameter.KI_U,
+            kiDenominatorParameter: CoreConstants.Parameters.KI_U,
             inhibitorAlias: CoreConstants.Alias.MIXED_COMPETIVE_INHIBITION_I)
       {
       }  

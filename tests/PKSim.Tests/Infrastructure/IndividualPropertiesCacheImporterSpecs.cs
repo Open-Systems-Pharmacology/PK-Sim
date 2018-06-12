@@ -1,15 +1,15 @@
 ﻿using System.IO;
 using System.Linq;
+using FakeItEasy;
+using Microsoft.Extensions.Logging;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using NUnit.Framework;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure
 {
@@ -34,27 +34,19 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_importing_a_population_from_a_file_that_has_the_expected_format : concern_for_IndividualPropertiesCacheImporter
+   public class When_importing_a_population_from_a_file_that_was_saved_in_the_old_format_that_is_not_supported : concern_for_IndividualPropertiesCacheImporter
    {
       private IndividualPropertiesCache _results;
 
       protected override void Because()
       {
-         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("pop_10"), _logger);
+         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("pop_10_old_format"), _logger);
       }
 
       [Observation]
-      public void should_return_a_individual_cache_containing_the_covariates_for_gender_and_population()
+      public void should_not_have_imported_any_individuals()
       {
-         _results.AllCovariates.Count.ShouldBeEqualTo(10);
-         _results.AllCovariates.Select(x => x.Gender).ShouldContain(_male, _female);
-         _results.AllCovariates.Select(x => x.Race).Distinct().ShouldOnlyContain(_population);
-      }
-
-      [Observation]
-      public void should_have_created_one_individual_per_available_columns()
-      {
-         _results.Count.ShouldBeEqualTo(10);
+         _results.Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -65,6 +57,22 @@ namespace PKSim.Infrastructure
       {
          var result = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("new_format_with_comment_" + delimiter), _logger);
          result.Count.ShouldBeEqualTo(50);
+      }
+   }
+
+   public class When_importing_a_population_from_a_file_that_is_using_the_old_format_with_semi_colon : concern_for_IndividualPropertiesCacheImporter
+   {
+      private IndividualPropertiesCache _results;
+
+      protected override void Because()
+      {
+         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("pop_10_semi_colon"), _logger);
+      }
+
+      [Observation]
+      public void should_have_imported_the_individuals()
+      {
+         _results.Count.ShouldBeEqualTo(10);
       }
    }
 
@@ -86,7 +94,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_added_some_log_info_explaining_why_the_file_is_corrupted()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>._, NotificationType.Error)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 
@@ -132,7 +140,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_added_some_log_info_explaining_why_the_file_is_corrupted()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>._, NotificationType.Error)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 

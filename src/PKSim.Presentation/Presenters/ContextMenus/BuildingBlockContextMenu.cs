@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.UICommands;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -29,6 +29,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          var allMenuItems = new List<IMenuBarItem>();
          allMenuItems.AddRange(ExportContextMenusFor(buildingBlock));
          allMenuItems.AddRange(DeleteContextMenusFor(buildingBlock));
+         allMenuItems.AddRange(DebugContextMenusFor(buildingBlock));
          return allMenuItems;
       }
 
@@ -36,8 +37,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          yield return DeleteMenuFor(buildingBlock)
             .AsGroupStarter();
+      }
 
-         yield return ParameterValueDebugMenuFor(buildingBlock);
+      protected IEnumerable<IMenuBarItem> DebugContextMenusFor(TBuildingBlock buildingBlock)
+      {
+         yield return ParameterValueDebugMenuFor(buildingBlock)
+            .AsGroupStarter();
+
+         yield return ExportSnapshotMenuFor(buildingBlock);
       }
 
       protected IEnumerable<IMenuBarItem> ExportContextMenusFor(TBuildingBlock buildingBlock)
@@ -48,8 +55,8 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return SaveAsSystemTemplateMenuFor(buildingBlock);
 
          yield return ExportToPDFMenuFor(buildingBlock);
-         
-         yield return AddToJournal(buildingBlock);
+
+         yield return AddToJournalMenuFor(buildingBlock);
       }
 
       protected IEnumerable<IMenuBarItem> EditContextMenusFor<TCommand>(TBuildingBlock buildingBlock) where TCommand : IEditBuildingBlockUICommand<TBuildingBlock>
@@ -59,7 +66,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return RenameMenuFor(buildingBlock);
 
          yield return DescriptionMenuFor(buildingBlock);
-    
+
          yield return CloneMenuFor(buildingBlock)
             .AsGroupStarter();
       }
@@ -98,26 +105,26 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected IMenuBarItem SaveAsUserTemplateMenuFor(TBuildingBlock buildingBlock)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsTemplate)
-            .WithCommandFor<SaveBuildingBlockAsTemplateCommand<TBuildingBlock>, TBuildingBlock>(buildingBlock)
+            .WithCommandFor<SaveBuildingBlockAsTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(new[] {buildingBlock,})
             .WithIcon(ApplicationIcons.SaveAsTemplate);
       }
 
       protected IMenuBarItem SaveAsSystemTemplateMenuFor(TBuildingBlock buildingBlock)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsSytemTemplate)
-            .WithCommandFor<SaveBuildingBlockAsSystemTemplateCommand<TBuildingBlock>, TBuildingBlock>(buildingBlock)
+            .WithCommandFor<SaveBuildingBlockAsSystemTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(new[] {buildingBlock,})
             .WithIcon(ApplicationIcons.SaveAsTemplate)
             .ForDeveloper();
       }
 
       protected IMenuBarItem ParameterValueDebugMenuFor(TBuildingBlock buildingBlock)
       {
-         return CreateMenuButton.WithCaption("Parameter Value Export (Debug only)")
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Parameter Value Export"))
             .WithCommandFor<ParameterValueForDebugCommand, IPKSimBuildingBlock>(buildingBlock)
             .ForDeveloper();
       }
 
-      protected IMenuBarItem AddToJournal(TBuildingBlock buildingBlock)
+      protected IMenuBarItem AddToJournalMenuFor(TBuildingBlock buildingBlock)
       {
          return GenericMenu.AddToJournal(buildingBlock);
       }
@@ -125,6 +132,11 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected IMenuBarItem ExportToPDFMenuFor(TBuildingBlock buildingBlock)
       {
          return GenericMenu.ExportToPDFMenuFor(buildingBlock);
+      }
+
+      protected IMenuBarItem ExportSnapshotMenuFor(TBuildingBlock buildingBlock)
+      {
+         return GenericMenu.ExportSnapshotMenuFor(buildingBlock);
       }
    }
 }

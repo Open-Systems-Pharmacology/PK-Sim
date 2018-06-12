@@ -1,7 +1,7 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using PKSim.Core.Model;
 using OSPSuite.Utility.Exceptions;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
@@ -25,11 +25,11 @@ namespace PKSim.Core.Commands
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
          _oldValue = retrieveValue();
-         var bbParameter = OriginParameterFor(_parameter, context);
 
          if (_parameter.IsFixedValue && _fixedValueSetHere)
          {
             //Inverse command need to reset the value as it was before the execution
+            var bbParameter = OriginParameterFor(_parameter, context);
             ResetParameter(_parameter);
             ResetParameter(bbParameter);
             _fixedValueSetHere = false;
@@ -39,9 +39,9 @@ namespace PKSim.Core.Commands
             if (_parameter.IsFixedValue == false)
                _fixedValueSetHere = true;
 
-            UpdateParameter(_parameter, context);
-            UpdateParameter(bbParameter, context);
+            UpdateParameter(context);
          }
+
 
          Description = ParameterMessages.SetParameterValue(_parameter, context.DisplayNameFor(_parameter), _oldValue, _valueToSet);
       }
@@ -60,7 +60,9 @@ namespace PKSim.Core.Commands
 
       protected override void UpdateParameter(IParameter parameter, IExecutionContext context)
       {
-         if (parameter == null) return;
+         if (parameter == null)
+            return;
+
          parameter.Value = _valueToSet;
 
          //only parameters set by the user should be set as IsFixed = true. Otherwise
@@ -75,10 +77,8 @@ namespace PKSim.Core.Commands
       {
          if (parameter == null) return;
 
-         //for non formula parameter, it is necessary to update the value as well
-         //if (parameter.Formula.IsAnImplementationOf<IExplici)
+         //Update value before resetting fixed value flag to ensure consistency
          parameter.Value = _valueToSet;
-
          parameter.IsFixedValue = false;
       }
 
@@ -87,10 +87,10 @@ namespace PKSim.Core.Commands
          return new SetParameterValueCommand(_parameter, _oldValue).AsInverseFor(this);
       }
 
-      public override void UpdateInternalFrom(IBuildingBlockChangeCommand buildingBlockChangeCommand)
+      public override void UpdateInternalFrom(IBuildingBlockChangeCommand originalCommand)
       {
-         base.UpdateInternalFrom(buildingBlockChangeCommand);
-         var setParameterValueCommand = buildingBlockChangeCommand as SetParameterValueCommand;
+         base.UpdateInternalFrom(originalCommand);
+         var setParameterValueCommand = originalCommand as SetParameterValueCommand;
          if (setParameterValueCommand == null) return;
          _fixedValueSetHere = setParameterValueCommand._fixedValueSetHere;
       }

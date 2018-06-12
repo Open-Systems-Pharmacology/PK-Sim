@@ -28,7 +28,7 @@ namespace PKSim.Presentation
    public abstract class concern_for_PopulationPKAnalysisPresenter : ContextSpecification<IPopulationPKAnalysisPresenter>
    {
       protected IPKAnalysisExportTask _exportTask;
-      protected IPKAnalysisTask _pkAnalysisTask;
+      protected IPKAnalysesTask _pkAnalysesTask;
       protected IPopulationPKAnalysisView _view;
 
       protected ChartData<TimeProfileXValue, TimeProfileYValue> _timeProfileChartData;
@@ -47,14 +47,14 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _exportTask = A.Fake<IPKAnalysisExportTask>();
-         _pkAnalysisTask = A.Fake<IPKAnalysisTask>();
+         _pkAnalysesTask = A.Fake<IPKAnalysesTask>();
          _view = A.Fake<IPopulationPKAnalysisView>();
          _populationPKAnalysisToDTOMapper = A.Fake<IPopulationPKAnalysisToPKAnalysisDTOMapper>();
          _populationPKAnalysisToDataTableMapper = A.Fake<IPopulationPKAnalysisToDataTableMapper>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
 
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
-         sut = new PopulationPKAnalysisPresenter(_view, _pkAnalysisTask, _exportTask, _populationPKAnalysisToDTOMapper, _pkParameterRepository, _presenterSettingsTask);
+         sut = new PopulationPKAnalysisPresenter(_view, _pkAnalysesTask, _exportTask, _populationPKAnalysisToDTOMapper, _pkParameterRepository, _presenterSettingsTask);
 
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
          _timeProfileChartData = new ChartData<TimeProfileXValue, TimeProfileYValue>(null, null);
@@ -72,7 +72,7 @@ namespace PKSim.Presentation
          };
 
 
-         A.CallTo(() => _pkAnalysisTask.CalculateFor(_populationDataCollector, _timeProfileChartData)).Returns(_allPKanalysis);
+         A.CallTo(() => _pkAnalysesTask.CalculateFor(_populationDataCollector, _timeProfileChartData)).Returns(_allPKanalysis);
          A.CallTo(() => _view.BindTo(A<PKAnalysisDTO>._)).Invokes(x => _dataTable = x.GetArgument<PKAnalysisDTO>(0).DataTable);
          A.CallTo(() => _populationPKAnalysisToDataTableMapper.MapFrom(A<IReadOnlyList<PopulationPKAnalysis>>._, true)).Returns(_dataTable);
       }

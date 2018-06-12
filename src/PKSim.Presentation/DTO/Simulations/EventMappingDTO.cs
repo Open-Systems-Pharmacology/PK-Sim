@@ -1,21 +1,20 @@
 using System.Collections.Generic;
-using PKSim.Assets;
-using OSPSuite.Utility.Validation;
-using PKSim.Core.Model;
 using OSPSuite.Presentation.DTO;
-using PKSim.Presentation.DTO.Parameters;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Simulations
 {
    public class EventMappingDTO : DxValidatableDTO
    {
-      public IEventMapping EventMapping { get; private set; }
+      public EventMapping EventMapping { get; }
       public IParameterDTO StartTimeParameter { get; set; }
       private PKSimEvent _event;
 
       public PKSimEvent Event
       {
-         get { return _event; }
+         get => _event;
          set
          {
             _event = value;
@@ -24,7 +23,7 @@ namespace PKSim.Presentation.DTO.Simulations
          }
       }
 
-      public EventMappingDTO(IEventMapping eventMapping)
+      public EventMappingDTO(EventMapping eventMapping)
       {
          EventMapping = eventMapping;
          Rules.AddRange(AllRules.All());
@@ -32,8 +31,8 @@ namespace PKSim.Presentation.DTO.Simulations
 
       public double StartTime
       {
-         get { return StartTimeParameter.Value; }
-         set { StartTimeParameter.Value = value; }
+         get => StartTimeParameter.Value;
+         set => StartTimeParameter.Value = value;
       }
 
       private static class AllRules

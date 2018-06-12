@@ -1,6 +1,7 @@
 using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Commands
 {
@@ -8,15 +9,14 @@ namespace PKSim.Core.Commands
    {
       private double _oldValue;
 
-      public ResetParameterCommand(IParameter parameterToReset) : base(parameterToReset)
+      public ResetParameterCommand(IParameter parameter) : base(parameter)
       {
       }
 
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
          _oldValue = _parameter.Value;
-         UpdateParameter(_parameter, context);
-         UpdateParameter(OriginParameterFor(_parameter, context), context);
+         UpdateParameter(context);
          Description = ParameterMessages.ResetParameterValue(_parameter, context.DisplayNameFor(_parameter), _oldValue);
       }
 
@@ -24,6 +24,18 @@ namespace PKSim.Core.Commands
       {
          if (parameter == null) return;
          parameter.ResetToDefault();
+         resetValueOriginForDefaultParameter(parameter, context);
+      }
+
+      private void resetValueOriginForDefaultParameter(IParameter parameter, IExecutionContext context)
+      {
+         var valueOriginRepository = context.Resolve<IValueOriginRepository>();
+
+         var valueOrigin = valueOriginRepository.ValueOriginFor(parameter);
+         parameter.UpdateValueOriginFrom(valueOrigin);
+
+         //reset only available for trully default parameter with a default value
+         parameter.IsDefault = true;
       }
 
       protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)

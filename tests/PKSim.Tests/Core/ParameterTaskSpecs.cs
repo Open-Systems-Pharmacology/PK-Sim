@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -10,6 +11,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -33,9 +35,11 @@ namespace PKSim.Core
          var dimensionFactory = new DimensionFactory();
          _volumeDimension = dimensionFactory.AddDimension(new BaseDimensionRepresentation {LengthExponent = 3}, "Volume", "L");
          _volumeDimension.AddUnit("mL", 1e-3, 0);
-         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10);
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithId("ID");
          _parameter.Dimension = _volumeDimension;
          A.CallTo(() => _executionContext.BuildingBlockContaining(_parameter)).Returns(A.Fake<IPKSimBuildingBlock>());
+
+         A.CallTo(() => _executionContext.Get<IParameter>(_parameter.Id)).Returns(_parameter);
       }
    }
 
@@ -53,7 +57,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.REL_EXP
+            Name = CoreConstants.Parameters.REL_EXP
          };
 
          _normalizedExpressionParameter = new Parameter
@@ -61,10 +65,10 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.REL_EXP_NORM
+            Name = CoreConstants.Parameters.REL_EXP_NORM
          };
 
-         var container = new Container { _relativeExpressionParameter, _normalizedExpressionParameter };
+         var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
       }
 
       protected override void Because()
@@ -93,7 +97,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.REL_EXP
+            Name = CoreConstants.Parameters.REL_EXP
          };
 
          _normalizedExpressionParameter = new Parameter
@@ -101,7 +105,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameter.REL_EXP_NORM
+            Name = CoreConstants.Parameters.REL_EXP_NORM
          };
 
          var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
@@ -109,7 +113,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _command = sut.SetParameterValue(_relativeExpressionParameter, 0.0);
+         _command = sut.SetParameterValue(_relativeExpressionParameter, 3);
       }
 
       [Observation]
@@ -215,51 +219,70 @@ namespace PKSim.Core
 
    public class When_setting_a_value_description_for_a_parameter_with_origin : concern_for_ParameterTask
    {
-      private IParameter _originParameter;
+      private ValueOrigin _newValueOrigin;
+      private BuildingBlockChangeCommand _result;
 
       protected override void Context()
       {
          base.Context();
-         _originParameter = A.Fake<IParameter>();
+         _newValueOrigin = new ValueOrigin
+         {
+            Description = "TEXT",
+            Source = ValueOriginSources.ParameterIdentification,
+            Method = ValueOriginDeterminationMethods.ManualFit,
+         };
+
          _parameter.Origin.ParameterId = "Origin";
-         A.CallTo(() => _executionContext.Get<IParameter>(_parameter.Origin.ParameterId)).Returns(_originParameter);
       }
 
       protected override void Because()
       {
-         sut.SetParameterValueDescription(_parameter, "TEXT");
+         _result = sut.SetParameterValueOrigin(_parameter, _newValueOrigin) as BuildingBlockChangeCommand;
       }
 
       [Observation]
       public void should_update_the_value_description_of_this_parameter()
       {
-         _parameter.ValueDescription.ShouldBeEqualTo("TEXT");
+         _parameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(_newValueOrigin.Source);
+         _parameter.ValueOrigin.Method.ShouldBeEqualTo(_newValueOrigin.Method);
       }
 
       [Observation]
-      public void should_update_the_value_description_of_the_origin_parameter()
+      public void should_change_the_building_block_versions()
       {
-         _originParameter.ValueDescription.ShouldBeEqualTo("TEXT");
+         _result.ShouldChangeVersion.ShouldBeTrue();
       }
    }
 
    public class When_setting_a_value_description_for_a_parameter_without_origin : concern_for_ParameterTask
    {
+      private ValueOrigin _newValueOrigin;
+
       protected override void Context()
       {
          base.Context();
+         _newValueOrigin = new ValueOrigin
+         {
+            Description = "TEXT",
+            Source = ValueOriginSources.ParameterIdentification,
+            Method = ValueOriginDeterminationMethods.ManualFit,
+         };
+
          A.CallTo(() => _executionContext.Get<IParameter>(A<string>._)).Returns(null);
       }
 
       protected override void Because()
       {
-         sut.SetParameterValueDescription(_parameter, "TEXT");
+         sut.SetParameterValueOrigin(_parameter, _newValueOrigin);
       }
 
       [Observation]
       public void should_update_the_value_description_of_this_parameter()
       {
-         _parameter.ValueDescription.ShouldBeEqualTo("TEXT");
+         _parameter.ValueOrigin.Description.ShouldBeEqualTo(_newValueOrigin.Description);
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(_newValueOrigin.Source);
+         _parameter.ValueOrigin.Method.ShouldBeEqualTo(_newValueOrigin.Method);
       }
    }
 
@@ -363,7 +386,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _parameter.Name = CoreConstants.Parameter.PARTICLE_RADIUS_MAX;
+         _parameter.Name = CoreConstants.Parameters.PARTICLE_RADIUS_MAX;
          _parameter.Value = 10; //in L
          _parameter.DisplayUnit = _volumeDimension.DefaultUnit; //L
          _unitToSet = _volumeDimension.Unit("mL");
@@ -498,14 +521,14 @@ namespace PKSim.Core
          var kidney = new Container().WithName("Kidney").WithParentContainer(organism);
          var liver = new Container().WithName("Liver").WithParentContainer(organism);
          var bone = new Container().WithName("Bone").WithParentContainer(organism);
-         _relExpPlasma = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_PLASMA).WithParentContainer(organism);
-         _relExpPlasmaNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_PLASMA_NORM).WithParentContainer(organism);
-         _relExpLiver = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(liver);
-         _relExpLiverNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_NORM).WithParentContainer(liver);
-         _relExpKidney = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(kidney);
-         _relExpKidneyNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP_NORM).WithParentContainer(kidney);
+         _relExpPlasma = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_PLASMA).WithParentContainer(organism);
+         _relExpPlasmaNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_PLASMA_NORM).WithParentContainer(organism);
+         _relExpLiver = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(liver);
+         _relExpLiverNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_NORM).WithParentContainer(liver);
+         _relExpKidney = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(kidney);
+         _relExpKidneyNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_NORM).WithParentContainer(kidney);
          _anotherParameter = new PKSimParameter().WithName("not_a_rel_exp").WithParentContainer(kidney);
-         _relExpWithoutNorm = new PKSimParameter().WithName(CoreConstants.Parameter.REL_EXP).WithParentContainer(bone);
+         _relExpWithoutNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(bone);
       }
 
       protected override void Because()
@@ -597,6 +620,157 @@ namespace PKSim.Core
       public void should_throw_the_event_specifing_that_the_parameter_was_remove_from_the_favorites()
       {
          A.CallTo(() => _favoriteTask.SetParameterFavorite(_parameter, false)).MustHaveHappened();
+      }
+   }
+
+   public class When_updating_the_value_of_a_default_parameter_with_undefined_value_origin : concern_for_ParameterTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.IsDefault = true;
+      }
+
+      protected override void Because()
+      {
+         sut.SetParameterValue(_parameter, 10);
+      }
+
+      [Observation]
+      public void should_set_the_default_flag_to_false()
+      {
+         _parameter.IsDefault.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_set_the_value_origin_to_unknwon()
+      {
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Unknown);
+      }
+   }
+
+   public class When_updating_the_value_of_a_default_parameter_with_defined_value_origin : concern_for_ParameterTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.IsDefault = true;
+         _parameter.ValueOrigin.Source = ValueOriginSources.Internet;
+         _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Assumption;
+         _parameter.ValueOrigin.Description = "THIS IS A TEST";
+      }
+
+      protected override void Because()
+      {
+         sut.SetParameterValue(_parameter, 10);
+      }
+
+      [Observation]
+      public void should_set_the_default_flag_to_false()
+      {
+         _parameter.IsDefault.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_set_the_value_origin_to_unknwon()
+      {
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Unknown);
+         _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.Undefined);
+         string.IsNullOrEmpty(_parameter.ValueOrigin.Description).ShouldBeTrue();
+      }
+   }
+
+   public class When_executing_the_inverse_of_the_set_parameter_value_command_for_a_default_parameter_with_defined_value_origin : concern_for_ParameterTask
+   {
+      private IPKSimReversibleCommand _setCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.IsDefault = true;
+         _parameter.ValueOrigin.Source = ValueOriginSources.Internet;
+         _setCommand = sut.SetParameterValue(_parameter, 10).DowncastTo<IPKSimReversibleCommand>();
+      }
+
+      protected override void Because()
+      {
+         _setCommand.InvokeInverse(_executionContext);
+      }
+
+      [Observation]
+      public void should_reset_the_default_flag()
+      {
+         _parameter.IsDefault.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_not_touch_the_value_origin()
+      {
+         _parameter.ValueOrigin.Source = ValueOriginSources.Internet;
+      }
+   }
+
+   public class When_executing_the_inverse_of_the_set_parameter_value_command_for_a_default_parameter_with_undefined_value_origin : concern_for_ParameterTask
+   {
+      private IPKSimReversibleCommand _setCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.IsDefault = true;
+         _setCommand = sut.SetParameterValue(_parameter, 10).DowncastTo<IPKSimReversibleCommand>();
+      }
+
+      protected override void Because()
+      {
+         _setCommand.InvokeInverse(_executionContext);
+      }
+
+      [Observation]
+      public void should_reset_the_default_flag()
+      {
+         _parameter.IsDefault.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_reset_the_value_origin_to_undefined()
+      {
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Undefined);
+      }
+   }
+
+   public class When_executing_the_set_parameter_value_command_for_a_default_parameter_with_undefined_value_origin : concern_for_ParameterTask
+   {
+      private PKSimMacroCommand _setCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.IsDefault = true;
+      }
+
+      protected override void Because()
+      {
+         _setCommand = sut.SetParameterValue(_parameter, 10) as PKSimMacroCommand;
+      }
+
+      [Observation]
+      public void should_return_a_macro_command_with_three_command()
+      {
+         _setCommand.ShouldNotBeNull();
+         _setCommand.Count.ShouldBeEqualTo(3);
+      }
+
+      [Observation]
+      public void should_hide_the_set_default_flag_command()
+      {
+         _setCommand.All().First(x => x.IsAnImplementationOf<SetParameterDefaultStateCommand>()).Visible.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_hide_the_set_value_origin_command()
+      {
+         _setCommand.All().First(x => x.IsAnImplementationOf<UpdateParameterValueOriginCommand>()).Visible.ShouldBeFalse();
       }
    }
 }

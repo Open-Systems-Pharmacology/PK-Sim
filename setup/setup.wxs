@@ -103,10 +103,6 @@
                 <File Name="PKSimTemplateDBSystem.mdb" Id="PKSimTemplateDBSystem" Source="$(var.DeployDir)/PKSimTemplateDBSystem.mdb" KeyPath="yes" />
               </Component>
 
-              <Component Id='log4net.config.xml' Guid='A6BF052C-E9BA-4959-82B1-5B61011A06AB'>
-                <File Name='log4net.config.xml' Id='log4net.config.xml' Source='$(var.DeployDir)/log4net.config.xml' KeyPath='yes' />
-              </Component>
-              
               <Directory Id="ChartLayoutsFolder" Name="ChartLayouts">
                 <Component Id="ChartLayoutsFolder" Guid="FE800FCC-CF4A-452E-AA9D-E5DF4AF61777">
                   <CreateFolder Directory="ChartLayoutsFolder">
@@ -174,7 +170,6 @@
       <ComponentGroupRef Id="Examples" />
 
       <ComponentRef Id="PKSim.exe" />
-      <ComponentRef Id="log4net.config.xml" />
       <ComponentRef Id="OSPSuiteMenuDir" />
       <ComponentRef Id="Manual.pdf" />
       <ComponentRef Id="PKSimDB" />

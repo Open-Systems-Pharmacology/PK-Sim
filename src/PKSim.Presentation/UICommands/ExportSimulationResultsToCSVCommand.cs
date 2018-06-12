@@ -15,9 +15,9 @@ namespace PKSim.Presentation.UICommands
          _simulationTask = simulationTask;
       }
 
-      protected override void PerformExecute()
+      protected override async void PerformExecute()
       {
-         _simulationTask.SecureAwait(x => x.ExportResultsToCSVAsync(Subject));
+         await _simulationTask.SecureAwait(x => x.ExportResultsToCSVAsync(Subject));
       }
    }
 }

@@ -41,14 +41,14 @@ namespace PKSim.ProjectConverter.v6_1
 
       private void validateWeightRange(RandomPopulation population)
       {
-         population.Settings.ParameterRange(CoreConstants.Parameter.MEAN_WEIGHT).MinValueInDisplayUnit.ShouldBeEqualTo(90);
-         population.Settings.ParameterRange(CoreConstants.Parameter.MEAN_WEIGHT).MaxValueInDisplayUnit.ShouldBeEqualTo(130);
+         population.Settings.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT).MinValueInDisplayUnit.ShouldBeEqualTo(90);
+         population.Settings.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT).MaxValueInDisplayUnit.ShouldBeEqualTo(130);
       }
 
       private void validateHeightRange(RandomPopulation population)
       {
-         population.Settings.ParameterRange(CoreConstants.Parameter.MEAN_HEIGHT).MinValueInDisplayUnit.ShouldBeEqualTo(160);
-         population.Settings.ParameterRange(CoreConstants.Parameter.MEAN_HEIGHT).MaxValueInDisplayUnit.ShouldBeEqualTo(170);
+         population.Settings.ParameterRange(CoreConstants.Parameters.MEAN_HEIGHT).MinValueInDisplayUnit.ShouldBeEqualTo(160);
+         population.Settings.ParameterRange(CoreConstants.Parameters.MEAN_HEIGHT).MaxValueInDisplayUnit.ShouldBeEqualTo(170);
       }
 
       [Observation]

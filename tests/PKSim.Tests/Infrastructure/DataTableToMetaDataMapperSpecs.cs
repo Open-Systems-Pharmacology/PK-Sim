@@ -86,8 +86,9 @@ namespace PKSim.Infrastructure
                ParameterName = "P1",
                ParameterValueVersion = "DUMMY",
                Species = "Maulwurf",
-               Visible = true
-            };
+               Visible = true,
+               ValueOriginId= 5
+         };
 
          pvd1.ParentContainerPath = new ObjectPath(new[] { Constants.ROOT, Constants.ORGANISM, "Liver", "Cells" }).ToString();
 
@@ -111,6 +112,9 @@ namespace PKSim.Infrastructure
 
             if (p.PropertyType == typeof (double?))
                typeForDataTable = typeof (double);
+
+            if (p.PropertyType == typeof(int?))
+               typeForDataTable = typeof(int);
 
             if (p.PropertyType == typeof (bool))
                typeForDataTable = typeof (int);

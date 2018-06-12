@@ -9,10 +9,10 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Populations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {

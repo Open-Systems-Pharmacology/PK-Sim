@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -23,9 +21,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private List<CompoundProcess> _allCompoundProcesses;
 
       public CompoundProcessRepository(IFlatProcessRepository processRepository,
-                                       IParameterContainerTask parameterContainerTask,
-                                       IFlatProcessToCompoundProcessMapper flatProcessToCompoundProcessMapper,
-                                       IGroupRepository groupRepository)
+         IParameterContainerTask parameterContainerTask,
+         IFlatProcessToCompoundProcessMapper flatProcessToCompoundProcessMapper,
+         IGroupRepository groupRepository)
       {
          _processRepository = processRepository;
          _parameterContainerTask = parameterContainerTask;
@@ -43,7 +41,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          _allCompoundProcesses = allCompoundProcesses().MapAllUsing(_flatProcessToCompoundProcessMapper).ToList();
          _allCompoundProcesses.Each(addParametersToTemplate);
-
       }
 
       private IEnumerable<FlatProcess> allCompoundProcesses()
@@ -66,10 +63,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
       public CompoundProcess ProcessByName(string processTemplateName)
       {
          Start();
-
-         if (!this.ExistsByName(processTemplateName))
-            throw new ArgumentOutOfRangeException("processTemplateName", PKSimConstants.Error.CompoundProcessNotExists(processTemplateName));
-
          return All().FindByName(processTemplateName);
       }
 

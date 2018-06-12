@@ -41,7 +41,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          {
             var lipo = systemicProcess.Parameter(ConverterConstants.Parameter.Lipophilicity);
             lipo.Visible = true;
-            lipo.Name = CoreConstants.Parameter.LIPOPHILICITY_EXPERIMENT;
+            lipo.Name = CoreConstants.Parameters.LIPOPHILICITY_EXPERIMENT;
             updateLipophilicityReferences(systemicProcess, ConverterConstants.Parameter.BloodPlasmaConcentrationRatio);
             updateLipophilicityReferences(systemicProcess, ConverterConstants.Parameter.PartitionCoefficientWwaterProtein);
          }
@@ -53,7 +53,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          if (parameter == null) return;
          foreach (var objectPath in parameter.Formula.ObjectPaths)
          {
-            objectPath.Replace(ConverterConstants.Parameter.Lipophilicity, CoreConstants.Parameter.LIPOPHILICITY_EXPERIMENT);
+            objectPath.Replace(ConverterConstants.Parameter.Lipophilicity, CoreConstants.Parameters.LIPOPHILICITY_EXPERIMENT);
          }
       }
 
@@ -61,15 +61,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
       {
          var defaultCompound = _compoundFactory.Create();
 
-         var plasmaProteinBindingPartner = _cloner.Clone(defaultCompound.Parameter(CoreConstants.Parameter.PLASMA_PROTEIN_BINDING_PARTNER));
-         plasmaProteinBindingPartner.Value = (int) PlasmaProteinPartner.Unknown;
+         var plasmaProteinBindingPartner = _cloner.Clone(defaultCompound.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER));
+         plasmaProteinBindingPartner.Value = (int) PlasmaProteinBindingPartner.Unknown;
          compound.Add(plasmaProteinBindingPartner);
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.Kass_FcRn)));
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.Kd_FcRn_pls_int)));
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.BP_AGP)));
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.BP_ALBUMIN)));
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.BP_UNKNOWN)));
-         compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.CalculatedSpecificIntestinalPermeability)));
 
          var oldKdFCRn = compound.Parameter("Kd (FcRn)");
          oldKdFCRn.Name = ConverterConstants.Parameter.Kd_FcRn_Endo;
@@ -86,18 +85,18 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
       private static void updateFractionUnboundParameterInContainer(IContainer container)
       {
-         container.Parameter(ConverterConstants.Parameter.FractionUnboundPlasma).Name = CoreConstants.Parameter.FractionUnbound;
+         container.Parameter(ConverterConstants.Parameter.FractionUnboundPlasma).Name = CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE;
       }
 
       public void UpdateGainPerChargeInAlternatives(Compound compound, bool updateValues = true)
       {
-         var gainPerCharge = compound.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge);
+         var gainPerCharge = compound.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
          gainPerCharge.GroupName = CoreConstants.Groups.COMPOUND_SOLUBILITY;
 
          var solGroup = compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_SOLUBILITY);
          foreach (var alternative in solGroup.AllAlternatives)
          {
-            var alternativeParameter = alternative.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge);
+            var alternativeParameter = alternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
             if (alternativeParameter != null)
             {
                if (updateValues)

@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Extensions;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Views.Parameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Presentation.Presenters;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation.Presenters.Parameters
@@ -31,9 +32,9 @@ namespace PKSim.Presentation.Presenters.Parameters
       /// </summary>
       Action<TableFormula> ConfigureCreatedTableAction { get; set; }
 
-      string Description { set; }
+      string Description { get; set; }
 
-      string ImportToolTip { set; }
+      string ImportToolTip { get; set; }
    }
 
    public abstract class TableParameterPresenter<TView> : AbstractCommandCollectorPresenter<TView, ITableParameterPresenter>, ITableParameterPresenter
@@ -72,12 +73,14 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public string Description
       {
-         set { View.Description = value; }
+         set => View.Description = value;
+         get => View.Description;
       }
 
       public string ImportToolTip
       {
-         set { View.ImportToolTip = value; }
+         set => View.ImportToolTip = value;
+         get => View.ImportToolTip;
       }
 
       public TableFormula EditedFormula
@@ -119,7 +122,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          _allPoints = new NotifyList<ValuePointDTO>();
          _editedFormula.AllPoints().Each(p => _allPoints.Add(new ValuePointDTO(_tableParameter, _editedFormula, p)));
 
-         string yName = string.IsNullOrEmpty(_editedFormula.YName) ? _tableParameter.Name : _editedFormula.YName;
+         var yName = string.IsNullOrEmpty(_editedFormula.YName) ? _tableParameter.Name : _editedFormula.YName;
          _view.XCaption = Constants.NameWithUnitFor(_editedFormula.XName, _editedFormula.XDisplayUnit);
          _view.YCaption = Constants.NameWithUnitFor(yName, _editedFormula.YDisplayUnit);
 
@@ -146,9 +149,24 @@ namespace PKSim.Presentation.Presenters.Parameters
          ViewChanged();
       }
 
+      public override bool CanClose
+      {
+         get
+         {
+            if (_editedFormula == null)
+               return base.CanClose;
+
+            return base.CanClose && _editedFormula.AllPoints().Any();
+         }
+      }
+
       public void ImportTable()
       {
-         editFormula(_importTableFormula());
+         var importedFormula = _importTableFormula();
+         if (importedFormula == null)
+            return;
+
+         editFormula(importedFormula);
          ViewChanged();
       }
 
@@ -176,6 +194,7 @@ namespace PKSim.Presentation.Presenters.Parameters
             _allPoints.Remove(newPoint);
             throw;
          }
+
          _view.EditPoint(newPoint);
       }
 
@@ -188,7 +207,7 @@ namespace PKSim.Presentation.Presenters.Parameters
    public class TableParameterPresenter : TableParameterPresenter<ITableParameterView>
    {
       public TableParameterPresenter(ITableParameterView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner) :
-         base(view, parameterTask, formulaFactory, cloner, formulaFactory.CreateTableFormula)
+         base(view, parameterTask, formulaFactory, cloner, () => formulaFactory.CreateTableFormula())
       {
          //default import function disabled when context is not specified
          view.ImportVisible = false;

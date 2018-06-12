@@ -411,7 +411,7 @@ namespace PKSim.Presentation
          _versionChecker.CurrentVersion = "1.1.1";
          _userSettings.LastIgnoredVersion = string.Empty;
          A.CallTo(() => _userSettings.ShowUpdateNotification).Returns(true);
-         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).ReturnsAsync(true);
+         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).Returns(true);
          A.CallTo(() => _versionChecker.LatestVersion).Returns(new VersionInfo{Version = _newVersion});
       }
       protected override void Because()
@@ -440,7 +440,7 @@ namespace PKSim.Presentation
          _versionChecker.CurrentVersion = "1.1.1";
          A.CallTo(() => _userSettings.ShowUpdateNotification).Returns(true);
          A.CallTo(() => _userSettings.LastIgnoredVersion).Returns(_newVersion);
-         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).ReturnsAsync(true);
+         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).Returns(true);
          A.CallTo(() => _versionChecker.LatestVersion).Returns(new VersionInfo { Version = _newVersion });
       }
       protected override void Because()
@@ -467,7 +467,7 @@ namespace PKSim.Presentation
          _versionChecker.CurrentVersion = "1.1.1";
          A.CallTo(() => _userSettings.ShowUpdateNotification).Returns(true);
          A.CallTo(() => _userSettings.LastIgnoredVersion).Returns("1.2.1");
-         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).ReturnsAsync(true);
+         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).Returns(true);
          A.CallTo(() => _versionChecker.LatestVersion).Returns(new VersionInfo { Version = _newVersion });
       }
       protected override void Because()

@@ -56,7 +56,7 @@ namespace PKSim.Core
    public class When_retrieving_all_the_field_of_a_given_type_with_derived_fields : concern_for_PopulationAnalysis
    {
       [Observation]
-      public void should_only_return_the_pk_parameters_and_the_derived_fields_based_on_pk_parmaeters_if_any()
+      public void should_only_return_the_pk_parameters_and_the_derived_fields_based_on_pk_parameters_if_any()
       {
          A.CallTo(() => _derivedField1.IsDerivedTypeFor(typeof (PopulationAnalysisPKParameterField))).Returns(true);
          sut.All(typeof(PopulationAnalysisPKParameterField), withDerived: true).ShouldOnlyContain(_pkField1, _pkField2, _derivedField1);
@@ -66,7 +66,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_only_return_the_population_parameters_and_the_derived_fields_based_on_population_parmaeters_if_any()
+      public void should_only_return_the_population_parameters_and_the_derived_fields_based_on_population_parameters_if_any()
       {
          A.CallTo(() => _derivedField1.IsDerivedTypeFor(typeof (PopulationAnalysisParameterField))).Returns(true);
          sut.All(typeof(PopulationAnalysisParameterField), withDerived: true).ShouldOnlyContain(_paraField1, _paraField2, _derivedField1);

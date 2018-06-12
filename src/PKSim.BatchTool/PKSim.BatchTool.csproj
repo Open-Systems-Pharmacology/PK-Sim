@@ -10,7 +10,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PKSim.BatchTool</RootNamespace>
     <AssemblyName>PKSim.BatchTool</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -57,6 +58,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>PKSim.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
@@ -148,134 +152,122 @@
       <HintPath>..\..\packages\OSPSuite.DevExpress.17.1.5\lib\net45\DevExpress.XtraVerticalGrid.v17.1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.4.4.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.2.0.1\lib\netstandard2.0\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.0.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Options.2.0.1\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Primitives.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Draw, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Draw.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Draw, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Draw.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Instruments, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Instruments.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Instruments, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Instruments.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Layout, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Layout.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Layout, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Layout.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Pdf, Version=5.1.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Pdf.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Pdf, Version=5.1.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Pdf.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Svg, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Svg.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Svg, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Svg.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Xml, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Xml, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Xml.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.86\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.81\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.86\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.81\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.DataBinding, Version=2.1.0.5, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.DataBinding.2.1.0.5\lib\net452\OSPSuite.DataBinding.dll</HintPath>
+    <Reference Include="OSPSuite.DataBinding, Version=2.2.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DataBinding.2.2.0.2\lib\net462\OSPSuite.DataBinding.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.DataBinding.DevExpress, Version=2.1.0.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.DataBinding.DevExpress.2.1.0.4\lib\net452\OSPSuite.DataBinding.DevExpress.dll</HintPath>
+    <Reference Include="OSPSuite.DataBinding.DevExpress, Version=2.2.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DataBinding.DevExpress.2.2.0.2\lib\net462\OSPSuite.DataBinding.DevExpress.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.FuncParser">
-      <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.0.6\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.86\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.81\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OSPSuite.Serializer">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.SimModel.2.2.0.6\lib\net45\OSPSuite.SimModel.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.SimModel.3.0.0.16\lib\net45\OSPSuite.SimModel.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.TeXReporting, Version=2.0.1.7, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.1.7\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    <Reference Include="OSPSuite.TeXReporting, Version=2.1.0.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.1.0.8\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.UI, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.UI.7.2.0.86\lib\net452\OSPSuite.UI.dll</HintPath>
+    <Reference Include="OSPSuite.UI, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.UI.7.3.0.81\lib\net462\OSPSuite.UI.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Utility, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Utility.2.0.1.4\lib\net452\OSPSuite.Utility.dll</HintPath>
+    <Reference Include="OSPSuite.Utility, Version=3.0.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.3\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="SX, Version=2.6.5.7, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.5.7\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.6.7.6, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.7.6\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.4.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="Presenters\GenerateProjectOverviewPresenter.cs" />
-    <Compile Include="Presenters\GenerateTrainingMaterialPresenter.cs" />
+    <Compile Include="Captions.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="DTO\InputAndOutputFolderDTO.cs" />
+    <Compile Include="DTO\FolderDTO.cs" />
+    <Compile Include="DTO\SnapshotFolderListDTO.cs" />
+    <Compile Include="DTO\SnapshotSingleFolderDTO.cs" />
+    <Compile Include="Presenters\FolderListSnapshotPresenter.cs" />
     <Compile Include="Presenters\InputAndOutputBatchPresenter.cs" />
-    <Compile Include="Services\BatchDiagramModel.cs" />
-    <Compile Include="Mappers\BatchDiagramModelToXmlMapper.cs" />
-    <Compile Include="Presenters\BatchDTO.cs" />
-    <Compile Include="Services\BatchJournalDiagramManagerFactory.cs" />
+    <Compile Include="Presenters\ISnapshotPresenter.cs" />
+    <Compile Include="Presenters\SingleFolderSnapshotPresenter.cs" />
+    <Compile Include="Presenters\SnapshotRunPresenter.cs" />
     <Compile Include="Presenters\BatchMainPresenter.cs" />
-    <Compile Include="Services\ProjectOverviewRunner.cs" />
-    <Compile Include="Services\TrainingMaterialRunner.cs" />
-    <Compile Include="Services\TrainingMaterials\ITrainingMaterialExercise.cs" />
-    <Compile Include="Services\TrainingMaterials\IV.cs" />
-    <Compile Include="Services\TrainingObservedDataRepository.cs" />
-    <Compile Include="Services\TrainingMaterials\TrainingMaterialsRegister.cs" />
-    <Compile Include="Services\TrainingMaterials\TrainingMaterialTask.cs" />
     <Compile Include="Views\BatchMainView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -284,27 +276,25 @@
     </Compile>
     <Compile Include="Presenters\JsonSimulationBatchPresenter.cs" />
     <Compile Include="BatchRegister.cs" />
-    <Compile Include="Services\JsonSimulationRunner.cs" />
-    <Compile Include="BatchStarter.cs" />
-    <Compile Include="BatchStartOptions.cs" />
-    <Compile Include="Services\BatchUserSettings.cs" />
-    <Compile Include="Views\GenerateProjectOverviewView.cs">
+    <Compile Include="ApplicationStartup.cs" />
+    <Compile Include="Views\BatchView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\GenerateProjectOverviewView.Designer.cs">
-      <DependentUpon>GenerateProjectOverviewView.cs</DependentUpon>
+    <Compile Include="Views\BatchView.Designer.cs">
+      <DependentUpon>BatchView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\GenerateTrainingMaterialView.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Views\ExportModeRadioGroupExtensions.cs" />
+    <Compile Include="Views\FolderListSnapshotView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\GenerateTrainingMaterialView.Designer.cs">
-      <DependentUpon>GenerateTrainingMaterialView.cs</DependentUpon>
+    <Compile Include="Views\FolderListSnapshotView.Designer.cs">
+      <DependentUpon>FolderListSnapshotView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\IBatchMainView.cs" />
     <Compile Include="Presenters\IBatchPresenter.cs" />
-    <Compile Include="Services\IBatchRunner.cs" />
     <Compile Include="Views\IBatchView.cs" />
-    <Compile Include="Views\IGenerateProjectOverviewView.cs" />
+    <Compile Include="Views\IFolderListSnapshotView.cs" />
+    <Compile Include="Views\IInputAndOutputBatchView.cs" />
     <Compile Include="Views\InputAndOutputBatchView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -312,16 +302,26 @@
       <DependentUpon>InputAndOutputBatchView.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Presenters\ProjectComparisonPresenter.cs" />
-    <Compile Include="Services\ProjectComparisonRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\IGenerateTrainingMaterialView.cs" />
+    <Compile Include="Views\ISingleFolderSnapshotView.cs" />
+    <Compile Include="Views\ISnapshotRunView.cs" />
+    <Compile Include="Views\SingleFolderSnapshotView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SingleFolderSnapshotView.Designer.cs">
+      <DependentUpon>SingleFolderSnapshotView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SnapshotRunView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SnapshotRunView.Designer.cs">
+      <DependentUpon>SnapshotRunView.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Views\BatchMainView.resx">
       <DependentUpon>BatchMainView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\GenerateProjectOverviewView.resx">
-      <DependentUpon>GenerateProjectOverviewView.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="Views\FolderListSnapshotView.resx">
+      <DependentUpon>FolderListSnapshotView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\InputAndOutputBatchView.resx">
       <DependentUpon>InputAndOutputBatchView.cs</DependentUpon>
@@ -337,8 +337,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Views\GenerateTrainingMaterialView.resx">
-      <DependentUpon>GenerateTrainingMaterialView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\SingleFolderSnapshotView.resx">
+      <DependentUpon>SingleFolderSnapshotView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SnapshotRunView.resx">
+      <DependentUpon>SnapshotRunView.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="..\..\simmodel.schema\OSPSuite.SimModel.xsd">
       <Link>OSPSuite.SimModel.xsd</Link>
@@ -359,13 +362,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Services\SimulationExporter.cs" />
-    <Compile Include="Services\SimulationLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PKSim.Assets\PKSim.Assets.csproj">
       <Project>{2ffded35-4f46-4f0c-a5a7-4097b0c5f7aa}</Project>
       <Name>PKSim.Assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj">
+      <Project>{62f91ef9-5720-449d-9ec8-e9a7d5ba09b0}</Project>
+      <Name>PKSim.CLI.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj">
       <Project>{CEF9367D-F2C4-4796-847B-42B090A601B5}</Project>
@@ -374,10 +379,6 @@
     <ProjectReference Include="..\PKSim.Infrastructure\PKSim.Infrastructure.csproj">
       <Project>{4A55E410-29A7-4BD7-A731-09A9F04BFEFC}</Project>
       <Name>PKSim.Infrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PKSim.Matlab\PKSim.Matlab.csproj">
-      <Project>{2F19A0C6-4C93-4A78-8DB6-E4C3EDE8E6F6}</Project>
-      <Name>PKSim.Matlab</Name>
     </ProjectReference>
     <ProjectReference Include="..\PKSim.Presentation\PKSim.Presentation.csproj">
       <Project>{0238E2F1-A931-4D3D-9C6E-88924CFF9501}</Project>
@@ -401,14 +402,24 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\packages\OSPSuite.SimModelSolver_CVODES282.2.0.0.1\lib\net45\OSPSuite.SimModelSolver_CVODES282.dll">
+    <None Include="..\..\packages\OSPSuite.SimModelSolver_CVODES282.3.0.0.7\lib\net45\OSPSuite.SimModelSolver_CVODES282.dll">
       <Link>OSPSuite.SimModelSolver_CVODES282.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net45\x86\SQLite.Interop.dll">
+    </None>
+    <Content Include="..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x86\SQLite.Interop.dll">
       <Link>SQLite.Interop.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Icons\AssumptionValueOrigin.ico" />
+    <Content Include="Icons\DatabaseValueOrigin.ico" />
+    <Content Include="Icons\DefaultValueOrigin.ico" />
+    <Content Include="Icons\InternetValueOrigin.ico" />
+    <Content Include="Icons\ManualFitValueOrigin.ico" />
+    <Content Include="Icons\OtherValueOrigin.ico" />
+    <Content Include="Icons\ParameterIdentificationValueOrigin.ico" />
+    <Content Include="Icons\PublicationValueOrigin.ico" />
+    <Content Include="Icons\ReportValueOrigin.ico" />
+    <Content Include="Icons\UnknownValueOrigin.ico" />
     <Content Include="PKSim.ico" />
   </ItemGroup>
   <ItemGroup />

@@ -1,21 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Presenters;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
-using OSPSuite.Core.Commands;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Services;
+using PKSim.Presentation.Presenters;
+using PKSim.Presentation.Presenters.Snapshots;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure.Services
@@ -27,15 +29,17 @@ namespace PKSim.Infrastructure.Services
       private readonly IApplicationController _applicationController;
       private readonly ITemplateTask _templateTask;
       private readonly IObservedDataPersistor _observedDataPersistor;
+      private readonly ISnapshotTask _snapshotTask;
 
-      public ObservedDataTask(IPKSimProjectRetriever projectRetriever, IExecutionContext executionContext, IDialogCreator dialogCreator, IApplicationController applicationController,IDataRepositoryTask dataRepositoryTask,
-         ITemplateTask templateTask, IContainerTask containerTask, IObservedDataPersistor observedDataPersistor, IObjectTypeResolver objectTypeResolver) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
+      public ObservedDataTask(IPKSimProjectRetriever projectRetriever, IExecutionContext executionContext, IDialogCreator dialogCreator, IApplicationController applicationController, IDataRepositoryTask dataRepositoryTask,
+         ITemplateTask templateTask, IContainerTask containerTask, IObservedDataPersistor observedDataPersistor, IObjectTypeResolver objectTypeResolver, ISnapshotTask snapshotTask) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
          _applicationController = applicationController;
          _templateTask = templateTask;
          _observedDataPersistor = observedDataPersistor;
+         _snapshotTask = snapshotTask;
       }
 
       public override void Rename(DataRepository observedData)
@@ -60,6 +64,15 @@ namespace PKSim.Infrastructure.Services
          if (string.IsNullOrEmpty(file)) return;
 
          _observedDataPersistor.Save(observedData, file);
+      }
+
+      public void LoadFromSnapshot()
+      {
+         using (var presenter = _applicationController.Start<ILoadFromSnapshotPresenter<DataRepository>>())
+         {
+            var observedData = presenter.LoadModelFromSnapshot();
+            observedData.Each(AddObservedDataToProject);
+         }
       }
 
       public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable)
@@ -110,10 +123,10 @@ namespace PKSim.Infrastructure.Services
          var simulation = usedObservedData.Simulation;
 
          return from parameterIdentification in allParameterIdentifications()
-                let outputMappings = parameterIdentification.AllOutputMappingsFor(simulation)
-                where outputMappings.Any(x => x.UsesObservedData(observedData))
-                select parameterIdentification;
-      }   
+            let outputMappings = parameterIdentification.AllOutputMappingsFor(simulation)
+            where outputMappings.Any(x => x.UsesObservedData(observedData))
+            select parameterIdentification;
+      }
 
       private IReadOnlyCollection<ParameterIdentification> allParameterIdentifications()
       {
@@ -142,10 +155,8 @@ namespace PKSim.Infrastructure.Services
 
       public void LoadObservedDataFromTemplate()
       {
-         var observedData = _templateTask.LoadFromTemplate<DataRepository>(TemplateType.ObservedData);
-         if (observedData == null) return;
-
-         AddObservedDataToProject(observedData);
+         var observedDataList = _templateTask.LoadFromTemplate<DataRepository>(TemplateType.ObservedData);
+         observedDataList.Each(AddObservedDataToProject);
       }
    }
 }

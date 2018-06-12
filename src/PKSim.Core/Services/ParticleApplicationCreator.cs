@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using PKSim.Assets;
 using OSPSuite.Core.Maths.Statistics;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
@@ -48,14 +46,14 @@ namespace PKSim.Core.Services
          // get number of bins
          int numberOfBins;
 
-         bool isPolyDisperse = formulationParameterValue(CoreConstants.Parameter.PARTICLE_DISPERSE_SYSTEM) == CoreConstants.Parameter.POLYDISPERSE;
+         bool isPolyDisperse = formulationParameterValue(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM) == CoreConstants.Parameters.POLYDISPERSE;
 
          if (isPolyDisperse)
-            numberOfBins = (int) formulationParameterValue(CoreConstants.Parameter.NUMBER_OF_BINS);
+            numberOfBins = (int) formulationParameterValue(CoreConstants.Parameters.NUMBER_OF_BINS);
          else
             numberOfBins = 1;
 
-         if (numberOfBins < 1 || numberOfBins > CoreConstants.Parameter.MAX_NUMBER_OF_BINS)
+         if (numberOfBins < 1 || numberOfBins > CoreConstants.Parameters.MAX_NUMBER_OF_BINS)
             throw new PKSimException(PKSimConstants.Error.InvalidNumberOfBins);
 
          // get (start)radius and factor for particles number for each bin
@@ -65,7 +63,7 @@ namespace PKSim.Core.Services
          fillBinRadiusAndNumberOfParticlesFactor(numberOfBins, binRadius, binNumberOfParticlesFactor);
 
          // delete not required bin containers
-         for (int i = numberOfBins + 1; i <= CoreConstants.Parameter.MAX_NUMBER_OF_BINS; i++)
+         for (int i = numberOfBins + 1; i <= CoreConstants.Parameters.MAX_NUMBER_OF_BINS; i++)
          {
             var binName = binContainerName(i);
             applicationBuilder.RemoveChild(applicationBuilder.GetSingleChildByName(binName));
@@ -77,6 +75,12 @@ namespace PKSim.Core.Services
             setupParticleBin(applicationBuilder, i, binRadius[i - 1], binNumberOfParticlesFactor[i - 1], formulaCache);
          }
 
+         //// add insoluble molecule for particle bin
+         //var appMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(insolubleMoleculeName(0)); //TODO replace insolubleMoleculeName(0) with const string
+         //appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(CoreConstants.ContainerName.InsolubleDrug);
+         //appMoleculeBuilder.Formula = insolubleDrugStartFormula(formulaCache);
+         //applicationBuilder.AddMolecule(appMoleculeBuilder);
+
          // add "ParticleApplication"-Tag required for Fraction Solid/Dissolved/Insoluble observer
          applicationBuilder.AddTag(CoreConstants.Tags.ParticlesApplicationWithNBins(numberOfBins));
       }
@@ -85,7 +89,7 @@ namespace PKSim.Core.Services
       {
          const double factor = 3.0 / 4.0 / Math.PI; // = 1 / (4/3*Pi)
 
-         double meanRadius = formulationParameterValue(CoreConstants.Parameter.PARTICLE_RADIUS_MEAN);
+         double meanRadius = formulationParameterValue(CoreConstants.Parameters.PARTICLE_RADIUS_MEAN);
 
          // monodisperse case (no real distribution)
          if (numberOfBins == 1)
@@ -97,19 +101,19 @@ namespace PKSim.Core.Services
 
          // polydisperse case
          var particlesDistributionType =
-            (int) formulationParameterValue(CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION);
+            (int) formulationParameterValue(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
 
-         var minRadius = formulationParameterValue(CoreConstants.Parameter.PARTICLE_RADIUS_MIN);
-         var maxRadius = formulationParameterValue(CoreConstants.Parameter.PARTICLE_RADIUS_MAX);
+         var minRadius = formulationParameterValue(CoreConstants.Parameters.PARTICLE_RADIUS_MIN);
+         var maxRadius = formulationParameterValue(CoreConstants.Parameters.PARTICLE_RADIUS_MAX);
 
          // bin radii
          var binRadiusDistributionValue = new double[numberOfBins];
 
          IDistribution distribution;
-         if (particlesDistributionType == CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
+         if (particlesDistributionType == CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
          {
-            double mean = formulationParameterValue(CoreConstants.Parameter.PARTICLE_RADIUS_MEAN);
-            double deviation = formulationParameterValue(CoreConstants.Parameter.PARTICLE_RADIUS_STD_DEVIATION);
+            double mean = formulationParameterValue(CoreConstants.Parameters.PARTICLE_RADIUS_MEAN);
+            double deviation = formulationParameterValue(CoreConstants.Parameters.PARTICLE_RADIUS_STD_DEVIATION);
 
             distribution = new NormalDistribution(mean, deviation);
 
@@ -119,10 +123,10 @@ namespace PKSim.Core.Services
                binRadius[binIndex] = minRadius + (binIndex + 0.5) * (maxRadius - minRadius) / numberOfBins;
             }
          }
-         else if (particlesDistributionType == CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL)
+         else if (particlesDistributionType == CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL)
          {
-            double mean = Math.Log(formulationParameterValue(CoreConstants.Parameter.PARTICLE_LOG_DISTRIBUTION_MEAN));
-            double deviation = formulationParameterValue(CoreConstants.Parameter.PARTICLE_LOG_VARIATION_COEFF);
+            double mean = Math.Log(formulationParameterValue(CoreConstants.Parameters.PARTICLE_LOG_DISTRIBUTION_MEAN));
+            double deviation = formulationParameterValue(CoreConstants.Parameters.PARTICLE_LOG_VARIATION_COEFF);
 
             distribution = new LogNormalDistribution(mean, deviation);
 
@@ -174,10 +178,10 @@ namespace PKSim.Core.Services
          var binName = binContainerName(binIndex);
          var binContainer = applicBuilder.GetSingleChildByName<IContainer>(binName);
 
-         var numberOfParticlesFactor = binContainer.Parameter(CoreConstants.Parameter.NumberOfParticlesFactor);
+         var numberOfParticlesFactor = binContainer.Parameter(CoreConstants.Parameters.NUMBER_OF_PARTICLES_FACTOR);
          numberOfParticlesFactor.Value = binNumberOfParticlesFactor;
 
-         var particleRadius = binContainer.Parameter(CoreConstants.Parameter.StartParticleRadius);
+         var particleRadius = binContainer.Parameter(CoreConstants.Parameters.START_PARTICLE_RADIUS);
          particleRadius.Value = binRadius;
 
          // add application molecule in particle bin and set its formula
@@ -210,18 +214,18 @@ namespace PKSim.Core.Services
 
       private IFormula particleDrugMassFormula(IFormulaCache formulaCache)
       {
-         if (formulaCache.ExistsByName(CoreConstants.Parameter.PARTICLE_BIN_DRUG_MASS))
-            return formulaCache.FindByName(CoreConstants.Parameter.PARTICLE_BIN_DRUG_MASS);
+         if (formulaCache.ExistsByName(CoreConstants.Parameters.PARTICLE_BIN_DRUG_MASS))
+            return formulaCache.FindByName(CoreConstants.Parameters.PARTICLE_BIN_DRUG_MASS);
 
 
-         var pathToDrugMass = _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, CoreConstants.Parameter.PARTICLE_BIN_DRUG_MASS)
+         var pathToDrugMass = _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, CoreConstants.Parameters.PARTICLE_BIN_DRUG_MASS)
             .WithAlias("ParticleBinDrugMass")
             .WithDimension(_dimensionRepository.Amount);
 
          var startFormula = _objectBaseFactory.Create<ExplicitFormula>()
             .WithFormulaString(pathToDrugMass.Alias)
             .WithDimension(_dimensionRepository.Amount)
-            .WithName(CoreConstants.Parameter.PARTICLE_BIN_DRUG_MASS);
+            .WithName(CoreConstants.Parameters.PARTICLE_BIN_DRUG_MASS);
 
 
          startFormula.AddObjectPath(pathToDrugMass);

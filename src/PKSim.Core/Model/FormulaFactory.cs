@@ -49,7 +49,7 @@ namespace PKSim.Core.Model
       IFormula ValueFor(ParameterValueMetaData valueDefinition);
 
       /// <summary>
-      ///    Creates and returns a constant formula based on the <paramref name="valueDefinition" />
+      ///    Creates and returns a constant formula with <paramref name="value"/> and <paramref name="dimension"/>
       /// </summary>
       IFormula ValueFor(double value, IDimension dimension);
 
@@ -59,9 +59,10 @@ namespace PKSim.Core.Model
       IFormula RateFor(RateKey rateKey, IFormulaCache formulaCache);
 
       /// <summary>
-      ///    creates and returns a table formula
+      ///    Creates and returns a table formula
       /// </summary>
-      TableFormula CreateTableFormula();
+      /// <param name="useDerivedValues">Indicates of derived values of the table should be used when solving the ODE system. Default is <c>true</c></param>
+      TableFormula CreateTableFormula(bool useDerivedValues = true);
 
       /// <summary>
       ///    creates and returns a distributed table formula
@@ -104,12 +105,12 @@ namespace PKSim.Core.Model
       IFormula DrugMassFormulaFor(IFormulaCache formulaCache);
 
       /// <summary>
-      ///    Returns the Dose Formula as a function of the DosePerBodyWeight Parmaeter;
+      ///    Returns the Dose Formula as a function of the DosePerBodyWeight parameter;
       /// </summary>
       IFormula DoseFromDosePerBodyWeightFor(IFormulaCache formulaCache);
 
       /// <summary>
-      ///    Returns the Dose Formula as a function of the DosePerBodyWeight Parmaeter;
+      ///    Returns the Dose Formula as a function of the DosePerBodyWeight parameter;
       /// </summary>
       IFormula DoseFromDosePerBodySurfaceAreaFor(IFormulaCache formulaCache);
    }
@@ -151,7 +152,7 @@ namespace PKSim.Core.Model
          const string weight = "BW";
 
          var formula = _objectBaseFactory.Create<ExplicitFormula>()
-            .WithName(CoreConstants.Parameter.BMI)
+            .WithName(CoreConstants.Parameters.BMI)
             .WithFormulaString($"{height}>0 ? {weight} / ({height})^2 : 0")
             .WithDimension(_dimensionRepository.BMI);
 
@@ -168,7 +169,7 @@ namespace PKSim.Core.Model
 
          //Age is in year but time is in min
          var formula = _objectBaseFactory.Create<ExplicitFormula>()
-            .WithName(CoreConstants.Parameter.AGE)
+            .WithName(CoreConstants.Parameters.AGE)
             .WithFormulaString($"{age0} + {Constants.TIME} * {minToYearFactor}")
             .WithDimension(_dimensionRepository.AgeInYears);
 
@@ -260,9 +261,10 @@ namespace PKSim.Core.Model
          return formulaCache[rateKey];
       }
 
-      public TableFormula CreateTableFormula()
+      public TableFormula CreateTableFormula(bool useDerivedValues = true)
       {
          var tableFormula = _objectBaseFactory.Create<TableFormula>().WithName(CoreConstants.Formula.TableFormula);
+         tableFormula.UseDerivedValues = useDerivedValues;
          setupDefaultFor(tableFormula);
          return tableFormula;
       }
@@ -311,6 +313,9 @@ namespace PKSim.Core.Model
          if (rateKey.IsTableWithOffsetFormula)
             return createTableFormulaWithOffset(rateKey);
 
+         if (rateKey.IsTableWithXArgumentFormula)
+            return createTableFormulaWithArgument(rateKey);
+
          //now it can be either dynamic formula or explicit formula
          FormulaWithFormulaString formula;
 
@@ -348,6 +353,27 @@ namespace PKSim.Core.Model
          return constantFormula(formula.Calculate(null)).WithDimension(dimension);
       }
 
+      private IFormula createTableFormulaWithArgument(RateKey rateKey)
+      {
+         var formula = _objectBaseFactory.Create<TableFormulaWithXArgument>()
+            .WithId(rateKey)
+            .WithName(rateKey.Rate);
+
+         var tableObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.TABLE);
+         var xArgument = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.XARG);
+
+         if (tableObjectPath == null || xArgument == null)
+            throw new ArgumentException(PKSimConstants.Error.TableFormulaWithXReferenceMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.XARG));
+         
+         formula.AddTableObjectPath(tableObjectPath);
+         formula.AddXArgumentObjectPath(xArgument);
+
+         //Table formula with reference has the same dimension as its referenced table object
+         formula.Dimension = tableObjectPath.Dimension;
+
+         return formula;
+      }
+
       private IFormula createTableFormulaWithOffset(RateKey rateKey)
       {
          var formula = _objectBaseFactory.Create<TableFormulaWithOffset>()
@@ -357,9 +383,8 @@ namespace PKSim.Core.Model
          var tableObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.TABLE);
          var offsetObjectPath = _rateObjectPathsRepository.PathWithAlias(rateKey, CoreConstants.Alias.OFFSET);
 
-         if ((tableObjectPath == null) || (offsetObjectPath == null))
-            throw new ArgumentException(
-               PKSimConstants.Error.TableFormulaWithOffsetMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.OFFSET));
+         if (tableObjectPath == null || offsetObjectPath == null)
+            throw new ArgumentException(PKSimConstants.Error.TableFormulaWithOffsetMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.OFFSET));
 
          formula.AddTableObjectPath(tableObjectPath.Clone<IFormulaUsablePath>());
          formula.AddOffsetObjectPath(offsetObjectPath.Clone<IFormulaUsablePath>());

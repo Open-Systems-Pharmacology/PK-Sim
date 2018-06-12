@@ -1,7 +1,5 @@
-﻿using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Matlab
 {
@@ -22,6 +20,5 @@ namespace PKSim.Matlab
 
          return objectBase.Name;
       }
-
    }
 }

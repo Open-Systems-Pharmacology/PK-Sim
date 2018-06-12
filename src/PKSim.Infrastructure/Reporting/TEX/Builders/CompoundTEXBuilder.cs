@@ -8,6 +8,7 @@ using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting.Builder;
 using OSPSuite.TeXReporting.Data;
 using OSPSuite.TeXReporting.Items;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Extensions;
@@ -185,25 +186,25 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          var molWeight = _representationRepository.DisplayNameFor(RepresentationObjectType.PARAMETER, Constants.Parameters.MOL_WEIGHT);
          return new List<object>
             {
-               compound.Parameter(CoreConstants.Parameter.IS_SMALL_MOLECULE),
+               compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE),
                new SubSubSection(molWeight),
                new ParameterList(molWeight,
                                  compound.Parameter(Constants.Parameters.MOL_WEIGHT),
-                                 compound.Parameter(CoreConstants.Parameter.EFFECTIVE_MOLECULAR_WEIGHT),
-                                 compound.Parameter(CoreConstants.Parameter.I),
-                                 compound.Parameter(CoreConstants.Parameter.F),
-                                 compound.Parameter(CoreConstants.Parameter.CL),
-                                 compound.Parameter(CoreConstants.Parameter.BR))
+                                 compound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT),
+                                 compound.Parameter(CoreConstants.Parameters.I),
+                                 compound.Parameter(CoreConstants.Parameters.F),
+                                 compound.Parameter(CoreConstants.Parameters.CL),
+                                 compound.Parameter(CoreConstants.Parameters.BR))
             };
       }
 
       private IEnumerable<object> dissociationConstants(Compound compound)
       {
          var table = new DataTable(groupDisplayName(CoreConstants.Groups.COMPOUND_PKA));
-         table.AddColumns<string>(CoreConstants.Parameter.PARAMETER_PKA_BASE, CoreConstants.Parameter.ParameterCompoundTypeBase);
-         addCompoundTypePart(table, compound, CoreConstants.Parameter.ParameterPka1, CoreConstants.Parameter.COMPOUND_TYPE1);
-         addCompoundTypePart(table, compound, CoreConstants.Parameter.ParameterPka2, CoreConstants.Parameter.COMPOUND_TYPE2);
-         addCompoundTypePart(table, compound, CoreConstants.Parameter.ParameterPka3, CoreConstants.Parameter.COMPOUND_TYPE3);
+         table.AddColumns<string>(CoreConstants.Parameters.PARAMETER_PKA_BASE, CoreConstants.Parameters.ParameterCompoundTypeBase);
+         addCompoundTypePart(table, compound, CoreConstants.Parameters.PARAMETER_PKA1, CoreConstants.Parameters.COMPOUND_TYPE1);
+         addCompoundTypePart(table, compound, CoreConstants.Parameters.PARAMETER_PKA2, CoreConstants.Parameters.COMPOUND_TYPE2);
+         addCompoundTypePart(table, compound, CoreConstants.Parameters.PARAMETER_PKA3, CoreConstants.Parameters.COMPOUND_TYPE3);
          if (table.Rows.Count == 0)
             return null;
 
@@ -214,72 +215,72 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       {
          var compoundType = compound.Parameter(parameterCompoundType1).Value;
 
-         if (compoundType == CoreConstants.Compound.CompoundTypeNeutral) return;
+         if (compoundType == CoreConstants.Compound.COMPOUND_TYPE_NEUTRAL) return;
          var pka = compound.Parameter(parameterPka1).Value;
 
          string compoundTypeDisplay;
-         if (compoundType == CoreConstants.Compound.CompoundTypeAcid)
+         if (compoundType == CoreConstants.Compound.COMPOUND_TYPE_ACID)
             compoundTypeDisplay = PKSimConstants.UI.CompoundTypeAcid;
          else
             compoundTypeDisplay = PKSimConstants.UI.CompoundTypeBase;
 
          var row = table.NewRow();
-         row[CoreConstants.Parameter.PARAMETER_PKA_BASE] = pka;
-         row[CoreConstants.Parameter.ParameterCompoundTypeBase] = compoundTypeDisplay;
+         row[CoreConstants.Parameters.PARAMETER_PKA_BASE] = pka;
+         row[CoreConstants.Parameters.ParameterCompoundTypeBase] = compoundTypeDisplay;
          table.Rows.Add(row);
       }
 
       private IEnumerable<object> solubilityAlternatives(Compound compound)
       {
-         Action<DataTable> createColumns = t =>
-            {
-               t.AddColumn<double>(PKSimConstants.UI.RefpH);
-               t.AddColumn<double>(PKSimConstants.UI.RefSolubility);
-               t.AddColumn<double>(PKSimConstants.UI.SolubilityGainPerCharge);
-            };
+         void CreateColumns(DataTable t)
+         {
+            t.AddColumn<double>(PKSimConstants.UI.RefpH);
+            t.AddColumn<double>(PKSimConstants.UI.RefSolubility);
+            t.AddColumn<double>(PKSimConstants.UI.SolubilityGainPerCharge);
+         }
 
-         Action<DataRow, ParameterAlternative> fillColumns = (row, alternative) =>
-            {
-               setParameterValue(alternative.Parameter(CoreConstants.Parameter.RefpH), row, PKSimConstants.UI.RefpH);
-               setParameterValue(alternative.Parameter(CoreConstants.Parameter.SolubilityAtRefpH), row, PKSimConstants.UI.RefSolubility);
-               setParameterValue(alternative.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge), row, PKSimConstants.UI.SolubilityGainPerCharge);
-            };
+         void FillColumns(DataRow row, ParameterAlternative alternative)
+         {
+            setParameterValue(alternative.Parameter(CoreConstants.Parameters.REFERENCE_PH), row, PKSimConstants.UI.RefpH);
+            setParameterValue(alternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH), row, PKSimConstants.UI.RefSolubility);
+            setParameterValue(alternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE), row, PKSimConstants.UI.SolubilityGainPerCharge);
+         }
 
-         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY, createColumns, fillColumns, PKSimConstants.Reporting.SolubilityDescription);
+         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY, CreateColumns, (Action<DataRow, ParameterAlternative>) FillColumns, PKSimConstants.Reporting.SolubilityDescription);
       }
 
       private IEnumerable<object> intestinalPermeabilityAlternatives(Compound compound)
       {
          return calculatedAlternatives(compound, CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY, PKSimConstants.UI.Permeability,
-                                       CoreConstants.Parameter.SpecificIntestinalPermeability, PKSimConstants.Reporting.IntestinalPermeabilityDescription, x => x.IntestinalPermeabilityValuesFor);
+                                       CoreConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY, PKSimConstants.Reporting.IntestinalPermeabilityDescription, x => x.IntestinalPermeabilityValuesFor);
       }
 
       private IEnumerable<object> permeabilityAlternatives(Compound compound)
       {
          return calculatedAlternatives(compound, CoreConstants.Groups.COMPOUND_PERMEABILITY, PKSimConstants.UI.Permeability,
-                                       CoreConstants.Parameter.Permeability, PKSimConstants.Reporting.PermeabilityDescription, x => x.PermeabilityValuesFor);
+                                       CoreConstants.Parameters.PERMEABILITY, PKSimConstants.Reporting.PermeabilityDescription, x => x.PermeabilityValuesFor);
       }
 
       private IEnumerable<object> fractionUnboundAlternatives(Compound compound)
       {
-         Action<DataTable> createColumns = t =>
-            {
-               t.AddColumn<double>(PKSimConstants.UI.FractionUnbound);
-               t.AddColumn(PKSimConstants.UI.Species);
-            };
+         void CreateColumns(DataTable t)
+         {
+            t.AddColumn<double>(PKSimConstants.UI.FractionUnbound);
+            t.AddColumn(PKSimConstants.UI.Species);
+         }
 
-         Action<DataRow, ParameterAlternativeWithSpecies> fillColumns = (row, alternative) =>
-            {
-               setParameterValue(alternative.Parameter(CoreConstants.Parameter.FractionUnbound), row, PKSimConstants.UI.FractionUnbound);
-               row[PKSimConstants.UI.Species] = alternative.Species.DisplayName;
-            };
+         void FillColumns(DataRow row, ParameterAlternativeWithSpecies alternative)
+         {
+            setParameterValue(alternative.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE), row, PKSimConstants.UI.FractionUnbound);
+            row[PKSimConstants.UI.Species] = alternative.Species.DisplayName;
+         }
 
-         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, createColumns, fillColumns, PKSimConstants.Reporting.FractionUnboundDescription);
+         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, CreateColumns, (Action<DataRow, ParameterAlternativeWithSpecies>) FillColumns, PKSimConstants.Reporting.FractionUnboundDescription);
       }
 
       private IEnumerable<object> lipophilicyAlternatives(Compound compound)
       {
-         return simpleAlternatives(compound, CoreConstants.Groups.COMPOUND_LIPOPHILICITY, CoreConstants.Parameter.LIPOPHILICITY, PKSimConstants.UI.Lipophilicity, PKSimConstants.Reporting.LipophilicityDescription);
+         return simpleAlternatives(compound, CoreConstants.Groups.COMPOUND_LIPOPHILICITY, CoreConstants.Parameters.LIPOPHILICITY, PKSimConstants.UI.Lipophilicity, PKSimConstants.Reporting.LipophilicityDescription);
       }
 
       private IEnumerable<object> calculatedAlternatives(Compound compound, string groupName, string columnName, string parameterName, string description, Func<ICompoundAlternativeTask, Func<Compound, IEnumerable<IParameter>>> calculatedParameters)
@@ -299,19 +300,17 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          if (needsDescription)
             table.AddColumn(PKSimConstants.UI.Description);
 
-         Func<ParameterAlternative, DataRow> createDefaultRow = alternative =>
-            {
-               var row = table.NewRow();
-               row[PKSimConstants.UI.Experiment] = alternative.Name;
+         DataRow CreateDefaultRow(ParameterAlternative alternative)
+         {
+            var row = table.NewRow();
+            row[PKSimConstants.UI.Experiment] = alternative.Name;
 
-               if (needsDefault)
-                  row[PKSimConstants.UI.IsDefault] = alternative.IsDefault;
+            if (needsDefault) row[PKSimConstants.UI.IsDefault] = alternative.IsDefault;
 
-               if (needsDescription)
-                  row[PKSimConstants.UI.Description] = alternative.Description;
+            if (needsDescription) row[PKSimConstants.UI.Description] = alternative.Description;
 
-               return row;
-            };
+            return row;
+         }
 
          foreach (var alternative in parameterGroup.AllAlternatives)
          {
@@ -319,7 +318,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             {
                foreach (var parameter in calculatedParameters(_compoundAlternativeTask)(compound))
                {
-                  var row = createDefaultRow(alternative);
+                  var row = CreateDefaultRow(alternative);
                   row[PKSimConstants.UI.Lipophilicity] = parameter.Name;
                   setParameterValue(parameter, row, columnName);
                   table.Rows.Add(row);
@@ -327,7 +326,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             }
             else
             {
-               var row = createDefaultRow(alternative);
+               var row = CreateDefaultRow(alternative);
                setParameterValue(alternative.Parameter(parameterName), row, columnName);
                table.Rows.Add(row);
             }
@@ -337,11 +336,11 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       private IEnumerable<object> simpleAlternatives(Compound compound, string groupName, string parameterName, string columnName, string description)
       {
-         Action<DataTable> createColumns = t => t.AddColumn<double>(columnName);
+         void CreateColumns(DataTable t) => t.AddColumn<double>(columnName);
 
-         Action<DataRow, ParameterAlternative> fillColumns = (row, alternative) => setParameterValue(alternative.Parameter(parameterName), row, columnName);
+         void FillColumns(DataRow row, ParameterAlternative alternative) => setParameterValue(alternative.Parameter(parameterName), row, columnName);
 
-         return createAlternatives(compound, groupName, createColumns, fillColumns, description);
+         return createAlternatives(compound, groupName, CreateColumns, (Action<DataRow, ParameterAlternative>) FillColumns, description);
       }
 
       private void setParameterValue(IParameter parameter, DataRow row, string columnName)

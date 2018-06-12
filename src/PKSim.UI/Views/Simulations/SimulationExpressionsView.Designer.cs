@@ -31,61 +31,45 @@
       private void InitializeComponent()
       {
          this.mainLayout = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.panelHalfLifeIntestine = new DevExpress.XtraEditors.PanelControl();
-         this.panelHalfLifeLiver = new DevExpress.XtraEditors.PanelControl();
+         this.panelMoleculeParameters = new DevExpress.XtraEditors.PanelControl();
          this.gridParameters = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewParameters = new PKSim.UI.Views.Core.UxGridView();
-         this.panelReferenceConcentration = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutItemParameters = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutItemReferenceConcentration = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemHalfLifeLiver = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemHalfLifeIntestine = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemRelativeExpressions = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemMoleculeParameters = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutGroupMoleculeParameters = new DevExpress.XtraLayout.LayoutControlGroup();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.mainLayout)).BeginInit();
          this.mainLayout.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.panelHalfLifeIntestine)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelHalfLifeLiver)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridViewParameters)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelReferenceConcentration)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameters)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemReferenceConcentration)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemHalfLifeLiver)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemHalfLifeIntestine)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemRelativeExpressions)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeParameters)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutGroupMoleculeParameters)).BeginInit();
          this.SuspendLayout();
          // 
          // mainLayout
          // 
          this.mainLayout.AllowCustomization = false;
-         this.mainLayout.Controls.Add(this.panelHalfLifeIntestine);
-         this.mainLayout.Controls.Add(this.panelHalfLifeLiver);
+         this.mainLayout.Controls.Add(this.panelMoleculeParameters);
          this.mainLayout.Controls.Add(this.gridParameters);
-         this.mainLayout.Controls.Add(this.panelReferenceConcentration);
          this.mainLayout.Dock = System.Windows.Forms.DockStyle.Fill;
          this.mainLayout.Location = new System.Drawing.Point(0, 0);
          this.mainLayout.Name = "mainLayout";
+         this.mainLayout.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(727, 141, 450, 400);
          this.mainLayout.Root = this.layoutControlGroup1;
          this.mainLayout.Size = new System.Drawing.Size(424, 420);
          this.mainLayout.TabIndex = 0;
          this.mainLayout.Text = "layoutControl1";
          // 
-         // panelHalfLifeIntestine
+         // panelMoleculeParameters
          // 
-         this.panelHalfLifeIntestine.Location = new System.Drawing.Point(148, 62);
-         this.panelHalfLifeIntestine.Name = "panelHalfLifeIntestine";
-         this.panelHalfLifeIntestine.Size = new System.Drawing.Size(262, 20);
-         this.panelHalfLifeIntestine.TabIndex = 8;
-         // 
-         // panelHalfLifeLiver
-         // 
-         this.panelHalfLifeLiver.Location = new System.Drawing.Point(148, 38);
-         this.panelHalfLifeLiver.Name = "panelHalfLifeLiver";
-         this.panelHalfLifeLiver.Size = new System.Drawing.Size(262, 20);
-         this.panelHalfLifeLiver.TabIndex = 7;
+         this.panelMoleculeParameters.Location = new System.Drawing.Point(14, 32);
+         this.panelMoleculeParameters.Name = "panelMoleculeParameters";
+         this.panelMoleculeParameters.Size = new System.Drawing.Size(396, 50);
+         this.panelMoleculeParameters.TabIndex = 9;
          // 
          // gridParameters
          // 
@@ -108,13 +92,7 @@
          this.gridViewParameters.OptionsNavigation.AutoFocusNewRow = true;
          this.gridViewParameters.OptionsSelection.EnableAppearanceFocusedCell = false;
          this.gridViewParameters.OptionsSelection.EnableAppearanceFocusedRow = false;
-         // 
-         // panelReferenceConcentration
-         // 
-         this.panelReferenceConcentration.Location = new System.Drawing.Point(148, 14);
-         this.panelReferenceConcentration.Name = "panelReferenceConcentration";
-         this.panelReferenceConcentration.Size = new System.Drawing.Size(262, 20);
-         this.panelReferenceConcentration.TabIndex = 4;
+         this.gridViewParameters.OptionsSelection.MultiSelect = true;
          // 
          // layoutControlGroup1
          // 
@@ -122,78 +100,40 @@
          this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup1.GroupBordersVisible = false;
          this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemParameters,
-            this.layoutControlGroup2});
+            this.layoutItemRelativeExpressions,
+            this.layoutGroupMoleculeParameters});
          this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlGroup1.Name = "layoutControlGroup1";
+         this.layoutControlGroup1.Name = "Root";
          this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup1.Size = new System.Drawing.Size(424, 420);
-         this.layoutControlGroup1.Text = "layoutControlGroup1";
          this.layoutControlGroup1.TextVisible = false;
          // 
-         // layoutItemParameters
+         // layoutItemRelativeExpressions
          // 
-         this.layoutItemParameters.Control = this.gridParameters;
-         this.layoutItemParameters.CustomizationFormText = "layoutItemParameters";
-         this.layoutItemParameters.Location = new System.Drawing.Point(0, 96);
-         this.layoutItemParameters.Name = "layoutItemParameters";
-         this.layoutItemParameters.Size = new System.Drawing.Size(424, 324);
-         this.layoutItemParameters.Text = "layoutItemParameters";
-         this.layoutItemParameters.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemParameters.TextToControlDistance = 0;
-         this.layoutItemParameters.TextVisible = false;
+         this.layoutItemRelativeExpressions.Control = this.gridParameters;
+         this.layoutItemRelativeExpressions.CustomizationFormText = "layoutItemParameters";
+         this.layoutItemRelativeExpressions.Location = new System.Drawing.Point(0, 96);
+         this.layoutItemRelativeExpressions.Name = "layoutItemRelativeExpressions";
+         this.layoutItemRelativeExpressions.Size = new System.Drawing.Size(424, 324);
+         this.layoutItemRelativeExpressions.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemRelativeExpressions.TextVisible = false;
          // 
-         // layoutControlGroup2
+         // layoutItemMoleculeParameters
          // 
-         this.layoutControlGroup2.CustomizationFormText = "layoutControlGroup2";
-         this.layoutControlGroup2.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemReferenceConcentration,
-            this.layoutItemHalfLifeLiver,
-            this.layoutItemHalfLifeIntestine});
-         this.layoutControlGroup2.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlGroup2.Name = "layoutControlGroup2";
-         this.layoutControlGroup2.Size = new System.Drawing.Size(424, 96);
-         this.layoutControlGroup2.Text = "layoutControlGroup2";
-         this.layoutControlGroup2.TextVisible = false;
+         this.layoutItemMoleculeParameters.Control = this.panelMoleculeParameters;
+         this.layoutItemMoleculeParameters.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemMoleculeParameters.Name = "layoutItemMoleculeParameters";
+         this.layoutItemMoleculeParameters.Size = new System.Drawing.Size(400, 54);
+         this.layoutItemMoleculeParameters.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemMoleculeParameters.TextVisible = false;
          // 
-         // layoutItemReferenceConcentration
+         // layoutGroupMoleculeParameters
          // 
-         this.layoutItemReferenceConcentration.Control = this.panelReferenceConcentration;
-         this.layoutItemReferenceConcentration.CustomizationFormText = "layoutItemProteinContent";
-         this.layoutItemReferenceConcentration.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemReferenceConcentration.MaxSize = new System.Drawing.Size(0, 24);
-         this.layoutItemReferenceConcentration.MinSize = new System.Drawing.Size(233, 24);
-         this.layoutItemReferenceConcentration.Name = "layoutItemReferenceConcentration";
-         this.layoutItemReferenceConcentration.Size = new System.Drawing.Size(400, 24);
-         this.layoutItemReferenceConcentration.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
-         this.layoutItemReferenceConcentration.Text = "layoutItemProteinContent";
-         this.layoutItemReferenceConcentration.TextSize = new System.Drawing.Size(131, 13);
-         // 
-         // layoutItemHalfLifeLiver
-         // 
-         this.layoutItemHalfLifeLiver.Control = this.panelHalfLifeLiver;
-         this.layoutItemHalfLifeLiver.CustomizationFormText = "layoutItemHalfLifeLiver";
-         this.layoutItemHalfLifeLiver.Location = new System.Drawing.Point(0, 24);
-         this.layoutItemHalfLifeLiver.MaxSize = new System.Drawing.Size(0, 24);
-         this.layoutItemHalfLifeLiver.MinSize = new System.Drawing.Size(232, 24);
-         this.layoutItemHalfLifeLiver.Name = "layoutItemHalfLifeLiver";
-         this.layoutItemHalfLifeLiver.Size = new System.Drawing.Size(400, 24);
-         this.layoutItemHalfLifeLiver.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
-         this.layoutItemHalfLifeLiver.Text = "layoutItemHalfLife";
-         this.layoutItemHalfLifeLiver.TextSize = new System.Drawing.Size(131, 13);
-         // 
-         // layoutItemHalfLifeIntestine
-         // 
-         this.layoutItemHalfLifeIntestine.Control = this.panelHalfLifeIntestine;
-         this.layoutItemHalfLifeIntestine.CustomizationFormText = "layoutItemHalfLifeIntestine";
-         this.layoutItemHalfLifeIntestine.Location = new System.Drawing.Point(0, 48);
-         this.layoutItemHalfLifeIntestine.MaxSize = new System.Drawing.Size(0, 24);
-         this.layoutItemHalfLifeIntestine.MinSize = new System.Drawing.Size(238, 24);
-         this.layoutItemHalfLifeIntestine.Name = "layoutItemHalfLifeIntestine";
-         this.layoutItemHalfLifeIntestine.Size = new System.Drawing.Size(400, 24);
-         this.layoutItemHalfLifeIntestine.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
-         this.layoutItemHalfLifeIntestine.Text = "layoutItemHalfLifeIntestine";
-         this.layoutItemHalfLifeIntestine.TextSize = new System.Drawing.Size(131, 13);
+         this.layoutGroupMoleculeParameters.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutItemMoleculeParameters});
+         this.layoutGroupMoleculeParameters.Location = new System.Drawing.Point(0, 0);
+         this.layoutGroupMoleculeParameters.Name = "layoutGroupMoleculeParameters";
+         this.layoutGroupMoleculeParameters.Size = new System.Drawing.Size(424, 96);
          // 
          // SimulationExpressionsView
          // 
@@ -206,17 +146,13 @@
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.mainLayout)).EndInit();
          this.mainLayout.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.panelHalfLifeIntestine)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelHalfLifeLiver)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridViewParameters)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelReferenceConcentration)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameters)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemReferenceConcentration)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemHalfLifeLiver)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemHalfLifeIntestine)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemRelativeExpressions)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeParameters)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutGroupMoleculeParameters)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -226,14 +162,10 @@
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private OSPSuite.UI.Controls.UxGridControl gridParameters;
       private PKSim.UI.Views.Core.UxGridView gridViewParameters;
-      private DevExpress.XtraEditors.PanelControl panelReferenceConcentration;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemReferenceConcentration;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemParameters;
-      private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup2;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemRelativeExpressions;
       private OSPSuite.UI.Controls.UxLayoutControl mainLayout;
-      private DevExpress.XtraEditors.PanelControl panelHalfLifeLiver;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemHalfLifeLiver;
-      private DevExpress.XtraEditors.PanelControl panelHalfLifeIntestine;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemHalfLifeIntestine;
+      private DevExpress.XtraEditors.PanelControl panelMoleculeParameters;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemMoleculeParameters;
+      private DevExpress.XtraLayout.LayoutControlGroup layoutGroupMoleculeParameters;
    }
 }

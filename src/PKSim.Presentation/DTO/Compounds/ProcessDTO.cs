@@ -27,7 +27,7 @@ namespace PKSim.Presentation.DTO.Compounds
 
       public virtual string DataSource
       {
-         get { return _dataSource; }
+         get => _dataSource;
          set
          {
             _dataSource = value.TrimmedValue();
@@ -35,9 +35,6 @@ namespace PKSim.Presentation.DTO.Compounds
          }
       }
 
-      public string TemplateName
-      {
-         get { return Process.InternalName; }
-      }
+      public string TemplateName => Process.InternalName;
    }
 }

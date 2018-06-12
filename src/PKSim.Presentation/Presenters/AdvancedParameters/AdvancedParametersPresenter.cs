@@ -1,23 +1,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.AdvancedParameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.AdvancedParameters
 {
    public interface IAdvancedParametersPresenter : IPresenter,
-                                                   IListener<AddAdvancedParameterToContainerEvent>,
-                                                   IListener<RemoveAdvancedParameterFromContainerEvent>
+      IListener<AddAdvancedParameterToContainerEvent>,
+      IListener<RemoveAdvancedParameterFromContainerEvent>
    {
       /// <summary>
       ///    Add the selected "non-advanced" parameter as an "advanced" parameter in the edited population
@@ -31,7 +30,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
    }
 
    public abstract class AdvancedParametersPresenter : AbstractSubPresenter<IAdvancedParametersView, IAdvancedParametersPresenter>,
-                                                       IAdvancedParametersPresenter
+      IAdvancedParametersPresenter
    {
       protected readonly IEntityPathResolver _entityPathResolver;
       protected readonly IPopulationParameterGroupsPresenter _constantParameterGroupsPresenter;
@@ -43,20 +42,20 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       private PathCache<IParameter> _parameterCache;
 
       protected AdvancedParametersPresenter(IAdvancedParametersView view, IEntityPathResolver entityPathResolver,
-                                            IPopulationParameterGroupsPresenter constantParameterGroupsPresenter, IPopulationParameterGroupsPresenter advancedParameterGroupsPresenter,
-                                            IAdvancedParameterPresenter advancedParameterPresenter, IAdvancedParametersTask advancedParametersTask,
-                                            IEventPublisher eventPublisher)
+         IPopulationParameterGroupsPresenter constantParameterGroupsPresenter, IPopulationParameterGroupsPresenter advancedParameterGroupsPresenter,
+         IAdvancedParameterPresenter advancedParameterPresenter, IAdvancedParametersTask advancedParametersTask,
+         IEventPublisher eventPublisher)
          : base(view)
       {
          _entityPathResolver = entityPathResolver;
          _constantParameterGroupsPresenter = constantParameterGroupsPresenter;
-         _constantParameterGroupsPresenter.GroupNodeSelected += (o,e) => deactivateAdd();
+         _constantParameterGroupsPresenter.GroupNodeSelected += (o, e) => deactivateAdd();
          _constantParameterGroupsPresenter.ParameterNodeSelected += (o, e) => activateAdd();
          _advancedParameterGroupsPresenter = advancedParameterGroupsPresenter;
          _advancedParameterPresenter = advancedParameterPresenter;
          _advancedParametersTask = advancedParametersTask;
          _eventPublisher = eventPublisher;
-         _advancedParameterGroupsPresenter.GroupNodeSelected += (o,e)=>advancedParameterGroupSelected(e);
+         _advancedParameterGroupsPresenter.GroupNodeSelected += (o, e) => advancedParameterGroupSelected(e);
          _advancedParameterGroupsPresenter.ParameterNodeSelected += (o, e) => advancedParameterSelected(e);
          _advancedParameterPresenter.OnDistributionTypeChanged += (o, e) => switchAdvancedParameterType(e);
          _advancedParameterGroupsPresenter.EnableFilter = false;
@@ -66,8 +65,6 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          _view.AddEnabled = false;
          _view.RemoveEnabled = false;
       }
-
-   
 
       protected void EditAdvancedParametersFor(IAdvancedParameterContainer advancedParameterContainer, IEnumerable<IParameter> allParameters)
       {
@@ -169,7 +166,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          return parameterFrom(eventToHandle.AdvancedParameter);
       }
 
-      private IParameter parameterFrom(IAdvancedParameter advancedParameter)
+      private IParameter parameterFrom(AdvancedParameter advancedParameter)
       {
          return _parameterCache[advancedParameter.ParameterPath];
       }

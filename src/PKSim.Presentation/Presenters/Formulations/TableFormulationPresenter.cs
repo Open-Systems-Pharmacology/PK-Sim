@@ -56,16 +56,13 @@ namespace PKSim.Presentation.Presenters.Formulations
       public void Edit(Formulation formulation)
       {
          var allParameters = formulation.AllParameters().ToList();
-         var fractionOfDose = allParameters.FindByName(CoreConstants.Parameter.FRACTION_DOSE);
+         var fractionOfDose = allParameters.FindByName(CoreConstants.Parameters.FRACTION_DOSE);
          allParameters.Remove(fractionOfDose);
 
          _formulationParametersPresenter.Edit(allParameters);
          _tableParameterPresenter.Edit(fractionOfDose);
       }
 
-      public TableFormula EditedFormula
-      {
-         get { return _tableParameterPresenter.EditedFormula; }
-      }
+      public TableFormula EditedFormula => _tableParameterPresenter.EditedFormula;
    }
 }

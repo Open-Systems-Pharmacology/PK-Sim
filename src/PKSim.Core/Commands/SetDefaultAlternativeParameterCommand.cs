@@ -1,5 +1,5 @@
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using PKSim.Assets;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
@@ -8,11 +8,11 @@ namespace PKSim.Core.Commands
    {
       private readonly string _oldDefaultAlternativeId;
       private readonly string _parameterGroupId;
-      private PKSim.Core.Model.ParameterAlternative _oldDefaultAlternative;
-      private PKSim.Core.Model.ParameterAlternative _parameterAlternative;
-      private PKSim.Core.Model.ParameterAlternativeGroup _parameterGroup;
+      private ParameterAlternative _oldDefaultAlternative;
+      private ParameterAlternative _parameterAlternative;
+      private ParameterAlternativeGroup _parameterGroup;
 
-      public SetDefaultAlternativeParameterCommand(PKSim.Core.Model.ParameterAlternativeGroup parameterGroup, PKSim.Core.Model.ParameterAlternative parameterAlternative, IExecutionContext context)
+      public SetDefaultAlternativeParameterCommand(ParameterAlternativeGroup parameterGroup, ParameterAlternative parameterAlternative, IExecutionContext context)
       {
          _parameterGroup = parameterGroup;
          _parameterGroupId = _parameterGroup.Id;
@@ -24,7 +24,7 @@ namespace PKSim.Core.Commands
          BuildingBlockId = context.BuildingBlockIdContaining(parameterGroup);
          Description = PKSimConstants.Command.SetDefaultAlternativeParameterDescription(context.DisplayNameFor(parameterGroup), _oldDefaultAlternative.Name, parameterAlternative.Name);
          ShouldChangeVersion = false;
-         context.UpdateBuildinBlockProperties(this, context.BuildingBlockContaining(parameterGroup));
+         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(parameterGroup));
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)
@@ -43,8 +43,8 @@ namespace PKSim.Core.Commands
       public override void RestoreExecutionData(IExecutionContext context)
       {
          base.RestoreExecutionData(context);
-         _parameterGroup = context.Get<PKSim.Core.Model.ParameterAlternativeGroup>(_parameterGroupId);
-         _oldDefaultAlternative = context.Get<PKSim.Core.Model.ParameterAlternative>(_oldDefaultAlternativeId);
+         _parameterGroup = context.Get<ParameterAlternativeGroup>(_parameterGroupId);
+         _oldDefaultAlternative = context.Get<ParameterAlternative>(_oldDefaultAlternativeId);
       }
 
       protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)

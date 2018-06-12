@@ -1,5 +1,8 @@
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.Core;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Mappers;
@@ -7,9 +10,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.ProteinExpression;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
 {
@@ -23,9 +23,9 @@ namespace PKSim.Presentation.Services
       private readonly IMoleculeToQueryExpressionSettingsMapper _queryExpressionSettingsMapper;
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly ITransportContainerUpdater _transportContainerUpdater;
-      private readonly IMoleculeParameterRepository _moleculeParameterRepository;
       private readonly ISimulationSubjectExpressionTask<TSimulationSubject> _simulationSubjectExpressionTask;
       private readonly IOntogenyTask<TSimulationSubject> _ontogenyTask;
+      private readonly IMoleculeParameterTask _moleculeParameterTask;
 
       public MoleculeExpressionTask(IApplicationController applicationController, IExecutionContext executionContext,
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
@@ -34,9 +34,9 @@ namespace PKSim.Presentation.Services
          IProteinExpressionsDatabasePathManager proteinExpressionsDatabasePathManager,
          IOntogenyRepository ontogenyRepository,
          ITransportContainerUpdater transportContainerUpdater,
-         IMoleculeParameterRepository moleculeParameterRepository,
          ISimulationSubjectExpressionTask<TSimulationSubject> simulationSubjectExpressionTask,
-         IOntogenyTask<TSimulationSubject> ontogenyTask)
+         IOntogenyTask<TSimulationSubject> ontogenyTask,
+         IMoleculeParameterTask moleculeParameterTask)
       {
          _applicationController = applicationController;
          _executionContext = executionContext;
@@ -46,9 +46,9 @@ namespace PKSim.Presentation.Services
          _proteinExpressionsDatabasePathManager = proteinExpressionsDatabasePathManager;
          _ontogenyRepository = ontogenyRepository;
          _transportContainerUpdater = transportContainerUpdater;
-         _moleculeParameterRepository = moleculeParameterRepository;
          _simulationSubjectExpressionTask = simulationSubjectExpressionTask;
          _ontogenyTask = ontogenyTask;
+         _moleculeParameterTask = moleculeParameterTask;
       }
 
       public ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
@@ -164,7 +164,7 @@ namespace PKSim.Presentation.Services
          return command;
       }
 
-      public ICommand SetMembraneLocationFor(ITransporterExpressionContainer transporterContainer, TransportType transportType, MembraneLocation membraneLocation)
+      public ICommand SetMembraneLocationFor(TransporterExpressionContainer transporterContainer, TransportType transportType, MembraneLocation membraneLocation)
       {
          return new SetMembraneTypeCommand(transporterContainer, transportType, membraneLocation, _executionContext).Run(_executionContext);
       }
@@ -193,27 +193,12 @@ namespace PKSim.Presentation.Services
       {
          setDefaultSettingsForTransporter(molecule, simulationSubject, moleculeName);
          setDefaultOntogeny(molecule, simulationSubject, moleculeName);
-         setDefaulParameters(molecule, moleculeName);
-      }
-
-      private void setDefaulParameters(IndividualMolecule molecule, string moleculeName)
-      {
-         setDefaultParameter(moleculeName, molecule.ReferenceConcentration);
-         setDefaultParameter(moleculeName, molecule.HalfLifeLiver);
-         setDefaultParameter(moleculeName, molecule.HalfLifeIntestine);
-      }
-
-      private void setDefaultParameter(string moleculeName, IParameter parameter)
-      {
-         var value = _moleculeParameterRepository.ParameterValueFor(moleculeName, parameter.Name, parameter.DefaultValue);
-         parameter.DefaultValue = value;
-         parameter.Value = value;
+         _moleculeParameterTask.SetDefaulMoleculeParameters(molecule, moleculeName);
       }
 
       private void setDefaultSettingsForTransporter(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)
       {
-         var transporter = molecule as IndividualTransporter;
-         if (transporter == null) return;
+         if (!(molecule is IndividualTransporter transporter)) return;
 
          _transportContainerUpdater.SetDefaultSettingsForTransporter(transporter, simulationSubject.Species.Name, moleculeName);
       }

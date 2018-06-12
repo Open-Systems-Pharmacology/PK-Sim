@@ -22,11 +22,9 @@ namespace PKSim.Presentation.DTO.Mappers
 
       public LipophilictyAlternativeDTO MapFrom(ParameterAlternative parameterAlternative)
       {
-         var lipophilictyAlternativeDTO = new LipophilictyAlternativeDTO(parameterAlternative);
-
-         var lipophilicity = parameterAlternative.Parameter(CoreConstants.Parameter.LIPOPHILICITY);
+         var lipophilicity = parameterAlternative.Parameter(CoreConstants.Parameters.LIPOPHILICITY);
+         var lipophilictyAlternativeDTO = new LipophilictyAlternativeDTO(parameterAlternative, lipophilicity.ValueOrigin);
          lipophilictyAlternativeDTO.LipophilictyParameter = _parameterDTOMapper.MapFrom(lipophilicity, lipophilictyAlternativeDTO, dto => dto.Lipophilicty, dto => dto.LipophilictyParameter);
-
          return lipophilictyAlternativeDTO;
       }
    }

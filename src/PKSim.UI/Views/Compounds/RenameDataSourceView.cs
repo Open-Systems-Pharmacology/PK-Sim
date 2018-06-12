@@ -31,9 +31,6 @@ namespace PKSim.UI.Views.Compounds
          SetOkButtonEnable();
       }
 
-      public override bool HasError
-      {
-         get { return _compoundProcessBinder.HasError; }
-      }
+      public override bool HasError => _compoundProcessBinder.HasError;
    }
 }

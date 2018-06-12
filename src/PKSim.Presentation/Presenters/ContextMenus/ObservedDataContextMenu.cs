@@ -54,6 +54,8 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return GenericMenu.AddToJournal(dataRepository);
 
+         yield return GenericMenu.ExportSnapshotMenuFor(dataRepository);
+
          if (activeSimulation != null && !activeSimulation.UsesObservedData(dataRepository))
             yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddObservedDataToSimulation(activeSimulation.Name))
                .WithCommand(IoC.Resolve<AddObservedDataToActiveSimulationUICommand>().For(dataRepository).For(activeSimulation))

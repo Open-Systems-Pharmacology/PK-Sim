@@ -1,13 +1,13 @@
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
    public interface IAdvancedParameterFactory
    {
-      IAdvancedParameter CreateDefaultFor(IParameter parameter);
-      IAdvancedParameter Create(IParameter parameter, DistributionType distributionType);
+      AdvancedParameter CreateDefaultFor(IParameter parameter);
+      AdvancedParameter Create(IParameter parameter, DistributionType distributionType);
    }
 
    public class AdvancedParameterFactory : IAdvancedParameterFactory
@@ -24,24 +24,29 @@ namespace PKSim.Core.Model
          _objectBaseFactory = objectBaseFactory;
       }
 
-      public IAdvancedParameter CreateDefaultFor(IParameter parameter)
+      public AdvancedParameter CreateDefaultFor(IParameter parameter)
       {
          return Create(parameter, DistributionTypes.Normal);
       }
 
-      public IAdvancedParameter Create(IParameter parameter, DistributionType distributionType)
+      public AdvancedParameter Create(IParameter parameter, DistributionType distributionType)
       {
-         var advancedParameter = _objectBaseFactory.Create<IAdvancedParameter>();
+         var advancedParameter = _objectBaseFactory.Create<AdvancedParameter>();
 
          //we don't care about the name, it should only be unique in the hiearchy
          advancedParameter.Name = _entityPathResolver.PathFor(parameter);
          advancedParameter.ParameterPath = advancedParameter.Name;
 
-         var distributionMetaData = new ParameterDistributionMetaData();
-         distributionMetaData.DistributionType = distributionType.Id;
-         distributionMetaData.BuildingBlockType = buildingBlockTypeFrom(parameter);
-         distributionMetaData.Mean = defaultMeanValueBasedOn(parameter.Value, distributionType);
-         distributionMetaData.Deviation = defaultStdValueBasedOn(distributionType);
+         var distributionMetaData = new ParameterDistributionMetaData
+         {
+            DistributionType = distributionType.Id,
+            BuildingBlockType = buildingBlockTypeFrom(parameter),
+            Mean = defaultMeanValueBasedOn(parameter.Value, distributionType),
+            Deviation = defaultStdValueBasedOn(distributionType),
+            Dimension = parameter.Dimension.Name,
+            DefaultUnit = parameter.DisplayUnit.Name,
+            ParameterName = "distribution"
+         };
 
          if (distributionType == DistributionTypes.Uniform)
          {
@@ -56,19 +61,17 @@ namespace PKSim.Core.Model
             distributionMetaData.MaxValue = parameter.MaxValue;
             distributionMetaData.MaxIsAllowed = parameter.MaxIsAllowed;
          }
-         distributionMetaData.Dimension = parameter.Dimension.Name;
-         distributionMetaData.DefaultUnit = parameter.DisplayUnit.Name;
 
-         distributionMetaData.ParameterName = "distribution";
          advancedParameter.DistributedParameter = _parameterFactory.CreateFor(distributionMetaData);
 
          //should set the distribution parameter as visible since they will need to be edited
          advancedParameter.DistributedParameter.AllParameters().Each(x =>
-            {
-               x.Visible = true;
-               x.CanBeVaried = true;
-               x.CanBeVariedInPopulation = false;
-            });
+         {
+            x.Visible = true;
+            x.IsDefault = false;
+            x.CanBeVaried = true;
+            x.CanBeVariedInPopulation = false;
+         });
 
          return advancedParameter;
       }

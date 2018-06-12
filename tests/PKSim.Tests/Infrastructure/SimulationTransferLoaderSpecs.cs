@@ -23,7 +23,7 @@ namespace PKSim.Infrastructure
       private string _pkmlFile;
       protected SimulationTransfer _simulationTransfer;
       protected SimulationTransfer _result;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IJournalTask _journalTask;
       private ICloneManagerForModel _cloneManagerForModel;
 
@@ -35,11 +35,10 @@ namespace PKSim.Infrastructure
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _simulationPersister = A.Fake<ISimulationPersistor>();
          _projectRetriever = A.Fake<IProjectRetriever>();
-         _dialogCreator = A.Fake<IDialogCreator>();
          _journalTask = A.Fake<IJournalTask>();
          _cloneManagerForModel= A.Fake<ICloneManagerForModel>();
 
-         sut = new SimulationTransferLoader(_dimensionFactory, _objectBaseFactory, _simulationPersister, _projectRetriever, _dialogCreator, _journalTask,_cloneManagerForModel);
+         sut = new SimulationTransferLoader(_dimensionFactory, _objectBaseFactory, _simulationPersister, _projectRetriever, _journalTask,_cloneManagerForModel);
          _simulationTransfer = new SimulationTransfer();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          A.CallTo(() => _simulationPersister.Load(_pkmlFile, _dimensionFactory, _objectBaseFactory, A<IWithIdRepository>._,_cloneManagerForModel)).Returns(_simulationTransfer);
@@ -59,6 +58,29 @@ namespace PKSim.Infrastructure
          _result.ShouldBeEqualTo(_simulationTransfer);
       }
    }
+
+
+   public class When_loading_a_simulation_and_no_project_is_defined : concern_for_SimulationTransferLoader
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _projectRetriever.CurrentProject).Returns(null);
+      }
+
+      [Observation]
+      public void should_simply_return_the_simulation()
+      {
+         _result.ShouldBeEqualTo(_simulationTransfer);
+      }
+
+      [Observation]
+      public void should_not_load_the_journal()
+      {
+         A.CallTo(() => _journalTask.LoadJournal(A<string>._, A<bool>._)).MustNotHaveHappened();
+      }
+   }
+
 
    public class When_loading_a_simulation_that_contains_information_on_the_used_journal_and_no_jounral_is_currently_loaded : concern_for_SimulationTransferLoader
    {

@@ -4,42 +4,30 @@ namespace PKSim.Core.Events
 {
    public interface IAdvancedParameterEvent
    {
-      IAdvancedParameter AdvancedParameter { get; }
+      AdvancedParameter AdvancedParameter { get; }
       IAdvancedParameterContainer AdvancedParameterContainer { get; }
    }
 
-   public class RemoveAdvancedParameterFromContainerEvent : RemoveEntityEvent<IAdvancedParameter, IAdvancedParameterContainer>, IAdvancedParameterEvent
+   public class RemoveAdvancedParameterFromContainerEvent : RemoveEntityEvent<AdvancedParameter, IAdvancedParameterContainer>, IAdvancedParameterEvent
    {
-      public IAdvancedParameterContainer AdvancedParameterContainer
-      {
-         get { return Container; }
-      }
+      public IAdvancedParameterContainer AdvancedParameterContainer => Container;
 
-      public IAdvancedParameter AdvancedParameter
-      {
-         get { return Entity; }
-      }
+      public AdvancedParameter AdvancedParameter => Entity;
    }
 
-   public class AddAdvancedParameterToContainerEvent : AddEntityEvent<IAdvancedParameter, IAdvancedParameterContainer>, IAdvancedParameterEvent
+   public class AddAdvancedParameterToContainerEvent : AddEntityEvent<AdvancedParameter, IAdvancedParameterContainer>, IAdvancedParameterEvent
    {
-      public IAdvancedParameterContainer AdvancedParameterContainer
-      {
-         get { return Container; }
-      }
+      public IAdvancedParameterContainer AdvancedParameterContainer => Container;
 
-      public IAdvancedParameter AdvancedParameter
-      {
-         get { return Entity; }
-      }
+      public AdvancedParameter AdvancedParameter => Entity;
    }
 
    public class AdvancedParameteSelectedEvent : IAdvancedParameterEvent
    {
-      public IAdvancedParameterContainer AdvancedParameterContainer { get; private set; }
-      public IAdvancedParameter AdvancedParameter { get; private set; }
+      public IAdvancedParameterContainer AdvancedParameterContainer { get; }
+      public AdvancedParameter AdvancedParameter { get; }
 
-      public AdvancedParameteSelectedEvent(IAdvancedParameterContainer advancedParameterContainer, IAdvancedParameter advancedParameter)
+      public AdvancedParameteSelectedEvent(IAdvancedParameterContainer advancedParameterContainer, AdvancedParameter advancedParameter)
       {
          AdvancedParameterContainer = advancedParameterContainer;
          AdvancedParameter = advancedParameter;
@@ -48,16 +36,15 @@ namespace PKSim.Core.Events
 
    public class AdvancedParameterDistributionChangedEvent : IAdvancedParameterEvent
    {
-      public IAdvancedParameterContainer AdvancedParameterContainer { get; private set; }
-      public IAdvancedParameter AdvancedParameter { get; private set; }
+      public IAdvancedParameterContainer AdvancedParameterContainer { get; }
+      public AdvancedParameter AdvancedParameter { get; }
 
-      public AdvancedParameterDistributionChangedEvent(IAdvancedParameterContainer advancedParameterContainer, IAdvancedParameter advancedParameter)
+      public AdvancedParameterDistributionChangedEvent(IAdvancedParameterContainer advancedParameterContainer, AdvancedParameter advancedParameter)
       {
          AdvancedParameterContainer = advancedParameterContainer;
          AdvancedParameter = advancedParameter;
       }
    }
-
 
    public class RemoveAdvancedParameterContainerFromPopulationEvent : EntityEvent<Population>
    {

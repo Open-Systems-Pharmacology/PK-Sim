@@ -4,6 +4,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using PKSim.Core.Extensions;
 
 namespace PKSim.IntegrationTests
 {
@@ -33,6 +34,32 @@ namespace PKSim.IntegrationTests
    public abstract class concern_for_PKSimParameterXmlSerializer : concern_for_PKSimParameterXmlSerializer<IParameter>
    {
    }
+
+   public class When_serializing_a_parameter : concern_for_PKSimParameterXmlSerializer
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName("toto");
+         _parameter.IsDefault = true;
+         _parameter.ValueOrigin.Description = "Hello";
+         _parameter.ValueOrigin.Method= ValueOriginDeterminationMethods.InVitro;
+         _parameter.ValueOrigin.Source= ValueOriginSources.ParameterIdentification;
+      }
+
+      [Observation]
+      public void should_serialize_the_default_state_flag()
+      {
+         _deserializedParameter.IsDefault.ShouldBeEqualTo(_parameter.IsDefault);
+      }
+
+      [Observation]
+      public void should_serialize_the_value_origin()
+      {
+         _deserializedParameter.ValueOrigin.ShouldBeEqualTo(_parameter.ValueOrigin);
+      }
+   }
+
 
    public class When_serializing_a_constant_parameter_whose_value_was_not_fixed_by_the_user : concern_for_PKSimParameterXmlSerializer
    {

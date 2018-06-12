@@ -7,7 +7,7 @@ namespace PKSim.Core.Commands
    public class SetRelativeExpressionFromNormalizedCommand : PKSimMacroCommand
    {
       private readonly double _newNormalizedValue;
-      private readonly IParameter _normalizedParameter;
+      private IParameter _normalizedParameter;
 
       public SetRelativeExpressionFromNormalizedCommand(IParameter normalizedParameter, double normalizedValue)
       {
@@ -33,6 +33,9 @@ namespace PKSim.Core.Commands
          Add(new SetParameterValueCommand(_normalizedParameter, _newNormalizedValue));
 
          base.Execute(context);
+
+         //clear references
+         _normalizedParameter = null;
       }
 
       private double getRelativeExpressionValue(double newNormalizedValue, IParameter relativeExpressionParameter)
@@ -42,7 +45,7 @@ namespace PKSim.Core.Commands
 
       private IParameter getRelativeExpressionFrom(IParameter normalizedParameter)
       {
-         var nonNormalizedParameterName = normalizedParameter.Name.Replace(CoreConstants.Parameter.NORM_SUFFIX, string.Empty);
+         var nonNormalizedParameterName = normalizedParameter.Name.Replace(CoreConstants.Parameters.NORM_SUFFIX, string.Empty);
          return normalizedParameter.ParentContainer.Parameter(nonNormalizedParameterName);
       }
    }

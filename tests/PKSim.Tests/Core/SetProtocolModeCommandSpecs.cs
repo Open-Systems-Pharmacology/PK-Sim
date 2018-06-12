@@ -1,10 +1,10 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using FakeItEasy;
 
 namespace PKSim.Core
 {
@@ -13,23 +13,19 @@ namespace PKSim.Core
       protected IExecutionContext _context;
       protected IProtocolFactory _protocolFactory;
       protected IProtocolUpdater _protocolUpdater;
-      protected  PKSim.Core.Model.Protocol _oldProtocol;
+      protected Protocol _oldProtocol;
       protected ProtocolMode _oldProtocolMode;
       protected ProtocolMode _newProtocolMode;
-      protected IPKSimProject _project;
-      protected  PKSim.Core.Model.Protocol _newProtocol;
+      protected PKSimProject _project;
+      protected Protocol _newProtocol;
 
-      public override void GlobalContext()
-      {
-         base.GlobalContext();
-      }
       protected override void Context()
       {
          _context = A.Fake<IExecutionContext>();
          _protocolUpdater = A.Fake<IProtocolUpdater>();
          _protocolFactory = A.Fake<IProtocolFactory>();
-         _project = A.Fake<IPKSimProject>();
-         _oldProtocol = A.Fake< PKSim.Core.Model.Protocol>();
+         _project = A.Fake<PKSimProject>();
+         _oldProtocol = A.Fake<Protocol>();
          _oldProtocolMode = ProtocolMode.Simple;
          _newProtocolMode = ProtocolMode.Advanced;
 
@@ -37,20 +33,17 @@ namespace PKSim.Core
          A.CallTo(() => _context.Resolve<IProtocolUpdater>()).Returns(_protocolUpdater);
          A.CallTo(() => _context.Resolve<IProtocolFactory>()).Returns(_protocolFactory);
 
-         _newProtocol = A.Fake< PKSim.Core.Model.Protocol>();
+         _newProtocol = A.Fake<Protocol>();
          A.CallTo(() => _protocolFactory.Create(_newProtocolMode)).Returns(_newProtocol);
-         sut = new SetProtocolModeCommand(_oldProtocol, _oldProtocolMode, _newProtocolMode,_context);
+         sut = new SetProtocolModeCommand(_oldProtocol, _oldProtocolMode, _newProtocolMode, _context);
       }
    }
 
-   
    public class When_executing_the_set_protocol_command : concern_for_SetProtocolCommand
    {
-    
       protected override void Because()
       {
          sut.Execute(_context);
-
       }
 
       [Observation]
@@ -67,7 +60,6 @@ namespace PKSim.Core
       }
    }
 
-   
    public class The_inverse_of_the_set_protocol_command : concern_for_SetProtocolCommand
    {
       private IReversibleCommand<IExecutionContext> _result;

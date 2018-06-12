@@ -1,6 +1,9 @@
 ﻿using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core
@@ -17,7 +20,7 @@ namespace PKSim.Core
          sut.SetLimits((new[] {14.5, 18.5}).OrderBy(x => x));
          sut.AddItems(PopulationAnalysisHelperForSpecs.AgeGroups);
 
-         _expectedResults = string.Format("iif([Field] < 14.5, 'Children', iif([Field] < 18.5, 'Adolescents', 'Adults'))");
+         _expectedResults = "iif([Field] < 14.5, \'Children\', iif([Field] < 18.5, \'Adolescents\', \'Adults\'))";
       }
    }
 
@@ -32,15 +35,42 @@ namespace PKSim.Core
       [Observation]
       public void can_be_used_for_numeric_types()
       {
-         sut.CanBeUsedFor(typeof (double)).ShouldBeTrue();
+         sut.CanBeUsedFor(typeof(double)).ShouldBeTrue();
       }
 
       [Observation]
       public void cannot_be_used_for_non_numeric_types()
       {
-         sut.CanBeUsedFor(typeof (string)).ShouldBeFalse();
+         sut.CanBeUsedFor(typeof(string)).ShouldBeFalse();
       }
    }
 
- 
+   public class When_updating_a_fixed_limit_grouping_definition_from_another_grouping_definition : concern_for_FixedLimitsGroupingDefinition
+   {
+      private FixedLimitsGroupingDefinition _sourceFixedLimitDefinition;
+      private ICloneManager _cloneManager;
+
+      protected override void Context()
+      {
+         base.Context();
+         _cloneManager= A.Fake<ICloneManager>(); 
+         _sourceFixedLimitDefinition = new FixedLimitsGroupingDefinition("Field");
+         _sourceFixedLimitDefinition.SetLimits(new []{1.5, 2.5}.OrderBy(x=>x));
+         _sourceFixedLimitDefinition.Dimension = DomainHelperForSpecs.TimeDimensionForSpecs();
+         _sourceFixedLimitDefinition.DisplayUnit = _sourceFixedLimitDefinition.Dimension.Unit("h");
+      }
+
+      protected override void Because()
+      {
+         sut.UpdatePropertiesFrom(_sourceFixedLimitDefinition, _cloneManager);
+      }
+
+      [Observation]
+      public void should_update_all_propeties_from_the_source_object()
+      {
+         sut.Dimension.ShouldBeEqualTo(_sourceFixedLimitDefinition.Dimension);
+         sut.DisplayUnit.ShouldBeEqualTo(_sourceFixedLimitDefinition.DisplayUnit);
+         sut.Limits.ShouldOnlyContainInOrder(_sourceFixedLimitDefinition.Limits);
+      }
+   }
 }

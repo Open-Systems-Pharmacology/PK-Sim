@@ -37,7 +37,7 @@ namespace PKSim.Presentation
          _doseParameterDTO = A.Fake<ParameterDTO>();
          _endTimeParameterDTO = A.Fake<ParameterDTO>();
          _simpleProtocol = new SimpleProtocol();
-         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.END_TIME));
          _simpleProtocol.DosingInterval = DosingIntervals.DI_24;
          _simpleProtocol.ApplicationType = ApplicationTypes.Oral;

@@ -28,8 +28,7 @@ namespace PKSim.Core.Commands
 
       protected override void ExecuteUpdateParameter(IExecutionContext context)
       {
-         UpdateParameter(_parameter, context);
-         UpdateParameter(OriginParameterFor(_parameter, context), context);
+         UpdateParameter(context);
          Description = ParameterMessages.SetParameterDisplayUnit(context.DisplayNameFor(_parameter), _oldDisplayUnit, _displayUnit);
       }
 

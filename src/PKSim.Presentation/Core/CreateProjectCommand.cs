@@ -1,37 +1,37 @@
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Events;
+using OSPSuite.Presentation.Core;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using OSPSuite.Core;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.Core
 {
    public class CreateProjectCommand : PKSimCommand
    {
-      private IPKSimProject _project;
       private IWorkspace _workspace;
 
-      public CreateProjectCommand(IWorkspace workspace, IPKSimProject project)
+      public CreateProjectCommand(IWorkspace workspace)
       {
          _workspace = workspace;
-         _project = project;
          ObjectType = ObjectTypes.Project;
          CommandType = Command.CommandTypeAdd;
       }
 
       protected override void ExecuteWith(IExecutionContext context)
       {
-         _workspace.Project = _project;
+         var metaDataFactory = context.Resolve<ICreationMetaDataFactory>();
+         var project = new PKSimProject {Creation = metaDataFactory.Create()};
+         _workspace.Project = project;
          _workspace.WorkspaceLayout = new WorkspaceLayout();
-         var configuration = context.Resolve<IApplicationConfiguration>();
-         Description = Command.CreateProjectDescription(configuration.Version);
+         Description = Command.CreateProjectDescription(project.Creation.Version);
+         context.PublishEvent(new ProjectCreatedEvent(project));
       }
 
       protected override void ClearReferences()
       {
          _workspace = null;
-         _project = null;
       }
    }
 }

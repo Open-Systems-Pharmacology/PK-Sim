@@ -46,15 +46,14 @@ namespace PKSim.Presentation.DTO.Mappers
 
       public SimulationExpressionsDTO MapFrom(IEnumerable<IParameter> expressionParameters)
       {
-         var dto = new SimulationExpressionsDTO();
          var allParameters = expressionParameters.ToList();
 
-         dto.ReferenceConcentration = updateGlobalParameter(allParameters, CoreConstants.Parameter.REFERENCE_CONCENTRATION);
-         dto.HalfLifeLiver = updateGlobalParameter(allParameters, CoreConstants.Parameter.HALF_LIFE_LIVER);
-         dto.HalfLifeIntestine = updateGlobalParameter(allParameters, CoreConstants.Parameter.HALF_LIFE_INTESTINE);
-
-         dto.RelativeExpressions = relativeExpressionsFrom(allParameters).ToList();
-         return dto;
+         return new SimulationExpressionsDTO(
+            updateGlobalParameter(allParameters, CoreConstants.Parameters.REFERENCE_CONCENTRATION),
+            updateGlobalParameter(allParameters, CoreConstants.Parameters.HALF_LIFE_LIVER),
+            updateGlobalParameter(allParameters, CoreConstants.Parameters.HALF_LIFE_INTESTINE),
+            relativeExpressionsFrom(allParameters).ToList()
+         );
       }
 
       private IParameterDTO updateGlobalParameter(List<IParameter> allParameters, string globalParameterName)
@@ -76,7 +75,7 @@ namespace PKSim.Presentation.DTO.Mappers
          var expressionContainerDTO = new ExpressionContainerDTO();
          var moleculeName = relativeExpression.ParentContainer.Name;
          var simulation = _executionContext.Get<Simulation>(relativeExpression.Origin.SimulationId);
-         var molecule = simulation.Individual.MoleculeByName<IndividualMolecule>(moleculeName);
+         var molecule = simulation.Individual?.MoleculeByName<IndividualMolecule>(moleculeName);
          var isTransporter = moleculeIsTransporter(molecule);
 
          expressionContainerDTO.RelativeExpressionParameter = _containerParameterMapper.MapFrom(relativeExpression, expressionContainerDTO, x => x.RelativeExpression, x => x.RelativeExpressionParameter);
@@ -124,7 +123,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private bool moleculeIsTransporter(IndividualMolecule molecule)
       {
-         return molecule.MoleculeType == QuantityType.Transporter;
+         return molecule?.MoleculeType == QuantityType.Transporter;
       }
 
       private bool expressionShouldBeTreatedAsGlobal(IParameter relativeExpression, bool isTransporter)
@@ -173,13 +172,13 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private string containerNameForGlobalExpression(string parameterName)
       {
-         if (string.Equals(parameterName, CoreConstants.Parameter.REL_EXP_BLOOD_CELL))
+         if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_BLOOD_CELL))
             return CoreConstants.Compartment.BloodCells;
 
-         if (string.Equals(parameterName, CoreConstants.Parameter.REL_EXP_PLASMA))
+         if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_PLASMA))
             return CoreConstants.Compartment.Plasma;
 
-         if (string.Equals(parameterName, CoreConstants.Parameter.REL_EXP_VASC_ENDO))
+         if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_VASC_ENDO))
             return CoreConstants.Compartment.VascularEndothelium;
 
          return parameterName;
@@ -187,9 +186,9 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private bool parameterIsGlobalExpression(IParameter relativeExpression)
       {
-         return relativeExpression.NameIsOneOf(CoreConstants.Parameter.REL_EXP_BLOOD_CELL,
-            CoreConstants.Parameter.REL_EXP_PLASMA,
-            CoreConstants.Parameter.REL_EXP_VASC_ENDO);
+         return relativeExpression.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELL,
+            CoreConstants.Parameters.REL_EXP_PLASMA,
+            CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
    }
 }

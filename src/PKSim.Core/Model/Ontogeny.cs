@@ -27,7 +27,7 @@ namespace PKSim.Core.Model
    {
       public NullOntogeny()
       {
-         Name = CoreConstants.Parameter.UndefinedOntogeny;
+         Name = CoreConstants.Parameters.UNDEFINED_ONTOGENY;
          DisplayName = Name;
       }
 

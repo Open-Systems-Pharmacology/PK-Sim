@@ -55,7 +55,10 @@ namespace PKSim.Infrastructure.Serialization.Xml
 
          var (element, originalVersion, conversionHappened) = getConvertedElementFrom(serializationBytes);
 
-         var context = serializationContext ?? _serializationContextFactory.Create();
+         var isSimulation = typeof(TObject).IsAnImplementationOf<Simulation>();
+
+         var context = serializationContext ?? _serializationContextFactory.Create(addProjectSimulations:!isSimulation);
+
          try
          {
             using (new XElementDisposer(element))

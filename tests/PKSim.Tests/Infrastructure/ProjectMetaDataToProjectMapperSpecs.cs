@@ -15,7 +15,7 @@ namespace PKSim.Infrastructure
       private ISimulationMetaDataToSimulationMapper _simulationMapper;
       private ICompressedSerializationManager _entitySerializer;
       private ISerializationContextFactory _serializationContextFactory;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected ProjectMetaData _projectMetaData;
       protected IndividualSimulationComparisonMetaData _simulationComparisonMetaData;
 

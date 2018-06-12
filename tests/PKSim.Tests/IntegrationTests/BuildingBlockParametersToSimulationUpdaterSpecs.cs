@@ -13,7 +13,7 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_SimulationBuildingBlockUpdater : ContextForSimulationIntegration<IBuildingBlockParametersToSimulationUpdater>
+   public abstract class concern_for_BuildingBlockParametersToSimulationUpdater : ContextForSimulationIntegration<IBuildingBlockParametersToSimulationUpdater>
    {
       protected Individual _templateIndividual;
       private IWorkspace _workspace;
@@ -35,14 +35,14 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_updating_the_parameter_values_from_a_template_building_block_in_a_simulation_building_block : concern_for_SimulationBuildingBlockUpdater
+   public class When_updating_the_parameter_values_from_a_template_building_block_in_a_simulation_building_block : concern_for_BuildingBlockParametersToSimulationUpdater
    {
       private ICommand _result;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var templateParameter = _templateIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameter.ALLOMETRIC_SCALE_FACTOR);
+         var templateParameter = _templateIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR);
          templateParameter.Value = 3;
       }
 
@@ -55,7 +55,7 @@ namespace PKSim.IntegrationTests
       public void should_have_updated_the_parameter_values_in_the_simulation_and_in_the_simulation_building_block_according_to_the_value_in_the_template()
       {
          var simIndividual = _simulation.Individual;
-         var parameter = simIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameter.ALLOMETRIC_SCALE_FACTOR);
+         var parameter = simIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR);
          parameter.Value.ShouldBeEqualTo(3);
 
          //now parameter in simulation

@@ -7,7 +7,7 @@ namespace PKSim.Core.Events
 {
    public class SimulationComparisonCreatedEvent : ProjectEvent
    {
-      public ISimulationComparison SimulationComparison { get; private set; }
+      public ISimulationComparison SimulationComparison { get; }
 
       public SimulationComparisonCreatedEvent(IProject project, ISimulationComparison simulationComparison)
          : base(project)
@@ -18,12 +18,32 @@ namespace PKSim.Core.Events
 
    public class SimulationComparisonDeletedEvent : ProjectEvent
    {
-      public ISimulationComparison Chart { get; private set; }
+      public ISimulationComparison Chart { get; }
 
       public SimulationComparisonDeletedEvent(IProject project, ISimulationComparison chart)
          : base(project)
       {
          Chart = chart;
+      }
+   }
+
+   public class QualificationPlanCreatedEvent : ProjectEvent
+   {
+      public QualificationPlan QualificationPlan { get; }
+
+      public QualificationPlanCreatedEvent(IProject project, QualificationPlan qualificationQualificationPlan) : base(project)
+      {
+         QualificationPlan = qualificationQualificationPlan;
+      }
+   }
+
+   public class QualificationPlanDeletedEvent : ProjectEvent
+   {
+      public QualificationPlan QualificationPlan { get; }
+
+      public QualificationPlanDeletedEvent(IProject project, QualificationPlan qualificationQualificationPlan) : base(project)
+      {
+         QualificationPlan = qualificationQualificationPlan;
       }
    }
 

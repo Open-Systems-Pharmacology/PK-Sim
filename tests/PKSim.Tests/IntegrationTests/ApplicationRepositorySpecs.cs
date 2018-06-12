@@ -49,7 +49,7 @@ namespace PKSim.IntegrationTests
          {
             if (applicBuilder.Name.StartsWith("Oral")||applicBuilder.Name.Equals(CoreConstants.Application.Name.IntravenousBolus))
                continue;
-            applicBuilder.GetSingleChildByName<IParameter>(CoreConstants.Parameter.ApplicationRate).ShouldNotBeNull();
+            applicBuilder.GetSingleChildByName<IParameter>(CoreConstants.Parameters.APPLICATION_RATE).ShouldNotBeNull();
          }
       }
 

@@ -7,7 +7,7 @@ namespace PKSim.Core.Model
    public class ImportPopulation : Population
    {
       /// <summary>
-      ///    Population settings for the given random population
+      ///    Population settings for the population
       /// </summary>
       public virtual ImportPopulationSettings Settings { get; private set; }
 

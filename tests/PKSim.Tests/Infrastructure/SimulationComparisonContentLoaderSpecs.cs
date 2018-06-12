@@ -8,7 +8,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
 using PKSim.Infrastructure.Services;
-using Individual = PKSim.Core.Batch.Individual;
 
 namespace PKSim.Infrastructure
 {

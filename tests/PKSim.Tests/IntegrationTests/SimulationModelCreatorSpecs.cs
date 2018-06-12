@@ -86,7 +86,7 @@ namespace PKSim.IntegrationTests
          var explicitFormula = cypMuscleCell.Formula.DowncastTo<ExplicitFormula>();
          var path = explicitFormula.FormulaUsablePathBy("M_0");
          path.ShouldNotBeNull();
-         path.Last().ShouldBeEqualTo(CoreConstants.Parameter.START_AMOUNT);
+         path.Last().ShouldBeEqualTo(CoreConstants.Parameters.START_AMOUNT);
       }
 
       [Observation]
@@ -95,8 +95,8 @@ namespace PKSim.IntegrationTests
          var protBoneInterstitial = _simulation.Model.Root.EntityAt<MoleculeAmount>(
             Constants.ORGANISM, CoreConstants.Organ.Bone, CoreConstants.Compartment.Interstitial, _protein.Name);
 
-         protBoneInterstitial.Parameter(CoreConstants.Parameter.REL_EXP).Visible.ShouldBeFalse();
-         protBoneInterstitial.Parameter(CoreConstants.Parameter.REL_EXP_NORM).Visible.ShouldBeFalse();
+         protBoneInterstitial.Parameter(CoreConstants.Parameters.REL_EXP).Visible.ShouldBeFalse();
+         protBoneInterstitial.Parameter(CoreConstants.Parameters.REL_EXP_NORM).Visible.ShouldBeFalse();
       }
    }
 }

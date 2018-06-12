@@ -85,7 +85,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       protected override void AddRibbonPages()
       {
-         _view.AddApplicationMenu(_buttonGroupRepository.Find(ButtonGroupIds.File));
+         _view.AddApplicationMenu(_buttonGroupRepository.Find(ButtonGroupIds.Project));
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Create), PKSimConstants.RibbonPages.Modeling);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Compare), PKSimConstants.RibbonPages.Modeling);
@@ -176,11 +176,23 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.About].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.JournalView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.JournalDiagramView].Enabled = true;
+         _menuBarItemRepository[MenuBarItemIds.LoadProjectFromSnahpshot].Enabled = true;
       }
 
       public void Handle(ProjectCreatedEvent eventToHandle)
       {
-         updateProjectItems(isEnabled: true, observedDataEnabled: compoundsAvailableIn(eventToHandle.Project));
+         updateLoadedProjectItem(eventToHandle);
+      }
+
+      public override void Handle(ProjectLoadedEvent eventToHandle)
+      {
+         base.Handle(eventToHandle);
+         updateLoadedProjectItem(eventToHandle);
+      }
+
+      private void updateLoadedProjectItem(ProjectEvent projectEvent)
+      {
+         updateProjectItems(isEnabled: true, observedDataEnabled: compoundsAvailableIn(projectEvent.Project));
       }
 
       public void Handle(ProjectClosedEvent eventToHandle)
@@ -322,6 +334,7 @@ namespace PKSim.Presentation.Presenters.Main
          updateSaveProjectButtons(enabled);
 
          _menuBarItemRepository[MenuBarItemIds.ProjectDescription].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.ExportProjectToSnapshot].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.CloseProject].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewIndividual].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadIndividual].Enabled = enabled;
@@ -331,7 +344,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.NewCompound].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadCompound].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewFormulation].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.LoadFormulation].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.LoadFormulationFromTemplate].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewSimulation].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewImportIndividualSimulation].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewImportPopulationSimulation].Enabled = enabled;
@@ -409,7 +422,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       private bool compoundsAvailableIn(IProject project)
       {
-         return project != null && project.DowncastTo<IPKSimProject>().All<Compound>().Any();
+         return project != null && project.DowncastTo<PKSimProject>().All<Compound>().Any();
       }
 
       private struct SimulationState

@@ -37,8 +37,8 @@ namespace PKSim.Presentation
       {
          base.Context();
          _schema = new Schema();
-         _schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.TIME_BETWEEN_REPETITIONS).WithDimension(DomainHelperForSpecs.TimeDimensionForSpecs()));
-         _schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.NUMBER_OF_REPETITIONS));
+         _schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS).WithDimension(DomainHelperForSpecs.TimeDimensionForSpecs()));
+         _schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.NUMBER_OF_REPETITIONS));
          _schema.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(Constants.Parameters.START_TIME).WithDimension(DomainHelperForSpecs.TimeDimensionForSpecs()));
 
          A.CallTo(_parameterDTOMapper).WithReturnType<IParameterDTO>()
@@ -50,7 +50,7 @@ namespace PKSim.Presentation
          _schema.AddSchemaItem(_schemaItemA);
 
          A.CallTo(_schemaItemDTOMapper).WithReturnType<SchemaItemDTO>()
-            .ReturnsLazily(x => new SchemaItemDTO(x.Arguments[0].DowncastTo<ISchemaItem>()));
+            .ReturnsLazily(x => new SchemaItemDTO(x.Arguments[0].DowncastTo<SchemaItem>()));
       }
 
       protected override void Because()

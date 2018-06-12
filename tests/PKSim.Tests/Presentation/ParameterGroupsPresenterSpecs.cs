@@ -9,16 +9,13 @@ using FakeItEasy;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Presenters.Parameters.Mappers;
 using PKSim.Presentation.Services;
-
 using PKSim.Presentation.Views.Parameters;
-
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Services;
@@ -43,6 +40,7 @@ namespace PKSim.Presentation
       protected ITreeNodeFactory _treeNodeFactory;
       protected ITreeNode<IGroup> _groupAllNode;
       protected ITreeNode<IGroup> _groupFavoritesNode;
+      protected ITreeNode<IGroup> _groupUserDefinedNode;
       protected IGroupRepository _groupRepository;
       protected IUserSettings _userSettings;
       protected INoItemInSelectionPresenter _noItemInSelectionPresenter;
@@ -74,17 +72,20 @@ namespace PKSim.Presentation
          A.CallTo(() => _containerNode.Children).Returns(new List<ITreeNode>());
          _groupAllNode = A.Fake<ITreeNode<IGroup>>();
          _groupFavoritesNode = A.Fake<ITreeNode<IGroup>>();
+         _groupUserDefinedNode = A.Fake<ITreeNode<IGroup>>();
          A.CallTo(() => _treeNodeFactory.CreateGroupAll()).Returns(_groupAllNode);
          A.CallTo(() => _treeNodeFactory.CreateGroupFavorites()).Returns(_groupFavoritesNode);
+         A.CallTo(() => _treeNodeFactory.CreateGroupUserDefined()).Returns(_groupUserDefinedNode);
          A.CallTo(() => _noItemInSelectionPresenter.BaseView).Returns(A.Fake<IView>());
       }
 
       protected void CreateSutForSettings(ParameterGroupingModeId parameterGroupingModeId)
       {
          A.CallTo(() => _userSettings.DefaultParameterGroupingMode).Returns(parameterGroupingModeId);
-         var settings=new ParameterGroupsPresenterSettings();
-         settings.DefaultParameterGroupingModeId =parameterGroupingModeId;
+         var settings = new ParameterGroupsPresenterSettings {DefaultParameterGroupingModeId = parameterGroupingModeId};
+
          A.CallTo(_presenterSettingsTask).WithReturnType<ParameterGroupsPresenterSettings>().Returns(settings);
+
          sut = new ParameterGroupsPresenter(_view, _parameterGroupTask, _groupNodeCreator, _containerNodeMapper,
                                             _parameterPresenterMapper, _noItemInSelectionPresenter, _treeNodeFactory, _groupRepository, _userSettings,
                                             _presenterSettingsTask, _treeNodeContextMenuFactory);
@@ -137,6 +138,12 @@ namespace PKSim.Presentation
       {
          _nodes.ShouldNotContain(_groupFavoritesNode);
       }
+
+      [Observation]
+      public void shouold_not_contain_changed()
+      {
+         _nodes.ShouldNotContain(_groupUserDefinedNode);
+      }
    }
 
    public class When_setting_the_grouping_mode_to_simple_for_parameters : When_setting_the_grouping_mode_for_parameters
@@ -151,6 +158,12 @@ namespace PKSim.Presentation
       {
          _nodes.First().ShouldBeEqualTo(_groupFavoritesNode);
       }
+
+      [Observation]
+      public void Must_insert_changed_at_second_position()
+      {
+         _nodes.ElementAt(1).ShouldBeEqualTo(_groupUserDefinedNode);
+      }
    }
 
    public class When_setting_the_grouping_mode_to_advanced_for_parameters : When_setting_the_grouping_mode_for_parameters
@@ -164,6 +177,13 @@ namespace PKSim.Presentation
       public void Must_insert_favourites_at_the_top()
       {
          _nodes.First().ShouldBeEqualTo(_groupFavoritesNode);
+      }
+
+
+      [Observation]
+      public void Must_insert_changed_at_second_position()
+      {
+         _nodes.ElementAt(1).ShouldBeEqualTo(_groupUserDefinedNode);
       }
    }
 
@@ -247,7 +267,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_tell_the_view_to_display_one_node_in_the_tree_view_for_each_visible_parameter_groups_and_the_all_and_favoritegroup()
       {
-         _nodes.ShouldOnlyContain(_nodeGroup1, _nodeGroup2, _groupAllNode, _groupFavoritesNode);
+         _nodes.ShouldOnlyContain(_nodeGroup1, _nodeGroup2, _groupAllNode, _groupFavoritesNode, _groupUserDefinedNode);
       }
    }
 
@@ -300,7 +320,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_tell_the_view_to_display_one_node_in_the_tree_view_for_each_visible_parameter_groups_and_the_favorite_group()
       {
-         _nodes.ShouldOnlyContain(_nodeGroup1, _nodeGroup2, _groupFavoritesNode);
+         _nodes.ShouldOnlyContain(_nodeGroup1, _nodeGroup2, _groupFavoritesNode, _groupUserDefinedNode);
       }
    }
 
@@ -540,4 +560,72 @@ namespace PKSim.Presentation
          _parameters.ShouldOnlyContain(_visibleParameter);
       }
    }
+
+   public class When_the_user_defined_group_node_is_being_activated : concern_for_ParameterGroupsPresenter
+   {
+      private ICustomParametersPresenter _validPresenter;
+      private IParameter _visibleParameter;
+      private IEnumerable<IParameter> _parameters;
+
+      protected override void Context()
+      {
+         base.Context();
+         CreateSutForSettings(ParameterGroupingModeId.Advanced);
+
+         _validPresenter = A.Fake<ICustomParametersPresenter>();
+         _visibleParameter = A.Fake<IParameter>();
+         _visibleParameter.Visible = true;
+         var hiddenParameter = A.Fake<IParameter>();
+         hiddenParameter.Visible = false;
+         _allParameters.Add(_visibleParameter);
+         _allParameters.Add(hiddenParameter);
+         A.CallTo(() => _parameterPresenterMapper.MapFrom(_groupUserDefinedNode)).Returns(_validPresenter);
+         A.CallTo(() => _validPresenter.Edit(A<IEnumerable<IParameter>>.Ignored)).Invokes(x => _parameters = x.GetArgument<IEnumerable<IParameter>>(0));
+         sut.InitializeWith(_organism, _allParameters);                                       
+         sut.ParameterGroupingMode = ParameterGroupingModes.Advanced;
+      }
+
+      protected override void Because()
+      {
+         sut.ActivateNode(_groupUserDefinedNode);
+      }
+
+      [Observation]
+      public void should_edit_all_parameters()
+      {
+         _parameters.ShouldOnlyContain(_visibleParameter);
+      }
+   }
+
+   public class When_a_customer_parameter_presenter_that_requires_constant_refresh_is_being_activated_a_second_time : concern_for_ParameterGroupsPresenter
+   {
+      private ICustomParametersPresenter _alwaysRefreshPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         CreateSutForSettings(ParameterGroupingModeId.Advanced);
+         _alwaysRefreshPresenter = A.Fake<ICustomParametersPresenter>();
+         A.CallTo(() => _alwaysRefreshPresenter.AlwaysRefresh).Returns(true);
+         A.CallTo(() => _parameterPresenterMapper.MapFrom(_groupUserDefinedNode)).Returns(_alwaysRefreshPresenter);
+         var visibleParameter = A.Fake<IParameter>();
+         visibleParameter.Visible = true;
+         _allParameters.Add(visibleParameter);
+
+         sut.InitializeWith(_organism, _allParameters);
+      }
+
+      protected override void Because()
+      {
+         sut.ActivateNode(_groupUserDefinedNode);
+         sut.ActivateNode(_groupUserDefinedNode);
+      }
+
+      [Observation]
+      public void should_edit_the_parameters_again()
+      {
+         A.CallTo(() => _alwaysRefreshPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappened(Repeated.Exactly.Twice);
+      }
+   }
+
 }

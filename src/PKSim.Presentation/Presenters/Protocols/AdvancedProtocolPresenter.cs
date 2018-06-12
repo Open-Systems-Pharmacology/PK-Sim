@@ -93,7 +93,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          AddCommand(_protocolTask.SetFormulationType(SchemaItemFrom(schemaItemDTO), newFormulationType));
       }
 
-      protected ISchemaItem SchemaItemFrom(SchemaItemDTO schemaItemDTO)
+      protected SchemaItem SchemaItemFrom(SchemaItemDTO schemaItemDTO)
       {
          return schemaItemDTO.SchemaItem;
       }
@@ -186,7 +186,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          OnStatusChanged();
       }
 
-      private bool canHandle(EntityContainerEvent<ISchemaItem, Schema> schemaItemEvent)
+      private bool canHandle(EntityContainerEvent<SchemaItem, Schema> schemaItemEvent)
       {
          if (_protocol == null) return false;
          return _protocol.Contains(schemaItemEvent.Container);

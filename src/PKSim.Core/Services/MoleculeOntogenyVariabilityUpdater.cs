@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
@@ -65,7 +64,6 @@ namespace PKSim.Core.Services
          updateMoleculeOntogeny(molecule, ontogeny, population, allAgesIn(population), allGAsIn(population));
       }
 
-
       private void clearOntogenyFor(string ontogenyFactorPath, string ontogenyFactorGIPath, Population population)
       {
          population.IndividualPropertiesCache.Remove(ontogenyFactorPath);
@@ -122,28 +120,27 @@ namespace PKSim.Core.Services
 
       private void updatePlasmaProteinOntogenyFor(Population population, IReadOnlyList<double> allAges, IReadOnlyList<double> allGAs, string parameterName, string proteinName)
       {
-         var parameter = population.Organism.Parameter(parameterName);
-         if (parameter == null) return;
-         var plasmaProteinOntogenyPath = _entityPathResolver.PathFor(parameter);
-         var ontogenyFactors = new ParameterValues(plasmaProteinOntogenyPath);
+         var plasmaProteinOntogenyParameter = population.Organism.Parameter(parameterName);
+         if (plasmaProteinOntogenyParameter == null) return;
+         var ontogenyFactors = new ParameterValues(_entityPathResolver.PathFor(plasmaProteinOntogenyParameter));
 
          for (int i = 0; i < population.NumberOfItems; i++)
          {
             ontogenyFactors.Add(_ontogenyRepository.PlasmaProteinOntogenyFactor(proteinName, allAges[i], allGAs[i], population.Species.Name, population.RandomGenerator));
          }
 
-         population.IndividualPropertiesCache.Remove(plasmaProteinOntogenyPath);
+         population.IndividualPropertiesCache.Remove(ontogenyFactors.ParameterPath);
          population.IndividualPropertiesCache.Add(ontogenyFactors);
       }
 
       private IReadOnlyList<double> allGAsIn(Population population)
       {
-         return population.AllOrganismValuesFor(CoreConstants.Parameter.GESTATIONAL_AGE, _entityPathResolver);
+         return population.AllOrganismValuesFor(CoreConstants.Parameters.GESTATIONAL_AGE, _entityPathResolver);
       }
 
       private IReadOnlyList<double> allAgesIn(Population population)
       {
-         return population.AllOrganismValuesFor(CoreConstants.Parameter.AGE, _entityPathResolver);
+         return population.AllOrganismValuesFor(CoreConstants.Parameters.AGE, _entityPathResolver);
       }
    }
 }

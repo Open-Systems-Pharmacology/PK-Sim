@@ -19,6 +19,7 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
 		'PKSim.exe',
+		'PKSimDB.mdb',
 		'PKSimTemplateDBSystem.mdb'
 	]
 
@@ -28,15 +29,12 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		'packages/**/OSPSuite.TeXReporting/**/*.*',
 		'examples/**/*.{wxs,pksim5}',
 		'src/PKSim.Assets/Resources/*.ico',
-		'src/Db/PKSimDB.mdb',
-		'src/Db/TemplateDB/PKSimTemplateDBSystem.mdb',
 		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
 		'dimensions/*.xml',
 		'pkparameters/*.xml',
 		'setup/setup.wxs',
-		'setup/**/*.{msm,rtf,bmp}',
-		'log4net.config.xml'
+		'setup/**/*.{msm,rtf,bmp}'
 	]
 
 	Rake::Task['setup:create'].execute(OpenStruct.new(
@@ -59,8 +57,7 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 		'documentation/*.pdf',
 		'dimensions/*.xml',
 		'pkparameters/*.xml',
-		'setup/**/*.{rtf}',
-		'log4net.config.xml',
+		'setup/**/*.{rtf}'
 	]
 
 	setup_folders = [
@@ -90,7 +87,7 @@ task :postclean do |t, args|
 	packages_dir =  File.join(solution_dir, 'packages')
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.2')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.3')
 
 	copy_depdencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml

@@ -120,7 +120,7 @@ namespace PKSim.UI.Views.Simulations
             .WithCaption(PKSimConstants.UI.DataSourceColumn)
             .WithRepository(repositoryItemForSystemicProcesses)
             .WithEditorConfiguration(configureSystemicProcessesRepository)
-            .WithFixedWidth(CoreConstants.UI.DataSourceWidth)
+            .WithFixedWidth(CoreConstants.UI.DATA_SOURCE_WIDTH)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithOnChanged(dto => OnEvent(() => _presenter.SelectionChanged(dto)));
       }

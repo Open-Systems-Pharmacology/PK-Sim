@@ -10,12 +10,9 @@ namespace PKSim.Infrastructure.Services
       private readonly FileStream _fsReader;
       private readonly CsvReader _csv;
 
-      public CsvReader Csv
-      {
-         get { return _csv; }
-      }
+      public CsvReader Csv => _csv;
 
-      public CsvReaderDisposer(string fileFullPath, char delimiter = ';')
+      public CsvReaderDisposer(string fileFullPath, char delimiter = ',')
       {
          _fsReader = new FileStream(fileFullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
          _csv = new CsvReader(new StreamReader(_fsReader, Encoding.Default), hasHeaders: true, delimiter: delimiter);
@@ -23,11 +20,9 @@ namespace PKSim.Infrastructure.Services
 
       protected virtual void Cleanup()
       {
-         if (_csv != null)
-            _csv.Dispose();
+         _csv?.Dispose();
 
-         if (_fsReader != null)
-            _fsReader.Dispose();
+         _fsReader?.Dispose();
       }
 
       #region Disposable properties

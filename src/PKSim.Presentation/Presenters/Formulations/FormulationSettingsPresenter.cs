@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.Charts;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -11,9 +12,6 @@ using PKSim.Presentation.DTO.Formulations;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Formulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.Charts;
 
 namespace PKSim.Presentation.Presenters.Formulations
 {
@@ -77,7 +75,7 @@ namespace PKSim.Presentation.Presenters.Formulations
 
       public bool CanEditFormulationType
       {
-         set { _view.FormulationTypeVisible = value; }
+         set => _view.FormulationTypeVisible = value;
       }
 
       public void EditFormulationFor(string applicationRoute)
@@ -100,6 +98,7 @@ namespace PKSim.Presentation.Presenters.Formulations
          Formulation = formulation;
          _formulationDTO = _formulationDTOMapper.MapFrom(formulation);
          adjustParameterVisibility();
+
          if (Formulation.IsTable)
          {
             _view.AddParameterView(_tableFormulationPresenter.BaseView);
@@ -110,6 +109,7 @@ namespace PKSim.Presentation.Presenters.Formulations
             _formulationParametersPresenter.Edit(_formulationDTO.Parameters);
             _view.AddParameterView(_formulationParametersPresenter.View);
          }
+
          updatePlot();
          _view.BindTo(_formulationDTO);
       }
@@ -149,34 +149,14 @@ namespace PKSim.Presentation.Presenters.Formulations
 
       private void adjustParameterVisibility()
       {
-         if (!Formulation.IsParticleDissolution)
-            return;
-
-         var cache = new Cache<string, IParameter>(p => p.Name);
-         cache.AddRange(_formulationDTO.Parameters);
-         cache.Each(p => p.Visible = true);
-
-         var particleDisperseSystem = cache[CoreConstants.Parameter.PARTICLE_DISPERSE_SYSTEM];
-         var particleDistribution = cache[CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION];
-         var parameterToHide = new List<string>();
-
-         if (particleDisperseSystem.Value == CoreConstants.Parameter.MONODISPERSE)
-            parameterToHide.AddRange(CoreConstants.Parameter.HiddenParameterForMonodisperse);
-
-         else if (particleDistribution.Value == CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
-            parameterToHide.AddRange(CoreConstants.Parameter.HiddenParameterForPolydisperseNormal);
-
-         else
-            parameterToHide.AddRange(CoreConstants.Parameter.HiddenParameterForPolydisperseLogNormal);
-
-         parameterToHide.Each(p => cache[p].Visible = false);
+         Formulation.UpdateParticleParametersVisibility();
       }
 
       private void parameterChanged(IParameter parameter)
       {
          updatePlot();
 
-         if (!parameter.NameIsOneOf(CoreConstants.Parameter.PARTICLE_DISPERSE_SYSTEM, CoreConstants.Parameter.PARTICLE_SIZE_DISTRIBUTION))
+         if (!parameter.NameIsOneOf(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM, CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
             return;
 
          adjustParameterVisibility();

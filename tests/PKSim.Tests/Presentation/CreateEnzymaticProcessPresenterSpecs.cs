@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
 using FakeItEasy;
+using OSPSuite.BDDHelper;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Presenters.Parameters;
@@ -70,11 +71,18 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _view.UpdateAvailableCompounds(A<IEnumerable<string>>.That.Matches(x => x.Count() == 2))).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_bind_to_the_enzymatic_process_to_the_view()
+      {
+         A.CallTo(() => _view.BindTo(A<EnzymaticProcessDTO>._)).MustHaveHappened();
+      }
    }
 
    public class when_changing_the_metabolite : concern_for_CreateEnzymaticProcessPresenter
    {
       private string _newMetabolite;
+
       protected override void Context()
       {
          base.Context();
@@ -83,7 +91,6 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         
          sut.MetaboliteChanged(_newMetabolite);
       }
 

@@ -1,4 +1,3 @@
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Commands

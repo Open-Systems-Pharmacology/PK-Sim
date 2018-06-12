@@ -239,7 +239,7 @@ namespace PKSim.Presentation.Services
             case PKSimBuildingBlockType.Event:
                return Constants.EVENTS;
             default:
-               throw new ArgumentOutOfRangeException("buildingBlockType");
+               throw new ArgumentOutOfRangeException(nameof(buildingBlockType));
          }
       }
 

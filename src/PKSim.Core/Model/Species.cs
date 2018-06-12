@@ -1,39 +1,32 @@
 using System.Collections.Generic;
-using OSPSuite.Utility.Collections;
+using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
 
 namespace PKSim.Core.Model
 {
    public class Species : ObjectBase
    {
-      private readonly IList<SpeciesPopulation> _allPopulations = new List<SpeciesPopulation>();
-      private readonly ICache<string, ParameterValueVersionCategory> _pvvCategories = new Cache<string, ParameterValueVersionCategory>(pvv => pvv.Name);
       public virtual string DisplayName { get; set; }
+
       public virtual bool IsHuman { get; set; }
 
-      public virtual SpeciesPopulation PopulationByName(string name)
-      {
-         return _allPopulations.FindByName(name);
-      }
+      private readonly List<SpeciesPopulation> _allPopulations = new List<SpeciesPopulation>();
 
-      public virtual IEnumerable<SpeciesPopulation> Populations => _allPopulations;
+      private readonly Cache<string, ParameterValueVersionCategory> _pvvCategories = new Cache<string, ParameterValueVersionCategory>(pvv => pvv.Name);
 
-      public virtual void AddPopulation(SpeciesPopulation speciesPopulation)
-      {
-         _allPopulations.Add(speciesPopulation);
-      }
+      public virtual SpeciesPopulation DefaultPopulation => _allPopulations.FirstOrDefault();
 
-      public virtual IEnumerable<ParameterValueVersionCategory> PVVCategories => _pvvCategories;
+      public virtual SpeciesPopulation PopulationByName(string name) => _allPopulations.FindByName(name);
 
-      public virtual void AddPVVCategory(ParameterValueVersionCategory pvvCategory)
-      {
-         _pvvCategories.Add(pvvCategory);
-      }
+      public virtual IReadOnlyList<SpeciesPopulation> Populations => _allPopulations;
 
-      public virtual ParameterValueVersionCategory PVVCategoryByName(string categoryName)
-      {
-         return _pvvCategories[categoryName];
-      }
+      public virtual void AddPopulation(SpeciesPopulation speciesPopulation) => _allPopulations.Add(speciesPopulation);
 
+      public virtual IReadOnlyCollection<ParameterValueVersionCategory> PVVCategories => _pvvCategories;
+
+      public virtual void AddPVVCategory(ParameterValueVersionCategory pvvCategory) => _pvvCategories.Add(pvvCategory);
+
+      public virtual ParameterValueVersionCategory PVVCategoryByName(string categoryName) => _pvvCategories[categoryName];
    }
 }

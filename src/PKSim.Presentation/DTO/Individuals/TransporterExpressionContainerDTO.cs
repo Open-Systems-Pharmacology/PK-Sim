@@ -5,9 +5,9 @@ namespace PKSim.Presentation.DTO.Individuals
 {
    public class TransporterExpressionContainerDTO : ExpressionContainerDTO
    {
-      private ITransporterExpressionContainer _transporterContainer;
+      private TransporterExpressionContainer _transporterContainer;
 
-      public TransporterExpressionContainerDTO(ITransporterExpressionContainer transporterContainer) 
+      public TransporterExpressionContainerDTO(TransporterExpressionContainer transporterContainer) 
       {
          _transporterContainer = transporterContainer;
          _transporterContainer.PropertyChanged += raisePropertyChange;
@@ -19,9 +19,9 @@ namespace PKSim.Presentation.DTO.Individuals
       }
      public MembraneLocation MembraneLocation
       {
-         get { return _transporterContainer.MembraneLocation; }
-         set { _transporterContainer.MembraneLocation = value; }
-      }
+         get => _transporterContainer.MembraneLocation;
+        set => _transporterContainer.MembraneLocation = value;
+     }
 
       public override void ClearReferences()
       {

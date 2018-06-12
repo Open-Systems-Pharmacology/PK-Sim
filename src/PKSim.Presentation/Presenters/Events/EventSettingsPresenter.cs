@@ -42,7 +42,7 @@ namespace PKSim.Presentation.Presenters.Events
 
       public bool CanEditEventTemplate
       {
-         set { _view.EventTemplateVisible = value; }
+         set => _view.EventTemplateVisible = value;
       }
 
       public EventSettingsPresenter(IEventSettingsView view, IEventGroupRepository eventGroupRepository,
@@ -52,6 +52,7 @@ namespace PKSim.Presentation.Presenters.Events
          _eventGroupRepository = eventGroupRepository;
          _representationInfoRepository = representationInfoRepository;
          _eventParametersPresenter = eventParametersPresenter;
+         _eventParametersPresenter.HeaderVisible = true;
          _view.AddParameterView(_eventParametersPresenter.View);
       }
 

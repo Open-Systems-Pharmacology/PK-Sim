@@ -26,7 +26,7 @@ namespace PKSim.IntegrationTests
       protected ParameterSelection _parameterSelection1;
       protected ParameterSelection _parameterSelection2;
       protected ParameterIdentificationRunResult _runResult;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
 
       public override void GlobalContext()
       {
@@ -51,7 +51,7 @@ namespace PKSim.IntegrationTests
 
          _objectBaseRepository = IoC.Resolve<IWithIdRepository>();
          var workspace = IoC.Resolve<IWorkspace>();
-         _project = IoC.Resolve<IPKSimProject>();
+         _project = IoC.Resolve<PKSimProject>();
          workspace.Project = _project;
          _objectBaseRepository.Register(_sim1);
          _objectBaseRepository.Register(_sim2);
@@ -169,7 +169,7 @@ namespace PKSim.IntegrationTests
       {
          var stream = _serializationManager.Serialize(source);
          var serializationContectFactory = IoC.Resolve<ISerializationContextFactory>();
-         using (var context = serializationContectFactory.Create(externalReferences: _project.All<ISimulation>()))
+         using (var context = serializationContectFactory.Create())
          {
             return _serializationManager.Deserialize<ParameterIdentification>(stream, context);
          }

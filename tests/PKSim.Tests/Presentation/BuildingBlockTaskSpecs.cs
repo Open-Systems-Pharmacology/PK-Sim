@@ -17,6 +17,7 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
@@ -31,7 +32,7 @@ namespace PKSim.Presentation
       protected ICloneBuildingBlockPresenter _clonePresenter;
       protected IRenameObjectPresenter _renamePresenter;
       protected IDialogCreator _dialogCreator;
-      protected IPKSimProject _project;
+      protected PKSimProject _project;
       protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       protected IEntityTask _entityTask;
       protected ITemplateTaskQuery _templateTaskQuery;
@@ -43,7 +44,7 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _entityTask = A.Fake<IEntityTask>();
          _templateTaskQuery = A.Fake<ITemplateTaskQuery>();
          _executionContext = A.Fake<IExecutionContext>();
@@ -59,8 +60,19 @@ namespace PKSim.Presentation
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
 
-         sut = new BuildingBlockTask(_executionContext, _applicationController, _dialogCreator, _buildingBlockInSimulationManager,
-            _entityTask, _templateTaskQuery, _singleStartPresenterTask, _buildingBlockRepository, _lazyLoadTask, _presenterSettingsTask, _simulationReferenceUpdater);
+         sut = new BuildingBlockTask(
+            _executionContext,
+            _applicationController, 
+            _dialogCreator,
+            _buildingBlockInSimulationManager,
+            _entityTask, 
+            _templateTaskQuery, 
+            _singleStartPresenterTask, 
+            _buildingBlockRepository, 
+            _lazyLoadTask, 
+            _presenterSettingsTask,
+            _simulationReferenceUpdater);
+
          A.CallTo(() => _applicationController.Start<ICloneBuildingBlockPresenter>()).Returns(_clonePresenter);
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renamePresenter);
 
@@ -587,6 +599,32 @@ namespace PKSim.Presentation
       public void should_not_save_the_template_or_any_of_the_references()
       {
          _allTemplateItems.ShouldBeNull();
+      }
+   }
+
+   public class When_saving_multiple_building_blocks_to_the_database : When_saving_building_blocks_to_the_user_template_database
+   {
+      private List<IPKSimBuildingBlock> _buildingBlocks;
+      private IPKSimBuildingBlock _anotherBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _anotherBuildingBlock= A.Fake<IPKSimBuildingBlock>();
+         _buildingBlocks = new List<IPKSimBuildingBlock> {_buildingBlock, _anotherBuildingBlock};
+      }
+
+      protected override void Because()
+      {
+         sut.SaveAsTemplate(_buildingBlocks, TemplateDatabaseType.User);
+      }
+
+      [Observation]
+      public void should_save_each_template_to_the_template_database()
+      {
+         _allTemplateItems.Count.ShouldBeEqualTo(2);
+         _allTemplateItems[0].Object.ShouldBeEqualTo(_buildingBlock);
+         _allTemplateItems[1].Object.ShouldBeEqualTo(_anotherBuildingBlock);
       }
    }
 

@@ -1,15 +1,14 @@
-﻿using OSPSuite.Utility;
+﻿using System;
+using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.Nodes;
-using OSPSuite.Presentation.Presenters.Nodes;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
    public interface IPartialProcessToRootNodeTypeMapper : IMapper<PartialProcess, RootNodeType>
    {
-      
    }
 
    public class PartialProcessToRootNodeTypeMapper : IPartialProcessToRootNodeTypeMapper
@@ -33,7 +32,7 @@ namespace PKSim.Presentation.DTO.Mappers
          if (type.IsAnImplementationOf<TransportPartialProcess>())
             return PKSimRootNodeTypes.CompoundTransportProteins;
 
-         throw new PKSimException("The partial process is not recognized");
+         throw new ArgumentException(partialProcess.ToString());
       }
    }
 }

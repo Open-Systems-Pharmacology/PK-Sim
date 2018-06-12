@@ -1,49 +1,55 @@
-using System.Linq;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core.Model;
+using System;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Events;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public interface ISimulationRunner : IListener<SimulationResultsUpdatedEvent>
+   public interface ISimulationRunner
    {
-      void RunSimulation(Simulation simulation, bool defineSettings = false);
+      Task RunSimulation(Simulation simulation, SimulationRunOptions simulationRunOptions = null);
       void StopSimulation();
    }
 
-   public class SimulationRunner : ISimulationRunner,
-                                   IStrictVisitor,
-                                   IVisitor<IndividualSimulation>,
-                                   IVisitor<PopulationSimulation>
+   public class SimulationRunner : ISimulationRunner
    {
       private readonly ISimulationEngineFactory _simulationEngineFactory;
-      private readonly ISimulationAnalysisCreator _simulationAnalysisCreator;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IEntityValidationTask _entityValidationTask;
-      private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
-      private readonly ICloner _cloner;
+      private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
       private ISimulationEngine _simulationEngine;
-      private bool _defineSettings;
+      private readonly Task _simulationDidNotRun = Task.FromResult(false);
+      private SimulationRunOptions _simulationRunOptions;
 
-      public SimulationRunner(ISimulationEngineFactory simulationEngineFactory, ISimulationAnalysisCreator simulationAnalysisCreator, ILazyLoadTask lazyLoadTask,
-                              IEntityValidationTask entityValidationTask,  ISimulationSettingsRetriever simulationSettingsRetriever, ICloner cloner)
+      public SimulationRunner(
+         ISimulationEngineFactory simulationEngineFactory,
+         ILazyLoadTask lazyLoadTask,
+         IEntityValidationTask entityValidationTask,
+         ISimulationPersistableUpdater simulationPersistableUpdater)
       {
          _simulationEngineFactory = simulationEngineFactory;
-         _simulationAnalysisCreator = simulationAnalysisCreator;
          _lazyLoadTask = lazyLoadTask;
          _entityValidationTask = entityValidationTask;
-         _simulationSettingsRetriever = simulationSettingsRetriever;
-         _cloner = cloner;
+         _simulationPersistableUpdater = simulationPersistableUpdater;
       }
 
-      public void RunSimulation(Simulation simulation, bool defineSettings = false)
+      public Task RunSimulation(Simulation simulation, SimulationRunOptions simulationRunOptions = null)
       {
-         _defineSettings = defineSettings;
+         _simulationRunOptions = simulationRunOptions ?? new SimulationRunOptions();
          _lazyLoadTask.Load(simulation);
-         if (!_entityValidationTask.Validate(simulation)) return;
-         this.Visit(simulation);
+
+         if (_simulationRunOptions.Validate && !_entityValidationTask.Validate(simulation))
+            return _simulationDidNotRun;
+
+         switch (simulation)
+         {
+            case IndividualSimulation individualSimulation:
+               return runSimulation(individualSimulation, _simulationPersistableUpdater.UpdatePersistableFromSettings);
+
+            case PopulationSimulation populationSimulation:
+               return runSimulation(populationSimulation, _simulationPersistableUpdater.UpdatePersistableFromSettings);
+         }
+         return _simulationDidNotRun;
       }
 
       public void StopSimulation()
@@ -53,48 +59,18 @@ namespace PKSim.Core.Services
          _simulationEngine = null;
       }
 
-      public void Visit(IndividualSimulation simulation)
+      private async Task runSimulation<TSimulation>(TSimulation simulation, Action<TSimulation> updatePersistableFromSettings) where TSimulation : Simulation
       {
-         runSimulation(simulation);
-      }
-
-      public void Visit(PopulationSimulation populationSimulation)
-      {
-         runSimulation(populationSimulation);
-      }
-
-      private void runSimulation<TSimulation>(TSimulation simulation) where TSimulation : Simulation
-      {
-         if (settingsRequired(simulation))
-         {
-            var outputSelections = _simulationSettingsRetriever.SettingsFor(simulation);
-            if (outputSelections == null) return;
-            simulation.OutputSelections.UpdatePropertiesFrom(outputSelections, _cloner);
-         }
-
          var simulationEngine = _simulationEngineFactory.Create<TSimulation>();
          _simulationEngine = simulationEngine;
-         simulationEngine.RunAsync(simulation);
+
+         if (_simulationRunOptions.RunForAllOutputs)
+            _simulationPersistableUpdater.ResetPersistable(simulation);
+         else
+            updatePersistableFromSettings(simulation);
+
+         await simulationEngine.RunAsync(simulation, _simulationRunOptions);
          simulation.HasChanged = true;
-      }
-
-      private bool settingsRequired(Simulation simulation)
-      {
-         if (_defineSettings)
-            return true;
-
-         if (simulation.OutputSelections == null)
-            return true;
-
-         return !simulation.OutputSelections.HasSelection;
-      }
-
-      public void Handle(SimulationResultsUpdatedEvent eventToHandle)
-      {
-         var simulation = eventToHandle.Simulation as Simulation;
-         if (simulation == null || !simulation.HasResults) return;
-         if (simulation.Analyses.Count() != 0) return;
-         _simulationAnalysisCreator.CreateAnalysisFor(simulation);
       }
    }
 }

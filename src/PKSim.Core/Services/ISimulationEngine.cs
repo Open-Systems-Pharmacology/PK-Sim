@@ -14,18 +14,7 @@ namespace PKSim.Core.Services
       ///    Run the simulation asynchronously (Hand returns right away to the caller)
       /// </summary>
       /// <param name="simulation">simulation to run</param>
-      Task RunAsync(TSimulation simulation);
-
-      /// <summary>
-      ///    Run the simulaton synchronously and does not raise any UI events
-      /// </summary>
-      /// <param name="simulation">Simulation to run</param>
-      void Run(TSimulation simulation);
-
-
-      /// <summary>
-      /// Run the simulation as a batch run an ensure that all outputs are available
-      /// </summary>
-      Task RunForBatch(TSimulation simulation, bool checkNegativeValues);
+      /// <param name="simulationRunOptions">Run options for this simulation run</param>
+      Task RunAsync(TSimulation simulation, SimulationRunOptions simulationRunOptions);   
    }
 }

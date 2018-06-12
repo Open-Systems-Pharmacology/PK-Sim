@@ -17,7 +17,7 @@ namespace PKSim.Presentation
 {
    public abstract class concern_for_CreatePartialProcessPresenter : ContextSpecification<ICreatePartialProcessPresenter>
    {
-      private ICreateEnzymaticProcessView _view;
+      protected ICreateEnzymaticProcessView _view;
       protected ICompoundProcessTask _compoundProcessTask;
       protected ICompoundProcessToCompoundProcessDTOMapper _processMapper;
       protected IPartialProcessToPartialProcessDTOMapper _partialProcessMapper;
@@ -50,19 +50,24 @@ namespace PKSim.Presentation
       private EnzymaticProcess _template2;
       private PartialProcessDTO _process1DTO;
       private PartialProcessDTO _process2DTO;
+      private EnzymaticProcessDTO _enzymaticPartialProcessDTO;
 
       protected override void Context()
       {
          base.Context();
          _template1 = new EnzymaticProcess().WithName("Proc1");
          _template1.InternalName = "Proc1";
+         _template1.MetaboliteName = "META";
          _template2 = new EnzymaticProcess().WithName("Proc2");
          _template2.InternalName = "Proc2";
          _allProcessTemplates.AddRange(new[] {_template1, _template2});
-         _process1DTO = new PartialProcessDTO(_template1);
-         _process1DTO.MoleculeName = "Protein";
-         _process1DTO.DataSource = "Lab";
+         _process1DTO = new PartialProcessDTO(_template1)
+         {
+            MoleculeName = "Protein",
+            DataSource = "Lab"
+         };
          _process2DTO = new PartialProcessDTO(_template2);
+
          A.CallTo(() => _compoundProcessTask.CreateProcessFromTemplate<CompoundProcess>(_template1, _compound)).Returns(_template1);
          A.CallTo(() => _compoundProcessTask.CreateProcessFromTemplate<CompoundProcess>(_template2, _compound)).Returns(_template2);
          A.CallTo(() => _processMapper.MapFrom(_template1)).Returns(_process1DTO);
@@ -70,6 +75,10 @@ namespace PKSim.Presentation
          A.CallTo(() => _partialProcessMapper.MapFrom(_template1, _compound)).Returns(_process1DTO);
          A.CallTo(() => _partialProcessMapper.MapFrom(_template2, _compound)).Returns(_process2DTO);
          sut.CreateProcess(_compound, _allProcessTemplates);
+
+         A.CallTo(() => _view.BindTo(A<EnzymaticProcessDTO>._))
+            .Invokes(x => _enzymaticPartialProcessDTO = x.GetArgument<EnzymaticProcessDTO>(0));
+
       }
 
       protected override void Because()
@@ -82,6 +91,12 @@ namespace PKSim.Presentation
       {
          _process2DTO.MoleculeName.ShouldBeEqualTo("Protein");
          _process2DTO.DataSource.ShouldBeEqualTo("Lab");
+      }
+      
+      [Observation]
+      public void should_not_reset_the_name_of_the_metabolite()
+      {
+         _enzymaticPartialProcessDTO.Metabolite.ShouldBeEqualTo(_template1.MetaboliteName);
       }
    }
 }

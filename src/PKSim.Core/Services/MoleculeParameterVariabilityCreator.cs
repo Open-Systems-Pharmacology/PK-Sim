@@ -12,7 +12,7 @@ namespace PKSim.Core.Services
    public interface IMoleculeParameterVariabilityCreator
    {
       /// <summary>
-      ///    Automatically adds user defined variability to the <paramref name="population" />
+      ///    Automatically adds variability to the <paramref name="population" />
       ///    but only for molecule parameters defined in the database.
       /// </summary>
       void AddVariabilityTo(Population population);
@@ -62,7 +62,7 @@ namespace PKSim.Core.Services
             ObjectType = PKSimConstants.ObjectTypes.Population,
             Description = PKSimConstants.Command.AddDefaultVariabilityToPopulation(population.Name)
          };
-         _executionContext.UpdateBuildinBlockProperties(macroCommand, population);
+         _executionContext.UpdateBuildinBlockPropertiesInCommand(macroCommand, population);
          return macroCommand;
       }
 

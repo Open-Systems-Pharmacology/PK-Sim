@@ -1,18 +1,16 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Collections;
-using FakeItEasy;
-using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation
 {
@@ -59,7 +57,7 @@ namespace PKSim.Presentation
    {
       protected override void Because()
       {
-         sut.SaveAsTemplate(_compound);
+         sut.SaveAsTemplate(new []{_compound });
       }
 
       [Observation]
@@ -87,7 +85,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.SaveAsTemplate(_compound);
+         sut.SaveAsTemplate(new[] { _compound });
       }
 
       [Observation]
@@ -117,7 +115,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.SaveAsTemplate(_compound);
+         sut.SaveAsTemplate(new[] { _compound });
       }
 
       [Observation]
@@ -142,7 +140,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_loading_a_compound_from_the_template_database_with_its_metabolite_and_none_of_them_was_renamed : concern_for_CompoundTask
+   public class When_saving_multiple_compound_to_the_template_database_with_defined_metabolites_and_the_user_wants_to_save_the_metabolites : concern_for_CompoundTask
    {
       private Compound _metabolite;
       private Compound _subMetabolite;
@@ -152,50 +150,38 @@ namespace PKSim.Presentation
          base.Context();
          _metabolite = new Compound().WithName("METABOLITE");
          _subMetabolite = new Compound().WithName("SUB_METABOLITE");
-         _compound.AddProcess(new EnzymaticProcess {MetaboliteName = _metabolite.Name});
-         _metabolite.AddProcess(new EnzymaticProcess {MetaboliteName = _subMetabolite.Name});
-         A.CallTo(() => _buildingBlockRepository.All<Compound>()).Returns(new[] {_compound, _metabolite, _subMetabolite});
-
-         A.CallTo(() => _buildingBlockTask.LoadFromTemplate<Compound>(PKSimBuildingBlockType.Compound)).Returns(new[] {_compound, _metabolite, _subMetabolite});
+         _compound.AddProcess(new EnzymaticProcess { MetaboliteName = _metabolite.Name });
+         _metabolite.AddProcess(new EnzymaticProcess { MetaboliteName = _subMetabolite.Name });
+         _subMetabolite.AddProcess(new EnzymaticProcess { MetaboliteName = _compound.Name });
+         A.CallTo(() => _buildingBlockRepository.All<Compound>()).Returns(new[] { _compound, _metabolite, _subMetabolite });
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
 
       protected override void Because()
       {
-         sut.LoadFromTemplate();
+         sut.SaveAsTemplate(new[] { _compound, _subMetabolite, _metabolite });
       }
 
       [Observation]
-      public void should_not_show_a_warning_to_the_user()
+      public void should_save_the_compound_with_its_metabolite()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._)).MustNotHaveHappened();
-      }
-   }
-
-   public class When_loading_a_compound_from_the_template_database_with_its_metabolite_and_one_of_them_was_renamed : concern_for_CompoundTask
-   {
-      private Compound _metabolite;
-      private Compound _metabolite2;
-
-      protected override void Context()
-      {
-         base.Context();
-         _metabolite = new Compound().WithName("METABOLITE");
-         _metabolite2 = new Compound().WithName("METABOLITE");
-         _compound.AddProcess(new EnzymaticProcess {MetaboliteName = _metabolite.Name});
-         A.CallTo(() => _buildingBlockRepository.All<Compound>()).Returns(new[] {_compound, _metabolite, _metabolite2});
-
-         A.CallTo(() => _buildingBlockTask.LoadFromTemplate<Compound>(PKSimBuildingBlockType.Compound)).Returns(new[] {_compound, _metabolite2});
-      }
-
-      protected override void Because()
-      {
-         sut.LoadFromTemplate();
+         _cache.Contains(_compound).ShouldBeTrue();
+         _cache[_compound].ShouldContain(_metabolite);
       }
 
       [Observation]
-      public void should_show_a_warning_to_the_user()
+      public void should_also_save_the_metabolite_of_the_metabolite()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxInfo(PKSimConstants.Warning.OneMetaboliteWasRenamed(_compound.Name))).MustHaveHappened();
+         _cache.Contains(_metabolite).ShouldBeTrue();
+         _cache[_metabolite].ShouldContain(_subMetabolite);
+      }
+
+      [Observation]
+      public void should_also_save_the_metabolite_of_the_submetabolite()
+      {
+         _cache.Contains(_subMetabolite).ShouldBeTrue();
+         _cache[_subMetabolite].ShouldContain(_compound);
       }
    }
+
 }

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Views;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.Parameters
 {
@@ -10,6 +11,7 @@ namespace PKSim.Presentation.Views.Parameters
    {
       void BindTo(IEnumerable<ParameterDTO> parameters);
       bool DistributionVisible { get; set; }
+      bool ValueOriginVisible { get; set; }
       bool ParameterNameVisible { get; set; }
       void SetVisibility(PathElement pathElement, bool visible);
       void SetCaption(PathElement pathElement, string caption);
@@ -29,7 +31,13 @@ namespace PKSim.Presentation.Views.Parameters
       void GroupByCategory();
       void GroupBy(PathElement pathElement, int groupIndex = 0, bool useCustomSort = true);
       void FixParameterColumnWidth(int parameterWitdh);
-      IEnumerable<ParameterDTO> SelectedParameters { get; }
+
+      /// <summary>
+      ///    Returns all parameters currently being dislayed in the view. This is a subest of all edited parameters (user might
+      ///    have filtered out some parameters)
+      /// </summary>
+      IEnumerable<ParameterDTO> AllVisibleParameters { get; }
+
       void SaveEditor();
 
       /// <summary>
@@ -42,5 +50,10 @@ namespace PKSim.Presentation.Views.Parameters
       ///    Set to false, the custom sort using parameter sequence is not taken into consideration. Default is true
       /// </summary>
       bool CustomSortEnabled { set; }
+
+      /// <summary>
+      ///    Returns or set parameters selected in the view.
+      /// </summary>
+      IReadOnlyList<ParameterDTO> SelectedParameters { get; set; }
    }
 }

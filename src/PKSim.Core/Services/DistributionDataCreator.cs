@@ -149,7 +149,7 @@ namespace PKSim.Core.Services
 
       private int numberOfItemsFor(IReadOnlyList<Gender> allGenders, string selectedGender)
       {
-         if (string.Equals(selectedGender, CoreConstants.Population.AllGender))
+         if (string.Equals(selectedGender, CoreConstants.Population.ALL_GENDER))
             return allGenders.Count;
 
          return allGenders.Count(x => string.Equals(x.Name, selectedGender));
@@ -157,7 +157,7 @@ namespace PKSim.Core.Services
 
       private bool shouldDisplayGender(Gender gender, string selectedGender)
       {
-         return string.Equals(selectedGender, CoreConstants.Population.AllGender) ||
+         return string.Equals(selectedGender, CoreConstants.Population.ALL_GENDER) ||
                 string.Equals(gender.Name, selectedGender);
       }
    }

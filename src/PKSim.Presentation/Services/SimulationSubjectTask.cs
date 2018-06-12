@@ -55,10 +55,14 @@ namespace PKSim.Presentation.Services
          throw new NotSupportedException("Do not call Edit for a simulation subject. Use the dedicated method instead");
       }
 
-
       public IReadOnlyList<ISimulationSubject> LoadFromTemplate()
       {
          return _buildingBlockTask.LoadFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+      }
+
+      public IReadOnlyList<ISimulationSubject> LoadFromSnapshot()
+      {
+         throw new NotSupportedException("Do not call LoadFromSnapshot for a simulation subject. Use the dedicated method instead");
       }
 
       public ISimulationSubject LoadSingleFromTemplate()
@@ -76,12 +80,12 @@ namespace PKSim.Presentation.Services
          return _buildingBlockTask.All<ISimulationSubject>();
       }
 
-      public void SaveAsTemplate(ISimulationSubject buildingBlockToSave)
+      public void SaveAsTemplate(IReadOnlyList<ISimulationSubject> buildingBlocksToSave)
       {
          throw new NotSupportedException("Do not call SaveAsTemplate for a simulation subject. Use the dedicated method instead");
       }
 
-      public void SaveAsSystemTemplate(ISimulationSubject buildingBlockToSave)
+      public void SaveAsSystemTemplate(IReadOnlyList<ISimulationSubject> buildingBlocksToSave)
       {
          throw new NotSupportedException("Do not call SaveAsSystemTemplate for a simulation subject. Use the dedicated method instead");
       }

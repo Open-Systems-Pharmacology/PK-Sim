@@ -38,7 +38,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _tableParameter = new Parameter().WithName(CoreConstants.Parameter.FRACTION_DOSE);
+         _tableParameter = new Parameter().WithName(CoreConstants.Parameters.FRACTION_DOSE);
          _otherParameter = new Parameter().WithName("OTHER PARAMETERS");
          _formulation = new Formulation {_otherParameter, _tableParameter};
          A.CallTo(() => _formulationParametersPresenter.Edit(A<IEnumerable<IParameter>>._))

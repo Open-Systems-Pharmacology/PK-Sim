@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
    public class Converter601To602 : IObjectConverter,
       IVisitor<Individual>,
       IVisitor<Simulation>,
-      IVisitor<IPKSimProject>
+      IVisitor<PKSimProject>
    {
       private readonly INeighborhoodFinalizer _neighborhoodFinalizer;
       private readonly IIndividualUpdater _individualUpdater;
@@ -122,7 +122,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
          _neighborhoodFinalizer.SetNeighborsIn(individual);
       }
 
-      public void Visit(IPKSimProject project)
+      public void Visit(PKSimProject project)
       {
          foreach (var observedData in project.AllObservedData)
          {

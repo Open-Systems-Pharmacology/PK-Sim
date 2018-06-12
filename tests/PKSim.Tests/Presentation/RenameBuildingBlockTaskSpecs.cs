@@ -77,6 +77,7 @@ namespace PKSim.Presentation
       private IFormula _f1;
       private IFormula _f2;
       private IFormula _f3;
+      private TableFormulaWithXArgument _f4;
       private IndividualResults _individualResults;
 
       protected override void Context()
@@ -86,18 +87,22 @@ namespace PKSim.Presentation
          _f1 = new ExplicitFormula("A+B");
          _f2 = new ExplicitFormula("A+B");
          _f3 = new ExplicitFormula("A+B");
+         _f4 = new TableFormulaWithXArgument();
          _f1.AddObjectPath(new FormulaUsablePath(_initialSimulationName, "Liver", "Cell"));
          _f1.AddObjectPath(new FormulaUsablePath("Drug", "LogP"));
          _f2.AddObjectPath(new FormulaUsablePath("SU", "Liver", "Cell"));
          _f2.AddObjectPath(new FormulaUsablePath("Drug", "LogP"));
          _f3.AddObjectPath(new FormulaUsablePath(_initialSimulationName, "Liver", "Cell"));
          _f3.AddObjectPath(new FormulaUsablePath(_initialSimulationName, "LogP"));
+         _f4.AddTableObjectPath(new FormulaUsablePath(_initialSimulationName, "SolubilityTable"){Alias = "Sol"});
 
          var p1 = new PKSimParameter().WithName("P1").WithFormula(_f1);
          var p2 = new PKSimParameter().WithName("P2").WithFormula(_f2);
          var p3 = new PKSimParameter().WithName("P3").WithFormula(_f3);
+         var p4 = new PKSimParameter().WithName("P4").WithFormula(_f4);
          var c1 = new Container().WithName("C1");
          c1.Add(p3);
+         c1.Add(p4);
          _root.Add(p1);
          _root.Add(p2);
          _root.Add(c1);
@@ -159,6 +164,7 @@ namespace PKSim.Presentation
          _f1.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "Liver", "Cell"));
          _f3.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "Liver", "Cell"));
          _f3.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "LogP"));
+         _f4.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "SolubilityTable"));
       }
 
       [Observation]

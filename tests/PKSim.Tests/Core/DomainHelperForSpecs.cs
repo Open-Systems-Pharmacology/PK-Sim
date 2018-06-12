@@ -72,14 +72,14 @@ namespace PKSim.Core
             SubPopulation = new SubPopulation(),
             Species = new Species().WithName("Species"),
             Gender = new Gender().WithName("Gender"),
-            SpeciesPopulation = new SpeciesPopulation().WithName("Population")
+            SpeciesPopulation = new SpeciesPopulation().WithName("Population"),
          };
 
          var pvv = new ParameterValueVersion().WithName("PVVName");
          var category = new ParameterValueVersionCategory().WithName("CategoryName");
          category.Add(pvv);
          originData.SubPopulation.AddParameterValueVersion(pvv);
-         var organism = new Organism().WithName("Organism").WithId("OrganismId");
+         var organism = new Organism().WithName(Constants.ORGANISM).WithId("OrganismId");
          var organLiver = new Organ().WithName(CoreConstants.Organ.Liver).WithId("LiverId");
          organLiver.OrganType = OrganType.TissueOrgansNotInGiTract;
          var periportal = new Compartment().WithName(CoreConstants.Compartment.Periportal).WithId("PeriportalId");
@@ -120,24 +120,29 @@ namespace PKSim.Core
          return individual;
       }
 
-      public static IParameter ConstantParameterWithValue(double value)
+      public static IParameter ConstantParameterWithValue(double value=10, bool isDefault = false, bool visible = true)
       {
          var parameter = new PKSimParameter().WithFormula(new ConstantFormula(value).WithId("constantFormulaId"));
-         parameter.Visible = true;
+         parameter.Visible = visible;
          addDimensionTo(parameter);
          parameter.IsFixedValue = true;
+         parameter.IsDefault = isDefault;
          return parameter;
       }
 
-      public static IDistributedParameter NormalDistributedParameter(double defaultMean = 0, double defaultDeviation = 1, double defaultPercentile = 0.5)
+      public static IDistributedParameter NormalDistributedParameter(double defaultMean = 0, double defaultDeviation = 1, double defaultPercentile = 0.5, bool isDefault=false, bool distributionParameterIsDefault = true)
       {
          var parameter = new PKSimDistributedParameter().WithId("P1");
+         parameter.IsDefault = isDefault;
          var pathFactory = new ObjectPathFactoryForSpecs();
          var meanParameter = new PKSimParameter {Name = Constants.Distribution.MEAN}.WithFormula(new ConstantFormula(defaultMean).WithId("MeanFormula")).WithId("Mean");
+         meanParameter.IsDefault = distributionParameterIsDefault;
          addDimensionTo(meanParameter);
          var stdParameter = new PKSimParameter {Name = Constants.Distribution.DEVIATION}.WithFormula(new ConstantFormula(defaultDeviation).WithId("DeviationFormula")).WithId("Deviation");
+         stdParameter.IsDefault = distributionParameterIsDefault;
          addDimensionTo(stdParameter);
          var percentileParameter = new PKSimParameter {Name = Constants.Distribution.PERCENTILE}.WithFormula(new ConstantFormula(defaultPercentile).WithId("PercentileFormula")).WithId("Percentile");
+         percentileParameter.IsDefault = distributionParameterIsDefault;
          addDimensionTo(percentileParameter);
          parameter.Add(meanParameter);
          parameter.Add(stdParameter);
@@ -326,7 +331,7 @@ namespace PKSim.Core
       {
          var schemaItemDTO = new SchemaItemDTO(new SchemaItem {ApplicationType = applicationType})
          {
-            DoseParameter = new ParameterDTO(ConstantParameterWithValue(doseValue.GetValueOrDefault(1)).WithName(CoreConstants.Parameter.INPUT_DOSE)),
+            DoseParameter = new ParameterDTO(ConstantParameterWithValue(doseValue.GetValueOrDefault(1)).WithName(CoreConstants.Parameters.INPUT_DOSE)),
             StartTimeParameter = new ParameterDTO(ConstantParameterWithValue(startTimeValue.GetValueOrDefault(0)).WithName(Constants.Parameters.START_TIME))
          };
 
@@ -340,9 +345,9 @@ namespace PKSim.Core
       {
          return new IndividualEnzyme
          {
-            ConstantParameterWithValue(10).WithName(CoreConstants.Parameter.REFERENCE_CONCENTRATION),
-            ConstantParameterWithValue(20).WithName(CoreConstants.Parameter.HALF_LIFE_LIVER),
-            ConstantParameterWithValue(30).WithName(CoreConstants.Parameter.HALF_LIFE_INTESTINE)
+            ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION),
+            ConstantParameterWithValue(20).WithName(CoreConstants.Parameters.HALF_LIFE_LIVER),
+            ConstantParameterWithValue(30).WithName(CoreConstants.Parameters.HALF_LIFE_INTESTINE)
          };
       }
    }

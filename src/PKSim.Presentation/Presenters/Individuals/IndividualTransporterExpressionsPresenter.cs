@@ -109,7 +109,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          return TransportTypes.By(transportType).DisplayName;
       }
 
-      private ITransporterExpressionContainer transporterContainerFrom(TransporterExpressionContainerDTO transporterExpressionContainerDTO)
+      private TransporterExpressionContainer transporterContainerFrom(TransporterExpressionContainerDTO transporterExpressionContainerDTO)
       {
          return _transporter.AllExpressionsContainers().FindByName(transporterExpressionContainerDTO.ContainerName);
       }
@@ -130,12 +130,12 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public bool OntogenyVisible
       {
-         set { _moleculePropertiesPresenter.OntogenyVisible = value; }
+         set => _moleculePropertiesPresenter.OntogenyVisible = value;
       }
 
       public bool MoleculeParametersVisible
       {
-         set { _moleculePropertiesPresenter.MoleculeParametersVisible = value; }
+         set => _moleculePropertiesPresenter.MoleculeParametersVisible = value;
       }
 
       public void ActivateMolecule(IndividualMolecule molecule)
@@ -144,11 +144,17 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.HideWarning();
          _view.BindTo(_transporterExpressionDTOMapper.MapFrom(_transporter));
          _moleculePropertiesPresenter.Edit(molecule,SimulationSubject.DowncastTo<TSimulationSubject>());
+         RefreshView();
       }
 
       public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
       {
          AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_transporter, expressionContainerDTO.ContainerName, value));
+      }
+
+      public void RefreshView()
+      {
+         _moleculePropertiesPresenter.RefreshView();
       }
 
       public void Handle(NoTranporterTemplateAvailableEvent eventToHandle)

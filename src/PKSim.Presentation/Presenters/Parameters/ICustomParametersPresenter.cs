@@ -21,6 +21,11 @@ namespace PKSim.Presentation.Presenters.Parameters
       /// </summary>
       bool ForcesDisplay { get; }
 
+      /// <summary>
+      /// Returns true if the Edit method should be called to refresh the presenter even if the presenter was already loaded. 
+      /// </summary>
+      bool AlwaysRefresh { get; }
+
       IEnumerable<IParameter> EditedParameters { get; }
    }
 }

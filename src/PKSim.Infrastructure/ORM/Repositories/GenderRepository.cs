@@ -57,15 +57,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
          gender.DisplayName = representationInfo.DisplayName;
       }
 
-      public Gender Male
-      {
-         get { return this.FindByName(CoreConstants.Gender.Male); }
-      }
+      public Gender Male => this.FindByName(CoreConstants.Gender.Male);
 
-      public Gender Female
-      {
-         get { return this.FindByName(CoreConstants.Gender.Female); }
-      }
+      public Gender Female => this.FindByName(CoreConstants.Gender.Female);
 
       public Gender FindByIndex(int index)
       {

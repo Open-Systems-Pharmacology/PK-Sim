@@ -1,20 +1,22 @@
 ﻿using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
+using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;
 using IPKCalculationOptionsFactory = PKSim.Core.Services.IPKCalculationOptionsFactory;
-using PKCalculationOptionsFactory = OSPSuite.Core.Domain.Services.PKCalculationOptionsFactory;
+using PKAnalysesTask = PKSim.Core.Services.PKAnalysesTask;
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_PopulationPKAnalysesTask : ContextSpecification<IPopulationPKAnalysesTask>
+   public abstract class concern_for_PopulationPKAnalysesTask : ContextSpecification<IPKAnalysesTask>
    {
       protected ILazyLoadTask _lazyLoadTask;
       protected IPKValuesCalculator _pkValuesCalculator;
@@ -32,6 +34,8 @@ namespace PKSim.Infrastructure
       protected OutputSelections _outputSelections;
       private PKParameter _pkParameter1;
       private PKParameter _pkParameter2;
+      private IPKValuesToPKAnalysisMapper _pkMapper;
+      private IDimensionRepository _dimensionRepository;
 
       protected override void Context()
       {
@@ -40,7 +44,9 @@ namespace PKSim.Infrastructure
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
-         sut = new PopulationPKAnalysesTask(_lazyLoadTask, _pkValuesCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver);
+         _pkMapper= A.Fake<IPKValuesToPKAnalysisMapper>();
+         _dimensionRepository= A.Fake<IDimensionRepository>();
+         sut = new PKAnalysesTask(_lazyLoadTask, _pkValuesCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver,_pkMapper, _dimensionRepository);
 
          _populationSimulation = A.Fake<PopulationSimulation>();
          _outputSelections = new OutputSelections();
@@ -78,7 +84,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _populationSimulation.HasResults).Returns(true);
          _outputSelections.AddOutput(new QuantitySelection(_quantityPath1, QuantityType.Drug));
          _outputSelections.AddOutput(new QuantitySelection(_quantityPath2, QuantityType.Drug));
-        _allBodyWeights.AddRange(new[] {10d, 20d});
+         _allBodyWeights.AddRange(new[] {10d, 20d});
       }
 
       protected override void Because()

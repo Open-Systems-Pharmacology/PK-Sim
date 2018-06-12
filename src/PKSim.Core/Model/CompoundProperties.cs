@@ -20,14 +20,11 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual Simulation Simulation { get; set; }
 
-      private readonly IList<CompoundGroupSelection> _compoundGroupSelections;
+      private readonly List<CompoundGroupSelection> _compoundGroupSelections;
       public virtual CalculationMethodCache CalculationMethodCache { get; private set; }
       public virtual CompoundProcessesSelection Processes { get; set; }
 
-      public bool AnyProcessesDefined()
-      {
-         return Processes.Any();
-      }
+      public bool AnyProcessesDefined => Processes.Any();
 
       /// <summary>
       ///    Protocol configuration such as formulation mapping for formulation keys
@@ -67,14 +64,8 @@ namespace PKSim.Core.Model
          _compoundGroupSelections.Clear();
       }
 
-      public virtual IEnumerable<CompoundGroupSelection> CompoundGroupSelections
-      {
-         get { return _compoundGroupSelections; }
-      }
+      public virtual IReadOnlyList<CompoundGroupSelection> CompoundGroupSelections => _compoundGroupSelections;
 
-      public bool IsAdministered
-      {
-         get { return ProtocolProperties.IsAdministered; }
-      }
+      public bool IsAdministered => ProtocolProperties.IsAdministered;
    }
 }

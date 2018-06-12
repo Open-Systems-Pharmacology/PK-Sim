@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -9,12 +12,8 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -51,18 +50,32 @@ namespace PKSim.Presentation.Presenters.Compounds
       private readonly ICompoundToMolWeightDTOMapper _molWeightDTOMapper;
       private readonly IMolWeightHalogensPresenter _molWeightHalogensPresenter;
       private readonly IParameterTask _parameterTask;
+      private readonly IEditValueOriginPresenter _editValueOriginPresenter;
       private MolWeightDTO _molWeightDTO;
-      private IEnumerable<IParameter> _compoundParameters;
+      private List<IParameter> _molWeightParameters;
 
-      public MolWeightGroupPresenter(IMolWeightGroupView view, IRepresentationInfoRepository representationInfoRepository, ICompoundToMolWeightDTOMapper molWeightDTOMapper,
-         IMolWeightHalogensPresenter molWeightHalogensPresenter, IParameterTask parameterTask) :
-            base(view, representationInfoRepository, CoreConstants.Groups.COMPOUND_MW)
+      public MolWeightGroupPresenter(IMolWeightGroupView view,
+         IRepresentationInfoRepository representationInfoRepository,
+         ICompoundToMolWeightDTOMapper molWeightDTOMapper,
+         IMolWeightHalogensPresenter molWeightHalogensPresenter,
+         IParameterTask parameterTask,
+         IEditValueOriginPresenter editValueOriginPresenter) :
+         base(view, representationInfoRepository, CoreConstants.Groups.COMPOUND_MW)
       {
          _molWeightDTOMapper = molWeightDTOMapper;
          _molWeightHalogensPresenter = molWeightHalogensPresenter;
          _parameterTask = parameterTask;
+         _editValueOriginPresenter = editValueOriginPresenter;
+         AddSubPresenters(_editValueOriginPresenter, _molWeightHalogensPresenter);
          _view.SetHalogensView(_molWeightHalogensPresenter.View);
-         _molWeightHalogensPresenter.StatusChanged += OnStatusChanged;
+         _view.AddValueOriginView(_editValueOriginPresenter.View);
+         _editValueOriginPresenter.ValueOriginUpdated = valueOriginUpdated;
+      }
+
+      private void valueOriginUpdated(ValueOrigin valueOrigin)
+      {
+         //This should update the value origin for all related parameters
+         AddCommand(_parameterTask.SetParametersValueOrigin(_molWeightParameters, valueOrigin));
       }
 
       public override void EditCompound(Compound compound)
@@ -70,22 +83,9 @@ namespace PKSim.Presentation.Presenters.Compounds
          EditCompoundParameters(compound.AllParameters());
       }
 
-      public override void InitializeWith(ICommandCollector commandCollector)
-      {
-         base.InitializeWith(commandCollector);
-         _molWeightHalogensPresenter.InitializeWith(commandCollector);
-      }
-
-      public override void ReleaseFrom(IEventPublisher eventPublisher)
-      {
-         base.ReleaseFrom(eventPublisher);
-         _molWeightHalogensPresenter.ReleaseFrom(eventPublisher);
-         _molWeightHalogensPresenter.StatusChanged -= OnStatusChanged;
-      }
-
       public void EditHalogens()
       {
-         _molWeightHalogensPresenter.EditHalogens(_compoundParameters);
+         _molWeightHalogensPresenter.EditHalogens(_molWeightParameters);
       }
 
       public void SaveHalogens()
@@ -100,9 +100,10 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void EditCompoundParameters(IEnumerable<IParameter> compoundParameters)
       {
-         _compoundParameters = compoundParameters.ToList();
-         _molWeightDTO = _molWeightDTOMapper.MapFrom(_compoundParameters);
+         _molWeightParameters = compoundParameters.Where(x => string.Equals(x.GroupName, CoreConstants.Groups.COMPOUND_MW)).ToList();
+         _molWeightDTO = _molWeightDTOMapper.MapFrom(_molWeightParameters);
          _view.BindTo(new[] {_molWeightDTO.MolWeightParameter, _molWeightDTO.HasHalogensParameter, _molWeightDTO.MolWeightEffParameter});
+         _editValueOriginPresenter.Edit(_molWeightDTO.MolWeightParameter);
       }
 
       public bool IsMolWeightEff(IParameterDTO parameter)
@@ -134,14 +135,9 @@ namespace PKSim.Presentation.Presenters.Compounds
          AddCommand(_parameterTask.SetParameterPercentile(parameterDTO.Parameter, percentileInPercent));
       }
 
-      public void SetParameterValueDescription(IParameterDTO parameterDTO, string valueDescription)
+      public void SetParameterValueOrigin(IParameterDTO parameterDTO, ValueOrigin valueOrigin)
       {
-         AddCommand(_parameterTask.SetParameterValueDescription(parameterDTO.Parameter, valueDescription));
-      }
-
-      public void SetMolWeightValue(MolWeightDTO molWeightDTO, double newMolWeightValue)
-      {
-         AddCommand(_parameterTask.SetParameterDisplayValue(molWeightDTO.MolWeightParameter.Parameter, newMolWeightValue));
+         AddCommand(_parameterTask.SetParameterValueOrigin(parameterDTO.Parameter, valueOrigin));
       }
    }
 }

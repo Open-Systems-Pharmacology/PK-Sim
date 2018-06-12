@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -26,6 +26,8 @@ namespace PKSim.Presentation.Presenters.Compounds
       private List<IParameter> _allParameters;
       public string Description { get; set; }
       public bool ForcesDisplay => true;
+      public bool AlwaysRefresh { get; } = false;
+
       public IEnumerable<IParameter> EditedParameters => _allParameters;
 
       public CompoundInSimulationPresenter(ICompoundInSimulationView view, IMolWeightGroupPresenter molWeightGroupPresenter,
@@ -41,14 +43,10 @@ namespace PKSim.Presentation.Presenters.Compounds
          _calculationMethodsPresenter = calculationMethodsPresenter;
          _withIdRepository = withIdRepository;
          AddSubPresenters(_calculationMethodsPresenter, _molWeightGroupPresenter, _compoundTypeGroupPresenter, _simpleParameterPresenter, _advancedParameterPresenter);
-         _simpleParameterPresenter.IsSimpleEditor = true;
-         _simpleParameterPresenter.HeaderVisible = true;
-         _simpleParameterPresenter.ShowFavorites = true;
-         _advancedParameterPresenter.IsSimpleEditor = true;
-         _advancedParameterPresenter.ShowFavorites = true;
-         _advancedParameterPresenter.HeaderVisible = true;
          _calculationMethodsPresenter.ReadOnly = true;
          _compoundTypeGroupPresenter.ShowFavorites = true;
+         initializeParametersPresenter(_simpleParameterPresenter);
+         initializeParametersPresenter(_advancedParameterPresenter);
       }
 
       public override void InitializeWith(ICommandCollector commandCollector)
@@ -78,6 +76,12 @@ namespace PKSim.Presentation.Presenters.Compounds
             hideCalculationMethodView();
       }
 
+      private void initializeParametersPresenter(IMultiParameterEditPresenter multiParameterEditPresenter)
+      {
+         multiParameterEditPresenter.IsSimpleEditor = true;
+         multiParameterEditPresenter.ShowFavorites = true;
+      }
+
       private void hideCalculationMethodView()
       {
          _view.HideCachedView(_calculationMethodsPresenter.BaseView);
@@ -95,7 +99,6 @@ namespace PKSim.Presentation.Presenters.Compounds
 
          return simulation?.CompoundPropertiesList.FirstOrDefault(x => x.Compound.IsNamed(compoundName));
       }
-
 
       private bool parameterIsAdvancedParameter(IParameter parameter)
       {

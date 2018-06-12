@@ -3,6 +3,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Compounds;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Mappers;
 
 namespace PKSim.Presentation.DTO.Mappers
@@ -22,14 +23,19 @@ namespace PKSim.Presentation.DTO.Mappers
 
       public SolubilityAlternativeDTO MapFrom(ParameterAlternative parameterAlternative)
       {
-         var solubilityAlternativeDTO = new SolubilityAlternativeDTO(parameterAlternative);
+         var solubilityAtRefPh = parameterAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH);
+         var solubilityTable = parameterAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
+         var solubilityParameter = solubilityTable.Formula.IsTable() ? solubilityTable : solubilityAtRefPh;
 
-         var solubility = parameterAlternative.Parameter(CoreConstants.Parameter.SolubilityAtRefpH);
-         var refPh = parameterAlternative.Parameter(CoreConstants.Parameter.RefpH);
-         var gainPerCharge = parameterAlternative.Parameter(CoreConstants.Parameter.SolubilityGainPerCharge);
-         solubilityAlternativeDTO.SolubilityParameter = _parameterDTOMapper.MapFrom(solubility, solubilityAlternativeDTO, dto => dto.Solubility, dto => dto.SolubilityParameter);
+         var solubilityAlternativeDTO = new SolubilityAlternativeDTO(parameterAlternative, solubilityParameter.ValueOrigin);
+         solubilityAlternativeDTO.SolubilityParameter = _parameterDTOMapper.MapFrom(solubilityParameter, solubilityAlternativeDTO, dto => dto.Solubility, dto => dto.SolubilityParameter);
+
+         var refPh = parameterAlternative.Parameter(CoreConstants.Parameters.REFERENCE_PH);
          solubilityAlternativeDTO.RefpHParameter = _parameterDTOMapper.MapFrom(refPh, solubilityAlternativeDTO, dto => dto.RefpH, dto => dto.RefpHParameter);
+
+         var gainPerCharge = parameterAlternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE);
          solubilityAlternativeDTO.GainPerChargeParameter = _parameterDTOMapper.MapFrom(gainPerCharge, solubilityAlternativeDTO, dto => dto.GainPerCharge, dto => dto.GainPerChargeParameter);
+        
 
          return solubilityAlternativeDTO;
       }

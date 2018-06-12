@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Presentation.Views;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -14,10 +18,6 @@ using PKSim.Presentation.Presenters.Formulations;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Formulations;
 using PKSim.Presentation.Views.Parameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Presentation.Presenters.Charts;
-using OSPSuite.Presentation.Views;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation
@@ -119,9 +119,7 @@ namespace PKSim.Presentation
          base.Context();
          _formulation = A.Fake<Formulation>();
          A.CallTo(() => _formulation.IsTable).Returns(false);
-         _formulationDTO = A.Fake<FormulationDTO>();
-         _formulationDTO.Parameters = A.Fake<IEnumerable<IParameter>>();
-         _formulationDTO.Type = new FormulationTypeDTO {Id = "oral"};
+         _formulationDTO = new FormulationDTO(new List<IParameter>()) {Type = new FormulationTypeDTO {Id = "oral"}};
          A.CallTo(() => _formulationDTOMapper.MapFrom(_formulation)).Returns(_formulationDTO);
       }
 
@@ -167,9 +165,7 @@ namespace PKSim.Presentation
          _tableParameter = new PKSimParameter();
          _formulation = new Formulation {FormulationType = CoreConstants.Formulation.Table};
          _formulation.Add(_tableParameter);
-         _formulationDTO = A.Fake<FormulationDTO>();
-         _formulationDTO.Parameters = new[] {_tableParameter};
-         _formulationDTO.Type = new FormulationTypeDTO {Id = "oral"};
+         _formulationDTO = new FormulationDTO(new[] {_tableParameter}) {Type = new FormulationTypeDTO {Id = "oral"}};
          A.CallTo(() => _formulationDTOMapper.MapFrom(_formulation)).Returns(_formulationDTO);
          A.CallTo(() => _tableFormulationPresenter.EditedFormula).Returns(new TableFormula());
       }
@@ -229,7 +225,7 @@ namespace PKSim.Presentation
          base.Context();
          _formulationTypeDTO = new FormulationTypeDTO {Id = "trala"};
          _formulation = A.Fake<Formulation>();
-         _formulationDTO = new FormulationDTO {Type = _formulationTypeDTO};
+         _formulationDTO = new FormulationDTO(new List<IParameter>()) {Type = _formulationTypeDTO};
 
          A.CallTo(() => _formulationDTOMapper.MapFrom(_formulation)).Returns(_formulationDTO);
          sut.EditFormulation(_formulation);
@@ -284,6 +280,70 @@ namespace PKSim.Presentation
       public void should_not_raised_the_status_changed_event()
       {
          _eventRaised.ShouldBeFalse();
+      }
+   }
+
+   public class When_switching_the_particle_dissolution_mode_from_polydisperse_to_monodisperse : concern_for_FormulationSettingsPresenter
+   {
+      private Formulation _formulation;
+      private FormulationDTO _formulationDTO;
+      private IParameter _particleDisperseSystem;
+
+      protected override void Context()
+      {
+         base.Context();
+         _particleDisperseSystem = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.MONODISPERSE).WithName(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM);
+         _formulationDTO = new FormulationDTO(new List<IParameter>());
+
+         _formulation = A.Fake<Formulation>();
+         A.CallTo(() => _formulation.IsParticleDissolution).Returns(true);
+         A.CallTo(() => _formulationDTOMapper.MapFrom(_formulation)).Returns(_formulationDTO);
+
+
+         sut.EditFormulation(_formulation);
+      }
+
+      protected override void Because()
+      {
+         _formulaParameterPresenter.ParameterChanged += Raise.FreeForm.With(_particleDisperseSystem);
+      }
+
+      [Observation]
+      public void should_set_the_visibility_of_monodisperse_parameter_to_false_and_the_default_state_to_true()
+      {
+         A.CallTo(() => _formulation.UpdateParticleParametersVisibility()).MustHaveHappened();
+      }
+   }
+
+   public class When_switching_the_particle_dissolution_mode_from_polydispertse_normal_to_polydisperse_lognormal : concern_for_FormulationSettingsPresenter
+   {
+      private Formulation _formulation;
+      private FormulationDTO _formulationDTO;
+      private IParameter _particleSizeDistribution;
+
+      protected override void Context()
+      {
+         base.Context();
+         _particleSizeDistribution = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL).WithName(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
+     
+         _formulationDTO = new FormulationDTO(new List<IParameter>());
+
+         _formulation = A.Fake<Formulation>();
+         A.CallTo(() => _formulationDTOMapper.MapFrom(_formulation)).Returns(_formulationDTO);
+
+
+         sut.EditFormulation(_formulation);
+      }
+
+      protected override void Because()
+      {
+         _formulaParameterPresenter.ParameterChanged += Raise.FreeForm.With(_particleSizeDistribution);
+      }
+
+      [Observation]
+      public void should_set_the_visibility_of_monodisperse_parameter_to_false_and_the_default_state_to_true()
+      {
+         A.CallTo(() => _formulation.UpdateParticleParametersVisibility()).MustHaveHappened();
       }
    }
 }

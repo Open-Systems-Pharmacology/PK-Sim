@@ -21,11 +21,9 @@ namespace PKSim.Presentation.DTO.Mappers
 
       public PermeabilityAlternativeDTO MapFrom(ParameterAlternative parameterAlternative, string parameterName)
       {
-         var permeabilityAlternativeDTO = new PermeabilityAlternativeDTO(parameterAlternative);
-
          var permeability = parameterAlternative.Parameter(parameterName);
+         var permeabilityAlternativeDTO = new PermeabilityAlternativeDTO(parameterAlternative, permeability.ValueOrigin);
          permeabilityAlternativeDTO.PermeabilityParameter = _parameterDTOMapper.MapFrom(permeability, permeabilityAlternativeDTO, dto => dto.Permeability, dto => dto.PermeabilityParameter);
-
          return permeabilityAlternativeDTO;
       }
    }

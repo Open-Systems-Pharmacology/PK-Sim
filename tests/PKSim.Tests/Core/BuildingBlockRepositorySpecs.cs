@@ -10,14 +10,14 @@ namespace PKSim.Core
    public abstract class concern_for_BuildingBlockRepository : ContextSpecification<IBuildingBlockRepository>
    {
       private IProjectRetriever _projectRetriever;
-      private IPKSimProject _project;
+      private PKSimProject _project;
       protected Individual _individual1;
       protected Individual _individual2;
 
       protected override void Context()
       {
          _projectRetriever = A.Fake<IProjectRetriever>();
-         _project = A.Fake<IPKSimProject>();
+         _project = A.Fake<PKSimProject>();
          _individual1 = new Individual();
          _individual2 = new Individual();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);

@@ -6,7 +6,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.Core;
-using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.UICommands;
 using OSPSuite.Presentation.Core;
@@ -50,6 +49,11 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithIcon(ApplicationIcons.LoadFromTemplate)
             .AsGroupStarter());
 
+         _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Load from Snapshot"))
+            .WithCommand<LoadObservedDataFromSnapshotUICommand>()
+            .WithIcon(ApplicationIcons.SnapshotImport)
+            .ForDeveloper());
+           
 
          if (treeNode.AllLeafNodes.OfType<ObservedDataNode>().Any())
             _view.AddMenuItem(ObservedDataClassificationCommonContextMenuItems.CreateEditMultipleMetaDataMenuButton(treeNode).AsGroupStarter());

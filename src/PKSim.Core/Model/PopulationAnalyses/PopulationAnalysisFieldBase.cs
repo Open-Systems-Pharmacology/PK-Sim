@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using PKSim.Assets;
-using OSPSuite.Utility.Reflection;
-using OSPSuite.Utility.Validation;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Reflection;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model.PopulationAnalyses
 {
@@ -18,8 +18,8 @@ namespace PKSim.Core.Model.PopulationAnalyses
 
    public abstract class PopulationAnalysisFieldBase : Notifier, IPopulationAnalysisField
    {
-      public Type DataType { get; private set; }
-      public IBusinessRuleSet Rules { get; private set; }
+      public Type DataType { get; }
+      public IBusinessRuleSet Rules { get; }
       public string Name { get; set; }
       public string Description { get; set; }
       public abstract string Id { get; }

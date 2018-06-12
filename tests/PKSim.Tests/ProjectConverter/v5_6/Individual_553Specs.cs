@@ -57,7 +57,7 @@ namespace PKSim.ProjectConverter.v5_6
       [Observation]
       public void should_have_added_the_IsZonatedLiver_flag_to_the_individual()
       {
-         var parameter = liverIn(_individual).Parameter(CoreConstants.Parameter.IS_LIVER_ZONATED);
+         var parameter = liverIn(_individual).Parameter(CoreConstants.Parameters.IS_LIVER_ZONATED);
          parameter.Value.ShouldBeEqualTo(0);
       }
 
@@ -142,7 +142,7 @@ namespace PKSim.ProjectConverter.v5_6
       [Observation]
       public void should_have_set_the_ontogeny_factor_as_visible()
       {
-         foreach (var plasmaOntogenyFactoryName in CoreConstants.Parameter.AllPlasmaProteinOntogenyFactors)
+         foreach (var plasmaOntogenyFactoryName in CoreConstants.Parameters.AllPlasmaProteinOntogenyFactors)
          {
             _individual.Organism.Parameter(plasmaOntogenyFactoryName).Visible.ShouldBeTrue();
          }

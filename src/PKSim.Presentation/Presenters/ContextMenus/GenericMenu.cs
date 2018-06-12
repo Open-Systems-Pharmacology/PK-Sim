@@ -6,6 +6,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.Assets;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -25,11 +26,27 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithIcon(ApplicationIcons.PDF);
       }
 
+      public static IMenuBarItem ExportSnapshotMenuFor<T>(T objectToExport) where T : class, IObjectBase
+      {
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Save Snapshot"))
+            .WithCommandFor<ExportSnapshotUICommand<T>, T>(objectToExport)
+            .WithIcon(ApplicationIcons.SnapshotExport)
+            .ForDeveloper();        
+      }
+      
       public static IMenuBarItem ExportCollectionToPDFMenuFor<T>()
       {
          return CreateMenuButton.WithCaption(MenuNames.ExportToPDF)
             .WithCommand<ExportCollectionToPDFCommand<T>>()
             .WithIcon(ApplicationIcons.PDF);
+      }
+
+      public static IMenuBarItem LoadBuildingBlockFromSnapshot<T>() where T:class, IPKSimBuildingBlock
+      {
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Load from Snapshot"))
+            .WithCommand<LoadBuildingBlockFromSnapshotUICommand<T>>()
+            .WithIcon(ApplicationIcons.SnapshotImport)
+            .ForDeveloper();
       }
 
       public static IMenuBarItem EditMenuFor<TCommand, T>(T objectToEdit) where T : class where TCommand : IObjectUICommand<T>

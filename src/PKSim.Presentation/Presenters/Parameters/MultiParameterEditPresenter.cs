@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
@@ -12,63 +17,70 @@ using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Parameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
-   public interface IMultiParameterEditPresenter : IPresenter<IMultiParameterEditView>,
+   public interface IMultiParameterEditPresenter :
+      IPresenter<IMultiParameterEditView>,
       IParameterSetPresenter,
       IPresenterWithContextMenu<IParameterDTO>
    {
       /// <summary>
-      ///    Returns true if the parmaeter is distributed otherwise false
+      ///    Returns <c>true</c> if the parameter is distributed otherwise <c>false</c>
       /// </summary>
       bool ParameterIsDistributed(IParameterDTO parameterDTO);
 
       /// <summary>
       ///    Is the grouping panel visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool GroupingVisible { set; }
 
       /// <summary>
       ///    Is the scaling panel visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool ScalingVisible { set; }
 
       /// <summary>
       ///    Is the header panel visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool HeaderVisible { set; }
 
       /// <summary>
       ///    Is the row indicator visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool RowIndicatorVisible { set; }
 
       /// <summary>
       ///    Are the container names visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool ContainerVisible { set; }
 
       /// <summary>
       ///    Is the distribution column visible?
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool DistributionVisible { set; }
 
       /// <summary>
+      ///    Is the value origin column visible?
+      ///    Default is <c>true</c>
+      /// </summary>
+      bool ValueOriginVisible { set; }
+
+      /// <summary>
+      ///    Forces the name column to be always visible. This should be called after the Edit method
+      /// </summary>
+      bool ParameterNameVisible { set; }
+
+      /// <summary>
       ///    Configure the editor to display the most simple view possible
-      ///    Grouping, scaling, headers will be hidden and the favorite column as well
-      ///    Default is false
+      ///    Grouping, scaling, favorite will be hidden 
+      ///    Default is <c>false</c>
       /// </summary>
       bool IsSimpleEditor { set; }
 
@@ -84,7 +96,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       /// <summary>
       ///    True if multiple parameter can be selected.
-      ///    Default is true
+      ///    Default is <c>true</c>
       /// </summary>
       bool AllowMultiSelect { set; }
 
@@ -114,10 +126,22 @@ namespace PKSim.Presentation.Presenters.Parameters
       void SaveEditor();
 
       /// <summary>
+      ///    Typically called from the view, this method will raised the <see cref="OnSelectedParametersChanged" /> event
+      /// </summary>
+      void SelectedParametersChanged();
+
+      /// <summary>
       ///    if set to true, parameter will be compared for sort only if sharing the same hiearchy of visible groups
-      ///    It is useful for events, default is false
+      ///    It is useful for events, default is <c>false</c>
       /// </summary>
       bool UseAdvancedSortingMode { set; }
+
+      IReadOnlyList<IParameter> SelectedParameters { get; set; }
+
+      /// <summary>
+      ///    Event is raised whenever the selection of parameters in the UI has changed
+      /// </summary>
+      event Action OnSelectedParametersChanged;
    }
 
    public class MultiParameterEditPresenter : ParameterSetPresenter<IMultiParameterEditView, IMultiParameterEditPresenter>, IMultiParameterEditPresenter
@@ -126,6 +150,8 @@ namespace PKSim.Presentation.Presenters.Parameters
       private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
       private readonly IParameterContextMenuFactory _contextMenuFactory;
       public event Action<IParameter> ParameterChanged = delegate { };
+      public event Action OnSelectedParametersChanged = delegate { };
+
       protected const int NO_COLUMN = -1;
 
       public MultiParameterEditPresenter(IMultiParameterEditView view, IScaleParametersPresenter scaleParametersPresenter,
@@ -163,7 +189,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       protected virtual void PerformDefaultGrouping(IReadOnlyList<IParameter> parameters)
       {
          bool parameterNameVisible = !AllParametersHaveTheSameDisplayName || _visibleParameters.Count == 1;
-         _view.ParameterNameVisible = parameterNameVisible;
+         ParameterNameVisible = parameterNameVisible;
 
          if (parameterNameVisible) return;
 
@@ -173,7 +199,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public override bool ShowFavorites
       {
-         set { _view.FavoritesVisible = value; }
+         set => _view.FavoritesVisible = value;
       }
 
       protected bool AllParametersHaveTheSameDisplayName
@@ -223,17 +249,17 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool ScalingVisible
       {
-         set { _view.ScalingVisible = value; }
+         set => _view.ScalingVisible = value;
       }
 
       public bool AllowMultiSelect
       {
-         set { _view.AllowMultiSelect = value; }
+         set => _view.AllowMultiSelect = value;
       }
 
       public string Caption
       {
-         set { _view.Caption = value; }
+         set => _view.Caption = value;
       }
 
       public int OptimalHeight => _view.OptimalHeight;
@@ -245,17 +271,17 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool HeaderVisible
       {
-         set { _view.HeaderVisible = value; }
+         set => _view.HeaderVisible = value;
       }
 
       public bool RowIndicatorVisible
       {
-         set { _view.ShowRowIndicator = value; }
+         set => _view.ShowRowIndicator = value;
       }
 
       public bool ContainerVisible
       {
-         set { _view.SetVisibility(PathElement.Container, value); }
+         set => _view.SetVisibility(PathElement.Container, value);
       }
 
       public void SaveEditor()
@@ -263,14 +289,26 @@ namespace PKSim.Presentation.Presenters.Parameters
          _view.SaveEditor();
       }
 
+      public void SelectedParametersChanged() => OnSelectedParametersChanged();
+
       public bool UseAdvancedSortingMode
       {
-         set { _view.UseAdvancedSortingMode = value; }
+         set => _view.UseAdvancedSortingMode = value;
       }
 
       public bool DistributionVisible
       {
-         set { _view.DistributionVisible = value; }
+         set => _view.DistributionVisible = value;
+      }
+
+      public bool ValueOriginVisible
+      {
+         set => _view.ValueOriginVisible = value;
+      }
+
+      public bool ParameterNameVisible
+      {
+         set => _view.ParameterNameVisible = value;
       }
 
       public bool IsSimpleEditor
@@ -278,7 +316,6 @@ namespace PKSim.Presentation.Presenters.Parameters
          set
          {
             ScalingVisible = !value;
-            HeaderVisible = !value;
             GroupingVisible = !value;
             DistributionVisible = !value;
             ContainerVisible = !value;
@@ -300,12 +337,21 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool GroupingVisible
       {
-         set { _view.GroupingVisible = value; }
+         set => _view.GroupingVisible = value;
       }
 
-      protected override IEnumerable<IParameterDTO> SelectedParameters()
+      protected override IEnumerable<IParameterDTO> AllVisibleParameterDTOs => _view.AllVisibleParameters;
+
+      public virtual IReadOnlyList<IParameter> SelectedParameters
       {
-         return _view.SelectedParameters;
+         get => ParametersFrom(_view.SelectedParameters).ToList();
+         set
+         {
+            if (value == null)
+               return;
+
+            _view.SelectedParameters = AllParametersDTO.Where(x => value.Contains(x.Parameter)).ToList();
+         }
       }
 
       public override void AddCommand(ICommand command)

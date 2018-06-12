@@ -50,7 +50,7 @@ namespace PKSim.Core.Services
       {
          if (parameter == null) return false;
          if (string.Equals(parameter.Name, Constants.Parameters.START_TIME)) return false;
-         if (string.Equals(parameter.Name, CoreConstants.Parameter.INPUT_DOSE)) return false;
+         if (string.Equals(parameter.Name, CoreConstants.Parameters.INPUT_DOSE)) return false;
          if (string.Equals(parameter.Name, Constants.Parameters.END_TIME)) return false;
          return true;
       }

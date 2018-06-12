@@ -1,7 +1,7 @@
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
 using PKSim.Core.Services;
 
 namespace PKSim.Core.Model
@@ -20,11 +20,12 @@ namespace PKSim.Core.Model
       private readonly ICompoundCalculationMethodCategoryRepository _compoundCalculationMethodCategoryRepository;
 
       public CompoundFactory(
-         IObjectBaseFactory objectBaseFactory, 
+         IObjectBaseFactory objectBaseFactory,
          IParameterContainerTask parameterContainerTask,
-         IParameterAlternativeFactory parameterAlternativeFactory, 
-         IParameterGroupTask parameterGroupTask, 
-         ICompoundCalculationMethodCategoryRepository compoundCalculationMethodCategoryRepository)
+         IParameterAlternativeFactory parameterAlternativeFactory,
+         IParameterGroupTask parameterGroupTask,
+         ICompoundCalculationMethodCategoryRepository compoundCalculationMethodCategoryRepository
+      )
       {
          _objectBaseFactory = objectBaseFactory;
          _parameterContainerTask = parameterContainerTask;
@@ -51,13 +52,12 @@ namespace PKSim.Core.Model
       private void readCompoundFromTemplate(Compound compound)
       {
          //STEP1: Add all parameters defined for the compound from the database
-         //need to set the name of the compound to drug in order to load parameter from database
          _parameterContainerTask.AddCompoundParametersTo(compound);
 
-         foreach (IGroup group in _parameterGroupTask.GroupsUsedBy(compound.AllParameters().ToList()).Where(groupNeedsAlterntive))
+         foreach (var group in _parameterGroupTask.GroupsUsedBy(compound.AllParameters().ToList()).Where(groupNeedsAlterntive))
          {
             // create and add new compound parameter group
-            var compoundParamGroup = _objectBaseFactory.Create<PKSim.Core.Model.ParameterAlternativeGroup>().WithName(group.Name);
+            var compoundParamGroup = _objectBaseFactory.Create<ParameterAlternativeGroup>().WithName(group.Name);
             compound.AddParameterAlternativeGroup(compoundParamGroup);
 
             // create a default alternative

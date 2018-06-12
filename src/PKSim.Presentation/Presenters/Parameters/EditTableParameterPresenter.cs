@@ -1,12 +1,9 @@
 using System;
 using PKSim.Assets;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.Views.Parameters;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Charts;
 
@@ -18,20 +15,25 @@ namespace PKSim.Presentation.Presenters.Parameters
       TableFormula EditedFormula { get; }
    }
 
-   public class EditTableParameterPresenter : AbstractDisposablePresenter<IEditTableParameterView, IEditTableParameterPresenter>, IEditTableParameterPresenter
+   public abstract class EditTableParameterPresenter<T> : 
+      AbstractDisposablePresenter<IEditTableParameterView, IEditTableParameterPresenter>, IEditTableParameterPresenter where T : ITableParameterPresenter
    {
-      private readonly ITableParameterPresenter _tableParameterPresenter;
+      private readonly T _tableParameterPresenter;
       private readonly IFullPathDisplayResolver _fullPathDisplayResolver;
       private readonly ISimpleChartPresenter _chartPresenter;
 
-      public EditTableParameterPresenter(IEditTableParameterView view, ITableParameterPresenter tableParameterPresenter,
-         IFullPathDisplayResolver fullPathDisplayResolver, ISimpleChartPresenter chartPresenter) : base(view)
+      protected EditTableParameterPresenter(
+         IEditTableParameterView view,
+         T tableParameterPresenter,
+         IFullPathDisplayResolver fullPathDisplayResolver, 
+         ISimpleChartPresenter chartPresenter) : base(view)
       {
          _tableParameterPresenter = tableParameterPresenter;
          _fullPathDisplayResolver = fullPathDisplayResolver;
          _chartPresenter = chartPresenter;
          _view.AddView(tableParameterPresenter.BaseView);
          _view.AddChart(_chartPresenter.BaseView);
+         AddSubPresenters(chartPresenter, tableParameterPresenter);
          _tableParameterPresenter.StatusChanged += tableFormulaChanged;
       }
 
@@ -49,6 +51,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       private void tableFormulaChanged(object sender, EventArgs eventArgs)
       {
          plotTable();
+         View.OkEnabled = CanClose;
       }
 
       private void plotTable()
@@ -56,9 +59,13 @@ namespace PKSim.Presentation.Presenters.Parameters
          _chartPresenter.Plot(EditedFormula);
       }
 
-      public TableFormula EditedFormula
+      public TableFormula EditedFormula => _tableParameterPresenter.EditedFormula;
+   }
+
+   public class EditTableParameterPresenter : EditTableParameterPresenter<ITableParameterPresenter>
+   {
+      public EditTableParameterPresenter(IEditTableParameterView view, ITableParameterPresenter tableParameterPresenter, IFullPathDisplayResolver fullPathDisplayResolver, ISimpleChartPresenter chartPresenter) : base(view, tableParameterPresenter, fullPathDisplayResolver, chartPresenter)
       {
-         get { return _tableParameterPresenter.EditedFormula; }
       }
    }
 }

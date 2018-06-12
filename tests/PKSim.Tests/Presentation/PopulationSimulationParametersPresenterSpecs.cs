@@ -56,7 +56,7 @@ namespace PKSim.Presentation
          _protocolParameter = create(PKSimBuildingBlockType.Protocol);
          _formulationParameter = create(PKSimBuildingBlockType.Formulation);
          _volumeParameter = create(PKSimBuildingBlockType.Simulation).WithName(Constants.Parameters.VOLUME);
-         _expressionParameter = create(PKSimBuildingBlockType.Simulation).WithName(CoreConstants.Parameter.REL_EXP);
+         _expressionParameter = create(PKSimBuildingBlockType.Simulation).WithName(CoreConstants.Parameters.REL_EXP);
 
          _allParameters.Add(_compoundParameter);
          _allParameters.Add(_simulationVariableParameter);
@@ -131,7 +131,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_not_display_simulation_parmaeters_named_volume()
+      public void should_not_display_simulation_parameters_named_volume()
       {
          _displayedParameters.Contains(_volumeParameter).ShouldBeFalse();
       }

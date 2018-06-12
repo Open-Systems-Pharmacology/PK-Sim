@@ -1,17 +1,16 @@
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Assets;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
    public class SwitchAdvancedParameterDistributionTypeCommand : BuildingBlockChangeCommand
    {
       private readonly DistributionType _oldDistributionType;
-      private IAdvancedParameter _advancedParameter;
+      private AdvancedParameter _advancedParameter;
       private IAdvancedParameterContainer _advancedParameterContainer;
       private IDistributedParameter _newDistributedParameter;
       private DistributionType _newDistributionType;
@@ -31,11 +30,11 @@ namespace PKSim.Core.Commands
          _advancedParameter = _advancedParameterContainer.AdvancedParameterFor(entityPathResolver, _parameter);
          _oldDistributedParameter = _advancedParameter.DistributedParameter;
          _oldDistributionType = _advancedParameter.DistributionType;
-         IAdvancedParameter newParameter = advancedParameterFactory.Create(_parameter, _newDistributionType);
+         var newParameter = advancedParameterFactory.Create(_parameter, _newDistributionType);
          _newDistributedParameter = newParameter.DistributedParameter;
          ObjectType = context.TypeFor(_advancedParameter);
          Description = PKSimConstants.Command.SwitchAdvancedParameterDistributionTypeDescription(_advancedParameter.ParameterPath, _oldDistributionType.ToString(), _newDistributionType.ToString());
-         context.UpdateBuildinBlockProperties(this, _advancedParameterContainer);
+         context.UpdateBuildinBlockPropertiesInCommand(this, _advancedParameterContainer);
       }
 
       public string ParameterId { get; private set; }
@@ -80,10 +79,10 @@ namespace PKSim.Core.Commands
          context.PublishEvent(new AdvancedParameterDistributionChangedEvent(_advancedParameterContainer, _advancedParameter));
       }
 
-      public override void UpdateInternalFrom(IBuildingBlockChangeCommand buildingBlockChangeCommand)
+      public override void UpdateInternalFrom(IBuildingBlockChangeCommand originalCommand)
       {
-         base.UpdateInternalFrom(buildingBlockChangeCommand);
-         var switchDistributionTypeCommand = buildingBlockChangeCommand as SwitchAdvancedParameterDistributionTypeCommand;
+         base.UpdateInternalFrom(originalCommand);
+         var switchDistributionTypeCommand = originalCommand as SwitchAdvancedParameterDistributionTypeCommand;
          if (switchDistributionTypeCommand == null) return;
          _newDistributedParameter = switchDistributionTypeCommand._oldDistributedParameter;
          _oldDistributedParameter = switchDistributionTypeCommand._newDistributedParameter;

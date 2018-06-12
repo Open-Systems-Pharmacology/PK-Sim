@@ -13,7 +13,7 @@ namespace PKSim.Core.Services
 
       protected override void CacheParameterValueFor(Formulation formulation)
       {
-         _tEnd = formulation.Parameter(CoreConstants.Parameter.T_END).Value;
+         _tEnd = formulation.Parameter(CoreConstants.Parameters.T_END).Value;
       }
 
       protected override double ValueFor(Formulation formulation, double time)

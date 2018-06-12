@@ -5,6 +5,7 @@ namespace PKSim.Core.Repositories
 {
    public interface IParameterMetaDataRepository<TParameterMetaData> : IStartableRepository<TParameterMetaData>
    {
-      IEnumerable<TParameterMetaData> AllFor(string containerPath);
+      IReadOnlyList<TParameterMetaData> AllFor(string containerPath);
+      TParameterMetaData ParameterMetaDataFor(string containerPath, string parameterName);
    }
 }

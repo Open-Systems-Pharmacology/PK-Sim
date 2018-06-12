@@ -27,7 +27,7 @@ namespace PKSim.IntegrationTests
          base.Context();
          _originData = new OriginData
          {
-            Species = new Species {Name = CoreConstants.Species.Human},
+            Species = new Species {Name = CoreConstants.Species.HUMAN},
             Age = 0.8
          };
       }
@@ -63,7 +63,7 @@ namespace PKSim.IntegrationTests
       {
          base.Context();
          CYP3A4 = sut.All().FindByName("CYP3A4");
-         _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.Human}};
+         _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.HUMAN}};
       }
 
       [Observation]
@@ -97,7 +97,7 @@ namespace PKSim.IntegrationTests
          base.Context();
          CYP3A4 = sut.All().FindByName("CYP3A4");
          _randomGenerator = new RandomGenerator();
-         _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.Human}};
+         _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.HUMAN}};
       }
 
       [Observation]
@@ -121,7 +121,7 @@ namespace PKSim.IntegrationTests
       {
          base.Context();
          _randomGenerator = new RandomGenerator();
-         _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.Human}};
+         _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.HUMAN}};
       }
 
       [Observation]
@@ -145,7 +145,7 @@ namespace PKSim.IntegrationTests
          A.CallTo(() => _userDefinedOntogeny.PostmenstrualAges()).Returns(new [] {1, 2, 3f});
          A.CallTo(() => _userDefinedOntogeny.OntogenyFactors()).Returns(new [] {0, 1, 31f});
          A.CallTo(() => _userDefinedOntogeny.Deviations()).Returns(new [] {1, 1, 1f});
-         _originData = new OriginData { Species = new Species { Name = CoreConstants.Species.Human }, Age = 1, GestationalAge = 24};
+         _originData = new OriginData { Species = new Species { Name = CoreConstants.Species.HUMAN }, Age = 1, GestationalAge = 24};
       }
 
       [Observation]
@@ -162,14 +162,14 @@ namespace PKSim.IntegrationTests
       protected override void Context()
       {
          base.Context();
-         _adultOriginData = new OriginData {Species = new Species {Name = CoreConstants.Species.Human}};
+         _adultOriginData = new OriginData {Species = new Species {Name = CoreConstants.Species.HUMAN}};
          _adultOriginData.Age = 30;
       }
 
       [Observation]
       public void should_always_return_1()
       {
-         foreach (var ontogeny in sut.AllFor(CoreConstants.Species.Human))
+         foreach (var ontogeny in sut.AllFor(CoreConstants.Species.HUMAN))
          {
             if (ontogeny.Name.IsOneOf("UGT1A1","CYP3A7")) continue;
             sut.OntogenyFactorFor(ontogeny, "Liver", _adultOriginData).ShouldBeEqualTo(1, ontogeny.Name);
@@ -180,14 +180,14 @@ namespace PKSim.IntegrationTests
    public class When_retreving_all_ontogenie_factor_for_a_protein_strict_bigger_than_a_given_PMA_using_a_random_factor : concern_for_OntogenyRepository
    {
       private readonly RandomGenerator _randomGenerator = new RandomGenerator();
-      private readonly OriginData _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.Human}, GestationalAge = 25, Age = 0};
+      private readonly OriginData _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.HUMAN}, GestationalAge = 25, Age = 0};
       private IReadOnlyList<Sample> _resultRandom;
       private IReadOnlyList<Sample> _resultMean;
 
       protected override void Because()
       {
-         _resultRandom = sut.AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(CoreConstants.Parameter.ONTOGENY_FACTOR_ALBUMIN, _originData, _randomGenerator);
-         _resultMean = sut.AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(CoreConstants.Parameter.ONTOGENY_FACTOR_ALBUMIN, _originData);
+         _resultRandom = sut.AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN, _originData, _randomGenerator);
+         _resultMean = sut.AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN, _originData);
       }
 
       [Observation]

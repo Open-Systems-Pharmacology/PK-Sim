@@ -6,7 +6,7 @@ namespace PKSim.Core.Services
 {
    public interface IPKSimProjectRetriever : IProjectRetriever
    {
-      IPKSimProject Current { get; }
+      PKSimProject Current { get; }
       void AddToHistory(ICommand command);
    }
 

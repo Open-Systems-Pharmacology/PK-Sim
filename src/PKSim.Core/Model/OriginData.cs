@@ -1,15 +1,16 @@
-using PKSim.Assets;
 using OSPSuite.Core.Domain;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
-   public class OriginData : IWithCalculationMethods
+   public class OriginData : IWithCalculationMethods, IWithValueOrigin
    {
       public virtual Species Species { get; set; }
       public virtual SpeciesPopulation SpeciesPopulation { get; set; }
       public virtual SubPopulation SubPopulation { get; set; }
       public virtual Gender Gender { get; set; }
       public virtual CalculationMethodCache CalculationMethodCache { get; private set; }
+      public ValueOrigin ValueOrigin { get; }
 
       public virtual double? Age { get; set; }
       public virtual string AgeUnit { get; set; }
@@ -31,11 +32,12 @@ namespace PKSim.Core.Model
       public OriginData()
       {
          CalculationMethodCache = new CalculationMethodCache();
+         ValueOrigin = new ValueOrigin();
       }
 
       public virtual OriginData Clone()
       {
-         return new OriginData
+         var clone = new OriginData
          {
             Age = Age,
             AgeUnit = AgeUnit,
@@ -53,11 +55,19 @@ namespace PKSim.Core.Model
             GestationalAge = GestationalAge,
             CalculationMethodCache = CalculationMethodCache.Clone()
          };
+
+         clone.UpdateValueOriginFrom(ValueOrigin);
+         return clone;
       }
 
       public override string ToString()
       {
          return PKSimConstants.UI.OriginData;
+      }
+
+      public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
+      {
+         ValueOrigin.UpdateFrom(sourceValueOrigin);
       }
    }
 }

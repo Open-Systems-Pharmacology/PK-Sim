@@ -1,5 +1,3 @@
-using OSPSuite.Utility.Reflection;
-using OSPSuite.Utility.Validation;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 
@@ -8,7 +6,7 @@ namespace PKSim.Core
    /// <summary>
    ///    User specific settings influencing the model creation in any ways
    /// </summary>
-   public interface ICoreUserSettings : OSPSuite.Core.ICoreUserSettings,  INotifier, IValidatable
+   public interface ICoreUserSettings : OSPSuite.Core.ICoreUserSettings
    {
       /// <summary>
       ///    Name of default species that should be used throughout the program for default initialization
@@ -49,8 +47,7 @@ namespace PKSim.Core
       ///    Returns the default settings or null if not found
       /// </summary>
       OutputSelections OutputSelections { get; set; }
-
-    
+      
       /// <summary>
       ///    Default population analysis type used when starting a population
       /// </summary>

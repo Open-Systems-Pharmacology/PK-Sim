@@ -17,8 +17,8 @@ namespace PKSim.Core.Services
       IPKSimCommand SetDosingInterval(SimpleProtocol protocol, DosingInterval dosingInterval);
       IPKSimCommand AddSchemaTo(AdvancedProtocol protocol);
       IPKSimCommand RemoveSchemaFrom(Schema schemaToDelete, AdvancedProtocol protocol);
-      IPKSimCommand AddSchemaItemTo(Schema schema, ISchemaItem schemaItemToDupicate);
-      IPKSimCommand RemoveSchemaItemFrom(ISchemaItem schemaItemToDelete, Schema schema);
+      IPKSimCommand AddSchemaItemTo(Schema schema, SchemaItem schemaItemToDupicate);
+      IPKSimCommand RemoveSchemaItemFrom(SchemaItem schemaItemToDelete, Schema schema);
       IPKSimCommand SetTargetOrgan(ISchemaItem schemaItem, string targetOrgan, string targetCompartment);
       IPKSimCommand SetTargetCompartment(ISchemaItem schemaItem, string targetCompartment);
    }
@@ -74,12 +74,12 @@ namespace PKSim.Core.Services
          return _schemaTask.RemoveSchemaFrom(schemaToDelete, protocol);
       }
 
-      public IPKSimCommand AddSchemaItemTo(Schema schema, ISchemaItem schemaItemToDupicate)
+      public IPKSimCommand AddSchemaItemTo(Schema schema, SchemaItem schemaItemToDupicate)
       {
          return _schemaTask.AddSchemaItemTo(schema, schemaItemToDupicate);
       }
 
-      public IPKSimCommand RemoveSchemaItemFrom(ISchemaItem schemaItemToDelete, Schema schema)
+      public IPKSimCommand RemoveSchemaItemFrom(SchemaItem schemaItemToDelete, Schema schema)
       {
          return _schemaTask.RemoveSchemaItemFrom(schemaItemToDelete, schema);
       }

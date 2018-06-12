@@ -32,7 +32,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void the_parmaeter_should_have_been_added_to_the_container()
+      public void the_parameter_should_have_been_added_to_the_container()
       {
          A.CallTo(() => _parentContainer.Add(_parameterToAdd)).MustHaveHappened();
       }

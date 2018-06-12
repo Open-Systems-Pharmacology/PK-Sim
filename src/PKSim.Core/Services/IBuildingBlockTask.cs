@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
@@ -26,12 +27,19 @@ namespace PKSim.Core.Services
       void Rename<TBuildingBlock>(TBuildingBlock buildingBlockToRename) where TBuildingBlock : class, IPKSimBuildingBlock;
       IReadOnlyList<TBuildingBlock> LoadFromTemplate<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock;
 
+      IReadOnlyList<TBuildingBlock> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock;
+
       /// <summary>
       ///    Saves the building blocks defined as key in <paramref name="buildingBlocksWithReferenceToSave" /> and all their
       ///    references as well (defined as value of the cache <paramref name="buildingBlocksWithReferenceToSave" />).
       ///    It is expected that each reference is available as key in the cache as well.
       /// </summary>
       void SaveAsTemplate(ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> buildingBlocksWithReferenceToSave, TemplateDatabaseType templateDatabaseType);
+
+      /// <summary>
+      ///    Saves the building blocks defined in <paramref name="buildingBlocks"/>. References won't be saved
+      /// </summary>
+      void SaveAsTemplate(IReadOnlyList<IPKSimBuildingBlock> buildingBlocks, TemplateDatabaseType templateDatabaseType);
 
       void EditDescription(IPKSimBuildingBlock buildingBlock);
       string TypeFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IPKSimBuildingBlock;
@@ -72,9 +80,10 @@ namespace PKSim.Core.Services
       void Edit(TBuildingBlock buildingBlockToEdit);
       TBuildingBlock LoadSingleFromTemplate();
       IReadOnlyList<TBuildingBlock> LoadFromTemplate();
+      IReadOnlyList<TBuildingBlock> LoadFromSnapshot();
       void Load(TBuildingBlock buildingBlockToLoad);
       IEnumerable<TBuildingBlock> All();
-      void SaveAsTemplate(TBuildingBlock buildingBlockToSave);
-      void SaveAsSystemTemplate(TBuildingBlock buildingBlockToSave);
+      void SaveAsTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave);
+      void SaveAsSystemTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave);
    }
 }

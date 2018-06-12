@@ -37,7 +37,7 @@ namespace PKSim.Core
 
          _simulation = A.Fake<Simulation>();
          var organism = new Organism();
-         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameter.HCT));
+         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.HCT));
          A.CallTo(() => _simulation.Individual.Organism).Returns(organism);
 
       }

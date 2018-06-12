@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Core
 {
@@ -16,10 +16,13 @@ namespace PKSim.Core
       protected IParameter _para1;
       protected IParameter _para2;
       protected Individual _individual;
+      protected ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
 
       protected override void Context()
       {
-         sut = new ParameterIdUpdater(A.Fake<ISimulationParameterOriginIdUpdater>());
+         _simulationParameterOriginIdUpdater = A.Fake<ISimulationParameterOriginIdUpdater>();
+         sut = new ParameterIdUpdater(_simulationParameterOriginIdUpdater);
+
          _individual = A.Fake<Individual>();
          A.CallTo(() => _individual.BuildingBlockType).Returns(PKSimBuildingBlockType.Individual);
          _individual.Id = "toto";
@@ -88,7 +91,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_updating_the_parameter_if_a_parameter_from_another_parameter : concern_for_ParameterIdUpdater
+   public class When_updating_the_parameter_id_of_a_parameter_defined_in_a_simulation_from_another_parameter : concern_for_ParameterIdUpdater
    {
       private IParameter _sourceParameter;
       private IParameter _targetParameter;
@@ -98,6 +101,7 @@ namespace PKSim.Core
          base.Context();
          _sourceParameter = new PKSimParameter().WithId("toto");
          _targetParameter = new PKSimParameter().WithId("tata");
+         _targetParameter.Origin.SimulationId = "SimID";
       }
 
       protected override void Because()
@@ -112,7 +116,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_updating_the_parameter_ids_of_parameter_defined_in_containers : concern_for_ParameterIdUpdater
+   public class When_updating_the_parameter_ids_of_parameter_defined_in_containers_that_belongs_in_a_simulation : concern_for_ParameterIdUpdater
    {
       private IContainer _sourceContainer;
       private IContainer _targetContainer;
@@ -127,6 +131,7 @@ namespace PKSim.Core
          _targetContainer = new Container();
          _sourceParameter = new PKSimParameter().WithName("toto").WithId("1");
          _targetParameter = new PKSimParameter().WithName("toto").WithId("10");
+         _targetParameter.Origin.SimulationId = "SimId";
          _targetParameter2 = new PKSimParameter().WithName("titi").WithId("20");
          _sourceContainer.Add(_sourceParameter);
          _targetContainer.Add(_targetParameter);
@@ -142,6 +147,40 @@ namespace PKSim.Core
       public void should_update_the_parameter_id_of_parameter_having_the_same_name()
       {
          _targetParameter.Origin.ParameterId.ShouldBeEqualTo(_sourceParameter.Id);
+      }
+   }
+
+   public class When_updating_the_simulation_id_in_a_simulation : concern_for_ParameterIdUpdater
+   {
+      private Simulation _simulation;
+      private readonly string _simulationId = "SimId";
+      private PKSimEvent _eventBuildingBlockInSimulation;
+      private IParameter _eventParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new IndividualSimulation().WithId(_simulationId);
+         _eventParameter = DomainHelperForSpecs.ConstantParameterWithValue(10);
+         _eventBuildingBlockInSimulation = new PKSimEvent {_eventParameter};
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("TemplateId", PKSimBuildingBlockType.Event) {BuildingBlock = _eventBuildingBlockInSimulation});
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateSimulationId(_simulation);
+      }
+
+      [Observation]
+      public void should_delegate_to_the_core_simulaion_id_updater_to_update_the_simulation()
+      {
+         A.CallTo(() => _simulationParameterOriginIdUpdater.UpdateSimulationId(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_also_set_the_simulation_id_in_all_building_block_parameters()
+      {
+         _eventParameter.Origin.SimulationId.ShouldBeEqualTo(_simulationId);
       }
    }
 }

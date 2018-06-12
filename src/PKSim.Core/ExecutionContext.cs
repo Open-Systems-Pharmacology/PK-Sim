@@ -13,7 +13,7 @@ using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Core
 {
-   public interface IExecutionContext : IOSPSuiteExecutionContext<IPKSimProject>
+   public interface IExecutionContext : IOSPSuiteExecutionContext<PKSimProject>
    {
       ICloneManager CloneManager { get; }
       void Load(ILazyLoadable lazyLoadable);
@@ -21,7 +21,7 @@ namespace PKSim.Core
       IPKSimBuildingBlock BuildingBlockContaining(IEntity entity);
       string BuildingBlockIdContaining(IEntity entity);
       void UpdateBuildingBlockVersion(IBuildingBlockChangeCommand buildingBlockChangeCommand);
-      void UpdateBuildinBlockProperties(IPKSimCommand command, IPKSimBuildingBlock buildingBlock);
+      void UpdateBuildinBlockPropertiesInCommand(IOSPSuiteCommand command, IPKSimBuildingBlock buildingBlock);
       void UpdateDependenciesOn(IParameter parameter);
       string ReportFor<T>(T objectToReport);
    }
@@ -71,7 +71,7 @@ namespace PKSim.Core
          _parameterChangeUpdater = parameterChangeUpdater;
       }
 
-      public IPKSimProject CurrentProject => _projectRetriever.CurrentProject.DowncastTo<IPKSimProject>();
+      public PKSimProject CurrentProject => _projectRetriever.CurrentProject.DowncastTo<PKSimProject>();
 
       public T Get<T>(string id) where T : class, IWithId
       {
@@ -160,7 +160,7 @@ namespace PKSim.Core
          buildingBlock.HasChanged = true;
       }
 
-      public void UpdateBuildinBlockProperties(IPKSimCommand command, IPKSimBuildingBlock buildingBlock)
+      public void UpdateBuildinBlockPropertiesInCommand(IOSPSuiteCommand command, IPKSimBuildingBlock buildingBlock)
       {
          if (buildingBlock == null)
          {

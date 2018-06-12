@@ -122,7 +122,7 @@ namespace PKSim.Presentation.Services
 
             //create + add command are added as one action into the history
             var overallCommand = new PKSimMacroCommand {CommandType = PKSimConstants.Command.CommandTypeAdd};
-            _executionContext.UpdateBuildinBlockProperties(overallCommand, compound);
+            _executionContext.UpdateBuildinBlockPropertiesInCommand(overallCommand, compound);
 
             //First add process to compound so that it will be available for later rollbacks
             var addProcessToCompound = new AddProcessToCompoundCommand(process, compound, _executionContext).Run(_executionContext);
@@ -130,7 +130,7 @@ namespace PKSim.Presentation.Services
             overallCommand.Description = addProcessToCompound.Description;
             overallCommand.ObjectType = addProcessToCompound.ObjectType;
 
-            _executionContext.UpdateBuildinBlockProperties(editCommands, compound);
+            _executionContext.UpdateBuildinBlockPropertiesInCommand(editCommands, compound);
 
             var macroCommand = editCommands as IPKSimMacroCommand;
             if (macroCommand != null)
@@ -165,25 +165,30 @@ namespace PKSim.Presentation.Services
 
       private void updateFractionUnbound(CompoundProcess newProcess, Compound compound)
       {
-         updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameter.FRATION_UNBOUND_EXPERIMENT,
-                                                       CoreConstants.Parameter.FractionUnbound,
+         updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT,
+                                                       CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE,
                                                        CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
       }
 
       private void updateLipophilicity(CompoundProcess newProcess, Compound compound)
       {
-         updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameter.LIPOPHILICITY_EXPERIMENT,
-                                                       CoreConstants.Parameter.LIPOPHILICITY,
+         updateProcessParameterFromDefaultAleternative(newProcess, compound, CoreConstants.Parameters.LIPOPHILICITY_EXPERIMENT,
+                                                       CoreConstants.Parameters.LIPOPHILICITY,
                                                        CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
       }
 
       private void updateProcessParameterFromDefaultAleternative(CompoundProcess newProcess, Compound compound, string processParameterName, string compoundParameterName, string groupName)
       {
          var processParameter = newProcess.Parameter(processParameterName);
-         if (processParameter == null) return;
+         if (processParameter == null)
+            return;
+
          var parameterAlternative = compound.ParameterAlternativeGroup(groupName).DefaultAlternative;
-         if (parameterAlternative == null) return;
+         if (parameterAlternative == null)
+            return;
+
          processParameter.Value = parameterAlternative.Parameter(compoundParameterName).Value;
+         processParameter.IsDefault = false;
       }
 
       public IPKSimCommand RenameDataSource(CompoundProcess compoundProcess)

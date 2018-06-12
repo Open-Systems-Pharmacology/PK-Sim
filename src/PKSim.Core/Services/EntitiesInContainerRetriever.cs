@@ -4,7 +4,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Services
 {
@@ -97,12 +96,12 @@ namespace PKSim.Core.Services
 
          var comparison = populationDataCollector.DowncastTo<PopulationSimulationComparison>();
 
-         var firstSimulation = comparison.AllSimulations().FirstOrDefault();
+         var firstSimulation = comparison.AllSimulations.FirstOrDefault();
          if (firstSimulation == null)
             return new PathCache<T>(_entityPathResolver);
 
          var pathIntersect = dataCollector(firstSimulation);
-         var allCommonPaths = comparison.AllSimulations().Aggregate(pathIntersect.Keys, (current, simulation) => current.Intersect(dataCollector(simulation).Keys)).ToList();
+         var allCommonPaths = comparison.AllSimulations.Aggregate(pathIntersect.Keys, (current, simulation) => current.Intersect(dataCollector(simulation).Keys)).ToList();
 
          foreach (var availalbePath in pathIntersect.Keys.ToList())
          {

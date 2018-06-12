@@ -107,7 +107,7 @@ namespace PKSim.Infrastructure
       public void should_write_population_data()
       {
          File.Exists(Path.Combine(_clusterInputDirectory, $"{_populationSimulation.Name}.csv")).ShouldBeTrue();
-         File.Exists(Path.Combine(_clusterInputDirectory, $"{_populationSimulation.Name}{CoreConstants.Population.TableParameterExport}.csv")).ShouldBeTrue();
+         File.Exists(Path.Combine(_clusterInputDirectory, $"{_populationSimulation.Name}{CoreConstants.Population.TABLE_PARAMETER_EXPORT}.csv")).ShouldBeTrue();
       }
 
       [Observation]

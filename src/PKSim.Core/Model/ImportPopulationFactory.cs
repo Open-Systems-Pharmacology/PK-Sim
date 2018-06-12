@@ -35,8 +35,12 @@ namespace PKSim.Core.Model
       private PathCache<IParameter> _allParameters;
       private PathCache<IParameter> _allCreateIndividualParameters;
 
-      public ImportPopulationFactory(IObjectBaseFactory objectBaseFactory, IProgressManager progressManager,
-         IIndividualPropertiesCacheImporter individualPropertiesCacheImporter, ICloner cloner, IContainerTask containerTask, IAdvancedParameterFactory advancedParameterFactory)
+      public ImportPopulationFactory(IObjectBaseFactory objectBaseFactory, 
+         IProgressManager progressManager,
+         IIndividualPropertiesCacheImporter individualPropertiesCacheImporter, 
+         ICloner cloner, 
+         IContainerTask containerTask, 
+         IAdvancedParameterFactory advancedParameterFactory)
       {
          _objectBaseFactory = objectBaseFactory;
          _progressManager = progressManager;
@@ -186,7 +190,7 @@ namespace PKSim.Core.Model
       {
          var importPopulation = _objectBaseFactory.Create<ImportPopulation>();
          importPopulation.Root = _objectBaseFactory.Create<IRootContainer>();
-         importPopulation.SetAdvancedParameters(_objectBaseFactory.Create<IAdvancedParameterCollection>());
+         importPopulation.SetAdvancedParameters(_objectBaseFactory.Create<AdvancedParameterCollection>());
          importPopulation.Settings.BaseIndividual = _cloner.Clone(individual);
          importPopulation.IsLoaded = true;
          return importPopulation;

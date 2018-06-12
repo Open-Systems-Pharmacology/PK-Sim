@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
@@ -14,10 +17,6 @@ using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -170,8 +169,8 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       public bool ScalingVisible
       {
-         set { View.ScalingVisible = value; }
-         get { return View.ScalingVisible; }
+         set => View.ScalingVisible = value;
+         get => View.ScalingVisible;
       }
 
       public virtual void FieldSelected(IPopulationAnalysisField populationAnalysisField)
@@ -251,7 +250,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       protected IPopulationAnalysisField SelectedField()
       {
          var selectedDTO = _view.SelectedField;
-         return selectedDTO != null ? selectedDTO.Field : null;
+         return selectedDTO?.Field;
       }
 
       protected T SelectedField<T>() where T : IPopulationAnalysisField
@@ -322,7 +321,5 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       {
          return _populationAnalysis.All<TField>().Where(query).FirstOrDefault();
       }
-
-
    }
 }

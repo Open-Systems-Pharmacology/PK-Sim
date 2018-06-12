@@ -15,6 +15,7 @@ namespace PKSim.Infrastructure
       public string TemplateUserDatabaseTemplatePath { get; }
       public string DefaultTemplateUserDatabasePath { get; }
       public override string ProductName { get; } = CoreConstants.PRODUCT_NAME;
+      public override int InternalVersion { get; } = ProjectVersions.Current;
       public override Origin Product { get; } = Origins.PKSim;
       public override string ProductNameWithTrademark { get; } = CoreConstants.PRODUCT_NAME_WITH_TRADEMARK;
       public override ApplicationIcon Icon { get; } = ApplicationIcons.PKSim;
@@ -28,9 +29,9 @@ namespace PKSim.Infrastructure
       public PKSimConfiguration()
       {
          createDefaultSettingsFolder();
-         PKSimDbPath = AllUsersOrLocalPathForFile(CoreConstants.PK_SIM_DB_FILE);
-         TemplateSystemDatabasePath = AllUsersOrLocalPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
-         TemplateUserDatabaseTemplatePath = AllUsersOrLocalPathForFile(CoreConstants.TEMPLATE_USER_DATABASE_TEMPLATE);
+         PKSimDbPath = LocalOrAllUsersPathForFile(CoreConstants.PK_SIM_DB_FILE);
+         TemplateSystemDatabasePath = LocalOrAllUsersPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
+         TemplateUserDatabaseTemplatePath = LocalOrAllUsersPathForFile(CoreConstants.TEMPLATE_USER_DATABASE_TEMPLATE);
          DefaultTemplateUserDatabasePath = CurrentUserFile(CoreConstants.TEMPLATE_USER_DATABASE);
       }
 
@@ -42,7 +43,7 @@ namespace PKSim.Infrastructure
          if (!DirectoryHelper.DirectoryExists(AllUsersFolderPath))
             DirectoryHelper.CreateDirectory(AllUsersFolderPath);
       }
-         
+
       public string MoBiPath
       {
          get

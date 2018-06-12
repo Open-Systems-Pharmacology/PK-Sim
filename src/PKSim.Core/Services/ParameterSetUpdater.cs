@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Collections;
-using PKSim.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using PKSim.Assets;
+using PKSim.Core.Commands;
+using PKSim.Core.Extensions;
 
 namespace PKSim.Core.Services
 {
@@ -20,7 +22,8 @@ namespace PKSim.Core.Services
       ICommand UpdateValues(IContainer sourceContainer, IContainer targetContainer);
 
       /// <summary>
-      ///    Update all parameters defined in the target enumeration with the value of the same parameter in the source enumeration
+      ///    Update all parameters defined in the target enumeration with the value of the same parameter in the source
+      ///    enumeration
       ///    <paramref name="sourceParameters" />. Same parameter is defined as "have the same absolute path".
       /// </summary>
       ICommand UpdateValues(IEnumerable<IParameter> sourceParameters, IEnumerable<IParameter> targetParameters);
@@ -36,7 +39,7 @@ namespace PKSim.Core.Services
       ///    Update all parameters defined in the target cache with the value of the same parameter in the source cache
       ///    <paramref name="sourceParameters" />. Same parameter is defined as being registered with the same key in the cache.
       /// </summary>
-      ICommand UpdateValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters);
+      IOSPSuiteCommand UpdateValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters, bool updateParameterOriginId = true);
 
       /// <summary>
       ///    Update all prameters defined in the target container with the value of the same parameter in the source container
@@ -48,7 +51,8 @@ namespace PKSim.Core.Services
       ICommand UpdateValuesByName(IContainer sourceContainer, IContainer targetContainer);
 
       /// <summary>
-      ///    Update all parameters defined in the target enumeration with the value of the same parameter in the source enumeration
+      ///    Update all parameters defined in the target enumeration with the value of the same parameter in the source
+      ///    enumeration
       ///    <paramref name="sourceParameters" />. Same parameter is defined as "have the same name".
       /// </summary>
       ICommand UpdateValuesByName(IEnumerable<IParameter> sourceParameters, IEnumerable<IParameter> targetParameters);
@@ -67,8 +71,12 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="sourceParameter">Source parameter containing the value</param>
       /// <param name="targetParameter">Target parameter that will be updated with the value from the source parameter</param>
+      /// <param name="updateParameterOriginId">
+      ///    Set to true, the <paramref name="targetParameter" /> origin id will be set to the
+      ///    id of <paramref name="sourceParameter" />
+      /// </param>
       /// <returns></returns>
-      ICommand UpdateValue(IParameter sourceParameter, IParameter targetParameter);
+      ICommand UpdateValue(IParameter sourceParameter, IParameter targetParameter, bool updateParameterOriginId = true);
    }
 
    public class ParameterSetUpdater : IParameterSetUpdater
@@ -76,12 +84,14 @@ namespace PKSim.Core.Services
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IParameterUpdater _parameterUpdater;
       private readonly IParameterIdUpdater _parameterIdUpdater;
+      private readonly IParameterTask _parameterTask;
 
-      public ParameterSetUpdater(IEntityPathResolver entityPathResolver, IParameterUpdater parameterUpdater, IParameterIdUpdater parameterIdUpdater)
+      public ParameterSetUpdater(IEntityPathResolver entityPathResolver, IParameterUpdater parameterUpdater, IParameterIdUpdater parameterIdUpdater, IParameterTask parameterTask)
       {
          _entityPathResolver = entityPathResolver;
          _parameterUpdater = parameterUpdater;
          _parameterIdUpdater = parameterIdUpdater;
+         _parameterTask = parameterTask;
       }
 
       public ICommand UpdateValues(IContainer sourceContainer, IContainer targetContainer)
@@ -103,8 +113,8 @@ namespace PKSim.Core.Services
          return UpdateValues(sourceParameters, allTargetParameters);
       }
 
-      public ICommand UpdateValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters)
-      {  
+      public IOSPSuiteCommand UpdateValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters, bool updateParameterOriginId = true)
+      {
          var updateCommands = new PKSimMacroCommand {CommandType = PKSimConstants.Command.CommandTypeEdit, ObjectType = PKSimConstants.ObjectTypes.Parameter};
          //should update non distributed parameter first and then distributed parameter
          foreach (var sourceParameter in sourceParameters.KeyValues.OrderBy(x => x.Value.IsDistributed()))
@@ -112,7 +122,7 @@ namespace PKSim.Core.Services
             var targetParameter = targetParameters[sourceParameter.Key];
             if (targetParameter == null) continue;
 
-            updateCommands.Add(UpdateValue(sourceParameter.Value, targetParameter));
+            updateCommands.Add(UpdateValue(sourceParameter.Value, targetParameter, updateParameterOriginId));
          }
          return updateCommands;
       }
@@ -143,11 +153,27 @@ namespace PKSim.Core.Services
          return updateCommands;
       }
 
-      public ICommand UpdateValue(IParameter sourceParameter, IParameter targetParameter)
+      public ICommand UpdateValue(IParameter sourceParameter, IParameter targetParameter, bool updateParameterOriginId = true)
       {
-         _parameterIdUpdater.UpdateParameterId(sourceParameter, targetParameter);
-         targetParameter.ValueDescription = sourceParameter.ValueDescription;
-         return _parameterUpdater.UpdateValue(sourceParameter, targetParameter);
+         if (updateParameterOriginId)
+            _parameterIdUpdater.UpdateParameterId(sourceParameter, targetParameter);
+
+         return withUpdatedValueOrigin(_parameterUpdater.UpdateValue(sourceParameter, targetParameter), sourceParameter, targetParameter);
+      }
+
+      private ICommand withUpdatedValueOrigin(ICommand command, IParameter sourceParameter, IParameter targetParameter)
+      {
+         if (Equals(sourceParameter.ValueOrigin, targetParameter.ValueOrigin))
+            return command;
+
+         var updateValueOriginCommand = _parameterTask.SetParameterValueOrigin(targetParameter, sourceParameter.ValueOrigin);
+         if (command == null)
+            return updateValueOriginCommand;
+
+         var macroCommand = new PKSimMacroCommand {CommandType = command.CommandType, ObjectType = command.ObjectType, Description = command.Description};
+         macroCommand.Add(command);
+         macroCommand.Add(updateValueOriginCommand);
+         return macroCommand;
       }
    }
 }

@@ -1,15 +1,14 @@
-using PKSim.Core.Model;
-
-using PKSim.Presentation.DTO.Parameters;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Compounds
 {
    public class FractionUnboundAlternativeDTO : ParameterAlternativeDTO
    {
-      public new ParameterAlternativeWithSpecies ParameterAlternative { get; private set; }
+      public new ParameterAlternativeWithSpecies ParameterAlternative { get; }
 
-      public FractionUnboundAlternativeDTO(ParameterAlternativeWithSpecies parameterAlternative) : base(parameterAlternative)
+      public FractionUnboundAlternativeDTO(ParameterAlternativeWithSpecies parameterAlternative, ValueOrigin valueOrigin) : base(parameterAlternative, valueOrigin)
       {
          ParameterAlternative = parameterAlternative;
       }
@@ -18,14 +17,17 @@ namespace PKSim.Presentation.DTO.Compounds
 
       public Species Species
       {
-         get { return ParameterAlternative.Species; }
-         set { ParameterAlternative.Species = value; }
+         get => ParameterAlternative.Species;
+         set => ParameterAlternative.Species = value;
       }
 
       public double FractionUnbound
       {
-         get { return FractionUnboundParameter.Value; }
-         set {/*nothing to do here*/}
+         get => FractionUnboundParameter.Value;
+         set
+         {
+            /*nothing to do here*/
+         }
       }
    }
 }

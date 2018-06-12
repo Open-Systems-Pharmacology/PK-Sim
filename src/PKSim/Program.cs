@@ -2,9 +2,9 @@
 using System.Windows.Forms;
 using DevExpress.LookAndFeel;
 using DevExpress.XtraEditors;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using PKSim.UI.BootStrapping;
 
 namespace PKSim
@@ -25,13 +25,12 @@ namespace PKSim
 
          try
          {
-            ApplicationStartup.Initialize();
+            ApplicationStartup.Initialize(LogLevel.Debug);
             IoC.Resolve<PKSimApplication>().Run(args);
          }
          catch (Exception e)
          {
             MessageBox.Show(e.ExceptionMessageWithStackTrace(), "Unhandled Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            e.LogError();
          }
       }
    }

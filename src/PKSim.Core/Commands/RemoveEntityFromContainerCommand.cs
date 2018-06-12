@@ -38,7 +38,7 @@ namespace PKSim.Core.Commands
          CommandType = PKSimConstants.Command.CommandTypeDelete;
          ObjectType = context.TypeFor(entityToRemove);
          Description = PKSimConstants.Command.RemoveEntityFromContainer(ObjectType, entityToRemove.Name, context.TypeFor(parentContainer), parentContainer.Name);
-         context.UpdateBuildinBlockProperties(this, context.BuildingBlockContaining(parentContainer));
+         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(parentContainer));
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)

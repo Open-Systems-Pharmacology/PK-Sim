@@ -35,7 +35,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_have_created_one_entry_for_the_changed_parameter_in_the_parmaeter_start_value_building_block()
+      public void should_have_created_one_entry_for_the_changed_parameter_in_the_parameter_start_value_building_block()
       {
          _psv[_parameterPath].ShouldNotBeNull();
          _psv[_parameterPath].StartValue.ShouldBeEqualTo(10);

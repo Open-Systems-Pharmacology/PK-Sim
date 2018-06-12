@@ -5,9 +5,9 @@ namespace PKSim.Presentation.UICommands
 {
     public class StopSimulationCommand : IUICommand
    {
-      private readonly ISimulationRunner _simulationRunner;
+      private readonly IInteractiveSimulationRunner _simulationRunner;
 
-      public StopSimulationCommand(ISimulationRunner simulationRunner)
+      public StopSimulationCommand(IInteractiveSimulationRunner simulationRunner)
       {
          _simulationRunner = simulationRunner;
       }

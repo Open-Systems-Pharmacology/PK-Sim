@@ -192,7 +192,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
          if (applications != null)
          {
-            var allParticleFactors = applications.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameter.NumberOfParticlesFactor));
+            var allParticleFactors = applications.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.NUMBER_OF_PARTICLES_FACTOR));
             foreach (var allParticleFactor in allParticleFactors)
             {
                allParticleFactor.Value *= 1000;
@@ -256,9 +256,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
          var human = _defaultIndividualRetriever.DefaultHuman();
 
-         individual.Organism.Add(clone(human.Organism, CoreConstants.Parameter.ONTOGENY_FACTOR_ALBUMIN));
-         individual.Organism.Add(clone(human.Organism, CoreConstants.Parameter.ONTOGENY_FACTOR_AGP));
-         individual.Organism.Add(clone(human.Organism, CoreConstants.Parameter.PLASMA_PROTEIN_SCALE_FACTOR));
+         individual.Organism.Add(clone(human.Organism, CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN));
+         individual.Organism.Add(clone(human.Organism, CoreConstants.Parameters.ONTOGENY_FACTOR_AGP));
+         individual.Organism.Add(clone(human.Organism, CoreConstants.Parameters.PLASMA_PROTEIN_SCALE_FACTOR));
 
 
          if (!individual.IsHuman)
@@ -271,9 +271,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
             individual.OriginData.GestationalAge = CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
             individual.OriginData.GestationalAgeUnit = CoreConstants.Units.Weeks;
 
-            var gestationalAge = human.Organism.Parameter(CoreConstants.Parameter.GESTATIONAL_AGE);
+            var gestationalAge = human.Organism.Parameter(CoreConstants.Parameters.GESTATIONAL_AGE);
 
-            if (!individual.Organism.ContainsName(CoreConstants.Parameter.GESTATIONAL_AGE))
+            if (!individual.Organism.ContainsName(CoreConstants.Parameters.GESTATIONAL_AGE))
                individual.Organism.Add(_cloner.Clone(gestationalAge));
          }
       }
@@ -319,26 +319,26 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
          if (liver == null)
             return;
 
-         var ontogenyFactorLiver = liver.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR);
+         var ontogenyFactorLiver = liver.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR);
          if (ontogenyFactorLiver != null)
             molecule.Add(ontogenyFactorLiver);
 
          IParameter ontogenyFactorDuodenum = null;
          var duodenum = molecule.ExpressionContainer(CoreConstants.Compartment.Duodenum);
          if (duodenum != null)
-            ontogenyFactorDuodenum = duodenum.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR);
+            ontogenyFactorDuodenum = duodenum.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR);
 
          //remove old ontogeny factor parameter in container
          foreach (var expressionContainer in molecule.AllExpressionsContainers())
          {
-            var ontogenyFactor = expressionContainer.Parameter(CoreConstants.Parameter.ONTOGENY_FACTOR);
+            var ontogenyFactor = expressionContainer.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR);
             if (ontogenyFactor != null)
                expressionContainer.RemoveChild(ontogenyFactor);
          }
 
          if (ontogenyFactorDuodenum != null)
          {
-            ontogenyFactorDuodenum.Name = CoreConstants.Parameter.ONTOGENY_FACTOR_GI;
+            ontogenyFactorDuodenum.Name = CoreConstants.Parameters.ONTOGENY_FACTOR_GI;
             molecule.Add(ontogenyFactorDuodenum);
          }
       }

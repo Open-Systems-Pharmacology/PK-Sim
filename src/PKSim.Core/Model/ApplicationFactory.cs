@@ -166,9 +166,9 @@ namespace PKSim.Core.Model
          //now that parameter have been set, we need to update the dose by hand according to the selected unit 
          var inputDose = schemaItem.Dose; 
 
-         var dose = targetContainer.Parameter(CoreConstants.Parameter.DOSE);
-         var dosePerBodyWeight = targetContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_WEIGHT);
-         var dosePerBodySurfaceArea = targetContainer.Parameter(CoreConstants.Parameter.DOSE_PER_BODY_SURFACE_AREA);
+         var dose = targetContainer.Parameter(CoreConstants.Parameters.DOSE);
+         var dosePerBodyWeight = targetContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_WEIGHT);
+         var dosePerBodySurfaceArea = targetContainer.Parameter(CoreConstants.Parameters.DOSE_PER_BODY_SURFACE_AREA);
 
          if (schemaItem.DoseIsInMass())
          {

@@ -1,6 +1,8 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 
@@ -17,6 +19,12 @@ namespace PKSim.IntegrationTests
       protected override void Because()
       {
          _compound = sut.Create();
+      }
+
+      [Observation]
+      public void should_only_have_parameters_of_type_compound()
+      {
+         _compound.GetAllChildren<IParameter>().Each(x => x.BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Compound));
       }
 
       [Observation]

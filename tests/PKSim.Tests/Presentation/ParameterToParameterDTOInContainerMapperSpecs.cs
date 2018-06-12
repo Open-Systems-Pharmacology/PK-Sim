@@ -26,7 +26,7 @@ namespace PKSim.Presentation
          _parameterContainer = new ParameterContainerForSpecs();
          A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(_parameterDTO);
          sut = new ParameterToParameterDTOInContainerMapper<ParameterContainerForSpecs>(_parameterMapper);
-         _result = sut.MapFrom(_parameter, _parameterContainer, x => x.ParameterValue, x => x.ParmaeterDTO);
+         _result = sut.MapFrom(_parameter, _parameterContainer, x => x.ParameterValue, x => x.ParameterDTO);
       }
    }
 
@@ -64,6 +64,6 @@ namespace PKSim.Presentation
    public class ParameterContainerForSpecs : ValidatableDTO
    {
       public double ParameterValue { get; set; }
-      public ParameterDTO ParmaeterDTO { get; set; }
+      public ParameterDTO ParameterDTO { get; set; }
    }
 }

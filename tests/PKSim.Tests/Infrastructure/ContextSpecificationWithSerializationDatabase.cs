@@ -30,8 +30,6 @@ namespace PKSim.Infrastructure
             _dataBaseFile = FileHelper.GenerateTemporaryFileName();
 
          _sessionFactory = _sessionFactoryProvider.InitalizeSessionFactoryFor(_dataBaseFile);
-
-         this.LogDebug("Database file {0}", _dataBaseFile);
       }
 
       public override void GlobalCleanup()

@@ -26,7 +26,7 @@ namespace PKSim.Core
 
    public class When_asked_to_update_a_transport_container_for_a_given_species_membrane_and_transport_type_that_do_exit_in_the_databse : concern_for_TransportContainerUpdater
    {
-      private ITransporterExpressionContainer _transporterContainer;
+      private TransporterExpressionContainer _transporterContainer;
       private string _species;
       private MembraneLocation _membrane;
       private TransportType _transportType;
@@ -37,8 +37,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _transporterContainer = A.Fake<ITransporterExpressionContainer>();
-         A.CallTo(() => _transporterContainer.Name).Returns(_liver);
+         _transporterContainer = new TransporterExpressionContainer().WithName(_liver);
          _species = "human";
          A.CallTo(() => _repository.TransportersFor(_species, _liver)).Returns(_allTransporters);
          _membrane = MembraneLocation.Apical;
@@ -55,13 +54,13 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_transporter_if_the_template_exists()
       {
-         A.CallTo(() => _transporterContainer.UpdatePropertiesFrom(_transporterContainerTemplate)).MustHaveHappened();
+         _transporterContainer.MembraneLocation.ShouldBeEqualTo(_membrane);
       }
    }
 
    public class When_asked_to_update_a_transport_container_for_a_given_species_membrane_and_transport_type_that_do_not_exit_in_the_databse : concern_for_TransportContainerUpdater
    {
-      private ITransporterExpressionContainer _transporterContainer;
+      private TransporterExpressionContainer _transporterContainer;
       private string _species;
       private MembraneLocation _membrane;
       private TransportType _transportType;
@@ -72,8 +71,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _transporterContainer = A.Fake<ITransporterExpressionContainer>();
-         A.CallTo(() => _transporterContainer.Name).Returns(_liver);
+         _transporterContainer = new TransporterExpressionContainer().WithName(_liver);
          _species = "human";
          A.CallTo(() => _repository.TransportersFor(_species, _liver)).Returns(_allTransporters);
          _membrane = MembraneLocation.Apical;
@@ -99,8 +97,8 @@ namespace PKSim.Core
 
    public class When_asked_to_set_the_default_settings_for_a_transporter : concern_for_TransportContainerUpdater
    {
-      private ITransporterExpressionContainer _transporterWithTemplate;
-      private ITransporterExpressionContainer _transporterWithoutTemplate;
+      private TransporterExpressionContainer _transporterWithTemplate;
+      private TransporterExpressionContainer _transporterWithoutTemplate;
       private const string _species = "human";
       private const string _liver = "Liver";
       private const string _kidney = "Kidney";

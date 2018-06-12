@@ -36,7 +36,7 @@ namespace PKSim.Presentation.Presenters.Individuals
    }
 
    public abstract class IndividualProteinExpressionsPresenter<TProtein, TSimulationSubject> : EditParameterPresenter<IIndividualProteinExpressionsView, IIndividualProteinExpressionsPresenter>, IIndividualProteinExpressionsPresenter
-      where TProtein : IndividualProtein 
+      where TProtein : IndividualProtein
       where TSimulationSubject : ISimulationSubject
    {
       protected readonly IMoleculeExpressionTask<TSimulationSubject> _moleculeExpressionTask;
@@ -44,7 +44,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IIndividualMoleculePropertiesPresenter<TSimulationSubject> _moleculePropertiesPresenter;
       protected TProtein _protein;
-      private readonly Action<Object> _updateViewHandler;
+      private readonly Action<Object> _updateLocationVisibilityHandler;
       private ProteinExpressionDTO _proteinExpressionDTO;
       public ISimulationSubject SimulationSubject { get; set; }
 
@@ -58,18 +58,18 @@ namespace PKSim.Presentation.Presenters.Individuals
          _representationInfoRepository = representationInfoRepository;
          _moleculePropertiesPresenter = moleculePropertiesPresenter;
          AddSubPresenters(_moleculePropertiesPresenter);
-         _updateViewHandler = o => updateView();
+         _updateLocationVisibilityHandler = o => updateLocationSelectionVisibility();
          view.AddMoleculePropertiesView(_moleculePropertiesPresenter.View);
       }
 
       public bool OntogenyVisible
       {
-         set { _moleculePropertiesPresenter.OntogenyVisible = value; }
+         set => _moleculePropertiesPresenter.OntogenyVisible = value;
       }
 
       public bool MoleculeParametersVisible
       {
-         set { _moleculePropertiesPresenter.MoleculeParametersVisible = value; }
+         set => _moleculePropertiesPresenter.MoleculeParametersVisible = value;
       }
 
       public void ActivateMolecule(IndividualMolecule molecule)
@@ -86,6 +86,12 @@ namespace PKSim.Presentation.Presenters.Individuals
       public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
       {
          AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_protein, expressionContainerDTO.ContainerName, value));
+      }
+
+      private void updateLocationSelectionVisibility()
+      {
+         _view.IntracellularVascularEndoLocationVisible = (_protein.TissueLocation == TissueLocation.Intracellular);
+         _view.LocationOnVascularEndoVisible = (_protein.TissueLocation == TissueLocation.ExtracellularMembrane);
       }
 
       public IEnumerable<TissueLocation> AllTissueLocations()
@@ -135,29 +141,17 @@ namespace PKSim.Presentation.Presenters.Individuals
          _proteinExpressionDTO = _proteinExpressionDTOMapper.MapFrom(protein);
          _view.BindTo(_proteinExpressionDTO);
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
-         _protein.Changed += _updateViewHandler;
-         updateView();
+         _protein.Changed += _updateLocationVisibilityHandler;
+         updateLocationSelectionVisibility();
+         _moleculePropertiesPresenter.RefreshView();
       }
 
       private void clearReferences()
       {
          if (_protein != null)
-            _protein.Changed -= _updateViewHandler;
+            _protein.Changed -= _updateLocationVisibilityHandler;
 
-         if (_proteinExpressionDTO != null)
-            _proteinExpressionDTO.ClearReferences();
-      }
-
-      private void updateView()
-      {
-         _view.IntracellularVascularEndoLocationVisible = (_protein.TissueLocation == TissueLocation.Intracellular);
-         _view.LocationOnVascularEndoVisible = (_protein.TissueLocation == TissueLocation.ExtracellularMembrane);
-         _moleculePropertiesPresenter.RefreshView();
-      }
-
-      public void ClearSelection()
-      {
-         View.Clear();
+         _proteinExpressionDTO?.ClearReferences();
       }
    }
 }

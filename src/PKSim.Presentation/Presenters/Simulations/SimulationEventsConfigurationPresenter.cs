@@ -1,21 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
-
-using PKSim.Presentation.DTO.Parameters;
-
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -68,7 +65,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          OnStatusChanged();
       }
 
-      private void addEventMapping(IEventMapping eventMapping)
+      private void addEventMapping(EventMapping eventMapping)
       {
          _allEventsMappingDTO.Add(_eventMappingDTOMapper.MapFrom(eventMapping, _simulation));
       }
@@ -130,10 +127,9 @@ namespace PKSim.Presentation.Presenters.Simulations
          _editParameterPresenterTask.SetParameterUnit(this, parameterDTO, displayUnit);
       }
 
-      public void SetParameterValueDescription(IParameterDTO parameterDTO, string valueDescription)
+      public void SetParameterValueOrigin(IParameterDTO parameterDTO, ValueOrigin valueOrigin)
       {
-         _editParameterPresenterTask.SetParameterValueDescription(this, parameterDTO, valueDescription);
+         _editParameterPresenterTask.SetParameterValueOrigin(this, parameterDTO, valueOrigin);
       }
-
    }
 }

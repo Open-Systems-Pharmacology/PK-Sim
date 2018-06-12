@@ -1,42 +1,63 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
-   public abstract class ParameterMetaDataRepository<TParameterMetaData> : StartableRepository<TParameterMetaData>, IParameterMetaDataRepository<TParameterMetaData> where TParameterMetaData : ParameterMetaData
+   public abstract class ParameterMetaDataRepository<TParameterMetaData> : StartableRepository<TParameterMetaData>, IParameterMetaDataRepository<TParameterMetaData>
+      where TParameterMetaData : ParameterMetaData
    {
       private readonly IMetaDataRepository<TParameterMetaData> _flatParameterMetaDataRepository;
       private readonly IFlatContainerRepository _flatContainerRepository;
+      protected readonly IValueOriginRepository _valueOriginRepository;
       protected IList<TParameterMetaData> _parameterMetaDataList;
-      private readonly ICache<string, IList<TParameterMetaData>> _parameterMetaDataCache = new Cache<string, IList<TParameterMetaData>>(s => new List<TParameterMetaData>());
 
-      protected ParameterMetaDataRepository(IMetaDataRepository<TParameterMetaData> flatParameterMetaDataRepository, IFlatContainerRepository flatContainerRepository)
+      private readonly ICache<string, List<TParameterMetaData>> _parameterMetaDataCacheByContainer = new Cache<string, List<TParameterMetaData>>(s => new List<TParameterMetaData>());
+
+      protected ParameterMetaDataRepository(
+         IMetaDataRepository<TParameterMetaData> flatParameterMetaDataRepository,
+         IFlatContainerRepository flatContainerRepository,
+         IValueOriginRepository valueOriginRepository)
       {
          _flatParameterMetaDataRepository = flatParameterMetaDataRepository;
          _flatContainerRepository = flatContainerRepository;
+         _valueOriginRepository = valueOriginRepository;
       }
 
-      public IEnumerable<TParameterMetaData> AllFor(string containerPath)
+      public IReadOnlyList<TParameterMetaData> AllFor(string containerPath)
       {
          Start();
-         return _parameterMetaDataCache[containerPath];
+         return _parameterMetaDataCacheByContainer[containerPath];
+      }
+
+      public TParameterMetaData ParameterMetaDataFor(string containerPath, string parameterName)
+      {
+         return AllFor(containerPath).Find(x => string.Equals(x.ParameterName, parameterName));
       }
 
       protected override void DoStart()
       {
          _parameterMetaDataList = _flatParameterMetaDataRepository.All().ToList();
 
-         foreach (var parameterMetaData in _parameterMetaDataList)
+         _parameterMetaDataList.Each(parameterMetaData =>
+         {
             parameterMetaData.ParentContainerPath = _flatContainerRepository.ContainerPathFrom(parameterMetaData.ContainerId).ToString();
+            //Use clone here to ensure that we are not modifying the reference stored in the repository
+            var valueOrigin = _valueOriginRepository.FindBy(parameterMetaData.ValueOriginId).Clone();
+            parameterMetaData.ValueOrigin = valueOrigin;
+         });
 
-         //now cache the _parameter values
+         //now cache the parameter meta data by container path
          foreach (var parameterValueMetaDataGroup in _parameterMetaDataList.GroupBy(x => x.ParentContainerPath))
          {
-            _parameterMetaDataCache.Add(parameterValueMetaDataGroup.Key, new List<TParameterMetaData>(parameterValueMetaDataGroup));
+            _parameterMetaDataCacheByContainer.Add(parameterValueMetaDataGroup.Key, new List<TParameterMetaData>(parameterValueMetaDataGroup));            
          }
+
+
       }
 
       public override IEnumerable<TParameterMetaData> All()

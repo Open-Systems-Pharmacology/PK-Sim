@@ -41,9 +41,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private ISchemaItem mapFrom(FlatSchemaItem flatSchemaItem)
       {
-         var schemaItem = new SchemaItem();
-         schemaItem.Name = flatSchemaItem.Name;
-         schemaItem.ApplicationType = ApplicationTypes.ByName(flatSchemaItem.ApplicationType);
+         var schemaItem = new SchemaItem
+         {
+            Name = flatSchemaItem.Name,
+            ApplicationType = ApplicationTypes.ByName(flatSchemaItem.ApplicationType)
+         };
 
          // temporarily create parent container hierarchy of the
          //schema item container in order to retrieve parameters from the DB

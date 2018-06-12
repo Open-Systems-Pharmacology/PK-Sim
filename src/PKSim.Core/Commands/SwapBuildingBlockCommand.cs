@@ -27,7 +27,7 @@ namespace PKSim.Core.Commands
          CommandType = PKSimConstants.Command.CommandTypeUpdate;
          ObjectType = context.TypeFor(oldBuildingBlock);
          Description = PKSimConstants.Command.SwapBuildingCommandDescription(ObjectType, _oldBuildingBlock.Name);
-         context.UpdateBuildinBlockProperties(this, _newBuildingBlock);
+         context.UpdateBuildinBlockPropertiesInCommand(this, _newBuildingBlock);
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)

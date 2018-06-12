@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using PKSim.Assets;
 using OSPSuite.Utility.Collections;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
@@ -37,9 +37,9 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    distribution id as defined in the PKSim Database
       /// </summary>
-      public string Id { get; private set; }
+      public string Id { get; }
 
-      public string DisplayName { get; private set; }
+      public string DisplayName { get; }
 
       public DistributionType(string id, string displayName)
       {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Matlab
 {
@@ -12,12 +12,12 @@ namespace PKSim.Matlab
       /// <summary>
       ///    Name of the molecule being used in the model
       /// </summary>
-      public string Molecule { get; private set; }
+      public string Molecule { get; }
 
       /// <summary>
       ///    Name of the ontogeny associated with the molecule
       /// </summary>
-      public string Ontogeny { get; private set; }
+      public string Ontogeny { get; }
 
       public MoleculeOntogeny(string moleculeName, string ontogenyName)
       {
@@ -58,8 +58,8 @@ namespace PKSim.Matlab
             var ontogeny = allOntogeniesForSpecies.FindByName(moleculeOntogeny.Ontogeny);
             if (ontogeny == null) continue;
 
-            allOntogenyFactors.Add(ontogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Parameter.ONTOGENY_FACTOR, CoreConstants.Groups.ONTOGENY_LIVER));
-            allOntogenyFactors.Add(ontogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Parameter.ONTOGENY_FACTOR_GI, CoreConstants.Groups.ONTOGENY_DUODENUM));
+            allOntogenyFactors.Add(ontogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Parameters.ONTOGENY_FACTOR, CoreConstants.Groups.ONTOGENY_LIVER));
+            allOntogenyFactors.Add(ontogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Parameters.ONTOGENY_FACTOR_GI, CoreConstants.Groups.ONTOGENY_DUODENUM));
          }
 
          return allOntogenyFactors;

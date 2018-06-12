@@ -33,8 +33,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _ageInWeeksDimension = dimensionRepository.AgeInWeeks;
          SupportedProteins = new Cache<string, string>
          {
-            {CoreConstants.Parameter.ONTOGENY_FACTOR_AGP, CoreConstants.Molecule.AGP},
-            {CoreConstants.Parameter.ONTOGENY_FACTOR_ALBUMIN, CoreConstants.Molecule.Albumin}
+            {CoreConstants.Parameters.ONTOGENY_FACTOR_AGP, CoreConstants.Molecule.AGP},
+            {CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN, CoreConstants.Molecule.Albumin}
          };
       }
 

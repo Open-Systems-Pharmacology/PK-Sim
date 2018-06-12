@@ -83,7 +83,7 @@ namespace PKSim.UI
 
       public SuperToolTip ToolTipFor(ParameterAlternativeDTO parameterAlternativeDTO)
       {
-         return CreateToolTip(parameterAlternativeDTO.Description);
+         return ToolTipFor(parameterAlternativeDTO.ValueOrigin);
       }
 
       public SuperToolTip ToolTipFor(IEnumerable<ToolTipPart> toolTipParts)
@@ -175,11 +175,13 @@ namespace PKSim.UI
 
       private void addValueDescriptionToolTip(SuperToolTip toolTip, IParameterDTO parameterDTO)
       {
-         if (string.IsNullOrEmpty(parameterDTO.ValueDescription))
+         var valueOriginAsString = parameterDTO.ValueOrigin.Display;
+         if (string.IsNullOrEmpty(valueOriginAsString))
             return;
+
          toolTip.Items.AddSeparator();
-         toolTip.WithTitle(PKSimConstants.UI.ValueDescription);
-         toolTip.WithText(parameterDTO.ValueDescription);
+         toolTip.WithTitle(Captions.ValueOrigin);
+         toolTip.WithText(valueOriginAsString);
       }
 
       private void addFormulaToolTipTo(SuperToolTip toolTip, IParameterDTO parameterDTO)

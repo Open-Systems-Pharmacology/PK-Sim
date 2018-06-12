@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting.Items;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
@@ -57,7 +58,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Reporters
             dt.AddColumn<bool>(PKSimConstants.UI.ReferenceSimulation);
 
          dt.BeginLoadData();
-         foreach (var simulation in populationSimulationComparison.AllSimulations())
+         foreach (var simulation in populationSimulationComparison.AllSimulations)
          {
             var row = dt.NewRow();
             row[PKSimConstants.ObjectTypes.Simulation] = simulation.Name;

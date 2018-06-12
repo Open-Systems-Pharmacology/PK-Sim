@@ -19,7 +19,7 @@ namespace PKSim.Core.Services
 
       protected override void CacheParameterValueFor(Formulation formulation)
       {
-         _tHalf = formulation.Parameter(CoreConstants.Parameter.HALF_LIFE).Value;
+         _tHalf = formulation.Parameter(CoreConstants.Parameters.HALF_LIFE).Value;
       }
 
       protected override double ValueFor(Formulation formulation, double time)

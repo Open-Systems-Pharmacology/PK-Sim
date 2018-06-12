@@ -199,14 +199,8 @@ namespace PKSim.Presentation.Presenters.Simulations
          _view.AdjustHeight();
       }
       
-      public bool HasProcessesDefined
-      {
-         get
-         {
-            return _allPartialProcessesDTO != null && _allPartialProcessesDTO.Any() ||
-                   _allSystemicProcessesDTO != null && _allSystemicProcessesDTO.Any();
-         }
-      }
+      public bool HasProcessesDefined => _allPartialProcessesDTO != null && _allPartialProcessesDTO.Any() ||
+                                         _allSystemicProcessesDTO != null && _allSystemicProcessesDTO.Any();
 
       protected virtual void ValidateProcessSelection()
       {

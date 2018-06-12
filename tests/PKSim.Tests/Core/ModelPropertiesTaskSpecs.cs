@@ -16,7 +16,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          _modelConfigurationRepository = A.Fake<IModelConfigurationRepository>();
-         _originData = new OriginData {Species = A.Fake<Species>().WithName(CoreConstants.Species.Human)};
+         _originData = new OriginData {Species = A.Fake<Species>().WithName(CoreConstants.Species.HUMAN)};
          sut = new ModelPropertiesTask(_modelConfigurationRepository);
       }
    }

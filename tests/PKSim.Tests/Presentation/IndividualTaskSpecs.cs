@@ -26,7 +26,7 @@ namespace PKSim.Presentation
          _scaleIndividualPresenter = A.Fake<IScaleIndividualPresenter>();
          _executionContext = A.Fake<IExecutionContext>();
          _applicationController = A.Fake<IApplicationController>();
-         A.CallTo(() => _executionContext.CurrentProject).Returns(A.Fake<IPKSimProject>());
+         A.CallTo(() => _executionContext.CurrentProject).Returns(A.Fake<PKSimProject>());
          _individual = A.Fake<Individual>();
          A.CallTo(() => _applicationController.Start<ICreateIndividualPresenter>()).Returns(_createIndividualPresenter);
          A.CallTo(() => _applicationController.Start<IScaleIndividualPresenter>()).Returns(_scaleIndividualPresenter);

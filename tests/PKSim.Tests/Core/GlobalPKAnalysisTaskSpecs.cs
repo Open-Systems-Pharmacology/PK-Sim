@@ -12,6 +12,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
+using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;
 using IPKCalculationOptionsFactory = PKSim.Core.Services.IPKCalculationOptionsFactory;
 
 namespace PKSim.Core
@@ -23,7 +24,7 @@ namespace PKSim.Core
       protected IProtocolFactory _protocolFactory;
       protected IGlobalPKAnalysisRunner _globalPKAnalysisRunner;
       private IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
-      protected IPKAnalysisTask _pkAnalysisTask;
+      protected IPKAnalysesTask _pkAnalysisTask;
       private IVSSCalculator _vssCalculator;
       protected DataColumn _peripheralVenousBloodPlasma;
       protected DataColumn _venousBloodPlasma;
@@ -35,7 +36,7 @@ namespace PKSim.Core
       protected PKValues _peripheralVenousBloodPK;
       protected Species _species;
       protected SimpleProtocol _protocol;
-      protected List<ISchemaItem> _simulationSchemaItems;
+      protected List<SchemaItem> _simulationSchemaItems;
       private IInteractionTask _interactionTask;
       protected Compound _compound;
       private ICloner _cloner;
@@ -48,7 +49,7 @@ namespace PKSim.Core
          _protocolFactory = A.Fake<IProtocolFactory>();
          _globalPKAnalysisRunner = A.Fake<IGlobalPKAnalysisRunner>();
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
-         _pkAnalysisTask = A.Fake<IPKAnalysisTask>();
+         _pkAnalysisTask = A.Fake<IPKAnalysesTask>();
          _interactionTask = A.Fake<IInteractionTask>();
          _cloner = A.Fake<ICloner>();
          sut = new GlobalPKAnalysisTask(_parameterFactory, _protocolMapper, _protocolFactory, _globalPKAnalysisRunner,
@@ -64,7 +65,7 @@ namespace PKSim.Core
 
          _compound = new Compound().WithName(_compoundName);
          _compoundProperties = new CompoundProperties {Compound = _compound};
-         _simulationSchemaItems = new List<ISchemaItem>();
+         _simulationSchemaItems = new List<SchemaItem>();
          _protocol = new SimpleProtocol();
          _compoundProperties.ProtocolProperties.Protocol = _protocol;
          A.CallTo(() => _protocolMapper.MapFrom(_protocol)).Returns(_simulationSchemaItems);
@@ -121,7 +122,7 @@ namespace PKSim.Core
          base.Context();
          var protocol = A.Fake<Protocol>();
          _compoundProperties.ProtocolProperties.Protocol = protocol;
-         _species.Name = CoreConstants.Species.Human;
+         _species.Name = CoreConstants.Species.HUMAN;
 
 
          var schemaItem = new SchemaItem {ApplicationType = ApplicationTypes.Intravenous};
@@ -157,7 +158,7 @@ namespace PKSim.Core
          base.Context();
          var protocol = A.Fake<Protocol>();
          _compoundProperties.ProtocolProperties.Protocol = protocol;
-         _species.Name = CoreConstants.Species.Human;
+         _species.Name = CoreConstants.Species.HUMAN;
 
 
          var schemaItem = new SchemaItem {ApplicationType = ApplicationTypes.Oral};
@@ -193,7 +194,7 @@ namespace PKSim.Core
          base.Context();
          var protocol = A.Fake<Protocol>();
          _compoundProperties.ProtocolProperties.Protocol = protocol;
-         _species.Name = CoreConstants.Species.Human;
+         _species.Name = CoreConstants.Species.HUMAN;
          _simulation.CompoundPKFor(_compoundName).AucIV = 5;
          _bioaValue = _venousBloodPK[Constants.PKParameters.AUC_inf].Value / _simulation.AucIVFor(_compoundName).Value;
 
@@ -227,7 +228,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _species.Name = CoreConstants.Species.Mouse;
+         _species.Name = CoreConstants.Species.MOUSE;
          var protocol = A.Fake<Protocol>();
          _compoundProperties.ProtocolProperties.Protocol = protocol;
 
@@ -299,11 +300,11 @@ namespace PKSim.Core
 
          A.CallTo(() => _protocolFactory.Create(ProtocolMode.Simple, ApplicationTypes.Intravenous)).Returns(_protocol);
          _protocol.AddParameter(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.INFUSION_TIME));
-         _protocol.AddParameter(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameter.INPUT_DOSE));
+         _protocol.AddParameter(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.INPUT_DOSE));
          _protocol.AddParameter(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.START_TIME));
 
          //single dosing
-         var schemaItem = A.Fake<ISchemaItem>();
+         var schemaItem = A.Fake<SchemaItem>();
          var inputDose = DomainHelperForSpecs.ConstantParameterWithValue(10);
          var startTime = DomainHelperForSpecs.ConstantParameterWithValue(3);
          A.CallTo(() => schemaItem.Dose).Returns(inputDose);
@@ -331,7 +332,7 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_same_input_dose_as_the_original_simulation()
       {
-         _protocol.Parameter(CoreConstants.Parameter.INPUT_DOSE).Value.ShouldBeEqualTo(10);
+         _protocol.Parameter(CoreConstants.Parameters.INPUT_DOSE).Value.ShouldBeEqualTo(10);
       }
 
       [Observation]

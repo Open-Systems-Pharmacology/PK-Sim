@@ -16,19 +16,19 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public static GroupingDefinitionItem NumberOfBins = addGrouping<NumberOfBinsGroupingDefinition>(PKSimConstants.UI.NumberOfBinsGroupingDefinition);
       public static GroupingDefinitionItem ValueMapping = addGrouping<ValueMappingGroupingDefinition>(PKSimConstants.UI.ValueMappingGroupingDefinition);
 
-      private static GroupingDefinitionItem addGrouping<T>(string displayName) where T : IGroupingDefinition
+      private static GroupingDefinitionItem addGrouping<T>(string displayName) where T : GroupingDefinition
       {
          var groupingDefintion = new GroupingDefinitionItem(typeof (T), displayName);
          _allGroupings.Add(groupingDefintion, groupingDefintion.DisplayName);
          return groupingDefintion;
       }
 
-      public static IEnumerable<GroupingDefinitionItem> All<T>() where T : IGroupingDefinition
+      public static IEnumerable<GroupingDefinitionItem> All<T>() where T : GroupingDefinition
       {
          return _allGroupings.Keys.Where(x => x.GroupingDefinitionType.IsAnImplementationOf<T>());
       }
     
-      public static GroupingDefinitionItem For(IGroupingDefinition groupingDefinition)
+      public static GroupingDefinitionItem For(GroupingDefinition groupingDefinition)
       {
          return _allGroupings.Keys.First(x => x.GroupingDefinitionType == groupingDefinition.GetType());
       }

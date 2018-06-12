@@ -1,10 +1,10 @@
 using System.Linq;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Model
 {
@@ -73,17 +73,18 @@ namespace PKSim.Core.Model
       private void updateParameterFromIndividual(ISpatialStructure spatialStructure, Individual individual)
       {
          //Update parameter values for parameter that have been changed in individual
-         var allIndividualParameter = new PathCache<IParameter>(_entityPathResolver).For(individual.GetAllChildren<IParameter>());
+         var allIndividualParameters = new PathCache<IParameter>(_entityPathResolver).For(individual.GetAllChildren<IParameter>());
          var allContainerParameters = new PathCache<IParameter>(_entityPathResolver).For(spatialStructure.TopContainers.SelectMany(x => x.GetAllChildren<IParameter>()));
          var allNeighborhoodParameters = new PathCache<IParameter>(_entityPathResolver).For(spatialStructure.Neighborhoods.SelectMany(x => x.GetAllChildren<IParameter>()));
 
-         _parameterSetUpdater.UpdateValues(allIndividualParameter, allContainerParameters);
-         _parameterSetUpdater.UpdateValues(allIndividualParameter, allNeighborhoodParameters);
+         _parameterSetUpdater.UpdateValues(allIndividualParameters, allContainerParameters);
+         _parameterSetUpdater.UpdateValues(allIndividualParameters, allNeighborhoodParameters);
+
          _parameterIdUpdater.UpdateBuildingBlockId(allContainerParameters, individual);
          _parameterIdUpdater.UpdateBuildingBlockId(allNeighborhoodParameters, individual);
 
-         copyParameterTags(allIndividualParameter, allContainerParameters);
-         copyParameterTags(allIndividualParameter, allNeighborhoodParameters);
+         copyParameterTags(allIndividualParameters, allContainerParameters);
+         copyParameterTags(allIndividualParameters, allNeighborhoodParameters);
       }
 
       private void copyParameterTags(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters)
@@ -93,7 +94,7 @@ namespace PKSim.Core.Model
             var targetParameter = targetParameters[sourceParameter.Key];
             if (targetParameter == null) continue;
 
-            sourceParameter.Value.ParentContainer.Tags.Each(t=>targetParameter.AddTag(t.Value));
+            sourceParameter.Value.ParentContainer.Tags.Each(t => targetParameter.AddTag(t.Value));
          }
       }
 

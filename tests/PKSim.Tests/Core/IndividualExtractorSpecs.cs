@@ -80,11 +80,11 @@ namespace PKSim.Core
          _cloneIndividual = A.Fake<Individual>();
          var organism = new Organism();
          A.CallTo(() => _cloneIndividual.Organism).Returns(organism);
-         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(40).WithName(CoreConstants.Parameter.WEIGHT));
-         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(50).WithName(CoreConstants.Parameter.HEIGHT));
-         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(60).WithName(CoreConstants.Parameter.BMI));
-         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(70).WithName(CoreConstants.Parameter.AGE));
-         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(80).WithName(CoreConstants.Parameter.GESTATIONAL_AGE));
+         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(40).WithName(CoreConstants.Parameters.WEIGHT));
+         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(50).WithName(CoreConstants.Parameters.HEIGHT));
+         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(60).WithName(CoreConstants.Parameters.BMI));
+         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(70).WithName(CoreConstants.Parameters.AGE));
+         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(80).WithName(CoreConstants.Parameters.GESTATIONAL_AGE));
 
          _constParam1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P1");
          _constParam2 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P2");
@@ -184,11 +184,11 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_origin_data_with_the_value_of_all_organism_parameters()
       {
-         checkOriginDataParameter(_cloneIndividual.OriginData.Age, CoreConstants.Parameter.AGE);
-         checkOriginDataParameter(_cloneIndividual.OriginData.GestationalAge, CoreConstants.Parameter.GESTATIONAL_AGE);
-         checkOriginDataParameter(_cloneIndividual.OriginData.BMI, CoreConstants.Parameter.BMI);
-         checkOriginDataParameter(_cloneIndividual.OriginData.Height, CoreConstants.Parameter.HEIGHT);
-         checkOriginDataParameter(_cloneIndividual.OriginData.Weight, CoreConstants.Parameter.WEIGHT);
+         checkOriginDataParameter(_cloneIndividual.OriginData.Age, CoreConstants.Parameters.AGE);
+         checkOriginDataParameter(_cloneIndividual.OriginData.GestationalAge, CoreConstants.Parameters.GESTATIONAL_AGE);
+         checkOriginDataParameter(_cloneIndividual.OriginData.BMI, CoreConstants.Parameters.BMI);
+         checkOriginDataParameter(_cloneIndividual.OriginData.Height, CoreConstants.Parameters.HEIGHT);
+         checkOriginDataParameter(_cloneIndividual.OriginData.Weight, CoreConstants.Parameters.WEIGHT);
       }
 
       private void checkOriginDataParameter(double? originDataParameter, string parameterName)

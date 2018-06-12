@@ -37,13 +37,13 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_defined_a_BSA_parameter_as_formula()
       {
-         var bsa = sut.Organism.Parameter(CoreConstants.Parameter.BSA);
+         var bsa = sut.Organism.Parameter(CoreConstants.Parameters.BSA);
          bsa.ShouldNotBeNull();
 
          bsa.Formula.IsExplicit().ShouldBeTrue();
          bsa.DisplayUnit = bsa.Dimension.Unit("m²");
-         sut.Organism.Parameter(CoreConstants.Parameter.WEIGHT).Value = 73;
-         sut.Organism.Parameter(CoreConstants.Parameter.HEIGHT).Value = 17.6;
+         sut.Organism.Parameter(CoreConstants.Parameters.WEIGHT).Value = 73;
+         sut.Organism.Parameter(CoreConstants.Parameters.HEIGHT).Value = 17.6;
          bsa.ValueInDisplayUnit.ShouldBeEqualTo(1.89, 1e-2);
       }
 
@@ -80,19 +80,19 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         sut = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Species.Rabbit);
+         sut = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Species.RABBIT);
       }
 
       [Observation]
       public void individual_species_should_be_rabbit()
       {
-         sut.Population.Species.ShouldBeEqualTo(CoreConstants.Species.Rabbit);
+         sut.Population.Species.ShouldBeEqualTo(CoreConstants.Species.RABBIT);
       }
 
       [Observation]
       public void individual_should_not_have_BSA_parameter()
       {
-         sut.Organism.Parameter(CoreConstants.Parameter.BSA).ShouldBeNull();
+         sut.Organism.Parameter(CoreConstants.Parameters.BSA).ShouldBeNull();
       }
    }
 }

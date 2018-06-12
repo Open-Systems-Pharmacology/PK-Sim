@@ -34,8 +34,8 @@ namespace PKSim.Presentation.Presenters.Protocols
       private readonly double _endTimeInMin;
 
       private readonly ICache<Compound, IReadOnlyList<SchemaItemDTO>> _allSchemaItemDTO;
-      public IDimension TimeDimension { get; private set; }
-      public Unit TimeUnit { get; private set; }
+      public IDimension TimeDimension { get; }
+      public Unit TimeUnit { get; }
       public Unit YAxisUnit { get; private set; }
       public Unit Y2AxisUnit { get; private set; }
 
@@ -45,10 +45,7 @@ namespace PKSim.Presentation.Presenters.Protocols
       private const string UNIT = "Unit";
       private const string SCHEMA_ITEM = "SchemaItem";
 
-      public bool NeedsMultipleAxis
-      {
-         get { return YAxisUnit != Y2AxisUnit; }
-      }
+      public bool NeedsMultipleAxis => YAxisUnit != Y2AxisUnit;
 
       public bool SeriesShouldBeOnSecondAxis(string serieName)
       {
@@ -60,11 +57,10 @@ namespace PKSim.Presentation.Presenters.Protocols
       public SchemaItemDTO SchemaItemFor(object tag)
       {
          var dataRow = tag as DataRowView;
-         if (dataRow == null) return null;
-         return dataRow[SchemaItemName].DowncastTo<SchemaItemDTO>();
+         return dataRow?[SchemaItemName].DowncastTo<SchemaItemDTO>();
       }
 
-      public DataTable DataTable { get; private set; }
+      public DataTable DataTable { get; }
 
       public ProtocolChartData(ICache<Compound, IReadOnlyList<SchemaItemDTO>> allSchemaItemDTO, IDimension timeDimension, Unit timeUnit, double endTimeInMin)
       {
@@ -73,48 +69,27 @@ namespace PKSim.Presentation.Presenters.Protocols
          DataTable = new DataTable("Protocol");
          TimeDimension = timeDimension;
          TimeUnit = timeUnit;
-         DataTable.Columns.Add(new DataColumn(GROUPING_NAME, typeof (string)));
-         DataTable.Columns.Add(new DataColumn(TIME, typeof (double)));
-         DataTable.Columns.Add(new DataColumn(DOSE, typeof (double)));
-         DataTable.Columns.Add(new DataColumn(UNIT, typeof (Unit)));
-         DataTable.Columns.Add(new DataColumn(SCHEMA_ITEM, typeof(SchemaItemDTO)));
+         DataTable.AddColumn(GROUPING_NAME);
+         DataTable.AddColumn<double>(TIME);
+         DataTable.AddColumn<double>(DOSE);
+         DataTable.AddColumn<Unit>(UNIT);
+         DataTable.AddColumn<SchemaItemDTO>(SCHEMA_ITEM);
          createDataToPlot();
       }
 
-      public string GroupingName
-      {
-         get { return GROUPING_NAME; }
-      }
+      public string GroupingName => GROUPING_NAME;
 
-      public string XValue
-      {
-         get { return TIME; }
-      }
+      public string XValue => TIME;
 
-      public string YValue
-      {
-         get { return DOSE; }
-      }
+      public string YValue => DOSE;
 
-      public string UnitName
-      {
-         get { return UNIT; }
-      }
+      public string UnitName => UNIT;
 
-      public string SchemaItemName
-      {
-         get { return SCHEMA_ITEM; }
-      }
+      public string SchemaItemName => SCHEMA_ITEM;
 
-      public double XMin
-      {
-         get { return 0; }
-      }
+      public double XMin => 0;
 
-      public double XMax
-      {
-         get { return timeValueInDisplayUnit(_endTimeInMin); }
-      }
+      public double XMax => timeValueInDisplayUnit(_endTimeInMin);
 
       private double timeValueInDisplayUnit(double timeValueInBaseUnit)
       {
@@ -122,11 +97,17 @@ namespace PKSim.Presentation.Presenters.Protocols
       }
       private void createDataToPlot()
       {
-         if (_allSchemaItemDTO.Count == 0) return;
+         if (_allSchemaItemDTO.Count == 0)
+            return;
+
          var allDoseUnits = allUsedDoseUnits();
+         if (allDoseUnits.Count == 0)
+            return;
+
          bool hasOnlyOneDoseUnit = allDoseUnits.Count == 1;
          YAxisUnit = allDoseUnits[0];
          Y2AxisUnit = allDoseUnits[hasOnlyOneDoseUnit ? 0 : 1];
+
          foreach (var schemaItemsDTOForCompound in _allSchemaItemDTO.KeyValues)
          {
             var compound = schemaItemsDTOForCompound.Key;
@@ -146,9 +127,9 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       private string schemaItemAggregation(SchemaItemDTO dto)
       {
-         var key = string.Format("{0}|{1}|{2}", dto.ApplicationType, dto.StartTime, dto.DoseParameter.DisplayUnit);
+         var key = $"{dto.ApplicationType}|{dto.StartTime}|{dto.DoseParameter.DisplayUnit}";
          if (dto.NeedsFormulation)
-            key = string.Format("{0}|{1}", key, dto.FormulationKey);
+            key = $"{key}|{dto.FormulationKey}";
 
          return key;
       }

@@ -96,7 +96,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_have_set_the_parmaeter_hiearchy_path_according_to_the_parameter()
+      public void should_have_set_the_parameter_hiearchy_path_according_to_the_parameter()
       {
          _result.PathElements[PathElement.TopContainer].DisplayName.ShouldBeEqualTo(_path0.DisplayName);
          _result.PathElements[PathElement.Container].DisplayName.ShouldBeEqualTo(_path1.DisplayName);
