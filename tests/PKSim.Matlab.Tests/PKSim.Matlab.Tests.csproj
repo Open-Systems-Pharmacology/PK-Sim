@@ -106,6 +106,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\src\Db\PKSimDB.sqlite">
+      <Link>PKSimDB.sqlite</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="Data\S1_concentrBased.pkml" />
     <None Include="packages.config">
@@ -119,10 +123,6 @@
     </Content>
     <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml">
       <Link>OSPSuite.PKParameters.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\src\Db\PKSimDB.mdb">
-      <Link>PKSimDB.mdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

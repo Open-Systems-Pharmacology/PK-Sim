@@ -38,7 +38,7 @@ namespace PKSim.UI.BootStrapping
       protected override void OnCreateSplashScreen()
       {
          _splashPresenter = _applicationController.Start<ISplashViewPresenter>();
-//         SplashScreen = _splashPresenter.View.DowncastTo<Form>();
+         SplashScreen = _splashPresenter.View.DowncastTo<Form>();
       }
 
       protected override void OnCreateMainForm()

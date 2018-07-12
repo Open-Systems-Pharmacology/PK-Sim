@@ -217,10 +217,6 @@
       <Link>OSPSuite.PKParameters.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\Db\PKSimDB.mdb">
-      <Link>PKSimDB.mdb</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\Db\TemplateDB\PKSimTemplateDBSystem.mdb">
       <Link>PKSimTemplateDBSystem.mdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
