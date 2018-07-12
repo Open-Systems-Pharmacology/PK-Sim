@@ -4,7 +4,7 @@ namespace PKSim.Infrastructure.ORM.Core
    {
    }
 
-   public class ModelDatabase : AccessDatabase, IModelDatabase
+   public class ModelDatabase : SQLiteDatabase, IModelDatabase
    {
    }
 }

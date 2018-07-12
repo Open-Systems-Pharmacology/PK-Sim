@@ -40,7 +40,7 @@ namespace PKSim.Core
       public static readonly string TEMPLATE_SYSTEM_DATABASE = "PKSimTemplateDBSystem.mdb";
       public static readonly string TEMPLATE_USER_DATABASE = "PKSimTemplateDBUser.mdb";
       public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
-      public static readonly string PK_SIM_DB_FILE = "PKSimDB.mdb";
+      public static readonly string PK_SIM_DB_FILE = "PKSimDB.sqlite";
       public const string PRODUCT_NAME = "PK-Sim";
       public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";

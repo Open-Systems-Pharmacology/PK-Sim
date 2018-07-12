@@ -185,6 +185,7 @@
     <Compile Include="Extensions\CsvReaderExtensions.cs" />
     <Compile Include="Extensions\DASExtensions.cs" />
     <Compile Include="ORM\Core\Database.cs" />
+    <Compile Include="ORM\Core\SQLiteDatabase.cs" />
     <Compile Include="ORM\DAS\DAS.cs" />
     <Compile Include="ORM\DAS\DASColumnValue.cs" />
     <Compile Include="ORM\DAS\DASDataColumn.cs" />

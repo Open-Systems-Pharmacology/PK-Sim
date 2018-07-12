@@ -152,6 +152,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\Db\PKSimDB.sqlite">
+      <Link>PKSimDB.sqlite</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\Db\TemplateDB\PKSimTemplateDBUser.template">
       <Link>PKSimTemplateDBUser.template</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

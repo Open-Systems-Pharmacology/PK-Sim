@@ -28,9 +28,6 @@ namespace PKSim.Infrastructure.ORM.Core
          return dataTable;
       }
 
-      private DAS.DAS databaseConnection
-      {
-         get { return _modelDatabase.DatabaseObject; }
-      }
+      private DAS.DAS databaseConnection => _modelDatabase.DatabaseObject;
    }
 }

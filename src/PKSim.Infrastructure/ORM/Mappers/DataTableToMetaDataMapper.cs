@@ -44,23 +44,25 @@ namespace PKSim.Infrastructure.ORM.Mappers
          foreach (var propertyInfo in _propertyCache.Keys)
          {
             var value = dataRow[propertyInfo.Name];
-
+            var propertyType = propertyInfo.PropertyType;
             //for DB null values, nullable target type is supposed
             //so just replace DBNull with null value.
             if (value == DBNull.Value)
                value = null;
 
             var setHandler = _propertyCache[propertyInfo];
-            if (propertyInfo.PropertyType == typeof (bool))
+            if (propertyType.IsAnImplementationOf<bool>())
             {
                if (value != null)
                   setHandler(newObj, int.Parse(value.ToString()) == 1);
             }
-            else if (propertyInfo.PropertyType.IsAnImplementationOf(typeof (Enum)))
+            else if (propertyType.IsAnImplementationOf<Enum>())
             {
                if (value != null)
-                  setHandler(newObj, Enum.Parse(propertyInfo.PropertyType, value.ToString(), true));
+                  setHandler(newObj, Enum.Parse(propertyType, value.ToString(), true));
             }
+            else if ((propertyType.IsAnImplementationOf<int>() || propertyType.IsAnImplementationOf<int?>()) && value.IsAnImplementationOf<long>())
+               setHandler(newObj, Convert.ToInt32(value));
             else
                setHandler(newObj, value);
          }
