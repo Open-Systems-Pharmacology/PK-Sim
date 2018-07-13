@@ -37,8 +37,8 @@ namespace PKSim.Core
       public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17); //DO NOT rename this constant (otherwise Matlab-Toolbox must be adjusted)
 
       public static readonly string APPLICATION_FOLDER_PATH = @"Open Systems Pharmacology\PK-Sim";
-      public static readonly string TEMPLATE_SYSTEM_DATABASE = "PKSimTemplateDBSystem.mdb";
-      public static readonly string TEMPLATE_USER_DATABASE = "PKSimTemplateDBUser.mdb";
+      public static readonly string TEMPLATE_SYSTEM_DATABASE = "PKSimTemplateDBSystem.sqlite";
+      public static readonly string TEMPLATE_USER_DATABASE = "PKSimTemplateDBUser.sqlite";
       public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
       public static readonly string PK_SIM_DB_FILE = "PKSimDB.sqlite";
       public const string PRODUCT_NAME = "PK-Sim";
@@ -49,6 +49,7 @@ namespace PKSim.Core
       public static readonly string PROJECT_UNDEFINED = "Undefined";
       public static readonly string VERSION_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.xml";
       public static readonly string ISSUE_TRACKER_URL = "http://www.open-systems-pharmacology.org/pk-sim/issues";
+      public static readonly string TEMPLATE_DATABASE_CONVERSION_WIKI_URL = "https://github.com/Open-Systems-Pharmacology/OSPSuite.Documentation/wiki/Converting-User-Template-Database";
 
       public const string APPLICATION_NAME_TEMPLATE = "Application_";
 

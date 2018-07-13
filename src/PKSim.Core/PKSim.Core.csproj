@@ -203,7 +203,9 @@
     <Compile Include="Model\QualificationPlan.cs" />
     <Compile Include="Model\RunParameterIdentificationQualificationStep.cs" />
     <Compile Include="Model\RunSimulationQualificationStep.cs" />
+    <Compile Include="Services\IPostLaunchChecker.cs" />
     <Compile Include="Services\IQualificationStepRunner.cs" />
+    <Compile Include="Services\ITemplateDatabaseCreator.cs" />
     <Compile Include="Services\MoleculeParameterTask.cs" />
     <Compile Include="Services\QualificationStepRunnerFactory.cs" />
     <Compile Include="Services\ParameterDefaultStateUpdater.cs" />

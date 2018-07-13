@@ -48,10 +48,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public List<Template> References { get; private set; }
 
-      public bool HasReferences
-      {
-         get { return References.Any(); }
-      }
+      public bool HasReferences => References.Any();
 
       public Template() : base(ShortGuid.NewGuid())
       {

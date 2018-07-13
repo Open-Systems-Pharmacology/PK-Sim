@@ -156,6 +156,10 @@
       <Link>PKSimDB.sqlite</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\Db\TemplateDB\PKSimTemplateDBSystem.sqlite">
+      <Link>PKSimTemplateDBSystem.sqlite</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\Db\TemplateDB\PKSimTemplateDBUser.template">
       <Link>PKSimTemplateDBUser.template</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -215,10 +219,6 @@
     </None>
     <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml">
       <Link>OSPSuite.PKParameters.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\Db\TemplateDB\PKSimTemplateDBSystem.mdb">
-      <Link>PKSimTemplateDBSystem.mdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -634,6 +634,7 @@
     <Compile Include="Services\SettingsLoader.cs" />
     <Compile Include="Services\SettingsPersistor.cs" />
     <Compile Include="Services\SimulationPKAnalysesImporter.cs" />
+    <Compile Include="Services\TemplateDatabaseCreator.cs" />
     <Compile Include="Services\TemplateDatabaseConverter.cs" />
     <Compile Include="Services\TemplateTaskQuery.cs" />
     <Compile Include="Services\ChartTask.cs" />

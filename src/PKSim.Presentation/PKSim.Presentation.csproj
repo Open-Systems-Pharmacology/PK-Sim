@@ -190,6 +190,7 @@
     <Compile Include="DTO\Simulations\SimulationInteractionProcessSelectionDTO.cs" />
     <Compile Include="DTO\Simulations\SimulationResultsFileSelectionDTO.cs" />
     <Compile Include="DTO\Snapshots\LoadFromSnapshotDTO.cs" />
+    <Compile Include="Events\ShowNotificationEvent.cs" />
     <Compile Include="Extensions\QuantityPresenterExtensions.cs" />
     <Compile Include="IUserSettings.cs" />
     <Compile Include="Mappers\CompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper.cs" />
@@ -513,6 +514,7 @@
     <Compile Include="Services\PopulationHierarchyNodeCreator.cs" />
     <Compile Include="Services\PopulationOntogenyTask.cs" />
     <Compile Include="Services\PopulationSimulationAnalysisStarter.cs" />
+    <Compile Include="Services\PostLaunchChecker.cs" />
     <Compile Include="Services\SimulationComparisonCreator.cs" />
     <Compile Include="Services\SimulationResultsTask.cs" />
     <Compile Include="Services\SolubilityParameterFormatter.cs" />

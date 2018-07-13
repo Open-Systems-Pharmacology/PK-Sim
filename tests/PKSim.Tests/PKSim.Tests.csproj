@@ -306,6 +306,7 @@
     <Compile Include="Core\SpeciesSpecs.cs" />
     <Compile Include="Core\TableFormulaMapperSpecs.cs" />
     <Compile Include="Core\TablePartSpecs.cs" />
+    <Compile Include="Core\TemplateDatabaseCreatorSpecs.cs" />
     <Compile Include="Core\TimeProfileAnalysisChartSpecs.cs" />
     <Compile Include="Core\UpdateParametersValueOriginCommandSpecs.cs" />
     <Compile Include="Core\UpdateParameterValueOriginCommandSpecs.cs" />
@@ -579,6 +580,7 @@
     <Compile Include="Presentation\MoleculeParameterTaskSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeDTOSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeNamePresenterSpecs.cs" />
+    <Compile Include="Presentation\PostLaunchCheckerSpecs.cs" />
     <Compile Include="Presentation\QualificationStepRunnerFactorySpecs.cs" />
     <Compile Include="Presentation\QualiticationPlanRunnerSpecs.cs" />
     <Compile Include="Presentation\RenameSubjectUICommandSpecs.cs" />
@@ -1112,6 +1114,10 @@
       <Link>PKSimDB.sqlite</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\src\Db\TemplateDB\PKSimTemplateDBSystem.sqlite">
+      <Link>PKSimTemplateDBSystem.sqlite</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="Data\2Pore_515.pksim5" />
     <None Include="Data\515_UnitTest.pksim5" />
@@ -1245,10 +1251,6 @@
     </None>
     <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml">
       <Link>OSPSuite.PKParameters.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\src\Db\TemplateDB\PKSimTemplateDBSystem.mdb">
-      <Link>PKSimTemplateDBSystem.mdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\TemplateDatabaseV5.2.mdb">
