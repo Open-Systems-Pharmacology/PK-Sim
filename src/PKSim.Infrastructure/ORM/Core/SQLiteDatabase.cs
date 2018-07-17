@@ -1,4 +1,5 @@
-﻿using PKSim.Infrastructure.ORM.DAS;
+﻿using System;
+using PKSim.Infrastructure.ORM.DAS;
 
 namespace PKSim.Infrastructure.ORM.Core
 {
@@ -9,5 +10,14 @@ namespace PKSim.Infrastructure.ORM.Core
       }
 
       protected override DataProviders GetProvider() => DataProviders.SQLite;
+   }
+
+   public abstract class AccessDatabase : Database
+   {
+      protected AccessDatabase(string password = null) : base(password, String.Empty)
+      {
+      }
+      protected override DataProviders GetProvider() => DataProviders.MSAccess;
+
    }
 }

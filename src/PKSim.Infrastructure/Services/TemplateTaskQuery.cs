@@ -195,12 +195,12 @@ namespace PKSim.Infrastructure.Services
 
                var sqlQuery = $"SELECT t.{TemplateTable.Columns.XML} FROM {TemplateTable.NAME} t WHERE t.{TemplateTable.Columns.TEMPLATE_TYPE} IN ({typeFrom(template.TemplateType)}) AND t.{TemplateTable.Columns.NAME} = {_pName}";
 
-               var query = new DASDataTable(connection);
-               connection.FillDataTable(query, sqlQuery);
+               var table = new DASDataTable(connection);
+               connection.FillDataTable(table, sqlQuery);
 
-               if (query.Rows.Count() > 0)
+               if (table.Rows.Count() > 0)
                {
-                  var serializationString = query.Rows.ItemByIndex(0)[TemplateTable.Columns.XML].ToString();
+                  var serializationString = table.Rows.ItemByIndex(0)[TemplateTable.Columns.XML].ToString();
                   var objectFromTemplate = _stringSerializer.Deserialize<T>(serializationString);
                   _objectIdResetter.ResetIdFor(objectFromTemplate);
 
@@ -223,7 +223,7 @@ namespace PKSim.Infrastructure.Services
 
       private static void addTemplateNameParameter(string templateName, DAS connection)
       {
-         connection.AddParameter(_pName, templateName, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_VARCHAR2);
+         connection.AddParameter(_pName, templateName, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.STRING);
       }
 
       private static void removeNameParameter(DAS connection)

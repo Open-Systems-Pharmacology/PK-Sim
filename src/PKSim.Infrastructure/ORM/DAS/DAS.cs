@@ -15,7 +15,9 @@ namespace PKSim.Infrastructure.ORM.DAS
 
       private const string STR_WHERE = " WHERE ";
       private DbProviderFactory _providerFactory;
-      private DbConnection _connection;
+
+      public DbConnection Connection { get; private set; }
+
       //this is just a dummy command to create a parameters collection to store parameters
       private DbCommand _command;
       private DbParameterCollection _parameters;
@@ -57,15 +59,15 @@ namespace PKSim.Infrastructure.ORM.DAS
          /// <summary>
          /// This means the parameter is used to hold numeric values.
          /// </summary>
-         ST_NUMBER = DbType.Double,
+         NUMBER = DbType.Double,
          /// <summary>
          /// This means the parameter is used to hold textual values.
          /// </summary>
-         ST_VARCHAR2 = DbType.String,
+         STRING = DbType.String,
          /// <summary>
          /// This means the parameter is used to hold date values.
          /// </summary>
-         ST_DATE = DbType.Date
+         DATE = DbType.Date
       }
 
       /// <summary>
@@ -107,10 +109,10 @@ namespace PKSim.Infrastructure.ORM.DAS
                }
             }
 
-            _connection = _providerFactory.CreateConnection();
-            _connection.ConnectionString = connectionString;
-            _connection.Open();
-            if (_connection.State == ConnectionState.Open)
+            Connection = _providerFactory.CreateConnection();
+            Connection.ConnectionString = connectionString;
+            Connection.Open();
+            if (Connection.State == ConnectionState.Open)
             {
                _provider = dataProvider;
                _connectionString = connectionString;
@@ -325,9 +327,9 @@ namespace PKSim.Infrastructure.ORM.DAS
       {
          get
          {
-            if (_connection != null)
+            if (Connection != null)
             {
-               return (_connection.State == ConnectionState.Open);
+               return (Connection.State == ConnectionState.Open);
             }
             return false;
          }
@@ -342,10 +344,10 @@ namespace PKSim.Infrastructure.ORM.DAS
          get
          {
             if (IsConnected)
-               return String.IsNullOrEmpty(_connection.Database)
+               return String.IsNullOrEmpty(Connection.Database)
                          ?
-                            _connection.DataSource
-                         : _connection.Database;
+                            Connection.DataSource
+                         : Connection.Database;
             throw new NotConnectedException();
          }
       }
@@ -367,7 +369,7 @@ namespace PKSim.Infrastructure.ORM.DAS
          {
             var cmd = _providerFactory.CreateCommand();
             cmd.CommandText = sql;
-            cmd.Connection = _connection;
+            cmd.Connection = Connection;
             foreach (DbParameter param in _parameters)
             {
                if (!sql.Contains(param.ParameterName)) continue;
@@ -417,9 +419,9 @@ namespace PKSim.Infrastructure.ORM.DAS
       /// 
       ///   try 
       ///   {
-      ///     das.AddParameter(RETVAL, String.Empty, DAS.ParameterModes.PARM_RETURN, DAS.ServerTypes.ST_VARCHAR2);
-      ///     das.AddParameter(PARAM1, param1, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_VARCHAR2);
-      ///     das.AddParameter(PARAM2, param2, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_NUMBER);
+      ///     das.AddParameter(RETVAL, String.Empty, DAS.ParameterModes.PARM_RETURN, DAS.ServerTypes.STRING);
+      ///     das.AddParameter(PARAM1, param1, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.STRING);
+      ///     das.AddParameter(PARAM2, param2, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.NUMBER);
       /// 
       ///     das.ExecuteStoredProcedure("MyFunction");
       ///     returnValue = (string)das.GetParameterValue(RETVAL);
@@ -444,7 +446,7 @@ namespace PKSim.Infrastructure.ORM.DAS
             DbCommand cmd = _providerFactory.CreateCommand();
             cmd.CommandText = storedProcedureName;
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Connection = _connection;
+            cmd.Connection = Connection;
             foreach (DbParameter param in _parameters)
             {
                DbParameter newParam = _providerFactory.CreateParameter();
@@ -515,10 +517,11 @@ namespace PKSim.Infrastructure.ORM.DAS
       /// </summary>
       /// <param name="tableName">Name of the database table which schema should be used.</param>
       /// <exception cref="NotConnectedException">Thrown when there is no established connection.</exception>
-      public DASDataTable CreateDASDataTable(string tableName)
+      public DASDataTable CreateDASDataTable(string tableName = "Query")
       {
          if ((string.IsNullOrEmpty(tableName)))
-            throw new ArgumentNullException("tableName");
+            throw new ArgumentNullException(nameof(tableName));
+
          return CreateDASDataTable("*", tableName);
       }
 
@@ -544,7 +547,7 @@ namespace PKSim.Infrastructure.ORM.DAS
 
             var cmd = _providerFactory.CreateCommand();
             cmd.CommandText = string.Format("SELECT {0} FROM {1}", columnList, tableName);
-            cmd.Connection = _connection;
+            cmd.Connection = Connection;
             cmd.Transaction = _transaction;
             dataTable.Load(cmd.ExecuteReader(CommandBehavior.SchemaOnly));
 
@@ -638,7 +641,7 @@ namespace PKSim.Infrastructure.ORM.DAS
       /// <exception cref="NotConnectedException">Thrown when there is no established connection.</exception>
       public DASDataTable CreateAndFillDataTable(string sql)
       {
-         DASDataTable dt = CreateDASDataTable(GetDBTableName(sql));
+         var dt = CreateDASDataTable(GetDBTableName(sql));
          FillDataTable(dt, sql);
          return dt;
       }
@@ -667,10 +670,8 @@ namespace PKSim.Infrastructure.ORM.DAS
 
          var cmd = _providerFactory.CreateCommand();
          cmd.CommandText = sql;
-         cmd.Connection = _connection;
+         cmd.Connection = Connection;
          cmd.Transaction = _transaction;
-         if (dataTable == null)
-            dataTable = CreateDASDataTable(GetDBTableName(sql));
 
          foreach (DbParameter param in _parameters)
          {
@@ -709,7 +710,7 @@ namespace PKSim.Infrastructure.ORM.DAS
                case DbType.Date:
                case DbType.DateTime:
                case DbType.Time:
-                  paramValue.ServerType = ServerTypes.ST_DATE;
+                  paramValue.ServerType = ServerTypes.DATE;
                   break;
                case DbType.Decimal:
                case DbType.Double:
@@ -720,13 +721,13 @@ namespace PKSim.Infrastructure.ORM.DAS
                case DbType.UInt16:
                case DbType.UInt32:
                case DbType.UInt64:
-                  paramValue.ServerType = ServerTypes.ST_NUMBER;
+                  paramValue.ServerType = ServerTypes.NUMBER;
                   break;
                case DbType.AnsiString:
                case DbType.AnsiStringFixedLength:
                case DbType.String:
                case DbType.StringFixedLength:
-                  paramValue.ServerType = ServerTypes.ST_VARCHAR2;
+                  paramValue.ServerType = ServerTypes.STRING;
                   break;
                default:
                   throw new UnsupportedDataTypeException(parameter.DbType.ToString());
@@ -783,7 +784,7 @@ namespace PKSim.Infrastructure.ORM.DAS
             {
                cmd.CommandText = string.Format("SELECT {0}.NEXTVAL FROM DUAL", autoValueCreator);
             }
-            cmd.Connection = _connection;
+            cmd.Connection = Connection;
             cmd.Transaction = _transaction;
             returnValue = cmd.ExecuteScalar();
          }
@@ -847,8 +848,8 @@ namespace PKSim.Infrastructure.ORM.DAS
       /// 
       ///   try 
       ///   {
-      ///     das.AddParameter(PARAM1, param1, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_VARCHAR2);
-      ///     das.AddParameter(PARAM2, param2, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_NUMBER);
+      ///     das.AddParameter(PARAM1, param1, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.STRING);
+      ///     das.AddParameter(PARAM2, param2, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.NUMBER);
       /// 
       ///     das.FillDataTable(ref dt, sql);
       ///   }
@@ -873,11 +874,11 @@ namespace PKSim.Infrastructure.ORM.DAS
             param.ParameterName = paramName.StartsWith("@") ? paramName : string.Concat("@", paramName);
             switch (serverType)
             {
-               case ServerTypes.ST_DATE:
+               case ServerTypes.DATE:
                   param.DbType = DbType.DateTime;
                   param.Value = paramValue;
                   break;
-               case ServerTypes.ST_NUMBER:
+               case ServerTypes.NUMBER:
                   int variable;
                   if (Int32.TryParse(paramValue.ToString(),out variable))
                   {
@@ -890,7 +891,7 @@ namespace PKSim.Infrastructure.ORM.DAS
                      param.Value = Convert.ToDouble(paramValue);
                   }
                   break;
-               case ServerTypes.ST_VARCHAR2:
+               case ServerTypes.STRING:
                   param.DbType = DbType.String;
                   param.Value = paramValue;
                   break;
@@ -950,8 +951,8 @@ namespace PKSim.Infrastructure.ORM.DAS
       /// 
       ///   try 
       ///   {
-      ///     das.AddParameter(PARAM1, param1, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_VARCHAR2);
-      ///     das.AddParameter(PARAM2, param2, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_NUMBER);
+      ///     das.AddParameter(PARAM1, param1, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.STRING);
+      ///     das.AddParameter(PARAM2, param2, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.NUMBER);
       /// 
       ///     das.FillDataTable(ref dt, sql);
       ///   }
@@ -1044,8 +1045,8 @@ namespace PKSim.Infrastructure.ORM.DAS
       {
          if (!IsConnected)
             throw new NotConnectedException();
-         _connection.Close();
-         _connection = null;
+         Connection.Close();
+         Connection = null;
       }
 
       /// <summary>
@@ -1067,7 +1068,7 @@ namespace PKSim.Infrastructure.ORM.DAS
             throw new NotConnectedException();
          if (_transactionOpen)
             throw new AlreadyOpenTransactionException();
-         _transaction = _connection.BeginTransaction();
+         _transaction = Connection.BeginTransaction();
          _transactionOpen = true;
       }
 
@@ -1115,7 +1116,7 @@ namespace PKSim.Infrastructure.ORM.DAS
 
       public void Dispose()
       {
-         _connection = null;
+         Connection = null;
       }
    }
 }

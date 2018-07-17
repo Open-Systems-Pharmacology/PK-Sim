@@ -12,13 +12,11 @@ namespace PKSim.Infrastructure.ORM.Core
    public class SimpleDbGateway : IDbGateway
    {
       private readonly IModelDatabase _modelDatabase;
-      private readonly IPKSimConfiguration _configuration;
 
       public SimpleDbGateway(IModelDatabase modelDatabase, IPKSimConfiguration configuration)
       {
          _modelDatabase = modelDatabase;
-         _configuration = configuration;
-         _modelDatabase.Connect(_configuration.PKSimDbPath);
+         _modelDatabase.Connect(configuration.PKSimDbPath);
       }
 
       public virtual DataTable ExecuteStatementForDataTable(string selectStatement)

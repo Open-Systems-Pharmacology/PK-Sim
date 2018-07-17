@@ -13,7 +13,7 @@ namespace PKSim.Presentation
       protected IProteinExpressionsView _view;
       protected ISubPresenterItemManager<IExpressionItemPresenter> _subPresenterManager;
       protected IDialogCreator _dialogCreator;
-      protected IProteinExpressionQueries _proteinExpressionQueries;
+      protected IGeneExpressionQueries _geneExpressionQueries;
       protected IMappingPresenter _mappingPresenter;
       private IProteinExpressionDataHelper _dataHelper;
 
@@ -22,11 +22,11 @@ namespace PKSim.Presentation
          _view = A.Fake<IProteinExpressionsView>();
          _subPresenterManager = A.Fake<ISubPresenterItemManager<IExpressionItemPresenter>>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _proteinExpressionQueries = A.Fake<IProteinExpressionQueries>();
+         _geneExpressionQueries = A.Fake<IGeneExpressionQueries>();
          _mappingPresenter = A.Fake<IMappingPresenter>();
          _dataHelper= A.Fake<IProteinExpressionDataHelper>();
 
-         sut = new ProteinExpressionsPresenter(_view, _subPresenterManager, _dialogCreator, _proteinExpressionQueries, _mappingPresenter, _dataHelper);
+         sut = new ProteinExpressionsPresenter(_view, _subPresenterManager, _dialogCreator, _geneExpressionQueries, _mappingPresenter, _dataHelper);
       }
    }
 

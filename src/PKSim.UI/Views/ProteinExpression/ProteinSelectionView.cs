@@ -15,6 +15,7 @@ using PKSim.Presentation.Views.ProteinExpression;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Assets;
+using OSPSuite.Core.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 
@@ -69,12 +70,12 @@ namespace PKSim.UI.Views.ProteinExpression
       private static void OnGridViewRowStyle(object sender, RowStyleEventArgs e)
       {
          var gridView = sender as GridView;
-         if (gridView == null) return;
-         var row = gridView.GetDataRow(e.RowHandle);
-         if (row == null) return;
-         var hasData = row[DatabaseConfiguration.ProteinColumns.HAS_DATA];
-         if (hasData == null) return;
-         if (((int) hasData) != 1)
+         var row = gridView?.GetDataRow(e.RowHandle);
+         if (row == null)
+            return;
+
+         var hasData = row.ValueAt<long>(DatabaseConfiguration.ProteinColumns.HAS_DATA);
+         if (hasData != 1)
             e.Appearance.BackColor = Color.LightGray;
       }
 
@@ -84,20 +85,20 @@ namespace PKSim.UI.Views.ProteinExpression
       void onSearchCriteriaChanged(object sender, EventArgs e)
       {
          var textbox = sender as TextEdit;
-         if (textbox != null)
-            if (textbox.EditValue != null) btnSearch.Enabled = (textbox.EditValue.ToString().Length > 0);
+         if (textbox?.EditValue != null)
+            btnSearch.Enabled = (textbox.EditValue.ToString().Length > 0);
       }
 
       void onFocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
       {
          SelectionChanged = true;
          var view = sender as GridView;
-         if (view == null) return;
-         var row = view.GetDataRow(e.FocusedRowHandle);
-         if (row == null) return;
-         var hasData = (int) row[DatabaseConfiguration.ProteinColumns.HAS_DATA];
-         _presenter.ProteinHasData = (hasData == 1);
+         var row = view?.GetDataRow(e.FocusedRowHandle);
+         if (row == null)
+            return;
 
+         var hasData = row.ValueAt<long>(DatabaseConfiguration.ProteinColumns.HAS_DATA);
+         _presenter.ProteinHasData = (hasData == 1);
          _presenter.SetActiveControl();
       }
 
@@ -125,7 +126,7 @@ namespace PKSim.UI.Views.ProteinExpression
          if (hi.HitTest == GridHitTest.RowCell || hi.HitTest == GridHitTest.Column)
          {
             //An object that uniquely identifies a row cell
-            object o = string.Format("Row {0}-{1}", hi.RowHandle, hi.Column.FieldName);
+            object o = $"Row {hi.RowHandle}-{hi.Column.FieldName}";
             info = new ToolTipControlInfo(o, string.Empty);
             if (hi.Column.FieldName == DatabaseConfiguration.ProteinColumns.COL_GENE_ID ||
                 hi.Column.FieldName == DatabaseConfiguration.ProteinColumns.COL_SYMBOL ||

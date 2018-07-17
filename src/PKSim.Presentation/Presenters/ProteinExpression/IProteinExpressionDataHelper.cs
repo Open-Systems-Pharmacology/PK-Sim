@@ -23,6 +23,6 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
       /// <summary>
       ///    This helping method retrieves a string collection with all distinct values of the given column.
       /// </summary>
-      ICollection GetDistinctLoV(DataColumn column);
+      IList GetDistinctLoV(DataColumn column);
    }
 }

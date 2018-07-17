@@ -365,10 +365,9 @@
     <Compile Include="ORM\Repositories\FlatCalculationMethodParameterRateRepository.cs" />
     <Compile Include="ORM\Repositories\FlatCategoryRepository.cs" />
     <Compile Include="ORM\Repositories\FlatTransporterContainerTemplateRepository.cs" />
-    <Compile Include="ORM\Core\AccessDatabase.cs" />
     <Compile Include="ORM\Core\DatabaseDisposer.cs" />
     <Compile Include="ORM\Core\ModelDatabase.cs" />
-    <Compile Include="ORM\Core\ProteinExpressionDatabase.cs" />
+    <Compile Include="ORM\Core\GeneExpressionDatabase.cs" />
     <Compile Include="ORM\Core\TemplateDatabase.cs" />
     <Compile Include="ORM\Core\UpdatableLinkDbConfiguration.cs" />
     <Compile Include="ORM\FlatObjects\FlatApplication.cs" />
@@ -658,8 +657,8 @@
     <Compile Include="Services\VersionChecker.cs" />
     <Compile Include="Services\ObservedDataTask.cs" />
     <Compile Include="Services\ProjectFileCompressor.cs" />
-    <Compile Include="Services\ProteinExpressionQueries.cs" />
-    <Compile Include="Services\ProteinExpressionsDatabasePathManager.cs" />
+    <Compile Include="Services\GeneExpressionQueries.cs" />
+    <Compile Include="Services\GeneExpressionsDatabasePathManager.cs" />
     <Compile Include="Serialization\Xml\Serializers\BuildingBlockXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\CalculationMethodXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\CategoryItemXmlSerializer.cs" />

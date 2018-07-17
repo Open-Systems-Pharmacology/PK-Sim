@@ -613,7 +613,7 @@
     <Compile Include="Services\IObservedDataTask.cs" />
     <Compile Include="Services\IPopulationExportTask.cs" />
     <Compile Include="Services\ISimulationSettingsRetriever.cs" />
-    <Compile Include="Services\IProteinExpressionQueries.cs" />
+    <Compile Include="Services\IGeneExpressionQueries.cs" />
     <Compile Include="Services\NoBuildingBlockTemplateAvailableException.cs" />
     <Compile Include="Services\ObservedDataInSimulationManager.cs" />
     <Compile Include="Services\PKAnalysesMolarToMassConverter.cs" />
@@ -743,7 +743,7 @@
     <Compile Include="Services\IModelObserverQuery.cs" />
     <Compile Include="Services\IModelPassiveTransportQuery.cs" />
     <Compile Include="Services\INeighborhoodFinalizer.cs" />
-    <Compile Include="Services\IProteinExpressionsDatabasePathManager.cs" />
+    <Compile Include="Services\IGeneExpressionsDatabasePathManager.cs" />
     <Compile Include="Services\PKSimMoleculeStartValuesCreator.cs" />
     <Compile Include="Services\IMoleculeExpressionTask.cs" />
     <Compile Include="Services\MoleculesAndReactionsCreator.cs" />
