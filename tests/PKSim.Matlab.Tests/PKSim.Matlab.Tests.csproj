@@ -121,6 +121,10 @@
       <Link>OSPSuite.Dimensions.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x64\SQLite.Interop.dll">
+      <Link>SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml">
       <Link>OSPSuite.PKParameters.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
