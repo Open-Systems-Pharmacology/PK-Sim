@@ -1114,8 +1114,8 @@
       <Link>PKSimDB.sqlite</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\src\Db\TemplateDB\PKSimTemplateDBSystem.sqlite">
-      <Link>PKSimTemplateDBSystem.sqlite</Link>
+    <None Include="..\..\src\Db\TemplateDB\PKSimTemplateDBSystem.templateDbSystem">
+      <Link>PKSimTemplateDBSystem.templateDbSystem</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="app.config" />

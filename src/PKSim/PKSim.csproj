@@ -156,8 +156,8 @@
       <Link>PKSimDB.sqlite</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\Db\TemplateDB\PKSimTemplateDBSystem.sqlite">
-      <Link>PKSimTemplateDBSystem.sqlite</Link>
+    <None Include="..\Db\TemplateDB\PKSimTemplateDBSystem.templateDbSystem">
+      <Link>PKSimTemplateDBSystem.templateDbSystem</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\Db\TemplateDB\PKSimTemplateDBUser.template">

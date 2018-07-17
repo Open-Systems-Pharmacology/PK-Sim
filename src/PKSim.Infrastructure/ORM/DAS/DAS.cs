@@ -478,7 +478,7 @@ namespace PKSim.Infrastructure.ORM.DAS
       /// <returns>DBTableName</returns>
       /// <remarks>The DB table name can only be evaluated, if the sql statement queries 
       /// only a single database table.</remarks>
-      private static string GetDBTableName(string sql)
+      private static string getDbTableName(string sql)
       {
          var returnValue = sql.ToUpper();
          if (returnValue.Contains(STR_FROM))
@@ -641,7 +641,7 @@ namespace PKSim.Infrastructure.ORM.DAS
       /// <exception cref="NotConnectedException">Thrown when there is no established connection.</exception>
       public DASDataTable CreateAndFillDataTable(string sql)
       {
-         var dt = CreateDASDataTable(GetDBTableName(sql));
+         var dt = CreateDASDataTable(getDbTableName(sql));
          FillDataTable(dt, sql);
          return dt;
       }

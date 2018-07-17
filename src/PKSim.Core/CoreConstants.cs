@@ -34,17 +34,38 @@ namespace PKSim.Core
       public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
       public const int NUMBER_OF_PKA_PARAMETERS = 3;
       public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};
-      public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17); //DO NOT rename this constant (otherwise Matlab-Toolbox must be adjusted)
+      //DO NOT rename this constant (otherwise Matlab-Toolbox must be adjusted)
+      public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17);
+
+      public static class Filter
+      {
+         public static readonly string PROJECT_EXTENSION = ".pksim5";
+         public static readonly string PROJECT_OLD_EXTENSION = ".pkprj";
+         public static readonly string MDB_EXTENSION = ".mdb";
+         public static readonly string MODEL_DB_EXTENSION = ".sqlite";
+         public static readonly string USER_TEMPLATE_DB_EXTENSION = ".templateDbUser";
+         public static readonly string SYSTEM_TEMPLATE_DB_EXTENSION = ".templateDbSystem";
+         public static readonly string GENE_DB_EXTENSION = ".expressionDb";
+         public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
+         public static readonly string SIMULATION_RESULTS_FILTER = $"*{Constants.Filter.CSV_EXTENSION}";
+         public static readonly string EXPRESSION_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Gene Expression Database", GENE_DB_EXTENSION);
+         public static readonly string TEMPLATE_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("User Template Database", USER_TEMPLATE_DB_EXTENSION);
+         public static readonly string MOBI_FILE_FILTER = Constants.Filter.FileFilter("MoBi", ".exe");
+         public static readonly string POPULATION_FILE_FILTER = string.Format("Population File (*{0};*{1})|*{0};*{1}", Constants.Filter.CSV_EXTENSION, Constants.Filter.TEXT_EXTENSION);
+         public static readonly string LOAD_PROJECT_FILTER = string.Format("{0} Project (*{1};*{2})|*{1};*{2}", PRODUCT_NAME_WITH_TRADEMARK, PROJECT_EXTENSION, PROJECT_OLD_EXTENSION);
+         public static readonly string SAVE_PROJECT_FILTER = Constants.Filter.FileFilter($"{PRODUCT_NAME_WITH_TRADEMARK} Project", PROJECT_EXTENSION);
+      }
+
 
       public static readonly string APPLICATION_FOLDER_PATH = @"Open Systems Pharmacology\PK-Sim";
-      public static readonly string TEMPLATE_SYSTEM_DATABASE = "PKSimTemplateDBSystem.sqlite";
-      public static readonly string TEMPLATE_USER_DATABASE = "PKSimTemplateDBUser.sqlite";
+
+      public static readonly string TEMPLATE_SYSTEM_DATABASE = $"PKSimTemplateDBSystem{Filter.SYSTEM_TEMPLATE_DB_EXTENSION}";
+      public static readonly string TEMPLATE_USER_DATABASE = $"PKSimTemplateDBUser{Filter.USER_TEMPLATE_DB_EXTENSION}";
+      public static readonly string PK_SIM_DB_FILE = $"PKSimDB{Filter.MODEL_DB_EXTENSION}";
       public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
-      public static readonly string PK_SIM_DB_FILE = "PKSimDB.sqlite";
       public const string PRODUCT_NAME = "PK-Sim";
       public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
-      public static readonly string ACCESS_USER_NAME = "Admin";
       public static readonly string VALUE_PROPERTY_NAME = "Value";
       public static readonly string PROJECT_UNDEFINED = "Undefined";
       public static readonly string VERSION_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.xml";
@@ -61,23 +82,7 @@ namespace PKSim.Core
       //not as readonly as the text will be updated with the current version
       public static string ProductDisplayName = PRODUCT_NAME_WITH_TRADEMARK;
 
-      public static class Filter
-      {
-         public static readonly string PROJECT_EXTENSION = ".pksim5";
-         public static readonly string PROJECT_OLD_EXTENSION = ".pkprj";
-         public static readonly string MDB_EXTENSION = ".mdb";
-         public static readonly string MODEL_DB_EXTENSION = ".sqlite";
-         public static readonly string TEMPLATE_DB_EXTENSION = ".sqlite";
-         public static readonly string GENE_DB_EXTENSION = ".sqlite";
-         public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
-         public static readonly string SIMULATION_RESULTS_FILTER = $"*{Constants.Filter.CSV_EXTENSION}";
-         public static readonly string EXPRESSION_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Expression Database", GENE_DB_EXTENSION);
-         public static readonly string TEMPLATE_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Template Database", TEMPLATE_DB_EXTENSION);
-         public static readonly string MOBI_FILE_FILTER = Constants.Filter.FileFilter("MoBi", ".exe");
-         public static readonly string POPULATION_FILE_FILTER = string.Format("Population File (*{0};*{1})|*{0};*{1}", Constants.Filter.CSV_EXTENSION, Constants.Filter.TEXT_EXTENSION);
-         public static readonly string LOAD_PROJECT_FILTER = string.Format("{0} Project (*{1};*{2})|*{1};*{2}", PRODUCT_NAME_WITH_TRADEMARK, PROJECT_EXTENSION, PROJECT_OLD_EXTENSION);
-         public static readonly string SAVE_PROJECT_FILTER = Constants.Filter.FileFilter($"{PRODUCT_NAME_WITH_TRADEMARK} Project", PROJECT_EXTENSION);
-      }
+    
 
       public static string DefaultResultsExportNameFor(string simulationName) => $"{simulationName}-Results";
 
