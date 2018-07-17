@@ -100,7 +100,7 @@
               </Component>
 
               <Component Id="PKSimTemplateDBSystem" Guid="DF39FF9D-DAB8-4A6A-9E3E-FEFD68489F3C">
-                <File Name="PKSimTemplateDBSystem.sqlite" Id="PKSimTemplateDBSystem" Source="$(var.DeployDir)/PKSimTemplateDBSystem.sqlite" KeyPath="yes" />
+                <File Name="PKSimTemplateDBSystem.templateDbSystem" Id="PKSimTemplateDBSystem" Source="$(var.DeployDir)/PKSimTemplateDBSystem.templateDbSystem" KeyPath="yes" />
               </Component>
 
               <Directory Id="ChartLayoutsFolder" Name="ChartLayouts">
