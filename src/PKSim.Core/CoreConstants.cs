@@ -39,13 +39,13 @@ namespace PKSim.Core
 
       public static class Filter
       {
-         public static readonly string PROJECT_EXTENSION = ".pksim5";
-         public static readonly string PROJECT_OLD_EXTENSION = ".pkprj";
-         public static readonly string MDB_EXTENSION = ".mdb";
-         public static readonly string MODEL_DB_EXTENSION = ".sqlite";
-         public static readonly string USER_TEMPLATE_DB_EXTENSION = ".templateDbUser";
-         public static readonly string SYSTEM_TEMPLATE_DB_EXTENSION = ".templateDbSystem";
-         public static readonly string GENE_DB_EXTENSION = ".expressionDb";
+         public const string PROJECT_EXTENSION = ".pksim5";
+         public const string PROJECT_OLD_EXTENSION = ".pkprj";
+         public const string MDB_EXTENSION = ".mdb";
+         public const string MODEL_DB_EXTENSION = ".sqlite";
+         public const string USER_TEMPLATE_DB_EXTENSION = ".templateDbUser";
+         public const string SYSTEM_TEMPLATE_DB_EXTENSION = ".templateDbSystem";
+         public const string GENE_DB_EXTENSION = ".expressionDb";
          public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
          public static readonly string SIMULATION_RESULTS_FILTER = $"*{Constants.Filter.CSV_EXTENSION}";
          public static readonly string EXPRESSION_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Gene Expression Database", GENE_DB_EXTENSION);
@@ -55,7 +55,6 @@ namespace PKSim.Core
          public static readonly string LOAD_PROJECT_FILTER = string.Format("{0} Project (*{1};*{2})|*{1};*{2}", PRODUCT_NAME_WITH_TRADEMARK, PROJECT_EXTENSION, PROJECT_OLD_EXTENSION);
          public static readonly string SAVE_PROJECT_FILTER = Constants.Filter.FileFilter($"{PRODUCT_NAME_WITH_TRADEMARK} Project", PROJECT_EXTENSION);
       }
-
 
       public static readonly string APPLICATION_FOLDER_PATH = @"Open Systems Pharmacology\PK-Sim";
 

@@ -12,12 +12,13 @@ namespace PKSim.Infrastructure.ORM.Core
       protected override DataProviders GetProvider() => DataProviders.SQLite;
    }
 
-   public abstract class AccessDatabase : Database
-   {
-      protected AccessDatabase(string password = null) : base(password, String.Empty)
-      {
-      }
-      protected override DataProviders GetProvider() => DataProviders.MSAccess;
-
-   }
+   //TODO REMOVE
+//   public abstract class AccessDatabase : Database
+//   {
+//      protected AccessDatabase(string password = null) : base(password, String.Empty)
+//      {
+//      }
+//      protected override DataProviders GetProvider() => DataProviders.MSAccess;
+//
+//   }
 }

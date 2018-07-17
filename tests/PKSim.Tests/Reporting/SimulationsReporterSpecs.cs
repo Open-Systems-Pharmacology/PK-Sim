@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Container;
 using FakeItEasy;
 using NUnit.Framework;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Infrastructure;
-using PKSim.Presentation.Core;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Container;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Infrastructure;
 using PKSim.Infrastructure.Reporting.TeX.Reporters;
+using PKSim.IntegrationTests;
+using PKSim.Presentation.Core;
 
-namespace PKSim.IntegrationTests
+namespace PKSim.Reporting
 {
    [Category("Reporting")]
    public abstract class concern_for_SimulationsReporter : ContextForSimulationIntegration<SimulationsReporter>
