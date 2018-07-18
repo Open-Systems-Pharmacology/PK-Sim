@@ -19,7 +19,7 @@ namespace PKSim.Presentation.Services
       private readonly IContainerTask _containerTask;
       private readonly IExecutionContext _executionContext;
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
-      private readonly IProteinExpressionsDatabasePathManager _proteinExpressionsDatabasePathManager;
+      private readonly IGeneExpressionsDatabasePathManager _geneExpressionsDatabasePathManager;
       private readonly IMoleculeToQueryExpressionSettingsMapper _queryExpressionSettingsMapper;
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly ITransportContainerUpdater _transportContainerUpdater;
@@ -31,7 +31,7 @@ namespace PKSim.Presentation.Services
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
          IMoleculeToQueryExpressionSettingsMapper queryExpressionSettingsMapper,
          IContainerTask containerTask,
-         IProteinExpressionsDatabasePathManager proteinExpressionsDatabasePathManager,
+         IGeneExpressionsDatabasePathManager geneExpressionsDatabasePathManager,
          IOntogenyRepository ontogenyRepository,
          ITransportContainerUpdater transportContainerUpdater,
          ISimulationSubjectExpressionTask<TSimulationSubject> simulationSubjectExpressionTask,
@@ -43,7 +43,7 @@ namespace PKSim.Presentation.Services
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
          _queryExpressionSettingsMapper = queryExpressionSettingsMapper;
          _containerTask = containerTask;
-         _proteinExpressionsDatabasePathManager = proteinExpressionsDatabasePathManager;
+         _geneExpressionsDatabasePathManager = geneExpressionsDatabasePathManager;
          _ontogenyRepository = ontogenyRepository;
          _transportContainerUpdater = transportContainerUpdater;
          _simulationSubjectExpressionTask = simulationSubjectExpressionTask;
@@ -72,7 +72,7 @@ namespace PKSim.Presentation.Services
 
       public ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject)
       {
-         using (_proteinExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
+         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
          using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
          {
             presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(molecule));
@@ -95,7 +95,7 @@ namespace PKSim.Presentation.Services
 
       public bool CanQueryProteinExpressionsFor(TSimulationSubject simulationSubject)
       {
-         return _proteinExpressionsDatabasePathManager.HasDatabaseFor(simulationSubject.Species);
+         return _geneExpressionsDatabasePathManager.HasDatabaseFor(simulationSubject.Species);
       }
 
       public ICommand SetRelativeExpressionFor(IndividualMolecule molecule, string moleculeContainerName, double value)
@@ -128,7 +128,7 @@ namespace PKSim.Presentation.Services
 
       private ICommand proteinFromQuery(TSimulationSubject simulationSubject, IndividualMolecule newMolecule)
       {
-         using (_proteinExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
+         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
          using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
          {
             presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(newMolecule));

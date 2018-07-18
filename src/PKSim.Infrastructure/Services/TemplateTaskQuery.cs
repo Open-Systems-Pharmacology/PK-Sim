@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Extensions;
 using PKSim.Infrastructure.ORM.Core;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Utility.Collections;
 using PKSim.Infrastructure.ORM.DAS;
 
 namespace PKSim.Infrastructure.Services
@@ -59,6 +59,7 @@ namespace PKSim.Infrastructure.Services
                allTemplates.Add(template);
             }
          }
+
          return allTemplates;
       }
 
@@ -194,12 +195,12 @@ namespace PKSim.Infrastructure.Services
 
                var sqlQuery = $"SELECT t.{TemplateTable.Columns.XML} FROM {TemplateTable.NAME} t WHERE t.{TemplateTable.Columns.TEMPLATE_TYPE} IN ({typeFrom(template.TemplateType)}) AND t.{TemplateTable.Columns.NAME} = {_pName}";
 
-               var query = new DASDataTable(connection);
-               connection.FillDataTable(query, sqlQuery);
+               var table = new DASDataTable(connection);
+               connection.FillDataTable(table, sqlQuery);
 
-               if (query.Rows.Count() > 0)
+               if (table.Rows.Count() > 0)
                {
-                  var serializationString = query.Rows.ItemByIndex(0)[TemplateTable.Columns.XML].ToString();
+                  var serializationString = table.Rows.ItemByIndex(0)[TemplateTable.Columns.XML].ToString();
                   var objectFromTemplate = _stringSerializer.Deserialize<T>(serializationString);
                   _objectIdResetter.ResetIdFor(objectFromTemplate);
 
@@ -215,13 +216,14 @@ namespace PKSim.Infrastructure.Services
             {
                removeNameParameter(connection);
             }
+
             return default(T);
          }
       }
 
       private static void addTemplateNameParameter(string templateName, DAS connection)
       {
-         connection.AddParameter(_pName, templateName, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_VARCHAR2);
+         connection.AddParameter(_pName, templateName, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.STRING);
       }
 
       private static void removeNameParameter(DAS connection)
@@ -236,41 +238,55 @@ namespace PKSim.Infrastructure.Services
 
       private DASDataRow createTemplateRow(TemplateType templateType, string name)
       {
-         var templateRow = createNewRow(TemplateTable.NAME,
-            new[] {TemplateTable.Columns.TEMPLATE_TYPE, TemplateTable.Columns.NAME},
-            new[] {templateType.ToString(), name}
-            );
+         var keys = new Cache<string, string>
+         {
+            {TemplateTable.Columns.TEMPLATE_TYPE, templateType.ToString()},
+            {TemplateTable.Columns.NAME, name},
+         };
+
+         var defaultValues = new Cache<string, string>
+         {
+            {TemplateTable.Columns.XML, string.Empty}
+         };
+
+         var templateRow = createNewRow(TemplateTable.NAME, keys, defaultValues);
 
          if (templateRow.ExistsInDB())
          {
             templateRow.SelectFromDB();
             templateRow.AcceptChanges();
          }
+
          return templateRow;
       }
 
       private DASDataRow createReferenceRow(Template templateItem, Template reference)
       {
-         var newRow = createNewRow(TemplateReferenceTable.NAME,
-            new[] {TemplateReferenceTable.Columns.TEMPLATE_TYPE, TemplateReferenceTable.Columns.NAME, TemplateReferenceTable.Columns.REFERENCE_TEMPLATE_TYPE, TemplateReferenceTable.Columns.REFERENCE_NAME},
-            new[] {templateItem.TemplateType.ToString(), templateItem.Name, reference.TemplateType.ToString(), reference.Name}
-            );
-         return newRow;
+         var keys = new Cache<string, string>
+         {
+            {TemplateReferenceTable.Columns.TEMPLATE_TYPE, templateItem.TemplateType.ToString()},
+            {TemplateReferenceTable.Columns.NAME, templateItem.Name},
+            {TemplateReferenceTable.Columns.REFERENCE_TEMPLATE_TYPE, reference.TemplateType.ToString()},
+            {TemplateReferenceTable.Columns.REFERENCE_NAME, reference.Name},
+         };
+         return createNewRow(TemplateReferenceTable.NAME, keys);
       }
 
       private void createBuildingBlockTypeIfMissing(TemplateType templateType)
       {
-         var newRow = createNewRow(TemplateTypeTable.NAME, new[] {TemplateTypeTable.Columns.TEMPLATE_TYPE}, new[] {templateType.ToString()});
+         var keys = new Cache<string, string> {{TemplateTypeTable.Columns.TEMPLATE_TYPE, templateType.ToString()}};
+         var newRow = createNewRow(TemplateTypeTable.NAME, keys);
          if (newRow.ExistsInDB()) return;
          newRow.InsertIntoDB();
       }
 
-      private DASDataRow createNewRow(string tableName, IReadOnlyList<string> primaryKey, IReadOnlyList<string> primaryKeysValues)
+      private DASDataRow createNewRow(string tableName, ICache<string, string> primaryKeys, ICache<string, string> defaultValues = null)
       {
          var dataTable = databaseConnection().CreateDASDataTable(tableName);
-         dataTable.PrimaryKey = primaryKey.Select(x => dataTable.Columns.ItemByName(x)).ToArray();
+         dataTable.PrimaryKey = primaryKeys.Keys.Select(x => dataTable.Columns.ItemByName(x)).ToArray();
          var row = dataTable.NewRow().DowncastTo<DASDataRow>();
-         primaryKey.Each((colName, i) => { row[colName] = primaryKeysValues[i]; });
+         primaryKeys.KeyValues.Each(kv => { row[kv.Key] = kv.Value; });
+         defaultValues?.KeyValues.Each(kv => { row[kv.Key] = kv.Value; });
          dataTable.Rows.Add(row);
          return row;
       }

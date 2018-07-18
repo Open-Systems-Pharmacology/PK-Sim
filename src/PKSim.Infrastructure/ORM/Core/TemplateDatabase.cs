@@ -4,7 +4,7 @@ namespace PKSim.Infrastructure.ORM.Core
    {
    }
 
-   public class TemplateDatabase : AccessDatabase, ITemplateDatabase
+   public class TemplateDatabase : SQLiteDatabase, ITemplateDatabase
    {
    }
 }

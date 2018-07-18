@@ -1,30 +1,21 @@
 using System.Collections.Generic;
 using System.ComponentModel;
-using OSPSuite.Utility.Collections;
-using PKSim.Core.Services;
-using PKSim.Extensions;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Events;
-using PKSim.Core;
-using PKSim.Presentation.Presenters.ContextMenus;
-using PKSim.Presentation.Presenters.Main;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.UICommands;
-using FakeItEasy;
-using PKSim.Assets;
-using PKSim.Presentation.Views.Main;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Events;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
-using OSPSuite.Core.Services;
-using IContainer = System.ComponentModel.IContainer;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using PKSim.Core;
+using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.Main;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.UICommands;
+using PKSim.Presentation.Views.Main;
 
 namespace PKSim.Presentation
 {
@@ -40,26 +31,25 @@ namespace PKSim.Presentation
       protected IVersionChecker _versionChecker;
       private ITabbedMdiChildViewContextMenuFactory _contextMenuFactory;
       protected IPKSimConfiguration _configuration;
-      protected IWatermarkStatusChecker _watermarkStatusChecker;
+      protected IPostLaunchChecker _postLaunchChecker;
 
       protected override void Context()
       {
          _view = A.Fake<IPKSimMainView>();
          _presenterRepository = A.Fake<IRepository<IMainViewItemPresenter>>();
          _exitCommand = A.Fake<IExitCommand>();
-         _eventPublisher = A.Fake< IEventPublisher>();
+         _eventPublisher = A.Fake<IEventPublisher>();
          _userSettings = A.Fake<IUserSettings>();
-         _projectTask = A.Fake<IProjectTask>(); 
-         _versionChecker =A.Fake<IVersionChecker>();
+         _projectTask = A.Fake<IProjectTask>();
+         _versionChecker = A.Fake<IVersionChecker>();
          _contextMenuFactory = A.Fake<ITabbedMdiChildViewContextMenuFactory>();
          _configuration = A.Fake<IPKSimConfiguration>();
-         _watermarkStatusChecker= A.Fake<IWatermarkStatusChecker>(); 
+         _postLaunchChecker = A.Fake<IPostLaunchChecker>();
          A.CallTo(() => _configuration.ProductDisplayName).Returns("AA");
-         sut = new PKSimMainViewPresenter(_view, _eventPublisher,_contextMenuFactory, _presenterRepository, _exitCommand, _userSettings, _projectTask, _versionChecker, _configuration, _watermarkStatusChecker);
+         sut = new PKSimMainViewPresenter(_view, _eventPublisher, _contextMenuFactory, _presenterRepository, _exitCommand, _userSettings, _projectTask, _configuration, _postLaunchChecker, _versionChecker);
       }
    }
 
-   
    public class When_the_main_view_presenter_is_told_to_initialize : concern_for_PKSimMainViewPresenter
    {
       private IMainViewItemPresenter _presenter1;
@@ -87,7 +77,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_set_the_caption_to_the_name_of_the_product()
       {
-          _view.Caption.ShouldBeEqualTo(_configuration.ProductDisplayName);
+         _view.Caption.ShouldBeEqualTo(_configuration.ProductDisplayName);
       }
 
       [Observation]
@@ -104,8 +94,7 @@ namespace PKSim.Presentation
       }
    }
 
-   
-   public class When_the_main_view_presenter_is_notified_that_a_heavy_work_is_starting_and_the_hour_glass_should_be_forced_to_display: concern_for_PKSimMainViewPresenter
+   public class When_the_main_view_presenter_is_notified_that_a_heavy_work_is_starting_and_the_hour_glass_should_be_forced_to_display : concern_for_PKSimMainViewPresenter
    {
       protected override void Because()
       {
@@ -115,10 +104,10 @@ namespace PKSim.Presentation
       [Observation]
       public void should_tell_the_view_to_show_the_wait_cursor()
       {
-         A.CallTo(() => _view.InWaitCursor(true,true)).MustHaveHappened();
+         A.CallTo(() => _view.InWaitCursor(true, true)).MustHaveHappened();
       }
    }
-   
+
    public class When_the_main_view_presenter_is_notified_that_a_heavy_work_is_starting_and_the_hour_glass_should_not_be_forced_to_display : concern_for_PKSimMainViewPresenter
    {
       protected override void Because()
@@ -132,7 +121,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.InWaitCursor(true, false)).MustHaveHappened();
       }
    }
-   
+
    public class When_the_main_view_presenter_is_notified_that_a_heavy_work_has_finished_and_the_hour_glass_was_forced_to_be_displayed : concern_for_PKSimMainViewPresenter
    {
       protected override void Because()
@@ -146,7 +135,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.InWaitCursor(false, true)).MustHaveHappened();
       }
    }
-   
+
    public class When_the_main_view_presenter_is_notified_that_a_heavy_work_has_finished_and_the_hour_glass_was_not_forced_to_be_displayed : concern_for_PKSimMainViewPresenter
    {
       protected override void Because()
@@ -160,7 +149,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.InWaitCursor(false, false)).MustHaveHappened();
       }
    }
-   
+
    public class When_the_main_view_is_closing : concern_for_PKSimMainViewPresenter
    {
       private CancelEventArgs _cancelEventArgs;
@@ -176,7 +165,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _view.Closing+= Raise.FreeForm.With(_view, _cancelEventArgs);
+         _view.Closing += Raise.FreeForm.With(_view, _cancelEventArgs);
       }
 
       [Observation]
@@ -192,7 +181,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_the_main_view_presenter_is_being_notified_that_one_child_view_is_being_activated : concern_for_PKSimMainViewPresenter
    {
       private IMdiChildView _viewToActivate;
@@ -220,7 +208,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_the_main_view_presenter_is_being_notified_that_no_screen_is_active : concern_for_PKSimMainViewPresenter
    {
       protected override void Because()
@@ -234,7 +221,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_retrieving_the_active_screen_when_a_screen_has_been_selected_by_the_user : concern_for_PKSimMainViewPresenter
    {
       private ISingleStartPresenter _result;
@@ -260,7 +246,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_retrieving_the_active_screen_when_a_no_screen_was_selected_by_the_user : concern_for_PKSimMainViewPresenter
    {
       private ISingleStartPresenter _result;
@@ -283,7 +268,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_the_main_view_presenter_is_asked_to_save_changes_when_no_active_presenter_is_available : concern_for_PKSimMainViewPresenter
    {
       private ISingleStartPresenter _activePresenter;
@@ -291,7 +275,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _activePresenter =A.Fake<ISingleStartPresenter>();
+         _activePresenter = A.Fake<ISingleStartPresenter>();
          var childView = A.Fake<IMdiChildView>();
          A.CallTo(() => childView.Presenter).Returns(_activePresenter);
          A.CallTo(() => _view.ActiveView).Returns(childView);
@@ -309,7 +293,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_the_main_view_presenter_is_asked_to_save_changes_when_an_active_presenter_is_available : concern_for_PKSimMainViewPresenter
    {
       protected override void Context()
@@ -326,11 +309,9 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_crash()
       {
-
       }
    }
 
-   
    public class When_the_main_view_presenter_is_running_some_defined_startup_options : concern_for_PKSimMainViewPresenter
    {
       private StartOptions _startOptions;
@@ -338,7 +319,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _startOptions =A.Fake<StartOptions>();
+         _startOptions = A.Fake<StartOptions>();
          sut.StartOptions = _startOptions;
       }
 
@@ -350,137 +331,13 @@ namespace PKSim.Presentation
       [Observation]
       public void should_run_them_through_the_project_task()
       {
-         A.CallTo(() => _projectTask.Run(_startOptions)).MustHaveHappened();  
+         A.CallTo(() => _projectTask.Run(_startOptions)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_validate_the_watermark_usage()
+      public void should_start_the_post_launch_checks()
       {
-         A.CallTo(() => _watermarkStatusChecker.CheckWatermarkStatus()).MustHaveHappened();
-      }
-   }
-   
-   public class When_starting_the_application_and_the_user_wants_to_be_notified_of_any_version_update : concern_for_PKSimMainViewPresenter
-   {
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _userSettings.ShowUpdateNotification).Returns(true);
-      }
-      protected override void Because()
-      {
-         sut.Run();
-      }
-
-      [Observation]
-      public void should_start_the_version_check()
-      {
-         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).MustHaveHappened();
-      }
-   }
-
-   
-   public class When_starting_the_application_and_the_user_does_not_want_to_be_notified_of_any_version_update : concern_for_PKSimMainViewPresenter
-   {
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _userSettings.ShowUpdateNotification).Returns(false);
-      }
-      protected override void Because()
-      {
-         sut.Run();
-      }
-
-      [Observation]
-      public void should_start_the_version_check()
-      {
-         A.CallTo(() => _versionChecker.NewVersionIsAvailable()).MustNotHaveHappened();
-      }
-   }
-
-   
-   public class When_being_notified_that_a_new_version_is_available_and_the_user_wants_to_be_be_notified_for_that_update: concern_for_PKSimMainViewPresenter
-   {
-      private string _newVersion;
-
-      protected override void Context()
-      {
-         base.Context();
-         _newVersion =  "1.2.3";
-         _versionChecker.CurrentVersion = "1.1.1";
-         _userSettings.LastIgnoredVersion = string.Empty;
-         A.CallTo(() => _userSettings.ShowUpdateNotification).Returns(true);
-         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).Returns(true);
-         A.CallTo(() => _versionChecker.LatestVersion).Returns(new VersionInfo{Version = _newVersion});
-      }
-      protected override void Because()
-      {
-         sut.Run();
-      }
-
-      [Observation]
-      public void should_show_the_notification_to_the_user_containing_the_new_version()
-      {
-         A.CallTo(() => _view.DisplayNotification(PKSimConstants.UI.UpdateAvailable,
-            PKSimConstants.Information.NewVersionIsAvailable(_newVersion, Constants.PRODUCT_SITE),
-            Constants.PRODUCT_SITE_DOWNLOAD)).MustHaveHappened();
-      }
-   }
-
-   
-   public class When_being_notified_that_a_new_version_is_available_and_the_user_does_not_want_to_be_be_notified_for_that_update : concern_for_PKSimMainViewPresenter
-   {
-      private string _newVersion;
-
-      protected override void Context()
-      {
-         base.Context();
-         _newVersion = "1.2.3";
-         _versionChecker.CurrentVersion = "1.1.1";
-         A.CallTo(() => _userSettings.ShowUpdateNotification).Returns(true);
-         A.CallTo(() => _userSettings.LastIgnoredVersion).Returns(_newVersion);
-         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).Returns(true);
-         A.CallTo(() => _versionChecker.LatestVersion).Returns(new VersionInfo { Version = _newVersion });
-      }
-      protected override void Because()
-      {
-         sut.Run();
-      }
-
-      [Observation]
-      public void should_not_show_the_notification_to_the_user_containing_the_new_version()
-      {
-         A.CallTo(() => _view.DisplayNotification(A<string>.Ignored, A<string>.Ignored, A<string>.Ignored)).MustNotHaveHappened();
-      }
-   }
-
-   
-   public class When_being_notified_that_a_new_version_is_available_and_the_user_does_not_want_to_be_be_notified_for_an_older_update : concern_for_PKSimMainViewPresenter
-   {
-      private string _newVersion;
-
-      protected override void Context()
-      {
-         base.Context();
-         _newVersion = "1.2.3";
-         _versionChecker.CurrentVersion = "1.1.1";
-         A.CallTo(() => _userSettings.ShowUpdateNotification).Returns(true);
-         A.CallTo(() => _userSettings.LastIgnoredVersion).Returns("1.2.1");
-         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).Returns(true);
-         A.CallTo(() => _versionChecker.LatestVersion).Returns(new VersionInfo { Version = _newVersion });
-      }
-      protected override void Because()
-      {
-         sut.Run();
-      }
-
-      [Observation]
-      public void should_show_the_notification_to_the_user_containing_the_new_version()
-      {
-         A.CallTo(() => _view.DisplayNotification(PKSimConstants.UI.UpdateAvailable,
-            PKSimConstants.Information.NewVersionIsAvailable(_newVersion, Constants.PRODUCT_SITE),
-            Constants.PRODUCT_SITE_DOWNLOAD)).MustHaveHappened();
+         A.CallTo(() => _postLaunchChecker.PerformPostLaunchCheckAsync()).MustHaveHappened();
       }
    }
 }

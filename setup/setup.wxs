@@ -88,7 +88,7 @@
               </Component>
 
               <Component Id="PKSimDB" Guid="686F86BE-F0C7-4F00-8982-4B376997D8BA">
-                <File Name="PKSimDB.mdb" Id="PKSimDB" Source="$(var.DeployDir)/PKSimDB.mdb" KeyPath="yes" />
+                <File Name="PKSimDB.sqlite" Id="PKSimDB" Source="$(var.DeployDir)/PKSimDB.sqlite" KeyPath="yes" />
               </Component>
 
               <Component Id='OSPSuite.Dimensions' Guid='79ED18B0-4CBC-45D3-A24F-16FC2B324409'>
@@ -100,7 +100,7 @@
               </Component>
 
               <Component Id="PKSimTemplateDBSystem" Guid="DF39FF9D-DAB8-4A6A-9E3E-FEFD68489F3C">
-                <File Name="PKSimTemplateDBSystem.mdb" Id="PKSimTemplateDBSystem" Source="$(var.DeployDir)/PKSimTemplateDBSystem.mdb" KeyPath="yes" />
+                <File Name="PKSimTemplateDBSystem.templateDbSystem" Id="PKSimTemplateDBSystem" Source="$(var.DeployDir)/PKSimTemplateDBSystem.templateDbSystem" KeyPath="yes" />
               </Component>
 
               <Directory Id="ChartLayoutsFolder" Name="ChartLayouts">

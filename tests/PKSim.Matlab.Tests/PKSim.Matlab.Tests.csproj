@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -48,23 +48,23 @@
     <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.81\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.4.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.4.0.1\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.BDDHelper, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.BDDHelper.2.0.1.4\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.81\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.4.0.1, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Core.7.4.0.1\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.0.6\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.1.9\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.SimModel.3.0.0.16\lib\net45\OSPSuite.SimModel.dll</HintPath>
+    <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.SimModel.3.0.1.17\lib\net45\OSPSuite.SimModel.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.TeXReporting, Version=2.1.0.8, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.TeXReporting.2.1.0.8\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
@@ -106,6 +106,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\src\Db\PKSimDB.sqlite">
+      <Link>PKSimDB.sqlite</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="Data\S1_concentrBased.pkml" />
     <None Include="packages.config">
@@ -117,12 +121,12 @@
       <Link>OSPSuite.Dimensions.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x64\SQLite.Interop.dll">
+      <Link>SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml">
       <Link>OSPSuite.PKParameters.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\src\Db\PKSimDB.mdb">
-      <Link>PKSimDB.mdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

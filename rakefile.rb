@@ -19,8 +19,8 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
 		'PKSim.exe',
-		'PKSimDB.mdb',
-		'PKSimTemplateDBSystem.mdb'
+		'PKSimDB.sqlite',
+		'PKSimTemplateDBSystem.TemplateDBSystem'
 	]
 
 	#Files required for setup creation only and that will not be harvested automatically
@@ -87,7 +87,7 @@ task :postclean do |t, args|
 	packages_dir =  File.join(solution_dir, 'packages')
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.3')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.4')
 
 	copy_depdencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml
@@ -95,8 +95,8 @@ task :postclean do |t, args|
 	end
 
 	copy_depdencies solution_dir,  all_users_application_dir do
-		copy_file 'src/Db/PKSimDB.mdb'
-		copy_file 'src/Db/TemplateDB/PKSimTemplateDBSystem.mdb'
+		copy_file 'src/Db/PKSimDB.sqlite'
+		copy_file 'src/Db/TemplateDB/PKSimTemplateDBSystem.templateDBSystem'
 	end
 
 	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do

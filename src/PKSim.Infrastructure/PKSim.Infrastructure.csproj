@@ -50,7 +50,7 @@
     </DocumentationFile>
     <NoWarn>1591</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -128,26 +128,26 @@
       <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.81\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.4.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.4.0.1\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.81\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.4.0.1, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Core.7.4.0.1\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.0.6\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.1.9\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.81\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.4.0.1, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.4.0.1\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.81\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.4.0.1, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.4.0.1\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.SimModel.3.0.0.16\lib\net45\OSPSuite.SimModel.dll</HintPath>
+    <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.SimModel.3.0.1.17\lib\net45\OSPSuite.SimModel.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.TeXReporting, Version=2.1.0.8, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.TeXReporting.2.1.0.8\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
@@ -155,8 +155,8 @@
     <Reference Include="OSPSuite.Utility, Version=3.0.0.3, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.3\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
-    <Reference Include="SX, Version=2.6.7.6, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.7.6\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.6.8.2, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.8.2\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -185,6 +185,7 @@
     <Compile Include="Extensions\CsvReaderExtensions.cs" />
     <Compile Include="Extensions\DASExtensions.cs" />
     <Compile Include="ORM\Core\Database.cs" />
+    <Compile Include="ORM\Core\SQLiteDatabase.cs" />
     <Compile Include="ORM\DAS\DAS.cs" />
     <Compile Include="ORM\DAS\DASColumnValue.cs" />
     <Compile Include="ORM\DAS\DASDataColumn.cs" />
@@ -364,10 +365,9 @@
     <Compile Include="ORM\Repositories\FlatCalculationMethodParameterRateRepository.cs" />
     <Compile Include="ORM\Repositories\FlatCategoryRepository.cs" />
     <Compile Include="ORM\Repositories\FlatTransporterContainerTemplateRepository.cs" />
-    <Compile Include="ORM\Core\AccessDatabase.cs" />
     <Compile Include="ORM\Core\DatabaseDisposer.cs" />
     <Compile Include="ORM\Core\ModelDatabase.cs" />
-    <Compile Include="ORM\Core\ProteinExpressionDatabase.cs" />
+    <Compile Include="ORM\Core\GeneExpressionDatabase.cs" />
     <Compile Include="ORM\Core\TemplateDatabase.cs" />
     <Compile Include="ORM\Core\UpdatableLinkDbConfiguration.cs" />
     <Compile Include="ORM\FlatObjects\FlatApplication.cs" />
@@ -633,6 +633,7 @@
     <Compile Include="Services\SettingsLoader.cs" />
     <Compile Include="Services\SettingsPersistor.cs" />
     <Compile Include="Services\SimulationPKAnalysesImporter.cs" />
+    <Compile Include="Services\TemplateDatabaseCreator.cs" />
     <Compile Include="Services\TemplateDatabaseConverter.cs" />
     <Compile Include="Services\TemplateTaskQuery.cs" />
     <Compile Include="Services\ChartTask.cs" />
@@ -656,8 +657,8 @@
     <Compile Include="Services\VersionChecker.cs" />
     <Compile Include="Services\ObservedDataTask.cs" />
     <Compile Include="Services\ProjectFileCompressor.cs" />
-    <Compile Include="Services\ProteinExpressionQueries.cs" />
-    <Compile Include="Services\ProteinExpressionsDatabasePathManager.cs" />
+    <Compile Include="Services\GeneExpressionQueries.cs" />
+    <Compile Include="Services\GeneExpressionsDatabasePathManager.cs" />
     <Compile Include="Serialization\Xml\Serializers\BuildingBlockXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\CalculationMethodXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\CategoryItemXmlSerializer.cs" />

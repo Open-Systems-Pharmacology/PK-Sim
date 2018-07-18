@@ -63,7 +63,7 @@ namespace PKSim.Infrastructure.Services
 
       private VersionInfo retrieveVersionFrom(XDocument xDocument)
       {
-         XElement applicationNode = xDocument.Descendants("application").FirstOrDefault(e => string.Equals(e.GetAttribute("name"), ProductName));
+         var applicationNode = xDocument.Descendants("application").FirstOrDefault(e => string.Equals(e.GetAttribute("name"), ProductName));
          if (applicationNode == null)
             throw new OSPSuiteException($"{ProductName} node not available");
 

@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using OSPSuite.Core.Extensions;
 using PKSim.Core.Services;
 using PKSim.Presentation.Views.ProteinExpression;
 using OSPSuite.Presentation.Presenters;
@@ -23,21 +24,21 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
    public class ProteinSelectionPresenter : AbstractSubPresenter<IProteinSelectionView, IProteinSelectionPresenter>, IProteinSelectionPresenter
    {
-      private readonly IProteinExpressionQueries _proteinExpressionQueries;
+      private readonly IGeneExpressionQueries _geneExpressionQueries;
       public event Action<DataRow> OnSelectProtein = delegate { };
       public event Action OnProteinSearched = delegate { };
       public event Action OnSetActiveControl = delegate { };
       public bool ProteinSelected { get; private set; }
       public bool ProteinHasData { get; set; }
 
-      public ProteinSelectionPresenter(IProteinSelectionView view, IProteinExpressionQueries proteinExpressionQueries) : base(view)
+      public ProteinSelectionPresenter(IProteinSelectionView view, IGeneExpressionQueries geneExpressionQueries) : base(view)
       {
-         _proteinExpressionQueries = proteinExpressionQueries;
+         _geneExpressionQueries = geneExpressionQueries;
       }
 
       public void SearchProtein(string proteinName)
       {
-         _view.SetAvailableProteinsForSearchCriteria(_proteinExpressionQueries.GetProteinsByName(proteinName));
+         _view.SetAvailableProteinsForSearchCriteria(_geneExpressionQueries.GetProteinsByName(proteinName));
          OnProteinSearched();
       }
 
@@ -48,21 +49,18 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
       public void SelectProtein()
       {
-         DataRow selectedRow = _view.SelectedProteinData;
+         var selectedRow = _view.SelectedProteinData;
          if (selectedRow == null)
          {
             ProteinSelected = false;
             return;
          }
-         var hasData = (int) selectedRow[DatabaseConfiguration.ProteinColumns.HAS_DATA];
+         var hasData = selectedRow.ValueAt<long>(DatabaseConfiguration.ProteinColumns.HAS_DATA);
          ProteinSelected = (hasData == 1);
          OnSelectProtein(selectedRow);
       }
 
-      public bool ProteinSelectionChanged
-      {
-         get { return View.SelectionChanged; }
-      }
+      public bool ProteinSelectionChanged => View.SelectionChanged;
 
       public void ActualizeSelection()
       {

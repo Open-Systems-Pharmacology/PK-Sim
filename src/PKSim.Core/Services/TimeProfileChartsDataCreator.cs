@@ -5,7 +5,6 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Data;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
