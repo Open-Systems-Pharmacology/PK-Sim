@@ -24,6 +24,19 @@ namespace PKSim.Infrastructure.ORM.Core
          var dataTable = new DASDataTable(databaseConnection);
          databaseConnection.FillDataTable(dataTable, selectStatement);
          return dataTable;
+
+//         var rawData = new DataTable();
+//
+//         using (var command = databaseConnection.Connection.CreateCommand())
+//         {
+//             command.CommandText = selectStatement;
+//             command.CommandType = CommandType.Text;
+//             using (IDataReader reader = command.ExecuteReader())
+//             {
+//                 rawData.Load(reader);
+//             }
+//         }
+//         return rawData;
       }
 
       private DAS.DAS databaseConnection => _modelDatabase.DatabaseObject;
