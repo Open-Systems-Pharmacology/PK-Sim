@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ORM.Core
    {
       public DAS.DAS DatabaseObject { get; private set; }
       private readonly string _userName;
-      protected readonly string _password;
+      private readonly string _password;
 
       protected Database(string password, string username)
       {
