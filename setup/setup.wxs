@@ -18,7 +18,7 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="OSP_SUITE" Name="$(var.Manufacturer)">
         <Directory Id="INSTALLDIR" Name="$(var.ProductFullName)">
-          <Component Id="PKSim.exe" Guid="7E30E944-CA31-4330-93E7-A6F4F4AE4663">
+          <Component Id="PKSim.exe" Guid="7E30E944-CA31-4330-93E7-A6F4F4AE4663" Win64="yes">
             <File Name="PKSim.exe" Id="PKSim.exe" KeyPath="yes" Source="$(var.DeployDir)/PKSim.exe">
               <Shortcut Name="$(var.ProductName)" Id="PKSimShortcut" Icon="PKSimIcon.exe" Directory="OSPSuiteMenuDir" WorkingDirectory="INSTALLDIR" Advertise="yes" />
             </File>
@@ -120,7 +120,7 @@
                   </CreateFolder>
                 </Component>
 
-                <Component Id="ExampleFolderShortCut" Guid="21CC8E07-4C3B-4613-B237-28F17160E474">
+                <Component Id="ExampleFolderShortCut" Guid="21CC8E07-4C3B-4613-B237-28F17160E474" Win64="yes">
                   <Shortcut Id="ExampleFolderShortCut" Name="$(var.ProductName) Examples" Directory="OSPSuiteMenuDir" />
                   <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="Examples" KeyPath="yes" />
                 </Component>
@@ -133,7 +133,7 @@
       <!--Start menu Programms -->
       <Directory Id="ProgramMenuFolder">
         <Directory Id="OSPSuiteMenuDir" Name="$(var.SuiteName) $(var.ProductReleaseVersion)">
-          <Component Id="OSPSuiteMenuDir" Guid="5D07DE39-0070-487B-94F4-C0ADB6118BF0">
+          <Component Id="OSPSuiteMenuDir" Guid="5D07DE39-0070-487B-94F4-C0ADB6118BF0" Win64="yes">
             <RemoveFolder Id="OSPSuiteMenuDir" On="uninstall" />
             <RegistryValue Root="HKMU" Key="Software\[Manufacturer]\[ProductName]\OSP" Type="string" Value="" KeyPath="yes" />
           </Component>
