@@ -1,9 +1,9 @@
-using OSPSuite.Utility.Extensions;
+using System.Linq;
 using NHibernate;
-using PKSim.Infrastructure.Serialization.ORM.Mappers;
-using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using OSPSuite.Infrastructure.Serialization;
 using OSPSuite.Presentation.Core;
+using PKSim.Infrastructure.Serialization.ORM.Mappers;
+using PKSim.Infrastructure.Serialization.ORM.MetaData;
 
 namespace PKSim.Infrastructure.Serialization
 {
@@ -17,7 +17,7 @@ namespace PKSim.Infrastructure.Serialization
       private readonly IWorkspaceLayoutMetaDataToWorkspaceLayoutMapper _workspaceLayoutMapper;
 
       public WorkspaceLayoutPersistor(IWorkspaceLayoutToWorkspaceLayoutMetaDataMapper workspaceLayoutMetaDataMapper,
-                                      IWorkspaceLayoutMetaDataToWorkspaceLayoutMapper workspaceLayoutMapper)
+         IWorkspaceLayoutMetaDataToWorkspaceLayoutMapper workspaceLayoutMapper)
       {
          _workspaceLayoutMetaDataMapper = workspaceLayoutMetaDataMapper;
          _workspaceLayoutMapper = workspaceLayoutMapper;
@@ -25,21 +25,27 @@ namespace PKSim.Infrastructure.Serialization
 
       public void Save(IWorkspaceLayout workspaceLayout, ISession session)
       {
-
-         //first remove old layout if existing
-         var layoutsFromDb = session.CreateCriteria<WorkspaceLayoutMetaData>().List<WorkspaceLayoutMetaData>();
-         layoutsFromDb.Each(session.Delete);
+         var layoutFromDb = loadLayoutFromDb(session);
 
          var workspaceLayoutMetaData = _workspaceLayoutMetaDataMapper.MapFrom(workspaceLayout);
-         session.Save(workspaceLayoutMetaData);
+         if (layoutFromDb != null)
+            layoutFromDb.UpdateFrom(workspaceLayoutMetaData, session);
+         else
+            layoutFromDb = workspaceLayoutMetaData;
+
+         session.Save(layoutFromDb);
       }
 
       public IWorkspaceLayout Load(ISession session)
       {
+         var layoutFromDb = loadLayoutFromDb(session);
+         return layoutFromDb == null ? null : _workspaceLayoutMapper.MapFrom(layoutFromDb);
+      }
+
+      private static WorkspaceLayoutMetaData loadLayoutFromDb(ISession session)
+      {
          var layoutsFromDb = session.CreateCriteria<WorkspaceLayoutMetaData>().List<WorkspaceLayoutMetaData>();
-         if (layoutsFromDb.Count == 0) return null;
-         var layoutFromDb = layoutsFromDb[0];
-         return _workspaceLayoutMapper.MapFrom(layoutFromDb);
+         return layoutsFromDb.FirstOrDefault();
       }
    }
 }
