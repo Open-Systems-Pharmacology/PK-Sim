@@ -2,10 +2,9 @@ configuration: Debug
 image: Visual Studio 2017
 
 environment:
-  app_version: '7.4.0'
   MIK_TEX_INSTALL_DIR: 'C:\MikTex\'
 
-version: '%app_version%.{build}'
+version: '7.4.0.{build}'
 
 assembly_info:
   patch: true
