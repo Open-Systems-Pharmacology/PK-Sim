@@ -1,7 +1,10 @@
 configuration: Debug
 image: Visual Studio 2017
 
-version: '7.4.0.{build}'
+environment:
+  app_version: '7.4.0'
+
+version: '$(app_version).{build}'
 
 assembly_info:
   patch: true

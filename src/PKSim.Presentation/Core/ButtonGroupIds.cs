@@ -24,6 +24,7 @@ namespace PKSim.Presentation.Core
       public static ButtonGroupId Compare = new ButtonGroupId("Compare");
       public static ButtonGroupId Journal = new ButtonGroupId("Journal");
       public static ButtonGroupId Favorites = new ButtonGroupId("Favorites");
+      public static ButtonGroupId History = new ButtonGroupId("History");
       public static ButtonGroupId ParameterIdentification = new ButtonGroupId("ParameterIdentification");
       public static ButtonGroupId RunParameterIdentification = new ButtonGroupId("RunParameterIdentification");
       public static ButtonGroupId ParameterIdentificationAnalyses = new ButtonGroupId("ParameterIdentificationAnalyses");

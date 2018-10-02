@@ -103,6 +103,7 @@ namespace PKSim.Presentation.Presenters.Main
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Tools), PKSimConstants.RibbonPages.Utilities);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.DisplayUnits), PKSimConstants.RibbonPages.Utilities);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Favorites), PKSimConstants.RibbonPages.Utilities);
+         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.History), PKSimConstants.RibbonPages.Utilities);
 
 
          if (_startOptions.IsDeveloperMode)
@@ -373,6 +374,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.ParameterIdentificationFeedbackView].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.CreateSensitivityAnalysis].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.SensitivityAnalysisFeedbackView].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.ClearHistory].Enabled = enabled;
       }
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
