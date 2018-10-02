@@ -374,6 +374,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.ParameterIdentificationFeedbackView].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.CreateSensitivityAnalysis].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.SensitivityAnalysisFeedbackView].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.ClearHistory].Enabled = enabled;
       }
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
