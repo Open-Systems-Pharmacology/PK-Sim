@@ -443,6 +443,8 @@ namespace PKSim.Presentation.Repositories
          yield return CommonMenuBarButtons.ManageUserDisplayUnits(MenuBarItemIds.ManageUserDisplayUnits);
          yield return CommonMenuBarButtons.ManageProjectDisplayUnits(MenuBarItemIds.ManageProjectDisplayUnits);
          yield return CommonMenuBarButtons.UpdateAllToDisplayUnits(MenuBarItemIds.UpdateAllToDisplayUnits);
+         yield return CommonMenuBarButtons.ClearHistory(MenuBarItemIds.ClearHistory);
+
          yield return JournalMenuBarButtons.JournalView(MenuBarItemIds.JournalView);
          yield return JournalMenuBarButtons.CreateJournalPage(MenuBarItemIds.CreateJournalPage);
          yield return JournalMenuBarButtons.SelectJournal(MenuBarItemIds.SelectJournal);

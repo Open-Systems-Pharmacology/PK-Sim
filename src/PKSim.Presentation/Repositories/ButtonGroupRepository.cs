@@ -35,6 +35,7 @@ namespace PKSim.Presentation.Repositories
          yield return populationSimulationWorkflowButtonGroup;
          yield return journalButtonGroup;
          yield return favoritesButtonGroup;
+         yield return historyButtonGroup;
          yield return parameterIdentificationButtonGroup;
          yield return parameterSensitivityButtonGroup;
          yield return runParameterIdentificationButtonGroup;
@@ -227,6 +228,10 @@ namespace PKSim.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadFavorites)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SaveFavorites)))
          .WithId(ButtonGroupIds.Favorites);
+
+      private IButtonGroup historyButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.History)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ClearHistory)))
+         .WithId(ButtonGroupIds.History);
 
       private IButtonGroup runParameterIdentificationButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterIdentification)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.RunParameterIdentification)))

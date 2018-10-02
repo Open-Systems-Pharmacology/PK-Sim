@@ -103,6 +103,7 @@ namespace PKSim.Presentation.Presenters.Main
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Tools), PKSimConstants.RibbonPages.Utilities);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.DisplayUnits), PKSimConstants.RibbonPages.Utilities);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Favorites), PKSimConstants.RibbonPages.Utilities);
+         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.History), PKSimConstants.RibbonPages.Utilities);
 
 
          if (_startOptions.IsDeveloperMode)

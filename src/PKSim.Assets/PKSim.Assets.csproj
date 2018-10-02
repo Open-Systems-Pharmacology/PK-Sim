@@ -68,8 +68,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OSPSuite.Assets, Version=7.4.0.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.4.0.4\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.4.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.4.0.5\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Utility, Version=3.0.0.3, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.3\lib\net462\OSPSuite.Utility.dll</HintPath>
