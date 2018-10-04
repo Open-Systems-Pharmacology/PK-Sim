@@ -48,9 +48,10 @@ namespace PKSim.Core.Model
 
       public static bool IsIndividualMolecule(this IParameter parameter)
       {
-         return IsExpressionOrOntogenyFactor(parameter) ||
-                parameter.NameIsOneOf(CoreConstants.Parameters.REFERENCE_CONCENTRATION, CoreConstants.Parameters.HALF_LIFE_LIVER, CoreConstants.Parameters.HALF_LIFE_INTESTINE);
+         return IsExpressionOrOntogenyFactor(parameter) || IsIndividualMoleculeGlobal(parameter);
       }
+
+      public static bool IsIndividualMoleculeGlobal(this IParameter parameter) => CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
 
       public static bool IsStructural(this IParameter parameter)
       {

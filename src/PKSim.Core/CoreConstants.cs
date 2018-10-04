@@ -847,6 +847,14 @@ namespace PKSim.Core
          public static readonly string REL_EXP_VASC_ENDO = "Relative expression in vascular endothelium";
          public static readonly string REL_EXP_VASC_ENDO_NORM = NormParameterFor(REL_EXP_VASC_ENDO);
 
+         public static IReadOnlyList<string> AllGlobalMoleculeParameters = new[]
+         {
+            REFERENCE_CONCENTRATION,
+            HALF_LIFE_LIVER,
+            HALF_LIFE_INTESTINE
+         };
+
+
          public static IReadOnlyList<string> AllGlobalRelExpParameters = new[]
          {
             REL_EXP_BLOOD_CELL,

@@ -14,15 +14,12 @@ namespace PKSim.Core.Services
          return parameterScaling.IsDistributedScaling;
       }
 
-      public ScalingMethod Method
-      {
-         get { return new DistributionScalingMethod(_parameterTask); }
-      }
+      public ScalingMethod Method => new DistributionScalingMethod(_parameterTask);
 
-      public bool IsDefaultFor(ParameterScaling parameterSatifyingSpecification)
+      public bool IsDefaultFor(ParameterScaling parameterScaling)
       {
          //default value for all distribution
-         return parameterSatifyingSpecification.IsDistributedScaling;
+         return parameterScaling.IsDistributedScaling;
       }
    }
 }
