@@ -7,7 +7,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Indicates whether the scaling method is the default for the parameter scaling
       /// </summary>
-      bool IsDefaultFor(ParameterScaling parameterSatifyingSpecification);
+      bool IsDefaultFor(ParameterScaling parameterScaling);
 
       /// <summary>
       ///    The underlying scaling method

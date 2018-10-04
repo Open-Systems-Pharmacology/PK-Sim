@@ -1,9 +1,8 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
@@ -42,6 +41,9 @@ namespace PKSim.Core
    {
       private ParameterScaling _parameterScalingWithSourceNotSetByUser;
       private ParameterScaling _distributedScaling;
+      private ParameterScaling _globalMoleculeParameterScaling;
+      private IParameter _referenceConcentrationSourceParameter;
+      private IParameter _referenceConcentrationTargetParameter;
 
       protected override void Context()
       {
@@ -55,6 +57,10 @@ namespace PKSim.Core
 
          _distributedScaling = A.Fake<ParameterScaling>();
          A.CallTo(() => _distributedScaling.IsDistributedScaling).Returns(true);
+
+         _referenceConcentrationSourceParameter = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
+         _referenceConcentrationTargetParameter = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
+         _globalMoleculeParameterScaling = new ParameterScaling(_referenceConcentrationSourceParameter, _referenceConcentrationTargetParameter);
       }
 
       [Observation]
@@ -67,6 +73,12 @@ namespace PKSim.Core
       public void should_return_false_for_a_distributed_parameter()
       {
          sut.IsDefaultFor(_distributedScaling).ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_true_for_a_global_molecule_parameter()
+      {
+         sut.IsDefaultFor(_globalMoleculeParameterScaling).ShouldBeTrue();
       }
    }
 }

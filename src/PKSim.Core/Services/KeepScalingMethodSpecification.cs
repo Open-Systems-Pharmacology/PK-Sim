@@ -8,15 +8,12 @@ namespace PKSim.Core.Services
          return true;
       }
 
-      public bool IsDefaultFor(ParameterScaling parameterSatifyingSpecification)
+      public bool IsDefaultFor(ParameterScaling parameterScaling)
       {
          //never the default value
          return false;
       }
 
-      public ScalingMethod Method
-      {
-         get { return new KeepScalingMethod(); }
-      }
+      public ScalingMethod Method => new KeepScalingMethod();
    }
 }

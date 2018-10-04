@@ -279,4 +279,22 @@ namespace PKSim.Core
          _parameter.ValueIsComputable().ShouldBeFalse();
       }
    }
+
+   public class When_checking_if_a_parameter_is_a_global_molecule_parameter : StaticContextSpecification
+   {
+      private IParameter _parameter;
+
+      protected override void Context()
+      {
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue();
+      }
+
+      [Observation]
+      public void should_return_true_for_reference_concentration_half_life_liver_and_half_life_intestine()
+      {
+         _parameter.WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION).IsIndividualMoleculeGlobal().ShouldBeTrue();
+         _parameter.WithName(CoreConstants.Parameters.HALF_LIFE_INTESTINE).IsIndividualMoleculeGlobal().ShouldBeTrue();
+         _parameter.WithName(CoreConstants.Parameters.HALF_LIFE_LIVER).IsIndividualMoleculeGlobal().ShouldBeTrue();
+      }
+   }
 }

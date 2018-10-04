@@ -1,3 +1,6 @@
+using System.Linq;
+using PKSim.Core.Model;
+
 namespace PKSim.Core.Services
 {
    public class OverrideScalingMethodSpecification : IScalingMethodSpecification
@@ -15,15 +18,11 @@ namespace PKSim.Core.Services
          return true;
       }
 
-      public bool IsDefaultFor(ParameterScaling parameterSatifyingSpecification)
+      public bool IsDefaultFor(ParameterScaling parameterScaling)
       {
-         //never the default value
-         return false;
+         return parameterScaling.SourceParameter.IsIndividualMoleculeGlobal();
       }
 
-      public ScalingMethod Method
-      {
-         get { return new OverrideScalingMethod(_parameterTask); }
-      }
+      public ScalingMethod Method => new OverrideScalingMethod(_parameterTask);
    }
 }
