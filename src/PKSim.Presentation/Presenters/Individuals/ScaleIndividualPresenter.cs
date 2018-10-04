@@ -73,15 +73,11 @@ namespace PKSim.Presentation.Presenters.Individuals
          {
             var creationSuccessFull =  CreateIndividual();
             if (!creationSuccessFull)
-            {
                return;
-            }
          }
 
          if (previousIndex == ScaleIndividualItems.Scaling.Index)
-         {
             PerformScaling();
-         }
 
          base.WizardNext(previousIndex);
       }
