@@ -1,6 +1,4 @@
 using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Services
@@ -15,12 +13,12 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Origin parameter for the scaling (e.g. Adult parameter)
       /// </summary>
-      public virtual IParameter SourceParameter { get; private set; }
+      public virtual IParameter SourceParameter { get; }
 
       /// <summary>
       ///    Target parameter for the scaling (e.g. child parameter)
       /// </summary>
-      public virtual IParameter TargetParameter { get; private set; }
+      public virtual IParameter TargetParameter { get; }
 
       public ParameterScaling(IParameter sourceParameter, IParameter targetParameter)
       {
@@ -34,7 +32,7 @@ namespace PKSim.Core.Services
       /// </summary>
       public virtual ScalingMethod ScalingMethod
       {
-         get { return _scalingMethod; }
+         get => _scalingMethod;
          set
          {
             _scalingMethod = value;
@@ -45,50 +43,32 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Returns the scaled value in base unit according to the scaling method
       /// </summary>
-      public virtual double ScaledValue
-      {
-         get { return ScalingMethod.ScaledValueFor(this); }
-      }
+      public virtual double ScaledValue => ScalingMethod.ScaledValueFor(this);
 
       /// <summary>
       ///    Returns the scaled value in Display Unit
       /// </summary>
-      public virtual double TargetScaledValueInDisplayUnit
-      {
-         get { return TargetParameter.ValueInDisplayUnit; }
-      }
+      public virtual double TargetScaledValueInDisplayUnit => TargetParameter.ValueInDisplayUnit;
 
       /// <summary>
       ///    Returns the source value in Display Unit
       /// </summary>
-      public virtual double SourceDefaultValueInDisplayUnit
-      {
-         get { return SourceParameter.ConvertToDisplayUnit(SourceParameter.DefaultValue); }
-      }
+      public virtual double SourceDefaultValueInDisplayUnit => SourceParameter.ConvertToDisplayUnit(SourceParameter.DefaultValue);
 
       /// <summary>
       ///    Returns the source value in Display Unit
       /// </summary>
-      public virtual double SourceValueInDisplayUnit
-      {
-         get { return SourceParameter.ValueInDisplayUnit; }
-      }
+      public virtual double SourceValueInDisplayUnit => SourceParameter.ValueInDisplayUnit;
 
       /// <summary>
       ///    Returns the target default in Display Unit
       /// </summary>
-      public virtual double TargetDefaultValueInDisplayUnit
-      {
-         get { return TargetParameter.ConvertToDisplayUnit(_targetValueBeforeScaling); }
-      }
+      public virtual double TargetDefaultValueInDisplayUnit => TargetParameter.ConvertToDisplayUnit(_targetValueBeforeScaling);
 
       /// <summary>
       ///    Returns the target default in core unot
       /// </summary>
-      public virtual double TargetValue
-      {
-         get { return _targetValueBeforeScaling; }
-      }
+      public virtual double TargetValue => _targetValueBeforeScaling;
 
       /// <summary>
       ///    Scales the target parameter and returns the actual scale command that was used to perform the scaling
@@ -113,6 +93,12 @@ namespace PKSim.Core.Services
       public void ResetTargetParameter()
       {
          TargetParameter.Value = _targetValueBeforeScaling;
+      }
+
+      public void Deconstruct(out IParameter sourceParameter, out IParameter targetParameter)
+      {
+         sourceParameter = SourceParameter;
+         targetParameter = TargetParameter;
       }
    }
 }

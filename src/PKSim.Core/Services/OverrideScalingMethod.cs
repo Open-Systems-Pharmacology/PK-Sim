@@ -1,5 +1,6 @@
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using PKSim.Assets;
+using PKSim.Core.Commands;
 
 namespace PKSim.Core.Services
 {
@@ -19,7 +20,12 @@ namespace PKSim.Core.Services
 
       protected override ICommand PerformScaling(ParameterScaling parameterScaling)
       {
-         return _parameterTask.SetParameterValue(parameterScaling.TargetParameter, parameterScaling.SourceParameter.Value);
+         var (sourceParameter, targetParameter) = parameterScaling;
+
+         var updateValueCommand = _parameterTask.SetParameterValue(targetParameter, sourceParameter.Value);
+         var updateValueOriginCommand = _parameterTask.SetParameterValueOrigin(targetParameter, sourceParameter.ValueOrigin);
+
+         return new PKSimMacroCommand(new[] {updateValueCommand, updateValueOriginCommand});
       }
    }
 }
