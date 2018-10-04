@@ -38,6 +38,7 @@ namespace PKSim.Core
       private IParameter _targetParam1;
       private IParameter _targetParam2;
       private IParameter _targetParam3;
+      private IParameter _targetRefConcParam;
       private IParameter _originRelExpParam;
       private IParameter _originRefConcParam;
 
@@ -54,23 +55,27 @@ namespace PKSim.Core
          _targetParam1 = A.Fake<IParameter>().WithName("P1");
          _targetParam2 = A.Fake<IParameter>().WithName("P2");
          _targetParam3 = A.Fake<IParameter>().WithName("P3");
+         _targetRefConcParam = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
+         _originRefConcParam = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
          _originRelExpParam = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP);
-         _originRefConcParam = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
 
          _originParam1 = A.Fake<IParameter>().WithName(_targetParam1.Name);
          _originParam2 = A.Fake<IParameter>().WithName(_targetParam2.Name);
          _notMatchingOriginParam1 = A.Fake<IParameter>().WithName("not match1");
          _notMatchingOriginParam2 = A.Fake<IParameter>().WithName("not match2");
 
-         var pathParam1 = "_pathParam1";
-         var pathParam2 = "_pathParam2";
-         var pathParam3 = "_pathParam3";
+         var pathParam1 = "pathParam1";
+         var pathParam2 = "pathParam2";
+         var pathParam3 = "pathParam3";
+         var pathParam4 = "pathParam4";
 
          A.CallTo(() => _entityPathResolver.PathFor(_targetParam1)).Returns(pathParam1);
          A.CallTo(() => _entityPathResolver.PathFor(_originParam1)).Returns(pathParam1);
          A.CallTo(() => _entityPathResolver.PathFor(_targetParam2)).Returns(pathParam2);
          A.CallTo(() => _entityPathResolver.PathFor(_originParam2)).Returns(pathParam2);
          A.CallTo(() => _entityPathResolver.PathFor(_targetParam3)).Returns(pathParam3);
+         A.CallTo(() => _entityPathResolver.PathFor(_originRefConcParam)).Returns(pathParam4);
+         A.CallTo(() => _entityPathResolver.PathFor(_targetRefConcParam)).Returns(pathParam4);
          A.CallTo(() => _entityPathResolver.PathFor(_notMatchingOriginParam1)).Returns("_notMatchingParam1");
          A.CallTo(() => _entityPathResolver.PathFor(_notMatchingOriginParam2)).Returns("_notMatchingParam2");
 
@@ -78,17 +83,23 @@ namespace PKSim.Core
          _targetParam1.DefaultValue = 7;
          _originParam1.Value = 6;
 
+         _originRefConcParam.DefaultValue = 8;
+
          _originParam1.IsFixedValue = true;
          _originParam1.Visible = true;
          _originParam1.Editable = true;
 
          _targetParam2.Visible = false;
          _targetParam3.Visible = true;
-         _originRelExpParam.Visible = true;
+         _targetRefConcParam.Visible = true;
+         _targetRefConcParam.Editable = true;
+         _originRefConcParam.Visible = true;
+         _originRefConcParam.Editable = true;
 
          _targetIndividual.Add(_targetParam1);
          _targetIndividual.Add(_targetParam2);
          _targetIndividual.Add(_targetParam3);
+         _targetIndividual.Add(_targetRefConcParam);
 
          _originIndividual.Add(_originParam1);
          _originIndividual.Add(_originParam2);
@@ -107,9 +118,9 @@ namespace PKSim.Core
       public void should_return_one_parameter_scaling_for_each_visible_parameter_from_the_target_individual_for_which_the_scaling_is_actually_allowed()
       {
          //only one parameter that need scaling, since one is not visible, the other one is not matched and the last one is a relative expression parameter
-         //and the last one is a reference concentration parameter
-         _allParameterScalings.Count.ShouldBeEqualTo(1);
+         _allParameterScalings.Count.ShouldBeEqualTo(2);
          _allParameterScalings.Any(x => x.SourceParameter.IsNamed(_targetParam1.Name)).ShouldBeTrue();
+         _allParameterScalings.Any(x => x.SourceParameter.IsNamed(_targetRefConcParam.Name)).ShouldBeTrue();
       }
 
       [Observation]
@@ -122,9 +133,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_not_return_the_reference_concentration_parameter()
+      public void should_return_the_reference_concentration_parameter()
       {
-         _allParameterScalings.Any(x => x.SourceParameter.IsNamed(CoreConstants.Parameters.REFERENCE_CONCENTRATION)).ShouldBeFalse();
+         _allParameterScalings.Any(x => x.SourceParameter.IsNamed(CoreConstants.Parameters.REFERENCE_CONCENTRATION)).ShouldBeTrue();
       }
 
       [Observation]
