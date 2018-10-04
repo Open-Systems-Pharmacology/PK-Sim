@@ -65,10 +65,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _propertiesMapper.MapProperties(_scaleIndividualPropertiesDTO, Individual);
       }
 
-      public Individual Individual
-      {
-         get { return PresenterAt(ScaleIndividualItems.Settings).Individual; }
-      }
+      public Individual Individual => PresenterAt(ScaleIndividualItems.Settings).Individual;
 
       public override void WizardNext(int previousIndex)
       {

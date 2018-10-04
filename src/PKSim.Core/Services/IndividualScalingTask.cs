@@ -43,7 +43,7 @@ namespace PKSim.Core.Services
 
       private bool scalingRequiredFor(IParameter originParameter, IParameter targetParameter)
       {
-         if (originParameter == null || targetParameter == null)
+         if (targetParameter == null)
             return false;
 
          //parameter was marked as changed by user
@@ -61,13 +61,14 @@ namespace PKSim.Core.Services
       private bool scalingAllowedFor(IParameter parameter)
       {
          //editable parameter could not have been changed by user
-         if (!parameter.Editable) return false;
+         if (!parameter.Editable)
+            return false;
 
          //same goes for visible parameters
-         if (!parameter.Visible) return false;
+         if (!parameter.Visible)
+            return false;
 
-         //expression parameters as well
-         if (parameter.IsIndividualMolecule() || parameter.NameIsOneOf(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP, CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN)) 
+         if (parameter.IsExpressionOrOntogenyFactor() || parameter.NameIsOneOf(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP, CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN)) 
             return false;
 
          //other conditions
