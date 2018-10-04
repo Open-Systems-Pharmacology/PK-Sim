@@ -336,7 +336,7 @@ namespace PKSim.Core.Services
          return new SetRelativeExpressionFromNormalizedCommand(parameter, value);
       }
 
-      private ICommand setParameterValue(IParameter parameter, double value, bool shouldChangeVersion, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
+      private IOSPSuiteCommand setParameterValue(IParameter parameter, double value, bool shouldChangeVersion, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
       {
          return executeAndUpdatedDefaultStateAndValue(
             new SetParameterValueCommand(parameter, value),
@@ -350,13 +350,13 @@ namespace PKSim.Core.Services
          return executeAndUpdatedDefaultStateAndValue(new SetParameterDisplayUnitCommand(parameter, displayUnit), parameter, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
-      private ICommand executeAndUpdatedDefaultStateAndValue(BuildingBlockChangeCommand commandToExecute, IParameter parameter, bool shouldChangeVersion = true, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
+      private IOSPSuiteCommand executeAndUpdatedDefaultStateAndValue(BuildingBlockChangeCommand commandToExecute, IParameter parameter, bool shouldChangeVersion = true, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
       {
          commandToExecute.ShouldChangeVersion = shouldChangeVersion;
          return withUpdatedDefaultStateAndValue(commandToExecute.Run(_executionContext), parameter, shouldChangeVersion, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
-      private ICommand withUpdatedDefaultStateAndValue(IOSPSuiteCommand executedCommand, IParameter parameter, bool shouldChangeVersion = true, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
+      private IOSPSuiteCommand withUpdatedDefaultStateAndValue(IOSPSuiteCommand executedCommand, IParameter parameter, bool shouldChangeVersion = true, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
       {
          if (!shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
             return executedCommand;
