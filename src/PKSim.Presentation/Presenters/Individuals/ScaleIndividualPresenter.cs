@@ -71,8 +71,8 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          if (previousIndex == ScaleIndividualItems.Settings.Index)
          {
-            var creationSuccessFull =  CreateIndividual();
-            if (!creationSuccessFull)
+            var creationSuccessful =  CreateIndividual();
+            if (!creationSuccessful)
                return;
          }
 
