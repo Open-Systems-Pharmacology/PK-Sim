@@ -214,6 +214,8 @@ namespace PKSim.Presentation
 
    public class When_notify_that_the_settings_for_the_scaling_are_completed : concern_for_ScaleIndividualPresenter
    {
+      private bool _result;
+
       protected override void Context()
       {
          base.Context();
@@ -222,7 +224,13 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.CreateIndividual();
+         _result = sut.CreateIndividual();
+      }
+
+      [Observation]
+      public void the_result_of_the_create_individual_operation_should_be_true()
+      {
+         _result.ShouldBeTrue();
       }
 
       [Observation]
@@ -244,15 +252,50 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_tell_the_scaling_configuration_presenter_to_update_the_list_of_scaling_properties()
-      {
-         A.CallTo(() => _scalingConfigurationPresenter.ConfigureScaling(_cloneIndividual, _scaledIndividual)).MustHaveHappened();
-      }
-
-      [Observation]
       public void should_update_the_enzyme_expression_from_the_source_individual_to_the_target_individual()
       {
          A.CallTo(() => _individualExpressionsUpdater.Update(_cloneIndividual, _scaledIndividual)).MustHaveHappened();
+      }
+   }
+
+   public class When_notify_that_the_settings_for_the_scaling_are_completed_but_the_creation_of_the_scaled_individual_was_not_successful : concern_for_ScaleIndividualPresenter
+   {
+      private bool _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.ScaleIndividual(_sourceIndividual);
+         A.CallTo(() => _settingPresenter.Individual).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CreateIndividual();
+      }
+
+      [Observation]
+      public void the_result_of_the_create_individual_operation_should_be_false()
+      {
+         _result.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_create_a_new_individual_based_on_the_source_individual_properties()
+      {
+         A.CallTo(() => _settingPresenter.CreateIndividual()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_tell_scaling_configuration_presenter_to_update_the_configuration()
+      {
+         A.CallTo(() => _scalingConfigurationPresenter.ConfigureScaling(_cloneIndividual, A<Individual>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_update_the_enzyme_expression_from_the_source_individual_to_the_target_individual()
+      {
+         A.CallTo(() => _individualExpressionsUpdater.Update(_cloneIndividual, _scaledIndividual)).MustNotHaveHappened();
       }
    }
 
