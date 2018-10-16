@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
