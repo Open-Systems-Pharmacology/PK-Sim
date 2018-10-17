@@ -41,7 +41,10 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_4
          {
             p.Visible = true;
             p.Info.ReadOnly = false;
+            //just to make sure it's the last parmaeter visible 
+            p.Sequence = 20;
             _converted = true;
+
          });
       }
    }

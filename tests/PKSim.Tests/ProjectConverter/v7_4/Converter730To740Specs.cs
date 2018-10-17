@@ -39,6 +39,7 @@ namespace PKSim.ProjectConverter.v7_4
          {
             p.Visible.ShouldBeTrue();
             p.Info.ReadOnly.ShouldBeFalse();
+            p.Sequence.ShouldBeGreaterThan(10);
          });
       }
    }
