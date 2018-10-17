@@ -67,7 +67,7 @@ namespace PKSim.UI.Views.Simulations
             .WithRepository(getButtonRepository)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
-         _addAndRemoveButtonRepository.ButtonClick += (o, e) => OnEvent(() => addRemoveButtonClick(o, e));
+         _addAndRemoveButtonRepository.ButtonClick += (o, e) => OnEvent(() => addRemoveButtonClick(e));
          _addButtonRepository.ButtonClick += (o, e) => OnEvent(addButtonClick);
 
 
@@ -100,14 +100,13 @@ namespace PKSim.UI.Views.Simulations
          });
       }
 
-      private void addRemoveButtonClick(object sender, ButtonPressedEventArgs e)
+      private void addRemoveButtonClick(ButtonPressedEventArgs e)
       {
-         var editor = (ButtonEdit) sender;
-         var buttonIndex = editor.Properties.Buttons.IndexOf(e.Button);
-         if (buttonIndex == 0)
+         if (Equals(e.Button.Tag, ButtonType.Add))
             _presenter.AddOutputInterval();
          else
             _presenter.RemoveOutputInterval(_gridViewBinder.FocusedElement);
+
          mainView.CloseEditor();
       }
 
