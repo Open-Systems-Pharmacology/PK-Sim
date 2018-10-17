@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using DevExpress.Utils;
-using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
@@ -24,7 +23,6 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using PKSim.UI.Extensions;
 using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.Compounds
@@ -99,7 +97,7 @@ namespace PKSim.UI.Views.Compounds
             .WithRepository(GetButtonRepository)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
-         _addAndRemoveButtonRepository.ButtonClick += (o, e) => OnEvent(() => buttonRepositoryButtonClick(o, e, _gridViewBinder.FocusedElement));
+         _addAndRemoveButtonRepository.ButtonClick += (o, e) => OnEvent(() => buttonRepositoryButtonClick(e, _gridViewBinder.FocusedElement));
          _addButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.AddAlternative());
 
          //last but not least: Set the column for name as the first column in the grid view
@@ -165,11 +163,9 @@ namespace PKSim.UI.Views.Compounds
          return _addAndRemoveButtonRepository;
       }
 
-      private void buttonRepositoryButtonClick(object sender, ButtonPressedEventArgs e, ParameterAlternativeDTO parameterAlternativeDTO)
+      private void buttonRepositoryButtonClick(ButtonPressedEventArgs e, ParameterAlternativeDTO parameterAlternativeDTO)
       {
-         var editor = (ButtonEdit) sender;
-         var buttonIndex = editor.Properties.Buttons.IndexOf(e.Button);
-         if (buttonIndex == 0)
+         if (Equals(e.Button.Tag, ButtonType.Add))
             _presenter.AddAlternative();
          else
             _presenter.RemoveAlternative(parameterAlternativeDTO);
