@@ -52,7 +52,9 @@ namespace PKSim.Core
       public void should_set_the_factors_defined_in_the_database_for_liver_and_duodenum()
       {
          _molecule.OntogenyFactor.ShouldBeEqualTo(20);
+         _molecule.OntogenyFactorParameter.DefaultValue.ShouldBeEqualTo(_molecule.OntogenyFactor);
          _molecule.OntogenyFactorGI.ShouldBeEqualTo(10);
+         _molecule.OntogenyFactorGIParameter.DefaultValue.ShouldBeEqualTo(_molecule.OntogenyFactorGI);
       }
    }
 

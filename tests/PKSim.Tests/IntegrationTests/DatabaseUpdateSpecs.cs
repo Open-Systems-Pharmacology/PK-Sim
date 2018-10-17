@@ -27,33 +27,57 @@ namespace PKSim.IntegrationTests
       public void should_update_the_parameter_tablet_time_delay_factor()
       {
          var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
-         var allTabletTimeDelayFactors = parameterRateRepository.All().Where(p => p.ParameterName.Equals(ConverterConstants.Parameter.TabletTimeDelayFactor)).ToList();
-         allTabletTimeDelayFactors.Count.ShouldBeGreaterThan(0);
-         allTabletTimeDelayFactors.Each(p =>
-         {
-            p.Visible.ShouldBeTrue();
-            p.ReadOnly.ShouldBeFalse();
-         });
+         verifyParameterIsVisibleAndEditable(parameterRateRepository, ConverterConstants.Parameter.TabletTimeDelayFactor);
+      }
+
+      [Observation]
+      public void should_make_the_plasma_protein_ontogeny_factor_editable()
+      {
+         var parameterValueRepository = IoC.Resolve<IParameterValueRepository>();
+         verifyParameterIsVisibleAndEditable(parameterValueRepository, CoreConstants.Parameters.ONTOGENY_FACTOR_AGP);
+         verifyParameterIsVisibleAndEditable(parameterValueRepository, CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN);
+
+         var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         verifyParameterIsVisibleAndEditable(parameterRateRepository, CoreConstants.Parameters.ONTOGENY_FACTOR, "PROTEIN");
+         verifyParameterIsVisibleAndEditable(parameterRateRepository, CoreConstants.Parameters.ONTOGENY_FACTOR_GI, "PROTEIN");
       }
 
       [Observation]
       public void should_set_some_new_parameters_as_can_be_varied_in_population()
       {
          var parameterValueRepository = IoC.Resolve<IParameterValueRepository>();
-         verifyParametersCanBeVariedInPopulation(parameterValueRepository.All().Where(p => p.ParameterName.Equals("Fraction endosomal (global)")).ToList());
-         verifyParametersCanBeVariedInPopulation(parameterValueRepository.All().Where(p => p.ParameterName.Equals("Thickness (endothelium)")).ToList());
-         verifyParametersCanBeVariedInPopulation(parameterValueRepository.All().Where(p => p.ParameterName.Equals("Fraction mucosa")).ToList());
+         verifyParametersCanBeVariedInPopulation(parameterValueRepository, "Fraction endosomal (global)");
+         verifyParametersCanBeVariedInPopulation(parameterValueRepository, "Thickness (endothelium)");
+         verifyParametersCanBeVariedInPopulation(parameterValueRepository, "Fraction mucosa");
 
          var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
-         verifyParametersCanBeVariedInPopulation(parameterRateRepository.All().Where(p => p.ParameterName.Equals(CoreConstantsForSpecs.Parameter.INFUSION_TIME)).ToList());
-         verifyParametersCanBeVariedInPopulation(parameterRateRepository.All().Where(p => p.ParameterName.Equals(CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT)).ToList());
-         verifyParametersCanBeVariedInPopulation(parameterRateRepository.All().Where(p => p.ParameterName.Equals(ConverterConstants.Parameter.PartitionCoefficientWwaterProtein) && p.ContainerName=="DRUG").ToList());
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.INFUSION_TIME);
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT);
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, ConverterConstants.Parameter.PartitionCoefficientWwaterProtein, "DRUG");
       }
 
-      private void verifyParametersCanBeVariedInPopulation(IReadOnlyCollection<ParameterMetaData> parameters)
+      private void verifyParametersCanBeVariedInPopulation<T>(IParameterMetaDataRepository<T> parameterMetaDataRepository, string parameterName, string containerName = null) where T : ParameterMetaData
       {
+         var parameters = parameterMetaDataRepository.All().Where(p => p.ParameterName.Equals(parameterName)).ToList();
+         if (containerName != null)
+            parameters = parameters.Where(x => x.ContainerName == containerName).ToList();
+
          parameters.Count.ShouldBeGreaterThan(0);
-         parameters.Each(p=>p.CanBeVariedInPopulation.ShouldBeTrue());
+         parameters.Each(p => p.CanBeVariedInPopulation.ShouldBeTrue());
+      }
+
+      private static void verifyParameterIsVisibleAndEditable<T>(IParameterMetaDataRepository<T> parameterMetaDataRepository, string parameterName, string containerName = null) where T : ParameterMetaData
+      {
+         var parameters = parameterMetaDataRepository.All().Where(p => p.ParameterName.Equals(parameterName)).ToList();
+         if (containerName != null)
+            parameters = parameters.Where(x => x.ContainerName == containerName).ToList();
+
+         parameters.Count.ShouldBeGreaterThan(0);
+         parameters.Each(p =>
+         {
+            p.Visible.ShouldBeTrue();
+            p.ReadOnly.ShouldBeFalse();
+         });
       }
    }
 

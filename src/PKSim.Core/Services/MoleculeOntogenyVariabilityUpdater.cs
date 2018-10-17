@@ -43,8 +43,7 @@ namespace PKSim.Core.Services
       {
          var parameter = individual.Organism.Parameter(parameterName);
          if (parameter == null) return;
-         parameter.DefaultValue = _ontogenyRepository.PlasmaProteinOntogenyFactor(proteinNAme, individual.OriginData);
-         parameter.Value = parameter.DefaultValue.Value;
+         updateOntogenyParameter(parameter, _ontogenyRepository.PlasmaProteinOntogenyFactor(proteinNAme, individual.OriginData));
       }
 
       public void UpdatePlasmaProteinsOntogenyFor(Population population)
@@ -55,8 +54,14 @@ namespace PKSim.Core.Services
       public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Individual individual)
       {
          molecule.Ontogeny = ontogeny;
-         molecule.OntogenyFactorGI = _ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM, individual.OriginData);
-         molecule.OntogenyFactor = _ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, individual.OriginData);
+         updateOntogenyParameter(molecule.OntogenyFactorGIParameter, _ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM, individual.OriginData));
+         updateOntogenyParameter(molecule.OntogenyFactorParameter, _ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, individual.OriginData));
+      }
+
+      private void updateOntogenyParameter(IParameter parameter, double value)
+      {
+         parameter.DefaultValue = value;
+         parameter.Value = parameter.DefaultValue.Value;
       }
 
       public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Population population)
