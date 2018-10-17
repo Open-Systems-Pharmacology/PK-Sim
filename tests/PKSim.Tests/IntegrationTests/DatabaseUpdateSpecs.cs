@@ -26,14 +26,34 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_update_the_parameter_tablet_time_delay_factor()
       {
-         var paramValueRepo = IoC.Resolve<IParameterRateRepository>();
-         var allTabletTimeDelayFactors = paramValueRepo.All().Where(p => p.ParameterName.Equals(ConverterConstants.Parameter.TabletTimeDelayFactor)).ToList();
-
+         var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         var allTabletTimeDelayFactors = parameterRateRepository.All().Where(p => p.ParameterName.Equals(ConverterConstants.Parameter.TabletTimeDelayFactor)).ToList();
+         allTabletTimeDelayFactors.Count.ShouldBeGreaterThan(0);
          allTabletTimeDelayFactors.Each(p =>
          {
             p.Visible.ShouldBeTrue();
             p.ReadOnly.ShouldBeFalse();
          });
+      }
+
+      [Observation]
+      public void should_set_some_new_parameters_as_can_be_varied_in_population()
+      {
+         var parameterValueRepository = IoC.Resolve<IParameterValueRepository>();
+         verifyParametersCanBeVariedInPopulation(parameterValueRepository.All().Where(p => p.ParameterName.Equals("Fraction endosomal (global)")).ToList());
+         verifyParametersCanBeVariedInPopulation(parameterValueRepository.All().Where(p => p.ParameterName.Equals("Thickness (endothelium)")).ToList());
+         verifyParametersCanBeVariedInPopulation(parameterValueRepository.All().Where(p => p.ParameterName.Equals("Fraction mucosa")).ToList());
+
+         var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository.All().Where(p => p.ParameterName.Equals(CoreConstantsForSpecs.Parameter.INFUSION_TIME)).ToList());
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository.All().Where(p => p.ParameterName.Equals(CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT)).ToList());
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository.All().Where(p => p.ParameterName.Equals(ConverterConstants.Parameter.PartitionCoefficientWwaterProtein) && p.ContainerName=="DRUG").ToList());
+      }
+
+      private void verifyParametersCanBeVariedInPopulation(IReadOnlyCollection<ParameterMetaData> parameters)
+      {
+         parameters.Count.ShouldBeGreaterThan(0);
+         parameters.Each(p=>p.CanBeVariedInPopulation.ShouldBeTrue());
       }
    }
 
