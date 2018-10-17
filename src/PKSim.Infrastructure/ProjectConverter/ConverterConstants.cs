@@ -131,6 +131,7 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string RenalAgingScaleFactor = "Renal aging scaling factor";
          public static readonly string RESIDUAL_FRACTION = "Residual fraction";
          public static readonly string ScalingExponentForFluidRecircFlowRate = "Scaling exponent for fluid recirculation flow rate";
+         public static readonly string TabletTimeDelayFactor = "Tablet time delay factor";
 
          public static IList<string> AllCompoundGlobalParameters => new List<string>
          {

@@ -590,6 +590,7 @@
     <Compile Include="Presentation\SimulationExpressionsPresenterSpecs.cs" />
     <Compile Include="Presentation\UserDefinedParametersPresenterSpecs.cs" />
     <Compile Include="ProjectConverter\v7_3\Converter721To730Specs.cs" />
+    <Compile Include="ProjectConverter\v7_4\Converter730To740Specs.cs" />
     <Compile Include="Reporting\ReportingSpecs.cs" />
     <Compile Include="Reporting\SimulationsReporterSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationXmlSerializerSpecs.cs" />
@@ -1207,6 +1208,7 @@
     <None Include="Data\ReportingProject.pksim5" />
     <None Include="Data\S1_concentrBased.pkml" />
     <None Include="Data\SimpleCompound_515.pksim5" />
+    <None Include="Data\SimpleProject_730.pksim5" />
     <None Include="Data\SimpleSimulationIV_551.pksim5" />
     <None Include="Data\SimpleSimulationIV_710.pksim5" />
     <None Include="Data\Simple_MoBi_531.pksim5" />
