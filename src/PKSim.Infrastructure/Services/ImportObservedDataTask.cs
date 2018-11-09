@@ -5,7 +5,9 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Importer;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -141,6 +143,10 @@ namespace PKSim.Infrastructure.Services
          amountInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Amount, IsMainDimension = true});
          amountInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Mass, IsMainDimension = false});
          columns.Add(amountInfo);
+
+         var errorInfo = createErrorColumnInfo(amountInfo, _dimensionRepository.Mass, _dimensionRepository.NoDimension);
+         columns.Add(errorInfo);
+
          return columns;
       }
 
@@ -152,8 +158,9 @@ namespace PKSim.Infrastructure.Services
 
          var concentrationInfo = new ColumnInfo
          {
-            DefaultDimension = _dimensionRepository.MolarConcentration,
             Name = PKSimConstants.UI.Concentration,
+            Description = PKSimConstants.UI.Concentration,
+            DefaultDimension = _dimensionRepository.MolarConcentration,
             IsMandatory = true,
             NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = timeColumn.Name
@@ -164,24 +171,29 @@ namespace PKSim.Infrastructure.Services
 
          columns.Add(concentrationInfo);
 
-         var errorInfo = new ColumnInfo
-         {
-            DefaultDimension = _dimensionRepository.MolarConcentration,
-            Name = "Error",
-            Description = "Error",
-            DisplayName = "Error",
-            IsMandatory = false,
-            NullValuesHandling = NullValuesHandlingType.Allowed,
-            BaseGridName = timeColumn.Name,
-            RelatedColumnOf = concentrationInfo.Name
-         };
-
-         errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.MolarConcentration, IsMainDimension = true});
-         errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.MassConcentration, IsMainDimension = false});
-         errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.NoDimension, IsMainDimension = false});
+         var errorInfo = createErrorColumnInfo(concentrationInfo, _dimensionRepository.MassConcentration, _dimensionRepository.NoDimension);
          columns.Add(errorInfo);
 
          return columns;
+      }
+
+      private ColumnInfo createErrorColumnInfo(ColumnInfo mainColumnInfo, params IDimension[] relatedDimensions)
+      {
+         var errorInfo = new ColumnInfo
+         {
+            DefaultDimension = mainColumnInfo.DefaultDimension,
+            Name = PKSimConstants.UI.Error,
+            Description = PKSimConstants.UI.Error,
+            IsMandatory = false,
+            NullValuesHandling = NullValuesHandlingType.Allowed,
+            BaseGridName = mainColumnInfo.BaseGridName,
+            RelatedColumnOf = mainColumnInfo.Name
+         };
+
+         errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = mainColumnInfo.DefaultDimension, IsMainDimension = true});
+         relatedDimensions.Each(dimension => { errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = dimension, IsMainDimension = false}); });
+
+         return errorInfo;
       }
 
       private ColumnInfo createTimeColumn()
@@ -190,6 +202,7 @@ namespace PKSim.Infrastructure.Services
          {
             DefaultDimension = _dimensionRepository.Time,
             Name = PKSimConstants.UI.Time,
+            Description = PKSimConstants.UI.Time,
             IsMandatory = true,
             NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
