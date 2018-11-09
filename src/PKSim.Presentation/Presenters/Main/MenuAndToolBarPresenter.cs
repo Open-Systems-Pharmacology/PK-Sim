@@ -354,6 +354,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.NewProtocol].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadProtocol].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = enabled && observedDataEnabled;
+         _menuBarItemRepository[MenuBarItemIds.ImporAmountObservedData].Enabled = enabled && observedDataEnabled;
          _menuBarItemRepository[MenuBarItemIds.ImportFractionData].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ProjectReport].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparison].Enabled = enabled;
@@ -414,12 +415,16 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(BuildingBlockAddedEvent eventToHandle)
       {
-         _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = compoundsAvailableIn(eventToHandle.Project);
+         var projectHasCompound = compoundsAvailableIn(eventToHandle.Project);
+         _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = projectHasCompound;
+         _menuBarItemRepository[MenuBarItemIds.ImporAmountObservedData].Enabled = projectHasCompound;
       }
 
       public void Handle(BuildingBlockRemovedEvent eventToHandle)
       {
-         _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = compoundsAvailableIn(eventToHandle.Project);
+         var projectHasCompound = compoundsAvailableIn(eventToHandle.Project);
+         _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = projectHasCompound;
+         _menuBarItemRepository[MenuBarItemIds.ImporAmountObservedData].Enabled = projectHasCompound;
       }
 
       private bool compoundsAvailableIn(IProject project)

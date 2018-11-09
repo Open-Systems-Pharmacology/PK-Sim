@@ -1,20 +1,20 @@
-using OSPSuite.Presentation.MenuAndBars;
+﻿using OSPSuite.Presentation.MenuAndBars;
 using PKSim.Core.Services;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class ImportConcentrationDataCommmand : IUICommand
+   public class ImportAmountDataCommmand : IUICommand
    {
       private readonly IImportObservedDataTask _observedDataTask;
 
-      public ImportConcentrationDataCommmand(IImportObservedDataTask observedDataTask)
+      public ImportAmountDataCommmand(IImportObservedDataTask observedDataTask)
       {
          _observedDataTask = observedDataTask;
       }
 
       public void Execute()
       {
-         _observedDataTask.AddConcentrationDataToProject();
+         _observedDataTask.AddAmountDataToProject();
       }
    }
 }

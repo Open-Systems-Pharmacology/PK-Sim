@@ -1103,7 +1103,9 @@ namespace PKSim.Assets
          public static readonly string NewFormulation = "Add &Formulation...";
          public static readonly string NewEvent = "Add &Event...";
          public static readonly string AddObservedData = "Add &Observed Data...";
-         public static readonly string AddObservedDataFor = "Add Observed Data for";
+         public static readonly string AddAmountObservedData = "Add &Amount Observed Data...";
+         public static readonly string AddConcentrationObservedDataFor = "Add Observed Data for";
+         public static readonly string AddAmountObservedDataFor = "Add Amount Observed Data for";
          public static readonly string AddFractionData = "Add &Fraction Data...";
          public static readonly string SaveAs = "Save As...";
          public static readonly string Scale = "Scale...";
@@ -1334,6 +1336,7 @@ namespace PKSim.Assets
       public static class Ribbons
       {
          public static readonly string ObservedData = "&Observed Data";
+         public static readonly string AmountObservedData = "&Amount Observed Data";
          public static readonly string FractionData = "&Fraction Data";
          public static readonly string Individual = "&Individual";
          public static readonly string Population = "&Population";
@@ -1605,6 +1608,7 @@ namespace PKSim.Assets
          public static readonly string Ontogeny = "Ontogeny";
          public static readonly string OntogenyFactor = "Ontogeny factor";
          public static readonly string Concentration = "Concentration";
+         public static readonly string Amount = "Amount";
          public static readonly string OpeningProjectDatabase = "Opening project database...";
          public static readonly string CreatingProjectDatabase = "Creating project database...";
          public static readonly string LoadingProject = "Loading project...";
@@ -1819,7 +1823,7 @@ namespace PKSim.Assets
          public static readonly string ProtocolEndTime = "Protocol end time";
          public static readonly string DosingInterval = "Dosing interval";
          public static readonly string ApplicationType = "Administration type";
-         public static readonly string TargetOrgan = "Target organ";
+         public static readonly string TargetOrgan = "Target organ"; 
          public static readonly string TargetCompartment = "Target compartment";
          public static readonly string PlaceholderFormulation = "Placeholder for formulation";
          public static readonly string ProtocolProperties = "Protocol Properties";
@@ -1872,7 +1876,8 @@ namespace PKSim.Assets
          public static readonly string SimulationExplorerViewDescription = "Show or hide the simulation explorer";
          public static readonly string BuildingBlockExplorerViewDescription = "Show or hide the building block explorer";
          public static readonly string UndoDescription = "Undo the last action";
-         public static readonly string AddObservedDataDescription = "Add observed data to the project...";
+         public static readonly string AddObservedDataDescription = "Add concentration observed data to the project...";
+         public static readonly string AddAmountObservedDataDescription = "Add amount observed data to the project...";
          public static readonly string AddFractionDataDescription = "Add fraction data to the project...";
          public static readonly string ExportHistoryToExcelDescription = "Export history to Excel file...";
          public static readonly string ExportHistoryToPDFDescription = "Export history to PDF file...";

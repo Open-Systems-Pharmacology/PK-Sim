@@ -7,7 +7,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_MolarToMassAmoutDimensionConverter : ContextSpecification<MolarToMassAmoutDimensionConverter>
+   public abstract class concern_for_MolarToMassAmoutDimensionConverter : ContextSpecification<AmountToMassDimensionConverter>
    {
       private DataColumn _dataColumn;
       protected double _molWeight = 400;
@@ -18,7 +18,7 @@ namespace PKSim.Core
          _dataColumn = new DataColumn();
          _dataColumn.DataInfo.MolWeight = _molWeight;
          _dimensionRepository = A.Fake<IDimensionRepository>();
-         sut = new MolarToMassAmoutDimensionConverter(_dataColumn, _dimensionRepository);
+         sut = new AmountToMassDimensionConverter(_dataColumn, _dimensionRepository);
       }
    }
 

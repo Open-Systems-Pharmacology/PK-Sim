@@ -13,14 +13,8 @@ namespace PKSim.Core.Services
          _column = column;
       }
 
-      public override bool CanResolveParameters()
-      {
-         return _column.DataInfo.MolWeight != null;
-      }
+      public override bool CanResolveParameters() => _column.DataInfo.MolWeight != null;
 
-      protected override double MolWeight
-      {
-         get { return _column.DataInfo.MolWeight.HasValue ? _column.DataInfo.MolWeight.Value : double.NaN; }
-      }
+      protected override double MolWeight => _column.DataInfo.MolWeight ?? double.NaN;
    }
 }

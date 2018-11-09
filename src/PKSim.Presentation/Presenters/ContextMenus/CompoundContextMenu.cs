@@ -31,7 +31,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       private static IMenuBarButton addObservedDataMenuFor(Compound compound)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddObservedData)
-            .WithCommandFor<AddObservedDataForCompoundUICommand, Compound>(compound)
+            .WithCommandFor<AddConcentrationObservedDataForCompoundUICommand, Compound>(compound)
             .WithIcon(ApplicationIcons.ObservedData);
       }
    }
