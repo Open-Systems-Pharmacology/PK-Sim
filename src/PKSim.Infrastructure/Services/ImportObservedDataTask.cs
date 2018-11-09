@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Importer;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Importer;
-using OSPSuite.Assets;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure.Services
@@ -43,15 +45,20 @@ namespace PKSim.Infrastructure.Services
          _parameterChangeUpdater = parameterChangeUpdater;
       }
 
-      public void AddConcentrationDataToProject()
-      {
-         AddConcentrationDataToProjectForCompound(null);
-      }
+      public void AddConcentrationDataToProject() => AddConcentrationDataToProjectForCompound(null);
+
+      public void AddAmountDataToProject() => AddAmountDataToProjectForCompound(null);
 
       public void AddConcentrationDataToProjectForCompound(Compound compound)
       {
          _executionContext.Load(compound);
          addObservedData(concentrationImportConfiguration, compound);
+      }
+
+      public void AddAmountDataToProjectForCompound(Compound compound)
+      {
+         _executionContext.Load(compound);
+         addObservedData(amountImportConfiguration, compound);
       }
 
       public void AddFractionDataToProject()
@@ -91,13 +98,13 @@ namespace PKSim.Infrastructure.Services
 
          var baseGrid = observedData.BaseGrid;
          var baseGridName = baseGrid.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-         baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] { observedData.Name, baseGridName }, QuantityType.Time);
+         baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] {observedData.Name, baseGridName}, QuantityType.Time);
       }
 
       private void adjustMolWeight(DataRepository observedData)
       {
          _parameterChangeUpdater.UpdateMolWeightIn(observedData);
-      }  
+      }
 
       private IReadOnlyList<ColumnInfo> fractionImportConfiguration()
       {
@@ -108,9 +115,7 @@ namespace PKSim.Infrastructure.Services
          var fractionInfo = new ColumnInfo
          {
             DefaultDimension = _dimensionRepository.Fraction,
-            Name = "Fraction",
-            Description = "Fraction",
-            DisplayName = "Fraction",
+            Name = PKSimConstants.UI.Fraction,
             IsMandatory = true,
             NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = timeColumn.Name
@@ -120,19 +125,42 @@ namespace PKSim.Infrastructure.Services
          return columns;
       }
 
+      private IReadOnlyList<ColumnInfo> amountImportConfiguration()
+      {
+         var columns = new List<ColumnInfo>();
+         var timeColumn = createTimeColumn();
+         columns.Add(timeColumn);
+
+         var amountInfo = new ColumnInfo
+         {
+            DefaultDimension = _dimensionRepository.Amount,
+            Name = PKSimConstants.UI.Amount,
+            IsMandatory = true,
+            NullValuesHandling = NullValuesHandlingType.DeleteRow,
+            BaseGridName = timeColumn.Name
+         };
+
+         amountInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Amount, IsMainDimension = true});
+         amountInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Mass, IsMainDimension = false});
+         columns.Add(amountInfo);
+
+         var errorInfo = createErrorColumnInfo(amountInfo, _dimensionRepository.Mass, _dimensionRepository.NoDimension);
+         columns.Add(errorInfo);
+
+         return columns;
+      }
+
       private IReadOnlyList<ColumnInfo> concentrationImportConfiguration()
       {
          var columns = new List<ColumnInfo>();
          var timeColumn = createTimeColumn();
-
          columns.Add(timeColumn);
 
          var concentrationInfo = new ColumnInfo
          {
+            Name = PKSimConstants.UI.Concentration,
+            Description = PKSimConstants.UI.Concentration,
             DefaultDimension = _dimensionRepository.MolarConcentration,
-            Name = "Concentration",
-            Description = "Concentration",
-            DisplayName = "Concentration",
             IsMandatory = true,
             NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = timeColumn.Name
@@ -143,24 +171,29 @@ namespace PKSim.Infrastructure.Services
 
          columns.Add(concentrationInfo);
 
-         var errorInfo = new ColumnInfo
-         {
-            DefaultDimension = _dimensionRepository.MolarConcentration,
-            Name = "Error",
-            Description = "Error",
-            DisplayName = "Error",
-            IsMandatory = false,
-            NullValuesHandling = NullValuesHandlingType.Allowed,
-            BaseGridName = timeColumn.Name,
-            RelatedColumnOf = concentrationInfo.Name
-         };
-
-         errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.MolarConcentration, IsMainDimension = true});
-         errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.MassConcentration, IsMainDimension = false});
-         errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.NoDimension, IsMainDimension = false});
+         var errorInfo = createErrorColumnInfo(concentrationInfo, _dimensionRepository.MassConcentration, _dimensionRepository.NoDimension);
          columns.Add(errorInfo);
 
          return columns;
+      }
+
+      private ColumnInfo createErrorColumnInfo(ColumnInfo mainColumnInfo, params IDimension[] relatedDimensions)
+      {
+         var errorInfo = new ColumnInfo
+         {
+            DefaultDimension = mainColumnInfo.DefaultDimension,
+            Name = PKSimConstants.UI.Error,
+            Description = PKSimConstants.UI.Error,
+            IsMandatory = false,
+            NullValuesHandling = NullValuesHandlingType.Allowed,
+            BaseGridName = mainColumnInfo.BaseGridName,
+            RelatedColumnOf = mainColumnInfo.Name
+         };
+
+         errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = mainColumnInfo.DefaultDimension, IsMainDimension = true});
+         relatedDimensions.Each(dimension => { errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = dimension, IsMainDimension = false}); });
+
+         return errorInfo;
       }
 
       private ColumnInfo createTimeColumn()
@@ -168,9 +201,8 @@ namespace PKSim.Infrastructure.Services
          var timeColumn = new ColumnInfo
          {
             DefaultDimension = _dimensionRepository.Time,
-            Name = "Time",
-            Description = "Time",
-            DisplayName = "Time",
+            Name = PKSimConstants.UI.Time,
+            Description = PKSimConstants.UI.Time,
             IsMandatory = true,
             NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
@@ -198,7 +230,7 @@ namespace PKSim.Infrastructure.Services
 
       public IReadOnlyList<string> DefaultMetaDataCategories => CoreConstants.ObservedData.DefaultProperties;
 
-      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> { ObservedData.MOLECULE };
+      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> {ObservedData.MOLECULE};
 
       public bool MolWeightEditable => false;
 
@@ -267,6 +299,7 @@ namespace PKSim.Infrastructure.Services
          {
             addInfoToCategory(compCategory, compartment);
          }
+
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Observer.TISSUE));
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Observer.INTERSTITIAL_UNBOUND));
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Observer.INTRACELLULAR_UNBOUND));
@@ -301,13 +334,12 @@ namespace PKSim.Infrastructure.Services
             Name = descriptiveName,
             DisplayName = descriptiveName,
             Description = descriptiveName,
-            MetaDataType = typeof (T),
+            MetaDataType = typeof(T),
             IsMandatory = isMandatory,
             IsListOfValuesFixed = isListOfValuesFixed
          };
 
-         if (fixedValuesRetriever != null)
-            fixedValuesRetriever(category);
+         fixedValuesRetriever?.Invoke(category);
 
          return category;
       }
@@ -319,7 +351,7 @@ namespace PKSim.Infrastructure.Services
             Name = ObservedData.MOLECULE,
             DisplayName = PKSimConstants.UI.Molecule,
             Description = PKSimConstants.UI.MoleculeNameDescription,
-            MetaDataType = typeof (string),
+            MetaDataType = typeof(string),
             IsListOfValuesFixed = !canEditName,
             IsMandatory = true,
          };
@@ -346,6 +378,7 @@ namespace PKSim.Infrastructure.Services
             metaDataCategory.ListOfValues.Add(objectBase.Name, objectBase.Name);
             return;
          }
+
          //only add with display name as information will be used in data repository as is
          metaDataCategory.ListOfValues.Add(info.DisplayName, info.DisplayName);
          var icon = ApplicationIcons.IconByName(info.IconName);

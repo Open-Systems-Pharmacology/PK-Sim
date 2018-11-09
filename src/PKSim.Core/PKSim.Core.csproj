@@ -83,11 +83,11 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.4.0.11, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.4.0.11\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.4.0.12, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.4.0.12\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.4.0.11, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.Core.7.4.0.11\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.4.0.12, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Core.7.4.0.12\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.1.9\lib\net45\OSPSuite.FuncParser.dll</HintPath>
@@ -206,6 +206,7 @@
     <Compile Include="Services\IPostLaunchChecker.cs" />
     <Compile Include="Services\IQualificationStepRunner.cs" />
     <Compile Include="Services\ITemplateDatabaseCreator.cs" />
+    <Compile Include="Services\MassToAmoundDimensionConverter.cs" />
     <Compile Include="Services\MoleculeParameterTask.cs" />
     <Compile Include="Services\QualificationStepRunnerFactory.cs" />
     <Compile Include="Services\ParameterDefaultStateUpdater.cs" />
@@ -600,7 +601,7 @@
     <Compile Include="Services\ISimulationComparisonContentLoader.cs" />
     <Compile Include="Services\Lint80ValuesRetriever.cs" />
     <Compile Include="Services\MoleculeCalculationRetriever.cs" />
-    <Compile Include="Services\MolarToMassAmoutDimensionConverter.cs" />
+    <Compile Include="Services\AmountToMassDimensionConverter.cs" />
     <Compile Include="Services\MassToMolarConcentrationDimensionConverter.cs" />
     <Compile Include="Services\MolarToMassConcentrationDimensionConverter.cs" />
     <Compile Include="Services\ExpressionContainersRetriever.cs" />

@@ -6,6 +6,10 @@ namespace PKSim.Core.Services
    {
       void AddConcentrationDataToProject();
       void AddConcentrationDataToProjectForCompound(Compound compound);
+
+      void AddAmountDataToProject();
+      void AddAmountDataToProjectForCompound(Compound compound);
+
       void AddFractionDataToProject();
    }
 }

@@ -1,5 +1,5 @@
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain.Data;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
@@ -10,14 +10,8 @@ namespace PKSim.Core.Services
       {
       }
 
-      public override double ConvertToTargetBaseUnit(double massConcentration)
-      {
-         return ConvertToMolar(massConcentration);
-      }
+      public override double ConvertToTargetBaseUnit(double massConcentration) => ConvertToMolar(massConcentration);
 
-      public override double ConvertToSourceBaseUnit(double molarConcentration)
-      {
-         return ConvertToMass(molarConcentration);
-      }
+      public override double ConvertToSourceBaseUnit(double molarConcentration) => ConvertToMass(molarConcentration);
    }
 }

@@ -1,7 +1,7 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using PKSim.Core.Services;
 using PKSim.Presentation.UICommands;
-using FakeItEasy;
 
 namespace PKSim.Presentation
 {
@@ -16,7 +16,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_executing_the_import_observed_data_command : concern_for_ImportObservedDataCommmand
    {
       protected override void Because()
