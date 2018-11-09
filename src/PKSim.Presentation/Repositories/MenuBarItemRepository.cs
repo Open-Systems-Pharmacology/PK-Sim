@@ -39,7 +39,7 @@ namespace PKSim.Presentation.Repositories
             .WithId(MenuBarItemIds.ProjectDescription)
             .WithCommand<EditProjectDescriptionCommand>()
             .WithDescription(PKSimConstants.UI.ProjectDescriptionDescription)
-            .WithIcon(ApplicationIcons.ProjectOpen)
+            .WithIcon(ApplicationIcons.ProjectDescription)
             .WithShortcut(Keys.Control | Keys.D);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportProjectToSnapshot)

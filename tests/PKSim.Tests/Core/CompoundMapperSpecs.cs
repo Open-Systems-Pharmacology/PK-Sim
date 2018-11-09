@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
@@ -29,11 +29,13 @@ namespace PKSim.Core
       protected EnzymaticProcess _partialProcess;
       private SystemicProcess _systemicProcess;
       protected ICompoundFactory _compoundFactory;
+      private ParameterAlternativeGroup _compoundIntestinalPermeabilityAlternativeGroup;
+      private ParameterAlternative _calculatedAlternative;
 
       protected override Task Context()
       {
-         _alternativeMapper = A.Fake<AlternativeMapper>();
          _parameterMapper = A.Fake<ParameterMapper>();
+         _alternativeMapper = A.Fake<AlternativeMapper>();
          _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
          _processMapper = A.Fake<CompoundProcessMapper>();
          _compoundFactory = A.Fake<ICompoundFactory>();
@@ -49,11 +51,19 @@ namespace PKSim.Core
          addPkAParameters(_compound, 1, 4, CompoundType.Acid);
          addPkAParameters(_compound, 2, 7, CompoundType.Neutral);
 
+         _compoundIntestinalPermeabilityAlternativeGroup = createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY);
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY));
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND));
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_SOLUBILITY));
-         _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY));
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_PERMEABILITY));
+         _compound.AddParameterAlternativeGroup(_compoundIntestinalPermeabilityAlternativeGroup);
+
+         _compoundIntestinalPermeabilityAlternativeGroup.DefaultAlternative.IsDefault = true;
+         //Calculated alternative will not be the default alternative for intestinal perm
+         _calculatedAlternative = new ParameterAlternative {Name = PKSimConstants.UI.CalculatedAlernative, IsDefault = false};
+         _compoundIntestinalPermeabilityAlternativeGroup.AddAlternative(_calculatedAlternative);
+         //Mapping of a calculated alternative returns null
+         A.CallTo(() => _alternativeMapper.MapToSnapshot(_calculatedAlternative)).Returns(Task.FromResult<Alternative>(null));
 
          _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.IS_SMALL_MOLECULE));
          _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int) PlasmaProteinBindingPartner.Glycoprotein).WithName(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER));
@@ -155,7 +165,7 @@ namespace PKSim.Core
    public class When_mapping_a_valid_compound_snapshot_to_a_compound : concern_for_CompoundMapper
    {
       private Model.Compound _newCompound;
-      private ParameterAlternative _alternative;
+      private ParameterAlternative _fractionUnboundAlternative;
       private Model.CompoundProcess _newProcess;
       private ParameterAlternativeGroup _fractionUnboundParameterGroup;
 
@@ -175,9 +185,9 @@ namespace PKSim.Core
             new PkaType {Pka = 3, Type = CompoundType.Acid},
          };
 
-         _alternative = new ParameterAlternative().WithName("Alternative");
+         _fractionUnboundAlternative = new ParameterAlternative().WithName("Alternative");
          _fractionUnboundParameterGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
-         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], _fractionUnboundParameterGroup)).Returns(_alternative);
+         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], _fractionUnboundParameterGroup)).Returns(_fractionUnboundAlternative);
 
          _snapshot.Processes = new[] {_snapshotProcess1};
          _newProcess = new EnzymaticProcess();
@@ -228,7 +238,14 @@ namespace PKSim.Core
       [Observation]
       public void should_have_created_the_expected_alternatives()
       {
-         _newCompound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND).AllAlternatives.ShouldContain(_alternative);
+         _newCompound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND).AllAlternatives.ShouldContain(_fractionUnboundAlternative);
+      }
+
+      [Observation]
+      public void should_have_set_the_alternative_as_default_alternative()
+      {
+         _fractionUnboundAlternative.IsDefault.ShouldBeTrue();
+         _newCompound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY).DefaultAlternative.IsDefault.ShouldBeTrue();
       }
 
       [Observation]

@@ -91,9 +91,17 @@ namespace PKSim.Core.Snapshots.Mappers
          //Remove all alternatives except calculated ones
          alternativeGroup.AllAlternatives.ToList().Where(x => !x.IsCalculated).Each(alternativeGroup.RemoveAlternative);
 
+         //Reset the default flag that will be read from snapshot
+         alternativeGroup.AllAlternatives.Each(x=>x.IsDefault = false);
+
          var alternatives = await _alternativeMapper.MapToModels(snapshotAlternatives, alternativeGroup);
 
          alternatives?.Each(alternativeGroup.AddAlternative);
+
+         //Ensure that we have at least one default alternative (might not be the case if only calcualted alternatives were saved)
+         var defaultAlternative = alternativeGroup.DefaultAlternative;
+         if (defaultAlternative != null)
+            defaultAlternative.IsDefault = true;
       }
 
       private void updatePkaTypes(ModelCompound compound, SnapshotCompound snapshot)
