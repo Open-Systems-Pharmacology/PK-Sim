@@ -1,11 +1,14 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
+using OSPSuite.Core.Commands;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
@@ -14,12 +17,17 @@ namespace PKSim.Core
       protected List<IParameter> _parameterToScale;
       protected double _factor;
       protected IExecutionContext _executionContext;
+      protected IDimension _dimension;
+      protected IParameterTask _parameterTask;
 
       protected override void Context()
       {
          _parameterToScale = new List<IParameter>();
          _executionContext = A.Fake<IExecutionContext>();
+         _parameterTask = A.Fake<IParameterTask>();
+         _dimension= Constants.Dimension.NO_DIMENSION;
          _factor = 10;
+         A.CallTo(() => _executionContext.Resolve<IParameterTask>()).Returns(_parameterTask);
          sut = new ScaleParametersCommand(_parameterToScale, _factor);
       }
    }
@@ -28,25 +36,32 @@ namespace PKSim.Core
    {
       private IParameter _para1;
       private IParameter _para2;
-      private double _value1 = 1;
-      private double _value2 = 2;
-      private double _value3 = 3;
+      private readonly double _value1 = 1;
+      private readonly double _value2 = 2;
+      private readonly double _value3 = 3;
       private IParameter _para3;
+      private IPKSimCommand _setCommand1;
+      private IPKSimCommand _setCommand2;
 
       protected override void Context()
       {
          base.Context();
-         _para1 = DomainHelperForSpecs.ConstantParameterWithValue(_value1).WithName("para1").WithDimension(A.Fake<IDimension>());
+         _para1 = DomainHelperForSpecs.ConstantParameterWithValue(_value1).WithName("para1");
          _para1.Editable = true;
-         _para2 = DomainHelperForSpecs.ConstantParameterWithValue(_value2).WithName("para2").WithDimension(A.Fake<IDimension>());
+         _para2 = DomainHelperForSpecs.ConstantParameterWithValue(_value2).WithName("para2");
          _para2.Editable = true;
-         _para3 = DomainHelperForSpecs.ConstantParameterWithValue(_value3).WithName("para3").WithDimension(A.Fake<IDimension>());
+         _para3 = DomainHelperForSpecs.ConstantParameterWithValue(_value3).WithName("para3");
          _para3.Editable = false;
          A.CallTo(() => _executionContext.BuildingBlockContaining(_para1)).Returns(A.Fake<IPKSimBuildingBlock>());
          A.CallTo(() => _executionContext.BuildingBlockContaining(_para2)).Returns(A.Fake<IPKSimBuildingBlock>());
          _parameterToScale.Add(_para1);
          _parameterToScale.Add(_para2);
          _parameterToScale.Add(_para3);
+         _setCommand1= A.Fake<IPKSimCommand>();
+         _setCommand2 = A.Fake<IPKSimCommand>();
+
+         A.CallTo(() => _parameterTask.SetParameterValue(_para1, _value1 * _factor, true)).Returns(_setCommand1);
+         A.CallTo(() => _parameterTask.SetParameterValue(_para2, _value2 * _factor, true)).Returns(_setCommand2);
       }
 
       protected override void Because()
@@ -63,14 +78,13 @@ namespace PKSim.Core
       [Observation]
       public void should_have_scaled_the_parameters_with_the_given_factor()
       {
-         _para1.Value.ShouldBeEqualTo(_value1 * _factor);
-         _para2.Value.ShouldBeEqualTo(_value2 * _factor);
+         sut.All().ShouldContain(_setCommand1, _setCommand2);
       }
 
       [Observation]
       public void should_have_let_the_not_editale_parmater_unchanged()
       {
-         _para3.Value.ShouldBeEqualTo(_value3);
+         A.CallTo(() => _parameterTask.SetParameterValue(_para3, A<double>._, A<bool>._)).MustNotHaveHappened();
       }
    }
 
@@ -78,35 +92,38 @@ namespace PKSim.Core
    {
       private IParameter _para1;
       private IParameter _para2;
-      private double _value1 = 1;
-      private double _value2 = 2;
-      private double _value3 = 3;
+      private readonly double _value1 = 1;
+      private readonly double _value2 = 2;
+      private readonly double _value3 = 3;
       private IParameter _para3;
+      private IPKSimCommand _setCommand;
 
       protected override void Context()
       {
          base.Context();
-         _para1 = DomainHelperForSpecs.ConstantParameterWithValue(_value1).WithName(CoreConstants.Parameters.EHC_ENABLED).WithDimension(A.Fake<IDimension>());
+         _para1 = DomainHelperForSpecs.ConstantParameterWithValue(_value1).WithName(CoreConstants.Parameters.EHC_ENABLED);
          _para1.Editable = true;
-         _para2 = DomainHelperForSpecs.ConstantParameterWithValue(_value2).WithName("para2").WithDimension(A.Fake<IDimension>());
+         _para2 = DomainHelperForSpecs.ConstantParameterWithValue(_value2).WithName("para2");
          _para2.Editable = true;
-         _para3 = DomainHelperForSpecs.ConstantParameterWithValue(_value3).WithName(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM).WithDimension(A.Fake<IDimension>());
+         _para3 = DomainHelperForSpecs.ConstantParameterWithValue(_value3).WithName(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM);
          _para3.Editable = true;
-         A.CallTo(_executionContext).WithReturnType<IPKSimBuildingBlock>().Returns(A.Fake<IPKSimBuildingBlock>());
          _parameterToScale.Add(_para1);
          _parameterToScale.Add(_para2);
          _parameterToScale.Add(_para3);
+         _setCommand= A.Fake<IPKSimCommand>();
+         A.CallTo(() => _parameterTask.SetParameterValue(_para2, _value2 * _factor, true)).Returns(_setCommand);
       }
 
       protected override void Because()
       {
          sut.Execute(_executionContext);
       }
-       
+
       [Observation]
       public void should_not_scale_the_parameter()
       {
          sut.Count.ShouldBeEqualTo(1);
+         sut.All().ShouldContain(_setCommand);
       }
    }
 }
