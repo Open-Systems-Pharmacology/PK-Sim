@@ -1,0 +1,4 @@
+.output PKSimDB_dump.txt
+.dump
+.quit
+ 
