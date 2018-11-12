@@ -35,7 +35,6 @@ def download_pksimdb_file
   open(developPKSimDB, 'wb') do |fo| 
     fo.print open(uri,:read_timeout => nil).read
   end
-  file
 end
 
 def pksimDb
