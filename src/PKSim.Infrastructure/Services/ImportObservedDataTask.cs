@@ -259,6 +259,7 @@ namespace PKSim.Infrastructure.Services
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Observer.TISSUE));
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Observer.INTERSTITIAL_UNBOUND));
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Observer.INTRACELLULAR_UNBOUND));
+         addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Observer.WHOLE_BLOOD));
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Compartment.URINE));
          addInfoToCategory(compCategory, new Observer().WithName(CoreConstants.Compartment.FECES));
       }
