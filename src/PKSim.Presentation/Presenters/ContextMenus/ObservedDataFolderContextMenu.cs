@@ -29,31 +29,19 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
 
          //create sub menu containing all compounds
-         var addConcentrationObservedDataFor = CreateSubMenu.WithCaption(PKSimConstants.MenuNames.AddConcentrationObservedDataFor)
+         var addObservedDataFor = CreateSubMenu.WithCaption(PKSimConstants.MenuNames.AddObservedDataFor)
             .WithIcon(ApplicationIcons.ObservedDataForMolecule);
 
-         var addAmountObservedDataFor = CreateSubMenu.WithCaption(PKSimConstants.MenuNames.AddAmountObservedDataFor)
-            .WithIcon(ApplicationIcons.AmountObservedDataForMolecule);
 
          foreach (var compound in allCompounds)
          {
-            addConcentrationObservedDataFor.AddItem(CreateMenuButton.WithCaption(compound.Name)
-               .WithCommandFor<AddConcentrationObservedDataForCompoundUICommand, Compound>(compound));  
-
-            addAmountObservedDataFor.AddItem(CreateMenuButton.WithCaption(compound.Name)
-               .WithCommandFor<AddAmountObservedDataForCompoundUICommand, Compound>(compound));
+            addObservedDataFor.AddItem(CreateMenuButton.WithCaption(compound.Name)
+               .WithCommandFor<AddObservedDataForCompoundUICommand, Compound>(compound));  
          }
 
-
-         _view.AddMenuItem(repository[MenuBarItemIds.ImportObservedData]);
+         _view.AddMenuItem(repository[MenuBarItemIds.AddObservedData]);
          if (allCompounds.Any())
-            _view.AddMenuItem(addConcentrationObservedDataFor);
-
-         _view.AddMenuItem(repository[MenuBarItemIds.ImporAmountObservedData].AsGroupStarter());
-         if (allCompounds.Any())
-            _view.AddMenuItem(addAmountObservedDataFor);
-
-         _view.AddMenuItem(repository[MenuBarItemIds.ImportFractionData].AsGroupStarter());
+            _view.AddMenuItem(addObservedDataFor);
 
          _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
             .WithCommand<LoadObservedDataFromTemplateUICommand>()

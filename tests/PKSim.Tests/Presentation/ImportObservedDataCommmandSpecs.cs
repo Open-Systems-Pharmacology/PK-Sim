@@ -26,7 +26,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_the_selected_observed_data_to_the_current_project()
       {
-         A.CallTo(() => _observedDataTask.AddConcentrationDataToProject()).MustHaveHappened();
+         A.CallTo(() => _observedDataTask.AddObservedDataToProject()).MustHaveHappened();
       }
    }
 }

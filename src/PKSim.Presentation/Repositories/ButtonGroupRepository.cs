@@ -71,9 +71,7 @@ namespace PKSim.Presentation.Repositories
          .WithId(ButtonGroupIds.Project);
 
       private IButtonGroup importButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.Import)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ImportObservedData)).WithCaption(PKSimConstants.Ribbons.ObservedData))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ImporAmountObservedData)).WithCaption(PKSimConstants.Ribbons.AmountObservedData))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ImportFractionData)).WithCaption(PKSimConstants.Ribbons.FractionData))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.AddObservedData)).WithCaption(PKSimConstants.Ribbons.ObservedData))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewImportIndividualSimulation)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewImportPopulationSimulation)))
          .WithId(ButtonGroupIds.Import);

@@ -45,25 +45,12 @@ namespace PKSim.Infrastructure.Services
          _parameterChangeUpdater = parameterChangeUpdater;
       }
 
-      public void AddConcentrationDataToProject() => AddConcentrationDataToProjectForCompound(null);
+      public void AddObservedDataToProject() => AddObservedDataToProjectForCompound(null);
 
-      public void AddAmountDataToProject() => AddAmountDataToProjectForCompound(null);
-
-      public void AddConcentrationDataToProjectForCompound(Compound compound)
+      public void AddObservedDataToProjectForCompound(Compound compound)
       {
          _executionContext.Load(compound);
-         addObservedData(concentrationImportConfiguration, compound);
-      }
-
-      public void AddAmountDataToProjectForCompound(Compound compound)
-      {
-         _executionContext.Load(compound);
-         addObservedData(amountImportConfiguration, compound);
-      }
-
-      public void AddFractionDataToProject()
-      {
-         addObservedData(fractionImportConfiguration, allowCompoundNameEdit: true);
+         addObservedData(importConfiguration, compound);
       }
 
       private void addObservedData(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
@@ -106,78 +93,42 @@ namespace PKSim.Infrastructure.Services
          _parameterChangeUpdater.UpdateMolWeightIn(observedData);
       }
 
-      private IReadOnlyList<ColumnInfo> fractionImportConfiguration()
+
+      private IReadOnlyList<ColumnInfo> importConfiguration()
       {
          var columns = new List<ColumnInfo>();
          var timeColumn = createTimeColumn();
          columns.Add(timeColumn);
 
-         var fractionInfo = new ColumnInfo
-         {
-            DefaultDimension = _dimensionRepository.Fraction,
-            Name = PKSimConstants.UI.Fraction,
-            IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
-            BaseGridName = timeColumn.Name
+
+         var supportedDimensions = new[] {
+            _dimensionRepository.MolarConcentration,
+            _dimensionRepository.MassConcentration,
+            _dimensionRepository.Amount,
+            _dimensionRepository.Mass,
+            _dimensionRepository.NoDimension,
+            _dimensionRepository.Fraction,
          };
-         fractionInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Fraction, IsMainDimension = true});
-         columns.Add(fractionInfo);
-         return columns;
-      }
 
-      private IReadOnlyList<ColumnInfo> amountImportConfiguration()
-      {
-         var columns = new List<ColumnInfo>();
-         var timeColumn = createTimeColumn();
-         columns.Add(timeColumn);
-
-         var amountInfo = new ColumnInfo
+         var measurementInfo = new ColumnInfo
          {
-            DefaultDimension = _dimensionRepository.Amount,
-            Name = PKSimConstants.UI.Amount,
+            Name = PKSimConstants.UI.Measurement,
+            Description = PKSimConstants.UI.Measurement,
+            DefaultDimension = supportedDimensions[0],
             IsMandatory = true,
             NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = timeColumn.Name
          };
 
-         amountInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Amount, IsMainDimension = true});
-         amountInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Mass, IsMainDimension = false});
-         columns.Add(amountInfo);
+         addSupportedDimensionsTo(measurementInfo, supportedDimensions);
 
-         var errorInfo = createErrorColumnInfo(amountInfo, _dimensionRepository.Mass, _dimensionRepository.NoDimension);
-         columns.Add(errorInfo);
+         columns.Add(measurementInfo);
+         columns.Add(createErrorColumnInfo(measurementInfo, supportedDimensions));
 
          return columns;
       }
 
-      private IReadOnlyList<ColumnInfo> concentrationImportConfiguration()
-      {
-         var columns = new List<ColumnInfo>();
-         var timeColumn = createTimeColumn();
-         columns.Add(timeColumn);
-
-         var concentrationInfo = new ColumnInfo
-         {
-            Name = PKSimConstants.UI.Concentration,
-            Description = PKSimConstants.UI.Concentration,
-            DefaultDimension = _dimensionRepository.MolarConcentration,
-            IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
-            BaseGridName = timeColumn.Name
-         };
-
-         concentrationInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.MolarConcentration, IsMainDimension = true});
-         concentrationInfo.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.MassConcentration, IsMainDimension = false});
-
-         columns.Add(concentrationInfo);
-
-         var errorInfo = createErrorColumnInfo(concentrationInfo, _dimensionRepository.MassConcentration, _dimensionRepository.NoDimension);
-         columns.Add(errorInfo);
-
-         return columns;
-      }
-
-      private ColumnInfo createErrorColumnInfo(ColumnInfo mainColumnInfo, params IDimension[] relatedDimensions)
+      private ColumnInfo createErrorColumnInfo(ColumnInfo mainColumnInfo, IEnumerable<IDimension> supportedDimensions)
       {
          var errorInfo = new ColumnInfo
          {
@@ -190,10 +141,15 @@ namespace PKSim.Infrastructure.Services
             RelatedColumnOf = mainColumnInfo.Name
          };
 
-         errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = mainColumnInfo.DefaultDimension, IsMainDimension = true});
-         relatedDimensions.Each(dimension => { errorInfo.DimensionInfos.Add(new DimensionInfo {Dimension = dimension, IsMainDimension = false}); });
+         addSupportedDimensionsTo(errorInfo, supportedDimensions);
 
          return errorInfo;
+      }
+
+      private void addSupportedDimensionsTo(ColumnInfo column, IEnumerable<IDimension> supportedDimensions)
+      {
+         var mainDimension = column.DefaultDimension;
+         supportedDimensions.Select(dim => new DimensionInfo { Dimension = dim, IsMainDimension = Equals(dim, mainDimension)}).Each(column.DimensionInfos.Add);
       }
 
       private ColumnInfo createTimeColumn()

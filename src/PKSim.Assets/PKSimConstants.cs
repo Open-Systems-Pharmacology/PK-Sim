@@ -1103,10 +1103,7 @@ namespace PKSim.Assets
          public static readonly string NewFormulation = "Add &Formulation...";
          public static readonly string NewEvent = "Add &Event...";
          public static readonly string AddObservedData = "Add &Observed Data...";
-         public static readonly string AddAmountObservedData = "Add &Amount Observed Data...";
-         public static readonly string AddConcentrationObservedDataFor = "Add Observed Data for";
-         public static readonly string AddAmountObservedDataFor = "Add Amount Observed Data for";
-         public static readonly string AddFractionData = "Add &Fraction Data...";
+         public static readonly string AddObservedDataFor = "Add Observed Data for";
          public static readonly string SaveAs = "Save As...";
          public static readonly string Scale = "Scale...";
          public static readonly string Extras = "&Extras";
@@ -1609,6 +1606,7 @@ namespace PKSim.Assets
          public static readonly string OntogenyFactor = "Ontogeny factor";
          public static readonly string Concentration = "Concentration";
          public static readonly string Amount = "Amount";
+         public static readonly string Measurement = "Measurement";
          public static readonly string OpeningProjectDatabase = "Opening project database...";
          public static readonly string CreatingProjectDatabase = "Creating project database...";
          public static readonly string LoadingProject = "Loading project...";
@@ -1876,9 +1874,7 @@ namespace PKSim.Assets
          public static readonly string SimulationExplorerViewDescription = "Show or hide the simulation explorer";
          public static readonly string BuildingBlockExplorerViewDescription = "Show or hide the building block explorer";
          public static readonly string UndoDescription = "Undo the last action";
-         public static readonly string AddObservedDataDescription = "Add concentration observed data to the project...";
-         public static readonly string AddAmountObservedDataDescription = "Add amount observed data to the project...";
-         public static readonly string AddFractionDataDescription = "Add fraction data to the project...";
+         public static readonly string AddObservedDataDescription = "Add observed data (concentration, amount, fraction) to the project...";
          public static readonly string ExportHistoryToExcelDescription = "Export history to Excel file...";
          public static readonly string ExportHistoryToPDFDescription = "Export history to PDF file...";
          public static readonly string ProjectReportDescription = "Export project to a pdf file...";
