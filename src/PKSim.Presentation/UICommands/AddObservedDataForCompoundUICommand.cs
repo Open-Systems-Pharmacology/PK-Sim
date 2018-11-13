@@ -4,18 +4,18 @@ using OSPSuite.Presentation.UICommands;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class AddConcentrationObservedDataForCompoundUICommand : ObjectUICommand<Compound>
+   public class AddObservedDataForCompoundUICommand : ObjectUICommand<Compound>
    {
       private readonly IImportObservedDataTask _observedDataTask;
 
-      public AddConcentrationObservedDataForCompoundUICommand(IImportObservedDataTask observedDataTask)
+      public AddObservedDataForCompoundUICommand(IImportObservedDataTask observedDataTask)
       {
          _observedDataTask = observedDataTask;
       }
 
       protected override void PerformExecute()
       {
-         _observedDataTask.AddConcentrationDataToProjectForCompound(Subject);
+         _observedDataTask.AddObservedDataToProjectForCompound(Subject);
       }
    }
 }

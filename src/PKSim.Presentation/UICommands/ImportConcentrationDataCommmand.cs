@@ -14,7 +14,7 @@ namespace PKSim.Presentation.UICommands
 
       public void Execute()
       {
-         _observedDataTask.AddConcentrationDataToProject();
+         _observedDataTask.AddObservedDataToProject();
       }
    }
 }

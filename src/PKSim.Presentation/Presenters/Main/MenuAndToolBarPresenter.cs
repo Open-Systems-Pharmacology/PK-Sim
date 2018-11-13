@@ -353,9 +353,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.LoadEvent].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewProtocol].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadProtocol].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = enabled && observedDataEnabled;
-         _menuBarItemRepository[MenuBarItemIds.ImporAmountObservedData].Enabled = enabled && observedDataEnabled;
-         _menuBarItemRepository[MenuBarItemIds.ImportFractionData].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled && observedDataEnabled;
          _menuBarItemRepository[MenuBarItemIds.ProjectReport].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparison].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparisonInAnalyze].Enabled = enabled;
@@ -416,15 +414,13 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(BuildingBlockAddedEvent eventToHandle)
       {
          var projectHasCompound = compoundsAvailableIn(eventToHandle.Project);
-         _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = projectHasCompound;
-         _menuBarItemRepository[MenuBarItemIds.ImporAmountObservedData].Enabled = projectHasCompound;
+         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = projectHasCompound;
       }
 
       public void Handle(BuildingBlockRemovedEvent eventToHandle)
       {
          var projectHasCompound = compoundsAvailableIn(eventToHandle.Project);
-         _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = projectHasCompound;
-         _menuBarItemRepository[MenuBarItemIds.ImporAmountObservedData].Enabled = projectHasCompound;
+         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = projectHasCompound;
       }
 
       private bool compoundsAvailableIn(IProject project)
