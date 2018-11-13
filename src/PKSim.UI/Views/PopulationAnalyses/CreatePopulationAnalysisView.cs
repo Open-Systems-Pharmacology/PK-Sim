@@ -46,9 +46,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       public ApplicationIcon Image
       {
-         set { Icon = value.WithSize(IconSizes.Size16x16); }
+         set => Icon = value.WithSize(IconSizes.Size16x16);
       }
-
-      protected override int TopicId => HelpId.PKSim_Simulations_DisplayResultsPopulation;
    }
 }

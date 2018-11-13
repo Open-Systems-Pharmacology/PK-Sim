@@ -27,7 +27,5 @@ namespace PKSim.UI.Views.Individuals
          Icon = ApplicationIcons.Individual.WithSize(IconSizes.Size16x16);
          Caption = PKSimConstants.UI.CreateIndividual;
       }
-
-      protected override int TopicId => HelpId.PKSim_Individuals_NewIndividual;
    }
 }

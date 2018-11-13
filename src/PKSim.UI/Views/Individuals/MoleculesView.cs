@@ -61,11 +61,9 @@ namespace PKSim.UI.Views.Individuals
          groupExpressions.FillWith(expressionsView);
       }
 
-      protected override int TopicId => HelpId.PKSim_Expression;
-
       public string GroupCaption
       {
-         set { groupExpressions.Text = value; }
+         set => groupExpressions.Text = value;
       }
 
       public void AttachPresenter(IMoleculesPresenter presenter)

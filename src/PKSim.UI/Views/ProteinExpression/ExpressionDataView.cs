@@ -1241,7 +1241,5 @@ namespace PKSim.UI.Views.ProteinExpression
             _isPrefilterCriteriaChanging = false;
          }
       }
-
-      protected override int TopicId => HelpId.PKSim_Expression_AdvancedAnalysis_PivotTable;
    }
 }

@@ -50,8 +50,6 @@ namespace PKSim.UI.Views
          e.EditValue = LicenseAgreementFilePath;
       }
 
-      protected override int TopicId => HelpId.About;
-
       public override void Display()
       {
          lblProductInfo.Text = versionDescription();

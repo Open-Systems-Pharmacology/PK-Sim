@@ -112,7 +112,5 @@ namespace PKSim.UI.Views.Compounds
          //this action might be called when binding to the list even if the selection did not change
         _createProcessPresenter.ChangeProcessType(compoundProcessDTO);
       }
-
-      protected override int TopicId => HelpId.PKSim_Compounds_NewCompound;
    }
 }

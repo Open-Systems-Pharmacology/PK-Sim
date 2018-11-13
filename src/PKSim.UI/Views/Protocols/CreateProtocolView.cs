@@ -110,6 +110,5 @@ namespace PKSim.UI.Views.Protocols
          UpdateEditControl(viewToAdd);
       }
 
-      protected override int TopicId => HelpId.PKSim_Protocols_NewProtocol;
    }
 }

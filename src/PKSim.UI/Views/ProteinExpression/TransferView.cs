@@ -287,7 +287,5 @@ namespace PKSim.UI.Views.ProteinExpression
          Caption = PKSimConstants.ProteinExpressions.MainView.TabPageTransfer;
          ApplicationIcon = ApplicationIcons.Parameters;
       }
-
-      protected override int TopicId => HelpId.PKSim_Expression_ReviewGeneExpressionTransfer;
    }
 }

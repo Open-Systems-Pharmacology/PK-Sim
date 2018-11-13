@@ -38,7 +38,5 @@ namespace PKSim.UI.Views.ProteinExpression
          this.ReziseForCurrentScreen(fractionHeight: UIConstants.Size.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.Size.SCREEN_RESIZE_FRACTION);
          MaximizeBox = true;
       }
-
-      protected override int TopicId => HelpId.PKSim_Expression;
    }
 }

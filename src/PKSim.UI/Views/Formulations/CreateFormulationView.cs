@@ -27,7 +27,5 @@ namespace PKSim.UI.Views.Formulations
          Icon = ApplicationIcons.Formulation.WithSize(IconSizes.Size16x16);
          Caption = PKSimConstants.UI.CreateFormulation;
       }
-
-      protected override int TopicId => HelpId.PKSim_Formulations_NewFormulation;
    }
 }

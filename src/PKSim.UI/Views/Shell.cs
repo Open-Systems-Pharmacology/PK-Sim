@@ -96,8 +96,6 @@ namespace PKSim.UI.Views
          RegisterRegion(_panelJournalDiagram, RegionNames.JournalDiagram);
       }
 
-      protected override int AppHelpId => HelpId.PKSim;
-
       public void AttachPresenter(IPKSimMainViewPresenter presenter)
       {
          _presenter = presenter;

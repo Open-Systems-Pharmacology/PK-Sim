@@ -32,7 +32,5 @@ namespace PKSim.UI.Views.Charts
       {
          _presenter = presenter;
       }
-
-      protected override int TopicId => HelpId.PKSim_Simulations_DisplayResultsPopulation;
    }
 }

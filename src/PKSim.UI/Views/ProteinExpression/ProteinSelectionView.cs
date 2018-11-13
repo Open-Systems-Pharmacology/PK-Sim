@@ -269,7 +269,5 @@ namespace PKSim.UI.Views.ProteinExpression
          ApplicationIcon = ApplicationIcons.ProteinExpression;
          layoutItemSearch.AdjustButtonSize();
       }
-
-      protected override int TopicId => HelpId.PKSim_Expression_AddingProteinQuantitiesByQuery;
    }
 }

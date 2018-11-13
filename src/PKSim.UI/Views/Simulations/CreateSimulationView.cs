@@ -37,9 +37,6 @@ namespace PKSim.UI.Views.Simulations
          base.InitializeBinding();
          btnOk.Click += (o, e) => OnEvent(simulationWizardPresenter.CreateSimulation);
       }
-
-      protected override int TopicId => HelpId.PKSim_Simulations_CreateNewSimulation;
-
       private ISimulationWizardPresenter simulationWizardPresenter
       {
          get { return WizardPresenter.DowncastTo<ISimulationWizardPresenter>(); }

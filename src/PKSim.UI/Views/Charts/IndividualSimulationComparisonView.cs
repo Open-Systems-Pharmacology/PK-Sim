@@ -29,6 +29,5 @@ namespace PKSim.UI.Views.Charts
 
       public ApplicationIcon Image => ApplicationIcons.IndividualSimulationComparison;
 
-      protected override int TopicId => HelpId.PKSim_Simulations_CompareSimulations;
    }
 }
