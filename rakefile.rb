@@ -2,6 +2,7 @@ require_relative 'scripts/setup'
 require_relative 'scripts/copy-dependencies'
 require_relative 'scripts/utils'
 require_relative 'scripts/coverage'
+require_relative 'src/Db/db'
 
 task :cover do
 	filter = []
@@ -106,6 +107,11 @@ task :postclean do |t, args|
 	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
 		copy_files 'StandardTemplate', '*'
 	end
+end
+
+task :db_pre_commit do
+	Rake::Task['db:dump'].execute();
+	Rake::Task['db:diff'].execute();
 end
 
 private
