@@ -488,6 +488,7 @@ namespace PKSim.Core
          A.CallTo(() => _executionContext.BuildingBlockContaining(para1)).Returns(A.Fake<IPKSimBuildingBlock>());
          A.CallTo(() => _executionContext.BuildingBlockContaining(para2)).Returns(A.Fake<IPKSimBuildingBlock>());
          _parameters = new List<IParameter> {para1, para2};
+         A.CallTo(() => _executionContext.Resolve<IParameterTask>()).Returns(sut);
       }
 
       protected override void Because()
