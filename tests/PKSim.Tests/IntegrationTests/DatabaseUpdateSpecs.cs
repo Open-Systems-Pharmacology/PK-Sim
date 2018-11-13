@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -78,6 +79,28 @@ namespace PKSim.IntegrationTests
             p.Visible.ShouldBeTrue();
             p.ReadOnly.ShouldBeFalse();
          });
+      }
+
+      [Observation]
+      public void should_adjust_hill_kinetics()
+      {
+         var rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
+
+         var allHillFormulas = rateFormulaRepository.All().Where(r => r.Rate.EndsWith("_Hill")).ToArray();
+         allHillFormulas.Count().ShouldBeEqualTo(13);
+
+         foreach (var hillFormula in allHillFormulas)
+         {
+            var equation = hillFormula.Formula;
+
+            //count number of occurances of the exponent (alpha) and of the max function in the equation
+            //all terms with exponent must have the form "max(C;0)^alpha/(KM^alpha+max(C;0)^alpha)"
+            // thus <number of max-functions> must be 2/3*<number of exponents>
+            var alphasCount = Regex.Matches(equation, "alpha").Count;
+            var maxCount = Regex.Matches(equation, "max").Count;
+            alphasCount.ShouldBeGreaterThan(0);
+            maxCount.ShouldBeEqualTo(2*alphasCount/3);
+         }
       }
    }
 
