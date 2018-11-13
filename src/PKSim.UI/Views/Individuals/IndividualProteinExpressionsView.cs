@@ -161,7 +161,5 @@ namespace PKSim.UI.Views.Individuals
       }
 
       public override bool HasError => _screenBinder.HasError || _gridViewBinder.HasError;
-
-      protected override int TopicId => HelpId.PKSim_Expression_Reference_Concentration;
    }
 }

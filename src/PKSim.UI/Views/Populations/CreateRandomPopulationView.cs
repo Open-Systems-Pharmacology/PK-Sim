@@ -26,7 +26,5 @@ namespace PKSim.UI.Views.Populations
          Icon = ApplicationIcons.Population.WithSize(IconSizes.Size16x16);
          Caption = PKSimConstants.UI.CreatePopulation;
       }
-
-      protected override int TopicId => HelpId.PKSim_Populations_NewPopulation;
    }
 }

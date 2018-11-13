@@ -51,9 +51,7 @@ namespace PKSim.UI.Views.Simulations
 
       public Type SimulationSubjectType
       {
-         set { radioGroupSimulationSubject.EditValue = value; }
+         set => radioGroupSimulationSubject.EditValue = value;
       }
-
-      protected override int TopicId => HelpId.PKSim_Simulations_CreateNewSimulation;
    }
 }

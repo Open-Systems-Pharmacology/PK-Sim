@@ -30,8 +30,6 @@ namespace PKSim.UI.Views.Simulations
          _presenter = presenter;
       }
 
-      protected override int TopicId => HelpId.PKSim_Simulations_RunSimulation;
-
       protected override void SetActiveControl()
       {
          ActiveControl = btnOk;

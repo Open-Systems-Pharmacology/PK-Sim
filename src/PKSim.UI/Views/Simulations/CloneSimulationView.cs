@@ -18,7 +18,5 @@ namespace PKSim.UI.Views.Simulations
          Icon = ApplicationIcons.SimulationClone.WithSize(IconSizes.Size16x16);
          Caption = PKSimConstants.UI.CloneSimulation;
       }
-
-      protected override int TopicId => HelpId.PKSim_Simulations_CloneSimulations;
    }
 }

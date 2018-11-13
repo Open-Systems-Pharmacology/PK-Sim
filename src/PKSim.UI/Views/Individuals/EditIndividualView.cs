@@ -29,7 +29,5 @@ namespace PKSim.UI.Views.Individuals
       }
 
       public override XtraTabControl TabControl => tabEditIndividual;
-
-      protected override int TopicId => HelpId.PKSim_Individuals_SetorChangeIndividualProperties;
    }
 }

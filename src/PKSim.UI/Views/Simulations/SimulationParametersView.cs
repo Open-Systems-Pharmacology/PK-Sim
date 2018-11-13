@@ -32,6 +32,5 @@ namespace PKSim.UI.Views.Simulations
 
       public override string Caption => PKSimConstants.UI.Parameters;
 
-      protected override int TopicId => HelpId.PKSim_Simulations;
    }
 }

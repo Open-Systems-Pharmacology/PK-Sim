@@ -25,7 +25,5 @@ namespace PKSim.UI.Views.Compounds
          Icon = ApplicationIcons.Compound.WithSize(IconSizes.Size16x16);
          Caption = PKSimConstants.UI.CreateCompound;
       }
-
-      protected override int TopicId => HelpId.PKSim_Compounds_NewCompound;
    }
 }

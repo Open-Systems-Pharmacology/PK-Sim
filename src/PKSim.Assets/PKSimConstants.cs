@@ -1137,7 +1137,6 @@ namespace PKSim.Assets
          public static readonly string ExportSimulationToPDFMenu = "PDF";
          public static readonly string ProjectReport = "Project Report";
          public static readonly string Report = "Report";
-         public static readonly string Help = "Help";
          public static readonly string ExportSimulationResultsToExcel = $"Export Results to {UI.Excel}...";
          public static readonly string ExportSimulationResultsToExcelMenu = $"Results to {UI.Excel}";
          public static readonly string ExportSimulationResultsToCSV = $"Export Results to {"CSV"}...";

@@ -360,12 +360,6 @@ namespace PKSim.Presentation.Repositories
             .WithIcon(ApplicationIcons.PDF)
             .WithCommand<ExportHistoryToPDFCommand>();
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Help)
-            .WithId(MenuBarItemIds.Help)
-            .WithIcon(ApplicationIcons.Help)
-            .WithCommand<ShowHelpCommand>()
-            .WithShortcut(Keys.F1);
-
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.CloneMenu)
             .WithId(MenuBarItemIds.CloneActiveSimulation)
             .WithDescription(PKSimConstants.UI.CloneSimulation)
@@ -407,7 +401,6 @@ namespace PKSim.Presentation.Repositories
             .WithDescription(PKSimConstants.UI.ExportPopulationToCSVTitle)
             .WithCommand<ExportPopulationSimulationToCSVCommand>()
             .WithIcon(ApplicationIcons.PopulationExportToCSV);
-
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportPKAnalysesToCSVMenu)
           .WithId(MenuBarItemIds.ExportActiveSimulationPKAnalysesToCSV)
@@ -451,6 +444,7 @@ namespace PKSim.Presentation.Repositories
          yield return CommonMenuBarButtons.ManageProjectDisplayUnits(MenuBarItemIds.ManageProjectDisplayUnits);
          yield return CommonMenuBarButtons.UpdateAllToDisplayUnits(MenuBarItemIds.UpdateAllToDisplayUnits);
          yield return CommonMenuBarButtons.ClearHistory(MenuBarItemIds.ClearHistory);
+         yield return CommonMenuBarButtons.Help(MenuBarItemIds.Help);
 
          yield return JournalMenuBarButtons.JournalView(MenuBarItemIds.JournalView);
          yield return JournalMenuBarButtons.CreateJournalPage(MenuBarItemIds.CreateJournalPage);

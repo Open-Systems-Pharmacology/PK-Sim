@@ -42,8 +42,6 @@ namespace PKSim.UI.Views.Simulations
          btnOk.Click += (o, e) => OnEvent(simulationWizardPresenter.CreateSimulation);
       }
 
-      protected override int TopicId => HelpId.PKSim_Simulations;
-
       private ISimulationWizardPresenter simulationWizardPresenter => WizardPresenter.DowncastTo<ISimulationWizardPresenter>();
    }
 }

@@ -31,7 +31,5 @@ namespace PKSim.UI.Views.Individuals
       public override string Caption => PKSimConstants.UI.AnatomyAndPhysiology;
 
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.Parameters;
-
-      protected override int TopicId => HelpId.PKSim_Individuals_SetorChangeIndividualProperties;
    }
 }

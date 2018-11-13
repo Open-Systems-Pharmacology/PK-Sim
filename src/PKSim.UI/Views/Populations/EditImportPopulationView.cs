@@ -23,6 +23,5 @@ namespace PKSim.UI.Views.Populations
 
       public override XtraTabControl TabControl => tabEditPopulation;
 
-      protected override int TopicId => HelpId.PKSim_Population;
    }
 }

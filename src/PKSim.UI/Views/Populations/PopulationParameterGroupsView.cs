@@ -105,7 +105,5 @@ namespace PKSim.UI.Views.Populations
       {
          _treeGroups.SelectNode(node);
       }
-
-      protected override int TopicId => HelpId.PKSim_Population;
    }
 }
