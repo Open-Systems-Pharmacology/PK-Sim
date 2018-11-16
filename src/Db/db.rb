@@ -2,6 +2,7 @@ require 'open-uri'
 require 'openssl'
 require 'open3'
 PKSIM_DB_FILE_NAME = 'PKSimDB.sqlite'
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 namespace :db do
   desc "Performs a dump of the database"
