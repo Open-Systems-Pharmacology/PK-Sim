@@ -274,7 +274,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_hode_the_metabolite_column_since_no_metabolite_can_be_selected()
       {
-         A.CallTo(() => _view.HideMultipleCompoundColumns()).MustHaveHappened();
+         A.CallTo(() => _view.HideMultipleCompoundsColumns()).MustHaveHappened();
       }
    }
 

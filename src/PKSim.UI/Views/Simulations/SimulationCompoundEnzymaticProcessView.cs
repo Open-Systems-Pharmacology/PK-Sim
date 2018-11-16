@@ -76,7 +76,7 @@ namespace PKSim.UI.Views.Simulations
 
       private ISimulationCompoundEnzymaticProcessPresenter enzymaticProcessPresenter => _presenter.DowncastTo<ISimulationCompoundEnzymaticProcessPresenter>();
 
-      public void HideMultipleCompoundColumns()
+      public void HideMultipleCompoundsColumns()
       {
          _colMetaboliteName.UpdateVisibility(false);
          _colAddPartialProcess.UpdateVisibility(false);

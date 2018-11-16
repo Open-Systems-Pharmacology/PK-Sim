@@ -43,7 +43,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          if (simulation.Compounds.Count > 1)
             return;
 
-         enzymaticProcessView.HideMultipleCompoundColumns();
+         enzymaticProcessView.HideMultipleCompoundsColumns();
       }
 
       protected override IEnumerable<SimulationEnzymaticProcessSelectionDTO> MapPartialProcesses(IEnumerable<SimulationPartialProcess> selectedProcesses)
