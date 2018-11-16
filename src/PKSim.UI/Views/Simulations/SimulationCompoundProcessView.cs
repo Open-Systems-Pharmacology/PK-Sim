@@ -66,24 +66,24 @@ namespace PKSim.UI.Views.Simulations
 
       public string MoleculeName
       {
-         set { _colIndividualMolecule.Caption = PKSimConstants.UI.MoleculeInIndividual(value); }
+         set => _colIndividualMolecule.Caption = PKSimConstants.UI.MoleculeInIndividual(value);
       }
 
       public string CompoundProcessCaption
       {
-         set { _colCompoundProcess.Caption = value; }
+         set => _colCompoundProcess.Caption = value;
       }
 
       public bool WarningVisible
       {
-         set { layoutItemWarning.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemWarning.Visibility); }
+         set => layoutItemWarning.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemWarning.Visibility);
       }
 
       public string Warning
       {
-         get { return panelWarning.NoteText; }
-         set { updatePanelWarning(value, ApplicationIcons.ErrorHint); }
+         get => panelWarning.NoteText;
+         set => updatePanelWarning(value, ApplicationIcons.ErrorHint);
       }
 
       private void updatePanelWarning(string message, ApplicationIcon icon)
@@ -94,8 +94,8 @@ namespace PKSim.UI.Views.Simulations
 
       public string Info
       {
-         get { return panelWarning.NoteText; }
-         set { updatePanelWarning(value, ApplicationIcons.Info); }
+         get => panelWarning.NoteText;
+         set => updatePanelWarning(value, ApplicationIcons.Info);
       }
 
       public override void InitializeBinding()
@@ -110,7 +110,8 @@ namespace PKSim.UI.Views.Simulations
          _gridViewSystemicBinder.Bind(x => x.Image)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithRepository(dto => _statusIconRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .AsReadOnly();
 
          _gridViewSystemicBinder.Bind(x => x.SystemicProcessType)
             .WithCaption(PKSimConstants.UI.SystemicProcess)
@@ -153,15 +154,16 @@ namespace PKSim.UI.Views.Simulations
          return _gridViewPartialBinder.Bind(x => x.Image)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithRepository(dto => _statusIconRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .AsReadOnly();
       }
 
-      public void BindToPartialProcesses(IReadOnlyCollection<TPartialProcessDTO> allPartialProcessSelectionDTO)
+      public void BindToPartialProcesses(IEnumerable<TPartialProcessDTO> allPartialProcessSelectionDTO)
       {
          _gridViewPartialBinder.BindToSource(allPartialProcessSelectionDTO);
       }
 
-      public void BindToSystemicProcesses(IReadOnlyCollection<SimulationSystemicProcessSelectionDTO> allSystemicProcessSelectionDTO)
+      public void BindToSystemicProcesses(IEnumerable<SimulationSystemicProcessSelectionDTO> allSystemicProcessSelectionDTO)
       {
          _gridViewSystemicBinder.BindToSource(allSystemicProcessSelectionDTO);
       }

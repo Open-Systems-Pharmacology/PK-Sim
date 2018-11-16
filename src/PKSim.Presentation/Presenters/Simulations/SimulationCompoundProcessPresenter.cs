@@ -8,6 +8,7 @@ using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Collections;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -69,13 +70,12 @@ namespace PKSim.Presentation.Presenters.Simulations
       where TPartialProcessDTO : SimulationPartialProcessSelectionDTO
    {
       private readonly IPartialProcessRetriever _partialProcessRetriever;
-      protected IReadOnlyCollection<TPartialProcessDTO> _allPartialProcessesDTO;
+      protected List<TPartialProcessDTO> _allPartialProcessesDTO;
       private IEnumerable<TPartialProcess> _allPartialProcesses;
       protected List<SimulationSystemicProcessSelectionDTO> _allSystemicProcessesDTO;
       protected Compound _compound;
       private NotSelectedSystemicProcess _notSelectedSystemicProcess;
       private NotAvailableSystemicProcess _notAvailableSystemicProcess;
-      protected IEnumerable<SimulationPartialProcess> _selectedProcesses;
       protected CompoundProperties _compoundProperties;
       protected Simulation _simulation;
       protected readonly TPartialProcess _notSelectedPartialProcess;
@@ -103,9 +103,9 @@ namespace PKSim.Presentation.Presenters.Simulations
 
          var partialProcessSelection = ProcessSelectionGroup().AllPartialProcesses();
 
-         _selectedProcesses = _partialProcessRetriever.AllFor<TMolecule,TPartialProcess>(simulation, _compound, partialProcessSelection, addDefaultPartialProcess: true);
+         var selectedProcesses = _partialProcessRetriever.AllFor<TMolecule,TPartialProcess>(simulation, _compound, partialProcessSelection, addDefaultPartialProcess: true);
 
-         _allPartialProcessesDTO = MapPartialProcesses(_selectedProcesses).ToList();
+         _allPartialProcessesDTO = MapPartialProcesses(selectedProcesses).ToList();
 
          createSystemicProcessesFor(simulation);
 
