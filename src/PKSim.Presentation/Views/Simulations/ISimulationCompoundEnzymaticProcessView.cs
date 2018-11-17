@@ -5,6 +5,6 @@ namespace PKSim.Presentation.Views.Simulations
 {
    public interface ISimulationCompoundEnzymaticProcessView : ISimulationCompoundProcessView<EnzymaticProcess, SimulationEnzymaticProcessSelectionDTO>
    {
-      void HideMetaboliteColumn();
+      void HideMultipleCompoundsColumns();
    }
 }
