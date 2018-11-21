@@ -39,7 +39,6 @@
 *.StyleCop text
 *.targets text
 *.tt text
-*.txt text
 *.vb text
 *.vbhtml text
 *.vbproj text merge=union 

@@ -383,7 +383,6 @@
     <Compile Include="DTO\Individuals\TransportTypeDTO.cs" />
     <Compile Include="DTO\ObservedData\ObservedDataSelectionDTO.cs" />
     <Compile Include="DTO\Simulations\GlobalPKAnalysisDTO.cs" />
-    <Compile Include="DTO\Compounds\CompoundTypeDTO.cs" />
     <Compile Include="DTO\Compounds\FractionUnboundAlternativeDTO.cs" />
     <Compile Include="DTO\Compounds\LipophilictyAlternativeDTO.cs" />
     <Compile Include="DTO\Compounds\MolWeightDTO.cs" />
