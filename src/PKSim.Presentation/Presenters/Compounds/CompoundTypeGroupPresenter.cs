@@ -44,7 +44,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       private readonly IParameterTask _parameterTask;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IEditValueOriginPresenter _editValueOriginPresenter;
-      private CompoundTypeDTO _compoundTypeDTO;
+      private IReadOnlyList<TypePKaDTO> _compoundTypeDTOs;
       private PathCache<IParameter> _parameterCache;
       private List<IParameter> _compoundTypeParameters;
 
@@ -85,10 +85,11 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void EditCompoundParameters(IEnumerable<IParameter> compoundParameters)
       {
-         _compoundTypeParameters = compoundParameters.Where(x => string.Equals(x.GroupName, CoreConstants.Groups.COMPOUND_PKA)).ToList();
-         _parameterCache = new PathCache<IParameter>(_entityPathResolver).For(_compoundTypeParameters);
-         _compoundTypeDTO = _dtoMapper.MapFrom(_compoundTypeParameters);
-         _view.BindTo(_compoundTypeDTO.AllTypePKas);
+         var allCompoundPKaParameters = compoundParameters.Where(x => string.Equals(x.GroupName, CoreConstants.Groups.COMPOUND_PKA)).ToList();
+         _parameterCache = new PathCache<IParameter>(_entityPathResolver).For(allCompoundPKaParameters);
+         _compoundTypeDTOs = _dtoMapper.MapFrom(allCompoundPKaParameters);
+         _compoundTypeParameters = _compoundTypeDTOs.SelectMany(x => x.Parameters).ToList();
+         _view.BindTo(_compoundTypeDTOs);
          _editValueOriginPresenter.Edit(_compoundTypeParameters.FirstOrDefault());
       }
 
@@ -113,7 +114,7 @@ namespace PKSim.Presentation.Presenters.Compounds
          var pKaParameter = _parameterCache[eventToHandle.ParameterPath];
          if (pKaParameter == null) return;
 
-         var typePKA = _compoundTypeDTO.AllTypePKas.FirstOrDefault(x => Equals(x.PKaParameter.Parameter, pKaParameter));
+         var typePKA = _compoundTypeDTOs.FirstOrDefault(x => Equals(x.PKaParameter.Parameter, pKaParameter));
          if (typePKA == null) return;
          typePKA.IsFavorite = false;
       }

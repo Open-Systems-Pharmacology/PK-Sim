@@ -8,7 +8,7 @@ using PKSim.Presentation.DTO.Compounds;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
-   public interface ICompoundToCompoundTypeDTOMapper : IMapper<IEnumerable<IParameter>, CompoundTypeDTO>
+   public interface ICompoundToCompoundTypeDTOMapper : IMapper<IEnumerable<IParameter>, IReadOnlyList<TypePKaDTO>>
    {
    }
 
@@ -21,15 +21,15 @@ namespace PKSim.Presentation.DTO.Mappers
          _parameterMapper = parameterMapper;
       }
 
-      public CompoundTypeDTO MapFrom(IEnumerable<IParameter> compoundParameters)
+      public IReadOnlyList<TypePKaDTO> MapFrom(IEnumerable<IParameter> compoundParameters)
       {
          var allCompoundParameters = compoundParameters.ToList();
-         var compoundTypeAlternativeDTO = new CompoundTypeDTO();
-
-         compoundTypeAlternativeDTO.AddTypePKa(typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA1, CoreConstants.Parameters.COMPOUND_TYPE1));
-         compoundTypeAlternativeDTO.AddTypePKa(typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA2, CoreConstants.Parameters.COMPOUND_TYPE2));
-         compoundTypeAlternativeDTO.AddTypePKa(typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA3, CoreConstants.Parameters.COMPOUND_TYPE3));
-         return compoundTypeAlternativeDTO;
+         return new List<TypePKaDTO>
+         {
+            typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA1, CoreConstants.Parameters.COMPOUND_TYPE1),
+            typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA2, CoreConstants.Parameters.COMPOUND_TYPE2),
+            typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA3, CoreConstants.Parameters.COMPOUND_TYPE3)
+         };
       }
 
       private TypePKaDTO typePKaFor(IList<IParameter> compoundParameters, string parameterPka1, string parameterCompoundType1)
