@@ -23,10 +23,10 @@ namespace PKSim.Infrastructure.Services
          if (string.IsNullOrEmpty(projectPath))
             return;
 
-         _commandExecuter.ExecuteCommand(projectPath, clearUnusdContentCommand);
+         _commandExecuter.ExecuteCommand(projectPath, clearUnusedContentCommand);
       }
 
-      private void clearUnusdContentCommand(DbConnection connection)
+      private void clearUnusedContentCommand(DbConnection connection)
       {
          connection.ExecuteNonQuery(
             @"PRAGMA foreign_keys = ON;

@@ -2504,13 +2504,13 @@ namespace PKSim.Assets
          public static string UserTemplateDatabaseDatabaseUsedOldFormatAndCannotBeLoaded(string userTemplateDatabasePath, string wikiPageUrl) =>
             $"The template database located at\n\t\t'{userTemplateDatabasePath}'\n\nuses a file format that is not supported anymore. Please refer to\n\t\t'{wikiPageUrl}'\n\nto learn how to convert your database.";
 
-         private static readonly string[] _reallClearUnusedContent = {
+         private static readonly string[] _reallyClearUnusedContent = {
             "Removing unused content could permamently corrupt your project.",
             "You should make a backup of your project before proceeding.",
             "If you don't make a backup, you will be the only one to blame!"
          };
 
-         public static readonly string ReallyClearUnusedContent = DoYouWantToProceed(_reallClearUnusedContent);
+         public static readonly string ReallyClearUnusedContent = DoYouWantToProceed(_reallyClearUnusedContent);
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
       }
