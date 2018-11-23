@@ -12,7 +12,7 @@ namespace PKSim.Presentation.Core
       public static ButtonGroupId IndividualSimulationAnalyses = new ButtonGroupId("IndividualSimulationAnalyses");
       public static ButtonGroupId PopulationSimulationWorkflow = new ButtonGroupId("PopulationSimulationWorkflow");
       public static ButtonGroupId Tools = new ButtonGroupId("Tools");
-      public static ButtonGroupId Admin = new ButtonGroupId("Admin");
+      public static ButtonGroupId Developer = new ButtonGroupId("Developer");
       public static ButtonGroupId Skins = new ButtonGroupId("Skins");
       public static ButtonGroupId View = new ButtonGroupId("View");
       public static ButtonGroupId Import = new ButtonGroupId("Import");

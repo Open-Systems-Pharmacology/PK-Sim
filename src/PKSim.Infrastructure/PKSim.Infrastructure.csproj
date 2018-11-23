@@ -634,6 +634,7 @@
     <Compile Include="Serialization\Xml\Serializers\UsedObservedDataXmlSerializer.cs" />
     <Compile Include="Services\ApplicationSettingsPersistor.cs" />
     <Compile Include="Services\CsvReaderDisposer.cs" />
+    <Compile Include="Services\DeveloperTask.cs" />
     <Compile Include="Services\ImportObservedDataTask.cs" />
     <Compile Include="Services\MoBiExportTask.cs" />
     <Compile Include="Services\ParameterIdentificationContentLoader.cs" />

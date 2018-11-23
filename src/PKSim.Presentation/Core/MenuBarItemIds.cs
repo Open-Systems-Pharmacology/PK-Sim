@@ -107,6 +107,7 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId SensitivityAnalysisFeedbackView = createMenuBarItemId("SensitivityAnalysisFeedbackView");
       public static MenuBarItemId SensitivityAnalysisPKParameterAnalysis = createMenuBarItemId("SensitivityAnalysisPKParameterAnalysis");
       public static MenuBarItemId ClearHistory = createMenuBarItemId("ClearHistory");
+      public static MenuBarItemId RemoveUnusedContent = createMenuBarItemId("RemoveUnusedContent");
 
       private static MenuBarItemId createMenuBarItemId(string name)
       {

@@ -27,7 +27,7 @@ namespace PKSim.Presentation.Repositories
          yield return importPopulationSimulationButtonGroup;
          yield return exportIndividualSimulationGroup;
          yield return exportPopulationSimulationGroup;
-         yield return adminButtonGroup;
+         yield return developerButtonGroup;
          yield return exportProjectGroup;
          yield return loadBuildingBlocksButtonGroup;
          yield return displayUnitsButtonGroup;
@@ -172,12 +172,13 @@ namespace PKSim.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.Options)))
          .WithId(ButtonGroupIds.Tools);
 
-      private IButtonGroup adminButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.Admin)
+      private IButtonGroup developerButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.Developer)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GarbageCollection)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GenerateCalculationMethods)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GeneratePKMLTemplates)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GenerateGroupsTemplate)))
-         .WithId(ButtonGroupIds.Admin);
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.RemoveUnusedContent)))
+         .WithId(ButtonGroupIds.Developer);
 
       private IButtonGroup viewButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.PanelView)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.BuildingBlockExplorerView)))

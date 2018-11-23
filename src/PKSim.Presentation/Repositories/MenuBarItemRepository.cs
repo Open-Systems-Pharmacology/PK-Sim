@@ -427,6 +427,12 @@ namespace PKSim.Presentation.Repositories
             .WithIcon(ApplicationIcons.AnalysesSave)
             .WithCommand<SavePopulationAnalysisWorkflowToTemplateUICommand>();
 
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.RemoveUnusedContent)
+            .WithId(MenuBarItemIds.RemoveUnusedContent)
+            .WithCommand<RemoveUnusedContentUICommand>()
+            .WithIcon(ApplicationIcons.Delete)
+            .ForDeveloper();
+
          yield return CommonMenuBarButtons.ManageUserDisplayUnits(MenuBarItemIds.ManageUserDisplayUnits);
          yield return CommonMenuBarButtons.ManageProjectDisplayUnits(MenuBarItemIds.ManageProjectDisplayUnits);
          yield return CommonMenuBarButtons.UpdateAllToDisplayUnits(MenuBarItemIds.UpdateAllToDisplayUnits);
