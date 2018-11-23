@@ -1166,6 +1166,7 @@ namespace PKSim.Assets
          public static readonly string ExtractIndividualsMenu = "Extract Individuals...";
          public static readonly string ExportSnapshot = "Save Snapshot...";
          public static readonly string LoadFromSnapshot = "Load from Snapshot...";
+         public static readonly string RemoveUnusedContent = "Remove Unused Content";
 
          public static string DevOnlyMenuNameFor(string menuName) => $"{menuName} (Developer only)";
 
@@ -1354,7 +1355,7 @@ namespace PKSim.Assets
          public static readonly string Import = "Import";
          public static readonly string Export = "Export";
          public static readonly string ExportProject = "Export Project";
-         public static readonly string Admin = "Admin (Developer Only)";
+         public static readonly string Developer = "Developer Tools";
          public static readonly string DisplayUnits = "Display Units";
          public static readonly string Analyses = "Analyses";
          public static readonly string Workflow = "Workflow";
@@ -2502,6 +2503,16 @@ namespace PKSim.Assets
 
          public static string UserTemplateDatabaseDatabaseUsedOldFormatAndCannotBeLoaded(string userTemplateDatabasePath, string wikiPageUrl) =>
             $"The template database located at\n\t\t'{userTemplateDatabasePath}'\n\nuses a file format that is not supported anymore. Please refer to\n\t\t'{wikiPageUrl}'\n\nto learn how to convert your database.";
+
+         private static readonly string[] _reallClearUnusedContent = {
+            "Removing unused content could permamently corrupt your project.",
+            "You should make a backup of your project before proceeding.",
+            "If you don't make a backup, you will be the only one to blame!"
+         };
+
+         public static readonly string ReallyClearUnusedContent = DoYouWantToProceed(_reallClearUnusedContent);
+         public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
+
       }
 
       public static class Reporting

@@ -288,6 +288,7 @@
     <Compile Include="Services\BuildingBlockSelectionDisplayer.cs" />
     <Compile Include="Services\DisplayNameProvider.cs" />
     <Compile Include="Services\HistoryManagerRetriever.cs" />
+    <Compile Include="Services\IDeveloperTask.cs" />
     <Compile Include="Services\IndividualOntogenyTask.cs" />
     <Compile Include="Services\IUserSettingsPersistor.cs" />
     <Compile Include="Presenters\NameTemplatePresenter.cs" />
@@ -543,6 +544,7 @@
     <Compile Include="UICommands\LoadSimulationFromSnapshotUICommand.cs" />
     <Compile Include="UICommands\NewImportIndividualSimulationCommand.cs" />
     <Compile Include="UICommands\NewImportPopulationSimulationCommand.cs" />
+    <Compile Include="UICommands\RemoveUnusedContentUICommand.cs" />
     <Compile Include="UICommands\RenameObjectUICommand.cs" />
     <Compile Include="UICommands\RenameSubjectUICommand.cs" />
     <Compile Include="UICommands\SaveBuildingBlockAsSystemTemplateCommand.cs" />

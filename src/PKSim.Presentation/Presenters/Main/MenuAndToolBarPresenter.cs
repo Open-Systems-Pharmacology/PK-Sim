@@ -107,7 +107,7 @@ namespace PKSim.Presentation.Presenters.Main
 
 
          if (_startOptions.IsDeveloperMode)
-            _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Admin), PKSimConstants.RibbonPages.Utilities);
+            _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Developer), PKSimConstants.RibbonPages.Utilities);
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.View), PKSimConstants.RibbonPages.Views);
 
@@ -374,6 +374,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.CreateSensitivityAnalysis].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.SensitivityAnalysisFeedbackView].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ClearHistory].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.RemoveUnusedContent].Enabled = enabled;
       }
 
       public void Handle(SimulationRunStartedEvent eventToHandle)

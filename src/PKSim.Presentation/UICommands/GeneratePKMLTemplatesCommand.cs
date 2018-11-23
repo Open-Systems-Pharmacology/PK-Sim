@@ -11,7 +11,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
 using Project = PKSim.Core.Snapshots.Project;
 
@@ -51,7 +50,7 @@ namespace PKSim.Presentation.UICommands
          var individual = await _snapshotObjectCreator.DefaultIndividual();
          project.Individuals = new[] {individual};
 
-         var compound = await _snapshotObjectCreator.StandardCompound(lipophilicity: 3, fractionUnbound: 0.1, molWeight: 400, name:"Standard Molecule");
+         var compound = await _snapshotObjectCreator.StandardCompound(lipophilicity: 3, fractionUnbound: 0.1, molWeight: 400, name: "Standard Molecule");
          compound.Name = "Standard Molecule";
          project.Compounds = new[] {compound};
 
@@ -62,8 +61,8 @@ namespace PKSim.Presentation.UICommands
          var snapshotConfiguration = new SimulationConstruction
          {
             Individual = individual,
-            Compounds = new[] {compound },
-            Protocols = new [] {intrevanousBolusMgPerKg },
+            Compounds = new[] {compound},
+            Protocols = new[] {intrevanousBolusMgPerKg},
             ModelName = CoreConstants.Model.FourComp,
          };
 
@@ -72,7 +71,7 @@ namespace PKSim.Presentation.UICommands
          snapshotConfiguration.ModelName = CoreConstants.Model.TwoPores;
          var twoPore = await configurationFrom(snapshotConfiguration);
 
-         snapshotConfiguration.Protocols = new[] { intrevanousBolusMg};
+         snapshotConfiguration.Protocols = new[] {intrevanousBolusMg};
          snapshotConfiguration.ModelName = CoreConstants.Model.FourComp;
          var fourCompIvBolusMg = await configurationFrom(snapshotConfiguration);
 
