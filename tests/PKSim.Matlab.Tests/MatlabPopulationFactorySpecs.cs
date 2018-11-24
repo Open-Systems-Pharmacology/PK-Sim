@@ -32,6 +32,7 @@ namespace PKSim.Matlab
    {
       private PopulationSettings _settings;
       private IParameterValueCache _result;
+      private MoleculeOntogeny[] _moleculeOntogenies;
 
       protected override void Context()
       {
@@ -64,17 +65,30 @@ namespace PKSim.Matlab
             NumberOfIndividuals = 10,
             ProportionOfFemales = 70
          };
+
+         _moleculeOntogenies = new []{ new MoleculeOntogeny("CYP3A4", "CYP3A4"), new MoleculeOntogeny("CYP2D6", "CYP2D6")};
       }
 
       protected override void Because()
       {
-         _result = sut.CreatePopulation(_settings, new List<string>().ToArray());
+         _result = sut.CreatePopulation(_settings, _moleculeOntogenies);
       }
 
       [Observation]
       public void should_be_able_to_generate_a_basic_population()
       {
          _result.AllParameterValues.First().Values.Count.ShouldBeEqualTo(_settings.NumberOfIndividuals);
+      }
+
+      [Observation]
+      public void should_return_enzyme_ontogenies()
+      {
+         var parameterPaths = _result.AllParameterPaths().ToArray();
+         foreach (var moleculeOntogeny in _moleculeOntogenies)
+         {
+            parameterPaths.ShouldContain($"{moleculeOntogeny.Molecule}|{CoreConstants.Parameters.ONTOGENY_FACTOR}");
+            parameterPaths.ShouldContain($"{moleculeOntogeny.Molecule}|{CoreConstants.Parameters.ONTOGENY_FACTOR_GI}");
+         }
       }
    }
 
@@ -126,7 +140,7 @@ namespace PKSim.Matlab
 
       protected override void Because()
       {
-         _result = sut.CreatePopulation(_settings, new List<string>().ToArray());
+         _result = sut.CreatePopulation(_settings, new List<MoleculeOntogeny>().ToArray());
       }
 
       [Observation]
