@@ -100,6 +100,13 @@ namespace PKSim.IntegrationTests
             var maxCount = Regex.Matches(equation, "max").Count;
             alphasCount.ShouldBeGreaterThan(0);
             maxCount.ShouldBeEqualTo(2*alphasCount/3);
+
+            //all occurences of K_water should start with the opening bracket: 
+            // "(K_water_xxx*C)^alpha
+            //Exception: one occurence in pgp-hill-kinetik
+            var kwaterCount = Regex.Matches(equation, "K_water").Count;
+            var expectedBracketedKwaterCount = hillFormula.Rate.Equals("PgpSpecific_Hill") ? kwaterCount - 1 : kwaterCount;
+            Regex.Matches(equation, "[(]K_water").Count.ShouldBeEqualTo(expectedBracketedKwaterCount);
          }
       }
    }
