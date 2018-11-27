@@ -57,7 +57,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_update_the_target_parmaeter_value_with_the_source_parameter_value()
+      public void should_update_the_target_parameter_value_with_the_source_parameter_value()
       {
          A.CallTo(() => _parameterTask.SetParameterValue(_targetParameter, _sourceParameter.Value, true)).MustHaveHappened();
       }

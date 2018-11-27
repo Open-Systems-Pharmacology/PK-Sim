@@ -68,7 +68,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void the_command_should_be_an_empty_command_as_norm_parmaeter_are_directly_depending_on_relative_expression_parameters_and_will_constantly_be_updated()
+      public void the_command_should_be_an_empty_command_as_norm_parameter_are_directly_depending_on_relative_expression_parameters_and_will_constantly_be_updated()
       {
          _command.ShouldBeAnInstanceOf<PKSimEmptyCommand>();
       }

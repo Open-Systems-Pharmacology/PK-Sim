@@ -216,7 +216,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_false_if_the_parameter_is_a_default_parmaeter()
+      public void should_return_false_if_the_parameter_is_a_default_parameter()
       {
          _parameter.IsDefault = true;
          _parameter.ShouldExportToSnapshot().ShouldBeFalse();
