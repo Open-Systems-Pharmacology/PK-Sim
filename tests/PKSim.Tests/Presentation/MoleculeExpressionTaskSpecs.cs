@@ -239,21 +239,19 @@ namespace PKSim.Presentation
    {
       private ICommand _result;
       private double _relativeVMaxValue;
-      private string _containerName;
+      private IParameter _relExp;
 
       protected override void Context()
       {
          base.Context();
          _relativeVMaxValue = 25;
-         _containerName = "C1";
-         var relExp = new PKSimParameter();
-         relExp.Formula = new ConstantFormula();
-         A.CallTo(() => _executionContext.BuildingBlockContaining(relExp)).Returns(_individual);
+         _relExp = DomainHelperForSpecs.ConstantParameterWithValue(10);
+         A.CallTo(() => _executionContext.BuildingBlockContaining(_relExp)).Returns(_individual);
       }
 
       protected override void Because()
       {
-         _result = sut.SetRelativeExpressionFor(_molecule, _containerName, _relativeVMaxValue);
+         _result = sut.SetRelativeExpressionFor(_molecule, _relExp, _relativeVMaxValue);
       }
 
       [Observation]

@@ -24,14 +24,14 @@ namespace PKSim.Presentation.DTO.Individuals
 
       public bool IsFavorite
       {
-         get { return RelativeExpressionParameter.IsFavorite; }
-         set { RelativeExpressionParameter.IsFavorite = value; }
+         get => RelativeExpressionParameter.IsFavorite;
+         set => RelativeExpressionParameter.IsFavorite = value;
       }
 
       public double RelativeExpression
       {
-         get { return RelativeExpressionParameter.Value; }
-         set { RelativeExpressionParameter.Value = value; }
+         get => RelativeExpressionParameter.Value;
+         set => RelativeExpressionParameter.Value = value;
       }
 
       public double RelativeExpressionNorm => RelativeExpressionNormParameter.KernelValue * 100;

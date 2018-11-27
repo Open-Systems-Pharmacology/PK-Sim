@@ -23,16 +23,14 @@ namespace PKSim.Core.Services
       ICommand AddDefaultMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule;
 
       /// <summary>
-      ///    Set the value of the relative expression for the given molecule in the container named
-      ///    <paramref name="moleculeContainerName" />
+      ///    Set the value of the relative expression for  <paramref name="relativeExpressionParameter"/> defined in molecule <paramref name="molecule"/>
       /// </summary>
       /// <param name="molecule">Protein for which the relative expression should be set</param>
-      /// <param name="moleculeContainerName">
-      ///    Container where the protein is being expressed and for which the expression value
-      ///    should be changed
+      /// <param name="relativeExpressionParameter">
+      ///    Reltive expression parameter
       /// </param>
       /// <param name="value">relative expression</param>
-      ICommand SetRelativeExpressionFor(IndividualMolecule molecule, string moleculeContainerName, double value);
+      ICommand SetRelativeExpressionFor(IndividualMolecule molecule, IParameter relativeExpressionParameter, double value);
 
       /// <summary>
       ///    Set the value of the relative expression for the parameter in the simulation
