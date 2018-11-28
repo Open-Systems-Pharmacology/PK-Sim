@@ -1,5 +1,7 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Commands;
@@ -38,13 +40,13 @@ namespace PKSim.Core
       private IParameter _targetPara2;
       private IParameter _targetPara3;
       private IParameter _targetPara4;
-      private string _commonPath1 = "path1";
-      private string _commonPath2 = "path2";
-      private string _commonPath3 = "path3";
-      private string _sourcePath2 = "_sourcePath2";
-      private string _sourcePath3 = "_sourcePath3";
-      private string _targetPath2 = "_targetPath2";
-                                   
+      private readonly string _commonPath1 = "path1";
+      private readonly string _commonPath2 = "path2";
+      private readonly string _commonPath3 = "path3";
+      private readonly string _sourcePath2 = "_sourcePath2";
+      private readonly string _sourcePath3 = "_sourcePath3";
+      private readonly string _targetPath2 = "_targetPath2";
+
       protected override void Context()
       {
          base.Context();
@@ -174,4 +176,30 @@ namespace PKSim.Core
       }
    }
 
+   public class When_updating_an_expression_norm_parameter : concern_for_ParameterSetUpdater
+   {
+      private ICommand _command;
+
+      private IParameter _expNormParameterSource;
+
+      private IParameter _expNormParameterTarget;
+
+      protected override void Context()
+      {
+         base.Context();
+         _expNormParameterSource = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_NORM);
+         _expNormParameterTarget = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_NORM);
+      }
+
+      protected override void Because()
+      {
+         _command = sut.UpdateValue(_expNormParameterSource, _expNormParameterTarget);
+      }
+
+      [Observation]
+      public void should_not_update_the_parameter_as_those_parameter_should_be_excluded_from_automatic_update()
+      {
+         _command.ShouldBeAnInstanceOf<PKSimEmptyCommand>();
+      }
+   }
 }
