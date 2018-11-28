@@ -19,20 +19,20 @@ namespace PKSim.Presentation.UICommands
 
       public UsedBuildingBlock UsedBuildingBlock
       {
-         get { return _usedBuildingBlockReference.Target; }
-         set { _usedBuildingBlockReference = new WeakRef<UsedBuildingBlock>(value); }
+         get => _usedBuildingBlockReference.Target;
+         set => _usedBuildingBlockReference = new WeakRef<UsedBuildingBlock>(value);
       }
 
       public Simulation Simulation
       {
-         get { return _simulationReference.Target; }
-         set { _simulationReference = new WeakRef<Simulation>(value); }
+         get => _simulationReference.Target;
+         set => _simulationReference = new WeakRef<Simulation>(value);
       }
 
       public TBuildingBlock TemplateBuildingBlock
       {
-         get { return _templateBuildingBlockReference.Target; }
-         set { _templateBuildingBlockReference = new WeakRef<TBuildingBlock>(value); }
+         get => _templateBuildingBlockReference.Target;
+         set => _templateBuildingBlockReference = new WeakRef<TBuildingBlock>(value);
       }
 
       public abstract void Execute();

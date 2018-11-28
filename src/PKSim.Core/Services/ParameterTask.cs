@@ -330,9 +330,8 @@ namespace PKSim.Core.Services
 
       private IPKSimCommand commandForRelativeExpressionParameter(IParameter parameter, double value)
       {
-         //Normalized expression parameters are readonly and will be updated when setting relative expression
          if (parameter.IsExpressionNorm())
-            return new PKSimEmptyCommand();
+            return new SetRelativeExpressionFromNormalizedCommand(parameter, value);
 
          var expressionContainer = parameter.ParentContainer;
          switch (expressionContainer.ParentContainer)

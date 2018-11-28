@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using PKSim.Assets;
 using PKSim.Core.Commands;
-using PKSim.Core.Extensions;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -120,21 +120,13 @@ namespace PKSim.Core.Services
          foreach (var sourceParameter in sourceParameters.KeyValues.OrderBy(x => x.Value.IsDistributed()))
          {
             var targetParameter = targetParameters[sourceParameter.Key];
-            if (targetParameter == null) continue;
+            if (targetParameter == null)
+               continue;
 
             updateCommands.Add(UpdateValue(sourceParameter.Value, targetParameter, updateParameterOriginId));
          }
+
          return updateCommands;
-      }
-
-      public ICommand UpdateValuesByName(IContainer sourceContainer, IContainer targetContainer)
-      {
-         return UpdateValuesByName(sourceContainer, targetContainer.GetChildren<IParameter>());
-      }
-
-      public ICommand UpdateValuesByName(IContainer sourceContainer, IEnumerable<IParameter> targetParameters)
-      {
-         return UpdateValuesByName(sourceContainer.GetChildren<IParameter>(), targetParameters);
       }
 
       public ICommand UpdateValuesByName(IEnumerable<IParameter> sourceParameters, IEnumerable<IParameter> targetParameters)
@@ -150,7 +142,18 @@ namespace PKSim.Core.Services
 
             updateCommands.Add(UpdateValue(sourceParameter, targetParameter));
          }
+
          return updateCommands;
+      }
+
+      public ICommand UpdateValuesByName(IContainer sourceContainer, IContainer targetContainer)
+      {
+         return UpdateValuesByName(sourceContainer, targetContainer.GetChildren<IParameter>());
+      }
+
+      public ICommand UpdateValuesByName(IContainer sourceContainer, IEnumerable<IParameter> targetParameters)
+      {
+         return UpdateValuesByName(sourceContainer.GetChildren<IParameter>(), targetParameters);
       }
 
       public ICommand UpdateValue(IParameter sourceParameter, IParameter targetParameter, bool updateParameterOriginId = true)
@@ -158,7 +161,10 @@ namespace PKSim.Core.Services
          if (updateParameterOriginId)
             _parameterIdUpdater.UpdateParameterId(sourceParameter, targetParameter);
 
-         return withUpdatedValueOrigin(_parameterUpdater.UpdateValue(sourceParameter, targetParameter), sourceParameter, targetParameter);
+         if (parameterShouldBeExcludedFromBulkUpdate(targetParameter))
+            return new PKSimEmptyCommand();
+
+          return withUpdatedValueOrigin(_parameterUpdater.UpdateValue(sourceParameter, targetParameter), sourceParameter, targetParameter);
       }
 
       private ICommand withUpdatedValueOrigin(ICommand command, IParameter sourceParameter, IParameter targetParameter)
@@ -175,5 +181,7 @@ namespace PKSim.Core.Services
          macroCommand.Add(updateValueOriginCommand);
          return macroCommand;
       }
+
+      private bool parameterShouldBeExcludedFromBulkUpdate(IParameter parameter) => parameter.IsExpressionNorm();
    }
 }
