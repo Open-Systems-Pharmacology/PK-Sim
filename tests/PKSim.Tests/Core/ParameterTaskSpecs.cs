@@ -45,20 +45,13 @@ namespace PKSim.Core
 
    public class When_setting_value_of_normalized_relative_expression_parameter : concern_for_ParameterTask
    {
-      private Parameter _relativeExpressionParameter, _normalizedExpressionParameter;
       private ICommand _command;
+      private Parameter _normalizedExpressionParameter;
 
       protected override void Context()
       {
          base.Context();
          A.CallTo(() => _executionContext.Resolve<IParameterTask>()).Returns(sut);
-         _relativeExpressionParameter = new Parameter
-         {
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            Formula = new ConstantFormula(0.0),
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP
-         };
 
          _normalizedExpressionParameter = new Parameter
          {
@@ -67,8 +60,6 @@ namespace PKSim.Core
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
             Name = CoreConstants.Parameters.REL_EXP_NORM
          };
-
-         var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
       }
 
       protected override void Because()
@@ -77,13 +68,13 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void the_command_used_should_be_correct_implementation()
+      public void the_command_should_be_an_empty_command_as_norm_parameter_are_directly_depending_on_relative_expression_parameters_and_will_constantly_be_updated()
       {
-         _command.ShouldBeAnInstanceOf<SetRelativeExpressionFromNormalizedCommand>();
+         _command.ShouldBeAnInstanceOf<PKSimEmptyCommand>();
       }
    }
 
-   public class When_setting_value_of_relative_expression_parameter : concern_for_ParameterTask
+   public class When_setting_value_of_relative_expression_parameter_of_a_relative_expression_parameter_defined_in_a_simulation : concern_for_ParameterTask
    {
       private Parameter _relativeExpressionParameter, _normalizedExpressionParameter;
       private ICommand _command;
@@ -120,6 +111,50 @@ namespace PKSim.Core
       public void the_command_used_should_be_correct_implementation()
       {
          _command.ShouldBeAnInstanceOf<SetRelativeExpressionInSimulationAndNormalizedCommand>();
+      }
+   }
+
+   public class When_setting_value_of_relative_expression_parameter_of_a_relative_expression_parameter_defined_in_an_individual : concern_for_ParameterTask
+   {
+      private Parameter _relativeExpressionParameter;
+      private Parameter _relativeExpressionParameterNorm;
+      private ICommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _executionContext.Resolve<IParameterTask>()).Returns(sut);
+         _relativeExpressionParameter = new Parameter
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            Formula = new ConstantFormula(0.0),
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            Name = CoreConstants.Parameters.REL_EXP
+         };
+
+         _relativeExpressionParameterNorm = new Parameter
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            Formula = new ConstantFormula(0.0),
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            Name = CoreConstants.Parameters.REL_EXP_NORM
+         };
+
+         var expressionContainer = new MoleculeExpressionContainer {Name = "Plasma"};
+         expressionContainer.Add(_relativeExpressionParameter);
+         expressionContainer.Add(_relativeExpressionParameterNorm);
+         var molecule = new IndividualEnzyme {expressionContainer};
+      }
+
+      protected override void Because()
+      {
+         _command = sut.SetParameterValue(_relativeExpressionParameter, 3);
+      }
+
+      [Observation]
+      public void the_command_used_should_be_correct_implementation()
+      {
+         _command.ShouldBeAnInstanceOf<SetRelativeExpressionAndNormalizeCommand>();
       }
    }
 

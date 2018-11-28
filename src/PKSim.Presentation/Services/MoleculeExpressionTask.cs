@@ -98,9 +98,9 @@ namespace PKSim.Presentation.Services
          return _geneExpressionsDatabasePathManager.HasDatabaseFor(simulationSubject.Species);
       }
 
-      public ICommand SetRelativeExpressionFor(IndividualMolecule molecule, string moleculeContainerName, double value)
+      public ICommand SetRelativeExpressionFor(IndividualMolecule molecule, IParameter relativeExpressionParameter, double value)
       {
-         return new SetRelativeExpressionAndNormalizeCommand(molecule, moleculeContainerName, value).Run(_executionContext);
+         return new SetRelativeExpressionAndNormalizeCommand(molecule, relativeExpressionParameter, value).Run(_executionContext);
       }
 
       public ICommand SetRelativeExpressionInSimulationFor(IParameter parameter, double value)

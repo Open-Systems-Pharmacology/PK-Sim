@@ -85,7 +85,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
       {
-         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_protein, expressionContainerDTO.ContainerName, value));
+         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_protein, expressionContainerDTO.RelativeExpressionParameter.Parameter, value));
       }
 
       private void updateLocationSelectionVisibility()

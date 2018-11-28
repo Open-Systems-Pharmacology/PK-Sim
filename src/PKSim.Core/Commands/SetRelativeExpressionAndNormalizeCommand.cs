@@ -1,5 +1,5 @@
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
@@ -7,12 +7,12 @@ namespace PKSim.Core.Commands
    {
       private readonly double _newValue;
       private IndividualMolecule _molecule;
-      private IParameter _relExpParameter;
+      private IParameter _relativeExpressionParameter;
 
-      public SetRelativeExpressionAndNormalizeCommand(IndividualMolecule molecule, string proteinContainerName, double value)
+      public SetRelativeExpressionAndNormalizeCommand(IndividualMolecule molecule, IParameter relativeExpressionParameter, double value)
       {
          _molecule = molecule;
-         _relExpParameter = molecule.GetRelativeExpressionParameterFor(proteinContainerName);
+         _relativeExpressionParameter = relativeExpressionParameter;
          _newValue = value;
       }
 
@@ -22,7 +22,7 @@ namespace PKSim.Core.Commands
          Add(new NormalizeRelativeExpressionCommand(_molecule, context));
 
          //Then set the new relative expression command
-         Add(new SetRelativeExpressionCommand(_relExpParameter, _newValue));
+         Add(new SetRelativeExpressionCommand(_relativeExpressionParameter, _newValue));
 
          //last scale wthe relative expression according to the new value
          Add(new NormalizeRelativeExpressionCommand(_molecule, context));
@@ -32,7 +32,7 @@ namespace PKSim.Core.Commands
 
          //clear references
          _molecule = null;
-         _relExpParameter = null;
+         _relativeExpressionParameter = null;
       }
    }
 }

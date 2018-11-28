@@ -95,7 +95,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_update_the_edited_parmaeter_with_the_table_formula_and_add_the_command_into_the_register()
+      public void should_update_the_edited_parameter_with_the_table_formula_and_add_the_command_into_the_register()
       {
          A.CallTo(() => _presenter.AddCommand(_editCommand)).MustHaveHappened();
       }

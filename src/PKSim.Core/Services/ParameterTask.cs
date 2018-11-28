@@ -330,10 +330,18 @@ namespace PKSim.Core.Services
 
       private IPKSimCommand commandForRelativeExpressionParameter(IParameter parameter, double value)
       {
-         if (!parameter.IsExpressionNorm())
-            return new SetRelativeExpressionInSimulationAndNormalizedCommand(parameter, value);
+         //Normalized expression parameters are readonly and will be updated when setting relative expression
+         if (parameter.IsExpressionNorm())
+            return new PKSimEmptyCommand();
 
-         return new SetRelativeExpressionFromNormalizedCommand(parameter, value);
+         var expressionContainer = parameter.ParentContainer;
+         switch (expressionContainer.ParentContainer)
+         {
+            case IndividualMolecule individualMolecule:
+               return new SetRelativeExpressionAndNormalizeCommand(individualMolecule, parameter, value);
+            default:
+               return new SetRelativeExpressionInSimulationAndNormalizedCommand(parameter, value);
+         }
       }
 
       private IOSPSuiteCommand setParameterValue(IParameter parameter, double value, bool shouldChangeVersion, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
@@ -410,7 +418,7 @@ namespace PKSim.Core.Services
 
       public ICommand UpdateTableFormulaWithoutBuildingBlockChange(IParameter tableParameter, TableFormula tableFormula)
       {
-         return executeAndUpdatedDefaultStateAndValue(new UpdateParameterTableFormulaCommand(tableParameter, tableFormula) , tableParameter, shouldChangeVersion: false);
+         return executeAndUpdatedDefaultStateAndValue(new UpdateParameterTableFormulaCommand(tableParameter, tableFormula), tableParameter, shouldChangeVersion: false);
       }
 
       public ICommand SetParameterName(IParameter parameter, string name)
@@ -481,7 +489,7 @@ namespace PKSim.Core.Services
          return executeAndUpdatedDefaultStateAndValue(new SetParameterFormulaCommand(parameter, formula), parameter);
       }
 
-    public ICommand UpdateDistributedTableFormula(IParameter tableParameter, IDistributedParameter distributedParameter)
+      public ICommand UpdateDistributedTableFormula(IParameter tableParameter, IDistributedParameter distributedParameter)
       {
          var distributedTableFormula = tableParameter.Formula as DistributedTableFormula;
          if (distributedTableFormula == null)

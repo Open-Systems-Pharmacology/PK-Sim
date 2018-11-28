@@ -90,6 +90,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
             group = _groupRepository.GroupByName(CoreConstants.Groups.VASCULAR_SYSTEM);
             expressionContainerDTO.ContainerPathDTO = _representationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, containerNameForGlobalExpression(relativeExpression.Name)).ToPathElement();
+            expressionContainerDTO.Sequence = relativeExpression.Sequence;
          }
          else if (expressionShouldBeTreatedAsGlobal(relativeExpression, isTransporter))
          {
@@ -115,7 +116,11 @@ namespace PKSim.Presentation.DTO.Mappers
          }
 
          expressionContainerDTO.GroupingPathDTO = _representationInfoRepository.InfoFor(RepresentationObjectType.GROUP, group.Name).ToPathElement();
-         expressionContainerDTO.Sequence = group.Sequence;
+
+         //May have been set previously
+         if (expressionContainerDTO.Sequence==0)
+            expressionContainerDTO.Sequence = group.Sequence;
+
          expressionContainerDTO.MoleculeName = moleculeName;
          expressionContainerDTO.ParameterPath = _fullPathDisplayResolver.FullPathFor(relativeExpression);
          return expressionContainerDTO;

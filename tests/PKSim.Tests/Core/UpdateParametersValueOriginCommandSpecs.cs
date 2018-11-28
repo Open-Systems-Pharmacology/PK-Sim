@@ -36,7 +36,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_executing_the_update_parameter_value_origin_command_for_a_set_of_parmaeters : concern_for_UpdateParametersValueOriginCommand
+   public class When_executing_the_update_parameter_value_origin_command_for_a_set_of_parameters : concern_for_UpdateParametersValueOriginCommand
    {
       protected override void Context()
       {

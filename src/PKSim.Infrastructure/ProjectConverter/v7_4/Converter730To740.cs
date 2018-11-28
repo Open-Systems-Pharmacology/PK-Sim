@@ -95,7 +95,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_4
       {
          parameter.Visible = true;
          parameter.Editable = true;
-         //just to make sure it's the last parmaeter visible 
+         //just to make sure it's the last parameter visible 
          parameter.Sequence = 20;
          _converted = true;
       }
