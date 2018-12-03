@@ -11,7 +11,7 @@ namespace PKSim.Core.Model
 
       public string ProductName(string productNameTemplate)
       {
-         return CoreConstants.Molecule.ProcessProductName(CompoundName, MoleculeName, productNameTemplate);
+         return CoreConstants.Molecule.ProcessProductName(CompoundName, ProcessName, productNameTemplate);
       }
 
       public virtual ProcessSelection Clone(ICloneManager cloneManager)
