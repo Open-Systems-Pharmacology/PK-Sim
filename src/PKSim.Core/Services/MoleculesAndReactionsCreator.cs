@@ -290,14 +290,16 @@ namespace PKSim.Core.Services
 
       private IMoleculeBuilder getOrCreateMetaboliteFor(IReactionMapping compoundReactionMapping, CompoundProperties compoundProperties)
       {
-         var enzymaticProcess = compoundReactionMapping.DowncastTo<EnzymaticProcessSelection>();
-         var metabolite = _moleculeBuildingBlock[enzymaticProcess.MetaboliteName];
+         IMoleculeBuilder metabolite = null;
+         var enzymaticProcess = compoundReactionMapping as EnzymaticProcessSelection;
+         if (enzymaticProcess != null)
+            metabolite = _moleculeBuildingBlock[enzymaticProcess.MetaboliteName];
 
          if (metabolite != null)
             return metabolite;
 
          metabolite = _moleculeBuilderFactory.Create(QuantityType.Metabolite, _moleculeBuildingBlock.FormulaCache)
-            .WithName(enzymaticProcess.ProductName());
+            .WithName(compoundReactionMapping.ProductName(CoreConstants.Molecule.Metabolite));
 
          addMoleculeToBuildingBlock(metabolite, compoundProperties);
          return metabolite;
