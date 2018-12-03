@@ -80,7 +80,7 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesList.First()
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection {ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
       }
@@ -145,7 +145,7 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesList.First()
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection {ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
       }
@@ -258,7 +258,7 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesList.First()
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection {ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
       }
@@ -385,7 +385,7 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesList.First()
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection {ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
       }
@@ -505,7 +505,7 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesList.First()
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection {ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
       }
@@ -537,7 +537,7 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesList.First()
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection {ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
       }
@@ -580,7 +580,7 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesList.First()
             .Processes
             .TransportAndExcretionSelection
-            .AddPartialProcessSelection(new ProcessSelection {CompoundName = _compound.Name, ProcessName = _transportProcess.Name, MoleculeName = _transporter.Name});
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { CompoundName = _compound.Name, ProcessName = _transportProcess.Name, MoleculeName = _transporter.Name});
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
       }
@@ -662,12 +662,12 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesFor(_compound.Name)
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection {CompoundName = _compound.Name, ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { CompoundName = _compound.Name, ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
 
          _simulation.CompoundPropertiesFor(_otherCompound.Name)
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection {CompoundName = _otherCompound.Name, ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { CompoundName = _otherCompound.Name, ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
       }
@@ -699,7 +699,7 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesFor(_compound.Name)
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection {CompoundName = _compound.Name, ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { CompoundName = _compound.Name, ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name});
 
 
          _simulation.InteractionProperties.AddInteraction(new InteractionSelection {CompoundName = _compound.Name, MoleculeName = _enzyme.Name, ProcessName = _irreversibleProcess.Name});
@@ -733,7 +733,7 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesFor(_compound.Name)
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection { CompoundName = _compound.Name, ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name });
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { CompoundName = _compound.Name, ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name });
 
 
          _simulation.InteractionProperties.AddInteraction(new InteractionSelection { CompoundName = _compound.Name, MoleculeName = _enzyme.Name, ProcessName = _induction.Name });
@@ -773,7 +773,7 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPropertiesFor(_compound.Name)
             .Processes
             .MetabolizationSelection
-            .AddPartialProcessSelection(new ProcessSelection { CompoundName = _compound.Name, ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name });
+            .AddPartialProcessSelection(new EnzymaticProcessSelection { CompoundName = _compound.Name, ProcessName = _metabolizationProcess.Name, MoleculeName = _enzyme.Name });
 
 
          _simulation.InteractionProperties.AddInteraction(new InteractionSelection { CompoundName = _compound.Name, MoleculeName = _enzyme.Name, ProcessName = _induction.Name });

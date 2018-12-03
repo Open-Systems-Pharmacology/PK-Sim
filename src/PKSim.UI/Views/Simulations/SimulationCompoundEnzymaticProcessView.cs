@@ -23,7 +23,6 @@ namespace PKSim.UI.Views.Simulations
       private readonly UxAddAndRemoveButtonRepository _addAndRemoveRepository = new UxAddAndRemoveButtonRepository();
       private readonly UxAddAndDisabledRemoveButtonRepository _addAndDisableRemoveRepository = new UxAddAndDisabledRemoveButtonRepository();
       private IGridViewColumn _colMetaboliteName;
-      private IGridViewColumn _colAddPartialProcess;
 
       public SimulationCompoundEnzymaticProcessView()
       {
@@ -41,7 +40,7 @@ namespace PKSim.UI.Views.Simulations
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithCaption(PKSimConstants.UI.Metabolite);
 
-         _colAddPartialProcess =  _gridViewPartialBinder.AddUnboundColumn()
+         _gridViewPartialBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(getAddRepository)
@@ -79,7 +78,6 @@ namespace PKSim.UI.Views.Simulations
       public void HideMultipleCompoundsColumns()
       {
          _colMetaboliteName.UpdateVisibility(false);
-         _colAddPartialProcess.UpdateVisibility(false);
       }
    }
 }
