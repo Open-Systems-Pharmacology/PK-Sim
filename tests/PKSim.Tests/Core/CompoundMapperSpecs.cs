@@ -35,6 +35,8 @@ namespace PKSim.Core
       protected ValueOriginMapper _valueOriginMapper;
       protected Snapshots.ValueOrigin _snapshotValueOrigin;
       protected ValueOrigin _pkaValueOrigin;
+      private IParameter _molweightParameter;
+      private IParameter _halogenFParameter;
 
       protected override Task Context()
       {
@@ -88,6 +90,14 @@ namespace PKSim.Core
          A.CallTo(() => _processMapper.MapToSnapshot(_partialProcess)).Returns(_snapshotProcess1);
          A.CallTo(() => _processMapper.MapToSnapshot(_systemicProcess)).Returns(_snapshotProcess2);
 
+         _molweightParameter = DomainHelperForSpecs.ConstantParameterWithValue(400).WithName(Constants.Parameters.MOL_WEIGHT);
+         _molweightParameter.ValueOrigin.Method = ValueOriginDeterminationMethods.InVivo;
+
+         //Do not update F value origin to ensure that it's being synchronized when mapping from snapshot
+         _halogenFParameter = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.F);
+
+         _compound.Add(_molweightParameter);
+         _compound.Add(_halogenFParameter);
          return _completed;
       }
 
@@ -283,6 +293,17 @@ namespace PKSim.Core
 
          _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[2].Type);
          _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE3).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
+      }
+
+
+      [Observation]
+      public void should_have_ensured_that_the_mol_weight_and_halogen_parameters_share_the_same_value_origin()
+      {
+         _fractionUnboundAlternative.IsDefault.ShouldBeTrue();
+         var molWeight = _newCompound.Parameter(Constants.Parameters.MOL_WEIGHT);
+         var F = _newCompound.Parameter(Constants.Parameters.F);
+
+         F.ValueOrigin.ShouldBeEqualTo(molWeight.ValueOrigin);
       }
    }
 }

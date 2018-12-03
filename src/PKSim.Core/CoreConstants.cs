@@ -835,8 +835,8 @@ namespace PKSim.Core
          public static readonly string HAS_HALOGENS = "Has halogens";
          public static readonly string EFFECTIVE_MOLECULAR_WEIGHT = "Effective molecular weight";
          public static readonly string LIPOPHILICITY = "Lipophilicity";
-         public static readonly string CONCENTRATION = "Concentration";
-         public static readonly string MOLECULAR_WEIGHT = "Molecular weight";
+         public static readonly string CONCENTRATION = Constants.Parameters.CONCENTRATION;
+         public static readonly string MOLECULAR_WEIGHT = Constants.Parameters.MOL_WEIGHT;
          public static readonly string REFERENCE_CONCENTRATION = "Reference concentration";
          public static readonly string REL_EXP = "Relative expression";
          public static readonly string NORM_SUFFIX = " (normalized)";
@@ -963,10 +963,6 @@ namespace PKSim.Core
          public const string NUMBER_OF_BINS = "Number of bins";
          public const string K_CELL_PLS = "Partition coefficient (intracellular/plasma)";
          public const string K_WATER = "Partition coefficient (water/container)";
-         public const string BR = "Br";
-         public const string CL = "Cl";
-         public const string F = "F";
-         public const string I = "I";
          public const string SPECIFIC_CLEARANCE = "Specific clearance";
          public const int PARTICLE_SIZE_DISTRIBUTION_NORMAL = 0;
          public const int PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL = 1;
@@ -1137,7 +1133,10 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyCollection<string> Halogens = new[]
          {
-            CL, BR, F, I
+            Constants.Parameters.CL,
+            Constants.Parameters.BR,
+            Constants.Parameters.F,
+            Constants.Parameters.I
          };
 
          public static readonly IReadOnlyCollection<string> AllBooleanParameters = new[]

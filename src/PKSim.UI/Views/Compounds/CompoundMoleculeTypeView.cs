@@ -36,10 +36,7 @@ namespace PKSim.UI.Views.Compounds
             .OnValueUpdating += (o, e) => OnEvent(() => moleculeTypePresenter.SetMoleculeType(e.NewValue));
       }
 
-      private ICompoundMoleculeTypePresenter moleculeTypePresenter
-      {
-         get { return _presenter.DowncastTo<ICompoundMoleculeTypePresenter>(); }
-      }
+      private ICompoundMoleculeTypePresenter moleculeTypePresenter => _presenter.DowncastTo<ICompoundMoleculeTypePresenter>();
 
       public void AdjustHeight()
       {
@@ -55,8 +52,7 @@ namespace PKSim.UI.Views.Compounds
       {
          /*nothing to do here*/
       }
-
-      public int OptimalHeight { get { return calculateHeight(); } }
+      public int OptimalHeight => calculateHeight();
 
       public void BindTo(IsSmallMoleculeDTO isSmallMolecule)
       {

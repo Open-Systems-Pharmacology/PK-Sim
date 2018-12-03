@@ -67,6 +67,7 @@ namespace PKSim.Core.Snapshots.Mappers
          await updateProcesses(snapshot, compound);
          await UpdateParametersFromSnapshot(snapshot, compound);
 
+         synchronizeMolWeightValueOrigins(compound);
          return compound;
       }
 
@@ -110,6 +111,14 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          snapshot.PkaTypes?.Each((pkaType, i) => updatePkaType(compound, pkaType, i));
          synchronizePkaValueOrigins(snapshot.PkaTypes?.FirstOrDefault(), compound);
+      }
+
+      private void synchronizeMolWeightValueOrigins(ModelCompound compound)
+      {
+         //Mol weight parameter and halogens value share the same value origin and should be updated as such
+         var molWeight = compound.Parameter(MOLECULAR_WEIGHT);
+         var halogens = compound.AllParameters(x => x.NameIsOneOf(Halogens));
+         halogens.Each(x=>x.ValueOrigin.UpdateAllFrom(molWeight.ValueOrigin));
       }
 
       private void synchronizePkaValueOrigins(PkaType pkaType, ModelCompound compound)

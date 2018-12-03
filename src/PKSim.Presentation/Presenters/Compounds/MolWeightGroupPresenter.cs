@@ -32,7 +32,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       /// <summary>
       ///    Returns true if the parameter should have an advanced editor, for instance to display halogens otherwise false
       /// </summary>
-      bool IsHalogens(IParameterDTO parameter);
+      bool IsHasHalogens(IParameterDTO parameter);
 
       /// <summary>
       ///    Edit the parameters belonging to the MolWeight group
@@ -53,6 +53,8 @@ namespace PKSim.Presentation.Presenters.Compounds
       private readonly IEditValueOriginPresenter _editValueOriginPresenter;
       private MolWeightDTO _molWeightDTO;
       private List<IParameter> _molWeightParameters;
+      private IReadOnlyList<IParameter> _halogenParameters;
+      private IReadOnlyList<IParameter> _editableParameters;
 
       public MolWeightGroupPresenter(IMolWeightGroupView view,
          IRepresentationInfoRepository representationInfoRepository,
@@ -74,8 +76,8 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       private void valueOriginUpdated(ValueOrigin valueOrigin)
       {
-         //This should update the value origin for all related parameters
-         AddCommand(_parameterTask.SetParametersValueOrigin(_molWeightParameters, valueOrigin));
+         //This should update the value origin for all editable parameters
+         AddCommand(_parameterTask.SetParametersValueOrigin(_editableParameters, valueOrigin));
       }
 
       public override void EditCompound(Compound compound)
@@ -85,7 +87,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void EditHalogens()
       {
-         _molWeightHalogensPresenter.EditHalogens(_molWeightParameters);
+         _molWeightHalogensPresenter.EditHalogens(_halogenParameters);
       }
 
       public void SaveHalogens()
@@ -93,23 +95,19 @@ namespace PKSim.Presentation.Presenters.Compounds
          _molWeightHalogensPresenter.SaveHalogens();
       }
 
-      public bool IsHalogens(IParameterDTO parameter)
-      {
-         return Equals(parameter, _molWeightDTO.HasHalogensParameter);
-      }
+      public bool IsHasHalogens(IParameterDTO parameter) => Equals(parameter, _molWeightDTO.HasHalogensParameter);
 
       public void EditCompoundParameters(IEnumerable<IParameter> compoundParameters)
       {
          _molWeightParameters = compoundParameters.Where(x => string.Equals(x.GroupName, CoreConstants.Groups.COMPOUND_MW)).ToList();
+         _halogenParameters = _molWeightParameters.Where(x => x.NameIsOneOf(CoreConstants.Parameters.Halogens)).ToList();
          _molWeightDTO = _molWeightDTOMapper.MapFrom(_molWeightParameters);
+         _editableParameters = new List<IParameter>(_halogenParameters) {_molWeightDTO.MolWeightParameter.Parameter};
          _view.BindTo(new[] {_molWeightDTO.MolWeightParameter, _molWeightDTO.HasHalogensParameter, _molWeightDTO.MolWeightEffParameter});
          _editValueOriginPresenter.Edit(_molWeightDTO.MolWeightParameter);
       }
 
-      public bool IsMolWeightEff(IParameterDTO parameter)
-      {
-         return parameter == molWeightEffParameter;
-      }
+      public bool IsMolWeightEff(IParameterDTO parameter) => Equals(parameter, _molWeightDTO.MolWeightEffParameter);
 
       protected override void OnStatusChanged(object sender, EventArgs e)
       {
@@ -117,11 +115,11 @@ namespace PKSim.Presentation.Presenters.Compounds
          _view.RefreshData();
       }
 
-      private IParameterDTO molWeightEffParameter => _molWeightDTO.MolWeightEffParameter;
-
       public void SetParameterValue(IParameterDTO parameterDTO, double valueInGuiUnit)
       {
-         if (parameterDTO == molWeightEffParameter) return;
+         if (IsMolWeightEff(parameterDTO))
+            return;
+
          AddCommand(_parameterTask.SetParameterDisplayValue(parameterDTO.Parameter, valueInGuiUnit));
       }
 

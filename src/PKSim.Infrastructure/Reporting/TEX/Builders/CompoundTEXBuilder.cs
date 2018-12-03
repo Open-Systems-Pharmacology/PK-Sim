@@ -191,10 +191,10 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
                new ParameterList(molWeight,
                                  compound.Parameter(Constants.Parameters.MOL_WEIGHT),
                                  compound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT),
-                                 compound.Parameter(CoreConstants.Parameters.I),
-                                 compound.Parameter(CoreConstants.Parameters.F),
-                                 compound.Parameter(CoreConstants.Parameters.CL),
-                                 compound.Parameter(CoreConstants.Parameters.BR))
+                                 compound.Parameter(Constants.Parameters.I),
+                                 compound.Parameter(Constants.Parameters.F),
+                                 compound.Parameter(Constants.Parameters.CL),
+                                 compound.Parameter(Constants.Parameters.BR))
             };
       }
 
