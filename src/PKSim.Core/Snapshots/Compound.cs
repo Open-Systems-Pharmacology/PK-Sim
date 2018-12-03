@@ -10,6 +10,8 @@ namespace PKSim.Core.Snapshots
 
       [Required]
       public double Pka { get; set; }
+
+      public ValueOrigin ValueOrigin { get; set; }
    }
 
    public class Compound : ParameterContainerSnapshotBase

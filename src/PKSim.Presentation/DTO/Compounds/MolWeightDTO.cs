@@ -1,4 +1,3 @@
-using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.Compounds
