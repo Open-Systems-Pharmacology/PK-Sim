@@ -118,7 +118,7 @@ namespace PKSim.Core.Snapshots.Mappers
          //Mol weight parameter and halogens value share the same value origin and should be updated as such
          var molWeight = compound.Parameter(MOLECULAR_WEIGHT);
          var halogens = compound.AllParameters(x => x.NameIsOneOf(Halogens));
-         halogens.Each(x=>x.ValueOrigin.UpdateAllFrom(molWeight.ValueOrigin));
+         halogens.Each(x => x.ValueOrigin.UpdateAllFrom(molWeight.ValueOrigin));
       }
 
       private void synchronizePkaValueOrigins(PkaType pkaType, ModelCompound compound)
