@@ -1,7 +1,7 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using PKSim.Core.Services;
 using PKSim.Presentation.UICommands;
-using FakeItEasy;
 
 namespace PKSim.Presentation
 {
@@ -16,7 +16,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_executing_the_import_observed_data_command : concern_for_ImportObservedDataCommmand
    {
       protected override void Because()
@@ -27,7 +26,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_the_selected_observed_data_to_the_current_project()
       {
-         A.CallTo(() => _observedDataTask.AddConcentrationDataToProject()).MustHaveHappened();
+         A.CallTo(() => _observedDataTask.AddObservedDataToProject()).MustHaveHappened();
       }
    }
 }

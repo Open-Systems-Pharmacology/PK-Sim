@@ -270,3 +270,4 @@ paket-files/
 /src/Db/03_PKSimDB_TissueAndBloodWeight.mdb
 /src/Db/7.2_PregnantWoman.xlsx
 /src/Db/PKSimDB.ldb
+/src/Db/**/*.develop.sqlite

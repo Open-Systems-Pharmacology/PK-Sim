@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using CalculationMethodCache = PKSim.Core.Snapshots.CalculationMethodCache;
 using Compound = PKSim.Core.Snapshots.Compound;
 using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
+using ValueOrigin = OSPSuite.Core.Domain.ValueOrigin;
 
 namespace PKSim.Core
 {
@@ -29,31 +30,49 @@ namespace PKSim.Core
       protected EnzymaticProcess _partialProcess;
       private SystemicProcess _systemicProcess;
       protected ICompoundFactory _compoundFactory;
+      private ParameterAlternativeGroup _compoundIntestinalPermeabilityAlternativeGroup;
+      private ParameterAlternative _calculatedAlternative;
+      protected ValueOriginMapper _valueOriginMapper;
+      protected Snapshots.ValueOrigin _snapshotValueOrigin;
+      protected ValueOrigin _pkaValueOrigin;
+      private IParameter _molweightParameter;
+      private IParameter _halogenFParameter;
 
       protected override Task Context()
       {
-         _alternativeMapper = A.Fake<AlternativeMapper>();
          _parameterMapper = A.Fake<ParameterMapper>();
+         _alternativeMapper = A.Fake<AlternativeMapper>();
          _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
          _processMapper = A.Fake<CompoundProcessMapper>();
          _compoundFactory = A.Fake<ICompoundFactory>();
-         sut = new CompoundMapper(_parameterMapper, _alternativeMapper, _calculationMethodCacheMapper, _processMapper, _compoundFactory);
+         _valueOriginMapper= A.Fake<ValueOriginMapper>();
+         sut = new CompoundMapper(_parameterMapper, _alternativeMapper, _calculationMethodCacheMapper, _processMapper,_valueOriginMapper, _compoundFactory);
 
          _compound = new Model.Compound
          {
             Name = "Compound",
             Description = "Description"
          };
+         _pkaValueOrigin = new ValueOrigin { Method = ValueOriginDeterminationMethods.InVitro, Description = "PKA" };
+         _snapshotValueOrigin = new Snapshots.ValueOrigin { Method = ValueOriginDeterminationMethodId.InVivo, Description = "PKA" };
 
          addPkAParameters(_compound, 0, 8, CompoundType.Base);
          addPkAParameters(_compound, 1, 4, CompoundType.Acid);
          addPkAParameters(_compound, 2, 7, CompoundType.Neutral);
 
+         _compoundIntestinalPermeabilityAlternativeGroup = createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY);
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY));
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND));
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_SOLUBILITY));
-         _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY));
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_PERMEABILITY));
+         _compound.AddParameterAlternativeGroup(_compoundIntestinalPermeabilityAlternativeGroup);
+
+         _compoundIntestinalPermeabilityAlternativeGroup.DefaultAlternative.IsDefault = true;
+         //Calculated alternative will not be the default alternative for intestinal perm
+         _calculatedAlternative = new ParameterAlternative {Name = PKSimConstants.UI.CalculatedAlernative, IsDefault = false};
+         _compoundIntestinalPermeabilityAlternativeGroup.AddAlternative(_calculatedAlternative);
+         //Mapping of a calculated alternative returns null
+         A.CallTo(() => _alternativeMapper.MapToSnapshot(_calculatedAlternative)).Returns(Task.FromResult<Alternative>(null));
 
          _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.IS_SMALL_MOLECULE));
          _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int) PlasmaProteinBindingPartner.Glycoprotein).WithName(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER));
@@ -71,13 +90,27 @@ namespace PKSim.Core
          A.CallTo(() => _processMapper.MapToSnapshot(_partialProcess)).Returns(_snapshotProcess1);
          A.CallTo(() => _processMapper.MapToSnapshot(_systemicProcess)).Returns(_snapshotProcess2);
 
+         _molweightParameter = DomainHelperForSpecs.ConstantParameterWithValue(400).WithName(Constants.Parameters.MOL_WEIGHT);
+         _molweightParameter.ValueOrigin.Method = ValueOriginDeterminationMethods.InVivo;
+
+         //Do not update F value origin to ensure that it's being synchronized when mapping from snapshot
+         _halogenFParameter = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.F);
+
+         _compound.Add(_molweightParameter);
+         _compound.Add(_halogenFParameter);
          return _completed;
       }
 
       private void addPkAParameters(Model.Compound compound, int index, double pkA, CompoundType compoundType)
       {
-         compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(pkA).WithName(CoreConstants.Parameters.ParameterPKa(index)));
-         compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int) compoundType).WithName(CoreConstants.Parameters.ParameterCompoundType(index)));
+         var pkaParameter = DomainHelperForSpecs.ConstantParameterWithValue(pkA).WithName(CoreConstants.Parameters.ParameterPKa(index));
+         pkaParameter.ValueOrigin.UpdateFrom(_pkaValueOrigin);
+         A.CallTo(() => _valueOriginMapper.MapToSnapshot(pkaParameter.ValueOrigin)).Returns(_snapshotValueOrigin);
+         compound.Add(pkaParameter);
+         var compoundTypeParameter = DomainHelperForSpecs.ConstantParameterWithValue((int) compoundType).WithName(CoreConstants.Parameters.ParameterCompoundType(index));
+         compoundTypeParameter.ValueOrigin.UpdateFrom(_pkaValueOrigin);
+         A.CallTo(() => _valueOriginMapper.MapToSnapshot(compoundTypeParameter.ValueOrigin)).Returns(_snapshotValueOrigin);
+         compound.Add(compoundTypeParameter);
       }
 
       private ParameterAlternativeGroup createParameterAlternativeGroup(string parameterAlternativeGroupName)
@@ -146,16 +179,18 @@ namespace PKSim.Core
          _snapshot.PkaTypes.Length.ShouldBeEqualTo(2);
          _snapshot.PkaTypes[0].Pka.ShouldBeEqualTo(8);
          _snapshot.PkaTypes[0].Type.ShouldBeEqualTo(CompoundType.Base);
+         _snapshot.PkaTypes[0].ValueOrigin.ShouldBeEqualTo(_snapshotValueOrigin);
 
          _snapshot.PkaTypes[1].Pka.ShouldBeEqualTo(4);
          _snapshot.PkaTypes[1].Type.ShouldBeEqualTo(CompoundType.Acid);
+         _snapshot.PkaTypes[1].ValueOrigin.ShouldBeEqualTo(_snapshotValueOrigin);
       }
    }
 
    public class When_mapping_a_valid_compound_snapshot_to_a_compound : concern_for_CompoundMapper
    {
       private Model.Compound _newCompound;
-      private ParameterAlternative _alternative;
+      private ParameterAlternative _fractionUnboundAlternative;
       private Model.CompoundProcess _newProcess;
       private ParameterAlternativeGroup _fractionUnboundParameterGroup;
 
@@ -170,14 +205,14 @@ namespace PKSim.Core
          _snapshot.IsSmallMolecule = false;
          _snapshot.PkaTypes = new[]
          {
-            new PkaType {Pka = 1, Type = CompoundType.Acid},
-            new PkaType {Pka = 2, Type = CompoundType.Base},
-            new PkaType {Pka = 3, Type = CompoundType.Acid},
+            new PkaType {Pka = 1, Type = CompoundType.Acid, ValueOrigin = _snapshotValueOrigin},
+            new PkaType {Pka = 2, Type = CompoundType.Base,ValueOrigin = _snapshotValueOrigin},
+            new PkaType {Pka = 3, Type = CompoundType.Acid, ValueOrigin = _snapshotValueOrigin},
          };
 
-         _alternative = new ParameterAlternative().WithName("Alternative");
+         _fractionUnboundAlternative = new ParameterAlternative().WithName("Alternative");
          _fractionUnboundParameterGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
-         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], _fractionUnboundParameterGroup)).Returns(_alternative);
+         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], _fractionUnboundParameterGroup)).Returns(_fractionUnboundAlternative);
 
          _snapshot.Processes = new[] {_snapshotProcess1};
          _newProcess = new EnzymaticProcess();
@@ -228,19 +263,47 @@ namespace PKSim.Core
       [Observation]
       public void should_have_created_the_expected_alternatives()
       {
-         _newCompound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND).AllAlternatives.ShouldContain(_alternative);
+         _newCompound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND).AllAlternatives.ShouldContain(_fractionUnboundAlternative);
+      }
+
+      [Observation]
+      public void should_have_set_the_alternative_as_default_alternative()
+      {
+         _fractionUnboundAlternative.IsDefault.ShouldBeTrue();
+         _newCompound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY).DefaultAlternative.IsDefault.ShouldBeTrue();
       }
 
       [Observation]
       public void should_have_loaded_the_expected_pka_type_values()
       {
          _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA1).Value.ShouldBeEqualTo(_snapshot.PkaTypes[0].Pka);
+         _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA1).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
+
          _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA2).Value.ShouldBeEqualTo(_snapshot.PkaTypes[1].Pka);
+         _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA2).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
+
          _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA3).Value.ShouldBeEqualTo(_snapshot.PkaTypes[2].Pka);
+         _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA3).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
 
          _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[0].Type);
+         _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE1).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
+
          _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE2).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[1].Type);
+         _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE2).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
+
          _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[2].Type);
+         _newCompound.Parameter(CoreConstants.Parameters.COMPOUND_TYPE3).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
+      }
+
+
+      [Observation]
+      public void should_have_ensured_that_the_mol_weight_and_halogen_parameters_share_the_same_value_origin()
+      {
+         _fractionUnboundAlternative.IsDefault.ShouldBeTrue();
+         var molWeight = _newCompound.Parameter(Constants.Parameters.MOL_WEIGHT);
+         var F = _newCompound.Parameter(Constants.Parameters.F);
+
+         F.ValueOrigin.ShouldBeEqualTo(molWeight.ValueOrigin);
       }
    }
 }

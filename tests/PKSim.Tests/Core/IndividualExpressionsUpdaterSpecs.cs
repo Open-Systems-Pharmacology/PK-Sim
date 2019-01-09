@@ -78,7 +78,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_reset_all_molecule_user_defined_parmaeters_to_their_default_value()
+      public void should_reset_all_molecule_user_defined_parameters_to_their_default_value()
       {
          _userDefinedParameter.Value.ShouldBeEqualTo(_defaultValue);
       }

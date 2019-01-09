@@ -103,10 +103,11 @@ namespace PKSim.Presentation.Presenters.Main
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Tools), PKSimConstants.RibbonPages.Utilities);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.DisplayUnits), PKSimConstants.RibbonPages.Utilities);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Favorites), PKSimConstants.RibbonPages.Utilities);
+         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.History), PKSimConstants.RibbonPages.Utilities);
 
 
          if (_startOptions.IsDeveloperMode)
-            _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Admin), PKSimConstants.RibbonPages.Utilities);
+            _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Developer), PKSimConstants.RibbonPages.Utilities);
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.View), PKSimConstants.RibbonPages.Views);
 
@@ -352,8 +353,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.LoadEvent].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewProtocol].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadProtocol].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = enabled && observedDataEnabled;
-         _menuBarItemRepository[MenuBarItemIds.ImportFractionData].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled && observedDataEnabled;
          _menuBarItemRepository[MenuBarItemIds.ProjectReport].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparison].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparisonInAnalyze].Enabled = enabled;
@@ -373,6 +373,8 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.ParameterIdentificationFeedbackView].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.CreateSensitivityAnalysis].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.SensitivityAnalysisFeedbackView].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.ClearHistory].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.RemoveUnusedContent].Enabled = enabled;
       }
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
@@ -412,12 +414,14 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(BuildingBlockAddedEvent eventToHandle)
       {
-         _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = compoundsAvailableIn(eventToHandle.Project);
+         var projectHasCompound = compoundsAvailableIn(eventToHandle.Project);
+         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = projectHasCompound;
       }
 
       public void Handle(BuildingBlockRemovedEvent eventToHandle)
       {
-         _menuBarItemRepository[MenuBarItemIds.ImportObservedData].Enabled = compoundsAvailableIn(eventToHandle.Project);
+         var projectHasCompound = compoundsAvailableIn(eventToHandle.Project);
+         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = projectHasCompound;
       }
 
       private bool compoundsAvailableIn(IProject project)

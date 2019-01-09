@@ -111,6 +111,48 @@ namespace PKSim.IntegrationTests
          }
       }
 
+      private void checkDefaultAlternative(Compound compound, string groupName, string defaultAlternativeName)
+      {
+         foreach (var alternative in compound.ParameterAlternativeGroup(groupName).AllAlternatives)
+         {
+            if (alternative.Name.Equals(defaultAlternativeName))
+            {
+               alternative.IsDefault.ShouldBeTrue($"{alternative} must be default");
+               continue;
+            }
+            alternative.IsDefault.ShouldBeFalse($"{alternative} may not be default");
+         }
+      }
+
+      private void checkParameter(IParameter parameter, double expectedValue, string expectedUnit = "")
+      {
+         parameter.Value.ShouldBeEqualTo(expectedValue);
+
+         if (string.IsNullOrEmpty(expectedUnit))
+            return;
+
+         parameter.DisplayUnit.Name.ShouldBeEqualTo(expectedUnit);
+      }
+
+      private void checkAlternativeParameter(Compound compound, string groupName, string alternativeName,
+         string parameterName, double expectedValue, string expectedUnit = "")
+      {
+         var alternative = compound.ParameterAlternativeGroup(groupName).AlternativeByName(alternativeName);
+         checkParameter(alternative.Parameter(parameterName),expectedValue,expectedUnit);
+      }
+
+      private void checkCalculationMethod(Compound compound, string category, string expectedCalculationMethod)
+      {
+         compound.CalculationMethodCache.CalculationMethodFor(category)
+            .Name.ShouldBeEqualTo(expectedCalculationMethod);
+      }
+
+      private void checkProcessParameter(Compound compound, string processName,
+         string parameterName, double expectedValue, string expectedUnit = "")
+      {
+         checkParameter(compound.ProcessByName(processName).Parameter(parameterName), expectedValue, expectedUnit);
+      }
+
       [Observation]
       public void loaded_individuals_should_have_updated_protein_model_structure()
       {
@@ -155,6 +197,41 @@ namespace PKSim.IntegrationTests
       public void system_database_should_contain_new_templates()
       {
          _compounds.FindByName("Digoxin").ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void check_compound_template_fixes_for_7_4()
+      {
+         var permeabilityGroup = CoreConstants.Groups.COMPOUND_PERMEABILITY;
+         var lipophilicityGroup = CoreConstants.Groups.COMPOUND_LIPOPHILICITY;
+         var intestinalPermeabilityGroup = CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY;
+
+         //---- Midazolam
+         var midazolam = _compounds.FindByName("Midazolam");
+         checkCalculationMethod(midazolam, CoreConstants.Category.DistributionCellular, CoreConstants.CalculationMethod.RodgerAndRowland);
+         checkDefaultAlternative(midazolam, intestinalPermeabilityGroup, "Optimization");
+
+         //---- Digoxin
+         var digoxin = _compounds.FindByName("Digoxin");
+
+         checkAlternativeParameter(digoxin, lipophilicityGroup, "Alsenz 2007", CoreConstants.Parameters.LIPOPHILICITY, 1.623);
+         checkProcessParameter(digoxin, "ATP1A2-Katz (2010)", CoreConstantsForSpecs.Parameter.KD, 25.6E-3, "nmol/l");
+
+         checkDefaultAlternative(digoxin, permeabilityGroup, "fitted");
+         checkAlternativeParameter(digoxin, permeabilityGroup, "fitted", CoreConstants.Parameters.PERMEABILITY, 1.01150E-5, "dm/min");
+
+         //---- Itraconazole
+         var itraconazole = _compounds.FindByName("Itraconazole");
+         checkDefaultAlternative(itraconazole, intestinalPermeabilityGroup, "Optimization");
+         
+         //---- Rifampicin
+         var rifampicin = _compounds.FindByName("Rifampicin");
+         checkDefaultAlternative(rifampicin, intestinalPermeabilityGroup, "fitted");
+
+         //---- S-Warfarin
+         var swarfarin = _compounds.FindByName("S-Warfarin");
+         checkDefaultAlternative(swarfarin, intestinalPermeabilityGroup, "fitted");
+
       }
    }
 

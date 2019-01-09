@@ -300,8 +300,6 @@ namespace PKSim.UI.Views.Individuals
          cbSpecies.SetImages(_imageListRetriever);
       }
 
-      protected override int TopicId => HelpId.PKSim_Individuals_NewIndividual;
-
       public override string Caption => PKSimConstants.UI.Biometrics;
 
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.Individual;

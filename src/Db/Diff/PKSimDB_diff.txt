@@ -1,0 +1,4 @@
+UPDATE tab_container_parameters SET sequence=2 WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Relative expression in plasma';
+UPDATE tab_container_parameters SET sequence=2 WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Relative expression in plasma (normalized)';
+UPDATE tab_container_parameters SET sequence=3 WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Relative expression in vascular endothelium';
+UPDATE tab_container_parameters SET sequence=3 WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Relative expression in vascular endothelium (normalized)';

@@ -2,7 +2,7 @@
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="$(var.ProductId)" Name="$(var.ProductFullName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="35BAE78E-2BCE-491C-A496-450A82E2BB5E">
-    <Package InstallerVersion="200" Compressed="yes" InstallPrivileges="elevated" />
+    <Package InstallerVersion="200" Compressed="yes" InstallPrivileges="elevated" Platform="x64" />
 
     <Condition Message="For a correct installation of the software, administrator rights are necessary. You do not have these rights. Please contact your IT-administrator to carry out the installation">Privileged</Condition>
 
@@ -14,17 +14,11 @@
     <Property Id="ALLUSERS" Value="1" />
     <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
-    <?if $(sys.BUILDARCH) = x64 ?>
-    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-    <?else?>
-    <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-    <?endif?>
-
     <!--Programm Files Set by bundle Setup-->
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="OSP_SUITE" Name="$(var.Manufacturer)">
         <Directory Id="INSTALLDIR" Name="$(var.ProductFullName)">
-          <Component Id="PKSim.exe" Guid="7E30E944-CA31-4330-93E7-A6F4F4AE4663">
+          <Component Id="PKSim.exe" Guid="7E30E944-CA31-4330-93E7-A6F4F4AE4663" Win64="yes">
             <File Name="PKSim.exe" Id="PKSim.exe" KeyPath="yes" Source="$(var.DeployDir)/PKSim.exe">
               <Shortcut Name="$(var.ProductName)" Id="PKSimShortcut" Icon="PKSimIcon.exe" Directory="OSPSuiteMenuDir" WorkingDirectory="INSTALLDIR" Advertise="yes" />
             </File>
@@ -88,7 +82,7 @@
               </Component>
 
               <Component Id="PKSimDB" Guid="686F86BE-F0C7-4F00-8982-4B376997D8BA">
-                <File Name="PKSimDB.mdb" Id="PKSimDB" Source="$(var.DeployDir)/PKSimDB.mdb" KeyPath="yes" />
+                <File Name="PKSimDB.sqlite" Id="PKSimDB" Source="$(var.DeployDir)/PKSimDB.sqlite" KeyPath="yes" />
               </Component>
 
               <Component Id='OSPSuite.Dimensions' Guid='79ED18B0-4CBC-45D3-A24F-16FC2B324409'>
@@ -100,7 +94,7 @@
               </Component>
 
               <Component Id="PKSimTemplateDBSystem" Guid="DF39FF9D-DAB8-4A6A-9E3E-FEFD68489F3C">
-                <File Name="PKSimTemplateDBSystem.mdb" Id="PKSimTemplateDBSystem" Source="$(var.DeployDir)/PKSimTemplateDBSystem.mdb" KeyPath="yes" />
+                <File Name="PKSimTemplateDBSystem.templateDbSystem" Id="PKSimTemplateDBSystem" Source="$(var.DeployDir)/PKSimTemplateDBSystem.templateDbSystem" KeyPath="yes" />
               </Component>
 
               <Directory Id="ChartLayoutsFolder" Name="ChartLayouts">
@@ -126,7 +120,7 @@
                   </CreateFolder>
                 </Component>
 
-                <Component Id="ExampleFolderShortCut" Guid="21CC8E07-4C3B-4613-B237-28F17160E474">
+                <Component Id="ExampleFolderShortCut" Guid="21CC8E07-4C3B-4613-B237-28F17160E474" Win64="yes">
                   <Shortcut Id="ExampleFolderShortCut" Name="$(var.ProductName) Examples" Directory="OSPSuiteMenuDir" />
                   <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="Examples" KeyPath="yes" />
                 </Component>
@@ -139,7 +133,7 @@
       <!--Start menu Programms -->
       <Directory Id="ProgramMenuFolder">
         <Directory Id="OSPSuiteMenuDir" Name="$(var.SuiteName) $(var.ProductReleaseVersion)">
-          <Component Id="OSPSuiteMenuDir" Guid="5D07DE39-0070-487B-94F4-C0ADB6118BF0">
+          <Component Id="OSPSuiteMenuDir" Guid="5D07DE39-0070-487B-94F4-C0ADB6118BF0" Win64="yes">
             <RemoveFolder Id="OSPSuiteMenuDir" On="uninstall" />
             <RegistryValue Root="HKMU" Key="Software\[Manufacturer]\[ProductName]\OSP" Type="string" Value="" KeyPath="yes" />
           </Component>

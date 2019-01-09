@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
 using PKSim.Core.Model;
 using static PKSim.Core.CoreConstants.Groups;
 using static PKSim.Core.CoreConstants.Parameters;
@@ -17,6 +16,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly AlternativeMapper _alternativeMapper;
       private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
       private readonly CompoundProcessMapper _processMapper;
+      private readonly ValueOriginMapper _valueOriginMapper;
       private readonly ICompoundFactory _compoundFactory;
 
       public CompoundMapper(
@@ -24,11 +24,13 @@ namespace PKSim.Core.Snapshots.Mappers
          AlternativeMapper alternativeMapper,
          CalculationMethodCacheMapper calculationMethodCacheMapper,
          CompoundProcessMapper processMapper,
+         ValueOriginMapper valueOriginMapper,
          ICompoundFactory compoundFactory) : base(parameterMapper)
       {
          _alternativeMapper = alternativeMapper;
          _calculationMethodCacheMapper = calculationMethodCacheMapper;
          _processMapper = processMapper;
+         _valueOriginMapper = valueOriginMapper;
          _compoundFactory = compoundFactory;
       }
 
@@ -41,7 +43,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Solubility = await mapAlternatives(compound, COMPOUND_SOLUBILITY);
          snapshot.IntestinalPermeability = await mapAlternatives(compound, COMPOUND_INTESTINAL_PERMEABILITY);
          snapshot.Permeability = await mapAlternatives(compound, COMPOUND_PERMEABILITY);
-         snapshot.PkaTypes = mapPkaTypes(compound);
+         snapshot.PkaTypes = await mapPkaTypes(compound);
          snapshot.Processes = await mapProcesses(compound);
          snapshot.IsSmallMolecule = compound.IsSmallMolecule;
          snapshot.PlasmaProteinBindingPartner = SnapshotValueFor(compound.PlasmaProteinBindingPartner, PlasmaProteinBindingPartner.Unknown);
@@ -65,6 +67,7 @@ namespace PKSim.Core.Snapshots.Mappers
          await updateProcesses(snapshot, compound);
          await UpdateParametersFromSnapshot(snapshot, compound);
 
+         synchronizeMolWeightValueOrigins(compound);
          return compound;
       }
 
@@ -91,42 +94,81 @@ namespace PKSim.Core.Snapshots.Mappers
          //Remove all alternatives except calculated ones
          alternativeGroup.AllAlternatives.ToList().Where(x => !x.IsCalculated).Each(alternativeGroup.RemoveAlternative);
 
+         //Reset the default flag that will be read from snapshot
+         alternativeGroup.AllAlternatives.Each(x => x.IsDefault = false);
+
          var alternatives = await _alternativeMapper.MapToModels(snapshotAlternatives, alternativeGroup);
 
          alternatives?.Each(alternativeGroup.AddAlternative);
+
+         //Ensure that we have at least one default alternative (might not be the case if only calcualted alternatives were saved)
+         var defaultAlternative = alternativeGroup.DefaultAlternative;
+         if (defaultAlternative != null)
+            defaultAlternative.IsDefault = true;
       }
 
       private void updatePkaTypes(ModelCompound compound, SnapshotCompound snapshot)
       {
-         snapshot.PkaTypes?.Each((pkaType, i) =>
+         snapshot.PkaTypes?.Each((pkaType, i) => updatePkaType(compound, pkaType, i));
+         synchronizePkaValueOrigins(snapshot.PkaTypes?.FirstOrDefault(), compound);
+      }
+
+      private void synchronizeMolWeightValueOrigins(ModelCompound compound)
+      {
+         //Mol weight parameter and halogens value share the same value origin and should be updated as such
+         var molWeight = compound.Parameter(MOLECULAR_WEIGHT);
+         var halogens = compound.AllParameters(x => x.NameIsOneOf(Halogens));
+         halogens.Each(x => x.ValueOrigin.UpdateAllFrom(molWeight.ValueOrigin));
+      }
+
+      private void synchronizePkaValueOrigins(PkaType pkaType, ModelCompound compound)
+      {
+         var valueOrign = pkaType?.ValueOrigin;
+         if (valueOrign == null)
+            return;
+
+         //Making sure that all pKa parameters have the same value origin, even neutral ones
+         Enumerable.Range(0, CoreConstants.NUMBER_OF_PKA_PARAMETERS).Each(index =>
          {
-            var compoundType = pkaType.Type;
-            compound.Parameter(ParameterCompoundType(i)).Value = (int) compoundType;
-            compound.Parameter(ParameterPKa(i)).Value = pkaType.Pka;
+            var (compoundTypeParameter, pKaParameter) = pkaParametersFor(compound, index);
+            _valueOriginMapper.UpdateValueOrigin(compoundTypeParameter.ValueOrigin, valueOrign);
+            _valueOriginMapper.UpdateValueOrigin(pKaParameter.ValueOrigin, valueOrign);
          });
+      }
+
+      private void updatePkaType(ModelCompound compound, PkaType pkaType, int index)
+      {
+         var (compoundTypeParameter, pKaParameter) = pkaParametersFor(compound, index);
+
+         compoundTypeParameter.Value = (int) pkaType.Type;
+         pKaParameter.Value = pkaType.Pka;
+      }
+
+      private (IParameter compoundTypeParameter, IParameter pkaParameter) pkaParametersFor(ModelCompound compound, int index)
+      {
+         var compoundTypeParameter = compound.Parameter(ParameterCompoundType(index));
+         var pkaParameter = compound.Parameter(ParameterPKa(index));
+         return (compoundTypeParameter, pkaParameter);
       }
 
       private Task<CompoundProcess[]> mapProcesses(ModelCompound compound) => _processMapper.MapToSnapshots(compound.AllProcesses());
 
-      private PkaType[] mapPkaTypes(ModelCompound compound)
+      private Task<PkaType[]> mapPkaTypes(ModelCompound compound)
       {
-         var pkaTypes = new List<PkaType>();
+         return SnapshotMapperBaseExtensions.MapTo(Enumerable.Range(0, CoreConstants.NUMBER_OF_PKA_PARAMETERS), i => mapPkaType(compound, i));
+      }
 
-         for (int i = 0; i < CoreConstants.NUMBER_OF_PKA_PARAMETERS; i++)
-         {
-            var compoundTypeParameter = compound.Parameter(ParameterCompoundType(i));
-            var pkA = compound.Parameter(ParameterPKa(i)).Value;
-            var compoundType = (CompoundType) compoundTypeParameter.Value;
-            if (compoundType == CompoundType.Neutral)
-               continue;
+      private async Task<PkaType> mapPkaType(ModelCompound compound, int index)
+      {
+         var (compoundTypeParameter, pKaParameter) = pkaParametersFor(compound, index);
+         var pKa = pKaParameter.Value;
+         var compoundType = (CompoundType) compoundTypeParameter.Value;
+         if (compoundType == CompoundType.Neutral)
+            return null;
 
-            pkaTypes.Add(new PkaType {Pka = pkA, Type = compoundType});
-         }
+         var valueOrigin = await _valueOriginMapper.MapToSnapshot(pKaParameter.ValueOrigin);
 
-         if (pkaTypes.Any())
-            return pkaTypes.ToArray();
-
-         return null;
+         return new PkaType {Pka = pKa, Type = compoundType, ValueOrigin = valueOrigin};
       }
 
       protected override Task AddModelParametersToSnapshot(ModelCompound compound, SnapshotCompound snapshot)

@@ -116,9 +116,6 @@ namespace PKSim.Core.Services
          var globalMoleculeContainer = simulation.Model.Root
             .GetSingleChildByName<IContainer>(molecule.Name);
 
-         hideParameter(globalMoleculeContainer.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI));
-         hideParameter(globalMoleculeContainer.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR));
-
          hideGlobalParametersForUndefinedMolecule(globalMoleculeContainer);
 
          hideInterstialParametersForIntracellularLocalizationInTissue(individual,  molecule, allOrganismContainers, moleculeAmountPath);

@@ -1104,7 +1104,6 @@ namespace PKSim.Assets
          public static readonly string NewEvent = "Add &Event...";
          public static readonly string AddObservedData = "Add &Observed Data...";
          public static readonly string AddObservedDataFor = "Add Observed Data for";
-         public static readonly string AddFractionData = "Add &Fraction Data...";
          public static readonly string SaveAs = "Save As...";
          public static readonly string Scale = "Scale...";
          public static readonly string Extras = "&Extras";
@@ -1135,7 +1134,6 @@ namespace PKSim.Assets
          public static readonly string ExportSimulationToPDFMenu = "PDF";
          public static readonly string ProjectReport = "Project Report";
          public static readonly string Report = "Report";
-         public static readonly string Help = "Help";
          public static readonly string ExportSimulationResultsToExcel = $"Export Results to {UI.Excel}...";
          public static readonly string ExportSimulationResultsToExcelMenu = $"Results to {UI.Excel}";
          public static readonly string ExportSimulationResultsToCSV = $"Export Results to {"CSV"}...";
@@ -1168,6 +1166,7 @@ namespace PKSim.Assets
          public static readonly string ExtractIndividualsMenu = "Extract Individuals...";
          public static readonly string ExportSnapshot = "Save Snapshot...";
          public static readonly string LoadFromSnapshot = "Load from Snapshot...";
+         public static readonly string RemoveUnusedContent = "Remove Unused Content";
 
          public static string DevOnlyMenuNameFor(string menuName) => $"{menuName} (Developer only)";
 
@@ -1334,6 +1333,7 @@ namespace PKSim.Assets
       public static class Ribbons
       {
          public static readonly string ObservedData = "&Observed Data";
+         public static readonly string AmountObservedData = "&Amount Observed Data";
          public static readonly string FractionData = "&Fraction Data";
          public static readonly string Individual = "&Individual";
          public static readonly string Population = "&Population";
@@ -1355,7 +1355,7 @@ namespace PKSim.Assets
          public static readonly string Import = "Import";
          public static readonly string Export = "Export";
          public static readonly string ExportProject = "Export Project";
-         public static readonly string Admin = "Admin (Developer Only)";
+         public static readonly string Developer = "Developer Tools";
          public static readonly string DisplayUnits = "Display Units";
          public static readonly string Analyses = "Analyses";
          public static readonly string Workflow = "Workflow";
@@ -1605,6 +1605,8 @@ namespace PKSim.Assets
          public static readonly string Ontogeny = "Ontogeny";
          public static readonly string OntogenyFactor = "Ontogeny factor";
          public static readonly string Concentration = "Concentration";
+         public static readonly string Amount = "Amount";
+         public static readonly string Measurement = "Measurement";
          public static readonly string OpeningProjectDatabase = "Opening project database...";
          public static readonly string CreatingProjectDatabase = "Creating project database...";
          public static readonly string LoadingProject = "Loading project...";
@@ -1819,7 +1821,7 @@ namespace PKSim.Assets
          public static readonly string ProtocolEndTime = "Protocol end time";
          public static readonly string DosingInterval = "Dosing interval";
          public static readonly string ApplicationType = "Administration type";
-         public static readonly string TargetOrgan = "Target organ";
+         public static readonly string TargetOrgan = "Target organ"; 
          public static readonly string TargetCompartment = "Target compartment";
          public static readonly string PlaceholderFormulation = "Placeholder for formulation";
          public static readonly string ProtocolProperties = "Protocol Properties";
@@ -1872,8 +1874,7 @@ namespace PKSim.Assets
          public static readonly string SimulationExplorerViewDescription = "Show or hide the simulation explorer";
          public static readonly string BuildingBlockExplorerViewDescription = "Show or hide the building block explorer";
          public static readonly string UndoDescription = "Undo the last action";
-         public static readonly string AddObservedDataDescription = "Add observed data to the project...";
-         public static readonly string AddFractionDataDescription = "Add fraction data to the project...";
+         public static readonly string AddObservedDataDescription = "Add observed data (concentration, amount, fraction) to the project...";
          public static readonly string ExportHistoryToExcelDescription = "Export history to Excel file...";
          public static readonly string ExportHistoryToPDFDescription = "Export history to PDF file...";
          public static readonly string ProjectReportDescription = "Export project to a pdf file...";
@@ -2498,7 +2499,20 @@ namespace PKSim.Assets
 
          public static string LoadFromSnapshot => "Load Snapshot";
 
-         public static string NumberOfTemplatesSelectedIs(int number, string templateType) => $"{number} {templateType.PluralizeIf(number).ToLowerInvariant()} selected";         
+         public static string NumberOfTemplatesSelectedIs(int number, string templateType) => $"{number} {templateType.PluralizeIf(number).ToLowerInvariant()} selected";
+
+         public static string UserTemplateDatabaseDatabaseUsedOldFormatAndCannotBeLoaded(string userTemplateDatabasePath, string wikiPageUrl) =>
+            $"The template database located at\n\t\t'{userTemplateDatabasePath}'\n\nuses a file format that is not supported anymore. Please refer to\n\t\t'{wikiPageUrl}'\n\nto learn how to convert your database.";
+
+         private static readonly string[] _reallyClearUnusedContent = {
+            "Removing unused content could permamently corrupt your project.",
+            "You should make a backup of your project before proceeding.",
+            "If you don't make a backup, you will be the only one to blame!"
+         };
+
+         public static readonly string ReallyClearUnusedContent = DoYouWantToProceed(_reallyClearUnusedContent);
+         public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
+
       }
 
       public static class Reporting

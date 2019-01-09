@@ -2,6 +2,7 @@ require_relative 'scripts/setup'
 require_relative 'scripts/copy-dependencies'
 require_relative 'scripts/utils'
 require_relative 'scripts/coverage'
+require_relative 'src/Db/db'
 
 task :cover do
 	filter = []
@@ -19,8 +20,8 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
 		'PKSim.exe',
-		'PKSimDB.mdb',
-		'PKSimTemplateDBSystem.mdb'
+		'PKSimDB.sqlite',
+		'PKSimTemplateDBSystem.TemplateDBSystem'
 	]
 
 	#Files required for setup creation only and that will not be harvested automatically
@@ -87,7 +88,7 @@ task :postclean do |t, args|
 	packages_dir =  File.join(solution_dir, 'packages')
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.3')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.4')
 
 	copy_depdencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml
@@ -95,8 +96,8 @@ task :postclean do |t, args|
 	end
 
 	copy_depdencies solution_dir,  all_users_application_dir do
-		copy_file 'src/Db/PKSimDB.mdb'
-		copy_file 'src/Db/TemplateDB/PKSimTemplateDBSystem.mdb'
+		copy_file 'src/Db/PKSimDB.sqlite'
+		copy_file 'src/Db/TemplateDB/PKSimTemplateDBSystem.templateDBSystem'
 	end
 
 	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
@@ -108,11 +109,18 @@ task :postclean do |t, args|
 	end
 end
 
+task :db_pre_commit do
+	Rake::Task['db:dump'].execute();
+	Rake::Task['db:diff'].execute();
+end
+
 private
 
 def update_smart_xls(args) 
 	require_relative 'scripts/smartxls'
-
+	if (!args.smart_xls_package || !args.smart_xls_version)
+		return
+	end
 	src_dir = src_dir_for(args.configuration)
 	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
 end

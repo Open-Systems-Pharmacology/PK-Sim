@@ -27,22 +27,21 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          var allCompounds = buildingBlockRepository.All<Compound>().ToList();
 
-         _view.AddMenuItem(repository[MenuBarItemIds.ImportObservedData]);
 
          //create sub menu containing all compounds
-         var subMenu = CreateSubMenu.WithCaption(PKSimConstants.MenuNames.AddObservedDataFor)
+         var addObservedDataFor = CreateSubMenu.WithCaption(PKSimConstants.MenuNames.AddObservedDataFor)
             .WithIcon(ApplicationIcons.ObservedDataForMolecule);
+
 
          foreach (var compound in allCompounds)
          {
-            subMenu.AddItem(CreateMenuButton.WithCaption(compound.Name)
-               .WithCommandFor<AddObservedDataForCompoundUICommand, Compound>(compound));
+            addObservedDataFor.AddItem(CreateMenuButton.WithCaption(compound.Name)
+               .WithCommandFor<AddObservedDataForCompoundUICommand, Compound>(compound));  
          }
 
+         _view.AddMenuItem(repository[MenuBarItemIds.AddObservedData]);
          if (allCompounds.Any())
-            _view.AddMenuItem(subMenu);
-
-         _view.AddMenuItem(repository[MenuBarItemIds.ImportFractionData].AsGroupStarter());
+            _view.AddMenuItem(addObservedDataFor);
 
          _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
             .WithCommand<LoadObservedDataFromTemplateUICommand>()

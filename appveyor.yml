@@ -2,9 +2,9 @@ configuration: Debug
 image: Visual Studio 2017
 
 environment:
-  app_version: '7.3.0'
+  app_version: '7.4.0'
 
-version: '%app_version%.{build}'
+version: '$(app_version).{build}'
 
 clone_depth: 1
 

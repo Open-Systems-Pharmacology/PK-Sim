@@ -1,18 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Assets;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
    public interface ISimulationCompoundEnzymaticProcessPresenter : ISimulationCompoundProcessPresenter<EnzymaticProcess, SimulationEnzymaticProcessSelectionDTO>
    {
       IEnumerable<string> AllMetabolitesFor(SimulationEnzymaticProcessSelectionDTO dto);
+      void AddPartialProcessMappingBaseOn(SimulationEnzymaticProcessSelectionDTO dto);
+      void DeletePartialProcessMapping(SimulationEnzymaticProcessSelectionDTO dto);
+      bool CanDeletePartialProcess(SimulationEnzymaticProcessSelectionDTO dto);
    }
 
    public class SimulationCompoundEnzymaticProcessPresenter : SimulationCompoundProcessPresenter<IndividualEnzyme, EnzymaticProcess, SimulationEnzymaticProcessSelectionDTO>, ISimulationCompoundEnzymaticProcessPresenter
@@ -37,8 +40,10 @@ namespace PKSim.Presentation.Presenters.Simulations
       public override void EditProcessesIn(Simulation simulation, CompoundProperties compoundProperties)
       {
          base.EditProcessesIn(simulation, compoundProperties);
-         if (simulation.Compounds.Count <= 1)
-            enzymaticProcessView.HideMetaboliteColumn();
+         if (simulation.Compounds.Count > 1)
+            return;
+
+         enzymaticProcessView.HideMultipleCompoundsColumns();
       }
 
       protected override IEnumerable<SimulationEnzymaticProcessSelectionDTO> MapPartialProcesses(IEnumerable<SimulationPartialProcess> selectedProcesses)
@@ -94,6 +99,39 @@ namespace PKSim.Presentation.Presenters.Simulations
          }
       }
 
+      public void AddPartialProcessMappingBaseOn(SimulationEnzymaticProcessSelectionDTO processSelectionDTO)
+      {
+         var currentSimulationPartialProcess = processSelectionDTO.SimulationPartialProcess;
+         var newProcess = new SimulationPartialProcess
+         {
+            CompoundProcess = _notSelectedPartialProcess,
+            IndividualMolecule = currentSimulationPartialProcess.IndividualMolecule,
+         };
+
+         var newProcessDTO = mapFrom(newProcess);
+         var insertIndex = _allPartialProcessesDTO.IndexOf(processSelectionDTO);
+         _allPartialProcessesDTO.Insert(insertIndex + 1, newProcessDTO);
+
+         rebindPartialProcess();
+      }
+
+      public void DeletePartialProcessMapping(SimulationEnzymaticProcessSelectionDTO dto)
+      {
+         _allPartialProcessesDTO.Remove(dto);
+         rebindPartialProcess();
+      }
+
+      public bool CanDeletePartialProcess(SimulationEnzymaticProcessSelectionDTO dto)
+      {
+         return _allPartialProcessesDTO.Count(x => x.IndividualMolecule == dto.IndividualMolecule) > 1;
+      }
+
+      private void rebindPartialProcess()
+      {
+         _view.BindToPartialProcesses(_allPartialProcessesDTO);
+         _view.AdjustHeight();
+      }
+
       protected override ProcessSelection MapPartialProcessFrom(SimulationEnzymaticProcessSelectionDTO simulationEnzymaticProcessDTO)
       {
          var metaboliteName = simulationEnzymaticProcessDTO.MetaboliteName;
@@ -109,9 +147,6 @@ namespace PKSim.Presentation.Presenters.Simulations
          };
       }
 
-      private ISimulationCompoundEnzymaticProcessView enzymaticProcessView
-      {
-         get { return View.DowncastTo<ISimulationCompoundEnzymaticProcessView>(); }
-      }
+      private ISimulationCompoundEnzymaticProcessView enzymaticProcessView => View.DowncastTo<ISimulationCompoundEnzymaticProcessView>();
    }
 }

@@ -21,16 +21,8 @@ namespace PKSim.UI.Views.Populations
          _presenter = presenter;
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.Population; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Population;
 
-      public override XtraTabControl TabControl
-      {
-         get { return tabEditPopulation; }
-      }
-
-      protected override int TopicId => HelpId.PKSim_Population;
+      public override XtraTabControl TabControl => tabEditPopulation;
    }
 }

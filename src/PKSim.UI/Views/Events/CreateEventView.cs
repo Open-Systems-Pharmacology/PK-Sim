@@ -25,7 +25,5 @@ namespace PKSim.UI.Views.Events
          Icon = ApplicationIcons.Event.WithSize(IconSizes.Size16x16);
          Caption = PKSimConstants.UI.CreateEvent;
       }
-
-      protected override int TopicId => HelpId.PKSim_Events_NewEvent;
    }
 }

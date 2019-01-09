@@ -25,8 +25,8 @@ namespace PKSim.Presentation
       protected ICompoundToCompoundTypeDTOMapper _mapper;
       private IParameterTask _parameterTask;
       protected List<IParameter> _parameters;
-      protected CompoundTypeDTO _compoundTypeDTO;
       private IEditValueOriginPresenter _editValueOriginPresenter;
+      protected List<TypePKaDTO> _compoundTypesDTOs;
 
       protected override void Context()
       {
@@ -40,8 +40,8 @@ namespace PKSim.Presentation
          sut = new CompoundTypeGroupPresenter(_view, _representationInfoRep, _mapper, _parameterTask, _entityPathResolver, _editValueOriginPresenter);
 
          _parameters = new List<IParameter>();
-         _compoundTypeDTO = new CompoundTypeDTO();
-         A.CallTo(() => _mapper.MapFrom(_parameters)).Returns(_compoundTypeDTO);
+         _compoundTypesDTOs = new List<TypePKaDTO>();
+         A.CallTo(() => _mapper.MapFrom(_parameters)).Returns(_compoundTypesDTOs);
       }
    }
 
@@ -91,7 +91,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("EXISTS");
          _parameters.Add(_parameter);
          sut.EditCompoundParameters(_parameters);
-         _compoundTypeDTO.AddTypePKa(new TypePKaDTO {PKaParameter = new ParameterDTO(_parameter)});
+         _compoundTypesDTOs.Add(new TypePKaDTO {PKaParameter = new ParameterDTO(_parameter)});
       }
 
       [Observation]

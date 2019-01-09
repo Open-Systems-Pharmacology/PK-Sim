@@ -32,8 +32,6 @@ namespace PKSim.UI.Views.Charts
          AttachPresenter(presenter.DowncastTo<IPKAnalysisWithChartPresenter>());
       }
 
-      protected override int TopicId => HelpId.PKSim_Simulations_DisplayResultsPopulation;
-
       public void AttachPresenter(IEditTimeProfileAnalysisChartPresenter presenter)
       {
          AttachPresenter(presenter.DowncastTo<IEditPopulationAnalysisChartPresenter>());

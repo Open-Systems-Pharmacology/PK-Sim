@@ -31,14 +31,11 @@ namespace PKSim.Core.Services
          return defaultValue.Value != 0;
       }
 
-      public bool IsDefaultFor(ParameterScaling parameterSatifyingSpecification)
+      public bool IsDefaultFor(ParameterScaling parameterScaling)
       {
-         return !parameterSatifyingSpecification.IsDistributedScaling;
+         return !parameterScaling.IsDistributedScaling;
       }
 
-      public ScalingMethod Method
-      {
-         get { return new RatioScalingMethod(_parameterTask); }
-      }
+      public ScalingMethod Method => new RatioScalingMethod(_parameterTask);
    }
 }

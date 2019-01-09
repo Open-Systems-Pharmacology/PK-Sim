@@ -91,7 +91,7 @@ namespace PKSim.Infrastructure.Services
       /// <summary>
       /// This helping method retrieves a string collection with all distinct values of the given column.
       /// </summary>
-      public ICollection GetDistinctLoV(DataColumn column)
+      public IList GetDistinctLoV(DataColumn column)
       {
          IList ret = new StringCollection();
          foreach (DataRow row in column.Table.Select(null, column.ColumnName))

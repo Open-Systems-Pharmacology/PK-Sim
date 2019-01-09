@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -19,6 +20,95 @@ namespace PKSim.IntegrationTests
 {
    public abstract class concern_for_DatabaseUpdate : ContextForIntegration<IModelDatabase>
    {
+   }
+
+   public class When_checking_the_changes_in_the_database_for_version_7_4_0 : concern_for_DatabaseUpdate
+   {
+      [Observation]
+      public void should_update_the_parameter_tablet_time_delay_factor()
+      {
+         var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         verifyParameterIsVisibleAndEditable(parameterRateRepository, ConverterConstants.Parameter.TabletTimeDelayFactor);
+      }
+
+      [Observation]
+      public void should_make_the_plasma_protein_ontogeny_factor_editable()
+      {
+         var parameterValueRepository = IoC.Resolve<IParameterValueRepository>();
+         verifyParameterIsVisibleAndEditable(parameterValueRepository, CoreConstants.Parameters.ONTOGENY_FACTOR_AGP);
+         verifyParameterIsVisibleAndEditable(parameterValueRepository, CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN);
+
+         var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         verifyParameterIsVisibleAndEditable(parameterRateRepository, CoreConstants.Parameters.ONTOGENY_FACTOR, "PROTEIN");
+         verifyParameterIsVisibleAndEditable(parameterRateRepository, CoreConstants.Parameters.ONTOGENY_FACTOR_GI, "PROTEIN");
+      }
+
+      [Observation]
+      public void should_set_some_new_parameters_as_can_be_varied_in_population()
+      {
+         var parameterValueRepository = IoC.Resolve<IParameterValueRepository>();
+         verifyParametersCanBeVariedInPopulation(parameterValueRepository, "Fraction endosomal (global)");
+         verifyParametersCanBeVariedInPopulation(parameterValueRepository, "Thickness (endothelium)");
+         verifyParametersCanBeVariedInPopulation(parameterValueRepository, "Fraction mucosa");
+
+         var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.INFUSION_TIME);
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT);
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, ConverterConstants.Parameter.PartitionCoefficientWwaterProtein, "DRUG");
+      }
+
+      private void verifyParametersCanBeVariedInPopulation<T>(IParameterMetaDataRepository<T> parameterMetaDataRepository, string parameterName, string containerName = null) where T : ParameterMetaData
+      {
+         var parameters = parameterMetaDataRepository.All().Where(p => p.ParameterName.Equals(parameterName)).ToList();
+         if (containerName != null)
+            parameters = parameters.Where(x => x.ContainerName == containerName).ToList();
+
+         parameters.Count.ShouldBeGreaterThan(0);
+         parameters.Each(p => p.CanBeVariedInPopulation.ShouldBeTrue());
+      }
+
+      private static void verifyParameterIsVisibleAndEditable<T>(IParameterMetaDataRepository<T> parameterMetaDataRepository, string parameterName, string containerName = null) where T : ParameterMetaData
+      {
+         var parameters = parameterMetaDataRepository.All().Where(p => p.ParameterName.Equals(parameterName)).ToList();
+         if (containerName != null)
+            parameters = parameters.Where(x => x.ContainerName == containerName).ToList();
+
+         parameters.Count.ShouldBeGreaterThan(0);
+         parameters.Each(p =>
+         {
+            p.Visible.ShouldBeTrue();
+            p.ReadOnly.ShouldBeFalse();
+         });
+      }
+
+      [Observation]
+      public void should_adjust_hill_kinetics()
+      {
+         var rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
+
+         var allHillFormulas = rateFormulaRepository.All().Where(r => r.Rate.EndsWith("_Hill")).ToArray();
+         allHillFormulas.Count().ShouldBeEqualTo(13);
+
+         foreach (var hillFormula in allHillFormulas)
+         {
+            var equation = hillFormula.Formula;
+
+            //count number of occurances of the exponent (alpha) and of the max function in the equation
+            //all terms with exponent must have the form "max(C;0)^alpha/(KM^alpha+max(C;0)^alpha)"
+            // thus <number of max-functions> must be 2/3*<number of exponents>
+            var alphasCount = Regex.Matches(equation, "alpha").Count;
+            var maxCount = Regex.Matches(equation, "max").Count;
+            alphasCount.ShouldBeGreaterThan(0);
+            maxCount.ShouldBeEqualTo(2*alphasCount/3);
+
+            //all occurences of K_water should start with the opening bracket: 
+            // "(K_water_xxx*C)^alpha
+            //Exception: one occurence in pgp-hill-kinetik
+            var kwaterCount = Regex.Matches(equation, "K_water").Count;
+            var expectedBracketedKwaterCount = hillFormula.Rate.Equals("PgpSpecific_Hill") ? kwaterCount - 1 : kwaterCount;
+            Regex.Matches(equation, "[(]K_water").Count.ShouldBeEqualTo(expectedBracketedKwaterCount);
+         }
+      }
    }
 
    public class When_checking_the_changes_in_the_database_for_version_7_2_0 : concern_for_DatabaseUpdate
@@ -47,15 +137,15 @@ namespace PKSim.IntegrationTests
       {
          var meanStdRatios = new[]
          {
-            new {organ=CoreConstants.Organ.ArterialBlood, maleRatio=0.05, femaleRatio=0.05 },
-            new {organ=CoreConstants.Organ.Bone, maleRatio=0.011059, femaleRatio=0.01 },
-            new {organ=CoreConstants.Organ.Gonads, maleRatio=0.05, femaleRatio=0.05 },
-            new {organ=CoreConstants.Organ.Kidney, maleRatio=0.24628, femaleRatio=0.25 },
-            new {organ=CoreConstants.Organ.LargeIntestine, maleRatio=0.14, femaleRatio=0.14 },
-            new {organ=CoreConstants.Organ.Liver, maleRatio=0.25, femaleRatio=0.25 },
-            new {organ=CoreConstants.Organ.Pancreas, maleRatio=0.2689, femaleRatio=0.28 },
-            new {organ=CoreConstants.Organ.Skin, maleRatio=0.05, femaleRatio=0.05 },
-            new {organ=CoreConstants.Organ.VenousBlood, maleRatio=0.05, femaleRatio=0.05 }
+            new {organ = CoreConstants.Organ.ArterialBlood, maleRatio = 0.05, femaleRatio = 0.05},
+            new {organ = CoreConstants.Organ.Bone, maleRatio = 0.011059, femaleRatio = 0.01},
+            new {organ = CoreConstants.Organ.Gonads, maleRatio = 0.05, femaleRatio = 0.05},
+            new {organ = CoreConstants.Organ.Kidney, maleRatio = 0.24628, femaleRatio = 0.25},
+            new {organ = CoreConstants.Organ.LargeIntestine, maleRatio = 0.14, femaleRatio = 0.14},
+            new {organ = CoreConstants.Organ.Liver, maleRatio = 0.25, femaleRatio = 0.25},
+            new {organ = CoreConstants.Organ.Pancreas, maleRatio = 0.2689, femaleRatio = 0.28},
+            new {organ = CoreConstants.Organ.Skin, maleRatio = 0.05, femaleRatio = 0.05},
+            new {organ = CoreConstants.Organ.VenousBlood, maleRatio = 0.05, femaleRatio = 0.05}
          };
 
          foreach (var meanStdRatio in meanStdRatios)
@@ -68,8 +158,7 @@ namespace PKSim.IntegrationTests
                   continue; //no update for this combination
 
                var ratio = volumeParameter.Deviation / volumeParameter.Mean;
-               var expectedRatio = volumeParameter.Gender.Equals(CoreConstants.Gender.Male) ?
-                  meanStdRatio.maleRatio : meanStdRatio.femaleRatio;
+               var expectedRatio = volumeParameter.Gender.Equals(CoreConstants.Gender.Male) ? meanStdRatio.maleRatio : meanStdRatio.femaleRatio;
 
                ratio.ShouldBeEqualTo(expectedRatio, 1e-3, $"{meanStdRatio.organ}.{volumeParameter.Gender}.{volumeParameter.Age} years");
             }
@@ -621,7 +710,7 @@ namespace PKSim.IntegrationTests
          var refConcParameters = moleculeParameterRepo.All().Where(mp => mp.Parameter.Name.StartsWith("Reference")).ToList();
 
          refConcParameters.Count.ShouldBeGreaterThan(0);
-         refConcParameters.Each(mp=>mp.Parameter.Name.ShouldBeEqualTo(CoreConstants.Parameters.REFERENCE_CONCENTRATION));
+         refConcParameters.Each(mp => mp.Parameter.Name.ShouldBeEqualTo(CoreConstants.Parameters.REFERENCE_CONCENTRATION));
       }
    }
 
@@ -640,9 +729,9 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void value_origins_with_nonempty_description_should_not_be_undefined()
       {
-         foreach (var valueOrigin in _valueOriginsRepository.All().Where(vo=>!string.IsNullOrEmpty(vo.Description)))
+         foreach (var valueOrigin in _valueOriginsRepository.All().Where(vo => !string.IsNullOrEmpty(vo.Description)))
          {
-            (valueOrigin.Source.Id==ValueOriginSourceId.Undefined).ShouldBeFalse(valueOrigin.Description);
+            (valueOrigin.Source.Id == ValueOriginSourceId.Undefined).ShouldBeFalse(valueOrigin.Description);
          }
       }
 
@@ -652,32 +741,32 @@ namespace PKSim.IntegrationTests
          var agesWithFilledValueOrigins = new double[] {0, 1, 5, 10, 15, 30, 40, 50, 60, 70, 80, 90, 100};
          var icrpParams = _parameterDistributionRepository.All()
             .Where(p => p.Population.Equals(CoreConstants.Population.ICRP))
-            .Where(p=>p.ParameterName.IsOneOf(
+            .Where(p => p.ParameterName.IsOneOf(
                CoreConstantsForSpecs.Parameter.VOLUME,
                CoreConstants.Parameters.BLOOD_FLOW)).ToList();
 
-         icrpParams.Count.ShouldBeGreaterThanOrEqualTo(agesWithFilledValueOrigins.Length*2*2); //2 Genders * 2 parameters per age
+         icrpParams.Count.ShouldBeGreaterThanOrEqualTo(agesWithFilledValueOrigins.Length * 2 * 2); //2 Genders * 2 parameters per age
 
          foreach (var param in icrpParams)
          {
-            if(param.Age.IsOneOf(agesWithFilledValueOrigins))
+            if (param.Age.IsOneOf(agesWithFilledValueOrigins))
                param.ValueOrigin.IsUndefined.ShouldBeFalse();
             else
                param.ValueOrigin.IsUndefined.ShouldBeTrue();
-         } 
+         }
       }
 
       [Observation]
       public void should_retrieve_new_agp_ontogeny()
       {
          var ontogenyRepo = IoC.Resolve<IOntogenyRepository>();
-         var ontogeny = new DatabaseOntogeny { Name = CoreConstants.Molecule.AGP, SpeciesName = CoreConstants.Species.HUMAN};
+         var ontogeny = new DatabaseOntogeny {Name = CoreConstants.Molecule.AGP, SpeciesName = CoreConstants.Species.HUMAN};
 
-         var agpOntogenies = ontogenyRepo.AllValuesFor(ontogeny).OrderBy(onto=>onto.PostmenstrualAge).ToArray();
+         var agpOntogenies = ontogenyRepo.AllValuesFor(ontogeny).OrderBy(onto => onto.PostmenstrualAge).ToArray();
          agpOntogenies.Length.ShouldBeEqualTo(19);
 
          agpOntogenies[0].PostmenstrualAge.ShouldBeEqualTo(0.76, 1e-2);
-         agpOntogenies[agpOntogenies.Length-1].PostmenstrualAge.ShouldBeEqualTo(90.45, 1e-2);
+         agpOntogenies[agpOntogenies.Length - 1].PostmenstrualAge.ShouldBeEqualTo(90.45, 1e-2);
 
          foreach (var agpOntogeny in agpOntogenies)
          {
@@ -691,7 +780,7 @@ namespace PKSim.IntegrationTests
       {
          var populationsRepo = IoC.Resolve<IPopulationRepository>();
          var populationsOrderedBySequence = populationsRepo.All().OrderBy(pop => pop.Sequence);
-         var firstPopulation = populationsOrderedBySequence.First(pop=>pop.Species.Equals(CoreConstants.Species.HUMAN));
+         var firstPopulation = populationsOrderedBySequence.First(pop => pop.Species.Equals(CoreConstants.Species.HUMAN));
 
          firstPopulation.Name.ShouldBeEqualTo(CoreConstants.Population.ICRP);
       }

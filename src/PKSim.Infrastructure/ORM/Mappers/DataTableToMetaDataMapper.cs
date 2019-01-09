@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
-using PKSim.Assets;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Reflection;
+using PKSim.Assets;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
@@ -44,32 +44,35 @@ namespace PKSim.Infrastructure.ORM.Mappers
          foreach (var propertyInfo in _propertyCache.Keys)
          {
             var value = dataRow[propertyInfo.Name];
-
+            var propertyType = propertyInfo.PropertyType;
             //for DB null values, nullable target type is supposed
             //so just replace DBNull with null value.
             if (value == DBNull.Value)
                value = null;
 
             var setHandler = _propertyCache[propertyInfo];
-            if (propertyInfo.PropertyType == typeof (bool))
+            if (propertyType.IsAnImplementationOf<bool>())
             {
                if (value != null)
                   setHandler(newObj, int.Parse(value.ToString()) == 1);
             }
-            else if (propertyInfo.PropertyType.IsAnImplementationOf(typeof (Enum)))
+            else if (propertyType.IsAnImplementationOf<Enum>())
             {
                if (value != null)
-                  setHandler(newObj, Enum.Parse(propertyInfo.PropertyType, value.ToString(), true));
+                  setHandler(newObj, Enum.Parse(propertyType, value.ToString(), true));
             }
+            else if ((propertyType.IsAnImplementationOf<int>() || propertyType.IsAnImplementationOf<int?>()) && value.IsAnImplementationOf<long>())
+               setHandler(newObj, Convert.ToInt32(value));
             else
                setHandler(newObj, value);
          }
+
          return newObj;
       }
 
       /// <summary>
-      /// Check that datatable passed is OK for the property info list:
-      ///   - Same named data column is available for every property
+      ///    Check that datatable passed is OK for the property info list:
+      ///    - Same named data column is available for every property
       /// </summary>
       private void checkDataTableStructure(DataTable dt)
       {
@@ -81,13 +84,12 @@ namespace PKSim.Infrastructure.ORM.Mappers
          {
             if (!allPropertyNames.Contains(dataColumn.ColumnName))
                errorList.Add(PKSimConstants.Error.MissingColumnInView(dataColumn.ColumnName));
-            
          }
 
          //remove keys that are not defined in query
          foreach (var property in _propertyCache.Keys.ToList())
          {
-            if(! dt.Columns.Contains(property.Name))
+            if (!dt.Columns.Contains(property.Name))
                _propertyCache.Remove(property);
          }
 

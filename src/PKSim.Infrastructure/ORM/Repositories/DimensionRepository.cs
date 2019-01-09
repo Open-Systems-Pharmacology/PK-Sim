@@ -150,13 +150,13 @@ namespace PKSim.Infrastructure.ORM.Repositories
          var aucMolarToAucMassConcentrationMerging = new SimpleDimensionMergingInformation(AucMolar, Auc);
          _dimensionFactory.AddMergingInformation(aucMolarToAucMassConcentrationMerging);
 
-         var molarToMassAmountMerging = new SimpleDimensionMergingInformation(Amount, Mass);
-         _dimensionFactory.AddMergingInformation(molarToMassAmountMerging);
+         var amountToMassMerging = new SimpleDimensionMergingInformation(Amount, Mass);
+         _dimensionFactory.AddMergingInformation(amountToMassMerging);
+
+         var massToAmountMerging = new SimpleDimensionMergingInformation(Mass, Amount);
+         _dimensionFactory.AddMergingInformation(massToAmountMerging);
       }
 
-      private bool hasDimension(string dimensionName)
-      {
-         return _dimensionNames.Contains(dimensionName);
-      }
+      private bool hasDimension(string dimensionName) => _dimensionNames.Contains(dimensionName);
    }
 }

@@ -37,7 +37,7 @@ namespace PKSim.IntegrationTests
          var specificBindingSelection = new ProcessSelection {CompoundName = _compoundName, MoleculeName = "Protein", ProcessName = "Specific Binding"};
          var metabolizationSelection = new EnzymaticProcessSelection {CompoundName = _compoundName, MoleculeName = "Protein", ProcessName = "Metabolism"};
          _complexProductName = specificBindingSelection.ProductName(CoreConstants.Molecule.Complex);
-         _metaboliteProductName = specificBindingSelection.ProductName(CoreConstants.Molecule.Metabolite);
+         _metaboliteProductName = metabolizationSelection.ProductName(CoreConstants.Molecule.Metabolite);
          _moleculeBuildingBlock.Add(new MoleculeBuilder {Name = _complexProductName, QuantityType = QuantityType.Complex});
          compoundProperties.Processes.SpecificBindingSelection.AddPartialProcessSelection(specificBindingSelection);
          compoundProperties.Processes.MetabolizationSelection.AddPartialProcessSelection(metabolizationSelection);

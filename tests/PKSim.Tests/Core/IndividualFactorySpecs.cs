@@ -132,7 +132,7 @@ namespace PKSim.Core
       [Observation]
       public void individual_should_have_a_random_seed()
       {
-         _individual.Seed.ShouldBeGreaterThan(0);
+         _individual.Seed.ShouldNotBeEqualTo(0);
       }
 
       [Observation]

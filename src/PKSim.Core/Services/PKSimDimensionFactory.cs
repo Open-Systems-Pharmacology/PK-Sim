@@ -1,10 +1,11 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Core.Services
 {
@@ -52,7 +53,7 @@ namespace PKSim.Core.Services
          var dimension = quantityField.Dimension;
          if (dimension == DimensionRepository.MolarConcentration)
             return new MolarToMassConcentrationDimensionForFieldConverter(quantityField, populationDataCollector, DimensionRepository);
-
+         
          if (dimension == DimensionRepository.Amount)
             return new MolarToMassAmoutDimensionForFieldConverter(quantityField, populationDataCollector, DimensionRepository);
 
@@ -70,15 +71,15 @@ namespace PKSim.Core.Services
          if (isConcentration(sourceDimension))
             return PKSimConstants.UI.Concentration;
 
+         if(isAmount(sourceDimension))
+            return PKSimConstants.UI.Amount;
+
          return base.MergedDimensionNameFor(sourceDimension);
       }
 
-      private bool isConcentration(IDimension dimension)
-      {
-         return
-            dimension == DimensionRepository.MassConcentration ||
-            dimension == DimensionRepository.MolarConcentration;
-      }
+      private bool isConcentration(IDimension dimension) => dimension.IsOneOf(DimensionRepository.MassConcentration, DimensionRepository.MolarConcentration);
+
+      private bool isAmount(IDimension dimension) => dimension.IsOneOf(DimensionRepository.Mass, DimensionRepository.Amount);
 
       private IDimensionConverterFor createParameterConverterFor(IParameter parameter)
       {
@@ -100,7 +101,10 @@ namespace PKSim.Core.Services
             return new MassToMolarConcentrationDimensionConverter(column, DimensionRepository);
 
          if (column.Dimension == DimensionRepository.Amount)
-            return new MolarToMassAmoutDimensionConverter(column, DimensionRepository);
+            return new AmountToMassDimensionConverter(column, DimensionRepository);
+
+         if (column.Dimension == DimensionRepository.Mass)
+            return new MassToAmoundDimensionConverter(column, DimensionRepository);
 
          return null;
       }

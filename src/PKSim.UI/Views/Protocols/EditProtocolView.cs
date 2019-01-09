@@ -88,11 +88,6 @@ namespace PKSim.UI.Views.Protocols
                                                              });
       }
 
-      private IEditProtocolPresenter editProtocolPresenter
-      {
-         get { return _presenter.DowncastTo<IEditProtocolPresenter>(); }
-      }
-
-      protected override int TopicId => HelpId.PKSim_Protocols_SetorChangeProtocol;
+      private IEditProtocolPresenter editProtocolPresenter => _presenter.DowncastTo<IEditProtocolPresenter>();
    }
 }

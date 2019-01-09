@@ -5,7 +5,6 @@ using OSPSuite.UI.Services;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
-using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
@@ -16,7 +15,6 @@ using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
@@ -161,7 +159,5 @@ namespace PKSim.UI.Views.Individuals
       }
 
       public override bool HasError => _screenBinder.HasError || _gridViewBinder.HasError;
-
-      protected override int TopicId => HelpId.PKSim_Expression_Reference_Concentration;
    }
 }

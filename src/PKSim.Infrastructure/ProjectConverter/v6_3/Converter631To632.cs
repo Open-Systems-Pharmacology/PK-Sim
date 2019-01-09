@@ -1,8 +1,8 @@
 ﻿using System.Xml.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ProjectConverter.v6_3
 {
@@ -21,7 +21,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_3
 
       public void Visit(Simulation simulation)
       {
-         foreach (var container in simulation.Model.Root.GetChildren<IContainer>(c=>c.ContainerType==ContainerType.Molecule))
+         foreach (var container in simulation.Model.Root.GetChildren<IContainer>(c => c.ContainerType == ContainerType.Molecule))
          {
             var ontogenyFactor = container.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR);
             if (ontogenyFactor != null)
@@ -31,6 +31,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_3
             if (ontogenyFactorGI != null)
                ontogenyFactorGI.CanBeVaried = true;
          }
+
          _converted = true;
       }
 

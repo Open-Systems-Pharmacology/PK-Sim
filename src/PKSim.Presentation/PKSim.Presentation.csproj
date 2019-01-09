@@ -56,7 +56,7 @@
     </DocumentationFile>
     <NoWarn>1591</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -77,41 +77,41 @@
       <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.17.1.5\lib\net45\DevExpress.Utils.v17.1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.4.4.0\lib\net461\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.4.5.1\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.0.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.1.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.81\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.4.0.16, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.4.0.16\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.81\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.4.0.16, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Core.7.4.0.16\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.0.6\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.1.9\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.81\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.4.0.16, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.4.0.16\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.SimModel.3.0.0.16\lib\net45\OSPSuite.SimModel.dll</HintPath>
+    <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.SimModel.3.0.1.17\lib\net45\OSPSuite.SimModel.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.TeXReporting, Version=2.1.0.8, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.1.0.8\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    <Reference Include="OSPSuite.TeXReporting, Version=2.1.1.9, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.1.1.9\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Utility, Version=3.0.0.3, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.3\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
-    <Reference Include="SX, Version=2.6.7.6, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.7.6\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.6.9.0, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.9\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -190,6 +190,7 @@
     <Compile Include="DTO\Simulations\SimulationInteractionProcessSelectionDTO.cs" />
     <Compile Include="DTO\Simulations\SimulationResultsFileSelectionDTO.cs" />
     <Compile Include="DTO\Snapshots\LoadFromSnapshotDTO.cs" />
+    <Compile Include="Events\ShowNotificationEvent.cs" />
     <Compile Include="Extensions\QuantityPresenterExtensions.cs" />
     <Compile Include="IUserSettings.cs" />
     <Compile Include="Mappers\CompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper.cs" />
@@ -286,6 +287,8 @@
     <Compile Include="Presenters\UserDisplayUnitsPresenter.cs" />
     <Compile Include="Services\BuildingBlockSelectionDisplayer.cs" />
     <Compile Include="Services\DisplayNameProvider.cs" />
+    <Compile Include="Services\HistoryManagerRetriever.cs" />
+    <Compile Include="Services\IDeveloperTask.cs" />
     <Compile Include="Services\IndividualOntogenyTask.cs" />
     <Compile Include="Services\IUserSettingsPersistor.cs" />
     <Compile Include="Presenters\NameTemplatePresenter.cs" />
@@ -381,7 +384,6 @@
     <Compile Include="DTO\Individuals\TransportTypeDTO.cs" />
     <Compile Include="DTO\ObservedData\ObservedDataSelectionDTO.cs" />
     <Compile Include="DTO\Simulations\GlobalPKAnalysisDTO.cs" />
-    <Compile Include="DTO\Compounds\CompoundTypeDTO.cs" />
     <Compile Include="DTO\Compounds\FractionUnboundAlternativeDTO.cs" />
     <Compile Include="DTO\Compounds\LipophilictyAlternativeDTO.cs" />
     <Compile Include="DTO\Compounds\MolWeightDTO.cs" />
@@ -513,6 +515,7 @@
     <Compile Include="Services\PopulationHierarchyNodeCreator.cs" />
     <Compile Include="Services\PopulationOntogenyTask.cs" />
     <Compile Include="Services\PopulationSimulationAnalysisStarter.cs" />
+    <Compile Include="Services\PostLaunchChecker.cs" />
     <Compile Include="Services\SimulationComparisonCreator.cs" />
     <Compile Include="Services\SimulationResultsTask.cs" />
     <Compile Include="Services\SolubilityParameterFormatter.cs" />
@@ -541,6 +544,7 @@
     <Compile Include="UICommands\LoadSimulationFromSnapshotUICommand.cs" />
     <Compile Include="UICommands\NewImportIndividualSimulationCommand.cs" />
     <Compile Include="UICommands\NewImportPopulationSimulationCommand.cs" />
+    <Compile Include="UICommands\RemoveUnusedContentUICommand.cs" />
     <Compile Include="UICommands\RenameObjectUICommand.cs" />
     <Compile Include="UICommands\RenameSubjectUICommand.cs" />
     <Compile Include="UICommands\SaveBuildingBlockAsSystemTemplateCommand.cs" />
@@ -842,7 +846,6 @@
     <Compile Include="UICommands\ExportSimulationResultsToExcelCommand.cs" />
     <Compile Include="UICommands\ExportToMatlabOrRCommand.cs" />
     <Compile Include="UICommands\GenerateCalculationMethodsCommand.cs" />
-    <Compile Include="UICommands\ImportFractionDataCommand.cs" />
     <Compile Include="UICommands\NewEventCommand.cs" />
     <Compile Include="UICommands\DeleteSimulationComparisonsUICommand.cs" />
     <Compile Include="UICommands\SaveSimulationToMoBiFileCommand.cs" />

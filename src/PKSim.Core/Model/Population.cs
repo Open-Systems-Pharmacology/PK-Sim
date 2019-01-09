@@ -228,10 +228,7 @@ namespace PKSim.Core.Model
 
       private bool parameterShouldBeReturnedAsConstant(IParameter parameter)
       {
-         if (parameter.IsNamed(CoreConstants.Parameters.REFERENCE_CONCENTRATION))
-            return true;
-
-         return !parameter.IsIndividualMolecule();
+         return !parameter.IsExpressionOrOntogenyFactor();
       }
 
       public virtual PathCache<IParameter> AllParameters(IEntityPathResolver entityPathResolver)

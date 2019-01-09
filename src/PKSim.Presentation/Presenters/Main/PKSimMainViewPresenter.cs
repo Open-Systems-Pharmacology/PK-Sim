@@ -1,13 +1,3 @@
-using System;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Events;
-using PKSim.Core.Services;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.UICommands;
-using PKSim.Presentation.Views.Main;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Events;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;
@@ -16,12 +6,21 @@ using OSPSuite.TeXReporting.Events;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Events;
+using PKSim.Core.Services;
+using PKSim.Presentation.Events;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.UICommands;
+using PKSim.Presentation.Views.Main;
 
 namespace PKSim.Presentation.Presenters.Main
 {
    public interface IPKSimMainViewPresenter : IMainViewPresenter,
       IListener<SimulationRunStartedEvent>,
-      IListener<SimulationRunFinishedEvent>
+      IListener<SimulationRunFinishedEvent>,
+      IListener<ShowNotificationEvent>
 
    {
       StartOptions StartOptions { get; set; }
@@ -33,31 +32,31 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IExitCommand _exitCommand;
       private readonly IUserSettings _userSettings;
       private readonly IProjectTask _projectTask;
-      private readonly IVersionChecker _versionChecker;
       private readonly IPKSimConfiguration _configuration;
-      private readonly IWatermarkStatusChecker _watermarkStatusChecker;
+      private readonly IPostLaunchChecker _postLaunchChecker;
+      private readonly IVersionChecker _versionChecker;
       public StartOptions StartOptions { get; set; }
 
-      public PKSimMainViewPresenter(IPKSimMainView mainView, 
-         IEventPublisher eventPublisher, 
-         ITabbedMdiChildViewContextMenuFactory contextMenuFactory, 
-         IRepository<IMainViewItemPresenter> presenterRepository, 
-         IExitCommand exitCommand, 
-         IUserSettings userSettings, 
-         IProjectTask projectTask, 
-         IVersionChecker versionChecker, 
+      public PKSimMainViewPresenter(IPKSimMainView mainView,
+         IEventPublisher eventPublisher,
+         ITabbedMdiChildViewContextMenuFactory contextMenuFactory,
+         IRepository<IMainViewItemPresenter> presenterRepository,
+         IExitCommand exitCommand,
+         IUserSettings userSettings,
+         IProjectTask projectTask,
          IPKSimConfiguration configuration,
-         IWatermarkStatusChecker watermarkStatusChecker
-         )
+         IPostLaunchChecker postLaunchChecker,
+         IVersionChecker versionChecker
+      )
          : base(mainView, eventPublisher, contextMenuFactory)
       {
          _presenterRepository = presenterRepository;
          _exitCommand = exitCommand;
          _userSettings = userSettings;
          _projectTask = projectTask;
-         _versionChecker = versionChecker;
          _configuration = configuration;
-         _watermarkStatusChecker = watermarkStatusChecker;
+         _postLaunchChecker = postLaunchChecker;
+         _versionChecker = versionChecker;
       }
 
       public override void Initialize()
@@ -84,32 +83,7 @@ namespace PKSim.Presentation.Presenters.Main
       {
          _projectTask.Run(StartOptions);
 
-         showUpdateNotification();
-         _watermarkStatusChecker.CheckWatermarkStatus();
-      }
-
-      private async void showUpdateNotification()
-      {
-         if (!_userSettings.ShowUpdateNotification)
-            return;
-
-         try
-         {
-            var hasNewVersion = await _versionChecker.NewVersionIsAvailableAsync();
-            if (!hasNewVersion) return;
-         }
-         catch (Exception)
-         {
-            //no need to do anything if version cannot be returned
-            return;
-         }
-    
-         if (string.Equals(_versionChecker.LatestVersion, _userSettings.LastIgnoredVersion))
-            return;
-
-         _view.DisplayNotification(PKSimConstants.UI.UpdateAvailable,
-            PKSimConstants.Information.NewVersionIsAvailable(_versionChecker.LatestVersion, Constants.PRODUCT_SITE),
-            Constants.PRODUCT_SITE_DOWNLOAD);
+         _postLaunchChecker.PerformPostLaunchCheckAsync();
       }
 
       public override void RemoveAlert()
@@ -144,6 +118,16 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(SimulationRunFinishedEvent eventToHandle)
       {
          View.AllowChildActivation = true;
+      }
+
+      public void Handle(ShowNotificationEvent eventToHandle)
+      {
+         showNotification(eventToHandle.Caption, eventToHandle.Notification, eventToHandle.Url);
+      }
+
+      private void showNotification(string caption, string notification, string url)
+      {
+         _view.DisplayNotification(caption, notification, url);
       }
    }
 }

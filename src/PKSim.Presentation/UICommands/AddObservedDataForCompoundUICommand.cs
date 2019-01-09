@@ -15,7 +15,7 @@ namespace PKSim.Presentation.UICommands
 
       protected override void PerformExecute()
       {
-         _observedDataTask.AddConcentrationDataToProjectForCompound(Subject);
+         _observedDataTask.AddObservedDataToProjectForCompound(Subject);
       }
    }
 }

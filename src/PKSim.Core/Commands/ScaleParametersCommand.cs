@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
@@ -26,16 +26,14 @@ namespace PKSim.Core.Commands
       public override void Execute(IExecutionContext context)
       {
          Description = PKSimConstants.Command.ScaleParametersDescription(_factor);
+         var parameterTask = context.Resolve<IParameterTask>();
          foreach (var parameter in _parameters.Where(parameterCanBeScaled))
          {
-            Add(new SetParameterValueCommand(parameter, parameter.Value * _factor));
+            Add(parameterTask.SetParameterValue(parameter, parameter.Value * _factor));
          }
 
          //update properties from first command
          this.UpdatePropertiesFrom(All().FirstOrDefault());
-
-         //now execute all commands
-         base.Execute(context);
 
          //clear references
          _parameters = null;

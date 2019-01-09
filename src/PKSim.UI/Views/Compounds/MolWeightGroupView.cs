@@ -115,7 +115,7 @@ namespace PKSim.UI.Views.Compounds
          var parameterDTO = _gridViewBinder.ElementAt(rowHandle);
          if (parameterDTO == null) return;
 
-         _gridView.EditorShowMode = molWeightGroupPresenter.IsHalogens(parameterDTO) ? EditorShowMode.Default : EditorShowMode.MouseUp;
+         _gridView.EditorShowMode = molWeightGroupPresenter.IsHasHalogens(parameterDTO) ? EditorShowMode.Default : EditorShowMode.MouseUp;
       }
 
       protected override bool ColumnIsValue(GridColumn gridColumn)
@@ -126,7 +126,7 @@ namespace PKSim.UI.Views.Compounds
 
       private IFormatter<double> getParameterFormatter(IParameterDTO parameterDTO)
       {
-         return molWeightGroupPresenter.IsHalogens(parameterDTO) ? new BooleanFormatter() : parameterDTO.ParameterFormatter();
+         return molWeightGroupPresenter.IsHasHalogens(parameterDTO) ? new BooleanFormatter() : parameterDTO.ParameterFormatter();
       }
 
       private void setParameterValue(IParameterDTO parameterDTO, PropertyValueSetEventArgs<double> valueInGuiUnit)
@@ -143,12 +143,12 @@ namespace PKSim.UI.Views.Compounds
 
       private RepositoryItem getRepository(IParameterDTO parameterDTO)
       {
-         return molWeightGroupPresenter.IsHalogens(parameterDTO) ? _repositoryItemPopupContainerEdit : _repositoryItemConstantParameter;
+         return molWeightGroupPresenter.IsHasHalogens(parameterDTO) ? _repositoryItemPopupContainerEdit : _repositoryItemConstantParameter;
       }
 
       private void configureRepository(BaseEdit baseEdit, IParameterDTO parameterDTO)
       {
-         if (molWeightGroupPresenter.IsHalogens(parameterDTO))
+         if (molWeightGroupPresenter.IsHasHalogens(parameterDTO))
             OnEvent(molWeightGroupPresenter.EditHalogens);
          else
             _comboBoxUnit.UpdateUnitsFor(baseEdit, parameterDTO);

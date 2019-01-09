@@ -19,36 +19,22 @@ namespace PKSim.Presentation.DTO.PopulationAnalyses
 
       public double? Minimum
       {
-         get { return _minimum; }
-         set
-         {
-            _minimum = value;
-            OnPropertyChanged(() => Minimum);
-         }
+         get => _minimum;
+         set => SetProperty(ref _minimum, value);
       }
 
       public double? Maximum
       {
-         get { return _maximum; }
-         set
-         {
-            _maximum = value;
-            OnPropertyChanged(() => Maximum);
-         }
+         get => _maximum;
+         set => SetProperty(ref _maximum, value);
       }
 
       private static class AllRules
       {
-         private static IBusinessRule maximumDefined
-         {
-            get
-            {
-               return CreateRule.For<FixedLimitGroupingDTO>()
-                  .Property(item => item.Maximum)
-                  .WithRule((param, value) => !param.MaximumEditable || value.HasValue)
-                  .WithError(PKSimConstants.Rules.Parameter.MaxShouldBeDefined);
-            }
-         }
+         private static IBusinessRule maximumDefined { get; } = CreateRule.For<FixedLimitGroupingDTO>()
+            .Property(item => item.Maximum)
+            .WithRule((param, value) => !param.MaximumEditable || value.HasValue)
+            .WithError(PKSimConstants.Rules.Parameter.MaxShouldBeDefined);
 
          public static IEnumerable<IBusinessRule> All
          {

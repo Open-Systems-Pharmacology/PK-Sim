@@ -15,7 +15,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Presentation.Presenters.ProteinExpression
 {
@@ -54,7 +53,7 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
    public class ProteinExpressionsPresenter : PKSimWizardPresenter<IProteinExpressionsView, IProteinExpressionsPresenter, IExpressionItemPresenter>, IProteinExpressionsPresenter
    {
-      private readonly IProteinExpressionQueries _proteinExpressionQueries;
+      private readonly IGeneExpressionQueries _geneExpressionQueries;
       private readonly IMappingPresenter _mappingPresenter;
       private readonly IProteinExpressionDataHelper _dataHelper;
       private DataSet _expressionDataSet;
@@ -63,10 +62,10 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
       private QueryExpressionResults _queryExpressionResults;
 
       public ProteinExpressionsPresenter(IProteinExpressionsView view, ISubPresenterItemManager<IExpressionItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator,
-         IProteinExpressionQueries proteinExpressionQueries, IMappingPresenter mappingPresenter, IProteinExpressionDataHelper dataHelper)
+         IGeneExpressionQueries geneExpressionQueries, IMappingPresenter mappingPresenter, IProteinExpressionDataHelper dataHelper)
          : base(view, subPresenterItemManager, ExpressionItems.All, dialogCreator)
       {
-         _proteinExpressionQueries = proteinExpressionQueries;
+         _geneExpressionQueries = geneExpressionQueries;
          _mappingPresenter = mappingPresenter;
          _dataHelper = dataHelper;
          _mappingPresenter.MappingChanged += MappingChanged;
@@ -147,20 +146,26 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
       public void SelectProtein(DataRow selectedRow)
       {
          if (selectedRow == null) return;
-         var id = (int) selectedRow[DatabaseConfiguration.ProteinColumns.COL_ID];
-         DataTable expressionDataTable = _proteinExpressionQueries.GetExpressionDataByGeneId(id);
+
+         var id = (long) selectedRow[DatabaseConfiguration.ProteinColumns.COL_ID];
+         var expressionDataTable = _geneExpressionQueries.GetExpressionDataByGeneId(id);
          expressionDataTable.TableName = DatabaseConfiguration.TableNames.EXPRESSION_DATA;
 
-         DataTable mappingContainerTissue = _proteinExpressionQueries.GetContainerTissueMapping();
+         var mappingContainerTissue = _geneExpressionQueries.GetContainerTissueMapping();
          mappingContainerTissue.TableName = DatabaseConfiguration.TableNames.MAPPING_DATA;
 
+         //This is required because the code below sets null value in a table that does not allow null value in the database
+         mappingContainerTissue.Columns[DatabaseConfiguration.MappingColumns.COL_CONTAINER].AllowDBNull = true;
+
+
          //add all tissues in expression data which are not mapped to containers
-         ICollection mappedTissues = _dataHelper.GetDistinctLoV(mappingContainerTissue.Columns[DatabaseConfiguration.MappingColumns.COL_TISSUE]);
-         ICollection tissueLov = _dataHelper.GetDistinctLoV(expressionDataTable.Columns[DatabaseConfiguration.ExpressionDataColumns.COL_TISSUE]);
+         var mappedTissues = _dataHelper.GetDistinctLoV(mappingContainerTissue.Columns[DatabaseConfiguration.MappingColumns.COL_TISSUE]);
+         var tissueLov = _dataHelper.GetDistinctLoV(expressionDataTable.Columns[DatabaseConfiguration.ExpressionDataColumns.COL_TISSUE]);
+
          mappingContainerTissue.BeginLoadData();
          foreach (string expressionTissue in tissueLov)
          {
-            if (((IList) mappedTissues).Contains(expressionTissue)) continue;
+            if (mappedTissues.Contains(expressionTissue)) continue;
             var newRow = mappingContainerTissue.NewRow();
             newRow[DatabaseConfiguration.MappingColumns.COL_CONTAINER] = DBNull.Value;
             newRow[DatabaseConfiguration.MappingColumns.COL_TISSUE] = expressionTissue;
@@ -347,7 +352,7 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
       public bool Start()
       {
-         _proteinExpressionQueries.ValidateDatabase();
+         _geneExpressionQueries.ValidateDatabase();
          if (!isOldQuery)
             PresenterAt(ExpressionItems.ProteinSelection).Activate();
 

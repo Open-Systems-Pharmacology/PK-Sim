@@ -166,8 +166,8 @@ namespace PKSim.Infrastructure
             scan.ExcludeType<DefaultIndividualRetriever>();
             scan.ExcludeType<SessionManager>();
             scan.ExcludeType<TemplateDatabase>();
-            scan.ExcludeType<ProteinExpressionDatabase>();
-            scan.ExcludeType<ProteinExpressionQueries>();
+            scan.ExcludeType<GeneExpressionDatabase>();
+            scan.ExcludeType<GeneExpressionQueries>();
             scan.ExcludeType<ModelDatabase>();
             scan.ExcludeType<VersionChecker>();
             scan.ExcludeType<Workspace>();
@@ -190,8 +190,8 @@ namespace PKSim.Infrastructure
             scan.IncludeType<DefaultIndividualRetriever>();
             scan.IncludeType<SessionManager>();
             scan.IncludeType<TemplateDatabase>();
-            scan.IncludeType<ProteinExpressionDatabase>();
-            scan.IncludeType<ProteinExpressionQueries>();
+            scan.IncludeType<GeneExpressionDatabase>();
+            scan.IncludeType<GeneExpressionQueries>();
             scan.IncludeType<ModelDatabase>();
 
             scan.IncludeType<VersionChecker>();

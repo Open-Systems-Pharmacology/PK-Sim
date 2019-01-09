@@ -40,8 +40,8 @@ namespace PKSim.Core.Services
          if (usedBuildingBlock == null) return null;
 
          var buildingBlockType = _executionContext.TypeFor(templateBuildingBlock);
-         var templateParameters = _containerTask.CacheAllChildren<IParameter>(templateBuildingBlock);
-         var usedBuildingBlockParameters = _containerTask.CacheAllChildren<IParameter>(usedBuildingBlock.BuildingBlock);
+         var templateParameters = parametersToUpdateFrom(templateBuildingBlock);
+         var usedBuildingBlockParameters = parametersToUpdateFrom(usedBuildingBlock.BuildingBlock);
          var updateCommands = new PKSimMacroCommand();
 
          //First Update the parameters in the template building block (the parameter in the used building block are synchronized with the one used in the simulation)
@@ -70,5 +70,7 @@ namespace PKSim.Core.Services
          //we do not want to update parameter origin id here since we are updateing building block parameters
          return _parameterSetUpdater.UpdateValues(simulationParameters, templateParameters, updateParameterOriginId: false);
       }
+
+      private PathCache<IParameter> parametersToUpdateFrom(IPKSimBuildingBlock buildingBlock) => _containerTask.CacheAllChildren<IParameter>(buildingBlock);
    }
 }

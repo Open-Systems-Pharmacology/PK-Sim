@@ -3,7 +3,6 @@
 *.gif binary
 *.jpg binary
 *.png binary
-*.snk binary
 *.exe binary
 *.pksim5 binary
 *.mbp3 binary
@@ -16,6 +15,9 @@
 *.TIF binary
 *.ico binary
 *.msm binary
+*.sqlite binary
+*.template binary
+*.templateDbSystem binary
 
 *.ascx text
 *.cd text
@@ -39,7 +41,6 @@
 *.StyleCop text
 *.targets text
 *.tt text
-*.txt text
 *.vb text
 *.vbhtml text
 *.vbproj text merge=union 

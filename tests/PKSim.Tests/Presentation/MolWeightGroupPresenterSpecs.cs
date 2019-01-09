@@ -25,6 +25,9 @@ namespace PKSim.Presentation
       protected ICommandCollector _commandRegister;
       protected IRepresentationInfoRepository _representationInfoRepository;
       protected IEditValueOriginPresenter _editValueOriginPresenter;
+      protected MolWeightDTO _molWeightDTO;
+      protected IParameter _molWeightParameter;
+      protected IParameter _molWeightParameterEff;
 
       protected override void Context()
       {
@@ -37,6 +40,17 @@ namespace PKSim.Presentation
          _editValueOriginPresenter = A.Fake<IEditValueOriginPresenter>();
          sut = new MolWeightGroupPresenter(_view, _representationInfoRepository, _molWeightDTOMapper, _molWeightsHalogenPresenters, _parameterTask, _editValueOriginPresenter);
          sut.InitializeWith(_commandRegister);
+
+         _molWeightParameter = new PKSimParameter();
+         _molWeightParameterEff = new PKSimParameter();
+
+         _molWeightDTO = new MolWeightDTO
+         {
+            MolWeightParameter = new ParameterDTO(_molWeightParameter),
+            MolWeightEffParameter = new ParameterDTO(_molWeightParameterEff)
+         };
+
+         A.CallTo(_molWeightDTOMapper).WithReturnType<MolWeightDTO>().Returns(_molWeightDTO);
       }
    }
 
@@ -56,9 +70,7 @@ namespace PKSim.Presentation
 
    public class When_the_molweight_value_is_being_edited : concern_for_MolWeightGroupPresenter
    {
-      private MolWeightDTO _molWeightDTO;
       private double _newMolWeightValue;
-      private IParameter _molWeightParameter;
       private IPKSimCommand _command;
       private IEnumerable<IParameter> _allParameters;
 
@@ -67,12 +79,7 @@ namespace PKSim.Presentation
          base.Context();
          _allParameters = new List<IParameter>();
          _newMolWeightValue = 13;
-         _molWeightParameter = new PKSimParameter();
-         _molWeightDTO = new MolWeightDTO();
-         _molWeightDTO.MolWeightParameter = new ParameterDTO(_molWeightParameter);
-         _molWeightDTO.MolWeightEffParameter = new ParameterDTO(new PKSimParameter());
          _command = A.Fake<IPKSimCommand>();
-         A.CallTo(() => _molWeightDTOMapper.MapFrom(_allParameters)).Returns(_molWeightDTO);
          A.CallTo(() => _parameterTask.SetParameterDisplayValue(_molWeightParameter, _newMolWeightValue)).Returns(_command);
          sut.EditCompoundParameters(_allParameters);
       }
@@ -91,9 +98,7 @@ namespace PKSim.Presentation
 
    public class When_the_molweight_eff_is_being_is_being_edited : concern_for_MolWeightGroupPresenter
    {
-      private MolWeightDTO _molWeightDTO;
       private double _newMolWeightValue;
-      private IParameter _molWeightParameterEff;
       private IPKSimCommand _command;
       private IList<IParameter> _allParameters;
 
@@ -102,13 +107,8 @@ namespace PKSim.Presentation
          base.Context();
          _newMolWeightValue = 13;
          _allParameters = new List<IParameter>();
-         _molWeightParameterEff = new PKSimParameter();
-         _molWeightDTO = new MolWeightDTO();
-         _molWeightDTO.MolWeightParameter = new ParameterDTO(new PKSimParameter());
-         _molWeightDTO.MolWeightEffParameter = new ParameterDTO(_molWeightParameterEff);
          _command = A.Fake<IPKSimCommand>();
          _allParameters.Add(_molWeightParameterEff);
-         A.CallTo(_molWeightDTOMapper).WithReturnType<MolWeightDTO>().Returns(_molWeightDTO);
          A.CallTo(() => _parameterTask.SetParameterDisplayValue(_molWeightParameterEff, _newMolWeightValue)).Returns(_command);
          sut.EditCompoundParameters(_allParameters);
       }
@@ -133,7 +133,6 @@ namespace PKSim.Presentation
       {
          base.Context();
          _compoundParameters = new List<IParameter>();
-         A.CallTo(_molWeightDTOMapper).WithReturnType<MolWeightDTO>().Returns(new MolWeightDTO());
          sut.EditCompoundParameters(_compoundParameters);
       }
 

@@ -22,7 +22,5 @@ namespace PKSim.UI.Views.Compounds
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.Compound;
 
       public override XtraTabControl TabControl => tabEditCompound;
-
-      protected override int TopicId => HelpId.PKSim_DefinitionCompounds;
    }
 }

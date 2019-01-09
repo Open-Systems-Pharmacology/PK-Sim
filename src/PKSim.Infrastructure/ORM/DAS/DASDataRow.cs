@@ -116,14 +116,14 @@ namespace PKSim.Infrastructure.ORM.DAS
             switch (column.DASDataType)
             {
                case DASDataColumn.DASDataTypes.DASDATE:
-                  TableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_DATE);
+                  TableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.DATE);
                   break;
                case DASDataColumn.DASDataTypes.DASDOUBLE:
                case DASDataColumn.DASDataTypes.DASLONG:
-                  TableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_NUMBER);
+                  TableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.NUMBER);
                   break;
                case DASDataColumn.DASDataTypes.DASSTRING:
-                  TableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_VARCHAR2);
+                  TableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.STRING);
                   break;
                default:
                   throw new UnsupportedDataTypeException(column.DASDataType.ToString());
@@ -204,14 +204,14 @@ namespace PKSim.Infrastructure.ORM.DAS
             switch (column.DASDataType)
             {
                case DASDataColumn.DASDataTypes.DASDATE:
-                  tableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_DATE);
+                  tableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.DATE);
                   break;
                case DASDataColumn.DASDataTypes.DASDOUBLE:
                case DASDataColumn.DASDataTypes.DASLONG:
-                  tableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_NUMBER);
+                  tableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.NUMBER);
                   break;
                case DASDataColumn.DASDataTypes.DASSTRING:
-                  tableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_VARCHAR2);
+                  tableDAS.AddParameter(string.Format("@P{0}", i), this[column, rowVersion], DAS.ParameterModes.PARM_IN, DAS.ServerTypes.STRING);
                   break;
                default:
                   throw new UnsupportedDataTypeException(column.DASDataType.ToString());
@@ -261,60 +261,6 @@ namespace PKSim.Infrastructure.ORM.DAS
          if (RowState != DataRowState.Detached && RowState != DataRowState.Added)
             AcceptChanges();
       }
-
-      /// <summary>
-      /// This sub queries the data using the given dbkey.
-      /// </summary>
-      /// <param name="DBKeyValue"><see cref=" string"></see> representation of primary key values.</param>
-      /// <exception cref="RowNotFoundException">Thrown when the row could not be found.</exception>
-      public void SelectByDBKey(string DBKeyValue)
-      {
-         string[] strtemp;
-         string[] oldtemp;
-         long i;
-
-         if (DBKeyValue.Contains(Table.DAS.KeyDelimiter.ToString()))
-         {
-            strtemp = DBKeyValue.Split(Table.DAS.KeyDelimiter);
-            oldtemp = new string[strtemp.Length];
-            for (i = 0; i < strtemp.Length; i++) {
-               var ColumnValue = new DASColumnValue(this, (DASDataColumn)Table.PrimaryKey[i]);
-               oldtemp[i] = ColumnValue.GetValueAsString();
-               ColumnValue.SetValueAsString(strtemp[i]);
-            }
-         } else {
-            oldtemp = new string[1];
-            var ColumnValue = new DASColumnValue(this, (DASDataColumn)Table.PrimaryKey[0]);
-            oldtemp[0] = ColumnValue.GetValueAsString();
-            ColumnValue.SetValueAsString(DBKeyValue);
-         }
-
-         if (ExistsInDB())
-         {
-            if (RowState != DataRowState.Detached && RowState != DataRowState.Added)
-               AcceptChanges();
-            SelectFromDB();
-         }
-         else
-         {
-            if (DBKeyValue.Contains("|"))
-            {
-               for (i = 0; i < oldtemp.Length; i++)
-               {
-                  var ColumnValue = new DASColumnValue(this, (DASDataColumn) Table.PrimaryKey[i]);
-                  ColumnValue.SetValueAsString(oldtemp[i]);
-               }
-            }
-            else
-            {
-               var ColumnValue = new DASColumnValue(this, (DASDataColumn) Table.PrimaryKey[0]);
-               ColumnValue.SetValueAsString(oldtemp[0]);
-            }
-
-            throw new RowNotFoundException(DBKeyValue);
-         }
-      }
-
       /// <summary>
       /// This function inserts the row into the database.
       /// </summary>
@@ -380,16 +326,16 @@ namespace PKSim.Infrastructure.ORM.DAS
             {
                case DASDataColumn.DASDataTypes.DASDATE:
                   TableDAS.AddParameter(string.Format("@P{0}", i), ColumnValue.Value, DAS.ParameterModes.PARM_IN,
-                                        DAS.ServerTypes.ST_DATE);
+                                        DAS.ServerTypes.DATE);
                   break;
                case DASDataColumn.DASDataTypes.DASDOUBLE:
                case DASDataColumn.DASDataTypes.DASLONG:
                   TableDAS.AddParameter(string.Format("@P{0}", i), ColumnValue.Value, DAS.ParameterModes.PARM_IN,
-                                        DAS.ServerTypes.ST_NUMBER);
+                                        DAS.ServerTypes.NUMBER);
                   break;
                case DASDataColumn.DASDataTypes.DASSTRING:
                   TableDAS.AddParameter(string.Format("@P{0}", i), ColumnValue.Value, DAS.ParameterModes.PARM_IN,
-                                        DAS.ServerTypes.ST_VARCHAR2);
+                                        DAS.ServerTypes.STRING);
                   break;
                default:
                   throw new UnsupportedDataTypeException(column.DASDataType.ToString());
@@ -451,14 +397,14 @@ namespace PKSim.Infrastructure.ORM.DAS
                   switch (column.DASDataType)
                   {
                      case DASDataColumn.DASDataTypes.DASDATE:
-                        tableDAS.AddParameter(string.Format("@P{0}", i), ColumnValue.Value, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_DATE);
+                        tableDAS.AddParameter(string.Format("@P{0}", i), ColumnValue.Value, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.DATE);
                         break;
                      case DASDataColumn.DASDataTypes.DASDOUBLE:
                      case DASDataColumn.DASDataTypes.DASLONG:
-                        tableDAS.AddParameter(string.Format("@P{0}", i), ColumnValue.Value, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_NUMBER);
+                        tableDAS.AddParameter(string.Format("@P{0}", i), ColumnValue.Value, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.NUMBER);
                         break;
                      case DASDataColumn.DASDataTypes.DASSTRING:
-                        tableDAS.AddParameter(string.Format("@P{0}", i), ColumnValue.Value, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_VARCHAR2);
+                        tableDAS.AddParameter(string.Format("@P{0}", i), ColumnValue.Value, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.STRING);
                         break;
                      default:
                         throw new UnsupportedDataTypeException(column.DataType.ToString());
@@ -472,14 +418,14 @@ namespace PKSim.Infrastructure.ORM.DAS
                   switch (column.DASDataType)
                   {
                      case DASDataColumn.DASDataTypes.DASDATE:
-                        tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_DATE);
+                        tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.DATE);
                         break;
                      case DASDataColumn.DASDataTypes.DASDOUBLE:
                      case DASDataColumn.DASDataTypes.DASLONG:
-                        tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_NUMBER);
+                        tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.NUMBER);
                         break;
                      case DASDataColumn.DASDataTypes.DASSTRING:
-                        tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_VARCHAR2);
+                        tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.STRING);
                         break;
                      default:
                         throw new UnsupportedDataTypeException(column.DASDataType.ToString());
@@ -569,14 +515,14 @@ namespace PKSim.Infrastructure.ORM.DAS
                switch (column.DASDataType)
                {
                   case DASDataColumn.DASDataTypes.DASDATE:
-                     tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_DATE);
+                     tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.DATE);
                      break;
                   case DASDataColumn.DASDataTypes.DASDOUBLE:
                   case DASDataColumn.DASDataTypes.DASLONG:
-                     tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_NUMBER);
+                     tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.NUMBER);
                      break;
                   case DASDataColumn.DASDataTypes.DASSTRING:
-                     tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.ST_VARCHAR2);
+                     tableDAS.AddParameter(string.Format("@PK{0}", i), ColumnValue.DBValue, DAS.ParameterModes.PARM_IN, DAS.ServerTypes.STRING);
                      break;
                   default:
                      throw new UnsupportedDataTypeException(column.DASDataType.ToString());

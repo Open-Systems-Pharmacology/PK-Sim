@@ -45,20 +45,13 @@ namespace PKSim.Core
 
    public class When_setting_value_of_normalized_relative_expression_parameter : concern_for_ParameterTask
    {
-      private Parameter _relativeExpressionParameter, _normalizedExpressionParameter;
       private ICommand _command;
+      private Parameter _normalizedExpressionParameter;
 
       protected override void Context()
       {
          base.Context();
          A.CallTo(() => _executionContext.Resolve<IParameterTask>()).Returns(sut);
-         _relativeExpressionParameter = new Parameter
-         {
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            Formula = new ConstantFormula(0.0),
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP
-         };
 
          _normalizedExpressionParameter = new Parameter
          {
@@ -67,8 +60,6 @@ namespace PKSim.Core
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
             Name = CoreConstants.Parameters.REL_EXP_NORM
          };
-
-         var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
       }
 
       protected override void Because()
@@ -83,7 +74,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_setting_value_of_relative_expression_parameter : concern_for_ParameterTask
+   public class When_setting_value_of_relative_expression_parameter_of_a_relative_expression_parameter_defined_in_a_simulation : concern_for_ParameterTask
    {
       private Parameter _relativeExpressionParameter, _normalizedExpressionParameter;
       private ICommand _command;
@@ -120,6 +111,50 @@ namespace PKSim.Core
       public void the_command_used_should_be_correct_implementation()
       {
          _command.ShouldBeAnInstanceOf<SetRelativeExpressionInSimulationAndNormalizedCommand>();
+      }
+   }
+
+   public class When_setting_value_of_relative_expression_parameter_of_a_relative_expression_parameter_defined_in_an_individual : concern_for_ParameterTask
+   {
+      private Parameter _relativeExpressionParameter;
+      private Parameter _relativeExpressionParameterNorm;
+      private ICommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _executionContext.Resolve<IParameterTask>()).Returns(sut);
+         _relativeExpressionParameter = new Parameter
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            Formula = new ConstantFormula(0.0),
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            Name = CoreConstants.Parameters.REL_EXP
+         };
+
+         _relativeExpressionParameterNorm = new Parameter
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            Formula = new ConstantFormula(0.0),
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            Name = CoreConstants.Parameters.REL_EXP_NORM
+         };
+
+         var expressionContainer = new MoleculeExpressionContainer {Name = "Plasma"};
+         expressionContainer.Add(_relativeExpressionParameter);
+         expressionContainer.Add(_relativeExpressionParameterNorm);
+         var molecule = new IndividualEnzyme {expressionContainer};
+      }
+
+      protected override void Because()
+      {
+         _command = sut.SetParameterValue(_relativeExpressionParameter, 3);
+      }
+
+      [Observation]
+      public void the_command_used_should_be_correct_implementation()
+      {
+         _command.ShouldBeAnInstanceOf<SetRelativeExpressionAndNormalizeCommand>();
       }
    }
 
@@ -488,6 +523,7 @@ namespace PKSim.Core
          A.CallTo(() => _executionContext.BuildingBlockContaining(para1)).Returns(A.Fake<IPKSimBuildingBlock>());
          A.CallTo(() => _executionContext.BuildingBlockContaining(para2)).Returns(A.Fake<IPKSimBuildingBlock>());
          _parameters = new List<IParameter> {para1, para2};
+         A.CallTo(() => _executionContext.Resolve<IParameterTask>()).Returns(sut);
       }
 
       protected override void Because()

@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.RepositoryItems;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.UI;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.RepositoryItems;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
 using PKSim.UI.Views.Core;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.UI;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.PopulationAnalyses
 {
@@ -35,11 +35,11 @@ namespace PKSim.UI.Views.PopulationAnalyses
       {
          InitializeComponent();
          _gridViewBinder = new GridViewBinder<FixedLimitGroupingDTO>(gridView);
-         gridView.RowCellStyle += (o, e) => OnEvent(updateRowCellStyle,e);
-         gridView.ShowingEditor += (o, e) => OnEvent(onShowingEditor,e);
+         gridView.RowCellStyle += (o, e) => OnEvent(updateRowCellStyle, e);
+         gridView.ShowingEditor += (o, e) => OnEvent(onShowingEditor, e);
          gridView.ShowRowIndicator = false;
          gridView.AllowsFiltering = false;
-         _symbolsRepository = new UxSymbolsComboBoxRepository(gridView) ;
+         _symbolsRepository = new UxSymbolsComboBoxRepository(gridView);
          _colorRepository = new UxRepositoryItemColorPickEditWithHistory();
       }
 
@@ -61,7 +61,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          //use autobind to enable automatic notification
          _colMinimum = _gridViewBinder.AutoBind(x => x.Minimum);
          _colMaximum = _gridViewBinder.AutoBind(x => x.Maximum)
-            .WithOnValueUpdating((o, e) => OnEvent(() => maximumValueChanged(o,e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => maximumValueChanged(o, e.NewValue)));
 
          _gridViewBinder.AutoBind(x => x.Label);
          _gridViewBinder.AutoBind(x => x.Color)
@@ -77,7 +77,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
             .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
          _addButtonRepository.ButtonClick += (o, e) => OnEvent(addFixedLimit);
-         _addAndRemoveButtonRepository.ButtonClick += (o, e) => OnEvent(addOrRemoveFixedLimit,e);
+         _addAndRemoveButtonRepository.ButtonClick += (o, e) => OnEvent(addOrRemoveFixedLimit, e);
 
          _gridViewBinder.Changed += NotifyViewChanged;
       }
@@ -91,7 +91,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       private void addOrRemoveFixedLimit(ButtonPressedEventArgs e)
       {
-         if (e.Button.Kind == ButtonPredefines.Delete)
+         if (Equals(e.Button.Tag, ButtonType.Remove))
             _presenter.RemoveFixedLimit(_gridViewBinder.FocusedElement);
          else
             addFixedLimit();

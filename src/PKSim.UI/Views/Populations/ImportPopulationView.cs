@@ -28,6 +28,5 @@ namespace PKSim.UI.Views.Populations
          Caption = PKSimConstants.UI.ImportPopulation;
       }
 
-      protected override int TopicId => HelpId.PKSim_Populations_NewPopulation;
    }
 }

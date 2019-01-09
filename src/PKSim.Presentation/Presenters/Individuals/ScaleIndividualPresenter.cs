@@ -1,5 +1,8 @@
-using PKSim.Assets;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
+using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -7,9 +10,6 @@ using PKSim.Presentation.DTO.Core;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -17,7 +17,7 @@ namespace PKSim.Presentation.Presenters.Individuals
    {
       IPKSimCommand ScaleIndividual(Individual individualToScale);
       void PerformScaling();
-      void CreateIndividual();
+      bool CreateIndividual();
    }
 
    public class ScaleIndividualPresenter : PKSimWizardPresenter<IScaleIndividualView, IScaleIndividualPresenter, IIndividualItemPresenter>, IScaleIndividualPresenter
@@ -65,33 +65,41 @@ namespace PKSim.Presentation.Presenters.Individuals
          _propertiesMapper.MapProperties(_scaleIndividualPropertiesDTO, Individual);
       }
 
-      public Individual Individual
-      {
-         get { return PresenterAt(ScaleIndividualItems.Settings).Individual; }
-      }
+      public Individual Individual => settingsPresenter.Individual;
 
       public override void WizardNext(int previousIndex)
       {
          if (previousIndex == ScaleIndividualItems.Settings.Index)
          {
-            CreateIndividual();
+            var creationSuccessful =  CreateIndividual();
+            if (!creationSuccessful)
+               return;
          }
+
          if (previousIndex == ScaleIndividualItems.Scaling.Index)
-         {
             PerformScaling();
-         }
+
          base.WizardNext(previousIndex);
       }
 
-      public void CreateIndividual()
+      public bool CreateIndividual()
       {
-         if (PresenterAt(ScaleIndividualItems.Settings).IndividualCreated) return;
-         PresenterAt(ScaleIndividualItems.Settings).CreateIndividual();
+         //Already created with the same settings. Nothing to do
+         if (settingsPresenter.IndividualCreated)
+            return true;
+
+         settingsPresenter.CreateIndividual();
+
+         //Create individual did not work, return
+         if (Individual == null)
+            return false;
+
          _individualExpressionsUpdater.Update(_individualToScale, Individual);
          PresenterAt(ScaleIndividualItems.Scaling).ConfigureScaling(_individualToScale, Individual);
 
          //remove all previous command from the history
          _macroCommand.Clear();
+         return true;
       }
 
       protected override void UpdateControls(int indexThatWillHaveFocus)
@@ -112,5 +120,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          PresenterAt(ScaleIndividualItems.Parameters).EditIndividual(Individual);
          PresenterAt(ScaleIndividualItems.Expressions).EditIndividual(Individual);
       }
+
+      private IIndividualSettingsPresenter settingsPresenter => PresenterAt(ScaleIndividualItems.Settings);
    }
 }

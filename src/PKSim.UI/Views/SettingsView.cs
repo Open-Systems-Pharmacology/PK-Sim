@@ -48,7 +48,5 @@ namespace PKSim.UI.Views
       {
          _presenter.ResetLayout();
       }
-
-      protected override int TopicId => HelpId.PKSim_Options;
    }
 }

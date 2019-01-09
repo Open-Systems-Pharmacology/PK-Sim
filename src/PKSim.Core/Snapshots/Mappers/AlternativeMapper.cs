@@ -10,6 +10,8 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class AlternativeMapper : ParameterContainerSnapshotMapperBase<ParameterAlternative, Alternative, ParameterAlternativeGroup>
    {
+      private const bool DEFAULT_IS_DEFAULT = true;
+
       private readonly ISpeciesRepository _speciesRepository;
       private readonly IParameterAlternativeFactory _parameterAlternativeFactory;
       private readonly ICompoundAlternativeTask _compoundAlternativeTask;
@@ -31,7 +33,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var snapshot =  await SnapshotFrom(parameterAlternative, x =>
          {
-            x.IsDefault = SnapshotValueFor(parameterAlternative.IsDefault, true);
+            x.IsDefault = SnapshotValueFor(parameterAlternative.IsDefault, DEFAULT_IS_DEFAULT);
             x.Species = (parameterAlternative as ParameterAlternativeWithSpecies)?.Species.Name;
          });
 
@@ -41,7 +43,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ParameterAlternative> MapToModel(Alternative snapshot, ParameterAlternativeGroup parameterAlternativeGroup)
       {
          var alternative = _parameterAlternativeFactory.CreateAlternativeFor(parameterAlternativeGroup);
-         alternative.IsDefault = ModelValueFor(snapshot.IsDefault, true);
+         alternative.IsDefault = ModelValueFor(snapshot.IsDefault, DEFAULT_IS_DEFAULT);
          MapSnapshotPropertiesToModel(snapshot, alternative);
 
          await UpdateParametersFromSnapshot(snapshot, alternative, parameterAlternativeGroup.Name);

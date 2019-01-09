@@ -4,8 +4,7 @@ namespace PKSim.Core.Services
 {
    public interface IImportObservedDataTask
    {
-      void AddConcentrationDataToProject();
-      void AddConcentrationDataToProjectForCompound(Compound compound);
-      void AddFractionDataToProject();
+      void AddObservedDataToProject();
+      void AddObservedDataToProjectForCompound(Compound compound);
    }
 }

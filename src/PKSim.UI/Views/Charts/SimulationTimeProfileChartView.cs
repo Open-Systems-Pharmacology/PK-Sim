@@ -14,7 +14,5 @@ namespace PKSim.UI.Views.Charts
       {
          AttachPresenter(presenter.DowncastTo<IPKAnalysisWithChartPresenter>());
       }
-
-      protected override int TopicId => HelpId.PKSim_Simulations_DisplayResultsIndividuals;
    }
 }

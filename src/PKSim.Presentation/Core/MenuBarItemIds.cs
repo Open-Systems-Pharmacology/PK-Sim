@@ -46,8 +46,7 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId LoadProtocol = createMenuBarItemId("LoadProtocol");
       public static MenuBarItemId NewFormulation = createMenuBarItemId("NewFormulation");
       public static MenuBarItemId LoadFormulationFromTemplate = createMenuBarItemId("LoadFormulationFromTemplate");
-      public static MenuBarItemId ImportObservedData = createMenuBarItemId("ImportObservedData");
-      public static MenuBarItemId ImportFractionData = createMenuBarItemId("ImportFractionData");
+      public static MenuBarItemId AddObservedData = createMenuBarItemId("AddObservedData");
       public static MenuBarItemId ProjectReport = createMenuBarItemId("ProjectReport");
       public static MenuBarItemId Help = createMenuBarItemId("Help");
       public static MenuBarItemId NewEvent = createMenuBarItemId("NewEvent");
@@ -107,6 +106,8 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId StopSensitivityAnalysis = createMenuBarItemId("StopSensitivityAnalysis");
       public static MenuBarItemId SensitivityAnalysisFeedbackView = createMenuBarItemId("SensitivityAnalysisFeedbackView");
       public static MenuBarItemId SensitivityAnalysisPKParameterAnalysis = createMenuBarItemId("SensitivityAnalysisPKParameterAnalysis");
+      public static MenuBarItemId ClearHistory = createMenuBarItemId("ClearHistory");
+      public static MenuBarItemId RemoveUnusedContent = createMenuBarItemId("RemoveUnusedContent");
 
       private static MenuBarItemId createMenuBarItemId(string name)
       {

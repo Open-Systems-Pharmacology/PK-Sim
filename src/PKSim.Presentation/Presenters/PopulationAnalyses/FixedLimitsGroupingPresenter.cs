@@ -154,7 +154,13 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       public void RemoveFixedLimit(FixedLimitGroupingDTO fixedLimitGroupingDTO)
       {
-         if (fixedLimitGroupingDTO == null) return;
+         if (fixedLimitGroupingDTO == null)
+            return;
+
+         // At least two entries
+         if (_fixedLimitDTOs.Count <= 2)
+            return;
+         
 
          var index = _fixedLimitDTOs.IndexOf(fixedLimitGroupingDTO);
          _fixedLimitDTOs.Remove(fixedLimitGroupingDTO);

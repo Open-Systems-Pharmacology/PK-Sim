@@ -12,7 +12,7 @@ namespace PKSim.Presentation.Core
       public static ButtonGroupId IndividualSimulationAnalyses = new ButtonGroupId("IndividualSimulationAnalyses");
       public static ButtonGroupId PopulationSimulationWorkflow = new ButtonGroupId("PopulationSimulationWorkflow");
       public static ButtonGroupId Tools = new ButtonGroupId("Tools");
-      public static ButtonGroupId Admin = new ButtonGroupId("Admin");
+      public static ButtonGroupId Developer = new ButtonGroupId("Developer");
       public static ButtonGroupId Skins = new ButtonGroupId("Skins");
       public static ButtonGroupId View = new ButtonGroupId("View");
       public static ButtonGroupId Import = new ButtonGroupId("Import");
@@ -24,6 +24,7 @@ namespace PKSim.Presentation.Core
       public static ButtonGroupId Compare = new ButtonGroupId("Compare");
       public static ButtonGroupId Journal = new ButtonGroupId("Journal");
       public static ButtonGroupId Favorites = new ButtonGroupId("Favorites");
+      public static ButtonGroupId History = new ButtonGroupId("History");
       public static ButtonGroupId ParameterIdentification = new ButtonGroupId("ParameterIdentification");
       public static ButtonGroupId RunParameterIdentification = new ButtonGroupId("RunParameterIdentification");
       public static ButtonGroupId ParameterIdentificationAnalyses = new ButtonGroupId("ParameterIdentificationAnalyses");

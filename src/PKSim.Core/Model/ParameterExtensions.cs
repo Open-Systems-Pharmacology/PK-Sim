@@ -35,7 +35,7 @@ namespace PKSim.Core.Model
             CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
 
-      public static bool IsIndividualMolecule(this IParameter parameter)
+      public static bool IsExpressionOrOntogenyFactor(this IParameter parameter)
       {
          if (parameter.IsExpression())
             return true;
@@ -43,11 +43,15 @@ namespace PKSim.Core.Model
          if (CoreConstants.Parameters.OntogenyFactors.Contains(parameter.Name))
             return true;
 
-         if (parameter.IsNamed(CoreConstants.Parameters.REFERENCE_CONCENTRATION))
-            return true;
-
          return false;
       }
+
+      public static bool IsIndividualMolecule(this IParameter parameter)
+      {
+         return IsExpressionOrOntogenyFactor(parameter) || IsIndividualMoleculeGlobal(parameter);
+      }
+
+      public static bool IsIndividualMoleculeGlobal(this IParameter parameter) => CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
 
       public static bool IsStructural(this IParameter parameter)
       {
@@ -115,7 +119,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      /// Returns <c>true</c> if the value can be computed and is not NaN otherwise <c>false</c>
+      ///    Returns <c>true</c> if the value can be computed and is not NaN otherwise <c>false</c>
       /// </summary>
       public static bool ValueIsDefined(this IParameter parameter)
       {
@@ -126,7 +130,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      /// Returns <c>true</c> if the value can be computed otherwise <c>false</c>
+      ///    Returns <c>true</c> if the value can be computed otherwise <c>false</c>
       /// </summary>
       public static bool ValueIsComputable(this IParameter parameter)
       {

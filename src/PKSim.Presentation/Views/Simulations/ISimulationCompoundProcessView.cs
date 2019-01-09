@@ -11,8 +11,8 @@ namespace PKSim.Presentation.Views.Simulations
       where TPartialProcess : PartialProcess
       where TPartialProcessDTO : SimulationPartialProcessSelectionDTO
    {
-      void BindToPartialProcesses(IReadOnlyCollection<TPartialProcessDTO> allPartialProcessSelectionDTO);
-      void BindToSystemicProcesses(IReadOnlyCollection<SimulationSystemicProcessSelectionDTO> allSystemicProcessSelectionDTO);
+      void BindToPartialProcesses(IEnumerable<TPartialProcessDTO> allPartialProcessSelectionDTO);
+      void BindToSystemicProcesses(IEnumerable<SimulationSystemicProcessSelectionDTO> allSystemicProcessSelectionDTO);
       string MoleculeName { set; }
       string CompoundProcessCaption { set; }
       bool WarningVisible { get; set; }

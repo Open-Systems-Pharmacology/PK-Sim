@@ -20,7 +20,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_creating_a_parmaeter_alternative_dto_for_an_alternative_that_have_some_input_parameters : concern_for_ParameterAlternativeDTO
+   public class When_creating_a_parameter_alternative_dto_for_an_alternative_that_have_some_input_parameters : concern_for_ParameterAlternativeDTO
    {
       private IParameter _defaultParameter;
       private IParameter _inputParameter;

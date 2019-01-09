@@ -1,5 +1,6 @@
-﻿using System.Data.SQLite;
+﻿using System.Data.Common;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Infrastructure.Services;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -10,17 +11,19 @@ namespace PKSim.Infrastructure.Services
 
    public class ProjectFileCompressor : IProjectFileCompressor
    {
-      public void Compress(string projectFile)
+      private readonly SQLiteProjectCommandExecuter _commandExecuter;
+
+      public ProjectFileCompressor(SQLiteProjectCommandExecuter commandExecuter)
       {
-         string file = projectFile.ToUNCPath();
-         using (var sqlLite = new SQLiteConnection($"Data Source={file}"))
-         {
-            sqlLite.Open();
-            vacuum(sqlLite);
-         }
+         _commandExecuter = commandExecuter;
       }
 
-      private static void vacuum(SQLiteConnection sqlLite)
+      public void Compress(string projectFile)
+      {
+         _commandExecuter.ExecuteCommand(projectFile, vacuum);
+      }
+
+      private static void vacuum(DbConnection sqlLite)
       {
          sqlLite.ExecuteNonQuery("vacuum;");
       }

@@ -252,7 +252,5 @@ namespace PKSim.UI.Views.ProteinExpression
                }
          }
       }
-
-      protected override int TopicId => HelpId.PKSim_Expression_AdvancedAnalysis_EditMapping;
    }
 }

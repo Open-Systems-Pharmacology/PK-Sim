@@ -43,11 +43,11 @@ namespace PKSim.UI.Views.ProteinExpression
 
    public class ProteinExpressionToolTipCreator : IProteinExpressionToolTipCreator
    {
-      private readonly IProteinExpressionQueries _proteinExpressionQueries;
+      private readonly IGeneExpressionQueries _geneExpressionQueries;
 
-      public ProteinExpressionToolTipCreator(IProteinExpressionQueries proteinExpressionQueries)
+      public ProteinExpressionToolTipCreator(IGeneExpressionQueries geneExpressionQueries)
       {
-         _proteinExpressionQueries = proteinExpressionQueries;
+         _geneExpressionQueries = geneExpressionQueries;
       }
 
       public SuperToolTip GetTipForVariantHeader(string fieldCaption)
@@ -164,12 +164,12 @@ namespace PKSim.UI.Views.ProteinExpression
 
          ret.Items.Add($"These protein data have been taken from record {recid} of database {database}.");
 
-         string[] infos = _proteinExpressionQueries.GetDataBaseRecInfos(database, recid);
+         string[] infos = _geneExpressionQueries.GetDataBaseRecInfos(database, recid);
          ret.Items.AddTitle("Information");
          foreach (string s in infos)
             ret.Items.Add(s);
 
-         string[] props = _proteinExpressionQueries.GetDataBaseRecProperties(database, recid);
+         string[] props = _geneExpressionQueries.GetDataBaseRecProperties(database, recid);
          ret.Items.AddTitle("Properties");
          foreach (string s in props)
             ret.Items.Add(s);
@@ -181,7 +181,7 @@ namespace PKSim.UI.Views.ProteinExpression
          return new SuperToolTip()
             .WithTitle(fieldCaption)
             .WithTitle(gender)
-            .WithText(_proteinExpressionQueries.GetGenderHint(gender));
+            .WithText(_geneExpressionQueries.GetGenderHint(gender));
       }
 
       public SuperToolTip GetTipForTissue(string fieldCaption, string tissue)
@@ -189,7 +189,7 @@ namespace PKSim.UI.Views.ProteinExpression
          return new SuperToolTip()
             .WithTitle(fieldCaption)
             .WithTitle(tissue)
-            .WithText(_proteinExpressionQueries.GetTissueHint(tissue));
+            .WithText(_geneExpressionQueries.GetTissueHint(tissue));
       }
 
       public SuperToolTip GetTipForContainer(string fieldCaption, string container)
@@ -205,7 +205,7 @@ namespace PKSim.UI.Views.ProteinExpression
          return new SuperToolTip()
             .WithTitle(fieldCaption)
             .WithTitle(healthState)
-            .WithText(_proteinExpressionQueries.GetHealthStateHint(healthState));
+            .WithText(_geneExpressionQueries.GetHealthStateHint(healthState));
       }
 
       public SuperToolTip GetTipForSampleSource(string fieldCaption, string sampleSource)
@@ -213,7 +213,7 @@ namespace PKSim.UI.Views.ProteinExpression
          return new SuperToolTip()
             .WithTitle(fieldCaption)
             .WithTitle(sampleSource)
-            .WithText(_proteinExpressionQueries.GetSampleSourceHint(sampleSource));
+            .WithText(_geneExpressionQueries.GetSampleSourceHint(sampleSource));
       }
 
       public SuperToolTip GetTipForAge(string fieldCaption, string age)
@@ -239,7 +239,7 @@ namespace PKSim.UI.Views.ProteinExpression
          return new SuperToolTip()
             .WithTitle(fieldCaption)
             .WithTitle(unit)
-            .WithText(_proteinExpressionQueries.GetUnitHint(unit));
+            .WithText(_geneExpressionQueries.GetUnitHint(unit));
       }
 
       public SuperToolTip GetTipForUnits(string[] units)
@@ -251,7 +251,7 @@ namespace PKSim.UI.Views.ProteinExpression
          {
             superTip.Items.AddSeparator();
             superTip.Items.AddTitle(unit);
-            superTip.Items.Add(_proteinExpressionQueries.GetUnitHint(unit));
+            superTip.Items.Add(_geneExpressionQueries.GetUnitHint(unit));
          }
          return superTip;
       }
@@ -259,7 +259,7 @@ namespace PKSim.UI.Views.ProteinExpression
       public SuperToolTip GetTipForThisNameType(string fieldCaption, string nameType)
       {
          return new SuperToolTip().WithTitle(fieldCaption)
-            .WithText(_proteinExpressionQueries.GetNameTypeHint(nameType));
+            .WithText(_geneExpressionQueries.GetNameTypeHint(nameType));
       }
 
       public SuperToolTip GetTipForNameType(string fieldCaption)

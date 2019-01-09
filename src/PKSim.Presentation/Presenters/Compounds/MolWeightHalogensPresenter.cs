@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Events;
-using PKSim.Core;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Compounds;
 
@@ -12,7 +9,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 {
    public interface IMolWeightHalogensPresenter : IPresenter<IMolWeightHalogensView>, ICommandCollectorPresenter
    {
-      void EditHalogens(IEnumerable<IParameter> compoundParameters);
+      void EditHalogens(IEnumerable<IParameter> halogenParameters);
       void SaveHalogens();
    }
 
@@ -26,7 +23,7 @@ namespace PKSim.Presentation.Presenters.Compounds
          _parameterEditPresenter.IsSimpleEditor = true;
          _parameterEditPresenter.ValueOriginVisible = false;
          _parameterEditPresenter.HeaderVisible = false;
-         _parameterEditPresenter.StatusChanged += OnStatusChanged;
+         AddSubPresenters(_parameterEditPresenter);
          view.FillWithParameterView(parameterEditPresenter.View);
       }
 
@@ -36,33 +33,14 @@ namespace PKSim.Presentation.Presenters.Compounds
          _parameterEditPresenter.InitializeWith(commandCollector);
       }
 
-      public override void ReleaseFrom(IEventPublisher eventPublisher)
+      public void EditHalogens(IEnumerable<IParameter> halogenParameters)
       {
-         base.ReleaseFrom(eventPublisher);
-         _parameterEditPresenter.ReleaseFrom(eventPublisher);
-         _parameterEditPresenter.StatusChanged -= OnStatusChanged;
-      }
-
-      public void EditHalogens(IEnumerable<IParameter> compoundParameters)
-      {
-         _parameterEditPresenter.Edit(compoundParameters.Where(isHalogens));
+         _parameterEditPresenter.Edit(halogenParameters);
       }
 
       public void SaveHalogens()
       {
          _parameterEditPresenter.SaveEditor();
-      }
-
-      private bool isHalogens(IParameter parameter)
-      {
-         if (parameter.GroupName != CoreConstants.Groups.COMPOUND_MW) return false;
-         if (parameter.NameIsOneOf(
-            Constants.Parameters.MOL_WEIGHT, 
-            CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT, 
-            CoreConstants.Parameters.HAS_HALOGENS))
-            return false;
-
-         return true;
       }
    }
 }

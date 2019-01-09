@@ -37,7 +37,7 @@ namespace PKSim.Core
          A.CallTo(() => _configuration.TemplateSystemDatabasePath).Returns("SystemPath");
          A.CallTo(() => _userSettingsPersistor.Load()).Returns(_userSettings);
          
-         sut = new SettingsLoader(_userSettingsPersistor, _applicationSettingsPersistor, _configuration);
+         sut = new SettingsLoader(_userSettingsPersistor, _applicationSettingsPersistor);
   
       }
 
@@ -79,48 +79,4 @@ namespace PKSim.Core
 
    }
 
-   
-   public class When_loading_the_settings_with_a_user_template_database_that_does_not_exist_in_the_user_profile : concern_for_SettingsLoader
-   {
-      private Action<string, string> _oldCopy;
-      private bool _didPerformCopy;
-
-      protected override void Context()
-      {
-         base.Context();
-         //in this scenario, each call to the method should return false
-         FileHelper.FileExists = s => false;
-         _oldCopy = FileHelper.Copy;
-
-         FileHelper.Copy = copyAction;
-         A.CallTo(() => _configuration.TemplateUserDatabaseTemplatePath).Returns(FileHelper.GenerateTemporaryFileName());
-         A.CallTo(() => _configuration.DefaultTemplateUserDatabasePath).Returns(FileHelper.GenerateTemporaryFileName());
-         A.CallTo(() => _userSettings.TemplateDatabasePath).Returns(_configuration.DefaultTemplateUserDatabasePath);
-
-      }
-
-      private void copyAction(string source, string target)
-      {
-         _didPerformCopy = string.Equals(source, _configuration.TemplateUserDatabaseTemplatePath) &&
-                           string.Equals(target, _userSettings.TemplateDatabasePath);
-      }
-
-      protected override void Because()
-      {
-         sut.Start();
-      }
-
-      [Observation]
-      public void should_copy_the_template_database_to_the_user_profile()
-      {
-         _didPerformCopy.ShouldBeTrue();
-      }
-
-      public override void Cleanup()
-      {
-         base.Cleanup();
-         FileHelper.Copy =_oldCopy;
-      }
- 
-   }
 }

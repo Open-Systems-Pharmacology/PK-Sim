@@ -27,7 +27,7 @@ namespace PKSim.Presentation
       protected IApplicationController _applicationController;
       private IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       protected IContainerTask _containerTask;
-      protected IProteinExpressionsDatabasePathManager _proteinExpressionDbPathManager;
+      protected IGeneExpressionsDatabasePathManager _geneExpressionsDatabasePathManager;
       protected IProteinExpressionsPresenter _proteinExpressionPresenter;
       protected ISimpleMoleculePresenter _simpleMoleculePresenter;
       protected IndividualMolecule _molecule;
@@ -54,7 +54,7 @@ namespace PKSim.Presentation
          _individualMoleculeFactoryResolver = A.Fake<IIndividualMoleculeFactoryResolver>();
          _transportContainerUpdater = A.Fake<ITransportContainerUpdater>();
          _containerTask = A.Fake<IContainerTask>();
-         _proteinExpressionDbPathManager = A.Fake<IProteinExpressionsDatabasePathManager>();
+         _geneExpressionsDatabasePathManager = A.Fake<IGeneExpressionsDatabasePathManager>();
          A.CallTo(() => _applicationController.Start<IProteinExpressionsPresenter>()).Returns(_proteinExpressionPresenter);
          A.CallTo(() => _applicationController.Start<ISimpleMoleculePresenter>()).Returns(_simpleMoleculePresenter);
          _moleculeParameterTask= A.Fake<IMoleculeParameterTask>();
@@ -80,7 +80,7 @@ namespace PKSim.Presentation
          _ontogenyTask = A.Fake<IOntogenyTask<Individual>>();
          sut = new MoleculeExpressionTask<Individual>(_applicationController, _executionContext,
             _individualMoleculeFactoryResolver, _querySettingsMapper,
-            _containerTask, _proteinExpressionDbPathManager,
+            _containerTask, _geneExpressionsDatabasePathManager,
             _ontogenyRepository, _transportContainerUpdater,_subjectExpressionTask,_ontogenyTask,_moleculeParameterTask);
       }
    }
@@ -102,7 +102,7 @@ namespace PKSim.Presentation
          _queryResults = new QueryExpressionResults(new List<ExpressionResult>());
          _queryResults.ProteinName = _moleculeName;
          A.CallTo(() => _querySettingsMapper.MapFrom(_molecule)).Returns(_querySettings);
-         A.CallTo(() => _proteinExpressionDbPathManager.HasDatabaseFor(_individual.Species)).Returns(true);
+         A.CallTo(() => _geneExpressionsDatabasePathManager.HasDatabaseFor(_individual.Species)).Returns(true);
          A.CallTo(() => _proteinExpressionPresenter.Start()).Returns(true);
          A.CallTo(() => _proteinExpressionPresenter.GetQueryResults()).Returns(_queryResults);
          _queryResults.QueryConfiguration = _queryConfiguration;
@@ -207,7 +207,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _proteinExpressionDbPathManager.HasDatabaseFor(_individual.Species)).Returns(false);
+         A.CallTo(() => _geneExpressionsDatabasePathManager.HasDatabaseFor(_individual.Species)).Returns(false);
          A.CallTo(() => _simpleMoleculePresenter.CreateMoleculeFor<IndividualProtein>(_individual)).Returns(true);
       }
 
@@ -239,21 +239,19 @@ namespace PKSim.Presentation
    {
       private ICommand _result;
       private double _relativeVMaxValue;
-      private string _containerName;
+      private IParameter _relExp;
 
       protected override void Context()
       {
          base.Context();
          _relativeVMaxValue = 25;
-         _containerName = "C1";
-         var relExp = new PKSimParameter();
-         relExp.Formula = new ConstantFormula();
-         A.CallTo(() => _executionContext.BuildingBlockContaining(relExp)).Returns(_individual);
+         _relExp = DomainHelperForSpecs.ConstantParameterWithValue(10);
+         A.CallTo(() => _executionContext.BuildingBlockContaining(_relExp)).Returns(_individual);
       }
 
       protected override void Because()
       {
-         _result = sut.SetRelativeExpressionFor(_molecule, _containerName, _relativeVMaxValue);
+         _result = sut.SetRelativeExpressionFor(_molecule, _relExp, _relativeVMaxValue);
       }
 
       [Observation]

@@ -2,9 +2,9 @@ configuration: Debug
 image: Visual Studio 2017
 
 environment:
-  app_version: '7.3.0'
+  app_version: '7.4.0'
 
-version: '%app_version%.{build}'
+version: '$(app_version).{build}'
 
 assembly_info:
   patch: true
@@ -19,6 +19,7 @@ cache:
   packages -> **\packages.config  
 
 install:
+- set PATH=C:\Ruby25\bin;%PATH%
 - git submodule update --init --recursive
 - gem install xml-simple
 - ps: >-
