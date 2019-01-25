@@ -74,75 +74,99 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.BonusSkins.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.BonusSkins.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Charts.v18.2.Core, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.Charts.v18.2.Core.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Data.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.18.2.4.1\lib\net45\DevExpress.Data.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Images.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.Images.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Office.v18.2.Core, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.Office.v18.2.Core.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.PivotGrid.v18.2.Core, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.PivotGrid.v18.2.Core.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Printing.v18.2.Core, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.Printing.v18.2.Core.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.RichEdit.v18.2.Core, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.RichEdit.v18.2.Core.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.RichEdit.v18.2.Export, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.RichEdit.v18.2.Export.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Utils.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.18.2.4.1\lib\net45\DevExpress.Utils.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraBars.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraBars.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraCharts.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraCharts.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraCharts.v18.2.UI, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraCharts.v18.2.UI.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraCharts.v18.2.Wizard, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraCharts.v18.2.Wizard.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraEditors.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraEditors.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraGrid.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraGrid.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraLayout.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraLayout.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraNavBar.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraNavBar.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraPivotGrid.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraPivotGrid.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraPrinting.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraPrinting.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraRichEdit.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraRichEdit.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraRichEdit.v18.2.Extensions, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraRichEdit.v18.2.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraTreeList.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraTreeList.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraVerticalGrid.v18.2, Version=18.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OSPSuite.DevExpress.18.2.4.1\lib\net45\DevExpress.XtraVerticalGrid.v18.2.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
