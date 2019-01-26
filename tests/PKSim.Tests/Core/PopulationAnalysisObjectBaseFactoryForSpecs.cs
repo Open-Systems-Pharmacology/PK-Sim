@@ -7,13 +7,13 @@ namespace PKSim.Core
 {
    internal class PopulationAnalysisObjectBaseFactoryForSpecs : IObjectBaseFactory
    {
-      public T Create<T>() where T : IObjectBase
+      public T Create<T>() where T : class, IObjectBase
       {
          //nothing to do here
          return default(T);
       }
 
-      public T Create<T>(string id) where T : IObjectBase
+      public T Create<T>(string id) where T : class, IObjectBase
       {
          return Create<T>();
       }
