@@ -92,7 +92,7 @@ namespace PKSim.Presentation
       public void should_add_one_compound_parameter_selection_for_each_selected_alternative()
       {
          //one for each process
-         A.CallTo(() => _compoundProperties.AddCompoundGroupSelection(A<CompoundGroupSelection>.Ignored)).MustHaveHappened(Repeated.Exactly.Twice);
+         A.CallTo(() => _compoundProperties.AddCompoundGroupSelection(A<CompoundGroupSelection>.Ignored)).MustHaveHappenedTwiceExactly();
       }
    }
 }

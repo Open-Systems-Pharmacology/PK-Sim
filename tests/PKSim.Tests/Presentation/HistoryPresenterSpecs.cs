@@ -67,7 +67,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_initialize_the_history_browser_presenter_twice()
       {
-         A.CallTo(() => _historyBrowserPresenter.Initialize()).MustHaveHappened(Repeated.Exactly.Once);
+         A.CallTo(() => _historyBrowserPresenter.Initialize()).MustHaveHappenedOnceExactly();
       }
    }
 

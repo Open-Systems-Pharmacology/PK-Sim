@@ -67,7 +67,7 @@ namespace PKSim.Presentation
       public void should_update_the_anlaysis_status_in_all_sub_presenters()
       {
          //once at lease in edit. A second time for event
-         A.CallTo(() => _view.UpdateTrafficLightFor(_simulationAnalysisPresenter, A<ApplicationIcon>._)).MustHaveHappened(Repeated.AtLeast.Twice);
+         A.CallTo(() => _view.UpdateTrafficLightFor(_simulationAnalysisPresenter, A<ApplicationIcon>._)).MustHaveHappenedTwiceOrMore();
       }
    }
 
@@ -91,7 +91,7 @@ namespace PKSim.Presentation
       public void should_not_update_the_anlaysis_status_in_all_sub_presenters()
       {
          //once at lease in edit. No second time for even
-         A.CallTo(() => _view.UpdateTrafficLightFor(_simulationAnalysisPresenter, A<ApplicationIcon>._)).MustHaveHappened(Repeated.Exactly.Once);
+         A.CallTo(() => _view.UpdateTrafficLightFor(_simulationAnalysisPresenter, A<ApplicationIcon>._)).MustHaveHappenedOnceExactly();
       }
    }
 

@@ -185,7 +185,7 @@ namespace PKSim.Core
       [Observation]
       public void should_add_a_mean_parameter_a_std_parameter_and_a_percentile_parameter_to_the_distributed_parameter()
       {
-         A.CallTo(() => _result.Add(A<IEntity>.Ignored)).MustHaveHappened(Repeated.Exactly.Times(3));
+         A.CallTo(() => _result.Add(A<IEntity>.Ignored)).MustHaveHappened(3, Times.Exactly);
       }
    }
 

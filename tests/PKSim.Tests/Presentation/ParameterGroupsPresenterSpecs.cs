@@ -624,7 +624,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_edit_the_parameters_again()
       {
-         A.CallTo(() => _alwaysRefreshPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappened(Repeated.Exactly.Twice);
+         A.CallTo(() => _alwaysRefreshPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappenedTwiceExactly();
       }
    }
 
