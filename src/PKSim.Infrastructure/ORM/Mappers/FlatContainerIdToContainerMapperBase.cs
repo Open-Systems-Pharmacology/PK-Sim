@@ -8,7 +8,7 @@ using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public abstract class FlatContainerIdToContainerMapperBase<T> where T : IContainer
+   public abstract class FlatContainerIdToContainerMapperBase<T> where T :class,  IContainer
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IFlatContainerRepository _flatContainerRepository;

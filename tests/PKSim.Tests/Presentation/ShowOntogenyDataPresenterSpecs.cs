@@ -127,7 +127,7 @@ namespace PKSim.Presentation
       public void should_plot_the_data_for_the_new_enzyme()
       {
          //twice: first time in context and second time with container changed
-         A.CallTo(() => _simpleChartPresenter.Plot(A<DataRepository>._, A<Scalings>._)).MustHaveHappened(Repeated.Exactly.Twice);
+         A.CallTo(() => _simpleChartPresenter.Plot(A<DataRepository>._, A<Scalings>._)).MustHaveHappenedTwiceExactly();
       }
    }
 }

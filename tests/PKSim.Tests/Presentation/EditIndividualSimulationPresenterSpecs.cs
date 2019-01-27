@@ -158,7 +158,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_just_reactivate_the_view()
       {
-         A.CallTo(() => _view.Display()).MustHaveHappened(Repeated.Exactly.Twice);
+         A.CallTo(() => _view.Display()).MustHaveHappenedTwiceExactly();
       }
 
       [Observation]

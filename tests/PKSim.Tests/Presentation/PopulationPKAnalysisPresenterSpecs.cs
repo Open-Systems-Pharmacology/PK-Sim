@@ -163,7 +163,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_view()
       {
-         A.CallTo(() => _view.BindTo(A<PKAnalysisDTO>._)).MustHaveHappened(Repeated.Exactly.Twice);
+         A.CallTo(() => _view.BindTo(A<PKAnalysisDTO>._)).MustHaveHappenedTwiceExactly();
       }
    }
 

@@ -279,7 +279,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_cache_and_use_the_first_instance_of_presenter_resolved_for_node_type()
       {
-         A.CallTo(() => _compoundParameterNodeTypeToCompoundParameterGroupPresenterMapper.MapFrom(_compoundParameterNodeType)).MustHaveHappened(Repeated.Exactly.Once);
+         A.CallTo(() => _compoundParameterNodeTypeToCompoundParameterGroupPresenterMapper.MapFrom(_compoundParameterNodeType)).MustHaveHappenedOnceExactly();
       }
    }
 
@@ -369,7 +369,7 @@ namespace PKSim.Presentation
       [Observation]
       public void must_add_node_to_correct_parent()
       {
-         A.CallTo(() => _view.TreeView.NodeById(GetRootNodeId())).MustHaveHappened(Repeated.Exactly.Twice);
+         A.CallTo(() => _view.TreeView.NodeById(GetRootNodeId())).MustHaveHappenedTwiceExactly();
       }
 
       protected abstract string GetRootNodeId();
