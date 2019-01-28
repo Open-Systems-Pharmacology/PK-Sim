@@ -3,13 +3,13 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Snapshots
 {
-   public class Project : IWithDescription
+   public class Project : IWithDescription, IWithName
    {
       [Required]
       public int Version { get; set; }
 
+      public string Name { get; set; }
       public string Description { get; set; }
-
       public Individual[] Individuals { get; set; }
       public Population[] Populations { get; set; }
       public Compound[] Compounds { get; set; }

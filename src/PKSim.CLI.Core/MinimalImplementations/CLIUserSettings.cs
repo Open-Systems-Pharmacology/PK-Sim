@@ -25,8 +25,8 @@ namespace PKSim.CLI.Core.MinimalImplementations
       public Scalings DefaultChartYScaling { get; set; }
       public int NumberOfBins { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
-      public string DefaultSpecies { get; set; }
-      public string DefaultPopulation { get; set; }
+      public string DefaultSpecies { get; set; } = CoreConstants.Species.HUMAN;
+      public string DefaultPopulation { get; set; } = CoreConstants.Population.ICRP;
       public double AbsTol { get; set; }
       public double RelTol { get; set; }
       public string DefaultLipophilicityName { get; set; }

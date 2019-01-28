@@ -132,7 +132,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       protected virtual Task<IEnumerable<T>> LoadModelAsync(string snapshotFile)
       {
-         return _snapshotTask.LoadModelFromSnapshot<T>(snapshotFile);
+         return _snapshotTask.LoadModelsFromSnapshotFile<T>(snapshotFile);
       }
 
       protected override void Cleanup()

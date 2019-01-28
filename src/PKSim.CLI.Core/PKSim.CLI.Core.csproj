@@ -111,11 +111,13 @@
     <Compile Include="MinimalImplementations\CLIUserSettings.cs" />
     <Compile Include="MinimalImplementations\CLIWorkspace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RunOptions\QualificationRunOptions.cs" />
     <Compile Include="Services\ExportSimulationRunner.cs" />
     <Compile Include="Services\IBatchRunner.cs" />
     <Compile Include="RunOptions\JsonRunOptions.cs" />
     <Compile Include="Services\JsonSimulationRunner.cs" />
     <Compile Include="RunOptions\RunOptionsRules.cs" />
+    <Compile Include="Services\QualificationRunner.cs" />
     <Compile Include="Services\SimulationExporter.cs" />
     <Compile Include="RunOptions\SnapshotRunOptions.cs" />
     <Compile Include="Services\SnapshotRunner.cs" />
