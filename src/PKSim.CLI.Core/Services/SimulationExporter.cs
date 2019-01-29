@@ -25,7 +25,7 @@ namespace PKSim.CLI.Core.Services
 
    public interface ISimulationExporter
    {
-      Task RunAndExport(Simulation simulation, string outputFolder, SimulationRunOptions simulationRunOptions, SimulationExportMode simulationExportMode, string projectName=null);
+      Task RunAndExport(Simulation simulation, string outputFolder, SimulationRunOptions simulationRunOptions, SimulationExportMode simulationExportMode, string projectName = null);
 
       Task Export(Simulation simulation, string outputFolder, SimulationExportMode simulationExportMode, string projectName = null);
    }

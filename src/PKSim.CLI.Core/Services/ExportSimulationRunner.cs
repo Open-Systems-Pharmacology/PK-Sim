@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
-using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -15,7 +13,12 @@ using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI.Core.Services
 {
-   public class ExportSimulationRunner : IBatchRunner<ExportRunOptions>
+   public interface IExportSimulationRunner : IBatchRunner<ExportRunOptions>
+   {
+      Task ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions);
+   }
+
+   public class ExportSimulationRunner : IExportSimulationRunner
    {
       private readonly ILogger _logger;
       private readonly IWorkspacePersistor _workspacePersistor;
@@ -27,7 +30,7 @@ namespace PKSim.CLI.Core.Services
          ILogger logger,
          IWorkspacePersistor workspacePersistor,
          IWorkspace workspace,
-         ISimulationExporter simulationExporter, 
+         ISimulationExporter simulationExporter,
          ILazyLoadTask lazyLoadTask
       )
       {
@@ -56,12 +59,12 @@ namespace PKSim.CLI.Core.Services
          _workspacePersistor.LoadSession(_workspace, projectFile);
          _logger.AddDebug($"Project loaded successfuly from '{projectFile}'");
 
-         await exportSimulations(_workspace.Project, runOptions);
+         await ExportSimulationsIn(_workspace.Project, runOptions);
 
          _logger.AddInfo($"Project export for '{projectFile}' terminated");
       }
 
-      private async Task exportSimulations(PKSimProject project, ExportRunOptions exportRunOptions)
+      public async Task ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions)
       {
          var nameOfSimulationsToExport = (exportRunOptions.Simulations ?? Enumerable.Empty<string>()).ToList();
          if (!nameOfSimulationsToExport.Any())

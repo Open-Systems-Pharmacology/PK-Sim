@@ -216,6 +216,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="CLI\ExportSimulationRunnerSpecs.cs" />
+    <Compile Include="CLI\QualificationRunnerSpecs.cs" />
     <Compile Include="CLI\SnapshotRunnerSpecs.cs" />
     <Compile Include="ContextSpecificationWithLocalContainer.cs" />
     <Compile Include="CoreConstantsForSpecs.cs" />

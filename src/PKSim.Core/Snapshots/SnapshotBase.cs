@@ -21,4 +21,9 @@ namespace PKSim.Core.Snapshots
    {
       public Parameter[] Parameters { get; set; }
    }
+
+   public interface IBuildingBlockSnapshot : IWithName
+   {
+      PKSimBuildingBlockType BuildingBlockType { get; }
+   }
 }

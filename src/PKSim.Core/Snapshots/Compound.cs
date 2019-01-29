@@ -1,5 +1,6 @@
 ﻿using PKSim.Core.Model;
 using System.ComponentModel.DataAnnotations;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Snapshots
 {
@@ -14,7 +15,7 @@ namespace PKSim.Core.Snapshots
       public ValueOrigin ValueOrigin { get; set; }
    }
 
-   public class Compound : ParameterContainerSnapshotBase
+   public class Compound : ParameterContainerSnapshotBase, IBuildingBlockSnapshot
    {
       public bool? IsSmallMolecule { get; set; }
       public PlasmaProteinBindingPartner? PlasmaProteinBindingPartner { get; set; }
@@ -26,5 +27,6 @@ namespace PKSim.Core.Snapshots
       public PkaType[] PkaTypes { get; set; }
       public CompoundProcess[] Processes { get; set; }
       public CalculationMethodCache CalculationMethods { get; set; }
+      public PKSimBuildingBlockType BuildingBlockType { get; } = PKSimBuildingBlockType.Compound;
    }
 }

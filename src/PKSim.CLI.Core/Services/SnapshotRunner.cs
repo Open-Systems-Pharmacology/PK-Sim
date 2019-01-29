@@ -96,7 +96,7 @@ namespace PKSim.CLI.Core.Services
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
 
-         _logger.AddInfo($"{fileMaps.Count} {"project".PluralizeIf(fileMaps)} loaded and exported in '{timeSpent.ToDisplay()}'");
+         _logger.AddInfo($"{fileMaps.Count} {"project".PluralizeIf(fileMaps)} loaded and exported in {timeSpent.ToDisplay()}");
       }
 
       private async Task createProjectFromSnapshotFile(FileMap file)

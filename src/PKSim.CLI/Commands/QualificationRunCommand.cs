@@ -9,7 +9,6 @@ namespace PKSim.CLI.Commands
    {
       public override string Name { get; } = "Qualification";
 
-
       [Option('c', "config", Required = false, HelpText = "Json configuration string used to start the qualification workflow.")]
       public string Configuration { get; set; }
 
@@ -23,14 +22,13 @@ namespace PKSim.CLI.Commands
             Configuration = Configuration,
             ConfigurationFile = ConfigurationFile
          };
-
       }
 
       public override string ToString()
       {
          var sb = new StringBuilder();
          LogOptions(sb);
-         if(!string.IsNullOrEmpty(Configuration))
+         if (!string.IsNullOrEmpty(Configuration))
             sb.AppendLine($"Configuration string: {Configuration}");
 
          if (!string.IsNullOrEmpty(ConfigurationFile))
