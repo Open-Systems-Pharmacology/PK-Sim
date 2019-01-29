@@ -94,6 +94,7 @@ namespace PKSim.CLI.Core.Services
          _lazyLoadTask.Load(simulation);
          _lazyLoadTask.LoadResults(simulation);
 
+
          if (!simulation.OutputSelections.HasSelection)
          {
             _logger.AddWarning($"Simulation '{simulation.Name}' does not have any selected output and will not be exported");
@@ -107,7 +108,13 @@ namespace PKSim.CLI.Core.Services
             await _simulationExporter.Export(simulation, outputFolder, exportRunOptions.ExportMode);
 
          else
+         {
             _logger.AddWarning($"Simulation '{simulation.Name}' does not have any results and will not be exported");
+            return;
+         }
+
+         _logger.AddDebug($"Simulation '{simulation.Name}' exported to '{outputFolder}'");
+
       }
    }
 }

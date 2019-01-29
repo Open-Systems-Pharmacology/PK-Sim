@@ -37,6 +37,9 @@ namespace PKSim.Core
       //DO NOT rename this constant (otherwise Matlab-Toolbox must be adjusted)
       public static readonly IEnumerable<int> PretermRange = Enumerable.Range(24, 17);
 
+      public const string DEFAULT_QUALIFICATION_OBSERVED_DATA_FOLDER_NAME = "ObservedData";
+
+
       public static class Filter
       {
          public const string PROJECT_EXTENSION = ".pksim5";

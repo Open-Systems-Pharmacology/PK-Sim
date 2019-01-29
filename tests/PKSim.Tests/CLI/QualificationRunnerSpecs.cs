@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using FakeItEasy;
@@ -6,9 +7,12 @@ using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
@@ -31,10 +35,11 @@ namespace PKSim.CLI
       protected QualificationRunOptions _runOptions;
       protected QualifcationConfiguration _qualificationConfiguration;
       private Func<string, string> _oldCreateDirectory;
-      protected string _createdDirectory;
+      protected List<string> _createdDirectories = new List<string>();
       private Func<string, bool> _oldFileExists;
       private Func<string, bool> _oldDirectoryExists;
       private Action<string, bool> _oldDeleteDirectory;
+      protected IDataRepositoryTask _dataRepositoryTask;
 
       public override async Task GlobalContext()
       {
@@ -43,7 +48,11 @@ namespace PKSim.CLI
          _oldDirectoryExists = DirectoryHelper.DirectoryExists;
          _oldDeleteDirectory = DirectoryHelper.DeleteDirectory;
          _oldFileExists = FileHelper.FileExists;
-         DirectoryHelper.CreateDirectory = s => _createdDirectory = s;
+         DirectoryHelper.CreateDirectory = s =>
+         {
+            _createdDirectories.Add(s);
+            return s;
+         };
       }
 
       protected override Task Context()
@@ -54,8 +63,9 @@ namespace PKSim.CLI
          _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _exportSimulationRunner = A.Fake<IExportSimulationRunner>();
          _logger = A.Fake<ILogger>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
 
-         sut = new QualificationRunner(_snapshotTask, _jsonSerializer, _workspace, _workspacePersistor, _exportSimulationRunner, _logger);
+         sut = new QualificationRunner(_snapshotTask, _jsonSerializer, _workspace, _workspacePersistor, _exportSimulationRunner, _dataRepositoryTask, _logger);
 
          _runOptions = new QualificationRunOptions();
          _qualificationConfiguration = new QualifcationConfiguration();
@@ -98,7 +108,7 @@ namespace PKSim.CLI
          _runOptions.Configuration = "XXX";
          A.CallTo(() => _jsonSerializer.DeserializeFromString<QualifcationConfiguration>(_runOptions.Configuration)).Returns(_qualificationConfiguration);
          UpdateConfiguration();
-         _projectSnapshot = new SnapshotProject();
+         _projectSnapshot = new SnapshotProject().WithName(PROJECT_NAME);
          _project = new PKSimProject().WithName(PROJECT_NAME);
          A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_qualificationConfiguration.SnapshotPath)).Returns(_projectSnapshot);
          A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_projectSnapshot)).Returns(_project);
@@ -144,24 +154,26 @@ namespace PKSim.CLI
    public class When_running_the_qualification_runner_with_a_valid_configuration_for_a_valid_snapshot_file : concern_for_QualificationRunnerWithValidConfiguration
    {
       private string _expectedOutputPath;
+      private string _expectedObsDataPath;
       private string _deletedDirectory;
       private ExportRunOptions _exportOptions;
+      private DataRepository _observedData;
 
       protected override async Task Context()
       {
          await base.Context();
+         _qualificationConfiguration.ObservedDataFolderName = "OBS_DATA_FOLDER";
+
          _expectedOutputPath = Path.Combine(_qualificationConfiguration.OutputFolder, PROJECT_NAME);
+         _expectedObsDataPath = Path.Combine(_qualificationConfiguration.OutputFolder, _qualificationConfiguration.ObservedDataFolderName);
          DirectoryHelper.DirectoryExists = s => string.Equals(s, _expectedOutputPath);
          DirectoryHelper.DeleteDirectory = (s, b) => _deletedDirectory = s;
 
          A.CallTo(() => _exportSimulationRunner.ExportSimulationsIn(_project, A<ExportRunOptions>._))
             .Invokes(x => _exportOptions = x.GetArgument<ExportRunOptions>(1));
-      }
 
-      [Observation]
-      public void should_have_set_the_name_of_the_project_snapshot_to_the_name_of_the_file()
-      {
-         _projectSnapshot.Name.ShouldBeEqualTo(PROJECT_NAME);
+         _observedData = DomainHelperForSpecs.ObservedData().WithName("OBS");
+         _project.AddObservedData(_observedData);
       }
 
       [Observation]
@@ -173,7 +185,13 @@ namespace PKSim.CLI
       [Observation]
       public void should_create_the_output_directory_for_the_project()
       {
-         _createdDirectory.ShouldBeEqualTo(_expectedOutputPath);
+         _createdDirectories.ShouldContain(_expectedOutputPath);
+      }
+
+      [Observation]
+      public void should_create_the_output_directory_for_the_observed_data()
+      {
+         _createdDirectories.ShouldContain(_expectedObsDataPath);
       }
 
       [Observation]
@@ -181,6 +199,13 @@ namespace PKSim.CLI
       {
          _exportOptions.OutputFolder.ShouldBeEqualTo(_expectedOutputPath);
          _exportOptions.ExportMode.ShouldBeEqualTo(SimulationExportMode.All);
+      }
+
+      [Observation]
+      public void should_export_the_observed_data_defined_in_the_project_into_the_observed_data_folder()
+      {
+         var fileName = Path.Combine(_expectedObsDataPath, $"{_observedData.Name}{Constants.Filter.XLSX_EXTENSION}");
+         A.CallTo(() => _dataRepositoryTask.ExportToExcel(_observedData, fileName, false)).MustHaveHappened();
       }
    }
 

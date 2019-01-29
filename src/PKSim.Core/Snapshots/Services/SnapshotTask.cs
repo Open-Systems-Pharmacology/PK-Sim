@@ -42,10 +42,11 @@ namespace PKSim.Core.Snapshots.Services
 
       Task<PKSimProject> LoadProjectFromSnapshot(Project snapshot);
 
-      Task<T> LoadSnapshotFromFile<T>(string fileName);
+      Task<T> LoadSnapshotFromFile<T>(string fileName) where T : IWithName;
 
       /// <summary>
-      /// Returns <c>true</c> if <paramref name="objectToExport"/> was created with a version of PK-Sim fully supporting snaphsot (7.3 and higher) otherwise <c>false</c>
+      ///    Returns <c>true</c> if <paramref name="objectToExport" /> was created with a version of PK-Sim fully supporting
+      ///    snaphsot (7.3 and higher) otherwise <c>false</c>
       /// </summary>
       bool IsVersionCompatibleWithSnapshotExport<T>(T objectToExport) where T : class, IWithCreationMetaData;
    }
@@ -112,14 +113,18 @@ namespace PKSim.Core.Snapshots.Services
          return _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);
       }
 
-     
-      public async Task<T> LoadSnapshotFromFile<T>(string fileName)
+      public async Task<T> LoadSnapshotFromFile<T>(string fileName) where T : IWithName
       {
          var snapshots = await LoadSnapshots<T>(fileName);
-         return snapshots.FirstOrDefault();
+         var snapshot = snapshots.FirstOrDefault();
+
+         if (snapshot != null && string.IsNullOrEmpty(snapshot.Name))
+            snapshot.Name = FileHelper.FileNameFromFileFullPath(fileName);
+
+         return snapshot;
       }
 
-      public async Task<IEnumerable<T>> LoadSnapshots<T>(string fileName) 
+      public async Task<IEnumerable<T>> LoadSnapshots<T>(string fileName)
       {
          var snapshots = await loadSnapshot(fileName, typeof(T));
          return snapshots.OfType<T>();
@@ -157,10 +162,9 @@ namespace PKSim.Core.Snapshots.Services
          return projectWithUpdatedProperties(project, FileHelper.FileNameFromFileFullPath(fileName));
       }
 
-
       public async Task<PKSimProject> LoadProjectFromSnapshot(Project snapshot)
       {
-         var project = (await loadModelsFromSnapshots<PKSimProject>(new []{ snapshot })).FirstOrDefault();
+         var project = (await loadModelsFromSnapshots<PKSimProject>(new[] {snapshot})).FirstOrDefault();
          return projectWithUpdatedProperties(project, snapshot?.Name);
       }
 
@@ -173,7 +177,6 @@ namespace PKSim.Core.Snapshots.Services
          project.Name = name;
          return project;
       }
-
 
       public bool IsVersionCompatibleWithSnapshotExport<T>(T objectToExport) where T : class, IWithCreationMetaData
       {

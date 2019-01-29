@@ -80,6 +80,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelProject> MapToModel(SnapshotProject snapshot)
       {
+         _logger.AddDebug($"Loading project '{snapshot.Name}' from snapshot...");
+
          var project = new ModelProject
          {
             Description = snapshot.Description,
@@ -87,7 +89,7 @@ namespace PKSim.Core.Snapshots.Mappers
          };
          project.Creation.InternalVersion = snapshot.Version;
          project.Creation.Version = ProjectVersions.FindBy(snapshot.Version)?.VersionDisplay;
-
+         
          var buildingBlocks = await allBuidingBlocksFrom(snapshot);
          buildingBlocks?.Each(project.AddBuildingBlock);
 
