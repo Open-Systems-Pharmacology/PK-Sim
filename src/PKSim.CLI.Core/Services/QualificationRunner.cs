@@ -92,7 +92,6 @@ namespace PKSim.CLI.Core.Services
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
 
          var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot);
-
          var projectOutputFolder = createProjectOutputFolder(config.OutputFolder, project.Name);
 
          var exportRunOtions = new ExportRunOptions
@@ -156,7 +155,6 @@ namespace PKSim.CLI.Core.Services
             _logger.AddError(CannotFindBuildingBlockInSnapshot(type.ToString(), name, projectSnapshot.Name));
             return;
          }
-
 
          projectSnapshot.Swap(buildiingBlockToUse);
       }

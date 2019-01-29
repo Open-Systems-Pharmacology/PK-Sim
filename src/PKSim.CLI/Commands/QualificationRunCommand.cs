@@ -27,7 +27,7 @@ namespace PKSim.CLI.Commands
       public override string ToString()
       {
          var sb = new StringBuilder();
-         LogOptions(sb);
+         LogDefaultOptions(sb);
          if (!string.IsNullOrEmpty(Configuration))
             sb.AppendLine($"Configuration string: {Configuration}");
 

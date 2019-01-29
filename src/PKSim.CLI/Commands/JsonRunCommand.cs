@@ -14,7 +14,7 @@ namespace PKSim.CLI.Commands
       [Option('i', "input", Required = true, HelpText = "Input folder containing all batch json files to run.")]
       public string InputFolder { get; set; }
 
-      [Option('o', "output", Required = true, HelpText = "Output folder nwhere calculated values will be exported.")]
+      [Option('o', "output", Required = true, HelpText = "Output folder where calculated values will be exported.")]
       public string OutputFolder { get; set; }
 
       [Usage(ApplicationAlias = "PKSim.CLI")]
@@ -26,10 +26,8 @@ namespace PKSim.CLI.Commands
       public override string ToString()
       {
          var sb = new StringBuilder();
-         this.LogOption(sb);
-         sb.AppendLine($"Log file: {LogFileFullPath}");
-         sb.AppendLine($"Log level: {LogLevel}");
-         sb.AppendLine($"Export mode: {ExportMode}");
+         this.LogFolders(sb);
+         LogDefaultOptions(sb);
          return sb.ToString();
       }
 

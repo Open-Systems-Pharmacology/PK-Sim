@@ -18,7 +18,7 @@ namespace PKSim.CLI.Commands
       public LogLevel LogLevel { get; set; } = LogLevel.Information;
 
 
-      protected void LogOptions(StringBuilder sb)
+      protected virtual void LogDefaultOptions(StringBuilder sb)
       {
          sb.AppendLine($"Log file: {LogFileFullPath}");
          sb.AppendLine($"Log level: {LogLevel}");

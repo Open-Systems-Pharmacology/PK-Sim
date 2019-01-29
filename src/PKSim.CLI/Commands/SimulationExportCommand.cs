@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Text;
+using CommandLine;
 using PKSim.CLI.Core.Services;
 
 namespace PKSim.CLI.Commands
@@ -49,6 +50,12 @@ namespace PKSim.CLI.Commands
                ExportMode = ExportMode | SimulationExportMode.Pkml;
          }
          get => ExportMode.HasFlag(SimulationExportMode.Pkml);
+      }
+
+      protected override void LogDefaultOptions(StringBuilder sb)
+      {
+         base.LogDefaultOptions(sb);
+         sb.AppendLine($"Export mode: {ExportMode}");
       }
    }
 }
