@@ -17,7 +17,6 @@ namespace PKSim.CLI.Commands
       [Option("logLevel", Required = false, HelpText = "Optional. Log verbosity (Debug, Information, Warning, Error). Default is Information.")]
       public LogLevel LogLevel { get; set; } = LogLevel.Information;
 
-
       protected virtual void LogDefaultOptions(StringBuilder sb)
       {
          sb.AppendLine($"Log file: {LogFileFullPath}");
