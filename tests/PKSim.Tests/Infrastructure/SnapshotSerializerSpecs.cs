@@ -5,13 +5,14 @@ using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Infrastructure.Serialization.Json;
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_SnapshotSerializer : ContextSpecificationAsync<ISnapshotSerializer>
+   public abstract class concern_for_SnapshotSerializer : ContextSpecificationAsync<IJsonSerializer>
    {
       protected Parameter _parameter;
       protected string _fileName;
@@ -26,7 +27,7 @@ namespace PKSim.Infrastructure
       protected override Task Context()
       {
          _parameter = new Parameter();
-         sut = new SnapshotSerializer();
+         sut = new JsonSerializer();
          return _completed;
       }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using CommandLine;
 using Microsoft.Extensions.Logging;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
@@ -27,10 +26,11 @@ namespace PKSim.CLI
 
          ApplicationStartup.Initialize();
 
-         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand>(args)
+         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(args)
             .WithParsed<JsonRunCommand>(startCommand)
             .WithParsed<SnapshotRunCommand>(startCommand)
             .WithParsed<ExportRunCommand>(startCommand)
+            .WithParsed<QualificationRunCommand>(startCommand)
             .WithNotParsed(err => valid = false);
 
          if (!valid)

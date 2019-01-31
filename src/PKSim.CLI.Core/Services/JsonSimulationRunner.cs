@@ -10,7 +10,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
@@ -93,7 +92,7 @@ namespace PKSim.CLI.Core.Services
 
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
-         _logger.AddInfo($"{_allSimulationNames.Count} simulations calculated and exported in '{timeSpent.ToDisplay()}'");
+         _logger.AddInfo($"{_allSimulationNames.Count} simulations calculated and exported in {timeSpent.ToDisplay()}");
 
          createSummaryFilesIn(outputDirectory, exportMode);
       }
@@ -134,7 +133,7 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Starting batch simulation export for file '{projectFile}'");
          try
          {
-            var project = await _snapshotTask.LoadProjectFromSnapshot(projectFile.FullName);
+            var project = await _snapshotTask.LoadProjectFromSnapshotFile(projectFile.FullName);
             var simulations = project.All<Simulation>();
             var numberOfSimulations = simulations.Count;
             _logger.AddInfo($"{numberOfSimulations} {"simulation".PluralizeIf(numberOfSimulations)} found in file '{projectFile}'");

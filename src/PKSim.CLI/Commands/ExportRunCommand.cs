@@ -44,8 +44,7 @@ namespace PKSim.CLI.Commands
       {
          var sb = new StringBuilder();
          sb.AppendLine($"Project file: {ProjectFile}");
-         this.LogOption(sb);
-         sb.AppendLine($"Export mode: {ExportMode}");
+         this.LogOutputFolder(sb);
 
          if (Simulations.Any())
             sb.AppendLine($"Exporting simulation: {Simulations.ToString(", ")}");
@@ -53,8 +52,7 @@ namespace PKSim.CLI.Commands
             sb.AppendLine($"Exporting all simulations");
 
          sb.AppendLine($"Run simulation: {RunSimulation}");
-         sb.AppendLine($"Log level: {LogLevel}");
-         sb.AppendLine($"Log file: {LogFileFullPath}");
+         LogDefaultOptions(sb);
          return sb.ToString();
       }
 

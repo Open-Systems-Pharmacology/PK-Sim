@@ -224,7 +224,6 @@ namespace PKSim.UI.Binders
          if (!chartData.Panes.Any())
             return;
 
-         diagram.PaneLayout.RowDefinitions[0].Weight = 1;
          diagram.DefaultPane.Visibility = ChartElementVisibility.Hidden;
       }
 

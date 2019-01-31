@@ -48,7 +48,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       protected override async Task<IEnumerable<PKSimProject>> LoadModelAsync(string snapshotFile)
       {
-         var project = await _snapshotTask.LoadProjectFromSnapshot(snapshotFile);
+         var project = await _snapshotTask.LoadProjectFromSnapshotFile(snapshotFile);
          _registrationTask.RegisterProject(project);
          await runQualificationPlans(project);
          return new[] { project };

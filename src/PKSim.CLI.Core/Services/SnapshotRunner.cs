@@ -10,10 +10,8 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
-using PKSim.Core.Extensions;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
 
@@ -98,13 +96,13 @@ namespace PKSim.CLI.Core.Services
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
 
-         _logger.AddInfo($"{fileMaps.Count} {"project".PluralizeIf(fileMaps)} loaded and exported in '{timeSpent.ToDisplay()}'");
+         _logger.AddInfo($"{fileMaps.Count} {"project".PluralizeIf(fileMaps)} loaded and exported in {timeSpent.ToDisplay()}");
       }
 
       private async Task createProjectFromSnapshotFile(FileMap file)
       {
          _logger.AddInfo($"Starting project export for '{file.SnapshotFile}'");
-         var project = await _snapshotTask.LoadProjectFromSnapshot(file.SnapshotFile);
+         var project = await _snapshotTask.LoadProjectFromSnapshotFile(file.SnapshotFile);
          if (project == null)
             return;
 

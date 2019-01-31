@@ -216,6 +216,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="CLI\ExportSimulationRunnerSpecs.cs" />
+    <Compile Include="CLI\QualificationRunnerSpecs.cs" />
     <Compile Include="CLI\SnapshotRunnerSpecs.cs" />
     <Compile Include="ContextSpecificationWithLocalContainer.cs" />
     <Compile Include="CoreConstantsForSpecs.cs" />
@@ -291,6 +292,7 @@
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
     <Compile Include="Core\ProcessMappingMapperSpecs.cs" />
     <Compile Include="Core\ProjectMapperSpecs.cs" />
+    <Compile Include="Core\SnapshotProjectSpecs.cs" />
     <Compile Include="Core\QualificationPlanMapperSpecs.cs" />
     <Compile Include="Core\QualificationStepMapperSpecs.cs" />
     <Compile Include="Core\QuantityInfoMapperSpecs.cs" />

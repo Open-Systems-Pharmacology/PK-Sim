@@ -579,45 +579,26 @@ namespace PKSim.Assets
             return sb.ToString();
          }
 
-         public static string FileIsNotAPKSimFile(string projectFile, string productName)
-         {
-            return $"File '{projectFile}' is not a {productName} project file.";
-         }
+         public static string FileIsNotAPKSimFile(string projectFile, string productName) => $"File '{projectFile}' is not a {productName} project file.";
 
-         public static string FileIsNotASimulationFile(string simualtionFile, string productName)
-         {
-            return $"File '{simualtionFile}' is not a {productName} simulation file.";
-         }
+         public static string FileIsNotASimulationFile(string simualtionFile, string productName) => $"File '{simualtionFile}' is not a {productName} simulation file.";
 
-         public static string NoTemplateBuildingBlockAvailableForType(string buildingBlockType)
-         {
-            return $"No template '{buildingBlockType}' available in the template database.";
-         }
+         public static string NoTemplateBuildingBlockAvailableForType(string buildingBlockType) => $"No template '{buildingBlockType}' available in the template database.";
 
-         public static string UnableToUpdateParameterException(string parameterPath, string simulationName)
-         {
-            return $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
-         }
+         public static string UnableToUpdateParameterException(string parameterPath, string simulationName) => $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
 
-         public static string ConstantParameterAlreadyExistsInContainer(string containerName, string parameterName)
-         {
-            return $"Parameter '{parameterName}' already exists in '{containerName}' but is defined as a constant parameter.";
-         }
+         public static string ConstantParameterAlreadyExistsInContainer(string containerName, string parameterName) => $"Parameter '{parameterName}' already exists in '{containerName}' but is defined as a constant parameter.";
 
          public static string FormulaParamterAlreadyExistsInContainerWithAnotherFormula(string containerName, string parameterName, string formulaString, string formulaStringToAdd)
          {
             return $"Parameter '{parameterName}' already exists in '{containerName}' with another formula:\nOld formula = '{formulaString}'\nNew formula = '{formulaStringToAdd}'.";
          }
 
-         public static string FormulationCannotBeUsedWithRoute(string formulationName, string applicationRoute)
-         {
-            return $"Formulation '{formulationName}' cannot be used with route '{applicationRoute}.";
-         }
+         public static string FormulationCannotBeUsedWithRoute(string formulationName, string applicationRoute) => 
+            $"Formulation '{formulationName}' cannot be used with route '{applicationRoute}.";
 
-         public static string NoFormulationFoundForRoute(string protocolName, string applicationRoute)
-         {
-            return $"No formulation found for route '{applicationRoute}' in administration protocol '{protocolName}'.";
-         }
+         public static string NoFormulationFoundForRoute(string protocolName, string applicationRoute) => 
+            $"No formulation found for route '{applicationRoute}' in administration protocol '{protocolName}'.";
 
          public static string UnableToCreateSimulationWithMoleculesHavingSameName(string duplicateName)
          {
@@ -626,20 +607,13 @@ namespace PKSim.Assets
 
          public static string IntervalNotDefinedForParameter(string parameterName) => $"Interval not defined for parameter '{parameterName}'.";
 
-         public static string NameCannotContainIllegalCharacters(IEnumerable<string> illegalCharacters)
-         {
-            return $"Name cannot contain any of the following characters:\n{illegalCharacters.ToString(", ", "'")}";
-         }
-
          public static string MoleculeNameCannotBeUsedAsItWouldCreateDuplicateProcesses(string moleculeName)
          {
             return $"Molecule cannot be renamed to '{moleculeName}'. Two or more processes would have the same name.";
          }
 
-         public static string CannotSelectTheSamePartialProcessMoreThanOnce(string processName)
-         {
-            return $"'{processName}' cannot be selected more than once.";
-         }
+         public static string CannotSelectTheSamePartialProcessMoreThanOnce(string processName) => 
+            $"'{processName}' cannot be selected more than once.";
 
          public static string CouldNotFindSpecies(string species, IEnumerable<string> availableSpecies)
          {
@@ -894,6 +868,15 @@ namespace PKSim.Assets
          public static string UnableToFindAQualificationStepRunnderFor(string qualificationStep) => $"Cannot find {ObjectTypes.QualificationStep} runner for '{qualificationStep}'";
 
          public static string CannotLoadSimulation(string simulationName) => $"Cannot load {ObjectTypes.Simulation} '{simulationName}'";
+
+         public const string UnableToLoadQualificationConfigurationFromOptions = "Unable to read configuration from options";
+
+         public const string QualificationOutputFolderNotDefined = "Qualification output folder not defined.";
+         
+         public static string CannotFindBuildingBlockInSnapshot(string buildingBlockType, string buildingBlockName, string project) => $"Could not find {buildingBlockType} '{buildingBlockName}' in snapshot '{project}'.";
+
+         public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
+
       }
 
       public static class Information

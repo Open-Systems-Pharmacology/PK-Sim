@@ -43,7 +43,7 @@ namespace PKSim.CLI.Core.RunOptions
       public override string ToString()
       {
          var sb = new StringBuilder();
-         this.LogOption(sb);
+         this.LogFolders(sb);
          sb.AppendLine($"Export mode: {ExportMode}");
          return sb.ToString();
       }
