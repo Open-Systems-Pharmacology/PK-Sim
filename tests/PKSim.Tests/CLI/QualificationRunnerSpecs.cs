@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using FakeItEasy;
-using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
@@ -17,8 +17,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
-using static PKSim.Assets.PKSimConstants.Error;
-using ILogger = OSPSuite.Core.Services.ILogger;
 using Individual = PKSim.Core.Snapshots.Individual;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
 
@@ -72,11 +70,6 @@ namespace PKSim.CLI
          return _completed;
       }
 
-      protected override Task Because()
-      {
-         return sut.RunBatchAsync(_runOptions);
-      }
-
       public override async Task GlobalCleanup()
       {
          await base.GlobalCleanup();
@@ -92,7 +85,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_log_the_error()
       {
-         A.CallTo(() => _logger.AddToLog(UnableToLoadQualificationConfigurationFromOptions, LogLevel.Error, A<string>._)).MustHaveHappened();
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
       }
    }
 
@@ -132,7 +125,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_log_the_error()
       {
-         A.CallTo(() => _logger.AddToLog(QualificationOutputFolderNotDefined, LogLevel.Error, A<string>._)).MustHaveHappened();
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
       }
    }
 
@@ -147,7 +140,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_log_the_error()
       {
-         A.CallTo(() => _logger.AddToLog(CannotLoadSnapshotFromFile(_qualificationConfiguration.SnapshotPath), LogLevel.Error, A<string>._)).MustHaveHappened();
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
       }
    }
 
@@ -174,6 +167,11 @@ namespace PKSim.CLI
 
          _observedData = DomainHelperForSpecs.ObservedData().WithName("OBS");
          _project.AddObservedData(_observedData);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_runOptions);
       }
 
       [Observation]
@@ -230,7 +228,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_log_the_error_that_the_snapshot_was_not_found()
       {
-         A.CallTo(() => _logger.AddToLog(CannotLoadSnapshotFromFile(_buildingBlockSwap.SnapshotPath), LogLevel.Error, A<string>._)).MustHaveHappened();
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
       }
    }
 
@@ -257,7 +255,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_log_the_error_that_the_snapshot_was_not_found()
       {
-         A.CallTo(() => _logger.AddToLog(CannotFindBuildingBlockInSnapshot(PKSimBuildingBlockType.Individual.ToString(), _buildingBlockSwap.Name, _buildingBlockSwap.SnapshotPath), LogLevel.Error, A<string>._)).MustHaveHappened();
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
       }
    }
 
@@ -270,11 +268,12 @@ namespace PKSim.CLI
       protected override async Task Context()
       {
          await base.Context();
+
          _buildingBlockSwap = new BuildingBlockSwap
          {
             Name = "Ind",
             Type = PKSimBuildingBlockType.Individual,
-            SnapshotPath = "RefSnapshotPath"
+            SnapshotPath = "RefSnapshotPath.json"
          };
 
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
@@ -286,7 +285,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_log_the_error_that_the_snapshot_was_not_found_in_the_project()
       {
-         A.CallTo(() => _logger.AddToLog(CannotFindBuildingBlockInSnapshot(PKSimBuildingBlockType.Individual.ToString(), _buildingBlockSwap.Name, PROJECT_NAME), LogLevel.Error, A<string>._)).MustHaveHappened();
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
       }
    }
 
@@ -317,6 +316,11 @@ namespace PKSim.CLI
       }
 
       private Individual _originalIndividual;
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_runOptions);
+      }
 
       [Observation]
       public void should_swap_the_individual_and_use_the_referenced_individual()
