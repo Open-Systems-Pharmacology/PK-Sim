@@ -81,12 +81,19 @@ namespace PKSim.CLI.Core.Services
          if (string.IsNullOrEmpty(config.OutputFolder))
             throw new QualificationRunException(QualificationOutputFolderNotDefined);
 
-         var begin = DateTime.UtcNow;
          if (!FileHelper.FileExists(config.SnapshotPath))
             throw new QualificationRunException(CannotLoadSnapshotFromFile(config.SnapshotPath));
 
          var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotPath);
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
+
+         if (runOptions.Validate)
+         {
+            _logger.AddInfo("Qualification run configuration valid");
+            return;
+         }
+
+         var begin = DateTime.UtcNow;
          var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot);
          var projectOutputFolder = createProjectOutputFolder(config.OutputFolder, project.Name);
 

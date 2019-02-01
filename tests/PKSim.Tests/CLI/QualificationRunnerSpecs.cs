@@ -207,6 +207,65 @@ namespace PKSim.CLI
       }
    }
 
+   public class When_running_the_qualification_runner_with_a_valid_configuration_for_a_valid_snapshot_file_in_validation_mode : concern_for_QualificationRunnerWithValidConfiguration
+   {
+      private string _expectedOutputPath;
+      private string _expectedObsDataPath;
+      private string _deletedDirectory;
+      private DataRepository _observedData;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _runOptions.Validate = true;
+         _qualificationConfiguration.ObservedDataFolderName = "OBS_DATA_FOLDER";
+
+         _expectedOutputPath = Path.Combine(_qualificationConfiguration.OutputFolder, PROJECT_NAME);
+         _expectedObsDataPath = Path.Combine(_qualificationConfiguration.OutputFolder, _qualificationConfiguration.ObservedDataFolderName);
+         DirectoryHelper.DirectoryExists = s => string.Equals(s, _expectedOutputPath);
+         DirectoryHelper.DeleteDirectory = (s, b) => _deletedDirectory = s;
+
+
+         _observedData = DomainHelperForSpecs.ObservedData().WithName("OBS");
+         _project.AddObservedData(_observedData);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_runOptions);
+      }
+
+      [Observation]
+      public void should_not_delete_the_project_output_folder_under_the_output_folder_if_available()
+      {
+         string.IsNullOrEmpty(_deletedDirectory).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_not_create_the_output_directory_for_the_project()
+      {
+         _createdDirectories.ShouldNotContain(_expectedOutputPath);
+      }
+
+      [Observation]
+      public void should_not_create_the_output_directory_for_the_observed_data()
+      {
+         _createdDirectories.ShouldNotContain(_expectedObsDataPath);
+      }
+
+      [Observation]
+      public void should_not_export_the_project()
+      {
+         A.CallTo(() => _exportSimulationRunner.ExportSimulationsIn(_project, A<ExportRunOptions>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_export_the_observed_data_defined_in_the_project_into_the_observed_data_folder()
+      {
+         A.CallTo(_dataRepositoryTask).MustNotHaveHappened();
+      }
+   }
+
    public class When_running_the_qualification_runner_with_a_valid_configuration_with_swapable_building_blocks_based_on_an_invalid_file : concern_for_QualificationRunnerWithValidConfiguration
    {
       private BuildingBlockSwap _buildingBlockSwap;
