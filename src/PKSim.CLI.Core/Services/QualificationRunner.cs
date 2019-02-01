@@ -3,11 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
+using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
@@ -34,6 +37,7 @@ namespace PKSim.CLI.Core.Services
    {
       public string SnapshotPath { get; set; }
       public string OutputFolder { get; set; }
+      public string ObservedDataFolderName { get; set; } = CoreConstants.DEFAULT_QUALIFICATION_OBSERVED_DATA_FOLDER_NAME;
       public BuildingBlockSwap[] BuildingBlocks { get; set; }
    }
 
@@ -45,12 +49,14 @@ namespace PKSim.CLI.Core.Services
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly ILogger _logger;
       private readonly IExportSimulationRunner _exportSimulationRunner;
+      private readonly IDataRepositoryTask _dataRepositoryTask;
 
       public QualificationRunner(ISnapshotTask snapshotTask,
          IJsonSerializer jsonSerializer,
          IWorkspace workspace,
          IWorkspacePersistor workspacePersistor,
          IExportSimulationRunner exportSimulationRunner,
+         IDataRepositoryTask dataRepositoryTask,
          ILogger logger
       )
       {
@@ -60,6 +66,7 @@ namespace PKSim.CLI.Core.Services
          _workspacePersistor = workspacePersistor;
          _logger = logger;
          _exportSimulationRunner = exportSimulationRunner;
+         _dataRepositoryTask = dataRepositoryTask;
       }
 
       public async Task RunBatchAsync(QualificationRunOptions runOptions)
@@ -87,12 +94,11 @@ namespace PKSim.CLI.Core.Services
          }
 
          var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotPath);
-         snapshot.Name = FileHelper.FileNameFromFileFullPath(config.SnapshotPath);
-
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
-
          var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot);
          var projectOutputFolder = createProjectOutputFolder(config.OutputFolder, project.Name);
+
+         _logger.AddDebug($"Exporting project {project.Name} to '{projectOutputFolder}'");
 
          var exportRunOtions = new ExportRunOptions
          {
@@ -102,6 +108,8 @@ namespace PKSim.CLI.Core.Services
 
          await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOtions);
 
+         exportObservedData(project, config);
+
          var projectFile = Path.Combine(projectOutputFolder, $"{project.Name}{CoreConstants.Filter.PROJECT_EXTENSION}");
          _workspace.Project = project;
          _workspacePersistor.SaveSession(_workspace, projectFile);
@@ -109,6 +117,23 @@ namespace PKSim.CLI.Core.Services
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
          _logger.AddInfo($"Project '{project.Name}' exported for qualification in {timeSpent.ToDisplay()}");
+      }
+
+      private void exportObservedData(PKSimProject project, QualifcationConfiguration qualifcationConfiguration)
+      {
+         if (!project.AllObservedData.Any())
+            return;
+
+         var observedDataOutputFolder = Path.Combine(qualifcationConfiguration.OutputFolder, qualifcationConfiguration.ObservedDataFolderName);
+
+         DirectoryHelper.CreateDirectory(observedDataOutputFolder);
+
+         project.AllObservedData.Each(obs =>
+         {
+            var fileFullPath = Path.Combine(observedDataOutputFolder, $"{obs.Name}{Constants.Filter.XLSX_EXTENSION}");
+            _logger.AddDebug($"Observed data '{obs.Name}' exported to '{fileFullPath}'");
+            _dataRepositoryTask.ExportToExcel(obs, fileFullPath, launchExcel: false);
+         });
       }
 
       private string createProjectOutputFolder(string outputPath, string projectName)
