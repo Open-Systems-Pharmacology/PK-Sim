@@ -147,7 +147,6 @@ namespace PKSim.CLI
    public class When_running_the_qualification_runner_with_a_valid_configuration_for_a_valid_snapshot_file : concern_for_QualificationRunnerWithValidConfiguration
    {
       private string _expectedOutputPath;
-      private string _expectedObsDataPath;
       private string _deletedDirectory;
       private ExportRunOptions _exportOptions;
       private DataRepository _observedData;
@@ -155,10 +154,9 @@ namespace PKSim.CLI
       protected override async Task Context()
       {
          await base.Context();
-         _qualificationConfiguration.ObservedDataFolderName = "OBS_DATA_FOLDER";
+         _qualificationConfiguration.ObservedDataFolder = "OBS_DATA_FOLDER";
 
          _expectedOutputPath = Path.Combine(_qualificationConfiguration.OutputFolder, PROJECT_NAME);
-         _expectedObsDataPath = Path.Combine(_qualificationConfiguration.OutputFolder, _qualificationConfiguration.ObservedDataFolderName);
          DirectoryHelper.DirectoryExists = s => string.Equals(s, _expectedOutputPath);
          DirectoryHelper.DeleteDirectory = (s, b) => _deletedDirectory = s;
 
@@ -189,7 +187,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_create_the_output_directory_for_the_observed_data()
       {
-         _createdDirectories.ShouldContain(_expectedObsDataPath);
+         _createdDirectories.ShouldContain(_qualificationConfiguration.ObservedDataFolder);
       }
 
       [Observation]
@@ -202,7 +200,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_export_the_observed_data_defined_in_the_project_into_the_observed_data_folder()
       {
-         var fileName = Path.Combine(_expectedObsDataPath, $"{_observedData.Name}{Constants.Filter.XLSX_EXTENSION}");
+         var fileName = Path.Combine(_qualificationConfiguration.ObservedDataFolder, $"{_observedData.Name}{Constants.Filter.XLSX_EXTENSION}");
          A.CallTo(() => _dataRepositoryTask.ExportToExcel(_observedData, fileName, false)).MustHaveHappened();
       }
    }
@@ -218,10 +216,10 @@ namespace PKSim.CLI
       {
          await base.Context();
          _runOptions.Validate = true;
-         _qualificationConfiguration.ObservedDataFolderName = "OBS_DATA_FOLDER";
+         _qualificationConfiguration.ObservedDataFolder = "OBS_DATA_FOLDER";
 
          _expectedOutputPath = Path.Combine(_qualificationConfiguration.OutputFolder, PROJECT_NAME);
-         _expectedObsDataPath = Path.Combine(_qualificationConfiguration.OutputFolder, _qualificationConfiguration.ObservedDataFolderName);
+         _expectedObsDataPath = Path.Combine(_qualificationConfiguration.OutputFolder, _qualificationConfiguration.ObservedDataFolder);
          DirectoryHelper.DirectoryExists = s => string.Equals(s, _expectedOutputPath);
          DirectoryHelper.DeleteDirectory = (s, b) => _deletedDirectory = s;
 

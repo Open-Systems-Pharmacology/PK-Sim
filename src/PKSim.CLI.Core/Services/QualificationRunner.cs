@@ -36,9 +36,26 @@ namespace PKSim.CLI.Core.Services
 
    public class QualifcationConfiguration
    {
+      /// <summary>
+      /// Path of project snapshot file used for this qualificaiton run
+      /// </summary>
       public string SnapshotPath { get; set; }
+
+      /// <summary>
+      /// Output folder where project artefacts will be exported. It will be created if it does not exist
+      /// </summary>
       public string OutputFolder { get; set; }
-      public string ObservedDataFolderName { get; set; } = CoreConstants.DEFAULT_QUALIFICATION_OBSERVED_DATA_FOLDER_NAME;
+
+      /// <summary>
+      /// Folder were observed data will be exported
+      /// </summary>
+      public string ObservedDataFolder { get; set; } 
+
+      /// <summary>
+      /// Path of mapping file that will be created for the project.
+      /// </summary>
+      public string MappingPath { get; set; } 
+
       public BuildingBlockSwap[] BuildingBlocks { get; set; }
    }
 
@@ -123,8 +140,7 @@ namespace PKSim.CLI.Core.Services
          if (!project.AllObservedData.Any())
             return;
 
-         var observedDataOutputFolder = Path.Combine(qualifcationConfiguration.OutputFolder, qualifcationConfiguration.ObservedDataFolderName);
-
+         var observedDataOutputFolder = qualifcationConfiguration.ObservedDataFolder;
          DirectoryHelper.CreateDirectory(observedDataOutputFolder);
 
          project.AllObservedData.Each(obs =>
