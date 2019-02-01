@@ -201,7 +201,6 @@
     <Compile Include="Nodes\ComparisonNode.cs" />
     <Compile Include="Nodes\CompoundParameterNode.cs" />
     <Compile Include="Nodes\CompoundParameterNodeType.cs" />
-    <Compile Include="Nodes\QualificationPlanNode.cs" />
     <Compile Include="Nodes\SystemProcessRootNode.cs" />
     <Compile Include="Presenters\Charts\IPKAnalysisWithChartPresenter.cs" />
     <Compile Include="Presenters\Compounds\EditTableSolubilityParameterPresenter.cs" />

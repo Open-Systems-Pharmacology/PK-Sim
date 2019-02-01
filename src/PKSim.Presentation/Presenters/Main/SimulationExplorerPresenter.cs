@@ -1,22 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Nodes;
-using PKSim.Presentation.Regions;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.Views.Main;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Classifications;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -24,7 +15,16 @@ using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Nodes;
+using PKSim.Presentation.Regions;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.Views.Main;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters.Main
@@ -33,8 +33,6 @@ namespace PKSim.Presentation.Presenters.Main
       IListener<SimulationStatusChangedEvent>,
       IListener<SimulationComparisonCreatedEvent>,
       IListener<SimulationComparisonDeletedEvent>,
-      IListener<QualificationPlanCreatedEvent>,
-      IListener<QualificationPlanDeletedEvent>,
       IListener<RenamedEvent>,
       IListener<SwapBuildingBlockEvent>
 
@@ -51,12 +49,12 @@ namespace PKSim.Presentation.Presenters.Main
          IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IBuildingBlockIconRetriever buildingBlockIconRetriever,
          IRegionResolver regionResolver, IBuildingBlockTask buildingBlockTask, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
          IToolTipPartCreator toolTipPartCreator, IProjectRetriever projectRetriever, IClassificationPresenter classificationPresenter, IParameterAnalysablesInExplorerPresenter parameterAnalysablesInExplorerPresenter, IObservedDataInSimulationManager observedDataInSimulationManager) :
-            base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver, buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
+         base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver, buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
          _parameterAnalysablesInExplorerPresenter = parameterAnalysablesInExplorerPresenter;
          _observedDataInSimulationManager = observedDataInSimulationManager;
-         _parameterAnalysablesInExplorerPresenter.InitializeWith(this,classificationPresenter);
+         _parameterAnalysablesInExplorerPresenter.InitializeWith(this, classificationPresenter);
       }
 
       public override bool CanDrag(ITreeNode node)
@@ -66,7 +64,6 @@ namespace PKSim.Presentation.Presenters.Main
 
          return node.IsAnImplementationOf<SimulationNode>() ||
                 node.IsAnImplementationOf<ComparisonNode>() ||
-                node.IsAnImplementationOf<QualificationPlanNode>() ||
                 node.IsAnImplementationOf<ClassificationNode>() ||
                 _parameterAnalysablesInExplorerPresenter.CanDrag(node);
       }
@@ -93,7 +90,6 @@ namespace PKSim.Presentation.Presenters.Main
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ComparisonFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ParameterIdentificationFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.SensitivityAnalysisFolder));
-            _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.QualificationPlanFolder));
 
             //classifications
             _classificationPresenter.AddClassificationsToTree(project.AllClassificationsByType(ClassificationType.Simulation));
@@ -102,7 +98,6 @@ namespace PKSim.Presentation.Presenters.Main
 
             project.AllClassifiablesByType<ClassifiableSimulation>().Each(x => addClassifiableSimulationToRootFolder(x));
             project.AllClassifiablesByType<ClassifiableComparison>().Each(x => addClassifiableComparisonToRootFolder(x));
-            project.AllClassifiablesByType<ClassifiableQualificationPlan>().Each(x => addClassifiableQualificationPlanToRootFolder(x));
 
             _parameterAnalysablesInExplorerPresenter.AddParameterAnalysablesToTree(project);
          }
@@ -125,11 +120,6 @@ namespace PKSim.Presentation.Presenters.Main
          return AddSubjectToClassifyToTree<ISimulationComparison, ClassifiableComparison>(simulationComparison, addClassifiableComparisonToRootFolder);
       }
 
-      private ITreeNode addQualificationPlanToTree(QualificationPlan qualificationPlan)
-      {
-         return AddSubjectToClassifyToTree<QualificationPlan, ClassifiableQualificationPlan>(qualificationPlan, addClassifiableQualificationPlanToRootFolder);
-      }
-
       private ITreeNode addClassifiableSimulationToRootFolder(ClassifiableSimulation classifiableSimulation)
       {
          return AddClassifiableToTree(classifiableSimulation, RootNodeTypes.SimulationFolder, addClassifiableSimulationToTree);
@@ -140,27 +130,13 @@ namespace PKSim.Presentation.Presenters.Main
          return AddClassifiableToTree(classifiableComparison, RootNodeTypes.ComparisonFolder, addClassifiableComparisonToTree);
       }
 
-      private ITreeNode addClassifiableQualificationPlanToRootFolder(ClassifiableQualificationPlan classifiableQualificationPlan)
-      {
-         return AddClassifiableToTree(classifiableQualificationPlan, RootNodeTypes.QualificationPlanFolder, addClassifiableQualificationPlanToTree);
-      }
-
-     private ITreeNode addClassifiableComparisonToTree(ITreeNode<IClassification> classificationNode, ClassifiableComparison classifiableComparison)
+      private ITreeNode addClassifiableComparisonToTree(ITreeNode<IClassification> classificationNode, ClassifiableComparison classifiableComparison)
       {
          var simulationComparisonNode = _treeNodeFactory.CreateFor(classifiableComparison)
             .WithIcon(_buildingBlockIconRetriever.IconFor(classifiableComparison.Comparison));
 
          AddClassifiableNodeToView(simulationComparisonNode, classificationNode);
          return simulationComparisonNode;
-      }
-
-      private ITreeNode addClassifiableQualificationPlanToTree(ITreeNode<IClassification> classificationNode, ClassifiableQualificationPlan classifiableQualificationPlan)
-      {
-         var qualificationPlanNode = _treeNodeFactory.CreateFor(classifiableQualificationPlan)
-            .WithIcon(_buildingBlockIconRetriever.IconFor(classifiableQualificationPlan.QualificationPlan));
-
-         AddClassifiableNodeToView(qualificationPlanNode, classificationNode);
-         return qualificationPlanNode;
       }
 
       private ITreeNode addClassifiableSimulationToTree(ITreeNode<IClassification> classificationNode, ClassifiableSimulation classifiableSimulation)
@@ -234,18 +210,6 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(SimulationComparisonDeletedEvent eventToHandle)
       {
          RemoveNodeFor(eventToHandle.Chart);
-      }
-
-
-      public void Handle(QualificationPlanCreatedEvent eventToHandle)
-      {
-         var node = addQualificationPlanToTree(eventToHandle.QualificationPlan);
-         EnsureNodeVisible(node);
-      }
-
-      public void Handle(QualificationPlanDeletedEvent eventToHandle)
-      {
-         RemoveNodeFor(eventToHandle.QualificationPlan);
       }
 
       public void Handle(RenamedEvent renamedEvent)
@@ -378,6 +342,5 @@ namespace PKSim.Presentation.Presenters.Main
 
          allNodesToUpdate.Each(x => x.TemplateBuildingBlock = eventToHandle.NewBuildingBlock);
       }
-
    }
 }

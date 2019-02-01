@@ -1,18 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Assets;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Nodes;
-using PKSim.Presentation.Presenters.Main;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.Views.Main;
-
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
@@ -25,7 +17,14 @@ using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
+using PKSim.Assets;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Nodes;
+using PKSim.Presentation.Presenters.Main;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.Views.Main;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation
@@ -55,13 +54,11 @@ namespace PKSim.Presentation
       protected ComparisonNode _comparisonNode;
       protected RootNode _simulationFolderNode;
       protected RootNode _comparisonFolderNode;
-      protected RootNode _qualificationPlanFolderNode;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
       protected IPKSimBuildingBlock _templageCompoundBuildingBlock;
       protected ITreeNode _usedObservedDataNode;
       private IParameterAnalysablesInExplorerPresenter _parameterAnalysablesInExplorerPresenter;
       protected IObservedDataInSimulationManager _observedDataInSimulationManager;
-      protected QualificationPlanNode _qualificationPlanNode;
 
       protected override void Context()
       {
@@ -76,11 +73,10 @@ namespace PKSim.Presentation
          _toolTipNodeCreator = A.Fake<IToolTipPartCreator>();
          _projectRetriever = A.Fake<IProjectRetriever>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
-         _parameterAnalysablesInExplorerPresenter= A.Fake<IParameterAnalysablesInExplorerPresenter>();
+         _parameterAnalysablesInExplorerPresenter = A.Fake<IParameterAnalysablesInExplorerPresenter>();
 
          _simulationFolderNode = new RootNode(RootNodeTypes.SimulationFolder);
          _comparisonFolderNode = new RootNode(RootNodeTypes.ComparisonFolder);
-         _qualificationPlanFolderNode = new RootNode(RootNodeTypes.ComparisonFolder);
          _project = new PKSimProject();
          _usedObservedData = new UsedObservedData {Id = "UsedData"};
          _simulation = new IndividualSimulation().WithName("individualSimulation").WithId("individualSimulation");
@@ -117,18 +113,12 @@ namespace PKSim.Presentation
          _project.AddSimulationComparison(simulationComparison);
          A.CallTo(() => _treeNodeFactory.CreateFor(classifiableComparison)).Returns(_comparisonNode);
 
-         var qualificationPlan = new QualificationPlan {Id = "QP_ID"};
-         var classifiableQualificationPlan = new ClassifiableQualificationPlan {Subject = qualificationPlan};
-         _qualificationPlanNode = new QualificationPlanNode(classifiableQualificationPlan);
-         _project.AddQualificationPlan(qualificationPlan);
-         A.CallTo(() => _treeNodeFactory.CreateFor(classifiableQualificationPlan)).Returns(_qualificationPlanNode);
 
          _usedCompoundBuildingBlock = new UsedBuildingBlock("toto", PKSimBuildingBlockType.Compound) {Id = "usedBB"};
          _simulation.AddUsedBuildingBlock(_usedCompoundBuildingBlock);
          _simulation.AddUsedObservedData(_usedObservedData);
 
          _project.AddClassifiable(classifiableComparison);
-         _project.AddClassifiable(classifiableQualificationPlan);
 
          _templageCompoundBuildingBlock = A.Fake<IPKSimBuildingBlock>();
          _usedBuildingBlockNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, _templageCompoundBuildingBlock);
@@ -140,11 +130,10 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.TreeView.NodeById(_usedCompoundBuildingBlock.Id)).Returns(_usedBuildingBlockNode);
          A.CallTo(() => _view.TreeView.NodeById(RootNodeTypes.SimulationFolder.Id)).Returns(_simulationFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(RootNodeTypes.ComparisonFolder.Id)).Returns(_comparisonFolderNode);
-         A.CallTo(() => _view.TreeView.NodeById(RootNodeTypes.QualificationPlanFolder.Id)).Returns(_qualificationPlanFolderNode);
 
          _observedDataInSimulationManager = A.Fake<IObservedDataInSimulationManager>();
          sut = new SimulationExplorerPresenter(_view, _treeNodeFactory, _contextMenuFactory, _multipleTreeNodeContextMenuFactory, _buildingBlockIconRetriever,
-            _regionResolver, _buildingBlockTask, _buildingBlockInSimulationManager, _toolTipNodeCreator, _projectRetriever, _classificationPresenter,_parameterAnalysablesInExplorerPresenter, _observedDataInSimulationManager);
+            _regionResolver, _buildingBlockTask, _buildingBlockInSimulationManager, _toolTipNodeCreator, _projectRetriever, _classificationPresenter, _parameterAnalysablesInExplorerPresenter, _observedDataInSimulationManager);
 
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
       }
@@ -261,12 +250,6 @@ namespace PKSim.Presentation
          _comparisonFolderNode.Children.Contains(_comparisonNode).ShouldBeTrue();
       }
 
-      [Observation]
-      public void should_add_one_node_for_each_qualification_plan_under_the_qualification_plan_root_node()
-      {
-         _qualificationPlanFolderNode.Children.Contains(_qualificationPlanNode).ShouldBeTrue();
-      }
-    
       [Observation]
       public void should_not_add_any_building_block_information_for_the_imported_simulation()
       {
