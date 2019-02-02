@@ -80,10 +80,11 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelProject> MapToModel(SnapshotProject snapshot)
       {
-         _logger.AddDebug($"Loading project '{snapshot.Name}' from snapshot...");
+         _logger.AddDebug($"Loading project '{snapshot.Name}' from snapshot...", snapshot.Name);
 
          var project = new ModelProject
          {
+            Name = snapshot.Name,
             Description = snapshot.Description,
             Creation = _creationMetaDataFactory.Create()
          };

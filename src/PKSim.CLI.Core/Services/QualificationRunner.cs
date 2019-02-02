@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Exceptions;
-using OSPSuite.Utility.Extensions;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -24,38 +23,44 @@ namespace PKSim.CLI.Core.Services
    {
       public PKSimBuildingBlockType Type { get; set; }
       public string Name { get; set; }
-      public string SnapshotPath { get; set; }
+      public string SnapshotFile { get; set; }
 
-      public void Deconstruct(out PKSimBuildingBlockType type, out string name, out string snapshotPath)
+      public void Deconstruct(out PKSimBuildingBlockType type, out string name, out string snapshotFile)
       {
          type = Type;
          name = Name;
-         snapshotPath = SnapshotPath;
+         snapshotFile = SnapshotFile;
       }
    }
 
    public class QualifcationConfiguration
    {
       /// <summary>
-      /// Path of project snapshot file used for this qualificaiton run
+      ///    Path of project snapshot file used for this qualificaiton run
       /// </summary>
-      public string SnapshotPath { get; set; }
+      public string SnapshotFile { get; set; }
 
       /// <summary>
-      /// Output folder where project artefacts will be exported. It will be created if it does not exist
+      ///    Output folder where project artefacts will be exported. It will be created if it does not exist
       /// </summary>
       public string OutputFolder { get; set; }
 
       /// <summary>
-      /// Folder were observed data will be exported
+      ///    Folder were observed data will be exported
       /// </summary>
-      public string ObservedDataFolder { get; set; } 
+      public string ObservedDataFolder { get; set; }
 
       /// <summary>
-      /// Path of mapping file that will be created for the project.
+      ///    Path of mapping file that will be created for the project.
       /// </summary>
-      public string MappingPath { get; set; } 
+      public string MappingFile { get; set; }
 
+      /// <summary>
+      /// Path of configuration file that will be created as part of the qualificaton run
+      /// </summary>
+      public string ReportConfigurationFile { get; set; }
+
+      
       public BuildingBlockSwap[] BuildingBlocks { get; set; }
    }
 
@@ -98,10 +103,10 @@ namespace PKSim.CLI.Core.Services
          if (string.IsNullOrEmpty(config.OutputFolder))
             throw new QualificationRunException(QualificationOutputFolderNotDefined);
 
-         if (!FileHelper.FileExists(config.SnapshotPath))
-            throw new QualificationRunException(CannotLoadSnapshotFromFile(config.SnapshotPath));
+         if (!FileHelper.FileExists(config.SnapshotFile))
+            throw new QualificationRunException(CannotLoadSnapshotFromFile(config.SnapshotFile));
 
-         var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotPath);
+         var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotFile);
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
 
          if (runOptions.Validate)
@@ -114,7 +119,7 @@ namespace PKSim.CLI.Core.Services
          var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot);
          var projectOutputFolder = createProjectOutputFolder(config.OutputFolder, project.Name);
 
-         _logger.AddDebug($"Exporting project {project.Name} to '{projectOutputFolder}'");
+         _logger.AddDebug($"Exporting project {project.Name} to '{projectOutputFolder}'", project.Name);
 
          var exportRunOtions = new ExportRunOptions
          {
@@ -122,9 +127,19 @@ namespace PKSim.CLI.Core.Services
             ExportMode = SimulationExportMode.All
          };
 
-         await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOtions);
 
-         exportObservedData(project, config);
+         var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOtions);
+         var simulationMappings = simulationExports.Select(x => simulationMappingFrom(x, config.ReportConfigurationFile)).ToArray();
+         var observedDataMappings = exportObservedData(project, config);
+
+         var mapping = new QualificationMapping
+         {
+            SimulationMappings = simulationMappings,
+            ObservedDataMappings = observedDataMappings
+         };
+
+         await _jsonSerializer.Serialize(mapping, config.MappingFile);
+
 
          var projectFile = Path.Combine(projectOutputFolder, $"{project.Name}{CoreConstants.Filter.PROJECT_EXTENSION}");
          _workspace.Project = project;
@@ -132,23 +147,37 @@ namespace PKSim.CLI.Core.Services
 
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
-         _logger.AddInfo($"Project '{project.Name}' exported for qualification in {timeSpent.ToDisplay()}");
+         _logger.AddInfo($"Project '{project.Name}' exported for qualification in {timeSpent.ToDisplay()}", project.Name);
       }
 
-      private void exportObservedData(PKSimProject project, QualifcationConfiguration qualifcationConfiguration)
+      private SimulationMapping simulationMappingFrom(SimulationExport simulationExport, string reportFile) =>
+         new SimulationMapping
+         {
+            Path = FileHelper.CreateRelativePath(simulationExport.SimulationFolder, reportFile),
+            RefProject = simulationExport.ProjectName,
+            RefSimulation = simulationExport.SimulationFolder
+         };
+
+      private ObservedDataMapping[] exportObservedData(PKSimProject project, QualifcationConfiguration qualifcationConfiguration)
       {
          if (!project.AllObservedData.Any())
-            return;
+            return null;
 
          var observedDataOutputFolder = qualifcationConfiguration.ObservedDataFolder;
          DirectoryHelper.CreateDirectory(observedDataOutputFolder);
 
-         project.AllObservedData.Each(obs =>
+         return project.AllObservedData.Select(obs =>
          {
-            var fileFullPath = Path.Combine(observedDataOutputFolder, $"{obs.Name}{Constants.Filter.XLSX_EXTENSION}");
-            _logger.AddDebug($"Observed data '{obs.Name}' exported to '{fileFullPath}'");
+            var fileFullPath = Path.Combine(observedDataOutputFolder, $"{FileHelper.RemoveIllegalCharactersFrom(obs.Name)}{Constants.Filter.XLSX_EXTENSION}");
+            var relativePath = FileHelper.CreateRelativePath(fileFullPath, qualifcationConfiguration.ReportConfigurationFile);
+            _logger.AddDebug($"Observed data '{obs.Name}' exported to '{fileFullPath}'", project.Name);
             _dataRepositoryTask.ExportToExcel(obs, fileFullPath, launchExcel: false);
-         });
+            return new ObservedDataMapping
+            {
+               Id = obs.Name,
+               Path = relativePath,
+            };
+         }).ToArray();
       }
 
       private string createProjectOutputFolder(string outputPath, string projectName)

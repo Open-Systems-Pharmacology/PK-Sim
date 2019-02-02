@@ -103,15 +103,15 @@ namespace PKSim.CLI
          UpdateConfiguration();
          _projectSnapshot = new SnapshotProject().WithName(PROJECT_NAME);
          _project = new PKSimProject().WithName(PROJECT_NAME);
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_qualificationConfiguration.SnapshotPath)).Returns(_projectSnapshot);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
          A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_projectSnapshot)).Returns(_project);
-         FileHelper.FileExists = s => string.Equals(s, _qualificationConfiguration.SnapshotPath);
+         FileHelper.FileExists = s => string.Equals(s, _qualificationConfiguration.SnapshotFile);
       }
 
       protected virtual void UpdateConfiguration()
       {
          _qualificationConfiguration.OutputFolder = "AnOutputFolder";
-         _qualificationConfiguration.SnapshotPath = $"{PROJECT_NAME}.json";
+         _qualificationConfiguration.SnapshotFile = $"{PROJECT_NAME}.json";
       }
    }
 
@@ -275,10 +275,10 @@ namespace PKSim.CLI
          {
             Name = "Ind",
             Type = PKSimBuildingBlockType.Individual,
-            SnapshotPath = "RefSnapshotPathDoesNotExist"
+            SnapshotFile = "RefSnapshotPathDoesNotExist"
          };
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotPath)).Returns((SnapshotProject) null);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns((SnapshotProject) null);
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
       }
 
@@ -301,12 +301,12 @@ namespace PKSim.CLI
          {
             Name = "Ind",
             Type = PKSimBuildingBlockType.Individual,
-            SnapshotPath = "RefSnapshotPath.json"
+            SnapshotFile = "RefSnapshotPath.json"
          };
 
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
          _refSnapshotProject = new SnapshotProject();
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotPath)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -330,13 +330,13 @@ namespace PKSim.CLI
          {
             Name = "Ind",
             Type = PKSimBuildingBlockType.Individual,
-            SnapshotPath = "RefSnapshotPath.json"
+            SnapshotFile = "RefSnapshotPath.json"
          };
 
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
          _refIndividual = new Individual().WithName(_buildingBlockSwap.Name);
          _refSnapshotProject = new SnapshotProject {Individuals = new[] {_refIndividual}};
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotPath)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -359,7 +359,7 @@ namespace PKSim.CLI
          {
             Name = "Ind",
             Type = PKSimBuildingBlockType.Individual,
-            SnapshotPath = "RefSnapshotPath"
+            SnapshotFile = "RefSnapshotPath"
          };
 
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
@@ -369,7 +369,7 @@ namespace PKSim.CLI
          _refIndividual = new Individual().WithName(_buildingBlockSwap.Name);
          _refSnapshotProject = new SnapshotProject {Individuals = new[] {_refIndividual}};
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotPath)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       private Individual _originalIndividual;
