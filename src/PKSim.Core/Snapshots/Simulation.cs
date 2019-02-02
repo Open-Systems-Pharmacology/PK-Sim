@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace PKSim.Core.Snapshots
 {
@@ -27,5 +28,19 @@ namespace PKSim.Core.Snapshots
       public PopulationAnalysisChart[] PopulationAnalyses { get; set; }
 
       public CompoundProcessSelection[] Interactions { get; set; }
+
+      public IReadOnlyList<Chart> Analyses
+      {
+         get
+         {
+            if (IndividualAnalyses != null)
+               return IndividualAnalyses;
+
+            if (PopulationAnalyses != null)
+               return PopulationAnalyses;
+
+            return new List<Chart>();
+         }
+      }
    }
 }

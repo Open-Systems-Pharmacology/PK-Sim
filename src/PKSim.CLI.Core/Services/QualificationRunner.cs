@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
 using static PKSim.Assets.PKSimConstants.Error;
@@ -31,6 +33,12 @@ namespace PKSim.CLI.Core.Services
          name = Name;
          snapshotFile = SnapshotFile;
       }
+   }
+
+   public class SimulationPlot
+   {
+      public string Simulation { get; set; }
+      public int SectionId { get; set; }
    }
 
    public class QualifcationConfiguration
@@ -56,11 +64,12 @@ namespace PKSim.CLI.Core.Services
       public string MappingFile { get; set; }
 
       /// <summary>
-      /// Path of configuration file that will be created as part of the qualificaton run
+      ///    Path of configuration file that will be created as part of the qualificaton run
       /// </summary>
       public string ReportConfigurationFile { get; set; }
 
-      
+      public SimulationPlot[] SimulationCharts { get; set; }
+
       public BuildingBlockSwap[] BuildingBlocks { get; set; }
    }
 
@@ -109,6 +118,8 @@ namespace PKSim.CLI.Core.Services
          var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotFile);
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
 
+         var charts = retrieveChartDefinitionsFrom(snapshot, config);
+
          if (runOptions.Validate)
          {
             _logger.AddInfo("Qualification run configuration valid");
@@ -135,7 +146,8 @@ namespace PKSim.CLI.Core.Services
          var mapping = new QualificationMapping
          {
             SimulationMappings = simulationMappings,
-            ObservedDataMappings = observedDataMappings
+            ObservedDataMappings = observedDataMappings,
+            Charts = new List<object>(charts).ToArray()
          };
 
          await _jsonSerializer.Serialize(mapping, config.MappingFile);
@@ -148,6 +160,31 @@ namespace PKSim.CLI.Core.Services
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
          _logger.AddInfo($"Project '{project.Name}' exported for qualification in {timeSpent.ToDisplay()}", project.Name);
+      }
+
+      private Chart[] retrieveChartDefinitionsFrom(Project snapshotProject, QualifcationConfiguration configuration)
+      {
+         if (configuration.SimulationCharts == null || !configuration.SimulationCharts.Any())
+            return new List<Chart>().ToArray();
+
+         if (snapshotProject.Simulations == null)
+            throw new QualificationRunException($"Cannot export charts as simulation is defined in project '{snapshotProject.Name}'.");
+
+         return configuration.SimulationCharts.SelectMany(x => retrieveChartDefinitionsForSimulation(x, snapshotProject)).ToArray();
+      }
+
+      private IEnumerable<Chart> retrieveChartDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
+      {
+         var simuationName = simulationPlot.Simulation;
+         var simulation = snapshotProject.Simulations.FindByName(simuationName);
+         if (simulation == null)
+            throw new QualificationRunException($"Cannot find simulation {simuationName} in project '{snapshotProject.Name}'.");
+
+         return simulation.Analyses.Select(chart =>
+         {
+            chart.SectionId = simulationPlot.SectionId;
+            return chart;
+         });
       }
 
       private SimulationMapping simulationMappingFrom(SimulationExport simulationExport, string reportFile) =>
