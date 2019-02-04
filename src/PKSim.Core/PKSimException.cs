@@ -17,4 +17,19 @@ namespace PKSim.Core
       {
       }
    }
+
+   public class QualificationRunException : OSPSuiteException
+   {
+      public QualificationRunException()
+      {
+      }
+
+      public QualificationRunException(string message) : base(message)
+      {
+      }
+
+      public QualificationRunException(string message, Exception innerException) : base(message, innerException)
+      {
+      }
+   }
 }

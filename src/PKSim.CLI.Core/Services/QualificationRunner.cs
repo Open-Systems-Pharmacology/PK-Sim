@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
@@ -75,26 +76,24 @@ namespace PKSim.CLI.Core.Services
 
          var config = await readConfigurationFrom(runOptions);
          if (config == null)
-         {
-            _logger.AddError(UnableToLoadQualificationConfigurationFromOptions);
-            return;
-         }
+            throw new QualificationRunException(UnableToLoadQualificationConfigurationFromOptions);
 
          if (string.IsNullOrEmpty(config.OutputFolder))
+            throw new QualificationRunException(QualificationOutputFolderNotDefined);
+
+         if (!FileHelper.FileExists(config.SnapshotPath))
+            throw new QualificationRunException(CannotLoadSnapshotFromFile(config.SnapshotPath));
+
+         var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotPath);
+         await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
+
+         if (runOptions.Validate)
          {
-            _logger.AddError(QualificationOutputFolderNotDefined);
+            _logger.AddInfo("Qualification run configuration valid");
             return;
          }
 
          var begin = DateTime.UtcNow;
-         if (!FileHelper.FileExists(config.SnapshotPath))
-         {
-            _logger.AddError(CannotLoadSnapshotFromFile(config.SnapshotPath));
-            return;
-         }
-
-         var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotPath);
-         await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
          var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot);
          var projectOutputFolder = createProjectOutputFolder(config.OutputFolder, project.Name);
 
@@ -161,25 +160,15 @@ namespace PKSim.CLI.Core.Services
          var (type, name, snapshotPath) = buildingBlockSwap;
          var referenceSnasphot = await _snapshotTask.LoadSnapshotFromFile<Project>(snapshotPath);
          if (referenceSnasphot == null)
-         {
-            _logger.AddError(CannotLoadSnapshotFromFile(snapshotPath));
-            return;
-         }
+            throw new QualificationRunException(CannotLoadSnapshotFromFile(snapshotPath));
 
          var buildiingBlockToUse = referenceSnasphot.BuildingBlockByTypeAndName(type, name);
          if (buildiingBlockToUse == null)
-         {
-            _logger.AddError(CannotFindBuildingBlockInSnapshot(type.ToString(), name, snapshotPath));
-            return;
-         }
-
+            throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(type.ToString(), name, snapshotPath));
 
          var buildingBlock = projectSnapshot.BuildingBlockByTypeAndName(type, name);
          if (buildingBlock == null)
-         {
-            _logger.AddError(CannotFindBuildingBlockInSnapshot(type.ToString(), name, projectSnapshot.Name));
-            return;
-         }
+            throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(type.ToString(), name, projectSnapshot.Name));
 
          projectSnapshot.Swap(buildiingBlockToUse);
       }
