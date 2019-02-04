@@ -9,11 +9,11 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
 using static PKSim.Assets.PKSimConstants.Error;
@@ -41,7 +41,7 @@ namespace PKSim.CLI.Core.Services
       public int SectionId { get; set; }
    }
 
-   public class QualifcationConfiguration
+   public class QualifcationConfiguration : IValidatable
    {
       /// <summary>
       ///    Path of project snapshot file used for this qualificaiton run
@@ -71,6 +71,20 @@ namespace PKSim.CLI.Core.Services
       public SimulationPlot[] SimulationCharts { get; set; }
 
       public BuildingBlockSwap[] BuildingBlocks { get; set; }
+
+      public IBusinessRuleSet Rules { get; } = new BusinessRuleSet();
+
+      public QualifcationConfiguration()
+      {
+         Rules.AddRange(new[]
+         {
+            GenericRules.FileExists<QualifcationConfiguration>(x => x.SnapshotFile),
+            GenericRules.NonEmptyRule<QualifcationConfiguration>(x => x.OutputFolder, QualificationOutputFolderNotDefined),
+            GenericRules.NonEmptyRule<QualifcationConfiguration>(x => x.MappingFile, QualificationMappingFileNotDefined),
+            GenericRules.NonEmptyRule<QualifcationConfiguration>(x => x.ReportConfigurationFile, QualificationReportConfigurationFileNotDefined),
+            GenericRules.NonEmptyRule<QualifcationConfiguration>(x => x.ObservedDataFolder, QualificationObservedDataFolderNotDefined)
+         });
+      }
    }
 
    public class QualificationRunner : IBatchRunner<QualificationRunOptions>
@@ -109,11 +123,9 @@ namespace PKSim.CLI.Core.Services
          if (config == null)
             throw new QualificationRunException(UnableToLoadQualificationConfigurationFromOptions);
 
-         if (string.IsNullOrEmpty(config.OutputFolder))
-            throw new QualificationRunException(QualificationOutputFolderNotDefined);
-
-         if (!FileHelper.FileExists(config.SnapshotFile))
-            throw new QualificationRunException(CannotLoadSnapshotFromFile(config.SnapshotFile));
+         var errorMessage = config.Validate().Message;
+         if (!string.IsNullOrEmpty(errorMessage))
+            throw new QualificationRunException(errorMessage);
 
          var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotFile);
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
@@ -147,10 +159,11 @@ namespace PKSim.CLI.Core.Services
          {
             SimulationMappings = simulationMappings,
             ObservedDataMappings = observedDataMappings,
-            Charts = new List<object>(charts).ToArray()
+            Charts = charts
          };
 
          await _jsonSerializer.Serialize(mapping, config.MappingFile);
+         _logger.AddDebug($"Project mapping for '{project.Name}' exported to '{config.MappingFile}'", project.Name);
 
 
          var projectFile = Path.Combine(projectOutputFolder, $"{project.Name}{CoreConstants.Filter.PROJECT_EXTENSION}");
@@ -162,28 +175,27 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Project '{project.Name}' exported for qualification in {timeSpent.ToDisplay()}", project.Name);
       }
 
-      private Chart[] retrieveChartDefinitionsFrom(Project snapshotProject, QualifcationConfiguration configuration)
+      private ChartMapping[] retrieveChartDefinitionsFrom(Project snapshotProject, QualifcationConfiguration configuration)
       {
          if (configuration.SimulationCharts == null || !configuration.SimulationCharts.Any())
-            return new List<Chart>().ToArray();
-
-         if (snapshotProject.Simulations == null)
-            throw new QualificationRunException($"Cannot export charts as simulation is defined in project '{snapshotProject.Name}'.");
+            return null;
 
          return configuration.SimulationCharts.SelectMany(x => retrieveChartDefinitionsForSimulation(x, snapshotProject)).ToArray();
       }
 
-      private IEnumerable<Chart> retrieveChartDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
+      private IEnumerable<ChartMapping> retrieveChartDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
       {
          var simuationName = simulationPlot.Simulation;
-         var simulation = snapshotProject.Simulations.FindByName(simuationName);
+         var simulation = snapshotProject.Simulations?.FindByName(simuationName);
          if (simulation == null)
-            throw new QualificationRunException($"Cannot find simulation {simuationName} in project '{snapshotProject.Name}'.");
+            throw new QualificationRunException($"Cannot export charts as simulation '{simuationName}' in not defined in project '{snapshotProject.Name}'.");
 
-         return simulation.Analyses.Select(chart =>
+         return simulation.Analyses.Select(chart => new ChartMapping
          {
-            chart.SectionId = simulationPlot.SectionId;
-            return chart;
+            Chart = chart,
+            SectionId = simulationPlot.SectionId,
+            RefSimulation = simuationName,
+            RefProject = snapshotProject.Name
          });
       }
 
@@ -192,7 +204,7 @@ namespace PKSim.CLI.Core.Services
          {
             Path = FileHelper.CreateRelativePath(simulationExport.SimulationFolder, reportFile),
             RefProject = simulationExport.ProjectName,
-            RefSimulation = simulationExport.SimulationFolder
+            RefSimulation = simulationExport.SimulationName
          };
 
       private ObservedDataMapping[] exportObservedData(PKSimProject project, QualifcationConfiguration qualifcationConfiguration)

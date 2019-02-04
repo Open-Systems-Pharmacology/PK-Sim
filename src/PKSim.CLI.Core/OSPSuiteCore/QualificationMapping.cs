@@ -14,10 +14,19 @@
       public string Type { get; set; }
    }
 
+
+   public class ChartMapping
+   {
+      public int SectionId { get; set; }
+      public string RefProject { get; set; }
+      public string RefSimulation { get; set; }
+      public object Chart { get; set; }
+   }
+
    public class QualificationMapping
    {
       public SimulationMapping[] SimulationMappings { get; set; }
       public ObservedDataMapping[] ObservedDataMappings { get; set; }
-      public object[] Charts { get; set; }
+      public ChartMapping[] Charts { get; set; }
    }
 }

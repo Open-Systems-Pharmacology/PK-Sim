@@ -871,7 +871,15 @@ namespace PKSim.Assets
 
          public const string UnableToLoadQualificationConfigurationFromOptions = "Unable to read configuration from options";
 
+         public const string QualificationSnapshotFileNotDefined = "Qualification snapshot file not defined.";
+
          public const string QualificationOutputFolderNotDefined = "Qualification output folder not defined.";
+
+         public const string QualificationObservedDataFolderNotDefined = "Qualification observed data folder not defined.";
+
+         public const string QualificationMappingFileNotDefined = "Qualification mapping file not defined.";
+
+         public const string QualificationReportConfigurationFileNotDefined = "Qualification report configuration file not defined.";
          
          public static string CannotFindBuildingBlockInSnapshot(string buildingBlockType, string buildingBlockName, string project) => $"Could not find {buildingBlockType} '{buildingBlockName}' in snapshot '{project}'.";
 
