@@ -226,7 +226,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, PKSimProject project)
       {
-         _logger.AddDebug(PKSimConstants.Information.LoadingSimulation(snapshot.Name));
+         _logger.AddDebug(PKSimConstants.Information.LoadingSimulation(snapshot.Name), project.Name);
 
          var simulation = await createSimulationFrom(snapshot, project);
 

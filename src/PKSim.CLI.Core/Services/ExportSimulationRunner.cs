@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
@@ -13,9 +14,17 @@ using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI.Core.Services
 {
+   public class SimulationExport
+   {
+      public string ProjectName { get; set; }
+      public string SimulationName { get; set; }
+      public string SimulationFolder { get; set; }
+   }
+
    public interface IExportSimulationRunner : IBatchRunner<ExportRunOptions>
    {
-      Task ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions);
+      Task<SimulationExport[]> ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions);
+      Task<SimulationExport> ExportSimulation(Simulation simulation, ExportRunOptions exportRunOptions, PKSimProject project);
    }
 
    public class ExportSimulationRunner : IExportSimulationRunner
@@ -64,11 +73,13 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Project export for '{projectFile}' terminated");
       }
 
-      public async Task ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions)
+      public async Task<SimulationExport[]> ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions)
       {
          var nameOfSimulationsToExport = (exportRunOptions.Simulations ?? Enumerable.Empty<string>()).ToList();
          if (!nameOfSimulationsToExport.Any())
             nameOfSimulationsToExport.AddRange(project.All<Simulation>().AllNames());
+
+         var simulationExports = new List<SimulationExport>();
 
          //sequential for now
          foreach (var simulationName in nameOfSimulationsToExport)
@@ -76,18 +87,29 @@ namespace PKSim.CLI.Core.Services
             var simulation = project.BuildingBlockByName<Simulation>(simulationName);
             if (simulation == null)
             {
-               _logger.AddWarning($"Simulation '{simulationName}' was not found in project '{project.Name}'");
+               _logger.AddWarning($"Simulation '{simulationName}' was not found in project '{project.Name}'", project.Name);
                continue;
             }
 
-            await exportSimulation(simulation, exportRunOptions);
+            simulationExports.Add((await ExportSimulation(simulation, exportRunOptions, project)));
          }
+
+         return simulationExports.ToArray();
       }
 
-      private async Task exportSimulation(Simulation simulation, ExportRunOptions exportRunOptions)
+      public async Task<SimulationExport> ExportSimulation(Simulation simulation, ExportRunOptions exportRunOptions, PKSimProject project)
       {
-         var outputFolder = Path.Combine(exportRunOptions.OutputFolder, simulation.Name);
-         DirectoryHelper.CreateDirectory(outputFolder);
+         var projectName = project.Name;
+         var simulationName = simulation.Name;
+         var simulationFolder = Path.Combine(exportRunOptions.OutputFolder, FileHelper.RemoveIllegalCharactersFrom(simulationName));
+         DirectoryHelper.CreateDirectory(simulationFolder);
+
+         var simulationExport = new SimulationExport
+         {
+            ProjectName = projectName,
+            SimulationFolder = simulationFolder,
+            SimulationName = simulationName
+         };
 
          var simulationRunOptions = new SimulationRunOptions();
 
@@ -97,24 +119,24 @@ namespace PKSim.CLI.Core.Services
 
          if (!simulation.OutputSelections.HasSelection)
          {
-            _logger.AddWarning($"Simulation '{simulation.Name}' does not have any selected output and will not be exported");
-            return;
+            _logger.AddWarning($"Simulation '{simulation.Name}' does not have any selected output and will not be exported", projectName);
+            return simulationExport;
          }
 
          if (exportRunOptions.RunSimulation)
-            await _simulationExporter.RunAndExport(simulation, outputFolder, simulationRunOptions, exportRunOptions.ExportMode);
+            await _simulationExporter.RunAndExport(simulation, simulationFolder, simulationRunOptions, exportRunOptions.ExportMode, category: projectName);
 
          else if (simulation.HasResults)
-            await _simulationExporter.Export(simulation, outputFolder, exportRunOptions.ExportMode);
+            await _simulationExporter.Export(simulation, simulationFolder, exportRunOptions.ExportMode, category: projectName);
 
          else
          {
-            _logger.AddWarning($"Simulation '{simulation.Name}' does not have any results and will not be exported");
-            return;
+            _logger.AddWarning($"Simulation '{simulationName}' does not have any results and will not be exported", projectName);
+            return simulationExport;
          }
 
-         _logger.AddDebug($"Simulation '{simulation.Name}' exported to '{outputFolder}'");
-
+         _logger.AddDebug($"Simulation '{simulationName}' exported to '{simulationFolder}'", projectName);
+         return simulationExport;
       }
    }
 }

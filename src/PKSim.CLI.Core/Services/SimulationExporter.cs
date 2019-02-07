@@ -25,9 +25,9 @@ namespace PKSim.CLI.Core.Services
 
    public interface ISimulationExporter
    {
-      Task RunAndExport(Simulation simulation, string outputFolder, SimulationRunOptions simulationRunOptions, SimulationExportMode simulationExportMode, string projectName = null);
+      Task RunAndExport(Simulation simulation, string outputFolder, SimulationRunOptions simulationRunOptions, SimulationExportMode simulationExportMode, string projectName = null, string category = null);
 
-      Task Export(Simulation simulation, string outputFolder, SimulationExportMode simulationExportMode, string projectName = null);
+      Task Export(Simulation simulation, string outputFolder, SimulationExportMode simulationExportMode, string projectName = null, string category = null);
    }
 
    public class SimulationExporter : ISimulationExporter
@@ -59,90 +59,92 @@ namespace PKSim.CLI.Core.Services
          _moBiExportTask = moBiExportTask;
       }
 
-      public async Task RunAndExport(Simulation simulation, string outputFolder, SimulationRunOptions simulationRunOptions, SimulationExportMode simulationExportMode, string projectName = null)
+      public async Task RunAndExport(Simulation simulation, string outputFolder, SimulationRunOptions simulationRunOptions, SimulationExportMode simulationExportMode, string projectName = null, string category = null)
       {
-         _logger.AddDebug($"Running simulation '{simulation.Name}'");
+         var logCategory = logCategoryFrom(projectName, category);
+         _logger.AddDebug($"Running simulation '{simulation.Name}'", logCategory);
          await _simulationRunner.RunSimulation(simulation, simulationRunOptions);
 
-         await Export(simulation, outputFolder, simulationExportMode, projectName);
+         await Export(simulation, outputFolder, simulationExportMode, projectName, logCategory);
       }
 
-      public Task Export(Simulation simulation, string outputFolder, SimulationExportMode simulationExportMode, string projectName = null)
+      public Task Export(Simulation simulation, string outputFolder, SimulationExportMode simulationExportMode, string projectName = null, string category = null)
       {
+         var logCategory = logCategoryFrom(projectName, category);
          var tasks = new List<Task>();
          var individualSimulation = simulation as IndividualSimulation;
          var populationSimulation = simulation as PopulationSimulation;
 
          if (simulationExportMode.HasFlag(SimulationExportMode.Csv) && individualSimulation != null)
-            tasks.Add(exporIndividualSimulationToCsvAsync(individualSimulation, outputFolder, projectName));
+            tasks.Add(exporIndividualSimulationToCsvAsync(individualSimulation, outputFolder, projectName, logCategory));
 
          if (simulationExportMode.HasFlag(SimulationExportMode.Csv) && populationSimulation != null)
-            tasks.Add(exportPopulationSimulationToCsvAsync(populationSimulation, outputFolder, projectName));
+            tasks.Add(exportPopulationSimulationToCsvAsync(populationSimulation, outputFolder, projectName, logCategory));
 
          if (simulationExportMode.HasFlag(SimulationExportMode.Json) && individualSimulation != null)
-            tasks.Add(exportResultsToJsonAsync(individualSimulation, outputFolder, projectName));
+            tasks.Add(exportResultsToJsonAsync(individualSimulation, outputFolder, projectName, logCategory));
 
          if (simulationExportMode.HasFlag(SimulationExportMode.Xml))
-            tasks.Add(exportSimModelXmlAsync(simulation, outputFolder, projectName));
+            tasks.Add(exportSimModelXmlAsync(simulation, outputFolder, projectName, logCategory));
 
          if (simulationExportMode.HasFlag(SimulationExportMode.Pkml))
-            tasks.Add(exportSimulationPkmlAsync(simulation, outputFolder, projectName));
+            tasks.Add(exportSimulationPkmlAsync(simulation, outputFolder, projectName, logCategory));
 
          return Task.WhenAll(tasks);
       }
 
-      private async Task exportSimulationPkmlAsync(Simulation simulation, string outputFolder, string projectName)
+      private async Task exportSimulationPkmlAsync(Simulation simulation, string outputFolder, string projectName, string logCategory)
       {
          var fileName = pathUnder(outputFolder, simulation.Name, Constants.Filter.PKML_EXTENSION, projectName);
          await _moBiExportTask.SaveSimulationToFileAsync(simulation, fileName);
-         _logger.AddDebug($"Exporting simulation pkml to '{fileName}'");
+         _logger.AddDebug($"Exporting simulation pkml to '{fileName}'", logCategory);
       }
 
-      private async Task exportSimModelXmlAsync(Simulation simulation, string outputFolder, string projectName)
+      private async Task exportSimModelXmlAsync(Simulation simulation, string outputFolder, string projectName, string logCategory)
       {
          var fileName = pathUnder(outputFolder, simulation.Name, Constants.Filter.XML_EXTENSION, projectName);
          await _simulationExportTask.ExportSimulationToSimModelXmlAsync(simulation, fileName);
-         _logger.AddDebug($"Exporting simulation SimModel xml to '{fileName}'");
+         _logger.AddDebug($"Exporting simulation SimModel xml to '{fileName}'", logCategory);
       }
 
-      private async Task exportResultsToJsonAsync(IndividualSimulation simulation, string outputFolder, string projectName)
+      private async Task exportResultsToJsonAsync(IndividualSimulation simulation, string outputFolder, string projectName, string logCategory)
       {
          var fileName = pathUnder(outputFolder, simulation.Name, Constants.Filter.JSON_EXTENSION, projectName);
          await _simulationResultsExporter.ExportToJsonAsync(simulation, simulation.DataRepository, fileName);
-         _logger.AddDebug($"Exporting simulation results to '{fileName}'");
+         _logger.AddDebug($"Exporting simulation results to '{fileName}'", logCategory);
       }
 
-      private async Task exporIndividualSimulationToCsvAsync(IndividualSimulation simulation, string outputFolder, string projectName)
+      private async Task exporIndividualSimulationToCsvAsync(IndividualSimulation simulation, string outputFolder, string projectName, string logCategory)
       {
-         await exportSimulationResultsToCsv(simulation, outputFolder, projectName);
-         exportParameters(outputFolder, simulation, projectName);
+         await exportSimulationResultsToCsv(simulation, outputFolder, projectName, logCategory);
+         exportParameters(outputFolder, simulation, projectName, logCategory);
       }
 
-      private async Task exportPopulationSimulationToCsvAsync(PopulationSimulation populationSimulation, string outputFolder, string projectName)
+      private async Task exportPopulationSimulationToCsvAsync(PopulationSimulation populationSimulation, string outputFolder, string projectName, string logCategory)
       {
          var populationFile = CoreConstants.DefaultPopulationExportNameFor(populationSimulation.Name);
          var populationFileFullPath = csvPathUnder(outputFolder, populationFile, projectName);
          _populationExportTask.ExportToCSV(populationSimulation, populationFileFullPath);
 
-         await exportSimulationResultsToCsv(populationSimulation, outputFolder, projectName);
+         await exportSimulationResultsToCsv(populationSimulation, outputFolder, projectName, logCategory);
 
          var populationPKAnalysesFile = CoreConstants.DefaultPKAnalysesExportNameFor(populationSimulation.Name);
          var populationPKAnalysesFullPath = csvPathUnder(outputFolder, populationPKAnalysesFile, projectName);
          await _simulationExportTask.ExportPKAnalysesToCSVAsync(populationSimulation, populationPKAnalysesFullPath);
       }
 
-      private async Task exportSimulationResultsToCsv(Simulation simulation, string outputFolder, string projectName)
+      private async Task exportSimulationResultsToCsv(Simulation simulation, string outputFolder, string projectName, string logCategory)
       {
          var simulationResultFileFullPath = csvPathUnder(outputFolder, simulation.Name, projectName);
          await _simulationExportTask.ExportResultsToCSVAsync(simulation, simulationResultFileFullPath);
-         _logger.AddDebug($"Exporting simulation results to '{simulationResultFileFullPath}'");
+         _logger.AddDebug($"Exporting simulation results to '{simulationResultFileFullPath}'", logCategory);
       }
 
-      private void exportParameters(string outputFolder, IndividualSimulation individualSimulation, string projectName)
+      private void exportParameters(string outputFolder, IndividualSimulation individualSimulation, string projectName, string logCategory)
       {
          var parameterReportFileName = csvPathUnder(outputFolder, $"{individualSimulation.Name}_parameters", projectName);
          _parametersReportCreator.ExportParametersTo(individualSimulation.Model, parameterReportFileName);
-         _logger.AddDebug($"Exporting simulation parameters to '{parameterReportFileName}'");
+         _logger.AddDebug($"Exporting simulation parameters to '{parameterReportFileName}'", logCategory);
       }
 
       private string csvPathUnder(string outputFolder, string fileNameWithoutExtension, string projectName) => pathUnder(outputFolder, fileNameWithoutExtension, Constants.Filter.CSV_EXTENSION, projectName);
@@ -155,5 +157,7 @@ namespace PKSim.CLI.Core.Services
 
          return Path.Combine(outputFolder, $"{FileHelper.RemoveIllegalCharactersFrom(fileNameWithPrefix)}{extension}");
       }
+
+      private string logCategoryFrom(string projectName, string category) => category ?? projectName;
    }
 }

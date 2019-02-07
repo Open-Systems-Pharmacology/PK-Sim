@@ -136,13 +136,13 @@ namespace PKSim.CLI.Core.Services
             var project = await _snapshotTask.LoadProjectFromSnapshotFile(projectFile.FullName);
             var simulations = project.All<Simulation>();
             var numberOfSimulations = simulations.Count;
-            _logger.AddInfo($"{numberOfSimulations} {"simulation".PluralizeIf(numberOfSimulations)} found in file '{projectFile}'");
+            _logger.AddInfo($"{numberOfSimulations} {"simulation".PluralizeIf(numberOfSimulations)} found in file '{projectFile}'", project.Name);
 
             foreach (var simulation in simulations)
             {
-               _logger.AddDebug($"Starting batch simulation export for simulation '{simulation.Name}'");
+               _logger.AddDebug($"Starting batch simulation export for simulation '{simulation.Name}'", project.Name);
 
-               await _simulationExporter.RunAndExport(simulation, outputFolder, _simulationRunOptions, simulationExportMode, FileHelper.FileNameFromFileFullPath(projectFile.FullName));
+               await _simulationExporter.RunAndExport(simulation, outputFolder, _simulationRunOptions, simulationExportMode, project.Name);
                _allSimulationNames.Add(simulation.Name);
             }
          }

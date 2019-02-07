@@ -34,7 +34,8 @@ namespace PKSim.CLI
       private Func<string, string> _oldCreateDirectory;
 
       protected bool _outputFolderCreated;
-      protected string _projectFileName = "ProjectFile";
+      protected static string _projectName = "ProjectFile";
+      protected string _projectFileName = $"c:\\{_projectName}.pksim";
       protected static string _outputFolder = "OutputFolder";
       protected PKSimProject _project;
       protected Simulation _simulation1;
@@ -79,7 +80,7 @@ namespace PKSim.CLI
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          sut = new ExportSimulationRunner(_logger, _workspacePersitor, _workspace, _simulationExporter, _lazyLoadTask);
 
-         _project = new PKSimProject();
+         _project = new PKSimProject {Name = _projectName};
          _simulation1 = createSimulationWithResults(_simulation1Name);
          _simulation2 = createSimulationWithResults(_simulation2Name);
 
@@ -129,8 +130,8 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_all_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder, _exportRunOptions.ExportMode, A<string>._)).MustHaveHappened();
-         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder, _exportRunOptions.ExportMode, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder, _exportRunOptions.ExportMode, A<string>._, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder, _exportRunOptions.ExportMode, A<string>._, A<string>._)).MustHaveHappened();
       }
 
       [Observation]
@@ -182,13 +183,13 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_the_selected_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder,  _exportRunOptions.ExportMode, null)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder, _exportRunOptions.ExportMode, null, _projectName)).MustHaveHappened();
       }
 
       [Observation]
       public void should_not_run_the_export_for_the_simulation_excluded_from_the_run()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder,  _exportRunOptions.ExportMode, null)).MustNotHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder, _exportRunOptions.ExportMode, null, _projectName)).MustNotHaveHappened();
       }
 
       [Observation]
@@ -236,7 +237,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_the_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.RunAndExport(_simulation1, _s1OutputFolder,  A<SimulationRunOptions>._, _exportRunOptions.ExportMode, null)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.RunAndExport(_simulation1, _s1OutputFolder, A<SimulationRunOptions>._, _exportRunOptions.ExportMode, null, _projectName)).MustHaveHappened();
       }
    }
 

@@ -98,6 +98,7 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="OSPSuiteCore\QualificationMapping.cs" />
     <Compile Include="RunOptions\ExportRunOptions.cs" />
     <Compile Include="RunOptions\IWithInputAndOutputFolders.cs" />
     <Compile Include="CLIRegister.cs" />
