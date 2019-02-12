@@ -7,6 +7,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
@@ -101,8 +102,8 @@ namespace PKSim.CLI
       protected override async Task Context()
       {
          await base.Context();
-         _runOptions.Configuration = "XXX";
-         A.CallTo(() => _jsonSerializer.DeserializeFromString<QualifcationConfiguration>(_runOptions.Configuration)).Returns(_qualificationConfiguration);
+         _runOptions.ConfigurationFile = "XXX";
+         A.CallTo(() => _jsonSerializer.Deserialize<QualifcationConfiguration>(_runOptions.ConfigurationFile)).Returns(_qualificationConfiguration);
          _qualificationConfiguration.OutputFolder = "c:/tests/outputs/";
          _qualificationConfiguration.SnapshotFile = $"c:/tests/inputs/{PROJECT_NAME}.json";
          _qualificationConfiguration.MappingFile = $"c:/tests/temp/{PROJECT_NAME}_Mapping.json";
@@ -113,7 +114,7 @@ namespace PKSim.CLI
          _project = new PKSimProject().WithName(PROJECT_NAME);
          A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
          A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_projectSnapshot)).Returns(_project);
-         FileHelper.FileExists = s => string.Equals(s, _qualificationConfiguration.SnapshotFile);
+         FileHelper.FileExists = s => s.IsOneOf(_qualificationConfiguration.SnapshotFile, _runOptions.ConfigurationFile);
       }
    }
 
@@ -236,14 +237,14 @@ namespace PKSim.CLI
       {
          _mapping.ShouldNotBeNull();
       }
-      
+
       [Observation]
-      public void should_export_the_simulation_configuration_with_mapping_relative_to_the_report_configuration_file()
+      public void should_export_the_simulation_configuration_with_mapping_relative_to_the_report_output_folder()
       {
          _mapping.SimulationMappings.Length.ShouldBeEqualTo(1);
          _mapping.SimulationMappings[0].RefSimulation.ShouldBeEqualTo(_simulationName);
          _mapping.SimulationMappings[0].RefProject.ShouldBeEqualTo(PROJECT_NAME);
-         _mapping.SimulationMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedSimulationPath, _qualificationConfiguration.ReportConfigurationFile ));
+         _mapping.SimulationMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedSimulationPath, _qualificationConfiguration.OutputFolder));
       }
 
       [Observation]
@@ -253,13 +254,12 @@ namespace PKSim.CLI
       }
 
       [Observation]
-      public void should_export_the_observed_data_mapping_relative_to_the_report_configuration_file()
+      public void should_export_the_observed_data_mapping_relative_to_the_report_output_folder()
       {
          _mapping.ObservedDataMappings.Length.ShouldBeEqualTo(1);
          _mapping.ObservedDataMappings[0].Id.ShouldBeEqualTo(_observedData.Name);
-         _mapping.ObservedDataMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedObservedDataFullPath, _qualificationConfiguration.ReportConfigurationFile));
+         _mapping.ObservedDataMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedObservedDataFullPath, _qualificationConfiguration.OutputFolder));
       }
-
    }
 
    public class When_running_the_qualification_runner_with_a_valid_configuration_for_a_valid_snapshot_file_in_validation_mode : concern_for_QualificationRunnerWithValidConfiguration
@@ -448,12 +448,12 @@ namespace PKSim.CLI
       protected override async Task Context()
       {
          await base.Context();
-         var simulationChart = new SimulationPlot
+         var simulationPlot = new SimulationPlot
          {
             SectionId = 2,
             Simulation = "SimDoesNotExist"
          };
-         _qualificationConfiguration.SimulationCharts = new[] {simulationChart};
+         _qualificationConfiguration.SimulationPlots = new[] {simulationPlot};
       }
 
       [Observation]
@@ -466,7 +466,7 @@ namespace PKSim.CLI
    public class When_running_the_qualification_runner_with_a_configuration_defining_charts_for_a_simulation_that_does_exist : concern_for_QualificationRunnerWithValidConfiguration
    {
       private QualificationMapping _mapping;
-      private SimulationPlot _simulationChart;
+      private SimulationPlot _simulationPlot;
       private CurveChart _curveChart;
 
       protected override async Task Context()
@@ -477,13 +477,13 @@ namespace PKSim.CLI
 
          _curveChart = new CurveChart();
          simulation.IndividualAnalyses = new[] {_curveChart};
-         _simulationChart = new SimulationPlot
+         _simulationPlot = new SimulationPlot
          {
             SectionId = 2,
             Simulation = simulation.Name
          };
          _projectSnapshot.Simulations = new[] {simulation};
-         _qualificationConfiguration.SimulationCharts = new[] {_simulationChart};
+         _qualificationConfiguration.SimulationPlots = new[] {_simulationPlot};
 
          A.CallTo(() => _jsonSerializer.Serialize(A<QualificationMapping>._, _qualificationConfiguration.MappingFile))
             .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
@@ -497,11 +497,11 @@ namespace PKSim.CLI
       [Observation]
       public void should_export_the_charts_corresponding_to_the_selected_simulation_at_the_expected_section()
       {
-         _mapping.Charts.Length.ShouldBeEqualTo(1);
-         _mapping.Charts[0].SectionId.ShouldBeEqualTo(_simulationChart.SectionId);
-         _mapping.Charts[0].RefSimulation.ShouldBeEqualTo(_simulationChart.Simulation);
-         _mapping.Charts[0].RefProject.ShouldBeEqualTo(_projectSnapshot.Name);
-         _mapping.Charts[0].Chart.ShouldBeEqualTo(_curveChart);
+         _mapping.Plots.Length.ShouldBeEqualTo(1);
+         _mapping.Plots[0].SectionId.ShouldBeEqualTo(_simulationPlot.SectionId);
+         _mapping.Plots[0].RefSimulation.ShouldBeEqualTo(_simulationPlot.Simulation);
+         _mapping.Plots[0].RefProject.ShouldBeEqualTo(_projectSnapshot.Name);
+         _mapping.Plots[0].Plot.ShouldBeEqualTo(_curveChart);
       }
    }
 }

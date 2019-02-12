@@ -9,10 +9,7 @@ namespace PKSim.CLI.Commands
    {
       public override string Name { get; } = "Qualification";
 
-      [Option('c', "config", Required = false, HelpText = "Json configuration string used to start the qualification workflow.")]
-      public string Configuration { get; set; }
-
-      [Option('f', "file", Required = false, HelpText = "Json configuration file used to start the qualification workflow.")]
+      [Option('i', "input", Required = true, HelpText = "Json configuration file used to start the qualification workflow.")]
       public string ConfigurationFile { get; set; }
 
       [Option('v', "validate", Required = false, HelpText = "Specifies a validation run. Default is false")]
@@ -22,7 +19,6 @@ namespace PKSim.CLI.Commands
       {
          return new QualificationRunOptions
          {
-            Configuration = Configuration,
             ConfigurationFile = ConfigurationFile,
             Validate = Validate
          };
@@ -33,13 +29,7 @@ namespace PKSim.CLI.Commands
          var sb = new StringBuilder();
          LogDefaultOptions(sb);
          sb.AppendLine($"Validate: {Validate}");
-
-         if (!string.IsNullOrEmpty(Configuration))
-            sb.AppendLine($"Configuration string: {Configuration}");
-
-         if (!string.IsNullOrEmpty(ConfigurationFile))
-            sb.AppendLine($"Configuration file: {ConfigurationFile}");
-         
+         sb.AppendLine($"Configuration file: {ConfigurationFile}");
          return sb.ToString();
       }
    }

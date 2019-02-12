@@ -15,18 +15,18 @@
    }
 
 
-   public class ChartMapping
+   public class PlotMapping
    {
       public int SectionId { get; set; }
       public string RefProject { get; set; }
       public string RefSimulation { get; set; }
-      public object Chart { get; set; }
+      public object Plot { get; set; }
    }
 
    public class QualificationMapping
    {
       public SimulationMapping[] SimulationMappings { get; set; }
       public ObservedDataMapping[] ObservedDataMappings { get; set; }
-      public ChartMapping[] Charts { get; set; }
+      public PlotMapping[] Plots { get; set; }
    }
 }

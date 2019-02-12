@@ -19,10 +19,10 @@ namespace PKSim.CLI
 
    class Program
    {
+      static bool _valid = true;
+
       static int Main(string[] args)
       {
-         //starting batch tool with arguments
-         var valid = true;
 
          ApplicationStartup.Initialize();
 
@@ -31,9 +31,9 @@ namespace PKSim.CLI
             .WithParsed<SnapshotRunCommand>(startCommand)
             .WithParsed<ExportRunCommand>(startCommand)
             .WithParsed<QualificationRunCommand>(startCommand)
-            .WithNotParsed(err => valid = false);
+            .WithNotParsed(err => _valid = false);
 
-         if (!valid)
+         if (!_valid)
             return (int) ExitCodes.Error;
 
          return (int) ExitCodes.Success;
@@ -52,6 +52,7 @@ namespace PKSim.CLI
          catch (Exception e)
          {
             logger.AddException(e);
+            _valid = false;
          }
 
          logger.AddInfo($"{command.Name} run finished");
