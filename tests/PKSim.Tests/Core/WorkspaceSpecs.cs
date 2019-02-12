@@ -250,7 +250,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_path_to_a_relative_path()
       {
-         sut.Project.JournalPath.ShouldBeEqualTo("journal.sbj");
+         sut.Project.JournalPath.ShouldBeEqualTo("..\\journal.sbj");
       }
    }
 
