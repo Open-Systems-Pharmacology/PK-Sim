@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -74,6 +75,34 @@ namespace PKSim.Infrastructure
       public void should_be_able_to_retrievee_an_array_of_deserialized_objects()
       {
          _deserialiedParameters.Count().ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_serializating_an_object_with_a_color_property : concern_for_SnapshotSerializer
+   {
+      private CurveOptions _curveOptions;
+      private CurveOptions _deserializedCurveOptions;
+
+      protected override async Task Context()
+      {
+
+         await base.Context();
+         _curveOptions = new CurveOptions
+         {
+            Color = Color.Red
+         };
+      }
+
+      protected override async Task Because()
+      {
+         await sut.Serialize(_curveOptions, _fileName);
+         _deserializedCurveOptions = await sut.Deserialize<CurveOptions>(_fileName);
+      }
+
+      [Observation]
+      public void should_have_deserialized_the_color()
+      {
+         _deserializedCurveOptions.Color.ShouldBeEqualTo(Color.Red);
       }
    }
 }
