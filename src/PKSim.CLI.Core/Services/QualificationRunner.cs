@@ -21,72 +21,6 @@ using Project = PKSim.Core.Snapshots.Project;
 
 namespace PKSim.CLI.Core.Services
 {
-   public class BuildingBlockSwap : IWithName
-   {
-      public PKSimBuildingBlockType Type { get; set; }
-      public string Name { get; set; }
-      public string SnapshotFile { get; set; }
-
-      public void Deconstruct(out PKSimBuildingBlockType type, out string name, out string snapshotFile)
-      {
-         type = Type;
-         name = Name;
-         snapshotFile = SnapshotFile;
-      }
-   }
-
-   public class SimulationPlot
-   {
-      public string Simulation { get; set; }
-      public int SectionId { get; set; }
-   }
-
-   public class QualifcationConfiguration : IValidatable
-   {
-      /// <summary>
-      ///    Path of project snapshot file used for this qualificaiton run
-      /// </summary>
-      public string SnapshotFile { get; set; }
-
-      /// <summary>
-      ///    Output folder where project artefacts will be exported. It will be created if it does not exist
-      /// </summary>
-      public string OutputFolder { get; set; }
-
-      /// <summary>
-      ///    Folder were observed data will be exported
-      /// </summary>
-      public string ObservedDataFolder { get; set; }
-
-      /// <summary>
-      ///    Path of mapping file that will be created for the project.
-      /// </summary>
-      public string MappingFile { get; set; }
-
-      /// <summary>
-      ///    Path of configuration file that will be created as part of the qualificaton run
-      /// </summary>
-      public string ReportConfigurationFile { get; set; }
-
-      public SimulationPlot[] SimulationCharts { get; set; }
-
-      public BuildingBlockSwap[] BuildingBlocks { get; set; }
-
-      public IBusinessRuleSet Rules { get; } = new BusinessRuleSet();
-
-      public QualifcationConfiguration()
-      {
-         Rules.AddRange(new[]
-         {
-            GenericRules.FileExists<QualifcationConfiguration>(x => x.SnapshotFile),
-            GenericRules.NonEmptyRule<QualifcationConfiguration>(x => x.OutputFolder, QualificationOutputFolderNotDefined),
-            GenericRules.NonEmptyRule<QualifcationConfiguration>(x => x.MappingFile, QualificationMappingFileNotDefined),
-            GenericRules.NonEmptyRule<QualifcationConfiguration>(x => x.ReportConfigurationFile, QualificationReportConfigurationFileNotDefined),
-            GenericRules.NonEmptyRule<QualifcationConfiguration>(x => x.ObservedDataFolder, QualificationObservedDataFolderNotDefined)
-         });
-      }
-   }
-
    public class QualificationRunner : IBatchRunner<QualificationRunOptions>
    {
       private readonly ISnapshotTask _snapshotTask;
@@ -121,7 +55,7 @@ namespace PKSim.CLI.Core.Services
 
          var config = await readConfigurationFrom(runOptions);
          if (config == null)
-            throw new QualificationRunException(UnableToLoadQualificationConfigurationFromOptions);
+            throw new QualificationRunException(UnableToLoadQualificationConfigurationFromFile(runOptions.ConfigurationFile));
 
          var errorMessage = config.Validate().Message;
          if (!string.IsNullOrEmpty(errorMessage))
@@ -159,7 +93,7 @@ namespace PKSim.CLI.Core.Services
          {
             SimulationMappings = simulationMappings,
             ObservedDataMappings = observedDataMappings,
-            Charts = charts
+            Plots = charts
          };
 
          await _jsonSerializer.Serialize(mapping, config.MappingFile);
@@ -175,24 +109,19 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Project '{project.Name}' exported for qualification in {timeSpent.ToDisplay()}", project.Name);
       }
 
-      private ChartMapping[] retrieveChartDefinitionsFrom(Project snapshotProject, QualifcationConfiguration configuration)
-      {
-         if (configuration.SimulationCharts == null || !configuration.SimulationCharts.Any())
-            return null;
+      private PlotMapping[] retrieveChartDefinitionsFrom(Project snapshotProject, QualifcationConfiguration configuration) =>
+         configuration.SimulationPlots?.SelectMany(x => retrieveChartDefinitionsForSimulation(x, snapshotProject)).ToArray();
 
-         return configuration.SimulationCharts.SelectMany(x => retrieveChartDefinitionsForSimulation(x, snapshotProject)).ToArray();
-      }
-
-      private IEnumerable<ChartMapping> retrieveChartDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
+      private IEnumerable<PlotMapping> retrieveChartDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
       {
          var simuationName = simulationPlot.Simulation;
          var simulation = snapshotProject.Simulations?.FindByName(simuationName);
          if (simulation == null)
             throw new QualificationRunException($"Cannot export charts as simulation '{simuationName}' in not defined in project '{snapshotProject.Name}'.");
 
-         return simulation.Analyses.Select(chart => new ChartMapping
+         return simulation.Analyses.Select(chart => new PlotMapping
          {
-            Chart = chart,
+            Plot = chart,
             SectionId = simulationPlot.SectionId,
             RefSimulation = simuationName,
             RefProject = snapshotProject.Name
@@ -269,19 +198,11 @@ namespace PKSim.CLI.Core.Services
 
       private Task<QualifcationConfiguration> readConfigurationFrom(QualificationRunOptions runOptions)
       {
-         if (!string.IsNullOrEmpty(runOptions.ConfigurationFile))
-         {
-            _logger.AddDebug($"Reading configuration from file '{runOptions.ConfigurationFile}'");
-            return _jsonSerializer.Deserialize<QualifcationConfiguration>(runOptions.ConfigurationFile);
-         }
+         if (!FileHelper.FileExists(runOptions.ConfigurationFile))
+            throw new QualificationRunException(FileDoesNotExist(runOptions.ConfigurationFile));
 
-         if (!string.IsNullOrEmpty(runOptions.Configuration))
-         {
-            _logger.AddDebug("Reading configuration from string");
-            return _jsonSerializer.DeserializeFromString<QualifcationConfiguration>(runOptions.Configuration);
-         }
-
-         return Task.FromResult<QualifcationConfiguration>(null);
+         _logger.AddDebug($"Reading configuration from file '{runOptions.ConfigurationFile}'");
+         return _jsonSerializer.Deserialize<QualifcationConfiguration>(runOptions.ConfigurationFile);
       }
    }
-}
+}  

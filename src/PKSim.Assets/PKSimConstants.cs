@@ -869,21 +869,21 @@ namespace PKSim.Assets
 
          public static string CannotLoadSimulation(string simulationName) => $"Cannot load {ObjectTypes.Simulation} '{simulationName}'";
 
-         public const string UnableToLoadQualificationConfigurationFromOptions = "Unable to read configuration from options";
+         public static string UnableToLoadQualificationConfigurationFromFile(string fileFullPath) => $"TODO Unable to read configuration from file '{fileFullPath}'";
 
-         public const string QualificationSnapshotFileNotDefined = "Qualification snapshot file not defined.";
+         public const string QualificationSnapshotFileNotDefined = "TODO Qualification snapshot file not defined.";
 
-         public const string QualificationOutputFolderNotDefined = "Qualification output folder not defined.";
+         public const string QualificationOutputFolderNotDefined = "TODO Qualification output folder not defined.";
 
-         public const string QualificationObservedDataFolderNotDefined = "Qualification observed data folder not defined.";
+         public const string QualificationObservedDataFolderNotDefined = "TODO Qualification observed data folder not defined.";
 
-         public const string QualificationMappingFileNotDefined = "Qualification mapping file not defined.";
+         public const string QualificationMappingFileNotDefined = "TODO Qualification mapping file not defined.";
 
-         public const string QualificationReportConfigurationFileNotDefined = "Qualification report configuration file not defined.";
+         public const string QualificationReportConfigurationFileNotDefined = "TODO Qualification report configuration file not defined.";
          
-         public static string CannotFindBuildingBlockInSnapshot(string buildingBlockType, string buildingBlockName, string project) => $"Could not find {buildingBlockType} '{buildingBlockName}' in snapshot '{project}'.";
+         public static string CannotFindBuildingBlockInSnapshot(string buildingBlockType, string buildingBlockName, string project) => $"TODO Could not find {buildingBlockType} '{buildingBlockName}' in snapshot '{project}'.";
 
-         public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
+         public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"TODO Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
 
       }
 
