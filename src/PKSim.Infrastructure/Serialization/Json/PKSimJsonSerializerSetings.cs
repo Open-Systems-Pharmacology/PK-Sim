@@ -12,6 +12,7 @@ namespace PKSim.Infrastructure.Serialization.Json
          ContractResolver = new WritablePropertiesOnlyResolver();
          Converters.Add(new StringEnumConverter());
          Converters.Add(new NullabeDoubleJsonConverter());
+         Converters.Add(new ColorConverter());
       }
    }
 }
