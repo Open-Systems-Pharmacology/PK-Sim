@@ -103,6 +103,11 @@ namespace PKSim.CLI.Core.Services
          var projectFile = Path.Combine(projectOutputFolder, $"{project.Name}{CoreConstants.Filter.PROJECT_EXTENSION}");
          _workspace.Project = project;
          _workspacePersistor.SaveSession(_workspace, projectFile);
+         _logger.AddDebug($"Project saved to '{projectFile}'", project.Name);
+
+         var snapshotFile = Path.Combine(projectOutputFolder, $"{project.Name}{Constants.Filter.JSON_EXTENSION}");
+         await _snapshotTask.ExportModelToSnapshot(project, snapshotFile);
+         _logger.AddDebug($"Project snapshot saved to '{snapshotFile}'", project.Name);
 
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;

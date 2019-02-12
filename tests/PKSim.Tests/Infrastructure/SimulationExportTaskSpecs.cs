@@ -64,7 +64,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_throw_an_exception_indicating_that_the_simulation_should_be_calculated_first()
       {
-         The.Action(() => sut.ExportResultsToExcel(_simulation)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.ExportResultsToExcelAsync(_simulation)).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -84,7 +84,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public async Task should_not_export_the_results_to_excel()
       {
-         await sut.ExportResultsToExcel(_simulation);
+         await sut.ExportResultsToExcelAsync(_simulation);
          A.CallTo(() => _dataRepositoryTask.ExportToExcel(_simulation.DataRepository, A<string>.Ignored, true)).MustNotHaveHappened();
       }
    }
@@ -111,7 +111,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public async Task should_export_the_results_to_excel()
       {
-         await sut.ExportResultsToExcel(_simulation);
+         await sut.ExportResultsToExcelAsync(_simulation);
          A.CallTo(() => _dataRepositoryTask.ExportToExcel(_dataTables, _excelFile, true)).MustHaveHappened();
       }
    }

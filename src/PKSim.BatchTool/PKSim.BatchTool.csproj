@@ -378,6 +378,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\Db\PKSimDB.sqlite">
+      <Link>PKSimDB.sqlite</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="Data\Workshop_SBSuite.Ex_IV Willis 1979 MEAN.pkml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -436,8 +440,16 @@
       <Link>OSPSuite.SimModelSolver_CVODES282.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="..\..\dimensions\OSPSuite.Dimensions.xml">
+      <Link>OSPSuite.Dimensions.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\x64\SQLite.Interop.dll">
       <Link>SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml">
+      <Link>OSPSuite.PKParameters.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icons\AssumptionValueOrigin.ico" />

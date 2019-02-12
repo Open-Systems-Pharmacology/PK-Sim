@@ -43,17 +43,20 @@ namespace PKSim.Infrastructure.Services
          _simulationResultsToDataTableConverter = simulationResultsToDataTableConverter;
       }
 
-      public Task ExportResultsToExcel(IndividualSimulation individualSimulation)
+      public Task ExportResultsToExcelAsync(IndividualSimulation individualSimulation)
       {
          _buildingBlockTask.LoadResults(individualSimulation);
          if (!individualSimulation.HasResults)
             throw new PKSimException(PKSimConstants.Error.CannotExportResultsPleaseRunSimulation(individualSimulation.Name));
 
-         return exportToFileAsync(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, CoreConstants.DefaultResultsExportNameFor(individualSimulation.Name), async fileName =>
-         {
-            var dataTables = _dataRepositoryTask.ToDataTable(individualSimulation.DataRepository, x => _quantityDisplayPathMapper.DisplayPathAsStringFor(individualSimulation, x), x => x.Dimension);
-            await Task.Run(() => _dataRepositoryTask.ExportToExcel(dataTables, fileName, launchExcel: true));
-         }, Constants.DirectoryKey.REPORT);
+         return exportToFileAsync(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, CoreConstants.DefaultResultsExportNameFor(individualSimulation.Name),
+            fileName => ExportResultsToExcelAsync(individualSimulation, fileName), Constants.DirectoryKey.REPORT);
+      }
+
+      public Task ExportResultsToExcelAsync(IndividualSimulation individualSimulation, string fileName, bool launchExcel = true)
+      {
+         var dataTables = _dataRepositoryTask.ToDataTable(individualSimulation.DataRepository, x => _quantityDisplayPathMapper.DisplayPathAsStringFor(individualSimulation, x), x => x.Dimension);
+         return Task.Run(() => _dataRepositoryTask.ExportToExcel(dataTables, fileName, launchExcel));
       }
 
       public Task ExportResultsToCSVAsync(Simulation simulation)
@@ -62,7 +65,8 @@ namespace PKSim.Infrastructure.Services
          if (!simulation.HasResults)
             throw new PKSimException(PKSimConstants.Error.CannotExportResultsPleaseRunSimulation(simulation.Name));
 
-         return exportToFileAsync(PKSimConstants.UI.ExportSimulationResultsToCSV, Constants.Filter.CSV_FILE_FILTER, CoreConstants.DefaultResultsExportNameFor(simulation.Name), async fileName => { await ExportResultsToCSVAsync(simulation, fileName); }, Constants.DirectoryKey.REPORT);
+         return exportToFileAsync(PKSimConstants.UI.ExportSimulationResultsToCSV, Constants.Filter.CSV_FILE_FILTER, CoreConstants.DefaultResultsExportNameFor(simulation.Name),
+            fileName => ExportResultsToCSVAsync(simulation, fileName), Constants.DirectoryKey.REPORT);
       }
 
       public async Task ExportResultsToCSVAsync(Simulation simulation, string fileName)
@@ -112,7 +116,8 @@ namespace PKSim.Infrastructure.Services
          if (!populationSimulation.HasPKAnalyses)
             throw new PKSimException(PKSimConstants.Error.CannotExportPKAnalysesPleaseRunSimulation(populationSimulation.Name));
 
-         return exportToFileAsync(PKSimConstants.UI.ExportPKAnalysesToCSVTitle, Constants.Filter.CSV_FILE_FILTER, CoreConstants.DefaultPKAnalysesExportNameFor(populationSimulation.Name), async fileName => { await ExportPKAnalysesToCSVAsync(populationSimulation, fileName); }, Constants.DirectoryKey.REPORT);
+         return exportToFileAsync(PKSimConstants.UI.ExportPKAnalysesToCSVTitle, Constants.Filter.CSV_FILE_FILTER, CoreConstants.DefaultPKAnalysesExportNameFor(populationSimulation.Name),
+            fileName => ExportPKAnalysesToCSVAsync(populationSimulation, fileName), Constants.DirectoryKey.REPORT);
       }
 
       public async Task ExportPKAnalysesToCSVAsync(PopulationSimulation populationSimulation, string fileName)

@@ -116,6 +116,12 @@ namespace PKSim.CLI.Core.Services
          _lazyLoadTask.Load(simulation);
          _lazyLoadTask.LoadResults(simulation);
 
+         var simulationExportOptions = new SimulationExportOptions
+         {
+            OutputFolder = simulationFolder,
+            ExportMode = exportRunOptions.ExportMode,
+            ProjectName = projectName,
+         };
 
          if (!simulation.OutputSelections.HasSelection)
          {
@@ -124,10 +130,10 @@ namespace PKSim.CLI.Core.Services
          }
 
          if (exportRunOptions.RunSimulation)
-            await _simulationExporter.RunAndExport(simulation, simulationFolder, simulationRunOptions, exportRunOptions.ExportMode, category: projectName);
+            await _simulationExporter.RunAndExport(simulation,  simulationRunOptions, simulationExportOptions);
 
          else if (simulation.HasResults)
-            await _simulationExporter.Export(simulation, simulationFolder, exportRunOptions.ExportMode, category: projectName);
+            await _simulationExporter.Export(simulation,  simulationExportOptions);
 
          else
          {

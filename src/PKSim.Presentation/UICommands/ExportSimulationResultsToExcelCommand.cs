@@ -17,7 +17,7 @@ namespace PKSim.Presentation.UICommands
 
       protected override async void PerformExecute()
       {
-         await _simulationTask.SecureAwait(x=>x.ExportResultsToExcel(Subject));
+         await _simulationTask.SecureAwait(x=>x.ExportResultsToExcelAsync(Subject));
       }
    }
 }

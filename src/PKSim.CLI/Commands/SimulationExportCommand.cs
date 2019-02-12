@@ -52,6 +52,17 @@ namespace PKSim.CLI.Commands
          get => ExportMode.HasFlag(SimulationExportMode.Pkml);
       }
 
+      [Option('e', "excel", HelpText = "Export simulation results to xlsx Excel format.")]
+      public bool ExportExcel
+      {
+         set
+         {
+            if (value)
+               ExportMode = ExportMode | SimulationExportMode.Xlsx;
+         }
+         get => ExportMode.HasFlag(SimulationExportMode.Xlsx);
+      }
+
       protected override void LogDefaultOptions(StringBuilder sb)
       {
          base.LogDefaultOptions(sb);
