@@ -89,7 +89,7 @@ namespace PKSim.Core
 
       public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
 
-     public static string CompositeNameFor(params string[] names)
+      public static string CompositeNameFor(params string[] names)
       {
          if (names == null || names.Length == 0)
             return string.Empty;

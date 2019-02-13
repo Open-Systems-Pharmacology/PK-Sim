@@ -130,8 +130,8 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_all_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder, _exportRunOptions.ExportMode, A<string>._, A<string>._)).MustHaveHappened();
-         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder, _exportRunOptions.ExportMode, A<string>._, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation1, A<SimulationExportOptions>.That.Matches(x=>x.OutputFolder==_s1OutputFolder))).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation2, A<SimulationExportOptions>.That.Matches(x => x.OutputFolder == _s2OutputFolder))).MustHaveHappened();
       }
 
       [Observation]
@@ -183,13 +183,13 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_the_selected_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder, _exportRunOptions.ExportMode, null, _projectName)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation1, A<SimulationExportOptions>.That.Matches(x => x.OutputFolder == _s1OutputFolder))).MustHaveHappened();
       }
 
       [Observation]
       public void should_not_run_the_export_for_the_simulation_excluded_from_the_run()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder, _exportRunOptions.ExportMode, null, _projectName)).MustNotHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation2, A<SimulationExportOptions>.That.Matches(x => x.OutputFolder == _s2OutputFolder))).MustNotHaveHappened();
       }
 
       [Observation]
@@ -221,12 +221,17 @@ namespace PKSim.CLI
 
    public class When_running_the_export_simulation_runner_for_simulations_of_an_existing_project_and_simulation_should_be_calculated : concern_for_ExportSimulationRunner
    {
+      private SimulationExportOptions _simulationExportOptions;
+
       protected override async Task Context()
       {
          await base.Context();
          _exportRunOptions.ProjectFile = _projectFileName;
          _exportRunOptions.RunSimulation = true;
          _project.AddBuildingBlock(_simulation1);
+         A.CallTo(() => _simulationExporter.RunAndExport(_simulation1, A<SimulationRunOptions>._, A<SimulationExportOptions>._))
+            .Invokes(x => _simulationExportOptions = x.GetArgument<SimulationExportOptions>(2));
+
       }
 
       protected override Task Because()
@@ -237,7 +242,11 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_the_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.RunAndExport(_simulation1, _s1OutputFolder, A<SimulationRunOptions>._, _exportRunOptions.ExportMode, null, _projectName)).MustHaveHappened();
+         _simulationExportOptions.PrependProjectName.ShouldBeFalse();
+         _simulationExportOptions.ProjectName.ShouldBeEqualTo(_projectName);
+         _simulationExportOptions.LogCategory.ShouldBeEqualTo(_projectName);
+         _simulationExportOptions.OutputFolder.ShouldBeEqualTo(_s1OutputFolder);
+         _simulationExportOptions.ExportMode.ShouldBeEqualTo(_exportRunOptions.ExportMode);
       }
    }
 
