@@ -885,6 +885,8 @@ namespace PKSim.Assets
 
          public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"TODO Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
 
+         public static string CannotFindBuildingBlockInSpahsot(string buildingBlockType, string buildingBlockName, string snapshotName) => $"Could not find {buildingBlockType} '{buildingBlockName}' in snapshot '{snapshotName}'.";
+
       }
 
       public static class Information

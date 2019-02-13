@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Snapshots
 {
-   public class Simulation : SnapshotBase
+   public class Simulation : SnapshotBase, IBuildingBlockSnapshot
    {
+      public PKSimBuildingBlockType BuildingBlockType { get; } = PKSimBuildingBlockType.Simulation;
+
       [Required]
       public string Model { get; set; }
 
