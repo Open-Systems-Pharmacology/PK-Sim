@@ -208,7 +208,7 @@ namespace PKSim.CLI
          _projectSnapshot.Simulations = new[] { _simulation };
          _expectedObservedDataFullPath = Path.Combine(_qualificationConfiguration.ObservedDataFolder, $"{_observedData.Name}{Constants.Filter.XLSX_EXTENSION}");
 
-         _expectedInputFullPath = Path.Combine(_qualificationConfiguration.InputsFolder, PROJECT_NAME, PKSimBuildingBlockType.Simulation.ToString(), $"{_simulationName}{CoreConstants.Filter.MARDOWN_EXTENSION}");
+         _expectedInputFullPath = Path.Combine(_qualificationConfiguration.InputsFolder, PROJECT_NAME, PKSimBuildingBlockType.Simulation.ToString(), $"{_simulationName}{CoreConstants.Filter.MARKDOWN_EXTENSION}");
 
          A.CallTo(() => _jsonSerializer.Serialize(A<QualificationMapping>._, _qualificationConfiguration.MappingFile))
             .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));

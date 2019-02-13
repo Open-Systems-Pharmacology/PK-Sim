@@ -132,7 +132,7 @@ namespace PKSim.CLI.Core.Services
          {
             var buildingBlock = snapshotProject.BuildingBlockByTypeAndName(x.Type, x.Name);
             if (buildingBlock == null)
-               throw new QualificationRunException(CannotFindBuildingBlockInSpahsot(x.Type.ToString(), x.Name, snapshotProject.Name));
+               throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(x.Type.ToString(), x.Name, snapshotProject.Name));
          });
       }
 
@@ -199,7 +199,7 @@ namespace PKSim.CLI.Core.Services
          var targetFolder = Path.Combine(inputsFolder, projectName, input.Type.ToString());
          DirectoryHelper.CreateDirectory(targetFolder);
 
-         var fileFullPath = Path.Combine(targetFolder, $"{buildingBlockName}{CoreConstants.Filter.MARDOWN_EXTENSION}");
+         var fileFullPath = Path.Combine(targetFolder, $"{buildingBlockName}{CoreConstants.Filter.MARKDOWN_EXTENSION}");
          await _markdownReporterTask.ExportToMarkdown(buildingBlock, fileFullPath);
          _logger.AddDebug($"Input data for {input.Type} '{input.Name}' exported to '{fileFullPath}'", project.Name);
 

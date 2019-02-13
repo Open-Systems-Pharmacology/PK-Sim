@@ -67,7 +67,7 @@ namespace PKSim.Core.Snapshots
          var originalBuildingBlock = BuildingBlockByTypeAndName(type, name);
 
          if (originalBuildingBlock == null)
-            throw new PKSimException(PKSimConstants.Error.CannotFindBuildingBlockInSpahsot(type.ToString(), name, Name));
+            throw new PKSimException(PKSimConstants.Error.CannotFindBuildingBlockInSnapshot(type.ToString(), name, Name));
 
          switch (type)
          {

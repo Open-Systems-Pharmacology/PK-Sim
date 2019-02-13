@@ -46,7 +46,7 @@ namespace PKSim.Core
          public const string USER_TEMPLATE_DB_EXTENSION = ".templateDbUser";
          public const string SYSTEM_TEMPLATE_DB_EXTENSION = ".templateDbSystem";
          public const string GENE_DB_EXTENSION = ".expressionDb";
-         public static readonly string MARDOWN_EXTENSION = ".md";
+         public static readonly string MARKDOWN_EXTENSION = ".md";
          public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
          public static readonly string SIMULATION_RESULTS_FILTER = $"*{Constants.Filter.CSV_EXTENSION}";
          public static readonly string EXPRESSION_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Gene Expression Database", GENE_DB_EXTENSION);
