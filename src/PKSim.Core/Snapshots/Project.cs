@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 
 namespace PKSim.Core.Snapshots
 {
@@ -46,6 +47,8 @@ namespace PKSim.Core.Snapshots
                return Populations;
             case PKSimBuildingBlockType.Event:
                return Events;
+            case PKSimBuildingBlockType.Simulation:
+               return Simulations;
             default:
                return null;
          }
@@ -64,7 +67,7 @@ namespace PKSim.Core.Snapshots
          var originalBuildingBlock = BuildingBlockByTypeAndName(type, name);
 
          if (originalBuildingBlock == null)
-            throw new PKSimException($"Could not find {type} '{name}` in snapshot '${Name}'.");
+            throw new PKSimException(PKSimConstants.Error.CannotFindBuildingBlockInSnapshot(type.ToString(), name, Name));
 
          switch (type)
          {

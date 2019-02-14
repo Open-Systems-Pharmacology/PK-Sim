@@ -86,17 +86,17 @@
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.5.0.7, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.7\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.5.0.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.8\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.5.0.7, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.7\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.5.0.8, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.8\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.1.12\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.5.0.7, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.7\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.5.0.8, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.8\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -107,8 +107,8 @@
     <Reference Include="OSPSuite.TeXReporting, Version=2.1.1.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.TeXReporting.2.1.1.9\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Utility, Version=3.0.1.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Utility.3.0.1.1\lib\net462\OSPSuite.Utility.dll</HintPath>
+    <Reference Include="OSPSuite.Utility, Version=3.0.1.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.3.0.1.4\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
     <Reference Include="SX, Version=2.6.9.6, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.9.6\lib\net45\SX.dll</HintPath>

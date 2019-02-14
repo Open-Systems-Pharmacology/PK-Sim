@@ -12,7 +12,7 @@ namespace PKSim.Core.Reporting
 
       public string Title
       {
-         get { return _title; }
+         get => _title;
          set
          {
             _title = value;

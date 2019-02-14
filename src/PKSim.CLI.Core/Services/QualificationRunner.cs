@@ -9,6 +9,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
@@ -30,6 +31,7 @@ namespace PKSim.CLI.Core.Services
       private readonly ILogger _logger;
       private readonly IExportSimulationRunner _exportSimulationRunner;
       private readonly IDataRepositoryTask _dataRepositoryTask;
+      private readonly IMarkdownReporterTask _markdownReporterTask;
 
       public QualificationRunner(ISnapshotTask snapshotTask,
          IJsonSerializer jsonSerializer,
@@ -37,6 +39,7 @@ namespace PKSim.CLI.Core.Services
          IWorkspacePersistor workspacePersistor,
          IExportSimulationRunner exportSimulationRunner,
          IDataRepositoryTask dataRepositoryTask,
+         IMarkdownReporterTask markdownReporterTask,
          ILogger logger
       )
       {
@@ -47,6 +50,7 @@ namespace PKSim.CLI.Core.Services
          _logger = logger;
          _exportSimulationRunner = exportSimulationRunner;
          _dataRepositoryTask = dataRepositoryTask;
+         _markdownReporterTask = markdownReporterTask;
       }
 
       public async Task RunBatchAsync(QualificationRunOptions runOptions)
@@ -64,7 +68,9 @@ namespace PKSim.CLI.Core.Services
          var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotFile);
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
 
+         //Retrieve charts and validate inputs before exiting validation to ensure that we can throw error messages if an element is not available
          var charts = retrieveChartDefinitionsFrom(snapshot, config);
+         validateInputs(snapshot, config);
 
          if (runOptions.Validate)
          {
@@ -86,19 +92,22 @@ namespace PKSim.CLI.Core.Services
 
 
          var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOtions);
-         var simulationMappings = simulationExports.Select(x => simulationMappingFrom(x, config.ReportConfigurationFile)).ToArray();
+         var simulationMappings = simulationExports.Select(x => simulationMappingFrom(x, config)).ToArray();
+
          var observedDataMappings = exportObservedData(project, config);
+
+         var inputMappings = await exportInputs(project, config);
 
          var mapping = new QualificationMapping
          {
             SimulationMappings = simulationMappings,
             ObservedDataMappings = observedDataMappings,
-            Plots = charts
+            Plots = charts,
+            Inputs = inputMappings
          };
 
          await _jsonSerializer.Serialize(mapping, config.MappingFile);
          _logger.AddDebug($"Project mapping for '{project.Name}' exported to '{config.MappingFile}'", project.Name);
-
 
          var projectFile = Path.Combine(projectOutputFolder, $"{project.Name}{CoreConstants.Filter.PROJECT_EXTENSION}");
          _workspace.Project = project;
@@ -117,9 +126,19 @@ namespace PKSim.CLI.Core.Services
       private PlotMapping[] retrieveChartDefinitionsFrom(Project snapshotProject, QualifcationConfiguration configuration) =>
          configuration.SimulationPlots?.SelectMany(x => retrieveChartDefinitionsForSimulation(x, snapshotProject)).ToArray();
 
+      private void validateInputs(Project snapshotProject, QualifcationConfiguration configuration)
+      {
+         configuration.Inputs?.Each(x =>
+         {
+            var buildingBlock = snapshotProject.BuildingBlockByTypeAndName(x.Type, x.Name);
+            if (buildingBlock == null)
+               throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(x.Type.ToString(), x.Name, snapshotProject.Name));
+         });
+      }
+
       private IEnumerable<PlotMapping> retrieveChartDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
       {
-         var simuationName = simulationPlot.Simulation;
+         var simuationName = simulationPlot.RefSimulation;
          var simulation = snapshotProject.Simulations?.FindByName(simuationName);
          if (simulation == null)
             throw new QualificationRunException($"Cannot export charts as simulation '{simuationName}' in not defined in project '{snapshotProject.Name}'.");
@@ -133,34 +152,62 @@ namespace PKSim.CLI.Core.Services
          });
       }
 
-      private SimulationMapping simulationMappingFrom(SimulationExport simulationExport, string reportFile) =>
+      private SimulationMapping simulationMappingFrom(SimulationExport simulationExport, QualifcationConfiguration configuration) =>
          new SimulationMapping
          {
-            Path = FileHelper.CreateRelativePath(simulationExport.SimulationFolder, reportFile),
+            Path = relativePath(simulationExport.SimulationFolder, configuration.ReportConfigurationFile),
             RefProject = simulationExport.ProjectName,
             RefSimulation = simulationExport.SimulationName
          };
 
-      private ObservedDataMapping[] exportObservedData(PKSimProject project, QualifcationConfiguration qualifcationConfiguration)
+      private ObservedDataMapping[] exportObservedData(PKSimProject project, QualifcationConfiguration configuration)
       {
          if (!project.AllObservedData.Any())
             return null;
 
-         var observedDataOutputFolder = qualifcationConfiguration.ObservedDataFolder;
+         var observedDataOutputFolder = configuration.ObservedDataFolder;
          DirectoryHelper.CreateDirectory(observedDataOutputFolder);
 
          return project.AllObservedData.Select(obs =>
          {
             var fileFullPath = Path.Combine(observedDataOutputFolder, $"{FileHelper.RemoveIllegalCharactersFrom(obs.Name)}{Constants.Filter.XLSX_EXTENSION}");
-            var relativePath = FileHelper.CreateRelativePath(fileFullPath, qualifcationConfiguration.ReportConfigurationFile);
             _logger.AddDebug($"Observed data '{obs.Name}' exported to '{fileFullPath}'", project.Name);
             _dataRepositoryTask.ExportToExcel(obs, fileFullPath, launchExcel: false);
             return new ObservedDataMapping
             {
                Id = obs.Name,
-               Path = relativePath,
+               Path = relativePath(fileFullPath, configuration.ReportConfigurationFile)
             };
          }).ToArray();
+      }
+
+      private Task<InputMapping[]> exportInputs(PKSimProject project, QualifcationConfiguration configuration)
+      {
+         if (configuration.Inputs == null)
+            return Task.FromResult<InputMapping[]>(null);
+
+         return Task.WhenAll(configuration.Inputs.Select(x => exportInput(project, configuration, x)));
+      }
+
+      private async Task<InputMapping> exportInput(PKSimProject project, QualifcationConfiguration configuration, Input input)
+      {
+         var buildingBlock = project.BuildingBlockByName(input.Name, input.Type);
+
+         var inputsFolder = configuration.InputsFolder;
+         var projectName = FileHelper.RemoveIllegalCharactersFrom(project.Name);
+         var buildingBlockName = FileHelper.RemoveIllegalCharactersFrom(input.Name);
+         var targetFolder = Path.Combine(inputsFolder, projectName, input.Type.ToString());
+         DirectoryHelper.CreateDirectory(targetFolder);
+
+         var fileFullPath = Path.Combine(targetFolder, $"{buildingBlockName}{CoreConstants.Filter.MARKDOWN_EXTENSION}");
+         await _markdownReporterTask.ExportToMarkdown(buildingBlock, fileFullPath);
+         _logger.AddDebug($"Input data for {input.Type} '{input.Name}' exported to '{fileFullPath}'", project.Name);
+
+         return new InputMapping
+         {
+            SectionId = input.SectionId,
+            Path = relativePath(fileFullPath, configuration.ReportConfigurationFile)
+         };
       }
 
       private string createProjectOutputFolder(string outputPath, string projectName)
@@ -209,5 +256,8 @@ namespace PKSim.CLI.Core.Services
          _logger.AddDebug($"Reading configuration from file '{runOptions.ConfigurationFile}'");
          return _jsonSerializer.Deserialize<QualifcationConfiguration>(runOptions.ConfigurationFile);
       }
+
+      private string relativePath(string path, string relativeTo) =>
+         FileHelper.CreateRelativePath(path, relativeTo, useUnixPathSeparator: true);
    }
-}  
+}

@@ -42,6 +42,7 @@ namespace PKSim.CLI
       private Func<string, bool> _oldDirectoryExists;
       private Action<string, bool> _oldDeleteDirectory;
       protected IDataRepositoryTask _dataRepositoryTask;
+      protected IMarkdownReporterTask _markdownReporterTask;
 
       public override async Task GlobalContext()
       {
@@ -66,8 +67,9 @@ namespace PKSim.CLI
          _exportSimulationRunner = A.Fake<IExportSimulationRunner>();
          _logger = A.Fake<ILogger>();
          _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _markdownReporterTask = A.Fake<IMarkdownReporterTask>();
 
-         sut = new QualificationRunner(_snapshotTask, _jsonSerializer, _workspace, _workspacePersistor, _exportSimulationRunner, _dataRepositoryTask, _logger);
+         sut = new QualificationRunner(_snapshotTask, _jsonSerializer, _workspace, _workspacePersistor, _exportSimulationRunner, _dataRepositoryTask, _markdownReporterTask, _logger);
 
          _runOptions = new QualificationRunOptions();
          _qualificationConfiguration = new QualifcationConfiguration();
@@ -105,6 +107,7 @@ namespace PKSim.CLI
          _runOptions.ConfigurationFile = "XXX";
          A.CallTo(() => _jsonSerializer.Deserialize<QualifcationConfiguration>(_runOptions.ConfigurationFile)).Returns(_qualificationConfiguration);
          _qualificationConfiguration.OutputFolder = "c:/tests/outputs/";
+         _qualificationConfiguration.InputsFolder = "c:/tests/project_inputs/";
          _qualificationConfiguration.SnapshotFile = $"c:/tests/inputs/{PROJECT_NAME}.json";
          _qualificationConfiguration.MappingFile = $"c:/tests/temp/{PROJECT_NAME}_Mapping.json";
          _qualificationConfiguration.ReportConfigurationFile = "c:/tests/outputs/report_config.json";
@@ -175,6 +178,10 @@ namespace PKSim.CLI
       private QualificationMapping _mapping;
       private string _simulationName;
       private string _expectedObservedDataFullPath;
+      private string _expectedInputFullPath;
+      private Input _input;
+      private Simulation _simulation;
+      private IndividualSimulation _individualSimulation;
 
       protected override async Task Context()
       {
@@ -185,6 +192,9 @@ namespace PKSim.CLI
          DirectoryHelper.DeleteDirectory = (s, b) => _deletedDirectory = s;
 
          _simulationName = "S1";
+         _simulation = new Simulation {Name = _simulationName};
+         _individualSimulation = new IndividualSimulation { Name = _simulationName};
+         _input = new Input {RefProject = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation};
 
          _expectedSimulationPath = Path.Combine(_expectedOutputPath, _simulationName);
          _simulationExport = new SimulationExport {ProjectName = _projectSnapshot.Name, SimulationName = _simulationName, SimulationFolder = _expectedSimulationPath};
@@ -195,11 +205,16 @@ namespace PKSim.CLI
 
          _observedData = DomainHelperForSpecs.ObservedData().WithName("OBS");
          _project.AddObservedData(_observedData);
-
+         _projectSnapshot.Simulations = new[] { _simulation };
          _expectedObservedDataFullPath = Path.Combine(_qualificationConfiguration.ObservedDataFolder, $"{_observedData.Name}{Constants.Filter.XLSX_EXTENSION}");
+
+         _expectedInputFullPath = Path.Combine(_qualificationConfiguration.InputsFolder, PROJECT_NAME, PKSimBuildingBlockType.Simulation.ToString(), $"{_simulationName}{CoreConstants.Filter.MARKDOWN_EXTENSION}");
 
          A.CallTo(() => _jsonSerializer.Serialize(A<QualificationMapping>._, _qualificationConfiguration.MappingFile))
             .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
+
+         _project.AddBuildingBlock(_individualSimulation);
+         _qualificationConfiguration.Inputs = new[] {_input};
       }
 
       protected override Task Because()
@@ -244,7 +259,7 @@ namespace PKSim.CLI
          _mapping.SimulationMappings.Length.ShouldBeEqualTo(1);
          _mapping.SimulationMappings[0].RefSimulation.ShouldBeEqualTo(_simulationName);
          _mapping.SimulationMappings[0].RefProject.ShouldBeEqualTo(PROJECT_NAME);
-         _mapping.SimulationMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedSimulationPath, _qualificationConfiguration.OutputFolder));
+         _mapping.SimulationMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedSimulationPath, _qualificationConfiguration.ReportConfigurationFile, true));
       }
 
       [Observation]
@@ -258,7 +273,16 @@ namespace PKSim.CLI
       {
          _mapping.ObservedDataMappings.Length.ShouldBeEqualTo(1);
          _mapping.ObservedDataMappings[0].Id.ShouldBeEqualTo(_observedData.Name);
-         _mapping.ObservedDataMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedObservedDataFullPath, _qualificationConfiguration.OutputFolder));
+         _mapping.ObservedDataMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedObservedDataFullPath, _qualificationConfiguration.ReportConfigurationFile, true));
+      }
+
+      [Observation]
+      public void should_export_the_inputs_mapping_relative_to_the_report_output_folder()
+      {
+         _mapping.Inputs.Length.ShouldBeEqualTo(1);
+         _mapping.Inputs[0].SectionId.ShouldBeEqualTo(_input.SectionId);
+         _mapping.Inputs[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedInputFullPath, _qualificationConfiguration.ReportConfigurationFile, true));
+         A.CallTo(() => _markdownReporterTask.ExportToMarkdown(_individualSimulation, _expectedInputFullPath)).MustHaveHappened();
       }
    }
 
@@ -402,6 +426,27 @@ namespace PKSim.CLI
       }
    }
 
+   public class When_running_the_qualification_runner_with_a_valid_configuration_with_invalid_input_references : concern_for_QualificationRunnerWithValidConfiguration
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         
+         var input = new Input
+         {
+            Type = PKSimBuildingBlockType.Compound,
+            Name = "NOT THERE"
+         };
+         _qualificationConfiguration.Inputs = new[] {input};
+      }
+
+      [Observation]
+      public void should_log_the_error_that_the_snapshot_was_not_found_in_the_project()
+      {
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
+      }
+   }
+
    public class When_running_the_qualification_runner_with_a_valid_configuration_with_swapable_building_blocks_based_on_a_valid_file_referencing_a_valud_building_blocks : concern_for_QualificationRunnerWithValidConfiguration
    {
       private BuildingBlockSwap _buildingBlockSwap;
@@ -451,7 +496,7 @@ namespace PKSim.CLI
          var simulationPlot = new SimulationPlot
          {
             SectionId = 2,
-            Simulation = "SimDoesNotExist"
+            RefSimulation = "SimDoesNotExist"
          };
          _qualificationConfiguration.SimulationPlots = new[] {simulationPlot};
       }
@@ -480,7 +525,7 @@ namespace PKSim.CLI
          _simulationPlot = new SimulationPlot
          {
             SectionId = 2,
-            Simulation = simulation.Name
+            RefSimulation = simulation.Name
          };
          _projectSnapshot.Simulations = new[] {simulation};
          _qualificationConfiguration.SimulationPlots = new[] {_simulationPlot};
@@ -499,7 +544,7 @@ namespace PKSim.CLI
       {
          _mapping.Plots.Length.ShouldBeEqualTo(1);
          _mapping.Plots[0].SectionId.ShouldBeEqualTo(_simulationPlot.SectionId);
-         _mapping.Plots[0].RefSimulation.ShouldBeEqualTo(_simulationPlot.Simulation);
+         _mapping.Plots[0].RefSimulation.ShouldBeEqualTo(_simulationPlot.RefSimulation);
          _mapping.Plots[0].RefProject.ShouldBeEqualTo(_projectSnapshot.Name);
          _mapping.Plots[0].Plot.ShouldBeEqualTo(_curveChart);
       }
