@@ -177,7 +177,8 @@ namespace PKSim.CLI
       private string _expectedSimulationPath;
       private QualificationMapping _mapping;
       private string _simulationName;
-      private string _expectedObservedDataFullPath;
+      private string _expectedObservedDataXlsFullPath;
+      private string _expectedObservedDataCsvFullPath;
       private string _expectedInputFullPath;
       private Input _input;
       private Simulation _simulation;
@@ -206,7 +207,8 @@ namespace PKSim.CLI
          _observedData = DomainHelperForSpecs.ObservedData().WithName("OBS");
          _project.AddObservedData(_observedData);
          _projectSnapshot.Simulations = new[] { _simulation };
-         _expectedObservedDataFullPath = Path.Combine(_qualificationConfiguration.ObservedDataFolder, $"{_observedData.Name}{Constants.Filter.XLSX_EXTENSION}");
+         _expectedObservedDataXlsFullPath = Path.Combine(_qualificationConfiguration.ObservedDataFolder, $"{_observedData.Name}{Constants.Filter.XLSX_EXTENSION}");
+         _expectedObservedDataCsvFullPath = Path.Combine(_qualificationConfiguration.ObservedDataFolder, $"{_observedData.Name}{Constants.Filter.CSV_EXTENSION}");
 
          _expectedInputFullPath = Path.Combine(_qualificationConfiguration.InputsFolder, PROJECT_NAME, PKSimBuildingBlockType.Simulation.ToString(), $"{_simulationName}{CoreConstants.Filter.MARKDOWN_EXTENSION}");
 
@@ -263,9 +265,15 @@ namespace PKSim.CLI
       }
 
       [Observation]
-      public void should_export_the_observed_data_defined_in_the_project_into_the_observed_data_folder()
+      public void should_export_the_observed_data_defined_in_the_project_to_excel_into_the_observed_data_folder()
       {
-         A.CallTo(() => _dataRepositoryTask.ExportToExcel(_observedData, _expectedObservedDataFullPath, false)).MustHaveHappened();
+         A.CallTo(() => _dataRepositoryTask.ExportToExcelAsync(_observedData, _expectedObservedDataXlsFullPath, false, null)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_export_the_observed_data_defined_in_the_project_to_csv_into_the_observed_data_folder()
+      {
+         A.CallTo(() => _dataRepositoryTask.ExportToCsvAsync(_observedData, _expectedObservedDataCsvFullPath, null)).MustHaveHappened();
       }
 
       [Observation]
@@ -273,7 +281,7 @@ namespace PKSim.CLI
       {
          _mapping.ObservedDataMappings.Length.ShouldBeEqualTo(1);
          _mapping.ObservedDataMappings[0].Id.ShouldBeEqualTo(_observedData.Name);
-         _mapping.ObservedDataMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedObservedDataFullPath, _qualificationConfiguration.ReportConfigurationFile, true));
+         _mapping.ObservedDataMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedObservedDataCsvFullPath, _qualificationConfiguration.ReportConfigurationFile, true));
       }
 
       [Observation]
