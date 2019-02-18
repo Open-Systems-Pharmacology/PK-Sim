@@ -55,8 +55,11 @@ namespace PKSim.Infrastructure.Services
 
       public Task ExportResultsToExcelAsync(IndividualSimulation individualSimulation, string fileName, bool launchExcel = true)
       {
-         var dataTables = _dataRepositoryTask.ToDataTable(individualSimulation.DataRepository, x => _quantityDisplayPathMapper.DisplayPathAsStringFor(individualSimulation, x), x => x.Dimension);
-         return Task.Run(() => _dataRepositoryTask.ExportToExcel(dataTables, fileName, launchExcel));
+         var exportOption = new DataColumnExportOptions
+         {
+            ColumnNameRetriever = x => _quantityDisplayPathMapper.DisplayPathAsStringFor(individualSimulation, x)
+         };
+         return _dataRepositoryTask.ExportToExcelAsync(individualSimulation.DataRepository, fileName, launchExcel, exportOption);
       }
 
       public Task ExportResultsToCSVAsync(Simulation simulation)

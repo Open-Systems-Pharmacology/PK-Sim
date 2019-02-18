@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Qualification;
@@ -93,11 +94,10 @@ namespace PKSim.CLI.Core.Services
             ExportMode = SimulationExportMode.All
          };
 
-
          var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOtions);
          var simulationMappings = simulationExports.Select(x => simulationMappingFrom(x, config)).ToArray();
 
-         var observedDataMappings = exportObservedData(project, config);
+         var observedDataMappings = await exportAllObservedData(project, config);
 
          var inputMappings = await exportInputs(project, config);
 
@@ -163,25 +163,34 @@ namespace PKSim.CLI.Core.Services
             RefSimulation = simulationExport.SimulationName
          };
 
-      private ObservedDataMapping[] exportObservedData(PKSimProject project, QualifcationConfiguration configuration)
+      private Task<ObservedDataMapping[]> exportAllObservedData(PKSimProject project, QualifcationConfiguration configuration)
       {
          if (!project.AllObservedData.Any())
-            return null;
+            return Task.FromResult<ObservedDataMapping[]>(null);
 
          var observedDataOutputFolder = configuration.ObservedDataFolder;
          DirectoryHelper.CreateDirectory(observedDataOutputFolder);
 
-         return project.AllObservedData.Select(obs =>
+         return Task.WhenAll(project.AllObservedData.Select(x => exportObservedData(x, configuration, project)));
+      }
+
+      private async Task<ObservedDataMapping> exportObservedData(DataRepository observedData, QualifcationConfiguration configuration, PKSimProject project)
+      {
+         var observedDataOutputFolder = configuration.ObservedDataFolder;
+         var removeIllegalCharactersFrom = FileHelper.RemoveIllegalCharactersFrom(observedData.Name);
+         var csvFullPath = Path.Combine(observedDataOutputFolder, $"{removeIllegalCharactersFrom}{Constants.Filter.CSV_EXTENSION}");
+         var xlsFullPath = Path.Combine(observedDataOutputFolder, $"{removeIllegalCharactersFrom}{Constants.Filter.XLSX_EXTENSION}");
+         _logger.AddDebug($"Observed data '{observedData.Name}' exported to '{csvFullPath}'", project.Name);
+         await _dataRepositoryTask.ExportToCsvAsync(observedData, csvFullPath);
+
+         _logger.AddDebug($"Observed data '{observedData.Name}' exported to '{xlsFullPath}'", project.Name);
+         await _dataRepositoryTask.ExportToExcelAsync(observedData, xlsFullPath, launchExcel: false);
+
+         return new ObservedDataMapping
          {
-            var fileFullPath = Path.Combine(observedDataOutputFolder, $"{FileHelper.RemoveIllegalCharactersFrom(obs.Name)}{Constants.Filter.XLSX_EXTENSION}");
-            _logger.AddDebug($"Observed data '{obs.Name}' exported to '{fileFullPath}'", project.Name);
-            _dataRepositoryTask.ExportToExcel(obs, fileFullPath, launchExcel: false);
-            return new ObservedDataMapping
-            {
-               Id = obs.Name,
-               Path = relativePath(fileFullPath, configuration.ReportConfigurationFile)
-            };
-         }).ToArray();
+            Id = observedData.Name,
+            Path = relativePath(csvFullPath, configuration.ReportConfigurationFile)
+         };
       }
 
       private Task<InputMapping[]> exportInputs(PKSimProject project, QualifcationConfiguration configuration)

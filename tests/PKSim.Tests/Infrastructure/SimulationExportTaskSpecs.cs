@@ -10,16 +10,13 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Mappers;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
-using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 
 namespace PKSim.Infrastructure
 {
@@ -85,7 +82,7 @@ namespace PKSim.Infrastructure
       public async Task should_not_export_the_results_to_excel()
       {
          await sut.ExportResultsToExcelAsync(_simulation);
-         A.CallTo(() => _dataRepositoryTask.ExportToExcel(_simulation.DataRepository, A<string>.Ignored, true)).MustNotHaveHappened();
+         A.CallTo(() => _dataRepositoryTask.ExportToExcel(_simulation.DataRepository, A<string>.Ignored, true, A<DataColumnExportOptions>._)).MustNotHaveHappened();
       }
    }
 
@@ -93,7 +90,7 @@ namespace PKSim.Infrastructure
    {
       private IndividualSimulation _simulation;
       private string _excelFile;
-      private IEnumerable<DataTable> _dataTables;
+      private IReadOnlyList<DataTable> _dataTables;
 
       protected override void Context()
       {
@@ -105,14 +102,13 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _simulation.DataRepository).Returns(new DataRepository());
          _excelFile = "tralala";
          A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, CoreConstants.DefaultResultsExportNameFor(_simulation.Name), null)).Returns(_excelFile);
-         A.CallTo(() => _dataRepositoryTask.ToDataTable(_simulation.DataRepository, A<Func<DataColumn, string>>._, A<Func<DataColumn, IDimension>>._, false, true, false)).Returns(_dataTables);
       }
 
       [Observation]
       public async Task should_export_the_results_to_excel()
       {
          await sut.ExportResultsToExcelAsync(_simulation);
-         A.CallTo(() => _dataRepositoryTask.ExportToExcel(_dataTables, _excelFile, true)).MustHaveHappened();
+         A.CallTo(() => _dataRepositoryTask.ExportToExcelAsync(_simulation.DataRepository, _excelFile, true, A<DataColumnExportOptions>._)).MustHaveHappened();
       }
    }
 
