@@ -65,7 +65,10 @@ namespace PKSim.CLI.Core.Services
          if (!string.IsNullOrEmpty(errorMessage))
             throw new QualificationRunException(errorMessage);
 
+         _logger.AddDebug($"Loading project from snapshot file '{config.SnapshotFile}'...");
          var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotFile);
+         _logger.AddDebug($"Project {snapshot.Name} loaded from snapshot file '{config.SnapshotFile}'.");
+
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
 
          //Retrieve charts and validate inputs before exiting validation to ensure that we can throw error messages if an element is not available
