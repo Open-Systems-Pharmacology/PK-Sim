@@ -195,7 +195,7 @@ namespace PKSim.CLI
          _simulationName = "S1";
          _simulation = new Simulation {Name = _simulationName};
          _individualSimulation = new IndividualSimulation { Name = _simulationName};
-         _input = new Input {RefProject = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation};
+         _input = new Input {Project = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation};
 
          _expectedSimulationPath = Path.Combine(_expectedOutputPath, _simulationName);
          _simulationExport = new SimulationExport {ProjectName = _projectSnapshot.Name, SimulationName = _simulationName, SimulationFolder = _expectedSimulationPath};
@@ -259,8 +259,8 @@ namespace PKSim.CLI
       public void should_export_the_simulation_configuration_with_mapping_relative_to_the_report_output_folder()
       {
          _mapping.SimulationMappings.Length.ShouldBeEqualTo(1);
-         _mapping.SimulationMappings[0].RefSimulation.ShouldBeEqualTo(_simulationName);
-         _mapping.SimulationMappings[0].RefProject.ShouldBeEqualTo(PROJECT_NAME);
+         _mapping.SimulationMappings[0].Simulation.ShouldBeEqualTo(_simulationName);
+         _mapping.SimulationMappings[0].Project.ShouldBeEqualTo(PROJECT_NAME);
          _mapping.SimulationMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedSimulationPath, _qualificationConfiguration.ReportConfigurationFile, true));
       }
 
@@ -504,7 +504,7 @@ namespace PKSim.CLI
          var simulationPlot = new SimulationPlot
          {
             SectionId = 2,
-            RefSimulation = "SimDoesNotExist"
+            Simulation = "SimDoesNotExist"
          };
          _qualificationConfiguration.SimulationPlots = new[] {simulationPlot};
       }
@@ -533,7 +533,7 @@ namespace PKSim.CLI
          _simulationPlot = new SimulationPlot
          {
             SectionId = 2,
-            RefSimulation = simulation.Name
+            Simulation = simulation.Name
          };
          _projectSnapshot.Simulations = new[] {simulation};
          _qualificationConfiguration.SimulationPlots = new[] {_simulationPlot};
@@ -552,8 +552,8 @@ namespace PKSim.CLI
       {
          _mapping.Plots.Length.ShouldBeEqualTo(1);
          _mapping.Plots[0].SectionId.ShouldBeEqualTo(_simulationPlot.SectionId);
-         _mapping.Plots[0].RefSimulation.ShouldBeEqualTo(_simulationPlot.RefSimulation);
-         _mapping.Plots[0].RefProject.ShouldBeEqualTo(_projectSnapshot.Name);
+         _mapping.Plots[0].Simulation.ShouldBeEqualTo(_simulationPlot.Simulation);
+         _mapping.Plots[0].Project.ShouldBeEqualTo(_projectSnapshot.Name);
          _mapping.Plots[0].Plot.ShouldBeEqualTo(_curveChart);
       }
    }

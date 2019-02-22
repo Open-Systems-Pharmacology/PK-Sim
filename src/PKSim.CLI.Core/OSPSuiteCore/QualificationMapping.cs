@@ -1,9 +1,9 @@
 ﻿namespace OSPSuite.Core.Qualification
 {
-   public class SimulationMapping
+   public class SimulationMapping : IReferencingSimulation
    {
-      public string RefProject { get; set; }
-      public string RefSimulation { get; set; }
+      public string Project { get; set; }
+      public string Simulation { get; set; }
       public string Path { get; set; }
    }
 
@@ -14,11 +14,11 @@
       public string Type { get; set; }
    }
 
-   public class PlotMapping
+   public class PlotMapping : IReferencingSimulation
    {
       public int SectionId { get; set; }
-      public string RefProject { get; set; }
-      public string RefSimulation { get; set; }
+      public string Project { get; set; }
+      public string Simulation { get; set; }
       public object Plot { get; set; }
    }
 
