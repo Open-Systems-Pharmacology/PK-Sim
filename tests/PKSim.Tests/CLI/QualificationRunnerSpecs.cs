@@ -198,7 +198,7 @@ namespace PKSim.CLI
          _input = new Input {Project = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation};
 
          _expectedSimulationPath = Path.Combine(_expectedOutputPath, _simulationName);
-         _simulationExport = new SimulationExport {ProjectName = _projectSnapshot.Name, SimulationName = _simulationName, SimulationFolder = _expectedSimulationPath};
+         _simulationExport = new SimulationExport {Project = _projectSnapshot.Name, Simulation = _simulationName, SimulationFolder = _expectedSimulationPath};
          _simulationExports = new[] {_simulationExport};
          A.CallTo(() => _exportSimulationRunner.ExportSimulationsIn(_project, A<ExportRunOptions>._))
             .Invokes(x => _exportOptions = x.GetArgument<ExportRunOptions>(1))

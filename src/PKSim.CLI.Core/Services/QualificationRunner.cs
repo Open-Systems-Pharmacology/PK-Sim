@@ -159,8 +159,8 @@ namespace PKSim.CLI.Core.Services
          new SimulationMapping
          {
             Path = relativePath(simulationExport.SimulationFolder, configuration.ReportConfigurationFile),
-            Project = simulationExport.ProjectName,
-            Simulation = simulationExport.SimulationName
+            Project = simulationExport.Project,
+            Simulation = simulationExport.Simulation
          };
 
       private Task<ObservedDataMapping[]> exportAllObservedData(PKSimProject project, QualifcationConfiguration configuration)
