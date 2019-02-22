@@ -69,7 +69,7 @@ namespace PKSim.Core
       public static readonly string VALUE_PROPERTY_NAME = "Value";
       public static readonly string PROJECT_UNDEFINED = "Undefined";
       public static readonly string VERSION_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.xml";
-      public static readonly string ISSUE_TRACKER_URL = "http://www.open-systems-pharmacology.org/pk-sim/issues";
+      public static readonly string ISSUE_TRACKER_URL = "https://github.com/open-systems-pharmacology/pk-sim/issues";
       public static readonly string TEMPLATE_DATABASE_CONVERSION_WIKI_URL = "https://github.com/Open-Systems-Pharmacology/OSPSuite.Documentation/wiki/Converting-User-Template-Database";
 
       public const string APPLICATION_NAME_TEMPLATE = "Application_";
@@ -83,7 +83,6 @@ namespace PKSim.Core
       public static string ProductDisplayName = PRODUCT_NAME_WITH_TRADEMARK;
 
     
-
       public static string DefaultResultsExportNameFor(string simulationName) => $"{simulationName}-Results";
 
       public static string DefaultPKAnalysesExportNameFor(string simulationName) => $"{simulationName}-PK-Analyses";
