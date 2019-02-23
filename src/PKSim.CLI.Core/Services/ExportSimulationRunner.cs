@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
@@ -14,10 +15,10 @@ using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI.Core.Services
 {
-   public class SimulationExport
+   public class SimulationExport : IReferencingSimulation
    {
-      public string ProjectName { get; set; }
-      public string SimulationName { get; set; }
+      public string Project { get; set; }
+      public string Simulation { get; set; }
       public string SimulationFolder { get; set; }
    }
 
@@ -106,9 +107,9 @@ namespace PKSim.CLI.Core.Services
 
          var simulationExport = new SimulationExport
          {
-            ProjectName = projectName,
+            Project = projectName,
             SimulationFolder = simulationFolder,
-            SimulationName = simulationName
+            Simulation = simulationName
          };
 
          var simulationRunOptions = new SimulationRunOptions();
@@ -125,7 +126,7 @@ namespace PKSim.CLI.Core.Services
 
          if (!simulation.OutputSelections.HasSelection)
          {
-            _logger.AddWarning($"Simulation '{simulation.Name}' does not have any selected output and will not be exported", projectName);
+            _logger.AddWarning($"Simulation '{simulationName}' does not have any selected output and will not be exported", projectName);
             return simulationExport;
          }
 

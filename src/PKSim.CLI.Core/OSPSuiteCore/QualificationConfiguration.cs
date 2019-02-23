@@ -8,13 +8,18 @@ namespace OSPSuite.Core.Qualification
 {
    public interface IReferencingProject
    {
-      string RefProject { get; set; }
+      string Project { get; set; }
+   }
+
+   public interface IReferencingSimulation
+   {
+      string Simulation { get; set; }
    }
 
    public static class QualificationExtensions
    {
-      public static T[] ForProject<T>(this IEnumerable<T> referencingProject, string projectId) where T : IReferencingProject =>
-         referencingProject?.Where(x => string.Equals(x.RefProject, projectId)).ToArray();
+      public static T[] ForProject<T>(this IEnumerable<T> referencingProject, string projectName) where T : IReferencingProject =>
+         referencingProject?.Where(x => string.Equals(x.Project, projectName)).ToArray();
    }
 
    public class BuildingBlockSwap : IWithName
@@ -35,7 +40,7 @@ namespace OSPSuite.Core.Qualification
    {
       public PKSimBuildingBlockType Type { get; set; }
       public string Name { get; set; }
-      public string RefProject { get; set; }
+      public string Project { get; set; }
    }
 
    public class Input : BuildingBlockRef
@@ -45,8 +50,8 @@ namespace OSPSuite.Core.Qualification
 
    public class SimulationPlot : IReferencingProject
    {
-      public string RefSimulation { get; set; }
-      public string RefProject { get; set; }
+      public string Simulation { get; set; }
+      public string Project { get; set; }
       public int SectionId { get; set; }
    }
 
@@ -55,9 +60,8 @@ namespace OSPSuite.Core.Qualification
       /// <summary>
       /// Typically name of the project as referenced in the configuration fie
       /// </summary>
-      public string ProjectId { get; set; }
-
-
+      public string Project { get; set; }
+   
       /// <summary>
       ///    Path of project snapshot file used for this qualificaiton run
       /// </summary>

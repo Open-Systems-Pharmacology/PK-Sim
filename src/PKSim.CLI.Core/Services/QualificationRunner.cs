@@ -141,7 +141,7 @@ namespace PKSim.CLI.Core.Services
 
       private IEnumerable<PlotMapping> retrieveChartDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
       {
-         var simuationName = simulationPlot.RefSimulation;
+         var simuationName = simulationPlot.Simulation;
          var simulation = snapshotProject.Simulations?.FindByName(simuationName);
          if (simulation == null)
             throw new QualificationRunException($"Cannot export charts as simulation '{simuationName}' in not defined in project '{snapshotProject.Name}'.");
@@ -150,8 +150,8 @@ namespace PKSim.CLI.Core.Services
          {
             Plot = chart,
             SectionId = simulationPlot.SectionId,
-            RefSimulation = simuationName,
-            RefProject = snapshotProject.Name
+            Simulation = simuationName,
+            Project = snapshotProject.Name
          });
       }
 
@@ -159,8 +159,8 @@ namespace PKSim.CLI.Core.Services
          new SimulationMapping
          {
             Path = relativePath(simulationExport.SimulationFolder, configuration.ReportConfigurationFile),
-            RefProject = simulationExport.ProjectName,
-            RefSimulation = simulationExport.SimulationName
+            Project = simulationExport.Project,
+            Simulation = simulationExport.Simulation
          };
 
       private Task<ObservedDataMapping[]> exportAllObservedData(PKSimProject project, QualifcationConfiguration configuration)
