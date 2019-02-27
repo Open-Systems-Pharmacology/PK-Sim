@@ -158,7 +158,7 @@ namespace PKSim.CLI.Core.Services
       private SimulationMapping simulationMappingFrom(SimulationExport simulationExport, QualifcationConfiguration configuration) =>
          new SimulationMapping
          {
-            Path = relativePath(simulationExport.SimulationFolder, configuration.ReportConfigurationFile),
+            Path = relativePath(simulationExport.SimulationFolder, configuration.OutputFolder),
             Project = simulationExport.Project,
             Simulation = simulationExport.Simulation
          };
@@ -189,7 +189,7 @@ namespace PKSim.CLI.Core.Services
          return new ObservedDataMapping
          {
             Id = observedData.Name,
-            Path = relativePath(csvFullPath, configuration.ReportConfigurationFile)
+            Path = relativePath(csvFullPath, configuration.OutputFolder)
          };
       }
 
@@ -218,7 +218,7 @@ namespace PKSim.CLI.Core.Services
          return new InputMapping
          {
             SectionId = input.SectionId,
-            Path = relativePath(fileFullPath, configuration.ReportConfigurationFile)
+            Path = relativePath(fileFullPath, configuration.OutputFolder)
          };
       }
 
