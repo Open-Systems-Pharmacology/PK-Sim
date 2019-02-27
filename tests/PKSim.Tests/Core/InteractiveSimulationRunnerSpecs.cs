@@ -18,6 +18,7 @@ namespace PKSim.Core
       private ICloner _cloner;
       protected ISimulationSettingsRetriever _simulationSettingsRetriever;
       protected ISimulationRunner _simulationRunner;
+      protected ILazyLoadTask _lazyLoadTask;
 
       protected override Task Context()
       {
@@ -25,8 +26,8 @@ namespace PKSim.Core
          _cloner = A.Fake<ICloner>();
          _simulationSettingsRetriever = A.Fake<ISimulationSettingsRetriever>();
          _simulationRunner = A.Fake<ISimulationRunner>();
-
-         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator);
+         _lazyLoadTask= A.Fake<ILazyLoadTask>();
+         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask);
          return _completed;
       }
    }
@@ -46,6 +47,12 @@ namespace PKSim.Core
       protected override Task Because()
       {
          return sut.RunSimulation(_simulation, false);
+      }
+
+      [Observation]
+      public void should_load_the_simulation()
+      {
+         A.CallTo(() => _lazyLoadTask.Load((Simulation)_simulation)).MustHaveHappened();
       }
 
       [Observation]
