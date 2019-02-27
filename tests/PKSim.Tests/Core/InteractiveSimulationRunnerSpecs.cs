@@ -52,7 +52,7 @@ namespace PKSim.Core
       [Observation]
       public void should_load_the_simulation()
       {
-         A.CallTo(() => _lazyLoadTask.Load(_simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((Simulation)_simulation)).MustHaveHappened();
       }
 
       [Observation]
