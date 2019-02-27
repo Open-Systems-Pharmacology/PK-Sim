@@ -26,7 +26,7 @@ namespace PKSim.Core
          _cloner = A.Fake<ICloner>();
          _simulationSettingsRetriever = A.Fake<ISimulationSettingsRetriever>();
          _simulationRunner = A.Fake<ISimulationRunner>();
-
+         _lazyLoadTask= A.Fake<ILazyLoadTask>();
          sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask);
          return _completed;
       }
