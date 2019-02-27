@@ -107,7 +107,7 @@ namespace PKSim.CLI
          _runOptions.ConfigurationFile = "XXX";
          A.CallTo(() => _jsonSerializer.Deserialize<QualifcationConfiguration>(_runOptions.ConfigurationFile)).Returns(_qualificationConfiguration);
          _qualificationConfiguration.OutputFolder = "c:/tests/outputs/";
-         _qualificationConfiguration.InputsFolder = "c:/tests/project_inputs/";
+         _qualificationConfiguration.InputsFolder = "c:/tests/outputs/INPUTS";
          _qualificationConfiguration.SnapshotFile = $"c:/tests/inputs/{PROJECT_NAME}.json";
          _qualificationConfiguration.MappingFile = $"c:/tests/temp/{PROJECT_NAME}_Mapping.json";
          _qualificationConfiguration.ReportConfigurationFile = "c:/tests/outputs/report_config.json";
@@ -261,7 +261,7 @@ namespace PKSim.CLI
          _mapping.SimulationMappings.Length.ShouldBeEqualTo(1);
          _mapping.SimulationMappings[0].Simulation.ShouldBeEqualTo(_simulationName);
          _mapping.SimulationMappings[0].Project.ShouldBeEqualTo(PROJECT_NAME);
-         _mapping.SimulationMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedSimulationPath, _qualificationConfiguration.ReportConfigurationFile, true));
+         _mapping.SimulationMappings[0].Path.ShouldBeEqualTo($"{PROJECT_NAME}/{ _simulationName}/");
       }
 
       [Observation]
@@ -281,7 +281,7 @@ namespace PKSim.CLI
       {
          _mapping.ObservedDataMappings.Length.ShouldBeEqualTo(1);
          _mapping.ObservedDataMappings[0].Id.ShouldBeEqualTo(_observedData.Name);
-         _mapping.ObservedDataMappings[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedObservedDataCsvFullPath, _qualificationConfiguration.ReportConfigurationFile, true));
+         _mapping.ObservedDataMappings[0].Path.ShouldBeEqualTo($"OBS_DATA_FOLDER/{_observedData.Name}.csv");
       }
 
       [Observation]
@@ -289,7 +289,7 @@ namespace PKSim.CLI
       {
          _mapping.Inputs.Length.ShouldBeEqualTo(1);
          _mapping.Inputs[0].SectionId.ShouldBeEqualTo(_input.SectionId);
-         _mapping.Inputs[0].Path.ShouldBeEqualTo(FileHelper.CreateRelativePath(_expectedInputFullPath, _qualificationConfiguration.ReportConfigurationFile, true));
+         _mapping.Inputs[0].Path.ShouldBeEqualTo($"INPUTS/{PROJECT_NAME}/Simulation/{_input.Name}.md");
          A.CallTo(() => _markdownReporterTask.ExportToMarkdown(_individualSimulation, _expectedInputFullPath)).MustHaveHappened();
       }
    }
