@@ -121,8 +121,8 @@ namespace PKSim.Core.Snapshots.Mappers
       private void mapNumericFieldToModel(PopulationAnalysisField snapshot, INumericValueField field)
       {
          field.Dimension = _dimensionFactory.Dimension(snapshot.Dimension);
-         field.Dimension = _dimensionFactory.OptimalDimension(field.Dimension);
-         field.DisplayUnit = field.Dimension.Unit(ModelValueFor(snapshot.Unit));
+         var optimalDimension = _dimensionFactory.OptimalDimension(field.Dimension);
+         field.DisplayUnit = optimalDimension.Unit(ModelValueFor(snapshot.Unit));
          field.Scaling = ModelValueFor(snapshot.Scaling, field.Scaling);
       }
 

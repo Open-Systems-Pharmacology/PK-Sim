@@ -29,12 +29,14 @@ namespace PKSim.Core
       private GroupingDefinition _groupingDefinition;
       protected Snapshots.GroupingDefinition _snapshotGroupingDefinition;
       private IDimensionFactory _dimensionFactory;
+      private IDimension _mergedDimension;
 
       protected override Task Context()
       {
          _groupingDefinitionMapper = A.Fake<GroupingDefinitionMapper>();
-         _dimension = DomainHelperForSpecs.TimeDimensionForSpecs();
-         _unit = _dimension.Unit("h");
+         _dimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
+         _mergedDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
+         _unit = _mergedDimension.Unit("h"); // this unit is defined in the merged dimension but not in the field dimension
          _dimensionFactory = A.Fake<IDimensionFactory>();
 
          sut = new PopulationAnalysisFieldMapper(_groupingDefinitionMapper, _dimensionFactory);
@@ -88,7 +90,7 @@ namespace PKSim.Core
          A.CallTo(() => _groupingDefinitionMapper.MapToSnapshot(_groupingDefinition)).Returns(_snapshotGroupingDefinition);
 
          A.CallTo(() => _dimensionFactory.Dimension(_dimension.Name)).Returns(_dimension);
-         A.CallTo(() => _dimensionFactory.MergedDimensionFor(A<DataColumn>._)).Returns(_dimension);
+         A.CallTo(() => _dimensionFactory.MergedDimensionFor(A<DataColumn>._)).Returns(_mergedDimension);
          return _completed;
       }
    }
