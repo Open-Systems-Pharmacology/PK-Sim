@@ -155,6 +155,7 @@
     <Compile Include="Commands\UpdateParameterValueOriginCommand.cs" />
     <Compile Include="Commands\UpdateParametersValueOriginCommand.cs" />
     <Compile Include="Comparison\AdvancedParameterDiffBuilder.cs" />
+    <Compile Include="Comparison\AlternativeDiffBuilder.cs" />
     <Compile Include="Comparison\CompoundDiffBuilder.cs" />
     <Compile Include="Comparison\GenderRatioDiffBuilder.cs" />
     <Compile Include="Comparison\ImportPopulationDiffBuilder.cs" />
