@@ -522,6 +522,7 @@
     <Compile Include="Services\TemplateTask.cs" />
     <Compile Include="UICommands\CreatePopulationBasedOnIndividualCommand.cs" />
     <Compile Include="UICommands\DeleteBuildingBlocksUICommand.cs" />
+    <Compile Include="UICommands\ExportMarkdownUICommand.cs" />
     <Compile Include="UICommands\ExportProjectToSnapshotCommand.cs" />
     <Compile Include="UICommands\ExportObservedDataToPkmlCommand.cs" />
     <Compile Include="UICommands\ExportPopulationSimulationPKAnalysesCommand.cs" />

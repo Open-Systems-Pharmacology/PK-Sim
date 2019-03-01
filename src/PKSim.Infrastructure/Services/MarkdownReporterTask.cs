@@ -2,16 +2,19 @@
 using System.Threading.Tasks;
 using PKSim.Core.Reporting;
 using PKSim.Core.Services;
+using PKSim.Infrastructure.Reporting.Markdown;
 
 namespace PKSim.Infrastructure.Services
 {
    public class MarkdownReporterTask : IMarkdownReporterTask
    {
       private readonly IReportGenerator _reportGenerator;
+      private readonly IMarkdownBuilderRepository _markdownBuilderRepository;
 
-      public MarkdownReporterTask(IReportGenerator reportGenerator)
+      public MarkdownReporterTask(IReportGenerator reportGenerator, IMarkdownBuilderRepository markdownBuilderRepository)
       {
          _reportGenerator = reportGenerator;
+         _markdownBuilderRepository = markdownBuilderRepository;
       }
 
       public Task ExportToMarkdown(object objectToExport, string file)
@@ -21,7 +24,10 @@ namespace PKSim.Infrastructure.Services
 
       public string ExportToMarkdownString(object objectToExport)
       {
-         return _reportGenerator.StringReportFor(objectToExport);
+         var tracker = new MarkdownTracker();
+         var builder = _markdownBuilderRepository.BuilderFor(objectToExport);
+         builder.Report(objectToExport, tracker);
+         return tracker.ToString();
       }
    }
 }
