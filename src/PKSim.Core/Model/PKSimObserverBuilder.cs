@@ -11,7 +11,7 @@ namespace PKSim.Core.Model
    {
       public string CalculationMethod { get; set; }
       public string Rate { get; set; }
-      public IObserverBuilder ObserverBuilder { get; private set; }
+      public IObserverBuilder ObserverBuilder { get; }
 
       public PKSimObserverBuilder(IObserverBuilder observerBuilder)
       {

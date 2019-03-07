@@ -1,9 +1,19 @@
 using System;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters.Classifications;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Presentation.Presenters.ObservedData;
+using OSPSuite.Presentation.Regions;
+using OSPSuite.Presentation.Services;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -12,17 +22,6 @@ using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Regions;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Main;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Events;
-using OSPSuite.Presentation.Presenters.Classifications;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Presentation.Presenters.ObservedData;
-using OSPSuite.Presentation.Regions;
-using OSPSuite.Presentation.Services;
-using OSPSuite.Presentation.Views;
-using BuildingBlockRemovedEvent = PKSim.Core.Events.BuildingBlockRemovedEvent;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation
@@ -42,6 +41,7 @@ namespace PKSim.Presentation
       protected SimulationNode _simulationNode;
       protected IBuildingBlockIconRetriever _buildingBlockIconRetriever;
       protected ITreeNode<RootNodeType> _protocolFolderNode;
+      protected ITreeNode<RootNodeType> _observersFolderNode;
       protected Individual _individual;
       private IRegionResolver _regionResolver;
       protected ITreeNode<RootNodeType> _populationFolderNode;
@@ -62,10 +62,9 @@ namespace PKSim.Presentation
          _region = A.Fake<IRegion>();
          A.CallTo(() => _regionResolver.RegionWithName(RegionNames.BuildingBlockExplorer)).Returns(_region);
          _project = new PKSimProject();
-         var compound = A.Fake<Compound>().WithName("compound");
-         _individual = A.Fake<Individual>().WithName("individual");
-         A.CallTo(() => _individual.BuildingBlockType).Returns(PKSimBuildingBlockType.Individual);
-         A.CallTo(() => _individual.Species).Returns(new Species());
+         var compound = new Compound().WithName("compound");
+         _individual = new Individual().WithName("individual");
+         _individual.OriginData = new OriginData {Species = new Species()};
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(compound);
          _observedDataInExplorerPresenter = A.Fake<IObservedDataInExplorerPresenter>();
@@ -84,6 +83,7 @@ namespace PKSim.Presentation
          _individualFolderNode = new RootNode(PKSimRootNodeTypes.IndividualFolder);
          _formulationFolderNode = new RootNode(PKSimRootNodeTypes.FormulationFolder);
          _protocolFolderNode = new RootNode(PKSimRootNodeTypes.ProtocolFolder);
+         _observersFolderNode = new RootNode(PKSimRootNodeTypes.ObserversFolder);
          _populationFolderNode = new RootNode(PKSimRootNodeTypes.PopulationFolder);
          _eventRootNode = new RootNode(PKSimRootNodeTypes.EventFolder);
          _simulationNode = new SimulationNode(new ClassifiableSimulation {Subject = new IndividualSimulation {Id = "1"}});
@@ -93,6 +93,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.CompoundFolder)).Returns(_compoundFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.IndividualFolder)).Returns(_individualFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.ProtocolFolder)).Returns(_protocolFolderNode);
+         A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.ObserversFolder)).Returns(_observersFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.FormulationFolder)).Returns(_formulationFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.PopulationFolder)).Returns(_populationFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder)).Returns(_observationRootNode);
@@ -103,6 +104,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.CompoundFolder.Id)).Returns(_compoundFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.IndividualFolder.Id)).Returns(_individualFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.ProtocolFolder.Id)).Returns(_protocolFolderNode);
+         A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.ObserversFolder.Id)).Returns(_observersFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.FormulationFolder.Id)).Returns(_formulationFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.PopulationFolder.Id)).Returns(_populationFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(RootNodeTypes.ObservedDataFolder.Id)).Returns(_observationRootNode);
@@ -111,8 +113,6 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.AddNode(A<ITreeNode>._)).ReturnsLazily(s => s.Arguments[0].DowncastTo<ITreeNode>());
       }
    }
-
-  
 
    public class When_starting_the_tree_view_presenter : concern_for_BuildingBlockExplorerPresenter
    {
@@ -200,6 +200,12 @@ namespace PKSim.Presentation
       }
 
       [Observation]
+      public void should_add_one_root_node_for_the_observers_folder()
+      {
+         A.CallTo(() => _view.AddNode(_observersFolderNode)).MustHaveHappened();
+      }
+
+      [Observation]
       public void should_add_one_root_node_for_the_formulation_folder()
       {
          A.CallTo(() => _view.AddNode(_formulationFolderNode)).MustHaveHappened();
@@ -282,7 +288,6 @@ namespace PKSim.Presentation
          _view.Enabled.ShouldBeTrue();
       }
    }
-
 
    public class When_asked_if_multiple_selection_is_allowed_for_a_given_set_of_nodes : concern_for_BuildingBlockExplorerPresenter
    {

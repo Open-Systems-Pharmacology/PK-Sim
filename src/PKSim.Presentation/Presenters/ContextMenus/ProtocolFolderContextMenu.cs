@@ -1,12 +1,12 @@
 using OSPSuite.Presentation.Nodes;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Presentation.Core;
+using PKSim.Presentation.Nodes;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {

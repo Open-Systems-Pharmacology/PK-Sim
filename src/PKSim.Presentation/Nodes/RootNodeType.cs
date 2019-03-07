@@ -1,6 +1,5 @@
 using PKSim.Assets;
 using OSPSuite.Assets;
-using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters.Nodes;
 
 namespace PKSim.Presentation.Nodes
@@ -17,6 +16,7 @@ namespace PKSim.Presentation.Nodes
       public static readonly RootNodeType FormulationFolder = new RootNodeType(PKSimConstants.UI.FormulationFolder, ApplicationIcons.FormulationFolder);
       public static readonly RootNodeType PopulationFolder = new RootNodeType(PKSimConstants.UI.PopulationFolder, ApplicationIcons.PopulationFolder);
       public static readonly RootNodeType EventFolder = new RootNodeType(PKSimConstants.UI.EventFolder, ApplicationIcons.EventFolder);
+      public static readonly RootNodeType ObserversFolder = new RootNodeType(PKSimConstants.UI.ObserversFolder, ApplicationIcons.ObserverFolder);
       public static readonly RootNodeType IndividualMetabolizingEnzymes = new RootNodeType(PKSimConstants.UI.MetabolizingEnzymes, ApplicationIcons.Enzyme);
       public static readonly RootNodeType IndividualProteinBindingPartners = new RootNodeType(PKSimConstants.UI.ProteinBindingPartners, ApplicationIcons.Protein);
       public static readonly RootNodeType IndividualTransportProteins = new RootNodeType(PKSimConstants.UI.TransportProteins, ApplicationIcons.Transporter);
