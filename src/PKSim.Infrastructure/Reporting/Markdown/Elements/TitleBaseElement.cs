@@ -14,6 +14,6 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Elements
          _level = level;
       }
 
-      public override string ToMarkdown() => $"{new string('#', _level)} {_text}\n";
+      public override string ToMarkdown() => $"{new string('#', _level)} {_text}\n\n";
    }
 }

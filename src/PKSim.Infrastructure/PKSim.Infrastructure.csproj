@@ -284,6 +284,7 @@
     <Compile Include="Reporting\Extensions\SimpleProtocolExtensions.cs" />
     <Compile Include="Reporting\Markdown\Builders\CompoundMarkdownBuilder.cs" />
     <Compile Include="Reporting\Markdown\Builders\IMarkdownBuilder.cs" />
+    <Compile Include="Reporting\Markdown\Builders\ParametersMarkdownBuilder.cs" />
     <Compile Include="Reporting\Markdown\Elements\TitleBaseElement.cs" />
     <Compile Include="Reporting\Markdown\Elements\TitleElement.cs" />
     <Compile Include="Reporting\Markdown\Extensions\MarkdownElementExtensions.cs" />
