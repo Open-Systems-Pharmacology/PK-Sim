@@ -45,6 +45,9 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .AsGroupStarter();
 
          yield return ExportSnapshotMenuFor(buildingBlock);
+
+         yield return ExportMarkdownMenuFor(buildingBlock);
+
       }
 
       protected IEnumerable<IMenuBarItem> ExportContextMenusFor(TBuildingBlock buildingBlock)
@@ -124,19 +127,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .ForDeveloper();
       }
 
-      protected IMenuBarItem AddToJournalMenuFor(TBuildingBlock buildingBlock)
-      {
-         return GenericMenu.AddToJournal(buildingBlock);
-      }
+      protected IMenuBarItem AddToJournalMenuFor(TBuildingBlock buildingBlock) => GenericMenu.AddToJournal(buildingBlock);
 
-      protected IMenuBarItem ExportToPDFMenuFor(TBuildingBlock buildingBlock)
-      {
-         return GenericMenu.ExportToPDFMenuFor(buildingBlock);
-      }
+      protected IMenuBarItem ExportToPDFMenuFor(TBuildingBlock buildingBlock) => GenericMenu.ExportToPDFMenuFor(buildingBlock);
 
-      protected IMenuBarItem ExportSnapshotMenuFor(TBuildingBlock buildingBlock)
-      {
-         return GenericMenu.ExportSnapshotMenuFor(buildingBlock);
-      }
+      protected IMenuBarItem ExportSnapshotMenuFor(TBuildingBlock buildingBlock) => GenericMenu.ExportSnapshotMenuFor(buildingBlock);
+
+      protected IMenuBarItem ExportMarkdownMenuFor(TBuildingBlock buildingBlock) => GenericMenu.ExportMarkdownMenuFor(buildingBlock);
    }
 }

@@ -28,6 +28,8 @@ using PKSim.Infrastructure.ORM.Repositories;
 using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.ProjectConverter.v5_3;
 using PKSim.Infrastructure.ProjectConverter.v6_2;
+using PKSim.Infrastructure.Reporting.Markdown;
+using PKSim.Infrastructure.Reporting.Markdown.Builders;
 using PKSim.Infrastructure.Reporting.Summary;
 using PKSim.Infrastructure.Reporting.TeX.Builders;
 using PKSim.Infrastructure.Reporting.TeX.Reporters;
@@ -158,6 +160,7 @@ namespace PKSim.Infrastructure
             //this type will be registered using another convention
             scan.ExcludeNamespaceContainingType<IObjectConverter>(); //Converter
             scan.ExcludeNamespaceContainingType<IReportBuilder>(); //report builder
+            scan.ExcludeNamespaceContainingType<IMarkdownBuilder>(); //Markdown builder
             scan.ExcludeNamespaceContainingType<SimulationReporter>(); //tex reporter
             scan.ExcludeNamespaceContainingType<IndividualTeXBuilder>(); //tex builder
             scan.ExcludeNamespaceContainingType<PKSimXmlSerializerRepository>(); //Serializer
@@ -207,6 +210,8 @@ namespace PKSim.Infrastructure
 
          registerTexReporters(container);
 
+         registerMarkdownBuilders(container);
+
          container.Register<ICompression, SharpLibCompression>();
          container.Register<IStringCompression, StringCompression>();
          container.Register<IProjectRetriever, PKSimProjectRetriever>();
@@ -249,6 +254,19 @@ namespace PKSim.Infrastructure
          });
          container.Register<IReportGenerator, ReportGenerator>(LifeStyle.Singleton);
          container.Register<IReportBuilderRepository, ReportBuilderRepository>(LifeStyle.Singleton);
+      }
+
+
+      private static void registerMarkdownBuilders(IContainer container)
+      {
+         container.AddScanner(scan =>
+         {
+            scan.AssemblyContainingType<InfrastructureRegister>();
+            scan.IncludeNamespaceContainingType<IMarkdownBuilder>();
+            scan.ExcludeType<MarkdownBuilderRepository>();
+            scan.WithConvention<RegisterTypeConvention<IMarkdownBuilder>>();
+         });
+         container.Register<IMarkdownBuilderRepository, MarkdownBuilderRepository>(LifeStyle.Singleton);
       }
 
       private static void registerTexReporters(IContainer container)

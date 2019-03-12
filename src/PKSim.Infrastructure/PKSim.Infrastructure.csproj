@@ -93,6 +93,9 @@
     <Reference Include="LumenWorks.Framework.IO, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5ad3ea2f85776344, processorArchitecture=MSIL">
       <HintPath>..\..\packages\LumenWorksCsvReader.4.0.0\lib\net461\LumenWorks.Framework.IO.dll</HintPath>
     </Reference>
+    <Reference Include="MarkdownLog, Version=0.10.1.0, Culture=neutral, PublicKeyToken=2b6c562c5dd991ab, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MarkdownLog.NS20.0.10.1\lib\netstandard2.0\MarkdownLog.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MathNet.Numerics.4.7.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
@@ -279,6 +282,14 @@
     <Compile Include="ProjectConverter\v7_4\Converter730To740.cs" />
     <Compile Include="Reporting\Extensions\DataTableExtensions.cs" />
     <Compile Include="Reporting\Extensions\SimpleProtocolExtensions.cs" />
+    <Compile Include="Reporting\Markdown\Builders\CompoundMarkdownBuilder.cs" />
+    <Compile Include="Reporting\Markdown\Builders\IMarkdownBuilder.cs" />
+    <Compile Include="Reporting\Markdown\Builders\ParametersMarkdownBuilder.cs" />
+    <Compile Include="Reporting\Markdown\Elements\TitleBaseElement.cs" />
+    <Compile Include="Reporting\Markdown\Elements\TitleElement.cs" />
+    <Compile Include="Reporting\Markdown\Extensions\MarkdownElementExtensions.cs" />
+    <Compile Include="Reporting\Markdown\MarkdownBuilderRepository.cs" />
+    <Compile Include="Reporting\Markdown\MarkdownTracker.cs" />
     <Compile Include="Reporting\Summary\AdvancedProtocolReportBuilder.cs" />
     <Compile Include="Reporting\Summary\CreationMetaDataReportBuilder.cs" />
     <Compile Include="Reporting\Summary\GroupingDefinitionReportBuilder.cs" />
@@ -811,7 +822,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Reporting\TeX\ReportingTEX.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

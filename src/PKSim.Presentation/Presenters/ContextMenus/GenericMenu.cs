@@ -33,6 +33,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithIcon(ApplicationIcons.SnapshotExport)
             .ForDeveloper();        
       }
+
+      public static IMenuBarItem ExportMarkdownMenuFor<T>(T objectToExport) where T : class, IObjectBase
+      {
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Save Markdown"))
+            .WithCommandFor<ExportMarkdownUICommand<T>, T>(objectToExport)
+//            .WithIcon(ApplicationIcons.SnapshotExport)
+            .ForDeveloper();        
+      }
       
       public static IMenuBarItem ExportCollectionToPDFMenuFor<T>()
       {
