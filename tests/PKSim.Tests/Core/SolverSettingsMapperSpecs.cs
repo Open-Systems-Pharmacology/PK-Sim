@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using PKSim.Core.Snapshots.Mappers;
 using ISolverSettingsFactory = PKSim.Core.Model.ISolverSettingsFactory;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_SolverSettingsMapper : ContextSpecificationAsync<SolverSettingsMapper>

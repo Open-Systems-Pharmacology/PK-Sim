@@ -9,11 +9,12 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_DataRepositoryFromResultsCreator : ContextSpecification<IDataRepositoryFromResultsCreator>
    {
-      private IDataFactory _dataFactory;
+      private IDataRepositoryTask _dataFactory;
       private IDimensionRepository _dimensionRepository;
       private IndividualSimulation _simulation;
       protected DataRepository _dataRepository;
@@ -23,7 +24,7 @@ namespace PKSim.Core
 
       protected override void Context()
       {
-         _dataFactory = A.Fake<IDataFactory>();
+         _dataFactory = A.Fake<IDataRepositoryTask>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
          sut = new DataRepositoryFromResultsCreator(_dimensionRepository, new ObjectPathFactoryForSpecs(), _dataFactory);
 

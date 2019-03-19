@@ -13,6 +13,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_WorkspaceLayoutCreator : ContextSpecification<IWorkspaceLayoutUpdater>

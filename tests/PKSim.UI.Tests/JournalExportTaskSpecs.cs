@@ -9,6 +9,7 @@ using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.UI.Services;
 
+
 namespace PKSim.UI.Tests
 {
    public abstract class concern_for_JournalExportTask : ContextSpecification<JournalExportTask>

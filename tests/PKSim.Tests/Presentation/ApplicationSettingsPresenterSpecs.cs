@@ -17,6 +17,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_ApplicationSettingsPresenter : ContextSpecification<IApplicationSettingsPresenter>

@@ -5,6 +5,7 @@ using FakeItEasy;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_AddSchemaToProtocolCommand : ContextSpecification<AddSchemaToProtocolCommand>

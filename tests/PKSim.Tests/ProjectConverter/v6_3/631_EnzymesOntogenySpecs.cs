@@ -1,14 +1,13 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ProjectConverter.v6_3;
 using PKSim.IntegrationTests;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.ProjectConverter.v6_3
 {
-
    public class When_converting_the_631_EnzymesOntogenyProject : ContextWithLoadedProject<Converter631To632>
    {
       public override void GlobalContext()
@@ -24,7 +23,7 @@ namespace PKSim.ProjectConverter.v6_3
          {
             _lazyLoadTask.Load(simulation);
 
-            var ontogenyFactorsGI = simulation.Model.Root.GetAllChildren<IParameter>(p=>p.Name.Equals(CoreConstants.Parameters.ONTOGENY_FACTOR_GI));
+            var ontogenyFactorsGI = simulation.Model.Root.GetAllChildren<IParameter>(p => p.Name.Equals(CoreConstants.Parameters.ONTOGENY_FACTOR_GI));
             ontogenyFactorsGI.Count.ShouldBeGreaterThan(0);
 
             foreach (var ontogenyFactorGI in ontogenyFactorsGI)
@@ -33,7 +32,6 @@ namespace PKSim.ProjectConverter.v6_3
                ontogenyFactorGI.ParentContainer.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR).CanBeVaried.ShouldBeTrue();
             }
          }
-
       }
    }
-}	
+}

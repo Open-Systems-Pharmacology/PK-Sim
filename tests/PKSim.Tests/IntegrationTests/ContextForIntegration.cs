@@ -1,26 +1,28 @@
 using System;
 using System.Threading;
 using FakeItEasy;
-using PKSim.BatchTool;
-using PKSim.Core;
-using PKSim.Core.Services;
-using PKSim.Infrastructure;
-using PKSim.Matlab;
-using PKSim.Presentation;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Services;
 using OSPSuite.BDDHelper;
+using OSPSuite.Core;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
+using OSPSuite.Engine;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
+using PKSim.BatchTool;
 using PKSim.CLI.Core;
 using PKSim.CLI.Core.MinimalImplementations;
+using PKSim.Core;
+using PKSim.Core.Services;
+using PKSim.Infrastructure;
+using PKSim.Matlab;
+using PKSim.Presentation;
+using PKSim.Presentation.Services;
+using CoreRegister = PKSim.Core.CoreRegister;
 
 namespace PKSim.IntegrationTests
 {
@@ -31,10 +33,9 @@ namespace PKSim.IntegrationTests
       {
          if (IoC.Container != null) return;
 
-         InfrastructureRegister.Initialize();
+         var container = InfrastructureRegister.Initialize();
 
          //use only in tests
-         var container = IoC.Container;
          using (container.OptimizeDependencyResolution())
          {
             //need to register these serives for which the default implementation is in the UI
@@ -48,7 +49,7 @@ namespace PKSim.IntegrationTests
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
             container.RegisterImplementationOf(A.Fake<IDialogCreator>());
             container.RegisterImplementationOf(A.Fake<IHistoryManager>());
-            container.RegisterImplementationOf(A.Fake<OSPSuite.Core.IWorkspace>());
+            container.RegisterImplementationOf(A.Fake<IWorkspace>());
             container.RegisterImplementationOf(A.Fake<IHeavyWorkManager>());
             container.RegisterImplementationOf(A.Fake<IChartTemplatingTask>());
             container.RegisterImplementationOf(A.Fake<IPresentationSettingsTask>());
@@ -56,7 +57,8 @@ namespace PKSim.IntegrationTests
 
             container.AddRegister(x =>
             {
-               x.FromInstance(new CoreRegister());
+               x.FromType<CoreRegister>();
+               x.FromType<EngineRegister>();
                x.FromType<CLIRegister>();
                x.FromType<InfrastructureRegister>();
                x.FromType<PresenterRegister>();
@@ -74,6 +76,7 @@ namespace PKSim.IntegrationTests
             InfrastructureRegister.RegisterSerializationDependencies();
             InfrastructureRegister.RegisterWorkspace();
          }
+
          //Required for usage with nunit 3
          Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
       }

@@ -22,13 +22,13 @@ namespace PKSim.Core.Services
    {
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IObjectPathFactory _objectPathFactory;
-      private readonly IDataFactory _dataFactory;
+      private readonly IDataRepositoryTask _dataRepositoryTask;
 
-      public DataRepositoryFromResultsCreator(IDimensionRepository dimensionRepository, IObjectPathFactory objectPathFactory, IDataFactory dataFactory)
+      public DataRepositoryFromResultsCreator(IDimensionRepository dimensionRepository, IObjectPathFactory objectPathFactory, IDataRepositoryTask dataRepositoryTask)
       {
          _dimensionRepository = dimensionRepository;
          _objectPathFactory = objectPathFactory;
-         _dataFactory = dataFactory;
+         _dataRepositoryTask = dataRepositoryTask;
       }
 
       public DataRepository CreateResultsFor(IndividualSimulation simulation)
@@ -93,7 +93,7 @@ namespace PKSim.Core.Services
             DataInfo = newDataInfo(dimension),
          };
 
-         _dataFactory.UpdateMolWeight(newColumn, quantity, simulation.Model);
+         _dataRepositoryTask.UpdateMolWeight(newColumn, quantity, simulation.Model);
          return newColumn;
       }
 

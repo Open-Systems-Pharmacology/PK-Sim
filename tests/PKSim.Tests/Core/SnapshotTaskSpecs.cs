@@ -15,6 +15,7 @@ using PKSim.Core.Snapshots.Services;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 using Project = PKSim.Core.Snapshots.Project;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_SnapshotTask : ContextSpecificationAsync<ISnapshotTask>

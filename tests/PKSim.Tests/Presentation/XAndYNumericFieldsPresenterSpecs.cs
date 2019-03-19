@@ -10,6 +10,7 @@ using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_XAndYNumericFieldsPresenter : ContextSpecification<IXAndYNumericFieldsPresenter>

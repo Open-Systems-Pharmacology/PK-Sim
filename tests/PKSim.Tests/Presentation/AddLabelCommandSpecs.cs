@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Presentation.Services.Commands;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_AddLabelCommand : ContextSpecification<AddLabelCommand>

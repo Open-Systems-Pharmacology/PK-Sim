@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -10,11 +11,10 @@ using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Mappers;
 
+using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
-using FakeItEasy;
 using PKSim.Presentation.Views.Protocols;
 
 namespace PKSim.Presentation
@@ -26,14 +26,14 @@ namespace PKSim.Presentation
       protected IParameterTask _parameterTask;
       protected ISchemaItemToSchemaItemDTOMapper _schemaItemDTOMapper;
       protected IParameterToParameterDTOMapper _parameterDTOMapper;
-      protected  PKSim.Core.Model.AdvancedProtocol _advancedProtocol;
+      protected AdvancedProtocol _advancedProtocol;
       protected IList<Schema> _allSchemas;
       protected IProtocolTask _protocolTask;
       protected IDimensionRepository _dimensionRepository;
 
       protected override void Context()
       {
-         _advancedProtocol = A.Fake< PKSim.Core.Model.AdvancedProtocol>();
+         _advancedProtocol = A.Fake<AdvancedProtocol>();
          _allSchemas = new List<Schema>();
          A.CallTo(() => _advancedProtocol.AllSchemas).Returns(_allSchemas);
 
@@ -43,13 +43,12 @@ namespace PKSim.Presentation
          _protocolTask = A.Fake<IProtocolTask>();
          _parameterTask = A.Fake<IParameterTask>();
          _view = A.Fake<IAdvancedProtocolView>();
-         _dimensionRepository =A.Fake<IDimensionRepository>();
-         sut = new AdvancedProtocolPresenter(_view, _schemaItemDTOMapper, _schemaDTOMapper, _parameterDTOMapper, _protocolTask, _parameterTask,_dimensionRepository);
+         _dimensionRepository = A.Fake<IDimensionRepository>();
+         sut = new AdvancedProtocolPresenter(_view, _schemaItemDTOMapper, _schemaDTOMapper, _parameterDTOMapper, _protocolTask, _parameterTask, _dimensionRepository);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
 
-   
    public class When_the_advanced_protocol_presenter_is_asked_to_add_a_new_schema_to_the_protocol : concern_for_AdvancedProtocolPresenter
    {
       protected override void Context()
@@ -71,7 +70,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_the_advanced_protocol_presenter_is_asked_to_add_a_new_schema_item_to_a_schema : concern_for_AdvancedProtocolPresenter
    {
       private SchemaDTO _schemaDTO;
@@ -101,11 +99,10 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_a_schema_item_to_the_schema()
       {
-         A.CallTo(() => _protocolTask.AddSchemaItemTo(_schema,_schemaItem)).MustHaveHappened();
+         A.CallTo(() => _protocolTask.AddSchemaItemTo(_schema, _schemaItem)).MustHaveHappened();
       }
    }
 
-   
    public class When_the_advanced_protocol_presenter_is_removing_a_schema_item_from_a_schema_containing_at_least_2_schema_items : concern_for_AdvancedProtocolPresenter
    {
       private SchemaDTO _schemaDTO;
@@ -142,7 +139,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_the_advanced_protocol_presenter_is_removing_a_schema_from_protocol_containing_at_least_two_schemas : concern_for_AdvancedProtocolPresenter
    {
       private SchemaDTO _schemaDTO;
@@ -179,7 +175,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_notifed_that_a_schema_item_was_added_to_a_schema_belonging_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
@@ -214,7 +209,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_notifed_that_a_schema_item_was_added_to_a_schema_that_does_not_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
@@ -246,7 +240,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_notifed_that_a_schema_item_was_removed_from_a_schema_that_does_not_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
@@ -278,7 +271,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_notifed_that_a_schema_item_was_removed_from_a_schema_that_does_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
@@ -314,8 +306,6 @@ namespace PKSim.Presentation
       }
    }
 
-
-   
    public class When_notifed_that_a_schema_item_was_removed_from_a_schema_for_a_presenter_that_was_not_initialized : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
@@ -331,11 +321,10 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_crash()
       {
-         sut.Handle(new RemoveSchemaItemFromSchemaEvent { Container = _schema, Entity = _schemaItem });
+         sut.Handle(new RemoveSchemaItemFromSchemaEvent {Container = _schema, Entity = _schemaItem});
       }
    }
 
-   
    public class When_notifed_that_a_schema_item_was_added_to_a_schema_for_a_presenter_that_was_not_initialized : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
@@ -351,24 +340,23 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_crash()
       {
-         sut.Handle(new AddSchemaItemToSchemaEvent() { Container = _schema, Entity = _schemaItem });
+         sut.Handle(new AddSchemaItemToSchemaEvent() {Container = _schema, Entity = _schemaItem});
       }
    }
 
-   
    public class When_the_advanced_protocol_presenter_is_asked_for_the_available_application_type : concern_for_AdvancedProtocolPresenter
    {
       private IEnumerable<ApplicationType> _results;
 
-        protected override void Because()
+      protected override void Because()
       {
-         _results =  sut.AllApplications();
+         _results = sut.AllApplications();
       }
 
       [Observation]
       public void should_not_returned_user_defined_type()
       {
-         _results.Any(x=>x.UserDefined).ShouldBeFalse();
+         _results.Any(x => x.UserDefined).ShouldBeFalse();
       }
 
       [Observation]

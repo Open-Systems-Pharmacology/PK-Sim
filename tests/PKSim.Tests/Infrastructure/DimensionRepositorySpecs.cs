@@ -2,9 +2,11 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Engine;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.Repositories;
+
 
 namespace PKSim.Infrastructure
 {
@@ -15,6 +17,7 @@ namespace PKSim.Infrastructure
          var pkSimConfiguration = new PKSimConfiguration();
          var serializerRepository = new UnitSystemXmlSerializerRepository();
          serializerRepository.PerformMapping();
+         EngineRegister.InitFormulaParser();
          sut = new DimensionRepository(new PKSimDimensionFactory(), serializerRepository, pkSimConfiguration);
       }
    }

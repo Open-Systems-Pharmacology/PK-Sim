@@ -8,6 +8,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using ILogger = OSPSuite.Core.Services.ILogger;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_QualiticationPlanRunner : ContextSpecificationAsync<IQualiticationPlanRunner>

@@ -8,6 +8,7 @@ using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_SnapshotMapper : ContextSpecificationAsync<ISnapshotMapper>

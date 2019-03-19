@@ -8,6 +8,7 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Presentation.Core;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_AddProcessToCompoundCommand : ContextSpecification<AddProcessToCompoundCommand>

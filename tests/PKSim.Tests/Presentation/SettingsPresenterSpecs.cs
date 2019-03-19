@@ -6,6 +6,7 @@ using PKSim.Presentation.Views;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_SettingsPresenter : ContextSpecification<ISettingsPresenter>

@@ -7,6 +7,7 @@ using PKSim.Core.Services;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_ApplicationDiscriminator : ContextSpecification<IApplicationDiscriminator>

@@ -1,9 +1,10 @@
-﻿using System;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.Observers;
 
 namespace PKSim.Presentation.Services
 {
@@ -14,14 +15,22 @@ namespace PKSim.Presentation.Services
    public class ObserverBuildingBlockTask : BuildingBlockTask<PKSimObserverBuildingBlock>, IObserverBuildingBlockTask
 
    {
-      public ObserverBuildingBlockTask(IExecutionContext executionContext, IBuildingBlockTask buildingBlockTask, IApplicationController applicationController) :
+      private readonly IDialogCreator _dialogCreator;
+
+      public ObserverBuildingBlockTask(
+         IExecutionContext executionContext,
+         IBuildingBlockTask buildingBlockTask,
+         IApplicationController applicationController,
+         IDialogCreator dialogCreator
+      ) :
          base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Observers)
       {
+         _dialogCreator = dialogCreator;
       }
 
       public override PKSimObserverBuildingBlock AddToProject()
       {
-         throw new NotImplementedException();
+         return AddToProject<CreateObserverBuildingBlockPresenter>();
       }
    }
 }

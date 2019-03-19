@@ -15,6 +15,8 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Assets;
 
+
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_UserSettingsPresenter : ContextSpecification<IUserSettingsPresenter>

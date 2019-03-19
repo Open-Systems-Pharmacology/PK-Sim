@@ -16,6 +16,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.Charts;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_ShowOntogenyDataPresenter : ContextSpecification<IShowOntogenyDataPresenter>
