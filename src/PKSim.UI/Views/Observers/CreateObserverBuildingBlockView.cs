@@ -1,24 +1,31 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Drawing;
 using OSPSuite.Assets;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.UI.Views;
+using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Presentation.Presenters.Observers;
 using PKSim.Presentation.Views.Observers;
+using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.Observers
 {
-   public partial class CreateObserverBuildingBlockView : BaseModalView, ICreateObserverBuildingBlockView
+   public partial class CreateObserverBuildingBlockView : BuildingBlockContainerView, ICreateObserverBuildingBlockView
    {
-      public void AttachPresenter(ICreateObserverBuildingBlockPresenter presenter)
+      public CreateObserverBuildingBlockView(Shell shell) : base(shell)
       {
-         
+         InitializeComponent();
+         ClientSize = new Size(CoreConstants.UI.OBSERVER_VIEW_WITDH, CoreConstants.UI.OBSERVER_VIEW_HEIGHT);
       }
 
-      public void BindToProperties(ObjectBaseDTO observerBuildingBlockDTO)
+      public void AttachPresenter(ICreateObserverBuildingBlockPresenter presenter)
       {
-         throw new NotImplementedException();
+         _presenter = presenter;
+      }
+
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         Icon = ApplicationIcons.Observer.WithSize(IconSizes.Size16x16);
+         Caption = PKSimConstants.UI.CreateObserverBuildingBlock;
       }
    }
 }

@@ -454,6 +454,12 @@
     <Compile Include="Views\Observers\CreateObserverBuildingBlockView.Designer.cs">
       <DependentUpon>CreateObserverBuildingBlockView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Observers\ImportObserversView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Observers\ImportObserversView.Designer.cs">
+      <DependentUpon>ImportObserversView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Parameters\FavoriteParametersView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1495,6 +1501,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Individuals\IndividualMoleculePropertiesView.resx">
       <DependentUpon>IndividualMoleculePropertiesView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Observers\CreateObserverBuildingBlockView.resx">
+      <DependentUpon>CreateObserverBuildingBlockView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Observers\ImportObserversView.resx">
+      <DependentUpon>ImportObserversView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Parameters\FavoriteParametersView.resx">
       <DependentUpon>FavoriteParametersView.cs</DependentUpon>

@@ -1,4 +1,6 @@
 ﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Commands;
@@ -9,22 +11,27 @@ using PKSim.Presentation.Views.Observers;
 
 namespace PKSim.Presentation.Presenters.Observers
 {
-   public interface ICreateObserverBuildingBlockPresenter : ICreateBuildingBlockPresenter<PKSimObserverBuildingBlock>
+   public interface ICreateObserverBuildingBlockPresenter : ICreateBuildingBlockPresenter<PKSimObserverBuildingBlock>, IContainerPresenter
    {
+      PKSimObserverBuildingBlock Observers { get; }
    }
 
-   public class CreateObserverBuildingBlockPresenter : AbstractDisposableCommandCollectorPresenter<ICreateObserverBuildingBlockView, ICreateObserverBuildingBlockPresenter>, ICreateObserverBuildingBlockPresenter
+   public class CreateObserverBuildingBlockPresenter : AbstractSubPresenterContainerPresenter<ICreateObserverBuildingBlockView, ICreateObserverBuildingBlockPresenter, IObserverItemPresenter>, ICreateObserverBuildingBlockPresenter
    {
       private readonly IObjectBaseDTOFactory _buildingBlockDTOFactory;
       private readonly IBuildingBlockPropertiesMapper _propertiesMapper;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private ObjectBaseDTO _observedBuildingBlockDTO;
-      public PKSimObserverBuildingBlock BuildingBlock { get; private set; }
+      public PKSimObserverBuildingBlock Observers { get; private set; }
 
-      public CreateObserverBuildingBlockPresenter(ICreateObserverBuildingBlockView view,
+      public CreateObserverBuildingBlockPresenter(
+         ICreateObserverBuildingBlockView view,
+         ISubPresenterItemManager<IObserverItemPresenter> subPresenterItemManager,
+         IDialogCreator dialogCreator,
          IObjectBaseDTOFactory buildingBlockDTOFactory,
          IBuildingBlockPropertiesMapper propertiesMapper,
-         IObjectBaseFactory objectBaseFactory) : base(view)
+         IObjectBaseFactory objectBaseFactory
+      ) : base(view, subPresenterItemManager, ObserverItems.All, dialogCreator)
       {
          _buildingBlockDTOFactory = buildingBlockDTOFactory;
          _propertiesMapper = propertiesMapper;
@@ -41,11 +48,13 @@ namespace PKSim.Presentation.Presenters.Observers
             return new PKSimEmptyCommand();
 
 
-         BuildingBlock = _objectBaseFactory.Create<PKSimObserverBuildingBlock>();
+         Observers = _objectBaseFactory.Create<PKSimObserverBuildingBlock>();
 
          _propertiesMapper.MapProperties(_observedBuildingBlockDTO, BuildingBlock);
 
          return new PKSimMacroCommand();
       }
+
+      public PKSimObserverBuildingBlock BuildingBlock => Observers;
    }
 }

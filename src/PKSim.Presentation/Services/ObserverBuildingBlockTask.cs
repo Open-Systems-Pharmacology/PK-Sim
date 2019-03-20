@@ -30,7 +30,7 @@ namespace PKSim.Presentation.Services
 
       public override PKSimObserverBuildingBlock AddToProject()
       {
-         return AddToProject<CreateObserverBuildingBlockPresenter>();
+         return AddToProject<ICreateObserverBuildingBlockPresenter>();
       }
    }
 }

@@ -4,7 +4,7 @@ namespace PKSim.Core.Model
 {
    public class PKSimObserverBuildingBlock : PKSimBuildingBlock
    {
-      public PKSimObserverBuildingBlock():base(PKSimBuildingBlockType.Observers)
+      public PKSimObserverBuildingBlock() : base(PKSimBuildingBlockType.Observers)
       {
       }
    }

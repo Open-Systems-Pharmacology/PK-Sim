@@ -1669,6 +1669,7 @@ namespace PKSim.Assets
          public static readonly string Clone = "Clone";
          public static readonly string Rename = "Rename";
          public static readonly string CreateFormulation = "Create Formulation";
+         public static readonly string CreateObserverBuildingBlock = "Create Observer Building Block";
          public static readonly string CreateEvent = "Create Event";
          public static readonly string Expression = "Expression";
          public static readonly string Demographics = "Demographics";

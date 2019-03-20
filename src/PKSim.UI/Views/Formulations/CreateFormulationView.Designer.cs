@@ -28,6 +28,60 @@
       /// </summary>
       private void InitializeComponent()
       {
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
+         this.layoutControlBase.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
+         this.SuspendLayout();
+         // 
+         // btnCancel
+         // 
+         this.btnCancel.Location = new System.Drawing.Point(515, 12);
+         this.btnCancel.Size = new System.Drawing.Size(107, 22);
+         // 
+         // btnOk
+         // 
+         this.btnOk.Location = new System.Drawing.Point(386, 12);
+         this.btnOk.Size = new System.Drawing.Size(125, 22);
+         // 
+         // layoutControlBase
+         // 
+         this.layoutControlBase.Location = new System.Drawing.Point(0, 676);
+         this.layoutControlBase.Size = new System.Drawing.Size(634, 46);
+         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
+         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
+         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
+         // 
+         // btnExtra
+         // 
+         this.btnExtra.Size = new System.Drawing.Size(183, 22);
+         // 
+         // layoutControlGroupBase
+         // 
+         this.layoutControlGroupBase.Size = new System.Drawing.Size(634, 46);
+         // 
+         // layoutItemOK
+         // 
+         this.layoutItemOK.Location = new System.Drawing.Point(374, 0);
+         this.layoutItemOK.Size = new System.Drawing.Size(129, 26);
+         // 
+         // layoutItemCancel
+         // 
+         this.layoutItemCancel.Location = new System.Drawing.Point(503, 0);
+         this.layoutItemCancel.Size = new System.Drawing.Size(111, 26);
+         // 
+         // emptySpaceItemBase
+         // 
+         this.emptySpaceItemBase.Location = new System.Drawing.Point(187, 0);
+         this.emptySpaceItemBase.Size = new System.Drawing.Size(187, 26);
+         // 
+         // layoutItemExtra
+         // 
+         this.layoutItemExtra.Size = new System.Drawing.Size(187, 26);
          // 
          // CreateFormulationView
          // 
@@ -37,7 +91,17 @@
          this.ClientSize = new System.Drawing.Size(634, 722);
          this.Name = "CreateFormulationView";
          this.Text = "CreateFormulationView";
+         this.Controls.SetChildIndex(this.layoutControlBase, 0);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
+         this.layoutControlBase.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          this.ResumeLayout(false);
+         this.PerformLayout();
 
       }
 
