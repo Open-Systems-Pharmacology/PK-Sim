@@ -1514,9 +1514,6 @@
     <EmbeddedResource Include="Views\Individuals\IndividualMoleculePropertiesView.resx">
       <DependentUpon>IndividualMoleculePropertiesView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Observers\CreateObserverBuildingBlockView.resx">
-      <DependentUpon>CreateObserverBuildingBlockView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Views\Observers\EditObserverBuildingBlockView.resx">
       <DependentUpon>EditObserverBuildingBlockView.cs</DependentUpon>
     </EmbeddedResource>

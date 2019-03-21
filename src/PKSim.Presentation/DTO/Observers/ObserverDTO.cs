@@ -20,21 +20,17 @@ namespace PKSim.Presentation.DTO.Observers
          {
             var details = new List<string>();
             details.Add(InBold("Name"));
-            details.Add(Observer.Name);
+            details.Add(AddNewLine(Observer.Name));
 
             details.Add(InBold("Formula"));
-            details.Add(Observer.Formula.ToString());
+            details.Add(AddNewLine(Observer.Formula.ToString()));
 
             details.Add(InBold("References"));
-            Observer.Formula.ObjectPaths.Each(x =>
-            {
-               details.Add($"{x.Alias}:  {x.PathAsString}");
-            });
+            Observer.Formula.ObjectPaths.Each(x => { details.Add($"{x.Alias}:  {x.PathAsString}"); });
 
-            details.Add(InBold("Container Criteria"));
+            details.Add(StartWithNewLine(InBold("Container Criteria")));
             details.Add(Observer.ContainerCriteria.ToString());
-
-
+            
             return details;
          }
       }
@@ -48,5 +44,17 @@ namespace PKSim.Presentation.DTO.Observers
       {
          return $"<{marker}>{stringToFormat}</{marker}>";
       }
+
+      public static string AddNewLine(string stringToFormat)
+      {
+         return $"{stringToFormat}{NewLine}";
+      }
+
+      public static string StartWithNewLine(string stringToFormat)
+      {
+         return $"{NewLine}{stringToFormat}";
+      }
+
+      public static string NewLine = "<br>";
    }
 }
