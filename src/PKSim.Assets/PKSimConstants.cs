@@ -2358,6 +2358,8 @@ namespace PKSim.Assets
 
          public static string EditCompound(string name) => $"Compound: '{name}'";
 
+         public static string EditObserverBuildingBlock(string name) => $"Observer Building Block: '{name}'";
+
          public static string EditPopulation(string name) => $"Population: '{name}'";
 
          public static string EditProtocol(string name) => $"Administration Protocol: '{name}'";

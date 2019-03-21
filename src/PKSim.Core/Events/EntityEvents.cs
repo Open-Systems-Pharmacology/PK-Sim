@@ -1,6 +1,7 @@
 using PKSim.Core.Model;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace PKSim.Core.Events
 {
@@ -126,6 +127,15 @@ namespace PKSim.Core.Events
    public class AddParameterToContainerEvent : AddEntityEvent<IParameter, IContainer>
    {
    }
+
+   public class RemoveObserverFromObserverBuildingBlockEvent : RemoveEntityEvent<IObserverBuilder, PKSimObserverBuildingBlock>
+   {
+   }
+
+   public class AddObserverToObserverBuildingBlockEvent : AddEntityEvent<IObserverBuilder, PKSimObserverBuildingBlock>
+   {
+   }
+
 
    public class SwapSimulationEvent
    {

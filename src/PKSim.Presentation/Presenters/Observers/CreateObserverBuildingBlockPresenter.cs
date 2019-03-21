@@ -2,6 +2,7 @@
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -36,19 +37,19 @@ namespace PKSim.Presentation.Presenters.Observers
          _buildingBlockDTOFactory = buildingBlockDTOFactory;
          _propertiesMapper = propertiesMapper;
          _observerBuildingBlockTask = observerBuildingBlockTask;
+         ObserverBuildingBlock = observerBuildingBlockTask.Create();
       }
 
       public IPKSimCommand Create()
       {
          _observedBuildingBlockDTO = _buildingBlockDTOFactory.CreateFor<PKSimObserverBuildingBlock>();
+         ObserverBuildingBlock = _observerBuildingBlockTask.Create();
+         _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(ObserverBuildingBlock));
          _view.BindToProperties(_observedBuildingBlockDTO);
          _view.Display();
 
          if (_view.Canceled)
             return new PKSimEmptyCommand();
-
-
-         ObserverBuildingBlock = _observerBuildingBlockTask.CreateWith(importObserversPresenter.Observers);
 
          _propertiesMapper.MapProperties(_observedBuildingBlockDTO, ObserverBuildingBlock);
 
@@ -56,7 +57,5 @@ namespace PKSim.Presentation.Presenters.Observers
       }
 
       public PKSimObserverBuildingBlock BuildingBlock => ObserverBuildingBlock;
-
-      private IImportObserversPresenter importObserversPresenter => _subPresenterItemManager.PresenterAt(ObserverItems.ImportSettings);
    }
 }

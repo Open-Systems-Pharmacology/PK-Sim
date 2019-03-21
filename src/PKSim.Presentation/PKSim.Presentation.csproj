@@ -255,6 +255,7 @@
     <Compile Include="Presenters\ConfigurableLayoutPresenter.cs" />
     <Compile Include="Presenters\CalculationMethodsSelectionPresenter.cs" />
     <Compile Include="Presenters\Observers\CreateObserverBuildingBlockPresenter.cs" />
+    <Compile Include="Presenters\Observers\EditObserverBuildingBlockPresenter.cs" />
     <Compile Include="Presenters\Observers\ImportObserversPresenter.cs" />
     <Compile Include="Presenters\Observers\IObserverItemPresenter.cs" />
     <Compile Include="Presenters\Observers\ObserverInfoPresenter.cs" />
@@ -573,6 +574,7 @@
     <Compile Include="Views\Main\IPKSimMainView.cs" />
     <Compile Include="Views\ISelectFileView.cs" />
     <Compile Include="Views\Observers\ICreateObserverBuildingBlockView.cs" />
+    <Compile Include="Views\Observers\IEditObserverBuildingBlockView.cs" />
     <Compile Include="Views\Observers\IImportObserversView.cs" />
     <Compile Include="Views\Observers\IObserverInfoView.cs" />
     <Compile Include="Views\Parameters\IFavoriteParametersView.cs" />

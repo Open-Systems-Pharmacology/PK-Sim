@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using OSPSuite.Core.Domain.Builder;
+﻿using OSPSuite.Core.Domain.Builder;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -8,6 +7,6 @@ namespace PKSim.Core.Services
    {
       IObserverBuilder LoadObserverFrom(string fileName);
 
-      PKSimObserverBuildingBlock CreateWith(IEnumerable<IObserverBuilder> observers);
+      PKSimObserverBuildingBlock Create();
    }
 }

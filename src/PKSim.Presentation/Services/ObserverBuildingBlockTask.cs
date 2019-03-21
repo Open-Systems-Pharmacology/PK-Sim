@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using PKSim.Core;
@@ -37,10 +36,9 @@ namespace PKSim.Presentation.Services
          return _coreLoader.LoadObserver(fileName);
       }
 
-      public PKSimObserverBuildingBlock CreateWith(IEnumerable<IObserverBuilder> observers)
+      public PKSimObserverBuildingBlock Create()
       {
          var observerBuildingBlock = _objectBaseFactory.Create<PKSimObserverBuildingBlock>();
-         observerBuildingBlock.AddChildren(observers);
          observerBuildingBlock.IsLoaded = true;
          return observerBuildingBlock;
       }
