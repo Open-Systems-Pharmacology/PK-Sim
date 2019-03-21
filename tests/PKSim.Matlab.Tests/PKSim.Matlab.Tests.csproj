@@ -60,6 +60,9 @@
     <Reference Include="OSPSuite.Core, Version=7.5.0.20, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Core.7.5.0.20\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
+    <Reference Include="OSPSuite.Engine, Version=7.5.0.20, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Engine.7.5.0.20\lib\net462\OSPSuite.Engine.dll</HintPath>
+    </Reference>
     <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.1.14\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
@@ -92,6 +95,7 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="ContextSpecification.cs" />
     <Compile Include="MatlabHelperSpecs.cs" />
     <Compile Include="MatlabIndividualFactorySpecs.cs" />
     <Compile Include="MatlabPopulationFactorySpecs.cs" />
@@ -106,10 +110,6 @@
     <ProjectReference Include="..\..\src\PKSim.Matlab\PKSim.Matlab.csproj">
       <Project>{2f19a0c6-4c93-4a78-8db6-e4c3ede8e6f6}</Project>
       <Name>PKSim.Matlab</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PKSim.Tests\PKSim.Tests.csproj">
-      <Project>{E17E4702-AFE6-4EC5-8559-9A55F3996754}</Project>
-      <Name>PKSim.Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
