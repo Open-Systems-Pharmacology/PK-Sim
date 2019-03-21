@@ -200,6 +200,8 @@
     <Compile Include="Model\RunParameterIdentificationQualificationStep.cs" />
     <Compile Include="Model\RunSimulationQualificationStep.cs" />
     <Compile Include="Services\IMarkdownReporterTask.cs" />
+    <Compile Include="Services\IObserverBuildingBlockTask.cs" />
+    <Compile Include="Services\IObserverLoader.cs" />
     <Compile Include="Services\IPostLaunchChecker.cs" />
     <Compile Include="Services\IQualificationStepRunner.cs" />
     <Compile Include="Services\ITemplateDatabaseCreator.cs" />
@@ -496,7 +498,7 @@
     <Compile Include="Services\SimulationRepository.cs" />
     <Compile Include="Services\SimulationResultsImportTask.cs" />
     <Compile Include="Services\ISimulationResultsTask.cs" />
-    <Compile Include="Services\ISimulationTransferLoader.cs" />
+    <Compile Include="Services\ICoreLoader.cs" />
     <Compile Include="Services\IVersionChecker.cs" />
     <Compile Include="Services\InvalidSimulationConfigurationException.cs" />
     <Compile Include="Services\ParticleApplicationCreator.cs" />

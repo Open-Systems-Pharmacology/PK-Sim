@@ -6,14 +6,14 @@ using OSPSuite.Core.Serialization.Exchange;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_SimulationTransferLoader : ContextForIntegration<ISimulationTransferLoader>
+   public abstract class concern_for_SimulationTransferLoader : ContextForIntegration<ICoreLoader>
    {
       protected SimulationTransfer _simulationTransfer;
 
       public void LoadSimulation(string simulationfileName)
       {
          var simulationFile = DomainHelperForSpecs.DataFilePathFor($"{simulationfileName}.pkml");
-         _simulationTransfer = sut.Load(simulationFile);
+         _simulationTransfer = sut.LoadSimulationTransfer(simulationFile);
       }
    }
 

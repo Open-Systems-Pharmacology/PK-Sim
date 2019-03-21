@@ -577,7 +577,7 @@
     <Compile Include="Infrastructure\SimulationResultsImportTaskSpecs.cs" />
     <Compile Include="Infrastructure\SimulationResultsQuerySpecs.cs" />
     <Compile Include="Infrastructure\SimulationResultsToDataTableConverterSpecs.cs" />
-    <Compile Include="Infrastructure\SimulationTransferLoaderSpecs.cs" />
+    <Compile Include="Infrastructure\CoreLoaderSpecs.cs" />
     <Compile Include="Infrastructure\SimulationUpdaterAfterDeserializationSpecs.cs" />
     <Compile Include="IntegrationTests\CacheXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\ChartSettingsXmlSerializerSpecs.cs" />

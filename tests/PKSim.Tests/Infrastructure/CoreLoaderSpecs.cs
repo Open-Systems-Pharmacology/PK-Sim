@@ -1,20 +1,19 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Exchange;
-
+using OSPSuite.Core.Services;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Infrastructure.Services;
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_SimulationTransferLoader : ContextSpecification<ISimulationTransferLoader>
+   public abstract class concern_for_CoreLoader : ContextSpecification<ICoreLoader>
    {
       protected IDimensionFactory _dimensionFactory;
       protected IObjectBaseFactory _objectBaseFactory;
@@ -27,6 +26,8 @@ namespace PKSim.Infrastructure
       protected PKSimProject _project;
       protected IJournalTask _journalTask;
       private ICloneManagerForModel _cloneManagerForModel;
+      private IObserverLoader _observerLoader;
+      private IObjectIdResetter _objectIdResetter;
 
       protected override void Context()
       {
@@ -37,21 +38,22 @@ namespace PKSim.Infrastructure
          _simulationPersister = A.Fake<ISimulationPersistor>();
          _projectRetriever = A.Fake<IProjectRetriever>();
          _journalTask = A.Fake<IJournalTask>();
-         _cloneManagerForModel= A.Fake<ICloneManagerForModel>();
-
-         sut = new SimulationTransferLoader(_dimensionFactory, _objectBaseFactory, _simulationPersister, _projectRetriever, _journalTask,_cloneManagerForModel);
+         _cloneManagerForModel = A.Fake<ICloneManagerForModel>();
+         _observerLoader = A.Fake<IObserverLoader>();
+         _objectIdResetter= A.Fake<IObjectIdResetter>();
+         sut = new CoreLoader(_dimensionFactory, _objectBaseFactory, _simulationPersister, _projectRetriever, _journalTask, _cloneManagerForModel, _observerLoader, _objectIdResetter);
          _simulationTransfer = new SimulationTransfer();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
-         A.CallTo(() => _simulationPersister.Load(_pkmlFile, _dimensionFactory, _objectBaseFactory, A<IWithIdRepository>._,_cloneManagerForModel)).Returns(_simulationTransfer);
+         A.CallTo(() => _simulationPersister.Load(_pkmlFile, _dimensionFactory, _objectBaseFactory, A<IWithIdRepository>._, _cloneManagerForModel)).Returns(_simulationTransfer);
       }
 
       protected override void Because()
       {
-         _result = sut.Load(_pkmlFile);
+         _result = sut.LoadSimulationTransfer(_pkmlFile);
       }
    }
 
-   public class When_loading_a_simulation : concern_for_SimulationTransferLoader
+   public class When_loading_a_simulation : concern_for_CoreLoader
    {
       [Observation]
       public void should_simply_return_the_simulation()
@@ -60,8 +62,7 @@ namespace PKSim.Infrastructure
       }
    }
 
-
-   public class When_loading_a_simulation_and_no_project_is_defined : concern_for_SimulationTransferLoader
+   public class When_loading_a_simulation_and_no_project_is_defined : concern_for_CoreLoader
    {
       protected override void Context()
       {
@@ -82,8 +83,7 @@ namespace PKSim.Infrastructure
       }
    }
 
-
-   public class When_loading_a_simulation_that_contains_information_on_the_used_journal_and_no_jounral_is_currently_loaded : concern_for_SimulationTransferLoader
+   public class When_loading_a_simulation_that_contains_information_on_the_used_journal_and_no_jounral_is_currently_loaded : concern_for_CoreLoader
    {
       protected override void Context()
       {
@@ -95,7 +95,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_load_the_journal()
       {
-         A.CallTo(() => _journalTask.LoadJournal(_simulationTransfer.JournalPath,false)).MustHaveHappened();
+         A.CallTo(() => _journalTask.LoadJournal(_simulationTransfer.JournalPath, false)).MustHaveHappened();
       }
    }
 }

@@ -682,7 +682,7 @@
     <Compile Include="Services\MoleculeBuilderFactory.cs" />
     <Compile Include="Services\NeighborhoodFinalizer.cs" />
     <Compile Include="Services\PKSimProjectRetriever.cs" />
-    <Compile Include="Services\SimulationTransferLoader.cs" />
+    <Compile Include="Services\CoreLoader.cs" />
     <Compile Include="Services\VersionChecker.cs" />
     <Compile Include="Services\ObservedDataTask.cs" />
     <Compile Include="Services\ProjectFileCompressor.cs" />

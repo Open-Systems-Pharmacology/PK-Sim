@@ -17,7 +17,7 @@ namespace PKSim.Core.Services
 
    public class ImportSimulationTask : IImportSimulationTask
    {
-      private readonly ISimulationTransferLoader _simulationTransferLoader;
+      private readonly ICoreLoader _coreLoader;
       private readonly ISimulationFactory _simulationFactory;
       private readonly IEntitiesInContainerRetriever _parameterRetriever;
       private readonly ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
@@ -27,11 +27,11 @@ namespace PKSim.Core.Services
       private readonly ISimulationUpdaterAfterDeserialization _simulationUpdaterAfterDeserialization;
       private readonly IAdvancedParameterFactory _advancedParameterFactory;
 
-      public ImportSimulationTask(ISimulationTransferLoader simulationTransferLoader, ISimulationFactory simulationFactory, IEntitiesInContainerRetriever parameterRetriever, ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
+      public ImportSimulationTask(ICoreLoader coreLoader, ISimulationFactory simulationFactory, IEntitiesInContainerRetriever parameterRetriever, ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
          IIndividualPropertiesCacheImporter individualPropertiesCacheImporter, IExecutionContext executionContext, IObjectBaseFactory objectBaseFactory, 
          ISimulationUpdaterAfterDeserialization simulationUpdaterAfterDeserialization, IAdvancedParameterFactory advancedParameterFactory)
       {
-         _simulationTransferLoader = simulationTransferLoader;
+         _coreLoader = coreLoader;
          _simulationFactory = simulationFactory;
          _parameterRetriever = parameterRetriever;
          _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
@@ -122,7 +122,7 @@ namespace PKSim.Core.Services
       {
          try
          {
-            var loadedSim = _simulationTransferLoader.Load(pkmlFileFullPath);
+            var loadedSim = _coreLoader.LoadSimulationTransfer(pkmlFileFullPath);
             if (loadedSim == null)
                return null;
 

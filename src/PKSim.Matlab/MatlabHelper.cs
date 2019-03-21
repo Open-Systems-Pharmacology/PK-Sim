@@ -18,7 +18,7 @@ namespace PKSim.Matlab
    public class MatlabHelper : IMatlabHelper
    {
       private readonly ISimModelExporter _simModelExporter;
-      private readonly ISimulationTransferLoader _simulationTransferLoader;
+      private readonly ICoreLoader _coreLoader;
 
       static MatlabHelper()
       {
@@ -27,20 +27,20 @@ namespace PKSim.Matlab
 
       public MatlabHelper() : this(
             IoC.Resolve<ISimModelExporter>(),
-            IoC.Resolve<ISimulationTransferLoader>()
+            IoC.Resolve<ICoreLoader>()
          )
       {
       }
 
-      internal MatlabHelper(ISimModelExporter simModelExporter, ISimulationTransferLoader simulationTransferLoader)
+      internal MatlabHelper(ISimModelExporter simModelExporter, ICoreLoader coreLoader)
       {
          _simModelExporter = simModelExporter;
-         _simulationTransferLoader = simulationTransferLoader;
+         _coreLoader = coreLoader;
       }
 
       public void SaveToSimModelXmlFile(string pkmlFileFullPath, string simModelXmlFileFullPath)
       {
-         var simulationTransfer = _simulationTransferLoader.Load(pkmlFileFullPath);
+         var simulationTransfer = _coreLoader.LoadSimulationTransfer(pkmlFileFullPath);
          _simModelExporter.Export(simulationTransfer.Simulation, simModelXmlFileFullPath);
       }
    }
