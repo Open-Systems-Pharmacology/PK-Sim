@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
-using OSPSuite.Presentation.Core;
+﻿using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Presentation.Views.Observers;
 
 namespace PKSim.Presentation.Presenters.Observers
 {
-   public interface IEditObserverBuildingBlockPresenter : IEditBuildingBockPresenter<PKSimObserverBuildingBlock>
+   public interface IEditObserverBuildingBlockPresenter : IEditBuildingBockPresenter<PKSimObserverBuildingBlock>,
+      IListener<RemoveObserverFromObserverBuildingBlockEvent>,
+      IListener<AddObserverToObserverBuildingBlockEvent>
    {
    }
 
@@ -16,7 +19,7 @@ namespace PKSim.Presentation.Presenters.Observers
    {
       private PKSimObserverBuildingBlock _observerBuildingBlock;
 
-      public EditObserverBuildingBlockPresenter(IEditObserverBuildingBlockView view, ISubPresenterItemManager<IObserverItemPresenter> subPresenterItemManager) : 
+      public EditObserverBuildingBlockPresenter(IEditObserverBuildingBlockView view, ISubPresenterItemManager<IObserverItemPresenter> subPresenterItemManager) :
          base(view, subPresenterItemManager, ObserverItems.All)
       {
       }
@@ -34,6 +37,23 @@ namespace PKSim.Presentation.Presenters.Observers
          _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(_observerBuildingBlock));
          UpdateCaption();
          _view.Display();
+      }
+
+      public void Handle(RemoveObserverFromObserverBuildingBlockEvent eventToHandle) => handle(eventToHandle);
+
+      public void Handle(AddObserverToObserverBuildingBlockEvent eventToHandle) => handle(eventToHandle);
+
+      private void handle(IEntityContainerEvent eventToHandle)
+      {
+         if (!canHandle(eventToHandle))
+            return;
+
+         Edit(_observerBuildingBlock);
+      }
+
+      private bool canHandle(IEntityContainerEvent eventToHandle)
+      {
+         return Equals(eventToHandle.ContainerSubject, _observerBuildingBlock);
       }
    }
 }

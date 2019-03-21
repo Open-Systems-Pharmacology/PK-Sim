@@ -14,10 +14,7 @@ namespace PKSim.Core.Events
    {
       public TEntity Entity { get; set; }
 
-      public IEntity Subject
-      {
-         get { return Entity; }
-      }
+      public IEntity Subject => Entity;
    }
 
    public interface IEntityContainerEvent : IEntityEvent
@@ -31,10 +28,7 @@ namespace PKSim.Core.Events
    {
       public TContainer Container { get; set; }
 
-      public IEntity ContainerSubject
-      {
-         get { return Container; }
-      }
+      public IEntity ContainerSubject => Container;
    }
 
    public abstract class AddEntityEvent<TEntity, TContainer> : EntityContainerEvent<TEntity, TContainer>

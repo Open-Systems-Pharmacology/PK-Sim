@@ -4,11 +4,11 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Converter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Core.Serialization.Xml.Extensions;
 using OSPSuite.Serializer.Xml;
 using OSPSuite.Utility.Exceptions;
 
@@ -22,14 +22,14 @@ namespace PKSim.Core.Services
    public class ObserverLoader : IObserverLoader
    {
       private readonly IObjectConverterFinder _objectConverterFinder;
-      private readonly IXmlSerializer<SerializationContext> _formulaCacheSerializer;
       private readonly IXmlSerializer<SerializationContext> _containerObserverSerializer;
       private readonly IXmlSerializer<SerializationContext> _amountObserverSerializer;
+      private readonly IOSPSuiteXmlSerializerRepository _modellingXmlSerializerRepository;
 
       public ObserverLoader(IOSPSuiteXmlSerializerRepository modellingXmlSerializerRepository, IObjectConverterFinder objectConverterFinder)
       {
          _objectConverterFinder = objectConverterFinder;
-         _formulaCacheSerializer = modellingXmlSerializerRepository.SerializerFor<IFormulaCache>();
+         _modellingXmlSerializerRepository = modellingXmlSerializerRepository;
          _containerObserverSerializer = modellingXmlSerializerRepository.SerializerFor<ContainerObserverBuilder>();
          _amountObserverSerializer = modellingXmlSerializerRepository.SerializerFor<AmountObserverBuilder>();
       }
@@ -71,11 +71,7 @@ namespace PKSim.Core.Services
             if (serializer == null)
                throw new OSPSuiteException(Error.CouldNotLoadSimulationFromFile(pkmlFileFullPath));
 
-
-            var formulaCacheElement = getFormulaCacheElementFor(element);
-            convertXml(formulaCacheElement, version);
-            deserializeFormula(formulaCacheElement, version, serializationContext);  
-
+            _modellingXmlSerializerRepository.DeserializeFormulaCacheIn(element, serializationContext);
             observerBuilder = serializer.Deserialize<IObserverBuilder>(element, serializationContext);
          }
 
@@ -94,22 +90,6 @@ namespace PKSim.Core.Services
 
 
          return null;
-      }
-
-      private XElement getFormulaCacheElementFor(XElement element)
-      {
-         if (element == null)
-            return null;
-
-         var formulaCacheElement = element.Element(_formulaCacheSerializer.ElementName);
-         return formulaCacheElement ?? getFormulaCacheElementFor(element.Parent);
-      }
-
-      private void deserializeFormula(XElement formulaCacheElement, int version, SerializationContext serializationContext)
-      {
-         if (formulaCacheElement == null) return;
-         _formulaCacheSerializer.Deserialize(formulaCacheElement, serializationContext);
-         convert(serializationContext.Formulas, version, x => x.Convert);
       }
    }
 }

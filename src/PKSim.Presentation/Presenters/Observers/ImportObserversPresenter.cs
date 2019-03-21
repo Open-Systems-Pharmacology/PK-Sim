@@ -83,7 +83,7 @@ namespace PKSim.Presentation.Presenters.Observers
       private void updateView(ImportObserverDTO observerToSelect = null)
       {
          _view.Rebind();
-         SelectObserver(observerToSelect);
+         _view.SelectObserver(observerToSelect);
       }
 
       private string getNewFile()
@@ -94,6 +94,7 @@ namespace PKSim.Presentation.Presenters.Observers
       public void Edit(PKSimObserverBuildingBlock observerBuildingBlock)
       {
          _observerBuildingBlock = observerBuildingBlock;
+         _observerDTOs.Clear();
          _observerBuildingBlock.Observers.Each(x => addObserver(x));
          _view.Rebind();
       }
