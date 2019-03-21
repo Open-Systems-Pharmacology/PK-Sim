@@ -22,6 +22,7 @@ namespace PKSim.Core
 
       public override void GlobalContext()
       {
+        base.GlobalContext();
          _speciesContainerQuery = A.Fake<ISpeciesContainerQuery>();
          _parameterContainerTask = A.Fake<IParameterContainerTask>();
          _buildingBlockFinalizer = A.Fake<IBuildingBlockFinalizer>();

@@ -99,6 +99,7 @@ namespace PKSim.Presentation
 
       public override void GlobalContext()
       {
+         base.GlobalContext();
          _oldCopyAction = FileHelper.Copy;
          FileHelper.Copy = (s1, s2) =>
                               { _copyCalled = (s1 == _defaultTemplateUserDatabase && s2 == _newFileToCreate); };

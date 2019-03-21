@@ -22,6 +22,7 @@ using PKSim.Infrastructure;
 using PKSim.Matlab;
 using PKSim.Presentation;
 using PKSim.Presentation.Services;
+using SimModelNET;
 using CoreRegister = PKSim.Core.CoreRegister;
 
 namespace PKSim.IntegrationTests
@@ -31,6 +32,7 @@ namespace PKSim.IntegrationTests
    {
       public override void GlobalContext()
       {
+         base.GlobalContext();
          if (IoC.Container != null) return;
 
          var container = InfrastructureRegister.Initialize();
@@ -75,6 +77,9 @@ namespace PKSim.IntegrationTests
 
             InfrastructureRegister.RegisterSerializationDependencies();
             InfrastructureRegister.RegisterWorkspace();
+
+            var configuration = container.Resolve<IApplicationConfiguration>();
+            XMLSchemaCache.InitializeFromFile(configuration.SimModelSchemaFilePath);
          }
 
          //Required for usage with nunit 3
