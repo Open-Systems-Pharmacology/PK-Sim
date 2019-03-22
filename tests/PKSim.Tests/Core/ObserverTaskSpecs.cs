@@ -86,6 +86,7 @@ namespace PKSim.Core
    public class When_loading_an_observer_from_file : concern_for_ObserverTask
    {
       private readonly string _fileName = "OBS_FILE";
+      private IObserverBuilder _result;
 
       protected override void Context()
       {
@@ -93,10 +94,15 @@ namespace PKSim.Core
          A.CallTo(() => _observerLoader.Load(_fileName)).Returns(_observer1);
       }
 
+      protected override void Because()
+      {
+         _result = sut.LoadObserverFrom(_fileName);
+      }
+
       [Observation]
       public void should_delegate_to_the_observer_loader_to_load_the_observer()
       {
-         sut.LoadObserverFrom(_fileName).ShouldBeEqualTo(_observer1);
+         _result.ShouldBeEqualTo(_observer1);
       }
 
       [Observation]
