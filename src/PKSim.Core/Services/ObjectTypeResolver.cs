@@ -100,7 +100,7 @@ namespace PKSim.Core.Services
          addToCache<SensitivityAnalysisPKParameterAnalysis>(Captions.SensitivityAnalysis.SensitivityAnalysisPKParameterAnalysis);
          addToCache<ParameterIdentification>(ObjectTypes.ParameterIdentification);
          addToCache<PKSimObserverBuildingBlock>(ObjectTypes.ObserverBuildingBlock);
-         addToCache<IAmountObserverBuilder>(ObjectTypes.ObserverBuilder);
+         addToCache<IObserverBuilder>(ObjectTypes.ObserverBuilder);
       }
 
       private void addToCache<T>(string display)
