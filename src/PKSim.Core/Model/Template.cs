@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 
 namespace PKSim.Core.Model
 {
@@ -25,7 +25,8 @@ namespace PKSim.Core.Model
       PopulationAnalysis = 1 << 7,
       PopulationAnalysisField = 1 << 8,
       ObservedData = 1 << 9,
-      PopulationSimulationAnalysisWorkflow = 1 << 10
+      PopulationSimulationAnalysisWorkflow = 1 << 10,
+      Observers = 1 << 11,
    }
 
    public static class TemplateObjecTypeExtensions
@@ -41,10 +42,10 @@ namespace PKSim.Core.Model
       public TemplateDatabaseType DatabaseType { get; set; }
       public TemplateType TemplateType { get; set; }
       public object Object { get; set; }
-      
+
       /// <summary>
-      ///  List of <see cref="Template"/> referenced by current <see cref="Template"/>. 
-      ///  A template should not reference itself!
+      ///    List of <see cref="Template" /> referenced by current <see cref="Template" />.
+      ///    A template should not reference itself!
       /// </summary>
       public List<Template> References { get; private set; }
 
