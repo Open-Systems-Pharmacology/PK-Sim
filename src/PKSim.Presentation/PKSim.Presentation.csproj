@@ -229,6 +229,7 @@
     <Compile Include="Presenters\ContextMenus\MultipleProtocolNodeContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\MultipleUsedObservedDataContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\NamedBuildingBlock.cs" />
+    <Compile Include="Presenters\ContextMenus\ObserverBuildingBlockContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\ObserverBuildingBlockFolderContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\ParameterIdentificationContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\PopulationSimulationContextMenu.cs" />
