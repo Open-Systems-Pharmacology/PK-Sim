@@ -40,7 +40,7 @@ namespace PKSim.Reporting
          {
             Title = "Testing Reports",
             Author = "Unit Tests Engine",
-            Keywords = new[] { "Tests", "PKReporting", "SBSuite" },
+            Keywords = new[] {"Tests", "PKReporting", "SBSuite"},
             Software = "SBSuite",
             SubTitle = "SubTitle",
             SoftwareVersion = "5.2",
@@ -49,7 +49,7 @@ namespace PKSim.Reporting
             ColorStyle = ReportSettings.ReportColorStyles.Color
          };
 
-         _reportConfiguration.Template = new ReportTemplate { Path = DomainHelperForSpecs.TEXTemplateFolder() };
+         _reportConfiguration.Template = new ReportTemplate {Path = DomainHelperForSpecs.TEXTemplateFolder()};
 
          //Add all simulation to repository as they will be required when deserialzing the summary charts
          var repo = IoC.Resolve<IWithIdRepository>();

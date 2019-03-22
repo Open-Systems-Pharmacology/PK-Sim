@@ -8,6 +8,7 @@ using OSPSuite.Presentation.Repositories;
 using OSPSuite.Utility.Extensions;
 using ButtonGroupRepository = PKSim.Presentation.Repositories.ButtonGroupRepository;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_ButtonGroupRepository : ContextSpecification<IButtonGroupRepository>

@@ -13,6 +13,7 @@ using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+
 using SimModelNET;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
@@ -57,7 +58,7 @@ namespace PKSim.Core
          _simulation.Name = "Hello";
          _simulation.DataRepository = new DataRepository();
          _simulation.CompoundPKFor("TOTO").AucIV = 55;
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<ISolverWarning>(), new DataRepository()));
+         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<SolverWarning>(), new DataRepository()));
       }
 
       protected override Task Because()
@@ -105,7 +106,7 @@ namespace PKSim.Core
       {
          await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<ISolverWarning>(), new DataRepository()));
+         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<SolverWarning>(), new DataRepository()));
          await sut.RunAsync(_simulation, _simulationRunOption);
       }
 
@@ -131,7 +132,7 @@ namespace PKSim.Core
          await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
          _simulationRunOption.RaiseEvents = false;
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<ISolverWarning>(), new DataRepository()));
+         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<SolverWarning>(), new DataRepository()));
       }
 
       protected override Task Because()
@@ -156,7 +157,7 @@ namespace PKSim.Core
          await base.Context();
          _dataRepository = A.Fake<DataRepository>();
          _simulation = A.Fake<IndividualSimulation>();
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(false, Enumerable.Empty<ISolverWarning>(), _dataRepository));
+         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(false, Enumerable.Empty<SolverWarning>(), _dataRepository));
          await sut.RunAsync(_simulation, _simulationRunOption);
       }
 

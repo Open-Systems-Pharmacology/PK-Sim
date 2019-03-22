@@ -1092,6 +1092,7 @@ namespace PKSim.Assets
          public static readonly string NewSimulationSettings = "Add Si&mulation Settings...";
          public static readonly string NewFormulation = "Add &Formulation...";
          public static readonly string NewEvent = "Add &Event...";
+         public static readonly string NewObservers = "Add &Observers...";
          public static readonly string AddObservedData = "Add &Observed Data...";
          public static readonly string AddObservedDataFor = "Add Observed Data for";
          public static readonly string SaveAs = "Save As...";
@@ -1332,6 +1333,7 @@ namespace PKSim.Assets
          public static readonly string ImportSimulation = "&Import Simulation";
          public static readonly string Protocol = "&Administration Protocol";
          public static readonly string Event = "&Event";
+         public static readonly string Observers = "O&bservers";
          public static readonly string SimulationSettings = "Si&mulation Settings";
          public static readonly string Formulation = "&Formulation";
          public static readonly string Create = "Create";
@@ -1516,6 +1518,7 @@ namespace PKSim.Assets
          public static readonly string PopulationFolder = "Populations";
          public static readonly string Events = "Events";
          public static readonly string EventFolder = Events;
+         public static readonly string ObserversFolder = "Observers";
          public static readonly string AdministrationProtocolFolder = "Administration Protocols";
          public const string Value = "Value";
          public static readonly string Percentage = "Percentage";
@@ -1844,6 +1847,7 @@ namespace PKSim.Assets
          public static readonly string NewProtocolDescription = "Create a new administration protocol...";
          public static readonly string NewFormulationDescription = "Create a new formulation...";
          public static readonly string NewEventDescription = "Create a new event...";
+         public static readonly string NewObserversDescription = "Create a new observer list...";
          public static readonly string NewCompoundDescription = "Create a new compound...";
          public static readonly string OptionsDescription = "Manage the options for the application and the current user...";
          public static readonly string ExitDescription = "Exit the application";

@@ -9,6 +9,7 @@ using PKSim.Presentation.Nodes;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_ToolTipPartCreator : ContextSpecification<IToolTipPartCreator>

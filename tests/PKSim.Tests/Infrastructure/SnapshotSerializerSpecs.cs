@@ -11,6 +11,7 @@ using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Infrastructure.Serialization.Json;
 
+
 namespace PKSim.Infrastructure
 {
    public abstract class concern_for_SnapshotSerializer : ContextSpecificationAsync<IJsonSerializer>

@@ -10,6 +10,7 @@ using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_BoxWhiskerChartsDataCreator : ContextSpecification<IBoxWhiskerChartDataCreator>

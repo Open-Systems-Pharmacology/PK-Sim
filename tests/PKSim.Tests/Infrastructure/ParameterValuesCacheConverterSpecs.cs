@@ -10,7 +10,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ProjectConverter.v5_2;
 using PKSim.Infrastructure.Serialization.Xml;
-using PKSim.IntegrationTests;
+
 using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;

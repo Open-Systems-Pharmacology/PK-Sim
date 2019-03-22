@@ -18,6 +18,7 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Services;
 using Dimension = OSPSuite.Core.Domain.UnitSystem.Dimension;

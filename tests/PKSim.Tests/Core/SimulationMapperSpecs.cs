@@ -29,6 +29,7 @@ using Simulation = PKSim.Core.Snapshots.Simulation;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_SimulationMapper : ContextSpecificationAsync<SimulationMapper>

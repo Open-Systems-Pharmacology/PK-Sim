@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Commands;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_SetRelativeExpressionFromNormalizedCommand : ContextSpecification<SetRelativeExpressionFromNormalizedCommand>

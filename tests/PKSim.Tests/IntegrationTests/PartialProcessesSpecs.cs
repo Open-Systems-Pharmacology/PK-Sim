@@ -650,8 +650,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-
-
+         
          _otherCompound = DomainFactoryForSpecs.CreateStandardCompound().WithName("OtherCompound");
          _otherProtocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol().WithName("OtherProtocol");
          _otherCompound.AddProcess(_cloneManager.Clone(_metabolizationProcess));

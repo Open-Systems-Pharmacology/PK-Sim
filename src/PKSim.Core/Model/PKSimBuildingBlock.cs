@@ -12,7 +12,7 @@ namespace PKSim.Core.Model
       PKSimBuildingBlockType BuildingBlockType { get; }
 
       /// <summary>
-      ///    Root Container of the building block (container of all sub containers and paraemters)
+      ///    Root Container of the building block (container of all sub containers and parameters)
       /// </summary>
       IRootContainer Root { get; set; }
 

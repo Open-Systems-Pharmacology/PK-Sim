@@ -1,10 +1,9 @@
-using OSPSuite.Core.Commands.Core;
-using PKSim.Core;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.UICommands;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
+
+using PKSim.Presentation.Core;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation
 {
@@ -15,14 +14,13 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _workspace =A.Fake<IWorkspace>();
-         _historyManager =A.Fake<IHistoryManager>();
+         _workspace = A.Fake<IWorkspace>();
+         _historyManager = A.Fake<IHistoryManager>();
          A.CallTo(() => _workspace.HistoryManager).Returns(_historyManager);
          sut = new UndoCommand(_workspace);
       }
    }
 
-   
    public class When_executing_the_undo_command : concern_for_UndoCommand
    {
       protected override void Because()
@@ -36,4 +34,4 @@ namespace PKSim.Presentation
          A.CallTo(() => _historyManager.Undo()).MustHaveHappened();
       }
    }
-}	
+}

@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility;
 using PKSim.Core.Snapshots;
 
+
 namespace PKSim.Matlab
 {
    [IntegrationTests]

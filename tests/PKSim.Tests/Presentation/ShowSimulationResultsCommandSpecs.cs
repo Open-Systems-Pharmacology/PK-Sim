@@ -6,6 +6,8 @@ using PKSim.Core.Model;
 using OSPSuite.Core.Services;
 using ISimulationAnalysisCreator = PKSim.Core.Services.ISimulationAnalysisCreator;
 
+
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_ShowSimulationResultsCommand : ContextSpecification<ShowSimulationResultsCommand>

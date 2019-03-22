@@ -35,9 +35,9 @@ namespace PKSim.UI.BootStrapping
 {
    public class ApplicationStartup
    {
-      public static void Initialize(LogLevel logLevel = LogLevel.Information)
+      public static void Initialize(LogLevel logLevel = LogLevel.Information, Action<IContainer> registrationAction = null)
       {
-         new ApplicationStartup().InitializeForStartup(logLevel);
+         new ApplicationStartup().InitializeForStartup(logLevel, registrationAction);
       }
 
       public void InitializeUserInterace()
@@ -46,15 +46,14 @@ namespace PKSim.UI.BootStrapping
          UserInterfaceRegister.InitializeForStartup(IoC.Container);
       }
 
-      public void InitializeForStartup(LogLevel logLevel)
+      public void InitializeForStartup(LogLevel logLevel, Action<IContainer> registrationAction)
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
 
          updateGoDiagramKey();
 
-         InfrastructureRegister.Initialize();
-         var container = IoC.Container;
+         var container = InfrastructureRegister.Initialize();
          container.RegisterImplementationOf(getCurrentContext());
 
          container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
@@ -75,6 +74,8 @@ namespace PKSim.UI.BootStrapping
          container.Register<IConfigurableContainerLayoutView, TabbedLayoutView>(ViewLayouts.TabbedView.Id);
 
          configureLogger(container, logLevel);
+
+         registrationAction?.Invoke(container);
       }
 
       private void configureLogger(IContainer container, LogLevel logLevel)

@@ -5,6 +5,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_set_schema_item_formulation_key_command : ContextSpecification<SetSchemaItemFormulationKeyCommand>

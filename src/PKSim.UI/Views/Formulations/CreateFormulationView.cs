@@ -4,7 +4,6 @@ using PKSim.Core;
 using PKSim.Presentation.Presenters.Formulations;
 using PKSim.Presentation.Views.Formulations;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation;
 
 namespace PKSim.UI.Views.Formulations
 {

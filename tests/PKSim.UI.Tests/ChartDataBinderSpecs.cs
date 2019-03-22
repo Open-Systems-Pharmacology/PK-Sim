@@ -8,6 +8,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Core.Chart;
+
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 
 namespace PKSim.UI.Tests

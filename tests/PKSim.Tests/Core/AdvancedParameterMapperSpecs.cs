@@ -13,6 +13,7 @@ using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
 using ILogger = OSPSuite.Core.Services.ILogger;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_AdvancedParameterMapper : ContextSpecificationAsync<AdvancedParameterMapper>

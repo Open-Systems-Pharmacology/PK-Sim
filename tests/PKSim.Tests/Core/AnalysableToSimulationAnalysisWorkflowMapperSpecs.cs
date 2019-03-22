@@ -6,6 +6,7 @@ using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_AnalysableToSimulationAnalysisWorkflowMapper : ContextSpecification<IAnalysableToSimulationAnalysisWorkflowMapper>

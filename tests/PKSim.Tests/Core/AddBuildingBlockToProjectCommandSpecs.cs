@@ -5,6 +5,7 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using FakeItEasy;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_AddBuildingBlockToProjectCommand : ContextSpecification<AddBuildingBlockToProjectCommand>

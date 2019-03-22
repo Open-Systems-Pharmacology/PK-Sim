@@ -7,6 +7,7 @@ using PKSim.Core.Chart;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_BoxWhiskerCurveData : ContextSpecification<CurveData<BoxWhiskerXValue, BoxWhiskerYValue>>

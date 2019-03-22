@@ -6,6 +6,7 @@ using PKSim.Core.Model;
 using FakeItEasy;
 using OSPSuite.Core.Domain;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_SetRelativeExpressionCommand : ContextSpecification<SetRelativeExpressionCommand>
