@@ -10,6 +10,6 @@ namespace PKSim.Core.Services
       /// <param name="pkmlFileFullPath">Full path of the simulation transfer file</param>
       /// <returns>The simulation transfer deserialized using the file <paramref name="pkmlFileFullPath" /></returns>
       /// <exception cref="PKSimException">is thrown if the file does not represent a SimulationTransfer file</exception>
-      SimulationTransfer LoadSimulationTransfer(string pkmlFileFullPath);
+      SimulationTransfer Load(string pkmlFileFullPath);
    }
 }

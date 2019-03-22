@@ -47,7 +47,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _simulationTransferLoader.LoadSimulationTransfer(_pkmlFile)).Throws<Exception>();
+         A.CallTo(() => _simulationTransferLoader.Load(_pkmlFile)).Throws<Exception>();
       }
 
       [Observation]
@@ -67,7 +67,7 @@ namespace PKSim.Core
          base.Context();
          var simTransfer=new SimulationTransfer();
          _individualSimulation= A.Fake<IndividualSimulation>();
-         A.CallTo(() => _simulationTransferLoader.LoadSimulationTransfer(_pkmlFile)).Returns(simTransfer);
+         A.CallTo(() => _simulationTransferLoader.Load(_pkmlFile)).Returns(simTransfer);
          A.CallTo(() => _simulationFactory.CreateBasedOn<IndividualSimulation>(simTransfer.Simulation)).Returns(_individualSimulation);
       }
 
@@ -96,7 +96,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _simulationTransferLoader.LoadSimulationTransfer(_pkmlFile)).Returns(null);
+         A.CallTo(() => _simulationTransferLoader.Load(_pkmlFile)).Returns(null);
       }
 
       protected override void Because()

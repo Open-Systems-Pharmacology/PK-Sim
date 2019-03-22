@@ -89,7 +89,7 @@ namespace PKSim.ProjectConverter.v5_3
             exportTask.SaveSimulationToFile(simulation, tmpFile);
 
             var simulationTransferLoader = IoC.Resolve<ISimulationTransferLoader>();
-            var simulationTransfer = simulationTransferLoader.LoadSimulationTransfer(tmpFile);
+            var simulationTransfer = simulationTransferLoader.Load(tmpFile);
             simulationTransfer.Simulation.ShouldNotBeNull();
          }
          finally

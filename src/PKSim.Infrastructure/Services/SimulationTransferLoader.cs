@@ -32,7 +32,7 @@ namespace PKSim.Infrastructure.Services
          _cloneManagerForModel = cloneManagerForModel;
       }
 
-      public SimulationTransfer LoadSimulationTransfer(string pkmlFileFullPath)
+      public SimulationTransfer Load(string pkmlFileFullPath)
       {
          var project = _projectRetriever.CurrentProject;
 

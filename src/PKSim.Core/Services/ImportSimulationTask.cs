@@ -122,7 +122,7 @@ namespace PKSim.Core.Services
       {
          try
          {
-            var loadedSim = _simulationTransferLoader.LoadSimulationTransfer(pkmlFileFullPath);
+            var loadedSim = _simulationTransferLoader.Load(pkmlFileFullPath);
             if (loadedSim == null)
                return null;
 

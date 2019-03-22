@@ -40,7 +40,7 @@ namespace PKSim.Matlab
 
       public void SaveToSimModelXmlFile(string pkmlFileFullPath, string simModelXmlFileFullPath)
       {
-         var simulationTransfer = _simulationTransferLoader.LoadSimulationTransfer(pkmlFileFullPath);
+         var simulationTransfer = _simulationTransferLoader.Load(pkmlFileFullPath);
          _simModelExporter.Export(simulationTransfer.Simulation, simModelXmlFileFullPath);
       }
    }

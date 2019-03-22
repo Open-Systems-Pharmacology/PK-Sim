@@ -13,7 +13,7 @@ namespace PKSim.IntegrationTests
       public void LoadSimulation(string simulationfileName)
       {
          var simulationFile = DomainHelperForSpecs.DataFilePathFor($"{simulationfileName}.pkml");
-         _simulationTransfer = sut.LoadSimulationTransfer(simulationFile);
+         _simulationTransfer = sut.Load(simulationFile);
       }
    }
 

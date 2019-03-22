@@ -45,7 +45,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         _result = sut.LoadSimulationTransfer(_pkmlFile);
+         _result = sut.Load(_pkmlFile);
       }
    }
 
