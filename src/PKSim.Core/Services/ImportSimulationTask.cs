@@ -17,7 +17,7 @@ namespace PKSim.Core.Services
 
    public class ImportSimulationTask : IImportSimulationTask
    {
-      private readonly ICoreLoader _coreLoader;
+      private readonly ISimulationTransferLoader _simulationTransferLoader;
       private readonly ISimulationFactory _simulationFactory;
       private readonly IEntitiesInContainerRetriever _parameterRetriever;
       private readonly ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
@@ -27,11 +27,11 @@ namespace PKSim.Core.Services
       private readonly ISimulationUpdaterAfterDeserialization _simulationUpdaterAfterDeserialization;
       private readonly IAdvancedParameterFactory _advancedParameterFactory;
 
-      public ImportSimulationTask(ICoreLoader coreLoader, ISimulationFactory simulationFactory, IEntitiesInContainerRetriever parameterRetriever, ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
+      public ImportSimulationTask(ISimulationTransferLoader simulationTransferLoader, ISimulationFactory simulationFactory, IEntitiesInContainerRetriever parameterRetriever, ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
          IIndividualPropertiesCacheImporter individualPropertiesCacheImporter, IExecutionContext executionContext, IObjectBaseFactory objectBaseFactory, 
          ISimulationUpdaterAfterDeserialization simulationUpdaterAfterDeserialization, IAdvancedParameterFactory advancedParameterFactory)
       {
-         _coreLoader = coreLoader;
+         _simulationTransferLoader = simulationTransferLoader;
          _simulationFactory = simulationFactory;
          _parameterRetriever = parameterRetriever;
          _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
@@ -122,7 +122,7 @@ namespace PKSim.Core.Services
       {
          try
          {
-            var loadedSim = _coreLoader.LoadSimulationTransfer(pkmlFileFullPath);
+            var loadedSim = _simulationTransferLoader.LoadSimulationTransfer(pkmlFileFullPath);
             if (loadedSim == null)
                return null;
 

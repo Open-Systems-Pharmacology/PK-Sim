@@ -12,7 +12,7 @@ namespace PKSim.Core
 {
    public abstract class concern_for_ImportSimulationTask : ContextSpecification<IImportSimulationTask>
    {
-      protected ICoreLoader _coreLoader;
+      protected ISimulationTransferLoader _simulationTransferLoader;
       protected ISimulationFactory _simulationFactory;
       protected IEntitiesInContainerRetriever _parameterRetriever;
       protected ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
@@ -26,7 +26,7 @@ namespace PKSim.Core
 
       protected override void Context()
       {
-         _coreLoader = A.Fake<ICoreLoader>();
+         _simulationTransferLoader = A.Fake<ISimulationTransferLoader>();
          _simulationFactory = A.Fake<ISimulationFactory>();
          _parameterRetriever = A.Fake<IEntitiesInContainerRetriever>();
          _simulationBuildingBlockUpdater = A.Fake<ISimulationBuildingBlockUpdater>();
@@ -35,7 +35,7 @@ namespace PKSim.Core
          _objectBaseFactory= A.Fake<IObjectBaseFactory>();
          _simulationUpdaterAfterDeserialization= A.Fake<ISimulationUpdaterAfterDeserialization>();
          _advancedParameterFactory= A.Fake<IAdvancedParameterFactory>();
-         sut = new ImportSimulationTask(_coreLoader, _simulationFactory, _parameterRetriever,
+         sut = new ImportSimulationTask(_simulationTransferLoader, _simulationFactory, _parameterRetriever,
             _simulationBuildingBlockUpdater, _individualPropertiesCacheImporter,_executionContext, _objectBaseFactory,
             _simulationUpdaterAfterDeserialization,_advancedParameterFactory);
       }
@@ -47,7 +47,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _coreLoader.LoadSimulationTransfer(_pkmlFile)).Throws<Exception>();
+         A.CallTo(() => _simulationTransferLoader.LoadSimulationTransfer(_pkmlFile)).Throws<Exception>();
       }
 
       [Observation]
@@ -67,7 +67,7 @@ namespace PKSim.Core
          base.Context();
          var simTransfer=new SimulationTransfer();
          _individualSimulation= A.Fake<IndividualSimulation>();
-         A.CallTo(() => _coreLoader.LoadSimulationTransfer(_pkmlFile)).Returns(simTransfer);
+         A.CallTo(() => _simulationTransferLoader.LoadSimulationTransfer(_pkmlFile)).Returns(simTransfer);
          A.CallTo(() => _simulationFactory.CreateBasedOn<IndividualSimulation>(simTransfer.Simulation)).Returns(_individualSimulation);
       }
 
@@ -96,7 +96,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _coreLoader.LoadSimulationTransfer(_pkmlFile)).Returns(null);
+         A.CallTo(() => _simulationTransferLoader.LoadSimulationTransfer(_pkmlFile)).Returns(null);
       }
 
       protected override void Because()

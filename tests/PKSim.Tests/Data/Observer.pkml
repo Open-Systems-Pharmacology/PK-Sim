@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContainerObserverBuilder id="UYP4Sioxv069AJUMK23oUQ" name="Amount Lumen Colon" icon="Observer" dimension="Amount" formula="pWGwHmRBzU6jiUymaxcYJg" version="12">
+  <ContainerCriteria>
+    <DescriptorConditions>
+      <MatchTagCondition tag="Lumen" />
+      <NotMatchTagCondition tag="LumenSegment" />
+    </DescriptorConditions>
+  </ContainerCriteria>
+  <MoleculeList forAll="0">
+    <MoleculeNames>
+      <MoleculeNamesChild>A-1066</MoleculeNamesChild>
+    </MoleculeNames>
+  </MoleculeList>
+  <FormulaCache>
+    <Formulas>
+      <Formula id="pWGwHmRBzU6jiUymaxcYJg" name="Amount Lumen Colon" dim="Amount" formula="col_asc + col_desc + col_sig + col_trans">
+        <Paths>
+          <Path path="0" as="1" dim="2" />
+          <Path path="3" as="4" dim="2" />
+          <Path path="5" as="6" dim="2" />
+          <Path path="7" as="8" dim="2" />
+        </Paths>
+      </Formula>
+    </Formulas>
+    <StringMap>
+      <Map s="Organism|Lumen|ColonAscendens|MOLECULE" id="0" />
+      <Map s="col_asc" id="1" />
+      <Map s="Amount" id="2" />
+      <Map s="Organism|Lumen|ColonDescendens|MOLECULE" id="3" />
+      <Map s="col_desc" id="4" />
+      <Map s="Organism|Lumen|ColonSigmoid|MOLECULE" id="5" />
+      <Map s="col_sig" id="6" />
+      <Map s="Organism|Lumen|ColonTransversum|MOLECULE" id="7" />
+      <Map s="col_trans" id="8" />
+    </StringMap>
+  </FormulaCache>
+</ContainerObserverBuilder>

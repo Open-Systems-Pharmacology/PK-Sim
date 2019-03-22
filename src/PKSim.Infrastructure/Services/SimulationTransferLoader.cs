@@ -1,5 +1,4 @@
 ﻿using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Journal;
@@ -8,7 +7,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
 {
-   public class CoreLoader : ICoreLoader
+   public class SimulationTransferLoader : ISimulationTransferLoader
    {
       private readonly IDimensionFactory _dimensionFactory;
       private readonly IObjectBaseFactory _objectBaseFactory;
@@ -16,18 +15,14 @@ namespace PKSim.Infrastructure.Services
       private readonly IProjectRetriever _projectRetriever;
       private readonly IJournalTask _journalTask;
       private readonly ICloneManagerForModel _cloneManagerForModel;
-      private readonly IObserverLoader _observerLoader;
-      private readonly IObjectIdResetter _objectIdResetter;
 
-      public CoreLoader(
+      public SimulationTransferLoader(
          IDimensionFactory dimensionFactory,
          IObjectBaseFactory objectBaseFactory,
          ISimulationPersistor simulationPersister,
          IProjectRetriever projectRetriever,
          IJournalTask journalTask,
-         ICloneManagerForModel cloneManagerForModel,
-         IObserverLoader observerLoader,
-         IObjectIdResetter objectIdResetter)
+         ICloneManagerForModel cloneManagerForModel)
       {
          _dimensionFactory = dimensionFactory;
          _objectBaseFactory = objectBaseFactory;
@@ -35,8 +30,6 @@ namespace PKSim.Infrastructure.Services
          _projectRetriever = projectRetriever;
          _journalTask = journalTask;
          _cloneManagerForModel = cloneManagerForModel;
-         _observerLoader = observerLoader;
-         _objectIdResetter = objectIdResetter;
       }
 
       public SimulationTransfer LoadSimulationTransfer(string pkmlFileFullPath)
@@ -52,13 +45,6 @@ namespace PKSim.Infrastructure.Services
             _journalTask.LoadJournal(simulationTransfer.JournalPath, showJournal: false);
 
          return simulationTransfer;
-      }
-
-      public IObserverBuilder LoadObserver(string pkmlFileFullPath)
-      {
-         var observer = _observerLoader.Load(pkmlFileFullPath, _dimensionFactory, _objectBaseFactory, new WithIdRepository(), _cloneManagerForModel);
-         _objectIdResetter.ResetIdFor(observer);
-         return observer;
       }
 
       private static bool shouldLoadJournal(IProject project, SimulationTransfer simulationTransfer)

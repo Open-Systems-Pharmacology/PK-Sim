@@ -791,6 +791,11 @@ namespace PKSim.Assets
             return $"Could not load simulation from file '{pkmlFileFullPath}'.";
          }
 
+         public static string CouldNotLoadObserverFromFile(string pkmlFileFullPath, string elementName)
+         {
+            return $"Could not load observer from file '{pkmlFileFullPath}'. This seems to be a file for '{elementName}'.";
+         }
+
          public static string CannotAddOutputFieldBecauseOfDimensionMismatch(string outputName, IEnumerable<string> allowedDimensions, string currentDimension)
          {
             return cannotAddToAnalysisBecauseOfDimensionMismatch("output", outputName, allowedDimensions, new[] {currentDimension});

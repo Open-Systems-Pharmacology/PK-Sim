@@ -502,7 +502,7 @@
     <Compile Include="Services\SimulationRepository.cs" />
     <Compile Include="Services\SimulationResultsImportTask.cs" />
     <Compile Include="Services\ISimulationResultsTask.cs" />
-    <Compile Include="Services\ICoreLoader.cs" />
+    <Compile Include="Services\ISimulationTransferLoader.cs" />
     <Compile Include="Services\IVersionChecker.cs" />
     <Compile Include="Services\InvalidSimulationConfigurationException.cs" />
     <Compile Include="Services\ParticleApplicationCreator.cs" />

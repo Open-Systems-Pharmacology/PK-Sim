@@ -21,6 +21,7 @@ namespace PKSim.UI.Views.Observers
       private IImportObserversPresenter _presenter;
       private readonly GridViewBinder<ImportObserverDTO> _gridViewBinder;
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRemoveButtonRepository();
+      private IGridViewColumn _colFilePath;
 
       public ImportObserversView()
       {
@@ -59,6 +60,12 @@ namespace PKSim.UI.Views.Observers
          gridView.FocusedRowHandle = _gridViewBinder.RowHandleFor(observerDTO);
       }
 
+      public bool ShowFilePath
+      {
+         get => _colFilePath.Visible;
+         set => _colFilePath.Visible = value;
+      }
+
       private void selectFirstRow(IReadOnlyList<ImportObserverDTO> observers)
       {
          SelectObserver(observers.FirstOrDefault());
@@ -71,7 +78,7 @@ namespace PKSim.UI.Views.Observers
          _gridViewBinder.Bind(x => x.Name)
             .AsReadOnly();
 
-         _gridViewBinder.Bind(x => x.FilePath)
+         _colFilePath = _gridViewBinder.Bind(x => x.FilePath)
             .WithCaption(PKSimConstants.UI.FilePath)
             .AsReadOnly();
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Xml.Linq;
-using OSPSuite.Assets;
 using OSPSuite.Core.Converter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -11,24 +10,37 @@ using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Serialization.Xml.Extensions;
 using OSPSuite.Serializer.Xml;
 using OSPSuite.Utility.Exceptions;
+using PKSim.Assets;
 
 namespace PKSim.Core.Services
 {
    public interface IObserverLoader
    {
-      IObserverBuilder Load(string pkmlFileFullPath, IDimensionFactory dimensionFactory, IObjectBaseFactory objectBaseFactory, IWithIdRepository withIdRepository, ICloneManagerForModel cloneManagerForModel);
+      IObserverBuilder Load(string pkmlFileFullPath);
    }
 
    public class ObserverLoader : IObserverLoader
    {
       private readonly IObjectConverterFinder _objectConverterFinder;
+      private readonly IDimensionFactory _dimensionFactory;
+      private readonly IObjectBaseFactory _objectBaseFactory;
+      private readonly ICloneManagerForModel _cloneManagerForModel;
       private readonly IXmlSerializer<SerializationContext> _containerObserverSerializer;
       private readonly IXmlSerializer<SerializationContext> _amountObserverSerializer;
       private readonly IOSPSuiteXmlSerializerRepository _modellingXmlSerializerRepository;
 
-      public ObserverLoader(IOSPSuiteXmlSerializerRepository modellingXmlSerializerRepository, IObjectConverterFinder objectConverterFinder)
+      public ObserverLoader(
+         IOSPSuiteXmlSerializerRepository modellingXmlSerializerRepository,
+         IObjectConverterFinder objectConverterFinder,
+         IDimensionFactory dimensionFactory,
+         IObjectBaseFactory objectBaseFactory,
+         ICloneManagerForModel cloneManagerForModel
+      )
       {
          _objectConverterFinder = objectConverterFinder;
+         _dimensionFactory = dimensionFactory;
+         _objectBaseFactory = objectBaseFactory;
+         _cloneManagerForModel = cloneManagerForModel;
          _modellingXmlSerializerRepository = modellingXmlSerializerRepository;
          _containerObserverSerializer = modellingXmlSerializerRepository.SerializerFor<ContainerObserverBuilder>();
          _amountObserverSerializer = modellingXmlSerializerRepository.SerializerFor<AmountObserverBuilder>();
@@ -56,20 +68,20 @@ namespace PKSim.Core.Services
          }
       }
 
-      public IObserverBuilder Load(string pkmlFileFullPath, IDimensionFactory dimensionFactory, IObjectBaseFactory objectBaseFactory, IWithIdRepository withIdRepository, ICloneManagerForModel cloneManagerForModel)
+      public IObserverBuilder Load(string pkmlFileFullPath)
       {
          IObserverBuilder observerBuilder;
          int version;
-         using (var serializationContext = SerializationTransaction.Create(dimensionFactory, objectBaseFactory, withIdRepository, cloneManagerForModel))
+         using (var serializationContext = SerializationTransaction.Create(_dimensionFactory, _objectBaseFactory, new WithIdRepository(), _cloneManagerForModel))
          {
             var element = XElement.Load(pkmlFileFullPath);
             version = element.GetPKMLVersion();
-
+            var elementName = element.Name.LocalName;
             convertXml(element, version);
 
-            var serializer = findObserverSerializerFor(element);
+            var serializer = findObserverSerializerFor(elementName);
             if (serializer == null)
-               throw new OSPSuiteException(Error.CouldNotLoadSimulationFromFile(pkmlFileFullPath));
+               throw new OSPSuiteException(PKSimConstants.Error.CouldNotLoadObserverFromFile(pkmlFileFullPath, elementName));
 
             _modellingXmlSerializerRepository.DeserializeFormulaCacheIn(element, serializationContext);
             observerBuilder = serializer.Deserialize<IObserverBuilder>(element, serializationContext);
@@ -80,14 +92,13 @@ namespace PKSim.Core.Services
          return observerBuilder;
       }
 
-      private IXmlSerializer<SerializationContext> findObserverSerializerFor(XElement element)
+      private IXmlSerializer<SerializationContext> findObserverSerializerFor(string elementName)
       {
-         if (string.Equals(_amountObserverSerializer.ElementName, element.Name.LocalName))
+         if (string.Equals(_amountObserverSerializer.ElementName, elementName))
             return _amountObserverSerializer;
 
-         if (string.Equals(_containerObserverSerializer.ElementName, element.Name.LocalName))
+         if (string.Equals(_containerObserverSerializer.ElementName, elementName))
             return _containerObserverSerializer;
-
 
          return null;
       }

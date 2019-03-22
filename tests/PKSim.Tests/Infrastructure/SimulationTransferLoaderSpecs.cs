@@ -13,7 +13,7 @@ using PKSim.Infrastructure.Services;
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_CoreLoader : ContextSpecification<ICoreLoader>
+   public abstract class concern_for_SimulationTransfer : ContextSpecification<ISimulationTransferLoader>
    {
       protected IDimensionFactory _dimensionFactory;
       protected IObjectBaseFactory _objectBaseFactory;
@@ -26,8 +26,6 @@ namespace PKSim.Infrastructure
       protected PKSimProject _project;
       protected IJournalTask _journalTask;
       private ICloneManagerForModel _cloneManagerForModel;
-      private IObserverLoader _observerLoader;
-      private IObjectIdResetter _objectIdResetter;
 
       protected override void Context()
       {
@@ -39,9 +37,7 @@ namespace PKSim.Infrastructure
          _projectRetriever = A.Fake<IProjectRetriever>();
          _journalTask = A.Fake<IJournalTask>();
          _cloneManagerForModel = A.Fake<ICloneManagerForModel>();
-         _observerLoader = A.Fake<IObserverLoader>();
-         _objectIdResetter= A.Fake<IObjectIdResetter>();
-         sut = new CoreLoader(_dimensionFactory, _objectBaseFactory, _simulationPersister, _projectRetriever, _journalTask, _cloneManagerForModel, _observerLoader, _objectIdResetter);
+         sut = new SimulationTransferLoader(_dimensionFactory, _objectBaseFactory, _simulationPersister, _projectRetriever, _journalTask, _cloneManagerForModel);
          _simulationTransfer = new SimulationTransfer();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          A.CallTo(() => _simulationPersister.Load(_pkmlFile, _dimensionFactory, _objectBaseFactory, A<IWithIdRepository>._, _cloneManagerForModel)).Returns(_simulationTransfer);
@@ -53,7 +49,7 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_loading_a_simulation : concern_for_CoreLoader
+   public class When_loading_a_simulation : concern_for_SimulationTransfer
    {
       [Observation]
       public void should_simply_return_the_simulation()
@@ -62,7 +58,7 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_loading_a_simulation_and_no_project_is_defined : concern_for_CoreLoader
+   public class When_loading_a_simulation_and_no_project_is_defined : concern_for_SimulationTransfer
    {
       protected override void Context()
       {
@@ -83,7 +79,7 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_loading_a_simulation_that_contains_information_on_the_used_journal_and_no_jounral_is_currently_loaded : concern_for_CoreLoader
+   public class When_loading_a_simulation_that_contains_information_on_the_used_journal_and_no_jounral_is_currently_loaded : concern_for_SimulationTransfer
    {
       protected override void Context()
       {

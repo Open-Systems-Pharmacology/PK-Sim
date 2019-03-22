@@ -11,19 +11,19 @@ namespace PKSim.Presentation.Services
    public class ObserverBuildingBlockTask : BuildingBlockTask<PKSimObserverBuildingBlock>, IObserverBuildingBlockTask
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
-      private readonly ICoreLoader _coreLoader;
+      private readonly ISimulationTransferLoader _simulationTransferLoader;
 
       public ObserverBuildingBlockTask(
          IExecutionContext executionContext,
          IBuildingBlockTask buildingBlockTask,
          IApplicationController applicationController,
          IObjectBaseFactory objectBaseFactory,
-         ICoreLoader coreLoader
+         ISimulationTransferLoader simulationTransferLoader
       ) :
          base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Observers)
       {
          _objectBaseFactory = objectBaseFactory;
-         _coreLoader = coreLoader;
+         _simulationTransferLoader = simulationTransferLoader;
       }
 
       public override PKSimObserverBuildingBlock AddToProject()
@@ -31,10 +31,6 @@ namespace PKSim.Presentation.Services
          return AddToProject<ICreateObserverBuildingBlockPresenter>();
       }
 
-      public IObserverBuilder LoadObserverFrom(string fileName)
-      {
-         return _coreLoader.LoadObserver(fileName);
-      }
 
       public PKSimObserverBuildingBlock Create()
       {

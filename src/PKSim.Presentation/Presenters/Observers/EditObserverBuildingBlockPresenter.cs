@@ -23,6 +23,7 @@ namespace PKSim.Presentation.Presenters.Observers
          base(view, subPresenterItemManager, ObserverItems.All)
       {
       }
+      
 
       protected override void UpdateCaption()
       {
@@ -35,6 +36,7 @@ namespace PKSim.Presentation.Presenters.Observers
       {
          _observerBuildingBlock = observerBuildingBlock;
          _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(_observerBuildingBlock));
+         importObserversPresenter.ShowFilePath = false;
          UpdateCaption();
          _view.Display();
       }
@@ -55,5 +57,7 @@ namespace PKSim.Presentation.Presenters.Observers
       {
          return Equals(eventToHandle.ContainerSubject, _observerBuildingBlock);
       }
+
+      private IImportObserversPresenter importObserversPresenter => _subPresenterItemManager.PresenterAt(ObserverItems.ImportSettings);
    }
 }

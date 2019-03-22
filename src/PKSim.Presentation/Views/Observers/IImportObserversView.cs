@@ -11,5 +11,6 @@ namespace PKSim.Presentation.Views.Observers
       void Rebind();
       void AddObserverView(IView view);
       void SelectObserver(ImportObserverDTO observerDTO);
+      bool ShowFilePath { get; set; }
    }
 }

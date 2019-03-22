@@ -6,7 +6,7 @@ using OSPSuite.Core.Serialization.Exchange;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_SimulationTransferLoader : ContextForIntegration<ICoreLoader>
+   public abstract class concern_for_SimulationTransferLoader : ContextForIntegration<ISimulationTransferLoader>
    {
       protected SimulationTransfer _simulationTransfer;
 
