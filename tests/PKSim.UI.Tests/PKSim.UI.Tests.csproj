@@ -211,6 +211,9 @@
     <Reference Include="OSPSuite.DataBinding.DevExpress, Version=3.0.0.3, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.DataBinding.DevExpress.3.0.0.3\lib\net462\OSPSuite.DataBinding.DevExpress.dll</HintPath>
     </Reference>
+    <Reference Include="OSPSuite.Engine, Version=7.5.0.20, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Engine.7.5.0.20\lib\net462\OSPSuite.Engine.dll</HintPath>
+    </Reference>
     <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.1.14\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
@@ -281,6 +284,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="ChartDataBinderSpecs.cs" />
+    <Compile Include="ContextSpecification.cs" />
     <Compile Include="CustomColorArrayManagerSpecs.cs" />
     <Compile Include="ExitCommandSpecs.cs" />
     <Compile Include="Helpers\ExceptionManagerForSpecs.cs" />
@@ -301,10 +305,6 @@
     <ProjectReference Include="..\..\src\PKSim.UI\PKSim.UI.csproj">
       <Project>{19e2a5e5-2248-43aa-92e0-190b327d67a8}</Project>
       <Name>PKSim.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PKSim.Tests\PKSim.Tests.csproj">
-      <Project>{E17E4702-AFE6-4EC5-8559-9A55F3996754}</Project>
-      <Name>PKSim.Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
