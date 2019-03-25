@@ -230,7 +230,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       public void Visit(ObserverSetMetaData observerSetMetaData)
       {
-         _buildingBlock = new PKSimObserverBuildingBlock();
+         _buildingBlock = new ObserverSet();
       }
    }
 }

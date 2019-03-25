@@ -69,9 +69,9 @@ namespace PKSim.Presentation.UICommands
       }
    }
 
-   public class EditObserverBuildingBlockCommand : EditBuildingBlockUICommand<PKSimObserverBuildingBlock, IObserverBuildingBlockTask>
+   public class EditObserverSetCommand : EditBuildingBlockUICommand<ObserverSet, IObserverSetTask>
    {
-      public EditObserverBuildingBlockCommand(IObserverBuildingBlockTask observerBuildingBlockTask) : base(observerBuildingBlockTask)
+      public EditObserverSetCommand(IObserverSetTask observerSetTask) : base(observerSetTask)
       {
       }
    }

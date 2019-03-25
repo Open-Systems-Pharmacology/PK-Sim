@@ -623,7 +623,7 @@
     <Compile Include="IntegrationTests\PopulationSimulationSerializationSpecs.cs" />
     <Compile Include="IntegrationTests\ProjectXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\RenameBuildingBlockTaskSpecs.cs" />
-    <Compile Include="Presentation\EditObserverBuildingBlockPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditObserverSetPresenterSpecs.cs" />
     <Compile Include="Presentation\EditTableSolubilityParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\EditValueOriginPresenterSpecs.cs" />
     <Compile Include="Presentation\ImportObserversPresenterSpecs.cs" />

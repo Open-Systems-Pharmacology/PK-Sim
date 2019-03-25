@@ -31,7 +31,7 @@ namespace PKSim.Presentation.Core
       IVisitor<DataRepository>,
       IVisitor<ParameterIdentification>,
       IVisitor<SensitivityAnalysis>,
-      IVisitor<PKSimObserverBuildingBlock>,
+      IVisitor<ObserverSet>,
       IVisitor<IEnumerable<DataRepository>>,
       IStrictVisitor
    {
@@ -138,7 +138,7 @@ namespace PKSim.Presentation.Core
          openPresenter(objToVisit);
       }
 
-      public void Visit(PKSimObserverBuildingBlock objToVisit)
+      public void Visit(ObserverSet objToVisit)
       {
          openPresenter(objToVisit);
       }

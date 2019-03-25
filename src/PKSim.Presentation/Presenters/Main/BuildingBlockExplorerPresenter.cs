@@ -59,7 +59,7 @@ namespace PKSim.Presentation.Presenters.Main
             case PKSimBuildingBlockType.Event:
                return addEventToTree(buildingBlock.DowncastTo<PKSimEvent>());
             case PKSimBuildingBlockType.Observers:
-               return addObserversToTree(buildingBlock.DowncastTo<PKSimObserverBuildingBlock>());
+               return addObserversToTree(buildingBlock.DowncastTo<ObserverSet>());
             case PKSimBuildingBlockType.Simulation:
                return null;
             default:
@@ -101,7 +101,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       private ITreeNode addProtocolToTree(Protocol protocol) => addBuildingBlockToTree(protocol, PKSimRootNodeTypes.ProtocolFolder, ApplicationIcons.Protocol);
 
-      private ITreeNode addObserversToTree(PKSimObserverBuildingBlock observers) => addBuildingBlockToTree(observers, PKSimRootNodeTypes.ObserversFolder, ApplicationIcons.Observer);
+      private ITreeNode addObserversToTree(ObserverSet observers) => addBuildingBlockToTree(observers, PKSimRootNodeTypes.ObserversFolder, ApplicationIcons.Observer);
 
       private ITreeNode addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType, ApplicationIcon icon) where TBuildingBlock : class, IPKSimBuildingBlock
       {

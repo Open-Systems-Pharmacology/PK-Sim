@@ -5,7 +5,7 @@ using PKSim.Presentation.Presenters.Observers;
 
 namespace PKSim.Presentation.Views.Observers
 {
-   public interface IImportObserversView : IView<IImportObserversPresenter>
+   public interface IImportObserverSetView : IView<IImportObserverSetPresenter>
    {
       void BindTo(IReadOnlyList<ImportObserverDTO> observers);
       void Rebind();

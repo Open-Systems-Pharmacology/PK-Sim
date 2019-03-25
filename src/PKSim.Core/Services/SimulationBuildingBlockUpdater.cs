@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Services
 {
@@ -59,7 +59,6 @@ namespace PKSim.Core.Services
       void UpdateFormulationsInSimulation(Simulation simulation);
 
       bool BuildingBlockSupportsQuickUpdate(IPKSimBuildingBlock templateBuildingBlock);
-
    }
 
    public class SimulationBuildingBlockUpdater : ISimulationBuildingBlockUpdater
@@ -164,7 +163,7 @@ namespace PKSim.Core.Services
       {
          var allFormulationNames = allFormulationUsed.AllNames().Distinct().ToList();
 
-         if (allFormulationNames.Count== allFormulationUsed.Count)
+         if (allFormulationNames.Count == allFormulationUsed.Count)
             return;
 
          throw new PKSimException(PKSimConstants.Error.FormulationShouldBeUsedAsTemplateOrAsSimulationBuildingBlock);
@@ -172,7 +171,10 @@ namespace PKSim.Core.Services
 
       public bool BuildingBlockSupportsQuickUpdate(IPKSimBuildingBlock templateBuildingBlock)
       {
-         return !templateBuildingBlock.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Protocol, PKSimBuildingBlockType.Population);
+         return !templateBuildingBlock.BuildingBlockType.IsOneOf(
+            PKSimBuildingBlockType.Protocol,
+            PKSimBuildingBlockType.Population,
+            PKSimBuildingBlockType.Observers);
       }
    }
 }

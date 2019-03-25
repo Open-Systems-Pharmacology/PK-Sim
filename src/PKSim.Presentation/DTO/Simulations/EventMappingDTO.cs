@@ -17,9 +17,8 @@ namespace PKSim.Presentation.DTO.Simulations
          get => _event;
          set
          {
-            _event = value;
-            EventMapping.TemplateEventId = _event != null ? _event.Id : string.Empty;
-            OnPropertyChanged(() => Event);
+            EventMapping.TemplateEventId = value?.Id ?? string.Empty;
+            SetProperty(ref _event, value);
          }
       }
 
@@ -37,16 +36,10 @@ namespace PKSim.Presentation.DTO.Simulations
 
       private static class AllRules
       {
-         private static IBusinessRule buildingBlockNotNull
-         {
-            get
-            {
-               return CreateRule.For<EventMappingDTO>()
-                  .Property(item => item.Event)
-                  .WithRule((dto, ev) => ev != null)
-                  .WithError((dto, block) => PKSimConstants.Error.BuildingBlockNotDefined(PKSimConstants.ObjectTypes.Event));
-            }
-         }
+         private static IBusinessRule buildingBlockNotNull { get; } = CreateRule.For<EventMappingDTO>()
+            .Property(item => item.Event)
+            .WithRule((dto, ev) => ev != null)
+            .WithError((dto, block) => PKSimConstants.Error.BuildingBlockNotDefined(PKSimConstants.ObjectTypes.Event));
 
          internal static IEnumerable<IBusinessRule> All()
          {

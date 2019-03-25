@@ -448,23 +448,23 @@
     <Compile Include="Views\Individuals\IndividualMoleculePropertiesView.Designer.cs">
       <DependentUpon>IndividualMoleculePropertiesView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Observers\CreateObserverBuildingBlockView.cs">
+    <Compile Include="Views\Observers\CreateObserverSetView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Observers\CreateObserverBuildingBlockView.Designer.cs">
-      <DependentUpon>CreateObserverBuildingBlockView.cs</DependentUpon>
+    <Compile Include="Views\Observers\CreateObserverSetView.Designer.cs">
+      <DependentUpon>CreateObserverSetView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Observers\EditObserverBuildingBlockView.cs">
+    <Compile Include="Views\Observers\EditObserverSetView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Observers\EditObserverBuildingBlockView.Designer.cs">
-      <DependentUpon>EditObserverBuildingBlockView.cs</DependentUpon>
+    <Compile Include="Views\Observers\EditObserverSetView.Designer.cs">
+      <DependentUpon>EditObserverSetView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Observers\ImportObserversView.cs">
+    <Compile Include="Views\Observers\ImportObserverSetView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\Observers\ImportObserversView.Designer.cs">
-      <DependentUpon>ImportObserversView.cs</DependentUpon>
+    <Compile Include="Views\Observers\ImportObserverSetView.Designer.cs">
+      <DependentUpon>ImportObserverSetView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Observers\ObserverInfoView.cs">
       <SubType>UserControl</SubType>
@@ -1312,6 +1312,12 @@
     <Compile Include="Views\Simulations\EditOutputSchemaView.Designer.cs">
       <DependentUpon>EditOutputSchemaView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Simulations\SimulationObserversConfigurationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Simulations\SimulationObserversConfigurationView.Designer.cs">
+      <DependentUpon>SimulationObserversConfigurationView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Simulations\SimulationSelectionForComparisonView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1514,11 +1520,11 @@
     <EmbeddedResource Include="Views\Individuals\IndividualMoleculePropertiesView.resx">
       <DependentUpon>IndividualMoleculePropertiesView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Observers\EditObserverBuildingBlockView.resx">
-      <DependentUpon>EditObserverBuildingBlockView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Observers\EditObserverSetView.resx">
+      <DependentUpon>EditObserverSetView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Observers\ImportObserversView.resx">
-      <DependentUpon>ImportObserversView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Observers\ImportObserverSetView.resx">
+      <DependentUpon>ImportObserverSetView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Observers\ObserverInfoView.resx">
       <DependentUpon>ObserverInfoView.cs</DependentUpon>
@@ -1981,6 +1987,9 @@
     <EmbeddedResource Include="Views\Simulations\SimulationCompoundProcessView.resx">
       <DependentUpon>SimulationCompoundProcessView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Simulations\SimulationObserversConfigurationView.resx">
+      <DependentUpon>SimulationObserversConfigurationView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Simulations\SimulationSelectionForComparisonView.resx">
       <DependentUpon>SimulationSelectionForComparisonView.cs</DependentUpon>

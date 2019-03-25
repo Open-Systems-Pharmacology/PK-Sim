@@ -166,6 +166,7 @@ namespace PKSim.Presentation.Presenters.Main
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.Protocol);
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.Formulation);
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.Event);
+         addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.Observers);
       }
 
       private void addUsedBuildingBlock(Simulation simulation, ITreeNode simulationNode, PKSimBuildingBlockType buildingBlockType)

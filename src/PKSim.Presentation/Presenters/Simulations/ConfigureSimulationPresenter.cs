@@ -109,8 +109,11 @@ namespace PKSim.Presentation.Presenters.Simulations
                break;
             case PKSimBuildingBlockType.Event:
                break;
+            case PKSimBuildingBlockType.Observers:
+               itemToActivate = SimulationItems.Observers;
+               break;
             default:
-               throw new ArgumentOutOfRangeException();
+               throw new ArgumentOutOfRangeException(templateBuildingBlock.BuildingBlockType.ToString());
          }
          return configureSimulation(simulation, itemToActivate, updateAction);
       }

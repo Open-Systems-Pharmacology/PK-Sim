@@ -4,11 +4,11 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace PKSim.Core.Model
 {
-   public class PKSimObserverBuildingBlock : PKSimBuildingBlock
+   public class ObserverSet : PKSimBuildingBlock
    {
       public IEnumerable<IObserverBuilder> Observers => GetChildren<IObserverBuilder>();
 
-      public PKSimObserverBuildingBlock() : base(PKSimBuildingBlockType.Observers)
+      public ObserverSet() : base(PKSimBuildingBlockType.Observers)
       {
       }
    }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -17,7 +16,7 @@ using PKSim.Presentation.Views.Observers;
 
 namespace PKSim.Presentation.Presenters.Observers
 {
-   public interface IImportObserversPresenter : IObserverItemPresenter
+   public interface IImportObserverSetPresenter : IObserverSetItemPresenter
    {
       IEnumerable<IObserverBuilder> Observers { get; }
       void RemoveObserver(ImportObserverDTO observer);
@@ -26,17 +25,17 @@ namespace PKSim.Presentation.Presenters.Observers
       bool ShowFilePath { get; set; }
    }
 
-   public class ImportObserversPresenter : AbstractSubPresenter<IImportObserversView, IImportObserversPresenter>, IImportObserversPresenter, ILatchable
+   public class ImportObserverSetPresenter : AbstractSubPresenter<IImportObserverSetView, IImportObserverSetPresenter>, IImportObserverSetPresenter, ILatchable
    {
       private readonly IObserverInfoPresenter _observerInfoPresenter;
       private readonly IDialogCreator _dialogCreator;
       private readonly IObserverTask _observerTask;
       private readonly List<ImportObserverDTO> _observerDTOs = new List<ImportObserverDTO>();
-      private PKSimObserverBuildingBlock _observerBuildingBlock;
+      private ObserverSet _observerSet;
       public bool IsLatched { get; set; }
 
-      public ImportObserversPresenter(
-         IImportObserversView view,
+      public ImportObserverSetPresenter(
+         IImportObserverSetView view,
          IObserverInfoPresenter observerInfoPresenter,
          IDialogCreator dialogCreator,
          IObserverTask observerTask) : base(view)
@@ -51,21 +50,21 @@ namespace PKSim.Presentation.Presenters.Observers
 
       public IEnumerable<IObserverBuilder> Observers { get; } = new List<IObserverBuilder>();
 
-      public void Edit(PKSimObserverBuildingBlock observerBuildingBlock)
+      public void Edit(ObserverSet observerSet)
       {
          //This is to prevent edit triggered by action happening in this presenter
          if (IsLatched)
             return;
 
-         _observerBuildingBlock = observerBuildingBlock;
+         _observerSet = observerSet;
          _observerDTOs.Clear();
-         _observerBuildingBlock.Observers.Each(x => addObserver(x));
+         _observerSet.Observers.Each(x => addObserver(x));
          _view.Rebind();
       }
 
       public void RemoveObserver(ImportObserverDTO observerDTO)
       {
-         addCommand(() => _observerTask.RemoveObserver(observerDTO.Observer, _observerBuildingBlock));
+         addCommand(() => _observerTask.RemoveObserver(observerDTO.Observer, _observerSet));
          _observerDTOs.Remove(observerDTO);
          updateView();
       }
@@ -81,11 +80,11 @@ namespace PKSim.Presentation.Presenters.Observers
             return;
 
          if (_observerDTOs.ExistsByName(observer.Name))
-            throw new OSPSuiteException(PKSimConstants.Error.NameAlreadyExistsInContainerType(observer.Name, ObjectTypes.ObserverBuildingBlock));
+            throw new OSPSuiteException(PKSimConstants.Error.NameAlreadyExistsInContainerType(observer.Name, PKSimConstants.ObjectTypes.ObserverSet));
 
 
          var observerDTO = addObserver(observer, newFile);
-         addCommand(() => _observerTask.AddObserver(observer, _observerBuildingBlock));
+         addCommand(() => _observerTask.AddObserver(observer, _observerSet));
          updateView(observerDTO);
       }
 

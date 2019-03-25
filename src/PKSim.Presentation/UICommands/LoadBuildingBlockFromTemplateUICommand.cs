@@ -70,9 +70,9 @@ namespace PKSim.Presentation.UICommands
       }
    }
 
-   public class LoadObserverBuildingBlockCommand : LoadBuildingBlockFromTemplateUICommand<PKSimObserverBuildingBlock, IObserverBuildingBlockTask>
+   public class LoadObserverSetCommand : LoadBuildingBlockFromTemplateUICommand<ObserverSet, IObserverSetTask>
    {
-      public LoadObserverBuildingBlockCommand(IObserverBuildingBlockTask observerBuildingBlockTask) : base(observerBuildingBlockTask)
+      public LoadObserverSetCommand(IObserverSetTask observerSetTask) : base(observerSetTask)
       {
       }
    }

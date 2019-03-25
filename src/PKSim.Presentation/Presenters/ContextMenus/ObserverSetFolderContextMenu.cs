@@ -10,19 +10,19 @@ using PKSim.Presentation.Nodes;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
-   public class ObserverBuildingBlockFolderContextMenu : BuildingBlockFolderContextMenu<PKSimObserverBuildingBlock>
+   public class ObserverSetFolderContextMenu : BuildingBlockFolderContextMenu<ObserverSet>
    {
-      public ObserverBuildingBlockFolderContextMenu(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
-         : base(repository, buildingBlockRepository, MenuBarItemIds.NewObservers, MenuBarItemIds.LoadObservers)
+      public ObserverSetFolderContextMenu(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
+         : base(repository, buildingBlockRepository, MenuBarItemIds.NewObserverSet, MenuBarItemIds.LoadObserverSet)
       {
       }
    }
 
-   public class ObserverBuildingBlockFolderTreeNodeContextMenuFactory : RootNodeContextMenuFactory
+   public class ObserverSetFolderTreeNodeContextMenuFactory : RootNodeContextMenuFactory
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public ObserverBuildingBlockFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
+      public ObserverSetFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
          : base(PKSimRootNodeTypes.ObserversFolder, repository)
       {
          _buildingBlockRepository = buildingBlockRepository;
@@ -30,7 +30,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       public override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new ObserverBuildingBlockFolderContextMenu(_repository, _buildingBlockRepository);
+         return new ObserverSetFolderContextMenu(_repository, _buildingBlockRepository);
       }
    }
 }

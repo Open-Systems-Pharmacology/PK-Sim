@@ -331,7 +331,7 @@
     <Compile Include="Reporting\TeX\Builders\ImportPopulationSettingsTeXBuilder.cs" />
     <Compile Include="Reporting\TeX\Builders\ImportPopulationTeXBuilder.cs" />
     <Compile Include="Reporting\TeX\Builders\IndividualPKAnalysesTeXBuilder.cs" />
-    <Compile Include="Reporting\TeX\Builders\PKSimObserverBuildingBlockTexBuilder.cs" />
+    <Compile Include="Reporting\TeX\Builders\ObserverSetTexBuilder.cs" />
     <Compile Include="Reporting\TeX\Builders\PresentableTeXBuilder.cs" />
     <Compile Include="Reporting\TeX\Builders\PopulationPKAnalysesTeXBuilder.cs" />
     <Compile Include="Reporting\TeX\Builders\ProtocolPropertiesTeXBuilder.cs" />
@@ -587,8 +587,10 @@
     <Compile Include="Serialization\Xml\Serializers\LabelGenerationStrategyXmlAttributeMapper.cs" />
     <Compile Include="Serialization\Xml\Serializers\ObjectListXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\ObservedDataCurveOptionsXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializers\ObserverSetMappingXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializers\ObserverSetPropertiesXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\ParameterGroupsPresenterSettingsXmlSerializer.cs" />
-    <Compile Include="Serialization\Xml\Serializers\PKSimObserverBuildingBlockXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializers\ObserverSetXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\SimulationAnalysisWorkflowXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\PopulationSimulationComparisonXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\ParameterDistributionSettingsXmlSerializer.cs" />

@@ -26,6 +26,11 @@ namespace PKSim.Core.Model
       public virtual EventProperties EventProperties { get; set; }
 
       /// <summary>
+      ///    Observer set configuration
+      /// </summary>
+      public virtual ObserverSetProperties ObserverSetProperties { get; set; }
+
+      /// <summary>
       ///    Interaction configuration (Inhibition, Induction etc.)
       /// </summary>
       public virtual InteractionProperties InteractionProperties { get; set; }
@@ -42,6 +47,7 @@ namespace PKSim.Core.Model
          ModelProperties = new ModelProperties();
          _compoundPropertiesList = new List<CompoundProperties>();
          EventProperties = new EventProperties();
+         ObserverSetProperties = new ObserverSetProperties();
          InteractionProperties = new InteractionProperties();
          AllowAging = false;
          Origin = Origins.PKSim;
@@ -80,6 +86,7 @@ namespace PKSim.Core.Model
          {
             ModelProperties = ModelProperties.Clone(cloneManager),
             EventProperties = EventProperties.Clone(cloneManager),
+            ObserverSetProperties = ObserverSetProperties.Clone(cloneManager),
             InteractionProperties = InteractionProperties.Clone(cloneManager),
             AllowAging = AllowAging,
             Origin = Origin

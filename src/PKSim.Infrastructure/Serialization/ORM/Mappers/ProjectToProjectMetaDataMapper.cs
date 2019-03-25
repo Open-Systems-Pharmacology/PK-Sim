@@ -34,7 +34,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       IVisitor<RandomPopulation>,
       IVisitor<PKSimEvent>,
       IVisitor<ImportPopulation>,
-      IVisitor<PKSimObserverBuildingBlock>
+      IVisitor<ObserverSet>
    {
       private readonly ICompressedSerializationManager _serializationManager;
       private readonly ISimulationToSimulationMetaDataMapper _simulationMetaDataMapper;
@@ -224,10 +224,10 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          serializeContentFor(pkSimEvent);
       }
 
-      public void Visit(PKSimObserverBuildingBlock observerBuildingBlock)
+      public void Visit(ObserverSet observerSet)
       {
          _metaData = new ObserverSetMetaData();
-         serializeContentFor(observerBuildingBlock);
+         serializeContentFor(observerSet);
       }
 
       public void Visit(ImportPopulation importPopulation)

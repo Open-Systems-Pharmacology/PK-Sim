@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -17,10 +18,10 @@ namespace PKSim.Core.Model
 
       public virtual void AddEventMapping(EventMapping eventMapping) => _eventMappings.Add(eventMapping);
 
-      public virtual void AddEventMappings(IEnumerable<EventMapping> eventMappings) => _eventMappings.AddRange(eventMappings);
+      public virtual void AddEventMappings(IEnumerable<EventMapping> eventMappings) => eventMappings.Each(AddEventMapping);
 
       public virtual IReadOnlyList<EventMapping> EventMappings => _eventMappings;
 
-      public virtual void ClearEventMapping() => _eventMappings.Clear();
+      public virtual void ClearEventMappings() => _eventMappings.Clear();
    }
 }

@@ -3,7 +3,7 @@ using PKSim.Presentation.Presenters.Observers;
 
 namespace PKSim.Presentation.Views.Observers
 {
-   public interface IEditObserverBuildingBlockView : IMdiChildView<IEditObserverBuildingBlockPresenter>
+   public interface IEditObserverSetView : IMdiChildView<IEditObserverSetPresenter>
    {
    }
 }

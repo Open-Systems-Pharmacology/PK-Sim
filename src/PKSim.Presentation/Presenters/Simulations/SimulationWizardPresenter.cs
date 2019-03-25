@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -16,7 +16,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       Simulation Simulation { get; }
 
       /// <summary>
-      /// Creates the <see cref="Simulation"/>  for the given workflow and close the view in case of success
+      ///    Creates the <see cref="Simulation" />  for the given workflow and close the view in case of success
       /// </summary>
       void CreateSimulation();
    }
@@ -32,7 +32,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          : base(view, subPresenterItemManager, SimulationItems.All, dialogCreator)
       {
          _simulationModelCreator = simulationModelCreator;
-         _heavyWorkManager = heavyWorkManager;  
+         _heavyWorkManager = heavyWorkManager;
       }
 
       public abstract void ModelConfigurationDone();
@@ -83,10 +83,13 @@ namespace PKSim.Presentation.Presenters.Simulations
          return PresenterAt(SimulationItems.Model).SimulationCreated;
       }
 
-      protected IEnumerable<ISubPresenterItem<ISimulationItemPresenter>> AllSimulationItemsAfterModel => new ISubPresenterItem<ISimulationItemPresenter>[] {SimulationItems.Compounds, SimulationItems.CompoundsProcesses, SimulationItems.CompoundProtocols, SimulationItems.Events};
+      protected IEnumerable<ISubPresenterItem<ISimulationItemPresenter>> AllSimulationItemsAfterModel => new ISubPresenterItem<ISimulationItemPresenter>[]
+      {
+         SimulationItems.Compounds, SimulationItems.CompoundsProcesses, SimulationItems.CompoundProtocols, SimulationItems.Events, SimulationItems.Observers
+      };
 
       /// <summary>
-      /// Save the configuration defined in all SimulationItem presenters
+      ///    Save the configuration defined in all SimulationItem presenters
       /// </summary>
       protected void SaveBuildingBlocksConfiguration()
       {
