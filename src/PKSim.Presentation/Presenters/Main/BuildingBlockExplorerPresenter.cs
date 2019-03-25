@@ -101,7 +101,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       private ITreeNode addProtocolToTree(Protocol protocol) => addBuildingBlockToTree(protocol, PKSimRootNodeTypes.ProtocolFolder, ApplicationIcons.Protocol);
 
-      private ITreeNode addObserversToTree(PKSimObserverBuildingBlock observers) => addBuildingBlockToTree(observers, PKSimRootNodeTypes.ObserversFolder, ApplicationIcons.ObserverFolder);
+      private ITreeNode addObserversToTree(PKSimObserverBuildingBlock observers) => addBuildingBlockToTree(observers, PKSimRootNodeTypes.ObserversFolder, ApplicationIcons.Observer);
 
       private ITreeNode addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType, ApplicationIcon icon) where TBuildingBlock : class, IPKSimBuildingBlock
       {

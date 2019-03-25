@@ -99,6 +99,8 @@ namespace PKSim.Core.Services
          addToCache<ParameterIdentificationTimeProfileChart>(Captions.ParameterIdentification.TimeProfileAnalysis);
          addToCache<SensitivityAnalysisPKParameterAnalysis>(Captions.SensitivityAnalysis.SensitivityAnalysisPKParameterAnalysis);
          addToCache<ParameterIdentification>(ObjectTypes.ParameterIdentification);
+         addToCache<PKSimObserverBuildingBlock>(ObjectTypes.ObserverBuildingBlock);
+         addToCache<IObserverBuilder>(ObjectTypes.ObserverBuilder);
       }
 
       private void addToCache<T>(string display)

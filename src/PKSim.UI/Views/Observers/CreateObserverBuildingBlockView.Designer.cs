@@ -1,8 +1,6 @@
-﻿using System.Windows.Forms;
-
-namespace PKSim.UI.Views.Observers
+﻿namespace PKSim.UI.Views.Observers
 {
-   partial class CreateObserverBuildingBlockView 
+   partial class CreateObserverBuildingBlockView
    {
       /// <summary>
       /// Required designer variable.

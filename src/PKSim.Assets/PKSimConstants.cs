@@ -791,6 +791,11 @@ namespace PKSim.Assets
             return $"Could not load simulation from file '{pkmlFileFullPath}'.";
          }
 
+         public static string CouldNotLoadObserverFromFile(string pkmlFileFullPath, string elementName)
+         {
+            return $"Could not load observer from file '{pkmlFileFullPath}'. This seems to be a file for '{elementName}'.";
+         }
+
          public static string CannotAddOutputFieldBecauseOfDimensionMismatch(string outputName, IEnumerable<string> allowedDimensions, string currentDimension)
          {
             return cannotAddToAnalysisBecauseOfDimensionMismatch("output", outputName, allowedDimensions, new[] {currentDimension});
@@ -1669,6 +1674,7 @@ namespace PKSim.Assets
          public static readonly string Clone = "Clone";
          public static readonly string Rename = "Rename";
          public static readonly string CreateFormulation = "Create Formulation";
+         public static readonly string CreateObserverBuildingBlock = "Create Observer Building Block";
          public static readonly string CreateEvent = "Create Event";
          public static readonly string Expression = "Expression";
          public static readonly string Demographics = "Demographics";
@@ -2009,6 +2015,7 @@ namespace PKSim.Assets
          public static readonly string SelectSimulationPKMLFile = "Select Pkml File containing the simulation to import";
          public static readonly string SelectReportFile = "Select report file...";
          public static readonly string SelectPopulationFileToImport = "Select population file to import...";
+         public static readonly string SelectObserverFileToImport = "Select observer file to import...";
          public static readonly string SelectSimulationResultsFileToImport = "Select simulation results file to import...";
          public static readonly string SelectPKAnalysesFileToImport = "Select PK-Analyses file to import...";
          public static readonly string ResetLayoutSettingsToolTip = "Reset the application layout saved in the current user settings. This is necessary if the layout becomes corrupted.";
@@ -2104,6 +2111,7 @@ namespace PKSim.Assets
          public static readonly string Reference = "Reference";
          public static readonly string ImportPopulationSettings = "Imported Population";
          public static readonly string ImportPopulationSettingsDescription = "The base individual is used as template for the population: Parameters are replaced by values imported from file, if they exist. Otherwise, parameters are taken from the base individual.";
+         public static readonly string ImportObserversDescription = "TODO: This is the description for ImportObserversDescription";
          public static readonly string SimulationsUsedInComparison= "Simulations used in comparison";
          public static readonly string UsedAsReferenceSimulation = "Used as Reference Simulation";
          public static readonly string ExportSimulationResultsToExcelDescription = ExportSimulationResultsToExcel;
@@ -2354,6 +2362,8 @@ namespace PKSim.Assets
          public static string EditSimulationSettings(string name) => $"Simulation Settings: '{name}'";
 
          public static string EditCompound(string name) => $"Compound: '{name}'";
+
+         public static string EditObserverBuildingBlock(string name) => $"Observer Building Block: '{name}'";
 
          public static string EditPopulation(string name) => $"Population: '{name}'";
 

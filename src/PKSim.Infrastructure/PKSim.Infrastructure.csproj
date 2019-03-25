@@ -585,6 +585,7 @@
     <Compile Include="Serialization\Xml\Serializers\ObjectListXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\ObservedDataCurveOptionsXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\ParameterGroupsPresenterSettingsXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializers\PKSimObserverBuildingBlockXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\SimulationAnalysisWorkflowXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\PopulationSimulationComparisonXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\ParameterDistributionSettingsXmlSerializer.cs" />

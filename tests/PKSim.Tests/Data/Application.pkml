@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationBuilder id="j928YJBbc02beShPcYzbPg" name="Application_1" icon="Oral" mode="Logical" containerType="Application" eventGroupType="Oral" moleculeName="Comp" version="12">
+  <Tags>
+    <Tag value="TabletApplicationContainer" />
+    <Tag value="Application" />
+    <Tag value="Application_1" />
+    <Tag value="ApplicationRoot" />
+  </Tags>
+</ApplicationBuilder>

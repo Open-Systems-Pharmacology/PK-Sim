@@ -99,10 +99,7 @@ namespace PKSim.UI.Views.Populations
          _presenter = presenter;
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.Population; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Population;
 
       public void BindTo(ImportPopulationSettingsDTO importPopulationSettingsDTO)
       {
@@ -119,12 +116,8 @@ namespace PKSim.UI.Views.Populations
 
       public bool CreatingPopulation
       {
-         set
-         {
-            layoutGroupImportPopulation.Enabled = !value;
-            //layoutItemStop.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
-         }
-         get { return !layoutGroupImportPopulation.Enabled; }
+         set => layoutGroupImportPopulation.Enabled = !value;
+         get => !layoutGroupImportPopulation.Enabled;
       }
 
       public void UpdateLayoutForEditing()
@@ -148,9 +141,6 @@ namespace PKSim.UI.Views.Populations
          lblDescription.Text = PKSimConstants.UI.ImportPopulationSettingsDescription;
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError || _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError || _gridViewBinder.HasError;
    }
 }

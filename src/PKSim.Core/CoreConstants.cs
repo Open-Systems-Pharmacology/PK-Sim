@@ -1330,6 +1330,8 @@ namespace PKSim.Core
          public const int EXPRESSION_QUERY_VIEW_WIDTH = 1100;
          public const int FORMULATION_VIEW_WITDH = 650;
          public const int FORMULATION_VIEW_HEIGHT = 760;
+         public const int OBSERVER_VIEW_HEIGHT = 760;
+         public const int OBSERVER_VIEW_WITDH = 650;
       }
 
       public static class Covariates

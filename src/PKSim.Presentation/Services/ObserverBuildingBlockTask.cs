@@ -1,5 +1,5 @@
 ﻿using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -8,29 +8,35 @@ using PKSim.Presentation.Presenters.Observers;
 
 namespace PKSim.Presentation.Services
 {
-   public interface IObserverBuildingBlockTask : IBuildingBlockTask<PKSimObserverBuildingBlock>
-   {
-   }
-
    public class ObserverBuildingBlockTask : BuildingBlockTask<PKSimObserverBuildingBlock>, IObserverBuildingBlockTask
-
    {
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IObjectBaseFactory _objectBaseFactory;
+      private readonly ISimulationTransferLoader _simulationTransferLoader;
 
       public ObserverBuildingBlockTask(
          IExecutionContext executionContext,
          IBuildingBlockTask buildingBlockTask,
          IApplicationController applicationController,
-         IDialogCreator dialogCreator
+         IObjectBaseFactory objectBaseFactory,
+         ISimulationTransferLoader simulationTransferLoader
       ) :
          base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Observers)
       {
-         _dialogCreator = dialogCreator;
+         _objectBaseFactory = objectBaseFactory;
+         _simulationTransferLoader = simulationTransferLoader;
       }
 
       public override PKSimObserverBuildingBlock AddToProject()
       {
-         return AddToProject<CreateObserverBuildingBlockPresenter>();
+         return AddToProject<ICreateObserverBuildingBlockPresenter>();
+      }
+
+
+      public PKSimObserverBuildingBlock Create()
+      {
+         var observerBuildingBlock = _objectBaseFactory.Create<PKSimObserverBuildingBlock>();
+         observerBuildingBlock.IsLoaded = true;
+         return observerBuildingBlock;
       }
    }
 }

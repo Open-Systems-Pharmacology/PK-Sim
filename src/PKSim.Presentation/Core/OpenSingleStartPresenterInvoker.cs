@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core.Chart;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Visitor;
+using PKSim.Core.Chart;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Core
 {
@@ -17,22 +17,23 @@ namespace PKSim.Presentation.Core
    }
 
    public class OpenSingleStartPresenterInvoker : IOpenSingleStartPresenterInvoker,
-                                                  IVisitor<Individual>,
-                                                  IVisitor<Compound>,
-                                                  IVisitor<Protocol>,
-                                                  IVisitor<IndividualSimulation>,
-                                                  IVisitor<PopulationSimulation>,
-                                                  IVisitor<RandomPopulation>,
-                                                  IVisitor<ImportPopulation>,
-                                                  IVisitor<Formulation>,
-                                                  IVisitor<PKSimEvent>,
-                                                  IVisitor<IndividualSimulationComparison>,
-                                                  IVisitor<PopulationSimulationComparison>,
-                                                  IVisitor<DataRepository>,
-                                                  IVisitor<ParameterIdentification>,
-                                                  IVisitor<SensitivityAnalysis>,
-                                                  IVisitor<IEnumerable<DataRepository>>,
-                                                  IStrictVisitor
+      IVisitor<Individual>,
+      IVisitor<Compound>,
+      IVisitor<Protocol>,
+      IVisitor<IndividualSimulation>,
+      IVisitor<PopulationSimulation>,
+      IVisitor<RandomPopulation>,
+      IVisitor<ImportPopulation>,
+      IVisitor<Formulation>,
+      IVisitor<PKSimEvent>,
+      IVisitor<IndividualSimulationComparison>,
+      IVisitor<PopulationSimulationComparison>,
+      IVisitor<DataRepository>,
+      IVisitor<ParameterIdentification>,
+      IVisitor<SensitivityAnalysis>,
+      IVisitor<PKSimObserverBuildingBlock>,
+      IVisitor<IEnumerable<DataRepository>>,
+      IStrictVisitor
    {
       private readonly IApplicationController _applicationController;
       private ISingleStartPresenter _presenter;
@@ -133,6 +134,11 @@ namespace PKSim.Presentation.Core
       }
 
       public void Visit(SensitivityAnalysis objToVisit)
+      {
+         openPresenter(objToVisit);
+      }
+
+      public void Visit(PKSimObserverBuildingBlock objToVisit)
       {
          openPresenter(objToVisit);
       }

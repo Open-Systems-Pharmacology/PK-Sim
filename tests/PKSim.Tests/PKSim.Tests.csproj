@@ -304,6 +304,7 @@
     <Compile Include="Core\ClassificationMapperSpecs.cs" />
     <Compile Include="Core\ObservedDataCollectionMappperSpecs.cs" />
     <Compile Include="Core\ObservedDataMapperSpecs.cs" />
+    <Compile Include="Core\ObserverTaskSpecs.cs" />
     <Compile Include="Core\OntogenyMapperSpecs.cs" />
     <Compile Include="Core\OriginDataMapperSpecs.cs" />
     <Compile Include="Core\OutputIntervalMapperSpecs.cs" />
@@ -366,6 +367,7 @@
     <Compile Include="ContextSpecification.cs" />
     <Compile Include="IntegrationTests\FlatOrganTypeRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\JacobianMatrixXmlSerializerSpecs.cs" />
+    <Compile Include="IntegrationTests\ObserverLoaderSpecs.cs" />
     <Compile Include="IntegrationTests\OrganTypeRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationConfigurationClonerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationResidualVsTimeChartXmlSerializerSpecs.cs" />
@@ -621,8 +623,10 @@
     <Compile Include="IntegrationTests\PopulationSimulationSerializationSpecs.cs" />
     <Compile Include="IntegrationTests\ProjectXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\RenameBuildingBlockTaskSpecs.cs" />
+    <Compile Include="Presentation\EditObserverBuildingBlockPresenterSpecs.cs" />
     <Compile Include="Presentation\EditTableSolubilityParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\EditValueOriginPresenterSpecs.cs" />
+    <Compile Include="Presentation\ImportObserversPresenterSpecs.cs" />
     <Compile Include="Presentation\MoleculeParameterTaskSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeDTOSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeNamePresenterSpecs.cs" />
@@ -1167,11 +1171,14 @@
     <None Include="app.config" />
     <None Include="Data\2Pore_515.pksim5" />
     <None Include="Data\515_UnitTest.pksim5" />
+    <None Include="Data\6.0.3_ParticlesFormulation.pksim5" />
     <None Include="Data\6.3.2_GFR_TS.pksim5" />
     <None Include="Data\631_EnzymesOntogeny.pksim5" />
+    <None Include="Data\Application.pkml" />
     <None Include="Data\BuildingBlockRename_611.pksim5" />
     <None Include="Data\ChartTemplate_531.pksim5" />
     <None Include="Data\HumanAndRat_7.1.0.pksim5" />
+    <None Include="Data\HumanAndRat_7.1.0_from_7.1.0.pksim5" />
     <None Include="Data\HumanAndRat_7.2.0_from_7.1.0.pksim5" />
     <None Include="Data\Individual_553.pksim5" />
     <None Include="Data\Individual_55_Not_Default.pksim5" />
@@ -1179,6 +1186,7 @@
     <None Include="Data\Individual_CYP3A4_Query_553.pksim5" />
     <None Include="Data\IsDefaultConversion_722.pksim5" />
     <None Include="Data\Layout_631.pksim5" />
+    <None Include="Data\Observer.pkml" />
     <None Include="Data\oldProject.pkprj" />
     <None Include="Data\PartialProcess_554.pksim5" />
     <None Include="Data\PopSimTest.pksim5" />

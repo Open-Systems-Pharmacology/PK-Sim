@@ -43,7 +43,7 @@ namespace PKSim.Core.Commands
 
       protected override void PerformExecuteWith(IExecutionContext context)
       {
-         //current SBSuite.Core implemetation removes all entity children
+         //current OSPSuite.Core implemetation removes all entity children
          //in Container.RemoveChild(entity)
          //So deserialization must be done BEFORE RemoveChild
          _serializationByte = context.Serialize(_entityToRemove);

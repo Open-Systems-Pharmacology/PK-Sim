@@ -150,12 +150,15 @@
     <Compile Include="DTO\Mappers\IndividualPKAnalysisToPKAnalysisDTOMapper.cs" />
     <Compile Include="DTO\Mappers\ObservedDataCurveOptionsToObservedDataCurveOptionsDTOMapper.cs" />
     <Compile Include="DTO\Mappers\GlobalPKAnalysisToGlobalPKAnalysisDTOMapper.cs" />
+    <Compile Include="DTO\Mappers\ObservedToObserverDTOMapper.cs" />
     <Compile Include="DTO\Mappers\PartialProcessToRootNodeTypeMapper.cs" />
     <Compile Include="DTO\Mappers\PKSimDataColumnToPathElementsMapper.cs" />
     <Compile Include="DTO\Mappers\PKSimPathToPathElementsMapper.cs" />
     <Compile Include="DTO\Mappers\PopulationAnalysisFieldToPopulationAnalysisFieldDTOMapper.cs" />
     <Compile Include="DTO\Mappers\PopulationPKAnalysisToPKAnalysisDTOMapper.cs" />
     <Compile Include="DTO\Mappers\SystemicProcessToRootNodeTypeMapper.cs" />
+    <Compile Include="DTO\Observers\ImportObserverDTO.cs" />
+    <Compile Include="DTO\Observers\ObserverDTO.cs" />
     <Compile Include="DTO\Parameters\ParameterDTO.cs" />
     <Compile Include="DTO\PopulationAnalyses\BinSizeGroupingDTO.cs" />
     <Compile Include="DTO\PopulationAnalyses\BoxWhiskerNumericFieldDTO.cs" />
@@ -252,6 +255,11 @@
     <Compile Include="Presenters\ConfigurableLayoutPresenter.cs" />
     <Compile Include="Presenters\CalculationMethodsSelectionPresenter.cs" />
     <Compile Include="Presenters\Observers\CreateObserverBuildingBlockPresenter.cs" />
+    <Compile Include="Presenters\Observers\EditObserverBuildingBlockPresenter.cs" />
+    <Compile Include="Presenters\Observers\ImportObserversPresenter.cs" />
+    <Compile Include="Presenters\Observers\IObserverItemPresenter.cs" />
+    <Compile Include="Presenters\Observers\ObserverInfoPresenter.cs" />
+    <Compile Include="Presenters\Observers\ObserverItems.cs" />
     <Compile Include="Presenters\Parameters\UserDefinedParametersPresenter.cs" />
     <Compile Include="Presenters\Parameters\EditParameterPresenter.cs" />
     <Compile Include="Presenters\Parameters\ParameterGroupsPresenterSettings.cs" />
@@ -566,6 +574,9 @@
     <Compile Include="Views\Main\IPKSimMainView.cs" />
     <Compile Include="Views\ISelectFileView.cs" />
     <Compile Include="Views\Observers\ICreateObserverBuildingBlockView.cs" />
+    <Compile Include="Views\Observers\IEditObserverBuildingBlockView.cs" />
+    <Compile Include="Views\Observers\IImportObserversView.cs" />
+    <Compile Include="Views\Observers\IObserverInfoView.cs" />
     <Compile Include="Views\Parameters\IFavoriteParametersView.cs" />
     <Compile Include="Views\PopulationAnalyses\IBoxWhiskerNumericFieldsView.cs" />
     <Compile Include="Views\PopulationAnalyses\IMultipleNumericFieldsView.cs" />
