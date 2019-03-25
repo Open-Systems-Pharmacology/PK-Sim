@@ -1,20 +1,19 @@
 using System;
-using OSPSuite.Core;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core.Chart;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.Serialization.ORM.MetaData;
-using PKSim.Infrastructure.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 using PKSim.Core;
+using PKSim.Core.Chart;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Infrastructure.Serialization.ORM.MetaData;
+using PKSim.Infrastructure.Services;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 {
@@ -31,8 +30,8 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       IVisitor<FormulationMetaData>,
       IVisitor<EventMetaData>,
       IVisitor<RandomPopulationMetaData>,
-      IVisitor<ImportPopulationMetaData>
-
+      IVisitor<ImportPopulationMetaData>,
+      IVisitor<ObserverSetMetaData>
    {
       private readonly ISimulationMetaDataToSimulationMapper _simulationMapper;
       private readonly ICompressedSerializationManager _serializationManager;
@@ -227,6 +226,11 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          var population = new ImportPopulation();
          _serializationManager.Deserialize(population.Settings, importPopulation.Properties.Data);
          _buildingBlock = population;
+      }
+
+      public void Visit(ObserverSetMetaData observerSetMetaData)
+      {
+         _buildingBlock = new PKSimObserverBuildingBlock();
       }
    }
 }
