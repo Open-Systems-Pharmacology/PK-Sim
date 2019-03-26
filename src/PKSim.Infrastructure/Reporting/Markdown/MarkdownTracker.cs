@@ -21,9 +21,11 @@ namespace PKSim.Infrastructure.Reporting.Markdown
          return Markdown.ToString();
       }
 
-      public MarkdownTracker Add(IMarkdownElement markdown)
+      public MarkdownTracker Add(IMarkdownElement markdownElement) => Add(markdownElement.ToString());
+
+      public MarkdownTracker Add(string rawMarkdown)
       {
-         Markdown.Append(markdown.ToMarkdown());
+         Markdown.Append(rawMarkdown);
          return this;
       }
    }
