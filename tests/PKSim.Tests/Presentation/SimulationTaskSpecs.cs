@@ -260,7 +260,7 @@ namespace PKSim.Presentation
          _templateBuildingBlock = A.Fake<IPKSimBuildingBlock>();
          _usedBuildingBlock = new UsedBuildingBlock("X", PKSimBuildingBlockType.Protocol);
          _simulation = A.Fake<Simulation>();
-         A.CallTo(() => _simulationBuildingBlockUpdater.BuildingBlockSupportsQuickUpdate(_templateBuildingBlock)).Returns(true);
+         A.CallTo(() => _simulationBuildingBlockUpdater.BuildingBlockSupportComparison(_templateBuildingBlock)).Returns(true);
       }
 
       protected override void Because()
@@ -287,7 +287,7 @@ namespace PKSim.Presentation
          _templateBuildingBlock = A.Fake<IPKSimBuildingBlock>();
          _usedBuildingBlock = new UsedBuildingBlock("X", PKSimBuildingBlockType.Protocol);
          _simulation = A.Fake<Simulation>();
-         A.CallTo(() => _simulationBuildingBlockUpdater.BuildingBlockSupportsQuickUpdate(_templateBuildingBlock)).Returns(false);
+         A.CallTo(() => _simulationBuildingBlockUpdater.BuildingBlockSupportComparison(_templateBuildingBlock)).Returns(false);
       }
 
       [Observation]
