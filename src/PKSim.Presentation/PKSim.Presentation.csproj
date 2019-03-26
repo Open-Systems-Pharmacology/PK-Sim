@@ -84,14 +84,14 @@
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.22\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.23\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.22\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.23\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.22\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.23\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -151,6 +151,7 @@
     <Compile Include="DTO\Mappers\ObservedDataCurveOptionsToObservedDataCurveOptionsDTOMapper.cs" />
     <Compile Include="DTO\Mappers\GlobalPKAnalysisToGlobalPKAnalysisDTOMapper.cs" />
     <Compile Include="DTO\Mappers\ObservedToObserverDTOMapper.cs" />
+    <Compile Include="DTO\Mappers\ObserverSetMappingToObserverSetMappingDTOMapper.cs" />
     <Compile Include="DTO\Mappers\PartialProcessToRootNodeTypeMapper.cs" />
     <Compile Include="DTO\Mappers\PKSimDataColumnToPathElementsMapper.cs" />
     <Compile Include="DTO\Mappers\PKSimPathToPathElementsMapper.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="DTO\Simulations\ImportPKAnalysesDTO.cs" />
     <Compile Include="DTO\Simulations\ImportPopulationSimulationDTO.cs" />
     <Compile Include="DTO\Simulations\ImportSimulationResultsDTO.cs" />
+    <Compile Include="DTO\Simulations\ObserverSetMappingDTO.cs" />
     <Compile Include="DTO\Simulations\PKAnalysisDTO.cs" />
     <Compile Include="DTO\Simulations\SimulationEnzymaticProcessSelectionDTO.cs" />
     <Compile Include="DTO\Simulations\SimulationInteractionProcessSelectionDTO.cs" />
@@ -229,8 +231,8 @@
     <Compile Include="Presenters\ContextMenus\MultipleProtocolNodeContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\MultipleUsedObservedDataContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\NamedBuildingBlock.cs" />
-    <Compile Include="Presenters\ContextMenus\ObserverBuildingBlockContextMenu.cs" />
-    <Compile Include="Presenters\ContextMenus\ObserverBuildingBlockFolderContextMenu.cs" />
+    <Compile Include="Presenters\ContextMenus\ObserverSetContextMenu.cs" />
+    <Compile Include="Presenters\ContextMenus\ObserverSetFolderContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\ParameterIdentificationContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\PopulationSimulationContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\SensitivityAnalysisContextMenu.cs" />
@@ -255,12 +257,12 @@
     <Compile Include="Presenters\Diagrams\ReactionDiagramModalPresenter.cs" />
     <Compile Include="Presenters\ConfigurableLayoutPresenter.cs" />
     <Compile Include="Presenters\CalculationMethodsSelectionPresenter.cs" />
-    <Compile Include="Presenters\Observers\CreateObserverBuildingBlockPresenter.cs" />
-    <Compile Include="Presenters\Observers\EditObserverBuildingBlockPresenter.cs" />
-    <Compile Include="Presenters\Observers\ImportObserversPresenter.cs" />
-    <Compile Include="Presenters\Observers\IObserverItemPresenter.cs" />
+    <Compile Include="Presenters\Observers\CreateObserverSetPresenter.cs" />
+    <Compile Include="Presenters\Observers\EditObserverSetPresenter.cs" />
+    <Compile Include="Presenters\Observers\ImportObserverSetPresenter.cs" />
+    <Compile Include="Presenters\Observers\IObserverSetItemPresenter.cs" />
     <Compile Include="Presenters\Observers\ObserverInfoPresenter.cs" />
-    <Compile Include="Presenters\Observers\ObserverItems.cs" />
+    <Compile Include="Presenters\Observers\ObserverSetItems.cs" />
     <Compile Include="Presenters\Parameters\UserDefinedParametersPresenter.cs" />
     <Compile Include="Presenters\Parameters\EditParameterPresenter.cs" />
     <Compile Include="Presenters\Parameters\ParameterGroupsPresenterSettings.cs" />
@@ -283,6 +285,7 @@
     <Compile Include="Presenters\Simulations\SimulationModelConfigurationItems.cs" />
     <Compile Include="Presenters\Simulations\SimulationModelConfigurationPresenter.cs" />
     <Compile Include="Presenters\Simulations\SimulationCompoundProcessSummaryCollectorPresenter.cs" />
+    <Compile Include="Presenters\Simulations\SimulationObserversConfigurationPresenter.cs" />
     <Compile Include="Presenters\Snapshots\LoadFromSnapshotPresenter.cs" />
     <Compile Include="Presenters\Snapshots\LoadProjectFromSnapshotPresenter.cs" />
     <Compile Include="Presenters\Snapshots\LoadSimulationFromSnapshotPresenter.cs" />
@@ -474,7 +477,7 @@
     <Compile Include="Mappers\ParameterContainerToTreeNodeMapper.cs" />
     <Compile Include="Services\ParameterGroupNodeCreator.cs" />
     <Compile Include="Services\PKAnalysisExportTask.cs" />
-    <Compile Include="Services\ObserverBuildingBlockTask.cs" />
+    <Compile Include="Services\ObserverSetTask.cs" />
     <Compile Include="Services\PopulationAnalysisGroupingFieldCreator.cs" />
     <Compile Include="Services\PopulationAnalysisTemplateTask.cs" />
     <Compile Include="Services\PopulationGroupNodeCreator.cs" />
@@ -548,7 +551,7 @@
     <Compile Include="UICommands\LoadSimulationFromSnapshotUICommand.cs" />
     <Compile Include="UICommands\NewImportIndividualSimulationCommand.cs" />
     <Compile Include="UICommands\NewImportPopulationSimulationCommand.cs" />
-    <Compile Include="UICommands\NewObserverBuildingBlockCommand.cs" />
+    <Compile Include="UICommands\NewObserverSetCommand.cs" />
     <Compile Include="UICommands\RemoveUnusedContentUICommand.cs" />
     <Compile Include="UICommands\RenameObjectUICommand.cs" />
     <Compile Include="UICommands\RenameSubjectUICommand.cs" />
@@ -574,9 +577,9 @@
     <Compile Include="Views\IUserDisplayUnitsView.cs" />
     <Compile Include="Views\Main\IPKSimMainView.cs" />
     <Compile Include="Views\ISelectFileView.cs" />
-    <Compile Include="Views\Observers\ICreateObserverBuildingBlockView.cs" />
-    <Compile Include="Views\Observers\IEditObserverBuildingBlockView.cs" />
-    <Compile Include="Views\Observers\IImportObserversView.cs" />
+    <Compile Include="Views\Observers\ICreateObserverSetView.cs" />
+    <Compile Include="Views\Observers\IEditObserverSetView.cs" />
+    <Compile Include="Views\Observers\IImportObserverSetView.cs" />
     <Compile Include="Views\Observers\IObserverInfoView.cs" />
     <Compile Include="Views\Parameters\IFavoriteParametersView.cs" />
     <Compile Include="Views\PopulationAnalyses\IBoxWhiskerNumericFieldsView.cs" />
@@ -995,6 +998,7 @@
     <Compile Include="Views\Simulations\IPopulationPKAnalysisView.cs" />
     <Compile Include="Views\Simulations\ISimulationModelConfigurationView.cs" />
     <Compile Include="Views\Simulations\ISimulationCompoundProcessSummaryCollectorView.cs" />
+    <Compile Include="Views\Simulations\ISimulationObserversConfigurationView.cs" />
     <Compile Include="Views\Simulations\ISimulationQuantitySelectionView.cs" />
     <Compile Include="Views\Simulations\ISimulationCompoundProtocolFormulationView.cs" />
     <Compile Include="Views\Simulations\ICreateSimulationView.cs" />

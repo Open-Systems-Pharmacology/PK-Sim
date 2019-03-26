@@ -19,14 +19,14 @@ namespace PKSim.Core.Services
          _objectIdResetter = objectIdResetter;
       }
 
-      public IPKSimCommand AddObserver(IObserverBuilder observer, PKSimObserverBuildingBlock observerBuildingBlock)
+      public IPKSimCommand AddObserver(IObserverBuilder observer, ObserverSet observerSet)
       {
-         return new AddObserverToObserverBuildingBlockCommand(observer, observerBuildingBlock, _executionContext).Run(_executionContext);
+         return new AddObserverToObserverSetCommand(observer, observerSet, _executionContext).Run(_executionContext);
       }
 
-      public IPKSimCommand RemoveObserver(IObserverBuilder observer, PKSimObserverBuildingBlock observerBuildingBlock)
+      public IPKSimCommand RemoveObserver(IObserverBuilder observer, ObserverSet observerSet)
       {
-         return new RemoveObserverFromObserverBuildingBlockCommand(observer, observerBuildingBlock, _executionContext).Run(_executionContext);
+         return new RemoveObserverFromObserverSetCommand(observer, observerSet, _executionContext).Run(_executionContext);
       }
 
       public IObserverBuilder LoadObserverFrom(string pkmlFileFullPath)

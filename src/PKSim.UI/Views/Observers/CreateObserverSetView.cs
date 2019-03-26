@@ -8,15 +8,15 @@ using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.Observers
 {
-   public partial class CreateObserverBuildingBlockView : BuildingBlockContainerView, ICreateObserverBuildingBlockView
+   public partial class CreateObserverSetView : BuildingBlockContainerView, ICreateObserverSetView
    {
-      public CreateObserverBuildingBlockView(Shell shell) : base(shell)
+      public CreateObserverSetView(Shell shell) : base(shell)
       {
          InitializeComponent();
          ClientSize = new Size(CoreConstants.UI.OBSERVER_VIEW_WITDH, CoreConstants.UI.OBSERVER_VIEW_HEIGHT);
       }
 
-      public void AttachPresenter(ICreateObserverBuildingBlockPresenter presenter)
+      public void AttachPresenter(ICreateObserverSetPresenter presenter)
       {
          _presenter = presenter;
       }
@@ -25,7 +25,7 @@ namespace PKSim.UI.Views.Observers
       {
          base.InitializeResources();
          Icon = ApplicationIcons.Observer.WithSize(IconSizes.Size16x16);
-         Caption = PKSimConstants.UI.CreateObserverBuildingBlock;
+         Caption = PKSimConstants.UI.CreateObserverSet;
       }
    }
 }

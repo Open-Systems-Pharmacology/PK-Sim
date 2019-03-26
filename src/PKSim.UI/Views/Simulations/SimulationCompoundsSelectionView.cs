@@ -36,7 +36,7 @@ namespace PKSim.UI.Views.Simulations
          _gridViewBinder = new GridViewBinder<CompoundSelectionDTO>(gridView);
          var toolTipController = new ToolTipController();
          toolTipController.Initialize(imageListRetriever);
-         toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
+         toolTipController.GetActiveObjectInfo += (o, e) => OnEvent(onToolTipControllerGetActiveObjectInfo, o, e);
          gridControl.ToolTipController = toolTipController;
 
       }

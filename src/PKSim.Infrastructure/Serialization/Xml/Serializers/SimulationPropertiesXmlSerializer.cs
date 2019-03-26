@@ -11,6 +11,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.ModelProperties);
          MapEnumerable(x => x.CompoundPropertiesList,x=>x.AddCompoundProperties);
          Map(x => x.EventProperties);
+         Map(x => x.ObserverSetProperties);
          Map(x => x.InteractionProperties);
       }
    }

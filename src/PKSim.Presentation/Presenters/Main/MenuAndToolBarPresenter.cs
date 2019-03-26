@@ -353,8 +353,8 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.LoadEvent].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewProtocol].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadProtocol].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.NewObservers].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.LoadObservers].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.NewObserverSet].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.LoadObserverSet].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled && observedDataEnabled;
          _menuBarItemRepository[MenuBarItemIds.ProjectReport].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparison].Enabled = enabled;

@@ -1,6 +1,6 @@
 ﻿namespace PKSim.UI.Views.Observers
 {
-   partial class ImportObserversView
+   partial class ImportObserverSetView
    {
       /// <summary> 
       /// Required designer variable.
@@ -180,13 +180,13 @@
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
          // 
-         // ImportObserversView
+         // ImportObserverSetView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
          this.Margin = new System.Windows.Forms.Padding(12, 12, 12, 12);
-         this.Name = "ImportObserversView";
+         this.Name = "ImportObserverSetView";
          this.Size = new System.Drawing.Size(1136, 1300);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();

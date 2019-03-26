@@ -135,17 +135,17 @@
       <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.22\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.23\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.22\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.23\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.5.0.22\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.5.0.23\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.22\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.23\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -302,6 +302,7 @@
     <Compile Include="Reporting\Summary\IReportBuilderRepository.cs" />
     <Compile Include="Reporting\Summary\ModelPropertiesReportBuilder.cs" />
     <Compile Include="Reporting\Summary\ObservedDataReportBuilder.cs" />
+    <Compile Include="Reporting\Summary\ObserverSetReportBuilder.cs" />
     <Compile Include="Reporting\Summary\OriginDataReportBuilder.cs" />
     <Compile Include="Reporting\Summary\ParameterAlternativeGroupReportBuilder.cs" />
     <Compile Include="Reporting\Summary\ParameterRangeReportBuilder.cs" />
@@ -331,7 +332,7 @@
     <Compile Include="Reporting\TeX\Builders\ImportPopulationSettingsTeXBuilder.cs" />
     <Compile Include="Reporting\TeX\Builders\ImportPopulationTeXBuilder.cs" />
     <Compile Include="Reporting\TeX\Builders\IndividualPKAnalysesTeXBuilder.cs" />
-    <Compile Include="Reporting\TeX\Builders\PKSimObserverBuildingBlockTexBuilder.cs" />
+    <Compile Include="Reporting\TeX\Builders\ObserverSetTexBuilder.cs" />
     <Compile Include="Reporting\TeX\Builders\PresentableTeXBuilder.cs" />
     <Compile Include="Reporting\TeX\Builders\PopulationPKAnalysesTeXBuilder.cs" />
     <Compile Include="Reporting\TeX\Builders\ProtocolPropertiesTeXBuilder.cs" />
@@ -587,8 +588,10 @@
     <Compile Include="Serialization\Xml\Serializers\LabelGenerationStrategyXmlAttributeMapper.cs" />
     <Compile Include="Serialization\Xml\Serializers\ObjectListXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\ObservedDataCurveOptionsXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializers\ObserverSetMappingXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializers\ObserverSetPropertiesXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\ParameterGroupsPresenterSettingsXmlSerializer.cs" />
-    <Compile Include="Serialization\Xml\Serializers\PKSimObserverBuildingBlockXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializers\ObserverSetXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\SimulationAnalysisWorkflowXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\PopulationSimulationComparisonXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\Serializers\ParameterDistributionSettingsXmlSerializer.cs" />

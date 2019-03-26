@@ -1,13 +1,13 @@
+using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {
-   public class FormulationReportBuilder : ReportBuilder< PKSim.Core.Model.Formulation>
+   public class FormulationReportBuilder : ReportBuilder<Formulation>
    {
       private readonly IRepresentationInfoRepository _infoRepository;
 
@@ -16,7 +16,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
          _infoRepository = infoRepository;
       }
 
-      protected override void FillUpReport( PKSim.Core.Model.Formulation formulation, ReportPart reportPart)
+      protected override void FillUpReport(Formulation formulation, ReportPart reportPart)
       {
          reportPart.Title = _infoRepository.DisplayNameFor(RepresentationObjectType.CONTAINER, formulation.FormulationType);
          string parameterTableCaption = PKSimConstants.UI.ParametersDefinedIn(formulation.Name);
@@ -37,7 +37,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
             var particleDisperseSystem = formulation.Parameter(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM);
             var particleDistribution = formulation.Parameter(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
             var displayParticleDistribution = _infoRepository.DisplayNameFor(particleDistribution);
-            tablePart = new TablePart(PKSimConstants.UI.Parameter) { Caption = parameterTableCaption };
+            tablePart = new TablePart(PKSimConstants.UI.Parameter) {Caption = parameterTableCaption};
 
             if (particleDisperseSystem.Value == CoreConstants.Parameters.MONODISPERSE)
             {
@@ -61,6 +61,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
                }
             }
          }
+
          tablePart.Title = reportPart.Title;
          reportPart.AddPart(tablePart);
       }

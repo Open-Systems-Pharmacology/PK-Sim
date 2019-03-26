@@ -1251,6 +1251,7 @@ namespace PKSim.Assets
          public static readonly string QualificationStep = "Qualification Step";
          public static readonly string QualificationPlan = "Qualification Plan";
          public static readonly string Snapshot = "Snapshot";
+         public static readonly string ObserverSet = "Observers";
       }
 
       public static class ProteinExpressions
@@ -1568,6 +1569,7 @@ namespace PKSim.Assets
          public static readonly string SimulationModelConfiguration = "Model";
          public static readonly string SimulationCompoundsConfiguration = "Compounds";
          public static readonly string SimulationEventsConfiguration = "Events";
+         public static readonly string SimulationObserversConfiguration = "Observers";
          public static readonly string SimulationApplicationConfiguration = "Administration";
          public static readonly string SimulationProcessDefinition = "Processes";
          public static readonly string NextButton = "&Next";
@@ -1674,7 +1676,7 @@ namespace PKSim.Assets
          public static readonly string Clone = "Clone";
          public static readonly string Rename = "Rename";
          public static readonly string CreateFormulation = "Create Formulation";
-         public static readonly string CreateObserverBuildingBlock = "Create Observer Building Block";
+         public static readonly string CreateObserverSet = "Create Observer Set";
          public static readonly string CreateEvent = "Create Event";
          public static readonly string Expression = "Expression";
          public static readonly string Demographics = "Demographics";
@@ -1905,7 +1907,8 @@ namespace PKSim.Assets
          public static readonly string NoSinkCondition = "No Sink Condition";
          public static readonly string Soluble = "Soluble";
          public static readonly string Insoluble = "Insoluble";
-         public static readonly string AddEvent = "Add Event...";
+         public static readonly string AddEvent = "Add Event";
+         public static readonly string AddObserverSet = "Add Observers";
          public static readonly string ExportLogToFile = "Export project conversion log to file...";
          public static readonly string SaveLog = "Save Log...";
          public static readonly string RelTol = "Relative tolerance";
@@ -2363,7 +2366,7 @@ namespace PKSim.Assets
 
          public static string EditCompound(string name) => $"Compound: '{name}'";
 
-         public static string EditObserverBuildingBlock(string name) => $"Observer Building Block: '{name}'";
+         public static string EditObserverSet(string name) => $"Observer Set: '{name}'";
 
          public static string EditPopulation(string name) => $"Population: '{name}'";
 

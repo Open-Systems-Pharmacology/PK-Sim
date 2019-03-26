@@ -83,11 +83,11 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.22\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.23\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.22\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.23\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -134,14 +134,14 @@
     <Compile Include="Commands\AddMoleculeExpressionsFromQueryToPopulationCommand.cs" />
     <Compile Include="Commands\AddMoleculeExpressionsFromQueryToSimulationSubjectCommand.cs" />
     <Compile Include="Commands\AddMoleculeToPopulationCommand.cs" />
-    <Compile Include="Commands\AddObserverToObserverBuildingBlockCommand.cs" />
+    <Compile Include="Commands\AddObserverToObserverSetCommand.cs" />
     <Compile Include="Commands\ChangeEnzymaticProcessMetaboliteNameCommand.cs" />
     <Compile Include="Commands\EditIndividualMoleculeExpressionInPopulationFromQueryCommand.cs" />
     <Compile Include="Commands\EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand.cs" />
     <Compile Include="Commands\ObservedDataCommandBase.cs" />
     <Compile Include="Commands\RemoveBuildingBlockFromProjectIrreversibleCommand.cs" />
     <Compile Include="Commands\RemoveMoleculeFromPopulationCommand.cs" />
-    <Compile Include="Commands\RemoveObserverFromObserverBuildingBlockCommand.cs" />
+    <Compile Include="Commands\RemoveObserverFromObserverSetCommand.cs" />
     <Compile Include="Commands\SetCalculationMethodCommand.cs" />
     <Compile Include="Commands\SetOntogenyInMoleculeCommand.cs" />
     <Compile Include="Commands\SetOntogenyInMoleculeForPopulationCommand.cs" />
@@ -197,12 +197,15 @@
     <Compile Include="Model\CompoundPK.cs" />
     <Compile Include="Model\GlobalPKAnalysis.cs" />
     <Compile Include="Model\IQualificationStep.cs" />
-    <Compile Include="Model\PKSimObserverBuildingBlock.cs" />
+    <Compile Include="Model\ObserverSet.cs" />
+    <Compile Include="Model\ObserverSetFactory.cs" />
+    <Compile Include="Model\ObserverSetMapping.cs" />
+    <Compile Include="Model\ObserverSetProperties.cs" />
     <Compile Include="Model\QualificationPlan.cs" />
     <Compile Include="Model\RunParameterIdentificationQualificationStep.cs" />
     <Compile Include="Model\RunSimulationQualificationStep.cs" />
     <Compile Include="Services\IMarkdownReporterTask.cs" />
-    <Compile Include="Services\IObserverBuildingBlockTask.cs" />
+    <Compile Include="Services\IObserverSetTask.cs" />
     <Compile Include="Services\IObserverLoader.cs" />
     <Compile Include="Services\IObserverTask.cs" />
     <Compile Include="Services\IPostLaunchChecker.cs" />

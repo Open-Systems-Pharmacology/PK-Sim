@@ -6,8 +6,8 @@ namespace PKSim.Core.Services
 {
    public interface IObserverTask
    {
-      IPKSimCommand AddObserver(IObserverBuilder observer, PKSimObserverBuildingBlock observerBuildingBlock);
-      IPKSimCommand RemoveObserver(IObserverBuilder observer, PKSimObserverBuildingBlock observerBuildingBlock);
+      IPKSimCommand AddObserver(IObserverBuilder observer, ObserverSet observerSet);
+      IPKSimCommand RemoveObserver(IObserverBuilder observer, ObserverSet observerSet);
 
 
       /// <summary>

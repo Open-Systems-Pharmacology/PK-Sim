@@ -3,8 +3,8 @@ using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Presenters.Observers
 {
-   public interface IObserverItemPresenter : ISubPresenter
+   public interface IObserverSetItemPresenter : ISubPresenter
    {
-      void Edit(PKSimObserverBuildingBlock observerBuildingBlock);
+      void Edit(ObserverSet observerSet);
    }
 }

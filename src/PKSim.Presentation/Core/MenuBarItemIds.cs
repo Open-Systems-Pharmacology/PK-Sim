@@ -44,8 +44,8 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId TimeProfileAnalysis = createMenuBarItemId("TimeProfileAnalysis");
       public static MenuBarItemId NewProtocol = createMenuBarItemId("NewProtocol");
       public static MenuBarItemId LoadProtocol = createMenuBarItemId("LoadProtocol");
-      public static MenuBarItemId NewObservers = createMenuBarItemId("NewObservers");
-      public static MenuBarItemId LoadObservers = createMenuBarItemId("LoadObservers");
+      public static MenuBarItemId NewObserverSet = createMenuBarItemId("NewObserverSet");
+      public static MenuBarItemId LoadObserverSet = createMenuBarItemId("LoadObserverSet");
       public static MenuBarItemId NewFormulation = createMenuBarItemId("NewFormulation");
       public static MenuBarItemId LoadFormulationFromTemplate = createMenuBarItemId("LoadFormulationFromTemplate");
       public static MenuBarItemId AddObservedData = createMenuBarItemId("AddObservedData");

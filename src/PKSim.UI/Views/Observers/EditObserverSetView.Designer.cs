@@ -1,6 +1,6 @@
 ﻿namespace PKSim.UI.Views.Observers
 {
-   partial class EditObserverBuildingBlockView
+   partial class EditObserverSetView
    {
       /// <summary>
       /// Required designer variable.
@@ -77,15 +77,15 @@
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
          // 
-         // EditObserverBuildingBlockView
+         // EditObserverSetView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Caption = "EditObserverBuildingBlockView";
+         this.Caption = "EditObserverSetView";
          this.ClientSize = new System.Drawing.Size(800, 450);
          this.Controls.Add(this.layoutControl);
-         this.Name = "EditObserverBuildingBlockView";
-         this.Text = "EditObserverBuildingBlockView";
+         this.Name = "EditObserverSetView";
+         this.Text = "EditObserverSetView";
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);

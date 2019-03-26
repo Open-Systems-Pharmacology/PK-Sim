@@ -16,7 +16,7 @@ namespace PKSim.Core
       protected IObserverLoader _observerLoader;
       protected IObserverBuilder _observer1;
       protected IObserverBuilder _observer2;
-      protected PKSimObserverBuildingBlock _observerBuildingBlock;
+      protected ObserverSet _observerSet;
       protected IObjectIdResetter _objectIdResetter;
 
       protected override void Context()
@@ -28,7 +28,7 @@ namespace PKSim.Core
 
          _observer1 = new AmountObserverBuilder().WithName("OBS1");
          _observer2 = new AmountObserverBuilder().WithName("OBS2");
-         _observerBuildingBlock = new PKSimObserverBuildingBlock();
+         _observerSet = new ObserverSet();
       }
    }
 
@@ -38,19 +38,19 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _command = sut.AddObserver(_observer1, _observerBuildingBlock);
+         _command = sut.AddObserver(_observer1, _observerSet);
       }
 
       [Observation]
       public void should_have_added_the_observer_to_the_building_block()
       {
-         _observerBuildingBlock.Observers.ShouldOnlyContain(_observer1);
+         _observerSet.Observers.ShouldOnlyContain(_observer1);
       }
 
       [Observation]
       public void should_return_the_expected_commnad()
       {
-         _command.ShouldBeAnInstanceOf<AddObserverToObserverBuildingBlockCommand>();
+         _command.ShouldBeAnInstanceOf<AddObserverToObserverSetCommand>();
       }
    }
 
@@ -61,25 +61,25 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.AddObserver(_observer1, _observerBuildingBlock);
-         sut.AddObserver(_observer2, _observerBuildingBlock);
+         sut.AddObserver(_observer1, _observerSet);
+         sut.AddObserver(_observer2, _observerSet);
       }
 
       protected override void Because()
       {
-         _command = sut.RemoveObserver(_observer1, _observerBuildingBlock);
+         _command = sut.RemoveObserver(_observer1, _observerSet);
       }
 
       [Observation]
       public void should_have_removed_the_observer_to_the_building_block()
       {
-         _observerBuildingBlock.Observers.ShouldOnlyContain(_observer2);
+         _observerSet.Observers.ShouldOnlyContain(_observer2);
       }
 
       [Observation]
       public void should_return_the_expected_commnad()
       {
-         _command.ShouldBeAnInstanceOf<RemoveObserverFromObserverBuildingBlockCommand>();
+         _command.ShouldBeAnInstanceOf<RemoveObserverFromObserverSetCommand>();
       }
    }
 

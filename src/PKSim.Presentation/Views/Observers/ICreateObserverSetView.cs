@@ -4,7 +4,7 @@ using PKSim.Presentation.Presenters.Observers;
 
 namespace PKSim.Presentation.Views.Observers
 {
-   public interface ICreateObserverBuildingBlockView : IModalView<ICreateObserverBuildingBlockPresenter>, IContainerView
+   public interface ICreateObserverSetView : IModalView<ICreateObserverSetPresenter>, IContainerView
    {
       void BindToProperties(ObjectBaseDTO observerBuildingBlockDTO);
    }

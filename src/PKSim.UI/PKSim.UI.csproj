@@ -215,11 +215,11 @@
       <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.22\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.23\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.22\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.23\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.DataBinding, Version=2.3.0.3, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.DataBinding.2.3.0.3\lib\net462\OSPSuite.DataBinding.dll</HintPath>
@@ -227,8 +227,8 @@
     <Reference Include="OSPSuite.DataBinding.DevExpress, Version=3.0.0.3, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.DataBinding.DevExpress.3.0.0.3\lib\net462\OSPSuite.DataBinding.DevExpress.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.22\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.23\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -236,8 +236,8 @@
     <Reference Include="OSPSuite.TeXReporting, Version=2.1.1.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.TeXReporting.2.1.1.9\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.UI, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.UI.7.5.0.22\lib\net462\OSPSuite.UI.dll</HintPath>
+    <Reference Include="OSPSuite.UI, Version=7.5.0.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.UI.7.5.0.23\lib\net462\OSPSuite.UI.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Utility, Version=3.0.1.7, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.3.0.1.7\lib\net462\OSPSuite.Utility.dll</HintPath>
@@ -448,23 +448,23 @@
     <Compile Include="Views\Individuals\IndividualMoleculePropertiesView.Designer.cs">
       <DependentUpon>IndividualMoleculePropertiesView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Observers\CreateObserverBuildingBlockView.cs">
+    <Compile Include="Views\Observers\CreateObserverSetView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Observers\CreateObserverBuildingBlockView.Designer.cs">
-      <DependentUpon>CreateObserverBuildingBlockView.cs</DependentUpon>
+    <Compile Include="Views\Observers\CreateObserverSetView.Designer.cs">
+      <DependentUpon>CreateObserverSetView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Observers\EditObserverBuildingBlockView.cs">
+    <Compile Include="Views\Observers\EditObserverSetView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Observers\EditObserverBuildingBlockView.Designer.cs">
-      <DependentUpon>EditObserverBuildingBlockView.cs</DependentUpon>
+    <Compile Include="Views\Observers\EditObserverSetView.Designer.cs">
+      <DependentUpon>EditObserverSetView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Observers\ImportObserversView.cs">
+    <Compile Include="Views\Observers\ImportObserverSetView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\Observers\ImportObserversView.Designer.cs">
-      <DependentUpon>ImportObserversView.cs</DependentUpon>
+    <Compile Include="Views\Observers\ImportObserverSetView.Designer.cs">
+      <DependentUpon>ImportObserverSetView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Observers\ObserverInfoView.cs">
       <SubType>UserControl</SubType>
@@ -1312,6 +1312,12 @@
     <Compile Include="Views\Simulations\EditOutputSchemaView.Designer.cs">
       <DependentUpon>EditOutputSchemaView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Simulations\SimulationObserversConfigurationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Simulations\SimulationObserversConfigurationView.Designer.cs">
+      <DependentUpon>SimulationObserversConfigurationView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Simulations\SimulationSelectionForComparisonView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1514,11 +1520,11 @@
     <EmbeddedResource Include="Views\Individuals\IndividualMoleculePropertiesView.resx">
       <DependentUpon>IndividualMoleculePropertiesView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Observers\EditObserverBuildingBlockView.resx">
-      <DependentUpon>EditObserverBuildingBlockView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Observers\EditObserverSetView.resx">
+      <DependentUpon>EditObserverSetView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Observers\ImportObserversView.resx">
-      <DependentUpon>ImportObserversView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Observers\ImportObserverSetView.resx">
+      <DependentUpon>ImportObserverSetView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Observers\ObserverInfoView.resx">
       <DependentUpon>ObserverInfoView.cs</DependentUpon>
@@ -1981,6 +1987,9 @@
     <EmbeddedResource Include="Views\Simulations\SimulationCompoundProcessView.resx">
       <DependentUpon>SimulationCompoundProcessView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Simulations\SimulationObserversConfigurationView.resx">
+      <DependentUpon>SimulationObserversConfigurationView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Simulations\SimulationSelectionForComparisonView.resx">
       <DependentUpon>SimulationSelectionForComparisonView.cs</DependentUpon>

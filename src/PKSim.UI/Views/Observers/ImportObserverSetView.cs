@@ -16,14 +16,14 @@ using PKSim.Presentation.Views.Observers;
 
 namespace PKSim.UI.Views.Observers
 {
-   public partial class ImportObserversView : BaseUserControl, IImportObserversView
+   public partial class ImportObserverSetView : BaseUserControl, IImportObserverSetView
    {
-      private IImportObserversPresenter _presenter;
+      private IImportObserverSetPresenter _presenter;
       private readonly GridViewBinder<ImportObserverDTO> _gridViewBinder;
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRemoveButtonRepository();
       private IGridViewColumn _colFilePath;
 
-      public ImportObserversView()
+      public ImportObserverSetView()
       {
          InitializeComponent();
          gridView.AllowsFiltering = false;
@@ -33,7 +33,7 @@ namespace PKSim.UI.Views.Observers
          _gridViewBinder = new GridViewBinder<ImportObserverDTO>(gridView);
       }
 
-      public void AttachPresenter(IImportObserversPresenter presenter)
+      public void AttachPresenter(IImportObserverSetPresenter presenter)
       {
          _presenter = presenter;
       }

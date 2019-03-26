@@ -163,15 +163,15 @@ namespace PKSim.Presentation.Repositories
             .WithIcon(ApplicationIcons.LoadFromTemplate);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.NewObservers)
-            .WithId(MenuBarItemIds.NewObservers)
-            .WithCommand<NewObserverBuildingBlockCommand>()
+            .WithId(MenuBarItemIds.NewObserverSet)
+            .WithCommand<NewObserverSetCommand>()
             .WithDescription(PKSimConstants.UI.NewObserversDescription)
             .WithIcon(ApplicationIcons.Observer);
 //            .WithShortcut(Keys.Control | Keys.Alt | Keys.O);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
-            .WithId(MenuBarItemIds.LoadObservers)
-            .WithCommand<LoadObserverBuildingBlockCommand>()
+            .WithId(MenuBarItemIds.LoadObserverSet)
+            .WithCommand<LoadObserverSetCommand>()
             .WithIcon(ApplicationIcons.LoadFromTemplate);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.About)

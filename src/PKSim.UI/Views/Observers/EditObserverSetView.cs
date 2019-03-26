@@ -8,9 +8,9 @@ using PKSim.Presentation.Views.Observers;
 
 namespace PKSim.UI.Views.Observers
 {
-   public partial class EditObserverBuildingBlockView : BaseMdiChildView, IEditObserverBuildingBlockView
+   public partial class EditObserverSetView : BaseMdiChildView, IEditObserverSetView
    {
-      public EditObserverBuildingBlockView(Shell shell) : base(shell)
+      public EditObserverSetView(Shell shell) : base(shell)
       {
          InitializeComponent();
       }
@@ -20,7 +20,7 @@ namespace PKSim.UI.Views.Observers
          panelControl.FillWith(viewToAdd);
       }
 
-      public void AttachPresenter(IEditObserverBuildingBlockPresenter presenter)
+      public void AttachPresenter(IEditObserverSetPresenter presenter)
       {
          _presenter = presenter;
       }

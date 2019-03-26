@@ -15,14 +15,14 @@ using PKSim.Presentation.Views.Observers;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_ImportObserversPresenter : ContextSpecification<IImportObserversPresenter>
+   public abstract class concern_for_ImportObserversPresenter : ContextSpecification<IImportObserverSetPresenter>
    {
-      protected IImportObserversView _view;
-      protected IObserverBuildingBlockTask _observerBuildingBlockTask;
+      protected IImportObserverSetView _view;
+      protected IObserverSetTask _observerSetTask;
       protected IObserverInfoPresenter _observerInfoPresenter;
       protected IDialogCreator _dialogCreator;
       protected IObserverTask _observerTask;
-      protected PKSimObserverBuildingBlock _observerBuildingBlock;
+      protected ObserverSet _observerSet;
       protected IObserverBuilder _observer1;
       protected IObserverBuilder _observer2;
       protected IReadOnlyList<ImportObserverDTO> _allImportObserverDTO;
@@ -30,19 +30,19 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _view = A.Fake<IImportObserversView>();
+         _view = A.Fake<IImportObserverSetView>();
          _observerInfoPresenter = A.Fake<IObserverInfoPresenter>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _observerTask = A.Fake<IObserverTask>();
          _commandCollector = A.Fake<ICommandCollector>();
          _observer1 = new ContainerObserverBuilder().WithName("OBS1");
          _observer2 = new ContainerObserverBuilder().WithName("OBS2");
-         _observerBuildingBlock = new PKSimObserverBuildingBlock {_observer1, _observer2};
+         _observerSet = new ObserverSet {_observer1, _observer2};
 
          A.CallTo(() => _view.BindTo(A<IReadOnlyList<ImportObserverDTO>>._))
             .Invokes(x => _allImportObserverDTO = x.GetArgument<IReadOnlyList<ImportObserverDTO>>(0));
 
-         sut = new ImportObserversPresenter(_view, _observerInfoPresenter, _dialogCreator, _observerTask);
+         sut = new ImportObserverSetPresenter(_view, _observerInfoPresenter, _dialogCreator, _observerTask);
          sut.InitializeWith(_commandCollector);
       }
    }
@@ -51,7 +51,7 @@ namespace PKSim.Presentation
    {
       protected override void Because()
       {
-         sut.Edit(_observerBuildingBlock);
+         sut.Edit(_observerSet);
       }
 
       [Observation]
@@ -68,7 +68,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         sut.Edit(_observerBuildingBlock);
+         sut.Edit(_observerSet);
       }
 
       protected override void Because()
@@ -86,7 +86,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_remove_the_observer_from_the_building_block_using_a_command()
       {
-         A.CallTo(() => _observerTask.RemoveObserver(_observer1, _observerBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _observerTask.RemoveObserver(_observer1, _observerSet)).MustHaveHappened();
       }
 
       [Observation]
@@ -110,7 +110,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         sut.Edit(_observerBuildingBlock);
+         sut.Edit(_observerSet);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileFullPath);
          A.CallTo(() => _observerTask.LoadObserverFrom(_fileFullPath)).Returns(_newObserver);
       }
@@ -130,7 +130,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_the_observer_from_the_building_block_using_a_command()
       {
-         A.CallTo(() => _observerTask.AddObserver(_newObserver, _observerBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _observerTask.AddObserver(_newObserver, _observerSet)).MustHaveHappened();
       }
 
       [Observation]
@@ -154,7 +154,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         sut.Edit(_observerBuildingBlock);
+         sut.Edit(_observerSet);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileFullPath);
          A.CallTo(() => _observerTask.LoadObserverFrom(_fileFullPath)).Returns(_newObserver);
       }
