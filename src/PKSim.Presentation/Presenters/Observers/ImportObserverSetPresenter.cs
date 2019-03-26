@@ -64,7 +64,7 @@ namespace PKSim.Presentation.Presenters.Observers
 
       public void RemoveObserver(ImportObserverDTO observerDTO)
       {
-         addCommand(() => _observerTask.RemoveObserver(observerDTO.Observer, _observerSet));
+         AddCommand(() => _observerTask.RemoveObserver(observerDTO.Observer, _observerSet));
          _observerDTOs.Remove(observerDTO);
          updateView();
       }
@@ -84,7 +84,7 @@ namespace PKSim.Presentation.Presenters.Observers
 
 
          var observerDTO = addObserver(observer, newFile);
-         addCommand(() => _observerTask.AddObserver(observer, _observerSet));
+         AddCommand(() => _observerTask.AddObserver(observer, _observerSet));
          updateView(observerDTO);
       }
 
@@ -93,9 +93,9 @@ namespace PKSim.Presentation.Presenters.Observers
          _observerInfoPresenter.Edit(observer?.Observer);
       }
 
-      private void addCommand(Func<ICommand> commandAction)
+      public override void AddCommand(Func<ICommand> commandFunc)
       {
-         this.DoWithinLatch(() => AddCommand(commandAction()));
+         this.DoWithinLatch(() => base.AddCommand(commandFunc));
       }
 
       public bool ShowFilePath
