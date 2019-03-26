@@ -5,19 +5,16 @@ namespace PKSim.Core.Comparison
 {
    public class ObserverSetDiffBuilder : DiffBuilder<ObserverSet>
    {
-      private readonly EntityDiffBuilder _entityDiffBuilder;
-      private readonly EnumerableComparer _enumerableComparer;
+      private readonly ContainerDiffBuilder _containerDiffBuilder;
 
-      public ObserverSetDiffBuilder(EntityDiffBuilder entityDiffBuilder, EnumerableComparer enumerableComparer)
+      public ObserverSetDiffBuilder(ContainerDiffBuilder containerDiffBuilder)
       {
-         _entityDiffBuilder = entityDiffBuilder;
-         _enumerableComparer = enumerableComparer;
+         _containerDiffBuilder = containerDiffBuilder;
       }
 
       public override void Compare(IComparison<ObserverSet> comparison)
       {
-         _entityDiffBuilder.Compare(comparison);
-         _enumerableComparer.CompareEnumerables(comparison, x => x.Observers, x => x.Name);
+         _containerDiffBuilder.Compare(comparison);
       }
    }
 }
