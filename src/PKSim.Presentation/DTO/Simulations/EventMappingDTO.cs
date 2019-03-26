@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
@@ -36,10 +37,8 @@ namespace PKSim.Presentation.DTO.Simulations
 
       private static class AllRules
       {
-         private static IBusinessRule buildingBlockNotNull { get; } = CreateRule.For<EventMappingDTO>()
-            .Property(item => item.Event)
-            .WithRule((dto, ev) => ev != null)
-            .WithError((dto, block) => PKSimConstants.Error.BuildingBlockNotDefined(PKSimConstants.ObjectTypes.Event));
+         private static IBusinessRule buildingBlockNotNull { get; } =
+            GenericRules.NotNull<EventMappingDTO, PKSimEvent>(x => x.Event, PKSimConstants.Error.BuildingBlockNotDefined(PKSimConstants.ObjectTypes.Event));
 
          internal static IEnumerable<IBusinessRule> All()
          {
