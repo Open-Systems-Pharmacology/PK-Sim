@@ -24,8 +24,11 @@ namespace PKSim.Infrastructure.Services
 
       public string ExportToMarkdownString(object objectToExport)
       {
-         var tracker = new MarkdownTracker();
          var builder = _markdownBuilderRepository.BuilderFor(objectToExport);
+         if (builder == null)
+            return _reportGenerator.StringReportFor(objectToExport);
+
+         var tracker = new MarkdownTracker();
          builder.Report(objectToExport, tracker);
          return tracker.ToString();
       }
