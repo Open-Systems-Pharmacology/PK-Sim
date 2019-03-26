@@ -302,6 +302,7 @@
     <Compile Include="Reporting\Summary\IReportBuilderRepository.cs" />
     <Compile Include="Reporting\Summary\ModelPropertiesReportBuilder.cs" />
     <Compile Include="Reporting\Summary\ObservedDataReportBuilder.cs" />
+    <Compile Include="Reporting\Summary\ObserverSetReportBuilder.cs" />
     <Compile Include="Reporting\Summary\OriginDataReportBuilder.cs" />
     <Compile Include="Reporting\Summary\ParameterAlternativeGroupReportBuilder.cs" />
     <Compile Include="Reporting\Summary\ParameterRangeReportBuilder.cs" />

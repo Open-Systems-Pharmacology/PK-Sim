@@ -44,7 +44,7 @@ namespace PKSim.Presentation.DTO.Simulations
 
       public bool Selected
       {
-         get { return _selected; }
+         get => _selected;
          set
          {
             _selected = value;
