@@ -120,7 +120,7 @@ namespace PKSim.Presentation.Services
          _buildingBlockTask.Load(templateBuildingBlock);
          _buildingBlockTask.Load(simulation);
 
-         if (!_simulationBuildingBlockUpdater.BuildingBlockSupportsQuickUpdate(templateBuildingBlock))
+         if (!_simulationBuildingBlockUpdater.BuildingBlockSupportComparison(templateBuildingBlock))
             throw new PKSimException(PKSimConstants.Error.ComparisonWithTemplateNotSupportedForBuildingBlockOfType(_executionContext.TypeFor(templateBuildingBlock)));
 
          //Uses the UsedBuildingBlockById since the usedBuildingBlock might have been lazy loaded

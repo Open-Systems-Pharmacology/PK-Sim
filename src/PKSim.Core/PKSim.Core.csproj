@@ -159,6 +159,7 @@
     <Compile Include="Comparison\IndividualDiffBuilder.cs" />
     <Compile Include="Comparison\IndividualProteinDiffBuilder.cs" />
     <Compile Include="Comparison\IndividualTransporterDiffBuilder.cs" />
+    <Compile Include="Comparison\ObserverSetDiffBuilder.cs" />
     <Compile Include="Comparison\OriginDataDiffBuilder.cs" />
     <Compile Include="Comparison\ParameterRangeDiffBuilder.cs" />
     <Compile Include="Comparison\PKSimParameterDiffBuilder.cs" />
