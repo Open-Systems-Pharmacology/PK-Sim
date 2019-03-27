@@ -110,6 +110,7 @@ namespace PKSim.CLI
          _qualificationConfiguration.InputsFolder = "c:/tests/outputs/INPUTS";
          _qualificationConfiguration.SnapshotFile = $"c:/tests/inputs/{PROJECT_NAME}.json";
          _qualificationConfiguration.MappingFile = $"c:/tests/temp/{PROJECT_NAME}_Mapping.json";
+         _qualificationConfiguration.TempFolder = $"c:/tests/temp";
          _qualificationConfiguration.ReportConfigurationFile = "c:/tests/outputs/report_config.json";
          _qualificationConfiguration.ObservedDataFolder = "c:/tests/outputs/OBS_DATA_FOLDER";
 
@@ -246,7 +247,7 @@ namespace PKSim.CLI
       public void should_load_the_project_from_snapshot_and_export_its_simulations_to_the_output_folder()
       {
          _exportOptions.OutputFolder.ShouldBeEqualTo(_expectedOutputPath);
-         _exportOptions.ExportMode.ShouldBeEqualTo(SimulationExportMode.All);
+         _exportOptions.ExportMode.ShouldBeEqualTo(SimulationExportMode.Csv | SimulationExportMode.Xml);
       }
 
       [Observation]

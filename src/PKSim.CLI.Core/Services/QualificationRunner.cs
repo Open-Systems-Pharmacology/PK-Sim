@@ -91,7 +91,7 @@ namespace PKSim.CLI.Core.Services
          var exportRunOtions = new ExportRunOptions
          {
             OutputFolder = projectOutputFolder,
-            ExportMode = SimulationExportMode.All
+            ExportMode = SimulationExportMode.Xml | SimulationExportMode.Csv
          };
 
          var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOtions);
@@ -112,12 +112,12 @@ namespace PKSim.CLI.Core.Services
          await _jsonSerializer.Serialize(mapping, config.MappingFile);
          _logger.AddDebug($"Project mapping for '{project.Name}' exported to '{config.MappingFile}'", project.Name);
 
-         var projectFile = Path.Combine(projectOutputFolder, $"{project.Name}{CoreConstants.Filter.PROJECT_EXTENSION}");
+         var projectFile = Path.Combine(config.TempFolder, $"{project.Name}{CoreConstants.Filter.PROJECT_EXTENSION}");
          _workspace.Project = project;
          _workspacePersistor.SaveSession(_workspace, projectFile);
          _logger.AddDebug($"Project saved to '{projectFile}'", project.Name);
 
-         var snapshotFile = Path.Combine(projectOutputFolder, $"{project.Name}{Constants.Filter.JSON_EXTENSION}");
+         var snapshotFile = Path.Combine(config.TempFolder, $"{project.Name}{Constants.Filter.JSON_EXTENSION}");
          await _snapshotTask.ExportModelToSnapshot(project, snapshotFile);
          _logger.AddDebug($"Project snapshot saved to '{snapshotFile}'", project.Name);
 
