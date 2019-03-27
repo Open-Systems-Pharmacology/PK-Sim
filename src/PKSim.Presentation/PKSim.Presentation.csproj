@@ -227,6 +227,7 @@
     <Compile Include="Presenters\ContextMenus\MultipleEventNodeContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\MultipleFormulationNodeContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\MultipleIndividualNodeContextMenu.cs" />
+    <Compile Include="Presenters\ContextMenus\MultipleObserverSetNodeContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\MultiplePopulationNodeContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\MultipleProtocolNodeContextMenu.cs" />
     <Compile Include="Presenters\ContextMenus\MultipleUsedObservedDataContextMenu.cs" />

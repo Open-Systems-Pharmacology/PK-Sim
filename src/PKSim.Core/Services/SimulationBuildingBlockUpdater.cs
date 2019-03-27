@@ -59,6 +59,11 @@ namespace PKSim.Core.Services
       void UpdateFormulationsInSimulation(Simulation simulation);
 
       bool BuildingBlockSupportsQuickUpdate(IPKSimBuildingBlock templateBuildingBlock);
+
+      /// <summary>
+      /// Returns whether a building block comparison is available for the building block
+      /// </summary>
+      bool BuildingBlockSupportComparison(IPKSimBuildingBlock templateBuildingBlock);
    }
 
    public class SimulationBuildingBlockUpdater : ISimulationBuildingBlockUpdater
@@ -175,6 +180,13 @@ namespace PKSim.Core.Services
             PKSimBuildingBlockType.Protocol,
             PKSimBuildingBlockType.Population,
             PKSimBuildingBlockType.Observers);
+      }
+
+      public bool BuildingBlockSupportComparison(IPKSimBuildingBlock templateBuildingBlock)
+      {
+         return !templateBuildingBlock.BuildingBlockType.IsOneOf(
+            PKSimBuildingBlockType.Protocol,
+            PKSimBuildingBlockType.Population);
       }
    }
 }
