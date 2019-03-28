@@ -172,10 +172,9 @@ namespace PKSim.CLI.Core.Services
          _logger.AddDebug($"Exporting simulation results to '{fileName}'", simulationExportOptions.LogCategory);
       }
 
-      private async Task exporIndividualSimulationToCsvAsync(IndividualSimulation simulation, SimulationExportOptions simulationExportOptions)
+      private Task exporIndividualSimulationToCsvAsync(IndividualSimulation simulation, SimulationExportOptions simulationExportOptions)
       {
-         await exportSimulationResultsToCsv(simulation, simulationExportOptions);
-         exportParameters(simulation, simulationExportOptions);
+         return exportSimulationResultsToCsv(simulation, simulationExportOptions);
       }
 
       private async Task exportPopulationSimulationToCsvAsync(PopulationSimulation populationSimulation, SimulationExportOptions simulationExportOptions)
@@ -205,13 +204,6 @@ namespace PKSim.CLI.Core.Services
          var simulationResultFileFullPath = simulationExportOptions.TargetPathFor(resultFileName, Constants.Filter.XLSX_EXTENSION);
          await _simulationExportTask.ExportResultsToExcelAsync(simulation, simulationResultFileFullPath, launchExcel:false);
          _logger.AddDebug($"Exporting simulation results to '{simulationResultFileFullPath}'", simulationExportOptions.LogCategory);
-      }
-
-      private void exportParameters(IndividualSimulation individualSimulation, SimulationExportOptions simulationExportOptions)
-      {
-         var parameterReportFileName = simulationExportOptions.TargetCSVPathFor($"{individualSimulation.Name}-parameters");
-         _parametersReportCreator.ExportParametersTo(individualSimulation.Model, parameterReportFileName);
-         _logger.AddDebug($"Exporting simulation parameters to '{parameterReportFileName}'", simulationExportOptions.LogCategory);
       }
    }
 }
