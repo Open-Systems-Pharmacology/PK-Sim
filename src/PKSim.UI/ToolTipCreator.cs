@@ -202,7 +202,7 @@ namespace PKSim.UI
          var sb = new StringBuilder();
          foreach (var objectPath in formula.ObjectPaths)
          {
-            sb.AppendLine(string.Format("<I>{0}</I> is defined as: {1}", objectPath.Alias, displayObjectPathFrom(objectPath)));
+            sb.AppendLine($"<I>{objectPath.Alias}</I> is defined as: {displayObjectPathFrom(objectPath)}");
          }
 
          toolTip.WithText(sb.ToString());
@@ -211,7 +211,7 @@ namespace PKSim.UI
       private string displayObjectPathFrom(IFormulaUsablePath objectPath)
       {
          var display = objectPath.PathAsString;
-         display = display.Replace(string.Format("{0}|", Constants.ROOT), string.Empty);
+         display = display.Replace($"{Constants.ROOT}|", string.Empty);
          return display;
       }
    }

@@ -1565,6 +1565,7 @@ namespace PKSim.Assets
          public static readonly string Ratio = "Same ratio";
          public static readonly string SimulationSettings = "Settings";
          public static readonly string CompoundActiveProcessType = "Type";
+         public static readonly string ObserverType = "Type";
          public static readonly string Kinetic = "Kinetic";
          public static readonly string SimulationModelConfiguration = "Model";
          public static readonly string SimulationCompoundsConfiguration = "Compounds";
@@ -2172,6 +2173,10 @@ namespace PKSim.Assets
          public static readonly string WatermarkText = "Text";
          public static readonly string WatermarkProperties = "Watermark Properties";
          public static readonly string CreateTableSolubilityAlternative = "Create as pH-Solubility table";
+         public static readonly string ContainerCriteria = "Container Criteria";
+         public static readonly string ForAll = "For All";
+         public static readonly string MoleculeExcludeList = "Molecules Excluded";
+         public static readonly string MoleculeIncludeList = "For Molecules";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 

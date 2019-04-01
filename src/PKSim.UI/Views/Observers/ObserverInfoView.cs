@@ -25,6 +25,7 @@ namespace PKSim.UI.Views.Observers
       {
          Clear();
          observerDTO.Details.Each(x => richEditControl.Document.AppendHtmlText($"{x}<br>"));
+         richEditControl.Document.CaretPosition = richEditControl.Document.Range.Start;
       }
 
       public void Clear()
