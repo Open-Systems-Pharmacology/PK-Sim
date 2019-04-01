@@ -1,6 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Descriptors;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Extensions;
@@ -8,11 +12,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Descriptors;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Infrastructure.ORM.Queries
 {
@@ -44,6 +43,8 @@ namespace PKSim.Infrastructure.ORM.Queries
          var observerBuildingBlock = _objectBaseFactory.Create<IObserverBuildingBlock>().WithName(simulation.Name);
          addStandardObserversTo(simulation, observerBuildingBlock, moleculeBuildingBlock);
 
+         addSimulationObservers(simulation, observerBuildingBlock);
+
          //now add dynamic observers for molecules needing one
          createFractionExcretedToUrineObserver(simulation, observerBuildingBlock);
          createFractionOfDoseExcretedToBileObserver(simulation, observerBuildingBlock);
@@ -67,6 +68,13 @@ namespace PKSim.Infrastructure.ORM.Queries
          return observerBuildingBlock;
       }
 
+      private void addSimulationObservers(Simulation simulation, IObserverBuildingBlock observerBuildingBlock)
+      {
+         simulation.AllBuildingBlocks<ObserverSet>()
+            .SelectMany(x => x.Observers)
+            .Each(observerBuildingBlock.Add);
+      }
+
       private void addStandardObserversTo(Simulation simulation, IObserverBuildingBlock observerBuildingBlock, IMoleculeBuildingBlock moleculeBuildingBlock)
       {
          var allMoleculesNeedingConcentrationObservers = moleculeBuildingBlock.Where(concentrationIsNeeded).Select(x => x.Name).ToList();
@@ -87,7 +95,7 @@ namespace PKSim.Infrastructure.ORM.Queries
                   observer.Formula.ReplaceKeywordsInObjectPaths(
                      new[] {CoreConstants.Molecule.DrugFcRnComplexTemplate},
                      new[] {CoreConstants.Molecule.DrugFcRnComplexName(compoundName)}
-                     );
+                  );
 
                   observer.AddMoleculeName(compoundName);
 
