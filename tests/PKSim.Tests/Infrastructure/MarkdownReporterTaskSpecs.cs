@@ -27,7 +27,7 @@ namespace PKSim.Infrastructure
          var individualMarkdownBuilder = A.Fake<IMarkdownBuilder>();
          A.CallTo(() => _markdownReportBuilder.BuilderFor(_individual)).Returns(individualMarkdownBuilder);
          A.CallTo(() => _markdownReportBuilder.BuilderFor(_compound)).Returns(null);
-         A.CallTo(() => individualMarkdownBuilder.Report(_individual, A<MarkdownTracker>._)).Invokes(x =>
+         A.CallTo(() => individualMarkdownBuilder.Report(_individual, A<MarkdownTracker>._, A<int>._)).Invokes(x =>
          {
             var markdownTracker = x.GetArgument<MarkdownTracker>(1);
             markdownTracker.Add("IND");
