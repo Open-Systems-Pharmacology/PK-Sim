@@ -274,11 +274,13 @@
     <Compile Include="ProjectConverter\v7_4\Converter730To740.cs" />
     <Compile Include="Reporting\Extensions\DataTableExtensions.cs" />
     <Compile Include="Reporting\Extensions\SimpleProtocolExtensions.cs" />
+    <Compile Include="Reporting\Markdown\Builders\CalculationMethodCacheMarkdownBuilder.cs" />
     <Compile Include="Reporting\Markdown\Builders\CompoundMarkdownBuilder.cs" />
+    <Compile Include="Reporting\Markdown\Builders\CompoundProcessMarkdownBuilder.cs" />
     <Compile Include="Reporting\Markdown\Builders\IMarkdownBuilder.cs" />
     <Compile Include="Reporting\Markdown\Builders\ParametersMarkdownBuilder.cs" />
+    <Compile Include="Reporting\Markdown\Elements\ParameterElement.cs" />
     <Compile Include="Reporting\Markdown\Elements\TitleBaseElement.cs" />
-    <Compile Include="Reporting\Markdown\Elements\TitleElement.cs" />
     <Compile Include="Reporting\Markdown\Extensions\MarkdownElementExtensions.cs" />
     <Compile Include="Reporting\Markdown\MarkdownBuilderRepository.cs" />
     <Compile Include="Reporting\Markdown\MarkdownTracker.cs" />

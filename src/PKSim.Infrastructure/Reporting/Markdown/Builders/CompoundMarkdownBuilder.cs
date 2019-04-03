@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Infrastructure.Reporting.Markdown.Elements;
 using PKSim.Infrastructure.Reporting.Markdown.Extensions;
 
 namespace PKSim.Infrastructure.Reporting.Markdown.Builders
@@ -19,40 +20,49 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Builders
          _markdownBuilderRepository = markdownBuilderRepository;
       }
 
-      public override void Report(Compound compound, MarkdownTracker tracker)
+      public override void Report(Compound compound, MarkdownTracker tracker, int indentationLevel)
       {
-         tracker.Add($"{PKSimConstants.ObjectTypes.Compound}: {compound.Name}".ToMarkdownTitle());
-         tracker.Add(PKSimConstants.ObjectTypes.Parameter.Pluralize().ToMarkdownSubTitle());
-
+         tracker.Add($"{PKSimConstants.ObjectTypes.Compound}: {compound.Name}".ToMarkdownLevelElement(indentationLevel));
+         var sublevelIdentation = indentationLevel + 1;
+         tracker.Add(PKSimConstants.ObjectTypes.Parameter.Pluralize().ToMarkdownLevelElement(sublevelIdentation));
 
          var allAlternatives = compound.AllParameterAlternativeGroups().SelectMany(x => x.AllAlternatives);
-         var allParametersAlternatives = new List<ParameterAlternative>();
+         var allCompoundParameters = new List<CompoundParameter>();
          foreach (var alternative in allAlternatives)
          {
             var allUserDefinedParameters = alternative.AllParameters(p => !p.IsDefault).ToList();
-            allUserDefinedParameters.Each(p =>
-            {
-               allParametersAlternatives.Add(new ParameterAlternative
-               {
-                  Alternative = alternative.Name,
-                  Default = alternative.IsDefault,
-                  Name = p.Name,
-                  ValueOrigin = p.ValueOrigin.ToString(),
-                  Value = $"{p.ValueInDisplayUnit} {p.DisplayUnit.Name}"
-               });
-            });
+            allUserDefinedParameters.Each(p => allCompoundParameters.Add(mapFrom(alternative, p)));
          }
 
-         tracker.Add(allParametersAlternatives.ToMarkdownTable());
+         var allSimpleParameters = compound.AllSimpleParameters().Where(p => !p.IsDefault).ToList();
+         allSimpleParameters.Each(p => allCompoundParameters.Add(mapFrom(p)));
+         tracker.Add(allCompoundParameters.ToMarkdownTable());
+
+         tracker.Add(PKSimConstants.UI.CalculationMethods.ToMarkdownLevelElement(sublevelIdentation));
+         _markdownBuilderRepository.Report(compound.CalculationMethodCache, tracker);
+
+         tracker.Add(PKSimConstants.UI.Processes.ToMarkdownLevelElement(sublevelIdentation));
+         compound.AllProcesses().Each(x => _markdownBuilderRepository.Report(x, tracker, sublevelIdentation + 1));
       }
 
-      private class ParameterAlternative
+      private CompoundParameter mapFrom(IParameter parameter) => parameter.To<CompoundParameter>();
+
+      private CompoundParameter mapFrom(ParameterAlternative alternative, IParameter parameter)
+      {
+         var compoundParameter = mapFrom(parameter);
+         compoundParameter.Alternative = alternative.Name;
+         compoundParameter.Alternative = alternative.Name;
+         compoundParameter.Default = alternative.IsDefault;
+         return compoundParameter;
+      }
+
+      private class CompoundParameter : IParameterElement
       {
          public string Name { get; set; }
          public string Value { get; set; }
          public string ValueOrigin { get; set; }
          public string Alternative { get; set; }
-         public bool Default { get; set; }
+         public bool? Default { get; set; }
       }
    }
 }

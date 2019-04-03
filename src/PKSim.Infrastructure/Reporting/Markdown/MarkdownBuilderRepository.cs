@@ -6,7 +6,7 @@ namespace PKSim.Infrastructure.Reporting.Markdown
 {
    public interface IMarkdownBuilderRepository : IBuilderRepository<IMarkdownBuilder>
    {
-      void Report<T>(T objectToReport, MarkdownTracker tracker);
+      void Report<T>(T objectToReport, MarkdownTracker tracker, int identationLevel = 0);
    }
 
    public class MarkdownBuilderRepository : BuilderRepository<IMarkdownBuilder>, IMarkdownBuilderRepository
@@ -15,10 +15,10 @@ namespace PKSim.Infrastructure.Reporting.Markdown
       {
       }
 
-      public void Report<T>(T objectToReport, MarkdownTracker tracker)
+      public void Report<T>(T objectToReport, MarkdownTracker tracker, int identationLevel = 0)
       {
          var builder = BuilderFor(objectToReport);
-         builder.Report(objectToReport, tracker);
+         builder.Report(objectToReport, tracker, identationLevel);
       }
    }
 }
