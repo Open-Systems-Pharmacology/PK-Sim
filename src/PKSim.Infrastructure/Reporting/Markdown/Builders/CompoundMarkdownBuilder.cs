@@ -51,7 +51,6 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Builders
       {
          var compoundParameter = mapFrom(parameter);
          compoundParameter.Alternative = alternative.Name;
-         compoundParameter.Alternative = alternative.Name;
          compoundParameter.Default = alternative.IsDefault;
          return compoundParameter;
       }
