@@ -12,20 +12,18 @@ using PKSim.Infrastructure.Reporting.Markdown.Mappers;
 
 namespace PKSim.Infrastructure.Reporting.Markdown.Builders
 {
-   public class CompoundMarkdownBuilder : MarkdownBuilder<Compound>
+   public class CompoundMarkdownBuilder : BuildingBlockMarkdownBuilder<Compound>
    {
-      private readonly IMarkdownBuilderRepository _markdownBuilderRepository;
       private readonly IParameterToParameterElementMapper _parameterElementMapper;
 
-      public CompoundMarkdownBuilder(IMarkdownBuilderRepository markdownBuilderRepository, IParameterToParameterElementMapper parameterElementMapper)
+      public CompoundMarkdownBuilder(IMarkdownBuilderRepository markdownBuilderRepository, IParameterToParameterElementMapper parameterElementMapper):base(markdownBuilderRepository)
       {
-         _markdownBuilderRepository = markdownBuilderRepository;
          _parameterElementMapper = parameterElementMapper;
       }
 
       public override void Report(Compound compound, MarkdownTracker tracker, int indentationLevel)
       {
-         tracker.Add($"{PKSimConstants.ObjectTypes.Compound}: {compound.Name}".ToMarkdownLevelElement(indentationLevel));
+         base.Report(compound, tracker);
          var sublevelIndentation = indentationLevel + 1;
          tracker.Add(PKSimConstants.ObjectTypes.Parameter.Pluralize().ToMarkdownLevelElement(sublevelIndentation));
 
@@ -33,7 +31,7 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Builders
          var allCompoundParameters = new List<CompoundParameter>();
          foreach (var alternative in allAlternatives)
          {
-            var allUserDefinedParameters = alternative.AllParameters(p => !p.IsDefault).ToList();
+            var allUserDefinedParameters = alternative.AllUserDefinedParameters().ToList();
             allUserDefinedParameters.Each(p => allCompoundParameters.Add(mapFrom(alternative, p)));
          }
 

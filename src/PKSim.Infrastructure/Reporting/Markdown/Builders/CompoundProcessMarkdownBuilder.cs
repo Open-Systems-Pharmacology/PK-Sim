@@ -1,6 +1,4 @@
-﻿using OSPSuite.Assets.Extensions;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
+﻿using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.Reporting.Markdown.Extensions;
@@ -10,17 +8,15 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Builders
    public class CompoundProcessMarkdownBuilder : MarkdownBuilder<CompoundProcess>
    {
       private readonly IMarkdownBuilderRepository _markdownBuilderRepository;
-      private readonly IObjectTypeResolver _objectTypeResolver;
 
-      public CompoundProcessMarkdownBuilder(IMarkdownBuilderRepository markdownBuilderRepository, IObjectTypeResolver objectTypeResolver)
+      public CompoundProcessMarkdownBuilder(IMarkdownBuilderRepository markdownBuilderRepository)
       {
          _markdownBuilderRepository = markdownBuilderRepository;
-         _objectTypeResolver = objectTypeResolver;
       }
 
       public override void Report(CompoundProcess compoundProcess, MarkdownTracker tracker, int indentationLevel)
       {
-         tracker.Add($"{_objectTypeResolver.TypeFor(compoundProcess)}: {compoundProcess.Name}".ToMarkdownLevelElement(indentationLevel));
+         tracker.Add($"{_markdownBuilderRepository.TypeFor(compoundProcess)}: {compoundProcess.Name}".ToMarkdownLevelElement(indentationLevel));
          reportSpecies(compoundProcess, tracker);
          switch (compoundProcess)
          {
@@ -29,8 +25,7 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Builders
                break;
          }
 
-         tracker.Add(PKSimConstants.ObjectTypes.Parameter.Pluralize().ToMarkdownLevelElement(indentationLevel + 1));
-         _markdownBuilderRepository.Report(compoundProcess.AllParameters(x => !x.IsDefault), tracker, indentationLevel);
+         _markdownBuilderRepository.Report(compoundProcess.AllUserDefinedParameters(), tracker, indentationLevel + 1);
       }
 
       private void report(PartialProcess partialProcess, MarkdownTracker tracker)

@@ -45,8 +45,11 @@ namespace PKSim.Presentation.Presenters.Events
          set => _view.EventTemplateVisible = value;
       }
 
-      public EventSettingsPresenter(IEventSettingsView view, IEventGroupRepository eventGroupRepository,
-         IRepresentationInfoRepository representationInfoRepository, IParametersByGroupPresenter eventParametersPresenter)
+      public EventSettingsPresenter(
+         IEventSettingsView view, 
+         IEventGroupRepository eventGroupRepository,
+         IRepresentationInfoRepository representationInfoRepository, 
+         IParametersByGroupPresenter eventParametersPresenter)
          : base(view)
       {
          _eventGroupRepository = eventGroupRepository;

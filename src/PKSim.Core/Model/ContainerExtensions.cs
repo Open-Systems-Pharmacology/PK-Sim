@@ -7,10 +7,9 @@ namespace PKSim.Core.Model
 {
    public static class ContainerExtensions
    {
-      public static IEnumerable<IParameter> AllVisibleParameters(this IContainer container)
-      {
-         return container.AllParameters(x => x.Visible);
-      }
+      public static IEnumerable<IParameter> AllVisibleParameters(this IContainer container) => container.AllParameters(x => x.Visible);
+
+      public static IEnumerable<IParameter> AllUserDefinedParameters(this IContainer container) => container.AllParameters(x => !x.IsDefault);
 
       public static IEnumerable<string> AllParameterNames(this IContainer container)
       {
