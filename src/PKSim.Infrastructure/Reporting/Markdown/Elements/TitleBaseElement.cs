@@ -1,5 +1,4 @@
-﻿using System;
-using MarkdownLog;
+﻿using MarkdownLog;
 
 namespace PKSim.Infrastructure.Reporting.Markdown.Elements
 {

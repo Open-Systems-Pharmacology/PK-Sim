@@ -6,4 +6,11 @@
       {
       }
    }
+
+   public class SubTitleElement : TitleBaseElement
+   {
+      public SubTitleElement(string text) : base(text, 2)
+      {
+      }
+   }
 }
