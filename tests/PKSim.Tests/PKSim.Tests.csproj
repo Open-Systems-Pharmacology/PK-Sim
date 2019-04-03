@@ -362,6 +362,7 @@
     <Compile Include="Infrastructure\DefaultIndividualRetrieverSpecs.cs" />
     <Compile Include="Infrastructure\FlatValueOriginToValueOriginMapperSpecs.cs" />
     <Compile Include="Infrastructure\MarkdownReporterTaskSpecs.cs" />
+    <Compile Include="Infrastructure\ParameterToParameterElementMapperSpecs.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
     <Compile Include="Infrastructure\SerializationContextFactorySpecs.cs" />
     <Compile Include="Infrastructure\SimulationComparisonContentLoaderSpecs.cs" />

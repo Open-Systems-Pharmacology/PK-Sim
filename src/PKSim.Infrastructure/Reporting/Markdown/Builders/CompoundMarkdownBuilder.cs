@@ -8,16 +8,19 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.Reporting.Markdown.Elements;
 using PKSim.Infrastructure.Reporting.Markdown.Extensions;
+using PKSim.Infrastructure.Reporting.Markdown.Mappers;
 
 namespace PKSim.Infrastructure.Reporting.Markdown.Builders
 {
    public class CompoundMarkdownBuilder : MarkdownBuilder<Compound>
    {
       private readonly IMarkdownBuilderRepository _markdownBuilderRepository;
+      private readonly IParameterToParameterElementMapper _parameterElementMapper;
 
-      public CompoundMarkdownBuilder(IMarkdownBuilderRepository markdownBuilderRepository)
+      public CompoundMarkdownBuilder(IMarkdownBuilderRepository markdownBuilderRepository, IParameterToParameterElementMapper parameterElementMapper)
       {
          _markdownBuilderRepository = markdownBuilderRepository;
+         _parameterElementMapper = parameterElementMapper;
       }
 
       public override void Report(Compound compound, MarkdownTracker tracker, int indentationLevel)
@@ -45,21 +48,22 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Builders
          compound.AllProcesses().Each(x => _markdownBuilderRepository.Report(x, tracker, sublevelIndentation + 1));
       }
 
-      private CompoundParameter mapFrom(IParameter parameter) => parameter.To<CompoundParameter>();
+      private CompoundParameter mapFrom(IParameter parameter) => _parameterElementMapper.MapFrom<CompoundParameter>(parameter);
 
       private CompoundParameter mapFrom(ParameterAlternative alternative, IParameter parameter)
       {
-         var compoundParameter = mapFrom(parameter);
-         compoundParameter.Alternative = alternative.Name;
-         compoundParameter.Default = alternative.IsDefault;
-         return compoundParameter;
+         return _parameterElementMapper.MapFrom<CompoundParameter>(parameter, compoundParameter =>
+         {
+            compoundParameter.Alternative = alternative.Name;
+            compoundParameter.Default = alternative.IsDefault;
+         });
       }
 
       private class CompoundParameter : IParameterElement
       {
          public string Name { get; set; }
          public string Value { get; set; }
-         public string ValueOrigin { get; set; }
+         public ValueOrigin ValueOrigin { get; set; }
          public string Alternative { get; set; }
          public bool? Default { get; set; }
       }

@@ -1150,7 +1150,7 @@ namespace PKSim.Core
             USE_AS_SUSPENSION
          };
 
-         public static readonly IReadOnlyCollection<string> AllWithListOfValues = new List<string>(Halogens.Union(AllBooleanParameters))
+         public static readonly HashSet<string> AllWithListOfValues = new HashSet<string>(Halogens.Union(AllBooleanParameters))
          {
             PARTICLE_SIZE_DISTRIBUTION,
             NUMBER_OF_BINS,

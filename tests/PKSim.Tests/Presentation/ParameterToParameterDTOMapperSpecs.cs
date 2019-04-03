@@ -26,6 +26,7 @@ namespace PKSim.Presentation
       protected IEntityPathResolver _entityPathResolver;
       protected IFavoriteRepository _favoriteRepository;
       protected IGroupRepository _groupRepository;
+      protected IParameterListOfValuesRetriever _parameterListOfValuesRetriever;
 
       protected override void Context()
       {
@@ -35,7 +36,8 @@ namespace PKSim.Presentation
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _favoriteRepository = A.Fake<IFavoriteRepository>();
          _pathToPathElementsMapper = A.Fake<IPathToPathElementsMapper>();
-         sut = new ParameterToParameterDTOMapper(_representationInfoRepository, _formulaTypeMapper, _pathToPathElementsMapper, _favoriteRepository, _entityPathResolver);
+         _parameterListOfValuesRetriever= A.Fake<IParameterListOfValuesRetriever>();
+         sut = new ParameterToParameterDTOMapper(_representationInfoRepository, _formulaTypeMapper, _pathToPathElementsMapper, _favoriteRepository, _entityPathResolver,_parameterListOfValuesRetriever );
       }
    }
 
