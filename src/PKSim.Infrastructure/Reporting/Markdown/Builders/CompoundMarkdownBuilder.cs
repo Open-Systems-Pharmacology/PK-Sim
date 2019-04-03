@@ -23,8 +23,8 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Builders
       public override void Report(Compound compound, MarkdownTracker tracker, int indentationLevel)
       {
          tracker.Add($"{PKSimConstants.ObjectTypes.Compound}: {compound.Name}".ToMarkdownLevelElement(indentationLevel));
-         var sublevelIdentation = indentationLevel + 1;
-         tracker.Add(PKSimConstants.ObjectTypes.Parameter.Pluralize().ToMarkdownLevelElement(sublevelIdentation));
+         var sublevelIndentation = indentationLevel + 1;
+         tracker.Add(PKSimConstants.ObjectTypes.Parameter.Pluralize().ToMarkdownLevelElement(sublevelIndentation));
 
          var allAlternatives = compound.AllParameterAlternativeGroups().SelectMany(x => x.AllAlternatives);
          var allCompoundParameters = new List<CompoundParameter>();
@@ -38,11 +38,11 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Builders
          allSimpleParameters.Each(p => allCompoundParameters.Add(mapFrom(p)));
          tracker.Add(allCompoundParameters.ToMarkdownTable());
 
-         tracker.Add(PKSimConstants.UI.CalculationMethods.ToMarkdownLevelElement(sublevelIdentation));
+         tracker.Add(PKSimConstants.UI.CalculationMethods.ToMarkdownLevelElement(sublevelIndentation));
          _markdownBuilderRepository.Report(compound.CalculationMethodCache, tracker);
 
-         tracker.Add(PKSimConstants.UI.Processes.ToMarkdownLevelElement(sublevelIdentation));
-         compound.AllProcesses().Each(x => _markdownBuilderRepository.Report(x, tracker, sublevelIdentation + 1));
+         tracker.Add(PKSimConstants.UI.Processes.ToMarkdownLevelElement(sublevelIndentation));
+         compound.AllProcesses().Each(x => _markdownBuilderRepository.Report(x, tracker, sublevelIndentation + 1));
       }
 
       private CompoundParameter mapFrom(IParameter parameter) => parameter.To<CompoundParameter>();
