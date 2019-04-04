@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 
@@ -14,6 +17,17 @@ namespace PKSim.Core.Mappers
 
    public class ParameterListOfValuesRetriever : IParameterListOfValuesRetriever
    {
+      private readonly HashSet<string> _parameterWithListOfValues;
+
+      public ParameterListOfValuesRetriever() : this(CoreConstants.Parameters.AllWithListOfValues)
+      {
+      }
+
+      public ParameterListOfValuesRetriever(HashSet<string> parameterWithListOfValues)
+      {
+         _parameterWithListOfValues = parameterWithListOfValues;
+      }
+
       public ICache<double, string> ListOfValuesFor(IParameter parameter)
       {
          var listOfValues = new Cache<double, string>(x => parameter.ValueInDisplayUnit);
@@ -23,7 +37,7 @@ namespace PKSim.Core.Mappers
 
       public void UpdateLisOfValues(ICache<double, string> listOfValues, IParameter parameter)
       {
-         if (!CoreConstants.Parameters.AllWithListOfValues.Contains(parameter.Name))
+         if (!_parameterWithListOfValues.Contains(parameter.Name))
             return;
 
          if (parameter.IsNamed(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
@@ -75,14 +89,13 @@ namespace PKSim.Core.Mappers
             listOfValues.Add(CoreConstants.Parameters.SINK_CONDITION, PKSimConstants.UI.SinkCondition);
             listOfValues.Add(CoreConstants.Parameters.NO_SINK_CONDITION, PKSimConstants.UI.NoSinkCondition);
          }
+         else
+            throw new ArgumentException("Cannot create list of values", parameter.Name);
       }
 
       private void addNumericListOfValues(ICache<double, string> cache, int min, int max)
       {
-         for (int i = min; i <= max; i++)
-         {
-            cache.Add(i, i.ToString());
-         }
+         Enumerable.Range(min, max - min + 1).Each(i => cache.Add(i, i.ToString()));
       }
    }
 }

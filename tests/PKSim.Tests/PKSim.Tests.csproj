@@ -323,6 +323,7 @@
     <Compile Include="Core\ParameterIdentificationMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationRunModeMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
+    <Compile Include="Core\ParameterListOfValuesRetrieverSpecs.cs" />
     <Compile Include="Core\ParameterMapperSpecs.cs" />
     <Compile Include="Core\ParameterRangeMapperSpecs.cs" />
     <Compile Include="Core\PKSimParameterDiffBuilderSpecs.cs" />
