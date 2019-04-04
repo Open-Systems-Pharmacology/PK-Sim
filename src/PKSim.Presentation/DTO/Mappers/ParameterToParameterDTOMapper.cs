@@ -1,19 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility;
-using PKSim.Core;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Mappers;
+using PKSim.Core;
+using PKSim.Core.Mappers;
+using PKSim.Core.Repositories;
+using PKSim.Presentation.DTO.Parameters;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
@@ -29,18 +25,22 @@ namespace PKSim.Presentation.DTO.Mappers
       private readonly IPathToPathElementsMapper _parameterDisplayPathMapper;
       private readonly IFavoriteRepository _favoriteRepository;
       private readonly IEntityPathResolver _entityPathResolver;
-      private readonly List<string> _parameterNameWithListOfValues;
+      private readonly IParameterListOfValuesRetriever _parameterListOfValuesRetriever;
 
-      public ParameterToParameterDTOMapper(IRepresentationInfoRepository representationInfoRepository, IFormulaToFormulaTypeMapper formulaTypeMapper,
-         IPathToPathElementsMapper parameterDisplayPathMapper, IFavoriteRepository favoriteRepository,
-         IEntityPathResolver entityPathResolver)
+      public ParameterToParameterDTOMapper(
+         IRepresentationInfoRepository representationInfoRepository,
+         IFormulaToFormulaTypeMapper formulaTypeMapper,
+         IPathToPathElementsMapper parameterDisplayPathMapper,
+         IFavoriteRepository favoriteRepository,
+         IEntityPathResolver entityPathResolver,
+         IParameterListOfValuesRetriever parameterListOfValuesRetriever)
       {
          _representationInfoRepository = representationInfoRepository;
          _formulaTypeMapper = formulaTypeMapper;
          _parameterDisplayPathMapper = parameterDisplayPathMapper;
          _favoriteRepository = favoriteRepository;
          _entityPathResolver = entityPathResolver;
-         _parameterNameWithListOfValues = new List<string>(CoreConstants.Parameters.AllWithListOfValues);
+         _parameterListOfValuesRetriever = parameterListOfValuesRetriever;
       }
 
       public IParameterDTO MapFrom(IParameter parameter)
@@ -98,68 +98,6 @@ namespace PKSim.Presentation.DTO.Mappers
          return allVisibleUnits.Where(unit => unitsToKeep.Contains(unit.Name)).ToList();
       }
 
-      private void updateListOfValues(ParameterDTO parameterDTO, IParameter parameter)
-      {
-         if (!_parameterNameWithListOfValues.Contains(parameter.Name)) return;
-         if (parameter.IsNamed(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
-         {
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL, PKSimConstants.UI.Normal);
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL, PKSimConstants.UI.LogNormal);
-         }
-         else if (parameter.IsNamed(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER))
-         {
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_ALBUMIN, PKSimConstants.UI.Albumin);
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_AGP, PKSimConstants.UI.Glycoprotein);
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_UNKNOWN, PKSimConstants.UI.Unknown);
-         }
-         else if (parameter.IsNamed(CoreConstants.Parameters.NUMBER_OF_BINS))
-         {
-            addNumericListOfValues(parameterDTO, 1, CoreConstants.Parameters.MAX_NUMBER_OF_BINS);
-         }
-         else if (parameter.NameIsOneOf(CoreConstants.Parameters.Halogens))
-         {
-            addNumericListOfValues(parameterDTO, 0, CoreConstants.Parameters.MAX_NUMBER_OF_HALOGENS);
-         }
-         else if (parameter.Name.StartsWith(CoreConstants.Parameters.ParameterCompoundTypeBase))
-         {
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_ACID, CompoundType.Acid.ToString());
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_NEUTRAL, CompoundType.Neutral.ToString());
-            parameterDTO.ListOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_BASE, CompoundType.Base.ToString());
-         }
-         else if (parameter.IsNamed(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM))
-         {
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.MONODISPERSE, PKSimConstants.UI.Monodisperse);
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.POLYDISPERSE, PKSimConstants.UI.Polydisperse);
-         }
-         else if (parameter.IsNamed(CoreConstants.Parameters.PRECIPITATED_DRUG_SOLUBLE))
-         {
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.SOLUBLE, PKSimConstants.UI.Soluble);
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.INSOLUBLE, PKSimConstants.UI.Insoluble);
-         }
-         else if (parameter.IsNamed(CoreConstants.Parameters.GESTATIONAL_AGE))
-         {
-            addNumericListOfValues(parameterDTO, CoreConstants.PretermRange.Min(), CoreConstants.PretermRange.Max());
-         }
-         else if (CoreConstants.Parameters.AllBooleanParameters.Contains(parameter.Name))
-         {
-            parameterDTO.ListOfValues.Add(1, PKSimConstants.UI.Yes);
-            parameterDTO.ListOfValues.Add(0, PKSimConstants.UI.No);
-         }
-         else if (parameter.NameIsOneOf(CoreConstants.Parameters.PARA_ABSORBTION_SINK, CoreConstants.Parameters.TRANS_ABSORBTION_SINK))
-         {
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.SINK_CONDITION, PKSimConstants.UI.SinkCondition);
-            parameterDTO.ListOfValues.Add(CoreConstants.Parameters.NO_SINK_CONDITION, PKSimConstants.UI.NoSinkCondition);
-         }
-         else
-            throw new ArgumentException("Cannot create list of values", parameter.Name);
-      }
-
-      private void addNumericListOfValues(ParameterDTO parameterDTO, int min, int max)
-      {
-         for (int i = min; i <= max; i++)
-         {
-            parameterDTO.ListOfValues.Add(i, i.ToString());
-         }
-      }
+      private void updateListOfValues(ParameterDTO parameterDTO, IParameter parameter) => _parameterListOfValuesRetriever.UpdateLisOfValues(parameterDTO.ListOfValues, parameter);
    }
 }

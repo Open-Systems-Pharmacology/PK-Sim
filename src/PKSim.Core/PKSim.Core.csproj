@@ -180,6 +180,7 @@
     <Compile Include="Mappers\BoxWhiskerChartDataToDataTableMapper.cs" />
     <Compile Include="Mappers\ChartDataToDataTableMapper.cs" />
     <Compile Include="Mappers\IDataRepositoryToObservedCurveDataMapper.cs" />
+    <Compile Include="Mappers\ParameterListOfValuesRetriever.cs" />
     <Compile Include="Mappers\PopulationPKAnalysisToDataTableMapper.cs" />
     <Compile Include="Mappers\CompoundToCompoundPropertiesMapper.cs" />
     <Compile Include="Mappers\GlobalPKAnalysisToDataTableMapper.cs" />
