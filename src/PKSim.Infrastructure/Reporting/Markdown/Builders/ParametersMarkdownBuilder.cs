@@ -20,9 +20,12 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Builders
 
       public override void Report(IEnumerable<IParameter> parameters, MarkdownTracker tracker, int indentationLevel)
       {
+         var parameterElements = parameters.Select(x => _parameterElementMapper.MapFrom(x)).ToList();
+         if (!parameterElements.Any())
+            return;
+
          tracker.Add(PKSimConstants.ObjectTypes.Parameter.Pluralize().ToMarkdownLevelElement(indentationLevel));
-         var table = parameters.Select(x => _parameterElementMapper.MapFrom(x));
-         tracker.Add(table.ToMarkdownTable());
+         tracker.Add(parameterElements.ToMarkdownTable());
       }
    }
 }
