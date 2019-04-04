@@ -282,7 +282,6 @@
     <Compile Include="Reporting\Markdown\Elements\ParameterElement.cs" />
     <Compile Include="Reporting\Markdown\Elements\TitleBaseElement.cs" />
     <Compile Include="Reporting\Markdown\Extensions\MarkdownElementExtensions.cs" />
-    <Compile Include="Reporting\Markdown\IParameterToParameterElementMapper.cs" />
     <Compile Include="Reporting\Markdown\MarkdownBuilderRepository.cs" />
     <Compile Include="Reporting\Markdown\MarkdownTracker.cs" />
     <Compile Include="Reporting\Markdown\Mappers\ParameterToParameterElementMapper.cs" />
