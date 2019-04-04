@@ -23,7 +23,7 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Builders
 
       public override void Report(Compound compound, MarkdownTracker tracker, int indentationLevel)
       {
-         base.Report(compound, tracker);
+         base.Report(compound, tracker, indentationLevel);
          var sublevelIndentation = indentationLevel + 1;
          tracker.Add(PKSimConstants.ObjectTypes.Parameter.Pluralize().ToMarkdownLevelElement(sublevelIndentation));
 
