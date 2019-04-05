@@ -2177,6 +2177,7 @@ namespace PKSim.Assets
          public static readonly string ForAll = "For All";
          public static readonly string MoleculeExcludeList = "For All Molecules Except";
          public static readonly string MoleculeIncludeList = "For Molecules";
+         public static readonly string Type = "Type";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 

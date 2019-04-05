@@ -11,7 +11,7 @@ namespace PKSim.Infrastructure.Reporting.Markdown
       private const string OFFSET = "     ";
       private const string TABLE_OFFSET = "\r\n     ";
       private const string TABLE_OFFSET_NO_INDENT = "\r\n";
-      private const string NEW_LINE = "\r\n\r\n";
+      private const string NEW_LINE = "\r\n";
 
       /// <summary>
       ///    The string builder containing the actual Markdown being generated
