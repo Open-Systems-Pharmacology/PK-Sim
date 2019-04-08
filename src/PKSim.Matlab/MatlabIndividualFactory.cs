@@ -68,8 +68,7 @@ namespace PKSim.Matlab
 
       public ParameterValue[] CreateIndividual(OriginData matlabOriginData)
       {
-         IEnumerable<MoleculeOntogeny> moleculeOnogenies = new MoleculeOntogeny[0];
-         return CreateIndividual(matlabOriginData, moleculeOnogenies);
+         return CreateIndividual(matlabOriginData, Enumerable.Empty<MoleculeOntogeny>());
       }
 
         public DistributedParameterValue[] DistributionsFor(OriginData matlabOriginData, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
