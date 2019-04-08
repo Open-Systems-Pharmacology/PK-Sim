@@ -14,6 +14,7 @@ namespace PKSim.Matlab
    public interface IMatlabIndividualFactory
    {
       ParameterValue[] CreateIndividual(OriginData matlabOriginData, IEnumerable<MoleculeOntogeny> moleculeOntogenies);
+      ParameterValue[] CreateIndividual(OriginData matlabOriginData);
       DistributedParameterValue[] DistributionsFor(OriginData matlabOriginData, IEnumerable<MoleculeOntogeny> moleculeOntogenies);
    }
 
@@ -65,7 +66,12 @@ namespace PKSim.Matlab
          return allIndividualParameters.ToArray();
       }
 
-      public DistributedParameterValue[] DistributionsFor(OriginData matlabOriginData, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
+      public ParameterValue[] CreateIndividual(OriginData matlabOriginData)
+      {
+         return CreateIndividual(matlabOriginData, Enumerable.Empty<MoleculeOntogeny>());
+      }
+
+        public DistributedParameterValue[] DistributionsFor(OriginData matlabOriginData, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
       {
          var originData = originDataFrom(matlabOriginData);
          var individual = _individualFactory.CreateAndOptimizeFor(originData);
