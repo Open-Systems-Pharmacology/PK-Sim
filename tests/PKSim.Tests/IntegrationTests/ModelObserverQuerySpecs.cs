@@ -23,7 +23,7 @@ namespace PKSim.IntegrationTests
       private string _complexProductName;
       private string _metaboliteProductName;
       private IObserverBuilder _observer;
-
+      
       public override void GlobalContext()
       {
          base.GlobalContext();
