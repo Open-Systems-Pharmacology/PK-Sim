@@ -105,9 +105,9 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_created_a_fraction_excreted_to_feces_observer_for_the_drug()
       {
-         var fractionExcretedToFeced = _observers.FindByName(CoreConstants.Observer.FRACTION_EXCRETED_TO_FECES);
-         fractionExcretedToFeced.ShouldNotBeNull();
-         fractionExcretedToFeced.MoleculeNames().ShouldOnlyContain(_compoundName);
+         var fractionExcretedToFeces = _observers.FindByName(CoreConstants.Observer.FRACTION_EXCRETED_TO_FECES);
+         fractionExcretedToFeces.ShouldNotBeNull();
+         fractionExcretedToFeces.MoleculeNames().ShouldOnlyContain(_compoundName);
       }
 
       [Observation]
@@ -158,7 +158,7 @@ namespace PKSim.IntegrationTests
          var individual = DomainFactoryForSpecs.CreateStandardIndividual();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
 
-         _simulation =  DomainFactoryForSpecs.CreateSimulationWith(individual, compound, protocol, CoreConstants.Model.TwoPores).DowncastTo<IndividualSimulation>();
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(individual, compound, protocol, CoreConstants.Model.TwoPores).DowncastTo<IndividualSimulation>();
          _moleculeBuildingBlock = new MoleculeBuildingBlock();
          var compoundProperties = _simulation.CompoundPropertiesList.First();
          _compoundName = compoundProperties.Compound.Name;

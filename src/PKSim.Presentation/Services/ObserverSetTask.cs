@@ -13,8 +13,7 @@ namespace PKSim.Presentation.Services
       public ObserverSetTask(
          IExecutionContext executionContext,
          IBuildingBlockTask buildingBlockTask,
-         IApplicationController applicationController,
-         IObjectBaseFactory objectBaseFactory
+         IApplicationController applicationController
       ) :
          base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.ObserverSet)
       {

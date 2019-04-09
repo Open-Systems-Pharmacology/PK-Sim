@@ -148,25 +148,35 @@ namespace PKSim.Infrastructure.ORM.Queries
          //always add complex molecules if any
          var moleculeNames = processes.SpecificBindingSelection.AllEnabledPartialProcesses().Select(x => x.ProductName(CoreConstants.Molecule.Complex)).ToList();
 
-         //Add sink metabolite
-         moleculeNames.AddRange(processes.MetabolizationSelection.AllEnabledPartialProcesses().OfType<EnzymaticProcessSelection>()
+         //Add sink metabolites
+         var enzymaticProcessProductNames = processes.MetabolizationSelection.AllEnabledPartialProcesses().OfType<EnzymaticProcessSelection>()
             .Where(x => x.IsSink)
-            .Select(x => x.ProductName()));
+            .Select(x => x.ProductName()).ToList();
+
+         moleculeNames.AddRange(enzymaticProcessProductNames);
 
          if (!moleculeNames.Any())
             return;
 
+         //Local fraction of dose observer defined per instance of the metabolization or specific binding process
          var observerName = CoreConstants.Observer.ObserverNameFrom(CoreConstants.Observer.FRACTION_OF_DOSE, compound.Name);
-         var fractionObserver = createFractionObserver(observerName, observerBuildingBlock, () => getFractionOfDoseFormula(observerBuildingBlock, compound));
-
+         var fractionObserver = createAmountFractionObserver(observerName, observerBuildingBlock, () => getFractionOfDoseFormula(observerBuildingBlock, compound));
          moleculeNames.Each(fractionObserver.AddMoleculeName);
+
+         //Add liver zone specific observers based on this observer
          addLiverZoneObserversBasedOn(fractionObserver, observerBuildingBlock, compound);
+
+         //Global fraction of dose observers. One per complex or binding process defined globally under organism
+         var totalFractionObserverName = CoreConstants.Observer.ObserverNameFrom(CoreConstants.Observer.TOTAL_FRACTION_OF_DOSE, compound.Name);
+         var totalFractionObserver = createContainerFractionObserver(totalFractionObserverName, observerBuildingBlock, () => getTotalFractionOfDoseFormula(observerBuildingBlock, compound, observerName));
+         totalFractionObserver.ContainerCriteria = Create.Criteria(x => x.With(Constants.ORGANISM));
+         moleculeNames.Each(totalFractionObserver.AddMoleculeName);
       }
 
       private void createReceptorOccupancyObserver(IObserverBuildingBlock observerBuildingBlock, IMoleculeBuilder protein, IMoleculeBuilder complex)
       {
          var observerName = CoreConstants.Observer.ObserverNameFrom(CoreConstants.Observer.RECEPTOR_OCCUPANCY, complex.Name);
-         var observer = createFractionObserver(observerName, observerBuildingBlock, () => getReceptorOccupancyFormula(observerBuildingBlock, protein, complex));
+         var observer = createAmountFractionObserver(observerName, observerBuildingBlock, () => getReceptorOccupancyFormula(observerBuildingBlock, protein, complex));
          observer.AddMoleculeName(complex.Name);
       }
 
@@ -187,7 +197,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
       private void createSimpleFractionObserver(Simulation simulation, IObserverBuildingBlock observerBuildingBlock, string observerName, string criteria)
       {
-         var observer = createFractionObserver(observerName, observerBuildingBlock, () => getFractionFormula(observerBuildingBlock));
+         var observer = createAmountFractionObserver(observerName, observerBuildingBlock, () => getFractionFormula(observerBuildingBlock));
          var compoundNames = simulation.Compounds.Where(x => !_interactionTask.IsMetabolite(x, simulation)).AllNames().ToList();
          compoundNames.Each(observer.AddMoleculeName);
          observer.ContainerCriteria = Create.Criteria(x => x.With(criteria));
@@ -221,8 +231,8 @@ namespace PKSim.Infrastructure.ORM.Queries
             .WithFormulaString("(M_periportal + M_pericentral)/" + TOTAL_DRUG_MASS_ALIAS)
             .WithDimension(_dimensionRepository.Fraction);
 
-         formula.AddObjectPath(createZoneAmoutPath(compartment, CoreConstants.Compartment.Periportal, "M_periportal"));
-         formula.AddObjectPath(createZoneAmoutPath(compartment, CoreConstants.Compartment.Pericentral, "M_pericentral"));
+         formula.AddObjectPath(createZoneAmountPath(compartment, CoreConstants.Compartment.Periportal, "M_periportal"));
+         formula.AddObjectPath(createZoneAmountPath(compartment, CoreConstants.Compartment.Pericentral, "M_pericentral"));
          formula.AddObjectPath(createTotalDrugMassObjectPath(compound.Name));
 
          observer.Formula = formula;
@@ -230,14 +240,25 @@ namespace PKSim.Infrastructure.ORM.Queries
          observerBuildingBlock.AddFormula(formula);
       }
 
-      private IFormulaUsablePath createZoneAmoutPath(string compartment, string zone, string alias)
+      private IFormulaUsablePath createZoneAmountPath(string compartment, string zone, string alias)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(Constants.ORGANISM, CoreConstants.Organ.Liver, zone, compartment, ObjectPathKeywords.MOLECULE)
             .WithAlias(alias)
             .WithDimension(_dimensionRepository.Amount);
       }
 
-      private IAmountObserverBuilder createFractionObserver(string observerName, IObserverBuildingBlock observerBuildingBlock, Func<IFormula> getFormula)
+      private IContainerObserverBuilder createContainerFractionObserver(string observerName, IObserverBuildingBlock observerBuildingBlock, Func<IFormula> getFormula)
+      {
+         var observer = _objectBaseFactory.Create<IContainerObserverBuilder>()
+            .WithName(observerName)
+            .WithDimension(_dimensionRepository.Fraction)
+            .WithFormula(getFormula());
+
+         observerBuildingBlock.Add(observer);
+         return observer;
+      }
+
+      private IAmountObserverBuilder createAmountFractionObserver(string observerName, IObserverBuildingBlock observerBuildingBlock, Func<IFormula> getFormula)
       {
          var observer = _objectBaseFactory.Create<IAmountObserverBuilder>()
             .WithName(observerName)
@@ -259,6 +280,24 @@ namespace PKSim.Infrastructure.ORM.Queries
       {
          var formulaName = $"FractionOfDose_{compound.Name}";
          return getFractionFormula(observerBuildingBlock, formulaName, compound.Name);
+      }
+
+      private IFormula getTotalFractionOfDoseFormula(IObserverBuildingBlock observerBuildingBlock, Compound compound, string fractionOfDoseObserverName)
+      {
+         var formulaName = $"TotalFractionOfDose_{compound.Name}";
+
+         if (observerBuildingBlock.FormulaCache.Contains(formulaName))
+            return observerBuildingBlock.FormulaCache[formulaName];
+
+         var sumFormula = _objectBaseFactory.Create<SumFormula>()
+            .WithName(formulaName)
+            .WithDimension(_dimensionRepository.Fraction);
+
+         sumFormula.Criteria = Create.Criteria(x => x.With(fractionOfDoseObserverName));
+         sumFormula.Variable = "F";
+         sumFormula.FormulaString = sumFormula.VariablePattern;
+
+         return sumFormula;
       }
 
       private IFormula getFractionFormula(IObserverBuildingBlock observerBuildingBlock, string formulaName, string pathToDrugMass)
