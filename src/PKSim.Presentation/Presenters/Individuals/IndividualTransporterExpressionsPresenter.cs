@@ -90,6 +90,8 @@ namespace PKSim.Presentation.Presenters.Individuals
       public void UpdateTransportType(TransportType newTransportType)
       {
          AddCommand(_moleculeExpressionTask.SetTransporterTypeFor(_transporter, newTransportType));
+         //required to refresh view when changing transport type as some UI elements need to be invalidated
+         RefreshView();         
       }
 
       public override void AddCommand(ICommand command)
@@ -155,6 +157,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       public void RefreshView()
       {
          _moleculePropertiesPresenter.RefreshView();
+         _view.RefreshData();
       }
 
       public void Handle(NoTranporterTemplateAvailableEvent eventToHandle)

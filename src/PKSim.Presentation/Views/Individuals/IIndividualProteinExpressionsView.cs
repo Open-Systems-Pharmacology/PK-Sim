@@ -22,5 +22,6 @@ namespace PKSim.Presentation.Views.Individuals
       void BindTo(TransporterExpressionDTO transporterExpressionDTO);
       void ShowWarning(string warning);
       void HideWarning();
+      void RefreshData();
    }
 }
