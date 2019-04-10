@@ -195,7 +195,7 @@ namespace PKSim.CLI
 
          _simulationName = "S1";
          _simulation = new Simulation {Name = _simulationName};
-         _individualSimulation = new IndividualSimulation { Name = _simulationName};
+         _individualSimulation = new IndividualSimulation {Name = _simulationName};
          _input = new Input {Project = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation};
 
          _expectedSimulationPath = Path.Combine(_expectedOutputPath, _simulationName);
@@ -207,7 +207,7 @@ namespace PKSim.CLI
 
          _observedData = DomainHelperForSpecs.ObservedData().WithName("OBS");
          _project.AddObservedData(_observedData);
-         _projectSnapshot.Simulations = new[] { _simulation };
+         _projectSnapshot.Simulations = new[] {_simulation};
          _expectedObservedDataXlsFullPath = Path.Combine(_qualificationConfiguration.ObservedDataFolder, $"{_observedData.Name}{Constants.Filter.XLSX_EXTENSION}");
          _expectedObservedDataCsvFullPath = Path.Combine(_qualificationConfiguration.ObservedDataFolder, $"{_observedData.Name}{Constants.Filter.CSV_EXTENSION}");
 
@@ -262,7 +262,7 @@ namespace PKSim.CLI
          _mapping.SimulationMappings.Length.ShouldBeEqualTo(1);
          _mapping.SimulationMappings[0].Simulation.ShouldBeEqualTo(_simulationName);
          _mapping.SimulationMappings[0].Project.ShouldBeEqualTo(PROJECT_NAME);
-         _mapping.SimulationMappings[0].Path.ShouldBeEqualTo($"{PROJECT_NAME}/{ _simulationName}/");
+         _mapping.SimulationMappings[0].Path.ShouldBeEqualTo($"{PROJECT_NAME}/{_simulationName}/");
       }
 
       [Observation]
@@ -353,7 +353,7 @@ namespace PKSim.CLI
       }
    }
 
-   public class When_running_the_qualification_runner_with_a_valid_configuration_with_swapable_building_blocks_based_on_an_invalid_file : concern_for_QualificationRunnerWithValidConfiguration
+   public class When_running_the_qualification_runner_with_a_valid_configuration_with_swappable_building_blocks_based_on_an_invalid_file : concern_for_QualificationRunnerWithValidConfiguration
    {
       private BuildingBlockSwap _buildingBlockSwap;
 
@@ -378,7 +378,7 @@ namespace PKSim.CLI
       }
    }
 
-   public class When_running_the_qualification_runner_with_a_valid_configuration_with_swapable_building_blocks_based_on_a_valid_file_referencing_an_invalid_building_block_in_ref_project : concern_for_QualificationRunnerWithValidConfiguration
+   public class When_running_the_qualification_runner_with_a_valid_configuration_with_swappable_building_blocks_based_on_a_valid_file_referencing_an_invalid_building_block_in_ref_project : concern_for_QualificationRunnerWithValidConfiguration
    {
       private BuildingBlockSwap _buildingBlockSwap;
       private SnapshotProject _refSnapshotProject;
@@ -405,7 +405,7 @@ namespace PKSim.CLI
       }
    }
 
-   public class When_running_the_qualification_runner_with_a_valid_configuration_with_swapable_building_blocks_based_on_a_valid_file_referencing_an_invalid_building_block_in_base_project : concern_for_QualificationRunnerWithValidConfiguration
+   public class When_running_the_qualification_runner_with_a_valid_configuration_with_swappable_building_blocks_based_on_a_valid_file_referencing_an_invalid_building_block_in_base_project : concern_for_QualificationRunnerWithValidConfiguration
    {
       private BuildingBlockSwap _buildingBlockSwap;
       private SnapshotProject _refSnapshotProject;
@@ -440,7 +440,7 @@ namespace PKSim.CLI
       protected override async Task Context()
       {
          await base.Context();
-         
+
          var input = new Input
          {
             Type = PKSimBuildingBlockType.Compound,
@@ -456,7 +456,7 @@ namespace PKSim.CLI
       }
    }
 
-   public class When_running_the_qualification_runner_with_a_valid_configuration_with_swapable_building_blocks_based_on_a_valid_file_referencing_a_valud_building_blocks : concern_for_QualificationRunnerWithValidConfiguration
+   public class When_running_the_qualification_runner_with_a_valid_configuration_wit_swappable_building_blocks_based_on_a_valid_file_referencing_a_valid_building_blocks : concern_for_QualificationRunnerWithValidConfiguration
    {
       private BuildingBlockSwap _buildingBlockSwap;
       private SnapshotProject _refSnapshotProject;
@@ -494,6 +494,148 @@ namespace PKSim.CLI
       {
          _projectSnapshot.Individuals.ShouldNotContain(_originalIndividual);
          _projectSnapshot.Individuals.ShouldContain(_refIndividual);
+      }
+   }
+
+   public class When_running_the_qualification_runner_with_a_valid_configuration_with_swappable_simulation_parameters_based_on_a_valid_file_referencing_a_valid_simulation_parameters : concern_for_QualificationRunnerWithValidConfiguration
+   {
+      private SimulationParameterSwap _simulationParameterSwap;
+      private SnapshotProject _refSnapshotProject;
+      private Simulation _refSimulation;
+      private Simulation _originalSimulation;
+      private LocalizedParameter _refLocalizedParameter;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _originalSimulation = new Simulation().WithName("TARGET_SIM");
+         _refSimulation = new Simulation().WithName("REF_SIM");
+         _refLocalizedParameter = new LocalizedParameter {Path = "Organism|P", Value = 10};
+
+         _simulationParameterSwap = new SimulationParameterSwap
+         {
+            Simulation = _refSimulation.Name,
+            ParameterPath = _refLocalizedParameter.Path,
+            TargetSimulations = new[] {_originalSimulation.Name},
+            SnapshotFile = "RefSnapshotPath"
+         };
+
+         _refSimulation.Parameters = new[] {_refLocalizedParameter};
+         _qualificationConfiguration.SimulationParameters = new[] {_simulationParameterSwap};
+
+         _refSnapshotProject = new SnapshotProject {Simulations = new[] {_refSimulation}};
+
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         _projectSnapshot.Simulations = new[] {_originalSimulation};
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_runOptions);
+      }
+
+      [Observation]
+      public void should_add_the_simulation_parameter_from_the_reference_simulation_into_the_original_simulation()
+      {
+         var newParameter = _originalSimulation.Parameters.Find(x => string.Equals(x.Path, _refLocalizedParameter.Path));
+         newParameter.Value.ShouldBeEqualTo(_refLocalizedParameter.Value);
+      }
+   }
+
+   public class When_running_the_qualification_runner_with_a_valid_configuration_with_swappable_simulation_parameters_based_on_a_target_simulation_that_does_not_exist : concern_for_QualificationRunnerWithValidConfiguration
+   {
+      private SimulationParameterSwap _simulationParameterSwap;
+      private SnapshotProject _refSnapshotProject;
+      private Simulation _refSimulation;
+      private LocalizedParameter _refLocalizedParameter;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _refSimulation = new Simulation().WithName("REF_SIM");
+         _refLocalizedParameter = new LocalizedParameter { Path = "Organism|P", Value = 10 };
+
+         _simulationParameterSwap = new SimulationParameterSwap
+         {
+            Simulation = _refSimulation.Name,
+            ParameterPath = _refLocalizedParameter.Path,
+            TargetSimulations = new[] { "DOES NOT EXIST" },
+            SnapshotFile = "RefSnapshotPath"
+         };
+
+         _refSimulation.Parameters = new[] { _refLocalizedParameter };
+         _qualificationConfiguration.SimulationParameters = new[] { _simulationParameterSwap };
+
+         _refSnapshotProject = new SnapshotProject { Simulations = new[] { _refSimulation } };
+
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+      }
+      [Observation]
+      public void should_log_the_error_that_the_simulation_was_not_found_in_the_project()
+      {
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
+      }
+   }
+
+   public class When_running_the_qualification_runner_with_a_valid_configuration_with_swappable_simulation_parameters_based_on_a_ref_simulation_that_does_not_exist : concern_for_QualificationRunnerWithValidConfiguration
+   {
+      private SimulationParameterSwap _simulationParameterSwap;
+      private SnapshotProject _refSnapshotProject;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+
+         _simulationParameterSwap = new SimulationParameterSwap
+         {
+            Simulation = "DOES_NOT_EXIST",
+            TargetSimulations = new[] { "DOES NOT EXIST" },
+            SnapshotFile = "RefSnapshotPath"
+         };
+
+         _qualificationConfiguration.SimulationParameters = new[] { _simulationParameterSwap };
+
+         _refSnapshotProject = new SnapshotProject();
+
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+      }
+
+      [Observation]
+      public void should_log_the_error_that_the_simulation_was_not_found_in_the_project()
+      {
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
+      }
+   }
+
+   public class When_running_the_qualification_runner_with_a_valid_configuration_wit_swappable_simulation_parameters_based_on_a_ref_parameter_that_does_not_exist : concern_for_QualificationRunnerWithValidConfiguration
+   {
+      private SimulationParameterSwap _simulationParameterSwap;
+      private SnapshotProject _refSnapshotProject;
+      private Simulation _refSimulation;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _refSimulation = new Simulation().WithName("REF_SIM");
+
+         _simulationParameterSwap = new SimulationParameterSwap
+         {
+            Simulation = _refSimulation.Name,
+            ParameterPath = "DOES NOT EXIST",
+            SnapshotFile = "RefSnapshotPath"
+         };
+
+         _qualificationConfiguration.SimulationParameters = new[] { _simulationParameterSwap };
+
+         _refSnapshotProject = new SnapshotProject { Simulations = new[] { _refSimulation } };
+
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+      }
+
+      [Observation]
+      public void should_log_the_error_that_the_simulation_was_not_found_in_the_project()
+      {
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
       }
    }
 

@@ -43,6 +43,29 @@ namespace OSPSuite.Core.Qualification
       public string Project { get; set; }
    }
 
+   public class SimulationParameterSwap
+   {
+      public string SnapshotFile { get; set; }
+      public string Simulation { get; set; }
+      public string ParameterPath { get; set; }
+      public string[] TargetSimulations { get; set; }
+
+      public void Deconstruct(out string parameterPath, out string simulation, out string snapshotFile)
+      {
+         snapshotFile = SnapshotFile;
+         simulation = Simulation;
+         parameterPath = ParameterPath;
+      }
+   }
+
+   public class SimulationParameterRef : IReferencingSimulation
+   {
+      public string Path { get; set; }
+      public string[] TargetSimulations { get; set; }
+      public string Project { get; set; }
+      public string Simulation { get; set; }
+   }
+
    public class Input : BuildingBlockRef
    {
       public int SectionId { get; set; }
@@ -102,6 +125,8 @@ namespace OSPSuite.Core.Qualification
       public Input[] Inputs { get; set; }
 
       public BuildingBlockSwap[] BuildingBlocks { get; set; }
+
+      public SimulationParameterSwap[] SimulationParameters { get; set; }
 
       public IBusinessRuleSet Rules { get; } = new BusinessRuleSet();
 

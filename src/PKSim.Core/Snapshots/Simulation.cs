@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Snapshots
@@ -44,6 +45,18 @@ namespace PKSim.Core.Snapshots
 
             return new List<Chart>();
          }
+      }
+
+      public void AddOrUpdate(LocalizedParameter parameter)
+      {
+         var localizedParameters = new List<LocalizedParameter>(Parameters??Enumerable.Empty<LocalizedParameter>());
+         var existingParameter = localizedParameters.Find(x => string.Equals(x.Path, parameter.Path));
+         if (existingParameter != null)
+            localizedParameters.Remove(existingParameter);
+
+         localizedParameters.Add(parameter);
+
+         Parameters = localizedParameters.ToArray();
       }
    }
 }

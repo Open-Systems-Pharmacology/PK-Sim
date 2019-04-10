@@ -72,6 +72,8 @@ namespace PKSim.CLI.Core.Services
 
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
 
+         await performSimulationParameterSwap(snapshot, config.SimulationParameters);
+         
          //Retrieve charts and validate inputs before exiting validation to ensure that we can throw error messages if an element is not available
          var charts = retrieveChartDefinitionsFrom(snapshot, config);
          validateInputs(snapshot, config);
@@ -88,13 +90,13 @@ namespace PKSim.CLI.Core.Services
 
          _logger.AddDebug($"Exporting project {project.Name} to '{projectOutputFolder}'", project.Name);
 
-         var exportRunOtions = new ExportRunOptions
+         var exportRunOptions = new ExportRunOptions
          {
             OutputFolder = projectOutputFolder,
             ExportMode = SimulationExportMode.Xml | SimulationExportMode.Csv
          };
 
-         var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOtions);
+         var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOptions);
          var simulationMappings = simulationExports.Select(x => simulationMappingFrom(x, config)).ToArray();
 
          var observedDataMappings = await exportAllObservedData(project, config);
@@ -141,16 +143,16 @@ namespace PKSim.CLI.Core.Services
 
       private IEnumerable<PlotMapping> retrieveChartDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
       {
-         var simuationName = simulationPlot.Simulation;
-         var simulation = snapshotProject.Simulations?.FindByName(simuationName);
+         var simulationName = simulationPlot.Simulation;
+         var simulation = snapshotProject.Simulations?.FindByName(simulationName);
          if (simulation == null)
-            throw new QualificationRunException($"Cannot export charts as simulation '{simuationName}' in not defined in project '{snapshotProject.Name}'.");
+            throw new QualificationRunException(CannotFindSimulationInSnapshot(simulationName,snapshotProject.Name));
 
          return simulation.Analyses.Select(chart => new PlotMapping
          {
             Plot = chart,
             SectionId = simulationPlot.SectionId,
-            Simulation = simuationName,
+            Simulation = simulationName,
             Project = snapshotProject.Name
          });
       }
@@ -239,25 +241,60 @@ namespace PKSim.CLI.Core.Services
          if (buildingBlockSwaps == null)
             return Task.CompletedTask;
 
-         return Task.WhenAll(buildingBlockSwaps.Select(swap => swapBuildingBlockIn(projectSnapshot, swap)));
+         return Task.WhenAll(buildingBlockSwaps.Select(x => swapBuildingBlockIn(projectSnapshot, x)));
+      }
+
+      private Task performSimulationParameterSwap(Project projectSnapshot, SimulationParameterSwap[] simulationParameters)
+      {
+         if (simulationParameters == null)
+            return Task.CompletedTask;
+
+         return Task.WhenAll(simulationParameters.Select(x => swapSimulationParametersIn(projectSnapshot, x)));
       }
 
       private async Task swapBuildingBlockIn(Project projectSnapshot, BuildingBlockSwap buildingBlockSwap)
       {
          var (type, name, snapshotPath) = buildingBlockSwap;
-         var referenceSnasphot = await _snapshotTask.LoadSnapshotFromFile<Project>(snapshotPath);
-         if (referenceSnasphot == null)
+         var referenceSnapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(snapshotPath);
+         if (referenceSnapshot == null)
             throw new QualificationRunException(CannotLoadSnapshotFromFile(snapshotPath));
 
-         var buildiingBlockToUse = referenceSnasphot.BuildingBlockByTypeAndName(type, name);
-         if (buildiingBlockToUse == null)
-            throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(type.ToString(), name, snapshotPath));
+         var buildingBlockToUse = referenceSnapshot.BuildingBlockByTypeAndName(type, name);
+         if (buildingBlockToUse == null)
+            throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(type.ToString(), name, referenceSnapshot.Name));
 
          var buildingBlock = projectSnapshot.BuildingBlockByTypeAndName(type, name);
          if (buildingBlock == null)
             throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(type.ToString(), name, projectSnapshot.Name));
 
-         projectSnapshot.Swap(buildiingBlockToUse);
+         projectSnapshot.Swap(buildingBlockToUse);
+      }
+
+      private async Task swapSimulationParametersIn(Project projectSnapshot, SimulationParameterSwap simulationParameter)
+      {
+         var (parameterPath, simulationName, snapshotPath) = simulationParameter;
+         var referenceSnapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(snapshotPath);
+         if (referenceSnapshot == null)
+            throw new QualificationRunException(CannotLoadSnapshotFromFile(snapshotPath));
+
+         var referenceSimulation = referenceSnapshot.Simulations?.FindByName(simulationName);
+         if (referenceSimulation == null)
+            throw new QualificationRunException(CannotFindSimulationInSnapshot(simulationName, referenceSnapshot.Name));
+
+         var referenceParameter = referenceSimulation.Parameters?.Find(x => string.Equals(x.Path, parameterPath));
+         if (referenceParameter == null)
+            throw new QualificationRunException(CannotFindSimulationParameterInSnapshot(parameterPath, simulationName, referenceSnapshot.Name));
+
+
+         simulationParameter.TargetSimulations?.Each(targetSimulationName =>
+         {
+            var targetSimulation = projectSnapshot.Simulations?.FindByName(targetSimulationName);
+            if (targetSimulation == null)
+               throw new QualificationRunException(CannotFindSimulationInSnapshot(targetSimulationName, projectSnapshot.Name));
+
+            targetSimulation.AddOrUpdate(referenceParameter);
+         });
+
       }
 
       private Task<QualifcationConfiguration> readConfigurationFrom(QualificationRunOptions runOptions)
