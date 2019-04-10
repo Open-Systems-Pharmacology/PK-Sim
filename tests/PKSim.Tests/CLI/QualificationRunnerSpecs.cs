@@ -515,7 +515,7 @@ namespace PKSim.CLI
          _simulationParameterSwap = new SimulationParameterSwap
          {
             Simulation = _refSimulation.Name,
-            ParameterPath = _refLocalizedParameter.Path,
+            Path = _refLocalizedParameter.Path,
             TargetSimulations = new[] {_originalSimulation.Name},
             SnapshotFile = "RefSnapshotPath"
          };
@@ -558,7 +558,7 @@ namespace PKSim.CLI
          _simulationParameterSwap = new SimulationParameterSwap
          {
             Simulation = _refSimulation.Name,
-            ParameterPath = _refLocalizedParameter.Path,
+            Path = _refLocalizedParameter.Path,
             TargetSimulations = new[] { "DOES NOT EXIST" },
             SnapshotFile = "RefSnapshotPath"
          };
@@ -621,7 +621,7 @@ namespace PKSim.CLI
          _simulationParameterSwap = new SimulationParameterSwap
          {
             Simulation = _refSimulation.Name,
-            ParameterPath = "DOES NOT EXIST",
+            Path = "DOES NOT EXIST",
             SnapshotFile = "RefSnapshotPath"
          };
 

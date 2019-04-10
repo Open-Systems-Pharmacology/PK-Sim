@@ -39,7 +39,7 @@ namespace PKSim.Core
          sut.AddOrUpdate(_parameter1);
          _otherParameter = new LocalizedParameter {Path = _parameter1.Path, Value = 2};
       }
-      `
+      
       protected override void Because()
       {
          sut.AddOrUpdate(_otherParameter);

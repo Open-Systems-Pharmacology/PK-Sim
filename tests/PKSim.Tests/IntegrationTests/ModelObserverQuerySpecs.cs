@@ -44,7 +44,7 @@ namespace PKSim.IntegrationTests
          compoundProperties.Processes.MetabolizationSelection.AddPartialProcessSelection(metabolizationSelection);
 
          var observerSet = new ObserverSet();
-         var observerSetBuildingBlock = new UsedBuildingBlock("OBS_ID", PKSimBuildingBlockType.Observers) {BuildingBlock = observerSet};
+         var observerSetBuildingBlock = new UsedBuildingBlock("OBS_ID", PKSimBuildingBlockType.ObserverSet) {BuildingBlock = observerSet};
          _observer = new AmountObserverBuilder().WithName("Test");
          observerSet.Add(_observer);
          _simulation.AddUsedBuildingBlock(observerSetBuildingBlock);

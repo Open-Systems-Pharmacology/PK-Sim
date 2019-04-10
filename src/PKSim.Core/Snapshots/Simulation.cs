@@ -47,10 +47,13 @@ namespace PKSim.Core.Snapshots
          }
       }
 
+      public LocalizedParameter ParameterByPath(string parameterPath) =>
+         Parameters?.Find(x => string.Equals(x.Path, parameterPath));
+
       public void AddOrUpdate(LocalizedParameter parameter)
       {
-         var localizedParameters = new List<LocalizedParameter>(Parameters??Enumerable.Empty<LocalizedParameter>());
-         var existingParameter = localizedParameters.Find(x => string.Equals(x.Path, parameter.Path));
+         var existingParameter = ParameterByPath(parameter.Path);
+         var localizedParameters = new List<LocalizedParameter>(Parameters ?? Enumerable.Empty<LocalizedParameter>());
          if (existingParameter != null)
             localizedParameters.Remove(existingParameter);
 

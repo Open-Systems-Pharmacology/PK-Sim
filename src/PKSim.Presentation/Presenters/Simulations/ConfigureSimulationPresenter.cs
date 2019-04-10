@@ -109,7 +109,7 @@ namespace PKSim.Presentation.Presenters.Simulations
                break;
             case PKSimBuildingBlockType.Event:
                break;
-            case PKSimBuildingBlockType.Observers:
+            case PKSimBuildingBlockType.ObserverSet:
                itemToActivate = SimulationItems.Observers;
                break;
             default:

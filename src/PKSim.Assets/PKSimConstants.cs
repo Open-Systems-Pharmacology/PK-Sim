@@ -876,16 +876,6 @@ namespace PKSim.Assets
 
          public static string UnableToLoadQualificationConfigurationFromFile(string fileFullPath) => $"TODO Unable to read configuration from file '{fileFullPath}'";
 
-         public const string QualificationSnapshotFileNotDefined = "TODO Qualification snapshot file not defined.";
-
-         public const string QualificationOutputFolderNotDefined = "TODO Qualification output folder not defined.";
-
-         public const string QualificationObservedDataFolderNotDefined = "TODO Qualification observed data folder not defined.";
-
-         public const string QualificationMappingFileNotDefined = "TODO Qualification mapping file not defined.";
-
-         public const string QualificationReportConfigurationFileNotDefined = "TODO Qualification report configuration file not defined.";
-         
          public static string CannotFindBuildingBlockInSnapshot(string buildingBlockType, string buildingBlockName, string project) => $"TODO Could not find {buildingBlockType} '{buildingBlockName}' in snapshot '{project}'.";
 
          public static string CannotFindSimulationInSnapshot(string simulationName, string project) => CannotFindBuildingBlockInSnapshot(ObjectTypes.Simulation, simulationName, project);

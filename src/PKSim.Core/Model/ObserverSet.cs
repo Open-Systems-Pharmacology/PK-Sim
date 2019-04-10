@@ -8,7 +8,7 @@ namespace PKSim.Core.Model
    {
       public IEnumerable<IObserverBuilder> Observers => GetChildren<IObserverBuilder>();
 
-      public ObserverSet() : base(PKSimBuildingBlockType.Observers)
+      public ObserverSet() : base(PKSimBuildingBlockType.ObserverSet)
       {
       }
    }
