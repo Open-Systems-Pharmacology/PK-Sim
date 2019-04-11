@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
@@ -25,7 +24,7 @@ namespace PKSim.Core.Snapshots.Mappers
          OutputMappingMapper outputMappingMapper,
          IdentificationParameterMapper identificationParameterMapper,
          ParameterIdentificationAnalysisMapper parameterIdentificationAnalysisMapper,
-         IObjectBaseFactory objectBaseFactory, 
+         IObjectBaseFactory objectBaseFactory,
          ILogger logger
       )
       {

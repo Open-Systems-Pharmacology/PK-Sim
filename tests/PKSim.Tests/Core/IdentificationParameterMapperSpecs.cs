@@ -51,7 +51,7 @@ namespace PKSim.Core
          _startValueParameter = DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.START_VALUE);
 
          _identificationParameter.Add(_startValueParameter);
-
+         _identificationParameter.Name = "PARAM";
          _parameter1 = DomainHelperForSpecs.ConstantParameterWithValue().WithName("P1");
          _parameter2 = DomainHelperForSpecs.ConstantParameterWithValue().WithName("P2");
          _simulation = A.Fake<Simulation>().WithName("S");
@@ -74,7 +74,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_an_indentification_parameter_to_snapshot : concern_for_IdentificationParameterMapper
+   public class When_mapping_an_identification_parameter_to_snapshot : concern_for_IdentificationParameterMapper
    {
       protected override async Task Because()
       {
@@ -87,6 +87,7 @@ namespace PKSim.Core
          _snapshot.IsFixed.ShouldBeEqualTo(_identificationParameter.IsFixed);
          _snapshot.UseAsFactor.ShouldBeEqualTo(_identificationParameter.UseAsFactor);
          _snapshot.Scaling.ShouldBeEqualTo(_identificationParameter.Scaling);
+         _snapshot.Name.ShouldBeEqualTo(_identificationParameter.Name);
       }
 
       [Observation]
@@ -110,7 +111,8 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_identificationParameter);
-         A.CallTo(() => _identificationParameterFactory.CreateFor(A<IEnumerable<ParameterSelection>>._, _parameterIdentificationContext.ParameterIdentification)).Returns(_identificationParameter);
+         var newIdentificationParameter = new IdentificationParameter();
+         A.CallTo(() => _identificationParameterFactory.CreateFor(A<IEnumerable<ParameterSelection>>._, _parameterIdentificationContext.ParameterIdentification)).Returns(newIdentificationParameter);
       }
 
       protected override async Task Because()
@@ -124,6 +126,7 @@ namespace PKSim.Core
          _newParameterIdentification.IsFixed.ShouldBeEqualTo(_identificationParameter.IsFixed);
          _newParameterIdentification.UseAsFactor.ShouldBeEqualTo(_identificationParameter.UseAsFactor);
          _newParameterIdentification.Scaling.ShouldBeEqualTo(_identificationParameter.Scaling);
+         _newParameterIdentification.Name.ShouldBeEqualTo(_identificationParameter.Name);
       }
 
       [Observation]

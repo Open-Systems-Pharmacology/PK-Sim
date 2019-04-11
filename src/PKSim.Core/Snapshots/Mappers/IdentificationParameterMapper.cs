@@ -51,9 +51,10 @@ namespace PKSim.Core.Snapshots.Mappers
          if (snapshot.LinkedParameters == null || !snapshot.LinkedParameters.Any())
             return null;
 
-         var parameterSelections = snapshot.LinkedParameters.Select(x => parameterSelectionFrom(x, context.Project)).ToList();
+         var parameterSelections = snapshot.LinkedParameters.Select(x => parameterSelectionFrom(x, context.Project));
 
          var identificationParameter = _identificationParameterFactory.CreateFor(parameterSelections, context.ParameterIdentification);
+         MapSnapshotPropertiesToModel(snapshot, identificationParameter);
          identificationParameter.IsFixed = ModelValueFor(snapshot.IsFixed);
          identificationParameter.UseAsFactor = ModelValueFor(snapshot.UseAsFactor);
          identificationParameter.Scaling = snapshot.Scaling;
