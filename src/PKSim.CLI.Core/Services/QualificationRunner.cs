@@ -10,6 +10,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.RunOptions;
@@ -20,6 +21,7 @@ using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
 using static PKSim.Assets.PKSimConstants.Error;
 using Project = PKSim.Core.Snapshots.Project;
+using Simulation = PKSim.Core.Snapshots.Simulation;
 
 namespace PKSim.CLI.Core.Services
 {
@@ -33,6 +35,7 @@ namespace PKSim.CLI.Core.Services
       private readonly IExportSimulationRunner _exportSimulationRunner;
       private readonly IDataRepositoryTask _dataRepositoryTask;
       private readonly IMarkdownReporterTask _markdownReporterTask;
+      private readonly Cache<string, Project> _snapshotProjectCache = new Cache<string, Project>();
 
       public QualificationRunner(ISnapshotTask snapshotTask,
          IJsonSerializer jsonSerializer,
@@ -56,6 +59,7 @@ namespace PKSim.CLI.Core.Services
 
       public async Task RunBatchAsync(QualificationRunOptions runOptions)
       {
+         _snapshotProjectCache.Clear();
          _logger.AddDebug("Starting qualification run");
 
          var config = await readConfigurationFrom(runOptions);
@@ -67,10 +71,12 @@ namespace PKSim.CLI.Core.Services
             throw new QualificationRunException(errorMessage);
 
          _logger.AddDebug($"Loading project from snapshot file '{config.SnapshotFile}'...");
-         var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(config.SnapshotFile);
+         var snapshot = await snapshotProjectFromFile(config.SnapshotFile);
          _logger.AddDebug($"Project {snapshot.Name} loaded from snapshot file '{config.SnapshotFile}'.");
 
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
+
+         await performSimulationParameterSwap(snapshot, config.SimulationParameters);
 
          //Retrieve charts and validate inputs before exiting validation to ensure that we can throw error messages if an element is not available
          var charts = retrieveChartDefinitionsFrom(snapshot, config);
@@ -88,13 +94,13 @@ namespace PKSim.CLI.Core.Services
 
          _logger.AddDebug($"Exporting project {project.Name} to '{projectOutputFolder}'", project.Name);
 
-         var exportRunOtions = new ExportRunOptions
+         var exportRunOptions = new ExportRunOptions
          {
             OutputFolder = projectOutputFolder,
             ExportMode = SimulationExportMode.Xml | SimulationExportMode.Csv
          };
 
-         var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOtions);
+         var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOptions);
          var simulationMappings = simulationExports.Select(x => simulationMappingFrom(x, config)).ToArray();
 
          var observedDataMappings = await exportAllObservedData(project, config);
@@ -141,16 +147,14 @@ namespace PKSim.CLI.Core.Services
 
       private IEnumerable<PlotMapping> retrieveChartDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
       {
-         var simuationName = simulationPlot.Simulation;
-         var simulation = snapshotProject.Simulations?.FindByName(simuationName);
-         if (simulation == null)
-            throw new QualificationRunException($"Cannot export charts as simulation '{simuationName}' in not defined in project '{snapshotProject.Name}'.");
+         var simulationName = simulationPlot.Simulation;
+         var simulation = simulationFrom(snapshotProject, simulationName);
 
          return simulation.Analyses.Select(chart => new PlotMapping
          {
             Plot = chart,
             SectionId = simulationPlot.SectionId,
-            Simulation = simuationName,
+            Simulation = simulationName,
             Project = snapshotProject.Name
          });
       }
@@ -239,25 +243,67 @@ namespace PKSim.CLI.Core.Services
          if (buildingBlockSwaps == null)
             return Task.CompletedTask;
 
-         return Task.WhenAll(buildingBlockSwaps.Select(swap => swapBuildingBlockIn(projectSnapshot, swap)));
+         return Task.WhenAll(buildingBlockSwaps.Select(x => swapBuildingBlockIn(projectSnapshot, x)));
+      }
+
+      private Task performSimulationParameterSwap(Project projectSnapshot, SimulationParameterSwap[] simulationParameters)
+      {
+         if (simulationParameters == null)
+            return Task.CompletedTask;
+
+         return Task.WhenAll(simulationParameters.Select(x => swapSimulationParametersIn(projectSnapshot, x)));
       }
 
       private async Task swapBuildingBlockIn(Project projectSnapshot, BuildingBlockSwap buildingBlockSwap)
       {
-         var (type, name, snapshotPath) = buildingBlockSwap;
-         var referenceSnasphot = await _snapshotTask.LoadSnapshotFromFile<Project>(snapshotPath);
-         if (referenceSnasphot == null)
-            throw new QualificationRunException(CannotLoadSnapshotFromFile(snapshotPath));
+         var (buildingBlockType, name, snapshotPath) = buildingBlockSwap;
+         var referenceSnapshot = await snapshotProjectFromFile(snapshotPath);
+         var typeDisplay = buildingBlockType.ToString();
 
-         var buildiingBlockToUse = referenceSnasphot.BuildingBlockByTypeAndName(type, name);
-         if (buildiingBlockToUse == null)
-            throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(type.ToString(), name, snapshotPath));
+         var buildingBlockToUse = referenceSnapshot.BuildingBlockByTypeAndName(buildingBlockType, name);
+         if (buildingBlockToUse == null)
+            throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(typeDisplay, name, referenceSnapshot.Name));
 
-         var buildingBlock = projectSnapshot.BuildingBlockByTypeAndName(type, name);
+         var buildingBlock = projectSnapshot.BuildingBlockByTypeAndName(buildingBlockType, name);
          if (buildingBlock == null)
-            throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(type.ToString(), name, projectSnapshot.Name));
+            throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(typeDisplay, name, projectSnapshot.Name));
 
-         projectSnapshot.Swap(buildiingBlockToUse);
+         projectSnapshot.Swap(buildingBlockToUse);
+      }
+
+      private async Task swapSimulationParametersIn(Project projectSnapshot, SimulationParameterSwap simulationParameter)
+      {
+         var (parameterPath, simulationName, snapshotPath) = simulationParameter;
+         var referenceSnapshot = await snapshotProjectFromFile(snapshotPath);
+
+         var referenceSimulation = simulationFrom(referenceSnapshot, simulationName);
+
+         var referenceParameter = referenceSimulation.ParameterByPath(parameterPath);
+         if (referenceParameter == null)
+            throw new QualificationRunException(CannotFindSimulationParameterInSnapshot(parameterPath, simulationName, referenceSnapshot.Name));
+
+         simulationParameter.TargetSimulations?.Each(targetSimulationName =>
+         {
+            var targetSimulation = simulationFrom(projectSnapshot,targetSimulationName);
+            targetSimulation.AddOrUpdate(referenceParameter);
+         });
+      }
+
+      private async Task<Project> snapshotProjectFromFile(string snapshotPath)
+      {
+         if (!_snapshotProjectCache.Contains(snapshotPath))
+         {
+            var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(snapshotPath);
+            _snapshotProjectCache[snapshotPath] = snapshot ?? throw new QualificationRunException(CannotLoadSnapshotFromFile(snapshotPath));
+         }
+
+         return _snapshotProjectCache[snapshotPath];
+      }
+
+      private Simulation simulationFrom(Project snapshotProject, string simulationName)
+      {
+         var referenceSimulation = snapshotProject.Simulations?.FindByName(simulationName);
+         return referenceSimulation ?? throw new QualificationRunException(CannotFindSimulationInSnapshot(simulationName, snapshotProject.Name));
       }
 
       private Task<QualifcationConfiguration> readConfigurationFrom(QualificationRunOptions runOptions)

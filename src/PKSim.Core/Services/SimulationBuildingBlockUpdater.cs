@@ -179,7 +179,7 @@ namespace PKSim.Core.Services
          return !templateBuildingBlock.BuildingBlockType.IsOneOf(
             PKSimBuildingBlockType.Protocol,
             PKSimBuildingBlockType.Population,
-            PKSimBuildingBlockType.Observers);
+            PKSimBuildingBlockType.ObserverSet);
       }
 
       public bool BuildingBlockSupportComparison(IPKSimBuildingBlock templateBuildingBlock)

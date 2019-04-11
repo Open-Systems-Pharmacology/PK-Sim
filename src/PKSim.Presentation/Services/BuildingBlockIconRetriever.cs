@@ -51,7 +51,7 @@ namespace PKSim.Presentation.Services
          if (usedBuildingBlock.BuildingBlockType == PKSimBuildingBlockType.Individual)
             iconName = speciesNameFrom(usedBuildingBlock);
 
-         if (usedBuildingBlock.BuildingBlockType == PKSimBuildingBlockType.Observers)
+         if (usedBuildingBlock.BuildingBlockType == PKSimBuildingBlockType.ObserverSet)
             iconName = ApplicationIcons.Observer.IconName;
 
             return retrieveIconForStatus(iconName, _buildingBlockInSimulationManager.StatusFor(usedBuildingBlock));

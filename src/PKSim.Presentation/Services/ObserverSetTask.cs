@@ -16,7 +16,7 @@ namespace PKSim.Presentation.Services
          IApplicationController applicationController,
          IObjectBaseFactory objectBaseFactory
       ) :
-         base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Observers)
+         base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.ObserverSet)
       {
       }
 

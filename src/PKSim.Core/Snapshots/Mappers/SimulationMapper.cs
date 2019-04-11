@@ -411,7 +411,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var buildingBlock = project.BuildingBlockByName<T>(name);
          if (buildingBlock == null)
-            throw new SnapshotOutdatedException(PKSimConstants.Error.SimulationTemplateBuildingBlocktNotFoundInProject(name, typeof(T).Name));
+            throw new SnapshotOutdatedException(PKSimConstants.Error.SimulationTemplateBuildingBlockNotFoundInProject(name, typeof(T).Name));
 
          _executionContext.Load(buildingBlock);
          return buildingBlock;

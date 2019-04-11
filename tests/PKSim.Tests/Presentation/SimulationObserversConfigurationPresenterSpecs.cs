@@ -299,7 +299,7 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(
             _simulation, 
-            A<IEnumerable<ObserverSet>>.That.Contains(_observerSetTemplate2), PKSimBuildingBlockType.Observers)).MustHaveHappened();
+            A<IEnumerable<ObserverSet>>.That.Contains(_observerSetTemplate2), PKSimBuildingBlockType.ObserverSet)).MustHaveHappened();
       }
    }
 }

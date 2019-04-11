@@ -68,7 +68,7 @@ namespace PKSim.Presentation.Presenters.Simulations
             _observerSetProperties.AddObserverSetMapping(x.ObserverSetMapping);
          });
 
-         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(_simulation, _allObserverSetMappingDTOs.Select(x => x.ObserverSet), PKSimBuildingBlockType.Observers);
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(_simulation, _allObserverSetMappingDTOs.Select(x => x.ObserverSet), PKSimBuildingBlockType.ObserverSet);
       }
 
       public IEnumerable<ObserverSet> AllUnmappedObserverSets(ObserverSetMappingDTO currentObserverSetMappingDTO = null)

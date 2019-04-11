@@ -58,7 +58,7 @@ namespace PKSim.Presentation.Presenters.Main
                return addPopulationToTree(buildingBlock.DowncastTo<Population>());
             case PKSimBuildingBlockType.Event:
                return addEventToTree(buildingBlock.DowncastTo<PKSimEvent>());
-            case PKSimBuildingBlockType.Observers:
+            case PKSimBuildingBlockType.ObserverSet:
                return addObserversToTree(buildingBlock.DowncastTo<ObserverSet>());
             case PKSimBuildingBlockType.Simulation:
                return null;
