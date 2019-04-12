@@ -293,7 +293,8 @@ namespace PKSim.Infrastructure.ORM.Queries
             .WithName(formulaName)
             .WithDimension(_dimensionRepository.Fraction);
 
-         sumFormula.Criteria = Create.Criteria(x => x.With(fractionOfDoseObserverName));
+         //This will collect all observer named 'fractionOfDoseObserverName' for the molecule where the observer is defined.
+         sumFormula.Criteria = Create.Criteria(x => x.With(fractionOfDoseObserverName).And.InContainer(ObjectPathKeywords.MOLECULE));
          sumFormula.Variable = "F";
          sumFormula.FormulaString = sumFormula.VariablePattern;
 
