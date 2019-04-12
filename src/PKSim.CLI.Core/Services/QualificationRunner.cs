@@ -79,7 +79,7 @@ namespace PKSim.CLI.Core.Services
          await performSimulationParameterSwap(snapshot, config.SimulationParameters);
 
          //Retrieve charts and validate inputs before exiting validation to ensure that we can throw error messages if an element is not available
-         var charts = retrieveChartDefinitionsFrom(snapshot, config);
+         var plots = retrievePlotDefinitionsFrom(snapshot, config);
          validateInputs(snapshot, config);
 
          if (runOptions.Validate)
@@ -111,7 +111,7 @@ namespace PKSim.CLI.Core.Services
          {
             SimulationMappings = simulationMappings,
             ObservedDataMappings = observedDataMappings,
-            Plots = charts,
+            Plots = plots,
             Inputs = inputMappings
          };
 
@@ -132,8 +132,11 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Project '{project.Name}' exported for qualification in {timeSpent.ToDisplay()}", project.Name);
       }
 
-      private PlotMapping[] retrieveChartDefinitionsFrom(Project snapshotProject, QualifcationConfiguration configuration) =>
-         configuration.SimulationPlots?.SelectMany(x => retrieveChartDefinitionsForSimulation(x, snapshotProject)).ToArray();
+      private PlotMapping[] retrievePlotDefinitionsFrom(Project snapshotProject, QualifcationConfiguration configuration)
+      {
+         var plotMappings = configuration.SimulationPlots?.SelectMany(x => retrievePlotDefinitionsForSimulation(x, snapshotProject));
+         return plotMappings?.ToArray() ?? Array.Empty<PlotMapping>();
+      }
 
       private void validateInputs(Project snapshotProject, QualifcationConfiguration configuration)
       {
@@ -145,14 +148,14 @@ namespace PKSim.CLI.Core.Services
          });
       }
 
-      private IEnumerable<PlotMapping> retrieveChartDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
+      private IEnumerable<PlotMapping> retrievePlotDefinitionsForSimulation(SimulationPlot simulationPlot, Project snapshotProject)
       {
          var simulationName = simulationPlot.Simulation;
          var simulation = simulationFrom(snapshotProject, simulationName);
 
-         return simulation.Analyses.Select(chart => new PlotMapping
+         return simulation.Analyses.Select(plot => new PlotMapping
          {
-            Plot = chart,
+            Plot = plot,
             SectionId = simulationPlot.SectionId,
             Simulation = simulationName,
             Project = snapshotProject.Name
@@ -170,7 +173,7 @@ namespace PKSim.CLI.Core.Services
       private Task<ObservedDataMapping[]> exportAllObservedData(PKSimProject project, QualifcationConfiguration configuration)
       {
          if (!project.AllObservedData.Any())
-            return Task.FromResult<ObservedDataMapping[]>(null);
+            return Task.FromResult(Array.Empty<ObservedDataMapping>());
 
          var observedDataOutputFolder = configuration.ObservedDataFolder;
          DirectoryHelper.CreateDirectory(observedDataOutputFolder);
@@ -200,7 +203,7 @@ namespace PKSim.CLI.Core.Services
       private Task<InputMapping[]> exportInputs(PKSimProject project, QualifcationConfiguration configuration)
       {
          if (configuration.Inputs == null)
-            return Task.FromResult<InputMapping[]>(null);
+            return Task.FromResult(Array.Empty<InputMapping>());
 
          return Task.WhenAll(configuration.Inputs.Select(x => exportInput(project, configuration, x)));
       }
@@ -284,7 +287,7 @@ namespace PKSim.CLI.Core.Services
 
          simulationParameter.TargetSimulations?.Each(targetSimulationName =>
          {
-            var targetSimulation = simulationFrom(projectSnapshot,targetSimulationName);
+            var targetSimulation = simulationFrom(projectSnapshot, targetSimulationName);
             targetSimulation.AddOrUpdate(referenceParameter);
          });
       }

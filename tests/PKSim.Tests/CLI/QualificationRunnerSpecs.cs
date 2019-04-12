@@ -553,23 +553,24 @@ namespace PKSim.CLI
       {
          await base.Context();
          _refSimulation = new Simulation().WithName("REF_SIM");
-         _refLocalizedParameter = new LocalizedParameter { Path = "Organism|P", Value = 10 };
+         _refLocalizedParameter = new LocalizedParameter {Path = "Organism|P", Value = 10};
 
          _simulationParameterSwap = new SimulationParameterSwap
          {
             Simulation = _refSimulation.Name,
             Path = _refLocalizedParameter.Path,
-            TargetSimulations = new[] { "DOES NOT EXIST" },
+            TargetSimulations = new[] {"DOES NOT EXIST"},
             SnapshotFile = "RefSnapshotPath"
          };
 
-         _refSimulation.Parameters = new[] { _refLocalizedParameter };
-         _qualificationConfiguration.SimulationParameters = new[] { _simulationParameterSwap };
+         _refSimulation.Parameters = new[] {_refLocalizedParameter};
+         _qualificationConfiguration.SimulationParameters = new[] {_simulationParameterSwap};
 
-         _refSnapshotProject = new SnapshotProject { Simulations = new[] { _refSimulation } };
+         _refSnapshotProject = new SnapshotProject {Simulations = new[] {_refSimulation}};
 
          A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
+
       [Observation]
       public void should_log_the_error_that_the_simulation_was_not_found_in_the_project()
       {
@@ -589,11 +590,11 @@ namespace PKSim.CLI
          _simulationParameterSwap = new SimulationParameterSwap
          {
             Simulation = "DOES_NOT_EXIST",
-            TargetSimulations = new[] { "DOES NOT EXIST" },
+            TargetSimulations = new[] {"DOES NOT EXIST"},
             SnapshotFile = "RefSnapshotPath"
          };
 
-         _qualificationConfiguration.SimulationParameters = new[] { _simulationParameterSwap };
+         _qualificationConfiguration.SimulationParameters = new[] {_simulationParameterSwap};
 
          _refSnapshotProject = new SnapshotProject();
 
@@ -625,9 +626,9 @@ namespace PKSim.CLI
             SnapshotFile = "RefSnapshotPath"
          };
 
-         _qualificationConfiguration.SimulationParameters = new[] { _simulationParameterSwap };
+         _qualificationConfiguration.SimulationParameters = new[] {_simulationParameterSwap};
 
-         _refSnapshotProject = new SnapshotProject { Simulations = new[] { _refSimulation } };
+         _refSnapshotProject = new SnapshotProject {Simulations = new[] {_refSimulation}};
 
          A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
@@ -698,6 +699,66 @@ namespace PKSim.CLI
          _mapping.Plots[0].Simulation.ShouldBeEqualTo(_simulationPlot.Simulation);
          _mapping.Plots[0].Project.ShouldBeEqualTo(_projectSnapshot.Name);
          _mapping.Plots[0].Plot.ShouldBeEqualTo(_curveChart);
+      }
+
+      [Observation]
+      public void should_create_an_empty_array_for_observed_data_if_the_project_does_not_have_any_observed_data()
+      {
+         _mapping.ObservedDataMappings.ShouldNotBeNull();
+         _mapping.ObservedDataMappings.ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_create_an_empty_array_for_inputs_if_no_input_were_exported()
+      {
+         _mapping.Inputs.ShouldNotBeNull();
+         _mapping.Inputs.ShouldBeEmpty();
+      }
+   }
+
+   public class When_running_the_qualification_runner_with_a_configuration_without_any_mapping_created : concern_for_QualificationRunnerWithValidConfiguration
+   {
+      private QualificationMapping _mapping;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+
+         A.CallTo(() => _jsonSerializer.Serialize(A<QualificationMapping>._, _qualificationConfiguration.MappingFile))
+            .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_runOptions);
+      }
+
+      [Observation]
+      public void should_create_an_empty_array_for_simulation_mapping()
+      {
+         _mapping.Plots.ShouldNotBeNull();
+         _mapping.Plots.ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_create_an_empty_array_for_charts()
+      {
+         _mapping.Plots.ShouldNotBeNull();
+         _mapping.Plots.ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_create_an_empty_array_for_observed_data_mappings()
+      {
+         _mapping.ObservedDataMappings.ShouldNotBeNull();
+         _mapping.ObservedDataMappings.ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_create_an_empty_array_for_inputs()
+      {
+         _mapping.Inputs.ShouldNotBeNull();
+         _mapping.Inputs.ShouldBeEmpty();
       }
    }
 }
