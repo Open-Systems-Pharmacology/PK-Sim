@@ -297,7 +297,7 @@ namespace PKSim.Infrastructure.ORM.Queries
          sumFormula.Criteria = Create.Criteria(x => x.With(ObjectPathKeywords.MOLECULE));
          sumFormula.Variable = "M";
          sumFormula.AddObjectPath(createTotalDrugMassObjectPath(compound.Name));
-         sumFormula.FormulaString = $"{sumFormula.VariablePattern}/{TOTAL_DRUG_MASS_ALIAS}";
+         sumFormula.FormulaString = $"({TOTAL_DRUG_MASS_ALIAS} > 0 ? {sumFormula.VariablePattern}/{TOTAL_DRUG_MASS_ALIAS} : 0)";
 
          observerBuildingBlock.AddFormula(sumFormula);
          return sumFormula;
