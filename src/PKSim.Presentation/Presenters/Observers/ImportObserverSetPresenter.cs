@@ -6,7 +6,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -30,6 +29,7 @@ namespace PKSim.Presentation.Presenters.Observers
       private readonly IObserverInfoPresenter _observerInfoPresenter;
       private readonly IDialogCreator _dialogCreator;
       private readonly IObserverTask _observerTask;
+      private readonly IEntityTask _entityTask;
       private readonly List<ImportObserverDTO> _observerDTOs = new List<ImportObserverDTO>();
       private ObserverSet _observerSet;
       public bool IsLatched { get; set; }
@@ -38,11 +38,13 @@ namespace PKSim.Presentation.Presenters.Observers
          IImportObserverSetView view,
          IObserverInfoPresenter observerInfoPresenter,
          IDialogCreator dialogCreator,
-         IObserverTask observerTask) : base(view)
+         IObserverTask observerTask,
+         IEntityTask entityTask) : base(view)
       {
          _observerInfoPresenter = observerInfoPresenter;
          _dialogCreator = dialogCreator;
          _observerTask = observerTask;
+         _entityTask = entityTask;
          AddSubPresenters(_observerInfoPresenter);
          _view.AddObserverView(_observerInfoPresenter.View);
          _view.BindTo(_observerDTOs);
@@ -80,8 +82,13 @@ namespace PKSim.Presentation.Presenters.Observers
             return;
 
          if (_observerDTOs.ExistsByName(observer.Name))
-            throw new OSPSuiteException(PKSimConstants.Error.NameAlreadyExistsInContainerType(observer.Name, PKSimConstants.ObjectTypes.ObserverSet));
+         {
+            var newName = _entityTask.NewNameFor(observer, _observerDTOs.AllNames());
+            if (string.IsNullOrEmpty(newName))
+               return;
 
+            observer.Name = newName;
+         }
 
          var observerDTO = addObserver(observer, newFile);
          AddCommand(() => _observerTask.AddObserver(observer, _observerSet));

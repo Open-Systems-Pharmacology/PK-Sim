@@ -633,7 +633,7 @@
     <Compile Include="Presentation\EditObserverSetPresenterSpecs.cs" />
     <Compile Include="Presentation\EditTableSolubilityParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\EditValueOriginPresenterSpecs.cs" />
-    <Compile Include="Presentation\ImportObserversPresenterSpecs.cs" />
+    <Compile Include="Presentation\ImportObserverSetPresenterSpecs.cs" />
     <Compile Include="Presentation\MoleculeParameterTaskSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeDTOSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeNamePresenterSpecs.cs" />
