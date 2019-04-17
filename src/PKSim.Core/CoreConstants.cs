@@ -131,6 +131,7 @@ namespace PKSim.Core
       public static class Observer
       {
          public static readonly string FRACTION_OF_DOSE = "Fraction of dose";
+         public static readonly string TOTAL_FRACTION_OF_DOSE = "Total fraction of dose";
          public static readonly string RECEPTOR_OCCUPANCY = "Receptor Occupancy";
          public static readonly string FRACTION_EXCRETED = "Fraction excreted";
          public static readonly string FRACTION_EXCRETED_TO_URINE = $"{FRACTION_EXCRETED} to urine";
