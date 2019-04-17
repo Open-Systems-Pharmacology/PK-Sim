@@ -7,12 +7,12 @@ namespace PKSim.Core.Services
    public interface IEntityTask
    {
       /// <summary>
-      ///    Renames the element. Does not trigger a strucutral change of the containing building block
+      ///    Renames the element. Does not trigger a structural change of the containing building block
       /// </summary>
       ICommand Rename(IEntity elementToRename);
 
       /// <summary>
-      ///    Renames the element and triggers a strucutral change of the containing building block
+      ///    Renames the element and triggers a structural change of the containing building block
       /// </summary>
       ICommand StructuralRename(IEntity elementToRename);
 
