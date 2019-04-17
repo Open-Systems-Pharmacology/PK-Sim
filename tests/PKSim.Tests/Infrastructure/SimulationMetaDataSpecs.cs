@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -194,7 +195,7 @@ namespace PKSim.Infrastructure
          using (var session = _sessionFactory.OpenSession())
          using (var transaction = session.BeginTransaction())
          {
-            var projectMetaData = session.CreateCriteria<ProjectMetaData>().List<ProjectMetaData>().First().DowncastTo<ProjectMetaData>();
+            var projectMetaData = session.CreateCriteria<ProjectMetaData>().List<ProjectMetaData>().First();
             projectMetaData.UpdateFrom(_projectMetaData, session);
             transaction.Commit();
          }
