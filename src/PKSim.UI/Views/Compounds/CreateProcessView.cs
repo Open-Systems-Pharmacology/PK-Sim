@@ -1,19 +1,18 @@
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Assets;
 using DevExpress.LookAndFeel;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Extensions;
-using OSPSuite.Presentation;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -110,7 +109,7 @@ namespace PKSim.UI.Views.Compounds
       private void selectedProcessTypeChanged(CompoundProcessDTO compoundProcessDTO)
       {
          //this action might be called when binding to the list even if the selection did not change
-        _createProcessPresenter.ChangeProcessType(compoundProcessDTO);
+         _createProcessPresenter.ChangeProcessType(compoundProcessDTO);
       }
    }
 }

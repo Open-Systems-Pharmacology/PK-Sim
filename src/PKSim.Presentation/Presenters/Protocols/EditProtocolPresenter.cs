@@ -1,9 +1,4 @@
 using System;
-using PKSim.Assets;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Views.Protocols;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
@@ -12,6 +7,11 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Views.Protocols;
 
 namespace PKSim.Presentation.Presenters.Protocols
 {
@@ -77,6 +77,7 @@ namespace PKSim.Presentation.Presenters.Protocols
             setProtocol(protocol);
             UpdateCaption();
          }
+
          _view.Display();
       }
 
@@ -92,7 +93,7 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       public ProtocolMode ProtocolMode
       {
-         get { return _protocolMode; }
+         get => _protocolMode;
          set
          {
             if (_protocolMode == value) return;
@@ -106,9 +107,6 @@ namespace PKSim.Presentation.Presenters.Protocols
          if (_protocolMode == protocolMode)
             return true;
 
-         if (!_protocolUpdater.ValidateSwitchFrom(_protocol))
-            return false;
-
          if (protocolMode == ProtocolMode.Advanced)
             return true;
 
@@ -121,10 +119,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          _view.Caption = PKSimConstants.UI.EditProtocol(_protocol.Name);
       }
 
-      private IView activeProtocolView
-      {
-         get { return activeProtocolPresenter.BaseView; }
-      }
+      private IView activeProtocolView => activeProtocolPresenter.BaseView;
 
       private IProtocolItemPresenter activeProtocolPresenter
       {
@@ -144,9 +139,7 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       private ProtocolMode modeFrom(Protocol protocol)
       {
-         if (protocol.IsAnImplementationOf<SimpleProtocol>())
-            return ProtocolMode.Simple;
-         return ProtocolMode.Advanced;
+         return protocol.IsAnImplementationOf<SimpleProtocol>() ? ProtocolMode.Simple : ProtocolMode.Advanced;
       }
 
       public void Handle(ProtocolModeChangedEvent eventToHandle)

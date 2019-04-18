@@ -2,21 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Views.Protocols;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters;
-using PKSim.Assets;
 
 namespace PKSim.Presentation.Presenters.Protocols
 {
@@ -34,14 +33,17 @@ namespace PKSim.Presentation.Presenters.Protocols
       void AddSchemaItemTo(SchemaDTO schemaDTO, SchemaItemDTO schemaItemDTOToDuplicate);
       void RemoveSchemaItem(SchemaItemDTO schemaItemDTO);
       IList DynamicContentFor(SchemaItemDTO schemaItemDTO);
-      bool HadDynamicContent(SchemaItemDTO schemaItemDTO);
+      bool HasDynamicContent(SchemaItemDTO schemaItemDTO);
       IEnumerable<Unit> AllTimeUnits();
       void ProtocolUnitChanged();
+      void SetSchemaItemTarget(SchemaItemTargetDTO schemaItemTargetDTO, string target);
+      IEnumerable<string> AllTargetsFor(SchemaItemTargetDTO schemaItemTargetDTO);
    }
 
    public class AdvancedProtocolPresenter : ProtocolItemPresenter<IAdvancedProtocolView, IAdvancedProtocolPresenter>, IAdvancedProtocolPresenter
    {
       private AdvancedProtocol _protocol;
+
       //if using a binding list here, it will be necessary to rebind in presenter
       private NotifyList<SchemaDTO> _allSchemas;
       private readonly ISchemaItemToSchemaItemDTOMapper _schemaItemDTOMapper;
@@ -49,10 +51,17 @@ namespace PKSim.Presentation.Presenters.Protocols
       private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
       private readonly IDimensionRepository _dimensionRepository;
 
-      public AdvancedProtocolPresenter(IAdvancedProtocolView view, ISchemaItemToSchemaItemDTOMapper schemaItemDTOMapper,
-         ISchemaToSchemaDTOMapper schemaDTOMapper, IParameterToParameterDTOMapper parameterDTOMapper,
-         IProtocolTask protocolTask, IParameterTask parameterTask, IDimensionRepository dimensionRepository)
-         : base(view, protocolTask, parameterTask)
+      public AdvancedProtocolPresenter(
+         IAdvancedProtocolView view, 
+         ISchemaItemToSchemaItemDTOMapper schemaItemDTOMapper,
+         ISchemaToSchemaDTOMapper schemaDTOMapper, 
+         IParameterToParameterDTOMapper parameterDTOMapper,
+         IProtocolTask protocolTask, 
+         IParameterTask parameterTask, 
+         IDimensionRepository dimensionRepository, 
+         IIndividualFactory individualFactory,
+         IRepresentationInfoRepository representationInfoRepository)
+         : base(view, protocolTask, parameterTask, individualFactory, representationInfoRepository)
       {
          _schemaItemDTOMapper = schemaItemDTOMapper;
          _schemaDTOMapper = schemaDTOMapper;
@@ -69,11 +78,6 @@ namespace PKSim.Presentation.Presenters.Protocols
          _view.BindToSchemas(_allSchemas);
       }
 
-      public override IEnumerable<ApplicationType> AllApplications()
-      {
-         return ApplicationTypes.All();
-      }
-
       public void AddNewSchema()
       {
          AddCommand(_protocolTask.AddSchemaTo(_protocol));
@@ -86,7 +90,7 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       public void SetApplicationType(SchemaItemDTO schemaItemDTO, ApplicationType newApplicationType)
       {
-         AddCommand(_protocolTask.SetApplicationType(SchemaItemFrom(schemaItemDTO), newApplicationType));
+         SetApplicationType(newApplicationType, SchemaItemFrom(schemaItemDTO));
       }
 
       public void SetFormulationType(SchemaItemDTO schemaItemDTO, string newFormulationType)
@@ -94,15 +98,9 @@ namespace PKSim.Presentation.Presenters.Protocols
          AddCommand(_protocolTask.SetFormulationType(SchemaItemFrom(schemaItemDTO), newFormulationType));
       }
 
-      protected SchemaItem SchemaItemFrom(SchemaItemDTO schemaItemDTO)
-      {
-         return schemaItemDTO.SchemaItem;
-      }
+      protected SchemaItem SchemaItemFrom(SchemaItemDTO schemaItemDTO) => schemaItemDTO.SchemaItem;
 
-      protected Schema SchemaFrom(SchemaDTO schemaDTO)
-      {
-         return schemaDTO.Schema;
-      }
+      protected Schema SchemaFrom(SchemaDTO schemaDTO) => schemaDTO.Schema;
 
       public void AddSchemaItemTo(SchemaDTO schemaDTO, SchemaItemDTO schemaItemDTOToDuplicate)
       {
@@ -124,35 +122,43 @@ namespace PKSim.Presentation.Presenters.Protocols
          if (schemaItemDTO == null)
             return new List<IParameterDTO>();
 
-         if(schemaItemDTO.IsUserDefined)
+         if (schemaItemDTO.IsUserDefined)
             return new List<SchemaItemTargetDTO>
             {
-               new SchemaItemTargetDTO{Name = PKSimConstants.UI.TargetOrgan, Target = schemaItemDTO.TargetOrgan},
-               new SchemaItemTargetDTO{Name = PKSimConstants.UI.TargetCompartment, Target = schemaItemDTO.TargetCompartment},
+               new SchemaItemTargetDTO(PKSimConstants.UI.TargetOrgan, schemaItemDTO, x => x.TargetOrgan),
+               new SchemaItemTargetDTO(PKSimConstants.UI.TargetCompartment, schemaItemDTO, x => x.TargetCompartment),
             };
 
          return _protocolTask.AllDynamicParametersFor(SchemaItemFrom(schemaItemDTO)).MapAllUsing(_parameterDTOMapper).ToList();
       }
 
-      public bool HadDynamicContent(SchemaItemDTO schemaItemDTO)
+      public bool HasDynamicContent(SchemaItemDTO schemaItemDTO)
       {
          if (schemaItemDTO == null)
             return false;
 
-         if (schemaItemDTO.IsUserDefined)
-            return true;
-
-         return _protocolTask.AllDynamicParametersFor(SchemaItemFrom(schemaItemDTO)).Any();
+         return schemaItemDTO.IsUserDefined || _protocolTask.AllDynamicParametersFor(SchemaItemFrom(schemaItemDTO)).Any();
       }
 
-      public IEnumerable<Unit> AllTimeUnits()
+      public IEnumerable<Unit> AllTimeUnits() => _dimensionRepository.Time.Units;
+
+      public void ProtocolUnitChanged() => OnStatusChanged();
+
+      public void SetSchemaItemTarget(SchemaItemTargetDTO schemaItemTargetDTO, string target)
       {
-         return _dimensionRepository.Time.Units;
+         var schemaItem = schemaItemTargetDTO.SchemaItemDTO.SchemaItem;
+         if (schemaItemTargetDTO.IsOrgan)
+            SetTargetOrgan(target, schemaItem);
+         else
+            SetTargetCompartment(target, schemaItem);
       }
 
-      public void ProtocolUnitChanged()
+      public IEnumerable<string> AllTargetsFor(SchemaItemTargetDTO schemaItemTargetDTO)
       {
-         OnStatusChanged();
+         if (schemaItemTargetDTO.IsOrgan)
+            return AllOrgans();
+
+         return AllCompartmentsFor(schemaItemTargetDTO.SchemaItemDTO.TargetOrgan);
       }
 
       public override void AddCommand(ICommand commandToAdd)

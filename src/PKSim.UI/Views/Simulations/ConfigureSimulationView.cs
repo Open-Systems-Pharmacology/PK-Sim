@@ -18,7 +18,7 @@ namespace PKSim.UI.Views.Simulations
       public ConfigureSimulationView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.SIMULATION_VIEW_WITDH, CoreConstants.UI.CONFIGURE_SIMULATION_VIEW_HEIGHT);
+         ClientSize = new Size(CoreConstants.UI.SIMULATION_VIEW_WIDTH, CoreConstants.UI.CONFIGURE_SIMULATION_VIEW_HEIGHT);
       }
 
       public override XtraTabControl TabControl => tabConfigureSimulation;

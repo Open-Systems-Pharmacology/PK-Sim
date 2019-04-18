@@ -1,16 +1,16 @@
 using System;
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views.Protocols;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Presenters.Protocols
 {
@@ -25,7 +25,6 @@ namespace PKSim.Presentation.Presenters.Protocols
       private readonly IProtocolFactory _protocolFactory;
       private readonly IProtocolUpdater _protocolUpdater;
       private readonly IProtocolToProtocolPropertiesDTOMapper _protocolPropertiesDTOMapper;
-      private Protocol _protocol;
       private ProtocolMode _protocolMode;
       private ObjectBaseDTO _protocolPropertiesDTO;
 
@@ -48,14 +47,14 @@ namespace PKSim.Presentation.Presenters.Protocols
       public override void InitializeWith(ICommandCollector commandCollector)
       {
          base.InitializeWith(commandCollector);
-        _subPresenterItemManager.AllSubPresenters.Each(pres =>
+         _subPresenterItemManager.AllSubPresenters.Each(pres =>
          {
             pres.StatusChanged += subPresenterChanged;
             pres.StatusChanging += subPresenterChanging;
          });
 
          ProtocolMode = ProtocolMode.Simple;
-         _protocolPropertiesDTO = _protocolPropertiesDTOMapper.MapFrom(_protocol);
+         _protocolPropertiesDTO = _protocolPropertiesDTOMapper.MapFrom(BuildingBlock);
          _view.UpdateChartControl(_protocolChartPresenter.View);
          _view.BindToProperties(_protocolPropertiesDTO);
          refreshPlot();
@@ -68,7 +67,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          if (_view.Canceled)
             return new PKSimEmptyCommand();
 
-         _propertiesMapper.MapProperties(_protocolPropertiesDTO, _protocol);
+         _propertiesMapper.MapProperties(_protocolPropertiesDTO, BuildingBlock);
          return _macroCommand;
       }
 
@@ -78,17 +77,17 @@ namespace PKSim.Presentation.Presenters.Protocols
          set
          {
             _protocolMode = value;
-            var oldProtocol = _protocol;
-            _protocol = _protocolFactory.Create(_protocolMode);
+            var oldProtocol = BuildingBlock;
+            BuildingBlock = _protocolFactory.Create(_protocolMode);
             _macroCommand.Clear();
-            _protocolUpdater.UpdateProtocol(oldProtocol, _protocol);
+            _protocolUpdater.UpdateProtocol(oldProtocol, BuildingBlock);
             updateView();
          }
       }
 
       private void refreshPlot()
       {
-         _protocolChartPresenter.PlotProtocol(_protocol);
+         _protocolChartPresenter.PlotProtocol(BuildingBlock);
       }
 
       private void subPresenterChanged(object sender, EventArgs eventArgs)
@@ -102,13 +101,10 @@ namespace PKSim.Presentation.Presenters.Protocols
          updateControls();
       }
 
-      public Protocol BuildingBlock => _protocol;
+      public Protocol BuildingBlock { get; private set; }
 
       public bool SwitchModeConfirm(ProtocolMode protocolMode)
       {
-         if (!_protocolUpdater.ValidateSwitchFrom(_protocol))
-            return false;
-
          if (protocolMode == ProtocolMode.Advanced)
             return true;
 
@@ -118,7 +114,7 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       private void updateView()
       {
-         activeProtocolPresenter.EditProtocol(_protocol);
+         activeProtocolPresenter.EditProtocol(BuildingBlock);
          _view.UpdateEditControl(activeProtocolView);
          updateControls();
       }

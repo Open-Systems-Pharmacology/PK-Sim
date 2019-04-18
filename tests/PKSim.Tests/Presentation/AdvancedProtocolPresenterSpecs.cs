@@ -5,13 +5,14 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
@@ -30,6 +31,8 @@ namespace PKSim.Presentation
       protected IList<Schema> _allSchemas;
       protected IProtocolTask _protocolTask;
       protected IDimensionRepository _dimensionRepository;
+      protected IIndividualFactory _individualFactory;
+      protected IRepresentationInfoRepository _representationInfoRepository;
 
       protected override void Context()
       {
@@ -44,7 +47,9 @@ namespace PKSim.Presentation
          _parameterTask = A.Fake<IParameterTask>();
          _view = A.Fake<IAdvancedProtocolView>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
-         sut = new AdvancedProtocolPresenter(_view, _schemaItemDTOMapper, _schemaDTOMapper, _parameterDTOMapper, _protocolTask, _parameterTask, _dimensionRepository);
+         _individualFactory = A.Fake<IIndividualFactory>();
+         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
+         sut = new AdvancedProtocolPresenter(_view, _schemaItemDTOMapper, _schemaDTOMapper, _parameterDTOMapper, _protocolTask, _parameterTask, _dimensionRepository, _individualFactory, _representationInfoRepository);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -169,13 +174,13 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void shoud_add_a_schema_item_to_the_schema_and_register_the_command()
+      public void should_add_a_schema_item_to_the_schema_and_register_the_command()
       {
          A.CallTo(() => sut.CommandCollector.AddCommand(_removeSchemaCommand)).MustHaveHappened();
       }
    }
 
-   public class When_notifed_that_a_schema_item_was_added_to_a_schema_belonging_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
+   public class When_notified_that_a_schema_item_was_added_to_a_schema_belonging_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
       private Schema _schema;
@@ -209,7 +214,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notifed_that_a_schema_item_was_added_to_a_schema_that_does_not_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
+   public class When_notified_that_a_schema_item_was_added_to_a_schema_that_does_not_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
       private Schema _schema;
@@ -240,7 +245,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notifed_that_a_schema_item_was_removed_from_a_schema_that_does_not_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
+   public class When_notified_that_a_schema_item_was_removed_from_a_schema_that_does_not_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
       private Schema _schema;
@@ -271,7 +276,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notifed_that_a_schema_item_was_removed_from_a_schema_that_does_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
+   public class When_notified_that_a_schema_item_was_removed_from_a_schema_that_does_belong_to_the_edited_protocol : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
       private Schema _schema;
@@ -306,7 +311,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notifed_that_a_schema_item_was_removed_from_a_schema_for_a_presenter_that_was_not_initialized : concern_for_AdvancedProtocolPresenter
+   public class When_notified_that_a_schema_item_was_removed_from_a_schema_for_a_presenter_that_was_not_initialized : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
       private Schema _schema;
@@ -325,7 +330,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notifed_that_a_schema_item_was_added_to_a_schema_for_a_presenter_that_was_not_initialized : concern_for_AdvancedProtocolPresenter
+   public class When_notified_that_a_schema_item_was_added_to_a_schema_for_a_presenter_that_was_not_initialized : concern_for_AdvancedProtocolPresenter
    {
       private SchemaItem _schemaItem;
       private Schema _schema;
@@ -354,15 +359,114 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_not_returned_user_defined_type()
+      public void should_returned_all_available_types()
       {
-         _results.Any(x => x.UserDefined).ShouldBeFalse();
+         _results.ShouldOnlyContainInOrder(ApplicationTypes.All());
+      }
+   }
+
+   public class When_retrieving_the_dynamic_content_for_a_user_defined_schema_item : concern_for_AdvancedProtocolPresenter
+   {
+      private SchemaItemDTO _schemaItemDTO;
+      private SchemaItem _schemaItem;
+      private SchemaItemTargetDTO _targetOrgan;
+      private SchemaItemTargetDTO _targetCompartment;
+
+      protected override void Context()
+      {
+         base.Context();
+         _schemaItem = new SchemaItem {ApplicationType = ApplicationTypes.UserDefined, TargetOrgan = "Liv", TargetCompartment = "Cell"};
+
+         _schemaItemDTO = new SchemaItemDTO(_schemaItem);
+      }
+
+      protected override void Because()
+      {
+         var result = sut.DynamicContentFor(_schemaItemDTO);
+         _targetOrgan = result[0].DowncastTo<SchemaItemTargetDTO>();
+         _targetCompartment = result[1].DowncastTo<SchemaItemTargetDTO>();
       }
 
       [Observation]
-      public void should_return_some_application()
+      public void should_return_two_elements_for_target_organ_and_target_compartment()
       {
-         _results.Count().ShouldBeGreaterThan(0);
+         _targetCompartment.ShouldNotBeNull();
+         _targetOrgan.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_return_target_items_initialized_with_the_expected_values()
+      {
+         _targetCompartment.Target.ShouldBeEqualTo(_schemaItem.TargetCompartment);
+         _targetCompartment.IsOrgan.ShouldBeFalse();
+
+         _targetOrgan.Target.ShouldBeEqualTo(_schemaItem.TargetOrgan);
+         _targetOrgan.IsOrgan.ShouldBeTrue();
+      }
+   }
+
+   public class When_checking_if_a_schema_item_dto_has_dynamic_content_to_display : concern_for_AdvancedProtocolPresenter
+   {
+      private readonly SchemaItem _userDefinedSchemaItem = new SchemaItem {ApplicationType = ApplicationTypes.UserDefined};
+      private readonly SchemaItem _schemaItemWithParameters = new SchemaItem {ApplicationType = ApplicationTypes.IntravenousBolus};
+      private readonly SchemaItem _schemaItemWithoutParameters = new SchemaItem {ApplicationType = ApplicationTypes.Intravenous};
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _protocolTask.AllDynamicParametersFor(_schemaItemWithParameters)).Returns(new[] {DomainHelperForSpecs.ConstantParameterWithValue(10)});
+         A.CallTo(() => _protocolTask.AllDynamicParametersFor(_schemaItemWithoutParameters)).Returns(Enumerable.Empty<IParameter>());
+      }
+
+      [Observation]
+      public void should_return_false_if_the_schema_item_is_undefined()
+      {
+         sut.HasDynamicContent(null).ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_true_if_the_schema_item_represented_a_user_defined_application()
+      {
+         var schemaItemDTO = new SchemaItemDTO(_userDefinedSchemaItem);
+         sut.HasDynamicContent(schemaItemDTO).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_true_if_the_schema_item_has_dynamic_parameters()
+      {
+         var schemaItemDTO = new SchemaItemDTO(_schemaItemWithParameters);
+         sut.HasDynamicContent(schemaItemDTO).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_false_if_the_schema_item_does_not_have_dynamic_parameters()
+      {
+         var schemaItemDTO = new SchemaItemDTO(_schemaItemWithoutParameters);
+         sut.HasDynamicContent(schemaItemDTO).ShouldBeFalse();
+      }
+   }
+
+   public class When_the_advanced_protocol_presenter_is_setting_the_application_type_to_user_defined_for_a_schema_item : concern_for_AdvancedProtocolPresenter
+   {
+      private readonly SchemaItem _schemaItem = new SchemaItem {ApplicationType = ApplicationTypes.IntravenousBolus};
+      private SchemaItemDTO _schemaItemDTO;
+
+      protected override void Context()
+      {
+         base.Context();
+         _schemaItemDTO = new SchemaItemDTO(_schemaItem);
+      }
+
+      protected override void Because()
+      {
+         sut.SetApplicationType(_schemaItemDTO, ApplicationTypes.UserDefined);
+      }
+
+      [Observation]
+      public void should_also_set_the_default_value_for_target_and_compartment()
+      {
+         _schemaItem.TargetOrgan.ShouldBeEqualTo(CoreConstants.Organ.ArterialBlood);
+         _schemaItem.TargetCompartment.ShouldBeEqualTo(CoreConstants.Compartment.Plasma);
       }
    }
 }
