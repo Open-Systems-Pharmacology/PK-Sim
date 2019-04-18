@@ -42,15 +42,16 @@ namespace PKSim.Presentation.Services
 
       public bool ValidateSwitchFrom(Protocol sourceProtocol)
       {
-         var simpleProtocol = sourceProtocol as SimpleProtocol;
-         if (simpleProtocol == null)
-            return true;
-
-         if (!simpleProtocol.ApplicationType.UserDefined)
-            return true;
-
-         _dialogCreator.MessageBoxError(PKSimConstants.Error.CannotSwitchToAdvancedProtocolWhenUsingUserDefinedAppplication);
-         return false;
+         return true;
+//         var simpleProtocol = sourceProtocol as SimpleProtocol;
+//         if (simpleProtocol == null)
+//            return true;
+//
+////         if (!simpleProtocol.ApplicationType.UserDefined)
+//            return true;
+//
+//         _dialogCreator.MessageBoxError(PKSimConstants.Error.CannotSwitchToAdvancedProtocolWhenUsingUserDefinedAppplication);
+//         return false;
       }
 
       private void updateProtocolProperties(Protocol sourceProtocol, Protocol targetProtocol)

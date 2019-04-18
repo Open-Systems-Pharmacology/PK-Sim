@@ -16,6 +16,7 @@ using PKSim.Presentation.Views.Protocols;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Assets;
 
 namespace PKSim.Presentation.Presenters.Protocols
 {
@@ -30,10 +31,10 @@ namespace PKSim.Presentation.Presenters.Protocols
       void RemoveSchema(SchemaDTO schemaToRemove);
       void SetApplicationType(SchemaItemDTO schemaItemDTO, ApplicationType newApplicationType);
       void SetFormulationType(SchemaItemDTO schemaItemDTO, string newFormulationType);
-      void AddSchemaItemTo(SchemaDTO schemaDTO, SchemaItemDTO schemaItemDTOToDupicate);
+      void AddSchemaItemTo(SchemaDTO schemaDTO, SchemaItemDTO schemaItemDTOToDuplicate);
       void RemoveSchemaItem(SchemaItemDTO schemaItemDTO);
-      IList DynamicParametersFor(SchemaItemDTO schemaItemDTO);
-      bool HasDynamicParameters(SchemaItemDTO schemaItemDTO);
+      IList DynamicContentFor(SchemaItemDTO schemaItemDTO);
+      bool HadDynamicContent(SchemaItemDTO schemaItemDTO);
       IEnumerable<Unit> AllTimeUnits();
       void ProtocolUnitChanged();
    }
@@ -70,7 +71,7 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       public override IEnumerable<ApplicationType> AllApplications()
       {
-         return ApplicationTypes.All().Where(x => !x.UserDefined);
+         return ApplicationTypes.All();
       }
 
       public void AddNewSchema()
@@ -103,10 +104,10 @@ namespace PKSim.Presentation.Presenters.Protocols
          return schemaDTO.Schema;
       }
 
-      public void AddSchemaItemTo(SchemaDTO schemaDTO, SchemaItemDTO schemaItemDTOToDupicate)
+      public void AddSchemaItemTo(SchemaDTO schemaDTO, SchemaItemDTO schemaItemDTOToDuplicate)
       {
          var schema = SchemaFrom(schemaDTO);
-         var schemaItem = SchemaItemFrom(schemaItemDTOToDupicate);
+         var schemaItem = SchemaItemFrom(schemaItemDTOToDuplicate);
          AddCommand(_protocolTask.AddSchemaItemTo(schema, schemaItem));
       }
 
@@ -118,17 +119,29 @@ namespace PKSim.Presentation.Presenters.Protocols
          AddCommand(_protocolTask.RemoveSchemaItemFrom(schemaItemToDelete, schema));
       }
 
-      public IList DynamicParametersFor(SchemaItemDTO schemaItemDTO)
+      public IList DynamicContentFor(SchemaItemDTO schemaItemDTO)
       {
          if (schemaItemDTO == null)
             return new List<IParameterDTO>();
 
+         if(schemaItemDTO.IsUserDefined)
+            return new List<SchemaItemTargetDTO>
+            {
+               new SchemaItemTargetDTO{Name = PKSimConstants.UI.TargetOrgan, Target = schemaItemDTO.TargetOrgan},
+               new SchemaItemTargetDTO{Name = PKSimConstants.UI.TargetCompartment, Target = schemaItemDTO.TargetCompartment},
+            };
+
          return _protocolTask.AllDynamicParametersFor(SchemaItemFrom(schemaItemDTO)).MapAllUsing(_parameterDTOMapper).ToList();
       }
 
-      public bool HasDynamicParameters(SchemaItemDTO schemaItemDTO)
+      public bool HadDynamicContent(SchemaItemDTO schemaItemDTO)
       {
-         if (schemaItemDTO == null) return false;
+         if (schemaItemDTO == null)
+            return false;
+
+         if (schemaItemDTO.IsUserDefined)
+            return true;
+
          return _protocolTask.AllDynamicParametersFor(SchemaItemFrom(schemaItemDTO)).Any();
       }
 

@@ -164,7 +164,7 @@ namespace PKSim.Presentation.Presenters.Protocols
       {
          var allDynamicParameters = _protocolTask.AllDynamicParametersFor(_protocol);
          _view.EndTimeVisible = !_protocol.IsSingleDosing;
-         _view.DyamicParameterVisible = allDynamicParameters.Any();
+         _view.DynamicParameterVisible = allDynamicParameters.Any();
          _view.TargetDefinitionVisible = _protocol.ApplicationType.UserDefined;
       }
    }

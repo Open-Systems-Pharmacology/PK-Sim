@@ -20,6 +20,8 @@ namespace PKSim.Presentation.DTO.Protocols
 
       public bool NeedsFormulation => ApplicationType.NeedsFormulation;
 
+      public bool IsUserDefined => SchemaItem.ApplicationType == ApplicationTypes.UserDefined;
+
       public string DisplayName
       {
          get
@@ -33,25 +35,37 @@ namespace PKSim.Presentation.DTO.Protocols
 
       public ApplicationType ApplicationType
       {
-         get { return SchemaItem.ApplicationType; }
+         get => SchemaItem.ApplicationType;
          set { /*nothing to do*/}
       }
 
       public string FormulationKey
       {
-         get { return SchemaItem.FormulationKey; }
+         get => SchemaItem.FormulationKey;
          set { /*nothing to do*/}
       }
 
       public double StartTime
       {
-         get { return StartTimeParameter.Value; }
+         get => StartTimeParameter.Value;
          set { /*nothing to do*/}
       }
 
       public double Dose
       {
-         get { return DoseParameter.Value; }
+         get => DoseParameter.Value;
+         set { /*nothing to do*/}
+      }
+
+      public string TargetOrgan
+      {
+         get => SchemaItem.TargetOrgan;
+         set { /*nothing to do*/}
+      }
+
+      public string TargetCompartment
+      {
+         get => SchemaItem.TargetCompartment;
          set { /*nothing to do*/}
       }
    }

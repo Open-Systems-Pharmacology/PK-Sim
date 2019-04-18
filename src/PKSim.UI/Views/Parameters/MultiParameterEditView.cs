@@ -27,7 +27,8 @@ using PKSim.Presentation.Views.Parameters;
 
 namespace PKSim.UI.Views.Parameters
 {
-   public partial class MultiParameterEditView : ParameterSetView, IMultiParameterEditView
+   public partial class 
+      MultiParameterEditView : ParameterSetView, IMultiParameterEditView
    {
       private readonly PathElementsBinder<ParameterDTO> _pathElementsBinder;
       private RepositoryItemTextEdit _repositoryForStandardParameter;

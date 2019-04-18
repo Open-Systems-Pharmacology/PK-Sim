@@ -74,7 +74,7 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       public ProtocolMode ProtocolMode
       {
-         get { return _protocolMode; }
+         get => _protocolMode;
          set
          {
             _protocolMode = value;
@@ -102,10 +102,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          updateControls();
       }
 
-      public Protocol BuildingBlock
-      {
-         get { return _protocol; }
-      }
+      public Protocol BuildingBlock => _protocol;
 
       public bool SwitchModeConfirm(ProtocolMode protocolMode)
       {
@@ -137,10 +134,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          _view.SimpleProtocolEnabled = true;
       }
 
-      private IView activeProtocolView
-      {
-         get { return activeProtocolPresenter.BaseView; }
-      }
+      private IView activeProtocolView => activeProtocolPresenter.BaseView;
 
       private IProtocolItemPresenter activeProtocolPresenter
       {
