@@ -9,7 +9,7 @@ namespace PKSim.Presentation.Views.Protocols
    {
       void BindTo(SimpleProtocolDTO simpleProtocolDTO);
       bool EndTimeVisible { set; }
-      bool DyamicParameterVisible { get; set; }
+      bool DynamicParameterVisible { get; set; }
       bool TargetDefinitionVisible { get; set; }
       void AddDynamicParameterView(IView view);
       void RefreshCompartmentList();

@@ -69,7 +69,7 @@ namespace PKSim.UI.Views.Populations
             .WithCaption(PKSimConstants.UI.FilePath);
 
          _gridViewBinder.Bind(x => x.Count)
-            .WithFixedWidth(CoreConstants.UI.PARAMETER_WITDH)
+            .WithFixedWidth(CoreConstants.UI.PARAMETER_WIDTH)
             .WithFormat(new NullIntParameterFormatter())
             .AsReadOnly();
 

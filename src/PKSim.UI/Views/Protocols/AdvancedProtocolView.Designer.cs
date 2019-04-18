@@ -36,6 +36,7 @@ namespace PKSim.UI.Views.Protocols
       {
          DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
          DevExpress.XtraGrid.GridLevelNode gridLevelNode2 = new DevExpress.XtraGrid.GridLevelNode();
+         DevExpress.XtraGrid.GridLevelNode gridLevelNode3 = new DevExpress.XtraGrid.GridLevelNode();
          this.gridViewSchemaItems = new PKSim.UI.Views.Core.UxGridView();
          this.gridProtocol = new OSPSuite.UI.Controls.UxGridControl();
          this.mainView = new PKSim.UI.Views.Core.UxGridView();
@@ -45,6 +46,7 @@ namespace PKSim.UI.Views.Protocols
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemTimeUnit = new DevExpress.XtraLayout.LayoutControlItem();
+         this.gridViewUserDefinedTarget = new OSPSuite.UI.Controls.UxGridView();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridViewSchemaItems)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridProtocol)).BeginInit();
@@ -56,6 +58,7 @@ namespace PKSim.UI.Views.Protocols
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemTimeUnit)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridViewUserDefinedTarget)).BeginInit();
          this.SuspendLayout();
          // 
          // gridViewSchemaItems
@@ -74,8 +77,11 @@ namespace PKSim.UI.Views.Protocols
          gridLevelNode1.LevelTemplate = this.gridViewSchemaItems;
          gridLevelNode2.LevelTemplate = this.gridViewDynamicParameters;
          gridLevelNode2.RelationName = "DynamicParameters";
+         gridLevelNode3.LevelTemplate = this.gridViewUserDefinedTarget;
+         gridLevelNode3.RelationName = "UserDefinedTarget";
          gridLevelNode1.Nodes.AddRange(new DevExpress.XtraGrid.GridLevelNode[] {
-            gridLevelNode2});
+            gridLevelNode2,
+            gridLevelNode3});
          gridLevelNode1.RelationName = "SchemaItems";
          this.gridProtocol.LevelTree.Nodes.AddRange(new DevExpress.XtraGrid.GridLevelNode[] {
             gridLevelNode1});
@@ -87,7 +93,8 @@ namespace PKSim.UI.Views.Protocols
          this.gridProtocol.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.mainView,
             this.gridViewDynamicParameters,
-            this.gridViewSchemaItems});
+            this.gridViewSchemaItems,
+            this.gridViewUserDefinedTarget});
          // 
          // mainView
          // 
@@ -142,7 +149,6 @@ namespace PKSim.UI.Views.Protocols
          this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1,
             this.layoutItemTimeUnit});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup1.Name = "layoutControlGroup1";
          this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup1.Size = new System.Drawing.Size(713, 545);
@@ -167,6 +173,19 @@ namespace PKSim.UI.Views.Protocols
          this.layoutItemTimeUnit.Size = new System.Drawing.Size(713, 24);
          this.layoutItemTimeUnit.TextSize = new System.Drawing.Size(93, 13);
          // 
+         // gridViewUserDefinedTarget
+         // 
+         this.gridViewUserDefinedTarget.AllowsFiltering = true;
+         this.gridViewUserDefinedTarget.EnableColumnContextMenu = true;
+         this.gridViewUserDefinedTarget.GridControl = this.gridProtocol;
+         this.gridViewUserDefinedTarget.MultiSelect = true;
+         this.gridViewUserDefinedTarget.Name = "gridViewUserDefinedTarget";
+         this.gridViewUserDefinedTarget.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
+         this.gridViewUserDefinedTarget.OptionsNavigation.AutoFocusNewRow = true;
+         this.gridViewUserDefinedTarget.OptionsSelection.EnableAppearanceFocusedCell = false;
+         this.gridViewUserDefinedTarget.OptionsSelection.EnableAppearanceFocusedRow = false;
+         this.gridViewUserDefinedTarget.OptionsSelection.MultiSelect = true;
+         // 
          // AdvancedProtocolView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -185,13 +204,12 @@ namespace PKSim.UI.Views.Protocols
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemTimeUnit)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridViewUserDefinedTarget)).EndInit();
          this.ResumeLayout(false);
 
       }
 
       #endregion
-
-      private DevExpress.XtraGrid.GridControl gridProtocol;
       private PKSim.UI.Views.Core.UxGridView gridViewSchemaItems;
       private PKSim.UI.Views.Core.UxGridView mainView;
       private PKSim.UI.Views.Core.UxGridView gridViewDynamicParameters;
@@ -200,7 +218,8 @@ namespace PKSim.UI.Views.Protocols
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemTimeUnit;
-
+      private OSPSuite.UI.Controls.UxGridView gridViewUserDefinedTarget;
+      private OSPSuite.UI.Controls.UxGridControl gridProtocol;
    }
 }
 

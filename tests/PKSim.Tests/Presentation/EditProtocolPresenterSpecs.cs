@@ -1,17 +1,16 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
-using FakeItEasy;
-using PKSim.Assets;
-using PKSim.Presentation.Presenters.Protocols;
-using PKSim.Presentation.Views.Protocols;
-
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Presentation.Core;
+using PKSim.Presentation.Presenters.Protocols;
+using PKSim.Presentation.Views.Protocols;
 
 namespace PKSim.Presentation
 {
@@ -208,7 +207,6 @@ namespace PKSim.Presentation
       {
          base.Context();
          _protocolToEdit = A.Fake<Protocol>();
-         A.CallTo(() => _protocolUpdater.ValidateSwitchFrom(_protocolToEdit)).Returns(true);
          sut.Edit(_protocolToEdit);
       }
 
@@ -221,30 +219,6 @@ namespace PKSim.Presentation
       public void should_return_that_the_protocol_can_be_switched_to_simple_mode()
       {
          _result.ShouldBeTrue();
-      }
-   }
-
-   public class When_the_edit_protocol_presenter_is_asked_if_the_mode_switch_is_allowed_for_a_protocol_that_cannot_be_switched_ : concern_for_EditProtocolPresenter
-   {
-      private bool _result;
-
-      protected override void Context()
-      {
-         base.Context();
-         _protocolToEdit = new SimpleProtocol();
-         A.CallTo(() => _protocolUpdater.ValidateSwitchFrom(_protocolToEdit)).Returns(false);
-         sut.Edit(_protocolToEdit);
-      }
-
-      protected override void Because()
-      {
-         _result = sut.SwitchModeConfirm(ProtocolMode.Advanced);
-      }
-
-      [Observation]
-      public void should_return_that_the_protocol_cannot_be_switched_to_advanced_mode()
-      {
-         _result.ShouldBeFalse();
       }
    }
 }

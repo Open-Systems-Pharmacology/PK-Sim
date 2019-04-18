@@ -59,48 +59,48 @@ namespace PKSim.UI.Views.Protocols
          // 
          // btnCancel
          // 
-         this.btnCancel.Location = new System.Drawing.Point(485, 12);
-         this.btnCancel.Size = new System.Drawing.Size(99, 22);
+         this.btnCancel.Location = new System.Drawing.Point(563, 12);
+         this.btnCancel.Size = new System.Drawing.Size(116, 22);
          // 
          // btnOk
          // 
-         this.btnOk.Location = new System.Drawing.Point(363, 12);
-         this.btnOk.Size = new System.Drawing.Size(118, 22);
+         this.btnOk.Location = new System.Drawing.Point(421, 12);
+         this.btnOk.Size = new System.Drawing.Size(138, 22);
          // 
          // layoutControlBase
          // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 561);
-         this.layoutControlBase.Size = new System.Drawing.Size(596, 46);
+         this.layoutControlBase.Location = new System.Drawing.Point(0, 631);
+         this.layoutControlBase.Size = new System.Drawing.Size(691, 46);
          this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
          this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
          this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
          // 
          // btnExtra
          // 
-         this.btnExtra.Size = new System.Drawing.Size(171, 22);
+         this.btnExtra.Size = new System.Drawing.Size(200, 22);
          // 
          // layoutControlGroupBase
          // 
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(596, 46);
+         this.layoutControlGroupBase.Size = new System.Drawing.Size(691, 46);
          // 
          // layoutItemOK
          // 
-         this.layoutItemOK.Location = new System.Drawing.Point(351, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(122, 26);
+         this.layoutItemOK.Location = new System.Drawing.Point(409, 0);
+         this.layoutItemOK.Size = new System.Drawing.Size(142, 26);
          // 
          // layoutItemCancel
          // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(473, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(103, 26);
+         this.layoutItemCancel.Location = new System.Drawing.Point(551, 0);
+         this.layoutItemCancel.Size = new System.Drawing.Size(120, 26);
          // 
          // emptySpaceItemBase
          // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(175, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(176, 26);
+         this.emptySpaceItemBase.Location = new System.Drawing.Point(204, 0);
+         this.emptySpaceItemBase.Size = new System.Drawing.Size(205, 26);
          // 
          // layoutItemExtra
          // 
-         this.layoutItemExtra.Size = new System.Drawing.Size(175, 26);
+         this.layoutItemExtra.Size = new System.Drawing.Size(204, 26);
          // 
          // layoutApplicationSchema
          // 
@@ -113,7 +113,7 @@ namespace PKSim.UI.Views.Protocols
          this.layoutApplicationSchema.Name = "layoutApplicationSchema";
          this.layoutApplicationSchema.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(581, 362, 250, 350);
          this.layoutApplicationSchema.Root = this.layoutProtocol;
-         this.layoutApplicationSchema.Size = new System.Drawing.Size(596, 561);
+         this.layoutApplicationSchema.Size = new System.Drawing.Size(691, 631);
          this.layoutApplicationSchema.TabIndex = 33;
          this.layoutApplicationSchema.Text = "layoutControl1";
          // 
@@ -125,7 +125,7 @@ namespace PKSim.UI.Views.Protocols
          this.splitContainer.Panel1.AutoScroll = true;
          this.splitContainer.Panel1.Text = "Panel1";
          this.splitContainer.Panel2.Text = "Panel2";
-         this.splitContainer.Size = new System.Drawing.Size(576, 488);
+         this.splitContainer.Size = new System.Drawing.Size(671, 558);
          this.splitContainer.SplitterPosition = 255;
          this.splitContainer.TabIndex = 7;
          this.splitContainer.Text = "splitContainer";
@@ -134,7 +134,7 @@ namespace PKSim.UI.Views.Protocols
          // 
          this.tbName.Location = new System.Drawing.Point(94, 41);
          this.tbName.Name = "tbName";
-         this.tbName.Size = new System.Drawing.Size(490, 20);
+         this.tbName.Size = new System.Drawing.Size(585, 20);
          this.tbName.StyleController = this.layoutApplicationSchema;
          this.tbName.TabIndex = 6;
          // 
@@ -142,7 +142,7 @@ namespace PKSim.UI.Views.Protocols
          // 
          this.radioGroupProtocolMode.Location = new System.Drawing.Point(12, 12);
          this.radioGroupProtocolMode.Name = "radioGroupProtocolMode";
-         this.radioGroupProtocolMode.Size = new System.Drawing.Size(572, 25);
+         this.radioGroupProtocolMode.Size = new System.Drawing.Size(667, 25);
          this.radioGroupProtocolMode.StyleController = this.layoutApplicationSchema;
          this.radioGroupProtocolMode.TabIndex = 5;
          // 
@@ -155,9 +155,8 @@ namespace PKSim.UI.Views.Protocols
             this.layoutProtocolMode,
             this.layoutItemName,
             this.layoutItemSplit});
-         this.layoutProtocol.Location = new System.Drawing.Point(0, 0);
          this.layoutProtocol.Name = "Root";
-         this.layoutProtocol.Size = new System.Drawing.Size(596, 561);
+         this.layoutProtocol.Size = new System.Drawing.Size(691, 631);
          this.layoutProtocol.TextVisible = false;
          // 
          // layoutProtocolMode
@@ -168,7 +167,7 @@ namespace PKSim.UI.Views.Protocols
          this.layoutProtocolMode.MaxSize = new System.Drawing.Size(0, 29);
          this.layoutProtocolMode.MinSize = new System.Drawing.Size(54, 29);
          this.layoutProtocolMode.Name = "layoutProtocolMode";
-         this.layoutProtocolMode.Size = new System.Drawing.Size(576, 29);
+         this.layoutProtocolMode.Size = new System.Drawing.Size(671, 29);
          this.layoutProtocolMode.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
          this.layoutProtocolMode.TextSize = new System.Drawing.Size(0, 0);
          this.layoutProtocolMode.TextVisible = false;
@@ -179,7 +178,7 @@ namespace PKSim.UI.Views.Protocols
          this.layoutItemName.CustomizationFormText = "layoutItemName";
          this.layoutItemName.Location = new System.Drawing.Point(0, 29);
          this.layoutItemName.Name = "layoutItemName";
-         this.layoutItemName.Size = new System.Drawing.Size(576, 24);
+         this.layoutItemName.Size = new System.Drawing.Size(671, 24);
          this.layoutItemName.TextSize = new System.Drawing.Size(79, 13);
          // 
          // layoutItemSplit
@@ -189,7 +188,7 @@ namespace PKSim.UI.Views.Protocols
          this.layoutItemSplit.Location = new System.Drawing.Point(0, 53);
          this.layoutItemSplit.Name = "layoutItemSplit";
          this.layoutItemSplit.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutItemSplit.Size = new System.Drawing.Size(576, 488);
+         this.layoutItemSplit.Size = new System.Drawing.Size(671, 558);
          this.layoutItemSplit.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemSplit.TextVisible = false;
          // 
@@ -198,7 +197,7 @@ namespace PKSim.UI.Views.Protocols
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "CreateProtocolView";
-         this.ClientSize = new System.Drawing.Size(596, 607);
+         this.ClientSize = new System.Drawing.Size(691, 677);
          this.Controls.Add(this.layoutApplicationSchema);
          this.Name = "CreateProtocolView";
          this.Text = "CreateProtocolView";

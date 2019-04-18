@@ -5,6 +5,5 @@ namespace PKSim.Core.Services
    public interface IProtocolUpdater
    {
       void UpdateProtocol(Protocol sourceProtocol, Protocol targetProtocol);
-      bool ValidateSwitchFrom(Protocol sourceProtocol);
    }
 }

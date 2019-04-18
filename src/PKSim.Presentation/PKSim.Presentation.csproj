@@ -176,6 +176,7 @@
     <Compile Include="DTO\Populations\ExtractIndividualsDTO.cs" />
     <Compile Include="DTO\Populations\ImportPopulationSettingsDTO.cs" />
     <Compile Include="DTO\Populations\PopulationFileSelectionDTO.cs" />
+    <Compile Include="DTO\Protocols\SchemaItemTargetDTO.cs" />
     <Compile Include="DTO\SimulationComparisonSelectionDTO.cs" />
     <Compile Include="DTO\SimulationReactionDiagramDTO.cs" />
     <Compile Include="DTO\Simulations\ImportPKAnalysesDTO.cs" />
