@@ -52,10 +52,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          return PresenterAt(IndividualItems.Settings).IndividualCreated;
       }
 
-      public PKSim.Core.Model.Individual BuildingBlock
-      {
-         get { return Individual; }
-      }
+      public PKSim.Core.Model.Individual BuildingBlock => Individual;
 
       private void updateIndividualProperties()
       {
@@ -71,10 +68,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.SetControlEnabled(IndividualItems.Parameters, PresenterAt(IndividualItems.Settings).IndividualCreated);
       }
 
-      public override bool CanClose
-      {
-         get { return base.CanClose && PresenterAt(IndividualItems.Settings).IndividualCreated; }
-      }
+      public override bool CanClose => base.CanClose && PresenterAt(IndividualItems.Settings).IndividualCreated;
 
       public void CreateIndividual()
       {
