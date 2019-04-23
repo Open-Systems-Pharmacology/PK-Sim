@@ -62,8 +62,8 @@ namespace PKSim.UI.Views.Compounds
          // panelNote
          // 
          this.panelNote.Location = new System.Drawing.Point(2, 293);
-         this.panelNote.MaximumSize = new System.Drawing.Size(1000000, 60);
-         this.panelNote.MinimumSize = new System.Drawing.Size(200, 60);
+         this.panelNote.MaximumSize = new System.Drawing.Size(1000000, 40);
+         this.panelNote.MinimumSize = new System.Drawing.Size(200, 40);
          this.panelNote.Name = "panelNote";
          this.panelNote.NoteText = "";
          this.panelNote.Size = new System.Drawing.Size(393, 60);

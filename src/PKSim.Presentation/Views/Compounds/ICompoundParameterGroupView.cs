@@ -14,6 +14,7 @@ namespace PKSim.Presentation.Views.Compounds
    {
       void SetParameterView(IMultiParameterEditView view);
       string Hint { set; }
+      bool IsLargeHint {  set; }
    }
 
    public interface ICompoundParameterGroupWithAlternativeView : IView<ICompoundParameterGroupWithAlternativePresenter>, IResizableView

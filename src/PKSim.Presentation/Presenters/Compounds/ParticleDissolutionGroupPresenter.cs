@@ -18,6 +18,7 @@ namespace PKSim.Presentation.Presenters.Compounds
          : base(view, representationInfoRepository, parameterEditPresenter, parameterGroupTask, CoreConstants.Groups.COMPOUND_DISSOLUTION)
       {
          view.Hint = PKSimConstants.UI.CompoundParticleDissolutionParametersNote;
+         view.IsLargeHint = true;
       }
    }
 }

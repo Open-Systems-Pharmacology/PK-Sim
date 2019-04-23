@@ -10,6 +10,11 @@ namespace PKSim.UI.Views.Compounds
 {
    public partial class CompoundAdvancedParameterGroupView : BaseUserControl, ICompoundAdvancedParameterGroupView
    {
+      private const int NUMBER_OF_LINES_HINT = 3;
+      private const int NUMBER_OF_LINES_LARGE_HINT = 5;
+      private const int HINT_HEIGHT = 80;
+      private const int LARGE_HINT_HEIGHT = 80;
+
       private IMultiParameterEditView _parameterView;
       public event EventHandler<ViewResizedEventArgs> HeightChanged = delegate { };
 
@@ -30,7 +35,18 @@ namespace PKSim.UI.Views.Compounds
 
       public string Hint
       {
-         set { panelNote.NoteText = value; }
+         set => panelNote.NoteText = value;
+      }
+
+      public bool IsLargeHint
+      {
+         set
+         {
+            var height = value ? LARGE_HINT_HEIGHT : HINT_HEIGHT;
+            var lines = value ? NUMBER_OF_LINES_LARGE_HINT : NUMBER_OF_LINES_HINT;
+            panelNote.MaxLines = lines;
+            panelNote.MinimumSize = new System.Drawing.Size(panelNote.MinimumSize.Width, height);
+         }
       }
 
       public void AdjustHeight()
