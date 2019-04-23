@@ -983,6 +983,7 @@ namespace PKSim.Core
          public const string FRACTION_DOSE = "Fraction (dose)";
          public const string USE_PENALTY_FACTOR = "Use pH- and pKa-dependent penalty factor for charged molecule fraction";
          public const string IS_SMALL_MOLECULE = "Is small molecule";
+         public const string ENABLE_SUPERSATURATION = "Enable supersaturation";
          public const string PLASMA_PROTEIN_BINDING_PARTNER = "Plasma protein binding partner";
          public const string SOLUBILITY_P_KA__P_H_FACTOR = "Solubility_pKa_pH_Factor";
          public const string HALF_LIFE = "t1/2";
@@ -1148,7 +1149,8 @@ namespace PKSim.Core
             USE_PENALTY_FACTOR,
             IS_SMALL_MOLECULE,
             IS_LIVER_ZONATED,
-            USE_AS_SUSPENSION
+            USE_AS_SUSPENSION,
+            ENABLE_SUPERSATURATION
          };
 
          public static readonly HashSet<string> AllWithListOfValues = new HashSet<string>(Halogens.Union(AllBooleanParameters))

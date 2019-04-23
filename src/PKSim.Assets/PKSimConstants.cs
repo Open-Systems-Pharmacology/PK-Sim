@@ -1879,7 +1879,7 @@ namespace PKSim.Assets
          public static readonly string SaveProjectDescription = "Save the project...";
          public static readonly string SaveProjectAsDescription = "Save the project to a new file...";
          public static readonly string CompoundTwoPoreParametersNote = "These parameters are only used in a simulation where the model for proteins and large molecules was selected. Their values are irrelevant otherwise and can be left as is.";
-         public static readonly string CompoundParticleDissolutionParametersNote = "These parameters are only used in a simulation where the particle dissolution function was selected. Their values are irrelevant otherwise and can be left as is.";
+         public static readonly string CompoundParticleDissolutionParametersNote = "These parameters are only used in a simulation where the particle dissolution function was selected. Their values are irrelevant otherwise (except for: 'Enable supersaturation') and can be left as is.\nEnabling supersaturation inactivates the limit of how much solute can be dissolved. It should always and only be allowed in combination with particle dissolution formulations; otherwise disabled. Enabling in case of other formulations results in a lack of the solubility limit and hence in infinitely soluble solutes.";
          public static readonly string ResetAllVisibleButtonToolTip = "Reset all visible parameters to default.";
          public static readonly string ResetParameterToolTip = "Reset parameter to default";
          public static readonly string ScaleButtonToolTip = "Scale all visible parameters with the given factor";
