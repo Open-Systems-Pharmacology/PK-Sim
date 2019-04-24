@@ -17,7 +17,7 @@ namespace PKSim.Core.Commands
          ObjectType = PKSimConstants.ObjectTypes.Simulation;
          CommandType = PKSimConstants.Command.CommandTypeUpdate;
          Description = PKSimConstants.Command.UpdateBuildingBlockInfoCommandDescription;
-         context.UpdateBuildinBlockPropertiesInCommand(this, _simulation);
+         context.UpdateBuildingBlockPropertiesInCommand(this, _simulation);
          Visible = false;
       }
 

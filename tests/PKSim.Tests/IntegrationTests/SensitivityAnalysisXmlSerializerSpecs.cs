@@ -33,7 +33,7 @@ namespace PKSim.IntegrationTests
          _sim1.Model.Root.Add(new Container {new Parameter().WithName("P")}.WithName("Liver"));
 
          var objectBaseRepository = IoC.Resolve<IWithIdRepository>();
-         var workspace = IoC.Resolve<IWorkspace>();
+         var workspace = IoC.Resolve<ICoreWorkspace>();
          _project = IoC.Resolve<PKSimProject>();
          workspace.Project = _project;
          objectBaseRepository.Register(_sim1);

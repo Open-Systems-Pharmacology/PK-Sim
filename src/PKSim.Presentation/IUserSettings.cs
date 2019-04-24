@@ -17,7 +17,7 @@ namespace PKSim.Presentation
       uint DecimalPlace { get; set; }
 
       /// <summary>
-      ///    Scientific notation allowes (1e-2 for instance)
+      ///    Scientific notation allows (1e-2 for instance)
       /// </summary>
       bool AllowsScientifcNotation { get; set; }
 
@@ -92,7 +92,7 @@ namespace PKSim.Presentation
       string LastIgnoredVersion { get; set; }
 
       /// <summary>
-      ///    Resets the currrent layout
+      ///    Resets the current layout
       /// </summary>
       void ResetLayout();
 

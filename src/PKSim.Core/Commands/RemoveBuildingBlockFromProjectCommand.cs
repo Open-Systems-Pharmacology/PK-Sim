@@ -30,7 +30,7 @@ namespace PKSim.Core.Commands
          _dueToSwap = dueToSwap;
          CommandType = PKSimConstants.Command.CommandTypeDelete;
          ObjectType = context.TypeFor(buildingBlock);
-         context.UpdateBuildinBlockPropertiesInCommand(this, buildingBlock);
+         context.UpdateBuildingBlockPropertiesInCommand(this, buildingBlock);
       }
 
       protected override void ExecuteWith(IExecutionContext context)

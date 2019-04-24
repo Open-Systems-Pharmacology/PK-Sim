@@ -13,6 +13,9 @@ using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Services;
+using PKSim.Core;
+using PKSim.Core.Services;
+using PKSim.Presentation;
 
 namespace PKSim.Infrastructure
 {

@@ -12,8 +12,8 @@ using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Presentation.Core;
 
 namespace PKSim.CLI.Core.Services
 {
@@ -32,7 +32,7 @@ namespace PKSim.CLI.Core.Services
 
    public class SnapshotRunner : IBatchRunner<SnapshotRunOptions>
    {
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
       private readonly ISnapshotTask _snapshotTask;
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly ILogger _logger;
@@ -43,7 +43,7 @@ namespace PKSim.CLI.Core.Services
 
 
       public SnapshotRunner(
-         IWorkspace workspace,
+         ICoreWorkspace workspace,
          ISnapshotTask snapshotTask,
          IWorkspacePersistor workspacePersistor,
          ILogger logger)
@@ -106,7 +106,7 @@ namespace PKSim.CLI.Core.Services
          if (project == null)
             return;
 
-         _logger.AddDebug($"Snapshot loaded successfuly from '{file.SnapshotFile}'");
+         _logger.AddDebug($"Snapshot loaded successfully from '{file.SnapshotFile}'");
          _workspace.Project = project;
          _workspacePersistor.SaveSession(_workspace, file.ProjectFile);
          _logger.AddInfo($"Project saved to '{file.ProjectFile};");
@@ -117,7 +117,7 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Starting snapshot export for '{file.ProjectFile}'");
 
          _workspacePersistor.LoadSession(_workspace, file.ProjectFile);
-         _logger.AddDebug($"Project loaded successfuly from '{file.ProjectFile}'");
+         _logger.AddDebug($"Project loaded successfully from '{file.ProjectFile}'");
 
          await _snapshotTask.ExportModelToSnapshot(_workspace.Project, file.SnapshotFile);
          _logger.AddInfo($"Snapshot saved to '{file.SnapshotFile}'");

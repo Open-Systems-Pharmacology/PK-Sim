@@ -133,7 +133,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_a_simulaiton_created_using_a_building_block()
       {
-         A.CallTo(() => _importSimulationTask.ImportFromBuidlingBlock(_dto.FilePath, A<Population>._)).MustHaveHappened();
+         A.CallTo(() => _importSimulationTask.ImportFromBuildingBlock(_dto.FilePath, A<Population>._)).MustHaveHappened();
       }
    }
 

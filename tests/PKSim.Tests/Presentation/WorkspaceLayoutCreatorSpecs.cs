@@ -1,18 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-
 
 namespace PKSim.Presentation
 {
@@ -23,7 +24,7 @@ namespace PKSim.Presentation
       private IWithIdRepository _withIdRepository;
       private ILazyLoadTask _lazyLoadTask;
       private IEventPublisher _eventPublisher;
-      protected IWorkspace _workspace;
+      protected IWithWorkspaceLayout _workspace;
 
       protected override void Context()
       {
@@ -32,7 +33,7 @@ namespace PKSim.Presentation
          _withIdRepository = A.Fake<IWithIdRepository>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _eventPublisher = A.Fake<IEventPublisher>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<IWithWorkspaceLayout>();
          sut = new WorkspaceLayoutUpdater(_applicationController, _withIdRepository, _openSingleStartPresenterInvoker, _lazyLoadTask, _eventPublisher, _workspace);
       }
    }

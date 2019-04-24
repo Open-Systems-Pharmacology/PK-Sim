@@ -25,6 +25,9 @@ namespace PKSim.Infrastructure.Serialization
 
       public void Save(IWorkspaceLayout workspaceLayout, ISession session)
       {
+         if (workspaceLayout == null)
+            return;
+
          var layoutFromDb = loadLayoutFromDb(session);
 
          var workspaceLayoutMetaData = _workspaceLayoutMetaDataMapper.MapFrom(workspaceLayout);

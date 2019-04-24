@@ -9,7 +9,7 @@ namespace PKSim.Core.Services
 {
    public interface IImportSimulationTask
    {
-      PopulationSimulationImport ImportFromBuidlingBlock(string simulationFile, Population population);
+      PopulationSimulationImport ImportFromBuildingBlock(string simulationFile, Population population);
       PopulationSimulationImport ImportFromPopulationFile(string simulationFile, string populationFile);
       PopulationSimulationImport ImportFromPopulationSize(string simulationFile, int numberOfIndividuals);
       IndividualSimulation ImportIndividualSimulation(string pkmlFileFullPath);
@@ -42,7 +42,7 @@ namespace PKSim.Core.Services
          _advancedParameterFactory = advancedParameterFactory;
       }
 
-      public PopulationSimulationImport ImportFromBuidlingBlock(string simulationFile, Population population)
+      public PopulationSimulationImport ImportFromBuildingBlock(string simulationFile, Population population)
       {
          _executionContext.Load(population);
          var populationSimulationImport = populationSimulationImportFrom(simulationFile);

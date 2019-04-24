@@ -15,7 +15,7 @@ namespace PKSim.Core
    {
       protected Compound _compound;
       protected IExecutionContext _executionContext;
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected PKSimProject _project;
       protected CompoundProcess _proc;
 

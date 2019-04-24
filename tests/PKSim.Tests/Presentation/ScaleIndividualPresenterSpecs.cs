@@ -13,13 +13,14 @@ using PKSim.Presentation.Views.Individuals;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_ScaleIndividualPresenter : ContextSpecification<IScaleIndividualPresenter>
    {
       protected IScaleIndividualView _view;
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected IIndividualSettingsPresenter _settingPresenter;
       protected IIndividualParametersPresenter _parameterPresenter;
       protected Individual _sourceIndividual;
@@ -41,7 +42,7 @@ namespace PKSim.Presentation
          _subPresenterManager = SubPresenterHelper.Create<IIndividualItemPresenter>();
          _view = A.Fake<IScaleIndividualView>();
          _propertiesMapper = A.Fake<IBuildingBlockPropertiesMapper>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _individualExpressionsUpdater = A.Fake<IIndividualExpressionsUpdater>();
          _cloner = A.Fake<ICloner>();
          _sourceIndividual = A.Fake<Individual>();

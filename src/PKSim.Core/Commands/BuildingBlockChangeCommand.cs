@@ -78,7 +78,7 @@ namespace PKSim.Core.Commands
       protected override void PerformExecuteWith(IExecutionContext context)
       {
          ObjectType = context.TypeFor(_buildingBlock);
-         context.UpdateBuildinBlockPropertiesInCommand(this, _buildingBlock);
+         context.UpdateBuildingBlockPropertiesInCommand(this, _buildingBlock);
       }
 
       protected override void ClearReferences()

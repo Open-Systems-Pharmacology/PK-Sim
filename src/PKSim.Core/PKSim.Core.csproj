@@ -83,17 +83,14 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.5.0.44, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.44\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.5.0.45, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.45\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.5.0.44, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.44\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.5.0.45, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.45\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
-    </Reference>
-    <Reference Include="OSPSuite.TeXReporting, Version=2.1.1.9, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.1.1.9\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Utility, Version=3.0.1.7, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.3.0.1.7\lib\net462\OSPSuite.Utility.dll</HintPath>
@@ -176,6 +173,7 @@
     <Compile Include="Extensions\CurveExtensions.cs" />
     <Compile Include="Extensions\DataRepositoryExtensions.cs" />
     <Compile Include="Extensions\DataSetExtensions.cs" />
+    <Compile Include="ICoreWorkspace.cs" />
     <Compile Include="Mappers\BasePKAnalysisToDataTableMapper.cs" />
     <Compile Include="Mappers\BoxWhiskerChartDataToDataTableMapper.cs" />
     <Compile Include="Mappers\ChartDataToDataTableMapper.cs" />
@@ -213,6 +211,7 @@
     <Compile Include="Services\IPostLaunchChecker.cs" />
     <Compile Include="Services\IQualificationStepRunner.cs" />
     <Compile Include="Services\ITemplateDatabaseCreator.cs" />
+    <Compile Include="Services\IWorkspacePersistor.cs" />
     <Compile Include="Services\MassToAmoundDimensionConverter.cs" />
     <Compile Include="Services\MoleculeParameterTask.cs" />
     <Compile Include="Services\ObserverTask.cs" />

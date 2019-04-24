@@ -15,7 +15,6 @@ using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
-using IWorkspace = PKSim.Presentation.Core.IWorkspace;
 
 namespace PKSim.Presentation.Presenters.Main
 {
@@ -31,14 +30,14 @@ namespace PKSim.Presentation.Presenters.Main
    public class HistoryPresenter : IHistoryPresenter
    {
       private readonly IHistoryBrowserPresenter _historyBrowserPresenter;
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
       private readonly IExecutionContext _executionContext;
       private readonly IApplicationConfiguration _applicationConfiguration;
       private readonly IRegion _region;
       private bool _initialized;
       public event EventHandler StatusChanged = delegate { };
 
-      public HistoryPresenter(IHistoryBrowserPresenter historyBrowserPresenter, IWorkspace workspace, IRegionResolver regionResolver, IExecutionContext executionContext, IApplicationConfiguration applicationConfiguration)
+      public HistoryPresenter(IHistoryBrowserPresenter historyBrowserPresenter, ICoreWorkspace workspace, IRegionResolver regionResolver, IExecutionContext executionContext, IApplicationConfiguration applicationConfiguration)
       {
          _historyBrowserPresenter = historyBrowserPresenter;
          _workspace = workspace;

@@ -16,6 +16,7 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.FileLocker;
+using PKSim.Presentation;
 
 namespace PKSim.Core
 {
@@ -23,38 +24,38 @@ namespace PKSim.Core
    {
       protected IEventPublisher _eventPublisher;
       protected IHistoryManager _historyManager;
-      protected IWorkspacePersistor _workspacePersisor;
+      protected IWorkspacePersistor _workspacePersistor;
       protected IRegistrationTask _registrationTask;
       protected IMRUProvider _mruProvider;
       private IHistoryManagerFactory _historyManagerFactory;
       protected IFileLocker _fileLocker;
-      private Func<string, bool> _oldFileExitst;
+      private Func<string, bool> _oldFileExists;
       protected IJournalSession _journalSession;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _oldFileExitst = FileHelper.FileExists;
+         _oldFileExists = FileHelper.FileExists;
       }
 
       protected override void Context()
       {
          _eventPublisher = A.Fake<IEventPublisher>();
          _mruProvider = A.Fake<IMRUProvider>();
-         _workspacePersisor = A.Fake<IWorkspacePersistor>();
+         _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _registrationTask = A.Fake<IRegistrationTask>();
          _historyManagerFactory = A.Fake<IHistoryManagerFactory>();
          _historyManager = A.Fake<IHistoryManager>();
          _fileLocker = A.Fake<IFileLocker>();
          _journalSession = A.Fake<IJournalSession>();
          A.CallTo(() => _historyManagerFactory.Create()).Returns(_historyManager);
-         sut = new Workspace(_eventPublisher,  _journalSession, _fileLocker, _registrationTask, _workspacePersisor, _mruProvider, _historyManagerFactory);
+         sut = new Workspace(_eventPublisher,  _journalSession, _fileLocker, _registrationTask, _workspacePersistor, _mruProvider, _historyManagerFactory);
       }
 
       public override void GlobalCleanup()
       {
          base.GlobalCleanup();
-         FileHelper.FileExists = _oldFileExitst;
+         FileHelper.FileExists = _oldFileExists;
       }
    }
 
@@ -152,7 +153,7 @@ namespace PKSim.Core
       [Observation]
       public void should_leverage_the_persistence_manager_to_load_the_project_from_file()
       {
-         A.CallTo(() => _workspacePersisor.LoadSession(sut, _fileName)).MustHaveHappened();
+         A.CallTo(() => _workspacePersistor.LoadSession(sut, _fileName)).MustHaveHappened();
       }
 
       [Observation]
@@ -208,7 +209,7 @@ namespace PKSim.Core
       [Observation]
       public void should_leverage_the_persistence_manager_to_save_the_project_from_file()
       {
-         A.CallTo(() => _workspacePersisor.SaveSession(sut, _fileName)).MustHaveHappened();
+         A.CallTo(() => _workspacePersistor.SaveSession(sut, _fileName)).MustHaveHappened();
       }
 
       [Observation]

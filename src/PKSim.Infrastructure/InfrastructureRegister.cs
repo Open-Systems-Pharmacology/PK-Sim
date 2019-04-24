@@ -40,7 +40,6 @@ using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ILogger = OSPSuite.Core.Services.ILogger;
-using IWorkspace = PKSim.Presentation.Core.IWorkspace;
 
 namespace PKSim.Infrastructure
 {
@@ -129,13 +128,8 @@ namespace PKSim.Infrastructure
 
       public static void RegisterWorkspace()
       {
-         RegisterWorkspace<Workspace>();
-      }
-
-      public static void RegisterWorkspace<TWorkspace>() where TWorkspace : IWorkspace
-      {
          var container = IoC.Container;
-         container.Register<IWorkspace, IWithWorkspaceLayout, OSPSuite.Core.IWorkspace, TWorkspace>(LifeStyle.Singleton);
+         container.Register<Presentation.IWorkspace,IWithWorkspaceLayout, ICoreWorkspace, OSPSuite.Core.IWorkspace, Workspace>(LifeStyle.Singleton);
       }
 
       private void registerORMDependencies()

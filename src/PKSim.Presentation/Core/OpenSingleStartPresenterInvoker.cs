@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Visitor;
+using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 
@@ -39,7 +40,7 @@ namespace PKSim.Presentation.Core
       private ISingleStartPresenter _presenter;
       private readonly ICommandCollector _commandCollector;
 
-      public OpenSingleStartPresenterInvoker(IApplicationController applicationController, IWorkspace commandCollector)
+      public OpenSingleStartPresenterInvoker(IApplicationController applicationController, ICoreWorkspace commandCollector)
       {
          _applicationController = applicationController;
          _commandCollector = commandCollector;

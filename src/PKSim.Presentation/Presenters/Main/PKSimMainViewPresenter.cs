@@ -20,7 +20,10 @@ namespace PKSim.Presentation.Presenters.Main
    public interface IPKSimMainViewPresenter : IMainViewPresenter,
       IListener<SimulationRunStartedEvent>,
       IListener<SimulationRunFinishedEvent>,
-      IListener<ShowNotificationEvent>
+      IListener<ShowNotificationEvent>,
+      IListener<ReportCreationStartedEvent>,
+      IListener<ReportCreationFinishedEvent>
+
 
    {
       StartOptions StartOptions { get; set; }
@@ -98,13 +101,13 @@ namespace PKSim.Presentation.Presenters.Main
          _projectTask.OpenProjectFrom(fileName);
       }
 
-      public override void Handle(ReportCreationStartedEvent reportStartedEvent)
+      public void Handle(ReportCreationStartedEvent reportStartedEvent)
       {
          _view.DisplayNotification(PKSimConstants.UI.ReportCreationStarted,
             PKSimConstants.UI.ReportCreationStartedMessage(reportStartedEvent.ReportFullPath), string.Empty);
       }
 
-      public override void Handle(ReportCreationFinishedEvent reportFinishedEvent)
+      public void Handle(ReportCreationFinishedEvent reportFinishedEvent)
       {
          _view.DisplayNotification(PKSimConstants.UI.ReportCreationFinished,
             PKSimConstants.UI.ReportCreationFinishedMessage(reportFinishedEvent.ReportFullPath), reportFinishedEvent.ReportFullPath);

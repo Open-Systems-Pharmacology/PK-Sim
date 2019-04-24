@@ -1,15 +1,16 @@
 using System;
 using System.IO;
-using PKSim.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Events;
-using PKSim.Core;
-using PKSim.Infrastructure.Services;
-using PKSim.Presentation.Core;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Services;
+using OSPSuite.Presentation.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Events;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Services;
+using PKSim.Infrastructure.Services;
 
 namespace PKSim.Infrastructure.Serialization
 {
@@ -26,14 +27,14 @@ namespace PKSim.Infrastructure.Serialization
       private readonly IProjectClassifiableUpdaterAfterDeserialization _projectClassifiableUpdaterAfterDeserialization;
 
       public WorkspacePersistor(
-         IProjectPersistor projectPersistor, 
-         IHistoryManagerPersistor historyManagerPersistor, 
-         IWorkspaceLayoutPersistor workspaceLayoutPersistor, 
-         ISessionManager sessionManager, 
-         IProgressManager progressManager, 
-         IProjectFileCompressor projectFileCompressor, 
-         IDatabaseSchemaMigrator databaseSchemaMigrator, 
-         IJournalLoader journalLoader, 
+         IProjectPersistor projectPersistor,
+         IHistoryManagerPersistor historyManagerPersistor,
+         IWorkspaceLayoutPersistor workspaceLayoutPersistor,
+         ISessionManager sessionManager,
+         IProgressManager progressManager,
+         IProjectFileCompressor projectFileCompressor,
+         IDatabaseSchemaMigrator databaseSchemaMigrator,
+         IJournalLoader journalLoader,
          IProjectClassifiableUpdaterAfterDeserialization projectClassifiableUpdaterAfterDeserialization)
       {
          _projectPersistor = projectPersistor;
@@ -45,10 +46,9 @@ namespace PKSim.Infrastructure.Serialization
          _databaseSchemaMigrator = databaseSchemaMigrator;
          _journalLoader = journalLoader;
          _projectClassifiableUpdaterAfterDeserialization = projectClassifiableUpdaterAfterDeserialization;
-
       }
 
-      public void SaveSession(IWorkspace workspace, string fileFullPath)
+      public void SaveSession(ICoreWorkspace workspace, string fileFullPath)
       {
          using (var progress = _progressManager.Create())
          {
@@ -69,7 +69,8 @@ namespace PKSim.Infrastructure.Serialization
                _historyManagerPersistor.Save(workspace.HistoryManager, session);
 
                progress.IncrementProgress(PKSimConstants.UI.SavingLayout);
-               _workspaceLayoutPersistor.Save(workspace.WorkspaceLayout, session);
+               if (workspace is IWithWorkspaceLayout withWorkspaceLayout)
+                  _workspaceLayoutPersistor.Save(withWorkspaceLayout.WorkspaceLayout, session);
 
                transaction.Commit();
             }
@@ -85,7 +86,7 @@ namespace PKSim.Infrastructure.Serialization
          workspace.Project.Name = FileHelper.FileNameFromFileFullPath(fileFullPath);
       }
 
-      public void LoadSession(IWorkspace workspace, string fileFullPath)
+      public void LoadSession(ICoreWorkspace workspace, string fileFullPath)
       {
          using (var progress = _progressManager.Create())
          {
@@ -98,7 +99,7 @@ namespace PKSim.Infrastructure.Serialization
             try
             {
                _sessionManager.OpenFactoryFor(fileFullPath);
-               
+
                using (var session = _sessionManager.OpenSession())
                using (session.BeginTransaction())
                {
@@ -121,12 +122,13 @@ namespace PKSim.Infrastructure.Serialization
                   _projectClassifiableUpdaterAfterDeserialization.Update(project);
 
                   progress.IncrementProgress(PKSimConstants.UI.LoadingWorkingJournal);
-                  var journal  = _journalLoader.Load(project.JournalPath, fileFullPath);
+                  var journal = _journalLoader.Load(project.JournalPath, fileFullPath);
                   workspace.Journal = journal;
 
                   progress.IncrementProgress(PKSimConstants.UI.LoadingLayout);
                   var workspaceLayout = _workspaceLayoutPersistor.Load(session);
-                  workspace.WorkspaceLayout = workspaceLayout;
+                  if (workspace is IWithWorkspaceLayout withWorkspaceLayout)
+                     withWorkspaceLayout.WorkspaceLayout = workspaceLayout;
                }
             }
             catch (Exception)

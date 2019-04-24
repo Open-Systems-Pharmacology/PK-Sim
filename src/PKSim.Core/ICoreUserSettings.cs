@@ -19,12 +19,12 @@ namespace PKSim.Core
       string DefaultPopulation { get; set; }
 
       /// <summary>
-      ///    Absolute tolerance used by defaut in  a simulation
+      ///    Absolute tolerance used by default in  a simulation
       /// </summary>
       double AbsTol { get; set; }
 
       /// <summary>
-      ///    Absolute tolerance used by defaut in  a simulation
+      ///    Absolute tolerance used by default in  a simulation
       /// </summary>
       double RelTol { get; set; }
 

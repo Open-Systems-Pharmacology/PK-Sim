@@ -34,7 +34,7 @@ namespace PKSim.Core.Commands
          _newDistributedParameter = newParameter.DistributedParameter;
          ObjectType = context.TypeFor(_advancedParameter);
          Description = PKSimConstants.Command.SwitchAdvancedParameterDistributionTypeDescription(_advancedParameter.ParameterPath, _oldDistributionType.ToString(), _newDistributionType.ToString());
-         context.UpdateBuildinBlockPropertiesInCommand(this, _advancedParameterContainer);
+         context.UpdateBuildingBlockPropertiesInCommand(this, _advancedParameterContainer);
       }
 
       public string ParameterId { get; private set; }

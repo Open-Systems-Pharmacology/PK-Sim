@@ -5,7 +5,7 @@ using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-
+using PKSim.Core;
 
 namespace PKSim.Presentation
 {
@@ -16,7 +16,7 @@ namespace PKSim.Presentation
       protected ISettingsItemPresenter _userSettings;
       protected ISettingsItemPresenter _appSettings;
       protected IDialogCreator _dialogCreator;
-      private IWorkspace _workspace;
+      private ICoreWorkspace _workspace;
       protected IUserDisplayUnitsPresenter _userDisplayUnitSettings;
 
       protected override void Context()
@@ -27,7 +27,7 @@ namespace PKSim.Presentation
          _userDisplayUnitSettings = _subPresenterManager.CreateFake(SettingsItems.UserDisplayUnitsSettings);
 
          _dialogCreator = A.Fake<IDialogCreator>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _view = A.Fake<ISettingsView>();
          sut = new SettingsPresenter(_view, _subPresenterManager, _dialogCreator, _workspace);
       }

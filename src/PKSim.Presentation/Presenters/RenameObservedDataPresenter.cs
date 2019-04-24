@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters
 {
@@ -14,9 +15,9 @@ namespace PKSim.Presentation.Presenters
 
    public class RenameObservedDataPresenter : ObjectBasePresenter<DataRepository>, IRenameObservedDataPresenter
    {
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
 
-      public RenameObservedDataPresenter(IObjectBaseView view, IWorkspace workspace) : base(view, false)
+      public RenameObservedDataPresenter(IObjectBaseView view, ICoreWorkspace workspace) : base(view, false)
       {
          _workspace = workspace;
       }

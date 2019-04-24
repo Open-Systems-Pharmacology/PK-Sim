@@ -1,13 +1,14 @@
 using OSPSuite.Presentation.MenuAndBars;
+using PKSim.Core;
 using PKSim.Presentation.Core;
 
 namespace PKSim.Presentation.UICommands
 {
    public class UndoCommand : IUICommand
    {
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
 
-      public UndoCommand(IWorkspace workspace)
+      public UndoCommand(ICoreWorkspace workspace)
       {
          _workspace = workspace;
       }

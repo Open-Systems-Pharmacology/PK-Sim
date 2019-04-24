@@ -24,7 +24,7 @@ namespace PKSim.Core.Commands
          BuildingBlockId = context.BuildingBlockIdContaining(parameterGroup);
          Description = PKSimConstants.Command.SetDefaultAlternativeParameterDescription(context.DisplayNameFor(parameterGroup), _oldDefaultAlternative.Name, parameterAlternative.Name);
          ShouldChangeVersion = false;
-         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(parameterGroup));
+         context.UpdateBuildingBlockPropertiesInCommand(this, context.BuildingBlockContaining(parameterGroup));
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)

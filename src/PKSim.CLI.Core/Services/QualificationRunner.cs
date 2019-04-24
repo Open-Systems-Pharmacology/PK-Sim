@@ -18,7 +18,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Presentation.Core;
 using static PKSim.Assets.PKSimConstants.Error;
 using Project = PKSim.Core.Snapshots.Project;
 using Simulation = PKSim.Core.Snapshots.Simulation;
@@ -29,7 +28,7 @@ namespace PKSim.CLI.Core.Services
    {
       private readonly ISnapshotTask _snapshotTask;
       private readonly IJsonSerializer _jsonSerializer;
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly ILogger _logger;
       private readonly IExportSimulationRunner _exportSimulationRunner;
@@ -39,7 +38,7 @@ namespace PKSim.CLI.Core.Services
 
       public QualificationRunner(ISnapshotTask snapshotTask,
          IJsonSerializer jsonSerializer,
-         IWorkspace workspace,
+         ICoreWorkspace workspace,
          IWorkspacePersistor workspacePersistor,
          IExportSimulationRunner exportSimulationRunner,
          IDataRepositoryTask dataRepositoryTask,

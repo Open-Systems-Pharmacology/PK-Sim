@@ -8,9 +8,9 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using PKSim.CLI.Core.RunOptions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI.Core.Services
@@ -32,14 +32,14 @@ namespace PKSim.CLI.Core.Services
    {
       private readonly ILogger _logger;
       private readonly IWorkspacePersistor _workspacePersistor;
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
       private readonly ISimulationExporter _simulationExporter;
       private readonly ILazyLoadTask _lazyLoadTask;
 
       public ExportSimulationRunner(
          ILogger logger,
          IWorkspacePersistor workspacePersistor,
-         IWorkspace workspace,
+         ICoreWorkspace workspace,
          ISimulationExporter simulationExporter,
          ILazyLoadTask lazyLoadTask
       )

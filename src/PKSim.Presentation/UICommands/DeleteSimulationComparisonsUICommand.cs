@@ -10,18 +10,19 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.UICommands;
+using PKSim.Core;
 
 namespace PKSim.Presentation.UICommands
 {
    public class DeleteSimulationComparisonsUICommand : ObjectUICommand<IReadOnlyList<ISimulationComparison>>
    {
       private readonly IApplicationController _applicationController;
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
       private readonly IEventPublisher _eventPublisher;
       private readonly IDialogCreator _dialogCreator;
       private readonly IRegistrationTask _registrationTask;
 
-      public DeleteSimulationComparisonsUICommand(IApplicationController applicationController, IWorkspace workspace, IEventPublisher eventPublisher,
+      public DeleteSimulationComparisonsUICommand(IApplicationController applicationController, ICoreWorkspace workspace, IEventPublisher eventPublisher,
          IDialogCreator dialogCreator, IRegistrationTask registrationTask)
       {
          _applicationController = applicationController;

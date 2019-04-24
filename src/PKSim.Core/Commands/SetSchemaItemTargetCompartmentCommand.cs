@@ -19,7 +19,7 @@ namespace PKSim.Core.Commands
          ObjectType = PKSimConstants.ObjectTypes.AdministrationProtocol;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          BuildingBlockId = context.BuildingBlockIdContaining(schemaItem);
-         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(schemaItem));
+         context.UpdateBuildingBlockPropertiesInCommand(this, context.BuildingBlockContaining(schemaItem));
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)

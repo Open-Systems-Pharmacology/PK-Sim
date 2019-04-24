@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Journal;
-using OSPSuite.Presentation.Core;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 
 namespace PKSim.CLI.Core.MinimalImplementations
 {
-   public class CLIWorkspace : IWorkspace
+   public class CLIWorkspace : ICoreWorkspace
    {
       private readonly IRegistrationTask _registrationTask;
       private PKSimProject _project;
@@ -28,8 +27,6 @@ namespace PKSim.CLI.Core.MinimalImplementations
       {
          return Enumerable.Empty<ICommand>();
       }
-
-      public IWorkspaceLayout WorkspaceLayout { get; set; } = new WorkspaceLayout();
 
       public void Clear()
       {
