@@ -137,6 +137,7 @@ namespace PKSim.IntegrationTests
             if (parameter.ParameterName.IsOneOf(
                CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE,
                CoreConstants.Parameters.IS_SMALL_MOLECULE,
+               CoreConstants.Parameters.ENABLE_SUPERSATURATION,
                CoreConstants.Parameters.LIPOPHILICITY,
                CoreConstants.Parameters.MOLECULAR_WEIGHT,
                CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER,
