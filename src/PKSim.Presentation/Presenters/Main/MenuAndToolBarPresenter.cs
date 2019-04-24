@@ -22,7 +22,7 @@ using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
-using IWorkspace = PKSim.Presentation.Core.IWorkspace;
+using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters.Main
 {
@@ -60,7 +60,7 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IButtonGroupRepository _buttonGroupRepository;
       private readonly ISkinManager _skinManager;
       private readonly IStartOptions _startOptions;
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
       private bool _enabled;
       private SimulationState _simulationState;
@@ -72,7 +72,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
          IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider,
-         ISkinManager skinManager, IStartOptions startOptions, IWorkspace workspace, IActiveSubjectRetriever activeSubjectRetriever) : base(view, menuBarItemRepository, mruProvider)
+         ISkinManager skinManager, IStartOptions startOptions, ICoreWorkspace workspace, IActiveSubjectRetriever activeSubjectRetriever) : base(view, menuBarItemRepository, mruProvider)
       {
          _menuBarItemRepository = menuBarItemRepository;
          _buttonGroupRepository = buttonGroupRepository;

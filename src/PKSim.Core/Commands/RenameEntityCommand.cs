@@ -64,7 +64,7 @@ namespace PKSim.Core.Commands
 
 
          var buildingBlock = context.Get<IPKSimBuildingBlock>(BuildingBlockId);
-         context.UpdateBuildinBlockPropertiesInCommand(this, buildingBlock);
+         context.UpdateBuildingBlockPropertiesInCommand(this, buildingBlock);
          if (buildingBlock != null)
             buildingBlock.HasChanged = true;
 

@@ -29,7 +29,7 @@ namespace PKSim.CLI.Core.Services
    {
       private readonly ISnapshotTask _snapshotTask;
       private readonly IJsonSerializer _jsonSerializer;
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly ILogger _logger;
       private readonly IExportSimulationRunner _exportSimulationRunner;
@@ -39,7 +39,7 @@ namespace PKSim.CLI.Core.Services
 
       public QualificationRunner(ISnapshotTask snapshotTask,
          IJsonSerializer jsonSerializer,
-         IWorkspace workspace,
+         ICoreWorkspace workspace,
          IWorkspacePersistor workspacePersistor,
          IExportSimulationRunner exportSimulationRunner,
          IDataRepositoryTask dataRepositoryTask,

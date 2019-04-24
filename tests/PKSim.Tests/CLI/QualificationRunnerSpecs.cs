@@ -30,7 +30,7 @@ namespace PKSim.CLI
    {
       protected ISnapshotTask _snapshotTask;
       protected IJsonSerializer _jsonSerializer;
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected IWorkspacePersistor _workspacePersistor;
       protected IExportSimulationRunner _exportSimulationRunner;
       protected ILogger _logger;
@@ -62,7 +62,7 @@ namespace PKSim.CLI
       {
          _snapshotTask = A.Fake<ISnapshotTask>();
          _jsonSerializer = A.Fake<IJsonSerializer>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _exportSimulationRunner = A.Fake<IExportSimulationRunner>();
          _logger = A.Fake<ILogger>();

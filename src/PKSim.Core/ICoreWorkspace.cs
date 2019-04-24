@@ -1,11 +1,10 @@
 using System;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Presentation.Services;
 using PKSim.Core.Model;
 
-namespace PKSim.Presentation.Core
+namespace PKSim.Core
 {
-   public interface IWorkspace : ICommandCollector, IWithWorkspaceLayout, OSPSuite.Core.IWorkspace
+   public interface ICoreWorkspace : ICommandCollector, OSPSuite.Core.IWorkspace
    {
       /// <summary>
       ///    Returns/sets the current project
@@ -29,19 +28,20 @@ namespace PKSim.Presentation.Core
       void SaveProject(string fileFullPath);
 
       /// <summary>
-      ///    Opens the project located at <paramref name="fileFullPath"/>
+      ///    Opens the project located at <paramref name="fileFullPath" />
       /// </summary>
       /// <param name="fileFullPath">Full path of the file where the project is located</param>
       void OpenProject(string fileFullPath);
 
       /// <summary>
-      ///    Loads the project using the <paramref name="projectLoadAction"/>. The <paramref name="projectLoadAction"/> is responsible to 
-      /// call <c>Workspace.Project = project</c>
+      ///    Loads the project using the <paramref name="projectLoadAction" />. The <paramref name="projectLoadAction" /> is
+      ///    responsible to
+      ///    call <c>Workspace.Project = project</c>
       /// </summary>
       void LoadProject(Action projectLoadAction);
 
       /// <summary>
-      ///    Loads the project <paramref name="project"/> given as parameter
+      ///    Loads the project <paramref name="project" /> given as parameter
       /// </summary>
       void LoadProject(PKSimProject project);
 

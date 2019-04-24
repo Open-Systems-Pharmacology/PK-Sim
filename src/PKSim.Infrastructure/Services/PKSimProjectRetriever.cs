@@ -1,5 +1,6 @@
 ﻿using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;
@@ -8,9 +9,9 @@ namespace PKSim.Infrastructure.Services
 {
    public class PKSimProjectRetriever : IPKSimProjectRetriever
    {
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
 
-      public PKSimProjectRetriever(IWorkspace workspace)
+      public PKSimProjectRetriever(ICoreWorkspace workspace)
       {
          _workspace = workspace;
       }

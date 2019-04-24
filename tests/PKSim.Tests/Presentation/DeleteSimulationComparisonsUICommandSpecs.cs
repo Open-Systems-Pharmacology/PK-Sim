@@ -13,6 +13,7 @@ using PKSim.Presentation.UICommands;
 
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
+using PKSim.Core;
 
 namespace PKSim.Presentation
 {
@@ -20,7 +21,7 @@ namespace PKSim.Presentation
    {
       protected IDialogCreator _dialogCreator;
       private IApplicationController _applicationController;
-      private IWorkspace _workspace;
+      private ICoreWorkspace _workspace;
       protected IEventPublisher _eventPublisher;
       protected IndividualSimulationComparison _individualSimulationComparison;
       protected PKSimProject _project;
@@ -30,7 +31,7 @@ namespace PKSim.Presentation
       {
          _dialogCreator = A.Fake<IDialogCreator>();
          _applicationController = A.Fake<IApplicationController>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _project = A.Fake<PKSimProject>();
          _registrationTask= A.Fake<IRegistrationTask>();
          A.CallTo(() => _workspace.Project).Returns(_project);

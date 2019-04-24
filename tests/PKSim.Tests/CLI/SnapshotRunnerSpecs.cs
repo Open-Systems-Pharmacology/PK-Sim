@@ -11,6 +11,7 @@ using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
 
@@ -18,7 +19,7 @@ namespace PKSim.CLI
 {
    public abstract class concern_for_SnapshotRunner : ContextSpecificationAsync<SnapshotRunner>
    {
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected ISnapshotTask _snapshotTask;
       protected IWorkspacePersistor _workspacePersistor;
       protected ILogger _logger;
@@ -37,7 +38,7 @@ namespace PKSim.CLI
 
       protected override Task Context()
       {
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _snapshotTask = A.Fake<ISnapshotTask>();
          _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _logger = A.Fake<ILogger>();

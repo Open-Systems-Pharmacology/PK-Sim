@@ -8,13 +8,14 @@ using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
+using PKSim.Core;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_EditIndividualPresenter : ContextSpecification<IEditIndividualPresenter>
    {
       protected IEditIndividualView _view;
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected IIndividualSettingsPresenter _individualSettingsPresenter;
       protected IIndividualMoleculesPresenter _individualMoleculesPresenter;
       protected Individual _individualToEdit;
@@ -24,7 +25,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _view = A.Fake<IEditIndividualView>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _individualSettingsPresenter = A.Fake<IIndividualSettingsPresenter>();
          _individualMoleculesPresenter = A.Fake<IIndividualMoleculesPresenter>();
          _individualToEdit = A.Fake<Individual>();

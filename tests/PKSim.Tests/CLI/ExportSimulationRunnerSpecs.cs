@@ -25,7 +25,7 @@ namespace PKSim.CLI
    {
       protected ILogger _logger;
       protected IWorkspacePersistor _workspacePersitor;
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected ISimulationExporter _simulationExporter;
       protected ILazyLoadTask _lazyLoadTask;
       protected ExportRunOptions _exportRunOptions = new ExportRunOptions {ExportMode = SimulationExportMode.Json | SimulationExportMode.Xml};
@@ -75,7 +75,7 @@ namespace PKSim.CLI
       {
          _logger = A.Fake<ILogger>();
          _workspacePersitor = A.Fake<IWorkspacePersistor>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _simulationExporter = A.Fake<ISimulationExporter>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          sut = new ExportSimulationRunner(_logger, _workspacePersitor, _workspace, _simulationExporter, _lazyLoadTask);

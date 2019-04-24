@@ -176,6 +176,7 @@
     <Compile Include="Extensions\CurveExtensions.cs" />
     <Compile Include="Extensions\DataRepositoryExtensions.cs" />
     <Compile Include="Extensions\DataSetExtensions.cs" />
+    <Compile Include="ICoreWorkspace.cs" />
     <Compile Include="Mappers\BasePKAnalysisToDataTableMapper.cs" />
     <Compile Include="Mappers\BoxWhiskerChartDataToDataTableMapper.cs" />
     <Compile Include="Mappers\ChartDataToDataTableMapper.cs" />
@@ -213,6 +214,7 @@
     <Compile Include="Services\IPostLaunchChecker.cs" />
     <Compile Include="Services\IQualificationStepRunner.cs" />
     <Compile Include="Services\ITemplateDatabaseCreator.cs" />
+    <Compile Include="Services\IWorkspacePersistor.cs" />
     <Compile Include="Services\MassToAmoundDimensionConverter.cs" />
     <Compile Include="Services\MoleculeParameterTask.cs" />
     <Compile Include="Services\ObserverTask.cs" />

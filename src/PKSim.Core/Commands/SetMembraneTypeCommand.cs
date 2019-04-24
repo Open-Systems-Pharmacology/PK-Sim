@@ -27,7 +27,7 @@ namespace PKSim.Core.Commands
          _oldMembraneLocation = _transporterContainer.MembraneLocation;
          ObjectType = PKSimConstants.ObjectTypes.Transporter;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         context.UpdateBuildinBlockPropertiesInCommand(this, _individual);
+         context.UpdateBuildingBlockPropertiesInCommand(this, _individual);
       }
 
       protected override void ClearReferences()

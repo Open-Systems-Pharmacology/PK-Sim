@@ -41,7 +41,7 @@ namespace PKSim.Matlab
 
             //no computation required in matlab interface
             InfrastructureRegister.RegisterSerializationDependencies();
-            InfrastructureRegister.RegisterWorkspace<CLIWorkspace>();
+            container.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
          }
       }
 

@@ -19,7 +19,7 @@ namespace PKSim.Core.Commands
          ObjectType = PKSimConstants.ObjectTypes.AdministrationProtocol;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          Description = PKSimConstants.Command.SetProtocolModeCommandDescription(oldProtocolMode.ToString(), newProtocolMode.ToString());
-         context.UpdateBuildinBlockPropertiesInCommand(this, _protocol);
+         context.UpdateBuildingBlockPropertiesInCommand(this, _protocol);
       }
 
       public override void Execute(IExecutionContext context)

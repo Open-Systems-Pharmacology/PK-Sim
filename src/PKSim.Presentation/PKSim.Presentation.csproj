@@ -138,8 +138,6 @@
     <Compile Include="Core\CreateProjectCommand.cs" />
     <Compile Include="Core\ExportToPDFInvoker.cs" />
     <Compile Include="Core\FileSelection.cs" />
-    <Compile Include="Core\IWorkspace.cs" />
-    <Compile Include="Core\IWorkspacePersistor.cs" />
     <Compile Include="Core\LoadProjectFromSnapshotCommand.cs" />
     <Compile Include="Core\StatusBarElements.cs" />
     <Compile Include="DTO\ApplicationSettingsDTO.cs" />
@@ -191,6 +189,7 @@
     <Compile Include="Events\ShowNotificationEvent.cs" />
     <Compile Include="Extensions\QuantityPresenterExtensions.cs" />
     <Compile Include="IUserSettings.cs" />
+    <Compile Include="IWorkspace.cs" />
     <Compile Include="Mappers\CompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper.cs" />
     <Compile Include="Mappers\DataRepositoryToObservedCurveDataMapper.cs" />
     <Compile Include="Mappers\GroupingDefinitionToGroupingDefinitionPresenterMapper.cs" />

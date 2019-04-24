@@ -67,7 +67,7 @@ namespace PKSim.CLI
          container.Register<IDiagramModelToXmlMapper, CLIDiagramModelToXmlMapper>(LifeStyle.Singleton);
          container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
          container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, CLIUserSettings>(LifeStyle.Singleton);
-         InfrastructureRegister.RegisterWorkspace<CLIWorkspace>();
+         container.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
       }
    }
 }

@@ -5,13 +5,12 @@ using OSPSuite.Core;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.Core;
-using IWorkspace = PKSim.Presentation.Core.IWorkspace;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_LoadProjectFromSnapshotCommand : ContextSpecification<LoadProjectFromSnapshotCommand>
    {
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected PKSimProject _project;
       protected string _snapshotFile = "SnapshotFile";
       protected IExecutionContext _context;
@@ -20,7 +19,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          _context= A.Fake<IExecutionContext>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _configuration= A.Fake<IApplicationConfiguration>();
          _project = new PKSimProject {Creation = {Version = "CreationVersion"}};
          A.CallTo(() => _context.Resolve<IApplicationConfiguration>()).Returns(_configuration);

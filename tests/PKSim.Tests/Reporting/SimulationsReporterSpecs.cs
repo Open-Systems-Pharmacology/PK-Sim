@@ -36,7 +36,7 @@ namespace PKSim.Reporting
 
       protected override void Context()
       {
-         var workspace = A.Fake<IWorkspace>();
+         var workspace = A.Fake<ICoreWorkspace>();
          _project = A.Fake<PKSimProject>();
          workspace.Project = _project;
          A.CallTo(() => _project.All(PKSimBuildingBlockType.Template)).Returns(_allBuildingBlocks);

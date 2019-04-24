@@ -21,7 +21,7 @@ namespace PKSim.Core.Commands
          _oldSpecies = entity.Species;
          _newSpecies = species;
          Description = PKSimConstants.Command.SetSpeciesInSpeciesDependentEntityDescription(context.TypeFor(_entity), entity.Name, _oldSpecies.Name, _newSpecies.Name);
-         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(entity));
+         context.UpdateBuildingBlockPropertiesInCommand(this, context.BuildingBlockContaining(entity));
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)

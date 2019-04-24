@@ -24,6 +24,7 @@ using PKSim.Presentation;
 using PKSim.Presentation.Services;
 using SimModelNET;
 using CoreRegister = PKSim.Core.CoreRegister;
+using IWorkspace = PKSim.Presentation.IWorkspace;
 
 namespace PKSim.IntegrationTests
 {

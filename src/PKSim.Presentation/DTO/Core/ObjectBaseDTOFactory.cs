@@ -3,6 +3,7 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.Core;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core;
 
 namespace PKSim.Presentation.DTO.Core
 {
@@ -13,9 +14,9 @@ namespace PKSim.Presentation.DTO.Core
 
    public class ObjectBaseDTOFactory : IObjectBaseDTOFactory
    {
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
 
-      public ObjectBaseDTOFactory(IWorkspace workspace)
+      public ObjectBaseDTOFactory(ICoreWorkspace workspace)
       {
          _workspace = workspace;
       }

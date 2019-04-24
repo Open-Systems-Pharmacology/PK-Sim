@@ -21,7 +21,7 @@ namespace PKSim.Core
       IPKSimBuildingBlock BuildingBlockContaining(IEntity entity);
       string BuildingBlockIdContaining(IEntity entity);
       void UpdateBuildingBlockVersion(IBuildingBlockChangeCommand buildingBlockChangeCommand);
-      void UpdateBuildinBlockPropertiesInCommand(IOSPSuiteCommand command, IPKSimBuildingBlock buildingBlock);
+      void UpdateBuildingBlockPropertiesInCommand(IOSPSuiteCommand command, IPKSimBuildingBlock buildingBlock);
       void UpdateDependenciesOn(IParameter parameter);
       string ReportFor<T>(T objectToReport);
    }
@@ -160,7 +160,7 @@ namespace PKSim.Core
          buildingBlock.HasChanged = true;
       }
 
-      public void UpdateBuildinBlockPropertiesInCommand(IOSPSuiteCommand command, IPKSimBuildingBlock buildingBlock)
+      public void UpdateBuildingBlockPropertiesInCommand(IOSPSuiteCommand command, IPKSimBuildingBlock buildingBlock)
       {
          if (buildingBlock == null)
          {

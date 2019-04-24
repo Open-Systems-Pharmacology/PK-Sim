@@ -30,7 +30,7 @@ namespace PKSim.Infrastructure.Services
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly ISimModelExporter _simModelExporter;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
       private readonly IPKSimConfiguration _configuration;
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly IDialogCreator _dialogCreator;
@@ -38,7 +38,7 @@ namespace PKSim.Infrastructure.Services
 
       public PopulationExportTask(IApplicationController applicationController, IEntityPathResolver entityPathResolver,
          ILazyLoadTask lazyLoadTask, ISimModelExporter simModelExporter, ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
-         IWorkspace workspace, IPKSimConfiguration configuration, ISimulationSettingsRetriever simulationSettingsRetriever,
+         ICoreWorkspace workspace, IPKSimConfiguration configuration, ISimulationSettingsRetriever simulationSettingsRetriever,
          IDialogCreator dialogCreator, ICloner cloner)
       {
          _applicationController = applicationController;

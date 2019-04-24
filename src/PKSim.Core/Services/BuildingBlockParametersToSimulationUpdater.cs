@@ -63,7 +63,7 @@ namespace PKSim.Core.Services
          updateCommands.ObjectType = PKSimConstants.ObjectTypes.Simulation;
          updateCommands.CommandType = PKSimConstants.Command.CommandTypeUpdate;
          updateCommands.Description = PKSimConstants.Command.UpdateBuildingBlockCommandDescription(buildingBlockType, templateBuildingBlock.Name, simulation.Name);
-         _executionContext.UpdateBuildinBlockPropertiesInCommand(updateCommands, simulation);
+         _executionContext.UpdateBuildingBlockPropertiesInCommand(updateCommands, simulation);
          return updateCommands;
       }
 

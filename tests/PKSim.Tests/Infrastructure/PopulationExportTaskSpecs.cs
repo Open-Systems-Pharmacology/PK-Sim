@@ -29,7 +29,7 @@ namespace PKSim.Infrastructure
       protected ISimModelExporter _simModelExporter;
       protected ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       private IPKSimConfiguration _configuration;
-      private IWorkspace _workspace;
+      private ICoreWorkspace _workspace;
       private IApplicationController _applicationController;
       protected ISelectFilePresenter _selectFilePresenter;
       protected IDialogCreator _dialogCreator;
@@ -40,7 +40,7 @@ namespace PKSim.Infrastructure
       {
          _configuration = A.Fake<IPKSimConfiguration>();
          _applicationController = A.Fake<IApplicationController>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _selectFilePresenter = A.Fake<ISelectFilePresenter>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();

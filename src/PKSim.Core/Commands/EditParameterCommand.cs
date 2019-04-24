@@ -55,7 +55,7 @@ namespace PKSim.Core.Commands
       private void udpateBuildingBlockProperties(IExecutionContext context)
       {
          var parentBuildingBlock = context.BuildingBlockContaining(_parameter) ?? context.Get<IPKSimBuildingBlock>(BuildingBlockId);
-         context.UpdateBuildinBlockPropertiesInCommand(this, parentBuildingBlock);
+         context.UpdateBuildingBlockPropertiesInCommand(this, parentBuildingBlock);
       }
 
       protected abstract void UpdateParameter(IParameter parameter, IExecutionContext context);

@@ -62,7 +62,7 @@ namespace PKSim.Core.Services
             ObjectType = PKSimConstants.ObjectTypes.Population,
             Description = PKSimConstants.Command.AddDefaultVariabilityToPopulation(population.Name)
          };
-         _executionContext.UpdateBuildinBlockPropertiesInCommand(macroCommand, population);
+         _executionContext.UpdateBuildingBlockPropertiesInCommand(macroCommand, population);
          return macroCommand;
       }
 

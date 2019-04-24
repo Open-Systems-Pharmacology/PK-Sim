@@ -19,7 +19,7 @@ namespace PKSim.Core.Commands
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          ObjectType = PKSimConstants.ObjectTypes.Protein;
          BuildingBlockId = context.BuildingBlockIdContaining(parameter);
-         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(parameter));
+         context.UpdateBuildingBlockPropertiesInCommand(this, context.BuildingBlockContaining(parameter));
          //This command is necessary to insure consitency but does not need to be seen
          Visible = false;
       }

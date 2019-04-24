@@ -4,10 +4,6 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters.ParameterIdentifications;
-using OSPSuite.Presentation.Presenters.SensitivityAnalyses;
-using OSPSuite.Presentation.Services;
-using OSPSuite.Presentation.Settings;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
@@ -17,7 +13,7 @@ using PKSim.Presentation;
 
 namespace PKSim.CLI.Core.MinimalImplementations
 {
-   public class CLIUserSettings : Notifier, IUserSettings
+   public class CLIUserSettings : Notifier, ICoreUserSettings
    {
       public IBusinessRuleSet Rules { get; private set; }
       public string DefaultChartEditorLayout { get; set; }
@@ -54,8 +50,6 @@ namespace PKSim.CLI.Core.MinimalImplementations
       public Color DisabledColor { get; set; }
       public bool ShouldRestoreWorkspaceLayout { get; set; }
       public ParameterGroupingModeId DefaultParameterGroupingMode { get; set; }
-      public DirectoryMapSettings DirectoryMapSettings { get; set; }
-      public IEnumerable<DirectoryMap> UsedDirectories { get; set; }
       public bool ShowUpdateNotification { get; set; }
       public string LastIgnoredVersion { get; set; }
       public ViewLayout PreferredViewLayout { get; set; }
@@ -65,8 +59,6 @@ namespace PKSim.CLI.Core.MinimalImplementations
 
       public string ChartEditorLayout { get; set; }
 
-      public JournalPageEditorSettings JournalPageEditorSettings { get; set; }
-
       public void ResetToDefault()
       {
          AbsTol = CoreConstants.DEFAULT_ABS_TOL;
@@ -75,9 +67,6 @@ namespace PKSim.CLI.Core.MinimalImplementations
          DefaultLipophilicityName = PKSimConstants.UI.DefaultAlternative;
          DefaultFractionUnboundName = PKSimConstants.UI.DefaultAlternative;
          DefaultSolubilityName = PKSimConstants.UI.DefaultAlternative;
-         JournalPageEditorSettings = new JournalPageEditorSettings();
-         ParameterIdentificationFeedbackEditorSettings = new ParameterIdentificationFeedbackEditorSettings();
-         SensitivityAnalysisFeedbackEditorSettings = new SensitivityAnalysisFeedbackEditorSettings();
       }
 
       public void ResetLayout()
@@ -98,8 +87,5 @@ namespace PKSim.CLI.Core.MinimalImplementations
          ProjectFiles = new List<string>();
          ResetToDefault();
       }
-
-      public ParameterIdentificationFeedbackEditorSettings ParameterIdentificationFeedbackEditorSettings { get; set; }
-      public SensitivityAnalysisFeedbackEditorSettings SensitivityAnalysisFeedbackEditorSettings { get; set; }
    }
 }

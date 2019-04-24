@@ -25,7 +25,7 @@ namespace PKSim.Core.Commands
          var subjectName = string.IsNullOrEmpty(_simulationSubject.Name) ? CoreConstants.ContainerName.NameTemplate : _simulationSubject.Name;
 
          Description = PKSimConstants.Command.SetOntogenyInProteinDescription(subjectName, molecule.Name, _oldOntogeny.Name, _newOntogeny.Name);
-         context.UpdateBuildinBlockPropertiesInCommand(this, simulationSubject);
+         context.UpdateBuildingBlockPropertiesInCommand(this, simulationSubject);
       }
 
       protected override void ClearReferences()

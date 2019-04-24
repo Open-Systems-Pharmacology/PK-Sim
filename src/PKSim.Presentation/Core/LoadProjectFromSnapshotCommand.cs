@@ -11,9 +11,9 @@ namespace PKSim.Presentation.Core
    {
       private PKSimProject _project;
       private readonly string _snapshotFile;
-      private IWorkspace _workspace;
+      private ICoreWorkspace _workspace;
 
-      public LoadProjectFromSnapshotCommand(IWorkspace workspace, PKSimProject project, string snapshotFile)
+      public LoadProjectFromSnapshotCommand(ICoreWorkspace workspace, PKSimProject project, string snapshotFile)
       {
          _workspace = workspace;
          _project = project;

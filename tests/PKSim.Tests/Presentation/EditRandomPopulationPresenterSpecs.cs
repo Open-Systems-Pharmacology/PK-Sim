@@ -6,12 +6,13 @@ using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.Populations;
 using OSPSuite.Presentation.Core;
+using PKSim.Core;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_EditRandomPopulationPresenter : ContextSpecification<IEditRandomPopulationPresenter>
    {
-      private IWorkspace _workspace;
+      private ICoreWorkspace _workspace;
       protected IEditRandomPopulationView _view;
       private ISubPresenterItemManager<IPopulationItemPresenter> _subPresenterManager;
       protected IRandomPopulationSettingsPresenter _popSettingsPresenter;
@@ -21,7 +22,7 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _view = A.Fake<IEditRandomPopulationView>();
          _subPresenterManager = SubPresenterHelper.Create<IPopulationItemPresenter>();
          _popSettingsPresenter = _subPresenterManager.CreateFake(RamdomPopulationItems.Settings);
