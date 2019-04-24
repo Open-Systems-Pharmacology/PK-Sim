@@ -18,7 +18,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Presentation.Core;
 using static PKSim.Assets.PKSimConstants.Error;
 using Project = PKSim.Core.Snapshots.Project;
 using Simulation = PKSim.Core.Snapshots.Simulation;

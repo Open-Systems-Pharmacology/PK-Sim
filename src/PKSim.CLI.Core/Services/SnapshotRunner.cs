@@ -14,7 +14,6 @@ using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Presentation.Core;
 
 namespace PKSim.CLI.Core.Services
 {

@@ -54,13 +54,13 @@ namespace PKSim.Core.Services
 
       /// <summary>
       ///    Returns the possible parameters for the permeability depending on the different alternatives defined for
-      ///    Lipophilicty
+      ///    Lipophilicity
       /// </summary>
       IEnumerable<IParameter> PermeabilityValuesFor(Compound compound);
 
       /// <summary>
       ///    Returns the possible parameters for the intestinal permeability depending on the different alternatives defined for
-      ///    Lipophilicty
+      ///    Lipophilicity
       /// </summary>
       IEnumerable<IParameter> IntestinalPermeabilityValuesFor(Compound compound);
 
@@ -79,7 +79,7 @@ namespace PKSim.Core.Services
       ICommand SetSpeciesForAlternative(ParameterAlternativeWithSpecies parameterAlternative, Species species);
 
       /// <summary>
-      ///    Returns a table formula containg the solubiltiy as a function of ph for the given solubility alternative
+      ///    Returns a table formula containing the solubility as a function of ph for the given solubility alternative
       /// </summary>
       TableFormula SolubilityTableForPh(ParameterAlternative solubilityAlternative, Compound compound);
 
@@ -89,12 +89,12 @@ namespace PKSim.Core.Services
       TableFormula ImportSolubilityTableFormula();
 
       /// <summary>
-      ///    Edits the solubility talbe for the given <paramref name="parameter" />
+      ///    Edits the solubility table for the given <paramref name="parameter" />
       /// </summary>
       ICommand EditSolubilityTableFor(IParameter parameter);
 
       /// <summary>
-      ///    Performs initalization steps for a brand new solubility alternative that should behave as a Table alternative
+      ///    Performs initialization steps for a brand new solubility alternative that should behave as a Table alternative
       /// </summary>
       /// <param name="solubilityAlternative"></param>
       void PrepareSolubilityAlternativeForTableSolubility(ParameterAlternative solubilityAlternative);

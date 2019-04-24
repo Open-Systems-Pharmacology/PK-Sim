@@ -33,12 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v18.2, Version=18.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.18.2.7\lib\net45\DevExpress.Data.v18.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Utils.v18.2, Version=18.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.18.2.7\lib\net45\DevExpress.Utils.v18.2.dll</HintPath>
-    </Reference>
     <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MathNet.Numerics.4.7.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
@@ -116,10 +110,6 @@
     <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj">
       <Project>{cef9367d-f2c4-4796-847b-42b090a601b5}</Project>
       <Name>PKSim.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PKSim.Presentation\PKSim.Presentation.csproj">
-      <Project>{0238e2f1-a931-4d3d-9c6e-88924cff9501}</Project>
-      <Name>PKSim.Presentation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

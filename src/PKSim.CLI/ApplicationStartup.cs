@@ -8,12 +8,14 @@ using OSPSuite.Core.Services;
 using OSPSuite.Engine;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Format;
 using PKSim.CLI.Core;
 using PKSim.CLI.Core.MinimalImplementations;
+using PKSim.CLI.Services;
 using PKSim.Core;
 using PKSim.Infrastructure;
 using SimModelNET;
@@ -64,9 +66,10 @@ namespace PKSim.CLI
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
          container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
          container.Register<IDiagramModel, CLIDiagramModel>();
+         container.Register<IWithWorkspaceLayout, CLIWithWorkspaceLayout>();
          container.Register<IDiagramModelToXmlMapper, CLIDiagramModelToXmlMapper>(LifeStyle.Singleton);
          container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
-         container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, CLIUserSettings>(LifeStyle.Singleton);
+         container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, CLIUserSettings>(LifeStyle.Singleton);
          container.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
       }
    }

@@ -9,7 +9,6 @@ using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Presentation;
 
 namespace PKSim.CLI.Core.MinimalImplementations
 {
@@ -52,7 +51,6 @@ namespace PKSim.CLI.Core.MinimalImplementations
       public ParameterGroupingModeId DefaultParameterGroupingMode { get; set; }
       public bool ShowUpdateNotification { get; set; }
       public string LastIgnoredVersion { get; set; }
-      public ViewLayout PreferredViewLayout { get; set; }
       public IList<string> ProjectFiles { get; set; }
 
       public IDiagramOptions DiagramOptions { get; set; }
