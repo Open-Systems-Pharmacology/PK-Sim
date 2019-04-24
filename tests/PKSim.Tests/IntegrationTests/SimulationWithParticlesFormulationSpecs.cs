@@ -507,7 +507,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         //load protoype simulation
+         //load prototype simulation
          var importSimulationTask = IoC.Resolve<IImportSimulationTask>();
          var pkmlFilePrototypeSimulation = DomainHelperForSpecs.DataFilePathFor("PrototypeParticlesDissolution_722.pkml");
          _prototypeSimulation = importSimulationTask.ImportIndividualSimulation(pkmlFilePrototypeSimulation);

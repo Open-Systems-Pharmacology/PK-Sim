@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using OSPSuite.Assets;
-using OSPSuite.Core.Comparison;
-using OSPSuite.Core.Diagram;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
@@ -15,9 +10,6 @@ namespace PKSim.CLI.Core.MinimalImplementations
    public class CLIUserSettings : Notifier, ICoreUserSettings
    {
       public IBusinessRuleSet Rules { get; private set; }
-      public string DefaultChartEditorLayout { get; set; }
-      public string ActiveSkin { get; set; }
-      public Scalings DefaultChartYScaling { get; set; }
       public int NumberOfBins { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
       public string DefaultSpecies { get; set; } = CoreConstants.Species.HUMAN;
@@ -31,31 +23,6 @@ namespace PKSim.CLI.Core.MinimalImplementations
       public int MaximumNumberOfCoresToUse { get; set; }
       public PopulationAnalysisType DefaultPopulationAnalysis { get; set; }
       public string TemplateDatabasePath { get; set; }
-      public IconSize IconSizeTreeView { get; set; }
-      public IconSize IconSizeTab { get; set; }
-      public IconSize IconSizeContextMenu { get; set; }
-      public uint DecimalPlace { get; set; }
-      public bool AllowsScientifcNotation { get; set; }
-      public uint MRUListItemCount { get; set; }
-      public ComparerSettings ComparerSettings { get; set; }
-      public string MainViewLayout { get; set; }
-      public string RibbonLayout { get; set; }
-      public int LayoutVersion { get; set; }
-      public Color ChangedColor { get; set; }
-      public Color FormulaColor { get; set; }
-      public Color ChartBackColor { get; set; }
-      public Color ChartDiagramBackColor { get; set; }
-      public DisplayUnitsManager DisplayUnits { get; set; }
-      public Color DisabledColor { get; set; }
-      public bool ShouldRestoreWorkspaceLayout { get; set; }
-      public ParameterGroupingModeId DefaultParameterGroupingMode { get; set; }
-      public bool ShowUpdateNotification { get; set; }
-      public string LastIgnoredVersion { get; set; }
-      public IList<string> ProjectFiles { get; set; }
-
-      public IDiagramOptions DiagramOptions { get; set; }
-
-      public string ChartEditorLayout { get; set; }
 
       public void ResetToDefault()
       {
@@ -67,22 +34,8 @@ namespace PKSim.CLI.Core.MinimalImplementations
          DefaultSolubilityName = PKSimConstants.UI.DefaultAlternative;
       }
 
-      public void ResetLayout()
-      {
-      }
-
-      public void RestoreLayout()
-      {
-      }
-
-      public void SaveLayout()
-      {
-      }
-
       public CLIUserSettings()
       {
-         DisplayUnits = new DisplayUnitsManager();
-         ProjectFiles = new List<string>();
          ResetToDefault();
       }
    }

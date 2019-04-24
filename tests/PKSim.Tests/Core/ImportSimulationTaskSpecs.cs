@@ -127,7 +127,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _simulationImport = sut.ImportFromBuidlingBlock(_pkmlFile, _population);
+         _simulationImport = sut.ImportFromBuildingBlock(_pkmlFile, _population);
       }
 
       [Observation]

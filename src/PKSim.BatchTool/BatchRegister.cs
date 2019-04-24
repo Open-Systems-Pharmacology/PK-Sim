@@ -20,7 +20,7 @@ namespace PKSim.BatchTool
             scan.WithDefaultConvention();
          });
 
-         container.Register<IUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, CLIUserSettings>(LifeStyle.Singleton);
+         container.Register<IUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, BatchUserSettings>(LifeStyle.Singleton);
          container.Register<IDiagramModelToXmlMapper, CLIDiagramModelToXmlMapper>();
          container.Register<IDiagramModel, CLIDiagramModel>();
          container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();

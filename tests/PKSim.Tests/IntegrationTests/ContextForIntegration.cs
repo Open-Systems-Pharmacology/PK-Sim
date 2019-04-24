@@ -71,7 +71,8 @@ namespace PKSim.IntegrationTests
                x.FromType<BatchRegister>();
             });
 
-            var userSettings = container.Resolve<ICoreUserSettings>();
+
+            var userSettings = container.Resolve<IUserSettings>();
             userSettings.AbsTol = 1e-10;
             userSettings.RelTol = 1e-5;
             //this is use to create reports
