@@ -14,7 +14,7 @@ namespace PKSim.Core.Services
 
       public override bool IsSatisfiedBy(Formulation formulation)
       {
-         return formulation.FormulationType == CoreConstants.Formulation.FirstOrder;
+         return formulation.FormulationType == CoreConstants.Formulation.FIRST_ORDER;
       }
 
       protected override void CacheParameterValueFor(Formulation formulation)

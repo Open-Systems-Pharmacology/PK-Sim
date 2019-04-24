@@ -47,17 +47,26 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    returns true if the parameter is neutral otherwise false
+      ///    returns <c>true</c> if the parameter is neutral otherwise false
       /// </summary>
       public virtual bool IsNeutral => this.Parameter(CoreConstants.Parameters.IS_NEUTRAL).Value == 1;
 
       /// <summary>
-      ///    returns true if the parameter is small molecule otherwise false
+      ///    returns <c>true</c> if the parameter is small molecule otherwise false
       /// </summary>
       public virtual bool IsSmallMolecule
       {
          get => this.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value == 1;
          set => this.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = value ? 1: 0;
+      }
+
+      /// <summary>
+      ///    returns <c>true</c> if the parameter is small molecule otherwise false
+      /// </summary>
+      public virtual bool SupersaturationEnabled
+      {
+         get => this.Parameter(CoreConstants.Parameters.ENABLE_SUPERSATURATION).Value == 1;
+         set => this.Parameter(CoreConstants.Parameters.ENABLE_SUPERSATURATION).Value = value ? 1 : 0;
       }
 
       public virtual PlasmaProteinBindingPartner PlasmaProteinBindingPartner

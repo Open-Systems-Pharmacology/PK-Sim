@@ -61,19 +61,20 @@ namespace PKSim.UI.Views.Compounds
          // 
          // panelNote
          // 
-         this.panelNote.Location = new System.Drawing.Point(2, 293);
+         this.panelNote.Location = new System.Drawing.Point(2, 299);
          this.panelNote.MaximumSize = new System.Drawing.Size(1000000, 40);
+         this.panelNote.MaxLines = 3;
          this.panelNote.MinimumSize = new System.Drawing.Size(200, 40);
          this.panelNote.Name = "panelNote";
          this.panelNote.NoteText = "";
-         this.panelNote.Size = new System.Drawing.Size(393, 60);
+         this.panelNote.Size = new System.Drawing.Size(393, 40);
          this.panelNote.TabIndex = 0;
          // 
          // panelParameters
          // 
          this.panelParameters.Location = new System.Drawing.Point(2, 2);
          this.panelParameters.Name = "panelParameters";
-         this.panelParameters.Size = new System.Drawing.Size(393, 287);
+         this.panelParameters.Size = new System.Drawing.Size(393, 293);
          this.panelParameters.TabIndex = 4;
          // 
          // layoutControlGroup1
@@ -95,7 +96,7 @@ namespace PKSim.UI.Views.Compounds
          this.layoutItemParameters.CustomizationFormText = "layoutItemParameters";
          this.layoutItemParameters.Location = new System.Drawing.Point(0, 0);
          this.layoutItemParameters.Name = "layoutItemParameters";
-         this.layoutItemParameters.Size = new System.Drawing.Size(397, 291);
+         this.layoutItemParameters.Size = new System.Drawing.Size(397, 297);
          this.layoutItemParameters.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemParameters.TextVisible = false;
          // 
@@ -103,9 +104,9 @@ namespace PKSim.UI.Views.Compounds
          // 
          this.layoutItemNote.Control = this.panelNote;
          this.layoutItemNote.CustomizationFormText = "layoutItemNote";
-         this.layoutItemNote.Location = new System.Drawing.Point(0, 291);
+         this.layoutItemNote.Location = new System.Drawing.Point(0, 297);
          this.layoutItemNote.Name = "layoutItemNote";
-         this.layoutItemNote.Size = new System.Drawing.Size(397, 64);
+         this.layoutItemNote.Size = new System.Drawing.Size(397, 58);
          this.layoutItemNote.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemNote.TextVisible = false;
          // 

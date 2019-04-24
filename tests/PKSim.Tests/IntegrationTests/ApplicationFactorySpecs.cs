@@ -52,7 +52,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _applicationBuilder = sut.CreateFor(_schemaItemIV, CoreConstants.Formulation.EmptyFormulation, _applicationName, COMPOUND_NAME, new List<IParameter>(), _formulaCache);
+         _applicationBuilder = sut.CreateFor(_schemaItemIV, CoreConstants.Formulation.EMPTY_FORMULATION, _applicationName, COMPOUND_NAME, new List<IParameter>(), _formulaCache);
       }
 
       protected IApplicationMoleculeBuilder Molecule => _applicationBuilder.Molecules.First();
@@ -148,7 +148,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _schemaItemIV.Dose.DisplayUnit = _schemaItemIV.Dose.Dimension.Unit(CoreConstants.Units.MgPerM2);
-         _applicationBuilder = sut.CreateFor(_schemaItemIV, CoreConstants.Formulation.EmptyFormulation, _applicationName, COMPOUND_NAME, new List<IParameter>(), _formulaCache);
+         _applicationBuilder = sut.CreateFor(_schemaItemIV, CoreConstants.Formulation.EMPTY_FORMULATION, _applicationName, COMPOUND_NAME, new List<IParameter>(), _formulaCache);
       }
 
       [Observation]
@@ -190,7 +190,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _schemaItemIV.Dose.DisplayUnit = _schemaItemIV.Dose.Dimension.Unit(CoreConstants.Units.MgPerKg);
-         _applicationBuilder = sut.CreateFor(_schemaItemIV, CoreConstants.Formulation.EmptyFormulation, _applicationName, COMPOUND_NAME, new List<IParameter>(), _formulaCache);
+         _applicationBuilder = sut.CreateFor(_schemaItemIV, CoreConstants.Formulation.EMPTY_FORMULATION, _applicationName, COMPOUND_NAME, new List<IParameter>(), _formulaCache);
       }
 
       [Observation]

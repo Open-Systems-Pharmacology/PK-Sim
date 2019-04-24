@@ -84,7 +84,7 @@ namespace PKSim.Core.Mappers
             listOfValues.Add(1, PKSimConstants.UI.Yes);
             listOfValues.Add(0, PKSimConstants.UI.No);
          }
-         else if (parameter.NameIsOneOf(CoreConstants.Parameters.PARA_ABSORBTION_SINK, CoreConstants.Parameters.TRANS_ABSORBTION_SINK))
+         else if (parameter.NameIsOneOf(CoreConstants.Parameters.PARA_ABSORPTION_SINK, CoreConstants.Parameters.TRANS_ABSORPTION_SINK))
          {
             listOfValues.Add(CoreConstants.Parameters.SINK_CONDITION, PKSimConstants.UI.SinkCondition);
             listOfValues.Add(CoreConstants.Parameters.NO_SINK_CONDITION, PKSimConstants.UI.NoSinkCondition);

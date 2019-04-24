@@ -36,7 +36,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_if_the_formulation_is_particle_polydisperse()
       {
-         sut.FormulationType = CoreConstants.Formulation.Particles;
+         sut.FormulationType = CoreConstants.Formulation.PARTICLES;
          _particleDisperseSystem.Value = CoreConstants.Parameters.POLYDISPERSE;
          sut.IsMonodisperse.ShouldBeFalse();
       }
@@ -44,7 +44,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_if_the_formulation_is_particle_monodisperse()
       {
-         sut.FormulationType = CoreConstants.Formulation.Particles;
+         sut.FormulationType = CoreConstants.Formulation.PARTICLES;
          _particleDisperseSystem.Value = CoreConstants.Parameters.MONODISPERSE;
          sut.IsMonodisperse.ShouldBeTrue();
       }
@@ -61,7 +61,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_if_the_formulation_is_particle_monodisperse()
       {
-         sut.FormulationType = CoreConstants.Formulation.Particles;
+         sut.FormulationType = CoreConstants.Formulation.PARTICLES;
          _particleDisperseSystem.Value = CoreConstants.Parameters.MONODISPERSE;
          sut.IsPolydisperse.ShouldBeFalse();
       }
@@ -69,7 +69,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_if_the_formulation_is_particle_polydisperse()
       {
-         sut.FormulationType = CoreConstants.Formulation.Particles;
+         sut.FormulationType = CoreConstants.Formulation.PARTICLES;
          _particleDisperseSystem.Value = CoreConstants.Parameters.POLYDISPERSE;
          sut.IsPolydisperse.ShouldBeTrue();
       }
@@ -80,7 +80,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.FormulationType = CoreConstants.Formulation.Particles;
+         sut.FormulationType = CoreConstants.Formulation.PARTICLES;
          _particleDisperseSystem.Value = CoreConstants.Parameters.MONODISPERSE;
       }
 
@@ -104,7 +104,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.FormulationType = CoreConstants.Formulation.Particles;
+         sut.FormulationType = CoreConstants.Formulation.PARTICLES;
          _particleDisperseSystem.Value = CoreConstants.Parameters.POLYDISPERSE;
          _particleSizeDistribution.Value = CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL;
       }
@@ -134,7 +134,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.FormulationType = CoreConstants.Formulation.Particles;
+         sut.FormulationType = CoreConstants.Formulation.PARTICLES;
          _particleDisperseSystem.Value = CoreConstants.Parameters.POLYDISPERSE;
          _particleSizeDistribution.Value = CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL;
       }

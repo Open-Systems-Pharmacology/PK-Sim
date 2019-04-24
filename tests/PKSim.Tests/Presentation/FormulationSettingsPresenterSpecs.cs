@@ -163,7 +163,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _tableParameter = new PKSimParameter();
-         _formulation = new Formulation {FormulationType = CoreConstants.Formulation.Table};
+         _formulation = new Formulation {FormulationType = CoreConstants.Formulation.TABLE};
          _formulation.Add(_tableParameter);
          _formulationDTO = new FormulationDTO(new[] {_tableParameter}) {Type = new FormulationTypeDTO {Id = "oral"}};
          A.CallTo(() => _formulationDTOMapper.MapFrom(_formulation)).Returns(_formulationDTO);

@@ -35,7 +35,7 @@ namespace PKSim.Core.Services
 
       public override bool IsSatisfiedBy(Formulation formulation)
       {
-         return formulation.FormulationType == CoreConstants.Formulation.Lint80;
+         return formulation.FormulationType == CoreConstants.Formulation.LINT80;
       }
    }
 }

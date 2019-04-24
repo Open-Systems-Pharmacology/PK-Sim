@@ -97,8 +97,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_1
          var lumen = root.Container(Constants.ORGANISM)
             .Container(CoreConstants.Organ.Lumen);
 
-         updateSinkValue(lumen, CoreConstants.Parameters.TRANS_ABSORBTION_SINK);
-         updateSinkValue(lumen, CoreConstants.Parameters.PARA_ABSORBTION_SINK);
+         updateSinkValue(lumen, CoreConstants.Parameters.TRANS_ABSORPTION_SINK);
+         updateSinkValue(lumen, CoreConstants.Parameters.PARA_ABSORPTION_SINK);
 
          //make sure model properties are uptodate
          _modelPropertiesTask.UpdateCategoriesIn(simulation.ModelProperties, simulation.Individual.OriginData);
