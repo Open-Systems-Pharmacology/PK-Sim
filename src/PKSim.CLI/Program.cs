@@ -42,7 +42,8 @@ namespace PKSim.CLI
       private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
       {
          var logger = initializeLogger(command);
-         logger.AddInfo($"Starting {command.Name.ToLower()} run with arguments:\n{command}");
+         logger.AddInfo($"Starting {command.Name.ToLower()} run");
+         logger.AddDebug($"Arguments:\n{command}");
          ApplicationStartup.Start();
          var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
          try
