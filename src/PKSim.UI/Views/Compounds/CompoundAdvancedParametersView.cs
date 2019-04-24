@@ -20,10 +20,7 @@ namespace PKSim.UI.Views.Compounds
          /*nothing to do*/
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.Parameters; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Parameters;
 
       public void AddViewForGroup(ISubPresenterItem subPresenterItem, IView view)
       {
