@@ -41,7 +41,7 @@ namespace PKSim.IntegrationTests
          //use only in tests
          using (container.OptimizeDependencyResolution())
          {
-            //need to register these serives for which the default implementation is in the UI
+            //need to register these series for which the default implementation is in the UI
             container.RegisterImplementationOf(new SynchronizationContext());
             container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
@@ -53,6 +53,7 @@ namespace PKSim.IntegrationTests
             container.RegisterImplementationOf(A.Fake<IDialogCreator>());
             container.RegisterImplementationOf(A.Fake<IHistoryManager>());
             container.RegisterImplementationOf(A.Fake<IWorkspace>());
+            container.RegisterImplementationOf(A.Fake<ICoreWorkspace>());
             container.RegisterImplementationOf(A.Fake<IHeavyWorkManager>());
             container.RegisterImplementationOf(A.Fake<IChartTemplatingTask>());
             container.RegisterImplementationOf(A.Fake<IPresentationSettingsTask>());
