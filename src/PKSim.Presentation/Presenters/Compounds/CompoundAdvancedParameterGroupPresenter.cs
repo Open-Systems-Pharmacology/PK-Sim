@@ -1,12 +1,12 @@
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -16,7 +16,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       /// <summary>
       ///    Edit the alternative defined in the compound to edit for the group
       /// </summary>
-      void EditCompound(PKSim.Core.Model.Compound compound);
+      void EditCompound(Compound compound);
    }
 
    public abstract class CompoundAdvancedParameterGroupPresenter<TView> : AbstractSubPresenter<TView, ICompoundAdvancedParameterGroupPresenter>, ICompoundAdvancedParameterGroupPresenter where TView : ICompoundAdvancedParameterGroupView
@@ -25,9 +25,12 @@ namespace PKSim.Presentation.Presenters.Compounds
       private readonly IParameterGroupTask _parameterGroupTask;
       private readonly string _groupName;
 
-      protected CompoundAdvancedParameterGroupPresenter(TView view, IRepresentationInfoRepository representationInfoRepository,
-                                                        IMultiParameterEditPresenter parameterEditPresenter, IParameterGroupTask parameterGroupTask,
-                                                        string groupName)
+      protected CompoundAdvancedParameterGroupPresenter(
+         TView view, 
+         IRepresentationInfoRepository representationInfoRepository,
+         IMultiParameterEditPresenter parameterEditPresenter, 
+         IParameterGroupTask parameterGroupTask,
+         string groupName)
          : base(view)
       {
          _parameterEditPresenter = parameterEditPresenter;

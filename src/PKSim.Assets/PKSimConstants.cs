@@ -455,7 +455,8 @@ namespace PKSim.Assets
          public const string FormulationShouldBeUsedAsTemplateOrAsSimulationBuildingBlock = "Formulation usage is inconsitent. Please use either the template formulation or the simulation formulation.";
          public const string AtLeastOneIndividualIdRequiredToPerformPopulationExtraction = "At least one valid individual id is required to perform the population extraction.";
 
-         public static string SaturationEnabledCanOnlyBeUsedForOralApplicationUsingParticleDissolution(string compoundName) => $"ERROR!!!";
+         public static string SaturationEnabledCanOnlyBeUsedForOralApplicationUsingParticleDissolution(string compoundName) =>
+            $"Supersaturation is enabled for '{compoundName}'.\nEnabling supersaturation inactivates the limit of how much solute can be dissolved. It should always and only be allowed in combination with particle dissolution formulations; otherwise disabled.\nEnabling in case of other formulations results in a lack of the solubility limit and hence in infinitely soluble solutes.";
 
          public static string DosePerBodySurfaceAreaProtocolCannotBeUsedWithSpeciesPopulation(string speciesPopulation) => $"Body surface area dosing cannot be used with species '{speciesPopulation}'.";
 
@@ -504,9 +505,9 @@ namespace PKSim.Assets
 
          public const string EventTemplateNotDefined = "Event template not defined.";
 
-         public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is requiered for type '{applicationType}'.";
+         public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
 
-         public static string BuildingBlockNotDefined(string buildingblock) => $"No {buildingblock} defined. Please use create.";
+         public static string BuildingBlockNotDefined(string buildingBlock) => $"No {buildingBlock} defined. Please use create.";
 
          public static string MissingColumnInView(string propertyName) => $"Property named {propertyName} not found.";
 
@@ -527,10 +528,10 @@ namespace PKSim.Assets
             return $"The file '{fileFullPath}' is readonly and cannot be read by the application. Please make the project writable and try again.";
          }
 
-         public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string dowloadUrl)
+         public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string downloadUrl)
          {
             if (projectVersion > currentVersion)
-               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {dowloadUrl}.";
+               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}.";
 
             return $"Work in progress.\nThis project file was created with a beta or RC version (version {projectVersion}) and cannot be loaded.\nSorry :-(";
          }
@@ -1881,7 +1882,7 @@ namespace PKSim.Assets
          public static readonly string SaveProjectDescription = "Save the project...";
          public static readonly string SaveProjectAsDescription = "Save the project to a new file...";
          public static readonly string CompoundTwoPoreParametersNote = "These parameters are only used in a simulation where the model for proteins and large molecules was selected. Their values are irrelevant otherwise and can be left as is.";
-         public static readonly string CompoundParticleDissolutionParametersNote = "These parameters are only used in a simulation where the particle dissolution function was selected. Their values are irrelevant otherwise (except for: 'Enable supersaturation') and can be left as is.\nEnabling supersaturation inactivates the limit of how much solute can be dissolved. It should always and only be allowed in combination with particle dissolution formulations; otherwise disabled. Enabling in case of other formulations results in a lack of the solubility limit and hence in infinitely soluble solutes.";
+         public static readonly string CompoundParticleDissolutionParametersNote = "These parameters are only used in a simulation where the particle dissolution function was selected. Their values are irrelevant otherwise and can be left as is.";
          public static readonly string ResetAllVisibleButtonToolTip = "Reset all visible parameters to default.";
          public static readonly string ResetParameterToolTip = "Reset parameter to default";
          public static readonly string ScaleButtonToolTip = "Scale all visible parameters with the given factor";
