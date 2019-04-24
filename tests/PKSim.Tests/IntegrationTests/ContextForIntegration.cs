@@ -24,6 +24,7 @@ using PKSim.Presentation;
 using PKSim.Presentation.Services;
 using SimModelNET;
 using CoreRegister = PKSim.Core.CoreRegister;
+using ICoreUserSettings = PKSim.Core.ICoreUserSettings;
 using IWorkspace = PKSim.Presentation.IWorkspace;
 
 namespace PKSim.IntegrationTests
@@ -70,7 +71,7 @@ namespace PKSim.IntegrationTests
                x.FromType<BatchRegister>();
             });
 
-            var userSettings = container.Resolve<IUserSettings>();
+            var userSettings = container.Resolve<ICoreUserSettings>();
             userSettings.AbsTol = 1e-10;
             userSettings.RelTol = 1e-5;
             //this is use to create reports
