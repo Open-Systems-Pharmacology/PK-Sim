@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Repositories
 {
@@ -18,11 +17,11 @@ namespace PKSim.Core.Repositories
 
    public class BuildingBlockRepository : IBuildingBlockRepository
    {
-      private readonly IProjectRetriever _workspace;
+      private readonly IPKSimProjectRetriever _projectRetriever;
 
-      public BuildingBlockRepository(IProjectRetriever workspace)
+      public BuildingBlockRepository(IPKSimProjectRetriever projectRetriever)
       {
-         _workspace = workspace;
+         _projectRetriever = projectRetriever;
       }
 
       public IEnumerable<IPKSimBuildingBlock> All()
@@ -32,10 +31,10 @@ namespace PKSim.Core.Repositories
 
       public IEnumerable<TBuildingBlock> All<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         if (_workspace.CurrentProject == null)
+         if (_projectRetriever.Current == null)
             return new List<TBuildingBlock>();
 
-         return _workspace.CurrentProject.DowncastTo<PKSimProject>().All<TBuildingBlock>();
+         return _projectRetriever.Current.All<TBuildingBlock>();
       }
 
       public TBuildingBlock ById<TBuildingBlock>(string templateId) where TBuildingBlock : class, IPKSimBuildingBlock
