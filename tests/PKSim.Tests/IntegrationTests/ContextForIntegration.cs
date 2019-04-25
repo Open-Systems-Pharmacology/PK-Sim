@@ -49,12 +49,9 @@ namespace PKSim.IntegrationTests
             container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
             container.Register<IOntogenyFactorsRetriever, OntogenyFactorsRetriever>();
             container.Register<ISimulationConstructor, SimulationConstructor>();
-
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
             container.RegisterImplementationOf(A.Fake<IDialogCreator>());
             container.RegisterImplementationOf(A.Fake<IHistoryManager>());
-            container.RegisterImplementationOf(A.Fake<IWorkspace>());
-            container.RegisterImplementationOf(A.Fake<ICoreWorkspace>());
             container.RegisterImplementationOf(A.Fake<IHeavyWorkManager>());
             container.RegisterImplementationOf(A.Fake<IChartTemplatingTask>());
             container.RegisterImplementationOf(A.Fake<IPresentationSettingsTask>());

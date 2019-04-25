@@ -3,7 +3,6 @@ using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 
 namespace PKSim.Infrastructure.Services
 {

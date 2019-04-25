@@ -62,14 +62,7 @@ namespace PKSim.Infrastructure.ORM.Core
          }
       }
 
-      public bool IsConnected
-      {
-         get
-         {
-            if (DatabaseObject == null) return false;
-            return DatabaseObject.IsConnected;
-         }
-      }
+      public bool IsConnected => DatabaseObject != null && DatabaseObject.IsConnected;
 
       protected virtual void Cleanup()
       {

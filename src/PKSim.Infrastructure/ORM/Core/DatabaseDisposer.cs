@@ -14,8 +14,7 @@ namespace PKSim.Infrastructure.ORM.Core
 
       public void Dispose()
       {
-         if(_database!=null)
-            _database.Disconnect();
+         _database?.Disconnect();
       }
    }
 }
