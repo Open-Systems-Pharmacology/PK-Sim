@@ -485,14 +485,14 @@ namespace PKSim.Core
 
       public static class Formulation
       {
-         public static readonly string EmptyFormulation = "Formulation_Empty";
-         public static readonly string Particles = "Formulation_Particles";
-         public static readonly string FirstOrder = "Formulation_FirstOrder";
-         public static readonly string ZeroOrder = "Formulation_ZeroOrder";
-         public static readonly string Lint80 = "Formulation_Tablet_Lint80";
-         public static readonly string Table = "Formulation_Table";
-         public static readonly string Weibull = "Formulation_Tablet_Weibull";
-         public static readonly string Dissolved = "Formulation_Dissolved";
+         public static readonly string EMPTY_FORMULATION = "Formulation_Empty";
+         public static readonly string PARTICLES = "Formulation_Particles";
+         public static readonly string FIRST_ORDER = "Formulation_FirstOrder";
+         public static readonly string ZERO_ORDER = "Formulation_ZeroOrder";
+         public static readonly string LINT80 = "Formulation_Tablet_Lint80";
+         public static readonly string TABLE = "Formulation_Table";
+         public static readonly string WEIBULL = "Formulation_Tablet_Weibull";
+         public static readonly string DISSOLVED = "Formulation_Dissolved";
       }
 
       public static class Gender
@@ -978,8 +978,8 @@ namespace PKSim.Core
          public const string IS_FLOATING_IN_LUMEN = "Is floating in lumen";
          public const string FRACTION_UNBOUND_EXPERIMENT = "Fraction unbound (experiment)";
          public const string LIPOPHILICITY_EXPERIMENT = "Lipophilicity (experiment)";
-         public const string PARA_ABSORBTION_SINK = "Paracellular absorption sink condition";
-         public const string TRANS_ABSORBTION_SINK = "Transcellular absorption sink condition";
+         public const string PARA_ABSORPTION_SINK = "Paracellular absorption sink condition";
+         public const string TRANS_ABSORPTION_SINK = "Transcellular absorption sink condition";
          public const string FRACTION_DOSE = "Fraction (dose)";
          public const string USE_PENALTY_FACTOR = "Use pH- and pKa-dependent penalty factor for charged molecule fraction";
          public const string IS_SMALL_MOLECULE = "Is small molecule";
@@ -1162,8 +1162,8 @@ namespace PKSim.Core
             COMPOUND_TYPE3,
             PARTICLE_DISPERSE_SYSTEM,
             PRECIPITATED_DRUG_SOLUBLE,
-            TRANS_ABSORBTION_SINK,
-            PARA_ABSORBTION_SINK,
+            TRANS_ABSORPTION_SINK,
+            PARA_ABSORPTION_SINK,
             GESTATIONAL_AGE,
             PLASMA_PROTEIN_BINDING_PARTNER
          };

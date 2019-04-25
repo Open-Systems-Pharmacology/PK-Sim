@@ -71,7 +71,7 @@ namespace PKSim.Core.Model
          drugMassParameter?.AddTag(ObjectPathKeywords.MOLECULE);
 
          // add start formula(s) for the drug molecule
-         if (string.Equals(formulationType, CoreConstants.Formulation.Particles))
+         if (string.Equals(formulationType, CoreConstants.Formulation.PARTICLES))
             _particleApplicationCreator.CreateParticleIn(application, formulationParameters, formulaCache);
          else
             addDrugStartFormula(application, formulaCache);

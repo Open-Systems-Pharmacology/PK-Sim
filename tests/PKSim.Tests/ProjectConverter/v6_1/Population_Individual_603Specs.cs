@@ -73,7 +73,7 @@ namespace PKSim.ProjectConverter.v6_1
       [Observation]
       public void should_not_add_use_as_suspension_parameter()
       {
-         _formulation.FormulationType.ShouldBeEqualTo(CoreConstants.Formulation.Particles);
+         _formulation.FormulationType.ShouldBeEqualTo(CoreConstants.Formulation.PARTICLES);
          _formulation.Parameter(CoreConstants.Parameters.USE_AS_SUSPENSION).ShouldBeNull();
       }
    }

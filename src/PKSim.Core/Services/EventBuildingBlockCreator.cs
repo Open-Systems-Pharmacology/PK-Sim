@@ -187,7 +187,7 @@ namespace PKSim.Core.Services
          else
          {
             applicationParentContainer = protocolGroupBuilder;
-            formulationType = CoreConstants.Formulation.EmptyFormulation;
+            formulationType = CoreConstants.Formulation.EMPTY_FORMULATION;
             formulationParameters = new List<IParameter>();
          }
 
@@ -211,7 +211,7 @@ namespace PKSim.Core.Services
          _parameterIdUpdater.UpdateBuildingBlockId(formulationBuilder, formulation);
          _parameterIdUpdater.UpdateParameterIds(formulation, formulationBuilder);
 
-         if (formulation.FormulationType.Equals(CoreConstants.Formulation.Particles))
+         if (formulation.FormulationType.Equals(CoreConstants.Formulation.PARTICLES))
             setParticleRadiusDistributionParametersToLockedAndInvisible(formulationBuilder);
 
          return formulationBuilder;

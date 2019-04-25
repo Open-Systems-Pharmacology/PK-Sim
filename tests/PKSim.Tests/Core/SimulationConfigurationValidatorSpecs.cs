@@ -16,11 +16,14 @@ namespace PKSim.Core
       protected Simulation _simulation;
       protected Individual _individual;
       protected Compound _compound;
-      protected Protocol _protocol;
+      protected SimpleProtocol _protocol;
       protected IProtocolToSchemaItemsMapper _protocolToProtocolSchemaItemMapper;
       protected SpeciesPopulation _speciesPopulation;
-      private SchemaItem _schemaItem;
+      protected SchemaItem _schemaItem;
       protected Unit _doseUnit;
+      protected Formulation _formulation;
+      protected ProtocolProperties _protocolProperties;
+      protected FormulationMapping _formulationMapping;
 
       protected override void Context()
       {
@@ -30,16 +33,18 @@ namespace PKSim.Core
             SimulationSettings = new SimulationSettings(),
             ModelConfiguration = new ModelConfiguration()
          };
-         _individual = new Individual().WithName("MyIndividuyal");
+         _individual = new Individual().WithName("MyIndividual");
          _speciesPopulation = new SpeciesPopulation();
 
          _individual.OriginData = new OriginData {SpeciesPopulation = _speciesPopulation};
          _compound = A.Fake<Compound>().WithName("MyCompound");
-         _protocol = A.Fake<Protocol>().WithName("MyProtocol");
+         _protocol = A.Fake<SimpleProtocol>().WithName("MyProtocol");
+         _formulation = A.Fake<Formulation>().WithName("Formulation");
 
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Individual", PKSimBuildingBlockType.Individual) { BuildingBlock = _individual });
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Compound", PKSimBuildingBlockType.Compound) { BuildingBlock = _compound });
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Protocol", PKSimBuildingBlockType.Protocol) { BuildingBlock = _protocol });
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Formulation", PKSimBuildingBlockType.Formulation) { BuildingBlock = _formulation });
 
          _protocolToProtocolSchemaItemMapper = A.Fake<IProtocolToSchemaItemsMapper>();
          sut = new SimulationConfigurationValidator(_protocolToProtocolSchemaItemMapper);
@@ -48,6 +53,14 @@ namespace PKSim.Core
          _schemaItem= A.Fake<SchemaItem>();
          _doseUnit= A.Fake<Unit>();
          _schemaItem.Dose.DisplayUnit = _doseUnit;
+
+         _protocolProperties = new ProtocolProperties();
+         _formulationMapping = new FormulationMapping {FormulationKey = "F1", Formulation = _formulation};
+         _simulation.Properties.AddCompoundProperties(new CompoundProperties
+         {
+            Compound = _compound,
+            ProtocolProperties = _protocolProperties
+         });
          A.CallTo(() => _protocolToProtocolSchemaItemMapper.MapFrom(_protocol)).Returns(new []{_schemaItem});
       }
    }
@@ -58,7 +71,7 @@ namespace PKSim.Core
       {
          base.Context();
          _simulation.ModelConfiguration.ModelName = CoreConstants.Model.TwoPores;
-         A.CallTo(() => _compound.IsSmallMolecule).Returns(false);
+         _compound.IsSmallMolecule = false;
       }
 
       [Observation]
@@ -74,7 +87,7 @@ namespace PKSim.Core
       {
          base.Context();
          _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FourComp;
-         A.CallTo(() => _compound.IsSmallMolecule).Returns(true);
+         _compound.IsSmallMolecule = true;
       }
 
       [Observation]
@@ -90,7 +103,7 @@ namespace PKSim.Core
       {
          base.Context();
          _simulation.ModelConfiguration.ModelName = CoreConstants.Model.TwoPores;
-         A.CallTo(() => _compound.IsSmallMolecule).Returns(true);
+         _compound.IsSmallMolecule = true;
       }
 
       [Observation]
@@ -106,7 +119,7 @@ namespace PKSim.Core
       {
          base.Context();
          _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FourComp;
-         A.CallTo(() => _compound.IsSmallMolecule).Returns(false);
+         _compound.IsSmallMolecule = false;
       }
 
       [Observation]
@@ -203,6 +216,131 @@ namespace PKSim.Core
          base.Context();
          _speciesPopulation.IsHeightDependent = true;
          A.CallTo(() => _doseUnit.Name).Returns(CoreConstants.Units.MgPerM2);
+      }
+
+      [Observation]
+      public void should_not_throw_an_exception()
+      {
+         sut.ValidateConfigurationFor(_simulation);
+      }
+   }
+
+   public class When_validating_the_configuration_of_a_simulation_using_a_compound_with_an_oral_application_super_saturation_and_not_particle_dissolution : concern_for_SimulationConfigurationValidator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _compound.SupersaturationEnabled = true;
+         _schemaItem.ApplicationType = ApplicationTypes.Oral;
+         _schemaItem.FormulationKey = _formulationMapping.FormulationKey;
+         _formulation.FormulationType = CoreConstants.Formulation.FIRST_ORDER;
+         _protocolProperties.Protocol = _protocol;
+         _protocolProperties.AddFormulationMapping(_formulationMapping);
+
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.ValidateConfigurationFor(_simulation)).ShouldThrowAn<InvalidSimulationConfigurationException>();
+      }
+   }
+
+   public class When_validating_the_configuration_of_a_simulation_using_a_compound_with_a_user_defined_in_lumen_application_and_super_saturation : concern_for_SimulationConfigurationValidator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _compound.SupersaturationEnabled = true;
+         _schemaItem.ApplicationType = ApplicationTypes.UserDefined;
+         _schemaItem.FormulationKey = _formulationMapping.FormulationKey;
+         _schemaItem.TargetOrgan = CoreConstants.Organ.Lumen;
+         _formulation.FormulationType = CoreConstants.Formulation.LINT80;
+         _protocolProperties.Protocol = _protocol;
+         _protocolProperties.AddFormulationMapping(_formulationMapping);
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.ValidateConfigurationFor(_simulation)).ShouldThrowAn<InvalidSimulationConfigurationException>();
+      }
+   }
+
+   public class When_validating_the_configuration_of_a_simulation_using_a_compound_with_a_user_defined_in_lumen_application_without_super_saturation : concern_for_SimulationConfigurationValidator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _compound.SupersaturationEnabled = false;
+         _schemaItem.ApplicationType = ApplicationTypes.UserDefined;
+         _schemaItem.FormulationKey = _formulationMapping.FormulationKey;
+         _schemaItem.TargetOrgan = CoreConstants.Organ.Lumen;
+         _formulation.FormulationType = CoreConstants.Formulation.LINT80;
+         _protocolProperties.Protocol = _protocol;
+         _protocolProperties.AddFormulationMapping(_formulationMapping);
+      }
+
+      [Observation]
+      public void should_not_throw_an_exception()
+      {
+         sut.ValidateConfigurationFor(_simulation);
+      }
+   }
+
+   public class When_validating_the_configuration_of_a_simulation_using_a_compound_with_a_user_defined_not_in_lumen_application_with_super_saturation : concern_for_SimulationConfigurationValidator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _compound.SupersaturationEnabled = true;
+         _schemaItem.ApplicationType = ApplicationTypes.UserDefined;
+         _schemaItem.FormulationKey = _formulationMapping.FormulationKey;
+         _schemaItem.TargetOrgan = CoreConstants.Organ.Bone;
+         _formulation.FormulationType = CoreConstants.Formulation.LINT80;
+         _protocolProperties.Protocol = _protocol;
+         _protocolProperties.AddFormulationMapping(_formulationMapping);
+      }
+
+      [Observation]
+      public void should_not_throw_an_exception()
+      {
+         sut.ValidateConfigurationFor(_simulation);
+      }
+   }
+
+   public class When_validating_the_configuration_of_a_simulation_using_a_compound_with_an_oral_application_super_saturation_and_particle_dissolution : concern_for_SimulationConfigurationValidator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _compound.SupersaturationEnabled = true;
+         _schemaItem.ApplicationType = ApplicationTypes.Oral;
+         _schemaItem.FormulationKey = _formulationMapping.FormulationKey;
+         _protocolProperties.Protocol = _protocol;
+         _protocolProperties.AddFormulationMapping(_formulationMapping);
+         _formulation.FormulationType = CoreConstants.Formulation.PARTICLES;
+      }
+
+
+      [Observation]
+      public void should_not_throw_an_exception()
+      {
+         sut.ValidateConfigurationFor(_simulation);
+      }
+   }
+
+   public class When_validating_the_configuration_of_a_simulation_using_a_compound_with_an_oral_application_and_not_user_super_saturation_and_not_particle_dissolution : concern_for_SimulationConfigurationValidator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _compound.SupersaturationEnabled = false;
+         _schemaItem.ApplicationType = ApplicationTypes.Oral;
+         _schemaItem.FormulationKey = _formulationMapping.FormulationKey;
+         _protocolProperties.Protocol = _protocol;
+         _protocolProperties.AddFormulationMapping(_formulationMapping);
+         _formulation.FormulationType = CoreConstants.Formulation.FIRST_ORDER;
       }
 
       [Observation]

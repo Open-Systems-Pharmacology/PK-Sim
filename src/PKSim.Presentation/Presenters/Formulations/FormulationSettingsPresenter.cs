@@ -167,7 +167,7 @@ namespace PKSim.Presentation.Presenters.Formulations
       public IEnumerable<FormulationTypeDTO> AllFormulationTypes()
       {
          return from formulation in _formulationRepository.AllFor(ApplicationRoute)
-            where formulation.Name != CoreConstants.Formulation.EmptyFormulation
+            where formulation.Name != CoreConstants.Formulation.EMPTY_FORMULATION
             let formulationInfo = _representationInfoRepository.InfoFor(formulation)
             select new FormulationTypeDTO {Id = formulation.FormulationType, DisplayName = formulationInfo.DisplayName};
       }

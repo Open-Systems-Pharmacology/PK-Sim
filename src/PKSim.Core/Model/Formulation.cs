@@ -30,17 +30,17 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    returns true if the formulation is defining a table formulation
       /// </summary>
-      public virtual bool IsTable => string.Equals(FormulationType, CoreConstants.Formulation.Table);
+      public virtual bool IsTable => string.Equals(FormulationType, CoreConstants.Formulation.TABLE);
 
       /// <summary>
       ///    returns true if the formulation is defining a particle dissolution formulation
       /// </summary>
-      public virtual bool IsParticleDissolution => string.Equals(FormulationType, CoreConstants.Formulation.Particles);
+      public virtual bool IsParticleDissolution => string.Equals(FormulationType, CoreConstants.Formulation.PARTICLES);
 
       /// <summary>
       ///    returns true if the formulation is defining a dissolved formulation
       /// </summary>
-      public bool IsDissolved => string.Equals(FormulationType, CoreConstants.Formulation.Dissolved);
+      public bool IsDissolved => string.Equals(FormulationType, CoreConstants.Formulation.DISSOLVED);
       
       /// <summary>
       /// Returns <c>true</c> if the formulation is particle formulation using monodisperse system otherwise <c>false</c>

@@ -12,7 +12,7 @@ namespace PKSim.UI.Views.Compounds
    {
       private const int NUMBER_OF_LINES_HINT = 3;
       private const int NUMBER_OF_LINES_LARGE_HINT = 5;
-      private const int HINT_HEIGHT = 80;
+      private const int HINT_HEIGHT = 60;
       private const int LARGE_HINT_HEIGHT = 80;
 
       private IMultiParameterEditView _parameterView;

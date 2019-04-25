@@ -17,8 +17,6 @@ namespace PKSim.Presentation.Presenters.Compounds
          base(view, representationInfoRepository, parameterEditPresenter, parameterGroupTask, CoreConstants.Groups.COMPOUND_TWO_PORE)
       {
          view.Hint = PKSimConstants.UI.CompoundTwoPoreParametersNote;
-         view.IsLargeHint = false;
-
       }
    }
 }
