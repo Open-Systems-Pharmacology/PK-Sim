@@ -25,7 +25,16 @@ namespace PKSim.Infrastructure.Reporting.Markdown
 
       public MarkdownTracker Add(IMarkdownElement markdownElement) => Add(markdownElement.ToString());
 
-      public MarkdownTracker Add(Table markdownTable) => Add(adjustTableHeader(markdownTable).ToString().Remove(0, OFFSET.Length).Replace(TABLE_OFFSET, TABLE_OFFSET_NO_INDENT));
+      public MarkdownTracker Add(Table markdownTable) => Add(tableMarkdownFor(adjustTableHeader(markdownTable)));
+
+      private string tableMarkdownFor(Table table)
+      {
+         return table.ToString()
+            .Remove(0, OFFSET.Length)                             // to remove weird offset at the beginning
+            .Replace(TABLE_OFFSET, TABLE_OFFSET_NO_INDENT)        // to remove offset for each row
+            .Replace($"- {NEW_LINE}", $"-{NEW_LINE}")             // to remove the extra space for the separator for the last column
+            .Replace(NEW_LINE, $" |{NEW_LINE}");                  // to add a separator at the end of each row
+      }
 
       public MarkdownTracker Add(string rawMarkdown)
       {
