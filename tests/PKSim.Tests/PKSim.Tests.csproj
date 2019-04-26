@@ -1031,7 +1031,6 @@
     <Compile Include="Presentation\PartialProcessToPartialProcessTemplateDTOMapperSpecs.cs" />
     <Compile Include="Presentation\PKAnalysisPresenterSpecs.cs" />
     <Compile Include="Presentation\PopulationAdvancedParametersPresenterSpecs.cs" />
-    <Compile Include="Presentation\PopulationExportTaskSpecs.cs" />
     <Compile Include="Presentation\PopulationAdvancedParameterDistributionPresenterSpecs.cs" />
     <Compile Include="Presentation\PopulationSettingsDTOToPopulationSettingsMapperSpecs.cs" />
     <Compile Include="Presentation\RandomPopulationSettingsPresenterSpecs.cs" />

@@ -89,6 +89,8 @@ namespace PKSim.CLI.Core.Services
 
          var begin = DateTime.UtcNow;
          var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot);
+         _workspace.Project = project;
+
          var projectOutputFolder = createProjectOutputFolder(config.OutputFolder, project.Name);
 
          _logger.AddDebug($"Exporting project {project.Name} to '{projectOutputFolder}'", project.Name);
@@ -118,7 +120,6 @@ namespace PKSim.CLI.Core.Services
          _logger.AddDebug($"Project mapping for '{project.Name}' exported to '{config.MappingFile}'", project.Name);
 
          var projectFile = Path.Combine(config.TempFolder, $"{project.Name}{CoreConstants.Filter.PROJECT_EXTENSION}");
-         _workspace.Project = project;
          _workspacePersistor.SaveSession(_workspace, projectFile);
          _logger.AddDebug($"Project saved to '{projectFile}'", project.Name);
 
