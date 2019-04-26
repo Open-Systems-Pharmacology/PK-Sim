@@ -254,11 +254,6 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
-/src/OSPSuite.Core/OSPSuite.SimModel.xsd
-/tests/OSPSuite.Core.Tests/OSPSuite.SimModel.xsd
-/tests/OSPSuite.Core.Tests/OSPSuite.SimModelSolver_CVODES282.dll
-/src/OSPSuite.Core/include
-/tests/OSPSuite.Core.Tests/include
 /7.1_PKSim.exe.lnk
 /src/Db/PKSimDB - Kopie.mdb
 /src/Db/Transfer.mdb
