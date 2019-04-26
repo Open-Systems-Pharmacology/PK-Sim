@@ -17,9 +17,9 @@ namespace PKSim.Infrastructure.Services
 
       public IProject CurrentProject => Current;
 
-      public string ProjectName => Current.Name;
+      public string ProjectName => Current?.Name ?? string.Empty;
 
-      public string ProjectFullPath => Current.FilePath;
+      public string ProjectFullPath => Current?.FilePath ?? string.Empty;
 
       public PKSimProject Current => _workspace.Project;
 

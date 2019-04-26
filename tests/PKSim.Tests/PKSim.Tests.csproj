@@ -376,6 +376,7 @@
     <Compile Include="Infrastructure\FlatValueOriginToValueOriginMapperSpecs.cs" />
     <Compile Include="Infrastructure\MarkdownReporterTaskSpecs.cs" />
     <Compile Include="Infrastructure\ParameterToParameterElementMapperSpecs.cs" />
+    <Compile Include="Infrastructure\PKSimProjectRetrieverSpecs.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
     <Compile Include="Infrastructure\SerializationContextFactorySpecs.cs" />
     <Compile Include="Infrastructure\SimulationComparisonContentLoaderSpecs.cs" />
@@ -1031,7 +1032,6 @@
     <Compile Include="Presentation\PartialProcessToPartialProcessTemplateDTOMapperSpecs.cs" />
     <Compile Include="Presentation\PKAnalysisPresenterSpecs.cs" />
     <Compile Include="Presentation\PopulationAdvancedParametersPresenterSpecs.cs" />
-    <Compile Include="Presentation\PopulationExportTaskSpecs.cs" />
     <Compile Include="Presentation\PopulationAdvancedParameterDistributionPresenterSpecs.cs" />
     <Compile Include="Presentation\PopulationSettingsDTOToPopulationSettingsMapperSpecs.cs" />
     <Compile Include="Presentation\RandomPopulationSettingsPresenterSpecs.cs" />
