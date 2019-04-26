@@ -39,7 +39,7 @@ before_build:
   - nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress 
   - nuget sources add -name funcparser -source https://ci.appveyor.com/nuget/ospsuite-funcparser 
   - nuget sources add -name simmodel -source https://ci.appveyor.com/nuget/ospsuite-simmodel
-  - nuget sources add -name cvodes -source https://ci.appveyor.com/nuget/ospsuite-simmodel-solver-cvodes-282
+  - nuget sources add -name cvodes -source https://ci.appveyor.com/nuget/ospsuite-simmodel-solver-cvodes
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
   - nuget restore
   - rake "update_go_license[ApplicationStartup.cs, %GO_DIAGRAM_KEY%]"
