@@ -35,7 +35,7 @@ namespace PKSim.IntegrationTests
    {
       private bool isOneOfReadOnlyAndIsInputParameters(string parameterName)
       {
-         return parameterName.IsOneOf(CoreConstants.Parameters.IS_SMALL_MOLECULE, CoreConstants.Parameters.INPUT_DOSE);
+         return parameterName.IsOneOf(Constants.Parameters.IS_SMALL_MOLECULE, CoreConstants.Parameters.INPUT_DOSE);
       }
 
       [Observation]
@@ -136,11 +136,11 @@ namespace PKSim.IntegrationTests
          {
             if (parameter.ParameterName.IsOneOf(
                CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE,
-               CoreConstants.Parameters.IS_SMALL_MOLECULE,
-               CoreConstants.Parameters.ENABLE_SUPERSATURATION,
+               Constants.Parameters.IS_SMALL_MOLECULE,
+               Constants.Parameters.ENABLE_SUPERSATURATION,
                CoreConstants.Parameters.LIPOPHILICITY,
                CoreConstants.Parameters.MOLECULAR_WEIGHT,
-               CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER,
+               Constants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER,
                CoreConstants.Parameters.REFERENCE_PH,
                CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH))
                checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);

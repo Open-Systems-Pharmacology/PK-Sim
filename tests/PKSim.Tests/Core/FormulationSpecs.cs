@@ -15,8 +15,8 @@ namespace PKSim.Core
 
       protected override void Context()
       {
-         _particleSizeDistribution = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL).WithName(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
-         _particleDisperseSystem = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.MONODISPERSE).WithName(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM);
+         _particleSizeDistribution = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL).WithName(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
+         _particleDisperseSystem = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.MONODISPERSE).WithName(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM);
          _particleRadiusMinSize = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.PARTICLE_RADIUS_MIN);
          _particleLogVariationCoeff = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.PARTICLE_LOG_VARIATION_COEFF);
          _particleRadiusMean = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.PARTICLE_RADIUS_MEAN);

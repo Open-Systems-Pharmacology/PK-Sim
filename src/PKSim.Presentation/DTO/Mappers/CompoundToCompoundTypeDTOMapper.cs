@@ -26,9 +26,9 @@ namespace PKSim.Presentation.DTO.Mappers
          var allCompoundParameters = compoundParameters.ToList();
          return new List<TypePKaDTO>
          {
-            typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA1, CoreConstants.Parameters.COMPOUND_TYPE1),
-            typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA2, CoreConstants.Parameters.COMPOUND_TYPE2),
-            typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA3, CoreConstants.Parameters.COMPOUND_TYPE3)
+            typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA1, Constants.Parameters.COMPOUND_TYPE1),
+            typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA2, Constants.Parameters.COMPOUND_TYPE2),
+            typePKaFor(allCompoundParameters, CoreConstants.Parameters.PARAMETER_PKA3, Constants.Parameters.COMPOUND_TYPE3)
          };
       }
 

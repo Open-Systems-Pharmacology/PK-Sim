@@ -146,7 +146,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private (IParameter compoundTypeParameter, IParameter pkaParameter) pkaParametersFor(ModelCompound compound, int index)
       {
-         var compoundTypeParameter = compound.Parameter(ParameterCompoundType(index));
+         var compoundTypeParameter = compound.Parameter(Constants.Parameters.ParameterCompoundType(index));
          var pkaParameter = compound.Parameter(ParameterPKa(index));
          return (compoundTypeParameter, pkaParameter);
       }

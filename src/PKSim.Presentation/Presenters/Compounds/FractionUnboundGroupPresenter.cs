@@ -51,7 +51,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public override void EditCompound(Compound compound)
       {
-         _plasmaProteinPartner = compound.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER);
+         _plasmaProteinPartner = compound.Parameter(Constants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER);
          base.EditCompound(compound);
       }
 

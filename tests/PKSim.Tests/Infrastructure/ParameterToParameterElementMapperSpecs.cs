@@ -22,7 +22,7 @@ namespace PKSim.Infrastructure
          _parameter.Dimension = DomainHelperForSpecs.TimeDimensionForSpecs();
          _parameter.DisplayUnit = _parameter.Dimension.Unit("h");
          _parameter.ValueOrigin.UpdateFrom(new ValueOrigin {Method = ValueOriginDeterminationMethods.Assumption, Source = ValueOriginSources.Other});
-         _booleanParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.HAS_HALOGENS);
+         _booleanParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.HAS_HALOGENS);
          sut = new ParameterToParameterElementMapper(_listOfValuesRetriever);
       }
    }

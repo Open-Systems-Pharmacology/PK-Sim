@@ -43,7 +43,7 @@ namespace PKSim.Presentation.DTO.Mappers
             _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.HEIGHT)),
             _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.WEIGHT)),
             _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.BMI)),
-            _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.GESTATIONAL_AGE)));
+            _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE)));
 
 
          return individualDTO;

@@ -37,7 +37,7 @@ namespace PKSim.Core
          sut = new IndividualFactory(_individualModelTask, _entityBaseFactory, _createIndvidualAlgorithm, _speciesRepository, _entityValidator, _reportGenerator, _moleculeOntogenyVariabilityUpdater);
 
          _age = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.AGE);
-         _gestationalAge = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.GESTATIONAL_AGE);
+         _gestationalAge = DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.GESTATIONAL_AGE);
          _height = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.HEIGHT);
          _weight = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.WEIGHT);
          _bmi = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.BMI);

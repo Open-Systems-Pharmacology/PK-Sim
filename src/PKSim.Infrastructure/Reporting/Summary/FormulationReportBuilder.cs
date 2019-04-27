@@ -34,8 +34,8 @@ namespace PKSim.Infrastructure.Reporting.Summary
          }
          else
          {
-            var particleDisperseSystem = formulation.Parameter(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM);
-            var particleDistribution = formulation.Parameter(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
+            var particleDisperseSystem = formulation.Parameter(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM);
+            var particleDistribution = formulation.Parameter(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
             var displayParticleDistribution = _infoRepository.DisplayNameFor(particleDistribution);
             tablePart = new TablePart(PKSimConstants.UI.Parameter) {Caption = parameterTableCaption};
 

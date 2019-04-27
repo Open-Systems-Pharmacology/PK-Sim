@@ -131,7 +131,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
             return;
 
          var templateFormulation = _formulationRepository.FormulationBy(formulation.FormulationType);
-         var useAsSuspension = _cloner.Clone(templateFormulation.Parameter(CoreConstants.Parameters.USE_AS_SUSPENSION));
+         var useAsSuspension = _cloner.Clone(templateFormulation.Parameter(Constants.Parameters.USE_AS_SUSPENSION));
          useAsSuspension.Value = 0;
          formulation.Add(useAsSuspension);
          _converted = true;

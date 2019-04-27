@@ -19,7 +19,7 @@ namespace PKSim.Core.Mappers
    {
       private readonly HashSet<string> _parameterWithListOfValues;
 
-      public ParameterListOfValuesRetriever() : this(CoreConstants.Parameters.AllWithListOfValues)
+      public ParameterListOfValuesRetriever() : this( new HashSet<string>(Constants.Parameters.AllWithListOfValues))
       {
       }
 
@@ -40,18 +40,18 @@ namespace PKSim.Core.Mappers
          if (!_parameterWithListOfValues.Contains(parameter.Name))
             return;
 
-         if (parameter.IsNamed(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
+         if (parameter.IsNamed(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
          {
             listOfValues.Add(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL, PKSimConstants.UI.Normal);
             listOfValues.Add(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL, PKSimConstants.UI.LogNormal);
          }
-         else if (parameter.IsNamed(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER))
+         else if (parameter.IsNamed(Constants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER))
          {
             listOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_ALBUMIN, PKSimConstants.UI.Albumin);
             listOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_AGP, PKSimConstants.UI.Glycoprotein);
             listOfValues.Add(CoreConstants.Compound.BINDING_PARTNER_UNKNOWN, PKSimConstants.UI.Unknown);
          }
-         else if (parameter.IsNamed(CoreConstants.Parameters.NUMBER_OF_BINS))
+         else if (parameter.IsNamed(Constants.Parameters.NUMBER_OF_BINS))
          {
             addNumericListOfValues(listOfValues, 1, CoreConstants.Parameters.MAX_NUMBER_OF_BINS);
          }
@@ -59,32 +59,32 @@ namespace PKSim.Core.Mappers
          {
             addNumericListOfValues(listOfValues, 0, CoreConstants.Parameters.MAX_NUMBER_OF_HALOGENS);
          }
-         else if (parameter.Name.StartsWith(CoreConstants.Parameters.ParameterCompoundTypeBase))
+         else if (parameter.Name.StartsWith(Constants.Parameters.ParameterCompoundTypeBase))
          {
             listOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_ACID, CompoundType.Acid.ToString());
             listOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_NEUTRAL, CompoundType.Neutral.ToString());
             listOfValues.Add(CoreConstants.Compound.COMPOUND_TYPE_BASE, CompoundType.Base.ToString());
          }
-         else if (parameter.IsNamed(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM))
+         else if (parameter.IsNamed(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM))
          {
             listOfValues.Add(CoreConstants.Parameters.MONODISPERSE, PKSimConstants.UI.Monodisperse);
             listOfValues.Add(CoreConstants.Parameters.POLYDISPERSE, PKSimConstants.UI.Polydisperse);
          }
-         else if (parameter.IsNamed(CoreConstants.Parameters.PRECIPITATED_DRUG_SOLUBLE))
+         else if (parameter.IsNamed(Constants.Parameters.PRECIPITATED_DRUG_SOLUBLE))
          {
             listOfValues.Add(CoreConstants.Parameters.SOLUBLE, PKSimConstants.UI.Soluble);
             listOfValues.Add(CoreConstants.Parameters.INSOLUBLE, PKSimConstants.UI.Insoluble);
          }
-         else if (parameter.IsNamed(CoreConstants.Parameters.GESTATIONAL_AGE))
+         else if (parameter.IsNamed(Constants.Parameters.GESTATIONAL_AGE))
          {
             addNumericListOfValues(listOfValues, CoreConstants.PretermRange.Min(), CoreConstants.PretermRange.Max());
          }
-         else if (CoreConstants.Parameters.AllBooleanParameters.Contains(parameter.Name))
+         else if (Constants.Parameters.AllBooleanParameters.Contains(parameter.Name))
          {
             listOfValues.Add(1, PKSimConstants.UI.Yes);
             listOfValues.Add(0, PKSimConstants.UI.No);
          }
-         else if (parameter.NameIsOneOf(CoreConstants.Parameters.PARA_ABSORPTION_SINK, CoreConstants.Parameters.TRANS_ABSORPTION_SINK))
+         else if (parameter.NameIsOneOf(Constants.Parameters.PARA_ABSORPTION_SINK, Constants.Parameters.TRANS_ABSORPTION_SINK))
          {
             listOfValues.Add(CoreConstants.Parameters.SINK_CONDITION, PKSimConstants.UI.SinkCondition);
             listOfValues.Add(CoreConstants.Parameters.NO_SINK_CONDITION, PKSimConstants.UI.NoSinkCondition);

@@ -232,8 +232,8 @@ namespace PKSim.Core.Model
 
             if (originData.SpeciesPopulation.IsPreterm)
             {
-               originData.GestationalAge = createDiscreteRandomValueFor(populationSettings, CoreConstants.Parameters.GESTATIONAL_AGE, randomGenerator, out success);
-               currentIndividual.Organism.Parameter(CoreConstants.Parameters.GESTATIONAL_AGE).Value = originData.GestationalAge.Value;
+               originData.GestationalAge = createDiscreteRandomValueFor(populationSettings, Constants.Parameters.GESTATIONAL_AGE, randomGenerator, out success);
+               currentIndividual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE).Value = originData.GestationalAge.Value;
                if (!success) continue;
             }
 

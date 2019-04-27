@@ -31,8 +31,8 @@ namespace PKSim.ProjectConverter.v5_2
       [Observation]
       public void should_have_added_the_plasma_protein_binding_partner_parameter()
       {
-         _compound.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).ShouldNotBeNull();
-         _compound.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).Value.ShouldBeEqualTo((double) PlasmaProteinBindingPartner.Unknown);
+         _compound.Parameter(Constants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).ShouldNotBeNull();
+         _compound.Parameter(Constants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).Value.ShouldBeEqualTo((double) PlasmaProteinBindingPartner.Unknown);
       }
 
       [Observation]
