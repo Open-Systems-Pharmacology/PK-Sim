@@ -447,7 +447,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_6
       private void updateIsLiverZonatedValue(Individual individual)
       {
          var liver = liverIn(individual);
-         liver.Parameter(CoreConstants.Parameters.IS_LIVER_ZONATED).Value = 0;
+         liver.Parameter(Constants.Parameters.IS_LIVER_ZONATED).Value = 0;
       }
 
       private void updateLiverStructure(Individual individual)

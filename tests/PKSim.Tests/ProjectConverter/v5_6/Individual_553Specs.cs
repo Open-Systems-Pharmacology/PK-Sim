@@ -47,9 +47,9 @@ namespace PKSim.ProjectConverter.v5_6
          validateLiverStructureIn(_simulation.Individual);
       }
 
-      private void validateLiverStructureIn(Individual indiviual)
+      private void validateLiverStructureIn(Individual individual)
       {
-         var liver = liverIn(indiviual);
+         var liver = liverIn(individual);
          liver.Container(CoreConstants.Compartment.Pericentral).ShouldNotBeNull();
          liver.Container(CoreConstants.Compartment.Periportal).ShouldNotBeNull();
       }
@@ -57,7 +57,7 @@ namespace PKSim.ProjectConverter.v5_6
       [Observation]
       public void should_have_added_the_IsZonatedLiver_flag_to_the_individual()
       {
-         var parameter = liverIn(_individual).Parameter(CoreConstants.Parameters.IS_LIVER_ZONATED);
+         var parameter = liverIn(_individual).Parameter(Constants.Parameters.IS_LIVER_ZONATED);
          parameter.Value.ShouldBeEqualTo(0);
       }
 

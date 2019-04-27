@@ -296,7 +296,7 @@ namespace PKSim.Core.Services
 
          var originData = _baseOriginData.Clone();
          var allAges = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameters.AGE, _entityPathResolver);
-         var allGAs = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameters.GESTATIONAL_AGE, _entityPathResolver);
+         var allGAs = populationSimulation.AllOrganismValuesFor(Constants.Parameters.GESTATIONAL_AGE, _entityPathResolver);
          var allHeights = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameters.HEIGHT, _entityPathResolver);
          var allGender = populationSimulation.AllGenders.ToList();
          var allValues = populationSimulation.AllValuesFor(parameterPath).ToList();

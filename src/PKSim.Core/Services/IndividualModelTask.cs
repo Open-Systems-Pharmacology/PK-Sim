@@ -102,7 +102,7 @@ namespace PKSim.Core.Services
 
       public IParameter MeanGestationalAgeFor(OriginData originData)
       {
-         var param = MeanOrganismParameter(originData, CoreConstants.Parameters.GESTATIONAL_AGE);
+         var param = MeanOrganismParameter(originData, Constants.Parameters.GESTATIONAL_AGE);
          //for population not preterm where the parameter is actually defined, the value of the parameter should be set to another default
          if (param != null && !originData.SpeciesPopulation.IsPreterm)
             param.Value = CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;

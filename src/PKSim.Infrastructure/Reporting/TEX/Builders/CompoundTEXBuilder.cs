@@ -186,7 +186,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          var molWeight = _representationRepository.DisplayNameFor(RepresentationObjectType.PARAMETER, Constants.Parameters.MOL_WEIGHT);
          return new List<object>
             {
-               compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE),
+               compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE),
                new SubSubSection(molWeight),
                new ParameterList(molWeight,
                                  compound.Parameter(Constants.Parameters.MOL_WEIGHT),
@@ -201,10 +201,10 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       private IEnumerable<object> dissociationConstants(Compound compound)
       {
          var table = new DataTable(groupDisplayName(CoreConstants.Groups.COMPOUND_PKA));
-         table.AddColumns<string>(CoreConstants.Parameters.PARAMETER_PKA_BASE, CoreConstants.Parameters.ParameterCompoundTypeBase);
-         addCompoundTypePart(table, compound, CoreConstants.Parameters.PARAMETER_PKA1, CoreConstants.Parameters.COMPOUND_TYPE1);
-         addCompoundTypePart(table, compound, CoreConstants.Parameters.PARAMETER_PKA2, CoreConstants.Parameters.COMPOUND_TYPE2);
-         addCompoundTypePart(table, compound, CoreConstants.Parameters.PARAMETER_PKA3, CoreConstants.Parameters.COMPOUND_TYPE3);
+         table.AddColumns<string>(CoreConstants.Parameters.PARAMETER_PKA_BASE, Constants.Parameters.ParameterCompoundTypeBase);
+         addCompoundTypePart(table, compound, CoreConstants.Parameters.PARAMETER_PKA1, Constants.Parameters.COMPOUND_TYPE1);
+         addCompoundTypePart(table, compound, CoreConstants.Parameters.PARAMETER_PKA2, Constants.Parameters.COMPOUND_TYPE2);
+         addCompoundTypePart(table, compound, CoreConstants.Parameters.PARAMETER_PKA3, Constants.Parameters.COMPOUND_TYPE3);
          if (table.Rows.Count == 0)
             return null;
 
@@ -226,7 +226,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
          var row = table.NewRow();
          row[CoreConstants.Parameters.PARAMETER_PKA_BASE] = pka;
-         row[CoreConstants.Parameters.ParameterCompoundTypeBase] = compoundTypeDisplay;
+         row[Constants.Parameters.ParameterCompoundTypeBase] = compoundTypeDisplay;
          table.Rows.Add(row);
       }
 

@@ -101,11 +101,11 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _para1 = DomainHelperForSpecs.ConstantParameterWithValue(_value1).WithName(CoreConstants.Parameters.EHC_ENABLED);
+         _para1 = DomainHelperForSpecs.ConstantParameterWithValue(_value1).WithName(Constants.Parameters.EHC_ENABLED);
          _para1.Editable = true;
          _para2 = DomainHelperForSpecs.ConstantParameterWithValue(_value2).WithName("para2");
          _para2.Editable = true;
-         _para3 = DomainHelperForSpecs.ConstantParameterWithValue(_value3).WithName(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM);
+         _para3 = DomainHelperForSpecs.ConstantParameterWithValue(_value3).WithName(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM);
          _para3.Editable = true;
          _parameterToScale.Add(_para1);
          _parameterToScale.Add(_para2);

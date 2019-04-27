@@ -46,10 +46,10 @@ namespace PKSim.Core.Services
          // get number of bins
          int numberOfBins;
 
-         bool isPolyDisperse = formulationParameterValue(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM) == CoreConstants.Parameters.POLYDISPERSE;
+         bool isPolyDisperse = formulationParameterValue(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM) == CoreConstants.Parameters.POLYDISPERSE;
 
          if (isPolyDisperse)
-            numberOfBins = (int) formulationParameterValue(CoreConstants.Parameters.NUMBER_OF_BINS);
+            numberOfBins = (int) formulationParameterValue(Constants.Parameters.NUMBER_OF_BINS);
          else
             numberOfBins = 1;
 
@@ -101,7 +101,7 @@ namespace PKSim.Core.Services
 
          // polydisperse case
          var particlesDistributionType =
-            (int) formulationParameterValue(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
+            (int) formulationParameterValue(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
 
          var minRadius = formulationParameterValue(CoreConstants.Parameters.PARTICLE_RADIUS_MIN);
          var maxRadius = formulationParameterValue(CoreConstants.Parameters.PARTICLE_RADIUS_MAX);

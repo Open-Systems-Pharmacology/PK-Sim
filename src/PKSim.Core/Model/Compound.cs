@@ -56,8 +56,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual bool IsSmallMolecule
       {
-         get => this.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value == 1;
-         set => this.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = value ? 1: 0;
+         get => this.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value == 1;
+         set => this.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = value ? 1: 0;
       }
 
       /// <summary>
@@ -65,14 +65,14 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual bool SupersaturationEnabled
       {
-         get => this.Parameter(CoreConstants.Parameters.ENABLE_SUPERSATURATION).Value == 1;
-         set => this.Parameter(CoreConstants.Parameters.ENABLE_SUPERSATURATION).Value = value ? 1 : 0;
+         get => this.Parameter(Constants.Parameters.ENABLE_SUPERSATURATION).Value == 1;
+         set => this.Parameter(Constants.Parameters.ENABLE_SUPERSATURATION).Value = value ? 1 : 0;
       }
 
       public virtual PlasmaProteinBindingPartner PlasmaProteinBindingPartner
       {
-         get => (PlasmaProteinBindingPartner)this.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).Value;
-         set => this.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).Value = (int) value;
+         get => (PlasmaProteinBindingPartner)this.Parameter(Constants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).Value;
+         set => this.Parameter(Constants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER).Value = (int) value;
       }
 
       public virtual IEnumerable<ParameterAlternativeGroup> AllParameterAlternativeGroups() => GetChildren<ParameterAlternativeGroup>();

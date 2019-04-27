@@ -123,9 +123,9 @@ namespace PKSim.Core.Model
          parameter.IsDefault = !visible;
       }
 
-      private bool isParticleDisperseSystem(int particleDisperseSystem) => IsParticleDissolution && this.Parameter(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value == particleDisperseSystem;
+      private bool isParticleDisperseSystem(int particleDisperseSystem) => IsParticleDissolution && this.Parameter(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value == particleDisperseSystem;
 
-      private bool isPolydisperseWithDistribution(int particleSizeDistribution) => IsPolydisperse && this.Parameter(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value == particleSizeDistribution;
+      private bool isPolydisperseWithDistribution(int particleSizeDistribution) => IsPolydisperse && this.Parameter(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value == particleSizeDistribution;
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {

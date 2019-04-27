@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -33,7 +34,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Age = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.AGE);
          snapshot.Weight = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.MEAN_WEIGHT);
          snapshot.Height = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.MEAN_HEIGHT);
-         snapshot.GestationalAge = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.GESTATIONAL_AGE);
+         snapshot.GestationalAge = await snapshotRangeFor(randomPopulationSettings, Constants.Parameters.GESTATIONAL_AGE);
          snapshot.BMI = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.BMI);
          return snapshot;
       }
@@ -57,7 +58,7 @@ namespace PKSim.Core.Snapshots.Mappers
          await updateModelRange(settings, CoreConstants.Parameters.AGE, snapshot.Age);
          await updateModelRange(settings, CoreConstants.Parameters.MEAN_WEIGHT, snapshot.Weight);
          await updateModelRange(settings, CoreConstants.Parameters.MEAN_HEIGHT, snapshot.Height);
-         await updateModelRange(settings, CoreConstants.Parameters.GESTATIONAL_AGE, snapshot.GestationalAge);
+         await updateModelRange(settings, Constants.Parameters.GESTATIONAL_AGE, snapshot.GestationalAge);
          await updateModelRange(settings, CoreConstants.Parameters.BMI, snapshot.BMI);
          return settings;
       }

@@ -156,7 +156,7 @@ namespace PKSim.Presentation.Presenters.Formulations
       {
          updatePlot();
 
-         if (!parameter.NameIsOneOf(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM, CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
+         if (!parameter.NameIsOneOf(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM, Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
             return;
 
          adjustParameterVisibility();

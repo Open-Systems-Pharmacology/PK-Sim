@@ -223,15 +223,15 @@ namespace PKSim.Core.Services
          CoreConstants.Parameters.ParticleDistributionStructuralParameters.Each(paramName => formulationBuilder.Parameter(paramName).Editable = false);
 
          // second, set some parameters to not visible depending on settings
-         var parameterNamesToBeInvisible = new List<string> {CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM};
+         var parameterNamesToBeInvisible = new List<string> { Constants.Parameters.PARTICLE_DISPERSE_SYSTEM};
 
-         var numberOfBins = (int) formulationBuilder.Parameter(CoreConstants.Parameters.NUMBER_OF_BINS).Value;
+         var numberOfBins = (int) formulationBuilder.Parameter(Constants.Parameters.NUMBER_OF_BINS).Value;
 
          if (numberOfBins == 1)
             parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForMonodisperse);
          else
          {
-            var particlesDistributionType = (int) formulationBuilder.Parameter(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value;
+            var particlesDistributionType = (int) formulationBuilder.Parameter(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value;
 
             if (particlesDistributionType == CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
                parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseNormal);

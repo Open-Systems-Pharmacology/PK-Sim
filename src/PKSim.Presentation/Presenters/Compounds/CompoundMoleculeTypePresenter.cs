@@ -28,7 +28,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public override void EditCompound(Compound compound)
       {
-         _parameter = compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE);
+         _parameter = compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE);
          var info = _representationInfoRepository.InfoFor(_parameter);
          var isSmallMolecule = new IsSmallMoleculeDTO {Value = _parameter.Value == 1, Description = info.Description, Display = info.DisplayName};
          _view.BindTo(isSmallMolecule);

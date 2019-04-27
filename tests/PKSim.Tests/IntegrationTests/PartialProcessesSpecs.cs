@@ -498,7 +498,7 @@ namespace PKSim.IntegrationTests
          var modelConfig = _modelConfigurationRepository.AllFor(_individual.Species).First(x => x.ModelName == CoreConstants.Model.TwoPores);
          var twoPoreModelProperties = _modelPropertiesTask.DefaultFor(modelConfig, _individual.OriginData);
 
-         _compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = 0;
+         _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol, twoPoreModelProperties)
             .DowncastTo<IndividualSimulation>();
 
@@ -529,7 +529,7 @@ namespace PKSim.IntegrationTests
 
          var modelConfig = _modelConfigurationRepository.AllFor(_individual.Species).First(x => x.ModelName == CoreConstants.Model.TwoPores);
          var twoPoreModelProperties = _modelPropertiesTask.DefaultFor(modelConfig, _individual.OriginData);
-         _compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = 0;
+         _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol, twoPoreModelProperties)
             .DowncastTo<IndividualSimulation>();

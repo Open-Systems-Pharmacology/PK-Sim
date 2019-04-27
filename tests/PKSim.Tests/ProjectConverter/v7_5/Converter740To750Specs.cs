@@ -41,7 +41,7 @@ namespace PKSim.ProjectConverter.v7_5
       private void verifyEnableSaturationParameter(Compound compound)
       {
          compound.SupersaturationEnabled.ShouldBeFalse();
-         var enableSaturation = compound.Parameter(CoreConstants.Parameters.ENABLE_SUPERSATURATION);
+         var enableSaturation = compound.Parameter(Constants.Parameters.ENABLE_SUPERSATURATION);
          enableSaturation.CanBeVaried.ShouldBeTrue();
          enableSaturation.Info.ReadOnly.ShouldBeFalse();
          enableSaturation.Visible.ShouldBeTrue();

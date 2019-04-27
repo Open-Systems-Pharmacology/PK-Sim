@@ -45,7 +45,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_5
       private void convertCompound(Compound compound)
       {
          var templateCompound = _templateCompound.Value;
-         var enableSupersaturation = _cloner.Clone(templateCompound.Parameter(CoreConstants.Parameters.ENABLE_SUPERSATURATION));
+         var enableSupersaturation = _cloner.Clone(templateCompound.Parameter(Constants.Parameters.ENABLE_SUPERSATURATION));
          compound.Add(enableSupersaturation);
          _converted = true;
       }

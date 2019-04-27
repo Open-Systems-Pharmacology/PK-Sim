@@ -61,7 +61,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
       {
          var defaultCompound = _compoundFactory.Create();
 
-         var plasmaProteinBindingPartner = _cloner.Clone(defaultCompound.Parameter(CoreConstants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER));
+         var plasmaProteinBindingPartner = _cloner.Clone(defaultCompound.Parameter(Constants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER));
          plasmaProteinBindingPartner.Value = (int) PlasmaProteinBindingPartner.Unknown;
          compound.Add(plasmaProteinBindingPartner);
          compound.Add(_cloner.Clone(defaultCompound.Parameter(ConverterConstants.Parameter.Kass_FcRn)));

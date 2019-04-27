@@ -68,13 +68,13 @@ namespace PKSim.ProjectConverter.v5_3
       public void should_have_set_the_has_halogen_parameter_to_visible()
       {
          var compound = First<Compound>();
-         compound.Parameter(CoreConstants.Parameters.HAS_HALOGENS).Visible.ShouldBeTrue();
+         compound.Parameter(Constants.Parameters.HAS_HALOGENS).Visible.ShouldBeTrue();
 
          var simulation = First<Simulation>();
          var simCompound = simulation.BuildingBlock<Compound>();
-         simCompound.Parameter(CoreConstants.Parameters.HAS_HALOGENS).Visible.ShouldBeTrue();
+         simCompound.Parameter(Constants.Parameters.HAS_HALOGENS).Visible.ShouldBeTrue();
 
-         var simParameter = simulation.Model.Root.Container(compound.Name).Parameter(CoreConstants.Parameters.HAS_HALOGENS);
+         var simParameter = simulation.Model.Root.Container(compound.Name).Parameter(Constants.Parameters.HAS_HALOGENS);
          simParameter.Visible.ShouldBeTrue();
       }
 

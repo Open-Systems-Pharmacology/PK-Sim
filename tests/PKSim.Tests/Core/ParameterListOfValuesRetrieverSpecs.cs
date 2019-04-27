@@ -44,7 +44,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _parameter.Name = CoreConstants.Parameters.NUMBER_OF_BINS;
+         _parameter.Name = Constants.Parameters.NUMBER_OF_BINS;
          _listOfParameterWithValues.Add(_parameter.Name);
       }
 
