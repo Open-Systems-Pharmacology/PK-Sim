@@ -65,7 +65,7 @@ test:
 notifications:
   - provider: Slack
     incoming_webhook:      
-      secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyF1h7st5qNdNezFp6T+bWXqrcZ4q/smtPcJ7LkUFHL46JDYUFlIL8FDz+ApX/vP+x0=
+      secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyFEAs8X080yIO8g1FLt3tNfBN4OpeBnkgrXzf7AqNKV5561x7Coux3ByGrHmsL1sCo
 
 install:
 - cmd: git submodule update --init --recursive
