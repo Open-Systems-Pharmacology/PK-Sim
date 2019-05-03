@@ -877,16 +877,16 @@ namespace PKSim.Assets
 
          public static string CannotLoadSimulation(string simulationName) => $"Cannot load {ObjectTypes.Simulation} '{simulationName}'";
 
-         public static string UnableToLoadQualificationConfigurationFromFile(string fileFullPath) => $"TODO Unable to read configuration from file '{fileFullPath}'";
+         public static string UnableToLoadQualificationConfigurationFromFile(string fileFullPath) => $"Unable to read configuration from file '{fileFullPath}'";
 
-         public static string CannotFindBuildingBlockInSnapshot(string buildingBlockType, string buildingBlockName, string project) => $"TODO Could not find {buildingBlockType} '{buildingBlockName}' in snapshot '{project}'.";
+         public static string CannotFindBuildingBlockInSnapshot(string buildingBlockType, string buildingBlockName, string project) => $"Could not find {buildingBlockType} '{buildingBlockName}' in snapshot '{project}'.";
 
          public static string CannotFindSimulationInSnapshot(string simulationName, string project) => CannotFindBuildingBlockInSnapshot(ObjectTypes.Simulation, simulationName, project);
 
          public static string CannotFindSimulationParameterInSnapshot(string parameterPath, string simulationName, string project) => 
             $"TODO Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
 
-         public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"TODO Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
+         public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
       }
 
       public static class Information
@@ -2113,7 +2113,6 @@ namespace PKSim.Assets
          public static readonly string Reference = "Reference";
          public static readonly string ImportPopulationSettings = "Imported Population";
          public static readonly string ImportPopulationSettingsDescription = "The base individual is used as template for the population: Parameters are replaced by values imported from file, if they exist. Otherwise, parameters are taken from the base individual.";
-         public static readonly string ImportObserversDescription = "TODO: This is the description for ImportObserversDescription";
          public static readonly string SimulationsUsedInComparison= "Simulations used in comparison";
          public static readonly string UsedAsReferenceSimulation = "Used as Reference Simulation";
          public static readonly string ExportSimulationResultsToExcelDescription = ExportSimulationResultsToExcel;
@@ -2195,6 +2194,19 @@ namespace PKSim.Assets
             sb.AppendLine($" -   <b>{populationNamePattern}</b> with the name of the population");
             sb.AppendLine($" -   <b>{individualIdPattern}</b> with the id of the individual");
             return sb.ToString();
+         }
+
+         public static string ImportObserversDescription
+         {
+            get
+            {
+               var sb = new StringBuilder();
+               sb.AppendLine("Any observer (Amount or Container) created in MoBi can be imported into PK-Sim:");
+               sb.AppendLine(" -  Right click on the observer of interest in MoBi.");
+               sb.AppendLine(" -  Export it using the 'Save As PKML' option.");
+               sb.AppendLine(" -  Select the exported file using the 'Add File' button below.");
+               return sb.ToString();
+            }
          }
 
          public static string ExtractIndividualFromPopulation(string populationName) => $"Extract Individuals from Population '{populationName}'";
