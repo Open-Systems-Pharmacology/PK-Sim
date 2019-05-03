@@ -26,10 +26,10 @@ namespace PKSim.Core.Model
       PopulationAnalysisField = 1 << 8,
       ObservedData = 1 << 9,
       PopulationSimulationAnalysisWorkflow = 1 << 10,
-      Observers = 1 << 11,
+      ObserverSet = 1 << 11,
    }
 
-   public static class TemplateObjecTypeExtensions
+   public static class TemplateObjectTypeExtensions
    {
       public static bool Is(this TemplateType templateType, TemplateType typeToCompare)
       {
