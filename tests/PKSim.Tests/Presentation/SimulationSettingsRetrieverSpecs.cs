@@ -68,7 +68,7 @@ namespace PKSim.Presentation
          var drugVenousBlood = new Container().WithName(_compound1.Name);
          var periperhalVenousBloodObserver = new Observer {Name = CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD};
          drugPeripheralBlood.Add(periperhalVenousBloodObserver);
-         var venousBloodObserver = new Observer {Name = CoreConstants.Observer.CONCENTRATION};
+         var venousBloodObserver = new Observer {Name = CoreConstants.Observer.CONCENTRATION_IN_CONTAINER};
          drugVenousBlood.Add(venousBloodObserver);
          peripheralVenousBlood.Add(drugPeripheralBlood);
          venousBloodPlasma.Add(drugVenousBlood);

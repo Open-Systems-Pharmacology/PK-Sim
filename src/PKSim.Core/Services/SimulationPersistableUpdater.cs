@@ -36,7 +36,7 @@ namespace PKSim.Core.Services
       {
          //make sure venous blood plasma is always selected so that PK can be calculated as well
          updatePeristable(organism, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma,
-            compound.Name, CoreConstants.Observer.CONCENTRATION);
+            compound.Name, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
 
          //make sure peripheral venous blood plasma is always selected so that PK can be calculated as well
          updatePeristable(organism, CoreConstants.Organ.PeripheralVenousBlood, compound.Name,
@@ -98,7 +98,7 @@ namespace PKSim.Core.Services
       private void setConcentrationObserversToNonPersistableIn(IContainer container)
       {
          if (container == null) return;
-         SetPersistable(container.GetAllChildren<IObserver>(x => x.NameIsOneOf(CoreConstants.Observer.CONCENTRATION)), false);
+         SetPersistable(container.GetAllChildren<IObserver>(x => x.NameIsOneOf(CoreConstants.Observer.CONCENTRATION_IN_CONTAINER)), false);
       }
 
       private void setApplicationObserversNonPersistable(Simulation simulation)

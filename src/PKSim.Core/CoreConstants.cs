@@ -137,7 +137,7 @@ namespace PKSim.Core
          public static readonly string FRACTION_EXCRETED_TO_URINE = $"{FRACTION_EXCRETED} to urine";
          public static readonly string FRACTION_EXCRETED_TO_BILE = $"{FRACTION_EXCRETED} to bile";
          public static readonly string FRACTION_EXCRETED_TO_FECES = $"{FRACTION_EXCRETED} to feces";
-         public static readonly string CONCENTRATION = "Concentration in container";
+         public static readonly string CONCENTRATION_IN_CONTAINER = "Concentration in container";
          public static readonly string PLASMA_PERIPHERAL_VENOUS_BLOOD = "Plasma (Peripheral Venous Blood)";
          public static readonly string TISSUE = "Tissue";
          public static readonly string WHOLE_BLOOD = "Whole Blood";
@@ -154,7 +154,7 @@ namespace PKSim.Core
 
          public static IReadOnlyCollection<string> FractionObservers => new[] {FRACTION_EXCRETED, FRACTION_EXCRETED_TO_URINE, FRACTION_EXCRETED_TO_BILE, FRACTION_EXCRETED_TO_FECES, FRACTION_OF_DOSE, RECEPTOR_OCCUPANCY};
 
-         public static IReadOnlyCollection<string> MoBiForAll => new[] {CONCENTRATION, FRACTION_EXCRETED_TO_URINE, TISSUE, PLASMA_PERIPHERAL_VENOUS_BLOOD, PLASMA_UNBOUND_PERIPHERAL_VENOUS_BLOOD};
+         public static IReadOnlyCollection<string> MoBiForAll => new[] {CONCENTRATION_IN_CONTAINER, FRACTION_EXCRETED_TO_URINE, TISSUE, PLASMA_PERIPHERAL_VENOUS_BLOOD, PLASMA_UNBOUND_PERIPHERAL_VENOUS_BLOOD};
 
          public static string ObserverNameFrom(string observerName, string compoundName)
          {

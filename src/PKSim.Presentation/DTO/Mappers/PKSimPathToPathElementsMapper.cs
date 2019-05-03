@@ -162,7 +162,8 @@ namespace PKSim.Presentation.DTO.Mappers
          if (observerIsFractionOfDoseLiver(observer))
             updateNameElementForFractionOfDose(pathElements, observer);
 
-         else if (!FractionObservers.Any(observer.Name.StartsWith))
+         // These observers should be renamed to their dimension (concentration).
+         else if (observer.Name.StartsWith(CONCENTRATION_IN_CONTAINER))
             updateNameElementToQuantityDimensionName(pathElements, observer);
       }
 
