@@ -796,7 +796,7 @@ namespace PKSim.Assets
 
          public static string CouldNotLoadObserverFromFile(string pkmlFileFullPath, string elementName)
          {
-            return $"Could not load observer from file '{pkmlFileFullPath}'. This seems to be a file for '{elementName}'.";
+            return $"Could not load observer from file '{pkmlFileFullPath}'.\nThis seems to be a file for '{elementName}'. Make sure that the selected file contains a SINGLE observer only.";
          }
 
          public static string CannotAddOutputFieldBecauseOfDimensionMismatch(string outputName, IEnumerable<string> allowedDimensions, string currentDimension)
