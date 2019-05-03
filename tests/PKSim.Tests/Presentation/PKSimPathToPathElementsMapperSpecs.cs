@@ -133,7 +133,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _entity = new Observer().WithName(CoreConstants.Observer.CONCENTRATION)
+         _entity = new Observer().WithName(CoreConstants.Observer.CONCENTRATION_IN_CONTAINER)
             .WithParentContainer(_drug)
             .WithDimension(_concentrationDimension);
       }
@@ -142,6 +142,23 @@ namespace PKSim.Presentation
       public void should_set_the_name_of_the_observer_to_concentration()
       {
          ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma, _drugName, CoreConstants.Output.Concentration);
+      }
+   }
+
+   public class When_creating_the_path_elements_for_an_observer_that_is_not_a_default_observer : concern_for_PKSimPathToPathElementsMapper
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _entity = new Observer().WithName("TOTO")
+            .WithParentContainer(_drug)
+            .WithDimension(_concentrationDimension);
+      }
+
+      [Observation]
+      public void should_not_rename_the_name_entry()
+      {
+         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma, _drugName, _entity.Name);
       }
    }
 

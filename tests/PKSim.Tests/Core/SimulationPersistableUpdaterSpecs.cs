@@ -44,7 +44,7 @@ namespace PKSim.Core
          _peripheralVenousBloodObserver = new Observer().WithName(CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD);
          moleculePeripheral.Add(_peripheralVenousBloodObserver);
 
-         _venousBloodPlasma = new Observer().WithName(CoreConstants.Observer.CONCENTRATION);
+         _venousBloodPlasma = new Observer().WithName(CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
          moleculeVenousBlood.Add(_venousBloodPlasma);
 
          var moleculeLumen = new Container().WithName("DRUG")
@@ -118,11 +118,11 @@ namespace PKSim.Core
             .WithParentContainer(gallBladder);
          _moleculeGallBladder.Persistable = false;
 
-         _urineConcentrationObserver = new Observer().WithName(CoreConstants.Observer.CONCENTRATION);
+         _urineConcentrationObserver = new Observer().WithName(CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
          _urineConcentrationObserver.Persistable = true;
          _moleculeUrine.Add(_urineConcentrationObserver);
 
-         _fecesConcentrationObserver = new Observer().WithName(CoreConstants.Observer.CONCENTRATION);
+         _fecesConcentrationObserver = new Observer().WithName(CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
          _fecesConcentrationObserver.Persistable = true;
          _moleculeFeces.Add(_fecesConcentrationObserver);
 

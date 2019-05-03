@@ -130,6 +130,11 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private void adjustDisplayPathForQuantity(PathElements pathElements, IQuantity quantity)
       {
+
+         if (quantity.IsNamed("Plasma_Unbound"))
+         {
+            quantity.Name = quantity.Name;
+         }
          if (quantity.HasAncestorNamed(CoreConstants.Organ.Gallbladder))
             adjustDisplayPathForGallBladder(pathElements, quantity);
 
@@ -162,7 +167,8 @@ namespace PKSim.Presentation.DTO.Mappers
          if (observerIsFractionOfDoseLiver(observer))
             updateNameElementForFractionOfDose(pathElements, observer);
 
-         else if (!FractionObservers.Any(observer.Name.StartsWith))
+         // These observers should be renamed to their dimension (concentration).
+         else if (observer.Name.StartsWith(CONCENTRATION_IN_CONTAINER))
             updateNameElementToQuantityDimensionName(pathElements, observer);
       }
 
