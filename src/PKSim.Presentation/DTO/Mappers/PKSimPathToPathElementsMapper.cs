@@ -130,11 +130,6 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private void adjustDisplayPathForQuantity(PathElements pathElements, IQuantity quantity)
       {
-
-         if (quantity.IsNamed("Plasma_Unbound"))
-         {
-            quantity.Name = quantity.Name;
-         }
          if (quantity.HasAncestorNamed(CoreConstants.Organ.Gallbladder))
             adjustDisplayPathForGallBladder(pathElements, quantity);
 
