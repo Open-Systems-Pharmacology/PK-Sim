@@ -2203,8 +2203,8 @@ namespace PKSim.Assets
                var sb = new StringBuilder();
                sb.AppendLine("Any observer (Amount or Container) created in MoBi can be imported into PK-Sim:");
                sb.AppendLine(" -  Right click on the observer of interest in MoBi.");
-               sb.AppendLine(" -  Export it using the 'Save As PKML' option.");
-               sb.AppendLine(" -  Select the exported file using the 'Add File' button below.");
+               sb.AppendLine(" -  Export it using the <b>Save As PKML</b> option.");
+               sb.AppendLine(" -  Select the exported file using the <b>Add File</b> button below.");
                return sb.ToString();
             }
          }
@@ -2230,7 +2230,7 @@ namespace PKSim.Assets
          {
             var sb = new StringBuilder();
             sb.AppendLine("Automatically generates labels replacing the occurence in the naming pattern of:");
-            sb.AppendFormat(" -   <b>{0}</b> with an identifer generated using the selected template\n", iterationPattern);
+            sb.AppendFormat(" -   <b>{0}</b> with an identifier generated using the selected template\n", iterationPattern);
             sb.AppendFormat(" -   <b>{0}</b> with a value representing the start of the interval and n the number of digits\n", startPattern);
             sb.AppendFormat(" -   <b>{0}</b> with a value representing the end of the interval and n the number of digits\n", endPattern);
             return sb.ToString();
