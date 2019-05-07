@@ -30,7 +30,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl = new DevExpress.XtraLayout.LayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.buttonClearList = new DevExpress.XtraEditors.SimpleButton();
          this.buttonExportList = new DevExpress.XtraEditors.SimpleButton();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
@@ -274,7 +274,7 @@
 
       #endregion
 
-      private DevExpress.XtraLayout.LayoutControl layoutControl;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private OSPSuite.UI.Controls.UxGridControl gridControl;
       private PKSim.UI.Views.Core.UxGridView gridView;
       private DevExpress.XtraEditors.SimpleButton buttonImportList;

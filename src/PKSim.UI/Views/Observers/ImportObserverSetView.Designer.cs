@@ -29,7 +29,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl = new DevExpress.XtraLayout.LayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelObservedDataDetails = new DevExpress.XtraEditors.PanelControl();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
@@ -206,7 +206,7 @@
 
       #endregion
 
-      private DevExpress.XtraLayout.LayoutControl layoutControl;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup Root;
       private OSPSuite.UI.Controls.UxGridControl gridControl;
       private PKSim.UI.Views.Core.UxGridView gridView;
