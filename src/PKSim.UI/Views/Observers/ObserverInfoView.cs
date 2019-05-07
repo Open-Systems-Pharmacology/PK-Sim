@@ -38,6 +38,7 @@ namespace PKSim.UI.Views.Observers
          base.InitializeResources();
          richEditControl.Document.Text = string.Empty;
          richEditControl.ActiveViewType = RichEditViewType.Simple;
+         richEditControl.ReadOnly = true;
       }
    }
 }
