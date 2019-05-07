@@ -128,6 +128,7 @@ namespace PKSim.Infrastructure.Serialization
 
                   progress.IncrementProgress(PKSimConstants.UI.LoadingLayout);
                   var workspaceLayout = _workspaceLayoutPersistor.Load(session);
+                  // The workspace layout may be null if the workspace was created via CLI. In that case, we simply initialize the workspace layout
                   if (workspace is IWithWorkspaceLayout withWorkspaceLayout)
                      withWorkspaceLayout.WorkspaceLayout = workspaceLayout ?? new WorkspaceLayout();
                }
