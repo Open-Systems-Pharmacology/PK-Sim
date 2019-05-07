@@ -4,6 +4,7 @@ using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
@@ -128,12 +129,12 @@ namespace PKSim.Infrastructure.Serialization
                   progress.IncrementProgress(PKSimConstants.UI.LoadingLayout);
                   var workspaceLayout = _workspaceLayoutPersistor.Load(session);
                   if (workspace is IWithWorkspaceLayout withWorkspaceLayout)
-                     withWorkspaceLayout.WorkspaceLayout = workspaceLayout;
+                     withWorkspaceLayout.WorkspaceLayout = workspaceLayout ?? new WorkspaceLayout();
                }
             }
             catch (Exception)
             {
-               //Exeption occurs while opening the project! 
+               //Exception occurs while opening the project! 
                //close the file and rethrow the exception
                _sessionManager.CloseFactory();
                throw;

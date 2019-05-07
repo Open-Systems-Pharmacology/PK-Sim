@@ -58,7 +58,7 @@ namespace PKSim.Infrastructure
 
       public void SaveProject(string fileFullPath)
       {
-         //try to lock the file if it exisits or is not lock already
+         //try to lock the file if it exists or is not lock already
          LockFile(fileFullPath);
 
          //notify the action project saving
@@ -85,7 +85,7 @@ namespace PKSim.Infrastructure
       {
          LoadProject(() =>
          {
-            //retrieve project from file. This will load the project into the workbook itselfs
+            //retrieve project from file. This will load the project into the workbook itself
             _workspacePersistor.LoadSession(this, fileFullPath);
 
             if (Project == null)
