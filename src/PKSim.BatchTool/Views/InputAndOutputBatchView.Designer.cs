@@ -29,7 +29,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelLog = new DevExpress.XtraEditors.PanelControl();
          this.btnOutputFolder = new DevExpress.XtraEditors.ButtonEdit();
          this.btnCalculate = new DevExpress.XtraEditors.SimpleButton();
@@ -218,7 +218,7 @@
 
       #endregion
 
-      private DevExpress.XtraLayout.LayoutControl layoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraEditors.SimpleButton btnCalculate;
       private DevExpress.XtraEditors.ButtonEdit btnInputFolder;

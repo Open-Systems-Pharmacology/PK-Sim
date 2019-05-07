@@ -28,7 +28,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl = new DevExpress.XtraLayout.LayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.panelControl = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -98,7 +98,7 @@
 
       #endregion
 
-      private DevExpress.XtraLayout.LayoutControl layoutControl;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup Root;
       private DevExpress.XtraEditors.PanelControl panelControl;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;

@@ -144,7 +144,7 @@
 
       #endregion
 
-      private DevExpress.XtraLayout.LayoutControl layoutControl;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup Root;
       private DevExpress.XtraGrid.GridControl gridControl;
       private PKSim.UI.Views.Core.UxGridView gridView;
