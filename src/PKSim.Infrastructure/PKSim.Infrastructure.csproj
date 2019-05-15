@@ -281,7 +281,7 @@
     <Compile Include="ProjectConverter\v7_2\Converter720To721.cs" />
     <Compile Include="ProjectConverter\v7_3\Converter721To730.cs" />
     <Compile Include="ProjectConverter\v7_4\Converter730To740.cs" />
-    <Compile Include="ProjectConverter\v7_5\Converter740To750.cs" />
+    <Compile Include="ProjectConverter\v8_0\Converter740To80.cs" />
     <Compile Include="Reporting\Extensions\DataTableExtensions.cs" />
     <Compile Include="Reporting\Extensions\SimpleProtocolExtensions.cs" />
     <Compile Include="Reporting\Markdown\Builders\BuildingBlockMarkdownBuilder.cs" />

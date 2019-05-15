@@ -660,7 +660,7 @@
     <Compile Include="Presentation\UserDefinedParametersPresenterSpecs.cs" />
     <Compile Include="ProjectConverter\v7_3\Converter721To730Specs.cs" />
     <Compile Include="ProjectConverter\v7_4\Converter730To740Specs.cs" />
-    <Compile Include="ProjectConverter\v7_5\Converter740To750Specs.cs" />
+    <Compile Include="ProjectConverter\v8_0\Converter740To80Specs.cs" />
     <Compile Include="Reporting\ReportingSpecs.cs" />
     <Compile Include="Reporting\SimulationsReporterSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationXmlSerializerSpecs.cs" />
