@@ -67,7 +67,7 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Starting project export for '{projectFile}'");
 
          _workspacePersistor.LoadSession(_workspace, projectFile);
-         _logger.AddDebug($"Project loaded successfuly from '{projectFile}'");
+         _logger.AddDebug($"Project loaded successfully from '{projectFile}'");
 
          await ExportSimulationsIn(_workspace.Project, runOptions);
 

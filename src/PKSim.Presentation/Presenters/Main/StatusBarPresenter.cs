@@ -154,7 +154,7 @@ namespace PKSim.Presentation.Presenters.Main
       {
          updateProjectInfo(Captions.None, Captions.None, false);
          update(StatusBarElements.Version)
-            .WithCaption(_applicationConfiguration.FullVersionDisplay);
+            .WithCaption($"Version {_applicationConfiguration.FullVersionDisplay}");
 
          hideProgressBar();
       }
