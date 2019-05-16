@@ -4,14 +4,13 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ProjectConverter.v7_5;
 using PKSim.IntegrationTests;
 
-namespace PKSim.ProjectConverter.v7_5
+namespace PKSim.ProjectConverter.v8_0
 {
-   public class When_converting_the_simple_project_730_project_to_750 : ContextWithLoadedProject<Converter740To750>
+   public class When_converting_the_simple_project_730_project_to_80 : ContextWithLoadedProject<Converter740To80>
    {
       private List<Simulation> _allSimulations;
       private List<Compound> _allCompounds;
@@ -52,7 +51,7 @@ namespace PKSim.ProjectConverter.v7_5
       [Observation]
       public void should_have_added_the_enable_saturation_parameter_to_each_simulation_compound()
       {
-         _allSimulations.SelectMany(x=>x.Compounds).Each(verifyEnableSaturationParameter);
+         _allSimulations.SelectMany(x => x.Compounds).Each(verifyEnableSaturationParameter);
       }
    }
 }

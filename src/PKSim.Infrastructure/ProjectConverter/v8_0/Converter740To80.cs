@@ -9,7 +9,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.ProjectConverter.v7_5
 {
-   public class Converter740To750 : IObjectConverter,
+   public class Converter740To80 : IObjectConverter,
       IVisitor<Compound>,
       IVisitor<Simulation>
    {
@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_5
       private readonly Lazy<Compound> _templateCompound;
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V7_4_0;
 
-      public Converter740To750(
+      public Converter740To80(
          ICompoundFactory compoundFactory,
          ICloner cloner)
       {
@@ -30,12 +30,12 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_5
       {
          _converted = false;
          this.Visit(objectToConvert);
-         return (ProjectVersions.V7_5_0, _converted);
+         return (ProjectVersions.V8_0, _converted);
       }
 
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return (ProjectVersions.V7_5_0, false);
+         return (ProjectVersions.V8_0, false);
       }
 
       public void Visit(Compound compound) => convertCompound(compound);
