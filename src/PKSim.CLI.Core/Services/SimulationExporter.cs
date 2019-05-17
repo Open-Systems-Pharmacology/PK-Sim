@@ -131,7 +131,7 @@ namespace PKSim.CLI.Core.Services
          var exportMode = simulationExportOptions.ExportMode;
 
          if (exportMode.HasFlag(SimulationExportMode.Csv) && individualSimulation != null)
-            tasks.Add(exporIndividualSimulationToCsvAsync(individualSimulation, simulationExportOptions));
+            tasks.Add(exportIndividualSimulationToCsvAsync(individualSimulation, simulationExportOptions));
 
          if (exportMode.HasFlag(SimulationExportMode.Csv) && populationSimulation != null)
             tasks.Add(exportPopulationSimulationToCsvAsync(populationSimulation, simulationExportOptions));
@@ -172,10 +172,8 @@ namespace PKSim.CLI.Core.Services
          _logger.AddDebug($"Exporting simulation results to '{fileName}'", simulationExportOptions.LogCategory);
       }
 
-      private Task exporIndividualSimulationToCsvAsync(IndividualSimulation simulation, SimulationExportOptions simulationExportOptions)
-      {
-         return exportSimulationResultsToCsv(simulation, simulationExportOptions);
-      }
+      private Task exportIndividualSimulationToCsvAsync(IndividualSimulation simulation, SimulationExportOptions simulationExportOptions) => 
+         exportSimulationResultsToCsv(simulation, simulationExportOptions);
 
       private async Task exportPopulationSimulationToCsvAsync(PopulationSimulation populationSimulation, SimulationExportOptions simulationExportOptions)
       {

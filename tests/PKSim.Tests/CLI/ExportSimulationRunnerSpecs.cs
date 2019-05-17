@@ -15,7 +15,6 @@ using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using ILogger = OSPSuite.Core.Services.ILogger;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
@@ -40,10 +39,10 @@ namespace PKSim.CLI
       protected PKSimProject _project;
       protected Simulation _simulation1;
       protected Simulation _simulation2;
-      protected static string _simulation1Name = "S1";
+      protected static string _simulation1Name = "S1 200mg/kg";
       protected static string _simulation2Name = "S2";
-      protected string _s1OutputFolder = Path.Combine(_outputFolder, _simulation1Name);
-      protected string _s2OutputFolder = Path.Combine(_outputFolder, _simulation2Name);
+      protected string _s1OutputFolder = Path.Combine(_outputFolder, FileHelper.RemoveIllegalCharactersFrom(_simulation1Name));
+      protected string _s2OutputFolder = Path.Combine(_outputFolder, FileHelper.RemoveIllegalCharactersFrom(_simulation2Name));
       protected bool _s1OutputFolderCreated;
       protected bool _s2OutputFolderCreated;
 
@@ -111,6 +110,22 @@ namespace PKSim.CLI
       }
    }
 
+   public class When_exporting_the_simulation_result_for_a_simulation_in_a_project : concern_for_ExportSimulationRunner
+   {
+      private SimulationExport _export;
+
+      protected override async Task Because()
+      {
+         _export = await sut.ExportSimulation(_simulation1, _exportRunOptions, _project);
+      }
+
+      [Observation]
+      public void should_ensure_that_simulation_export_contains_the_escaped_name_of_the_simulation()
+      {
+         _export.Simulation.ShouldBeEqualTo(FileHelper.RemoveIllegalCharactersFrom(_simulation1Name));
+      }
+   }
+
    public class When_running_the_export_simulation_runner_for_all_simulations_of_an_existing_project : concern_for_ExportSimulationRunner
    {
       protected override async Task Context()
@@ -130,7 +145,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_all_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation1, A<SimulationExportOptions>.That.Matches(x=>x.OutputFolder==_s1OutputFolder))).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation1, A<SimulationExportOptions>.That.Matches(x => x.OutputFolder == _s1OutputFolder))).MustHaveHappened();
          A.CallTo(() => _simulationExporter.Export(_simulation2, A<SimulationExportOptions>.That.Matches(x => x.OutputFolder == _s2OutputFolder))).MustHaveHappened();
       }
 
@@ -231,7 +246,6 @@ namespace PKSim.CLI
          _project.AddBuildingBlock(_simulation1);
          A.CallTo(() => _simulationExporter.RunAndExport(_simulation1, A<SimulationRunOptions>._, A<SimulationExportOptions>._))
             .Invokes(x => _simulationExportOptions = x.GetArgument<SimulationExportOptions>(2));
-
       }
 
       protected override Task Because()
