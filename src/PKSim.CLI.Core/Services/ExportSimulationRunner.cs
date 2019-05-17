@@ -17,8 +17,13 @@ namespace PKSim.CLI.Core.Services
 {
    public class SimulationExport : IReferencingSimulation
    {
+      //Name of project where simulation belongs
       public string Project { get; set; }
+
+      //Escaped name of exported simulation
       public string Simulation { get; set; }
+
+      //Folder where simulation will be exported
       public string SimulationFolder { get; set; }
    }
 
@@ -102,14 +107,15 @@ namespace PKSim.CLI.Core.Services
       {
          var projectName = project.Name;
          var simulationName = simulation.Name;
-         var simulationFolder = Path.Combine(exportRunOptions.OutputFolder, FileHelper.RemoveIllegalCharactersFrom(simulationName));
+         var escapedSimulationName = FileHelper.RemoveIllegalCharactersFrom(simulationName);
+         var simulationFolder = Path.Combine(exportRunOptions.OutputFolder, escapedSimulationName);
          DirectoryHelper.CreateDirectory(simulationFolder);
 
          var simulationExport = new SimulationExport
          {
             Project = projectName,
             SimulationFolder = simulationFolder,
-            Simulation = simulationName
+            Simulation = escapedSimulationName
          };
 
          var simulationRunOptions = new SimulationRunOptions();
