@@ -120,9 +120,9 @@ namespace PKSim.CLI
       }
 
       [Observation]
-      public void should_ensure_that_simulation_export_contains_the_escaped_name_of_the_simulation()
+      public void should_ensure_that_simulation_export_contains_the_name_of_the_simulation()
       {
-         _export.Simulation.ShouldBeEqualTo(FileHelper.RemoveIllegalCharactersFrom(_simulation1Name));
+         _export.Simulation.ShouldBeEqualTo(_simulation1Name);
       }
    }
 

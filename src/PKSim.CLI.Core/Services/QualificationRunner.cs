@@ -71,6 +71,9 @@ namespace PKSim.CLI.Core.Services
 
          _logger.AddDebug($"Loading project from snapshot file '{config.SnapshotFile}'...");
          var snapshot = await snapshotProjectFromFile(config.SnapshotFile);
+
+         //Ensures that the name of the snapshot is also the name of the project as defined in the configuration
+         snapshot.Name = config.Project;
          _logger.AddDebug($"Project {snapshot.Name} loaded from snapshot file '{config.SnapshotFile}'.");
 
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);

@@ -46,7 +46,7 @@ namespace PKSim.Core.Snapshots.Services
 
       /// <summary>
       ///    Returns <c>true</c> if <paramref name="objectToExport" /> was created with a version of PK-Sim fully supporting
-      ///    snaphsot (7.3 and higher) otherwise <c>false</c>
+      ///    snapshot (7.3 and higher) otherwise <c>false</c>
       /// </summary>
       bool IsVersionCompatibleWithSnapshotExport<T>(T objectToExport) where T : class, IWithCreationMetaData;
    }
