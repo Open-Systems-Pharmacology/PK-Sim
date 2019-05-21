@@ -100,21 +100,23 @@ namespace PKSim.CLI
       protected SnapshotProject _projectSnapshot;
       protected PKSimProject _project;
       protected const string PROJECT_NAME = "toto";
+      protected const string PROJECT_SNAPSHOT_NAME = "toto_model";
 
       protected override async Task Context()
       {
          await base.Context();
          _runOptions.ConfigurationFile = "XXX";
          A.CallTo(() => _jsonSerializer.Deserialize<QualifcationConfiguration>(_runOptions.ConfigurationFile)).Returns(_qualificationConfiguration);
+         _qualificationConfiguration.Project = PROJECT_NAME;
          _qualificationConfiguration.OutputFolder = "c:/tests/outputs/";
          _qualificationConfiguration.InputsFolder = "c:/tests/outputs/INPUTS";
-         _qualificationConfiguration.SnapshotFile = $"c:/tests/inputs/{PROJECT_NAME}.json";
+         _qualificationConfiguration.SnapshotFile = $"c:/tests/inputs/{PROJECT_SNAPSHOT_NAME}.json";
          _qualificationConfiguration.MappingFile = $"c:/tests/temp/{PROJECT_NAME}_Mapping.json";
          _qualificationConfiguration.TempFolder = $"c:/tests/temp";
          _qualificationConfiguration.ReportConfigurationFile = "c:/tests/outputs/report_config.json";
          _qualificationConfiguration.ObservedDataFolder = "c:/tests/outputs/OBS_DATA_FOLDER";
 
-         _projectSnapshot = new SnapshotProject().WithName(PROJECT_NAME);
+         _projectSnapshot = new SnapshotProject().WithName(PROJECT_SNAPSHOT_NAME);
          _project = new PKSimProject().WithName(PROJECT_NAME);
          A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
          A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_projectSnapshot)).Returns(_project);
@@ -199,7 +201,7 @@ namespace PKSim.CLI
          _input = new Input {Project = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation};
 
          _expectedSimulationPath = Path.Combine(_expectedOutputPath, _simulationName);
-         _simulationExport = new SimulationExport {Project = _projectSnapshot.Name, Simulation = _simulationName, SimulationFolder = _expectedSimulationPath};
+         _simulationExport = new SimulationExport {Project = PROJECT_NAME, Simulation = _simulationName, SimulationFolder = _expectedSimulationPath};
          _simulationExports = new[] {_simulationExport};
          A.CallTo(() => _exportSimulationRunner.ExportSimulationsIn(_project, A<ExportRunOptions>._))
             .Invokes(x => _exportOptions = x.GetArgument<ExportRunOptions>(1))
@@ -251,7 +253,7 @@ namespace PKSim.CLI
       }
 
       [Observation]
-      public void should_export_the_mapping_to_the_specififed_mapping_file()
+      public void should_export_the_mapping_to_the_specified_mapping_file()
       {
          _mapping.ShouldNotBeNull();
       }

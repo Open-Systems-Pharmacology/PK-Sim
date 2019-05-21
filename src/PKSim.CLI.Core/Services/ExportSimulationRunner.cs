@@ -20,7 +20,7 @@ namespace PKSim.CLI.Core.Services
       //Name of project where simulation belongs
       public string Project { get; set; }
 
-      //Escaped name of exported simulation
+      //Name of exported simulation
       public string Simulation { get; set; }
 
       //Folder where simulation will be exported
@@ -107,15 +107,14 @@ namespace PKSim.CLI.Core.Services
       {
          var projectName = project.Name;
          var simulationName = simulation.Name;
-         var escapedSimulationName = FileHelper.RemoveIllegalCharactersFrom(simulationName);
-         var simulationFolder = Path.Combine(exportRunOptions.OutputFolder, escapedSimulationName);
+         var simulationFolder = Path.Combine(exportRunOptions.OutputFolder, FileHelper.RemoveIllegalCharactersFrom(simulationName));
          DirectoryHelper.CreateDirectory(simulationFolder);
 
          var simulationExport = new SimulationExport
          {
             Project = projectName,
             SimulationFolder = simulationFolder,
-            Simulation = escapedSimulationName
+            Simulation = simulationName
          };
 
          var simulationRunOptions = new SimulationRunOptions();
