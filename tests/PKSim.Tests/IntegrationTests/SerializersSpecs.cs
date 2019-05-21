@@ -112,7 +112,7 @@ namespace PKSim.IntegrationTests
          if (type.Equals(typeof (OntogenyMetaData))) return true;
          if (type.Equals(typeof (DistributedParameterValue))) return true;
          if (type.Equals(typeof (QuantityValues))) return true;
-         if (type.Equals(typeof (SimulationResultsFile))) return true;
+         if (type.Equals(typeof (SimulationResultsImportFile))) return true;
          if (type.Equals(typeof (SimulationResultsImport))) return true;
          if (type.Equals(typeof (SimulationPKParametersImport))) return true;
          if (type.Equals(typeof(PopulationSimulationImport))) return true;
@@ -133,7 +133,7 @@ namespace PKSim.IntegrationTests
          //help classes that are not stored in our domain objects
          if (type.Equals(typeof(NumericFieldContext))) return true;
          if (type.Equals(typeof(ParameterValue))) return true;
-         if (type.Equals(typeof(PKAnalysesFile))) return true;
+         if (type.Equals(typeof(PKAnalysesImportFile))) return true;
          if (type.Equals(typeof (IndividualProperties))) return true;
          if (type.Equals(typeof (ParameterValueMetaData))) return true;
          if (type.Equals(typeof (ParameterMetaData))) return true;

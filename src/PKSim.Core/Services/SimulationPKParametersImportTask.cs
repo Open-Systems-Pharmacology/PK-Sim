@@ -86,7 +86,7 @@ namespace PKSim.Core.Services
       {
          return Task.Run(() =>
          {
-            var pKAnalysesFile = new PKAnalysesFile { FilePath = filefullPath };
+            var pKAnalysesFile = new PKAnalysesImportFile { FilePath = filefullPath };
             var pkAnalyses = _pkAnalysesImporter.ImportPKParameters(filefullPath, pKAnalysesFile);
             return new SimulationPKParametersImport(pkAnalyses, pKAnalysesFile);
          }, cancellationToken);

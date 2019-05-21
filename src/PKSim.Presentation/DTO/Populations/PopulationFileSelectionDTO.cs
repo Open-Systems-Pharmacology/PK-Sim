@@ -26,7 +26,7 @@ namespace PKSim.Presentation.DTO.Populations
          }
       }
 
-      public static PopulationFileSelectionDTO From(PopulationFile populationFile)
+      public static PopulationFileSelectionDTO From(PopulationImportFile populationFile)
       {
          return new PopulationFileSelectionDTO
             {

@@ -23,7 +23,7 @@ namespace PKSim.Presentation
       protected PopulationSimulation _populationSimulation;
       protected ImportSimulationResultsDTO _dto;
       protected SimulationResults _simulationResults;
-      protected readonly IList<SimulationResultsFile> _simulationResultsFiles = new List<SimulationResultsFile>();
+      protected readonly IList<SimulationResultsImportFile> _simulationResultsFiles = new List<SimulationResultsImportFile>();
 
       protected SimulationResultsImport _importedResults;
 
@@ -147,8 +147,8 @@ namespace PKSim.Presentation
 
    public class When_importing_some_files_and_the_import_is_successful : concern_for_ImportSimulationResultsPresenter
    {
-      private readonly SimulationResultsFile _file1 = new SimulationResultsFile {FilePath = "Path1"};
-      private readonly SimulationResultsFile _file2 = new SimulationResultsFile {FilePath = "Path2"};
+      private readonly SimulationResultsImportFile _file1 = new SimulationResultsImportFile {FilePath = "Path1"};
+      private readonly SimulationResultsImportFile _file2 = new SimulationResultsImportFile {FilePath = "Path2"};
 
       protected override void Context()
       {
@@ -178,8 +178,8 @@ namespace PKSim.Presentation
 
    public class When_importing_some_files_and_the_import_is_not_successful : concern_for_ImportSimulationResultsPresenter
    {
-      private readonly SimulationResultsFile _file1 = new SimulationResultsFile {FilePath = "Path1"};
-      private readonly SimulationResultsFile _file2 = new SimulationResultsFile {FilePath = "Path2"};
+      private readonly SimulationResultsImportFile _file1 = new SimulationResultsImportFile {FilePath = "Path1"};
+      private readonly SimulationResultsImportFile _file2 = new SimulationResultsImportFile {FilePath = "Path2"};
 
       protected override void Context()
       {

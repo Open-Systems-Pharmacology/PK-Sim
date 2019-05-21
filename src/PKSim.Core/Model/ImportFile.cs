@@ -7,16 +7,16 @@ namespace PKSim.Core.Model
       public virtual string FilePath { get; set; }
    }
 
-   public class PopulationFile : ImportFile
+   public class PopulationImportFile : ImportFile
    {
       /// <summary>
       ///    Number of individual in imported file
       /// </summary>
       public virtual int NumberOfIndividuals { get; set; }
 
-      public virtual PopulationFile Clone()
+      public virtual PopulationImportFile Clone()
       {
-         return MemberwiseClone() as PopulationFile;
+         return MemberwiseClone() as PopulationImportFile;
       }
 
       public override string ToString()
@@ -25,13 +25,13 @@ namespace PKSim.Core.Model
       }
    }
 
-   public class SimulationResultsFile : ImportFile
+   public class SimulationResultsImportFile : ImportFile
    {
       public virtual int NumberOfIndividuals { get; set; }
       public virtual int NumberOfQuantities { get; set; }
    }
 
-   public class PKAnalysesFile : ImportFile
+   public class PKAnalysesImportFile : ImportFile
    {
    }
 }

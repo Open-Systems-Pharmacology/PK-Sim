@@ -2,7 +2,7 @@
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
-   public class PopulationFileXmlSerializer : BaseXmlSerializer<PopulationFile>
+   public class PopulationFileXmlSerializer : BaseXmlSerializer<PopulationImportFile>
    {
       public override void PerformMapping()
       {

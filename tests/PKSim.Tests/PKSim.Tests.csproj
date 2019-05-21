@@ -1265,6 +1265,7 @@
     <None Include="Data\PopulationFiles\junk.csv" />
     <None Include="Data\PopulationFiles\new_format_with_comment.csv" />
     <None Include="Data\PopulationFiles\new_format_with_comment_tab.csv" />
+    <None Include="Data\PopulationFiles\path_with_units.csv" />
     <None Include="Data\PopulationFiles\pop_10.csv" />
     <None Include="Data\PopulationFiles\pop_10000.csv" />
     <None Include="Data\PopulationFiles\pop_10_old_format.csv" />

@@ -9,21 +9,21 @@ namespace PKSim.Core
 {
    public abstract class concern_for_ImportPopulation : ContextSpecification<ImportPopulation>
    {
-      protected PopulationFile _goodFile;
-      protected PopulationFile _warningFile;
-      protected PopulationFile _errorFile;
-      protected PopulationFile _debugFile;
+      protected PopulationImportFile _goodFile;
+      protected PopulationImportFile _warningFile;
+      protected PopulationImportFile _errorFile;
+      protected PopulationImportFile _debugFile;
 
       protected override void Context()
       {
-         _goodFile = new PopulationFile();
+         _goodFile = new PopulationImportFile();
          _goodFile.AddInfo("Info");
-         _warningFile = new PopulationFile();
+         _warningFile = new PopulationImportFile();
          _warningFile.AddWarning("Warning");
-         _errorFile = new PopulationFile();
+         _errorFile = new PopulationImportFile();
          _errorFile.AddError("Error");
 
-         _debugFile = new PopulationFile();
+         _debugFile = new PopulationImportFile();
          _debugFile.AddDebug("Debug");
          sut = new ImportPopulation();
       }

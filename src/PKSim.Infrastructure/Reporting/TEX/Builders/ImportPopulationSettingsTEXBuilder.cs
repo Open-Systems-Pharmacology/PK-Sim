@@ -36,7 +36,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          _builderRepository.Report(objectToReports, tracker);
       }
 
-      private DataTable getTableFor(IEnumerable<PopulationFile> importedFiles)
+      private DataTable getTableFor(IEnumerable<PopulationImportFile> importedFiles)
       {
          var dt = new DataTable("Imported Files");
 
