@@ -120,7 +120,7 @@ namespace PKSim.Core.Model
       {
          return Task.Run(() =>
          {
-            var populationFile = new PopulationImportFile {FilePath = file};
+            var populationFile = new PopulationFile {FilePath = file};
 
             var importResult = new ImportResult {IndividualValues = _individualPropertiesCacheImporter.ImportFrom(file, _allParameters, populationFile)};
             cancellationToken.ThrowIfCancellationRequested();
@@ -152,7 +152,7 @@ namespace PKSim.Core.Model
       private class ImportResult
       {
          public IndividualPropertiesCache IndividualValues { get; set; }
-         public PopulationImportFile PopulationFile { get; set; }
+         public PopulationFile PopulationFile { get; set; }
       }
 
       private ImportPopulation createPopulationFor(Individual individual)

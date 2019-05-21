@@ -8,20 +8,20 @@ namespace PKSim.Core.Model
 {
    public class ImportPopulationSettings
    {
-      private readonly List<PopulationImportFile> _allFiles;
+      private readonly List<PopulationFile> _allFiles;
       public Individual BaseIndividual { get; set; }
 
       public ImportPopulationSettings()
       {
-         _allFiles = new List<PopulationImportFile>();
+         _allFiles = new List<PopulationFile>();
       }
 
-      public void AddFile(PopulationImportFile populationFile)
+      public void AddFile(PopulationFile populationFile)
       {
          _allFiles.Add(populationFile);
       }
 
-      public IReadOnlyCollection<PopulationImportFile> AllFiles => _allFiles.ToList();
+      public IReadOnlyCollection<PopulationFile> AllFiles => _allFiles.ToList();
 
       public ImportPopulationSettings Clone(ICloneManager cloneManager)
       {
