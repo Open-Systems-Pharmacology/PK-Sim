@@ -213,11 +213,6 @@ namespace PKSim.CLI.Core.Services
          //  return Task.WhenAll(configuration.Inputs.Select(x => exportInput(project, configuration, x)));
 
          return configuration.Inputs.Select(x => exportInput(project, configuration, x)).ToArray();
-//
-//         foreach (var exportInputTask in configuration.Inputs.Select(x => exportInput(project, configuration, x)))
-//         {
-//            await exportInputTask
-//         }
       }
 
       private InputMapping exportInput(PKSimProject project, QualifcationConfiguration configuration, Input input)
