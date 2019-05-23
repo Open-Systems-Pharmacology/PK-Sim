@@ -25,13 +25,13 @@ namespace PKSim.Core.Model
       }
    }
 
-   public class SimulationResultsFile : ImportFile
+   public class SimulationResultsImportFile : ImportFile
    {
       public virtual int NumberOfIndividuals { get; set; }
       public virtual int NumberOfQuantities { get; set; }
    }
 
-   public class PKAnalysesFile : ImportFile
+   public class PKAnalysesImportFile : ImportFile
    {
    }
 }

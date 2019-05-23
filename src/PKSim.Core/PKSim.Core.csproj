@@ -360,7 +360,7 @@
     <Compile Include="Model\ImportLogger.cs" />
     <Compile Include="Model\ImportPopulationSettings.cs" />
     <Compile Include="Model\ParameterValues.cs" />
-    <Compile Include="Model\PopulationFile.cs" />
+    <Compile Include="Model\ImportFile.cs" />
     <Compile Include="Model\SimulationResultsExtensions.cs" />
     <Compile Include="Model\UnknownDistributionFormula.cs" />
     <Compile Include="Model\UnknownDistributionFormulaSpecificationFactory.cs" />

@@ -28,7 +28,7 @@ namespace PKSim.Presentation.DTO.Simulations
          }
       }
 
-      public static SimulationResultsFileSelectionDTO From(SimulationResultsFile simulationResultsFile)
+      public static SimulationResultsFileSelectionDTO From(SimulationResultsImportFile simulationResultsFile)
       {
          return new SimulationResultsFileSelectionDTO
             {

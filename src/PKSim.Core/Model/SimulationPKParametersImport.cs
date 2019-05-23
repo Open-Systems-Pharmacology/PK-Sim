@@ -5,10 +5,10 @@ namespace PKSim.Core.Model
 {
    public class SimulationPKParametersImport : ImportLogger
    {
-      public virtual PKAnalysesFile PKAnalysesFile { get; private set; }
+      public virtual PKAnalysesImportFile PKAnalysesFile { get; private set; }
       public virtual IEnumerable<QuantityPKParameter> PKParameters { get; private set; }
 
-      public SimulationPKParametersImport(IEnumerable<QuantityPKParameter> pkParameters, PKAnalysesFile pkAnalysesFile)
+      public SimulationPKParametersImport(IEnumerable<QuantityPKParameter> pkParameters, PKAnalysesImportFile pkAnalysesFile)
       {
          PKAnalysesFile = pkAnalysesFile;
          PKParameters = pkParameters;
