@@ -1,5 +1,6 @@
-﻿using PKSim.Assets;
+﻿using System.Drawing;
 using OSPSuite.Assets;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Presentation.Presenters.Formulations;
 using PKSim.Presentation.Views.Formulations;
@@ -12,7 +13,7 @@ namespace PKSim.UI.Views.Formulations
       public CreateFormulationView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new System.Drawing.Size(CoreConstants.UI.FORMULATION_VIEW_WIDTH, CoreConstants.UI.FORMULATION_VIEW_HEIGHT);
+         ClientSize = new Size(CoreConstants.UI.FORMULATION_VIEW_WIDTH, CoreConstants.UI.FORMULATION_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(ICreateFormulationPresenter presenter)

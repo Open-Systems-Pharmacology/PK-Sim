@@ -442,6 +442,12 @@
     <Compile Include="Views\Core\UxRepositoryItemComboBoxPivotGrid.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Views\Formulations\CreateFormulationView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Formulations\CreateFormulationView.Designer.cs">
+      <DependentUpon>CreateFormulationView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Individuals\IndividualMoleculePropertiesView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -968,12 +974,6 @@
     </Compile>
     <Compile Include="Views\Events\EventSettingsView.Designer.cs">
       <DependentUpon>EventSettingsView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Formulations\CreateFormulationView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Formulations\CreateFormulationView.Designer.cs">
-      <DependentUpon>CreateFormulationView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Formulations\EditFormulationView.cs">
       <SubType>Form</SubType>
@@ -1514,6 +1514,9 @@
     <EmbeddedResource Include="Views\Core\MultiplePanelView.resx">
       <DependentUpon>MultiplePanelView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\Formulations\CreateFormulationView.resx">
+      <DependentUpon>CreateFormulationView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\Formulations\TableFormulationView.resx">
       <DependentUpon>TableFormulationView.cs</DependentUpon>
     </EmbeddedResource>
@@ -1752,10 +1755,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Events\EventSettingsView.resx">
       <DependentUpon>EventSettingsView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Formulations\CreateFormulationView.resx">
-      <DependentUpon>CreateFormulationView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Formulations\EditFormulationView.resx">
