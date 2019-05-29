@@ -8,6 +8,7 @@ namespace PKSim.CLI.Commands
    public class QualificationRunCommand : CLICommand<QualificationRunOptions>
    {
       public override string Name { get; } = "Qualification";
+      public override bool LogCommandName { get; } = false;
 
       [Option('i', "input", Required = true, HelpText = "Json configuration file used to start the qualification workflow.")]
       public string ConfigurationFile { get; set; }
