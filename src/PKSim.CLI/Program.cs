@@ -42,7 +42,9 @@ namespace PKSim.CLI
       private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
       {
          var logger = initializeLogger(command);
-         logger.AddInfo($"Starting {command.Name.ToLower()} run");
+         if(command.LogCommandName)
+            logger.AddInfo($"Starting {command.Name.ToLower()} run");
+
          logger.AddDebug($"Arguments:\n{command}");
          ApplicationStartup.Start();
          var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
@@ -56,7 +58,8 @@ namespace PKSim.CLI
             _valid = false;
          }
 
-         logger.AddInfo($"{command.Name} run finished");
+         if (command.LogCommandName)
+            logger.AddInfo($"{command.Name} run finished");
       }
 
       private static ILogger initializeLogger(CLICommand runCommand)

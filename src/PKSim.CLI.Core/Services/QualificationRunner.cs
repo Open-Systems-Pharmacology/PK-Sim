@@ -59,7 +59,7 @@ namespace PKSim.CLI.Core.Services
       public async Task RunBatchAsync(QualificationRunOptions runOptions)
       {
          _snapshotProjectCache.Clear();
-         _logger.AddDebug("Starting qualification run");
+         _logger.AddInfo(runOptions.Validate ? "Starting validation run..." : "Starting qualification run...");
 
          var config = await readConfigurationFrom(runOptions);
          if (config == null)
@@ -86,7 +86,7 @@ namespace PKSim.CLI.Core.Services
 
          if (runOptions.Validate)
          {
-            _logger.AddInfo("Qualification run configuration valid");
+            _logger.AddInfo($"Validation run terminated for {snapshot.Name}");
             return;
          }
 

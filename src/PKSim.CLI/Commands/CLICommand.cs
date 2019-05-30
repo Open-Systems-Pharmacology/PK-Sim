@@ -8,6 +8,8 @@ namespace PKSim.CLI.Commands
    {
       public abstract string Name { get; }
 
+      public virtual bool LogCommandName { get; } = true;
+
       [Option('l', "log", Required = false, HelpText = "Optional. Full path of log file where log output will be written. A log file will not be created if this value is not provided.")]
       public string LogFileFullPath { get; set; }
 
