@@ -5,7 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Infrastructure.ProjectConverter.v7_5;
+using PKSim.Infrastructure.ProjectConverter.v8_0;
 using PKSim.IntegrationTests;
 
 namespace PKSim.ProjectConverter.v8_0
@@ -45,7 +45,7 @@ namespace PKSim.ProjectConverter.v8_0
          enableSaturation.Info.ReadOnly.ShouldBeFalse();
          enableSaturation.Visible.ShouldBeTrue();
          enableSaturation.CanBeVariedInPopulation.ShouldBeFalse();
-         enableSaturation.IsDefault.ShouldBeFalse();
+         enableSaturation.IsDefault.ShouldBeTrue();
       }
 
       [Observation]

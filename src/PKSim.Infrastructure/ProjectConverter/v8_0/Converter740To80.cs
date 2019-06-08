@@ -7,7 +7,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
-namespace PKSim.Infrastructure.ProjectConverter.v7_5
+namespace PKSim.Infrastructure.ProjectConverter.v8_0
 {
    public class Converter740To80 : IObjectConverter,
       IVisitor<Compound>,
