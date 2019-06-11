@@ -120,4 +120,13 @@ namespace PKSim.Core
          _dataRepository.Any().ShouldBeTrue();
       }
    }
+
+   public class When_updating_the_internal_status_of_a_data_repository_for_a_given_simulation : concern_for_DataRepositoryFromResultsCreator
+   {
+      [Observation]
+      public void Observation()
+      {
+         
+      }
+   }
 }
