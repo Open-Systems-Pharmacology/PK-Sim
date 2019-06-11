@@ -580,7 +580,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns the settings for the simulation
+      ///    Returns the <see cref="OutputSelections"/> for the simulation
       /// </summary>
       public virtual OutputSelections OutputSelections
       {

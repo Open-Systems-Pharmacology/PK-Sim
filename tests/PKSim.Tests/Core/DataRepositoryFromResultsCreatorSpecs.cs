@@ -6,9 +6,10 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-
+using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core
 {
@@ -16,17 +17,19 @@ namespace PKSim.Core
    {
       private IDataRepositoryTask _dataFactory;
       private IDimensionRepository _dimensionRepository;
-      private IndividualSimulation _simulation;
+      protected IndividualSimulation _simulation;
       protected DataRepository _dataRepository;
       protected SimulationResults _simulationResults;
       protected IndividualResults _individualResults;
       protected QuantityValues _timeValues;
+      private OutputSelections _outputSelection;
 
       protected override void Context()
       {
          _dataFactory = A.Fake<IDataRepositoryTask>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
-         sut = new DataRepositoryFromResultsCreator(_dimensionRepository, new ObjectPathFactoryForSpecs(), _dataFactory);
+         sut = new DataRepositoryFromResultsCreator(
+            _dimensionRepository, new ObjectPathFactoryForSpecs(), _dataFactory);
 
          _simulation = new IndividualSimulation().WithName("S");
          _simulation.Model = new OSPSuite.Core.Domain.Model();
@@ -47,6 +50,12 @@ namespace PKSim.Core
          _individualResults = new IndividualResults();
          _individualResults.Add(new QuantityValues { QuantityPath = "LIVER|C", Time = _timeValues, Values = new[] { 10f, 20f, 30f } });
          _individualResults.Add(new QuantityValues {QuantityPath = "KIDNEY|C", Time = _timeValues, Values = new[] {11f, 22f, 33f}});
+
+         _outputSelection = new OutputSelections();
+         _outputSelection.AddOutput(new QuantitySelection(new[] { "LIVER", "C" }.ToPathString(), QuantityType.Molecule));
+
+         _simulation.SimulationSettings = new SimulationSettings();
+         _simulation.SimulationSettings.OutputSelections = _outputSelection;
       }
 
       protected override void Because()
@@ -55,7 +64,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_creating_a_data_repositoty_from_empty_results : concern_for_DataRepositoryFromResultsCreator
+   public class When_creating_a_data_repository_from_empty_results : concern_for_DataRepositoryFromResultsCreator
    {
       [Observation]
       public void should_return_an_empty_data_repository()
@@ -84,6 +93,16 @@ namespace PKSim.Core
          kidneyConc.ShouldNotBeNull();
          kidneyConc.Values.ShouldOnlyContainInOrder(11f, 22f, 33f);
       }
+
+      [Observation]
+      public void should_have_updated_the_internal_column_states()
+      {
+         var liverConc = _dataRepository.Find(x => x.QuantityInfo.PathAsString == "S|LIVER|C");
+         liverConc.IsInternal.ShouldBeFalse();
+
+         var kidneyConc = _dataRepository.Find(x => x.QuantityInfo.PathAsString == "S|KIDNEY|C");
+         kidneyConc.IsInternal.ShouldBeTrue();
+      }
    }
 
    public class When_creating_a_data_repository_for_results_that_cannot_be_resolved : concern_for_DataRepositoryFromResultsCreator
@@ -99,6 +118,15 @@ namespace PKSim.Core
       public void should_not_crash()
       {
          _dataRepository.Any().ShouldBeTrue();
+      }
+   }
+
+   public class When_updating_the_internal_status_of_a_data_repository_for_a_given_simulation : concern_for_DataRepositoryFromResultsCreator
+   {
+      [Observation]
+      public void Observation()
+      {
+         
       }
    }
 }

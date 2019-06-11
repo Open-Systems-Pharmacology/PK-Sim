@@ -456,7 +456,7 @@
     <Compile Include="Core\DataColumnExtensionsSpecs.cs" />
     <Compile Include="Core\DistributedTableFormulaSpecs.cs" />
     <Compile Include="Core\DistributionMetaDataToDistributionMapperSpecs.cs" />
-    <Compile Include="Core\DataRepositorySynchronizerSpecs.cs" />
+    <Compile Include="Core\SimulationResultsSynchronizerSpecs.cs" />
     <Compile Include="Core\DistributionFactorySpecs.cs" />
     <Compile Include="Core\DistributionFormulaExtensionsSpecs.cs" />
     <Compile Include="Core\DistributionScalingMethodSpecificationSpecs.cs" />
