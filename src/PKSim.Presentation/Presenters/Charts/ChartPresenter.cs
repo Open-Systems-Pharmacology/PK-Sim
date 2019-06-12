@@ -43,7 +43,7 @@ namespace PKSim.Presentation.Presenters.Charts
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
       protected readonly IChartTemplatingTask _chartTemplatingTask;
 
-      protected ChartPresenter(TView view, ChartPresenterContext chartPresenterContext, IChartTemplatingTask chartTemplatingTask, IIndividualPKAnalysisPresenter pkAnalysisPresenter, 
+      protected ChartPresenter(TView view, ChartPresenterContext chartPresenterContext, IChartTemplatingTask chartTemplatingTask, IIndividualPKAnalysisPresenter pkAnalysisPresenter,
          IChartTask chartTask, IObservedDataTask observedDataTask, IChartUpdater chartUpdater)
          : base(view, chartPresenterContext)
       {
@@ -92,9 +92,11 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          if (_repositoryCache.Contains(dataRepository))
          {
-            ChartEditorPresenter.RemoveUnusedColumns();
-            AddDataRepositoriesToEditor(new []{dataRepository});
-            ChartDisplayPresenter.Refresh();
+            using (_chartUpdater.UpdateTransaction(Chart))
+            {
+               ChartEditorPresenter.RemoveUnusedColumns();
+               AddDataRepositoriesToEditor(new[] {dataRepository});
+            }
 
             //after refresh, some data might not be available anymore=>in that case init chart from template
             InitializeFromTemplateIfRequired();
@@ -104,7 +106,7 @@ namespace PKSim.Presentation.Presenters.Charts
          else
          {
             _repositoryCache[dataRepository] = simulation;
-            AddDataRepositoriesToEditor(new[] { dataRepository });
+            AddDataRepositoriesToEditor(new[] {dataRepository});
          }
       }
 
@@ -180,7 +182,7 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          AddDataRepositoriesToEditor(observedData);
 
-         //make curve visibles
+         //make curve visible
          if (!asResultOfDragAndDrop) return;
 
          using (_chartUpdater.UpdateTransaction(Chart))
