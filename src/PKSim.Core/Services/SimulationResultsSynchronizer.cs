@@ -1,11 +1,11 @@
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -28,6 +28,7 @@ namespace PKSim.Core.Services
       /// <param name="populationSimulation">population Simulation</param>
       /// <param name="newResults">new results of simulation</param>
       void Synchronize(PopulationSimulation populationSimulation, SimulationResults newResults);
+
    }
 
    public class SimulationResultsSynchronizer : ISimulationResultsSynchronizer
@@ -35,12 +36,18 @@ namespace PKSim.Core.Services
       private readonly IPKAnalysesTask _populationPKAnalysesTask;
       private readonly ISimulationResultsCreator _simulationResultsCreator;
       private readonly IDisplayUnitUpdater _displayUnitUpdater;
+      private readonly IDataRepositoryFromResultsCreator _dataRepositoryFromResultsCreator;
 
-      public SimulationResultsSynchronizer(IPKAnalysesTask populationPKAnalysesTask, ISimulationResultsCreator simulationResultsCreator, IDisplayUnitUpdater displayUnitUpdater)
+      public SimulationResultsSynchronizer(
+         IPKAnalysesTask populationPKAnalysesTask,
+         ISimulationResultsCreator simulationResultsCreator,
+         IDisplayUnitUpdater displayUnitUpdater, 
+         IDataRepositoryFromResultsCreator dataRepositoryFromResultsCreator)
       {
          _populationPKAnalysesTask = populationPKAnalysesTask;
          _simulationResultsCreator = simulationResultsCreator;
          _displayUnitUpdater = displayUnitUpdater;
+         _dataRepositoryFromResultsCreator = dataRepositoryFromResultsCreator;
       }
 
       public void Synchronize(IndividualSimulation simulation, DataRepository newResults)
@@ -50,7 +57,7 @@ namespace PKSim.Core.Services
          else
             simulation.DataRepository = synchronize(simulation.DataRepository, newResults);
 
-         updateColumnInternalUse(simulation);
+         _dataRepositoryFromResultsCreator.UpdateColumnInternalUse(simulation);
 
          //once the data repository was updated, we need to update the underlying results as well
          _displayUnitUpdater.UpdateDisplayUnitsIn(simulation.DataRepository);
@@ -59,21 +66,6 @@ namespace PKSim.Core.Services
          updateSequence(simulation.DataRepository);
       }
 
-      private void updateColumnInternalUse(IndividualSimulation simulation)
-      {
-         var outputSelections = simulation.OutputSelections;
-         foreach (var column in simulation.DataRepository.AllButBaseGrid())
-         {
-            column.IsInternal = !columnIsSelected(simulation.Name, column, outputSelections);
-         }
-      }
-
-      private bool columnIsSelected(string simulationName, DataColumn column, OutputSelections outputSelections)
-      {
-         //skip the first entry that corresponds to the simulation name
-         var columnPath = column.QuantityInfo.Path.Skip(1).ToPathString();
-         return outputSelections.Any(x => string.Equals(x.Path, columnPath));
-      }
 
       public void Synchronize(PopulationSimulation populationSimulation, SimulationResults newResults)
       {
@@ -103,7 +95,7 @@ namespace PKSim.Core.Services
          var baseGridColumns = oldResultsToUpdate.Where(col => col.IsBaseGrid());
          baseGridColumns.Each(baseGrid => updateColumnValues(baseGrid, newResultsCache));
 
-         //then update non base grid columnds
+         //then update non base grid columns
          var columns = oldResultsToUpdate.AllButBaseGrid();
          columns.Each(col => updateColumnValues(col, newResultsCache));
 
@@ -126,11 +118,12 @@ namespace PKSim.Core.Services
       private DataColumn cloneColumn(ICache<QuantityInfo, DataColumn> oldResultsCache, DataColumn columnToAdd)
       {
          var baseGrid = oldResultsCache[columnToAdd.BaseGrid.QuantityInfo].DowncastTo<BaseGrid>();
-         var clone = new DataColumn(columnToAdd.Id, columnToAdd.Name, columnToAdd.Dimension, baseGrid);
-         clone.QuantityInfo = columnToAdd.QuantityInfo;
-         clone.DataInfo = columnToAdd.DataInfo;
-         clone.Values = columnToAdd.InternalValues;
-         return clone;
+         return new DataColumn(columnToAdd.Id, columnToAdd.Name, columnToAdd.Dimension, baseGrid)
+         {
+            QuantityInfo = columnToAdd.QuantityInfo,
+            DataInfo = columnToAdd.DataInfo,
+            Values = columnToAdd.InternalValues
+         };
       }
 
       private void updateColumnValues(DataColumn columnToUpdate, ICache<QuantityInfo, DataColumn> newResults)

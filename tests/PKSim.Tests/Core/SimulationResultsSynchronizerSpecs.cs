@@ -1,15 +1,15 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
@@ -18,18 +18,19 @@ namespace PKSim.Core
       protected IPKAnalysesTask _populationPKAnalysesTask;
       protected ISimulationResultsCreator _simulationResultsCreator;
       protected IDisplayUnitUpdater _displayUnitUpdater;
+      protected IDataRepositoryFromResultsCreator _dataRepositoryFromResultsCreator;
 
       protected override void Context()
       {
          _populationPKAnalysesTask = A.Fake<IPKAnalysesTask>();
-         _simulationResultsCreator= A.Fake<ISimulationResultsCreator>();
-         _displayUnitUpdater= A.Fake<IDisplayUnitUpdater>();
-
-         sut = new SimulationResultsSynchronizer(_populationPKAnalysesTask,_simulationResultsCreator,_displayUnitUpdater);
+         _simulationResultsCreator = A.Fake<ISimulationResultsCreator>();
+         _displayUnitUpdater = A.Fake<IDisplayUnitUpdater>();
+         _dataRepositoryFromResultsCreator = A.Fake<IDataRepositoryFromResultsCreator>();
+         sut = new SimulationResultsSynchronizer(_populationPKAnalysesTask, _simulationResultsCreator, _displayUnitUpdater, _dataRepositoryFromResultsCreator);
       }
    }
 
-   public class When_synchronizing_the_data_for_an_individual_simulation_that_was_not_calulated_yet : concern_for_DataRepositorySynchronizer
+   public class When_synchronizing_the_data_for_an_individual_simulation_that_was_not_calculated_yet : concern_for_DataRepositorySynchronizer
    {
       private DataRepository _dataRepository;
       private IndividualSimulation _simulation;
@@ -45,7 +46,7 @@ namespace PKSim.Core
          base.Context();
          var dimension = A.Fake<IDimension>();
          _outputSelection = new OutputSelections();
-         _simulation = new IndividualSimulation {SimulationSettings = new SimulationSettings{OutputSelections = _outputSelection}};
+         _simulation = new IndividualSimulation {SimulationSettings = new SimulationSettings {OutputSelections = _outputSelection}};
          _compound = A.Fake<Compound>();
          A.CallTo(() => _compound.Name).Returns("Drug");
          A.CallTo(() => _compound.MolWeight).Returns(20);
@@ -58,12 +59,12 @@ namespace PKSim.Core
          };
          _otherColumn = new DataColumn("col2", "col2", dimension, _newBaseGrid)
          {
-            QuantityInfo = new QuantityInfo("Obs", new List<string> { "Sim", "Liver", "Cell", "Sp1", "Obs" }, QuantityType.Observer | QuantityType.Metabolite)
+            QuantityInfo = new QuantityInfo("Obs", new List<string> {"Sim", "Liver", "Cell", "Sp1", "Obs"}, QuantityType.Observer | QuantityType.Metabolite)
          };
          _dataRepository.Add(_newBaseGrid);
          _dataRepository.Add(_newColumn);
          _dataRepository.Add(_otherColumn);
-         _simulationResults= A.Fake<SimulationResults>();
+         _simulationResults = A.Fake<SimulationResults>();
          A.CallTo(() => _simulationResultsCreator.CreateResultsFrom(_dataRepository)).Returns(_simulationResults);
          _outputSelection.AddOutput(new QuantitySelection(new[] {"Liver", "Cell", "Drug", "Obs"}.ToPathString(), _newColumn.QuantityInfo.Type));
       }
@@ -80,7 +81,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_let_the_moleweight_of_all_other_columns_to_null()
+      public void should_have_let_the_molweight_of_all_other_columns_to_null()
       {
          _otherColumn.DataInfo.MolWeight.ShouldBeNull();
       }
@@ -92,15 +93,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_udpate_the_display_unit_used_in_the_simulation_results()
+      public void should_update_the_display_unit_used_in_the_simulation_results()
       {
          A.CallTo(() => _displayUnitUpdater.UpdateDisplayUnitsIn(_simulation.DataRepository)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_mark_output_not_selected_by_user_as_internal()
+      public void should_update_the_internal_state_of_the_simulation_results()
       {
-         _otherColumn.IsInternal.ShouldBeTrue();
+         A.CallTo(() => _dataRepositoryFromResultsCreator.UpdateColumnInternalUse(_simulation, null)).MustHaveHappened();
       }
 
       [Observation]

@@ -40,7 +40,7 @@ namespace PKSim.UI.BootStrapping
          new ApplicationStartup().InitializeForStartup(logLevel, registrationAction);
       }
 
-      public void InitializeUserInterace()
+      public void InitializeUserInterface()
       {
          //Register typed instance of shell and splash screen 
          UserInterfaceRegister.InitializeForStartup(IoC.Container);

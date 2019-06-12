@@ -30,7 +30,7 @@ namespace PKSim.UI.BootStrapping
 
       protected override bool OnInitialize(ReadOnlyCollection<string> commandLineArgs)
       {
-         _applicationStartup.InitializeUserInterace();
+         _applicationStartup.InitializeUserInterface();
          _startOptions.InitializeFrom(commandLineArgs.ToArray());
          return base.OnInitialize(commandLineArgs);
       }

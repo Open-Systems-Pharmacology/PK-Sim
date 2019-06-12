@@ -1,21 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
    public interface IDataRepositoryFromResultsCreator
    {
+      /// <summary>
+      ///    Returns a new <see cref="DataRepository" /> containing the results of the <paramref name="simulation" />
+      /// </summary>
+      /// <param name="simulation">Simulation whose results should be converted to <see cref="DataRepository" /></param>
       DataRepository CreateResultsFor(IndividualSimulation simulation);
+
+      /// <summary>
+      ///    Adjusts the Internal flag for the columns defined in <paramref name="dataRepository" /> based on the selected output
+      ///    values in <paramref name="simulation" />
+      /// </summary>
+      void UpdateColumnInternalUse(IndividualSimulation simulation, DataRepository dataRepository = null);
    }
 
    public class DataRepositoryFromResultsCreator : IDataRepositoryFromResultsCreator
@@ -24,7 +34,10 @@ namespace PKSim.Core.Services
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IDataRepositoryTask _dataRepositoryTask;
 
-      public DataRepositoryFromResultsCreator(IDimensionRepository dimensionRepository, IObjectPathFactory objectPathFactory, IDataRepositoryTask dataRepositoryTask)
+      public DataRepositoryFromResultsCreator(
+         IDimensionRepository dimensionRepository,
+         IObjectPathFactory objectPathFactory,
+         IDataRepositoryTask dataRepositoryTask)
       {
          _dimensionRepository = dimensionRepository;
          _objectPathFactory = objectPathFactory;
@@ -41,9 +54,30 @@ namespace PKSim.Core.Services
 
          var individualResults = simulation.Results.First();
          individualResults.Select(value => dataColumnFor(value, simulation, timeColumn))
-            .Where(col=> col!=null).Each(dataRepository.Add);
+            .Where(col => col != null).Each(dataRepository.Add);
 
+         UpdateColumnInternalUse(simulation, dataRepository);
          return dataRepository;
+      }
+
+      public void UpdateColumnInternalUse(IndividualSimulation simulation, DataRepository dataRepository = null)
+      {
+         var dataRepositoryToUse = dataRepository ?? simulation.DataRepository;
+         if (dataRepositoryToUse == null)
+            return;
+
+         var outputSelections = simulation.OutputSelections;
+         foreach (var column in dataRepositoryToUse.AllButBaseGrid())
+         {
+            column.IsInternal = !columnIsSelected(column, outputSelections);
+         }
+      }
+
+      private bool columnIsSelected(DataColumn column, OutputSelections outputSelections)
+      {
+         //skip the first entry that corresponds to the simulation name
+         var columnPath = column.QuantityInfo.Path.Skip(1).ToPathString();
+         return outputSelections.Any(x => string.Equals(x.Path, columnPath));
       }
 
       /// <summary>
@@ -84,10 +118,10 @@ namespace PKSim.Core.Services
       ///    create a bare bone datacolumn with the given id, name, path and dimension
       ///    Also makes sure that molweight is being updated for the created column
       /// </summary>
-      private DataColumn createDataColumn(string colummId, string columnName, IEnumerable<string> path, IQuantity quantity,
+      private DataColumn createDataColumn(string columnId, string columnName, IEnumerable<string> path, IQuantity quantity,
          IDimension dimension, BaseGrid timeColumn, Simulation simulation)
       {
-         var newColumn = new DataColumn(colummId, columnName, dimension, timeColumn)
+         var newColumn = new DataColumn(columnId, columnName, dimension, timeColumn)
          {
             QuantityInfo = new QuantityInfo(columnName, path, quantity.QuantityType),
             DataInfo = newDataInfo(dimension),
@@ -107,7 +141,7 @@ namespace PKSim.Core.Services
          var time = simulationResults.Time;
          return new BaseGrid(dataColumnIdFrom(time), Constants.TIME, _dimensionRepository.Time)
          {
-            QuantityInfo = new QuantityInfo(Constants.TIME, new[] { Constants.TIME }, QuantityType.Time),
+            QuantityInfo = new QuantityInfo(Constants.TIME, new[] {Constants.TIME}, QuantityType.Time),
             Values = time.Values
          };
       }
