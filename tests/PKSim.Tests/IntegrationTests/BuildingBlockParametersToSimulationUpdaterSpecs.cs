@@ -2,21 +2,19 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
-using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using PKSim.Presentation.Core;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.IntegrationTests
 {
    public abstract class concern_for_BuildingBlockParametersToSimulationUpdater : ContextForSimulationIntegration<IBuildingBlockParametersToSimulationUpdater>
    {
       protected Individual _templateIndividual;
-      private IWorkspace _workspace;
+      private ICoreWorkspace _workspace;
 
       public override void GlobalContext()
       {
@@ -25,7 +23,7 @@ namespace PKSim.IntegrationTests
          var compound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_templateIndividual, compound, protocol) as IndividualSimulation;
-         _workspace = IoC.Resolve<IWorkspace>();
+         _workspace = IoC.Resolve<ICoreWorkspace>();
          var project = new PKSimProject();
          project.AddBuildingBlock(compound);
          project.AddBuildingBlock(protocol);

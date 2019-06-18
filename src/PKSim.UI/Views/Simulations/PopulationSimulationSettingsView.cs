@@ -22,7 +22,7 @@ namespace PKSim.UI.Views.Simulations
       {
          _toolTipCreator = toolTipCreator;
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.SIMULATION_SETTINGS_WITDH, CoreConstants.UI.SIMULATION_SETTINGS_HEIGHT);
+         ClientSize = new Size(CoreConstants.UI.SIMULATION_SETTINGS_WIDTH, CoreConstants.UI.SIMULATION_SETTINGS_HEIGHT);
       }
 
       public void AttachPresenter(IPopulationSimulationSettingsPresenter presenter)

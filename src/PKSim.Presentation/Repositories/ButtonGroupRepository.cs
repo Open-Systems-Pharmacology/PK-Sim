@@ -117,6 +117,7 @@ namespace PKSim.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewFormulation)).WithCaption(PKSimConstants.Ribbons.Formulation))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewProtocol)).WithCaption(PKSimConstants.Ribbons.Protocol))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewEvent)).WithCaption(PKSimConstants.Ribbons.Event))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewObserverSet)).WithCaption(PKSimConstants.Ribbons.Observers))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulation)).WithCaption(PKSimConstants.Ribbons.Simulation))
          .WithId(ButtonGroupIds.Create);
 

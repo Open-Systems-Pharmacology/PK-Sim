@@ -34,7 +34,7 @@ namespace PKSim.Core.Services
 
       public override bool IsSatisfiedBy(Formulation formulation)
       {
-         return formulation.FormulationType == CoreConstants.Formulation.Weibull;
+         return formulation.FormulationType == CoreConstants.Formulation.WEIBULL;
       }
    }
 }

@@ -23,6 +23,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          allMenuItems.Add(exportPopulationToCSVMenuFor(population));
          allMenuItems.Add(extractIndividualsMenuFor(population));
          allMenuItems.AddRange(DeleteContextMenusFor(population));
+         allMenuItems.AddRange(DebugContextMenusFor(population));
          return allMenuItems;
       }
 

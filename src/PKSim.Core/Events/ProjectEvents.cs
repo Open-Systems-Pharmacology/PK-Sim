@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Events
 {
@@ -24,26 +24,6 @@ namespace PKSim.Core.Events
          : base(project)
       {
          Chart = chart;
-      }
-   }
-
-   public class QualificationPlanCreatedEvent : ProjectEvent
-   {
-      public QualificationPlan QualificationPlan { get; }
-
-      public QualificationPlanCreatedEvent(IProject project, QualificationPlan qualificationQualificationPlan) : base(project)
-      {
-         QualificationPlan = qualificationQualificationPlan;
-      }
-   }
-
-   public class QualificationPlanDeletedEvent : ProjectEvent
-   {
-      public QualificationPlan QualificationPlan { get; }
-
-      public QualificationPlanDeletedEvent(IProject project, QualificationPlan qualificationQualificationPlan) : base(project)
-      {
-         QualificationPlan = qualificationQualificationPlan;
       }
    }
 

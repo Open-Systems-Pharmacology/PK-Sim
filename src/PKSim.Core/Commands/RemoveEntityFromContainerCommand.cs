@@ -38,12 +38,12 @@ namespace PKSim.Core.Commands
          CommandType = PKSimConstants.Command.CommandTypeDelete;
          ObjectType = context.TypeFor(entityToRemove);
          Description = PKSimConstants.Command.RemoveEntityFromContainer(ObjectType, entityToRemove.Name, context.TypeFor(parentContainer), parentContainer.Name);
-         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(parentContainer));
+         context.UpdateBuildingBlockPropertiesInCommand(this, context.BuildingBlockContaining(parentContainer));
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)
       {
-         //current SBSuite.Core implemetation removes all entity children
+         //current OSPSuite.Core implemetation removes all entity children
          //in Container.RemoveChild(entity)
          //So deserialization must be done BEFORE RemoveChild
          _serializationByte = context.Serialize(_entityToRemove);

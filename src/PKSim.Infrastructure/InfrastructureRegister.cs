@@ -28,6 +28,8 @@ using PKSim.Infrastructure.ORM.Repositories;
 using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.ProjectConverter.v5_3;
 using PKSim.Infrastructure.ProjectConverter.v6_2;
+using PKSim.Infrastructure.Reporting.Markdown;
+using PKSim.Infrastructure.Reporting.Markdown.Builders;
 using PKSim.Infrastructure.Reporting.Summary;
 using PKSim.Infrastructure.Reporting.TeX.Builders;
 using PKSim.Infrastructure.Reporting.TeX.Reporters;
@@ -36,16 +38,14 @@ using PKSim.Infrastructure.Serialization.Xml;
 using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
-using SimModelNET;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ILogger = OSPSuite.Core.Services.ILogger;
-using IWorkspace = PKSim.Presentation.Core.IWorkspace;
 
 namespace PKSim.Infrastructure
 {
    public class InfrastructureRegister : Register
    {
-      public static void Initialize()
+      public static IContainer Initialize()
       {
          var container = initializeContainer();
 
@@ -60,6 +60,7 @@ namespace PKSim.Infrastructure
          registerLogging(container);
 
          EnvironmentHelper.ApplicationName = () => "pksim";
+         return container;
       }
 
       private static void registerLogging(IContainer container)
@@ -104,7 +105,7 @@ namespace PKSim.Infrastructure
          container.RegisterFactory<IHistoryManagerFactory>();
       }
 
-      public static void RegisterSerializationDependencies(bool registerSimModelSchema = true)
+      public static void RegisterSerializationDependencies()
       {
          var container = IoC.Container;
 
@@ -123,20 +124,12 @@ namespace PKSim.Infrastructure
          var pKParameterLoader = container.Resolve<IPKParameterRepositoryLoader>();
          var pkSimConfiguration = container.Resolve<IPKSimConfiguration>();
          pKParameterLoader.Load(pkParameterRepository, pkSimConfiguration.PKParametersFilePath);
-
-         if (registerSimModelSchema)
-            XMLSchemaCache.InitializeFromFile(pkSimConfiguration.SimModelSchemaFilePath);
       }
 
       public static void RegisterWorkspace()
       {
-         RegisterWorkspace<Workspace>();
-      }
-
-      public static void RegisterWorkspace<TWorkspace>() where TWorkspace : IWorkspace
-      {
          var container = IoC.Container;
-         container.Register<IWorkspace, IWithWorkspaceLayout, OSPSuite.Core.IWorkspace, TWorkspace>(LifeStyle.Singleton);
+         container.Register<Presentation.IWorkspace,IWithWorkspaceLayout, ICoreWorkspace, OSPSuite.Core.IWorkspace, Workspace>(LifeStyle.Singleton);
       }
 
       private void registerORMDependencies()
@@ -158,6 +151,7 @@ namespace PKSim.Infrastructure
             //this type will be registered using another convention
             scan.ExcludeNamespaceContainingType<IObjectConverter>(); //Converter
             scan.ExcludeNamespaceContainingType<IReportBuilder>(); //report builder
+            scan.ExcludeNamespaceContainingType<IMarkdownBuilder>(); //Markdown builder
             scan.ExcludeNamespaceContainingType<SimulationReporter>(); //tex reporter
             scan.ExcludeNamespaceContainingType<IndividualTeXBuilder>(); //tex builder
             scan.ExcludeNamespaceContainingType<PKSimXmlSerializerRepository>(); //Serializer
@@ -207,6 +201,8 @@ namespace PKSim.Infrastructure
 
          registerTexReporters(container);
 
+         registerMarkdownBuilders(container);
+
          container.Register<ICompression, SharpLibCompression>();
          container.Register<IStringCompression, StringCompression>();
          container.Register<IProjectRetriever, PKSimProjectRetriever>();
@@ -249,6 +245,18 @@ namespace PKSim.Infrastructure
          });
          container.Register<IReportGenerator, ReportGenerator>(LifeStyle.Singleton);
          container.Register<IReportBuilderRepository, ReportBuilderRepository>(LifeStyle.Singleton);
+      }
+
+      private static void registerMarkdownBuilders(IContainer container)
+      {
+         container.AddScanner(scan =>
+         {
+            scan.AssemblyContainingType<InfrastructureRegister>();
+            scan.IncludeNamespaceContainingType<IMarkdownBuilder>();
+            scan.ExcludeType<MarkdownBuilderRepository>();
+            scan.WithConvention<RegisterTypeConvention<IMarkdownBuilder>>();
+         });
+         container.Register<IMarkdownBuilderRepository, MarkdownBuilderRepository>(LifeStyle.Singleton);
       }
 
       private static void registerTexReporters(IContainer container)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using OSPSuite.Core.Domain;
@@ -20,7 +19,6 @@ namespace PKSim.Presentation.Services
       void ExportToExcel(IEnumerable<DataColumn> dataColumns, GlobalPKAnalysis globalPKAnalysis, DataTable pkAnalysisDataTable, IEnumerable<Simulation> simulations);
       IEnumerable<DataTable> ExportToDataTable(IEnumerable<DataColumn> dataColumns, GlobalPKAnalysis globalPKAnalysis, DataTable dataTable, IEnumerable<Simulation> simulations);
       void ExportToExcel(DataTable dataTable, string defaultName);
-
    }
 
    public class PKAnalysisExportTask : IPKAnalysisExportTask
@@ -50,7 +48,7 @@ namespace PKSim.Presentation.Services
          if (string.IsNullOrEmpty(fileName)) return;
 
          var allDataTables = ExportToDataTable(dataColumns, globalPKAnalysis, pkAnalysisDataTable, allSimulations);
-         _dataRepositoryTask.ExportToExcel(allDataTables, fileName, launchExcel:true);
+         _dataRepositoryTask.ExportToExcel(allDataTables, fileName, launchExcel: true);
       }
 
       public IEnumerable<DataTable> ExportToDataTable(IEnumerable<DataColumn> dataColumns, GlobalPKAnalysis globalPKAnalysis, DataTable dataTable, IEnumerable<Simulation> simulations)
@@ -60,8 +58,12 @@ namespace PKSim.Presentation.Services
 
          if (allSimulations.Any())
          {
-            string ColumnNameRetriever(DataColumn dataColumn) => _quantityDisplayPathMapper.DisplayPathAsStringFor(simulationForColumn(dataColumn, allSimulations), dataColumn);
-            allDataTables.AddRange(_dataRepositoryTask.ToDataTable(dataColumns, ColumnNameRetriever, _dimensionFactory.MergedDimensionFor));
+            var exportOptions = new DataColumnExportOptions
+            {
+               ColumnNameRetriever = x => _quantityDisplayPathMapper.DisplayPathAsStringFor(simulationForColumn(x, allSimulations), x),
+               DimensionRetriever = _dimensionFactory.MergedDimensionFor
+            };
+            allDataTables.AddRange(_dataRepositoryTask.ToDataTable(dataColumns, exportOptions));
          }
 
          allDataTables.Add(_globalPKAnalysisToDataTableMapper.MapFrom(globalPKAnalysis));
@@ -75,9 +77,8 @@ namespace PKSim.Presentation.Services
          var fileName = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportPKAnalysesToExcelTitle, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, defaultName);
          if (string.IsNullOrEmpty(fileName)) return;
 
-         _dataRepositoryTask.ExportToExcel(new[] { dataTable }, fileName, true);
+         _dataRepositoryTask.ExportToExcel(new[] {dataTable}, fileName, true);
       }
-
 
       private Simulation simulationForColumn(DataColumn dataColumn, IEnumerable<Simulation> allSimulations)
       {

@@ -8,6 +8,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Core.Snapshots.Services
@@ -31,16 +32,21 @@ namespace PKSim.Core.Snapshots.Services
       /// </summary>
       Task ExportSnapshot(IWithName snapshotObject);
 
-      Task<IEnumerable<T>> LoadModelFromSnapshot<T>() where T : class, IObjectBase;
+      Task<IEnumerable<T>> LoadModelsFromSnapshotFile<T>() where T : class, IObjectBase;
 
-      Task<IEnumerable<T>> LoadSnapshot<T>(string fileName) where T : IWithName;
+      Task<IEnumerable<T>> LoadSnapshots<T>(string fileName);
 
-      Task<IEnumerable<T>> LoadModelFromSnapshot<T>(string fileName) where T : class, IObjectBase;
+      Task<IEnumerable<T>> LoadModelsFromSnapshotFile<T>(string fileName) where T : class, IObjectBase;
 
-      Task<PKSimProject> LoadProjectFromSnapshot(string fileName);
+      Task<PKSimProject> LoadProjectFromSnapshotFile(string fileName);
+
+      Task<PKSimProject> LoadProjectFromSnapshot(Project snapshot);
+
+      Task<T> LoadSnapshotFromFile<T>(string fileName) where T : IWithName;
 
       /// <summary>
-      /// Returns <c>true</c> if <paramref name="objectToExport"/> was created with a version of PK-Sim fully supporting snaphsot (7.3 and higher) otherwise <c>false</c>
+      ///    Returns <c>true</c> if <paramref name="objectToExport" /> was created with a version of PK-Sim fully supporting
+      ///    snapshot (7.3 and higher) otherwise <c>false</c>
       /// </summary>
       bool IsVersionCompatibleWithSnapshotExport<T>(T objectToExport) where T : class, IWithCreationMetaData;
    }
@@ -50,15 +56,15 @@ namespace PKSim.Core.Snapshots.Services
       private readonly IDialogCreator _dialogCreator;
       private readonly IExecutionContext _executionContext;
       private readonly IObjectTypeResolver _objectTypeResolver;
-      private readonly ISnapshotSerializer _snapshotSerializer;
+      private readonly IJsonSerializer _jsonSerializer;
       private readonly ISnapshotMapper _snapshotMapper;
 
-      public SnapshotTask(IDialogCreator dialogCreator, ISnapshotSerializer snapshotSerializer, ISnapshotMapper snapshotMapper, IExecutionContext executionContext, IObjectTypeResolver objectTypeResolver)
+      public SnapshotTask(IDialogCreator dialogCreator, IJsonSerializer jsonSerializer, ISnapshotMapper snapshotMapper, IExecutionContext executionContext, IObjectTypeResolver objectTypeResolver)
       {
          _dialogCreator = dialogCreator;
          _executionContext = executionContext;
          _objectTypeResolver = objectTypeResolver;
-         _snapshotSerializer = snapshotSerializer;
+         _jsonSerializer = jsonSerializer;
          _snapshotMapper = snapshotMapper;
       }
 
@@ -95,10 +101,10 @@ namespace PKSim.Core.Snapshots.Services
          await saveSnapshotToFile(snapshotObject, fileName);
       }
 
-      public Task<IEnumerable<T>> LoadModelFromSnapshot<T>() where T : class, IObjectBase
+      public Task<IEnumerable<T>> LoadModelsFromSnapshotFile<T>() where T : class, IObjectBase
       {
          var fileName = fileNameForSnapshotImport<T>();
-         return LoadModelFromSnapshot<T>(fileName);
+         return LoadModelsFromSnapshotFile<T>(fileName);
       }
 
       private string fileNameForSnapshotImport<T>()
@@ -107,7 +113,18 @@ namespace PKSim.Core.Snapshots.Services
          return _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);
       }
 
-      public async Task<IEnumerable<T>> LoadSnapshot<T>(string fileName) where T : IWithName
+      public async Task<T> LoadSnapshotFromFile<T>(string fileName) where T : IWithName
+      {
+         var snapshots = await LoadSnapshots<T>(fileName);
+         var snapshot = snapshots.FirstOrDefault();
+
+         if (snapshot != null && string.IsNullOrEmpty(snapshot.Name))
+            snapshot.Name = FileHelper.FileNameFromFileFullPath(fileName);
+
+         return snapshot;
+      }
+
+      public async Task<IEnumerable<T>> LoadSnapshots<T>(string fileName)
       {
          var snapshots = await loadSnapshot(fileName, typeof(T));
          return snapshots.OfType<T>();
@@ -118,14 +135,19 @@ namespace PKSim.Core.Snapshots.Services
          if (string.IsNullOrEmpty(fileName))
             return Enumerable.Empty<object>();
 
-         return await _snapshotSerializer.DeserializeAsArray(fileName, snapshotType);
+         return await _jsonSerializer.DeserializeAsArray(fileName, snapshotType);
       }
 
-      public async Task<IEnumerable<T>> LoadModelFromSnapshot<T>(string fileName) where T : class, IObjectBase
+      public async Task<IEnumerable<T>> LoadModelsFromSnapshotFile<T>(string fileName) where T : class, IObjectBase
       {
          var snapshotType = _snapshotMapper.SnapshotTypeFor<T>();
          var snapshots = await loadSnapshot(fileName, snapshotType);
 
+         return await loadModelsFromSnapshots<T>(snapshots);
+      }
+
+      private async Task<IEnumerable<T>> loadModelsFromSnapshots<T>(IEnumerable<object> snapshots) where T : class, IObjectBase
+      {
          if (snapshots == null)
             return Enumerable.Empty<T>();
 
@@ -134,15 +156,25 @@ namespace PKSim.Core.Snapshots.Services
          return models.OfType<T>();
       }
 
-      public async Task<PKSimProject> LoadProjectFromSnapshot(string fileName)
+      public async Task<PKSimProject> LoadProjectFromSnapshotFile(string fileName)
       {
-         var project = (await LoadModelFromSnapshot<PKSimProject>(fileName)).FirstOrDefault();
+         var project = (await LoadModelsFromSnapshotFile<PKSimProject>(fileName)).FirstOrDefault();
+         return projectWithUpdatedProperties(project, FileHelper.FileNameFromFileFullPath(fileName));
+      }
 
+      public async Task<PKSimProject> LoadProjectFromSnapshot(Project snapshot)
+      {
+         var project = (await loadModelsFromSnapshots<PKSimProject>(new[] {snapshot})).FirstOrDefault();
+         return projectWithUpdatedProperties(project, snapshot?.Name);
+      }
+
+      private PKSimProject projectWithUpdatedProperties(PKSimProject project, string name)
+      {
          if (project == null)
             return null;
 
          project.HasChanged = true;
-         project.Name = FileHelper.FileNameFromFileFullPath(fileName);
+         project.Name = name;
          return project;
       }
 
@@ -161,6 +193,6 @@ namespace PKSim.Core.Snapshots.Services
          await saveSnapshotToFile(snapshot, fileName);
       }
 
-      private Task saveSnapshotToFile(object snapshot, string fileName) => _snapshotSerializer.Serialize(snapshot, fileName);
+      private Task saveSnapshotToFile(object snapshot, string fileName) => _jsonSerializer.Serialize(snapshot, fileName);
    }
 }

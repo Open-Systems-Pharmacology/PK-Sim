@@ -154,7 +154,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
          Visit(simulation.BuildingBlock<Compound>());
          addMissingSolverParameters(simulation);
 
-         var halogenParameters = simulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.HAS_HALOGENS)).FirstOrDefault();
+         var halogenParameters = simulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(Constants.Parameters.HAS_HALOGENS)).FirstOrDefault();
          updateHalogensParameter(halogenParameters);
 
          convertTotalDrugMassParameter(simulation);
@@ -256,7 +256,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_3
 
       public void Visit(Compound compound)
       {
-         updateHalogensParameter(compound.Parameter(CoreConstants.Parameters.HAS_HALOGENS));
+         updateHalogensParameter(compound.Parameter(Constants.Parameters.HAS_HALOGENS));
 
          //wrong conversion between 5.1.4 and 5.2. So we need to call the conversion again
          _compoundConverter.UpdateGainPerChargeInAlternatives(compound, updateValues: false);

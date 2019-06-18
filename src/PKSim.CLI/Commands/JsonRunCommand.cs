@@ -26,10 +26,8 @@ namespace PKSim.CLI.Commands
       public override string ToString()
       {
          var sb = new StringBuilder();
-         this.LogOption(sb);
-         sb.AppendLine($"Log file: {LogFileFullPath}");
-         sb.AppendLine($"Log level: {LogLevel}");
-         sb.AppendLine($"Export mode: {ExportMode}");
+         this.LogFolders(sb);
+         LogDefaultOptions(sb);
          return sb.ToString();
       }
 

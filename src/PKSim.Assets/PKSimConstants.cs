@@ -454,7 +454,10 @@ namespace PKSim.Assets
          public const string GenderAndOrPopulationMissingFromFile = "Gender and/or Population are not defined in the file to import.";
          public const string FormulationShouldBeUsedAsTemplateOrAsSimulationBuildingBlock = "Formulation usage is inconsitent. Please use either the template formulation or the simulation formulation.";
          public const string AtLeastOneIndividualIdRequiredToPerformPopulationExtraction = "At least one valid individual id is required to perform the population extraction.";
-         
+
+         public static string SaturationEnabledCanOnlyBeUsedForOralApplicationUsingParticleDissolution(string compoundName) =>
+            $"Supersaturation is enabled for '{compoundName}'.\nEnabling supersaturation inactivates the limit of how much solute can be dissolved. It should always and only be allowed in combination with particle dissolution formulations; otherwise disabled.\nEnabling in case of other formulations results in a lack of the solubility limit and hence in infinitely soluble solutes.";
+
          public static string DosePerBodySurfaceAreaProtocolCannotBeUsedWithSpeciesPopulation(string speciesPopulation) => $"Body surface area dosing cannot be used with species '{speciesPopulation}'.";
 
          public static string PregnantPopulationCanOnlyBeUsedWithMoBiModel(string speciesPopulation) => $"Population based on '{speciesPopulation}' can only be used with pregnancy models imported from MoBi.";
@@ -502,9 +505,9 @@ namespace PKSim.Assets
 
          public const string EventTemplateNotDefined = "Event template not defined.";
 
-         public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is requiered for type '{applicationType}'.";
+         public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
 
-         public static string BuildingBlockNotDefined(string buildingblock) => $"No {buildingblock} defined. Please use create.";
+         public static string BuildingBlockNotDefined(string buildingBlock) => $"No {buildingBlock} defined. Please use create.";
 
          public static string MissingColumnInView(string propertyName) => $"Property named {propertyName} not found.";
 
@@ -525,10 +528,10 @@ namespace PKSim.Assets
             return $"The file '{fileFullPath}' is readonly and cannot be read by the application. Please make the project writable and try again.";
          }
 
-         public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string dowloadUrl)
+         public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string downloadUrl)
          {
             if (projectVersion > currentVersion)
-               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {dowloadUrl}.";
+               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}.";
 
             return $"Work in progress.\nThis project file was created with a beta or RC version (version {projectVersion}) and cannot be loaded.\nSorry :-(";
          }
@@ -579,45 +582,26 @@ namespace PKSim.Assets
             return sb.ToString();
          }
 
-         public static string FileIsNotAPKSimFile(string projectFile, string productName)
-         {
-            return $"File '{projectFile}' is not a {productName} project file.";
-         }
+         public static string FileIsNotAPKSimFile(string projectFile, string productName) => $"File '{projectFile}' is not a {productName} project file.";
 
-         public static string FileIsNotASimulationFile(string simualtionFile, string productName)
-         {
-            return $"File '{simualtionFile}' is not a {productName} simulation file.";
-         }
+         public static string FileIsNotASimulationFile(string simualtionFile, string productName) => $"File '{simualtionFile}' is not a {productName} simulation file.";
 
-         public static string NoTemplateBuildingBlockAvailableForType(string buildingBlockType)
-         {
-            return $"No template '{buildingBlockType}' available in the template database.";
-         }
+         public static string NoTemplateBuildingBlockAvailableForType(string buildingBlockType) => $"No template '{buildingBlockType}' available in the template database.";
 
-         public static string UnableToUpdateParameterException(string parameterPath, string simulationName)
-         {
-            return $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
-         }
+         public static string UnableToUpdateParameterException(string parameterPath, string simulationName) => $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
 
-         public static string ConstantParameterAlreadyExistsInContainer(string containerName, string parameterName)
-         {
-            return $"Parameter '{parameterName}' already exists in '{containerName}' but is defined as a constant parameter.";
-         }
+         public static string ConstantParameterAlreadyExistsInContainer(string containerName, string parameterName) => $"Parameter '{parameterName}' already exists in '{containerName}' but is defined as a constant parameter.";
 
          public static string FormulaParamterAlreadyExistsInContainerWithAnotherFormula(string containerName, string parameterName, string formulaString, string formulaStringToAdd)
          {
             return $"Parameter '{parameterName}' already exists in '{containerName}' with another formula:\nOld formula = '{formulaString}'\nNew formula = '{formulaStringToAdd}'.";
          }
 
-         public static string FormulationCannotBeUsedWithRoute(string formulationName, string applicationRoute)
-         {
-            return $"Formulation '{formulationName}' cannot be used with route '{applicationRoute}.";
-         }
+         public static string FormulationCannotBeUsedWithRoute(string formulationName, string applicationRoute) => 
+            $"Formulation '{formulationName}' cannot be used with route '{applicationRoute}.";
 
-         public static string NoFormulationFoundForRoute(string protocolName, string applicationRoute)
-         {
-            return $"No formulation found for route '{applicationRoute}' in administration protocol '{protocolName}'.";
-         }
+         public static string NoFormulationFoundForRoute(string protocolName, string applicationRoute) => 
+            $"No formulation found for route '{applicationRoute}' in administration protocol '{protocolName}'.";
 
          public static string UnableToCreateSimulationWithMoleculesHavingSameName(string duplicateName)
          {
@@ -626,20 +610,13 @@ namespace PKSim.Assets
 
          public static string IntervalNotDefinedForParameter(string parameterName) => $"Interval not defined for parameter '{parameterName}'.";
 
-         public static string NameCannotContainIllegalCharacters(IEnumerable<string> illegalCharacters)
-         {
-            return $"Name cannot contain any of the following characters:\n{illegalCharacters.ToString(", ", "'")}";
-         }
-
          public static string MoleculeNameCannotBeUsedAsItWouldCreateDuplicateProcesses(string moleculeName)
          {
             return $"Molecule cannot be renamed to '{moleculeName}'. Two or more processes would have the same name.";
          }
 
-         public static string CannotSelectTheSamePartialProcessMoreThanOnce(string processName)
-         {
-            return $"'{processName}' cannot be selected more than once.";
-         }
+         public static string CannotSelectTheSamePartialProcessMoreThanOnce(string processName) => 
+            $"'{processName}' cannot be selected more than once.";
 
          public static string CouldNotFindSpecies(string species, IEnumerable<string> availableSpecies)
          {
@@ -817,6 +794,11 @@ namespace PKSim.Assets
             return $"Could not load simulation from file '{pkmlFileFullPath}'.";
          }
 
+         public static string CouldNotLoadObserverFromFile(string pkmlFileFullPath, string elementName)
+         {
+            return $"Could not load observer from file '{pkmlFileFullPath}'.\nThis seems to be a file for '{elementName}'. Make sure that the selected file contains a SINGLE observer only.";
+         }
+
          public static string CannotAddOutputFieldBecauseOfDimensionMismatch(string outputName, IEnumerable<string> allowedDimensions, string currentDimension)
          {
             return cannotAddToAnalysisBecauseOfDimensionMismatch("output", outputName, allowedDimensions, new[] {currentDimension});
@@ -877,7 +859,7 @@ namespace PKSim.Assets
 
          public const string SimulationSubjectUndefinedInSnapshot = "Simulation subject (Individual or Population) is not defined in snapshot.";
 
-         public static string SimulationTemplateBuildingBlocktNotFoundInProject(string buildingBlockName, string buildingBlockType) => $"{buildingBlockType} '{buildingBlockName} not found in project.";
+         public static string SimulationTemplateBuildingBlockNotFoundInProject(string buildingBlockName, string buildingBlockType) => $"{buildingBlockType} '{buildingBlockName} not found in project.";
 
          public static string ProcessNotFoundInCompound(string processName, string compound) => $"Process '{processName}' was not found in compound '{compound}'";
 
@@ -891,9 +873,20 @@ namespace PKSim.Assets
 
          public static string CompoundAlternativeNotFoundFor(string alternativeName, string defaultAlternativeName, string compoundGroup, string compoundName) => $"Cannot find alternative '{alternativeName}' in compound group '{compoundGroup}' for compound '{compoundName}'. Default alternative '{defaultAlternativeName}' will be used instead";
 
-         public static string UnableToFindAQualificationStepRunnderFor(string qualificationStep) => $"Cannot find {ObjectTypes.QualificationStep} runner for '{qualificationStep}'";
+         public static string UnableToFindAQualificationStepRunnerFor(string qualificationStep) => $"Cannot find {ObjectTypes.QualificationStep} runner for '{qualificationStep}'";
 
          public static string CannotLoadSimulation(string simulationName) => $"Cannot load {ObjectTypes.Simulation} '{simulationName}'";
+
+         public static string UnableToLoadQualificationConfigurationFromFile(string fileFullPath) => $"Unable to read configuration from file '{fileFullPath}'";
+
+         public static string CannotFindBuildingBlockInSnapshot(string buildingBlockType, string buildingBlockName, string project) => $"Could not find {buildingBlockType} '{buildingBlockName}' in snapshot '{project}'.";
+
+         public static string CannotFindSimulationInSnapshot(string simulationName, string project) => CannotFindBuildingBlockInSnapshot(ObjectTypes.Simulation, simulationName, project);
+
+         public static string CannotFindSimulationParameterInSnapshot(string parameterPath, string simulationName, string project) => 
+            $"TODO Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
+
+         public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
       }
 
       public static class Information
@@ -1102,6 +1095,7 @@ namespace PKSim.Assets
          public static readonly string NewSimulationSettings = "Add Si&mulation Settings...";
          public static readonly string NewFormulation = "Add &Formulation...";
          public static readonly string NewEvent = "Add &Event...";
+         public static readonly string NewObservers = "Add &Observers...";
          public static readonly string AddObservedData = "Add &Observed Data...";
          public static readonly string AddObservedDataFor = "Add Observed Data for";
          public static readonly string SaveAs = "Save As...";
@@ -1255,6 +1249,7 @@ namespace PKSim.Assets
          public static readonly string QualificationStep = "Qualification Step";
          public static readonly string QualificationPlan = "Qualification Plan";
          public static readonly string Snapshot = "Snapshot";
+         public static readonly string ObserverSet = "Observers";
       }
 
       public static class ProteinExpressions
@@ -1342,6 +1337,7 @@ namespace PKSim.Assets
          public static readonly string ImportSimulation = "&Import Simulation";
          public static readonly string Protocol = "&Administration Protocol";
          public static readonly string Event = "&Event";
+         public static readonly string Observers = "O&bservers";
          public static readonly string SimulationSettings = "Si&mulation Settings";
          public static readonly string Formulation = "&Formulation";
          public static readonly string Create = "Create";
@@ -1526,6 +1522,7 @@ namespace PKSim.Assets
          public static readonly string PopulationFolder = "Populations";
          public static readonly string Events = "Events";
          public static readonly string EventFolder = Events;
+         public static readonly string ObserversFolder = "Observers";
          public static readonly string AdministrationProtocolFolder = "Administration Protocols";
          public const string Value = "Value";
          public static readonly string Percentage = "Percentage";
@@ -1566,10 +1563,12 @@ namespace PKSim.Assets
          public static readonly string Ratio = "Same ratio";
          public static readonly string SimulationSettings = "Settings";
          public static readonly string CompoundActiveProcessType = "Type";
+         public static readonly string ObserverType = "Type";
          public static readonly string Kinetic = "Kinetic";
          public static readonly string SimulationModelConfiguration = "Model";
          public static readonly string SimulationCompoundsConfiguration = "Compounds";
          public static readonly string SimulationEventsConfiguration = "Events";
+         public static readonly string SimulationObserversConfiguration = "Observers";
          public static readonly string SimulationApplicationConfiguration = "Administration";
          public static readonly string SimulationProcessDefinition = "Processes";
          public static readonly string NextButton = "&Next";
@@ -1676,6 +1675,7 @@ namespace PKSim.Assets
          public static readonly string Clone = "Clone";
          public static readonly string Rename = "Rename";
          public static readonly string CreateFormulation = "Create Formulation";
+         public static readonly string CreateObserverSet = "Create Observer Set";
          public static readonly string CreateEvent = "Create Event";
          public static readonly string Expression = "Expression";
          public static readonly string Demographics = "Demographics";
@@ -1854,6 +1854,7 @@ namespace PKSim.Assets
          public static readonly string NewProtocolDescription = "Create a new administration protocol...";
          public static readonly string NewFormulationDescription = "Create a new formulation...";
          public static readonly string NewEventDescription = "Create a new event...";
+         public static readonly string NewObserversDescription = "Create a new observer list...";
          public static readonly string NewCompoundDescription = "Create a new compound...";
          public static readonly string OptionsDescription = "Manage the options for the application and the current user...";
          public static readonly string ExitDescription = "Exit the application";
@@ -1905,7 +1906,8 @@ namespace PKSim.Assets
          public static readonly string NoSinkCondition = "No Sink Condition";
          public static readonly string Soluble = "Soluble";
          public static readonly string Insoluble = "Insoluble";
-         public static readonly string AddEvent = "Add Event...";
+         public static readonly string AddEvent = "Add Event";
+         public static readonly string AddObserverSet = "Add Observers";
          public static readonly string ExportLogToFile = "Export project conversion log to file...";
          public static readonly string SaveLog = "Save Log...";
          public static readonly string RelTol = "Relative tolerance";
@@ -2015,6 +2017,7 @@ namespace PKSim.Assets
          public static readonly string SelectSimulationPKMLFile = "Select Pkml File containing the simulation to import";
          public static readonly string SelectReportFile = "Select report file...";
          public static readonly string SelectPopulationFileToImport = "Select population file to import...";
+         public static readonly string SelectObserverFileToImport = "Select observer file to import...";
          public static readonly string SelectSimulationResultsFileToImport = "Select simulation results file to import...";
          public static readonly string SelectPKAnalysesFileToImport = "Select PK-Analyses file to import...";
          public static readonly string ResetLayoutSettingsToolTip = "Reset the application layout saved in the current user settings. This is necessary if the layout becomes corrupted.";
@@ -2167,6 +2170,11 @@ namespace PKSim.Assets
          public static readonly string WatermarkText = "Text";
          public static readonly string WatermarkProperties = "Watermark Properties";
          public static readonly string CreateTableSolubilityAlternative = "Create as pH-Solubility table";
+         public static readonly string ContainerCriteria = "Container Criteria";
+         public static readonly string ForAll = "For All";
+         public static readonly string MoleculeExcludeList = "For All Molecules Except";
+         public static readonly string MoleculeIncludeList = "For Molecules";
+         public static readonly string Type = "Type";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 
@@ -2186,6 +2194,19 @@ namespace PKSim.Assets
             sb.AppendLine($" -   <b>{populationNamePattern}</b> with the name of the population");
             sb.AppendLine($" -   <b>{individualIdPattern}</b> with the id of the individual");
             return sb.ToString();
+         }
+
+         public static string ImportObserversDescription
+         {
+            get
+            {
+               var sb = new StringBuilder();
+               sb.AppendLine("Any observer (Amount or Container) created in MoBi can be imported into PK-Sim:");
+               sb.AppendLine(" -  Right click on the observer of interest in MoBi.");
+               sb.AppendLine(" -  Export it using the <b>Save As PKML</b> option.");
+               sb.AppendLine(" -  Select the exported file using the <b>Add File</b> button below.");
+               return sb.ToString();
+            }
          }
 
          public static string ExtractIndividualFromPopulation(string populationName) => $"Extract Individuals from Population '{populationName}'";
@@ -2209,7 +2230,7 @@ namespace PKSim.Assets
          {
             var sb = new StringBuilder();
             sb.AppendLine("Automatically generates labels replacing the occurence in the naming pattern of:");
-            sb.AppendFormat(" -   <b>{0}</b> with an identifer generated using the selected template\n", iterationPattern);
+            sb.AppendFormat(" -   <b>{0}</b> with an identifier generated using the selected template\n", iterationPattern);
             sb.AppendFormat(" -   <b>{0}</b> with a value representing the start of the interval and n the number of digits\n", startPattern);
             sb.AppendFormat(" -   <b>{0}</b> with a value representing the end of the interval and n the number of digits\n", endPattern);
             return sb.ToString();
@@ -2360,6 +2381,8 @@ namespace PKSim.Assets
          public static string EditSimulationSettings(string name) => $"Simulation Settings: '{name}'";
 
          public static string EditCompound(string name) => $"Compound: '{name}'";
+
+         public static string EditObserverSet(string name) => $"Observer Set: '{name}'";
 
          public static string EditPopulation(string name) => $"Population: '{name}'";
 

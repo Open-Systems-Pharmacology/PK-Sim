@@ -11,6 +11,7 @@ using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Core;
 
@@ -18,12 +19,12 @@ namespace PKSim.CLI
 {
    public abstract class concern_for_SnapshotRunner : ContextSpecificationAsync<SnapshotRunner>
    {
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected ISnapshotTask _snapshotTask;
       protected IWorkspacePersistor _workspacePersistor;
       protected ILogger _logger;
       protected SnapshotRunOptions _runOptions;
-      protected string _directoryCreated;
+      protected string _createdDirectory;
       private Func<string, string> _oldCreateDirectory;
       protected readonly string _inputFolder = @"C:\Input\";
       protected readonly string _outputFolder = @"C:\Output\";
@@ -32,12 +33,12 @@ namespace PKSim.CLI
       {
          await base.GlobalContext();
          _oldCreateDirectory = DirectoryHelper.CreateDirectory;
-         DirectoryHelper.CreateDirectory = s => _directoryCreated = s;
+         DirectoryHelper.CreateDirectory = s => _createdDirectory = s;
       }
 
       protected override Task Context()
       {
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _snapshotTask = A.Fake<ISnapshotTask>();
          _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _logger = A.Fake<ILogger>();
@@ -79,7 +80,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_load_the_snapshot_from_file()
       {
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_snapshotFile)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFile(_snapshotFile)).MustHaveHappened();
       }
 
       [Observation]
@@ -91,7 +92,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_generate_the_output_folder_in_case_in_does_not_exist()
       {
-         _directoryCreated.ShouldBeEqualTo(_outputFolder);
+         _createdDirectory.ShouldBeEqualTo(_outputFolder);
       }
    }
 
@@ -133,7 +134,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_generate_the_output_folder_in_case_in_does_not_exist()
       {
-         _directoryCreated.ShouldBeEqualTo(_outputFolder);
+         _createdDirectory.ShouldBeEqualTo(_outputFolder);
       }
    }
 
@@ -161,7 +162,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_load_the_snapshot_from_file()
       {
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_snapshotFile)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFile(_snapshotFile)).MustHaveHappened();
       }
 
       [Observation]

@@ -9,10 +9,12 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 using Project = PKSim.Core.Snapshots.Project;
+
 
 namespace PKSim.Core
 {
@@ -22,7 +24,7 @@ namespace PKSim.Core
       protected IExecutionContext _executionContext;
       protected IParameter _parameter;
       protected string _parameterType = "parameter";
-      protected ISnapshotSerializer _snapshotSerializer;
+      protected IJsonSerializer _jsonSerializer;
       protected Parameter _parameterSnapshot;
       protected ISnapshotMapper _snapshotMapper;
       protected IObjectTypeResolver _objectTypeResolver;
@@ -31,10 +33,10 @@ namespace PKSim.Core
       {
          _dialogCreator = A.Fake<IDialogCreator>();
          _executionContext = A.Fake<IExecutionContext>();
-         _snapshotSerializer = A.Fake<ISnapshotSerializer>();
+         _jsonSerializer = A.Fake<IJsonSerializer>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         sut = new SnapshotTask(_dialogCreator, _snapshotSerializer, _snapshotMapper, _executionContext, _objectTypeResolver);
+         sut = new SnapshotTask(_dialogCreator, _jsonSerializer, _snapshotMapper, _executionContext, _objectTypeResolver);
 
          _parameter = A.Fake<IParameter>();
          _parameter.Name = "Param";
@@ -62,7 +64,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_export_the_snapshot_to_file()
       {
-         A.CallTo(() => _snapshotSerializer.Serialize(A<object>._, A<string>._)).MustNotHaveHappened();
+         A.CallTo(() => _jsonSerializer.Serialize(A<object>._, A<string>._)).MustNotHaveHappened();
       }
 
       [Observation]
@@ -112,7 +114,7 @@ namespace PKSim.Core
       [Observation]
       public void should_export_the_snapshot_to_file()
       {
-         A.CallTo(() => _snapshotSerializer.Serialize(_parameterSnapshot, _fileFullPath)).MustHaveHappened();
+         A.CallTo(() => _jsonSerializer.Serialize(_parameterSnapshot, _fileFullPath)).MustHaveHappened();
       }
    }
 
@@ -137,14 +139,14 @@ namespace PKSim.Core
 
          A.CallTo(() => _snapshotMapper.SnapshotTypeFor<Formulation>()).Returns(_snapshotType);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
-         A.CallTo(() => _snapshotSerializer.DeserializeAsArray(_fileName, _snapshotType)).Returns(new[] {_snapshot1, _snapshot2});
+         A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, _snapshotType)).Returns(new[] {_snapshot1, _snapshot2});
          A.CallTo(() => _snapshotMapper.MapToModel(_snapshot1)).Returns(_formulation1);
          A.CallTo(() => _snapshotMapper.MapToModel(_snapshot2)).Returns(_formulation2);
       }
 
       protected override async Task Because()
       {
-         _formulations = (await sut.LoadModelFromSnapshot<Formulation>()).ToList();
+         _formulations = (await sut.LoadModelsFromSnapshotFile<Formulation>()).ToList();
       }
 
       [Observation]
@@ -172,7 +174,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _formulations = (await sut.LoadModelFromSnapshot<Formulation>()).ToList();
+         _formulations = (await sut.LoadModelsFromSnapshotFile<Formulation>()).ToList();
       }
 
       [Observation]
@@ -201,13 +203,13 @@ namespace PKSim.Core
          var project = new PKSimProject();
 
          A.CallTo(() => _snapshotMapper.SnapshotTypeFor<PKSimProject>()).Returns(snapshotType);
-         A.CallTo(() => _snapshotSerializer.DeserializeAsArray(_fileName, snapshotType)).Returns(new object[] {projectSnapshot,});
+         A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, snapshotType)).Returns(new object[] {projectSnapshot,});
          A.CallTo(() => _snapshotMapper.MapToModel(projectSnapshot)).Returns(project);
       }
 
       protected override async Task Because()
       {
-         _project = await sut.LoadProjectFromSnapshot(_fileName);
+         _project = await sut.LoadProjectFromSnapshotFile(_fileName);
       }
 
       [Observation]

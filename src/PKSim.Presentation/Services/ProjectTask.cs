@@ -269,7 +269,7 @@ namespace PKSim.Presentation.Services
          return (proceed == ViewResult.No);
       }
 
-      public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshot(snapshotFileFullPath);
+      public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshotFile(snapshotFileFullPath);
 
       private void openSimulationForPopulationSimulation(string simulationFile)
       {

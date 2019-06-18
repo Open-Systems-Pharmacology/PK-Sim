@@ -78,18 +78,12 @@ namespace PKSim.Core.Model
          _hasChanged = true;
       }
 
-      public override IReadOnlyCollection<T> All<T>()
-      {
-         return All<T>(x => true);
-      }
+      public override IReadOnlyCollection<T> All<T>() => All<T>(x => true);
 
       /// <summary>
       ///    Returns all the building block of a given type <paramref name="buildingBlockType" />
       /// </summary>
-      public virtual IReadOnlyCollection<IPKSimBuildingBlock> All(PKSimBuildingBlockType buildingBlockType)
-      {
-         return All<IPKSimBuildingBlock>(c => c.BuildingBlockType.Is(buildingBlockType));
-      }
+      public virtual IReadOnlyCollection<IPKSimBuildingBlock> All(PKSimBuildingBlockType buildingBlockType) => All<IPKSimBuildingBlock>(c => c.BuildingBlockType.Is(buildingBlockType));
 
       /// <summary>
       ///    Returns all the building block of a given type <typeparamref name="T" /> matching a given predicate
@@ -108,15 +102,11 @@ namespace PKSim.Core.Model
 
       public virtual IPKSimBuildingBlock BuildingBlockById(string templateBuildingBlockId) => BuildingBlockById<IPKSimBuildingBlock>(templateBuildingBlockId);
 
-      public virtual T BuildingBlockById<T>(string templateBuildingBlockId) where T : class, IPKSimBuildingBlock
-      {
-         return _allBuildingBlocks.FindById(templateBuildingBlockId) as T;
-      }
+      public virtual T BuildingBlockById<T>(string templateBuildingBlockId) where T : class, IPKSimBuildingBlock => _allBuildingBlocks.FindById(templateBuildingBlockId) as T;
 
-      public virtual T BuildingBlockByName<T>(string templateBuildingBlockName) where T : class, IPKSimBuildingBlock
-      {
-         return _allBuildingBlocks.OfType<T>().FindByName(templateBuildingBlockName);
-      }
+      public virtual T BuildingBlockByName<T>(string templateBuildingBlockName) where T : class, IPKSimBuildingBlock => _allBuildingBlocks.OfType<T>().FindByName(templateBuildingBlockName);
+
+      public virtual IPKSimBuildingBlock BuildingBlockByName(string templateBuildingBlockName, PKSimBuildingBlockType type) => All(type).FindByName(templateBuildingBlockName);
 
       /// <summary>
       ///    Add a building block to the project

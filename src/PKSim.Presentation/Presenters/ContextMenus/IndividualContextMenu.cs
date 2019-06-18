@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using PKSim.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Presentation.Nodes;
-using PKSim.Core.Model;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.UICommands;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {

@@ -7,6 +7,7 @@ using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_SimulationProcessSummaryPresenter : ContextSpecification<ISimulationCompoundProcessSummaryPresenter>

@@ -89,7 +89,6 @@ namespace PKSim.Infrastructure
 
    public class When_checking_if_a_new_version_is_available_when_a_newer_version_is_available_asynchronously : concern_for_VersionChecker
    {
-      
       protected override void Context()
       {
          base.Context();

@@ -28,9 +28,9 @@ namespace PKSim.Infrastructure.Services
          _populationRepository = populationRepository;
       }
 
-      private static readonly Char[] ALLOWED_DELIMITERS = {',', ';', '\t'};
+      private static readonly char[] ALLOWED_DELIMITERS = {',', ';', '\t'};
 
-      public IndividualPropertiesCache ImportFrom(string fileFullPath, IImportLogger logger)
+      public IndividualPropertiesCache ImportFrom(string fileFullPath, PathCache<IParameter> allParameters, IImportLogger logger)
       {
          try
          {
@@ -39,7 +39,7 @@ namespace PKSim.Infrastructure.Services
                var individualPropertyCache = individualPropertiesCacheFrom(fileFullPath, delimiter);
                //we found at least one individual, this is a valid file for the delimiter and we can exit
                if (individualPropertyCache?.Count > 0)
-                  return individualPropertyCache;
+                  return withPathsContainingUnitsUpdated(individualPropertyCache, allParameters);
             }
 
             //no match. Log 
@@ -51,6 +51,35 @@ namespace PKSim.Infrastructure.Services
             logger.AddError(e.FullMessage());
             return new IndividualPropertiesCache();
          }
+      }
+
+      private IndividualPropertiesCache withPathsContainingUnitsUpdated(IndividualPropertiesCache individualPropertiesCache, PathCache<IParameter> allParameters)
+      {
+         individualPropertiesCache.AllParameterValues.ToList().Each(parameterValue => { removeUnits(individualPropertiesCache, parameterValue, allParameters); });
+         return individualPropertiesCache;
+      }
+
+      private void removeUnits(IndividualPropertiesCache individualValues, ParameterValues parameterValue, PathCache<IParameter> allParameters)
+      {
+         var parameterPath = parameterValue.ParameterPath;
+         if (allParameters.Contains(parameterPath))
+            return;
+
+         var pathWithUnitsRemoved = importedPathWithUnitsRemoved(parameterPath);
+         if (allParameters.Contains(pathWithUnitsRemoved))
+         {
+            individualValues.RenamePath(parameterPath, pathWithUnitsRemoved);
+            parameterValue.ParameterPath = pathWithUnitsRemoved;
+         }
+      }
+
+      private string importedPathWithUnitsRemoved(string path)
+      {
+         if (!path.TrimEnd().EndsWith("]")) return path;
+
+         var indexOfUnitStart = path.LastIndexOf("[", StringComparison.Ordinal);
+
+         return indexOfUnitStart == -1 ? path : path.Remove(indexOfUnitStart, path.Length - indexOfUnitStart).TrimEnd();
       }
 
       private IndividualPropertiesCache individualPropertiesCacheFrom(string fileFullPath, char delimiter)

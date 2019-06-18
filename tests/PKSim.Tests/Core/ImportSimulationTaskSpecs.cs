@@ -127,7 +127,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _simulationImport = sut.ImportFromBuidlingBlock(_pkmlFile, _population);
+         _simulationImport = sut.ImportFromBuildingBlock(_pkmlFile, _population);
       }
 
       [Observation]
@@ -187,10 +187,10 @@ namespace PKSim.Core
          _mobiPopulation= A.Fake<MoBiPopulation>();
          A.CallTo(_simulationFactory).WithReturnType<PopulationSimulation>().Returns(_populationSimulation);
          A.CallTo(() => _objectBaseFactory.Create<MoBiPopulation>()).Returns(_mobiPopulation);
-         A.CallTo(() => _individualPropertiesCacheImporter.ImportFrom(_populationFile, A<IImportLogger>._)).Returns(_individualPropertiesCache);
          A.CallTo(() => _parameterRetriever.ParametersFrom(_populationSimulation)).Returns(_patchCache);
+         A.CallTo(() => _individualPropertiesCacheImporter.ImportFrom(_populationFile, _patchCache,A<IImportLogger>._)).Returns(_individualPropertiesCache);
 
-         _advancedParameterContainer= new AdvancedParameter();
+         _advancedParameterContainer = new AdvancedParameter();
          A.CallTo(() => _advancedParameterFactory.Create(advancedParameter, DistributionTypes.Unknown)).Returns(_advancedParameterContainer);
       }
 

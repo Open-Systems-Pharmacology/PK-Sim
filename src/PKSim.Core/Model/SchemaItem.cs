@@ -52,6 +52,10 @@ namespace PKSim.Core.Model
 
       public bool NeedsFormulation => ApplicationType.NeedsFormulation;
 
+      public bool IsOral => ApplicationType==ApplicationTypes.Oral;
+
+      public bool IsUserDefined => ApplicationType==ApplicationTypes.UserDefined;
+      
       public virtual IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
 
       public virtual IParameter Dose => this.Parameter(CoreConstants.Parameters.INPUT_DOSE);

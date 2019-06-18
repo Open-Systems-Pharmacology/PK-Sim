@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_BuildConfigurationTask : ContextSpecification<IBuildConfigurationTask>

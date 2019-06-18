@@ -50,7 +50,7 @@ namespace PKSim.IntegrationTests
          _sim2.Model.Root.Add(new Container {new Parameter().WithName("P")}.WithName("Liver"));
 
          _objectBaseRepository = IoC.Resolve<IWithIdRepository>();
-         var workspace = IoC.Resolve<IWorkspace>();
+         var workspace = IoC.Resolve<ICoreWorkspace>();
          _project = IoC.Resolve<PKSimProject>();
          workspace.Project = _project;
          _objectBaseRepository.Register(_sim1);

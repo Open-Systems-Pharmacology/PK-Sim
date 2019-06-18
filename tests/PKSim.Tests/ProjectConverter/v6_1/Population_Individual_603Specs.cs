@@ -49,7 +49,7 @@ namespace PKSim.ProjectConverter.v6_1
       [Observation]
       public void should_have_set_the_value_of_parameter_use_as_suspenssion_to_zero()
       {
-         _formulation.Parameter(CoreConstants.Parameters.USE_AS_SUSPENSION).Value.ShouldBeEqualTo(0);
+         _formulation.Parameter(Constants.Parameters.USE_AS_SUSPENSION).Value.ShouldBeEqualTo(0);
       }
 
       private void validateNegativeValueAllowedFlags(Simulation simulation)
@@ -73,8 +73,8 @@ namespace PKSim.ProjectConverter.v6_1
       [Observation]
       public void should_not_add_use_as_suspension_parameter()
       {
-         _formulation.FormulationType.ShouldBeEqualTo(CoreConstants.Formulation.Particles);
-         _formulation.Parameter(CoreConstants.Parameters.USE_AS_SUSPENSION).ShouldBeNull();
+         _formulation.FormulationType.ShouldBeEqualTo(CoreConstants.Formulation.PARTICLES);
+         _formulation.Parameter(Constants.Parameters.USE_AS_SUSPENSION).ShouldBeNull();
       }
    }
 }

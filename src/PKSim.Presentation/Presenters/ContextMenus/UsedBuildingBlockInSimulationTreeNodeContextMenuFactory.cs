@@ -72,4 +72,13 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          return new PopulationInSimulationContextMenu(simulation, usedBuildingBlock, population);
       }
    }
+
+
+   public class UsedObserverSetInSimulationTreeNodeContextMenuFactory : UsedBuildingBlockInSimulationTreeNodeContextMenuFactory<ObserverSet>
+   {
+      protected override IContextMenu CreateFor(Simulation simulation, UsedBuildingBlock usedBuildingBlock, ObserverSet observerSet)
+      {
+         return new UsedBuidlingBlockInSimulationContextMenu<ObserverSet>(simulation, usedBuildingBlock, observerSet);
+      }
+   }
 }

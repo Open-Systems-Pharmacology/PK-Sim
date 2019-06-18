@@ -31,10 +31,7 @@ namespace PKSim.UI.Views.Protocols
          _presenter = presenter;
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
 
       public void BindTo(SimpleProtocolDTO simpleProtocolDTO)
       {
@@ -43,13 +40,13 @@ namespace PKSim.UI.Views.Protocols
 
       public bool EndTimeVisible
       {
-         set { layoutItemEndTime.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
+         set => layoutItemEndTime.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
-      public bool DyamicParameterVisible
+      public bool DynamicParameterVisible
       {
-         set { layoutItemDynamicParameters.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemDynamicParameters.Visibility); }
+         set => layoutItemDynamicParameters.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemDynamicParameters.Visibility);
       }
 
       public bool TargetDefinitionVisible
@@ -59,7 +56,7 @@ namespace PKSim.UI.Views.Protocols
             layoutItemTargetOrgan.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
             layoutItemTargetCompartment.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
          }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemTargetOrgan.Visibility); }
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemTargetOrgan.Visibility);
       }
 
       public void AddDynamicParameterView(IView view)

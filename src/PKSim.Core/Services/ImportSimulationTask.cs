@@ -1,15 +1,15 @@
 ﻿using System;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
    public interface IImportSimulationTask
    {
-      PopulationSimulationImport ImportFromBuidlingBlock(string simulationFile, Population population);
+      PopulationSimulationImport ImportFromBuildingBlock(string simulationFile, Population population);
       PopulationSimulationImport ImportFromPopulationFile(string simulationFile, string populationFile);
       PopulationSimulationImport ImportFromPopulationSize(string simulationFile, int numberOfIndividuals);
       IndividualSimulation ImportIndividualSimulation(string pkmlFileFullPath);
@@ -28,7 +28,7 @@ namespace PKSim.Core.Services
       private readonly IAdvancedParameterFactory _advancedParameterFactory;
 
       public ImportSimulationTask(ISimulationTransferLoader simulationTransferLoader, ISimulationFactory simulationFactory, IEntitiesInContainerRetriever parameterRetriever, ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
-         IIndividualPropertiesCacheImporter individualPropertiesCacheImporter, IExecutionContext executionContext, IObjectBaseFactory objectBaseFactory, 
+         IIndividualPropertiesCacheImporter individualPropertiesCacheImporter, IExecutionContext executionContext, IObjectBaseFactory objectBaseFactory,
          ISimulationUpdaterAfterDeserialization simulationUpdaterAfterDeserialization, IAdvancedParameterFactory advancedParameterFactory)
       {
          _simulationTransferLoader = simulationTransferLoader;
@@ -42,7 +42,7 @@ namespace PKSim.Core.Services
          _advancedParameterFactory = advancedParameterFactory;
       }
 
-      public PopulationSimulationImport ImportFromBuidlingBlock(string simulationFile, Population population)
+      public PopulationSimulationImport ImportFromBuildingBlock(string simulationFile, Population population)
       {
          _executionContext.Load(population);
          var populationSimulationImport = populationSimulationImportFrom(simulationFile);
@@ -52,15 +52,15 @@ namespace PKSim.Core.Services
       public PopulationSimulationImport ImportFromPopulationFile(string simulationFile, string populationFile)
       {
          var populationSimulationImport = populationSimulationImportFrom(simulationFile);
-         var cache = _individualPropertiesCacheImporter.ImportFrom(populationFile, populationSimulationImport);
+         var populationSimulation = populationSimulationImport.PopulationSimulation;
+         var allParameters = _parameterRetriever.ParametersFrom(populationSimulation);
+
+         var cache = _individualPropertiesCacheImporter.ImportFrom(populationFile, allParameters, populationSimulationImport);
          if (populationSimulationImport.Status.Is(NotificationType.Error))
             return populationSimulationImport;
 
          var population = _objectBaseFactory.Create<MoBiPopulation>();
          population.SetNumberOfItems(cache.Count);
-
-         var populationSimulation = populationSimulationImport.PopulationSimulation;
-         var allParameters = _parameterRetriever.ParametersFrom(populationSimulation);
 
          foreach (var parameterPath in cache.AllParameterPaths())
          {
@@ -81,7 +81,7 @@ namespace PKSim.Core.Services
       {
          if (!parameter.CanBeDefinedAsAdvanced())
             return;
-         
+
          var advancedParameter = _advancedParameterFactory.Create(parameter, DistributionTypes.Unknown);
 
          //do not generate random values as these were loaded from files

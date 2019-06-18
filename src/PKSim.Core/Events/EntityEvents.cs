@@ -1,6 +1,7 @@
 using PKSim.Core.Model;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace PKSim.Core.Events
 {
@@ -13,10 +14,7 @@ namespace PKSim.Core.Events
    {
       public TEntity Entity { get; set; }
 
-      public IEntity Subject
-      {
-         get { return Entity; }
-      }
+      public IEntity Subject => Entity;
    }
 
    public interface IEntityContainerEvent : IEntityEvent
@@ -30,10 +28,7 @@ namespace PKSim.Core.Events
    {
       public TContainer Container { get; set; }
 
-      public IEntity ContainerSubject
-      {
-         get { return Container; }
-      }
+      public IEntity ContainerSubject => Container;
    }
 
    public abstract class AddEntityEvent<TEntity, TContainer> : EntityContainerEvent<TEntity, TContainer>
@@ -126,6 +121,15 @@ namespace PKSim.Core.Events
    public class AddParameterToContainerEvent : AddEntityEvent<IParameter, IContainer>
    {
    }
+
+   public class RemoveObserverFromObserverSetEvent : RemoveEntityEvent<IObserverBuilder, ObserverSet>
+   {
+   }
+
+   public class AddObserverToObserverSetEvent : AddEntityEvent<IObserverBuilder, ObserverSet>
+   {
+   }
+
 
    public class SwapSimulationEvent
    {

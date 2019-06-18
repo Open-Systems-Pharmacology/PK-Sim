@@ -156,7 +156,7 @@ namespace PKSim.Presentation.Presenters.Formulations
       {
          updatePlot();
 
-         if (!parameter.NameIsOneOf(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM, CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
+         if (!parameter.NameIsOneOf(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM, Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION))
             return;
 
          adjustParameterVisibility();
@@ -167,7 +167,7 @@ namespace PKSim.Presentation.Presenters.Formulations
       public IEnumerable<FormulationTypeDTO> AllFormulationTypes()
       {
          return from formulation in _formulationRepository.AllFor(ApplicationRoute)
-            where formulation.Name != CoreConstants.Formulation.EmptyFormulation
+            where formulation.Name != CoreConstants.Formulation.EMPTY_FORMULATION
             let formulationInfo = _representationInfoRepository.InfoFor(formulation)
             select new FormulationTypeDTO {Id = formulation.FormulationType, DisplayName = formulationInfo.DisplayName};
       }

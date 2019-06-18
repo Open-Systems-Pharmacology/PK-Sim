@@ -1,9 +1,12 @@
-﻿using PKSim.Core.Model;
+﻿using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots
 {
-   public class Protocol : ParameterContainerSnapshotBase
+   public class Protocol : ParameterContainerSnapshotBase, IBuildingBlockSnapshot
    {
+      public PKSimBuildingBlockType BuildingBlockType { get; } = PKSimBuildingBlockType.Protocol;
+
       //Simple protocol properties
       public string ApplicationType { get; set; }
 

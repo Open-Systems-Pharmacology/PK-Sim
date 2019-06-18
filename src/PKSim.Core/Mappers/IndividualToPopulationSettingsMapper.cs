@@ -45,7 +45,7 @@ namespace PKSim.Core.Mappers
 
          if (individual.IsPreterm)
          {
-            var gestationalAgeParameter = individual.Organism.Parameter(CoreConstants.Parameters.GESTATIONAL_AGE);
+            var gestationalAgeParameter = individual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE);
             populationSettings.AddParameterRange(discretedParameterRangeFrom(gestationalAgeParameter, numericListOfValues(gestationalAgeParameter)));
          }
 

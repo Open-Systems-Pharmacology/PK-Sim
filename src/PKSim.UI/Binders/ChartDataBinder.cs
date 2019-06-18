@@ -212,7 +212,7 @@ namespace PKSim.UI.Binders
       private void addPanes(ChartData<TX, TY> chartData, XYDiagram diagram)
       {
          diagram.PaneDistance = 10;
-         diagram.PaneLayoutDirection = PaneLayoutDirection.Vertical;
+         diagram.PaneLayout.Direction = PaneLayoutDirection.Vertical;
 
          diagram.Panes.Clear();
          foreach (var paneData in chartData.Panes)
@@ -224,8 +224,7 @@ namespace PKSim.UI.Binders
          if (!chartData.Panes.Any())
             return;
 
-         diagram.Panes[0].Weight = 1;
-         diagram.DefaultPane.Visible = false;
+         diagram.DefaultPane.Visibility = ChartElementVisibility.Hidden;
       }
 
       private bool isNoTitleNeededFor(PaneData<TX, TY> paneData)

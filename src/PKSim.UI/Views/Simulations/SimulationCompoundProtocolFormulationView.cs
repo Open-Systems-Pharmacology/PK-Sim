@@ -10,7 +10,6 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using PKSim.UI.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.UI;
 using OSPSuite.UI.Controls;
@@ -56,13 +55,13 @@ namespace PKSim.UI.Views.Simulations
 
       public bool FormulationKeyVisible
       {
-         set { _formulationKeyColumn.UpdateVisibility(value); }
+         set => _formulationKeyColumn.UpdateVisibility(value);
       }
 
       public bool FormulationVisible
       {
-         get { return GridVisible; }
-         set { GridVisible = value; }
+         get => GridVisible;
+         set => GridVisible = value;
       }
 
       public override void InitializeBinding()

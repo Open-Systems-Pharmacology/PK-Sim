@@ -29,7 +29,7 @@ namespace PKSim.Core.Services
                return _container.Resolve<RunSimulationQualificationStepRunner>();
          }
 
-         throw new ArgumentException(PKSimConstants.Error.UnableToFindAQualificationStepRunnderFor(qualificationStep.GetType().Name));
+         throw new ArgumentException(PKSimConstants.Error.UnableToFindAQualificationStepRunnerFor(qualificationStep.GetType().Name));
       }
    }
 }

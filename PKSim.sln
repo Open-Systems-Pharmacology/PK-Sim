@@ -106,8 +106,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 		VisualSVNWorkingCopyRoot = 
+		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\PKSim.ndproj"

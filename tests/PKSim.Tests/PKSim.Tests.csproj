@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\..\packages\NUnit.3.12.0\build\NUnit.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -96,109 +97,159 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Windsor, Version=3.4.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Castle.Windsor.3.4.0\lib\net45\Castle.Windsor.dll</HintPath>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Core.4.3.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="CommandLine, Version=2.2.1.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CommandLineParser.2.2.1\lib\net45\CommandLine.dll</HintPath>
+    <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Windsor.4.1.1\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
-    <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
+    <Reference Include="CommandLine, Version=2.4.3.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CommandLineParser.2.4.3\lib\netstandard2.0\CommandLine.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Data.v17.1, Version=17.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.17.1.5\lib\net45\DevExpress.Data.v17.1.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Dapper, Version=1.60.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Dapper.1.60.6\lib\net451\Dapper.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Utils.v17.1, Version=17.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.17.1.5\lib\net45\DevExpress.Utils.v17.1.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="DevExpress.Data.v18.2, Version=18.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.18.2.7\lib\net45\DevExpress.Data.v18.2.dll</HintPath>
     </Reference>
-    <Reference Include="FakeItEasy, Version=4.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FakeItEasy.4.9.1\lib\net45\FakeItEasy.dll</HintPath>
+    <Reference Include="DevExpress.Utils.v18.2, Version=18.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.18.2.7\lib\net45\DevExpress.Utils.v18.2.dll</HintPath>
     </Reference>
-    <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
+    <Reference Include="FakeItEasy, Version=5.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FakeItEasy.5.1.1\lib\net45\FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=1.0.0.999, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SharpZipLib.1.0.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="FluentNHibernate, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentNHibernate.2.1.2\lib\net461\FluentNHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpZipLib.1.1.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Iesi.Collections.4.0.2\lib\net461\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.4.5.1\lib\net461\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MarkdownLog, Version=0.10.1.0, Culture=neutral, PublicKeyToken=2b6c562c5dd991ab, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MarkdownLog.NS20.0.10.1\lib\netstandard2.0\MarkdownLog.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.4.7.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.1.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Configuration, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Configuration.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Configuration.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Binder, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Configuration.Binder.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Binder.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Options.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Primitives.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate, Version=4.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
+    <Reference Include="NHibernate, Version=5.2.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NHibernate.5.2.5\lib\net461\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.4.0.16, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.4.0.16\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=8.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.8.0.4\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.BDDHelper, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.BDDHelper.2.0.1.4\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
+    <Reference Include="OSPSuite.BDDHelper, Version=3.1.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.BDDHelper.3.1.0.1\lib\netstandard2.0\OSPSuite.BDDHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.4.0.16, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.Core.7.4.0.16\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=8.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.8.0.4\lib\net462\OSPSuite.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Engine, Version=8.0.4.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Engine.8.0.4\lib\net462\OSPSuite.Engine.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.1.9\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.1.14\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.4.0.16, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.4.0.16\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=8.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.8.0.4\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.4.0.16, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.4.0.16\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=8.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Presentation.8.0.4\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.SimModel.3.0.1.17\lib\net45\OSPSuite.SimModel.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.SimModel.3.0.1.27\lib\net45\OSPSuite.SimModel.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.TeXReporting, Version=2.1.1.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.TeXReporting.2.1.1.9\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Utility, Version=3.0.0.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.3\lib\net462\OSPSuite.Utility.dll</HintPath>
+    <Reference Include="OSPSuite.Utility, Version=3.0.1.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.3.0.1.7\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
-    <Reference Include="SX, Version=2.6.9.0, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.9\lib\net45\SX.dll</HintPath>
+    <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
+    </Reference>
+    <Reference Include="SX, Version=2.7.0.9, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.7.0.9\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Console, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Console.4.3.1\lib\net46\System.Console.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.SQLite, Version=1.0.106.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.106.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.109.2\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Memory.4.5.2\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -217,6 +268,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="CLI\ExportSimulationRunnerSpecs.cs" />
+    <Compile Include="CLI\QualificationRunnerSpecs.cs" />
     <Compile Include="CLI\SnapshotRunnerSpecs.cs" />
     <Compile Include="ContextSpecificationWithLocalContainer.cs" />
     <Compile Include="CoreConstantsForSpecs.cs" />
@@ -266,6 +318,7 @@
     <Compile Include="Core\ClassificationMapperSpecs.cs" />
     <Compile Include="Core\ObservedDataCollectionMappperSpecs.cs" />
     <Compile Include="Core\ObservedDataMapperSpecs.cs" />
+    <Compile Include="Core\ObserverTaskSpecs.cs" />
     <Compile Include="Core\OntogenyMapperSpecs.cs" />
     <Compile Include="Core\OriginDataMapperSpecs.cs" />
     <Compile Include="Core\OutputIntervalMapperSpecs.cs" />
@@ -281,6 +334,7 @@
     <Compile Include="Core\ParameterIdentificationMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationRunModeMapperSpecs.cs" />
     <Compile Include="Core\ParameterIdentificationSimulationSelectorSpecs.cs" />
+    <Compile Include="Core\ParameterListOfValuesRetrieverSpecs.cs" />
     <Compile Include="Core\ParameterMapperSpecs.cs" />
     <Compile Include="Core\ParameterRangeMapperSpecs.cs" />
     <Compile Include="Core\PKSimParameterDiffBuilderSpecs.cs" />
@@ -292,6 +346,7 @@
     <Compile Include="Core\PopulationSimulationAnalysisSynchronizerSpecs.cs" />
     <Compile Include="Core\ProcessMappingMapperSpecs.cs" />
     <Compile Include="Core\ProjectMapperSpecs.cs" />
+    <Compile Include="Core\SnapshotProjectSpecs.cs" />
     <Compile Include="Core\QualificationPlanMapperSpecs.cs" />
     <Compile Include="Core\QualificationStepMapperSpecs.cs" />
     <Compile Include="Core\QuantityInfoMapperSpecs.cs" />
@@ -306,6 +361,7 @@
     <Compile Include="Core\SimulationConfigurationValidatorSpecs.cs" />
     <Compile Include="Core\SimulationMapperSpecs.cs" />
     <Compile Include="Core\SnapshotMapperSpecs.cs" />
+    <Compile Include="Core\SnapshotSimulationSpecs.cs" />
     <Compile Include="Core\SnapshotTaskSpecs.cs" />
     <Compile Include="Core\SolverSettingsMapperSpecs.cs" />
     <Compile Include="Core\SpeciesSpecs.cs" />
@@ -318,14 +374,19 @@
     <Compile Include="Core\ValueOriginMapperSpecs.cs" />
     <Compile Include="Infrastructure\DefaultIndividualRetrieverSpecs.cs" />
     <Compile Include="Infrastructure\FlatValueOriginToValueOriginMapperSpecs.cs" />
+    <Compile Include="Infrastructure\MarkdownReporterTaskSpecs.cs" />
+    <Compile Include="Infrastructure\ParameterToParameterElementMapperSpecs.cs" />
+    <Compile Include="Infrastructure\PKSimProjectRetrieverSpecs.cs" />
     <Compile Include="Infrastructure\PresentableTEXBuilderSpecs.cs" />
     <Compile Include="Infrastructure\SerializationContextFactorySpecs.cs" />
     <Compile Include="Infrastructure\SimulationComparisonContentLoaderSpecs.cs" />
     <Compile Include="Infrastructure\SimulationConstructor.cs" />
     <Compile Include="Infrastructure\SnapshotSerializerSpecs.cs" />
     <Compile Include="Infrastructure\WorkspaceLayoutPersistorSpecs.cs" />
+    <Compile Include="ContextSpecification.cs" />
     <Compile Include="IntegrationTests\FlatOrganTypeRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\JacobianMatrixXmlSerializerSpecs.cs" />
+    <Compile Include="IntegrationTests\ObserverLoaderSpecs.cs" />
     <Compile Include="IntegrationTests\OrganTypeRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationConfigurationClonerSpecs.cs" />
     <Compile Include="IntegrationTests\ParameterIdentificationResidualVsTimeChartXmlSerializerSpecs.cs" />
@@ -395,7 +456,7 @@
     <Compile Include="Core\DataColumnExtensionsSpecs.cs" />
     <Compile Include="Core\DistributedTableFormulaSpecs.cs" />
     <Compile Include="Core\DistributionMetaDataToDistributionMapperSpecs.cs" />
-    <Compile Include="Core\DataRepositorySynchronizerSpecs.cs" />
+    <Compile Include="Core\SimulationResultsSynchronizerSpecs.cs" />
     <Compile Include="Core\DistributionFactorySpecs.cs" />
     <Compile Include="Core\DistributionFormulaExtensionsSpecs.cs" />
     <Compile Include="Core\DistributionScalingMethodSpecificationSpecs.cs" />
@@ -581,8 +642,10 @@
     <Compile Include="IntegrationTests\PopulationSimulationSerializationSpecs.cs" />
     <Compile Include="IntegrationTests\ProjectXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\RenameBuildingBlockTaskSpecs.cs" />
+    <Compile Include="Presentation\EditObserverSetPresenterSpecs.cs" />
     <Compile Include="Presentation\EditTableSolubilityParameterPresenterSpecs.cs" />
     <Compile Include="Presentation\EditValueOriginPresenterSpecs.cs" />
+    <Compile Include="Presentation\ImportObserverSetPresenterSpecs.cs" />
     <Compile Include="Presentation\MoleculeParameterTaskSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeDTOSpecs.cs" />
     <Compile Include="Presentation\ParameterAlternativeNamePresenterSpecs.cs" />
@@ -593,9 +656,11 @@
     <Compile Include="Presentation\RunParameterIdentificationQualificationStepRunnerSpecs.cs" />
     <Compile Include="Presentation\RunSimulationQualificationStepRunnerSpecs.cs" />
     <Compile Include="Presentation\SimulationExpressionsPresenterSpecs.cs" />
+    <Compile Include="Presentation\SimulationObserversConfigurationPresenterSpecs.cs" />
     <Compile Include="Presentation\UserDefinedParametersPresenterSpecs.cs" />
     <Compile Include="ProjectConverter\v7_3\Converter721To730Specs.cs" />
     <Compile Include="ProjectConverter\v7_4\Converter730To740Specs.cs" />
+    <Compile Include="ProjectConverter\v8_0\Converter740To80Specs.cs" />
     <Compile Include="Reporting\ReportingSpecs.cs" />
     <Compile Include="Reporting\SimulationsReporterSpecs.cs" />
     <Compile Include="IntegrationTests\SimulationXmlSerializerSpecs.cs" />
@@ -968,7 +1033,6 @@
     <Compile Include="Presentation\PartialProcessToPartialProcessTemplateDTOMapperSpecs.cs" />
     <Compile Include="Presentation\PKAnalysisPresenterSpecs.cs" />
     <Compile Include="Presentation\PopulationAdvancedParametersPresenterSpecs.cs" />
-    <Compile Include="Presentation\PopulationExportTaskSpecs.cs" />
     <Compile Include="Presentation\PopulationAdvancedParameterDistributionPresenterSpecs.cs" />
     <Compile Include="Presentation\PopulationSettingsDTOToPopulationSettingsMapperSpecs.cs" />
     <Compile Include="Presentation\RandomPopulationSettingsPresenterSpecs.cs" />
@@ -1127,11 +1191,14 @@
     <None Include="app.config" />
     <None Include="Data\2Pore_515.pksim5" />
     <None Include="Data\515_UnitTest.pksim5" />
+    <None Include="Data\6.0.3_ParticlesFormulation.pksim5" />
     <None Include="Data\6.3.2_GFR_TS.pksim5" />
     <None Include="Data\631_EnzymesOntogeny.pksim5" />
+    <None Include="Data\Application.pkml" />
     <None Include="Data\BuildingBlockRename_611.pksim5" />
     <None Include="Data\ChartTemplate_531.pksim5" />
     <None Include="Data\HumanAndRat_7.1.0.pksim5" />
+    <None Include="Data\HumanAndRat_7.1.0_from_7.1.0.pksim5" />
     <None Include="Data\HumanAndRat_7.2.0_from_7.1.0.pksim5" />
     <None Include="Data\Individual_553.pksim5" />
     <None Include="Data\Individual_55_Not_Default.pksim5" />
@@ -1139,6 +1206,7 @@
     <None Include="Data\Individual_CYP3A4_Query_553.pksim5" />
     <None Include="Data\IsDefaultConversion_722.pksim5" />
     <None Include="Data\Layout_631.pksim5" />
+    <None Include="Data\Observer.pkml" />
     <None Include="Data\oldProject.pkprj" />
     <None Include="Data\PartialProcess_554.pksim5" />
     <None Include="Data\PopSimTest.pksim5" />
@@ -1197,6 +1265,7 @@
     <None Include="Data\PopulationFiles\junk.csv" />
     <None Include="Data\PopulationFiles\new_format_with_comment.csv" />
     <None Include="Data\PopulationFiles\new_format_with_comment_tab.csv" />
+    <None Include="Data\PopulationFiles\path_with_units.csv" />
     <None Include="Data\PopulationFiles\pop_10.csv" />
     <None Include="Data\PopulationFiles\pop_10000.csv" />
     <None Include="Data\PopulationFiles\pop_10_old_format.csv" />
@@ -1238,7 +1307,9 @@
     <None Include="Data\SurfaceAreaVariability_551.pksim5" />
     <None Include="Data\Test4Convert_504.pksim5" />
     <None Include="Data\Theophylline_612.pksim5" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Templates\StandardTemplate\SBSuite.sty" />
     <None Include="Templates\StandardTemplate\StandardTemplate.json" />
     <None Include="Templates\StandardTemplate\StandardTemplate.tex" />
@@ -1248,14 +1319,14 @@
       <Link>OSPSuite.Dimensions.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="..\..\packages\OSPSuite.SimModelSolver_CVODES282.3.0.1.9\lib\net45\OSPSuite.SimModelSolver_CVODES282.dll">
-      <Link>OSPSuite.SimModelSolver_CVODES282.dll</Link>
+    <Content Include="..\..\packages\OSPSuite.SimModelSolver_CVODES.4.0.0.5\lib\net45\OSPSuite.SimModelSolver_CVODES.dll">
+      <Link>OSPSuite.SimModelSolver_CVODES.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x64\SQLite.Interop.dll">
+    </Content>
+    <Content Include="..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\x64\SQLite.Interop.dll">
       <Link>SQLite.Interop.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml">
       <Link>OSPSuite.PKParameters.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1286,12 +1357,13 @@
     <Folder Include="ProteinExpressions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NUnit.3.12.0\build\NUnit.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,15 +1,14 @@
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Events;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
 {
    public interface IEventTask : IBuildingBlockTask<PKSimEvent>
    {
-      PKSimEvent CreateEvent();
       EventMapping CreateEventMapping();
    }
 
@@ -24,11 +23,6 @@ namespace PKSim.Presentation.Services
       }
 
       public override PKSimEvent AddToProject()
-      {
-         return AddToProject<ICreateEventPresenter>();
-      }
-
-      public PKSimEvent CreateEvent()
       {
          return AddToProject<ICreateEventPresenter>();
       }

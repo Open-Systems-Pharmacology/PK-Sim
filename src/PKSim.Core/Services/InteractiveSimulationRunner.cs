@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using PKSim.Core.Model;
 
@@ -18,15 +17,22 @@ namespace PKSim.Core.Services
       private readonly ISimulationRunner _simulationRunner;
       private readonly ICloner _cloner;
       private readonly ISimulationAnalysisCreator _simulationAnalysisCreator;
+      private readonly ILazyLoadTask _lazyLoadTask;
 
       private readonly SimulationRunOptions _simulationRunOptions;
 
-      public InteractiveSimulationRunner(ISimulationSettingsRetriever simulationSettingsRetriever, ISimulationRunner simulationRunner, ICloner cloner, ISimulationAnalysisCreator simulationAnalysisCreator)
+      public InteractiveSimulationRunner(
+         ISimulationSettingsRetriever simulationSettingsRetriever, 
+         ISimulationRunner simulationRunner, 
+         ICloner cloner, 
+         ISimulationAnalysisCreator simulationAnalysisCreator, 
+         ILazyLoadTask lazyLoadTask)
       {
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _simulationRunner = simulationRunner;
          _cloner = cloner;
          _simulationAnalysisCreator = simulationAnalysisCreator;
+         _lazyLoadTask = lazyLoadTask;
 
          _simulationRunOptions = new SimulationRunOptions
          {
@@ -39,6 +45,8 @@ namespace PKSim.Core.Services
 
       public async Task RunSimulation(Simulation simulation, bool selectOutput)
       {
+         _lazyLoadTask.Load(simulation);
+
          if (outputSelectionRequired(simulation, selectOutput))
          {
             var outputSelections = _simulationSettingsRetriever.SettingsFor(simulation);
@@ -53,7 +61,6 @@ namespace PKSim.Core.Services
          addAnalysableToSimulationIfRequired(simulation);
       }
 
-     
       private bool outputSelectionRequired(Simulation simulation, bool selectOutput)
       {
          if (selectOutput)

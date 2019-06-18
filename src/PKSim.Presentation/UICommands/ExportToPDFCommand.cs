@@ -11,6 +11,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;
@@ -52,9 +53,9 @@ namespace PKSim.Presentation.UICommands
 
    public class ExportHistoryToPDFCommand : ExportToPDFCommand<IHistoryManager>
    {
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
 
-      public ExportHistoryToPDFCommand(IApplicationController applicationController, IWorkspace workspace) : base(applicationController)
+      public ExportHistoryToPDFCommand(IApplicationController applicationController, ICoreWorkspace workspace) : base(applicationController)
       {
          _workspace = workspace;
       }

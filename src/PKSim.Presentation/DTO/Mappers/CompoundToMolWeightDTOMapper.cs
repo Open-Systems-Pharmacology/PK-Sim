@@ -30,7 +30,7 @@ namespace PKSim.Presentation.DTO.Mappers
                    {
                       MolWeightParameter = _parameterDTOMapper.MapFrom(allCompoundParameters.FindByName(Constants.Parameters.MOL_WEIGHT)),
                       MolWeightEffParameter = _parameterDTOMapper.MapFrom(allCompoundParameters.FindByName(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT)),
-                      HasHalogensParameter = _parameterDTOMapper.MapFrom(allCompoundParameters.FindByName(CoreConstants.Parameters.HAS_HALOGENS)),
+                      HasHalogensParameter = _parameterDTOMapper.MapFrom(allCompoundParameters.FindByName(Constants.Parameters.HAS_HALOGENS)),
                    };
 
       }

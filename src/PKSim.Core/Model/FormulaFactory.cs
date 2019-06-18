@@ -100,7 +100,7 @@ namespace PKSim.Core.Model
       IFormula AgeFormulaFor(IParameter age0Parameter, IParameter minToYearFactorParameter);
 
       /// <summary>
-      ///    Returns the drug mass formula for an application molecule builer 
+      ///    Returns the drug mass formula for an application molecule builder 
       /// </summary>
       IFormula DrugMassFormulaFor(IFormulaCache formulaCache);
 

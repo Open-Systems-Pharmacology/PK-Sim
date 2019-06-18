@@ -99,7 +99,7 @@ namespace PKSim.Core.Services
          return Task.Run(() =>
          {
             var importResult = new IndividualResultsImport();
-            var simulationResultsFile = new SimulationResultsFile {FilePath = fileFullPath};
+            var simulationResultsFile = new SimulationResultsImportFile {FilePath = fileFullPath};
             importResult.IndividualResults = _individualResultsImporter.ImportFrom(fileFullPath, simulation,simulationResultsFile).ToList();
             simulationResultsFile.NumberOfIndividuals = importResult.IndividualResults.Count;
             importResult.SimulationResultsFile = simulationResultsFile;
@@ -155,7 +155,7 @@ namespace PKSim.Core.Services
       private class IndividualResultsImport
       {
          public IList<IndividualResults> IndividualResults { get; set; }
-         public SimulationResultsFile SimulationResultsFile { get; set; }
+         public SimulationResultsImportFile SimulationResultsFile { get; set; }
       }
 
       private static void validateResults(SimulationResultsImport simulationResultsImport, IndividualResults individualResults)

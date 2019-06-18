@@ -1,10 +1,4 @@
 ﻿using System.Linq;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
@@ -13,17 +7,23 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Assets;
 using PKSim.UI.Views.Core;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.UI.Views.Individuals
 {
@@ -190,15 +190,17 @@ namespace PKSim.UI.Views.Individuals
          layoutItemWarning.Visibility = LayoutVisibility.Never;
       }
 
+      public void RefreshData()
+      {
+         _gridViewBinder.Rebind();
+      }
+
       public void AddMoleculePropertiesView(IView view)
       {
          AddViewTo(layoutItemMoleculeProperties, view);
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError || _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError || _gridViewBinder.HasError;
 
       public void Clear()
       {

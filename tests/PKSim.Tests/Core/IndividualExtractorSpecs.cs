@@ -84,7 +84,7 @@ namespace PKSim.Core
          organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(50).WithName(CoreConstants.Parameters.HEIGHT));
          organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(60).WithName(CoreConstants.Parameters.BMI));
          organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(70).WithName(CoreConstants.Parameters.AGE));
-         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(80).WithName(CoreConstants.Parameters.GESTATIONAL_AGE));
+         organism.Add(DomainHelperForSpecs.ConstantParameterWithValue(80).WithName(Constants.Parameters.GESTATIONAL_AGE));
 
          _constParam1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P1");
          _constParam2 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P2");
@@ -185,7 +185,7 @@ namespace PKSim.Core
       public void should_update_the_origin_data_with_the_value_of_all_organism_parameters()
       {
          checkOriginDataParameter(_cloneIndividual.OriginData.Age, CoreConstants.Parameters.AGE);
-         checkOriginDataParameter(_cloneIndividual.OriginData.GestationalAge, CoreConstants.Parameters.GESTATIONAL_AGE);
+         checkOriginDataParameter(_cloneIndividual.OriginData.GestationalAge, Constants.Parameters.GESTATIONAL_AGE);
          checkOriginDataParameter(_cloneIndividual.OriginData.BMI, CoreConstants.Parameters.BMI);
          checkOriginDataParameter(_cloneIndividual.OriginData.Height, CoreConstants.Parameters.HEIGHT);
          checkOriginDataParameter(_cloneIndividual.OriginData.Weight, CoreConstants.Parameters.WEIGHT);

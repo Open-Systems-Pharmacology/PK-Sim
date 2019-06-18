@@ -5,6 +5,7 @@ using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_BuildingBlockFinalizer : ContextSpecification<IBuildingBlockFinalizer>

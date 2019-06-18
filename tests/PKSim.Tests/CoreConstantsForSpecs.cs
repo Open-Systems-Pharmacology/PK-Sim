@@ -9,7 +9,6 @@
          public static readonly string ActiveEffluxSpecificHill = "ActiveEffluxSpecific_Hill";
       }
 
-
       public static class Process
       {
          public static readonly string LIVER_CLEARANCE = "LiverClearance";
@@ -41,7 +40,7 @@
          public static readonly string ENZYME_CONCENTRATION = "Enzyme concentration";
          public static readonly string CL_SPEC_PER_ENZYME = "CLspec/[Enzyme]";
          public static readonly string NUMBER_OF_CELLS_PER_INCUBATION = "Number of cells/incubation";
-         public static readonly string INTESTINAL_TRANSIT_RATE_ABSOLUTE="Intestinal transit rate (absolute)";
+         public static readonly string INTESTINAL_TRANSIT_RATE_ABSOLUTE = "Intestinal transit rate (absolute)";
          public static readonly string DRUG_MASS = "DrugMass";
          public static readonly string PARTICLE_RADIUS_DISSOLVED = "Immediately dissolve particles smaller than";
          public static readonly string THICKNESS_WATER_LAYER = "Thickness (unstirred water layer)";
@@ -83,6 +82,11 @@
       public static class Population
       {
          public const string Japanese = "Japanese_Population";
+      }
+
+      public static class Observer
+      {
+         public static readonly string WHOLE_ORGAN_INCLUDING_FCRN_COMPLEX = "Whole Organ incl. FcRn_Complex";
       }
    }
 }

@@ -23,7 +23,7 @@ namespace PKSim.Core.Services
 
       public override bool IsSatisfiedBy(Formulation formulation)
       {
-         return formulation.FormulationType == CoreConstants.Formulation.ZeroOrder;
+         return formulation.FormulationType == CoreConstants.Formulation.ZERO_ORDER;
       }
    }
 }

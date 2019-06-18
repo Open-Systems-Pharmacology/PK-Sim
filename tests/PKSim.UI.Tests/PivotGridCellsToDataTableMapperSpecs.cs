@@ -11,6 +11,7 @@ using OSPSuite.UI.Mappers;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 
+
 namespace PKSim.UI.Tests
 {
    public abstract class concern_for_PivotGridCellsToDataTableMapper : ContextSpecification<PivotGridCellsToDataTableMapper>

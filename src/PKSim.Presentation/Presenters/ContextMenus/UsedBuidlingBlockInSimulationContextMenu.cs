@@ -50,19 +50,10 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             : ApplicationIcons.CommitRed;
       }
 
-      protected virtual bool CanUpdate
-      {
-         get { return _usedBuildingBlock.Altered || _templateBuildingBlock.Version != _usedBuildingBlock.Version; }
-      }
+      protected virtual bool CanUpdate => _usedBuildingBlock.Altered || _templateBuildingBlock.Version != _usedBuildingBlock.Version;
 
-      protected virtual bool CanCommit
-      {
-         get { return CanUpdate; }
-      }
+      protected virtual bool CanCommit => CanUpdate;
 
-      protected virtual bool CanShowDiff
-      {
-         get { return CanUpdate; }
-      }
+      protected virtual bool CanShowDiff => CanUpdate;
    }
 }

@@ -116,8 +116,8 @@ namespace PKSim.IntegrationTests
 
       protected bool PrecipitatedDrugSoluble
       {
-         get => MoleculeProperties(CoreConstants.Parameters.PRECIPITATED_DRUG_SOLUBLE).Value == 1;
-         set => MoleculeProperties(CoreConstants.Parameters.PRECIPITATED_DRUG_SOLUBLE).Value = value ? 1 : 0;
+         get => MoleculeProperties(Constants.Parameters.PRECIPITATED_DRUG_SOLUBLE).Value == 1;
+         set => MoleculeProperties(Constants.Parameters.PRECIPITATED_DRUG_SOLUBLE).Value = value ? 1 : 0;
       }
 
       protected double ParticleRadiusDissolved
@@ -507,7 +507,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         //load protoype simulation
+         //load prototype simulation
          var importSimulationTask = IoC.Resolve<IImportSimulationTask>();
          var pkmlFilePrototypeSimulation = DomainHelperForSpecs.DataFilePathFor("PrototypeParticlesDissolution_722.pkml");
          _prototypeSimulation = importSimulationTask.ImportIndividualSimulation(pkmlFilePrototypeSimulation);
@@ -601,9 +601,9 @@ namespace PKSim.IntegrationTests
          MoleculeProperties(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value = 0.85;
          MoleculeProperties(CoreConstants.Parameters.MOLECULAR_WEIGHT).Value = 2.2521E-07;
          MoleculeProperties(CoreConstants.Parameters.PARAMETER_PKA1).Value = 9.20;
-         MoleculeProperties(CoreConstants.Parameters.COMPOUND_TYPE1).Value = CoreConstants.Compound.COMPOUND_TYPE_ACID;
+         MoleculeProperties(Constants.Parameters.COMPOUND_TYPE1).Value = CoreConstants.Compound.COMPOUND_TYPE_ACID;
          MoleculeProperties(CoreConstants.Parameters.PARAMETER_PKA2).Value = 2.20;
-         MoleculeProperties(CoreConstants.Parameters.COMPOUND_TYPE2).Value = CoreConstants.Compound.COMPOUND_TYPE_BASE;
+         MoleculeProperties(Constants.Parameters.COMPOUND_TYPE2).Value = CoreConstants.Compound.COMPOUND_TYPE_BASE;
          MoleculeProperties(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH).Value = 1E-05;
          MoleculeProperties("Reference pH").Value = 7;
 

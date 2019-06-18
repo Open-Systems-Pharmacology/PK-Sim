@@ -22,6 +22,7 @@ using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
 using IProjectTask = PKSim.Presentation.Services.IProjectTask;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_ProjectTask : ContextSpecificationAsync<IProjectTask>
@@ -78,7 +79,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_runnung_pk_sim_with_a_pop_simulation_file : concern_for_ProjectTask
+   public class When_running_pk_sim_with_a_pop_simulation_file : concern_for_ProjectTask
    {
       private readonly string _simFile = "simFile.pkml";
       private NewImportPopulationSimulationCommand _importPopulationSimlationCommand;

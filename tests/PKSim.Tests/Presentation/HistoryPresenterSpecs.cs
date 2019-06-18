@@ -10,7 +10,6 @@ using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters.Commands;
 using OSPSuite.Presentation.Regions;
-using IWorkspace = PKSim.Presentation.Core.IWorkspace;
 
 namespace PKSim.Presentation
 {
@@ -18,7 +17,7 @@ namespace PKSim.Presentation
    {
       protected IHistoryBrowserPresenter _historyBrowserPresenter;
       protected IRegion _region;
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       private IRegionResolver _regionResolver;
       protected IExecutionContext _executionContext;
       private IApplicationConfiguration _configuration;
@@ -27,7 +26,7 @@ namespace PKSim.Presentation
       {
          _region = A.Fake<IRegion>();
          _historyBrowserPresenter = A.Fake<IHistoryBrowserPresenter>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _regionResolver = A.Fake<IRegionResolver>();
          _executionContext = A.Fake<IExecutionContext>();
          _configuration= A.Fake<IApplicationConfiguration>();
@@ -67,7 +66,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_initialize_the_history_browser_presenter_twice()
       {
-         A.CallTo(() => _historyBrowserPresenter.Initialize()).MustHaveHappened(Repeated.Exactly.Once);
+         A.CallTo(() => _historyBrowserPresenter.Initialize()).MustHaveHappenedOnceExactly();
       }
    }
 

@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
@@ -30,23 +29,30 @@ namespace PKSim.Infrastructure.Services
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly ISimModelExporter _simModelExporter;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
-      private readonly IWorkspace _workspace;
+      private readonly IProjectRetriever _projectRetriever;
       private readonly IPKSimConfiguration _configuration;
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly IDialogCreator _dialogCreator;
       private readonly ICloner _cloner;
 
-      public PopulationExportTask(IApplicationController applicationController, IEntityPathResolver entityPathResolver,
-         ILazyLoadTask lazyLoadTask, ISimModelExporter simModelExporter, ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
-         IWorkspace workspace, IPKSimConfiguration configuration, ISimulationSettingsRetriever simulationSettingsRetriever,
-         IDialogCreator dialogCreator, ICloner cloner)
+      public PopulationExportTask(
+         IApplicationController applicationController,
+         IEntityPathResolver entityPathResolver,
+         ILazyLoadTask lazyLoadTask,
+         ISimModelExporter simModelExporter,
+         ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
+         IProjectRetriever projectRetriever,
+         IPKSimConfiguration configuration,
+         ISimulationSettingsRetriever simulationSettingsRetriever,
+         IDialogCreator dialogCreator,
+         ICloner cloner)
       {
          _applicationController = applicationController;
          _entityPathResolver = entityPathResolver;
          _lazyLoadTask = lazyLoadTask;
          _simModelExporter = simModelExporter;
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
-         _workspace = workspace;
+         _projectRetriever = projectRetriever;
          _configuration = configuration;
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _dialogCreator = dialogCreator;
@@ -93,7 +99,7 @@ namespace PKSim.Infrastructure.Services
 
       private IReadOnlyList<string> getProjectMetaInfo(string description = null)
       {
-         var metaInfo = new List<string> {$"Project: {_workspace.Project.Name}", $"{CoreConstants.PRODUCT_NAME} version: {_configuration.FullVersion}"};
+         var metaInfo = new List<string> {$"Project: {_projectRetriever.ProjectName}", $"{CoreConstants.PRODUCT_NAME} version: {_configuration.FullVersion}"};
          if (!string.IsNullOrEmpty(description))
             metaInfo.Add(description);
 
@@ -199,6 +205,7 @@ namespace PKSim.Infrastructure.Services
          {
             populationExport = presenter.SelectDirectory(PKSimConstants.UI.ExportForClusterSimulationTitle, Constants.DirectoryKey.SIM_MODEL_XML);
          }
+
          if (populationExport == null)
             return;
 

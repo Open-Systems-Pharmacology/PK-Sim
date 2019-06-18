@@ -32,7 +32,7 @@ namespace PKSim.UI.Views.Compounds
       private void InitializeComponent()
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.panelNote = new UxHintPanel();
+         this.panelNote = new OSPSuite.UI.Controls.UxHintPanel();
          this.panelParameters = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemParameters = new DevExpress.XtraLayout.LayoutControlItem();
@@ -61,8 +61,9 @@ namespace PKSim.UI.Views.Compounds
          // 
          // panelNote
          // 
-         this.panelNote.Location = new System.Drawing.Point(2, 313);
+         this.panelNote.Location = new System.Drawing.Point(2, 299);
          this.panelNote.MaximumSize = new System.Drawing.Size(1000000, 40);
+         this.panelNote.MaxLines = 3;
          this.panelNote.MinimumSize = new System.Drawing.Size(200, 40);
          this.panelNote.Name = "panelNote";
          this.panelNote.NoteText = "";
@@ -73,7 +74,7 @@ namespace PKSim.UI.Views.Compounds
          // 
          this.panelParameters.Location = new System.Drawing.Point(2, 2);
          this.panelParameters.Name = "panelParameters";
-         this.panelParameters.Size = new System.Drawing.Size(393, 307);
+         this.panelParameters.Size = new System.Drawing.Size(393, 293);
          this.panelParameters.TabIndex = 4;
          // 
          // layoutControlGroup1
@@ -84,11 +85,9 @@ namespace PKSim.UI.Views.Compounds
          this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemParameters,
             this.layoutItemNote});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup1.Name = "layoutControlGroup1";
          this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup1.Size = new System.Drawing.Size(397, 355);
-         this.layoutControlGroup1.Text = "layoutControlGroup1";
          this.layoutControlGroup1.TextVisible = false;
          // 
          // layoutItemParameters
@@ -97,22 +96,18 @@ namespace PKSim.UI.Views.Compounds
          this.layoutItemParameters.CustomizationFormText = "layoutItemParameters";
          this.layoutItemParameters.Location = new System.Drawing.Point(0, 0);
          this.layoutItemParameters.Name = "layoutItemParameters";
-         this.layoutItemParameters.Size = new System.Drawing.Size(397, 311);
-         this.layoutItemParameters.Text = "layoutItemParameters";
+         this.layoutItemParameters.Size = new System.Drawing.Size(397, 297);
          this.layoutItemParameters.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemParameters.TextToControlDistance = 0;
          this.layoutItemParameters.TextVisible = false;
          // 
          // layoutItemNote
          // 
          this.layoutItemNote.Control = this.panelNote;
          this.layoutItemNote.CustomizationFormText = "layoutItemNote";
-         this.layoutItemNote.Location = new System.Drawing.Point(0, 311);
+         this.layoutItemNote.Location = new System.Drawing.Point(0, 297);
          this.layoutItemNote.Name = "layoutItemNote";
-         this.layoutItemNote.Size = new System.Drawing.Size(397, 44);
-         this.layoutItemNote.Text = "layoutItemNote";
+         this.layoutItemNote.Size = new System.Drawing.Size(397, 58);
          this.layoutItemNote.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemNote.TextToControlDistance = 0;
          this.layoutItemNote.TextVisible = false;
          // 
          // CompoundAdvancedParameterGroupView

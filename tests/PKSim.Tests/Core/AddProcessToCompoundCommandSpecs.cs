@@ -8,13 +8,14 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Presentation.Core;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_AddProcessToCompoundCommand : ContextSpecification<AddProcessToCompoundCommand>
    {
       protected Compound _compound;
       protected IExecutionContext _executionContext;
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected PKSimProject _project;
       protected CompoundProcess _proc;
 

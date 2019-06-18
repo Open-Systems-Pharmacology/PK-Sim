@@ -57,11 +57,11 @@ namespace PKSim.Infrastructure
       public static Formulation CreateParticlesFormulation(int numberOfBins)
       {
          var formulationRepository = IoC.Resolve<IFormulationRepository>();
-         var formulation = formulationRepository.FormulationBy(CoreConstants.Formulation.Particles);
-         formulation.Parameter(CoreConstants.Parameters.NUMBER_OF_BINS).Value = numberOfBins;
+         var formulation = formulationRepository.FormulationBy(CoreConstants.Formulation.PARTICLES);
+         formulation.Parameter(Constants.Parameters.NUMBER_OF_BINS).Value = numberOfBins;
          
          //set mono/polydisperse property (0=mono, 1=poly).
-         formulation.Parameter(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value = (numberOfBins > 1) ? CoreConstants.Parameters.POLYDISPERSE : CoreConstants.Parameters.MONODISPERSE;
+         formulation.Parameter(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value = (numberOfBins > 1) ? CoreConstants.Parameters.POLYDISPERSE : CoreConstants.Parameters.MONODISPERSE;
 
          return formulation;
       }

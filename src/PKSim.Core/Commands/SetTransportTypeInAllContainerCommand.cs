@@ -23,7 +23,7 @@ namespace PKSim.Core.Commands
          ObjectType = PKSimConstants.ObjectTypes.Transporter;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          Description = PKSimConstants.Command.SetTransportTypeCommandDescription(_individualTransporter.Name, OldTransportType.ToString(), NewTransportType.ToString());
-         context.UpdateBuildinBlockPropertiesInCommand(this, _individual);
+         context.UpdateBuildingBlockPropertiesInCommand(this, _individual);
       }
 
       public override void Execute(IExecutionContext context)

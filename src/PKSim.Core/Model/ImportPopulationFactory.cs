@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +6,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Services;
 
@@ -35,11 +33,11 @@ namespace PKSim.Core.Model
       private PathCache<IParameter> _allParameters;
       private PathCache<IParameter> _allCreateIndividualParameters;
 
-      public ImportPopulationFactory(IObjectBaseFactory objectBaseFactory, 
+      public ImportPopulationFactory(IObjectBaseFactory objectBaseFactory,
          IProgressManager progressManager,
-         IIndividualPropertiesCacheImporter individualPropertiesCacheImporter, 
-         ICloner cloner, 
-         IContainerTask containerTask, 
+         IIndividualPropertiesCacheImporter individualPropertiesCacheImporter,
+         ICloner cloner,
+         IContainerTask containerTask,
          IAdvancedParameterFactory advancedParameterFactory)
       {
          _objectBaseFactory = objectBaseFactory;
@@ -57,9 +55,9 @@ namespace PKSim.Core.Model
             using (var progressUpdater = _progressManager.Create())
             {
                var importPopulation = createPopulationFor(individual);
-               var popIndiviudal = importPopulation.Settings.BaseIndividual;
-               _allParameters = _containerTask.CacheAllChildren<IParameter>(popIndiviudal);
-               _allCreateIndividualParameters = _containerTask.CacheAllChildrenSatisfying<IParameter>(popIndiviudal, x => x.IsChangedByCreateIndividual);
+               var baseIndividual = importPopulation.Settings.BaseIndividual;
+               _allParameters = _containerTask.CacheAllChildren<IParameter>(baseIndividual);
+               _allCreateIndividualParameters = _containerTask.CacheAllChildrenSatisfying<IParameter>(baseIndividual, x => x.IsChangedByCreateIndividual);
 
                var settings = importPopulation.Settings;
                progressUpdater.Initialize(files.Count, PKSimConstants.UI.CreatingPopulation);
@@ -124,9 +122,8 @@ namespace PKSim.Core.Model
          {
             var populationFile = new PopulationFile {FilePath = file};
 
-            var importResult = new ImportResult {IndividualValues = _individualPropertiesCacheImporter.ImportFrom(file, populationFile)};
+            var importResult = new ImportResult {IndividualValues = _individualPropertiesCacheImporter.ImportFrom(file, _allParameters, populationFile)};
             cancellationToken.ThrowIfCancellationRequested();
-            updatePathsContaininUnits(importResult.IndividualValues);
             validate(importResult.IndividualValues, populationFile);
             populationFile.NumberOfIndividuals = importResult.IndividualValues.Count;
             importResult.PopulationFile = populationFile;
@@ -135,37 +132,9 @@ namespace PKSim.Core.Model
          }, cancellationToken);
       }
 
-      private void updatePathsContaininUnits(IndividualPropertiesCache individualValues)
-      {
-         individualValues.AllParameterValues.ToList().Each(parameterValue => { removeUnits(individualValues, parameterValue); });
-      }
-
-      private void removeUnits(IndividualPropertiesCache individualValues, ParameterValues parameterValue)
-      {
-         var parameterPath = parameterValue.ParameterPath;
-         if (allParametersContains(parameterPath))
-            return;
-
-         var pathWithUnitsRemoved = importedPathWithUnitsRemoved(parameterPath);
-         if (allParametersContains(pathWithUnitsRemoved))
-         {
-            individualValues.RenamePath(parameterPath, pathWithUnitsRemoved);
-            parameterValue.ParameterPath = pathWithUnitsRemoved;
-         }
-      }
-
       private bool allParametersContains(string parameterPath)
       {
          return _allParameters.Contains(parameterPath);
-      }
-
-      private string importedPathWithUnitsRemoved(string path)
-      {
-         if (!path.TrimEnd().EndsWith("]")) return path;
-
-         var indexOfUnitStart = path.LastIndexOf("[", StringComparison.Ordinal);
-
-         return indexOfUnitStart == -1 ? path : path.Remove(indexOfUnitStart, path.Length - indexOfUnitStart).TrimEnd();
       }
 
       private void validate(IndividualPropertiesCache individualValues, IImportLogger logger)

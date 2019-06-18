@@ -1,7 +1,7 @@
+using OSPSuite.Presentation.UICommands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
-using OSPSuite.Presentation.UICommands;
 using IProtocolTask = PKSim.Presentation.Services.IProtocolTask;
 
 namespace PKSim.Presentation.UICommands
@@ -65,6 +65,13 @@ namespace PKSim.Presentation.UICommands
    public class EditEventCommand : EditBuildingBlockUICommand<PKSimEvent, IEventTask>
    {
       public EditEventCommand(IEventTask eventTask) : base(eventTask)
+      {
+      }
+   }
+
+   public class EditObserverSetCommand : EditBuildingBlockUICommand<ObserverSet, IObserverSetTask>
+   {
+      public EditObserverSetCommand(IObserverSetTask observerSetTask) : base(observerSetTask)
       {
       }
    }

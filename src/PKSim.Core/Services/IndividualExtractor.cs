@@ -130,7 +130,7 @@ namespace PKSim.Core.Services
       {
          var organism = individual.Organism;
          originData.Age = organism.Parameter(CoreConstants.Parameters.AGE)?.Value;
-         originData.GestationalAge = organism.Parameter(CoreConstants.Parameters.GESTATIONAL_AGE)?.Value;
+         originData.GestationalAge = organism.Parameter(Constants.Parameters.GESTATIONAL_AGE)?.Value;
          originData.Height = organism.Parameter(CoreConstants.Parameters.HEIGHT)?.Value;
          originData.BMI = organism.Parameter(CoreConstants.Parameters.BMI)?.Value;
          originData.Weight = organism.Parameter(CoreConstants.Parameters.WEIGHT).Value;

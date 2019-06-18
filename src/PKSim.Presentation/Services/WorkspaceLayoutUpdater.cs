@@ -9,6 +9,8 @@ using PKSim.Presentation.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Events;
+using OSPSuite.Presentation.Services;
+using PKSim.Core;
 
 namespace PKSim.Presentation.Services
 {
@@ -25,27 +27,27 @@ namespace PKSim.Presentation.Services
       private readonly IOpenSingleStartPresenterInvoker _openSingleStartPresenterInvoker;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IEventPublisher _eventPublisher;
-      private readonly IWorkspace _workspace;
+      private readonly IWithWorkspaceLayout _withWorkspaceLayout;
 
       public WorkspaceLayoutUpdater(IApplicationController applicationController, IWithIdRepository withIdRepository,
-         IOpenSingleStartPresenterInvoker openSingleStartPresenterInvoker, ILazyLoadTask lazyLoadTask, IEventPublisher eventPublisher, IWorkspace workspace)
+         IOpenSingleStartPresenterInvoker openSingleStartPresenterInvoker, ILazyLoadTask lazyLoadTask, IEventPublisher eventPublisher, IWithWorkspaceLayout withWorkspaceLayout)
       {
          _applicationController = applicationController;
          _withIdRepository = withIdRepository;
          _openSingleStartPresenterInvoker = openSingleStartPresenterInvoker;
          _lazyLoadTask = lazyLoadTask;
          _eventPublisher = eventPublisher;
-         _workspace = workspace;
+         _withWorkspaceLayout = withWorkspaceLayout;
       }
 
       public void SaveCurrentLayout()
       {
-         var existingLayoutItems = _workspace.WorkspaceLayout.LayoutItems;
+         var existingLayoutItems = _withWorkspaceLayout.WorkspaceLayout.LayoutItems;
 
          var workspaceLayout = createNewWorkspaceLayoutWithOpenPresenters();
          addExistingLayoutItemsToWorkspaceLayout(existingLayoutItems, workspaceLayout);
 
-         _workspace.WorkspaceLayout =  workspaceLayout;
+         _withWorkspaceLayout.WorkspaceLayout =  workspaceLayout;
       }
 
       private void addExistingLayoutItemsToWorkspaceLayout(IEnumerable<WorkspaceLayoutItem> existingLayoutItems, IWorkspaceLayout workspaceLayout)
@@ -77,7 +79,7 @@ namespace PKSim.Presentation.Services
 
       public void RestoreLayout()
       {
-         var workspaceLayout = _workspace.WorkspaceLayout;
+         var workspaceLayout = _withWorkspaceLayout.WorkspaceLayout;
          if (workspaceLayout == null) return;
 
          try

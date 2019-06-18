@@ -5,17 +5,18 @@ using PKSim.Presentation.UICommands;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Presentation.Services.Commands;
+using PKSim.Core;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_AddLabelCommand : ContextSpecification<AddLabelCommand>
    {
-      protected IWorkspace _worskpace;
+      protected ICoreWorkspace _worskpace;
       protected ILabelTask _labelTask;
 
       protected override void Context()
       {
-         _worskpace = A.Fake<IWorkspace>();
+         _worskpace = A.Fake<ICoreWorkspace>();
          _labelTask = A.Fake<ILabelTask>();
          sut = new AddLabelCommand(_labelTask, _worskpace);
          A.CallTo(() => _worskpace.HistoryManager).Returns(A.Fake<IHistoryManager<PKSimProject>>());

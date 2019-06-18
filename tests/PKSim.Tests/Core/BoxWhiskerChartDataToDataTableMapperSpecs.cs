@@ -8,6 +8,7 @@ using PKSim.Core.Mappers;
 using OSPSuite.Core.Domain;
 using Helper = PKSim.Core.ChartDataHelperForSpecs;
 
+
 namespace PKSim.Core
 {
    public abstract class concern_for_BoxWhiskerChartDataToDataTableMapper : ContextSpecification<ChartDataToDataTableMapper<BoxWhiskerXValue, BoxWhiskerYValue>>

@@ -1,4 +1,5 @@
 ﻿using System;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
@@ -39,7 +40,7 @@ namespace PKSim.Infrastructure.ORM.Core
          if (!FileHelper.FileExists(databasePath))
             throw new OSPSuiteException(PKSimConstants.Error.FileDoesNotExist(databasePath));
 
-         DatabaseObject.Connect(databasePath, _userName, _password, GetProvider());
+         DatabaseObject.Connect(databasePath.ToUNCPath(), _userName, _password, GetProvider());
       }
 
       protected abstract DataProviders GetProvider();
@@ -61,14 +62,7 @@ namespace PKSim.Infrastructure.ORM.Core
          }
       }
 
-      public bool IsConnected
-      {
-         get
-         {
-            if (DatabaseObject == null) return false;
-            return DatabaseObject.IsConnected;
-         }
-      }
+      public bool IsConnected => DatabaseObject != null && DatabaseObject.IsConnected;
 
       protected virtual void Cleanup()
       {

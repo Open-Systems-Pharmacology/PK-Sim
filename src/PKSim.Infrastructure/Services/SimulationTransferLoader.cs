@@ -16,8 +16,12 @@ namespace PKSim.Infrastructure.Services
       private readonly IJournalTask _journalTask;
       private readonly ICloneManagerForModel _cloneManagerForModel;
 
-      public SimulationTransferLoader(IDimensionFactory dimensionFactory, IObjectBaseFactory objectBaseFactory,
-         ISimulationPersistor simulationPersister, IProjectRetriever projectRetriever, IJournalTask journalTask,
+      public SimulationTransferLoader(
+         IDimensionFactory dimensionFactory,
+         IObjectBaseFactory objectBaseFactory,
+         ISimulationPersistor simulationPersister,
+         IProjectRetriever projectRetriever,
+         IJournalTask journalTask,
          ICloneManagerForModel cloneManagerForModel)
       {
          _dimensionFactory = dimensionFactory;

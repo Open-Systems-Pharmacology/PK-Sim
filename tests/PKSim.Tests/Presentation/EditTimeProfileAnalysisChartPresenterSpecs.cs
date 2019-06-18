@@ -181,7 +181,7 @@ namespace PKSim.Presentation
       public void should_display_the_chart_view_again()
       {
          //2 times: start and switch
-         A.CallTo(() => _view.SetChartView(_timeProfilerChartPresenter.BaseView)).MustHaveHappened(Repeated.Exactly.Twice);
+         A.CallTo(() => _view.SetChartView(_timeProfilerChartPresenter.BaseView)).MustHaveHappenedTwiceExactly();
       }
    }
 

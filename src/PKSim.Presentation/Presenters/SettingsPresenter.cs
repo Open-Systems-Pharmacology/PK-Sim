@@ -5,6 +5,7 @@ using PKSim.Presentation.Views;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters
 {
@@ -15,9 +16,9 @@ namespace PKSim.Presentation.Presenters
 
    public class SettingsPresenter : AbstractSubPresenterContainerPresenter<ISettingsView, ISettingsPresenter, ISettingsItemPresenter>, ISettingsPresenter
    {
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
 
-      public SettingsPresenter(ISettingsView view, ISubPresenterItemManager<ISettingsItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator, IWorkspace workspace)
+      public SettingsPresenter(ISettingsView view, ISubPresenterItemManager<ISettingsItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator, ICoreWorkspace workspace)
          : base(view, subPresenterItemManager, SettingsItems.All, dialogCreator)
       {
          _workspace = workspace;

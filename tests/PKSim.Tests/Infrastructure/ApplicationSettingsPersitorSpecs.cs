@@ -4,6 +4,7 @@ using PKSim.Infrastructure.Services;
 using OSPSuite.BDDHelper;
 using FakeItEasy;
 
+
 namespace PKSim.Infrastructure
 {
    public abstract class concern_for_ApplicationSettingsPersitor : ContextSpecification<IApplicationSettingsPersistor>

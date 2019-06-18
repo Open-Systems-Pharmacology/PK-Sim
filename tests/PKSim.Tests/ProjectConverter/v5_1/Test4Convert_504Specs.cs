@@ -63,8 +63,8 @@ namespace PKSim.ProjectConverter.v5_1
          var lumen = _simulation.Model.Root.Container(Constants.ORGANISM)
             .Container(CoreConstants.Organ.Lumen);
 
-         lumen.Parameter(CoreConstants.Parameters.PARA_ABSORBTION_SINK).Value.ShouldBeEqualTo(CoreConstants.Parameters.SINK_CONDITION);
-         lumen.Parameter(CoreConstants.Parameters.TRANS_ABSORBTION_SINK).Value.ShouldBeEqualTo(CoreConstants.Parameters.NO_SINK_CONDITION);
+         lumen.Parameter(Constants.Parameters.PARA_ABSORPTION_SINK).Value.ShouldBeEqualTo(CoreConstants.Parameters.SINK_CONDITION);
+         lumen.Parameter(Constants.Parameters.TRANS_ABSORPTION_SINK).Value.ShouldBeEqualTo(CoreConstants.Parameters.NO_SINK_CONDITION);
       }
 
       [Observation]

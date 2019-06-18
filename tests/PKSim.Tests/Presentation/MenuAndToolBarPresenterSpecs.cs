@@ -9,7 +9,7 @@ using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
-using IWorkspace = PKSim.Presentation.Core.IWorkspace;
+using PKSim.Core;
 
 namespace PKSim.Presentation
 {
@@ -20,7 +20,7 @@ namespace PKSim.Presentation
       protected IButtonGroupRepository _buttonGroupRepository;
       protected IMRUProvider _mruProvider;
       protected ISkinManager _skinManager;
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected IActiveSubjectRetriever _activeSubjectRetriever;
       private IStartOptions _startOptions;
 
@@ -31,7 +31,7 @@ namespace PKSim.Presentation
          _buttonGroupRepository = A.Fake<IButtonGroupRepository>();
          _mruProvider = A.Fake<IMRUProvider>();
          _skinManager = A.Fake<ISkinManager>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
          _startOptions= A.Fake<IStartOptions>();
 

@@ -1,12 +1,11 @@
-﻿using FakeItEasy;
-using OSPSuite.BDDHelper;
+﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_CoreConstants : StaticContextSpecification
    {
-      
    }
 
    public class The_list_of_parameters_that_behaves_as_boolean : concern_for_CoreConstants
@@ -14,7 +13,7 @@ namespace PKSim.Core
       [Observation]
       public void should_contain_the_parameter_if_liver_zonated()
       {
-         CoreConstants.Parameters.AllBooleanParameters.ShouldContain(CoreConstants.Parameters.IS_LIVER_ZONATED);
+         Constants.Parameters.AllBooleanParameters.ShouldContain(Constants.Parameters.IS_LIVER_ZONATED);
       }
    }
-}	
+}

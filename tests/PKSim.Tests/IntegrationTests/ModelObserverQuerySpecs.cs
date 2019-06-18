@@ -1,17 +1,17 @@
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Descriptors;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Descriptors;
-using OSPSuite.Core.Domain.Formulas;
 
 namespace PKSim.IntegrationTests
 {
@@ -22,7 +22,8 @@ namespace PKSim.IntegrationTests
       private IMoleculeBuildingBlock _moleculeBuildingBlock;
       private string _complexProductName;
       private string _metaboliteProductName;
-
+      private IObserverBuilder _observer;
+      
       public override void GlobalContext()
       {
          base.GlobalContext();
@@ -41,6 +42,12 @@ namespace PKSim.IntegrationTests
          _moleculeBuildingBlock.Add(new MoleculeBuilder {Name = _complexProductName, QuantityType = QuantityType.Complex});
          compoundProperties.Processes.SpecificBindingSelection.AddPartialProcessSelection(specificBindingSelection);
          compoundProperties.Processes.MetabolizationSelection.AddPartialProcessSelection(metabolizationSelection);
+
+         var observerSet = new ObserverSet();
+         var observerSetBuildingBlock = new UsedBuildingBlock("OBS_ID", PKSimBuildingBlockType.ObserverSet) {BuildingBlock = observerSet};
+         _observer = new AmountObserverBuilder().WithName("Test");
+         observerSet.Add(_observer);
+         _simulation.AddUsedBuildingBlock(observerSetBuildingBlock);
       }
 
       protected override void Because()
@@ -98,9 +105,9 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_created_a_fraction_excreted_to_feces_observer_for_the_drug()
       {
-         var fractionExcretedToFeced = _observers.FindByName(CoreConstants.Observer.FRACTION_EXCRETED_TO_FECES);
-         fractionExcretedToFeced.ShouldNotBeNull();
-         fractionExcretedToFeced.MoleculeNames().ShouldOnlyContain(_compoundName);
+         var fractionExcretedToFeces = _observers.FindByName(CoreConstants.Observer.FRACTION_EXCRETED_TO_FECES);
+         fractionExcretedToFeces.ShouldNotBeNull();
+         fractionExcretedToFeces.MoleculeNames().ShouldOnlyContain(_compoundName);
       }
 
       [Observation]
@@ -128,6 +135,12 @@ namespace PKSim.IntegrationTests
          obs.ContainerCriteria.IsSatisfiedBy(lumenSegment).ShouldBeTrue();
          obs.ContainerCriteria.IsSatisfiedBy(feces).ShouldBeFalse();
       }
+
+      [Observation]
+      public void should_have_added_the_user_defined_observers_to_the_observer_building_block()
+      {
+         _observers.ShouldContain(_observer);
+      }
    }
 
    public class When_creating_the_observer_building_block_for_protein_model : ContextForSimulationIntegration<IModelObserverQuery>
@@ -145,13 +158,13 @@ namespace PKSim.IntegrationTests
          var individual = DomainFactoryForSpecs.CreateStandardIndividual();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
 
-         _simulation = _simulation = DomainFactoryForSpecs.CreateSimulationWith(individual, compound, protocol, CoreConstants.Model.TwoPores) as IndividualSimulation;
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(individual, compound, protocol, CoreConstants.Model.TwoPores).DowncastTo<IndividualSimulation>();
          _moleculeBuildingBlock = new MoleculeBuildingBlock();
          var compoundProperties = _simulation.CompoundPropertiesList.First();
          _compoundName = compoundProperties.Compound.Name;
          _moleculeBuildingBlock.Add(new MoleculeBuilder {Name = _compoundName, QuantityType = QuantityType.Drug});
 
-         _observerName = CoreConstants.Observer.ObserverNameFrom("Whole Organ incl. FcRn_Complex", _compoundName);
+         _observerName = CoreConstants.Observer.ObserverNameFrom(CoreConstantsForSpecs.Observer.WHOLE_ORGAN_INCLUDING_FCRN_COMPLEX, _compoundName);
       }
 
       protected override void Because()

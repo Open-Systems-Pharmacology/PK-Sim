@@ -14,7 +14,7 @@ namespace PKSim.IntegrationTests
    public abstract class concern_for_SimulationParametersToBuildingBlockUpdater : ContextForSimulationIntegration<ISimulationParametersToBuildingBlockUpdater>
    {
       protected Individual _templateIndividual;
-      private IWorkspace _workspace;
+      private ICoreWorkspace _workspace;
 
       public override void GlobalContext()
       {
@@ -23,7 +23,7 @@ namespace PKSim.IntegrationTests
          var compound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_templateIndividual, compound, protocol) as IndividualSimulation;
-         _workspace = IoC.Resolve<IWorkspace>();
+         _workspace = IoC.Resolve<ICoreWorkspace>();
          var project = new PKSimProject();
          project.AddBuildingBlock(compound);
          project.AddBuildingBlock(protocol);

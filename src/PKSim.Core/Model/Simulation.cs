@@ -580,7 +580,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns the settings for the simulation
+      ///    Returns the <see cref="OutputSelections"/> for the simulation
       /// </summary>
       public virtual OutputSelections OutputSelections
       {
@@ -646,12 +646,22 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns the events used in the simulation configuration
+      ///    Returns the event mappings used in the simulation configuration
       /// </summary>
       public virtual EventProperties EventProperties
       {
          get => Properties.EventProperties;
          set => Properties.EventProperties = value;
+      }
+
+
+      /// <summary>
+      ///    Returns the observer set mappings used in the simulation configuration
+      /// </summary>
+      public virtual ObserverSetProperties ObserverSetProperties
+      {
+         get => Properties.ObserverSetProperties;
+         set => Properties.ObserverSetProperties = value;
       }
 
       /// <summary>

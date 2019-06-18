@@ -82,7 +82,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          switch (_importPopulationSimulationDTO.PopulationImportMode)
          {
             case PopulationImportMode.BuildingBlock:
-               return _importSimulationTask.ImportFromBuidlingBlock(_importPopulationSimulationDTO.FilePath, _importPopulationSimulationDTO.Population);
+               return _importSimulationTask.ImportFromBuildingBlock(_importPopulationSimulationDTO.FilePath, _importPopulationSimulationDTO.Population);
             case PopulationImportMode.File:
                return _importSimulationTask.ImportFromPopulationFile(_importPopulationSimulationDTO.FilePath, _importPopulationSimulationDTO.PopulationFile);
             case PopulationImportMode.Size:

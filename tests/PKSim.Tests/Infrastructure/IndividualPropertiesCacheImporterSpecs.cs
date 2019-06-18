@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -21,6 +22,7 @@ namespace PKSim.Infrastructure
       protected Gender _male = new Gender();
       protected Gender _female = new Gender();
       protected SpeciesPopulation _population = new SpeciesPopulation();
+      protected PathCache<IParameter> _allParameters;
 
       protected override void Context()
       {
@@ -31,6 +33,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _populationRepository.FindByIndex(0)).Returns(_population);
          _logger = A.Fake<IImportLogger>();
          sut = new IndividualPropertiesCacheImporter(_genderRepository, _populationRepository);
+         _allParameters = A.Fake<PathCache<IParameter>>();
       }
    }
 
@@ -40,7 +43,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("pop_10_old_format"), _logger);
+         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("pop_10_old_format"), _allParameters, _logger);
       }
 
       [Observation]
@@ -55,7 +58,7 @@ namespace PKSim.Infrastructure
       [TestCase("tab")]
       public void should_have_imported_the_individuals(string delimiter)
       {
-         var result = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("new_format_with_comment_" + delimiter), _logger);
+         var result = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("new_format_with_comment_" + delimiter), _allParameters, _logger);
          result.Count.ShouldBeEqualTo(50);
       }
    }
@@ -66,7 +69,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("pop_10_semi_colon"), _logger);
+         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("pop_10_semi_colon"), _allParameters, _logger);
       }
 
       [Observation]
@@ -82,7 +85,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("corrupt1"), _logger);
+         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("corrupt1"), _allParameters, _logger);
       }
 
       [Observation]
@@ -104,7 +107,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("new_format_with_comment"), _logger);
+         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("new_format_with_comment"), _allParameters, _logger);
       }
 
       [Observation]
@@ -122,13 +125,45 @@ namespace PKSim.Infrastructure
       }
    }
 
+   public class When_importing_a_file_containing_path_with_units : concern_for_IndividualPropertiesCacheImporter
+   {
+      private IndividualPropertiesCache _results;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _allParameters.Contains("Organism|VenousBlood|Volume [l]")).Returns(false);
+         A.CallTo(() => _allParameters.Contains("Organism|VenousBlood|Volume")).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("path_with_units"), _allParameters, _logger);
+      }
+
+      [Observation]
+      public void should_have_imported_the_individuals()
+      {
+         _results.Count.ShouldBeEqualTo(3);
+      }
+
+      [Observation]
+      public void should_remove_units_when_path_is_not_found()
+      {
+         _results.AllParameterPaths().Contains("Organism|VenousBlood|Volume").ShouldBeTrue();
+         _results.AllParameterPaths().Contains("Organism|VenousBlood|Volume [l]").ShouldBeFalse();
+         _results.ParameterValuesCache.Has("Organism|VenousBlood|Volume [l]").ShouldBeFalse();
+         _results.ParameterValuesCache.Has("Organism|VenousBlood|Volume").ShouldBeTrue();
+      }
+   }
+
    public class When_importing_a_population_from_a_file_that_contains_junk : concern_for_IndividualPropertiesCacheImporter
    {
       private IndividualPropertiesCache _results;
 
       protected override void Because()
       {
-         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("junk"), _logger);
+         _results = sut.ImportFrom(DomainHelperForSpecs.PopulationFilePathFor("junk"), _allParameters, _logger);
       }
 
       [Observation]
@@ -159,7 +194,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         _results = sut.ImportFrom(_fileName, _logger);
+         _results = sut.ImportFrom(_fileName, _allParameters, _logger);
       }
 
       [Observation]

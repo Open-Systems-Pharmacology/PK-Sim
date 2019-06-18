@@ -163,7 +163,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _tableParameter = new PKSimParameter();
-         _formulation = new Formulation {FormulationType = CoreConstants.Formulation.Table};
+         _formulation = new Formulation {FormulationType = CoreConstants.Formulation.TABLE};
          _formulation.Add(_tableParameter);
          _formulationDTO = new FormulationDTO(new[] {_tableParameter}) {Type = new FormulationTypeDTO {Id = "oral"}};
          A.CallTo(() => _formulationDTOMapper.MapFrom(_formulation)).Returns(_formulationDTO);
@@ -292,7 +292,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _particleDisperseSystem = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.MONODISPERSE).WithName(CoreConstants.Parameters.PARTICLE_DISPERSE_SYSTEM);
+         _particleDisperseSystem = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.MONODISPERSE).WithName(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM);
          _formulationDTO = new FormulationDTO(new List<IParameter>());
 
          _formulation = A.Fake<Formulation>();
@@ -324,7 +324,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _particleSizeDistribution = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL).WithName(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
+         _particleSizeDistribution = DomainHelperForSpecs.ConstantParameterWithValue(CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_LOG_NORMAL).WithName(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
      
          _formulationDTO = new FormulationDTO(new List<IParameter>());
 

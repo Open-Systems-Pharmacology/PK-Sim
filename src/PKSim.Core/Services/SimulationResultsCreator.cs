@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model.Extensions;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
 
@@ -50,8 +49,7 @@ namespace PKSim.Core.Services
       private int selectIndividualIndex(DataColumn column)
       {
          var lastEntry = column.QuantityInfo.Path.Last();
-         int index = 0;
-         int.TryParse(lastEntry, out index);
+         int.TryParse(lastEntry, out var index);
          return index;
       }
 

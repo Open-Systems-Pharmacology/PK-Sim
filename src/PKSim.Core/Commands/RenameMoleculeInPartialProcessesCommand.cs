@@ -19,7 +19,7 @@ namespace PKSim.Core.Commands
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          Description = PKSimConstants.Command.RenameMoleculeInPartialProcessesCommandDescription(moleculeName);
 
-         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(_partialProcesses.FirstOrDefault()));
+         context.UpdateBuildingBlockPropertiesInCommand(this, context.BuildingBlockContaining(_partialProcesses.FirstOrDefault()));
       }
 
       public override void Execute(IExecutionContext context)

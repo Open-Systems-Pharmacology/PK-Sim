@@ -20,6 +20,7 @@
          base.Dispose(disposing);
       }
 
+
       #region Windows Form Designer generated code
 
       /// <summary>
@@ -28,13 +29,14 @@
       /// </summary>
       private void InitializeComponent()
       {
+         this.SuspendLayout();
          // 
          // CreateFormulationView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "CreateFormulationView";
-         this.ClientSize = new System.Drawing.Size(634, 722);
+         this.ClientSize = new System.Drawing.Size(417, 443);
          this.Name = "CreateFormulationView";
          this.Text = "CreateFormulationView";
          this.ResumeLayout(false);

@@ -1,15 +1,14 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Services;
-using FakeItEasy;
+using OSPSuite.Presentation.Core;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
-
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation
 {
@@ -55,7 +54,6 @@ namespace PKSim.Presentation
       {
          base.Context();
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallySwitchProtocolMode)).Returns(ViewResult.Yes);
-         A.CallTo(() => _protocolUpdater.ValidateSwitchFrom(sut.BuildingBlock)).Returns(true);
       }
 
       protected override void Because()
@@ -73,28 +71,6 @@ namespace PKSim.Presentation
       public void should_return_that_he_protocol_can_be_switched_to_simple_mode()
       {
          _result.ShouldBeTrue();
-      }
-   }
-
-   public class When_the_create_protocol_presenter_is_asked_if_the_mode_switch_is_allowed_for_a_forbidden_switch_to_advanced_mode : concern_for_CreateProtocolPresenter
-   {
-      private bool _result;
-
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _protocolUpdater.ValidateSwitchFrom(sut.BuildingBlock)).Returns(false);
-      }
-
-      protected override void Because()
-      {
-         _result = sut.SwitchModeConfirm(ProtocolMode.Advanced);
-      }
-
-      [Observation]
-      public void should_return_that_the_protocol_cannot_be_switched_to_advanced_mode()
-      {
-         _result.ShouldBeFalse();
       }
    }
 
@@ -122,12 +98,6 @@ namespace PKSim.Presentation
 
    public class When_the_create_protocol_presenter_is_asked_if_the_mode_switch_is_allowed_to_advanced : concern_for_CreateProtocolPresenter
    {
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _protocolUpdater.ValidateSwitchFrom(A<Protocol>._)).Returns(true);
-      }
-
       [Observation]
       public void should_return_true()
       {

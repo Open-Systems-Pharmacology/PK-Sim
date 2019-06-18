@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper.Extensions;
 using DevExpress.XtraEditors.ColorPickEditControl;
 using OSPSuite.UI.Controls;
 
+
 namespace PKSim.UI.Tests
 {
    // this test is located here to take advantage of the dedicated UI Test project which does not exist in SBSuite.Core

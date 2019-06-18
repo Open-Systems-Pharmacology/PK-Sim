@@ -19,7 +19,7 @@ namespace PKSim.Core.Commands
          _compoundProcess = compoundProcess;
          ObjectType = context.TypeFor(compoundProcess);
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         context.UpdateBuildinBlockPropertiesInCommand(this, context.BuildingBlockContaining(compoundProcess));
+         context.UpdateBuildingBlockPropertiesInCommand(this, context.BuildingBlockContaining(compoundProcess));
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)

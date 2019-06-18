@@ -1,14 +1,13 @@
 ﻿using System.Xml.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Infrastructure.ProjectConverter.v6_4
 {
-   public class Converter632To641 : IObjectConverter, 
+   public class Converter632To641 : IObjectConverter,
       IVisitor<Individual>,
       IVisitor<Population>,
       IVisitor<Simulation>

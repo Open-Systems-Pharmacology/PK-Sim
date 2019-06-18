@@ -39,13 +39,13 @@ namespace PKSim.Core
 
    public class When_retrieving_the_status_of_a_simulation_result_import : concern_for_SimulationResultsImport
    {
-      private SimulationResultsFile _simulationResultFile;
+      private SimulationResultsImportFile _simulationResultFile;
 
       protected override void Context()
       {
          base.Context();
          sut.AddInfo("TOTO");
-         _simulationResultFile = new SimulationResultsFile();
+         _simulationResultFile = new SimulationResultsImportFile();
          sut.SimulationResultsFiles.Add(_simulationResultFile);
       }
 

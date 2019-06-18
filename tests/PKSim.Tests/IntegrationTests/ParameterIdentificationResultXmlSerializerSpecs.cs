@@ -45,7 +45,7 @@ namespace PKSim.IntegrationTests
          _bestRunResult.AddResult(DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("S1"));
          _bestRunResult.AddResult(DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("S2"));
 
-         var workspace = IoC.Resolve<IWorkspace>();
+         var workspace = IoC.Resolve<ICoreWorkspace>();
          var project = IoC.Resolve<PKSimProject>();
          workspace.Project = project;
          project.AddObservedData(_observedData1);

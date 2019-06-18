@@ -444,11 +444,48 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_loading_an_observer_set_from_template : concern_for_BuildingBlockTask
+   {
+      private ITemplatePresenter _templatePresenter;
+      private ObserverSet _templateObserverSet;
+      private ObserverSet _observerSet;
+      private IPKSimCommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         _templatePresenter = A.Fake<ITemplatePresenter>();
+         _templateObserverSet = new ObserverSet();
+         A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
+         A.CallTo(_templatePresenter).WithReturnType<IReadOnlyList<ObserverSet>>().Returns(new[] { _templateObserverSet });
+
+         A.CallTo(() => _executionContext.AddToHistory((A<IPKSimCommand>._)))
+            .Invokes(x => _command = x.GetArgument<IPKSimCommand>(0));
+      }
+
+      protected override void Because()
+      {
+         _observerSet = sut.LoadFromTemplate<ObserverSet>(PKSimBuildingBlockType.ObserverSet).FirstOrDefault();
+      }
+
+      [Observation]
+      public void should_retrieve_the_available_template_from_the_template_database()
+      {
+         _observerSet.ShouldBeAnInstanceOf<ObserverSet>();
+      }
+
+      [Observation]
+      public void should_add_the_building_block_the_project()
+      {
+         _command.ShouldBeAnInstanceOf<AddBuildingBlockToProjectCommand>();
+      }
+   }
+
    public class When_loading_a_template_for_a_given_building_block_type_whose_name_is_already_being_used_even_in_a_different_case : concern_for_BuildingBlockTask
    {
       private ITemplatePresenter _templatePresenter;
       private ISimulationSubject _templateIndividual;
-      private ISimulationSubject _existingIndiviudal;
+      private ISimulationSubject _existingIndividual;
       private IPKSimCommand _command;
 
       protected override void Context()
@@ -456,10 +493,10 @@ namespace PKSim.Presentation
          base.Context();
          _templatePresenter = A.Fake<ITemplatePresenter>();
          _templateIndividual = new Individual().WithName("Existing");
-         _existingIndiviudal = new Individual().WithName("ExiStIng");
+         _existingIndividual = new Individual().WithName("ExiStIng");
          A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
          A.CallTo(_templatePresenter).WithReturnType<IReadOnlyList<ISimulationSubject>>().Returns(new[] {_templateIndividual});
-         A.CallTo(() => _project.All(_templateIndividual.BuildingBlockType)).Returns(new[] {_existingIndiviudal});
+         A.CallTo(() => _project.All(_templateIndividual.BuildingBlockType)).Returns(new[] {_existingIndividual});
 
          A.CallTo(() => _executionContext.AddToHistory((A<IPKSimCommand>._)))
             .Invokes(x => _command = x.GetArgument<IPKSimCommand>(0));

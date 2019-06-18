@@ -1,25 +1,25 @@
 ﻿using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 
 namespace PKSim.Infrastructure.Services
 {
    public class PKSimProjectRetriever : IPKSimProjectRetriever
    {
-      private readonly IWorkspace _workspace;
+      private readonly ICoreWorkspace _workspace;
 
-      public PKSimProjectRetriever(IWorkspace workspace)
+      public PKSimProjectRetriever(ICoreWorkspace workspace)
       {
          _workspace = workspace;
       }
 
       public IProject CurrentProject => Current;
 
-      public string ProjectName => Current.Name;
+      public string ProjectName => Current?.Name ?? string.Empty;
 
-      public string ProjectFullPath => Current.FilePath;
+      public string ProjectFullPath => Current?.FilePath ?? string.Empty;
 
       public PKSimProject Current => _workspace.Project;
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 
 namespace PKSim.Infrastructure.ProjectConverter
@@ -137,7 +138,7 @@ namespace PKSim.Infrastructure.ProjectConverter
          {
             BloodPlasmaConcentrationRatio,
             PartitionCoefficientWwaterProtein,
-            CoreConstants.Parameters.USE_PENALTY_FACTOR,
+            Constants.Parameters.USE_PENALTY_FACTOR,
          };
 
          public static IList<string> DistributedParametersWithOnlyOneSupportingPoint => new List<string>

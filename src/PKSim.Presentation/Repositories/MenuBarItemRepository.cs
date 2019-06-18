@@ -6,7 +6,6 @@ using OSPSuite.Utility.Container;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.UICommands;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.Assets;
@@ -161,6 +160,18 @@ namespace PKSim.Presentation.Repositories
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
             .WithId(MenuBarItemIds.LoadEvent)
             .WithCommand<LoadEventCommand>()
+            .WithIcon(ApplicationIcons.LoadFromTemplate);
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.NewObservers)
+            .WithId(MenuBarItemIds.NewObserverSet)
+            .WithCommand<NewObserverSetCommand>()
+            .WithDescription(PKSimConstants.UI.NewObserversDescription)
+            .WithIcon(ApplicationIcons.Observer);
+//            .WithShortcut(Keys.Control | Keys.Alt | Keys.O);
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
+            .WithId(MenuBarItemIds.LoadObserverSet)
+            .WithCommand<LoadObserverSetCommand>()
             .WithIcon(ApplicationIcons.LoadFromTemplate);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.About)

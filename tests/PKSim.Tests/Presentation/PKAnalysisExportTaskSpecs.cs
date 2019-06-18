@@ -88,7 +88,7 @@ namespace PKSim.Presentation
          _sim1 = A.Fake<Simulation>().WithName("Sim");
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
 
-         A.CallTo(_dataRepositoryTask).WithReturnType<IEnumerable<DataTable>>().Returns(new[] {_dataTable1, _dataTable2});
+         A.CallTo(_dataRepositoryTask).WithReturnType<IReadOnlyList<DataTable>>().Returns(new[] {_dataTable1, _dataTable2});
          A.CallTo(() => _dataRepositoryTask.ExportToExcel(A<IEnumerable<DataTable>>._, _fileName, true))
             .Invokes(x => _dataTables = x.GetArgument<IEnumerable<DataTable>>(0));
       }

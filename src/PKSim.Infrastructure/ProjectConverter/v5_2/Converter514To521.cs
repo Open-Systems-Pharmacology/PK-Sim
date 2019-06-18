@@ -271,9 +271,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
             individual.OriginData.GestationalAge = CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
             individual.OriginData.GestationalAgeUnit = CoreConstants.Units.Weeks;
 
-            var gestationalAge = human.Organism.Parameter(CoreConstants.Parameters.GESTATIONAL_AGE);
+            var gestationalAge = human.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE);
 
-            if (!individual.Organism.ContainsName(CoreConstants.Parameters.GESTATIONAL_AGE))
+            if (!individual.Organism.ContainsName(Constants.Parameters.GESTATIONAL_AGE))
                individual.Organism.Add(_cloner.Clone(gestationalAge));
          }
       }

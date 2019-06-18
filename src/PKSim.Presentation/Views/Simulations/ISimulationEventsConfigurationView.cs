@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-
+using OSPSuite.Presentation.Views;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.Simulations
 {

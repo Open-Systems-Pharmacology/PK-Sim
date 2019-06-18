@@ -1,9 +1,9 @@
-using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
 
 namespace PKSim.Core
 {
@@ -17,12 +17,11 @@ namespace PKSim.Core
       {
          _context = A.Fake<IExecutionContext>();
          _schemaItem = A.Fake<SchemaItem>();
-         _schema  =A.Fake<Schema>();
-         sut = new AddSchemaItemToSchemaCommand(_schemaItem,_schema,_context);
+         _schema = A.Fake<Schema>();
+         sut = new AddSchemaItemToSchemaCommand(_schemaItem, _schema, _context);
       }
    }
 
-   
    public class When_executing_the_add_schema_item_to_schema_command : concern_for_AddSchemaItemToSchemaCommand
    {
       protected override void Because()
@@ -37,7 +36,6 @@ namespace PKSim.Core
       }
    }
 
-   
    public class The_inverse_of_the_add_schema_item_to_schema_command : concern_for_AddSchemaItemToSchemaCommand
    {
       private IReversibleCommand<IExecutionContext> _result;
@@ -59,4 +57,4 @@ namespace PKSim.Core
          _result.IsInverseFor(sut).ShouldBeTrue();
       }
    }
-}	
+}

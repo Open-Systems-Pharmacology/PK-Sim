@@ -8,12 +8,12 @@ namespace PKSim.Core.Model
    public class SimulationResultsImport : ImportLogger
    {
       public virtual SimulationResults SimulationResults { get; private set; }
-      public virtual IList<SimulationResultsFile> SimulationResultsFiles { get; private set; }
+      public virtual IList<SimulationResultsImportFile> SimulationResultsFiles { get; private set; }
 
       public SimulationResultsImport()
       {
          SimulationResults = new SimulationResults();
-         SimulationResultsFiles = new List<SimulationResultsFile>();
+         SimulationResultsFiles = new List<SimulationResultsImportFile>();
       }
 
       /// <summary>

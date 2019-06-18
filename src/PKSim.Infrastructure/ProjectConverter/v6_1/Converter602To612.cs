@@ -127,11 +127,11 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
 
       public void Visit(Formulation formulation)
       {
-         if (!formulation.FormulationType.IsOneOf(CoreConstants.Formulation.Weibull, CoreConstants.Formulation.Lint80, CoreConstants.Formulation.Table))
+         if (!formulation.FormulationType.IsOneOf(CoreConstants.Formulation.WEIBULL, CoreConstants.Formulation.LINT80, CoreConstants.Formulation.TABLE))
             return;
 
          var templateFormulation = _formulationRepository.FormulationBy(formulation.FormulationType);
-         var useAsSuspension = _cloner.Clone(templateFormulation.Parameter(CoreConstants.Parameters.USE_AS_SUSPENSION));
+         var useAsSuspension = _cloner.Clone(templateFormulation.Parameter(Constants.Parameters.USE_AS_SUSPENSION));
          useAsSuspension.Value = 0;
          formulation.Add(useAsSuspension);
          _converted = true;

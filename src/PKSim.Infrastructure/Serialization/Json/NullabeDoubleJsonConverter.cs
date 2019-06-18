@@ -14,7 +14,7 @@ namespace PKSim.Infrastructure.Serialization.Json
          DecimalPlace = DOUBLE_PRECISION
       });
 
-      public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+      public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
       {
          var d = (double?) value;
          if (!d.HasValue)
@@ -27,7 +27,7 @@ namespace PKSim.Infrastructure.Serialization.Json
          writer.WriteValue(roundedFromString);
       }
 
-      public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+      public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
       {
          //this will never be called for nullable as double reader will take precedence
          return 0;

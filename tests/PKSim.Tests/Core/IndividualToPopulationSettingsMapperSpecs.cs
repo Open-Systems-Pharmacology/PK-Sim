@@ -49,7 +49,7 @@ namespace PKSim.Core
          originData.SpeciesPopulation = new SpeciesPopulation();
          A.CallTo(() => _individual.OriginData).Returns(originData);
          var organism = new Organism();
-         var ga = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.GESTATIONAL_AGE);
+         var ga = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.GESTATIONAL_AGE);
          ga.Info.MinValue = 24;
          ga.Info.MaxValue = 25;
          organism.Add(ga);
@@ -66,13 +66,13 @@ namespace PKSim.Core
       [Observation]
       public void should_add_a_range_for_gestational_age()
       {
-         _result.ParameterRange(CoreConstants.Parameters.GESTATIONAL_AGE).ShouldNotBeNull();
+         _result.ParameterRange(Constants.Parameters.GESTATIONAL_AGE).ShouldNotBeNull();
       }
 
       [Observation]
       public void should_have_set_the_list_of_values_for_the_gestational_age()
       {
-         var discreteRange = _result.ParameterRange(CoreConstants.Parameters.GESTATIONAL_AGE).DowncastTo<DiscreteParameterRange>();
+         var discreteRange = _result.ParameterRange(Constants.Parameters.GESTATIONAL_AGE).DowncastTo<DiscreteParameterRange>();
          discreteRange.ListOfValues.ShouldOnlyContain(24, 25);
       }
    }

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Commands;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
 
 namespace PKSim.Core
 {

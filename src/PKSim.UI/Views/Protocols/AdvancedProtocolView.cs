@@ -2,13 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Data;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
@@ -18,20 +11,27 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
 using PKSim.UI.Views.Core;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.UI.Views;
 using BaseView = DevExpress.XtraGrid.Views.Base.BaseView;
-using UIConstants = OSPSuite.UI.UIConstants;
 
 namespace PKSim.UI.Views.Protocols
 {
@@ -73,7 +73,7 @@ namespace PKSim.UI.Views.Protocols
 
          gridViewSchemaItems.MasterRowEmpty += schemaViewMasterRowEmpty;
          gridViewSchemaItems.MasterRowGetChildList += schemaViewMasterRowGetChildList;
-         gridViewSchemaItems.MasterRowGetRelationCount += masterRowGetRelationCount;
+         gridViewSchemaItems.MasterRowGetRelationCount += schemaViewMasterRowGetRelationCount;
          gridViewSchemaItems.MasterRowGetRelationName += schemaViewMasterRowGetRelationName;
          gridViewSchemaItems.OptionsDetail.ShowDetailTabs = false;
          gridViewSchemaItems.OptionsDetail.EnableDetailToolTip = false;
@@ -86,11 +86,18 @@ namespace PKSim.UI.Views.Protocols
          gridViewSchemaItems.OptionsCustomization.AllowSort = true;
          gridViewSchemaItems.KeyDown += gridViewKeyDown;
 
-         gridViewDynamicParameters.OptionsView.ShowColumnHeaders = false;
+         gridViewDynamicParameters.ShowColumnHeaders = false;
+         gridViewDynamicParameters.ShowRowIndicator = false;
          gridViewDynamicParameters.OptionsView.ShowGroupPanel = false;
          gridViewDynamicParameters.SynchronizeClones = false;
          gridViewDynamicParameters.HiddenEditor += (o, e) => { _comboBoxUnit.Visible = false; };
          gridViewDynamicParameters.EditorShowMode = EditorShowMode.MouseDown;
+
+
+         gridViewUserDefinedTarget.ShowColumnHeaders = false;
+         gridViewUserDefinedTarget.OptionsView.ShowGroupPanel = false;
+         gridViewUserDefinedTarget.SynchronizeClones = false;
+         gridViewUserDefinedTarget.ShowRowIndicator = false;
       }
 
       public void AttachPresenter(IAdvancedProtocolPresenter presenter)
@@ -162,9 +169,10 @@ namespace PKSim.UI.Views.Protocols
          //Create a dummy column for the detail view to avoid auto binding to details
          gridViewSchemaItems.Columns.AddField("Dummy");
          gridViewDynamicParameters.Columns.AddField("Dummy");
+         gridViewUserDefinedTarget.Columns.AddField("Dummy");
       }
 
-      private void intializeSchemaItemBinding(GridViewBinder<SchemaItemDTO> schemaItemBinder)
+      private void initializeSchemaItemBinding(GridViewBinder<SchemaItemDTO> schemaItemBinder)
       {
          var applicationRepository = new UxRepositoryItemImageComboBox(schemaItemBinder.GridView, _imageListRetriever);
          var schemaItemButtonRepository = createAddRemoveButtonRepository();
@@ -206,10 +214,10 @@ namespace PKSim.UI.Views.Protocols
 
          schemaItemBinder.Changed += NotifyViewChanged;
 
-         schemaItemButtonRepository.ButtonClick += (o, e) => OnEvent(() => schemaItemButtonRepositoryButtonClick(o, e,  schemaItemBinder.FocusedElement));
+         schemaItemButtonRepository.ButtonClick += (o, e) => OnEvent(() => schemaItemButtonRepositoryButtonClick(o, e, schemaItemBinder.FocusedElement));
       }
 
-      private void intializeDynamicParameterBinding(GridViewBinder<IParameterDTO> parameterBinder)
+      private void initializeDynamicParameterBinding(GridViewBinder<IParameterDTO> parameterBinder)
       {
          parameterBinder.Bind(x => x.DisplayName)
             .AsReadOnly();
@@ -220,6 +228,34 @@ namespace PKSim.UI.Views.Protocols
             .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto, valueInGuiUnit.NewValue);
 
          parameterBinder.Changed += NotifyViewChanged;
+      }
+
+      private void initializeUserDefinedTargetParameterBinding(GridViewBinder<SchemaItemTargetDTO> schemaItemTargetBinder)
+      {
+         schemaItemTargetBinder.BindingMode = BindingMode.TwoWay;
+
+         schemaItemTargetBinder.Bind(x => x.Name)
+            .AsReadOnly();
+
+         schemaItemTargetBinder.Bind(item => item.Target)
+            .WithRepository(x => getTargetRepository(x, schemaItemTargetBinder.GridView))
+            .WithShowButton(ShowButtonModeEnum.ShowAlways)
+            .OnValueUpdating += (o, e) => OnEvent(() => updateTarget(o, e.NewValue, schemaItemTargetBinder));
+
+         schemaItemTargetBinder.Changed += NotifyViewChanged;
+      }
+
+      private void updateTarget(SchemaItemTargetDTO schemaItemTargetDTO, string newTarget, GridViewBinder<SchemaItemTargetDTO> girdViewBinder)
+      {
+         _presenter.SetSchemaItemTarget(schemaItemTargetDTO, newTarget);
+         girdViewBinder.Rebind();
+      }
+
+      private RepositoryItem getTargetRepository(SchemaItemTargetDTO schemaItemTargetDTO, BaseView baseView)
+      {
+         var repositoryItemImageComboBox = new UxRepositoryItemImageComboBox(baseView, _imageListRetriever);
+         repositoryItemImageComboBox.FillImageComboBoxRepositoryWith(_presenter.AllTargetsFor(schemaItemTargetDTO), s => _imageListRetriever.ImageIndex(s), _presenter.DisplayFor);
+         return repositoryItemImageComboBox;
       }
 
       private void schemaButtonRepositoryButtonClick(object sender, ButtonPressedEventArgs e, SchemaDTO schemaDTO)
@@ -235,7 +271,7 @@ namespace PKSim.UI.Views.Protocols
          }
       }
 
-      private void schemaItemButtonRepositoryButtonClick(object sender, ButtonPressedEventArgs e,  SchemaItemDTO schemaItemDTO)
+      private void schemaItemButtonRepositoryButtonClick(object sender, ButtonPressedEventArgs e, SchemaItemDTO schemaItemDTO)
       {
          var editor = (ButtonEdit) sender;
          var buttonIndex = editor.Properties.Buttons.IndexOf(e.Button);
@@ -258,6 +294,7 @@ namespace PKSim.UI.Views.Protocols
             _formulationRepository = new RepositoryItemMRUEdit();
             _presenter.AllFormulationKeys().Each(key => _formulationRepository.Items.Add(key));
          }
+
          _formulationRepository.ReadOnly = !schemaItemDTO.NeedsFormulation;
          _formulationRepository.Enabled = schemaItemDTO.NeedsFormulation;
 
@@ -285,7 +322,7 @@ namespace PKSim.UI.Views.Protocols
 
       private void unitChanged()
       {
-         OnEvent( _presenter.ProtocolUnitChanged);
+         OnEvent(_presenter.ProtocolUnitChanged);
       }
 
       private void setApplicationType(SchemaItemDTO dto, ApplicationType newApplicationType)
@@ -348,6 +385,9 @@ namespace PKSim.UI.Views.Protocols
       private void schemaViewMasterRowGetRelationName(object sender, MasterRowGetRelationNameEventArgs e)
       {
          e.RelationName = "DynamicParameters";
+         var schemaItem = schemaItemAt(sender, e.RowHandle);
+         if (schemaItem != null && schemaItem.IsUserDefined)
+            e.RelationName = "UserDefinedTarget";
       }
 
       private void mainViewMasterRowGetChildList(object sender, MasterRowGetChildListEventArgs e)
@@ -358,16 +398,21 @@ namespace PKSim.UI.Views.Protocols
          e.ChildList = schema.SchemaItems;
       }
 
+      private void schemaViewMasterRowGetRelationCount(object sender, MasterRowGetRelationCountEventArgs e)
+      {
+         e.RelationCount = 1;
+      }
+
       private void schemaViewMasterRowGetChildList(object sender, MasterRowGetChildListEventArgs e)
       {
          var schemaItem = schemaItemAt(sender, e.RowHandle);
-         e.ChildList = _presenter.DynamicParametersFor(schemaItem);
+         e.ChildList = _presenter.DynamicContentFor(schemaItem);
       }
 
       private void schemaViewMasterRowEmpty(object sender, MasterRowEmptyEventArgs e)
       {
          var schemaItem = schemaItemAt(sender, e.RowHandle);
-         e.IsEmpty = !_presenter.HasDynamicParameters(schemaItem);
+         e.IsEmpty = !_presenter.HasDynamicContent(schemaItem);
       }
 
       private SchemaItemDTO schemaItemAt(object sender, int rowHandle)
@@ -395,10 +440,13 @@ namespace PKSim.UI.Views.Protocols
       {
          var dataSource = e.View.DataSource;
          if (dataSource.IsAnImplementationOf<IEnumerable<SchemaItemDTO>>())
-            registerBinderFor<SchemaItemDTO>(e.View, intializeSchemaItemBinding);
+            registerBinderFor<SchemaItemDTO>(e.View, initializeSchemaItemBinding);
 
          if (dataSource.IsAnImplementationOf<IEnumerable<IParameterDTO>>())
-            registerBinderFor<IParameterDTO>(e.View, intializeDynamicParameterBinding);
+            registerBinderFor<IParameterDTO>(e.View, initializeDynamicParameterBinding);
+
+         if (dataSource.IsAnImplementationOf<IEnumerable<SchemaItemTargetDTO>>())
+            registerBinderFor<SchemaItemTargetDTO>(e.View, initializeUserDefinedTargetParameterBinding);
       }
 
       private void registerBinderFor<T>(BaseView view, Action<GridViewBinder<T>> initBinding) where T : class
@@ -408,8 +456,8 @@ namespace PKSim.UI.Views.Protocols
          {
             var gridView = view.DowncastTo<GridView>();
             var binder = new GridViewBinder<T>(gridView) {BindingMode = BindingMode.OneWay};
-            initBinding(binder);
             _cache.Add(gridView, binder);
+            initBinding(binder);
          }
 
          var gridViewBinder = _cache[view].DowncastTo<GridViewBinder<T>>();

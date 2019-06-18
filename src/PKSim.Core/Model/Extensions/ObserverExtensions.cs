@@ -7,12 +7,12 @@ namespace PKSim.Core.Model.Extensions
    {
       public static bool IsConcentration(this IObserver observer)
       {
-         return string.Equals(observer.Name, CoreConstants.Observer.CONCENTRATION);
+         return string.Equals(observer.Name, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
       }
 
       public static bool IsConcentration(this IObserverBuilder observerBuilder)
       {
-         return string.Equals(observerBuilder.Name, CoreConstants.Observer.CONCENTRATION);
+         return string.Equals(observerBuilder.Name, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
       }
    }
 }

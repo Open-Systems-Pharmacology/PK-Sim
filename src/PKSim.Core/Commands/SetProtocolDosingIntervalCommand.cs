@@ -18,7 +18,7 @@ namespace PKSim.Core.Commands
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          _newDosingInterval = newDosingInterval;
          BuildingBlockId = simpleProtocol.Id;
-         context.UpdateBuildinBlockPropertiesInCommand(this, simpleProtocol);
+         context.UpdateBuildingBlockPropertiesInCommand(this, simpleProtocol);
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)

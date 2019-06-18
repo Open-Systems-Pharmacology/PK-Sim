@@ -61,7 +61,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       public void AddEventMapping()
       {
          var eventMapping = _eventTask.CreateEventMapping();
-         _allEventsMappingDTO.Add(_eventMappingDTOMapper.MapFrom(eventMapping, _simulation));
+         addEventMapping(eventMapping);
          OnStatusChanged();
       }
 
@@ -70,14 +70,11 @@ namespace PKSim.Presentation.Presenters.Simulations
          _allEventsMappingDTO.Add(_eventMappingDTOMapper.MapFrom(eventMapping, _simulation));
       }
 
-      public IEnumerable<PKSimEvent> AllEvents()
-      {
-         return _eventTask.All();
-      }
+      public IEnumerable<PKSimEvent> AllEvents() => _eventTask.All();
 
       public void SaveConfiguration()
       {
-         _eventProperties.ClearEventMapping();
+         _eventProperties.ClearEventMappings();
 
          _allEventsMappingDTO.Each(eventMappingDTO =>
          {
@@ -101,7 +98,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void CreateEventFor(EventMappingDTO eventMappingDTO)
       {
-         updateEventInMapping(eventMappingDTO, _eventTask.CreateEvent());
+         updateEventInMapping(eventMappingDTO, _eventTask.AddToProject());
       }
 
       private void updateEventInMapping(EventMappingDTO eventMappingDTO, PKSimEvent pkSimEvent)

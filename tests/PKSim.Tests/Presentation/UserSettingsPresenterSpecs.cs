@@ -15,6 +15,8 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Assets;
 
+
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_UserSettingsPresenter : ContextSpecification<IUserSettingsPresenter>
@@ -97,6 +99,7 @@ namespace PKSim.Presentation
 
       public override void GlobalContext()
       {
+         base.GlobalContext();
          _oldCopyAction = FileHelper.Copy;
          FileHelper.Copy = (s1, s2) =>
                               { _copyCalled = (s1 == _defaultTemplateUserDatabase && s2 == _newFileToCreate); };

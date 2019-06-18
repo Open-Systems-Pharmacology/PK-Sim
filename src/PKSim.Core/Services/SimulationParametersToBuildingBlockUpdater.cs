@@ -47,7 +47,7 @@ namespace PKSim.Core.Services
          //First Update the parameters in the template building block (the parameter in the used building block are synchronized with the one used in the simulation)
          var updateTemplateParametersCommand = updateParameterValues(usedBuildingBlockParameters, templateParameters);
          updateTemplateParametersCommand.Description = PKSimConstants.Command.UpdateTemplateParameterCommandDescription(templateBuildingBlock.Name, buildingBlockType, simulation.Name);
-         _executionContext.UpdateBuildinBlockPropertiesInCommand(updateTemplateParametersCommand, templateBuildingBlock);
+         _executionContext.UpdateBuildingBlockPropertiesInCommand(updateTemplateParametersCommand, templateBuildingBlock);
 
          updateCommands.Add(updateTemplateParametersCommand);
 
@@ -59,7 +59,7 @@ namespace PKSim.Core.Services
          updateCommands.BuildingBlockName = templateBuildingBlock.Name;
          updateCommands.CommandType = PKSimConstants.Command.CommandTypeUpdate;
          updateCommands.Description = PKSimConstants.Command.UpdateTemplateBuildingBlockCommandDescription(buildingBlockType, templateBuildingBlock.Name, simulation.Name);
-         _executionContext.UpdateBuildinBlockPropertiesInCommand(updateCommands, templateBuildingBlock);
+         _executionContext.UpdateBuildingBlockPropertiesInCommand(updateCommands, templateBuildingBlock);
 
          _executionContext.PublishEvent(new BuildingBlockUpdatedEvent(templateBuildingBlock));
          return updateCommands;

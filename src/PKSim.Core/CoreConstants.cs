@@ -46,6 +46,7 @@ namespace PKSim.Core
          public const string USER_TEMPLATE_DB_EXTENSION = ".templateDbUser";
          public const string SYSTEM_TEMPLATE_DB_EXTENSION = ".templateDbSystem";
          public const string GENE_DB_EXTENSION = ".expressionDb";
+         public static readonly string MARKDOWN_EXTENSION = ".md";
          public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
          public static readonly string SIMULATION_RESULTS_FILTER = $"*{Constants.Filter.CSV_EXTENSION}";
          public static readonly string EXPRESSION_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Gene Expression Database", GENE_DB_EXTENSION);
@@ -68,7 +69,7 @@ namespace PKSim.Core
       public static readonly string VALUE_PROPERTY_NAME = "Value";
       public static readonly string PROJECT_UNDEFINED = "Undefined";
       public static readonly string VERSION_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.xml";
-      public static readonly string ISSUE_TRACKER_URL = "http://www.open-systems-pharmacology.org/pk-sim/issues";
+      public static readonly string ISSUE_TRACKER_URL = "https://github.com/open-systems-pharmacology/pk-sim/issues";
       public static readonly string TEMPLATE_DATABASE_CONVERSION_WIKI_URL = "https://github.com/Open-Systems-Pharmacology/OSPSuite.Documentation/wiki/Converting-User-Template-Database";
 
       public const string APPLICATION_NAME_TEMPLATE = "Application_";
@@ -82,14 +83,13 @@ namespace PKSim.Core
       public static string ProductDisplayName = PRODUCT_NAME_WITH_TRADEMARK;
 
     
-
       public static string DefaultResultsExportNameFor(string simulationName) => $"{simulationName}-Results";
 
       public static string DefaultPKAnalysesExportNameFor(string simulationName) => $"{simulationName}-PK-Analyses";
 
       public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
 
-     public static string CompositeNameFor(params string[] names)
+      public static string CompositeNameFor(params string[] names)
       {
          if (names == null || names.Length == 0)
             return string.Empty;
@@ -131,12 +131,13 @@ namespace PKSim.Core
       public static class Observer
       {
          public static readonly string FRACTION_OF_DOSE = "Fraction of dose";
+         public static readonly string TOTAL_FRACTION_OF_DOSE = "Total fraction of dose";
          public static readonly string RECEPTOR_OCCUPANCY = "Receptor Occupancy";
          public static readonly string FRACTION_EXCRETED = "Fraction excreted";
          public static readonly string FRACTION_EXCRETED_TO_URINE = $"{FRACTION_EXCRETED} to urine";
          public static readonly string FRACTION_EXCRETED_TO_BILE = $"{FRACTION_EXCRETED} to bile";
          public static readonly string FRACTION_EXCRETED_TO_FECES = $"{FRACTION_EXCRETED} to feces";
-         public static readonly string CONCENTRATION = "Concentration in container";
+         public static readonly string CONCENTRATION_IN_CONTAINER = "Concentration in container";
          public static readonly string PLASMA_PERIPHERAL_VENOUS_BLOOD = "Plasma (Peripheral Venous Blood)";
          public static readonly string TISSUE = "Tissue";
          public static readonly string WHOLE_BLOOD = "Whole Blood";
@@ -153,7 +154,7 @@ namespace PKSim.Core
 
          public static IReadOnlyCollection<string> FractionObservers => new[] {FRACTION_EXCRETED, FRACTION_EXCRETED_TO_URINE, FRACTION_EXCRETED_TO_BILE, FRACTION_EXCRETED_TO_FECES, FRACTION_OF_DOSE, RECEPTOR_OCCUPANCY};
 
-         public static IReadOnlyCollection<string> MoBiForAll => new[] {CONCENTRATION, FRACTION_EXCRETED_TO_URINE, TISSUE, PLASMA_PERIPHERAL_VENOUS_BLOOD, PLASMA_UNBOUND_PERIPHERAL_VENOUS_BLOOD};
+         public static IReadOnlyCollection<string> MoBiForAll => new[] {CONCENTRATION_IN_CONTAINER, FRACTION_EXCRETED_TO_URINE, TISSUE, PLASMA_PERIPHERAL_VENOUS_BLOOD, PLASMA_UNBOUND_PERIPHERAL_VENOUS_BLOOD};
 
          public static string ObserverNameFrom(string observerName, string compoundName)
          {
@@ -484,14 +485,14 @@ namespace PKSim.Core
 
       public static class Formulation
       {
-         public static readonly string EmptyFormulation = "Formulation_Empty";
-         public static readonly string Particles = "Formulation_Particles";
-         public static readonly string FirstOrder = "Formulation_FirstOrder";
-         public static readonly string ZeroOrder = "Formulation_ZeroOrder";
-         public static readonly string Lint80 = "Formulation_Tablet_Lint80";
-         public static readonly string Table = "Formulation_Table";
-         public static readonly string Weibull = "Formulation_Tablet_Weibull";
-         public static readonly string Dissolved = "Formulation_Dissolved";
+         public static readonly string EMPTY_FORMULATION = "Formulation_Empty";
+         public static readonly string PARTICLES = "Formulation_Particles";
+         public static readonly string FIRST_ORDER = "Formulation_FirstOrder";
+         public static readonly string ZERO_ORDER = "Formulation_ZeroOrder";
+         public static readonly string LINT80 = "Formulation_Tablet_Lint80";
+         public static readonly string TABLE = "Formulation_Table";
+         public static readonly string WEIBULL = "Formulation_Tablet_Weibull";
+         public static readonly string DISSOLVED = "Formulation_Dissolved";
       }
 
       public static class Gender
@@ -832,7 +833,6 @@ namespace PKSim.Core
       {
          public static readonly string PH = "pH";
          public static readonly string IS_NEUTRAL = "Is neutral";
-         public static readonly string HAS_HALOGENS = "Has halogens";
          public static readonly string EFFECTIVE_MOLECULAR_WEIGHT = "Effective molecular weight";
          public static readonly string LIPOPHILICITY = "Lipophilicity";
          public static readonly string CONCENTRATION = Constants.Parameters.CONCENTRATION;
@@ -878,7 +878,6 @@ namespace PKSim.Core
          public static readonly string DOSE_PER_BODY_SURFACE_AREA = "DosePerBodySurfaceArea";
          public static readonly string AGE = "Age";
          public static readonly string AGE_0 = "Age of individual at t=0";
-         public static readonly string GESTATIONAL_AGE = "Gestational age";
          public static readonly string PMA = "Postmenstrual age";
          public static readonly string WEIGHT = "Weight";
          public static readonly string HCT = "Hematocrit";
@@ -910,17 +909,6 @@ namespace PKSim.Core
          public static readonly string PARAMETER_PKA2 = ParameterPKa(1);
          public static readonly string PARAMETER_PKA3 = ParameterPKa(NUMBER_OF_PKA_PARAMETERS - 1);
 
-         public static readonly string ParameterCompoundTypeBase = "Compound type ";
-
-         public static string ParameterCompoundType(int index)
-         {
-            return $"{ParameterCompoundTypeBase}{index}";
-         }
-
-         public static readonly string COMPOUND_TYPE1 = ParameterCompoundType(0);
-         public static readonly string COMPOUND_TYPE2 = ParameterCompoundType(1);
-         public static readonly string COMPOUND_TYPE3 = ParameterCompoundType(NUMBER_OF_PKA_PARAMETERS - 1);
-
          public const string APPLICATION_RATE = "Application rate";
          public const string PERMEABILITY = "Permeability";
          public const string SPECIFIC_INTESTINAL_PERMEABILITY = "Specific intestinal permeability (transcellular)";
@@ -951,16 +939,12 @@ namespace PKSim.Core
          public const string FRACTION_VASCULAR = "Fraction vascular";
          public const string NUMBER_OF_PARTICLES_FACTOR = "Number_Of_Particles_Factor";
          public const string START_PARTICLE_RADIUS = "Particle radius (at t=0)";
-         public const string PRECIPITATED_DRUG_SOLUBLE = "Treat precipitated drug as";
-         public const string PARTICLE_DISPERSE_SYSTEM = "Type of particle size distribution";
-         public const string PARTICLE_SIZE_DISTRIBUTION = "Particle size distribution";
          public const string PARTICLE_RADIUS_MEAN = "Particle radius (mean)";
          public const string PARTICLE_RADIUS_MIN = "Particle radius (min)";
          public const string PARTICLE_RADIUS_MAX = "Particle radius (max)";
          public const string PARTICLE_RADIUS_STD_DEVIATION = "Particle radius (SD)";
          public const string PARTICLE_LOG_DISTRIBUTION_MEAN = "Particle radius (geomean)";
          public const string PARTICLE_LOG_VARIATION_COEFF = "Coefficient of variation";
-         public const string NUMBER_OF_BINS = "Number of bins";
          public const string K_CELL_PLS = "Partition coefficient (intracellular/plasma)";
          public const string K_WATER = "Partition coefficient (water/container)";
          public const string SPECIFIC_CLEARANCE = "Specific clearance";
@@ -977,12 +961,7 @@ namespace PKSim.Core
          public const string IS_FLOATING_IN_LUMEN = "Is floating in lumen";
          public const string FRACTION_UNBOUND_EXPERIMENT = "Fraction unbound (experiment)";
          public const string LIPOPHILICITY_EXPERIMENT = "Lipophilicity (experiment)";
-         public const string PARA_ABSORBTION_SINK = "Paracellular absorption sink condition";
-         public const string TRANS_ABSORBTION_SINK = "Transcellular absorption sink condition";
          public const string FRACTION_DOSE = "Fraction (dose)";
-         public const string USE_PENALTY_FACTOR = "Use pH- and pKa-dependent penalty factor for charged molecule fraction";
-         public const string IS_SMALL_MOLECULE = "Is small molecule";
-         public const string PLASMA_PROTEIN_BINDING_PARTNER = "Plasma protein binding partner";
          public const string SOLUBILITY_P_KA__P_H_FACTOR = "Solubility_pKa_pH_Factor";
          public const string HALF_LIFE = "t1/2";
          public const string HALF_LIFE_LIVER = "t1/2 (liver)";
@@ -992,7 +971,6 @@ namespace PKSim.Core
          public const string DISS_TIME80 = "Dissolution time (80% dissolved)";
          public const string DISS_TIME50 = "Dissolution time (50% dissolved)";
          public const string DISS_SHAPE = "Dissolution shape";
-         public const string EHC_ENABLED = "Gallbladder emptying enabled";
          public const string LYMPH_FLOW = "Lymph flow rate";
          public const string LYMPH_FLOW_INCL_MUCOSA = "Lymph flow rate (incl. mucosa)";
          public const string RECIRCULATION_FLOW = "Fluid recirculation flow rate";
@@ -1006,7 +984,6 @@ namespace PKSim.Core
          public const string KI = "Ki";
          public const string KI_C = "Ki_c";
          public const string KI_U = "Ki_u";
-         public const string IS_LIVER_ZONATED = "Is liver zonated";
          public const string VOLUME_PLASMA = "Volume (plasma)";
          public const string MUCOSA_PERMEABILITY_SCALE_FACTOR = "Mucosa permeability scale factor (transcellular)";
          public const string START_AMOUNT = "Start amount";
@@ -1016,7 +993,6 @@ namespace PKSim.Core
          public const string KINACT = "kinact";
          public const string EMAX = "Emax";
          public const string EC50 = "EC50";
-         public const string USE_AS_SUSPENSION = "Use as suspension";
          public const string WEIGHT_TISSUE = "Weight (tissue)";
 
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
@@ -1033,10 +1009,10 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyList<string> HiddenParameterForMonodisperse = new[]
          {
-            PARTICLE_SIZE_DISTRIBUTION,
+            Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION,
             PARTICLE_RADIUS_MIN,
             PARTICLE_RADIUS_MAX,
-            NUMBER_OF_BINS,
+            Constants.Parameters.NUMBER_OF_BINS,
             PARTICLE_RADIUS_STD_DEVIATION,
             PARTICLE_LOG_DISTRIBUTION_MEAN,
             PARTICLE_LOG_VARIATION_COEFF
@@ -1056,10 +1032,10 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyList<string> ParticleDistributionStructuralParameters = new[]
          {
-            PARTICLE_DISPERSE_SYSTEM,
-            NUMBER_OF_BINS,
+            Constants.Parameters.PARTICLE_DISPERSE_SYSTEM,
+            Constants.Parameters.NUMBER_OF_BINS,
             PARTICLE_RADIUS_MEAN,
-            PARTICLE_SIZE_DISTRIBUTION,
+            Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION,
             PARTICLE_RADIUS_MIN,
             PARTICLE_RADIUS_MAX,
             PARTICLE_RADIUS_STD_DEVIATION,
@@ -1104,7 +1080,7 @@ namespace PKSim.Core
          {
             Constants.Parameters.VOLUME,
             AGE,
-            GESTATIONAL_AGE,
+            Constants.Parameters.GESTATIONAL_AGE,
             HEIGHT,
             WEIGHT,
             MEAN_WEIGHT,
@@ -1139,39 +1115,14 @@ namespace PKSim.Core
             Constants.Parameters.I
          };
 
-         public static readonly IReadOnlyCollection<string> AllBooleanParameters = new[]
-         {
-            Constants.Parameters.USE_JACOBIAN,
-            HAS_HALOGENS,
-            EHC_ENABLED,
-            USE_PENALTY_FACTOR,
-            IS_SMALL_MOLECULE,
-            IS_LIVER_ZONATED,
-            USE_AS_SUSPENSION
-         };
-
-         public static readonly IReadOnlyCollection<string> AllWithListOfValues = new List<string>(Halogens.Union(AllBooleanParameters))
-         {
-            PARTICLE_SIZE_DISTRIBUTION,
-            NUMBER_OF_BINS,
-            COMPOUND_TYPE1,
-            COMPOUND_TYPE2,
-            COMPOUND_TYPE3,
-            PARTICLE_DISPERSE_SYSTEM,
-            PRECIPITATED_DRUG_SOLUBLE,
-            TRANS_ABSORBTION_SINK,
-            PARA_ABSORBTION_SINK,
-            GESTATIONAL_AGE,
-            PLASMA_PROTEIN_BINDING_PARTNER
-         };
-
+       
          public static readonly IReadOnlyCollection<string> AllParametersWithLockedValueOriginInSimulation = new List<string>(Halogens)
          {
             Constants.Parameters.MOL_WEIGHT,
             EFFECTIVE_MOLECULAR_WEIGHT,
-            COMPOUND_TYPE1,
-            COMPOUND_TYPE2,
-            COMPOUND_TYPE3,
+            Constants.Parameters.COMPOUND_TYPE1,
+            Constants.Parameters.COMPOUND_TYPE2,
+            Constants.Parameters.COMPOUND_TYPE3,
             PARAMETER_PKA1,
             PARAMETER_PKA2,
             PARAMETER_PKA3,
@@ -1317,19 +1268,23 @@ namespace PKSim.Core
       public static class UI
       {
          public static readonly int BUILDING_BLOCK_SELECTION_SIZE = 32;
-         public static readonly int PARAMETER_WITDH = 110;
+         public static readonly int PARAMETER_WIDTH = 110;
          public static readonly int DATA_SOURCE_WIDTH = 180;
-         public const int SIMULATION_SETTINGS_WITDH = 750;
+         public const int SIMULATION_SETTINGS_WIDTH = 750;
          public const int SIMULATION_SETTINGS_HEIGHT = 650;
-         public const int SIMULATION_VIEW_WITDH = 700;
-         public const int INDIVIDUAL_VIEW_WITDH = 880;
+         public const int SIMULATION_VIEW_WIDTH = 700;
+         public const int INDIVIDUAL_VIEW_WIDTH = 880;
          public const int INDIVIDUAL_VIEW_HEIGHT = 720;
          public const int CONFIGURE_SIMULATION_VIEW_HEIGHT = 708;
          public const int CREATE_SIMULATION_VIEW_HEIGHT = CONFIGURE_SIMULATION_VIEW_HEIGHT + 40;
          public const int EXPRESSION_QUERY_VIEW_HEIGHT = 900;
          public const int EXPRESSION_QUERY_VIEW_WIDTH = 1100;
-         public const int FORMULATION_VIEW_WITDH = 650;
+         public const int FORMULATION_VIEW_WIDTH = 650;
          public const int FORMULATION_VIEW_HEIGHT = 760;
+         public const int OBSERVER_VIEW_HEIGHT = 760;
+         public const int OBSERVER_VIEW_WIDTH = 650;
+         public const int PROTOCOL_VIEW_WIDTH = 700;
+         public const int PROTOCOL_VIEW_HEIGHT = 760;
       }
 
       public static class Covariates

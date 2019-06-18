@@ -75,13 +75,13 @@ namespace PKSim.UI.Views.Simulations
 
          _gridViewBinder.Bind(x => x.NumberOfIndividuals)
             .WithCaption(PKSimConstants.UI.NumberOfIndividuals)
-            .WithFixedWidth(CoreConstants.UI.PARAMETER_WITDH)
+            .WithFixedWidth(CoreConstants.UI.PARAMETER_WIDTH)
             .WithFormat(new NullIntParameterFormatter())
             .AsReadOnly();
 
          _gridViewBinder.Bind(x => x.NumberOfQuantities)
             .WithCaption(PKSimConstants.UI.NumberOfOutputs)
-            .WithFixedWidth(CoreConstants.UI.PARAMETER_WITDH)
+            .WithFixedWidth(CoreConstants.UI.PARAMETER_WIDTH)
             .WithFormat(new NullIntParameterFormatter())
             .AsReadOnly();
 

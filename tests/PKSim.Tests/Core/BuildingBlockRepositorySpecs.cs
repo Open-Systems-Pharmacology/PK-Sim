@@ -4,23 +4,24 @@ using FakeItEasy;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_BuildingBlockRepository : ContextSpecification<IBuildingBlockRepository>
    {
-      private IProjectRetriever _projectRetriever;
+      private IPKSimProjectRetriever _projectRetriever;
       private PKSimProject _project;
       protected Individual _individual1;
       protected Individual _individual2;
 
       protected override void Context()
       {
-         _projectRetriever = A.Fake<IProjectRetriever>();
+         _projectRetriever = A.Fake<IPKSimProjectRetriever>();
          _project = A.Fake<PKSimProject>();
          _individual1 = new Individual();
          _individual2 = new Individual();
-         A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
+         A.CallTo(() => _projectRetriever.Current).Returns(_project);
          A.CallTo(() => _project.All<Individual>()).Returns(new[] {_individual1, _individual2});
          sut = new BuildingBlockRepository(_projectRetriever);
       }

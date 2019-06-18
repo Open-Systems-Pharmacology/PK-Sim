@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
@@ -47,9 +49,41 @@ namespace PKSim.Core.Services
          if (!speciesPopulation.IsBodySurfaceAreaDependent && schemaItems.Any(x => x.DoseIsPerBodySurfaceArea()))
             throw new InvalidSimulationConfigurationException(PKSimConstants.Error.DosePerBodySurfaceAreaProtocolCannotBeUsedWithSpeciesPopulation(speciesPopulation.DisplayName));
 
-         if(speciesPopulation.IsNamed(CoreConstants.Population.PREGNANT))
+         if (speciesPopulation.IsNamed(CoreConstants.Population.PREGNANT))
             throw new InvalidSimulationConfigurationException(PKSimConstants.Error.PregnantPopulationCanOnlyBeUsedWithMoBiModel(speciesPopulation.DisplayName));
 
+         var administeredCompoundWithSuperSaturationEnabled = compounds.Where(x => x.SupersaturationEnabled).Select(x => new
+         {
+            Compound = x,
+            simulation.CompoundPropertiesFor(x).ProtocolProperties
+         }).Where(x => x.ProtocolProperties.IsAdministered).Select(x => new
+         {
+            x.Compound,
+            x.ProtocolProperties.Protocol,
+            x.ProtocolProperties.FormulationMappings
+         });
+
+         administeredCompoundWithSuperSaturationEnabled.Each(x => validateSupersaturationUsageFor(x.Compound, x.Protocol, x.FormulationMappings));
+      }
+
+      private void validateSupersaturationUsageFor(Compound compound, Protocol protocol, IReadOnlyList<FormulationMapping> formulationMappings)
+      {
+         var protocolSchemaItems = _schemaItemsMapper.MapFrom(protocol);
+
+         var hasOralApplicationsNotUsingParticles = protocolSchemaItems
+            .Where(x => x.IsOral)
+            .Select(x => formulationMappings.Find(f => string.Equals(f.FormulationKey, x.FormulationKey)))
+            .Any(item => !string.Equals(item?.Formulation.FormulationType, CoreConstants.Formulation.PARTICLES));
+
+         if (hasOralApplicationsNotUsingParticles)
+            throw new InvalidSimulationConfigurationException(PKSimConstants.Error.SaturationEnabledCanOnlyBeUsedForOralApplicationUsingParticleDissolution(compound.Name));
+
+         var hasUserDefinedApplicationInLumen = protocolSchemaItems
+            .Where(x => x.IsUserDefined)
+            .Any(x => string.Equals(x.TargetOrgan, CoreConstants.Organ.Lumen));
+
+         if (hasUserDefinedApplicationInLumen)
+            throw new InvalidSimulationConfigurationException(PKSimConstants.Error.SaturationEnabledCanOnlyBeUsedForOralApplicationUsingParticleDissolution(compound.Name));
       }
    }
 }

@@ -81,7 +81,7 @@ namespace PKSim.IntegrationTests
       }
 
       private IList<T> loadSystemTemplates<T>(TemplateType templateType)
-         where T: PKSimBuildingBlock
+         where T : PKSimBuildingBlock
       {
          var templates = sut.AllTemplatesFor(TemplateDatabaseType.System, templateType);
 
@@ -120,6 +120,7 @@ namespace PKSim.IntegrationTests
                alternative.IsDefault.ShouldBeTrue($"{alternative} must be default");
                continue;
             }
+
             alternative.IsDefault.ShouldBeFalse($"{alternative} may not be default");
          }
       }
@@ -138,7 +139,7 @@ namespace PKSim.IntegrationTests
          string parameterName, double expectedValue, string expectedUnit = "")
       {
          var alternative = compound.ParameterAlternativeGroup(groupName).AlternativeByName(alternativeName);
-         checkParameter(alternative.Parameter(parameterName),expectedValue,expectedUnit);
+         checkParameter(alternative.Parameter(parameterName), expectedValue, expectedUnit);
       }
 
       private void checkCalculationMethod(Compound compound, string category, string expectedCalculationMethod)
@@ -223,7 +224,7 @@ namespace PKSim.IntegrationTests
          //---- Itraconazole
          var itraconazole = _compounds.FindByName("Itraconazole");
          checkDefaultAlternative(itraconazole, intestinalPermeabilityGroup, "Optimization");
-         
+
          //---- Rifampicin
          var rifampicin = _compounds.FindByName("Rifampicin");
          checkDefaultAlternative(rifampicin, intestinalPermeabilityGroup, "fitted");
@@ -231,7 +232,6 @@ namespace PKSim.IntegrationTests
          //---- S-Warfarin
          var swarfarin = _compounds.FindByName("S-Warfarin");
          checkDefaultAlternative(swarfarin, intestinalPermeabilityGroup, "fitted");
-
       }
    }
 
@@ -259,6 +259,33 @@ namespace PKSim.IntegrationTests
       public void should_be_able_to_load_the_template_by_name()
       {
          sut.LoadTemplate<Individual>(_template).ShouldNotBeNull();
+      }
+   }
+
+   public class When_saving_an_observer_set_building_block_to_the_database : concern_for_TemplateTaskQuery
+   {
+      private ObserverSet _observerSet;
+      private Template _template;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _observerSet = new ObserverSet {Name = "ObsSet"};
+
+         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _observerSet.Name, Object = _observerSet, TemplateType = TemplateType.ObserverSet};
+         sut.SaveToTemplate(_template);
+      }
+
+      [Observation]
+      public void the_template_should_exist_by_name()
+      {
+         sut.Exists(TemplateDatabaseType.User, _observerSet.Name, TemplateType.ObserverSet).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_be_able_to_load_the_template_by_name()
+      {
+         sut.LoadTemplate<ObserverSet>(_template).ShouldNotBeNull();
       }
    }
 

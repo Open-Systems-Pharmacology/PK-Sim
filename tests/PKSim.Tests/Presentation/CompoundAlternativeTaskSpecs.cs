@@ -18,6 +18,7 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Services;
 using Dimension = OSPSuite.Core.Domain.UnitSystem.Dimension;
@@ -64,7 +65,7 @@ namespace PKSim.Presentation
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT));
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameters.LIPOPHILICITY));
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(8).WithName(CoreConstants.Parameters.PERMEABILITY));
-            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.IS_SMALL_MOLECULE));
+            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.IS_SMALL_MOLECULE));
             return compound;
          }
       }

@@ -1,7 +1,18 @@
 using System;
 using System.Collections.Generic;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.Classifications;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Presentation.Presenters.ObservedData;
+using OSPSuite.Presentation.Regions;
+using OSPSuite.Presentation.Services;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Events;
@@ -11,17 +22,6 @@ using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Regions;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Main;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters.Classifications;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Presentation.Presenters.ObservedData;
-using OSPSuite.Presentation.Regions;
-using OSPSuite.Presentation.Services;
-using OSPSuite.Presentation.Views;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters.Main
@@ -39,7 +39,7 @@ namespace PKSim.Presentation.Presenters.Main
          : base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver, buildingBlockTask, RegionNames.BuildingBlockExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {
          _observedDataInExplorerPresenter = observedDataInExplorerPresenter;
-         _observedDataInExplorerPresenter.InitializeWith(this, classificationPresenter,RootNodeTypes.ObservedDataFolder);
+         _observedDataInExplorerPresenter.InitializeWith(this, classificationPresenter, RootNodeTypes.ObservedDataFolder);
       }
 
       protected override ITreeNode AddBuildingBlockToTree(IPKSimBuildingBlock buildingBlock)
@@ -58,6 +58,8 @@ namespace PKSim.Presentation.Presenters.Main
                return addPopulationToTree(buildingBlock.DowncastTo<Population>());
             case PKSimBuildingBlockType.Event:
                return addEventToTree(buildingBlock.DowncastTo<PKSimEvent>());
+            case PKSimBuildingBlockType.ObserverSet:
+               return addObserversToTree(buildingBlock.DowncastTo<ObserverSet>());
             case PKSimBuildingBlockType.Simulation:
                return null;
             default:
@@ -77,49 +79,29 @@ namespace PKSim.Presentation.Presenters.Main
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.FormulationFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.ProtocolFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.EventFolder));
+            _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.ObserversFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder));
 
             var pksimProject = project.DowncastTo<PKSimProject>();
-            pksimProject.All<Individual>().Each(bb => addIndividualToTree(bb));
-            pksimProject.All<Compound>().Each(bb => addCompoundToTree(bb));
-            pksimProject.All<Protocol>().Each(bb => addProtocolToTree(bb));
-            pksimProject.All<Formulation>().Each(bb => addFormulationToTree(bb));
-            pksimProject.All<Population>().Each(bb => addPopulationToTree(bb));
-            pksimProject.All<PKSimEvent>().Each(bb => addEventToTree(bb));
+            pksimProject.All<IPKSimBuildingBlock>().Each(x => AddBuildingBlockToTree(x));
 
             _observedDataInExplorerPresenter.AddObservedDataToTree(project);
          }
       }
 
-      private ITreeNode addEventToTree(PKSimEvent pkSimEvent)
-      {
-         return addBuildingBlockToTree(pkSimEvent, PKSimRootNodeTypes.EventFolder, ApplicationIcons.Event);
-      }
+      private ITreeNode addEventToTree(PKSimEvent pkSimEvent) => addBuildingBlockToTree(pkSimEvent, PKSimRootNodeTypes.EventFolder, ApplicationIcons.Event);
 
-      private ITreeNode addPopulationToTree(Population population)
-      {
-         return addBuildingBlockToTree(population, PKSimRootNodeTypes.PopulationFolder, ApplicationIcons.Population);
-      }
+      private ITreeNode addPopulationToTree(Population population) => addBuildingBlockToTree(population, PKSimRootNodeTypes.PopulationFolder, ApplicationIcons.Population);
 
-      private ITreeNode addIndividualToTree(Individual individual)
-      {
-         return addBuildingBlockToTree(individual, PKSimRootNodeTypes.IndividualFolder, ApplicationIcons.IconByName(individual.Species.Icon));
-      }
+      private ITreeNode addIndividualToTree(Individual individual) => addBuildingBlockToTree(individual, PKSimRootNodeTypes.IndividualFolder, ApplicationIcons.IconByName(individual.Species.Icon));
 
-      private ITreeNode addCompoundToTree(Compound compound)
-      {
-         return addBuildingBlockToTree(compound, PKSimRootNodeTypes.CompoundFolder, ApplicationIcons.Compound);
-      }
+      private ITreeNode addCompoundToTree(Compound compound) => addBuildingBlockToTree(compound, PKSimRootNodeTypes.CompoundFolder, ApplicationIcons.Compound);
 
-      private ITreeNode addFormulationToTree(Formulation formulation)
-      {
-         return addBuildingBlockToTree(formulation, PKSimRootNodeTypes.FormulationFolder, ApplicationIcons.Formulation);
-      }
+      private ITreeNode addFormulationToTree(Formulation formulation) => addBuildingBlockToTree(formulation, PKSimRootNodeTypes.FormulationFolder, ApplicationIcons.Formulation);
 
-      private ITreeNode addProtocolToTree(Protocol protocol)
-      {
-         return addBuildingBlockToTree(protocol, PKSimRootNodeTypes.ProtocolFolder, ApplicationIcons.Protocol);
-      }
+      private ITreeNode addProtocolToTree(Protocol protocol) => addBuildingBlockToTree(protocol, PKSimRootNodeTypes.ProtocolFolder, ApplicationIcons.Protocol);
+
+      private ITreeNode addObserversToTree(ObserverSet observers) => addBuildingBlockToTree(observers, PKSimRootNodeTypes.ObserversFolder, ApplicationIcons.Observer);
 
       private ITreeNode addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType, ApplicationIcon icon) where TBuildingBlock : class, IPKSimBuildingBlock
       {

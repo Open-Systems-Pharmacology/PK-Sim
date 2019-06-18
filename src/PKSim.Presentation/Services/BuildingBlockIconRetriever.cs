@@ -47,10 +47,14 @@ namespace PKSim.Presentation.Services
       public ApplicationIcon IconFor(UsedBuildingBlock usedBuildingBlock)
       {
          var iconName = usedBuildingBlock.BuildingBlockType.ToString();
+
          if (usedBuildingBlock.BuildingBlockType == PKSimBuildingBlockType.Individual)
             iconName = speciesNameFrom(usedBuildingBlock);
 
-         return retrieveIconForStatus(iconName, _buildingBlockInSimulationManager.StatusFor(usedBuildingBlock));
+         if (usedBuildingBlock.BuildingBlockType == PKSimBuildingBlockType.ObserverSet)
+            iconName = ApplicationIcons.Observer.IconName;
+
+            return retrieveIconForStatus(iconName, _buildingBlockInSimulationManager.StatusFor(usedBuildingBlock));
       }
 
       public ApplicationIcon IconFor(ISimulationComparison simulationComparison)

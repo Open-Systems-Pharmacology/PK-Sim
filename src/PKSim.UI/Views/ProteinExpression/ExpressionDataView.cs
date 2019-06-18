@@ -528,7 +528,7 @@ namespace PKSim.UI.Views.ProteinExpression
          pgrdExpressionData.Fields.Clear();
 
          // reset chart to supress side effects
-         chrtExpressionData.SeriesTemplate.SummaryFunction = "";
+         chrtExpressionData.SeriesTemplate.NumericSummaryOptions.SummaryFunction = "";
          chrtExpressionData.ResetSummaryFunctions();
          pgrdExpressionData.DataSource = expressionDataTable;
          pgrdExpressionData.RefreshData();
@@ -713,11 +713,8 @@ namespace PKSim.UI.Views.ProteinExpression
                                        new[] {argument1Description, argument2Description},
                                        customSummary);
 
-         chart.SeriesTemplate.SummaryFunction = String.Format("{0}([{1}],[{2}])", STR_CUSTOM_SUMMARY_FUNCTION_NAME,
-                                                              _fieldNormValue.FieldName + "_" +
-                                                              _fieldNormValue.SummaryType,
-                                                              _fieldNormValue2.FieldName + "_" +
-                                                              _fieldNormValue2.SummaryType);
+         chart.SeriesTemplate.NumericSummaryOptions.SummaryFunction = 
+            $"{STR_CUSTOM_SUMMARY_FUNCTION_NAME}([{_fieldNormValue.FieldName + "_" + _fieldNormValue.SummaryType}],[{_fieldNormValue2.FieldName + "_" + _fieldNormValue2.SummaryType}])";
 
          //config layout
          chart.SeriesTemplate.View = new SideBySideBarSeriesView();

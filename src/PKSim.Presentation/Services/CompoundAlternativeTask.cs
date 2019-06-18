@@ -350,12 +350,12 @@ namespace PKSim.Presentation.Services
       private IEnumerable<IParameter> permeabilityParametersFor(Compound compound, string permeabilityParameterName)
       {
          //create a temp compound from the compound factory
-         //retrieve the lipophilicty alternatives
-         var lipophilictyGroup = compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
-         foreach (var alternative in lipophilictyGroup.AllAlternatives)
+         //retrieve the lipophilicity alternatives
+         var lipophilicityGroup = compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
+         foreach (var alternative in lipophilicityGroup.AllAlternatives)
          {
             var tempCompound = _compoundFactory.Create();
-            tempCompound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value;
+            tempCompound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value;
             tempCompound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT).Value = compound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT).Value;
             tempCompound.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value = alternative.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value;
             var permParameter = tempCompound.Parameter(permeabilityParameterName);

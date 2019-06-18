@@ -240,7 +240,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _compound.Parameter(CoreConstants.Parameters.IS_SMALL_MOLECULE).Value = 0;
+         _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TwoPores) as IndividualSimulation;
          var buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
          _buildConfiguration = buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);

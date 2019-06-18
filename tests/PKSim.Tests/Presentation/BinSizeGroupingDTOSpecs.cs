@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper.Extensions;
 using NUnit.Framework;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 
+
 namespace PKSim.Presentation
 {
    public abstract class concern_for_BinSizeGroupingDTO : ContextSpecification<BinSizeGroupingDTO>

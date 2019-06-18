@@ -55,7 +55,7 @@ namespace PKSim.Presentation
          _qualificationPlan = new QualificationPlan();
          _newProject.AddQualificationPlan(_qualificationPlan);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_fileName)).Returns(_newProject);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFile(_fileName)).Returns(_newProject);
          A.CallTo(() => _view.Display())
             .Invokes(x => sut.Start().Wait());
       }

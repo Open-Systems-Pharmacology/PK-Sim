@@ -122,6 +122,7 @@ namespace PKSim.Presentation.Presenters.Main
       private void updateProjectInfo(IProject project, bool enabled)
       {
          updateProjectInfo(project.Name, project.FilePath, enabled);
+         updateJournalInfo(project.JournalPath);
       }
 
       public void Handle(ProgressInitEvent eventToHandle)
@@ -153,15 +154,14 @@ namespace PKSim.Presentation.Presenters.Main
       {
          updateProjectInfo(Captions.None, Captions.None, false);
          update(StatusBarElements.Version)
-            .WithCaption(_applicationConfiguration.FullVersionDisplay);
+            .WithCaption($"{_applicationConfiguration.FullVersionDisplay}");
 
          hideProgressBar();
       }
 
       public void Handle(JournalLoadedEvent journalLoadedEvent)
       {
-         var name = FileHelper.FileNameFromFileFullPath(journalLoadedEvent.Journal.FullPath);
-         updateJournalInfo(name, journalLoadedEvent.Journal.FullPath, enabled: true);
+         updateJournalInfo(journalLoadedEvent.Journal.FullPath);
       }
 
       public void Handle(JournalClosedEvent eventToHandle)
@@ -172,6 +172,17 @@ namespace PKSim.Presentation.Presenters.Main
       private void updateUndefinedJournalInfo()
       {
          updateJournalInfo(PKSimConstants.UI.Undefined, string.Empty, enabled: false);
+      }
+
+      private void updateJournalInfo(string journalFilePath)
+      {
+         if (string.IsNullOrEmpty(journalFilePath))
+            updateUndefinedJournalInfo();
+         else
+         {
+            var name = FileHelper.FileNameFromFileFullPath(journalFilePath);
+            updateJournalInfo(name, journalFilePath, enabled: true);
+         }
       }
 
       private void updateJournalInfo(string name, string path, bool enabled)

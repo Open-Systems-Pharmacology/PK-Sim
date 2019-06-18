@@ -17,18 +17,12 @@ namespace PKSim.Core.Events
 
    public class RemoveCompoundProcessEvent : RemoveEntityEvent<PKSim.Core.Model.CompoundProcess, Compound>, ICompoundEvent
    {
-      public Compound Compound
-      {
-         get { return Container; }
-      }
+      public Compound Compound => Container;
    }
 
    public class AddCompoundProcessEvent : AddEntityEvent<PKSim.Core.Model.CompoundProcess, Compound>, ICompoundEvent
    {
-      public Compound Compound
-      {
-         get { return Container; }
-      }
+      public Compound Compound => Container;
    }
 
    public class MoleculeRenamedInCompound : ICompoundEvent

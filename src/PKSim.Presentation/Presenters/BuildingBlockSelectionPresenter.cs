@@ -45,9 +45,9 @@ namespace PKSim.Presentation.Presenters
       private readonly IContainer _container;
       private readonly IBuildingBlockSelectionDisplayer _buildingBlockSelectionDisplayer;
       private readonly BuildingBlockSelectionDTO _buildingBlockDTO;
-      private readonly string _buildingBlockType;
       private IPKSimBuildingBlock _editedBuildingBlock;
       private readonly TBuildingBlock _emptySelection;
+      public string BuildingBlockType { get; }
 
       public BuildingBlockSelectionPresenter(IBuildingBlockSelectionView view, IObjectTypeResolver objectTypeResolver,
          IBuildingBlockRepository buildingBlockRepository, IContainer container,
@@ -57,8 +57,8 @@ namespace PKSim.Presentation.Presenters
          _buildingBlockRepository = buildingBlockRepository;
          _container = container;
          _buildingBlockSelectionDisplayer = buildingBlockSelectionDisplayer;
-         _buildingBlockType = objectTypeResolver.TypeFor<TBuildingBlock>();
-         _buildingBlockDTO = new BuildingBlockSelectionDTO {BuildingBockType = _buildingBlockType};
+         BuildingBlockType = objectTypeResolver.TypeFor<TBuildingBlock>();
+         _buildingBlockDTO = new BuildingBlockSelectionDTO {BuildingBockType = BuildingBlockType};
          _view.DisplayIcons = true;
          _emptySelection = objectBaseFactory.Create<TBuildingBlock>().WithName(PKSimConstants.UI.None);
       }
@@ -155,9 +155,5 @@ namespace PKSim.Presentation.Presenters
          return _buildingBlockSelectionDisplayer.ToolTipFor(buildingBlock);
       }
 
-      public string BuildingBlockType
-      {
-         get { return _buildingBlockType; }
-      }
    }
 }

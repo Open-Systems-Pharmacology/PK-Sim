@@ -15,7 +15,6 @@ using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using ILogger = OSPSuite.Core.Services.ILogger;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
@@ -25,7 +24,7 @@ namespace PKSim.CLI
    {
       protected ILogger _logger;
       protected IWorkspacePersistor _workspacePersitor;
-      protected IWorkspace _workspace;
+      protected ICoreWorkspace _workspace;
       protected ISimulationExporter _simulationExporter;
       protected ILazyLoadTask _lazyLoadTask;
       protected ExportRunOptions _exportRunOptions = new ExportRunOptions {ExportMode = SimulationExportMode.Json | SimulationExportMode.Xml};
@@ -34,15 +33,16 @@ namespace PKSim.CLI
       private Func<string, string> _oldCreateDirectory;
 
       protected bool _outputFolderCreated;
-      protected string _projectFileName = "ProjectFile";
+      protected static string _projectName = "ProjectFile";
+      protected string _projectFileName = $"c:\\{_projectName}.pksim";
       protected static string _outputFolder = "OutputFolder";
       protected PKSimProject _project;
       protected Simulation _simulation1;
       protected Simulation _simulation2;
-      protected static string _simulation1Name = "S1";
+      protected static string _simulation1Name = "S1 200mg/kg";
       protected static string _simulation2Name = "S2";
-      protected string _s1OutputFolder = Path.Combine(_outputFolder, _simulation1Name);
-      protected string _s2OutputFolder = Path.Combine(_outputFolder, _simulation2Name);
+      protected string _s1OutputFolder = Path.Combine(_outputFolder, FileHelper.RemoveIllegalCharactersFrom(_simulation1Name));
+      protected string _s2OutputFolder = Path.Combine(_outputFolder, FileHelper.RemoveIllegalCharactersFrom(_simulation2Name));
       protected bool _s1OutputFolderCreated;
       protected bool _s2OutputFolderCreated;
 
@@ -74,12 +74,12 @@ namespace PKSim.CLI
       {
          _logger = A.Fake<ILogger>();
          _workspacePersitor = A.Fake<IWorkspacePersistor>();
-         _workspace = A.Fake<IWorkspace>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _simulationExporter = A.Fake<ISimulationExporter>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          sut = new ExportSimulationRunner(_logger, _workspacePersitor, _workspace, _simulationExporter, _lazyLoadTask);
 
-         _project = new PKSimProject();
+         _project = new PKSimProject {Name = _projectName};
          _simulation1 = createSimulationWithResults(_simulation1Name);
          _simulation2 = createSimulationWithResults(_simulation2Name);
 
@@ -110,6 +110,22 @@ namespace PKSim.CLI
       }
    }
 
+   public class When_exporting_the_simulation_result_for_a_simulation_in_a_project : concern_for_ExportSimulationRunner
+   {
+      private SimulationExport _export;
+
+      protected override async Task Because()
+      {
+         _export = await sut.ExportSimulation(_simulation1, _exportRunOptions, _project);
+      }
+
+      [Observation]
+      public void should_ensure_that_simulation_export_contains_the_name_of_the_simulation()
+      {
+         _export.Simulation.ShouldBeEqualTo(_simulation1Name);
+      }
+   }
+
    public class When_running_the_export_simulation_runner_for_all_simulations_of_an_existing_project : concern_for_ExportSimulationRunner
    {
       protected override async Task Context()
@@ -129,8 +145,8 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_all_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder, _exportRunOptions.ExportMode, A<string>._)).MustHaveHappened();
-         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder, _exportRunOptions.ExportMode, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation1, A<SimulationExportOptions>.That.Matches(x => x.OutputFolder == _s1OutputFolder))).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation2, A<SimulationExportOptions>.That.Matches(x => x.OutputFolder == _s2OutputFolder))).MustHaveHappened();
       }
 
       [Observation]
@@ -182,13 +198,13 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_the_selected_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation1, _s1OutputFolder,  _exportRunOptions.ExportMode, null)).MustHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation1, A<SimulationExportOptions>.That.Matches(x => x.OutputFolder == _s1OutputFolder))).MustHaveHappened();
       }
 
       [Observation]
       public void should_not_run_the_export_for_the_simulation_excluded_from_the_run()
       {
-         A.CallTo(() => _simulationExporter.Export(_simulation2, _s2OutputFolder,  _exportRunOptions.ExportMode, null)).MustNotHaveHappened();
+         A.CallTo(() => _simulationExporter.Export(_simulation2, A<SimulationExportOptions>.That.Matches(x => x.OutputFolder == _s2OutputFolder))).MustNotHaveHappened();
       }
 
       [Observation]
@@ -220,12 +236,16 @@ namespace PKSim.CLI
 
    public class When_running_the_export_simulation_runner_for_simulations_of_an_existing_project_and_simulation_should_be_calculated : concern_for_ExportSimulationRunner
    {
+      private SimulationExportOptions _simulationExportOptions;
+
       protected override async Task Context()
       {
          await base.Context();
          _exportRunOptions.ProjectFile = _projectFileName;
          _exportRunOptions.RunSimulation = true;
          _project.AddBuildingBlock(_simulation1);
+         A.CallTo(() => _simulationExporter.RunAndExport(_simulation1, A<SimulationRunOptions>._, A<SimulationExportOptions>._))
+            .Invokes(x => _simulationExportOptions = x.GetArgument<SimulationExportOptions>(2));
       }
 
       protected override Task Because()
@@ -236,7 +256,11 @@ namespace PKSim.CLI
       [Observation]
       public void should_run_the_export_for_the_simulations_defined_in_the_project()
       {
-         A.CallTo(() => _simulationExporter.RunAndExport(_simulation1, _s1OutputFolder,  A<SimulationRunOptions>._, _exportRunOptions.ExportMode, null)).MustHaveHappened();
+         _simulationExportOptions.PrependProjectName.ShouldBeFalse();
+         _simulationExportOptions.ProjectName.ShouldBeEqualTo(_projectName);
+         _simulationExportOptions.LogCategory.ShouldBeEqualTo(_projectName);
+         _simulationExportOptions.OutputFolder.ShouldBeEqualTo(_s1OutputFolder);
+         _simulationExportOptions.ExportMode.ShouldBeEqualTo(_exportRunOptions.ExportMode);
       }
    }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using CommandLine;
 using Microsoft.Extensions.Logging;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
@@ -20,20 +19,21 @@ namespace PKSim.CLI
 
    class Program
    {
+      static bool _valid = true;
+
       static int Main(string[] args)
       {
-         //starting batch tool with arguments
-         var valid = true;
 
          ApplicationStartup.Initialize();
 
-         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand>(args)
+         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(args)
             .WithParsed<JsonRunCommand>(startCommand)
             .WithParsed<SnapshotRunCommand>(startCommand)
             .WithParsed<ExportRunCommand>(startCommand)
-            .WithNotParsed(err => valid = false);
+            .WithParsed<QualificationRunCommand>(startCommand)
+            .WithNotParsed(err => _valid = false);
 
-         if (!valid)
+         if (!_valid)
             return (int) ExitCodes.Error;
 
          return (int) ExitCodes.Success;
@@ -42,7 +42,10 @@ namespace PKSim.CLI
       private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
       {
          var logger = initializeLogger(command);
-         logger.AddInfo($"Starting {command.Name.ToLower()} run with arguments:\n{command}");
+         if(command.LogCommandName)
+            logger.AddInfo($"Starting {command.Name.ToLower()} run");
+
+         logger.AddDebug($"Arguments:\n{command}");
          ApplicationStartup.Start();
          var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
          try
@@ -52,9 +55,11 @@ namespace PKSim.CLI
          catch (Exception e)
          {
             logger.AddException(e);
+            _valid = false;
          }
 
-         logger.AddInfo($"{command.Name} run finished");
+         if (command.LogCommandName)
+            logger.AddInfo($"{command.Name} run finished");
       }
 
       private static ILogger initializeLogger(CLICommand runCommand)

@@ -1,22 +1,22 @@
 ﻿using System.Linq;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.ProjectConverter.v5_3;
 using PKSim.IntegrationTests;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace PKSim.ProjectConverter.v5_3
 {
-   public  class When_converting_the_EHC_Convert_Test_522 : ContextWithLoadedProject<Converter52To531>
+   public class When_converting_the_EHC_Convert_Test_522 : ContextWithLoadedProject<Converter52To531>
    {
       public override void GlobalContext()
       {
@@ -28,7 +28,7 @@ namespace PKSim.ProjectConverter.v5_3
       [Observation]
       public void should_have_renamed_the_parameter_gall_bladder_emptying_rate_in_the_organism()
       {
-         foreach (var rootContainer in _project.All<Simulation>().Select(x=>x.Model.Root))
+         foreach (var rootContainer in _project.All<Simulation>().Select(x => x.Model.Root))
          {
             var gallBladder = rootContainer.EntityAt<IContainer>(Constants.ORGANISM, CoreConstants.Organ.Gallbladder);
             if (gallBladder == null)
@@ -64,7 +64,7 @@ namespace PKSim.ProjectConverter.v5_3
       public void should_have_changed_the_assignment_value_to_a_constant_1_formula_in_all_EHC_start_events()
       {
          //Transport Nbhoods|Gbl_Lumen_duodenum|COMPOUND|GallbladderEmptying anpassen (neue formel)
-         foreach (var ehcStartEvent in _project.All<Simulation>().SelectMany(x=>x.Model.Root.GetAllChildren<IEvent>(e=>e.IsNamed(ConverterConstants.Events.EHCStartEvent))))
+         foreach (var ehcStartEvent in _project.All<Simulation>().SelectMany(x => x.Model.Root.GetAllChildren<IEvent>(e => e.IsNamed(ConverterConstants.Events.EHCStartEvent))))
          {
             foreach (var assignment in ehcStartEvent.Assignments)
             {
@@ -98,4 +98,4 @@ namespace PKSim.ProjectConverter.v5_3
          }
       }
    }
-}	
+}

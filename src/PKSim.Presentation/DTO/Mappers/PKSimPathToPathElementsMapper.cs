@@ -76,7 +76,7 @@ namespace PKSim.Presentation.DTO.Mappers
          if (quantity == null)
             return pathElements;
 
-         //special treatement for PKSim objects
+         //special treatment for PKSim objects
          if (quantity.IsInNeighborhood())
             adjustDisplayPathForNeighborhood(pathElements, quantity);
 
@@ -139,6 +139,10 @@ namespace PKSim.Presentation.DTO.Mappers
          else if (quantity.IsNamed(PLASMA_UNBOUND))
             adjustDisplayPathForContainerObserver(pathElements, quantity);
 
+         else if (quantity.Name.StartsWith(TOTAL_FRACTION_OF_DOSE))
+            adjustDisplayPathForTotalFractionOfDose(pathElements, quantity);
+
+         //Container observers directly in a container located under organism
          else if (!pathElements.Contains(PathElement.BottomCompartment))
             adjustDisplayPathForContainerObserver(pathElements, quantity);
 
@@ -146,13 +150,20 @@ namespace PKSim.Presentation.DTO.Mappers
             adjustDisplayNameForMoleculeObserver(pathElements, quantity.DowncastTo<IObserver>());
       }
 
+      private void adjustDisplayPathForTotalFractionOfDose(PathElements pathElements, IQuantity quantity)
+      {
+         pathElements[PathElement.Container] = pathElements[PathElement.TopContainer];
+         pathElements[PathElement.TopContainer] = new PathElementDTO();
+      }
+
       private void adjustDisplayNameForMoleculeObserver(PathElements pathElements, IObserver observer)
       {
-         //For all fraction observers, the name should remain as is except for liver zone observers that need to be rename explicitely
+         //For all fraction observers, the name should remain as is except for liver zone observers that need to be rename explicitly
          if (observerIsFractionOfDoseLiver(observer))
             updateNameElementForFractionOfDose(pathElements, observer);
 
-         else if (!FractionObservers.Any(observer.Name.StartsWith))
+         // These observers should be renamed to their dimension (concentration).
+         else if (observer.Name.StartsWith(CONCENTRATION_IN_CONTAINER))
             updateNameElementToQuantityDimensionName(pathElements, observer);
       }
 
@@ -162,10 +173,7 @@ namespace PKSim.Presentation.DTO.Mappers
          pathElements[PathElement.Name] = CreatePathElementDTO(observerName);
       }
 
-      private bool observerIsFractionOfDoseLiver(IObserver observer)
-      {
-         return _fractionOfDoseLiverRegex.IsMatch(observer.Name);
-      }
+      private bool observerIsFractionOfDoseLiver(IObserver observer) => _fractionOfDoseLiverRegex.IsMatch(observer.Name);
 
       private void adjustDisplayPathForNeighborhood(PathElements pathElements, IQuantity quantity)
       {
@@ -189,11 +197,11 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private void adjustDisplayPathForContainerObserver(PathElements pathElements, IQuantity quantity)
       {
-         updateComparmtentElementToQuantityDisplayName(pathElements, quantity);
+         updateCompartmentElementToQuantityDisplayName(pathElements, quantity);
          updateNameElementToQuantityDimensionName(pathElements, quantity);
       }
 
-      private void updateComparmtentElementToQuantityDisplayName(PathElements pathElements, IQuantity quantity)
+      private void updateCompartmentElementToQuantityDisplayName(PathElements pathElements, IQuantity quantity)
       {
          pathElements[PathElement.BottomCompartment] = CreatePathElementDTO(_representationInfoRepository.DisplayNameFor(quantity));
       }

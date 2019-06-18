@@ -16,7 +16,7 @@ namespace PKSim.UI.Views.Simulations
       public CreateSimulationView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.SIMULATION_VIEW_WITDH, CoreConstants.UI.CREATE_SIMULATION_VIEW_HEIGHT);
+         ClientSize = new Size(CoreConstants.UI.SIMULATION_VIEW_WIDTH, CoreConstants.UI.CREATE_SIMULATION_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(ISimulationWizardPresenter presenter)
@@ -37,9 +37,6 @@ namespace PKSim.UI.Views.Simulations
          base.InitializeBinding();
          btnOk.Click += (o, e) => OnEvent(simulationWizardPresenter.CreateSimulation);
       }
-      private ISimulationWizardPresenter simulationWizardPresenter
-      {
-         get { return WizardPresenter.DowncastTo<ISimulationWizardPresenter>(); }
-      }
+      private ISimulationWizardPresenter simulationWizardPresenter => WizardPresenter.DowncastTo<ISimulationWizardPresenter>();
    }
 }

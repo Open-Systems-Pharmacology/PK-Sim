@@ -88,7 +88,7 @@ task :postclean do |t, args|
 	packages_dir =  File.join(solution_dir, 'packages')
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.4')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '8.0')
 
 	copy_depdencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml
