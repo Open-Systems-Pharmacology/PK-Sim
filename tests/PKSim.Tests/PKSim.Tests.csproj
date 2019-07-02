@@ -384,6 +384,7 @@
     <Compile Include="Infrastructure\SnapshotSerializerSpecs.cs" />
     <Compile Include="Infrastructure\WorkspaceLayoutPersistorSpecs.cs" />
     <Compile Include="ContextSpecification.cs" />
+    <Compile Include="IntegrationTests\BatchRunnerSpecs.cs" />
     <Compile Include="IntegrationTests\FlatOrganTypeRepositorySpecs.cs" />
     <Compile Include="IntegrationTests\JacobianMatrixXmlSerializerSpecs.cs" />
     <Compile Include="IntegrationTests\ObserverLoaderSpecs.cs" />
