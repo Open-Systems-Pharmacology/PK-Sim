@@ -228,7 +228,7 @@ namespace PKSim.CLI.Core.Services
          var fileFullPath = Path.Combine(targetFolder, $"{buildingBlockName}{CoreConstants.Filter.MARKDOWN_EXTENSION}");
 
          // Use wait for now until we can support // run of input
-         _markdownReporterTask.ExportToMarkdown(buildingBlock, fileFullPath).Wait();
+         _markdownReporterTask.ExportToMarkdown(buildingBlock, fileFullPath, input.SectionLevel).Wait();
          _logger.AddDebug($"Input data for {input.Type} '{input.Name}' exported to '{fileFullPath}'", project.Name);
 
          return new InputMapping

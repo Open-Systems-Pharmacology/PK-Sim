@@ -17,19 +17,19 @@ namespace PKSim.Infrastructure.Services
          _markdownBuilderRepository = markdownBuilderRepository;
       }
 
-      public Task ExportToMarkdown(object objectToExport, string file)
+      public Task ExportToMarkdown(object objectToExport, string file, int? indentationLevel = null)
       {
-         return Task.Run(() => File.WriteAllText(file, ExportToMarkdownString(objectToExport)));
+         return Task.Run(() => File.WriteAllText(file, ExportToMarkdownString(objectToExport, indentationLevel)));
       }
 
-      public string ExportToMarkdownString(object objectToExport)
+      public string ExportToMarkdownString(object objectToExport, int? indentationLevel = null)
       {
          var builder = _markdownBuilderRepository.BuilderFor(objectToExport);
          if (builder == null)
             return _reportGenerator.StringReportFor(objectToExport);
 
          var tracker = new MarkdownTracker();
-         builder.Report(objectToExport, tracker);
+         builder.Report(objectToExport, tracker, indentationLevel ?? 1);
          return tracker.ToString();
       }
    }
