@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ProjectConverter.v5_2;

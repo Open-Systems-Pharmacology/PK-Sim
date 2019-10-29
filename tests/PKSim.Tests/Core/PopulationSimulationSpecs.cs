@@ -6,6 +6,7 @@ using FakeItEasy;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Populations;
 
 namespace PKSim.Core
 {
@@ -71,7 +72,7 @@ namespace PKSim.Core
          base.Context();
          sut.PKAnalyses = A.Fake<PopulationSimulationPKAnalyses>();
          _pkParameter = A.Fake<QuantityPKParameter>();
-         A.CallTo(() => _pkParameter.Values).Returns(new List<float> {1, 2, 3});
+         A.CallTo(() => _pkParameter.Values).Returns(new[] {1f, 2, 3});
          A.CallTo(() => sut.PKAnalyses.PKParameterFor("Path", "Cmax")).Returns(_pkParameter);
       }
 

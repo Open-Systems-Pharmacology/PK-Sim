@@ -56,7 +56,7 @@ namespace PKSim.Presentation.Services
          var dataImporterSettings = new DataImporterSettings
          {
             Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportOntogeny}",
-            Icon = ApplicationIcons.Excel
+            IconName = ApplicationIcons.Excel.IconName
          };
 
          var data = _dataImporter.ImportDataSet(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings);

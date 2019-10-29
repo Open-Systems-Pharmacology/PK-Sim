@@ -39,7 +39,7 @@ namespace PKSim.Presentation
       protected IPopulationDataCollector _populationDataCollector;
       protected ChartData<TimeProfileXValue, TimeProfileYValue> _chartData;
       protected DataRepository _observedDataRepository;
-      protected DragEventArgs _dragEventArgs;
+      protected IDragEvent _dragEventArgs;
       private PaneData<TimeProfileXValue, TimeProfileYValue> _paneData;
       private PopulationStatisticalAnalysis _populationStatisticalAnalysis;
       private IDimensionRepository _dimensionRepository;
@@ -68,12 +68,8 @@ namespace PKSim.Presentation
          sut.InitializeAnalysis(_timeProfileAnalysisChart, _populationDataCollector);
 
          _observedDataRepository = DomainHelperForSpecs.ObservedData();
-         var data = new DragDropInfo(
-            new List<ITreeNode> {new ObservedDataNode(new ClassifiableObservedData {Subject = _observedDataRepository})}
-         );
-
-         _dragEventArgs = new DragEventArgs(new DataObject(data), 0, 0, 0, DragDropEffects.All, DragDropEffects.All);
-
+         _dragEventArgs = A.Fake<IDragEvent>();
+         A.CallTo(() => _dragEventArgs.Data<IEnumerable<ITreeNode>>()).Returns(new List<ITreeNode> { new ObservedDataNode(new ClassifiableObservedData { Subject = _observedDataRepository })});
          _chartData = new ChartData<TimeProfileXValue, TimeProfileYValue>(null, null);
          var concentrationDimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
          var yAxis = new AxisData(concentrationDimension, concentrationDimension.DefaultUnit, Scalings.Linear);

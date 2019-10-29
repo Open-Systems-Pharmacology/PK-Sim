@@ -41,7 +41,7 @@ namespace PKSim.CLI
       private Func<string, bool> _oldFileExists;
       private Func<string, bool> _oldDirectoryExists;
       private Action<string, bool> _oldDeleteDirectory;
-      protected IDataRepositoryTask _dataRepositoryTask;
+      protected IDataRepositoryExportTask _dataRepositoryTask;
       protected IMarkdownReporterTask _markdownReporterTask;
 
       public override async Task GlobalContext()
@@ -66,7 +66,7 @@ namespace PKSim.CLI
          _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _exportSimulationRunner = A.Fake<IExportSimulationRunner>();
          _logger = A.Fake<ILogger>();
-         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _markdownReporterTask = A.Fake<IMarkdownReporterTask>();
 
          sut = new QualificationRunner(_snapshotTask, _jsonSerializer, _workspace, _workspacePersistor, _exportSimulationRunner, _dataRepositoryTask, _markdownReporterTask, _logger);

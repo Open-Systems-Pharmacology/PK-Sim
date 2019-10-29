@@ -1,14 +1,14 @@
-using System.Windows.Forms;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Chart;
 using PKSim.Presentation.Views.Charts;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Charts
 {
    public interface IIndividualSimulationComparisonMdiPresenter : ISingleStartPresenter<IndividualSimulationComparison>, IPresenter<IIndividualSimulationComparisonMdiView>
    {
-      void OnDragDrop(object sender, DragEventArgs e);
-      void OnDragOver(object sender, DragEventArgs e);
+      void OnDragDrop(object sender, IDragEvent e);
+      void OnDragOver(object sender, IDragEvent e);
    }
 
    public class IndividualSimulationComparisonMdiPresenter : SingleStartPresenter<IIndividualSimulationComparisonMdiView, IIndividualSimulationComparisonMdiPresenter>, IIndividualSimulationComparisonMdiPresenter
@@ -23,12 +23,12 @@ namespace PKSim.Presentation.Presenters.Charts
          view.AddChartView(_individualSimulationComparisonPresenter.BaseView);
       }
 
-      public void OnDragOver(object sender, DragEventArgs e)
+      public void OnDragOver(object sender, IDragEvent e)
       {
          _individualSimulationComparisonPresenter.DragOver(sender, e);
       }
 
-      public void OnDragDrop(object sender, DragEventArgs e)
+      public void OnDragDrop(object sender, IDragEvent e)
       {
          _individualSimulationComparisonPresenter.DragDrop(sender, e);
          updateChartVisibility();

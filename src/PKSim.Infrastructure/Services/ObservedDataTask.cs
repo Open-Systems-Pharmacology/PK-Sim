@@ -15,7 +15,6 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Presenters.Snapshots;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
@@ -29,17 +28,23 @@ namespace PKSim.Infrastructure.Services
       private readonly IApplicationController _applicationController;
       private readonly ITemplateTask _templateTask;
       private readonly IObservedDataPersistor _observedDataPersistor;
-      private readonly ISnapshotTask _snapshotTask;
 
-      public ObservedDataTask(IPKSimProjectRetriever projectRetriever, IExecutionContext executionContext, IDialogCreator dialogCreator, IApplicationController applicationController, IDataRepositoryTask dataRepositoryTask,
-         ITemplateTask templateTask, IContainerTask containerTask, IObservedDataPersistor observedDataPersistor, IObjectTypeResolver objectTypeResolver, ISnapshotTask snapshotTask) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
+      public ObservedDataTask(
+         IPKSimProjectRetriever projectRetriever,
+         IExecutionContext executionContext,
+         IDialogCreator dialogCreator,
+         IApplicationController applicationController,
+         IDataRepositoryExportTask dataRepositoryTask,
+         ITemplateTask templateTask,
+         IContainerTask containerTask,
+         IObservedDataPersistor observedDataPersistor,
+         IObjectTypeResolver objectTypeResolver) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
          _applicationController = applicationController;
          _templateTask = templateTask;
          _observedDataPersistor = observedDataPersistor;
-         _snapshotTask = snapshotTask;
       }
 
       public override void Rename(DataRepository observedData)

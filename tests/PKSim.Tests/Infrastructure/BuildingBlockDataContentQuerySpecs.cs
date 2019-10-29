@@ -1,12 +1,12 @@
 using System.Text;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using NHibernate;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
+using OSPSuite.Infrastructure.Serialization.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
-using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
-using OSPSuite.Infrastructure.Services;
 
 namespace PKSim.Infrastructure
 {
@@ -25,7 +25,6 @@ namespace PKSim.Infrastructure
       }
    }
 
-   
    public class When_retrieving_the_content_of_a_entity_meta_data_saved_into_the_database : concern_for_BuildingBlockMetaDataContentQuery
    {
       private BuildingBlockMetaData _buildingBlockMetaData;
@@ -56,6 +55,5 @@ namespace PKSim.Infrastructure
       {
          _contentValue.Data.ShouldBeEqualTo(_buildingBlockMetaData.Content.Data);
       }
-
    }
-}	
+}

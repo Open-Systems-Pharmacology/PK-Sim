@@ -12,6 +12,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Mappers;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Presentation.Services.Charts;
 using PKSim.Core;
@@ -72,7 +73,7 @@ namespace PKSim.Presentation
 
    public class When_adding_a_simulation_to_the_summary_chart_containing_curves : concern_for_IndividualSimulationComparisonPresenter
    {
-      private DragEventArgs _dropEventArgs;
+      private IDragEvent _dropEventArgs;
       private IndividualSimulation _simulation;
       private IndividualSimulationComparison _individualSimulationComparison;
       private IDimensionFactory _dimensionFactory;
@@ -92,12 +93,13 @@ namespace PKSim.Presentation
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(() => _simulation.HasResults).Returns(true);
          var simulationNode = new SimulationNode(new ClassifiableSimulation {Subject = _simulation});
-         _dropEventArgs = new DragEventArgs(new DataObject(new DragDropInfo(new List<SimulationNode> {simulationNode})), 0, 0, 0, DragDropEffects.All, DragDropEffects.All);
+         _dropEventArgs = A.Fake<IDragEvent>();
+         A.CallTo(() => _dropEventArgs.Data<IReadOnlyList<ITreeNode>>()).Returns(new List<SimulationNode> { simulationNode });
       }
 
       protected override void Because()
       {
-         sut.DragDrop(this, _dropEventArgs);
+         sut.DragDrop(this,   _dropEventArgs);
       }
 
       [Observation]
@@ -118,23 +120,23 @@ namespace PKSim.Presentation
 
    public class When_editing_an_individual_simulation_comparison : concern_for_IndividualSimulationComparisonPresenter
    {
-      private IndividualSimulationComparison _indivisualSimulationComparison;
+      private IndividualSimulationComparison _individualSimulationComparison;
 
       protected override void Context()
       {
          base.Context();
-         _indivisualSimulationComparison = new IndividualSimulationComparison();
+         _individualSimulationComparison = new IndividualSimulationComparison();
       }
 
       protected override void Because()
       {
-         sut.Edit(_indivisualSimulationComparison);
+         sut.Edit(_individualSimulationComparison);
       }
 
       [Observation]
       public void should_bind_the_chart_to_all_editor_even_when_no_simulation_is_used_in_the_comparison()
       {
-         A.CallTo(() => _chartPresenter.DisplayPresenter.Edit(_indivisualSimulationComparison)).MustHaveHappened();
+         A.CallTo(() => _chartPresenter.DisplayPresenter.Edit(_individualSimulationComparison)).MustHaveHappened();
       }
    }
 }

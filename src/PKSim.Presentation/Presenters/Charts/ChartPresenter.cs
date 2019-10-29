@@ -5,6 +5,7 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Binders;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Presentation.Services.Charts;
@@ -192,12 +193,12 @@ namespace PKSim.Presentation.Presenters.Charts
          }
       }
 
-      protected virtual void OnDragOver(object sender, DragEventArgs e)
+      protected virtual void OnDragOver(object sender, IDragEvent e)
       {
          _observedDataDragDropBinder.PrepareDrag(e);
       }
 
-      protected virtual void OnDragDrop(object sender, DragEventArgs e)
+      protected virtual void OnDragDrop(object sender, IDragEvent e)
       {
          var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e).ToList();
          AddObservedData(droppedObservedData, asResultOfDragAndDrop: true);

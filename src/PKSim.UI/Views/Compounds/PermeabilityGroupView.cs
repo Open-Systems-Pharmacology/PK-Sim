@@ -5,6 +5,7 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Columns;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Binders;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;

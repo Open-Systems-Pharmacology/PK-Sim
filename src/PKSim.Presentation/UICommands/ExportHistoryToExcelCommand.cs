@@ -1,10 +1,9 @@
-using PKSim.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Extensions;
-using PKSim.Presentation.Core;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 
 namespace PKSim.Presentation.UICommands
@@ -12,10 +11,10 @@ namespace PKSim.Presentation.UICommands
    public class ExportHistoryToExcelCommand : IUICommand
    {
       private readonly ICoreWorkspace _workspace;
-      private readonly IReportTask _reportTask;
+      private readonly IHistoryExportTask _reportTask;
       private readonly IDialogCreator _dialogCreator;
 
-      public ExportHistoryToExcelCommand(ICoreWorkspace workspace, IReportTask reportTask, IDialogCreator dialogCreator)
+      public ExportHistoryToExcelCommand(ICoreWorkspace workspace, IHistoryExportTask reportTask, IDialogCreator dialogCreator)
       {
          _workspace = workspace;
          _reportTask = reportTask;

@@ -5,9 +5,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("PK-Sim")]
 [assembly: AssemblyCopyright("Copyright © 2002-2019 - Open Systems Pharmacology Community")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("9.0.0")]
-[assembly: AssemblyFileVersion("9.0.0")]
-[assembly: AssemblyInformationalVersion("9.0.0")]
 
 [assembly: InternalsVisibleTo("PKSim.Tests")]
 [assembly: InternalsVisibleTo("PKSim.UI.Tests")]

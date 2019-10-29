@@ -1,11 +1,11 @@
 using System.Linq;
-using System.Windows.Forms;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Container;
 using FakeItEasy;
+using OSPSuite.Presentation.Core;
 using PKSim.Presentation.Core;
 using OSPSuite.Presentation.Repositories;
 using MenuBarItemRepository = PKSim.Presentation.Repositories.MenuBarItemRepository;
@@ -43,7 +43,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_creating_all_menu_bar_items_defined_in_the_appolication : concern_for_MenuBarItemRepository
+   public class When_creating_all_menu_bar_items_defined_in_the_application : concern_for_MenuBarItemRepository
    {
       private Cache<Keys, IMenuBarItem> _allEntriesWithShortCuts;
 

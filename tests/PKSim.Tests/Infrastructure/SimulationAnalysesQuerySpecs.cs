@@ -1,11 +1,11 @@
 ﻿using System.Text;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using NHibernate;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Infrastructure.Serialization.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
-using OSPSuite.Infrastructure.Services;
 
 namespace PKSim.Infrastructure
 {
@@ -21,7 +21,7 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_retrieving_the_simulation_anaylyses_for_a_given_simulation : concern_for_SimulationAnalysesQuery
+   public class When_retrieving_the_simulation_analyses_for_a_given_simulation : concern_for_SimulationAnalysesQuery
    {
       private SimulationMetaData _simulation;
 

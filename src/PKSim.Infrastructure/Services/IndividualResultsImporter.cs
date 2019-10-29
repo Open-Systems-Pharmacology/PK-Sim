@@ -140,7 +140,7 @@ namespace PKSim.Infrastructure.Services
 
       private QuantityValues quantityPathFor(IndividualResults individualResult, string path, Cache<QuantityValues, List<float>> cacheQuantitiesValues)
       {
-         var quantity = individualResult.ValuesFor(path);
+         var quantity = individualResult.QuantityValuesFor(path);
          if (quantity == null)
          {
             quantity = new QuantityValues {QuantityPath = path};

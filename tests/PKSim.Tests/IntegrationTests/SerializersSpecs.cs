@@ -76,7 +76,6 @@ namespace PKSim.IntegrationTests
          if (type.Equals(typeof (PKSimContainerType))) return true;
          if (type.Equals(typeof (PlasmaProteinBindingPartner))) return true;
          if (type.Equals(typeof (PivotArea))) return true;
-         if (type.Equals(typeof (RandomValue))) return true;
          if (type.Equals(typeof (PopulationAgeSettings))) return true;
          if (type.Equals(typeof (CompoundType))) return true;
          if (type.Equals(typeof (RateKey))) return true;
@@ -132,7 +131,6 @@ namespace PKSim.IntegrationTests
 
          //help classes that are not stored in our domain objects
          if (type.Equals(typeof(NumericFieldContext))) return true;
-         if (type.Equals(typeof(ParameterValue))) return true;
          if (type.Equals(typeof(PKAnalysesImportFile))) return true;
          if (type.Equals(typeof (IndividualProperties))) return true;
          if (type.Equals(typeof (ParameterValueMetaData))) return true;

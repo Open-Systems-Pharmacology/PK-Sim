@@ -19,7 +19,7 @@ namespace PKSim.Infrastructure.Services
    {
       private readonly IBuildingBlockTask _buildingBlockTask;
       private readonly IDialogCreator _dialogCreator;
-      private readonly IDataRepositoryTask _dataRepositoryTask;
+      private readonly IDataRepositoryExportTask _dataRepositoryTask;
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       private readonly IStringSerializer _stringSerializer;
       private readonly IModelReportCreator _modelReportCreator;
@@ -27,10 +27,16 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimModelExporter _simModelExporter;
       private readonly ISimulationResultsToDataTableConverter _simulationResultsToDataTableConverter;
 
-      public SimulationExportTask(IBuildingBlockTask buildingBlockTask, IDialogCreator dialogCreator, IDataRepositoryTask dataRepositoryTask,
-         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IStringSerializer stringSerializer,
-         IModelReportCreator modelReportCreator, ISimulationToModelCoreSimulationMapper coreSimulationMapper,
-         ISimModelExporter simModelExporter, ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
+      public SimulationExportTask(
+         IBuildingBlockTask buildingBlockTask, 
+         IDialogCreator dialogCreator, 
+         IDataRepositoryExportTask dataRepositoryTask,
+         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, 
+         IStringSerializer stringSerializer,
+         IModelReportCreator modelReportCreator, 
+         ISimulationToModelCoreSimulationMapper coreSimulationMapper,
+         ISimModelExporter simModelExporter, 
+         ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
       {
          _buildingBlockTask = buildingBlockTask;
          _dialogCreator = dialogCreator;
@@ -74,7 +80,7 @@ namespace PKSim.Infrastructure.Services
 
       public async Task ExportResultsToCSVAsync(Simulation simulation, string fileName)
       {
-         var dataTable = await _simulationResultsToDataTableConverter.ResultsToDataTable(simulation);
+         var dataTable = await _simulationResultsToDataTableConverter.ResultsToDataTableAsync(simulation.Results, simulation);
          dataTable.ExportToCSV(fileName);
       }
 
@@ -125,7 +131,7 @@ namespace PKSim.Infrastructure.Services
 
       public async Task ExportPKAnalysesToCSVAsync(PopulationSimulation populationSimulation, string fileName)
       {
-         var dataTable = await _simulationResultsToDataTableConverter.PKAnalysesToDataTable(populationSimulation);
+         var dataTable = await _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(populationSimulation.PKAnalyses, populationSimulation);
          dataTable.ExportToCSV(fileName);
       }
 

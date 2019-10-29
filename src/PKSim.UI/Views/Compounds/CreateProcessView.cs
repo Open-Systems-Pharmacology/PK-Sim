@@ -65,7 +65,7 @@ namespace PKSim.UI.Views.Compounds
 
       public string TemplateDescription
       {
-         set { lblProcessDescription.Text = value.FormatForDescription(); }
+         set => lblProcessDescription.Text = value.FormatForDescription();
       }
 
       public void SetIcon(ApplicationIcon icon)
@@ -80,13 +80,10 @@ namespace PKSim.UI.Views.Compounds
 
       public string ProteinCaption
       {
-         set { layoutItemProtein.Text = value.FormatForLabel(); }
+         set => layoutItemProtein.Text = value.FormatForLabel();
       }
 
-      public override bool HasError
-      {
-         get { return _templateBinder.HasError; }
-      }
+      public override bool HasError => _templateBinder.HasError;
 
       public override void InitializeResources()
       {

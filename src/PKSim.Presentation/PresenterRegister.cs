@@ -138,6 +138,9 @@ namespace PKSim.Presentation
          container.Register<IPathToPathElementsMapper, PKSimPathToPathElementsMapper>();
          container.Register<IDataColumnToPathElementsMapper, PKSimDataColumnToPathElementsMapper>();
          container.Register<IQuantityPathToQuantityDisplayPathMapper, PKSimQuantityPathToQuantityDisplayPathMapper>();
+
+
+         container.AddRegister(x=>x.FromType<OSPSuite.Presentation.Importer.PresentationImporterRegister>());
       }
 
       private static void registerSingleStartPresenters(IContainer container)

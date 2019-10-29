@@ -18,8 +18,8 @@ namespace PKSim.UI.Views.Charts
 
       public override ApplicationIcon ApplicationIcon
       {
-         get { return _icon; }
-         set { _icon = value; }
+         get => _icon;
+         set => _icon = value;
       }
 
       public void UpdateIcon(ApplicationIcon icon)

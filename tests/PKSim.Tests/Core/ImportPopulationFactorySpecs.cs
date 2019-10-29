@@ -95,7 +95,7 @@ namespace PKSim.Core
          _allCreateIndividualParameters.Add("P1", _allParameters.FindByName("P1"));
          _advancedParameter = new AdvancedParameter();
          A.CallTo(() => _advancedParameterFactory.Create(_allParameters.FindByName("P2"), DistributionTypes.Unknown)).Returns(_advancedParameter);
-         A.CallTo(() => _createdPopulation.IndividualPropertiesCache.AllParameterPaths()).Returns(_allImportedParameters);
+         A.CallTo(() => _createdPopulation.IndividualPropertiesCache.AllParameterPaths()).Returns(_allImportedParameters.ToArray());
       }
 
       protected override async Task Because()

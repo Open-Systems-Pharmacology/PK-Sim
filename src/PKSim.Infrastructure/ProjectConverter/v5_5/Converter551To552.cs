@@ -8,6 +8,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_5

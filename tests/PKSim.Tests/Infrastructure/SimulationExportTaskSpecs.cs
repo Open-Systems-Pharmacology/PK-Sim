@@ -26,7 +26,7 @@ namespace PKSim.Infrastructure
       private IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       protected IBuildingBlockTask _buildingBlockTask;
       protected IDialogCreator _dialogCreator;
-      protected IDataRepositoryTask _dataRepositoryTask;
+      protected IDataRepositoryExportTask _dataRepositoryTask;
       private IStringSerializer _stringSerializer;
       private IModelReportCreator _modelReportCreator;
       private ISimulationToModelCoreSimulationMapper _simulationMapper;
@@ -38,7 +38,7 @@ namespace PKSim.Infrastructure
          _quantityDisplayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
          _buildingBlockTask = A.Fake<IBuildingBlockTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _stringSerializer = A.Fake<IStringSerializer>();
          _modelReportCreator = A.Fake<IModelReportCreator>();
          _simulationMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
@@ -139,7 +139,7 @@ namespace PKSim.Infrastructure
       public async Task should_export_the_file_to_csv()
       {
          await sut.ExportResultsToCSVAsync(_simulation);
-         A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTable(_simulation)).MustHaveHappened();
+         A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTableAsync(_simulation.Results, _simulation)).MustHaveHappened();
       }
    }
 
@@ -195,7 +195,7 @@ namespace PKSim.Infrastructure
       public async Task should_not_export_the_file_to_csv()
       {
          await sut.ExportResultsToCSVAsync(_simulation);
-         A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTable(_simulation)).MustNotHaveHappened();
+         A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTableAsync(_simulation.Results, _simulation)).MustNotHaveHappened();
       }
    }
 
@@ -243,7 +243,7 @@ namespace PKSim.Infrastructure
          _fileFullPath = "file full path";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileFullPath);
 
-         A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTable(_populationSimulation)).Returns(Task.FromResult(_dataTable));
+         A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(_populationSimulation.PKAnalyses, _populationSimulation)).Returns(Task.FromResult(_dataTable));
       }
 
       [Observation]
@@ -257,7 +257,7 @@ namespace PKSim.Infrastructure
       public async Task should_export_the_pk_analysis_to_csv()
       {
          await sut.ExportPKAnalysesToCSVAsync(_populationSimulation);
-         A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTable(_populationSimulation)).MustHaveHappened();
+         A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(_populationSimulation.PKAnalyses, _populationSimulation)).MustHaveHappened();
       }
    }
 }

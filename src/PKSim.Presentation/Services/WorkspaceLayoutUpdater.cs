@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters.Events;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Events;
-using OSPSuite.Presentation.Services;
-using PKSim.Core;
 
 namespace PKSim.Presentation.Services
 {
@@ -29,8 +28,12 @@ namespace PKSim.Presentation.Services
       private readonly IEventPublisher _eventPublisher;
       private readonly IWithWorkspaceLayout _withWorkspaceLayout;
 
-      public WorkspaceLayoutUpdater(IApplicationController applicationController, IWithIdRepository withIdRepository,
-         IOpenSingleStartPresenterInvoker openSingleStartPresenterInvoker, ILazyLoadTask lazyLoadTask, IEventPublisher eventPublisher, IWithWorkspaceLayout withWorkspaceLayout)
+      public WorkspaceLayoutUpdater(IApplicationController applicationController, 
+         IWithIdRepository withIdRepository,
+         IOpenSingleStartPresenterInvoker openSingleStartPresenterInvoker, 
+         ILazyLoadTask lazyLoadTask, 
+         IEventPublisher eventPublisher, 
+         IWithWorkspaceLayout withWorkspaceLayout)
       {
          _applicationController = applicationController;
          _withIdRepository = withIdRepository;
@@ -47,7 +50,7 @@ namespace PKSim.Presentation.Services
          var workspaceLayout = createNewWorkspaceLayoutWithOpenPresenters();
          addExistingLayoutItemsToWorkspaceLayout(existingLayoutItems, workspaceLayout);
 
-         _withWorkspaceLayout.WorkspaceLayout =  workspaceLayout;
+         _withWorkspaceLayout.WorkspaceLayout = workspaceLayout;
       }
 
       private void addExistingLayoutItemsToWorkspaceLayout(IEnumerable<WorkspaceLayoutItem> existingLayoutItems, IWorkspaceLayout workspaceLayout)
@@ -69,6 +72,7 @@ namespace PKSim.Presentation.Services
             var workspaceLayoutItem = new WorkspaceLayoutItem {WasOpenOnSave = true, SubjectId = withId.Id, PresentationSettings = presenter.GetSettings()};
             workspaceLayout.AddLayoutItem(workspaceLayoutItem);
          }
+
          return workspaceLayout;
       }
 
@@ -84,7 +88,7 @@ namespace PKSim.Presentation.Services
 
          try
          {
-            _eventPublisher.PublishEvent(new HeavyWorkStartedEvent(forceHourGlassCursor:true));
+            _eventPublisher.PublishEvent(new HeavyWorkStartedEvent(forceHourGlassCursor: true));
             //To list is important here as restoring the layout may creates new layout items
             workspaceLayout.LayoutItems.Where(x => x.WasOpenOnSave).ToList().Each(restoreLayout);
          }
@@ -115,7 +119,6 @@ namespace PKSim.Presentation.Services
 
       private IPKSimBuildingBlock subjectFor(WorkspaceLayoutItem layoutItem)
       {
-         
          if (!_withIdRepository.ContainsObjectWithId(layoutItem.SubjectId))
             return null;
 

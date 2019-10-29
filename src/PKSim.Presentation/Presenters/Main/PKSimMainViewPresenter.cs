@@ -1,5 +1,5 @@
-using OSPSuite.Presentation.Events;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.TeXReporting.Events;
@@ -23,7 +23,6 @@ namespace PKSim.Presentation.Presenters.Main
       IListener<ShowNotificationEvent>,
       IListener<ReportCreationStartedEvent>,
       IListener<ReportCreationFinishedEvent>
-
 
    {
       StartOptions StartOptions { get; set; }

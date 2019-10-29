@@ -1,7 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using DevExpress.XtraBars;
 using DevExpress.XtraCharts;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -40,6 +42,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          base.AddDynamicMenus(allowEdit);
          _exportIndividualsMenu = Chart.AddPopupMenu(PKSimConstants.MenuNames.ExtractIndividualByPercentile, extractIndividuals, ApplicationIcons.Individual, beginGroup: true);
       }
+
 
       private void extractIndividuals()
       {

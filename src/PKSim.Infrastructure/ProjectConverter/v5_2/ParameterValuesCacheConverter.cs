@@ -10,6 +10,7 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.Xml;
 using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization;

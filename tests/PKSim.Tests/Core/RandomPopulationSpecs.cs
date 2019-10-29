@@ -4,6 +4,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 
@@ -158,7 +159,6 @@ namespace PKSim.Core
          _randomValues = new List<RandomValue>
          {
             new RandomValue {Value = 1, Percentile = 0.5},
-            new RandomValue {Value = 2, Percentile = 0.6}
          };
          A.CallTo(() => _advancedParameter.GenerateRandomValues(sut.NumberOfItems)).Returns(_randomValues);
       }
@@ -188,7 +188,6 @@ namespace PKSim.Core
          var sourceValues = _randomValues.Select(x => x.Percentile).ToArray();
 
          values[0].ShouldBeEqualTo(sourceValues[0], 1e-2);
-         values[1].ShouldBeEqualTo(sourceValues[1], 1e-2);
       }
    }
 
@@ -201,7 +200,7 @@ namespace PKSim.Core
          base.Context();
          _advancedParameter = A.Fake<AdvancedParameter>();
          _advancedParameter.ParameterPath = "A NEW PARAMETER PATH";
-         sut.AddAdvancedParameter(_advancedParameter);
+         sut.AddAdvancedParameter(_advancedParameter, generateRandomValues:false);
       }
 
       protected override void Because()
@@ -232,7 +231,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_the_convariate_defined_in_the_individual_properties_cache_extended_with_the_population_name()
+      public void should_return_the_covariate_defined_in_the_individual_properties_cache_extended_with_the_population_name()
       {
          sut.AllCovariateNames.ShouldOnlyContain("Cov1", "Cov2", CoreConstants.Covariates.POPULATION_NAME);
       }

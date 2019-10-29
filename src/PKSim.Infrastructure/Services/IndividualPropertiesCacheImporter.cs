@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using LumenWorks.Framework.IO.Csv;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Collections;

@@ -16,6 +16,7 @@ using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.UI.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Controls;
 using OSPSuite.Presentation.Extensions;
 

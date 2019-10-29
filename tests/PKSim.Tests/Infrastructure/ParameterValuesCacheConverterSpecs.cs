@@ -13,6 +13,7 @@ using PKSim.Infrastructure.Serialization.Xml;
 
 using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;

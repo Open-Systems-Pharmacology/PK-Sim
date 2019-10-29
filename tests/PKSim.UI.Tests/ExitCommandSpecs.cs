@@ -12,15 +12,15 @@ namespace PKSim.UI.Tests
    public abstract class concern_for_ExitCommand : ContextSpecification<IExitCommand>
    {
       protected IProjectTask _projectTask;
-      protected IUserSettingsPersistor _userSettingsPersitor;
+      protected IUserSettingsPersistor _userSettingsPersistor;
       protected IApplicationSettingsPersistor _applicationSettingsPersistor;
 
       protected override void Context()
       {
          _projectTask = A.Fake<IProjectTask>();
-         _userSettingsPersitor = A.Fake<IUserSettingsPersistor>();
+         _userSettingsPersistor = A.Fake<IUserSettingsPersistor>();
          _applicationSettingsPersistor = A.Fake<IApplicationSettingsPersistor>();
-         sut = new ExitCommand(_projectTask, _userSettingsPersitor, _applicationSettingsPersistor);
+         sut = new ExitCommand(_projectTask, _userSettingsPersistor, _applicationSettingsPersistor);
       }
 
       protected override void Because()
@@ -46,7 +46,7 @@ namespace PKSim.UI.Tests
       [Observation]
       public void should_save_the_user_settings()
       {
-         A.CallTo(() => _userSettingsPersitor.SaveCurrent()).MustHaveHappened();
+         A.CallTo(() => _userSettingsPersistor.SaveCurrent()).MustHaveHappened();
       }
 
       [Observation]
@@ -73,7 +73,7 @@ namespace PKSim.UI.Tests
       [Observation]
       public void should_not_save_the_user_settings()
       {
-         A.CallTo(() => _userSettingsPersitor.SaveCurrent()).MustNotHaveHappened();
+         A.CallTo(() => _userSettingsPersistor.SaveCurrent()).MustNotHaveHappened();
       }
    }
 }

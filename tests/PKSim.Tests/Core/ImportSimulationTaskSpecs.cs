@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Serialization.Exchange;
 
 namespace PKSim.Core
@@ -286,7 +287,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_created_some_random_values_for_each_distributed_parameters_defined_in_the_simulation()
       {
-         A.CallTo(() => _parameterValueCache.SetValues("P1",A<IEnumerable<RandomValue>>._)).MustHaveHappened();
+         A.CallTo(() => _parameterValueCache.SetValues("P1",A<IReadOnlyList<RandomValue>>._)).MustHaveHappened();
       }
    }
 }	

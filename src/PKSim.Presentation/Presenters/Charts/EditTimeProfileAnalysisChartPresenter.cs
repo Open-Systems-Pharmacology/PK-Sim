@@ -41,7 +41,17 @@ namespace PKSim.Presentation.Presenters.Charts
       private ChartDisplayMode _chartDisplayMode;
       private const string CHART_DISPLAY_MODE_SETTING = "chartDisplayMode";
 
-      public EditTimeProfileAnalysisChartPresenter(IEditTimeProfileAnalysisChartView view, ITimeProfileChartPresenter timeProfileChartPresenter, ITimeProfileChartDataCreator timeProfileChartDataCreator, IPopulationSimulationAnalysisStarter populationSimulationAnalysisStarter, IPopulationAnalysisTask populationAnalysisTask, IColorGenerator colorGenerator, IObservedDataTask observedDataTask, IPopulationPKAnalysisPresenter pkAnalysisPresenter, IDimensionRepository dimensionRepository, IPresentationSettingsTask presentationSettingsTask)
+      public EditTimeProfileAnalysisChartPresenter(
+         IEditTimeProfileAnalysisChartView view, 
+         ITimeProfileChartPresenter timeProfileChartPresenter, 
+         ITimeProfileChartDataCreator timeProfileChartDataCreator, 
+         IPopulationSimulationAnalysisStarter populationSimulationAnalysisStarter, 
+         IPopulationAnalysisTask populationAnalysisTask, 
+         IColorGenerator colorGenerator, 
+         IObservedDataTask observedDataTask, 
+         IPopulationPKAnalysisPresenter pkAnalysisPresenter, 
+         IDimensionRepository dimensionRepository, 
+         IPresentationSettingsTask presentationSettingsTask)
          : base(view, timeProfileChartPresenter, timeProfileChartDataCreator, populationSimulationAnalysisStarter, populationAnalysisTask, ApplicationIcons.TimeProfileAnalysis)
       {
          _colorGenerator = colorGenerator;
@@ -71,12 +81,12 @@ namespace PKSim.Presentation.Presenters.Charts
          return _chartDataCreator.CreateFor(PopulationAnalysisChart, AggregationFunctions.QuantityAggregation);
       }
 
-      public virtual void OnDragOver(object sender, DragEventArgs e)
+      public virtual void OnDragOver(object sender, IDragEvent e)
       {
          _observedDataDragDropBinder.PrepareDrag(e);
       }
 
-      public virtual void OnDragDrop(object sender, DragEventArgs e)
+      public virtual void OnDragDrop(object sender, IDragEvent e)
       {
          var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e);
          AddObservedData(droppedObservedData.ToList());

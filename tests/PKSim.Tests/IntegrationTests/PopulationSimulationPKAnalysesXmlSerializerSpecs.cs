@@ -49,7 +49,7 @@ namespace PKSim.IntegrationTests
       {
          _deserializedPKAnalyses.ShouldNotBeNull();
          _deserializedPKAnalyses.All().Count().ShouldBeEqualTo(5);
-         _deserializedPKAnalyses.PKParameterFor("Path1", "AUC").Values.Count.ShouldBeEqualTo(_numberOfIndividuals);
+         _deserializedPKAnalyses.PKParameterFor("Path1", "AUC").Values.Length.ShouldBeEqualTo(_numberOfIndividuals);
       }
    }
 }

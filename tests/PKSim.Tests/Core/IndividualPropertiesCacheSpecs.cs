@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 
 namespace PKSim.Core
 {

@@ -24,14 +24,17 @@ namespace PKSim.Presentation.Services
    public class PKAnalysisExportTask : IPKAnalysisExportTask
    {
       private readonly IDialogCreator _dialogCreator;
-      private readonly IDataRepositoryTask _dataRepositoryTask;
+      private readonly IDataRepositoryExportTask _dataRepositoryTask;
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
-
       private readonly IGlobalPKAnalysisToDataTableMapper _globalPKAnalysisToDataTableMapper;
       private readonly IDimensionFactory _dimensionFactory;
 
-      public PKAnalysisExportTask(IDialogCreator dialogCreator, IDataRepositoryTask dataRepositoryTask, IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper,
-         IGlobalPKAnalysisToDataTableMapper globalPKAnalysisToDataTableMapper, IDimensionFactory dimensionFactory)
+      public PKAnalysisExportTask(
+         IDialogCreator dialogCreator, 
+         IDataRepositoryExportTask dataRepositoryTask, 
+         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper,
+         IGlobalPKAnalysisToDataTableMapper globalPKAnalysisToDataTableMapper, 
+         IDimensionFactory dimensionFactory)
       {
          _dialogCreator = dialogCreator;
          _dataRepositoryTask = dataRepositoryTask;

@@ -53,6 +53,7 @@ namespace PKSim.UI.BootStrapping
 
          updateGoDiagramKey();
 
+
          var container = InfrastructureRegister.Initialize();
          container.RegisterImplementationOf(getCurrentContext());
 

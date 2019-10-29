@@ -1,12 +1,12 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using NHibernate;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Infrastructure.Serialization.Services;
 using PKSim.Core;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Infrastructure.Services;
 
 namespace PKSim.Infrastructure
 {
@@ -49,7 +49,6 @@ namespace PKSim.Infrastructure
 
          _result = sut.ResultFor(_simulation.Id);
       }
-
 
       [Observation]
       public void should_be_able_to_retrieve_the_values_saved_into_the_database()

@@ -12,6 +12,7 @@ using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Presentation.DTO;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;

@@ -30,7 +30,7 @@ namespace PKSim.Infrastructure
       protected IDialogCreator _dialogCreator;
       protected IApplicationController _applicationController;
       protected IObservedDataInSimulationManager _observedDataInSimulationManager;
-      private IDataRepositoryTask _dataRepositoryTask;
+      private IDataRepositoryExportTask _dataRepositoryTask;
       protected IContainerTask _containerTask;
       protected ITemplateTask _templateTask;
       protected PKSimProject _project;
@@ -43,12 +43,11 @@ namespace PKSim.Infrastructure
       {
          _containerTask = A.Fake<IContainerTask>();
          _projectRetriever = A.Fake<IPKSimProjectRetriever>();
-         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _executionContext = A.Fake<IExecutionContext>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _applicationController = A.Fake<IApplicationController>();
          _templateTask = A.Fake<ITemplateTask>();
-         _snapshotTask = A.Fake<ISnapshotTask>();
          _project = new PKSimProject();
          _observedDataPersistor = A.Fake<IObservedDataPersistor>();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
@@ -56,7 +55,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _executionContext.Project).Returns(_project);
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
-            _dataRepositoryTask, _templateTask, _containerTask, _observedDataPersistor, _objectTypeResolver, _snapshotTask);
+            _dataRepositoryTask, _templateTask, _containerTask, _observedDataPersistor, _objectTypeResolver);
       }
    }
 
