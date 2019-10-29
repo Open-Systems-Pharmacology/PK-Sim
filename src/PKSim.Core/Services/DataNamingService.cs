@@ -4,7 +4,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Services
 {
-   public class DataNamingService : IDataNamingService
+   public class DataNamingService 
    {
       private readonly IWithIdRepository _withIdRepository;
 

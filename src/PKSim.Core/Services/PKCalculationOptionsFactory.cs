@@ -64,19 +64,19 @@ namespace PKSim.Core.Services
          return simulation != null ? CreateFor(simulation, compoundName) : new PKCalculationOptions();
       }
 
-      public override void UpdateAppliedDose(ISimulation simulation, string moleculeName, PKCalculationOptions options, IReadOnlyList<ApplicationParameters> allApplicationParameters)
+      public override void UpdateAppliedDose(IModelCoreSimulation simulation, string moleculeName, PKCalculationOptions options, IReadOnlyList<ApplicationParameters> allApplicationParametersOrderedByStartTime)
       {
-         base.UpdateAppliedDose(simulation, moleculeName, options, allApplicationParameters);
+         base.UpdateAppliedDose(simulation, moleculeName, options, allApplicationParametersOrderedByStartTime);
 
          if (options.SingleDosing)
             return;
 
          //we have at least 2 applied applications at that stage since we are in multiple dosing mode
          var bodyWeight = simulation.DowncastTo<Simulation>().BodyWeight?.Value;
-         var applicationCount = allApplicationParameters.Count;
-         options.FirstDose = drugMassPerBodyWeightFor(allApplicationParameters[0].DrugMass, bodyWeight);
-         options.LastMinusOneDose = drugMassPerBodyWeightFor(allApplicationParameters[applicationCount - 2].DrugMass, bodyWeight);
-         options.LastDose = drugMassPerBodyWeightFor(allApplicationParameters[applicationCount - 1].DrugMass, bodyWeight);
+         var applicationCount = allApplicationParametersOrderedByStartTime.Count;
+         options.FirstDose = drugMassPerBodyWeightFor(allApplicationParametersOrderedByStartTime[0].DrugMass, bodyWeight);
+         options.LastMinusOneDose = drugMassPerBodyWeightFor(allApplicationParametersOrderedByStartTime[applicationCount - 2].DrugMass, bodyWeight);
+         options.LastDose = drugMassPerBodyWeightFor(allApplicationParametersOrderedByStartTime[applicationCount - 1].DrugMass, bodyWeight);
       }
 
       private double? drugMassPerBodyWeightFor(IParameter drugMass, double? bodyWeight)

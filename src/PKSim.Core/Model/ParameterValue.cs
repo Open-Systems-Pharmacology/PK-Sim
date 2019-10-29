@@ -1,22 +1,7 @@
+using OSPSuite.Core.Domain.Populations;
+
 namespace PKSim.Core.Model
 {
-   public class ParameterValue : RandomValue
-   {
-      public string ParameterPath { get; set; }
-
-      public ParameterValue(string parameterPath, double value, double percentile)
-      {
-         ParameterPath = parameterPath;
-         Value = value;
-         Percentile = percentile;
-      }
-
-      public ParameterValue Clone()
-      {
-         return new ParameterValue(ParameterPath, Value, Percentile);
-      }
-   }
-
    public class DistributedParameterValue : ParameterValue
    {
       public double Mean { get; private set; }
@@ -30,4 +15,4 @@ namespace PKSim.Core.Model
          DistributionType = distributionType;
       }
    }
-}  
+}

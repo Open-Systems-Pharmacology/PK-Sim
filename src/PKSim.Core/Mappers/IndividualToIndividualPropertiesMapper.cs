@@ -4,6 +4,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Mappers

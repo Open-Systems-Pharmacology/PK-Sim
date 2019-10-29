@@ -579,6 +579,10 @@ namespace PKSim.Core.Model
          set => Properties.Origin = value;
       }
 
+      //This is not used in PKSim.
+      public IBuildConfiguration BuildConfiguration { get; } = null;
+
+
       /// <summary>
       ///    Returns the <see cref="OutputSelections"/> for the simulation
       /// </summary>

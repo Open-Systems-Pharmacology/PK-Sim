@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Utility.Collections;
 
 namespace PKSim.Core.Model
 {
    public class IndividualProperties
    {
-      private readonly ICache<string, ParameterValue> _parameterValues = new Cache<string, ParameterValue>(x => x.ParameterPath);
+      private readonly Cache<string, ParameterValue> _parameterValues = new Cache<string, ParameterValue>(x => x.ParameterPath);
       public IndividualCovariates Covariates { get; set; }
 
       public IndividualProperties()
@@ -13,10 +14,7 @@ namespace PKSim.Core.Model
          Covariates = new IndividualCovariates();
       }
 
-      public virtual IEnumerable<ParameterValue> ParameterValues
-      {
-         get { return _parameterValues; }
-      }
+      public virtual IEnumerable<ParameterValue> ParameterValues => _parameterValues;
 
       public virtual void AddParameterValue(ParameterValue parameterValue)
       {

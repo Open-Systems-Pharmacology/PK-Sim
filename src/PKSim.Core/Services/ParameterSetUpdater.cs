@@ -31,6 +31,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Update all parameters defined in the target container  with the value of the same parameter in the source cache
       ///    <paramref name="sourceParameters" />. Same parameter is defined as "have the same absolute path".
+      /// <param name="sourceParameters"> Parameters from which the value should be taken</param>
       ///    <param name="targetContainer">container for which the parameter values should be updated</param>
       /// </summary>
       ICommand UpdateValues(PathCache<IParameter> sourceParameters, IContainer targetContainer);
@@ -42,7 +43,7 @@ namespace PKSim.Core.Services
       IOSPSuiteCommand UpdateValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters, bool updateParameterOriginId = true);
 
       /// <summary>
-      ///    Update all prameters defined in the target container with the value of the same parameter in the source container
+      ///    Update all parameters defined in the target container with the value of the same parameter in the source container
       ///    if available. Same parameter is defined as "have the same name"
       /// </summary>
       /// <param name="sourceContainer">container from which the value should be taken</param>

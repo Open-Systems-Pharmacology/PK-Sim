@@ -11,7 +11,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Seed used to intialize the random generator while creating the individual
       /// </summary>
-      public virtual int Seed { get;  set; }
+      public virtual int Seed { get; set; }
 
       /// <summary>
       ///    Origin data defining the property used to create the individual
@@ -23,7 +23,6 @@ namespace PKSim.Core.Model
          Seed = Environment.TickCount;
       }
 
-
       public virtual Organism Organism => this.GetSingleChild<Organism>();
 
       public virtual IContainer Neighborhoods => this.GetSingleChildByName<IContainer>(Constants.NEIGHBORHOODS);
@@ -33,7 +32,6 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual SpeciesPopulation Population => OriginData.SpeciesPopulation;
 
- 
       /// <summary>
       ///    all available organs in the individual
       /// </summary>
@@ -78,9 +76,7 @@ namespace PKSim.Core.Model
       public virtual IEnumerable<IndividualMolecule> AllDefinedMolecules() => AllMolecules().Where(x => !x.IsUndefinedMolecule());
 
       /// <summary>
-      ///    All protein of type
-      ///    <typeparam name="TMolecule" />
-      ///    in the individual
+      ///    All protein of type <typeparamref name="TMolecule" /> in the individual
       /// </summary>
       /// <typeparam name="TMolecule"> Type of molecule to be retrieved </typeparam>
       public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule => GetChildren<TMolecule>();
@@ -161,7 +157,8 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns <c>true</c> if at least one molecule of type <typeparamref name="TIndividualMolecule"/>is defined in the individual otherwise false
+      ///    Returns <c>true</c> if at least one molecule of type <typeparamref name="TIndividualMolecule" />is defined in the
+      ///    individual otherwise false
       /// </summary>
       public bool HasMolecules<TIndividualMolecule>() where TIndividualMolecule : IndividualMolecule
       {

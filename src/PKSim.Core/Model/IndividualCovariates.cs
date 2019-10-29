@@ -4,7 +4,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
-   public class IndividualCovariates
+   public class IndividualCovariates 
    {
       /// <summary>
       ///    List of user defined attributes for the individual (e.g. PopulationName, Genotype etc)

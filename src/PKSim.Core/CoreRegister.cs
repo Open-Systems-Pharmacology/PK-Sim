@@ -80,8 +80,6 @@ namespace PKSim.Core
          container.Register<IApplicationSettings, OSPSuite.Core.IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
 
          //Register opened types generics
-         container.Register(typeof(IRepository<>), typeof(ImplementationRepository<>));
-
          container.Register<IInterpolation, LinearInterpolation>();
          container.Register<IPivoter, Pivoter>();
 

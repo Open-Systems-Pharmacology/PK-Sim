@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 
 namespace PKSim.Core.Model
 {
@@ -16,10 +17,10 @@ namespace PKSim.Core.Model
       {
       }
 
-      public IndividualPropertiesCache(ParameterValuesCache parameterValuesCache, IEnumerable<IndividualCovariates> allConvariates)
+      public IndividualPropertiesCache(ParameterValuesCache parameterValuesCache, IEnumerable<IndividualCovariates> allCovariates)
       {
          ParameterValuesCache = parameterValuesCache;
-         AllCovariates = new List<IndividualCovariates>(allConvariates);
+         AllCovariates = new List<IndividualCovariates>(allCovariates);
       }
 
       public void Add(IndividualProperties individualProperties)
@@ -58,9 +59,14 @@ namespace PKSim.Core.Model
          get { return AllCovariates.Where(x => x.Race != null).Select(x => x.Race).ToList(); }
       }
 
-      public virtual IEnumerable<string> AllParameterPaths()
+      public virtual string[] AllParameterPaths()
       {
          return ParameterValuesCache.AllParameterPaths();
+      }
+
+      public double[] GetValues(string parameterPath)
+      {
+         return ParameterValuesCache.GetValues(parameterPath);
       }
 
       public virtual IndividualPropertiesCache Clone()
@@ -73,17 +79,17 @@ namespace PKSim.Core.Model
          ParameterValuesCache.Remove(parameterPath);
       }
 
-      public virtual void SetValues(string parameterPath, IEnumerable<RandomValue> newValues)
+      public virtual void SetValues(string parameterPath, IReadOnlyList<RandomValue> newValues)
       {
          ParameterValuesCache.SetValues(parameterPath, newValues);
       }
 
-      public virtual void SetValues(string parameterPath, IEnumerable<double> newValues)
+      public virtual void SetValues(string parameterPath, IReadOnlyList<double> newValues)
       {
          ParameterValuesCache.SetValues(parameterPath, newValues);
       }
 
-      public virtual IEnumerable<ParameterValues> AllParameterValues => ParameterValuesCache.AllParameterValues;
+      public virtual IReadOnlyCollection<ParameterValues> AllParameterValues => ParameterValuesCache.AllParameterValues;
 
       public virtual ParameterValues ParameterValuesFor(string parameterPath)
       {
