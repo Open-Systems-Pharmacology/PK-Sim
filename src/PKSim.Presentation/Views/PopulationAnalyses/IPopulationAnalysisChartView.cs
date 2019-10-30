@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using OSPSuite.Presentation.Core;
 using PKSim.Core.Chart;
 using PKSim.Presentation.Presenters.PopulationAnalyses;

@@ -1,8 +1,7 @@
 ﻿using OSPSuite.Assets;
+using OSPSuite.UI.Core;
 using PKSim.Presentation.Presenters.Charts;
 using PKSim.Presentation.Views.Charts;
-using OSPSuite.Presentation;
-using OSPSuite.UI.Core;
 
 namespace PKSim.UI.Views.Charts
 {
@@ -18,8 +17,8 @@ namespace PKSim.UI.Views.Charts
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         DragDrop += (o,e)=> _individualSimulationComparisonPresenter.DragDrop(e, new DragEvent(e));
-         DragOver += (o, e) => _individualSimulationComparisonPresenter.DragOver(e, new DragEvent(e));
+         DragDrop += (o, e) => _individualSimulationComparisonPresenter.DragDrop(o, new DragEvent(e));
+         DragOver += (o, e) => _individualSimulationComparisonPresenter.DragOver(o, new DragEvent(e));
       }
 
       public void AttachPresenter(IIndividualSimulationComparisonPresenter presenter)
@@ -29,6 +28,5 @@ namespace PKSim.UI.Views.Charts
       }
 
       public ApplicationIcon Image => ApplicationIcons.IndividualSimulationComparison;
-
    }
 }

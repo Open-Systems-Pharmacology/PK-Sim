@@ -1,9 +1,8 @@
-using BTS.Utility.Validation;
-using PKSim.Presentation.DTO.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
 using PKSim.Presentation.DTO.Parameters;
-using PKSim.Resources;
-using SBSuite.Core.Domain;
-using SBSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.Simulations
 {

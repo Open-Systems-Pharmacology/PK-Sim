@@ -7,15 +7,15 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
    public interface IGroupingDefinitionPresenter : IPresenter
    {
       /// <summary>
-      /// Returns the grouping definiton defined by the user
+      /// Returns the grouping definition defined by the user
       /// </summary>
       GroupingDefinition GroupingDefinition { get; }
 
       /// <summary>
-      /// Initializes the grouping definition presenter allowing the user to setup a new <see cref="IGroupingDefinition"/>
+      /// Initializes the grouping definition presenter allowing the user to setup a new GroupingDefinition
       /// </summary>
       /// <param name="populationAnalysisField">Field for which the grouping definition should be defined</param>
-      /// <param name="populationDataCollector">Population simulation used in the analyse</param>
+      /// <param name="populationDataCollector">Population simulation used in the analysis</param>
       void InitializeWith(IPopulationAnalysisField populationAnalysisField, IPopulationDataCollector populationDataCollector);
 
       /// <summary>

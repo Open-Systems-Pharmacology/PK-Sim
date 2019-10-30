@@ -59,7 +59,6 @@ namespace PKSim.Presentation
 
             //This objects were already registered in Bootstrap
             scan.ExcludeType<ApplicationController>();
-            scan.ExcludeType<PKSimProgressUpdater>();
             scan.ExcludeType<StartOptions>();
 
             scan.RegisterAs(LifeStyle.Transient);

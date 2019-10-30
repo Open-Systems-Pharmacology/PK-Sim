@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -44,8 +43,14 @@ namespace PKSim.Presentation.Presenters.Charts
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
       protected readonly IChartTemplatingTask _chartTemplatingTask;
 
-      protected ChartPresenter(TView view, ChartPresenterContext chartPresenterContext, IChartTemplatingTask chartTemplatingTask, IIndividualPKAnalysisPresenter pkAnalysisPresenter,
-         IChartTask chartTask, IObservedDataTask observedDataTask, IChartUpdater chartUpdater)
+      protected ChartPresenter(
+         TView view, 
+         ChartPresenterContext chartPresenterContext, 
+         IChartTemplatingTask chartTemplatingTask, 
+         IIndividualPKAnalysisPresenter pkAnalysisPresenter,
+         IChartTask chartTask, 
+         IObservedDataTask observedDataTask, 
+         IChartUpdater chartUpdater)
          : base(view, chartPresenterContext)
       {
          _chartTask = chartTask;

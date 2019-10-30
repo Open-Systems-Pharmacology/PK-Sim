@@ -321,6 +321,7 @@
     <Compile Include="Mappers\LineStyleToDashStyleMapper.cs" />
     <Compile Include="Mappers\SimulationToSimulationReactionDiagramDTOMapper.cs" />
     <Compile Include="Mappers\SymbolToMarkerKindMapper.cs" />
+    <Compile Include="PKSimProgressUpdater.cs" />
     <Compile Include="UserInterfaceRegister.cs" />
     <Compile Include="Extensions\LayoutControlItemExtensions.cs" />
     <Compile Include="ToolTipCreator.cs" />
@@ -2065,9 +2066,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
