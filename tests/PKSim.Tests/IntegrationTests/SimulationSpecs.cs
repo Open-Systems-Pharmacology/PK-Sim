@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,6 @@ using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
-using System;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.IntegrationTests
@@ -163,7 +163,7 @@ namespace PKSim.IntegrationTests
          {
             //currently simulations with pregnant pop cannot be created
             if (pop.Name.Equals(CoreConstants.Population.PREGNANT))
-               continue; 
+               continue;
 
             await runPopulationSimulationFor(pop.Name, errors);
          }
@@ -182,10 +182,10 @@ namespace PKSim.IntegrationTests
             var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
             var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
             simSettingsRetriever.CreatePKSimDefaults(simulation);
-            await simulationEngine.RunAsync(simulation,_simulationRunOptions);
+            await simulationEngine.RunAsync(simulation, _simulationRunOptions);
             simulation.HasResults.ShouldBeTrue();
          }
-         catch(Exception ex)
+         catch (Exception ex)
          {
             var errorMsg = $"Population simulation for the population '{populationName}' failed: {ex.ToString()}";
             errors.Add(errorMsg);
@@ -374,7 +374,7 @@ namespace PKSim.IntegrationTests
          solubilityTableFormula.AddPoint(5, 50);
          solubilityTableFormula.AddPoint(12, 100);
 
-         solubilityTable.Formula= solubilityTableFormula;
+         solubilityTable.Formula = solubilityTableFormula;
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
       }
 

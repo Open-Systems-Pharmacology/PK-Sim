@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using DevExpress.Utils.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Utility.Container;
