@@ -7,6 +7,8 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Extensions;
+using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -15,7 +17,9 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Extensions;
+using IImportLogger = PKSim.Core.Model.IImportLogger;
 
+//TODO 
 namespace PKSim.Infrastructure.Services
 {
    public class IndividualPropertiesCacheImporter : IIndividualPropertiesCacheImporter

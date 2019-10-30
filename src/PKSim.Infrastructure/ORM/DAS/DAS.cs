@@ -167,7 +167,6 @@ namespace PKSim.Infrastructure.ORM.DAS
       ///       <see cref="DataProviders.Oracle"></see> means a connection to an Oracle database using the oracle data
       ///       provider.
       ///    </para>
-      /// </param>
       /// <para>
       ///    <see cref="DataProviders.MSOracle"></see> means a connection to an Oracle database using the microsoft data
       ///    provider.

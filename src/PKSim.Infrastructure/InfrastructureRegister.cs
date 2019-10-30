@@ -114,6 +114,7 @@ namespace PKSim.Infrastructure
          var container = IoC.Container;
 
          container.Register<ISerializationManager, XmlSerializationManager>();
+         container.Register<IStringSerializer, StringSerializer>();
          container.Register<IStringSerializer, CompressedStringSerializer>(CoreConstants.Serialization.Compressed);
          container.Register<IPKSimXmlSerializerRepository, PKSimXmlSerializerRepository>(LifeStyle.Singleton);
 
@@ -170,6 +171,8 @@ namespace PKSim.Infrastructure
             scan.ExcludeType<VersionChecker>();
             scan.ExcludeType<Workspace>();
             scan.ExcludeType<PKSimLogger>();
+            scan.ExcludeType<StringSerializer>();
+            scan.ExcludeType<CompressedStringSerializer>();
 
             //already registered
             scan.ExcludeType<PKSimXmlSerializerRepository>();

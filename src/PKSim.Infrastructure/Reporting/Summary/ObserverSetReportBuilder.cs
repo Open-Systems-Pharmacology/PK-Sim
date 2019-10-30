@@ -1,4 +1,4 @@
-﻿using FluentNHibernate.Utils;
+﻿using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 

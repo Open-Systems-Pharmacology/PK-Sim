@@ -8,7 +8,6 @@ using LumenWorks.Framework.IO.Csv;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Extensions;
-using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Extensions;
@@ -16,6 +15,9 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Extensions;
+using OSPSuite.Infrastructure.Import.Services;
+using IImportLogger = PKSim.Core.Model.IImportLogger;
 
 namespace PKSim.Infrastructure.Services
 {
