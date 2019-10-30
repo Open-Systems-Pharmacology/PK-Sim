@@ -87,7 +87,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -119,7 +119,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
          simSettingsRetriever.CreatePKSimDefaults(_simulation);
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
@@ -179,11 +179,14 @@ namespace PKSim.IntegrationTests
             var population = DomainFactoryForSpecs.CreateDefaultPopulation(individual);
             var simulation = DomainFactoryForSpecs.CreateSimulationWith(population, _compound, _protocol) as PopulationSimulation;
 
-            var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
+            var simulationEngine = IoC.Resolve<IPopulationSimulationEngine>();
             var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
             simSettingsRetriever.CreatePKSimDefaults(simulation);
-            await simulationEngine.RunAsync(simulation, _simulationRunOptions);
-            simulation.HasResults.ShouldBeTrue();
+            var result = await simulationEngine.RunAsync(simulation, _simulationRunOptions);
+            if (result.Errors.Any())
+            {
+               errors.Add($"Population simulation for the population '{populationName}' failed: {result.Errors.Select(x => x.ErrorMessage).ToString("\n")}");
+            }
          }
          catch (Exception ex)
          {
@@ -208,7 +211,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
+         var simulationEngine = IoC.Resolve<IPopulationSimulationEngine>();
          var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
          simSettingsRetriever.CreatePKSimDefaults(_simulation);
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
@@ -265,7 +268,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -387,7 +390,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -413,7 +416,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -439,7 +442,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -662,7 +665,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }

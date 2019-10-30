@@ -22,7 +22,7 @@ namespace PKSim.IntegrationTests
 
       public async Task VerifySimulationCanRun(IndividualSimulation simulation)
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(simulation, new Core.Services.SimulationRunOptions());
          simulation.HasResults.ShouldBeTrue();
       }

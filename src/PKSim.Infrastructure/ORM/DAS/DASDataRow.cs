@@ -266,7 +266,7 @@ namespace PKSim.Infrastructure.ORM.DAS
       /// </summary>
       /// <returns>Number of rows affected.</returns>
       /// <remarks>Columns with property <see cref="DASDataColumn.IsAutoValue"></see> = <c>True</c> 
-      /// must be set to their <see cref="DASDataColumn.DefaultValue"></see> to get the auto value 
+      /// must be set to their DASDataColumn.DefaultValue to get the auto value 
       /// by <see cref="InsertIntoDB"></see>.</remarks>
       /// <exception cref="NotEditableException">Thrown when the table is not editable.</exception>
       /// <exception cref="UnsupportedDataTypeException">Thrown when an unsupported data type occurs.</exception>

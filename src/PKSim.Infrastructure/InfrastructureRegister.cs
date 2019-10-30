@@ -58,6 +58,7 @@ namespace PKSim.Infrastructure
          registerConfigurationIn(container);
 
          container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
+         container.Register<IDbGateway, SimpleDbGateway>(LifeStyle.Singleton);
 
          registerRunOptionsIn(container);
 
@@ -140,7 +141,6 @@ namespace PKSim.Infrastructure
       private void registerORMDependencies()
       {
          var container = IoC.Container;
-         container.Register<IDbGateway, SimpleDbGateway>(LifeStyle.Singleton);
          container.Register(typeof(IDataTableToMetaDataMapper<>), typeof(DataTableToMetaDataMapper<>));
       }
 

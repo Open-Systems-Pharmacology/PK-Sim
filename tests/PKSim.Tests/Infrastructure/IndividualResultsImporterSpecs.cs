@@ -99,7 +99,7 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
-      public void should_have_a_valud_status()
+      public void should_have_a_valid_status()
       {
          _importLogger.Status.ShouldBeEqualTo(NotificationType.Info);
       }

@@ -4,6 +4,6 @@ namespace PKSim.Core.Services
 {
    public interface ISimulationEngineFactory
    {
-      ISimulationEngine<TSimulation> Create<TSimulation>() where TSimulation : Simulation;
+      ISimulationEngine<TSimulation, TResult> Create<TSimulation, TResult>() where TSimulation : Simulation;
    }
 }

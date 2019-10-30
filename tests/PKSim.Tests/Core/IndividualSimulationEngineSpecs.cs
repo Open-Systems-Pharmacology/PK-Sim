@@ -18,7 +18,7 @@ using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_IndividualSimulationEngine : ContextSpecificationAsync<ISimulationEngine<IndividualSimulation>>
+   public abstract class concern_for_IndividualSimulationEngine : ContextSpecificationAsync<IIndividualSimulationEngine>
    {
       protected ISimModelManager _simModelManager;
       protected IProgressUpdater _progressUpdater;

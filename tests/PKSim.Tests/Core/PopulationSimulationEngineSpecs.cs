@@ -13,7 +13,7 @@ using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_PopulationSimulationEngine : ContextSpecificationAsync<ISimulationEngine<PopulationSimulation>>
+   public abstract class concern_for_PopulationSimulationEngine : ContextSpecificationAsync<IPopulationSimulationEngine>
    {
       private IEventPublisher _eventPubliser;
       protected IProgressUpdater _progressUpdater;

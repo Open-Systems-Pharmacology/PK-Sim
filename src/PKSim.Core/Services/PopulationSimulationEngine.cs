@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
@@ -11,7 +12,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public class PopulationSimulationEngine : ISimulationEngine<PopulationSimulation>
+   public class PopulationSimulationEngine : IPopulationSimulationEngine
    {
       private readonly IPopulationRunner _populationRunner;
       private readonly IProgressManager _progressManager;
@@ -45,7 +46,7 @@ namespace PKSim.Core.Services
          _populationRunner.SimulationProgress += simulationProgress;
       }
 
-      public async Task RunAsync(PopulationSimulation populationSimulation, SimulationRunOptions simulationRunOptions)
+      public async Task<PopulationRunResults> RunAsync(PopulationSimulation populationSimulation, SimulationRunOptions simulationRunOptions)
       {
          _progressUpdater = _progressManager.Create();
          _progressUpdater.Initialize(populationSimulation.NumberOfItems, PKSimConstants.UI.Calculating);
@@ -62,10 +63,13 @@ namespace PKSim.Core.Services
             _simulationResultsSynchronizer.Synchronize(populationSimulation, populationRunResults.Results);
             _populationSimulationAnalysisSynchronizer.UpdateAnalysesDefinedIn(populationSimulation);
             _eventPublisher.PublishEvent(new SimulationResultsUpdatedEvent(populationSimulation));
+
+            return populationRunResults;
          }
          catch (OperationCanceledException)
          {
             simulationTerminated();
+            return null;
          }
          catch (Exception)
          {

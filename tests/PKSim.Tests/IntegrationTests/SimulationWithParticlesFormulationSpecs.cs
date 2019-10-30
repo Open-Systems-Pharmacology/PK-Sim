@@ -83,7 +83,7 @@ namespace PKSim.IntegrationTests
          var simulationPersistableUpdater = IoC.Resolve<ISimulationPersistableUpdater>();
          simulationPersistableUpdater.UpdatePersistableFromSettings(individualSimulation);
 
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          return simulationEngine.RunAsync(individualSimulation, _simulationRunOptions);
       }
 
