@@ -25,9 +25,9 @@ namespace PKSim.Core
       private static Dimension _massConcentrationDimension;
       private static Dimension _fractionDimension;
 
-      private static string PATH_TO_SRC = "..\\..\\..\\..\\..\\src\\";
-      private static string PATH_TO_DATA = "..\\..\\..\\Data\\";
-      private static string PATH_TO_TEMPLATES = "..\\..\\..\\Templates\\";
+      private static string PATH_TO_SRC = "..\\..\\..\\..\\src\\";
+      private static string PATH_TO_DATA = "..\\..\\Data\\";
+      private static string PATH_TO_TEMPLATES = "..\\..\\Templates\\";
 
       public static string FilePathFor(string fileNameWithExtension)
       {
