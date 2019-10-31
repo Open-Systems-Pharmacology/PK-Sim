@@ -14,7 +14,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <OutputPath>bin\$(Configuration)\$(TargetFramework)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>1591, 3246</NoWarn>
     <ApplicationIcon>PKSim.ico</ApplicationIcon>
   </PropertyGroup>
 
@@ -26,19 +26,19 @@
     <Content Include="..\..\dimensions\OSPSuite.Dimensions.xml" Link="OSPSuite.Dimensions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\packages\OSPSuite.FuncParser.4.0.0.42\OSPSuite.FuncParserNative\bin\native\x64\Release\OSPSuite.FuncParserNative.dll" Link="OSPSuite.FuncParserNative.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\packages\OSPSuite.SimModel.4.0.0.29\OSPSuite.SimModelNative\bin\native\x64\Release\OSPSuite.SimModelNative.dll" Link="OSPSuite.SimModelNative.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\packages\OSPSuite.SimModelSolver_CVODES.4.0.0.5\lib\net45\OSPSuite.SimModelSolver_CVODES.dll" Link="OSPSuite.SimModelSolver_CVODES.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\packages\System.Data.SQLite.Core.1.0.112.0\build\net46\x64\SQLite.Interop.dll" Link="SQLite.Interop.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml" Link="OSPSuite.PKParameters.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgOSPSuite_FuncParser)\OSPSuite.FuncParserNative\bin\native\x64\Release\OSPSuite.FuncParserNative.dll" Link="OSPSuite.FuncParserNative.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgOSPSuite_SimModel)\OSPSuite.SimModelNative\bin\native\x64\Release\OSPSuite.SimModelNative.dll" Link="OSPSuite.SimModelNative.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgOSPSuite_SimModelSolver_CVODES)\lib\net45\OSPSuite.SimModelSolver_CVODES.dll" Link="OSPSuite.SimModelSolver_CVODES.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgSystem_Data_SQLite_Core)\build\net46\x64\SQLite.Interop.dll" Link="SQLite.Interop.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -66,6 +66,10 @@
   <ItemGroup>
     <PackageReference Include="OSPSuite.Core" Version="9.0.13" />
     <PackageReference Include="OSPSuite.DevExpress" Version="18.2.7" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.42" GeneratePathProperty="true"/>
+    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.29" GeneratePathProperty="true"/>
+    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.0.0.5" GeneratePathProperty="true"/>
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true"/>
   </ItemGroup>
 
   <ItemGroup>
