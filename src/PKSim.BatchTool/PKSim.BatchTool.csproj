@@ -19,6 +19,10 @@
     <Description>PKSim.BatchTool - Batch runner for json based PK-Sim simulations</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
   </ItemGroup>
@@ -61,10 +65,10 @@
   <ItemGroup>
     <PackageReference Include="OSPSuite.Core" Version="9.0.13" />
     <PackageReference Include="OSPSuite.DevExpress" Version="18.2.7" />
-    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.42" GeneratePathProperty="true"/>
-    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.29" GeneratePathProperty="true"/>
-    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.0.0.5" GeneratePathProperty="true"/>
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true"/>
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.42" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.29" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.0.0.5" GeneratePathProperty="true" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>
