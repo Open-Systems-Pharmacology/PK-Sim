@@ -35,7 +35,7 @@ namespace PKSim.Matlab
       protected override void Context()
       {
          base.Context();
-         _simulationFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Data", "S1_concentrBased.pkml");
+         _simulationFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Data", "S1_concentrBased.pkml");
          _simModelXmlFile = FileHelper.GenerateTemporaryFileName();
       }
 

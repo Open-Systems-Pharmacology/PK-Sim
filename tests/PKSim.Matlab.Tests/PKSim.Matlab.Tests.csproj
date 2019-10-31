@@ -4,6 +4,7 @@
     <TargetFramework>net472</TargetFramework>
 
     <IsPackable>false</IsPackable>
+    <OutputPath>bin\$(Configuration)</OutputPath>
 
     <RootNamespace>PKSim.Matlab</RootNamespace>
   </PropertyGroup>
