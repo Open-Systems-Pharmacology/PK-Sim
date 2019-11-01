@@ -4,7 +4,7 @@ using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Utility.Collections;
 
-namespace PKSim.Assets
+namespace PKSim.Assets.Images
 {
    public static class ApplicationImages
    {

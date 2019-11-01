@@ -477,7 +477,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_create_required_molecules_in_subcompartments_of_tissue_organ()
+      public void should_create_required_molecules_in_sub_compartments_of_tissue_organ()
       {
          string comp1FcRnComplexName = CoreConstants.Molecule.DrugFcRnComplexName(_compound1Name);
          string comp2FcRnComplexName = CoreConstants.Molecule.DrugFcRnComplexName(_compound2Name);

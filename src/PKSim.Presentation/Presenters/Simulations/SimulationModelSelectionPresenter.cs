@@ -101,7 +101,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private void updateModelProperties(ModelProperties modelProperties)
       {
-         _view.UpdateModelImage(ApplicationImages.ImageByName(selectedModelConfiguration.ModelName));
+         _view.UpdateModelImage(selectedModelConfiguration.ModelName);
          updateCalculationMethods(modelProperties.AllCalculationMethods());
       }
 
@@ -110,14 +110,8 @@ namespace PKSim.Presentation.Presenters.Simulations
          _modelConfigurationDTO.CalculationMethodDTOs = calculationMethods.MapAllUsing(_categoryCalculationMethodDTOMapper);
       }
 
-      public ModelProperties ModelProperties
-      {
-         get { return _modelPropertiesMapper.MapFrom(_modelConfigurationDTO); }
-      }
+      public ModelProperties ModelProperties => _modelPropertiesMapper.MapFrom(_modelConfigurationDTO);
 
-      private ModelConfiguration selectedModelConfiguration
-      {
-         get { return _modelConfigurationDTO != null ? _modelConfigurationDTO.ModelConfiguration : null; }
-      }
+      private ModelConfiguration selectedModelConfiguration => _modelConfigurationDTO != null ? _modelConfigurationDTO.ModelConfiguration : null;
    }
 }

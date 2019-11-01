@@ -6,6 +6,7 @@ using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using OSPSuite.UI.Controls;
+using PKSim.Assets.Images;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -44,9 +45,9 @@ namespace PKSim.UI.Views.Simulations
       }
 
 
-      public void UpdateModelImage(ApplicationImage image)
+      public void UpdateModelImage(string imageName)
       {
-         pbModel.Image = image;
+         pbModel.Image = ApplicationImages.ImageByName(imageName);
       }
 
       public void BindTo(ModelConfigurationDTO modelConfigurationDTO)

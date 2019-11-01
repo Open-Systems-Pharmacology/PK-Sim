@@ -2,7 +2,6 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
 using PKSim.UI.UICommands;
