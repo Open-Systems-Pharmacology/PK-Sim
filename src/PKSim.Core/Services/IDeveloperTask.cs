@@ -1,4 +1,4 @@
-﻿namespace PKSim.Presentation.Services
+﻿namespace PKSim.Core.Services
 {
    public interface IDeveloperTask
    {

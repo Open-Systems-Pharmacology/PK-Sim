@@ -74,7 +74,6 @@
   <ItemGroup>
     <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj" />
     <ProjectReference Include="..\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
-    <ProjectReference Include="..\PKSim.Presentation\PKSim.Presentation.csproj" />
   </ItemGroup>
 
 </Project>

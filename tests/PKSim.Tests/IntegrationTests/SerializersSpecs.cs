@@ -83,7 +83,6 @@ namespace PKSim.IntegrationTests
          if (type.Equals(typeof (Template))) return true;
          if (type.Equals(typeof (TransporterContainerTemplate))) return true;
          if (type.Equals(typeof (ParameterValueVersionCategory))) return true;
-         if (type.Equals(typeof (ImportLogger))) return true;
          if (type.Equals(typeof (LabelGenerationStrategy))) return true;
          if (type.Equals(typeof (DosingIntervalId))) return true;
          if (type.Equals(typeof (LabelGenerationStrategyId))) return true;
@@ -111,8 +110,6 @@ namespace PKSim.IntegrationTests
          if (type.Equals(typeof (OntogenyMetaData))) return true;
          if (type.Equals(typeof (DistributedParameterValue))) return true;
          if (type.Equals(typeof (QuantityValues))) return true;
-         if (type.Equals(typeof (SimulationResultsImportFile))) return true;
-         if (type.Equals(typeof (SimulationResultsImport))) return true;
          if (type.Equals(typeof (SimulationPKParametersImport))) return true;
          if (type.Equals(typeof(PopulationSimulationImport))) return true;
          if (type.Equals(typeof(GroupingItem))) return true;

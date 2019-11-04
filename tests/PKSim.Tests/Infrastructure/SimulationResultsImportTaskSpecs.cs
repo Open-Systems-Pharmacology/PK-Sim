@@ -12,6 +12,9 @@ using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Infrastructure.Import.Services;
+using ISimulationResultsImportTask = PKSim.Core.Services.ISimulationResultsImportTask;
+using SimulationResultsImportTask = PKSim.Core.Services.SimulationResultsImportTask;
 
 namespace PKSim.Infrastructure
 {

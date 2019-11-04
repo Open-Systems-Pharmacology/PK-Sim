@@ -2,14 +2,15 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using PKSim.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -42,7 +43,7 @@ namespace PKSim.Core.Services
                _allQuantities = _quantitiesRetriever.QuantitiesFrom(populationSimulation);
 
                // Use ToList to execute the query and start the import task.
-               var tasks = files.Select(f => importFiles(f,populationSimulation, cancellationToken)).ToList();
+               var tasks = files.Select(f => importFiles(f, populationSimulation, cancellationToken)).ToList();
                var allImportedResults = new List<IndividualResultsImport>();
                // Await the completion of all the running tasks. 
                // Add a loop to process the tasks one at a time until none remain. 
@@ -100,7 +101,7 @@ namespace PKSim.Core.Services
          {
             var importResult = new IndividualResultsImport();
             var simulationResultsFile = new SimulationResultsImportFile {FilePath = fileFullPath};
-            importResult.IndividualResults = _individualResultsImporter.ImportFrom(fileFullPath, simulation,simulationResultsFile).ToList();
+            importResult.IndividualResults = _individualResultsImporter.ImportFrom(fileFullPath, simulation, simulationResultsFile).ToList();
             simulationResultsFile.NumberOfIndividuals = importResult.IndividualResults.Count;
             importResult.SimulationResultsFile = simulationResultsFile;
 

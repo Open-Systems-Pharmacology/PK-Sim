@@ -6,6 +6,7 @@ using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Infrastructure.Import.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;

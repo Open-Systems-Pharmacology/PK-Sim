@@ -2,12 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Infrastructure.Import.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core
 {
@@ -37,7 +38,6 @@ namespace PKSim.Core
          A.CallTo(() => _quantityRetriever.OutputsFrom(_populationSimulation)).Returns(_availableQuantities);
          sut = new SimulationPKParametersImportTask(_pkAnalysesImporter, _quantityRetriever);
       }
-
    }
 
    public class When_importing_pk_parameters_for_a_simulation_that_were_already_defined : concern_for_SimulationPKAnalysesImportTask

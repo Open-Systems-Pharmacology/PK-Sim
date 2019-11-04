@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Threading;
+using OSPSuite.Core;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain.Services;
@@ -14,7 +15,8 @@ using PKSim.CLI.Core;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Infrastructure;
-using IWorkspace = OSPSuite.Core.IWorkspace;
+using CoreRegister = PKSim.Core.CoreRegister;
+using ICoreUserSettings = PKSim.Core.ICoreUserSettings;
 
 namespace PKSim.CLI
 {

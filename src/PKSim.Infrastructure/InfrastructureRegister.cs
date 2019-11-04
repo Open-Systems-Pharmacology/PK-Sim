@@ -7,16 +7,16 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure.Container.Castle;
+using OSPSuite.Infrastructure.Export;
 using OSPSuite.Infrastructure.Reporting;
+using OSPSuite.Infrastructure.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
 using OSPSuite.Infrastructure.Serialization.Services;
-using OSPSuite.Infrastructure.Services;
 using OSPSuite.Presentation.Serialization.Extensions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.TeXReporting;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Compression;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -42,6 +42,7 @@ using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ILogger = OSPSuite.Core.Services.ILogger;
+using IWorkspace = PKSim.Presentation.IWorkspace;
 
 namespace PKSim.Infrastructure
 {
@@ -135,7 +136,7 @@ namespace PKSim.Infrastructure
       public static void RegisterWorkspace()
       {
          var container = IoC.Container;
-         container.Register<Presentation.IWorkspace,IWithWorkspaceLayout, ICoreWorkspace, OSPSuite.Core.IWorkspace, Workspace>(LifeStyle.Singleton);
+         container.Register<IWorkspace, IWithWorkspaceLayout, ICoreWorkspace, OSPSuite.Core.IWorkspace, Workspace>(LifeStyle.Singleton);
       }
 
       private void registerORMDependencies()
@@ -223,10 +224,10 @@ namespace PKSim.Infrastructure
          ospSuiteXmlSerializerRepository.AddPresentationSerializers();
          xmlRegister.PerformMappingForSerializerIn(container);
 
-         container.AddRegister(x => x.FromType<OSPSuite.TeXReporting.ReportingRegister>());
-         container.AddRegister(x => x.FromType<OSPSuite.Infrastructure.Serialization.InfrastructureSerializationRegister>());
-         container.AddRegister(x => x.FromType<OSPSuite.Infrastructure.Reporting.InfrastructureReportingRegister>());
-         container.AddRegister(x => x.FromType<OSPSuite.Infrastructure.Export.InfrastructureExportRegister>());
+         container.AddRegister(x => x.FromType<ReportingRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureSerializationRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureReportingRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureExportRegister>());
 
          //register factory also as IObjectBaseFactoryIBuildTrackerFactory
          var factory = container.Resolve<IPKSimObjectBaseFactory>() as IObjectBaseFactory;

@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using LumenWorks.Framework.IO.Csv;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Extensions;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Extensions;
 using OSPSuite.Infrastructure.Import.Services;
-using IImportLogger = PKSim.Core.Model.IImportLogger;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -52,7 +48,7 @@ namespace PKSim.Infrastructure.Services
                validateFileFormat(headers);
                while (csv.ReadNextRecord())
                {
-                  var pkParameter =  retrieveOrCreatePKParameterFor(csv);
+                  var pkParameter = retrieveOrCreatePKParameterFor(csv);
                   addValues(pkParameter, csv);
                }
             }
@@ -62,12 +58,12 @@ namespace PKSim.Infrastructure.Services
                var pkParameter = keyValue.Key;
                var values = keyValue.Value;
                //0-based id
-               var maxIndividualId = values.Select(x=>x.Item1).Max();
+               var maxIndividualId = values.Select(x => x.Item1).Max();
                pkParameter.SetNumberOfIndividuals(maxIndividualId + 1);
 
                foreach (var value in values)
                {
-                  pkParameter.SetValue(value.Item1,value.Item2);
+                  pkParameter.SetValue(value.Item1, value.Item2);
                }
             }
 
@@ -87,8 +83,8 @@ namespace PKSim.Infrastructure.Services
 
       private void addValues(QuantityPKParameter pkParameter, CsvReader csv)
       {
-         if(!_valuesCache.Contains(pkParameter))
-            _valuesCache.Add(pkParameter,new List<Tuple<int, float>>());
+         if (!_valuesCache.Contains(pkParameter))
+            _valuesCache.Add(pkParameter, new List<Tuple<int, float>>());
 
          var coreUnit = convertValueToCoreValue(pkParameter.Dimension, csv.DoubleAt(VALUE), csv[UNIT]);
          _valuesCache[pkParameter].Add(new Tuple<int, float>(csv.IntAt(INDIVIDUAL_ID), coreUnit.ToFloat()));
@@ -97,8 +93,8 @@ namespace PKSim.Infrastructure.Services
       private double convertValueToCoreValue(IDimension dimension, double valueInUnit, string unitName)
       {
          var unit = dimension.Unit(unitName);
-         if(unit==null)
-            throw new PKSimException(PKSimConstants.Error.UnitIsNotDefinedInDimension(dimension.Name,unitName));
+         if (unit == null)
+            throw new PKSimException(PKSimConstants.Error.UnitIsNotDefinedInDimension(dimension.Name, unitName));
 
          return dimension.UnitValueToBaseUnitValue(unit, valueInUnit);
       }
@@ -111,10 +107,10 @@ namespace PKSim.Infrastructure.Services
          if (!_importedPK.Contains(id))
          {
             var dimension = findDimensionFor(csv[UNIT]);
-            var pkParameter = new QuantityPKParameter { Name = parameterName, QuantityPath = quantityPath, Dimension = dimension };
+            var pkParameter = new QuantityPKParameter {Name = parameterName, QuantityPath = quantityPath, Dimension = dimension};
             _importedPK.Add(pkParameter);
-
          }
+
          return _importedPK[id];
       }
 

@@ -8,6 +8,7 @@ using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace PKSim.Core
 {

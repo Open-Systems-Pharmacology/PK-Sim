@@ -16,8 +16,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Infrastructure.Extensions;
-using IImportLogger = PKSim.Core.Model.IImportLogger;
 
 //TODO 
 namespace PKSim.Infrastructure.Services

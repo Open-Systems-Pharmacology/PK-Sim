@@ -1,9 +1,8 @@
 ﻿using System.Linq;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Presenters.Compounds;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ProjectConverter.v5_2
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace PKSim.Core.Services
 {
