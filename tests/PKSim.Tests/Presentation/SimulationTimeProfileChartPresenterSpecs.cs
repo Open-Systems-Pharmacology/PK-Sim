@@ -8,12 +8,12 @@ using OSPSuite.Core;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Charts;
-using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Services.Charts;
@@ -59,11 +59,11 @@ namespace PKSim.Presentation
          _chartEditorAndDisplayPresenter = A.Fake<IChartEditorAndDisplayPresenter>();
          _dataColumnToPathElementsMapper = A.Fake<IDataColumnToPathElementsMapper>();
          _chartTask = A.Fake<IChartTask>();
-         _dimensionFactory= A.Fake<IDimensionFactory>();
+         _dimensionFactory = A.Fake<IDimensionFactory>();
          _observedDataTask = A.Fake<IObservedDataTask>();
          _chartLayoutTask = A.Fake<IChartEditorLayoutTask>();
          _chartUpdateTask = A.Fake<IChartUpdater>();
-         _presentationSettingsTask= A.Fake<IPresentationSettingsTask>();
+         _presentationSettingsTask = A.Fake<IPresentationSettingsTask>();
          _allTemplates = new List<ChartEditorLayoutTemplate>();
          A.CallTo(() => _chartLayoutTask.AllTemplates()).Returns(_allTemplates);
          A.CallTo(() => _chartEditorAndDisplayPresenter.EditorPresenter).Returns(_chartEditorPresenter);
@@ -73,12 +73,11 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartEditorPresenter.ColumnSettingsFor(A<CurveOptionsColumns>._)).Returns(new GridColumnSettings(CurveOptionsColumns.xData.ToString()));
          _chartTemplatingTask = A.Fake<IChartTemplatingTask>();
          _projectRetriever = A.Fake<IProjectRetriever>();
-         _chartPresenterContext = new ChartPresenterContext(_chartEditorAndDisplayPresenter, _curveNamer, _dataColumnToPathElementsMapper, _chartTemplatingTask, _presentationSettingsTask,_chartLayoutTask, _projectRetriever,_dimensionFactory);
+         _chartPresenterContext = new ChartPresenterContext(_chartEditorAndDisplayPresenter, _curveNamer, _dataColumnToPathElementsMapper, _chartTemplatingTask, _presentationSettingsTask, _chartLayoutTask, _projectRetriever, _dimensionFactory);
          _curveNamer = A.Fake<ICurveNamer>();
 
          sut = new SimulationTimeProfileChartPresenter(_view, _chartPresenterContext, _pkAnalysisPresenter, _chartTask, _observedDataTask, _chartTemplatingTask, _chartUpdateTask);
       }
-
    }
 
    public class When_handling_simulation_result_updates : concern_for_SimulationTimeProfileChartPresenter
@@ -293,7 +292,7 @@ namespace PKSim.Presentation
          simulation.DataRepository = _dataRepository;
          sut.UpdateAnalysisBasedOn(simulation);
 
-         _allDataRepositoryRemoved  =new List<DataRepository>();
+         _allDataRepositoryRemoved = new List<DataRepository>();
          A.CallTo(() => _chartEditorPresenter.RemoveDataRepositories(A<IEnumerable<DataRepository>>._))
             .Invokes(x => _allDataRepositoryRemoved.AddRange(x.GetArgument<IEnumerable<DataRepository>>(0)));
       }
@@ -458,7 +457,7 @@ namespace PKSim.Presentation
       private SimulationTimeProfileChart _chart;
       private DataRepository _observedData;
       private IndividualSimulation _simulation;
-      private string _newName = "NEW NAME";
+      private readonly string _newName = "NEW NAME";
 
       protected override void Context()
       {
@@ -489,7 +488,7 @@ namespace PKSim.Presentation
       private SimulationTimeProfileChart _chart;
       private DataRepository _observedData;
       private IndividualSimulation _simulation;
-      private string _newName = "NEW NAME";
+      private readonly string _newName = "NEW NAME";
 
       protected override void Context()
       {
@@ -505,7 +504,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new RenamedEvent(new SimulationTimeProfileChart{Name = _newName}));
+         sut.Handle(new RenamedEvent(new SimulationTimeProfileChart {Name = _newName}));
       }
 
       [Observation]
@@ -514,5 +513,4 @@ namespace PKSim.Presentation
          _view.Caption.ShouldNotBeEqualTo(_newName);
       }
    }
-
 }

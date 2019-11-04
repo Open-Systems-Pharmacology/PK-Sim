@@ -14,7 +14,7 @@ namespace PKSim.CLI.Services
       }
 
       /// <summary>
-      ///    Adds a file logger to <paramref name="logFileFullPath>" /> that is enabled for the specififed
+      ///    Adds a file logger to <paramref name="logFileFullPath>" /> that is enabled for the specified
       ///    <paramref name="logLevel" /> or higher.
       /// </summary>
       public static ILoggerFactory AddFile(this ILoggerFactory factory, string logFileFullPath, LogLevel logLevel)
@@ -23,7 +23,7 @@ namespace PKSim.CLI.Services
       }
 
       /// <summary>
-      ///    Adds a file logger to <paramref name="logFileFullPath>" /> that is enabled for the specififed
+      ///    Adds a file logger to <paramref name="logFileFullPath>" /> that is enabled for the specified
       ///    <paramref name="logLevel" /> or higher and specifies if the file should be appended or created
       /// </summary>
       public static ILoggerFactory AddFile(this ILoggerFactory factory, string logFileFullPath, LogLevel logLevel, bool append)

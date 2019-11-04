@@ -85,9 +85,9 @@ namespace PKSim.Presentation.Presenters.Parameters
       bool IsSimpleEditor { set; }
 
       /// <summary>
-      ///    Group by the column with the given <paramref name="pathElement" />
+      ///    Group by the column with the given <paramref name="pathElementId" />
       /// </summary>
-      void GroupBy(PathElement pathElement);
+      void GroupBy(PathElementId pathElementId);
 
       /// <summary>
       ///    Clear the presenter of the displayed parameters
@@ -177,7 +177,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
          _view.DistributionVisible = AllParametersDTO.Any(ParameterIsDistributed);
 
-         EnumHelper.AllValuesFor<PathElement>().Each(updateColumnVisibility);
+         EnumHelper.AllValuesFor<PathElementId>().Each(updateColumnVisibility);
          updateCategoryVisibility();
 
          _scaleParametersPresenter.Enabled = _visibleParameters.Any(x => x.Editable);
@@ -207,9 +207,9 @@ namespace PKSim.Presentation.Presenters.Parameters
          get { return !haveDifferent(x => x.DisplayName); }
       }
 
-      private void updateColumnVisibility(PathElement pathElement)
+      private void updateColumnVisibility(PathElementId pathElementId)
       {
-         _view.SetVisibility(pathElement, AllParametersDTO.HasDistinctValuesAt(pathElement));
+         _view.SetVisibility(pathElementId, AllParametersDTO.HasDistinctValuesAt(pathElementId));
       }
 
       private void updateCategoryVisibility()
@@ -281,7 +281,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool ContainerVisible
       {
-         set => _view.SetVisibility(PathElement.Container, value);
+         set => _view.SetVisibility(PathElementId.Container, value);
       }
 
       public void SaveEditor()
@@ -325,9 +325,9 @@ namespace PKSim.Presentation.Presenters.Parameters
          }
       }
 
-      public void GroupBy(PathElement pathElement)
+      public void GroupBy(PathElementId pathElementId)
       {
-         View.GroupBy(pathElement);
+         View.GroupBy(pathElementId);
       }
 
       public void Clear()

@@ -2,24 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
-using PKSim.Presentation.DTO.Extensions;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
-using OSPSuite.Assets;
-using static PKSim.Core.CoreConstants;
-using static PKSim.Core.CoreConstants.Observer;
+using ContainerExtensions = PKSim.Core.Model.ContainerExtensions;
 using ContainerType = OSPSuite.Core.Domain.ContainerType;
 
-namespace PKSim.Presentation.DTO.Mappers
+namespace PKSim.Core.Mappers
 {
    public class PKSimPathToPathElementsMapper : PathToPathElementsMapper
    {
@@ -31,7 +27,7 @@ namespace PKSim.Presentation.DTO.Mappers
       {
          _representationInfoRepository = representationInfoRepository;
          //Format is (Fraction of dose-DRUG_NAME)-Liver-COMPARTMENT
-         var fractionOfDoseLiverObserverPattern = $@"(?<{OBSERVER_NAME}>{FRACTION_OF_DOSE}{COMPOSITE_SEPARATOR}\w*){COMPOSITE_SEPARATOR}{CoreConstants.Organ.Liver}{COMPOSITE_SEPARATOR}\w*";
+         var fractionOfDoseLiverObserverPattern = $@"(?<{OBSERVER_NAME}>{CoreConstants.Observer.FRACTION_OF_DOSE}{CoreConstants.COMPOSITE_SEPARATOR}\w*){CoreConstants.COMPOSITE_SEPARATOR}{CoreConstants.Organ.Liver}{CoreConstants.COMPOSITE_SEPARATOR}\w*";
          _fractionOfDoseLiverRegex = new Regex(fractionOfDoseLiverObserverPattern);
       }
 
@@ -40,28 +36,28 @@ namespace PKSim.Presentation.DTO.Mappers
          return _representationInfoRepository.DisplayNameFor(container);
       }
 
-      protected override PathElementDTO CreatePathElementDTO(IContainer container)
+      protected override PathElement CreatePathElement(IContainer container)
       {
-         var pathElementDTO = base.CreatePathElementDTO(container);
+         var pathElementDTO = base.CreatePathElement(container);
          var representationInfo = _representationInfoRepository.InfoFor(container);
          representationInfo.UpdatePathElement(pathElementDTO);
          return pathElementDTO;
       }
 
-      protected override PathElementDTO CreateContainerPath(IReadOnlyList<IContainer> containerList)
+      protected override PathElement CreateContainerPath(IReadOnlyList<IContainer> containerList)
       {
          if (containerList.Count == 0)
             return base.CreateContainerPath(containerList);
 
          //This is a parameter in an event group hierarchy
          if (containerList.Last().ContainerType == ContainerType.EventGroup)
-            return base.CreatePathElementDTO(containerList.Last());
+            return base.CreatePathElement(containerList.Last());
 
          //This is a parameter in a formulation
          if (containerList.First().ContainerType == ContainerType.EventGroup)
-            return CreatePathElementDTO(containerList.First());
+            return CreatePathElement(containerList.First());
 
-         return CreatePathElementDTO(containerList.Last());
+         return CreatePathElement(containerList.Last());
       }
 
       protected override PathElements CreatePathElementsFrom(IReadOnlyList<IContainer> containers, string name)
@@ -92,10 +88,10 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private void updateMoleculeIcon(PathElements pathElements)
       {
-         if (!pathElements.Contains(PathElement.Molecule))
+         if (!pathElements.Contains(PathElementId.Molecule))
             return;
 
-         var moleculePathElement = pathElements[PathElement.Molecule];
+         var moleculePathElement = pathElements[PathElementId.Molecule];
          if (ApplicationIcons.HasIconNamed(moleculePathElement.IconName))
             return;
 
@@ -105,11 +101,11 @@ namespace PKSim.Presentation.DTO.Mappers
       private void adjustDisplayPathForParameter(PathElements pathElements, IParameter parameter)
       {
          if (parameter.IsInMucosa())
-            adjustDisplayPathForParameterInSubSegment(pathElements, parameter, x => x.IsSegment(), PKSimConstants.ObjectTypes.Mucosa);
+            adjustDisplayPathForParameterInSubSegment(pathElements, parameter, x => ContainerExtensions.IsSegment(x), PKSimConstants.ObjectTypes.Mucosa);
          else
-            adjustDisplayPathForParameterInSubSegment(pathElements, parameter, x => x.IsLiverZone(), PKSimConstants.ObjectTypes.Organs);
+            adjustDisplayPathForParameterInSubSegment(pathElements, parameter, x => ContainerExtensions.IsLiverZone(x), PKSimConstants.ObjectTypes.Organs);
 
-         pathElements[PathElement.Name].DisplayName = _representationInfoRepository.DisplayNameFor(parameter);
+         pathElements[PathElementId.Name].DisplayName = _representationInfoRepository.DisplayNameFor(parameter);
       }
 
       private void adjustDisplayPathForParameterInSubSegment(PathElements pathElements, IParameter parameter, Func<IContainer, bool> containerCondition, string groupingName)
@@ -121,11 +117,11 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private static void swapCompartmentWithContainer(PathElements pathElements)
       {
-         if (!pathElements.Contains(PathElement.BottomCompartment))
+         if (!pathElements.Contains(PathElementId.BottomCompartment))
             return;
 
-         pathElements[PathElement.Container] = pathElements[PathElement.BottomCompartment];
-         pathElements.Remove(PathElement.BottomCompartment);
+         pathElements[PathElementId.Container] = pathElements[PathElementId.BottomCompartment];
+         pathElements.Remove(PathElementId.BottomCompartment);
       }
 
       private void adjustDisplayPathForQuantity(PathElements pathElements, IQuantity quantity)
@@ -136,14 +132,14 @@ namespace PKSim.Presentation.DTO.Mappers
          else if (quantity.HasAncestorNamed(CoreConstants.Organ.Lumen))
             adjustDisplayPathForLumen(pathElements, quantity);
 
-         else if (quantity.IsNamed(PLASMA_UNBOUND))
+         else if (quantity.IsNamed(CoreConstants.Observer.PLASMA_UNBOUND))
             adjustDisplayPathForContainerObserver(pathElements, quantity);
 
-         else if (quantity.Name.StartsWith(TOTAL_FRACTION_OF_DOSE))
+         else if (quantity.Name.StartsWith(CoreConstants.Observer.TOTAL_FRACTION_OF_DOSE))
             adjustDisplayPathForTotalFractionOfDose(pathElements, quantity);
 
          //Container observers directly in a container located under organism
-         else if (!pathElements.Contains(PathElement.BottomCompartment))
+         else if (!pathElements.Contains(PathElementId.BottomCompartment))
             adjustDisplayPathForContainerObserver(pathElements, quantity);
 
          else if (quantity.IsAnImplementationOf<IObserver>())
@@ -152,8 +148,8 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private void adjustDisplayPathForTotalFractionOfDose(PathElements pathElements, IQuantity quantity)
       {
-         pathElements[PathElement.Container] = pathElements[PathElement.TopContainer];
-         pathElements[PathElement.TopContainer] = new PathElementDTO();
+         pathElements[PathElementId.Container] = pathElements[PathElementId.TopContainer];
+         pathElements[PathElementId.TopContainer] = new PathElement();
       }
 
       private void adjustDisplayNameForMoleculeObserver(PathElements pathElements, IObserver observer)
@@ -163,14 +159,14 @@ namespace PKSim.Presentation.DTO.Mappers
             updateNameElementForFractionOfDose(pathElements, observer);
 
          // These observers should be renamed to their dimension (concentration).
-         else if (observer.Name.StartsWith(CONCENTRATION_IN_CONTAINER))
+         else if (observer.Name.StartsWith(CoreConstants.Observer.CONCENTRATION_IN_CONTAINER))
             updateNameElementToQuantityDimensionName(pathElements, observer);
       }
 
       private void updateNameElementForFractionOfDose(PathElements pathElements, IObserver observer)
       {
          var observerName = _fractionOfDoseLiverRegex.Matches(observer.Name)[0].Groups[OBSERVER_NAME].Value;
-         pathElements[PathElement.Name] = CreatePathElementDTO(observerName);
+         pathElements[PathElementId.Name] = CreatePathElement(observerName);
       }
 
       private bool observerIsFractionOfDoseLiver(IObserver observer) => _fractionOfDoseLiverRegex.IsMatch(observer.Name);
@@ -178,7 +174,7 @@ namespace PKSim.Presentation.DTO.Mappers
       private void adjustDisplayPathForNeighborhood(PathElements pathElements, IQuantity quantity)
       {
          var neighborhood = quantity.NeighborhoodAncestor();
-         pathElements[PathElement.Container] = CreatePathElementDTO(neighborhood.FirstNeighbor.ParentContainer);
+         pathElements[PathElementId.Container] = CreatePathElement(neighborhood.FirstNeighbor.ParentContainer);
       }
 
       private void adjustDisplayPathForLumen(PathElements pathElements, IQuantity quantity)
@@ -189,7 +185,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private void adjustDisplayPathForGallBladder(PathElements pathElements, IQuantity quantity)
       {
-         if (quantity.IsNamed(FRACTION_EXCRETED_TO_BILE))
+         if (quantity.IsNamed(CoreConstants.Observer.FRACTION_EXCRETED_TO_BILE))
             return;
 
          adjustDisplayPathForContainerObserver(pathElements, quantity);
@@ -203,12 +199,12 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private void updateCompartmentElementToQuantityDisplayName(PathElements pathElements, IQuantity quantity)
       {
-         pathElements[PathElement.BottomCompartment] = CreatePathElementDTO(_representationInfoRepository.DisplayNameFor(quantity));
+         pathElements[PathElementId.BottomCompartment] = CreatePathElement(_representationInfoRepository.DisplayNameFor(quantity));
       }
 
       private void updateNameElementToQuantityDimensionName(PathElements pathElements, IQuantity quantity)
       {
-         pathElements[PathElement.Name] = CreatePathElementDTO(dimensionDisplayNameFor(quantity));
+         pathElements[PathElementId.Name] = CreatePathElement(dimensionDisplayNameFor(quantity));
       }
 
       private string dimensionDisplayNameFor(IQuantity quantity)
@@ -216,14 +212,14 @@ namespace PKSim.Presentation.DTO.Mappers
          if (quantity.Dimension == null)
             return quantity.Name;
 
-         if (quantity.Dimension.Name == Dimension.Fraction)
-            return Output.FractionDose;
+         if (quantity.Dimension.Name == CoreConstants.Dimension.Fraction)
+            return CoreConstants.Output.FractionDose;
 
-         if (quantity.Dimension.Name.IsOneOf(Dimension.Mass, Constants.Dimension.AMOUNT))
-            return Output.Amount;
+         if (quantity.Dimension.Name.IsOneOf(CoreConstants.Dimension.Mass, Constants.Dimension.AMOUNT))
+            return CoreConstants.Output.Amount;
 
          if (quantityIsConcentration(quantity))
-            return Output.Concentration;
+            return CoreConstants.Output.Concentration;
 
          return quantity.Dimension.DisplayName;
       }
@@ -231,7 +227,7 @@ namespace PKSim.Presentation.DTO.Mappers
       private bool quantityIsConcentration(IQuantity quantity)
       {
          return quantity.Dimension != null &&
-                quantity.Dimension.Name.IsOneOf(Dimension.MASS_CONCENTRATION, Constants.Dimension.MOLAR_CONCENTRATION);
+                quantity.Dimension.Name.IsOneOf(CoreConstants.Dimension.MASS_CONCENTRATION, Constants.Dimension.MOLAR_CONCENTRATION);
       }
    }
 }

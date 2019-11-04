@@ -12,6 +12,7 @@ using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;

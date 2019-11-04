@@ -1,9 +1,9 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Validation;
-using PKSim.Presentation.Core;
+using PKSim.Core.Services;
 
-namespace PKSim.Presentation
+namespace PKSim.Core
 {
    public abstract class concern_for_FileSelection : ContextSpecification<FileSelection>
    {

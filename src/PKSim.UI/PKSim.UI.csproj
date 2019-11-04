@@ -27,11 +27,11 @@
     <PackageReference Include="OSPSuite.DataBinding" Version="2.3.0.3" />
     <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="3.0.0.3" />
     <PackageReference Include="OSPSuite.DevExpress" Version="18.2.7" />
-    <PackageReference Include="OSPSuite.Presentation" Version="9.0.13" />
-    <PackageReference Include="OSPSuite.UI" Version="9.0.13" />
-    <PackageReference Include="OSPSuite.UI.Importer" Version="9.0.13" />
+    <PackageReference Include="OSPSuite.Presentation" Version="9.0.14" />
+    <PackageReference Include="OSPSuite.UI" Version="9.0.14" />
+    <PackageReference Include="OSPSuite.UI.Importer" Version="9.0.14" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.13" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.14" />
   </ItemGroup>
 
   <ItemGroup>

@@ -138,7 +138,7 @@ namespace PKSim.Presentation
          _allOutputs.Add(_oneOutput);
          A.CallTo(() => _outputsRetriever.OutputsFrom(_populationDataCollector)).Returns(_allOutputs);
          var dto=new QuantitySelectionDTO{Quantity = _oneOutput};
-         dto.PathElements.Add(PathElement.TopContainer, new PathElementDTO{DisplayName = "TOTO"});
+         dto.PathElements.Add(PathElementId.TopContainer, new PathElement{DisplayName = "TOTO"});
          A.CallTo(() => _allOutputsPresenter.QuantityDTOByPath(_allOutputs.Keys.First())).Returns(dto);
       }
 

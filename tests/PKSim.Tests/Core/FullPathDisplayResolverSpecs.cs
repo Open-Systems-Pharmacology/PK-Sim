@@ -4,12 +4,11 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Presentation.Services;
+using PKSim.Core.Services;
 
-namespace PKSim.Presentation
+namespace PKSim.Core
 {
    public abstract class concern_for_FullPathDisplayResolver : ContextSpecification<IFullPathDisplayResolver>
    {
@@ -62,6 +61,7 @@ namespace PKSim.Presentation
          _parameterAlternativeGroup = new ParameterAlternativeGroup();
          A.CallTo(() => _representationInfoRep.DisplayNameFor(_parameterAlternativeGroup)).Returns("DISPLAY_GROUP");
       }
+
       protected override void Because()
       {
          _result = sut.FullPathFor(_parameterAlternativeGroup);

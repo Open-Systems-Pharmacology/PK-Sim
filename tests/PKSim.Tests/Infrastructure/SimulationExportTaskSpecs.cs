@@ -17,14 +17,14 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
-
+using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Infrastructure
 {
    public abstract class concern_for_SimulationExportTask : ContextSpecification<ISimulationExportTask>
    {
       private IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
-      protected IBuildingBlockTask _buildingBlockTask;
+      protected ILazyLoadTask _lazyLoadTask;
       protected IDialogCreator _dialogCreator;
       protected IDataRepositoryExportTask _dataRepositoryTask;
       private IStringSerializer _stringSerializer;
@@ -36,7 +36,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          _quantityDisplayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
-         _buildingBlockTask = A.Fake<IBuildingBlockTask>();
+         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _stringSerializer = A.Fake<IStringSerializer>();
@@ -44,7 +44,7 @@ namespace PKSim.Infrastructure
          _simulationMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
          _simModelExporter = A.Fake<ISimModelExporter>();
          _simulationResultsToDataTableConverter = A.Fake<ISimulationResultsToDataTableConverter>();
-         sut = new SimulationExportTask(_buildingBlockTask, _dialogCreator, _dataRepositoryTask, _quantityDisplayPathMapper,
+         sut = new SimulationExportTask(_lazyLoadTask, _dialogCreator, _dataRepositoryTask, _quantityDisplayPathMapper,
             _stringSerializer, _modelReportCreator, _simulationMapper, _simModelExporter, _simulationResultsToDataTableConverter);
       }
    }
@@ -132,7 +132,7 @@ namespace PKSim.Infrastructure
       public async Task should_load_the_results()
       {
          await sut.ExportResultsToCSVAsync(_simulation);
-         A.CallTo(() => _buildingBlockTask.LoadResults(_simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.LoadResults(_simulation)).MustHaveHappened();
       }
 
       [Observation]
@@ -188,7 +188,7 @@ namespace PKSim.Infrastructure
       public async Task should_load_the_results()
       {
          await sut.ExportResultsToCSVAsync(_simulation);
-         A.CallTo(() => _buildingBlockTask.LoadResults(_simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.LoadResults(_simulation)).MustHaveHappened();
       }
 
       [Observation]
@@ -250,7 +250,7 @@ namespace PKSim.Infrastructure
       public async Task should_load_the_simulation()
       {
          await sut.ExportPKAnalysesToCSVAsync(_populationSimulation);
-         A.CallTo(() => _buildingBlockTask.Load(_populationSimulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load(_populationSimulation)).MustHaveHappened();
       }
 
       [Observation]

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
-using OSPSuite.Core.Domain;
 
-namespace PKSim.Presentation.Core
+namespace PKSim.Core.Services
 {
    public class FileSelection : Notifier, IValidatable
    {
@@ -19,24 +19,16 @@ namespace PKSim.Presentation.Core
 
       public virtual string FilePath
       {
-         get { return _filePath; }
-         set
-         {
-            _filePath = value;
-            OnPropertyChanged(() => FilePath);
-         }
+         get => _filePath;
+         set => SetProperty(ref _filePath, value);
       }
 
       private string _description;
 
       public virtual string Description
       {
-         get { return _description; }
-         set
-         {
-            _description = value;
-            OnPropertyChanged(() => Description);
-         }
+         get => _description;
+         set => SetProperty(ref _description, value);
       }
 
       private static class AllRules

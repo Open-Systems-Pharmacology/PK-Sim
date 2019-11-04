@@ -8,6 +8,7 @@ using PKSim.Presentation.Views;
 
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using PKSim.Core.Services;
 
 namespace PKSim.Presentation
 {

@@ -1,19 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Services;
 using PKSim.Core;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Mappers;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Presentation.Services;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation
@@ -45,7 +45,7 @@ namespace PKSim.Presentation
          _fullPathDisplayResolver = A.Fake<IFullPathDisplayResolver>();
          _toolTipPartCreator = A.Fake<IToolTipPartCreator>();
          _treeNodeFactory = new TreeNodeFactoryForSpecs();
-      
+
          A.CallTo(() => _representationInfoRepository.InfoFor(A<IObjectBase>._))
             .ReturnsLazily(x => new RepresentationInfo {DisplayName = x.GetArgument<IObjectBase>(0).Name});
 
@@ -58,9 +58,9 @@ namespace PKSim.Presentation
 
          _para1 = new PKSimParameter().WithId("P1").WithName("P1");
          _para2 = new PKSimParameter().WithId("P2").WithName("P2");
-         _allParameters = new List<IParameter> { _para1, _para2 };
-         _rootGroup = new Group { Name = "group1" };
-         _subGroup = new Group { Name = "subGroup" };
+         _allParameters = new List<IParameter> {_para1, _para2};
+         _rootGroup = new Group {Name = "group1"};
+         _subGroup = new Group {Name = "subGroup"};
          _subGroupNode = new GroupNode(_subGroup);
          _rootNode = new GroupNode(_rootGroup);
          _rootNode.AddChild(_subGroupNode);

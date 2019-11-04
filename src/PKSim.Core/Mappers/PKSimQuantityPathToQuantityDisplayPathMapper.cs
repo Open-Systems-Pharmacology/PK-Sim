@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
+using OSPSuite.Core.Domain.Mappers;
 
-namespace PKSim.Presentation.Mappers
+namespace PKSim.Core.Mappers
 {
    public class PKSimQuantityPathToQuantityDisplayPathMapper : QuantityPathToQuantityDisplayPathMapper
    {
@@ -11,20 +10,20 @@ namespace PKSim.Presentation.Mappers
       {
       }
 
-      protected override IEnumerable<PathElement> DefaultPathElementsToUse(bool addSimulationName, PathElements pathElements)
+      protected override IEnumerable<PathElementId> DefaultPathElementsToUse(bool addSimulationName, PathElements pathElements)
       {
          if(addSimulationName)
-            yield return PathElement.Simulation;
+            yield return PathElementId.Simulation;
 
-         yield return PathElement.Molecule;
+         yield return PathElementId.Molecule;
 
          //Container is defined? no need to use TopContainer
-         if(!pathElements.Contains(PathElement.Container))
-            yield return PathElement.TopContainer;
+         if(!pathElements.Contains(PathElementId.Container))
+            yield return PathElementId.TopContainer;
 
-         yield return PathElement.Container;
-         yield return PathElement.BottomCompartment;
-         yield return PathElement.Name;
+         yield return PathElementId.Container;
+         yield return PathElementId.BottomCompartment;
+         yield return PathElementId.Name;
       }
    }
 }

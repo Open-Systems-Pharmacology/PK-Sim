@@ -1,18 +1,15 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
-using FakeItEasy;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Presentation.Mappers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
 
-namespace PKSim.Presentation
+namespace PKSim.Core
 {
    public abstract class concern_for_QuantityPathToQuantityDisplayPathMapper : ContextSpecification<IQuantityPathToQuantityDisplayPathMapper>
    {
@@ -43,7 +40,7 @@ namespace PKSim.Presentation
          _root = new Container().WithName("ROOT");
          var baseGrid = new BaseGrid("Time", DomainHelperForSpecs.TimeDimensionForSpecs());
          _column = new DataColumn("Conc", DomainHelperForSpecs.ConcentrationDimensionForSpecs(), baseGrid);
-         _individualSimulation = new IndividualSimulation {Model = new Model {Root = _root}};
+         _individualSimulation = new IndividualSimulation {Model = new OSPSuite.Core.Domain.Model {Root = _root}};
       }
    }
 
@@ -60,7 +57,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _pathElements = new PathElements {{PathElement.Container, new PathElementDTO {DisplayName = "Toto"}}};
+         _pathElements = new PathElements {{PathElementId.Container, new PathElement {DisplayName = "Toto"}}};
          A.CallTo(() => _dataColumnToPathElementsMapper.MapFrom(_column, _individualSimulation.Model.Root)).Returns(_pathElements);
       }
 
@@ -81,12 +78,12 @@ namespace PKSim.Presentation
          base.Context();
          _pathElements = new PathElements
          {
-            [PathElement.Simulation] = new PathElementDTO {DisplayName = "Sim"},
-            [PathElement.TopContainer] = new PathElementDTO {DisplayName = "Organism"},
-            [PathElement.Container] = new PathElementDTO {DisplayName = "Liver"},
-            [PathElement.Molecule] = new PathElementDTO {DisplayName = "Drug"},
-            [PathElement.BottomCompartment] = new PathElementDTO {DisplayName = "Plasma"},
-            [PathElement.Name] = new PathElementDTO {DisplayName = "OBS"}
+            [PathElementId.Simulation] = new PathElement {DisplayName = "Sim"},
+            [PathElementId.TopContainer] = new PathElement {DisplayName = "Organism"},
+            [PathElementId.Container] = new PathElement {DisplayName = "Liver"},
+            [PathElementId.Molecule] = new PathElement {DisplayName = "Drug"},
+            [PathElementId.BottomCompartment] = new PathElement {DisplayName = "Plasma"},
+            [PathElementId.Name] = new PathElement {DisplayName = "OBS"}
          };
          A.CallTo(() => _dataColumnToPathElementsMapper.MapFrom(_column, _individualSimulation.Model.Root)).Returns(_pathElements);
       }
@@ -113,12 +110,12 @@ namespace PKSim.Presentation
          base.Context();
          _pathElements = new PathElements
          {
-            [PathElement.Simulation] = new PathElementDTO {DisplayName = "Sim"},
-            [PathElement.TopContainer] = new PathElementDTO {DisplayName = "Organism"},
-            [PathElement.Container] = new PathElementDTO {DisplayName = "Liver"},
-            [PathElement.Molecule] = new PathElementDTO {DisplayName = "Drug"},
-            [PathElement.BottomCompartment] = new PathElementDTO {DisplayName = "Plasma"},
-            [PathElement.Name] = new PathElementDTO {DisplayName = "OBS"}
+            [PathElementId.Simulation] = new PathElement {DisplayName = "Sim"},
+            [PathElementId.TopContainer] = new PathElement {DisplayName = "Organism"},
+            [PathElementId.Container] = new PathElement {DisplayName = "Liver"},
+            [PathElementId.Molecule] = new PathElement {DisplayName = "Drug"},
+            [PathElementId.BottomCompartment] = new PathElement {DisplayName = "Plasma"},
+            [PathElementId.Name] = new PathElement {DisplayName = "OBS"}
          };
          _column.DataInfo.Origin = ColumnOrigins.Observation;
          A.CallTo(() => _dataColumnToPathElementsMapper.MapFrom(_column, _individualSimulation.Model.Root)).Returns(_pathElements);
@@ -145,12 +142,12 @@ namespace PKSim.Presentation
       {
          base.Context();
          _pathElements = new PathElements();
-         _pathElements[PathElement.Simulation] = new PathElementDTO {DisplayName = "Sim"};
-         _pathElements[PathElement.TopContainer] = new PathElementDTO {DisplayName = "Organism"};
-         _pathElements[PathElement.Container] = new PathElementDTO {DisplayName = "Liver"};
-         _pathElements[PathElement.Molecule] = new PathElementDTO {DisplayName = "Drug"};
-         _pathElements[PathElement.BottomCompartment] = new PathElementDTO {DisplayName = "Plasma"};
-         _pathElements[PathElement.Name] = new PathElementDTO {DisplayName = "OBS"};
+         _pathElements[PathElementId.Simulation] = new PathElement {DisplayName = "Sim"};
+         _pathElements[PathElementId.TopContainer] = new PathElement {DisplayName = "Organism"};
+         _pathElements[PathElementId.Container] = new PathElement {DisplayName = "Liver"};
+         _pathElements[PathElementId.Molecule] = new PathElement {DisplayName = "Drug"};
+         _pathElements[PathElementId.BottomCompartment] = new PathElement {DisplayName = "Plasma"};
+         _pathElements[PathElementId.Name] = new PathElement {DisplayName = "OBS"};
          A.CallTo(() => _dataColumnToPathElementsMapper.MapFrom(_column, _individualSimulation.Model.Root)).Returns(_pathElements);
       }
 
@@ -175,9 +172,9 @@ namespace PKSim.Presentation
       {
          base.Context();
          _pathElements = new PathElements();
-         _pathElements[PathElement.Simulation] = new PathElementDTO { DisplayName = "Sim" };
-         _pathElements[PathElement.TopContainer] = new PathElementDTO { DisplayName = "Organism" };
-         _pathElements[PathElement.Name] = new PathElementDTO { DisplayName = "OBS" };
+         _pathElements[PathElementId.Simulation] = new PathElement {DisplayName = "Sim"};
+         _pathElements[PathElementId.TopContainer] = new PathElement {DisplayName = "Organism"};
+         _pathElements[PathElementId.Name] = new PathElement {DisplayName = "OBS"};
          A.CallTo(() => _dataColumnToPathElementsMapper.MapFrom(_column, _individualSimulation.Model.Root)).Returns(_pathElements);
       }
 
@@ -189,7 +186,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_a_string_containing_only_the_relevant_path_elements()
       {
-         _display.ShouldBeEqualTo(new[] { "Sim", "Organism", "OBS" }.ToString(Constants.DISPLAY_PATH_SEPARATOR));
+         _display.ShouldBeEqualTo(new[] {"Sim", "Organism", "OBS"}.ToString(Constants.DISPLAY_PATH_SEPARATOR));
       }
    }
 }

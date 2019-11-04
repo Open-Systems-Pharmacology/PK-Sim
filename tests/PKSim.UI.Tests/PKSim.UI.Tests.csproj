@@ -15,8 +15,8 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.13" />
-    <PackageReference Include="OSPSuite.UI" Version="9.0.13" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.14" />
+    <PackageReference Include="OSPSuite.UI" Version="9.0.14" />
   </ItemGroup>
 
   <ItemGroup>

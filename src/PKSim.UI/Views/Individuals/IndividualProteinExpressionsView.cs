@@ -10,6 +10,7 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
@@ -113,10 +114,10 @@ namespace PKSim.UI.Views.Individuals
          return _colRelativeExpression.XtraColumn == column;
       }
 
-      private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
+      private RepositoryItem configureContainerRepository(PathElement parameterPath)
       {
          var containerRepository  = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
-         return containerRepository.AddItem(parameterPathDTO, parameterPathDTO.IconName);
+         return containerRepository.AddItem(parameterPath, parameterPath.IconName);
       }
 
       public void BindTo(ProteinExpressionDTO proteinExpressionDTO)

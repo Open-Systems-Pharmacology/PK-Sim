@@ -53,13 +53,16 @@
       <PackagePath></PackagePath>
       <Pack>True</Pack>
     </None>
+    <None Include="..\Db\PKSimDB.sqlite" Link="PKSimDB.sqlite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.6.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.13" />
-    <PackageReference Include="OSPSuite.Presentation" Version="9.0.13" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.14" />
+    <PackageReference Include="OSPSuite.Presentation" Version="9.0.14" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.1" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.42" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.29" GeneratePathProperty="true" />

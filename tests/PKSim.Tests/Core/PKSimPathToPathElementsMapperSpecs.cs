@@ -1,17 +1,15 @@
-﻿using PKSim.Assets;
-using OSPSuite.BDDHelper;
+﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Presentation.DTO.Mappers;
-
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
+using PKSim.Assets;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Presentation;
 
-namespace PKSim.Presentation
+namespace PKSim.Core
 {
    public abstract class concern_for_PKSimPathToPathElementsMapper : ContextSpecification<PKSimPathToPathElementsMapper>
    {
@@ -54,9 +52,9 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _entityPathResolver =new EntityPathResolverForSpecs();
-         _representationInfoRepository =new RepresentationInfoRepositoryForSpecs();
-         sut = new PKSimPathToPathElementsMapper(_representationInfoRepository,_entityPathResolver);
+         _entityPathResolver = new EntityPathResolverForSpecs();
+         _representationInfoRepository = new RepresentationInfoRepositoryForSpecs();
+         sut = new PKSimPathToPathElementsMapper(_representationInfoRepository, _entityPathResolver);
 
          _organism = new Organism();
          _venousBlood = new Organ().WithName(CoreConstants.Organ.VenousBlood).WithParentContainer(_organism);
@@ -94,7 +92,6 @@ namespace PKSim.Presentation
          _fractionDimension = DomainHelperForSpecs.FractionDimensionForSpecs();
       }
 
-
       protected override void Because()
       {
          _pathElements = sut.MapFrom(_entity);
@@ -102,12 +99,12 @@ namespace PKSim.Presentation
 
       protected void ShouldReturnPathElementValues(string simulation, string topContainer, string container, string compartment, string molecule, string name)
       {
-         _pathElements[PathElement.Simulation].DisplayName.ShouldBeEqualTo(simulation);
-         _pathElements[PathElement.TopContainer].DisplayName.ShouldBeEqualTo(topContainer);
-         _pathElements[PathElement.Container].DisplayName.ShouldBeEqualTo(container);
-         _pathElements[PathElement.BottomCompartment].DisplayName.ShouldBeEqualTo(compartment);
-         _pathElements[PathElement.Molecule].DisplayName.ShouldBeEqualTo(molecule);
-         _pathElements[PathElement.Name].DisplayName.ShouldBeEqualTo(name);
+         _pathElements[PathElementId.Simulation].DisplayName.ShouldBeEqualTo(simulation);
+         _pathElements[PathElementId.TopContainer].DisplayName.ShouldBeEqualTo(topContainer);
+         _pathElements[PathElementId.Container].DisplayName.ShouldBeEqualTo(container);
+         _pathElements[PathElementId.BottomCompartment].DisplayName.ShouldBeEqualTo(compartment);
+         _pathElements[PathElementId.Molecule].DisplayName.ShouldBeEqualTo(molecule);
+         _pathElements[PathElementId.Name].DisplayName.ShouldBeEqualTo(name);
       }
    }
 
@@ -122,7 +119,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_set_the_name_of_the_bottom_compartment_to_the_name_of_the_observer ()
+      public void should_set_the_name_of_the_bottom_compartment_to_the_name_of_the_observer()
       {
          ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VenousBlood, CoreConstants.Observer.PLASMA_UNBOUND, _drugName, CoreConstants.Output.Concentration);
       }
@@ -196,8 +193,7 @@ namespace PKSim.Presentation
       }
    }
 
-
-   public class When_creating_the_path_elements_for_the_fraction_of_dose_liver_observer: concern_for_PKSimPathToPathElementsMapper
+   public class When_creating_the_path_elements_for_the_fraction_of_dose_liver_observer : concern_for_PKSimPathToPathElementsMapper
    {
       protected override void Context()
       {
@@ -285,7 +281,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_creating_the_path_elements_for_the_concentration_observers_defined_in_lumen: concern_for_PKSimPathToPathElementsMapper
+   public class When_creating_the_path_elements_for_the_concentration_observers_defined_in_lumen : concern_for_PKSimPathToPathElementsMapper
    {
       protected override void Context()
       {
@@ -319,7 +315,6 @@ namespace PKSim.Presentation
       }
    }
 
-
    public class When_creating_the_path_elements_of_a_parameter_defined_in_a_neighborhood : concern_for_PKSimPathToPathElementsMapper
    {
       protected override void Context()
@@ -334,13 +329,11 @@ namespace PKSim.Presentation
       {
          ShouldReturnPathElementValues(string.Empty, Constants.NEIGHBORHOODS, CoreConstants.Organ.Liver, string.Empty, string.Empty, _entity.Name);
          _pathElements.Category.ShouldBeEqualTo(PKSimConstants.ObjectTypes.Organs);
-      
       }
    }
 
    public class When_creating_the_path_elements_of_a_parameter_defined_in_the_mucosa : concern_for_PKSimPathToPathElementsMapper
    {
-
       protected override void Context()
       {
          base.Context();
@@ -353,10 +346,8 @@ namespace PKSim.Presentation
       {
          ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Compartment.Duodenum, string.Empty, string.Empty, _entity.Name);
          _pathElements.Category.ShouldBeEqualTo(PKSimConstants.ObjectTypes.Mucosa);
-
       }
    }
-
 
    public class When_creating_the_path_element_for_a_ph_parameter_defined_in_the_interstitial_space_of_the_small_intestine_mucosa_duodenum : concern_for_PKSimPathToPathElementsMapper
    {
@@ -372,7 +363,6 @@ namespace PKSim.Presentation
       {
          ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Compartment.Duodenum, CoreConstants.Compartment.Interstitial, string.Empty, _entity.Name);
          _pathElements.Category.ShouldBeEqualTo(PKSimConstants.ObjectTypes.Mucosa);
-
       }
    }
 
@@ -394,7 +384,6 @@ namespace PKSim.Presentation
 
    public class When_creating_the_path_element_for_a_formulation_parameters : concern_for_PKSimPathToPathElementsMapper
    {
-
       protected override void Context()
       {
          base.Context();
@@ -408,4 +397,4 @@ namespace PKSim.Presentation
          ShouldReturnPathElementValues(string.Empty, Constants.APPLICATIONS, _application1.Name, string.Empty, string.Empty, _entity.Name);
       }
    }
-}	
+}

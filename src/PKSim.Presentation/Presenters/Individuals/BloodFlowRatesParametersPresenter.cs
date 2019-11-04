@@ -25,7 +25,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          base.Edit(parameters);
          _view.GroupByCategory(); //add grouping by organ type
-         _view.GroupBy(pathElement: PathElement.Container, groupIndex: 1, useCustomSort: true); //add grouping by organ name
+         _view.GroupBy(pathElement: PathElementId.Container, groupIndex: 1, useCustomSort: true); //add grouping by organ name
          _view.GroupingVisible = false;
       }
    }

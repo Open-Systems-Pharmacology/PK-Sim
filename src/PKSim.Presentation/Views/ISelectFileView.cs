@@ -1,6 +1,6 @@
-﻿using PKSim.Presentation.Core;
+﻿using OSPSuite.Presentation.Views;
+using PKSim.Core.Services;
 using PKSim.Presentation.Presenters;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views
 {

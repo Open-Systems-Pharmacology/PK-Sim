@@ -1,10 +1,10 @@
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
-namespace PKSim.Presentation.Services
+namespace PKSim.Core.Services
 {
    public class FullPathDisplayResolver : IFullPathDisplayResolver
    {

@@ -1,17 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Services
@@ -73,7 +72,7 @@ namespace PKSim.Presentation.Services
       private bool parameterHaveSameDisplayNamesAsOneParentGroup(IEnumerable<PathElements> allPathElements, ITreeNode treeNode)
       {
          //if the display name of the parameters are equal to the group display name, no need to add a container as well
-         var allDisplayNames = allPathElements.Select(x => x[PathElement.Name].DisplayName).Distinct().ToList();
+         var allDisplayNames = allPathElements.Select(x => x[PathElementId.Name].DisplayName).Distinct().ToList();
 
          //more than one display names in parameters? return true 
          if (allDisplayNames.Count != 1) return false;
@@ -86,6 +85,7 @@ namespace PKSim.Presentation.Services
 
             treeNode = treeNode.ParentNode;
          }
+
          return false;
       }
 
@@ -95,22 +95,22 @@ namespace PKSim.Presentation.Services
          cache.AddRange(allParameters);
 
          if (parameterHaveSameDisplayNamesAsOneParentGroup(cache.Keys, node))
-            createNodeHiearchyWithoutParameterNameUnder(node, cache);
+            createNodeHierarchyWithoutParameterNameUnder(node, cache);
          else
-            createNodeHiearchyWithParameterNameUnder(node, cache);
+            createNodeHierarchyWithParameterNameUnder(node, cache);
       }
 
-      private void createNodeHiearchyWithoutParameterNameUnder(ITreeNode groupNode, Cache<PathElements, IParameter> allPathElementByParameters)
+      private void createNodeHierarchyWithoutParameterNameUnder(ITreeNode groupNode, Cache<PathElements, IParameter> allPathElementByParameters)
       {
-         createNodeHiearchyUnder(groupNode, allPathElementByParameters, allPathElementByParameters.Keys, new[] {PathElement.TopContainer, PathElement.Container, PathElement.BottomCompartment});
+         createNodeHierarchyUnder(groupNode, allPathElementByParameters, allPathElementByParameters.Keys, new[] {PathElementId.TopContainer, PathElementId.Container, PathElementId.BottomCompartment});
       }
 
-      private void createNodeHiearchyWithParameterNameUnder(ITreeNode groupNode, Cache<PathElements, IParameter> allPathElementByParameters)
+      private void createNodeHierarchyWithParameterNameUnder(ITreeNode groupNode, Cache<PathElements, IParameter> allPathElementByParameters)
       {
-         createNodeHiearchyUnder(groupNode, allPathElementByParameters, allPathElementByParameters.Keys, new[] {PathElement.Name, PathElement.TopContainer, PathElement.Container, PathElement.BottomCompartment});
+         createNodeHierarchyUnder(groupNode, allPathElementByParameters, allPathElementByParameters.Keys, new[] {PathElementId.Name, PathElementId.TopContainer, PathElementId.Container, PathElementId.BottomCompartment});
       }
 
-      private void createNodeHiearchyUnder(ITreeNode node, Cache<PathElements, IParameter> allPathElementByParameters, IEnumerable<PathElements> pathElements, IReadOnlyList<PathElement> pathElementStructure)
+      private void createNodeHierarchyUnder(ITreeNode node, Cache<PathElements, IParameter> allPathElementByParameters, IEnumerable<PathElements> pathElements, IReadOnlyList<PathElementId> pathElementStructure)
       {
          var currentPathElementStructure = pathElementStructure.ToList();
 
@@ -128,18 +128,18 @@ namespace PKSim.Presentation.Services
          {
             var topNode = node;
             var pathElementDTO = pathElementByPosition.Key;
-            if (shouldAddPathElementToNodeHiearchy(pathElementDTO, pathElementByPosition.ElementAt(0)))
+            if (shouldAddPathElementToNodeHierarchy(pathElementDTO, pathElementByPosition.ElementAt(0)))
             {
                topNode = createPathElementNodeFor(node, pathElementDTO);
             }
 
-            createNodeHiearchyUnder(topNode, allPathElementByParameters, pathElementByPosition, currentPathElementStructure);
+            createNodeHierarchyUnder(topNode, allPathElementByParameters, pathElementByPosition, currentPathElementStructure);
          }
       }
 
-      private ITreeNode createPathElementNodeFor(ITreeNode node, PathElementDTO pathElementDTO)
+      private ITreeNode createPathElementNodeFor(ITreeNode node, PathElement pathElement)
       {
-         var pathElementNode = _treeNodeFactory.CreateFor(pathElementDTO.DisplayName, string.Format("{0}-{1}", node.Id, pathElementDTO.DisplayName), pathElementDTO.IconName);
+         var pathElementNode = _treeNodeFactory.CreateFor(pathElement.DisplayName, $"{node.Id}-{pathElement.DisplayName}", pathElement.IconName);
 
          var existingNode = node.Children.Find(n => Equals(n.Id, pathElementNode.Id));
          if (existingNode != null)
@@ -149,14 +149,14 @@ namespace PKSim.Presentation.Services
          return pathElementNode;
       }
 
-      private bool shouldAddPathElementToNodeHiearchy(PathElementDTO pathElementDTO, PathElements pathElements)
+      private bool shouldAddPathElementToNodeHierarchy(PathElement pathElementDTO, PathElements pathElements)
       {
          return !string.IsNullOrEmpty(pathElementDTO.DisplayName)
                 && !pathElementDTO.DisplayName.IsOneOf(Constants.ORGANISM, Constants.NEIGHBORHOODS, CoreConstants.Organ.Lumen, Constants.APPLICATIONS, Constants.EVENTS)
                 && !Equals(parameterDisplayElementDTOFor(pathElements), pathElementDTO); //means that the parameter won't have the same display name as the parent node
       }
 
-      private void addParmeterNode(ITreeNode node, IParameter parameter, PathElementDTO pathElementDTO)
+      private void addParameterNode(ITreeNode node, IParameter parameter, PathElement pathElementDTO)
       {
          var representation = new RepresentationInfo {DisplayName = pathElementDTO.DisplayName, IconName = pathElementDTO.IconName};
          var parameterNode = _treeNodeFactory.CreateFor(parameter, representation);
@@ -167,20 +167,20 @@ namespace PKSim.Presentation.Services
       private void addParameterNode(ITreeNode node, PathElements pathElements, Cache<PathElements, IParameter> allPathElementByParameters)
       {
          var parameter = allPathElementByParameters[pathElements];
-         addParmeterNode(node, parameter, parameterDisplayElementDTOFor(pathElements));
+         addParameterNode(node, parameter, parameterDisplayElementDTOFor(pathElements));
       }
 
-      private PathElementDTO parameterDisplayElementDTOFor(PathElements pathElements)
+      private PathElement parameterDisplayElementDTOFor(PathElements pathElements)
       {
-         return pathElementAt(pathElements, PathElement.Molecule) ??
-                pathElementAt(pathElements, PathElement.BottomCompartment) ??
-                pathElementAt(pathElements, PathElement.Container) ??
-                pathElementAt(pathElements, PathElement.Name);
+         return pathElementAt(pathElements, PathElementId.Molecule) ??
+                pathElementAt(pathElements, PathElementId.BottomCompartment) ??
+                pathElementAt(pathElements, PathElementId.Container) ??
+                pathElementAt(pathElements, PathElementId.Name);
       }
 
-      private PathElementDTO pathElementAt(PathElements pathElements, PathElement pathElement)
+      private PathElement pathElementAt(PathElements pathElements, PathElementId pathElementId)
       {
-         var dto = pathElements[pathElement];
+         var dto = pathElements[pathElementId];
          return string.IsNullOrEmpty(dto.DisplayName) ? null : dto;
       }
    }

@@ -203,14 +203,14 @@ namespace PKSim.Presentation
       public void should_show_the_container_if_visible()
       {
          sut.ContainerVisible = true;
-         A.CallTo(() => _view.SetVisibility(PathElement.Container, true)).MustHaveHappened();
+         A.CallTo(() => _view.SetVisibility(PathElementId.Container, true)).MustHaveHappened();
       }
 
       [Observation]
       public void should_hide_the_container_if_unvisible()
       {
          sut.ContainerVisible = false;
-         A.CallTo(() => _view.SetVisibility(PathElement.Container, false)).MustHaveHappened();
+         A.CallTo(() => _view.SetVisibility(PathElementId.Container, false)).MustHaveHappened();
       }
    }
 

@@ -12,8 +12,8 @@ namespace PKSim.Presentation.Views.Parameters
       bool DistributionVisible { get; set; }
       bool ValueOriginVisible { get; set; }
       bool ParameterNameVisible { get; set; }
-      void SetVisibility(PathElement pathElement, bool visible);
-      void SetCaption(PathElement pathElement, string caption);
+      void SetVisibility(PathElementId pathElement, bool visible);
+      void SetCaption(PathElementId pathElement, string caption);
       bool CategoryVisible { get; set; }
       bool ParameterPathVisible { set; }
       bool GroupingVisible { get; set; }
@@ -28,11 +28,11 @@ namespace PKSim.Presentation.Views.Parameters
       bool AllowMultiSelect { set; }
 
       void GroupByCategory();
-      void GroupBy(PathElement pathElement, int groupIndex = 0, bool useCustomSort = true);
-      void FixParameterColumnWidth(int parameterWitdh);
+      void GroupBy(PathElementId pathElement, int groupIndex = 0, bool useCustomSort = true);
+      void FixParameterColumnWidth(int parameterWidth);
 
       /// <summary>
-      ///    Returns all parameters currently being dislayed in the view. This is a subest of all edited parameters (user might
+      ///    Returns all parameters currently being displayed in the view. This is a subset of all edited parameters (user might
       ///    have filtered out some parameters)
       /// </summary>
       IEnumerable<ParameterDTO> AllVisibleParameters { get; }
@@ -40,7 +40,7 @@ namespace PKSim.Presentation.Views.Parameters
       void SaveEditor();
 
       /// <summary>
-      ///    if set to true, parameter will be compared for sort only if sharing the same hiearchy of visible groups
+      ///    if set to true, parameter will be compared for sort only if sharing the same hierarchy of visible groups
       ///    It is useful for events, default is false
       /// </summary>
       bool UseAdvancedSortingMode { set; }

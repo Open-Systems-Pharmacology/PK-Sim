@@ -62,7 +62,14 @@ namespace PKSim.Infrastructure.Services
 
       public void LoadResults<TSimulation>(TSimulation simulation) where TSimulation : Simulation
       {
-         if (simulation == null || simulation.HasResults) return;
+         if (simulation == null)
+            return;
+         
+         Load(simulation);
+
+         if (simulation.HasResults)
+            return;
+
          _simulationResultsLoader.LoadResultsFor(simulation);
       }
 
