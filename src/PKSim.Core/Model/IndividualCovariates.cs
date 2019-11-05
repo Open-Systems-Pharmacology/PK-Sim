@@ -9,7 +9,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    List of user defined attributes for the individual (e.g. PopulationName, Genotype etc)
       /// </summary>
-      public virtual Cache<string, string> Attributes { get; private set; }
+      public virtual Cache<string, string> Attributes { get; }
 
       public virtual Gender Gender { get; set; }
       public virtual SpeciesPopulation Race { get; set; }

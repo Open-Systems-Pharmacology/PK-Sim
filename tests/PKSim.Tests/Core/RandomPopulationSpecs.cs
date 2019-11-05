@@ -226,8 +226,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.IndividualPropertiesCache.AddConvariate("Cov1", new List<string> {"Male"});
-         sut.IndividualPropertiesCache.AddConvariate("Cov2", new List<string> {"EU"});
+         sut.IndividualPropertiesCache.AddCovariate("Cov1", new List<string> {"Male"});
+         sut.IndividualPropertiesCache.AddCovariate("Cov2", new List<string> {"EU"});
       }
 
       [Observation]
@@ -239,7 +239,7 @@ namespace PKSim.Core
       [Observation]
       public void the_population_name_should_only_be_available_once()
       {
-         sut.IndividualPropertiesCache.AddConvariate(CoreConstants.Covariates.POPULATION_NAME, new List<string> {"TOTO"});
+         sut.IndividualPropertiesCache.AddCovariate(CoreConstants.Covariates.POPULATION_NAME, new List<string> {"TOTO"});
          sut.AllCovariateNames.ShouldOnlyContain("Cov1", "Cov2", CoreConstants.Covariates.POPULATION_NAME);
       }
    }
