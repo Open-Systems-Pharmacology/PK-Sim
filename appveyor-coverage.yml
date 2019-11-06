@@ -15,8 +15,6 @@ assembly_info:
 
 clone_depth: 1
 
-cache: packages -> **\packages.config
-
 install:
   - set PATH=C:\Ruby22\bin;C:\\Python34;C:\\Python34\\Scripts;%PATH%"
   - pip install codecov
