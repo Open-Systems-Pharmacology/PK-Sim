@@ -175,7 +175,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_5
          var clone = _cloner.Clone(factor);
          var advancedParameter = new AdvancedParameter {DistributedParameter = clone, Seed = population.Seed};
          var randomValues = advancedParameter.GenerateRandomValues(population.NumberOfItems);
-         population.IndividualPropertiesCache.Add(randomValues.Select(rv => new ParameterValue(parameterPath, rv.Value, rv.Percentile)).ToList());
+         population.IndividualValuesCache.Add(randomValues.Select(rv => new ParameterValue(parameterPath, rv.Value, rv.Percentile)).ToList());
       }
    }
 }

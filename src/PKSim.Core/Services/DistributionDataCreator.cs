@@ -27,13 +27,20 @@ namespace PKSim.Core.Services
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly ICoreUserSettings _userSettings;
+      private readonly IGenderRepository _genderRepository;
 
-      public DistributionDataCreator(IBinIntervalsCreator binIntervalsCreator, IRepresentationInfoRepository representationInfoRepository, IEntityPathResolver entityPathResolver, ICoreUserSettings userSettings)
+      public DistributionDataCreator(
+         IBinIntervalsCreator binIntervalsCreator, 
+         IRepresentationInfoRepository representationInfoRepository, 
+         IEntityPathResolver entityPathResolver, 
+         ICoreUserSettings userSettings,
+         IGenderRepository genderRepository)
       {
          _binIntervalsCreator = binIntervalsCreator;
          _representationInfoRepository = representationInfoRepository;
          _entityPathResolver = entityPathResolver;
          _userSettings = userSettings;
+         _genderRepository = genderRepository;
       }
 
       public ContinuousDistributionData CreateFor(IPopulationDataCollector populationDataCollector, DistributionSettings settings, QuantityPKParameter parameter, IDimension dimension, Unit displayUnit)
@@ -57,14 +64,14 @@ namespace PKSim.Core.Services
          return CreateFor(parameterContainer, settings, allValues, dimension, displayUnit);
       }
 
-      private static IReadOnlyList<Gender> allGendersFrom(IVectorialParametersContainer parameterContainer, int count)
+      private  IReadOnlyList<Gender> allGendersFrom(IVectorialParametersContainer parameterContainer, int count)
       {
-         var allGenders = parameterContainer.AllGenders;
+         var allGenders = parameterContainer.AllGenders(_genderRepository);
          if (allGenders.Count == count)
             return allGenders;
 
-         var unknowGender = new Gender {Name = CoreConstants.Gender.Undefined};
-         return new Gender[count].InitializeWith(unknowGender);
+         var unknownGender = new Gender {Name = CoreConstants.Gender.Undefined};
+         return new Gender[count].InitializeWith(unknownGender);
       }
 
       public DiscreteDistributionData CreateFor(IVectorialParametersContainer parameterContainer, DistributionSettings settings, string covariate)
@@ -149,7 +156,7 @@ namespace PKSim.Core.Services
 
       private int numberOfItemsFor(IReadOnlyList<Gender> allGenders, string selectedGender)
       {
-         if (string.Equals(selectedGender, CoreConstants.Population.ALL_GENDER))
+         if (string.Equals(selectedGender, Constants.Population.ALL_GENDERS))
             return allGenders.Count;
 
          return allGenders.Count(x => string.Equals(x.Name, selectedGender));
@@ -157,7 +164,7 @@ namespace PKSim.Core.Services
 
       private bool shouldDisplayGender(Gender gender, string selectedGender)
       {
-         return string.Equals(selectedGender, CoreConstants.Population.ALL_GENDER) ||
+         return string.Equals(selectedGender, Constants.Population.ALL_GENDERS) ||
                 string.Equals(gender.Name, selectedGender);
       }
    }

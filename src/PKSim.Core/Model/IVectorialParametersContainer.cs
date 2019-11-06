@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Model
 {
@@ -47,12 +48,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns all genders associated to the vectorial container
       /// </summary>
-      IReadOnlyList<Gender> AllGenders { get; }
-
-      /// <summary>
-      ///    Returns all races associated to the vectorial container
-      /// </summary>
-      IReadOnlyList<SpeciesPopulation> AllRaces { get; }
+      IReadOnlyList<Gender> AllGenders(IGenderRepository genderRepository);
 
       /// <summary>
       /// Returns all covariates values defined for the covariate named <paramref name="covariateName"/>
@@ -65,7 +61,7 @@ namespace PKSim.Core.Model
       IReadOnlyList<string> AllCovariateNames { get; }
 
       /// <summary>
-      /// Returns wether the parameters should be displayed using the group structure or the container structure
+      /// Returns whether the parameters should be displayed using the group structure or the container structure
       /// </summary>
       bool DisplayParameterUsingGroupStructure { get; }
 

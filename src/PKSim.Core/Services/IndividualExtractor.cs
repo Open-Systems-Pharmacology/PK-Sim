@@ -110,18 +110,19 @@ namespace PKSim.Core.Services
          var individual = _executionContext.Clone(population.FirstIndividual)
             .WithName(createIndividualName(population, individualId, individualExtractionOptions));
 
-         var exctractedIndividualParameterCache = new PathCache<IParameter>(_entityPathResolver).For(individual.GetAllChildren<IParameter>());
+         var extractedIndividualParameterCache = new PathCache<IParameter>(_entityPathResolver).For(individual.GetAllChildren<IParameter>());
 
          foreach (var parameter in allParametersOrderedByFormulaType)
          {
-            updateParameterValue(population, individualId, parameter, exctractedIndividualParameterCache);
+            updateParameterValue(population, individualId, parameter, extractedIndividualParameterCache);
          }
 
          var originData = individual.OriginData;
          updateOriginDataFromIndividual(individual, originData);
 
-         originData.Gender = population.AllGenders[individualId];
-         originData.SpeciesPopulation = population.AllRaces[individualId];
+         // TODO
+//         originData.Gender = population.AllGenders[individualId];
+//         originData.SpeciesPopulation = population.AllRaces[individualId];
 
          return _individualTask.AddToProject(individual, editBuildingBlock: false, addToHistory: false);
       }

@@ -72,8 +72,8 @@ namespace PKSim.Core.Services
 
       private void clearOntogenyFor(string ontogenyFactorPath, string ontogenyFactorGIPath, Population population)
       {
-         population.IndividualPropertiesCache.Remove(ontogenyFactorPath);
-         population.IndividualPropertiesCache.Remove(ontogenyFactorGIPath);
+         population.IndividualValuesCache.Remove(ontogenyFactorPath);
+         population.IndividualValuesCache.Remove(ontogenyFactorGIPath);
       }
 
       public void UpdateAllOntogenies(Population population)
@@ -112,8 +112,8 @@ namespace PKSim.Core.Services
             ontogenyFactorsGI.Add(_ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM, age, ga, population.RandomGenerator));
          }
 
-         population.IndividualPropertiesCache.Add(ontogenyFactors);
-         population.IndividualPropertiesCache.Add(ontogenyFactorsGI);
+         population.IndividualValuesCache.Add(ontogenyFactors);
+         population.IndividualValuesCache.Add(ontogenyFactorsGI);
       }
 
       private void updatePlasmaProteinsOntogenyFor(Population population, IReadOnlyList<double> allAges, IReadOnlyList<double> allGAs)
@@ -135,8 +135,8 @@ namespace PKSim.Core.Services
             ontogenyFactors.Add(_ontogenyRepository.PlasmaProteinOntogenyFactor(proteinName, allAges[i], allGAs[i], population.Species.Name, population.RandomGenerator));
          }
 
-         population.IndividualPropertiesCache.Remove(ontogenyFactors.ParameterPath);
-         population.IndividualPropertiesCache.Add(ontogenyFactors);
+         population.IndividualValuesCache.Remove(ontogenyFactors.ParameterPath);
+         population.IndividualValuesCache.Add(ontogenyFactors);
       }
 
       private IReadOnlyList<double> allGAsIn(Population population)

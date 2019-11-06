@@ -24,7 +24,7 @@ namespace PKSim.Matlab
    {
       private readonly OriginDataMapper _originDataMapper;
       private readonly IIndividualFactory _individualFactory;
-      private readonly IIndividualToIndividualPropertiesMapper _individualPropertiesMapper;
+      private readonly IIndividualToIndividualValuesMapper _individualValuesMapper;
       private readonly IOntogenyFactorsRetriever _ontogenyFactorsRetriever;
       private readonly IEntityPathResolver _entityPathResolver;
 
@@ -37,7 +37,7 @@ namespace PKSim.Matlab
          : this(
             IoC.Resolve<OriginDataMapper>(),
             IoC.Resolve<IIndividualFactory>(),
-            IoC.Resolve<IIndividualToIndividualPropertiesMapper>(),
+            IoC.Resolve<IIndividualToIndividualValuesMapper>(),
             IoC.Resolve<IOntogenyFactorsRetriever>(),
             IoC.Resolve<IEntityPathResolver>()
          )
@@ -47,13 +47,13 @@ namespace PKSim.Matlab
       internal MatlabIndividualFactory(
          OriginDataMapper originDataMapper,
          IIndividualFactory individualFactory,
-         IIndividualToIndividualPropertiesMapper individualPropertiesMapper,
+         IIndividualToIndividualValuesMapper individualValuesMapper,
          IOntogenyFactorsRetriever ontogenyFactorsRetriever,
          IEntityPathResolver entityPathResolver)
       {
          _originDataMapper = originDataMapper;
          _individualFactory = individualFactory;
-         _individualPropertiesMapper = individualPropertiesMapper;
+         _individualValuesMapper = individualValuesMapper;
          _ontogenyFactorsRetriever = ontogenyFactorsRetriever;
          _entityPathResolver = entityPathResolver;
       }
@@ -62,7 +62,7 @@ namespace PKSim.Matlab
       {
          var originData = originDataFrom(matlabOriginData);
          var individual = _individualFactory.CreateAndOptimizeFor(originData);
-         var individualProperties = _individualPropertiesMapper.MapFrom(individual);
+         var individualProperties = _individualValuesMapper.MapFrom(individual);
          var allIndividualParameters = individualProperties.ParameterValues.ToList();
          allIndividualParameters.AddRange(_ontogenyFactorsRetriever.FactorsFor(originData, moleculeOntogenies));
          return allIndividualParameters.ToArray();

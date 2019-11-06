@@ -137,7 +137,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
             parameterValues.Add(bsaParameter.Value);
          }
 
-         population.IndividualPropertiesCache.Add(parameterValues);
+         population.IndividualValuesCache.Add(parameterValues);
       }
    }
 }

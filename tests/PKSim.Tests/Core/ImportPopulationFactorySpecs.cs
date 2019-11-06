@@ -6,6 +6,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Events;
@@ -28,8 +29,8 @@ namespace PKSim.Core
       protected Individual _cloneIndividual;
       protected IAdvancedParameterFactory _advancedParameterFactory;
       protected ImportPopulation _createdPopulation;
-      protected IndividualPropertiesCache _popFile1;
-      protected IndividualPropertiesCache _popFile2;
+      protected IndividualValuesCache _popFile1;
+      protected IndividualValuesCache _popFile2;
       protected readonly PathCache<IParameter> _allParameters = new PathCache<IParameter>(new EntityPathResolverForSpecs());
       protected readonly PathCache<IParameter> _allCreateIndividualParameters = new PathCache<IParameter>(new EntityPathResolverForSpecs());
 
@@ -47,14 +48,14 @@ namespace PKSim.Core
 
          A.CallTo(() => _cloner.Clone(_individual)).Returns(_cloneIndividual);
          A.CallTo(() => _objectBaseFactory.Create<ImportPopulation>()).Returns(_createdPopulation);
-         A.CallTo(() => _createdPopulation.IndividualPropertiesCache).Returns(A.Fake<IndividualPropertiesCache>());
+         A.CallTo(() => _createdPopulation.IndividualValuesCache).Returns(A.Fake<IndividualValuesCache>());
          sut = new ImportPopulationFactory(_objectBaseFactory, _progressManager, _individualCacheImporter, _cloner, _containerTask, _advancedParameterFactory);
 
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(_cloneIndividual)).Returns(_allParameters);
          A.CallTo(() => _containerTask.CacheAllChildrenSatisfying(_cloneIndividual, A<Func<IParameter, bool>>._)).Returns(_allCreateIndividualParameters);
 
-         _popFile1 = A.Fake<IndividualPropertiesCache>();
-         _popFile2 = A.Fake<IndividualPropertiesCache>();
+         _popFile1 = A.Fake<IndividualValuesCache>();
+         _popFile2 = A.Fake<IndividualValuesCache>();
          A.CallTo(() => _individualCacheImporter.ImportFrom(_file1, _allParameters, A<IImportLogger>._)).Returns(_popFile1);
          A.CallTo(() => _individualCacheImporter.ImportFrom(_file2, _allParameters, A<IImportLogger>._)).Returns(_popFile2);
 
@@ -78,7 +79,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_a_population_containing_the_individuals_defined_in_these_files()
       {
-         A.CallTo(() => _population.IndividualPropertiesCache.Merge(_popFile2, _allParameters)).MustHaveHappened();
+         A.CallTo(() => _population.IndividualValuesCache.Merge(_popFile2, _allParameters)).MustHaveHappened();
       }
    }
 
@@ -96,7 +97,7 @@ namespace PKSim.Core
          _allCreateIndividualParameters.Add("P1", _allParameters.FindByName("P1"));
          _advancedParameter = new AdvancedParameter();
          A.CallTo(() => _advancedParameterFactory.Create(_allParameters.FindByName("P2"), DistributionTypes.Unknown)).Returns(_advancedParameter);
-         A.CallTo(() => _createdPopulation.IndividualPropertiesCache.AllParameterPaths()).Returns(_allImportedParameters.ToArray());
+         A.CallTo(() => _createdPopulation.IndividualValuesCache.AllParameterPaths()).Returns(_allImportedParameters.ToArray());
       }
 
       protected override async Task Because()

@@ -149,12 +149,7 @@ namespace PKSim.Core.Services
          //and one column for each individual in the population
          foreach (var covariate in population.AllCovariateNames)
          {
-            if (covariate == CoreConstants.Covariates.GENDER)
-               addColumnValues(population, dataTable, CoreConstants.Parameters.GENDER, population.AllGenders.Select(x => x.Index).ToList());
-            else if (covariate == CoreConstants.Covariates.RACE)
-               addColumnValues(population, dataTable, CoreConstants.Parameters.RACE_INDEX, population.AllRaces.Select(x => x.RaceIndex).ToList());
-            else
-               addColumnValues(population, dataTable, covariate, population.AllCovariateValuesFor(covariate));
+            addColumnValues(population, dataTable, covariate, population.AllCovariateValuesFor(covariate));
          }
       }
 

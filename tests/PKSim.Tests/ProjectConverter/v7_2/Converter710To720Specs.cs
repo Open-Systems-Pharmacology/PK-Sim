@@ -79,7 +79,7 @@ namespace PKSim.ProjectConverter.v7_2
       {
          var population = First<Population>();
          var bsaParameterPath = _entityPathResolver.PathFor(population.Organism.Parameter(CoreConstants.Parameters.BSA));
-         population.IndividualPropertiesCache.Has(bsaParameterPath).ShouldBeTrue();
+         population.IndividualValuesCache.Has(bsaParameterPath).ShouldBeTrue();
       }
    }
 

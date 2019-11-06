@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Model
 {
@@ -249,9 +250,9 @@ namespace PKSim.Core.Model
 
       public virtual IEnumerable<AdvancedParameter> AdvancedParameters => advancedParameterCollection.AdvancedParameters;
 
-      public virtual IReadOnlyList<Gender> AllGenders => Population.AllGenders;
+      public virtual IReadOnlyList<Gender> AllGenders(IGenderRepository genderRepository) => Population.AllGenders(genderRepository);
 
-      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => Population.AllRaces;
+//      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => Population.AllRaces;
 
       public virtual IReadOnlyList<string> AllCovariateValuesFor(string covariateName)
       {

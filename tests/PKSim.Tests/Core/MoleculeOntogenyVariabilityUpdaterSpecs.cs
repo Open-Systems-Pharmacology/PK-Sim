@@ -85,8 +85,8 @@ namespace PKSim.Core
          gaValues.Add(40);
 
          _population = new RandomPopulation {Settings = new RandomPopulationSettings {BaseIndividual = _individual, NumberOfIndividuals = 2}};
-         _population.IndividualPropertiesCache.Add(ageValues);
-         _population.IndividualPropertiesCache.Add(gaValues);
+         _population.IndividualValuesCache.Add(ageValues);
+         _population.IndividualValuesCache.Add(gaValues);
 
          A.CallTo(() => _ontogenyRepository.OntogenyFactorFor(_ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, 1, 30, _population.RandomGenerator)).Returns(10);
          A.CallTo(() => _ontogenyRepository.OntogenyFactorFor(_ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, 2, 40, _population.RandomGenerator)).Returns(11);

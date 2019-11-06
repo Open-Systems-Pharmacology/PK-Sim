@@ -35,7 +35,7 @@ namespace PKSim.Core.Model
       private readonly IProgressManager _progressManager;
       private readonly IIndividualModelTask _individualModelTask;
       private readonly ICreateIndividualAlgorithm _createIndividualAlgorithm;
-      private readonly IIndividualToIndividualPropertiesMapper _individualPropertiesMapper;
+      private readonly IIndividualToIndividualValuesMapper _individualValuesMapper;
       private readonly IContainerTask _containerTask;
       private readonly ICloner _cloner;
       private readonly IDistributedParametersUpdater _distributedParametersUpdater;
@@ -47,7 +47,7 @@ namespace PKSim.Core.Model
 
       public RandomPopulationFactory(IObjectBaseFactory objectBaseFactory,
          IProgressManager progressManager, IIndividualModelTask individualModelTask,
-         ICreateIndividualAlgorithm createIndividualAlgorithm, IIndividualToIndividualPropertiesMapper individualPropertiesMapper,
+         ICreateIndividualAlgorithm createIndividualAlgorithm, IIndividualToIndividualValuesMapper individualValuesMapper,
          IContainerTask containerTask, ICloner cloner, IDistributedParametersUpdater distributedParametersUpdater,
          IReportGenerator reportGenerator, IMoleculeParameterVariabilityCreator moleculeParameterVariabilityCreator, IMoleculeOntogenyVariabilityUpdater moleculeOntogenyVariabilityUpdater)
       {
@@ -55,7 +55,7 @@ namespace PKSim.Core.Model
          _progressManager = progressManager;
          _individualModelTask = individualModelTask;
          _createIndividualAlgorithm = createIndividualAlgorithm;
-         _individualPropertiesMapper = individualPropertiesMapper;
+         _individualValuesMapper = individualValuesMapper;
          _containerTask = containerTask;
          _cloner = cloner;
          _distributedParametersUpdater = distributedParametersUpdater;
@@ -110,7 +110,7 @@ namespace PKSim.Core.Model
                   bool success = tryRandomize(currentIndividual, populationSettings, allIndividualParameters, randomPopulation.RandomGenerator);
                   if (!success) continue;
 
-                  randomPopulation.AddIndividualProperties(_individualPropertiesMapper.MapFrom(currentIndividual, allChangedByCreatedIndividualParameters));
+                  randomPopulation.AddIndividualValues(_individualValuesMapper.MapFrom(currentIndividual, allChangedByCreatedIndividualParameters));
 
                   currentGender = _genderQueue.Dequeue();
                   progressUpdater.IncrementProgress(PKSimConstants.UI.CreatingIndividualInPopulation(randomPopulation.NumberOfItems, populationSettings.NumberOfIndividuals));

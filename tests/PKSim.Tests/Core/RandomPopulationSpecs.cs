@@ -17,7 +17,7 @@ namespace PKSim.Core
       protected IParameter _oneAdvancedParameter;
       protected IParameter _individualParameter;
       protected IParameter _anotherParameter;
-      protected IndividualProperties _indvidualProperties;
+      protected IndividualValues _individualValues;
       protected string _pathParameterAdvanced;
 
       protected override void Context()
@@ -31,9 +31,9 @@ namespace PKSim.Core
          sut.Settings = new RandomPopulationSettings {BaseIndividual = _baseIndividual};
          _entityPathResolver = A.Fake<IEntityPathResolver>();
 
-         _indvidualProperties = new IndividualProperties();
-         _indvidualProperties.AddParameterValue(new ParameterValue(pathParameterIndividual, 10, 0.1));
-         _indvidualProperties.AddParameterValue(new ParameterValue(_pathParameterAdvanced, 20, 0.2));
+         _individualValues = new IndividualValues();
+         _individualValues.AddParameterValue(new ParameterValue(pathParameterIndividual, 10, 0.1));
+         _individualValues.AddParameterValue(new ParameterValue(_pathParameterAdvanced, 20, 0.2));
          _oneAdvancedParameter = A.Fake<IParameter>().WithName("Advanced");
          A.CallTo(() => _oneAdvancedParameter.IsChangedByCreateIndividual).Returns(false);
          _oneAdvancedParameter.Visible = true;
@@ -47,7 +47,7 @@ namespace PKSim.Core
          A.CallTo(() => _entityPathResolver.PathFor(_individualParameter)).Returns(pathParameterIndividual);
          A.CallTo(() => _entityPathResolver.PathFor(_anotherParameter)).Returns(anotherPath);
          A.CallTo(() => _baseIndividual.GetAllChildren<IParameter>()).Returns(new[] {_individualParameter, _oneAdvancedParameter, _anotherParameter});
-         sut.AddIndividualProperties(_indvidualProperties);
+         sut.AddIndividualValues(_individualValues);
       }
    }
 
@@ -217,7 +217,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_contain_any_value_for_the_parameter_with_the_given_path_anymore()
       {
-         sut.IndividualPropertiesCache.Has(_advancedParameter.ParameterPath).ShouldBeFalse();
+         sut.IndividualValuesCache.Has(_advancedParameter.ParameterPath).ShouldBeFalse();
       }
    }
 
@@ -226,8 +226,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.IndividualPropertiesCache.AddCovariate("Cov1", new List<string> {"Male"});
-         sut.IndividualPropertiesCache.AddCovariate("Cov2", new List<string> {"EU"});
+         sut.IndividualValuesCache.AddCovariate("Cov1", new List<string> {"Male"});
+         sut.IndividualValuesCache.AddCovariate("Cov2", new List<string> {"EU"});
       }
 
       [Observation]
@@ -239,7 +239,7 @@ namespace PKSim.Core
       [Observation]
       public void the_population_name_should_only_be_available_once()
       {
-         sut.IndividualPropertiesCache.AddCovariate(CoreConstants.Covariates.POPULATION_NAME, new List<string> {"TOTO"});
+         sut.IndividualValuesCache.AddCovariate(CoreConstants.Covariates.POPULATION_NAME, new List<string> {"TOTO"});
          sut.AllCovariateNames.ShouldOnlyContain("Cov1", "Cov2", CoreConstants.Covariates.POPULATION_NAME);
       }
    }

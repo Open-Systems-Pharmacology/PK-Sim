@@ -68,7 +68,7 @@ namespace PKSim.Matlab
 
          _ontogenyVariabilityUpdater.UpdateAllOntogenies(population);
 
-         return population.IndividualPropertiesCache;
+         return population.IndividualValuesCache;
       }
    }
 }

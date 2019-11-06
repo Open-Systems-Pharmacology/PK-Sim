@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Model
 {
@@ -75,7 +76,7 @@ namespace PKSim.Core.Model
          get { return _allSimulations.Aggregate(true, (upToDate, s) => upToDate && s.HasUpToDateResults); }
       }
 
-      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => concatenateValues(x => x.AllRaces);
+// TODO      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => concatenateValues(x => x.AllRaces);
 
       private IReadOnlyList<T> concatenateValues<T>(Func<PopulationSimulation, IReadOnlyList<T>> simulationValuesRetriever)
       {
@@ -146,7 +147,7 @@ namespace PKSim.Core.Model
          return firstSimulation.ParameterByPath(parameterPath, entityPathResolver);
       }
 
-      public virtual IReadOnlyList<Gender> AllGenders => concatenateValues(x => x.AllGenders);
+      public virtual IReadOnlyList<Gender> AllGenders(IGenderRepository genderRepository) => concatenateValues(x => x.AllGenders(genderRepository));
 
       private PopulationSimulation firstSimulation => _allSimulations.FirstOrDefault() ?? new PopulationSimulation();
 

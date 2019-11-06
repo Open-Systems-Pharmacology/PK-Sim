@@ -5,6 +5,7 @@ using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Chart;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core
 {
@@ -97,46 +98,27 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_all_races_defined_in_the_comparison : concern_for_PopulationSimulationComparison
-   {
-      private SpeciesPopulation _race1, _race2, _race3;
-
-      protected override void Context()
-      {
-         base.Context();
-         _race1 = new SpeciesPopulation();
-         _race2 = new SpeciesPopulation();
-         _race3 = new SpeciesPopulation();
-         A.CallTo(() => _popSim1.AllRaces).Returns(new[] {_race1, _race2});
-         A.CallTo(() => _popSim2.AllRaces).Returns(new[] {_race2, _race3});
-         A.CallTo(() => _popSim3.AllRaces).Returns(new[] {_race3, _race1});
-      }
-
-      [Observation]
-      public void should_return_the_concatenated_list_of_races_in_the_accurate_order()
-      {
-         sut.AllRaces.ShouldOnlyContainInOrder(_race1, _race2, _race2, _race3, _race3, _race1);
-      }
-   }
 
    public class When_retrieving_all_genders_defined_in_the_comparison : concern_for_PopulationSimulationComparison
    {
       private Gender _gender1, _gender2;
+      private IGenderRepository _genderRepository;
 
       protected override void Context()
       {
          base.Context();
          _gender1 = new Gender();
          _gender2 = new Gender();
-         A.CallTo(() => _popSim1.AllGenders).Returns(new[] {_gender1, _gender2});
-         A.CallTo(() => _popSim2.AllGenders).Returns(new[] {_gender2, _gender1});
-         A.CallTo(() => _popSim3.AllGenders).Returns(new[] {_gender2, _gender1});
+         _genderRepository= A.Fake<IGenderRepository>(); 
+         A.CallTo(() => _popSim1.AllGenders(_genderRepository)).Returns(new[] {_gender1, _gender2});
+         A.CallTo(() => _popSim2.AllGenders(_genderRepository)).Returns(new[] {_gender2, _gender1});
+         A.CallTo(() => _popSim3.AllGenders(_genderRepository)).Returns(new[] {_gender2, _gender1});
       }
 
       [Observation]
       public void should_return_the_concatenated_list_of_genders_in_the_accurate_order()
       {
-         sut.AllGenders.ShouldOnlyContainInOrder(_gender1, _gender2, _gender2, _gender1, _gender2, _gender1);
+         sut.AllGenders(_genderRepository).ShouldOnlyContainInOrder(_gender1, _gender2, _gender2, _gender1, _gender2, _gender1);
       }
    }
 

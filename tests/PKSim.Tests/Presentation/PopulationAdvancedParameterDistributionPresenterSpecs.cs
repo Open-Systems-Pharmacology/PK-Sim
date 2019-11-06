@@ -32,6 +32,7 @@ namespace PKSim.Presentation
       protected IPopulationDistributionPresenter _popParameterDistributionPresenter;
       private PathCache<IParameter> _allParametersCache;
       protected IProjectChangedNotifier _projectChangedNotifier;
+      private IGenderRepository _genderRepository;
 
       protected override void Context()
       {
@@ -42,10 +43,11 @@ namespace PKSim.Presentation
          _popParameterDistributionPresenter = A.Fake<IPopulationDistributionPresenter>();
          _population = A.Fake<Population>();
          _projectChangedNotifier = A.Fake<IProjectChangedNotifier>();
+         _genderRepository= A.Fake<IGenderRepository>(); 
 
          _gender1 = A.Fake<Gender>().WithName("Gender1");
          _gender2 = A.Fake<Gender>().WithName("Gender2");
-         A.CallTo(() => _population.AllGenders).Returns(new[] {_gender1, _gender2});
+         A.CallTo(_population).WithReturnType<IReadOnlyList<Gender>>().Returns(new[] {_gender1, _gender2});
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_gender1)).Returns("Display1");
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_gender2)).Returns("Display2");
 
@@ -59,7 +61,7 @@ namespace PKSim.Presentation
 
 
          sut = new PopulationAdvancedParameterDistributionPresenter(_view, _parametersPresenter,
-            _representationInfoRepository, _entityPathResolver, _popParameterDistributionPresenter, _projectChangedNotifier);
+            _representationInfoRepository, _entityPathResolver, _popParameterDistributionPresenter, _projectChangedNotifier, _genderRepository);
       }
    }
 
@@ -85,7 +87,7 @@ namespace PKSim.Presentation
          _p2 = A.Fake<IParameter>();
          _p3 = A.Fake<IParameter>();
          _allParameters.AddRange(new[] {_p1, _p2, _p3});
-         A.CallTo(() => _population.AllGenders).Returns(new List<Gender>());
+         A.CallTo(_population).WithReturnType<IReadOnlyList<Gender>>().Returns(new List<Gender>());
       }
 
       protected override void Because()
@@ -191,7 +193,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _population.AllGenders).Returns(new[] {_gender1});
+         A.CallTo(_population).WithReturnType<IReadOnlyList<Gender>>().Returns(new[] {_gender1});
          sut.EditPopulation(_population);
       }
 
@@ -213,29 +215,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_the_available_genders_and_have_added_the_generic_gender_to_the_genders()
       {
-         sut.AllGenders().ShouldOnlyContainInOrder(CoreConstants.Population.ALL_GENDER, _gender1.Name, _gender2.Name);
-      }
-   }
-
-   public class When_retrieving_the_display_name_for_a_given_gender : concern_for_PopulationAdvancedParameterDistributionPresenter
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.EditPopulation(_population);
-      }
-
-      [Observation]
-      public void should_return_the_all_gender_name_if_the_selected_gender_is_the_all_gender()
-      {
-         sut.GenderDisplayFor(CoreConstants.Population.ALL_GENDER).ShouldBeEqualTo(PKSimConstants.UI.AllGender);
-      }
-
-      [Observation]
-      public void should_return_the_display_name_of_the_gender_otherwise()
-      {
-         sut.GenderDisplayFor(_gender1.Name).ShouldBeEqualTo("Display1");
-         sut.GenderDisplayFor(_gender2.Name).ShouldBeEqualTo("Display2");
+         sut.AllGenders().ShouldOnlyContainInOrder(Constants.Population.ALL_GENDERS, _gender1.Name, _gender2.Name);
       }
    }
 

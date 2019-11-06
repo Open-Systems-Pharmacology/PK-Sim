@@ -55,8 +55,8 @@ namespace PKSim.ProjectConverter.v5_2
             if (molecule.Name == CoreConstants.Molecule.UndefinedLiver)
                continue;
             
-            _population.IndividualPropertiesCache.Has(string.Format("{0}|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR)).ShouldBeTrue();
-            _population.IndividualPropertiesCache.Has(string.Format("{0}|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR_GI)).ShouldBeTrue();
+            _population.IndividualValuesCache.Has(string.Format("{0}|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR)).ShouldBeTrue();
+            _population.IndividualValuesCache.Has(string.Format("{0}|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR_GI)).ShouldBeTrue();
          }
       }
 
@@ -66,9 +66,9 @@ namespace PKSim.ProjectConverter.v5_2
          foreach (var molecule in _individual.AllMolecules())
          {
   
-            _population.IndividualPropertiesCache.Has(string.Format("{0}|Liver|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR)).ShouldBeFalse();
-            _population.IndividualPropertiesCache.Has(string.Format("{0}|Duodenum|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR)).ShouldBeFalse();
-            _population.IndividualPropertiesCache.Has(string.Format("{0}|Lumen-Duodenum|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR)).ShouldBeFalse();
+            _population.IndividualValuesCache.Has(string.Format("{0}|Liver|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR)).ShouldBeFalse();
+            _population.IndividualValuesCache.Has(string.Format("{0}|Duodenum|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR)).ShouldBeFalse();
+            _population.IndividualValuesCache.Has(string.Format("{0}|Lumen-Duodenum|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR)).ShouldBeFalse();
          }
       }
    }

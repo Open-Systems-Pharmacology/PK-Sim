@@ -58,13 +58,11 @@ namespace PKSim.Core
       private IParameter _formulaParameter2;
       protected DataTable _result;
       private Gender _male;
-      private SpeciesPopulation _american;
 
       protected override void Context()
       {
          base.Context();
          _male = new Gender();
-         _american = new SpeciesPopulation();
          _constantParameter = new PKSimParameter().WithName("P1").WithFormula(new ConstantFormula(1));
          _formulaParameter1 = new PKSimParameter().WithName("P2").WithFormula(new ExplicitFormula("1+1")).WithDimension(DomainHelperForSpecs.LengthDimensionForSpecs());
          _formulaParameter2 = new PKSimParameter().WithName("P3").WithFormula(new ExplicitFormula("1+2"));
@@ -77,8 +75,7 @@ namespace PKSim.Core
          A.CallTo(() => _population.AllAdvancedParameters(_entityPathResolver)).Returns(_allAdvancedParameters);
 
          A.CallTo(() => _population.NumberOfItems).Returns(3);
-         A.CallTo(() => _population.AllGenders).Returns(new[] {_male, _male, _male});
-         A.CallTo(() => _population.AllRaces).Returns(new[] {_american, _american, _american});
+         A.CallTo(_population).WithReturnType<IReadOnlyList<Gender>>().Returns(new[] {_male, _male, _male});
       }
 
       protected bool ResultsHasParameter(string columnName)

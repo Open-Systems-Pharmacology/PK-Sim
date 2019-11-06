@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Services;
@@ -100,7 +101,7 @@ namespace PKSim.Core.Model
 
       private void createAdvancedParametersFor(ImportPopulation importPopulation)
       {
-         foreach (var parameterPath in importPopulation.IndividualPropertiesCache.AllParameterPaths())
+         foreach (var parameterPath in importPopulation.IndividualValuesCache.AllParameterPaths())
          {
             if (_allCreateIndividualParameters.Contains(parameterPath))
                continue;
@@ -112,9 +113,9 @@ namespace PKSim.Core.Model
          }
       }
 
-      private void mergeImportedIndividualsInPopulation(ImportPopulation importPopulation, IndividualPropertiesCache individualValues)
+      private void mergeImportedIndividualsInPopulation(ImportPopulation importPopulation, IndividualValuesCache individualValues)
       {
-         importPopulation.IndividualPropertiesCache.Merge(individualValues, _allParameters);
+         importPopulation.IndividualValuesCache.Merge(individualValues, _allParameters);
       }
 
       private Task<ImportResult> importFiles(string file, CancellationToken cancellationToken)
@@ -138,7 +139,7 @@ namespace PKSim.Core.Model
          return _allParameters.Contains(parameterPath);
       }
 
-      private void validate(IndividualPropertiesCache individualValues, IImportLogger logger)
+      private void validate(IndividualValuesCache individualValues, IImportLogger logger)
       {
          foreach (var parameterPath in individualValues.AllParameterPaths().ToList())
          {
@@ -152,7 +153,7 @@ namespace PKSim.Core.Model
 
       private class ImportResult
       {
-         public IndividualPropertiesCache IndividualValues { get; set; }
+         public IndividualValuesCache IndividualValues { get; set; }
          public PopulationFile PopulationFile { get; set; }
       }
 

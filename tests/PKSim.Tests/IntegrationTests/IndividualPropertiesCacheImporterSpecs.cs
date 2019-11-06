@@ -6,41 +6,36 @@ using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Infrastructure.Services;
+using PKSim.Infrastructure;
 
-namespace PKSim.Infrastructure
+namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_IndividualPropertiesCacheImporter : ContextSpecification<IIndividualPropertiesCacheImporter>
+   public abstract class concern_for_IndividualPropertiesCacheImporter : ContextForIntegration<IIndividualPropertiesCacheImporter>
    {
-      private IGenderRepository _genderRepository;
       protected IImportLogger _logger;
-      private IPopulationRepository _populationRepository;
-      protected Gender _male = new Gender();
-      protected Gender _female = new Gender();
-      protected SpeciesPopulation _population = new SpeciesPopulation();
       protected PathCache<IParameter> _allParameters;
 
-      protected override void Context()
+      public override void GlobalContext()
       {
-         _genderRepository = A.Fake<IGenderRepository>();
-         A.CallTo(() => _genderRepository.FindByIndex(1)).Returns(_male);
-         A.CallTo(() => _genderRepository.FindByIndex(2)).Returns(_female);
-         _populationRepository = A.Fake<IPopulationRepository>();
-         A.CallTo(() => _populationRepository.FindByIndex(0)).Returns(_population);
+         base.GlobalContext();
          _logger = A.Fake<IImportLogger>();
-         sut = new IndividualPropertiesCacheImporter(_genderRepository, _populationRepository);
-         _allParameters = A.Fake<PathCache<IParameter>>();
+         var individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         var containerTask = IoC.Resolve<IContainerTask>();
+         _allParameters = containerTask.CacheAllChildren<IParameter>(individual);
       }
+
    }
 
    public class When_importing_a_population_from_a_file_that_was_saved_in_the_old_format_that_is_not_supported : concern_for_IndividualPropertiesCacheImporter
    {
-      private IndividualPropertiesCache _results;
+      private IndividualValuesCache _results;
 
       protected override void Because()
       {
@@ -55,7 +50,7 @@ namespace PKSim.Infrastructure
    }
 
    public class When_importing_a_population_from_a_file_that_has_the_expected_format_different_delimiters : concern_for_IndividualPropertiesCacheImporter
-   {
+   {  
       [TestCase("tab")]
       public void should_have_imported_the_individuals(string delimiter)
       {
@@ -66,7 +61,7 @@ namespace PKSim.Infrastructure
 
    public class When_importing_a_population_from_a_file_that_is_using_the_old_format_with_semi_colon : concern_for_IndividualPropertiesCacheImporter
    {
-      private IndividualPropertiesCache _results;
+      private IndividualValuesCache _results;
 
       protected override void Because()
       {
@@ -82,7 +77,7 @@ namespace PKSim.Infrastructure
 
    public class When_importing_a_population_from_a_file_that_is_corrupted : concern_for_IndividualPropertiesCacheImporter
    {
-      private IndividualPropertiesCache _results;
+      private IndividualValuesCache _results;
 
       protected override void Because()
       {
@@ -102,9 +97,9 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_importing_a_population_from_a_file_that_is_using_the_new_format_with_comment : concern_for_IndividualPropertiesCacheImporter
+   public class When_importing_a_population_from_a_file_that_is_using_the_new_format_with_comment_but_with_old_entries_for_gender_and_race : concern_for_IndividualPropertiesCacheImporter
    {
-      private IndividualPropertiesCache _results;
+      private IndividualValuesCache _results;
 
       protected override void Because()
       {
@@ -120,22 +115,30 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_imported_the_covariates()
       {
-         var genotypeCovariate = _results.AllCovariates.Select(x => x.Covariate("Genotype")).ToList();
+         var genotypeCovariate = _results.AllCovariateValuesFor("Genotype");
          genotypeCovariate.Count.ShouldBeEqualTo(50);
          genotypeCovariate.Distinct().ShouldOnlyContain("A", "B", "C");
       }
+
+      [Observation]
+      public void should_have_converted_the_old_gender_and_race_to_use_the_display_name()
+      {
+         var genderCovariates = _results.AllCovariateValuesFor(Constants.Population.GENDER);
+         genderCovariates.Count.ShouldBeEqualTo(50);
+         genderCovariates.Distinct().ShouldOnlyContain("Male", "Female");
+         var raceCovariate = _results.AllCovariateValuesFor(Constants.Population.RACE);
+         raceCovariate.Count.ShouldBeEqualTo(50);
+         raceCovariate.Distinct().ShouldOnlyContain("European (ICRP, 2002)");
+
+      }
    }
+
+
 
    public class When_importing_a_file_containing_path_with_units : concern_for_IndividualPropertiesCacheImporter
    {
-      private IndividualPropertiesCache _results;
+      private IndividualValuesCache _results;
 
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _allParameters.Contains("Organism|VenousBlood|Volume [l]")).Returns(false);
-         A.CallTo(() => _allParameters.Contains("Organism|VenousBlood|Volume")).Returns(true);
-      }
 
       protected override void Because()
       {
@@ -160,7 +163,7 @@ namespace PKSim.Infrastructure
 
    public class When_importing_a_population_from_a_file_that_contains_junk : concern_for_IndividualPropertiesCacheImporter
    {
-      private IndividualPropertiesCache _results;
+      private IndividualValuesCache _results;
 
       protected override void Because()
       {
@@ -182,7 +185,7 @@ namespace PKSim.Infrastructure
 
    public class When_importing_a_file_that_is_already_open : concern_for_IndividualPropertiesCacheImporter
    {
-      private IndividualPropertiesCache _results;
+      private IndividualValuesCache _results;
       private string _fileName;
       private FileStream _fileStream;
 

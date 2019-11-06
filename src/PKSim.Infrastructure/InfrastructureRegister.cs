@@ -8,6 +8,7 @@ using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure.Container.Castle;
 using OSPSuite.Infrastructure.Export;
+using OSPSuite.Infrastructure.Import;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Infrastructure.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
@@ -228,6 +229,7 @@ namespace PKSim.Infrastructure
          container.AddRegister(x => x.FromType<InfrastructureSerializationRegister>());
          container.AddRegister(x => x.FromType<InfrastructureReportingRegister>());
          container.AddRegister(x => x.FromType<InfrastructureExportRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureImportRegister>());
 
          //register factory also as IObjectBaseFactoryIBuildTrackerFactory
          var factory = container.Resolve<IPKSimObjectBaseFactory>() as IObjectBaseFactory;

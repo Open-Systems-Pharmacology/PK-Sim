@@ -9,7 +9,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Add and advanced parameter to the container. When the parameter <paramref name="generateRandomValues" /> is set to
       ///    true (default),
-      ///    random values are also generated for the advanced paraneters
+      ///    random values are also generated for the advanced parameters
       /// </summary>
       void AddAdvancedParameter(AdvancedParameter advancedParameter, bool generateRandomValues = true);
 

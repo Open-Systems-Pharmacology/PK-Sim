@@ -1,11 +1,11 @@
 ﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Infrastructure.Import.Services;
-using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
    public interface IIndividualPropertiesCacheImporter
    {
-      IndividualPropertiesCache ImportFrom(string fileFullPath, PathCache<IParameter> allParameters, IImportLogger logger);
+      IndividualValuesCache ImportFrom(string fileFullPath, PathCache<IParameter> allParameters, IImportLogger logger);
    }
 }
