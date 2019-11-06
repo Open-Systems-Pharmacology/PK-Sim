@@ -2,43 +2,42 @@ configuration: Debug
 image: Visual Studio 2019
 
 # hack until donet patching works with PR
-init: 
+init:
   - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set build_number=1) ELSE (Set build_number=%APPVEYOR_BUILD_NUMBER%)
 
 environment:
-  app_version: '9.0'
+  app_version: "9.0"
 
-version: '$(app_version).{build}'
+version: "$(app_version).{build}"
 
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  assembly_version: '$(app_version).$(build_number)'
-  file_version: '$(app_version).$(build_number)'
-  informational_version: '$(app_version).$(build_number)'
+  assembly_version: "$(app_version).$(build_number)"
+  file_version: "$(app_version).$(build_number)"
+  informational_version: "$(app_version).$(build_number)"
 
 clone_depth: 1
 
 install:
-- set PATH=C:\Ruby25\bin;%PATH%
-- git submodule update --init --recursive
-- gem install xml-simple
-- ps: >-
-    (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi', 'C:\msxml.msi')
+  - set PATH=C:\Ruby25\bin;%PATH%
+  - git submodule update --init --recursive
+  - gem install xml-simple
+  - ps: >-
+      (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi', 'C:\msxml.msi')
 
-    Start-Process msiexec.exe -ArgumentList /i, C:\msxml.msi, /quiet, /qn, /norestart -Wait    
-- ps: >-
-    (new-object net.webclient).DownloadFile('https://ci.appveyor.com/api/projects/Open-Systems-Pharmacology-ci/smartxls/artifacts/OSPSuite.SmartXLS.2.6.4.1.nupkg', 'C:\smartxls.zip')
-
+      Start-Process msiexec.exe -ArgumentList /i, C:\msxml.msi, /quiet, /qn, /norestart -Wait
+  - ps: >-
+      (new-object net.webclient).DownloadFile('https://ci.appveyor.com/api/projects/Open-Systems-Pharmacology-ci/smartxls/artifacts/OSPSuite.SmartXLS.2.6.4.1.nupkg', 'C:\smartxls.zip')
 
 before_build:
-  - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
-  - nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility 
+  - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper
+  - nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility
   - nuget sources add -name serializer -source https://ci.appveyor.com/nuget/ospsuite-serializer
-  - nuget sources add -name texreporting -source https://ci.appveyor.com/nuget/ospsuite-texreporting  
-  - nuget sources add -name databinding -source https://ci.appveyor.com/nuget/ospsuite-databinding 
-  - nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress 
-  - nuget sources add -name funcparser -source https://ci.appveyor.com/nuget/ospsuite-funcparser 
+  - nuget sources add -name texreporting -source https://ci.appveyor.com/nuget/ospsuite-texreporting
+  - nuget sources add -name databinding -source https://ci.appveyor.com/nuget/ospsuite-databinding
+  - nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress
+  - nuget sources add -name funcparser -source https://ci.appveyor.com/nuget/ospsuite-funcparser
   - nuget sources add -name simmodel -source https://ci.appveyor.com/nuget/ospsuite-simmodel
   - nuget sources add -name cvodes -source https://ci.appveyor.com/nuget/ospsuite-simmodel-solver-cvodes
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
@@ -56,10 +55,10 @@ build:
 
 notifications:
   - provider: Slack
-    incoming_webhook:      
+    incoming_webhook:
       secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyFEAs8X080yIO8g1FLt3tNfBN4OpeBnkgrXzf7AqNKV5561x7Coux3ByGrHmsL1sCo=
 
-on_finish: 
+on_finish:
   - ps: Get-ChildItem setup.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
   - ps: Get-ChildItem .\setup\*.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
