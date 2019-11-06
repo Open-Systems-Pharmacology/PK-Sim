@@ -1,8 +1,8 @@
-﻿using PKSim.Assets;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Views;
-using OSPSuite.Core.Services;
+﻿using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Assets;
+using PKSim.Core.Services;
+using PKSim.Presentation.Views;
 
 namespace PKSim.Presentation.Presenters
 {

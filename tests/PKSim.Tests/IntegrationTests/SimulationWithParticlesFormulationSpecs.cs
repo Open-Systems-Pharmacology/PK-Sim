@@ -83,7 +83,7 @@ namespace PKSim.IntegrationTests
          var simulationPersistableUpdater = IoC.Resolve<ISimulationPersistableUpdater>();
          simulationPersistableUpdater.UpdatePersistableFromSettings(individualSimulation);
 
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          return simulationEngine.RunAsync(individualSimulation, _simulationRunOptions);
       }
 
@@ -183,7 +183,7 @@ namespace PKSim.IntegrationTests
 
       private float[] valuesFor(string outputQuantityPath) => ValuesFor(_simulation, outputQuantityPath);
 
-      protected float[] ValuesFor(IndividualSimulation sim, string outputQuantityPath) => sim.Results.AllValuesFor(outputQuantityPath)[0].Values;
+      protected float[] ValuesFor(IndividualSimulation sim, string outputQuantityPath) => sim.Results.AllQuantityValuesFor(outputQuantityPath)[0].Values;
 
       private void addOutputs(string[] lumenPaths, string[] binSolidDrugPaths, string[] binInsolubleDrugPaths, 
                               string[][] binSolidDrugPerSegmentPaths, string[][] binParticlesFractionPerSegmentPaths)

@@ -4,6 +4,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace PKSim.Core
 {

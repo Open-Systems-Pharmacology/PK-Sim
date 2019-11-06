@@ -1,15 +1,13 @@
 ﻿using DevExpress.Utils;
 using FakeItEasy;
 using NUnit.Framework;
-using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.UI.Binders;
-using PKSim.UI.Views.PopulationAnalyses;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Core.Chart;
-
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
+using PKSim.UI.Views.PopulationAnalyses;
 
 namespace PKSim.UI.Tests
 {

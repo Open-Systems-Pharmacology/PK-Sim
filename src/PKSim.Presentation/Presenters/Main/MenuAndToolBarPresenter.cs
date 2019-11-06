@@ -16,12 +16,12 @@ using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Presenters.Events;
 using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters.Main

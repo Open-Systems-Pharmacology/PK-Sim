@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 
@@ -44,11 +45,12 @@ namespace PKSim.Core.Services
          switch (simulation)
          {
             case IndividualSimulation individualSimulation:
-               return runSimulation(individualSimulation, _simulationPersistableUpdater.UpdatePersistableFromSettings);
+               return runSimulation<IndividualSimulation, SimulationRunResults>(individualSimulation, _simulationPersistableUpdater.UpdatePersistableFromSettings);
 
             case PopulationSimulation populationSimulation:
-               return runSimulation(populationSimulation, _simulationPersistableUpdater.UpdatePersistableFromSettings);
+               return runSimulation<PopulationSimulation, PopulationRunResults>(populationSimulation, _simulationPersistableUpdater.UpdatePersistableFromSettings);
          }
+
          return _simulationDidNotRun;
       }
 
@@ -59,9 +61,9 @@ namespace PKSim.Core.Services
          _simulationEngine = null;
       }
 
-      private async Task runSimulation<TSimulation>(TSimulation simulation, Action<TSimulation> updatePersistableFromSettings) where TSimulation : Simulation
+      private async Task runSimulation<TSimulation, TResult>(TSimulation simulation, Action<TSimulation> updatePersistableFromSettings) where TSimulation : Simulation
       {
-         var simulationEngine = _simulationEngineFactory.Create<TSimulation>();
+         var simulationEngine = _simulationEngineFactory.Create<TSimulation, TResult>();
          _simulationEngine = simulationEngine;
 
          if (_simulationRunOptions.RunForAllOutputs)

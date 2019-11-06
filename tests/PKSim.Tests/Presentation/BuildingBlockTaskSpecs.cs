@@ -373,40 +373,12 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_retun_the_building_block_of_the_type_defined_in_the_repository()
+      public void should_return_the_building_block_of_the_type_defined_in_the_repository()
       {
          _results.ShouldOnlyContain(_ind1, _ind2);
       }
    }
-
-   public class When_loading_the_results_of_a_simulation : concern_for_BuildingBlockTask
-   {
-      private Simulation _simulationToLoad;
-
-      protected override void Context()
-      {
-         base.Context();
-         _simulationToLoad = A.Fake<Simulation>();
-      }
-
-      protected override void Because()
-      {
-         sut.LoadResults(_simulationToLoad);
-      }
-
-      [Observation]
-      public void should_load_the_simulation_first()
-      {
-         A.CallTo(() => _executionContext.Load(_simulationToLoad)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_load_the_results()
-      {
-         A.CallTo(() => _lazyLoadTask.LoadResults(_simulationToLoad)).MustHaveHappened();
-      }
-   }
-
+   
    public class When_loading_a_template_for_a_given_building_block_type : concern_for_BuildingBlockTask
    {
       private ITemplatePresenter _templatePresenter;

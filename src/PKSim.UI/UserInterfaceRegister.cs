@@ -47,6 +47,9 @@ namespace PKSim.UI
          container.Register(typeof(ISimulationCompoundProcessView<,>), typeof(SimulationCompoundProcessView<,>));
 
          container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
+
+
+         container.AddRegister(x=>x.FromType<OSPSuite.UI.UIImporterRegister>());
       }
    }
 }

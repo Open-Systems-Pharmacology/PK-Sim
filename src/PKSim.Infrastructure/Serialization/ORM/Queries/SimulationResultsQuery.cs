@@ -1,15 +1,14 @@
 ﻿using System.Linq;
-using OSPSuite.Utility.Extensions;
 using NHibernate;
 using NHibernate.Linq;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Infrastructure.Services;
+using OSPSuite.Infrastructure.Serialization.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Queries
 {
    public interface ISimulationResultsQuery : IQuery<SimulationResults, string>
    {
-
    }
 
    public class SimulationResultsQuery : ISimulationResultsQuery
@@ -28,23 +27,22 @@ namespace PKSim.Infrastructure.Serialization.ORM.Queries
          //avoid cartesian product 
          //load only simulation results
          var sim = session.Query<SimulationResults>().Where(x => x.Id == simulationResultId);
-         
+
          //specify that we will load the collection in the future
          sim.FetchMany(x => x.AllIndividualResults).ToFuture();
 
          //loads all the values into another future query
          var s = session.Query<IndividualResults>()
             .Where(x => x.SimulationResults.Id == simulationResultId)
-            .FetchMany(x=>x.AllValues)
+            .FetchMany(x => x.AllValues)
             .ToFuture();
 
          //actually performes the query
-         var simResults =  sim.ToFuture().Single();
+         var simResults = sim.ToFuture().Single();
          simResults.AllIndividualResults.Each(x => x.UpdateQuantityTimeReference());
          return simResults;
       }
 
-      
       public SimulationResults ResultFor(string simulationId)
       {
          if (!_sessionManager.IsOpen)

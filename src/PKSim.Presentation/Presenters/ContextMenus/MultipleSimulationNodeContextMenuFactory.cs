@@ -38,7 +38,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<NamedBuildingBlock<Simulation>> simulations, IExecutionContext executionContext)
       {
-         yield return CompareBuidlingBlocks(simulations, executionContext);
+         yield return CompareBuildingBlocks(simulations, executionContext);
 
          yield return AddToJournal(simulations);
 

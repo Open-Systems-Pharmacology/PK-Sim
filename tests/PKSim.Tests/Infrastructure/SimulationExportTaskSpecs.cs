@@ -17,16 +17,16 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
-
+using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Infrastructure
 {
    public abstract class concern_for_SimulationExportTask : ContextSpecification<ISimulationExportTask>
    {
       private IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
-      protected IBuildingBlockTask _buildingBlockTask;
+      protected ILazyLoadTask _lazyLoadTask;
       protected IDialogCreator _dialogCreator;
-      protected IDataRepositoryTask _dataRepositoryTask;
+      protected IDataRepositoryExportTask _dataRepositoryTask;
       private IStringSerializer _stringSerializer;
       private IModelReportCreator _modelReportCreator;
       private ISimulationToModelCoreSimulationMapper _simulationMapper;
@@ -36,15 +36,15 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          _quantityDisplayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
-         _buildingBlockTask = A.Fake<IBuildingBlockTask>();
+         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _stringSerializer = A.Fake<IStringSerializer>();
          _modelReportCreator = A.Fake<IModelReportCreator>();
          _simulationMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
          _simModelExporter = A.Fake<ISimModelExporter>();
          _simulationResultsToDataTableConverter = A.Fake<ISimulationResultsToDataTableConverter>();
-         sut = new SimulationExportTask(_buildingBlockTask, _dialogCreator, _dataRepositoryTask, _quantityDisplayPathMapper,
+         sut = new SimulationExportTask(_lazyLoadTask, _dialogCreator, _dataRepositoryTask, _quantityDisplayPathMapper,
             _stringSerializer, _modelReportCreator, _simulationMapper, _simModelExporter, _simulationResultsToDataTableConverter);
       }
    }
@@ -132,14 +132,14 @@ namespace PKSim.Infrastructure
       public async Task should_load_the_results()
       {
          await sut.ExportResultsToCSVAsync(_simulation);
-         A.CallTo(() => _buildingBlockTask.LoadResults(_simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.LoadResults(_simulation)).MustHaveHappened();
       }
 
       [Observation]
       public async Task should_export_the_file_to_csv()
       {
          await sut.ExportResultsToCSVAsync(_simulation);
-         A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTable(_simulation)).MustHaveHappened();
+         A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTableAsync(_simulation.Results, _simulation)).MustHaveHappened();
       }
    }
 
@@ -188,14 +188,14 @@ namespace PKSim.Infrastructure
       public async Task should_load_the_results()
       {
          await sut.ExportResultsToCSVAsync(_simulation);
-         A.CallTo(() => _buildingBlockTask.LoadResults(_simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.LoadResults(_simulation)).MustHaveHappened();
       }
 
       [Observation]
       public async Task should_not_export_the_file_to_csv()
       {
          await sut.ExportResultsToCSVAsync(_simulation);
-         A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTable(_simulation)).MustNotHaveHappened();
+         A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTableAsync(_simulation.Results, _simulation)).MustNotHaveHappened();
       }
    }
 
@@ -243,21 +243,21 @@ namespace PKSim.Infrastructure
          _fileFullPath = "file full path";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileFullPath);
 
-         A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTable(_populationSimulation)).Returns(Task.FromResult(_dataTable));
+         A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(_populationSimulation.PKAnalyses, _populationSimulation)).Returns(Task.FromResult(_dataTable));
       }
 
       [Observation]
       public async Task should_load_the_simulation()
       {
          await sut.ExportPKAnalysesToCSVAsync(_populationSimulation);
-         A.CallTo(() => _buildingBlockTask.Load(_populationSimulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load(_populationSimulation)).MustHaveHappened();
       }
 
       [Observation]
       public async Task should_export_the_pk_analysis_to_csv()
       {
          await sut.ExportPKAnalysesToCSVAsync(_populationSimulation);
-         A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTable(_populationSimulation)).MustHaveHappened();
+         A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(_populationSimulation.PKAnalyses, _populationSimulation)).MustHaveHappened();
       }
    }
 }

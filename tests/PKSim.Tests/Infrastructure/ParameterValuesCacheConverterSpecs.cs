@@ -13,6 +13,7 @@ using PKSim.Infrastructure.Serialization.Xml;
 
 using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
@@ -49,8 +50,8 @@ namespace PKSim.Infrastructure
          var cache = new PathCache<IParameter>(_entityPathResolver);
          cache.Add("PATH1", DomainHelperForSpecs.ConstantParameterWithValue(4).WithName("PARA1"));
          cache.Add("PATH2", DomainHelperForSpecs.ConstantParameterWithValue(5).WithName("PARA2"));
-         pop.IndividualPropertiesCache.ParameterValuesCache.Add(new[] {new ParameterValue("PATH1", 1, 0.1), new ParameterValue("PATH2", 2, 0.2)});
-         pop.IndividualPropertiesCache.ParameterValuesCache.Add(new[] {new ParameterValue("PATH1", 11, 0.11), new ParameterValue("PATH2", 11, 0.22)});
+         pop.IndividualValuesCache.ParameterValuesCache.Add(new[] {new ParameterValue("PATH1", 1, 0.1), new ParameterValue("PATH2", 2, 0.2)});
+         pop.IndividualValuesCache.ParameterValuesCache.Add(new[] {new ParameterValue("PATH1", 11, 0.11), new ParameterValue("PATH2", 11, 0.22)});
          pop.Settings.BaseIndividual = DomainHelperForSpecs.CreateIndividual();
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(pop.Settings.BaseIndividual)).Returns(cache);
 
@@ -108,7 +109,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_set_all_the_percentile_to_the_defualt_percentile_value()
       {
-         _population.IndividualPropertiesCache.PercentilesFor("PATH1").ShouldOnlyContain(CoreConstants.DEFAULT_PERCENTILE, CoreConstants.DEFAULT_PERCENTILE);
+         _population.IndividualValuesCache.PercentilesFor("PATH1").ShouldOnlyContain(CoreConstants.DEFAULT_PERCENTILE, CoreConstants.DEFAULT_PERCENTILE);
       }
    }
 

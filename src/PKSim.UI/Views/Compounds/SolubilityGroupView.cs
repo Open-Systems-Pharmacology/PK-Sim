@@ -10,6 +10,7 @@ using DevExpress.XtraGrid.Views.Grid;
 using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Extensions;

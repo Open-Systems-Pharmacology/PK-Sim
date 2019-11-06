@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,6 @@ using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
-using System;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.IntegrationTests
@@ -87,7 +87,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -119,7 +119,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
          simSettingsRetriever.CreatePKSimDefaults(_simulation);
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
@@ -163,7 +163,7 @@ namespace PKSim.IntegrationTests
          {
             //currently simulations with pregnant pop cannot be created
             if (pop.Name.Equals(CoreConstants.Population.PREGNANT))
-               continue; 
+               continue;
 
             await runPopulationSimulationFor(pop.Name, errors);
          }
@@ -179,13 +179,16 @@ namespace PKSim.IntegrationTests
             var population = DomainFactoryForSpecs.CreateDefaultPopulation(individual);
             var simulation = DomainFactoryForSpecs.CreateSimulationWith(population, _compound, _protocol) as PopulationSimulation;
 
-            var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
+            var simulationEngine = IoC.Resolve<IPopulationSimulationEngine>();
             var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
             simSettingsRetriever.CreatePKSimDefaults(simulation);
-            await simulationEngine.RunAsync(simulation,_simulationRunOptions);
-            simulation.HasResults.ShouldBeTrue();
+            var result = await simulationEngine.RunAsync(simulation, _simulationRunOptions);
+            if (result.Errors.Any())
+            {
+               errors.Add($"Population simulation for the population '{populationName}' failed: {result.Errors.Select(x => x.ErrorMessage).ToString("\n")}");
+            }
          }
-         catch(Exception ex)
+         catch (Exception ex)
          {
             var errorMsg = $"Population simulation for the population '{populationName}' failed: {ex.ToString()}";
             errors.Add(errorMsg);
@@ -208,7 +211,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<PopulationSimulation>>();
+         var simulationEngine = IoC.Resolve<IPopulationSimulationEngine>();
          var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
          simSettingsRetriever.CreatePKSimDefaults(_simulation);
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
@@ -265,7 +268,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -374,7 +377,7 @@ namespace PKSim.IntegrationTests
          solubilityTableFormula.AddPoint(5, 50);
          solubilityTableFormula.AddPoint(12, 100);
 
-         solubilityTable.Formula= solubilityTableFormula;
+         solubilityTable.Formula = solubilityTableFormula;
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
       }
 
@@ -387,7 +390,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -413,7 +416,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -439,7 +442,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -474,7 +477,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_create_required_molecules_in_subcompartments_of_tissue_organ()
+      public void should_create_required_molecules_in_sub_compartments_of_tissue_organ()
       {
          string comp1FcRnComplexName = CoreConstants.Molecule.DrugFcRnComplexName(_compound1Name);
          string comp2FcRnComplexName = CoreConstants.Molecule.DrugFcRnComplexName(_compound2Name);
@@ -662,7 +665,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }

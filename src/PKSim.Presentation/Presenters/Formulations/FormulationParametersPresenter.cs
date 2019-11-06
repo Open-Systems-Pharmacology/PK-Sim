@@ -25,8 +25,8 @@ namespace PKSim.Presentation.Presenters.Formulations
       {
          base.Edit(parameters);
          _view.ParameterNameVisible = true;
-         _view.SetVisibility(PathElement.Container, visible: true);
-         _view.GroupBy(PathElement.Container);
+         _view.SetVisibility(PathElementId.Container, visible: true);
+         _view.GroupBy(PathElementId.Container);
          _view.GroupingVisible = false;
       }
    }

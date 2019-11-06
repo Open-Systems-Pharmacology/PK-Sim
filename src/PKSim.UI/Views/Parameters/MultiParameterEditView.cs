@@ -27,8 +27,7 @@ using PKSim.Presentation.Views.Parameters;
 
 namespace PKSim.UI.Views.Parameters
 {
-   public partial class 
-      MultiParameterEditView : ParameterSetView, IMultiParameterEditView
+   public partial class MultiParameterEditView : ParameterSetView, IMultiParameterEditView
    {
       private readonly PathElementsBinder<ParameterDTO> _pathElementsBinder;
       private RepositoryItemTextEdit _repositoryForStandardParameter;
@@ -36,8 +35,8 @@ namespace PKSim.UI.Views.Parameters
 
       private IGridViewColumn _columnPercentile;
       private IMultiParameterEditPresenter _presenter;
-      private IList<PathElement> _groupingIndexList;
-      private IGridViewColumn _columCategory;
+      private IList<PathElementId> _groupingIndexList;
+      private IGridViewColumn _columnCategory;
       public event EventHandler<ViewResizedEventArgs> HeightChanged = delegate { };
 
       public bool UseAdvancedSortingMode { set; private get; }
@@ -95,7 +94,7 @@ namespace PKSim.UI.Views.Parameters
 
       protected void InitializeCategoryBinding()
       {
-         _columCategory = _gridViewBinder.Bind(param => param.Category)
+         _columnCategory = _gridViewBinder.Bind(param => param.Category)
             .WithCaption(PKSimConstants.UI.Category)
             .AsReadOnly();
       }
@@ -168,11 +167,11 @@ namespace PKSim.UI.Views.Parameters
       {
          set
          {
-            _pathElementsBinder.SetVisibility(PathElement.Name, visible: value);
+            _pathElementsBinder.SetVisibility(PathElementId.Name, visible: value);
             if (value)
-               _pathElementsBinder.ColumnAt(PathElement.Name).XtraColumn.VisibleIndex = 0;
+               _pathElementsBinder.ColumnAt(PathElementId.Name).XtraColumn.VisibleIndex = 0;
          }
-         get => _pathElementsBinder.ColumnAt(PathElement.Name).Visible;
+         get => _pathElementsBinder.ColumnAt(PathElementId.Name).Visible;
       }
 
       public bool DistributionVisible
@@ -183,26 +182,26 @@ namespace PKSim.UI.Views.Parameters
 
       public bool CategoryVisible
       {
-         get => _columCategory.Visible;
-         set => _columCategory.UpdateVisibility(value);
+         get => _columnCategory.Visible;
+         set => _columnCategory.UpdateVisibility(value);
       }
 
-      public void SetCaption(PathElement pathElement, string caption)
+      public void SetCaption(PathElementId pathElement, string caption)
       {
          _pathElementsBinder.SetCaption(pathElement, caption);
       }
 
-      public void SetVisibility(PathElement pathElement, bool visible)
+      public void SetVisibility(PathElementId pathElement, bool visible)
       {
          _pathElementsBinder.SetVisibility(pathElement, visible);
       }
 
       public void GroupByCategory()
       {
-         groupByColumn(_columCategory);
+         groupByColumn(_columnCategory);
       }
 
-      public void GroupBy(PathElement pathElement, int groupIndex = 0, bool useCustomSort = true)
+      public void GroupBy(PathElementId pathElement, int groupIndex = 0, bool useCustomSort = true)
       {
          groupByColumn(_pathElementsBinder.ColumnAt(pathElement), groupIndex, useCustomSort);
       }
@@ -222,7 +221,7 @@ namespace PKSim.UI.Views.Parameters
          gridView.ExpandAllGroups();
       }
 
-      private IList<PathElement> indexOfGroupByColumns()
+      private IList<PathElementId> indexOfGroupByColumns()
       {
          return _pathElementsBinder.ColumnCache.KeyValues
             .Where(columnKeyValue => isGroupBy(columnKeyValue.Value))
@@ -234,9 +233,9 @@ namespace PKSim.UI.Views.Parameters
          return gridViewColumn.XtraColumn.GroupIndex >= 0;
       }
 
-      public void FixParameterColumnWidth(int parameterWitdh)
+      public void FixParameterColumnWidth(int parameterWidth)
       {
-         _columnValue.WithFixedWidth(parameterWitdh);
+         _columnValue.WithFixedWidth(parameterWidth);
       }
 
       public IEnumerable<ParameterDTO> AllVisibleParameters => gridView.DataController.GetAllFilteredAndSortedRows().Cast<ParameterDTO>();

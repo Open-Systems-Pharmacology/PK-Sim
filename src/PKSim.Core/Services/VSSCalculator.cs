@@ -30,7 +30,7 @@ namespace PKSim.Core.Services
       ICache<Species, IParameter> VSSPhysChemFor(Compound compound);
 
       /// <summary>
-      ///    Returns a vss parameter with the given <see cref="value" />
+      ///    Returns a vss parameter with the given <paramref name="value"/>
       /// </summary>
       IParameter VSSParameterWithValue(double value);
    }

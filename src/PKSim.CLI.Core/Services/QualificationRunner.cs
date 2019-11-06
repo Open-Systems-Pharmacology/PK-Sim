@@ -32,7 +32,7 @@ namespace PKSim.CLI.Core.Services
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly ILogger _logger;
       private readonly IExportSimulationRunner _exportSimulationRunner;
-      private readonly IDataRepositoryTask _dataRepositoryTask;
+      private readonly IDataRepositoryExportTask _dataRepositoryExportTask;
       private readonly IMarkdownReporterTask _markdownReporterTask;
       private readonly Cache<string, Project> _snapshotProjectCache = new Cache<string, Project>();
 
@@ -41,7 +41,7 @@ namespace PKSim.CLI.Core.Services
          ICoreWorkspace workspace,
          IWorkspacePersistor workspacePersistor,
          IExportSimulationRunner exportSimulationRunner,
-         IDataRepositoryTask dataRepositoryTask,
+         IDataRepositoryExportTask dataRepositoryExportTask,
          IMarkdownReporterTask markdownReporterTask,
          ILogger logger
       )
@@ -52,7 +52,7 @@ namespace PKSim.CLI.Core.Services
          _workspacePersistor = workspacePersistor;
          _logger = logger;
          _exportSimulationRunner = exportSimulationRunner;
-         _dataRepositoryTask = dataRepositoryTask;
+         _dataRepositoryExportTask = dataRepositoryExportTask;
          _markdownReporterTask = markdownReporterTask;
       }
 
@@ -191,10 +191,10 @@ namespace PKSim.CLI.Core.Services
          var csvFullPath = Path.Combine(observedDataOutputFolder, $"{removeIllegalCharactersFrom}{Constants.Filter.CSV_EXTENSION}");
          var xlsFullPath = Path.Combine(observedDataOutputFolder, $"{removeIllegalCharactersFrom}{Constants.Filter.XLSX_EXTENSION}");
          _logger.AddDebug($"Observed data '{observedData.Name}' exported to '{csvFullPath}'", project.Name);
-         await _dataRepositoryTask.ExportToCsvAsync(observedData, csvFullPath);
+         await _dataRepositoryExportTask.ExportToCsvAsync(observedData, csvFullPath);
 
          _logger.AddDebug($"Observed data '{observedData.Name}' exported to '{xlsFullPath}'", project.Name);
-         await _dataRepositoryTask.ExportToExcelAsync(observedData, xlsFullPath, launchExcel: false);
+         await _dataRepositoryExportTask.ExportToExcelAsync(observedData, xlsFullPath, launchExcel: false);
 
          return new ObservedDataMapping
          {

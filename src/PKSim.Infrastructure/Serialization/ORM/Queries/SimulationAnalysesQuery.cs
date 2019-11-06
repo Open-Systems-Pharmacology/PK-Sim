@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using NHibernate.Linq;
+using OSPSuite.Infrastructure.Serialization.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
-using OSPSuite.Infrastructure.Services;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Queries
 {

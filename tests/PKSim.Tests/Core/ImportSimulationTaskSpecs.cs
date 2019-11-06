@@ -6,7 +6,9 @@ using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace PKSim.Core
 {
@@ -149,11 +151,11 @@ namespace PKSim.Core
       }
    }
 
-   public class Whhen_importing_a_population_simulation_from_a_valid_pkml_file_using_a_population_file: concern_for_ImportSimulationTask
+   public class When_importing_a_population_simulation_from_a_valid_pkml_file_using_a_population_file: concern_for_ImportSimulationTask
    {
       private PopulationSimulationImport _simulationImport;
       private PopulationSimulation _populationSimulation;
-      private IndividualPropertiesCache _individualPropertiesCache;
+      private IndividualValuesCache _individualPropertiesCache;
       private MoBiPopulation _mobiPopulation;
       private ParameterValuesCache _parameterValueCache;
       private readonly ParameterValues _value1 = new ParameterValues("Path1");
@@ -166,7 +168,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _individualPropertiesCache= A.Fake<IndividualPropertiesCache>();
+         _individualPropertiesCache= A.Fake<IndividualValuesCache>();
          _patchCache=new PathCacheForSpecs<IParameter>();
          var individualParameter = A.Fake<IParameter>();
          A.CallTo(() => individualParameter.IsChangedByCreateIndividual).Returns(true);
@@ -286,7 +288,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_created_some_random_values_for_each_distributed_parameters_defined_in_the_simulation()
       {
-         A.CallTo(() => _parameterValueCache.SetValues("P1",A<IEnumerable<RandomValue>>._)).MustHaveHappened();
+         A.CallTo(() => _parameterValueCache.SetValues("P1",A<IReadOnlyList<RandomValue>>._)).MustHaveHappened();
       }
    }
 }	

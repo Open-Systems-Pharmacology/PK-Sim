@@ -12,14 +12,14 @@ namespace PKSim.Presentation.UICommands
    {
       private readonly SimulationMapper _simulationMapper;
       private readonly IPKSimProjectRetriever _projectRetriever;
-      private readonly IBuildingBlockTask _buildingBlockTask;
+      private readonly ILazyLoadTask _lazyLoadTask;
       private readonly ISnapshotTask _snapshotTask;
 
-      public ExportSimulationSnapshotUICommand(SimulationMapper simulationMapper, IPKSimProjectRetriever projectRetriever, IBuildingBlockTask buildingBlockTask, ISnapshotTask snapshotTask)
+      public ExportSimulationSnapshotUICommand(SimulationMapper simulationMapper, IPKSimProjectRetriever projectRetriever, ILazyLoadTask lazyLoadTask, ISnapshotTask snapshotTask)
       {
          _simulationMapper = simulationMapper;
          _projectRetriever = projectRetriever;
-         _buildingBlockTask = buildingBlockTask;
+         _lazyLoadTask = lazyLoadTask;
          _snapshotTask = snapshotTask;
       }
 
@@ -30,7 +30,7 @@ namespace PKSim.Presentation.UICommands
 
       private async Task exportSimulationToSnapshot()
       {
-         _buildingBlockTask.LoadResults(Subject);
+         _lazyLoadTask.LoadResults(Subject);
 
          var snapshotObject = await _simulationMapper.MapToSnapshot(Subject, _projectRetriever.Current);
 

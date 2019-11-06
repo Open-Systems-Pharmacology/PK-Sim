@@ -1,11 +1,11 @@
 ﻿using System.Text;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using NHibernate;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Infrastructure.Serialization.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
-using OSPSuite.Infrastructure.Services;
 
 namespace PKSim.Infrastructure
 {
@@ -32,8 +32,8 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _sessionManager.OpenSession()).Returns(_session);
 
          _simulation = new SimulationMetaData {Id = "tralala", Name = " toto"};
-         _simulation.AddChart(new SimulationChartMetaData {Id="Chart1",Name="Chart1", Content = {Data = Encoding.UTF8.GetBytes("chart1")}});
-         _simulation.AddChart(new SimulationChartMetaData { Id = "Chart2", Name = "Chart2", Content = { Data = Encoding.UTF8.GetBytes("chart2") } });
+         _simulation.AddChart(new SimulationChartMetaData {Id = "Chart1", Name = "Chart1", Content = {Data = Encoding.UTF8.GetBytes("chart1")}});
+         _simulation.AddChart(new SimulationChartMetaData {Id = "Chart2", Name = "Chart2", Content = {Data = Encoding.UTF8.GetBytes("chart2")}});
 
          using (var session = _sessionFactory.OpenSession())
          using (var transaction = session.BeginTransaction())

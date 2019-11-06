@@ -55,7 +55,7 @@ namespace PKSim.Infrastructure.Services
 
       private void addObservedData(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
       {
-         var dataImporterSettings = new DataImporterSettings {Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", Icon = ApplicationIcons.ObservedData};
+         var dataImporterSettings = new DataImporterSettings {Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName};
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
          var metaDataCategories = defaultMetaDataCategories().ToList();
@@ -340,7 +340,7 @@ namespace PKSim.Infrastructure.Services
          metaDataCategory.ListOfValues.Add(info.DisplayName, info.DisplayName);
          var icon = ApplicationIcons.IconByName(info.IconName);
          if (icon != ApplicationIcons.EmptyIcon)
-            metaDataCategory.ListOfImages.Add(info.DisplayName, icon);
+            metaDataCategory.ListOfImages.Add(info.DisplayName, icon.IconName);
       }
    }
 }

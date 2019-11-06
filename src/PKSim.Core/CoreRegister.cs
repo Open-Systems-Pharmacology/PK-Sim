@@ -37,6 +37,8 @@ namespace PKSim.Core
             scan.ExcludeType<DistributionFormulaFactory>();
             scan.ExcludeType<ApplicationSettings>();
             scan.ExcludeType<ProjectChangedNotifier>();
+            scan.ExcludeType<IndividualSimulationEngine>();
+            scan.ExcludeType<IPopulationSimulationEngine>();
             
             //Do not register the InteractiveSimulationRunner as it should be registered only if needed
             scan.ExcludeType<InteractiveSimulationRunner>();
@@ -46,7 +48,7 @@ namespace PKSim.Core
             scan.WithConvention<PKSimRegistrationConvention>();
          });
 
-         //Register singletons explicitely
+         //Register singletons explicitly
          container.AddScanner(scan =>
          {
             scan.AssemblyContainingType<CoreRegister>();
@@ -64,6 +66,8 @@ namespace PKSim.Core
          container.Register<ICoreSimulationFactory, SimulationFactory>();
          container.Register<ISetParameterTask,  ParameterTask>(LifeStyle.Transient);
          container.Register<ITransferOptimizedParametersToSimulationsTask, TransferOptimizedParametersToSimulationsTask<IExecutionContext>>();
+         container.Register<IIndividualSimulationEngine, ISimulationEngine<IndividualSimulation, SimulationRunResults>, IndividualSimulationEngine>(LifeStyle.Transient);
+         container.Register<IPopulationSimulationEngine, ISimulationEngine<PopulationSimulation, PopulationRunResults>, PopulationSimulationEngine>(LifeStyle.Transient);
 
          //other singleton external to application
          container.Register<ICloneManager, Cloner>(LifeStyle.Singleton);
@@ -80,8 +84,6 @@ namespace PKSim.Core
          container.Register<IApplicationSettings, OSPSuite.Core.IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
 
          //Register opened types generics
-         container.Register(typeof(IRepository<>), typeof(ImplementationRepository<>));
-
          container.Register<IInterpolation, LinearInterpolation>();
          container.Register<IPivoter, Pivoter>();
 

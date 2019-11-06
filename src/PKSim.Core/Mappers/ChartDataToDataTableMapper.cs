@@ -140,15 +140,12 @@ namespace PKSim.Core.Mappers
 
       private IEnumerable<DataColumn> getEmptyColumns(DataTable table)
       {
-         return table.Columns.Cast<DataColumn>().ToArray().Where(column => table.AsEnumerable().All(row => row.IsNull(column)));
+         return table.Columns.Cast<DataColumn>().ToArray().Where(column => table.Rows.Cast<DataRow>().All(row => row.IsNull(column)));
       }
 
       private CurveData<TXValue, TYValue> firstCurveDefinedIn(ChartData<TXValue, TYValue> chartData)
       {
-         if (chartData == null)
-            return null;
-
-         return chartData.Panes.SelectMany(x => x.Curves).FirstOrDefault();
+         return chartData?.Panes.SelectMany(x => x.Curves).FirstOrDefault();
       }
 
       protected abstract void AddSpecificChartColumns(DataTable dataTable, CurveData<TXValue, TYValue> curveData, bool exportForPivot);

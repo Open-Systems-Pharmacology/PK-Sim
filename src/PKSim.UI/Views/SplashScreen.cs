@@ -5,6 +5,7 @@ using OSPSuite.Assets;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Views.Main;
 using OSPSuite.UI.Views;
+using PKSim.Assets.Images;
 
 namespace PKSim.UI.Views
 {

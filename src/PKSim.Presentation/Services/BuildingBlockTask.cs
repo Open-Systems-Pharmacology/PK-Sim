@@ -66,12 +66,6 @@ namespace PKSim.Presentation.Services
          _executionContext.AddToHistory(command);
       }
 
-      public void LoadResults<TBuildingBlock>(TBuildingBlock simulationToLoad) where TBuildingBlock : Simulation
-      {
-         Load(simulationToLoad);
-         _lazyLoadTask.LoadResults(simulationToLoad);
-      }
-
       public void Edit(IPKSimBuildingBlock buildingBlockToEdit)
       {
          if (buildingBlockToEdit == null) return;

@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
-using OSPSuite.Engine;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
@@ -36,7 +35,6 @@ namespace PKSim.Matlab
             container.RegisterImplementationOf(new SynchronizationContext());
             container.AddRegister(x => x.FromType<MatlabRegister>());
             container.AddRegister(x => x.FromType<CoreRegister>());
-            container.AddRegister(x => x.FromType<EngineRegister>());
             container.AddRegister(x => x.FromType<InfrastructureRegister>());
 
             //no computation required in matlab interface

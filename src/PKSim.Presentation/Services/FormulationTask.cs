@@ -71,7 +71,7 @@ namespace PKSim.Presentation.Services
          var dataImporterSettings = new DataImporterSettings
          {
             Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportFormulation}",
-            Icon = ApplicationIcons.Formulation
+            IconName = ApplicationIcons.Formulation.IconName
          };
 
          var importedFormula = _dataImporter.ImportDataSet(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings);

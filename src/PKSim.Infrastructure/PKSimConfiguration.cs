@@ -1,8 +1,8 @@
 using System;
 using Microsoft.Win32;
 using OSPSuite.Assets;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Infrastructure.Configuration;
 using OSPSuite.Utility;
 using PKSim.Core;
 
@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure
       public override int InternalVersion { get; } = ProjectVersions.Current;
       public override Origin Product { get; } = Origins.PKSim;
       public override string ProductNameWithTrademark { get; } = CoreConstants.PRODUCT_NAME_WITH_TRADEMARK;
-      public override ApplicationIcon Icon { get; } = ApplicationIcons.PKSim;
+      public override string IconName { get; } = ApplicationIcons.PKSim.IconName;
       public override string UserSettingsFileName { get; } = "UserSettings.xml";
       public override string ApplicationSettingsFileName { get; } = "ApplicationSettings.xml";
       public override string IssueTrackerUrl { get; } = CoreConstants.ISSUE_TRACKER_URL;

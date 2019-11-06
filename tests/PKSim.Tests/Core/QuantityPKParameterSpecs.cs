@@ -41,7 +41,7 @@ namespace PKSim.Core
       [Observation]
       public void should_be_able_to_retrieve_all_the_values()
       {
-         The.Action(() => sut.SetValue(indiviudalId: 2, pkValue: 0.2f)).ShouldThrowAn<Exception>();
+         The.Action(() => sut.SetValue(individualId: 2, pkValue: 0.2f)).ShouldThrowAn<Exception>();
       }
    }
 }

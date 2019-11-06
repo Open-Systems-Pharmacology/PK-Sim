@@ -1,12 +1,12 @@
-﻿using OSPSuite.DataBinding;
+﻿using DevExpress.XtraEditors.Controls;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using DevExpress.XtraEditors.Controls;
-using PKSim.Assets;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Presenters;
-using PKSim.Presentation.Views;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Views;
+using PKSim.Assets;
+using PKSim.Core.Services;
+using PKSim.Presentation.Presenters;
+using PKSim.Presentation.Views;
 
 namespace PKSim.UI.Views.Core
 {
@@ -56,9 +56,6 @@ namespace PKSim.UI.Views.Core
          _screenBinder.BindToSource(fileSelection);
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
    }
 }

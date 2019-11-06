@@ -12,6 +12,7 @@ using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;
@@ -59,7 +60,6 @@ namespace PKSim.Presentation
 
             //This objects were already registered in Bootstrap
             scan.ExcludeType<ApplicationController>();
-            scan.ExcludeType<PKSimProgressUpdater>();
             scan.ExcludeType<StartOptions>();
 
             scan.RegisterAs(LifeStyle.Transient);
@@ -138,6 +138,9 @@ namespace PKSim.Presentation
          container.Register<IPathToPathElementsMapper, PKSimPathToPathElementsMapper>();
          container.Register<IDataColumnToPathElementsMapper, PKSimDataColumnToPathElementsMapper>();
          container.Register<IQuantityPathToQuantityDisplayPathMapper, PKSimQuantityPathToQuantityDisplayPathMapper>();
+
+
+         container.AddRegister(x=>x.FromType<OSPSuite.Presentation.Importer.PresentationImporterRegister>());
       }
 
       private static void registerSingleStartPresenters(IContainer container)

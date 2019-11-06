@@ -1,5 +1,5 @@
 ﻿using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
-using OSPSuite.Infrastructure.Services;
+using OSPSuite.Infrastructure.Serialization.Services;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Queries
 {
@@ -23,6 +23,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Queries
                .SetString("id", objectId)
                .UniqueResult<MetaDataContent>();
          }
+
          return content;
       }
    }

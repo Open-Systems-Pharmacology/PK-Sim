@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Populations;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;

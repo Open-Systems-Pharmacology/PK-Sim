@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
-using FakeItEasy;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core;
+using PKSim.Core.Model;
 
 namespace PKSim.Infrastructure
 {
@@ -28,7 +27,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         _results = sut.ImportFrom(_fileName,_simulation, _importLogger).ToList();
+         _results = sut.ImportFrom(_fileName, _simulation, _importLogger).ToList();
       }
    }
 
@@ -56,10 +55,10 @@ namespace PKSim.Infrastructure
       public void should_have_imported_the_expected_number_of_values()
       {
          _results.Each(x =>
-            {
-               x.Time.Length.ShouldBeEqualTo(150);
-               x.AllValues.First().Length.ShouldBeEqualTo(150);
-            });
+         {
+            x.Time.Length.ShouldBeEqualTo(150);
+            x.AllValues.First().Length.ShouldBeEqualTo(150);
+         });
       }
    }
 
@@ -99,7 +98,7 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
-      public void should_have_a_valud_status()
+      public void should_have_a_valid_status()
       {
          _importLogger.Status.ShouldBeEqualTo(NotificationType.Info);
       }
@@ -136,6 +135,7 @@ namespace PKSim.Infrastructure
          _results.Count.ShouldBeGreaterThan(0);
       }
    }
+
    public class When_importing_a_valid_file_containing_some_units_in_header : concern_for_IndividualResultsImporter
    {
       protected override void Context()

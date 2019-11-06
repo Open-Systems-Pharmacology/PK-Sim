@@ -243,7 +243,7 @@ namespace PKSim.Presentation.Services
          var dataImporterSettings = new DataImporterSettings
          {
             Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportSolubilityTable}",
-            Icon = ApplicationIcons.Compound
+            IconName = ApplicationIcons.Compound.IconName
          };
 
          var importedFormula = _dataImporter.ImportDataSet(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings);

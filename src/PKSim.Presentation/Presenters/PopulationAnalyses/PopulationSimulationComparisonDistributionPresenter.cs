@@ -14,7 +14,8 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
    public class PopulationSimulationComparisonDistributionPresenter : AdvancedParameterDistributionPresenter, IPopulationSimulationComparisonDistributionPresenter
    {
-      public PopulationSimulationComparisonDistributionPresenter(IAdvancedParameterDistributionView view, IPopulationParameterGroupsPresenter parametersPresenter, IRepresentationInfoRepository representationInfoRepository, IEntityPathResolver entityPathResolver, IPopulationDistributionPresenter populationParameterDistributionPresenter, IProjectChangedNotifier projectChangedNotifier) : base(view, parametersPresenter, representationInfoRepository, entityPathResolver, populationParameterDistributionPresenter,projectChangedNotifier)
+      public PopulationSimulationComparisonDistributionPresenter(IAdvancedParameterDistributionView view, IPopulationParameterGroupsPresenter parametersPresenter, IRepresentationInfoRepository representationInfoRepository, IEntityPathResolver entityPathResolver, IPopulationDistributionPresenter populationParameterDistributionPresenter, IProjectChangedNotifier projectChangedNotifier, IGenderRepository genderRepository) : 
+         base(view, parametersPresenter, representationInfoRepository, entityPathResolver, populationParameterDistributionPresenter,projectChangedNotifier,genderRepository)
       {
       }
 

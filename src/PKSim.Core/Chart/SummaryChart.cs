@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using BTS.Utility.Collections;
-using BTS.Utility.Visitor;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Visitor;
 using PKSim.Core.Model;
-using SBSuite.Core.Chart;
-using SBSuite.Core.Domain;
-using SBSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Chart
 {
@@ -13,6 +13,10 @@ namespace PKSim.Core.Chart
       private readonly ICache<string, IndividualSimulation> _allSimulations;
       public bool IsLoaded { get; set; }
       public string Icon { get; set; }
+
+      public IReadOnlyCollection<IndividualSimulation> AllSimulations => _allSimulations;
+
+      public IReadOnlyCollection<Simulation> AllBaseSimulations => _allSimulations;
 
       public SummaryChart()
       {
@@ -26,11 +30,6 @@ namespace PKSim.Core.Chart
             return;
 
          _allSimulations.Add(simulation);
-      }
-
-      public IEnumerable<IndividualSimulation> AllSimulations()
-      {
-         return _allSimulations;
       }
 
       public bool HasSimulation(IndividualSimulation populationSimulation)
@@ -52,7 +51,7 @@ namespace PKSim.Core.Chart
          _allSimulations.Clear();
       }
 
-      public virtual void AcceptVisitor(IVisitor visitor)
+      public override void AcceptVisitor(IVisitor visitor)
       {
          visitor.Visit(this);
       }

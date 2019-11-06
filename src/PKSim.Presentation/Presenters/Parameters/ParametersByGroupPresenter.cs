@@ -6,7 +6,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Extensions;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Services;

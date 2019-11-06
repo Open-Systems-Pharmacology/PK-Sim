@@ -19,7 +19,7 @@ namespace PKSim.IntegrationTests
    public abstract class concern_for_Mucosa_Permeability_Scaling : ContextForIntegration<Simulation>
    {
       protected IList<CalculationMethod> _intestinalPermeabilityCalcMethods;
-      protected ISimulationEngine<IndividualSimulation> _simulationEngine;
+      protected IIndividualSimulationEngine _simulationEngine;
       protected const string _intestinalPermAlternativeName = "P1";
 
       protected Compound _compound;
@@ -44,7 +44,7 @@ namespace PKSim.IntegrationTests
 
          _intestinalPermeabilityCalcMethods = cmRepo.Where(cm => cm.Category.Equals(CoreConstants.Category.IntestinalPermeability)).ToList();
          _alternativeIntestinalPermParam = alternative.Parameter(CoreConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY);
-         _simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         _simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          _simulationRunOptions = new SimulationRunOptions();
       }
 

@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility;
 using NHibernate;
+using OSPSuite.Infrastructure.Serialization.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using PKSim.Infrastructure.Services;
 using OSPSuite.Infrastructure.Services;

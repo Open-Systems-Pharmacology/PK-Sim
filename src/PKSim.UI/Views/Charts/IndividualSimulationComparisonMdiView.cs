@@ -7,6 +7,7 @@ using PKSim.Assets;
 using PKSim.Presentation.Presenters.Charts;
 using PKSim.Presentation.Views.Charts;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Core;
 using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Charts
@@ -27,12 +28,12 @@ namespace PKSim.UI.Views.Charts
       {
          base.InitializeBinding();
          DragDrop += DragDropEventHandler;
-         DragOver += _individualSimulationComparisonMdiPresenter.OnDragOver;
+         DragOver += (o,e) => _individualSimulationComparisonMdiPresenter.OnDragOver(o, new DragEvent(e));
       }
 
       private void DragDropEventHandler(object sender, DragEventArgs e)
       {
-         _individualSimulationComparisonMdiPresenter.OnDragDrop(sender, e);
+         _individualSimulationComparisonMdiPresenter.OnDragDrop(sender, new DragEvent(e));
       }
 
       public override void InitializeResources()

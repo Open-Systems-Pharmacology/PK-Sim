@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Extensions;
@@ -21,6 +22,7 @@ namespace PKSim.Core
       private IRepresentationInfoRepository _representationInfoRep;
       protected IEntityPathResolver _entityPathResolver;
       private IBinIntervalsCreator _binIntervalCreator;
+      protected IGenderRepository _genderRepository;
 
       protected override void Context()
       {
@@ -29,12 +31,13 @@ namespace PKSim.Core
          _userSettings.NumberOfIndividualsPerBin = 100;
          _representationInfoRep = A.Fake<IRepresentationInfoRepository>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
+         _genderRepository= A.Fake<IGenderRepository>(); 
          _binIntervalCreator =new BinIntervalsCreator(_userSettings);
-         sut = new DistributionDataCreator(_binIntervalCreator, _representationInfoRep, _entityPathResolver, _userSettings);
+         sut = new DistributionDataCreator(_binIntervalCreator, _representationInfoRep, _entityPathResolver, _userSettings,_genderRepository);
       }
    }
 
-   public class When_retriving_the_distibution_data_for_a_vectorial_parameter_containers : concern_for_DistributionDataCreator
+   public class When_retrieving_the_distribution_data_for_a_vectorial_parameter_containers : concern_for_DistributionDataCreator
    {
       private IParameter _parameter;
       private IVectorialParametersContainer _vectorialParameterContainers;
@@ -48,7 +51,7 @@ namespace PKSim.Core
          _vectorialParameterContainers = A.Fake<IVectorialParametersContainer>();
          A.CallTo(() => _vectorialParameterContainers.AllValuesFor("Path")).Returns(new[] {0.77, 0.99, double.NaN});
          var gender = new Gender {Id = CoreConstants.Gender.Male, Name = CoreConstants.Gender.Male};
-         A.CallTo(() => _vectorialParameterContainers.AllGenders).Returns(new[] {gender, gender, gender});
+         A.CallTo(() => _vectorialParameterContainers.AllGenders(_genderRepository)).Returns(new[] {gender, gender, gender});
       }
 
       protected override void Because()
@@ -75,7 +78,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retriving_the_distibution_data_for_a_skalar_parameter_containers : concern_for_DistributionDataCreator
+   public class When_retrieving_the_distribution_data_for_a_scalar_parameter_containers : concern_for_DistributionDataCreator
    {
       private IParameter _parameter;
       private IVectorialParametersContainer _vectorialParameterContainers;
@@ -89,7 +92,7 @@ namespace PKSim.Core
          _vectorialParameterContainers = A.Fake<IVectorialParametersContainer>();
          A.CallTo(() => _vectorialParameterContainers.AllValuesFor("Path")).Returns(new[] { 0.5, 0.5, 0.5});
          var gender = new Gender { Id = CoreConstants.Gender.Male, Name = CoreConstants.Gender.Male };
-         A.CallTo(() => _vectorialParameterContainers.AllGenders).Returns(new[] { gender, gender, gender });
+         A.CallTo(_vectorialParameterContainers).WithReturnType<IReadOnlyList<Gender>>().Returns(new[] { gender, gender, gender });
       }
 
       protected override void Because()

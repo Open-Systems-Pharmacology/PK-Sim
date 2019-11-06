@@ -10,6 +10,7 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.Xml;
 using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization;
@@ -53,7 +54,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
 
       public void Convert(RandomPopulation randomPopulation)
       {
-         var parameterCache = randomPopulation.IndividualPropertiesCache.ParameterValuesCache;
+         var parameterCache = randomPopulation.IndividualValuesCache.ParameterValuesCache;
          var individual = randomPopulation.FirstIndividual;
          var parameterPathCache = _containerTask.CacheAllChildren<IParameter>(individual);
 
@@ -123,7 +124,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_2
       {
          var originData = individual.OriginData.Clone();
          var allAges = randomPopulation.AllValuesFor(_entityPathResolver.PathFor(individual.Organism.Parameter(CoreConstants.Parameters.AGE))).ToList();
-         var allGender = randomPopulation.AllGenders.ToList();
+         var allGender = randomPopulation.AllGenders(_genderRepository).ToList();
          var allValues = randomPopulation.AllValuesFor(_entityPathResolver.PathFor(parameter)).ToList();
          var allPercentiles = new double[allValues.Count].InitializeWith(0);
          originData.GestationalAge = CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;

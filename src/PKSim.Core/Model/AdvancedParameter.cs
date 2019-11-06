@@ -2,19 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
-using PKSim.Core.Model.Extensions;
 using OSPSuite.Core.Maths.Random;
+using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Model
 {
-   public class RandomValue
-   {
-      public double Value { get; set; }
-      public double Percentile { get; set; }
-   }
-
- public class AdvancedParameter : Container
+   public class AdvancedParameter : Container
    {
       private RandomGenerator _randomGenerator;
 
@@ -24,7 +19,8 @@ namespace PKSim.Core.Model
       public string ParameterPath { get; set; }
 
       /// <summary>
-      ///    Full path of parameter in tree hierarchy. This value will always be set at runtime and does not need to be serialized.
+      ///    Full path of parameter in tree hierarchy. This value will always be set at runtime and does not need to be
+      ///    serialized.
       /// </summary>
       public string FullDisplayName { get; set; }
 
@@ -76,6 +72,7 @@ namespace PKSim.Core.Model
             randomValue.Percentile = GetPercentileForValue(randomValue.Value);
             randomValues.Add(randomValue);
          }
+
          return randomValues;
       }
 
@@ -120,7 +117,7 @@ namespace PKSim.Core.Model
             Add(value);
          }
       }
-      
+
       /// <summary>
       ///    Reset the generator with the value of the seed.
       ///    This is necessary if we want to be able to generate the same sequence of random numbers

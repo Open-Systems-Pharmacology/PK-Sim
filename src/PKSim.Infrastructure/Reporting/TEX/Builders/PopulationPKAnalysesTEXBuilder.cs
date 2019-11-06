@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using FluentNHibernate.Utils;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.TeXReporting.Builder;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Services;

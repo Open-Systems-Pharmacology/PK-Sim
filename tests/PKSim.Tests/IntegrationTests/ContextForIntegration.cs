@@ -7,7 +7,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
-using OSPSuite.Engine;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
@@ -22,10 +21,7 @@ using PKSim.Infrastructure;
 using PKSim.Matlab;
 using PKSim.Presentation;
 using PKSim.Presentation.Services;
-using SimModelNET;
 using CoreRegister = PKSim.Core.CoreRegister;
-using ICoreUserSettings = PKSim.Core.ICoreUserSettings;
-using IWorkspace = PKSim.Presentation.IWorkspace;
 
 namespace PKSim.IntegrationTests
 {
@@ -60,7 +56,6 @@ namespace PKSim.IntegrationTests
             container.AddRegister(x =>
             {
                x.FromType<CoreRegister>();
-               x.FromType<EngineRegister>();
                x.FromType<CLIRegister>();
                x.FromType<InfrastructureRegister>();
                x.FromType<PresenterRegister>();
@@ -78,9 +73,6 @@ namespace PKSim.IntegrationTests
 
             InfrastructureRegister.RegisterSerializationDependencies();
             InfrastructureRegister.RegisterWorkspace();
-
-            var configuration = container.Resolve<IApplicationConfiguration>();
-            XMLSchemaCache.InitializeFromFile(configuration.SimModelSchemaFilePath);
          }
 
          //Required for usage with nunit 3

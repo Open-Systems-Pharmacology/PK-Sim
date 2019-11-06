@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Events;
-using OSPSuite.Infrastructure;
-using OSPSuite.Infrastructure.Journal;
+using OSPSuite.Infrastructure.Serialization.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
@@ -12,13 +12,14 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.FileLocker;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation;
+using IWorkspace = PKSim.Presentation.IWorkspace;
 
 namespace PKSim.Infrastructure
 {
    public class Workspace : Workspace<PKSimProject>, IWorkspace
    {
       private readonly IEventPublisher _eventPublisher;
+      private readonly IJournalSession _journalSession;
       private readonly IRegistrationTask _registrationTask;
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly IMRUProvider _mruProvider;
@@ -34,9 +35,10 @@ namespace PKSim.Infrastructure
          IRegistrationTask registrationTask,
          IWorkspacePersistor workspacePersistor,
          IMRUProvider mruProvider,
-         IHistoryManagerFactory historyManagerFactory) : base(eventPublisher, journalSession, fileLocker)
+         IHistoryManagerFactory historyManagerFactory) : base(eventPublisher,  fileLocker)
       {
          _eventPublisher = eventPublisher;
+         _journalSession = journalSession;
          _registrationTask = registrationTask;
          _workspacePersistor = workspacePersistor;
          _mruProvider = mruProvider;
@@ -52,6 +54,7 @@ namespace PKSim.Infrastructure
          HistoryManager = null;
          WorkspaceLayout = new WorkspaceLayout();
          _workspacePersistor.CloseSession();
+         _journalSession.Close();
          Clear();
          _eventPublisher.PublishEvent(new ProjectClosedEvent());
       }

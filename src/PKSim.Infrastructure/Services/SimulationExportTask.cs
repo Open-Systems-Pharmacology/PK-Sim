@@ -12,14 +12,15 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Infrastructure.Services
 {
    public class SimulationExportTask : ISimulationExportTask
    {
-      private readonly IBuildingBlockTask _buildingBlockTask;
+      private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IDialogCreator _dialogCreator;
-      private readonly IDataRepositoryTask _dataRepositoryTask;
+      private readonly IDataRepositoryExportTask _dataRepositoryTask;
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       private readonly IStringSerializer _stringSerializer;
       private readonly IModelReportCreator _modelReportCreator;
@@ -27,12 +28,18 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimModelExporter _simModelExporter;
       private readonly ISimulationResultsToDataTableConverter _simulationResultsToDataTableConverter;
 
-      public SimulationExportTask(IBuildingBlockTask buildingBlockTask, IDialogCreator dialogCreator, IDataRepositoryTask dataRepositoryTask,
-         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IStringSerializer stringSerializer,
-         IModelReportCreator modelReportCreator, ISimulationToModelCoreSimulationMapper coreSimulationMapper,
-         ISimModelExporter simModelExporter, ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
+      public SimulationExportTask(
+         ILazyLoadTask lazyLoadTask, 
+         IDialogCreator dialogCreator, 
+         IDataRepositoryExportTask dataRepositoryTask,
+         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, 
+         IStringSerializer stringSerializer,
+         IModelReportCreator modelReportCreator, 
+         ISimulationToModelCoreSimulationMapper coreSimulationMapper,
+         ISimModelExporter simModelExporter, 
+         ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
       {
-         _buildingBlockTask = buildingBlockTask;
+         _lazyLoadTask = lazyLoadTask;
          _dialogCreator = dialogCreator;
          _dataRepositoryTask = dataRepositoryTask;
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
@@ -45,7 +52,7 @@ namespace PKSim.Infrastructure.Services
 
       public Task ExportResultsToExcelAsync(IndividualSimulation individualSimulation)
       {
-         _buildingBlockTask.LoadResults(individualSimulation);
+         _lazyLoadTask.LoadResults(individualSimulation);
          if (!individualSimulation.HasResults)
             throw new PKSimException(PKSimConstants.Error.CannotExportResultsPleaseRunSimulation(individualSimulation.Name));
 
@@ -64,7 +71,7 @@ namespace PKSim.Infrastructure.Services
 
       public Task ExportResultsToCSVAsync(Simulation simulation)
       {
-         _buildingBlockTask.LoadResults(simulation);
+         _lazyLoadTask.LoadResults(simulation);
          if (!simulation.HasResults)
             throw new PKSimException(PKSimConstants.Error.CannotExportResultsPleaseRunSimulation(simulation.Name));
 
@@ -74,7 +81,7 @@ namespace PKSim.Infrastructure.Services
 
       public async Task ExportResultsToCSVAsync(Simulation simulation, string fileName)
       {
-         var dataTable = await _simulationResultsToDataTableConverter.ResultsToDataTable(simulation);
+         var dataTable = await _simulationResultsToDataTableConverter.ResultsToDataTableAsync(simulation.Results, simulation);
          dataTable.ExportToCSV(fileName);
       }
 
@@ -115,7 +122,7 @@ namespace PKSim.Infrastructure.Services
 
       public Task ExportPKAnalysesToCSVAsync(PopulationSimulation populationSimulation)
       {
-         _buildingBlockTask.Load(populationSimulation);
+         _lazyLoadTask.Load(populationSimulation);
          if (!populationSimulation.HasPKAnalyses)
             throw new PKSimException(PKSimConstants.Error.CannotExportPKAnalysesPleaseRunSimulation(populationSimulation.Name));
 
@@ -125,7 +132,7 @@ namespace PKSim.Infrastructure.Services
 
       public async Task ExportPKAnalysesToCSVAsync(PopulationSimulation populationSimulation, string fileName)
       {
-         var dataTable = await _simulationResultsToDataTableConverter.PKAnalysesToDataTable(populationSimulation);
+         var dataTable = await _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(populationSimulation.PKAnalyses, populationSimulation);
          dataTable.ExportToCSV(fileName);
       }
 
@@ -133,7 +140,7 @@ namespace PKSim.Infrastructure.Services
       {
          return exportToFileAsync(title, filter, simulation.Name, async fileName =>
          {
-            _buildingBlockTask.Load(simulation);
+            _lazyLoadTask.Load(simulation);
             await actionToPerform(fileName);
          }, directoryKey);
       }

@@ -1,6 +1,5 @@
-using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
-using OSPSuite.Infrastructure.Services;
+using OSPSuite.Infrastructure.Serialization.Services;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Queries
 {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using OSPSuite.Core.Domain;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace PKSim.Core.Model
 {
@@ -17,10 +18,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Status of import action. Its value indicates whether the import was successful or not
       /// </summary>
-      public override NotificationType Status
-      {
-         get { return base.Status | PKAnalysesFile.Status; }
-      }
+      public override NotificationType Status => base.Status | PKAnalysesFile.Status;
 
       public override IEnumerable<string> Log
       {

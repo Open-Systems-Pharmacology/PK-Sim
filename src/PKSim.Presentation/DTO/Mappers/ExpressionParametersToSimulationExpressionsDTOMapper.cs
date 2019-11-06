@@ -9,7 +9,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Extensions;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Simulations;
 

@@ -16,8 +16,8 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       public SimulationAdvancedParameterDistributionPresenter(IAdvancedParameterDistributionView view, IPopulationParameterGroupsPresenter parametersPresenter,
          IRepresentationInfoRepository representationInfoRepository, IEntityPathResolver entityPathResolver,
-         IPopulationDistributionPresenter populationParameterDistributionPresenter, IProjectChangedNotifier projectChangedNotifier)
-         : base(view, parametersPresenter, representationInfoRepository, entityPathResolver, populationParameterDistributionPresenter, projectChangedNotifier)
+         IPopulationDistributionPresenter populationParameterDistributionPresenter, IProjectChangedNotifier projectChangedNotifier, IGenderRepository genderRepository)
+         : base(view, parametersPresenter, representationInfoRepository, entityPathResolver, populationParameterDistributionPresenter, projectChangedNotifier, genderRepository)
       {
       }
 

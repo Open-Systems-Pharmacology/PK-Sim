@@ -8,8 +8,10 @@ using DevExpress.Utils;
 using DevExpress.XtraBars.Docking;
 using DevExpress.XtraCharts;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Assets;
@@ -24,6 +26,10 @@ namespace PKSim.UI.Views.PopulationAnalyses
       where TX : IXValue
       where TY : IYValue
    {
+      public event EventHandler<IDragEvent> OnDragOverEvent = delegate { };
+      public event EventHandler<IDragEvent> OnDragDropEvent = delegate { };
+
+
       private readonly IToolTipCreator _toolTipCreator;
       protected IPopulationAnalysisChartPresenter<TX, TY> _presenter;
       protected CurveData<TX, TY> _latestTrackedCurvedData;
@@ -93,12 +99,14 @@ namespace PKSim.UI.Views.PopulationAnalyses
       {
          if (!DragDropEnabled) return;
          base.OnDragOver(e);
+         OnDragOverEvent(this, new DragEvent(e));
       }
 
       protected override void OnDragDrop(DragEventArgs e)
       {
          if (!DragDropEnabled) return;
          base.OnDragDrop(e);
+         OnDragDropEvent(this, new DragEvent(e));
       }
 
       private void onObjectHotTracked(HotTrackEventArgs e)

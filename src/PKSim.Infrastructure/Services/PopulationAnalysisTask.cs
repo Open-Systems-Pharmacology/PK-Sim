@@ -18,11 +18,14 @@ namespace PKSim.Infrastructure.Services
       private readonly IChartDataToTableMapperFactory _chartDataToTableMapperFactory;
       private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IDialogCreator _dialogCreator;
-      private readonly IDataRepositoryTask _dataRepositoryTask;
+      private readonly IDataRepositoryExportTask _dataRepositoryTask;
 
       public PopulationAnalysisTask(
-         IDialogCreator dialogCreator, IDataRepositoryTask dataRepositoryTask, ExportSimulationAnalysisToPDFCommand exportSimulationAnalysisToPDFCommand,
-         IChartDataToTableMapperFactory chartDataToTableMapperFactory, IPKSimProjectRetriever projectRetriever)
+         IDialogCreator dialogCreator,
+         IDataRepositoryExportTask dataRepositoryTask, 
+         ExportSimulationAnalysisToPDFCommand exportSimulationAnalysisToPDFCommand,
+         IChartDataToTableMapperFactory chartDataToTableMapperFactory, 
+         IPKSimProjectRetriever projectRetriever)
       {
          _exportSimulationAnalysisToPDFCommand = exportSimulationAnalysisToPDFCommand;
          _chartDataToTableMapperFactory = chartDataToTableMapperFactory;

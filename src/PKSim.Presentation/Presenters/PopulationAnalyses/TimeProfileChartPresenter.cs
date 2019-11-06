@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;
+using OSPSuite.Presentation.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
@@ -13,12 +13,12 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       /// <summary>
       ///    Event is fired when some data are dragged over view
       /// </summary>
-      event DragEventHandler DragOver;
+      event EventHandler<IDragEvent> DragOver;
 
       /// <summary>
       ///    Event is fired when some data are dropped onto view
       /// </summary>
-      event DragEventHandler DragDrop;
+      event EventHandler<IDragEvent> DragDrop;
 
       event Action ObservedDataSettingsChanged;
    }
@@ -36,16 +36,16 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _timeProfileChartSettingsPresenter.ObservedDataSettingsChanged += () => ObservedDataSettingsChanged();
       }
 
-      public event DragEventHandler DragOver
+      public event EventHandler<IDragEvent> DragOver
       {
-         add => _view.DragOver += value;
-         remove => _view.DragOver -= value;
+         add => _view.OnDragOverEvent += value;
+         remove => _view.OnDragOverEvent -= value;
       }
 
-      public event DragEventHandler DragDrop
+      public event EventHandler<IDragEvent> DragDrop
       {
-         add => _view.DragDrop += value;
-         remove => _view.DragDrop -= value;
+         add => _view.OnDragDropEvent += value;
+         remove => _view.OnDragDropEvent -= value;
       }
 
       public override void Show(ChartData<TimeProfileXValue, TimeProfileYValue> chartsData, PopulationAnalysisChart populationAnalysisChart)

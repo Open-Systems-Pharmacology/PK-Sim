@@ -5,13 +5,14 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Services;
 using FakeItEasy;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Extensions;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Infrastructure.Import.Services;
+using ISimulationResultsImportTask = PKSim.Core.Services.ISimulationResultsImportTask;
 
 namespace PKSim.Presentation
 {

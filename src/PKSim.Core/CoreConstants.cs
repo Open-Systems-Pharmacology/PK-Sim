@@ -896,8 +896,6 @@ namespace PKSim.Core
          public static readonly string MIN_TO_YEAR_FACTOR = "Minute to year unit conversion factor";
          public static readonly string GFR_FRACTION = "GFR fraction";
          public static readonly string INTESTINAL_PERMEABILITY = "Intestinal permeability (transcellular)";
-         public static readonly string RACE_INDEX = "RaceIndex";
-         public static readonly string GENDER = "Gender";
          public static readonly string VOLUME_MOUSE = "Organ volume mouse";
 
          public static string ParameterPKa(int index)
@@ -1162,7 +1160,6 @@ namespace PKSim.Core
       public static class Population
       {
          public const string OUTPUT_DEFINITION_EXPORT = "_Outputs";
-         public const string ALL_GENDER = "AllGender";
          public const string ICRP = "European_ICRP_2002";
          public const string PRETERM = "Preterm";
          public const string TABLE_PARAMETER_EXPORT = "_TableParameters";

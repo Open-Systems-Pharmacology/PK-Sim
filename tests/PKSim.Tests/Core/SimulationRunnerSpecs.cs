@@ -1,19 +1,20 @@
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistableUpdater;
-
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_SimulationRunner : ContextSpecificationAsync<ISimulationRunner>
    {
-      protected ISimulationEngine<IndividualSimulation> _simulationEngine;
-      protected ISimulationEngine<PopulationSimulation> _popSimulationEngine;
+      protected IIndividualSimulationEngine _simulationEngine;
+      protected IPopulationSimulationEngine _popSimulationEngine;
       protected ISimulationEngineFactory _simulationEngineFactory;
       protected ILazyLoadTask _lazyLoadTask;
       protected IEntityValidationTask _entityTask;
@@ -22,14 +23,14 @@ namespace PKSim.Core
 
       protected override Task Context()
       {
-         _simulationEngine = A.Fake<ISimulationEngine<IndividualSimulation>>();
-         _popSimulationEngine = A.Fake<ISimulationEngine<PopulationSimulation>>();
+         _simulationEngine = A.Fake<IIndividualSimulationEngine>();
+         _popSimulationEngine = A.Fake<IPopulationSimulationEngine>();
          _simulationEngineFactory = A.Fake<ISimulationEngineFactory>();
          _simulationPersistableUpdater = A.Fake<ISimulationPersistableUpdater>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _entityTask = A.Fake<IEntityValidationTask>();
-         A.CallTo(() => _simulationEngineFactory.Create<PopulationSimulation>()).Returns(_popSimulationEngine);
-         A.CallTo(() => _simulationEngineFactory.Create<IndividualSimulation>()).Returns(_simulationEngine);
+         A.CallTo(() => _simulationEngineFactory.Create<PopulationSimulation, PopulationRunResults>()).Returns(_popSimulationEngine);
+         A.CallTo(() => _simulationEngineFactory.Create<IndividualSimulation, SimulationRunResults>()).Returns(_simulationEngine);
 
          sut = new SimulationRunner(_simulationEngineFactory, _lazyLoadTask, _entityTask, _simulationPersistableUpdater);
 

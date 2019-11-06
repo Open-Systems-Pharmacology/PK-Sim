@@ -28,8 +28,8 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="buildConfiguration"> spatialStructure that will be use to create the simulation </param>
       /// <param name="simulation"> Model less simulation that whose spatial structure will be created </param>
-      /// <param name="createAgindDataInSimulation"></param>
-      void UpdateBuildConfigurationForAging(IBuildConfiguration buildConfiguration, Simulation simulation, bool createAgindDataInSimulation);
+      /// <param name="createAgingDataInSimulation"></param>
+      void UpdateBuildConfigurationForAging(IBuildConfiguration buildConfiguration, Simulation simulation, bool createAgingDataInSimulation);
    }
 
    public class DistributedParameterToTableParameterConverter : IDistributedParameterToTableParameterConverter
@@ -45,6 +45,7 @@ namespace PKSim.Core.Services
       private readonly IInterpolation _interpolation;
       private readonly IParameterStartValuesCreator _parameterStartValuesCreator;
       private readonly IObjectPathFactory _objectPathFactory;
+      private readonly IGenderRepository _genderRepository;
       private readonly IDimension _timeDimension;
       private readonly Unit _yearUnit;
       private Simulation _simulation;
@@ -52,11 +53,21 @@ namespace PKSim.Core.Services
       private OriginData _baseOriginData;
       private IReadOnlyList<ParameterDistributionMetaData> _allHeightDistributionMaleParameters;
       private IReadOnlyList<ParameterDistributionMetaData> _allHeightDistributionFemaleParameters;
-      private bool _createAgindDataInSimulation;
+      private bool _createAgingDataInSimulation;
 
-      public DistributedParameterToTableParameterConverter(IFormulaFactory formulaFactory, IEntityPathResolver entityPathResolver, IParameterFactory parameterFactory,
-         ICloneManager cloneManager, IParameterQuery parameterQuery, IDimensionRepository dimensionRepository, IOntogenyRepository ontogenyRepository,
-         IFullPathDisplayResolver fullPathDisplayResolver, IInterpolation interpolation, IParameterStartValuesCreator parameterStartValuesCreator, IObjectPathFactory objectPathFactory)
+      public DistributedParameterToTableParameterConverter(
+         IFormulaFactory formulaFactory, 
+         IEntityPathResolver entityPathResolver, 
+         IParameterFactory parameterFactory,
+         ICloneManager cloneManager, 
+         IParameterQuery parameterQuery, 
+         IDimensionRepository dimensionRepository, 
+         IOntogenyRepository ontogenyRepository,
+         IFullPathDisplayResolver fullPathDisplayResolver, 
+         IInterpolation interpolation, 
+         IParameterStartValuesCreator parameterStartValuesCreator, 
+         IObjectPathFactory objectPathFactory,
+         IGenderRepository genderRepository)
       {
          _formulaFactory = formulaFactory;
          _entityPathResolver = entityPathResolver;
@@ -69,11 +80,12 @@ namespace PKSim.Core.Services
          _interpolation = interpolation;
          _parameterStartValuesCreator = parameterStartValuesCreator;
          _objectPathFactory = objectPathFactory;
+         _genderRepository = genderRepository;
          _timeDimension = dimensionRepository.Time;
          _yearUnit = _timeDimension.Unit(dimensionRepository.AgeInYears.BaseUnit.Name);
       }
 
-      public void UpdateBuildConfigurationForAging(IBuildConfiguration buildConfiguration, Simulation simulation, bool createAgindDataInSimulation)
+      public void UpdateBuildConfigurationForAging(IBuildConfiguration buildConfiguration, Simulation simulation, bool createAgingDataInSimulation)
       {
          if (!simulation.AllowAging)
             return;
@@ -81,7 +93,7 @@ namespace PKSim.Core.Services
          try
          {
             _simulation = simulation;
-            _createAgindDataInSimulation = createAgindDataInSimulation;
+            _createAgingDataInSimulation = createAgingDataInSimulation;
             _baseIndividual = simulation.Individual;
             _baseOriginData = _baseIndividual.OriginData;
             var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.SpeciesPopulation, _baseOriginData.SubPopulation, CoreConstants.Parameters.MEAN_HEIGHT);
@@ -292,13 +304,13 @@ namespace PKSim.Core.Services
       private void addAgingDataToPopulationSimulation<TParameter>(PopulationSimulation populationSimulation, string parameterPath, TParameter parameter,
          Func<TableFormulaParameter<TParameter>, TableFormula> tableFormulaRetriever) where TParameter : IParameter
       {
-         if (populationSimulation == null || !_createAgindDataInSimulation) return;
+         if (populationSimulation == null || !_createAgingDataInSimulation) return;
 
          var originData = _baseOriginData.Clone();
          var allAges = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameters.AGE, _entityPathResolver);
          var allGAs = populationSimulation.AllOrganismValuesFor(Constants.Parameters.GESTATIONAL_AGE, _entityPathResolver);
          var allHeights = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameters.HEIGHT, _entityPathResolver);
-         var allGender = populationSimulation.AllGenders.ToList();
+         var allGender = populationSimulation.AllGenders(_genderRepository).ToList();
          var allValues = populationSimulation.AllValuesFor(parameterPath).ToList();
          var allPercentiles = populationSimulation.AllPercentilesFor(parameterPath)
             .Select(x => x.CorrectedPercentileValue()).ToList();
@@ -306,7 +318,7 @@ namespace PKSim.Core.Services
          var tableFormulaParameter = new TableFormulaParameter<TParameter> {OriginData = originData, Parameter = parameter};
          for (int individualIndex = 0; individualIndex < populationSimulation.NumberOfItems; individualIndex++)
          {
-            //create orgin data for individual i
+            //create origin data for individual i
             originData.Age = allAges[individualIndex];
             originData.GestationalAge = allGAs[individualIndex];
             originData.Height = allHeights[individualIndex];

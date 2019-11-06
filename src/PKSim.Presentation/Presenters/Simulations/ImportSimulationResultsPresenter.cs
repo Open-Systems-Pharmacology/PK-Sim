@@ -10,13 +10,13 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
-
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Presentation.Presenters;
+using ISimulationResultsImportTask = PKSim.Core.Services.ISimulationResultsImportTask;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
