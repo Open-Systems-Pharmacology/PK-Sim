@@ -10,8 +10,30 @@ task :cover do
 	filter << "+[PKSim.Assets]*"
 	filter << "+[PKSim.Presentation]*"
 	filter << "+[PKSim.Infrastructure]*"
+  
+  #exclude namespaces that are tested from applications
+  # filter << "-[OSPSuite.Infrastructure.Serialization]OSPSuite.Infrastructure.Serialization.ORM*"
+  # filter << "-[OSPSuite.Presentation]OSPSuite.Presentation.MenuAndBars*"
+  # filter << "-[OSPSuite.Presentation]OSPSuite.Presentation.Presenters.ContextMenus*"
 
-	Coverage.cover(filter, "PKSim.Tests.csproj")
+  targetProjects = [
+	"PKSim.Tests.dll",
+	"PKSim.UI.Tests.dll",
+	];
+
+  Coverage.cover(filter, targetProjects)
+end
+
+module Coverage
+  def self.cover(filter_array, targetProjects)
+    testProjects = Dir.glob("tests/**/*.dll").select{|path| targetProjects.include?(File.basename path)}
+    openCover = Dir.glob("packages/OpenCover.*/tools/OpenCover.Console.exe").first
+    testProjects.unshift("vstest")
+    targetArgs = testProjects.join(" ")
+
+    Utils.run_cmd(openCover, ["-register:user", "-target:dotnet.exe", "-targetargs:#{targetArgs}", "-output:OpenCover.xml", "-filter:#{filter_array.join(" ")}", "-excludebyfile:*.Designer.cs", "-oldstyle"])
+    Utils.run_cmd("codecov", ["-f", "OpenCover.xml"])
+  end
 end
 
 task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|

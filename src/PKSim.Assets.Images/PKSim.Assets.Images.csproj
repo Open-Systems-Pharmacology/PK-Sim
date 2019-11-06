@@ -6,7 +6,7 @@
     <PackageVersion>1.0.0</PackageVersion>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
-    <InformationalVersion>1.0.0.0</InformationalVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -26,8 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="9.0.20" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="9.0.20" />
+    <PackageReference Include="OSPSuite.Assets" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="9.0.23" />
   </ItemGroup>
 
   <ItemGroup>

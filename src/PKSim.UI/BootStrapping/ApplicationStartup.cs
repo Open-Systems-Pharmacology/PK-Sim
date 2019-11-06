@@ -156,7 +156,6 @@ namespace PKSim.UI.BootStrapping
 
          //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
          container.Register<IInteractiveSimulationRunner,InteractiveSimulationRunner>(LifeStyle.Singleton);
-
       }
 
       private void startStartableObject(IContainer container)

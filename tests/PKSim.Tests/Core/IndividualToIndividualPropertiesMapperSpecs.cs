@@ -42,11 +42,11 @@ namespace PKSim.Core
          A.CallTo(() => _para2.IsChangedByCreateIndividual).Returns(true);
          _para3 = A.Fake<IParameter>().WithName("P3");
          A.CallTo(() => _para3.IsChangedByCreateIndividual).Returns(false);
-         _pathPara1 = "tralal";
+         _pathPara1 = "tata";
          _pathPara2 = "tutu";
          _individual = new Individual();
          _individual.OriginData = A.Fake<OriginData>();
-         _individual.OriginData.Gender = A.Fake<Gender>();
+         _individual.OriginData.Gender = new Gender().WithName("TOTO");
          A.CallTo(() => _entityPathResolver.PathFor(_para1)).Returns(_pathPara1);
          A.CallTo(() => _entityPathResolver.PathFor(_para2)).Returns(_pathPara2);
          A.CallTo(() => _entityPathResolver.PathFor(_para2)).Returns(_pathPara2);

@@ -74,7 +74,7 @@ namespace PKSim.Infrastructure.Services
             return originalCovariateValues;
 
          // needs conversion
-         var genders = originalCovariateValues.Values.Select(x => _genderRepository.FindByIndex(int.Parse(x))).Select(x => x.DisplayName).ToList();
+         var genders = originalCovariateValues.Values.Select(x => _genderRepository.FindByIndex(int.Parse(x))).Select(x => x.Name).ToList();
          return new CovariateValues(Constants.Population.GENDER, genders);
       }
       
@@ -89,7 +89,7 @@ namespace PKSim.Infrastructure.Services
             return originalCovariateValues;
 
          // needs conversion
-         var races = originalCovariateValues.Values.Select(x => _populationRepository.FindByIndex(int.Parse(x))).Select(x => x.DisplayName).ToList();
+         var races = originalCovariateValues.Values.Select(x => _populationRepository.FindByIndex(int.Parse(x))).Select(x => x.Name).ToList();
          return new CovariateValues(Constants.Population.RACE, races);
       }
    }

@@ -1,22 +1,23 @@
 configuration: Debug
 image: Visual Studio 2019
 
+# hack until donet patching works with PR
+init: 
+  - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set build_number=1) ELSE (Set build_number=%APPVEYOR_BUILD_NUMBER%)
+
 environment:
   app_version: '9.0'
 
 version: '$(app_version).{build}'
 
-assembly_info:
+dotnet_csproj:
   patch: true
-  file: SolutionInfo.*
-  assembly_version: "{version}"
-  assembly_file_version: "{version}"  
-  assembly_informational_version: "{version}" 
+  file: '**\*.csproj'
+  assembly_version: '$(app_version).$(build_number)'
+  file_version: '$(app_version).$(build_number)'
+  informational_version: '$(app_version).$(build_number)'
 
 clone_depth: 1
-
-cache:
-  packages -> **\packages.config  
 
 install:
 - set PATH=C:\Ruby25\bin;%PATH%

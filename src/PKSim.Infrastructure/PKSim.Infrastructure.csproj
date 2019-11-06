@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <Version>1.0.0</Version>
-    <PackageVersion>1.0.0</PackageVersion>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <FileVersion>1.0.0</FileVersion>
-    <InformationalVersion>1.0.0.0</InformationalVersion>
+    <Version>9.0.0</Version>
+    <PackageVersion>9.0.0</PackageVersion>
+    <AssemblyVersion>9.0.0</AssemblyVersion>
+    <FileVersion>9.0.0</FileVersion>
+    <InformationalVersion>9.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -39,13 +39,13 @@
     <PackageReference Include="MarkdownLog.NS20" Version="0.10.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.11" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.20" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="9.0.20" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="9.0.20" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="9.0.20" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="9.0.20" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="9.0.20" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="9.0.20" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="9.0.23" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.1" />
   </ItemGroup>
 

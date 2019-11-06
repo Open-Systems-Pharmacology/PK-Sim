@@ -66,7 +66,7 @@ namespace PKSim.Presentation.Presenters.Main
          View.Initialize();
          View.Caption = _configuration.ProductDisplayName;
 
-         //intialize all sub presenter defined in the user interface
+         //initialize all sub presenter defined in the user interface
          _presenterRepository.All().Each(presenter => presenter.Initialize());
 
          //set the action to be performed when closing the main form

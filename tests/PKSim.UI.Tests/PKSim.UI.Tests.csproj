@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
@@ -15,8 +15,8 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.20" />
-    <PackageReference Include="OSPSuite.UI" Version="9.0.20" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.UI" Version="9.0.23" />
   </ItemGroup>
 
   <ItemGroup>

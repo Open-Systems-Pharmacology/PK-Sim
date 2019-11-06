@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <Version>1.0.0</Version>
-    <PackageVersion>1.0.0</PackageVersion>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <FileVersion>1.0.0</FileVersion>
-    <InformationalVersion>1.0.0.0</InformationalVersion>
+    <Version>9.0.0</Version>
+    <PackageVersion>9.0.0</PackageVersion>
+    <AssemblyVersion>9.0.0</AssemblyVersion>
+    <FileVersion>9.0.0</FileVersion>
+    <InformationalVersion>9.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -27,11 +27,11 @@
     <PackageReference Include="OSPSuite.DataBinding" Version="2.3.0.3" />
     <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="3.0.0.3" />
     <PackageReference Include="OSPSuite.DevExpress" Version="18.2.7" />
-    <PackageReference Include="OSPSuite.Presentation" Version="9.0.20" />
-    <PackageReference Include="OSPSuite.UI" Version="9.0.20" />
-    <PackageReference Include="OSPSuite.UI.Importer" Version="9.0.20" />
+    <PackageReference Include="OSPSuite.Presentation" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.UI" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.UI.Importer" Version="9.0.23" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.20" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.23" />
   </ItemGroup>
 
   <ItemGroup>

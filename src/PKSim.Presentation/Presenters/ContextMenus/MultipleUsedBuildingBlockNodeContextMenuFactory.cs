@@ -22,7 +22,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<NamedBuildingBlock<IPKSimBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
       {
-         yield return CompareBuidlingBlocks(buildingBlocks, executionContext);
+         yield return CompareBuildingBlocks(buildingBlocks, executionContext);
 
          yield return AddToJournal(buildingBlocks);
 

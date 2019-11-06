@@ -30,14 +30,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return SaveAsSystemTemplateMenuFor(buildingBlocks);
 
-         yield return CompareBuidlingBlocks(buildingBlocks, executionContext);
+         yield return CompareBuildingBlocks(buildingBlocks, executionContext);
 
          yield return AddToJournal(buildingBlocks);
 
          yield return DeleteSelectedBuildingBlockMenuItem(buildingBlocks);
       }
 
-      protected static IMenuBarItem CompareBuidlingBlocks(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
+      protected static IMenuBarItem CompareBuildingBlocks(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
       {
          var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
          var objectBaseList = buildingBlockList.Cast<IObjectBase>().ToList();
@@ -94,10 +94,10 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       private static IMenuBarButton comparisonNotPossibleMenu(IReadOnlyList<TBuildingBlock> buildingBlocks, IExecutionContext executionContext)
       {
-         var buiildingBlockType = executionContext.TypeFor(buildingBlocks[0]);
+         var buildingBlockType = executionContext.TypeFor(buildingBlocks[0]);
          return CreateMenuButton.WithCaption(MenuNames.CompareObjects(executionContext.TypeFor(buildingBlocks[0])))
             .WithIcon(ApplicationIcons.Comparison)
-            .WithActionCommand(() => throw new PKSimException(PKSimConstants.Error.ComparisonBetweenBuildingBLocksNotSupportedForBuildingBlockOfType(buiildingBlockType)));
+            .WithActionCommand(() => throw new PKSimException(PKSimConstants.Error.ComparisonBetweenBuildingBLocksNotSupportedForBuildingBlockOfType(buildingBlockType)));
       }
    }
 }

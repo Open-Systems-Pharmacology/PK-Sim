@@ -33,8 +33,8 @@ namespace PKSim.Core.Mappers
       {
          var individualValues = new IndividualValues();
 
-         individualValues.AddCovariate(Constants.Population.GENDER, individual.OriginData.Gender.DisplayName);
-         individualValues.AddCovariate(Constants.Population.RACE, individual.OriginData.SpeciesPopulation.DisplayName);
+         individualValues.AddCovariate(Constants.Population.GENDER, individual.OriginData.Gender.Name);
+         individualValues.AddCovariate(Constants.Population.RACE, individual.OriginData.SpeciesPopulation.Name);
 
          updatedParameters.KeyValues.Each(paraKey => individualValues.AddParameterValue(parameterValueFrom(paraKey)));
          return individualValues;
