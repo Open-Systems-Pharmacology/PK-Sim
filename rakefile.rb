@@ -39,6 +39,9 @@ end
 task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
 	update_smart_xls(args)
 
+	src_dir = src_dir_for(args.configuration)
+	relative_src_dir = relative_src_dir_for(args.configuration)
+
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
 		'PKSim.exe',
@@ -48,10 +51,10 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
-		'packages/**/OSPSuite.Presentation/**/*.{wxs,xml}',
-		'packages/**/OSPSuite.TeXReporting/**/*.*',
+		"#{relative_src_dir}/ChartLayouts/**/*.{wxs,xml}",
+		"#{relative_src_dir}/TeXTemplates/**/*.*",
 		'examples/**/*.{wxs,pksim5}',
-		'src/PKSim.Assets/Resources/*.ico',
+		'src/PKSim.Assets.Images/Resources/*.ico',
 		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
 		'dimensions/*.xml',
@@ -60,9 +63,10 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		'setup/**/*.{msm,rtf,bmp}'
 	]
 
+
 	Rake::Task['setup:create'].execute(OpenStruct.new(
 		solution_dir: solution_dir,
-		src_dir: src_dir_for(args.configuration), 
+		src_dir: src_dir, 
 		setup_dir: setup_dir,  
 		product_name: product_name, 
 		product_version: args.product_version,
@@ -74,6 +78,10 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 end
 
 task :create_portable_setup, [:product_version, :configuration, :package_name] do |t, args|
+
+	src_dir = src_dir_for(args.configuration)
+	relative_src_dir = relative_src_dir_for(args.configuration)
+	
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
 		'Open Systems Pharmacology Suite License.pdf',
@@ -85,8 +93,8 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 
 	setup_folders = [
 		'examples/**/*.pksim5',
-		'packages/**/OSPSuite.Presentation/**/*.{xml}',
-		'packages/**/OSPSuite.TeXReporting/**/*.{json,sty,tex}',
+		"#{relative_src_dir}/ChartLayouts/**/*.{xml}",
+		"#{relative_src_dir}/TeXTemplates/**/*.{json,sty,tex}",
 	]
 
 	Rake::Task['setup:create_portable'].execute(OpenStruct.new(
@@ -107,7 +115,7 @@ task :update_go_license, [:file_path, :license] do |t, args|
 end	
 
 task :postclean do |t, args| 
-	packages_dir =  File.join(solution_dir, 'packages')
+	packages_dir =  src_dir_for("Debug")
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
 	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '9.0')
@@ -147,8 +155,12 @@ def update_smart_xls(args)
 	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
 end
 
+def relative_src_dir_for(configuration)
+	File.join( 'src', 'PKSim', 'bin', configuration, 'net472')
+end
+
 def src_dir_for(configuration)
-	File.join(solution_dir, 'src', 'PKSim', 'bin', configuration)
+	File.join(solution_dir, relative_src_dir_for(configuration))
 end
 
 def solution_dir
