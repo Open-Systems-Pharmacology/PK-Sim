@@ -28,11 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="9.0.23" />
-    <PackageReference Include="OSPSuite.Presentation.Importer" Version="9.0.23" />
-    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.3" />
+    <PackageReference Include="OSPSuite.Presentation" Version="9.0.25" />
+    <PackageReference Include="OSPSuite.Presentation.Importer" Version="9.0.25" />
+    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.23" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.25" />
   </ItemGroup>
 
   <ItemGroup>
