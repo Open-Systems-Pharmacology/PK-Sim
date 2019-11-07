@@ -51,7 +51,7 @@ namespace PKSim.Infrastructure.Serialization.Xml
 
       public TObject Deserialize<TObject>(byte[] serializationBytes, SerializationContext serializationContext = null)
       {
-         TObject deseserializedObject;
+         TObject deserializedObject;
 
          var (element, originalVersion, conversionHappened) = getConvertedElementFrom(serializationBytes);
 
@@ -66,7 +66,7 @@ namespace PKSim.Infrastructure.Serialization.Xml
                try
                {
                   var xmlObjectReader = XmlReaderFor<TObject>();
-                  deseserializedObject = xmlObjectReader.ReadFrom(element, context);
+                  deserializedObject = xmlObjectReader.ReadFrom(element, context);
                }
                catch (Exception)
                {
@@ -81,8 +81,8 @@ namespace PKSim.Infrastructure.Serialization.Xml
                context.Dispose();
          }
 
-         updatePropertiesFor(deseserializedObject, originalVersion, conversionHappened);
-         return deseserializedObject;
+         updatePropertiesFor(deserializedObject, originalVersion, conversionHappened);
+         return deserializedObject;
       }
 
       private (XElement element, int originalVersion, bool conversionHappened) getConvertedElementFrom(byte[] serializationBytes)
@@ -131,12 +131,12 @@ namespace PKSim.Infrastructure.Serialization.Xml
       {
          string versionString = element.GetAttribute(CoreConstants.Serialization.Attribute.XmlVersion);
          if (string.IsNullOrEmpty(versionString))
-            return mssingVersionFor(element);
+            return missingVersionFor(element);
 
          return versionString.ConvertedTo<int>();
       }
 
-      private int mssingVersionFor(XElement element)
+      private int missingVersionFor(XElement element)
       {
          if (element.Name.IsOneOf(Constants.Serialization.DATA_REPOSITORY, CoreConstants.Serialization.Project,
             CoreConstants.Serialization.PopulationSettings, CoreConstants.Serialization.SummaryChart,
