@@ -48,11 +48,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
          var covariateValuesCacheWriter = _container.Resolve<IXmlWriter<CovariateValuesCache>>();
 
          var context = SerializationTransaction.Create();
+
+         //With this release, the IndividualPropertiesCache was renamed to IndividualValuesCache
+         //Covariates structure was changed completely  (saved by covariate as opposed to saved by individual)
          foreach (var individualPropertiesCacheElement in element.Descendants("IndividualPropertiesCache").ToList())
          {
             var covariateValuesCache = new CovariateValuesCache();
             var parameterValueCacheElement = individualPropertiesCacheElement.Descendants("ParameterValuesCache");
             var allCovariatesElement = individualPropertiesCacheElement.Descendants("AllCovariates");
+
+            // List of old covariates as defined in PKSim 8.x and below
             var allIndividualCovariates = new List<IndividualCovariates>();
             foreach (var individualCovariatesElement in allCovariatesElement.Descendants("IndividualCovariates"))
             {
@@ -64,6 +69,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
             allCovariateNames.Add(Constants.Population.GENDER);
             allCovariateNames.Add(Constants.Population.POPULATION);
 
+            // Transform the old covariates in the new structure
             foreach (var covariateName in allCovariateNames)
             {
                var covariateValues = new CovariateValues(covariateName);
@@ -84,35 +90,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
             var parent = individualPropertiesCacheElement.Parent;
             individualPropertiesCacheElement.Remove();
             parent.Add(individualValuesCacheElement);
-
-
-
-            //            var parameterValuesCache = new ParameterValuesCache();
-            //
-            //            foreach (var dataColumnNode in parameterCacheElement.Descendants(ConverterConstants.Serialization.DATA_TABLE_COLUMN))
-            //            {
-            //               var parameterValues = new ParameterValues(dataColumnNode.GetAttribute(CoreConstants.Serialization.Attribute.Name));
-            //               parameterValuesCache.Add(parameterValues);
-            //            }
-            //
-            //            var documentElement = parameterCacheElement.Descendants("DocumentElement").First();
-            //            foreach (var parameterValuesElement in documentElement.Descendants("ParameterValues"))
-            //            {
-            //               int index = 0;
-            //               foreach (var parameterValue in parameterValuesElement.Descendants())
-            //               {
-            //                  var parameterValues = parameterValuesCache.ParameterValuesAt(index);
-            //                  parameterValues.Add(parameterValue.Value.ConvertedTo<double>());
-            //                  index++;
-            //               }
-            //            }
-
-            //            var writer = _container.Resolve<IXmlWriter<ParameterValuesCache>>();
-            //            var newElement = writer.WriteFor(parameterValuesCache, SerializationTransaction.Create());
-            //
-            //            var parent = parameterCacheElement.Parent;
-            //            parameterCacheElement.Remove();
-            //            parent.Add(newElement);
          }
 
       }
