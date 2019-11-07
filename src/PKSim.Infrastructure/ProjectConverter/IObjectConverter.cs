@@ -15,7 +15,7 @@ namespace PKSim.Infrastructure.ProjectConverter
       (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion);
 
       /// <summary>
-      /// Convert the xml This should only be implemented if the xml strucutre has changed so drastically, that a basic object conversion cannot do the job
+      /// Convert the xml This should only be implemented if the xml structure has changed so drastically, that a basic object conversion cannot do the job
       /// </summary>
       (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion);
    }
