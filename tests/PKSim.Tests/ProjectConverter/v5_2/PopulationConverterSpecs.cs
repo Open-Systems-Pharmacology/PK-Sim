@@ -55,8 +55,8 @@ namespace PKSim.ProjectConverter.v5_2
             if (molecule.Name == CoreConstants.Molecule.UndefinedLiver)
                continue;
             
-            _population.IndividualValuesCache.Has(string.Format("{0}|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR)).ShouldBeTrue();
-            _population.IndividualValuesCache.Has(string.Format("{0}|{1}", molecule.Name, CoreConstants.Parameters.ONTOGENY_FACTOR_GI)).ShouldBeTrue();
+            _population.IndividualValuesCache.Has($"{molecule.Name}|{CoreConstants.Parameters.ONTOGENY_FACTOR}").ShouldBeTrue();
+            _population.IndividualValuesCache.Has($"{molecule.Name}|{CoreConstants.Parameters.ONTOGENY_FACTOR_GI}").ShouldBeTrue();
          }
       }
 
