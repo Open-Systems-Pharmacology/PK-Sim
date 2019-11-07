@@ -53,7 +53,7 @@ namespace PKSim.Infrastructure.Services
                covariateValuesCache.Add(x);
 
             else if(x.IsNamed(Constants.Population.RACE_INDEX))
-               covariateValuesCache.Add(raceCovariateFrom(x));
+               covariateValuesCache.Add(populationCovariateFrom(x));
 
             else
                covariateValuesCache.Add(genderCovariateFrom(x));
@@ -78,10 +78,10 @@ namespace PKSim.Infrastructure.Services
          return new CovariateValues(Constants.Population.GENDER, genders);
       }
       
-      private CovariateValues raceCovariateFrom(CovariateValues originalCovariateValues)
+      private CovariateValues populationCovariateFrom(CovariateValues originalCovariateValues)
       {
          if (originalCovariateValues.Count == 0)
-            return new CovariateValues(Constants.Population.RACE);
+            return new CovariateValues(Constants.Population.POPULATION);
 
          //Not a number => Already to the newest format
          var firstValue = originalCovariateValues.ValueAt(0);
@@ -90,7 +90,7 @@ namespace PKSim.Infrastructure.Services
 
          // needs conversion
          var races = originalCovariateValues.Values.Select(x => _populationRepository.FindByIndex(int.Parse(x))).Select(x => x.Name).ToList();
-         return new CovariateValues(Constants.Population.RACE, races);
+         return new CovariateValues(Constants.Population.POPULATION, races);
       }
    }
 }
