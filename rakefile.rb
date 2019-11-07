@@ -1,7 +1,7 @@
 require_relative 'scripts/setup'
 require_relative 'scripts/copy-dependencies'
 require_relative 'scripts/utils'
-require_relative 'scripts/coverage'
+#require_relative 'scripts/coverage'
 require_relative 'src/Db/db'
 
 task :cover do
@@ -25,6 +25,17 @@ task :cover do
   Coverage.cover(filter, targetProjects)
 end
 
+
+module Coverage
+  def self.cover(filter_array, targetProjects)
+    testProjects = Dir.glob("tests/**/*.csproj").select{|path| targetProjects.include?(File.basename path)}
+    openCover = Dir.glob("packages/OpenCover.*/tools/OpenCover.Console.exe").first
+    targetArgs = testProjects.join(" ")
+
+    Utils.run_cmd(openCover, ["-register:path64", "-target:nunit3-console.exe", "-targetargs:#{targetArgs}", "-output:OpenCover.xml", "-filter:#{filter_array.join(" ")}", "-excludebyfile:*.Designer.cs"])
+    Utils.run_cmd("codecov", ["-f", "OpenCover.xml"])
+  end
+end
 
 task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
 	update_smart_xls(args)
