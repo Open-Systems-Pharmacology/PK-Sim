@@ -65,7 +65,7 @@ namespace PKSim.Reporting
       public void CreateReportAndValidate(object objectToReport, string reportName)
       {
          if (objectToReport == null) return;
-         _reportConfiguration.ReportFile = Path.Combine(_reportsDir.FullName, string.Format("{0}.pdf", reportName));
+         _reportConfiguration.ReportFile = Path.Combine(_reportsDir.FullName, $"{reportName}.pdf");
          _reportConfiguration.SubTitle = reportName;
          _reportingTask.CreateReportAsync(objectToReport, _reportConfiguration).Wait();
          FileHelper.FileExists(_reportConfiguration.ReportFile).ShouldBeTrue();
