@@ -30,7 +30,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          var converted = false;
-         if (element.Name.IsOneOf("PopulationSimulation", "RandomPopulation", "MoBiPopulation"))
+         if (element.Name.IsOneOf("PopulationSimulation", "RandomPopulation", "MoBiPopulation", "ImportedPopulation"))
          {
             convertIndividualValueCache(element);
             converted = true;

@@ -109,7 +109,7 @@ namespace PKSim.Core.Model
       public virtual IReadOnlyList<Gender> AllGenders(IGenderRepository genderRepository)
       {
          var genderCovariates = IndividualValuesCache.AllCovariateValuesFor(Constants.Population.GENDER);
-         return genderCovariates.Select(genderRepository.FindByName).ToList();
+         return genderCovariates?.Select(genderRepository.FindByName).ToList() ?? new List<Gender>();
       }
 
       public virtual IReadOnlyList<string> AllCovariateNames => new List<string>(IndividualValuesCache.AllCovariatesNames().Union(new[] {CoreConstants.Covariates.POPULATION_NAME}));
