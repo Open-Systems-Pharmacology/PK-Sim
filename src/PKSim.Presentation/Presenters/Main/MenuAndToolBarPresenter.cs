@@ -111,8 +111,8 @@ namespace PKSim.Presentation.Presenters.Main
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.View), PKSimConstants.RibbonPages.Views);
 
-         _view.AddQuickAcccessButton(_menuBarItemRepository[MenuBarItemIds.OpenProject]);
-         _view.AddQuickAcccessButton(_menuBarItemRepository[MenuBarItemIds.SaveProject]);
+         _view.AddQuickAccessButton(_menuBarItemRepository[MenuBarItemIds.OpenProject]);
+         _view.AddQuickAccessButton(_menuBarItemRepository[MenuBarItemIds.SaveProject]);
          _view.AddPageHeaderItemLinks(_menuBarItemRepository[MenuBarItemIds.Help]);
 
          initializeDynamicPages();

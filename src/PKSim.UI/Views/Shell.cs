@@ -22,6 +22,7 @@ namespace PKSim.UI.Views
       public Shell(IContainer container)
       {
          InitializeComponent();
+
          container.RegisterImplementationOf(ribbon.Manager);
          container.RegisterImplementationOf(ribbon.Manager as BarManager);
          container.RegisterImplementationOf(defaultLookAndFeel.LookAndFeel);
