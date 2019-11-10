@@ -17,6 +17,8 @@
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
     <PackageReference Include="OSPSuite.Core" Version="9.0.34" />
     <PackageReference Include="OSPSuite.UI" Version="9.0.34" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.UI" Version="9.0.32" />
   </ItemGroup>
 
   <ItemGroup>

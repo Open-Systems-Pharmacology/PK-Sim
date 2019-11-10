@@ -47,6 +47,14 @@
     <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="9.0.34" />
     <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="9.0.34" />
     <PackageReference Include="OSPSuite.Presentation.Serialization" Version="9.0.34" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="9.0.32" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.1" />
   </ItemGroup>
 

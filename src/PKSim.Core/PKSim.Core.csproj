@@ -34,6 +34,10 @@
     <PackageReference Include="OSPSuite.Assets" Version="9.0.34" />
     <PackageReference Include="OSPSuite.Assets.Images" Version="9.0.34" />
     <PackageReference Include="OSPSuite.Infrastructure.Import" Version="9.0.34" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.Assets" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="9.0.32" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="9.0.32" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
   </ItemGroup>
 
