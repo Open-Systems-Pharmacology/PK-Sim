@@ -57,7 +57,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData = new OriginData {Species = A.Fake<Species>().WithName("toto"), SpeciesPopulation = A.Fake<SpeciesPopulation>()};
+         _originData = new OriginData {Species = new Species{Name = "A", Icon = "B"}, SpeciesPopulation = A.Fake<SpeciesPopulation>()};
          _individual = new Individual();
          _organism = new Organism();
          _neighborhoods = A.Fake<IContainer>();
@@ -97,7 +97,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_create_a_standard_individual_based_on_the_predefined_value_for_the_orgine_data()
+      public void should_create_a_standard_individual_based_on_the_predefined_value_for_the_origin_data()
       {
          _result.ShouldBeEqualTo(_individual);
          _result.Neighborhoods.ShouldBeEqualTo(_neighborhoods);
@@ -106,15 +106,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void the_created_individual_should_have_an_organism_that_match_the_origine_data()
+      public void the_created_individual_should_have_an_organism_that_match_the_origin_data()
       {
          _result.ShouldBeEqualTo(_individual);
       }
 
       [Observation]
-      public void should_set_the_icon_name_to_the_name_of_the_species_so_that_individuals_can_be_differentiated()
+      public void should_set_the_icon_name_to_the_icon_of_the_species_so_that_individuals_can_be_differentiated()
       {
-         _result.Icon.ShouldBeEqualTo(_originData.Species.Name);
+         _result.Icon.ShouldBeEqualTo(_originData.Species.Icon);
       }
 
       [Observation]

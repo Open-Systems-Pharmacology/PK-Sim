@@ -45,7 +45,7 @@ namespace PKSim.Core
       protected Container _rootContainer;
       private CompoundPropertiesMapper _compoundPropertiesMapper;
       private CompoundProperties _compoundProperties;
-      protected Snapshots.CompoundProperties _snaphotCompoundProperties;
+      protected Snapshots.CompoundProperties _snapshotCompoundProperties;
       protected AdvancedParameterMapper _advancedParameterMapper;
       protected PKSimProject _project;
       protected ISimulationFactory _simulationFactory;
@@ -61,7 +61,7 @@ namespace PKSim.Core
       protected RandomPopulation _population;
       protected PopulationSimulation _populationSimulation;
       protected OSPSuite.Core.Domain.Model _model;
-      protected AdvancedParameterCollection _avancedParameterCollection;
+      protected AdvancedParameterCollection _advancedParameterCollection;
       protected DataRepository _observedData;
       protected IModelPropertiesTask _modelPropertiesTask;
       protected SimulationTimeProfileChartMapper _curveChartMapper;
@@ -72,7 +72,7 @@ namespace PKSim.Core
       protected PopulationAnalysisChart _populationSimulationAnalysisChart;
       protected Snapshots.PopulationAnalysisChart _snapshotPopulationAnalysisChart;
       protected ProcessMappingMapper _processMappingMapper;
-      protected InteractionSelection _intereactionSelection;
+      protected InteractionSelection _interactionSelection;
       protected CompoundProcessSelection _snapshotInteraction;
       protected InductionProcess _inductionProcess;
       protected EventMapping _eventMapping;
@@ -139,8 +139,8 @@ namespace PKSim.Core
                ModelConfiguration = new ModelConfiguration {ModelName = "4Comp"}
             }
          };
-         _intereactionSelection = new InteractionSelection {ProcessName = _inductionProcess.Name};
-         _simulationProperties.InteractionProperties.AddInteraction(_intereactionSelection);
+         _interactionSelection = new InteractionSelection {ProcessName = _inductionProcess.Name};
+         _simulationProperties.InteractionProperties.AddInteraction(_interactionSelection);
 
          _settings = new SimulationSettings();
          _rootContainer = new Container().WithName("Sim");
@@ -169,26 +169,26 @@ namespace PKSim.Core
             Model = _model
          };
 
-         _avancedParameterCollection = new AdvancedParameterCollection();
+         _advancedParameterCollection = new AdvancedParameterCollection();
          _populationSimulationAnalysisChart = new BoxWhiskerAnalysisChart();
-         _populationSimulation.SetAdvancedParameters(_avancedParameterCollection);
+         _populationSimulation.SetAdvancedParameters(_advancedParameterCollection);
          _populationSimulation.AddAnalysis(_populationSimulationAnalysisChart);
          _snapshotPopulationAnalysisChart = new Snapshots.PopulationAnalysisChart();
 
          A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshot(_populationSimulationAnalysisChart)).Returns(_snapshotPopulationAnalysisChart);
 
          _snapshotInteraction = new CompoundProcessSelection();
-         A.CallTo(() => _processMappingMapper.MapToSnapshot(_intereactionSelection)).Returns(_snapshotInteraction);
+         A.CallTo(() => _processMappingMapper.MapToSnapshot(_interactionSelection)).Returns(_snapshotInteraction);
          _snapshotInteraction.CompoundName = _compound.Name;
          _snapshotInteraction.Name = _inductionProcess.Name;
 
          _compoundProperties = new CompoundProperties();
-         _snaphotCompoundProperties = new Snapshots.CompoundProperties {Name = _compound.Name};
+         _snapshotCompoundProperties = new Snapshots.CompoundProperties {Name = _compound.Name};
          _individualSimulation.Properties.AddCompoundProperties(_compoundProperties);
 
          _eventMapping = new EventMapping();
          _individualSimulation.EventProperties.AddEventMapping(_eventMapping);
-         A.CallTo(() => _compoundPropertiesMapper.MapToSnapshot(_compoundProperties, _project)).Returns(_snaphotCompoundProperties);
+         A.CallTo(() => _compoundPropertiesMapper.MapToSnapshot(_compoundProperties, _project)).Returns(_snapshotCompoundProperties);
 
 
          _eventSelection = new EventSelection
@@ -222,7 +222,7 @@ namespace PKSim.Core
          _outputSelectionSnapshot = new OutputSelections();
          A.CallTo(() => _outputSelectionMapper.MapToSnapshot(_individualSimulation.OutputSelections)).Returns(_outputSelectionSnapshot);
 
-         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotInteraction, _inductionProcess)).Returns(_intereactionSelection);
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotInteraction, _inductionProcess)).Returns(_interactionSelection);
 
          return _completed;
       }
@@ -336,7 +336,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_compound_properties_to_snapshot()
       {
-         _snapshot.Compounds.ShouldContain(_snaphotCompoundProperties);
+         _snapshot.Compounds.ShouldContain(_snapshotCompoundProperties);
       }
 
       [Observation]
@@ -391,7 +391,7 @@ namespace PKSim.Core
       {
          await base.Context();
          _advancedParameter = new Model.AdvancedParameter();
-         _avancedParameterCollection.AddAdvancedParameter(_advancedParameter);
+         _advancedParameterCollection.AddAdvancedParameter(_advancedParameter);
          _snapshotAdvancedParameter = new AdvancedParameter();
          A.CallTo(() => _advancedParameterMapper.MapToSnapshot(_advancedParameter)).Returns(_snapshotAdvancedParameter);
       }
@@ -542,7 +542,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_interactions()
       {
-         _simulation.InteractionProperties.Interactions.ShouldContain(_intereactionSelection);
+         _simulation.InteractionProperties.Interactions.ShouldContain(_interactionSelection);
       }
 
       [Observation]
