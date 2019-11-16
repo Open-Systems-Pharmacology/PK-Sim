@@ -4,12 +4,12 @@ CREATE TABLE "tab_calculation_method_rate_descriptor_conditions"
 	calculation_method text not null,
 	formula_rate text not null,
 	tag text not null
-		references tab_tags (""),
+		references tab_tags,
 	condition text
-		references tab_criteria_conditions ("")
+		references tab_criteria_conditions
 			on update cascade on delete restrict,
 	primary key (calculation_method, formula_rate, tag),
-	foreign key (calculation_method, formula_rate) references tab_calculation_method_rates ("", "")
+	foreign key (calculation_method, formula_rate) references tab_calculation_method_rates
 );
 INSERT INTO tab_calculation_method_rate_descriptor_conditions(calculation_method,formula_rate,tag,condition) VALUES('DynamicSumFormulas','PARAM_Blood_Organs_Weight','BloodOrgan','Has');
 INSERT INTO tab_calculation_method_rate_descriptor_conditions(calculation_method,formula_rate,tag,condition) VALUES('DynamicSumFormulas','PARAM_Blood_Organs_Weight','Weight (tissue)','Has');
@@ -30,6 +30,9 @@ INSERT INTO tab_calculation_method_rate_descriptor_conditions(calculation_method
 INSERT INTO tab_calculation_method_rate_descriptor_conditions(calculation_method,formula_rate,tag,condition) VALUES('DynamicSumFormulas','PARAM_TotalDrugMass','DrugMass','Has');
 INSERT INTO tab_calculation_method_rate_descriptor_conditions(calculation_method,formula_rate,tag,condition) VALUES('DynamicSumFormulas','PARAM_TotalDrugMass','MOLECULE','Has');
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('DynamicSumFormulas','PARAM_Q_lng','P_#i','Flow');
+DELETE FROM tab_calculation_method_rates WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng';
+UPDATE tab_calculation_method_rates SET formula='Concentration' WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_Concentration';
+UPDATE tab_calculation_method_rates SET formula='Concentration' WHERE calculation_method='Observer_PKSim_4Comp' AND formula_rate='OBS_Concentration';
 INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(160,'ORGAN','Lung','Blood flow rate','DynamicSumFormulas','PARAM_Q_lng',0.0,1,NULL,1,NULL);
 DELETE FROM tab_container_parameter_rates WHERE container_id=160 AND container_type='ORGAN' AND container_name='Lung' AND parameter_name='Blood flow rate' AND calculation_method='Individual_PKSim';
 CREATE TABLE tab_criteria_conditions
@@ -42,4 +45,22 @@ INSERT INTO tab_criteria_conditions(condition) VALUES('DoesNotHave');
 INSERT INTO tab_criteria_conditions(condition) VALUES('Has');
 INSERT INTO tab_criteria_conditions(condition) VALUES('InContainer');
 INSERT INTO tab_criteria_conditions(condition) VALUES('NotInContainer');
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=152 AND container_type='ORGAN' AND container_name='Fat' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=155 AND container_type='ORGAN' AND container_name='Gonads' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=156 AND container_type='ORGAN' AND container_name='Heart' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=157 AND container_type='ORGAN' AND container_name='Kidney' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=158 AND container_type='ORGAN' AND container_name='LargeIntestine' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=159 AND container_type='ORGAN' AND container_name='Liver' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=161 AND container_type='ORGAN' AND container_name='Muscle' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=162 AND container_type='ORGAN' AND container_name='Pancreas' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=167 AND container_type='ORGAN' AND container_name='Skin' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=168 AND container_type='ORGAN' AND container_name='SmallIntestine' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=169 AND container_type='ORGAN' AND container_name='Spleen' AND parameter_name='Blood flow rate';
+DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_Q_lng' AND container_id=170 AND container_type='ORGAN' AND container_name='Stomach' AND parameter_name='Blood flow rate';
+UPDATE tab_rate_generic_molecules SET alias='Concentration', use_amount=0 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_Concentration' AND path_id=139 AND molecule='DRUG';
+UPDATE tab_rate_generic_molecules SET alias='Concentration', use_amount=0 WHERE calculation_method='Observer_PKSim_4Comp' AND formula_rate='OBS_Concentration' AND path_id=139 AND molecule='DRUG';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_Concentration' AND path_id=140 AND parameter_name='Volume';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Observer_PKSim_4Comp' AND formula_rate='OBS_Concentration' AND path_id=140 AND parameter_name='Volume';
 INSERT INTO tab_tags(tag,display_name,description) VALUES('Blood flow rate','Blood flow rate','Blood flow rate');
