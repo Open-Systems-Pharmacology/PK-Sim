@@ -1,20 +1,25 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Core.Domain.Descriptors;
+using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
    public class DynamicFormulaCriteriaRepository : StartableRepository<DynamicFormulaCriteria>, IDynamicFormulaCriteriaRepository
    {
       private readonly IFlatDynamicFormulaCriteriaRepository _flatDynamicFormulaCriteriaRepository;
+      private readonly ICriteriaConditionToDescriptorConditionMapper _descriptorConditionMapper;
       private readonly ICache<RateKey, DynamicFormulaCriteria> _criteria;
 
-      public DynamicFormulaCriteriaRepository(IFlatDynamicFormulaCriteriaRepository flatDynamicFormulaCriteriaRepository)
+      public DynamicFormulaCriteriaRepository(
+         IFlatDynamicFormulaCriteriaRepository flatDynamicFormulaCriteriaRepository,
+         ICriteriaConditionToDescriptorConditionMapper descriptorConditionMapper)
       {
          _flatDynamicFormulaCriteriaRepository = flatDynamicFormulaCriteriaRepository;
-         _criteria=new Cache<RateKey, DynamicFormulaCriteria>(dc=>dc.RateKey);
+         _descriptorConditionMapper = descriptorConditionMapper;
+         _criteria = new Cache<RateKey, DynamicFormulaCriteria>(dc => dc.RateKey);
       }
 
       protected override void DoStart()
@@ -23,21 +28,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
          {
             var rateKey = new RateKey(flatFormulaCriteria.CalculationMethod, flatFormulaCriteria.Rate);
 
-            DynamicFormulaCriteria criteria;
-            if (_criteria.Contains(rateKey))
-            {
-               criteria = _criteria[rateKey];
-            }
-            else
-            {
-               criteria = new DynamicFormulaCriteria(rateKey);
-               _criteria.Add(criteria);
-            }
+            if (!_criteria.Contains(rateKey))
+               _criteria.Add(new DynamicFormulaCriteria(rateKey));
 
-            if (flatFormulaCriteria.ShouldHave)
-               criteria.DescriptorCriteria.Add(new MatchTagCondition(flatFormulaCriteria.Tag));
-            else
-               criteria.DescriptorCriteria.Add(new NotMatchTagCondition(flatFormulaCriteria.Tag));
+            var criteria = _criteria[rateKey];
+            criteria.DescriptorCriteria.Add(_descriptorConditionMapper.MapFrom(flatFormulaCriteria.Condition, flatFormulaCriteria.Tag));
          }
       }
 
@@ -50,11 +45,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       public DescriptorCriteria CriteriaFor(RateKey rateKey)
       {
          Start();
-
-         if (!_criteria.Contains(rateKey))
-            return new DescriptorCriteria();
-
-         return _criteria[rateKey].DescriptorCriteria;
+         return _criteria.Contains(rateKey) ? _criteria[rateKey].DescriptorCriteria :  new DescriptorCriteria();
       }
 
       public DescriptorCriteria CriteriaFor(string calculationMethod, string rate)

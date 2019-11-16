@@ -30,13 +30,13 @@ namespace PKSim.Infrastructure
             ))
                return;
 
-            model.CustomComponentActivator = typeof(SerialiationCustomComponentActivator);
+            model.CustomComponentActivator = typeof(SerializationCustomComponentActivator);
          }
       }
 
-      public class SerialiationCustomComponentActivator : DefaultComponentActivator
+      public class SerializationCustomComponentActivator : DefaultComponentActivator
       {
-         public SerialiationCustomComponentActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+         public SerializationCustomComponentActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
             : base(model, kernel, onCreation, onDestruction)
          {
          }
