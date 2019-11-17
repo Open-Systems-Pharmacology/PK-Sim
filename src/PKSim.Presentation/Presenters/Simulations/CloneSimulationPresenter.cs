@@ -47,7 +47,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          return ConfigureSimulation(simulationToClone);
       }
 
-      protected override string HeayWorkCaption => PKSimConstants.UI.PerformingSimulationClone;
+      protected override string HeavyWorkCaption => PKSimConstants.UI.PerformingSimulationClone;
 
       protected override string ViewCaption(Simulation simulation)
       {

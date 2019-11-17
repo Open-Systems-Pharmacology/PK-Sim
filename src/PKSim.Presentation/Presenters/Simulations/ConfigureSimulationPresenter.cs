@@ -43,10 +43,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
       }
 
-      protected override string HeayWorkCaption
-      {
-         get { return PKSimConstants.UI.UpdatingSimulation; }
-      }
+      protected override string HeavyWorkCaption => PKSimConstants.UI.UpdatingSimulation;
 
       protected override string ViewCaption(Simulation simulation)
       {

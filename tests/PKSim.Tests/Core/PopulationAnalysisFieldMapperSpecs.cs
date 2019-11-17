@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Extensions;
@@ -28,7 +29,7 @@ namespace PKSim.Core
       protected PopulationAnalysisGroupingField _groupingField;
       private GroupingDefinition _groupingDefinition;
       protected Snapshots.GroupingDefinition _snapshotGroupingDefinition;
-      private IDimensionFactory _dimensionFactory;
+      private IDimensionRepository _dimensionRepository;
       private IDimension _mergedDimension;
 
       protected override Task Context()
@@ -37,9 +38,9 @@ namespace PKSim.Core
          _dimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
          _mergedDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
          _unit = _mergedDimension.Unit("h"); // this unit is defined in the merged dimension but not in the field dimension
-         _dimensionFactory = A.Fake<IDimensionFactory>();
+         _dimensionRepository = A.Fake<IDimensionRepository>();
 
-         sut = new PopulationAnalysisFieldMapper(_groupingDefinitionMapper, _dimensionFactory);
+         sut = new PopulationAnalysisFieldMapper(_groupingDefinitionMapper, _dimensionRepository);
 
          _groupingItem1 = new GroupingItem();
 
@@ -89,8 +90,8 @@ namespace PKSim.Core
          _snapshotGroupingDefinition = new Snapshots.GroupingDefinition();
          A.CallTo(() => _groupingDefinitionMapper.MapToSnapshot(_groupingDefinition)).Returns(_snapshotGroupingDefinition);
 
-         A.CallTo(() => _dimensionFactory.Dimension(_dimension.Name)).Returns(_dimension);
-         A.CallTo(() => _dimensionFactory.MergedDimensionFor(A<DataColumn>._)).Returns(_mergedDimension);
+         A.CallTo(() => _dimensionRepository.DimensionByName(_dimension.Name)).Returns(_dimension);
+         A.CallTo(() => _dimensionRepository.MergedDimensionFor(A<INumericValueField>._)).Returns(_mergedDimension);
          return _completed;
       }
    }

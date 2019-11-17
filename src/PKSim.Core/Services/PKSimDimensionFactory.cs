@@ -55,7 +55,7 @@ namespace PKSim.Core.Services
             return new MolarToMassConcentrationDimensionForFieldConverter(quantityField, populationDataCollector, DimensionRepository);
          
          if (dimension == DimensionRepository.Amount)
-            return new MolarToMassAmoutDimensionForFieldConverter(quantityField, populationDataCollector, DimensionRepository);
+            return new MolarToMassAmountDimensionForFieldConverter(quantityField, populationDataCollector, DimensionRepository);
 
          if (dimension == DimensionRepository.AucMolar)
             return new AucMolarToAucMassDimensionForFieldConverter(quantityField, populationDataCollector, DimensionRepository);
@@ -105,7 +105,7 @@ namespace PKSim.Core.Services
 
          if (column.Dimension == DimensionRepository.Mass)
             return new MassToAmoundDimensionConverter(column, DimensionRepository);
-
+         
          return null;
       }
    }

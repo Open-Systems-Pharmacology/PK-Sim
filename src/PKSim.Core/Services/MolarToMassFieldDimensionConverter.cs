@@ -31,9 +31,9 @@ namespace PKSim.Core.Services
       }
    }
 
-   public class MolarToMassAmoutDimensionForFieldConverter : MolarToMassFieldDimensionConverter
+   public class MolarToMassAmountDimensionForFieldConverter : MolarToMassFieldDimensionConverter
    {
-      public MolarToMassAmoutDimensionForFieldConverter(IQuantityField quantityField, IPopulationDataCollector populationDataCollector, IDimensionRepository dimensionRepository) :
+      public MolarToMassAmountDimensionForFieldConverter(IQuantityField quantityField, IPopulationDataCollector populationDataCollector, IDimensionRepository dimensionRepository) :
          base(quantityField, populationDataCollector, dimensionRepository.Amount, dimensionRepository.Mass)
       {
       }
@@ -47,21 +47,4 @@ namespace PKSim.Core.Services
       }
    }
 
-   public class MassToMolarConcentrationDimensionForFieldConverter : FieldDimensionConverter
-   {
-      public MassToMolarConcentrationDimensionForFieldConverter(IQuantityField quantityField, IPopulationDataCollector populationDataCollector, IDimensionRepository dimensionRepository)
-         : base(quantityField, populationDataCollector, dimensionRepository.MassConcentration, dimensionRepository.MolarConcentration)
-      {
-      }
-
-      public override double ConvertToTargetBaseUnit(double massConcentration)
-      {
-         return ConvertToMolar(massConcentration);
-      }
-
-      public override double ConvertToSourceBaseUnit(double molarConcentration)
-      {
-         return ConvertToMass(molarConcentration);
-      }
-   }
 }

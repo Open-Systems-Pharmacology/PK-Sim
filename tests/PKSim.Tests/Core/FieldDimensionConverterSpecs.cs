@@ -20,7 +20,7 @@ namespace PKSim.Core
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
          _quantityField.QuantityPath = "Quantity";
-         sut = new MolarToMassAmoutDimensionForFieldConverter(_quantityField, _populationDataCollector, _dimensionRepository);
+         sut = new MolarToMassAmountDimensionForFieldConverter(_quantityField, _populationDataCollector, _dimensionRepository);
       }
    }
 
