@@ -98,8 +98,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public IDimension MergedDimensionFor(object objectThatMightHaveDimension)
       {
-         var hasDimension = objectThatMightHaveDimension as IWithDimension;
-         return hasDimension != null ? MergedDimensionFor(hasDimension) : Constants.Dimension.NO_DIMENSION;
+         return objectThatMightHaveDimension is IWithDimension hasDimension ? MergedDimensionFor(hasDimension) : Constants.Dimension.NO_DIMENSION;
       }
 
       protected override void DoStart()

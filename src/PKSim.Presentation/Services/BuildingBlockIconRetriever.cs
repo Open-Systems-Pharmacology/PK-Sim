@@ -32,7 +32,7 @@ namespace PKSim.Presentation.Services
 
       public ApplicationIcon IconFor(Simulation simulation)
       {
-         string iconName = simulation.BuildingBlockType.ToString();
+         var iconName = simulation.BuildingBlockType.ToString();
 
          //for pop simulation, we use another icon
          if (simulation.IsAnImplementationOf<PopulationSimulation>())
@@ -48,13 +48,17 @@ namespace PKSim.Presentation.Services
       {
          var iconName = usedBuildingBlock.BuildingBlockType.ToString();
 
-         if (usedBuildingBlock.BuildingBlockType == PKSimBuildingBlockType.Individual)
-            iconName = speciesIconFrom(usedBuildingBlock);
+         switch (usedBuildingBlock.BuildingBlockType)
+         {
+            case PKSimBuildingBlockType.Individual:
+               iconName = individualIconFor(usedBuildingBlock);
+               break;
+            case PKSimBuildingBlockType.ObserverSet:
+               iconName = ApplicationIcons.Observer.IconName;
+               break;
+         }
 
-         if (usedBuildingBlock.BuildingBlockType == PKSimBuildingBlockType.ObserverSet)
-            iconName = ApplicationIcons.Observer.IconName;
-
-            return retrieveIconForStatus(iconName, _buildingBlockInSimulationManager.StatusFor(usedBuildingBlock));
+         return retrieveIconForStatus(iconName, _buildingBlockInSimulationManager.StatusFor(usedBuildingBlock));
       }
 
       public ApplicationIcon IconFor(ISimulationComparison simulationComparison)
@@ -71,10 +75,10 @@ namespace PKSim.Presentation.Services
 
       public ApplicationIcon IconFor(QualificationPlan qualificationPlan) => ApplicationIcons.Formula;
 
-      private string speciesIconFrom(UsedBuildingBlock usedBuildingBlock)
+      private string individualIconFor(UsedBuildingBlock usedBuildingBlock)
       {
          var individual = _buildingBlockRepository.ById(usedBuildingBlock.TemplateId) as Individual;
-         return individual == null ? usedBuildingBlock.BuildingBlockType.ToString() : individual.Species.Icon;
+         return individual == null ? usedBuildingBlock.BuildingBlockType.ToString() : individual.Icon;
       }
 
       private ApplicationIcon retrieveIconForStatus(string iconName, BuildingBlockStatus status) => ApplicationIcons.IconByName($"{iconName}{status}");

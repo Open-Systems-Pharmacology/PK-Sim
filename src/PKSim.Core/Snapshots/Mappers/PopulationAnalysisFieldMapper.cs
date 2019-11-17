@@ -4,18 +4,19 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
    public class PopulationAnalysisFieldMapper : ObjectBaseSnapshotMapperBase<IPopulationAnalysisField, PopulationAnalysisField>
    {
       private readonly GroupingDefinitionMapper _groupingDefinitionMapper;
-      private readonly IDimensionFactory _dimensionFactory;
+      private readonly IDimensionRepository _dimensionRepository;
 
-      public PopulationAnalysisFieldMapper(GroupingDefinitionMapper groupingDefinitionMapper, IDimensionFactory dimensionFactory)
+      public PopulationAnalysisFieldMapper(GroupingDefinitionMapper groupingDefinitionMapper, IDimensionRepository dimensionRepository)
       {
          _groupingDefinitionMapper = groupingDefinitionMapper;
-         _dimensionFactory = dimensionFactory;
+         _dimensionRepository = dimensionRepository;
       }
 
       public override async Task<PopulationAnalysisField> MapToSnapshot(IPopulationAnalysisField field)
@@ -120,16 +121,15 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void mapNumericFieldToModel(PopulationAnalysisField snapshot, INumericValueField field)
       {
-         field.Dimension = _dimensionFactory.Dimension(snapshot.Dimension);
-         var optimalDimension = _dimensionFactory.OptimalDimension(field.Dimension);
+         field.Dimension = _dimensionRepository.DimensionByName(snapshot.Dimension);
+         var optimalDimension = _dimensionRepository.MergedDimensionFor(field);
          field.DisplayUnit = optimalDimension.Unit(ModelValueFor(snapshot.Unit));
          field.Scaling = ModelValueFor(snapshot.Scaling, field.Scaling);
       }
 
       private void mapIf<T>(PopulationAnalysisField snapshot, IPopulationAnalysisField populationAnalysisField, Action<PopulationAnalysisField, T> mapAction) where T : class, IPopulationAnalysisField
       {
-         var field = populationAnalysisField as T;
-         if (field == null)
+         if (!(populationAnalysisField is T field))
             return;
 
          mapAction(snapshot, field);
@@ -148,8 +148,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (snapshot.GroupingDefinition != null)
          {
-            var groupingDefintion = await _groupingDefinitionMapper.MapToModel(snapshot.GroupingDefinition);
-            return new PopulationAnalysisGroupingField(groupingDefintion);
+            var groupingDefinition = await _groupingDefinitionMapper.MapToModel(snapshot.GroupingDefinition);
+            return new PopulationAnalysisGroupingField(groupingDefinition);
          }
 
          return new PopulationAnalysisOutputField();

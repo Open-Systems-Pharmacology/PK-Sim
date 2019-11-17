@@ -24,7 +24,7 @@ namespace PKSim.Core.Services
       {
          if (!_resolved)
          {
-            _molWeight = _populationDataCollector != null ? _populationDataCollector.MolWeightFor(_quantityField.QuantityPath) : null;
+            _molWeight = _populationDataCollector?.MolWeightFor(_quantityField.QuantityPath);
             _resolved = true;
          }
 
@@ -42,9 +42,6 @@ namespace PKSim.Core.Services
          }
       }
 
-      protected override double MolWeight
-      {
-         get { return _molWeight.GetValueOrDefault(double.NaN); }
-      }
+      protected override double MolWeight => _molWeight.GetValueOrDefault(double.NaN);
    }
 }
