@@ -49,7 +49,7 @@ namespace PKSim.Presentation.Services
          var iconName = usedBuildingBlock.BuildingBlockType.ToString();
 
          if (usedBuildingBlock.BuildingBlockType == PKSimBuildingBlockType.Individual)
-            iconName = speciesNameFrom(usedBuildingBlock);
+            iconName = speciesIconFrom(usedBuildingBlock);
 
          if (usedBuildingBlock.BuildingBlockType == PKSimBuildingBlockType.ObserverSet)
             iconName = ApplicationIcons.Observer.IconName;
@@ -71,10 +71,10 @@ namespace PKSim.Presentation.Services
 
       public ApplicationIcon IconFor(QualificationPlan qualificationPlan) => ApplicationIcons.Formula;
 
-      private string speciesNameFrom(UsedBuildingBlock usedBuildingBlock)
+      private string speciesIconFrom(UsedBuildingBlock usedBuildingBlock)
       {
          var individual = _buildingBlockRepository.ById(usedBuildingBlock.TemplateId) as Individual;
-         return individual == null ? usedBuildingBlock.BuildingBlockType.ToString() : individual.Species.Name;
+         return individual == null ? usedBuildingBlock.BuildingBlockType.ToString() : individual.Species.Icon;
       }
 
       private ApplicationIcon retrieveIconForStatus(string iconName, BuildingBlockStatus status) => ApplicationIcons.IconByName($"{iconName}{status}");

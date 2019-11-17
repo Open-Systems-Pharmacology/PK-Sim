@@ -55,6 +55,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var individual = _individualFactory.CreateAndOptimizeFor(originData, individualSnapshot.Seed);
          MapSnapshotPropertiesToModel(individualSnapshot, individual);
          await updateIndividualParameters(individualSnapshot, individual);
+         individual.Icon = individual.Species.Icon;
          var molecules = await _moleculeMapper.MapToModels(individualSnapshot.Molecules, individual);
          molecules?.Each(individual.AddMolecule);
          return individual;
