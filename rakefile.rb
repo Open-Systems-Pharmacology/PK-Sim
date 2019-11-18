@@ -25,18 +25,6 @@ task :cover do
   Coverage.cover(filter, targetProjects)
 end
 
-
-module Coverage
-  def self.cover(filter_array, targetProjects)
-    testProjects = Dir.glob("tests/**/*.csproj").select{|path| targetProjects.include?(File.basename path)}
-    openCover = Dir.glob("packages/OpenCover.*/tools/OpenCover.Console.exe").first
-    targetArgs = testProjects.join(" ")
-
-    Utils.run_cmd(openCover, ["-register:path64", "-target:nunit3-console.exe", "-targetargs:#{targetArgs}", "-output:OpenCover.xml", "-filter:#{filter_array.join(" ")}", "-excludebyfile:*.Designer.cs"])
-    Utils.run_cmd("codecov", ["-f", "OpenCover.xml"])
-  end
-end
-
 task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
 	update_smart_xls(args)
 
@@ -121,21 +109,21 @@ task :postclean do |t, args|
 	all_users_dir = ENV['ALLUSERSPROFILE']
 	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '9.0')
 
-	copy_depdencies solution_dir,  all_users_application_dir do
+	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml
 		copy_pkparameters_xml
 	end
 
-	copy_depdencies solution_dir,  all_users_application_dir do
+	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_file 'src/Db/PKSimDB.sqlite'
 		copy_file 'src/Db/TemplateDB/PKSimTemplateDBSystem.templateDBSystem'
 	end
 
-	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
+	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
 		copy_files 'OSPSuite.Presentation', 'xml'
 	end
 
-	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
+	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
 		copy_files 'StandardTemplate', '*'
 	end
 end
