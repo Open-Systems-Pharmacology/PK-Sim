@@ -1,6 +1,10 @@
 configuration: Debug
 image: Visual Studio 2019
 
+# hack until donet patching works with PR
+init:
+  - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set build_number=1) ELSE (Set build_number=%APPVEYOR_BUILD_NUMBER%)
+
 environment:
   app_version: '9.0'
 
