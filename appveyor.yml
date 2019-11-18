@@ -8,11 +8,12 @@ version: '$(app_version).{build}'
 
 clone_depth: 1
 
-assembly_info:
+dotnet_csproj:
   patch: true
-  file: SolutionInfo.*
-  assembly_version: "{version}"
-  assembly_file_version: "{version}"	
+  file: '**\*.csproj'
+  assembly_version: "$(app_version).$(build_number)"
+  file_version: "$(app_version).$(build_number)"
+  informational_version: "$(app_version).$(build_number)"
 
 skip_branch_with_pr: true
 
