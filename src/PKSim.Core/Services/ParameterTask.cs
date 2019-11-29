@@ -58,7 +58,7 @@ namespace PKSim.Core.Services
 
       /// <summary>
       ///    Sets the value in the parameter. Value will be converted in kernel unit
-      ///    The command will not induce a change in the vrsion of the containing building block
+      ///    The command will not induce a change in the version of the containing building block
       /// </summary>
       /// <param name="parameter">Parameter</param>
       /// <param name="valueToSetInGuiUnit">Value in display unit</param>
@@ -116,7 +116,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Sets the percentile in the parameter.
       /// </summary>
-      /// <param name="parameter">Distribued Parameter</param>
+      /// <param name="parameter">Distributed Parameter</param>
       /// <param name="percentile">Percentile</param>
       ICommand SetParameterPercentile(IParameter parameter, double percentile);
 
@@ -152,19 +152,19 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Resets all parameters to their default values
       /// </summary>
-      /// <param name="parameters">Parameters to be reseted</param>
+      /// <param name="parameters">Parameters to be reset</param>
       ICommand ResetParameters(IEnumerable<IParameter> parameters);
 
       /// <summary>
       ///    Resets the parameter to its default value
       /// </summary>
-      /// <param name="parameter">Parameter to be reseted</param>
+      /// <param name="parameter">Parameter to be reset</param>
       ICommand ResetParameter(IParameter parameter);
 
       /// <summary>
       ///    Scales the value of the given parameters with the factor
       /// </summary>
-      /// <param name="parametersToScale">Parameters whose values will be multipled with the factor</param>
+      /// <param name="parametersToScale">Parameters whose values will be multiplied with the factor</param>
       /// <param name="factor">Scaling factor</param>
       ICommand ScaleParameters(IEnumerable<IParameter> parametersToScale, double factor);
 
@@ -199,9 +199,9 @@ namespace PKSim.Core.Services
       void SetParameterFavorite(IParameter parameter, bool isFavorite);
 
       /// <summary>
-      ///    Sets the given compound type to the compountType Parameter
+      ///    Sets the given compound type to the compoundType Parameter
       /// </summary>
-      ICommand SetCompoundType(IParameter compountTypeParameter, CompoundType newCompoundType);
+      ICommand SetCompoundType(IParameter compoundTypeParameter, CompoundType newCompoundType);
 
       PathCache<IParameter> PathCacheFor(IEnumerable<IParameter> parameters);
 
@@ -217,10 +217,10 @@ namespace PKSim.Core.Services
       ///    This should not be used with building block parameters defined in simulation as a reference will be saved in both
       ///    simulation parameters and used building block
       /// </remarks>
-      ICommand SetParameterFomula(IParameter parameter, IFormula formula);
+      ICommand SetParameterFormula(IParameter parameter, IFormula formula);
 
       /// <summary>
-      ///    Updates the table formula defined in the tableParameter with the valus of the tableFormula! This implicitely
+      ///    Updates the table formula defined in the tableParameter with the the value of the tableFormula! This implicitly
       ///    performs a clone of the table formula and does not update the references in the tableParameter
       /// </summary>
       /// <param name="tableParameter">
@@ -230,7 +230,7 @@ namespace PKSim.Core.Services
       ICommand UpdateTableFormula(IParameter tableParameter, TableFormula tableFormula);
 
       /// <summary>
-      ///    Updates the table formula defined in the tableParameter with the valus of the tableFormula! This implicitely
+      ///    Updates the table formula defined in the tableParameter with the value of the tableFormula! This implicitly
       ///    performs a clone of the table formula and does not update the references in the tableParameter. The version of the
       ///    building block containing the parameter will not be changed
       /// </summary>
@@ -246,10 +246,10 @@ namespace PKSim.Core.Services
       ///    an empty command is returned.
       /// </summary>
       /// <param name="tableParameter">
-      ///    Table parameter containg the <see cref="DistributedTableFormula" /> that will be updated
+      ///    Table parameter containing the <see cref="DistributedTableFormula" /> that will be updated
       /// </param>
       /// <param name="distributedParameter">
-      ///    Distributed parameter containg the percentile use to update the <paramref name="tableParameter" /> formula
+      ///    Distributed parameter containing the percentile use to update the <paramref name="tableParameter" /> formula
       /// </param>
       ICommand UpdateDistributedTableFormula(IParameter tableParameter, IDistributedParameter distributedParameter);
    }
@@ -317,7 +317,7 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterValue(IParameter parameter, double value, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
       {
-         var shouldChangeVersion = true;
+         const bool shouldChangeVersion = true;
 
          if (parameter.IsExpression())
             return withUpdatedDefaultStateAndValue(commandForRelativeExpressionParameter(parameter, value).Run(_executionContext), parameter, shouldChangeVersion, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
@@ -471,9 +471,9 @@ namespace PKSim.Core.Services
          _favoriteTask.SetParameterFavorite(parameter, isFavorite);
       }
 
-      public ICommand SetCompoundType(IParameter compountTypeParameter, CompoundType newCompoundType)
+      public ICommand SetCompoundType(IParameter compoundTypeParameter, CompoundType newCompoundType)
       {
-         return executeAndUpdatedDefaultStateAndValue(new SetCompoundTypeParameterCommand(compountTypeParameter, newCompoundType), compountTypeParameter);
+         return executeAndUpdatedDefaultStateAndValue(new SetCompoundTypeParameterCommand(compoundTypeParameter, newCompoundType), compoundTypeParameter);
       }
 
       public PathCache<IParameter> PathCacheFor(IEnumerable<IParameter> parameters)
@@ -483,7 +483,7 @@ namespace PKSim.Core.Services
 
       public string PathFor(IParameter parameter) => _entityPathResolver.PathFor(parameter);
 
-      public ICommand SetParameterFomula(IParameter parameter, IFormula formula)
+      public ICommand SetParameterFormula(IParameter parameter, IFormula formula)
       {
          return executeAndUpdatedDefaultStateAndValue(new SetParameterFormulaCommand(parameter, formula), parameter);
       }
