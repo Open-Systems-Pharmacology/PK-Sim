@@ -52,7 +52,7 @@ namespace PKSim.CLI
 
       private static void registerCLITypes(IContainer container)
       {
-         container.Register<IProgressUpdater, CLIProgressUpdater>();
+         container.Register<IProgressUpdater, NoneProgressUpdater>();
          container.Register<IDialogCreator, CLIDialogCreator>();
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
          container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();

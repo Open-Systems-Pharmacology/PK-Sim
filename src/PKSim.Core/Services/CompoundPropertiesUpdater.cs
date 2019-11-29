@@ -47,7 +47,7 @@ namespace PKSim.Core.Services
          simulation.AllBuildingBlocks<Compound>().Where(c => simulation.CompoundPropertiesFor(c) == null)
             .Each(c => simulation.Properties.AddCompoundProperties(_compoundPropertiesMapper.MapFrom(c)));
 
-         //update protocol to previsous selected one in case of a one to one mapping (e.g. switching from compound A to compound B)
+         //update protocol to previous selected one in case of a one to one mapping (e.g. switching from compound A to compound B)
          if (!isUpdatingOneCompoundWithAnotherOne(simulation, allExistingCompoundProperties))
             return;
 

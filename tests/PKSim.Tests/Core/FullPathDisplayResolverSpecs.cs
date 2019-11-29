@@ -21,7 +21,7 @@ namespace PKSim.Core
          _individual = DomainHelperForSpecs.CreateIndividual();
          _representationInfoRep = A.Fake<IRepresentationInfoRepository>();
          _quantityPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
-         sut = new FullPathDisplayResolver(_representationInfoRep, _quantityPathMapper);
+         sut = new Services.FullPathDisplayResolver(_quantityPathMapper, _representationInfoRep);
       }
    }
 

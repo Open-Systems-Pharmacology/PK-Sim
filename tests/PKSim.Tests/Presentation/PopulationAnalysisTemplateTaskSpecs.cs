@@ -392,7 +392,7 @@ namespace PKSim.Presentation
       public void should_warn_the_user_that_the_field_might_not_be_the_one_he_intended_to_load()
       {
          _derivedField = sut.LoadDerivedFieldFor(_populationAnalysis, _dataField);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.Warning.DerivedFieldWasSavedForAnotherField("ANOTHER NAME", _dataField.Name))).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.Warning.DerivedFieldWasSavedForAnotherField("ANOTHER NAME", _dataField.Name), ViewResult.Yes)).MustHaveHappened();
       }
 
       [Observation]

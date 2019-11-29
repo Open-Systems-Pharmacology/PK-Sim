@@ -156,7 +156,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_ask_the_user_to_confirm_the_action()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyResetLayout, PKSimConstants.UI.Reset, PKSimConstants.UI.CancelButton)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyResetLayout, PKSimConstants.UI.Reset, PKSimConstants.UI.CancelButton, ViewResult.Yes)).MustHaveHappened();
       }
    }
 
@@ -166,7 +166,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<string>.Ignored, A<string>.Ignored)).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<string>.Ignored, A<string>.Ignored, ViewResult.Yes)).Returns(ViewResult.No);
       }
       protected override void Because()
       {
@@ -188,7 +188,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<string>.Ignored, A<string>.Ignored)).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<string>.Ignored, A<string>.Ignored, ViewResult.Yes)).Returns(ViewResult.Yes);
 
       }
       protected override void Because()

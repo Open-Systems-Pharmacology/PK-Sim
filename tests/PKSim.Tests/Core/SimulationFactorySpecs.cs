@@ -434,7 +434,7 @@ namespace PKSim.Core
       [Observation]
       public void should_reconciliate_the_values_between_the_old_and_new_simulation()
       {
-         A.CallTo(() => _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, _simulationForBioavailability)).MustHaveHappened();
+         A.CallTo(() => _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, _simulationForBioavailability, PKSimBuildingBlockType.Simulation)).MustHaveHappened();
       }
    }
 
@@ -495,11 +495,10 @@ namespace PKSim.Core
          _simulationForDDI.ModelProperties.ShouldBeEqualTo(_clonedSimulation.ModelProperties);
       }
 
-
       [Observation]
-      public void should_reconciliate_the_values_between_the_old_and_new_simulation()
+      public void should_reconciliate_the_values_between_the_old_and_new_simulation_by_synchronizing_simulation_and_protocol_values()
       {
-         A.CallTo(() => _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, _simulationForDDI)).MustHaveHappened();
+         A.CallTo(() => _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, _simulationForDDI, PKSimBuildingBlockType.Simulation | PKSimBuildingBlockType.Protocol)).MustHaveHappened();
       }
    }
 

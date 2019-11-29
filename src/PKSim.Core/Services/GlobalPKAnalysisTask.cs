@@ -157,7 +157,7 @@ namespace PKSim.Core.Services
                if (bioAvailability.Value > fractionAbsorbed.Value)
                   bioAvailability.Rules.Add(bioAvailabilityRule);
 
-               addFractionAbsorvedWarningTo(fractionAbsorbed, fractionAbsorbedWarningParameters);
+               addFractionAbsorbedWarningTo(fractionAbsorbed, fractionAbsorbedWarningParameters);
             }
 
             container.AddChildren(pkValues);
@@ -166,7 +166,7 @@ namespace PKSim.Core.Services
          return globalPKAnalysis;
       }
 
-      private void addFractionAbsorvedWarningTo(IParameter fractionAbsorbed, IReadOnlyList<IParameter> pkParameters)
+      private void addFractionAbsorbedWarningTo(IParameter fractionAbsorbed, IReadOnlyList<IParameter> pkParameters)
       {
          if (ValueComparer.AreValuesEqual(fractionAbsorbed.Value, 1, CoreConstants.DOUBLE_RELATIVE_EPSILON))
             return;
@@ -239,27 +239,15 @@ namespace PKSim.Core.Services
          return createParameter(name, value, dimensionName);
       }
 
-      private IBusinessRule bioAvailabilityRule
-      {
-         get
-         {
-            return CreateRule.For<IParameter>()
-               .Property(item => item.Value)
-               .WithRule((param, value) => false)
-               .WithError((param, value) => PKSimConstants.Warning.BioAvailabilityAndFractionAbsorbed);
-         }
-      }
+      private IBusinessRule bioAvailabilityRule { get; } = CreateRule.For<IParameter>()
+         .Property(item => item.Value)
+         .WithRule((param, value) => false)
+         .WithError((param, value) => PKSimConstants.Warning.BioAvailabilityAndFractionAbsorbed);
 
-      private IBusinessRule fractionAbsorbedRule
-      {
-         get
-         {
-            return CreateRule.For<IParameter>()
-               .Property(item => item.Value)
-               .WithRule((param, value) => value <= 1)
-               .WithError((param, value) => PKSimConstants.Warning.FractionAbsorbedAndEHC);
-         }
-      }
+      private IBusinessRule fractionAbsorbedRule { get; } = CreateRule.For<IParameter>()
+         .Property(item => item.Value)
+         .WithRule((param, value) => value <= 1)
+         .WithError((param, value) => PKSimConstants.Warning.FractionAbsorbedAndEHC);
 
       public void CalculateBioavailabilityFor(Simulation simulation, string compoundName)
       {

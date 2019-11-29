@@ -295,7 +295,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    returns true if the observed data is used in the current simulaton otherwise false
+      ///    returns true if the observed data is used in the current simulation otherwise false
       /// </summary>
       public virtual bool UsesObservedData(DataRepository dataRepository)
       {
