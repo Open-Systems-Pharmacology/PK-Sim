@@ -111,11 +111,11 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_parameters_from_the_original_simulation()
       {
-         A.CallTo(() => _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, _clonedSimulation)).MustHaveHappened();
+         A.CallTo(() => _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, _clonedSimulation, PKSimBuildingBlockType.Simulation)).MustHaveHappened();
       }
    }
 
-   public class When_configuring_a_simulation_and_the_new_configuration_results_in_some_overwritten_parameters_not_availalbe_anymore : concern_for_ConfigureSimulationPresenter
+   public class When_configuring_a_simulation_and_the_new_configuration_results_in_some_overwritten_parameters_not_available_anymore : concern_for_ConfigureSimulationPresenter
    {
       private string _fullPathForParameter;
       private string _message;

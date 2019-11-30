@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands;
 
 namespace PKSim.Presentation
 {
@@ -23,6 +24,7 @@ namespace PKSim.Presentation
       protected RenameObjectDTO _buildingBlockDTO;
       protected IPKSimBuildingBlock _cloneObject;
       private IRenameObjectDTOFactory _renameObjectBaseDTOFactory;
+      private IOSPSuiteExecutionContext _executionContext;
 
       protected override void Context()
       {
@@ -39,8 +41,9 @@ namespace PKSim.Presentation
          _cloner = A.Fake<ICloner>();
          A.CallTo(() => _cloner.Clone(_buildingBlock)).Returns(_cloneObject);
          _renameObjectBaseDTOFactory = A.Fake<IRenameObjectDTOFactory>();
+         _executionContext= A.Fake<IOSPSuiteExecutionContext>();  
          A.CallTo(() => _renameObjectBaseDTOFactory.CreateFor(_buildingBlock)).Returns(_buildingBlockDTO);
-         sut = new CloneBuildingBlockPresenter(_view, _objectTypeResolver, _renameObjectBaseDTOFactory, _cloner);
+         sut = new CloneBuildingBlockPresenter(_view, _objectTypeResolver, _renameObjectBaseDTOFactory, _cloner, _executionContext);
       }
    }
 

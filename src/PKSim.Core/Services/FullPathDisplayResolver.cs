@@ -1,37 +1,30 @@
 ﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
-using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
-   public class FullPathDisplayResolver : IFullPathDisplayResolver
+   public class FullPathDisplayResolver : OSPSuite.Core.Domain.Services.FullPathDisplayResolver
    {
       private readonly IRepresentationInfoRepository _representationInfoRepository;
-      private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
 
-      public FullPathDisplayResolver(IRepresentationInfoRepository representationInfoRepository, IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper)
+      public FullPathDisplayResolver(IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IRepresentationInfoRepository representationInfoRepository) : base(quantityDisplayPathMapper)
       {
          _representationInfoRepository = representationInfoRepository;
-         _quantityDisplayPathMapper = quantityDisplayPathMapper;
       }
 
-      public string FullPathFor(IObjectBase objectBase, bool addSimulationName = false)
+      public override string FullPathFor(IObjectBase objectBase, bool addSimulationName = false)
       {
          switch (objectBase)
          {
-            case IQuantity quantity:
-               return _quantityDisplayPathMapper.DisplayPathAsStringFor(quantity, addSimulationName);
             case ParameterAlternativeGroup parameterAlternativeGroup:
-               return displayFor(parameterAlternativeGroup);
-            case IEntity entity:
-               return entity.EntityPath();
+               return DisplayFor(parameterAlternativeGroup);
          }
 
-         return displayFor(objectBase);
+         return base.FullPathFor(objectBase, addSimulationName);
       }
 
-      private string displayFor(IObjectBase objectBase) => _representationInfoRepository.DisplayNameFor(objectBase);
+      protected override string DisplayFor(IObjectBase objectBase) => _representationInfoRepository.DisplayNameFor(objectBase);
    }
 }

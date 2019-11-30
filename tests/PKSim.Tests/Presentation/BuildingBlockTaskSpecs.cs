@@ -165,7 +165,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _buildingBlock.Name).Returns("toto");
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(_buildingBlockType, _buildingBlock.Name))).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(_buildingBlockType, _buildingBlock.Name), ViewResult.Yes)).Returns(ViewResult.No);
       }
 
       protected override void Because()
@@ -197,7 +197,7 @@ namespace PKSim.Presentation
          _buildingBlock.Id = "toto";
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(_buildingBlockType, _buildingBlock.Name))).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(_buildingBlockType, _buildingBlock.Name), ViewResult.Yes)).Returns(ViewResult.Yes);
       }
 
       protected override void Because()

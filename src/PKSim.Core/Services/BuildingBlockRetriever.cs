@@ -37,7 +37,7 @@ namespace PKSim.Core.Services
 
       public IPKSimBuildingBlock BuildingBlockContaining(IEntity entity)
       {
-         return findBuildingbBlockFor(entity);
+         return findBuildingBlockFor(entity);
       }
 
       public IPKSimBuildingBlock BuildingBlockWithId(string buildingBlockId)
@@ -55,15 +55,15 @@ namespace PKSim.Core.Services
 
       public string BuildingBlockIdContaining(IEntity entity)
       {
-         var buidingBlock = BuildingBlockContaining(entity);
-         return buidingBlock != null ? buidingBlock.Id : string.Empty;
+         var buildingBlock = BuildingBlockContaining(entity);
+         return buildingBlock != null ? buildingBlock.Id : string.Empty;
       }
 
-      private IPKSimBuildingBlock findBuildingbBlockFor(IEntity entity)
+      private IPKSimBuildingBlock findBuildingBlockFor(IEntity entity)
       {
          if (entity == null) return null;
          var buildingBlock = entity as IPKSimBuildingBlock;
-         return buildingBlock ?? findBuildingbBlockFor(entity.ParentContainer);
+         return buildingBlock ?? findBuildingBlockFor(entity.ParentContainer);
       }
    }
 }

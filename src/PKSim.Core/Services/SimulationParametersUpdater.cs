@@ -12,7 +12,8 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="sourceSimulation">Simulation with the original values</param>
       /// <param name="targetSimulation">Simulation that will be updated</param>
-      ValidationResult ReconciliateSimulationParametersBetween(Simulation sourceSimulation, Simulation targetSimulation);
+      /// <param name="buildingBlockType">Type of parameters to be synchronized between simulations. By default, only simulation parameters will be updated</param>
+      ValidationResult ReconciliateSimulationParametersBetween(Simulation sourceSimulation, Simulation targetSimulation, PKSimBuildingBlockType buildingBlockType = PKSimBuildingBlockType.Simulation);
    }
 
    public class SimulationParametersUpdater : ISimulationParametersUpdater
@@ -26,10 +27,10 @@ namespace PKSim.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public ValidationResult ReconciliateSimulationParametersBetween(Simulation sourceSimulation, Simulation targetSimulation)
+      public ValidationResult ReconciliateSimulationParametersBetween(Simulation sourceSimulation, Simulation targetSimulation, PKSimBuildingBlockType buildingBlockType = PKSimBuildingBlockType.Simulation)
       {
-         var sourceParameters = simulationParametersCacheFor(sourceSimulation);
-         var targetParameters = simulationParametersCacheFor(targetSimulation);
+         var sourceParameters = simulationParametersCacheFor(sourceSimulation, buildingBlockType);
+         var targetParameters = simulationParametersCacheFor(targetSimulation, buildingBlockType);
          _parameterSetUpdater.UpdateValues(sourceParameters, targetParameters);
          return validateParameterUpdates(sourceParameters, targetParameters);
       }
@@ -52,9 +53,9 @@ namespace PKSim.Core.Services
          return validationResult;
       }
 
-      private PathCache<IParameter> simulationParametersCacheFor(Simulation simulation)
+      private PathCache<IParameter> simulationParametersCacheFor(Simulation simulation, PKSimBuildingBlockType buildingBlockType)
       {
-         return new PathCache<IParameter>(_entityPathResolver).For(simulation.ParametersOfType(PKSimBuildingBlockType.Simulation));
+         return new PathCache<IParameter>(_entityPathResolver).For(simulation.ParametersOfType(buildingBlockType));
       }
    }
 }

@@ -50,16 +50,15 @@ namespace PKSim.Core.Services
       {
          _progressUpdater = _progressManager.Create();
          _progressUpdater.Initialize(populationSimulation.NumberOfItems, PKSimConstants.UI.Calculating);
-         _populationRunner.NumberOfCoresToUse = _userSettings.MaximumNumberOfCoresToUse;
 
          var begin = SystemTime.UtcNow();
          try
          {
             var populationData = _populationExporter.CreatePopulationDataFor(populationSimulation);
             var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(populationSimulation, shouldCloneModel: false);
-
+            var runOptions = new RunOptions {NumberOfCoresToUse = _userSettings.MaximumNumberOfCoresToUse};
             _eventPublisher.PublishEvent(new SimulationRunStartedEvent());
-            var populationRunResults = await _populationRunner.RunPopulationAsync(modelCoreSimulation, populationData, populationSimulation.AgingData.ToDataTable());
+            var populationRunResults = await _populationRunner.RunPopulationAsync(modelCoreSimulation, runOptions, populationData, populationSimulation.AgingData.ToDataTable());
             _simulationResultsSynchronizer.Synchronize(populationSimulation, populationRunResults.Results);
             _populationSimulationAnalysisSynchronizer.UpdateAnalysesDefinedIn(populationSimulation);
             _eventPublisher.PublishEvent(new SimulationResultsUpdatedEvent(populationSimulation));
@@ -101,7 +100,7 @@ namespace PKSim.Core.Services
          _populationRunner.StopSimulation();
       }
 
-      private void simulationProgress(object sender, PopulationSimulationProgressEventArgs e)
+      private void simulationProgress(object sender, MultipleSimulationsProgressEventArgs e)
       {
          _progressUpdater.ReportProgress(e.NumberOfCalculatedSimulation, PKSimConstants.UI.CalculationPopulationSimulation(e.NumberOfCalculatedSimulation, e.NumberOfSimulations));
       }

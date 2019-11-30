@@ -52,7 +52,7 @@ namespace PKSim.Presentation
       [Observation]
       public void the_user_should_be_asked_to_confirm_the_deletion()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }))).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }), ViewResult.Yes)).MustHaveHappened();
       }
    }
 
@@ -61,7 +61,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }))).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }), ViewResult.Yes)).Returns(ViewResult.No);
       }
 
       [Observation]
@@ -71,14 +71,14 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_user_decides_to_delete_a_summary_plot_and_confirn_the_deletion : concern_for_DeleteSimulationComparisonsUICommand
+   public class When_the_user_decides_to_delete_a_summary_plot_and_confirm_the_deletion : concern_for_DeleteSimulationComparisonsUICommand
    {
       private SimulationComparisonDeletedEvent _chartDeletedEvent;
 
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }))).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }), ViewResult.Yes)).Returns(ViewResult.Yes);
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationComparisonDeletedEvent>.Ignored)).Invokes(
             x => _chartDeletedEvent = x.GetArgument<SimulationComparisonDeletedEvent>(0));
       }

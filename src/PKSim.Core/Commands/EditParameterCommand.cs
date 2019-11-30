@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -34,7 +33,7 @@ namespace PKSim.Core.Commands
          if (string.IsNullOrEmpty(BuildingBlockId))
             BuildingBlockId = SimulationId;
 
-         udpateBuildingBlockProperties(context);
+         updateBuildingBlockProperties(context);
 
          setBuildingBlockAlteredFlag(context);
 
@@ -52,7 +51,7 @@ namespace PKSim.Core.Commands
          context.UpdateDependenciesOn(_parameter);
       }
 
-      private void udpateBuildingBlockProperties(IExecutionContext context)
+      private void updateBuildingBlockProperties(IExecutionContext context)
       {
          var parentBuildingBlock = context.BuildingBlockContaining(_parameter) ?? context.Get<IPKSimBuildingBlock>(BuildingBlockId);
          context.UpdateBuildingBlockPropertiesInCommand(this, parentBuildingBlock);
@@ -74,13 +73,6 @@ namespace PKSim.Core.Commands
          if (string.IsNullOrEmpty(parameter.Origin.BuilingBlockId))
             return false;
 
-         //THIS SHOULD NOT HAPPEN and should be deleted
-         if (string.IsNullOrEmpty(parameter.Origin.SimulationId) || parameter.BuildingBlockType == PKSimBuildingBlockType.Simulation)
-         {
-            Debug.Print($"This should not happen for parameter {parameter.Name}");
-            return false;
-         }
-
          return true;
       }
 
@@ -91,6 +83,10 @@ namespace PKSim.Core.Commands
             return;
 
          var simulation = context.Get<Simulation>(SimulationId);
+
+         //This can happen when updating simulation parameters during ad-hoc simulation creating that are not registered in context (for example for DDI Ratio simulation)
+         if (simulation == null)
+            return;
 
          //retrieve the former flag 
          bool altered = simulation.GetAltered(_parameter.Origin.BuilingBlockId);
