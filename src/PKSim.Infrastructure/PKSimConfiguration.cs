@@ -10,7 +10,7 @@ namespace PKSim.Infrastructure
 {
    public class PKSimConfiguration : OSPSuiteConfiguration, IPKSimConfiguration
    {
-      public string PKSimDbPath { get; }
+      public string PKSimDbPath { get; set; }
       public string TemplateSystemDatabasePath { get; }
       public string TemplateUserDatabaseTemplatePath { get; }
       public string DefaultTemplateUserDatabasePath { get; }

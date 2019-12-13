@@ -71,8 +71,8 @@ namespace PKSim.IntegrationTests
             userSettings.NumberOfBins = CoreConstants.DEFAULT_NUMBER_OF_BINS;
 
 
-            InfrastructureRegister.RegisterSerializationDependencies();
-            InfrastructureRegister.RegisterWorkspace();
+            InfrastructureRegister.LoadSerializers(container);
+            InfrastructureRegister.RegisterWorkspace(container);
          }
 
          //Required for usage with nunit 3

@@ -1,45 +1,62 @@
 using System;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Threading;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Exceptions;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Infrastructure;
 
-namespace PKSim.Matlab
+namespace PKSim.R.Bootstrap
 {
    internal class ApplicationStartup
    {
-      private static bool _initialized;
+      private static IContainer _container;
 
-      public static void Initialize()
+      public static IContainer Initialize()
       {
-         if (_initialized) return;
+         if (_container != null)
+            return _container;
 
          redirectNHibernateAssembly();
 
-         new ApplicationStartup().initializeForMatlab();
-         _initialized = true;
+         _container = new ApplicationStartup().performInitialization();
+         return _container;
       }
 
-      private void initializeForMatlab()
+      private IContainer performInitialization()
       {
-         if (IoC.Container != null)
-            return;
-
          var container = InfrastructureRegister.Initialize();
 
          using (container.OptimizeDependencyResolution())
          {
             container.RegisterImplementationOf(new SynchronizationContext());
-            container.AddRegister(x => x.FromType<MatlabRegister>());
+            container.AddRegister(x => x.FromType<RRegister>());
             container.AddRegister(x => x.FromType<CoreRegister>());
             container.AddRegister(x => x.FromType<InfrastructureRegister>());
-
-            InfrastructureRegister.LoadSerializers(container);
-            container.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
+            InfrastructureRegister.RegisterSerializationDependencies(container);
+            registerMinimalImplementations(container);
          }
+
+         var configuration = container.Resolve<IPKSimConfiguration>();
+         configuration.PKSimDbPath = Path.Combine(new FileInfo(Assembly.GetAssembly(GetType()).Location).DirectoryName, CoreConstants.PK_SIM_DB_FILE);
+
+         // Serialization mapping will require access to PKSim DB and as such, it needs to be performed after the DB was set.
+         InfrastructureRegister.LoadDefaultEntities(container);
+         return container;
+      }
+
+      private void registerMinimalImplementations(IContainer container)
+      {
+         container.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
+         container.Register<ICoreUserSettings, CLIUserSettings>();
+         container.Register<IProgressUpdater, NoneProgressUpdater>();
+         container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
+         container.Register<IExceptionManager, CLIExceptionManager>();
       }
 
       private static void redirectNHibernateAssembly()

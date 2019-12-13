@@ -1,3 +1,4 @@
+using System;
 using Castle.Facilities.TypedFactory;
 using Microsoft.Extensions.Logging;
 using OSPSuite.Core;
@@ -24,6 +25,7 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using PKSim.Core;
 using PKSim.Core.Reporting;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.Core;
 using PKSim.Infrastructure.ORM.Mappers;
@@ -103,8 +105,7 @@ namespace PKSim.Infrastructure
          container.Register<IPKSimConfiguration, IApplicationConfiguration, PKSimConfiguration>(LifeStyle.Singleton);
 
          var configuration = container.Resolve<IPKSimConfiguration>();
-         CoreConstants.ProductDisplayName = configuration.ProductDisplayName;
-      }
+         CoreConstants.ProductDisplayName = configuration.ProductDisplayName; }
 
       private static void registerFactoryIn(IContainer container)
       {
@@ -112,10 +113,14 @@ namespace PKSim.Infrastructure
          container.RegisterFactory<IHistoryManagerFactory>();
       }
 
-      public static void RegisterSerializationDependencies()
+      public static void LoadSerializers(IContainer container)
       {
-         var container = IoC.Container;
+         RegisterSerializationDependencies(container);
+         LoadDefaultEntities(container);
+      }
 
+      public static void RegisterSerializationDependencies(IContainer container)
+      {
          container.Register<ISerializationManager, XmlSerializationManager>();
          container.Register<IStringSerializer, StringSerializer>();
          container.Register<IStringSerializer, CompressedStringSerializer>(CoreConstants.Serialization.Compressed);
@@ -124,9 +129,36 @@ namespace PKSim.Infrastructure
          container.Register(typeof(IXmlReader<>), typeof(XmlReader<>));
          container.Register(typeof(IXmlWriter<>), typeof(XmlWriter<>));
 
-         //load repository to trigger initialization
-         container.Resolve<IPKSimXmlSerializerRepository>().PerformMapping();
+         //Core serialization to serialize to pkml compatible with core
+         container.AddRegister(x => x.FromType<CoreSerializerRegister>());
+      }
 
+      public static void LoadDefaultEntities(IContainer container)
+      {
+         //load unit serializer
+         container.Resolve<IUnitSystemXmlSerializerRepository>().PerformMapping();
+         //Then trigger dimension load to load the dimensions
+         loadDimensionRepository(container);
+
+         //Load pkml serializers
+         var ospSuiteXmlSerializerRepository = container.Resolve<IOSPSuiteXmlSerializerRepository>();
+         ospSuiteXmlSerializerRepository.AddPresentationSerializers();
+         ospSuiteXmlSerializerRepository.PerformMapping();
+         //then load pk parameters
+         loadPKParameters(container);
+
+         //last load all serializer
+         container.Resolve<IPKSimXmlSerializerRepository>().PerformMapping();
+      }
+
+      private static void loadDimensionRepository(IContainer container)
+      {
+         //Loading the dimension will trigger the load
+         container.Resolve<IDimensionRepository>().All();
+      }
+
+      private static void loadPKParameters(IContainer container)
+      {
          //register pk analyses values
          var pkParameterRepository = container.Resolve<IPKParameterRepository>();
          var pKParameterLoader = container.Resolve<IPKParameterRepositoryLoader>();
@@ -134,15 +166,13 @@ namespace PKSim.Infrastructure
          pKParameterLoader.Load(pkParameterRepository, pkSimConfiguration.PKParametersFilePath);
       }
 
-      public static void RegisterWorkspace()
+      public static void RegisterWorkspace(IContainer container)
       {
-         var container = IoC.Container;
          container.Register<IWorkspace, IWithWorkspaceLayout, ICoreWorkspace, OSPSuite.Core.IWorkspace, Workspace>(LifeStyle.Singleton);
       }
 
-      private void registerORMDependencies()
+      private void registerORMDependencies(IContainer container)
       {
-         var container = IoC.Container;
          container.Register(typeof(IDataTableToMetaDataMapper<>), typeof(DataTableToMetaDataMapper<>));
       }
 
@@ -217,23 +247,13 @@ namespace PKSim.Infrastructure
          container.Register<IFlatContainerIdToContainerMapperSpecification, FlatContainerIdToFormulationMapper>();
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
 
-         registerORMDependencies();
-
-         var xmlRegister = new CoreSerializerRegister();
-         container.AddRegister(x => x.FromInstance(xmlRegister));
-         var ospSuiteXmlSerializerRepository = container.Resolve<IOSPSuiteXmlSerializerRepository>();
-         ospSuiteXmlSerializerRepository.AddPresentationSerializers();
-         xmlRegister.PerformMappingForSerializerIn(container);
+         registerORMDependencies(container);
 
          container.AddRegister(x => x.FromType<ReportingRegister>());
          container.AddRegister(x => x.FromType<InfrastructureSerializationRegister>());
          container.AddRegister(x => x.FromType<InfrastructureReportingRegister>());
          container.AddRegister(x => x.FromType<InfrastructureExportRegister>());
          container.AddRegister(x => x.FromType<InfrastructureImportRegister>());
-
-         //register factory also as IObjectBaseFactoryIBuildTrackerFactory
-         var factory = container.Resolve<IPKSimObjectBaseFactory>() as IObjectBaseFactory;
-         container.RegisterImplementationOf(factory);
 
          var configuration = container.Resolve<IPKSimConfiguration>();
          var versionChecker = container.Resolve<IVersionChecker>();

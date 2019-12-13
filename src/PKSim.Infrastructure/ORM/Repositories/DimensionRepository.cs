@@ -19,7 +19,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IUnitSystemXmlSerializerRepository _unitSystemXmlSerializerRepository;
       private IList<string> _dimensionNames;
 
-      public DimensionRepository(IPKSimDimensionFactory dimensionFactory, IUnitSystemXmlSerializerRepository unitSystemXmlSerializerRepository,
+      public DimensionRepository(
+         IPKSimDimensionFactory dimensionFactory, 
+         IUnitSystemXmlSerializerRepository unitSystemXmlSerializerRepository,
          IPKSimConfiguration pkSimConfiguration)
       {
          _dimensionFactory = dimensionFactory;

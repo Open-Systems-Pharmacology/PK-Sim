@@ -16,7 +16,11 @@ namespace PKSim.Core.Services
 
    public class PKSimObjectBaseFactory : ObjectBaseFactory, IPKSimObjectBaseFactory
    {
-      public PKSimObjectBaseFactory(IoC container, IDimensionRepository dimensionRepository, IIdGenerator idGenerator, ICreationMetaDataFactory creationMetaDataFactory)
+      public PKSimObjectBaseFactory(
+         IoC container, 
+         IDimensionRepository dimensionRepository, 
+         IIdGenerator idGenerator, 
+         ICreationMetaDataFactory creationMetaDataFactory)
          : base(container, dimensionRepository.DimensionFactory, idGenerator,creationMetaDataFactory)
       {
       }
