@@ -14,12 +14,6 @@ namespace PKSim.R
 
             //Register Services
             scan.IncludeNamespaceContainingType<IOntogenyFactorsRetriever>();
-//
-//               //Register Minimal implementations
-//               scan.IncludeNamespaceContainingType<DisplayUnitRetriever>();
-//
-//               //Register Mappers
-//               scan.IncludeNamespaceContainingType<ISensitivityAnalysisToCoreSensitivityAnalysisMapper>();
 
             scan.WithConvention<PKSimRegistrationConvention>();
          });
