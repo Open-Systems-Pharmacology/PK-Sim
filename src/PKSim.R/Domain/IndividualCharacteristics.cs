@@ -4,16 +4,14 @@ using PKSim.Core.Snapshots;
 namespace PKSim.R.Domain
 {
    /// <summary>
-   /// This object is required because one cannot pass array of object from R to .NET
+   /// Wrapper object for .net that encapsulates origin data and molecule ontogeny
    /// </summary>
-   public class IndividualCharacteristics
+   public class IndividualCharacteristics : OriginData
    {
       private readonly List<MoleculeOntogeny> _moleculeOntogenies = new List<MoleculeOntogeny>();
 
-
-      public OriginData OriginData { get; set; }
-
       public IReadOnlyList<MoleculeOntogeny> MoleculeOntogenies => _moleculeOntogenies;
+      public MoleculeOntogeny[] MoleculeOntogeniesAsArray => _moleculeOntogenies.ToArray();
 
       public void AddMoleculeOntogeny(MoleculeOntogeny moleculeOntogeny)
       {

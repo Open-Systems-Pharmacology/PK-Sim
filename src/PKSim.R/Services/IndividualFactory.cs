@@ -46,7 +46,7 @@ namespace PKSim.R.Services
 
       public ParameterValue[] CreateIndividual(IndividualCharacteristics individualCharacteristics)
       {
-         var originData = originDataFrom(individualCharacteristics.OriginData);
+         var originData = originDataFrom(individualCharacteristics);
          var moleculeOntogenies = individualCharacteristics.MoleculeOntogenies;
          var individual = _individualFactory.CreateAndOptimizeFor(originData);
          var individualProperties = _individualValuesMapper.MapFrom(individual);
@@ -57,7 +57,7 @@ namespace PKSim.R.Services
 
       public DistributedParameterValue[] DistributionsFor(IndividualCharacteristics individualCharacteristics)
       {
-         var originData = originDataFrom(individualCharacteristics.OriginData);
+         var originData = originDataFrom(individualCharacteristics);
          var moleculeOntogenies = individualCharacteristics.MoleculeOntogenies;
          var individual = _individualFactory.CreateAndOptimizeFor(originData);
          return individual.GetAllChildren<IDistributedParameter>().Select(distributedParameterValueFrom).ToArray();

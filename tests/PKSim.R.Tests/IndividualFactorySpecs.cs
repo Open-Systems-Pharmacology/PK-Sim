@@ -8,13 +8,12 @@ using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.R.Domain;
 using IIndividualFactory = PKSim.R.Services.IIndividualFactory;
-using OriginData = PKSim.Core.Snapshots.OriginData;
 
 namespace PKSim.R
 {
    public abstract class concern_for_IndividualFactory : ContextForIntegration<IIndividualFactory>
    {
-      protected OriginData _originData;
+      protected IndividualCharacteristics _individualCharacteristics;
 
       public override void GlobalContext()
       {
@@ -30,7 +29,7 @@ namespace PKSim.R
       protected override void Context()
       {
          base.Context();
-         _originData = new OriginData
+         _individualCharacteristics = new IndividualCharacteristics
          {
             Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
@@ -55,8 +54,7 @@ namespace PKSim.R
 
       protected override void Because()
       {
-         var individualCharacteristics = new IndividualCharacteristics { OriginData = _originData };
-         _results = sut.CreateIndividual(individualCharacteristics);
+         _results = sut.CreateIndividual(_individualCharacteristics);
       }
 
       [Observation]
@@ -73,7 +71,7 @@ namespace PKSim.R
       protected override void Context()
       {
          base.Context();
-         _originData = new OriginData
+         _individualCharacteristics = new IndividualCharacteristics
          {
             Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
@@ -98,9 +96,8 @@ namespace PKSim.R
 
       protected override void Because()
       {
-         var individualCharacteristics = new IndividualCharacteristics {OriginData = _originData};
-         individualCharacteristics.AddMoleculeOntogeny(new MoleculeOntogeny { Molecule = "CYP3A4", Ontogeny = "CYP3A4" });
-         _results = sut.CreateIndividual(individualCharacteristics);
+         _individualCharacteristics.AddMoleculeOntogeny(new MoleculeOntogeny { Molecule = "CYP3A4", Ontogeny = "CYP3A4" });
+         _results = sut.CreateIndividual(_individualCharacteristics);
       }
 
       [Observation]
@@ -118,7 +115,8 @@ namespace PKSim.R
       protected override void Context()
       {
          base.Context();
-         _originData = new OriginData
+         _individualCharacteristics = new IndividualCharacteristics
+
          {
             Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
@@ -143,7 +141,7 @@ namespace PKSim.R
 
       protected override void Because()
       {
-         _results = sut.DistributionsFor( new IndividualCharacteristics{OriginData=_originData});
+         _results = sut.DistributionsFor(_individualCharacteristics);
       } 
 
       [Observation]
