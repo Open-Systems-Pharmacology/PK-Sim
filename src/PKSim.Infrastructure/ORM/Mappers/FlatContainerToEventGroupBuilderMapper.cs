@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
+using OSPSuite.Utility;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.FlatObjects;
@@ -12,22 +12,24 @@ using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public interface IFlatContainerToEventGroupBuilderMapper:IMapper<FlatContainer,IEventGroupBuilder>
-   {}
+   public interface IFlatContainerToEventGroupBuilderMapper : IMapper<FlatContainer, IEventGroupBuilder>
+   {
+   }
 
    public class FlatContainerToEventGroupBuilderMapper :
-      FlatContainerIdToContainerMapperBase<IEventGroupBuilder>,IFlatContainerToEventGroupBuilderMapper
+      FlatContainerIdToContainerMapperBase<IEventGroupBuilder>, IFlatContainerToEventGroupBuilderMapper
    {
       private readonly IParameterContainerTask _parameterContainerTask;
-      private readonly IFlatContainerRepository _flatContainerRepo;
       private readonly IFlatContainerToEventBuilderMapper _eventMapper;
 
-      public FlatContainerToEventGroupBuilderMapper(IParameterContainerTask parameterContainerTask,
-                                                    IFlatContainerRepository flatContainerRepo,
-                                                    IFlatContainerToEventBuilderMapper eventMapper)
+      public FlatContainerToEventGroupBuilderMapper(
+         IParameterContainerTask parameterContainerTask,
+         IFlatContainerToEventBuilderMapper eventMapper,
+         IObjectBaseFactory objectBaseFactory, 
+         IFlatContainerRepository flatContainerRepository, 
+         IFlatContainerTagRepository flatContainerTagRepository) : base(objectBaseFactory, flatContainerRepository, flatContainerTagRepository)
       {
          _parameterContainerTask = parameterContainerTask;
-         _flatContainerRepo = flatContainerRepo;
          _eventMapper = eventMapper;
       }
 
@@ -70,15 +72,13 @@ namespace PKSim.Infrastructure.ORM.Mappers
          }
       }
 
-
       private IEnumerable<FlatContainer> eventGroupSubContainers(FlatContainer eventGroupFlatContainer)
       {
-         return from flatContainer in _flatContainerRepo.All()
-                let parentContainer = _flatContainerRepo.ParentContainerFrom(flatContainer.Id)
-                where parentContainer != null
-                where parentContainer.Id == eventGroupFlatContainer.Id
-                select flatContainer;
+         return from flatContainer in _flatContainerRepository.All()
+            let parentContainer = _flatContainerRepository.ParentContainerFrom(flatContainer.Id)
+            where parentContainer != null
+            where parentContainer.Id == eventGroupFlatContainer.Id
+            select flatContainer;
       }
-
    }
 }

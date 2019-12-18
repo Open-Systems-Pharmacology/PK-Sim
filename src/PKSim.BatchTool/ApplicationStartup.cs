@@ -25,8 +25,8 @@ namespace PKSim.BatchTool
             container.AddRegister(x => x.FromType<BatchRegister>());
             container.AddRegister(x => x.FromType<CLIRegister>());
 
-            InfrastructureRegister.RegisterSerializationDependencies();
-            InfrastructureRegister.RegisterWorkspace();
+            InfrastructureRegister.LoadSerializers(container);
+            InfrastructureRegister.RegisterWorkspace(container);
             UI.BootStrapping.ApplicationStartup.RegisterCommands(container);
             container.RegisterImplementationOf(new DefaultLookAndFeel().LookAndFeel);
          }

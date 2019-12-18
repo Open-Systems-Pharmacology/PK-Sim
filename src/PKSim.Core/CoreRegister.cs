@@ -54,7 +54,6 @@ namespace PKSim.Core
             scan.AssemblyContainingType<CoreRegister>();
             scan.IncludeType<FormulationValuesRetriever>();
             scan.IncludeType<ObjectTypeResolver>();
-            scan.IncludeType<PKSimObjectBaseFactory>();
             scan.IncludeType<DistributionFormulaFactory>();
             scan.IncludeType<ProjectChangedNotifier>();
             scan.IncludeType<SnapshotMapper>();
@@ -80,6 +79,7 @@ namespace PKSim.Core
          container.RegisterFactory<ISimulationEngineFactory>();
          container.RegisterFactory<IChartDataToTableMapperFactory>();
 
+         container.Register<IPKSimObjectBaseFactory, IObjectBaseFactory, PKSimObjectBaseFactory>(LifeStyle.Singleton);
          container.Register<IPKSimDimensionFactory, IDimensionFactory, PKSimDimensionFactory>(LifeStyle.Singleton);
          container.Register<IApplicationSettings, OSPSuite.Core.IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
 

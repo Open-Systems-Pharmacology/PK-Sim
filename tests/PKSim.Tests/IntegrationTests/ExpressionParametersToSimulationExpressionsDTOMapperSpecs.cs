@@ -94,7 +94,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_map_one_parameter_for_each_realtive_expression_parameter_defined_in_the_list()
+      public void should_map_one_parameter_for_each_relative_expression_parameter_defined_in_the_list()
       {
          _result.RelativeExpressions.Count().ShouldBeEqualTo(2);
       }
