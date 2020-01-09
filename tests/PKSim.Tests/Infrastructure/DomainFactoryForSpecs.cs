@@ -175,6 +175,14 @@ namespace PKSim.Infrastructure
       {
          var populationFactory = IoC.Resolve<IRandomPopulationFactory>();
          var populationSettings = IoC.Resolve<IIndividualToPopulationSettingsMapper>().MapFrom(individual);
+         //Non Age dependent species. We have to make sure that we set correct weight so that the algorithm can randomize target weight
+         if (!individual.IsAgeDependent)
+         {
+            var weightValue = individual.MeanWeight;
+            var weightRange = populationSettings.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT);
+            weightRange.MinValue = weightValue / 10;
+            weightRange.MaxValue = weightValue * 10;
+         }
          populationSettings.NumberOfIndividuals = 3;
          var population = populationFactory.CreateFor(populationSettings, new CancellationToken()).Result;
          return population.WithName("POP");
