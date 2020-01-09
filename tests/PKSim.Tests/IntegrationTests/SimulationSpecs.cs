@@ -158,17 +158,16 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-          var errors = new List<string>();
+         var errors = new List<string>();
          foreach (var pop in _allPopulations)
          {
             //currently simulations with pregnant pop cannot be created
             if (pop.Name.Equals(CoreConstants.Population.PREGNANT))
                continue;
-         
+
             await runPopulationSimulationFor(pop.Name, errors);
          }
 
-         await runPopulationSimulationFor("Beagle", errors);
          errors.Count.ShouldBeEqualTo(0, errors.ToString("\n"));
       }
 
