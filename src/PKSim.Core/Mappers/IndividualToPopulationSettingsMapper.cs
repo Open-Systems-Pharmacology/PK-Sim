@@ -46,7 +46,7 @@ namespace PKSim.Core.Mappers
          if (individual.IsPreterm)
          {
             var gestationalAgeParameter = individual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE);
-            populationSettings.AddParameterRange(discretedParameterRangeFrom(gestationalAgeParameter, numericListOfValues(gestationalAgeParameter)));
+            populationSettings.AddParameterRange(discreteParameterRangeFrom(gestationalAgeParameter, numericListOfValues(gestationalAgeParameter)));
          }
 
          if (population.IsHeightDependent)
@@ -78,7 +78,7 @@ namespace PKSim.Core.Mappers
          return parameterRange;
       }
 
-      private ParameterRange discretedParameterRangeFrom(IParameter parameter, IEnumerable<double> listOfValues)
+      private ParameterRange discreteParameterRangeFrom(IParameter parameter, IEnumerable<double> listOfValues)
       {
          var parameterRange = createParameterRange<DiscreteParameterRange>(parameter);
          parameterRange.MinValue = parameter.MinValue;

@@ -75,7 +75,7 @@ namespace PKSim.Core.Model
                fllUpGenderQueueBasedOn(populationSettings);
                progressUpdater.Initialize(populationSettings.NumberOfIndividuals, PKSimConstants.UI.CreatingPopulation);
 
-               //the base indiviudal is used to retrieve the default values. 
+               //the base individual is used to retrieve the default values. 
                var baseIndividual = populationSettings.BaseIndividual;
 
                //current individual defined as a clone of the based individual. The current individual will be the one varying 
@@ -83,11 +83,11 @@ namespace PKSim.Core.Model
 
                //cache containing all parameters changed by the create individual from the current individual. This will be used just as reference to the current parameters
                var allChangedByCreatedIndividualParameters = getAllCreateIndividualParametersFrom(currentIndividual);
-               //all distributed parameters. This will be used to udpate the distribution for the current individual
+               //all distributed parameters. This will be used to update the distribution for the current individual
                var allDistributedParameters = getAllDistributedParametersFrom(currentIndividual);
-               var allBaseDistributedParamters = getAllDistributedParametersFrom(baseIndividual);
+               var allBaseDistributedParameters = getAllDistributedParametersFrom(baseIndividual);
 
-               //all individual parameters. Just an optimiztion to avoid call GetAllChildren for each individual
+               //all individual parameters. Just an optimization to avoid call GetAllChildren for each individual
                var allIndividualParameters = currentIndividual.GetAllChildren<IParameter>().ToList();
 
                int maxTotalIterations = populationSettings.NumberOfIndividuals * _maxIterations;
@@ -105,7 +105,7 @@ namespace PKSim.Core.Model
                      throw new CannotCreatePopulationWithConstraintsException(_reportGenerator.StringReportFor(populationSettings));
 
                   //create a new individual based on population settings defined by the user
-                  updateCurrentIndividualFromSettings(populationSettings, currentIndividual, allDistributedParameters, allBaseDistributedParamters, currentGender, randomPopulation.RandomGenerator);
+                  updateCurrentIndividualFromSettings(populationSettings, currentIndividual, allDistributedParameters, allBaseDistributedParameters, currentGender, randomPopulation.RandomGenerator);
 
                   bool success = tryRandomize(currentIndividual, populationSettings, allIndividualParameters, randomPopulation.RandomGenerator);
                   if (!success) continue;
