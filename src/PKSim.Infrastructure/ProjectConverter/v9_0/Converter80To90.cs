@@ -5,15 +5,20 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization;
+using OSPSuite.Utility.Visitor;
 using PKSim.Core;
+using PKSim.Core.Model;
 using PKSim.Infrastructure.Serialization.Xml;
 using IoC = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Infrastructure.ProjectConverter.v9_0
 {
-   public class Converter80To90 : IObjectConverter
+   public class Converter80To90 : IObjectConverter,
+      IVisitor<PopulationSimulation>,
+      IVisitor<Population>
    {
       private readonly IoC _container;
+      private bool _converted;
 
       public Converter80To90(IoC container)
       {
@@ -24,7 +29,10 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
 
       public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
-         return (ProjectVersions.V9_0, false);
+         _converted = false;
+         this.Visit(objectToConvert);
+
+         return (ProjectVersions.V9_0, _converted);
       }
 
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
@@ -32,15 +40,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
          var converted = false;
          if (element.Name.IsOneOf("PopulationSimulation", "RandomPopulation", "MoBiPopulation", "ImportedPopulation"))
          {
-            convertIndividualValueCache(element);
+            convertIndividualValueCacheElement(element);
             converted = true;
          }
 
          return (ProjectVersions.V9_0, converted);
-
       }
 
-      private void convertIndividualValueCache(XElement element)
+      private void convertIndividualValueCacheElement(XElement element)
       {
          //With this release, the IndividualPropertiesCache was renamed to IndividualValuesCache
          //Covariates structure was changed completely  (saved by covariate as opposed to saved by individual)
@@ -103,7 +110,30 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
             covariateValuesCache.Add(covariateValues);
          }
 
-         return  covariateValuesCacheWriter.WriteFor(covariateValuesCache, context);
+         return covariateValuesCacheWriter.WriteFor(covariateValuesCache, context);
+      }
+
+      public void Visit(PopulationSimulation objToVisit)
+      {
+         Visit(objToVisit.Population);
+      }
+
+      public void Visit(Population population)
+      {
+         if (population == null)
+            return;
+
+         convertIndividualValueCache(population.IndividualValuesCache);
+      }
+
+      private void convertIndividualValueCache(IndividualValuesCache individualValuesCache)
+      {
+         var firstParameterValue = individualValuesCache.AllParameterValues.FirstOrDefault();
+         if (firstParameterValue == null)
+            return;
+
+         individualValuesCache.IndividualIds.AddRange(Enumerable.Range(0, firstParameterValue.Count));
+         _converted = true;
       }
    }
 }
