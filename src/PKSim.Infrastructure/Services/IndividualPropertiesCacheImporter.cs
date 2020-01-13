@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using LumenWorks.Framework.IO.Csv;
+﻿using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Services;
-using OSPSuite.Infrastructure.Import.Extensions;
 using OSPSuite.Infrastructure.Import.Services;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 
-//TODO 
 namespace PKSim.Infrastructure.Services
 {
    public class IndividualPropertiesCacheImporter : IIndividualPropertiesCacheImporter
@@ -33,10 +22,8 @@ namespace PKSim.Infrastructure.Services
          _individualValuesCacheImporter = individualValuesCacheImporter;
       }
 
-
       public IndividualValuesCache ImportFrom(string fileFullPath, PathCache<IParameter> allParameters, IImportLogger logger)
       {
-
          var individualValuesCache = _individualValuesCacheImporter.ImportFrom(fileFullPath, logger, allParameters);
 
          return withUpdatedGenderAndRace(individualValuesCache);
@@ -49,22 +36,22 @@ namespace PKSim.Infrastructure.Services
 
          individualValuesCache.CovariateValuesCache.AllCovariateValues.Each(x =>
          {
-            if (!x.NameIsOneOf(Constants.Population.RACE_INDEX, Constants.Population.GENDER))
+            if (!x.CovariateName.IsOneOf(Constants.Population.RACE_INDEX, Constants.Population.GENDER))
                covariateValuesCache.Add(x);
 
-            else if(x.IsNamed(Constants.Population.RACE_INDEX))
+            else if (string.Equals(x.CovariateName, Constants.Population.RACE_INDEX))
                covariateValuesCache.Add(populationCovariateFrom(x));
 
             else
                covariateValuesCache.Add(genderCovariateFrom(x));
          });
 
-         return new IndividualValuesCache(parameterValues, covariateValuesCache);
+         return new IndividualValuesCache(parameterValues, covariateValuesCache, individualValuesCache.IndividualIds);
       }
 
       private CovariateValues genderCovariateFrom(CovariateValues originalCovariateValues)
       {
-         if(originalCovariateValues.Count==0)
+         if (originalCovariateValues.Count == 0)
             return new CovariateValues(Constants.Population.GENDER);
 
          var firstValue = originalCovariateValues.ValueAt(0);
@@ -77,7 +64,7 @@ namespace PKSim.Infrastructure.Services
          var genders = originalCovariateValues.Values.Select(x => _genderRepository.FindByIndex(int.Parse(x))).Select(x => x.Name).ToList();
          return new CovariateValues(Constants.Population.GENDER, genders);
       }
-      
+
       private CovariateValues populationCovariateFrom(CovariateValues originalCovariateValues)
       {
          if (originalCovariateValues.Count == 0)

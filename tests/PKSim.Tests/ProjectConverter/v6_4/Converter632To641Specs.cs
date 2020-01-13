@@ -1,6 +1,4 @@
-﻿using FakeItEasy;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+﻿using OSPSuite.BDDHelper;
 using PKSim.Core.Model;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter.v6_4;
