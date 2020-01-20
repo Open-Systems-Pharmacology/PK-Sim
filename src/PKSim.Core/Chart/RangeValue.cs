@@ -38,10 +38,7 @@ namespace PKSim.Core.Chart
       public float UpperPercentile { get; set; }
       public float Median { get; set; }
 
-      public bool IsValid
-      {
-         get { return LowerPercentile.IsValid() && UpperPercentile.IsValid() && Median.IsValid(); }
-      }
+      public bool IsValid => LowerPercentile.IsValid() && UpperPercentile.IsValid() && Median.IsValid();
 
       public string ToString(IWithDisplayUnit unitConverter)
       {
@@ -51,14 +48,8 @@ namespace PKSim.Core.Chart
             unitConverter.DisplayValue(UpperPercentile));
       }
 
-      public float[] Values
-      {
-         get { return new[] {Median}; }
-      }
+      public float[] Values => new[] {Median};
 
-      public float Y
-      {
-         get { return Median; }
-      }
+      public float Y => Median;
    }
 }

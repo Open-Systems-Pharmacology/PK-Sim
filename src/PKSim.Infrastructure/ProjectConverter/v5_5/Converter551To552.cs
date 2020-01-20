@@ -174,7 +174,10 @@ namespace PKSim.Infrastructure.ProjectConverter.v5_5
          //use a clone as this parameter will be used to create the advanced parameter
          var clone = _cloner.Clone(factor);
          var advancedParameter = new AdvancedParameter {DistributedParameter = clone, Seed = population.Seed};
-         var randomValues = advancedParameter.GenerateRandomValues(population.NumberOfItems);
+         //Because of changes in population serialization in v9, NumberOfItems in population is not set yet. Let's retrieve it from the internal structure
+         var numberOfIndividuals = population.IndividualValuesCache.AllParameterValues.FirstOrDefault()?.Count;
+
+         var randomValues = advancedParameter.GenerateRandomValues(numberOfIndividuals.GetValueOrDefault(0));
          population.IndividualValuesCache.Add(randomValues.Select(rv => new ParameterValue(parameterPath, rv.Value, rv.Percentile)).ToList());
       }
    }

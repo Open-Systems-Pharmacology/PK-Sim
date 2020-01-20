@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
@@ -108,7 +109,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void Should_have_created_a_default_pane()
+      public void should_have_created_a_default_pane()
       {
          _chartData.ShouldNotBeNull();
          _chartData.Panes.Count().ShouldBeEqualTo(1);
@@ -123,13 +124,48 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_bridged_up_the_game_between_grouping_for_each_pane()
+      public void should_have_bridged_up_the_gap_between_grouping_for_each_pane()
       {
          var defaultPane = _chartData.Panes.First();
          var firstCurve = defaultPane.Curves.ElementAt(0);
          var secondCurve = defaultPane.Curves.ElementAt(1);
          firstCurve.XValues.Last().ShouldBeEqualTo(secondCurve.XValues.First());
          firstCurve.YValues.Last().ShouldBeEqualTo(secondCurve.YValues.First());
+      }
+   }
+
+
+   public class When_creating_the_range_chart_data_based_on_valid_data_containing_only_grouping_on_columns_where_data_bridge_should_not_happen : concern_for_RangeChartsDataCreator
+   {
+      private PivotResult _pivotResult;
+      private ChartData<RangeXValue, RangeYValue> _chartData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _pivotAnalysis.SetPosition(_bmiClass, PivotArea.ColorArea, 0);
+         _pivotAnalysis.SetPosition(_cmaxField, PivotArea.DataArea, 0);
+         _pivotAnalysis.SetPosition(_bmiField, PivotArea.DataArea, 1);
+
+         _pivotResult = ChartDataHelperForSpecs.CreatePivotResult(_pivotAnalysis, 
+            AggregationFunctions.ValuesAggregation, 
+            _genderField, _raceField, _bmiField, _cmaxField,
+            cmaxValues:new double[]{600,800,600});
+      }
+
+      protected override void Because()
+      {
+         _chartData = sut.CreateFor(_pivotResult);
+      }
+
+      [Observation]
+      public void should_not_bridged_up_the_gap_between_grouping_for_each_pane()
+      {
+         var defaultPane = _chartData.Panes.First();
+         var firstCurve = defaultPane.Curves.ElementAt(0);
+         var secondCurve = defaultPane.Curves.ElementAt(1);
+         firstCurve.XValues.Last().ShouldNotBeEqualTo(secondCurve.XValues.First());
+         firstCurve.YValues.Last().ShouldNotBeEqualTo(secondCurve.YValues.First());
       }
    }
 
@@ -154,7 +190,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void Should_have_created_one_pane_for_each_unique_grouping_value()
+      public void should_have_created_one_pane_for_each_unique_grouping_value()
       {
          _chartData.ShouldNotBeNull();
          _chartData.Panes.Count.ShouldBeEqualTo(2);
