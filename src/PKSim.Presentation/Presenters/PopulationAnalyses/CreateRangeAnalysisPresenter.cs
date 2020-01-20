@@ -15,8 +15,8 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
    public class CreateRangeAnalysisPresenter : CreatePopulationAnalysisPresenter<PopulationPivotAnalysis, RangeAnalysisChart>, ICreateRangeAnalysisPresenter
    {
       public CreateRangeAnalysisPresenter(ICreatePopulationAnalysisView view, ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager,
-         IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, IPopulationAnalysisTask populationAnalysisTask) :
-            base(view, subPresenterItemManager, RangeItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask)
+         IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, IPopulationAnalysisTask populationAnalysisTask, IPopulationAnalysisFieldFactory populationAnalysisFieldFactory) :
+            base(view, subPresenterItemManager, RangeItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask, populationAnalysisFieldFactory)
       {
          View.Image = ApplicationIcons.RangeAnalysis;
       }

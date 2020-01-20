@@ -19,17 +19,14 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly ILazyLoadTask _lazyLoadTask;
 
       public CreateTimeProfileAnalysisPresenter(ICreatePopulationAnalysisView view, ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager,
-         IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, ILazyLoadTask lazyLoadTask, IPopulationAnalysisTask populationAnalysisTask)
-         : base(view, subPresenterItemManager, TimeProfileItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask)
+         IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, ILazyLoadTask lazyLoadTask, IPopulationAnalysisTask populationAnalysisTask, IPopulationAnalysisFieldFactory populationAnalysisFieldFactory)
+         : base(view, subPresenterItemManager, TimeProfileItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask, populationAnalysisFieldFactory)
       {
          _lazyLoadTask = lazyLoadTask;
          View.Image = ApplicationIcons.TimeProfileAnalysis;
       }
 
-      protected override string AnalysisType
-      {
-         get { return PKSimConstants.UI.TimeProfile; }
-      }
+      protected override string AnalysisType => PKSimConstants.UI.TimeProfile;
 
       protected override bool Edit(IPopulationDataCollector populationDataCollector, PopulationAnalysisChart<PopulationStatisticalAnalysis> populationAnalysisChart)
       {
@@ -44,9 +41,6 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          PresenterAt(TimeProfileItems.ParameterSelection).ScalingVisible = false;
       }
 
-      protected override ISubPresenterItem<IPopulationAnalysisResultsPresenter> ResultsPresenterItem
-      {
-         get { return TimeProfileItems.Chart; }
-      }
+      protected override ISubPresenterItem<IPopulationAnalysisResultsPresenter> ResultsPresenterItem => TimeProfileItems.Chart;
    }
 }

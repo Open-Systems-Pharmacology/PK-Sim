@@ -2,6 +2,7 @@ using OSPSuite.Core;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -74,6 +75,11 @@ namespace PKSim.Core
          //Register special type for parameters so that core methods in the context of pksim creates a PKSimParameter
          container.Register<IParameter, PKSimParameter>();
          container.Register<IDistributedParameter, PKSimDistributedParameter>();
+
+         //specific PKSim Implementations
+         container.Register<IPathToPathElementsMapper, PKSimPathToPathElementsMapper>();
+         container.Register<IDataColumnToPathElementsMapper, PKSimDataColumnToPathElementsMapper>();
+         container.Register<IQuantityPathToQuantityDisplayPathMapper, PKSimQuantityPathToQuantityDisplayPathMapper>();
 
          //Register Factories
          container.RegisterFactory<ISimulationEngineFactory>();

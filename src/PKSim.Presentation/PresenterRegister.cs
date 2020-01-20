@@ -134,12 +134,6 @@ namespace PKSim.Presentation
          Captions.NamePath = PKSimConstants.UI.Name;
          Captions.MoleculePath = PKSimConstants.UI.Molecule;
 
-         //specific PKSim Implementations
-         container.Register<IPathToPathElementsMapper, PKSimPathToPathElementsMapper>();
-         container.Register<IDataColumnToPathElementsMapper, PKSimDataColumnToPathElementsMapper>();
-         container.Register<IQuantityPathToQuantityDisplayPathMapper, PKSimQuantityPathToQuantityDisplayPathMapper>();
-
-
          container.AddRegister(x=>x.FromType<OSPSuite.Presentation.Importer.PresentationImporterRegister>());
       }
 

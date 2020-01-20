@@ -9,7 +9,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using ContainerExtensions = PKSim.Core.Model.ContainerExtensions;

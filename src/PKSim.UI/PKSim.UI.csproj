@@ -41,11 +41,11 @@
     <PackageReference Include="OSPSuite.DataBinding" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="4.0.0.1" />
     <PackageReference Include="OSPSuite.DevExpress" Version="19.2.4.1" />
-    <PackageReference Include="OSPSuite.Presentation" Version="9.0.50" />
-    <PackageReference Include="OSPSuite.UI" Version="9.0.50" />
-    <PackageReference Include="OSPSuite.UI.Importer" Version="9.0.50" />
+    <PackageReference Include="OSPSuite.Presentation" Version="9.0.52" />
+    <PackageReference Include="OSPSuite.UI" Version="9.0.52" />
+    <PackageReference Include="OSPSuite.UI.Importer" Version="9.0.52" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.50" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.52" />
   </ItemGroup>
 
   <ItemGroup>
