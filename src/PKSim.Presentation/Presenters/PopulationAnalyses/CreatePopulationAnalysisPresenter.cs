@@ -11,6 +11,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -45,6 +46,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
    {
       private readonly IPopulationAnalysisTemplateTask _populationAnalysisTemplateTask;
       private readonly IPopulationAnalysisTask _populationAnalysisTask;
+      private readonly IPopulationAnalysisFieldFactory _populationAnalysisFieldFactory;
       private bool _shouldRefreshData;
       protected bool ShouldRefreshChart { get; set; }
 
@@ -53,13 +55,20 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public PopulationAnalysisChart<TPopulationAnalysis> PopulationAnalysisChart { get; private set; }
       protected abstract string AnalysisType { get; }
 
-      protected CreatePopulationAnalysisPresenter(ICreatePopulationAnalysisView view, ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager,
-         IReadOnlyList<ISubPresenterItem> subPresenterItems, IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask,
-         IPopulationAnalysisChartFactory populationAnalysisChartFactory, IPopulationAnalysisTask populationAnalysisTask)
+      protected CreatePopulationAnalysisPresenter(
+         ICreatePopulationAnalysisView view, 
+         ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager,
+         IReadOnlyList<ISubPresenterItem> subPresenterItems, 
+         IDialogCreator dialogCreator, 
+         IPopulationAnalysisTemplateTask populationAnalysisTemplateTask,
+         IPopulationAnalysisChartFactory populationAnalysisChartFactory, 
+         IPopulationAnalysisTask populationAnalysisTask, 
+         IPopulationAnalysisFieldFactory populationAnalysisFieldFactory)
          : base(view, subPresenterItemManager, subPresenterItems, dialogCreator)
       {
          _populationAnalysisTemplateTask = populationAnalysisTemplateTask;
          _populationAnalysisTask = populationAnalysisTask;
+         _populationAnalysisFieldFactory = populationAnalysisFieldFactory;
          PopulationAnalysisChart = populationAnalysisChartFactory.Create<TPopulationAnalysis, TPopulationAnalysisChart>();
       }
 
@@ -101,6 +110,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          PopulationAnalysisChart = populationAnalysisChart;
          PopulationAnalysisChart.Analysable = _populationDataCollector;
 
+         AddDefaultAnalysisField();
          SetWizardButtonEnabled(_subPresenterItems.First());
 
          InitializeSubPresentersForAnalysis();
@@ -112,6 +122,19 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
             return false;
          }
          return true;
+      }
+
+      protected virtual void AddDefaultAnalysisField()
+      {
+        //Add grouping by simulation name when comparing simulations as it is a step that is always required in order to display something meaningful
+        if (!_populationDataCollector.IsAnImplementationOf<PopulationSimulationComparison>())
+           return;
+
+        var simulationNameField = _populationAnalysisFieldFactory.CreateFor(CoreConstants.Covariates.SIMULATION_NAME, _populationDataCollector);
+        PopulationAnalysisChart.PopulationAnalysis.Add(simulationNameField);
+
+        var pivotPopulationAnalysis = PopulationAnalysis as PopulationPivotAnalysis;
+        pivotPopulationAnalysis?.SetPosition(simulationNameField, PivotArea.ColorArea);
       }
 
       protected override void UpdateControls(int currentIndex)

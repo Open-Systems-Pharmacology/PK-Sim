@@ -1,4 +1,4 @@
-﻿using OSPSuite.BDDHelper;
+﻿   using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Services;
 using FakeItEasy;
@@ -24,6 +24,7 @@ namespace PKSim.Presentation
       protected PopulationBoxWhiskerAnalysis _analysis;
       protected BoxWhiskerAnalysisChart _boxWiskerAnalysisChart;
       protected IPopulationAnalysisTask _populationAnalysisTask;
+      private IPopulationAnalysisFieldFactory _populationAnalysisFieldFactory;
 
       protected override void Context()
       {
@@ -32,6 +33,7 @@ namespace PKSim.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _populationAnalysisTemplateTask = A.Fake<IPopulationAnalysisTemplateTask>();
          _populationAnalysisChartFactory = A.Fake<IPopulationAnalysisChartFactory>();
+         _populationAnalysisFieldFactory= A.Fake<IPopulationAnalysisFieldFactory>();   
          _subPresenterManager = SubPresenterHelper.Create<IPopulationAnalysisItemPresenter>();
          _parameterSelectionPresenter = _subPresenterManager.CreateFake(BoxWhiskerItems.ParameterSelection);
          _pkParameterSpecificationPresenter = _subPresenterManager.CreateFake(BoxWhiskerItems.PKParameterSpecification);
@@ -41,7 +43,7 @@ namespace PKSim.Presentation
          A.CallTo(_populationAnalysisChartFactory).WithReturnType<BoxWhiskerAnalysisChart>().Returns(_boxWiskerAnalysisChart);
          _populationAnalysisTask = A.Fake<IPopulationAnalysisTask>();
 
-         sut = new CreateBoxWhiskerAnalysisPresenter(_view, _subPresenterManager, _dialogCreator, _populationAnalysisTemplateTask, _populationAnalysisChartFactory, _populationAnalysisTask);
+         sut = new CreateBoxWhiskerAnalysisPresenter(_view, _subPresenterManager, _dialogCreator, _populationAnalysisTemplateTask, _populationAnalysisChartFactory, _populationAnalysisTask, _populationAnalysisFieldFactory);
       }
    }
 

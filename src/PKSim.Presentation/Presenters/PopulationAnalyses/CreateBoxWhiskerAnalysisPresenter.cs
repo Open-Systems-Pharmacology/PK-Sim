@@ -14,8 +14,8 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
    public class CreateBoxWhiskerAnalysisPresenter : CreatePopulationAnalysisPresenter<PopulationBoxWhiskerAnalysis, BoxWhiskerAnalysisChart>, ICreateBoxWhiskerAnalysisPresenter
    {
-      public CreateBoxWhiskerAnalysisPresenter(ICreatePopulationAnalysisView view, ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, IPopulationAnalysisTask populationAnalysisTask)
-         : base(view, subPresenterItemManager, BoxWhiskerItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask)
+      public CreateBoxWhiskerAnalysisPresenter(ICreatePopulationAnalysisView view, ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, IPopulationAnalysisTask populationAnalysisTask, IPopulationAnalysisFieldFactory populationAnalysisFieldFactory)
+         : base(view, subPresenterItemManager, BoxWhiskerItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask, populationAnalysisFieldFactory)
       {
          View.Image = ApplicationIcons.BoxWhiskerAnalysis;
       }

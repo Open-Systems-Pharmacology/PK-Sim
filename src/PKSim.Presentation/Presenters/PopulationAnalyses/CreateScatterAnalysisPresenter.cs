@@ -14,8 +14,8 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
    public class CreateScatterAnalysisPresenter : CreatePopulationAnalysisPresenter<PopulationPivotAnalysis, ScatterAnalysisChart>, ICreateScatterAnalysisPresenter
    {
-      public CreateScatterAnalysisPresenter(ICreatePopulationAnalysisView view, ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, IPopulationAnalysisTask populationAnalysisTask) :
-         base(view, subPresenterItemManager, ScatterItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask)
+      public CreateScatterAnalysisPresenter(ICreatePopulationAnalysisView view, ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, IPopulationAnalysisTask populationAnalysisTask, IPopulationAnalysisFieldFactory populationAnalysisFieldFactory) :
+         base(view, subPresenterItemManager, ScatterItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask, populationAnalysisFieldFactory)
       {
          View.Image = ApplicationIcons.ScatterAnalysis;
       }
