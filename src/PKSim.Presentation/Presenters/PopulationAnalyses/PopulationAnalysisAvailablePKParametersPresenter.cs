@@ -91,9 +91,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private IReadOnlyCollection<QuantityPKParameterDTO> availablePKParametersFor(IQuantity quantity)
       {
          var quantityDTO = _quantitySelectionDTOMapper.MapFrom(quantity);
-         var quantityDisplayPth = _quantityDisplayPathMapper.DisplayPathAsStringFor(quantity, addSimulationName: false);
+         var quantityDisplayPath = _quantityDisplayPathMapper.DisplayPathAsStringFor(quantity, addSimulationName: false);
          return _populationDataCollector.AllPKParametersFor(quantityDTO.QuantityPath)
-            .Select(x => mapFrom(x, quantityDisplayPth)).ToList();
+            .Select(x => mapFrom(x, quantityDisplayPath)).ToList();
       }
 
       public string QuantityPathDisplayFor(QuantityPKParameter quantityPKParameter)
