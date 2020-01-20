@@ -15,7 +15,6 @@ namespace PKSim.UI.Views
          : base(imageListRetriever)
       {
          InitializeComponent();
-         treeView.CompareNodeValues += compareNodeValues;
       }
 
       public void AttachPresenter(ISimulationExplorerPresenter presenter)

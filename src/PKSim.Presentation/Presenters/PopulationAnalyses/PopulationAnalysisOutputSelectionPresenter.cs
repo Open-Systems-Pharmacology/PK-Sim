@@ -10,6 +10,7 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Extensions;
 using PKSim.Presentation.Views.PopulationAnalyses;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
@@ -30,18 +31,26 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly IPopulationAnalysisStatisticsSelectionPresenter _statisticsSelectionPresenter;
       private readonly IEntitiesInContainerRetriever _outputsRetriever;
       private readonly IEventPublisher _eventPublisher;
+      private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       private PopulationStatisticalAnalysis _populationAnalysis;
       private readonly IDimension _timeDimension;
 
-      public PopulationAnalysisOutputSelectionPresenter(IPopulationAnalysisOutputSelectionView view, IQuantityListPresenter allOutputsPresenter,
-         IPopulationAnalysisOutputFieldsPresenter selectedOutputsPresenter, IPopulationAnalysisStatisticsSelectionPresenter statisticsSelectionPresenter, IEntitiesInContainerRetriever outputsRetriever,
-         IEventPublisher eventPublisher, IDimensionRepository dimensionRepository) : base(view)
+      public PopulationAnalysisOutputSelectionPresenter(
+         IPopulationAnalysisOutputSelectionView view, 
+         IQuantityListPresenter allOutputsPresenter,
+         IPopulationAnalysisOutputFieldsPresenter selectedOutputsPresenter, 
+         IPopulationAnalysisStatisticsSelectionPresenter statisticsSelectionPresenter, 
+         IEntitiesInContainerRetriever outputsRetriever,
+         IEventPublisher eventPublisher, 
+         IDimensionRepository dimensionRepository,
+         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper) : base(view)
       {
          _allOutputsPresenter = allOutputsPresenter;
          _selectedOutputsPresenter = selectedOutputsPresenter;
          _statisticsSelectionPresenter = statisticsSelectionPresenter;
          _outputsRetriever = outputsRetriever;
          _eventPublisher = eventPublisher;
+         _quantityDisplayPathMapper = quantityDisplayPathMapper;
          _timeDimension = dimensionRepository.Time;
          AddSubPresenters(allOutputsPresenter, _selectedOutputsPresenter, _statisticsSelectionPresenter);
          _view.AddPopulationOutputsView(_allOutputsPresenter.View);
@@ -90,23 +99,16 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       private void addOutput(QuantitySelectionDTO output)
       {
-         addOutput(new[] {output});
+         //Do not add simulation name as the output are already constructed as the intersection of all outputs available for all simulations
+         var displayPathAsString = _quantityDisplayPathMapper.DisplayPathAsStringFor(output.Quantity, addSimulationName: false);
+         _selectedOutputsPresenter.AddOutput(output.Quantity, displayPathAsString);
       }
 
-      private void addOutput(IEnumerable<QuantitySelectionDTO> outputs)
-      {
-         outputs.Each(dto => _selectedOutputsPresenter.AddOutput(dto.Quantity, dto.DisplayPathAsString));
-      }
+      private void addOutput(IEnumerable<QuantitySelectionDTO> outputs) => outputs.Each(addOutput);
 
-      public void RemoveOutput()
-      {
-         _selectedOutputsPresenter.RemoveSelection();
-      }
+      public void RemoveOutput() => _selectedOutputsPresenter.RemoveSelection();
 
-      public IEnumerable<Unit> AllTimeUnits
-      {
-         get { return _timeDimension.Units; }
-      }
+      public IEnumerable<Unit> AllTimeUnits => _timeDimension.Units;
 
       public override void ViewChanged()
       {

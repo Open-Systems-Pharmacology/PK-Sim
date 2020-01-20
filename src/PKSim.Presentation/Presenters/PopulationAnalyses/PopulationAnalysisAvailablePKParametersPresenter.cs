@@ -9,6 +9,7 @@ using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.PopulationAnalyses;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;
@@ -36,18 +37,24 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly IQuantityToQuantitySelectionDTOMapper _quantitySelectionDTOMapper;
       private readonly IEntitiesInContainerRetriever _entitiesInContainerRetriever;
       private readonly IPKParameterRepository _pkParameterRepository;
+      private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       private readonly List<QuantityPKParameterDTO> _allPKParameters;
       private IPopulationDataCollector _populationDataCollector;
       public event EventHandler<PKParameterDoubleClickedEventArgs> QuantityPKParameterDoubleClicked = delegate { };
       public event EventHandler<PKParameterSelectedEventArgs> PKParameterSelected = delegate { };
 
-      public PopulationAnalysisAvailablePKParametersPresenter(IPopulationAnalysisAvailablePKParametersView view,
-         IQuantityToQuantitySelectionDTOMapper quantitySelectionDTOMapper, IEntitiesInContainerRetriever entitiesInContainerRetriever, IPKParameterRepository pkParameterRepository)
+      public PopulationAnalysisAvailablePKParametersPresenter(
+         IPopulationAnalysisAvailablePKParametersView view,
+         IQuantityToQuantitySelectionDTOMapper quantitySelectionDTOMapper, 
+         IEntitiesInContainerRetriever entitiesInContainerRetriever, 
+         IPKParameterRepository pkParameterRepository,
+         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper)
          : base(view)
       {
          _quantitySelectionDTOMapper = quantitySelectionDTOMapper;
          _entitiesInContainerRetriever = entitiesInContainerRetriever;
          _pkParameterRepository = pkParameterRepository;
+         _quantityDisplayPathMapper = quantityDisplayPathMapper;
          _allPKParameters = new List<QuantityPKParameterDTO>();
       }
 
@@ -84,8 +91,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private IReadOnlyCollection<QuantityPKParameterDTO> availablePKParametersFor(IQuantity quantity)
       {
          var quantityDTO = _quantitySelectionDTOMapper.MapFrom(quantity);
+         var quantityDisplayPth = _quantityDisplayPathMapper.DisplayPathAsStringFor(quantity, addSimulationName: false);
          return _populationDataCollector.AllPKParametersFor(quantityDTO.QuantityPath)
-            .Select(x => mapFrom(x, quantityDTO.DisplayPathAsString)).ToList();
+            .Select(x => mapFrom(x, quantityDisplayPth)).ToList();
       }
 
       public string QuantityPathDisplayFor(QuantityPKParameter quantityPKParameter)
