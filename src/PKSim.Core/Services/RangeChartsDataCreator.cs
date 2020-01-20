@@ -80,7 +80,7 @@ namespace PKSim.Core.Services
             var secondCurve = orderedCurveByXValue[i];
             // Only connect points if curves already belong to one and only that were split for some binning reasons. 
             // e.g if the current X is after the next X, those curves clearly do not belong together
-            if (firstCurve.XValues[0].X < secondCurve.XValues[0].X)
+            if (firstCurve.XValues.Last().X < secondCurve.XValues[0].X)
             {
               firstCurve.Add(secondCurve.XValues[0], secondCurve.YValues[0]);
             }
