@@ -37,6 +37,7 @@ namespace PKSim.Presentation.Presenters.Charts
       protected readonly IChartTask _chartTask;
       protected readonly IObservedDataTask _observedDataTask;
       private readonly IChartUpdater _chartUpdater;
+      private readonly bool _useSimulationNameToCreateCurveName;
 
       protected ChartDisplayMode _chartDisplayMode;
       protected readonly ICache<DataRepository, IndividualSimulation> _repositoryCache;
@@ -50,12 +51,13 @@ namespace PKSim.Presentation.Presenters.Charts
          IIndividualPKAnalysisPresenter pkAnalysisPresenter,
          IChartTask chartTask, 
          IObservedDataTask observedDataTask, 
-         IChartUpdater chartUpdater)
+         IChartUpdater chartUpdater, bool useSimulationNameToCreateCurveName)
          : base(view, chartPresenterContext)
       {
          _chartTask = chartTask;
          _observedDataTask = observedDataTask;
          _chartUpdater = chartUpdater;
+         _useSimulationNameToCreateCurveName = useSimulationNameToCreateCurveName;
          _view.SetChartView(chartPresenterContext.EditorAndDisplayPresenter.BaseView);
          _pkAnalysisPresenter = pkAnalysisPresenter;
          _view.SetPKAnalysisView(_pkAnalysisPresenter.View);
@@ -114,6 +116,11 @@ namespace PKSim.Presentation.Presenters.Charts
             _repositoryCache[dataRepository] = simulation;
             AddDataRepositoriesToEditor(new[] {dataRepository});
          }
+      }
+
+      protected override string NameForColumn(DataColumn dataColumn)
+      {
+         return _chartPresenterContext.CurveNamer.CurveNameForColumn(SimulationFor(dataColumn), dataColumn, _useSimulationNameToCreateCurveName);
       }
 
       protected void InitializeFromTemplate()
