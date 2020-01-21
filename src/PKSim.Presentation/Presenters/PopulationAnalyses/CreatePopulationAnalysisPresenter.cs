@@ -116,12 +116,11 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          InitializeSubPresentersForAnalysis();
 
          View.Display();
-         if (_view.Canceled)
-         {
-            PopulationAnalysisChart = null;
-            return false;
-         }
-         return true;
+         if (!_view.Canceled)
+            return true;
+
+         PopulationAnalysisChart = null;
+         return false;
       }
 
       protected virtual void AddDefaultAnalysisField()
