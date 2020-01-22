@@ -34,9 +34,6 @@ skip_commits:
   files:
     - '*.md'
 
-cache:
-  packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
-
 before_build:
   - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
   - nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility 
@@ -55,11 +52,6 @@ build:
   project: PKSim.sln
 
 test:
-  assemblies:
-    - PKSim.Tests.dll
-    - PKSim.UI.Tests.dll
-    - PKSim.Matlab.Tests.dll
-
   categories:
     except:
       - Reporting

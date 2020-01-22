@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Extensions;
@@ -57,7 +58,7 @@ namespace PKSim.R
          _results = sut.CreateIndividual(_individualCharacteristics);
       }
 
-      [Observation]
+      [Test]
       public void should_return_all_individual_parameters_defined_by_the_create_individual_algorithm()
       {
          _results.DistributedParameters.Length.ShouldBeGreaterThan(0);
