@@ -4,7 +4,7 @@ namespace PKSim.Core.Model
 {
    public class DistributedParameterValue : ParameterValue
    {
-      public double Mean { get; private set; }
+      public double Mean { get; }
       public double Std { get; }
       public DistributionType DistributionType { get; private set; }
 

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
@@ -16,9 +16,9 @@ namespace PKSim.R.Services
    public interface IIndividualFactory
    {
       /// <summary>
-      /// Returns the <seealso cref="ParameterValues"/> representing an individual with the characteristics defined in <paramref name="individualCharacteristics"/>.
+      /// Returns the <seealso cref="CreateIndividualResults"/> representing an individual with the characteristics defined in <paramref name="individualCharacteristics"/>.
       /// </summary>
-      ParameterValue[] CreateIndividual(IndividualCharacteristics individualCharacteristics);
+      CreateIndividualResults CreateIndividual(IndividualCharacteristics individualCharacteristics);
       DistributedParameterValue[] DistributionsFor(IndividualCharacteristics individualCharacteristics);
    }
 
@@ -29,30 +29,46 @@ namespace PKSim.R.Services
       private readonly IIndividualToIndividualValuesMapper _individualValuesMapper;
       private readonly IOntogenyFactorsRetriever _ontogenyFactorsRetriever;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IContainerTask _containerTask;
 
       public IndividualFactory(
          OriginDataMapper originDataMapper,
          ICoreIndividualFactory individualFactory,
          IIndividualToIndividualValuesMapper individualValuesMapper,
          IOntogenyFactorsRetriever ontogenyFactorsRetriever,
-         IEntityPathResolver entityPathResolver)
+         IEntityPathResolver entityPathResolver,
+         IContainerTask containerTask)
       {
          _originDataMapper = originDataMapper;
          _individualFactory = individualFactory;
          _individualValuesMapper = individualValuesMapper;
          _ontogenyFactorsRetriever = ontogenyFactorsRetriever;
          _entityPathResolver = entityPathResolver;
+         _containerTask = containerTask;
       }
 
-      public ParameterValue[] CreateIndividual(IndividualCharacteristics individualCharacteristics)
+      public CreateIndividualResults CreateIndividual(IndividualCharacteristics individualCharacteristics)
       {
          var originData = originDataFrom(individualCharacteristics);
          var moleculeOntogenies = individualCharacteristics.MoleculeOntogenies;
          var individual = _individualFactory.CreateAndOptimizeFor(originData);
          var individualProperties = _individualValuesMapper.MapFrom(individual);
-         var allIndividualParameters = individualProperties.ParameterValues.ToList();
-         allIndividualParameters.AddRange(_ontogenyFactorsRetriever.FactorsFor(originData, moleculeOntogenies));
-         return allIndividualParameters.ToArray();
+         var allIndividualParameters = individualProperties.ParameterValues;
+         var ontogenyParameters = _ontogenyFactorsRetriever.FactorsFor(originData, moleculeOntogenies);
+         var allDistributedParameterCache = _containerTask.CacheAllChildren<IDistributedParameter>(individual);
+         var distributedParameters = new List<ParameterValue>();
+         var derivedParameters = new List<ParameterValue>();
+
+         foreach (var individualParameter in allIndividualParameters)
+         {
+            if(allDistributedParameterCache.Contains(individualParameter.ParameterPath))
+               distributedParameters.Add(individualParameter);
+            else
+               derivedParameters.Add(individualParameter);
+         }
+         distributedParameters.AddRange(ontogenyParameters);
+
+         return new CreateIndividualResults(distributedParameters.ToArray(), derivedParameters.ToArray());
       }
 
       public DistributedParameterValue[] DistributionsFor(IndividualCharacteristics individualCharacteristics)
@@ -60,7 +76,9 @@ namespace PKSim.R.Services
          var originData = originDataFrom(individualCharacteristics);
          var moleculeOntogenies = individualCharacteristics.MoleculeOntogenies;
          var individual = _individualFactory.CreateAndOptimizeFor(originData);
-         return individual.GetAllChildren<IDistributedParameter>().Select(distributedParameterValueFrom).ToArray();
+         var distributedParameters = individual.GetAllChildren<IDistributedParameter>().Select(distributedParameterValueFrom).ToList();
+         distributedParameters.AddRange(_ontogenyFactorsRetriever.DistributionFactorsFor(originData, moleculeOntogenies));
+         return distributedParameters.ToArray();
       }
 
       private Core.Model.OriginData originDataFrom(OriginData originData) => _originDataMapper.MapToModel(originData).Result;

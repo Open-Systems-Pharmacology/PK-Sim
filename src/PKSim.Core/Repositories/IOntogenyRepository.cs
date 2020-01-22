@@ -14,13 +14,12 @@ namespace PKSim.Core.Repositories
 
       double PlasmaProteinOntogenyFactor(string protein, OriginData originData, RandomGenerator randomGenerator = null);
       double PlasmaProteinOntogenyFactor(string protein, double? age, double? gestationalAge, string species, RandomGenerator randomGenerator);
-      
+
       IReadOnlyList<OntogenyMetaData> AllValuesFor(Ontogeny ontogeny);
       IReadOnlyList<OntogenyMetaData> AllValuesFor(Ontogeny ontogeny, string containerName);
 
-
       /// <summary>
-      ///    Returns all ontogenie factor defined for the given origin data with pma > origin data.pma
+      ///    Returns all ontogenies factor defined for the given origin data with pma > origin data.pma
       /// </summary>
       /// <param name="ontogeny">ontogeny</param>
       /// <param name="originData">origin data</param>
@@ -30,7 +29,7 @@ namespace PKSim.Core.Repositories
       IReadOnlyList<Sample> AllOntogenyFactorForStrictBiggerThanPMA(Ontogeny ontogeny, OriginData originData, string containerName, RandomGenerator randomGenerator = null);
 
       /// <summary>
-      ///    Returns all ontogenie factor defined for the given origin data with pma > origin data.pma
+      ///    Returns all ontogenies factor defined for the given origin data with pma > origin data.pma
       /// </summary>
       /// <param name="parameterName">name of ontogeny factor parameter</param>
       /// <param name="originData">origin data</param>
@@ -39,5 +38,13 @@ namespace PKSim.Core.Repositories
       IReadOnlyList<Sample> AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(string parameterName, OriginData originData, RandomGenerator randomGenerator = null);
 
       ICache<string, string> SupportedProteins { get; }
+
+      /// <summary>
+      /// Returns the parameter distribution associated with the ontogeny for the PMA defined in OriginData at location <paramref name="containerName"/>
+      /// </summary>
+      /// <param name="ontogeny">Ontogeny for which a distribution should be retrieved</param>
+      /// <param name="originData">Origin data used to evaluate the PMA (as a function of age and gestational age)</param>
+      /// <param name="containerName">Location of the ontogeny distribution to retrieve. (e.g. GI vs Liver)</param>
+      (double mean, double std, DistributionType distributionType) OntogenyParameterDistributionFor(Ontogeny ontogeny, OriginData originData, string containerName);
    }
 }

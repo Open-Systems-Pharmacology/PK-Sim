@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Core.Maths.Random;
 using OSPSuite.Utility.Collections;
@@ -8,8 +10,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -21,7 +21,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly List<Ontogeny> _allOntogenies;
       private readonly ICache<CompositeKey, IReadOnlyList<OntogenyMetaData>> _ontogenyValues;
       private readonly IDimension _ageInWeeksDimension;
-      public ICache<string, string> SupportedProteins { get; private set; }
+      public ICache<string, string> SupportedProteins { get; }
 
       public OntogenyRepository(IFlatOntogenyRepository flatOntogenyRepository, IInterpolation interpolation, IObjectBaseFactory objectBaseFactory, IDimensionRepository dimensionRepository)
       {
@@ -38,7 +38,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
          };
       }
 
-
       public override IEnumerable<Ontogeny> All()
       {
          Start();
@@ -48,12 +47,12 @@ namespace PKSim.Infrastructure.ORM.Repositories
       protected override void DoStart()
       {
          var moleculeWithDefinedOntogenies = (from flatOntogeny in _flatOntogenyRepository.All()
-            select new
-            {
-               flatOntogeny.MoleculeName,
-               flatOntogeny.SpeciesName,
-               flatOntogeny.DisplayName,
-            }
+               select new
+               {
+                  flatOntogeny.MoleculeName,
+                  flatOntogeny.SpeciesName,
+                  flatOntogeny.DisplayName,
+               }
             ).Distinct();
 
          foreach (var moleculeWithOntogeny in moleculeWithDefinedOntogenies)
@@ -126,12 +125,32 @@ namespace PKSim.Infrastructure.ORM.Repositories
          var pma = postmenstrualAgeInYearsFor(originData);
          var gaInYears = inYears(originData.GestationalAge.GetValueOrDefault(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS));
 
-         var ontogenies = AllValuesFor(ontogeny, containerName).Where(x => x.PostmenstrualAge > pma).ToList();
+         var ontogenies = AllValuesFor(ontogeny, containerName)
+            .Where(x => x.PostmenstrualAge > pma)
+            .OrderBy(x => x.PostmenstrualAge).ToList();
+
          if (!ontogenies.Any())
             return new List<Sample>();
 
          var factorRetriever = ontogenyFactorRetriever(randomGenerator, ontogenies);
          return ontogenies.Select(x => new Sample(x.PostmenstrualAge - gaInYears, factorRetriever(x))).ToList();
+      }
+
+      public (double mean, double std, DistributionType distributionType) OntogenyParameterDistributionFor(Ontogeny ontogeny, OriginData originData, string containerName)
+      {
+         var distributions = AllValuesFor(ontogeny, containerName).OrderBy(x => x.PostmenstrualAge).ToList();
+         var pma = postmenstrualAgeInYearsFor(originData);
+
+         var knownSamples = distributions.Select(x => new
+         {
+            Mean = new Sample(x.PostmenstrualAge, x.OntogenyFactor),
+            Std = new Sample(x.PostmenstrualAge, x.Deviation)
+         }).ToList();
+
+         var mean = _interpolation.Interpolate(knownSamples.Select(item => item.Mean), pma);
+         var std = _interpolation.Interpolate(knownSamples.Select(item => item.Std), pma);
+
+         return (mean, std, DistributionTypes.LogNormal);
       }
 
       public IReadOnlyList<Sample> AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(string parameterName, OriginData originData, RandomGenerator randomGenerator = null)
