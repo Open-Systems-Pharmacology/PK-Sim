@@ -2,7 +2,6 @@
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
-using OSPSuite.Core.Maths.Interpolations;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -65,8 +64,8 @@ namespace PKSim.R.Services
             var ontogeny = allOntogeniesForSpecies.FindByName(moleculeOntogeny.Ontogeny);
             if (ontogeny == null) continue;
 
-            allOntogenyDistributions.Add(distributedOntogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Groups.ONTOGENY_LIVER, CoreConstants.Parameters.ONTOGENY_FACTOR));
-            allOntogenyDistributions.Add(distributedOntogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Groups.ONTOGENY_DUODENUM, CoreConstants.Parameters.ONTOGENY_FACTOR_GI));
+            allOntogenyDistributions.Add(distributedOntogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Parameters.ONTOGENY_FACTOR, CoreConstants.Groups.ONTOGENY_LIVER));
+            allOntogenyDistributions.Add(distributedOntogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Parameters.ONTOGENY_FACTOR_GI, CoreConstants.Groups.ONTOGENY_DUODENUM));
          }
 
          return allOntogenyDistributions;
@@ -81,7 +80,7 @@ namespace PKSim.R.Services
 
       private DistributedParameterValue distributedOntogenyFactorFor(Ontogeny ontogeny, string moleculeName, OriginData originData, string parameterName, string ontogenyLocation)
       {
-         var parameterPath = new ObjectPath {moleculeName, CoreConstants.Parameters.ONTOGENY_FACTOR};
+         var parameterPath = new ObjectPath {moleculeName, parameterName};
          var (mean, std, distributionType) = _ontogenyRepository.OntogenyParameterDistributionFor(ontogeny, originData, ontogenyLocation);
          return new DistributedParameterValue(parameterPath, mean, CoreConstants.DEFAULT_PERCENTILE, mean, std, distributionType);
       }
