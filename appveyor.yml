@@ -6,9 +6,10 @@ init:
   - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set build_number=1) ELSE (Set build_number=%APPVEYOR_BUILD_NUMBER%)
 
 environment:
-  app_version: '9.0'
+  app_version: "9.0"
+  APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
 
-version: '$(app_version).{build}'
+version: "$(app_version).{build}"
 
 clone_depth: 1
 
@@ -25,23 +26,23 @@ branches:
   only:
     - develop
 
-pull_requests: 
-  do_not_increment_build_number: true     
+pull_requests:
+  do_not_increment_build_number: true
 
 skip_tags: true
 
 skip_commits:
   files:
-    - '*.md'
+    - "*.md"
 
 before_build:
-  - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
-  - nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility 
+  - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper
+  - nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility
   - nuget sources add -name serializer -source https://ci.appveyor.com/nuget/ospsuite-serializer
-  - nuget sources add -name texreporting -source https://ci.appveyor.com/nuget/ospsuite-texreporting  
-  - nuget sources add -name databinding -source https://ci.appveyor.com/nuget/ospsuite-databinding 
-  - nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress 
-  - nuget sources add -name funcparser -source https://ci.appveyor.com/nuget/ospsuite-funcparser 
+  - nuget sources add -name texreporting -source https://ci.appveyor.com/nuget/ospsuite-texreporting
+  - nuget sources add -name databinding -source https://ci.appveyor.com/nuget/ospsuite-databinding
+  - nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress
+  - nuget sources add -name funcparser -source https://ci.appveyor.com/nuget/ospsuite-funcparser
   - nuget sources add -name simmodel -source https://ci.appveyor.com/nuget/ospsuite-simmodel
   - nuget sources add -name cvodes -source https://ci.appveyor.com/nuget/ospsuite-simmodel-solver-cvodes
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
@@ -61,12 +62,12 @@ test:
 
 notifications:
   - provider: Slack
-    incoming_webhook:      
+    incoming_webhook:
       secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyFEAs8X080yIO8g1FLt3tNfBN4OpeBnkgrXzf7AqNKV5561x7Coux3ByGrHmsL1sCo=
 
 install:
-- cmd: git submodule update --init --recursive
-- ps: >-
-    (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi', 'C:\\msxml.msi')
+  - cmd: git submodule update --init --recursive
+  - ps: >-
+      (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi', 'C:\\msxml.msi')
 
-    Start-Process msiexec.exe -ArgumentList /i, C:\msxml.msi, /quiet, /qn, /norestart -Wait
+      Start-Process msiexec.exe -ArgumentList /i, C:\msxml.msi, /quiet, /qn, /norestart -Wait

@@ -4,6 +4,7 @@ image: Visual Studio 2019
 environment:
   app_version: "9.0"
   MIK_TEX_INSTALL_DIR: 'C:\MikTex\'
+  APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
 
 version: "$(app_version).{build}"
 
