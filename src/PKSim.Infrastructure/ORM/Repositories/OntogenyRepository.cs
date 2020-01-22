@@ -125,7 +125,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
          var pma = postmenstrualAgeInYearsFor(originData);
          var gaInYears = inYears(originData.GestationalAge.GetValueOrDefault(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS));
 
-         var ontogenies = AllValuesFor(ontogeny, containerName).Where(x => x.PostmenstrualAge > pma).ToList();
+         var ontogenies = AllValuesFor(ontogeny, containerName)
+            .Where(x => x.PostmenstrualAge > pma)
+            .OrderBy(x => x.PostmenstrualAge).ToList();
+
          if (!ontogenies.Any())
             return new List<Sample>();
 
@@ -133,7 +136,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return ontogenies.Select(x => new Sample(x.PostmenstrualAge - gaInYears, factorRetriever(x))).ToList();
       }
 
-      public DistributedParameterValue OntogenyParameterDistributionFor(Ontogeny ontogeny, OriginData originData, string containerName, string parameterPath)
+      public (double mean, double std, DistributionType distributionType) OntogenyParameterDistributionFor(Ontogeny ontogeny, OriginData originData, string containerName)
       {
          var distributions = AllValuesFor(ontogeny, containerName).OrderBy(x => x.PostmenstrualAge).ToList();
          var pma = postmenstrualAgeInYearsFor(originData);
@@ -147,7 +150,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          var mean = _interpolation.Interpolate(knownSamples.Select(item => item.Mean), pma);
          var std = _interpolation.Interpolate(knownSamples.Select(item => item.Std), pma);
 
-         return new DistributedParameterValue(parameterPath, mean, mean, CoreConstants.DEFAULT_PERCENTILE, std, DistributionTypes.LogNormal);
+         return (mean, std, DistributionTypes.LogNormal);
       }
 
       public IReadOnlyList<Sample> AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(string parameterName, OriginData originData, RandomGenerator randomGenerator = null)

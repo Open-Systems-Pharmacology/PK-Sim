@@ -65,8 +65,8 @@ namespace PKSim.R.Services
             var ontogeny = allOntogeniesForSpecies.FindByName(moleculeOntogeny.Ontogeny);
             if (ontogeny == null) continue;
 
-            allOntogenyDistributions.Add(_ontogenyRepository.OntogenyParameterDistributionFor(ontogeny, originData, CoreConstants.Groups.ONTOGENY_LIVER, new ObjectPath {moleculeOntogeny.Molecule, CoreConstants.Parameters.ONTOGENY_FACTOR}));
-            allOntogenyDistributions.Add(_ontogenyRepository.OntogenyParameterDistributionFor(ontogeny, originData, CoreConstants.Groups.ONTOGENY_DUODENUM, new ObjectPath {moleculeOntogeny.Molecule, CoreConstants.Parameters.ONTOGENY_FACTOR_GI}));
+            allOntogenyDistributions.Add(distributedOntogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Groups.ONTOGENY_LIVER, CoreConstants.Parameters.ONTOGENY_FACTOR));
+            allOntogenyDistributions.Add(distributedOntogenyFactorFor(ontogeny, moleculeOntogeny.Molecule, originData, CoreConstants.Groups.ONTOGENY_DUODENUM, CoreConstants.Parameters.ONTOGENY_FACTOR_GI));
          }
 
          return allOntogenyDistributions;
@@ -77,6 +77,13 @@ namespace PKSim.R.Services
          var path = new ObjectPath {moleculeName, parameterName};
          double factor = _ontogenyRepository.OntogenyFactorFor(ontogeny, ontogenyLocation, originData);
          return new ParameterValue(path, factor, CoreConstants.DEFAULT_PERCENTILE);
+      }
+
+      private DistributedParameterValue distributedOntogenyFactorFor(Ontogeny ontogeny, string moleculeName, OriginData originData, string parameterName, string ontogenyLocation)
+      {
+         var parameterPath = new ObjectPath {moleculeName, CoreConstants.Parameters.ONTOGENY_FACTOR};
+         var (mean, std, distributionType) = _ontogenyRepository.OntogenyParameterDistributionFor(ontogeny, originData, ontogenyLocation);
+         return new DistributedParameterValue(parameterPath, mean, CoreConstants.DEFAULT_PERCENTILE, mean, std, distributionType);
       }
    }
 }

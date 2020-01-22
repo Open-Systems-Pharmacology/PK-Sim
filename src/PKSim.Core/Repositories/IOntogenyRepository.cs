@@ -39,6 +39,12 @@ namespace PKSim.Core.Repositories
 
       ICache<string, string> SupportedProteins { get; }
 
-      DistributedParameterValue OntogenyParameterDistributionFor(Ontogeny ontogeny, OriginData originData, string containerName, string parameterPath);
+      /// <summary>
+      /// Returns the parameter distribution associated with the ontogeny for the PMA defined in OriginData at location <paramref name="containerName"/>
+      /// </summary>
+      /// <param name="ontogeny">Ontogeny for which a distribution should be retrieved</param>
+      /// <param name="originData">Origin data used to evaluate the PMA (as a function of age and gestational age)</param>
+      /// <param name="containerName">Location of the ontogeny distribution to retrieve. (e.g. GI vs Liver)</param>
+      (double mean, double std, DistributionType distributionType) OntogenyParameterDistributionFor(Ontogeny ontogeny, OriginData originData, string containerName);
    }
 }

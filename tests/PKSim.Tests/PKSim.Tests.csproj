@@ -21,7 +21,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.52" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.53" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.44" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.32" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.7" GeneratePathProperty="true" />
@@ -65,6 +65,9 @@
 
   <ItemGroup>
     <None Include="..\..\src\Db\TemplateDB\PKSimTemplateDBSystem.templateDbSystem" Link="PKSimTemplateDBSystem.templateDbSystem">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\src\Db\TemplateDB\PKSimTemplateDBUser.template" Link="PKSimTemplateDBUser.template">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

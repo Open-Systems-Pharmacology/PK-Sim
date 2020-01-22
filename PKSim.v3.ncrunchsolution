@@ -7,7 +7,7 @@
     <EngineMode>
       <Name>No Integration Tests</Name>
       <Settings>
-        <TestsToExecuteAutomatically>DoesNotHaveCategory 'IntegrationTests'</TestsToExecuteAutomatically>
+        <TestsToExecuteAutomatically>(DoesNotHaveCategory 'ProjectConverter' AND DoesNotHaveCategory 'Reporting')</TestsToExecuteAutomatically>
       </Settings>
     </EngineMode>
   </EngineModes>
