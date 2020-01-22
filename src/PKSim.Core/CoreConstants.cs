@@ -548,7 +548,6 @@ namespace PKSim.Core
          public static readonly string GI_LUMEN = "GI_LUMEN";
          public static readonly string GI_MUCOSA = "GI_MUCOSA";
          public static readonly string GI_NON_MUCOSA_TISSUE = "GI_NON_MUCOSA_TISSUE";
-         public static readonly string ONTOGENY_LIVER_ALL = "ONTOGENY_LIVER_ALL";
          public static readonly string ONTOGENY_LIVER = "ONTOGENY_LIVER_NO_GI";
          public static readonly string ONTOGENY_DUODENUM = "ONTOGENY_DUODENUM";
          public static readonly string ONTOGENY_PLASMA = "ONTOGENY_PLASMA";
