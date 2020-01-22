@@ -39,6 +39,6 @@ namespace PKSim.Core.Repositories
 
       ICache<string, string> SupportedProteins { get; }
 
-      DistributedParameterValue OntogenyDistributionFor(Ontogeny ontogeny, OriginData originData, string containerName, string parameterPath);
+      DistributedParameterValue OntogenyParameterDistributionFor(Ontogeny ontogeny, OriginData originData, string containerName, string parameterPath);
    }
 }

@@ -65,8 +65,8 @@ namespace PKSim.R.Services
             var ontogeny = allOntogeniesForSpecies.FindByName(moleculeOntogeny.Ontogeny);
             if (ontogeny == null) continue;
 
-            allOntogenyDistributions.Add(_ontogenyRepository.OntogenyDistributionFor(ontogeny, originData, CoreConstants.Groups.ONTOGENY_LIVER, new ObjectPath {moleculeOntogeny.Molecule, CoreConstants.Parameters.ONTOGENY_FACTOR}));
-            allOntogenyDistributions.Add(_ontogenyRepository.OntogenyDistributionFor(ontogeny, originData, CoreConstants.Groups.ONTOGENY_DUODENUM, new ObjectPath {moleculeOntogeny.Molecule, CoreConstants.Parameters.ONTOGENY_FACTOR_GI}));
+            allOntogenyDistributions.Add(_ontogenyRepository.OntogenyParameterDistributionFor(ontogeny, originData, CoreConstants.Groups.ONTOGENY_LIVER, new ObjectPath {moleculeOntogeny.Molecule, CoreConstants.Parameters.ONTOGENY_FACTOR}));
+            allOntogenyDistributions.Add(_ontogenyRepository.OntogenyParameterDistributionFor(ontogeny, originData, CoreConstants.Groups.ONTOGENY_DUODENUM, new ObjectPath {moleculeOntogeny.Molecule, CoreConstants.Parameters.ONTOGENY_FACTOR_GI}));
          }
 
          return allOntogenyDistributions;

@@ -21,7 +21,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly List<Ontogeny> _allOntogenies;
       private readonly ICache<CompositeKey, IReadOnlyList<OntogenyMetaData>> _ontogenyValues;
       private readonly IDimension _ageInWeeksDimension;
-      public ICache<string, string> SupportedProteins { get; private set; }
+      public ICache<string, string> SupportedProteins { get; }
 
       public OntogenyRepository(IFlatOntogenyRepository flatOntogenyRepository, IInterpolation interpolation, IObjectBaseFactory objectBaseFactory, IDimensionRepository dimensionRepository)
       {
@@ -133,10 +133,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return ontogenies.Select(x => new Sample(x.PostmenstrualAge - gaInYears, factorRetriever(x))).ToList();
       }
 
-      public DistributedParameterValue OntogenyDistributionFor(Ontogeny ontogeny, OriginData originData, string containerName, string parameterPath)
+      public DistributedParameterValue OntogenyParameterDistributionFor(Ontogeny ontogeny, OriginData originData, string containerName, string parameterPath)
       {
          var distributions = AllValuesFor(ontogeny, containerName).OrderBy(x => x.PostmenstrualAge).ToList();
-         var age = postmenstrualAgeInYearsFor(originData);
+         var pma = postmenstrualAgeInYearsFor(originData);
 
          var knownSamples = distributions.Select(x => new
          {
@@ -144,8 +144,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
             Std = new Sample(x.PostmenstrualAge, x.Deviation)
          }).ToList();
 
-         var mean = _interpolation.Interpolate(knownSamples.Select(item => item.Mean), age);
-         var std = _interpolation.Interpolate(knownSamples.Select(item => item.Std), age);
+         var mean = _interpolation.Interpolate(knownSamples.Select(item => item.Mean), pma);
+         var std = _interpolation.Interpolate(knownSamples.Select(item => item.Std), pma);
 
          return new DistributedParameterValue(parameterPath, mean, mean, CoreConstants.DEFAULT_PERCENTILE, std, DistributionTypes.LogNormal);
       }
