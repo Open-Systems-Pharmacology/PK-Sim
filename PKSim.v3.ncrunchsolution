@@ -5,9 +5,15 @@
   </Settings>
   <EngineModes>
     <EngineMode>
-      <Name>No Integration Tests</Name>
+      <Name>No Nighlty Tests</Name>
       <Settings>
         <TestsToExecuteAutomatically>(DoesNotHaveCategory 'ProjectConverter' AND DoesNotHaveCategory 'Reporting')</TestsToExecuteAutomatically>
+      </Settings>
+    </EngineMode>
+    <EngineMode>
+      <Name>No Integration Tests</Name>
+      <Settings>
+        <TestsToExecuteAutomatically>DoesNotHaveCategory 'IntegrationTests'</TestsToExecuteAutomatically>
       </Settings>
     </EngineMode>
   </EngineModes>
