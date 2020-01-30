@@ -1,10 +1,10 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -16,7 +16,7 @@ namespace PKSim.Infrastructure
 {
    public abstract class concern_for_SerializationContextFactory : ContextSpecification<ISerializationContextFactory>
    {
-      protected ISerializationDimensionFactory _dimensionFactory;
+      protected IDimensionFactory _dimensionFactory;
       protected IObjectBaseFactory _objectBaseFactory;
       protected ICloneManagerForModel _cloneManagerForModel;
       protected IContainer _container;
@@ -25,7 +25,7 @@ namespace PKSim.Infrastructure
 
       protected override void Context()
       {
-         _dimensionFactory = A.Fake<ISerializationDimensionFactory>();
+         _dimensionFactory = A.Fake<IDimensionFactory>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _cloneManagerForModel = A.Fake<ICloneManagerForModel>();
          _container = A.Fake<IContainer>();

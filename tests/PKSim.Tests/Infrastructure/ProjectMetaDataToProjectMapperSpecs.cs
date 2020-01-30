@@ -59,7 +59,7 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          _projectMetaData.AddSimulationComparison(_simulationComparisonMetaData);
-         _projectMetaData.Version = ProjectVersions.V5_2_1;
+         _projectMetaData.Version = ProjectVersions.UNSUPPORTED;
       }
 
       protected override void Because()
