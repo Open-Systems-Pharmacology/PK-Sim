@@ -25,7 +25,7 @@ namespace PKSim.CLI.Core.MinimalImplementations
          if (validationResult.ValidationState == ValidationState.Valid)
             return true;
 
-         var error = Error.EntityIsInvalid(this._executionContext.TypeFor<IObjectBase>(objectToValidate), objectToValidate.Name);
+         var error = Error.EntityIsInvalid(_executionContext.TypeFor(objectToValidate), objectToValidate.Name);
          _logger.AddError(error);
          return false;
       }
