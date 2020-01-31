@@ -92,12 +92,29 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_loading_a_project_that_was_created_with_an_older_version_from_the_application : concern_for_ProjectPersistor
+   public class When_loading_a_project_that_was_created_with_an_newer_version_from_the_application : concern_for_ProjectPersistor
    {
       protected override void Context()
       {
          base.Context();
          _projectMetaData.Version = ProjectVersions.Current + 1;
+         _listOfProjectsInDatabase.Add(_projectMetaData);
+         A.CallTo(() => _projectMetaDataToProjectMapper.MapFrom(_projectMetaData)).Returns(_project);
+      }
+
+      [Observation]
+      public void should_throw_an_invalid_project_version_exception()
+      {
+         The.Action(() => sut.Load(_session)).ShouldThrowAn<InvalidProjectVersionException>();
+      }
+   }
+
+   public class When_loading_a_project_that_was_created_with_an_version_of_the_application_that_is_not_supported_anymore : concern_for_ProjectPersistor
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _projectMetaData.Version = ProjectVersions.UNSUPPORTED;
          _listOfProjectsInDatabase.Add(_projectMetaData);
          A.CallTo(() => _projectMetaDataToProjectMapper.MapFrom(_projectMetaData)).Returns(_project);
       }

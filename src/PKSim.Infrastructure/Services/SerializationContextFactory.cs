@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Utility.Extensions;
@@ -26,13 +26,13 @@ namespace PKSim.Infrastructure.Services
 
    public class SerializationContextFactory : ISerializationContextFactory
    {
-      private readonly ISerializationDimensionFactory _dimensionFactory;
+      private readonly IDimensionFactory _dimensionFactory;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IContainer _container;
       private readonly ICloneManagerForModel _cloneManagerForModel;
 
       public SerializationContextFactory(
-         ISerializationDimensionFactory dimensionFactory,
+         IDimensionFactory dimensionFactory,
          IObjectBaseFactory objectBaseFactory,
          IContainer container,
          ICloneManagerForModel cloneManagerForModel)

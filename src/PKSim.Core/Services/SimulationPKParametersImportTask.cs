@@ -9,7 +9,7 @@ namespace PKSim.Core.Services
 {
    public interface ISimulationPKParametersImportTask
    {
-      Task<SimulationPKParametersImport> ImportPKParameters(PopulationSimulation populationSimulation, string filefullPath, CancellationToken cancellationToken);
+      Task<SimulationPKParametersImport> ImportPKParameters(PopulationSimulation populationSimulation, string fileFullPath, CancellationToken cancellationToken);
    }
 
    public class SimulationPKParametersImportTask : ISimulationPKParametersImportTask
@@ -23,9 +23,9 @@ namespace PKSim.Core.Services
          _quantityRetriever = quantityRetriever;
       }
 
-      public async Task<SimulationPKParametersImport> ImportPKParameters(PopulationSimulation populationSimulation, string filefullPath, CancellationToken cancellationToken)
+      public async Task<SimulationPKParametersImport> ImportPKParameters(PopulationSimulation populationSimulation, string fileFullPath, CancellationToken cancellationToken)
       {
-         var importedPKAnalysis = await importPKAnalysesFromFile(filefullPath, cancellationToken);
+         var importedPKAnalysis = await importPKAnalysesFromFile(fileFullPath, cancellationToken);
          validateConsistencyWithSimulation(populationSimulation, importedPKAnalysis);
          addImportedPKToLogForSuccessfulImport(importedPKAnalysis);
          return importedPKAnalysis;
@@ -82,12 +82,12 @@ namespace PKSim.Core.Services
          importedPKParameter.AddError(PKSimConstants.Error.NotEnoughPKValuesForParameter(pkParameter.Name, pkParameter.QuantityPath, populationSimulation.NumberOfItems, pkParameter.Count));
       }
 
-      private Task<SimulationPKParametersImport> importPKAnalysesFromFile(string filefullPath, CancellationToken cancellationToken)
+      private Task<SimulationPKParametersImport> importPKAnalysesFromFile(string fileFullPath, CancellationToken cancellationToken)
       {
          return Task.Run(() =>
          {
-            var pKAnalysesFile = new PKAnalysesImportFile { FilePath = filefullPath };
-            var pkAnalyses = _pkAnalysesImporter.ImportPKParameters(filefullPath, pKAnalysesFile);
+            var pKAnalysesFile = new PKAnalysesImportFile { FilePath = fileFullPath };
+            var pkAnalyses = _pkAnalysesImporter.ImportPKParameters(fileFullPath, pKAnalysesFile);
             return new SimulationPKParametersImport(pkAnalyses, pKAnalysesFile);
          }, cancellationToken);
       }

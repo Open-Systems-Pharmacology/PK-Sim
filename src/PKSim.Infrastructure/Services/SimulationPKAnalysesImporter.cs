@@ -135,8 +135,7 @@ namespace PKSim.Infrastructure.Services
             throw exception;
 
          //check if headers are actually real strings
-         double result;
-         if (double.TryParse(headers[0], out result))
+         if (double.TryParse(headers[0], out _))
             throw exception;
       }
    }

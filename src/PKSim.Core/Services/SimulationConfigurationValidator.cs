@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Mappers;
@@ -32,6 +33,7 @@ namespace PKSim.Core.Services
          var compounds = simulation.Compounds;
          var simulationSubject = simulation.BuildingBlock<ISimulationSubject>();
          var protocols = simulation.Protocols;
+         var formulations = simulation.AllBuildingBlocks<Formulation>();
          var modelConfiguration = simulation.ModelConfiguration;
 
          //ForComp model can only be used with small molecules
@@ -64,6 +66,20 @@ namespace PKSim.Core.Services
          });
 
          administeredCompoundWithSuperSaturationEnabled.Each(x => validateSupersaturationUsageFor(x.Compound, x.Protocol, x.FormulationMappings));
+
+         formulations.Where(x=>x.FormulationType==CoreConstants.Formulation.TABLE).Each(validateTableFormulation);
+      }
+
+      private void validateTableFormulation(Formulation tableFormulation)
+      {
+         var formulaParameter = tableFormulation.Parameter(CoreConstants.Parameters.FRACTION_DOSE);
+         var tableFormula = formulaParameter?.Formula as TableFormula;
+
+         //at least one point in this formulation
+         if(tableFormula!=null && tableFormula.AllPoints().Any()) 
+            return;
+
+         throw new InvalidSimulationConfigurationException(PKSimConstants.Error.TableFormulationRequiresAtLeastOnePoint(tableFormulation.Name));
       }
 
       private void validateSupersaturationUsageFor(Compound compound, Protocol protocol, IReadOnlyList<FormulationMapping> formulationMappings)

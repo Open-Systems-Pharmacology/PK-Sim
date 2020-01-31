@@ -141,7 +141,7 @@ namespace PKSim.Infrastructure.Serialization.Xml
          if (element.Name.IsOneOf(Constants.Serialization.DATA_REPOSITORY, CoreConstants.Serialization.Project,
             CoreConstants.Serialization.PopulationSettings, CoreConstants.Serialization.SummaryChart,
             CoreConstants.Serialization.OriginData, CoreConstants.Serialization.WorkspaceLayout))
-            return ProjectVersions.V5_0_1;
+            return ProjectVersions.UNSUPPORTED;
 
          return ProjectVersions.Current;
       }

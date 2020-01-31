@@ -4,12 +4,12 @@ using OSPSuite.BDDHelper.Extensions;
 
 namespace PKSim.Core
 {
-   public class When_checking_if_a_versin_can_be_loaded_: StaticContextSpecification
+   public class When_checking_if_a_version_can_be_loaded_: StaticContextSpecification
    {
       [Observation]
       public void should_return_true_for_a_know_version_that_is_smaller_than_the_current_version()
       {
-         ProjectVersions.CanLoadVersion(ProjectVersions.V5_1_3).ShouldBeTrue();
+         ProjectVersions.CanLoadVersion(ProjectVersions.V6_2_1).ShouldBeTrue();
       }
 
       [Observation]

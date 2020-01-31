@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
-using PKSim.Core;
-using PKSim.Infrastructure.ProjectConverter.v5_2;
-using OSPSuite.Core.Converter.v5_4;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using PKSim.Core;
 
 namespace PKSim.Infrastructure.ProjectConverter.v6_2
 {
@@ -21,19 +19,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_2
    /// </summary>
    public class ObservedDataConvertor : IObservedDataConvertor
    {
-      private readonly IFormulaAndDimensionConverter _formulaAndDimensionConverter;
-      private readonly IDataRepositoryConverter _dataRepositoryConverter;
-
-      public ObservedDataConvertor(IFormulaAndDimensionConverter formulaAndDimensionConverter, IDataRepositoryConverter dataRepositoryConverter)
-      {
-         _formulaAndDimensionConverter = formulaAndDimensionConverter;
-         _dataRepositoryConverter = dataRepositoryConverter;
-      }
-
       public void Convert(IProject project, DataRepository observedData, int originalVersion)
       {
-         perform521Conversion(observedData, originalVersion);
-         perform541Conversion(project,observedData, originalVersion);
          perform602Conversion(observedData, originalVersion);
       }
 
@@ -41,30 +28,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_2
       {
          //retrieve all elements with an attribute dimension
          var allDimensionAttributes = from child in observedDataElement.DescendantsAndSelf()
-                                      where child.HasAttributes
-                                      let attr = child.Attribute(Constants.Serialization.Attribute.Dimension) ?? child.Attribute("dimension")
-                                      where attr != null
-                                      select attr;
+            where child.HasAttributes
+            let attr = child.Attribute(Constants.Serialization.Attribute.Dimension) ?? child.Attribute("dimension")
+            where attr != null
+            select attr;
 
          foreach (var dimensionAttribute in allDimensionAttributes)
          {
             if (string.Equals(dimensionAttribute.Value, "Concentration"))
                dimensionAttribute.SetValue(CoreConstants.Dimension.MASS_CONCENTRATION);
          }
-      }
-
-      private void perform521Conversion(DataRepository observedData, int originalVersion)
-      {
-         performConversion(originalVersion, ProjectVersions.V5_2_1, () => _formulaAndDimensionConverter.ConvertDimensionIn(observedData));
-      }
-
-      private void perform541Conversion(IProject project, DataRepository observedData, int originalVersion)
-      {
-         performConversion(originalVersion, ProjectVersions.V5_4_1, () =>
-         {
-            _dataRepositoryConverter.Convert(observedData);
-            project.AddClassifiable(new ClassifiableObservedData { Subject = observedData });
-         });
       }
 
       private void perform602Conversion(DataRepository observedData, int originalVersion)

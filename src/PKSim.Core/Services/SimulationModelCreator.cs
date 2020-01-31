@@ -69,7 +69,7 @@ namespace PKSim.Core.Services
       private void updateSimulationAfterModelCreation(Simulation simulation)
       {
          //last step. Once the model has been created, it is necessary to set the id of the simulation 
-         //in all paramater defined in the model
+         //in all parameter defined in the model
          _parameterIdUpdater.UpdateSimulationId(simulation);
 
          var allMoleculeAmounts = simulation.All<IMoleculeAmount>().ToList();

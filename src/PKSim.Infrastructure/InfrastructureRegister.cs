@@ -31,7 +31,6 @@ using PKSim.Infrastructure.ORM.Core;
 using PKSim.Infrastructure.ORM.Mappers;
 using PKSim.Infrastructure.ORM.Repositories;
 using PKSim.Infrastructure.ProjectConverter;
-using PKSim.Infrastructure.ProjectConverter.v5_3;
 using PKSim.Infrastructure.ProjectConverter.v6_2;
 using PKSim.Infrastructure.Reporting.Markdown;
 using PKSim.Infrastructure.Reporting.Markdown.Builders;
@@ -307,13 +306,11 @@ namespace PKSim.Infrastructure
             scan.IncludeNamespaceContainingType<IObjectConverter>();
             scan.ExcludeType<ProjectConverterLogger>();
             scan.ExcludeType<ObjectConverterFinder>();
-            scan.ExcludeType<Converter52To531>();
             scan.ExcludeType<Converter612To621>();
             scan.WithConvention<PKSimRegistrationConvention>();
          });
 
          //required as singleton because of element caching
-         container.Register<Converter52To531, IObjectConverter, Converter52To531>(LifeStyle.Singleton);
          container.Register<Converter612To621, IObjectConverter, Converter612To621>(LifeStyle.Singleton);
          container.Register<IObjectConverterFinder, ObjectConverterFinder>(LifeStyle.Singleton);
          container.Register<IProjectConverterLogger, ProjectConverterLogger>(LifeStyle.Singleton);

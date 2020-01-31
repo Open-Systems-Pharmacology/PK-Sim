@@ -37,7 +37,7 @@ namespace PKSim.ProjectConverter.v6_2
 
       protected override void Because()
       {
-         sut.ConvertXml(_chartElement, ProjectVersions.V5_5_1);
+         sut.ConvertXml(_chartElement, ProjectVersions.V6_1_2);
       }
 
       [Observation]

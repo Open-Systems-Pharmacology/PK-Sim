@@ -7,19 +7,7 @@ namespace PKSim.Core
    {
       private static readonly Cache<int, ProjectVersion> _knownVersions = new Cache<int, ProjectVersion>(x => x.Version, x => null);
 
-      public static readonly ProjectVersion V5_0_1 = addVersion(20, "5.0.1");
-      public static readonly ProjectVersion V5_1_3 = addVersion(21, "5.1.3");
-      public static readonly ProjectVersion V5_1_4 = addVersion(22, "5.1.4");
-      public static readonly ProjectVersion V5_1_5 = addVersion(51, "5.1.5");
-      public static readonly ProjectVersion V5_2_1 = addVersion(53, "5.2.1");
-      public static readonly ProjectVersion V5_2_2 = addVersion(55, "5.2.2");
-      public static readonly ProjectVersion V5_3_1 = addVersion(57, "5.3.1");
-      public static readonly ProjectVersion V5_3_2 = addVersion(58, "5.3.2");
-      public static readonly ProjectVersion V5_4_1 = addVersion(59, "5.4.1");
-      public static readonly ProjectVersion V5_5_1 = addVersion(60, "5.5.1");
-      public static readonly ProjectVersion V5_5_2 = addVersion(61, "5.5.2");
-      public static readonly ProjectVersion V5_6_1 = addVersion(62, "5.6.1");
-      public static readonly ProjectVersion V5_6_2 = addVersion(63, "5.6.2");
+      public const int UNSUPPORTED = 63;
       public static readonly ProjectVersion V6_0_1 = addVersion(64, "6.0.1");
       public static readonly ProjectVersion V6_0_2 = addVersion(65, "6.0.2");
       public static readonly ProjectVersion V6_1_2 = addVersion(66, "6.1.2");
