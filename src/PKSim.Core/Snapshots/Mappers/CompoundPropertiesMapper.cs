@@ -147,26 +147,20 @@ namespace PKSim.Core.Snapshots.Mappers
 
          foreach (var snapshotProcess in snapshotProcesses)
          {
-            var process = compound.ProcessByName(snapshotProcess.Name);
-            await addProcessToProcessSelection(compoundProcessesSelection, snapshotProcess, process, simulationSubject);
+            var process = compound.ProcessByName(snapshotProcess.Name) ?? notSelectedProcessFrom(snapshotProcess, simulationSubject);
+            if (process == null)
+               continue;
+
+            await addProcessToProcessSelection(compoundProcessesSelection, snapshotProcess, process);
          }
 
          return compoundProcessesSelection;
       }
 
-      private async Task addProcessToProcessSelection(
-         CompoundProcessesSelection compoundProcessesSelection,
-         CompoundProcessSelection snapshotCompoundProcessSelection,
-         Model.CompoundProcess process,
-         ISimulationSubject simulationSubject)
+      private async Task addProcessToProcessSelection(CompoundProcessesSelection compoundProcessesSelection, CompoundProcessSelection snapshotCompoundProcessSelection, Model.CompoundProcess process)
       {
-         var processToUse = process ?? notSelectedProcessFrom(snapshotCompoundProcessSelection, simulationSubject);
-
-         if (processToUse == null)
-            return;
-         
-         var processSelectionGroup = selectionGroupFor(compoundProcessesSelection, processToUse);
-         var processSelection = await _processMappingMapper.MapToModel(snapshotCompoundProcessSelection, processToUse);
+         var processSelectionGroup = selectionGroupFor(compoundProcessesSelection, process);
+         var processSelection = await _processMappingMapper.MapToModel(snapshotCompoundProcessSelection, process);
          processSelectionGroup.AddProcessSelection(processSelection);
       }
 
@@ -178,7 +172,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          //this should be a specific process
          if (!string.IsNullOrEmpty(systemicProcessType))
-            return new NotSelectedSystemicProcess { SystemicProcessType = SystemicProcessTypes.ById(systemicProcessType) };
+            return new NotSelectedSystemicProcess {SystemicProcessType = SystemicProcessTypes.ById(systemicProcessType)};
 
          if (string.IsNullOrEmpty(moleculeName))
             return null;
