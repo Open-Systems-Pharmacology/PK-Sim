@@ -143,9 +143,9 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          //Exclude Protocol for now because of the 1to n relationship between building block parameters and simulation parameters
          return buildingBlockType.IsOneOf(
-            PKSimBuildingBlockType.Compound, 
-            PKSimBuildingBlockType.Formulation, 
-            PKSimBuildingBlockType.Individual, 
+            PKSimBuildingBlockType.Compound,
+            PKSimBuildingBlockType.Formulation,
+            PKSimBuildingBlockType.Individual,
             PKSimBuildingBlockType.Event,
             PKSimBuildingBlockType.Population);
       }
@@ -181,7 +181,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private static bool parameterDiffersFromTemplate(IParameter templateBuildingBlockParameter, IParameter parameter)
       {
-         return templateBuildingBlockParameter == null || 
+         return templateBuildingBlockParameter == null ||
                 !templateBuildingBlockParameter.ValueIsDefined() ||
                 !ValueComparer.AreValuesEqual(parameter, templateBuildingBlockParameter);
       }
@@ -253,28 +253,36 @@ namespace PKSim.Core.Snapshots.Mappers
          if (snapshotInteractions == null)
             return;
 
+         var simulationSubject = simulation.BuildingBlock<ISimulationSubject>();
          foreach (var snapshotInteraction in snapshotInteractions)
          {
-            var interaction = await interactionSelectionFrom(snapshotInteraction, project);
+            var interaction = await interactionSelectionFrom(snapshotInteraction, simulationSubject, project);
             if (interaction != null)
                simulation.InteractionProperties.AddInteraction(interaction);
          }
       }
 
-      private async Task<InteractionSelection> interactionSelectionFrom(CompoundProcessSelection snapshotInteraction, PKSimProject project)
+      private async Task<InteractionSelection> interactionSelectionFrom(CompoundProcessSelection snapshotInteraction, ISimulationSubject simulationSubject, PKSimProject project)
       {
-         var process = findProcess(project, snapshotInteraction);
+         var process = findProcess(project, snapshotInteraction, simulationSubject);
          if (process == null)
             return null;
-       
+
          var processSelection = await _processMappingMapper.MapToModel(snapshotInteraction, process);
          return processSelection.DowncastTo<InteractionSelection>();
       }
 
-      private Model.CompoundProcess findProcess(PKSimProject project, CompoundProcessSelection snapshotInteraction)
+      private Model.CompoundProcess findProcess(PKSimProject project, CompoundProcessSelection snapshotInteraction, ISimulationSubject simulationSubject)
       {
-         return project.BuildingBlockByName<Model.Compound>(snapshotInteraction.CompoundName)
+         var compoundProcess = project.BuildingBlockByName<Model.Compound>(snapshotInteraction.CompoundName)
             ?.ProcessByName(snapshotInteraction.Name);
+
+         if (compoundProcess != null)
+            return compoundProcess;
+
+         //This might be a process that was deselected explicitly by the user
+         var molecule = simulationSubject.MoleculeByName(snapshotInteraction.MoleculeName);
+         return molecule == null ? null : new NoInteractionProcess {MoleculeName = molecule.Name};
       }
 
       private async Task runSimulation(SnapshotSimulation snapshot, ModelSimulation simulation)

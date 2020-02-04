@@ -183,7 +183,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (string.IsNullOrEmpty(moleculeName))
             return null;
 
-         var molecule = simulationSubject.AllMolecules().FindByName(moleculeName);
+         var molecule = simulationSubject.MoleculeByName(moleculeName);
          if (molecule == null)
             return null;
 

@@ -207,7 +207,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_compoundProperties, _project);
          _simulation = A.Fake<Simulation>();
          _simulationSubject = A.Fake<ISimulationSubject>();
-         A.CallTo(() => _simulationSubject.AllMolecules()).Returns(new[] {new IndividualEnzyme {Name = "CYP3A4"}});
+         A.CallTo(() => _simulationSubject.MoleculeByName("CYP3A4")).Returns(new IndividualEnzyme {Name = "CYP3A4"});
          A.CallTo(() => _simulation.BuildingBlock<ISimulationSubject>()).Returns(_simulationSubject);
          var newModelCompoundProperties = new Model.CompoundProperties {Compound = _compoundProperties.Compound};
          _compoundProperties.CompoundGroupSelections.Each(newModelCompoundProperties.AddCompoundGroupSelection);
@@ -247,7 +247,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_compoundProperties, _project);
          _simulation = A.Fake<Simulation>();
          _simulationSubject = A.Fake<ISimulationSubject>();
-         A.CallTo(() => _simulationSubject.AllMolecules()).Returns(new[] { new IndividualEnzyme { Name = "NOT_CYP3A4" } });
+         A.CallTo(() => _simulationSubject.MoleculeByName("CYP3A4")).Returns(null);
          A.CallTo(() => _simulation.BuildingBlock<ISimulationSubject>()).Returns(_simulationSubject);
          var newModelCompoundProperties = new Model.CompoundProperties { Compound = _compoundProperties.Compound };
          _compoundProperties.CompoundGroupSelections.Each(newModelCompoundProperties.AddCompoundGroupSelection);
@@ -284,7 +284,7 @@ namespace PKSim.Core
          _snapshot.Processes = new List<CompoundProcessSelection>(_snapshot.Processes) {new CompoundProcessSelection()}.ToArray();
          _simulation = A.Fake<Simulation>();
          _simulationSubject = A.Fake<ISimulationSubject>();
-         A.CallTo(() => _simulationSubject.AllMolecules()).Returns(new[] {new IndividualEnzyme {Name = "CYP3A4"}});
+         A.CallTo(() => _simulationSubject.MoleculeByName("CYP3A4")).Returns(new IndividualEnzyme { Name = "CYP3A4" });
          A.CallTo(() => _simulation.BuildingBlock<ISimulationSubject>()).Returns(_simulationSubject);
          var newModelCompoundProperties = new Model.CompoundProperties {Compound = _compoundProperties.Compound};
          _compoundProperties.CompoundGroupSelections.Each(newModelCompoundProperties.AddCompoundGroupSelection);

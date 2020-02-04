@@ -81,6 +81,8 @@ namespace PKSim.Core
       protected ILogger _logger;
       protected IContainerTask _containerTask;
       protected IEntityPathResolver _entityPathResolver;
+      protected CompoundProcessSelection _noSelectionSnapshotInteraction;
+      protected InteractionSelection _noInteractionSelection;
 
       protected override Task Context()
       {
@@ -140,7 +142,10 @@ namespace PKSim.Core
             }
          };
          _interactionSelection = new InteractionSelection {ProcessName = _inductionProcess.Name};
+         _noInteractionSelection = new InteractionSelection { MoleculeName = "CYP2D6"};
+
          _simulationProperties.InteractionProperties.AddInteraction(_interactionSelection);
+         _simulationProperties.InteractionProperties.AddInteraction(_noInteractionSelection);
 
          _settings = new SimulationSettings();
          _rootContainer = new Container().WithName("Sim");
@@ -173,6 +178,11 @@ namespace PKSim.Core
          _populationSimulationAnalysisChart = new BoxWhiskerAnalysisChart();
          _populationSimulation.SetAdvancedParameters(_advancedParameterCollection);
          _populationSimulation.AddAnalysis(_populationSimulationAnalysisChart);
+         _populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
+         {
+            BuildingBlock = _individual
+         });
+
          _snapshotPopulationAnalysisChart = new Snapshots.PopulationAnalysisChart();
 
          A.CallTo(() => _populationAnalysisChartMapper.MapToSnapshot(_populationSimulationAnalysisChart)).Returns(_snapshotPopulationAnalysisChart);
@@ -181,6 +191,10 @@ namespace PKSim.Core
          A.CallTo(() => _processMappingMapper.MapToSnapshot(_interactionSelection)).Returns(_snapshotInteraction);
          _snapshotInteraction.CompoundName = _compound.Name;
          _snapshotInteraction.Name = _inductionProcess.Name;
+
+         _noSelectionSnapshotInteraction = new CompoundProcessSelection();
+         A.CallTo(() => _processMappingMapper.MapToSnapshot(_noInteractionSelection)).Returns(_noSelectionSnapshotInteraction);
+         _noSelectionSnapshotInteraction.MoleculeName = _noInteractionSelection.MoleculeName;
 
          _compoundProperties = new CompoundProperties();
          _snapshotCompoundProperties = new Snapshots.CompoundProperties {Name = _compound.Name};
@@ -261,7 +275,7 @@ namespace PKSim.Core
       
       private IParameter _protocolParameter;
       
-      private LocalizedParameter[] _localizedParamters;
+      private LocalizedParameter[] _localizedParameters;
       private Individual _individualTemplateBuildingBlock;
       private Protocol _protocolTemplateBuildingBlock;
 
@@ -293,10 +307,10 @@ namespace PKSim.Core
          _rootContainer.Add(_simulationParameter);
          _rootContainer.Add(_protocolParameter);
 
-         _localizedParamters = new[] {_individualChangedParameterSnapshot, _simulationParameterSnapshot, _protocolParameterSnapshot};
+         _localizedParameters = new[] {_individualChangedParameterSnapshot, _simulationParameterSnapshot, _protocolParameterSnapshot};
 
          A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Matches(x => x.ContainsAll(new[] {_individualParameterChanged, _simulationParameter, _protocolParameter}))))
-            .Returns(_localizedParamters);
+            .Returns(_localizedParameters);
 
          _individualTemplateBuildingBlock = new Individual {Id = "IndTemplateId"};
          _project.AddBuildingBlock(_individualTemplateBuildingBlock);
@@ -372,7 +386,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_interactions()
       {
-         _snapshot.Interactions.ShouldContain(_snapshotInteraction);
+         _snapshot.Interactions.ShouldContain(_snapshotInteraction, _noSelectionSnapshotInteraction);
       }
 
       [Observation]
@@ -447,6 +461,11 @@ namespace PKSim.Core
             SimulationSettings = _settings,
             Model = _model
          };
+
+         individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
+         {
+            BuildingBlock = _individual
+         });
 
          _modelProperties = new ModelProperties();
          A.CallTo(() => _modelPropertiesTask.DefaultFor(_individual.OriginData, _snapshot.Model)).Returns(_modelProperties);
@@ -542,7 +561,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_interactions()
       {
-         _simulation.InteractionProperties.Interactions.ShouldContain(_interactionSelection);
+         _simulation.InteractionProperties.Interactions.ShouldContain(_interactionSelection, _noInteractionSelection);
       }
 
       [Observation]
@@ -574,6 +593,11 @@ namespace PKSim.Core
             SimulationSettings = _settings,
             Model = _model
          };
+         
+         populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
+         {
+            BuildingBlock = _individual
+         });
 
          A.CallTo(() => _simulationFactory.CreateFrom(_population, A<IReadOnlyList<Compound>>._, A<ModelProperties>._, null)).Returns(populationSimulation);
 

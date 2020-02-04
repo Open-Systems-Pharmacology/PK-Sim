@@ -9,7 +9,7 @@ namespace PKSim.Core.Model
    public class Individual : PKSimBuildingBlock, ISimulationSubject
    {
       /// <summary>
-      ///    Seed used to intialize the random generator while creating the individual
+      ///    Seed used to initialize the random generator while creating the individual
       /// </summary>
       public virtual int Seed { get; set; }
 
@@ -28,7 +28,7 @@ namespace PKSim.Core.Model
       public virtual IContainer Neighborhoods => this.GetSingleChildByName<IContainer>(Constants.NEIGHBORHOODS);
 
       /// <summary>
-      ///    Population used to create the individul (based on the selected species)
+      ///    Population used to create the individual (based on the selected species)
       /// </summary>
       public virtual SpeciesPopulation Population => OriginData.SpeciesPopulation;
 
@@ -41,7 +41,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns the availabe genders defined for the population in which the individual belongs
+      ///    Returns the available genders defined for the population in which the individual belongs
       /// </summary>
       public virtual IEnumerable<Gender> AvailableGenders()
       {
@@ -69,6 +69,8 @@ namespace PKSim.Core.Model
       ///    All molecules defined in the individual
       /// </summary>
       public virtual IEnumerable<IndividualMolecule> AllMolecules() => AllMolecules<IndividualMolecule>();
+
+      public IndividualMolecule MoleculeByName(string moleculeName) => MoleculeByName<IndividualMolecule>(moleculeName);
 
       /// <summary>
       ///    All defined molecules defined in the individual
@@ -116,12 +118,12 @@ namespace PKSim.Core.Model
       public virtual double InputWeight => OriginData.Weight;
 
       /// <summary>
-      ///    Input Weight of the indvidual.
+      ///    Input Weight of the individual.
       /// </summary>
       public virtual double InputHeight => OriginData.Height ?? 0;
 
       /// <summary>
-      ///    Mean height as defined in the databse for the organism
+      ///    Mean height as defined in the database for the organism
       /// </summary>
       public virtual double MeanHeight
       {
@@ -139,7 +141,7 @@ namespace PKSim.Core.Model
 
       /// ///
       /// <summary>
-      ///    Mean weight as defined in the databse for the organism
+      ///    Mean weight as defined in the database for the organism
       /// </summary>
       public virtual double MeanWeight => Organism.Parameter(CoreConstants.Parameters.MEAN_WEIGHT).Value;
 
