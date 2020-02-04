@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace PKSim.Core.Model
 {
    /// <summary>
-   ///    Defines an item that can be simulated in a simulaton (e.g. a population or an individual)
+   ///    Defines an item that can be simulated in a simulation (e.g. a population or an individual)
    /// </summary>
    public interface ISimulationSubject : IPKSimBuildingBlock
    {

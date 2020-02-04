@@ -96,7 +96,63 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_specfic_binding_partial_process_mapping_to_snapshot : concern_for_ProcessMappingMapper
+   public class When_mapping_enzymatic_process_mapping_to_snapshot_representing_a_process_mapping_that_was_disabled_by_the_user : concern_for_ProcessMappingMapper
+   {
+      private EnzymaticProcessSelection _noProcessSelection;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _noProcessSelection = new EnzymaticProcessSelection
+         {
+            MoleculeName = "CYP",
+         };
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_noProcessSelection);
+      }
+
+      [Observation]
+      public void should_return_the_expected_mapping()
+      {
+         _snapshot.Name.ShouldBeNull();
+         _snapshot.MoleculeName.ShouldBeEqualTo(_noProcessSelection.MoleculeName);
+         _snapshot.MetaboliteName.ShouldBeNull();
+      }
+   }
+
+   public class When_mapping_specific_binding_partial_process_mapping_to_snapshot_representing_a_process_mapping_that_was_disabled_by_the_user : concern_for_ProcessMappingMapper
+   {
+      private SystemicProcessSelection _noSystemicProcessSelection;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _noSystemicProcessSelection = new SystemicProcessSelection
+         {
+            ProcessType = SystemicProcessTypes.Hepatic
+         };
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_noSystemicProcessSelection);
+      }
+
+      [Observation]
+      public void should_return_the_expected_mapping()
+      {
+         _snapshot.SystemicProcessType.ShouldBeEqualTo(SystemicProcessTypes.Hepatic.SystemicProcessTypeId.ToString());
+         _snapshot.Name.ShouldBeNull();
+         _snapshot.MoleculeName.ShouldBeNull();
+         _snapshot.MetaboliteName.ShouldBeNull();
+      }
+   }
+
+
+   public class When_mapping_specific_binding_partial_process_mapping_to_snapshot : concern_for_ProcessMappingMapper
    {
       protected override async Task Because()
       {
@@ -111,6 +167,7 @@ namespace PKSim.Core
          _snapshot.MetaboliteName.ShouldBeNull();
       }
    }
+
 
    public class When_mapping_transport_systemic_process_mapping_to_snapshot : concern_for_ProcessMappingMapper
    {

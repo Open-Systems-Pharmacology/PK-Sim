@@ -51,6 +51,12 @@ namespace PKSim.Core.Model
          return AllProcessSelectionGroups.SelectMany(x => x.AllEnabledProcesses());
       }
 
+
+      public virtual IEnumerable<IReactionMapping> AllProcesses()
+      {
+         return AllProcessSelectionGroups.SelectMany(x => x.AllProcesses());
+      }
+
       public virtual IEnumerable<ProcessSelectionGroup> AllProcessSelectionGroups
       {
          get

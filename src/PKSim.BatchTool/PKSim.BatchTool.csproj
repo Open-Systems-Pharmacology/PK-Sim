@@ -63,7 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="9.0.70" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.74" />
     <PackageReference Include="OSPSuite.DevExpress" Version="19.2.4.1" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.44" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.33" GeneratePathProperty="true" />
