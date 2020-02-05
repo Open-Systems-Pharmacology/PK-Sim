@@ -44,7 +44,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Systemic process id
       /// </summary>
-      public SystemicProcessTypeId SystemicProcessTypeId { get; private set; }
+      public SystemicProcessTypeId SystemicProcessTypeId { get; }
 
       /// <summary>
       ///    Name of icon used to represent the process

@@ -7,7 +7,7 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       public override async Task<CompoundProcessSelection> MapToSnapshot(IProcessMapping partialProcessMapping)
       {
-         var snapshot = await SnapshotFrom(partialProcessMapping, x => { x.Name = partialProcessMapping.ProcessName; });
+         var snapshot = await SnapshotFrom(partialProcessMapping, x => { x.Name = SnapshotValueFor(partialProcessMapping.ProcessName); });
 
          switch (partialProcessMapping)
          {
@@ -21,6 +21,9 @@ namespace PKSim.Core.Snapshots.Mappers
                break;
             case ProcessSelection processSelection:
                snapshot.MoleculeName = SnapshotValueFor(processSelection.MoleculeName);
+               break;
+            case SystemicProcessSelection systemicProcessSelection:
+               snapshot.SystemicProcessType = systemicProcessSelection.ProcessType.SystemicProcessTypeId.ToString();
                break;
          }
 
@@ -52,9 +55,10 @@ namespace PKSim.Core.Snapshots.Mappers
                break;
          }
 
-         processMapping.ProcessName = snapshot.Name;
-         processMapping.CompoundName = process.ParentCompound.Name;
-         processMapping.MoleculeName = snapshot.MoleculeName;
+         processMapping.ProcessName = ModelValueFor(snapshot.Name);
+         //Parent compound may be null for process that are representing a non existent selection
+         processMapping.CompoundName = ModelValueFor(process.ParentCompound?.Name);
+         processMapping.MoleculeName = ModelValueFor(snapshot.MoleculeName);
 
          return Task.FromResult(processMapping);
       }

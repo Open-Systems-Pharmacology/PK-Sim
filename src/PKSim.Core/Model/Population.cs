@@ -151,20 +151,13 @@ namespace PKSim.Core.Model
 
       public Organism Organism => FirstIndividual?.Organism ?? new Organism();
 
-      public IEnumerable<IndividualMolecule> AllMolecules()
-      {
-         if (FirstIndividual != null)
-            return FirstIndividual.AllMolecules();
+      public IEnumerable<IndividualMolecule> AllMolecules() => AllMolecules<IndividualMolecule>();
 
-         return Enumerable.Empty<IndividualMolecule>();
-      }
+      public IndividualMolecule MoleculeByName(string moleculeName) => FirstIndividual?.MoleculeByName(moleculeName);
 
       public IEnumerable<TMolecules> AllMolecules<TMolecules>() where TMolecules : IndividualMolecule
       {
-         if (FirstIndividual != null)
-            return FirstIndividual.AllMolecules<TMolecules>();
-
-         return Enumerable.Empty<TMolecules>();
+         return FirstIndividual?.AllMolecules<TMolecules>() ?? Enumerable.Empty<TMolecules>();
       }
 
       public void AddMolecule(IndividualMolecule molecule)

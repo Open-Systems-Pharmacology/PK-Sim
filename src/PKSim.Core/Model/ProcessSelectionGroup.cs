@@ -44,6 +44,11 @@ namespace PKSim.Core.Model
          }
       }
 
+      public IEnumerable<IReactionMapping> AllProcesses()
+      {
+         return AllPartialProcesses().Union(AllSystemicProcesses().Cast<IReactionMapping>());
+      }
+      
       public IEnumerable<IReactionMapping> AllEnabledProcesses()
       {
          return AllEnabledPartialProcesses().Union(AllEnabledSystemicProcesses().Cast<IReactionMapping>());
