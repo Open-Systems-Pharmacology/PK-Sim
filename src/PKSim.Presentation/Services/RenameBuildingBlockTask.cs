@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
-using OSPSuite.Assets;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Extensions;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.Services
@@ -92,7 +92,7 @@ namespace PKSim.Presentation.Services
 
       private void renameForIndividualSimulation(IndividualSimulation individualSimulation, string newName)
       {
-         _curveNamer.RenameCurvesWithOriginalNames(individualSimulation, () => renameIndividualSimulation(individualSimulation, newName), addSimulationName:true);
+         _curveNamer.RenameCurvesWithOriginalNames(individualSimulation, () => renameIndividualSimulation(individualSimulation, newName), addSimulationName: true);
       }
 
       private void renameIndividualSimulation(IndividualSimulation individualSimulation, string newName)
@@ -205,14 +205,24 @@ namespace PKSim.Presentation.Services
          renamedContainer.GetAllChildren<IFormulaUsable>().Each(reference =>
          {
             var allObjectReferencing = _objectReferencingRetriever.AllUsingFormulaReferencing(reference, simulation.Model);
-            renameFormulaPathInFormulas(allObjectReferencing, renamedContainer.Name, oldContainerName);
+            renameFormulaPathInFormulas(allObjectReferencing, reference, renamedContainer.Name, oldContainerName);
          });
       }
 
-      private void renameFormulaPathInFormulas(IEnumerable<IUsingFormula> referencingFormulas, string newName, string oldName)
+      private void renameFormulaPathInFormulas(IEnumerable<IUsingFormula> referencingFormulas, IFormulaUsable reference, string newName, string oldName)
       {
-         referencingFormulas.Select(x => x.Formula).SelectMany(x => x.ObjectPaths)
-            .Each(objecPath => objecPath.Replace(oldName, newName));
+         foreach (var formula in referencingFormulas.Select(x => x.Formula).Where(x => x.AreReferencesResolved))
+         {
+            //Reference is always found by construction
+            var referenceIndex = formula.ObjectReferences.Select(x => x.Object).IndexOf(reference);
+            var objectPath = formula.ObjectPaths[referenceIndex];
+
+            //The reference is used. The path needs to be updated only if it is a path referencing the old name
+            if(!objectPath.Contains(oldName))
+               continue;
+
+            objectPath.ReplaceWith(reference.EntityPath().ToPathArray());
+         }
       }
 
       private IEnumerable<IContainer> getContainersToRename(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock, string oldContainerName)

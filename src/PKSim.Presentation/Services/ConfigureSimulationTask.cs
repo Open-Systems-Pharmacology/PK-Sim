@@ -15,7 +15,7 @@ namespace PKSim.Presentation.Services
    public interface IConfigureSimulationTask
    {
       /// <summary>
-      ///    Starts the configure simulation worflow
+      ///    Starts the configure simulation workflow
       /// </summary>
       /// <param name="simulationToConfigure"></param>
       void Configure(Simulation simulationToConfigure);
