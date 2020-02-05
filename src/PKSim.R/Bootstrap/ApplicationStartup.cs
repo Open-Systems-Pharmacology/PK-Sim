@@ -9,6 +9,8 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Infrastructure;
 
 namespace PKSim.R.Bootstrap
@@ -56,6 +58,7 @@ namespace PKSim.R.Bootstrap
          container.Register<ICoreUserSettings, CLIUserSettings>();
          container.Register<IProgressUpdater, NoneProgressUpdater>();
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
+         container.Register<IOntogenyTask<Individual>, CLIIndividualOntogenyTask>();
          container.Register<IExceptionManager, CLIExceptionManager>();
       }
 
