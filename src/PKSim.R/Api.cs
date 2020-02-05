@@ -17,6 +17,8 @@ namespace PKSim.R
 
       public static IIndividualFactory GetIndividualFactory() => resolveTask<IIndividualFactory>();
 
+      public static IPopulationFactory GetPopulationFactory() => resolveTask<IPopulationFactory>();
+
       private static T resolveTask<T>()
       {
          try

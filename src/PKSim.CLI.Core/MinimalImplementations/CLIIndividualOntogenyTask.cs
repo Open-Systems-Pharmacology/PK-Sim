@@ -5,13 +5,13 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
-namespace PKSim.Matlab
+namespace PKSim.CLI.Core.MinimalImplementations
 {
-   public class MatlabIndividualOntogenyTask : IOntogenyTask<Individual>
+   public class CLIIndividualOntogenyTask : IOntogenyTask<Individual>
    {
       private readonly IExecutionContext _executionContext;
 
-      public MatlabIndividualOntogenyTask(IExecutionContext executionContext)
+      public CLIIndividualOntogenyTask(IExecutionContext executionContext)
       {
          _executionContext = executionContext;
       }

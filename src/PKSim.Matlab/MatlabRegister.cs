@@ -26,7 +26,7 @@ namespace PKSim.Matlab
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
          container.Register<IMatlabPopulationSettingsToPopulationSettingsMapper, MatlabPopulationSettingsToPopulationSettingsMapper>();
          container.Register<ILazyLoadTask, MatlabLazyLoadTask>(LifeStyle.Singleton);
-         container.Register<IOntogenyTask<Individual>, MatlabIndividualOntogenyTask>();
+         container.Register<IOntogenyTask<Individual>, CLIIndividualOntogenyTask>();
       }
    }
 }

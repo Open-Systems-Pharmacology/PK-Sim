@@ -167,8 +167,8 @@ namespace PKSim.Core.Model
       }
 
       private void updateCurrentIndividualFromSettings(RandomPopulationSettings populationSettings, Individual currentIndividual,
-         PathCache<IDistributedParameter> allCurrentDistribuedParameters, 
-         PathCache<IDistributedParameter> allBaseDistributedParamters, 
+         PathCache<IDistributedParameter> allCurrentDistributedParameters, 
+         PathCache<IDistributedParameter> allBaseDistributedParameters, 
          Gender currentGender,
          RandomGenerator randomGenerator)
       {
@@ -176,11 +176,11 @@ namespace PKSim.Core.Model
          currentIndividual.OriginData = populationSettings.BaseIndividual.OriginData.Clone();
          currentIndividual.OriginData.Gender = currentGender;
 
-         //perform random varation of the origin data according to the settings defined for the population
+         //perform random variation of the origin data according to the settings defined for the population
          perturbate(currentIndividual, populationSettings, randomGenerator);
 
          //Update the distribution according to the new origin data
-         _distributedParametersUpdater.UpdateDistributedParameter(allCurrentDistribuedParameters, allBaseDistributedParamters, currentIndividual.OriginData);
+         _distributedParametersUpdater.UpdateDistributedParameter(allCurrentDistributedParameters, allBaseDistributedParameters, currentIndividual.OriginData);
       }
 
       private PathCache<IDistributedParameter> getAllDistributedParametersFrom(Individual individual)
@@ -205,7 +205,7 @@ namespace PKSim.Core.Model
             }
          }
 
-         //add possible items missing because of rounding artefacts
+         //add possible items missing because of rounding artifacts
          //+1 is because we need to add one element more in any case in order to be able to dequeue properly
          for (int i = 0; i < populationSettings.NumberOfIndividuals + 1 - _genderQueue.Count; i++)
          {
