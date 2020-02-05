@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Extensions;
@@ -209,20 +210,38 @@ namespace PKSim.Presentation.Services
          });
       }
 
-      private void renameFormulaPathInFormulas(IEnumerable<IUsingFormula> referencingFormulas, IFormulaUsable reference, string newName, string oldName)
+      private void renameFormulaPathInFormulas(IReadOnlyCollection<IUsingFormula> referencingFormulas, IFormulaUsable reference, string newName, string oldName)
       {
-         foreach (var formula in referencingFormulas.Select(x => x.Formula).Where(x => x.AreReferencesResolved))
+         foreach (var usingFormula in referencingFormulas)
          {
-            //Reference is always found by construction
-            var referenceIndex = formula.ObjectReferences.Select(x => x.Object).IndexOf(reference);
-            var objectPath = formula.ObjectPaths[referenceIndex];
+            var objectPath = formulaUsablePathReferencing(usingFormula, reference);
+
+            //Reference is always found by construction and this should never happen
+            if (objectPath==null)
+               return;
 
             //The reference is used. The path needs to be updated only if it is a path referencing the old name
-            if(!objectPath.Contains(oldName))
+            if (!objectPath.Contains(oldName))
                continue;
 
             objectPath.ReplaceWith(reference.EntityPath().ToPathArray());
          }
+      }
+
+      private IFormulaUsablePath formulaUsablePathReferencing(IUsingFormula usingFormula, IFormulaUsable reference)
+      {
+         var parameter = usingFormula as IParameter;
+         return formulaUsablePathReferencing(usingFormula.Formula, reference) ??
+                formulaUsablePathReferencing(parameter?.RHSFormula, reference);
+      }
+
+      private IFormulaUsablePath formulaUsablePathReferencing(IFormula formula, IFormulaUsable reference)
+      {
+         if (formula == null)
+            return null;
+
+         var referenceIndex = formula.ObjectReferences.Select(x => x.Object).IndexOf(reference);
+         return (referenceIndex >= 0) ? formula.ObjectPaths[referenceIndex] : null;
       }
 
       private IEnumerable<IContainer> getContainersToRename(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock, string oldContainerName)
