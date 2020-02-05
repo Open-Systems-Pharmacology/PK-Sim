@@ -280,6 +280,13 @@ namespace PKSim.Core.Snapshots.Mappers
          if (compoundProcess != null)
             return compoundProcess;
 
+         //No process found and a name was specified. This is a snapshot that is corrupted
+         if (!string.IsNullOrEmpty(snapshotInteraction.Name))
+         {
+            _logger.AddWarning(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotInteraction.Name, snapshotInteraction.CompoundName));
+            return null;
+         }
+
          //This might be a process that was deselected explicitly by the user
          var molecule = simulationSubject.MoleculeByName(snapshotInteraction.MoleculeName);
          return molecule == null ? null : new NoInteractionProcess {MoleculeName = molecule.Name};

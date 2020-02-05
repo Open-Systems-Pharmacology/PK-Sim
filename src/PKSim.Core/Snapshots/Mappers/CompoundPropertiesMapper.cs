@@ -149,7 +149,14 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             var process = compound.ProcessByName(snapshotProcess.Name) ?? notSelectedProcessFrom(snapshotProcess, simulationSubject);
             if (process == null)
+            {
+               //No process found and a name was specified. This is a snapshot that is corrupted
+               if(!string.IsNullOrEmpty(snapshotProcess.Name))
+                  _logger.AddWarning(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotProcess.Name, compound.Name));
+
                continue;
+
+            }
 
             await addProcessToProcessSelection(compoundProcessesSelection, snapshotProcess, process);
          }
