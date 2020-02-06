@@ -23,8 +23,6 @@ namespace PKSim.R
 
    public class When_creating_a_population_with_invalid_settings_from_R : concern_for_PopulationFactory
    {
-      private IndividualValuesCache _result;
-
       protected override void Context()
       {
          base.Context();

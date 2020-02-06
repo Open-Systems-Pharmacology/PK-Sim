@@ -34,7 +34,7 @@ namespace PKSim.Presentation.DTO.PopulationAnalyses
          private static IBusinessRule maximumDefined { get; } = CreateRule.For<FixedLimitGroupingDTO>()
             .Property(item => item.Maximum)
             .WithRule((param, value) => !param.MaximumEditable || value.HasValue)
-            .WithError(PKSimConstants.Rules.Parameter.MaxShouldBeDefined);
+            .WithError(PKSimConstants.Rules.Parameter.MinShouldBeDefinedAnonymous);
 
          public static IEnumerable<IBusinessRule> All
          {

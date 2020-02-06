@@ -93,7 +93,7 @@ namespace PKSim.Core.Model
                return CreateRule.For<ParameterRange>()
                   .Property(item => item.MinValueInDisplayUnit)
                   .WithRule(minLessThanMax)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinLessThanMax);
+                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinLessThanMax(param.ParameterName));
             }
          }
 
@@ -104,7 +104,7 @@ namespace PKSim.Core.Model
                return CreateRule.For<ParameterRange>()
                   .Property(item => item.MaxValueInDisplayUnit)
                   .WithRule(maxGreaterThanMin)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxGreaterThanMin);
+                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxGreaterThanMin(param.ParameterName));
             }
          }
 
@@ -115,7 +115,7 @@ namespace PKSim.Core.Model
                return CreateRule.For<ParameterRange>()
                   .Property(item => item.MinValueInDisplayUnit)
                   .WithRule(minGreaterThanDbMin)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinGreaterThanDbMinValue(param.DbMinValue, param.Unit.ToString()));
+                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinGreaterThanDbMinValue(param.ParameterName, param.DbMinValue, param.Unit.ToString()));
             }
          }
 
@@ -126,7 +126,7 @@ namespace PKSim.Core.Model
                return CreateRule.For<ParameterRange>()
                   .Property(item => item.MaxValueInDisplayUnit)
                   .WithRule(maxLessThanDbMax)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxLessThanDbMaxValue(param.DbMaxValue, param.Unit.ToString()));
+                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxLessThanDbMaxValue(param.ParameterName, param.DbMaxValue, param.Unit.ToString()));
             }
          }
 
@@ -137,7 +137,7 @@ namespace PKSim.Core.Model
                return CreateRule.For<ParameterRange>()
                   .Property(item => item.MinValueInDisplayUnit)
                   .WithRule(minLessThanDbMax)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinLessThanDbMaxValue(param.DbMaxValue, param.Unit.ToString()));
+                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinLessThanDbMaxValue(param.ParameterName, param.DbMaxValue, param.Unit.ToString()));
             }
          }
 
@@ -148,7 +148,7 @@ namespace PKSim.Core.Model
                return CreateRule.For<ParameterRange>()
                   .Property(item => item.MaxValueInDisplayUnit)
                   .WithRule(maxGreaterThanDbMin)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxGreaterThanDbMinValue(param.DbMinValue, param.Unit.ToString()));
+                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxGreaterThanDbMinValue(param.ParameterName, param.DbMinValue, param.Unit.ToString()));
             }
          }
 
@@ -260,7 +260,7 @@ namespace PKSim.Core.Model
                return CreateRule.For<ParameterRange>()
                   .Property(item => item.MinValue)
                   .WithRule((param, value) => value.HasValue)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinShouldBeDefined);
+                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinShouldBeDefined(param.ParameterName));
             }
          }
 
@@ -271,7 +271,7 @@ namespace PKSim.Core.Model
                return CreateRule.For<ParameterRange>()
                   .Property(item => item.MaxValue)
                   .WithRule((param, value) => value.HasValue)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxShouldBeDefined);
+                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxShouldBeDefined(param.ParameterName));
             }
          }
       }
