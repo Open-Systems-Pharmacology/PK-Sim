@@ -1399,32 +1399,38 @@ namespace PKSim.Assets
       {
          public static class Parameter
          {
-            public static readonly string MinShouldBeDefined = "Minimum value should be defined.";
-            public static readonly string MaxShouldBeDefined = "Maximum value should be defined.";
-            public static readonly string MinLessThanMax = "Minimum value should be less than than maximum value.";
-            public static readonly string MaxGreaterThanMin = "Maximum value should be greater than minimum value.";
             public static readonly string StartTimeLessThanOrEqualToEndTime = "Start time value should be less than end time value.";
             public static readonly string EndTimeGreaterThanOrEqualToStartTime = "End time value should be greater than start time value.";
+            public static readonly string MinShouldBeDefinedAnonymous = "Minimum value should be defined.";
+
+            public static string MinShouldBeDefined(string parameterName) => $"Minimum value for {parameterName} should be defined.";
+
+            public static string MaxShouldBeDefined(string parameterName) => $"Maximum value for {parameterName} should be defined.";
+
+            public static string MinLessThanMax(string parameterName) => $"Minimum value for {parameterName} should be less than maximum value.";
+
+            public static string MaxGreaterThanMin(string parameterName) => $"Maximum value for {parameterName} should be greater than minimum value.";
+            
             public static string ValueShouldBeGreaterThanOrEqualToZero(string parameterName) => $"{parameterName} value should be greater than or equal to 0.";
 
-            public static string MinGreaterThanDbMinValue(double? dbMinValue, string unit)
+            public static string MinGreaterThanDbMinValue(string parameterName, double? dbMinValue, string unit)
             {
-               return $"Minimum value should be greater than or equal to {dbMinValue} {unit}.";
+               return $"Minimum value for {parameterName} should be greater than or equal to {dbMinValue} {unit}.";
             }
 
-            public static string MaxGreaterThanDbMinValue(double? dbMinValue, string unit)
+            public static string MaxGreaterThanDbMinValue(string parameterName, double? dbMinValue, string unit)
             {
-               return $"Maximum value should be greater than or equal to {dbMinValue} {unit}.";
+               return $"Maximum value for {parameterName} should be greater than or equal to {dbMinValue} {unit}.";
             }
 
-            public static string MaxLessThanDbMaxValue(double? dbMaxValue, string unit)
+            public static string MaxLessThanDbMaxValue(string parameterName, double? dbMaxValue, string unit)
             {
-               return $"Maximum value should be less than or equal to {dbMaxValue} {unit}.";
+               return $"Maximum value for {parameterName} should be less than or equal to {dbMaxValue} {unit}.";
             }
 
-            public static string MinLessThanDbMaxValue(double? dbMaxValue, string unit)
+            public static string MinLessThanDbMaxValue(string parameterName, double? dbMaxValue, string unit)
             {
-               return $"Minimum value should be less than or equal to {dbMaxValue} {unit}.";
+               return $"Minimum value for {parameterName} should be less than or equal to {dbMaxValue} {unit}.";
             }
 
             public static string ValueSmallerThanMax(string parameterName, string value, string unit)
