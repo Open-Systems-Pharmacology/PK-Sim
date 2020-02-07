@@ -16,7 +16,7 @@ namespace PKSim.Presentation.UICommands
 
       protected override void PerformExecute()
       {
-         _moBiExportTask.SaveSimulationToFile(Subject);
+         _moBiExportTask.ExportSimulationToPkmlFile(Subject);
       }
    }
 }

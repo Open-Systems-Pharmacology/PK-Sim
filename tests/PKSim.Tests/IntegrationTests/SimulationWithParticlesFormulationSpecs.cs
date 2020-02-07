@@ -292,7 +292,7 @@ namespace PKSim.IntegrationTests
       protected void ExportSimulation(IndividualSimulation simulation, string file)
       {
          var exporter = IoC.Resolve<IMoBiExportTask>();
-         exporter.SaveSimulationToFile(simulation, file);
+         exporter.ExportSimulationToPkmlFile(simulation, file);
       }
 
       /// <summary>

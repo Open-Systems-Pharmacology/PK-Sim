@@ -89,7 +89,6 @@ namespace PKSim.CLI.Core.Services
    {
       private readonly ISimulationRunner _simulationRunner;
       private readonly ILogger _logger;
-      private readonly IParametersReportCreator _parametersReportCreator;
       private readonly ISimulationResultsExporter _simulationResultsExporter;
       private readonly ISimulationExportTask _simulationExportTask;
       private readonly IPopulationExportTask _populationExportTask;
@@ -98,7 +97,6 @@ namespace PKSim.CLI.Core.Services
       public SimulationExporter(
          ISimulationRunner simulationRunner,
          ILogger logger,
-         IParametersReportCreator parametersReportCreator,
          ISimulationResultsExporter simulationResultsExporter,
          ISimulationExportTask simulationExportTask,
          IPopulationExportTask populationExportTask,
@@ -107,7 +105,6 @@ namespace PKSim.CLI.Core.Services
       {
          _simulationRunner = simulationRunner;
          _logger = logger;
-         _parametersReportCreator = parametersReportCreator;
          _simulationResultsExporter = simulationResultsExporter;
          _simulationExportTask = simulationExportTask;
          _populationExportTask = populationExportTask;

@@ -21,12 +21,12 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Exports the simulation into a predefined file
       /// </summary>
-      void SaveSimulationToFile(Simulation simulation);
+      void ExportSimulationToPkmlFile(Simulation simulation);
 
       /// <summary>
       /// Exports the simulation into the file with path <paramref name="fileName"/>
       /// </summary>
-      void SaveSimulationToFile(Simulation simulation,string fileName);
+      void ExportSimulationToPkmlFile(Simulation simulation,string fileName);
 
       /// <summary>
       /// Exports the simulation into the file with path <paramref name="fileName"/>

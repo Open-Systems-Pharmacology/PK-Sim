@@ -69,7 +69,7 @@ namespace PKSim.Infrastructure.Services
 
          allRepositories.Each(withIdRepository.Register);
 
-         return SerializationTransaction.Create(_dimensionFactory, _objectBaseFactory, withIdRepository, _cloneManagerForModel, allRepositories);
+         return SerializationTransaction.Create(_container, _dimensionFactory, _objectBaseFactory, withIdRepository, _cloneManagerForModel, allRepositories);
       }
    }
 }

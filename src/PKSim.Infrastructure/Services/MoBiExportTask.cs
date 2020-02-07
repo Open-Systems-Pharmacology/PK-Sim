@@ -134,7 +134,7 @@ namespace PKSim.Infrastructure.Services
 
       public Task SaveSimulationToFileAsync(Simulation simulation, string fileName)
       {
-         return Task.Run(() => SaveSimulationToFile(simulation, fileName));
+         return Task.Run(() => ExportSimulationToPkmlFile(simulation, fileName));
       }
 
       public void UpdateObserverForAllFlag(IObserverBuildingBlock observerBuildingBlock)
@@ -148,13 +148,13 @@ namespace PKSim.Infrastructure.Services
          UpdateObserverForAllFlag(moBiSimulation.BuildConfiguration.Observers);
       }
 
-      public void SaveSimulationToFile(Simulation simulation)
+      public void ExportSimulationToPkmlFile(Simulation simulation)
       {
          var moBiFile = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationToMoBiTitle, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, simulation.Name);
-         SaveSimulationToFile(simulation, moBiFile);
+         ExportSimulationToPkmlFile(simulation, moBiFile);
       }
 
-      public void SaveSimulationToFile(Simulation simulation, string fileName)
+      public void ExportSimulationToPkmlFile(Simulation simulation, string fileName)
       {
          if (string.IsNullOrEmpty(fileName)) return;
          exportSimulationToFile(simulation, fileName);

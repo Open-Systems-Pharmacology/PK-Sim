@@ -1,8 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
-using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -32,8 +30,7 @@ namespace PKSim.Core.Services
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly ICloner _cloner;
       private readonly IDialogCreator _dialogCreator;
-      private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
-      private readonly ISimModelExporter _simModelExporter;
+      private readonly IMoBiExportTask _mobiExportTask;
       private readonly IPopulationExportTask _populationExportTask;
 
       public PopulationSimulationExportTask(
@@ -41,16 +38,14 @@ namespace PKSim.Core.Services
          ISimulationSettingsRetriever simulationSettingsRetriever,
          ICloner cloner,
          IDialogCreator dialogCreator,
-         ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
-         ISimModelExporter simModelExporter,
+         IMoBiExportTask mobiExportTask,
          IPopulationExportTask populationExportTask)
       {
          _lazyLoadTask = lazyLoadTask;
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _cloner = cloner;
          _dialogCreator = dialogCreator;
-         _modelCoreSimulationMapper = modelCoreSimulationMapper;
-         _simModelExporter = simModelExporter;
+         _mobiExportTask = mobiExportTask;
          _populationExportTask = populationExportTask;
       }
 
@@ -87,19 +82,14 @@ namespace PKSim.Core.Services
          }
 
          var fileName = populationSimulation.Name;
-         var modelFileFullPath = Path.Combine(populationFolder, $"{fileName}.xml");
+         var modelFileFullPath = Path.Combine(populationFolder, $"{fileName}.pkml");
          var agingFileFullPath = Path.Combine(populationFolder, $"{fileName}{CoreConstants.Population.TABLE_PARAMETER_EXPORT}.csv");
-         var outputDefinitionFileFullPath = Path.Combine(populationFolder, $"{fileName}{CoreConstants.Population.OUTPUT_DEFINITION_EXPORT}.csv");
 
          //Model
-         _simModelExporter.Export(_modelCoreSimulationMapper.MapFrom(populationSimulation, shouldCloneModel: false), modelFileFullPath);
-         // Outputs
-
-         var outputSelection = populationSimulation.OutputSelections;
-
-         exportOutputDefinition(outputSelection, outputDefinitionFileFullPath);
+         _mobiExportTask.ExportSimulationToPkmlFile(populationSimulation, modelFileFullPath);
 
          var comments = _populationExportTask.CreateProjectMetaInfoFrom(fileDescription);
+
          //all values
          var dataTable = _populationExportTask.CreatePopulationDataFor(populationSimulation);
          dataTable.ExportToCSV(Path.Combine(populationFolder, $"{fileName}.csv"), comments: comments);
@@ -109,17 +99,7 @@ namespace PKSim.Core.Services
          if (agingData.Rows.Count > 0)
             agingData.ExportToCSV(agingFileFullPath, comments: comments);
       }
-
-      private void exportOutputDefinition(OutputSelections outputSelections, string outputDefinitionFileFullPath)
-      {
-         using (var sw = new StreamWriter(outputDefinitionFileFullPath, false))
-         {
-            // Add Simulation Name to paths for sim model
-            outputSelections.AllOutputs.Each(sq => sw.WriteLine("{0}{1}", sq.Path, ';'));
-            sw.Close();
-         }
-      }
-
+      
       private bool settingsRequired(Simulation simulation)
       {
          if (simulation.OutputSelections == null)

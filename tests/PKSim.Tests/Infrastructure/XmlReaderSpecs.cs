@@ -1,24 +1,27 @@
 using System.Xml.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Serializer;
-using OSPSuite.Serializer.Xml;
-using FakeItEasy;
-using PKSim.Infrastructure.Serialization.Xml;
-using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Serializer;
+using OSPSuite.Serializer.Xml;
+using PKSim.Infrastructure.Serialization.Xml;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Infrastructure
 {
    public abstract class concern_for_XmlReader<T> : ContextSpecification<IXmlReader<T>> where T : class
    {
       protected IPKSimXmlSerializerRepository _serializerRepository;
+      protected IContainer _container;
 
       protected override void Context()
       {
          _serializerRepository = A.Fake<IPKSimXmlSerializerRepository>();
+         _container = A.Fake<IContainer>();
 
          sut = new XmlReader<T>(_serializerRepository);
       }
@@ -36,14 +39,14 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          _entitySerializer = A.Fake<IXmlSerializer<SerializationContext>>();
-         _serializationContext = SerializationTransaction.Create();
+         _serializationContext = SerializationTransaction.Create(_container);
          _deserializedObject = A.Fake<IEntity>();
          A.CallTo(() => _entitySerializer.ObjectType).Returns(typeof(IEntity));
 
          _element = new XElement("TUTU");
          A.CallTo(() => _entitySerializer.Deserialize<IEntity>(_element, _serializationContext)).Returns(_deserializedObject);
          //serializers only defined for type but not for element
-         A.CallTo(() => _serializerRepository.SerializerFor(typeof (IEntity))).Returns(_entitySerializer);
+         A.CallTo(() => _serializerRepository.SerializerFor(typeof(IEntity))).Returns(_entitySerializer);
 
          A.CallTo(() => _serializerRepository.SerializerFor(_element)).Throws(new SerializerNotFoundException("toto"));
       }
@@ -53,9 +56,8 @@ namespace PKSim.Infrastructure
          _entity = sut.ReadFrom(_element, _serializationContext);
       }
 
-
       [Observation]
-      public void should_deserialize_the_formula_cahce_using_the_repository()
+      public void should_deserialize_the_formula_cache_using_the_repository()
       {
          A.CallTo(() => _serializerRepository.DeserializeFormulaCache(_element, _serializationContext, typeof(IEntity))).MustHaveHappened();
       }
@@ -74,12 +76,12 @@ namespace PKSim.Infrastructure
       private IXmlSerializer<SerializationContext> _entitySerializer;
       private IEntity _entity;
       private SerializationContext _serializationContext;
-
+      
       protected override void Context()
       {
          base.Context();
          _entitySerializer = A.Fake<IXmlSerializer<SerializationContext>>();
-         _serializationContext = SerializationTransaction.Create();
+         _serializationContext = SerializationTransaction.Create(_container);
 
          _deserializedObject = A.Fake<IEntity>();
          _element = new XElement("TUTU");
@@ -112,11 +114,11 @@ namespace PKSim.Infrastructure
          base.Context();
          _entitySerializer = A.Fake<IXmlSerializer<SerializationContext>>();
          _deserializedObject = A.Fake<IEntity>();
-         _serializationContext = SerializationTransaction.Create();
+         _serializationContext = SerializationTransaction.Create(_container);
          _element = new XElement("TUTU");
          A.CallTo(() => _entitySerializer.Deserialize<IEntity>(_element, _serializationContext)).Returns(_deserializedObject);
          A.CallTo(() => _serializerRepository.SerializerFor(_element)).Returns(_entitySerializer);
-         A.CallTo(() => _serializerRepository.SerializerFor(typeof (IEntity))).Throws(new SerializerNotFoundException(typeof (IEntity)));
+         A.CallTo(() => _serializerRepository.SerializerFor(typeof(IEntity))).Throws(new SerializerNotFoundException(typeof(IEntity)));
       }
 
       protected override void Because()

@@ -1,10 +1,11 @@
 ﻿using System.Xml.Linq;
-using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -17,14 +18,14 @@ namespace PKSim.Infrastructure.Services
    {
       private readonly IDimensionFactory _dimensionFactory;
 
-      public ObservedDataPersistor(IPKSimXmlSerializerRepository serializerRepository, IDimensionFactory dimensionFactory) : base(serializerRepository)
+      public ObservedDataPersistor(IPKSimXmlSerializerRepository serializerRepository, IDimensionFactory dimensionFactory, IContainer container) : base(serializerRepository, container)
       {
          _dimensionFactory = dimensionFactory;
       }
 
       public override void Load(DataRepository dataRepository, string fileName)
       {
-         using (var context = SerializationTransaction.Create(_dimensionFactory,withIdRepository:new WithIdRepository()))
+         using (var context = SerializationTransaction.Create(_container, _dimensionFactory, withIdRepository: new WithIdRepository()))
          {
             var xmlSerializer = _serializerRepository.SerializerFor(dataRepository);
             var outputToDeserialize = XElement.Load(fileName);

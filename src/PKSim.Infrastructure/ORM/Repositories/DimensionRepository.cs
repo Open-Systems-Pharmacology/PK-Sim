@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using OSPSuite.Utility.Collections;
-using PKSim.Core;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Utility.Collections;
+using PKSim.Core;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -16,18 +17,21 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       private readonly IPKSimDimensionFactory _dimensionFactory;
       private readonly IPKSimConfiguration _pkSimConfiguration;
+      private readonly IContainer _container;
       private readonly IUnitSystemXmlSerializerRepository _unitSystemXmlSerializerRepository;
       private IList<string> _dimensionNames;
 
       public DimensionRepository(
-         IPKSimDimensionFactory dimensionFactory, 
+         IPKSimDimensionFactory dimensionFactory,
          IUnitSystemXmlSerializerRepository unitSystemXmlSerializerRepository,
-         IPKSimConfiguration pkSimConfiguration)
+         IPKSimConfiguration pkSimConfiguration,
+         IContainer container)
       {
          _dimensionFactory = dimensionFactory;
          _dimensionFactory.DimensionRepository = this;
          _unitSystemXmlSerializerRepository = unitSystemXmlSerializerRepository;
          _pkSimConfiguration = pkSimConfiguration;
+         _container = container;
       }
 
       public IDimension OptimalDimensionFor(IDimension dimension) => _dimensionFactory.OptimalDimension(dimension);
@@ -131,7 +135,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          var serializer = _unitSystemXmlSerializerRepository.SerializerFor(_dimensionFactory);
          var xel = XElement.Load(_pkSimConfiguration.DimensionFilePath);
-         serializer.Deserialize(_dimensionFactory, xel, SerializationTransaction.Create());
+         serializer.Deserialize(_dimensionFactory, xel, SerializationTransaction.Create(_container));
       }
 
       private Unit addInputDoseUnit(IDimension inputDose, string unit, double factor)

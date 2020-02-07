@@ -89,7 +89,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_2
 
          var serializerRepository = _container.Resolve<IPKSimXmlSerializerRepository>();
          var serializer = serializerRepository.SerializerFor<DataRepository>();
-         using (var serializationContext = SerializationTransaction.Create(dimensionFactory: _dimensionFactory, withIdRepository: new WithIdRepository()))
+         using (var serializationContext = SerializationTransaction.Create(_container, dimensionFactory: _dimensionFactory, withIdRepository: new WithIdRepository()))
          {
             var context = serializationContext;
             _projectObservedDataElementCache.Each(e =>

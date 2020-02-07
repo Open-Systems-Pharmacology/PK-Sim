@@ -50,9 +50,9 @@ namespace PKSim.Infrastructure
 {
    public class InfrastructureRegister : Register
    {
-      public static IContainer Initialize()
+      public static IContainer Initialize(bool registerContainerAsStatic = true)
       {
-         var container = initializeContainer();
+         var container = initializeContainer(registerContainerAsStatic);
 
          container.AddRegister(x => x.FromType<OSPSuite.Infrastructure.InfrastructureRegister>());
 
@@ -83,10 +83,11 @@ namespace PKSim.Infrastructure
          container.Register<StartOptions, IStartOptions, StartOptions>(LifeStyle.Singleton);
       }
 
-      private static IContainer initializeContainer()
+      private static IContainer initializeContainer(bool registerContainerAsStatic)
       {
          var container = new CastleWindsorContainer();
-         IoC.InitializeWith(container);
+         if (registerContainerAsStatic) 
+            IoC.InitializeWith(container);
 
          container.WindsorContainer.AddFacility<EventRegisterFacility>();
          container.WindsorContainer.AddFacility<SerializationFacility>();

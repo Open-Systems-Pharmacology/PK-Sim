@@ -11,6 +11,7 @@ using OSPSuite.Core.Serialization.Xml.Extensions;
 using OSPSuite.Serializer.Xml;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Core.Services
 {
@@ -27,23 +28,26 @@ namespace PKSim.Core.Services
       private readonly ICloneManagerForModel _cloneManagerForModel;
       private readonly IXmlSerializer<SerializationContext> _containerObserverSerializer;
       private readonly IXmlSerializer<SerializationContext> _amountObserverSerializer;
-      private readonly IOSPSuiteXmlSerializerRepository _modellingXmlSerializerRepository;
+      private readonly IOSPSuiteXmlSerializerRepository _modelingXmlSerializerRepository;
+      private readonly IContainer _container;
 
       public ObserverLoader(
-         IOSPSuiteXmlSerializerRepository modellingXmlSerializerRepository,
+         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository,
          IObjectConverterFinder objectConverterFinder,
          IDimensionFactory dimensionFactory,
          IObjectBaseFactory objectBaseFactory,
-         ICloneManagerForModel cloneManagerForModel
+         ICloneManagerForModel cloneManagerForModel,
+         IContainer container
       )
       {
          _objectConverterFinder = objectConverterFinder;
          _dimensionFactory = dimensionFactory;
          _objectBaseFactory = objectBaseFactory;
          _cloneManagerForModel = cloneManagerForModel;
-         _modellingXmlSerializerRepository = modellingXmlSerializerRepository;
-         _containerObserverSerializer = modellingXmlSerializerRepository.SerializerFor<ContainerObserverBuilder>();
-         _amountObserverSerializer = modellingXmlSerializerRepository.SerializerFor<AmountObserverBuilder>();
+         _modelingXmlSerializerRepository = modelingXmlSerializerRepository;
+         _containerObserverSerializer = modelingXmlSerializerRepository.SerializerFor<ContainerObserverBuilder>();
+         _amountObserverSerializer = modelingXmlSerializerRepository.SerializerFor<AmountObserverBuilder>();
+         _container = container;
       }
 
       private void convertXml(XElement sourceElement, int version)
@@ -72,7 +76,7 @@ namespace PKSim.Core.Services
       {
          IObserverBuilder observerBuilder;
          int version;
-         using (var serializationContext = SerializationTransaction.Create(_dimensionFactory, _objectBaseFactory, new WithIdRepository(), _cloneManagerForModel))
+         using (var serializationContext = SerializationTransaction.Create(_container, _dimensionFactory, _objectBaseFactory, new WithIdRepository(), _cloneManagerForModel))
          {
             var element = XElement.Load(pkmlFileFullPath);
             version = element.GetPKMLVersion();
@@ -83,7 +87,7 @@ namespace PKSim.Core.Services
             if (serializer == null)
                throw new OSPSuiteException(PKSimConstants.Error.CouldNotLoadObserverFromFile(pkmlFileFullPath, elementName));
 
-            _modellingXmlSerializerRepository.DeserializeFormulaCacheIn(element, serializationContext);
+            _modelingXmlSerializerRepository.DeserializeFormulaCacheIn(element, serializationContext);
             observerBuilder = serializer.Deserialize<IObserverBuilder>(element, serializationContext);
          }
 
