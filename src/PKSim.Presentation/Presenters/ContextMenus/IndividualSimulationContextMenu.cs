@@ -47,7 +47,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected override IEnumerable<IMenuBarItem> DebugMenuFor(IndividualSimulation simulation)
       {
          yield return CreateMenuButton.WithCaption(MenuNames.ExportSimModelXml)
-            .WithCommandFor<ExportToMatlabOrRCommand, Simulation>(simulation)
+            .WithCommandFor<ExportSimulationToSimModelXmlUICommand, Simulation>(simulation)
             .AsGroupStarter()
             .ForDeveloper();
 

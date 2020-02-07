@@ -6,11 +6,11 @@ using PKSim.Core.Services;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class ExportToMatlabOrRCommand : ActiveObjectUICommand<Simulation>
+   public class ExportSimulationToSimModelXmlUICommand : ActiveObjectUICommand<Simulation>
    {
       private readonly ISimulationExportTask _simulationExportTask;
 
-      public ExportToMatlabOrRCommand(ISimulationExportTask simulationExportTask, IActiveSubjectRetriever activeSubjectRetriever) : base(activeSubjectRetriever)
+      public ExportSimulationToSimModelXmlUICommand(ISimulationExportTask simulationExportTask, IActiveSubjectRetriever activeSubjectRetriever) : base(activeSubjectRetriever)
       {
          _simulationExportTask = simulationExportTask;
       }
