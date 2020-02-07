@@ -20,6 +20,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
 
       protected abstract IEnumerable<IMenuBarItem> ActionMenuItemsSpecificToType(TSimulation simulation);
+
       protected abstract IEnumerable<IMenuBarItem> ExportMenuItemsSpecificToType(TSimulation simulation);
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(TSimulation simulation)
@@ -41,6 +42,13 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          yield return DeleteMenuFor(simulation)
             .AsGroupStarter();
+      }
+
+      protected IMenuBarItem ExportSimulationToCppMenuItem(TSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(MenuNames.ExportForCpp)
+            .WithCommandFor<ExportSimulationToCppUICommand, Simulation>(simulation)
+            .ForDeveloper();
       }
 
       private IEnumerable<IMenuBarItem> commonItemsForSimulations(TSimulation simulation)

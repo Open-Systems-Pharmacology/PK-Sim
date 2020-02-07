@@ -79,6 +79,18 @@ namespace PKSim.Infrastructure.Services
             fileName => ExportResultsToCSVAsync(simulation, fileName), Constants.DirectoryKey.REPORT);
       }
 
+      public Task ExportSimulationToCppAsync(Simulation simulation)
+      {
+         var outputFolder = _dialogCreator.AskForFolder(PKSimConstants.UI.ExportSimulationToCpp, Constants.DirectoryKey.SIM_MODEL_XML);
+         return string.IsNullOrEmpty(outputFolder) ? Task.CompletedTask : ExportSimulationToCppAsync(simulation, outputFolder);
+      }
+
+      public Task ExportSimulationToCppAsync(Simulation simulation, string outputFolder)
+      {
+         _lazyLoadTask.Load(simulation);
+         return Task.Run(() => _simModelExporter.ExportCppCode(_coreSimulationMapper.MapFrom(simulation, shouldCloneModel: false), outputFolder, FormulaExportMode.Formula));
+      }
+
       public async Task ExportResultsToCSVAsync(Simulation simulation, string fileName)
       {
          var dataTable = await _simulationResultsToDataTableConverter.ResultsToDataTableAsync(simulation.Results, simulation);
@@ -104,7 +116,7 @@ namespace PKSim.Infrastructure.Services
 
       public Task ExportSimulationToSimModelXmlAsync(Simulation simulation, string fileName)
       {
-         return Task.Run(() => _simModelExporter.Export(_coreSimulationMapper.MapFrom(simulation, shouldCloneModel: false), fileName));
+         return Task.Run(() => _simModelExporter.ExportSimModelXml(_coreSimulationMapper.MapFrom(simulation, shouldCloneModel: false), fileName));
       }
 
       public Task CreateSimulationReport(Simulation simulation)

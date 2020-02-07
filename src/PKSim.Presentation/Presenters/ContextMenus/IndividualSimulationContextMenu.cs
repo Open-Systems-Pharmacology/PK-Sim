@@ -32,17 +32,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          exportToExcel.Enabled = simulationHasResult(individualSimulation);
          yield return exportToExcel;
 
-
          var exportToCSV = CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSimulationResultsToCSV)
             .WithCommandFor<ExportSimulationResultsToCSVCommand, Simulation>(individualSimulation)
             .WithIcon(ApplicationIcons.ExportToCSV);
 
          exportToCSV.Enabled = simulationHasResult(individualSimulation);
          yield return exportToCSV;
-
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportForMatlab)
-            .WithIcon(ApplicationIcons.Matlab)
-            .WithCommandFor<ExportToMatlabOrRCommand, Simulation>(individualSimulation);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSimulationModelToFile)
             .WithIcon(ApplicationIcons.Report)
@@ -51,9 +46,15 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> DebugMenuFor(IndividualSimulation simulation)
       {
+         yield return CreateMenuButton.WithCaption(MenuNames.ExportSimModelXml)
+            .WithCommandFor<ExportToMatlabOrRCommand, Simulation>(simulation)
+            .AsGroupStarter()
+            .ForDeveloper();
+
+         yield return ExportSimulationToCppMenuItem(simulation);
+
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Parameter Ids Export"))
             .WithCommandFor<ParameterExportForDebugCommand, Simulation>(simulation)
-            .AsGroupStarter()
             .ForDeveloper();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Simulation Xml Export"))

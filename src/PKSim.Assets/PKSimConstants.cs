@@ -1059,7 +1059,6 @@ namespace PKSim.Assets
          public static readonly string ExportPopulationToCSVMenu = "Population to CSV";
          public static readonly string ExportForClusterComputations = "Export for Cluster Computations...";
          public static readonly string ExportForClusterComputationsMenu = "Cluster Computations";
-         public static readonly string ExportForMatlab = "Export for Matlab®/R...";
          public static readonly string Configure = "&Configure...";
          public static readonly string ConfigureShortMenu = "Configure";
          public static readonly string NewProject = "&New...";
@@ -1164,7 +1163,7 @@ namespace PKSim.Assets
          public static readonly string LoadFromSnapshot = "Load from Snapshot...";
          public static readonly string RemoveUnusedContent = "Remove Unused Content";
 
-         public static string DevOnlyMenuNameFor(string menuName) => $"{menuName} (Developer only)";
+         public static string DevOnlyMenuNameFor(string menuName) => OSPSuite.Assets.MenuNames.AsDeveloperOnly(menuName);
 
          public static string CompareBuildingBlocks(string buildingBlockType)
          {
@@ -1621,7 +1620,6 @@ namespace PKSim.Assets
          public static readonly string SnapshotFile = "Select snapshot file";
          public static readonly string SavingProject = "Saving project...";
          public static readonly string LoadingHistory = "Loading history...";
-         public static readonly string LoadingMatlab = "Loading Matlab®...";
          public static readonly string LoadingLayout = "Loading layout...";
          public static readonly string LoadingWorkingJournal = "Loading journal...";
          public static readonly string SavingHistory = "Saving history...";
@@ -1639,7 +1637,6 @@ namespace PKSim.Assets
          public static readonly string ExportPopulationToCSVTitle = "Export Population to CSV File";
          public static readonly string ExportPKAnalysesToCSVTitle = $"Export PK-Analyses to {"CSV"}";
          public static readonly string ExportForClusterSimulationTitle = "Export for Cluster Simulation...";
-         public static readonly string ExportPopulationForMatlabWrapper = "Select a folder where required files to run the matlab wrapper will be generated";
          public static readonly string UserTemplates = "User Templates";
          public static readonly string SystemTemplates = "Predefined Templates";
          public static readonly string EditDescription = "Edit Description";
@@ -1926,7 +1923,8 @@ namespace PKSim.Assets
          public static readonly string ExportObservedDataToPkml = "Export observed data to pkml";
          public static readonly string ExportSimulationResultsToExcel = $"Export simulation results to {Excel}";
          public static readonly string ExportPopulationAnalysisToExcelTitle = $"Export analysis to {Excel}";
-         public static readonly string ExportSimulationResultsToCSV = $"Export simulation results to {"CSV"}";
+         public static readonly string ExportSimulationResultsToCSV = $"Export simulation results to CSV";
+         public static readonly string ExportSimulationToCpp = $"Export simulation to C++ code";
          public static readonly string ReallyCancel = "Do you really want to cancel?";
          public static readonly string BuildingBlockName = "Building Block Name";
          public static readonly string BuildingBlockType = "Building Block Type";
@@ -1974,7 +1972,7 @@ namespace PKSim.Assets
          public static readonly string Filter = "Filter";
          public static readonly string SaveSimulationToXmlFile = "Save Simulation to xml File (PKSim Format)";
          public static readonly string SaveSimulationParameterToCsvFile = "Save Simulation parameters to csv File (PKSim Format)";
-         public static readonly string SaveSimulationToSimModelXmlFile = "Save Simulation to xml File (for use in Matlab or R)";
+         public static readonly string SaveSimulationToSimModelXmlFile = "Save Simulation to SimModel xml File (for use in Matlab)";
          public static readonly string Solubility = "Solubility";
          public static readonly string Analysis = "Analysis";
          public static readonly string pH = "pH";

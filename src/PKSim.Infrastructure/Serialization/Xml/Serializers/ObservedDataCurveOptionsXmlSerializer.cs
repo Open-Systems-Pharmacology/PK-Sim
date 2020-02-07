@@ -1,9 +1,8 @@
 ﻿using System.Xml.Linq;
-using OSPSuite.Utility.Container;
-using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Infrastructure.Serialization.Xml.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Serialization.Xml;
+using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Infrastructure.Serialization.Xml.Extensions;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
@@ -35,7 +34,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       protected override void TypedDeserialize(ObservedDataCollection observedDataCollection, XElement element, SerializationContext serializationContext)
       {
          base.TypedDeserialize(observedDataCollection, element, serializationContext);
-         var withIdRepository = IoC.Resolve<IWithIdRepository>();
+         var withIdRepository = serializationContext.Resolve<IWithIdRepository>();
          element.AddReferencedObservedData(observedDataCollection, withIdRepository);
       }
    }

@@ -41,7 +41,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       {
          base.TypedDeserialize(field, element, serializationContext);
          //We need to update the Dimension to use the merged dimension
-         var dimensionRepository = IoC.Resolve<IDimensionRepository>();
+         var dimensionRepository = serializationContext.Resolve<IDimensionRepository>();
          var mergedDimension = dimensionRepository.MergedDimensionFor(field);
          field.DisplayUnit = element.GetDisplayUnit(mergedDimension);
       }

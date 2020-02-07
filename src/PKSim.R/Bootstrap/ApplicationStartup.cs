@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using OSPSuite.Core;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
@@ -12,6 +13,8 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using CoreRegister = PKSim.Core.CoreRegister;
+using ICoreUserSettings = PKSim.Core.ICoreUserSettings;
 
 namespace PKSim.R.Bootstrap
 {
@@ -32,7 +35,8 @@ namespace PKSim.R.Bootstrap
 
       private IContainer performInitialization()
       {
-         var container = InfrastructureRegister.Initialize();
+         // We do not want to register the IoC container to avoid static pollution that may collide with OSPSuite-R
+         var container = InfrastructureRegister.Initialize(registerContainerAsStatic: false);
 
          using (container.OptimizeDependencyResolution())
          {
@@ -54,7 +58,7 @@ namespace PKSim.R.Bootstrap
 
       private void registerMinimalImplementations(IContainer container)
       {
-         container.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
+         container.Register<ICoreWorkspace, IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
          container.Register<ICoreUserSettings, CLIUserSettings>();
          container.Register<IProgressUpdater, NoneProgressUpdater>();
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();

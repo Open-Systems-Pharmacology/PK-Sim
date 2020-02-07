@@ -1,25 +1,12 @@
-using OSPSuite.Serializer.Attributes;
-using OSPSuite.Utility.Container;
 using OSPSuite.Core.Domain;
-using PKSim.Core.Extensions;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Serializer.Attributes;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
-   public class ObjectPathXmlAttributeMapper : AttributeMapper<IObjectPath,SerializationContext>
+   public class ObjectPathXmlAttributeMapper : AttributeMapper<IObjectPath, SerializationContext>
    {
-      private readonly IObjectPathFactory _objectPathFactory;
-
-      public ObjectPathXmlAttributeMapper() : this(IoC.Resolve<IObjectPathFactory>())
-      {
-      }
-
-      public ObjectPathXmlAttributeMapper(IObjectPathFactory objectPathFactory)
-      {
-         _objectPathFactory = objectPathFactory;
-      }
-
       public override string Convert(IObjectPath objectPath, SerializationContext context)
       {
          return objectPath == null ? string.Empty : objectPath.ToString();
@@ -30,7 +17,8 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          if (string.IsNullOrEmpty(attributeValue))
             return new ObjectPath();
 
-         return _objectPathFactory.CreateObjectPathFrom(attributeValue.ToPathArray());
+         var objectPathFactory = context.Resolve<IObjectPathFactory>();
+         return objectPathFactory.CreateObjectPathFrom(attributeValue.ToPathArray());
       }
    }
 }

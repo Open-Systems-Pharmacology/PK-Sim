@@ -8,6 +8,7 @@ using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Infrastructure
 {
@@ -18,6 +19,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          _serializerRepository = A.Fake<IPKSimXmlSerializerRepository>();
+         
          sut = new XmlWriter<T>(_serializerRepository);
       }
    }
@@ -29,15 +31,17 @@ namespace PKSim.Infrastructure
       private IXmlSerializer<SerializationContext> _entitySerializer;
       private XElement _element;
       private SerializationContext _serializationContext;
+      private IContainer _container;
 
       protected override void Context()
       {
          base.Context();
          _element = new XElement("TOTO");
+         _container = A.Fake<IContainer>();
          _entityToSerialize = A.Fake<IEntity>();
          _entitySerializer = A.Fake<IXmlSerializer<SerializationContext>>();
          A.CallTo(() => _entitySerializer.ObjectType).Returns(typeof(IEntity));
-         _serializationContext = SerializationTransaction.Create();
+         _serializationContext = SerializationTransaction.Create(_container);
          A.CallTo(() => _entitySerializer.Serialize(_entityToSerialize, _serializationContext)).Returns(_element);
          A.CallTo(() => _serializerRepository.SerializerFor(_entityToSerialize)).Returns(_entitySerializer);
       }

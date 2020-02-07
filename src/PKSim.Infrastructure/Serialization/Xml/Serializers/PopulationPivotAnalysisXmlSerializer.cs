@@ -65,7 +65,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 
       protected override void TypedDeserialize(PopulationStatisticalAnalysis populationStatisticalAnalysis, XElement element, SerializationContext serializationContext)
       {
-         var dimensionRepository = IoC.Resolve<IDimensionRepository>();
+         var dimensionRepository = serializationContext.Resolve<IDimensionRepository>();
          base.TypedDeserialize(populationStatisticalAnalysis, element, serializationContext);
          populationStatisticalAnalysis.TimeUnit = element.GetDisplayUnit(dimensionRepository.Time);
       }

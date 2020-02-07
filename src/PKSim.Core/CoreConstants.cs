@@ -1158,7 +1158,6 @@ namespace PKSim.Core
 
       public static class Population
       {
-         public const string OUTPUT_DEFINITION_EXPORT = "_Outputs";
          public const string ICRP = "European_ICRP_2002";
          public const string PRETERM = "Preterm";
          public const string TABLE_PARAMETER_EXPORT = "_TableParameters";

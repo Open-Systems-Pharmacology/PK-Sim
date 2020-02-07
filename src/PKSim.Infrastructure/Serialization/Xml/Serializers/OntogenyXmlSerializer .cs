@@ -1,13 +1,11 @@
-using System.Linq;
 using System.Xml.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Serializer;
 using OSPSuite.Serializer.Xml.Extensions;
-using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
@@ -24,10 +22,10 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       {
          var ontogenyName = element.GetAttribute(CoreConstants.Serialization.Attribute.Name);
          var speciesName = element.GetAttribute(CoreConstants.Serialization.Attribute.Species);
-         if(string.IsNullOrEmpty(ontogenyName) || string.IsNullOrEmpty(speciesName))
+         if (string.IsNullOrEmpty(ontogenyName) || string.IsNullOrEmpty(speciesName))
             return new NullOntogeny();
 
-         var ontogenyRepository = IoC.Resolve<IOntogenyRepository>();
+         var ontogenyRepository = serializationContext.Resolve<IOntogenyRepository>();
          var ontogeny = ontogenyRepository.AllFor(speciesName).FindByName(ontogenyName) as DatabaseOntogeny;
          return ontogeny ?? new NullOntogeny();
       }

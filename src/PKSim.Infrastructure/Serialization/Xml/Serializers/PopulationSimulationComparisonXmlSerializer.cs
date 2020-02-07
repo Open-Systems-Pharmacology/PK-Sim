@@ -34,8 +34,8 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       {
          base.TypedDeserialize(comparison, comparisonElement, context);
 
-         var lazyLoadTask = IoC.Resolve<ILazyLoadTask>();
-         var withIdRepository = IoC.Resolve<IWithIdRepository>();
+         var lazyLoadTask = context.Resolve<ILazyLoadTask>();
+         var withIdRepository = context.Resolve<IWithIdRepository>();
 
          comparisonElement.AddReferencedSimulations(comparison, withIdRepository, lazyLoadTask);
          var referenceSimulationId = comparisonElement.GetAttribute(CoreConstants.Serialization.Attribute.ReferenceSimulation);

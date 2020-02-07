@@ -82,7 +82,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
          var individualCovariatesReader = _container.Resolve<IXmlReader<IndividualCovariates>>();
          var covariateValuesCacheWriter = _container.Resolve<IXmlWriter<CovariateValuesCache>>();
 
-         var context = SerializationTransaction.Create();
+         var context = SerializationTransaction.Create(_container);
 
          // List of old covariates as defined in PKSim 8.x and below
          var allIndividualCovariates = new List<IndividualCovariates>();

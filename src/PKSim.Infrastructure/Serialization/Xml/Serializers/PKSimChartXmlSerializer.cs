@@ -52,9 +52,9 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       protected override void TypedDeserialize(IndividualSimulationComparison chart, XElement chartElement, SerializationContext serializationContext)
       {
          //first load the simulation and then deserialize the chart as the results are needed 
-         var lazyLoadTask = IoC.Resolve<ILazyLoadTask>();
-         var withIdRepository = IoC.Resolve<IWithIdRepository>();
-         var observedDataRepository = IoC.Resolve<IObservedDataRepository>();
+         var lazyLoadTask = serializationContext.Resolve<ILazyLoadTask>();
+         var withIdRepository = serializationContext.Resolve<IWithIdRepository>();
+         var observedDataRepository = serializationContext.Resolve<IObservedDataRepository>();
 
          chartElement.AddReferencedSimulations(chart, withIdRepository, lazyLoadTask);
 

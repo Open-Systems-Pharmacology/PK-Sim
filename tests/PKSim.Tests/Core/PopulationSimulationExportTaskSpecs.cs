@@ -4,8 +4,6 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Mappers;
-using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -15,8 +13,7 @@ namespace PKSim.Core
    public abstract class concern_for_PopulationSimulationExportTask : ContextSpecification<IPopulationSimulationExportTask>
    {
       protected ILazyLoadTask _lazyLoadTask;
-      protected ISimModelExporter _simModelExporter;
-      protected ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
+      protected IMoBiExportTask _mobiExportTask;
       protected IDialogCreator _dialogCreator;
       protected ISimulationSettingsRetriever _simulationSettingsRetriever;
       protected ICloner _cloner;
@@ -25,13 +22,12 @@ namespace PKSim.Core
       protected override void Context()
       {
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
-         _simModelExporter = A.Fake<ISimModelExporter>();
-         _modelCoreSimulationMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
+         _mobiExportTask = A.Fake<IMoBiExportTask>();
          _simulationSettingsRetriever = A.Fake<ISimulationSettingsRetriever>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _cloner = A.Fake<ICloner>();
          _populationExportTask = A.Fake<IPopulationExportTask>();
-         sut = new PopulationSimulationExportTask(_lazyLoadTask, _simulationSettingsRetriever, _cloner, _dialogCreator, _modelCoreSimulationMapper, _simModelExporter, _populationExportTask);
+         sut = new PopulationSimulationExportTask(_lazyLoadTask, _simulationSettingsRetriever, _cloner, _dialogCreator, _mobiExportTask, _populationExportTask);
       }
    }
 
@@ -39,7 +35,6 @@ namespace PKSim.Core
    {
       private PopulationSimulation _populationSimulation;
       private const string _clusterInputDirectory = @"c:\temp\PKSIMTEST";
-      private IModelCoreSimulation _coreSimulation;
       private FileSelection _clusterExport;
 
       public override void GlobalContext()
@@ -59,8 +54,6 @@ namespace PKSim.Core
          agingData.Rows.Add(row);
          A.CallTo(() => _populationSimulation.AgingData.ToDataTable()).Returns(agingData);
          _clusterExport = new FileSelection() {Description = "Desc", FilePath = _clusterInputDirectory};
-         _coreSimulation = A.Fake<IModelCoreSimulation>();
-         A.CallTo(() => _modelCoreSimulationMapper.MapFrom(_populationSimulation, false)).Returns(_coreSimulation);
       }
 
       protected override void Because()
@@ -77,7 +70,7 @@ namespace PKSim.Core
       [Observation]
       public void should_write_simulation_file()
       {
-         A.CallTo(() => _simModelExporter.Export(_coreSimulation, Path.Combine(_clusterInputDirectory, $"{_populationSimulation.Name}.{"xml"}"))).MustHaveHappened();
+         A.CallTo(() => _mobiExportTask.ExportSimulationToPkmlFile(_populationSimulation, Path.Combine(_clusterInputDirectory, $"{_populationSimulation.Name}.{"pkml"}"))).MustHaveHappened();
       }
 
       [Observation]

@@ -21,6 +21,16 @@ namespace PKSim.Core.Services
       Task ExportResultsToCSVAsync(Simulation simulation);
 
       /// <summary>
+      ///    Exports simulation to C++ code
+      /// </summary>
+      Task ExportSimulationToCppAsync(Simulation simulation);
+
+      /// <summary>
+      ///    Exports simulation to C++ code to the folder <paramref name="outputFolder"/>
+      /// </summary>
+      Task ExportSimulationToCppAsync(Simulation simulation, string outputFolder);
+
+      /// <summary>
       ///    Exports simulation results to the csv file with path <paramref name="fileName" />
       /// </summary>
       Task ExportResultsToCSVAsync(Simulation simulation, string fileName);

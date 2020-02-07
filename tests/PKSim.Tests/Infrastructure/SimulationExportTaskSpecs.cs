@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -21,7 +19,7 @@ using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_SimulationExportTask : ContextSpecification<ISimulationExportTask>
+   public abstract class concern_for_SimulationExportTask : ContextSpecificationAsync<ISimulationExportTask>
    {
       private IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       protected ILazyLoadTask _lazyLoadTask;
@@ -29,11 +27,11 @@ namespace PKSim.Infrastructure
       protected IDataRepositoryExportTask _dataRepositoryTask;
       private IStringSerializer _stringSerializer;
       private IModelReportCreator _modelReportCreator;
-      private ISimulationToModelCoreSimulationMapper _simulationMapper;
-      private ISimModelExporter _simModelExporter;
+      protected ISimulationToModelCoreSimulationMapper _simulationMapper;
+      protected ISimModelExporter _simModelExporter;
       protected ISimulationResultsToDataTableConverter _simulationResultsToDataTableConverter;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _quantityDisplayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
@@ -46,6 +44,8 @@ namespace PKSim.Infrastructure
          _simulationResultsToDataTableConverter = A.Fake<ISimulationResultsToDataTableConverter>();
          sut = new SimulationExportTask(_lazyLoadTask, _dialogCreator, _dataRepositoryTask, _quantityDisplayPathMapper,
             _stringSerializer, _modelReportCreator, _simulationMapper, _simModelExporter, _simulationResultsToDataTableConverter);
+
+         return _completed;
       }
    }
 
@@ -53,9 +53,9 @@ namespace PKSim.Infrastructure
    {
       private IndividualSimulation _simulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = new IndividualSimulation();
       }
 
@@ -70,19 +70,22 @@ namespace PKSim.Infrastructure
    {
       private IndividualSimulation _simulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         Debug.Print(AppDomain.CurrentDomain.BaseDirectory);
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(() => _simulation.HasResults).Returns(true);
          A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, null, null)).Returns(string.Empty);
       }
 
-      [Observation]
-      public async Task should_not_export_the_results_to_excel()
+      protected override async Task Because()
       {
          await sut.ExportResultsToExcelAsync(_simulation);
+      }
+
+      [Observation]
+      public void should_not_export_the_results_to_excel()
+      {
          A.CallTo(() => _dataRepositoryTask.ExportToExcel(_simulation.DataRepository, A<string>.Ignored, true, A<DataColumnExportOptions>._)).MustNotHaveHappened();
       }
    }
@@ -91,13 +94,11 @@ namespace PKSim.Infrastructure
    {
       private IndividualSimulation _simulation;
       private string _excelFile;
-      private IReadOnlyList<DataTable> _dataTables;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
-         _dataTables = new List<DataTable>();
          A.CallTo(() => _simulation.HasResults).Returns(true);
          A.CallTo(() => _simulation.Name).Returns("toto");
          A.CallTo(() => _simulation.DataRepository).Returns(new DataRepository());
@@ -105,10 +106,14 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationResultsToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, CoreConstants.DefaultResultsExportNameFor(_simulation.Name), null)).Returns(_excelFile);
       }
 
-      [Observation]
-      public async Task should_export_the_results_to_excel()
+      protected override async Task Because()
       {
          await sut.ExportResultsToExcelAsync(_simulation);
+      }
+
+      [Observation]
+      public void should_export_the_results_to_excel()
+      {
          A.CallTo(() => _dataRepositoryTask.ExportToExcelAsync(_simulation.DataRepository, _excelFile, true, A<DataColumnExportOptions>._)).MustHaveHappened();
       }
    }
@@ -118,9 +123,9 @@ namespace PKSim.Infrastructure
       private Simulation _simulation;
       private string _fileFullPath;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<Simulation>().WithName("Sim");
          A.CallTo(() => _simulation.HasResults).Returns(true);
          _fileFullPath = "file full path";
@@ -128,17 +133,20 @@ namespace PKSim.Infrastructure
             .Returns(_fileFullPath);
       }
 
-      [Observation]
-      public async Task should_load_the_results()
+      protected override async Task Because()
       {
          await sut.ExportResultsToCSVAsync(_simulation);
+      }
+
+      [Observation]
+      public void should_load_the_results()
+      {
          A.CallTo(() => _lazyLoadTask.LoadResults(_simulation)).MustHaveHappened();
       }
 
       [Observation]
-      public async Task should_export_the_file_to_csv()
+      public void should_export_the_file_to_csv()
       {
-         await sut.ExportResultsToCSVAsync(_simulation);
          A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTableAsync(_simulation.Results, _simulation)).MustHaveHappened();
       }
    }
@@ -146,29 +154,18 @@ namespace PKSim.Infrastructure
    public class When_exporting_a_simulation_without_results_to_a_csv_file : concern_for_SimulationExportTask
    {
       private Simulation _simulation;
-      private bool _exceptionRaised;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<Simulation>().WithName("Sim");
          A.CallTo(() => _simulation.HasResults).Returns(false);
       }
 
       [Observation]
-      public async Task should_throw_an_exception()
+      public void should_throw_an_exception()
       {
-         try
-         {
-            await sut.ExportResultsToCSVAsync(_simulation);
-            _exceptionRaised = false;
-         }
-         catch (Exception)
-         {
-            _exceptionRaised = true;
-         }
-
-         _exceptionRaised.ShouldBeTrue();
+         The.Action(() => sut.ExportResultsToCSVAsync(_simulation)).ShouldThrowAn<Exception>();
       }
    }
 
@@ -176,25 +173,28 @@ namespace PKSim.Infrastructure
    {
       private Simulation _simulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<Simulation>().WithName("Sim");
          A.CallTo(() => _simulation.HasResults).Returns(true);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
       }
 
-      [Observation]
-      public async Task should_load_the_results()
+      protected override async Task Because()
       {
          await sut.ExportResultsToCSVAsync(_simulation);
+      }
+
+      [Observation]
+      public void should_load_the_results()
+      {
          A.CallTo(() => _lazyLoadTask.LoadResults(_simulation)).MustHaveHappened();
       }
 
       [Observation]
-      public async Task should_not_export_the_file_to_csv()
+      public void should_not_export_the_file_to_csv()
       {
-         await sut.ExportResultsToCSVAsync(_simulation);
          A.CallTo(() => _simulationResultsToDataTableConverter.ResultsToDataTableAsync(_simulation.Results, _simulation)).MustNotHaveHappened();
       }
    }
@@ -202,29 +202,18 @@ namespace PKSim.Infrastructure
    public class When_exporting_the_pk_analysis_for_a_simulation_that_does_not_have_any_available : concern_for_SimulationExportTask
    {
       private PopulationSimulation _populationSimulation;
-      private bool _exceptionRaised;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _populationSimulation = A.Fake<PopulationSimulation>();
          A.CallTo(() => _populationSimulation.HasPKAnalyses).Returns(false);
       }
 
       [Observation]
-      public async Task should_throw_an_exception()
+      public void should_throw_an_exception()
       {
-         try
-         {
-            await sut.ExportPKAnalysesToCSVAsync(_populationSimulation);
-            _exceptionRaised = false;
-         }
-         catch (Exception)
-         {
-            _exceptionRaised = true;
-         }
-
-         _exceptionRaised.ShouldBeTrue();
+         The.Action(() => sut.ExportPKAnalysesToCSVAsync(_populationSimulation)).ShouldThrowAn<Exception>();
       }
    }
 
@@ -234,9 +223,9 @@ namespace PKSim.Infrastructure
       private string _fileFullPath;
       private DataTable _dataTable;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _dataTable = new DataTable();
          _populationSimulation = A.Fake<PopulationSimulation>().WithName("POP");
          A.CallTo(() => _populationSimulation.HasPKAnalyses).Returns(true);
@@ -246,18 +235,55 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(_populationSimulation.PKAnalyses, _populationSimulation)).Returns(Task.FromResult(_dataTable));
       }
 
-      [Observation]
-      public async Task should_load_the_simulation()
+      protected override async Task Because()
       {
          await sut.ExportPKAnalysesToCSVAsync(_populationSimulation);
+      }
+
+      [Observation]
+      public void should_load_the_simulation()
+      {
          A.CallTo(() => _lazyLoadTask.Load(_populationSimulation)).MustHaveHappened();
       }
 
       [Observation]
-      public async Task should_export_the_pk_analysis_to_csv()
+      public void should_export_the_pk_analysis_to_csv()
       {
-         await sut.ExportPKAnalysesToCSVAsync(_populationSimulation);
          A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(_populationSimulation.PKAnalyses, _populationSimulation)).MustHaveHappened();
+      }
+   }
+
+   public class When_exporting_the_simulation_to_cpp_code : concern_for_SimulationExportTask
+   {
+      private Simulation _simulation;
+      private string _outputFolder;
+      private IModelCoreSimulation _modelCoreSimulation;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _outputFolder = "outputFolder";
+         _modelCoreSimulation = A.Fake<IModelCoreSimulation>();
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_outputFolder);
+
+         A.CallTo(() => _simulationMapper.MapFrom(_simulation, false)).Returns(_modelCoreSimulation);
+      }
+
+      protected override async Task Because()
+      {
+         await sut.ExportSimulationToCppAsync(_simulation);
+      }
+
+      [Observation]
+      public void should_load_the_simulation()
+      {
+         A.CallTo(() => _lazyLoadTask.Load(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_export_the_simulation_to_cpp_in_the_selected_output_folder_using_formula()
+      {
+         A.CallTo(() => _simModelExporter.ExportCppCode(_modelCoreSimulation, _outputFolder, FormulaExportMode.Formula)).MustHaveHappened();
       }
    }
 }
