@@ -886,9 +886,13 @@ namespace PKSim.Assets
          public static string CannotFindSimulationInSnapshot(string simulationName, string project) => CannotFindBuildingBlockInSnapshot(ObjectTypes.Simulation, simulationName, project);
 
          public static string CannotFindSimulationParameterInSnapshot(string parameterPath, string simulationName, string project) => 
-            $"TODO Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
+            $"Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
 
          public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
+
+         public static string AlteredBuildingBlockNotFoundInSimulation(string simulationName, string buildingBlockName, string buildingBlockType) =>
+            $"Could not update the altered flag for {buildingBlockType} building block '{buildingBlockName}' as it is not used in {ObjectTypes.Simulation} '{simulationName}'.";
+
       }
 
       public static class Information
@@ -1043,6 +1047,9 @@ namespace PKSim.Assets
 
       public static class MenuNames
       {
+         public static string AsDeveloperOnly(string menuName) => OSPSuite.Assets.MenuNames.AsDeveloperOnly(menuName);
+
+
          public static readonly string LoadFromTemplate = UI.LoadFromTemplate;
          public static readonly string SaveAsTemplate = UI.SaveAsTemplate;
          public static readonly string SaveAsSytemTemplate = "Save as System Template...";
@@ -1162,8 +1169,8 @@ namespace PKSim.Assets
          public static readonly string ExportSnapshot = "Save Snapshot...";
          public static readonly string LoadFromSnapshot = "Load from Snapshot...";
          public static readonly string RemoveUnusedContent = "Remove Unused Content";
-
-         public static string DevOnlyMenuNameFor(string menuName) => OSPSuite.Assets.MenuNames.AsDeveloperOnly(menuName);
+         public static readonly string ExportODEForMatlab = AsDeveloperOnly("Export Simulation to Matlab® Differential Equations...");
+         public static readonly string ExportODEForR = AsDeveloperOnly("Export Simulation to R Differential Equations");
 
          public static string CompareBuildingBlocks(string buildingBlockType)
          {
@@ -1925,6 +1932,8 @@ namespace PKSim.Assets
          public static readonly string ExportPopulationAnalysisToExcelTitle = $"Export analysis to {Excel}";
          public static readonly string ExportSimulationResultsToCSV = $"Export simulation results to CSV";
          public static readonly string ExportSimulationToCpp = $"Export simulation to C++ code";
+         public static readonly string ExportODEForMatlab = "Export simulation to Matlab® ODE";
+         public static readonly string ExportODEForR = "Export simulation to R ODE";
          public static readonly string ReallyCancel = "Do you really want to cancel?";
          public static readonly string BuildingBlockName = "Building Block Name";
          public static readonly string BuildingBlockType = "Building Block Type";

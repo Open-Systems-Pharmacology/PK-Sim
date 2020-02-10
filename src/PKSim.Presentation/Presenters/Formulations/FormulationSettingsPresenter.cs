@@ -26,7 +26,7 @@ namespace PKSim.Presentation.Presenters.Formulations
       bool CanEditFormulationType { set; }
 
       /// <summary>
-      ///    Specifies whether the formulation should be saved as soon as a command is raised or only whne triggered explictely.
+      ///    Specifies whether the formulation should be saved as soon as a command is raised or only when triggered explicitly.
       ///    Default is false
       /// </summary>
       bool AutoSave { get; set; }
@@ -70,6 +70,7 @@ namespace PKSim.Presentation.Presenters.Formulations
          _view.AddChartView(_simpleChartPresenter.View);
          _tableFormulationPresenter.TableFormulaChanged += tableFormulaChanged;
          AddSubPresenters(_formulationParametersPresenter, _tableFormulationPresenter);
+         _simpleChartPresenter.LogLinSelectionEnabled = true;
          AutoSave = false;
       }
 
@@ -139,6 +140,7 @@ namespace PKSim.Presentation.Presenters.Formulations
          else
             _simpleChartPresenter.Plot(_formulationValuesRetriever.TableValueFor(Formulation));
 
+         _simpleChartPresenter.SetChartScale(Scalings.Linear);
          View.ChartVisible = true;
       }
 

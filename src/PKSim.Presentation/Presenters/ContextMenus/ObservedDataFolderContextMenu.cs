@@ -48,7 +48,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithIcon(ApplicationIcons.LoadFromTemplate)
             .AsGroupStarter());
 
-         _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Load from Snapshot"))
+         _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Load from Snapshot"))
             .WithCommand<LoadObservedDataFromSnapshotUICommand>()
             .WithIcon(ApplicationIcons.SnapshotImport)
             .ForDeveloper());

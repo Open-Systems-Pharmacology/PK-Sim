@@ -122,7 +122,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected IMenuBarItem ParameterValueDebugMenuFor(TBuildingBlock buildingBlock)
       {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Parameter Value Export"))
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Parameter Value Export"))
             .WithCommandFor<ParameterValueForDebugCommand, IPKSimBuildingBlock>(buildingBlock)
             .ForDeveloper();
       }
