@@ -52,21 +52,23 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .ForDeveloper();
 
          yield return ExportSimulationToCppMenuItem(simulation);
+         yield return ExportODEForMatlabMenuItem(simulation);
+         yield return ExportODEForRMenuItem(simulation);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Parameter Ids Export"))
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Parameter Ids Export"))
             .WithCommandFor<ParameterExportForDebugCommand, Simulation>(simulation)
             .ForDeveloper();
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Simulation Xml Export"))
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Simulation Serialization Xml Export"))
             .WithCommandFor<SimulationXmlExportCommand, Simulation>(simulation)
             .ForDeveloper();
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Simulation Parameter Export To CSV"))
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Simulation Parameter Export To CSV"))
             .WithCommandFor<SimulationParameterExportToCsvCommand, Simulation>(simulation)
             .ForDeveloper();
 
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Save Snapshot"))
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Save Snapshot"))
             .WithCommandFor<ExportSimulationSnapshotUICommand, Simulation>(simulation)
             .WithIcon(ApplicationIcons.SnapshotExport)
             .ForDeveloper();

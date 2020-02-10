@@ -51,6 +51,23 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .ForDeveloper();
       }
 
+
+      protected IMenuBarItem ExportODEForMatlabMenuItem(TSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportODEForMatlab)
+            .WithCommandFor<ExportODEForMatlabUICommand, Simulation>(simulation)
+            .WithIcon(ApplicationIcons.Matlab)
+            .ForDeveloper();
+      }
+
+      protected IMenuBarItem ExportODEForRMenuItem(TSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportODEForR)
+            .WithCommandFor<ExportODEForRUICommand, Simulation>(simulation)
+            .WithIcon(ApplicationIcons.R)
+            .ForDeveloper();
+      }
+
       private IEnumerable<IMenuBarItem> commonItemsForSimulations(TSimulation simulation)
       {
          yield return GenericMenu.EditMenuFor<EditSimulationCommand, Simulation>(simulation);

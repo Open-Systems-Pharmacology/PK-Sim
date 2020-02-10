@@ -29,14 +29,14 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimulationResultsToDataTableConverter _simulationResultsToDataTableConverter;
 
       public SimulationExportTask(
-         ILazyLoadTask lazyLoadTask, 
-         IDialogCreator dialogCreator, 
+         ILazyLoadTask lazyLoadTask,
+         IDialogCreator dialogCreator,
          IDataRepositoryExportTask dataRepositoryTask,
-         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, 
+         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper,
          IStringSerializer stringSerializer,
-         IModelReportCreator modelReportCreator, 
+         IModelReportCreator modelReportCreator,
          ISimulationToModelCoreSimulationMapper coreSimulationMapper,
-         ISimModelExporter simModelExporter, 
+         ISimModelExporter simModelExporter,
          ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
       {
          _lazyLoadTask = lazyLoadTask;
@@ -89,6 +89,30 @@ namespace PKSim.Infrastructure.Services
       {
          _lazyLoadTask.Load(simulation);
          return Task.Run(() => _simModelExporter.ExportCppCode(_coreSimulationMapper.MapFrom(simulation, shouldCloneModel: false), outputFolder, FormulaExportMode.Formula));
+      }
+
+      public Task ExportODEForMatlab(Simulation simulation)
+      {
+         var outputFolder = _dialogCreator.AskForFolder(PKSimConstants.UI.ExportODEForMatlab, Constants.DirectoryKey.SIM_MODEL_XML);
+         return string.IsNullOrEmpty(outputFolder) ? Task.CompletedTask : ExportODEForMatlab(simulation, outputFolder);
+      }
+
+      public Task ExportODEForMatlab(Simulation simulation, string outputFolder)
+      {
+         _lazyLoadTask.Load(simulation);
+         return Task.Run(() => _simModelExporter.ExportODEForMatlab(simulation, outputFolder, FormulaExportMode.Formula));
+      }
+
+      public Task ExportODEForR(Simulation simulation)
+      {
+         var outputFolder = _dialogCreator.AskForFolder(PKSimConstants.UI.ExportODEForR, Constants.DirectoryKey.SIM_MODEL_XML);
+         return string.IsNullOrEmpty(outputFolder) ? Task.CompletedTask : ExportODEForR(simulation, outputFolder);
+      }
+
+      public Task ExportODEForR(Simulation simulation, string outputFolder)
+      {
+         _lazyLoadTask.Load(simulation);
+         return Task.Run(() => _simModelExporter.ExportODEForR(simulation, outputFolder, FormulaExportMode.Formula));
       }
 
       public async Task ExportResultsToCSVAsync(Simulation simulation, string fileName)
