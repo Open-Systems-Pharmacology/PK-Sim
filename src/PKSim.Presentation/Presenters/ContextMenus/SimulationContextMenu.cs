@@ -54,7 +54,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected IMenuBarItem ExportODEForMatlabMenuItem(TSimulation simulation)
       {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportODEForMatlab)
+         return CreateMenuButton.WithCaption(MenuNames.AsDeveloperOnly(MenuNames.ExportODEForMatlab))
             .WithCommandFor<ExportODEForMatlabUICommand, Simulation>(simulation)
             .WithIcon(ApplicationIcons.Matlab)
             .ForDeveloper();
@@ -62,7 +62,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected IMenuBarItem ExportODEForRMenuItem(TSimulation simulation)
       {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportODEForR)
+         return CreateMenuButton.WithCaption(MenuNames.AsDeveloperOnly(MenuNames.ExportODEForR))
             .WithCommandFor<ExportODEForRUICommand, Simulation>(simulation)
             .WithIcon(ApplicationIcons.R)
             .ForDeveloper();
