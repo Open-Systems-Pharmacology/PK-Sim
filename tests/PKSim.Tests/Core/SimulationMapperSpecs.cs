@@ -212,7 +212,9 @@ namespace PKSim.Core
 
          _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
          {
-            BuildingBlock = _individual
+            BuildingBlock = _individual,
+
+            Altered = true
          });
 
          _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompTemplateId", PKSimBuildingBlockType.Compound)
@@ -394,6 +396,15 @@ namespace PKSim.Core
       {
          _snapshot.Parameters.ShouldOnlyContain(_simulationParameterSnapshot, _individualChangedParameterSnapshot, _protocolParameterSnapshot);
       }
+
+      [Observation]
+      public void should_export_all_building_block_that_were_altered_in_the_simulation()
+      {
+         _snapshot.AlteredBuildingBlocks.Length.ShouldBeEqualTo(1);
+         _snapshot.AlteredBuildingBlocks[0].Type.ShouldBeEqualTo(PKSimBuildingBlockType.Individual);
+         _snapshot.AlteredBuildingBlocks[0].Name.ShouldBeEqualTo(_snapshot.Individual);
+      }
+
    }
 
    public class When_mapping_a_population_simulation_to_snapshot : concern_for_SimulationMapper
@@ -464,6 +475,7 @@ namespace PKSim.Core
 
          individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
          {
+            Name = _individual.Name,
             BuildingBlock = _individual
          });
 
@@ -574,6 +586,12 @@ namespace PKSim.Core
       public void should_update_parameter_origin_from_simulation()
       {
          A.CallTo(() => _simulationParameterOriginIdUpdater.UpdateSimulationId(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_the_altered_flag_for_each_altered_building_block()
+      {
+         _simulation.UsedBuildingBlockInSimulation<Individual>().Altered.ShouldBeTrue();
       }
    }
 

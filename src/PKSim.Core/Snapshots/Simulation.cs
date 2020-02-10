@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots
 {
@@ -24,6 +25,7 @@ namespace PKSim.Core.Snapshots
       public EventSelection[] Events { get; set; }
       public AdvancedParameter[] AdvancedParameters { get; set; }
       public bool HasResults { get; set; }
+      public AlteredBuildingBlock[] AlteredBuildingBlocks { get; set; }
 
       //Individual charts (only set for individual simulation)
       public CurveChart[] IndividualAnalyses { get; set; }

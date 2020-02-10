@@ -15,9 +15,9 @@ namespace PKSim.Core.Model
       public virtual PKSimBuildingBlockType BuildingBlockType { get; }
 
       /// <summary>
-      ///    Id of the template building block used in the project (this is not the id of the buildingblock saved as member but
+      ///    Id of the template building block used in the project (this is not the id of the building block saved as member but
       ///    the id of the template
-      ///    used to generate the building block (e.g. orign))
+      ///    used to generate the building block (e.g. origin))
       /// </summary>
       public virtual string TemplateId { get; }
 
@@ -36,7 +36,7 @@ namespace PKSim.Core.Model
       public string Id { get; set; }
 
       /// <summary>
-      ///    Name of the building block (based on the tempalte building block). The name will be changed when the building
+      ///    Name of the building block (based on the template building block). The name will be changed when the building
       ///    block in the simulation is changed as well. The name of the internal building block however remains unchanged
       /// </summary>
       public virtual string Name { get; set; }

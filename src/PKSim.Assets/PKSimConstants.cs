@@ -886,9 +886,13 @@ namespace PKSim.Assets
          public static string CannotFindSimulationInSnapshot(string simulationName, string project) => CannotFindBuildingBlockInSnapshot(ObjectTypes.Simulation, simulationName, project);
 
          public static string CannotFindSimulationParameterInSnapshot(string parameterPath, string simulationName, string project) => 
-            $"TODO Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
+            $"Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
 
          public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
+
+         public static string AlteredBuildingBlockNotFoundInSimulation(string simulationName, string buildingBlockName, string buildingBlockType) =>
+            $"Could not update the altered flag for {buildingBlockType} building block '{buildingBlockName}' as it is not used in {ObjectTypes.Simulation} '{simulationName}'.";
+
       }
 
       public static class Information
