@@ -1169,8 +1169,6 @@ namespace PKSim.Assets
          public static readonly string ExportSnapshot = "Save Snapshot...";
          public static readonly string LoadFromSnapshot = "Load from Snapshot...";
          public static readonly string RemoveUnusedContent = "Remove Unused Content";
-         public static readonly string ExportODEForMatlab = AsDeveloperOnly("Export Simulation to Matlab® Differential Equations...");
-         public static readonly string ExportODEForR = AsDeveloperOnly("Export Simulation to R Differential Equations");
 
          public static string CompareBuildingBlocks(string buildingBlockType)
          {
