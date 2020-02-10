@@ -1,7 +1,5 @@
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Visitor;
 
 namespace PKSim.Core.Services
 {
@@ -11,8 +9,7 @@ namespace PKSim.Core.Services
    }
 
    public class RegisterObjectVisitor : IRegisterObjectVisitor,
-      IVisitor<IObjectBase>,
-      IVisitor<Simulation>
+      IVisitor<IObjectBase>
    {
       private readonly IWithIdRepository _withIdRepository;
 
@@ -44,13 +41,6 @@ namespace PKSim.Core.Services
          if (string.IsNullOrEmpty(objToVisit.Id)) return;
          _withIdRepository.Unregister(objToVisit.Id);
          register(objToVisit);
-      }
-
-      public void Visit(Simulation simulation)
-      {
-         Visit(simulation as IObjectBase);
-         if (!simulation.IsLoaded) return;
-         simulation.UsedBuildingBlocks.Each(bb => Register(bb.BuildingBlock));
       }
    }
 }
