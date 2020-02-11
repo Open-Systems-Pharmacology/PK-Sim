@@ -3,9 +3,9 @@ using Newtonsoft.Json.Converters;
 
 namespace PKSim.Infrastructure.Serialization.Json
 {
-   public class PKSimJsonSerializerSetings : JsonSerializerSettings
+   public class PKSimJsonSerializerSettings : JsonSerializerSettings
    {
-      public PKSimJsonSerializerSetings()
+      public PKSimJsonSerializerSettings()
       {
          TypeNameHandling = TypeNameHandling.Auto;
          NullValueHandling = NullValueHandling.Ignore;

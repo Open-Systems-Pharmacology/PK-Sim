@@ -64,22 +64,22 @@ namespace PKSim.Infrastructure
 
    public class When_serializing_an_array_of_objects_to_json : concern_for_SnapshotSerializer
    {
-      private IEnumerable<Parameter> _deserialiedParameters;
+      private IEnumerable<Parameter> _deserializedParameters;
 
       protected override async Task Because()
       {
          await sut.Serialize(new[] {_parameter, _parameter}, _fileName);
-         _deserialiedParameters = (await sut.DeserializeAsArray(_fileName, typeof(Parameter))).Cast<Parameter>();
+         _deserializedParameters = (await sut.DeserializeAsArray(_fileName, typeof(Parameter))).Cast<Parameter>();
       }
 
       [Observation]
-      public void should_be_able_to_retrievee_an_array_of_deserialized_objects()
+      public void should_be_able_to_retrieve_an_array_of_deserialized_objects()
       {
-         _deserialiedParameters.Count().ShouldBeEqualTo(2);
+         _deserializedParameters.Count().ShouldBeEqualTo(2);
       }
    }
 
-   public class When_serializating_an_object_with_a_color_property : concern_for_SnapshotSerializer
+   public class When_serializing_an_object_with_a_color_property : concern_for_SnapshotSerializer
    {
       private CurveOptions _curveOptions;
       private CurveOptions _deserializedCurveOptions;
@@ -104,6 +104,34 @@ namespace PKSim.Infrastructure
       public void should_have_deserialized_the_color()
       {
          _deserializedCurveOptions.Color.ShouldBeEqualTo(Color.Red);
+      }
+   }
+
+   public class When_serializing_an_object_with_a_color_property_with_transparency : concern_for_SnapshotSerializer
+   {
+      private CurveOptions _curveOptions;
+      private CurveOptions _deserializedCurveOptions;
+
+      protected override async Task Context()
+      {
+
+         await base.Context();
+         _curveOptions = new CurveOptions
+         {
+            Color = Color.FromArgb(20, Color.CadetBlue)
+         };
+      }
+
+      protected override async Task Because()
+      {
+         await sut.Serialize(_curveOptions, _fileName);
+         _deserializedCurveOptions = await sut.Deserialize<CurveOptions>(_fileName);
+      }
+
+      [Observation]
+      public void should_have_deserialized_the_color()
+      {
+         _deserializedCurveOptions.Color.ShouldBeEqualTo(Color.FromArgb(20, Color.CadetBlue));
       }
    }
 }
