@@ -262,6 +262,7 @@ namespace PKSim.Infrastructure
       protected override async Task Context()
       {
          await base.Context();
+         _simulation= A.Fake<Simulation>();
          _outputFolder = "outputFolder";
          _modelCoreSimulation = A.Fake<IModelCoreSimulation>();
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_outputFolder);

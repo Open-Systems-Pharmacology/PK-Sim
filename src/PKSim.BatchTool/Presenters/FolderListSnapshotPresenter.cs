@@ -75,7 +75,7 @@ namespace PKSim.BatchTool.Presenters
             return;
 
          ClearFolderList();
-         var settings = new PKSimJsonSerializerSetings();
+         var settings = new PKSimJsonSerializerSettings();
          var folders = JsonConvert.DeserializeObject<IEnumerable<string>>(File.ReadAllText(file), settings);
          _snapshotFolderListDTO.AddFolders(folders);
       }
@@ -86,7 +86,7 @@ namespace PKSim.BatchTool.Presenters
          if (string.IsNullOrEmpty(file))
             return;
 
-         var settings = new PKSimJsonSerializerSetings();
+         var settings = new PKSimJsonSerializerSettings();
          File.WriteAllText(file, JsonConvert.SerializeObject(_snapshotFolderListDTO.Folders.Select(x => x.Folder), Formatting.Indented, settings));
       }
 

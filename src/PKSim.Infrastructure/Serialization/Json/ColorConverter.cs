@@ -13,7 +13,10 @@ namespace PKSim.Infrastructure.Serialization.Json
             return;
 
          var c = (Color) value;
-         var hexString = $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+         var hexString = $"{c.R:X2}{c.G:X2}{c.B:X2}";
+         // Only add hex transparency if required as it does not seem to be widely supported by color readers.
+         var preFix = c.A == 255 ? "#" : $"#{c.A:X2}";
+         hexString = $"{preFix}{hexString}";
          writer.WriteValue(hexString);
       }
 
