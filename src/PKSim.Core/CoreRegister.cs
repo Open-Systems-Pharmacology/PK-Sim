@@ -39,6 +39,7 @@ namespace PKSim.Core
             scan.ExcludeType<ApplicationSettings>();
             scan.ExcludeType<ProjectChangedNotifier>();
             scan.ExcludeType<IndividualSimulationEngine>();
+            scan.ExcludeType<DefaultIndividualRetriever>();
             scan.ExcludeType<IPopulationSimulationEngine>();
             
             //Do not register the InteractiveSimulationRunner as it should be registered only if needed
@@ -58,6 +59,7 @@ namespace PKSim.Core
             scan.IncludeType<DistributionFormulaFactory>();
             scan.IncludeType<ProjectChangedNotifier>();
             scan.IncludeType<SnapshotMapper>();
+            scan.IncludeType<DefaultIndividualRetriever>();
 
             scan.RegisterAs(LifeStyle.Singleton);
             scan.WithConvention<PKSimRegistrationConvention>();

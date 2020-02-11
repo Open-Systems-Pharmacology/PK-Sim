@@ -10,11 +10,6 @@ namespace PKSim.Core.Services
    public interface ICompoundAlternativeTask
    {
       /// <summary>
-      ///    Creates an alternative and adds it to the given <paramref name="compoundParameterGroup" />
-      /// </summary>
-      ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup);
-
-      /// <summary>
       ///    Adds the given <paramref name="parameterAlternative" /> to the given <paramref name="compoundParameterGroup" />
       /// </summary>
       ICommand AddParameterGroupAlternativeTo(ParameterAlternativeGroup compoundParameterGroup, ParameterAlternative parameterAlternative);
@@ -23,11 +18,6 @@ namespace PKSim.Core.Services
       ///    Removes the  <paramref name="parameterAlternative" /> from the <paramref name="parameterGroup" />
       /// </summary>
       ICommand RemoveParameterGroupAlternative(ParameterAlternativeGroup parameterGroup, ParameterAlternative parameterAlternative);
-
-      /// <summary>
-      ///    Renames the given <paramref name="parameterAlternative" />
-      /// </summary>
-      ICommand RenameParameterAlternative(ParameterAlternative parameterAlternative);
 
       /// <summary>
       ///    Sets the value of the parameter. If the alternative containing the parameter is not used in any simulation,
@@ -43,7 +33,8 @@ namespace PKSim.Core.Services
 
       /// <summary>
       ///    Updates the table formula in <paramref name="parameter" /> with the <paramref name="formula" />.  If the alternative
-      ///    containing the parameter is not used in any simulation,the command will not update the building block version of the compound
+      ///    containing the parameter is not used in any simulation,the command will not update the building block version of the
+      ///    compound
       /// </summary>
       ICommand SetAlternativeParameterTable(IParameter parameter, TableFormula formula);
 
@@ -89,14 +80,13 @@ namespace PKSim.Core.Services
       TableFormula ImportSolubilityTableFormula();
 
       /// <summary>
-      ///    Edits the solubility table for the given <paramref name="parameter" />
-      /// </summary>
-      ICommand EditSolubilityTableFor(IParameter parameter);
-
-      /// <summary>
       ///    Performs initialization steps for a brand new solubility alternative that should behave as a Table alternative
       /// </summary>
       /// <param name="solubilityAlternative"></param>
       void PrepareSolubilityAlternativeForTableSolubility(ParameterAlternative solubilityAlternative);
+
+      ParameterAlternative CreateSolubilityTableAlternativeFor(ParameterAlternativeGroup solubilityAlternativeGroup, string name);
+
+      ParameterAlternative CreateAlternative(ParameterAlternativeGroup compoundParameterGroup, string name);
    }
 }

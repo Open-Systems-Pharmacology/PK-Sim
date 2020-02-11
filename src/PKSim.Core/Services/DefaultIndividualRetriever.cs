@@ -1,31 +1,28 @@
-using OSPSuite.Utility.Collections;
-using PKSim.Core;
+﻿using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Individuals;
-using PKSim.Presentation.DTO.Mappers;
+using PKSim.Core.Snapshots.Mappers;
+using OriginData = PKSim.Core.Snapshots.OriginData;
 
-namespace PKSim.Infrastructure.Services
+namespace PKSim.Core.Services
 {
    public class DefaultIndividualRetriever : IDefaultIndividualRetriever
    {
       private readonly ISpeciesRepository _speciesRepository;
       private readonly IIndividualFactory _individualFactory;
-      private readonly IIndividualSettingsDTOToOriginDataMapper _individualSettingsMapper;
-      private readonly IIndividualDefaultValueRetriever _individualDefaultValueRetriever;
+      private readonly OriginDataMapper _originDataMapper;
       private readonly ICache<SpeciesPopulation, Individual> _individualCacheProSpecies = new Cache<SpeciesPopulation, Individual>();
 
       public DefaultIndividualRetriever(
          ISpeciesRepository speciesRepository,
          IIndividualFactory individualFactory,
-         IIndividualSettingsDTOToOriginDataMapper individualSettingsMapper,
-         IIndividualDefaultValueRetriever individualDefaultValueRetriever)
+         OriginDataMapper originDataMapper
+      )
+
       {
          _speciesRepository = speciesRepository;
          _individualFactory = individualFactory;
-         _individualSettingsMapper = individualSettingsMapper;
-         _individualDefaultValueRetriever = individualDefaultValueRetriever;
+         _originDataMapper = originDataMapper;
       }
 
       public Individual DefaultIndividual()
@@ -43,12 +40,23 @@ namespace PKSim.Infrastructure.Services
          return DefaultIndividualFor(species.DefaultPopulation);
       }
 
+      public Gender DefaultGenderFor(SpeciesPopulation speciesPopulation)
+      {
+         return speciesPopulation.Genders[0];
+      }
+
       public Individual DefaultIndividualFor(SpeciesPopulation speciesPopulation)
       {
          if (!_individualCacheProSpecies.Contains(speciesPopulation))
          {
-            var individualDTO = _individualDefaultValueRetriever.DefaultSettingFor(speciesPopulation);
-            _individualCacheProSpecies[speciesPopulation] = _individualFactory.CreateStandardFor(_individualSettingsMapper.MapFrom(individualDTO));
+            var originDataSnapshot = new OriginData
+            {
+               Species = speciesPopulation.Species,
+               Population = speciesPopulation.Name,
+               Gender = DefaultGenderFor(speciesPopulation).Name
+            };
+            var originData = _originDataMapper.MapToModel(originDataSnapshot).Result;
+            _individualCacheProSpecies[speciesPopulation] = _individualFactory.CreateStandardFor(originData);
          }
 
          return _individualCacheProSpecies[speciesPopulation];
