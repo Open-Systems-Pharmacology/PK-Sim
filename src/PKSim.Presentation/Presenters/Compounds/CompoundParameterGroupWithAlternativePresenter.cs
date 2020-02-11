@@ -9,6 +9,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Compounds;
+using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
 
 namespace PKSim.Presentation.Presenters.Compounds
@@ -33,7 +34,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       void SetIsDefaultFor(ParameterAlternativeDTO parameterAlternativeDTO, bool isDefault);
 
       /// <summary>
-      ///    Set a new name for the given alernative
+      ///    Set a new name for the given alternative
       /// </summary>
       void RenameAlternative(ParameterAlternativeDTO parameterAlternativeDTO);
 
@@ -46,7 +47,7 @@ namespace PKSim.Presentation.Presenters.Compounds
    public interface ICompoundParameterGroupWithCalculatedDefaultPresenter : ICompoundParameterGroupWithAlternativePresenter
    {
       /// <summary>
-      ///    Show the calculated value for the selected parameter group (for insance all permeability values as a function of
+      ///    Show the calculated value for the selected parameter group (for instance all permeability values as a function of
       ///    available lipophilicity)
       /// </summary>
       void UpdateCalculatedValue();
@@ -62,16 +63,24 @@ namespace PKSim.Presentation.Presenters.Compounds
    public abstract class CompoundParameterGroupWithAlternativePresenter<TView> : AbstractSubPresenter<TView, ICompoundParameterGroupWithAlternativePresenter>, ICompoundParameterGroupWithAlternativePresenter where TView : ICompoundParameterGroupWithAlternativeView
    {
       protected readonly ICompoundAlternativeTask _compoundAlternativeTask;
+      protected readonly ICompoundAlternativePresentationTask _compoundAlternativePresentationTask;
       private readonly IDialogCreator _dialogCreator;
       private readonly string _parameterGroupName;
       protected ParameterAlternativeGroup _parameterGroup;
       protected Compound _compound;
 
-      protected CompoundParameterGroupWithAlternativePresenter(TView view, IRepresentationInfoRepository representationRepository, ICompoundAlternativeTask compoundAlternativeTask, IDialogCreator dialogCreator, string groupName)
+      protected CompoundParameterGroupWithAlternativePresenter(
+         TView view, 
+         IRepresentationInfoRepository representationRepository, 
+         ICompoundAlternativeTask compoundAlternativeTask, 
+         ICompoundAlternativePresentationTask compoundAlternativePresentationTask,
+         IDialogCreator dialogCreator, 
+         string groupName)
          : base(view)
       {
          _dialogCreator = dialogCreator;
          _compoundAlternativeTask = compoundAlternativeTask;
+         _compoundAlternativePresentationTask = compoundAlternativePresentationTask;
          _dialogCreator = dialogCreator;
          _parameterGroupName = groupName;
          View.Caption = representationRepository.DisplayNameFor(RepresentationObjectType.GROUP, _parameterGroupName);
@@ -98,7 +107,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void AddAlternative()
       {
-         AddCommand(_compoundAlternativeTask.AddParameterGroupAlternativeTo(_parameterGroup));
+         AddCommand(_compoundAlternativePresentationTask.AddParameterGroupAlternativeTo(_parameterGroup));
       }
 
       public void RemoveAlternative(ParameterAlternativeDTO parameterAlternativeDTO)
@@ -116,7 +125,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void RenameAlternative(ParameterAlternativeDTO parameterAlternativeDTO)
       {
-         AddCommand(_compoundAlternativeTask.RenameParameterAlternative(ParameterAlternativeFrom(parameterAlternativeDTO)));
+         AddCommand(_compoundAlternativePresentationTask.RenameParameterAlternative(ParameterAlternativeFrom(parameterAlternativeDTO)));
       }
 
       public void UpdateValueOriginFor(ParameterAlternativeDTO parameterAlternativeDTO, ValueOrigin newValueOrigin)

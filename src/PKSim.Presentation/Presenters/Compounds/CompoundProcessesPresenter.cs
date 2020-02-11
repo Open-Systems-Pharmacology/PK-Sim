@@ -19,6 +19,7 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Views;
+using PKSim.Presentation.Services;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters.Compounds
@@ -94,6 +95,7 @@ namespace PKSim.Presentation.Presenters.Compounds
    public class CompoundProcessesPresenter : AbstractSubPresenter<ICompoundProcessesView, ICompoundProcessesPresenter>, ICompoundProcessesPresenter
    {
       private readonly ICompoundProcessTask _compoundProcessTask;
+      private readonly ICompoundProcessPresentationTask _compoundProcessPresentationTask;
       private readonly IPartialProcessToTreeNodeMapper _partialProcessNodeMapper;
       private readonly ITreeNodeContextMenuFactory _contextMenuFactory;
       private readonly ICompoundProcessPresenter _compoundProcessPresenter;
@@ -110,6 +112,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public CompoundProcessesPresenter(ICompoundProcessesView view,
          ICompoundProcessTask compoundProcessTask,
+         ICompoundProcessPresentationTask compoundProcessPresentationTask,
          IPartialProcessToTreeNodeMapper partialProcessNodeMapper,
          ITreeNodeFactory treeNodeFactory,
          ITreeNodeContextMenuFactory contextMenuFactory,
@@ -122,6 +125,7 @@ namespace PKSim.Presentation.Presenters.Compounds
          : base(view)
       {
          _compoundProcessTask = compoundProcessTask;
+         _compoundProcessPresentationTask = compoundProcessPresentationTask;
          _partialProcessNodeMapper = partialProcessNodeMapper;
          _treeNodeFactory = treeNodeFactory;
          _contextMenuFactory = contextMenuFactory;
@@ -282,7 +286,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void AddEnzymaticPartialProcess()
       {
-         AddCommand(_compoundProcessTask.CreateEnzymaticProcessFor(_compound));
+         AddCommand(_compoundProcessPresentationTask.CreateEnzymaticProcessFor(_compound));
       }
 
       public void EditCompound(Compound compound)
@@ -299,22 +303,22 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void RenameMoleculeForPartialProcesses(string moleculeName, Type partialProcessType)
       {
-         AddCommand(_compoundProcessTask.RenameMoleculeForPartialProcessesIn(_compound, moleculeName, partialProcessType));
+         AddCommand(_compoundProcessPresentationTask.RenameMoleculeForPartialProcessesIn(_compound, moleculeName, partialProcessType));
       }
 
       public void AddPartialProcessesForMolecule(string moleculeName, Type partialProcessType)
       {
-         AddCommand(_compoundProcessTask.AddPartialProcessesForMolecule(_compound, moleculeName, partialProcessType));
+         AddCommand(_compoundProcessPresentationTask.AddPartialProcessesForMolecule(_compound, moleculeName, partialProcessType));
       }
 
       public void AddInhibitionProcess()
       {
-         AddCommand(_compoundProcessTask.CreateInhibitionProcessFor(_compound));
+         AddCommand(_compoundProcessPresentationTask.CreateInhibitionProcessFor(_compound));
       }
 
       public void AddInductionProcess()
       {
-         AddCommand(_compoundProcessTask.CreateInductionProcessFor(_compound));
+         AddCommand(_compoundProcessPresentationTask.CreateInductionProcessFor(_compound));
       }
 
       public void ActivateNode(ITreeNode node)
@@ -374,7 +378,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void RenameDataSourceInProcess(CompoundProcess compoundProcess)
       {
-         AddCommand(_compoundProcessTask.RenameDataSource(compoundProcess));
+         AddCommand(_compoundProcessPresentationTask.RenameDataSource(compoundProcess));
       }
 
       public void RemoveProcess(CompoundProcess compoundProcess)
@@ -386,17 +390,17 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void AddSystemicProcess(IEnumerable<SystemicProcessType> systemicProcessType)
       {
-         AddCommand(_compoundProcessTask.CreateSystemicProcessFor(_compound, systemicProcessType));
+         AddCommand(_compoundProcessPresentationTask.CreateSystemicProcessFor(_compound, systemicProcessType));
       }
 
       public void AddSpecificBinding()
       {
-         AddCommand(_compoundProcessTask.CreateSpecificBindingFor(_compound));
+         AddCommand(_compoundProcessPresentationTask.CreateSpecificBindingFor(_compound));
       }
 
       public void AddTransport()
       {
-         AddCommand(_compoundProcessTask.CreateTransportFor(_compound));
+         AddCommand(_compoundProcessPresentationTask.CreateTransportFor(_compound));
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)

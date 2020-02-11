@@ -11,6 +11,7 @@ using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using OSPSuite.Core.Domain;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation
 {
@@ -26,6 +27,7 @@ namespace PKSim.Presentation
       protected ParameterAlternative _newAlternative, _existingAlternative;
       private ILipophilicityGroupView _view;
       private IParameterGroupAlternativeToLipophilicityAlternativeDTOMapper _alternativeDTOMapper;
+      protected ICompoundAlternativePresentationTask _compoundAlternativePresentationTask;
 
       protected override void Context()
       {
@@ -37,9 +39,9 @@ namespace PKSim.Presentation
          _compoundParamGroup = new ParameterAlternativeGroup();
          _existingAlternative = new ParameterAlternative().WithName("Existing").WithId("ID_Existing");
          _compoundParamGroup.AddAlternative(_existingAlternative);
-
+         _compoundAlternativePresentationTask= A.Fake<ICompoundAlternativePresentationTask>();  
          _newAlternative = new ParameterAlternative().WithName("New").WithId("ID_New");
-         sut = new LipophilicityGroupPresenter(_view, _compoundAlternativeTask, _reprInfoRepo, _alternativeDTOMapper, _dialogCreator);
+         sut = new LipophilicityGroupPresenter(_view, _compoundAlternativeTask, _compoundAlternativePresentationTask, _reprInfoRepo, _alternativeDTOMapper, _dialogCreator);
 
          _commandRegister = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandRegister);
@@ -56,7 +58,7 @@ namespace PKSim.Presentation
 
          _addCommand = new PKSimMacroCommand();
 
-         A.CallTo(() => _compoundAlternativeTask.AddParameterGroupAlternativeTo(A<ParameterAlternativeGroup>.Ignored)).Returns(_addCommand);
+         A.CallTo(() => _compoundAlternativePresentationTask.AddParameterGroupAlternativeTo(A<ParameterAlternativeGroup>._ )).Returns(_addCommand);
       }
 
       protected override void Because()

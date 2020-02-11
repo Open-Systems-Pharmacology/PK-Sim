@@ -1,23 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
+using PKSim.Assets;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.DTO.Parameters;
+using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
    public interface IPermeabilityGroupPresenter : ICompoundParameterGroupWithCalculatedDefaultPresenter, IPresenter<IPermeabilityGroupView>
    {
-      void SetPermabilityValue(PermeabilityAlternativeDTO permeabilityAlternativeDTO, double newValue);
-      void SetPermabilityUnit(IParameterDTO permeabilityParameter, Unit newUnit);
+      void SetPermeabilityValue(PermeabilityAlternativeDTO permeabilityAlternativeDTO, double newValue);
+      void SetPermeabilityUnit(IParameterDTO permeabilityParameter, Unit newUnit);
    }
 
    public abstract class PermeabilityGroupPresenterBase : CompoundParameterGroupWithAlternativePresenter<IPermeabilityGroupView>, IPermeabilityGroupPresenter
@@ -27,11 +27,14 @@ namespace PKSim.Presentation.Presenters.Compounds
       private PermeabilityAlternativeDTO _calculatedDefault;
       private List<PermeabilityAlternativeDTO> _permeabilityDTOs;
 
-      protected PermeabilityGroupPresenterBase(IPermeabilityGroupView view, ICompoundAlternativeTask compoundAlternativeTask,
-                                               IRepresentationInfoRepository representationRepo,
-                                               IParameterGroupAlternativeToPermeabilityAlternativeDTOMapper permeabilityAlternativeDTOMapper,
-                                               ICalculatedParameterValuePresenter calculatedParameterValuePresenter, IDialogCreator dialogCreator, string groupName)
-         : base(view, representationRepo, compoundAlternativeTask, dialogCreator, groupName)
+      protected PermeabilityGroupPresenterBase(
+         IPermeabilityGroupView view,
+         ICompoundAlternativeTask compoundAlternativeTask,
+         ICompoundAlternativePresentationTask compoundAlternativePresentationTask,
+         IRepresentationInfoRepository representationRepo,
+         IParameterGroupAlternativeToPermeabilityAlternativeDTOMapper permeabilityAlternativeDTOMapper,
+         ICalculatedParameterValuePresenter calculatedParameterValuePresenter, IDialogCreator dialogCreator, string groupName)
+         : base(view, representationRepo, compoundAlternativeTask, compoundAlternativePresentationTask, dialogCreator, groupName)
       {
          _permeabilityAlternativeDTOMapper = permeabilityAlternativeDTOMapper;
          _calculatedParameterValuePresenter = calculatedParameterValuePresenter;
@@ -47,12 +50,12 @@ namespace PKSim.Presentation.Presenters.Compounds
          return _calculatedDefault == parameterAlternativeDTO;
       }
 
-      public void SetPermabilityValue(PermeabilityAlternativeDTO permeabilityAlternativeDTO, double newValue)
+      public void SetPermeabilityValue(PermeabilityAlternativeDTO permeabilityAlternativeDTO, double newValue)
       {
          AddCommand(_compoundAlternativeTask.SetAlternativeParameterValue(permeabilityAlternativeDTO.PermeabilityParameter.Parameter, newValue));
       }
 
-      public void SetPermabilityUnit(IParameterDTO permeabilityParameter, Unit newUnit)
+      public void SetPermeabilityUnit(IParameterDTO permeabilityParameter, Unit newUnit)
       {
          AddCommand(_compoundAlternativeTask.SetAlternativeParameterUnit(permeabilityParameter.Parameter, newUnit));
       }

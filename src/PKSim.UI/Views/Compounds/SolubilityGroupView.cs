@@ -86,7 +86,7 @@ namespace PKSim.UI.Views.Compounds
             .WithFormat(secondaryParameterFormatter)
             .WithRepository(repoForSecondarySolubilityParameters)
             .WithCaption(PKSimConstants.UI.SolubilityGainPerCharge)
-            .WithOnValueUpdating((dto, e) => OnEvent(() => solubilityGroupPresenter.SetGainPerChanrgeValue(dto, e.NewValue)));
+            .WithOnValueUpdating((dto, e) => OnEvent(() => solubilityGroupPresenter.SetGainPerChargeValue(dto, e.NewValue)));
 
          var col = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.pHDependentSolubility)

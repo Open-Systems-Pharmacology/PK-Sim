@@ -19,6 +19,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Views;
+using PKSim.Presentation.Services;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation
@@ -41,6 +42,7 @@ namespace PKSim.Presentation
       protected ICompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper _compoundParameterNodeTypeToCompoundParameterGroupPresenterMapper;
       protected ICompoundParameterGroupPresenter _presenter;
       protected IEnzymaticCompoundProcessPresenter _compoundEnzymaticProcessPresenter;
+      protected ICompoundProcessPresentationTask _compoundProcessPresentationTask;
 
       protected override void Context()
       {
@@ -49,6 +51,7 @@ namespace PKSim.Presentation
          _commandRegister = A.Fake<ICommandCollector>();
          A.CallTo(() => _view.TreeView).Returns(A.Fake<IUxTreeView>());
          _compoundProcessTask = A.Fake<ICompoundProcessTask>();
+         _compoundProcessPresentationTask= A.Fake<ICompoundProcessPresentationTask>(); 
          _partialProcessNodeMapper = A.Fake<IPartialProcessToTreeNodeMapper>();
          _compoundProcessPresenter = A.Fake<ICompoundProcessPresenter>();
          _compoundEnzymaticProcessPresenter = A.Fake<IEnzymaticCompoundProcessPresenter>();
@@ -62,7 +65,7 @@ namespace PKSim.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _noItemInSelectionPresenter = A.Fake<INoItemInSelectionPresenter>();
 
-         sut = new CompoundProcessesPresenter(_view, _compoundProcessTask, _partialProcessNodeMapper, _treeNodeFactory,
+         sut = new CompoundProcessesPresenter(_view, _compoundProcessTask, _compoundProcessPresentationTask, _partialProcessNodeMapper, _treeNodeFactory,
             _contextMenuFactory, _compoundProcessPresenter, _entityTask, _dialogCreator, _noItemInSelectionPresenter,
             _compoundParameterNodeTypeToCompoundParameterGroupPresenterMapper, _compoundEnzymaticProcessPresenter, 
             new PartialProcessToRootNodeTypeMapper(), new SystemicProcessToRootNodeTypeMapper());
@@ -307,7 +310,7 @@ namespace PKSim.Presentation
          base.Context();
          _process = A.Fake<SystemicProcess>();
          _renameCommand = A.Fake<IPKSimCommand>();
-         A.CallTo(() => _compoundProcessTask.RenameDataSource(_process)).Returns(_renameCommand);
+         A.CallTo(() => _compoundProcessPresentationTask.RenameDataSource(_process)).Returns(_renameCommand);
       }
 
       protected override void Because()
