@@ -26,7 +26,7 @@ namespace PKSim.Infrastructure.Serialization.Json
          return existingValue;
       }
 
-      public override bool CanRead => true;
+      public override bool CanRead => false;
 
       public override bool CanConvert(Type objectType)
       {
