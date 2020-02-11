@@ -49,6 +49,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
+      protected override bool ShouldExportParameterToSnapshot(IParameter parameter)
+      {
+         //For a protein, we export all global parameters to ensure that they do not get out of sync when loading from snapshot 
+         var defaultShouldExport = base.ShouldExportParameterToSnapshot(parameter);
+         return defaultShouldExport || parameter.IsIndividualMoleculeGlobal();
+      }
+
       private async Task<ExpressionContainer[]> expressionFor(IndividualMolecule molecule)
       {
          var expression = await _expressionContainerMapper.MapToSnapshots(molecule.AllExpressionsContainers());
