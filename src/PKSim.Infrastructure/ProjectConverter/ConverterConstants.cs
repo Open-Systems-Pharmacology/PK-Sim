@@ -174,5 +174,10 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string BSA = "BSA";
          public static readonly string DynamicFormulas = "DynamicFormulas";
       }
+
+      public static class Population
+      {
+         public const string RACE = "Race";
+      }
    }
 }

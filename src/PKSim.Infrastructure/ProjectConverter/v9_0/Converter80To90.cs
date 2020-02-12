@@ -8,6 +8,7 @@ using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Infrastructure.Serialization.Xml;
 using IoC = OSPSuite.Utility.Container.IContainer;
 
@@ -15,6 +16,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
 {
    public class Converter80To90 : IObjectConverter,
       IVisitor<PopulationSimulation>,
+      IVisitor<PopulationAnalysisChart>,
       IVisitor<Population>
    {
       private readonly IoC _container;
@@ -113,9 +115,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
          return covariateValuesCacheWriter.WriteFor(covariateValuesCache, context);
       }
 
-      public void Visit(PopulationSimulation objToVisit)
+      public void Visit(PopulationSimulation populationSimulation)
       {
-         Visit(objToVisit.Population);
+         Visit(populationSimulation.Population);
       }
 
       public void Visit(Population population)
@@ -133,6 +135,17 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
             return;
 
          individualValuesCache.IndividualIds.AddRange(Enumerable.Range(0, firstParameterValue.Count));
+         _converted = true;
+      }
+
+      public void Visit(PopulationAnalysisChart populationAnalysisChart)
+      {
+         var populationAnalysis = populationAnalysisChart.BasePopulationAnalysis;
+         if (!(populationAnalysis.FieldByName(ConverterConstants.Population.RACE) is PopulationAnalysisCovariateField raceCovariateField))
+            return;
+
+         populationAnalysis.RenameField(ConverterConstants.Population.RACE, Constants.Population.POPULATION);
+         raceCovariateField.Covariate = Constants.Population.POPULATION;
          _converted = true;
       }
    }
