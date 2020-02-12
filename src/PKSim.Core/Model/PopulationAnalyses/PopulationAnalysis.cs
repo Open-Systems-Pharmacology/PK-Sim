@@ -85,7 +85,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
       }
 
       /// <summary>
-      ///    Renames the field and all named <paramref name="oldFieldName" /> to <paramref name="newFieldName" />
+      ///    Renames the field named <paramref name="oldFieldName" /> to <paramref name="newFieldName" />
       ///    and ensure that all derived fields and grouping depending on that field are updated as well
       /// </summary>
       public virtual void RenameField(string oldFieldName, string newFieldName)
