@@ -18,6 +18,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim", "src\PKSim\PKSim.csproj", "{E9E36D2F-309E-4AED-A89B-0889D62DC7E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AEE05F2D-C709-4F03-BFDE-14FF68744F35} = {AEE05F2D-C709-4F03-BFDE-14FF68744F35}
+		{2F19A0C6-4C93-4A78-8DB6-E4C3EDE8E6F6} = {2F19A0C6-4C93-4A78-8DB6-E4C3EDE8E6F6}
+		{9BCFE7D4-F76C-453F-95CB-6F53F640C429} = {9BCFE7D4-F76C-453F-95CB-6F53F640C429}
+		{625D2DE8-F930-4D53-9576-4E3237A30814} = {625D2DE8-F930-4D53-9576-4E3237A30814}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.Core", "src\PKSim.Core\PKSim.Core.csproj", "{CEF9367D-F2C4-4796-847B-42B090A601B5}"
 EndProject
@@ -47,7 +53,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.Assets.Images", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.R", "src\PKSim.R\PKSim.R.csproj", "{AEE05F2D-C709-4F03-BFDE-14FF68744F35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKSim.R.Tests", "tests\PKSim.R.Tests\PKSim.R.Tests.csproj", "{4E310F99-4604-4502-8F0B-A4E4F27B062B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.R.Tests", "tests\PKSim.R.Tests\PKSim.R.Tests.csproj", "{4E310F99-4604-4502-8F0B-A4E4F27B062B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,8 +130,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 		VisualSVNWorkingCopyRoot = 
+		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\PKSim.ndproj"
