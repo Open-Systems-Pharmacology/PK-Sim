@@ -27,11 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="9.0.81" />
-    <PackageReference Include="OSPSuite.Presentation.Importer" Version="9.0.81" />
+    <PackageReference Include="OSPSuite.Presentation" Version="9.0.83" />
+    <PackageReference Include="OSPSuite.Presentation.Importer" Version="9.0.83" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.81" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.83" />
   </ItemGroup>
 
   <ItemGroup>
