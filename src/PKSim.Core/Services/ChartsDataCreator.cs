@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Data;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core.Services
 {
@@ -25,7 +26,7 @@ namespace PKSim.Core.Services
       protected readonly IDimensionRepository _dimensionRepository;
       private readonly IPivotResultCreator _pivotResultCreator;
       private const string DEFAULT_ID = "Default";
-      protected string _aggreationName;
+      protected string _aggregationName;
       protected PopulationPivotAnalysis _analysis;
       protected DataTable _data;
       private IPopulationDataCollector _populationDataCollector;
@@ -51,7 +52,7 @@ namespace PKSim.Core.Services
          {
             _analysis = pivotResult.Analysis;
             _data = pivotResult.PivotedData;
-            _aggreationName = pivotResult.AggregationName;
+            _aggregationName = pivotResult.AggregationName;
             _dataColumnName = pivotResult.DataColumnName;
             _populationDataCollector = pivotResult.PopulationDataCollector;
             _observedDataCollection = pivotResult.ObservedDataCollection;
@@ -107,9 +108,9 @@ namespace PKSim.Core.Services
       }
 
       protected ChartData<TX, TY> CreateChart(
-         INumericValueField xAxisField, 
-         IReadOnlyList<IComparer<object>> paneFieldValueComparers, 
-         IReadOnlyList<string> xFieldNames=null, 
+         INumericValueField xAxisField,
+         IReadOnlyList<IComparer<object>> paneFieldValueComparers,
+         IReadOnlyList<string> xFieldNames = null,
          IComparer<TX> xValueComparer = null)
       {
          return new ChartData<TX, TY>(CreateAxisDataFor(xAxisField), paneFieldValueComparers, xFieldNames, xValueComparer);
@@ -128,7 +129,7 @@ namespace PKSim.Core.Services
          var pane = getOrCreatePane(chart, paneFieldValues, curveFieldValueComparers, yAxisField);
 
          var seriesFieldValues = GetFieldValues(seriesFieldNames, row);
-         var series = getOrCreateCurve(pane, seriesFieldValues);
+         var series = getOrCreateCurve(pane, seriesFieldValues, yAxisField);
 
          var quantityField = yAxisField as IQuantityField;
          if (quantityField != null)
@@ -141,7 +142,7 @@ namespace PKSim.Core.Services
       protected virtual void SetCurveSettings(CurveData<TX, TY> series, DataRow row)
       {
          var colorField = _analysis.ColorField;
-         var symbolfield = _analysis.SymbolField;
+         var symbolField = _analysis.SymbolField;
 
          if (colorField != null)
          {
@@ -150,9 +151,9 @@ namespace PKSim.Core.Services
             series.Symbol = colorGrouping.Symbol;
          }
 
-         if (symbolfield != null)
+         if (symbolField != null)
          {
-            var symbolGrouping = symbolfield.GroupingByName(row.StringAt(symbolfield.Name));
+            var symbolGrouping = symbolField.GroupingByName(row.StringAt(symbolField.Name));
             series.Symbol = symbolGrouping.Symbol;
          }
       }
@@ -202,7 +203,7 @@ namespace PKSim.Core.Services
          return pane;
       }
 
-      private CurveData<TX, TY> getOrCreateCurve(PaneData<TX, TY> pane, IReadOnlyDictionary<string, string> seriesFieldValues)
+      private CurveData<TX, TY> getOrCreateCurve(PaneData<TX, TY> pane, IReadOnlyDictionary<string, string> seriesFieldValues, INumericValueField yAxisField)
       {
          string curveCaption = captionFor(seriesFieldValues.Values);
          string curveId = idFromCaption(curveCaption);
@@ -215,21 +216,27 @@ namespace PKSim.Core.Services
          {
             Id = curveId,
             Caption = curveCaption,
+            YDimension = createMergedDimensionFor(yAxisField)
          };
          pane.AddCurve(series);
          return series;
       }
 
-      protected virtual AxisData CreateAxisDataFor(INumericValueField axisField)
+      protected virtual AxisData CreateAxisDataFor(INumericValueField numericValueField)
       {
-         if (axisField == null)
+         if (numericValueField == null)
             return new AxisData(_dimensionRepository.NoDimension, _dimensionRepository.NoDimension.DefaultUnit, Scalings.Linear);
 
-         var mergedDimension = _dimensionRepository.MergedDimensionFor(new NumericFieldContext(axisField, _populationDataCollector));
-         return new AxisData(mergedDimension, axisField.DisplayUnit, axisField.Scaling)
+         var mergedDimension = createMergedDimensionFor(numericValueField);
+         return new AxisData(mergedDimension, numericValueField.DisplayUnit, numericValueField.Scaling)
          {
-            Caption = Constants.NameWithUnitFor(axisField.Name, axisField.DisplayUnit)
+            Caption = Constants.NameWithUnitFor(numericValueField.Name, numericValueField.DisplayUnit)
          };
+      }
+
+      private IDimension createMergedDimensionFor(INumericValueField numericValueField)
+      {
+         return _dimensionRepository.MergedDimensionFor(new NumericFieldContext(numericValueField, _populationDataCollector));
       }
 
       private static string captionFor(IEnumerable<string> fieldValues)

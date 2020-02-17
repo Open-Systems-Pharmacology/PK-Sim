@@ -20,8 +20,4 @@ namespace PKSim.Core.Model
          return PKSimConstants.UI.PopulationFile;
       }
    }
-
-   public class PKAnalysesImportFile : ImportLogger
-   {
-   }
 }

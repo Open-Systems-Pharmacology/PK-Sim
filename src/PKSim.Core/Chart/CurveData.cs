@@ -6,6 +6,7 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Core.Chart
 {
@@ -19,16 +20,16 @@ namespace PKSim.Core.Chart
       string PaneCaption { get; }
    }
 
-   // for RangeArea, IndividualCurves: TX = double , XValues is reference to timegrid
+   // for RangeArea, IndividualCurves: TX = double , XValues is reference to time grid
    // for Scatter: TX = double , XValues is specific for each Curve
-   // for BoxWhisker: TX = string[], TX could be reference to the same (complete) List of grouping value tupels, empty y-values are expressed by NaN
+   // for BoxWhisker: TX = string[], TX could be reference to the same (complete) List of grouping value tuples, empty y-values are expressed by NaN
    //                 alternatively TX could be specific for each curve, this would require an chart internal creation of all used x-Values within one pane/chart 
    //                 and using string as X-Axis DataType or mapping to (numeric) index of x-Values
 
-   // for RangeArea: TY = double[3] for median+/-stdDev or double[N] for quantils
-   // for IndividualCurves: TY = double[NIndividuals] (all cndividual curves <-> Curve)  or   double (each cndividual curve <-> Curve)
+   // for RangeArea: TY = double[3] for median+/-stdDev or double[N] for quantile
+   // for IndividualCurves: TY = double[NIndividuals] (all individual curves <-> Curve)  or   double (each individual curve <-> Curve)
    // for Scatter: TY = double 
-   // for BoxWhisker: TY = double[5] for lowerWhisker, lowerQuartil, median, upperQuartil, upperWhisker
+   // for BoxWhisker: TY = double[5] for lowerWhisker, lowerQuantile, median, upperQuantile, upperWhisker
    public class CurveData<TX, TY> : ICurveDataSettings
       where TX : IXValue
       where TY : IYValue
@@ -37,7 +38,7 @@ namespace PKSim.Core.Chart
       /// <summary>
       /// Dictionary containing all fields {Name, Value} that where used to create this curve based on the population data
       /// </summary>
-      public virtual IReadOnlyDictionary<string, string> FieldKeyValues { get; private set; }
+      public virtual IReadOnlyDictionary<string, string> FieldKeyValues { get; }
       public virtual PaneData Pane { get; set; }
       public virtual Color Color { get; set; }
       public virtual LineStyles LineStyle { get; set; }
@@ -52,6 +53,11 @@ namespace PKSim.Core.Chart
       /// Path of underlying quantity being displayed. This is only set if the field is an IQuantityField
       /// </summary>
       public virtual string QuantityPath { get; set; }
+
+      /// <summary>
+      /// Dimension in which the x values are stored. 
+      /// </summary>
+      public virtual IDimension YDimension { get; set; }
 
       /// <summary>
       ///    Convenience constructor especially useful for tests
@@ -109,14 +115,14 @@ namespace PKSim.Core.Chart
 
       public virtual string YDisplayValueAt(int pointIndex)
       {
-         return YValues[pointIndex].ToString(YAxis);
+         return YValues[pointIndex].ToString(YAxis, YDimension);
       }
 
       private class XYValue
       {
          private readonly IXValue _xValue;
          private readonly IYValue _yValue;
-         public int Index { get; private set; }
+         public int Index { get; }
 
          public XYValue(int index, IXValue xValue, IYValue yValue)
          {

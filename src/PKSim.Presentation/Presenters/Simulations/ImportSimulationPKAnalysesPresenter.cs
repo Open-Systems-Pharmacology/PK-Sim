@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using PKSim.Assets;
 using OSPSuite.Core.Services;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
+using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Presentation.Presenters;
+using ISimulationPKParametersImportTask = PKSim.Core.Services.ISimulationPKParametersImportTask;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -60,10 +61,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          udpateButtonState();
       }
 
-      public override bool CanClose
-      {
-         get { return base.CanClose && _pkAnalyses.Count > 0 && !_importDTO.Status.Is(NotificationType.Error); }
-      }
+      public override bool CanClose => base.CanClose && _pkAnalyses.Count > 0 && !_importDTO.Status.Is(NotificationType.Error);
 
       public async Task StartImportProcess()
       {

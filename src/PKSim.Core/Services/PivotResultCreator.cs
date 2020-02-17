@@ -14,7 +14,7 @@ namespace PKSim.Core.Services
       /// <param name="populationDataCollector">The analyzer containing the data for the analysis</param>
       /// <param name="observedDataCollection">Collection of observed data that ought to be displayed</param>
       /// <param name="aggregate">The aggregation function used to create the plot data</param>
-      PivotResult Create(PopulationPivotAnalysis pivotAnalysis, IPopulationDataCollector populationDataCollector, ObservedDataCollection observedDataCollection,Aggregate aggregate);
+      PivotResult Create(PopulationPivotAnalysis pivotAnalysis, IPopulationDataCollector populationDataCollector, ObservedDataCollection observedDataCollection, Aggregate aggregate);
    }
 
    public class PivotResultCreator : IPivotResultCreator
@@ -34,7 +34,7 @@ namespace PKSim.Core.Services
          var data = _flatTableCreator.Create(populationDataCollector, pivotAnalysis);
          var pivotInfo = getPivotInfo(pivotAnalysis, aggregate);
          var pivotedData = _pivoter.PivotData(data.DefaultView, pivotInfo);
-         return new PivotResult(pivotAnalysis, pivotedData, populationDataCollector,observedDataCollection, aggregate.Name, pivotInfo.DataFieldColumnName);
+         return new PivotResult(pivotAnalysis, pivotedData, populationDataCollector, observedDataCollection, aggregate.Name, pivotInfo.DataFieldColumnName);
       }
 
       private PivotInfo getPivotInfo(PopulationPivotAnalysis pivotAnalysis, Aggregate aggregate)

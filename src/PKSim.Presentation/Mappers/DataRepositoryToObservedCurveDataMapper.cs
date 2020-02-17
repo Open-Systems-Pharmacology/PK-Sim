@@ -35,10 +35,10 @@ namespace PKSim.Presentation.Mappers
 
       private ObservedCurveData mapFrom(DataColumn observedDataColumn, ObservedDataCurveOptions observedDataCurveOptions, IDimension yAxisDimension)
       {
-         var observedCurve = createCurveData(observedDataColumn, observedDataCurveOptions);
+         var yDimension = _dimensionRepository.MergedDimensionFor(observedDataColumn);
+         var observedCurve = createCurveData(observedDataColumn, observedDataCurveOptions, yDimension);
          var errorColumn = errorColumnFor(observedDataColumn);
          var baseGrid = observedDataColumn.BaseGrid;
-         var yDimension = _dimensionRepository.MergedDimensionFor(observedDataColumn);
          var yErrorDimension = yDimension;
 
          if (observedCurve.ErrorType == AuxiliaryType.GeometricStdDev)
@@ -48,9 +48,9 @@ namespace PKSim.Presentation.Mappers
          {
             var observedDataYValue = new ObservedDataYValue
             {
-               Mean = convertToAxisBaseValue(yAxisDimension, yDimension, observedDataColumn[i]),
+               Mean =  observedDataColumn[i],
                ErrorType = observedCurve.ErrorType,
-               Error = convertToAxisBaseValue(yAxisDimension, yErrorDimension, errorColumn[i])
+               Error = errorColumn[i],
             };
             observedCurve.Add(new TimeProfileXValue(value), observedDataYValue);
          });
@@ -66,7 +66,7 @@ namespace PKSim.Presentation.Mappers
          return columnDimension.BaseUnitValueToUnitValue(yAxisDimension.BaseUnit, valueInColumnBaseUnit).ToFloat();
       }
 
-      private ObservedCurveData createCurveData(DataColumn observedDataColumn, ObservedDataCurveOptions observedDataCurveOptions)
+      private ObservedCurveData createCurveData(DataColumn observedDataColumn, ObservedDataCurveOptions observedDataCurveOptions, IDimension valueDimension)
       {
          if (string.IsNullOrEmpty(observedDataCurveOptions.Caption))
             //use null here as observed data do not belong to any simulation
@@ -76,6 +76,7 @@ namespace PKSim.Presentation.Mappers
          {
             Id = observedDataColumn.Id,
             Caption = observedDataCurveOptions.Caption,
+            YDimension = valueDimension
          };
 
          updateCurveOptions(observedDataCurveOptions.CurveOptions, observedCurve);
