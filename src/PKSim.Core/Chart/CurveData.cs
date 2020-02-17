@@ -55,7 +55,7 @@ namespace PKSim.Core.Chart
       public virtual string QuantityPath { get; set; }
 
       /// <summary>
-      /// Dimension in which the x values are stored. 
+      /// Dimension in which the y values are stored. 
       /// </summary>
       public virtual IDimension YDimension { get; set; }
 
