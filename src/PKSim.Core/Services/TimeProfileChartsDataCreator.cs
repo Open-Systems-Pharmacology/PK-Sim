@@ -108,7 +108,7 @@ namespace PKSim.Core.Services
                      continue;
                }
 
-               var observedCurveData = _observedCurveDataMapper.MapFrom(observedData, _observedDataCollection, pane.Axis.Dimension);
+               var observedCurveData = _observedCurveDataMapper.MapFrom(observedData, _observedDataCollection);
                observedCurveData.Each(pane.AddObservedCurve);
 
                if (!_observedDataCollection.ApplyGroupingToObservedData)
