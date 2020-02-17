@@ -216,6 +216,7 @@ namespace PKSim.Core.Services
          {
             Id = curveId,
             Caption = curveCaption,
+            //Save one merge dimension per curve so that we can always convert using the dimension matching the output field exactly (only necessary when converting between molar and mass)
             YDimension = createMergedDimensionFor(yAxisField)
          };
          pane.AddCurve(series);
