@@ -28,8 +28,9 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="buildConfiguration"> spatialStructure that will be use to create the simulation </param>
       /// <param name="simulation"> Model less simulation that whose spatial structure will be created </param>
-      /// <param name="createAgingDataInSimulation"></param>
-      void UpdateBuildConfigurationForAging(IBuildConfiguration buildConfiguration, Simulation simulation, bool createAgingDataInSimulation);
+      /// <param name="createAgingDataInPopulationSimulation">Set to <c>True</c>, generates the AgingData if <paramref name="simulation"/> is a population simulation. Note that aging data will be added to the population simulation directly
+      /// and therefor modifying the instance of the simulation</param>
+      void UpdateBuildConfigurationForAging(IBuildConfiguration buildConfiguration, Simulation simulation, bool createAgingDataInPopulationSimulation);
    }
 
    public class DistributedParameterToTableParameterConverter : IDistributedParameterToTableParameterConverter
@@ -85,7 +86,7 @@ namespace PKSim.Core.Services
          _yearUnit = _timeDimension.Unit(dimensionRepository.AgeInYears.BaseUnit.Name);
       }
 
-      public void UpdateBuildConfigurationForAging(IBuildConfiguration buildConfiguration, Simulation simulation, bool createAgingDataInSimulation)
+      public void UpdateBuildConfigurationForAging(IBuildConfiguration buildConfiguration, Simulation simulation, bool createAgingDataInPopulationSimulation)
       {
          if (!simulation.AllowAging)
             return;
@@ -93,7 +94,7 @@ namespace PKSim.Core.Services
          try
          {
             _simulation = simulation;
-            _createAgingDataInSimulation = createAgingDataInSimulation;
+            _createAgingDataInSimulation = createAgingDataInPopulationSimulation;
             _baseIndividual = simulation.Individual;
             _baseOriginData = _baseIndividual.OriginData;
             var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.SpeciesPopulation, _baseOriginData.SubPopulation, CoreConstants.Parameters.MEAN_HEIGHT);
@@ -162,7 +163,8 @@ namespace PKSim.Core.Services
          foreach (var baseIndividualParameter in allBaseIndividualDistributedParameters.KeyValues)
          {
             var structureParameter = allContainerParameters[baseIndividualParameter.Key] ?? allNeighborhoodParameters[baseIndividualParameter.Key];
-            if (structureParameter == null) continue;
+            if (structureParameter == null)
+               continue;
 
             //cache all distributions for this parameter defined for the population and sub population.
             var allDistributionsForParameter = _parameterQuery.ParameterDistributionsFor(baseIndividualParameter.Value.ParentContainer, _baseOriginData.SpeciesPopulation, _baseOriginData.SubPopulation, baseIndividualParameter.Value.Name);
@@ -201,7 +203,8 @@ namespace PKSim.Core.Services
          {
             var parameter = organism.Parameter(ontogenyParameterName);
             var formula = createPlasmaProteinOntogenyTableFormulaFrom(parameter, _baseOriginData);
-            if (formula == null) continue;
+            if (formula == null)
+               continue;
 
             updateConstantParameterToFormula(parameter, formula, buildConfiguration);
             createPopulationPlasmaProteinOntogenyTableParameter(parameter, _simulation as PopulationSimulation);
@@ -215,11 +218,11 @@ namespace PKSim.Core.Services
          var parameterStartValue = psv[ontogenyFactorPath];
 
          parameterStartValue.Formula = createOntogenyTableFormulaFrom(ontogenyFactorParameter, molecule.Ontogeny, _baseOriginData);
-         if (parameterStartValue.Formula != null)
-         {
-            parameterStartValue.StartValue = null;
-            psv.FormulaCache.Add(parameterStartValue.Formula);
-         }
+         if (parameterStartValue.Formula == null)
+            return;
+
+         parameterStartValue.StartValue = null;
+         psv.FormulaCache.Add(parameterStartValue.Formula);
       }
 
       private TableFormula createMoleculeOntogenyTableFormula(IParameter ontogenyFactor, OriginData originData, IReadOnlyList<Sample> allOntogenies)
@@ -301,7 +304,10 @@ namespace PKSim.Core.Services
             p => createPlasmaProteinOntogenyTableFormulaFrom(ontogenyFactorParameter, _baseOriginData, populationSimulation.RandomGenerator));
       }
 
-      private void addAgingDataToPopulationSimulation<TParameter>(PopulationSimulation populationSimulation, string parameterPath, TParameter parameter,
+      private void addAgingDataToPopulationSimulation<TParameter>(
+         PopulationSimulation populationSimulation, 
+         string parameterPath, 
+         TParameter parameter,
          Func<TableFormulaParameter<TParameter>, TableFormula> tableFormulaRetriever) where TParameter : IParameter
       {
          if (populationSimulation == null || !_createAgingDataInSimulation) return;
@@ -431,7 +437,7 @@ namespace PKSim.Core.Services
 
          double meanHeight = heightDistributionParameters.Item1;
          double deviation = heightDistributionParameters.Item2;
-         var heigthDistributionFormula = distributionFrom(DistributionTypes.Normal, meanHeight, deviation);
+         var heightDistributionFormula = createDistributionFrom(DistributionTypes.Normal, meanHeight, deviation);
 
          double currentHeight = originData.Height.GetValueOrDefault(meanHeight);
 
@@ -440,7 +446,7 @@ namespace PKSim.Core.Services
             return distributionsToScale;
 
          //is used in order to retrieve the percentile 
-         double currentPercentile = heigthDistributionFormula.CalculatePercentileForValue(currentHeight);
+         double currentPercentile = heightDistributionFormula.CalculatePercentileForValue(currentHeight);
          double alpha = individualParameter.ParentContainer.Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR).Value;
 
          var currentOriginData = originData.Clone();
@@ -499,7 +505,7 @@ namespace PKSim.Core.Services
          return true;
       }
 
-      private IDistribution distributionFrom(DistributionType distributionType, double mean, double deviation)
+      private IDistribution createDistributionFrom(DistributionType distributionType, double mean, double deviation)
       {
          if (distributionType == DistributionTypes.LogNormal)
             return new LogNormalDistribution(Math.Log(mean), Math.Log(deviation));
@@ -517,7 +523,7 @@ namespace PKSim.Core.Services
 
       private double valueFrom(DistributionType distributionType, double mean, double deviation, double percentile)
       {
-         return distributionFrom(distributionType, mean, deviation).CalculateValueFromPercentile(percentile);
+         return createDistributionFrom(distributionType, mean, deviation).CalculateValueFromPercentile(percentile);
       }
 
       private void scaleDistributionMetaData(ParameterDistributionMetaData parameterDistributionMeta, double hrel, double alpha)

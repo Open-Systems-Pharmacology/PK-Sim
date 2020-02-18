@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
@@ -32,7 +31,7 @@ namespace PKSim.Core
          _populationSimulation.PKAnalyses = _pkAnalyses;
          _corePKParameterImporter = A.Fake<OSPSuite.Infrastructure.Import.Services.ISimulationPKParametersImportTask>();
          var coreSimulationPKParameterImport = new SimulationPKParametersImport {PKParameters = _importedPKParameters};
-         A.CallTo(_corePKParameterImporter).WithReturnType<SimulationPKParametersImport>().Returns(coreSimulationPKParameterImport);
+         A.CallTo(_corePKParameterImporter).WithReturnType<Task<SimulationPKParametersImport>>().Returns(coreSimulationPKParameterImport);
          sut = new SimulationPKParametersImportTask(_corePKParameterImporter);
 
          return _completed;
@@ -65,12 +64,6 @@ namespace PKSim.Core
       public void should_warn_the_user_that_the_analysis_will_be_overwritten()
       {
          _simulationPKParametersImport.Status.Is(NotificationType.Warning).ShouldBeTrue(_simulationPKParametersImport.Status.ToString());
-      }
-
-      [Observation]
-      public void should_have_added_the_information_to_the_log_that_the_pk_parameter_were_successfully_imported_nonetheless()
-      {
-         _simulationPKParametersImport.Log.Any(x => x.Contains(_importedPKParameter.ToString())).ShouldBeTrue();
       }
    }
 
