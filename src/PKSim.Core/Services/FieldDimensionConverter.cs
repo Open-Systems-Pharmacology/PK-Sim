@@ -1,8 +1,8 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
-using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Core.Services
 {

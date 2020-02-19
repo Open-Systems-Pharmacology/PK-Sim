@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -9,59 +10,60 @@ using PKSim.Core.Extensions;
 
 namespace PKSim.Core.Chart
 {
-   public class ValueWithIndvividualId
+   public class ValueWithIndividualId
    {
       public float Value { get; set; }
       public int IndividualId { get; set; }
 
-      public ValueWithIndvividualId(float value)
+      public ValueWithIndividualId(float value)
       {
          Value = value;
       }
 
       public bool IsValid => Value.IsValid();
 
-      public static implicit operator float(ValueWithIndvividualId valueWithIndvividualId)
+      public static implicit operator float(ValueWithIndividualId valueWithIndividualId)
       {
-         return valueWithIndvividualId.Value;
+         return valueWithIndividualId.Value;
       }
    }
 
    public class BoxWhiskerYValue : IYValue
    {
-      public ValueWithIndvividualId LowerWhisker { get; set; }
-      public ValueWithIndvividualId LowerBox { get; set; }
-      public ValueWithIndvividualId Median { get; set; }
-      public ValueWithIndvividualId UpperBox { get; set; }
-      public ValueWithIndvividualId UpperWhisker { get; set; }
-      public ValueWithIndvividualId[] Outliers { get; set; }
+      public ValueWithIndividualId LowerWhisker { get; set; }
+      public ValueWithIndividualId LowerBox { get; set; }
+      public ValueWithIndividualId Median { get; set; }
+      public ValueWithIndividualId UpperBox { get; set; }
+      public ValueWithIndividualId UpperWhisker { get; set; }
+      public ValueWithIndividualId[] Outliers { get; set; }
 
+   
       //use lower whisker because this is the first value of the box
       public float Y => LowerWhisker.Value;
 
       public bool IsValid => LowerWhisker.IsValid && LowerBox.IsValid && Median.IsValid && UpperBox.IsValid && UpperWhisker.IsValid;
 
-      public string ToString(IWithDisplayUnit unitConverter)
+      public string ToString(IWithDisplayUnit objectWithTargetUnit, IDimension valueDimension)
       {
-         var outlierValues = Outliers.Select(o => unitConverter.DisplayValue(o.Value)).ToArray();
+         var outlierValues = Outliers.Select(o => objectWithTargetUnit.DisplayValueWithUnit(o.Value, valueDimension)).ToArray();
          var outlierIndividualIds = Outliers.Select(o => o.IndividualId).ToArray();
 
          return PKSimConstants.Information.BoxWhiskerYAsTooltip(
-            unitConverter.DisplayValue(LowerWhisker.Value),
+            objectWithTargetUnit.DisplayValueWithUnit(LowerWhisker.Value, valueDimension),
             LowerWhisker.IndividualId,
-            unitConverter.DisplayValue(LowerBox.Value),
+            objectWithTargetUnit.DisplayValueWithUnit(LowerBox.Value, valueDimension),
             LowerBox.IndividualId,
-            unitConverter.DisplayValue(Median.Value),
+            objectWithTargetUnit.DisplayValueWithUnit(Median.Value, valueDimension),
             Median.IndividualId,
-            unitConverter.DisplayValue(UpperBox.Value),
+            objectWithTargetUnit.DisplayValueWithUnit(UpperBox.Value, valueDimension),
             UpperBox.IndividualId,
-            unitConverter.DisplayValue(UpperWhisker.Value),
+            objectWithTargetUnit.DisplayValueWithUnit(UpperWhisker.Value, valueDimension),
             UpperWhisker.IndividualId,
             outlierValues,
             outlierIndividualIds);
       }
 
-      public IEnumerable<ValueWithIndvividualId> AllValues
+      public IEnumerable<ValueWithIndividualId> AllValues
       {
          get
          {
@@ -83,7 +85,7 @@ namespace PKSim.Core.Chart
 
       public void ClearOutliers()
       {
-         Outliers = new ValueWithIndvividualId[] { };
+         Outliers = new ValueWithIndividualId[] { };
       }
    }
 

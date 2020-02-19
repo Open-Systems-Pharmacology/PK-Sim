@@ -76,16 +76,11 @@ namespace PKSim.Core.Chart
             xValue.X = _allXValues[xValue];
       }
 
-      private IEnumerable<TX> allPossibleXValues
-      {
-         get
-         {
-            return from pane in _allPanes
-               from curve in pane.Curves
-               from xValue in curve.XValues
-               select xValue;
-         }
-      }
+      private IEnumerable<TX> allPossibleXValues =>
+         from pane in _allPanes
+         from curve in pane.Curves
+         from xValue in curve.XValues
+         select xValue;
 
       public void AddPane(PaneData<TX, TY>  pane)
       {

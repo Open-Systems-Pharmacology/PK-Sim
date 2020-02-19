@@ -1,7 +1,8 @@
 using System;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Assets;
 using PKSim.Core.Extensions;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Chart
 {
@@ -14,7 +15,7 @@ namespace PKSim.Core.Chart
    public interface IYValue
    {
       float Y { get; }
-      string ToString(IWithDisplayUnit unitConverter);
+      string ToString(IWithDisplayUnit objectWithTargetUnit, IDimension valueDimension);
       bool IsValid { get; }
    }
 
@@ -29,9 +30,8 @@ namespace PKSim.Core.Chart
 
       public virtual string ToString(IWithDisplayUnit unitConverter)
       {
-         return PKSimConstants.Information.XAsTooltip(unitConverter.DisplayValue(X));
+         return PKSimConstants.Information.XAsTooltip(unitConverter.DisplayValueWithUnit(X));
       }
-
 
       public int CompareTo(IXValue valueToCompareTo)
       {

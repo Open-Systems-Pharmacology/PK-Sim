@@ -29,11 +29,9 @@ namespace PKSim.Core
       protected IReadOnlyList<ObservedCurveData> _result;
       protected CurveOptions _curveOptions;
       private IDimensionRepository _dimensionRepository;
-      private IDimension _yAxisDimension;
 
       protected override void Context()
       {
-         _yAxisDimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
          _observedDataCollection = new ObservedDataCollection();
          _displayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
@@ -66,7 +64,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_observedData, _observedDataCollection, _yAxisDimension);
+         _result = sut.MapFrom(_observedData, _observedDataCollection);
       }
    }
 

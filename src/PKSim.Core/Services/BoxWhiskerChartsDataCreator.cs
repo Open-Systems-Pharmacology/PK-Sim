@@ -58,7 +58,7 @@ namespace PKSim.Core.Services
       private void setSeriesValues(CurveData<BoxWhiskerXValue, BoxWhiskerYValue> series, DataRow row, IEnumerable<string> xFieldNames, PopulationBoxWhiskerAnalysis boxWhiskerAnalysis)
       {
          var xValue = new BoxWhiskerXValue(GetFieldValues(xFieldNames, row).Values);
-         var yValue = row[_aggreationName].DowncastTo<BoxWhiskerYValue>();
+         var yValue = row[_aggregationName].DowncastTo<BoxWhiskerYValue>();
          if (!yValue.IsValid) return;
 
          if (!boxWhiskerAnalysis.ShowOutliers)

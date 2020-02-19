@@ -107,11 +107,11 @@ namespace PKSim.Core
             var X = new BoxWhiskerXValue(new List<string>() {v.X1, v.X2});
             var Y = new BoxWhiskerYValue
             {
-               LowerWhisker = new ValueWithIndvividualId(v.LW),
-               LowerBox = new ValueWithIndvividualId(v.LW),
-               Median = new ValueWithIndvividualId(v.M),
-               UpperBox = new ValueWithIndvividualId(v.LW),
-               UpperWhisker = new ValueWithIndvividualId(v.LW),
+               LowerWhisker = new ValueWithIndividualId(v.LW),
+               LowerBox = new ValueWithIndividualId(v.LW),
+               Median = new ValueWithIndividualId(v.M),
+               UpperBox = new ValueWithIndividualId(v.LW),
+               UpperWhisker = new ValueWithIndividualId(v.LW),
             };
             curveData.Add(X, Y);
          }

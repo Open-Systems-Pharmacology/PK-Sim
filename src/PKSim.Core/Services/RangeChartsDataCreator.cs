@@ -94,8 +94,8 @@ namespace PKSim.Core.Services
          pkValues[0] = yFieldName; // DATA_FIELD-column first, see CreatePrimaryKey
          DataRow yFieldRow = _data.Rows.Find(pkValues);
 
-         var xValues = xFieldRow[_aggreationName] as float[];
-         var yValues = yFieldRow[_aggreationName] as float[];
+         var xValues = xFieldRow[_aggregationName] as float[];
+         var yValues = yFieldRow[_aggregationName] as float[];
 
          //possible if no values are defined for the row filter
          if (xValues == null || yValues == null)

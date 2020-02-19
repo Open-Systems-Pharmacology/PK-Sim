@@ -56,8 +56,8 @@ namespace PKSim.Core.Services
          pkValues[0] = yFieldName;
          DataRow yFieldRow = _data.Rows.Find(pkValues);
 
-         var xValues = (float[]) row[_aggreationName];
-         var yValues = (float[]) yFieldRow[_aggreationName];
+         var xValues = (float[]) row[_aggregationName];
+         var yValues = (float[]) yFieldRow[_aggregationName];
 
          if (xValues.Length != yValues.Length)
             throw new InvalidDataException(PKSimConstants.Error.DifferentVectorLengths);

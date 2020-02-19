@@ -1,7 +1,8 @@
-﻿using PKSim.Assets;
-using PKSim.Core.Extensions;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Extensions;
 
 namespace PKSim.Core.Chart
 {
@@ -32,28 +33,18 @@ namespace PKSim.Core.Chart
          UpperValue = float.NaN;
       }
 
-      public bool IsValid
-      {
-         get
-         {
-            if (Y.IsValid())
-               return true;
+      public bool IsValid => Y.IsValid() || IsRange;
 
-            return IsRange;
-         }
-      }
+      public bool IsRange => LowerValue.IsValid() && UpperValue.IsValid();
 
-      public bool IsRange
-      {
-         get { return LowerValue.IsValid() && UpperValue.IsValid(); }
-      }
-
-      public string ToString(IWithDisplayUnit unitConverter)
+      public string ToString(IWithDisplayUnit objectWithTargetUnit, IDimension valueDimension)
       {
          if (IsRange)
-            return PKSimConstants.Information.TimeProfileYAsTooltip(unitConverter.DisplayValue(LowerValue), unitConverter.DisplayValue(UpperValue));
+            return PKSimConstants.Information.TimeProfileYAsTooltip(
+               objectWithTargetUnit.DisplayValueWithUnit(LowerValue, valueDimension),
+               objectWithTargetUnit.DisplayValueWithUnit(UpperValue, valueDimension));
 
-         return PKSimConstants.Information.ScatterYAsTooltip(unitConverter.DisplayValue(Y));
+         return PKSimConstants.Information.ScatterYAsTooltip(objectWithTargetUnit.DisplayValueWithUnit(Y, valueDimension));
       }
    }
 }

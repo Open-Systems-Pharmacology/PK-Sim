@@ -1,9 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using PKSim.Assets;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Services;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using ICoreSimulationPKParametersImportTask = OSPSuite.Infrastructure.Import.Services.ISimulationPKParametersImportTask;
 
 namespace PKSim.Core.Services
 {
@@ -14,42 +16,26 @@ namespace PKSim.Core.Services
 
    public class SimulationPKParametersImportTask : ISimulationPKParametersImportTask
    {
-      private readonly ISimulationPKAnalysesImporter _pkAnalysesImporter;
-      private readonly IEntitiesInContainerRetriever _quantityRetriever;
+      private readonly ICoreSimulationPKParametersImportTask _coreSimulationPKParametersImportTask;
 
-      public SimulationPKParametersImportTask(ISimulationPKAnalysesImporter pkAnalysesImporter, IEntitiesInContainerRetriever quantityRetriever)
+      public SimulationPKParametersImportTask(ICoreSimulationPKParametersImportTask coreSimulationPKParametersImportTask)
       {
-         _pkAnalysesImporter = pkAnalysesImporter;
-         _quantityRetriever = quantityRetriever;
+         _coreSimulationPKParametersImportTask = coreSimulationPKParametersImportTask;
       }
 
       public async Task<SimulationPKParametersImport> ImportPKParameters(PopulationSimulation populationSimulation, string fileFullPath, CancellationToken cancellationToken)
       {
-         var importedPKAnalysis = await importPKAnalysesFromFile(fileFullPath, cancellationToken);
+         var importedPKAnalysis = await _coreSimulationPKParametersImportTask.ImportPKParameters(fileFullPath, populationSimulation, cancellationToken);
+         cancellationToken.ThrowIfCancellationRequested();
          validateConsistencyWithSimulation(populationSimulation, importedPKAnalysis);
-         addImportedPKToLogForSuccessfulImport(importedPKAnalysis);
          return importedPKAnalysis;
-      }
-
-      private void addImportedPKToLogForSuccessfulImport(SimulationPKParametersImport pkParameterImport)
-      {
-         if (pkParameterImport.Status.Is(NotificationType.Error))
-            return;
-
-         pkParameterImport.AddInfo(PKSimConstants.Information.FollowingPKParametersWereSuccessfulyImported);
-         foreach (var quantityPKParameter in pkParameterImport.PKParameters)
-         {
-            pkParameterImport.AddInfo(quantityPKParameter.ToString());
-         }
       }
 
       private void validateConsistencyWithSimulation(PopulationSimulation populationSimulation, SimulationPKParametersImport importedPKParameter)
       {
-         var allQuantities = _quantityRetriever.OutputsFrom(populationSimulation);
          foreach (var pkParameter in importedPKParameter.PKParameters)
          {
             validateLength(populationSimulation, pkParameter, importedPKParameter);
-            verifyThatQuantityExistsInSimulation(allQuantities, pkParameter, importedPKParameter);
             warnIfParameterAlreadyExists(populationSimulation.PKAnalyses, pkParameter, importedPKParameter);
          }
       }
@@ -63,15 +49,6 @@ namespace PKSim.Core.Services
             return;
 
          importedPKParameter.AddWarning(PKSimConstants.Warning.PKParameterAlreadyExistsAndWillBeOverwritten(pkParameter.Name, pkParameter.QuantityPath));
-
-      }
-
-      private void verifyThatQuantityExistsInSimulation(PathCache<IQuantity> allQuantities, QuantityPKParameter pkParameter, SimulationPKParametersImport importedPKParameter)
-      {
-         if (allQuantities.Contains(pkParameter.QuantityPath))
-            return;
-
-         importedPKParameter.AddError(PKSimConstants.Error.CouldNotFindQuantityWithPath(pkParameter.QuantityPath));
       }
 
       private void validateLength(PopulationSimulation populationSimulation, QuantityPKParameter pkParameter, SimulationPKParametersImport importedPKParameter)
@@ -80,16 +57,6 @@ namespace PKSim.Core.Services
             return;
 
          importedPKParameter.AddError(PKSimConstants.Error.NotEnoughPKValuesForParameter(pkParameter.Name, pkParameter.QuantityPath, populationSimulation.NumberOfItems, pkParameter.Count));
-      }
-
-      private Task<SimulationPKParametersImport> importPKAnalysesFromFile(string fileFullPath, CancellationToken cancellationToken)
-      {
-         return Task.Run(() =>
-         {
-            var pKAnalysesFile = new PKAnalysesImportFile { FilePath = fileFullPath };
-            var pkAnalyses = _pkAnalysesImporter.ImportPKParameters(fileFullPath, pKAnalysesFile);
-            return new SimulationPKParametersImport(pkAnalyses, pKAnalysesFile);
-         }, cancellationToken);
       }
    }
 }

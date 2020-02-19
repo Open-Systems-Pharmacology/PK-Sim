@@ -65,11 +65,11 @@ namespace PKSim.Core
          _xValue = new BoxWhiskerXValue(new string[] {"Normal", "Young"});
          _yValue = new BoxWhiskerYValue
          {
-            LowerWhisker = new ValueWithIndvividualId(1.1F),
-            LowerBox = new ValueWithIndvividualId(1.2F), 
-            Median = new ValueWithIndvividualId(1.3F),
-            UpperBox = new ValueWithIndvividualId(1.4F),
-            UpperWhisker = new ValueWithIndvividualId(1.5F)
+            LowerWhisker = new ValueWithIndividualId(1.1F),
+            LowerBox = new ValueWithIndividualId(1.2F), 
+            Median = new ValueWithIndividualId(1.3F),
+            UpperBox = new ValueWithIndividualId(1.4F),
+            UpperWhisker = new ValueWithIndividualId(1.5F)
          };
          sut.Add(_xValue, _yValue);
       }
@@ -157,8 +157,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.Add(new BoxWhiskerXValue(new[] {"A"}) {X = 1}, new BoxWhiskerYValue {LowerWhisker = new ValueWithIndvividualId(10)});
-         sut.Add(new BoxWhiskerXValue(new[] {"B"}) {X = 2}, new BoxWhiskerYValue {LowerWhisker = new ValueWithIndvividualId(20)});
+         sut.Add(new BoxWhiskerXValue(new[] {"A"}) {X = 1}, new BoxWhiskerYValue {LowerWhisker = new ValueWithIndividualId(10)});
+         sut.Add(new BoxWhiskerXValue(new[] {"B"}) {X = 2}, new BoxWhiskerYValue {LowerWhisker = new ValueWithIndividualId(20)});
       }
 
       [Observation]

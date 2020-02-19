@@ -150,9 +150,9 @@ namespace PKSim.Core
          var displayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
          var dimensionRepository = A.Fake<IDimensionRepository>();
          var observedDataMapper = new DataRepositoryToObservedCurveDataMapper(displayPathMapper, dimensionRepository);
-         var obserevdDataCurves = observedDataMapper.MapFrom(_observedData, new ObservedDataCollection(), concDimension);
-         obserevdDataCurves.Each(pane1.AddObservedCurve);
-         observedDataMapper.MapFrom(_observedData, new ObservedDataCollection(), concDimension).Each(curve =>
+         var observedDataCurves = observedDataMapper.MapFrom(_observedData, new ObservedDataCollection());
+         observedDataCurves.Each(pane1.AddObservedCurve);
+         observedDataMapper.MapFrom(_observedData, new ObservedDataCollection()).Each(curve =>
          {
             curve.Visible = false;
             pane1.AddObservedCurve(curve);

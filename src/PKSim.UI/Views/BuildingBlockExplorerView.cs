@@ -1,8 +1,8 @@
-﻿using OSPSuite.UI.Services;
-using DevExpress.XtraTreeList;
+﻿using DevExpress.XtraTreeList;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Views.Main;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views
 {

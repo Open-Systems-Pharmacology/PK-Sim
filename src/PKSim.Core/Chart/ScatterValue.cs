@@ -1,7 +1,8 @@
-﻿using PKSim.Assets;
-using PKSim.Core.Extensions;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Extensions;
 
 namespace PKSim.Core.Chart
 {
@@ -14,23 +15,20 @@ namespace PKSim.Core.Chart
 
    public class ScatterYValue : IYValue
    {
-      public float Value { get; private set; }
+      public float Value { get; }
 
       public ScatterYValue(float value)
       {
          Value = value;
       }
 
-      public bool IsValid
+      public bool IsValid => Value.IsValid();
+
+      public string ToString(IWithDisplayUnit objectWithTargetUnit, IDimension valueDimension)
       {
-         get { return Value.IsValid(); }
+         return PKSimConstants.Information.ScatterYAsTooltip(objectWithTargetUnit.DisplayValueWithUnit(Value, valueDimension));
       }
 
-      public string ToString(IWithDisplayUnit unitConverter)
-      {
-         return PKSimConstants.Information.ScatterYAsTooltip(unitConverter.DisplayValue(Value));
-      }
-
-      public float Y { get { return Value; } }
+      public float Y => Value;
    }
 }
