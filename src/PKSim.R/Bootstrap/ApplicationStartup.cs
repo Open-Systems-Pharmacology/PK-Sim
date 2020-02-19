@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using OSPSuite.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
@@ -14,6 +15,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using CoreRegister = PKSim.Core.CoreRegister;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 using ICoreUserSettings = PKSim.Core.ICoreUserSettings;
 
 namespace PKSim.R.Bootstrap
@@ -49,7 +51,10 @@ namespace PKSim.R.Bootstrap
          }
 
          var configuration = container.Resolve<IPKSimConfiguration>();
-         configuration.PKSimDbPath = Path.Combine(new FileInfo(Assembly.GetAssembly(GetType()).Location).DirectoryName, CoreConstants.PK_SIM_DB_FILE);
+         var currentPath = new FileInfo(Assembly.GetAssembly(GetType()).Location).DirectoryName;
+         configuration.PKSimDbPath = Path.Combine(currentPath, CoreConstants.PK_SIM_DB_FILE);
+         configuration.PKParametersFilePath = Path.Combine(currentPath, Constants.Files.PK_PARAMETERS_FILE_NAME);
+         configuration.DimensionFilePath = Path.Combine(currentPath, Constants.Files.DIMENSIONS_FILE_NAME);
 
          // Serialization mapping will require access to PKSim DB and as such, it needs to be performed after the DB was set.
          InfrastructureRegister.LoadDefaultEntities(container);
