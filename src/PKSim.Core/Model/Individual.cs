@@ -146,7 +146,7 @@ namespace PKSim.Core.Model
       public virtual double MeanWeight => Organism.Parameter(CoreConstants.Parameters.MEAN_WEIGHT).Value;
 
       /// <summary>
-      ///    Actual weight of the individual (might differ from input weight and mean weight if volumina were changed)
+      ///    Actual weight of the individual (might differ from input weight and mean weight if volumes were changed)
       /// </summary>
       public virtual IParameter WeightParameter => Organism.Parameter(CoreConstants.Parameters.WEIGHT);
 

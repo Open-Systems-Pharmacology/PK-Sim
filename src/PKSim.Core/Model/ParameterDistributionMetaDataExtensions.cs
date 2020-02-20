@@ -5,7 +5,7 @@ namespace PKSim.Core.Model
 {
    public static class ParameterDistributionMetaDataExtensions
    {
-      public static IEnumerable<ParameterDistributionMetaData> DefinedFor(this IEnumerable<ParameterDistributionMetaData> allMetaData, OriginData originData)
+      public static IReadOnlyList<ParameterDistributionMetaData> DefinedFor(this IEnumerable<ParameterDistributionMetaData> allMetaData, OriginData originData)
       {
          var allValidMetaData = new List<ParameterDistributionMetaData>();
          foreach (var metaDataForParameter in allMetaData.GroupBy(x => x.ParameterName))
@@ -32,14 +32,14 @@ namespace PKSim.Core.Model
          return allValidMetaData;
       }
 
-      private static IEnumerable<ParameterDistributionMetaData> addMissingAgeForGA(List<ParameterDistributionMetaData> allNonPreterm, List<ParameterDistributionMetaData> allForGestationalAge)
+      private static IReadOnlyList<ParameterDistributionMetaData> addMissingAgeForGA(IReadOnlyList<ParameterDistributionMetaData> allNonPreterm, IReadOnlyList<ParameterDistributionMetaData> allForGestationalAge)
       {
          var allMissing = new List<ParameterDistributionMetaData>();
-         var allAvailablesAgesForGA = allForGestationalAge.GroupBy(x => x.Age).Select(x => x.Key).ToList();
+         var allAvailableAgesForGA = allForGestationalAge.GroupBy(x => x.Age).Select(x => x.Key).ToList();
 
          foreach (var metaData in allNonPreterm)
          {
-            if (!allAvailablesAgesForGA.Contains(metaData.Age))
+            if (!allAvailableAgesForGA.Contains(metaData.Age))
                allMissing.Add(metaData);
          }
          return allMissing;
