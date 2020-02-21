@@ -18,7 +18,7 @@ namespace PKSim.Core.Model
       {
          Aggregation = doubles => doubles.ToFloatArray(),
          Name = "Values"
-      };
+      }; 
 
       public static Aggregate<IEnumerable<QuantityValues>> QuantityAggregation = new Aggregate<QuantityValues, IEnumerable<QuantityValues>>
       {
