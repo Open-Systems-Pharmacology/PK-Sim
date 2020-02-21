@@ -57,7 +57,7 @@ namespace PKSim.Core.Services
       private OriginData _baseOriginData;
       private IReadOnlyList<ParameterDistributionMetaData> _allHeightDistributionMaleParameters;
       private IReadOnlyList<ParameterDistributionMetaData> _allHeightDistributionFemaleParameters;
-      private bool _createAgingDataInSimulation;
+      private bool _createAgingDataInPopulationSimulation;
 
       public DistributedParameterToTableParameterConverter(
          IFormulaFactory formulaFactory,
@@ -97,7 +97,7 @@ namespace PKSim.Core.Services
          try
          {
             _simulation = simulation;
-            _createAgingDataInSimulation = createAgingDataInPopulationSimulation;
+            _createAgingDataInPopulationSimulation = createAgingDataInPopulationSimulation;
             _baseIndividual = simulation.Individual;
             _baseOriginData = _baseIndividual.OriginData;
             var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.SpeciesPopulation, _baseOriginData.SubPopulation, CoreConstants.Parameters.MEAN_HEIGHT);
@@ -314,7 +314,7 @@ namespace PKSim.Core.Services
          PopulationSimulation populationSimulation
       )
       {
-         if (populationSimulation == null || !_createAgingDataInSimulation)
+         if (populationSimulation == null || !_createAgingDataInPopulationSimulation)
             return;
 
          var originData = _baseOriginData.Clone();
@@ -366,7 +366,7 @@ namespace PKSim.Core.Services
          TParameter parameter,
          Func<TableFormulaParameter<TParameter>, TableFormula> tableFormulaRetriever) where TParameter : IParameter
       {
-         if (populationSimulation == null || !_createAgingDataInSimulation) return;
+         if (populationSimulation == null || !_createAgingDataInPopulationSimulation) return;
 
          var originData = _baseOriginData.Clone();
          var allAges = populationSimulation.AllOrganismValuesFor(CoreConstants.Parameters.AGE, _entityPathResolver);
