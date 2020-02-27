@@ -156,7 +156,7 @@ namespace PKSim.IntegrationTests
       {
          _results.AllParameterPaths().Contains("Organism|VenousBlood|Volume").ShouldBeTrue();
          _results.AllParameterPaths().Contains("Organism|VenousBlood|Volume [l]").ShouldBeFalse();
-         _results.ParameterValuesCache.Has("Organism|VenousBlood|Volume [l]").ShouldBeFalse();
+         _results.ParameterValuesCache.Has("Organism|VenousBlood|Volume [l]").ShouldBeTrue();
          _results.ParameterValuesCache.Has("Organism|VenousBlood|Volume").ShouldBeTrue();
       }
    }

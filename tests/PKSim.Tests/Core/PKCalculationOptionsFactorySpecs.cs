@@ -271,7 +271,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void multiple_adiministration_times_should_not_be_used_to_calculate_pk_parameter_options()
+      public void multiple_administration_times_should_not_be_used_to_calculate_pk_parameter_options()
       {
          sut.CreateFor(_simulation1, _product).PKParameterMode.ShouldBeEqualTo(PKParameterMode.Single);
       }
@@ -385,7 +385,7 @@ namespace PKSim.Core
       public void should_return_options_containing_dosing_intervals_for_the_first_and_only_application()
       {
          _options.SingleDosing.ShouldBeTrue();
-         _options.FirstInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_startTime.Value.ToFloat());
+         _options.FirstInterval.StartValue.ShouldBeEqualTo(_startTime.Value.ToFloat());
       }
    }
 
