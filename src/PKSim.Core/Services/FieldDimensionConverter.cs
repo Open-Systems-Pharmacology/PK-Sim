@@ -6,7 +6,7 @@ using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core.Services
 {
-   public abstract class FieldDimensionConverter : DimensionConverterBase
+   public abstract class FieldDimensionConverter : MolWeightDimensionConverter
    {
       private readonly IQuantityField _quantityField;
       private readonly IPopulationDataCollector _populationDataCollector;

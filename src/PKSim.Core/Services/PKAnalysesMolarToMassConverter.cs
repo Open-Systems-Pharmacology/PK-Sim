@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Core.Services
 {
-   public abstract class PKAnalysesMolarToMassConverter : DimensionConverterBase
+   public abstract class PKAnalysesMolarToMassConverter : MolWeightDimensionConverter
    {
       private readonly IParameter _parameter;
 

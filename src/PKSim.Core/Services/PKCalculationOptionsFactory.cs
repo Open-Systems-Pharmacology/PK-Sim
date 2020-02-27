@@ -40,7 +40,7 @@ namespace PKSim.Core.Services
       public PKCalculationOptions CreateFor(PopulationSimulation populationSimulation, string moleculeName)
       {
          var options = CreateFor((Simulation) populationSimulation, moleculeName);
-         options.Dose = null;
+         options.DrugMassPerBodyWeight = null;
          return options;
       }
 
@@ -54,7 +54,7 @@ namespace PKSim.Core.Services
 
          return new PKCalculationOptions
          {
-            Dose = allDosesForMolecules.Count == 1 ? allDosesForMolecules[0] : null
+            DrugMassPerBodyWeight= allDosesForMolecules.Count == 1 ? allDosesForMolecules[0] : null
          };
       }
 
@@ -64,9 +64,9 @@ namespace PKSim.Core.Services
          return simulation != null ? CreateFor(simulation, compoundName) : new PKCalculationOptions();
       }
 
-      public override void UpdateAppliedDose(IModelCoreSimulation simulation, string moleculeName, PKCalculationOptions options, IReadOnlyList<ApplicationParameters> allApplicationParametersOrderedByStartTime)
+      public override void UpdateTotalDrugMassPerBodyWeight(IModelCoreSimulation simulation, string moleculeName, PKCalculationOptions options, IReadOnlyList<ApplicationParameters> allApplicationParametersOrderedByStartTime)
       {
-         base.UpdateAppliedDose(simulation, moleculeName, options, allApplicationParametersOrderedByStartTime);
+         base.UpdateTotalDrugMassPerBodyWeight(simulation, moleculeName, options, allApplicationParametersOrderedByStartTime);
 
          if (options.SingleDosing)
             return;
@@ -74,9 +74,9 @@ namespace PKSim.Core.Services
          //we have at least 2 applied applications at that stage since we are in multiple dosing mode
          var bodyWeight = simulation.DowncastTo<Simulation>().BodyWeight?.Value;
          var applicationCount = allApplicationParametersOrderedByStartTime.Count;
-         options.FirstDose = drugMassPerBodyWeightFor(allApplicationParametersOrderedByStartTime[0].DrugMass, bodyWeight);
-         options.LastMinusOneDose = drugMassPerBodyWeightFor(allApplicationParametersOrderedByStartTime[applicationCount - 2].DrugMass, bodyWeight);
-         options.LastDose = drugMassPerBodyWeightFor(allApplicationParametersOrderedByStartTime[applicationCount - 1].DrugMass, bodyWeight);
+         options.FirstInterval.DrugMassPerBodyWeight = drugMassPerBodyWeightFor(allApplicationParametersOrderedByStartTime[0].DrugMass, bodyWeight);
+         options.LastMinusOneInterval.DrugMassPerBodyWeight = drugMassPerBodyWeightFor(allApplicationParametersOrderedByStartTime[applicationCount - 2].DrugMass, bodyWeight);
+         options.LastInterval.DrugMassPerBodyWeight = drugMassPerBodyWeightFor(allApplicationParametersOrderedByStartTime[applicationCount - 1].DrugMass, bodyWeight);
       }
 
       private double? drugMassPerBodyWeightFor(IParameter drugMass, double? bodyWeight)
