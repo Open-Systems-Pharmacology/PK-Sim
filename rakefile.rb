@@ -71,6 +71,12 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 	src_dir = src_dir_for(args.configuration)
 	relative_src_dir = relative_src_dir_for(args.configuration)
 	
+	# Copy folder structure so that the portable setups works as expected
+	FileUtils.mkdir_p setup_temp_dir
+	FileUtils.copy_entry File.join(src_dir, 'TeXTemplates'), File.join(setup_temp_dir, 'TeXTemplates')
+	FileUtils.copy_entry File.join(src_dir, 'ChartLayouts'), File.join(setup_temp_dir, 'ChartLayouts')
+
+
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
 		'Open Systems Pharmacology Suite License.pdf',
@@ -82,8 +88,7 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 
 	setup_folders = [
 		'examples/**/*.pksim5',
-		"#{relative_src_dir}/ChartLayouts/**/*.{xml}",
-		"#{relative_src_dir}/TeXTemplates/**/*.{json,sty,tex}",
+		"#{setup_temp_dir}/**/*.*",
 	]
 
 	Rake::Task['setup:create_portable'].execute(OpenStruct.new(
@@ -120,7 +125,7 @@ task :postclean do |t, args|
 	end
 
 	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
-		copy_files 'OSPSuite.Presentation', 'xml'
+		copy_files 'ChartLayouts', 'xml'
 	end
 
 	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
@@ -170,4 +175,8 @@ end
 
 def setup_dir
 	File.join(solution_dir, 'setup')
+end
+
+def setup_temp_dir
+	File.join(setup_dir, 'temp')
 end
