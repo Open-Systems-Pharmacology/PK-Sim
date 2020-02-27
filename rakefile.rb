@@ -18,6 +18,7 @@ task :cover do
 
   targetProjects = [
 	"PKSim.Tests.csproj",
+	"PKSim.R.Tests.csproj",
 	"PKSim.Matlab.Tests.csproj",
 	"PKSim.UI.Tests.csproj",
 	];
