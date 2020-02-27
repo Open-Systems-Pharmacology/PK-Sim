@@ -23,9 +23,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.98" />
-    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.47" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.39" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.100" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.49" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.40" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.7" GeneratePathProperty="true" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
   </ItemGroup>
