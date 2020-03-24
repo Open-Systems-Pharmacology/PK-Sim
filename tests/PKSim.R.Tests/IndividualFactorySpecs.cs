@@ -5,10 +5,10 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots;
 using PKSim.R.Domain;
 using PKSim.R.Services;
 using IIndividualFactory = PKSim.R.Services.IIndividualFactory;
-using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.R
 {
@@ -63,6 +63,36 @@ namespace PKSim.R
       {
          _results.DistributedParameters.Length.ShouldBeGreaterThan(0);
          _results.DerivedParameters.Length.ShouldBeGreaterThan(0);
+      }
+   }
+
+   public class When_creating_an_individual_for_the_human_species_with_a_missing_age_parameter : concern_for_IndividualFactory
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _individualCharacteristics = new IndividualCharacteristics
+         {
+            Species = CoreConstants.Species.HUMAN,
+            Population = CoreConstants.Population.ICRP,
+            Weight = new Parameter
+            {
+               Value = 75,
+               Unit = "kg",
+            },
+            Height = new Parameter
+            {
+               Value = 175,
+               Unit = "cm",
+            },
+            Gender = CoreConstants.Gender.Male
+         };
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.CreateIndividual(_individualCharacteristics)).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -187,7 +217,7 @@ namespace PKSim.R
       protected override void Because()
       {
          _individualCharacteristics.AddMoleculeOntogeny(new MoleculeOntogeny {Molecule = "AAA", Ontogeny = "CYP3A4"});
-         _individualCharacteristics.AddMoleculeOntogeny(new MoleculeOntogeny {Molecule = "BBB", Ontogeny = "CYP2E1" });
+         _individualCharacteristics.AddMoleculeOntogeny(new MoleculeOntogeny {Molecule = "BBB", Ontogeny = "CYP2E1"});
          _results = sut.DistributionsFor(_individualCharacteristics);
       }
 
@@ -198,16 +228,14 @@ namespace PKSim.R
          // 2 parameters created 
          var allCYP3A4Parameters = _results.Where(x => x.ParameterPath.Contains("AAA")).ToList();
          allCYP3A4Parameters.Count.ShouldBeEqualTo(2);
-         allCYP3A4Parameters[0].ParameterPath.ShouldBeEqualTo(new[]{ "AAA", CoreConstants.Parameters.ONTOGENY_FACTOR }.ToPathString());
-         allCYP3A4Parameters[1].ParameterPath.ShouldBeEqualTo(new[]{ "AAA", CoreConstants.Parameters.ONTOGENY_FACTOR_GI }.ToPathString());
+         allCYP3A4Parameters[0].ParameterPath.ShouldBeEqualTo(new[] {"AAA", CoreConstants.Parameters.ONTOGENY_FACTOR}.ToPathString());
+         allCYP3A4Parameters[1].ParameterPath.ShouldBeEqualTo(new[] {"AAA", CoreConstants.Parameters.ONTOGENY_FACTOR_GI}.ToPathString());
 
 
          var allCYP2E1Parameters = _results.Where(x => x.ParameterPath.Contains("BBB")).ToList();
          allCYP2E1Parameters.Count.ShouldBeEqualTo(2);
-         allCYP2E1Parameters[0].ParameterPath.ShouldBeEqualTo(new[] { "BBB", CoreConstants.Parameters.ONTOGENY_FACTOR }.ToPathString());
-         allCYP2E1Parameters[1].ParameterPath.ShouldBeEqualTo(new[] { "BBB", CoreConstants.Parameters.ONTOGENY_FACTOR_GI }.ToPathString());
-
-
+         allCYP2E1Parameters[0].ParameterPath.ShouldBeEqualTo(new[] {"BBB", CoreConstants.Parameters.ONTOGENY_FACTOR}.ToPathString());
+         allCYP2E1Parameters[1].ParameterPath.ShouldBeEqualTo(new[] {"BBB", CoreConstants.Parameters.ONTOGENY_FACTOR_GI}.ToPathString());
       }
 
       [Observation]
@@ -217,7 +245,6 @@ namespace PKSim.R
          //             0.77  0.32  1.52
          //             1.08  0.41  1.45
          //             1.44  0.5   1.45
-
 
 
          // CYP3A4 LIV  PMA   Mean Std
@@ -233,7 +260,6 @@ namespace PKSim.R
          //             1.3   0.92  1.33
 
 
-
          //0.5 years and 40 weeks GA => PMA is 1.26
          var allCYP3A4Parameters = _results.Where(x => x.ParameterPath.Contains("AAA")).ToList();
          var allCYP2E1Parameters = _results.Where(x => x.ParameterPath.Contains("BBB")).ToList();
@@ -247,7 +273,7 @@ namespace PKSim.R
          allCYP3A4Parameters[1].Mean.ShouldBeGreaterThan(0.41);
          allCYP3A4Parameters[1].Mean.ShouldBeSmallerThan(0.5);
          allCYP3A4Parameters[1].Std.ShouldBeEqualTo(1.45);
-         
+
          allCYP2E1Parameters[0].DistributionType.ShouldBeEqualTo(DistributionTypes.LogNormal);
          allCYP2E1Parameters[0].Mean.ShouldBeGreaterThan(0.85);
          allCYP2E1Parameters[0].Mean.ShouldBeSmallerThan(0.92);

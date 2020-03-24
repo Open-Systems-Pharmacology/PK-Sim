@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 using PKSim.Core;
-using OSPSuite.Core.Converter.v6_3;
+using OSPSuite.Core.Converters.v6_3;
 
 namespace PKSim.Infrastructure.ProjectConverter.v6_3
 {

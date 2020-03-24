@@ -3,22 +3,25 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.R.Domain;
 using ICoreIndividualFactory = PKSim.Core.Model.IIndividualFactory;
-using OriginData = PKSim.Core.Snapshots.OriginData;
 
 namespace PKSim.R.Services
 {
    public interface IIndividualFactory
    {
       /// <summary>
-      /// Returns the <seealso cref="CreateIndividualResults"/> representing an individual with the characteristics defined in <paramref name="individualCharacteristics"/>.
+      ///    Returns the <seealso cref="CreateIndividualResults" /> representing an individual with the characteristics defined
+      ///    in <paramref name="individualCharacteristics" />.
       /// </summary>
       CreateIndividualResults CreateIndividual(IndividualCharacteristics individualCharacteristics);
+
       DistributedParameterValue[] DistributionsFor(IndividualCharacteristics individualCharacteristics);
    }
 
@@ -61,11 +64,12 @@ namespace PKSim.R.Services
 
          foreach (var individualParameter in allIndividualParameters)
          {
-            if(allDistributedParameterCache.Contains(individualParameter.ParameterPath))
+            if (allDistributedParameterCache.Contains(individualParameter.ParameterPath))
                distributedParameters.Add(individualParameter);
             else
                derivedParameters.Add(individualParameter);
          }
+
          distributedParameters.AddRange(ontogenyParameters);
 
          return new CreateIndividualResults(distributedParameters.ToArray(), derivedParameters.ToArray());
@@ -81,7 +85,16 @@ namespace PKSim.R.Services
          return distributedParameters.ToArray();
       }
 
-      private Core.Model.OriginData originDataFrom(OriginData originData) => _originDataMapper.MapToModel(originData).Result;
+      private OriginData originDataFrom(Core.Snapshots.OriginData originData)
+      {
+         var coreOriginData = _originDataMapper.MapToModel(originData).Result;
+
+         if (coreOriginData.SpeciesPopulation.IsAgeDependent && originData.Age == null)
+            throw new PKSimException(PKSimConstants.Error.ParameterIsRequired(CoreConstants.Parameters.AGE));
+
+
+         return coreOriginData;
+      }
 
       private DistributedParameterValue distributedParameterValueFrom(IDistributedParameter parameter)
       {

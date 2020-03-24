@@ -413,7 +413,6 @@ namespace PKSim.Assets
          public static string CannotCreateContainerOfType(string type) => $"Cannot create container of type '{type}'.";
          public static string UnknownUsageInIndividualFlag(string flag) => $"'{flag}' is not valid flag for 'Usage in individual'.";
          public static string CompoundParameterSelectionNeededFor(string parameterName) => $"Compound parameter selection is required for '{parameterName}'.";
-         public const string InvalidPartialStabiLink = "Invalid link for creating enzymatic stability partial process passed.";
          public const string ContainerPathIsEmpty = "Given container path is empty.";
          public const string CannotDeleteSchemaItem = "At least one schema item needs to be defined.";
          public const string CannotDeleteSimulationInterval = "At least one interval needs to be defined.";
@@ -426,7 +425,7 @@ namespace PKSim.Assets
          public const string InvalidNumberOfBins = "Number of particle bins must be in [1..20].";
          public const string InvalidParticleSizeDistribution = "Unknown particles size distribution passed.";
          public const string FirstOrderActiveTransportsNotSupported = "First order active transports are not supported.";
-         public const string CannotSwitchToAdvancedProtocolWhenUsingUserDefinedAppplication = "User defined administration cannot be used with an advanced administration protocol.";
+         public const string CannotSwitchToAdvancedProtocolWhenUsingUserDefinedApplication = "User defined administration cannot be used with an advanced administration protocol.";
          public const string MolWeightNotAvailable = "Molecular Weight not available.";
          public const string MolWeightNotAvailableForPopulationSimulationComparison = "Molecular Weight was not found or is not the same in all compared simulations.";
          public const string EventGroupSubContainerHasInvalidType = "Subcontainer of event group must be of type event or event group.";
@@ -475,6 +474,8 @@ namespace PKSim.Assets
          public static string TableFormulationRequiresAtLeastOnePoint(string formulation) => $"Table formulation '{formulation}' requires at least one point to be used in a simulation.";
 
          public static string CouldNotFindSimulation(string simulationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
+
+         public static string ParameterIsRequired(string parameterName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Parameter, parameterName);
 
          public static string SimulationResultsFileDoesNotHaveTheExpectedFormat
          {
@@ -586,7 +587,7 @@ namespace PKSim.Assets
 
          public static string FileIsNotAPKSimFile(string projectFile, string productName) => $"File '{projectFile}' is not a {productName} project file.";
 
-         public static string FileIsNotASimulationFile(string simualtionFile, string productName) => $"File '{simualtionFile}' is not a {productName} simulation file.";
+         public static string FileIsNotASimulationFile(string simulationFile, string productName) => $"File '{simulationFile}' is not a {productName} simulation file.";
 
          public static string NoTemplateBuildingBlockAvailableForType(string buildingBlockType) => $"No template '{buildingBlockType}' available in the template database.";
 
@@ -594,7 +595,7 @@ namespace PKSim.Assets
 
          public static string ConstantParameterAlreadyExistsInContainer(string containerName, string parameterName) => $"Parameter '{parameterName}' already exists in '{containerName}' but is defined as a constant parameter.";
 
-         public static string FormulaParamterAlreadyExistsInContainerWithAnotherFormula(string containerName, string parameterName, string formulaString, string formulaStringToAdd)
+         public static string FormulaParameterAlreadyExistsInContainerWithAnotherFormula(string containerName, string parameterName, string formulaString, string formulaStringToAdd)
          {
             return $"Parameter '{parameterName}' already exists in '{containerName}' with another formula:\nOld formula = '{formulaString}'\nNew formula = '{formulaStringToAdd}'.";
          }

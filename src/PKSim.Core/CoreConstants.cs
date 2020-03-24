@@ -815,9 +815,9 @@ namespace PKSim.Core
             Constants.PKParameters.Thalf,
             Constants.PKParameters.AUC_inf,
             Constants.PKParameters.AUC_inf_norm,
-            Constants.PKParameters.AUC_inf_t1,
-            Constants.PKParameters.AUC_inf_t1_norm,
-            Constants.PKParameters.AUC_inf_tLast,
+            Constants.PKParameters.AUC_inf_tD1,
+            Constants.PKParameters.AUC_inf_tD1_norm,
+            Constants.PKParameters.AUC_inf_tDLast,
             Constants.PKParameters.AUC_inf_tLast_norm
          };
       }

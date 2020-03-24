@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Maths.Random;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Maths.Random;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Model
@@ -51,17 +51,18 @@ namespace PKSim.Core.Model
 
       public override TBuildingBlock BuildingBlock<TBuildingBlock>()
       {
-         if (typeof (TBuildingBlock).IsAnImplementationOf<Individual>())
+         if (typeof(TBuildingBlock).IsAnImplementationOf<Individual>())
             return Population.FirstIndividual as TBuildingBlock;
 
          return AllBuildingBlocks<TBuildingBlock>().SingleOrDefault();
       }
 
       /// <summary>
-      ///    Returns all parameters that could potentially be defined as advanced parameters in a simulation 
+      ///    Returns all parameters that could potentially be defined as advanced parameters in a simulation
       /// </summary>
-      public virtual IEnumerable<IParameter> AllPotentialAdvancedParameters => 
-         ParametersOfType(PKSimBuildingBlockType.Simulation | PKSimBuildingBlockType.Compound | PKSimBuildingBlockType.Event | PKSimBuildingBlockType.Formulation | PKSimBuildingBlockType.Protocol);
+      public virtual IEnumerable<IParameter> AllPotentialAdvancedParameters =>
+         ParametersOfType(PKSimBuildingBlockType.Simulation | PKSimBuildingBlockType.Compound | PKSimBuildingBlockType.Event |
+                          PKSimBuildingBlockType.Formulation | PKSimBuildingBlockType.Protocol);
 
       /// <summary>
       ///    Returns all values defined for the organism parameter names <paramref name="parameterName" />
@@ -232,6 +233,7 @@ namespace PKSim.Core.Model
             if (!allParameters.Contains(populationParameters.Key))
                allParameters.Add(populationParameters.Key, populationParameters.Value);
          }
+
          return allParameters;
       }
 

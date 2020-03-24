@@ -11,7 +11,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Simulations;
-using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Simulations;
@@ -37,7 +36,7 @@ namespace PKSim.Presentation
       protected TimeProfileCurveData _curve2;
       protected PKAnalysis _pk1;
       protected PKAnalysis _pk2;
-      protected List<PopulationPKAnalysis> _allPKanalysis;
+      protected List<PopulationPKAnalysis> _allPKAnalysis;
       protected IPopulationPKAnalysisToPKAnalysisDTOMapper _populationPKAnalysisToDTOMapper;
       protected DataTable _dataTable;
       protected IPopulationPKAnalysisToDataTableMapper _populationPKAnalysisToDataTableMapper;
@@ -65,14 +64,14 @@ namespace PKSim.Presentation
          _pk1 = new PKAnalysis();
          _pk2 = new PKAnalysis();
 
-         _allPKanalysis = new List<PopulationPKAnalysis>
+         _allPKAnalysis = new List<PopulationPKAnalysis>
          {
             new PopulationPKAnalysis(_curve1, _pk1),
             new PopulationPKAnalysis(_curve2, _pk2),
          };
 
 
-         A.CallTo(() => _pkAnalysesTask.CalculateFor(_populationDataCollector, _timeProfileChartData)).Returns(_allPKanalysis);
+         A.CallTo(() => _pkAnalysesTask.CalculateFor(_populationDataCollector, _timeProfileChartData)).Returns(_allPKAnalysis);
          A.CallTo(() => _view.BindTo(A<PKAnalysisDTO>._)).Invokes(x => _dataTable = x.GetArgument<PKAnalysisDTO>(0).DataTable);
          A.CallTo(() => _populationPKAnalysisToDataTableMapper.MapFrom(A<IReadOnlyList<PopulationPKAnalysis>>._, true)).Returns(_dataTable);
       }
@@ -94,7 +93,7 @@ namespace PKSim.Presentation
 
          _pkSimParameter = new PKSimParameter {Dimension = dimension};
 
-         _allPKanalysis.First().PKAnalysis.Add(_pkSimParameter);
+         _allPKAnalysis.First().PKAnalysis.Add(_pkSimParameter);
          _settings = new DefaultPresentationSettings();
          A.CallTo(() => _presenterSettingsTask.PresentationSettingsFor<DefaultPresentationSettings>(A<IPresenterWithSettings>._, A<IWithId>._)).Returns(_settings);
          _settings.SetSetting(_pkSimParameter.Name, "kl/f");
@@ -145,19 +144,19 @@ namespace PKSim.Presentation
       {
          base.Context();
          _newDisplayUnit = A.Fake<Unit>();
-         _pk1.Add(A.Fake<IParameter>().WithName(Constants.PKParameters.AUC));
+         _pk1.Add(A.Fake<IParameter>().WithName(Constants.PKParameters.AUC_tEnd));
          sut.CalculatePKAnalysis(_populationDataCollector, _timeProfileChartData);
       }
 
       protected override void Because()
       {
-         sut.ChangeUnit(Constants.PKParameters.AUC, _newDisplayUnit);
+         sut.ChangeUnit(Constants.PKParameters.AUC_tEnd, _newDisplayUnit);
       }
 
       [Observation]
       public void should_update_the_display_unit_in_all_pk_parameters()
       {
-         _pk1.Parameter(Constants.PKParameters.AUC).DisplayUnit.ShouldBeEqualTo(_newDisplayUnit);
+         _pk1.Parameter(Constants.PKParameters.AUC_tEnd).DisplayUnit.ShouldBeEqualTo(_newDisplayUnit);
       }
 
       [Observation]
@@ -175,7 +174,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _newDisplayUnit = A.Fake<Unit>();
-         _pk1.Add(A.Fake<IParameter>().WithName(Constants.PKParameters.AUC));
+         _pk1.Add(A.Fake<IParameter>().WithName(Constants.PKParameters.AUC_tEnd));
          sut.CalculatePKAnalysis(_populationDataCollector, _timeProfileChartData);
       }
 
@@ -199,7 +198,7 @@ namespace PKSim.Presentation
             .WithDimension(A.Fake<IDimension>()));
 
          _pk2.Add(A.Fake<IParameter>()
-           .WithName(Constants.PKParameters.AUC)
+           .WithName(Constants.PKParameters.AUC_tEnd)
            .WithDimension(_dimension));
 
          sut.CalculatePKAnalysis(_populationDataCollector, _timeProfileChartData);
@@ -208,7 +207,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_the_units_defined_in_the_pk_parameter_of_the_first_analysis_where_the_parameter_is_defined()
       {
-         sut.AvailableUnitsFor(Constants.PKParameters.AUC).ShouldBeEqualTo(_dimension.Units);
+         sut.AvailableUnitsFor(Constants.PKParameters.AUC_tEnd).ShouldBeEqualTo(_dimension.Units);
       }
 
       [Observation]
@@ -227,16 +226,16 @@ namespace PKSim.Presentation
          base.Context();
          _dimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
          _pk1.Add(A.Fake<IParameter>()
-            .WithName(Constants.PKParameters.AUC)
+            .WithName(Constants.PKParameters.AUC_tEnd)
             .WithDimension(_dimension));
-         _pk1.Parameter(Constants.PKParameters.AUC).DisplayUnit = A.Fake<Unit>();
+         _pk1.Parameter(Constants.PKParameters.AUC_tEnd).DisplayUnit = A.Fake<Unit>();
          sut.CalculatePKAnalysis(_populationDataCollector, _timeProfileChartData);
       }
 
       [Observation]
       public void should_return_the_display_unit_of_the_pk_parameter_of_the_first_analysis_for_an_existing_parameter()
       {
-         sut.DisplayUnitFor(Constants.PKParameters.AUC).ShouldBeEqualTo(_pk1.Parameter(Constants.PKParameters.AUC).DisplayUnit);
+         sut.DisplayUnitFor(Constants.PKParameters.AUC_tEnd).ShouldBeEqualTo(_pk1.Parameter(Constants.PKParameters.AUC_tEnd).DisplayUnit);
       }
 
       [Observation]

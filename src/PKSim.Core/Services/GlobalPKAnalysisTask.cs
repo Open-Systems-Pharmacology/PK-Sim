@@ -194,12 +194,12 @@ namespace PKSim.Core.Services
 
       private static string pkParameterNameForAUCRatio(ApplicationType applicationType)
       {
-         return applicationType == ApplicationType.Multiple ? Constants.PKParameters.AUC_inf_tLast : Constants.PKParameters.AUC_inf;
+         return applicationType == ApplicationType.Multiple ? Constants.PKParameters.AUC_inf_tDLast : Constants.PKParameters.AUC_inf;
       }
 
       private static string pkParameterNameForCmaxRatio(ApplicationType applicationType)
       {
-         return applicationType == ApplicationType.Multiple ? Constants.PKParameters.C_max_tLast_tEnd : Constants.PKParameters.C_max;
+         return applicationType == ApplicationType.Multiple ? Constants.PKParameters.C_max_tDLast_tDEnd : Constants.PKParameters.C_max;
       }
 
       private DataColumn bloodCurveForSpecies(DataColumn peripheralVenousBloodCurve, DataColumn venousBloodCurve, Individual individual)

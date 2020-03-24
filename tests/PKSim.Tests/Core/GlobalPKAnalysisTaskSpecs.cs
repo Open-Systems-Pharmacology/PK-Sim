@@ -83,16 +83,16 @@ namespace PKSim.Core
          _venousBloodPK.AddValue(Constants.PKParameters.CL, 12);
 
          _venousBloodPK.AddValue(Constants.PKParameters.AUC_inf, 13);
-         _venousBloodPK.AddValue(Constants.PKParameters.AUC_inf_t1_norm, 14);
+         _venousBloodPK.AddValue(Constants.PKParameters.AUC_inf_tD1_norm, 14);
 
          _peripheralVenousBloodPK = new PKValues();
          _peripheralVenousBloodPK.AddValue(Constants.PKParameters.Vss, 21);
          _peripheralVenousBloodPK.AddValue(Constants.PKParameters.Vd, 22);
          _peripheralVenousBloodPK.AddValue(Constants.PKParameters.CL, 23);
          _peripheralVenousBloodPK.AddValue(Constants.PKParameters.AUC_inf, 24);
-         _peripheralVenousBloodPK.AddValue(Constants.PKParameters.AUC_inf_t1_norm, 25);
+         _peripheralVenousBloodPK.AddValue(Constants.PKParameters.AUC_inf_tD1_norm, 25);
          _peripheralVenousBloodPK.AddValue(Constants.PKParameters.C_max, 26);
-         _peripheralVenousBloodPK.AddValue(Constants.PKParameters.C_max_tLast_tEnd, 27);
+         _peripheralVenousBloodPK.AddValue(Constants.PKParameters.C_max_tDLast_tDEnd, 27);
 
 
          A.CallTo(() => _pkAnalysisTask.CalculatePK(_venousBloodPlasma, A<PKCalculationOptions>._)).Returns(_venousBloodPK);
@@ -437,8 +437,8 @@ namespace PKSim.Core
 
          _pkAnalysis = new PKAnalysis
          {
-            DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.PKParameters.C_max_tLast_tEnd),
-            DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(Constants.PKParameters.AUC_inf_tLast)
+            DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.PKParameters.C_max_tDLast_tDEnd),
+            DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(Constants.PKParameters.AUC_inf_tDLast)
          };
 
          A.CallTo(() => _globalPKAnalysisRunner.RunForDDIRatio(_simulation)).Returns(_ddiRatioSimulation);
