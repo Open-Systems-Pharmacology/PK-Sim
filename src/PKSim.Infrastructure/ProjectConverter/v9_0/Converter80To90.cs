@@ -21,7 +21,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
       IVisitor<PopulationSimulation>,
       IVisitor<PopulationAnalysisChart>,
       IVisitor<Population>,
-      IVisitor<SensitivityAnalysis>
+      IVisitor<SensitivityAnalysis>,
+      IVisitor<PopulationSimulationPKAnalyses>
 
    {
       private readonly IoC _container;
@@ -125,6 +126,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
       public void Visit(PopulationSimulation populationSimulation)
       {
          Visit(populationSimulation.Population);
+         Visit(populationSimulation.PKAnalyses);
       }
 
       public void Visit(Population population)
@@ -175,6 +177,11 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
       public void Visit(SensitivityAnalysis sensitivityAnalysis)
       {
          (_, _converted) = _converter730To90.Convert(sensitivityAnalysis);
+      }
+
+      public void Visit(PopulationSimulationPKAnalyses populationSimulationPKAnalyses)
+      {
+         (_, _converted) = _converter730To90.Convert(populationSimulationPKAnalyses);
       }
    }
 }
