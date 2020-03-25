@@ -72,7 +72,8 @@ namespace PKSim.ProjectConverter.v9_0
       {
          foreach (var popSimulation in _allSimulations)
          {
-            var covariateFields = popSimulation.AnalysesOfType<PopulationAnalysisChart>().Select(x => x.BasePopulationAnalysis).SelectMany(x => x.All<PopulationAnalysisCovariateField>()).ToList();
+            var covariateFields = popSimulation.AnalysesOfType<PopulationAnalysisChart>().Select(x => x.BasePopulationAnalysis)
+               .SelectMany(x => x.All<PopulationAnalysisCovariateField>()).ToList();
             covariateFields.FindByName(ConverterConstants.Population.RACE).ShouldBeNull();
             var populationCovariateFields = covariateFields.FindByName(Constants.Population.POPULATION);
             populationCovariateFields.ShouldNotBeNull();
@@ -80,5 +81,27 @@ namespace PKSim.ProjectConverter.v9_0
          }
       }
 
+      [Observation]
+      public void should_have_converted_the_pk_parameter_in_the_pk_parameter_field()
+      {
+         foreach (var popSimulation in _allSimulations)
+         {
+            var pkParameterFields = popSimulation.AnalysesOfType<PopulationAnalysisChart>().Select(x => x.BasePopulationAnalysis)
+               .SelectMany(x => x.All<PopulationAnalysisPKParameterField>()).ToList();
+            pkParameterFields.Exists(x => x.PKParameter.Equals(Constants.PKParameters.AUC_tEnd)).ShouldBeTrue();
+            pkParameterFields.Exists(x => x.PKParameter.Equals("AUC")).ShouldBeTrue();
+         }
+      }
+
+      [Observation]
+      public void should_have_converter_the_population_simulation_pk_analysis()
+      {
+         foreach (var popSimulation in _allSimulations)
+         {
+            var pkAnalyses = popSimulation.PKAnalyses;
+            pkAnalyses.All().Any(x => x.Name.Equals(Constants.PKParameters.AUC_tEnd)).ShouldBeTrue();
+            pkAnalyses.All().Any(x => x.Name.Equals("AUC")).ShouldBeFalse();
+         }
+      }
    }
 }

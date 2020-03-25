@@ -4,6 +4,7 @@ using System.Linq;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
@@ -43,6 +44,8 @@ namespace PKSim.UI.Views.Compounds
       public event EventHandler<ViewResizedEventArgs> HeightChanged = delegate { };
       protected readonly ComboBoxUnitParameter _comboBoxUnit;
       protected readonly GridViewBinder<TParameterAlternativeDTO> _gridViewBinder;
+      private IGridViewColumn _colButtons;
+    
 
       public CompoundParameterWithDefaultAlternativeBaseView()
       {
@@ -91,7 +94,7 @@ namespace PKSim.UI.Views.Compounds
          colDefault.OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetIsDefaultFor(o, e.NewValue));
          _colDefault = colDefault;
 
-         _gridViewBinder.AddUnboundColumn()
+        _colButtons = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(GetButtonRepository)
@@ -104,6 +107,11 @@ namespace PKSim.UI.Views.Compounds
          _colName.XtraColumn.VisibleIndex = 0;
       }
 
+      protected override bool ColumnIsButton(GridColumn column)
+      {
+         return Equals(_colButtons?.XtraColumn, column);
+      }
+      
       public override void InitializeResources()
       {
          base.InitializeResources();

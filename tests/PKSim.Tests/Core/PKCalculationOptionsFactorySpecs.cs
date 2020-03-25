@@ -104,7 +104,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_options_with_a_dose_set_to_null_as_it_needs_to_be_calculated_for_all_individual_separately()
       {
-         _result.DrugMassPerBodyWeight.ShouldBeNull();
+         _result.TotalDrugMassPerBodyWeight.ShouldBeNull();
       }
    }
 
@@ -165,7 +165,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_option_with_the_dose_set()
       {
-         sut.CreateForObservedData(new[] {_simulation1}, _moleculeName).DrugMassPerBodyWeight.ShouldBeEqualTo(_dose);
+         sut.CreateForObservedData(new[] {_simulation1}, _moleculeName).TotalDrugMassPerBodyWeight.ShouldBeEqualTo(_dose);
       }
    }
 
@@ -188,7 +188,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_option_with_the_dose_null()
       {
-         sut.CreateForObservedData(new[] {_simulation1, _simulation2,}, _moleculeName).DrugMassPerBodyWeight.ShouldBeNull();
+         sut.CreateForObservedData(new[] {_simulation1, _simulation2,}, _moleculeName).TotalDrugMassPerBodyWeight.ShouldBeNull();
       }
    }
 

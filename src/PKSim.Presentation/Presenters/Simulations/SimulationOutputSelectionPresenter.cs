@@ -1,13 +1,11 @@
 using System;
 using PKSim.Assets;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.Extensions;
 using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Services;

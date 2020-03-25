@@ -75,9 +75,13 @@ namespace PKSim.UI.Views.Simulations
          mainView.HiddenEditor += (o, e) => { _comboBoxUnit.Visible = false; };
       }
 
+      protected override bool ColumnIsButton(GridColumn column)
+      {
+         return _buttonColumn.XtraColumn == column;
+      }
+
       protected override bool ColumnIsValue(GridColumn column)
       {
-         if (column == null) return false;
          return _buttonColumn.XtraColumn != column;
       }
 
@@ -102,6 +106,9 @@ namespace PKSim.UI.Views.Simulations
 
       private void addRemoveButtonClick(ButtonPressedEventArgs e)
       {
+         if(e.Button==null)
+            return;
+         
          if (Equals(e.Button.Tag, ButtonType.Add))
             _presenter.AddOutputInterval();
          else

@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using FluentNHibernate.Utils;
+using OSPSuite.Core.Converters.v9;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
+using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Visitor;
@@ -17,14 +20,19 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
    public class Converter80To90 : IObjectConverter,
       IVisitor<PopulationSimulation>,
       IVisitor<PopulationAnalysisChart>,
-      IVisitor<Population>
+      IVisitor<Population>,
+      IVisitor<SensitivityAnalysis>,
+      IVisitor<PopulationSimulationPKAnalyses>
+
    {
       private readonly IoC _container;
+      private readonly Converter730To90 _converter730To90;
       private bool _converted;
 
-      public Converter80To90(IoC container)
+      public Converter80To90(IoC container, Converter730To90 converter730To90)
       {
          _container = container;
+         _converter730To90 = converter730To90;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V8_0;
@@ -39,14 +47,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
 
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         var converted = false;
+         _converted = false;
          if (element.Name.IsOneOf("PopulationSimulation", "RandomPopulation", "MoBiPopulation", "ImportedPopulation"))
          {
             convertIndividualValueCacheElement(element);
-            converted = true;
+            _converted = true;
          }
 
-         return (ProjectVersions.V9_0, converted);
+         return (ProjectVersions.V9_0, _converted);
       }
 
       private void convertIndividualValueCacheElement(XElement element)
@@ -118,6 +126,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
       public void Visit(PopulationSimulation populationSimulation)
       {
          Visit(populationSimulation.Population);
+         Visit(populationSimulation.PKAnalyses);
       }
 
       public void Visit(Population population)
@@ -141,12 +150,38 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
       public void Visit(PopulationAnalysisChart populationAnalysisChart)
       {
          var populationAnalysis = populationAnalysisChart.BasePopulationAnalysis;
+
+         convertCovariates(populationAnalysis);
+         convertPKAnalysisField(populationAnalysis);
+         _converted = true;
+      }
+
+      private void convertPKAnalysisField(PopulationAnalysis populationAnalysis)
+      {
+         populationAnalysis?.All<PopulationAnalysisPKParameterField>().Each(pkField =>
+            {
+               pkField.PKParameter = _converter730To90.ConvertPKParameterName(pkField.PKParameter);
+            });
+      }
+
+      private void convertCovariates(PopulationAnalysis populationAnalysis)
+      {
          if (!(populationAnalysis.FieldByName(ConverterConstants.Population.RACE) is PopulationAnalysisCovariateField raceCovariateField))
             return;
 
          populationAnalysis.RenameField(ConverterConstants.Population.RACE, Constants.Population.POPULATION);
          raceCovariateField.Covariate = Constants.Population.POPULATION;
-         _converted = true;
+
+      }
+
+      public void Visit(SensitivityAnalysis sensitivityAnalysis)
+      {
+         (_, _converted) = _converter730To90.Convert(sensitivityAnalysis);
+      }
+
+      public void Visit(PopulationSimulationPKAnalyses populationSimulationPKAnalyses)
+      {
+         (_, _converted) = _converter730To90.Convert(populationSimulationPKAnalyses);
       }
    }
 }
