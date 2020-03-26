@@ -89,7 +89,7 @@ namespace PKSim.ProjectConverter.v9_0
             var pkParameterFields = popSimulation.AnalysesOfType<PopulationAnalysisChart>().Select(x => x.BasePopulationAnalysis)
                .SelectMany(x => x.All<PopulationAnalysisPKParameterField>()).ToList();
             pkParameterFields.Exists(x => x.PKParameter.Equals(Constants.PKParameters.AUC_tEnd)).ShouldBeTrue();
-            pkParameterFields.Exists(x => x.PKParameter.Equals("AUC")).ShouldBeTrue();
+            pkParameterFields.Exists(x => x.PKParameter.Equals("AUC")).ShouldBeFalse();
          }
       }
 
