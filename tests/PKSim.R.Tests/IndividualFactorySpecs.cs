@@ -2,13 +2,14 @@
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Snapshots;
 using PKSim.R.Domain;
 using PKSim.R.Services;
 using IIndividualFactory = PKSim.R.Services.IIndividualFactory;
+using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.R
 {
@@ -138,11 +139,44 @@ namespace PKSim.R
          _results.DistributedParameters.Length.ShouldBeGreaterThan(0);
          _results.DistributedParameters.Last().ParameterPath.Contains("CYP3A4").ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_have_added_height_as_a_distributed_parameter()
+      {
+         var height = _results.DistributedParameters.FirstOrDefault(x =>
+            x.ParameterPath == new[] {Constants.ORGANISM, CoreConstants.Parameters.HEIGHT}.ToPathString());
+
+         height.ShouldNotBeNull();
+         height.Value.ShouldBeEqualTo(17.5);
+         height.Unit.ShouldBeEqualTo("dm");
+      }
+
+      [Observation]
+      public void should_have_added_the_age_parameter_as_a_distributed_parameter()
+      {
+         var age = _results.DistributedParameters.FirstOrDefault(x =>
+            x.ParameterPath == new[] { Constants.ORGANISM, CoreConstants.Parameters.AGE }.ToPathString());
+
+         age.ShouldNotBeNull();
+         age.Value.ShouldBeEqualTo(30);
+         age.Unit.ShouldBeEqualTo("year(s)");
+      }
+
+      [Observation]
+      public void should_have_added_the_gestational_age_parameter_as_a_distributed_parameter()
+      {
+         var ga = _results.DistributedParameters.FirstOrDefault(x =>
+            x.ParameterPath == new[] { Constants.ORGANISM, Constants.Parameters.GESTATIONAL_AGE }.ToPathString());
+
+         ga.ShouldNotBeNull();
+         ga.Value.ShouldBeEqualTo(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS);
+         ga.Unit.ShouldBeEqualTo("week(s)");
+      }
    }
 
    public class When_retrieving_the_distributed_parameter_based_on_a_valid_origin_data : concern_for_IndividualFactory
    {
-      private DistributedParameterValue[] _results;
+      private DistributedParameterValueWithUnit[] _results;
 
       protected override void Context()
       {
@@ -181,11 +215,19 @@ namespace PKSim.R
       {
          _results.Count().ShouldBeGreaterThan(0);
       }
+
+      [Observation]
+      public void should_have_added_the_unit_to_the_parameter()
+      {
+         _results.Count(x => !string.IsNullOrEmpty(x.Unit)).ShouldBeGreaterThan(0);
+      }
+
+     
    }
 
    public class When_retrieving_the_distributed_parameter_based_on_a_valid_origin_data_with_ontogeny : concern_for_IndividualFactory
    {
-      private DistributedParameterValue[] _results;
+      private DistributedParameterValueWithUnit[] _results;
 
       protected override void Context()
       {

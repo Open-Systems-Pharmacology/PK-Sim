@@ -50,9 +50,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public IDimension Fraction => DimensionByName(CoreConstants.Dimension.Fraction);
 
-      public IDimension Amount => DimensionByName(Constants.Dimension.AMOUNT);
+      public IDimension Amount => DimensionByName(Constants.Dimension.MOLAR_AMOUNT);
 
-      public IDimension Mass => DimensionByName(CoreConstants.Dimension.Mass);
+      public IDimension Mass => DimensionByName(Constants.Dimension.MASS_AMOUNT);
 
       public IDimension AucMolar => DimensionByName(CoreConstants.Dimension.AucMolar);
 

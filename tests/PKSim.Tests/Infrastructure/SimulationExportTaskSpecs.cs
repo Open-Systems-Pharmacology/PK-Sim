@@ -30,6 +30,7 @@ namespace PKSim.Infrastructure
       protected ISimulationToModelCoreSimulationMapper _simulationMapper;
       protected ISimModelExporter _simModelExporter;
       protected ISimulationResultsToDataTableConverter _simulationResultsToDataTableConverter;
+      protected IPopulationSimulationPKAnalysesToDataTableConverter _populationSimulationPKAnalysesToDataTableConverter;
 
       protected override Task Context()
       {
@@ -42,8 +43,9 @@ namespace PKSim.Infrastructure
          _simulationMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
          _simModelExporter = A.Fake<ISimModelExporter>();
          _simulationResultsToDataTableConverter = A.Fake<ISimulationResultsToDataTableConverter>();
+         _populationSimulationPKAnalysesToDataTableConverter= A.Fake<IPopulationSimulationPKAnalysesToDataTableConverter>();
          sut = new SimulationExportTask(_lazyLoadTask, _dialogCreator, _dataRepositoryTask, _quantityDisplayPathMapper,
-            _stringSerializer, _modelReportCreator, _simulationMapper, _simModelExporter, _simulationResultsToDataTableConverter);
+            _stringSerializer, _modelReportCreator, _simulationMapper, _simModelExporter, _simulationResultsToDataTableConverter, _populationSimulationPKAnalysesToDataTableConverter);
 
          return _completed;
       }
@@ -232,7 +234,7 @@ namespace PKSim.Infrastructure
          _fileFullPath = "file full path";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileFullPath);
 
-         A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(_populationSimulation.PKAnalyses, _populationSimulation)).Returns(Task.FromResult(_dataTable));
+         A.CallTo(() => _populationSimulationPKAnalysesToDataTableConverter.PKAnalysesToDataTableAsync(_populationSimulation.PKAnalyses, _populationSimulation)).Returns(Task.FromResult(_dataTable));
       }
 
       protected override async Task Because()
@@ -249,7 +251,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_export_the_pk_analysis_to_csv()
       {
-         A.CallTo(() => _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(_populationSimulation.PKAnalyses, _populationSimulation)).MustHaveHappened();
+         A.CallTo(() => _populationSimulationPKAnalysesToDataTableConverter.PKAnalysesToDataTableAsync(_populationSimulation.PKAnalyses, _populationSimulation)).MustHaveHappened();
       }
    }
 

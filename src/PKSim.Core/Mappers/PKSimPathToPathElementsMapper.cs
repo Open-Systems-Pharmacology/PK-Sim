@@ -214,7 +214,7 @@ namespace PKSim.Core.Mappers
          if (quantity.Dimension.Name == CoreConstants.Dimension.Fraction)
             return CoreConstants.Output.FractionDose;
 
-         if (quantity.Dimension.Name.IsOneOf(CoreConstants.Dimension.Mass, Constants.Dimension.AMOUNT))
+         if (quantity.Dimension.Name.IsOneOf(Constants.Dimension.MASS_AMOUNT, Constants.Dimension.MOLAR_AMOUNT))
             return CoreConstants.Output.Amount;
 
          if (quantityIsConcentration(quantity))

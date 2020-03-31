@@ -39,14 +39,14 @@
     <PackageReference Include="MarkdownLog.NS20" Version="0.10.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.13" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.109" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="9.0.109" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="9.0.109" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="9.0.109" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="9.0.109" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="9.0.109" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="9.0.109" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="9.0.109" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.115" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="9.0.115" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="9.0.115" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="9.0.115" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="9.0.115" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="9.0.115" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="9.0.115" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="9.0.115" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
   </ItemGroup>
 
