@@ -6,7 +6,7 @@ namespace PKSim.Core.Model
    {
       public double Mean { get; }
       public double Std { get; }
-      public DistributionType DistributionType { get; private set; }
+      public DistributionType DistributionType { get; }
 
       public DistributedParameterValue(string parameterPath, double value, double percentile, double mean, double std, DistributionType distributionType) : base(parameterPath, value, percentile)
       {

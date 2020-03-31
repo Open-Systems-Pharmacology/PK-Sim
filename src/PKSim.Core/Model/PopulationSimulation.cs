@@ -202,15 +202,6 @@ namespace PKSim.Core.Model
          return PKAnalyses.HasPKParameterFor(quantityPath, pkParameter);
       }
 
-      public double? MolWeightFor(string quantityPath)
-      {
-         var objectPath = new ObjectPath(quantityPath.ToPathArray());
-         var quantity = objectPath.TryResolve<IQuantity>(Model.Root, out bool found);
-         if (!found)
-            return null;
-
-         return Model.MolWeightFor(quantity);
-      }
 
       public virtual IReadOnlyList<string> AllSimulationNames => new string[NumberOfItems].InitializeWith(Name);
 

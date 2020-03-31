@@ -27,6 +27,7 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimulationToModelCoreSimulationMapper _coreSimulationMapper;
       private readonly ISimModelExporter _simModelExporter;
       private readonly ISimulationResultsToDataTableConverter _simulationResultsToDataTableConverter;
+      private readonly IPopulationSimulationPKAnalysesToDataTableConverter _populationSimulationPKAnalysesToDataTableConverter;
 
       public SimulationExportTask(
          ILazyLoadTask lazyLoadTask,
@@ -37,7 +38,8 @@ namespace PKSim.Infrastructure.Services
          IModelReportCreator modelReportCreator,
          ISimulationToModelCoreSimulationMapper coreSimulationMapper,
          ISimModelExporter simModelExporter,
-         ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
+         ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter, 
+         IPopulationSimulationPKAnalysesToDataTableConverter populationSimulationPKAnalysesToDataTableConverter)
       {
          _lazyLoadTask = lazyLoadTask;
          _dialogCreator = dialogCreator;
@@ -48,6 +50,7 @@ namespace PKSim.Infrastructure.Services
          _coreSimulationMapper = coreSimulationMapper;
          _simModelExporter = simModelExporter;
          _simulationResultsToDataTableConverter = simulationResultsToDataTableConverter;
+         _populationSimulationPKAnalysesToDataTableConverter = populationSimulationPKAnalysesToDataTableConverter;
       }
 
       public Task ExportResultsToExcelAsync(IndividualSimulation individualSimulation)
@@ -168,7 +171,7 @@ namespace PKSim.Infrastructure.Services
 
       public async Task ExportPKAnalysesToCSVAsync(PopulationSimulation populationSimulation, string fileName)
       {
-         var dataTable = await _simulationResultsToDataTableConverter.PKAnalysesToDataTableAsync(populationSimulation.PKAnalyses, populationSimulation);
+         var dataTable = await _populationSimulationPKAnalysesToDataTableConverter.PKAnalysesToDataTableAsync(populationSimulation.PKAnalyses, populationSimulation);
          dataTable.ExportToCSV(fileName);
       }
 

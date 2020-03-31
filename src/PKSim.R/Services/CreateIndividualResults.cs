@@ -1,14 +1,13 @@
-﻿
-using OSPSuite.Core.Domain.Populations;
+﻿using PKSim.R.Domain;
 
 namespace PKSim.R.Services
 {
    public class CreateIndividualResults
    {
-      public ParameterValue[] DistributedParameters { get;  }
-      public ParameterValue[] DerivedParameters { get;  }
+      public ParameterValueWithUnit[] DistributedParameters { get;  }
+      public ParameterValueWithUnit[] DerivedParameters { get;  }
 
-      public CreateIndividualResults(ParameterValue[] distributedParameters, ParameterValue[] derivedParameters)
+      public CreateIndividualResults(ParameterValueWithUnit[] distributedParameters, ParameterValueWithUnit[] derivedParameters)
       {
          DistributedParameters = distributedParameters;
          DerivedParameters = derivedParameters;

@@ -704,5 +704,9 @@ namespace PKSim.Core.Model
       {
          SimulationSettings.RemoveAllChartTemplates();
       }
+
+      public double? MolWeightFor(IQuantity quantity) => Model?.MolWeightFor(quantity);
+
+      public double? MolWeightFor(string quantityPath) => Model?.MolWeightFor(quantityPath);
    }
 }

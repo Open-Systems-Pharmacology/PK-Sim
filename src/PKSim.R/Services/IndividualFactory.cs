@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Mappers;
@@ -22,7 +23,7 @@ namespace PKSim.R.Services
       /// </summary>
       CreateIndividualResults CreateIndividual(IndividualCharacteristics individualCharacteristics);
 
-      DistributedParameterValue[] DistributionsFor(IndividualCharacteristics individualCharacteristics);
+      DistributedParameterValueWithUnit[] DistributionsFor(IndividualCharacteristics individualCharacteristics);
    }
 
    public class IndividualFactory : IIndividualFactory
@@ -57,31 +58,56 @@ namespace PKSim.R.Services
          var individual = _individualFactory.CreateAndOptimizeFor(originData);
          var individualProperties = _individualValuesMapper.MapFrom(individual);
          var allIndividualParameters = individualProperties.ParameterValues;
-         var ontogenyParameters = _ontogenyFactorsRetriever.FactorsFor(originData, moleculeOntogenies);
+         var ontogenyParameters = _ontogenyFactorsRetriever.FactorsFor(originData, moleculeOntogenies).Select(x => new ParameterValueWithUnit(x));
          var allDistributedParameterCache = _containerTask.CacheAllChildren<IDistributedParameter>(individual);
-         var distributedParameters = new List<ParameterValue>();
-         var derivedParameters = new List<ParameterValue>();
+         var allIndividualParametersCache = _containerTask.CacheAllChildren<IParameter>(individual);
+         var distributedParameters = new Cache<string, ParameterValueWithUnit>(x => x.ParameterPath);
+         var derivedParameters = new List<ParameterValueWithUnit>();
+
+         //Add Age and Height parameter that is not distributed at the moment
+         if (originData.SpeciesPopulation.IsAgeDependent)
+         {
+            distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.AGE)));
+            distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE)));
+         }
+
+         if (originData.SpeciesPopulation.IsHeightDependent)
+            distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.HEIGHT)));
+
+         distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP)));
+         distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN)));
 
          foreach (var individualParameter in allIndividualParameters)
          {
+            var parameter = allIndividualParametersCache[individualParameter.ParameterPath];
+            if (parameter == null)
+               continue;
+
+            var parameterValue = new ParameterValueWithUnit(individualParameter, parameter?.BaseUnitName());
             if (allDistributedParameterCache.Contains(individualParameter.ParameterPath))
-               distributedParameters.Add(individualParameter);
-            else
-               derivedParameters.Add(individualParameter);
+               distributedParameters.Add(parameterValue);
+
+            //Do not add parameters that were added specifically 
+            else if (!distributedParameters.Contains(individualParameter.ParameterPath))
+               derivedParameters.Add(parameterValue);
          }
 
+
+         //add Ontogeny parameters
          distributedParameters.AddRange(ontogenyParameters);
 
          return new CreateIndividualResults(distributedParameters.ToArray(), derivedParameters.ToArray());
       }
 
-      public DistributedParameterValue[] DistributionsFor(IndividualCharacteristics individualCharacteristics)
+      public DistributedParameterValueWithUnit[] DistributionsFor(IndividualCharacteristics individualCharacteristics)
       {
          var originData = originDataFrom(individualCharacteristics);
          var moleculeOntogenies = individualCharacteristics.MoleculeOntogenies;
          var individual = _individualFactory.CreateAndOptimizeFor(originData);
          var distributedParameters = individual.GetAllChildren<IDistributedParameter>().Select(distributedParameterValueFrom).ToList();
-         distributedParameters.AddRange(_ontogenyFactorsRetriever.DistributionFactorsFor(originData, moleculeOntogenies));
+         //Ontogeny factors have no units
+         distributedParameters.AddRange(_ontogenyFactorsRetriever.DistributionFactorsFor(originData, moleculeOntogenies)
+            .Select(x => new DistributedParameterValueWithUnit(x, "")));
          return distributedParameters.ToArray();
       }
 
@@ -96,7 +122,13 @@ namespace PKSim.R.Services
          return coreOriginData;
       }
 
-      private DistributedParameterValue distributedParameterValueFrom(IDistributedParameter parameter)
+      private ParameterValueWithUnit parameterValueFrom(IParameter parameter)
+      {
+         var parameterValue = new ParameterValue(_entityPathResolver.PathFor(parameter), parameter.Value, CoreConstants.DEFAULT_PERCENTILE);
+         return new ParameterValueWithUnit(parameterValue, parameter.BaseUnitName());
+      }
+
+      private DistributedParameterValueWithUnit distributedParameterValueFrom(IDistributedParameter parameter)
       {
          var parameterPath = _entityPathResolver.PathFor(parameter);
          var distributionType = parameter.Formula.DistributionType();
@@ -112,7 +144,9 @@ namespace PKSim.R.Services
             p2 = parameter.Parameter(Constants.Distribution.MAXIMUM).Value;
          }
 
-         return new DistributedParameterValue(parameterPath, parameter.Value, parameter.Percentile, p1, p2, distributionType);
+         var distributedParameterValue =
+            new DistributedParameterValue(parameterPath, parameter.Value, parameter.Percentile, p1, p2, distributionType);
+         return new DistributedParameterValueWithUnit(distributedParameterValue, parameter.BaseUnitName());
       }
    }
 }

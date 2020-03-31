@@ -441,7 +441,6 @@ namespace PKSim.Core
          public static readonly string Fraction = "Fraction";
          public static readonly string MASS_CONCENTRATION = Constants.Dimension.MASS_CONCENTRATION;
          public static readonly string DosePerBodyWeight = "Dose per body weight";
-         public static readonly string Mass = "Mass";
          public static readonly string VolumePerBodyWeight = "Volume per body weight";
          public static readonly string FlowPerWeight = "Flow per weight";
          public static readonly string Length = "Length";
@@ -457,7 +456,7 @@ namespace PKSim.Core
             Fraction,
             MASS_CONCENTRATION,
             DosePerBodyWeight,
-            Mass,
+            Constants.Dimension.MASS_AMOUNT,
             VolumePerBodyWeight,
             FlowPerWeight,
             Length,
