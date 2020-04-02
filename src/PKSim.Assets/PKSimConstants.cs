@@ -907,6 +907,8 @@ namespace PKSim.Assets
          public static readonly string NoParametersInIndividualSelection = "<B>Note:</B> Default Anatomy and physiology for selected species is preset.\nTo change click on the desired item in the tree view (left part) and change the values in the appearing table in this window";
          public static readonly string NoParametersInSimulationSelection = "<B>Note:</B> Default Anatomy and physiology for selected species is preset.\nTo change click on the desired item in the tree view (left part) and change the values in the appearing table in this window";
 
+         public static string InitializingPKSim(string productName, string version) => $"Initializing {productName} {version}";
+
          public static string IndividualExpressionInfo
          {
             get

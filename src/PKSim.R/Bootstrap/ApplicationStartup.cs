@@ -9,6 +9,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
+using PKSim.Assets;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -55,6 +56,9 @@ namespace PKSim.R.Bootstrap
          configuration.PKSimDbPath = Path.Combine(currentPath, CoreConstants.PK_SIM_DB_FILE);
          configuration.PKParametersFilePath = Path.Combine(currentPath, Constants.Files.PK_PARAMETERS_FILE_NAME);
          configuration.DimensionFilePath = Path.Combine(currentPath, Constants.Files.DIMENSIONS_FILE_NAME);
+
+         // This will log the version of PKSIm used to R
+         Console.WriteLine(PKSimConstants.Information.InitializingPKSim(CoreConstants.PRODUCT_NAME, configuration.FullVersion));
 
          // Serialization mapping will require access to PKSim DB and as such, it needs to be performed after the DB was set.
          InfrastructureRegister.LoadDefaultEntities(container);
