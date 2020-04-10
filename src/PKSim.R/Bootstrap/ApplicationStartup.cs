@@ -53,9 +53,14 @@ namespace PKSim.R.Bootstrap
 
          var configuration = container.Resolve<IPKSimConfiguration>();
          var currentPath = new FileInfo(Assembly.GetAssembly(GetType()).Location).DirectoryName;
-         configuration.PKSimDbPath = Path.Combine(currentPath, CoreConstants.PK_SIM_DB_FILE);
-         configuration.PKParametersFilePath = Path.Combine(currentPath, Constants.Files.PK_PARAMETERS_FILE_NAME);
-         configuration.DimensionFilePath = Path.Combine(currentPath, Constants.Files.DIMENSIONS_FILE_NAME);
+         if(!File.Exists(configuration.PKSimDbPath))
+            configuration.PKSimDbPath = Path.Combine(currentPath, CoreConstants.PK_SIM_DB_FILE);
+
+         if (!File.Exists(configuration.PKParametersFilePath))
+            configuration.PKParametersFilePath = Path.Combine(currentPath, Constants.Files.PK_PARAMETERS_FILE_NAME);
+
+         if (!File.Exists(configuration.DimensionFilePath))
+            configuration.DimensionFilePath = Path.Combine(currentPath, Constants.Files.DIMENSIONS_FILE_NAME);
 
          // This will log the version of PKSIm used to R
          Console.WriteLine(PKSimConstants.Information.InitializingPKSim(CoreConstants.PRODUCT_NAME, configuration.FullVersion));
