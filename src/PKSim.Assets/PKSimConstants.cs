@@ -533,8 +533,8 @@ namespace PKSim.Assets
 
          public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string downloadUrl)
          {
-            if (projectVersion > currentVersion)
-               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}.";
+            if (projectVersion < currentVersion)
+               return $"The application is too old (compatible version {projectVersion}) and cannot load a project created with a newer version (project version {currentVersion}).\nVisit our download page at {downloadUrl}.";
 
             return $"Work in progress.\nThis project file was created with a beta or RC version (version {projectVersion}) and cannot be loaded.\nSorry :-(";
          }
