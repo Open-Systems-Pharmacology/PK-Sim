@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
@@ -11,13 +12,14 @@ namespace PKSim.Presentation
    {
       protected ISimulationComparisonTask _simulationComparisonTask;
       private ISimulationComparison _individualSimulationComparison;
+      protected IReadOnlyList<ISimulationComparison> _simulationComparisonToDelete;
 
       protected override void Context()
       {
          _individualSimulationComparison = new IndividualSimulationComparison();
          _simulationComparisonTask = A.Fake<ISimulationComparisonTask>();
-         sut = new DeleteSimulationComparisonsUICommand(_simulationComparisonTask);
-         sut.For(new[] {_individualSimulationComparison});
+         _simulationComparisonToDelete= new[] {_individualSimulationComparison};
+         sut = new DeleteSimulationComparisonsUICommand(_simulationComparisonTask) {Subject = _simulationComparisonToDelete };
       }
 
       protected override void Because()
@@ -31,7 +33,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_simulation_comparison_task_to_delete_the_simulation_comparisons()
       {
-         A.CallTo(() => _simulationComparisonTask.Delete(sut.Subject)).MustHaveHappened();
+         A.CallTo(() => _simulationComparisonTask.Delete(_simulationComparisonToDelete)).MustHaveHappened();
       }
    }
 }
