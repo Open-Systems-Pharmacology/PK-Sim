@@ -1,4 +1,6 @@
-﻿using PKSim.Assets;
+﻿using System.Collections.Generic;
+using System.Linq;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Events;
@@ -7,13 +9,15 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Extensions;
 using ISimulationAnalysisCreator = PKSim.Core.Services.ISimulationAnalysisCreator;
 
 namespace PKSim.Presentation.Services
 {
-   public class SimulationComparisonCreator : ISimulationComparisonCreator
+   public class SimulationComparisonTask : ISimulationComparisonTask
    {
       private readonly IPKSimChartFactory _chartFactory;
       private readonly IContainerTask _containerTask;
@@ -22,10 +26,17 @@ namespace PKSim.Presentation.Services
       private readonly ISingleStartPresenterTask _singleStartPresenterTask;
       private readonly IExecutionContext _executionContext;
       private readonly ISimulationAnalysisCreator _simulationAnalysisCreator;
+      private readonly IDialogCreator _dialogCreator;
 
-      public SimulationComparisonCreator(IPKSimChartFactory chartFactory, IContainerTask containerTask,
-         IObjectBaseFactory objectBaseFactory, IApplicationController applicationController,
-         ISingleStartPresenterTask singleStartPresenterTask, IExecutionContext executionContext,ISimulationAnalysisCreator simulationAnalysisCreator)
+      public SimulationComparisonTask(
+         IPKSimChartFactory chartFactory, 
+         IContainerTask containerTask,
+         IObjectBaseFactory objectBaseFactory, 
+         IApplicationController applicationController,
+         ISingleStartPresenterTask singleStartPresenterTask, 
+         IExecutionContext executionContext,
+         ISimulationAnalysisCreator simulationAnalysisCreator,
+         IDialogCreator dialogCreator)
       {
          _chartFactory = chartFactory;
          _containerTask = containerTask;
@@ -34,6 +45,7 @@ namespace PKSim.Presentation.Services
          _singleStartPresenterTask = singleStartPresenterTask;
          _executionContext = executionContext;
          _simulationAnalysisCreator = simulationAnalysisCreator;
+         _dialogCreator = dialogCreator;
       }
 
       public ISimulationComparison CreateIndividualSimulationComparison()
@@ -91,6 +103,28 @@ namespace PKSim.Presentation.Services
             _applicationController.Close(simulationComparison);
             _singleStartPresenterTask.StartForSubject(simulationComparison);
          }
+      }
+
+      public bool Delete(IReadOnlyList<ISimulationComparison> simulationComparisons)
+      {
+         if (!simulationComparisons.Any())
+            return true;
+
+         var res = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(simulationComparisons.AllNames()));
+         if (res == ViewResult.No)
+            return false;
+
+         simulationComparisons.Each(deleteSimulationComparison);
+
+         return true;
+      }
+
+      private void deleteSimulationComparison(ISimulationComparison simulationComparison)
+      {
+         _applicationController.Close(simulationComparison);
+         _executionContext.CurrentProject.RemoveSimulationComparison(simulationComparison);
+         _executionContext.Unregister(simulationComparison);
+         _executionContext.PublishEvent(new SimulationComparisonDeletedEvent(_executionContext.CurrentProject, simulationComparison));
       }
    }
 }
