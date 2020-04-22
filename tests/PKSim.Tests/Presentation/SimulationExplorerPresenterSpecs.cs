@@ -60,6 +60,7 @@ namespace PKSim.Presentation
       protected ITreeNode _usedObservedDataNode;
       private IParameterAnalysablesInExplorerPresenter _parameterAnalysablesInExplorerPresenter;
       protected IObservedDataInSimulationManager _observedDataInSimulationManager;
+      private ISimulationComparisonTask _simulationComparisonTask;
 
       protected override void Context()
       {
@@ -75,7 +76,7 @@ namespace PKSim.Presentation
          _projectRetriever = A.Fake<IProjectRetriever>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
          _parameterAnalysablesInExplorerPresenter = A.Fake<IParameterAnalysablesInExplorerPresenter>();
-
+         _simulationComparisonTask= A.Fake<ISimulationComparisonTask>();   
          _simulationFolderNode = new RootNode(RootNodeTypes.SimulationFolder);
          _comparisonFolderNode = new RootNode(RootNodeTypes.ComparisonFolder);
          _project = new PKSimProject();
@@ -133,8 +134,12 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.TreeView.NodeById(RootNodeTypes.ComparisonFolder.Id)).Returns(_comparisonFolderNode);
 
          _observedDataInSimulationManager = A.Fake<IObservedDataInSimulationManager>();
-         sut = new SimulationExplorerPresenter(_view, _treeNodeFactory, _contextMenuFactory, _multipleTreeNodeContextMenuFactory, _buildingBlockIconRetriever,
-            _regionResolver, _buildingBlockTask, _buildingBlockInSimulationManager, _toolTipNodeCreator, _projectRetriever, _classificationPresenter, _parameterAnalysablesInExplorerPresenter, _observedDataInSimulationManager);
+         sut = new SimulationExplorerPresenter(
+            _view, _treeNodeFactory, _contextMenuFactory, 
+            _multipleTreeNodeContextMenuFactory, _buildingBlockIconRetriever,
+            _regionResolver, _buildingBlockTask, _buildingBlockInSimulationManager, 
+            _toolTipNodeCreator, _projectRetriever, _classificationPresenter, 
+            _parameterAnalysablesInExplorerPresenter, _observedDataInSimulationManager, _simulationComparisonTask);
 
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
       }
@@ -264,7 +269,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notifiy_that_an_entity_was_renamed_that_is_not_a_building_block : concern_for_SimulationExplorerPresenter
+   public class When_notified_that_an_entity_was_renamed_that_is_not_a_building_block : concern_for_SimulationExplorerPresenter
    {
       protected override void Context()
       {
@@ -285,7 +290,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notifiy_that_a_simulation_was_renamed : concern_for_SimulationExplorerPresenter
+   public class When_notified_that_a_simulation_was_renamed : concern_for_SimulationExplorerPresenter
    {
       protected override void Context()
       {
@@ -307,7 +312,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notifiy_that_a_building_block_used_in_a_simulation_was_renamed : concern_for_SimulationExplorerPresenter
+   public class When_notified_that_a_building_block_used_in_a_simulation_was_renamed : concern_for_SimulationExplorerPresenter
    {
       private IPKSimBuildingBlock _buildingBlock;
 
@@ -367,7 +372,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notifiy_that_a_building_block_that_is_not_used_in_a_simulation_was_renamed : concern_for_SimulationExplorerPresenter
+   public class When_notified_that_a_building_block_that_is_not_used_in_a_simulation_was_renamed : concern_for_SimulationExplorerPresenter
    {
       private IPKSimBuildingBlock _anotherBuildingBlock;
 

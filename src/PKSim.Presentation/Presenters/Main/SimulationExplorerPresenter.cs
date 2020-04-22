@@ -44,16 +44,29 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       private readonly IParameterAnalysablesInExplorerPresenter _parameterAnalysablesInExplorerPresenter;
       private readonly IObservedDataInSimulationManager _observedDataInSimulationManager;
+      private readonly ISimulationComparisonTask _simulationComparisonTask;
 
-      public SimulationExplorerPresenter(ISimulationExplorerView view, ITreeNodeFactory treeNodeFactory, ITreeNodeContextMenuFactory treeNodeContextMenuFactory,
-         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IBuildingBlockIconRetriever buildingBlockIconRetriever,
-         IRegionResolver regionResolver, IBuildingBlockTask buildingBlockTask, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
-         IToolTipPartCreator toolTipPartCreator, IProjectRetriever projectRetriever, IClassificationPresenter classificationPresenter, IParameterAnalysablesInExplorerPresenter parameterAnalysablesInExplorerPresenter, IObservedDataInSimulationManager observedDataInSimulationManager) :
+      public SimulationExplorerPresenter(
+         ISimulationExplorerView view, 
+         ITreeNodeFactory treeNodeFactory, 
+         ITreeNodeContextMenuFactory treeNodeContextMenuFactory,
+         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, 
+         IBuildingBlockIconRetriever buildingBlockIconRetriever,
+         IRegionResolver regionResolver,
+         IBuildingBlockTask buildingBlockTask, 
+         IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         IToolTipPartCreator toolTipPartCreator, 
+         IProjectRetriever projectRetriever, 
+         IClassificationPresenter classificationPresenter, 
+         IParameterAnalysablesInExplorerPresenter parameterAnalysablesInExplorerPresenter, 
+         IObservedDataInSimulationManager observedDataInSimulationManager,
+         ISimulationComparisonTask simulationComparisonTask) :
          base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver, buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
          _parameterAnalysablesInExplorerPresenter = parameterAnalysablesInExplorerPresenter;
          _observedDataInSimulationManager = observedDataInSimulationManager;
+         _simulationComparisonTask = simulationComparisonTask;
          _parameterAnalysablesInExplorerPresenter.InitializeWith(this, classificationPresenter);
       }
 
@@ -72,9 +85,16 @@ namespace PKSim.Presentation.Presenters.Main
       {
          if (classificationNode.Tag.ClassificationType == ClassificationType.Simulation)
          {
-            IReadOnlyList<Simulation> allSimulations = classificationNode.AllNodes<SimulationNode>().Select(x => x.Tag.Simulation).ToList();
+            var allSimulations = classificationNode.AllNodes<SimulationNode>().Select(x => x.Tag.Simulation).ToList();
             return _buildingBlockTask.Delete(allSimulations);
          }
+
+         if (classificationNode.Tag.ClassificationType == ClassificationType.Comparison)
+         {
+            var allComparisons = classificationNode.AllNodes<ComparisonNode>().Select(x => x.Tag.Comparison).ToList();
+            return _simulationComparisonTask.Delete(allComparisons);
+         }
+
 
          return _parameterAnalysablesInExplorerPresenter.RemoveDataUnderClassification(classificationNode);
       }

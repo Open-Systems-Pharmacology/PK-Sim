@@ -110,7 +110,7 @@ namespace PKSim.Presentation.Services
 
          buildingBlocksToDelete.OfType<Simulation>().Each(simulation => _simulationReferenceUpdater.RemoveSimulationFromParameterIdentificationsAndSensitivityAnalyses(simulation));
 
-         var macoCommand = new PKSimMacroCommand
+         var macroCommand = new PKSimMacroCommand
          {
             CommandType = PKSimConstants.Command.CommandTypeDelete,
             ObjectType = buildingBlockType,
@@ -118,8 +118,8 @@ namespace PKSim.Presentation.Services
             Description = PKSimConstants.Command.ObjectsDeletedFromProject(buildingBlockType),
          };
 
-         buildingBlocksToDelete.Each(x => macoCommand.Add(DeleteCommand(x)));
-         AddCommandToHistory(macoCommand.Run(_executionContext));
+         buildingBlocksToDelete.Each(x => macroCommand.Add(DeleteCommand(x)));
+         AddCommandToHistory(macroCommand.Run(_executionContext));
          buildingBlocksToDelete.Each(RemovePresenterSettings);
 
          return true;
@@ -127,7 +127,7 @@ namespace PKSim.Presentation.Services
 
       public bool Delete<TBuildingBlock>(TBuildingBlock buildingBlockToDelete) where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         return Delete<TBuildingBlock>(new[] {buildingBlockToDelete});
+         return Delete(new[] {buildingBlockToDelete});
       }
 
       public IPKSimCommand DeleteCommand<TBuildingBlock>(TBuildingBlock buildingBlockToDelete) where TBuildingBlock : class, IPKSimBuildingBlock
