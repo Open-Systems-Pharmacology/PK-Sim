@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -19,7 +18,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IPKSimConfiguration _pkSimConfiguration;
       private readonly IContainer _container;
       private readonly IUnitSystemXmlSerializerRepository _unitSystemXmlSerializerRepository;
-      private IList<string> _dimensionNames;
 
       public DimensionRepository(
          IPKSimDimensionFactory dimensionFactory,
@@ -82,7 +80,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          if (string.IsNullOrEmpty(dimensionName))
             return NoDimension;
 
-         if (!hasDimension(dimensionName))
+         if (!_dimensionFactory.Has(dimensionName))
             return NoDimension;
 
          return _dimensionFactory.Dimension(dimensionName);
@@ -113,7 +111,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
          addInputDoseDimension();
 
-         _dimensionNames = _dimensionFactory.DimensionNames.ToList();
          _dimensionFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
       }
 
@@ -161,7 +158,5 @@ namespace PKSim.Infrastructure.ORM.Repositories
          var massToAmountMerging = new SimpleDimensionMergingInformation(Mass, Amount);
          _dimensionFactory.AddMergingInformation(massToAmountMerging);
       }
-
-      private bool hasDimension(string dimensionName) => _dimensionNames.Contains(dimensionName);
    }
 }
