@@ -531,14 +531,17 @@ namespace PKSim.Assets
             return $"The file '{fileFullPath}' is readonly and cannot be read by the application. Please make the project writable and try again.";
          }
 
-         public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string downloadUrl)
+         public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, bool projectIsTooOld, string downloadUrl)
          {
-            if (projectVersion < currentVersion)
-               return $"The application is too old (compatible version {projectVersion}) and cannot load a project created with a newer version (project version {currentVersion}).\nVisit our download page at {downloadUrl}.";
+            if (projectIsTooOld)
+               return $"The project is too old (compatible version {projectVersion}) and cannot be loaded with this version. (project version {projectVersion}).\n" +
+                      $"Visit our download page at {downloadUrl} to download an older version of the software compatible with this project.";
+
+            if (projectVersion > currentVersion)
+               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}";
 
             return $"Work in progress.\nThis project file was created with a beta or RC version (version {projectVersion}) and cannot be loaded.\nSorry :-(";
          }
-
          public static string BuildingBlockVersionIsTooOld(int version)
          {
             return $"Work in progress.\nThe Building Block is too old (version {version}) and cannot be loaded.\nSorry :-(";
