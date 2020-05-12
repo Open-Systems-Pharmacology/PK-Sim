@@ -1,2 +1,2 @@
-INSERT INTO tab_calculation_method_rate_descriptor_conditions(calculation_method,formula_rate,tag,condition) VALUES('DynamicSumFormulas','PARAM_Q_lng','Mucosa','NotInContainer');
-UPDATE tab_calculation_method_rates SET formula='Q_#i' WHERE calculation_method='DynamicSumFormulas' AND formula_rate='PARAM_Q_lng';
+UPDATE tab_calculation_method_rates SET formula='(Q*(1-HCT))*C_pls' WHERE calculation_method='MassTransferLink_forTwoPores' AND formula_rate='PARAM_MassTransferIntestineToMucosaPlasma';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='MassTransferLink_forTwoPores' AND formula_rate='PARAM_MassTransferIntestineToMucosaPlasma' AND path_id=1524 AND parameter_name='Lymph flow rate';
