@@ -26,8 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="9.0.122" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="9.0.122" />
+    <PackageReference Include="OSPSuite.Assets" Version="9.0.123" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="9.0.123" />
   </ItemGroup>
 
   <ItemGroup>
