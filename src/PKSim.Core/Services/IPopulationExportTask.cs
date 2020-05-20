@@ -164,14 +164,17 @@ namespace PKSim.Core.Services
 
       private bool parameterShouldBeExported(IParameter parameter, IEnumerable<IParameter> advancedParameters)
       {
-         //BMI and BodyWeight should always be exported
-         if (parameter.NameIsOneOf(CoreConstants.Parameters.BMI, CoreConstants.Parameters.WEIGHT)) return true;
+         //Parameters that should always be exported
+         if (parameter.NameIsOneOf(CoreConstants.Parameters.BMI, CoreConstants.Parameters.WEIGHT, CoreConstants.Parameters.BSA)) 
+            return true;
 
-         //BMI MeanHeight MeanWeight should never be exported
-         if (parameter.NameIsOneOf(CoreConstants.Parameters.MEAN_WEIGHT, CoreConstants.Parameters.MEAN_HEIGHT)) return false;
+         //Parameters that should never be exported
+         if (parameter.NameIsOneOf(CoreConstants.Parameters.MEAN_WEIGHT, CoreConstants.Parameters.MEAN_HEIGHT)) 
+            return false;
 
          //distribution parameter search as mean, std, gsd etc should not be exported
-         if (CoreConstants.Parameters.AllDistributionParameters.Contains(parameter.Name)) return false;
+         if (CoreConstants.Parameters.AllDistributionParameters.Contains(parameter.Name)) 
+            return false;
 
          //advanced parameters should always be exported
          if (advancedParameters.Contains(parameter))
