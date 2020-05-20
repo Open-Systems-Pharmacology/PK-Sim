@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -19,6 +18,7 @@ using Event = PKSim.Core.Snapshots.Event;
 using Formulation = PKSim.Core.Model.Formulation;
 using ILogger = OSPSuite.Core.Services.ILogger;
 using Individual = PKSim.Core.Model.Individual;
+using ObserverSet = PKSim.Core.Model.ObserverSet;
 using Population = PKSim.Core.Model.Population;
 using Project = PKSim.Core.Snapshots.Project;
 using Protocol = PKSim.Core.Model.Protocol;
@@ -45,6 +45,7 @@ namespace PKSim.Core
       protected Snapshots.Formulation _formulationSnapshot;
       protected Snapshots.Protocol _protocolSnapshot;
       protected Population _population;
+      protected ObserverSet _observerSet;
       protected Snapshots.Population _populationSnapshot;
       protected DataRepository _observedData;
       protected Snapshots.DataRepository _observedDataSnapshot;
@@ -71,6 +72,7 @@ namespace PKSim.Core
       protected Snapshots.QualificationPlan _qualificationPlanSnapshot;
       protected ILogger _logger;
       protected ICreationMetaDataFactory _creationMetaDataFactory;
+      protected Snapshots.ObserverSet _observerSetSnapshot;
 
       protected override Task Context()
       {
@@ -105,6 +107,7 @@ namespace PKSim.Core
          _formulation = new Formulation().WithName("FORM");
          _protocol = new SimpleProtocol().WithName("PROTO");
          _population = new RandomPopulation().WithName("POP");
+         _observerSet = new ObserverSet().WithName("OBS_SET");
          _observedData = new DataRepository().WithName("OD");
          _parameterIdentification = new OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification().WithName("PI").WithId("PI_ID");
          _classifiableObservedData = new ClassifiableObservedData {Subject = _observedData};
@@ -119,6 +122,7 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_formulation);
          _project.AddBuildingBlock(_protocol);
          _project.AddBuildingBlock(_population);
+         _project.AddBuildingBlock(_observerSet);
          _project.AddObservedData(_observedData);
          _project.AddBuildingBlock(_simulation);
          _project.AddClassifiable(_classifiableObservedData);
@@ -130,6 +134,7 @@ namespace PKSim.Core
          _compoundSnapshot = new Snapshots.Compound();
          _individualSnapshot = new Snapshots.Individual();
          _eventSnapshot = new Event();
+         _observerSetSnapshot = new Snapshots.ObserverSet();
          _formulationSnapshot = new Snapshots.Formulation();
          _protocolSnapshot = new Snapshots.Protocol();
          _populationSnapshot = new Snapshots.Population();
@@ -152,6 +157,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_protocol)).Returns(_protocolSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_population)).Returns(_populationSnapshot);
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observedData)).Returns(_observedDataSnapshot);
+         A.CallTo(() => _snapshotMapper.MapToSnapshot(_observerSet)).Returns(_observerSetSnapshot);
          A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).Returns(_simulationSnapshot);
          A.CallTo(() => _simulationComparisonMapper.MapToSnapshot(_simulationComparison)).Returns(_simulationComparisonSnapshot);
          A.CallTo(() => _parameterIdentificationMapper.MapToSnapshot(_parameterIdentification, _project)).Returns(_parameterIdentificationSnapshot);
@@ -189,6 +195,7 @@ namespace PKSim.Core
          _snapshot.Formulations.ShouldContain(_formulationSnapshot);
          _snapshot.Events.ShouldContain(_eventSnapshot);
          _snapshot.Populations.ShouldContain(_populationSnapshot);
+         _snapshot.ObserverSets.ShouldContain(_observerSetSnapshot);
       }
 
       [Observation]
@@ -253,6 +260,7 @@ namespace PKSim.Core
          A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _event)).MustHaveHappened();
          A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _individual)).MustHaveHappened();
          A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _population)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _observerSet)).MustHaveHappened();
          A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _protocol)).MustHaveHappened();
       }
 
@@ -298,6 +306,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToModel(_eventSnapshot)).Returns(_event);
          A.CallTo(() => _snapshotMapper.MapToModel(_populationSnapshot)).Returns(_population);
          A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).Returns(_observedData);
+         A.CallTo(() => _snapshotMapper.MapToModel(_observerSetSnapshot)).Returns(_observerSet);
 
          A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<PKSimProject>._)).Returns(_simulation);
          A.CallTo(() => _simulationMapper.MapToModel(_corruptedSimulationSnapshot, A<PKSimProject>._)).Throws(new Exception());
@@ -320,6 +329,7 @@ namespace PKSim.Core
          _newProject.All<Formulation>().ShouldContain(_formulation);
          _newProject.All<Protocol>().ShouldContain(_protocol);
          _newProject.All<Population>().ShouldContain(_population);
+         _newProject.All<ObserverSet>().ShouldContain(_observerSet);
       }
 
       [Observation]
@@ -361,31 +371,31 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_udpate_project_classification_for_observed_data()
+      public void should_update_project_classification_for_observed_data()
       {
          A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableObservedData, DataRepository>(_snapshot.ObservedDataClassifications, _newProject, _newProject.AllObservedData)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_udpate_project_classification_for_simulation()
+      public void should_update_project_classification_for_simulation()
       {
          A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableSimulation, Model.Simulation>(_snapshot.SimulationClassifications, _newProject, A<IReadOnlyCollection<Model.Simulation>>._)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_udpate_project_classification_for_simulation_comparison()
+      public void should_update_project_classification_for_simulation_comparison()
       {
          A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableComparison, ISimulationComparison>(_snapshot.SimulationComparisonClassifications, _newProject, _newProject.AllSimulationComparisons)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_udpate_project_classification_for_qualification_plan()
+      public void should_update_project_classification_for_qualification_plan()
       {
          A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableQualificationPlan, QualificationPlan>(_snapshot.QualificationPlanClassifications, _newProject, _newProject.AllQualificationPlans)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_udpate_project_classification_for_parameter_identification()
+      public void should_update_project_classification_for_parameter_identification()
       {
          A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableParameterIdentification, OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification>(_snapshot.ParameterIdentificationClassifications, _newProject, _newProject.AllParameterIdentifications)).MustHaveHappened();
       }
