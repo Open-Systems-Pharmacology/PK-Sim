@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using PKSim.Core.Repositories;
 using ModelAxis = OSPSuite.Core.Chart.Axis;
-using SnashotAxis = PKSim.Core.Snapshots.Axis;
+using SnapshotAxis = PKSim.Core.Snapshots.Axis;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class AxisMapper : SnapshotMapperBase<ModelAxis, SnashotAxis>
+   public class AxisMapper : SnapshotMapperBase<ModelAxis, SnapshotAxis>
    {
       private readonly IDimensionRepository _dimensionRepository;
 
@@ -14,7 +14,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _dimensionRepository = dimensionRepository;
       }
 
-      public override Task<SnashotAxis> MapToSnapshot(ModelAxis axis)
+      public override Task<SnapshotAxis> MapToSnapshot(ModelAxis axis)
       {
          return SnapshotFrom(axis, x =>
          {
@@ -33,7 +33,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<ModelAxis> MapToModel(SnashotAxis snapshot)
+      public override Task<ModelAxis> MapToModel(SnapshotAxis snapshot)
       {
          var axis = new ModelAxis(snapshot.Type)
          {

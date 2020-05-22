@@ -7,10 +7,8 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Repositories;
 using SnapshotDataColumn = PKSim.Core.Snapshots.DataColumn;
-using SnapshotQuantityInfo = PKSim.Core.Snapshots.QuantityInfo;
 using ModelDataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
-using ModelQuantityInfo = OSPSuite.Core.Domain.Data.QuantityInfo;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

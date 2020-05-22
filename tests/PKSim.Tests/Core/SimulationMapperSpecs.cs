@@ -21,6 +21,7 @@ using Compound = PKSim.Core.Model.Compound;
 using CompoundProperties = PKSim.Core.Model.CompoundProperties;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Individual = PKSim.Core.Model.Individual;
+using ObserverSet = PKSim.Core.Model.ObserverSet;
 using OutputSchema = OSPSuite.Core.Domain.OutputSchema;
 using OutputSelections = PKSim.Core.Snapshots.OutputSelections;
 using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
@@ -76,13 +77,17 @@ namespace PKSim.Core
       protected CompoundProcessSelection _snapshotInteraction;
       protected InductionProcess _inductionProcess;
       protected EventMapping _eventMapping;
+      protected ObserverSetMapping _observerSetMapping;
       protected EventSelection _eventSelection;
+      protected ObserverSetSelection _observerSetSelection;
       protected ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
       protected ILogger _logger;
       protected IContainerTask _containerTask;
       protected IEntityPathResolver _entityPathResolver;
       protected CompoundProcessSelection _noSelectionSnapshotInteraction;
       protected InteractionSelection _noInteractionSelection;
+      protected ObserverSetMappingMapper _observerSetMappingMapper;
+      protected ObserverSet _observerSet;
 
       protected override Task Context()
       {
@@ -93,6 +98,7 @@ namespace PKSim.Core
          _compoundPropertiesMapper = A.Fake<CompoundPropertiesMapper>();
          _advancedParameterMapper = A.Fake<AdvancedParameterMapper>();
          _eventMappingMapper = A.Fake<EventMappingMapper>();
+         _observerSetMappingMapper= A.Fake<ObserverSetMappingMapper>(); 
          _curveChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
          _processMappingMapper = A.Fake<ProcessMappingMapper>();
          _simulationFactory = A.Fake<ISimulationFactory>();
@@ -109,7 +115,7 @@ namespace PKSim.Core
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
-            _advancedParameterMapper, _eventMappingMapper, _curveChartMapper,
+            _advancedParameterMapper, _eventMappingMapper, _observerSetMappingMapper,  _curveChartMapper,
             _populationAnalysisChartMapper, _processMappingMapper,
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask,
@@ -120,6 +126,7 @@ namespace PKSim.Core
          _project = new PKSimProject();
          _individual = new Individual {Name = "IND", Id = "IND"};
          _compound = new Compound {Name = "COMP", Id="COMP"};
+         _observerSet = new ObserverSet {Name = "OBS_SET", Id = "OBS_SET"};
          _protocol = new SimpleProtocol {Name = "PROT", Id="PROT"};
          _inductionProcess = new InductionProcess().WithName("Interaction process");
          _compound.AddProcess(_inductionProcess);
@@ -132,6 +139,7 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_compound);
          _project.AddBuildingBlock(_event);
          _project.AddBuildingBlock(_population);
+         _project.AddBuildingBlock(_observerSet);
          _project.AddObservedData(_observedData);
 
          _simulationProperties = new SimulationProperties
@@ -202,12 +210,21 @@ namespace PKSim.Core
 
          _eventMapping = new EventMapping();
          _individualSimulation.EventProperties.AddEventMapping(_eventMapping);
+
+         _observerSetMapping = new ObserverSetMapping();
+         _individualSimulation.ObserverSetProperties.AddObserverSetMapping(_observerSetMapping);
+
          A.CallTo(() => _compoundPropertiesMapper.MapToSnapshot(_compoundProperties, _project)).Returns(_snapshotCompoundProperties);
 
 
          _eventSelection = new EventSelection
          {
             Name = _event.Name,
+         };
+
+         _observerSetSelection = new ObserverSetSelection
+         {
+            Name = _observerSet.Name,
          };
 
          _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
@@ -227,13 +244,21 @@ namespace PKSim.Core
             BuildingBlock = _protocol
          });
 
+         _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("ObserveSetTemplateId", PKSimBuildingBlockType.ObserverSet)
+         {
+            BuildingBlock = _observerSet
+         });
+
          _populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("PopTemplateId", PKSimBuildingBlockType.Population)
          {
             BuildingBlock = _population
          });
+
+
          _individualSimulation.AddUsedObservedData(_observedData);
 
          A.CallTo(() => _eventMappingMapper.MapToSnapshot(_eventMapping, _project)).Returns(_eventSelection);
+         A.CallTo(() => _observerSetMappingMapper.MapToSnapshot(_observerSetMapping, _project)).Returns(_observerSetSelection);
 
          _outputSelectionSnapshot = new OutputSelections();
          A.CallTo(() => _outputSelectionMapper.MapToSnapshot(_individualSimulation.OutputSelections)).Returns(_outputSelectionSnapshot);
@@ -359,6 +384,12 @@ namespace PKSim.Core
       public void should_save_the_used_events_to_snapshot()
       {
          _snapshot.Events.ShouldContain(_eventSelection);
+      }
+
+      [Observation]
+      public void should_save_the_used_observer_sets_to_snapshot()
+      {
+         _snapshot.ObserverSets.ShouldContain(_observerSetSelection);
       }
 
       [Observation]
@@ -506,6 +537,7 @@ namespace PKSim.Core
             .Invokes(x => { individualSimulation.DataRepository = _calculatedDataRepository; });
 
          A.CallTo(() => _eventMappingMapper.MapToModel(_eventSelection, _project)).Returns(_eventMapping);
+         A.CallTo(() => _observerSetMappingMapper.MapToModel(_observerSetSelection, _project)).Returns(_observerSetMapping);
       }
 
       protected override async Task Because()
@@ -580,6 +612,13 @@ namespace PKSim.Core
       public void should_have_updated_the_event_mapping()
       {
          _simulation.EventProperties.EventMappings.ShouldContain(_eventMapping);
+      }
+
+
+      [Observation]
+      public void should_have_updated_the_observer_set_mapping()
+      {
+         _simulation.ObserverSetProperties.ObserverSetMappings.ShouldContain(_observerSetMapping);
       }
 
       [Observation]
