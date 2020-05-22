@@ -23,7 +23,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var tagCondition = descriptorCondition as TagCondition;
          var snapshot = await SnapshotFrom(descriptorCondition);
          snapshot.Tag = tagCondition?.Tag;
-         snapshot.Type = typeFrom(tagCondition);
+         snapshot.Type = typeFrom(descriptorCondition);
          return snapshot;
       }
 

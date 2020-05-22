@@ -114,18 +114,12 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _invalid = A.Fake<IDescriptorCondition>();;
+         _invalid = A.Fake<IDescriptorCondition>();
       }
 
       protected override async Task Because()
       {
          _result = await sut.MapToSnapshot(_invalid);
-      }
-
-      [Observation]
-      public void should_return_null()
-      {
-         _result.ShouldBeNull();
       }
 
       [Observation]

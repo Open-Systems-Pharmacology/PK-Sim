@@ -6,5 +6,6 @@
       public DescriptorCondition[] ContainerCriteria { get; set; }
       public ExplicitFormula Formula { get; set; }
       public MoleculeList MoleculeList { get; set; }
+      public string Type { get; set; }
    }
 }

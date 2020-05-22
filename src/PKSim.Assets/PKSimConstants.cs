@@ -562,6 +562,8 @@ namespace PKSim.Assets
             return $"Cannot find formulation with id '{formulationId}' for formulation key '{formulationKey}' in simulation '{simulationName}'.";
          }
 
+         public static string CannotFindObserverSetForMapping(string observerSet) => $"Cannot find observer set named '{observerSet}'.";
+
          public static string NoPartialTemplateProcessFound(string processType) => $"No templates for partial process {processType} found.";
 
          public static string BuildingBlockAlreadyExists(string buildingBlockType, string name) => $"{buildingBlockType} named '{name}' already exists in project.";
@@ -850,6 +852,8 @@ namespace PKSim.Assets
          public static string RelativeExpressionContainerNotFound(string containerName) => $"Relative expression container '{containerName}' not found.";
 
          public static string CannotCreateDescriptorSnapshotFor(string type) => $"Cannot create descriptor snapshot for descriptor of type '{type}'.";
+
+         public static string CannotCreateObserverFromSnapshot(string type) => $"Cannot create observer from snapshot with type '{type}'.";
 
          public static string CannotCreateDescriptorFromSnapshotFor(string type) => $"Cannot create descriptor from snapshot for type '{type}'.";
 

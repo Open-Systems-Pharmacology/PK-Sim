@@ -1,20 +1,45 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Repositories;
 using SnapshotExplicitFormula = PKSim.Core.Snapshots.ExplicitFormula;
 using ModelExplicitFormula = OSPSuite.Core.Domain.Formulas.ExplicitFormula;
-
 
 namespace PKSim.Core.Snapshots.Mappers
 {
    public class ExplicitFormulaMapper : ObjectBaseSnapshotMapperBase<ModelExplicitFormula, SnapshotExplicitFormula>
    {
-      public override Task<SnapshotExplicitFormula> MapToSnapshot(ModelExplicitFormula model)
+      private readonly IObjectBaseFactory _objectBaseFactory;
+      private readonly FormulaUsablePathMapper _formulaUsablePathMapper;
+      private readonly IDimensionRepository _dimensionRepository;
+
+      public ExplicitFormulaMapper(
+         IObjectBaseFactory objectBaseFactory,
+         FormulaUsablePathMapper formulaUsablePathMapper,
+         IDimensionRepository dimensionRepository)
       {
-         throw new System.NotImplementedException();
+         _objectBaseFactory = objectBaseFactory;
+         _formulaUsablePathMapper = formulaUsablePathMapper;
+         _dimensionRepository = dimensionRepository;
       }
 
-      public override Task<ModelExplicitFormula> MapToModel(SnapshotExplicitFormula snapshot)
+      public override async Task<SnapshotExplicitFormula> MapToSnapshot(ModelExplicitFormula formula)
       {
-         throw new System.NotImplementedException();
+         var snapshot = await SnapshotFrom(formula, x => x.Formula = formula.FormulaString);
+         snapshot.References = await _formulaUsablePathMapper.MapToSnapshots(formula.ObjectPaths);
+         snapshot.Dimension = formula.Dimension?.Name;
+         return snapshot;
+      }
+
+      public override async Task<ModelExplicitFormula> MapToModel(SnapshotExplicitFormula snapshot)
+      {
+         var formula = _objectBaseFactory.Create<ModelExplicitFormula>();
+         MapSnapshotPropertiesToModel(snapshot, formula);
+         formula.FormulaString = snapshot.Formula;
+         formula.Dimension = _dimensionRepository.DimensionByName(snapshot.Dimension);
+         var objectsPaths = await _formulaUsablePathMapper.MapToModels(snapshot.References);
+         objectsPaths?.Each(formula.AddObjectPath);
+         return formula;
       }
    }
 }

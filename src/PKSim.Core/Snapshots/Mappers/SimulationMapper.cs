@@ -26,6 +26,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ParameterMapper _parameterMapper;
       private readonly AdvancedParameterMapper _advancedParameterMapper;
       private readonly EventMappingMapper _eventMappingMapper;
+      private readonly ObserverSetMappingMapper _observerSetMappingMapper;
       private readonly SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
       private readonly PopulationAnalysisChartMapper _populationAnalysisChartMapper;
       private readonly ProcessMappingMapper _processMappingMapper;
@@ -48,6 +49,7 @@ namespace PKSim.Core.Snapshots.Mappers
          ParameterMapper parameterMapper,
          AdvancedParameterMapper advancedParameterMapper,
          EventMappingMapper eventMappingMapper,
+         ObserverSetMappingMapper observerSetMappingMapper,
          SimulationTimeProfileChartMapper simulationTimeProfileChartMapper,
          PopulationAnalysisChartMapper populationAnalysisChartMapper,
          ProcessMappingMapper processMappingMapper,
@@ -70,6 +72,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _parameterMapper = parameterMapper;
          _advancedParameterMapper = advancedParameterMapper;
          _eventMappingMapper = eventMappingMapper;
+         _observerSetMappingMapper = observerSetMappingMapper;
          _simulationTimeProfileChartMapper = simulationTimeProfileChartMapper;
          _populationAnalysisChartMapper = populationAnalysisChartMapper;
          _processMappingMapper = processMappingMapper;
@@ -94,6 +97,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Individual = usedSimulationSubject<Model.Individual>(simulation);
          snapshot.Population = usedSimulationSubject<Model.Population>(simulation);
          snapshot.Compounds = await usedCompoundsFrom(simulation, project);
+         snapshot.ObserverSets = await _observerSetMappingMapper.MapToSnapshots(simulation.ObserverSetProperties.ObserverSetMappings, project);
          snapshot.Model = simulation.ModelConfiguration.ModelName;
          snapshot.AllowAging = SnapshotValueFor(simulation.AllowAging, false);
          snapshot.Solver = await _solverSettingsMapper.MapToSnapshot(simulation.Solver);
@@ -368,6 +372,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          await mapCompoundProperties(simulation, snapshot.Compounds, project);
          simulation.EventProperties = await mapEventProperties(snapshot.Events, project);
+         simulation.ObserverSetProperties = await mapObserverSetProperties(snapshot.ObserverSets, project);
          await updateInteractionProperties(simulation, snapshot.Interactions, project);
 
          //Once all used building blocks have been set, we need to ensure that they are also synchronized in the  simulation
@@ -383,6 +388,15 @@ namespace PKSim.Core.Snapshots.Mappers
          return eventProperties;
       }
 
+
+      private async Task<ObserverSetProperties> mapObserverSetProperties(ObserverSetSelection[] snapshotObserverSet, PKSimProject project)
+      {
+         var observerSetProperties = new ObserverSetProperties();
+         var observerSetMappings = await _observerSetMappingMapper.MapToModels(snapshotObserverSet, project);
+         observerSetMappings?.Each(observerSetProperties.AddObserverSetMapping);
+         return observerSetProperties;
+      }
+
       private void updateUsedBuildingBlockInSimulation(ModelSimulation simulation, PKSimProject project)
       {
          _simulationBuildingBlockUpdater.UpdateFormulationsInSimulation(simulation);
@@ -390,6 +404,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var events = simulation.EventProperties.EventMappings.Select(x => project.BuildingBlockById<PKSimEvent>(x.TemplateEventId));
          _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, events, PKSimBuildingBlockType.Event);
+
+         var observerSets = simulation.ObserverSetProperties.ObserverSetMappings.Select(x => project.BuildingBlockById<Model.ObserverSet>(x.TemplateObserverSetId));
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, observerSets, PKSimBuildingBlockType.ObserverSet);
       }
 
       private Task mapCompoundProperties(ModelSimulation simulation, CompoundProperties[] snapshotCompoundProperties, PKSimProject project)
