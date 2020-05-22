@@ -26,9 +26,10 @@ namespace PKSim.Core.Snapshots.Mappers
          if (observerSet == null)
          {
             _logger.AddError(PKSimConstants.Error.CannotFindObserverSetForMapping(snapshot.Name));
+            return null;
          }
 
-         var observerSetMapping = new ObserverSetMapping {TemplateObserverSetId = observerSet?.Id ?? string.Empty};
+         var observerSetMapping = new ObserverSetMapping {TemplateObserverSetId = observerSet.Id ?? string.Empty};
          return Task.FromResult(observerSetMapping);
       }
    }
