@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -43,6 +45,15 @@ namespace PKSim.Core.Snapshots.Mappers
             return null;
 
          return SnapshotValueFor(value.Value, defaultValue);
+      }
+
+      protected T[] SnapshotValueFor<T>(IEnumerable<T> values)
+      {
+         if (values == null)
+            return null;
+
+         var array = values.ToArray();
+         return !array.Any() ? null : array;
       }
 
       protected string ModelValueFor(string snapshotValue) => snapshotValue ?? "";

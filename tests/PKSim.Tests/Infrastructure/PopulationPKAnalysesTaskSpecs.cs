@@ -101,8 +101,8 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_created_one_pk_analyses_for_each_output_defined_in_the_simulation()
       {
-         _results.AllPKParametersFor(_quantityPath1).Count.ShouldBeEqualTo(2);
-         _results.AllPKParametersFor(_quantityPath2).Count.ShouldBeEqualTo(2);
+         _results.AllPKParametersFor(_quantityPath1).Length.ShouldBeEqualTo(2);
+         _results.AllPKParametersFor(_quantityPath2).Length.ShouldBeEqualTo(2);
       }
 
       [Observation]
@@ -138,7 +138,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_not_crash()
       {
-         _results.AllPKParametersFor(_quantityPath1).Count.ShouldBeEqualTo(2);
+         _results.AllPKParametersFor(_quantityPath1).Length.ShouldBeEqualTo(2);
       }
    }
 

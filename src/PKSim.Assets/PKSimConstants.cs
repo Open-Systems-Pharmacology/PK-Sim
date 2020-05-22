@@ -849,6 +849,10 @@ namespace PKSim.Assets
 
          public static string RelativeExpressionContainerNotFound(string containerName) => $"Relative expression container '{containerName}' not found.";
 
+         public static string CannotCreateDescriptorSnapshotFor(string type) => $"Cannot create descriptor snapshot for descriptor of type '{type}'.";
+
+         public static string CannotCreateDescriptorFromSnapshotFor(string type) => $"Cannot create descriptor from snapshot for type '{type}'.";
+
          public static string SnapshotProcessNameNotFound(string processName) => $"Snapshot process '{processName}' not found in the PK-Sim database.";
 
          public static string MapToModelNotSupportedWithoutContext(string modelType, string contextType)
