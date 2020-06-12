@@ -68,7 +68,7 @@ namespace PKSim.CLI
          //PKSimLogger logger = IoC.Resolve<ILogger>();
          PKSimLogger logger = new PKSimLogger();
 
-         logger.AddLoggingBuilderConfiguration(builder => builder.AddConsole());
+         logger.AddLoggingBuilderConfiguration(builder => builder.AddConsole().SetMinimumLevel(runCommand.LogLevel));
 
          if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
            logger.AddLoggerProvider(new FileLoggerProvider(runCommand.LogFileFullPath, runCommand.LogLevel, runCommand.AppendToLog));
