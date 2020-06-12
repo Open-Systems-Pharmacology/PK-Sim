@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions.Internal;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace PKSim.CLI.Services
 {
@@ -46,7 +46,7 @@ namespace PKSim.CLI.Services
 
       public IDisposable BeginScope<TState>(TState state)
       {
-         return NullScope.Instance;
-      }
+            return NullLogger.Instance.BeginScope(state);
+        }
    }
 }

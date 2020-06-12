@@ -82,10 +82,9 @@ namespace PKSim.UI.BootStrapping
 
       private void configureLogger(IContainer container, LogLevel logLevel)
       {
-         var loggerFactory = container.Resolve<ILoggerFactory>();
-         loggerFactory
-            .AddPresenter(logLevel)
-            .AddDebug(logLevel);
+         //var logger = container.Resolve<OSPSuite.Core.Services.ILogger>();
+         PKSimLogger logger = new PKSimLogger();
+         logger.AddLoggingBuilderConfiguration(builder => builder.AddDebug()).AddLoggerProvider(new PresenterLoggerProvider(logLevel));
       }
 
       private static void updateGoDiagramKey()

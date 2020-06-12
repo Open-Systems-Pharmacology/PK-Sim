@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions.Internal;
+using Microsoft.Extensions.Logging.Abstractions;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
@@ -50,7 +50,7 @@ namespace PKSim.Infrastructure.Services
 
       public IDisposable BeginScope<TState>(TState state)
       {
-         return NullScope.Instance;
-      }
+            return NullLogger.Instance.BeginScope(state);
+        }
    }
 }
