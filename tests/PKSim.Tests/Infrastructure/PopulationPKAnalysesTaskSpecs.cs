@@ -108,7 +108,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_calculate_the_pk_analyses_using_a_dose_per_body_weight_for_each_individual_and_each_curve()
       {
-         A.CallTo(() => _pkCalculationOptionsFactory.UpdateTotalDrugMassPerBodyWeight(_populationSimulation, "Drug", A<PKCalculationOptions>._, A<IReadOnlyList<PKCalculationOptionsFactory.ApplicationParameters>>._)).MustHaveHappened(4, Times.Exactly);
+         A.CallTo(() => _pkCalculationOptionsFactory.UpdateTotalDrugMassPerBodyWeight(_populationSimulation, "Drug", A<PKCalculationOptions>._, A<IReadOnlyList<ApplicationParameters>>._)).MustHaveHappened(4, Times.Exactly);
       }
 
       [Observation]
