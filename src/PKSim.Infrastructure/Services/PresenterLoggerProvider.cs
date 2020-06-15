@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace PKSim.Infrastructure.Services
@@ -27,4 +28,13 @@ namespace PKSim.Infrastructure.Services
       {
       }
    }
+
+  public static class PresenterLoggingBuilderExtensions
+  {
+    public static ILoggingBuilder AddPresenter(this ILoggingBuilder builder, LogLevel logLevel)
+    {
+      builder.Services.AddSingleton<ILoggerProvider, PresenterLoggerProvider>(serviceProvider => new PresenterLoggerProvider(logLevel));
+      return builder;
+    }
+  }
 }

@@ -22,16 +22,32 @@ namespace PKSim.Infrastructure
     }
   }
 
-  public class When_the_pk_sim_logger_is_configured : concern_for_PKSimLogger
+  public class When_the_pk_sim_logger_is_configured_with_one_function : concern_for_PKSimLogger
   {
+    private Func<ILoggingBuilder, ILoggingBuilder> _f1;
+
+    protected override void Context()
+    {
+      base.Context();
+      _f1 = A.Fake<Func<ILoggingBuilder, ILoggingBuilder>>();
+    }
+
+    protected override void Because()
+    {
+      sut.AddLoggingBuilderConfiguration(_f1);
+    }
+
     [Observation]
     public void should_invoke_new_action()
     {
-      var f1 = A.Fake<Func<ILoggingBuilder, ILoggingBuilder>>();
-      sut.AddLoggingBuilderConfiguration(f1);
-      A.CallTo(() => f1.Invoke(A<ILoggingBuilder>.Ignored)).MustHaveHappened();
+      A.CallTo(() => _f1.Invoke(A<ILoggingBuilder>.Ignored)).MustHaveHappened();
     }
+  }
 
+
+  public class When_the_pk_sim_logger_is_configured_with_some_function : concern_for_PKSimLogger
+  {
+    
     [Observation]
     public void should_invoke_all_actions_in_order()
     {

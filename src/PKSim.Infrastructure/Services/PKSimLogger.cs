@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using NHibernate.Mapping;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using PKSim.Infrastructure.Extensions;
 using ILogger = OSPSuite.Core.Services.ILogger;
 
 namespace PKSim.Infrastructure.Services
@@ -68,7 +70,7 @@ namespace PKSim.Infrastructure.Services
       _loggerFactory = LoggerFactory.Create(
           builder =>
           _loggingBuilderConfigurations.Aggregate(
-              (f1, f2) => config => f2.Invoke(f1.Invoke(config))
+              (f1, f2) => config => f1.Compose(f2, config)
           ).Invoke(builder)
       );
       _loggerProviders.ForEach(provider => _loggerFactory.AddProvider(provider));

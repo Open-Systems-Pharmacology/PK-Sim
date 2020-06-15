@@ -71,7 +71,7 @@ namespace PKSim.CLI
          logger.AddLoggingBuilderConfiguration(builder => builder.AddConsole().SetMinimumLevel(runCommand.LogLevel));
 
          if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
-           logger.AddLoggerProvider(new FileLoggerProvider(runCommand.LogFileFullPath, runCommand.LogLevel, runCommand.AppendToLog));
+           logger.AddLoggingBuilderConfiguration(builder => builder.AddFile(runCommand.LogFileFullPath, runCommand.LogLevel, runCommand.AppendToLog));
 
          return logger;
       }

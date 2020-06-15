@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -84,7 +85,15 @@ namespace PKSim.UI.BootStrapping
       {
          //var logger = container.Resolve<OSPSuite.Core.Services.ILogger>();
          PKSimLogger logger = new PKSimLogger();
-         logger.AddLoggingBuilderConfiguration(builder => builder.AddDebug().SetMinimumLevel(logLevel)).AddLoggerProvider(new PresenterLoggerProvider(logLevel));
+        logger
+         .AddLoggingBuilderConfiguration(builder =>
+           builder
+             .AddDebug()
+             .SetMinimumLevel(logLevel)
+             .AddPresenter(logLevel)
+         );
+          //.AddLoggerProvider(new PresenterLoggerProvider(logLevel))
+          //.AddLoggerProvider(new DebugLoggerProvider());
       }
 
       private static void updateGoDiagramKey()
