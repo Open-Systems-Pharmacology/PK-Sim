@@ -1,6 +1,7 @@
 ﻿using System;
 using CommandLine;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
@@ -11,69 +12,69 @@ using ILogger = OSPSuite.Core.Services.ILogger;
 
 namespace PKSim.CLI
 {
-   [Flags]
-   enum ExitCodes
-   {
-      Success = 0,
-      Error = 1 << 0,
-   }
+  [Flags]
+  enum ExitCodes
+  {
+    Success = 0,
+    Error = 1 << 0,
+  }
 
-   class Program
-   {
-      static bool _valid = true;
+  class Program
+  {
+    static bool _valid = true;
 
-      static int Main(string[] args)
+    static int Main(string[] args)
+    {
+
+      ApplicationStartup.Initialize();
+
+      Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(args)
+         .WithParsed<JsonRunCommand>(startCommand)
+         .WithParsed<SnapshotRunCommand>(startCommand)
+         .WithParsed<ExportRunCommand>(startCommand)
+         .WithParsed<QualificationRunCommand>(startCommand)
+         .WithNotParsed(err => _valid = false);
+
+      if (!_valid)
+        return (int)ExitCodes.Error;
+
+      return (int)ExitCodes.Success;
+    }
+
+    private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
+    {
+      var logger = initializeLogger(command);
+      if (command.LogCommandName)
+        logger.AddInfo($"Starting {command.Name.ToLower()} run");
+
+      logger.AddDebug($"Arguments:\n{command}");
+      ApplicationStartup.Start();
+      var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
+      try
       {
-
-         ApplicationStartup.Initialize();
-
-         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(args)
-            .WithParsed<JsonRunCommand>(startCommand)
-            .WithParsed<SnapshotRunCommand>(startCommand)
-            .WithParsed<ExportRunCommand>(startCommand)
-            .WithParsed<QualificationRunCommand>(startCommand)
-            .WithNotParsed(err => _valid = false);
-
-         if (!_valid)
-            return (int) ExitCodes.Error;
-
-         return (int) ExitCodes.Success;
+        runner.RunBatchAsync(command.ToRunOptions()).Wait();
+      }
+      catch (Exception e)
+      {
+        logger.AddException(e);
+        _valid = false;
       }
 
-      private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
-      {
-         var logger = initializeLogger(command);
-         if(command.LogCommandName)
-            logger.AddInfo($"Starting {command.Name.ToLower()} run");
+      if (command.LogCommandName)
+        logger.AddInfo($"{command.Name} run finished");
+    }
 
-         logger.AddDebug($"Arguments:\n{command}");
-         ApplicationStartup.Start();
-         var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
-         try
-         {
-            runner.RunBatchAsync(command.ToRunOptions()).Wait();
-         }
-         catch (Exception e)
-         {
-            logger.AddException(e);
-            _valid = false;
-         }
+    private static ILogger initializeLogger(CLICommand runCommand)
+    {
+      PKSimLogger logger = (PKSimLogger)IoC.Resolve<ILogger>();
+      //ILogger logger = IoC.Resolve<ILogger>();
 
-         if (command.LogCommandName)
-            logger.AddInfo($"{command.Name} run finished");
-      }
+      logger.AddLoggingBuilderConfiguration(builder => builder.AddConsole().SetMinimumLevel(runCommand.LogLevel));
 
-      private static ILogger initializeLogger(CLICommand runCommand)
-      {
-         //PKSimLogger logger = IoC.Resolve<ILogger>();
-         PKSimLogger logger = new PKSimLogger();
+      if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
+        logger.AddLoggingBuilderConfiguration(builder => builder.AddFile(runCommand.LogFileFullPath, runCommand.LogLevel, runCommand.AppendToLog));
 
-         logger.AddLoggingBuilderConfiguration(builder => builder.AddConsole().SetMinimumLevel(runCommand.LogLevel));
-
-         if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
-           logger.AddLoggingBuilderConfiguration(builder => builder.AddFile(runCommand.LogFileFullPath, runCommand.LogLevel, runCommand.AppendToLog));
-
-         return logger;
-      }
-   }
+      return logger;
+    }
+  }
 }
