@@ -90,7 +90,7 @@ namespace PKSim.UI.BootStrapping
            builder
              .SetMinimumLevel(logLevel)
              .AddDebug()
-             .AddPresenter(logLevel)
+             .AddPresenter()
          );
       // an easier way
       //.AddLoggerProvider(new PresenterLoggerProvider(logLevel))

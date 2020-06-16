@@ -13,12 +13,10 @@ namespace PKSim.Infrastructure.Services
    {
       private readonly IEventPublisher _eventPublisher;
       public string Name { get; }
-      private readonly LogLevel _logLevel;
 
-      public PresenterLogger(string name, LogLevel logLevel)
+      public PresenterLogger(string name)
       {
          _eventPublisher = IoC.Resolve<IEventPublisher>();
-         _logLevel = logLevel;
          Name = name;
       }
 
@@ -45,7 +43,7 @@ namespace PKSim.Infrastructure.Services
 
       public bool IsEnabled(LogLevel logLevel)
       {
-         return logLevel >= _logLevel;
+         return true;
       }
 
       public IDisposable BeginScope<TState>(TState state)

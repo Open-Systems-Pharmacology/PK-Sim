@@ -8,14 +8,12 @@ namespace PKSim.CLI.Services
 {
   public class FileLoggerProvider : ILoggerProvider
   {
-    private readonly LogLevel _logLevel;
     private readonly string _logFileFullPath;
     private readonly ConcurrentDictionary<string, FileLogger> _loggers = new ConcurrentDictionary<string, FileLogger>();
     private readonly StreamWriter _streamWriter;
 
-    public FileLoggerProvider(string logFileFullPath, LogLevel logLevel, bool append)
+    public FileLoggerProvider(string logFileFullPath, bool append)
     {
-      _logLevel = logLevel;
       _logFileFullPath = logFileFullPath;
       ensureLogDirectoryExists();
       _streamWriter = new StreamWriter(_logFileFullPath, append);
@@ -28,7 +26,7 @@ namespace PKSim.CLI.Services
 
     private FileLogger createLoggerImplementation(string name)
     {
-      return new FileLogger(_streamWriter, _logLevel, name);
+      return new FileLogger(_streamWriter, name);
     }
 
     private void ensureLogDirectoryExists()
@@ -46,9 +44,9 @@ namespace PKSim.CLI.Services
 
   public static class FileLoggingBuilderExtensions
   {
-    public static ILoggingBuilder AddFile(this ILoggingBuilder builder, string logFileFullPath, LogLevel logLevel, bool append)
+    public static ILoggingBuilder AddFile(this ILoggingBuilder builder, string logFileFullPath, bool append)
     {
-      builder.Services.AddSingleton<ILoggerProvider, FileLoggerProvider>(serviceProvider => new FileLoggerProvider(logFileFullPath, logLevel, append));
+      builder.Services.AddSingleton<ILoggerProvider, FileLoggerProvider>(serviceProvider => new FileLoggerProvider(logFileFullPath, append));
       return builder;
     }
   }
