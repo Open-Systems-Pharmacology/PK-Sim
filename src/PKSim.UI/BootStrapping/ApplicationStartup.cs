@@ -85,8 +85,10 @@ namespace PKSim.UI.BootStrapping
     {
       var loggingBuilder = IoC.Resolve<ILoggingBuilder>();
       loggingBuilder.AddConsole();
+
       PKSimLogger logger = (PKSimLogger)container.Resolve<OSPSuite.Core.Services.ILogger>();
       //OSPSuite.Core.Services.ILogger logger = container.Resolve<OSPSuite.Core.Services.ILogger>();
+
       logger
          .AddLoggingBuilderConfiguration(builder =>
            builder
@@ -94,9 +96,6 @@ namespace PKSim.UI.BootStrapping
              .AddDebug()
              .AddPresenter()
          );
-      // an easier way
-      //.AddLoggerProvider(new PresenterLoggerProvider(logLevel))
-      //.AddLoggerProvider(new DebugLoggerProvider());
     }
 
     private static void updateGoDiagramKey()

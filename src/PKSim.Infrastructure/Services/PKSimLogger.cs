@@ -6,20 +6,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PKSim.Infrastructure.Extensions;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using IOSPLogger = OSPSuite.Core.Services.ILogger;
 using System.Collections.Concurrent;
 
 namespace PKSim.Infrastructure.Services
 {
-  public class PKSimLogger : ILogger
-  {
+  public class PKSimLogger : IOSPLogger
+   {
     private const string DEFAULT_LOGGER_CATEGORY = "PK-Sim";
-    private ConcurrentDictionary<string, Microsoft.Extensions.Logging.ILogger> _logger;
+    private readonly ConcurrentDictionary<string, ILogger> _loggerDict;
     private List<Func<ILoggingBuilder, ILoggingBuilder>> _loggingBuilderConfigurations = new List<Func<ILoggingBuilder, ILoggingBuilder>>() { builder => builder };
-
     public void AddToLog(string message, LogLevel logLevel, string categoryName)
     {
-      var logger = _logger.GetOrAdd(categoryName, (_) => SetupFactory((string.IsNullOrEmpty(categoryName) ? DEFAULT_LOGGER_CATEGORY : categoryName)));
+      var logger = _loggerDict.GetOrAdd(categoryName, (_) => SetupLogger((string.IsNullOrEmpty(categoryName) ? DEFAULT_LOGGER_CATEGORY : categoryName)));
       switch (logLevel)
       {
         case LogLevel.Trace:
@@ -49,9 +48,10 @@ namespace PKSim.Infrastructure.Services
       return this;
     }
 
-    private Microsoft.Extensions.Logging.ILogger SetupFactory(string categoryName)
+    private ILogger SetupLogger(string categoryName)
     {
-      Microsoft.Extensions.Logging.ILogger result;
+      ILogger logger;
+
       using (var loggerFactory = LoggerFactory.Create(
           builder =>
           _loggingBuilderConfigurations.Aggregate(
@@ -59,9 +59,9 @@ namespace PKSim.Infrastructure.Services
           ).Invoke(builder)
       ))
       {
-        result = loggerFactory.CreateLogger(categoryName);
+        logger = loggerFactory.CreateLogger(categoryName);
       };
-      return result;
+      return logger;
     }
   }
 }
