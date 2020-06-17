@@ -14,11 +14,15 @@ namespace PKSim.Infrastructure.Services
   public class PKSimLogger : IOSPLogger
    {
     private const string DEFAULT_LOGGER_CATEGORY = "PK-Sim";
-    private readonly ConcurrentDictionary<string, ILogger> _loggerDict;
-    private List<Func<ILoggingBuilder, ILoggingBuilder>> _loggingBuilderConfigurations = new List<Func<ILoggingBuilder, ILoggingBuilder>>() { builder => builder };
+    private readonly ILoggerCreator _loggerCreator;
+
+    public PKSimLogger(ILoggerCreator loggerCreator)
+    {
+         _loggerCreator = loggerCreator;
+    }
     public void AddToLog(string message, LogLevel logLevel, string categoryName)
     {
-      var logger = _loggerDict.GetOrAdd(categoryName, (_) => SetupLogger((string.IsNullOrEmpty(categoryName) ? DEFAULT_LOGGER_CATEGORY : categoryName)));
+      var logger = _loggerCreator.GetOrCreateLogger(string.IsNullOrEmpty(categoryName) ? DEFAULT_LOGGER_CATEGORY : categoryName);
       switch (logLevel)
       {
         case LogLevel.Trace:
@@ -40,28 +44,6 @@ namespace PKSim.Infrastructure.Services
           logger.LogCritical(message);
           break;
       }
-    }
-
-    public PKSimLogger AddLoggingBuilderConfiguration(Func<ILoggingBuilder, ILoggingBuilder> configuration)
-    {
-      _loggingBuilderConfigurations.Add(configuration);
-      return this;
-    }
-
-    private ILogger SetupLogger(string categoryName)
-    {
-      ILogger logger;
-
-      using (var loggerFactory = LoggerFactory.Create(
-          builder =>
-          _loggingBuilderConfigurations.Aggregate(
-              (f1, f2) => config => f1.Compose(f2, config)
-          ).Invoke(builder)
-      ))
-      {
-        logger = loggerFactory.CreateLogger(categoryName);
-      };
-      return logger;
     }
   }
 }

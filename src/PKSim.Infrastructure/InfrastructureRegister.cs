@@ -73,8 +73,8 @@ namespace PKSim.Infrastructure
 
       private static void registerLogging(IContainer container)
       {
-         var loggerFactory = new LoggerFactory();
-         container.RegisterImplementationOf((ILoggerFactory) loggerFactory);
+         var loggerCreator = new PKSimLoggerCreator();
+         container.RegisterImplementationOf((ILoggerCreator)loggerCreator);
          container.Register<ILogger, PKSimLogger>(LifeStyle.Singleton);
       }
 

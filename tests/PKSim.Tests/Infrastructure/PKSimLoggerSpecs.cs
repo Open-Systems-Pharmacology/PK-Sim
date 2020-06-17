@@ -14,15 +14,15 @@ using FakeItEasy.Configuration;
 
 namespace PKSim.Infrastructure
 {
-  public abstract class concern_for_PKSimLogger : ContextSpecification<PKSimLogger>
+  public abstract class concern_for_PKSimLoggerCreator : ContextSpecification<PKSimLoggerCreator>
   {
     protected override void Context()
     {
-      sut = new PKSimLogger();
+      sut = new PKSimLoggerCreator();
     }
   }
 
-  public class When_the_pk_sim_logger_is_configured_with_one_function : concern_for_PKSimLogger
+  public class When_the_pk_sim_logger_creator_is_configured_with_one_function : concern_for_PKSimLoggerCreator
   {
     private Func<ILoggingBuilder, ILoggingBuilder> _f1;
 
@@ -45,7 +45,7 @@ namespace PKSim.Infrastructure
   }
 
 
-  public class When_the_pk_sim_logger_is_configured_with_some_function : concern_for_PKSimLogger
+  public class When_the_pk_sim_logger_creator_is_configured_with_some_function : concern_for_PKSimLoggerCreator
   {
     
     [Observation]

@@ -8,7 +8,7 @@ using PKSim.CLI.Commands;
 using PKSim.CLI.Core.Services;
 using PKSim.CLI.Services;
 using PKSim.Infrastructure.Services;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using IOSPLogger = OSPSuite.Core.Services.ILogger;
 
 namespace PKSim.CLI
 {
@@ -64,17 +64,17 @@ namespace PKSim.CLI
         logger.AddInfo($"{command.Name} run finished");
     }
 
-    private static ILogger initializeLogger(CLICommand runCommand)
+    private static IOSPLogger initializeLogger(CLICommand runCommand)
     {
-      PKSimLogger logger = (PKSimLogger)IoC.Resolve<ILogger>();
-      //ILogger logger = IoC.Resolve<ILogger>();
 
-      logger.AddLoggingBuilderConfiguration(builder => builder.SetMinimumLevel(runCommand.LogLevel).AddConsole());
+      var loggerCreator = IoC.Resolve<ILoggerCreator>();
+
+      loggerCreator.AddLoggingBuilderConfiguration(builder => builder.SetMinimumLevel(runCommand.LogLevel).AddConsole());
 
       if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
-        logger.AddLoggingBuilderConfiguration(builder => builder.AddFile(runCommand.LogFileFullPath, runCommand.AppendToLog));
+          loggerCreator.AddLoggingBuilderConfiguration(builder => builder.AddFile(runCommand.LogFileFullPath, runCommand.AppendToLog));
 
-      return logger;
-    }
+      return IoC.Resolve<IOSPLogger>();
+      }
   }
 }
