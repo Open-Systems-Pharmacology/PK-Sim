@@ -5,8 +5,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
 using PKSim.CLI.Core.Services;
-//using PKSim.CLI.Services;
-using Serilog.Extensions.Logging;
 using PKSim.Infrastructure.Services;
 using IOSPLogger = OSPSuite.Core.Services.ILogger;
 
