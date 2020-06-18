@@ -3,6 +3,7 @@ using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OSPSuite.Utility;
+using Serilog.Extensions.Logging;
 
 namespace PKSim.CLI.Services
 {
@@ -47,6 +48,7 @@ namespace PKSim.CLI.Services
     public static ILoggingBuilder AddFile(this ILoggingBuilder builder, string logFileFullPath, bool append)
     {
       builder.Services.AddSingleton<ILoggerProvider, FileLoggerProvider>(serviceProvider => new FileLoggerProvider(logFileFullPath, append));
+      builder.Services.AddSingleton<ILoggerFactory>(serviceProvider => new SerilogLoggerFactory());
       return builder;
     }
   }

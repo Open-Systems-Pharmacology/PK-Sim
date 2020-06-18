@@ -1,7 +1,6 @@
 ﻿using System;
 using CommandLine;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
@@ -72,7 +71,7 @@ namespace PKSim.CLI
       loggerCreator.AddLoggingBuilderConfiguration(builder => builder.SetMinimumLevel(runCommand.LogLevel).AddConsole());
 
       if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
-          loggerCreator.AddLoggingBuilderConfiguration(builder => builder.AddFile(runCommand.LogFileFullPath, runCommand.AppendToLog));
+          loggerCreator.AddLoggingBuilderConfiguration(builder => builder.AddFile(runCommand.LogFileFullPath));
 
       return IoC.Resolve<IOSPLogger>();
       }
