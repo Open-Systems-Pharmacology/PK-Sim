@@ -35,153 +35,153 @@ using PresenterRegister = OSPSuite.Presentation.PresenterRegister;
 
 namespace PKSim.UI.BootStrapping
 {
-  public class ApplicationStartup
-  {
-    public static void Initialize(LogLevel logLevel = LogLevel.Information, Action<IContainer> registrationAction = null)
-    {
-      new ApplicationStartup().InitializeForStartup(logLevel, registrationAction);
-    }
-
-    public void InitializeUserInterface()
-    {
-      //Register typed instance of shell and splash screen 
-      UserInterfaceRegister.InitializeForStartup(IoC.Container);
-    }
-
-    public void InitializeForStartup(LogLevel logLevel, Action<IContainer> registrationAction)
-    {
-      Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-      Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-
-      updateGoDiagramKey();
-
-
-      var container = InfrastructureRegister.Initialize();
-      container.RegisterImplementationOf(getCurrentContext());
-
-      container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
-      container.Register<PKSimApplication, PKSimApplication>(LifeStyle.Singleton);
-
-      //UI and Presentation mandatory objects for startup
-      container.Register<IProgressUpdater, PKSimProgressUpdater>();
-      container.RegisterImplementationOf(NumericFormatterOptions.Instance);
-      container.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
-
-      container.AddRegister(x => x.FromType<UIRegister>());
-      container.AddRegister(x => x.FromType<PresenterRegister>());
-
-      //must be registered so that the ui thread can start the startup
-      container.RegisterImplementationOf(this);
-
-      container.Register<IConfigurableContainerLayoutView, AccordionLayoutView>(ViewLayouts.AccordionView.Id);
-      container.Register<IConfigurableContainerLayoutView, TabbedLayoutView>(ViewLayouts.TabbedView.Id);
-
-      configureLogger(container, logLevel);
-
-      registrationAction?.Invoke(container);
-    }
-
-    private void configureLogger(IContainer container, LogLevel logLevel)
-    {
-      var loggerCreator = IoC.Resolve<ILoggerCreator>();
-
-      loggerCreator
-         .AddLoggingBuilderConfiguration(builder =>
-            builder
-               .SetMinimumLevel(logLevel)
-               .AddDebug()
-               .AddPresenter()
-         );
-    }
-
-    private static void updateGoDiagramKey()
-    {
-      // This line is patched during creation of setup. Do not modify.
-      UIRegister.GoDiagramKey = $"{Environment.GetEnvironmentVariable("GO_DIAGRAM_KEY")}";
-    }
-
-    private SynchronizationContext getCurrentContext()
-    {
-      var context = SynchronizationContext.Current;
-      if (context == null)
+   public class ApplicationStartup
+   {
+      public static void Initialize(LogLevel logLevel = LogLevel.Information, Action<IContainer> registrationAction = null)
       {
-        context = new WindowsFormsSynchronizationContext();
-        SynchronizationContext.SetSynchronizationContext(context);
+         new ApplicationStartup().InitializeForStartup(logLevel, registrationAction);
       }
-      return SynchronizationContext.Current;
-    }
 
-    public void Start()
-    {
-      var progressManager = IoC.Resolve<IProgressManager>();
-      var container = IoC.Container;
-      using (var progress = progressManager.Create())
+      public void InitializeUserInterface()
       {
-        progress.Initialize(8);
-
-        using (container.OptimizeDependencyResolution())
-        {
-          showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Core));
-          container.AddRegister(x => x.FromType<CoreRegister>());
-
-          showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Infrastructure));
-          container.AddRegister(x => x.FromType<InfrastructureRegister>());
-
-          showStatusMessage(progress, message: PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Presentation));
-          container.AddRegister(x => x.FromType<Presentation.PresenterRegister>());
-
-          showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.UserInterface));
-          container.AddRegister(x => x.FromType<UserInterfaceRegister>());
-
-          showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Commands));
-          RegisterCommands(container);
-
-          showStatusMessage(progress, PKSimConstants.UI.RegisterSerializationDependencies);
-          InfrastructureRegister.LoadSerializers(container);
-
-          finalizeRegistration(container);
-        }
-
-        showStatusMessage(progress, PKSimConstants.UI.StartingUserInterface);
-        startStartableObject(container);
+         //Register typed instance of shell and splash screen 
+         UserInterfaceRegister.InitializeForStartup(IoC.Container);
       }
-    }
 
-    /// <summary>
-    ///    All specific registration that needs to be performed once all other registrations are done
-    /// </summary>
-    private void finalizeRegistration(IContainer container)
-    {
-      InfrastructureRegister.RegisterWorkspace(container);
-      //Create one instance of the invokers so that the object is available in the application 
-      //since the object is not created anywhere and is only used as event listener
-      container.Resolve<ICloseSubjectPresenterInvoker>();
-      container.Resolve<IExportToPDFInvoker>();
+      public void InitializeForStartup(LogLevel logLevel, Action<IContainer> registrationAction)
+      {
+         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+         Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
 
-      var mainPresenter = container.Resolve<IMainViewPresenter>();
-      container.RegisterImplementationOf((IChangePropagator)mainPresenter);
+         updateGoDiagramKey();
 
-      //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
-      container.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);
-    }
 
-    private void startStartableObject(IContainer container)
-    {
-      var rep = container.ResolveAll<IStartable>().ToList();
-      rep.Each(item => item.Start());
-    }
+         var container = InfrastructureRegister.Initialize();
+         container.RegisterImplementationOf(getCurrentContext());
 
-    public static void RegisterCommands(IContainer container)
-    {
-      container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
-      var historyBrowserConfiguration = container.Resolve<IHistoryBrowserConfiguration>();
-      historyBrowserConfiguration.AddDynamicColumn(Constants.Command.BUILDING_BLOCK_TYPE, PKSimConstants.UI.BuildingBlockType);
-      historyBrowserConfiguration.AddDynamicColumn(Constants.Command.BUILDING_BLOCK_NAME, PKSimConstants.UI.BuildingBlockName);
-    }
+         container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
+         container.Register<PKSimApplication, PKSimApplication>(LifeStyle.Singleton);
 
-    private void showStatusMessage(IProgressUpdater progressUpdater, string message)
-    {
-      progressUpdater.IncrementProgress($"{message}...");
-    }
-  }
+         //UI and Presentation mandatory objects for startup
+         container.Register<IProgressUpdater, PKSimProgressUpdater>();
+         container.RegisterImplementationOf(NumericFormatterOptions.Instance);
+         container.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
+
+         container.AddRegister(x => x.FromType<UIRegister>());
+         container.AddRegister(x => x.FromType<PresenterRegister>());
+
+         //must be registered so that the ui thread can start the startup
+         container.RegisterImplementationOf(this);
+
+         container.Register<IConfigurableContainerLayoutView, AccordionLayoutView>(ViewLayouts.AccordionView.Id);
+         container.Register<IConfigurableContainerLayoutView, TabbedLayoutView>(ViewLayouts.TabbedView.Id);
+
+         configureLogger(container, logLevel);
+
+         registrationAction?.Invoke(container);
+      }
+
+      private void configureLogger(IContainer container, LogLevel logLevel)
+      {
+         var loggerCreator = IoC.Resolve<ILoggerCreator>();
+
+         loggerCreator
+            .AddLoggingBuilderConfiguration(builder =>
+               builder
+                  .SetMinimumLevel(logLevel)
+                  .AddDebug()
+                  .AddPresenter()
+            );
+      }
+
+      private static void updateGoDiagramKey()
+      {
+         // This line is patched during creation of setup. Do not modify.
+         UIRegister.GoDiagramKey = $"{Environment.GetEnvironmentVariable("GO_DIAGRAM_KEY")}";
+      }
+
+      private SynchronizationContext getCurrentContext()
+      {
+         var context = SynchronizationContext.Current;
+         if (context == null)
+         {
+            context = new WindowsFormsSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(context);
+         }
+         return SynchronizationContext.Current;
+      }
+
+      public void Start()
+      {
+         var progressManager = IoC.Resolve<IProgressManager>();
+         var container = IoC.Container;
+         using (var progress = progressManager.Create())
+         {
+            progress.Initialize(8);
+
+            using (container.OptimizeDependencyResolution())
+            {
+               showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Core));
+               container.AddRegister(x => x.FromType<CoreRegister>());
+
+               showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Infrastructure));
+               container.AddRegister(x => x.FromType<InfrastructureRegister>());
+
+               showStatusMessage(progress, message: PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Presentation));
+               container.AddRegister(x => x.FromType<Presentation.PresenterRegister>());
+
+               showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.UserInterface));
+               container.AddRegister(x => x.FromType<UserInterfaceRegister>());
+
+               showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Commands));
+               RegisterCommands(container);
+
+               showStatusMessage(progress, PKSimConstants.UI.RegisterSerializationDependencies);
+               InfrastructureRegister.LoadSerializers(container);
+
+               finalizeRegistration(container);
+            }
+
+            showStatusMessage(progress, PKSimConstants.UI.StartingUserInterface);
+            startStartableObject(container);
+         }
+      }
+
+      /// <summary>
+      ///    All specific registration that needs to be performed once all other registrations are done
+      /// </summary>
+      private void finalizeRegistration(IContainer container)
+      {
+         InfrastructureRegister.RegisterWorkspace(container);
+         //Create one instance of the invokers so that the object is available in the application 
+         //since the object is not created anywhere and is only used as event listener
+         container.Resolve<ICloseSubjectPresenterInvoker>();
+         container.Resolve<IExportToPDFInvoker>();
+
+         var mainPresenter = container.Resolve<IMainViewPresenter>();
+         container.RegisterImplementationOf((IChangePropagator)mainPresenter);
+
+         //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
+         container.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);
+      }
+
+      private void startStartableObject(IContainer container)
+      {
+         var rep = container.ResolveAll<IStartable>().ToList();
+         rep.Each(item => item.Start());
+      }
+
+      public static void RegisterCommands(IContainer container)
+      {
+         container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
+         var historyBrowserConfiguration = container.Resolve<IHistoryBrowserConfiguration>();
+         historyBrowserConfiguration.AddDynamicColumn(Constants.Command.BUILDING_BLOCK_TYPE, PKSimConstants.UI.BuildingBlockType);
+         historyBrowserConfiguration.AddDynamicColumn(Constants.Command.BUILDING_BLOCK_NAME, PKSimConstants.UI.BuildingBlockName);
+      }
+
+      private void showStatusMessage(IProgressUpdater progressUpdater, string message)
+      {
+         progressUpdater.IncrementProgress($"{message}...");
+      }
+   }
 }

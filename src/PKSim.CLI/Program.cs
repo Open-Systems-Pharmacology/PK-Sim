@@ -12,75 +12,75 @@ using IOSPLogger = OSPSuite.Core.Services.ILogger;
 
 namespace PKSim.CLI
 {
-  [Flags]
-  enum ExitCodes
-  {
-    Success = 0,
-    Error = 1 << 0,
-  }
+   [Flags]
+   enum ExitCodes
+   {
+      Success = 0,
+      Error = 1 << 0,
+   }
 
-  class Program
-  {
-    static bool _valid = true;
+   class Program
+   {
+      static bool _valid = true;
 
-    static int Main(string[] args)
-    {
-
-      ApplicationStartup.Initialize();
-
-      Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(args)
-         .WithParsed<JsonRunCommand>(startCommand)
-         .WithParsed<SnapshotRunCommand>(startCommand)
-         .WithParsed<ExportRunCommand>(startCommand)
-         .WithParsed<QualificationRunCommand>(startCommand)
-         .WithNotParsed(err => _valid = false);
-
-      if (!_valid)
-        return (int)ExitCodes.Error;
-
-      return (int)ExitCodes.Success;
-    }
-
-    private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
-    {
-      var logger = initializeLogger(command);
-      if (command.LogCommandName)
-        logger.AddInfo($"Starting {command.Name.ToLower()} run");
-
-      logger.AddDebug($"Arguments:\n{command}");
-      ApplicationStartup.Start();
-      var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
-      try
+      static int Main(string[] args)
       {
-        runner.RunBatchAsync(command.ToRunOptions()).Wait();
-      }
-      catch (Exception e)
-      {
-        logger.AddException(e);
-        _valid = false;
+
+         ApplicationStartup.Initialize();
+
+         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(args)
+            .WithParsed<JsonRunCommand>(startCommand)
+            .WithParsed<SnapshotRunCommand>(startCommand)
+            .WithParsed<ExportRunCommand>(startCommand)
+            .WithParsed<QualificationRunCommand>(startCommand)
+            .WithNotParsed(err => _valid = false);
+
+         if (!_valid)
+            return (int)ExitCodes.Error;
+
+         return (int)ExitCodes.Success;
       }
 
-      if (command.LogCommandName)
-        logger.AddInfo($"{command.Name} run finished");
-    }
+      private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
+      {
+         var logger = initializeLogger(command);
+         if (command.LogCommandName)
+            logger.AddInfo($"Starting {command.Name.ToLower()} run");
 
-    private static IOSPLogger initializeLogger(CLICommand runCommand)
-    {
+         logger.AddDebug($"Arguments:\n{command}");
+         ApplicationStartup.Start();
+         var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
+         try
+         {
+            runner.RunBatchAsync(command.ToRunOptions()).Wait();
+         }
+         catch (Exception e)
+         {
+            logger.AddException(e);
+            _valid = false;
+         }
 
-      var loggerCreator = IoC.Resolve<ILoggerCreator>();
+         if (command.LogCommandName)
+            logger.AddInfo($"{command.Name} run finished");
+      }
 
-      loggerCreator.AddLoggingBuilderConfiguration(builder =>
-        builder
-          .SetMinimumLevel(runCommand.LogLevel)
-          .AddConsole()
-      );
+      private static IOSPLogger initializeLogger(CLICommand runCommand)
+      {
 
-      if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
-        loggerCreator.AddLoggingBuilderConfiguration(builder => 
-          builder
-            .AddFile(runCommand.LogFileFullPath)
-        );
-      return IoC.Resolve<IOSPLogger>();
-    }
-  }
+         var loggerCreator = IoC.Resolve<ILoggerCreator>();
+
+         loggerCreator.AddLoggingBuilderConfiguration(builder =>
+           builder
+             .SetMinimumLevel(runCommand.LogLevel)
+             .AddConsole()
+         );
+
+         if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
+            loggerCreator.AddLoggingBuilderConfiguration(builder =>
+              builder
+                .AddFile(runCommand.LogFileFullPath)
+            );
+         return IoC.Resolve<IOSPLogger>();
+      }
+   }
 }

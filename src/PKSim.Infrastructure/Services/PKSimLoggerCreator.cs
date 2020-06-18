@@ -1,9 +1,6 @@
 ﻿using PKSim.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using NHibernate.Mapping;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PKSim.Infrastructure.Extensions;
@@ -19,7 +16,7 @@ public class PKSimLoggerCreator : ILoggerCreator
       _loggingBuilderConfigurations.Add(configuration);
       return this;
    }
-   
+
    public ILogger GetOrCreateLogger(string categoryName)
    {
       var logger = _loggerDict.GetOrAdd(categoryName, (_) => SetupLogger(categoryName));
