@@ -40,6 +40,8 @@ namespace PKSim.Infrastructure
     [Observation]
     public void should_invoke_new_action()
     {
+      var logger = new PKSimLogger(sut);
+      logger.AddToLog("test", new LogLevel(), "testcategory");
       A.CallTo(() => _f1.Invoke(A<ILoggingBuilder>.Ignored)).MustHaveHappened();
     }
   }
@@ -56,23 +58,18 @@ namespace PKSim.Infrastructure
       for (var i = 0; i < iterations; i++)
       {
         functions.Add(A.Fake<Func<ILoggingBuilder, ILoggingBuilder>>());
+        sut.AddLoggingBuilderConfiguration(functions[i]);
       }
+
+      var logger = new PKSimLogger(sut);
+      logger.AddToLog("test", new LogLevel(), "testcategory");
 
       for (var i = 0; i < iterations; i++)
       {
-        sut.AddLoggingBuilderConfiguration(functions[i]);
         IOrderableCallAssertion check = A.CallTo(() => functions[0].Invoke(A<ILoggingBuilder>.Ignored)).MustHaveHappened();
-        for (var j = 1; j < i; j++)
+        for (var j = 1; j < iterations; j++)
         {
           check = check.Then(A.CallTo(() => functions[j].Invoke(A<ILoggingBuilder>.Ignored)).MustHaveHappened());
-        }
-        for (var j = i + 1; j < iterations; j++)
-        {
-          A.CallTo(() => functions[j].Invoke(A<ILoggingBuilder>.Ignored)).MustNotHaveHappened();
-        }
-        for (var j = 0; j < i; j++)
-        {
-          Fake.ClearConfiguration(functions[i]);
         }
       }
     }

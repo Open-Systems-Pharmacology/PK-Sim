@@ -5,7 +5,8 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
 using PKSim.CLI.Core.Services;
-using PKSim.CLI.Services;
+//using PKSim.CLI.Services;
+using Serilog.Extensions.Logging;
 using PKSim.Infrastructure.Services;
 using IOSPLogger = OSPSuite.Core.Services.ILogger;
 
@@ -71,9 +72,8 @@ namespace PKSim.CLI
       loggerCreator.AddLoggingBuilderConfiguration(builder => builder.SetMinimumLevel(runCommand.LogLevel).AddConsole());
 
       if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
-          loggerCreator.AddLoggingBuilderConfiguration(builder => builder.AddFile(runCommand.LogFileFullPath));
-
+        loggerCreator.AddLoggingBuilderConfiguration(builder => builder.AddFile(runCommand.LogFileFullPath));
       return IoC.Resolve<IOSPLogger>();
-      }
+    }
   }
 }
