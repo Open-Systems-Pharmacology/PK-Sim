@@ -69,10 +69,17 @@ namespace PKSim.CLI
 
       var loggerCreator = IoC.Resolve<ILoggerCreator>();
 
-      loggerCreator.AddLoggingBuilderConfiguration(builder => builder.SetMinimumLevel(runCommand.LogLevel).AddConsole());
+      loggerCreator.AddLoggingBuilderConfiguration(builder =>
+        builder
+          .SetMinimumLevel(runCommand.LogLevel)
+          .AddConsole()
+      );
 
       if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
-        loggerCreator.AddLoggingBuilderConfiguration(builder => builder.AddFile(runCommand.LogFileFullPath));
+        loggerCreator.AddLoggingBuilderConfiguration(builder => 
+          builder
+            .AddFile(runCommand.LogFileFullPath)
+        );
       return IoC.Resolve<IOSPLogger>();
     }
   }
