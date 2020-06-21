@@ -1,11 +1,11 @@
-using OSPSuite.BDDHelper;
-using OSPSuite.Utility.Events;
 using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Events;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Infrastructure.Serialization;
 using PKSim.Infrastructure.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure
 {
@@ -33,12 +33,12 @@ namespace PKSim.Infrastructure
          _simulationResultsLoader = A.Fake<ISimulationResultsLoader>();
          _simulationComparisonContentLoader = A.Fake<ISimulationComparisonContentLoader>();
          _simulationAnalysesLoader = A.Fake<ISimulationAnalysesLoader>();
-         _parameterIdentificationContentendLoader= A.Fake<IParameterIdentificationContentLoader>();
+         _parameterIdentificationContentendLoader = A.Fake<IParameterIdentificationContentLoader>();
          _sensitivityAnalysisContentLoader = A.Fake<ISensitivityAnalysisContentLoader>();
 
          A.CallTo(() => _progressManager.Create()).Returns(_progressUpdater);
          sut = new LazyLoadTask(_contentLoader, _simulationResultsLoader, _simulationChartsLoader,
-            _simulationComparisonContentLoader, _simulationAnalysesLoader,_parameterIdentificationContentendLoader, _sensitivityAnalysisContentLoader,
+            _simulationComparisonContentLoader, _simulationAnalysesLoader, _parameterIdentificationContentendLoader, _sensitivityAnalysisContentLoader,
             _registrationTask, _progressManager);
          _objectToLoad = A.Fake<IPKSimBuildingBlock>();
          _objectToLoad.Id = "objectId";
@@ -252,7 +252,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         sut.LoadResults((IPopulationDataCollector) _comparison);
+         sut.LoadResults(_comparison);
       }
 
       [Observation]
@@ -260,6 +260,34 @@ namespace PKSim.Infrastructure
       {
          A.CallTo(() => _simulationResultsLoader.LoadResultsFor(_sim1)).MustHaveHappened();
          A.CallTo(() => _simulationResultsLoader.LoadResultsFor(_sim2)).MustHaveHappened();
+      }
+   }
+
+   public class When_loading_the_results_of_a_simulation : concern_for_LazyLoadTask
+   {
+      private Simulation _simulationToLoad;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationToLoad = new IndividualSimulation();
+      }
+
+      protected override void Because()
+      {
+         sut.LoadResults(_simulationToLoad);
+      }
+
+      [Observation]
+      public void should_load_the_simulation_first()
+      {
+         A.CallTo(() => _contentLoader.LoadContentFor<IObjectBase>(_simulationToLoad)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_load_the_results()
+      {
+         A.CallTo(() => _simulationResultsLoader.LoadResultsFor(_simulationToLoad)).MustHaveHappened();
       }
    }
 }

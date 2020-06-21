@@ -12,6 +12,7 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.UI.Mappers;
@@ -447,7 +448,9 @@ namespace PKSim.UI.Binders
             var xValue = xAxis.ConvertToDisplayUnit(curveData.XValues[i].X);
             var yValues = yProperty(curveData.YValues[i]);
 
-            double[] yConvertedValues = yValues.Select(y => yAxis.ConvertToDisplayUnit(y)).ToArray();
+            //Convert to the display value of the yAxis using the curve dimension so that we take potential conversion from molar to mass into account
+            //This assumes that the dimensions of the axis and of the curve are compatible but that should be the case by construction
+            double[] yConvertedValues = yValues.Select(y => yAxis.DisplayValue(y, curveData.YDimension)).ToArray();
 
             if (!valuesAreValidForAxes(xAxis, xValue, yAxis, yConvertedValues))
                continue;

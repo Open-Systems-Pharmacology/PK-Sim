@@ -151,11 +151,11 @@ namespace PKSim.Infrastructure
          _individual = A.Fake<Individual>();
          _converter = A.Fake<IObjectConverter>();
          A.CallTo(() => _xmlReaderIndividual.ReadFrom(A<XElement>._, _serializationContext)).Returns(_individual);
-         A.CallTo(() => _objectConverterFinder.FindConverterFor(ProjectVersions.V5_0_1)).Returns(_converter);
+         A.CallTo(() => _objectConverterFinder.FindConverterFor(ProjectVersions.V6_1_2)).Returns(_converter);
          _element = new XElement("Individual");
-         _element.AddAttribute(CoreConstants.Serialization.Attribute.XmlVersion, ProjectVersions.V5_0_1.VersionAsString);
-         A.CallTo(() => _converter.Convert(_individual, ProjectVersions.V5_0_1)).Returns((ProjectVersions.Current, true));
-         A.CallTo(() => _converter.ConvertXml(A<XElement>._, ProjectVersions.V5_0_1)).Returns((ProjectVersions.Current, true));
+         _element.AddAttribute(CoreConstants.Serialization.Attribute.XmlVersion, ProjectVersions.V6_1_2.VersionAsString);
+         A.CallTo(() => _converter.Convert(_individual, ProjectVersions.V6_1_2)).Returns((ProjectVersions.Current, true));
+         A.CallTo(() => _converter.ConvertXml(A<XElement>._, ProjectVersions.V6_1_2)).Returns((ProjectVersions.Current, true));
       }
 
       protected override void Because()
@@ -166,7 +166,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_retrieved_a_converter_for_the_individual_and_convert_the_new_individual()
       {
-         A.CallTo(() => _converter.Convert(_individual, ProjectVersions.V5_0_1)).MustHaveHappened();
+         A.CallTo(() => _converter.Convert(_individual, ProjectVersions.V6_1_2)).MustHaveHappened();
       }
 
       [Observation]

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -22,8 +20,8 @@ namespace PKSim.Core
       protected IndividualTransporter _transporter;
       protected IndividualOtherProtein _otherProtein;
       protected Molecule _snapshot;
-      private IParameter _enzymeParameter;
-      private Parameter _enzymeParameterSnapshot;
+      private IParameter _enzymeGlobalParameter;
+      protected Parameter _enzymeGlobalParameterSnapshot;
       private MoleculeExpressionContainer _expressionContainer1;
       protected IParameter _relativeExpressionParameter1;
       private IParameter _relativeExpressionParameterNotSet;
@@ -45,15 +43,15 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         _expressionContainerMapper= A.Fake<ExpressionContainerMapper>();
+         _expressionContainerMapper = A.Fake<ExpressionContainerMapper>();
          _executionContext = A.Fake<IExecutionContext>();
          _individualMoleculeFactoryResolver = A.Fake<IIndividualMoleculeFactoryResolver>();
-         _ontogenyMapper= A.Fake<OntogenyMapper>();
-         _ontogenyTask= A.Fake<IOntogenyTask<Individual>>();
-         _individualMoleculeParametersTask= A.Fake<IMoleculeParameterTask>();
+         _ontogenyMapper = A.Fake<OntogenyMapper>();
+         _ontogenyTask = A.Fake<IOntogenyTask<Individual>>();
+         _individualMoleculeParametersTask = A.Fake<IMoleculeParameterTask>();
 
-         sut = new MoleculeMapper(_parameterMapper,_expressionContainerMapper, 
-            _ontogenyMapper,_individualMoleculeFactoryResolver, _executionContext, _ontogenyTask,_individualMoleculeParametersTask);
+         sut = new MoleculeMapper(_parameterMapper, _expressionContainerMapper,
+            _ontogenyMapper, _individualMoleculeFactoryResolver, _executionContext, _ontogenyTask, _individualMoleculeParametersTask);
 
          _ontogeny = new DatabaseOntogeny
          {
@@ -63,30 +61,30 @@ namespace PKSim.Core
          _enzyme = new IndividualEnzyme
          {
             Name = "Enzyme",
-            Description = "Hellp",
+            Description = "Help",
             Ontogeny = _ontogeny,
          };
 
          _transporter = new IndividualTransporter
          {
             Name = "Transporter",
-            Description = "Hellp"
+            Description = "Help"
          };
 
          _otherProtein = new IndividualOtherProtein
          {
             Name = "OtherProtein",
-            Description = "Hellp"
+            Description = "Help"
          };
 
-         _enzymeParameter = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName("HalfLife");
-         _enzymeParameterSnapshot = new Parameter();
+         _enzymeGlobalParameter = DomainHelperForSpecs.ConstantParameterWithValue(5, isDefault: true).WithName(CoreConstants.Parameters.HALF_LIFE_LIVER);
+         _enzymeGlobalParameterSnapshot = new Parameter();
 
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_enzymeParameter)).Returns(_enzymeParameterSnapshot);
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_enzymeGlobalParameter)).Returns(_enzymeGlobalParameterSnapshot);
 
          _expressionContainer1 = new MoleculeExpressionContainer {Name = "Exp Container1"};
-         _expressionContainer2 = new MoleculeExpressionContainer { Name = "Exp Container2"};
-         _enzyme.AddChildren(_expressionContainer1, _expressionContainer2);
+         _expressionContainer2 = new MoleculeExpressionContainer {Name = "Exp Container2"};
+         _enzyme.AddChildren(_expressionContainer1, _expressionContainer2, _enzymeGlobalParameter);
 
          _relativeExpressionParameter1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.REL_EXP);
          _relativeExpressionParameterNorm1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.REL_EXP_NORM);
@@ -106,7 +104,7 @@ namespace PKSim.Core
 
          _snapshotOntogeny = new Snapshots.Ontogeny();
          A.CallTo(() => _ontogenyMapper.MapToSnapshot(_ontogeny)).Returns(_snapshotOntogeny);
-         _individual =new Individual();
+         _individual = new Individual();
 
          return _completed;
       }
@@ -125,7 +123,6 @@ namespace PKSim.Core
          _snapshot.Name.ShouldBeEqualTo(_enzyme.Name);
          _snapshot.Description.ShouldBeEqualTo(_enzyme.Description);
       }
-
 
       [Observation]
       public void should_have_saved_the_relative_expression_parameters_values_that_are_set()
@@ -146,6 +143,12 @@ namespace PKSim.Core
       public void should_have_saved_the_ontogeny_of_the_molecule()
       {
          _snapshot.Ontogeny.ShouldBeEqualTo(_snapshotOntogeny);
+      }
+
+      [Observation]
+      public void should_have_saved_the_global_parameters_of_the_molecule_even_if_they_were_not_changed_by_the_user()
+      {
+         _snapshot.Parameters.ShouldContain(_enzymeGlobalParameterSnapshot);
       }
    }
 
@@ -173,7 +176,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_valid_enzyme_molecule_snahpshot_to_a_molecule : concern_for_MoleculeMapper
+   public class When_mapping_a_valid_enzyme_molecule_snapshot_to_a_molecule : concern_for_MoleculeMapper
    {
       private IndividualEnzyme _newMolecule;
 
@@ -235,7 +238,6 @@ namespace PKSim.Core
          A.CallTo(() => _ontogenyTask.SetOntogenyForMolecule(_newMolecule, _ontogeny, _individual)).MustHaveHappened();
       }
    }
-
 
    public class When_mapping_a_valid_transporter_molecule_snahpshot_to_a_molecule : concern_for_MoleculeMapper
    {

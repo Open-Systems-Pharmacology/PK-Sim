@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Repositories;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
@@ -22,27 +22,23 @@ namespace PKSim.Infrastructure.ORM.Mappers
    public class FlatContainerToApplicationMapper : FlatContainerIdToContainerMapperBase<IApplicationBuilder>, IFlatContainerToApplicationMapper
    {
       private readonly IParameterContainerTask _parameterContainerTask;
-      private readonly IApplicationTransportRepository _applicTransportRepo;
+      private readonly IApplicationTransportRepository _applicationTransportRepository;
       private readonly IEntityPathResolver _entityPathResolver;
-      private readonly IFlatContainerRepository _flatContainerRepo;
       private readonly IFlatContainerIdToContainerMapper _flatContainerIdMapper;
-      private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IFlatContainerToEventBuilderMapper _eventMapper;
 
       public FlatContainerToApplicationMapper(IParameterContainerTask parameterContainerTask,
-                                              IApplicationTransportRepository applicTransportRepo,
-                                              IEntityPathResolver entityPathResolver,
-                                              IFlatContainerRepository flatContainerRepo,
-                                              IFlatContainerIdToContainerMapper flatContainerIdMapper,
-                                              IObjectBaseFactory objectBaseFactory,
-                                              IFlatContainerToEventBuilderMapper eventMapper)
+         IApplicationTransportRepository applicationTransportRepository,
+         IEntityPathResolver entityPathResolver,
+         IFlatContainerRepository flatContainerRepository,
+         IFlatContainerIdToContainerMapper flatContainerIdMapper,
+         IObjectBaseFactory objectBaseFactory,
+         IFlatContainerToEventBuilderMapper eventMapper, IFlatContainerTagRepository flatContainerTagRepository) : base(objectBaseFactory, flatContainerRepository, flatContainerTagRepository)
       {
          _parameterContainerTask = parameterContainerTask;
-         _applicTransportRepo = applicTransportRepo;
+         _applicationTransportRepository = applicationTransportRepository;
          _entityPathResolver = entityPathResolver;
-         _flatContainerRepo = flatContainerRepo;
          _flatContainerIdMapper = flatContainerIdMapper;
-         _objectBaseFactory = objectBaseFactory;
          _eventMapper = eventMapper;
       }
 
@@ -72,16 +68,14 @@ namespace PKSim.Infrastructure.ORM.Mappers
          return applicationBuilder;
       }
 
-      private static void addApplicationSourceCriteria(IApplicationBuilder applicBuilder)
+      private static void addApplicationSourceCriteria(IApplicationBuilder applicationBuilder)
       {
-         applicBuilder.SourceCriteria.Add(new MatchTagCondition(Constants.APPLICATIONS));
+         applicationBuilder.SourceCriteria.Add(new MatchTagCondition(Constants.APPLICATIONS));
       }
 
       private void addEvents(IContainer container)
       {
-         var flatEventSubContainers = flatSubContainersFor(container,
-                                                           containerType =>
-                                                           containerType == CoreConstants.ContainerType.Event);
+         var flatEventSubContainers = flatSubContainersFor(container, x => x == CoreConstants.ContainerType.Event);
 
          foreach (var flatEventContainer in flatEventSubContainers)
          {
@@ -89,11 +83,11 @@ namespace PKSim.Infrastructure.ORM.Mappers
          }
       }
 
-      private void createParentFormulation(IApplicationBuilder applicBuilder, int? formulationContainerId)
+      private void createParentFormulation(IApplicationBuilder applicationBuilder, int? formulationContainerId)
       {
-         var flatFormulation = _flatContainerRepo.ContainerFrom(formulationContainerId);
+         var flatFormulation = _flatContainerRepository.ContainerFrom(formulationContainerId);
          var formulation = _objectBaseFactory.Create<IContainer>().WithName(flatFormulation.Name);
-         formulation.Add(applicBuilder);
+         formulation.Add(applicationBuilder);
       }
 
       private void addApplicationStructureTo(IContainer container)
@@ -112,9 +106,9 @@ namespace PKSim.Infrastructure.ORM.Mappers
       private IEnumerable<IContainer> subContainersFor(IContainer container)
       {
          var flatSubContainers = flatSubContainersFor(container,
-                                                      containerType =>
-                                                      containerType != CoreConstants.ContainerType.Event &&
-                                                      containerType != CoreConstants.ContainerType.Process);
+            containerType =>
+               containerType != CoreConstants.ContainerType.Event &&
+               containerType != CoreConstants.ContainerType.Process);
 
          return flatSubContainers.MapAllUsing(_flatContainerIdMapper);
       }
@@ -124,23 +118,23 @@ namespace PKSim.Infrastructure.ORM.Mappers
          var pathToParentContainer = _entityPathResolver.PathFor(container);
 
          //find parent container in repo
-         var flatParentContainer = _flatContainerRepo.ContainerFrom(pathToParentContainer);
+         var flatParentContainer = _flatContainerRepository.ContainerFrom(pathToParentContainer);
 
-         return from flatContainer in _flatContainerRepo.All()
-                let parentContainer = _flatContainerRepo.ParentContainerFrom(flatContainer.Id)
-                where parentContainer != null
-                where parentContainer.Id == flatParentContainer.Id
-                where containerTypeCondition(flatContainer.Type)
-                select flatContainer;
+         return from flatContainer in _flatContainerRepository.All()
+            let parentContainer = _flatContainerRepository.ParentContainerFrom(flatContainer.Id)
+            where parentContainer != null
+            where parentContainer.Id == flatParentContainer.Id
+            where containerTypeCondition(flatContainer.Type)
+            select flatContainer;
       }
 
       /// <summary>
-      ///   Add application processes to the application builder
+      ///    Add application processes to the application builder
       /// </summary>
-      private void addApplicationProcessesTo(IApplicationBuilder applicBuilder)
+      private void addApplicationProcessesTo(IApplicationBuilder applicationBuilder)
       {
-         var applicPocesses = _applicTransportRepo.TransportsFor(applicBuilder.Name);
-         applicPocesses.Each(applicBuilder.AddTransport);
+         var applicationProcess = _applicationTransportRepository.TransportsFor(applicationBuilder.Name);
+         applicationProcess.Each(applicationBuilder.AddTransport);
       }
    }
 }

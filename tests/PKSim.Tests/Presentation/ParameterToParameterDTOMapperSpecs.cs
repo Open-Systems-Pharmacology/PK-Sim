@@ -1,19 +1,18 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Mappers;
+using OSPSuite.Core.Domain.Repositories;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.DTO;
 using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Repositories;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
-using IParameterToParameterDTOMapper = PKSim.Presentation.DTO.Mappers.IParameterToParameterDTOMapper;
 
 namespace PKSim.Presentation
 {
@@ -36,8 +35,8 @@ namespace PKSim.Presentation
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _favoriteRepository = A.Fake<IFavoriteRepository>();
          _pathToPathElementsMapper = A.Fake<IPathToPathElementsMapper>();
-         _parameterListOfValuesRetriever= A.Fake<IParameterListOfValuesRetriever>();
-         sut = new ParameterToParameterDTOMapper(_representationInfoRepository, _formulaTypeMapper, _pathToPathElementsMapper, _favoriteRepository, _entityPathResolver,_parameterListOfValuesRetriever );
+         _parameterListOfValuesRetriever = A.Fake<IParameterListOfValuesRetriever>();
+         sut = new ParameterToParameterDTOMapper(_representationInfoRepository, _formulaTypeMapper, _pathToPathElementsMapper, _favoriteRepository, _entityPathResolver, _parameterListOfValuesRetriever);
       }
    }
 
@@ -66,11 +65,11 @@ namespace PKSim.Presentation
          _path2 = _repInfoParameter;
          A.CallTo(() => _representationInfoRepository.InfoFor(_parameter)).Returns(_repInfoParameter);
          var cache = new PathElements();
-         cache.Add(PathElement.TopContainer, new PathElementDTO {DisplayName = _path0.DisplayName});
-         cache.Add(PathElement.Container, new PathElementDTO {DisplayName = _path1.DisplayName});
+         cache.Add(PathElementId.TopContainer, new PathElement {DisplayName = _path0.DisplayName});
+         cache.Add(PathElementId.Container, new PathElement {DisplayName = _path1.DisplayName});
          A.CallTo(() => _pathToPathElementsMapper.MapFrom(_parameter)).Returns(cache);
          var parameterPath = new ObjectPath();
-         A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter,  false)).Returns(parameterPath);
+         A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(parameterPath);
          A.CallTo(() => _favoriteRepository.Contains(parameterPath)).Returns(true);
       }
 
@@ -98,16 +97,16 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_have_set_the_parameter_hiearchy_path_according_to_the_parameter()
+      public void should_have_set_the_parameter_hierarchy_path_according_to_the_parameter()
       {
-         _result.PathElements[PathElement.TopContainer].DisplayName.ShouldBeEqualTo(_path0.DisplayName);
-         _result.PathElements[PathElement.Container].DisplayName.ShouldBeEqualTo(_path1.DisplayName);
+         _result.PathElements[PathElementId.TopContainer].DisplayName.ShouldBeEqualTo(_path0.DisplayName);
+         _result.PathElements[PathElementId.Container].DisplayName.ShouldBeEqualTo(_path1.DisplayName);
       }
 
       [Observation]
-      public void should_have_set_the_parameter_path_corresponding_to_the_comparmtment_display_name_to_an_empty_string()
+      public void should_have_set_the_parameter_path_corresponding_to_the_compartment_display_name_to_an_empty_string()
       {
-         string.IsNullOrEmpty(_result.PathElements[PathElement.BottomCompartment].DisplayName).ShouldBeTrue();
+         string.IsNullOrEmpty(_result.PathElements[PathElementId.BottomCompartment].DisplayName).ShouldBeTrue();
       }
 
       [Observation]

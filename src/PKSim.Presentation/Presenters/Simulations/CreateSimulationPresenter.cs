@@ -69,6 +69,6 @@ namespace PKSim.Presentation.Presenters.Simulations
          AllSimulationItemsAfterModel.Each(x => PresenterAt(x).EditSimulation(Simulation, CreationMode.New));
       }
 
-      protected override string HeayWorkCaption => PKSimConstants.UI.CreatingSimulation;
+      protected override string HeavyWorkCaption => PKSimConstants.UI.CreatingSimulation;
    }
 }

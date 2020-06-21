@@ -17,7 +17,7 @@ namespace PKSim.Presentation.Presenters
       IPKSimCommand Create();
 
       /// <summary>
-      /// Returns the created <see cref="TBuildingBlock"/>
+      /// Returns the created <typeparamref name="TBuildingBlock"/> 
       /// </summary>
       TBuildingBlock BuildingBlock { get; }
    }

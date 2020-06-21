@@ -15,7 +15,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
       PopulationAnalysisParameterField CreateFor(IParameter parameter);
       PopulationAnalysisPKParameterField CreateFor(QuantityPKParameter pkParameter, QuantityType quantityType, string quantityDisplayPath);
       PopulationAnalysisCovariateField CreateFor(string covariate, IPopulationDataCollector populationDataCollector);
-      PopulationAnalysisGroupingField CreateGroupingField(GroupingDefinition groupingDefiniton, IPopulationAnalysisField populationAnalysisField);
+      PopulationAnalysisGroupingField CreateGroupingField(GroupingDefinition groupingDefinition, IPopulationAnalysisField populationAnalysisField);
       PopulationAnalysisOutputField CreateFor(IQuantity quantity, string defaultName);
    }
 
@@ -113,12 +113,12 @@ namespace PKSim.Core.Model.PopulationAnalyses
          groupingItem.Symbol = symbol;
       }
 
-      public PopulationAnalysisGroupingField CreateGroupingField(GroupingDefinition groupingDefiniton, IPopulationAnalysisField populationAnalysisField)
+      public PopulationAnalysisGroupingField CreateGroupingField(GroupingDefinition groupingDefinition, IPopulationAnalysisField populationAnalysisField)
       {
-         var interval = groupingDefiniton as IntervalGroupingDefinition;
+         var interval = groupingDefinition as IntervalGroupingDefinition;
          var numericField = populationAnalysisField as INumericValueField;
          updateDimension(numericField, interval);
-         return new PopulationAnalysisGroupingField(groupingDefiniton);
+         return new PopulationAnalysisGroupingField(groupingDefinition);
       }
 
       private void updateDimension(IWithDisplayUnit source, IWithDisplayUnit target)

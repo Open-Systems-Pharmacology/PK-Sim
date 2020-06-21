@@ -138,40 +138,12 @@ namespace PKSim.Infrastructure.ORM.DAS
       /// </summary>
       /// <param name="dbName">
       ///    Name of the database to connect to.
-      ///    <para>
-      ///       If <see cref="DataProviders.MSAccess"></see> or <see cref="DataProviders.MSAccessWithDatabaseSecurity"></see> or
-      ///       <see cref="DataProviders.MSAccessWithWorkgroupSecurity"></see> is specified as provider it has to be the filename
-      ///       of the Microsoft Access database file (*.mdb).
-      ///    </para>
-      ///    <para>
-      ///       If <see cref="DataProviders.Oracle"></see> is specified as provider the alias for a Oracle database used in
-      ///       the SQL*Net enviroment must be specified (tnsnames.ora).
-      ///    </para>
       /// </param>
       /// <param name="workgroupDb">Filename of the workgroup database.</param>
       /// <param name="user">Name of the database user used for the connection.</param>
       /// <param name="password">Password of the database user used for the connection.</param>
       /// <param name="dataProvider">
       ///    Provider for connection.
-      ///    <para><see cref="DataProviders.MSAccess"></see> means a connection to a Microsoft Access database.</para>
-      ///    <para>
-      ///       <see cref="DataProviders.MSAccessWithDatabaseSecurity"></see> means a connection to a Microsoft Access database
-      ///       with database security.
-      ///       That means there is a password defined within the database.
-      ///    </para>
-      ///    <para>
-      ///       <see cref="DataProviders.MSAccessWithWorkgroupSecurity"></see> means a connection to a Microsoft Access
-      ///       database with workgroup security.
-      ///    </para>
-      ///    <para>
-      ///       <see cref="DataProviders.Oracle"></see> means a connection to an Oracle database using the oracle data
-      ///       provider.
-      ///    </para>
-      /// </param>
-      /// <para>
-      ///    <see cref="DataProviders.MSOracle"></see> means a connection to an Oracle database using the microsoft data
-      ///    provider.
-      /// </para>
       /// </param>
       /// <returns><c>True</c>, if connection could be established.</returns>
       /// <exception cref="AlreadyConnectedException">Thrown when there is already an established connection.</exception>
@@ -187,27 +159,6 @@ namespace PKSim.Infrastructure.ORM.DAS
 
             switch (dataProvider)
             {
-               case DataProviders.MSAccess:
-                  sProvider = "System.Data.OleDb";
-                  connBuilder.Add("Provider", "Microsoft.Jet.OLEDB.4.0");
-                  connBuilder.Add("Data Source", dbName);
-                  connBuilder.Add("User ID", user);
-                  connBuilder.Add("Password", password);
-                  try
-                  {
-                     returnValue = Connect(sProvider, connBuilder.ConnectionString);
-                  }
-                  catch (Exception)
-                  {
-                  }
-
-                  if (!IsConnected)
-                  {
-                     connBuilder["Provider"] = "Microsoft.ACE.OLEDB.12.0";
-                  }
-
-                  break;
-
                case DataProviders.SQLite:
                   sProvider = "System.Data.SQLite";
                   connBuilder.Add("Data Source", dbName);
@@ -239,7 +190,7 @@ namespace PKSim.Infrastructure.ORM.DAS
          return Connect(dbName, string.Empty, user, password, dataProvider);
       }
 
-          /// <summary>
+      /// <summary>
       ///    This property gives the information whether there is an opened transaction.
       /// </summary>
       /// <exception cref="NotConnectedException">Thrown when there is no established connection.</exception>

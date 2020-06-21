@@ -17,13 +17,13 @@ namespace PKSim.Presentation.Presenters.Simulations
    public interface IConfigureSimulationPresenter : ISimulationWizardPresenter
    {
       /// <summary>
-      ///    Starts the configuation workflow for the given simulationToClone
+      ///    Starts the configuration workflow for the given simulationToClone
       /// </summary>
       /// <param name="simulation"> Simulation to configure </param>
       IPKSimCommand ConfigureSimulation(Simulation simulation);
 
       /// <summary>
-      ///    Starts the configuation workflow for the given simulationToClone and set the template building block als selected
+      ///    Starts the configuration workflow for the given simulationToClone and set the template building block als selected
       ///    building block
       /// </summary>
       /// <param name="simulation"> Simulation to configure </param>
@@ -43,10 +43,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
       }
 
-      protected override string HeayWorkCaption
-      {
-         get { return PKSimConstants.UI.UpdatingSimulation; }
-      }
+      protected override string HeavyWorkCaption => PKSimConstants.UI.UpdatingSimulation;
 
       protected override string ViewCaption(Simulation simulation)
       {

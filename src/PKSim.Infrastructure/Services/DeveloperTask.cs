@@ -1,8 +1,8 @@
 ﻿using System.Data.Common;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Infrastructure.Services;
-using PKSim.Presentation.Services;
+using OSPSuite.Infrastructure.Serialization.Services;
+using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
 {

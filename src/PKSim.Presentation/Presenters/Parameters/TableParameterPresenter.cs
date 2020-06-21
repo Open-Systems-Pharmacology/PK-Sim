@@ -179,7 +179,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       {
          //do not use AddCommand here as we only want to save the table without notifying any change events
          //since all changed were performed already
-         CommandCollector.AddCommand(_parameterTask.SetParameterFomula(_tableParameter, EditedFormula));
+         CommandCollector.AddCommand(_parameterTask.SetParameterFormula(_tableParameter, EditedFormula));
       }
 
       public void AddPoint()

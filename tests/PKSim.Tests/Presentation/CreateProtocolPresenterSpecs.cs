@@ -53,7 +53,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallySwitchProtocolMode)).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallySwitchProtocolMode, ViewResult.Yes)).Returns(ViewResult.Yes);
       }
 
       protected override void Because()
@@ -64,7 +64,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_ask_the_user_if_a_switch_if_necessary()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallySwitchProtocolMode)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallySwitchProtocolMode, ViewResult.Yes)).MustHaveHappened();
       }
 
       [Observation]
@@ -81,7 +81,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallySwitchProtocolMode)).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallySwitchProtocolMode, ViewResult.Yes)).Returns(ViewResult.No);
       }
 
       protected override void Because()

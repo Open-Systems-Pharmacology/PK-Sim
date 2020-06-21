@@ -191,7 +191,7 @@ namespace PKSim.Core.Services
          if (string.Equals(formula.FormulaString, formulaToAdd.FormulaString))
             return false;
 
-         throw new PKSimException(PKSimConstants.Error.FormulaParamterAlreadyExistsInContainerWithAnotherFormula(parameterContainer.Name, parameter.Name, formula.FormulaString, formulaToAdd.FormulaString));
+         throw new PKSimException(PKSimConstants.Error.FormulaParameterAlreadyExistsInContainerWithAnotherFormula(parameterContainer.Name, parameter.Name, formula.FormulaString, formulaToAdd.FormulaString));
       }
    }
 }

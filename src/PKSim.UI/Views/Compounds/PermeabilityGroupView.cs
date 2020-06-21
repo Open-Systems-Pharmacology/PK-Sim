@@ -5,12 +5,12 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Columns;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Binders;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.UI.Extensions;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -31,9 +31,9 @@ namespace PKSim.UI.Views.Compounds
 
          AddValueBinding(colValue);
          colValue.WithFormat(formatForAlternative);
-         colValue.OnValueUpdating += (x, e) => permeabilityGroupPresenter.SetPermabilityValue(x, e.NewValue);
+         colValue.OnValueUpdating += (x, e) => permeabilityGroupPresenter.SetPermeabilityValue(x, e.NewValue);
          _colValue = colValue;
-         _comboBoxUnit.ParameterUnitSet += (dto, unit) => OnEvent(() => permeabilityGroupPresenter.SetPermabilityUnit(dto, unit));
+         _comboBoxUnit.ParameterUnitSet += (dto, unit) => OnEvent(() => permeabilityGroupPresenter.SetPermeabilityUnit(dto, unit));
 
          //to do at the end to respect order
          base.InitializeBinding();

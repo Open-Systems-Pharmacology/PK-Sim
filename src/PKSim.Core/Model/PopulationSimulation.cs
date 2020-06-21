@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Maths.Random;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Maths.Random;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Model
 {
@@ -49,17 +51,18 @@ namespace PKSim.Core.Model
 
       public override TBuildingBlock BuildingBlock<TBuildingBlock>()
       {
-         if (typeof (TBuildingBlock).IsAnImplementationOf<Individual>())
+         if (typeof(TBuildingBlock).IsAnImplementationOf<Individual>())
             return Population.FirstIndividual as TBuildingBlock;
 
          return AllBuildingBlocks<TBuildingBlock>().SingleOrDefault();
       }
 
       /// <summary>
-      ///    Returns all parameters that could potentially be defined as advanced parameters in a simulation 
+      ///    Returns all parameters that could potentially be defined as advanced parameters in a simulation
       /// </summary>
-      public virtual IEnumerable<IParameter> AllPotentialAdvancedParameters => 
-         ParametersOfType(PKSimBuildingBlockType.Simulation | PKSimBuildingBlockType.Compound | PKSimBuildingBlockType.Event | PKSimBuildingBlockType.Formulation | PKSimBuildingBlockType.Protocol);
+      public virtual IEnumerable<IParameter> AllPotentialAdvancedParameters =>
+         ParametersOfType(PKSimBuildingBlockType.Simulation | PKSimBuildingBlockType.Compound | PKSimBuildingBlockType.Event |
+                          PKSimBuildingBlockType.Formulation | PKSimBuildingBlockType.Protocol);
 
       /// <summary>
       ///    Returns all values defined for the organism parameter names <paramref name="parameterName" />
@@ -134,7 +137,7 @@ namespace PKSim.Core.Model
          if (Results.IsNull())
             return missingQuantityValuesArray();
 
-         var allValuesForPath = Results.AllValuesFor(quantityPath);
+         var allValuesForPath = Results.AllQuantityValuesFor(quantityPath);
          //we might not have the right number or the values might not exist for the path
          if (allValuesForPath.Count == NumberOfItems && allValuesForPath.All(x => x != null))
             return allValuesForPath;
@@ -150,7 +153,7 @@ namespace PKSim.Core.Model
       private IReadOnlyList<QuantityValues> patchedUpResults(string quantityPath)
       {
          var values = new List<QuantityValues>(missingQuantityValuesArray());
-         var allExistingResults = Results.AllIndividualResults.Select(x => new {x.IndividualId, Values = x.ValuesFor(quantityPath)});
+         var allExistingResults = Results.AllIndividualResults.Select(x => new {x.IndividualId, Values = x.QuantityValuesFor(quantityPath)});
          allExistingResults.Each(existingValue => values[existingValue.IndividualId] = existingValue.Values);
          return values;
       }
@@ -199,15 +202,6 @@ namespace PKSim.Core.Model
          return PKAnalyses.HasPKParameterFor(quantityPath, pkParameter);
       }
 
-      public double? MolWeightFor(string quantityPath)
-      {
-         var objectPath = new ObjectPath(quantityPath.ToPathArray());
-         var quantity = objectPath.TryResolve<IQuantity>(Model.Root, out bool found);
-         if (!found)
-            return null;
-
-         return Model.MolWeightFor(quantity);
-      }
 
       public virtual IReadOnlyList<string> AllSimulationNames => new string[NumberOfItems].InitializeWith(Name);
 
@@ -230,6 +224,7 @@ namespace PKSim.Core.Model
             if (!allParameters.Contains(populationParameters.Key))
                allParameters.Add(populationParameters.Key, populationParameters.Value);
          }
+
          return allParameters;
       }
 
@@ -248,9 +243,9 @@ namespace PKSim.Core.Model
 
       public virtual IEnumerable<AdvancedParameter> AdvancedParameters => advancedParameterCollection.AdvancedParameters;
 
-      public virtual IReadOnlyList<Gender> AllGenders => Population.AllGenders;
+      public virtual IReadOnlyList<Gender> AllGenders(IGenderRepository genderRepository) => Population.AllGenders(genderRepository);
 
-      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => Population.AllRaces;
+//      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => Population.AllRaces;
 
       public virtual IReadOnlyList<string> AllCovariateValuesFor(string covariateName)
       {

@@ -4,6 +4,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 
@@ -16,7 +17,7 @@ namespace PKSim.Core
       protected IParameter _oneAdvancedParameter;
       protected IParameter _individualParameter;
       protected IParameter _anotherParameter;
-      protected IndividualProperties _indvidualProperties;
+      protected IndividualValues _individualValues;
       protected string _pathParameterAdvanced;
 
       protected override void Context()
@@ -30,9 +31,9 @@ namespace PKSim.Core
          sut.Settings = new RandomPopulationSettings {BaseIndividual = _baseIndividual};
          _entityPathResolver = A.Fake<IEntityPathResolver>();
 
-         _indvidualProperties = new IndividualProperties();
-         _indvidualProperties.AddParameterValue(new ParameterValue(pathParameterIndividual, 10, 0.1));
-         _indvidualProperties.AddParameterValue(new ParameterValue(_pathParameterAdvanced, 20, 0.2));
+         _individualValues = new IndividualValues();
+         _individualValues.AddParameterValue(new ParameterValue(pathParameterIndividual, 10, 0.1));
+         _individualValues.AddParameterValue(new ParameterValue(_pathParameterAdvanced, 20, 0.2));
          _oneAdvancedParameter = A.Fake<IParameter>().WithName("Advanced");
          A.CallTo(() => _oneAdvancedParameter.IsChangedByCreateIndividual).Returns(false);
          _oneAdvancedParameter.Visible = true;
@@ -46,7 +47,7 @@ namespace PKSim.Core
          A.CallTo(() => _entityPathResolver.PathFor(_individualParameter)).Returns(pathParameterIndividual);
          A.CallTo(() => _entityPathResolver.PathFor(_anotherParameter)).Returns(anotherPath);
          A.CallTo(() => _baseIndividual.GetAllChildren<IParameter>()).Returns(new[] {_individualParameter, _oneAdvancedParameter, _anotherParameter});
-         sut.AddIndividualProperties(_indvidualProperties);
+         sut.AddIndividualValues(_individualValues);
       }
    }
 
@@ -158,7 +159,6 @@ namespace PKSim.Core
          _randomValues = new List<RandomValue>
          {
             new RandomValue {Value = 1, Percentile = 0.5},
-            new RandomValue {Value = 2, Percentile = 0.6}
          };
          A.CallTo(() => _advancedParameter.GenerateRandomValues(sut.NumberOfItems)).Returns(_randomValues);
       }
@@ -188,7 +188,6 @@ namespace PKSim.Core
          var sourceValues = _randomValues.Select(x => x.Percentile).ToArray();
 
          values[0].ShouldBeEqualTo(sourceValues[0], 1e-2);
-         values[1].ShouldBeEqualTo(sourceValues[1], 1e-2);
       }
    }
 
@@ -201,7 +200,7 @@ namespace PKSim.Core
          base.Context();
          _advancedParameter = A.Fake<AdvancedParameter>();
          _advancedParameter.ParameterPath = "A NEW PARAMETER PATH";
-         sut.AddAdvancedParameter(_advancedParameter);
+         sut.AddAdvancedParameter(_advancedParameter, generateRandomValues:false);
       }
 
       protected override void Because()
@@ -218,7 +217,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_contain_any_value_for_the_parameter_with_the_given_path_anymore()
       {
-         sut.IndividualPropertiesCache.Has(_advancedParameter.ParameterPath).ShouldBeFalse();
+         sut.IndividualValuesCache.Has(_advancedParameter.ParameterPath).ShouldBeFalse();
       }
    }
 
@@ -227,12 +226,12 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.IndividualPropertiesCache.AddConvariate("Cov1", new List<string> {"Male"});
-         sut.IndividualPropertiesCache.AddConvariate("Cov2", new List<string> {"EU"});
+         sut.IndividualValuesCache.AddCovariate("Cov1", new List<string> {"Male"});
+         sut.IndividualValuesCache.AddCovariate("Cov2", new List<string> {"EU"});
       }
 
       [Observation]
-      public void should_return_the_convariate_defined_in_the_individual_properties_cache_extended_with_the_population_name()
+      public void should_return_the_covariate_defined_in_the_individual_properties_cache_extended_with_the_population_name()
       {
          sut.AllCovariateNames.ShouldOnlyContain("Cov1", "Cov2", CoreConstants.Covariates.POPULATION_NAME);
       }
@@ -240,7 +239,7 @@ namespace PKSim.Core
       [Observation]
       public void the_population_name_should_only_be_available_once()
       {
-         sut.IndividualPropertiesCache.AddConvariate(CoreConstants.Covariates.POPULATION_NAME, new List<string> {"TOTO"});
+         sut.IndividualValuesCache.AddCovariate(CoreConstants.Covariates.POPULATION_NAME, new List<string> {"TOTO"});
          sut.AllCovariateNames.ShouldOnlyContain("Cov1", "Cov2", CoreConstants.Covariates.POPULATION_NAME);
       }
    }

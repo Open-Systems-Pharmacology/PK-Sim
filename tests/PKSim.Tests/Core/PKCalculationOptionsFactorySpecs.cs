@@ -104,7 +104,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_options_with_a_dose_set_to_null_as_it_needs_to_be_calculated_for_all_individual_separately()
       {
-         _result.Dose.ShouldBeNull();
+         _result.TotalDrugMassPerBodyWeight.ShouldBeNull();
       }
    }
 
@@ -165,7 +165,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_option_with_the_dose_set()
       {
-         sut.CreateForObservedData(new[] {_simulation1}, _moleculeName).Dose.ShouldBeEqualTo(_dose);
+         sut.CreateForObservedData(new[] {_simulation1}, _moleculeName).TotalDrugMassPerBodyWeight.ShouldBeEqualTo(_dose);
       }
    }
 
@@ -188,7 +188,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_option_with_the_dose_null()
       {
-         sut.CreateForObservedData(new[] {_simulation1, _simulation2,}, _moleculeName).Dose.ShouldBeNull();
+         sut.CreateForObservedData(new[] {_simulation1, _simulation2,}, _moleculeName).TotalDrugMassPerBodyWeight.ShouldBeNull();
       }
    }
 
@@ -271,7 +271,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void multiple_adiministration_times_should_not_be_used_to_calculate_pk_parameter_options()
+      public void multiple_administration_times_should_not_be_used_to_calculate_pk_parameter_options()
       {
          sut.CreateFor(_simulation1, _product).PKParameterMode.ShouldBeEqualTo(PKParameterMode.Single);
       }
@@ -385,7 +385,7 @@ namespace PKSim.Core
       public void should_return_options_containing_dosing_intervals_for_the_first_and_only_application()
       {
          _options.SingleDosing.ShouldBeTrue();
-         _options.FirstDosingStartValue.ShouldBeEqualTo(_startTime.Value.ToFloat());
+         _options.FirstInterval.StartValue.ShouldBeEqualTo(_startTime.Value.ToFloat());
       }
    }
 
@@ -412,18 +412,18 @@ namespace PKSim.Core
       public void should_return_options_containing_dosing_intervals_for_the_multiple_applications()
       {
          _options.SingleDosing.ShouldBeFalse();
-         _options.FirstDosingStartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
-         _options.LastDosingStartValue.ShouldBeEqualTo(_startTime2.Value.ToFloat());
-         _options.LastMinusOneDosingStartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
+         _options.FirstInterval.StartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
+         _options.LastInterval.StartValue.ShouldBeEqualTo(_startTime2.Value.ToFloat());
+         _options.LastMinusOneInterval.StartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
       }
 
 
       [Observation]
       public void should_return_the_expected_dose_for_all_intervals()
       {
-         _options.FirstDose.ShouldBeEqualTo(_drugMass1.Value/_simulation1.BodyWeight.Value);
-         _options.LastMinusOneDose.ShouldBeEqualTo(_drugMass1.Value / _simulation1.BodyWeight.Value);
-         _options.LastDose.ShouldBeEqualTo(_drugMass2.Value / _simulation1.BodyWeight.Value);
+         _options.FirstInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass1.Value/_simulation1.BodyWeight.Value);
+         _options.LastMinusOneInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass1.Value / _simulation1.BodyWeight.Value);
+         _options.LastInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass2.Value / _simulation1.BodyWeight.Value);
       }
    }
 
@@ -472,9 +472,9 @@ namespace PKSim.Core
       {
          var options = sut.CreateFor(_simulation1, _multipleAppMolecule);
          options.SingleDosing.ShouldBeFalse();
-         options.FirstDosingStartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
-         options.LastDosingStartValue.ShouldBeEqualTo(_startTime2.Value.ToFloat());
-         options.LastMinusOneDosingStartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
+         options.FirstInterval.StartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
+         options.LastInterval.StartValue.ShouldBeEqualTo(_startTime2.Value.ToFloat());
+         options.LastMinusOneInterval.StartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
       }
 
       [Observation]
@@ -482,7 +482,7 @@ namespace PKSim.Core
       {
          var options = sut.CreateFor(_simulation1, _singleAppMolecule);
          options.SingleDosing.ShouldBeTrue();
-         options.FirstDosingStartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
+         options.FirstInterval.StartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
       }
    }
 

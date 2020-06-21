@@ -129,7 +129,7 @@ namespace PKSim.Core.Services
          if (!forceUpdate && areValuesEqual(targetParameter, sourceParameter))
          {
             //same value but not same display unit, simply update the display unit
-            if (sourceParameter.DisplayUnit == targetParameter.DisplayUnit)
+            if (areDisplayUnitsEqual(targetParameter, sourceParameter))
                return null;
 
             return _parameterTask.SetParameterDisplayUnit(targetParameter, sourceParameter.DisplayUnit, shouldUpdateDefaultState);
@@ -138,7 +138,7 @@ namespace PKSim.Core.Services
          var setValueCommand = _parameterTask.SetParameterValue(targetParameter, sourceParameter.Value, shouldUpdateDefaultState);
 
          //Only value differs
-         if (sourceParameter.DisplayUnit == targetParameter.DisplayUnit)
+         if (areDisplayUnitsEqual(targetParameter, sourceParameter))
             return setValueCommand;
 
          //in that case, we create a macro command that updates value and unit
@@ -152,6 +152,12 @@ namespace PKSim.Core.Services
       private bool areValuesEqual(IParameter targetParameter, IParameter sourceParameter)
       {
          return ValueComparer.AreValuesEqual(targetParameter, sourceParameter);
+      }
+
+      private bool areDisplayUnitsEqual(IParameter targetParameter, IParameter sourceParameter)
+      {
+         //We compare name are some dose related units may be the representing the same unit but with different reference
+         return string.Equals(targetParameter.DisplayUnit?.Name, sourceParameter.DisplayUnit?.Name);
       }
    }
 }

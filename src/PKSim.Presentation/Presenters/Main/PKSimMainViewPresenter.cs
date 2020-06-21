@@ -1,5 +1,5 @@
-using OSPSuite.Presentation.Events;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.TeXReporting.Events;
@@ -23,7 +23,6 @@ namespace PKSim.Presentation.Presenters.Main
       IListener<ShowNotificationEvent>,
       IListener<ReportCreationStartedEvent>,
       IListener<ReportCreationFinishedEvent>
-
 
    {
       StartOptions StartOptions { get; set; }
@@ -67,7 +66,7 @@ namespace PKSim.Presentation.Presenters.Main
          View.Initialize();
          View.Caption = _configuration.ProductDisplayName;
 
-         //intialize all sub presenter defined in the user interface
+         //initialize all sub presenter defined in the user interface
          _presenterRepository.All().Each(presenter => presenter.Initialize());
 
          //set the action to be performed when closing the main form

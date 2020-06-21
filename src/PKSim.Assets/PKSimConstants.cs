@@ -413,7 +413,6 @@ namespace PKSim.Assets
          public static string CannotCreateContainerOfType(string type) => $"Cannot create container of type '{type}'.";
          public static string UnknownUsageInIndividualFlag(string flag) => $"'{flag}' is not valid flag for 'Usage in individual'.";
          public static string CompoundParameterSelectionNeededFor(string parameterName) => $"Compound parameter selection is required for '{parameterName}'.";
-         public const string InvalidPartialStabiLink = "Invalid link for creating enzymatic stability partial process passed.";
          public const string ContainerPathIsEmpty = "Given container path is empty.";
          public const string CannotDeleteSchemaItem = "At least one schema item needs to be defined.";
          public const string CannotDeleteSimulationInterval = "At least one interval needs to be defined.";
@@ -426,7 +425,7 @@ namespace PKSim.Assets
          public const string InvalidNumberOfBins = "Number of particle bins must be in [1..20].";
          public const string InvalidParticleSizeDistribution = "Unknown particles size distribution passed.";
          public const string FirstOrderActiveTransportsNotSupported = "First order active transports are not supported.";
-         public const string CannotSwitchToAdvancedProtocolWhenUsingUserDefinedAppplication = "User defined administration cannot be used with an advanced administration protocol.";
+         public const string CannotSwitchToAdvancedProtocolWhenUsingUserDefinedApplication = "User defined administration cannot be used with an advanced administration protocol.";
          public const string MolWeightNotAvailable = "Molecular Weight not available.";
          public const string MolWeightNotAvailableForPopulationSimulationComparison = "Molecular Weight was not found or is not the same in all compared simulations.";
          public const string EventGroupSubContainerHasInvalidType = "Subcontainer of event group must be of type event or event group.";
@@ -472,7 +471,11 @@ namespace PKSim.Assets
 
          public static string NotMappingDefinedForQualificationStep(string qualificationStepType) => $"No mapping defined for {ObjectTypes.QualificationStep.ToLower()} '{qualificationStepType}'";
 
+         public static string TableFormulationRequiresAtLeastOnePoint(string formulation) => $"Table formulation '{formulation}' requires at least one point to be used in a simulation.";
+
          public static string CouldNotFindSimulation(string simulationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
+
+         public static string ParameterIsRequired(string parameterName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Parameter, parameterName);
 
          public static string SimulationResultsFileDoesNotHaveTheExpectedFormat
          {
@@ -528,14 +531,17 @@ namespace PKSim.Assets
             return $"The file '{fileFullPath}' is readonly and cannot be read by the application. Please make the project writable and try again.";
          }
 
-         public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string downloadUrl)
+         public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, bool projectIsTooOld, string downloadUrl)
          {
+            if (projectIsTooOld)
+               return $"The project is too old (compatible version {projectVersion}) and cannot be loaded with this version. (compatible version {currentVersion}).\n" +
+                 $"Visit our download page at {downloadUrl} to download an older version of the software compatible with this project.";
+
             if (projectVersion > currentVersion)
-               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}.";
+               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}";
 
             return $"Work in progress.\nThis project file was created with a beta or RC version (version {projectVersion}) and cannot be loaded.\nSorry :-(";
          }
-
          public static string BuildingBlockVersionIsTooOld(int version)
          {
             return $"Work in progress.\nThe Building Block is too old (version {version}) and cannot be loaded.\nSorry :-(";
@@ -555,6 +561,8 @@ namespace PKSim.Assets
          {
             return $"Cannot find formulation with id '{formulationId}' for formulation key '{formulationKey}' in simulation '{simulationName}'.";
          }
+
+         public static string CannotFindObserverSetForMapping(string observerSet) => $"Cannot find observer set named '{observerSet}'.";
 
          public static string NoPartialTemplateProcessFound(string processType) => $"No templates for partial process {processType} found.";
 
@@ -584,7 +592,7 @@ namespace PKSim.Assets
 
          public static string FileIsNotAPKSimFile(string projectFile, string productName) => $"File '{projectFile}' is not a {productName} project file.";
 
-         public static string FileIsNotASimulationFile(string simualtionFile, string productName) => $"File '{simualtionFile}' is not a {productName} simulation file.";
+         public static string FileIsNotASimulationFile(string simulationFile, string productName) => $"File '{simulationFile}' is not a {productName} simulation file.";
 
          public static string NoTemplateBuildingBlockAvailableForType(string buildingBlockType) => $"No template '{buildingBlockType}' available in the template database.";
 
@@ -592,7 +600,7 @@ namespace PKSim.Assets
 
          public static string ConstantParameterAlreadyExistsInContainer(string containerName, string parameterName) => $"Parameter '{parameterName}' already exists in '{containerName}' but is defined as a constant parameter.";
 
-         public static string FormulaParamterAlreadyExistsInContainerWithAnotherFormula(string containerName, string parameterName, string formulaString, string formulaStringToAdd)
+         public static string FormulaParameterAlreadyExistsInContainerWithAnotherFormula(string containerName, string parameterName, string formulaString, string formulaStringToAdd)
          {
             return $"Parameter '{parameterName}' already exists in '{containerName}' with another formula:\nOld formula = '{formulaString}'\nNew formula = '{formulaStringToAdd}'.";
          }
@@ -843,6 +851,12 @@ namespace PKSim.Assets
 
          public static string RelativeExpressionContainerNotFound(string containerName) => $"Relative expression container '{containerName}' not found.";
 
+         public static string CannotCreateDescriptorSnapshotFor(string type) => $"Cannot create descriptor snapshot for descriptor of type '{type}'.";
+
+         public static string CannotCreateObserverFromSnapshot(string type) => $"Cannot create observer from snapshot with type '{type}'.";
+
+         public static string CannotCreateDescriptorFromSnapshotFor(string type) => $"Cannot create descriptor from snapshot for type '{type}'.";
+
          public static string SnapshotProcessNameNotFound(string processName) => $"Snapshot process '{processName}' not found in the PK-Sim database.";
 
          public static string MapToModelNotSupportedWithoutContext(string modelType, string contextType)
@@ -884,9 +898,13 @@ namespace PKSim.Assets
          public static string CannotFindSimulationInSnapshot(string simulationName, string project) => CannotFindBuildingBlockInSnapshot(ObjectTypes.Simulation, simulationName, project);
 
          public static string CannotFindSimulationParameterInSnapshot(string parameterPath, string simulationName, string project) => 
-            $"TODO Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
+            $"Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
 
          public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
+
+         public static string AlteredBuildingBlockNotFoundInSimulation(string simulationName, string buildingBlockName, string buildingBlockType) =>
+            $"Could not update the altered flag for {buildingBlockType} building block '{buildingBlockName}' as it is not used in {ObjectTypes.Simulation} '{simulationName}'.";
+
       }
 
       public static class Information
@@ -899,6 +917,8 @@ namespace PKSim.Assets
          public static readonly string ParameterIsDefinedIn = "Parameter is defined in";
          public static readonly string NoParametersInIndividualSelection = "<B>Note:</B> Default Anatomy and physiology for selected species is preset.\nTo change click on the desired item in the tree view (left part) and change the values in the appearing table in this window";
          public static readonly string NoParametersInSimulationSelection = "<B>Note:</B> Default Anatomy and physiology for selected species is preset.\nTo change click on the desired item in the tree view (left part) and change the values in the appearing table in this window";
+
+         public static string InitializingPKSim(string productName, string version) => $"Initializing {productName} {version}";
 
          public static string IndividualExpressionInfo
          {
@@ -1041,6 +1061,9 @@ namespace PKSim.Assets
 
       public static class MenuNames
       {
+         public static string AsDeveloperOnly(string menuName) => OSPSuite.Assets.MenuNames.AsDeveloperOnly(menuName);
+
+
          public static readonly string LoadFromTemplate = UI.LoadFromTemplate;
          public static readonly string SaveAsTemplate = UI.SaveAsTemplate;
          public static readonly string SaveAsSytemTemplate = "Save as System Template...";
@@ -1057,7 +1080,6 @@ namespace PKSim.Assets
          public static readonly string ExportPopulationToCSVMenu = "Population to CSV";
          public static readonly string ExportForClusterComputations = "Export for Cluster Computations...";
          public static readonly string ExportForClusterComputationsMenu = "Cluster Computations";
-         public static readonly string ExportForMatlab = "Export for Matlab®/R...";
          public static readonly string Configure = "&Configure...";
          public static readonly string ConfigureShortMenu = "Configure";
          public static readonly string NewProject = "&New...";
@@ -1161,8 +1183,6 @@ namespace PKSim.Assets
          public static readonly string ExportSnapshot = "Save Snapshot...";
          public static readonly string LoadFromSnapshot = "Load from Snapshot...";
          public static readonly string RemoveUnusedContent = "Remove Unused Content";
-
-         public static string DevOnlyMenuNameFor(string menuName) => $"{menuName} (Developer only)";
 
          public static string CompareBuildingBlocks(string buildingBlockType)
          {
@@ -1397,32 +1417,38 @@ namespace PKSim.Assets
       {
          public static class Parameter
          {
-            public static readonly string MinShouldBeDefined = "Minimum value should be defined.";
-            public static readonly string MaxShouldBeDefined = "Maximum value should be defined.";
-            public static readonly string MinLessThanMax = "Minimum value should be less than than maximum value.";
-            public static readonly string MaxGreaterThanMin = "Maximum value should be greater than minimum value.";
             public static readonly string StartTimeLessThanOrEqualToEndTime = "Start time value should be less than end time value.";
             public static readonly string EndTimeGreaterThanOrEqualToStartTime = "End time value should be greater than start time value.";
+            public static readonly string MinShouldBeDefinedAnonymous = "Minimum value should be defined.";
+
+            public static string MinShouldBeDefined(string parameterName) => $"Minimum value for {parameterName} should be defined.";
+
+            public static string MaxShouldBeDefined(string parameterName) => $"Maximum value for {parameterName} should be defined.";
+
+            public static string MinLessThanMax(string parameterName) => $"Minimum value for {parameterName} should be less than maximum value.";
+
+            public static string MaxGreaterThanMin(string parameterName) => $"Maximum value for {parameterName} should be greater than minimum value.";
+            
             public static string ValueShouldBeGreaterThanOrEqualToZero(string parameterName) => $"{parameterName} value should be greater than or equal to 0.";
 
-            public static string MinGreaterThanDbMinValue(double? dbMinValue, string unit)
+            public static string MinGreaterThanDbMinValue(string parameterName, double? dbMinValue, string unit)
             {
-               return $"Minimum value should be greater than or equal to {dbMinValue} {unit}.";
+               return $"Minimum value for {parameterName} should be greater than or equal to {dbMinValue} {unit}.";
             }
 
-            public static string MaxGreaterThanDbMinValue(double? dbMinValue, string unit)
+            public static string MaxGreaterThanDbMinValue(string parameterName, double? dbMinValue, string unit)
             {
-               return $"Maximum value should be greater than or equal to {dbMinValue} {unit}.";
+               return $"Maximum value for {parameterName} should be greater than or equal to {dbMinValue} {unit}.";
             }
 
-            public static string MaxLessThanDbMaxValue(double? dbMaxValue, string unit)
+            public static string MaxLessThanDbMaxValue(string parameterName, double? dbMaxValue, string unit)
             {
-               return $"Maximum value should be less than or equal to {dbMaxValue} {unit}.";
+               return $"Maximum value for {parameterName} should be less than or equal to {dbMaxValue} {unit}.";
             }
 
-            public static string MinLessThanDbMaxValue(double? dbMaxValue, string unit)
+            public static string MinLessThanDbMaxValue(string parameterName, double? dbMaxValue, string unit)
             {
-               return $"Minimum value should be less than or equal to {dbMaxValue} {unit}.";
+               return $"Minimum value for {parameterName} should be less than or equal to {dbMaxValue} {unit}.";
             }
 
             public static string ValueSmallerThanMax(string parameterName, string value, string unit)
@@ -1613,7 +1639,6 @@ namespace PKSim.Assets
          public static readonly string SnapshotFile = "Select snapshot file";
          public static readonly string SavingProject = "Saving project...";
          public static readonly string LoadingHistory = "Loading history...";
-         public static readonly string LoadingMatlab = "Loading Matlab®...";
          public static readonly string LoadingLayout = "Loading layout...";
          public static readonly string LoadingWorkingJournal = "Loading journal...";
          public static readonly string SavingHistory = "Saving history...";
@@ -1631,7 +1656,6 @@ namespace PKSim.Assets
          public static readonly string ExportPopulationToCSVTitle = "Export Population to CSV File";
          public static readonly string ExportPKAnalysesToCSVTitle = $"Export PK-Analyses to {"CSV"}";
          public static readonly string ExportForClusterSimulationTitle = "Export for Cluster Simulation...";
-         public static readonly string ExportPopulationForMatlabWrapper = "Select a folder where required files to run the matlab wrapper will be generated";
          public static readonly string UserTemplates = "User Templates";
          public static readonly string SystemTemplates = "Predefined Templates";
          public static readonly string EditDescription = "Edit Description";
@@ -1918,7 +1942,10 @@ namespace PKSim.Assets
          public static readonly string ExportObservedDataToPkml = "Export observed data to pkml";
          public static readonly string ExportSimulationResultsToExcel = $"Export simulation results to {Excel}";
          public static readonly string ExportPopulationAnalysisToExcelTitle = $"Export analysis to {Excel}";
-         public static readonly string ExportSimulationResultsToCSV = $"Export simulation results to {"CSV"}";
+         public static readonly string ExportSimulationResultsToCSV = $"Export simulation results to CSV";
+         public static readonly string ExportSimulationToCpp = $"Export simulation to C++ code";
+         public static readonly string ExportODEForMatlab = "Export simulation to Matlab® ODE";
+         public static readonly string ExportODEForR = "Export simulation to R ODE";
          public static readonly string ReallyCancel = "Do you really want to cancel?";
          public static readonly string BuildingBlockName = "Building Block Name";
          public static readonly string BuildingBlockType = "Building Block Type";
@@ -1966,7 +1993,7 @@ namespace PKSim.Assets
          public static readonly string Filter = "Filter";
          public static readonly string SaveSimulationToXmlFile = "Save Simulation to xml File (PKSim Format)";
          public static readonly string SaveSimulationParameterToCsvFile = "Save Simulation parameters to csv File (PKSim Format)";
-         public static readonly string SaveSimulationToSimModelXmlFile = "Save Simulation to xml File (for use in Matlab or R)";
+         public static readonly string SaveSimulationToSimModelXmlFile = "Save Simulation to SimModel xml File (for use in Matlab)";
          public static readonly string Solubility = "Solubility";
          public static readonly string Analysis = "Analysis";
          public static readonly string pH = "pH";

@@ -1,4 +1,5 @@
-﻿using PKSim.Core.Model;
+﻿using OSPSuite.Infrastructure.Import.Services;
+using PKSim.Core.Model;
 using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.Simulations
@@ -10,22 +11,14 @@ namespace PKSim.Presentation.DTO.Simulations
 
       public int? NumberOfIndividuals
       {
-         get { return _numberOfIndividuals; }
-         set
-         {
-            _numberOfIndividuals = value;
-            OnPropertyChanged(() => NumberOfIndividuals);
-         }
+         get => _numberOfIndividuals;
+         set => SetProperty(ref _numberOfIndividuals, value);
       }
 
       public int? NumberOfQuantities
       {
-         get { return _numberOfQuantities; }
-         set
-         {
-            _numberOfQuantities = value;
-            OnPropertyChanged(() => NumberOfQuantities);
-         }
+         get => _numberOfQuantities;
+         set => SetProperty(ref _numberOfQuantities, value);
       }
 
       public static SimulationResultsFileSelectionDTO From(SimulationResultsImportFile simulationResultsFile)

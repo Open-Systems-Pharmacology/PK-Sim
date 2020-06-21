@@ -27,7 +27,7 @@ namespace PKSim.Presentation.Presenters.Events
       {
          base.Edit(parameters);
          _view.ParameterNameVisible = true;
-         _view.SetCaption(PathElement.Container, caption: PKSimConstants.UI.Events);
+         _view.SetCaption(PathElementId.Container, caption: PKSimConstants.UI.Events);
       }
    }
 }

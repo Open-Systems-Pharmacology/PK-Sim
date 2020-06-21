@@ -173,7 +173,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Cancel);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).Returns(ViewResult.Cancel);
          return _completed;
       }
 
@@ -234,7 +234,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_ask_the_user_if_he_wants_to_save_the_project()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).MustHaveHappened();
       }
    }
 
@@ -242,7 +242,7 @@ namespace PKSim.Presentation
    {
       protected override Task Context()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Cancel);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).Returns(ViewResult.Cancel);
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          return _completed;
       }
@@ -275,7 +275,7 @@ namespace PKSim.Presentation
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).Returns(ViewResult.Yes);
          return _completed;
       }
 
@@ -296,7 +296,7 @@ namespace PKSim.Presentation
    {
       protected override Task Context()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).Returns(ViewResult.Yes);
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = string.Empty;
          return _completed;
@@ -319,7 +319,7 @@ namespace PKSim.Presentation
    {
       protected override Task Context()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).Returns(ViewResult.Yes);
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = "tralala";
          _project.Name = "toto";
@@ -594,7 +594,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_asked_the_user_to_save_the_project()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).MustHaveHappened();
       }
    }
 
@@ -603,7 +603,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Cancel);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).Returns(ViewResult.Cancel);
          return _completed;
       }
 
@@ -620,7 +620,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_opening_a_project_while_a_current_project_that_has_changed_is_opened_and_the_saving_action_is_not_sucessful : concern_for_ProjectTask
+   public class When_opening_a_project_while_a_current_project_that_has_changed_is_opened_and_the_saving_action_is_not_successful : concern_for_ProjectTask
    {
       protected override Task Context()
       {
@@ -629,7 +629,7 @@ namespace PKSim.Presentation
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).Returns(ViewResult.Yes);
          return _completed;
       }
 
@@ -651,7 +651,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).Returns(ViewResult.No);
          A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.OpenProjectTitle, CoreConstants.Filter.LOAD_PROJECT_FILTER, Constants.DirectoryKey.PROJECT, null, null)).Returns(string.Empty);
          return _completed;
       }
@@ -678,7 +678,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _fileToOpen = "toto.pksim5";
          FileHelper.FileExists = x => string.Equals(x, _fileToOpen);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).Returns(ViewResult.No);
          A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.OpenProjectTitle, CoreConstants.Filter.LOAD_PROJECT_FILTER, Constants.DirectoryKey.PROJECT, null, null)).Returns(_fileToOpen);
          A.CallTo(() => _userSettings.ShouldRestoreWorkspaceLayout).Returns(true);
          return _completed;
@@ -752,7 +752,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_notify_that_the_project_is_already_open()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(_message, PKSimConstants.UI.OpenAnyway, PKSimConstants.UI.CancelButton)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(_message, PKSimConstants.UI.OpenAnyway, PKSimConstants.UI.CancelButton, ViewResult.Yes)).MustHaveHappened();
       }
    }
 
@@ -769,7 +769,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _workspace.LockFile(_fileToOpen)).Throws(cannotLockFileException);
          var message = PKSimConstants.Error.ProjectWillBeOpenedAsReadOnly(cannotLockFileException.Message);
          A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.OpenProjectTitle, CoreConstants.Filter.LOAD_PROJECT_FILTER, Constants.DirectoryKey.PROJECT, null, null)).Returns(_fileToOpen);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(message, PKSimConstants.UI.OpenAnyway, PKSimConstants.UI.CancelButton)).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(message, PKSimConstants.UI.OpenAnyway, PKSimConstants.UI.CancelButton, ViewResult.Yes)).Returns(ViewResult.Yes);
       }
 
       protected override Task Because()
@@ -804,7 +804,7 @@ namespace PKSim.Presentation
          var cannotLockFileException = new CannotLockFileException(new Exception());
          A.CallTo(() => _workspace.LockFile(_fileToOpen)).Throws(cannotLockFileException);
          var message = PKSimConstants.Error.ProjectWillBeOpenedAsReadOnly(cannotLockFileException.Message);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(message, PKSimConstants.UI.OKButton, PKSimConstants.UI.CancelButton)).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(message, PKSimConstants.UI.OKButton, PKSimConstants.UI.CancelButton, ViewResult.Yes)).Returns(ViewResult.No);
       }
 
       protected override Task Because()
@@ -1024,7 +1024,7 @@ namespace PKSim.Presentation
          _loadSnapshotPresenter = A.Fake<ILoadProjectFromSnapshotPresenter>();
          A.CallTo(() => _applicationController.Start<ILoadProjectFromSnapshotPresenter>()).Returns(_loadSnapshotPresenter);
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges)).Returns(ViewResult.Cancel);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).Returns(ViewResult.Cancel);
          A.CallTo(() => _loadSnapshotPresenter.LoadProject()).Returns(null);
       }
 

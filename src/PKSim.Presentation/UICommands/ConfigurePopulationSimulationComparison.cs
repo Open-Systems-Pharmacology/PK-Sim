@@ -6,16 +6,16 @@ namespace PKSim.Presentation.UICommands
 {
    public class ConfigurePopulationSimulationComparison : ObjectUICommand<PopulationSimulationComparison>
    {
-      private readonly ISimulationComparisonCreator _simulationComparisonCreator;
+      private readonly ISimulationComparisonTask _simulationComparisonTask;
 
-      public ConfigurePopulationSimulationComparison(ISimulationComparisonCreator simulationComparisonCreator)
+      public ConfigurePopulationSimulationComparison(ISimulationComparisonTask simulationComparisonTask)
       {
-         _simulationComparisonCreator = simulationComparisonCreator;
+         _simulationComparisonTask = simulationComparisonTask;
       }
 
       protected override void PerformExecute()
       {
-         _simulationComparisonCreator.ConfigurePopulationSimulationComparison(Subject);
+         _simulationComparisonTask.ConfigurePopulationSimulationComparison(Subject);
       }
    }
 }

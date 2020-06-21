@@ -23,7 +23,7 @@ namespace PKSim.Presentation
 {
    public abstract class concern_for_PKAnalysisExportTask : ContextSpecification<IPKAnalysisExportTask>
    {
-      protected IDataRepositoryTask _dataRepositoryTask;
+      protected IDataRepositoryExportTask _dataRepositoryTask;
       protected IDialogCreator _dialogCreator;
       protected IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       protected IPKAnalysesTask _pkAnalysesTask;
@@ -33,7 +33,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _dialogCreator = A.Fake<IDialogCreator>();
-         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _quantityDisplayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
          _pkAnalysesTask = A.Fake<IPKAnalysesTask>();
          _globalPKAnalysisMapper = A.Fake<IGlobalPKAnalysisToDataTableMapper>();

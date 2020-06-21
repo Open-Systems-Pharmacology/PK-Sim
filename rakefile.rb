@@ -10,12 +10,27 @@ task :cover do
 	filter << "+[PKSim.Assets]*"
 	filter << "+[PKSim.Presentation]*"
 	filter << "+[PKSim.Infrastructure]*"
+  
+  #exclude namespaces that are tested from applications
+  # filter << "-[OSPSuite.Infrastructure.Serialization]OSPSuite.Infrastructure.Serialization.ORM*"
+  # filter << "-[OSPSuite.Presentation]OSPSuite.Presentation.MenuAndBars*"
+  # filter << "-[OSPSuite.Presentation]OSPSuite.Presentation.Presenters.ContextMenus*"
 
-	Coverage.cover(filter, "PKSim.Tests.csproj")
+  targetProjects = [
+	"PKSim.Tests.csproj",
+	"PKSim.R.Tests.csproj",
+	"PKSim.Matlab.Tests.csproj",
+	"PKSim.UI.Tests.csproj",
+	];
+
+  Coverage.cover(filter, targetProjects)
 end
 
 task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
 	update_smart_xls(args)
+
+	src_dir = src_dir_for(args.configuration)
+	relative_src_dir = relative_src_dir_for(args.configuration)
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
@@ -26,10 +41,10 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
-		'packages/**/OSPSuite.Presentation/**/*.{wxs,xml}',
-		'packages/**/OSPSuite.TeXReporting/**/*.*',
+		"#{relative_src_dir}/ChartLayouts/**/*.{wxs,xml}",
+		"#{relative_src_dir}/TeXTemplates/**/*.*",
 		'examples/**/*.{wxs,pksim5}',
-		'src/PKSim.Assets/Resources/*.ico',
+		'src/PKSim.Assets.Images/Resources/*.ico',
 		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
 		'dimensions/*.xml',
@@ -38,9 +53,10 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		'setup/**/*.{msm,rtf,bmp}'
 	]
 
+
 	Rake::Task['setup:create'].execute(OpenStruct.new(
 		solution_dir: solution_dir,
-		src_dir: src_dir_for(args.configuration), 
+		src_dir: src_dir, 
 		setup_dir: setup_dir,  
 		product_name: product_name, 
 		product_version: args.product_version,
@@ -52,6 +68,16 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 end
 
 task :create_portable_setup, [:product_version, :configuration, :package_name] do |t, args|
+
+	src_dir = src_dir_for(args.configuration)
+	relative_src_dir = relative_src_dir_for(args.configuration)
+	
+	# Copy folder structure so that the portable setups works as expected
+	FileUtils.mkdir_p setup_temp_dir
+	FileUtils.copy_entry File.join(src_dir, 'TeXTemplates'), File.join(setup_temp_dir, 'TeXTemplates')
+	FileUtils.copy_entry File.join(src_dir, 'ChartLayouts'), File.join(setup_temp_dir, 'ChartLayouts')
+
+
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
 		'Open Systems Pharmacology Suite License.pdf',
@@ -63,8 +89,7 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 
 	setup_folders = [
 		'examples/**/*.pksim5',
-		'packages/**/OSPSuite.Presentation/**/*.{xml}',
-		'packages/**/OSPSuite.TeXReporting/**/*.{json,sty,tex}',
+		"#{setup_temp_dir}/**/*.*",
 	]
 
 	Rake::Task['setup:create_portable'].execute(OpenStruct.new(
@@ -85,26 +110,26 @@ task :update_go_license, [:file_path, :license] do |t, args|
 end	
 
 task :postclean do |t, args| 
-	packages_dir =  File.join(solution_dir, 'packages')
+	packages_dir =  src_dir_for("Debug")
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '8.0')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '9.0')
 
-	copy_depdencies solution_dir,  all_users_application_dir do
+	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml
 		copy_pkparameters_xml
 	end
 
-	copy_depdencies solution_dir,  all_users_application_dir do
+	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_file 'src/Db/PKSimDB.sqlite'
 		copy_file 'src/Db/TemplateDB/PKSimTemplateDBSystem.templateDBSystem'
 	end
 
-	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
-		copy_files 'OSPSuite.Presentation', 'xml'
+	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
+		copy_files 'ChartLayouts', 'xml'
 	end
 
-	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
+	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
 		copy_files 'StandardTemplate', '*'
 	end
 end
@@ -125,8 +150,12 @@ def update_smart_xls(args)
 	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
 end
 
+def relative_src_dir_for(configuration)
+	File.join( 'src', 'PKSim', 'bin', configuration, 'net472')
+end
+
 def src_dir_for(configuration)
-	File.join(solution_dir, 'src', 'PKSim', 'bin', configuration)
+	File.join(solution_dir, relative_src_dir_for(configuration))
 end
 
 def solution_dir
@@ -147,4 +176,8 @@ end
 
 def setup_dir
 	File.join(solution_dir, 'setup')
+end
+
+def setup_temp_dir
+	File.join(setup_dir, 'temp')
 end

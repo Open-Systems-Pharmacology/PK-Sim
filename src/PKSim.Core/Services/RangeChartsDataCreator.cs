@@ -67,18 +67,23 @@ namespace PKSim.Core.Services
 
       private void connectCurvesDefinedIn(PaneData<RangeXValue, RangeYValue> panes)
       {
-         var orderedCurveByXvalue = panes.Curves.Where(x => x.XValues.Any())
+         var orderedCurveByXValue = panes.Curves.Where(x => x.XValues.Any())
             .OrderBy(x => x.XValues[0]).ToList();
 
          //Some curves are invalid, we do not try to connect anything in that case
-         if (orderedCurveByXvalue.Count != panes.Curves.Count)
+         if (orderedCurveByXValue.Count != panes.Curves.Count)
             return;
 
-         for (int i = 1; i < orderedCurveByXvalue.Count; i++)
+         for (int i = 1; i < orderedCurveByXValue.Count; i++)
          {
-            var firstCurve = orderedCurveByXvalue[i - 1];
-            var secondCurve = orderedCurveByXvalue[i];
-            firstCurve.Add(secondCurve.XValues[0], secondCurve.YValues[0]);
+            var firstCurve = orderedCurveByXValue[i - 1];
+            var secondCurve = orderedCurveByXValue[i];
+            // Only connect points if curves already belong to one and only that were split for some binning reasons. 
+            // e.g if the current X is after the next X, those curves clearly do not belong together
+            if (firstCurve.XValues.Last().X < secondCurve.XValues[0].X)
+            {
+              firstCurve.Add(secondCurve.XValues[0], secondCurve.YValues[0]);
+            }
          }
       }
 
@@ -89,8 +94,8 @@ namespace PKSim.Core.Services
          pkValues[0] = yFieldName; // DATA_FIELD-column first, see CreatePrimaryKey
          DataRow yFieldRow = _data.Rows.Find(pkValues);
 
-         var xValues = xFieldRow[_aggreationName] as float[];
-         var yValues = yFieldRow[_aggreationName] as float[];
+         var xValues = xFieldRow[_aggregationName] as float[];
+         var yValues = yFieldRow[_aggregationName] as float[];
 
          //possible if no values are defined for the row filter
          if (xValues == null || yValues == null)

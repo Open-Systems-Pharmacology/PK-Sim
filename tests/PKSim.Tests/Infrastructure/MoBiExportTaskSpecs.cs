@@ -72,7 +72,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.SaveSimulationToFile(_sim, _fileName)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.ExportSimulationToPkmlFile(_sim, _fileName)).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -100,7 +100,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         sut.SaveSimulationToFile(_sim, _fileName);
+         sut.ExportSimulationToPkmlFile(_sim, _fileName);
       }
 
       [Observation]

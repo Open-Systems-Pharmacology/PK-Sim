@@ -8,8 +8,8 @@ namespace PKSim.Core.Model.PopulationAnalyses
    /// </summary>
    public class NumericFieldContext : IWithDimension
    {
-      public INumericValueField NumericValueField { get; private set; }
-      public IPopulationDataCollector PopulationDataCollector { get; private set; }
+      public INumericValueField NumericValueField { get; }
+      public IPopulationDataCollector PopulationDataCollector { get; }
 
       public NumericFieldContext(INumericValueField numericValueField, IPopulationDataCollector populationDataCollector)
       {
@@ -19,8 +19,8 @@ namespace PKSim.Core.Model.PopulationAnalyses
 
       public IDimension Dimension
       {
-         get { return NumericValueField.Dimension; }
-         set { NumericValueField.Dimension = value; }
+         get => NumericValueField.Dimension;
+         set => NumericValueField.Dimension = value;
       }
    }
 }

@@ -25,6 +25,10 @@ namespace PKSim.Core
       private static Dimension _massConcentrationDimension;
       private static Dimension _fractionDimension;
 
+      private static string PATH_TO_SRC = "..\\..\\..\\..\\..\\src\\";
+      private static string PATH_TO_DATA = "..\\..\\..\\Data\\";
+      private static string PATH_TO_TEMPLATES = "..\\..\\..\\Templates\\";
+
       public static string FilePathFor(string fileNameWithExtension)
       {
          return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileNameWithExtension);
@@ -32,37 +36,37 @@ namespace PKSim.Core
 
       public static string DataFilePathFor(string fileNameWithExtension)
       {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..\\Data", fileNameWithExtension);
+         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, fileNameWithExtension);
       }
 
       public static string PopulationFilePathFor(string fileNameWithoutExtension)
       {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..\\Data\\PopulationFiles", fileNameWithoutExtension + ".csv");
+         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "PopulationFiles", fileNameWithoutExtension + ".csv");
       }
 
       public static string SimulationResultsFilePathFor(string fileNameWithoutExtension)
       {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..\\Data\\SimulationResultsFiles", fileNameWithoutExtension + ".csv");
+         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "SimulationResultsFiles", fileNameWithoutExtension + ".csv");
       }
 
       public static string PKAnalysesFilePathFor(string fileNameWithoutExtension)
       {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..\\Data\\PKAnalysesFiles", fileNameWithoutExtension + ".csv");
+         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "PKAnalysesFiles", fileNameWithoutExtension + ".csv");
       }
 
       public static string TEXTemplateFolder()
       {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..\\Templates", "StandardTemplate");
+         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_TEMPLATES, "StandardTemplate");
       }
 
       public static string UserTemplateDatabasePath()
       {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\src\\Db\\TemplateDB", "PKSimTemplateDBUser.template");
+         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBUser.template");
       }
 
       public static string SystemTemplateDatabasePath()
       {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\src\\Db\\TemplateDB", "PKSimTemplateDBSystem.mdb");
+         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBSystem.mdb");
       }
 
       public static Individual CreateIndividual()

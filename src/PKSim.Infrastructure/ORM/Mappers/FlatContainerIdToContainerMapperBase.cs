@@ -1,27 +1,17 @@
 ﻿using System.Linq;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Repositories;
-using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public abstract class FlatContainerIdToContainerMapperBase<T> where T :class,  IContainer
+   public abstract class FlatContainerIdToContainerMapperBase<T> where T : class, IContainer
    {
-      private readonly IObjectBaseFactory _objectBaseFactory;
-      private readonly IFlatContainerRepository _flatContainerRepository;
-      private readonly IFlatContainerTagRepository _flatContainerTagRepository;
-
+      protected readonly IObjectBaseFactory _objectBaseFactory;
+      protected readonly IFlatContainerRepository _flatContainerRepository;
+      protected readonly IFlatContainerTagRepository _flatContainerTagRepository;
       protected FlatContainer FlatContainer { get; private set; }
-
-      protected FlatContainerIdToContainerMapperBase()
-         : this(IoC.Resolve<IObjectBaseFactory>(),
-            IoC.Resolve<IFlatContainerRepository>(),
-            IoC.Resolve<IFlatContainerTagRepository>())
-      {
-      }
 
       protected FlatContainerIdToContainerMapperBase(IObjectBaseFactory objectBaseFactory,
          IFlatContainerRepository flatContainerRepository,

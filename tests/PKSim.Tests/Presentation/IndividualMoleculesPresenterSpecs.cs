@@ -189,7 +189,7 @@ namespace PKSim.Presentation
          _proteinToRemove = A.Fake<IndividualEnzyme>().WithName("Trlala");
          _proteinType = "toto";
          A.CallTo(() => _moleculeExpressionTask.RemoveMoleculeFrom(_proteinToRemove, _individual)).Returns(_command);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored)).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, ViewResult.Yes)).Returns(ViewResult.Yes);
          A.CallTo(() => _entityTask.TypeFor(_proteinToRemove)).Returns(_proteinType);
          sut.EditIndividual(_individual);
       }
@@ -202,7 +202,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_ask_the_user_if_he_really_wants_to_delete_the_protein()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteProtein(_proteinType, _proteinToRemove.Name))).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteProtein(_proteinType, _proteinToRemove.Name), ViewResult.Yes)).MustHaveHappened();
       }
 
       [Observation]
@@ -227,7 +227,7 @@ namespace PKSim.Presentation
          base.Context();
          _proteinToRemove = A.Fake<IndividualEnzyme>().WithName("Trlala");
          sut.EditIndividual(_individual);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored)).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, ViewResult.Yes)).Returns(ViewResult.No);
       }
 
       protected override void Because()

@@ -1,13 +1,9 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Infrastructure.Import.Services;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
-   public abstract class ImportFile : ImportLogger
-   {
-      public virtual string FilePath { get; set; }
-   }
-
-   public class PopulationFile : ImportFile
+   public class PopulationFile : ImportLogger
    {
       /// <summary>
       ///    Number of individual in imported file
@@ -23,15 +19,5 @@ namespace PKSim.Core.Model
       {
          return PKSimConstants.UI.PopulationFile;
       }
-   }
-
-   public class SimulationResultsImportFile : ImportFile
-   {
-      public virtual int NumberOfIndividuals { get; set; }
-      public virtual int NumberOfQuantities { get; set; }
-   }
-
-   public class PKAnalysesImportFile : ImportFile
-   {
    }
 }

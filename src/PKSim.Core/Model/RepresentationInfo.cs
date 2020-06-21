@@ -1,4 +1,5 @@
-﻿using OSPSuite.Utility;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 
 namespace PKSim.Core.Model
 {
@@ -39,6 +40,25 @@ namespace PKSim.Core.Model
       public static RepresentationObjectType ObjectTypeFrom(string objectType)
       {
          return EnumHelper.ParseValue<RepresentationObjectType>(objectType);
+      }
+
+      public PathElement ToPathElement()
+      {
+         return new PathElement
+         {
+            Description = DisplayName,
+            IconName = IconName,
+            DisplayName = DisplayName,
+         };
+      }
+
+      public void UpdatePathElement(PathElement pathElementDTO)
+      {
+         pathElementDTO.Description = Description;
+         pathElementDTO.DisplayName = DisplayName;
+
+         if (!string.IsNullOrEmpty(IconName))
+            pathElementDTO.IconName = IconName;
       }
    }
 

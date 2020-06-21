@@ -36,7 +36,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       }
 
       public abstract void ModelConfigurationDone();
-      protected abstract string HeayWorkCaption { get; }
+      protected abstract string HeavyWorkCaption { get; }
 
       public override void WizardCurrent(int previousIndex, int newIndex)
       {
@@ -73,7 +73,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public virtual void CreateSimulation()
       {
-         var success = _heavyWorkManager.Start(UpdateSimulationProperties, HeayWorkCaption);
+         var success = _heavyWorkManager.Start(UpdateSimulationProperties, HeavyWorkCaption);
          if (success)
             _view.CloseView();
       }

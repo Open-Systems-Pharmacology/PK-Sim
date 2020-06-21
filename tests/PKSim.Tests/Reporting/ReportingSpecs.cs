@@ -65,7 +65,7 @@ namespace PKSim.Reporting
       public void CreateReportAndValidate(object objectToReport, string reportName)
       {
          if (objectToReport == null) return;
-         _reportConfiguration.ReportFile = Path.Combine(_reportsDir.FullName, string.Format("{0}.pdf", reportName));
+         _reportConfiguration.ReportFile = Path.Combine(_reportsDir.FullName, $"{reportName}.pdf");
          _reportConfiguration.SubTitle = reportName;
          _reportingTask.CreateReportAsync(objectToReport, _reportConfiguration).Wait();
          FileHelper.FileExists(_reportConfiguration.ReportFile).ShouldBeTrue();
@@ -195,26 +195,26 @@ namespace PKSim.Reporting
       }
    }
 
-   public class Testing_project_ReportingProject : When_creating_a_report
+   public class Testing_project_ReportingProject_740 : When_creating_a_report
    {
-      public Testing_project_ReportingProject()
-         : base("ReportingProject")
+      public Testing_project_ReportingProject_740()
+         : base("ReportingProject_740")
       {
       }
    }
 
-   public class Testing_project_ObservedData_515 : When_creating_a_report
+   public class Testing_project_ObservedData_740 : When_creating_a_report
    {
-      public Testing_project_ObservedData_515()
-         : base("ObservedData_515")
+      public Testing_project_ObservedData_740()
+         : base("ObservedData_740")
       {
       }
    }
 
-   public class Testing_project_PopSimTest : When_creating_a_report
+   public class Testing_project_PopSimTest_740 : When_creating_a_report
    {
-      public Testing_project_PopSimTest()
-         : base("PopSimTest")
+      public Testing_project_PopSimTest_740()
+         : base("PopSimTest_740")
       {
       }
    }

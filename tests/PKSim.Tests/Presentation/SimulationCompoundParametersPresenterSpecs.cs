@@ -61,21 +61,21 @@ namespace PKSim.Presentation
 
    public class When_editing_a_set_of_parameters_defined_in_molecule_properties_of_a_simulation : concern_for_SimulationCompoundParametersPresenter
    {
-      private PathElement _columnWithCompound;
+      private PathElementId _columnWithCompound;
 
       protected override void Context()
       {
          base.Context();
-         _columnWithCompound = PathElement.Molecule;
-         _parameterDTO1.PathElements[PathElement.TopContainer] = new PathElementDTO { DisplayName = "Organsim" };
-         _parameterDTO1.PathElements[PathElement.Container] = new PathElementDTO { DisplayName = "Liver" };
-         _parameterDTO1.PathElements[_columnWithCompound] = new PathElementDTO { DisplayName = "Drug" };
-         _parameterDTO2.PathElements[PathElement.TopContainer] = new PathElementDTO { DisplayName = "Organsim" };
-         _parameterDTO2.PathElements[PathElement.Container] = new PathElementDTO { DisplayName = "Liver" };
-         _parameterDTO2.PathElements[_columnWithCompound] = new PathElementDTO { DisplayName = "Inhibitor" };
-         _parameterDTO3.PathElements[PathElement.TopContainer] = new PathElementDTO { DisplayName = "Organsim" };
-         _parameterDTO3.PathElements[PathElement.Container] = new PathElementDTO { DisplayName = "Kidney" };
-         _parameterDTO3.PathElements[_columnWithCompound] = new PathElementDTO { DisplayName = "Inhibitor" };
+         _columnWithCompound = PathElementId.Molecule;
+         _parameterDTO1.PathElements[PathElementId.TopContainer] = new PathElement { DisplayName = "Organsim" };
+         _parameterDTO1.PathElements[PathElementId.Container] = new PathElement { DisplayName = "Liver" };
+         _parameterDTO1.PathElements[_columnWithCompound] = new PathElement { DisplayName = "Drug" };
+         _parameterDTO2.PathElements[PathElementId.TopContainer] = new PathElement { DisplayName = "Organsim" };
+         _parameterDTO2.PathElements[PathElementId.Container] = new PathElement { DisplayName = "Liver" };
+         _parameterDTO2.PathElements[_columnWithCompound] = new PathElement { DisplayName = "Inhibitor" };
+         _parameterDTO3.PathElements[PathElementId.TopContainer] = new PathElement { DisplayName = "Organsim" };
+         _parameterDTO3.PathElements[PathElementId.Container] = new PathElement { DisplayName = "Kidney" };
+         _parameterDTO3.PathElements[_columnWithCompound] = new PathElement { DisplayName = "Inhibitor" };
 
          var simulation = A.Fake<Simulation>();
          A.CallTo(() => simulation.CompoundNames).Returns(new[] {"Drug", "Inhibitor"});
@@ -90,24 +90,24 @@ namespace PKSim.Presentation
       [Observation]
       public void should_group_by_the_column_containing_the_name_of_all_compounds()
       {
-         A.CallTo(() => _view.GroupBy(PathElement.Molecule, 1, false)).MustHaveHappened(); 
+         A.CallTo(() => _view.GroupBy(PathElementId.Molecule, 1, false)).MustHaveHappened(); 
       }
    }
 
    public class When_editing_a_set_of_parameters_defining_one_parameter_exactly_for_each_compound : concern_for_SimulationCompoundParametersPresenter
    {
-      private PathElement _columnWithCompound;
+      private PathElementId _columnWithCompound;
 
       protected override void Context()
       {
          base.Context();
-         _columnWithCompound = PathElement.Molecule;
-         _parameterDTO1.PathElements[PathElement.TopContainer] = new PathElementDTO { DisplayName = "Organsim" };
-         _parameterDTO1.PathElements[PathElement.Container] = new PathElementDTO { DisplayName = "Liver" };
-         _parameterDTO1.PathElements[_columnWithCompound] = new PathElementDTO { DisplayName = "Drug" };
-         _parameterDTO2.PathElements[PathElement.TopContainer] = new PathElementDTO { DisplayName = "Organsim" };
-         _parameterDTO2.PathElements[PathElement.Container] = new PathElementDTO { DisplayName = "Liver" };
-         _parameterDTO2.PathElements[_columnWithCompound] = new PathElementDTO { DisplayName = "Inhibitor" };
+         _columnWithCompound = PathElementId.Molecule;
+         _parameterDTO1.PathElements[PathElementId.TopContainer] = new PathElement { DisplayName = "Organsim" };
+         _parameterDTO1.PathElements[PathElementId.Container] = new PathElement { DisplayName = "Liver" };
+         _parameterDTO1.PathElements[_columnWithCompound] = new PathElement { DisplayName = "Drug" };
+         _parameterDTO2.PathElements[PathElementId.TopContainer] = new PathElement { DisplayName = "Organsim" };
+         _parameterDTO2.PathElements[PathElementId.Container] = new PathElement { DisplayName = "Liver" };
+         _parameterDTO2.PathElements[_columnWithCompound] = new PathElement { DisplayName = "Inhibitor" };
 
          _parameters = new List<IParameter> { _parameter1, _parameter2};
 
@@ -125,7 +125,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_group_by_the_compound_names()
       {
-          A.CallTo(() => _view.GroupBy(PathElement.Molecule, 1, false)).MustNotHaveHappened();
+          A.CallTo(() => _view.GroupBy(PathElementId.Molecule, 1, false)).MustNotHaveHappened();
       }
    }
 
@@ -146,7 +146,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_group_by_the_column_containing_the_name_of_all_compounds()
       {
-         A.CallTo(() => _view.GroupBy(PathElement.Molecule, 1, false)).MustNotHaveHappened();
+         A.CallTo(() => _view.GroupBy(PathElementId.Molecule, 1, false)).MustNotHaveHappened();
       }
    }
 }

@@ -80,8 +80,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task updateProcesses(SnapshotCompound snapshot, ModelCompound compound)
       {
-         var proceses = await _processMapper.MapToModels(snapshot.Processes);
-         proceses?.Each(compound.AddProcess);
+         var processes = await _processMapper.MapToModels(snapshot.Processes);
+         processes?.Each(compound.AddProcess);
       }
 
       private async Task updateAlternatives(ModelCompound compound, Alternative[] snapshotAlternatives, string alternativeGroupName)
@@ -123,16 +123,16 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void synchronizePkaValueOrigins(PkaType pkaType, ModelCompound compound)
       {
-         var valueOrign = pkaType?.ValueOrigin;
-         if (valueOrign == null)
+         var valueOrigin = pkaType?.ValueOrigin;
+         if (valueOrigin == null)
             return;
 
          //Making sure that all pKa parameters have the same value origin, even neutral ones
          Enumerable.Range(0, CoreConstants.NUMBER_OF_PKA_PARAMETERS).Each(index =>
          {
             var (compoundTypeParameter, pKaParameter) = pkaParametersFor(compound, index);
-            _valueOriginMapper.UpdateValueOrigin(compoundTypeParameter.ValueOrigin, valueOrign);
-            _valueOriginMapper.UpdateValueOrigin(pKaParameter.ValueOrigin, valueOrign);
+            _valueOriginMapper.UpdateValueOrigin(compoundTypeParameter.ValueOrigin, valueOrigin);
+            _valueOriginMapper.UpdateValueOrigin(pKaParameter.ValueOrigin, valueOrigin);
          });
       }
 
@@ -199,8 +199,8 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task<Alternative[]> mapAlternatives(ModelCompound compound, string alternativeGroupName)
       {
          var alternativeGroup = compound.ParameterAlternativeGroup(alternativeGroupName);
-         var alteratives = await _alternativeMapper.MapToSnapshots(alternativeGroup.AllAlternatives);
-         var definedAlternatives = alteratives?.ToArray();
+         var alternatives = await _alternativeMapper.MapToSnapshots(alternativeGroup.AllAlternatives);
+         var definedAlternatives = alternatives?.ToArray();
          if (definedAlternatives == null || !definedAlternatives.Any())
             return null;
 

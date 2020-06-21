@@ -34,9 +34,9 @@ namespace PKSim.Core.Commands
             var individualParameter = objectPath.Resolve<IParameter>(defaultIndividual);
 
             Add(new SetParameterValueCommand(parameter, individualParameter.Value) {Visible = false});
-      
-            //Parameter updated from default indiviudal should have the default value origin
-            Add(new UpdateParameterValueOriginCommand(parameter, individualParameter.ValueOrigin) { Visible = false });
+
+            //Parameter updated from default individual should have the default value origin
+            Add(new UpdateParameterValueOriginCommand(parameter, individualParameter.ValueOrigin) {Visible = false});
          }
 
          base.Execute(context);

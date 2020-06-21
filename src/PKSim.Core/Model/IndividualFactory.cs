@@ -73,8 +73,8 @@ namespace PKSim.Core.Model
          var individual = _objectBaseFactory.Create<Individual>();
          individual.OriginData = originData;
 
-         //default icon for an individual is the name of the species
-         individual.Icon = originData.Species.Name;
+         //default icon for an individual is the icon of the species
+         individual.Icon = originData.Species.Icon;
          var rootContainer = _objectBaseFactory.Create<IRootContainer>();
          rootContainer.Add(_objectBaseFactory.Create<Organism>());
          rootContainer.Add(_objectBaseFactory.Create<IContainer>()
@@ -93,7 +93,7 @@ namespace PKSim.Core.Model
          //Do not update value for BMI and weight in individual as this parameter are defined as formula parameter
          setParameterDisplayUnit(individual, CoreConstants.Parameters.WEIGHT, originData.WeightUnit, originData.ValueOrigin);
 
-         //Do not uddate valuye origin for BMI as this is not an input from the user
+         //Do not update value origin for BMI as this is not an input from the user
          setParameterDisplayUnit(individual, CoreConstants.Parameters.BMI, originData.BMIUnit);
 
          //update ontogeny parameters 

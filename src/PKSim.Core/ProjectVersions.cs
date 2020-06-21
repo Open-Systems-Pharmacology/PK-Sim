@@ -7,19 +7,7 @@ namespace PKSim.Core
    {
       private static readonly Cache<int, ProjectVersion> _knownVersions = new Cache<int, ProjectVersion>(x => x.Version, x => null);
 
-      public static readonly ProjectVersion V5_0_1 = addVersion(20, "5.0.1");
-      public static readonly ProjectVersion V5_1_3 = addVersion(21, "5.1.3");
-      public static readonly ProjectVersion V5_1_4 = addVersion(22, "5.1.4");
-      public static readonly ProjectVersion V5_1_5 = addVersion(51, "5.1.5");
-      public static readonly ProjectVersion V5_2_1 = addVersion(53, "5.2.1");
-      public static readonly ProjectVersion V5_2_2 = addVersion(55, "5.2.2");
-      public static readonly ProjectVersion V5_3_1 = addVersion(57, "5.3.1");
-      public static readonly ProjectVersion V5_3_2 = addVersion(58, "5.3.2");
-      public static readonly ProjectVersion V5_4_1 = addVersion(59, "5.4.1");
-      public static readonly ProjectVersion V5_5_1 = addVersion(60, "5.5.1");
-      public static readonly ProjectVersion V5_5_2 = addVersion(61, "5.5.2");
-      public static readonly ProjectVersion V5_6_1 = addVersion(62, "5.6.1");
-      public static readonly ProjectVersion V5_6_2 = addVersion(63, "5.6.2");
+      public const int UNSUPPORTED = 63;
       public static readonly ProjectVersion V6_0_1 = addVersion(64, "6.0.1");
       public static readonly ProjectVersion V6_0_2 = addVersion(65, "6.0.2");
       public static readonly ProjectVersion V6_1_2 = addVersion(66, "6.1.2");
@@ -33,7 +21,8 @@ namespace PKSim.Core
       public static readonly ProjectVersion V7_3_0 = addVersion(74, "7.3.0");
       public static readonly ProjectVersion V7_4_0 = addVersion(75, "7.4.0");
       public static readonly ProjectVersion V8_0 = addVersion(76, "8");
-      public static readonly ProjectVersion Current = V8_0;
+      public static readonly ProjectVersion V9_0 = addVersion(77, "9");
+      public static readonly ProjectVersion Current = V9_0;
 
       private static ProjectVersion addVersion(int versionNumber, string versionDisplay)
       {
@@ -47,6 +36,11 @@ namespace PKSim.Core
       public static bool CanLoadVersion(int projectVersion)
       {
          return (projectVersion <= Current.Version) && _knownVersions.Contains(projectVersion);
+      }
+
+      public static bool ProjectIsTooOld(int projectVersion)
+      {
+         return projectVersion <= UNSUPPORTED;
       }
 
       public static ProjectVersion FindBy(int version)

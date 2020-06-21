@@ -175,7 +175,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          sut.Edit(_parameter);
-         A.CallTo(() => _parameterTask.SetParameterFomula(A<IParameter>.Ignored, A<IFormula>.Ignored))
+         A.CallTo(() => _parameterTask.SetParameterFormula(A<IParameter>.Ignored, A<IFormula>.Ignored))
             .Invokes(x => _formula = x.GetArgument<TableFormula>(1));
       }
 

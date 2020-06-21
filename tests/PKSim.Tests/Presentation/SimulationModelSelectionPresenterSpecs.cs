@@ -129,12 +129,12 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_image_for_the_active_model()
       {
-         A.CallTo(() => _view.UpdateModelImage(ApplicationImages.ImageByName(_modelConfiguration.ModelName))).MustHaveHappened();
+         A.CallTo(() => _view.UpdateModelImage(_modelConfiguration.ModelName)).MustHaveHappened();
       }
       
    }
 
-   public class When_retreiving_the_display_name_for_a_model_property : concern_for_SimulationModelSelectionPresenter
+   public class When_retrieving_the_display_name_for_a_model_property : concern_for_SimulationModelSelectionPresenter
    {
       protected override void Context()
       {

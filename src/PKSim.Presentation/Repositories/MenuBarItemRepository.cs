@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using System.Windows.Forms;
-using PKSim.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Container;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.UICommands;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.UICommands;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
+using PKSim.Assets;
+using PKSim.Presentation.Core;
+using PKSim.Presentation.UICommands;
+
 namespace PKSim.Presentation.Repositories
 {
    public class MenuBarItemRepository : OSPSuite.Presentation.Repositories.MenuBarItemRepository
@@ -49,7 +49,7 @@ namespace PKSim.Presentation.Repositories
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadProjectFromSnapshot)
             .WithId(MenuBarItemIds.LoadProjectFromSnahpshot)
-            .WithCommand< LoadProjectFromSnapshotUICommand>()
+            .WithCommand<LoadProjectFromSnapshotUICommand>()
             .WithDescription(PKSimConstants.UI.LoadProjectFromSnapshotDescription)
             .WithIcon(ApplicationIcons.SnapshotImport);
 
@@ -221,7 +221,7 @@ namespace PKSim.Presentation.Repositories
             .WithDescription(PKSimConstants.UI.OptionsDescription)
             .WithIcon(ApplicationIcons.Settings)
             .WithShortcut(Keys.Control | Keys.Shift | Keys.O);
-            
+
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Exit)
             .WithId(MenuBarItemIds.Exit)
             .WithCommand<IExitCommand>()
@@ -285,10 +285,10 @@ namespace PKSim.Presentation.Repositories
             .WithIcon(ApplicationIcons.IndividualSimulationComparison);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Comparison)
-           .WithId(MenuBarItemIds.IndividualSimulationComparisonInAnalyze)
-           .WithDescription(PKSimConstants.UI.IndividualSimulationComparisonDescription)
-           .WithCommand<CreateIndividualSimulationComparisonUICommand>()
-           .WithIcon(ApplicationIcons.IndividualSimulationComparison);
+            .WithId(MenuBarItemIds.IndividualSimulationComparisonInAnalyze)
+            .WithDescription(PKSimConstants.UI.IndividualSimulationComparisonDescription)
+            .WithCommand<CreateIndividualSimulationComparisonUICommand>()
+            .WithIcon(ApplicationIcons.IndividualSimulationComparison);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.PopulationPopulationComparison)
             .WithId(MenuBarItemIds.PopulationSimulationComparison)
@@ -401,10 +401,10 @@ namespace PKSim.Presentation.Repositories
             .WithIcon(ApplicationIcons.PopulationExportToCSV);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportPKAnalysesToCSVMenu)
-          .WithId(MenuBarItemIds.ExportActiveSimulationPKAnalysesToCSV)
-          .WithDescription(PKSimConstants.MenuNames.ExportPKAnalysesToCSV)
-          .WithCommand<ExportPopulationSimulationPKAnalysesCommand>()
-          .WithIcon(ApplicationIcons.PKAnalysesExportToCSV);
+            .WithId(MenuBarItemIds.ExportActiveSimulationPKAnalysesToCSV)
+            .WithDescription(PKSimConstants.MenuNames.ExportPKAnalysesToCSV)
+            .WithCommand<ExportPopulationSimulationPKAnalysesCommand>()
+            .WithIcon(ApplicationIcons.PKAnalysesExportToCSV);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportForClusterComputationsMenu)
             .WithId(MenuBarItemIds.ExportActiveSimulationForClusterComputations)
@@ -466,7 +466,7 @@ namespace PKSim.Presentation.Repositories
          yield return ParameterIdentificationMenuBarButtons.StopParameterIdentification(MenuBarItemIds.StopParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.TimeProfileParameterIdentification(MenuBarItemIds.TimeProfileParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.PredictedVsObservedParameterIdentification(MenuBarItemIds.PredictedVsObservedParameterIdentification);
-         yield return ParameterIdentificationMenuBarButtons.ResidualsVsTimeParameterIdentifcation(MenuBarItemIds.ResidualsVsTimeParameterIdentifcation);
+         yield return ParameterIdentificationMenuBarButtons.ResidualsVsTimeParameterIdentification(MenuBarItemIds.ResidualsVsTimeParameterIdentifcation);
          yield return ParameterIdentificationMenuBarButtons.ResidualHistogramParameterIdentification(MenuBarItemIds.ResidualHistogramParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.CorrelationMatrixParameterIdentification(MenuBarItemIds.CorrelationMatrixParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.CovarianceMatrixParameterIdentification(MenuBarItemIds.CovarianceMatrixParameterIdentification);

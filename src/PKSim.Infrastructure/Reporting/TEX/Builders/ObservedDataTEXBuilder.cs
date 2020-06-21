@@ -14,10 +14,13 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
    public class ObservedDataTeXBuilder : OSPSuiteTeXBuilder<DataRepository>
    {
       private readonly IReportGenerator _reportGenerator;
-      private readonly IDataRepositoryTask _dataRepositoryTask;
+      private readonly IDataRepositoryExportTask _dataRepositoryTask;
       private readonly ITeXBuilderRepository _builderRepository;
 
-      public ObservedDataTeXBuilder(IReportGenerator reportGenerator, IDataRepositoryTask dataRepositoryTask, ITeXBuilderRepository builderRepository)
+      public ObservedDataTeXBuilder(
+         IReportGenerator reportGenerator, 
+         IDataRepositoryExportTask dataRepositoryTask, 
+         ITeXBuilderRepository builderRepository)
       {
          _reportGenerator = reportGenerator;
          _dataRepositoryTask = dataRepositoryTask;

@@ -129,10 +129,10 @@ namespace PKSim.UI.Views.Individuals
          return $"{containerDTO.ContainerPathDTO.DisplayName} ({membraneLocation})";
       }
 
-      private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
+      private RepositoryItem configureContainerRepository(PathElement parameterPath)
       {
          var containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
-         return containerDisplayNameRepository.AddItem(parameterPathDTO, parameterPathDTO.IconName);
+         return containerDisplayNameRepository.AddItem(parameterPath, parameterPath.IconName);
       }
 
       private RepositoryItem getTransporterMembraneRepository(TransporterExpressionContainerDTO containerDTO)

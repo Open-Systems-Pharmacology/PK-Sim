@@ -35,7 +35,7 @@ namespace PKSim.Presentation.Presenters.Individuals
             return;
 
          //add  grouping by compound name using the standard sorting
-         _view.GroupBy(PathElement.Molecule, groupIndex: 1, useCustomSort: false); 
+         _view.GroupBy(PathElementId.Molecule, groupIndex: 1, useCustomSort: false); 
       }
 
       private Simulation simulationFrom(IReadOnlyList<IParameter> allParameters)

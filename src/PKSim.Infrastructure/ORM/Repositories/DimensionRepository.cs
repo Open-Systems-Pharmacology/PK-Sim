@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Linq;
-using OSPSuite.Utility.Collections;
-using PKSim.Core;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Utility.Collections;
+using PKSim.Core;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -16,16 +16,20 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       private readonly IPKSimDimensionFactory _dimensionFactory;
       private readonly IPKSimConfiguration _pkSimConfiguration;
+      private readonly IContainer _container;
       private readonly IUnitSystemXmlSerializerRepository _unitSystemXmlSerializerRepository;
-      private IList<string> _dimensionNames;
 
-      public DimensionRepository(IPKSimDimensionFactory dimensionFactory, IUnitSystemXmlSerializerRepository unitSystemXmlSerializerRepository,
-         IPKSimConfiguration pkSimConfiguration)
+      public DimensionRepository(
+         IPKSimDimensionFactory dimensionFactory,
+         IUnitSystemXmlSerializerRepository unitSystemXmlSerializerRepository,
+         IPKSimConfiguration pkSimConfiguration,
+         IContainer container)
       {
          _dimensionFactory = dimensionFactory;
          _dimensionFactory.DimensionRepository = this;
          _unitSystemXmlSerializerRepository = unitSystemXmlSerializerRepository;
          _pkSimConfiguration = pkSimConfiguration;
+         _container = container;
       }
 
       public IDimension OptimalDimensionFor(IDimension dimension) => _dimensionFactory.OptimalDimension(dimension);
@@ -44,9 +48,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public IDimension Fraction => DimensionByName(CoreConstants.Dimension.Fraction);
 
-      public IDimension Amount => DimensionByName(Constants.Dimension.AMOUNT);
+      public IDimension Amount => DimensionByName(Constants.Dimension.MOLAR_AMOUNT);
 
-      public IDimension Mass => DimensionByName(CoreConstants.Dimension.Mass);
+      public IDimension Mass => DimensionByName(Constants.Dimension.MASS_AMOUNT);
 
       public IDimension AucMolar => DimensionByName(CoreConstants.Dimension.AucMolar);
 
@@ -76,7 +80,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          if (string.IsNullOrEmpty(dimensionName))
             return NoDimension;
 
-         if (!hasDimension(dimensionName))
+         if (!_dimensionFactory.Has(dimensionName))
             return NoDimension;
 
          return _dimensionFactory.Dimension(dimensionName);
@@ -98,8 +102,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public IDimension MergedDimensionFor(object objectThatMightHaveDimension)
       {
-         var hasDimension = objectThatMightHaveDimension as IWithDimension;
-         return hasDimension != null ? MergedDimensionFor(hasDimension) : Constants.Dimension.NO_DIMENSION;
+         return objectThatMightHaveDimension is IWithDimension hasDimension ? MergedDimensionFor(hasDimension) : Constants.Dimension.NO_DIMENSION;
       }
 
       protected override void DoStart()
@@ -108,7 +111,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
          addInputDoseDimension();
 
-         _dimensionNames = _dimensionFactory.DimensionNames.ToList();
          _dimensionFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
       }
 
@@ -130,7 +132,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          var serializer = _unitSystemXmlSerializerRepository.SerializerFor(_dimensionFactory);
          var xel = XElement.Load(_pkSimConfiguration.DimensionFilePath);
-         serializer.Deserialize(_dimensionFactory, xel, SerializationTransaction.Create());
+         serializer.Deserialize(_dimensionFactory, xel, SerializationTransaction.Create(_container));
       }
 
       private Unit addInputDoseUnit(IDimension inputDose, string unit, double factor)
@@ -156,7 +158,5 @@ namespace PKSim.Infrastructure.ORM.Repositories
          var massToAmountMerging = new SimpleDimensionMergingInformation(Mass, Amount);
          _dimensionFactory.AddMergingInformation(massToAmountMerging);
       }
-
-      private bool hasDimension(string dimensionName) => _dimensionNames.Contains(dimensionName);
    }
 }

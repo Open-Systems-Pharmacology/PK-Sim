@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
@@ -11,7 +12,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public class IndividualSimulationEngine : ISimulationEngine<IndividualSimulation>
+   public class IndividualSimulationEngine : IIndividualSimulationEngine
    {
       private readonly ISimModelManager _simModelManager;
       private readonly IProgressManager _progressManager;
@@ -46,7 +47,7 @@ namespace PKSim.Core.Services
          _simModelManager.SimulationProgress -= simulationProgress;
       }
 
-      public async Task RunAsync(IndividualSimulation individualSimulation, SimulationRunOptions simulationRunOptions)
+      public async Task<SimulationRunResults> RunAsync(IndividualSimulation individualSimulation, SimulationRunOptions simulationRunOptions)
       {
          _shouldRaiseEvents = simulationRunOptions.RaiseEvents;
          initializeProgress();
@@ -58,7 +59,7 @@ namespace PKSim.Core.Services
          try
          {
             raiseEvent(new SimulationRunStartedEvent());
-            await runSimulation(individualSimulation, simulationRunOptions);
+            return await runSimulation(individualSimulation, simulationRunOptions);
          }
          catch (Exception)
          {
@@ -93,7 +94,7 @@ namespace PKSim.Core.Services
          _simModelManager.StopSimulation();
       }
 
-      private Task runSimulation(IndividualSimulation simulation, SimulationRunOptions simulationRunOptions)
+      private Task<SimulationRunResults> runSimulation(IndividualSimulation simulation, SimulationRunOptions simulationRunOptions)
       {
          return Task.Run(() =>
          {
@@ -101,7 +102,7 @@ namespace PKSim.Core.Services
             var simResults = _simModelManager.RunSimulation(modelCoreSimulation, simulationRunOptions);
 
             if (!simResults.Success)
-               return;
+               return Task.FromResult(simResults);
 
             _simulationResultsSynchronizer.Synchronize(simulation, simResults.Results);
             updateResultsName(simulation);
@@ -109,6 +110,7 @@ namespace PKSim.Core.Services
             simulation.ClearPKCache();
 
             raiseEvent(new SimulationResultsUpdatedEvent(simulation));
+            return Task.FromResult(simResults);
          });
       }
 

@@ -3,6 +3,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.MenuAndBars;
 using PKSim.Assets;
+using PKSim.Core.Services;
 using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation.UICommands

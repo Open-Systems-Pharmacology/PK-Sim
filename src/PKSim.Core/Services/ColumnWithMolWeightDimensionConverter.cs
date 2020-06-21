@@ -3,7 +3,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Core.Services
 {
-   public abstract class ColumnWithMolWeightDimensionConverter : DimensionConverterBase
+   public abstract class ColumnWithMolWeightDimensionConverter : MolWeightDimensionConverter
    {
       protected readonly DataColumn _column;
 

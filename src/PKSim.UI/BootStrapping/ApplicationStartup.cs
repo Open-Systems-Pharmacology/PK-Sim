@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.Commands;
@@ -53,13 +54,14 @@ namespace PKSim.UI.BootStrapping
 
          updateGoDiagramKey();
 
+
          var container = InfrastructureRegister.Initialize();
          container.RegisterImplementationOf(getCurrentContext());
 
          container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
          container.Register<PKSimApplication, PKSimApplication>(LifeStyle.Singleton);
 
-         //UI and Presentation mandatory ojects for startup
+         //UI and Presentation mandatory objects for startup
          container.Register<IProgressUpdater, PKSimProgressUpdater>();
          container.RegisterImplementationOf(NumericFormatterOptions.Instance);
          container.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
@@ -129,7 +131,7 @@ namespace PKSim.UI.BootStrapping
                RegisterCommands(container);
 
                showStatusMessage(progress, PKSimConstants.UI.RegisterSerializationDependencies);
-               InfrastructureRegister.RegisterSerializationDependencies();
+               InfrastructureRegister.LoadSerializers(container);
 
                finalizeRegistration(container);
             }
@@ -144,7 +146,7 @@ namespace PKSim.UI.BootStrapping
       /// </summary>
       private void finalizeRegistration(IContainer container)
       {
-         InfrastructureRegister.RegisterWorkspace();
+         InfrastructureRegister.RegisterWorkspace(container);
          //Create one instance of the invokers so that the object is available in the application 
          //since the object is not created anywhere and is only used as event listener
          container.Resolve<ICloseSubjectPresenterInvoker>();
@@ -155,7 +157,6 @@ namespace PKSim.UI.BootStrapping
 
          //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
          container.Register<IInteractiveSimulationRunner,InteractiveSimulationRunner>(LifeStyle.Singleton);
-
       }
 
       private void startStartableObject(IContainer container)

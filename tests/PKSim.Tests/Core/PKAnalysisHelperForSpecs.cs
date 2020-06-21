@@ -9,7 +9,7 @@ namespace PKSim.Core
       {
          var analysis = new PKAnalysis();
          analysis.AddChildren(
-            new PKSimParameter {Name = Constants.PKParameters.AUC, Value = 0.0},
+            new PKSimParameter {Name = Constants.PKParameters.AUC_tEnd, Value = 0.0},
             new PKSimParameter {Name = Constants.PKParameters.AUC_inf, Value = 1.0},
             new PKSimParameter {Name = Constants.PKParameters.C_max, Value = 2.0},
             new PKSimParameter {Name = Constants.PKParameters.Tmax, Value = 3.0},
@@ -24,8 +24,8 @@ namespace PKSim.Core
       {
          var newPKAnalysis = new PKAnalysis();
          newPKAnalysis.AddChildren(
-            new PKSimParameter {Name = Constants.PKParameters.AUC, Value = 0.0},
-            new PKSimParameter {Name = Constants.PKParameters.AUC_norm, Value = 1.0},
+            new PKSimParameter {Name = Constants.PKParameters.AUC_tEnd, Value = 0.0},
+            new PKSimParameter {Name = Constants.PKParameters.AUC_tEnd_norm, Value = 1.0},
             new PKSimParameter {Name = Constants.PKParameters.AUC_inf, Value = 2.0},
             new PKSimParameter {Name = Constants.PKParameters.AUC_inf_norm, Value = 3.0},
             new PKSimParameter {Name = Constants.PKParameters.C_max, Value = 4.0},

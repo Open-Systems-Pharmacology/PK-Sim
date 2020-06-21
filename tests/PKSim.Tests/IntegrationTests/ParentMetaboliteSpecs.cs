@@ -137,7 +137,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_run_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }

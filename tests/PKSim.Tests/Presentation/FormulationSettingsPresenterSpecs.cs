@@ -107,6 +107,12 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _formulaParameterPresenter.InitializeWith(sut)).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_ensure_that_the_user_can_switch_between_linear_and_log_for_the_formulation_plot()
+      {
+         _simpleChartPresenter.LogLinSelectionEnabled.ShouldBeTrue();
+      }
    }
 
    public class When_the_formulation_setting_is_asked_to_edit_a_formulation_that_is_not_a_table_formula : concern_for_FormulationSettingsPresenter
@@ -203,6 +209,13 @@ namespace PKSim.Presentation
       public void should_set_the_edited_table_as_source_for_the_data_chart_being_displayed()
       {
          A.CallTo(() => _simpleChartPresenter.Plot(_tableFormulationPresenter.EditedFormula)).MustHaveHappened();
+      }
+
+
+      [Observation]
+      public void should_set_the_default_value_for_the_y_scaling_to_linear()
+      {
+         A.CallTo(() => _simpleChartPresenter.SetChartScale(Scalings.Linear)).MustHaveHappened();
       }
 
       [Observation]

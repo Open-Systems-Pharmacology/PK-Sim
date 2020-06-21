@@ -29,7 +29,7 @@ namespace PKSim.Core.Extensions
       }
 
       /// <summary>
-      /// Returns the subset of <see cref="ICurve"/> defined in <paramref name="curves"/> that can be used for PK-Analysis calculations
+      /// Returns the subset of <see cref="Curve"/> defined in <paramref name="curves"/> that can be used for PK-Analysis calculations
       /// </summary>
       public static IReadOnlyList<Curve> ForPKAnalysis(this IEnumerable<Curve> curves)
       {

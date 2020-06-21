@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots
 {
@@ -22,8 +23,10 @@ namespace PKSim.Core.Snapshots
       public string Population { get; set; }
       public CompoundProperties[] Compounds { get; set; }
       public EventSelection[] Events { get; set; }
+      public ObserverSetSelection[] ObserverSets { get; set; }
       public AdvancedParameter[] AdvancedParameters { get; set; }
       public bool HasResults { get; set; }
+      public AlteredBuildingBlock[] AlteredBuildingBlocks { get; set; }
 
       //Individual charts (only set for individual simulation)
       public CurveChart[] IndividualAnalyses { get; set; }
@@ -46,6 +49,7 @@ namespace PKSim.Core.Snapshots
             return new List<Chart>();
          }
       }
+
 
       public LocalizedParameter ParameterByPath(string parameterPath) =>
          Parameters?.Find(x => string.Equals(x.Path, parameterPath));

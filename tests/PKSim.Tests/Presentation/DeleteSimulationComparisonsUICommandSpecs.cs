@@ -1,44 +1,25 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Events;
+﻿using System.Collections.Generic;
 using FakeItEasy;
-using PKSim.Assets;
+using OSPSuite.BDDHelper;
 using PKSim.Core.Chart;
-using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using PKSim.Presentation.UICommands;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
-using PKSim.Core;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_DeleteSimulationComparisonsUICommand : ContextSpecification<DeleteSimulationComparisonsUICommand>
    {
-      protected IDialogCreator _dialogCreator;
-      private IApplicationController _applicationController;
-      private ICoreWorkspace _workspace;
-      protected IEventPublisher _eventPublisher;
-      protected IndividualSimulationComparison _individualSimulationComparison;
-      protected PKSimProject _project;
-      protected IRegistrationTask _registrationTask;
+      protected ISimulationComparisonTask _simulationComparisonTask;
+      private ISimulationComparison _individualSimulationComparison;
+      protected IReadOnlyList<ISimulationComparison> _simulationComparisonToDelete;
 
       protected override void Context()
       {
-         _dialogCreator = A.Fake<IDialogCreator>();
-         _applicationController = A.Fake<IApplicationController>();
-         _workspace = A.Fake<ICoreWorkspace>();
-         _project = A.Fake<PKSimProject>();
-         _registrationTask= A.Fake<IRegistrationTask>();
-         A.CallTo(() => _workspace.Project).Returns(_project);
-         _eventPublisher = A.Fake<IEventPublisher>();
-         sut = new DeleteSimulationComparisonsUICommand(_applicationController, _workspace, _eventPublisher, _dialogCreator, _registrationTask);
-         _individualSimulationComparison = new IndividualSimulationComparison().WithName("chart");
-         sut.For(new [] {_individualSimulationComparison});
+         _individualSimulationComparison = new IndividualSimulationComparison();
+         _simulationComparisonTask = A.Fake<ISimulationComparisonTask>();
+         _simulationComparisonToDelete= new[] {_individualSimulationComparison};
+         sut = new DeleteSimulationComparisonsUICommand(_simulationComparisonTask) {Subject = _simulationComparisonToDelete };
       }
 
       protected override void Because()
@@ -47,58 +28,12 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_user_decides_to_delete_a_summary_plot : concern_for_DeleteSimulationComparisonsUICommand
+   public class When_the_user_is_executing_the_delete_simulation_comparison_command : concern_for_DeleteSimulationComparisonsUICommand
    {
       [Observation]
-      public void the_user_should_be_asked_to_confirm_the_deletion()
+      public void should_leverage_the_simulation_comparison_task_to_delete_the_simulation_comparisons()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }))).MustHaveHappened();
-      }
-   }
-
-   public class When_the_user_decides_to_delete_a_summary_plot_and_cancel_the_deletion : concern_for_DeleteSimulationComparisonsUICommand
-   {
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }))).Returns(ViewResult.No);
-      }
-
-      [Observation]
-      public void should_not_delete_the_summary_chart()
-      {
-         A.CallTo(() => _project.RemoveSimulationComparison(_individualSimulationComparison)).MustNotHaveHappened();
-      }
-   }
-
-   public class When_the_user_decides_to_delete_a_summary_plot_and_confirn_the_deletion : concern_for_DeleteSimulationComparisonsUICommand
-   {
-      private SimulationComparisonDeletedEvent _chartDeletedEvent;
-
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }))).Returns(ViewResult.Yes);
-         A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationComparisonDeletedEvent>.Ignored)).Invokes(
-            x => _chartDeletedEvent = x.GetArgument<SimulationComparisonDeletedEvent>(0));
-      }
-
-      [Observation]
-      public void should_delete_the_summary_chart()
-      {
-         A.CallTo(() => _project.RemoveSimulationComparison(_individualSimulationComparison)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_notify_the_summary_chart_deletion()
-      {
-         _chartDeletedEvent.Chart.ShouldBeEqualTo(_individualSimulationComparison);
-      }
-
-      [Observation]
-      public void should_unregister_the_comparison()
-      {
-         A.CallTo(() => _registrationTask.Unregister(_individualSimulationComparison)).MustHaveHappened();
+         A.CallTo(() => _simulationComparisonTask.Delete(_simulationComparisonToDelete)).MustHaveHappened();
       }
    }
 }

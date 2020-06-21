@@ -12,6 +12,7 @@ using PKSim.Presentation.Views.Compounds;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -38,11 +39,15 @@ namespace PKSim.Presentation.Presenters.Compounds
       private IReadOnlyList<FractionUnboundAlternativeDTO> _fractionUnboundDTOs;
       private IParameter _plasmaProteinPartner;
 
-      public FractionUnboundGroupPresenter(IFractionUnboundGroupView view, IRepresentationInfoRepository representationRepository,
+      public FractionUnboundGroupPresenter(IFractionUnboundGroupView view, 
+         IRepresentationInfoRepository representationRepository,
          ICompoundAlternativeTask compoundAlternativeTask,
+         ICompoundAlternativePresentationTask compoundAlternativePresentationTask,
          IParameterGroupAlternativeToFractionUnboundAlternativeDTOMapper fractionUnboundAlternativeDTOMapper,
-         ISpeciesRepository speciesRepository, IDialogCreator dialogCreator, IParameterTask parameterTask) :
-            base(view, representationRepository, compoundAlternativeTask, dialogCreator, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND)
+         ISpeciesRepository speciesRepository, 
+         IDialogCreator dialogCreator, 
+         IParameterTask parameterTask) :
+            base(view, representationRepository, compoundAlternativeTask, compoundAlternativePresentationTask, dialogCreator, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND)
       {
          _fractionUnboundAlternativeDTOMapper = fractionUnboundAlternativeDTOMapper;
          _speciesRepository = speciesRepository;

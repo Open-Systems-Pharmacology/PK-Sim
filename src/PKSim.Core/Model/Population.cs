@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Maths.Random;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Model
 {
@@ -17,7 +19,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    The underlying cache managing the individuals and their values
       /// </summary>
-      public virtual IndividualPropertiesCache IndividualPropertiesCache { get; protected set; }
+      public virtual IndividualValuesCache IndividualValuesCache { get; protected set; }
 
       private RandomGenerator _randomGenerator;
       private int _seed;
@@ -26,7 +28,7 @@ namespace PKSim.Core.Model
 
       protected Population() : base(PKSimBuildingBlockType.Population)
       {
-         IndividualPropertiesCache = new IndividualPropertiesCache();
+         IndividualValuesCache = new IndividualValuesCache();
          SelectedDistributions = new ParameterDistributionSettingsCache();
          Seed = Environment.TickCount;
       }
@@ -46,13 +48,13 @@ namespace PKSim.Core.Model
 
       public virtual IReadOnlyList<double> AllPercentilesFor(string parameterPath)
       {
-         if (IndividualPropertiesCache.Has(parameterPath))
-            return IndividualPropertiesCache.PercentilesFor(parameterPath);
+         if (IndividualValuesCache.Has(parameterPath))
+            return IndividualValuesCache.PercentilesFor(parameterPath);
 
          return defaultValuesWith(CoreConstants.DEFAULT_PERCENTILE);
       }
 
-      public virtual int NumberOfItems => IndividualPropertiesCache.Count;
+      public virtual int NumberOfItems => IndividualValuesCache.Count;
 
       /// <summary>
       ///    Returns all values defined for the organism parameter names <paramref name="parameterName" />
@@ -68,8 +70,8 @@ namespace PKSim.Core.Model
 
       public virtual IReadOnlyList<double> AllValuesFor(string parameterPath)
       {
-         if (IndividualPropertiesCache.Has(parameterPath))
-            return IndividualPropertiesCache.ValuesFor(parameterPath);
+         if (IndividualValuesCache.Has(parameterPath))
+            return IndividualValuesCache.ValuesFor(parameterPath);
 
          return defaultValuesWith(double.NaN);
       }
@@ -82,21 +84,21 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Add one individual to the population
       /// </summary>
-      /// <param name="individualProperties">properties of individual added to population</param>
-      public virtual void AddIndividualProperties(IndividualProperties individualProperties)
+      /// <param name="individualValues">properties of individual added to population</param>
+      public virtual void AddIndividualValues(IndividualValues individualValues)
       {
-         IndividualPropertiesCache.Add(individualProperties);
+         IndividualValuesCache.Add(individualValues);
       }
 
       public virtual IEnumerable<IParameter> AllVectorialParameters(IEntityPathResolver entityPathResolver)
       {
          var allParameters = AllParameters(entityPathResolver);
-         return IndividualPropertiesCache.AllParameterPaths().Select(p => allParameters[p]).Where(p => p != null);
+         return IndividualValuesCache.AllParameterPaths().Select(p => allParameters[p]).Where(p => p != null);
       }
 
       public virtual void GenerateRandomValuesFor(AdvancedParameter advancedParameter)
       {
-         IndividualPropertiesCache.SetValues(advancedParameter.ParameterPath, advancedParameter.GenerateRandomValues(NumberOfItems));
+         IndividualValuesCache.SetValues(advancedParameter.ParameterPath, advancedParameter.GenerateRandomValues(NumberOfItems));
       }
 
       public IParameter ParameterByPath(string parameterPath, IEntityPathResolver entityPathResolver)
@@ -104,18 +106,20 @@ namespace PKSim.Core.Model
          return AllParameters(entityPathResolver)[parameterPath];
       }
 
-      public virtual IReadOnlyList<Gender> AllGenders => IndividualPropertiesCache.Genders;
-      
-      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => IndividualPropertiesCache.Races;
+      public virtual IReadOnlyList<Gender> AllGenders(IGenderRepository genderRepository)
+      {
+         var genderCovariates = IndividualValuesCache.AllCovariateValuesFor(Constants.Population.GENDER);
+         return genderCovariates?.Select(genderRepository.FindByName).ToList() ?? new List<Gender>();
+      }
 
-      public virtual IReadOnlyList<string> AllCovariateNames => new List<string>(IndividualPropertiesCache.AllCovariatesNames().Union(new[] {CoreConstants.Covariates.POPULATION_NAME}));
+      public virtual IReadOnlyList<string> AllCovariateNames => new List<string>(IndividualValuesCache.AllCovariatesNames().Union(new[] {CoreConstants.Covariates.POPULATION_NAME}));
 
       public virtual IReadOnlyList<string> AllCovariateValuesFor(string covariateName)
       {
          if (string.Equals(covariateName, CoreConstants.Covariates.POPULATION_NAME))
             return new string[NumberOfItems].InitializeWith(Name);
 
-         return IndividualPropertiesCache.AllCovariates.Select(x => x.Covariate(covariateName)).ToList();
+         return IndividualValuesCache.AllCovariateValuesFor(covariateName);
       }
 
       public bool DisplayParameterUsingGroupStructure => true;
@@ -147,20 +151,13 @@ namespace PKSim.Core.Model
 
       public Organism Organism => FirstIndividual?.Organism ?? new Organism();
 
-      public IEnumerable<IndividualMolecule> AllMolecules()
-      {
-         if (FirstIndividual != null)
-            return FirstIndividual.AllMolecules();
+      public IEnumerable<IndividualMolecule> AllMolecules() => AllMolecules<IndividualMolecule>();
 
-         return Enumerable.Empty<IndividualMolecule>();
-      }
+      public IndividualMolecule MoleculeByName(string moleculeName) => FirstIndividual?.MoleculeByName(moleculeName);
 
       public IEnumerable<TMolecules> AllMolecules<TMolecules>() where TMolecules : IndividualMolecule
       {
-         if (FirstIndividual != null)
-            return FirstIndividual.AllMolecules<TMolecules>();
-
-         return Enumerable.Empty<TMolecules>();
+         return FirstIndividual?.AllMolecules<TMolecules>() ?? Enumerable.Empty<TMolecules>();
       }
 
       public void AddMolecule(IndividualMolecule molecule)
@@ -207,7 +204,7 @@ namespace PKSim.Core.Model
       public virtual void RemoveAdvancedParameter(AdvancedParameter advancedParameter)
       {
          advancedParameterCollection.RemoveAdvancedParameter(advancedParameter);
-         IndividualPropertiesCache.Remove(advancedParameter.ParameterPath);
+         IndividualValuesCache.Remove(advancedParameter.ParameterPath);
       }
 
       /// <summary>
@@ -241,7 +238,7 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          var sourcePopulation = sourceObject as Population;
          if (sourcePopulation == null) return;
-         IndividualPropertiesCache = sourcePopulation.IndividualPropertiesCache.Clone();
+         IndividualValuesCache = sourcePopulation.IndividualValuesCache.Clone();
          SelectedDistributions = sourcePopulation.SelectedDistributions.Clone();
          Seed = sourcePopulation.Seed;
       }

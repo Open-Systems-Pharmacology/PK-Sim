@@ -1,3 +1,4 @@
+using System;
 using Castle.Facilities.TypedFactory;
 using Microsoft.Extensions.Logging;
 using OSPSuite.Core;
@@ -7,26 +8,29 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure.Container.Castle;
+using OSPSuite.Infrastructure.Export;
+using OSPSuite.Infrastructure.Import;
 using OSPSuite.Infrastructure.Reporting;
+using OSPSuite.Infrastructure.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
-using OSPSuite.Infrastructure.Services;
+using OSPSuite.Infrastructure.Serialization.Services;
 using OSPSuite.Presentation.Serialization.Extensions;
 using OSPSuite.Presentation.Services;
+using OSPSuite.TeXReporting;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Compression;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using PKSim.Core;
 using PKSim.Core.Reporting;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.Core;
 using PKSim.Infrastructure.ORM.Mappers;
 using PKSim.Infrastructure.ORM.Repositories;
 using PKSim.Infrastructure.ProjectConverter;
-using PKSim.Infrastructure.ProjectConverter.v5_3;
 using PKSim.Infrastructure.ProjectConverter.v6_2;
 using PKSim.Infrastructure.Reporting.Markdown;
 using PKSim.Infrastructure.Reporting.Markdown.Builders;
@@ -40,20 +44,24 @@ using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ILogger = OSPSuite.Core.Services.ILogger;
+using IWorkspace = PKSim.Presentation.IWorkspace;
 
 namespace PKSim.Infrastructure
 {
    public class InfrastructureRegister : Register
    {
-      public static IContainer Initialize()
+      public static IContainer Initialize(bool registerContainerAsStatic = true)
       {
-         var container = initializeContainer();
+         var container = initializeContainer(registerContainerAsStatic);
+
+         container.AddRegister(x => x.FromType<OSPSuite.Infrastructure.InfrastructureRegister>());
 
          registerFactoryIn(container);
 
          registerConfigurationIn(container);
 
          container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
+         container.Register<IDbGateway, SimpleDbGateway>(LifeStyle.Singleton);
 
          registerRunOptionsIn(container);
 
@@ -75,10 +83,11 @@ namespace PKSim.Infrastructure
          container.Register<StartOptions, IStartOptions, StartOptions>(LifeStyle.Singleton);
       }
 
-      private static IContainer initializeContainer()
+      private static IContainer initializeContainer(bool registerContainerAsStatic)
       {
          var container = new CastleWindsorContainer();
-         IoC.InitializeWith(container);
+         if (registerContainerAsStatic) 
+            IoC.InitializeWith(container);
 
          container.WindsorContainer.AddFacility<EventRegisterFacility>();
          container.WindsorContainer.AddFacility<SerializationFacility>();
@@ -96,8 +105,7 @@ namespace PKSim.Infrastructure
          container.Register<IPKSimConfiguration, IApplicationConfiguration, PKSimConfiguration>(LifeStyle.Singleton);
 
          var configuration = container.Resolve<IPKSimConfiguration>();
-         CoreConstants.ProductDisplayName = configuration.ProductDisplayName;
-      }
+         CoreConstants.ProductDisplayName = configuration.ProductDisplayName; }
 
       private static void registerFactoryIn(IContainer container)
       {
@@ -105,20 +113,52 @@ namespace PKSim.Infrastructure
          container.RegisterFactory<IHistoryManagerFactory>();
       }
 
-      public static void RegisterSerializationDependencies()
+      public static void LoadSerializers(IContainer container)
       {
-         var container = IoC.Container;
+         RegisterSerializationDependencies(container);
+         LoadDefaultEntities(container);
+      }
 
+      public static void RegisterSerializationDependencies(IContainer container)
+      {
          container.Register<ISerializationManager, XmlSerializationManager>();
+         container.Register<IStringSerializer, StringSerializer>();
          container.Register<IStringSerializer, CompressedStringSerializer>(CoreConstants.Serialization.Compressed);
          container.Register<IPKSimXmlSerializerRepository, PKSimXmlSerializerRepository>(LifeStyle.Singleton);
 
          container.Register(typeof(IXmlReader<>), typeof(XmlReader<>));
          container.Register(typeof(IXmlWriter<>), typeof(XmlWriter<>));
 
-         //load repository to trigger initialization
-         container.Resolve<IPKSimXmlSerializerRepository>().PerformMapping();
+         //Core serialization to serialize to pkml compatible with core
+         container.AddRegister(x => x.FromType<CoreSerializerRegister>());
+      }
 
+      public static void LoadDefaultEntities(IContainer container)
+      {
+         //load unit serializer
+         container.Resolve<IUnitSystemXmlSerializerRepository>().PerformMapping();
+         //Then trigger dimension load to load the dimensions
+         loadDimensionRepository(container);
+
+         //Load pkml serializers
+         var ospSuiteXmlSerializerRepository = container.Resolve<IOSPSuiteXmlSerializerRepository>();
+         ospSuiteXmlSerializerRepository.AddPresentationSerializers();
+         ospSuiteXmlSerializerRepository.PerformMapping();
+         //then load pk parameters
+         loadPKParameters(container);
+
+         //last load all serializer
+         container.Resolve<IPKSimXmlSerializerRepository>().PerformMapping();
+      }
+
+      private static void loadDimensionRepository(IContainer container)
+      {
+         //Loading the dimension will trigger the load
+         container.Resolve<IDimensionRepository>().All();
+      }
+
+      private static void loadPKParameters(IContainer container)
+      {
          //register pk analyses values
          var pkParameterRepository = container.Resolve<IPKParameterRepository>();
          var pKParameterLoader = container.Resolve<IPKParameterRepositoryLoader>();
@@ -126,16 +166,13 @@ namespace PKSim.Infrastructure
          pKParameterLoader.Load(pkParameterRepository, pkSimConfiguration.PKParametersFilePath);
       }
 
-      public static void RegisterWorkspace()
+      public static void RegisterWorkspace(IContainer container)
       {
-         var container = IoC.Container;
-         container.Register<Presentation.IWorkspace,IWithWorkspaceLayout, ICoreWorkspace, OSPSuite.Core.IWorkspace, Workspace>(LifeStyle.Singleton);
+         container.Register<IWorkspace, IWithWorkspaceLayout, ICoreWorkspace, OSPSuite.Core.IWorkspace, Workspace>(LifeStyle.Singleton);
       }
 
-      private void registerORMDependencies()
+      private void registerORMDependencies(IContainer container)
       {
-         var container = IoC.Container;
-         container.Register<IDbGateway, SimpleDbGateway>(LifeStyle.Singleton);
          container.Register(typeof(IDataTableToMetaDataMapper<>), typeof(DataTableToMetaDataMapper<>));
       }
 
@@ -166,6 +203,8 @@ namespace PKSim.Infrastructure
             scan.ExcludeType<VersionChecker>();
             scan.ExcludeType<Workspace>();
             scan.ExcludeType<PKSimLogger>();
+            scan.ExcludeType<StringSerializer>();
+            scan.ExcludeType<CompressedStringSerializer>();
 
             //already registered
             scan.ExcludeType<PKSimXmlSerializerRepository>();
@@ -203,28 +242,18 @@ namespace PKSim.Infrastructure
 
          registerMarkdownBuilders(container);
 
-         container.Register<ICompression, SharpLibCompression>();
-         container.Register<IStringCompression, StringCompression>();
          container.Register<IProjectRetriever, PKSimProjectRetriever>();
          container.Register<IObservedDataConfiguration, ImportObservedDataTask>();
          container.Register<IFlatContainerIdToContainerMapperSpecification, FlatContainerIdToFormulationMapper>();
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
 
-         registerORMDependencies();
-
-         var xmlRegister = new CoreSerializerRegister();
-         container.AddRegister(x => x.FromInstance(xmlRegister));
-         var sbsuiteSerializerRepository = container.Resolve<IOSPSuiteXmlSerializerRepository>();
-         sbsuiteSerializerRepository.AddPresentationSerializers();
-         xmlRegister.PerformMappingForSerializerIn(container);
+         registerORMDependencies(container);
 
          container.AddRegister(x => x.FromType<ReportingRegister>());
-         container.AddRegister(x => x.FromType<OSPSuite.TeXReporting.ReportingRegister>());
-         container.AddRegister(x => x.FromType<OSPSuite.Infrastructure.InfrastructureRegister>());
-
-         //register factory also as IObjectBaseFactoryIBuildTrackerFactory
-         var factory = container.Resolve<IPKSimObjectBaseFactory>() as IObjectBaseFactory;
-         container.RegisterImplementationOf(factory);
+         container.AddRegister(x => x.FromType<InfrastructureSerializationRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureReportingRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureExportRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureImportRegister>());
 
          var configuration = container.Resolve<IPKSimConfiguration>();
          var versionChecker = container.Resolve<IVersionChecker>();
@@ -278,13 +307,11 @@ namespace PKSim.Infrastructure
             scan.IncludeNamespaceContainingType<IObjectConverter>();
             scan.ExcludeType<ProjectConverterLogger>();
             scan.ExcludeType<ObjectConverterFinder>();
-            scan.ExcludeType<Converter52To531>();
             scan.ExcludeType<Converter612To621>();
             scan.WithConvention<PKSimRegistrationConvention>();
          });
 
          //required as singleton because of element caching
-         container.Register<Converter52To531, IObjectConverter, Converter52To531>(LifeStyle.Singleton);
          container.Register<Converter612To621, IObjectConverter, Converter612To621>(LifeStyle.Singleton);
          container.Register<IObjectConverterFinder, ObjectConverterFinder>(LifeStyle.Singleton);
          container.Register<IProjectConverterLogger, ProjectConverterLogger>(LifeStyle.Singleton);

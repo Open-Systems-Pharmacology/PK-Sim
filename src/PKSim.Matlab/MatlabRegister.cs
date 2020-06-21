@@ -22,12 +22,11 @@ namespace PKSim.Matlab
          container.Register<IDialogCreator, CLIDialogCreator>();
          container.Register<ICoreUserSettings, CLIUserSettings>();
          container.Register<IExceptionManager, CLIExceptionManager>();
-         container.Register<IProgressUpdater, CLIProgressUpdater>();
+         container.Register<IProgressUpdater, NoneProgressUpdater>();
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
-         container.Register<IFullPathDisplayResolver, MatlabFullPathDisplayResolver>();
          container.Register<IMatlabPopulationSettingsToPopulationSettingsMapper, MatlabPopulationSettingsToPopulationSettingsMapper>();
          container.Register<ILazyLoadTask, MatlabLazyLoadTask>(LifeStyle.Singleton);
-         container.Register<IOntogenyTask<Individual>, MatlabIndividualOntogenyTask>();
+         container.Register<IOntogenyTask<Individual>, CLIIndividualOntogenyTask>();
       }
    }
 }

@@ -4,7 +4,7 @@ using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Infrastructure.Services;
+using OSPSuite.Infrastructure.Serialization.Services;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -23,15 +23,15 @@ namespace PKSim.Infrastructure.Services
       {
          var cfg = createSqlLiteConfigurationFor(dataSource);
          var update = new SchemaUpdate(cfg);
-         update.Execute(useStdOut: false, doUpdate:true);
+         update.Execute(useStdOut: false, doUpdate: true);
          return createSessionFactory(cfg);
       }
 
       private static ISessionFactory createSessionFactory(Configuration cfg)
       {
          var sessionFactory = cfg.BuildSessionFactory();
-         sessionFactory.Evict(typeof (SimulationResults));
-         sessionFactory.Evict(typeof (IndividualResults));
+         sessionFactory.Evict(typeof(SimulationResults));
+         sessionFactory.Evict(typeof(IndividualResults));
          return sessionFactory;
       }
 

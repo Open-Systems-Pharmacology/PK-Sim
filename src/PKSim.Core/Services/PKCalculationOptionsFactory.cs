@@ -40,7 +40,7 @@ namespace PKSim.Core.Services
       public PKCalculationOptions CreateFor(PopulationSimulation populationSimulation, string moleculeName)
       {
          var options = CreateFor((Simulation) populationSimulation, moleculeName);
-         options.Dose = null;
+         options.TotalDrugMassPerBodyWeight = null;
          return options;
       }
 
@@ -54,7 +54,7 @@ namespace PKSim.Core.Services
 
          return new PKCalculationOptions
          {
-            Dose = allDosesForMolecules.Count == 1 ? allDosesForMolecules[0] : null
+            TotalDrugMassPerBodyWeight = allDosesForMolecules.Count == 1 ? allDosesForMolecules[0] : null
          };
       }
 
@@ -62,29 +62,6 @@ namespace PKSim.Core.Services
       {
          var simulation = populationDataCollector as PopulationSimulation;
          return simulation != null ? CreateFor(simulation, compoundName) : new PKCalculationOptions();
-      }
-
-      public override void UpdateAppliedDose(ISimulation simulation, string moleculeName, PKCalculationOptions options, IReadOnlyList<ApplicationParameters> allApplicationParameters)
-      {
-         base.UpdateAppliedDose(simulation, moleculeName, options, allApplicationParameters);
-
-         if (options.SingleDosing)
-            return;
-
-         //we have at least 2 applied applications at that stage since we are in multiple dosing mode
-         var bodyWeight = simulation.DowncastTo<Simulation>().BodyWeight?.Value;
-         var applicationCount = allApplicationParameters.Count;
-         options.FirstDose = drugMassPerBodyWeightFor(allApplicationParameters[0].DrugMass, bodyWeight);
-         options.LastMinusOneDose = drugMassPerBodyWeightFor(allApplicationParameters[applicationCount - 2].DrugMass, bodyWeight);
-         options.LastDose = drugMassPerBodyWeightFor(allApplicationParameters[applicationCount - 1].DrugMass, bodyWeight);
-      }
-
-      private double? drugMassPerBodyWeightFor(IParameter drugMass, double? bodyWeight)
-      {
-         if (drugMass ==null || bodyWeight == null || double.IsNaN(bodyWeight.Value))
-            return null;
-
-         return drugMass.Value / bodyWeight.Value;
       }
    }
 }

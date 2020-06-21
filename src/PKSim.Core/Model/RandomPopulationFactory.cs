@@ -35,7 +35,7 @@ namespace PKSim.Core.Model
       private readonly IProgressManager _progressManager;
       private readonly IIndividualModelTask _individualModelTask;
       private readonly ICreateIndividualAlgorithm _createIndividualAlgorithm;
-      private readonly IIndividualToIndividualPropertiesMapper _individualPropertiesMapper;
+      private readonly IIndividualToIndividualValuesMapper _individualValuesMapper;
       private readonly IContainerTask _containerTask;
       private readonly ICloner _cloner;
       private readonly IDistributedParametersUpdater _distributedParametersUpdater;
@@ -47,7 +47,7 @@ namespace PKSim.Core.Model
 
       public RandomPopulationFactory(IObjectBaseFactory objectBaseFactory,
          IProgressManager progressManager, IIndividualModelTask individualModelTask,
-         ICreateIndividualAlgorithm createIndividualAlgorithm, IIndividualToIndividualPropertiesMapper individualPropertiesMapper,
+         ICreateIndividualAlgorithm createIndividualAlgorithm, IIndividualToIndividualValuesMapper individualValuesMapper,
          IContainerTask containerTask, ICloner cloner, IDistributedParametersUpdater distributedParametersUpdater,
          IReportGenerator reportGenerator, IMoleculeParameterVariabilityCreator moleculeParameterVariabilityCreator, IMoleculeOntogenyVariabilityUpdater moleculeOntogenyVariabilityUpdater)
       {
@@ -55,7 +55,7 @@ namespace PKSim.Core.Model
          _progressManager = progressManager;
          _individualModelTask = individualModelTask;
          _createIndividualAlgorithm = createIndividualAlgorithm;
-         _individualPropertiesMapper = individualPropertiesMapper;
+         _individualValuesMapper = individualValuesMapper;
          _containerTask = containerTask;
          _cloner = cloner;
          _distributedParametersUpdater = distributedParametersUpdater;
@@ -75,7 +75,7 @@ namespace PKSim.Core.Model
                fllUpGenderQueueBasedOn(populationSettings);
                progressUpdater.Initialize(populationSettings.NumberOfIndividuals, PKSimConstants.UI.CreatingPopulation);
 
-               //the base indiviudal is used to retrieve the default values. 
+               //the base individual is used to retrieve the default values. 
                var baseIndividual = populationSettings.BaseIndividual;
 
                //current individual defined as a clone of the based individual. The current individual will be the one varying 
@@ -83,11 +83,11 @@ namespace PKSim.Core.Model
 
                //cache containing all parameters changed by the create individual from the current individual. This will be used just as reference to the current parameters
                var allChangedByCreatedIndividualParameters = getAllCreateIndividualParametersFrom(currentIndividual);
-               //all distributed parameters. This will be used to udpate the distribution for the current individual
+               //all distributed parameters. This will be used to update the distribution for the current individual
                var allDistributedParameters = getAllDistributedParametersFrom(currentIndividual);
-               var allBaseDistributedParamters = getAllDistributedParametersFrom(baseIndividual);
+               var allBaseDistributedParameters = getAllDistributedParametersFrom(baseIndividual);
 
-               //all individual parameters. Just an optimiztion to avoid call GetAllChildren for each individual
+               //all individual parameters. Just an optimization to avoid call GetAllChildren for each individual
                var allIndividualParameters = currentIndividual.GetAllChildren<IParameter>().ToList();
 
                int maxTotalIterations = populationSettings.NumberOfIndividuals * _maxIterations;
@@ -105,12 +105,12 @@ namespace PKSim.Core.Model
                      throw new CannotCreatePopulationWithConstraintsException(_reportGenerator.StringReportFor(populationSettings));
 
                   //create a new individual based on population settings defined by the user
-                  updateCurrentIndividualFromSettings(populationSettings, currentIndividual, allDistributedParameters, allBaseDistributedParamters, currentGender, randomPopulation.RandomGenerator);
+                  updateCurrentIndividualFromSettings(populationSettings, currentIndividual, allDistributedParameters, allBaseDistributedParameters, currentGender, randomPopulation.RandomGenerator);
 
                   bool success = tryRandomize(currentIndividual, populationSettings, allIndividualParameters, randomPopulation.RandomGenerator);
                   if (!success) continue;
 
-                  randomPopulation.AddIndividualProperties(_individualPropertiesMapper.MapFrom(currentIndividual, allChangedByCreatedIndividualParameters));
+                  randomPopulation.AddIndividualValues(_individualValuesMapper.MapFrom(currentIndividual, allChangedByCreatedIndividualParameters));
 
                   currentGender = _genderQueue.Dequeue();
                   progressUpdater.IncrementProgress(PKSimConstants.UI.CreatingIndividualInPopulation(randomPopulation.NumberOfItems, populationSettings.NumberOfIndividuals));
@@ -167,8 +167,8 @@ namespace PKSim.Core.Model
       }
 
       private void updateCurrentIndividualFromSettings(RandomPopulationSettings populationSettings, Individual currentIndividual,
-         PathCache<IDistributedParameter> allCurrentDistribuedParameters, 
-         PathCache<IDistributedParameter> allBaseDistributedParamters, 
+         PathCache<IDistributedParameter> allCurrentDistributedParameters, 
+         PathCache<IDistributedParameter> allBaseDistributedParameters, 
          Gender currentGender,
          RandomGenerator randomGenerator)
       {
@@ -176,11 +176,11 @@ namespace PKSim.Core.Model
          currentIndividual.OriginData = populationSettings.BaseIndividual.OriginData.Clone();
          currentIndividual.OriginData.Gender = currentGender;
 
-         //perform random varation of the origin data according to the settings defined for the population
+         //perform random variation of the origin data according to the settings defined for the population
          perturbate(currentIndividual, populationSettings, randomGenerator);
 
          //Update the distribution according to the new origin data
-         _distributedParametersUpdater.UpdateDistributedParameter(allCurrentDistribuedParameters, allBaseDistributedParamters, currentIndividual.OriginData);
+         _distributedParametersUpdater.UpdateDistributedParameter(allCurrentDistributedParameters, allBaseDistributedParameters, currentIndividual.OriginData);
       }
 
       private PathCache<IDistributedParameter> getAllDistributedParametersFrom(Individual individual)
@@ -205,7 +205,7 @@ namespace PKSim.Core.Model
             }
          }
 
-         //add possible items missing because of rounding artefacts
+         //add possible items missing because of rounding artifacts
          //+1 is because we need to add one element more in any case in order to be able to dequeue properly
          for (int i = 0; i < populationSettings.NumberOfIndividuals + 1 - _genderQueue.Count; i++)
          {

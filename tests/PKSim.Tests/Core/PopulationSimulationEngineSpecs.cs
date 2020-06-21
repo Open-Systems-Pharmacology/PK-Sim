@@ -13,7 +13,7 @@ using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_PopulationSimulationEngine : ContextSpecificationAsync<ISimulationEngine<PopulationSimulation>>
+   public abstract class concern_for_PopulationSimulationEngine : ContextSpecificationAsync<IPopulationSimulationEngine>
    {
       private IEventPublisher _eventPubliser;
       protected IProgressUpdater _progressUpdater;
@@ -69,7 +69,7 @@ namespace PKSim.Core
          _simulationRunOptions = new SimulationRunOptions();
          A.CallTo(() => _popExportTask.CreatePopulationDataFor(_populationSimulation, A<bool>._)).Returns(_populationData);
          A.CallTo(() => _simMapper.MapFrom(_populationSimulation, false)).Returns(_modelSimulation);
-         A.CallTo(() => _populationRunner.RunPopulationAsync(_modelSimulation, _populationData, A<DataTable>._, A<DataTable>._)).Returns(_runResults);
+         A.CallTo(() => _populationRunner.RunPopulationAsync(_modelSimulation,A<RunOptions>._, _populationData, A<DataTable>._, A<DataTable>._)).Returns(_runResults);
       }
 
       protected override Task Because()
@@ -84,7 +84,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_syncrhonize_the_analysis_defined_in_the_population()
+      public void should_synchronize_the_analysis_defined_in_the_population()
       {
          A.CallTo(() => _populationSimulationAnalysisSynchronizer.UpdateAnalysesDefinedIn(_populationSimulation)).MustHaveHappened();
       }

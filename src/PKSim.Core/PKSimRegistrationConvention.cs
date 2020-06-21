@@ -11,10 +11,10 @@ namespace PKSim.Core
 {
    /// <summary>
    ///    Register components in the container using following logic
-   ///    1- if an interface IMyType for type MyType is found, the component is registerd with the given interface
+   ///    1- if an interface IMyType for type MyType is found, the component is registered with the given interface
    ///    2- if an interface starting with I in the PKSim namespace was defined for type MyType, and the flag
    ///    "registerWithBasedInterface" is true (default),
-   ///    the component is registerd with the given interface
+   ///    the component is registered with the given interface
    ///    3- Otherwise, the component is registered as is
    /// </summary>
    public class PKSimRegistrationConvention : OSPSuiteRegistrationConvention

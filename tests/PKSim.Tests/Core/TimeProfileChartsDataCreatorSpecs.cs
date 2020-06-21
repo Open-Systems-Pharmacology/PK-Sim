@@ -14,6 +14,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core
@@ -31,8 +32,10 @@ namespace PKSim.Core
       private IStatisticalDataCalculator _statisticalDataCalculator;
       private IPivotResultCreator _pivotResultCreator;
       private ILazyLoadTask _lazyLoadTask;
-      protected IDataRepositoryToObservedCurveDataMapper _observedcurveDataMapper;
-      protected const string _singlecurveId = "SingleCurve";
+      protected IDataRepositoryToObservedCurveDataMapper _observedCurveDataMapper;
+      protected IDimension _mergedDimensionVenousBloodPlasma;
+      protected IDimension _mergedDimensionLiverCell;
+      protected const string _singleCurveId = "SingleCurve";
       protected const string _percentileId = "Percentile";
 
       protected override void Context()
@@ -40,7 +43,7 @@ namespace PKSim.Core
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
-         _observedcurveDataMapper = A.Fake<IDataRepositoryToObservedCurveDataMapper>();
+         _observedCurveDataMapper = A.Fake<IDataRepositoryToObservedCurveDataMapper>();
          _statisticalAnalysis = new PopulationStatisticalAnalysis();
          _genderField = ChartDataHelperForSpecs.CreateGenderField();
          _statisticalAnalysis.Add(_genderField);
@@ -50,12 +53,24 @@ namespace PKSim.Core
          _percentileStatisticalAggregation = new PercentileStatisticalAggregation {Selected = false, Percentile = 50};
          _statisticalAnalysis.AddStatistic(_predefinedStatisticalAggregation);
          _statisticalAnalysis.AddStatistic(_percentileStatisticalAggregation);
-         A.CallTo(() => _representationInfoRepository.DisplayNameFor(_predefinedStatisticalAggregation)).Returns(_singlecurveId);
+         A.CallTo(() => _representationInfoRepository.DisplayNameFor(_predefinedStatisticalAggregation)).Returns(_singleCurveId);
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_percentileStatisticalAggregation)).Returns(_percentileId);
          _statisticalDataCalculator = new StatisticalDataCalculator();
          _pivotResultCreator = A.Fake<IPivotResultCreator>();
+
+         _mergedDimensionVenousBloodPlasma = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
+         _mergedDimensionLiverCell = DomainHelperForSpecs.FractionDimensionForSpecs();
+
+         A.CallTo(() => _dimensionRepository.MergedDimensionFor(A<IWithDimension>._))
+            .WhenArgumentsMatch((IWithDimension context) => Equals((context as NumericFieldContext)?.NumericValueField, _outputFieldVenousBloodPlasma))
+            .Returns(_mergedDimensionVenousBloodPlasma);
+
+         A.CallTo(() => _dimensionRepository.MergedDimensionFor(A<IWithDimension>._))
+            .WhenArgumentsMatch((IWithDimension context) => Equals((context as NumericFieldContext)?.NumericValueField, _outputFieldLiverCell))
+            .Returns(_mergedDimensionLiverCell);
+
          sut = new TimeProfileChartDataCreator(_dimensionRepository, _pivotResultCreator, _representationInfoRepository,
-            _statisticalDataCalculator, _lazyLoadTask, _observedcurveDataMapper);
+            _statisticalDataCalculator, _lazyLoadTask, _observedCurveDataMapper);
       }
    }
 
@@ -100,10 +115,12 @@ namespace PKSim.Core
                if (series.Id.StartsWith(_outputFieldLiverCell.Name))
                {
                   series.Color.ShouldBeEqualTo(_outputFieldLiverCell.Color);
+                  series.YDimension.ShouldBeEqualTo(_mergedDimensionLiverCell);
                }
                if (series.Id.StartsWith(_outputFieldVenousBloodPlasma.Name))
                {
                   series.Color.ShouldBeEqualTo(_outputFieldVenousBloodPlasma.Color);
+                  series.YDimension.ShouldBeEqualTo(_mergedDimensionVenousBloodPlasma);
                }
             }
          }
@@ -119,7 +136,7 @@ namespace PKSim.Core
             series.XValues.Select(x => x.X).ShouldOnlyContainInOrder(1f, 2f, 3f, 4f);
          }
 
-         var venousBloodPlasmaMaleMean = malePane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singlecurveId];
+         var venousBloodPlasmaMaleMean = malePane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singleCurveId];
 
          //mean of 10, 20, 30, 40 and 1000, 2000, 3000, 4000 
          venousBloodPlasmaMaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(
@@ -131,7 +148,7 @@ namespace PKSim.Core
          venousBloodPlasmaMaleMean.YValues.Select(y => y.UpperValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
 
 
-         var liverCellMaleMean = malePane.Curves[_outputFieldLiverCell.Name + Constants.DISPLAY_PATH_SEPARATOR + _singlecurveId];
+         var liverCellMaleMean = malePane.Curves[_outputFieldLiverCell.Name + Constants.DISPLAY_PATH_SEPARATOR + _singleCurveId];
 
          //mean of  50, 60, 70, 80 and 5000, 6000, 7000, 8000
          liverCellMaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(
@@ -153,14 +170,14 @@ namespace PKSim.Core
             series.XValues.Select(x => x.X).ShouldOnlyContainInOrder(1f, 2f, 3f, 4f);
          }
 
-         var venousBloodPlasmaFemaleMean = femalePane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singlecurveId];
+         var venousBloodPlasmaFemaleMean = femalePane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singleCurveId];
 
          //only one value 100,200,300,400
          venousBloodPlasmaFemaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(100, 200, 300, 400);
          venousBloodPlasmaFemaleMean.YValues.Select(y => y.LowerValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
          venousBloodPlasmaFemaleMean.YValues.Select(y => y.UpperValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
 
-         var liverCellFemaleMean = femalePane.Curves[_outputFieldLiverCell.Name + Constants.DISPLAY_PATH_SEPARATOR + _singlecurveId];
+         var liverCellFemaleMean = femalePane.Curves[_outputFieldLiverCell.Name + Constants.DISPLAY_PATH_SEPARATOR + _singleCurveId];
 
          //only one value 500,600,700,800
          liverCellFemaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(500, 600, 700, 800);
@@ -199,7 +216,7 @@ namespace PKSim.Core
             series.XValues.Select(x => x.X).ShouldOnlyContainInOrder(1f, 2f, 3f, 4f);
          }
 
-         var venousBloodPlasmaMaleMean = malePane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singlecurveId];
+         var venousBloodPlasmaMaleMean = malePane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singleCurveId];
          venousBloodPlasmaMaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
 
          //mean of 10, 20, 30, 40 and 1000, 2000, 3000, 4000 
@@ -226,7 +243,7 @@ namespace PKSim.Core
             series.XValues.Select(x => x.X).ShouldOnlyContainInOrder(1f, 2f, 3f, 4f);
          }
 
-         var venousBloodPlasmaFemaleMean = femalePane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singlecurveId];
+         var venousBloodPlasmaFemaleMean = femalePane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singleCurveId];
 
          //only one value 100,200,300,400
          venousBloodPlasmaFemaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
@@ -269,7 +286,7 @@ namespace PKSim.Core
       {
          foreach (var pane in _chartData.Panes)
          {
-            //one serie for each output on each pane and statistical output 2x2
+            //one series for each output on each pane and statistical output 2x2
             pane.Curves.Count.ShouldBeEqualTo(8);
             foreach (var series in pane.Curves)
             {
@@ -295,7 +312,7 @@ namespace PKSim.Core
             series.XValues.Select(x => x.X).ShouldOnlyContainInOrder(1f, 2f, 3f, 4f);
          }
 
-         var venousBloodPlasmaMaleMean = pane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singlecurveId + Constants.DISPLAY_PATH_SEPARATOR + "Male"];
+         var venousBloodPlasmaMaleMean = pane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singleCurveId + Constants.DISPLAY_PATH_SEPARATOR + "Male"];
 
          //mean of 10, 20, 30, 40 and 1000, 2000, 3000, 4000 
          venousBloodPlasmaMaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(
@@ -307,7 +324,7 @@ namespace PKSim.Core
          venousBloodPlasmaMaleMean.YValues.Select(y => y.UpperValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
 
 
-         var liverCellMaleMean = pane.Curves[_outputFieldLiverCell.Name + Constants.DISPLAY_PATH_SEPARATOR + _singlecurveId + Constants.DISPLAY_PATH_SEPARATOR + "Male"];
+         var liverCellMaleMean = pane.Curves[_outputFieldLiverCell.Name + Constants.DISPLAY_PATH_SEPARATOR + _singleCurveId + Constants.DISPLAY_PATH_SEPARATOR + "Male"];
 
          //mean of  50, 60, 70, 80 and 5000, 6000, 7000, 8000
          liverCellMaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(
@@ -329,14 +346,14 @@ namespace PKSim.Core
             series.XValues.Select(x => x.X).ShouldOnlyContainInOrder(1f, 2f, 3f, 4f);
          }
 
-         var venousBloodPlasmaFemaleMean = pane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singlecurveId + Constants.DISPLAY_PATH_SEPARATOR + "Female"];
+         var venousBloodPlasmaFemaleMean = pane.Curves[_outputFieldVenousBloodPlasma.Name + Constants.DISPLAY_PATH_SEPARATOR + _singleCurveId + Constants.DISPLAY_PATH_SEPARATOR + "Female"];
 
          //only one value 100,200,300,400
          venousBloodPlasmaFemaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(100, 200, 300, 400);
          venousBloodPlasmaFemaleMean.YValues.Select(y => y.LowerValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
          venousBloodPlasmaFemaleMean.YValues.Select(y => y.UpperValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
 
-         var liverCellFemaleMean = pane.Curves[_outputFieldLiverCell.Name + Constants.DISPLAY_PATH_SEPARATOR + _singlecurveId + Constants.DISPLAY_PATH_SEPARATOR + "Female"];
+         var liverCellFemaleMean = pane.Curves[_outputFieldLiverCell.Name + Constants.DISPLAY_PATH_SEPARATOR + _singleCurveId + Constants.DISPLAY_PATH_SEPARATOR + "Female"];
 
          //only one value 500,600,700,800
          liverCellFemaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(500, 600, 700, 800);
@@ -362,7 +379,7 @@ namespace PKSim.Core
          _observedCurveDataList.Add(_observedCurveData);
          _observedCurveData.Color = Color.Aqua;
 
-         A.CallTo(_observedcurveDataMapper).WithReturnType<IReadOnlyList<ObservedCurveData>>().Returns(_observedCurveDataList);
+         A.CallTo(_observedCurveDataMapper).WithReturnType<IReadOnlyList<ObservedCurveData>>().Returns(_observedCurveDataList);
 
          _statisticalAnalysis.SetPosition(_genderField, PivotArea.ColumnArea, 0);
          _statisticalAnalysis.ColorField = _genderField;
@@ -436,7 +453,7 @@ namespace PKSim.Core
          _observedCurveDataList.Add(_observedCurveData);
          _observedCurveData.Color = Color.Aqua;
 
-         A.CallTo(_observedcurveDataMapper).WithReturnType<IReadOnlyList<ObservedCurveData>>().Returns(_observedCurveDataList);
+         A.CallTo(_observedCurveDataMapper).WithReturnType<IReadOnlyList<ObservedCurveData>>().Returns(_observedCurveDataList);
 
          _statisticalAnalysis.SetPosition(_genderField, PivotArea.RowArea, 0);
          _statisticalAnalysis.SetPosition(_outputFieldVenousBloodPlasma, PivotArea.DataArea, 0);

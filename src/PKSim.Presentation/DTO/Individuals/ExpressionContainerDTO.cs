@@ -1,3 +1,4 @@
+using OSPSuite.Core.Domain;
 using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Presentation.DTO;
 
@@ -7,16 +8,16 @@ namespace PKSim.Presentation.DTO.Individuals
    {
       public ExpressionContainerDTO()
       {
-         GroupingPathDTO = new PathElementDTO();
-         ContainerPathDTO = new PathElementDTO();
+         GroupingPathDTO = new PathElement();
+         ContainerPathDTO = new PathElement();
          RelativeExpressionParameter = new NullParameterDTO();
          RelativeExpressionNormParameter = new NullParameterDTO();
       }
 
       public string MoleculeName { get; set; }
       public string ContainerName { get; set; }
-      public PathElementDTO GroupingPathDTO { get; set; }
-      public PathElementDTO ContainerPathDTO { get; set; }
+      public PathElement GroupingPathDTO { get; set; }
+      public PathElement ContainerPathDTO { get; set; }
       public IParameterDTO RelativeExpressionParameter { get; set; }
       public IParameterDTO RelativeExpressionNormParameter { get; set; }
       public string ParameterPath { get; set; }

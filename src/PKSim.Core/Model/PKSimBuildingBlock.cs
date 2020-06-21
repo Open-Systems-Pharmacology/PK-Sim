@@ -138,6 +138,8 @@ namespace PKSim.Core.Model
          set => Root.ContainerType = value;
       }
 
+      public string ContainerTypeAsString => Root.ContainerTypeAsString;
+
       public virtual ContainerMode Mode
       {
          get => Root.Mode;

@@ -107,11 +107,11 @@ namespace PKSim.Core
             var X = new BoxWhiskerXValue(new List<string>() {v.X1, v.X2});
             var Y = new BoxWhiskerYValue
             {
-               LowerWhisker = new ValueWithIndvividualId(v.LW),
-               LowerBox = new ValueWithIndvividualId(v.LW),
-               Median = new ValueWithIndvividualId(v.M),
-               UpperBox = new ValueWithIndvividualId(v.LW),
-               UpperWhisker = new ValueWithIndvividualId(v.LW),
+               LowerWhisker = new ValueWithIndividualId(v.LW),
+               LowerBox = new ValueWithIndividualId(v.LW),
+               Median = new ValueWithIndividualId(v.M),
+               UpperBox = new ValueWithIndividualId(v.LW),
+               UpperWhisker = new ValueWithIndividualId(v.LW),
             };
             curveData.Add(X, Y);
          }
@@ -176,11 +176,18 @@ namespace PKSim.Core
          }
       }
 
-      public static PivotResult CreatePivotResult(PopulationPivotAnalysis pivotAnalysis, Aggregate aggregate,
+      public static PivotResult CreatePivotResult(PopulationPivotAnalysis pivotAnalysis, 
+         Aggregate aggregate,
          PopulationAnalysisCovariateField genderFielder,
          PopulationAnalysisCovariateField raceField,
          PopulationAnalysisParameterField bmiField,
-         PopulationAnalysisPKParameterField cmaxField)
+         PopulationAnalysisPKParameterField cmaxField,
+         double[] bmiValues = null,
+         string[] genderValues = null,
+         string[] raceValues = null,
+         double[] cmaxValues = null,
+         string[] simValues = null
+         )
       {
          var pivotResultCreator = new PivotResultCreator(new Pivoter(), new PopulationAnalysisFlatTableCreator());
 
@@ -188,11 +195,11 @@ namespace PKSim.Core
          A.CallTo(() => populationSimulation.NumberOfItems).Returns(3);
 
          //thin, thin,  big
-         A.CallTo(() => populationSimulation.AllValuesFor(bmiField.ParameterPath)).Returns(new List<double> {10, 20, 30});
-         A.CallTo(() => populationSimulation.AllCovariateValuesFor(genderFielder.Covariate)).Returns(new List<string> {"Male", "Female", "Male"});
-         A.CallTo(() => populationSimulation.AllCovariateValuesFor(raceField.Covariate)).Returns(new List<string> {"US", "EU", "EU"});
-         A.CallTo(() => populationSimulation.AllPKParameterValuesFor(cmaxField.QuantityPath, cmaxField.PKParameter)).Returns(new List<double> {900, 600, 1000});
-         A.CallTo(() => populationSimulation.AllSimulationNames).Returns(new List<string> {"Sim", "Sim", "Sim"});
+         A.CallTo(() => populationSimulation.AllValuesFor(bmiField.ParameterPath)).Returns(bmiValues ?? new double[] {10, 20, 30});
+         A.CallTo(() => populationSimulation.AllCovariateValuesFor(genderFielder.Covariate)).Returns(genderValues ?? new [] {"Male", "Female", "Male"});
+         A.CallTo(() => populationSimulation.AllCovariateValuesFor(raceField.Covariate)).Returns(raceValues ?? new []{"US", "EU", "EU"});
+         A.CallTo(() => populationSimulation.AllPKParameterValuesFor(cmaxField.QuantityPath, cmaxField.PKParameter)).Returns(cmaxValues?? new double[] {900, 600, 1000});
+         A.CallTo(() => populationSimulation.AllSimulationNames).Returns(simValues ?? new[] {"Sim", "Sim", "Sim"});
 
          return pivotResultCreator.Create(pivotAnalysis, populationSimulation, new ObservedDataCollection(), aggregate);
       }

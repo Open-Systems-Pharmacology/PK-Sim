@@ -19,6 +19,7 @@ namespace PKSim.Core.Snapshots
       public Compound[] Compounds { get; set; }
       public Formulation[] Formulations { get; set; }
       public Protocol[] Protocols { get; set; }
+      public ObserverSet[] ObserverSets { get; set; }
       public Event[] Events { get; set; }
       public Simulation[] Simulations { get; set; }
       public ParameterIdentification[] ParameterIdentifications { get; set; }
@@ -49,6 +50,8 @@ namespace PKSim.Core.Snapshots
                return Events;
             case PKSimBuildingBlockType.Simulation:
                return Simulations;
+            case PKSimBuildingBlockType.ObserverSet:
+               return ObserverSets;
             default:
                return null;
          }
@@ -83,6 +86,8 @@ namespace PKSim.Core.Snapshots
                return swap(Populations, originalBuildingBlock, newBuildingBlock);
             case PKSimBuildingBlockType.Event:
                return swap(Events, originalBuildingBlock, newBuildingBlock);
+            case PKSimBuildingBlockType.ObserverSet:
+               return swap(ObserverSets, originalBuildingBlock, newBuildingBlock);
             default:
                return false;
          }

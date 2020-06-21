@@ -1,1 +1,2 @@
-UPDATE tab_container_parameters SET is_input=0 WHERE container_id=1678 AND container_type='COMPOUND' AND container_name='DRUG' AND parameter_name='Enable supersaturation';
+UPDATE tab_calculation_method_rates SET formula='(Q*(1-HCT))*C_pls' WHERE calculation_method='MassTransferLink_forTwoPores' AND formula_rate='PARAM_MassTransferIntestineToMucosaPlasma';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='MassTransferLink_forTwoPores' AND formula_rate='PARAM_MassTransferIntestineToMucosaPlasma' AND path_id=1524 AND parameter_name='Lymph flow rate';

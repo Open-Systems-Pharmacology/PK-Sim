@@ -10,7 +10,7 @@ namespace PKSim.Core.Services
       {
       }
 
-      public override double ConvertToTargetBaseUnit(double molarAmout) => ConvertToMass(molarAmout);
+      public override double ConvertToTargetBaseUnit(double molarAmount) => ConvertToMass(molarAmount);
 
       public override double ConvertToSourceBaseUnit(double massAmount) => ConvertToMolar(massAmount);
    }

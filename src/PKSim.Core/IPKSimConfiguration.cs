@@ -7,7 +7,7 @@ namespace PKSim.Core
       /// <summary>
       ///    Path of the PKSim Database
       /// </summary>
-      string PKSimDbPath { get; }
+      string PKSimDbPath { get; set; }
 
       /// <summary>
       ///    Path of the System Template Database (Read only DB delivered with setup)

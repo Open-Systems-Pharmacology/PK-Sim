@@ -38,7 +38,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       private static IMenuBarItem loadSimulationFromSnapshot()
       {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.DevOnlyMenuNameFor("Load from Snapshot"))
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Load from Snapshot"))
             .WithCommand<LoadSimulationFromSnapshotUICommand>()
             .WithIcon(ApplicationIcons.SnapshotImport)
             .ForDeveloper();

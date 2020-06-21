@@ -5,6 +5,7 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.Core.Domain;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
@@ -145,10 +146,10 @@ namespace PKSim.UI.Views.Simulations
          layoutGroupMoleculeParameters.Text = PKSimConstants.UI.Properties;
       }
 
-      private RepositoryItem configureContainerRepository(PathElementDTO parameterPathDTO)
+      private RepositoryItem configureContainerRepository(PathElement parameterPath)
       {
          var containerDisplayNameRepository = new UxRepositoryItemImageComboBox(gridViewParameters, _imageListRetriever);
-         return containerDisplayNameRepository.AddItem(parameterPathDTO, parameterPathDTO.IconName);
+         return containerDisplayNameRepository.AddItem(parameterPath, parameterPath.IconName);
       }
 
       public void AttachPresenter(ISimulationExpressionsPresenter presenter)

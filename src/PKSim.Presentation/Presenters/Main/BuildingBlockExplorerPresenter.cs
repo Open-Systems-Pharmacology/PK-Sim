@@ -93,7 +93,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       private ITreeNode addPopulationToTree(Population population) => addBuildingBlockToTree(population, PKSimRootNodeTypes.PopulationFolder, ApplicationIcons.Population);
 
-      private ITreeNode addIndividualToTree(Individual individual) => addBuildingBlockToTree(individual, PKSimRootNodeTypes.IndividualFolder, ApplicationIcons.IconByName(individual.Species.Icon));
+      private ITreeNode addIndividualToTree(Individual individual) => addBuildingBlockToTree(individual, PKSimRootNodeTypes.IndividualFolder, ApplicationIcons.IconByName(individual.Icon));
 
       private ITreeNode addCompoundToTree(Compound compound) => addBuildingBlockToTree(compound, PKSimRootNodeTypes.CompoundFolder, ApplicationIcons.Compound);
 

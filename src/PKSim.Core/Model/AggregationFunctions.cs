@@ -18,7 +18,7 @@ namespace PKSim.Core.Model
       {
          Aggregation = doubles => doubles.ToFloatArray(),
          Name = "Values"
-      };
+      }; 
 
       public static Aggregate<IEnumerable<QuantityValues>> QuantityAggregation = new Aggregate<QuantityValues, IEnumerable<QuantityValues>>
       {
@@ -34,15 +34,15 @@ namespace PKSim.Core.Model
          {
             Aggregation = doubles =>
             {
-               var ordereredValues = doubles.ToFloatArray().OrderedAndPurified();
+               var orderedValues = doubles.ToFloatArray().OrderedAndPurified();
 
                var boxWhiskerYValue = new BoxWhiskerYValue
                {
-                  LowerWhisker = valueWithIndex(ordereredValues, percentile),
-                  LowerBox = valueWithIndex(ordereredValues,  25),
-                  Median = valueWithIndex(ordereredValues,  50),
-                  UpperBox = valueWithIndex(ordereredValues,  75),
-                  UpperWhisker = valueWithIndex(ordereredValues,  100 - percentile),
+                  LowerWhisker = valueWithIndex(orderedValues, percentile),
+                  LowerBox = valueWithIndex(orderedValues,  25),
+                  Median = valueWithIndex(orderedValues,  50),
+                  UpperBox = valueWithIndex(orderedValues,  75),
+                  UpperWhisker = valueWithIndex(orderedValues,  100 - percentile),
                };
 
                var range = outlierRange * (boxWhiskerYValue.UpperBox - boxWhiskerYValue.LowerBox);
@@ -50,8 +50,8 @@ namespace PKSim.Core.Model
                var lowerLimit = boxWhiskerYValue.LowerWhisker - range;
                var upperLimit = boxWhiskerYValue.UpperWhisker + range;
 
-               var outliers = ordereredValues.Where(f => f < lowerLimit || f > upperLimit)
-                  .Select(f => new ValueWithIndvividualId(f))
+               var outliers = orderedValues.Where(f => f < lowerLimit || f > upperLimit)
+                  .Select(f => new ValueWithIndividualId(f))
                   .ToArray();
 
                boxWhiskerYValue.Outliers = outliers;
@@ -61,10 +61,10 @@ namespace PKSim.Core.Model
          };
       }
 
-      private static ValueWithIndvividualId valueWithIndex(float[] orderedValues,  double percentile)
+      private static ValueWithIndividualId valueWithIndex(float[] orderedValues,  double percentile)
       {
          var value = orderedValues.Percentile(percentile);
-         return new ValueWithIndvividualId(value);
+         return new ValueWithIndividualId(value);
       }
    }
 }

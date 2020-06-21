@@ -6,6 +6,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
 
 namespace PKSim.Presentation.Presenters.Compounds
@@ -16,11 +17,13 @@ namespace PKSim.Presentation.Presenters.Compounds
 
    public class IntestinalPermeabilityGroupPresenter : PermeabilityGroupPresenterBase, IIntestinalPermeabilityGroupPresenter
    {
-      public IntestinalPermeabilityGroupPresenter(IPermeabilityGroupView view, ICompoundAlternativeTask compoundAlternativeTask, 
-                                                  IRepresentationInfoRepository representationRepo,
-                                                  IParameterGroupAlternativeToPermeabilityAlternativeDTOMapper permeabilityAlternativeDTOMapper,
-                                                  ICalculatedParameterValuePresenter calculatedParameterValuePresenter, IDialogCreator dialogCreator) :
-         base(view, compoundAlternativeTask, representationRepo, permeabilityAlternativeDTOMapper, calculatedParameterValuePresenter, dialogCreator, CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY)
+      public IntestinalPermeabilityGroupPresenter(IPermeabilityGroupView view,
+         ICompoundAlternativeTask compoundAlternativeTask,
+         ICompoundAlternativePresentationTask compoundAlternativePresentationTask,
+         IRepresentationInfoRepository representationRepo,
+         IParameterGroupAlternativeToPermeabilityAlternativeDTOMapper permeabilityAlternativeDTOMapper,
+         ICalculatedParameterValuePresenter calculatedParameterValuePresenter, IDialogCreator dialogCreator) :
+         base(view, compoundAlternativeTask, compoundAlternativePresentationTask, representationRepo, permeabilityAlternativeDTOMapper, calculatedParameterValuePresenter, dialogCreator, CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY)
       {
       }
 

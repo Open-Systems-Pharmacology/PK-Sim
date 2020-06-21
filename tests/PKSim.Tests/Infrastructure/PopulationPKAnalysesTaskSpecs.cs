@@ -101,14 +101,14 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_have_created_one_pk_analyses_for_each_output_defined_in_the_simulation()
       {
-         _results.AllPKParametersFor(_quantityPath1).Count.ShouldBeEqualTo(2);
-         _results.AllPKParametersFor(_quantityPath2).Count.ShouldBeEqualTo(2);
+         _results.AllPKParametersFor(_quantityPath1).Length.ShouldBeEqualTo(2);
+         _results.AllPKParametersFor(_quantityPath2).Length.ShouldBeEqualTo(2);
       }
 
       [Observation]
       public void should_calculate_the_pk_analyses_using_a_dose_per_body_weight_for_each_individual_and_each_curve()
       {
-         A.CallTo(() => _pkCalculationOptionsFactory.UpdateAppliedDose(_populationSimulation, "Drug", A<PKCalculationOptions>._, A<IReadOnlyList<PKCalculationOptionsFactory.ApplicationParameters>>._)).MustHaveHappened(4, Times.Exactly);
+         A.CallTo(() => _pkCalculationOptionsFactory.UpdateTotalDrugMassPerBodyWeight(_populationSimulation, "Drug", A<PKCalculationOptions>._, A<IReadOnlyList<ApplicationParameters>>._)).MustHaveHappened(4, Times.Exactly);
       }
 
       [Observation]
@@ -138,7 +138,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_not_crash()
       {
-         _results.AllPKParametersFor(_quantityPath1).Count.ShouldBeEqualTo(2);
+         _results.AllPKParametersFor(_quantityPath1).Length.ShouldBeEqualTo(2);
       }
    }
 

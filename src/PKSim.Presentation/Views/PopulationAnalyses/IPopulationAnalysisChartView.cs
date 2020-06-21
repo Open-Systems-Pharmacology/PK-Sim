@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using OSPSuite.Presentation.Core;
 using PKSim.Core.Chart;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using OSPSuite.Presentation.Views;
@@ -16,19 +17,19 @@ namespace PKSim.Presentation.Views.PopulationAnalyses
       void AddDynamicMenus(bool allowEdit = true);
 
       /// <summary>
-      /// Speficy if Drag and drop operations are enabled on view. Default is <c>false</c>
+      /// Specify if Drag and drop operations are enabled on view. Default is <c>false</c>
       /// </summary>
       bool DragDropEnabled { get; set; }
 
       /// <summary>
       ///    Event is fired when some data are dragged over view
       /// </summary>
-      event DragEventHandler DragOver;
+      event EventHandler<IDragEvent> OnDragOverEvent;
 
       /// <summary>
       ///    Event is fired when some data are dropped onto view
       /// </summary>
-      event DragEventHandler DragDrop;
+      event EventHandler<IDragEvent> OnDragDropEvent;
    }
 
    public interface IChartWithSettings

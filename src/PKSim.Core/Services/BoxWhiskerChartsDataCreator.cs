@@ -58,7 +58,7 @@ namespace PKSim.Core.Services
       private void setSeriesValues(CurveData<BoxWhiskerXValue, BoxWhiskerYValue> series, DataRow row, IEnumerable<string> xFieldNames, PopulationBoxWhiskerAnalysis boxWhiskerAnalysis)
       {
          var xValue = new BoxWhiskerXValue(GetFieldValues(xFieldNames, row).Values);
-         var yValue = row[_aggreationName].DowncastTo<BoxWhiskerYValue>();
+         var yValue = row[_aggregationName].DowncastTo<BoxWhiskerYValue>();
          if (!yValue.IsValid) return;
 
          if (!boxWhiskerAnalysis.ShowOutliers)
@@ -100,36 +100,36 @@ namespace PKSim.Core.Services
          });
       }
    }
-}
 
-internal class BoxWhiskerXValueComparer : IComparer<BoxWhiskerXValue>
-{
-   private readonly IReadOnlyList<IPopulationAnalysisField> _columnFields;
-
-   public BoxWhiskerXValueComparer(IReadOnlyList<IPopulationAnalysisField> columnFields)
+   internal class BoxWhiskerXValueComparer : IComparer<BoxWhiskerXValue>
    {
-      _columnFields = columnFields;
-   }
+      private readonly IReadOnlyList<IPopulationAnalysisField> _columnFields;
 
-   public int Compare(BoxWhiskerXValue xValue1, BoxWhiskerXValue xValue2)
-   {
-      if (!_columnFields.Any())
-         return 0;
-
-      if (xValue1.Count != _columnFields.Count)
-         throw new ArgumentException(PKSimConstants.Error.InconsistentXValuesLength(xValue1.Count, _columnFields.Count));
-
-      if (xValue2.Count != _columnFields.Count)
-         throw new ArgumentException(PKSimConstants.Error.InconsistentXValuesLength(xValue2.Count, _columnFields.Count));
-
-      int i;
-      for (i = 0; i < _columnFields.Count - 1; i++)
+      public BoxWhiskerXValueComparer(IReadOnlyList<IPopulationAnalysisField> columnFields)
       {
-         int result = _columnFields[i].Compare(xValue1[i], xValue2[i]);
-         if (result != 0)
-            return result;
+         _columnFields = columnFields;
       }
 
-      return _columnFields[i].Compare(xValue1[i], xValue2[i]);
+      public int Compare(BoxWhiskerXValue xValue1, BoxWhiskerXValue xValue2)
+      {
+         if (!_columnFields.Any())
+            return 0;
+
+         if (xValue1.Count != _columnFields.Count)
+            throw new ArgumentException(PKSimConstants.Error.InconsistentXValuesLength(xValue1.Count, _columnFields.Count));
+
+         if (xValue2.Count != _columnFields.Count)
+            throw new ArgumentException(PKSimConstants.Error.InconsistentXValuesLength(xValue2.Count, _columnFields.Count));
+
+         int i;
+         for (i = 0; i < _columnFields.Count - 1; i++)
+         {
+            int result = _columnFields[i].Compare(xValue1[i], xValue2[i]);
+            if (result != 0)
+               return result;
+         }
+
+         return _columnFields[i].Compare(xValue1[i], xValue2[i]);
+      }
    }
 }

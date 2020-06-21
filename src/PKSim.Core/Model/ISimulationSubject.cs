@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace PKSim.Core.Model
 {
    /// <summary>
-   ///    Defines an item that can be simulated in a simulaton (e.g. a population or an individual)
+   ///    Defines an item that can be simulated in a simulation (e.g. a population or an individual)
    /// </summary>
    public interface ISimulationSubject : IPKSimBuildingBlock
    {
@@ -36,6 +36,10 @@ namespace PKSim.Core.Model
 
       IEnumerable<IndividualMolecule> AllMolecules();
 
+      /// <summary>
+      /// Returns the molecule named <paramref name="moleculeName"/> or NULL if not found
+      /// </summary>
+      IndividualMolecule MoleculeByName(string moleculeName);
 
       IEnumerable<TMolecules> AllMolecules<TMolecules>() where TMolecules : IndividualMolecule;
 

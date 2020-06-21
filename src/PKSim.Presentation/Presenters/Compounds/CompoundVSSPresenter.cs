@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -20,12 +19,12 @@ namespace PKSim.Presentation.Presenters.Compounds
       void EditCompound(Compound compound);
 
       /// <summary>
-      /// Starts the calculation of VSS for all available <see cref="Species"/>
+      ///    Starts the calculation of VSS for all available <see cref="Species" />
       /// </summary>
       void CalculateVSS();
 
       /// <summary>
-      /// Returns the formatted caption to be displayed as header (with display unit)
+      ///    Returns the formatted caption to be displayed as header (with display unit)
       /// </summary>
       string VSSCaption { get; }
    }
@@ -78,7 +77,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       public void EditCompound(Compound compound)
       {
          _compound = compound;
-        _view.AdjustHeight();
+         _view.AdjustHeight();
       }
 
       public void ChangeUnit(string parameterName, Unit newUnit)

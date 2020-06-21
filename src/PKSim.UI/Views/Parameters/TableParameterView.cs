@@ -74,6 +74,11 @@ namespace PKSim.UI.Views.Parameters
          return _columnX.XtraColumn == column || _columnX.XtraColumn == column;
       }
 
+      protected override bool ColumnIsButton(GridColumn column)
+      {
+         return _removeColumn.XtraColumn == column;
+      }
+
       public void AttachPresenter(ITableParameterPresenter presenter)
       {
          _presenter = presenter;

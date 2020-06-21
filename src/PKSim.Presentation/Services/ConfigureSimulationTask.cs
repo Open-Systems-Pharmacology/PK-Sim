@@ -15,7 +15,7 @@ namespace PKSim.Presentation.Services
    public interface IConfigureSimulationTask
    {
       /// <summary>
-      ///    Starts the configure simulation worflow
+      ///    Starts the configure simulation workflow
       /// </summary>
       /// <param name="simulationToConfigure"></param>
       void Configure(Simulation simulationToConfigure);
@@ -68,9 +68,10 @@ namespace PKSim.Presentation.Services
             var configureCommand = configureAction(presenter);
 
             //User cancel action. return
-            if (configureCommand.IsEmpty()) return;
+            if (configureCommand.IsEmpty())
+               return;
 
-            //Before swaping simulation=>update results and charts information from the original simulation
+            //Before swapping simulation=>update results and charts information from the original simulation
             var simulation = presenter.Simulation;
             _simulationResultsTask.CopyResults(simulationToConfigure, simulation);
             _simulationSettingsRetriever.SynchronizeSettingsIn(simulation);

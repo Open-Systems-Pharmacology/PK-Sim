@@ -41,7 +41,7 @@ namespace PKSim.CLI
       private Func<string, bool> _oldFileExists;
       private Func<string, bool> _oldDirectoryExists;
       private Action<string, bool> _oldDeleteDirectory;
-      protected IDataRepositoryTask _dataRepositoryTask;
+      protected IDataRepositoryExportTask _dataRepositoryTask;
       protected IMarkdownReporterTask _markdownReporterTask;
 
       public override async Task GlobalContext()
@@ -66,7 +66,7 @@ namespace PKSim.CLI
          _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _exportSimulationRunner = A.Fake<IExportSimulationRunner>();
          _logger = A.Fake<ILogger>();
-         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _markdownReporterTask = A.Fake<IMarkdownReporterTask>();
 
          sut = new QualificationRunner(_snapshotTask, _jsonSerializer, _workspace, _workspacePersistor, _exportSimulationRunner, _dataRepositoryTask, _markdownReporterTask, _logger);
@@ -198,7 +198,7 @@ namespace PKSim.CLI
          _simulationName = "S1";
          _simulation = new Simulation {Name = _simulationName};
          _individualSimulation = new IndividualSimulation {Name = _simulationName};
-         _input = new Input {Project = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation};
+         _input = new Input {Project = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation, SectionLevel = 5};
 
          _expectedSimulationPath = Path.Combine(_expectedOutputPath, _simulationName);
          _simulationExport = new SimulationExport {Project = PROJECT_NAME, Simulation = _simulationName, SimulationFolder = _expectedSimulationPath};
@@ -293,7 +293,7 @@ namespace PKSim.CLI
          _mapping.Inputs.Length.ShouldBeEqualTo(1);
          _mapping.Inputs[0].SectionId.ShouldBeEqualTo(_input.SectionId);
          _mapping.Inputs[0].Path.ShouldBeEqualTo($"INPUTS/{PROJECT_NAME}/Simulation/{_input.Name}.md");
-         A.CallTo(() => _markdownReporterTask.ExportToMarkdown(_individualSimulation, _expectedInputFullPath)).MustHaveHappened();
+         A.CallTo(() => _markdownReporterTask.ExportToMarkdown(_individualSimulation, _expectedInputFullPath, _input.SectionLevel)).MustHaveHappened();
       }
    }
 

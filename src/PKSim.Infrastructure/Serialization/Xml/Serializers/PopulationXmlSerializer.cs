@@ -7,7 +7,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          base.PerformMapping();
-         Map(x => x.IndividualPropertiesCache);
+         Map(x => x.IndividualValuesCache);
          Map(x => x.SelectedDistributions);
          Map(x => x.Seed);
       }

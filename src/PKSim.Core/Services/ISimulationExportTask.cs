@@ -21,6 +21,16 @@ namespace PKSim.Core.Services
       Task ExportResultsToCSVAsync(Simulation simulation);
 
       /// <summary>
+      ///    Exports simulation to C++ code
+      /// </summary>
+      Task ExportSimulationToCppAsync(Simulation simulation);
+
+      /// <summary>
+      ///    Exports simulation to C++ code to the folder <paramref name="outputFolder"/>
+      /// </summary>
+      Task ExportSimulationToCppAsync(Simulation simulation, string outputFolder);
+
+      /// <summary>
       ///    Exports simulation results to the csv file with path <paramref name="fileName" />
       /// </summary>
       Task ExportResultsToCSVAsync(Simulation simulation, string fileName);
@@ -51,5 +61,25 @@ namespace PKSim.Core.Services
       ///    Exports simulation pk-analyses to csv file
       /// </summary>
       Task ExportPKAnalysesToCSVAsync(PopulationSimulation populationSimulation, string fileName);
+
+      /// <summary>
+      ///    Exports simulation ODE to matlab conform code />
+      /// </summary>
+      Task ExportODEForMatlab(Simulation simulation);
+
+      /// <summary>
+      ///    Exports simulation ODE to matlab conform code into the folder <paramref name="outputFolder"/>
+      /// </summary>
+      Task ExportODEForMatlab(Simulation simulation, string outputFolder);
+
+      /// <summary>
+      ///    Exports simulation ODE to R conform code/>
+      /// </summary>
+      Task ExportODEForR(Simulation simulation);
+
+      /// <summary>
+      ///    Exports simulation ODE to R conform code into the folder <paramref name="outputFolder"/>
+      /// </summary>
+      Task ExportODEForR(Simulation simulation, string outputFolder);
    }
 }

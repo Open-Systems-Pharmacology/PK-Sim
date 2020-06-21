@@ -19,8 +19,10 @@ namespace PKSim.Core.Extensions
       /// <summary>
       /// In each object path: replaces path entries from <paramref name="keywords"/> with entries from <paramref name="replacementValues"/>
       /// </summary>
-      public static void ReplaceKeywordsInObjectPaths(this IFormula formula, string[] keywords,
-                                                     string[] replacementValues)
+      public static void ReplaceKeywordsInObjectPaths(
+         this IFormula formula, 
+         string[] keywords,
+         string[] replacementValues)
       {
          if (formula == null)
             return;

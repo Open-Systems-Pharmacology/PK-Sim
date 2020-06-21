@@ -90,7 +90,7 @@ namespace PKSim.Core.Services
             setSeriesValues(series, row);
          }
 
-         //add observed data if availables
+         //add observed data if available
          addObservedDataToChart(chart);
          return chart;
       }
@@ -108,7 +108,7 @@ namespace PKSim.Core.Services
                      continue;
                }
 
-               var observedCurveData = _observedCurveDataMapper.MapFrom(observedData, _observedDataCollection, pane.Axis.Dimension);
+               var observedCurveData = _observedCurveDataMapper.MapFrom(observedData, _observedDataCollection);
                observedCurveData.Each(pane.AddObservedCurve);
 
                if (!_observedDataCollection.ApplyGroupingToObservedData)
@@ -172,25 +172,25 @@ namespace PKSim.Core.Services
 
          var colorField = _analysis.ColorField;
 
-         var groupitem = colorField?.GroupingByName(row[colorField.Name].ToString());
-         if (groupitem == null)
+         var groupingItem = colorField?.GroupingByName(row[colorField.Name].ToString());
+         if (groupingItem == null)
             return;
 
-         series.Color = groupitem.Color;
+         series.Color = groupingItem.Color;
       }
 
-      protected override AxisData CreateAxisDataFor(INumericValueField axisField)
+      protected override AxisData CreateAxisDataFor(INumericValueField numericValueField)
       {
          //override default implementation to set caption to [display unit], because different DATA_FIELDS are shown at one pane
-         var axis = base.CreateAxisDataFor(axisField);
+         var axis = base.CreateAxisDataFor(numericValueField);
          if (axis != null)
-            axis.Caption = Constants.NameWithUnitFor(_dimensionRepository.MergedDimensionFor(axisField).DisplayName, axisField.DisplayUnit);
+            axis.Caption = Constants.NameWithUnitFor(_dimensionRepository.MergedDimensionFor(numericValueField).DisplayName, numericValueField.DisplayUnit);
          return axis;
       }
 
       private Tuple<QuantityValues, FloatMatrix> getTimeAndAllValuesFor(DataRow row)
       {
-         var allValuesForQuantity = row[_aggreationName] as IReadOnlyList<QuantityValues>;
+         var allValuesForQuantity = row[_aggregationName] as IReadOnlyList<QuantityValues>;
 
          if (allValuesForQuantity == null || allValuesForQuantity.Count == 0)
             return emptyTimeAndValues();
@@ -204,7 +204,7 @@ namespace PKSim.Core.Services
          var length = time.Length;
          for (int i = 0; i < length; i++)
          {
-            //values might have different lenght if using different time arrays. We base our arrays on the first time values
+            //values might have different length if using different time arrays. We base our arrays on the first time values
             var values = allValuesForQuantity.Where(qv => i < qv.Length)
                .Select(qv => qv.ValueAt(i));
 

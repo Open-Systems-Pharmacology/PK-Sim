@@ -1,3 +1,4 @@
+using OSPSuite.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain.Services;
@@ -16,8 +17,8 @@ namespace PKSim.Presentation.Presenters
    {
       private readonly ICloner _cloner;
 
-      public CloneBuildingBlockPresenter(IObjectBaseView view, IObjectTypeResolver objectTypeResolver, IRenameObjectDTOFactory renameObjectBaseDTOFactory, ICloner cloner)
-         : base(view, objectTypeResolver, renameObjectBaseDTOFactory)
+      public CloneBuildingBlockPresenter(IObjectBaseView view, IObjectTypeResolver objectTypeResolver, IRenameObjectDTOFactory renameObjectBaseDTOFactory, ICloner cloner, IOSPSuiteExecutionContext executionContext)
+         : base(view, objectTypeResolver, renameObjectBaseDTOFactory, executionContext)
       {
          _cloner = cloner;
       }

@@ -1,11 +1,17 @@
 ﻿using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ORM.FlatObjects;
+using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
    public class FlatContainerIdToGeneralContainerMapper : FlatContainerIdToContainerMapperBase<IContainer>, IFlatContainerIdToContainerMapperSpecification
    {
+
+      public FlatContainerIdToGeneralContainerMapper(IObjectBaseFactory objectBaseFactory, IFlatContainerRepository flatContainerRepository, IFlatContainerTagRepository flatContainerTagRepository) : base(objectBaseFactory, flatContainerRepository, flatContainerTagRepository)
+      {
+      }
+
       public IContainer MapFrom(FlatContainerId flatContainerId)
       {
          var container = MapCommonPropertiesFrom(flatContainerId);

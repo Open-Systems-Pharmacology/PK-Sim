@@ -1,13 +1,11 @@
 ﻿using DevExpress.LookAndFeel;
 using Microsoft.Extensions.Logging;
-using OSPSuite.Engine;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Core;
 using PKSim.Core;
 using PKSim.Infrastructure;
-using SimModelNET;
 using PresenterRegister = PKSim.Presentation.PresenterRegister;
 
 namespace PKSim.BatchTool
@@ -16,7 +14,7 @@ namespace PKSim.BatchTool
    {
       public static void Start()
       {
-         UI.BootStrapping.ApplicationStartup.Initialize(LogLevel.Debug, registrationAction);
+         UI.BootStrapping.ApplicationStartup.Initialize(LogLevel.Debug);
 
          var container = IoC.Container;
          using (container.OptimizeDependencyResolution())
@@ -27,8 +25,8 @@ namespace PKSim.BatchTool
             container.AddRegister(x => x.FromType<BatchRegister>());
             container.AddRegister(x => x.FromType<CLIRegister>());
 
-            InfrastructureRegister.RegisterSerializationDependencies();
-            InfrastructureRegister.RegisterWorkspace();
+            InfrastructureRegister.LoadSerializers(container);
+            InfrastructureRegister.RegisterWorkspace(container);
             UI.BootStrapping.ApplicationStartup.RegisterCommands(container);
             container.RegisterImplementationOf(new DefaultLookAndFeel().LookAndFeel);
          }
@@ -36,13 +34,6 @@ namespace PKSim.BatchTool
          var skinManager = container.Resolve<ISkinManager>();
          var userSettings = container.Resolve<IPresentationUserSettings>();
          skinManager.ActivateSkin(userSettings, Constants.DEFAULT_SKIN);
-      }
-
-      private static void registrationAction(IContainer container)
-      {
-         container.AddRegister(x => x.FromType<EngineRegister>());
-         var pkSimConfiguration = container.Resolve<IPKSimConfiguration>();
-         XMLSchemaCache.InitializeFromFile(pkSimConfiguration.SimModelSchemaFilePath);
       }
    }
 }

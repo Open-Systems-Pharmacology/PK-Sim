@@ -3,6 +3,7 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 using DevExpress.XtraGrid.Columns;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Binders;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;

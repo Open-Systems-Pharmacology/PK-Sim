@@ -233,7 +233,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _oldProject = new PKSimProject {Creation = {InternalVersion = ProjectVersions.V5_2_1}};
+         _oldProject = new PKSimProject {Creation = {InternalVersion = ProjectVersions.V7_1_0}};
          _newProject = new PKSimProject {Creation = {InternalVersion = ProjectVersions.V7_3_0}};
       }
 

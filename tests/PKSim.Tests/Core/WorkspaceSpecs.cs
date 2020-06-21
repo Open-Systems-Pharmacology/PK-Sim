@@ -1,21 +1,19 @@
 using System;
 using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Infrastructure;
-using PKSim.Presentation.Core;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Journal;
-using OSPSuite.Core.Serialization;
-using OSPSuite.Infrastructure.Journal;
+using OSPSuite.Infrastructure.Serialization.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.FileLocker;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Infrastructure;
 using PKSim.Presentation;
 
 namespace PKSim.Core
@@ -49,7 +47,7 @@ namespace PKSim.Core
          _fileLocker = A.Fake<IFileLocker>();
          _journalSession = A.Fake<IJournalSession>();
          A.CallTo(() => _historyManagerFactory.Create()).Returns(_historyManager);
-         sut = new Workspace(_eventPublisher,  _journalSession, _fileLocker, _registrationTask, _workspacePersistor, _mruProvider, _historyManagerFactory);
+         sut = new Workspace(_eventPublisher, _journalSession, _fileLocker, _registrationTask, _workspacePersistor, _mruProvider, _historyManagerFactory);
       }
 
       public override void GlobalCleanup()
@@ -353,7 +351,7 @@ namespace PKSim.Core
    public class When_setting_a_project : concern_for_Workspace
    {
       private PKSimProject _project;
-     private ProjectCreatedEvent _event;
+      private ProjectCreatedEvent _event;
 
       protected override void Context()
       {
@@ -373,8 +371,6 @@ namespace PKSim.Core
       {
          A.CallTo(() => _registrationTask.RegisterProject(_project)).MustHaveHappened();
       }
-
- 
 
       [Observation]
       public void should_update_the_history_manager()

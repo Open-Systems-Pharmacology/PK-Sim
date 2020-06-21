@@ -1,6 +1,7 @@
 using System;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 

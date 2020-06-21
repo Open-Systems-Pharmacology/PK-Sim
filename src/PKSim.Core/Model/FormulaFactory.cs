@@ -319,10 +319,12 @@ namespace PKSim.Core.Model
          //now it can be either dynamic formula or explicit formula
          FormulaWithFormulaString formula;
 
+         var formulaString = _rateFormulaRepository.FormulaFor(rateKey);
          if (rateKey.IsDynamicSumFormula)
          {
             var sumFormula = _objectBaseFactory.Create<SumFormula>();
             sumFormula.Criteria = _dynamicFormulaCriteriaRepository.CriteriaFor(rateKey).Clone();
+            sumFormula.Variable = dynamicVariableFormulaFrom(formulaString, sumFormula.Variable, sumFormula.VariablePattern);
             formula = sumFormula;
          }
          else
@@ -330,7 +332,7 @@ namespace PKSim.Core.Model
             formula = _objectBaseFactory.Create<ExplicitFormula>();
          }
 
-         formula.WithFormulaString(_rateFormulaRepository.FormulaFor(rateKey))
+         formula.WithFormulaString(formulaString)
             .WithId(rateKey)
             .WithName(rateKey.Rate);
 
@@ -349,8 +351,15 @@ namespace PKSim.Core.Model
          if (formula.ObjectPaths.Any() || formula.IsAnImplementationOf<DynamicFormula>())
             return formula;
 
-         //this is actually a constant formula! Evaluate the function and return a contant formula
+         //this is actually a constant formula! Evaluate the function and return a constant formula
          return constantFormula(formula.Calculate(null)).WithDimension(dimension);
+      }
+
+      private string dynamicVariableFormulaFrom(string formulaString, string currentVariableName, string currentVariablePattern)
+      {
+         var iterationPattern = currentVariablePattern.Replace(currentVariableName, "");
+         var variableFormulaIndex = formulaString.IndexOf(iterationPattern, StringComparison.Ordinal);
+         return formulaString.Substring(variableFormulaIndex - 1, 1);
       }
 
       private IFormula createTableFormulaWithArgument(RateKey rateKey)

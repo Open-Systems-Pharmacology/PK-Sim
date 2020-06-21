@@ -8,12 +8,10 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.Serialization;
 using PKSim.Infrastructure.Services;
-using PKSim.Presentation.Core;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
-using OSPSuite.Infrastructure.Services;
-using PKSim.Core;
+using OSPSuite.Infrastructure.Serialization.Services;
 using PKSim.Core.Services;
 using PKSim.Presentation;
 

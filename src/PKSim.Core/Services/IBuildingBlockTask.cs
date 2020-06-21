@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
@@ -12,13 +11,6 @@ namespace PKSim.Core.Services
    {
       void AddCommandToHistory(ICommand command);
       void Load<TBuildingBlock>(TBuildingBlock buildingBlockToLoad) where TBuildingBlock : class, IPKSimBuildingBlock;
-
-      /// <summary>
-      ///    Load the simulation and its results in memory
-      /// </summary>
-      /// <typeparam name="TBuildingBlock">Type of simulation</typeparam>
-      /// <param name="simulationToLoad">Simulation to load</param>
-      void LoadResults<TBuildingBlock>(TBuildingBlock simulationToLoad) where TBuildingBlock : Simulation;
 
       void Edit(IPKSimBuildingBlock buildingBlock);
       void Clone<TBuildingBlock>(TBuildingBlock buildingBlockToClone) where TBuildingBlock : class, IPKSimBuildingBlock;
@@ -37,7 +29,7 @@ namespace PKSim.Core.Services
       void SaveAsTemplate(ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> buildingBlocksWithReferenceToSave, TemplateDatabaseType templateDatabaseType);
 
       /// <summary>
-      ///    Saves the building blocks defined in <paramref name="buildingBlocks"/>. References won't be saved
+      ///    Saves the building blocks defined in <paramref name="buildingBlocks" />. References won't be saved
       /// </summary>
       void SaveAsTemplate(IReadOnlyList<IPKSimBuildingBlock> buildingBlocks, TemplateDatabaseType templateDatabaseType);
 

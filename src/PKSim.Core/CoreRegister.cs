@@ -2,6 +2,7 @@ using OSPSuite.Core;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -37,6 +38,9 @@ namespace PKSim.Core
             scan.ExcludeType<DistributionFormulaFactory>();
             scan.ExcludeType<ApplicationSettings>();
             scan.ExcludeType<ProjectChangedNotifier>();
+            scan.ExcludeType<IndividualSimulationEngine>();
+            scan.ExcludeType<DefaultIndividualRetriever>();
+            scan.ExcludeType<IPopulationSimulationEngine>();
             
             //Do not register the InteractiveSimulationRunner as it should be registered only if needed
             scan.ExcludeType<InteractiveSimulationRunner>();
@@ -46,16 +50,16 @@ namespace PKSim.Core
             scan.WithConvention<PKSimRegistrationConvention>();
          });
 
-         //Register singletons explicitely
+         //Register singletons explicitly
          container.AddScanner(scan =>
          {
             scan.AssemblyContainingType<CoreRegister>();
             scan.IncludeType<FormulationValuesRetriever>();
             scan.IncludeType<ObjectTypeResolver>();
-            scan.IncludeType<PKSimObjectBaseFactory>();
             scan.IncludeType<DistributionFormulaFactory>();
             scan.IncludeType<ProjectChangedNotifier>();
             scan.IncludeType<SnapshotMapper>();
+            scan.IncludeType<DefaultIndividualRetriever>();
 
             scan.RegisterAs(LifeStyle.Singleton);
             scan.WithConvention<PKSimRegistrationConvention>();
@@ -64,6 +68,8 @@ namespace PKSim.Core
          container.Register<ICoreSimulationFactory, SimulationFactory>();
          container.Register<ISetParameterTask,  ParameterTask>(LifeStyle.Transient);
          container.Register<ITransferOptimizedParametersToSimulationsTask, TransferOptimizedParametersToSimulationsTask<IExecutionContext>>();
+         container.Register<IIndividualSimulationEngine, ISimulationEngine<IndividualSimulation, SimulationRunResults>, IndividualSimulationEngine>(LifeStyle.Transient);
+         container.Register<IPopulationSimulationEngine, ISimulationEngine<PopulationSimulation, PopulationRunResults>, PopulationSimulationEngine>(LifeStyle.Transient);
 
          //other singleton external to application
          container.Register<ICloneManager, Cloner>(LifeStyle.Singleton);
@@ -72,16 +78,20 @@ namespace PKSim.Core
          container.Register<IParameter, PKSimParameter>();
          container.Register<IDistributedParameter, PKSimDistributedParameter>();
 
+         //specific PKSim Implementations
+         container.Register<IPathToPathElementsMapper, PKSimPathToPathElementsMapper>();
+         container.Register<IDataColumnToPathElementsMapper, PKSimDataColumnToPathElementsMapper>();
+         container.Register<IQuantityPathToQuantityDisplayPathMapper, PKSimQuantityPathToQuantityDisplayPathMapper>();
+
          //Register Factories
          container.RegisterFactory<ISimulationEngineFactory>();
          container.RegisterFactory<IChartDataToTableMapperFactory>();
 
+         container.Register<IPKSimObjectBaseFactory, IObjectBaseFactory, PKSimObjectBaseFactory>(LifeStyle.Singleton);
          container.Register<IPKSimDimensionFactory, IDimensionFactory, PKSimDimensionFactory>(LifeStyle.Singleton);
          container.Register<IApplicationSettings, OSPSuite.Core.IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
 
          //Register opened types generics
-         container.Register(typeof(IRepository<>), typeof(ImplementationRepository<>));
-
          container.Register<IInterpolation, LinearInterpolation>();
          container.Register<IPivoter, Pivoter>();
 

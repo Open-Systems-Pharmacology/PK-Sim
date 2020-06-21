@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
@@ -136,7 +137,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_2
             parameterValues.Add(bsaParameter.Value);
          }
 
-         population.IndividualPropertiesCache.Add(parameterValues);
+         population.IndividualValuesCache.Add(parameterValues);
       }
    }
 }

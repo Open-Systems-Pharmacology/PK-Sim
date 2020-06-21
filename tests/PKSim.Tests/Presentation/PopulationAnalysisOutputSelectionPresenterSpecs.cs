@@ -13,6 +13,7 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
@@ -29,6 +30,7 @@ namespace PKSim.Presentation
       protected IEventPublisher _eventPublisher;
       private IDimensionRepository _dimensionRepository;
       protected IDimension _timeDimension;
+      protected IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
 
       protected override void Context()
       {
@@ -39,9 +41,18 @@ namespace PKSim.Presentation
          _outputsRetriever = A.Fake<IEntitiesInContainerRetriever>();
          _eventPublisher = A.Fake<IEventPublisher>();
          _dimensionRepository= A.Fake<IDimensionRepository>();
-         _timeDimension= A.Fake<IDimension>();  
+         _timeDimension= A.Fake<IDimension>();
+         _quantityDisplayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();  
          A.CallTo(() => _dimensionRepository.Time).Returns(_timeDimension);
-         sut = new PopulationAnalysisOutputSelectionPresenter(_view,_allOutputsPresenter,_selectedOutputsPresenter,_statisticSelectionPresenter,_outputsRetriever,_eventPublisher,_dimensionRepository);
+         sut = new PopulationAnalysisOutputSelectionPresenter(
+            _view,
+            _allOutputsPresenter,
+            _selectedOutputsPresenter,
+            _statisticSelectionPresenter,
+            _outputsRetriever,
+            _eventPublisher,
+            _dimensionRepository,
+            _quantityDisplayPathMapper);
       }
    }
 
@@ -138,7 +149,8 @@ namespace PKSim.Presentation
          _allOutputs.Add(_oneOutput);
          A.CallTo(() => _outputsRetriever.OutputsFrom(_populationDataCollector)).Returns(_allOutputs);
          var dto=new QuantitySelectionDTO{Quantity = _oneOutput};
-         dto.PathElements.Add(PathElement.TopContainer, new PathElementDTO{DisplayName = "TOTO"});
+         dto.PathElements.Add(PathElementId.TopContainer, new PathElement{DisplayName = "TOTO"});
+         A.CallTo(() => _quantityDisplayPathMapper.DisplayPathAsStringFor(_oneOutput, A<bool>._)).Returns("TOTO_DISPLAY");
          A.CallTo(() => _allOutputsPresenter.QuantityDTOByPath(_allOutputs.Keys.First())).Returns(dto);
       }
 
@@ -150,7 +162,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_automatically_select_the_output()
       {
-         A.CallTo(() => _selectedOutputsPresenter.AddOutput(_oneOutput, "TOTO")).MustHaveHappened();
+         A.CallTo(() => _selectedOutputsPresenter.AddOutput(_oneOutput, "TOTO_DISPLAY")).MustHaveHappened();
       }
    }
 

@@ -441,7 +441,6 @@ namespace PKSim.Core
          public static readonly string Fraction = "Fraction";
          public static readonly string MASS_CONCENTRATION = Constants.Dimension.MASS_CONCENTRATION;
          public static readonly string DosePerBodyWeight = "Dose per body weight";
-         public static readonly string Mass = "Mass";
          public static readonly string VolumePerBodyWeight = "Volume per body weight";
          public static readonly string FlowPerWeight = "Flow per weight";
          public static readonly string Length = "Length";
@@ -457,7 +456,7 @@ namespace PKSim.Core
             Fraction,
             MASS_CONCENTRATION,
             DosePerBodyWeight,
-            Mass,
+            Constants.Dimension.MASS_AMOUNT,
             VolumePerBodyWeight,
             FlowPerWeight,
             Length,
@@ -548,7 +547,6 @@ namespace PKSim.Core
          public static readonly string GI_LUMEN = "GI_LUMEN";
          public static readonly string GI_MUCOSA = "GI_MUCOSA";
          public static readonly string GI_NON_MUCOSA_TISSUE = "GI_NON_MUCOSA_TISSUE";
-         public static readonly string ONTOGENY_LIVER_ALL = "ONTOGENY_LIVER_ALL";
          public static readonly string ONTOGENY_LIVER = "ONTOGENY_LIVER_NO_GI";
          public static readonly string ONTOGENY_DUODENUM = "ONTOGENY_DUODENUM";
          public static readonly string ONTOGENY_PLASMA = "ONTOGENY_PLASMA";
@@ -816,9 +814,9 @@ namespace PKSim.Core
             Constants.PKParameters.Thalf,
             Constants.PKParameters.AUC_inf,
             Constants.PKParameters.AUC_inf_norm,
-            Constants.PKParameters.AUC_inf_t1,
-            Constants.PKParameters.AUC_inf_t1_norm,
-            Constants.PKParameters.AUC_inf_tLast,
+            Constants.PKParameters.AUC_inf_tD1,
+            Constants.PKParameters.AUC_inf_tD1_norm,
+            Constants.PKParameters.AUC_inf_tDLast,
             Constants.PKParameters.AUC_inf_tLast_norm
          };
       }
@@ -896,8 +894,6 @@ namespace PKSim.Core
          public static readonly string MIN_TO_YEAR_FACTOR = "Minute to year unit conversion factor";
          public static readonly string GFR_FRACTION = "GFR fraction";
          public static readonly string INTESTINAL_PERMEABILITY = "Intestinal permeability (transcellular)";
-         public static readonly string RACE_INDEX = "RaceIndex";
-         public static readonly string GENDER = "Gender";
          public static readonly string VOLUME_MOUSE = "Organ volume mouse";
 
          public static string ParameterPKa(int index)
@@ -1161,8 +1157,6 @@ namespace PKSim.Core
 
       public static class Population
       {
-         public const string OUTPUT_DEFINITION_EXPORT = "_Outputs";
-         public const string ALL_GENDER = "AllGender";
          public const string ICRP = "European_ICRP_2002";
          public const string PRETERM = "Preterm";
          public const string TABLE_PARAMETER_EXPORT = "_TableParameters";

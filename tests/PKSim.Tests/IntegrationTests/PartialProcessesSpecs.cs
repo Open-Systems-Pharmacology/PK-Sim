@@ -628,7 +628,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_retrieve_the_fraction_metabolized_in_liver_intracellular()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
 
          _simulation.HasResults.ShouldBeTrue();
@@ -674,7 +674,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_create_and_run_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -708,7 +708,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_create_and_run_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -742,7 +742,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_create_and_run_the_simulation()
       {
-         var simulationEngine = IoC.Resolve<ISimulationEngine<IndividualSimulation>>();
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }

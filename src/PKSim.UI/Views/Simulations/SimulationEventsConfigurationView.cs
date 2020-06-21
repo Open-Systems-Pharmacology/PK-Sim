@@ -12,6 +12,7 @@ using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Views.Core;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI;
 using OSPSuite.UI.Controls;
@@ -29,6 +30,9 @@ namespace PKSim.UI.Views.Simulations
       private readonly UxRepositoryItemComboBox _eventRepository;
       private readonly ComboBoxUnitParameter _comboBoxUnit;
       private IGridViewBoundColumn<EventMappingDTO, double> _columnValue;
+      private IGridViewColumn _colCreateEvent;
+      private IGridViewColumn _colLoadEvent;
+      private IGridViewColumn _colRemoveEvent;
 
       public SimulationEventsConfigurationView()
       {
@@ -56,19 +60,19 @@ namespace PKSim.UI.Views.Simulations
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithEditorConfiguration(configureEventRepository);
 
-         _gridViewBinder.AddUnboundColumn()
+        _colCreateEvent= _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => createButtonRepository);
 
-         _gridViewBinder.AddUnboundColumn()
+        _colLoadEvent = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => loadButtonRepository);
 
-         _gridViewBinder.AddUnboundColumn()
+        _colRemoveEvent =  _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
@@ -86,6 +90,11 @@ namespace PKSim.UI.Views.Simulations
       {
          if (column == null) return false;
          return _columnValue.XtraColumn == column;
+      }
+
+      protected override bool ColumnIsButton(GridColumn column)
+      {
+         return column.IsOneOf(_colCreateEvent.XtraColumn, _colLoadEvent.XtraColumn, _colRemoveEvent.XtraColumn);
       }
 
       public void RefreshData()

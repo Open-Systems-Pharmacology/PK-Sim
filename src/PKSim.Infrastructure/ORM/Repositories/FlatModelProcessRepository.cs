@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Collections;
-using FluentNHibernate.Utils;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Infrastructure.ORM.Core;
 using PKSim.Infrastructure.ORM.FlatObjects;

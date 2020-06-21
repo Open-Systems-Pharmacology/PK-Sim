@@ -21,8 +21,8 @@ namespace PKSim.Presentation.Presenters.Populations
       IPresenter<IPopulationParameterDistributionView>, 
       ICanCopyToClipboard
    {
-      Color StartColorFor(string serie);
-      Color EndColorFor(string serie);
+      Color StartColorFor(string series);
+      Color EndColorFor(string series);
       void ResetPlot();
       void Plot(IVectorialParametersContainer vectorialParametersContainer, IParameter parameter, DistributionSettings settings = null, IDimension dimension = null, Unit displayUnit = null);
       void Plot(IPopulationDataCollector populationDataCollector, QuantityPKParameter pkParameter, DistributionSettings settings = null, IDimension dimension = null, Unit displayUnit = null);
@@ -124,7 +124,7 @@ namespace PKSim.Presentation.Presenters.Populations
             settings.YAxisTitle = settings.AxisCountMode.ToString();
 
          if (string.IsNullOrEmpty(settings.SelectedGender))
-            settings.SelectedGender = CoreConstants.Population.ALL_GENDER;
+            settings.SelectedGender = Constants.Population.ALL_GENDERS;
       }
 
       private string getTitleFor(IParameter parameter, Unit displayUnit)
@@ -139,17 +139,17 @@ namespace PKSim.Presentation.Presenters.Populations
          return Constants.NameWithUnitFor(parameterDisplayName, displayUnit);
       }
 
-      public Color StartColorFor(string serie)
+      public Color StartColorFor(string series)
       {
-         if (string.Equals(serie, PKSimConstants.UI.Female))
+         if (string.Equals(series, PKSimConstants.UI.Female))
             return PKSimColors.Female;
 
          return PKSimColors.Male;
       }
 
-      public Color EndColorFor(string serie)
+      public Color EndColorFor(string series)
       {
-         if (string.Equals(serie, PKSimConstants.UI.Female))
+         if (string.Equals(series, PKSimConstants.UI.Female))
             return PKSimColors.Female2;
 
          return PKSimColors.Male2;

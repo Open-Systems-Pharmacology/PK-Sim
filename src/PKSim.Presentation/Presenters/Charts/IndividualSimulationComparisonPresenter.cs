@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Presentation.Services.Charts;
@@ -36,8 +34,8 @@ namespace PKSim.Presentation.Presenters.Charts
       void Edit(IndividualSimulationComparison individualSimulationComparison);
       object Subject { get; }
       string ChartName { get; }
-      void DragOver(object sender, DragEventArgs e);
-      void DragDrop(object sender, DragEventArgs e);
+      void DragOver(object sender, IDragEvent e);
+      void DragDrop(object sender, IDragEvent e);
       bool AnyCurves();
       void Clear();
    }
@@ -49,13 +47,13 @@ namespace PKSim.Presentation.Presenters.Charts
       public event EventHandler Closing = delegate { };
 
       public IndividualSimulationComparisonPresenter(IIndividualSimulationComparisonView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, ILazyLoadTask lazyLoadTask, IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater) :
-         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdater)
+         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdater, useSimulationNameToCreateCurveName:true)
       {
          _lazyLoadTask = lazyLoadTask;
          PresentationKey = PresenterConstants.PresenterKeys.IndividualSimulationComparisonPresenter;
       }
 
-      public void DragDrop(object sender, DragEventArgs e)
+      public void DragDrop(object sender, IDragEvent e)
       {
          OnDragDrop(sender, e);
       }
@@ -65,7 +63,7 @@ namespace PKSim.Presentation.Presenters.Charts
          return _repositoryCache != null && _repositoryCache.Any();
       }
 
-      protected override void OnDragDrop(object sender, DragEventArgs e)
+      protected override void OnDragDrop(object sender, IDragEvent e)
       {
          var droppedNodes = e.Data<IReadOnlyList<ITreeNode>>();
          if (containsIndividualSimulationNodes(droppedNodes))
@@ -74,16 +72,16 @@ namespace PKSim.Presentation.Presenters.Charts
             base.OnDragDrop(sender, e);
       }
 
-      public void DragOver(object sender, DragEventArgs e)
+      public void DragOver(object sender, IDragEvent e)
       {
          OnDragOver(sender, e);
       }
 
-      protected override void OnDragOver(object sender, DragEventArgs e)
+      protected override void OnDragOver(object sender, IDragEvent e)
       {
          var draggedNodes = e.Data<IReadOnlyList<ITreeNode>>();
          if (containsIndividualSimulationNodes(draggedNodes))
-            e.Effect = DragDropEffects.Move;
+            e.Effect = DragEffect.Move;
          else
             base.OnDragOver(sender, e);
       }

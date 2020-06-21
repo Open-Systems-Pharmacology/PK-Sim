@@ -128,7 +128,7 @@ namespace PKSim.Core.Model
 
          combination.GroupBy(x => x.CompoundName).Each(grouping =>
          {
-            replaceCalculationMethodsWithNewCalcualtionMethods(grouping, newSimulation.CompoundPropertiesFor(grouping.Key));
+            replaceCalculationMethodsWithNewCalculationMethods(grouping, newSimulation.CompoundPropertiesFor(grouping.Key));
          });
 
          _simulationModelCreator.CreateModelFor(newSimulation);
@@ -136,7 +136,7 @@ namespace PKSim.Core.Model
          return newSimulation;
       }
 
-      private void replaceCalculationMethodsWithNewCalcualtionMethods(IEnumerable<CalculationMethodWithCompoundName> combination, IWithCalculationMethods compoundProperties)
+      private void replaceCalculationMethodsWithNewCalculationMethods(IEnumerable<CalculationMethodWithCompoundName> combination, IWithCalculationMethods compoundProperties)
       {
          if (compoundProperties == null)
             return;
@@ -208,12 +208,13 @@ namespace PKSim.Core.Model
       public IndividualSimulation CreateForDDIRatio(IndividualSimulation originalSimulation)
       {
          //DDI Ratio=> manipulate inhibition parameters so that all DDI effects are effectively deactivated 
-         var ddiRatioSimulation = createModelLessSimulationBasedOn(originalSimulation);
+         var ddiRatioSimulation =  createModelLessSimulationBasedOn(originalSimulation);
 
          _simulationModelCreator.CreateModelFor(ddiRatioSimulation);
 
-         //now update all parameters from the orginal simulation
-         _simulationParametersUpdater.ReconciliateSimulationParametersBetween(originalSimulation, ddiRatioSimulation);
+         // now update all parameters from the original simulation. We need to take protocol parameters as well as simulation parameters into account for the update
+         // as simulation building block are all kept in sync with the changes values EXCEPT Protocol (1 to n mapping)
+         _simulationParametersUpdater.ReconciliateSimulationParametersBetween(originalSimulation, ddiRatioSimulation, PKSimBuildingBlockType.Simulation | PKSimBuildingBlockType.Protocol) ;
 
          _interactionTask.AllInteractionContainers(ddiRatioSimulation)
             .SelectMany(c => c.AllParameters())
@@ -234,7 +235,7 @@ namespace PKSim.Core.Model
                                    CoreConstants.Parameters.KI_C))
             return double.PositiveInfinity;
 
-         //if we add any new parameters, the exception will be thrown per default, until we explicitely define
+         //if we add any new parameters, the exception will be thrown per default, until we explicitly define
          //how to handle this parameter for "disabled DDI"-simulation
          throw new OSPSuiteException(PKSimConstants.Error.CannotCalculateDDIRatioFor(parameterName));
       }
@@ -252,9 +253,9 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Creates a new simulation using a clone of all buidling blocks defined in the given
+      ///    Creates a new simulation using a clone of all building blocks defined in the given
       ///    <paramref name="originalSimulation" />.
-      ///    The resulting simulation should only be used for addhoc calculations and be discared after use
+      ///    The resulting simulation should only be used for ad-hoc calculations and be discarded after use
       /// </summary>
       private IndividualSimulation createModelLessSimulationBasedOn(IndividualSimulation originalSimulation)
       {
@@ -285,7 +286,7 @@ namespace PKSim.Core.Model
 
          _simulationModelCreator.CreateModelFor(pkSimulation);
 
-         //now update all parameters from the orginal simulation
+         //now update all parameters from the original simulation
          _simulationParametersUpdater.ReconciliateSimulationParametersBetween(originalSimulation, pkSimulation);
          return pkSimulation;
       }

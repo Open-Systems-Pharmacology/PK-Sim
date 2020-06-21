@@ -1,4 +1,4 @@
-using PKSim.Core.Model;
+﻿using PKSim.Infrastructure.ProjectConverter.v9_0;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {

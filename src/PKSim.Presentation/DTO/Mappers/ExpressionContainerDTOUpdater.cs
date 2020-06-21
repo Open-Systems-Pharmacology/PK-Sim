@@ -1,7 +1,5 @@
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Presentation.DTO.Extensions;
-
 using PKSim.Presentation.DTO.Individuals;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Mappers;

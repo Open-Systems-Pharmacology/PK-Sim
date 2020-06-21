@@ -9,9 +9,9 @@ namespace PKSim.Core.Model
    public class Individual : PKSimBuildingBlock, ISimulationSubject
    {
       /// <summary>
-      ///    Seed used to intialize the random generator while creating the individual
+      ///    Seed used to initialize the random generator while creating the individual
       /// </summary>
-      public virtual int Seed { get;  set; }
+      public virtual int Seed { get; set; }
 
       /// <summary>
       ///    Origin data defining the property used to create the individual
@@ -23,17 +23,15 @@ namespace PKSim.Core.Model
          Seed = Environment.TickCount;
       }
 
-
       public virtual Organism Organism => this.GetSingleChild<Organism>();
 
       public virtual IContainer Neighborhoods => this.GetSingleChildByName<IContainer>(Constants.NEIGHBORHOODS);
 
       /// <summary>
-      ///    Population used to create the individul (based on the selected species)
+      ///    Population used to create the individual (based on the selected species)
       /// </summary>
       public virtual SpeciesPopulation Population => OriginData.SpeciesPopulation;
 
- 
       /// <summary>
       ///    all available organs in the individual
       /// </summary>
@@ -43,7 +41,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns the availabe genders defined for the population in which the individual belongs
+      ///    Returns the available genders defined for the population in which the individual belongs
       /// </summary>
       public virtual IEnumerable<Gender> AvailableGenders()
       {
@@ -72,15 +70,15 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual IEnumerable<IndividualMolecule> AllMolecules() => AllMolecules<IndividualMolecule>();
 
+      public IndividualMolecule MoleculeByName(string moleculeName) => MoleculeByName<IndividualMolecule>(moleculeName);
+
       /// <summary>
       ///    All defined molecules defined in the individual
       /// </summary>
       public virtual IEnumerable<IndividualMolecule> AllDefinedMolecules() => AllMolecules().Where(x => !x.IsUndefinedMolecule());
 
       /// <summary>
-      ///    All protein of type
-      ///    <typeparam name="TMolecule" />
-      ///    in the individual
+      ///    All protein of type <typeparamref name="TMolecule" /> in the individual
       /// </summary>
       /// <typeparam name="TMolecule"> Type of molecule to be retrieved </typeparam>
       public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule => GetChildren<TMolecule>();
@@ -110,22 +108,22 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Input age of the indvidual.
+      ///    Input age of the individual.
       /// </summary>
       public virtual double Age => OriginData.Age ?? 0;
 
       /// <summary>
-      ///    Input height of the indvidual.
+      ///    Input height of the individual.
       /// </summary>
       public virtual double InputWeight => OriginData.Weight;
 
       /// <summary>
-      ///    Input Weight of the indvidual.
+      ///    Input Weight of the individual.
       /// </summary>
       public virtual double InputHeight => OriginData.Height ?? 0;
 
       /// <summary>
-      ///    Mean height as defined in the databse for the organism
+      ///    Mean height as defined in the database for the organism
       /// </summary>
       public virtual double MeanHeight
       {
@@ -143,12 +141,12 @@ namespace PKSim.Core.Model
 
       /// ///
       /// <summary>
-      ///    Mean weight as defined in the databse for the organism
+      ///    Mean weight as defined in the database for the organism
       /// </summary>
       public virtual double MeanWeight => Organism.Parameter(CoreConstants.Parameters.MEAN_WEIGHT).Value;
 
       /// <summary>
-      ///    Actual weight of the individual (might differ from input weight and mean weight if volumina were changed)
+      ///    Actual weight of the individual (might differ from input weight and mean weight if volumes were changed)
       /// </summary>
       public virtual IParameter WeightParameter => Organism.Parameter(CoreConstants.Parameters.WEIGHT);
 
@@ -161,7 +159,8 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns <c>true</c> if at least one molecule of type <typeparamref name="TIndividualMolecule"/>is defined in the individual otherwise false
+      ///    Returns <c>true</c> if at least one molecule of type <typeparamref name="TIndividualMolecule" />is defined in the
+      ///    individual otherwise false
       /// </summary>
       public bool HasMolecules<TIndividualMolecule>() where TIndividualMolecule : IndividualMolecule
       {

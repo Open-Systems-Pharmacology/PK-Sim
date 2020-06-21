@@ -165,7 +165,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _buildingBlock.Name).Returns("toto");
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(_buildingBlockType, _buildingBlock.Name))).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(_buildingBlockType, _buildingBlock.Name), ViewResult.Yes)).Returns(ViewResult.No);
       }
 
       protected override void Because()
@@ -197,7 +197,7 @@ namespace PKSim.Presentation
          _buildingBlock.Id = "toto";
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(_buildingBlockType, _buildingBlock.Name))).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(_buildingBlockType, _buildingBlock.Name), ViewResult.Yes)).Returns(ViewResult.Yes);
       }
 
       protected override void Because()
@@ -373,40 +373,12 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_retun_the_building_block_of_the_type_defined_in_the_repository()
+      public void should_return_the_building_block_of_the_type_defined_in_the_repository()
       {
          _results.ShouldOnlyContain(_ind1, _ind2);
       }
    }
-
-   public class When_loading_the_results_of_a_simulation : concern_for_BuildingBlockTask
-   {
-      private Simulation _simulationToLoad;
-
-      protected override void Context()
-      {
-         base.Context();
-         _simulationToLoad = A.Fake<Simulation>();
-      }
-
-      protected override void Because()
-      {
-         sut.LoadResults(_simulationToLoad);
-      }
-
-      [Observation]
-      public void should_load_the_simulation_first()
-      {
-         A.CallTo(() => _executionContext.Load(_simulationToLoad)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_load_the_results()
-      {
-         A.CallTo(() => _lazyLoadTask.LoadResults(_simulationToLoad)).MustHaveHappened();
-      }
-   }
-
+   
    public class When_loading_a_template_for_a_given_building_block_type : concern_for_BuildingBlockTask
    {
       private ITemplatePresenter _templatePresenter;

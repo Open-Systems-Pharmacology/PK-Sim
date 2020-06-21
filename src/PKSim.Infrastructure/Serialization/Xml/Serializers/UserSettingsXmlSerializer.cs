@@ -1,9 +1,8 @@
 using System.Xml.Linq;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Serializer;
-using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Presentation;
-using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
@@ -62,7 +61,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 
       public override IUserSettings CreateObject(XElement element, SerializationContext context)
       {
-         return IoC.Resolve<IUserSettings>();
+         return context.Resolve<IUserSettings>();
       }
    }
 }

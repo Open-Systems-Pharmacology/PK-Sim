@@ -112,7 +112,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       event EventHandler<DerivedFieldSelectedEventArgs> DerivedFieldSelected;
 
       /// <summary>
-      ///    Specifies whether the scaling field should be displayed. Default is <c>true</C>
+      ///    Specifies whether the scaling field should be displayed. Default is <c>true</c>
       /// </summary>
       bool ScalingVisible { get; set; }
 

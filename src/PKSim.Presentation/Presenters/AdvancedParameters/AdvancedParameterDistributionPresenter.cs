@@ -39,7 +39,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       /// <summary>
       ///    Returns the string to be displayed for the given genderKey
       /// </summary>
-      string GenderDisplayFor(string genderId);
+      string GenderDisplayFor(string genderName);
 
       /// <summary>
       ///    Select the advanced parameter and display its distribution
@@ -65,15 +65,21 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IPopulationDistributionPresenter _populationParameterDistributionPresenter;
       private readonly IProjectChangedNotifier _projectChangedNotifier;
+      private readonly IGenderRepository _genderRepository;
       private readonly DistributionSettings _defaultSettings;
       private IList<string> _genderSelection;
       private IVectorialParametersContainer _vectorialParametersContainer;
       private PathCache<IParameter> _allParametersCache;
       private ParameterDistributionSettingsCache _selectedDistributions;
 
-      protected AdvancedParameterDistributionPresenter(IAdvancedParameterDistributionView view, IPopulationParameterGroupsPresenter parametersPresenter,
-         IRepresentationInfoRepository representationInfoRepository, IEntityPathResolver entityPathResolver, IPopulationDistributionPresenter populationParameterDistributionPresenter,
-         IProjectChangedNotifier projectChangedNotifier)
+      protected AdvancedParameterDistributionPresenter(
+         IAdvancedParameterDistributionView view, 
+         IPopulationParameterGroupsPresenter parametersPresenter,
+         IRepresentationInfoRepository representationInfoRepository, 
+         IEntityPathResolver entityPathResolver, 
+         IPopulationDistributionPresenter populationParameterDistributionPresenter,
+         IProjectChangedNotifier projectChangedNotifier,
+         IGenderRepository genderRepository)
          : base(view)
       {
          _parametersPresenter = parametersPresenter;
@@ -81,6 +87,7 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          _entityPathResolver = entityPathResolver;
          _populationParameterDistributionPresenter = populationParameterDistributionPresenter;
          _projectChangedNotifier = projectChangedNotifier;
+         _genderRepository = genderRepository;
          _defaultSettings = new DistributionSettings();
          _parametersPresenter.GroupNodeSelected += (o, e) => activateNode(e.Node);
          _parametersPresenter.ParameterNodeSelected += (o, e) => activateNode(e.Node);
@@ -249,23 +256,23 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          return EnumHelper.AllValuesFor<AxisCountMode>();
       }
 
-      public string GenderDisplayFor(string genderId)
+      public string GenderDisplayFor(string genderName)
       {
-         if (string.Equals(genderId, CoreConstants.Population.ALL_GENDER))
+         if (string.Equals(genderName, Constants.Population.ALL_GENDERS))
             return PKSimConstants.UI.AllGender;
 
-         var gender = _vectorialParametersContainer.AllGenders.Distinct().FindByName(genderId);
+         var gender = _genderRepository.FindByName(genderName);
          return _representationInfoRepository.DisplayNameFor(gender);
       }
 
       private IEnumerable<string> genderSelectionsFrom(IVectorialParametersContainer vectorialParametersContainer)
       {
-         var allGenders = vectorialParametersContainer.AllGenders.Distinct().ToList();
+         var allGenders = vectorialParametersContainer.AllGenders(_genderRepository).Distinct().ToList();
          if (allGenders.Count == 1)
             yield return allGenders[0].Name;
          else
          {
-            yield return CoreConstants.Population.ALL_GENDER;
+            yield return Constants.Population.ALL_GENDERS;
             foreach (var gender in allGenders)
                yield return gender.Name;
          }

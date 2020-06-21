@@ -16,7 +16,7 @@ namespace PKSim.Infrastructure.Serialization.Json
 {
    public class JsonSerializer : IJsonSerializer
    {
-      private readonly JsonSerializerSettings _settings = new PKSimJsonSerializerSetings();
+      private readonly JsonSerializerSettings _settings = new PKSimJsonSerializerSettings();
 
       //Defines a static field as the free license only allows for a limited number of schema generation per hour
       private static readonly ConcurrentDictionary<Type, JSchema> _schemas = new ConcurrentDictionary<Type, JSchema>();

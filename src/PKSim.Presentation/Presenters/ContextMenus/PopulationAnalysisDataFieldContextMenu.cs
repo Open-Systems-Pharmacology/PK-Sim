@@ -49,7 +49,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       public bool IsSatisfiedBy(IPopulationAnalysisField populationAnalysisField, IPresenterWithContextMenu<IPopulationAnalysisField> presenter)
       {
-         return populationAnalysisField.IsAnImplementationOf<IPopulationAnalysisField>() &&
+         return populationAnalysisField.IsAnImplementationOf<PopulationAnalysisDataField>() &&
                 presenter.IsAnImplementationOf<IPopulationAnalysisFieldsPresenter>();
       }
    }

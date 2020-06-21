@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Binders;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Presentation.Services.Charts;
@@ -37,19 +37,27 @@ namespace PKSim.Presentation.Presenters.Charts
       protected readonly IChartTask _chartTask;
       protected readonly IObservedDataTask _observedDataTask;
       private readonly IChartUpdater _chartUpdater;
+      private readonly bool _useSimulationNameToCreateCurveName;
 
       protected ChartDisplayMode _chartDisplayMode;
       protected readonly ICache<DataRepository, IndividualSimulation> _repositoryCache;
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
       protected readonly IChartTemplatingTask _chartTemplatingTask;
 
-      protected ChartPresenter(TView view, ChartPresenterContext chartPresenterContext, IChartTemplatingTask chartTemplatingTask, IIndividualPKAnalysisPresenter pkAnalysisPresenter,
-         IChartTask chartTask, IObservedDataTask observedDataTask, IChartUpdater chartUpdater)
+      protected ChartPresenter(
+         TView view, 
+         ChartPresenterContext chartPresenterContext, 
+         IChartTemplatingTask chartTemplatingTask, 
+         IIndividualPKAnalysisPresenter pkAnalysisPresenter,
+         IChartTask chartTask, 
+         IObservedDataTask observedDataTask, 
+         IChartUpdater chartUpdater, bool useSimulationNameToCreateCurveName)
          : base(view, chartPresenterContext)
       {
          _chartTask = chartTask;
          _observedDataTask = observedDataTask;
          _chartUpdater = chartUpdater;
+         _useSimulationNameToCreateCurveName = useSimulationNameToCreateCurveName;
          _view.SetChartView(chartPresenterContext.EditorAndDisplayPresenter.BaseView);
          _pkAnalysisPresenter = pkAnalysisPresenter;
          _view.SetPKAnalysisView(_pkAnalysisPresenter.View);
@@ -108,6 +116,11 @@ namespace PKSim.Presentation.Presenters.Charts
             _repositoryCache[dataRepository] = simulation;
             AddDataRepositoriesToEditor(new[] {dataRepository});
          }
+      }
+
+      protected override string NameForColumn(DataColumn dataColumn)
+      {
+         return _chartPresenterContext.CurveNamer.CurveNameForColumn(SimulationFor(dataColumn), dataColumn, _useSimulationNameToCreateCurveName);
       }
 
       protected void InitializeFromTemplate()
@@ -192,12 +205,12 @@ namespace PKSim.Presentation.Presenters.Charts
          }
       }
 
-      protected virtual void OnDragOver(object sender, DragEventArgs e)
+      protected virtual void OnDragOver(object sender, IDragEvent e)
       {
          _observedDataDragDropBinder.PrepareDrag(e);
       }
 
-      protected virtual void OnDragDrop(object sender, DragEventArgs e)
+      protected virtual void OnDragDrop(object sender, IDragEvent e)
       {
          var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e).ToList();
          AddObservedData(droppedObservedData, asResultOfDragAndDrop: true);

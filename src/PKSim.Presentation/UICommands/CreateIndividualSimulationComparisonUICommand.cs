@@ -9,36 +9,36 @@ namespace PKSim.Presentation.UICommands
 {
    public abstract class CreateSimulationComparisonCommand : IUICommand
    {
-      private readonly ISimulationComparisonCreator _simulationComparisonCreator;
+      private readonly ISimulationComparisonTask _simulationComparisonTask;
       private readonly ISingleStartPresenterTask _singleStartPresenterTask;
-      private readonly Func<ISimulationComparisonCreator, Func<ISimulationComparison>> _creator;
+      private readonly Func<ISimulationComparisonTask, Func<ISimulationComparison>> _creator;
 
-      protected CreateSimulationComparisonCommand(ISimulationComparisonCreator simulationComparisonCreator, ISingleStartPresenterTask singleStartPresenterTask,
-         Func<ISimulationComparisonCreator, Func<ISimulationComparison>> creator)
+      protected CreateSimulationComparisonCommand(ISimulationComparisonTask simulationComparisonTask, ISingleStartPresenterTask singleStartPresenterTask,
+         Func<ISimulationComparisonTask, Func<ISimulationComparison>> creator)
       {
-         _simulationComparisonCreator = simulationComparisonCreator;
+         _simulationComparisonTask = simulationComparisonTask;
          _singleStartPresenterTask = singleStartPresenterTask;
          _creator = creator;
       }
 
       public void Execute()
       {
-         _singleStartPresenterTask.StartForSubject(_creator(_simulationComparisonCreator).Invoke());
+         _singleStartPresenterTask.StartForSubject(_creator(_simulationComparisonTask).Invoke());
       }
    }
 
    public class CreateIndividualSimulationComparisonUICommand : CreateSimulationComparisonCommand
    {
-      public CreateIndividualSimulationComparisonUICommand(ISimulationComparisonCreator simulationComparisonCreator, ISingleStartPresenterTask singleStartPresenterTask)
-         : base(simulationComparisonCreator, singleStartPresenterTask, x => x.CreateIndividualSimulationComparison)
+      public CreateIndividualSimulationComparisonUICommand(ISimulationComparisonTask simulationComparisonTask, ISingleStartPresenterTask singleStartPresenterTask)
+         : base(simulationComparisonTask, singleStartPresenterTask, x => x.CreateIndividualSimulationComparison)
       {
       }
    }
 
    public class CreatePopulationSimulationComparisonUICommand : CreateSimulationComparisonCommand
    {
-      public CreatePopulationSimulationComparisonUICommand(ISimulationComparisonCreator simulationComparisonCreator, ISingleStartPresenterTask singleStartPresenterTask)
-         : base(simulationComparisonCreator, singleStartPresenterTask, x => x.CreatePopulationSimulationComparison)
+      public CreatePopulationSimulationComparisonUICommand(ISimulationComparisonTask simulationComparisonTask, ISingleStartPresenterTask singleStartPresenterTask)
+         : base(simulationComparisonTask, singleStartPresenterTask, x => x.CreatePopulationSimulationComparison)
       {
       }
    }

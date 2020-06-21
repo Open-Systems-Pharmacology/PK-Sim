@@ -30,7 +30,7 @@ namespace PKSim.Infrastructure
       protected IDialogCreator _dialogCreator;
       protected IApplicationController _applicationController;
       protected IObservedDataInSimulationManager _observedDataInSimulationManager;
-      private IDataRepositoryTask _dataRepositoryTask;
+      private IDataRepositoryExportTask _dataRepositoryTask;
       protected IContainerTask _containerTask;
       protected ITemplateTask _templateTask;
       protected PKSimProject _project;
@@ -43,12 +43,11 @@ namespace PKSim.Infrastructure
       {
          _containerTask = A.Fake<IContainerTask>();
          _projectRetriever = A.Fake<IPKSimProjectRetriever>();
-         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _executionContext = A.Fake<IExecutionContext>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _applicationController = A.Fake<IApplicationController>();
          _templateTask = A.Fake<ITemplateTask>();
-         _snapshotTask = A.Fake<ISnapshotTask>();
          _project = new PKSimProject();
          _observedDataPersistor = A.Fake<IObservedDataPersistor>();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
@@ -56,7 +55,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _executionContext.Project).Returns(_project);
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
-            _dataRepositoryTask, _templateTask, _containerTask, _observedDataPersistor, _objectTypeResolver, _snapshotTask);
+            _dataRepositoryTask, _templateTask, _containerTask, _observedDataPersistor, _objectTypeResolver);
       }
    }
 
@@ -187,7 +186,7 @@ namespace PKSim.Infrastructure
          _observedDataUser = A.Fake<Simulation>();
          A.CallTo(() => _observedDataUser.UsesObservedData(_usedDataRepository)).Returns(true);
          A.CallTo(() => _observedDataUser.UsesObservedData(_unUsedDataRepository)).Returns(false);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._)).Returns(ViewResult.OK);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.OK);
          _project.AddBuildingBlock(_observedDataUser);
          _project.AddObservedData(_usedDataRepository);
          _project.AddObservedData(_unUsedDataRepository);
@@ -223,7 +222,7 @@ namespace PKSim.Infrastructure
          _dataRepository = new DataRepository("id");
          _observedDataUser = A.Fake<Simulation>();
          A.CallTo(() => _observedDataUser.UsesObservedData(_dataRepository)).Returns(true);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._)).Returns(ViewResult.OK);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.OK);
          _project.AddBuildingBlock(_observedDataUser);
       }
 
@@ -345,7 +344,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_ask_the_user_to_confirm_the_removal()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyRemoveObservedDataFromSimulation)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyRemoveObservedDataFromSimulation, ViewResult.Yes)).MustHaveHappened();
       }
 
       [Observation]

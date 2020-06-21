@@ -75,18 +75,18 @@ namespace PKSim.ProjectConverter.v7_2
       }
 
       [Observation]
-      public void should_have_addded_the_bsa_values_to_the_population()
+      public void should_have_added_the_bsa_values_to_the_population()
       {
          var population = First<Population>();
          var bsaParameterPath = _entityPathResolver.PathFor(population.Organism.Parameter(CoreConstants.Parameters.BSA));
-         population.IndividualPropertiesCache.Has(bsaParameterPath).ShouldBeTrue();
+         population.IndividualValuesCache.Has(bsaParameterPath).ShouldBeTrue();
       }
    }
 
-   public class When_converting_the_humand_and_rat_710_project : ContextWithLoadedProject<Converter710To720>
+   public class When_converting_the_human_and_rat_710_project : ContextWithLoadedProject<Converter710To720>
    {
       private List<Individual> _allIndividuals;
-      private List<Simulation> _allSImulations;
+      private List<Simulation> _allSimulations;
 
       public override void GlobalContext()
       {
@@ -94,9 +94,9 @@ namespace PKSim.ProjectConverter.v7_2
          LoadProject("HumanAndRat_7.1.0");
 
          _allIndividuals = All<Individual>();
-         _allSImulations = All<Simulation>();
+         _allSimulations = All<Simulation>();
          _allIndividuals.Each(Load);
-         _allSImulations.Each(Load);
+         _allSimulations.Each(Load);
       }
 
       [Observation]
@@ -117,7 +117,7 @@ namespace PKSim.ProjectConverter.v7_2
       [Observation]
       public void should_have_added_the_dynamic_formula_calculation_method_to_all_simulation_individuals()
       {
-         foreach (var simulation in _allSImulations.OfType<IndividualSimulation>())
+         foreach (var simulation in _allSimulations.OfType<IndividualSimulation>())
          {
             simulation.Individual.OriginData.CalculationMethodFor(ConverterConstants.Category.DynamicFormulas).Name.ShouldBeEqualTo(ConverterConstants.CalculationMethod.DynamicSumFormulas);
          }

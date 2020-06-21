@@ -1,15 +1,12 @@
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
-   /// <summary>
-   ///    Converter should convert a value into the concentration
-   /// </summary>
-   public class MolarToMassConcentrationDimensionConverter : ConcentrationDimensionConverter
+   public abstract class MolarToMassColumnDimensionConverter : ConcentrationDimensionConverter
    {
-      public MolarToMassConcentrationDimensionConverter(DataColumn column, IDimensionRepository dimensionRepository) :
-         base(column, dimensionRepository.MolarConcentration, dimensionRepository.MassConcentration)
+      protected MolarToMassColumnDimensionConverter(DataColumn column, IDimension molarDimension, IDimension massDimension) : base(column, molarDimension, massDimension)
       {
       }
 
@@ -21,6 +18,17 @@ namespace PKSim.Core.Services
       public override double ConvertToSourceBaseUnit(double massConcentration)
       {
          return ConvertToMolar(massConcentration);
+      }
+   }
+
+   /// <summary>
+   ///    Converter should convert a value into the concentration
+   /// </summary>
+   public class MolarToMassConcentrationDimensionConverter : MolarToMassColumnDimensionConverter
+   {
+      public MolarToMassConcentrationDimensionConverter(DataColumn column, IDimensionRepository dimensionRepository) :
+         base(column, dimensionRepository.MolarConcentration, dimensionRepository.MassConcentration)
+      {
       }
    }
 }

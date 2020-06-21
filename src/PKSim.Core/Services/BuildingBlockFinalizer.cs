@@ -1,5 +1,5 @@
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -21,8 +21,8 @@ namespace PKSim.Core.Services
       private readonly IFormulaTask _formulaTask;
 
       public BuildingBlockFinalizer(IReferencesResolver referencesResolver, IKeywordReplacerTask keywordReplacerTask,
-         INeighborhoodFinalizer neighborhoodFinalizer, IBuildingBlockInSimulationManager buildingBlockInSimulationManager, 
-         IIndividualPathWithRootExpander individualPathWithRootExpander, 
+         INeighborhoodFinalizer neighborhoodFinalizer, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         IIndividualPathWithRootExpander individualPathWithRootExpander,
          IFormulaTask formulaTask)
       {
          _referencesResolver = referencesResolver;
@@ -37,8 +37,7 @@ namespace PKSim.Core.Services
       {
          finalizeIndividual(buildingBlock as Individual);
 
-         var population = buildingBlock as Population;
-         if (population != null)
+         if (buildingBlock is Population population)
             finalizeIndividual(population.FirstIndividual);
 
          finalizeSimulation(buildingBlock as Simulation);

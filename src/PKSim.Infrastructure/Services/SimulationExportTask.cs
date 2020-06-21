@@ -12,27 +12,36 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Infrastructure.Services
 {
    public class SimulationExportTask : ISimulationExportTask
    {
-      private readonly IBuildingBlockTask _buildingBlockTask;
+      private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IDialogCreator _dialogCreator;
-      private readonly IDataRepositoryTask _dataRepositoryTask;
+      private readonly IDataRepositoryExportTask _dataRepositoryTask;
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       private readonly IStringSerializer _stringSerializer;
       private readonly IModelReportCreator _modelReportCreator;
       private readonly ISimulationToModelCoreSimulationMapper _coreSimulationMapper;
       private readonly ISimModelExporter _simModelExporter;
       private readonly ISimulationResultsToDataTableConverter _simulationResultsToDataTableConverter;
+      private readonly IPopulationSimulationPKAnalysesToDataTableConverter _populationSimulationPKAnalysesToDataTableConverter;
 
-      public SimulationExportTask(IBuildingBlockTask buildingBlockTask, IDialogCreator dialogCreator, IDataRepositoryTask dataRepositoryTask,
-         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IStringSerializer stringSerializer,
-         IModelReportCreator modelReportCreator, ISimulationToModelCoreSimulationMapper coreSimulationMapper,
-         ISimModelExporter simModelExporter, ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter)
+      public SimulationExportTask(
+         ILazyLoadTask lazyLoadTask,
+         IDialogCreator dialogCreator,
+         IDataRepositoryExportTask dataRepositoryTask,
+         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper,
+         IStringSerializer stringSerializer,
+         IModelReportCreator modelReportCreator,
+         ISimulationToModelCoreSimulationMapper coreSimulationMapper,
+         ISimModelExporter simModelExporter,
+         ISimulationResultsToDataTableConverter simulationResultsToDataTableConverter, 
+         IPopulationSimulationPKAnalysesToDataTableConverter populationSimulationPKAnalysesToDataTableConverter)
       {
-         _buildingBlockTask = buildingBlockTask;
+         _lazyLoadTask = lazyLoadTask;
          _dialogCreator = dialogCreator;
          _dataRepositoryTask = dataRepositoryTask;
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
@@ -41,11 +50,12 @@ namespace PKSim.Infrastructure.Services
          _coreSimulationMapper = coreSimulationMapper;
          _simModelExporter = simModelExporter;
          _simulationResultsToDataTableConverter = simulationResultsToDataTableConverter;
+         _populationSimulationPKAnalysesToDataTableConverter = populationSimulationPKAnalysesToDataTableConverter;
       }
 
       public Task ExportResultsToExcelAsync(IndividualSimulation individualSimulation)
       {
-         _buildingBlockTask.LoadResults(individualSimulation);
+         _lazyLoadTask.LoadResults(individualSimulation);
          if (!individualSimulation.HasResults)
             throw new PKSimException(PKSimConstants.Error.CannotExportResultsPleaseRunSimulation(individualSimulation.Name));
 
@@ -64,7 +74,7 @@ namespace PKSim.Infrastructure.Services
 
       public Task ExportResultsToCSVAsync(Simulation simulation)
       {
-         _buildingBlockTask.LoadResults(simulation);
+         _lazyLoadTask.LoadResults(simulation);
          if (!simulation.HasResults)
             throw new PKSimException(PKSimConstants.Error.CannotExportResultsPleaseRunSimulation(simulation.Name));
 
@@ -72,9 +82,45 @@ namespace PKSim.Infrastructure.Services
             fileName => ExportResultsToCSVAsync(simulation, fileName), Constants.DirectoryKey.REPORT);
       }
 
+      public Task ExportSimulationToCppAsync(Simulation simulation)
+      {
+         var outputFolder = _dialogCreator.AskForFolder(PKSimConstants.UI.ExportSimulationToCpp, Constants.DirectoryKey.SIM_MODEL_XML);
+         return string.IsNullOrEmpty(outputFolder) ? Task.CompletedTask : ExportSimulationToCppAsync(simulation, outputFolder);
+      }
+
+      public Task ExportSimulationToCppAsync(Simulation simulation, string outputFolder)
+      {
+         _lazyLoadTask.Load(simulation);
+         return Task.Run(() => _simModelExporter.ExportCppCode(_coreSimulationMapper.MapFrom(simulation, shouldCloneModel: false), outputFolder, FormulaExportMode.Formula));
+      }
+
+      public Task ExportODEForMatlab(Simulation simulation)
+      {
+         var outputFolder = _dialogCreator.AskForFolder(PKSimConstants.UI.ExportODEForMatlab, Constants.DirectoryKey.SIM_MODEL_XML);
+         return string.IsNullOrEmpty(outputFolder) ? Task.CompletedTask : ExportODEForMatlab(simulation, outputFolder);
+      }
+
+      public Task ExportODEForMatlab(Simulation simulation, string outputFolder)
+      {
+         _lazyLoadTask.Load(simulation);
+         return Task.Run(() => _simModelExporter.ExportODEForMatlab(simulation, outputFolder, FormulaExportMode.Formula));
+      }
+
+      public Task ExportODEForR(Simulation simulation)
+      {
+         var outputFolder = _dialogCreator.AskForFolder(PKSimConstants.UI.ExportODEForR, Constants.DirectoryKey.SIM_MODEL_XML);
+         return string.IsNullOrEmpty(outputFolder) ? Task.CompletedTask : ExportODEForR(simulation, outputFolder);
+      }
+
+      public Task ExportODEForR(Simulation simulation, string outputFolder)
+      {
+         _lazyLoadTask.Load(simulation);
+         return Task.Run(() => _simModelExporter.ExportODEForR(simulation, outputFolder, FormulaExportMode.Formula));
+      }
+
       public async Task ExportResultsToCSVAsync(Simulation simulation, string fileName)
       {
-         var dataTable = await _simulationResultsToDataTableConverter.ResultsToDataTable(simulation);
+         var dataTable = await _simulationResultsToDataTableConverter.ResultsToDataTableAsync(simulation.Results, simulation);
          dataTable.ExportToCSV(fileName);
       }
 
@@ -97,7 +143,7 @@ namespace PKSim.Infrastructure.Services
 
       public Task ExportSimulationToSimModelXmlAsync(Simulation simulation, string fileName)
       {
-         return Task.Run(() => _simModelExporter.Export(_coreSimulationMapper.MapFrom(simulation, shouldCloneModel: false), fileName));
+         return Task.Run(() => _simModelExporter.ExportSimModelXml(_coreSimulationMapper.MapFrom(simulation, shouldCloneModel: false), fileName));
       }
 
       public Task CreateSimulationReport(Simulation simulation)
@@ -115,7 +161,7 @@ namespace PKSim.Infrastructure.Services
 
       public Task ExportPKAnalysesToCSVAsync(PopulationSimulation populationSimulation)
       {
-         _buildingBlockTask.Load(populationSimulation);
+         _lazyLoadTask.Load(populationSimulation);
          if (!populationSimulation.HasPKAnalyses)
             throw new PKSimException(PKSimConstants.Error.CannotExportPKAnalysesPleaseRunSimulation(populationSimulation.Name));
 
@@ -125,7 +171,7 @@ namespace PKSim.Infrastructure.Services
 
       public async Task ExportPKAnalysesToCSVAsync(PopulationSimulation populationSimulation, string fileName)
       {
-         var dataTable = await _simulationResultsToDataTableConverter.PKAnalysesToDataTable(populationSimulation);
+         var dataTable = await _populationSimulationPKAnalysesToDataTableConverter.PKAnalysesToDataTableAsync(populationSimulation.PKAnalyses, populationSimulation);
          dataTable.ExportToCSV(fileName);
       }
 
@@ -133,7 +179,7 @@ namespace PKSim.Infrastructure.Services
       {
          return exportToFileAsync(title, filter, simulation.Name, async fileName =>
          {
-            _buildingBlockTask.Load(simulation);
+            _lazyLoadTask.Load(simulation);
             await actionToPerform(fileName);
          }, directoryKey);
       }

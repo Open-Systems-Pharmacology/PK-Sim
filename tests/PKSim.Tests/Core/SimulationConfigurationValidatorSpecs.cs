@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
@@ -120,6 +121,23 @@ namespace PKSim.Core
          base.Context();
          _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FourComp;
          _compound.IsSmallMolecule = false;
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.ValidateConfigurationFor(_simulation)).ShouldThrowAn<InvalidSimulationConfigurationException>();
+      }
+   }
+
+   public class When_validating_the_configuration_of_a_simulation_using_a_table_formula_without_any_point : concern_for_SimulationConfigurationValidator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _formulation.FormulationType = CoreConstants.Formulation.TABLE;
+         var tableParameter = new PKSimParameter().WithName(CoreConstants.Parameters.FRACTION_DOSE).WithFormula(new TableFormula());
+         _formulation.Add(tableParameter);
       }
 
       [Observation]
