@@ -155,10 +155,10 @@ namespace PKSim.Core.Model
       {
          if (usedBuildingBlock == null) return;
 
-         var existingUsedBuildignBlock = UsedBuildingBlockByTemplateId(usedBuildingBlock.TemplateId);
-         if (existingUsedBuildignBlock != null)
+         var existingUsedBuildingBlock = UsedBuildingBlockByTemplateId(usedBuildingBlock.TemplateId);
+         if (existingUsedBuildingBlock != null)
          {
-            usedBuildingBlock.UpdateVersionFrom(existingUsedBuildignBlock);
+            usedBuildingBlock.UpdateVersionFrom(existingUsedBuildingBlock);
             _usedBuildingBlocks.Remove(usedBuildingBlock.TemplateId);
          }
 
@@ -197,8 +197,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual void RemoveAllBuildingBlockOfType(PKSimBuildingBlockType buildingBlockType)
       {
-         var allBuidlingBlocksOfType = _usedBuildingBlocks.Where(x => x.BuildingBlockType.Is(buildingBlockType)).ToList();
-         allBuidlingBlocksOfType.Each(RemoveUsedBuildingBlock);
+         var allBuildingBlocksOfType = _usedBuildingBlocks.Where(x => x.BuildingBlockType.Is(buildingBlockType)).ToList();
+         allBuildingBlocksOfType.Each(RemoveUsedBuildingBlock);
       }
 
       /// <summary>
@@ -328,14 +328,14 @@ namespace PKSim.Core.Model
       public virtual bool ComesFromPKSim => Origin == Origins.PKSim;
 
       /// <summary>
-      ///    Returns true if the simulation was imported (e.g. throught pkml load). Otherwise false
+      ///    Returns true if the simulation was imported (e.g. through pkml load). Otherwise false
       /// </summary>
       public virtual bool IsImported => ModelProperties == null || ModelConfiguration == null;
 
       public virtual IContainer ApplicationsContainer => Model?.Root?.Container(Constants.APPLICATIONS);
 
       /// <summary>
-      ///    Returns true if the simulation results are uptodate.
+      ///    Returns true if the simulation results are up-t-odate.
       ///    (true: simulation was performed with current parameters, false: simulation parameters have changed ...)
       /// </summary>
       public virtual bool HasUpToDateResults => Version == ResultsVersion;
@@ -467,17 +467,12 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns the Body weight <see cref="IParameter" /> if available in the simulation otherwise null.
       /// </summary>
-      public virtual IParameter BodyWeight => Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.WEIGHT);
+      public virtual IParameter BodyWeight => Model.BodyWeight;
 
       /// <summary>
       ///    Returns the total drug mass defined in the simulation.
       /// </summary>
-      public virtual double? TotalDrugMassFor(string compoundName)
-      {
-         //total drug mass is a parameter defined under the compound molecule global property
-         var totalDrugMassParameter = Model.Root.EntityAt<IParameter>(compoundName, CoreConstants.Parameters.TOTAL_DRUG_MASS);
-         return totalDrugMassParameter?.Value;
-      }
+      public virtual IParameter TotalDrugMassFor(string compoundName) => Model.TotalDrugMassFor(compoundName);
 
       public override void AcceptVisitor(IVisitor visitor)
       {
@@ -493,7 +488,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    returns the building block used in the simulation with the given type
       /// </summary>
-      /// <typeparam name="TBuildingBlock">type of the building block we are lookiung for in the simulation</typeparam>
+      /// <typeparam name="TBuildingBlock">type of the building block we are looking for in the simulation</typeparam>
       public abstract TBuildingBlock BuildingBlock<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock;
 
       /// <summary>
