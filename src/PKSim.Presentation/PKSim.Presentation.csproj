@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <Version>9.0.0</Version>
-    <PackageVersion>9.0.0</PackageVersion>
-    <AssemblyVersion>9.0.0</AssemblyVersion>
-    <FileVersion>9.0.0</FileVersion>
-    <InformationalVersion>9.0.0</InformationalVersion>
+    <Version>10.0.0</Version>
+    <PackageVersion>10.0.0</PackageVersion>
+    <AssemblyVersion>10.0.0</AssemblyVersion>
+    <FileVersion>10.0.0</FileVersion>
+    <InformationalVersion>10.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -27,11 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="9.0.137" />
-    <PackageReference Include="OSPSuite.Presentation.Importer" Version="9.0.137" />
+    <PackageReference Include="OSPSuite.Presentation" Version="10.0.3" />
+    <PackageReference Include="OSPSuite.Presentation.Importer" Version="10.0.3" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.137" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>
