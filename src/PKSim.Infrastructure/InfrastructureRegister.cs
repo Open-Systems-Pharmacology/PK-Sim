@@ -71,6 +71,7 @@ namespace PKSim.Infrastructure
          return container;
       }
 
+      // TODO: Remove
       private static void registerLogging(IContainer container)
       {
          var loggerCreator = new PKSimLoggerCreator();

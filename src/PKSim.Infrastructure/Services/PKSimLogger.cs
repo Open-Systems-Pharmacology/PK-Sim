@@ -1,14 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using NHibernate.Mapping;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using PKSim.Infrastructure.Extensions;
 using IOSPLogger = OSPSuite.Core.Services.ILogger;
-using System.Collections.Concurrent;
 
+// TODO: Remove
 namespace PKSim.Infrastructure.Services
 {
    public class PKSimLogger : IOSPLogger

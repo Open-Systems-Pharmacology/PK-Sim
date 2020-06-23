@@ -12,6 +12,7 @@ using DevExpress.Utils.Extensions;
 using FluentNHibernate.Utils;
 using FakeItEasy.Configuration;
 
+// TODO: Remove
 namespace PKSim.Infrastructure
 {
    public abstract class concern_for_PKSimLoggerCreator : ContextSpecification<PKSimLoggerCreator>

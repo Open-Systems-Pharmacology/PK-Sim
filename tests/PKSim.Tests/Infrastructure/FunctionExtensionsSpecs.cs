@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
+// TODO: Remove
 namespace PKSim.Infrastructure
 {
   public abstract class concern_for_FunctioExtensions : ContextSpecification<Func<int, int>>

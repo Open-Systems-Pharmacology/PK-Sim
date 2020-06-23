@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// TODO: Remove
 namespace PKSim.Infrastructure.Extensions
 {
   public static class FunctionExtensions

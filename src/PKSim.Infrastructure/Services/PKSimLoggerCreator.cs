@@ -6,6 +6,7 @@ using System.Linq;
 using PKSim.Infrastructure.Extensions;
 using System.Collections.Concurrent;
 
+// TODO: Remove
 public class PKSimLoggerCreator : ILoggerCreator
 {
    private readonly ConcurrentDictionary<string, ILogger> _loggerDict = new ConcurrentDictionary<string, ILogger>();
