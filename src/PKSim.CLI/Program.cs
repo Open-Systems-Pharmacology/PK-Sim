@@ -6,7 +6,7 @@ using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
 using PKSim.CLI.Core.Services;
 using PKSim.Infrastructure.Services;
-using IOSPLogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 
 namespace PKSim.CLI
 {

@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 
 
 namespace PKSim.Presentation
@@ -14,12 +14,12 @@ namespace PKSim.Presentation
    public abstract class concern_for_QualiticationPlanRunner : ContextSpecificationAsync<IQualiticationPlanRunner>
    {
       protected IQualificationStepRunnerFactory _qualificationStepRunnerFactory;
-      protected ILogger _logger;
+      protected IOSPLogger _logger;
 
       protected override Task Context()
       {
          _qualificationStepRunnerFactory = A.Fake<IQualificationStepRunnerFactory>();
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPLogger>();
          sut = new QualiticationPlanRunner(_qualificationStepRunnerFactory, _logger);
 
          return _completed;

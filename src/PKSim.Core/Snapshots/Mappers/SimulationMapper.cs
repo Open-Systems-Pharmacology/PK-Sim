@@ -37,7 +37,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IModelPropertiesTask _modelPropertiesTask;
       private readonly ISimulationRunner _simulationRunner;
       private readonly ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
       private readonly IContainerTask _containerTask;
       private readonly IEntityPathResolver _entityPathResolver;
 
@@ -60,7 +60,7 @@ namespace PKSim.Core.Snapshots.Mappers
          IModelPropertiesTask modelPropertiesTask,
          ISimulationRunner simulationRunner,
          ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater,
-         ILogger logger,
+         IOSPLogger logger,
          IContainerTask containerTask,
          IEntityPathResolver entityPathResolver
       )

@@ -9,7 +9,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using IdentificationParameter = OSPSuite.Core.Domain.ParameterIdentifications.IdentificationParameter;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using OutputMapping = OSPSuite.Core.Domain.ParameterIdentifications.OutputMapping;
 using Simulation = PKSim.Core.Model.Simulation;
@@ -35,7 +35,7 @@ namespace PKSim.Core
       protected ISimulationAnalysis _parameterIdentificationAnalysis;
       protected ParameterIdentificationAnalysis _snapshotParameterIdentificationAnalysis;
       protected IObjectBaseFactory _objectBaseFactory;
-      protected ILogger _logger;
+      protected IOSPLogger _logger;
 
       protected override Task Context()
       {
@@ -44,7 +44,7 @@ namespace PKSim.Core
          _identificationParameterMapper = A.Fake<IdentificationParameterMapper>();
          _parameterIdentificationAnalysisMapper = A.Fake<ParameterIdentificationAnalysisMapper>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPLogger>();
 
          _project = new PKSimProject();
          _simulation = new IndividualSimulation().WithName("S1");

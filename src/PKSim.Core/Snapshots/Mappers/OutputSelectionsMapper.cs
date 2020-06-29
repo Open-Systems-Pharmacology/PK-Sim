@@ -13,9 +13,9 @@ namespace PKSim.Core.Snapshots.Mappers
    public class OutputSelectionsMapper : SnapshotMapperBase<ModelOutputSelections, SnapshotOutputSelections, Model.Simulation>
    {
       private readonly IEntitiesInContainerRetriever _entitiesInContainerRetriever;
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
 
-      public OutputSelectionsMapper(IEntitiesInContainerRetriever entitiesInContainerRetriever, ILogger logger)
+      public OutputSelectionsMapper(IEntitiesInContainerRetriever entitiesInContainerRetriever, IOSPLogger logger)
       {
          _entitiesInContainerRetriever = entitiesInContainerRetriever;
          _logger = logger;

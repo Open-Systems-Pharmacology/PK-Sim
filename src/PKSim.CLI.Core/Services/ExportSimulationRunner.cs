@@ -35,14 +35,14 @@ namespace PKSim.CLI.Core.Services
 
    public class ExportSimulationRunner : IExportSimulationRunner
    {
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly ICoreWorkspace _workspace;
       private readonly ISimulationExporter _simulationExporter;
       private readonly ILazyLoadTask _lazyLoadTask;
 
       public ExportSimulationRunner(
-         ILogger logger,
+         IOSPLogger logger,
          IWorkspacePersistor workspacePersistor,
          ICoreWorkspace workspace,
          ISimulationExporter simulationExporter,

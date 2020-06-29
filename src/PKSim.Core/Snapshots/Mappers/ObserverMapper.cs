@@ -23,7 +23,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly MoleculeListMapper _moleculeListMapper;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IDimensionRepository _dimensionRepository;
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
 
       public ObserverMapper(
          DescriptorConditionMapper descriptorConditionMapper, 
@@ -31,7 +31,7 @@ namespace PKSim.Core.Snapshots.Mappers
          MoleculeListMapper moleculeListMapper,
          IObjectBaseFactory objectBaseFactory,
          IDimensionRepository dimensionRepository,
-         ILogger logger)
+         IOSPLogger logger)
       {
          _descriptorConditionMapper = descriptorConditionMapper;
          _explicitFormulaMapper = explicitFormulaMapper;

@@ -30,7 +30,7 @@ namespace PKSim.CLI.Core.Services
       private readonly IJsonSerializer _jsonSerializer;
       private readonly ICoreWorkspace _workspace;
       private readonly IWorkspacePersistor _workspacePersistor;
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
       private readonly IExportSimulationRunner _exportSimulationRunner;
       private readonly IDataRepositoryExportTask _dataRepositoryExportTask;
       private readonly IMarkdownReporterTask _markdownReporterTask;
@@ -43,7 +43,7 @@ namespace PKSim.CLI.Core.Services
          IExportSimulationRunner exportSimulationRunner,
          IDataRepositoryExportTask dataRepositoryExportTask,
          IMarkdownReporterTask markdownReporterTask,
-         ILogger logger
+         IOSPLogger logger
       )
       {
          _snapshotTask = snapshotTask;

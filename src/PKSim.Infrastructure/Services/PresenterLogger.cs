@@ -5,7 +5,6 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace PKSim.Infrastructure.Services
 {

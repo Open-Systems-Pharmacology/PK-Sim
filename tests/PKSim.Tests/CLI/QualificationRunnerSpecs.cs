@@ -33,7 +33,7 @@ namespace PKSim.CLI
       protected ICoreWorkspace _workspace;
       protected IWorkspacePersistor _workspacePersistor;
       protected IExportSimulationRunner _exportSimulationRunner;
-      protected ILogger _logger;
+      protected IOSPLogger _logger;
       protected QualificationRunOptions _runOptions;
       protected QualifcationConfiguration _qualificationConfiguration;
       private Func<string, string> _oldCreateDirectory;
@@ -65,7 +65,7 @@ namespace PKSim.CLI
          _workspace = A.Fake<ICoreWorkspace>();
          _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _exportSimulationRunner = A.Fake<IExportSimulationRunner>();
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPLogger>();
          _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _markdownReporterTask = A.Fake<IMarkdownReporterTask>();
 

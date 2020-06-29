@@ -10,10 +10,10 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class QualificationStepMapper : SnapshotMapperBase<IQualificationStep, SnapshotQualificationStep, PKSimProject>
    {
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
       private const string QUALIFICATION_STEP_SUFFIX = "QualificationStep";
 
-      public QualificationStepMapper(ILogger logger)
+      public QualificationStepMapper(IOSPLogger logger)
       {
          _logger = logger;
       }

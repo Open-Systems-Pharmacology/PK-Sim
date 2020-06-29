@@ -22,14 +22,14 @@ namespace PKSim.Core
       protected DataRepository _dataRepository;
       protected CurveOptionsMapper _curveOptionsMapper;
       protected Snapshots.CurveOptions _snapshotCurveOptions;
-      private ILogger _logger;
+      private IOSPLogger _logger;
 
       protected override Task Context()
       {
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _curveOptionsMapper = A.Fake<CurveOptionsMapper>();
          _dataRepository = DomainHelperForSpecs.ObservedData();
-         _logger= A.Fake<ILogger>();
+         _logger= A.Fake<IOSPLogger>();
          sut = new CurveMapper(_curveOptionsMapper, _dimensionFactory, _logger);
 
          _curve = new Curve

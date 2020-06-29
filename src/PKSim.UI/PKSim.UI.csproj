@@ -42,14 +42,14 @@
     <PackageReference Include="OSPSuite.DataBinding" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="4.0.0.1" />
     <PackageReference Include="OSPSuite.DevExpress" Version="19.2.4.1" />
-    <PackageReference Include="OSPSuite.Presentation" Version="9.0.135" />
-    <PackageReference Include="OSPSuite.UI" Version="9.0.135" />
-    <PackageReference Include="OSPSuite.UI.Importer" Version="9.0.135" />
+    <PackageReference Include="OSPSuite.Presentation" Version="10.0.7" />
+    <PackageReference Include="OSPSuite.UI" Version="10.0.7" />
+    <PackageReference Include="OSPSuite.UI.Importer" Version="10.0.7" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
     <PackageReference Include="OSPSuite.Core" Version="9.0.128" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.135" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.7" />
   </ItemGroup>
 
   <ItemGroup>

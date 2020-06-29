@@ -7,9 +7,9 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class ObserverSetMappingMapper : SnapshotMapperBase<ObserverSetMapping, ObserverSetSelection, PKSimProject, PKSimProject>
    {
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
 
-      public ObserverSetMappingMapper(ILogger logger)
+      public ObserverSetMappingMapper(IOSPLogger logger)
       {
          _logger = logger;
       }

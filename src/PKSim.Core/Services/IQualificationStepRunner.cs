@@ -4,6 +4,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Services
 {
@@ -14,9 +15,9 @@ namespace PKSim.Core.Services
 
    public abstract class QualificationStepRunner<T> : IQualificationStepRunner where T : IQualificationStep
    {
-      protected readonly ILogger _logger;
+      protected readonly IOSPLogger _logger;
 
-      protected QualificationStepRunner(ILogger logger)
+      protected QualificationStepRunner(IOSPLogger logger)
       {
          _logger = logger;
       }

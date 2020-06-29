@@ -40,7 +40,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
       protected readonly ISnapshotTask _snapshotTask;
       private readonly IDialogCreator _dialogCreator;
       private readonly IObjectTypeResolver _objectTypeResolver;
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
       private readonly IEventPublisher _eventPublisher;
       private readonly ILogPresenter _logPresenter;
       private readonly LoadFromSnapshotDTO _loadFromSnapshotDTO = new LoadFromSnapshotDTO();
@@ -52,7 +52,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
          ISnapshotTask snapshotTask,
          IDialogCreator dialogCreator,
          IObjectTypeResolver objectTypeResolver,
-         ILogger logger,
+         IOSPLogger logger,
          IEventPublisher eventPublisher) : base(view)
       {
          _snapshotTask = snapshotTask;
