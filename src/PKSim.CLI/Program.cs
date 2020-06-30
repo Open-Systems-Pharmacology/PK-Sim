@@ -14,7 +14,7 @@ namespace PKSim.CLI
    enum ExitCodes
    {
       Success = 0,
-      Error = 1 << 0,
+      Error = 1 << 0, 
    }
 
    class Program
