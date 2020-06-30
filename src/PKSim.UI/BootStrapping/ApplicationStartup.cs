@@ -83,7 +83,7 @@ namespace PKSim.UI.BootStrapping
 
       private void configureLogger(IContainer container, LogLevel logLevel)
       {
-         var loggerCreator = IoC.Resolve<ILoggerCreator>();
+         var loggerCreator = container.Resolve<ILoggerCreator>();
 
          loggerCreator
             .AddLoggingBuilderConfiguration(builder =>
