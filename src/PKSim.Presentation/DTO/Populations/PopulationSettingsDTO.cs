@@ -64,7 +64,7 @@ namespace PKSim.Presentation.DTO.Populations
             {
                return CreateRule.For<PopulationSettingsDTO>()
                   .Property(x => x.ProportionOfFemales)
-                  .WithRule((dto, value) => (value <= 100))
+                  .WithRule((dto, value) => (value <= 100 && value >= 0))
                   .WithError(PKSimConstants.Rules.Parameter.ProportionOfFemaleBetween0And100);
             }
          }
