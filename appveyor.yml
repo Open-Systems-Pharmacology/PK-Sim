@@ -56,7 +56,7 @@ test:
       - ProjectConverter
       - NightlyOnly
 
-install:
+install: 
   - ps: >-
       (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi', 'C:\\msxml.msi')
 
