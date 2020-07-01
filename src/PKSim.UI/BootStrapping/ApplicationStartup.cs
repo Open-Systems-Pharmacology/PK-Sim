@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -82,10 +83,15 @@ namespace PKSim.UI.BootStrapping
 
       private void configureLogger(IContainer container, LogLevel logLevel)
       {
-         var loggerFactory = container.Resolve<ILoggerFactory>();
-         loggerFactory
-            .AddPresenter(logLevel)
-            .AddDebug(logLevel);
+         var loggerCreator = container.Resolve<ILoggerCreator>();
+
+         loggerCreator
+            .AddLoggingBuilderConfiguration(builder =>
+               builder
+                  .SetMinimumLevel(logLevel)
+                  .AddDebug()
+                  .AddPresenter()
+            );
       }
 
       private static void updateGoDiagramKey()
@@ -153,10 +159,10 @@ namespace PKSim.UI.BootStrapping
          container.Resolve<IExportToPDFInvoker>();
 
          var mainPresenter = container.Resolve<IMainViewPresenter>();
-         container.RegisterImplementationOf((IChangePropagator) mainPresenter);
+         container.RegisterImplementationOf((IChangePropagator)mainPresenter);
 
          //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
-         container.Register<IInteractiveSimulationRunner,InteractiveSimulationRunner>(LifeStyle.Singleton);
+         container.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);
       }
 
       private void startStartableObject(IContainer container)

@@ -22,7 +22,7 @@ namespace PKSim.CLI
       protected ICoreWorkspace _workspace;
       protected ISnapshotTask _snapshotTask;
       protected IWorkspacePersistor _workspacePersistor;
-      protected ILogger _logger;
+      protected IOSPLogger _logger;
       protected SnapshotRunOptions _runOptions;
       protected string _createdDirectory;
       private Func<string, string> _oldCreateDirectory;
@@ -41,7 +41,7 @@ namespace PKSim.CLI
          _workspace = A.Fake<ICoreWorkspace>();
          _snapshotTask = A.Fake<ISnapshotTask>();
          _workspacePersistor = A.Fake<IWorkspacePersistor>();
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPLogger>();
          sut = new SnapshotRunner(_workspace, _snapshotTask, _workspacePersistor, _logger);
 
          _runOptions = new SnapshotRunOptions();

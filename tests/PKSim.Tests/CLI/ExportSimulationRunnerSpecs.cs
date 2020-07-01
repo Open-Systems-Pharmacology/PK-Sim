@@ -15,14 +15,14 @@ using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI
 {
    public abstract class concern_for_ExportSimulationRunner : ContextSpecificationAsync<ExportSimulationRunner>
    {
-      protected ILogger _logger;
+      protected IOSPLogger _logger;
       protected IWorkspacePersistor _workspacePersitor;
       protected ICoreWorkspace _workspace;
       protected ISimulationExporter _simulationExporter;
@@ -72,7 +72,7 @@ namespace PKSim.CLI
 
       protected override Task Context()
       {
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPLogger>();
          _workspacePersitor = A.Fake<IWorkspacePersistor>();
          _workspace = A.Fake<ICoreWorkspace>();
          _simulationExporter = A.Fake<ISimulationExporter>();

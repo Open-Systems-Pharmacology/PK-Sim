@@ -13,7 +13,7 @@ namespace PKSim.BatchTool.Presenters
 
    public class JsonSimulationBatchPresenter : InputAndOutputBatchPresenter<JsonSimulationRunner, JsonRunOptions>, IJsonSimulationBatchPresenter
    {
-      public JsonSimulationBatchPresenter(IInputAndOutputBatchView<JsonRunOptions> view, JsonSimulationRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, ILogger batchLogger, DirectoryMapSettings directoryMapSettings) :
+      public JsonSimulationBatchPresenter(IInputAndOutputBatchView<JsonRunOptions> view, JsonSimulationRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IOSPLogger batchLogger, DirectoryMapSettings directoryMapSettings) :
          base(view, batchRunner, dialogCreator, logPresenter, batchLogger,directoryMapSettings)
       {
          view.Caption = "PK-Sim BatchTool: Batch runner for json based PK-Sim simulations";

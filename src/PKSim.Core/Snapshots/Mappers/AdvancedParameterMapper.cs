@@ -14,13 +14,13 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly IAdvancedParameterFactory _advancedParameterFactory;
       private readonly IEntityPathResolver _entityPathResolver;
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
 
       public AdvancedParameterMapper(
          ParameterMapper parameterMapper, 
          IAdvancedParameterFactory advancedParameterFactory, 
          IEntityPathResolver entityPathResolver, 
-         ILogger logger) : base(parameterMapper)
+         IOSPLogger logger) : base(parameterMapper)
       {
          _advancedParameterFactory = advancedParameterFactory;
          _entityPathResolver = entityPathResolver;

@@ -23,7 +23,7 @@ namespace PKSim.BatchTool.Presenters
          SnapshotRunner batchRunner,
          IDialogCreator dialogCreator,
          ILogPresenter logPresenter,
-         ILogger batchLogger,
+         IOSPLogger batchLogger,
          ISingleFolderSnapshotPresenter singleFolderSnapshotPresenter,
          IFolderListSnapshotPresenter folderListSnapshotPresenter) : base(view, batchRunner, dialogCreator, logPresenter, batchLogger)
       {

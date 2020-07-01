@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 
 
 namespace PKSim.Presentation
@@ -16,7 +16,7 @@ namespace PKSim.Presentation
    {
       protected IParameterIdentificationEngineFactory _parameterIdentificationEngineFactory;
       protected ITransferOptimizedParametersToSimulationsTask _transferOptimizedParametersToSimulationsTask;
-      protected ILogger _logger;
+      protected IOSPLogger _logger;
       protected RunParameterIdentificationQualificationStep _runParameterIdentificationStep;
       protected ParameterIdentification _parameterIdentification;
       protected IParameterIdentificationEngine _parameterIdentificationEngine;
@@ -25,7 +25,7 @@ namespace PKSim.Presentation
       {
          _parameterIdentificationEngineFactory = A.Fake<IParameterIdentificationEngineFactory>();
          _transferOptimizedParametersToSimulationsTask = A.Fake<ITransferOptimizedParametersToSimulationsTask>();
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPLogger>();
          sut = new RunParameterIdentificationQualificationStepRunner(_parameterIdentificationEngineFactory, _transferOptimizedParametersToSimulationsTask, _logger);
 
          _parameterIdentification = new ParameterIdentification();

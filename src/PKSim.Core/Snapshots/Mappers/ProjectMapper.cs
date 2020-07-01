@@ -25,7 +25,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IClassificationSnapshotTask _classificationSnapshotTask;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly ICreationMetaDataFactory _creationMetaDataFactory;
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
 
       public ProjectMapper(
@@ -37,7 +37,7 @@ namespace PKSim.Core.Snapshots.Mappers
          IClassificationSnapshotTask classificationSnapshotTask,
          ILazyLoadTask lazyLoadTask,
          ICreationMetaDataFactory creationMetaDataFactory,
-         ILogger logger)
+         IOSPLogger logger)
       {
          _simulationMapper = simulationMapper;
          _simulationComparisonMapper = simulationComparisonMapper;

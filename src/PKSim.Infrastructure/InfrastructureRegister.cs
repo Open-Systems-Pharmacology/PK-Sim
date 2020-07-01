@@ -43,7 +43,6 @@ using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using ILogger = OSPSuite.Core.Services.ILogger;
 using IWorkspace = PKSim.Presentation.IWorkspace;
 
 namespace PKSim.Infrastructure
@@ -65,19 +64,9 @@ namespace PKSim.Infrastructure
 
          registerRunOptionsIn(container);
 
-         registerLogging(container);
-
          EnvironmentHelper.ApplicationName = () => "pksim";
          return container;
       }
-
-      private static void registerLogging(IContainer container)
-      {
-         var loggerFactory = new LoggerFactory();
-         container.RegisterImplementationOf((ILoggerFactory) loggerFactory);
-         container.Register<ILogger, PKSimLogger>(LifeStyle.Singleton);
-      }
-
       private static void registerRunOptionsIn(IContainer container)
       {
          container.Register<StartOptions, IStartOptions, StartOptions>(LifeStyle.Singleton);
@@ -202,7 +191,6 @@ namespace PKSim.Infrastructure
             scan.ExcludeType<ModelDatabase>();
             scan.ExcludeType<VersionChecker>();
             scan.ExcludeType<Workspace>();
-            scan.ExcludeType<PKSimLogger>();
             scan.ExcludeType<StringSerializer>();
             scan.ExcludeType<CompressedStringSerializer>();
 

@@ -25,13 +25,13 @@ namespace PKSim.Core
       protected ITransportContainerUpdater _transportContainerUpdater;
       protected Individual _individual;
       protected ExpressionContainerMapperContext _expressionContainerMapperContext;
-      protected ILogger _logger;
+      protected IOSPLogger _logger;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _transportContainerUpdater = A.Fake<ITransportContainerUpdater>();
-         _logger= A.Fake<ILogger>();
+         _logger= A.Fake<IOSPLogger>();
 
          sut = new ExpressionContainerMapper(_parameterMapper, _transportContainerUpdater, _logger);
 

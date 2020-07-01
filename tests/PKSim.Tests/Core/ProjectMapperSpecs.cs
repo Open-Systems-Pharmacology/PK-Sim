@@ -16,7 +16,7 @@ using Compound = PKSim.Core.Model.Compound;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Event = PKSim.Core.Snapshots.Event;
 using Formulation = PKSim.Core.Model.Formulation;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 using Individual = PKSim.Core.Model.Individual;
 using ObserverSet = PKSim.Core.Model.ObserverSet;
 using Population = PKSim.Core.Model.Population;
@@ -70,7 +70,7 @@ namespace PKSim.Core
       protected QualificationPlanMapper _qualificationPlanMapper;
       protected QualificationPlan _qualificationPlan;
       protected Snapshots.QualificationPlan _qualificationPlanSnapshot;
-      protected ILogger _logger;
+      protected IOSPLogger _logger;
       protected ICreationMetaDataFactory _creationMetaDataFactory;
       protected Snapshots.ObserverSet _observerSetSnapshot;
 
@@ -86,7 +86,7 @@ namespace PKSim.Core
          _classificationSnapshotTask = A.Fake<IClassificationSnapshotTask>();
          _qualificationPlanMapper = A.Fake<QualificationPlanMapper>();
          _creationMetaDataFactory= A.Fake<ICreationMetaDataFactory>();
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPLogger>();
 
          sut = new ProjectMapper(
             _simulationMapper,

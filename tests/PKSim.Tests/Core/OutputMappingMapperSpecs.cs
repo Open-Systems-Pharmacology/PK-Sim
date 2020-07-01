@@ -18,7 +18,7 @@ namespace PKSim.Core
       private ISimulation _simulation;
       private IObserver _output;
       private DataRepository _dataRepository;
-      private ILogger _logger;
+      private IOSPLogger _logger;
 
       protected override Task Context()
       {
@@ -27,7 +27,7 @@ namespace PKSim.Core
          _simulation = A.Fake<Simulation>().WithName("S");
          _output = new Observer().WithName("OBS");
          _simulation.Model.Root = new Container {_output};
-         _logger= A.Fake<ILogger>();
+         _logger= A.Fake<IOSPLogger>();
          _dataRepository = DomainHelperForSpecs.ObservedData("OBS_DATA");
          _outputMapping = new OutputMapping
          {

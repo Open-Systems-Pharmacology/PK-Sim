@@ -10,10 +10,10 @@ namespace PKSim.Core.Snapshots.Mappers
    
    public class DescriptorConditionMapper : SnapshotMapperBase<IDescriptorCondition, SnapshotDescriptorCondition>
    {
-      private readonly ILogger _logger;
+      private readonly IOSPLogger _logger;
       const string MATCH_TAG = "MatchTag";
 
-      public DescriptorConditionMapper(ILogger logger)
+      public DescriptorConditionMapper(IOSPLogger logger)
       {
          _logger = logger;
       }

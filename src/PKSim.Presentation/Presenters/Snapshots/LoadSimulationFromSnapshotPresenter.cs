@@ -33,7 +33,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
          ISnapshotTask snapshotTask,
          IDialogCreator dialogCreator,
          IObjectTypeResolver objectTypeResolver,
-         ILogger logger,
+         IOSPLogger logger,
          IEventPublisher eventPublisher,
          SimulationMapper simulationMapper,
          IPKSimProjectRetriever projectRetriever

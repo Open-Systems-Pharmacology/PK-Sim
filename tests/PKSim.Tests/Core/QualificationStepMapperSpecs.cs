@@ -13,14 +13,14 @@ namespace PKSim.Core
 {
    public abstract class concern_for_QualificationStepMapper<T> : ContextSpecificationAsync<QualificationStepMapper> where T : IQualificationStep
    {
-      private ILogger _logger;
+      private IOSPLogger _logger;
       protected T _qualificationStep;
       protected QualificationStep _snapshot;
       protected PKSimProject _project;
 
       protected override Task Context()
       {
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPLogger>();
          sut = new QualificationStepMapper(_logger);
 
          _project = new PKSimProject();

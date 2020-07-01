@@ -1,17 +1,12 @@
 ﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace PKSim.Infrastructure.Services
 {
    public class PresenterLoggerProvider : ILoggerProvider
    {
-      private readonly LogLevel _logLevel;
       private readonly ConcurrentDictionary<string, PresenterLogger> _loggers = new ConcurrentDictionary<string, PresenterLogger>();
-
-      public PresenterLoggerProvider(LogLevel logLevel)
-      {
-         _logLevel = logLevel;
-      }
 
       public ILogger CreateLogger(string categoryName)
       {
@@ -20,11 +15,20 @@ namespace PKSim.Infrastructure.Services
 
       private PresenterLogger createLoggerImplementation(string name)
       {
-         return new PresenterLogger(name, _logLevel);
+         return new PresenterLogger(name);
       }
 
       public void Dispose()
       {
       }
    }
+
+  public static class PresenterLoggingBuilderExtensions
+  {
+    public static ILoggingBuilder AddPresenter(this ILoggingBuilder builder)
+    {
+      builder.Services.AddSingleton<ILoggerProvider, PresenterLoggerProvider>(serviceProvider => new PresenterLoggerProvider());
+      return builder;
+    }
+  }
 }

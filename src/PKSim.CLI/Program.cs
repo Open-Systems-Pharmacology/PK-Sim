@@ -5,8 +5,8 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
 using PKSim.CLI.Core.Services;
-using PKSim.CLI.Services;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using PKSim.Infrastructure.Services;
+using OSPSuite.Core.Services;
 
 namespace PKSim.CLI
 {
@@ -14,7 +14,7 @@ namespace PKSim.CLI
    enum ExitCodes
    {
       Success = 0,
-      Error = 1 << 0,
+      Error = 1 << 0, 
    }
 
    class Program
@@ -34,15 +34,15 @@ namespace PKSim.CLI
             .WithNotParsed(err => _valid = false);
 
          if (!_valid)
-            return (int) ExitCodes.Error;
+            return (int)ExitCodes.Error;
 
-         return (int) ExitCodes.Success;
+         return (int)ExitCodes.Success;
       }
 
       private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
       {
          var logger = initializeLogger(command);
-         if(command.LogCommandName)
+         if (command.LogCommandName)
             logger.AddInfo($"Starting {command.Name.ToLower()} run");
 
          logger.AddDebug($"Arguments:\n{command}");
@@ -62,17 +62,23 @@ namespace PKSim.CLI
             logger.AddInfo($"{command.Name} run finished");
       }
 
-      private static ILogger initializeLogger(CLICommand runCommand)
+      private static IOSPLogger initializeLogger(CLICommand runCommand)
       {
-         var loggerFactory = IoC.Resolve<ILoggerFactory>();
 
-         loggerFactory
-            .AddConsole(runCommand.LogLevel);
+         var loggerCreator = IoC.Resolve<ILoggerCreator>();
+
+         loggerCreator.AddLoggingBuilderConfiguration(builder =>
+           builder
+             .SetMinimumLevel(runCommand.LogLevel)
+             .AddConsole()
+         );
 
          if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
-            loggerFactory.AddFile(runCommand.LogFileFullPath, runCommand.LogLevel, runCommand.AppendToLog);
-
-         return IoC.Resolve<ILogger>();
+            loggerCreator.AddLoggingBuilderConfiguration(builder =>
+              builder
+                .AddFile(runCommand.LogFileFullPath)
+            );
+         return IoC.Resolve<IOSPLogger>();
       }
    }
 }
