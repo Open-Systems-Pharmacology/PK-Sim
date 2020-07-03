@@ -1,7 +1,17 @@
 configuration: Debug
 image: Visual Studio 2019
 
+<<<<<<< HEAD
 version: '{build}'
+=======
+# hack until donet patching works with PR
+init:
+  - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set build_number=1) ELSE (Set build_number=%APPVEYOR_BUILD_NUMBER%)
+
+environment:
+  app_version: "9.1"
+  APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
+>>>>>>> f8e02a4a... Fixes #1523 wrong interation factor
 
 init:
 - ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
@@ -21,6 +31,7 @@ skip_branch_with_pr: true
 branches:
   only:
     - develop
+    - hotfix/v9.1
 
 pull_requests:
   do_not_increment_build_number: true
