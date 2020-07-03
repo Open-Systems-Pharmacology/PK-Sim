@@ -38,7 +38,7 @@ namespace PKSim.Core.Services
       ///    named  <paramref name="moleculeName" />
       ///    having the type <paramref name="interactionType" />. If <paramref name="compoundName" /> is specified, all
       ///    <see cref="InteractionProcess" /> induced by a compound
-      ///    named <paramref name="compoundName" /> will be filtered out (defacto removing autoihibiting processes)
+      ///    named <paramref name="compoundName" /> will be filtered out (defacto removing auto-inhibiting processes)
       /// </summary>
       IReadOnlyList<InteractionProcess> AllInteractionProcessesFor(string moleculeName, InteractionType interactionType, Simulation simulation, string compoundName = null);
    }
@@ -70,7 +70,7 @@ namespace PKSim.Core.Services
       public virtual IEnumerable<IContainer> AllInteractionContainers(Simulation simulation)
       {
          var model = simulation.Model;
-         if (model == null || model.Root == null)
+         if (model?.Root == null)
             yield break;
 
          foreach (var interactionSelection in simulation.InteractionProperties.AllEnabledInteractions())

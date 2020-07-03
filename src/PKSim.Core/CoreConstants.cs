@@ -190,22 +190,21 @@ namespace PKSim.Core
          public static readonly string TABLE = "Table";
          public static readonly string XARG = "XArg";
          public static readonly string OFFSET = "Offset";
-         public static readonly string COMPETIVE_INHIBITION_KI = "KcI";
-         public static readonly string UNCOMPETIVE_INHIBITION_KI = "KuI";
-         public static readonly string NON_COMPETIVE_INHIBITION_KI = "KnI";
+         public static readonly string COMPETITIVE_INHIBITION_KI = "KcI";
+         public static readonly string UNCOMPETITIVE_INHIBITION_KI = "KuI";
+         public static readonly string NON_COMPETITIVE_INHIBITION_KI = "KnI";
          public static readonly string MIXED_COMPETITIVE_INHIBITION_KI = "KmcI";
          public static readonly string MIXED_UNCOMPETITIVE_INHIBITION_KI = "KmuI";
          public static readonly string IRREVERSIBLE_INHIBITION_KI = "KcTDI";
-         public static readonly string COMPETIVE_INHIBITION_I = "Ic";
-         public static readonly string UNCOMPETIVE_INHIBITION_I = "Iu";
-         public static readonly string NON_COMPETIVE_INHIBITION_I = "In";
-         public static readonly string MIXED_COMPETIVE_INHIBITION_I = "Im";
+         public static readonly string COMPETITIVE_INHIBITION_I = "Ic";
+         public static readonly string UNCOMPETITIVE_INHIBITION_I = "Iu";
+         public static readonly string NON_COMPETITIVE_INHIBITION_I = "In";
+         public static readonly string MIXED_INHIBITION_I = "Im";
          public static readonly string IRREVERSIBLE_INHIBITION_I = "IcTD";
-         public static readonly string COMPETIVE_INHIBITION_K_WATER = "K_water_c";
-         public static readonly string UNCOMPETIVE_INHIBITION_K_WATER = "K_water_u";
-         public static readonly string NON_COMPETIVE_INHIBITION_K_WATER = "K_water_n";
-         public static readonly string MIXED_COMPETITIVE_INHIBITION_K_WATER = "K_water_mc";
-         public static readonly string MIXED_UNCOMPETITIVE_INHIBITION_K_WATER = "K_water_mu";
+         public static readonly string COMPETITIVE_INHIBITION_K_WATER = "K_water_c";
+         public static readonly string UNCOMPETITIVE_INHIBITION_K_WATER = "K_water_u";
+         public static readonly string NON_COMPETITIVE_INHIBITION_K_WATER = "K_water_n";
+         public static readonly string MIXED_INHIBITION_K_WATER = "K_water_m";
          public static readonly string IRREVERSIBLE_INHIBITION_K_WATER = "K_water_cTD";
       }
 

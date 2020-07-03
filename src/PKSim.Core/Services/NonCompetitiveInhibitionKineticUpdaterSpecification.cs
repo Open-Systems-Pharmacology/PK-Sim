@@ -11,12 +11,12 @@ namespace PKSim.Core.Services
    {
       public NonCompetitiveInhibitionKineticUpdaterSpecification(IObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask) :
          base(objectPathFactory, dimensionRepository, interactionTask, InteractionType.NonCompetitiveInhibition,
-            kiNumeratorAlias: CoreConstants.Alias.NON_COMPETIVE_INHIBITION_KI,
+            kiNumeratorAlias: CoreConstants.Alias.NON_COMPETITIVE_INHIBITION_KI,
             kiNumeratorParameter: CoreConstants.Parameters.KI,
-            kiDenominatorAlias: CoreConstants.Alias.NON_COMPETIVE_INHIBITION_KI,
+            kiDenominatorAlias: CoreConstants.Alias.NON_COMPETITIVE_INHIBITION_KI,
             kiDenominatorParameter: CoreConstants.Parameters.KI,
-            inhibitorAlias: CoreConstants.Alias.NON_COMPETIVE_INHIBITION_I,
-            kWaterAlias:CoreConstants.Alias.NON_COMPETIVE_INHIBITION_K_WATER)
+            inhibitorAlias: CoreConstants.Alias.NON_COMPETITIVE_INHIBITION_I,
+            kWaterAlias:CoreConstants.Alias.NON_COMPETITIVE_INHIBITION_K_WATER)
       {
       }  
    }
