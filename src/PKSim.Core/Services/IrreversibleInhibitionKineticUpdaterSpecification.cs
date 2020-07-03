@@ -15,7 +15,8 @@ namespace PKSim.Core.Services
             kiNumeratorParameter: CoreConstants.Parameters.KI,
             kiDenominatorAlias: CoreConstants.Alias.IRREVERSIBLE_INHIBITION_KI,
             kiDenominatorParameter: CoreConstants.Parameters.KI,
-            inhibitorAlias: CoreConstants.Alias.IRREVERSIBLE_INHIBITION_I)
+            inhibitorAlias: CoreConstants.Alias.IRREVERSIBLE_INHIBITION_I,
+            kWaterAlias:CoreConstants.Alias.IRREVERSIBLE_INHIBITION_K_WATER)
       {
       }
    }
