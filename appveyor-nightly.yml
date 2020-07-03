@@ -6,7 +6,7 @@ init:
   - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set build_number=1) ELSE (Set build_number=%APPVEYOR_BUILD_NUMBER%)
 
 environment:
-  app_version: "9.0"
+  app_version: "9.1"
   APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
 
 version: "$(app_version).{build}"
