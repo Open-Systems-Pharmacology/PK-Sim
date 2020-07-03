@@ -74,7 +74,7 @@ namespace PKSim.Core
       public static readonly string PK_SIM_DB_FILE = $"PKSimDB{Filter.MODEL_DB_EXTENSION}";
       public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
       public const string PRODUCT_NAME = "PK-Sim";
-      public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
+      public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Simï¿½";
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
       public static readonly string VALUE_PROPERTY_NAME = "Value";
       public static readonly string PROJECT_UNDEFINED = "Undefined";
@@ -125,18 +125,18 @@ namespace PKSim.Core
 
       public static class Units
       {
-         public static readonly string KgPerM2 = "kg/m²";
+         public static readonly string KgPerM2 = "kg/mï¿½";
          public static readonly string Kg = "kg";
          public static readonly string cm = "cm";
          public static readonly string mg = "mg";
-         public static readonly string MicroMolPerLiter = "µmol/l";
+         public static readonly string MicroMolPerLiter = "ï¿½mol/l";
          public static readonly string Percent = "%";
          public static readonly string Days = "day(s)";
          public static readonly string Weeks = "week(s)";
          public static readonly string Years = "year(s)";
          public static readonly string KgPerKg = "kg/kg";
          public static readonly string MgPerKg = "mg/kg";
-         public static readonly string MgPerM2 = "mg/m²";
+         public static readonly string MgPerM2 = "mg/mï¿½";
       }
 
       public static class Observer
@@ -219,13 +219,12 @@ namespace PKSim.Core
          public static readonly string COMPETITIVE_INHIBITION_I = "Ic";
          public static readonly string UNCOMPETITIVE_INHIBITION_I = "Iu";
          public static readonly string NON_COMPETITIVE_INHIBITION_I = "In";
-         public static readonly string MIXED_COMPETITIVE_INHIBITION_I = "Im";
+         public static readonly string MIXED_INHIBITION_I = "Im";
          public static readonly string IRREVERSIBLE_INHIBITION_I = "IcTD";
-         public static readonly string COMPETIVE_INHIBITION_K_WATER = "K_water_c";
-         public static readonly string UNCOMPETIVE_INHIBITION_K_WATER = "K_water_u";
-         public static readonly string NON_COMPETIVE_INHIBITION_K_WATER = "K_water_n";
-         public static readonly string MIXED_COMPETITIVE_INHIBITION_K_WATER = "K_water_mc";
-         public static readonly string MIXED_UNCOMPETITIVE_INHIBITION_K_WATER = "K_water_mu";
+         public static readonly string COMPETITIVE_INHIBITION_K_WATER = "K_water_c";
+         public static readonly string UNCOMPETITIVE_INHIBITION_K_WATER = "K_water_u";
+         public static readonly string NON_COMPETITIVE_INHIBITION_K_WATER = "K_water_n";
+         public static readonly string MIXED_INHIBITION_K_WATER = "K_water_m";
          public static readonly string IRREVERSIBLE_INHIBITION_K_WATER = "K_water_cTD";
       }
 

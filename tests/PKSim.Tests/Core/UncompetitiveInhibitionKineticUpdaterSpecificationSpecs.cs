@@ -70,7 +70,7 @@ namespace PKSim.Core
       [Observation]
       public void should_only_return_the_part_of_the_interaction_for_uncompetitive_inhibition()
       {
-         sut.KmDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water1*Iu1/KuI1 + K_water2*Iu2/KuI2");
+         sut.KmDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water_u1*Iu1/KuI1 + K_water_u2*Iu2/KuI2");
       }
    }
 
@@ -79,7 +79,7 @@ namespace PKSim.Core
       [Observation]
       public void should_only_return_the_part_of_the_interaction_for_uncompetitive_inhibition()
       {
-         sut.KcatDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water1*Iu1/KuI1 + K_water2*Iu2/KuI2");
+         sut.KcatDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water_u1*Iu1/KuI1 + K_water_u2*Iu2/KuI2");
       }
    }
 
@@ -114,13 +114,13 @@ namespace PKSim.Core
       [Observation]
       public void should_have_removed_the_terms_in_the_km_denominator_due_to_the_inhibitor_itself()
       {
-         sut.KmDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water1*Iu1/KuI1");
+         sut.KmDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water_u1*Iu1/KuI1");
       }
 
       [Observation]
       public void should_have_removed_the_terms_in_the_vmax_denominator_due_to_the_inhibitor_itself()
       {
-         sut.KcatDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water1*Iu1/KuI1");
+         sut.KcatDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water_u1*Iu1/KuI1");
       }
    }
 

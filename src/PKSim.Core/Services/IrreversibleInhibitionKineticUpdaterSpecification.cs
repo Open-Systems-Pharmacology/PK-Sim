@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain;
 namespace PKSim.Core.Services
 {
    /// <summary>
-   ///    Represents the updater for irreversibleinhibition processes only
+   ///    Represents the updater for irreversible inhibition processes only
    /// </summary>
    public class IrreversibleInhibitionKineticUpdaterSpecification : InteractionKineticUpdaterSpecificationBase
    {

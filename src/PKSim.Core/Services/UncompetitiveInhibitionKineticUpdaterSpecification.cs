@@ -15,8 +15,8 @@ namespace PKSim.Core.Services
             kiNumeratorParameter: CoreConstants.Parameters.KI,
             kiDenominatorAlias: CoreConstants.Alias.UNCOMPETITIVE_INHIBITION_KI,
             kiDenominatorParameter: CoreConstants.Parameters.KI,
-            inhibitorAlias: CoreConstants.Alias.UNCOMPETIVE_INHIBITION_I,
-            kWaterAlias:CoreConstants.Alias.UNCOMPETIVE_INHIBITION_K_WATER)
+            inhibitorAlias: CoreConstants.Alias.UNCOMPETITIVE_INHIBITION_I,
+            kWaterAlias:CoreConstants.Alias.UNCOMPETITIVE_INHIBITION_K_WATER)
       {
       }
    }
