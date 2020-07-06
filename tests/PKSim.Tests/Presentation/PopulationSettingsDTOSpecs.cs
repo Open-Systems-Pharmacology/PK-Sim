@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using OSPSuite.BDDHelper;
+using OSPSuite.Utility.Validation;
 using PKSim.Presentation.DTO.Populations;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace PKSim.Presentation
       public void FemaleRate_should_be_properly_bounded(int femaleRate, bool expectation)
       {
          sut.ProportionOfFemales = femaleRate;
-         Assert.AreEqual(expectation, sut.Rules.All().All(r => r.IsSatisfiedBy(sut)));
+         Assert.AreEqual(expectation, sut.IsValid());
       }
    }
 }
