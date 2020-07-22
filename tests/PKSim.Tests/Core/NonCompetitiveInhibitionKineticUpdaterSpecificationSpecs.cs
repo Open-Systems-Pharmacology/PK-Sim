@@ -61,7 +61,7 @@ namespace PKSim.Core
       [Observation]
       public void should_only_return_the_part_of_the_interaction_for_non_competitive_inhibition()
       {
-         sut.KmNumeratorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water1*In1/KnI1 + K_water2*In2/KnI2");
+         sut.KmNumeratorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water_n1*In1/KnI1 + K_water_n2*In2/KnI2");
       }
    }
 
@@ -70,7 +70,7 @@ namespace PKSim.Core
       [Observation]
       public void should_only_return_the_part_of_the_interaction_for_non_competitive_inhibition()
       {
-         sut.KmDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water1*In1/KnI1 + K_water2*In2/KnI2");
+         sut.KmDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water_n1*In1/KnI1 + K_water_n2*In2/KnI2");
       }
    }
 
@@ -79,7 +79,7 @@ namespace PKSim.Core
       [Observation]
       public void should_only_return_the_part_of_the_interaction_for_non_competitive_inhibition()
       {
-         sut.KcatDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water1*In1/KnI1 + K_water2*In2/KnI2");
+         sut.KcatDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water_n1*In1/KnI1 + K_water_n2*In2/KnI2");
       }
    }
 
@@ -89,7 +89,7 @@ namespace PKSim.Core
       [Observation]
       public void should_only_return_the_part_of_the_interaction_for_non_competitive_inhibition()
       {
-         sut.CLSpecDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water1*In1/KnI1 + K_water2*In2/KnI2");
+         sut.CLSpecDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water_n1*In1/KnI1 + K_water_n2*In2/KnI2");
       }
    }
 }	
