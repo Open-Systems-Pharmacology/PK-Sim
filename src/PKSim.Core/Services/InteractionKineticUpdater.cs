@@ -153,8 +153,7 @@ namespace PKSim.Core.Services
          if (!allUpdatingKinetics.Any() || interactionFactor == null) return;
 
          var formulaName = CoreConstants.CompositeNameFor(processParameterContainer.Name, moleculeName, parameterName);
-         var formula = formulaCache.FindByName(formulaName) as ExplicitFormula;
-         if (formula != null)
+         if (formulaCache.FindByName(formulaName) is ExplicitFormula formula)
          {
             interactionFactor.Formula = formula;
             return;

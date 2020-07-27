@@ -254,7 +254,7 @@ namespace PKSim.Presentation.DTO.Parameters
       public override double Percentile { get; set; }
       public override Unit DisplayUnit { get; set; }
 
-      public override double KernelValue => default(double);
+      public override double KernelValue => default;
 
       public NullParameterDTO() : base(null)
       {

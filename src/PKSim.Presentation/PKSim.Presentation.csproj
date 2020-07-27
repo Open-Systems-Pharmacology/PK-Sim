@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
@@ -27,11 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.8" />
-    <PackageReference Include="OSPSuite.Presentation.Importer" Version="10.0.8" />
+    <PackageReference Include="OSPSuite.Presentation" Version="10.0.9" />
+    <PackageReference Include="OSPSuite.Presentation.Importer" Version="10.0.9" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.8" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.9" />
   </ItemGroup>
 
   <ItemGroup>
