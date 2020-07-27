@@ -39,13 +39,13 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.5" />
     <PackageReference Include="OSPSuite.DataBinding" Version="3.0.0.4" />
-    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.DevExpress" Version="19.2.4.1" />
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.8" />
-    <PackageReference Include="OSPSuite.UI" Version="10.0.8" />
-    <PackageReference Include="OSPSuite.UI.Importer" Version="10.0.8" />
+    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="5.0.0.1" />
+    <PackageReference Include="OSPSuite.DevExpress" Version="20.1.6" />
+    <PackageReference Include="OSPSuite.Presentation" Version="10.0.9" />
+    <PackageReference Include="OSPSuite.UI" Version="10.0.9" />
+    <PackageReference Include="OSPSuite.UI.Importer" Version="10.0.9" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.8" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.9" />
   </ItemGroup>
 
   <ItemGroup>

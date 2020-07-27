@@ -217,7 +217,7 @@ namespace PKSim.Infrastructure.Services
                removeNameParameter(connection);
             }
 
-            return default(T);
+            return default;
          }
       }
 
