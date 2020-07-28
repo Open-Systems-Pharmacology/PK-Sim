@@ -47,7 +47,7 @@ namespace PKSim.Core
 
    public class When_setting_value_of_relative_expression_parameter_of_a_relative_expression_parameter_defined_in_a_simulation : concern_for_ParameterTask
    {
-      private Parameter _relativeExpressionParameter, _normalizedExpressionParameter;
+      private Parameter _relativeExpressionParameter;
       private ICommand _command;
 
       protected override void Context()
@@ -62,15 +62,8 @@ namespace PKSim.Core
             Name = CoreConstants.Parameters.REL_EXP
          };
 
-         _normalizedExpressionParameter = new Parameter
-         {
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            Formula = new ConstantFormula(0.0),
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP
-         };
 
-         var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
+         var container = new Container {_relativeExpressionParameter};
       }
 
       protected override void Because()
@@ -88,7 +81,6 @@ namespace PKSim.Core
    public class When_setting_value_of_relative_expression_parameter_of_a_relative_expression_parameter_defined_in_an_individual : concern_for_ParameterTask
    {
       private Parameter _relativeExpressionParameter;
-      private Parameter _relativeExpressionParameterNorm;
       private ICommand _command;
 
       protected override void Context()
@@ -103,17 +95,9 @@ namespace PKSim.Core
             Name = CoreConstants.Parameters.REL_EXP
          };
 
-         _relativeExpressionParameterNorm = new Parameter
-         {
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            Formula = new ConstantFormula(0.0),
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP
-         };
 
          var expressionContainer = new MoleculeExpressionContainer {Name = "Plasma"};
          expressionContainer.Add(_relativeExpressionParameter);
-         expressionContainer.Add(_relativeExpressionParameterNorm);
          var molecule = new IndividualEnzyme {expressionContainer};
       }
 
@@ -544,14 +528,14 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_a_cache_contain_a_parameter_as_key_and_the_corresponding_norm_parameter_as_value_for_global_rel_exp_parameters()
+      public void should_return_a_list_contain_a_parameter_as_key_and_the_corresponding_norm_parameter_as_value_for_global_rel_exp_parameters()
       {
          _result.ShouldContain(_relExpPlasma);
          _result.ShouldNotContain(_relExpPlasmaNorm);
       }
 
       [Observation]
-      public void should_return_a_cache_contain_a_parameter_as_key_and_the_corresponding_norm_parameter_as_value_for_local_rel_exp_parameter()
+      public void should_return_a_list_contain_a_parameter_as_key_and_the_corresponding_norm_parameter_as_value_for_local_rel_exp_parameter()
       {
          _result.ShouldContain(_relExpLiver);
          _result.ShouldContain(_relExpKidney);
@@ -560,15 +544,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void the_returned_cache_should_not_contain_any_entry_for_parameter_that_are_not_relative_expression_parameters()
+      public void the_returned_list_should_not_contain_any_entry_for_parameter_that_are_not_relative_expression_parameters()
       {
          _result.Contains(_anotherParameter).ShouldBeFalse();
       }
 
       [Observation]
-      public void the_returned_cache_should_not_contain_any_entry_for_relative_expression_parameters_for_which_a_norm_was_not_found()
+      public void the_returned_list_should_contain_entries_for_relative_expression_parameters_for_which_a_norm_was_not_found()
       {
-         _result.Contains(_relExpWithoutNorm).ShouldBeFalse();
+         _result.Contains(_relExpWithoutNorm).ShouldBeTrue();
       }
    }
 

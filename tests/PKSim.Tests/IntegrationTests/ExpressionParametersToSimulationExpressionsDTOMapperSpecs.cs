@@ -3,7 +3,6 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
-using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Mappers;
@@ -69,7 +68,7 @@ namespace PKSim.IntegrationTests
          _halfLifeLiverParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.HALF_LIFE_LIVER);
          _halfLifeLiverIntestineParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.HALF_LIFE_INTESTINE);
          
-         _parameters.AddRange(new[] { _halfLifeLiverParameter, _halfLifeLiverIntestineParameter,_referenceConcentrationParam, relExp1Param, relExp2Param, relExp2Param });
+         _parameters.AddRange(new[] { _halfLifeLiverParameter, _halfLifeLiverIntestineParameter,_referenceConcentrationParam, relExp1Param, relExp2Param });
 
       }
 
@@ -94,7 +93,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_map_one_parameter_for_each_relative_expression_parameter_defined_in_the_list()
       {
-         _result.RelativeExpressions.Count().ShouldBeEqualTo(2);
+         _result.RelativeExpressions.Count.ShouldBeEqualTo(2);
       }
    }
 
