@@ -179,7 +179,7 @@ namespace PKSim.Presentation.Presenters.Parameters
             return _allVisibleParameters;
 
          if (node == _allGroupNode)
-            return _allVisibleParameters.Where(parameter => parameter.CanBeDisplayedInAllView());
+            return _allVisibleParameters;
 
          var container = containerFrom(node);
          if (container != null)

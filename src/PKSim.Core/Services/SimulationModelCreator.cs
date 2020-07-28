@@ -152,7 +152,6 @@ namespace PKSim.Core.Services
             if (amount == null) continue;
 
             hideParameter(amount.Parameter(CoreConstants.Parameters.REL_EXP));
-            hideParameter(amount.Parameter(CoreConstants.Parameters.REL_EXP_NORM));
          }
       }
 
@@ -174,7 +173,6 @@ namespace PKSim.Core.Services
             if (amount == null) continue;
 
             updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameters.REL_EXP), expressionContainer.RelativeExpressionParameter, individual, molecule);
-            updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameters.REL_EXP_NORM), expressionContainer.RelativeExpressionNormParameter, individual, molecule);
          }
       }
 
@@ -196,9 +194,7 @@ namespace PKSim.Core.Services
          else
             return;
 
-         var relExpNormName = CoreConstants.Parameters.NormParameterFor(relExpName);
          updateFromIndividualParameter(globalMoleculeContainer.Parameter(relExpName), expressionContainer.RelativeExpressionParameter, individual, molecule);
-         updateFromIndividualParameter(globalMoleculeContainer.Parameter(relExpNormName), expressionContainer.RelativeExpressionNormParameter, individual, molecule);
       }
 
       private void hideGlobalParametersForUndefinedMolecule(IContainer globalMoleculeContainer)

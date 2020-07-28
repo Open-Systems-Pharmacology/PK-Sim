@@ -44,23 +44,24 @@ namespace PKSim.Core.Commands
 
       protected override void PerformExecuteWith(IExecutionContext context)
       {
-         var parameterTask = context.Resolve<IParameterTask>();
-
-         var allRelativeExpressionParameters = _parameter.AllRelatedRelativeExpressionParameters();
-
-         var relNormExpressions = parameterTask.GroupExpressionParameters(allRelativeExpressionParameters);
-
-         double max = relNormExpressions.Keys.Select(x => x.Value).Max();
-
-         foreach (var parameter in relNormExpressions.KeyValues)
-         {
-            var parameterNorm = parameter.Value;
-            var newValue = max == 0 ? 0 : parameter.Key.Value / max;
-            if (ValueComparer.AreValuesEqual(parameterNorm.Value, newValue))
-               continue;
-
-            new SetParameterValueCommand(parameterNorm, newValue).Execute(context);
-         }
+         //TODO ZTMSE
+         // var parameterTask = context.Resolve<IParameterTask>();
+         //
+         // var allRelativeExpressionParameters = _parameter.AllRelatedRelativeExpressionParameters();
+         //
+         // var relNormExpressions = parameterTask.GroupExpressionParameters(allRelativeExpressionParameters);
+         //
+         // double max = relNormExpressions.Keys.Select(x => x.Value).Max();
+         //
+         // foreach (var parameter in relNormExpressions.KeyValues)
+         // {
+         //    var parameterNorm = parameter.Value;
+         //    var newValue = max == 0 ? 0 : parameter.Key.Value / max;
+         //    if (ValueComparer.AreValuesEqual(parameterNorm.Value, newValue))
+         //       continue;
+         //
+         //    new SetParameterValueCommand(parameterNorm, newValue).Execute(context);
+         // }
       }
    }
 }

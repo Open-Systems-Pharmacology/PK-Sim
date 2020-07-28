@@ -69,8 +69,7 @@ namespace PKSim.Core.Model
 
          transporterContainer.AddProcessName(CoreConstants.Process.BILIARY_CLEARANCE_TO_GALL_BLADDER);
          transporterContainer.AddProcessName(CoreConstants.Process.BILIARY_CLEARANCE_TO_DUODENUM);
-         transporterContainer.RelativeExpression = 100;
-         transporterContainer.RelativeExpressionNorm = 1;
+         transporterContainer.RelativeExpression = 1;
       }
 
       protected override TransporterExpressionContainer AddContainerExpression(ISimulationSubject simulationSubject, IndividualTransporter transporter, IContainer container, string groupeName)

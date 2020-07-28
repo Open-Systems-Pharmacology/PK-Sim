@@ -30,8 +30,6 @@ namespace PKSim.Core
       protected ExpressionContainer _relativeExpressionContainerSnapshot2;
       protected IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private IExecutionContext _executionContext;
-      protected IParameter _relativeExpressionParameterNorm1;
-      private IParameter _relativeExpressionParameterNotSetNorm;
       protected Individual _individual;
       protected OntogenyMapper _ontogenyMapper;
       protected Ontogeny _ontogeny;
@@ -87,14 +85,10 @@ namespace PKSim.Core
          _enzyme.AddChildren(_expressionContainer1, _expressionContainer2, _enzymeGlobalParameter);
 
          _relativeExpressionParameter1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.REL_EXP);
-         _relativeExpressionParameterNorm1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.REL_EXP_NORM);
          _expressionContainer1.Add(_relativeExpressionParameter1);
-         _expressionContainer1.Add(_relativeExpressionParameterNorm1);
 
          _relativeExpressionParameterNotSet = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP);
-         _relativeExpressionParameterNotSetNorm = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP_NORM);
          _expressionContainer2.Add(_relativeExpressionParameterNotSet);
-         _expressionContainer2.Add(_relativeExpressionParameterNotSetNorm);
 
          _relativeExpressionContainerSnapshot1 = new ExpressionContainer();
          _relativeExpressionContainerSnapshot2 = new ExpressionContainer();
@@ -192,7 +186,6 @@ namespace PKSim.Core
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualEnzyme>()).Returns(enzymeFactory);
          A.CallTo(() => enzymeFactory.CreateFor(_individual)).Returns(_enzyme);
          _relativeExpressionParameter1.Value = 0;
-         _relativeExpressionParameterNorm1.Value = 0;
          _relativeExpressionContainerSnapshot1.Value = 0.5;
          A.CallTo(() => _expressionContainerMapper.MapToModel(_relativeExpressionContainerSnapshot1, A<ExpressionContainerMapperContext>._))
             .Invokes(x => _relativeExpressionParameter1.Value = _relativeExpressionContainerSnapshot1.Value.Value);
@@ -227,19 +220,13 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_recalculate_the_norm_parameters()
-      {
-         _relativeExpressionParameterNorm1.Value.ShouldBeEqualTo(1);
-      }
-
-      [Observation]
       public void should_have_restored_the_ontogeny()
       {
          A.CallTo(() => _ontogenyTask.SetOntogenyForMolecule(_newMolecule, _ontogeny, _individual)).MustHaveHappened();
       }
    }
 
-   public class When_mapping_a_valid_transporter_molecule_snahpshot_to_a_molecule : concern_for_MoleculeMapper
+   public class When_mapping_a_valid_transporter_molecule_snapshot_to_a_molecule : concern_for_MoleculeMapper
    {
       private IndividualTransporter _newTransporter;
 

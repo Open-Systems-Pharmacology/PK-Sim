@@ -62,14 +62,14 @@ namespace PKSim.Presentation.DTO.Mappers
          return _parameterMapper.MapFrom(globalParameter);
       }
 
-      private IEnumerable<ExpressionContainerDTO> relativeExpressionsFrom(IReadOnlyList<IParameter> allParamters)
+      private IEnumerable<ExpressionContainerDTO> relativeExpressionsFrom(IReadOnlyList<IParameter> allParameters)
       {
-         var expressionsParameters = _parameterTask.GroupExpressionParameters(allParamters);
-         return expressionsParameters.KeyValues.Select(relativeExpression => expressionContainerFor(relativeExpression.Key, relativeExpression.Value))
+         var expressionsParameters = _parameterTask.GroupExpressionParameters(allParameters);
+         return expressionsParameters.Select(relativeExpression => expressionContainerFor(relativeExpression, relativeExpression))
             .Where(container => container != null);
       }
 
-      private ExpressionContainerDTO expressionContainerFor(IParameter relativeExpression, IParameter relativeExpressioNorm)
+      private ExpressionContainerDTO expressionContainerFor(IParameter relativeExpression, IParameter relativeExpressionNorm)
       {
          var expressionContainerDTO = new ExpressionContainerDTO();
          var moleculeName = relativeExpression.ParentContainer.Name;
@@ -78,7 +78,7 @@ namespace PKSim.Presentation.DTO.Mappers
          var isTransporter = moleculeIsTransporter(molecule);
 
          expressionContainerDTO.RelativeExpressionParameter = _containerParameterMapper.MapFrom(relativeExpression, expressionContainerDTO, x => x.RelativeExpression, x => x.RelativeExpressionParameter);
-         expressionContainerDTO.RelativeExpressionNormParameter = _containerParameterMapper.MapFrom(relativeExpressioNorm, expressionContainerDTO, x => x.RelativeExpressionNorm, x => x.RelativeExpressionNormParameter);
+         expressionContainerDTO.RelativeExpressionNormParameter = _containerParameterMapper.MapFrom(relativeExpressionNorm, expressionContainerDTO, x => x.RelativeExpressionNorm, x => x.RelativeExpressionNormParameter);
 
          IGroup group;
 

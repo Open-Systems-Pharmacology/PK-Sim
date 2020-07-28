@@ -161,7 +161,7 @@ namespace PKSim.Infrastructure.Services
          var allParameters = alternative.AllParameters().ToList();
          foreach (var alternativeParameter in allParameters)
          {
-            //Parameter does not exist in drug?
+            //Parameters does not exist in drug?
             var drugParameter = drug.Parameter(alternativeParameter.Name);
             if (drugParameter == null) continue;
 

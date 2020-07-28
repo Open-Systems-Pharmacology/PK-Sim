@@ -117,7 +117,6 @@ namespace PKSim.Core.Services
 
       private void setParameterValuesForInterstitial(IndividualProtein protein, IContainer expressionContainer)
       {
-         var relExpNormPath = relExpNormPathFor(protein, expressionContainer);
          var relExpPath = relExpPathFor(protein, expressionContainer);
          var relExpOut = relExpOutPathFor(protein, expressionContainer);
 
@@ -136,7 +135,6 @@ namespace PKSim.Core.Services
                if (protein.IntracellularVascularEndoLocation == IntracellularVascularEndoLocation.Interstitial)
                {
                   //reset value in interstitial that was set before 
-                  trySetFormula(relExpNormPath, zeroFormula());
                   trySetFormula(relExpPath, zeroFormula());
                   trySetFormula(relExpOut, CoreConstants.Rate.RelExpInterstialIntraVascEndoIsInterstitial);
                }
@@ -151,7 +149,6 @@ namespace PKSim.Core.Services
 
       private void setParameterValuesForPlasma(IndividualProtein protein, IContainer expressionContainer)
       {
-         trySetFormula(relExpNormPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpPlasmaNormGlobal);
          trySetFormula(relExpPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpPlasmaGlobal);
          var relExpOut = relExpOutPathFor(protein, expressionContainer);
 
@@ -180,7 +177,6 @@ namespace PKSim.Core.Services
 
       private void setParameterValuesForEndosome(IndividualProtein protein, IContainer expressionContainer)
       {
-         trySetFormula(relExpNormPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpVascEndoNormGlobal);
          trySetFormula(relExpPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpVascEndoGlobal);
          trySetFormula(relExpOutPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpEndosomal);
       }
@@ -188,9 +184,7 @@ namespace PKSim.Core.Services
       private void setParameterValuesForStandardContainer(IndividualMolecule molecule, IContainer expressionContainer)
       {
          var containerName = relativeExpressionContainerNameFrom(molecule, expressionContainer);
-         var relExpNormPath = relExpNormPathFor(molecule, expressionContainer);
          var relExpPath = relExpPathFor(molecule, expressionContainer);
-         trySetValue(relExpNormPath, molecule.GetRelativeExpressionNormParameterFor(containerName));
          trySetValue(relExpPath, molecule.GetRelativeExpressionParameterFor(containerName));
          var relExpOut = relExpOutPathFor(molecule, expressionContainer);
          trySetFormula(relExpOut, CoreConstants.Rate.RelExpOutFromNorm);
@@ -198,7 +192,6 @@ namespace PKSim.Core.Services
 
       private void setParameterValuesForBloodCells(IndividualProtein protein, IContainer expressionContainer)
       {
-         trySetFormula(relExpNormPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpBloodCellsNormGlobal);
          trySetFormula(relExpPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpBloodCellsGlobal);
          trySetFormula(relExpOutPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpOutFromNorm);
       }
@@ -254,13 +247,12 @@ namespace PKSim.Core.Services
          if (parameterStartValue != null)
             parameterStartValue.Formula = formula;
          else
-            throw new Exception(string.Format("Parameter not found : {0}", objectPath));
+            throw new Exception($"Parameter not found : {objectPath}");
       }
 
       private void setGlobalParameterValue(IndividualMolecule molecule, string expressionName, string containerName)
       {
          if (!molecule.HasContainerNamed(containerName)) return;
-         trySetValue(moleculeGlobalPathFor(molecule.Name).AndAdd(CoreConstants.Parameters.NormParameterFor(expressionName)), molecule.GetRelativeExpressionNormParameterFor(containerName));
          trySetValue(moleculeGlobalPathFor(molecule.Name).AndAdd(expressionName), molecule.GetRelativeExpressionParameterFor(containerName));
       }
 
@@ -272,11 +264,6 @@ namespace PKSim.Core.Services
       private IObjectPath moleculeGlobalPathFor(string moleculeName)
       {
          return _objectPathFactory.CreateObjectPathFrom(moleculeName);
-      }
-
-      private IObjectPath relExpNormPathFor(IndividualMolecule molecule, IContainer expressionContainer)
-      {
-         return parameterPathFor(molecule, expressionContainer, CoreConstants.Parameters.REL_EXP_NORM);
       }
 
       private IObjectPath relExpOutPathFor(IndividualMolecule molecule, IContainer expressionContainer)

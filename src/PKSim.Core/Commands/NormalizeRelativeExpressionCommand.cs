@@ -57,7 +57,9 @@ namespace PKSim.Core.Commands
          var allRelExpressionContainer = _molecule.AllExpressionsContainers();
          if (!allRelExpressionContainer.Any()) return;
          var max = allRelExpressionContainer.Select(x => x.RelativeExpression).Max();
-         allRelExpressionContainer.Each(relExp => relExp.RelativeExpressionNorm = max == 0 ? 0 : relExp.RelativeExpression / max);
-      }
+
+         //TODO ZTMSE
+         // allRelExpressionContainer.Each(relExp => relExp.RelativeExpressionNorm = max == 0 ? 0 : relExp.RelativeExpression / max);
+       }
    }
 }

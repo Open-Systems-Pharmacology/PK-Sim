@@ -2061,7 +2061,7 @@ namespace PKSim.Assets
          public static readonly string CloseAll = "Close All Documents";
          public static readonly string CloseAllButThis = "Close All But This";
          public static readonly string TargetBodyWeight = "Target Weight";
-         public static readonly string NormalizedExpressionLevels = "Normalized Expression Levels";
+         public static readonly string ExpressionLevels = "Expression Levels";
          public static readonly string ModelStructure = "Model Structure";
          public static readonly string OntogenyDescription = "The shown variability consists of a combined reported variability in maturation as well as enzyme activity and is based on experimental data from the following tissues:";
          public static readonly string MoleculeNotDefined = "None";

@@ -36,8 +36,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_add_the_relative_expression_norm_to_periportal_and_pericentral_and_set_the_value_to_1()
       {
-         _undefined.ExpressionContainer(CoreConstants.Compartment.Pericentral).RelativeExpressionNorm.ShouldBeEqualTo(1);
-         _undefined.ExpressionContainer(CoreConstants.Compartment.Periportal).RelativeExpressionNorm.ShouldBeEqualTo(1);
+         _undefined.ExpressionContainer(CoreConstants.Compartment.Pericentral).RelativeExpression.ShouldBeEqualTo(1);
+         _undefined.ExpressionContainer(CoreConstants.Compartment.Periportal).RelativeExpression.ShouldBeEqualTo(1);
       }
    }
 }

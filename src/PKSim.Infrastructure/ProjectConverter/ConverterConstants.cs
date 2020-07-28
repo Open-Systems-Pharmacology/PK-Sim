@@ -75,7 +75,7 @@ namespace PKSim.Infrastructure.ProjectConverter
          }
       }
 
-      public static class Parameter
+      public static class Parameters
       {
          public static readonly string DrugAbsorptionLumenToMucosaRate = "Drug absorption rate (lumen to mucosa)";
          public static readonly string PeripheralBloodFlowFraction = "Peripheral blood flow fraction";
@@ -133,6 +133,16 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string RESIDUAL_FRACTION = "Residual fraction";
          public static readonly string ScalingExponentForFluidRecircFlowRate = "Scaling exponent for fluid recirculation flow rate";
          public static readonly string TabletTimeDelayFactor = "Tablet time delay factor";
+         public static readonly string REL_EXP_BLOOD_CELL_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_BLOOD_CELL);
+         public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_PLASMA);
+         public static readonly string REL_EXP_VASC_ENDO_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_VASC_ENDO);
+         public static readonly string REL_EXP_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP);
+
+         public static string NormParameterFor(string parameter)
+         {
+            return $"{parameter}{CoreConstants.Parameters.NORM_SUFFIX}";
+         }
+
 
          public static IList<string> AllCompoundGlobalParameters => new List<string>
          {

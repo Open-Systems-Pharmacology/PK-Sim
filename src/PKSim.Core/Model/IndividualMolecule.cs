@@ -61,11 +61,6 @@ namespace PKSim.Core.Model
          return ExpressionContainer(expressionContainerName)?.RelativeExpressionParameter;
       }
 
-      public virtual IParameter GetRelativeExpressionNormParameterFor(string expressionContainerName)
-      {
-         return ExpressionContainer(expressionContainerName)?.RelativeExpressionNormParameter;
-      }
-
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
