@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
@@ -168,7 +167,7 @@ namespace PKSim.Core.Services
                break;
             case TissueLocation.Intracellular:
             case TissueLocation.Interstitial:
-               trySetFormula(relExpOut, CoreConstants.Rate.RelExpOutFromNorm);
+               trySetFormula(relExpOut, CoreConstants.Rate.RelExpOutFromRelExp);
                break;
             default:
                throw new ArgumentOutOfRangeException();
@@ -187,13 +186,13 @@ namespace PKSim.Core.Services
          var relExpPath = relExpPathFor(molecule, expressionContainer);
          trySetValue(relExpPath, molecule.GetRelativeExpressionParameterFor(containerName));
          var relExpOut = relExpOutPathFor(molecule, expressionContainer);
-         trySetFormula(relExpOut, CoreConstants.Rate.RelExpOutFromNorm);
+         trySetFormula(relExpOut, CoreConstants.Rate.RelExpOutFromRelExp);
       }
 
       private void setParameterValuesForBloodCells(IndividualProtein protein, IContainer expressionContainer)
       {
          trySetFormula(relExpPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpBloodCellsGlobal);
-         trySetFormula(relExpOutPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpOutFromNorm);
+         trySetFormula(relExpOutPathFor(protein, expressionContainer), CoreConstants.Rate.RelExpOutFromRelExp);
       }
 
       private void updateTransporterParameterValues(IndividualTransporter transporter)

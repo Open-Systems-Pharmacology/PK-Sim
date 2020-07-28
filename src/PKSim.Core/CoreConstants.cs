@@ -175,7 +175,7 @@ namespace PKSim.Core
          public static readonly string RelExpVascEndoGlobal = "RelExpVascEndoGlobal";
          public static readonly string RelExpPlasmaGlobal = "RelExpPlasmaGlobal";
          public static readonly string RelExpEndosomal = "RelExpEndosomal";
-         public static readonly string RelExpOutFromNorm = "RelExpOutFromNorm";
+         public static readonly string RelExpOutFromRelExp = "RelExpOutFromRelExp";
          public static readonly string TableFormulaWithOffsetPrefix = "TableFormulaWithOffset_";
          public static readonly string TableFormulaWithXArgumentPrefix = "TableFormulaWithXArgument_";
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA = "PARAM_Application_DoseFromDosePerBodySurfaceArea";
@@ -855,7 +855,7 @@ namespace PKSim.Core
          };
 
          public static readonly string REL_EXP_OUT = "Relative expression out.";
-        public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
+         public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
          public static readonly string ONTOGENY_FACTOR_GI = "Ontogeny factor GI";
          public static readonly string PARTICLE_BIN_DRUG_MASS = "DrugMass of particle bin";
          public static readonly string NUMBER_OF_REPETITIONS = "NumberOfRepetitions";
