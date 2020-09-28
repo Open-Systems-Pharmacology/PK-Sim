@@ -26,8 +26,8 @@ namespace PKSim.IntegrationTests
       protected Protocol _protocol;
       protected IIndividualEnzymeFactory _enzymeFactory;
       protected IIndividualTransporterFactory _transporterFactory;
-      protected double _relExpNormPls = 0.2;
-      protected double _relExpNormBloodCells = 0.5;
+      protected double _relExpPls = 0.2;
+      protected double _relExpBloodCells = 0.5;
       protected double _relExpVascEndo = 0.3;
       protected IndividualEnzyme _enzyme;
       protected double _hct = 0.6;
@@ -35,10 +35,8 @@ namespace PKSim.IntegrationTests
       protected IModelPropertiesTask _modelPropertiesTask;
       protected IModelConfigurationRepository _modelConfigurationRepository;
       protected SimulationRunOptions _simulationRunOptions;
-      protected const double _relExpDuoNorm = 0.2;
-      protected const double _relExpBoneNorm = 0.3;
-      protected const double _relExpBone = 30;
-      protected const double _relExpDuo = 40;
+      protected const double _relExpDuo = 0.2;
+      protected const double _relExpBone = 0.3;
 
       public override void GlobalContext()
       {
@@ -53,20 +51,20 @@ namespace PKSim.IntegrationTests
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
          _enzyme = _enzymeFactory.CreateFor(_individual).DowncastTo<IndividualEnzyme>().WithName("CYP");
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.Plasma).Value = _relExpNormPls;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.BloodCells).Value = _relExpNormBloodCells;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.VascularEndothelium).Value = _relExpVascEndo;
+         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Plasma).Value = _relExpPls;
+         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.BloodCells).Value = _relExpBloodCells;
+         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.VascularEndothelium).Value = _relExpVascEndo;
          _individual.AddMolecule(_enzyme);
          _hct = _individual.Organism.Parameter(CoreConstants.Parameters.HCT).Value;
          _metabolizationProcess = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.METABOLIZATION_SPECIFIC_FIRST_ORDER).DowncastTo<PartialProcess>());
          _metabolizationProcess.Name = "My Partial Process";
-         _metabolizationProcess.Parameter(ConverterConstants.Parameter.CLspec).Value = 15;
+         _metabolizationProcess.Parameter(ConverterConstants.Parameters.CLspec).Value = 15;
          _compound.AddProcess(_metabolizationProcess);
          _simulationRunOptions = new SimulationRunOptions{RaiseEvents = false};
       }
    }
 
-   public class When_creating_a_simulation_with_an_indivdual_containing_an_enzyme_localized_on_the_extracellular_membrane_apical_and_a_partial_process_in_compound : concern_for_PartialProcesses
+   public class When_creating_a_simulation_with_an_individual_containing_an_enzyme_localized_on_the_extracellular_membrane_apical_and_a_partial_process_in_compound : concern_for_PartialProcesses
    {
       public override void GlobalContext()
       {
@@ -86,7 +84,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_create_the_enzyme_only_in_plasma_and_interstial_compartments()
+      public void should_create_the_enzyme_only_in_plasma_and_interstitial_compartments()
       {
          var allContainerWithEnzyme = _simulation.All<IMoleculeAmount>().Where(x => x.Name.Equals(_enzyme.Name)).Select(x => x.ParentContainer);
          allContainerWithEnzyme.Select(x => x.Name).Distinct().Contains(CoreConstants.Compartment.Intracellular).ShouldBeFalse();
@@ -104,7 +102,7 @@ namespace PKSim.IntegrationTests
 
          foreach (var parameter in allRelExpOutParameters)
          {
-            parameter.Value.ShouldBeEqualTo(_relExpNormPls + (_hct) / (1 - _hct) * _relExpNormBloodCells, 1e-6);
+            parameter.Value.ShouldBeEqualTo(_relExpPls + (_hct) / (1 - _hct) * _relExpBloodCells, 1e-6);
          }
       }
 
@@ -121,8 +119,8 @@ namespace PKSim.IntegrationTests
          {
             var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
             var v_pls = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
-            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameter.VolumeVascularEndothelium).Value;
-            relExpOut.Value.ShouldBeEqualTo(_relExpNormPls + (_hct) / (1 - _hct) * _relExpNormBloodCells + v_vasend / v_pls * _relExpVascEndo, 1e-6);
+            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameters.VolumeVascularEndothelium).Value;
+            relExpOut.Value.ShouldBeEqualTo(_relExpPls + (_hct) / (1 - _hct) * _relExpBloodCells + v_vasend / v_pls * _relExpVascEndo, 1e-6);
          }
       }
    }
@@ -135,9 +133,7 @@ namespace PKSim.IntegrationTests
 
          _enzyme.TissueLocation = TissueLocation.ExtracellularMembrane;
          _enzyme.MembraneLocation = MembraneLocation.Basolateral;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Organ.Bone).Value = _relExpBoneNorm;
          _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Organ.Bone).Value = _relExpBone;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.Duodenum).Value = _relExpDuoNorm;
          _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Duodenum).Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
@@ -164,16 +160,16 @@ namespace PKSim.IntegrationTests
          var allRelExpNorm = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Interstitial))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_NORM));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExpNorm)
          {
             var grandparent = parameter.ParentContainer.ParentContainer.ParentContainer;
             if (grandparent.Name.Equals(CoreConstants.Organ.Bone))
-               parameter.Value.ShouldBeEqualTo(_relExpBoneNorm);
+               parameter.Value.ShouldBeEqualTo(_relExpBone);
 
             if (grandparent.Name.Equals(CoreConstants.Compartment.Duodenum))
-               parameter.Value.ShouldBeEqualTo(_relExpDuoNorm);
+               parameter.Value.ShouldBeEqualTo(_relExpDuo);
          }
       }
 
@@ -206,12 +202,12 @@ namespace PKSim.IntegrationTests
 
          foreach (var parameter in allRelExpOutParameters)
          {
-            parameter.Value.ShouldBeEqualTo(_relExpNormPls + (_hct) / (1 - _hct) * _relExpNormBloodCells, 1e-6);
+            parameter.Value.ShouldBeEqualTo(_relExpPls + (_hct) / (1 - _hct) * _relExpBloodCells, 1e-6);
          }
       }
 
       [Observation]
-      public void the_formula_used_in_interstial_for_tissue_organ_should_be_the_sum_of_the_relexp_in_the_organ_scaled_with_the_organ_fraction_and_the_value_in_vasc_endo_scaled_with_the_ration_of_volumina_()
+      public void the_formula_used_in_interstitial_for_tissue_organ_should_be_the_sum_of_the_relexp_in_the_organ_scaled_with_the_organ_fraction_and_the_value_in_vasc_endo_scaled_with_the_ration_of_volumina_()
       {
          var allEnzymeInTissueInterstitial = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
@@ -222,12 +218,12 @@ namespace PKSim.IntegrationTests
          foreach (var enzyme in allEnzymeInTissueInterstitial)
          {
             var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
-            var relExpNorm = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_NORM).Value;
+            var relExp = enzyme.Parameter(CoreConstants.Parameters.REL_EXP).Value;
             var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTRACELLULAR).Value;
             var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTERSTITIAL).Value;
             var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
-            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameter.VolumeVascularEndothelium).Value;
-            relExpOut.Value.ShouldBeEqualTo(relExpNorm * f_cell / f_int + v_vasend / v_int * _relExpVascEndo, 1e-6);
+            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameters.VolumeVascularEndothelium).Value;
+            relExpOut.Value.ShouldBeEqualTo(relExp * f_cell / f_int + v_vasend / v_int * _relExpVascEndo, 1e-6);
          }
       }
 
@@ -240,7 +236,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_creating_a_simulation_with_an_indivdual_containing_an_enzyme_localized_in_intracellular_with_location_in_vasc_endothelium_is_interstial_and_a_partial_process_in_compound : concern_for_PartialProcesses
+   public class When_creating_a_simulation_with_an_individual_containing_an_enzyme_localized_in_intracellular_with_location_in_vasc_endothelium_is_interstial_and_a_partial_process_in_compound : concern_for_PartialProcesses
    {
       public override void GlobalContext()
       {
@@ -248,9 +244,7 @@ namespace PKSim.IntegrationTests
 
          _enzyme.TissueLocation = TissueLocation.Intracellular;
          _enzyme.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Organ.Bone).Value = _relExpBoneNorm;
          _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Organ.Bone).Value = _relExpBone;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.Duodenum).Value = _relExpDuoNorm;
          _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Duodenum).Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
@@ -269,16 +263,16 @@ namespace PKSim.IntegrationTests
          var allRelExpNorm = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_NORM));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExpNorm)
          {
             var grandparent = parameter.ParentContainer.ParentContainer.ParentContainer;
             if (grandparent.Name.Equals(CoreConstants.Organ.Bone))
-               parameter.Value.ShouldBeEqualTo(_relExpBoneNorm);
+               parameter.Value.ShouldBeEqualTo(_relExpBone);
 
             if (grandparent.Name.Equals(CoreConstants.Compartment.Duodenum))
-               parameter.Value.ShouldBeEqualTo(_relExpDuoNorm);
+               parameter.Value.ShouldBeEqualTo(_relExpDuo);
          }
       }
 
@@ -311,7 +305,7 @@ namespace PKSim.IntegrationTests
 
          foreach (var parameter in allRelExpOutParameters)
          {
-            parameter.Value.ShouldBeEqualTo(_relExpNormPls, 1e-6);
+            parameter.Value.ShouldBeEqualTo(_relExpPls, 1e-6);
          }
       }
 
@@ -325,7 +319,7 @@ namespace PKSim.IntegrationTests
 
          foreach (var parameter in allRelExpOutParameters)
          {
-            parameter.Value.ShouldBeEqualTo(_relExpNormBloodCells, 1e-6);
+            parameter.Value.ShouldBeEqualTo(_relExpBloodCells, 1e-6);
          }
       }
 
@@ -342,7 +336,7 @@ namespace PKSim.IntegrationTests
          {
             var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
             var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
-            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameter.VolumeVascularEndothelium).Value;
+            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameters.VolumeVascularEndothelium).Value;
             relExpOut.Value.ShouldBeEqualTo(v_vasend / v_int * _relExpVascEndo, 1e-6);
          }
       }
@@ -359,24 +353,22 @@ namespace PKSim.IntegrationTests
          {
             var grandparent = parameter.ParentContainer.ParentContainer.ParentContainer;
             if (grandparent.Name.Equals(CoreConstants.Organ.Bone))
-               parameter.Value.ShouldBeEqualTo(_relExpBoneNorm);
+               parameter.Value.ShouldBeEqualTo(_relExpBone);
 
             if (grandparent.Name.Equals(CoreConstants.Compartment.Duodenum))
-               parameter.Value.ShouldBeEqualTo(_relExpDuoNorm);
+               parameter.Value.ShouldBeEqualTo(_relExpDuo);
          }
       }
    }
 
-   public class When_creating_a_simulation_with_an_indivdual_containing_an_enzyme_localized_in_interstitial_and_a_partial_process_in_compound : concern_for_PartialProcesses
+   public class When_creating_a_simulation_with_an_individual_containing_an_enzyme_localized_in_interstitial_and_a_partial_process_in_compound : concern_for_PartialProcesses
    {
       public override void GlobalContext()
       {
          base.GlobalContext();
 
          _enzyme.TissueLocation = TissueLocation.Interstitial;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Organ.Bone).Value = _relExpBoneNorm;
          _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Organ.Bone).Value = _relExpBone;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.Duodenum).Value = _relExpDuoNorm;
          _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Duodenum).Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
@@ -403,16 +395,16 @@ namespace PKSim.IntegrationTests
          var allRelExpNorm = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_NORM));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExpNorm)
          {
             var grandparent = parameter.ParentContainer.ParentContainer.ParentContainer;
             if (grandparent.Name.Equals(CoreConstants.Organ.Bone))
-               parameter.Value.ShouldBeEqualTo(_relExpBoneNorm);
+               parameter.Value.ShouldBeEqualTo(_relExpBone);
 
             if (grandparent.Name.Equals(CoreConstants.Compartment.Duodenum))
-               parameter.Value.ShouldBeEqualTo(_relExpDuoNorm);
+               parameter.Value.ShouldBeEqualTo(_relExpDuo);
          }
       }
 
@@ -445,7 +437,7 @@ namespace PKSim.IntegrationTests
 
          foreach (var parameter in allRelExpOutParameters)
          {
-            parameter.Value.ShouldBeEqualTo(_relExpNormPls, 1e-6);
+            parameter.Value.ShouldBeEqualTo(_relExpPls, 1e-6);
          }
       }
 
@@ -459,7 +451,7 @@ namespace PKSim.IntegrationTests
 
          foreach (var parameter in allRelExpOutParameters)
          {
-            parameter.Value.ShouldBeEqualTo(_relExpNormBloodCells, 1e-6);
+            parameter.Value.ShouldBeEqualTo(_relExpBloodCells, 1e-6);
          }
       }
 
@@ -475,18 +467,18 @@ namespace PKSim.IntegrationTests
          foreach (var enzyme in allEnzymeInTissueInterstitial)
          {
             var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
-            var relExpNorm = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_NORM).Value;
+            var relExp = enzyme.Parameter(CoreConstants.Parameters.REL_EXP).Value;
             var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
-            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameter.VolumeVascularEndothelium).Value;
+            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameters.VolumeVascularEndothelium).Value;
             var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTRACELLULAR).Value;
             var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTERSTITIAL).Value;
 
-            relExpOut.Value.ShouldBeEqualTo(relExpNorm * f_cell / f_int + v_vasend / v_int * _relExpVascEndo, 1e-6);
+            relExpOut.Value.ShouldBeEqualTo(relExp * f_cell / f_int + v_vasend / v_int * _relExpVascEndo, 1e-6);
          }
       }
    }
 
-   public class When_creating_a_simulation_with_an_indivdual_containing_an_enzyme_with_intracellular_location_endosomal_with_the_two_pore_model : concern_for_PartialProcesses
+   public class When_creating_a_simulation_with_an_individual_containing_an_enzyme_with_intracellular_location_endosomal_with_the_two_pore_model : concern_for_PartialProcesses
    {
       public override void GlobalContext()
       {
@@ -598,10 +590,10 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.Plasma).Value = 0;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.BloodCells).Value = 0;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.VascularEndothelium).Value = 0;
-         _enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.Periportal).Value = 1;
+         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Plasma).Value = 0;
+         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.BloodCells).Value = 0;
+         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.VascularEndothelium).Value = 0;
+         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Periportal).Value = 1;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();

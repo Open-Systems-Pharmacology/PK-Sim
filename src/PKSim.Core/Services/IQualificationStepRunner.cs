@@ -4,7 +4,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Core.Services
 {

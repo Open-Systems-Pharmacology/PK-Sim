@@ -28,9 +28,6 @@ namespace PKSim.Core.Model
          if (parameter == null)
             return false;
 
-         if (parameter.IsExpressionNorm())
-            return true;
-
          return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP, CoreConstants.Parameters.REL_EXP_BLOOD_CELL,
             CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
@@ -58,22 +55,10 @@ namespace PKSim.Core.Model
          return CoreConstants.Parameters.ParticleDistributionStructuralParameters.Contains(parameter.Name);
       }
 
-      public static bool IsExpressionNorm(this IParameter parameter)
-      {
-         if (parameter == null) return false;
-         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP_NORM, CoreConstants.Parameters.REL_EXP_BLOOD_CELL_NORM,
-            CoreConstants.Parameters.REL_EXP_PLASMA_NORM, CoreConstants.Parameters.REL_EXP_VASC_ENDO_NORM);
-      }
-
       public static bool IsOrganVolume(this IParameter parameter)
       {
          return parameter.IsNamed(Constants.Parameters.VOLUME) &&
                 parameter.ParentContainer.IsAnImplementationOf<Organ>();
-      }
-
-      public static bool CanBeDisplayedInAllView(this IParameter parameter)
-      {
-         return !parameter.IsExpressionNorm();
       }
 
       public static TParameter WithInfo<TParameter>(this TParameter parameter, ParameterInfo info) where TParameter : IParameter

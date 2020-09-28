@@ -17,7 +17,6 @@ namespace PKSim.Core
       {
          _expressionContainer = new MoleculeExpressionContainer().WithName("tralal");
          _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP));
-         _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP_NORM));
          _anotherContainer = new MoleculeExpressionContainer().WithName("AnotherContainer");
          sut = new IndividualEnzyme();
          _referenceConcentration = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);

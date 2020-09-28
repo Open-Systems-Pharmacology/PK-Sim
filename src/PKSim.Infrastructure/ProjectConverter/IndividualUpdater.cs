@@ -20,7 +20,7 @@ namespace PKSim.Infrastructure.ProjectConverter
 
       public void AddScalingExponentForFluidFlowTo(Individual individual)
       {
-         string parameterName = ConverterConstants.Parameter.ScalingExponentForFluidRecircFlowRate;
+         string parameterName = ConverterConstants.Parameters.ScalingExponentForFluidRecircFlowRate;
 
          var organism = individual.Organism;
 

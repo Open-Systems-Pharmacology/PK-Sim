@@ -96,7 +96,6 @@ namespace PKSim.IntegrationTests
             Constants.ORGANISM, CoreConstants.Organ.Bone, CoreConstants.Compartment.Interstitial, _protein.Name);
 
          protBoneInterstitial.Parameter(CoreConstants.Parameters.REL_EXP).Visible.ShouldBeFalse();
-         protBoneInterstitial.Parameter(CoreConstants.Parameters.REL_EXP_NORM).Visible.ShouldBeFalse();
       }
    }
 }

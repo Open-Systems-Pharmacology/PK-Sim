@@ -149,7 +149,6 @@ namespace PKSim.Core.Model
          expressionContainer.GroupName = groupingName;
          expressionContainer.ContainerName = containerName;
          createMoleculeParameterIn(expressionContainer, CoreConstants.Parameters.REL_EXP, 0, Constants.Dimension.DIMENSIONLESS);
-         createMoleculeParameterIn(expressionContainer, CoreConstants.Parameters.REL_EXP_NORM, 0, CoreConstants.Dimension.Fraction);
          return expressionContainer;
       }
 

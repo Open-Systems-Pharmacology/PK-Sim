@@ -61,8 +61,8 @@ namespace PKSim.IntegrationTests
 
             double siValue = smallIntestine.Parameter(Constants.Parameters.VOLUME).Value;
             double liValue = largeIntestine.Parameter(Constants.Parameters.VOLUME).Value;
-            double siDefaultValue = smallIntestine.Parameter(ConverterConstants.Parameter.Default_Volume).Value;
-            double liDefaultValue = largeIntestine.Parameter(ConverterConstants.Parameter.Default_Volume).Value;
+            double siDefaultValue = smallIntestine.Parameter(ConverterConstants.Parameters.Default_Volume).Value;
+            double liDefaultValue = largeIntestine.Parameter(ConverterConstants.Parameters.Default_Volume).Value;
             if (siValue != siDefaultValue)
                errorList.Add($"Small intestine value not equal to default value for '{species.Name}'");
 

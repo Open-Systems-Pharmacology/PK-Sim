@@ -28,7 +28,7 @@ namespace PKSim.IntegrationTests
       public void should_update_the_parameter_tablet_time_delay_factor()
       {
          var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
-         verifyParameterIsVisibleAndEditable(parameterRateRepository, ConverterConstants.Parameter.TabletTimeDelayFactor);
+         verifyParameterIsVisibleAndEditable(parameterRateRepository, ConverterConstants.Parameters.TabletTimeDelayFactor);
       }
 
       [Observation]
@@ -54,7 +54,7 @@ namespace PKSim.IntegrationTests
          var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
          verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.INFUSION_TIME);
          verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT);
-         verifyParametersCanBeVariedInPopulation(parameterRateRepository, ConverterConstants.Parameter.PartitionCoefficientWwaterProtein, "DRUG");
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, ConverterConstants.Parameters.PartitionCoefficientWwaterProtein, "DRUG");
       }
 
       private void verifyParametersCanBeVariedInPopulation<T>(IParameterMetaDataRepository<T> parameterMetaDataRepository, string parameterName, string containerName = null) where T : ParameterMetaData
@@ -511,7 +511,7 @@ namespace PKSim.IntegrationTests
       public void should_have_updated_the_description_for_residual_fraction()
       {
          var represenationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
-         represenationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, ConverterConstants.Parameter.RESIDUAL_FRACTION)
+         represenationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, ConverterConstants.Parameters.RESIDUAL_FRACTION)
             .Description.ShouldBeEqualTo("Residual fraction after measuring time");
       }
    }

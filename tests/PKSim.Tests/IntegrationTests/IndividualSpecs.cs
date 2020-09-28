@@ -31,7 +31,7 @@ namespace PKSim.IntegrationTests
       public void the_resulting_GFR_spec_value_should_be_comparable_with_the_value_defined_in_the_literature()
       {
          sut.Organism.Organ(CoreConstants.Organ.Kidney)
-            .Parameter(ConverterConstants.Parameter.GFRspec).Value.ShouldBeEqualTo(0.266, 1e-2);
+            .Parameter(ConverterConstants.Parameters.GFRspec).Value.ShouldBeEqualTo(0.266, 1e-2);
       }
 
       [Observation]

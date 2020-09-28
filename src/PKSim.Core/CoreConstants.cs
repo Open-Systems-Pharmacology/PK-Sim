@@ -172,13 +172,10 @@ namespace PKSim.Core
          public static readonly string RelExpBloodCellsGlobal = "RelExpBloodCellsGlobal";
          public static readonly string RelExpPlasmaMembraneExtracellularBasolateral = "RelExpPlasmaMembraneExtracellularBasolateral";
          public static readonly string RelExpInterstialForInterstitial = "RelExpInterstialForInterstitial";
-         public static readonly string RelExpBloodCellsNormGlobal = "RelExpBloodCellsNormGlobal";
-         public static readonly string RelExpVascEndoNormGlobal = "RelExpVascEndoNormGlobal";
          public static readonly string RelExpVascEndoGlobal = "RelExpVascEndoGlobal";
-         public static readonly string RelExpPlasmaNormGlobal = "RelExpPlasmaNormGlobal";
          public static readonly string RelExpPlasmaGlobal = "RelExpPlasmaGlobal";
          public static readonly string RelExpEndosomal = "RelExpEndosomal";
-         public static readonly string RelExpOutFromNorm = "RelExpOutFromNorm";
+         public static readonly string RelExpOutFromRelExp = "RelExpOutFromRelExp";
          public static readonly string TableFormulaWithOffsetPrefix = "TableFormulaWithOffset_";
          public static readonly string TableFormulaWithXArgumentPrefix = "TableFormulaWithXArgument_";
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA = "PARAM_Application_DoseFromDosePerBodySurfaceArea";
@@ -837,13 +834,10 @@ namespace PKSim.Core
          public static readonly string MOLECULAR_WEIGHT = Constants.Parameters.MOL_WEIGHT;
          public static readonly string REFERENCE_CONCENTRATION = "Reference concentration";
          public static readonly string REL_EXP = "Relative expression";
-         public static readonly string NORM_SUFFIX = " (normalized)";
          public static readonly string REL_EXP_BLOOD_CELL = "Relative expression in blood cells";
-         public static readonly string REL_EXP_BLOOD_CELL_NORM = NormParameterFor(REL_EXP_BLOOD_CELL);
          public static readonly string REL_EXP_PLASMA = "Relative expression in plasma";
-         public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(REL_EXP_PLASMA);
          public static readonly string REL_EXP_VASC_ENDO = "Relative expression in vascular endothelium";
-         public static readonly string REL_EXP_VASC_ENDO_NORM = NormParameterFor(REL_EXP_VASC_ENDO);
+         public static readonly string NORM_SUFFIX = " (normalized)";
 
          public static IReadOnlyList<string> AllGlobalMoleculeParameters = new[]
          {
@@ -856,15 +850,11 @@ namespace PKSim.Core
          public static IReadOnlyList<string> AllGlobalRelExpParameters = new[]
          {
             REL_EXP_BLOOD_CELL,
-            REL_EXP_BLOOD_CELL_NORM,
             REL_EXP_PLASMA,
-            REL_EXP_PLASMA_NORM,
             REL_EXP_VASC_ENDO,
-            REL_EXP_VASC_ENDO_NORM
          };
 
          public static readonly string REL_EXP_OUT = "Relative expression out.";
-         public static readonly string REL_EXP_NORM = NormParameterFor(REL_EXP);
          public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
          public static readonly string ONTOGENY_FACTOR_GI = "Ontogeny factor GI";
          public static readonly string PARTICLE_BIN_DRUG_MASS = "DrugMass of particle bin";
@@ -1129,10 +1119,6 @@ namespace PKSim.Core
             DOSE,
          };
 
-         public static string NormParameterFor(string parameter)
-         {
-            return $"{parameter}{NORM_SUFFIX}";
-         }
 
          public static readonly IReadOnlyCollection<string> AllDistributionParameters = new List<string>
          {

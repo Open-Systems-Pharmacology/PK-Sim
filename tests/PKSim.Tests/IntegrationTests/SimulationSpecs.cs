@@ -333,7 +333,7 @@ namespace PKSim.IntegrationTests
                continue;
 
             //only one point for this parameters
-            if (ConverterConstants.Parameter.DistributedParametersWithOnlyOneSupportingPoint.Contains(parameter.Value.Name))
+            if (ConverterConstants.Parameters.DistributedParametersWithOnlyOneSupportingPoint.Contains(parameter.Value.Name))
                continue;
 
             var simParameter = _allAgeDependentParameters[parameter.Key];
@@ -354,7 +354,7 @@ namespace PKSim.IntegrationTests
          //make sure table formula is exported in Non-Derivated mode!
          var tableFormula = formula.DowncastTo<TableFormula>();
          if (tableFormula.UseDerivedValues)
-            errorList.Add($"Parameter '{parameterKey}' was replaced with table formula in 'useDerivedValues' mode");
+            errorList.Add($"Parameters '{parameterKey}' was replaced with table formula in 'useDerivedValues' mode");
       }
 
       //check thet simulation parameter is table in nonderivedvalues-mode
@@ -362,7 +362,7 @@ namespace PKSim.IntegrationTests
       {
          var formula = simParameter.Formula;
          if (formula.IsAnImplementationOf<DistributedTableFormula>()) return;
-         errorList.Add($"Parameter '{parameterKey}' was not replaced with table formula (formula type is '{simParameter.Formula.GetType().Name})");
+         errorList.Add($"Parameters '{parameterKey}' was not replaced with table formula (formula type is '{simParameter.Formula.GetType().Name})");
       }
    }
 

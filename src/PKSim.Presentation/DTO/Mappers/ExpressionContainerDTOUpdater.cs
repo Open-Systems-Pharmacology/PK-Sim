@@ -36,10 +36,6 @@ namespace PKSim.Presentation.DTO.Mappers
          expressionDTO.RelativeExpressionParameter =
             _parameterMapper.MapFrom(expressionContainer.RelativeExpressionParameter, expressionDTO,
                                      x => x.RelativeExpression, x => x.RelativeExpressionParameter);
-
-         expressionDTO.RelativeExpressionNormParameter =
-            _parameterMapper.MapFrom(expressionContainer.RelativeExpressionNormParameter, expressionDTO,
-                                     x => x.RelativeExpressionNorm, x => x.RelativeExpressionNormParameter);
       }
    }
 }

@@ -33,8 +33,7 @@ namespace PKSim.Core.Model
          var liver = individual.Organism.Organ(CoreConstants.Organ.Liver);
          var zone = liver.Container(zoneName);
          var container = AddContainerExpression(individual, individualEnzyme, zone, CoreConstants.Groups.ORGANS_AND_TISSUES);
-         container.RelativeExpression = 100;
-         container.RelativeExpressionNorm = 1;
+         container.RelativeExpression = 1;
       }
 
       protected override ApplicationIcon Icon => ApplicationIcons.Enzyme;

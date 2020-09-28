@@ -187,11 +187,10 @@ namespace PKSim.Core.Services
       ICommand SetAdvancedParameterUnit(IParameter parameter, Unit displayUnit);
 
       /// <summary>
-      ///    Assuming that the given parameters represents all expression parameters, returns a cache containing
-      ///    as key an expression parameter, and as value the corresponding expression parameter norm
+      ///    Returns all expression parameters from the given parameter list
       /// </summary>
-      /// <param name="allExpressionParameters">all expression parameters</param>
-      ICache<IParameter, IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters);
+      /// <param name="allExpressionParameters">all potentials expression parameters</param>
+      IReadOnlyList<IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters);
 
       /// <summary>
       ///    Adds the parameter to the favorite, or remove the parameter from the favorite
@@ -330,9 +329,6 @@ namespace PKSim.Core.Services
 
       private IPKSimCommand commandForRelativeExpressionParameter(IParameter parameter, double value)
       {
-         if (parameter.IsExpressionNorm())
-            return new SetRelativeExpressionFromNormalizedCommand(parameter, value);
-
          var expressionContainer = parameter.ParentContainer;
          switch (expressionContainer.ParentContainer)
          {
@@ -450,20 +446,12 @@ namespace PKSim.Core.Services
          return executeAndUpdatedDefaultStateAndValue(new SetAdvancedParameterUnitCommand(parameter, displayUnit), parameter);
       }
 
-      public ICache<IParameter, IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters)
+      public IReadOnlyList<IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters)
       {
-         var relativeExpressionsParameters = allExpressionParameters
+         return allExpressionParameters
             .Where(x => !x.Name.Contains(CoreConstants.Parameters.NORM_SUFFIX))
-            .Where(x => x.Name.StartsWith(CoreConstants.Parameters.REL_EXP));
-
-         var results = new Cache<IParameter, IParameter>();
-         var query = from parameter in relativeExpressionsParameters
-            let normParameter = findNormParameterFor(parameter)
-            where normParameter != null
-            select new {parameter, normParameter};
-
-         query.Each(x => results.Add(x.parameter, x.normParameter));
-         return results;
+            .Where(x => x.Name.StartsWith(CoreConstants.Parameters.REL_EXP))
+            .ToList();
       }
 
       public void SetParameterFavorite(IParameter parameter, bool isFavorite)
@@ -506,11 +494,6 @@ namespace PKSim.Core.Services
             return new PKSimEmptyCommand();
 
          return executeAndUpdatedDefaultStateAndValue(new UpdateDistributedTableFormulaPercentileCommand(tableParameter, distributedParameter.Percentile), tableParameter);
-      }
-
-      private IParameter findNormParameterFor(IParameter relativeExpression)
-      {
-         return relativeExpression.ParentContainer.Parameter(CoreConstants.Parameters.NormParameterFor(relativeExpression.Name));
       }
 
       public ICommand SetParameterValue(IParameter parameter, double value, ISimulation simulation)

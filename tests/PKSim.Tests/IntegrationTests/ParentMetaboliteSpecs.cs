@@ -54,7 +54,7 @@ namespace PKSim.IntegrationTests
          var enzymaticProcess = cloneManager.Clone(compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.METABOLIZATION_SPECIFIC_FIRST_ORDER).DowncastTo<EnzymaticProcess>());
          enzymaticProcess.Name = "My Partial Process " + enzyme.Name;
          enzymaticProcess.MoleculeName = enzyme.Name;
-         enzymaticProcess.Parameter(ConverterConstants.Parameter.CLspec).Value = 10;
+         enzymaticProcess.Parameter(ConverterConstants.Parameters.CLspec).Value = 10;
          compound.AddProcess(enzymaticProcess);
          return enzymaticProcess;
       }
@@ -64,8 +64,8 @@ namespace PKSim.IntegrationTests
          var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
 
          var enzyme = enzymeFactory.CreateFor(_individual).DowncastTo<IndividualEnzyme>().WithName(enzymeName);
-         enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.Pericentral).Value = 1;
-         enzyme.GetRelativeExpressionNormParameterFor(CoreConstants.Compartment.Periportal).Value = 1;
+         enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Pericentral).Value = 1;
+         enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Periportal).Value = 1;
          individual.AddMolecule(enzyme);
          return enzyme;
       }
