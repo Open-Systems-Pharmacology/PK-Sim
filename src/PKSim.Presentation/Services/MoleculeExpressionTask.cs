@@ -56,7 +56,7 @@ namespace PKSim.Presentation.Services
          var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
          var newMolecule = moleculeFactory.CreateFor(simulationSubject);
 
-         //databse was defined for this species
+         //database was defined for this species
          if (CanQueryProteinExpressionsFor(simulationSubject))
             return proteinFromQuery(simulationSubject, newMolecule);
 
