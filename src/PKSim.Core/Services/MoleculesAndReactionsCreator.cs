@@ -30,8 +30,8 @@ namespace PKSim.Core.Services
       private readonly IMoleculeBuilderFactory _moleculeBuilderFactory;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IParameterSetUpdater _parameterSetUpdater;
-      private readonly IIndividualEnzymeFactory _individualEnzymeFactory;
-      private readonly IIndividualTransporterFactory _individualTransporterFactory;
+      private readonly IIndividualEnzymeTask _individualEnzymeTask;
+      private readonly IIndividualTransporterTask _individualTransporterTask;
       private readonly IModelContainerMoleculeRepository _modelContainerMoleculeRepo;
       private readonly IStaticReactionRepository _staticReactionRepository;
       private readonly IParameterIdUpdater _parameterIdUpdater;
@@ -54,8 +54,8 @@ namespace PKSim.Core.Services
          IParameterIdUpdater parameterIdUpdater,
          IProcessToProcessBuilderMapper processBuilderMapper,
          IParameterSetUpdater parameterSetUpdater,
-         IIndividualEnzymeFactory individualEnzymeFactory,
-         IIndividualTransporterFactory individualTransporterFactory,
+         IIndividualEnzymeTask individualEnzymeTask,
+         IIndividualTransporterTask individualTransporterTask,
          IModelContainerMoleculeRepository modelContainerMoleculeRepo,
          IStaticReactionRepository staticReactionRepository,
          IMoleculeCalculationRetriever moleculeCalculationRetriever,
@@ -69,8 +69,8 @@ namespace PKSim.Core.Services
          _parameterIdUpdater = parameterIdUpdater;
          _processBuilderMapper = processBuilderMapper;
          _parameterSetUpdater = parameterSetUpdater;
-         _individualEnzymeFactory = individualEnzymeFactory;
-         _individualTransporterFactory = individualTransporterFactory;
+         _individualEnzymeTask = individualEnzymeTask;
+         _individualTransporterTask = individualTransporterTask;
          _modelContainerMoleculeRepo = modelContainerMoleculeRepo;
          _staticReactionRepository = staticReactionRepository;
          _moleculeCalculationRetriever = moleculeCalculationRetriever;
@@ -260,7 +260,7 @@ namespace PKSim.Core.Services
          if (undefinedLiverTransporter != null)
             return;
 
-         undefinedLiverTransporter = _individualTransporterFactory.UndefinedLiverTransporterFor(_individual);
+         undefinedLiverTransporter = _individualTransporterTask.UndefinedLiverTransporterFor(_individual);
          _individual.AddMolecule(undefinedLiverTransporter);
       }
 
@@ -271,7 +271,7 @@ namespace PKSim.Core.Services
          if (undefinedLiver != null)
             return;
 
-         undefinedLiver = _individualEnzymeFactory.UndefinedLiverFor(_individual);
+         undefinedLiver = _individualEnzymeTask.UndefinedLiverFor(_individual);
          _individual.AddMolecule(undefinedLiver);
       }
 

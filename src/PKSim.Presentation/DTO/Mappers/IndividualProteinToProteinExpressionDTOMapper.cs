@@ -11,11 +11,11 @@ namespace PKSim.Presentation.DTO.Mappers
 
    public class IndividualProteinToProteinExpressionDTOMapper : IIndividualProteinToProteinExpressionDTOMapper
    {
-      private readonly IExpressionContainerDTOUpdater _expressionContainerDTOUpdater;
+      private readonly IExpressionContainerMapper _expressionContainerMapper;
 
-      public IndividualProteinToProteinExpressionDTOMapper(IExpressionContainerDTOUpdater expressionContainerDTOUpdater)
+      public IndividualProteinToProteinExpressionDTOMapper(IExpressionContainerMapper expressionContainerMapper)
       {
-         _expressionContainerDTOUpdater = expressionContainerDTOUpdater;
+         _expressionContainerMapper = expressionContainerMapper;
       }
 
       public ProteinExpressionDTO MapFrom(IndividualProtein protein)
@@ -32,7 +32,7 @@ namespace PKSim.Presentation.DTO.Mappers
       private void addContainerExpression(ProteinExpressionDTO proteinExpressionDTO, IndividualProtein protein, MoleculeExpressionContainer moleculeExpressionContainer)
       {
          var expressionDTO = new ExpressionContainerDTO {MoleculeName = protein.Name, ContainerName = moleculeExpressionContainer.Name};
-         _expressionContainerDTOUpdater.UpdateProperties(expressionDTO, moleculeExpressionContainer);
+         _expressionContainerMapper.UpdateProperties(expressionDTO, moleculeExpressionContainer);
          proteinExpressionDTO.AddProteinExpression(expressionDTO);
       }
    }

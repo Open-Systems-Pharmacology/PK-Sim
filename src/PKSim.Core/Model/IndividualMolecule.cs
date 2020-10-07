@@ -57,7 +57,7 @@ namespace PKSim.Core.Model
       public virtual IParameter HalfLifeIntestine => this.Parameter(CoreConstants.Parameters.HALF_LIFE_INTESTINE);
 
       public virtual IParameter GetRelativeExpressionParameterFor(string expressionContainerName)
-      {
+      { 
          return ExpressionContainer(expressionContainerName)?.RelativeExpressionParameter;
       }
 

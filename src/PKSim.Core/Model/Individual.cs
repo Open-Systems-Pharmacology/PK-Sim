@@ -23,6 +23,12 @@ namespace PKSim.Core.Model
          Seed = Environment.TickCount;
       }
 
+      public void AddGlobalMolecule(IContainer molecule)
+      {
+         Add(molecule);
+      }
+
+
       public virtual Organism Organism => this.GetSingleChild<Organism>();
 
       public virtual IContainer Neighborhoods => this.GetSingleChildByName<IContainer>(Constants.NEIGHBORHOODS);

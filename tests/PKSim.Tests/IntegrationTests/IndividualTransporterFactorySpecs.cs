@@ -2,11 +2,12 @@
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Infrastructure;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_IndividualTransporterFactory : ContextForIntegration<IIndividualTransporterFactory>
+   public abstract class concern_for_IndividualTransporterFactory : ContextForIntegration<IIndividualTransporterTask>
    {
       protected Individual _individual;
 

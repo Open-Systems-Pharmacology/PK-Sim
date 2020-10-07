@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Model
 {
@@ -54,5 +55,8 @@ namespace PKSim.Core.Model
       /// </summary>
       /// <param name="molecule"> Molecule to remove </param>
       void RemoveMolecule(IndividualMolecule molecule);
+
+      //TODO
+      void AddGlobalMolecule(IContainer molecule);
    }
 }

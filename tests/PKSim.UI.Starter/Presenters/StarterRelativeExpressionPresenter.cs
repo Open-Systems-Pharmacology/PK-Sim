@@ -2,6 +2,7 @@
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Presentation.Presenters.Individuals;
@@ -21,18 +22,18 @@ namespace PKSim.UI.Starter.Presenters
    {
       private readonly OriginDataMapper _originDataMapper;
       private readonly IIndividualFactory _individualFactory;
-      private readonly IIndividualEnzymeFactory _individualEnzymeFactory;
-      private readonly IIndividualEnzymeExpressionsPresenter<Individual> _individualEnzymeExpressionsPresenter;
+      private readonly IIndividualEnzymeTask _individualEnzymeTask;
+      private readonly IIndividualEnzymeExpressionsPresenterNew<Individual> _individualEnzymeExpressionsPresenter;
 
       public StarterRelativeExpressionPresenter(
          IStarterRelativeExpressionView view,
          OriginDataMapper originDataMapper,
          IIndividualFactory individualFactory,
-         IIndividualEnzymeFactory individualEnzymeFactory, IIndividualEnzymeExpressionsPresenter<Individual> individualEnzymeExpressionsPresenter) : base(view)
+         IIndividualEnzymeTask individualEnzymeTask, IIndividualEnzymeExpressionsPresenterNew<Individual> individualEnzymeExpressionsPresenter) : base(view)
       {
          _originDataMapper = originDataMapper;
          _individualFactory = individualFactory;
-         _individualEnzymeFactory = individualEnzymeFactory;
+         _individualEnzymeTask = individualEnzymeTask;
          _individualEnzymeExpressionsPresenter = individualEnzymeExpressionsPresenter;
          AddSubPresenters(individualEnzymeExpressionsPresenter);
          InitializeWith(new PKSimMacroCommand());
@@ -41,8 +42,7 @@ namespace PKSim.UI.Starter.Presenters
       public void Start()
       {
          var individual = createIndividual();
-         var enzyme = _individualEnzymeFactory.CreateFor(individual);
-         individual.AddMolecule(enzyme);
+         var enzyme = _individualEnzymeTask.AddMoleculeTo(individual, "CYP3A4");
          View.AddExpressionPresenter(_individualEnzymeExpressionsPresenter.BaseView);
          _individualEnzymeExpressionsPresenter.SimulationSubject = individual;
          _individualEnzymeExpressionsPresenter.ActivateMolecule(enzyme);

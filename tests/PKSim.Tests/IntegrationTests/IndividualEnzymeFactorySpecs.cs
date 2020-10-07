@@ -4,10 +4,11 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Services;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_IndividualEnzymeFactory : ContextForIntegration<IIndividualEnzymeFactory>
+   public abstract class concern_for_IndividualEnzymeFactory : ContextForIntegration<IIndividualEnzymeTask>
    {
       protected Individual _individual;
       public override void GlobalContext()

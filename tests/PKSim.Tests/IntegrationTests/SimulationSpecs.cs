@@ -292,7 +292,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
+         var enzymeFactory = IoC.Resolve<IIndividualEnzymeTask>();
          var individualProtein = enzymeFactory.CreateFor(_individual).WithName(_enzymeName);
          individualProtein.Ontogeny = new UserDefinedOntogeny() {Table = createOntogenyTable()};
          _individual.AddMolecule(individualProtein.DowncastTo<IndividualEnzyme>().WithName(_enzymeName));
@@ -692,8 +692,8 @@ namespace PKSim.IntegrationTests
          _compoundProcessRepo = IoC.Resolve<ICompoundProcessRepository>();
          _interactionTask = IoC.Resolve<IInteractionTask>();
          var cloner = IoC.Resolve<ICloneManager>();
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
-         var transporterFactory = IoC.Resolve<IIndividualTransporterFactory>();
+         var enzymeFactory = IoC.Resolve<IIndividualEnzymeTask>();
+         var transporterFactory = IoC.Resolve<IIndividualTransporterTask>();
 
          var inhibitor = DomainFactoryForSpecs.CreateStandardCompound().WithName("Inhibitor");
          var protocol2 = DomainFactoryForSpecs.CreateStandardIVBolusProtocol().WithName("IV2");

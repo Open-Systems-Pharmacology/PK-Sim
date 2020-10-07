@@ -52,12 +52,12 @@ namespace PKSim.UI.Starter
          container.Register<IToolTipCreator, OSPSuite.UI.Services.IToolTipCreator, ToolTipCreator>(LifeStyle.Transient);
          var skinManager = container.Resolve<ISkinManager>();
          var userSettings = container.Resolve<IPresentationUserSettings>();
-         skinManager.ActivateSkin(userSettings, Constants.DEFAULT_SKIN);
+         // skinManager.ActivateSkin(userSettings, Constants.DEFAULT_SKIN);
       }
 
       private static void registerUIImplementation(IContainer container)
       {
-         container.Register<IIndividualProteinExpressionsView, IndividualProteinExpressionsView>();
+         container.Register<IIndividualProteinExpressionsViewNew, IndividualProteinExpressionsViewNew>();
          container.Register<IIndividualMoleculePropertiesView, IndividualMoleculePropertiesView>();
          container.Register<IOntogenySelectionView, OntogenySelectionView>();
          container.Register<IMultiParameterEditView, MultiParameterEditView>();

@@ -56,6 +56,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return info;
       }
 
+      public PathElement PathElementFor(RepresentationObjectType objectType, string objectName) => InfoFor(objectType, objectName).ToPathElement();
+
       public RepresentationInfo ContainerInfoFor(string objectName) => InfoFor(RepresentationObjectType.CONTAINER, objectName);
 
       public string DisplayNameFor(IObjectBase objectBase) => InfoFor(objectBase).DisplayName;

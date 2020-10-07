@@ -12,12 +12,12 @@ namespace PKSim.Presentation
 {
    public abstract class concern_for_IndividualProteinToProteinExpressionDTOMapper : ContextSpecification<IIndividualProteinToProteinExpressionDTOMapper>
    {
-      private IExpressionContainerDTOUpdater _expressionContainerDTOUpdater;
+      private IExpressionContainerMapper _expressionContainerMapper;
 
       protected override void Context()
       {
-         _expressionContainerDTOUpdater = A.Fake<IExpressionContainerDTOUpdater>();
-         sut = new IndividualProteinToProteinExpressionDTOMapper(_expressionContainerDTOUpdater);
+         _expressionContainerMapper = A.Fake<IExpressionContainerMapper>();
+         sut = new IndividualProteinToProteinExpressionDTOMapper(_expressionContainerMapper);
       }
    }
 

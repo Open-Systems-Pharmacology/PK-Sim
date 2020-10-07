@@ -17,6 +17,11 @@ namespace PKSim.Presentation.Views.Individuals
       bool LocationOnVascularEndoVisible { set; }
    }
 
+   public interface IIndividualProteinExpressionsViewNew : IView<IIndividualProteinExpressionsPresenterNew>, IIndividualMoleculeView
+   {
+      void BindTo(IndividualProteinDTO individualProteinDTO);
+   }
+
    public interface IIndividualTransporterExpressionsView : IView<IIndividualTransporterExpressionsPresenter>, IIndividualMoleculeView
    {
       void BindTo(TransporterExpressionDTO transporterExpressionDTO);

@@ -33,7 +33,7 @@ namespace PKSim.Core.Model
       ///    <paramref name="buildingBlockType" />
       /// </summary>
       /// <exception cref="NotFoundException">
-      ///    is thrown if the no dimension can be found in the dimension repositry with the given
+      ///    is thrown if the no dimension can be found in the dimension repository with the given
       ///    <paramref name="dimensionName" />
       /// </exception>
       IParameter CreateFor(string parameterName, double defaultValue, string dimensionName, PKSimBuildingBlockType buildingBlockType);
@@ -42,7 +42,7 @@ namespace PKSim.Core.Model
       ///    Returns a parameter with a formula rate defined according to <paramref name="parameterRateDefinition" /> and add the
       ///    formula in the
       ///    <paramref name="formulaCache" />
-      ///    if the formula was not added alraedy
+      ///    if the formula was not added already
       /// </summary>
       IParameter CreateFor(ParameterRateMetaData parameterRateDefinition, IFormulaCache formulaCache);
 

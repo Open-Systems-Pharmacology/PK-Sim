@@ -6,25 +6,25 @@ namespace PKSim.Core.Services
 {
    public interface IIndividualMoleculeFactoryResolver
    {
-      IIndividualMoleculeFactory FactoryFor<TIndividualMolecule>();
-      IIndividualMoleculeFactory FactoryFor(Type individualMoleculeType);
+      IIndividualMoleculeTask FactoryFor<TIndividualMolecule>();
+      IIndividualMoleculeTask FactoryFor(Type individualMoleculeType);
    }
 
    public class IndividualMoleculeFactoryResolver : IIndividualMoleculeFactoryResolver
    {
-      private readonly IRepository<IIndividualMoleculeFactory> _enzymeExpressionFactoryRepository;
+      private readonly IRepository<IIndividualMoleculeTask> _enzymeExpressionFactoryRepository;
 
-      public IndividualMoleculeFactoryResolver(IRepository<IIndividualMoleculeFactory> enzymeExpressionFactoryRepository)
+      public IndividualMoleculeFactoryResolver(IRepository<IIndividualMoleculeTask> enzymeExpressionFactoryRepository)
       {
          _enzymeExpressionFactoryRepository = enzymeExpressionFactoryRepository;
       }
 
-      public IIndividualMoleculeFactory FactoryFor<TIndividualMolecule>()
+      public IIndividualMoleculeTask FactoryFor<TIndividualMolecule>()
       {
          return FactoryFor(typeof(TIndividualMolecule));
       }
 
-      public IIndividualMoleculeFactory FactoryFor(Type individualMoleculeType)
+      public IIndividualMoleculeTask FactoryFor(Type individualMoleculeType)
       {
          foreach (var expressionFactory in _enzymeExpressionFactoryRepository.All())
          {

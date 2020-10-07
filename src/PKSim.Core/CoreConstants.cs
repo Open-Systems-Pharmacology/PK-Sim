@@ -180,6 +180,9 @@ namespace PKSim.Core
          public static readonly string TableFormulaWithXArgumentPrefix = "TableFormulaWithXArgument_";
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA = "PARAM_Application_DoseFromDosePerBodySurfaceArea";
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT = "PARAM_Application_DoseFromDosePerBodyWeight";
+         public static readonly string INITIAL_CONCENTRATION_BLOOD_CELLS = "InitialConcentrationBloodCells";
+         public static readonly string ONE_RATE = "One_Rate";
+         public static readonly string ZERO_RATE = "Zero_Rate";
       }
 
       public static class Alias
@@ -267,6 +270,7 @@ namespace PKSim.Core
          public static readonly string RodgerAndRowland = "Cellular partition coefficient method - Rodgers and Rowland";
          public static readonly string RenalAgingHuman = "Renal_Aging_Human";
          public static readonly string RenalAgingAnimals = "Renal_Aging_Animals";
+         public static readonly string EXPRESSION_PARAMETERS = "ExpressionParameters";
 
          public static readonly IReadOnlyList<string> ForProcesses = new List<string> {LinksCommon, SpecificClearance, DistributionInVitroPKSim};
 
@@ -980,6 +984,14 @@ namespace PKSim.Core
          public const string EMAX = "Emax";
          public const string EC50 = "EC50";
          public const string WEIGHT_TISSUE = "Weight (tissue)";
+         public const string FRACTION_INTRACELLULAR_BLOOD_CELLS = "Fraction intracellular blood cells";
+         public const string FRACTION_MEMBRANE_BLOOD_CELLS = "Fraction membrane blood cells";
+         public const string FRACTION_MEMBRANE_PLASMA_SIDE = "Fraction membrane plasma-side";
+         public const string FRACTION_MEMBRANE_TISSUE_SIDE = "Fraction membrane tissue-side";
+         public const string FRACTION_ENDOSOME = "Fraction endosome";
+         public const string INITIAL_CONCENTRATION = "Initial concentration";
+         public const string REL_EXP_FRACTION = "Fraction";
+
 
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
          {

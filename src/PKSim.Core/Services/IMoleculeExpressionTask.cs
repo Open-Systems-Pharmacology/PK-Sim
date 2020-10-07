@@ -27,7 +27,7 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="molecule">Protein for which the relative expression should be set</param>
       /// <param name="relativeExpressionParameter">
-      ///    Reltive expression parameter
+      ///    Relative expression parameter
       /// </param>
       /// <param name="value">relative expression</param>
       ICommand SetRelativeExpressionFor(IndividualMolecule molecule, IParameter relativeExpressionParameter, double value);

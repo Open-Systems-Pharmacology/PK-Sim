@@ -182,7 +182,7 @@ namespace PKSim.Core
          _snapshot.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
          _snapshot.MembraneLocation = MembraneLocation.BloodBrainBarrier;
          _snapshot.TissueLocation = TissueLocation.Interstitial;
-         var enzymeFactory = A.Fake<IIndividualMoleculeFactory>();
+         var enzymeFactory = A.Fake<IIndividualMoleculeTask>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualEnzyme>()).Returns(enzymeFactory);
          A.CallTo(() => enzymeFactory.CreateFor(_individual)).Returns(_enzyme);
          _relativeExpressionParameter1.Value = 0;
@@ -236,7 +236,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_transporter);
 
          _snapshot.TransportType = TransportType.PgpLike;
-         var transporterFactory = A.Fake<IIndividualTransporterFactory>();
+         var transporterFactory = A.Fake<IIndividualTransporterTask>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualTransporter>()).Returns(transporterFactory);
          A.CallTo(() => transporterFactory.CreateFor(_individual, TransportType.PgpLike)).Returns(_transporter);
       }
@@ -268,7 +268,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_otherProtein);
 
-         var individualOtherProteinFactory = A.Fake<IIndividualMoleculeFactory>();
+         var individualOtherProteinFactory = A.Fake<IIndividualMoleculeTask>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualOtherProtein>()).Returns(individualOtherProteinFactory);
          A.CallTo(() => individualOtherProteinFactory.CreateFor(_individual)).Returns(_otherProtein);
       }

@@ -11,7 +11,7 @@ namespace PKSim.Core.Model
       public IObjectPath OrganPath { get; set; }
 
       /// <summary>
-      ///    Name of the parent container of the compartment (for organ, name of organ, for segemnt either lumen or segment name)
+      ///    Name of the parent container of the compartment (for organ, name of organ, for segment either lumen or segment name)
       /// </summary>
       public string GroupName { get; set; }
 
@@ -48,10 +48,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Return the path of the compartment where the protein will be defined
       /// </summary>
-      public IObjectPath CompartmentPath(string compartmentName)
-      {
-         return OrganPath.Clone<IObjectPath>().AndAdd(compartmentName);
-      }
+      public IObjectPath CompartmentPath(string compartmentName) => OrganPath.Clone<IObjectPath>().AndAdd(compartmentName);
 
       /// <summary>
       ///    returns true if the container represents a lumen segment otherwise false

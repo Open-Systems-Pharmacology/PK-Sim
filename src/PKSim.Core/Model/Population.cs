@@ -170,6 +170,11 @@ namespace PKSim.Core.Model
          FirstIndividual?.RemoveMolecule(molecule);
       }
 
+      public void AddGlobalMolecule(IContainer molecule)
+      {
+         FirstIndividual?.AddGlobalMolecule(molecule);
+      }
+
       public virtual IEnumerable<IParameter> AllAdvancedParameters(IEntityPathResolver entityPathResolver)
       {
          return AllVectorialParameters(entityPathResolver).Where(p => !p.IsChangedByCreateIndividual);

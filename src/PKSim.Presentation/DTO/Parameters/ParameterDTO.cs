@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Validation;
@@ -81,8 +82,9 @@ namespace PKSim.Presentation.DTO.Parameters
             {
                return Parameter.ValueInDisplayUnit;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+               Debug.Write(exception.Message);
                //Maybe implement a way to ask if a value can be computed instead of catching exception
                //Permeability cannot be read in compound as references cannot be resolved
                return 0;

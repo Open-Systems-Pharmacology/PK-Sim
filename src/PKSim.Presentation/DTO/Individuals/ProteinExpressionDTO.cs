@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.Individuals
@@ -10,8 +9,6 @@ namespace PKSim.Presentation.DTO.Individuals
    {
       private readonly IList<ExpressionContainerDTO> _allContainerExpressions;
       private IndividualProtein _protein;
-      public ParameterDTO ReferenceConcentrationParameter { get; set; }
-      public double ReferenceConcentration { get; set; }
 
       public ProteinExpressionDTO(IndividualProtein protein) : base(protein)
       {
