@@ -18,8 +18,9 @@ namespace PKSim.Core.Model
 
       public static void SetPercentile(this IParameter parameter, double percentile)
       {
-         var distributedParameter = parameter as IDistributedParameter;
-         if (distributedParameter == null) return;
+         if (!(parameter is IDistributedParameter distributedParameter)) 
+            return;
+
          distributedParameter.Percentile = percentile;
       }
 

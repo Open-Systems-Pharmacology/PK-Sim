@@ -181,6 +181,7 @@ namespace PKSim.Core
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA = "PARAM_Application_DoseFromDosePerBodySurfaceArea";
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT = "PARAM_Application_DoseFromDosePerBodyWeight";
          public static readonly string INITIAL_CONCENTRATION_BLOOD_CELLS = "InitialConcentrationBloodCells";
+         public static readonly string INITIAL_CONCENTRATION_INTRACELLULAR = "InitialConcentrationIntracellular";
          public static readonly string ONE_RATE = "One_Rate";
          public static readonly string ZERO_RATE = "Zero_Rate";
       }
@@ -990,9 +991,10 @@ namespace PKSim.Core
          public const string FRACTION_MEMBRANE_TISSUE_SIDE = "Fraction membrane tissue-side";
          public const string FRACTION_ENDOSOME = "Fraction endosome";
          public const string INITIAL_CONCENTRATION = "Initial concentration";
-         public const string REL_EXP_FRACTION = "Fraction";
+         public const string REL_EXP_FRACTION_INTRACELLULAR = "Fraction intracellular";
+         public const string REL_EXP_FRACTION_INTERSTITIAL = "Fraction interstitial";
 
-
+         
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
          {
             ONTOGENY_FACTOR_GI,
