@@ -17,11 +17,12 @@ namespace PKSim.Core.Model
       private readonly IIndividualPathWithRootExpander _individualPathWithRootExpander;
 
       protected IndividualProteinTask(
-         IObjectBaseFactory objectBaseFactory, 
-         IParameterFactory parameterFactory, 
+         IObjectBaseFactory objectBaseFactory,
+         IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
-         IIndividualPathWithRootExpander individualPathWithRootExpander) : base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver)
+         IIndividualPathWithRootExpander individualPathWithRootExpander) : base(objectBaseFactory, parameterFactory, objectPathFactory,
+         entityPathResolver)
       {
          _individualPathWithRootExpander = individualPathWithRootExpander;
       }
@@ -83,19 +84,30 @@ namespace PKSim.Core.Model
          );
       }
 
-      private ParameterMetaData relExpParam(string paramName) => new ParameterValueMetaData
-         {ParameterName = paramName, Dimension = DIMENSIONLESS, DefaultValue = 0, GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION};
+      private ParameterValueMetaData relExpParam(string paramName) => new ParameterValueMetaData
+      {
+         ParameterName = paramName,
+         Dimension = DIMENSIONLESS,
+         DefaultValue = 0,
+         GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+         BuildingBlockType = PKSimBuildingBlockType.Individual,
+         IsInput =  true,
+      };
 
-      private ParameterRateMetaData fractionParam(string paramName, string rate, string groupName = CoreConstants.Groups.RELATIVE_EXPRESSION) =>
+      private ParameterRateMetaData fractionParam(string paramName, string rate, string groupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+         bool editable = true) =>
          new ParameterRateMetaData
          {
             ParameterName = paramName,
             Rate = rate,
             CalculationMethod = CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS,
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
             CanBeVaried = true,
             CanBeVariedInPopulation = true,
+            ReadOnly = !editable,
             Dimension = CoreConstants.Dimension.Fraction,
-            GroupName = groupName
+            GroupName = groupName,
+            IsInput = true
          };
 
       private ParameterRateMetaData initialConcParam(string rate) =>
@@ -104,12 +116,12 @@ namespace PKSim.Core.Model
             ParameterName = INITIAL_CONCENTRATION,
             Rate = rate,
             CalculationMethod = CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS,
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
             CanBeVaried = true,
             CanBeVariedInPopulation = true,
-            Dimension = CoreConstants.Dimension.Fraction,
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION
+            Dimension = MOLAR_CONCENTRATION,
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
          };
-
 
       protected IParameter createFormulaParameterIn(IContainer parameterContainer, ParameterRateMetaData parameterRateMetaData, string moleculeName,
          string groupName = null)
@@ -132,7 +144,7 @@ namespace PKSim.Core.Model
          AddVascularSystemExpressionNew(globalContainer, CoreConstants.Groups.VASCULAR_SYSTEM,
             relExpParam(REL_EXP_BLOOD_CELL),
             fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS, CoreConstants.Rate.ZERO_RATE),
-            fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE, CoreConstants.Rate.ZERO_RATE)
+            fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE, CoreConstants.Rate.PARAM_F_EXP_BC_MEMBRANE, editable: false)
          );
 
          AddVascularSystemExpressionNew(globalContainer, CoreConstants.Groups.VASCULAR_SYSTEM, relExpParam(REL_EXP_PLASMA));
@@ -141,7 +153,7 @@ namespace PKSim.Core.Model
             relExpParam(REL_EXP_VASC_ENDO),
             fractionParam(FRACTION_EXPRESSED_ENDOSOME, CoreConstants.Rate.ZERO_RATE),
             fractionParam(FRACTION_EXPRESSED_PLASMA_SIDE_APICAL, CoreConstants.Rate.ZERO_RATE),
-            fractionParam(FRACTION_EXPRESSED_TISSUE_SIDE_BASOLATERAL, CoreConstants.Rate.ZERO_RATE)
+            fractionParam(FRACTION_EXPRESSED_TISSUE_SIDE_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_VASC_BASOLATERAL, editable: false)
          );
 
          AddTissueOrgansExpressionNew(simulationSubject, moleculeName);
@@ -171,9 +183,9 @@ namespace PKSim.Core.Model
          var lumen = simulationSubject.Organism.Organ(CoreConstants.Organ.Lumen);
          foreach (var segment in lumen.Compartments.Where(c => c.Visible))
          {
-            AddContainerExpressionNew(segment, segment.Name, moleculeName, CoreConstants.Groups.GI_LUMEN, 
-               relExpParam(REL_EXP), 
-               initialConcParam(CoreConstants.Rate.ZERO_RATE));
+            AddContainerExpressionNew(segment, segment.Name, moleculeName, CoreConstants.Groups.GI_LUMEN,
+               relExpParam(REL_EXP),
+               initialConcParam(CoreConstants.Rate.INITIAL_CONCENTRATION_LUMEN));
          }
       }
 
@@ -184,15 +196,17 @@ namespace PKSim.Core.Model
          return addContainerExpressionNew(parentContainer, containerName, moleculeName, groupingName, parameters);
       }
 
-      protected IParameter createMoleculeParameterInNew(IContainer parameterContainer, string parameterName, double defaultValue,
-         string dimensionName,
+      protected IParameter createConnstantParameterInNew(IContainer parameterContainer, 
+         ParameterValueMetaData parameterValueDefinition,
          string groupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
          bool canBeVaried = true,
          bool canBeVariedInPopulation = true,
          bool visible = true,
          string displayUnit = null)
+         
       {
-         var parameter = _parameterFactory.CreateFor(parameterName, defaultValue, dimensionName, PKSimBuildingBlockType.Individual);
+
+         var parameter = _parameterFactory.CreateFor(parameterValueDefinition);
          parameter.GroupName = groupName;
          parameter.CanBeVaried = canBeVaried;
          parameter.CanBeVariedInPopulation = canBeVariedInPopulation;
@@ -222,12 +236,12 @@ namespace PKSim.Core.Model
             case ParameterRateMetaData rateMetaData:
                createFormulaParameterIn(container, rateMetaData, moleculeName, groupName);
                break;
-            default:
-               createMoleculeParameterInNew(container, parameterMetaData.ParameterName, 0, parameterMetaData.Dimension, groupName);
+            case ParameterValueMetaData parameterValueMetaData:
+               createConnstantParameterInNew(container, parameterValueMetaData, groupName);
                break;
          }
-
       }
+
       protected void AddVascularSystemExpressionNew(IContainer moleculeContainer, string groupName, params ParameterMetaData[] parameters)
       {
          parameters.Each(p => addParameterIn(moleculeContainer, p, moleculeContainer.Name, groupName));

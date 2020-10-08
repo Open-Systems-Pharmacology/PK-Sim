@@ -1,18 +1,27 @@
 ﻿using System;
 using System.Diagnostics;
 using DevExpress.Utils;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Base;
+using DevExpress.XtraGrid.Views.Grid.ViewInfo;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Format;
 using PKSim.Assets;
+using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
@@ -22,15 +31,22 @@ namespace PKSim.UI.Views.Individuals
 {
    public partial class IndividualProteinExpressionsViewNew : BaseUserControlWithValueInGrid, IIndividualProteinExpressionsViewNew
    {
+      private readonly IToolTipCreator _toolTipCreator;
       private readonly IImageListRetriever _imageListRetriever;
       private IIndividualProteinExpressionsPresenterNew _presenter;
       private readonly GridViewBinder<ExpressionContainerParameterDTO> _gridViewBinder;
       private IGridViewColumn _colGrouping;
       private IGridViewColumn  _colParameterValue;
       private IGridViewColumn _colParameterName;
+      private ToolTipController _toolTipController;
+      private readonly UxRepositoryItemButtonImage _isFixedParameterEditRepository;
+      private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
 
-      public IndividualProteinExpressionsViewNew(IImageListRetriever imageListRetriever)
+      public IndividualProteinExpressionsViewNew(IToolTipCreator toolTipCreator,  IImageListRetriever imageListRetriever)
       {
+         _toolTipCreator = toolTipCreator;
+         _toolTipController = new ToolTipController();
+
          _imageListRetriever = imageListRetriever;
          InitializeComponent();
          gridView.ShouldUseColorForDisabledCell = false;
@@ -40,6 +56,16 @@ namespace PKSim.UI.Views.Individuals
          _gridViewBinder = new GridViewBinder<ExpressionContainerParameterDTO>(gridView);
          gridView.CustomColumnSort += customColumnSort;
          InitializeWithGrid(gridView);
+
+         _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset, PKSimConstants.UI.ResetParameterToolTip) { TextEditStyle = TextEditStyles.Standard };
+         _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
+         _toolTipController.Initialize(_imageListRetriever);
+         _standardParameterEditRepository.ConfigureWith(typeof(double));
+         _standardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
+         _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
+         gridView.GridControl.ToolTipController = _toolTipController;
+
+
       }
 
       //https://github.com/DevExpress-Examples/custom-gridcontrol-how-to-hide-particular-grouprow-headers-footers-t264208/blob/16.1.4%2B/CS/CustomGridControl/MyDataController.cs
@@ -102,13 +128,18 @@ namespace PKSim.UI.Views.Individuals
             .AsReadOnly();
          // .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
 
-         //TODO AUTOBIND
-         _colParameterValue = _gridViewBinder.Bind(item => item.Value)
-            .WithOnValueUpdating((dto, args) => dto.Parameter.Parameter.Value = args.NewValue)
+         //TODO MOVE TO PRESENTER
+         _colParameterValue = _gridViewBinder.AutoBind(item => item.Value)
+            .WithFormat(parameterFormatter)
+            .WithRepository(repoForParameter)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways)
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValue(o.Parameter, e.NewValue)))
             .WithCaption(PKSimConstants.UI.Value);
 
          _colParameterName.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.False;
          _colParameterValue.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.False;
+
+
 
          // var col = _gridViewBinder.AutoBind(item => item.RelativeExpressionNorm)
          //    .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
@@ -120,6 +151,69 @@ namespace PKSim.UI.Views.Individuals
          // col.XtraColumn.DisplayFormat.FormatType = FormatType.None;
 
       }
+
+      private IFormatter<double> parameterFormatter(ExpressionContainerParameterDTO expressionContainerParameterDTO)
+      {
+         return expressionContainerParameterDTO.Parameter.ParameterFormatter();
+      }
+
+      private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
+      {
+         var parameterDTO = _gridViewBinder.ElementAt(e)?.Parameter;
+         if (parameterDTO == null) return;
+
+         //check if subclass want to display a tool tip as well
+         var superToolTip = GetToolTipFor(parameterDTO, gridView.HitInfoAt(e.ControlMousePosition));
+         if (superToolTip == null)
+            return;
+
+         e.Info = _toolTipCreator.ToolTipControlInfoFor(parameterDTO, superToolTip);
+      }
+
+      protected virtual SuperToolTip GetToolTipFor(IParameterDTO parameterDTO, GridHitInfo hi)
+      {
+         //don't show tooltips for value as it might contain error info that would be hidden
+         if (hi.Column == _colParameterValue.XtraColumn)
+            return null;
+
+         return _toolTipCreator.ToolTipFor(parameterDTO);
+      }
+
+
+      private RepositoryItem repoForParameter(ExpressionContainerParameterDTO expressionContainerDTO)
+      {
+
+         if (IsSetByUser(expressionContainerDTO.Parameter))
+            return _isFixedParameterEditRepository;
+
+         return _standardParameterEditRepository;
+      }
+
+      //TODO Move to presenter
+      public bool IsSetByUser(IParameterDTO parameterDTO)
+      {
+         if (parameterDTO.Parameter == null)
+            return false;
+
+         return parameterDTO.Parameter.ValueDiffersFromDefault();
+      }
+
+      private void resetParameter()
+      {
+       //TODO  _presenter.ResetParameter(_gridViewBinder.FocusedElement);
+         gridView.CloseEditor();
+      }
+
+      private void setParameterUnit(IParameterDTO parameterDTO, Unit newUnit)
+      {
+         OnEvent(() =>
+         {
+            gridView.CloseEditor();
+            _presenter.SetParameterUnit(parameterDTO, newUnit);
+         });
+      }
+
+
       private RepositoryItem configureContainerRepository(PathElement pathElement)
       {
          var containerRepository = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);

@@ -200,8 +200,11 @@ namespace PKSim.Core
          public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL = "InitialConcentrationInterstitial";
          public static readonly string INITIAL_CONCENTRATION_PLASMA = "InitialConcentrationPlasma";
          public static readonly string INITIAL_CONCENTRATION_ENDOSOME = "InitialConcentrationEndosome";
+         public static readonly string INITIAL_CONCENTRATION_LUMEN = "InitialConcentrationLumen";
          public static readonly string ONE_RATE = "One_Rate";
          public static readonly string ZERO_RATE = "Zero_Rate";
+         public static readonly string PARAM_F_EXP_BC_MEMBRANE = "PARAM_f_exp_bc_membrane";
+         public static readonly string PARAM_F_EXP_VASC_BASOLATERAL = "PARAM_f_exp_vasc_basolateral";
       }
 
       public static class Alias
