@@ -62,6 +62,15 @@ namespace PKSim.Core.Model
             initialConcParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS)
          );
 
+         AddContainerExpressionNew(organ.Container(CoreConstants.Compartment.Plasma), organ.Name, moleculeName, groupName,
+            initialConcParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA)
+         );
+
+
+         AddContainerExpressionNew(organ.Container(CoreConstants.Compartment.Endosome), organ.Name, moleculeName, groupName,
+            initialConcParam(CoreConstants.Rate.INITIAL_CONCENTRATION_ENDOSOME)
+         );
+
          AddContainerExpressionNew(organ.Container(CoreConstants.Compartment.Intracellular), organ.Name, moleculeName, groupName,
             relExpParam(REL_EXP),
             fractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.ZERO_RATE),
