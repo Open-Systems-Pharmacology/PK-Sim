@@ -83,6 +83,7 @@ namespace PKSim.Presentation.DTO.Parameters
                return Parameter.ValueInDisplayUnit;
             }
             catch (Exception exception)
+
             {
                Debug.Write(exception.Message);
                //Maybe implement a way to ask if a value can be computed instead of catching exception

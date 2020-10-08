@@ -122,7 +122,7 @@ namespace PKSim.Core.Services
       public IParameter MeanOrganismParameter(OriginData originData, string parameterName)
       {
          var organism = new Organism().WithName(Constants.ORGANISM);
-         _parameterContainerTask.AddInvididualParametersTo(organism, originData, parameterName);
+         _parameterContainerTask.AddIndividualParametersTo(organism, originData, parameterName);
          return organism.Parameter(parameterName);
       }
 
@@ -144,7 +144,7 @@ namespace PKSim.Core.Services
       private void addModelStructureTo(IContainer container, OriginData originData, bool addParameter)
       {
          if (addParameter)
-            _parameterContainerTask.AddInvididualParametersTo(container, originData);
+            _parameterContainerTask.AddIndividualParametersTo(container, originData);
 
          foreach (var subContainer in _speciesContainerQuery.SubContainersFor(originData.SpeciesPopulation, container))
          {

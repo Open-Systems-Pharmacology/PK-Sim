@@ -64,13 +64,13 @@ namespace PKSim.Core.Model
 
          AddContainerExpressionNew(organ.Container(CoreConstants.Compartment.Intracellular), organ.Name, moleculeName, groupName,
             relExpParam(REL_EXP),
-            fractionParam(REL_EXP_FRACTION_INTRACELLULAR, CoreConstants.Rate.ZERO_RATE),
+            fractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.ZERO_RATE),
             initialConcParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR)
          );
 
          AddContainerExpressionNew(organ.Container(CoreConstants.Compartment.Interstitial), organ.Name, moleculeName, groupName,
-            fractionParam(REL_EXP_FRACTION_INTERSTITIAL, CoreConstants.Rate.ZERO_RATE),
-            initialConcParam(CoreConstants.Rate.ZERO_RATE)
+            fractionParam(FRACTION_EXPRESSED_INTERSTITIAL, CoreConstants.Rate.ZERO_RATE),
+            initialConcParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL)
          );
       }
 
@@ -122,17 +122,17 @@ namespace PKSim.Core.Model
          var globalContainer = CreateGlobalMoleculeContainer(moleculeName);
          AddVascularSystemExpressionNew(globalContainer, CoreConstants.Groups.VASCULAR_SYSTEM,
             relExpParam(REL_EXP_BLOOD_CELL),
-            fractionParam(FRACTION_INTRACELLULAR_BLOOD_CELLS, CoreConstants.Rate.ZERO_RATE),
-            fractionParam(FRACTION_MEMBRANE_BLOOD_CELLS, CoreConstants.Rate.ZERO_RATE)
+            fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS, CoreConstants.Rate.ZERO_RATE),
+            fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE, CoreConstants.Rate.ZERO_RATE)
          );
 
          AddVascularSystemExpressionNew(globalContainer, CoreConstants.Groups.VASCULAR_SYSTEM, relExpParam(REL_EXP_PLASMA));
 
          AddVascularSystemExpressionNew(globalContainer, CoreConstants.Groups.VASCULAR_SYSTEM,
             relExpParam(REL_EXP_VASC_ENDO),
-            fractionParam(FRACTION_ENDOSOME, CoreConstants.Rate.ZERO_RATE),
-            fractionParam(FRACTION_MEMBRANE_PLASMA_SIDE, CoreConstants.Rate.ZERO_RATE),
-            fractionParam(FRACTION_MEMBRANE_TISSUE_SIDE, CoreConstants.Rate.ZERO_RATE)
+            fractionParam(FRACTION_EXPRESSED_ENDOSOME, CoreConstants.Rate.ZERO_RATE),
+            fractionParam(FRACTION_EXPRESSED_PLASMA_SIDE_APICAL, CoreConstants.Rate.ZERO_RATE),
+            fractionParam(FRACTION_EXPRESSED_TISSUE_SIDE_BASOLATERAL, CoreConstants.Rate.ZERO_RATE)
          );
 
          AddTissueOrgansExpressionNew(simulationSubject, moleculeName);

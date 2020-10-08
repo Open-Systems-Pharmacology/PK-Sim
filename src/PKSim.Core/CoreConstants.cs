@@ -182,6 +182,7 @@ namespace PKSim.Core
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT = "PARAM_Application_DoseFromDosePerBodyWeight";
          public static readonly string INITIAL_CONCENTRATION_BLOOD_CELLS = "InitialConcentrationBloodCells";
          public static readonly string INITIAL_CONCENTRATION_INTRACELLULAR = "InitialConcentrationIntracellular";
+         public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL = "InitialConcentrationInterstitial";
          public static readonly string ONE_RATE = "One_Rate";
          public static readonly string ZERO_RATE = "Zero_Rate";
       }
@@ -985,14 +986,14 @@ namespace PKSim.Core
          public const string EMAX = "Emax";
          public const string EC50 = "EC50";
          public const string WEIGHT_TISSUE = "Weight (tissue)";
-         public const string FRACTION_INTRACELLULAR_BLOOD_CELLS = "Fraction intracellular blood cells";
-         public const string FRACTION_MEMBRANE_BLOOD_CELLS = "Fraction membrane blood cells";
-         public const string FRACTION_MEMBRANE_PLASMA_SIDE = "Fraction membrane plasma-side";
-         public const string FRACTION_MEMBRANE_TISSUE_SIDE = "Fraction membrane tissue-side";
-         public const string FRACTION_ENDOSOME = "Fraction endosome";
+         public const string FRACTION_EXPRESSED_BLOOD_CELLS = "Fraction expressed in blood cells";
+         public const string FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE = "Fraction expressed in blood cells membrane";
+         public const string FRACTION_EXPRESSED_PLASMA_SIDE_APICAL = "Fraction expressed on apical membrane of vascular endothelium";
+         public const string FRACTION_EXPRESSED_TISSUE_SIDE_BASOLATERAL = "Fraction expressed on basolateral membrane of vascular endothelium";
+         public const string FRACTION_EXPRESSED_ENDOSOME = "Fraction expressed in endosomes";
          public const string INITIAL_CONCENTRATION = "Initial concentration";
-         public const string REL_EXP_FRACTION_INTRACELLULAR = "Fraction intracellular";
-         public const string REL_EXP_FRACTION_INTERSTITIAL = "Fraction interstitial";
+         public const string FRACTION_EXPRESSED_INTRACELLULAR = "Fraction expressed intracellular";
+         public const string FRACTION_EXPRESSED_INTERSTITIAL = "Fraction expressed interstitial";
 
          
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
