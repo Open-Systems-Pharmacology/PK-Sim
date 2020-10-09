@@ -79,6 +79,25 @@ namespace PKSim.Core.Model
          if (parameter.Formula == null)
             return false;
 
+         //code should be
+         // if (!parameter.IsDefault)
+         //    return false;
+         //
+         // // Default only for constant parameter or distribute parameters
+         // return parameter.Formula.IsConstant() || parameter.Formula.IsDistributed();
+
+         var prev = parameter.Formula.IsConstant() || parameter.Formula.IsDistributed();
+
+         //TODO Review is this change is ok. 
+         if (!parameter.IsDefault)
+         {
+            if(prev)
+               return false;
+
+            return false;
+         }
+
+
          return parameter.Formula.IsConstant() || parameter.Formula.IsDistributed();
       }
 

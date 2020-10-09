@@ -16,7 +16,7 @@ using PKSim.Presentation.Views.Protocols;
 
 namespace PKSim.Presentation.Presenters.Protocols
 {
-   public interface IProtocolItemPresenter : ISubPresenter, IListener, IEditParameterPresenter
+   public interface IProtocolItemPresenter : ISubPresenter, IListener, IParameterValuePresenter
    {
       IEnumerable<ApplicationType> AllApplications();
       IEnumerable<string> AllFormulationKeys();

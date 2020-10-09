@@ -32,7 +32,7 @@
          this.uxLayoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelMoleculeLocalization = new DevExpress.XtraEditors.PanelControl();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
-         this.gridView = new PKSim.UI.Views.Core.UxGridView();
+         this._gridView = new PKSim.UI.Views.Core.UxGridView();
          this.panelMoleculeProperties = new DevExpress.XtraEditors.PanelControl();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutGroupMoleculeProperties = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -45,7 +45,7 @@
          this.uxLayoutControl1.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeLocalization)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this._gridView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeProperties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupMoleculeProperties)).BeginInit();
@@ -79,26 +79,26 @@
          // gridControl
          // 
          this.gridControl.Location = new System.Drawing.Point(12, 248);
-         this.gridControl.MainView = this.gridView;
+         this.gridControl.MainView = this._gridView;
          this.gridControl.Name = "gridControl";
          this.gridControl.Size = new System.Drawing.Size(786, 283);
          this.gridControl.TabIndex = 5;
          this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView});
+            this._gridView});
          // 
-         // gridView
+         // _gridView
          // 
-         this.gridView.AllowsFiltering = true;
-         this.gridView.EnableColumnContextMenu = true;
-         this.gridView.GridControl = this.gridControl;
-         this.gridView.MultiSelect = true;
-         this.gridView.Name = "gridView";
-         this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
-         this.gridView.OptionsNavigation.AutoFocusNewRow = true;
-         this.gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
-         this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
-         this.gridView.OptionsSelection.MultiSelect = true;
-         this.gridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
+         this._gridView.AllowsFiltering = true;
+         this._gridView.EnableColumnContextMenu = true;
+         this._gridView.GridControl = this.gridControl;
+         this._gridView.MultiSelect = true;
+         this._gridView.Name = "_gridView";
+         this._gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
+         this._gridView.OptionsNavigation.AutoFocusNewRow = true;
+         this._gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
+         this._gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
+         this._gridView.OptionsSelection.MultiSelect = true;
+         this._gridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
          // 
          // panelMoleculeProperties
          // 
@@ -172,7 +172,7 @@
          this.uxLayoutControl1.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeLocalization)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this._gridView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeProperties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupMoleculeProperties)).EndInit();
@@ -193,7 +193,7 @@
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupMoleculeProperties;
       private DevExpress.XtraEditors.PanelControl panelMoleculeLocalization;
       private OSPSuite.UI.Controls.UxGridControl gridControl;
-      private PKSim.UI.Views.Core.UxGridView gridView;
+      private PKSim.UI.Views.Core.UxGridView _gridView;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemPanelLocalization;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupMoleculeLocalization;

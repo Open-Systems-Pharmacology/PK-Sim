@@ -1,11 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
+using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
@@ -21,6 +24,7 @@ using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
@@ -49,13 +53,15 @@ namespace PKSim.UI.Views.Individuals
 
          _imageListRetriever = imageListRetriever;
          InitializeComponent();
-         gridView.ShouldUseColorForDisabledCell = false;
-         gridView.OptionsView.AllowCellMerge =true;
-         gridView.GroupFormat = "[#image]{1}";
-         //gridView.AllowsFiltering = false;
-         _gridViewBinder = new GridViewBinder<ExpressionContainerParameterDTO>(gridView);
-         gridView.CustomColumnSort += customColumnSort;
-         InitializeWithGrid(gridView);
+         _gridView.ShouldUseColorForDisabledCell = false;
+         _gridView.OptionsView.AllowCellMerge =true;
+         _gridView.GroupFormat = "[#image]{1}";
+         _gridView.RowCellStyle += updateRowCellStyle;
+         _gridView.ShowingEditor += onShowingEditor;
+         //_gridView.AllowsFiltering = false;
+         _gridViewBinder = new GridViewBinder<ExpressionContainerParameterDTO>(_gridView);
+         _gridView.CustomColumnSort += customColumnSort;
+         InitializeWithGrid(_gridView);
 
          _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset, PKSimConstants.UI.ResetParameterToolTip) { TextEditStyle = TextEditStyles.Standard };
          _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
@@ -63,7 +69,7 @@ namespace PKSim.UI.Views.Individuals
          _standardParameterEditRepository.ConfigureWith(typeof(double));
          _standardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
-         gridView.GridControl.ToolTipController = _toolTipController;
+         _gridView.GridControl.ToolTipController = _toolTipController;
 
 
       }
@@ -73,6 +79,14 @@ namespace PKSim.UI.Views.Individuals
       public void AttachPresenter(IIndividualProteinExpressionsPresenterNew presenter)
       {
          _presenter = presenter;
+      }
+
+      private void onShowingEditor(object sender, CancelEventArgs e)
+      {
+         var parameterDTO = _gridViewBinder.FocusedElement?.Parameter;
+         if (parameterDTO == null) return;
+         if (ColumnIsAlwaysActive(_gridView.FocusedColumn)) return;
+         e.Cancel = !_presenter.CanEditParameter(parameterDTO);
       }
 
       private void customColumnSort(object sender, CustomColumnSortEventArgs e)
@@ -128,7 +142,6 @@ namespace PKSim.UI.Views.Individuals
             .AsReadOnly();
          // .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
 
-         //TODO MOVE TO PRESENTER
          _colParameterValue = _gridViewBinder.AutoBind(item => item.Value)
             .WithFormat(parameterFormatter)
             .WithRepository(repoForParameter)
@@ -163,7 +176,7 @@ namespace PKSim.UI.Views.Individuals
          if (parameterDTO == null) return;
 
          //check if subclass want to display a tool tip as well
-         var superToolTip = GetToolTipFor(parameterDTO, gridView.HitInfoAt(e.ControlMousePosition));
+         var superToolTip = GetToolTipFor(parameterDTO, _gridView.HitInfoAt(e.ControlMousePosition));
          if (superToolTip == null)
             return;
 
@@ -179,36 +192,33 @@ namespace PKSim.UI.Views.Individuals
          return _toolTipCreator.ToolTipFor(parameterDTO);
       }
 
+      protected override bool ColumnIsValue(GridColumn gridColumn)
+      {
+         if (_colParameterValue == null) return false;
+         return _colParameterValue.XtraColumn == gridColumn;
+      }
 
       private RepositoryItem repoForParameter(ExpressionContainerParameterDTO expressionContainerDTO)
       {
 
-         if (IsSetByUser(expressionContainerDTO.Parameter))
+         if (_presenter.IsSetByUser(expressionContainerDTO.Parameter))
             return _isFixedParameterEditRepository;
 
          return _standardParameterEditRepository;
       }
 
-      //TODO Move to presenter
-      public bool IsSetByUser(IParameterDTO parameterDTO)
-      {
-         if (parameterDTO.Parameter == null)
-            return false;
-
-         return parameterDTO.Parameter.ValueDiffersFromDefault();
-      }
 
       private void resetParameter()
       {
-       //TODO  _presenter.ResetParameter(_gridViewBinder.FocusedElement);
-         gridView.CloseEditor();
+         _presenter.ResetParameter(_gridViewBinder.FocusedElement?.Parameter);
+         _gridView.CloseEditor();
       }
 
       private void setParameterUnit(IParameterDTO parameterDTO, Unit newUnit)
       {
          OnEvent(() =>
          {
-            gridView.CloseEditor();
+            _gridView.CloseEditor();
             _presenter.SetParameterUnit(parameterDTO, newUnit);
          });
       }
@@ -216,7 +226,7 @@ namespace PKSim.UI.Views.Individuals
 
       private RepositoryItem configureContainerRepository(PathElement pathElement)
       {
-         var containerRepository = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
+         var containerRepository = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever);
          return containerRepository.AddItem(pathElement, pathElement.IconName);
       }
 
@@ -232,7 +242,7 @@ namespace PKSim.UI.Views.Individuals
       public void BindTo(IndividualProteinDTO individualProteinDTO)
       {
          _gridViewBinder.BindToSource(individualProteinDTO.AllExpressionContainerParameters.ToBindingList());
-         gridView.BestFitColumns();
+         _gridView.BestFitColumns();
 
       }
 
@@ -242,6 +252,31 @@ namespace PKSim.UI.Views.Individuals
          layoutItemMoleculeProperties.TextVisible = false;
          layoutGroupMoleculeProperties.Text = PKSimConstants.UI.Properties;
          layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.Localization;
+      }
+
+      protected virtual bool ColumnIsAlwaysActive(GridColumn column)
+      {
+         return false;
+      }
+
+      private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
+      {
+         var parameterDTO = _gridViewBinder.ElementAt(e.RowHandle)?.Parameter;
+         if (parameterDTO == null) return;
+
+         if (ColumnIsAlwaysActive(e.Column))
+            _gridView.AdjustAppearance(e, true);
+
+         else if (e.Column.OptionsColumn.ReadOnly)
+            _gridView.AdjustAppearance(e, false);
+
+         else if (!parameterDTO.Parameter.Editable)
+            _gridView.AdjustAppearance(e, false);
+
+         else if (_presenter.IsSetByUser(parameterDTO))
+            _gridView.AdjustAppearance(e, PKSimColors.Changed);
+         else
+            e.CombineAppearance(_gridView.Appearance.Row);
       }
 
       // public override bool HasError => _screenBinder.HasError || _gridViewBinder.HasError;
