@@ -95,7 +95,7 @@ namespace PKSim.Core.Services
 
       private void updateProteinParametersValues(IndividualProtein protein)
       {
-         setGlobalParameterValue(protein, CoreConstants.Parameters.REL_EXP_BLOOD_CELL, CoreConstants.Compartment.BloodCells);
+         setGlobalParameterValue(protein, CoreConstants.Parameters.REL_EXP_BLOOD_CELLS, CoreConstants.Compartment.BloodCells);
          setGlobalParameterValue(protein, CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Compartment.Plasma);
          setGlobalParameterValue(protein, CoreConstants.Parameters.REL_EXP_VASC_ENDO, CoreConstants.Compartment.VascularEndothelium);
 

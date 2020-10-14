@@ -59,6 +59,7 @@ namespace PKSim.UI.Starter
       {
          container.Register<IIndividualProteinExpressionsViewNew, IndividualProteinExpressionsViewNew>();
          container.Register<IIndividualMoleculePropertiesView, IndividualMoleculePropertiesView>();
+         container.Register<IExpressionLocalizationView, ExpressionLocalizationView>();
          container.Register<IOntogenySelectionView, OntogenySelectionView>();
          container.Register<IMultiParameterEditView, MultiParameterEditView>();
          container.Register<IScaleParametersView, ScaleParametersView>();

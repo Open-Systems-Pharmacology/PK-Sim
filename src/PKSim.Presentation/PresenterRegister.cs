@@ -119,6 +119,7 @@ namespace PKSim.Presentation
          container.Register(typeof(IIndividualEnzymeExpressionsPresenterNew<>), typeof(IndividualEnzymeExpressionsPresenterNew<>));
          container.Register(typeof(IIndividualOtherProteinExpressionsPresenter<>), typeof(IndividualOtherProteinExpressionsPresenter<>));
          container.Register(typeof(IIndividualTransporterExpressionsPresenter<>), typeof(IndividualTransporterExpressionsPresenter<>));
+         container.Register(typeof(IExpressionLocalizationPresenter<>), typeof(ExpressionLocalizationPresenter<>));
          container.Register(typeof(IIndividualMoleculePropertiesPresenter<>), typeof(IndividualMoleculePropertiesPresenter<>));
          container.Register(typeof(IOntogenySelectionPresenter<>), typeof(OntogenySelectionPresenter<>));
          container.Register(typeof(ILoadFromSnapshotPresenter<>), typeof(LoadFromSnapshotPresenter<>));

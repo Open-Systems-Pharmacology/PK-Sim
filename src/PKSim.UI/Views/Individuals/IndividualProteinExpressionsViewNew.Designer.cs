@@ -64,6 +64,7 @@
          this.uxLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
          this.uxLayoutControl1.Location = new System.Drawing.Point(0, 0);
          this.uxLayoutControl1.Name = "uxLayoutControl1";
+         this.uxLayoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(857, 251, 650, 400);
          this.uxLayoutControl1.Root = this.Root;
          this.uxLayoutControl1.Size = new System.Drawing.Size(810, 543);
          this.uxLayoutControl1.TabIndex = 0;
@@ -71,17 +72,17 @@
          // 
          // panelMoleculeLocalization
          // 
-         this.panelMoleculeLocalization.Location = new System.Drawing.Point(169, 184);
+         this.panelMoleculeLocalization.Location = new System.Drawing.Point(169, 144);
          this.panelMoleculeLocalization.Name = "panelMoleculeLocalization";
-         this.panelMoleculeLocalization.Size = new System.Drawing.Size(617, 48);
+         this.panelMoleculeLocalization.Size = new System.Drawing.Size(617, 46);
          this.panelMoleculeLocalization.TabIndex = 6;
          // 
          // gridControl
          // 
-         this.gridControl.Location = new System.Drawing.Point(12, 248);
+         this.gridControl.Location = new System.Drawing.Point(12, 206);
          this.gridControl.MainView = this._gridView;
          this.gridControl.Name = "gridControl";
-         this.gridControl.Size = new System.Drawing.Size(786, 283);
+         this.gridControl.Size = new System.Drawing.Size(786, 325);
          this.gridControl.TabIndex = 5;
          this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this._gridView});
@@ -104,7 +105,7 @@
          // 
          this.panelMoleculeProperties.Location = new System.Drawing.Point(169, 45);
          this.panelMoleculeProperties.Name = "panelMoleculeProperties";
-         this.panelMoleculeProperties.Size = new System.Drawing.Size(617, 90);
+         this.panelMoleculeProperties.Size = new System.Drawing.Size(617, 50);
          this.panelMoleculeProperties.TabIndex = 4;
          // 
          // Root
@@ -125,22 +126,22 @@
             this.layoutItemMoleculeProperties});
          this.layoutGroupMoleculeProperties.Location = new System.Drawing.Point(0, 0);
          this.layoutGroupMoleculeProperties.Name = "layoutGroupMoleculeProperties";
-         this.layoutGroupMoleculeProperties.Size = new System.Drawing.Size(790, 139);
+         this.layoutGroupMoleculeProperties.Size = new System.Drawing.Size(790, 99);
          // 
          // layoutItemMoleculeProperties
          // 
          this.layoutItemMoleculeProperties.Control = this.panelMoleculeProperties;
          this.layoutItemMoleculeProperties.Location = new System.Drawing.Point(0, 0);
          this.layoutItemMoleculeProperties.Name = "layoutItemMoleculeProperties";
-         this.layoutItemMoleculeProperties.Size = new System.Drawing.Size(766, 94);
+         this.layoutItemMoleculeProperties.Size = new System.Drawing.Size(766, 54);
          this.layoutItemMoleculeProperties.TextSize = new System.Drawing.Size(142, 13);
          // 
          // layoutControlItem1
          // 
          this.layoutControlItem1.Control = this.gridControl;
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 236);
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 194);
          this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(790, 287);
+         this.layoutControlItem1.Size = new System.Drawing.Size(790, 329);
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
          // 
@@ -148,16 +149,16 @@
          // 
          this.layoutGroupMoleculeLocalization.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemPanelLocalization});
-         this.layoutGroupMoleculeLocalization.Location = new System.Drawing.Point(0, 139);
+         this.layoutGroupMoleculeLocalization.Location = new System.Drawing.Point(0, 99);
          this.layoutGroupMoleculeLocalization.Name = "layoutGroupMoleculeLocalization";
-         this.layoutGroupMoleculeLocalization.Size = new System.Drawing.Size(790, 97);
+         this.layoutGroupMoleculeLocalization.Size = new System.Drawing.Size(790, 95);
          // 
          // layoutItemPanelLocalization
          // 
          this.layoutItemPanelLocalization.Control = this.panelMoleculeLocalization;
          this.layoutItemPanelLocalization.Location = new System.Drawing.Point(0, 0);
          this.layoutItemPanelLocalization.Name = "layoutItemPanelLocalization";
-         this.layoutItemPanelLocalization.Size = new System.Drawing.Size(766, 52);
+         this.layoutItemPanelLocalization.Size = new System.Drawing.Size(766, 50);
          this.layoutItemPanelLocalization.TextSize = new System.Drawing.Size(142, 13);
          // 
          // IndividualProteinExpressionsViewNew

@@ -28,6 +28,7 @@ namespace PKSim.Core.Model
          Add(molecule);
       }
 
+      Individual ISimulationSubject.Individual => this;
 
       public virtual Organism Organism => this.GetSingleChild<Organism>();
 

@@ -176,7 +176,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private string containerNameForGlobalExpression(string parameterName)
       {
-         if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_BLOOD_CELL))
+         if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_BLOOD_CELLS))
             return CoreConstants.Compartment.BloodCells;
 
          if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_PLASMA))
@@ -190,7 +190,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private bool parameterIsGlobalExpression(IParameter relativeExpression)
       {
-         return relativeExpression.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELL,
+         return relativeExpression.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELLS,
             CoreConstants.Parameters.REL_EXP_PLASMA,
             CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }

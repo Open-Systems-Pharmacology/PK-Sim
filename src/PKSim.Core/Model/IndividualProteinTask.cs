@@ -74,7 +74,7 @@ namespace PKSim.Core.Model
 
          AddContainerExpressionNew(organ.Container(CoreConstants.Compartment.Intracellular), organ.Name, moleculeName, groupName,
             relExpParam(REL_EXP),
-            fractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.ZERO_RATE),
+            fractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.PARAM_F_EXP_INTRACELLULAR, editable: false),
             initialConcParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR)
          );
 
@@ -142,7 +142,7 @@ namespace PKSim.Core.Model
       {
          var globalContainer = CreateGlobalMoleculeContainer(moleculeName);
          AddVascularSystemExpressionNew(globalContainer, CoreConstants.Groups.VASCULAR_SYSTEM,
-            relExpParam(REL_EXP_BLOOD_CELL),
+            relExpParam(REL_EXP_BLOOD_CELLS),
             fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS, CoreConstants.Rate.ZERO_RATE),
             fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE, CoreConstants.Rate.PARAM_F_EXP_BC_MEMBRANE, editable: false)
          );
@@ -151,9 +151,9 @@ namespace PKSim.Core.Model
 
          AddVascularSystemExpressionNew(globalContainer, CoreConstants.Groups.VASCULAR_SYSTEM,
             relExpParam(REL_EXP_VASC_ENDO),
-            fractionParam(FRACTION_EXPRESSED_ENDOSOME, CoreConstants.Rate.ZERO_RATE),
-            fractionParam(FRACTION_EXPRESSED_PLASMA_SIDE_APICAL, CoreConstants.Rate.ZERO_RATE),
-            fractionParam(FRACTION_EXPRESSED_TISSUE_SIDE_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_VASC_BASOLATERAL, editable: false)
+            fractionParam(FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME, CoreConstants.Rate.ZERO_RATE),
+            fractionParam(FRACTION_EXPRESSED_VASC_ENDO_APICAL, CoreConstants.Rate.ZERO_RATE),
+            fractionParam(FRACTION_EXPRESSED_VASC_ENDO_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_VASC_BASOLATERAL, editable: false)
          );
 
          AddTissueOrgansExpressionNew(simulationSubject, moleculeName);
@@ -196,7 +196,7 @@ namespace PKSim.Core.Model
          return addContainerExpressionNew(parentContainer, containerName, moleculeName, groupingName, parameters);
       }
 
-      protected IParameter createConnstantParameterInNew(IContainer parameterContainer, 
+      protected IParameter createConstantParameterInNew(IContainer parameterContainer, 
          ParameterValueMetaData parameterValueDefinition,
          string groupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
          bool canBeVaried = true,
@@ -237,7 +237,7 @@ namespace PKSim.Core.Model
                createFormulaParameterIn(container, rateMetaData, moleculeName, groupName);
                break;
             case ParameterValueMetaData parameterValueMetaData:
-               createConnstantParameterInNew(container, parameterValueMetaData, groupName);
+               createConstantParameterInNew(container, parameterValueMetaData, groupName);
                break;
          }
       }

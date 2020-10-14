@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Presentation.DTO;
 using PKSim.Core.Model;
 
@@ -15,6 +16,9 @@ namespace PKSim.Presentation.DTO.Individuals
       }
 
       public IReadOnlyList<ExpressionContainerParameterDTO> AllExpressionContainerParameters => _allExpressionContainerParameters;
+
+
+      public IEnumerable<ExpressionContainerParameterDTO> AllVisibleExpressionContainerParameters => _allExpressionContainerParameters.Where(x => x.Visible);
 
       public void AddExpressionContainerParameter(ExpressionContainerParameterDTO expressionContainerParameterDTO)
       {

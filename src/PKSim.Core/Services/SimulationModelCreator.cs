@@ -186,7 +186,7 @@ namespace PKSim.Core.Services
       {
          string relExpName;
          if (expressionContainer.IsBloodCell())
-            relExpName = CoreConstants.Parameters.REL_EXP_BLOOD_CELL;
+            relExpName = CoreConstants.Parameters.REL_EXP_BLOOD_CELLS;
          else if (expressionContainer.IsPlasma())
             relExpName = CoreConstants.Parameters.REL_EXP_PLASMA;
          else if (expressionContainer.IsVascularEndothelium())

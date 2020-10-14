@@ -68,6 +68,11 @@ namespace PKSim.Core.Services
       ICommand SetTissueLocationFor(IndividualProtein protein, TissueLocation tissueLocation);
 
       /// <summary>
+      ///    Update the localization of the protein
+      /// </summary>
+      ICommand SetExpressionLocalizationFor(IndividualProtein protein, Localization localization, TSimulationSubject simulationSubject);
+
+      /// <summary>
       ///    Updates the transporter type for all organ defines for transporter with the given transporter type (only if the
       ///    transporter type is defined)
       /// </summary>

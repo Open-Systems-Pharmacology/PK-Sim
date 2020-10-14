@@ -13,13 +13,14 @@ namespace PKSim.Presentation.Presenters.Individuals
 
    public class IndividualEnzymeExpressionsPresenterNew<TSimulationSubject> : IndividualProteinExpressionsPresenterNew<IndividualEnzyme, TSimulationSubject>, IIndividualEnzymeExpressionsPresenterNew<TSimulationSubject> where TSimulationSubject : ISimulationSubject
    {
-      public IndividualEnzymeExpressionsPresenterNew(
-         IIndividualProteinExpressionsViewNew view, 
-         IEditParameterPresenterTask parameterTask, 
-         IMoleculeExpressionTask<TSimulationSubject> moleculeExpressionTask, 
+      public IndividualEnzymeExpressionsPresenterNew(IIndividualProteinExpressionsViewNew view,
+         IEditParameterPresenterTask parameterTask,
+         IMoleculeExpressionTask<TSimulationSubject> moleculeExpressionTask,
          IIndividualProteinToIndividualProteinDTOMapper individualProteinMapper,
-         IRepresentationInfoRepository representationInfoRepository, IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter)
-         : base(view, parameterTask, moleculeExpressionTask, individualProteinMapper, representationInfoRepository, moleculePropertiesPresenter)
+         IRepresentationInfoRepository representationInfoRepository,
+         IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter,
+         IExpressionLocalizationPresenter<TSimulationSubject> expressionLocalizationPresenter)
+         : base(view, parameterTask, moleculeExpressionTask, individualProteinMapper, representationInfoRepository, moleculePropertiesPresenter, expressionLocalizationPresenter)
       {
       }
    }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.ComponentModel;
 using DevExpress.Utils;
-using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
@@ -20,12 +17,10 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
-using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core;
-using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
@@ -40,38 +35,38 @@ namespace PKSim.UI.Views.Individuals
       private IIndividualProteinExpressionsPresenterNew _presenter;
       private readonly GridViewBinder<ExpressionContainerParameterDTO> _gridViewBinder;
       private IGridViewColumn _colGrouping;
-      private IGridViewColumn  _colParameterValue;
+      private IGridViewColumn _colParameterValue;
       private IGridViewColumn _colParameterName;
-      private ToolTipController _toolTipController;
+      private readonly ToolTipController _toolTipController = new ToolTipController();
       private readonly UxRepositoryItemButtonImage _isFixedParameterEditRepository;
       private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
 
-      public IndividualProteinExpressionsViewNew(IToolTipCreator toolTipCreator,  IImageListRetriever imageListRetriever)
+      public IndividualProteinExpressionsViewNew(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever)
       {
          _toolTipCreator = toolTipCreator;
-         _toolTipController = new ToolTipController();
 
          _imageListRetriever = imageListRetriever;
          InitializeComponent();
          _gridView.ShouldUseColorForDisabledCell = false;
-         _gridView.OptionsView.AllowCellMerge =true;
+         _gridView.OptionsView.AllowCellMerge = true;
          _gridView.GroupFormat = "[#image]{1}";
          _gridView.RowCellStyle += updateRowCellStyle;
          _gridView.ShowingEditor += onShowingEditor;
+         _gridView.EndGrouping += (o, e) => _gridView.ExpandAllGroups();
+
          //_gridView.AllowsFiltering = false;
          _gridViewBinder = new GridViewBinder<ExpressionContainerParameterDTO>(_gridView);
          _gridView.CustomColumnSort += customColumnSort;
          InitializeWithGrid(_gridView);
 
-         _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset, PKSimConstants.UI.ResetParameterToolTip) { TextEditStyle = TextEditStyles.Standard };
+         _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset, PKSimConstants.UI.ResetParameterToolTip)
+            {TextEditStyle = TextEditStyles.Standard};
          _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _toolTipController.Initialize(_imageListRetriever);
          _standardParameterEditRepository.ConfigureWith(typeof(double));
          _standardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
          _gridView.GridControl.ToolTipController = _toolTipController;
-
-
       }
 
       //https://github.com/DevExpress-Examples/custom-gridcontrol-how-to-hide-particular-grouprow-headers-footers-t264208/blob/16.1.4%2B/CS/CustomGridControl/MyDataController.cs
@@ -129,18 +124,17 @@ namespace PKSim.UI.Views.Individuals
 
          _gridViewBinder.AutoBind(item => item.ContainerPathDTO)
             .WithRepository(dto => configureContainerRepository(dto.ContainerPathDTO))
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(PKSimConstants.UI.Organ)
             .AsReadOnly();
 
          _gridViewBinder.AutoBind(item => item.CompartmentPathDTO)
             .WithRepository(dto => configureContainerRepository(dto.CompartmentPathDTO))
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(PKSimConstants.UI.Compartment)
             .AsReadOnly();
 
          _colParameterName = _gridViewBinder.AutoBind(item => item.ParameterName)
             .WithCaption(PKSimConstants.UI.Parameter)
             .AsReadOnly();
-         // .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
 
          _colParameterValue = _gridViewBinder.AutoBind(item => item.Value)
             .WithFormat(parameterFormatter)
@@ -153,7 +147,6 @@ namespace PKSim.UI.Views.Individuals
          _colParameterValue.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.False;
 
 
-
          // var col = _gridViewBinder.AutoBind(item => item.RelativeExpressionNorm)
          //    .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
          //    .WithRepository(x => _progressBarRepository)
@@ -163,6 +156,7 @@ namespace PKSim.UI.Views.Individuals
          // col.XtraColumn.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
          // col.XtraColumn.DisplayFormat.FormatType = FormatType.None;
 
+         _isFixedParameterEditRepository.ButtonClick += (o, e) => OnEvent(resetParameter);
       }
 
       private IFormatter<double> parameterFormatter(ExpressionContainerParameterDTO expressionContainerParameterDTO)
@@ -200,13 +194,11 @@ namespace PKSim.UI.Views.Individuals
 
       private RepositoryItem repoForParameter(ExpressionContainerParameterDTO expressionContainerDTO)
       {
-
          if (_presenter.IsSetByUser(expressionContainerDTO.Parameter))
             return _isFixedParameterEditRepository;
 
          return _standardParameterEditRepository;
       }
-
 
       private void resetParameter()
       {
@@ -222,7 +214,6 @@ namespace PKSim.UI.Views.Individuals
             _presenter.SetParameterUnit(parameterDTO, newUnit);
          });
       }
-
 
       private RepositoryItem configureContainerRepository(PathElement pathElement)
       {
@@ -241,15 +232,25 @@ namespace PKSim.UI.Views.Individuals
 
       public void BindTo(IndividualProteinDTO individualProteinDTO)
       {
-         _gridViewBinder.BindToSource(individualProteinDTO.AllExpressionContainerParameters.ToBindingList());
+         _gridViewBinder.BindToSource(individualProteinDTO.AllVisibleExpressionContainerParameters.ToBindingList());
          _gridView.BestFitColumns();
+      }
 
+      public void AddLocalizationView(IView view)
+      {
+         AddViewTo(layoutItemPanelLocalization, view);
+      }
+
+      public void RefreshData()
+      {
+         _gridView.RefreshData();
       }
 
       public override void InitializeResources()
       {
          base.InitializeResources();
          layoutItemMoleculeProperties.TextVisible = false;
+         layoutItemPanelLocalization.TextVisible = false;
          layoutGroupMoleculeProperties.Text = PKSimConstants.UI.Properties;
          layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.Localization;
       }
@@ -257,6 +258,19 @@ namespace PKSim.UI.Views.Individuals
       protected virtual bool ColumnIsAlwaysActive(GridColumn column)
       {
          return false;
+      }
+
+      protected override void OnValueColumnMouseDown(UxGridView gridView, GridColumn col, int rowHandle)
+      {
+         var parameterDTO = _gridViewBinder.ElementAt(rowHandle)?.Parameter;
+         if (parameterDTO == null) return;
+
+         _gridView.EditorShowMode = hasTextEditor(parameterDTO) ? EditorShowMode.MouseUp : EditorShowMode.Default;
+      }
+
+      private bool hasTextEditor(IParameterDTO parameterDTO)
+      {
+         return !_presenter.IsSetByUser(parameterDTO);
       }
 
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
@@ -281,6 +295,6 @@ namespace PKSim.UI.Views.Individuals
 
       // public override bool HasError => _screenBinder.HasError || _gridViewBinder.HasError;
 
-      public override bool HasError =>  _gridViewBinder.HasError;
+      public override bool HasError => _gridViewBinder.HasError;
    }
 }

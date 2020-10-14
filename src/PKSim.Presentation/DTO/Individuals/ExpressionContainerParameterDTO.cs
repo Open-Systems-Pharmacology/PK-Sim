@@ -37,6 +37,8 @@ namespace PKSim.Presentation.DTO.Individuals
          set => Parameter.Value = value;
       }
 
+      public bool Visible { get; set; }
+
       public override string ToString()
       {
          return $"{ContainerName} - {CompartmentName} - {ParameterName}";

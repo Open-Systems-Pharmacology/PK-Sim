@@ -29,7 +29,7 @@ namespace PKSim.Core.Model
          if (parameter == null)
             return false;
 
-         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP, CoreConstants.Parameters.REL_EXP_BLOOD_CELL,
+         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP, CoreConstants.Parameters.REL_EXP_BLOOD_CELLS,
             CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
 

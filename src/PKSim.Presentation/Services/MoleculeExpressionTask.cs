@@ -174,6 +174,11 @@ namespace PKSim.Presentation.Services
          return new SetTissueLocationCommand(protein, tissueLocation, _executionContext).Run(_executionContext);
       }
 
+      public ICommand SetExpressionLocalizationFor(IndividualProtein protein, Localization localization, TSimulationSubject simulationSubject)
+      {
+         return new SetExpressionLocalizationCommand(protein, localization, simulationSubject, _executionContext).Run(_executionContext);
+      }
+      
       public ICommand SetTransporterTypeFor(IndividualTransporter transporter, TransportType transportType)
       {
          return new SetTransportTypeInAllContainerCommand(transporter, transportType, _executionContext).Run(_executionContext);

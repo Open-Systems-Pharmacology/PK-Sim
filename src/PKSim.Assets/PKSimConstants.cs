@@ -2202,6 +2202,13 @@ namespace PKSim.Assets
          public static readonly string MoleculeExcludeList = "For All Molecules Except";
          public static readonly string MoleculeIncludeList = "For Molecules";
          public static readonly string Type = "Type";
+         public static readonly string LocalizationIntracellular = "Intracellular";
+         public static readonly string LocalizationInterstitial = "Interstitial";
+         public static readonly string LocalizationBloodCellsIntracellular = "Blood Cells Intracellular";
+         public static readonly string LocalizationBloodCellsMembrane = "Blood Cells Membrane";
+         public static readonly string LocalizationVascEndosome = "Vasc. Endothelium endosome";
+         public static readonly string LocalizationVascMembraneApical = "Vasc. Endothelium membrane plasma-side";
+         public static readonly string LocalizationVascMembraneBasolateral = "Vasc. Endothelium membrane tissue-side";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 

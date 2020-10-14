@@ -58,5 +58,10 @@ namespace PKSim.Core.Model
 
       //TODO
       void AddGlobalMolecule(IContainer molecule);
+
+      /// <summary>
+      /// The underlying individual associated with the simulation subject
+      /// </summary>
+      Individual Individual { get; }
    }
 }

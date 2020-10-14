@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -11,6 +13,7 @@ using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -43,6 +46,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly IIndividualProteinToIndividualProteinDTOMapper _individualProteinMapper;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IIndividualMoleculePropertiesPresenter<TSimulationSubject> _moleculePropertiesPresenter;
+      private readonly IExpressionLocalizationPresenter<TSimulationSubject> _expressionLocalizationPresenter;
       protected TProtein _protein;
       private readonly Action<Object> _updateLocationVisibilityHandler;
       private IndividualProteinDTO _proteinDTO;
@@ -54,16 +58,83 @@ namespace PKSim.Presentation.Presenters.Individuals
          IMoleculeExpressionTask<TSimulationSubject> moleculeExpressionTask,
          IIndividualProteinToIndividualProteinDTOMapper individualProteinMapper,
          IRepresentationInfoRepository representationInfoRepository, 
-         IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter)
+         IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter,
+         IExpressionLocalizationPresenter<TSimulationSubject> expressionLocalizationPresenter)
          : base(view, parameterTask)
       {
          _moleculeExpressionTask = moleculeExpressionTask;
          _individualProteinMapper = individualProteinMapper;
          _representationInfoRepository = representationInfoRepository;
          _moleculePropertiesPresenter = moleculePropertiesPresenter;
-         AddSubPresenters(_moleculePropertiesPresenter);
+         _expressionLocalizationPresenter = expressionLocalizationPresenter;
+         _expressionLocalizationPresenter.LocalizationChanged += (o,e)=>onLocalizationChanged();
+         AddSubPresenters(_moleculePropertiesPresenter, _expressionLocalizationPresenter);
          // _updateLocationVisibilityHandler = o => updateLocationSelectionVisibility();
          view.AddMoleculePropertiesView(_moleculePropertiesPresenter.View);
+         view.AddLocalizationView(_expressionLocalizationPresenter.View);
+      }
+
+      private void onLocalizationChanged()
+      {
+         rebind();
+      }
+
+      private void rebind()
+      {
+         updateParametersVisibility();
+         _view.BindTo(_proteinDTO);
+      }
+
+      private void updateParametersVisibility()
+      {
+         if(_protein==null)
+            return;
+
+         _proteinDTO.AllExpressionContainerParameters.Each(x =>
+         {
+            x.Visible = isParameterVisible(x);
+         });
+      }
+
+      private bool isParameterVisible(ExpressionContainerParameterDTO containerDTO)
+      {
+         var parameter = containerDTO.Parameter;
+         //initial concentration always visible
+         if (parameter.IsNamed(INITIAL_CONCENTRATION))
+            return true;
+
+         //global surrogate parameters depending on settings
+         if(string.Equals(parameter.Parameter.GroupName, CoreConstants.Groups.VASCULAR_SYSTEM))
+         {
+            switch (parameter.Name)
+            {
+               case REL_EXP_BLOOD_CELLS:
+                  return _protein.InBloodCells;
+               case FRACTION_EXPRESSED_BLOOD_CELLS:
+               case FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE:
+                  return _protein.IsBloodCellsMembrane && _protein.IsBloodCellsIntracellular;
+               case REL_EXP_VASC_ENDO:
+                  return _protein.InVascularEndothelium;
+               case FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME:
+                  return _protein.IsVascEndosome;
+               case FRACTION_EXPRESSED_VASC_ENDO_BASOLATERAL:
+                  return _protein.IsVascMembraneBasolateral;
+               case FRACTION_EXPRESSED_VASC_ENDO_APICAL:
+                  return _protein.IsVascMembraneApical;
+            }
+         }
+
+         //tissue location. Rel exp visible if we are expressing it
+         switch (parameter.Name)
+         {
+            case REL_EXP:
+               return _protein.InTissue;
+            case FRACTION_EXPRESSED_INTRACELLULAR:
+            case FRACTION_EXPRESSED_INTERSTITIAL:
+               return _protein.IsIntracellular && _protein.IsInterstitial;
+         }
+
+         return true;
       }
 
       public bool OntogenyVisible
@@ -143,11 +214,13 @@ namespace PKSim.Presentation.Presenters.Individuals
          clearReferences();
          _protein = protein;
          _proteinDTO = _individualProteinMapper.MapFrom(SimulationSubject, protein);
-         _view.BindTo(_proteinDTO);
+         rebind();
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
+         _expressionLocalizationPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
          _protein.Changed += _updateLocationVisibilityHandler;
          // updateLocationSelectionVisibility();
          _moleculePropertiesPresenter.RefreshView();
+
       }
 
       private void clearReferences()

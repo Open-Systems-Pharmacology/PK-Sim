@@ -20,6 +20,8 @@ namespace PKSim.Presentation.Views.Individuals
    public interface IIndividualProteinExpressionsViewNew : IView<IIndividualProteinExpressionsPresenterNew>, IIndividualMoleculeView
    {
       void BindTo(IndividualProteinDTO individualProteinDTO);
+      void AddLocalizationView(IView view);
+      void RefreshData();
    }
 
    public interface IIndividualTransporterExpressionsView : IView<IIndividualTransporterExpressionsPresenter>, IIndividualMoleculeView
