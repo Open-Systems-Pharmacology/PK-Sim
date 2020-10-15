@@ -2209,6 +2209,7 @@ namespace PKSim.Assets
          public static readonly string LocalizationVascEndosome = "Vasc. Endothelium endosome";
          public static readonly string LocalizationVascMembraneApical = "Vasc. Endothelium membrane plasma-side";
          public static readonly string LocalizationVascMembraneBasolateral = "Vasc. Endothelium membrane tissue-side";
+         public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 

@@ -22,6 +22,10 @@ namespace PKSim.Presentation.Presenters.Individuals
       IListener<NoTranporterTemplateAvailableEvent>
 
    {
+
+      void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value);
+
+
       /// <summary>
       ///    Update the menbrane ttype for the given transporter container
       /// </summary>

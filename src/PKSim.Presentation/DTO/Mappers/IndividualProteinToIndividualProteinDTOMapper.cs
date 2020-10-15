@@ -25,20 +25,20 @@ namespace PKSim.Presentation.DTO.Mappers
       {
          var dto = new IndividualProteinDTO(individualProtein);
          allExpressionContainersFor(simulationSubject, individualProtein)
-            .SelectMany(x => expressionContainerParameterFrom(dto, individualProtein, x))
-            .Union(globalExpressionContainersFrom(individualProtein))
-            .Each(dto.AddExpressionContainerParameter);
+            .SelectMany(x => expressionContainerParameterFrom(individualProtein, x))
+            .Union(globalExpressionParametersFrom(individualProtein))
+            .Each(dto.AddExpressionParameter);
          return dto;
       }
 
-      private IEnumerable<ExpressionContainerParameterDTO> globalExpressionContainersFrom(IndividualProtein individualProtein)
+      private IEnumerable<ExpressionParameterDTO> globalExpressionParametersFrom(IndividualProtein individualProtein)
       {
          return individualProtein.AllParameters()
             .Except(new[] {individualProtein.ReferenceConcentration, individualProtein.HalfLifeLiver, individualProtein.HalfLifeIntestine, individualProtein.OntogenyFactorParameter, individualProtein.OntogenyFactorGIParameter})
             .Select(x => _expressionContainerMapper.MapFrom(individualProtein, x));
       }
 
-      private IEnumerable<ExpressionContainerParameterDTO> expressionContainerParameterFrom(IndividualProteinDTO individualProteinDTO,
+      private IEnumerable<ExpressionParameterDTO> expressionContainerParameterFrom(
          IndividualProtein protein, MoleculeExpressionContainer moleculeExpressionContainer)
       {
          return moleculeExpressionContainer.AllParameters().Select(x => _expressionContainerMapper.MapFrom(moleculeExpressionContainer, protein, x));

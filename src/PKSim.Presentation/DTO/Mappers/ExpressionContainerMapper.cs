@@ -1,3 +1,4 @@
+using System;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Mappers;
 using PKSim.Core;
@@ -13,19 +14,19 @@ namespace PKSim.Presentation.DTO.Mappers
       //TODO probably not needed anymore
       void UpdateProperties(ExpressionContainerDTO expressionDTO, MoleculeExpressionContainer expressionContainer);
 
-      ExpressionContainerParameterDTO MapFrom(MoleculeExpressionContainer expressionContainer, IndividualMolecule individualMolecule,
+      ExpressionParameterDTO MapFrom(MoleculeExpressionContainer expressionContainer, IndividualMolecule individualMolecule,
          IParameter parameter);
 
-      ExpressionContainerParameterDTO MapFrom(IndividualProtein individualMolecule, IParameter parameter);
+      ExpressionParameterDTO MapFrom(IndividualProtein individualMolecule, IParameter parameter);
    }
 
    public class ExpressionContainerMapper : IExpressionContainerMapper
    {
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IGroupRepository _groupRepository;
-      private readonly IParameterToParameterDTOInContainerMapper<ExpressionContainerParameterDTO> _parameterMapper;
+      private readonly IParameterToParameterDTOInContainerMapper<ExpressionParameterDTO> _parameterMapper;
 
-      public ExpressionContainerMapper(IParameterToParameterDTOInContainerMapper<ExpressionContainerParameterDTO> parameterMapper,
+      public ExpressionContainerMapper(IParameterToParameterDTOInContainerMapper<ExpressionParameterDTO> parameterMapper,
          IRepresentationInfoRepository representationInfoRepository, IGroupRepository groupRepository)
       {
          _parameterMapper = parameterMapper;
@@ -47,7 +48,7 @@ namespace PKSim.Presentation.DTO.Mappers
          //                             x => x.RelativeExpression, x => x.RelativeExpressionParameter);
       }
 
-      public ExpressionContainerParameterDTO MapFrom(MoleculeExpressionContainer expressionContainer, IndividualMolecule individualMolecule,
+      public ExpressionParameterDTO MapFrom(MoleculeExpressionContainer expressionContainer, IndividualMolecule individualMolecule,
          IParameter parameter)
       {
          var compartment = parameter.ParentContainer.ParentContainer;
@@ -57,7 +58,7 @@ namespace PKSim.Presentation.DTO.Mappers
          return createExpressionContainerParameterDTOFrom(organ.Name, compartmentName, expressionContainer.GroupName, parameter);
       }
 
-      public ExpressionContainerParameterDTO MapFrom(IndividualProtein individualMolecule, IParameter parameter)
+      public ExpressionParameterDTO MapFrom(IndividualProtein individualMolecule, IParameter parameter)
       {
          //TODO DEFINE CONSTANT
          var containerName = parameter.Name.Contains("blood cells") ? CoreConstants.Compartment.BloodCells :
@@ -66,13 +67,13 @@ namespace PKSim.Presentation.DTO.Mappers
          return createExpressionContainerParameterDTOFrom( string.Empty, containerName, parameter.GroupName, parameter);
       }
 
-      private ExpressionContainerParameterDTO createExpressionContainerParameterDTOFrom(string containerName, string compartmentName,
+      private ExpressionParameterDTO createExpressionContainerParameterDTOFrom(string containerName, string compartmentName,
          string groupName, IParameter moleculeParameter)
       {
          var moleculeName = moleculeParameter.ParentContainer.Name;
          var group = _groupRepository.GroupByName(groupName);
 
-         var dto = new ExpressionContainerParameterDTO
+         var dto = new ExpressionParameterDTO
          {
             MoleculeName = moleculeName,
             ContainerName = containerName,
@@ -82,8 +83,6 @@ namespace PKSim.Presentation.DTO.Mappers
             CompartmentPathDTO = _representationInfoRepository.PathElementFor(RepresentationObjectType.CONTAINER, compartmentName),
             Sequence = group.Sequence
          };
-
-
 
          dto.Parameter = _parameterMapper.MapFrom(moleculeParameter, dto, x => x.Value, x => x.Parameter);
          return dto;

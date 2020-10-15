@@ -115,8 +115,6 @@ namespace PKSim.Presentation
          container.Register(typeof(IMoleculeExpressionTask<>), typeof(MoleculeExpressionTask<>));
          container.Register(typeof(IRootNodeToIndividualExpressionsPresenterMapper<>), typeof(RootNodeToIndividualExpressionsPresenterMapper<>));
          container.Register(typeof(IIndividualEnzymeExpressionsPresenter<>), typeof(IndividualEnzymeExpressionsPresenter<>));
-         //TODO
-         container.Register(typeof(IIndividualEnzymeExpressionsPresenterNew<>), typeof(IndividualEnzymeExpressionsPresenterNew<>));
          container.Register(typeof(IIndividualOtherProteinExpressionsPresenter<>), typeof(IndividualOtherProteinExpressionsPresenter<>));
          container.Register(typeof(IIndividualTransporterExpressionsPresenter<>), typeof(IndividualTransporterExpressionsPresenter<>));
          container.Register(typeof(IExpressionLocalizationPresenter<>), typeof(ExpressionLocalizationPresenter<>));

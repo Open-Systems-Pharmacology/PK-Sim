@@ -23,13 +23,13 @@ namespace PKSim.UI.Starter.Presenters
       private readonly OriginDataMapper _originDataMapper;
       private readonly IIndividualFactory _individualFactory;
       private readonly IIndividualEnzymeTask _individualEnzymeTask;
-      private readonly IIndividualEnzymeExpressionsPresenterNew<Individual> _individualEnzymeExpressionsPresenter;
+      private readonly IIndividualEnzymeExpressionsPresenter<Individual> _individualEnzymeExpressionsPresenter;
 
       public StarterRelativeExpressionPresenter(
          IStarterRelativeExpressionView view,
          OriginDataMapper originDataMapper,
          IIndividualFactory individualFactory,
-         IIndividualEnzymeTask individualEnzymeTask, IIndividualEnzymeExpressionsPresenterNew<Individual> individualEnzymeExpressionsPresenter) : base(view)
+         IIndividualEnzymeTask individualEnzymeTask, IIndividualEnzymeExpressionsPresenter<Individual> individualEnzymeExpressionsPresenter) : base(view)
       {
          _originDataMapper = originDataMapper;
          _individualFactory = individualFactory;

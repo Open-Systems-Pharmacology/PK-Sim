@@ -57,7 +57,7 @@ namespace PKSim.UI.Starter
 
       private static void registerUIImplementation(IContainer container)
       {
-         container.Register<IIndividualProteinExpressionsViewNew, IndividualProteinExpressionsViewNew>();
+         container.Register<IIndividualProteinExpressionsView, IndividualProteinExpressionsView>();
          container.Register<IIndividualMoleculePropertiesView, IndividualMoleculePropertiesView>();
          container.Register<IExpressionLocalizationView, ExpressionLocalizationView>();
          container.Register<IOntogenySelectionView, OntogenySelectionView>();

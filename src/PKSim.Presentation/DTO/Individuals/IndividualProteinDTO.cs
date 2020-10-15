@@ -8,21 +8,19 @@ namespace PKSim.Presentation.DTO.Individuals
    public class IndividualProteinDTO : ValidatableDTO<IndividualProtein>
    {
       private readonly IndividualProtein _individualProtein;
-      private readonly List<ExpressionContainerParameterDTO> _allExpressionContainerParameters = new List<ExpressionContainerParameterDTO>();
+      private readonly List<ExpressionParameterDTO> _allExpressionParameters = new List<ExpressionParameterDTO>();
 
       public IndividualProteinDTO(IndividualProtein individualProtein) : base(individualProtein)
       {
          _individualProtein = individualProtein;
       }
 
-      public IReadOnlyList<ExpressionContainerParameterDTO> AllExpressionContainerParameters => _allExpressionContainerParameters;
+      public IReadOnlyList<ExpressionParameterDTO> AllExpressionParameters => _allExpressionParameters;
 
 
-      public IEnumerable<ExpressionContainerParameterDTO> AllVisibleExpressionContainerParameters => _allExpressionContainerParameters.Where(x => x.Visible);
-
-      public void AddExpressionContainerParameter(ExpressionContainerParameterDTO expressionContainerParameterDTO)
+      public void AddExpressionContainerParameter(ExpressionParameterDTO expressionParameterDTO)
       {
-         _allExpressionContainerParameters.Add(expressionContainerParameterDTO);
+         _allExpressionParameters.Add(expressionParameterDTO);
       }
    }
 }
