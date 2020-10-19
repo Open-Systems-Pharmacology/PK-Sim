@@ -75,7 +75,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
          updateParametersVisibility();
          normalizeExpressionValues();
-         _view.BindTo(_proteinDTO.AllExpressionContainerParameters.Where(x => x.Visible));
+         _view.BindTo(_proteinDTO.AllExpressionParameters.Where(x => x.Visible));
       }
 
       private void updateParametersVisibility()
@@ -83,7 +83,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          if (_protein == null)
             return;
 
-         _proteinDTO.AllExpressionContainerParameters.Each(x => { x.Visible = isParameterVisible(x); });
+         _proteinDTO.AllExpressionParameters.Each(x => { x.Visible = isParameterVisible(x); });
       }
 
       private bool isParameterVisible(ExpressionParameterDTO expressionParameterDTO)
@@ -154,7 +154,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       private void normalizeExpressionValues()
       {
-         var allExpressionParameters = _proteinDTO.AllExpressionContainerParameters.Where(x => x.Parameter.Parameter.IsExpression()).ToList();
+         var allExpressionParameters = _proteinDTO.AllExpressionParameters.Where(x => x.Parameter.Parameter.IsExpression()).ToList();
          var max = allExpressionParameters.Select(x => x.Value).Max();
 
          allExpressionParameters.Each(x => x.NormalizedExpression = max == 0 ? 0 : x.Value / max);

@@ -53,21 +53,17 @@ namespace PKSim.Presentation.Services
 
       public ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
       {
-         var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
-         var newMolecule = moleculeFactory.CreateFor(simulationSubject);
-
          //database was defined for this species
          if (CanQueryProteinExpressionsFor(simulationSubject))
-            return proteinFromQuery(simulationSubject, newMolecule);
+            return proteinFromQuery<TMolecule>(simulationSubject);
 
          //no database defined for the species. return the simple configuration
-         return simpleMolecule<TMolecule>(simulationSubject, newMolecule);
+         return simpleMolecule<TMolecule>(simulationSubject);
       }
 
       public ICommand AddDefaultMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
       {
-         var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
-         return simpleMolecule<TMolecule>(simulationSubject, moleculeFactory.CreateFor(simulationSubject));
+         return simpleMolecule<TMolecule>(simulationSubject);
       }
 
       public ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject)
@@ -113,7 +109,7 @@ namespace PKSim.Presentation.Services
          return _simulationSubjectExpressionTask.RemoveMoleculeFrom(molecule, simulationSubject);
       }
 
-      private ICommand simpleMolecule<TMolecule>(TSimulationSubject simulationSubject, IndividualMolecule molecule) where TMolecule : IndividualMolecule
+      private ICommand simpleMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
       {
          using (var presenter = _applicationController.Start<ISimpleMoleculePresenter>())
          {
@@ -121,16 +117,19 @@ namespace PKSim.Presentation.Services
             if (!proteinCreated)
                return new PKSimEmptyCommand();
 
-            molecule.Name = presenter.MoleculeName;
+            var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
+            var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, presenter.MoleculeName);
             return addMoleculeTo(molecule, simulationSubject);
          }
       }
 
-      private ICommand proteinFromQuery(TSimulationSubject simulationSubject, IndividualMolecule newMolecule)
+      private ICommand proteinFromQuery<TMolecule>(TSimulationSubject simulationSubject) where TMolecule:IndividualMolecule
       {
          using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
          using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
          {
+            var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
+            var newMolecule = moleculeFactory.AddMoleculeTo(simulationSubject, "%TEMP%");
             presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(newMolecule));
             presenter.Title = PKSimConstants.UI.AddProteinExpression(_executionContext.TypeFor(newMolecule));
             bool proteinCreated = presenter.Start();
@@ -138,8 +137,9 @@ namespace PKSim.Presentation.Services
                return new PKSimEmptyCommand();
 
             var queryResults = presenter.GetQueryResults();
-            newMolecule.Name = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
-            newMolecule.QueryConfiguration = queryResults.QueryConfiguration;
+            var moleculeName = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
+            //Required to rename here as we created a temp molecule earlier to create the structure;
+            _simulationSubjectExpressionTask.RenameMolecule(newMolecule, simulationSubject, moleculeName);
             return addMoleculeTo(newMolecule, simulationSubject, queryResults);
          }
       }
@@ -150,14 +150,14 @@ namespace PKSim.Presentation.Services
          return _simulationSubjectExpressionTask.EditMolecule(moleculeToEdit, editedMolecule, queryResults, simulationSubject);
       }
 
-      private ICommand addMoleculeTo<TMolecule>(TMolecule molecule, TSimulationSubject simulationSubject, QueryExpressionResults queryExpressionResults) where TMolecule : IndividualMolecule
+      private ICommand addMoleculeTo(IndividualMolecule molecule, TSimulationSubject simulationSubject, QueryExpressionResults queryExpressionResults)
       {
          var command = _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject, queryExpressionResults);
          setDefaultFor(molecule, simulationSubject, queryExpressionResults.ProteinName);
          return command;
       }
 
-      private ICommand addMoleculeTo<TMolecule>(TMolecule molecule, TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
+      private ICommand addMoleculeTo(IndividualMolecule molecule, TSimulationSubject simulationSubject) 
       {
          var command = _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject);
          setDefaultFor(molecule, simulationSubject, molecule.Name);

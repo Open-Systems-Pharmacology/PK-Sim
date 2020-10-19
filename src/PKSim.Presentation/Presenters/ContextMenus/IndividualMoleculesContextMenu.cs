@@ -38,7 +38,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          var databaseEnabled = presenter.QueryConfigurationEnabled;
          yield return
             CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddProteinQuery(_addProteinCaption, databaseEnabled))
-               .WithActionCommand(presenter.AddMolcule<TMolecule>)
+               .WithActionCommand(presenter.AddMolecule<TMolecule>)
                .WithEnabled(databaseEnabled)
                .WithIcon(_addProteinIcon);
       }

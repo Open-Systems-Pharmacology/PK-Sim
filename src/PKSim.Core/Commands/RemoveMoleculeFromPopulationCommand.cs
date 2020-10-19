@@ -4,7 +4,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public class RemoveMoleculeFromPopulationCommand : RemoveEntityFromContainerCommand<IndividualMolecule, Population, RemoveMoleculeFromSimulationSubjectEvent<Population>>
+   public class RemoveMoleculeFromPopulationCommand : RemoveEntityFromContainerCommand<IndividualMolecule, Population, RemoveMoleculeFromSimulationSubjectEvent<Population>> 
    {
       public RemoveMoleculeFromPopulationCommand(IndividualMolecule molecule, Population population, IExecutionContext context) :
          base(molecule, population, context, x => x.RemoveMolecule)

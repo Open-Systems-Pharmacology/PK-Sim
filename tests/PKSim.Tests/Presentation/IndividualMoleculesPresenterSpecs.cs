@@ -130,7 +130,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.AddMolcule<IndividualEnzyme>();
+         sut.AddMolecule<IndividualEnzyme>();
       }
 
       [Observation]

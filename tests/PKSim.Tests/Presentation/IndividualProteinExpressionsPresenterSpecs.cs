@@ -60,9 +60,9 @@ namespace PKSim.Presentation
          _relativeExpression = createParameter(CoreConstants.Parameters.REL_EXP);
          _relativeExpression2 = createParameter(CoreConstants.Parameters.REL_EXP);
          _fraction_exp_bc = createParameter(CoreConstants.Parameters.FRACTION_EXPRESSED_BLOOD_CELLS);
-         _enzymeDTO.AddExpressionContainerParameter(_initialConcentration);
-         _enzymeDTO.AddExpressionContainerParameter(_relativeExpression);
-         _enzymeDTO.AddExpressionContainerParameter(_fraction_exp_bc);
+         _enzymeDTO.AddExpressionParameter(_initialConcentration);
+         _enzymeDTO.AddExpressionParameter(_relativeExpression);
+         _enzymeDTO.AddExpressionParameter(_fraction_exp_bc);
          A.CallTo(() => _individualProteinMapper.MapFrom(_individual, _enzyme)).Returns(_enzymeDTO);
 
          A.CallTo(() => _view.BindTo(A<IEnumerable<ExpressionParameterDTO>>._))
@@ -122,7 +122,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _enzymeDTO.AddExpressionContainerParameter(_relativeExpression2);
+         _enzymeDTO.AddExpressionParameter(_relativeExpression2);
 
          _relativeExpression.Parameter.Parameter.Value = 5;
          _relativeExpression2.Parameter.Parameter.Value = 10;

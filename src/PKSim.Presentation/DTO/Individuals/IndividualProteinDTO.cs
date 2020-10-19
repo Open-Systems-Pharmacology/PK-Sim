@@ -18,7 +18,7 @@ namespace PKSim.Presentation.DTO.Individuals
       public IReadOnlyList<ExpressionParameterDTO> AllExpressionParameters => _allExpressionParameters;
 
 
-      public void AddExpressionContainerParameter(ExpressionParameterDTO expressionParameterDTO)
+      public void AddExpressionParameter(ExpressionParameterDTO expressionParameterDTO)
       {
          _allExpressionParameters.Add(expressionParameterDTO);
       }

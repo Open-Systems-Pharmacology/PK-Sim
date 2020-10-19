@@ -24,6 +24,15 @@ namespace PKSim.Core.Services
       ///    database will be used. Otherwise the value defined in the molecule will used.
       /// </summary>
       ICommand AddMoleculeVariability(IndividualMolecule molecule, Population population, bool usePredefinedMeanVariability);
+
+
+      /// <summary>
+      ///    Automatically adds user defined variability to the <paramref name="population" /> for
+      ///    the molecile named <paramref name="moleculeName" /> only if the information is available in the database and returns the
+      ///    executed command. If<paramref name="usePredefinedMeanVariability" /> is <c>true</c>, the mean defined in the
+      ///    database will be used. Otherwise the value defined in the molecule will used.
+      /// </summary>
+      ICommand AddMoleculeVariability(string moleculeName, Population population, bool usePredefinedMeanVariability);
    }
 
    public class MoleculeParameterVariabilityCreator : IMoleculeParameterVariabilityCreator
@@ -64,6 +73,12 @@ namespace PKSim.Core.Services
          };
          _executionContext.UpdateBuildingBlockPropertiesInCommand(macroCommand, population);
          return macroCommand;
+      }
+
+      public ICommand AddMoleculeVariability(string moleculeName, Population population, bool usePredefinedMeanVariability)
+      {
+         var molecule = population.MoleculeByName(moleculeName);
+         return AddMoleculeVariability(molecule, population, usePredefinedMeanVariability);
       }
 
       private ICommand addParameterVariability(IndividualMolecule individualMolecule, IParameter parameter, Population population, bool usePredefinedMeanVariability)

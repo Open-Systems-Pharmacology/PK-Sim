@@ -52,7 +52,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       /// <summary>
       ///    Add a new protein of the given type to the individual
       /// </summary>
-      void AddMolcule<TMolecule>() where TMolecule : IndividualMolecule;
+      void AddMolecule<TMolecule>() where TMolecule : IndividualMolecule;
 
       /// <summary>
       ///    Add a default protein using the default construct
@@ -249,7 +249,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          AddCommand(_moleculeExpressionTask.RemoveMoleculeFrom(molecule, _simulationSubject));
       }
 
-      public virtual void AddMolcule<TMolecule>() where TMolecule : IndividualMolecule
+      public virtual void AddMolecule<TMolecule>() where TMolecule : IndividualMolecule
       {
          AddCommand(_moleculeExpressionTask.AddMoleculeTo<TMolecule>(_simulationSubject));
       }

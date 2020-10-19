@@ -12,12 +12,18 @@ namespace PKSim.Core.Commands
 
       protected override ICommand RemoveMoleculeFromSimulationSubjectCommand(IndividualMolecule molecule, Individual individual, IExecutionContext context)
       {
-         return new RemoveMoleculeFromIndividualCommand(molecule, individual, context);
+         //TODO
+         return new PKSimEmptyCommand();
+
+         // return new RemoveMoleculeFromIndividualCommand(molecule, individual, context);
       }
 
       protected override ICommand AddMoleculeToSimulationSubjectCommand(IndividualMolecule molecule, Individual individual, IExecutionContext context)
       {
-         return new AddMoleculeToIndividualCommand(molecule, individual, context);
+         //TODO
+         return new PKSimEmptyCommand();
+
+         // return new AddMoleculeToIndividualCommand(molecule, individual, context);
       }
    }
 }
