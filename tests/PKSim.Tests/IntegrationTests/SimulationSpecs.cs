@@ -293,7 +293,7 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
 
          var enzymeFactory = IoC.Resolve<IIndividualEnzymeTask>();
-         var individualProtein = enzymeFactory.CreateFor(_individual).WithName(_enzymeName);
+         var individualProtein = enzymeFactory.AddMoleculeTo(_individual,_enzymeName);
          individualProtein.Ontogeny = new UserDefinedOntogeny() {Table = createOntogenyTable()};
          _individual.AddMolecule(individualProtein.DowncastTo<IndividualEnzyme>().WithName(_enzymeName));
 
@@ -704,14 +704,13 @@ namespace PKSim.IntegrationTests
          {
             var moleculeName = "Molecule_" + metaTemplate.Name;
 
-            if (metaTemplate as EnzymaticProcess != null)
+            if (metaTemplate is EnzymaticProcess)
             {
-               var individualProtein = enzymeFactory.CreateFor(_individual).WithName(moleculeName);
-               _individual.AddMolecule(individualProtein.DowncastTo<IndividualEnzyme>().WithName(moleculeName));
+               enzymeFactory.AddMoleculeTo(_individual, moleculeName).WithName(moleculeName);
             }
             else
             {
-               var individualProtein = transporterFactory.CreateFor(_individual).WithName(moleculeName);
+               var individualProtein = transporterFactory.CreateFor(_individual, TransportType.Efflux).WithName(moleculeName);
                _individual.AddMolecule(individualProtein.DowncastTo<IndividualTransporter>().WithName(moleculeName));
             }
 

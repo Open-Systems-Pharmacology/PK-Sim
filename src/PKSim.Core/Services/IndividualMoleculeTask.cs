@@ -12,11 +12,11 @@ namespace PKSim.Core.Services
 {
    public interface IIndividualMoleculeTask : ISpecification<Type>
    {
-      /// <summary>
-      ///    Returns a <see cref="IndividualMolecule" /> filled with the contains defined in the
-      ///    <paramref name="simulationSubject" />
-      /// </summary>
-      IndividualMolecule CreateFor(ISimulationSubject simulationSubject);
+      // /// <summary>
+      // ///    Returns a <see cref="IndividualMolecule" /> filled with the contains defined in the
+      // ///    <paramref name="simulationSubject" />
+      // /// </summary>
+      // IndividualMolecule CreateFor(ISimulationSubject simulationSubject);
 
       /// <summary>
       ///    Returns an empty <see cref="IndividualMolecule" />  (only parameters are defined in the protein, no protein

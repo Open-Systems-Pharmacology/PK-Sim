@@ -25,11 +25,9 @@ namespace PKSim.IntegrationTests
          var compound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
 
-         _enzyme = enzymeFactory.CreateFor(templateIndividual).DowncastTo<IndividualEnzyme>().WithName("CYP");
-         templateIndividual.AddMolecule(_enzyme);
+         _enzyme = enzymeFactory.AddMoleculeTo(templateIndividual, "CYP").DowncastTo<IndividualEnzyme>();
 
-         _protein = enzymeFactory.CreateFor(templateIndividual).DowncastTo<IndividualEnzyme>().WithName("PROT");
-         templateIndividual.AddMolecule(_protein);
+         _protein = enzymeFactory.AddMoleculeTo(templateIndividual, "PROT").DowncastTo<IndividualEnzyme>();
 
          _protein.TissueLocation = TissueLocation.Intracellular;
          _protein.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;

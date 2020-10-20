@@ -26,7 +26,7 @@ namespace PKSim.IntegrationTests
      
       protected override void Because()
       {
-         _result = sut.CreateFor(_individual);
+         _result = sut.AddMoleculeTo(_individual, "CYP3A4");
       }
 
       [Observation]

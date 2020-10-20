@@ -71,7 +71,7 @@ namespace PKSim.Presentation
          _molecule = new IndividualEnzyme { Name = "CYP3A4" };
          _molecule.Add(_moleculeContainer1);
          _molecule.Add(_moleculeContainer2);
-         A.CallTo(() => proteinFactory.CreateFor(_individual)).Returns(_molecule);
+         A.CallTo(() => proteinFactory.AddMoleculeTo(_individual, A<string>._)).Returns(_molecule);
 
          A.CallTo(() => _ontogenyRepository.AllFor(_individual.Species.Name)).Returns(new[] {_ontogeny, new DatabaseOntogeny {Name = "tralala"},});
          A.CallTo(() => _executionContext.Resolve<IOntogenyRepository>()).Returns(_ontogenyRepository);

@@ -100,7 +100,7 @@ namespace PKSim.Presentation
 
    }
 
-   public class When_the_value_of_a_relative_expression_paraemter_is_set_in_the_simulation_expression_presenter : concern_for_SimulationExpressionsPresenter
+   public class When_the_value_of_a_relative_expression_parameter_is_set_in_the_simulation_expression_presenter : concern_for_SimulationExpressionsPresenter
    {
       private ExpressionContainerDTO _expressionContainerDTO;
       private double _value=5;
@@ -111,7 +111,7 @@ namespace PKSim.Presentation
          base.Context();
          _command = A.Fake<ICommand>();
          _expressionContainerDTO = new ExpressionContainerDTO {RelativeExpressionParameter = new ParameterDTO(_relativeExpressionParameter)};
-         A.CallTo(() => _moleculeExpressionTask.SetRelativeExpressionInSimulationFor(_relativeExpressionParameter, _value)).Returns(_command);
+         A.CallTo(() => _moleculeExpressionTask.SetRelativeExpressionFor(_relativeExpressionParameter, _value)).Returns(_command);
       }
 
       protected override void Because()
@@ -122,11 +122,11 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_relative_expression_command_to_update_the_value()
       {
-         A.CallTo(() => _moleculeExpressionTask.SetRelativeExpressionInSimulationFor(_relativeExpressionParameter,_value)).MustHaveHappened();
+         A.CallTo(() => _moleculeExpressionTask.SetRelativeExpressionFor(_relativeExpressionParameter,_value)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_add_the_commadn_to_the_history()
+      public void should_add_the_command_to_the_history()
       {
          A.CallTo(() => _commandCollector.AddCommand(_command)).MustHaveHappened();
       }

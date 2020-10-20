@@ -184,7 +184,7 @@ namespace PKSim.Core
          _snapshot.TissueLocation = TissueLocation.Interstitial;
          var enzymeFactory = A.Fake<IIndividualMoleculeTask>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualEnzyme>()).Returns(enzymeFactory);
-         A.CallTo(() => enzymeFactory.CreateFor(_individual)).Returns(_enzyme);
+         A.CallTo(() => enzymeFactory.AddMoleculeTo(_individual, A<string>._)).Returns(_enzyme);
          _relativeExpressionParameter1.Value = 0;
          _relativeExpressionContainerSnapshot1.Value = 0.5;
          A.CallTo(() => _expressionContainerMapper.MapToModel(_relativeExpressionContainerSnapshot1, A<ExpressionContainerMapperContext>._))
@@ -270,7 +270,7 @@ namespace PKSim.Core
 
          var individualOtherProteinFactory = A.Fake<IIndividualMoleculeTask>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualOtherProtein>()).Returns(individualOtherProteinFactory);
-         A.CallTo(() => individualOtherProteinFactory.CreateFor(_individual)).Returns(_otherProtein);
+         A.CallTo(() => individualOtherProteinFactory.AddMoleculeTo(_individual, A<string>._)).Returns(_otherProtein);
       }
 
       protected override async Task Because()

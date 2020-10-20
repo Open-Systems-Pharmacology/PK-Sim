@@ -2,6 +2,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -10,9 +14,6 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.IntegrationTests
@@ -35,6 +36,7 @@ namespace PKSim.IntegrationTests
       protected IModelPropertiesTask _modelPropertiesTask;
       protected IModelConfigurationRepository _modelConfigurationRepository;
       protected SimulationRunOptions _simulationRunOptions;
+      protected ICache<string, IParameter> _allExpressionParameters;
       protected const double _relExpDuo = 0.2;
       protected const double _relExpBone = 0.3;
 
@@ -50,10 +52,11 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
-         _enzyme = _enzymeTask.CreateFor(_individual).DowncastTo<IndividualEnzyme>().WithName("CYP");
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Plasma).Value = _relExpPls;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.BloodCells).Value = _relExpBloodCells;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.VascularEndothelium).Value = _relExpVascEndo;
+         _enzyme = _enzymeTask.AddMoleculeTo(_individual, "CYP").DowncastTo<IndividualEnzyme>();
+         _allExpressionParameters = _individual.AllExpressionParametersFor(_enzyme);
+         _allExpressionParameters[CoreConstants.Compartment.Plasma].Value = _relExpPls;
+         _allExpressionParameters[CoreConstants.Compartment.BloodCells].Value = _relExpBloodCells;
+         _allExpressionParameters[CoreConstants.Compartment.VascularEndothelium].Value = _relExpVascEndo;
          _individual.AddMolecule(_enzyme);
          _hct = _individual.Organism.Parameter(CoreConstants.Parameters.HCT).Value;
          _metabolizationProcess = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.METABOLIZATION_SPECIFIC_FIRST_ORDER).DowncastTo<PartialProcess>());
@@ -125,7 +128,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_creating_a_simulation_with_an_indivdual_containing_an_enzyme_localized_on_the_extracellular_membrane_basolateral_and_a_partial_process_in_compound : concern_for_PartialProcesses
+   public class When_creating_a_simulation_with_an_individual_containing_an_enzyme_localized_on_the_extracellular_membrane_basolateral_and_a_partial_process_in_compound : concern_for_PartialProcesses
    {
       public override void GlobalContext()
       {
@@ -133,8 +136,8 @@ namespace PKSim.IntegrationTests
 
          _enzyme.TissueLocation = TissueLocation.ExtracellularMembrane;
          _enzyme.MembraneLocation = MembraneLocation.Basolateral;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Organ.Bone).Value = _relExpBone;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Duodenum).Value = _relExpDuo;
+         _allExpressionParameters[CoreConstants.Organ.Bone].Value = _relExpBone;
+         _allExpressionParameters[CoreConstants.Compartment.Duodenum].Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
@@ -147,7 +150,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_create_the_enzyme_only_in_plasma_and_interstial_compartments()
+      public void should_create_the_enzyme_only_in_plasma_and_interstitial_compartments()
       {
          var allContainerWithEnzyme = _simulation.All<IMoleculeAmount>().Where(x => x.Name.Equals(_enzyme.Name)).Select(x => x.ParentContainer);
          allContainerWithEnzyme.Select(x => x.Name).Distinct().Contains(CoreConstants.Compartment.Intracellular).ShouldBeFalse();
@@ -244,8 +247,8 @@ namespace PKSim.IntegrationTests
 
          _enzyme.TissueLocation = TissueLocation.Intracellular;
          _enzyme.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Organ.Bone).Value = _relExpBone;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Duodenum).Value = _relExpDuo;
+         _allExpressionParameters[CoreConstants.Organ.Bone].Value = _relExpBone;
+         _allExpressionParameters[CoreConstants.Compartment.Duodenum].Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
@@ -368,8 +371,8 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
 
          _enzyme.TissueLocation = TissueLocation.Interstitial;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Organ.Bone).Value = _relExpBone;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Duodenum).Value = _relExpDuo;
+         _allExpressionParameters[CoreConstants.Organ.Bone].Value = _relExpBone;
+         _allExpressionParameters[CoreConstants.Compartment.Duodenum].Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
@@ -557,7 +560,7 @@ namespace PKSim.IntegrationTests
          var influxBBB = allTransporters.Where(x => x.MembraneLocation == MembraneLocation.BloodBrainBarrier)
             .FirstOrDefault(x => x.TransportType == TransportType.Influx);
 
-         _transporter = _transporterTask.CreateFor(_individual).DowncastTo<IndividualTransporter>().WithName("TRANS");
+         _transporter = _transporterTask.CreateFor(_individual, TransportType.Efflux).DowncastTo<IndividualTransporter>().WithName("TRANS");
          var transportContainer = _transporter.ExpressionContainer(CoreConstants.Organ.Brain).DowncastTo<TransporterExpressionContainer>();
          transportContainer.UpdatePropertiesFrom(influxBBB);
          _individual.AddMolecule(_transporter);
@@ -590,10 +593,10 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Plasma).Value = 0;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.BloodCells).Value = 0;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.VascularEndothelium).Value = 0;
-         _enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Periportal).Value = 1;
+         _allExpressionParameters[CoreConstants.Compartment.Plasma].Value = 0;
+         _allExpressionParameters[CoreConstants.Compartment.BloodCells].Value = 0;
+         _allExpressionParameters[CoreConstants.Compartment.VascularEndothelium].Value = 0;
+         _allExpressionParameters[CoreConstants.Compartment.Periportal].Value = 1;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
