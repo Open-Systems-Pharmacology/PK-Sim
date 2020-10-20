@@ -13,7 +13,10 @@ namespace PKSim.Core.Commands
 
       protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-         return new RemoveMoleculeFromIndividualCommand(_entityToAdd, _parentContainer, context).AsInverseFor(this);
+         //TODO Implement 
+         // https: //github.com/Open-Systems-Pharmacology/OSPSuite.Core/issues/831
+         // return new RemoveMoleculeFromIndividualCommand(_entityToAdd, _parentContainer, context).AsInverseFor(this);
+         return new PKSimMacroCommand();
       }
    }
 }

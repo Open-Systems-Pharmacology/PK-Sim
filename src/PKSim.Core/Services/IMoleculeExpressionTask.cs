@@ -23,19 +23,13 @@ namespace PKSim.Core.Services
       ICommand AddDefaultMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule;
 
       /// <summary>
-      ///    Set the value of the relative expression for  <paramref name="relativeExpressionParameter"/> defined in molecule <paramref name="molecule"/>
+      ///    Set the value of the relative expression for  <paramref name="relativeExpressionParameter"/>
       /// </summary>
-      /// <param name="molecule">Protein for which the relative expression should be set</param>
       /// <param name="relativeExpressionParameter">
       ///    Relative expression parameter
       /// </param>
       /// <param name="value">relative expression</param>
-      ICommand SetRelativeExpressionFor(IndividualMolecule molecule, IParameter relativeExpressionParameter, double value);
-
-      /// <summary>
-      ///    Set the value of the relative expression for the parameter in the simulation
-      /// </summary>
-      ICommand SetRelativeExpressionInSimulationFor(IParameter parameter, double value);
+      ICommand SetRelativeExpressionFor(IParameter relativeExpressionParameter, double value);
 
       /// <summary>
       ///    Remove the given molecule from the simulationSubject
@@ -63,11 +57,6 @@ namespace PKSim.Core.Services
       ICommand SetMembraneLocationFor(TransporterExpressionContainer transporterContainer, TransportType transportType, MembraneLocation membraneLocation);
 
       /// <summary>
-      ///    Update the tissue location of the protein
-      /// </summary>
-      ICommand SetTissueLocationFor(IndividualProtein protein, TissueLocation tissueLocation);
-
-      /// <summary>
       ///    Update the localization of the protein
       /// </summary>
       ICommand SetExpressionLocalizationFor(IndividualProtein protein, Localization localization, TSimulationSubject simulationSubject);
@@ -77,9 +66,5 @@ namespace PKSim.Core.Services
       ///    transporter type is defined)
       /// </summary>
       ICommand SetTransporterTypeFor(IndividualTransporter transporter, TransportType transportType);
-
-      ICommand SetMembraneLocationFor(IndividualProtein individualProteinOrEnzyme, MembraneLocation membraneLocation);
-
-      ICommand SetIntracellularVascularEndoLocation(IndividualProtein protein, IntracellularVascularEndoLocation vascularEndoLocation);
    }
 }

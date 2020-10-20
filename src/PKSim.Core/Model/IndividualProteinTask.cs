@@ -140,7 +140,7 @@ namespace PKSim.Core.Model
 
       public override IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName)
       {
-         var globalContainer = CreateGlobalMoleculeContainer(moleculeName);
+         var globalContainer = CreateMolecule(moleculeName);
          AddVascularSystemExpressionNew(globalContainer, CoreConstants.Groups.VASCULAR_SYSTEM,
             relExpParam(REL_EXP_BLOOD_CELLS),
             fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS, CoreConstants.Rate.ZERO_RATE),
@@ -160,7 +160,7 @@ namespace PKSim.Core.Model
          AddLumenExpressionsNew(simulationSubject, moleculeName);
          AddMucosaExpressionNew(simulationSubject, moleculeName);
 
-         simulationSubject.AddGlobalMolecule(globalContainer);
+         simulationSubject.AddMolecule(globalContainer);
 
          _individualPathWithRootExpander.AddRootToPathIn(simulationSubject, moleculeName);
          return globalContainer;
@@ -254,7 +254,7 @@ namespace PKSim.Core.Model
          return container;
       }
 
-      protected TMolecule CreateGlobalMoleculeContainer(string moleculeName)
+      protected TMolecule CreateMolecule(string moleculeName)
       {
          var molecule = _objectBaseFactory.Create<TMolecule>().WithIcon(Icon.IconName).WithName(moleculeName);
          createMoleculeParameterIn(molecule, REFERENCE_CONCENTRATION, CoreConstants.DEFAULT_REFERENCE_CONCENTRATION_VALUE, MOLAR_CONCENTRATION);

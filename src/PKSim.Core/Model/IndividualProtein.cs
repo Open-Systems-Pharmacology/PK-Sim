@@ -53,6 +53,9 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          var sourceProtein = sourceObject as IndividualProtein;
          if (sourceProtein == null) return;
+         Localization = sourceProtein.Localization;
+
+         //TODO REMOVE
          TissueLocation = sourceProtein.TissueLocation;
          MembraneLocation = sourceProtein.MembraneLocation;
          IntracellularVascularEndoLocation = sourceProtein.IntracellularVascularEndoLocation;

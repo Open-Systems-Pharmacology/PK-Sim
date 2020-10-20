@@ -2,7 +2,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public interface IBuildingBlockChangeCommand : IPKSimReversibleCommand
+   public interface IBuildingBlockChangeCommand : IPKSimCommand
    {
       /// <summary>
       ///    Specifies if the command should increment or decrement the version of the building block changed by the execute
@@ -27,6 +27,7 @@ namespace PKSim.Core.Commands
       /// <param name="originalCommand">Command from which the parameter should be updated</param>
       void UpdateInternalFrom(IBuildingBlockChangeCommand originalCommand);
    }
+
 
    public abstract class BuildingBlockChangeCommand : PKSimReversibleCommand, IBuildingBlockChangeCommand
    {

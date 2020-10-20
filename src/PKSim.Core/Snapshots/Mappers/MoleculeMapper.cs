@@ -117,7 +117,7 @@ namespace PKSim.Core.Snapshots.Mappers
          await _expressionContainerMapper.MapToModels(snapshot.Expression, context);
 
          //once expression have been set, we need to update normalized parameter
-         var normalizeExpressionCommand = new NormalizeRelativeExpressionCommand(context.Molecule, _executionContext);
+         var normalizeExpressionCommand = new NormalizeRelativeExpressionCommand(context.Molecule, context.SimulationSubject,  _executionContext);
          normalizeExpressionCommand.Execute(_executionContext);
       }
 

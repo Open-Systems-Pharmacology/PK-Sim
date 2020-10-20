@@ -11,13 +11,6 @@ namespace PKSim.Presentation.Views.Individuals
       void AddMoleculePropertiesView(IView view);
    }
 
-   public interface IIndividualProteinExpressionsViewOld : IView<IIndividualProteinExpressionsPresenterOld>, IIndividualMoleculeView
-   {
-      void BindTo(ProteinExpressionDTO proteinExpressionDTO);
-      bool IntracellularVascularEndoLocationVisible { set; }
-      bool LocationOnVascularEndoVisible { set; }
-   }
-
    public interface IIndividualProteinExpressionsView : IView<IIndividualProteinExpressionsPresenter>, IIndividualMoleculeView
    {
       void BindTo(IEnumerable<ExpressionParameterDTO> parameters);

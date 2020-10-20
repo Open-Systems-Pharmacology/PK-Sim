@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -21,11 +24,6 @@ namespace PKSim.Core.Model
       public Individual() : base(PKSimBuildingBlockType.Individual)
       {
          Seed = Environment.TickCount;
-      }
-
-      public void AddGlobalMolecule(IContainer molecule)
-      {
-         Add(molecule);
       }
 
       Individual ISimulationSubject.Individual => this;
@@ -92,7 +90,12 @@ namespace PKSim.Core.Model
 
       public virtual void AddMolecule(IndividualMolecule molecule) => Add(molecule);
 
-      public virtual void RemoveMolecule(IndividualMolecule molecule) => RemoveChild(molecule);
+      public virtual void RemoveMolecule(IndividualMolecule molecule)
+      {
+         RemoveChild(molecule);
+         var allMoleculeBuildingBlocks = GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name));
+         allMoleculeBuildingBlocks.Each(x => x.ParentContainer.RemoveChild(x));
+      }
 
       /// <summary>
       ///    Return the protein with the name <paramref name="name" /> if defined in the individual, otherwise null
@@ -160,19 +163,13 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns <c>true</c> if at least one molecule is defined in the individual otherwise false
       /// </summary>
-      public bool HasMolecules()
-      {
-         return HasMolecules<IndividualMolecule>();
-      }
+      public bool HasMolecules() => HasMolecules<IndividualMolecule>();
 
       /// <summary>
       ///    Returns <c>true</c> if at least one molecule of type <typeparamref name="TIndividualMolecule" />is defined in the
       ///    individual otherwise false
       /// </summary>
-      public bool HasMolecules<TIndividualMolecule>() where TIndividualMolecule : IndividualMolecule
-      {
-         return AllMolecules<TIndividualMolecule>().Any();
-      }
+      public bool HasMolecules<TIndividualMolecule>() where TIndividualMolecule : IndividualMolecule => AllMolecules<TIndividualMolecule>().Any();
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
@@ -182,6 +179,27 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(individual, cloneManager);
          OriginData = individual.OriginData.Clone();
          Seed = individual.Seed;
+      }
+
+      public ICache<string,IParameter> AllExpressionParametersFor(IndividualMolecule molecule)
+      {
+         var cache = new Cache<string, IParameter>();
+         var allExpressionParameters =  GetAllChildren<IParameter>(x => x.IsExpression() && x.ParentContainer.IsNamed(molecule.Name));
+         allExpressionParameters.Each(p =>
+            {
+               if (p.IsGlobalExpression())
+                  cache[CoreConstants.ContainerName.GlobalExpressionContainerNameFor(p.Name)] = p;
+               else
+               {
+                  var container = p.ParentContainer.ParentContainer;
+                  var key = container.IsNamed(CoreConstants.Compartment.Intracellular) ? container.ParentContainer.Name : container.Name;
+                  if (p.IsInLumen())
+                     key = CoreConstants.ContainerName.LumenSegmentNameFor(key);
+
+                  cache[key] = p;
+               }
+            });
+            return cache;
       }
    }
 }

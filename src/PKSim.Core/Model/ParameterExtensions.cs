@@ -18,10 +18,19 @@ namespace PKSim.Core.Model
 
       public static void SetPercentile(this IParameter parameter, double percentile)
       {
-         if (!(parameter is IDistributedParameter distributedParameter)) 
+         if (!(parameter is IDistributedParameter distributedParameter))
             return;
 
          distributedParameter.Percentile = percentile;
+      }
+
+      public static bool IsGlobalExpression(this IParameter parameter)
+      {
+         if (parameter == null)
+            return false;
+
+         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELLS,
+            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
 
       public static bool IsExpression(this IParameter parameter)
@@ -29,8 +38,7 @@ namespace PKSim.Core.Model
          if (parameter == null)
             return false;
 
-         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP, CoreConstants.Parameters.REL_EXP_BLOOD_CELLS,
-            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
+         return parameter.IsGlobalExpression() || parameter.IsNamed(CoreConstants.Parameters.REL_EXP);
       }
 
       public static bool IsExpressionOrOntogenyFactor(this IParameter parameter)
@@ -49,7 +57,8 @@ namespace PKSim.Core.Model
          return IsExpressionOrOntogenyFactor(parameter) || IsIndividualMoleculeGlobal(parameter);
       }
 
-      public static bool IsIndividualMoleculeGlobal(this IParameter parameter) => CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
+      public static bool IsIndividualMoleculeGlobal(this IParameter parameter) =>
+         CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
 
       public static bool IsStructural(this IParameter parameter)
       {
@@ -73,7 +82,8 @@ namespace PKSim.Core.Model
          if (parameter.NameIsOneOf(CoreConstants.Parameters.AllDistributionParameters))
             return false;
 
-         if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population, PKSimBuildingBlockType.Simulation))
+         if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population,
+            PKSimBuildingBlockType.Simulation))
             return false;
 
          if (parameter.Formula == null)
@@ -91,7 +101,7 @@ namespace PKSim.Core.Model
          //TODO Review is this change is ok. 
          if (!parameter.IsDefault)
          {
-            if(prev)
+            if (prev)
                return false;
 
             return false;

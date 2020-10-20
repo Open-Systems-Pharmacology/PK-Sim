@@ -60,10 +60,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       public ExpressionParameterDTO MapFrom(IndividualProtein individualMolecule, IParameter parameter)
       {
-         //TODO DEFINE CONSTANT
-         var containerName = parameter.Name.Contains("blood cells") ? CoreConstants.Compartment.BloodCells :
-            parameter.Name.EndsWith("plasma") ? CoreConstants.Compartment.Plasma : CoreConstants.Compartment.VascularEndothelium;
-
+         var containerName = CoreConstants.ContainerName.GlobalExpressionContainerNameFor(parameter.Name);
          return createExpressionContainerParameterDTOFrom( string.Empty, containerName, parameter.GroupName, parameter);
       }
 

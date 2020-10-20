@@ -155,7 +155,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
       {
-         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_transporter, expressionContainerDTO.RelativeExpressionParameter.Parameter, value));
+         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(expressionContainerDTO.RelativeExpressionParameter.Parameter, value));
       }
 
       public void RefreshView()

@@ -29,8 +29,11 @@ namespace PKSim.Presentation.DTO.Mappers
       private readonly IExecutionContext _executionContext;
       private readonly IOrganTypeRepository _organTypeRepository;
 
-      public ExpressionParametersToSimulationExpressionsDTOMapper(IParameterToParameterDTOInContainerMapper<ExpressionContainerDTO> containerParameterMapper, IRepresentationInfoRepository representationInfoRepository,
-         IGroupRepository groupRepository, IParameterTask parameterTask, IParameterToParameterDTOMapper parameterMapper, IFullPathDisplayResolver fullPathDisplayResolver,
+      public ExpressionParametersToSimulationExpressionsDTOMapper(
+         IParameterToParameterDTOInContainerMapper<ExpressionContainerDTO> containerParameterMapper,
+         IRepresentationInfoRepository representationInfoRepository,
+         IGroupRepository groupRepository, IParameterTask parameterTask, IParameterToParameterDTOMapper parameterMapper,
+         IFullPathDisplayResolver fullPathDisplayResolver,
          IExecutionContext executionContext, IOrganTypeRepository organTypeRepository)
       {
          _containerParameterMapper = containerParameterMapper;
@@ -77,18 +80,21 @@ namespace PKSim.Presentation.DTO.Mappers
          var molecule = simulation.Individual?.MoleculeByName<IndividualMolecule>(moleculeName);
          var isTransporter = moleculeIsTransporter(molecule);
 
-         expressionContainerDTO.RelativeExpressionParameter = _containerParameterMapper.MapFrom(relativeExpression, expressionContainerDTO, x => x.RelativeExpression, x => x.RelativeExpressionParameter);
-         expressionContainerDTO.RelativeExpressionNormParameter = _containerParameterMapper.MapFrom(relativeExpressionNorm, expressionContainerDTO, x => x.RelativeExpressionNorm, x => x.RelativeExpressionNormParameter);
+         expressionContainerDTO.RelativeExpressionParameter = _containerParameterMapper.MapFrom(relativeExpression, expressionContainerDTO,
+            x => x.RelativeExpression, x => x.RelativeExpressionParameter);
+         expressionContainerDTO.RelativeExpressionNormParameter = _containerParameterMapper.MapFrom(relativeExpressionNorm, expressionContainerDTO,
+            x => x.RelativeExpressionNorm, x => x.RelativeExpressionNormParameter);
 
          IGroup group;
 
-         if (parameterIsGlobalExpression(relativeExpression))
+         if (relativeExpression.IsGlobalExpression())
          {
             if (isTransporter)
                return null;
 
             group = _groupRepository.GroupByName(CoreConstants.Groups.VASCULAR_SYSTEM);
-            expressionContainerDTO.ContainerPathDTO = _representationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, containerNameForGlobalExpression(relativeExpression.Name)).ToPathElement();
+            expressionContainerDTO.ContainerPathDTO = _representationInfoRepository
+               .InfoFor(RepresentationObjectType.CONTAINER, containerNameForGlobalExpression(relativeExpression.Name)).ToPathElement();
             expressionContainerDTO.Sequence = relativeExpression.Sequence;
          }
          else if (expressionShouldBeTreatedAsGlobal(relativeExpression, isTransporter))
@@ -98,26 +104,30 @@ namespace PKSim.Presentation.DTO.Mappers
          else if (relativeExpression.HasAncestorNamed(CoreConstants.Organ.Lumen))
          {
             group = _groupRepository.GroupByName(CoreConstants.Groups.GI_LUMEN);
-            expressionContainerDTO.ContainerPathDTO = _representationInfoRepository.InfoFor(relativeExpression.ParentContainer.ParentContainer).ToPathElement();
+            expressionContainerDTO.ContainerPathDTO =
+               _representationInfoRepository.InfoFor(relativeExpression.ParentContainer.ParentContainer).ToPathElement();
          }
          else if (relativeExpression.HasAncestorNamed(CoreConstants.Compartment.Mucosa))
          {
             group = _groupRepository.GroupByName(CoreConstants.Groups.GI_MUCOSA);
             //Mucosa rel exp are for instance in Mucosa/Duodnum/interstitial
-            expressionContainerDTO.ContainerPathDTO = _representationInfoRepository.InfoFor(relativeExpression.ParentContainer.ParentContainer.ParentContainer).ToPathElement();
+            expressionContainerDTO.ContainerPathDTO = _representationInfoRepository
+               .InfoFor(relativeExpression.ParentContainer.ParentContainer.ParentContainer).ToPathElement();
          }
 
          else
          {
             var expressionContainer = expressionContainerFor(relativeExpression);
-            group = _groupRepository.GroupByName(isGiTractOrgan(expressionContainer) ? CoreConstants.Groups.GI_NON_MUCOSA_TISSUE : CoreConstants.Groups.ORGANS_AND_TISSUES);
+            group = _groupRepository.GroupByName(isGiTractOrgan(expressionContainer)
+               ? CoreConstants.Groups.GI_NON_MUCOSA_TISSUE
+               : CoreConstants.Groups.ORGANS_AND_TISSUES);
             expressionContainerDTO.ContainerPathDTO = _representationInfoRepository.InfoFor(expressionContainer).ToPathElement();
          }
 
          expressionContainerDTO.GroupingPathDTO = _representationInfoRepository.InfoFor(RepresentationObjectType.GROUP, group.Name).ToPathElement();
 
          //May have been set previously
-         if (expressionContainerDTO.Sequence==0)
+         if (expressionContainerDTO.Sequence == 0)
             expressionContainerDTO.Sequence = group.Sequence;
 
          expressionContainerDTO.MoleculeName = moleculeName;
@@ -186,13 +196,6 @@ namespace PKSim.Presentation.DTO.Mappers
             return CoreConstants.Compartment.VascularEndothelium;
 
          return parameterName;
-      }
-
-      private bool parameterIsGlobalExpression(IParameter relativeExpression)
-      {
-         return relativeExpression.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELLS,
-            CoreConstants.Parameters.REL_EXP_PLASMA,
-            CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
    }
 }

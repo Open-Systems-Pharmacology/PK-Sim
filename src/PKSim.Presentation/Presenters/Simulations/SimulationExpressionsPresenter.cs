@@ -71,7 +71,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double valueInGuiUnit)
       {
-         AddCommand(_moleculeExpressionTask.SetRelativeExpressionInSimulationFor(expressionContainerDTO.RelativeExpressionParameter.Parameter, valueInGuiUnit));
+         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(expressionContainerDTO.RelativeExpressionParameter.Parameter, valueInGuiUnit));
       }
 
       public void SetFavorite(ExpressionContainerDTO expressionContainerDTO, bool isFavorite)

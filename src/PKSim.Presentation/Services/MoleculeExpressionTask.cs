@@ -71,7 +71,7 @@ namespace PKSim.Presentation.Services
          using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
          using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
          {
-            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(molecule));
+            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(molecule, simulationSubject));
             presenter.Title = PKSimConstants.UI.EditProteinExpression;
             bool proteinEdited = presenter.Start();
             if (!proteinEdited)
@@ -94,14 +94,9 @@ namespace PKSim.Presentation.Services
          return _geneExpressionsDatabasePathManager.HasDatabaseFor(simulationSubject.Species);
       }
 
-      public ICommand SetRelativeExpressionFor(IndividualMolecule molecule, IParameter relativeExpressionParameter, double value)
+      public ICommand SetRelativeExpressionFor(IParameter relativeExpressionParameter, double value)
       {
-         return new SetRelativeExpressionAndNormalizeCommand(molecule, relativeExpressionParameter, value).Run(_executionContext);
-      }
-
-      public ICommand SetRelativeExpressionInSimulationFor(IParameter parameter, double value)
-      {
-         return new SetRelativeExpressionInSimulationAndNormalizedCommand(parameter, value).Run(_executionContext);
+         return new SetRelativeExpressionCommand(relativeExpressionParameter, value).Run(_executionContext);
       }
 
       public ICommand RemoveMoleculeFrom(IndividualMolecule molecule, TSimulationSubject simulationSubject)
@@ -123,18 +118,22 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      private ICommand proteinFromQuery<TMolecule>(TSimulationSubject simulationSubject) where TMolecule:IndividualMolecule
+      private ICommand proteinFromQuery<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
       {
          using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
          using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
          {
             var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
             var newMolecule = moleculeFactory.AddMoleculeTo(simulationSubject, "%TEMP%");
-            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(newMolecule));
+            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(newMolecule, simulationSubject));
             presenter.Title = PKSimConstants.UI.AddProteinExpression(_executionContext.TypeFor(newMolecule));
             bool proteinCreated = presenter.Start();
             if (!proteinCreated)
+            {
+               //needs to remove the molecule that was added previously
+               simulationSubject.RemoveMolecule(newMolecule);
                return new PKSimEmptyCommand();
+            }
 
             var queryResults = presenter.GetQueryResults();
             var moleculeName = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
@@ -144,7 +143,8 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      private ICommand editMolecule<TMolecule>(TMolecule moleculeToEdit, TMolecule editedMolecule, QueryExpressionResults queryResults, TSimulationSubject simulationSubject)
+      private ICommand editMolecule<TMolecule>(TMolecule moleculeToEdit, TMolecule editedMolecule, QueryExpressionResults queryResults,
+         TSimulationSubject simulationSubject)
          where TMolecule : IndividualMolecule
       {
          return _simulationSubjectExpressionTask.EditMolecule(moleculeToEdit, editedMolecule, queryResults, simulationSubject);
@@ -157,41 +157,27 @@ namespace PKSim.Presentation.Services
          return command;
       }
 
-      private ICommand addMoleculeTo(IndividualMolecule molecule, TSimulationSubject simulationSubject) 
+      private ICommand addMoleculeTo(IndividualMolecule molecule, TSimulationSubject simulationSubject)
       {
          var command = _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject);
          setDefaultFor(molecule, simulationSubject, molecule.Name);
          return command;
       }
 
-      public ICommand SetMembraneLocationFor(TransporterExpressionContainer transporterContainer, TransportType transportType, MembraneLocation membraneLocation)
+      public ICommand SetMembraneLocationFor(TransporterExpressionContainer transporterContainer, TransportType transportType,
+         MembraneLocation membraneLocation)
       {
          return new SetMembraneTypeCommand(transporterContainer, transportType, membraneLocation, _executionContext).Run(_executionContext);
-      }
-
-      public ICommand SetTissueLocationFor(IndividualProtein protein, TissueLocation tissueLocation)
-      {
-         return new SetTissueLocationCommand(protein, tissueLocation, _executionContext).Run(_executionContext);
       }
 
       public ICommand SetExpressionLocalizationFor(IndividualProtein protein, Localization localization, TSimulationSubject simulationSubject)
       {
          return new SetExpressionLocalizationCommand(protein, localization, simulationSubject, _executionContext).Run(_executionContext);
       }
-      
+
       public ICommand SetTransporterTypeFor(IndividualTransporter transporter, TransportType transportType)
       {
          return new SetTransportTypeInAllContainerCommand(transporter, transportType, _executionContext).Run(_executionContext);
-      }
-
-      public ICommand SetMembraneLocationFor(IndividualProtein protein, MembraneLocation membraneLocation)
-      {
-         return new SetProteinMembraneLocationCommand(protein, membraneLocation, _executionContext).Run(_executionContext);
-      }
-
-      public ICommand SetIntracellularVascularEndoLocation(IndividualProtein protein, IntracellularVascularEndoLocation vascularEndoLocation)
-      {
-         return new SetProteinIntracellularVascularEndoLocationCommand(protein, vascularEndoLocation, _executionContext).Run(_executionContext);
       }
 
       private void setDefaultFor(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)

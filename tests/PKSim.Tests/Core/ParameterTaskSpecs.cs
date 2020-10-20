@@ -74,7 +74,7 @@ namespace PKSim.Core
       [Observation]
       public void the_command_used_should_be_correct_implementation()
       {
-         _command.ShouldBeAnInstanceOf<SetRelativeExpressionInSimulationAndNormalizedCommand>();
+         _command.ShouldBeAnInstanceOf<SetRelativeExpressionCommand>();
       }
    }
 
@@ -109,7 +109,7 @@ namespace PKSim.Core
       [Observation]
       public void the_command_used_should_be_correct_implementation()
       {
-         _command.ShouldBeAnInstanceOf<SetRelativeExpressionAndNormalizeCommand>();
+         _command.ShouldBeAnInstanceOf<SetRelativeExpressionCommand>();
       }
    }
 

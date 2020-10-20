@@ -35,7 +35,7 @@ namespace PKSim.Core.Services
 
       public ICommand RenameMolecule(IndividualMolecule molecule, Individual simulationSubject, string newName)
       {
-         return new RenameMoleculeInSimulationSubjectCommand(simulationSubject, newName, _executionContext).Run(_executionContext);
+         return new RenameMoleculeInSimulationSubjectCommand(molecule, simulationSubject, newName, _executionContext).Run(_executionContext);
       }
    }
 }

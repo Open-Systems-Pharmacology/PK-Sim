@@ -9,8 +9,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
@@ -329,14 +327,7 @@ namespace PKSim.Core.Services
 
       private IPKSimCommand commandForRelativeExpressionParameter(IParameter parameter, double value)
       {
-         var expressionContainer = parameter.ParentContainer;
-         switch (expressionContainer.ParentContainer)
-         {
-            case IndividualMolecule individualMolecule:
-               return new SetRelativeExpressionAndNormalizeCommand(individualMolecule, parameter, value);
-            default:
-               return new SetRelativeExpressionInSimulationAndNormalizedCommand(parameter, value);
-         }
+         return new SetRelativeExpressionCommand(parameter, value);
       }
 
       private IOSPSuiteCommand setParameterValue(IParameter parameter, double value, bool shouldChangeVersion, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)

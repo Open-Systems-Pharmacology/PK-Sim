@@ -16,7 +16,7 @@ namespace PKSim.UI.Views.Individuals
    {
       private readonly ScreenBinder<IndividualProtein> _screenBinder;
       private IExpressionLocalizationPresenter _presenter;
-      private const int HEIGHT = 93;
+      private const int HEIGHT = 72;
       public ExpressionLocalizationView()
       {
          InitializeComponent();

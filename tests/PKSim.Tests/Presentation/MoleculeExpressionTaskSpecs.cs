@@ -102,7 +102,7 @@ namespace PKSim.Presentation
          _querySettings = A.Fake<QueryExpressionSettings>();
          _queryResults = new QueryExpressionResults(new List<ExpressionResult>());
          _queryResults.ProteinName = _moleculeName;
-         A.CallTo(() => _querySettingsMapper.MapFrom(_molecule)).Returns(_querySettings);
+         A.CallTo(() => _querySettingsMapper.MapFrom(_molecule,_individual)).Returns(_querySettings);
          A.CallTo(() => _geneExpressionsDatabasePathManager.HasDatabaseFor(_individual.Species)).Returns(true);
          A.CallTo(() => _proteinExpressionPresenter.Start()).Returns(true);
          A.CallTo(() => _proteinExpressionPresenter.GetQueryResults()).Returns(_queryResults);
@@ -252,13 +252,13 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.SetRelativeExpressionFor(_molecule, _relExp, _relativeVMaxValue);
+         _result = sut.SetRelativeExpressionFor(_relExp, _relativeVMaxValue);
       }
 
       [Observation]
       public void should_return_the_underlying_command_used_to_set_the_relative_expression_value()
       {
-         _result.ShouldBeAnInstanceOf<SetRelativeExpressionAndNormalizeCommand>();
+         _result.ShouldBeAnInstanceOf<SetRelativeExpressionCommand>();
       }
    }
 
@@ -308,7 +308,7 @@ namespace PKSim.Presentation
          _querySettings = A.Fake<QueryExpressionSettings>();
          _queryResults = A.Fake<QueryExpressionResults>();
          A.CallTo(() => _executionContext.Clone(_molecule)).Returns(_clonedProtein);
-         A.CallTo(() => _querySettingsMapper.MapFrom(_molecule)).Returns(_querySettings);
+         A.CallTo(() => _querySettingsMapper.MapFrom(_molecule, _individual)).Returns(_querySettings);
          A.CallTo(() => _proteinExpressionPresenter.Start()).Returns(true);
          A.CallTo(() => _proteinExpressionPresenter.GetQueryResults()).Returns(_queryResults);
       }

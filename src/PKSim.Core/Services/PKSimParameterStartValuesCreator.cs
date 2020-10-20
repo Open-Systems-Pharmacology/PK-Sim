@@ -184,7 +184,7 @@ namespace PKSim.Core.Services
       {
          var containerName = relativeExpressionContainerNameFrom(molecule, expressionContainer);
          var relExpPath = relExpPathFor(molecule, expressionContainer);
-         trySetValue(relExpPath, molecule.GetRelativeExpressionParameterFor(containerName));
+        //TODO  trySetValue(relExpPath, molecule.GetRelativeExpressionParameterFor(containerName));
          var relExpOut = relExpOutPathFor(molecule, expressionContainer);
          trySetFormula(relExpOut, CoreConstants.Rate.RelExpOutFromRelExp);
       }
@@ -252,7 +252,7 @@ namespace PKSim.Core.Services
       private void setGlobalParameterValue(IndividualMolecule molecule, string expressionName, string containerName)
       {
          if (!molecule.HasContainerNamed(containerName)) return;
-         trySetValue(moleculeGlobalPathFor(molecule.Name).AndAdd(expressionName), molecule.GetRelativeExpressionParameterFor(containerName));
+       //TODO  trySetValue(moleculeGlobalPathFor(molecule.Name).AndAdd(expressionName), molecule.GetRelativeExpressionParameterFor(containerName));
       }
 
       private IFormula zeroFormula()

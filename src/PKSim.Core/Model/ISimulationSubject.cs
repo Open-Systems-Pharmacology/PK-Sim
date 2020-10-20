@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
 
 namespace PKSim.Core.Model
 {
@@ -19,7 +20,7 @@ namespace PKSim.Core.Model
       Species Species { get; }
 
       /// <summary>
-      ///   Returns <c>true</c> if the underlying species is Human otherwise <c>false</c>
+      ///    Returns <c>true</c> if the underlying species is Human otherwise <c>false</c>
       /// </summary>
       bool IsHuman { get; }
 
@@ -38,30 +39,34 @@ namespace PKSim.Core.Model
       IEnumerable<IndividualMolecule> AllMolecules();
 
       /// <summary>
-      /// Returns the molecule named <paramref name="moleculeName"/> or NULL if not found
+      ///    Returns the molecule named <paramref name="moleculeName" /> or NULL if not found
       /// </summary>
       IndividualMolecule MoleculeByName(string moleculeName);
 
       IEnumerable<TMolecules> AllMolecules<TMolecules>() where TMolecules : IndividualMolecule;
 
       /// <summary>
-      ///    Add a <paramref name="molecule"/> to the subject
+      ///    Add a <paramref name="molecule" /> to the subject
       /// </summary>
       /// <param name="molecule"> Molecule to add </param>
       void AddMolecule(IndividualMolecule molecule);
 
       /// <summary>
-      ///    Remove a <paramref name="molecule"/> from the subject
+      ///    Remove a <paramref name="molecule" /> from the subject
       /// </summary>
       /// <param name="molecule"> Molecule to remove </param>
       void RemoveMolecule(IndividualMolecule molecule);
 
-      //TODO
-      void AddGlobalMolecule(IContainer molecule);
-
       /// <summary>
-      /// The underlying individual associated with the simulation subject
+      ///    The underlying individual associated with the simulation subject
       /// </summary>
       Individual Individual { get; }
+
+      /// <summary>
+      ///    Returns all containers defined for the given molecule.
+      /// </summary>
+      /// <example>If we have the following structure Kidney|Intracellular|CYP3A4|RelExp, it will return Kidney</example>
+      /// <returns></returns>
+      ICache<string, IParameter> AllExpressionParametersFor(IndividualMolecule molecule);
    }
 }

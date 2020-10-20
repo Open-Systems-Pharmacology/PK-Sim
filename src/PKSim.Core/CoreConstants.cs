@@ -441,6 +441,22 @@ namespace PKSim.Core
          {
             return CompositeNameFor(proteinName, dataSource);
          }
+
+         public static string GlobalExpressionContainerNameFor(string expressionParameter)
+         {
+            switch (expressionParameter)
+            {
+               case Parameters.REL_EXP_PLASMA:
+                  return Compartment.Plasma;
+               case Parameters.REL_EXP_BLOOD_CELLS:
+                  return Compartment.BloodCells;
+               case Parameters.REL_EXP_VASC_ENDO:
+                  return Compartment.VascularEndothelium;
+
+               default:
+                  return string.Empty;
+            }
+         }
       }
 
       public static class ContainerType

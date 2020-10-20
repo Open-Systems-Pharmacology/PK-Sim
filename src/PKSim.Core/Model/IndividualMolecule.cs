@@ -56,11 +56,6 @@ namespace PKSim.Core.Model
 
       public virtual IParameter HalfLifeIntestine => this.Parameter(CoreConstants.Parameters.HALF_LIFE_INTESTINE);
 
-      public virtual IParameter GetRelativeExpressionParameterFor(string expressionContainerName)
-      { 
-         return ExpressionContainer(expressionContainerName)?.RelativeExpressionParameter;
-      }
-
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
