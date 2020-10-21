@@ -3,7 +3,6 @@ using System.Linq;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -119,10 +118,16 @@ namespace PKSim.Core.Commands
             x.IsNamed(CoreConstants.Parameters.REL_EXP) && x.ParentContainer.IsNamed(_protein.Name));
 
 
+         //not in tissue=> set expression to 0
          command.AddRange(setParametersForFlags(parameterTask, None, InTissue, allTissueRelExpParameters.Select(x => (x, 0.0)).ToArray()));
+
+         //Only in Interstitial => set interstitial fraction to 1
          command.AddRange(setParametersForFlags(parameterTask, Interstitial, Intracellular, allInterstitialFractionParameters.Select(x => (x, 1.0)).ToArray()));
+
+         //Only in Intracellular=> set interstitial fraction to 0
          command.AddRange(setParametersForFlags(parameterTask, Intracellular, Interstitial, allInterstitialFractionParameters.Select(x => (x, 0.0)).ToArray()));
 
+         // no action is required when all localization settings of a group are active. {InTissue, None}
 
          return command.All();
       }
@@ -131,25 +136,33 @@ namespace PKSim.Core.Commands
       {
          var command = new PKSimMacroCommand();
          var parameterTask = context.Resolve<IParameterTask>();
-         var f_exp_vasc_apical = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_APICAL);
-         var f_exp_vasc_endosome = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME);
+         var f_exp_apical = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_APICAL);
+         var f_exp_endosome = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME);
          var rel_exp_vasc = _protein.Parameter(CoreConstants.Parameters.REL_EXP_VASC_ENDO);
 
          //not in vasc endo => set expression to 0
          command.AddRange(setParametersForFlags(parameterTask, None, InVascularEndothelium, (rel_exp_vasc, 0)));
-         command.AddRange(setParametersForFlags(parameterTask, VascMembraneApical | VascEndosome, VascMembraneBasolateral, (f_exp_vasc_apical, 0.5),
-            (f_exp_vasc_endosome, 0.5)));
-         command.AddRange(setParametersForFlags(parameterTask, VascMembraneApical | VascMembraneBasolateral, VascEndosome, (f_exp_vasc_apical, 0.5),
-            (f_exp_vasc_endosome, 0)));
-         command.AddRange(setParametersForFlags(parameterTask, VascEndosome | VascMembraneBasolateral, VascMembraneApical, (f_exp_vasc_apical, 0),
-            (f_exp_vasc_endosome, 0.5)));
-         command.AddRange(setParametersForFlags(parameterTask, VascMembraneApical, VascEndosome | VascMembraneBasolateral, (f_exp_vasc_apical, 1),
-            (f_exp_vasc_endosome, 0)));
-         command.AddRange(setParametersForFlags(parameterTask, VascEndosome, VascMembraneApical | VascMembraneBasolateral, (f_exp_vasc_apical, 0),
-            (f_exp_vasc_endosome, 1)));
-         command.AddRange(setParametersForFlags(parameterTask, VascMembraneBasolateral, VascMembraneApical | VascEndosome, (f_exp_vasc_apical, 0),
-            (f_exp_vasc_endosome, 0)));
 
+         //In apical and endosome but not basolateral => split equally between apical and endosome
+         command.AddRange(setParametersForFlags(parameterTask, VascMembraneApical | VascEndosome, VascMembraneBasolateral, (f_exp_apical, 0.5), (f_exp_endosome, 0.5)));
+
+         //In apical and basolateral but not endosome => split equally between apical and basolateral (basolateral = 1 - apical - endosome)
+         command.AddRange(setParametersForFlags(parameterTask, VascMembraneApical | VascMembraneBasolateral, VascEndosome, (f_exp_apical, 0.5), (f_exp_endosome, 0)));
+
+         //In endosome and basolateral but not apical => split equally between endosome and basolateral (basolateral = 1 - apical - endosome)
+         command.AddRange(setParametersForFlags(parameterTask, VascEndosome | VascMembraneBasolateral, VascMembraneApical, (f_exp_apical, 0), (f_exp_endosome, 0.5)));
+
+         //In apical but not endosome or basolateral => set all to apical
+         command.AddRange(setParametersForFlags(parameterTask, VascMembraneApical, VascEndosome | VascMembraneBasolateral, (f_exp_apical, 1), (f_exp_endosome, 0)));
+
+         //In endosome but not apical or basolateral => set all to endosome
+         command.AddRange(setParametersForFlags(parameterTask, VascEndosome, VascMembraneApical | VascMembraneBasolateral, (f_exp_apical, 0), (f_exp_endosome, 1)));
+
+         //In basolateral but not apical or endosome => set all to basolateral
+         command.AddRange(setParametersForFlags(parameterTask, VascMembraneBasolateral, VascMembraneApical | VascEndosome, (f_exp_apical, 0), (f_exp_endosome, 0)));
+
+
+         // no action is required when all localization settings of a group are active. {InVascularEndothelium, None}
          return command.All();
       }
 
@@ -165,13 +178,16 @@ namespace PKSim.Core.Commands
 
          // Only in BC interstitial
          command.AddRange(setParametersForFlags(parameterTask, BloodCellsIntracellular, BloodCellsMembrane, (f_exp_bc_cell, 1)));
+
          // Only in BC membrane
          command.AddRange(setParametersForFlags(parameterTask, BloodCellsMembrane, BloodCellsIntracellular, (f_exp_bc_cell, 0)));
 
+         // no action is required when all localization settings of a group are active. {InBloodCells, None}
          return command.All();
       }
 
-      private IEnumerable<ICommand> setParametersForFlags(IParameterTask parameterTask, Localization enabledLocalization,
+      private IEnumerable<ICommand> setParametersForFlags(IParameterTask parameterTask, 
+         Localization enabledLocalization,
          Localization disabledLocalization,
          params (IParameter param, double value)[] parametersToSet)
       {
