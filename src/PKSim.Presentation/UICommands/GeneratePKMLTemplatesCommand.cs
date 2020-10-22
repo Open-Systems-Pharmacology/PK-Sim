@@ -63,16 +63,16 @@ namespace PKSim.Presentation.UICommands
             Individual = individual,
             Compounds = new[] {compound},
             Protocols = new[] {intrevanousBolusMgPerKg},
-            ModelName = CoreConstants.Model.FourComp,
+            ModelName = CoreConstants.Model.FOUR_COMP,
          };
 
          var fourCompIvBolusMgPerKg = await configurationFrom(snapshotConfiguration);
 
-         snapshotConfiguration.ModelName = CoreConstants.Model.TwoPores;
+         snapshotConfiguration.ModelName = CoreConstants.Model.TWO_PORES;
          var twoPore = await configurationFrom(snapshotConfiguration);
 
          snapshotConfiguration.Protocols = new[] {intrevanousBolusMg};
-         snapshotConfiguration.ModelName = CoreConstants.Model.FourComp;
+         snapshotConfiguration.ModelName = CoreConstants.Model.FOUR_COMP;
          var fourCompIvBolusMg = await configurationFrom(snapshotConfiguration);
 
 

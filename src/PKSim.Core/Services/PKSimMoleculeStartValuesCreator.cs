@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
@@ -18,21 +18,19 @@ namespace PKSim.Core.Services
    {
       private readonly IMoleculeStartValuesCreator _moleculeStartValuesCreator;
       private readonly IObjectPathFactory _objectPathFactory;
-      private readonly IExpressionContainersRetriever _expressionContainersRetriever;
       private readonly IMoleculeStartFormulaRepository _moleculeStartFormulaRepository;
       private readonly IFormulaFactory _formulaFactory;
       private readonly IModelContainerMoleculeRepository _modelContainerMoleculeRepository;
 
-      public PKSimMoleculeStartValuesCreator(IMoleculeStartValuesCreator moleculeStartValuesCreator,
+      public PKSimMoleculeStartValuesCreator(
+         IMoleculeStartValuesCreator moleculeStartValuesCreator,
          IObjectPathFactory objectPathFactory,
-         IExpressionContainersRetriever expressionContainersRetriever,
          IMoleculeStartFormulaRepository moleculeStartFormulaRepository,
          IFormulaFactory formulaFactory,
          IModelContainerMoleculeRepository modelContainerMoleculeRepository)
       {
          _moleculeStartValuesCreator = moleculeStartValuesCreator;
          _objectPathFactory = objectPathFactory;
-         _expressionContainersRetriever = expressionContainersRetriever;
          _moleculeStartFormulaRepository = moleculeStartFormulaRepository;
          _formulaFactory = formulaFactory;
          _modelContainerMoleculeRepository = modelContainerMoleculeRepository;
@@ -42,27 +40,28 @@ namespace PKSim.Core.Services
       {
          //default molecule start values matrix
          var compounds = simulation.Compounds;
+         var individual = simulation.Individual;
          var defaultStartValues = _moleculeStartValuesCreator.CreateFrom(buildConfiguration.SpatialStructure, buildConfiguration.Molecules);
 
          //set available start formulas for molecules
          setStartFormulasForStaticMolecules(defaultStartValues, simulation, compounds);
 
-         foreach (var protein in simulation.Individual.AllMolecules())
+         foreach (var molecule in individual.AllMolecules())
          {
-            var allMoleculesObjectPath = moleculesInvolvedInExpression(buildConfiguration.SpatialStructure, protein, simulation.CompoundPropertiesList);
+            var allMoleculesObjectPath = moleculesInvolvedInExpression(individual, molecule, simulation.CompoundPropertiesList);
             //path involved expression might not exist in the start values structure=>hence check that they are not null
-            var allAvailbleStartValues = allMoleculesObjectPath.Select(objectPath => defaultStartValues[objectPath]).Where(msv => msv != null);
+            var allAvailableStartValues = allMoleculesObjectPath.Select(objectPath => defaultStartValues[objectPath]).Where(msv => msv != null);
             //the one found should be set to present
-            allAvailbleStartValues.Each(msv => msv.IsPresent = true);
+            allAvailableStartValues.Each(msv => msv.IsPresent = true);
          }
 
          return defaultStartValues.WithName(simulation.Name);
       }
 
-      private IEnumerable<IObjectPath> moleculesInvolvedInExpression(ISpatialStructure spatialStructure, IndividualMolecule molecule,
+      private IEnumerable<IObjectPath> moleculesInvolvedInExpression(Individual individual, IndividualMolecule molecule,
          IReadOnlyList<CompoundProperties> compoundPropertiesList)
       {
-         foreach (var expressionContainer in _expressionContainersRetriever.AllContainersFor(spatialStructure, molecule))
+         foreach (var expressionContainer in individual.AllMoleculeContainersFor(molecule))
          {
             var containerPath = _objectPathFactory.CreateAbsoluteObjectPath(expressionContainer);
 

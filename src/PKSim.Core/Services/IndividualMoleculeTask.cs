@@ -118,7 +118,6 @@ namespace PKSim.Core.Services
       private TMoleculeExpressionContainer addContainerExpression(TMolecule protein, IContainer container, string name, string groupingName)
       {
          var expressionContainer = addContainerExpression(protein, name, groupingName);
-         expressionContainer.OrganPath = _entityPathResolver.ObjectPathFor(container);
          return expressionContainer;
       }
 
@@ -141,7 +140,6 @@ namespace PKSim.Core.Services
          {
             var container = addContainerExpression(protein, lumen, CoreConstants.ContainerName.LumenSegmentNameFor(segment.Name),
                CoreConstants.Groups.GI_LUMEN);
-            container.ContainerName = segment.Name;
          }
       }
 
@@ -154,7 +152,6 @@ namespace PKSim.Core.Services
       protected TMoleculeExpressionContainer AddVascularSystemExpression(TMolecule protein, string surrogateName)
       {
          var expressionContainer = addContainerExpression(protein, surrogateName, CoreConstants.Groups.VASCULAR_SYSTEM);
-         expressionContainer.OrganPath = _objectPathFactory.CreateObjectPathFrom(surrogateName);
          return expressionContainer;
       }
 
@@ -162,7 +159,6 @@ namespace PKSim.Core.Services
       {
          var expressionContainer = createContainerExpressionFor(protein, containerName);
          expressionContainer.GroupName = groupingName;
-         expressionContainer.ContainerName = containerName;
          createMoleculeParameterIn(expressionContainer, CoreConstants.Parameters.REL_EXP, 0, Constants.Dimension.DIMENSIONLESS);
          return expressionContainer;
       }

@@ -533,8 +533,8 @@ namespace PKSim.IntegrationTests
          var observersRepo = IoC.Resolve<IFlatModelObserverRepository>();
 
          var observerName = CoreConstants.Observer.CONCENTRATION_IN_FECES;
-         observersRepo.Contains(CoreConstants.Model.FourComp, observerName).ShouldBeTrue();
-         observersRepo.Contains(CoreConstants.Model.TwoPores, observerName).ShouldBeTrue();
+         observersRepo.Contains(CoreConstants.Model.FOUR_COMP, observerName).ShouldBeTrue();
+         observersRepo.Contains(CoreConstants.Model.TWO_PORES, observerName).ShouldBeTrue();
       }
 
       [Observation]

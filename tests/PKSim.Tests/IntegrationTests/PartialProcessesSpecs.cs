@@ -94,38 +94,6 @@ namespace PKSim.IntegrationTests
          allContainerWithEnzyme.Select(x => x.Name).Distinct().Contains(CoreConstants.Compartment.BloodCells).ShouldBeFalse();
       }
 
-      [Observation]
-      public void the_formula_used_in_plasma_for_blood_organ_should_be_the_sum_of_the_value_in_plasma_and_the_value_in_blood_cells_scaled_with_the_hematocrit_ratio()
-      {
-         var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Plasma))
-            .Where(x => x.ParentContainer.ParentContainer.IsBloodOrgan())
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
-
-         foreach (var parameter in allRelExpOutParameters)
-         {
-            parameter.Value.ShouldBeEqualTo(_relExpPls + (_hct) / (1 - _hct) * _relExpBloodCells, 1e-6);
-         }
-      }
-
-      [Observation]
-      public void the_formula_used_in_plasma_for_tissue_organ_should_be_the_sum_of_the_value_in_plasma_with_the_value_in_blood_cells_scaled_with_the_hematocrit_ratio_and_the_value_in_vasc_endo_scaled_with_the_ration_of_volumina_()
-      {
-         var allEnzymeInTissuePlasma = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Plasma))
-            .Where(x => !x.ParentContainer.ParentContainer.IsBloodOrgan());
-
-
-         foreach (var enzyme in allEnzymeInTissuePlasma)
-         {
-            var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
-            var v_pls = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
-            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameters.VolumeVascularEndothelium).Value;
-            relExpOut.Value.ShouldBeEqualTo(_relExpPls + (_hct) / (1 - _hct) * _relExpBloodCells + v_vasend / v_pls * _relExpVascEndo, 1e-6);
-         }
-      }
    }
 
    public class When_creating_a_simulation_with_an_individual_containing_an_enzyme_localized_on_the_extracellular_membrane_basolateral_and_a_partial_process_in_compound : concern_for_PartialProcesses
@@ -195,40 +163,6 @@ namespace PKSim.IntegrationTests
          }
       }
 
-      [Observation]
-      public void the_formula_used_in_plasma_for_all_organs_should_be_the_sum_of_the_value_in_plasma_and_the_value_in_blood_cells_scaled_with_the_hematocrit_ratio()
-      {
-         var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Plasma))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
-
-         foreach (var parameter in allRelExpOutParameters)
-         {
-            parameter.Value.ShouldBeEqualTo(_relExpPls + (_hct) / (1 - _hct) * _relExpBloodCells, 1e-6);
-         }
-      }
-
-      [Observation]
-      public void the_formula_used_in_interstitial_for_tissue_organ_should_be_the_sum_of_the_relexp_in_the_organ_scaled_with_the_organ_fraction_and_the_value_in_vasc_endo_scaled_with_the_ration_of_volumina_()
-      {
-         var allEnzymeInTissueInterstitial = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Interstitial))
-            .Where(x => !x.ParentContainer.ParentContainer.IsBloodOrgan());
-
-
-         foreach (var enzyme in allEnzymeInTissueInterstitial)
-         {
-            var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
-            var relExp = enzyme.Parameter(CoreConstants.Parameters.REL_EXP).Value;
-            var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTRACELLULAR).Value;
-            var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTERSTITIAL).Value;
-            var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
-            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameters.VolumeVascularEndothelium).Value;
-            relExpOut.Value.ShouldBeEqualTo(relExp * f_cell / f_int + v_vasend / v_int * _relExpVascEndo, 1e-6);
-         }
-      }
 
       [Observation]
       public void the_reference_concentration_parameter_should_be_marked_as_can_be_varied_in_the_simulation()
@@ -286,71 +220,6 @@ namespace PKSim.IntegrationTests
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
             .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
-
-         foreach (var parameter in allRelExp)
-         {
-            var grandparent = parameter.ParentContainer.ParentContainer.ParentContainer;
-            if (grandparent.Name.Equals(CoreConstants.Organ.Bone))
-               parameter.Value.ShouldBeEqualTo(_relExpBone);
-
-            if (grandparent.Name.Equals(CoreConstants.Compartment.Duodenum))
-               parameter.Value.ShouldBeEqualTo(_relExpDuo);
-         }
-      }
-
-      [Observation]
-      public void the_formula_used_in_plasma_for_all_organs_should_be_the_the_value_defined_in_plasma()
-      {
-         var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Plasma))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
-
-         foreach (var parameter in allRelExpOutParameters)
-         {
-            parameter.Value.ShouldBeEqualTo(_relExpPls, 1e-6);
-         }
-      }
-
-      [Observation]
-      public void the_formula_used_in_blood_cells_for_all_organs_should_be_the_the_value_defined_in_blood_cells()
-      {
-         var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.BloodCells))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
-
-         foreach (var parameter in allRelExpOutParameters)
-         {
-            parameter.Value.ShouldBeEqualTo(_relExpBloodCells, 1e-6);
-         }
-      }
-
-      [Observation]
-      public void the_formula_used_in_interstitial_for_all_organs_should_be_the_the_value_defined_in_the_vascular_endothelial_scaled_with_the_volume_ratio()
-      {
-         var allEnzymeInTissueInterstitial = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Interstitial))
-            .Where(x => !x.ParentContainer.ParentContainer.IsBloodOrgan());
-
-
-         foreach (var enzyme in allEnzymeInTissueInterstitial)
-         {
-            var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
-            var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
-            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameters.VolumeVascularEndothelium).Value;
-            relExpOut.Value.ShouldBeEqualTo(v_vasend / v_int * _relExpVascEndo, 1e-6);
-         }
-      }
-
-      [Observation]
-      public void the_formula_used_in_intracellular_for_all_organs_should_be_the_the_value_defined_in_organs()
-      {
-         var allRelExp = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
 
          foreach (var parameter in allRelExp)
          {
@@ -429,56 +298,6 @@ namespace PKSim.IntegrationTests
                parameter.Value.ShouldBeEqualTo(_relExpDuo);
          }
       }
-
-      [Observation]
-      public void the_formula_used_in_plasma_for_all_organs_should_be_the_the_value_defined_in_plasma()
-      {
-         var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Plasma))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
-
-         foreach (var parameter in allRelExpOutParameters)
-         {
-            parameter.Value.ShouldBeEqualTo(_relExpPls, 1e-6);
-         }
-      }
-
-      [Observation]
-      public void the_formula_used_in_blood_cells_for_all_organs_should_be_the_the_value_defined_in_blood_cells()
-      {
-         var allRelExpOutParameters = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.BloodCells))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP_OUT));
-
-         foreach (var parameter in allRelExpOutParameters)
-         {
-            parameter.Value.ShouldBeEqualTo(_relExpBloodCells, 1e-6);
-         }
-      }
-
-      [Observation]
-      public void the_formula_used_in_interstitial_for_all_organs_should_be_the_sum_of_the_value_defined_in_the_vascular_endothelial_scaled_with_the_volume_ratio_and_the_value_defined_in_the_organ_scaled_with_the_fraction_ratio()
-      {
-         var allEnzymeInTissueInterstitial = _simulation.All<IMoleculeAmount>()
-            .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Interstitial))
-            .Where(x => !x.ParentContainer.ParentContainer.IsBloodOrgan());
-
-
-         foreach (var enzyme in allEnzymeInTissueInterstitial)
-         {
-            var relExpOut = enzyme.Parameter(CoreConstants.Parameters.REL_EXP_OUT);
-            var relExp = enzyme.Parameter(CoreConstants.Parameters.REL_EXP).Value;
-            var v_int = enzyme.ParentContainer.Parameter(Constants.Parameters.VOLUME).Value;
-            var v_vasend = enzyme.ParentContainer.ParentContainer.Parameter(ConverterConstants.Parameters.VolumeVascularEndothelium).Value;
-            var f_cell = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTRACELLULAR).Value;
-            var f_int = enzyme.ParentContainer.ParentContainer.Parameter(CoreConstants.Parameters.FRACTION_INTERSTITIAL).Value;
-
-            relExpOut.Value.ShouldBeEqualTo(relExp * f_cell / f_int + v_vasend / v_int * _relExpVascEndo, 1e-6);
-         }
-      }
    }
 
    public class When_creating_a_simulation_with_an_individual_containing_an_enzyme_with_intracellular_location_endosomal_with_the_two_pore_model : concern_for_PartialProcesses
@@ -490,7 +309,7 @@ namespace PKSim.IntegrationTests
          _enzyme.TissueLocation = TissueLocation.Intracellular;
          _enzyme.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Endosomal;
 
-         var modelConfig = _modelConfigurationRepository.AllFor(_individual.Species).First(x => x.ModelName == CoreConstants.Model.TwoPores);
+         var modelConfig = _modelConfigurationRepository.AllFor(_individual.Species).First(x => x.ModelName == CoreConstants.Model.TWO_PORES);
          var twoPoreModelProperties = _modelPropertiesTask.DefaultFor(modelConfig, _individual.OriginData);
 
          _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
@@ -522,7 +341,7 @@ namespace PKSim.IntegrationTests
          _enzyme.TissueLocation = TissueLocation.Intracellular;
          _enzyme.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
 
-         var modelConfig = _modelConfigurationRepository.AllFor(_individual.Species).First(x => x.ModelName == CoreConstants.Model.TwoPores);
+         var modelConfig = _modelConfigurationRepository.AllFor(_individual.Species).First(x => x.ModelName == CoreConstants.Model.TWO_PORES);
          var twoPoreModelProperties = _modelPropertiesTask.DefaultFor(modelConfig, _individual.OriginData);
          _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
 

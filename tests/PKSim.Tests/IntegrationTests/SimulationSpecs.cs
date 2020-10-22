@@ -244,7 +244,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TwoPores) as IndividualSimulation;
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TWO_PORES) as IndividualSimulation;
          var buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
          _buildConfiguration = buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
       }
@@ -430,7 +430,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _rat = DomainFactoryForSpecs.CreateStandardIndividual("Rat");
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_rat, _compound, _protocol, CoreConstants.Model.TwoPores) as IndividualSimulation;
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_rat, _compound, _protocol, CoreConstants.Model.TWO_PORES) as IndividualSimulation;
       }
 
       [Observation]
@@ -460,7 +460,7 @@ namespace PKSim.IntegrationTests
 
          _compound2 = DomainFactoryForSpecs.CreateStandardCompound().WithName("C2");
          _protocol2 = DomainFactoryForSpecs.CreateStandardIVBolusProtocol().WithName("IV2");
-         var modelProps = DomainFactoryForSpecs.CreateModelPropertiesFor(_individual, CoreConstants.Model.TwoPores);
+         var modelProps = DomainFactoryForSpecs.CreateModelPropertiesFor(_individual, CoreConstants.Model.TWO_PORES);
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(
             _individual, new[] {_compound, _compound2}, new[] {_protocol, _protocol2}, modelProps) as IndividualSimulation;

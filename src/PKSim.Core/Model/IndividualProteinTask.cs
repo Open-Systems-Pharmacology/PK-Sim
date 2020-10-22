@@ -224,7 +224,6 @@ namespace PKSim.Core.Model
       {
          var expressionContainer = createContainerExpressionForNew(parentContainer, moleculeName);
          expressionContainer.GroupName = groupingName;
-         expressionContainer.ContainerName = containerName;
          parameters.Each(p => addParameterIn(expressionContainer, p, moleculeName));
          return expressionContainer;
       }

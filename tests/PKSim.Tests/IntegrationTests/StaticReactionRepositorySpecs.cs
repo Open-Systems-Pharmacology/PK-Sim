@@ -54,8 +54,8 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _fourCompReactions = sut.AllFor(CoreConstants.Model.FourComp).ToList();
-         _twoPoreReactions = sut.AllFor(CoreConstants.Model.TwoPores).ToList();
+         _fourCompReactions = sut.AllFor(CoreConstants.Model.FOUR_COMP).ToList();
+         _twoPoreReactions = sut.AllFor(CoreConstants.Model.TWO_PORES).ToList();
       }
 
       [Observation]

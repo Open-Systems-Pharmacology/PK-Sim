@@ -38,10 +38,10 @@ namespace PKSim.Presentation.DTO.Mappers
       {
          var group = _groupRepository.GroupByName(expressionContainer.GroupName);
          var groupInfo = _representationInfoRepository.InfoFor(RepresentationObjectType.GROUP, expressionContainer.GroupName);
-         var containerInfo = _representationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, expressionContainer.ContainerName);
+         // var containerInfo = _representationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, expressionContainer.ContainerName);
 
          expressionDTO.GroupingPathDTO = groupInfo.ToPathElement();
-         expressionDTO.ContainerPathDTO = containerInfo.ToPathElement();
+         // expressionDTO.ContainerPathDTO = containerInfo.ToPathElement();
          expressionDTO.Sequence = group.Sequence;
          // expressionDTO.RelativeExpressionParameter =
          //    _parameterMapper.MapFrom(expressionContainer.RelativeExpressionParameter, expressionDTO,

@@ -179,18 +179,6 @@ namespace PKSim.Core
 
       public static class Rate
       {
-         public static readonly string RelExpPlasmaMembraneExtracellularApicalTissueOrgan = "RelExpPlasmaMembraneExtracellularApicalTissueOrgan";
-         public static readonly string RelExpPlasmaMembraneExtracellularApicalBloodOrgan = "RelExpPlasmaMembraneExtracellularApicalBloodOrgan";
-         public static readonly string RelExpInterstialMembraneExtracellularBasolateral = "RelExpInterstialMembraneExtracellularBasolateral";
-         public static readonly string RelExpInterstialIntraVascEndoIsInterstitial = "RelExpInterstialIntraVascEndoIsInterstitial";
-         public static readonly string RelExpInterstialMembraneExtracellularApical = "RelExpInterstialMembraneExtracellularApical";
-         public static readonly string RelExpBloodCellsGlobal = "RelExpBloodCellsGlobal";
-         public static readonly string RelExpPlasmaMembraneExtracellularBasolateral = "RelExpPlasmaMembraneExtracellularBasolateral";
-         public static readonly string RelExpInterstialForInterstitial = "RelExpInterstialForInterstitial";
-         public static readonly string RelExpVascEndoGlobal = "RelExpVascEndoGlobal";
-         public static readonly string RelExpPlasmaGlobal = "RelExpPlasmaGlobal";
-         public static readonly string RelExpEndosomal = "RelExpEndosomal";
-         public static readonly string RelExpOutFromRelExp = "RelExpOutFromRelExp";
          public static readonly string TableFormulaWithOffsetPrefix = "TableFormulaWithOffset_";
          public static readonly string TableFormulaWithXArgumentPrefix = "TableFormulaWithXArgument_";
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA = "PARAM_Application_DoseFromDosePerBodySurfaceArea";
@@ -865,8 +853,8 @@ namespace PKSim.Core
 
       public static class Model
       {
-         public const string FourComp = "4Comp";
-         public const string TwoPores = "TwoPores";
+         public const string FOUR_COMP = "4Comp";
+         public const string TWO_PORES = "TwoPores";
       }
 
       public static class Parameters
@@ -884,21 +872,20 @@ namespace PKSim.Core
          public const string REL_EXP_VASC_ENDO = "Relative expression in vascular endothelium";
          public static readonly string NORM_SUFFIX = " (normalized)";
 
-         public static IReadOnlyList<string> AllGlobalMoleculeParameters = new[]
+         public static readonly IReadOnlyList<string> AllGlobalMoleculeParameters = new[]
          {
             REFERENCE_CONCENTRATION,
             HALF_LIFE_LIVER,
             HALF_LIFE_INTESTINE
          };
 
-         public static IReadOnlyList<string> AllGlobalRelExpParameters = new[]
+         public static readonly IReadOnlyList<string> AllGlobalRelExpParameters = new[]
          {
             REL_EXP_BLOOD_CELLS,
             REL_EXP_PLASMA,
             REL_EXP_VASC_ENDO,
          };
 
-         public static readonly string REL_EXP_OUT = "Relative expression out.";
          public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
          public static readonly string ONTOGENY_FACTOR_GI = "Ontogeny factor GI";
          public static readonly string PARTICLE_BIN_DRUG_MASS = "DrugMass of particle bin";

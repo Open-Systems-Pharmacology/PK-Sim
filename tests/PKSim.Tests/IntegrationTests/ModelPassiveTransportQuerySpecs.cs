@@ -42,7 +42,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _simulation = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.FourComp);
+         _simulation = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.FOUR_COMP);
       }
 
       protected override void Because()
@@ -69,7 +69,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _simulation = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.TwoPores);
+         _simulation = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.TWO_PORES);
       }
 
       protected override void Because()

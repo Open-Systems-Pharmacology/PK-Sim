@@ -5,29 +5,18 @@ namespace PKSim.Core.Model
 {
    public class MoleculeExpressionContainer : Container
    {
-      /// <summary>
-      ///    Path to organ  where the reaction induced by the protein should take place
-      /// </summary>
-      public IObjectPath OrganPath { get; set; }
 
       /// <summary>
       ///    Name of the parent container of the compartment (for organ, name of organ, for segment either lumen or segment name)
       /// </summary>
       public string GroupName { get; set; }
 
-      /// <summary>
-      ///    Name of the physical container where the expression will be defined(Organ or segment).
-      /// </summary>
-      public string ContainerName { get; set; }
-
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          if (!(sourceObject is MoleculeExpressionContainer moleculeExpressionContainer)) return;
 
-         OrganPath = moleculeExpressionContainer.OrganPath.Clone<IObjectPath>();
          GroupName = moleculeExpressionContainer.GroupName;
-         ContainerName = moleculeExpressionContainer.ContainerName;
       }
 
       /// <summary>
@@ -44,11 +33,6 @@ namespace PKSim.Core.Model
       /// </summary>
       public IParameter RelativeExpressionParameter => this.Parameter(CoreConstants.Parameters.REL_EXP);
 
-
-      /// <summary>
-      ///    Return the path of the compartment where the protein will be defined
-      /// </summary>
-      public IObjectPath CompartmentPath(string compartmentName) => OrganPath.Clone<IObjectPath>().AndAdd(compartmentName);
 
       /// <summary>
       ///    returns true if the container represents a lumen segment otherwise false

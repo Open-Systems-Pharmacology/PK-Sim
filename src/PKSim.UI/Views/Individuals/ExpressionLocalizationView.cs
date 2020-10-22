@@ -30,9 +30,9 @@ namespace PKSim.UI.Views.Individuals
          initializeLocalization(layoutItemInterstitial, PKSimConstants.UI.LocalizationInterstitial);
          initializeLocalization(layoutItemBloodCellsIntracellular, PKSimConstants.UI.LocalizationBloodCellsIntracellular);
          initializeLocalization(layoutItemBloodCellsMembrane, PKSimConstants.UI.LocalizationBloodCellsMembrane);
-         initializeLocalization(layoutItemVascEndosome, PKSimConstants.UI.LocalizationVascEndosome);
-         initializeLocalization(layoutItemVascMembraneApical, PKSimConstants.UI.LocalizationVascMembraneApical);
-         initializeLocalization(layoutItemVascMembraneBasolateral, PKSimConstants.UI.LocalizationVascMembraneBasolateral);
+         initializeLocalization(layoutItemVascEndosome, PKSimConstants.UI.LocalizationVascularEndosome);
+         initializeLocalization(layoutItemVascMembraneApical, PKSimConstants.UI.LocalizationVascularMembraneApical);
+         initializeLocalization(layoutItemVascMembraneBasolateral, PKSimConstants.UI.LocalizationVascularMembraneBasolateral);
       }
 
       private void initializeLocalization(LayoutControlItem layoutItem, string caption)
