@@ -5,6 +5,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 
@@ -124,7 +125,7 @@ namespace PKSim.Core
    public class When_executing_the_reverse_command_of_a_set_parameter_value_inverse_command_for_a_parameter_whose_value_was_set_for_the_first_time_in_the_command :
       concern_for_SetParameterValueCommand
    {
-      private IReversibleCommand<IExecutionContext> _reverseCommand;
+      private ICommand<IExecutionContext> _reverseCommand;
 
       protected override void Context()
       {
@@ -139,8 +140,9 @@ namespace PKSim.Core
          command.Execute(_executionContext);
 
          //Inverse of Inverse command = first command
-         command.RestoreExecutionData(_executionContext);
-         _reverseCommand = command.InverseCommand(_executionContext);
+         var inverseCommand = command.DowncastTo<IReversibleCommand<IExecutionContext>>();
+         inverseCommand.RestoreExecutionData(_executionContext);
+         _reverseCommand = inverseCommand.InverseCommand(_executionContext);
       }
 
       protected override void Because()

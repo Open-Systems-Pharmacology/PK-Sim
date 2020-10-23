@@ -18,7 +18,7 @@ namespace PKSim.Core.Commands
          context.PublishEvent(new AddAdvancedParameterContainerToPopulationEvent(_parentContainer));
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new RemoveMoleculeFromPopulationCommand(_entityToAdd, _parentContainer, context).AsInverseFor(this);
       }

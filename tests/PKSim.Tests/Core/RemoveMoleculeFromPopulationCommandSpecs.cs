@@ -49,7 +49,7 @@ namespace PKSim.Core
 
    public class The_inverse_of_the_remove_molecule_from_population_command : concern_for_RemoveMoleculeFromPopulationCommand
    {
-      private IReversibleCommand<IExecutionContext> _result;
+      private ICommand<IExecutionContext> _result;
 
       protected override void Because()
       {
@@ -63,7 +63,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_beeen_marked_as_inverse_for_the_remove_command()
+      public void should_have_been_marked_as_inverse_for_the_remove_command()
       {
          _result.IsInverseFor(sut).ShouldBeTrue();
       }

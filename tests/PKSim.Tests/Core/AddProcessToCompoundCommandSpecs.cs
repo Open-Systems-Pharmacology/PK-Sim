@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Presentation.Core;
@@ -57,7 +58,7 @@ namespace PKSim.Core
 
    public class When_removing_a_process_from_a_compound : concern_for_AddProcessToCompoundCommand
    {
-      protected IReversibleCommand<IExecutionContext> _removePartialStabiCommand;
+      protected ICommand<IExecutionContext> _removePartialStabiCommand;
 
       protected override void Context()
       {
@@ -69,7 +70,7 @@ namespace PKSim.Core
       protected override void Because()
       {
          sut.RestoreExecutionData(_executionContext);
-         _removePartialStabiCommand = sut.InverseCommand(_executionContext);
+         _removePartialStabiCommand = sut.InverseCommand(_executionContext); 
          _removePartialStabiCommand.Execute(_executionContext);
       }
 
@@ -92,7 +93,7 @@ namespace PKSim.Core
          sut.Execute(_executionContext);
          //Remove
          sut.RestoreExecutionData(_executionContext);
-         _removePartialStabiCommand = sut.InverseCommand(_executionContext);
+         _removePartialStabiCommand = sut.InverseCommand(_executionContext).DowncastTo<IReversibleCommand<IExecutionContext>>();
          _removePartialStabiCommand.Execute(_executionContext);
       }
 
@@ -100,7 +101,7 @@ namespace PKSim.Core
       {
          _removePartialStabiCommand.RestoreExecutionData(_executionContext);
 
-         _restorePartialStabiCommand = _removePartialStabiCommand.InverseCommand(_executionContext);
+         _restorePartialStabiCommand = _removePartialStabiCommand.InverseCommand(_executionContext).DowncastTo<IReversibleCommand<IExecutionContext>>();
          _restorePartialStabiCommand.Execute(_executionContext);
       }
 

@@ -42,7 +42,7 @@ namespace PKSim.Core.Commands
          _simulationSubject = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new NormalizeRelativeExpressionCommand(_molecule, _simulationSubject, context).AsInverseFor(this);
       }

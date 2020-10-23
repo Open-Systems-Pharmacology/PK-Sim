@@ -15,7 +15,7 @@ namespace PKSim.Core.Commands
          _oldIsDefault = _parameter.IsDefault;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetParameterDefaultStateCommand(_parameter, _oldIsDefault).AsInverseFor(this);
       }

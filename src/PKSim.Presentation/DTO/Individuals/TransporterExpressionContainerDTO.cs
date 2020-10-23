@@ -3,7 +3,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Individuals
 {
-   public class TransporterExpressionContainerDTO : ExpressionContainerDTO
+   public class TransporterExpressionContainerDTO : ExpressionParameterDTO
    {
       private TransporterExpressionContainer _transporterContainer;
 
@@ -23,11 +23,12 @@ namespace PKSim.Presentation.DTO.Individuals
         set => _transporterContainer.MembraneLocation = value;
      }
 
-      public override void ClearReferences()
-      {
-         base.ClearReferences();
-         _transporterContainer.PropertyChanged  -= raisePropertyChange;
-         _transporterContainer = null;
-      }
+     //TODO
+      // public override void ClearReferences()
+      // {
+      //    base.ClearReferences();
+      //    _transporterContainer.PropertyChanged  -= raisePropertyChange;
+      //    _transporterContainer = null;
+      // }
    }
 }

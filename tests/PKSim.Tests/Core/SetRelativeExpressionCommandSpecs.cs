@@ -80,7 +80,7 @@ namespace PKSim.Core
 
    public class The_inverse_of_the_set_relative_expression_command : concern_for_SetRelativeExpressionCommand
    {
-      private IReversibleCommand<IExecutionContext> _result;
+      private ICommand<IExecutionContext> _result;
 
       protected override void Because()
       {
@@ -94,7 +94,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_beeen_marked_as_inverse_for_the_add_command()
+      public void should_have_been_marked_as_inverse_for_the_add_command()
       {
          _result.IsInverseFor(sut).ShouldBeTrue();
       }

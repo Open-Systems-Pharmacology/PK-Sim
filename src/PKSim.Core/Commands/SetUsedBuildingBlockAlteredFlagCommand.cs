@@ -49,7 +49,7 @@ namespace PKSim.Core.Commands
          _usedBuildingBlock = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetUsedBuildingBlockAlteredFlagCommand(_simulation, _usedBuildingBlock, _oldAltered, context).AsInverseFor(this);
       }

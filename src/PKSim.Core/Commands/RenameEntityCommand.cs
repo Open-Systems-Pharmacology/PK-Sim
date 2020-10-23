@@ -34,7 +34,7 @@ namespace PKSim.Core.Commands
          _entity = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new RenameEntityCommand(_entity, _oldName, context).AsInverseFor(this);
       }

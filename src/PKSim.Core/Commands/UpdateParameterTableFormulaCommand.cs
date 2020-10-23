@@ -22,7 +22,7 @@ namespace PKSim.Core.Commands
          _tableFormula = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new UpdateParameterTableFormulaCommand(_parameter, _tableFormula).AsInverseFor(this);
       }

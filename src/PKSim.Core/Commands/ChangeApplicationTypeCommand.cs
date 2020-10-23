@@ -27,7 +27,7 @@ namespace PKSim.Core.Commands
          _schemaItem = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new ChangeApplicationTypeCommand(_schemaItem, _oldApplicationType, context).AsInverseFor(this);
       }

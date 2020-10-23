@@ -14,7 +14,7 @@ namespace PKSim.Core.Commands
          ObjectType = PKSimConstants.ObjectTypes.Compound;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new AddParameterAlternativeCommand(_entityToRemove, _parentContainer, context).AsInverseFor(this);
       }

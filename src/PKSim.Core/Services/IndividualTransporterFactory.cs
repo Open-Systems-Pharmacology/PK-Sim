@@ -21,15 +21,10 @@ namespace PKSim.Core.Services
 
       public IndividualTransporterTask(IObjectBaseFactory objectBaseFactory, IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory, IEntityPathResolver entityPathResolver,
-         ITransporterContainerTemplateRepository transporterContainerTemplateRepository) : base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver)
+         ITransporterContainerTemplateRepository transporterContainerTemplateRepository) : base(objectBaseFactory, parameterFactory,
+         objectPathFactory, entityPathResolver)
       {
          _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
-      }
-
-      public override IndividualMolecule CreateFor(ISimulationSubject simulationSubject)
-      {
-         //default transporter type is Efflux
-         return CreateFor(simulationSubject, TransportType.Efflux);
       }
 
       public override IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName)
@@ -50,16 +45,41 @@ namespace PKSim.Core.Services
          return transporter;
       }
 
+      private void addTissueOrgansExpression(ISimulationSubject simulationSubject, IndividualTransporter molecule)
+      {
+         foreach (var container in simulationSubject.Organism.NonGITissueContainers)
+         {
+            AddContainerExpression(simulationSubject, molecule, container, CoreConstants.Groups.ORGANS_AND_TISSUES);
+         }
+
+         foreach (var organ in simulationSubject.Organism.GITissueContainers)
+         {
+            AddContainerExpression(simulationSubject, molecule, organ, CoreConstants.Groups.GI_NON_MUCOSA_TISSUE);
+         }
+      }
+
       public IndividualMolecule CreateFor(ISimulationSubject simulationSubject, TransportType transporterType)
       {
          var transporter = CreateEmptyMolecule();
          //default transporter type
          transporter.TransportType = transporterType;
 
-         AddTissueOrgansExpression(simulationSubject, transporter);
+         addTissueOrgansExpression(simulationSubject, transporter);
          AddMucosaExpression(simulationSubject, transporter);
 
          return transporter;
+      }
+
+      protected void AddMucosaExpression(ISimulationSubject simulationSubject, IndividualTransporter molecule)
+      {
+         foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SmallIntestine, CoreConstants.Organ.LargeIntestine))
+         {
+            var organMucosa = organ.Compartment(CoreConstants.Compartment.Mucosa);
+            foreach (var compartment in organMucosa.GetChildren<Compartment>().Where(c => c.Visible))
+            {
+               AddContainerExpression(simulationSubject, molecule, compartment, CoreConstants.Groups.GI_MUCOSA);
+            }
+         }
       }
 
       private void addLiverZoneExpression(Individual individual, IndividualTransporter transporter, string zoneName)
@@ -71,7 +91,8 @@ namespace PKSim.Core.Services
             .Where(x => x.MembraneLocation == MembraneLocation.Apical)
             .First(x => x.TransportType == TransportType.Efflux);
 
-         var transporterContainer = addTransporterExpressionForContainer(individual, transporter, zone, CoreConstants.Groups.ORGANS_AND_TISSUES, transportToBile);
+         var transporterContainer =
+            addTransporterExpressionForContainer(transporter, zone, CoreConstants.Groups.ORGANS_AND_TISSUES, transportToBile);
 
          transporterContainer.ClearProcessNames();
 
@@ -80,7 +101,8 @@ namespace PKSim.Core.Services
          transporterContainer.RelativeExpression = 1;
       }
 
-      protected override TransporterExpressionContainer AddContainerExpression(ISimulationSubject simulationSubject, IndividualTransporter transporter, IContainer container, string groupeName)
+      protected TransporterExpressionContainer AddContainerExpression(ISimulationSubject simulationSubject, IndividualTransporter transporter,
+         IContainer container, string groupName)
       {
          var availableTemplates = _transporterContainerTemplateRepository.TransportersFor(simulationSubject.Species.Name, container.Name)
             .Where(x => x.TransportType == transporter.TransportType).ToList();
@@ -88,14 +110,37 @@ namespace PKSim.Core.Services
          if (!availableTemplates.Any())
             return null;
 
-         return addTransporterExpressionForContainer(simulationSubject, transporter, container, groupeName, availableTemplates.ElementAt(0));
+         return addTransporterExpressionForContainer(transporter, container, groupName, availableTemplates.ElementAt(0));
       }
 
-      private TransporterExpressionContainer addTransporterExpressionForContainer(ISimulationSubject simulationSubject, IndividualTransporter transporter, IContainer container, string groupeName, TransporterContainerTemplate transportTemplate)
+      private TransporterExpressionContainer addTransporterExpressionForContainer(
+         IndividualTransporter transporter, IContainer container, string groupName, TransporterContainerTemplate transportTemplate)
       {
-         var containerExpression = base.AddContainerExpression(simulationSubject, transporter, container, groupeName);
+         var containerExpression = addContainerExpression(transporter, container, container.Name, groupName);
          containerExpression.UpdatePropertiesFrom(transportTemplate);
          return containerExpression;
+      }
+
+      private TransporterExpressionContainer addContainerExpression(IndividualTransporter protein, IContainer container, string name,
+         string groupingName)
+      {
+         var expressionContainer = addContainerExpression(protein, name, groupingName);
+         return expressionContainer;
+      }
+
+      private TransporterExpressionContainer addContainerExpression(IndividualTransporter protein, string containerName, string groupingName)
+      {
+         var expressionContainer = createContainerExpressionFor(protein, containerName);
+         expressionContainer.GroupName = groupingName;
+         CreateMoleculeParameterIn(expressionContainer, CoreConstants.Parameters.REL_EXP, 0, Constants.Dimension.DIMENSIONLESS);
+         return expressionContainer;
+      }
+
+      private TransporterExpressionContainer createContainerExpressionFor(IndividualTransporter protein, string containerName)
+      {
+         var container = _objectBaseFactory.Create<TransporterExpressionContainer>().WithName(containerName);
+         protein.Add(container);
+         return container;
       }
    }
 }

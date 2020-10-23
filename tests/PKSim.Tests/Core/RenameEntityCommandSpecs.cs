@@ -41,7 +41,7 @@ namespace PKSim.Core
 
    public class When_executing_the_rename_entity_inverse_command : concern_for_RenameEntityCommand
    {
-      private IReversibleCommand<IExecutionContext> _inverseCommand;
+      private ICommand<IExecutionContext> _inverseCommand;
 
       protected override void Context()
       {

@@ -38,7 +38,7 @@ namespace PKSim.Core.Commands
          _individual = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetTransportTypeCommand(_transporterContainer, _newTransportType, _oldTransportType, _oldMembraneLocation, context).AsInverseFor(this);
       }

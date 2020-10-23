@@ -71,13 +71,14 @@ namespace PKSim.UI.Views.Individuals
 
       private void customColumnSort(object sender, CustomColumnSortEventArgs e)
       {
-         if (e.Column != _colGrouping.XtraColumn) return;
-         var container1 = e.RowObject1 as ExpressionContainerDTO;
-         var container2 = e.RowObject2 as ExpressionContainerDTO;
-         if (container1 == null || container2 == null) return;
-         e.Handled = true;
-
-         e.Result = container1.Sequence.CompareTo(container2.Sequence);
+         //TODO
+         // if (e.Column != _colGrouping.XtraColumn) return;
+         // var container1 = e.RowObject1 as ExpressionContainerDTO;
+         // var container2 = e.RowObject2 as ExpressionContainerDTO;
+         // if (container1 == null || container2 == null) return;
+         // e.Handled = true;
+         //
+         // e.Result = container1.Sequence.CompareTo(container2.Sequence);
       }
 
       public override void InitializeBinding()
@@ -103,18 +104,19 @@ namespace PKSim.UI.Views.Individuals
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .OnValueUpdating += (transporter, args) => _presenter.SetMembraneLocation(transporter, args.NewValue);
 
-         _colRelativeExpression = _gridViewBinder.Bind(item => item.RelativeExpression)
-            .WithCaption(PKSimConstants.UI.RelativeExpression)
-            .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
-
-         var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
-            .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
-            .WithRepository(x => _progressBarRepository)
-            .AsReadOnly();
-
-         //necessary to align center since double value are aligned right by default
-         col.XtraColumn.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
-         col.XtraColumn.DisplayFormat.FormatType = FormatType.None;
+         //TODO 
+         // _colRelativeExpression = _gridViewBinder.Bind(item => item.RelativeExpression)
+         //    .WithCaption(PKSimConstants.UI.RelativeExpression)
+         //    .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
+         //
+         // var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
+         //    .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
+         //    .WithRepository(x => _progressBarRepository)
+         //    .AsReadOnly();
+         //
+         // //necessary to align center since double value are aligned right by default
+         // col.XtraColumn.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+         // col.XtraColumn.DisplayFormat.FormatType = FormatType.None;
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }

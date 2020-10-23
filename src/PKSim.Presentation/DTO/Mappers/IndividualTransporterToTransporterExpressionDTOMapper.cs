@@ -31,7 +31,8 @@ namespace PKSim.Presentation.DTO.Mappers
       private void addContainerExpression(TransporterExpressionDTO proteinExpressionDTO, IndividualTransporter transporter, TransporterExpressionContainer transporterExpressionContainer)
       {
          var expressionDTO = new TransporterExpressionContainerDTO(transporterExpressionContainer) {MoleculeName = transporter.Name, ContainerName = transporterExpressionContainer.Name};
-         _expressionContainerMapper.UpdateProperties(expressionDTO, transporterExpressionContainer);
+      //TODO 
+         //   _expressionContainerMapper.UpdateProperties(expressionDTO, transporterExpressionContainer);
          proteinExpressionDTO.AddProteinExpression(expressionDTO);
       }
    }

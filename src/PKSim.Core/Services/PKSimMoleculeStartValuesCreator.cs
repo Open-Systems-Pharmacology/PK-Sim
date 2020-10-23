@@ -17,23 +17,23 @@ namespace PKSim.Core.Services
    public class PKSimMoleculeStartValuesCreator : IPKSimMoleculeStartValuesCreator
    {
       private readonly IMoleculeStartValuesCreator _moleculeStartValuesCreator;
-      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IMoleculeStartFormulaRepository _moleculeStartFormulaRepository;
       private readonly IFormulaFactory _formulaFactory;
       private readonly IModelContainerMoleculeRepository _modelContainerMoleculeRepository;
+      private readonly IEntityPathResolver _entityPathResolver;
 
       public PKSimMoleculeStartValuesCreator(
          IMoleculeStartValuesCreator moleculeStartValuesCreator,
-         IObjectPathFactory objectPathFactory,
          IMoleculeStartFormulaRepository moleculeStartFormulaRepository,
          IFormulaFactory formulaFactory,
-         IModelContainerMoleculeRepository modelContainerMoleculeRepository)
+         IModelContainerMoleculeRepository modelContainerMoleculeRepository,
+         IEntityPathResolver entityPathResolver)
       {
          _moleculeStartValuesCreator = moleculeStartValuesCreator;
-         _objectPathFactory = objectPathFactory;
          _moleculeStartFormulaRepository = moleculeStartFormulaRepository;
          _formulaFactory = formulaFactory;
          _modelContainerMoleculeRepository = modelContainerMoleculeRepository;
+         _entityPathResolver = entityPathResolver;
       }
 
       public IMoleculeStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation)
@@ -61,9 +61,9 @@ namespace PKSim.Core.Services
       private IEnumerable<IObjectPath> moleculesInvolvedInExpression(Individual individual, IndividualMolecule molecule,
          IReadOnlyList<CompoundProperties> compoundPropertiesList)
       {
-         foreach (var expressionContainer in individual.AllMoleculeContainersFor(molecule))
+         foreach (var container in individual.AllPhysicalContainersWithMoleculeFor(molecule))
          {
-            var containerPath = _objectPathFactory.CreateAbsoluteObjectPath(expressionContainer);
+            var containerPath = _entityPathResolver.ObjectPathFor(container);
 
             foreach (var compoundProperties in compoundPropertiesList)
             {

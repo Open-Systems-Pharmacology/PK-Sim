@@ -26,7 +26,7 @@ namespace PKSim.Core.Services
       public IndividualEnzyme UndefinedLiverFor(Individual individual)
       {
          var undefinedLiver = CreateEmptyMolecule().WithName(CoreConstants.Molecule.UndefinedLiver);
-         undefinedLiver.TissueLocation = TissueLocation.Intracellular;
+         undefinedLiver.Localization = Localization.Intracellular;
          undefinedLiver.ReferenceConcentration.Visible = false;
          undefinedLiver.HalfLifeLiver.Visible = false;
          undefinedLiver.HalfLifeIntestine.Visible = false;
@@ -38,8 +38,9 @@ namespace PKSim.Core.Services
       {
          var liver = individual.Organism.Organ(CoreConstants.Organ.Liver);
          var zone = liver.Container(zoneName);
-         var container = AddContainerExpression(individual, individualEnzyme, zone, CoreConstants.Groups.ORGANS_AND_TISSUES);
-         container.RelativeExpression = 1;
+         var relExp = RelExpParam(CoreConstants.Parameters.REL_EXP);
+         relExp.DefaultValue = 1;
+         AddContainerExpression(zone, individualEnzyme.Name, CoreConstants.Groups.ORGANS_AND_TISSUES, RelExpParam(CoreConstants.Parameters.REL_EXP));
       }
 
       protected override ApplicationIcon Icon => ApplicationIcons.Enzyme;

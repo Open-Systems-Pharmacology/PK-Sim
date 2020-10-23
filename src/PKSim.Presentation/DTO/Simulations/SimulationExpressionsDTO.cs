@@ -11,18 +11,26 @@ namespace PKSim.Presentation.DTO.Simulations
       public IParameterDTO ReferenceConcentration { get; }
       public IParameterDTO HalfLifeLiver { get; }
       public IParameterDTO HalfLifeIntestine { get; }
-      public IReadOnlyList<ExpressionContainerDTO> RelativeExpressions { get; }
+      public IReadOnlyList<ExpressionParameterDTO> ExpressionParameters { get; }
       public IReadOnlyList<IParameter> MoleculeParameters { get; }
       public IReadOnlyList<IParameterDTO> AllParameters { get; }
 
-      public SimulationExpressionsDTO(IParameterDTO referenceConcentration, IParameterDTO halfLifeLiver, IParameterDTO halfLifeIntestine, IReadOnlyList<ExpressionContainerDTO> relativeExpressions)
+      public SimulationExpressionsDTO(
+         IParameterDTO referenceConcentration,
+         IParameterDTO halfLifeLiver,
+         IParameterDTO halfLifeIntestine,
+         IReadOnlyList<ExpressionParameterDTO> expressionParameters)
       {
          ReferenceConcentration = referenceConcentration;
          HalfLifeLiver = halfLifeLiver;
          HalfLifeIntestine = halfLifeIntestine;
-         RelativeExpressions = relativeExpressions;
+         ExpressionParameters = expressionParameters;
          MoleculeParameters = new[] {ReferenceConcentration.Parameter, HalfLifeLiver.Parameter, HalfLifeIntestine.Parameter};
-         AllParameters = new List<IParameterDTO>(RelativeExpressions.Select(x => x.RelativeExpressionParameter)) {referenceConcentration, halfLifeLiver, halfLifeIntestine};
+
+         AllParameters = new List<IParameterDTO>(expressionParameters.Select(x => x.Parameter))
+         {
+            referenceConcentration, halfLifeLiver, halfLifeIntestine
+         };
       }
    }
 }

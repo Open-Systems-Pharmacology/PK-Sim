@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-using DevExpress.Utils;
-using DevExpress.XtraEditors.Controls;
+﻿using DevExpress.Utils;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
@@ -9,11 +7,8 @@ using OSPSuite.Core.Domain;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI;
-using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
@@ -33,7 +28,7 @@ namespace PKSim.UI.Views.Simulations
       private readonly IImageListRetriever _imageListRetriever;
       private readonly IToolTipCreator _toolTipCreator;
       private ISimulationExpressionsPresenter _presenter;
-      private readonly GridViewBinder<ExpressionContainerDTO> _gridViewBinder;
+      private readonly GridViewBinder<ExpressionParameterDTO> _gridViewBinder;
       private readonly ScreenBinder<SimulationExpressionsDTO> _screenBinder;
       private readonly UxParameterDTOEdit _uxReferenceConcentration;
       private readonly UxParameterDTOEdit _uxHalfLifeLiver;
@@ -51,7 +46,7 @@ namespace PKSim.UI.Views.Simulations
          InitializeWithGrid(gridViewParameters);
          var toolTipController = new ToolTipController();
 
-         _gridViewBinder = new GridViewBinder<ExpressionContainerDTO>(gridViewParameters)
+         _gridViewBinder = new GridViewBinder<ExpressionParameterDTO>(gridViewParameters)
          {
             BindingMode = BindingMode.OneWay
          };
@@ -63,7 +58,7 @@ namespace PKSim.UI.Views.Simulations
          gridViewParameters.GroupFormat = "[#image]{1}";
          gridViewParameters.EndGrouping += (o, e) => gridViewParameters.ExpandAllGroups();
          gridViewParameters.AllowsFiltering = false;
-         gridViewParameters.CustomColumnSort += customColumnSort;
+         // gridViewParameters.CustomColumnSort += customColumnSort;
          gridViewParameters.GridControl.ToolTipController = toolTipController;
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
       }
@@ -76,17 +71,17 @@ namespace PKSim.UI.Views.Simulations
          var superToolTip = _toolTipCreator.CreateToolTip(parameterDTO.ParameterPath);
          e.Info = _toolTipCreator.ToolTipControlInfoFor(parameterDTO, superToolTip);
       }
-
-      private void customColumnSort(object sender, CustomColumnSortEventArgs e)
-      {
-         if (e.Column != _colGrouping.XtraColumn) return;
-         var container1 = e.RowObject1 as ExpressionContainerDTO;
-         var container2 = e.RowObject2 as ExpressionContainerDTO;
-         if (container1 == null || container2 == null) return;
-         e.Handled = true;
-
-         e.Result = container1.Sequence.CompareTo(container2.Sequence);
-      }
+      //
+      // private void customColumnSort(object sender, CustomColumnSortEventArgs e)
+      // {
+      //    if (e.Column != _colGrouping.XtraColumn) return;
+      //    var container1 = e.RowObject1 as ExpressionContainerDTO;
+      //    var container2 = e.RowObject2 as ExpressionContainerDTO;
+      //    if (container1 == null || container2 == null) return;
+      //    e.Handled = true;
+      //
+      //    e.Result = container1.Sequence.CompareTo(container2.Sequence);
+      // }
 
       public override void InitializeBinding()
       {
@@ -102,11 +97,11 @@ namespace PKSim.UI.Views.Simulations
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .AsReadOnly();
 
-         _columnValue = _gridViewBinder.Bind(item => item.RelativeExpression)
+         _columnValue = _gridViewBinder.Bind(item => item.Value)
             .WithCaption(PKSimConstants.UI.RelativeExpression)
-            .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
+            .WithOnValueUpdating((o, args) => _presenter.SetRelativeExpression(o, args.NewValue));
 
-         var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
+         var col = _gridViewBinder.Bind(item => item.NormalizedExpressionPercent)
             .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
             .WithRepository(x => _progressBarRepository)
             .AsReadOnly();
@@ -160,7 +155,7 @@ namespace PKSim.UI.Views.Simulations
       public void BindTo(SimulationExpressionsDTO simulationExpressionsDTO)
       {
          _screenBinder.BindToSource(simulationExpressionsDTO);
-         _gridViewBinder.BindToSource(simulationExpressionsDTO.RelativeExpressions.ToBindingList());
+         _gridViewBinder.BindToSource(simulationExpressionsDTO.ExpressionParameters.ToBindingList());
          _colGrouping.XtraColumn.GroupIndex = 0;
       }
 

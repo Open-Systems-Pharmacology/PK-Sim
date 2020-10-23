@@ -41,7 +41,7 @@ namespace PKSim.Core
    
    public class The_inverse_of_a_remove_building_block_from_project_command : concern_for_remove_building_block_from_project_command
    {
-      private IReversibleCommand<IExecutionContext> _result;
+      private ICommand<IExecutionContext> _result;
 
       protected override void Because()
       {
@@ -55,7 +55,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_beeen_marked_as_inverse_for_the_remove_command()
+      public void should_have_been_marked_as_inverse_for_the_remove_command()
       {
          _result.IsInverseFor(sut).ShouldBeTrue();
       }

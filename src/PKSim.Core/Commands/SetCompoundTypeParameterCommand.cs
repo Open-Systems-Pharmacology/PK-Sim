@@ -18,7 +18,7 @@ namespace PKSim.Core.Commands
          Description = PKSimConstants.Command.SetCompoundTypeParameterDescription(context.DisplayNameFor(_parameter), ((CompoundType) _oldValue).ToString(), ((CompoundType) _valueToSet).ToString());
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetCompoundTypeParameterCommand(_parameter, (CompoundType) _oldValue).AsInverseFor(this);
       }

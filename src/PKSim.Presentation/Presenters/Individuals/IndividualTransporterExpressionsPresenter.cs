@@ -23,7 +23,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
    {
 
-      void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value);
+      void SetRelativeExpression(ExpressionParameterDTO expressionParameterDTO, double value);
 
 
       /// <summary>
@@ -153,9 +153,9 @@ namespace PKSim.Presentation.Presenters.Individuals
          RefreshView();
       }
 
-      public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
+      public void SetRelativeExpression(ExpressionParameterDTO expressionParameterDTO, double value)
       {
-         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(expressionContainerDTO.RelativeExpressionParameter.Parameter, value));
+         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(ParameterFrom(expressionParameterDTO.Parameter), value));
       }
 
       public void RefreshView()

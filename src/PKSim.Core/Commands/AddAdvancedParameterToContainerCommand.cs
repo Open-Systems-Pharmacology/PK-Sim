@@ -17,7 +17,7 @@ namespace PKSim.Core.Commands
          return p => advancedParameterContainer.AddAdvancedParameter(p);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new RemoveAdvancedParameterFromContainerCommand(_entityToAdd, _parentContainer, context).AsInverseFor(this);
       }

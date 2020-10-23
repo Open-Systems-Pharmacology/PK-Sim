@@ -493,68 +493,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_grouping_the_parameter_expressions : concern_for_ParameterTask
-   {
-      private IParameter _relExpPlasma;
-      private IParameter _relExpPlasmaNorm;
-      private IParameter _relExpLiver;
-      private IParameter _relExpLiverNorm;
-      private IParameter _relExpKidney;
-      private IParameter _relExpKidneyNorm;
-      private IReadOnlyList<IParameter> _result;
-      private IParameter _anotherParameter;
-      private IParameter _relExpWithoutNorm;
-
-      protected override void Context()
-      {
-         base.Context();
-         var organism = new Container().WithName("Organism");
-         var kidney = new Container().WithName("Kidney").WithParentContainer(organism);
-         var liver = new Container().WithName("Liver").WithParentContainer(organism);
-         var bone = new Container().WithName("Bone").WithParentContainer(organism);
-         _relExpPlasma = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_PLASMA).WithParentContainer(organism);
-         _relExpPlasmaNorm = new PKSimParameter().WithName(ConverterConstants.Parameters.REL_EXP_PLASMA_NORM).WithParentContainer(organism);
-         _relExpLiver = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(liver);
-         _relExpLiverNorm = new PKSimParameter().WithName(ConverterConstants.Parameters.REL_EXP_NORM).WithParentContainer(liver);
-         _relExpKidney = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(kidney);
-         _relExpKidneyNorm = new PKSimParameter().WithName(ConverterConstants.Parameters.REL_EXP_NORM).WithParentContainer(kidney);
-         _anotherParameter = new PKSimParameter().WithName("not_a_rel_exp").WithParentContainer(kidney);
-         _relExpWithoutNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(bone);
-      }
-
-      protected override void Because()
-      {
-         _result = sut.GroupExpressionParameters(new[] {_relExpKidney, _relExpLiverNorm, _relExpLiver, _relExpPlasma, _relExpWithoutNorm, _relExpPlasmaNorm, _relExpKidneyNorm, _anotherParameter});
-      }
-
-      [Observation]
-      public void should_return_a_list_contain_a_parameter_as_key_and_the_corresponding_norm_parameter_as_value_for_global_rel_exp_parameters()
-      {
-         _result.ShouldContain(_relExpPlasma);
-         _result.ShouldNotContain(_relExpPlasmaNorm);
-      }
-
-      [Observation]
-      public void should_return_a_list_contain_a_parameter_as_key_and_the_corresponding_norm_parameter_as_value_for_local_rel_exp_parameter()
-      {
-         _result.ShouldContain(_relExpLiver);
-         _result.ShouldContain(_relExpKidney);
-         _result.ShouldNotContain(_relExpLiverNorm);
-         _result.ShouldNotContain(_relExpKidneyNorm);
-      }
-
-      [Observation]
-      public void the_returned_list_should_not_contain_any_entry_for_parameter_that_are_not_relative_expression_parameters()
-      {
-         _result.Contains(_anotherParameter).ShouldBeFalse();
-      }
-
-      [Observation]
-      public void the_returned_list_should_contain_entries_for_relative_expression_parameters_for_which_a_norm_was_not_found()
-      {
-         _result.Contains(_relExpWithoutNorm).ShouldBeTrue();
-      }
-   }
 
    public class When_a_parameter_is_set_as_favorite : concern_for_ParameterTask
    {

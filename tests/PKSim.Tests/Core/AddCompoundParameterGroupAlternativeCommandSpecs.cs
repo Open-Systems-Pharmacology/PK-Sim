@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using FakeItEasy;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 
@@ -65,7 +66,7 @@ namespace PKSim.Core
          sut.Execute(_executionContext);
          sut.RestoreExecutionData(_executionContext);
 
-         _inverseCommand = sut.InverseCommand(_executionContext);
+         _inverseCommand = sut.InverseCommand(_executionContext).DowncastTo<IReversibleCommand<IExecutionContext>>();
       }
 
       protected override void Because()
@@ -98,11 +99,11 @@ namespace PKSim.Core
          sut.Execute(_executionContext);
          sut.RestoreExecutionData(_executionContext);
 
-         _inverseCommand = sut.InverseCommand(_executionContext);
+         _inverseCommand = sut.InverseCommand(_executionContext).DowncastTo<IReversibleCommand<IExecutionContext>>();
          _inverseCommand.Execute(_executionContext);
 
          _inverseCommand.RestoreExecutionData(_executionContext);
-         _redoCommand = _inverseCommand.InverseCommand(_executionContext);
+         _redoCommand = _inverseCommand.InverseCommand(_executionContext).DowncastTo<IReversibleCommand<IExecutionContext>>();
       }
 
       protected override void Because()

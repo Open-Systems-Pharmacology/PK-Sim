@@ -47,7 +47,7 @@ namespace PKSim.Core.Commands
          _oldDefaultAlternative = context.Get<ParameterAlternative>(_oldDefaultAlternativeId);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetDefaultAlternativeParameterCommand(_parameterGroup, _oldDefaultAlternative, context).AsInverseFor(this);
       }

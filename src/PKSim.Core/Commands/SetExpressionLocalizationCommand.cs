@@ -57,7 +57,7 @@ namespace PKSim.Core.Commands
          Description = PKSimConstants.Command.SetProteinTissueLocationDescription(_oldLocalization.ToString(), _newLocalization.ToString());
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetExpressionLocalizationInProteinCommand(_protein, _oldLocalization, _simulationSubject, context, setAsFlag: false)
             .AsInverseFor(this);

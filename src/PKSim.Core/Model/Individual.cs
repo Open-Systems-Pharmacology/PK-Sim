@@ -184,11 +184,12 @@ namespace PKSim.Core.Model
       /// <summary>
       ///  Returns all possible (physical) containers of the organism in which <paramref name="molecule"/> will be defined or an empty array if the organism is not defined
       /// </summary>
-      public IReadOnlyList<IContainer> AllMoleculeContainersInOrganismFor(IndividualMolecule molecule) =>
-         Organism.GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)) ?? Array.Empty<IContainer>();
+      public IReadOnlyList<IContainer> AllPhysicalContainersWithMoleculeFor(IndividualMolecule molecule) =>
+         Organism?.GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)).Select(x=>x.ParentContainer).ToArray() ?? Array.Empty<IContainer>();
 
       /// <summary>
-      ///  Returns all possible  containers of the individual in which <paramref name="molecule"/> will be defined. This also returns the global molecule containers
+      ///  Returns all possible molecule containers of the individual in which <paramref name="molecule"/> will be defined.
+      ///   This also returns the global molecule containers
       /// </summary>
       public IReadOnlyList<IContainer> AllMoleculeContainersFor(IndividualMolecule molecule) =>
          GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)) ?? Array.Empty<IContainer>();

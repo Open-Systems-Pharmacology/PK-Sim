@@ -79,7 +79,7 @@ namespace PKSim.Core
    
    public class When_executing_the_set_parameter_unit_inverse_command : concern_for_SetParameterUnitCommand
    {
-      private IReversibleCommand<IExecutionContext> _inverseCommand;
+      private ICommand<IExecutionContext> _inverseCommand;
 
       protected override void Context()
       {
@@ -95,13 +95,13 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_restore_the_orginal_unit()
+      public void should_restore_the_original_unit()
       {
          _parameter.DisplayUnit.ShouldBeEqualTo(_oldUnit);
       }
 
       [Observation]
-      public void should_restore_the_orginal_value()
+      public void should_restore_the_original_value()
       {
          _parameter.Value.ShouldBeEqualTo(_oldValue);
       }
@@ -110,7 +110,7 @@ namespace PKSim.Core
    
    public class When_executing_the_set_parameter_unit_inverse_command_for_a_parameter_whose_value_was_using_the_formula : concern_for_SetParameterUnitCommand
    {
-      private IReversibleCommand<IExecutionContext> _inverseCommand;
+      private ICommand<IExecutionContext> _inverseCommand;
 
       protected override void Context()
       {
