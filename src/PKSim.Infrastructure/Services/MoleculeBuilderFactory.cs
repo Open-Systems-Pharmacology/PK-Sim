@@ -138,7 +138,7 @@ namespace PKSim.Infrastructure.Services
                .WithIcon(interactionProcess.Icon)
                .WithName(interactionProcess.InternalName);
 
-            //only add global pamrameters to the intercation container
+            //only add global parameters to the interaction container
             _parameterContainerTask.AddProcessBuilderParametersTo(interactionContainer);
             _parameterSetUpdater.UpdateValuesByName(interactionProcess, interactionContainer);
             interactionContainer.Name = interactionProcess.Name;

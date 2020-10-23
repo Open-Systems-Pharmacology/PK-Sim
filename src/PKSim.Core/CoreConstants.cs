@@ -277,7 +277,7 @@ namespace PKSim.Core
          public static readonly string ActiveProcess = "ActiveProcess_PKSim";
          public static readonly string FormulationParticles = "FormulationParticles";
          public static readonly string BlackBox = "BlackBox_CalculationMethod";
-         public static readonly string DYNAMIC_SUM_FORMULAS = "DYNAMIC_SUM_FORMULAS";
+         public static readonly string DYNAMIC_SUM_FORMULAS = "DynamicSumFormulas";
          public static readonly string RodgerAndRowland = "Cellular partition coefficient method - Rodgers and Rowland";
          public static readonly string RenalAgingHuman = "Renal_Aging_Human";
          public static readonly string RenalAgingAnimals = "Renal_Aging_Animals";
