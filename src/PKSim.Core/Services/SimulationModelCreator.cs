@@ -11,7 +11,7 @@ namespace PKSim.Core.Services
    public interface ISimulationModelCreator
    {
       /// <summary>
-      ///    Creates and sets the model based on the simlation configuration defined in the simulaton
+      ///    Creates and sets the model based on the simulation configuration defined in the simulation
       /// </summary>
       void CreateModelFor(Simulation simulation, bool shouldValidate = true, bool shouldShowProgress = false);
    }
@@ -24,13 +24,17 @@ namespace PKSim.Core.Services
       private readonly ISimulationSettingsFactory _simulationSettingsFactory;
       private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
       private readonly ISimulationConfigurationValidator _simulationConfigurationValidator;
+      private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IContainerTask _containerTask;
 
       public SimulationModelCreator(IBuildConfigurationTask buildConfigurationTask, 
          IModelConstructor modelConstructor, 
          IParameterIdUpdater parameterIdUpdater,
          ISimulationSettingsFactory simulationSettingsFactory, 
          ISimulationPersistableUpdater simulationPersistableUpdater, 
-         ISimulationConfigurationValidator simulationConfigurationValidator)
+         ISimulationConfigurationValidator simulationConfigurationValidator,
+         IEntityPathResolver entityPathResolver,
+         IContainerTask containerTask)
       {
          _buildConfigurationTask = buildConfigurationTask;
          _modelConstructor = modelConstructor;
@@ -38,6 +42,8 @@ namespace PKSim.Core.Services
          _simulationSettingsFactory = simulationSettingsFactory;
          _simulationPersistableUpdater = simulationPersistableUpdater;
          _simulationConfigurationValidator = simulationConfigurationValidator;
+         _entityPathResolver = entityPathResolver;
+         _containerTask = containerTask;
       }
 
       public void CreateModelFor(Simulation simulation, bool shouldValidate = true, bool shouldShowProgress = false)
@@ -66,22 +72,21 @@ namespace PKSim.Core.Services
          //in all parameter defined in the model
          _parameterIdUpdater.UpdateSimulationId(simulation);
 
-         // var allMoleculeAmounts = simulation.All<IMoleculeAmount>().ToList();
-
          //local molecule parameters parameter id need to be updated as well
-         // var allIndividualMoleculeAmounts = allMoleculeAmounts.Where(m => m.IsIndividualMolecule());
+         var allParameters = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
          var individual = simulation.Individual;
-         // var allOrganismContainers = _expressionContainersRetriever.AllOrganismContainers(individual).ToList();
 
          hideAllUndefinedParameterForMolecules(simulation);
-
-         //TODO 
-         // foreach (var moleculeAmountGroup in allIndividualMoleculeAmounts.GroupBy(x => x.Name))
-         // {
-         //    var molecule = individual.MoleculeByName<IndividualMolecule>(moleculeAmountGroup.Key);
-         //    var moleculeAmountPath = new PathCache<IMoleculeAmount>(_entityPathResolver).For(moleculeAmountGroup);
-         //    updateAllParametersFor(simulation, individual, allOrganismContainers, molecule, moleculeAmountPath);
-         // }
+         individual.AllMolecules().Each(m =>
+         {
+            var allMoleculeParameters = individual.AllMoleculeContainersFor(m).SelectMany(x => x.AllParameters());
+            allMoleculeParameters.Each(p =>
+            {
+               var simulationParameter = allParameters[_entityPathResolver.PathFor(p)];
+               if (simulationParameter != null)
+                  updateFromIndividualParameter(simulationParameter, p, individual);
+            });
+         });
 
          //we need to update the observer types according to their location (container observer are always of type drug, amount observer are depending on parent)
          var allObservers = simulation.All<IObserver>();
@@ -105,26 +110,7 @@ namespace PKSim.Core.Services
 
          allNaNParametersFromMolecules.Each(hideParameter);
       }
-      //
-      // private void updateAllParametersFor(Simulation simulation, Individual individual, IList<IContainer> allOrganismContainers, IndividualMolecule molecule, PathCache<IMoleculeAmount> moleculeAmountPath)
-      // {
-      //    var globalMoleculeContainer = simulation.Model.Root
-      //       .GetSingleChildByName<IContainer>(molecule.Name);
-      //
-      //    hideGlobalParametersForUndefinedMolecule(globalMoleculeContainer);
-      //
-      //    foreach (var expressionContainer in molecule.AllExpressionsContainers())
-      //    {
-      //       if (expressionContainer.IsSurrogate())
-      //       {
-      //          updateReferenceToIndividualParametersForSurrogateContainer(individual, molecule, expressionContainer, globalMoleculeContainer);
-      //       }
-      //       else
-      //       {
-      //          updateReferenceToIndividualParametersForStandardContainer(individual, molecule, expressionContainer, allOrganismContainers, moleculeAmountPath);
-      //       }
-      //    }
-      // }
+
 
       private void hideParameter(IParameter parameter)
       {
@@ -134,42 +120,8 @@ namespace PKSim.Core.Services
          parameter.Visible = false;
       }
 
-      // private void updateReferenceToIndividualParametersForStandardContainer(Individual individual, IndividualMolecule molecule, MoleculeExpressionContainer expressionContainer, IList<IContainer> allOrganismContainers, PathCache<IMoleculeAmount> moleculeAmountPath)
-      // {
-      //    var allContainers = _expressionContainersRetriever.AllContainersFor(individual.Organism, allOrganismContainers, molecule, expressionContainer);
-      //
-      //    foreach (var container in allContainers)
-      //    {
-      //       var amount = amountFor(container, molecule, moleculeAmountPath);
-      //       if (amount == null) continue;
-      //
-      //       updateFromIndividualParameter(amount.Parameter(CoreConstants.Parameters.REL_EXP), expressionContainer.RelativeExpressionParameter, individual, molecule);
-      //    }
-      // }
-
-      // private IMoleculeAmount amountFor(IContainer container, IndividualMolecule molecule, PathCache<IMoleculeAmount> moleculeAmountPath)
-      // {
-      //    var amount = moleculeAmountPath[_entityPathResolver.ObjectPathFor(container).AndAdd(molecule.Name).ToString()];
-      //    return amount;
-      // }
-
-      //TODO PROBABLY NOT NEEDED ANYMORE
-
-      // private void updateReferenceToIndividualParametersForSurrogateContainer(Individual individual, IndividualMolecule molecule, MoleculeExpressionContainer expressionContainer, IContainer globalMoleculeContainer)
-      // {
-      //    string relExpName;
-      //    if (expressionContainer.IsBloodCell())
-      //       relExpName = CoreConstants.Parameters.REL_EXP_BLOOD_CELLS;
-      //    else if (expressionContainer.IsPlasma())
-      //       relExpName = CoreConstants.Parameters.REL_EXP_PLASMA;
-      //    else if (expressionContainer.IsVascularEndothelium())
-      //       relExpName = CoreConstants.Parameters.REL_EXP_VASC_ENDO;
-      //    else
-      //       return;
-      //
-      //    updateFromIndividualParameter(globalMoleculeContainer.Parameter(relExpName), expressionContainer.RelativeExpressionParameter, individual, molecule);
-      // }
-      //TODO PROBABLY NOT NEEDED ANYMORE
+    
+  
 
       //
       // private void hideGlobalParametersForUndefinedMolecule(IContainer globalMoleculeContainer)
@@ -188,12 +140,12 @@ namespace PKSim.Core.Services
       //    updateFromIndividualParameter(parameterToUpdate, parameterInIndividual, individual, !molecule.IsUndefinedMolecule());
       // }
       //
-      // private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual, bool visible)
-      // {
-      //    _parameterIdUpdater.UpdateParameterId(parameterInIndividual, parameterToUpdate);
-      //    parameterToUpdate.BuildingBlockType = PKSimBuildingBlockType.Individual;
-      //    parameterToUpdate.Origin.BuilingBlockId = individual.Id;
-      //    parameterToUpdate.Visible = visible;
-      // }
+      private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual, bool visible = true)
+      {
+         _parameterIdUpdater.UpdateParameterId(parameterInIndividual, parameterToUpdate);
+         parameterToUpdate.BuildingBlockType = PKSimBuildingBlockType.Individual;
+         parameterToUpdate.Origin.BuilingBlockId = individual.Id;
+         parameterToUpdate.Visible = visible;
+      }
    }
 }

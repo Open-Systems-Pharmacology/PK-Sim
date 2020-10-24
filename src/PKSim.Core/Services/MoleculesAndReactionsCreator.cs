@@ -191,7 +191,7 @@ namespace PKSim.Core.Services
 
       private void addIndividualMolecules(IEnumerable<CompoundProperties> compoundPropertiesList)
       {
-         //first of all: add undefined proteins that are created internaly and are necessary to use the systemic processes
+         //first of all: add undefined proteins that are created internally and are necessary to use the systemic processes
          compoundPropertiesList.Select(x => x.Processes).Each(addUndefinedProteinForSystemicProcessesToIndividual);
          _individual.AllMolecules().Each(addMolecule);
       }
@@ -211,7 +211,7 @@ namespace PKSim.Core.Services
             .WithName(individualMolecule.Name)
             .WithIcon(individualMolecule.Icon);
 
-         addMoleculeToBuildingBlock(molecule, null);
+         addMoleculeToBuildingBlock(molecule, compoundProperties: null);
 
          //Update protein builder parameters with the parameter ids
          _parameterSetUpdater.UpdateValuesByName(individualMolecule, molecule.Parameters);

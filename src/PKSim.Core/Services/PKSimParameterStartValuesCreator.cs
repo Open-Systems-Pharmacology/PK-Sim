@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -6,11 +5,11 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using static PKSim.Core.CoreConstants.CalculationMethod;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core.Services
 {
-
    public interface IPKSimParameterStartValuesCreator
    {
       IParameterStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation);
@@ -21,12 +20,9 @@ namespace PKSim.Core.Services
       private readonly IParameterStartValuesCreator _parameterStartValuesCreator;
       private readonly IFormulaFactory _formulaFactory;
       private readonly IEntityPathResolver _entityPathResolver;
-      private ISpatialStructure _spatialStructure;
       private IParameterStartValuesBuildingBlock _defaultStartValues;
-      private IFormulaCache _formulaCache;
 
-      public PKSimParameterStartValuesCreator(
-         IParameterStartValuesCreator parameterStartValuesCreator, 
+      public PKSimParameterStartValuesCreator(IParameterStartValuesCreator parameterStartValuesCreator,
          IFormulaFactory formulaFactory,
          IEntityPathResolver entityPathResolver)
       {
@@ -40,9 +36,9 @@ namespace PKSim.Core.Services
          try
          {
             //default default parameter start values matrix
-            _spatialStructure = buildConfiguration.SpatialStructure;
-            _defaultStartValues = _parameterStartValuesCreator.CreateFrom(_spatialStructure, buildConfiguration.Molecules);
-            _formulaCache = _defaultStartValues.FormulaCache;
+            var spatialStructure = buildConfiguration.SpatialStructure;
+            var molecules = buildConfiguration.Molecules;
+            _defaultStartValues = _parameterStartValuesCreator.CreateFrom(spatialStructure, molecules);
             var individual = simulation.Individual;
 
             //set the relative expression values for each molecule defined in individual
@@ -50,16 +46,14 @@ namespace PKSim.Core.Services
             {
                updateMoleculeParametersValues(molecule, individual);
             }
-            
+
             updateSimulationParameters(simulation);
 
             return _defaultStartValues.WithName(simulation.Name);
          }
          finally
          {
-            _spatialStructure = null;
             _defaultStartValues = null;
-            _formulaCache = null;
          }
       }
 
@@ -67,7 +61,9 @@ namespace PKSim.Core.Services
       {
          //this is only required if the simulation already has a model. That means that we should update the PSV with any
          //simulation parameters that might have been updated by the user
-         if (simulation.Model == null) return;
+         if (simulation.Model == null) 
+            return;
+
          var allSimulationParameters = simulation.Model.Root.GetAllChildren<IParameter>(isChangedSimulationParameter);
          allSimulationParameters.Each(p =>
          {
@@ -86,60 +82,45 @@ namespace PKSim.Core.Services
       private void updateMoleculeParametersValues(IndividualMolecule molecule, Individual individual)
       {
          var allProteinParameters = individual.AllMoleculeContainersFor(molecule).SelectMany(x => x.AllParameters()).ToList();
-         allProteinParameters.Each(x => setParameter(x));
+         allProteinParameters.Each(setParameter);
       }
 
-      private IParameterStartValue setParameter(IParameter parameter)
+      private void setParameter(IParameter parameter)
       {
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
-         var parameterStartValue =_defaultStartValues[parameterPath] ?? _parameterStartValuesCreator.CreateParameterStartValue(parameterPath, parameter);
+         var parameterStartValue = _defaultStartValues[parameterPath];
+
+         // We are setting value for a parameter that does not exist or th
+         if (parameterStartValue == null)
+            return;
 
          if (parameter.Formula.IsExplicit())
          {
-            var formula = _formulaFactory.RateFor(CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS, parameter.Formula.Name, _formulaCache);
+            var formula = _formulaFactory.RateFor(EXPRESSION_PARAMETERS, parameter.Formula.Name, _defaultStartValues.FormulaCache);
             parameterStartValue.Formula = formula;
-            //There if a formula, make sure we use it. This flag will be overwritten if the value was set by user
-            //TODO CHECK
+            //There if a formula, make sure we use it. We set this flag to false to ensure that the formula will not be replaced with a constant formula
             parameterStartValue.OverrideFormulaWithValue = false;
          }
 
          if (parameter.IsConstantParameter())
          {
             parameterStartValue.StartValue = parameter.Value;
-            //TODO CHECK
-            parameterStartValue.OverrideFormulaWithValue = true;
          }
-
-         _defaultStartValues[parameterPath] = parameterStartValue;
-         return parameterStartValue;
       }
-
 
       private IParameterStartValue trySetValue(IParameter parameter)
       {
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
-         if (_defaultStartValues[parameterPath] != null)
-            return trySetValue(parameterPath, parameter);
+         var parameterStartValue = _defaultStartValues[parameterPath];
+         if (parameterStartValue != null)
+            parameterStartValue.StartValue = parameter.Value;
+         else
+         {
+            parameterStartValue = _parameterStartValuesCreator.CreateParameterStartValue(parameterPath, parameter);
+            _defaultStartValues.Add(parameterStartValue);
+         }
 
-         var parameterStartValue = _parameterStartValuesCreator.CreateParameterStartValue(parameterPath, parameter);
-         _defaultStartValues.Add(parameterStartValue);
          return parameterStartValue;
       }
-
-      private IParameterStartValue trySetValue(IObjectPath parameterPath, IParameter parameter)
-      {
-         return trySetValue(parameterPath, parameter.Value);
-      }
-
-      private IParameterStartValue trySetValue(IObjectPath objectPath, double value)
-      {
-         var parameterStartValue = _defaultStartValues[objectPath];
-         if (parameterStartValue == null)
-            throw new Exception($"Parameter not found : {objectPath}");
-
-         parameterStartValue.StartValue = value;
-         return parameterStartValue;
-      }
-
    }
 }
