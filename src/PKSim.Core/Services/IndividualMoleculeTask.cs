@@ -56,7 +56,7 @@ namespace PKSim.Core.Services
          DefaultValue = 0,
          GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
          BuildingBlockType = PKSimBuildingBlockType.Individual,
-         IsInput = false,
+         IsInput = true,
       };
 
 
@@ -96,7 +96,8 @@ namespace PKSim.Core.Services
          bool canBeVaried = true,
          bool canBeVariedInPopulation = true,
          bool visible = true,
-         string displayUnit = null)
+         string displayUnit = null,
+         PKSimBuildingBlockType buildingBlockType = PKSimBuildingBlockType.Individual)
       {
          var parameterValue = new ParameterValueMetaData
          {
@@ -107,7 +108,8 @@ namespace PKSim.Core.Services
             CanBeVaried = canBeVaried,
             CanBeVariedInPopulation = canBeVariedInPopulation,
             Visible = visible,
-            DefaultUnit = displayUnit
+            DefaultUnit = displayUnit,
+            BuildingBlockType = buildingBlockType
          };
 
          return CreateConstantParameterIn(parameterContainer, parameterValue);

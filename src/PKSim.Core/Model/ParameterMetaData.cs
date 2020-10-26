@@ -11,7 +11,11 @@ namespace PKSim.Core.Model
       public ParameterBuildMode BuildMode { get; set; }
       public int? ValueOriginId { get; set; }
       public ValueOrigin ValueOrigin { get; set; }
-      public bool IsInput { get; set; }
+
+      /// <summary>
+      /// Species if the parameter is a parameter set by the user or  a default parameter set in the DB. Default value is <c>false</c>
+      /// </summary>
+      public bool IsInput { get; set; } = false;
 
       private string _dimension;
       public string Dimension

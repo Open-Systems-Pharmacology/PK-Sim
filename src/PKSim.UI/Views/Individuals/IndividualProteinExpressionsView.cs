@@ -298,10 +298,10 @@ namespace PKSim.UI.Views.Individuals
             _gridView.AdjustAppearance(e, true);
 
          else if (e.Column.OptionsColumn.ReadOnly)
-            _gridView.AdjustAppearance(e, false);
+            _gridView.AdjustAppearance(e, true);
 
          else if (!parameterDTO.Parameter.Editable)
-            _gridView.AdjustAppearance(e, false);
+            _gridView.AdjustAppearance(e, true);
 
          else if (_presenter.IsSetByUser(parameterDTO))
             _gridView.AdjustAppearance(e, PKSimColors.Changed);
