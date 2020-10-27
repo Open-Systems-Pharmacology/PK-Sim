@@ -158,6 +158,7 @@ namespace PKSim.IntegrationTests
          if (type.Equals(typeof (MembraneLocation))) return true;
          if (type.Equals(typeof(ClassificationType))) return true;
          if (type.Equals(typeof(PopulationAnalysisType))) return true;
+         if (type.Equals(typeof(Localization))) return true;
 
          //TODO not serialized yet
          if (type.Equals(typeof(QualificationPlan))) return true;

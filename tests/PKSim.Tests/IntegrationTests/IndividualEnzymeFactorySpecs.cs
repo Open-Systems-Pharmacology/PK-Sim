@@ -4,6 +4,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
 using PKSim.Core.Services;
 
 namespace PKSim.IntegrationTests
@@ -22,11 +23,12 @@ namespace PKSim.IntegrationTests
    public class When_creating_a_metabolism_expression_for_an_individual : concern_for_IndividualEnzymeFactory
    {
       private IndividualMolecule _result;
+      private ICache<string, IParameter> _allExpressionParameters;
 
-     
       protected override void Because()
       {
          _result = sut.AddMoleculeTo(_individual, "CYP3A4");
+         _allExpressionParameters = _individual.AllExpressionParametersFor(_result);
       }
 
       [Observation]
@@ -38,8 +40,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_an_expression_containing_at_least_the_container_blood_cells_and_plasma()
       {
-         _result.ContainsName(CoreConstants.Compartment.BloodCells).ShouldBeTrue();
-         _result.ContainsName(CoreConstants.Compartment.Plasma).ShouldBeTrue();
+         _allExpressionParameters.Contains(CoreConstants.Compartment.BloodCells).ShouldBeTrue();
+         _allExpressionParameters.Contains(CoreConstants.Compartment.Plasma).ShouldBeTrue();
       }
 
       [Observation]
