@@ -108,7 +108,7 @@ namespace PKSim.Core
    {
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_enzyme);
+         _snapshot = await sut.MapToSnapshot(_enzyme, _individual);
       }
 
       [Observation]
@@ -150,7 +150,7 @@ namespace PKSim.Core
    {
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_transporter);
+         _snapshot = await sut.MapToSnapshot(_transporter, _individual);
       }
 
       [Observation]
@@ -177,7 +177,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_enzyme);
+         _snapshot = await sut.MapToSnapshot(_enzyme, _individual);
 
          _snapshot.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
          _snapshot.MembraneLocation = MembraneLocation.BloodBrainBarrier;
@@ -233,7 +233,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_transporter);
+         _snapshot = await sut.MapToSnapshot(_transporter, _individual);
 
          _snapshot.TransportType = TransportType.PgpLike;
          var transporterFactory = A.Fake<IIndividualTransporterTask>();
@@ -259,14 +259,14 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_valid_other_protein_molecule_snahpshot_to_a_molecule : concern_for_MoleculeMapper
+   public class When_mapping_a_valid_other_protein_molecule_snapshot_to_a_molecule : concern_for_MoleculeMapper
    {
       private IndividualOtherProtein _newOtherProtein;
 
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_otherProtein);
+         _snapshot = await sut.MapToSnapshot(_otherProtein, _individual);
 
          var individualOtherProteinFactory = A.Fake<IIndividualMoleculeTask>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualOtherProtein>()).Returns(individualOtherProteinFactory);

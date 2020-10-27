@@ -1,0 +1,14 @@
+﻿<SolutionConfiguration>
+  <Settings>
+    <AllowParallelTestExecution>True</AllowParallelTestExecution>
+    <SolutionConfigured>True</SolutionConfigured>
+  </Settings>
+  <EngineModes>
+    <EngineMode>
+      <Name>No Nightly</Name>
+      <Settings>
+        <TestsToExecuteAutomatically>(DoesNotHaveCategory 'NightlyOnly' AND DoesNotHaveCategory 'LocalOnly' AND DoesNotHaveCategory 'Reporting' AND DoesNotHaveCategory 'ProjectConverter')</TestsToExecuteAutomatically>
+      </Settings>
+    </EngineMode>
+  </EngineModes>
+</SolutionConfiguration>

@@ -40,7 +40,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<Molecule[]> allMoleculesFrom(ModelIndividual individual)
       {
-         return _moleculeMapper.MapToSnapshots(individual.AllDefinedMolecules());
+         return _moleculeMapper.MapToSnapshots(individual.AllDefinedMolecules(), individual);
       }
 
       private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelIndividual individual)

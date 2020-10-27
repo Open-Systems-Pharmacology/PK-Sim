@@ -29,9 +29,6 @@ namespace PKSim.IntegrationTests
 
          _protein = enzymeFactory.AddMoleculeTo(templateIndividual, "PROT").DowncastTo<IndividualEnzyme>();
 
-         _protein.TissueLocation = TissueLocation.Intracellular;
-         _protein.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
-
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(templateIndividual, compound, protocol).DowncastTo<IndividualSimulation>();
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);

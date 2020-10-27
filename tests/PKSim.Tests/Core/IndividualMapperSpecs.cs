@@ -72,8 +72,8 @@ namespace PKSim.Core
          _enzymeSnapshot = new Molecule {Type = QuantityType.Enzyme};
          _transporterSnapshot = new Molecule {Type = QuantityType.Transporter};
 
-         A.CallTo(() => _moleculeMapper.MapToSnapshot(_enzyme)).Returns(_enzymeSnapshot);
-         A.CallTo(() => _moleculeMapper.MapToSnapshot(_transporter)).Returns(_transporterSnapshot);
+         A.CallTo(() => _moleculeMapper.MapToSnapshot(_enzyme, _individual)).Returns(_enzymeSnapshot);
+         A.CallTo(() => _moleculeMapper.MapToSnapshot(_transporter, _individual)).Returns(_transporterSnapshot);
 
          _originDataSnapshot = new OriginData();
          A.CallTo(() => _originDataMapper.MapToSnapshot(_individual.OriginData)).Returns(_originDataSnapshot);

@@ -5,6 +5,7 @@ using PKSim.Core.Model;
 using PKSim.Infrastructure;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Container;
 using PKSim.Core.Services;
 
 namespace PKSim.IntegrationTests
@@ -16,6 +17,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         sut = IoC.Resolve<IIndividualEnzymeTask>();
       }
 
    }
@@ -25,9 +27,14 @@ namespace PKSim.IntegrationTests
       private IndividualMolecule _result;
       private ICache<string, IParameter> _allExpressionParameters;
 
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _result = sut.AddMoleculeTo(_individual, "CYP3A4");
+      }
+
       protected override void Because()
       {
-         _result = sut.AddMoleculeTo(_individual, "CYP3A4");
          _allExpressionParameters = _individual.AllExpressionParametersFor(_result);
       }
 
