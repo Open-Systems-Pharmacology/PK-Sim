@@ -303,7 +303,6 @@ namespace PKSim.Presentation
       {
          base.Context();
          _clonedProtein = A.Fake<IndividualMolecule>();
-         A.CallTo(() => _clonedProtein.AllExpressionsContainers()).Returns(_molecule.AllExpressionsContainers());
          _individual.AddMolecule(_molecule);
          _querySettings = A.Fake<QueryExpressionSettings>();
          _queryResults = A.Fake<QueryExpressionResults>();

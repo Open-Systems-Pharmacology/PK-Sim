@@ -21,10 +21,11 @@ namespace PKSim.Presentation.DTO.Mappers
       {
          var transporterExpressionDTO = new TransporterExpressionDTO(transporter);
 
-         foreach (var transporterExpressionContainer in transporter.AllExpressionsContainers())
-         {
-            addContainerExpression(transporterExpressionDTO, transporter, transporterExpressionContainer);
-         }
+         //TODO
+         // foreach (var transporterExpressionContainer in transporter.AllExpressionsContainers())
+         // {
+         //    addContainerExpression(transporterExpressionDTO, transporter, transporterExpressionContainer);
+         // }
          return transporterExpressionDTO;
       }
 

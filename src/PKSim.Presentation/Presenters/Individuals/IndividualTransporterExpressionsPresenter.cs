@@ -117,7 +117,9 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       private TransporterExpressionContainer transporterContainerFrom(TransporterExpressionContainerDTO transporterExpressionContainerDTO)
       {
-         return _transporter.AllExpressionsContainers().FindByName(transporterExpressionContainerDTO.ContainerName);
+         return null;
+
+         //TODO return _transporter.AllExpressionsContainers().FindByName(transporterExpressionContainerDTO.ContainerName);
       }
 
       public IEnumerable<MembraneLocation> AllProteinMembraneLocationsFor(TransporterExpressionContainerDTO transporterExpressionContainerDTO)

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -13,7 +13,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public ISimulationSubject SimulationSubject { get; set; }
    }
 
-   public class ExpressionContainerMapper : SnapshotMapperBase<MoleculeExpressionContainer, ExpressionContainer, ExpressionContainerMapperContext>
+   public class ExpressionContainerMapper : SnapshotMapperBase<IContainer, ExpressionContainer, ExpressionContainerMapperContext>
    {
       private readonly ParameterMapper _parameterMapper;
       private readonly ITransportContainerUpdater _transportContainerUpdater;
@@ -29,11 +29,12 @@ namespace PKSim.Core.Snapshots.Mappers
          _logger = logger;
       }
 
-      public override async Task<ExpressionContainer> MapToSnapshot(MoleculeExpressionContainer expressionContainer)
+      public override async Task<ExpressionContainer> MapToSnapshot(IContainer expressionContainer)
       {
          var transportedExpressionContainer = expressionContainer as TransporterExpressionContainer;
-         var expressionParameter = expressionContainer.RelativeExpressionParameter;
-
+         //TODO This is not ok anymore
+         var expressionParameter = expressionContainer.Parameter(CoreConstants.Parameters.REL_EXP);
+        
          if (!expressionParameter.ShouldExportToSnapshot())
             return null;
 
@@ -54,7 +55,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.MembraneLocation = transporterExpressionContainer.MembraneLocation;
       }
 
-      public override async Task<MoleculeExpressionContainer> MapToModel(ExpressionContainer snapshot, ExpressionContainerMapperContext context)
+      public override async Task<IContainer> MapToModel(ExpressionContainer snapshot, ExpressionContainerMapperContext context)
       {
          if (snapshot == null)
             return null;
@@ -62,25 +63,29 @@ namespace PKSim.Core.Snapshots.Mappers
          var molecule = context.Molecule;
          var individual = context.SimulationSubject;
 
-         var expressionContainer = molecule.ExpressionContainer(snapshot.Name);
-         if (expressionContainer == null)
-         {
-            _logger.AddWarning(PKSimConstants.Error.RelativeExpressionContainerNotFound(snapshot.Name));
-            return null;
-         }
 
-         var expressionParameter = expressionContainer.RelativeExpressionParameter;
-         await _parameterMapper.MapToModel(snapshot, expressionParameter);
+         //TODO DISCUSS
+         return null;
 
-         if (!(molecule is IndividualTransporter transporter))
-            return expressionContainer;
-
-         var species = individual.Species.Name;
-         var transporterExpressionContainer = expressionContainer.DowncastTo<TransporterExpressionContainer>();
-         var membraneLocation = ModelValueFor(snapshot.MembraneLocation, MembraneLocation.Basolateral);
-         _transportContainerUpdater.UpdateTransporterFromTemplate(transporterExpressionContainer, species, membraneLocation, transporter.TransportType);
-
-         return expressionContainer;
+         // var expressionContainer = molecule.ExpressionContainer(snapshot.Name);
+         // if (expressionContainer == null)
+         // {
+         //    _logger.AddWarning(PKSimConstants.Error.RelativeExpressionContainerNotFound(snapshot.Name));
+         //    return null;
+         // }
+         //
+         // var expressionParameter = expressionContainer.RelativeExpressionParameter;
+         // await _parameterMapper.MapToModel(snapshot, expressionParameter);
+         //
+         // if (!(molecule is IndividualTransporter transporter))
+         //    return expressionContainer;
+         //
+         // var species = individual.Species.Name;
+         // var transporterExpressionContainer = expressionContainer.DowncastTo<TransporterExpressionContainer>();
+         // var membraneLocation = ModelValueFor(snapshot.MembraneLocation, MembraneLocation.Basolateral);
+         // _transportContainerUpdater.UpdateTransporterFromTemplate(transporterExpressionContainer, species, membraneLocation, transporter.TransportType);
+         //
+         // return expressionContainer;
       }
    }
 }

@@ -86,14 +86,5 @@ namespace PKSim.IntegrationTests
          path.ShouldNotBeNull();
          path.Last().ShouldBeEqualTo(CoreConstants.Parameters.START_AMOUNT);
       }
-
-      [Observation]
-      public void should_hide_the_relative_expression_parameters_defined_in_interstitial_for_protein_defined_with_a_tissue_localization_in_cell_and_a_vascular_endothelium_localization_in_interstitial()
-      {
-         var protBoneInterstitial = _simulation.Model.Root.EntityAt<MoleculeAmount>(
-            Constants.ORGANISM, CoreConstants.Organ.Bone, CoreConstants.Compartment.Interstitial, _protein.Name);
-
-         protBoneInterstitial.Parameter(CoreConstants.Parameters.REL_EXP).Visible.ShouldBeFalse();
-      }
    }
 }

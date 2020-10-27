@@ -32,15 +32,16 @@ namespace PKSim.Core.Commands
 
          Add(new SetTransportTypeInTransporterCommand(_individualTransporter, NewTransportType, context));
 
+         //TODO 
          //Check if a template is available for the given container. If yes, we're good to go and can create a change transporter type command
          //we need to retrieve the process name for the given MembraneTupe/Process Type combo
-         foreach (var transporterContainer in _individualTransporter.AllExpressionsContainers())
-         {
-            var membraneLocationToUse = transportContainerUpdater.MembraneLocationToUse(transporterContainer, NewTransportType);
-
-            //change transport type 
-            Add(new SetTransportTypeCommand(transporterContainer, OldTransportType, NewTransportType, membraneLocationToUse, context));
-         }
+         // foreach (var transporterContainer in _individualTransporter.AllExpressionsContainers())
+         // {
+         //    var membraneLocationToUse = transportContainerUpdater.MembraneLocationToUse(transporterContainer, NewTransportType);
+         //
+         //    //change transport type 
+         //    Add(new SetTransportTypeCommand(transporterContainer, OldTransportType, NewTransportType, membraneLocationToUse, context));
+         // }
 
          //now execute all commands
          base.Execute(context);

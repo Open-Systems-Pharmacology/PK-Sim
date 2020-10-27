@@ -5,7 +5,6 @@ namespace PKSim.Core.Model
 {
    public class MoleculeExpressionContainer : Container
    {
-
       /// <summary>
       ///    Name of the parent container of the compartment (for organ, name of organ, for segment either lumen or segment name)
       /// </summary>
@@ -32,11 +31,5 @@ namespace PKSim.Core.Model
       ///    Parameter representing the relative expression value for this container
       /// </summary>
       public IParameter RelativeExpressionParameter => this.Parameter(CoreConstants.Parameters.REL_EXP);
-
-
-      /// <summary>
-      ///    returns true if the container represents a lumen segment otherwise false
-      /// </summary>
-      public bool IsLumen => string.Equals(GroupName, CoreConstants.Groups.GI_LUMEN);
    }
 }

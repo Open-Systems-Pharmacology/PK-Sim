@@ -9,7 +9,7 @@ using ModelIndividual = PKSim.Core.Model.Individual;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule, ModelIndividual>
+   public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule, ModelIndividual, ModelIndividual>
    {
       private readonly ExpressionContainerMapper _expressionContainerMapper;
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
@@ -36,7 +36,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _ontogenyMapper = ontogenyMapper;
       }
 
-      public override async Task<Molecule> MapToSnapshot(IndividualMolecule molecule)
+      public override async Task<Molecule> MapToSnapshot(IndividualMolecule molecule, ModelIndividual individual)
       {
          var snapshot = await SnapshotFrom(molecule, x =>
          {
@@ -44,7 +44,7 @@ namespace PKSim.Core.Snapshots.Mappers
             x.Type = molecule.MoleculeType;
          });
 
-         snapshot.Expression = await expressionFor(molecule);
+         snapshot.Expression = await expressionFor(molecule, individual);
          snapshot.Ontogeny = await _ontogenyMapper.MapToSnapshot(molecule.Ontogeny);
          return snapshot;
       }
@@ -56,9 +56,10 @@ namespace PKSim.Core.Snapshots.Mappers
          return defaultShouldExport || parameter.IsIndividualMoleculeGlobal();
       }
 
-      private async Task<ExpressionContainer[]> expressionFor(IndividualMolecule molecule)
+      private async Task<ExpressionContainer[]> expressionFor(IndividualMolecule molecule, ModelIndividual individual)
       {
-         var expression = await _expressionContainerMapper.MapToSnapshots(molecule.AllExpressionsContainers());
+         var allExpressionContainers = individual.AllMoleculeContainersFor(molecule);
+         var expression = await _expressionContainerMapper.MapToSnapshots(allExpressionContainers);
          return expression?.ToArray();
       }
 

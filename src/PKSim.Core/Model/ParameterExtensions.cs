@@ -113,7 +113,7 @@ namespace PKSim.Core.Model
 
       public static bool ShouldExportToSnapshot(this IParameter parameter)
       {
-         if (parameter.IsDefault)
+         if (parameter==null || parameter.IsDefault)
             return false;
 
          return parameter.ValueIsDefined();
