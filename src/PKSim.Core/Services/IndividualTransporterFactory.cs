@@ -12,7 +12,7 @@ namespace PKSim.Core.Services
    public interface IIndividualTransporterTask : IIndividualMoleculeTask
    {
       IndividualTransporter UndefinedLiverTransporterFor(Individual individual);
-      IndividualMolecule CreateFor(ISimulationSubject simulationSubject, TransportType transporterType);
+      IndividualTransporter CreateFor(ISimulationSubject simulationSubject, string moleculeName, TransportType transporterType);
    }
 
    public class IndividualTransporterTask : IndividualMoleculeTask<IndividualTransporter, TransporterExpressionContainer>, IIndividualTransporterTask
@@ -37,7 +37,7 @@ namespace PKSim.Core.Services
 
       public IndividualTransporter UndefinedLiverTransporterFor(Individual individual)
       {
-         var transporter = CreateEmptyMolecule().WithName(CoreConstants.Molecule.UndefinedLiverTransporter);
+         var transporter = CreateMolecule(CoreConstants.Molecule.UndefinedLiverTransporter);
          transporter.TransportType = TransportType.Efflux;
 
          CoreConstants.Compartment.LiverZones.Each(z => addLiverZoneExpression(individual, transporter, z));
@@ -58,9 +58,9 @@ namespace PKSim.Core.Services
          }
       }
 
-      public IndividualMolecule CreateFor(ISimulationSubject simulationSubject, TransportType transporterType)
+      public IndividualTransporter CreateFor(ISimulationSubject simulationSubject, string moleculeName, TransportType transporterType)
       {
-         var transporter = CreateEmptyMolecule();
+         var transporter = CreateMolecule(moleculeName);
          //default transporter type
          transporter.TransportType = transporterType;
 

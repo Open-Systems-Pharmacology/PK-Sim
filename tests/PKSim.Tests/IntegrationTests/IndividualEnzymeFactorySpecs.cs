@@ -56,7 +56,7 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _undefined = sut.UndefinedLiverFor(_individual);
+         _undefined = sut.AddUndefinedLiverTo(_individual);
       }
 
       [Observation]

@@ -128,7 +128,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (transporterFactory == null || molecule.TransportType == null)
             return moleculeFactory.AddMoleculeTo(simulationSubject, molecule.Name);
 
-         return transporterFactory.CreateFor(simulationSubject, molecule.TransportType.Value);
+         return transporterFactory.CreateFor(simulationSubject, molecule.Name,  molecule.TransportType.Value);
       }
 
       private IIndividualMoleculeTask factoryFor(Molecule molecule)

@@ -271,7 +271,7 @@ namespace PKSim.Core.Services
          if (undefinedLiver != null)
             return;
 
-         undefinedLiver = _individualEnzymeTask.UndefinedLiverFor(_individual);
+         undefinedLiver = _individualEnzymeTask.AddUndefinedLiverTo(_individual);
          _individual.AddMolecule(undefinedLiver);
       }
 

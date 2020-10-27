@@ -238,7 +238,7 @@ namespace PKSim.Core
          _snapshot.TransportType = TransportType.PgpLike;
          var transporterFactory = A.Fake<IIndividualTransporterTask>();
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualTransporter>()).Returns(transporterFactory);
-         A.CallTo(() => transporterFactory.CreateFor(_individual, TransportType.PgpLike)).Returns(_transporter);
+         A.CallTo(() => transporterFactory.CreateFor(_individual, A<string>._,  TransportType.PgpLike)).Returns(_transporter);
       }
 
       protected override async Task Because()

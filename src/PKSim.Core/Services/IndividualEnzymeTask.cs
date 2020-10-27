@@ -4,12 +4,12 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
-
+using static PKSim.Core.CoreConstants.Parameters;
 namespace PKSim.Core.Services
 {
    public interface IIndividualEnzymeTask : IIndividualMoleculeTask
    {
-      IndividualEnzyme UndefinedLiverFor(Individual individual);
+      IndividualEnzyme AddUndefinedLiverTo(Individual individual);
    }
 
    public class IndividualEnzymeTask : IndividualProteinTask<IndividualEnzyme>, IIndividualEnzymeTask
@@ -23,9 +23,9 @@ namespace PKSim.Core.Services
       {
       }
 
-      public IndividualEnzyme UndefinedLiverFor(Individual individual)
+      public IndividualEnzyme AddUndefinedLiverTo(Individual individual)
       {
-         var undefinedLiver = CreateEmptyMolecule().WithName(CoreConstants.Molecule.UndefinedLiver);
+         var undefinedLiver = CreateMolecule(CoreConstants.Molecule.UndefinedLiver);
          undefinedLiver.Localization = Localization.Intracellular;
          undefinedLiver.ReferenceConcentration.Visible = false;
          undefinedLiver.HalfLifeLiver.Visible = false;
@@ -38,9 +38,9 @@ namespace PKSim.Core.Services
       {
          var liver = individual.Organism.Organ(CoreConstants.Organ.Liver);
          var zone = liver.Container(zoneName);
-         var relExp = RelExpParam(CoreConstants.Parameters.REL_EXP);
-         relExp.DefaultValue = 1;
-         AddContainerExpression(zone, individualEnzyme.Name, CoreConstants.Groups.ORGANS_AND_TISSUES, RelExpParam(CoreConstants.Parameters.REL_EXP));
+         AddTissueParameters(zone, individualEnzyme.Name, CoreConstants.Groups.ORGANS_AND_TISSUES);
+         var relExp = zone.EntityAt<IParameter>(CoreConstants.Compartment.Intracellular, individualEnzyme.Name, REL_EXP);
+         relExp.Value = 1;
       }
 
       protected override ApplicationIcon Icon => ApplicationIcons.Enzyme;

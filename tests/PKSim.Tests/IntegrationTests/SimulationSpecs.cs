@@ -710,7 +710,7 @@ namespace PKSim.IntegrationTests
             }
             else
             {
-               var individualProtein = transporterFactory.CreateFor(_individual, TransportType.Efflux).WithName(moleculeName);
+               var individualProtein = transporterFactory.CreateFor(_individual, moleculeName, TransportType.Efflux);
                _individual.AddMolecule(individualProtein.DowncastTo<IndividualTransporter>().WithName(moleculeName));
             }
 

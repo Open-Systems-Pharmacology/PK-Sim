@@ -379,7 +379,7 @@ namespace PKSim.IntegrationTests
          var influxBBB = allTransporters.Where(x => x.MembraneLocation == MembraneLocation.BloodBrainBarrier)
             .FirstOrDefault(x => x.TransportType == TransportType.Influx);
 
-         _transporter = _transporterTask.CreateFor(_individual, TransportType.Efflux).DowncastTo<IndividualTransporter>().WithName("TRANS");
+         _transporter = _transporterTask.CreateFor(_individual, "TRANS", TransportType.Efflux).DowncastTo<IndividualTransporter>();
          var transportContainer = _transporter.ExpressionContainer(CoreConstants.Organ.Brain).DowncastTo<TransporterExpressionContainer>();
          transportContainer.UpdatePropertiesFrom(influxBBB);
          _individual.AddMolecule(_transporter);
