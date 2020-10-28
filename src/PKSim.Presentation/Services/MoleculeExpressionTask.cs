@@ -89,6 +89,32 @@ namespace PKSim.Presentation.Services
          }
       }
 
+      private ICommand proteinFromQuery<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
+      {
+         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
+         using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
+         {
+            var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
+            var newMolecule = moleculeFactory.AddMoleculeTo(simulationSubject, "%TEMP%");
+            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(newMolecule, simulationSubject));
+            presenter.Title = PKSimConstants.UI.AddProteinExpression(_executionContext.TypeFor(newMolecule));
+            bool proteinCreated = presenter.Start();
+            if (!proteinCreated)
+            {
+               //needs to remove the molecule that was added previously
+               simulationSubject.RemoveMolecule(newMolecule);
+               return new PKSimEmptyCommand();
+            }
+
+            var queryResults = presenter.GetQueryResults();
+            var moleculeName = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
+            //Required to rename here as we created a temp molecule earlier to create the structure;
+            _simulationSubjectExpressionTask.RenameMolecule(newMolecule, simulationSubject, moleculeName);
+            newMolecule.QueryConfiguration = queryResults.QueryConfiguration;
+            return addMoleculeTo(newMolecule, simulationSubject, queryResults);
+         }
+      }
+
       public bool CanQueryProteinExpressionsFor(TSimulationSubject simulationSubject)
       {
          return _geneExpressionsDatabasePathManager.HasDatabaseFor(simulationSubject.Species);
@@ -115,31 +141,6 @@ namespace PKSim.Presentation.Services
             var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
             var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, presenter.MoleculeName);
             return addMoleculeTo(molecule, simulationSubject);
-         }
-      }
-
-      private ICommand proteinFromQuery<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
-      {
-         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
-         using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
-         {
-            var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
-            var newMolecule = moleculeFactory.AddMoleculeTo(simulationSubject, "%TEMP%");
-            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(newMolecule, simulationSubject));
-            presenter.Title = PKSimConstants.UI.AddProteinExpression(_executionContext.TypeFor(newMolecule));
-            bool proteinCreated = presenter.Start();
-            if (!proteinCreated)
-            {
-               //needs to remove the molecule that was added previously
-               simulationSubject.RemoveMolecule(newMolecule);
-               return new PKSimEmptyCommand();
-            }
-
-            var queryResults = presenter.GetQueryResults();
-            var moleculeName = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
-            //Required to rename here as we created a temp molecule earlier to create the structure;
-            _simulationSubjectExpressionTask.RenameMolecule(newMolecule, simulationSubject, moleculeName);
-            return addMoleculeTo(newMolecule, simulationSubject, queryResults);
          }
       }
 

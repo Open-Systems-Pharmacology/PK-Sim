@@ -13,7 +13,6 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.ProteinExpression;
 using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using PKSim.Infrastructure.ProjectConverter;
@@ -168,6 +167,7 @@ namespace PKSim.Presentation
          base.Context();
          A.CallTo(() => _simpleMoleculePresenter.CreateMoleculeFor<IndividualProtein>(_individual)).Returns(true);
          A.CallTo(() => _simpleMoleculePresenter.MoleculeName).Returns("MOLECULE");
+         _molecule.Name = _simpleMoleculePresenter.MoleculeName;
       }
 
       protected override void Because()
