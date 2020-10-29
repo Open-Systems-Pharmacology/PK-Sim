@@ -188,11 +188,18 @@ namespace PKSim.Core.Model
          Organism?.GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)).Select(x=>x.ParentContainer).ToArray() ?? Array.Empty<IContainer>();
 
       /// <summary>
+      ///  Returns all possible molecule parameters defined for <paramref name="molecule"/> in the individual.
+      ///   This also returns the global molecule parameters
+      /// </summary>
+      public virtual IReadOnlyList<IParameter> AllMoleculeParametersFor(IndividualMolecule molecule) =>
+         GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)).SelectMany(x => x.AllParameters()).ToList();
+
+      /// <summary>
       ///  Returns all possible molecule containers of the individual in which <paramref name="molecule"/> will be defined.
       ///   This also returns the global molecule containers
       /// </summary>
-      public virtual IReadOnlyList<IContainer>  AllMoleculeContainersFor(IndividualMolecule molecule) =>
-         GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)) ?? Array.Empty<IContainer>();
+      public virtual IReadOnlyList<MoleculeExpressionContainer> AllMoleculeContainersFor(IndividualMolecule molecule) =>
+         GetAllChildren<MoleculeExpressionContainer>(x => x.IsNamed(molecule.Name));
 
       public virtual ICache<string,IParameter> AllExpressionParametersFor(IndividualMolecule molecule)
       {
@@ -203,7 +210,7 @@ namespace PKSim.Core.Model
                if (p.IsGlobalExpression())
                   cache[CoreConstants.ContainerName.GlobalExpressionContainerNameFor(p.Name)] = p;
                else
-               {
+               {     
                   var container = p.ParentContainer.ParentContainer;
                   var key = container.IsNamed(CoreConstants.Compartment.Intracellular) ? container.ParentContainer.Name : container.Name;
                   if (p.IsInLumen())

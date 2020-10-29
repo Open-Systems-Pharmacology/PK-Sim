@@ -60,7 +60,7 @@ namespace PKSim.Core.Services
          DefaultValue = 0,
          GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
          BuildingBlockType = PKSimBuildingBlockType.Individual,
-         IsInput = true,
+         IsDefault = true,
       };
 
       protected TMolecule CreateMolecule(string moleculeName)
@@ -90,6 +90,8 @@ namespace PKSim.Core.Services
             parameter.GroupName = groupName;
 
          parameter.Formula.ReplaceKeywordsInObjectPaths(new[] {ObjectPathKeywords.MOLECULE}, new[] {moleculeName});
+         //All constant parameters do not have default values
+         parameter.DefaultValue = null;
          return parameter;
       }
 
@@ -115,6 +117,8 @@ namespace PKSim.Core.Services
          if (!string.IsNullOrEmpty(groupName))
             parameter.GroupName = groupName;
 
+         //All constant parameters do not have default values
+         parameter.DefaultValue = null;
          return parameter;
       }
 

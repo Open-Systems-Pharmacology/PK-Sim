@@ -81,7 +81,7 @@ namespace PKSim.Core.Services
 
       private void updateMoleculeParametersValues(IndividualMolecule molecule, Individual individual)
       {
-         var allProteinParameters = individual.AllMoleculeContainersFor(molecule).SelectMany(x => x.AllParameters()).ToList();
+         var allProteinParameters = individual.AllMoleculeParametersFor(molecule);
          allProteinParameters.Each(setParameter);
       }
 

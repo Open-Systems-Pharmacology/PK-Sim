@@ -281,12 +281,7 @@ namespace PKSim.UI.Views.Individuals
          var parameterDTO = _gridViewBinder.ElementAt(rowHandle)?.Parameter;
          if (parameterDTO == null) return;
 
-         _gridView.EditorShowMode = hasTextEditor(parameterDTO) ? EditorShowMode.MouseUp : EditorShowMode.Default;
-      }
-
-      private bool hasTextEditor(IParameterDTO parameterDTO)
-      {
-         return !_presenter.IsSetByUser(parameterDTO);
+         _gridView.EditorShowMode = _presenter.IsSetByUser(parameterDTO) ?  EditorShowMode.Default : EditorShowMode.MouseUp;
       }
 
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)

@@ -184,7 +184,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_default_parameters_in_the_newly_added_molecule()
       {
-         A.CallTo(() => _moleculeParameterTask.SetDefaulMoleculeParameters(_molecule, "MOLECULE")).MustHaveHappened();
+         A.CallTo(() => _moleculeParameterTask.SetDefaultMoleculeParameters(_molecule, "MOLECULE")).MustHaveHappened();
       }
 
       [Observation]

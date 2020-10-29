@@ -9,9 +9,9 @@ namespace PKSim.Core.Services
       /// <summary>
       /// Updates the default global molecule parameters in the molecule based on the values defined in the database
       /// </summary>
-      /// <param name="molecule">Molecule containig the parameters to update</param>
+      /// <param name="molecule">Molecule containihgg the parameters to update</param>
       /// <param name="moleculeName">Name of molecule to use to retrieve the default parameters. If not set, <paramref name="molecule"/> name will be used instead</param>
-      void SetDefaulMoleculeParameters(IndividualMolecule molecule, string moleculeName = null);
+      void SetDefaultMoleculeParameters(IndividualMolecule molecule, string moleculeName = null);
 
    }
 
@@ -24,7 +24,7 @@ namespace PKSim.Core.Services
          _moleculeParameterRepository = moleculeParameterRepository;
       }
 
-      public void SetDefaulMoleculeParameters(IndividualMolecule molecule, string moleculeName = null)
+      public void SetDefaultMoleculeParameters(IndividualMolecule molecule, string moleculeName = null)
       {
          var name = moleculeName ?? molecule.Name;
          setDefaultParameter(name, molecule.ReferenceConcentration);
@@ -34,7 +34,7 @@ namespace PKSim.Core.Services
 
       private void setDefaultParameter(string moleculeName, IParameter parameter)
       {
-         var value = _moleculeParameterRepository.ParameterValueFor(moleculeName, parameter.Name, parameter.DefaultValue);
+         var value = _moleculeParameterRepository.ParameterValueFor(moleculeName, parameter.Name, parameter.Value);
          parameter.DefaultValue = value;
          parameter.Value = value;
       }

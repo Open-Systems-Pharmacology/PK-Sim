@@ -252,7 +252,7 @@ namespace PKSim.Core.Model
          parameter.BuildMode = parameterMetaData.BuildMode;
          parameter.Info = parameterMetaData.Clone();
          parameter.Dimension = _dimensionRepository.DimensionByName(parameterMetaData.Dimension);
-         parameter.IsDefault = !parameterMetaData.IsInput;
+         parameter.IsDefault = parameterMetaData.IsDefault;
          parameter.ValueOrigin.UpdateAllFrom(parameterMetaData.ValueOrigin);
 
          if (!string.IsNullOrEmpty(parameterMetaData.DefaultUnit))

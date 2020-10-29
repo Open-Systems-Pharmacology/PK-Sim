@@ -89,10 +89,9 @@ namespace PKSim.Core.Model
          if (parameter.Formula == null)
             return false;
 
-         //code should be
          if (!parameter.IsDefault)
             return false;
-         
+
          // Default only for constant parameter or distribute parameters
          return parameter.Formula.IsConstant() || parameter.Formula.IsDistributed();
       }
@@ -113,7 +112,14 @@ namespace PKSim.Core.Model
 
       public static bool ShouldExportToSnapshot(this IParameter parameter)
       {
-         if (parameter==null || parameter.IsDefault)
+         if (parameter == null || !parameter.Visible) 
+            return false;
+
+         //For a molecule, we export all global parameters to ensure that they do not get out of sync when loading from snapshot 
+         if (parameter.IsIndividualMoleculeGlobal())
+            return true;
+
+         if (parameter.IsDefault)
             return false;
 
          return parameter.ValueIsDefined();

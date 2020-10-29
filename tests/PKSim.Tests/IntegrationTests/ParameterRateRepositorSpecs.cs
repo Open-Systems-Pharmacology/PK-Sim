@@ -40,7 +40,7 @@ namespace PKSim.IntegrationTests
                x.ParameterName == CoreConstants.Parameters.LIPOPHILICITY;
          });
 
-         lipophilicityParameter.IsInput.ShouldBeTrue();
+         lipophilicityParameter.IsDefault.ShouldBeTrue();
       }
    }
 }

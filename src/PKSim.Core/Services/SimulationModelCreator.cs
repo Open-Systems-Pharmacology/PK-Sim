@@ -79,7 +79,7 @@ namespace PKSim.Core.Services
          hideAllUndefinedParameterForMolecules(simulation);
          individual.AllMolecules().Each(m =>
          {
-            var allMoleculeParameters = individual.AllMoleculeContainersFor(m).SelectMany(x => x.AllParameters());
+            var allMoleculeParameters = individual.AllMoleculeParametersFor(m);
             allMoleculeParameters.Each(p =>
             {
                var simulationParameter = allParameters[_entityPathResolver.PathFor(p)];

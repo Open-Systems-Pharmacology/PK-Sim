@@ -61,6 +61,7 @@ namespace PKSim.Presentation.Services
          return simpleMolecule<TMolecule>(simulationSubject);
       }
 
+
       public ICommand AddDefaultMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
       {
          return simpleMolecule<TMolecule>(simulationSubject);
@@ -138,10 +139,16 @@ namespace PKSim.Presentation.Services
             if (!proteinCreated)
                return new PKSimEmptyCommand();
 
-            var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
-            var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, presenter.MoleculeName);
-            return addMoleculeTo(molecule, simulationSubject);
+            return AddMoleculeTo<TMolecule>(simulationSubject, presenter.MoleculeName);
          }
+      }
+
+
+      public ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject, string moleculeName) where TMolecule : IndividualMolecule
+      {
+         var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
+         var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, moleculeName);
+         return addMoleculeTo(molecule, simulationSubject);
       }
 
       private ICommand editMolecule<TMolecule>(TMolecule moleculeToEdit, TMolecule editedMolecule, QueryExpressionResults queryResults,
@@ -181,11 +188,12 @@ namespace PKSim.Presentation.Services
          return new SetTransportTypeInAllContainerCommand(transporter, transportType, _executionContext).Run(_executionContext);
       }
 
+
       private void setDefaultFor(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)
       {
          setDefaultSettingsForTransporter(molecule, simulationSubject, moleculeName);
          setDefaultOntogeny(molecule, simulationSubject, moleculeName);
-         _moleculeParameterTask.SetDefaulMoleculeParameters(molecule, moleculeName);
+         _moleculeParameterTask.SetDefaultMoleculeParameters(molecule, moleculeName);
       }
 
       private void setDefaultSettingsForTransporter(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)

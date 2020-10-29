@@ -7,11 +7,19 @@ namespace PKSim.Core.Services
    public interface IMoleculeExpressionTask<TSimulationSubject> where TSimulationSubject : ISimulationSubject
    {
       /// <summary>
-      ///    Add a protein of type <typeparamref name="TMolecule" /> to the given individual
+      ///    Add a molecule of type <typeparamref name="TMolecule" /> to the given individual
       /// </summary>
       /// <typeparam name="TMolecule">Type of molecule to add. The molecule will be created depending on this type </typeparam>
       /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
       ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule;
+
+      /// <summary>
+      ///    Add a molecule of type <typeparamref name="TMolecule" /> to the given individual named <paramref name="moleculeName"/>
+      /// </summary>
+      /// <typeparam name="TMolecule">Type of molecule to add. The molecule will be created depending on this type </typeparam>
+      /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
+      /// <param name="moleculeName">Name of the molecule to add</param>
+      ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject, string moleculeName) where TMolecule : IndividualMolecule;
 
       /// <summary>
       ///    Add a default molecule of type <typeparamref name="TMolecule" /> to the given <paramref name="simulationSubject" />

@@ -92,8 +92,9 @@ namespace PKSim.Core.Snapshots.Mappers
          if (list == null || !list.Any())
             return null;
 
-         var targets = await Task.WhenAll(list.Select(mapToFunc));
-         return targets.Where(x => x != null).ToArray();
+         var targets = (await Task.WhenAll(list.Select(mapToFunc))).Where(x=>x!=null).ToArray();
+         
+         return !targets.Any() ? null : targets;
       }
    }
 }

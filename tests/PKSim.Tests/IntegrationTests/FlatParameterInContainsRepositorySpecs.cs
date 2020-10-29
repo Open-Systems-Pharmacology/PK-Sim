@@ -79,7 +79,7 @@ namespace PKSim.IntegrationTests
       {
          var parameters = _allParameters.Where(x => x.ReadOnly)
             .Where(x => !isOneOfReadOnlyAndIsInputParameters(x.ParameterName))
-            .Where(x => x.IsInput).ToList();
+            .Where(x => x.IsDefault).ToList();
 
          parameters.Any().ShouldBeFalse(ErrorMessageFor(parameters));
       }
@@ -89,7 +89,7 @@ namespace PKSim.IntegrationTests
       {
          var parameters = _allParameters.Where(x => !x.Visible)
             .Where(x => !isOneOfReadOnlyAndIsInputParameters(x.ParameterName))
-            .Where(x => x.IsInput).ToList();
+            .Where(x => x.IsDefault).ToList();
 
          parameters.Any().ShouldBeFalse(ErrorMessageFor(parameters));
       }
@@ -97,7 +97,7 @@ namespace PKSim.IntegrationTests
       private void checkIsInputFlag(List<ParameterMetaData> parametersWithWrongIsInputFlag,
                                     ParameterMetaData parameter, bool isInputShouldBe)
       {
-         if(parameter.IsInput != isInputShouldBe)
+         if(parameter.IsDefault != isInputShouldBe)
             parametersWithWrongIsInputFlag.Add(parameter);
       }
 

@@ -13,7 +13,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public ISimulationSubject SimulationSubject { get; set; }
    }
 
-   public class ExpressionContainerMapper : SnapshotMapperBase<IContainer, ExpressionContainer, ExpressionContainerMapperContext>
+   public class ExpressionContainerMapper : SnapshotMapperBase<MoleculeExpressionContainer, ExpressionContainer, ExpressionContainerMapperContext>
    {
       private readonly ParameterMapper _parameterMapper;
       private readonly ITransportContainerUpdater _transportContainerUpdater;
@@ -29,19 +29,13 @@ namespace PKSim.Core.Snapshots.Mappers
          _logger = logger;
       }
 
-      public override async Task<ExpressionContainer> MapToSnapshot(IContainer expressionContainer)
+      public override async Task<ExpressionContainer> MapToSnapshot(MoleculeExpressionContainer expressionContainer)
       {
          var transportedExpressionContainer = expressionContainer as TransporterExpressionContainer;
-         //TODO This is not ok anymore
-         var expressionParameter = expressionContainer.Parameter(CoreConstants.Parameters.REL_EXP);
-        
-         if (!expressionParameter.ShouldExportToSnapshot())
+         if (transportedExpressionContainer == null)
             return null;
 
          var snapshot = await SnapshotFrom(expressionContainer, x => { x.Name = expressionContainer.Name; });
-
-         await _parameterMapper.UpdateSnapshotFromParameter(snapshot, expressionParameter);
-
          mapTransporterExpressionProperties(snapshot, transportedExpressionContainer);
 
          return snapshot;
@@ -55,7 +49,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.MembraneLocation = transporterExpressionContainer.MembraneLocation;
       }
 
-      public override async Task<IContainer> MapToModel(ExpressionContainer snapshot, ExpressionContainerMapperContext context)
+      public override async Task<MoleculeExpressionContainer> MapToModel(ExpressionContainer snapshot, ExpressionContainerMapperContext context)
       {
          if (snapshot == null)
             return null;
@@ -63,6 +57,8 @@ namespace PKSim.Core.Snapshots.Mappers
          var molecule = context.Molecule;
          var individual = context.SimulationSubject;
 
+         // if (!(molecule is IndividualTransporter transporter))
+         //    return expressionContainer;
 
          //TODO DISCUSS
          return null;

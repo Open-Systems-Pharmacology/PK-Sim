@@ -385,7 +385,7 @@ namespace PKSim.IntegrationTests
          _irreversibleProcess = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.IRREVERSIBLE_INHIBITION)
             .DowncastTo<InhibitionProcess>());
          _irreversibleProcess.Name = "IrreversibleProcess";
-         _irreversibleProcess.Parameter(CoreConstantsForSpecs.Parameter.KINACT).Value = 10;
+         _irreversibleProcess.Parameter(CoreConstantsForSpecs.Parameter.KINACT).Value = 2;
          _compound.AddProcess(_irreversibleProcess);
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, new[] {_compound}, new[] {_protocol})

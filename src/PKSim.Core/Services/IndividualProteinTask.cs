@@ -101,7 +101,7 @@ namespace PKSim.Core.Services
             ReadOnly = !editable,
             Dimension = CoreConstants.Dimension.Fraction,
             GroupName = groupName,
-            IsInput = editable
+            IsDefault = true
          };
 
       private ParameterRateMetaData initialConcentrationParam(string rate) =>
