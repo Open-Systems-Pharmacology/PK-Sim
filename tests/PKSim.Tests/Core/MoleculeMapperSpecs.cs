@@ -184,7 +184,10 @@ namespace PKSim.Core
 
          _enzyme.Ontogeny = null;
          A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, _individual)).Returns(_ontogeny);
-         A.CallTo(() => _individualMoleculeParametersTask.AddMoleculeTo<IndividualEnzyme>(_individual, _snapshot.Name)).Invokes(x=>_individual.AddMolecule(_enzyme));
+
+         //we need to add the molecule that is now added as part of the creation process of a molecule
+         A.CallTo(() => _individualMoleculeParametersTask.AddMoleculeTo<IndividualEnzyme>(_individual, _snapshot.Name))
+            .Invokes(x => _individual.AddMolecule(_enzyme));
       }
 
       protected override async Task Because()
@@ -229,13 +232,17 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_transporter, _individual);
 
          _snapshot.TransportType = TransportType.PgpLike;
+
+         //we need to add the molecule that is now added as part of the creation process of a molecule
+         A.CallTo(() => _individualMoleculeParametersTask.AddMoleculeTo<IndividualTransporter>(_individual, _snapshot.Name))
+            .Invokes(x => _individual.AddMolecule(_transporter));
+
       }
 
       protected override async Task Because()
       {
          _newTransporter = await sut.MapToModel(_snapshot, _individual) as IndividualTransporter;
       }
-
 
       [Observation]
       public void should_have_added_molecule_to_the_individual()
@@ -264,6 +271,11 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_otherProtein, _individual);
+
+         //we need to add the molecule that is now added as part of the creation process of a molecule
+         A.CallTo(() => _individualMoleculeParametersTask.AddMoleculeTo<IndividualOtherProtein>(_individual, _snapshot.Name))
+            .Invokes(x => _individual.AddMolecule(_otherProtein));
+
       }
 
       protected override async Task Because()
@@ -276,6 +288,7 @@ namespace PKSim.Core
       {
          A.CallTo(() => _individualMoleculeParametersTask.AddMoleculeTo<IndividualOtherProtein>(_individual, _snapshot.Name)).MustHaveHappened();
       }
+
       [Observation]
       public void should_return_a_molecule_having_the_expected_type()
       {
