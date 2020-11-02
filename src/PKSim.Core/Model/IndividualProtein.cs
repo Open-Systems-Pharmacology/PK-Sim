@@ -4,19 +4,6 @@ using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
-   public enum TissueLocation
-   {
-      ExtracellularMembrane,
-      Intracellular,
-      Interstitial,
-   }
-
-   public enum IntracellularVascularEndoLocation
-   {
-      Endosomal,
-      Interstitial
-   }
-
    [Flags]
    public enum Localization
    {
@@ -28,7 +15,7 @@ namespace PKSim.Core.Model
       VascEndosome = 1 << 4,
       VascMembraneApical = 1 << 5,
       VascMembraneBasolateral = 1 << 6,
-    
+
       InTissue = Intracellular | Interstitial,
       InBloodCells = BloodCellsMembrane | BloodCellsIntracellular,
       InVascularEndothelium = VascEndosome | VascMembraneApical | VascMembraneBasolateral
@@ -45,9 +32,6 @@ namespace PKSim.Core.Model
    public abstract class IndividualProtein : IndividualMolecule
    {
       public Localization Localization { get; set; } = Localization.Intracellular;
-      private TissueLocation _tissueLocation;
-      private MembraneLocation _membraneLocation;
-      private IntracellularVascularEndoLocation _intracellularVascularEndoLocation;
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
@@ -55,29 +39,6 @@ namespace PKSim.Core.Model
          var sourceProtein = sourceObject as IndividualProtein;
          if (sourceProtein == null) return;
          Localization = sourceProtein.Localization;
-
-         //TODO REMOVE
-         TissueLocation = sourceProtein.TissueLocation;
-         MembraneLocation = sourceProtein.MembraneLocation;
-         IntracellularVascularEndoLocation = sourceProtein.IntracellularVascularEndoLocation;
-      }
-
-      public virtual MembraneLocation MembraneLocation
-      {
-         get => _membraneLocation;
-         set => SetProperty(ref _membraneLocation, value);
-      }
-
-      public virtual TissueLocation TissueLocation
-      {
-         get => _tissueLocation;
-         set => SetProperty(ref _tissueLocation, value);
-      }
-
-      public virtual IntracellularVascularEndoLocation IntracellularVascularEndoLocation
-      {
-         get => _intracellularVascularEndoLocation;
-         set => SetProperty(ref _intracellularVascularEndoLocation, value);
       }
 
       public bool IsIntracellular
@@ -106,7 +67,7 @@ namespace PKSim.Core.Model
 
       private void setLocalizationFlag(Localization localization, bool value)
       {
-         if(Localization.Is(localization)==value)
+         if (Localization.Is(localization) == value)
             return;
 
          Localization ^= localization;

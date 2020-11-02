@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots.Services;
 using static PKSim.Core.Snapshots.Services.LocalizationConverter;
 
 namespace PKSim.Core

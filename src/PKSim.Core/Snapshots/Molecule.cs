@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Snapshots
 {

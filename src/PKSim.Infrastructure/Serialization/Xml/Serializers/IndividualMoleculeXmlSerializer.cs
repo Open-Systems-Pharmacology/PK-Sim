@@ -18,9 +18,6 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       {
          base.PerformMapping();
          Map(x => x.Localization);
-         Map(x => x.TissueLocation);
-         Map(x => x.IntracellularVascularEndoLocation);
-         Map(x => x.MembraneLocation);
       }
    }
 

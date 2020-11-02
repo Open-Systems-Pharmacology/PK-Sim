@@ -7,6 +7,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Core.Snapshots.Services;
 using Individual = PKSim.Core.Model.Individual;
 using Ontogeny = PKSim.Core.Model.Ontogeny;
 using Parameter = PKSim.Core.Snapshots.Parameter;

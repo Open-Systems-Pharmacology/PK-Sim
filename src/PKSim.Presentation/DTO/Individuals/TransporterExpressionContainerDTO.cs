@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Presentation.DTO.Individuals
 {

@@ -4,6 +4,7 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Commands
 {

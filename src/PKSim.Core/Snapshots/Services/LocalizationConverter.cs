@@ -3,6 +3,27 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Services
 {
+   public enum MembraneLocation
+   {
+      Apical,
+      Basolateral,
+      BloodBrainBarrier, //(apical)
+      Tissue,            //(basolateral)
+   }
+
+   public enum TissueLocation
+   {
+      ExtracellularMembrane,
+      Intracellular,
+      Interstitial,
+   }
+
+   public enum IntracellularVascularEndoLocation
+   {
+      Endosomal,
+      Interstitial
+   }
+
    public static class LocalizationConverter
    {
       public static Localization ConvertToLocalization(TissueLocation tissueLocation, MembraneLocation membraneLocation,
