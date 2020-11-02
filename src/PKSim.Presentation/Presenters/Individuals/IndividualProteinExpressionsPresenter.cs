@@ -60,7 +60,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          view.AddLocalizationView(_expressionLocalizationPresenter.View);
 
          //TODO probably in preferences
-         _showInitialConcentration = true;
+         _showInitialConcentration = false;
       }
 
       private void onLocalizationChanged()

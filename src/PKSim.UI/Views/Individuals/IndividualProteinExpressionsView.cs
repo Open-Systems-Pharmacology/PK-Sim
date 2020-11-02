@@ -89,7 +89,6 @@ namespace PKSim.UI.Views.Individuals
       {
          var parameterDTO = _gridViewBinder.FocusedElement?.Parameter;
          if (parameterDTO == null) return;
-         if (ColumnIsAlwaysActive(_gridView.FocusedColumn)) return;
          e.Cancel = !_presenter.CanEditParameter(parameterDTO);
       }
 
@@ -116,7 +115,7 @@ namespace PKSim.UI.Views.Individuals
          if (!string.IsNullOrEmpty(container1.CompartmentName) && !string.IsNullOrEmpty(container2.CompartmentName))
             return;
 
-         // -1 will move the container1 above container 2
+         // -1 will move the container1 above container2
          e.Result = string.IsNullOrEmpty(container1.CompartmentName) ? -1 : 1;
 
 //         Debug.Print($"{container1} && {container2}  = {e.Result}");
@@ -182,7 +181,8 @@ namespace PKSim.UI.Views.Individuals
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
       {
          var parameterDTO = _gridViewBinder.ElementAt(e)?.Parameter;
-         if (parameterDTO == null) return;
+         if (parameterDTO == null) 
+            return;
 
          //check if subclass want to display a tool tip as well
          var superToolTip = GetToolTipFor(parameterDTO, _gridView.HitInfoAt(e.ControlMousePosition));
@@ -203,7 +203,9 @@ namespace PKSim.UI.Views.Individuals
 
       protected override bool ColumnIsValue(GridColumn gridColumn)
       {
-         if (_colParameterValue == null) return false;
+         if (_colParameterValue == null) 
+            return false;
+
          return _colParameterValue.XtraColumn == gridColumn;
       }
 
@@ -242,14 +244,7 @@ namespace PKSim.UI.Views.Individuals
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
       }
 
-      public void Clear()
-      {
-      }
-
-      public void AddMoleculePropertiesView(IView view)
-      {
-         AddViewTo(layoutItemMoleculeProperties, view);
-      }
+      public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, view);
 
       public void BindTo(IEnumerable<ExpressionParameterDTO> parameters)
       {
@@ -257,10 +252,7 @@ namespace PKSim.UI.Views.Individuals
          _screenBinder.BindToSource(_presenter);
       }
 
-      public void AddLocalizationView(IView view)
-      {
-         AddViewTo(layoutItemPanelLocalization, view);
-      }
+      public void AddLocalizationView(IView view) => AddViewTo(layoutItemPanelLocalization, view);
 
       public override void InitializeResources()
       {
@@ -271,32 +263,26 @@ namespace PKSim.UI.Views.Individuals
          layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.Localization;
       }
 
-      protected virtual bool ColumnIsAlwaysActive(GridColumn column)
-      {
-         return false;
-      }
-
       protected override void OnValueColumnMouseDown(UxGridView gridView, GridColumn col, int rowHandle)
       {
          var parameterDTO = _gridViewBinder.ElementAt(rowHandle)?.Parameter;
-         if (parameterDTO == null) return;
+         if (parameterDTO == null) 
+            return;
 
-         _gridView.EditorShowMode = _presenter.IsSetByUser(parameterDTO) ?  EditorShowMode.Default : EditorShowMode.MouseUp;
+         _gridView.EditorShowMode = _presenter.IsSetByUser(parameterDTO) ? EditorShowMode.Default : EditorShowMode.MouseUp;
       }
 
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
       {
          var parameterDTO = _gridViewBinder.ElementAt(e.RowHandle)?.Parameter;
-         if (parameterDTO == null) return;
+         if (parameterDTO == null) 
+            return;
 
-         if (ColumnIsAlwaysActive(e.Column))
-            _gridView.AdjustAppearance(e, true);
-
-         else if (e.Column.OptionsColumn.ReadOnly)
+         if (e.Column.OptionsColumn.ReadOnly)
             _gridView.AdjustAppearance(e, true);
 
          else if (!parameterDTO.Parameter.Editable)
-            _gridView.AdjustAppearance(e, true);
+            _gridView.AdjustAppearance(e, isEnabled: false);
 
          else if (_presenter.IsSetByUser(parameterDTO))
             _gridView.AdjustAppearance(e, PKSimColors.Changed);
