@@ -176,7 +176,7 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string BER = "Cellular partition coefficient method - Berezhkovskiy";
          public static readonly string PKSim = "Cellular partition coefficient method - PK-Sim Standard";
          public static readonly string BSA_Mosteller = "Body surface area - Mosteller";
-         public static readonly string DynamicSumFormulas = "DYNAMIC_SUM_FORMULAS";
+         public static readonly string DynamicSumFormulas = "DynamicSumFormulas";
       }
 
       public static class Category

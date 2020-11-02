@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Maths.Interpolations;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Data;
 using PKSim.Core.Comparison;
@@ -92,9 +91,10 @@ namespace PKSim.Core
          container.Register<IApplicationSettings, OSPSuite.Core.IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
 
          //Register opened types generics
+         container.Register(typeof(IMoleculeExpressionTask<>), typeof(MoleculeExpressionTask<>));
+
          container.Register<IInterpolation, LinearInterpolation>();
          container.Register<IPivoter, Pivoter>();
-
          container.Register<ISimulationSubject, Individual>();
          container.Register<Protocol, SimpleProtocol>();
          container.Register<Simulation, IndividualSimulation>();

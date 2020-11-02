@@ -203,7 +203,7 @@ namespace PKSim.Core.Model
 
       public virtual ICache<string,IParameter> AllExpressionParametersFor(IndividualMolecule molecule)
       {
-         var cache = new Cache<string, IParameter>();
+         var cache = new Cache<string, IParameter>(onMissingKey: x=>null);
          var allExpressionParameters =  GetAllChildren<IParameter>(x => x.IsExpression() && x.ParentContainer.IsNamed(molecule.Name));
          allExpressionParameters.Each(p =>
             {

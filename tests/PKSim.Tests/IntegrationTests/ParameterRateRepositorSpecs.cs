@@ -33,14 +33,10 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_set_the_default_flag_to_the_expected_parameters_for_some_know_parameters()
       {
-         var lipophilicityParameter = _result.Find(x =>
-         {
-            return
-               x.BuildingBlockType == PKSimBuildingBlockType.Compound &&
-               x.ParameterName == CoreConstants.Parameters.LIPOPHILICITY;
-         });
+         var lipophilicityParameter = _result.Find(x => x.BuildingBlockType == PKSimBuildingBlockType.Compound &&
+                                                        x.ParameterName == CoreConstants.Parameters.LIPOPHILICITY);
 
-         lipophilicityParameter.IsDefault.ShouldBeTrue();
+         lipophilicityParameter.IsInput.ShouldBeTrue();
       }
    }
 }

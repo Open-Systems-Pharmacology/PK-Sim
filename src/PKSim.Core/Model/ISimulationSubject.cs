@@ -63,10 +63,10 @@ namespace PKSim.Core.Model
       Individual Individual { get; }
 
       /// <summary>
-      ///    Returns all containers defined for the given molecule.
+      ///    Returns a cache with all expression parameters defined for <paramref name="molecule" /> in the simulation subject.
+      ///    Global expression parameters are also returned
       /// </summary>
-      /// <example>If we have the following structure Kidney|Intracellular|CYP3A4|RelExp, it will return Kidney</example>
-      /// <returns></returns>
+      /// <example>If we have the following structure Kidney|Intracellular|CYP3A4|RelExp, it will return (Kidney, RelExp)</example>
       ICache<string, IParameter> AllExpressionParametersFor(IndividualMolecule molecule);
    }
 }

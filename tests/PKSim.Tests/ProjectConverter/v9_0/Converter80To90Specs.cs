@@ -7,12 +7,12 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Infrastructure.ProjectConverter;
-using PKSim.Infrastructure.ProjectConverter.v9_0;
+using PKSim.Infrastructure.ProjectConverter.v9;
 using PKSim.IntegrationTests;
 
 namespace PKSim.ProjectConverter.v9_0
 {
-   public class When_converting_the_simple_project_730_project_to_90 : ContextWithLoadedProject<Converter80To90>
+   public class When_converting_the_simple_project_730_project_to_90 : ContextWithLoadedProject<Converter8To9>
    {
       private List<PopulationSimulation> _allSimulations;
       private List<Population> _allPopulations;
@@ -55,7 +55,7 @@ namespace PKSim.ProjectConverter.v9_0
       }
    }
 
-   public class When_converting_the_population_analysis_74_project_to_90 : ContextWithLoadedProject<Converter80To90>
+   public class When_converting_the_population_analysis_74_project_to_90 : ContextWithLoadedProject<Converter8To9>
    {
       private List<PopulationSimulation> _allSimulations;
 

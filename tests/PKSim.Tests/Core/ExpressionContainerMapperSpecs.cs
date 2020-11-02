@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
@@ -86,32 +87,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mappign_a_expression_container_with_a_changed_value : concern_for_ExpressionContainerMapper
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _relativeExpressionParameter.Value = 5;
-         _relativeExpressionParameter.IsDefault = false;
-      }
-
-      protected override async Task Because()
-      {
-         _snapshot = await sut.MapToSnapshot(_moleculeExpressionContainer);
-      }
-
-      [Observation]
-      public void should_update_the_parameter_value_from_expression_parameter()
-      {
-         A.CallTo(() => _parameterMapper.UpdateSnapshotFromParameter(_snapshot, _relativeExpressionParameter)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_have_set_the_name_of_the_expression_container_to_the_name_of_the_container()
-      {
-         _snapshot.Name.ShouldBeEqualTo(_moleculeExpressionContainer.Name);
-      }
-   }
 
    public class when_updating_a_undefined_expression_container_from_snapshot : concern_for_ExpressionContainerMapper
    {
@@ -131,10 +106,9 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _relativeExpressionParameter.Value = 5;
-         _relativeExpressionParameter.IsDefault = false;
-         _snapshot = await sut.MapToSnapshot(_moleculeExpressionContainer);
+         _snapshot = new ExpressionContainer {Name = "Plasma", Value = 5};
          _expressionContainerMapperContext.Molecule = _enzyme;
+         _expressionContainerMapperContext.ExpressionParameters = new Cache<string, IParameter>{{ _snapshot.Name, _relativeExpressionParameter }};
       }
 
       protected override Task Because()
@@ -160,6 +134,8 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_transporterExpressionContainer);
          _snapshot.MembraneLocation = MembraneLocation.Basolateral;
          _expressionContainerMapperContext.Molecule = _transporter;
+         _expressionContainerMapperContext.ExpressionParameters = new Cache<string, IParameter> { { _snapshot.Name, _transporterRelativeExpressionParameter } };
+
       }
 
       protected override Task Because()

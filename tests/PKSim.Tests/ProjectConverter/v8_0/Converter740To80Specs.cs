@@ -10,7 +10,7 @@ using PKSim.IntegrationTests;
 
 namespace PKSim.ProjectConverter.v8_0
 {
-   public class When_converting_the_simple_project_730_project_to_80 : ContextWithLoadedProject<Converter740To80>
+   public class When_converting_the_simple_project_730_project_to_80 : ContextWithLoadedProject<Converter740To8>
    {
       private List<Simulation> _allSimulations;
       private List<Compound> _allCompounds;

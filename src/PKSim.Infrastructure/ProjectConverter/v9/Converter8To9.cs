@@ -15,9 +15,9 @@ using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Infrastructure.Serialization.Xml;
 using IoC = OSPSuite.Utility.Container.IContainer;
 
-namespace PKSim.Infrastructure.ProjectConverter.v9_0
+namespace PKSim.Infrastructure.ProjectConverter.v9
 {
-   public class Converter80To90 : IObjectConverter,
+   public class Converter8To9 : IObjectConverter,
       IVisitor<PopulationSimulation>,
       IVisitor<PopulationAnalysisChart>,
       IVisitor<Population>,
@@ -29,7 +29,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v9_0
       private readonly Converter730To90 _converter730To90;
       private bool _converted;
 
-      public Converter80To90(IoC container, Converter730To90 converter730To90)
+      public Converter8To9(IoC container, Converter730To90 converter730To90)
       {
          _container = container;
          _converter730To90 = converter730To90;

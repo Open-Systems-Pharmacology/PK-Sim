@@ -182,7 +182,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_the_parameter_previously_set_by_the_user()
       {
-         A.CallTo(() => _parameterMapper.MapLocalizedParameters(_snapshot.Parameters, _individual.Organism)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapLocalizedParameters(_snapshot.Parameters, _individual)).MustHaveHappened();
       }
    }
 }

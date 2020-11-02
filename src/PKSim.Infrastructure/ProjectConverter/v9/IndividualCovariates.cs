@@ -4,7 +4,7 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 
-namespace PKSim.Infrastructure.ProjectConverter.v9_0
+namespace PKSim.Infrastructure.ProjectConverter.v9
 {
    public class IndividualCovariates
    {

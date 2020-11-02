@@ -27,7 +27,7 @@ namespace PKSim.Presentation
    public abstract class concern_for_IndividualMoleculesPresenter : ContextSpecification<IIndividualMoleculesPresenter>
    {
       protected IMoleculesView _view;
-      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
+      protected IEditMoleculeTask<Individual> _editMoleculeTask;
       protected ITreeNodeFactory _treeNodeFactory;
       protected ITreeNodeContextMenuFactory _contextMenyFactory;
       protected IDialogCreator _dialogCreator;
@@ -48,7 +48,7 @@ namespace PKSim.Presentation
       {
          _view = A.Fake<IMoleculesView>();
          A.CallTo(() => _view.TreeView).Returns(A.Fake<IUxTreeView>());
-         _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
+         _editMoleculeTask = A.Fake<IEditMoleculeTask<Individual>>();
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
          _contextMenyFactory = A.Fake<ITreeNodeContextMenuFactory>();
          _dialogCreator = A.Fake<IDialogCreator>();
@@ -74,7 +74,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.IndividualMetabolizingEnzymes.Id)).Returns(_enzymeFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.IndividualProteinBindingPartners.Id)).Returns(_otherProteinsFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.IndividualTransportProteins.Id)).Returns(_transporterFolderNode);
-         sut = new IndividualMoleculesPresenter(_view, _moleculeExpressionTask, _treeNodeFactory, _contextMenyFactory, _dialogCreator, _entityTask, _expressionsPresenterMapper, _noitemInSelectionPresenter);
+         sut = new IndividualMoleculesPresenter(_view, _editMoleculeTask, _treeNodeFactory, _contextMenyFactory, _dialogCreator, _entityTask, _expressionsPresenterMapper, _noitemInSelectionPresenter);
          sut.InitializeWith(_commandRegister);
       }
    }
@@ -124,7 +124,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _command = A.Fake<IPKSimCommand>();
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualEnzyme>(_individual)).Returns(_command);
+         A.CallTo(() => _editMoleculeTask.AddMoleculeTo<IndividualEnzyme>(_individual)).Returns(_command);
          sut.EditIndividual(_individual);
       }
 
@@ -136,7 +136,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_protein_expression_task_to_add_a_protein_for_the_individual()
       {
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualEnzyme>(_individual)).MustHaveHappened();
+         A.CallTo(() => _editMoleculeTask.AddMoleculeTo<IndividualEnzyme>(_individual)).MustHaveHappened();
       }
 
       [Observation]
@@ -154,7 +154,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _command = A.Fake<IPKSimCommand>();
-         A.CallTo(() => _moleculeExpressionTask.AddDefaultMolecule<IndividualEnzyme>(_individual)).Returns(_command);
+         A.CallTo(() => _editMoleculeTask.AddDefaultMolecule<IndividualEnzyme>(_individual)).Returns(_command);
          sut.EditIndividual(_individual);
       }
 
@@ -166,7 +166,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_protein_expression_task_to_add_a_default_protein_for_the_individual()
       {
-         A.CallTo(() => _moleculeExpressionTask.AddDefaultMolecule<IndividualEnzyme>(_individual)).MustHaveHappened();
+         A.CallTo(() => _editMoleculeTask.AddDefaultMolecule<IndividualEnzyme>(_individual)).MustHaveHappened();
       }
 
       [Observation]
@@ -188,7 +188,7 @@ namespace PKSim.Presentation
          _command = A.Fake<IPKSimCommand>();
          _proteinToRemove = A.Fake<IndividualEnzyme>().WithName("Trlala");
          _proteinType = "toto";
-         A.CallTo(() => _moleculeExpressionTask.RemoveMoleculeFrom(_proteinToRemove, _individual)).Returns(_command);
+         A.CallTo(() => _editMoleculeTask.RemoveMoleculeFrom(_proteinToRemove, _individual)).Returns(_command);
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, ViewResult.Yes)).Returns(ViewResult.Yes);
          A.CallTo(() => _entityTask.TypeFor(_proteinToRemove)).Returns(_proteinType);
          sut.EditIndividual(_individual);
@@ -208,7 +208,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_protein_expression_task_to_remove_the_protein_from_the_individual()
       {
-         A.CallTo(() => _moleculeExpressionTask.RemoveMoleculeFrom(_proteinToRemove, _individual)).MustHaveHappened();
+         A.CallTo(() => _editMoleculeTask.RemoveMoleculeFrom(_proteinToRemove, _individual)).MustHaveHappened();
       }
 
       [Observation]
@@ -238,7 +238,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_delete_the_protein()
       {
-         A.CallTo(() => _moleculeExpressionTask.RemoveMoleculeFrom(_proteinToRemove, _individual)).MustNotHaveHappened();
+         A.CallTo(() => _editMoleculeTask.RemoveMoleculeFrom(_proteinToRemove, _individual)).MustNotHaveHappened();
       }
    }
 }

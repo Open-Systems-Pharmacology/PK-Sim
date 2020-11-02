@@ -9,7 +9,7 @@ namespace PKSim.Core.Services
       /// <summary>
       /// Updates the default global molecule parameters in the molecule based on the values defined in the database
       /// </summary>
-      /// <param name="molecule">Molecule containihgg the parameters to update</param>
+      /// <param name="molecule">Molecule containing the parameters to update</param>
       /// <param name="moleculeName">Name of molecule to use to retrieve the default parameters. If not set, <paramref name="molecule"/> name will be used instead</param>
       void SetDefaultMoleculeParameters(IndividualMolecule molecule, string moleculeName = null);
 

@@ -23,13 +23,14 @@ namespace PKSim.Core.Model
       None = 0,
       Intracellular = 1 << 0,
       Interstitial = 1 << 1,
-      InTissue = Intracellular | Interstitial,
       BloodCellsMembrane = 1 << 2,
       BloodCellsIntracellular = 1 << 3,
-      InBloodCells = BloodCellsMembrane | BloodCellsIntracellular,
       VascEndosome = 1 << 4,
       VascMembraneApical = 1 << 5,
       VascMembraneBasolateral = 1 << 6,
+    
+      InTissue = Intracellular | Interstitial,
+      InBloodCells = BloodCellsMembrane | BloodCellsIntracellular,
       InVascularEndothelium = VascEndosome | VascMembraneApical | VascMembraneBasolateral
    }
 

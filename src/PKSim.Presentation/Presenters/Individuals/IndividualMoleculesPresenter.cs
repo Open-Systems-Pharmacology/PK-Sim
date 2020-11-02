@@ -6,6 +6,7 @@ using PKSim.Presentation.Presenters.Individuals.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Individuals;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -15,10 +16,10 @@ namespace PKSim.Presentation.Presenters.Individuals
 
    public class IndividualMoleculesPresenter : MoleculesPresenter<Individual>, IIndividualMoleculesPresenter
    {
-      public IndividualMoleculesPresenter(IMoleculesView view, IMoleculeExpressionTask<Individual> moleculeExpressionTask, ITreeNodeFactory treeNodeFactory, 
+      public IndividualMoleculesPresenter(IMoleculesView view, IEditMoleculeTask<Individual> editMoleculeTask, ITreeNodeFactory treeNodeFactory, 
          ITreeNodeContextMenuFactory contextMenuFactory, IDialogCreator dialogCreator, IEntityTask entityTask,
          IRootNodeToIndividualExpressionsPresenterMapper<Individual> expressionsPresenterMapper, INoItemInSelectionPresenter noItemInSelectionPresenter)
-         : base(view, moleculeExpressionTask, treeNodeFactory, contextMenuFactory, dialogCreator, entityTask, expressionsPresenterMapper, noItemInSelectionPresenter)
+         : base(view, editMoleculeTask, treeNodeFactory, contextMenuFactory, dialogCreator, entityTask, expressionsPresenterMapper, noItemInSelectionPresenter)
       {
       }
 

@@ -112,7 +112,7 @@ namespace PKSim.Core.Model
 
       public static bool ShouldExportToSnapshot(this IParameter parameter)
       {
-         if (parameter == null || !parameter.Visible) 
+         if (parameter == null) 
             return false;
 
          //For a molecule, we export all global parameters to ensure that they do not get out of sync when loading from snapshot 

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Collections;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -11,6 +12,9 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       public IndividualMolecule Molecule { get; set; }
       public ISimulationSubject SimulationSubject { get; set; }
+
+      //This is required to speed up process and ONLY for older format
+      public ICache<string, IParameter> ExpressionParameters { get; set; }
    }
 
    public class ExpressionContainerMapper : SnapshotMapperBase<MoleculeExpressionContainer, ExpressionContainer, ExpressionContainerMapperContext>
@@ -56,12 +60,24 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var molecule = context.Molecule;
          var individual = context.SimulationSubject;
+         var expressionParameterCache = context.ExpressionParameters;
 
+         //Value was only defined for older version of the snapshot
+         if (!snapshot.Value.HasValue)
+            return null;
+
+         var relExp = expressionParameterCache[snapshot.Name];
+         if (relExp == null)
+            return null;
+
+
+         await _parameterMapper.MapToModel(snapshot, relExp);
+
+         //TODO 
+         return null;
          // if (!(molecule is IndividualTransporter transporter))
          //    return expressionContainer;
 
-         //TODO DISCUSS
-         return null;
 
          // var expressionContainer = molecule.ExpressionContainer(snapshot.Name);
          // if (expressionContainer == null)
