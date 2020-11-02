@@ -8,7 +8,7 @@ using PKSim.Core.Model;
 using PKSim.Infrastructure.ProjectConverter.v8_0;
 using PKSim.IntegrationTests;
 
-namespace PKSim.ProjectConverter.v8_0
+namespace PKSim.ProjectConverter.v8
 {
    public class When_converting_the_simple_project_730_project_to_80 : ContextWithLoadedProject<Converter740To8>
    {

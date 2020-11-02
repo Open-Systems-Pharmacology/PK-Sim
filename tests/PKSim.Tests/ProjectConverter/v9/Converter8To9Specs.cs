@@ -10,7 +10,7 @@ using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.ProjectConverter.v9;
 using PKSim.IntegrationTests;
 
-namespace PKSim.ProjectConverter.v9_0
+namespace PKSim.ProjectConverter.v9
 {
    public class When_converting_the_simple_project_730_project_to_90 : ContextWithLoadedProject<Converter8To9>
    {
