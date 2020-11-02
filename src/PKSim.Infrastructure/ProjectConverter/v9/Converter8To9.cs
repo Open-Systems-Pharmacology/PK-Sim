@@ -35,14 +35,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v9
          _converter730To90 = converter730To90;
       }
 
-      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V8_0;
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V8;
 
       public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
          _converted = false;
          this.Visit(objectToConvert);
 
-         return (ProjectVersions.V9_0, _converted);
+         return (ProjectVersions.V9, _converted);
       }
 
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
@@ -54,7 +54,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v9
             _converted = true;
          }
 
-         return (ProjectVersions.V9_0, _converted);
+         return (ProjectVersions.V9, _converted);
       }
 
       private void convertIndividualValueCacheElement(XElement element)

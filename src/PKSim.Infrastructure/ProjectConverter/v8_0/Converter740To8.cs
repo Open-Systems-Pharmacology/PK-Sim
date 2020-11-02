@@ -30,12 +30,12 @@ namespace PKSim.Infrastructure.ProjectConverter.v8_0
       {
          _converted = false;
          this.Visit(objectToConvert);
-         return (ProjectVersions.V8_0, _converted);
+         return (ProjectVersions.V8, _converted);
       }
 
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return (ProjectVersions.V8_0, false);
+         return (ProjectVersions.V8, false);
       }
 
       public void Visit(Compound compound) => convertCompound(compound);
