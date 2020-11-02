@@ -38,7 +38,7 @@ namespace PKSim.Core
       {
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return null;
       }

@@ -28,36 +28,39 @@ namespace PKSim.Core
       }
    }
 
-   
-   public class When_retrieving_the_processes_induced_by_a_given_transporter : concern_for_IndividualTransporter
-   {
-      private IEnumerable<string> _result;
-
-      protected override void Because()
-      {
-         _result = sut.AllInducedProcesses();
-      }
-
-      [Observation]
-      public void should_retun_the_distinct_names_of_all_processes_that_are_defined_for_the_transporter()
-      {
-         _result.ShouldOnlyContain("P1","P2");
-      }
-   }
-
-
-
-   
-   public class When_retrieving_the_list_of_all_organs_where_a_process_does_not_take_place : concern_for_IndividualTransporter
-   {
-
-      [Observation]
-      public void should_return_the_organ_names_where_the_process_will_not_be_defined()
-      {
-         sut.AllOrgansWhereProcessDoesNotTakePlace("P1").ShouldOnlyContain("Kidney");
-         sut.AllOrgansWhereProcessDoesNotTakePlace("P2").ShouldOnlyContain("Liver","Brain");          
-      }
-   }
+   //TODO
+   //
+   // public class When_retrieving_the_processes_induced_by_a_given_transporter : concern_for_IndividualTransporter
+   // {
+   //    private IEnumerable<string> _result;
+   //
+   //    protected override void Because()
+   //    {
+   //       _result = sut.AllInducedProcesses();
+   //    }
+   //
+   //    [Observation]
+   //    public void should_retun_the_distinct_names_of_all_processes_that_are_defined_for_the_transporter()
+   //    {
+   //       _result.ShouldOnlyContain("P1","P2");
+   //    }
+   // }
 
 
-}	
+
+   //TODO
+
+
+   // public class When_retrieving_the_list_of_all_organs_where_a_process_does_not_take_place : concern_for_IndividualTransporter
+   // {
+   //
+   //    [Observation]
+   //    public void should_return_the_organ_names_where_the_process_will_not_be_defined()
+   //    {
+   //       sut.AllOrgansWhereProcessDoesNotTakePlace("P1").ShouldOnlyContain("Kidney");
+   //       sut.AllOrgansWhereProcessDoesNotTakePlace("P2").ShouldOnlyContain("Liver","Brain");          
+   //    }
+   // }
+
+
+}

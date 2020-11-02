@@ -7,6 +7,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Core.Snapshots.Services;
 using Individual = PKSim.Core.Model.Individual;
 using Ontogeny = PKSim.Core.Model.Ontogeny;
 using Parameter = PKSim.Core.Snapshots.Parameter;
@@ -28,28 +29,22 @@ namespace PKSim.Core
       private MoleculeExpressionContainer _expressionContainer2;
       protected ExpressionContainer _relativeExpressionContainerSnapshot1;
       protected ExpressionContainer _relativeExpressionContainerSnapshot2;
-      protected IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
-      private IExecutionContext _executionContext;
       protected Individual _individual;
       protected OntogenyMapper _ontogenyMapper;
       protected Ontogeny _ontogeny;
       protected Snapshots.Ontogeny _snapshotOntogeny;
       protected ExpressionContainerMapper _expressionContainerMapper;
       protected IOntogenyTask<Individual> _ontogenyTask;
-      protected IMoleculeParameterTask _individualMoleculeParametersTask;
+      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _expressionContainerMapper = A.Fake<ExpressionContainerMapper>();
-         _executionContext = A.Fake<IExecutionContext>();
-         _individualMoleculeFactoryResolver = A.Fake<IIndividualMoleculeFactoryResolver>();
          _ontogenyMapper = A.Fake<OntogenyMapper>();
          _ontogenyTask = A.Fake<IOntogenyTask<Individual>>();
-         _individualMoleculeParametersTask = A.Fake<IMoleculeParameterTask>();
-
-         sut = new MoleculeMapper(_parameterMapper, _expressionContainerMapper,
-            _ontogenyMapper, _individualMoleculeFactoryResolver, _executionContext, _ontogenyTask, _individualMoleculeParametersTask);
+         _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
+         sut = new MoleculeMapper(_parameterMapper, _expressionContainerMapper, _ontogenyMapper, _ontogenyTask, _moleculeExpressionTask);
 
          _ontogeny = new DatabaseOntogeny
          {
@@ -75,7 +70,8 @@ namespace PKSim.Core
             Description = "Help"
          };
 
-         _enzymeGlobalParameter = DomainHelperForSpecs.ConstantParameterWithValue(5, isDefault: true).WithName(CoreConstants.Parameters.HALF_LIFE_LIVER);
+         _enzymeGlobalParameter = DomainHelperForSpecs.ConstantParameterWithValue(5, isDefault: true)
+            .WithName(CoreConstants.Parameters.HALF_LIFE_LIVER);
          _enzymeGlobalParameterSnapshot = new Parameter();
 
          A.CallTo(() => _parameterMapper.MapToSnapshot(_enzymeGlobalParameter)).Returns(_enzymeGlobalParameterSnapshot);
@@ -83,6 +79,7 @@ namespace PKSim.Core
          _expressionContainer1 = new MoleculeExpressionContainer {Name = "Exp Container1"};
          _expressionContainer2 = new MoleculeExpressionContainer {Name = "Exp Container2"};
          _enzyme.AddChildren(_expressionContainer1, _expressionContainer2, _enzymeGlobalParameter);
+         _enzyme.Localization = Localization.Intracellular | Localization.BloodCellsMembrane;
 
          _relativeExpressionParameter1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.REL_EXP);
          _expressionContainer1.Add(_relativeExpressionParameter1);
@@ -108,7 +105,7 @@ namespace PKSim.Core
    {
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_enzyme);
+         _snapshot = await sut.MapToSnapshot(_enzyme, _individual);
       }
 
       [Observation]
@@ -119,17 +116,18 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_saved_the_relative_expression_parameters_values_that_are_set()
+      public void should_not_set_container_specific_parameters()
       {
-         _snapshot.Expression.ShouldOnlyContain(_relativeExpressionContainerSnapshot1, _relativeExpressionContainerSnapshot2);
+         _snapshot.Expression.ShouldBeNull();
       }
 
       [Observation]
       public void should_have_saved_enzyme_specific_properties()
       {
-         _snapshot.IntracellularVascularEndoLocation.ShouldBeEqualTo(_enzyme.IntracellularVascularEndoLocation);
-         _snapshot.MembraneLocation.ShouldBeEqualTo(_enzyme.MembraneLocation);
-         _snapshot.TissueLocation.ShouldBeEqualTo(_enzyme.TissueLocation);
+         _snapshot.IntracellularVascularEndoLocation.ShouldBeNull();
+         _snapshot.MembraneLocation.ShouldBeNull();
+         _snapshot.TissueLocation.ShouldBeNull();
+         _snapshot.Localization.ShouldBeEqualTo(_enzyme.Localization);
          _snapshot.TransportType.ShouldBeNull();
       }
 
@@ -140,9 +138,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_saved_the_global_parameters_of_the_molecule_even_if_they_were_not_changed_by_the_user()
+      public void should_also_not_saved_parameters_that_are_now_saved_in_the_individual()
       {
-         _snapshot.Parameters.ShouldContain(_enzymeGlobalParameterSnapshot);
+         _snapshot.Parameters.ShouldBeNull();
       }
    }
 
@@ -150,7 +148,7 @@ namespace PKSim.Core
    {
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_transporter);
+         _snapshot = await sut.MapToSnapshot(_transporter, _individual);
       }
 
       [Observation]
@@ -177,14 +175,12 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_enzyme);
+         _snapshot = await sut.MapToSnapshot(_enzyme, _individual);
 
+         _snapshot.Localization = null;
          _snapshot.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
          _snapshot.MembraneLocation = MembraneLocation.BloodBrainBarrier;
          _snapshot.TissueLocation = TissueLocation.Interstitial;
-         var enzymeFactory = A.Fake<IIndividualMoleculeFactory>();
-         A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualEnzyme>()).Returns(enzymeFactory);
-         A.CallTo(() => enzymeFactory.CreateFor(_individual)).Returns(_enzyme);
          _relativeExpressionParameter1.Value = 0;
          _relativeExpressionContainerSnapshot1.Value = 0.5;
          A.CallTo(() => _expressionContainerMapper.MapToModel(_relativeExpressionContainerSnapshot1, A<ExpressionContainerMapperContext>._))
@@ -192,6 +188,15 @@ namespace PKSim.Core
 
          _enzyme.Ontogeny = null;
          A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, _individual)).Returns(_ontogeny);
+
+         //we need to add the molecule that is now added as part of the creation process of a molecule
+         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualEnzyme>(_individual, _snapshot.Name))
+            .Invokes(x => _individual.AddMolecule(_enzyme));
+
+
+         //Localization is now set in task. We override behavior here and pretend that command was executed
+         A.CallTo(() => _moleculeExpressionTask.SetExpressionLocalizationFor(_enzyme, A<Localization>._, _individual))
+            .Invokes(x => _enzyme.Localization = x.GetArgument<Localization>(1));
       }
 
       protected override async Task Because()
@@ -200,9 +205,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_updated_the_molecule_default_parameters()
+      public void should_have_added_molecule_to_the_individual()
       {
-         A.CallTo(() => _individualMoleculeParametersTask.SetDefaulMoleculeParameters(_newMolecule, null)).MustHaveHappened();
+         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualEnzyme>(_individual, _snapshot.Name)).MustHaveHappened();
       }
 
       [Observation]
@@ -214,9 +219,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_the_expected_molecule_with_the_matching_properties()
       {
-         _newMolecule.IntracellularVascularEndoLocation.ShouldBeEqualTo(IntracellularVascularEndoLocation.Interstitial);
-         _newMolecule.MembraneLocation.ShouldBeEqualTo(MembraneLocation.BloodBrainBarrier);
-         _newMolecule.TissueLocation.ShouldBeEqualTo(TissueLocation.Interstitial);
+         _newMolecule.Localization.ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsIntracellular | Localization.VascMembraneBasolateral);
       }
 
       [Observation]
@@ -233,17 +236,25 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_transporter);
+         _snapshot = await sut.MapToSnapshot(_transporter, _individual);
 
          _snapshot.TransportType = TransportType.PgpLike;
-         var transporterFactory = A.Fake<IIndividualTransporterFactory>();
-         A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualTransporter>()).Returns(transporterFactory);
-         A.CallTo(() => transporterFactory.CreateFor(_individual, TransportType.PgpLike)).Returns(_transporter);
+
+         //we need to add the molecule that is now added as part of the creation process of a molecule
+         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualTransporter>(_individual, _snapshot.Name))
+            .Invokes(x => _individual.AddMolecule(_transporter));
+
       }
 
       protected override async Task Because()
       {
          _newTransporter = await sut.MapToModel(_snapshot, _individual) as IndividualTransporter;
+      }
+
+      [Observation]
+      public void should_have_added_molecule_to_the_individual()
+      {
+         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualTransporter>(_individual, _snapshot.Name)).MustHaveHappened();
       }
 
       [Observation]
@@ -259,23 +270,30 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_valid_other_protein_molecule_snahpshot_to_a_molecule : concern_for_MoleculeMapper
+   public class When_mapping_a_valid_other_protein_molecule_snapshot_to_a_molecule : concern_for_MoleculeMapper
    {
       private IndividualOtherProtein _newOtherProtein;
 
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_otherProtein);
+         _snapshot = await sut.MapToSnapshot(_otherProtein, _individual);
 
-         var individualOtherProteinFactory = A.Fake<IIndividualMoleculeFactory>();
-         A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualOtherProtein>()).Returns(individualOtherProteinFactory);
-         A.CallTo(() => individualOtherProteinFactory.CreateFor(_individual)).Returns(_otherProtein);
+         //we need to add the molecule that is now added as part of the creation process of a molecule
+         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualOtherProtein>(_individual, _snapshot.Name))
+            .Invokes(x => _individual.AddMolecule(_otherProtein));
+
       }
 
       protected override async Task Because()
       {
          _newOtherProtein = await sut.MapToModel(_snapshot, _individual) as IndividualOtherProtein;
+      }
+
+      [Observation]
+      public void should_have_added_molecule_to_the_individual()
+      {
+         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualOtherProtein>(_individual, _snapshot.Name)).MustHaveHappened();
       }
 
       [Observation]

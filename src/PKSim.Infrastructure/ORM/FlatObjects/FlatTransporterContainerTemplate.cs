@@ -1,5 +1,6 @@
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Infrastructure.ORM.FlatObjects
 {

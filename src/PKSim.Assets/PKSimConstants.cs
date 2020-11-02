@@ -19,26 +19,21 @@ namespace PKSim.Assets
          public const string PopulationFileFormatIsNotSupported = "Population file format is not supported.";
          public const string InhibitorClearanceMustBeDefinedSeparately = "Please note that for the mechanism-based inactivator no clearance process is defined via the inactivation process by default. In theory, for every inactivated target molecule, also one inactivator molecule is cleared; this must be separately defined by the user in form of additional clearance processes for the inhibitor.";
          public const string FractionAbsorbedSmallerThanOne = "Absorption seems to be incomplete or absorption process is not finished. Vd, Vss (or Vd/F and Vss/F), t1/2, MRT and AUC_inf should be compared with respective PK-parameters from an IV simulation.";
+         public const string ExpressionParametersWillBeReset = "TODO: Expression parameter will be reset";
 
          public static string SystemicProcessAvailableInCompoundButWasNotSelected(string systemicProcessType)
          {
             return $"{systemicProcessType} is available in compound but was not activated.";
          }
 
-         public static string ProteinAvailableButProcessNotSelected(string name)
-         {
-            return $"No compound process selected for protein '{name}'.";
-         }
+         public static string ProteinAvailableButProcessNotSelected(string name) => $"No compound process selected for protein '{name}'.";
 
          public static string NoTransporterTemplateFoundForTransporter(string transporterName, string transportType)
          {
             return $"The transporter '{transporterName}' was not found in the database. The transport direction is therefore set to the default setting '{transportType}'";
          }
 
-         public static string ParameterWithPathNotFoundInBaseIndividual(string parameterPath)
-         {
-            return $"Parameter '{parameterPath}' was not found in individual and will be ignored.";
-         }
+         public static string ParameterWithPathNotFoundInBaseIndividual(string parameterPath) => $"Parameter '{parameterPath}' was not found in individual and will be ignored.";
 
          public static string PKParameterAlreadyExistsAndWillBeOverwritten(string name, string quantityPath)
          {
@@ -50,10 +45,7 @@ namespace PKSim.Assets
             return $"Grouping field was defined for '{referencedFieldName}'. However you are trying to use it for '{dataField}'. Do you want to continue?";
          }
 
-         public static string ParameterPathNotFoundInSimulationAndWillBeIgnored(string parameterPath)
-         {
-            return $"Parameter '{parameterPath}' was not found in simulation and will be ignored";
-         }
+         public static string ParameterPathNotFoundInSimulationAndWillBeIgnored(string parameterPath) => $"Parameter '{parameterPath}' was not found in simulation and will be ignored";
 
          public static string MissingSimulationParametersWereOverwritten(IEnumerable<string> missingParameters)
          {
@@ -71,7 +63,7 @@ namespace PKSim.Assets
 
          public static string StaticInhibitionRemovedFromSimulationMapping(IEnumerable<string> processes)
          {
-            var sb = new StringBuilder("WARNING: Static inhibition was removed with version 5.6 of the software. The following processe(s) won't be used when cloning or configuring the simulation.\n");
+            var sb = new StringBuilder("WARNING: Static inhibition was removed with version 5.6 of the software. The following process(es) won't be used when cloning or configuring the simulation.\n");
             sb.AppendLine();
             sb.AppendLine(processes.ToString("\n"));
             sb.AppendLine();
@@ -2202,6 +2194,14 @@ namespace PKSim.Assets
          public static readonly string MoleculeExcludeList = "For All Molecules Except";
          public static readonly string MoleculeIncludeList = "For Molecules";
          public static readonly string Type = "Type";
+         public static readonly string LocalizationIntracellular = "Intracellular";
+         public static readonly string LocalizationInterstitial = "Interstitial";
+         public static readonly string LocalizationBloodCellsIntracellular = "Blood cells intracellular";
+         public static readonly string LocalizationBloodCellsMembrane = "Blood cells membrane";
+         public static readonly string LocalizationVascularEndosome = "Vascular endothelium endosome";
+         public static readonly string LocalizationVascularMembraneApical = "Vascular endothelium membrane plasma-side";
+         public static readonly string LocalizationVascularMembraneBasolateral = "Vascular endothelium membrane tissue-side";
+         public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 

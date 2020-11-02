@@ -11,11 +11,11 @@ namespace PKSim.Core.Services
    {
       public UncompetitiveInhibitionKineticUpdaterSpecification(IObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask) :
          base(objectPathFactory, dimensionRepository, interactionTask, InteractionType.UncompetitiveInhibition,
-            kiNumeratorAlias: CoreConstants.Alias.UNCOMPETIVE_INHIBITION_KI,
+            kiNumeratorAlias: CoreConstants.Alias.UNCOMPETITIVE_INHIBITION_KI,
             kiNumeratorParameter: CoreConstants.Parameters.KI,
-            kiDenominatorAlias: CoreConstants.Alias.UNCOMPETIVE_INHIBITION_KI,
+            kiDenominatorAlias: CoreConstants.Alias.UNCOMPETITIVE_INHIBITION_KI,
             kiDenominatorParameter: CoreConstants.Parameters.KI,
-            inhibitorAlias: CoreConstants.Alias.UNCOMPETIVE_INHIBITION_I)
+            inhibitorAlias: CoreConstants.Alias.UNCOMPETITIVE_INHIBITION_I)
       {
       }
    }

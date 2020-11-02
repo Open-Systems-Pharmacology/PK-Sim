@@ -71,7 +71,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.TwoPores;
+         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.TWO_PORES;
          _compound.IsSmallMolecule = false;
       }
 
@@ -87,7 +87,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FourComp;
+         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FOUR_COMP;
          _compound.IsSmallMolecule = true;
       }
 
@@ -103,7 +103,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.TwoPores;
+         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.TWO_PORES;
          _compound.IsSmallMolecule = true;
       }
 
@@ -119,7 +119,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FourComp;
+         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FOUR_COMP;
          _compound.IsSmallMolecule = false;
       }
 

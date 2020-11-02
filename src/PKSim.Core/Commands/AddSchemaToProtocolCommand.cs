@@ -11,7 +11,7 @@ namespace PKSim.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new RemoveSchemaFromProtocolCommand(_entityToAdd, _parentContainer, context).AsInverseFor(this);
       }

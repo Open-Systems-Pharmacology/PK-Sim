@@ -3,14 +3,17 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public class EditIndividualMoleculeExpressionInIndividualFromQueryCommand : EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand<Individual>
+   public class EditIndividualMoleculeExpressionInIndividualFromQueryCommand : EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand<
+      Individual>
    {
-      public EditIndividualMoleculeExpressionInIndividualFromQueryCommand(IndividualMolecule originalMolecule, IndividualMolecule editedMolecule, QueryExpressionResults queryExpressionResults,
+      public EditIndividualMoleculeExpressionInIndividualFromQueryCommand(IndividualMolecule originalMolecule, IndividualMolecule editedMolecule,
+         QueryExpressionResults queryExpressionResults,
          Individual individual) : base(originalMolecule, editedMolecule, queryExpressionResults, individual)
       {
       }
 
-      protected override ICommand RemoveMoleculeFromSimulationSubjectCommand(IndividualMolecule molecule, Individual individual, IExecutionContext context)
+      protected override ICommand RemoveMoleculeFromSimulationSubjectCommand(IndividualMolecule molecule, Individual individual,
+         IExecutionContext context)
       {
          return new RemoveMoleculeFromIndividualCommand(molecule, individual, context);
       }

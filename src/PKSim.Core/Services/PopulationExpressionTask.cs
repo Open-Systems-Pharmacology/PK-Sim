@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Assets;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -14,7 +14,8 @@ namespace PKSim.Core.Services
       private readonly IMoleculeParameterVariabilityCreator _moleculeParameterVariabilityCreator;
       private readonly IEntityPathResolver _entityPathResolver;
 
-      public PopulationExpressionTask(IExecutionContext executionContext, IMoleculeParameterVariabilityCreator moleculeParameterVariabilityCreator, IEntityPathResolver entityPathResolver)
+      public PopulationExpressionTask(IExecutionContext executionContext, IMoleculeParameterVariabilityCreator moleculeParameterVariabilityCreator,
+         IEntityPathResolver entityPathResolver)
       {
          _executionContext = executionContext;
          _moleculeParameterVariabilityCreator = moleculeParameterVariabilityCreator;
@@ -31,7 +32,7 @@ namespace PKSim.Core.Services
                removeAdvancedParametersForMolecule(molecule, population),
                removeMoleculeCommand.Run(_executionContext)
             }
-            );
+         );
          return command;
       }
 
@@ -47,7 +48,8 @@ namespace PKSim.Core.Services
          {
             var advancedParameter = population.AdvancedParameterFor(_entityPathResolver, parameter);
             if (advancedParameter != null)
-               macroCommand.AddCommand(new RemoveAdvancedParameterFromContainerCommand(advancedParameter, population, _executionContext).Run(_executionContext));
+               macroCommand.AddCommand(
+                  new RemoveAdvancedParameterFromContainerCommand(advancedParameter, population, _executionContext).Run(_executionContext));
          }
 
          _executionContext.UpdateBuildingBlockPropertiesInCommand(macroCommand, population);
@@ -60,15 +62,22 @@ namespace PKSim.Core.Services
          return addMoleculeToPopulation(molecule, population, baseCommand);
       }
 
-      public ICommand EditMolecule(IndividualMolecule moleculeToEdit, IndividualMolecule editedMolecule, QueryExpressionResults queryResults, Population population)
+      public ICommand EditMolecule(IndividualMolecule moleculeToEdit, IndividualMolecule editedMolecule, QueryExpressionResults queryResults,
+         Population population)
       {
-         return new EditIndividualMoleculeExpressionInPopulationFromQueryCommand(moleculeToEdit, editedMolecule, queryResults, population).Run(_executionContext);
+         return new EditIndividualMoleculeExpressionInPopulationFromQueryCommand(moleculeToEdit, editedMolecule, queryResults, population)
+            .Run(_executionContext);
       }
 
       public ICommand AddMoleculeTo(IndividualMolecule molecule, Population population, QueryExpressionResults queryExpressionResults)
       {
          var baseCommand = new AddMoleculeExpressionsFromQueryToPopulationCommand(molecule, queryExpressionResults, population);
          return addMoleculeToPopulation(molecule, population, baseCommand);
+      }
+
+      public ICommand RenameMolecule(IndividualMolecule molecule, Population simulationSubject, string newName)
+      {
+         return new RenameMoleculeInSimulationSubjectCommand(molecule, simulationSubject, newName, _executionContext).Run(_executionContext);
       }
 
       private ICommand addMoleculeToPopulation(IndividualMolecule molecule, Population population, ICommand<IExecutionContext> baseCommand)
@@ -78,9 +87,9 @@ namespace PKSim.Core.Services
             new[]
             {
                baseCommand.Run(_executionContext),
-               _moleculeParameterVariabilityCreator.AddMoleculeVariability(molecule, population, usePredefinedMeanVariability:true)
+               _moleculeParameterVariabilityCreator.AddMoleculeVariability(molecule, population, usePredefinedMeanVariability: true)
             }
-            );
+         );
       }
 
       private ICommand macroCommandFrom(Population population, ICommand baseCommand, IEnumerable<ICommand> commands)

@@ -21,8 +21,8 @@ namespace PKSim.IntegrationTests
 
          sut = IoC.Resolve<IModelPropertiesTask>();
 
-         _modelProperties_4Comp = sut.DefaultFor(_originData, CoreConstants.Model.FourComp);
-         _modelProperties_2Pores = sut.DefaultFor(_originData, CoreConstants.Model.TwoPores);
+         _modelProperties_4Comp = sut.DefaultFor(_originData, CoreConstants.Model.FOUR_COMP);
+         _modelProperties_2Pores = sut.DefaultFor(_originData, CoreConstants.Model.TWO_PORES);
       }
    }
 
@@ -39,7 +39,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_update_calculation_methods_with_2pores_calcmethods()
       {
-         ModelProperties modelProperties2Pores = sut.DefaultFor(_originData, CoreConstants.Model.TwoPores);
+         ModelProperties modelProperties2Pores = sut.DefaultFor(_originData, CoreConstants.Model.TWO_PORES);
 
          foreach (var calcMethod in modelProperties2Pores.AllCalculationMethods())
          {

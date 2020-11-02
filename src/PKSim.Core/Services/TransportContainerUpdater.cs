@@ -5,6 +5,7 @@ using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Services
 {
@@ -59,15 +60,16 @@ namespace PKSim.Core.Services
       {
          transporter.TransportType = _transporterContainerTemplateRepository.TransportTypeFor(species, transporterName);
 
-         foreach (var transporterContainer in transporter.AllExpressionsContainers())
-         {
-            //there is a db template
-            var tranporterTemplate = _transporterContainerTemplateRepository.TransportersFor(species, transporterContainer.Name, transporterName).FirstOrDefault();
-            if (tranporterTemplate != null)
-               transporterContainer.UpdatePropertiesFrom(tranporterTemplate);
-            else
-               UpdateTransporterFromTemplate(transporterContainer, species, MembraneLocationToUse(transporterContainer, transporter.TransportType), transporter.TransportType);
-         }
+         //TODO
+         // foreach (var transporterContainer in transporter.AllExpressionsContainers())
+         // {
+         //    //there is a db template
+         //    var transporterTemplate = _transporterContainerTemplateRepository.TransportersFor(species, transporterContainer.Name, transporterName).FirstOrDefault();
+         //    if (transporterTemplate != null)
+         //       transporterContainer.UpdatePropertiesFrom(transporterTemplate);
+         //    else
+         //       UpdateTransporterFromTemplate(transporterContainer, species, MembraneLocationToUse(transporterContainer, transporter.TransportType), transporter.TransportType);
+         // }
 
          if (_transporterContainerTemplateRepository.HasTransporterTemplateFor(species, transporterName))
             return;

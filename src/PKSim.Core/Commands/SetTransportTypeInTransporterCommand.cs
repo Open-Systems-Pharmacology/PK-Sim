@@ -30,7 +30,7 @@ namespace PKSim.Core.Commands
          _individualTransporter = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetTransportTypeInTransporterCommand(_individualTransporter, _oldTransportType, context).AsInverseFor(this);
       }

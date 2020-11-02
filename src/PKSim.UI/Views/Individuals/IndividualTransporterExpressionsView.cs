@@ -20,6 +20,7 @@ using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
@@ -71,13 +72,14 @@ namespace PKSim.UI.Views.Individuals
 
       private void customColumnSort(object sender, CustomColumnSortEventArgs e)
       {
-         if (e.Column != _colGrouping.XtraColumn) return;
-         var container1 = e.RowObject1 as ExpressionContainerDTO;
-         var container2 = e.RowObject2 as ExpressionContainerDTO;
-         if (container1 == null || container2 == null) return;
-         e.Handled = true;
-
-         e.Result = container1.Sequence.CompareTo(container2.Sequence);
+         //TODO
+         // if (e.Column != _colGrouping.XtraColumn) return;
+         // var container1 = e.RowObject1 as ExpressionContainerDTO;
+         // var container2 = e.RowObject2 as ExpressionContainerDTO;
+         // if (container1 == null || container2 == null) return;
+         // e.Handled = true;
+         //
+         // e.Result = container1.Sequence.CompareTo(container2.Sequence);
       }
 
       public override void InitializeBinding()
@@ -96,25 +98,26 @@ namespace PKSim.UI.Views.Individuals
          _colGrouping.XtraColumn.GroupIndex = 0;
          _colGrouping.XtraColumn.SortMode = ColumnSortMode.Custom;
 
-         _gridViewBinder.Bind(item => item.MembraneLocation)
-            .WithRepository(getTransporterMembraneRepository)
-            .WithEditorConfiguration(editTransporterMembraneTypeRepository)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
-            .OnValueUpdating += (transporter, args) => _presenter.SetMembraneLocation(transporter, args.NewValue);
+         //TODO 
+         // _gridViewBinder.Bind(item => item.MembraneLocation)
+         //    .WithRepository(getTransporterMembraneRepository)
+         //    .WithEditorConfiguration(editTransporterMembraneTypeRepository)
+         //    .WithShowButton(ShowButtonModeEnum.ShowAlways)
+         //    .WithCaption(PKSimConstants.UI.EmptyColumn)
+         //    .OnValueUpdating += (transporter, args) => _presenter.SetMembraneLocation(transporter, args.NewValue);
 
-         _colRelativeExpression = _gridViewBinder.Bind(item => item.RelativeExpression)
-            .WithCaption(PKSimConstants.UI.RelativeExpression)
-            .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
-
-         var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
-            .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
-            .WithRepository(x => _progressBarRepository)
-            .AsReadOnly();
-
-         //necessary to align center since double value are aligned right by default
-         col.XtraColumn.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
-         col.XtraColumn.DisplayFormat.FormatType = FormatType.None;
+         // _colRelativeExpression = _gridViewBinder.Bind(item => item.RelativeExpression)
+         //    .WithCaption(PKSimConstants.UI.RelativeExpression)
+         //    .WithOnValueUpdating((protein, args) => _presenter.SetRelativeExpression(protein, args.NewValue));
+         //
+         // var col = _gridViewBinder.Bind(item => item.RelativeExpressionNorm)
+         //    .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
+         //    .WithRepository(x => _progressBarRepository)
+         //    .AsReadOnly();
+         //
+         // //necessary to align center since double value are aligned right by default
+         // col.XtraColumn.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+         // col.XtraColumn.DisplayFormat.FormatType = FormatType.None;
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
@@ -135,23 +138,23 @@ namespace PKSim.UI.Views.Individuals
          return containerDisplayNameRepository.AddItem(parameterPath, parameterPath.IconName);
       }
 
-      private RepositoryItem getTransporterMembraneRepository(TransporterExpressionContainerDTO containerDTO)
-      {
-         string displayName = containerDTO.ContainerPathDTO.DisplayName;
-         string fullDisplayName = membraneContainerDisplayName(containerDTO.MembraneLocation, containerDTO);
-         var allMembranesTypes = _presenter.AllProteinMembraneLocationsFor(containerDTO).ToList();
-         if (allMembranesTypes.Count > 1)
-            displayName = fullDisplayName;
-
-         var repositoryItemImageComboBox = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever) {ReadOnly = (allMembranesTypes.Count == 1), AllowDropDownWhenReadOnly = DefaultBoolean.False};
-         if (repositoryItemImageComboBox.ReadOnly)
-            repositoryItemImageComboBox.Buttons.Clear();
-
-
-         var comboBoxItem = new ImageComboBoxItem(displayName, containerDTO.MembraneLocation, _imageListRetriever.ImageIndex(containerDTO.ContainerPathDTO.IconName));
-         repositoryItemImageComboBox.Items.Add(comboBoxItem);
-         return repositoryItemImageComboBox;
-      }
+      // private RepositoryItem getTransporterMembraneRepository(TransporterExpressionContainerDTO containerDTO)
+      // {
+      //    string displayName = containerDTO.ContainerPathDTO.DisplayName;
+      //    string fullDisplayName = membraneContainerDisplayName(containerDTO.MembraneLocation, containerDTO);
+      //    var allMembranesTypes = _presenter.AllProteinMembraneLocationsFor(containerDTO).ToList();
+      //    if (allMembranesTypes.Count > 1)
+      //       displayName = fullDisplayName;
+      //
+      //    var repositoryItemImageComboBox = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever) {ReadOnly = (allMembranesTypes.Count == 1), AllowDropDownWhenReadOnly = DefaultBoolean.False};
+      //    if (repositoryItemImageComboBox.ReadOnly)
+      //       repositoryItemImageComboBox.Buttons.Clear();
+      //
+      //
+      //    var comboBoxItem = new ImageComboBoxItem(displayName, containerDTO.MembraneLocation, _imageListRetriever.ImageIndex(containerDTO.ContainerPathDTO.IconName));
+      //    repositoryItemImageComboBox.Items.Add(comboBoxItem);
+      //    return repositoryItemImageComboBox;
+      // }
 
       private void editTransporterMembraneTypeRepository(BaseEdit editor, TransporterExpressionContainerDTO containerDTO)
       {

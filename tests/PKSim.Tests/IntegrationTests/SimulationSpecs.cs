@@ -244,7 +244,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TwoPores) as IndividualSimulation;
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TWO_PORES) as IndividualSimulation;
          var buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
          _buildConfiguration = buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
       }
@@ -292,8 +292,8 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
-         var individualProtein = enzymeFactory.CreateFor(_individual).WithName(_enzymeName);
+         var enzymeFactory = IoC.Resolve<IIndividualEnzymeTask>();
+         var individualProtein = enzymeFactory.AddMoleculeTo(_individual,_enzymeName);
          individualProtein.Ontogeny = new UserDefinedOntogeny() {Table = createOntogenyTable()};
          _individual.AddMolecule(individualProtein.DowncastTo<IndividualEnzyme>().WithName(_enzymeName));
 
@@ -430,7 +430,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _rat = DomainFactoryForSpecs.CreateStandardIndividual("Rat");
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_rat, _compound, _protocol, CoreConstants.Model.TwoPores) as IndividualSimulation;
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_rat, _compound, _protocol, CoreConstants.Model.TWO_PORES) as IndividualSimulation;
       }
 
       [Observation]
@@ -460,7 +460,7 @@ namespace PKSim.IntegrationTests
 
          _compound2 = DomainFactoryForSpecs.CreateStandardCompound().WithName("C2");
          _protocol2 = DomainFactoryForSpecs.CreateStandardIVBolusProtocol().WithName("IV2");
-         var modelProps = DomainFactoryForSpecs.CreateModelPropertiesFor(_individual, CoreConstants.Model.TwoPores);
+         var modelProps = DomainFactoryForSpecs.CreateModelPropertiesFor(_individual, CoreConstants.Model.TWO_PORES);
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(
             _individual, new[] {_compound, _compound2}, new[] {_protocol, _protocol2}, modelProps) as IndividualSimulation;
@@ -692,8 +692,8 @@ namespace PKSim.IntegrationTests
          _compoundProcessRepo = IoC.Resolve<ICompoundProcessRepository>();
          _interactionTask = IoC.Resolve<IInteractionTask>();
          var cloner = IoC.Resolve<ICloneManager>();
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
-         var transporterFactory = IoC.Resolve<IIndividualTransporterFactory>();
+         var enzymeFactory = IoC.Resolve<IIndividualEnzymeTask>();
+         var transporterFactory = IoC.Resolve<IIndividualTransporterTask>();
 
          var inhibitor = DomainFactoryForSpecs.CreateStandardCompound().WithName("Inhibitor");
          var protocol2 = DomainFactoryForSpecs.CreateStandardIVBolusProtocol().WithName("IV2");
@@ -704,14 +704,13 @@ namespace PKSim.IntegrationTests
          {
             var moleculeName = "Molecule_" + metaTemplate.Name;
 
-            if (metaTemplate as EnzymaticProcess != null)
+            if (metaTemplate is EnzymaticProcess)
             {
-               var individualProtein = enzymeFactory.CreateFor(_individual).WithName(moleculeName);
-               _individual.AddMolecule(individualProtein.DowncastTo<IndividualEnzyme>().WithName(moleculeName));
+               enzymeFactory.AddMoleculeTo(_individual, moleculeName).WithName(moleculeName);
             }
             else
             {
-               var individualProtein = transporterFactory.CreateFor(_individual).WithName(moleculeName);
+               var individualProtein = transporterFactory.CreateFor(_individual, moleculeName, TransportType.Efflux);
                _individual.AddMolecule(individualProtein.DowncastTo<IndividualTransporter>().WithName(moleculeName));
             }
 

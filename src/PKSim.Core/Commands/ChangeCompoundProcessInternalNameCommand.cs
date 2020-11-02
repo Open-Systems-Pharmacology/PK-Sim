@@ -33,7 +33,7 @@ namespace PKSim.Core.Commands
          _compoundProcess = context.Get<PartialProcess>(_processId);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new ChangeCompoundProcessInternalNameCommand(_compoundProcess, _oldInternalName, context).AsInverseFor(this);
       }

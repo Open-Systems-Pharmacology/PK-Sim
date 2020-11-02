@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Model
 {

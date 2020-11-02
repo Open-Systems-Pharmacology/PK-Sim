@@ -20,7 +20,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
    public class ExpressionParametersToSimulationExpressionsDTOMapper : IExpressionParametersToSimulationExpressionsDTOMapper
    {
-      private readonly IParameterToParameterDTOInContainerMapper<ExpressionContainerDTO> _containerParameterMapper;
+      private readonly IParameterToParameterDTOInContainerMapper<ExpressionParameterDTO> _containerParameterMapper;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IGroupRepository _groupRepository;
       private readonly IParameterTask _parameterTask;
@@ -28,10 +28,15 @@ namespace PKSim.Presentation.DTO.Mappers
       private readonly IFullPathDisplayResolver _fullPathDisplayResolver;
       private readonly IExecutionContext _executionContext;
       private readonly IOrganTypeRepository _organTypeRepository;
+      private readonly IExpressionContainerMapper _expressionContainerMapper;
 
-      public ExpressionParametersToSimulationExpressionsDTOMapper(IParameterToParameterDTOInContainerMapper<ExpressionContainerDTO> containerParameterMapper, IRepresentationInfoRepository representationInfoRepository,
-         IGroupRepository groupRepository, IParameterTask parameterTask, IParameterToParameterDTOMapper parameterMapper, IFullPathDisplayResolver fullPathDisplayResolver,
-         IExecutionContext executionContext, IOrganTypeRepository organTypeRepository)
+      public ExpressionParametersToSimulationExpressionsDTOMapper(
+         IParameterToParameterDTOInContainerMapper<ExpressionParameterDTO> containerParameterMapper,
+         IRepresentationInfoRepository representationInfoRepository,
+         IGroupRepository groupRepository, IParameterTask parameterTask, IParameterToParameterDTOMapper parameterMapper,
+         IFullPathDisplayResolver fullPathDisplayResolver,
+         IExecutionContext executionContext, IOrganTypeRepository organTypeRepository,
+         IExpressionContainerMapper expressionContainerMapper)
       {
          _containerParameterMapper = containerParameterMapper;
          _representationInfoRepository = representationInfoRepository;
@@ -41,6 +46,7 @@ namespace PKSim.Presentation.DTO.Mappers
          _fullPathDisplayResolver = fullPathDisplayResolver;
          _executionContext = executionContext;
          _organTypeRepository = organTypeRepository;
+         _expressionContainerMapper = expressionContainerMapper;
       }
 
       public SimulationExpressionsDTO MapFrom(IEnumerable<IParameter> expressionParameters)
@@ -62,67 +68,20 @@ namespace PKSim.Presentation.DTO.Mappers
          return _parameterMapper.MapFrom(globalParameter);
       }
 
-      private IEnumerable<ExpressionContainerDTO> relativeExpressionsFrom(IReadOnlyList<IParameter> allParameters)
+      private IEnumerable<ExpressionParameterDTO> relativeExpressionsFrom(IReadOnlyList<IParameter> allParameters)
       {
-         var expressionsParameters = _parameterTask.GroupExpressionParameters(allParameters);
-         return expressionsParameters.Select(relativeExpression => expressionContainerFor(relativeExpression, relativeExpression))
-            .Where(container => container != null);
+         return allParameters.Select(expressionContainerFor);
       }
 
-      private ExpressionContainerDTO expressionContainerFor(IParameter relativeExpression, IParameter relativeExpressionNorm)
+      private ExpressionParameterDTO expressionContainerFor(IParameter relativeExpression)
       {
-         var expressionContainerDTO = new ExpressionContainerDTO();
+         var expressionContainerDTO = new ExpressionParameterDTO();
          var moleculeName = relativeExpression.ParentContainer.Name;
          var simulation = _executionContext.Get<Simulation>(relativeExpression.Origin.SimulationId);
          var molecule = simulation.Individual?.MoleculeByName<IndividualMolecule>(moleculeName);
          var isTransporter = moleculeIsTransporter(molecule);
 
-         expressionContainerDTO.RelativeExpressionParameter = _containerParameterMapper.MapFrom(relativeExpression, expressionContainerDTO, x => x.RelativeExpression, x => x.RelativeExpressionParameter);
-         expressionContainerDTO.RelativeExpressionNormParameter = _containerParameterMapper.MapFrom(relativeExpressionNorm, expressionContainerDTO, x => x.RelativeExpressionNorm, x => x.RelativeExpressionNormParameter);
-
-         IGroup group;
-
-         if (parameterIsGlobalExpression(relativeExpression))
-         {
-            if (isTransporter)
-               return null;
-
-            group = _groupRepository.GroupByName(CoreConstants.Groups.VASCULAR_SYSTEM);
-            expressionContainerDTO.ContainerPathDTO = _representationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, containerNameForGlobalExpression(relativeExpression.Name)).ToPathElement();
-            expressionContainerDTO.Sequence = relativeExpression.Sequence;
-         }
-         else if (expressionShouldBeTreatedAsGlobal(relativeExpression, isTransporter))
-         {
-            return null;
-         }
-         else if (relativeExpression.HasAncestorNamed(CoreConstants.Organ.Lumen))
-         {
-            group = _groupRepository.GroupByName(CoreConstants.Groups.GI_LUMEN);
-            expressionContainerDTO.ContainerPathDTO = _representationInfoRepository.InfoFor(relativeExpression.ParentContainer.ParentContainer).ToPathElement();
-         }
-         else if (relativeExpression.HasAncestorNamed(CoreConstants.Compartment.Mucosa))
-         {
-            group = _groupRepository.GroupByName(CoreConstants.Groups.GI_MUCOSA);
-            //Mucosa rel exp are for instance in Mucosa/Duodnum/interstitial
-            expressionContainerDTO.ContainerPathDTO = _representationInfoRepository.InfoFor(relativeExpression.ParentContainer.ParentContainer.ParentContainer).ToPathElement();
-         }
-
-         else
-         {
-            var expressionContainer = expressionContainerFor(relativeExpression);
-            group = _groupRepository.GroupByName(isGiTractOrgan(expressionContainer) ? CoreConstants.Groups.GI_NON_MUCOSA_TISSUE : CoreConstants.Groups.ORGANS_AND_TISSUES);
-            expressionContainerDTO.ContainerPathDTO = _representationInfoRepository.InfoFor(expressionContainer).ToPathElement();
-         }
-
-         expressionContainerDTO.GroupingPathDTO = _representationInfoRepository.InfoFor(RepresentationObjectType.GROUP, group.Name).ToPathElement();
-
-         //May have been set previously
-         if (expressionContainerDTO.Sequence==0)
-            expressionContainerDTO.Sequence = group.Sequence;
-
-         expressionContainerDTO.MoleculeName = moleculeName;
-         expressionContainerDTO.ParameterPath = _fullPathDisplayResolver.FullPathFor(relativeExpression);
-         return expressionContainerDTO;
+         return _expressionContainerMapper.MapFrom(molecule, relativeExpression);
       }
 
       private bool moleculeIsTransporter(IndividualMolecule molecule)
@@ -176,7 +135,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private string containerNameForGlobalExpression(string parameterName)
       {
-         if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_BLOOD_CELL))
+         if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_BLOOD_CELLS))
             return CoreConstants.Compartment.BloodCells;
 
          if (string.Equals(parameterName, CoreConstants.Parameters.REL_EXP_PLASMA))
@@ -186,13 +145,6 @@ namespace PKSim.Presentation.DTO.Mappers
             return CoreConstants.Compartment.VascularEndothelium;
 
          return parameterName;
-      }
-
-      private bool parameterIsGlobalExpression(IParameter relativeExpression)
-      {
-         return relativeExpression.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELL,
-            CoreConstants.Parameters.REL_EXP_PLASMA,
-            CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
    }
 }

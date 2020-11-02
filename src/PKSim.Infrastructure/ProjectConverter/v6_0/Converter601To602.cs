@@ -97,9 +97,10 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
       {
          if (individual == null) return;
 
-         individual.AllMolecules().SelectMany(m => m.AllExpressionsContainers())
-            .Select(c => c.RelativeExpressionParameter)
-            .Each(p => p.Dimension = Constants.Dimension.NO_DIMENSION);
+         //TODO 
+         // individual.AllMolecules().SelectMany(m => m.AllExpressionsContainers())
+         //    .Select(c => c.RelativeExpressionParameter)
+         //    .Each(p => p.Dimension = Constants.Dimension.NO_DIMENSION);
 
          individual.AllMolecules().Where(x => x.HasQuery())
             .Each(updateDatabaseQueryStringToLiverZones);

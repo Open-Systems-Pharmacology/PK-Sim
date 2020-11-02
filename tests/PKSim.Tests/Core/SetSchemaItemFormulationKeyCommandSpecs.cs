@@ -41,7 +41,7 @@ namespace PKSim.Core
    
    public class The_inverse_of_set_schema_item_formulation_key_command : concern_for_set_schema_item_formulation_key_command
    {
-      private IReversibleCommand<IExecutionContext> _result;
+      private ICommand<IExecutionContext> _result;
 
       protected override void Because()
       {

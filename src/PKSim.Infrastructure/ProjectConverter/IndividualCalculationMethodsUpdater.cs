@@ -48,21 +48,21 @@ namespace PKSim.Infrastructure.ProjectConverter
          if (!isHuman)
             return;
 
-         addMissingCalulationMethodTo(withCalculationMethods, ConverterConstants.CalculationMethod.BSA_Mosteller);
+         addMissingCalculationMethodTo(withCalculationMethods, ConverterConstants.CalculationMethod.BSA_Mosteller);
       }
 
       private void addDynamicFormulaCalculationMethodTo(IWithCalculationMethods withCalculationMethods)
       {
-         addMissingCalulationMethodTo(withCalculationMethods, ConverterConstants.CalculationMethod.DynamicSumFormulas);
+         addMissingCalculationMethodTo(withCalculationMethods, ConverterConstants.CalculationMethod.DynamicSumFormulas);
       }
 
       private void addRenalAgingCalculationMethodTo(IWithCalculationMethods withCalculationMethods, bool isHuman)
       {
          var renalAgingCalculationMethodName = isHuman ? CoreConstants.CalculationMethod.RenalAgingHuman : CoreConstants.CalculationMethod.RenalAgingAnimals;
-         addMissingCalulationMethodTo(withCalculationMethods, renalAgingCalculationMethodName);
+         addMissingCalculationMethodTo(withCalculationMethods, renalAgingCalculationMethodName);
       }
 
-      private void addMissingCalulationMethodTo(IWithCalculationMethods withCalculationMethods, string calculationMethodName)
+      private void addMissingCalculationMethodTo(IWithCalculationMethods withCalculationMethods, string calculationMethodName)
       {
          var calculationMethodCache = withCalculationMethods.CalculationMethodCache;
          if (calculationMethodCache.Contains(calculationMethodName))

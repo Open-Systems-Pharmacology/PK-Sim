@@ -73,13 +73,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="10.0.9" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.12" />
     <PackageReference Include="OSPSuite.DevExpress" Version="20.1.6" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.50" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.42" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.8" GeneratePathProperty="true" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.9" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.Presentation" Version="10.0.12" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" GeneratePathProperty="true" />
 
   </ItemGroup>
@@ -93,7 +93,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(NCrunch)' != '1'">
     <Exec Command="copy $(ProjectDir)..\PKSim.R\$(OutDir)PKSim.R.* $(TargetDir)&#xD;&#xA;copy $(ProjectDir)..\PKSim.Matlab\$(OutDir)PKSim.Matlab.* $(TargetDir)&#xD;&#xA;copy $(ProjectDir)..\PKSim.BatchTool\$(OutDir)PKSim.BatchTool.* $(TargetDir)&#xD;&#xA;copy $(ProjectDir)..\PKSim.CLI\$(OutDir)PKSim.CLI.* $(TargetDir)&#xD;&#xA;copy $(ProjectDir)..\PKSim.CLI\$(OutDir)CommandLine.* $(TargetDir)&#xD;&#xA;copy $(ProjectDir)..\PKSim.CLI\$(OutDir)Microsoft.Extensions.Logging.* $(TargetDir)&#xD;&#xA;" />
   </Target>
 </Project>

@@ -9,8 +9,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
@@ -187,12 +185,6 @@ namespace PKSim.Core.Services
       ICommand SetAdvancedParameterUnit(IParameter parameter, Unit displayUnit);
 
       /// <summary>
-      ///    Returns all expression parameters from the given parameter list
-      /// </summary>
-      /// <param name="allExpressionParameters">all potentials expression parameters</param>
-      IReadOnlyList<IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters);
-
-      /// <summary>
       ///    Adds the parameter to the favorite, or remove the parameter from the favorite
       /// </summary>
       void SetParameterFavorite(IParameter parameter, bool isFavorite);
@@ -329,14 +321,7 @@ namespace PKSim.Core.Services
 
       private IPKSimCommand commandForRelativeExpressionParameter(IParameter parameter, double value)
       {
-         var expressionContainer = parameter.ParentContainer;
-         switch (expressionContainer.ParentContainer)
-         {
-            case IndividualMolecule individualMolecule:
-               return new SetRelativeExpressionAndNormalizeCommand(individualMolecule, parameter, value);
-            default:
-               return new SetRelativeExpressionInSimulationAndNormalizedCommand(parameter, value);
-         }
+         return new SetRelativeExpressionCommand(parameter, value);
       }
 
       private IOSPSuiteCommand setParameterValue(IParameter parameter, double value, bool shouldChangeVersion, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
@@ -444,14 +429,6 @@ namespace PKSim.Core.Services
       public ICommand SetAdvancedParameterUnit(IParameter parameter, Unit displayUnit)
       {
          return executeAndUpdatedDefaultStateAndValue(new SetAdvancedParameterUnitCommand(parameter, displayUnit), parameter);
-      }
-
-      public IReadOnlyList<IParameter> GroupExpressionParameters(IReadOnlyList<IParameter> allExpressionParameters)
-      {
-         return allExpressionParameters
-            .Where(x => !x.Name.Contains(CoreConstants.Parameters.NORM_SUFFIX))
-            .Where(x => x.Name.StartsWith(CoreConstants.Parameters.REL_EXP))
-            .ToList();
       }
 
       public void SetParameterFavorite(IParameter parameter, bool isFavorite)

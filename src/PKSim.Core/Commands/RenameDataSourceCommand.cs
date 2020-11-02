@@ -41,7 +41,7 @@ namespace PKSim.Core.Commands
          _compoundProcess = context.Get<CompoundProcess>(_processId);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new RenameDataSourceCommand(_compoundProcess, _oldDataSource, context).AsInverseFor(this);
       }

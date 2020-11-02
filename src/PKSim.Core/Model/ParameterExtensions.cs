@@ -18,9 +18,19 @@ namespace PKSim.Core.Model
 
       public static void SetPercentile(this IParameter parameter, double percentile)
       {
-         var distributedParameter = parameter as IDistributedParameter;
-         if (distributedParameter == null) return;
+         if (!(parameter is IDistributedParameter distributedParameter))
+            return;
+
          distributedParameter.Percentile = percentile;
+      }
+
+      public static bool IsGlobalExpression(this IParameter parameter)
+      {
+         if (parameter == null)
+            return false;
+
+         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELLS,
+            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
       }
 
       public static bool IsExpression(this IParameter parameter)
@@ -28,8 +38,7 @@ namespace PKSim.Core.Model
          if (parameter == null)
             return false;
 
-         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP, CoreConstants.Parameters.REL_EXP_BLOOD_CELL,
-            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
+         return parameter.IsGlobalExpression() || parameter.IsNamed(CoreConstants.Parameters.REL_EXP);
       }
 
       public static bool IsExpressionOrOntogenyFactor(this IParameter parameter)
@@ -48,7 +57,8 @@ namespace PKSim.Core.Model
          return IsExpressionOrOntogenyFactor(parameter) || IsIndividualMoleculeGlobal(parameter);
       }
 
-      public static bool IsIndividualMoleculeGlobal(this IParameter parameter) => CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
+      public static bool IsIndividualMoleculeGlobal(this IParameter parameter) =>
+         CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
 
       public static bool IsStructural(this IParameter parameter)
       {
@@ -72,12 +82,17 @@ namespace PKSim.Core.Model
          if (parameter.NameIsOneOf(CoreConstants.Parameters.AllDistributionParameters))
             return false;
 
-         if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population, PKSimBuildingBlockType.Simulation))
+         if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population,
+            PKSimBuildingBlockType.Simulation))
             return false;
 
          if (parameter.Formula == null)
             return false;
 
+         if (!parameter.IsDefault)
+            return false;
+
+         // Default only for constant parameter or distribute parameters
          return parameter.Formula.IsConstant() || parameter.Formula.IsDistributed();
       }
 
@@ -97,6 +112,13 @@ namespace PKSim.Core.Model
 
       public static bool ShouldExportToSnapshot(this IParameter parameter)
       {
+         if (parameter == null) 
+            return false;
+
+         //For a molecule, we export all global parameters to ensure that they do not get out of sync when loading from snapshot 
+         if (parameter.IsIndividualMoleculeGlobal())
+            return true;
+
          if (parameter.IsDefault)
             return false;
 

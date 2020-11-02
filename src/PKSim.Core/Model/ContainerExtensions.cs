@@ -8,12 +8,12 @@ namespace PKSim.Core.Model
    public static class ContainerExtensions
    {
       /// <summary>
-      ///    Returns all direct visible parameters (not in subcontainers)
+      ///    Returns all direct visible parameters (not in sub-containers)
       /// </summary>
       public static IEnumerable<IParameter> AllVisibleParameters(this IContainer container) => container.AllParameters(x => x.Visible);
 
       /// <summary>
-      ///    Returns all user defined parameters (direct children and in subcontainers)
+      ///    Returns all user defined parameters (direct children and in sub-containers)
       /// </summary>
       public static IEnumerable<IParameter> AllUserDefinedParameters(this IContainer container) => container.GetAllChildren<IParameter>(x => !x.IsDefault);
 

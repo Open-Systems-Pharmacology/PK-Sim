@@ -26,9 +26,9 @@ namespace PKSim.IntegrationTests
          const string transporterName = "Tr1";
 
          var individual = DomainFactoryForSpecs.CreateStandardIndividual();
-         var transporterFactory = IoC.Resolve<IIndividualTransporterFactory>();
+         var transporterFactory = IoC.Resolve<IIndividualTransporterTask>();
 
-         var transporter = transporterFactory.CreateFor(individual).WithName(transporterName);
+         var transporter = transporterFactory.CreateFor(individual, transporterName, TransportType.Efflux);
          individual.AddMolecule(transporter);
 
          var compound = DomainFactoryForSpecs.CreateStandardCompound().WithName(_drugName);
@@ -114,10 +114,7 @@ namespace PKSim.IntegrationTests
 
    public class When_creating_model_with_active_transporter_Hill : When_creating_a_model_with_active_transporter
    {
-      protected override string CompoundTransportName
-      {
-         get { return CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_HILL; }
-      }
+      protected override string CompoundTransportName => CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_HILL;
 
       [Observation]
       public void Should_create_active_efflux_specific_with_competitive_inhibition_transport_in_bone()

@@ -15,6 +15,7 @@ using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -22,6 +23,10 @@ namespace PKSim.Presentation.Presenters.Individuals
       IListener<NoTranporterTemplateAvailableEvent>
 
    {
+
+      void SetRelativeExpression(ExpressionParameterDTO expressionParameterDTO, double value);
+
+
       /// <summary>
       ///    Update the menbrane ttype for the given transporter container
       /// </summary>
@@ -113,7 +118,9 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       private TransporterExpressionContainer transporterContainerFrom(TransporterExpressionContainerDTO transporterExpressionContainerDTO)
       {
-         return _transporter.AllExpressionsContainers().FindByName(transporterExpressionContainerDTO.ContainerName);
+         return null;
+
+         //TODO return _transporter.AllExpressionsContainers().FindByName(transporterExpressionContainerDTO.ContainerName);
       }
 
       public IEnumerable<MembraneLocation> AllProteinMembraneLocationsFor(TransporterExpressionContainerDTO transporterExpressionContainerDTO)
@@ -149,9 +156,9 @@ namespace PKSim.Presentation.Presenters.Individuals
          RefreshView();
       }
 
-      public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
+      public void SetRelativeExpression(ExpressionParameterDTO expressionParameterDTO, double value)
       {
-         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_transporter, expressionContainerDTO.RelativeExpressionParameter.Parameter, value));
+         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(ParameterFrom(expressionParameterDTO.Parameter), value));
       }
 
       public void RefreshView()

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Model
 {

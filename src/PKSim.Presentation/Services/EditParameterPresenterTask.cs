@@ -1,3 +1,4 @@
+using System;
 using OSPSuite.Core.Commands.Core;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Parameters;
@@ -17,6 +18,7 @@ namespace PKSim.Presentation.Services
       void SetParameterName(ICommandCollector presenter, IParameterDTO parameterDTO, string name);
       void EditTableFor(ICommandCollector presenter, IParameterDTO parameterDTO);
       void SetParameterFavorite(IParameterDTO parameterDTO, bool isFavorite);
+      void ResetParameter(ICommandCollector presenter, IParameterDTO parameterDTO);
    }
 
    public class EditParameterPresenterTask : IEditParameterPresenterTask
@@ -61,6 +63,11 @@ namespace PKSim.Presentation.Services
       {
          parameterDTO.IsFavorite = isFavorite;
          _parameterTask.SetParameterFavorite(ParameterFrom(parameterDTO), isFavorite);
+      }
+
+      public void ResetParameter(ICommandCollector presenter, IParameterDTO parameterDTO)
+      {
+         presenter.AddCommand(_parameterTask.ResetParameter(ParameterFrom(parameterDTO)));
       }
 
       public virtual void SetParameterValue(ICommandCollector presenter, IParameterDTO parameterDTO, double valueInGuiUnit)

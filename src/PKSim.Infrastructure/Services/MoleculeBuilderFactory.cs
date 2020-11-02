@@ -57,7 +57,7 @@ namespace PKSim.Infrastructure.Services
          moleculeBuilder.Dimension = _dimensionRepository.Amount;
          moleculeBuilder.DefaultStartFormula.Dimension = _dimensionRepository.Amount;
          addFormulaToCacheIfNecessary(moleculeBuilder.DefaultStartFormula, formulaCache);
-         addConcentrationParmeterTo(moleculeBuilder, formulaCache);
+         addConcentrationParameterTo(moleculeBuilder, formulaCache);
          return moleculeBuilder;
       }
 
@@ -138,7 +138,7 @@ namespace PKSim.Infrastructure.Services
                .WithIcon(interactionProcess.Icon)
                .WithName(interactionProcess.InternalName);
 
-            //only add global pamrameters to the intercation container
+            //only add global parameters to the interaction container
             _parameterContainerTask.AddProcessBuilderParametersTo(interactionContainer);
             _parameterSetUpdater.UpdateValuesByName(interactionProcess, interactionContainer);
             interactionContainer.Name = interactionProcess.Name;
@@ -216,7 +216,7 @@ namespace PKSim.Infrastructure.Services
          formulaCache.Add(formula);
       }
 
-      private void addConcentrationParmeterTo(IMoleculeBuilder moleculeBuilder, IFormulaCache formulaCache)
+      private void addConcentrationParameterTo(IMoleculeBuilder moleculeBuilder, IFormulaCache formulaCache)
       {
          var parameter = _parameterFactory.CreateConcentrationParameterIn(formulaCache);
          moleculeBuilder.AddParameter(parameter);

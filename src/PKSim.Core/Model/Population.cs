@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Maths.Random;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core.Repositories;
@@ -169,6 +170,9 @@ namespace PKSim.Core.Model
       {
          FirstIndividual?.RemoveMolecule(molecule);
       }
+
+      public Individual Individual => FirstIndividual;
+      public ICache<string, IParameter> AllExpressionParametersFor(IndividualMolecule molecule) => FirstIndividual?.AllExpressionParametersFor(molecule);
 
       public virtual IEnumerable<IParameter> AllAdvancedParameters(IEntityPathResolver entityPathResolver)
       {

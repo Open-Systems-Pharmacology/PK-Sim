@@ -35,7 +35,7 @@ namespace PKSim.Core.Commands
          _process = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new ChangeEnzymaticProcessMetaboliteNameCommand(_process, _oldMetabolite, context).AsInverseFor(this);
       }

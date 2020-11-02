@@ -2,10 +2,10 @@ namespace PKSim.Core.Model
 {
    public class ExpressionContainerInfo
    {
-      public ExpressionContainerInfo(string containerName, string containerDiplayName, double relativeExpression)
+      public ExpressionContainerInfo(string containerName, string containerDisplayName, double relativeExpression)
       {
          ContainerName = containerName;
-         ContainerDiplayName = containerDiplayName;
+         ContainerDisplayName = containerDisplayName;
          RelativeExpression = relativeExpression;
       }
 
@@ -17,7 +17,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Display name for the container
       /// </summary>
-      public string ContainerDiplayName { get; private set; }
+      public string ContainerDisplayName { get; private set; }
 
       /// <summary>
       ///    Former value for the container if available
@@ -26,7 +26,7 @@ namespace PKSim.Core.Model
 
       public override string ToString()
       {
-         return ContainerDiplayName;
+         return ContainerDisplayName;
       }
    }
 }

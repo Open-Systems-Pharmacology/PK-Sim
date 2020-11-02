@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Model
 {
@@ -60,9 +61,6 @@ namespace PKSim.Core.Model
       /// </summary>
       public string MembraneLocationDisplayName { get; set; }
 
-      public override string Name
-      {
-         get { return Gene; }
-      }
+      public override string Name => Gene;
    }
 }

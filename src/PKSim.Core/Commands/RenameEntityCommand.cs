@@ -11,9 +11,9 @@ namespace PKSim.Core.Commands
    public class RenameEntityCommand : BuildingBlockStructureChangeCommand
    {
       private readonly string _entityId;
-      private readonly string _newName;
+      protected readonly string _newName;
       protected IEntity _entity;
-      private string _oldName;
+      protected string _oldName;
 
       public RenameEntityCommand(IEntity entity, string newName, IExecutionContext context)
       {
@@ -34,7 +34,7 @@ namespace PKSim.Core.Commands
          _entity = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new RenameEntityCommand(_entity, _oldName, context).AsInverseFor(this);
       }

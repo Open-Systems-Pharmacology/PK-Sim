@@ -72,8 +72,8 @@ namespace PKSim.Core
          _enzymeSnapshot = new Molecule {Type = QuantityType.Enzyme};
          _transporterSnapshot = new Molecule {Type = QuantityType.Transporter};
 
-         A.CallTo(() => _moleculeMapper.MapToSnapshot(_enzyme)).Returns(_enzymeSnapshot);
-         A.CallTo(() => _moleculeMapper.MapToSnapshot(_transporter)).Returns(_transporterSnapshot);
+         A.CallTo(() => _moleculeMapper.MapToSnapshot(_enzyme, _individual)).Returns(_enzymeSnapshot);
+         A.CallTo(() => _moleculeMapper.MapToSnapshot(_transporter, _individual)).Returns(_transporterSnapshot);
 
          _originDataSnapshot = new OriginData();
          A.CallTo(() => _originDataMapper.MapToSnapshot(_individual.OriginData)).Returns(_originDataSnapshot);
@@ -182,7 +182,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_the_parameter_previously_set_by_the_user()
       {
-         A.CallTo(() => _parameterMapper.MapLocalizedParameters(_snapshot.Parameters, _individual.Organism)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapLocalizedParameters(_snapshot.Parameters, _individual)).MustHaveHappened();
       }
    }
 }

@@ -27,7 +27,7 @@ namespace PKSim.Core.Model
       ///    Returns the concentration formula for a parameter defined in a molecule amount. if the formula was already defined
       ///    in the formula cache, simply returns the same reference
       ///    <remarks>
-      ///       This cannot be defined in the database so far, since the structure does not allow parameter paths referenciation
+      ///       This cannot be defined in the database so far, since the structure does not allow parameter paths reference
       ///       as needed (..)
       ///    </remarks>
       /// </summary>

@@ -15,7 +15,7 @@ namespace PKSim.UI.Views.Core
          InitializeComponent();
       }
 
-      protected void InitializeWithGrid(UxGridView gridView)
+      protected virtual void InitializeWithGrid(UxGridView gridView)
       {
          gridView.MouseDown += (sender, e) => OnGridViewMouseDown(gridView, e);
       }

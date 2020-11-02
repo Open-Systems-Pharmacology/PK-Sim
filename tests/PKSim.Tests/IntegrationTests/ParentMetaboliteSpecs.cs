@@ -61,11 +61,12 @@ namespace PKSim.IntegrationTests
 
       protected IndividualEnzyme AddEnzymeTo(Individual individual, string enzymeName)
       {
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
+         var enzymeFactory = IoC.Resolve<IIndividualEnzymeTask>();
 
-         var enzyme = enzymeFactory.CreateFor(_individual).DowncastTo<IndividualEnzyme>().WithName(enzymeName);
-         enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Pericentral).Value = 1;
-         enzyme.GetRelativeExpressionParameterFor(CoreConstants.Compartment.Periportal).Value = 1;
+         var enzyme = enzymeFactory.AddMoleculeTo(_individual, enzymeName).DowncastTo<IndividualEnzyme>();
+         var allExpressionParameters = _individual.AllExpressionParametersFor(enzyme);
+         allExpressionParameters[CoreConstants.Compartment.Pericentral].Value = 1;
+         allExpressionParameters[CoreConstants.Compartment.Periportal].Value = 1;
          individual.AddMolecule(enzyme);
          return enzyme;
       }

@@ -27,10 +27,10 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _fourCompSim = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.FourComp);
+         _fourCompSim = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.FOUR_COMP);
          _fourComp = _fourCompSim.Model.Root.Container(Constants.ORGANISM);
 
-         _twoPoresSim = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.TwoPores);
+         _twoPoresSim = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.TWO_PORES);
          _twoPores = _twoPoresSim.Model.Root.Container(Constants.ORGANISM);
 
          _organisms = new List<IContainer> {_fourComp, _twoPores};

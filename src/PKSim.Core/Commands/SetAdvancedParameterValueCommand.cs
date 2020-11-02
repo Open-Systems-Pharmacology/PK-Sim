@@ -18,7 +18,7 @@ namespace PKSim.Core.Commands
          advancedParameterUpdater.UpdatePopulationContaining(_parameter);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetAdvancedParameterValueCommand(_parameter, _oldValue).AsInverseFor(this);
       }

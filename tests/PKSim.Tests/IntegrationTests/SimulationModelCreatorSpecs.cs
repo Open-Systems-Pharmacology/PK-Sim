@@ -20,19 +20,14 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
+         var enzymeFactory = IoC.Resolve<IIndividualEnzymeTask>();
          var templateIndividual = DomainFactoryForSpecs.CreateStandardIndividual();
          var compound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
 
-         _enzyme = enzymeFactory.CreateFor(templateIndividual).DowncastTo<IndividualEnzyme>().WithName("CYP");
-         templateIndividual.AddMolecule(_enzyme);
+         _enzyme = enzymeFactory.AddMoleculeTo(templateIndividual, "CYP").DowncastTo<IndividualEnzyme>();
 
-         _protein = enzymeFactory.CreateFor(templateIndividual).DowncastTo<IndividualEnzyme>().WithName("PROT");
-         templateIndividual.AddMolecule(_protein);
-
-         _protein.TissueLocation = TissueLocation.Intracellular;
-         _protein.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
+         _protein = enzymeFactory.AddMoleculeTo(templateIndividual, "PROT").DowncastTo<IndividualEnzyme>();
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(templateIndividual, compound, protocol).DowncastTo<IndividualSimulation>();
 
@@ -87,15 +82,6 @@ namespace PKSim.IntegrationTests
          var path = explicitFormula.FormulaUsablePathBy("M_0");
          path.ShouldNotBeNull();
          path.Last().ShouldBeEqualTo(CoreConstants.Parameters.START_AMOUNT);
-      }
-
-      [Observation]
-      public void should_hide_the_relative_expression_parameters_defined_in_interstitial_for_protein_defined_with_a_tissue_localization_in_cell_and_a_vascular_endothelium_localization_in_interstitial()
-      {
-         var protBoneInterstitial = _simulation.Model.Root.EntityAt<MoleculeAmount>(
-            Constants.ORGANISM, CoreConstants.Organ.Bone, CoreConstants.Compartment.Interstitial, _protein.Name);
-
-         protBoneInterstitial.Parameter(CoreConstants.Parameters.REL_EXP).Visible.ShouldBeFalse();
       }
    }
 }

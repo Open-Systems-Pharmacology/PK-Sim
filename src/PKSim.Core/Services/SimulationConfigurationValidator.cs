@@ -37,7 +37,7 @@ namespace PKSim.Core.Services
          var modelConfiguration = simulation.ModelConfiguration;
 
          //ForComp model can only be used with small molecules
-         if (string.Equals(modelConfiguration.ModelName, CoreConstants.Model.FourComp) && compounds.Any(x => !x.IsSmallMolecule))
+         if (string.Equals(modelConfiguration.ModelName, CoreConstants.Model.FOUR_COMP) && compounds.Any(x => !x.IsSmallMolecule))
             throw new InvalidSimulationConfigurationException(PKSimConstants.Error.FourCompModelCannotBeUsedWithLargeMolecule);
 
          if (simulation.NameIsOneOf(compounds.AllNames()))

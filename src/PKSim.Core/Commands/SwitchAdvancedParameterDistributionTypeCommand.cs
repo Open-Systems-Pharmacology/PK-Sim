@@ -60,7 +60,7 @@ namespace PKSim.Core.Commands
          _newDistributionType = _advancedParameter.DistributionType;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SwitchAdvancedParameterDistributionTypeCommand(_parameter, _advancedParameterContainer, _oldDistributionType, context).AsInverseFor(this);
       }

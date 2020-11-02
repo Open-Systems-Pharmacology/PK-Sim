@@ -17,9 +17,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          base.PerformMapping();
-         Map(x => x.TissueLocation);
-         Map(x => x.IntracellularVascularEndoLocation);
-         Map(x => x.MembraneLocation);
+         Map(x => x.Localization);
       }
    }
 
@@ -45,9 +43,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          base.PerformMapping();
-         Map(x => x.OrganPath);
          Map(x => x.GroupName);
-         Map(x => x.ContainerName);
       }
    }
 

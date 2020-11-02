@@ -23,43 +23,44 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _transportType, value);
       }
 
-      /// <summary>
-      ///    Returns the organ container where the transporter mey be defined
-      /// </summary>
-      public new IEnumerable<TransporterExpressionContainer> AllExpressionsContainers()
-      {
-         return base.AllExpressionsContainers().Cast<TransporterExpressionContainer>();
-      }
-
-      /// <summary>
-      ///    Retuns the process names induced in the simulation by the given transporter definition
-      /// </summary>
-      public IEnumerable<string> AllInducedProcesses()
-      {
-         return AllExpressionsContainers().SelectMany(x => x.ProcessNames).Distinct();
-      }
-
-      /// <summary>
-      ///    Returns the list of organ name where the process will not take place
-      /// </summary>
-      /// <param name="simulationProcessName"> Process name in the simulation</param>
-      public IEnumerable<string> AllOrgansWhereProcessDoesNotTakePlace(string simulationProcessName)
-      {
-         return AllExpressionsContainers()
-            .Where(x => !x.ProcessNames.Contains(simulationProcessName))
-            .Select(x => x.OrganName);
-      }
-
-      /// <summary>
-      ///    Returns the list of organ name where the process will take place
-      /// </summary>
-      /// <param name="simulationProcessName"> Process name in the simulation</param>
-      public IEnumerable<string> AllOrgansWhereProcessTakesPlace(string simulationProcessName)
-      {
-         return AllExpressionsContainers()
-            .Where(x => x.ProcessNames.Contains(simulationProcessName))
-            .Select(x => x.OrganName);
-      }
+      //TODO
+      // /// <summary>
+      // ///    Returns the organ container where the transporter mey be defined
+      // /// </summary>
+      // public new IEnumerable<TransporterExpressionContainer> AllExpressionsContainers()
+      // {
+      //    return base.AllExpressionsContainers().Cast<TransporterExpressionContainer>();
+      // }
+      //
+      // /// <summary>
+      // ///    Retuns the process names induced in the simulation by the given transporter definition
+      // /// </summary>
+      // public IEnumerable<string> AllInducedProcesses()
+      // {
+      //    return AllExpressionsContainers().SelectMany(x => x.ProcessNames).Distinct();
+      // }
+      //
+      // /// <summary>
+      // ///    Returns the list of organ name where the process will not take place
+      // /// </summary>
+      // /// <param name="simulationProcessName"> Process name in the simulation</param>
+      // public IEnumerable<string> AllOrgansWhereProcessDoesNotTakePlace(string simulationProcessName)
+      // {
+      //    return AllExpressionsContainers()
+      //       .Where(x => !x.ProcessNames.Contains(simulationProcessName))
+      //       .Select(x => x.OrganName);
+      // }
+      //
+      // /// <summary>
+      // ///    Returns the list of organ name where the process will take place
+      // /// </summary>
+      // /// <param name="simulationProcessName"> Process name in the simulation</param>
+      // public IEnumerable<string> AllOrgansWhereProcessTakesPlace(string simulationProcessName)
+      // {
+      //    return AllExpressionsContainers()
+      //       .Where(x => x.ProcessNames.Contains(simulationProcessName))
+      //       .Select(x => x.OrganName);
+      // }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {

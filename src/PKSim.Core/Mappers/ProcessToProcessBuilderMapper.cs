@@ -269,14 +269,15 @@ namespace PKSim.Core.Mappers
          var transporterMoleculeContainer = _objectBaseFactory.Create<TransporterMoleculeContainer>().WithName(compoundProcess.InternalName);
          transporterMoleculeContainer.Icon = compoundProcess.Icon;
          transporterMoleculeContainer.TransportName = compoundProcess.Name;
-         foreach (var inducedProcess in transporter.AllInducedProcesses())
-         {
-            var activeTransporterBuilder = activeTransportFrom(compoundProcess, inducedProcess, formulaCache);
-            transporterMoleculeContainer.Icon = activeTransporterBuilder.Icon;
-            activeTransporterBuilder.TransportType = transporter.TransportType;
-            transporterMoleculeContainer.AddActiveTransportRealization(activeTransporterBuilder);
-            updateTransporterTagsFor(transporter, activeTransporterBuilder, inducedProcess);
-         }
+         //TODO
+         // foreach (var inducedProcess in transporter.AllInducedProcesses())
+         // {
+         //    var activeTransporterBuilder = activeTransportFrom(compoundProcess, inducedProcess, formulaCache);
+         //    transporterMoleculeContainer.Icon = activeTransporterBuilder.Icon;
+         //    activeTransporterBuilder.TransportType = transporter.TransportType;
+         //    transporterMoleculeContainer.AddActiveTransportRealization(activeTransporterBuilder);
+         //    updateTransporterTagsFor(transporter, activeTransporterBuilder, inducedProcess);
+         // }
 
          _parameterContainerTask.AddProcessBuilderParametersTo(transporterMoleculeContainer);
          _parameterSetUpdater.UpdateValuesByName(compoundProcess.AllParameters(), transporterMoleculeContainer.Parameters);
@@ -285,21 +286,21 @@ namespace PKSim.Core.Mappers
          return transporterMoleculeContainer;
       }
 
-      private void updateTransporterTagsFor(IndividualTransporter transporter, ITransportBuilder transporterBuilder, string simulationProcessName)
-      {
-         //if one organ was specified already, no need to create the list of not tags!
-         var allOrgans = transporter.AllOrgansWhereProcessTakesPlace(simulationProcessName).ToList();
-         var allMatchTags = transporterBuilder.SourceCriteria.OfType<MatchTagCondition>()
-            .Select(x => x.Tag);
-
-         if (allMatchTags.Intersect(allOrgans).Any())
-            return;
-
-         foreach (var organName in transporter.AllOrgansWhereProcessDoesNotTakePlace(simulationProcessName))
-         {
-            transporterBuilder.SourceCriteria.Add(new NotMatchTagCondition(organName));
-         }
-      }
+      // private void updateTransporterTagsFor(IndividualTransporter transporter, ITransportBuilder transporterBuilder, string simulationProcessName)
+      // {
+      //    //if one organ was specified already, no need to create the list of not tags!
+      //    var allOrgans = transporter.AllOrgansWhereProcessTakesPlace(simulationProcessName).ToList();
+      //    var allMatchTags = transporterBuilder.SourceCriteria.OfType<MatchTagCondition>()
+      //       .Select(x => x.Tag);
+      //
+      //    if (allMatchTags.Intersect(allOrgans).Any())
+      //       return;
+      //
+      //    foreach (var organName in transporter.AllOrgansWhereProcessDoesNotTakePlace(simulationProcessName))
+      //    {
+      //       transporterBuilder.SourceCriteria.Add(new NotMatchTagCondition(organName));
+      //    }
+      // }
 
       private ITransportBuilder activeTransportFrom(CompoundProcess process, string individualProcessName, IFormulaCache formulaCache)
       {

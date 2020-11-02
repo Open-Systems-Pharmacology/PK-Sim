@@ -19,7 +19,7 @@ namespace PKSim.Core.Commands
          parameter.IsDefault = (parameter.Value == 0);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetRelativeExpressionCommand(_parameter, _oldValue).AsInverseFor(this);
       }

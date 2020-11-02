@@ -1,65 +1,130 @@
-using System;
-using System.Collections.Generic;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Events;
+using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
-   public interface IIndividualMoleculeExpressionsPresenter : IEditParameterPresenter
-   {
-      bool OntogenyVisible { set; }
-      bool MoleculeParametersVisible { set; }
-      ISimulationSubject SimulationSubject { get; set; }
-      void ActivateMolecule(IndividualMolecule molecule);
-      void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value);
-   }
-
    public interface IIndividualProteinExpressionsPresenter : IIndividualMoleculeExpressionsPresenter
    {
-      IEnumerable<TissueLocation> AllTissueLocations();
-      IEnumerable<IntracellularVascularEndoLocation> AllIntracellularVascularEndoLocations();
-      void TissueLocationChanged(TissueLocation tissueLocation);
-      void MembraneLocationChanged(MembraneLocation membraneLocation);
-      void IntracellularLocationVascularEndoChanged(IntracellularVascularEndoLocation vascularEndoLocation);
-      IEnumerable<MembraneLocation> AllMembraneLocation();
-      string DisplayFor(TissueLocation tissueLocation);
-      string IconFor(TissueLocation tissueLocation);
+      void SetExpressionParameterValue(IParameterDTO expressionParameterDTO, double value);
+      bool ShowInitialConcentration { get; set; }
    }
 
-   public abstract class IndividualProteinExpressionsPresenter<TProtein, TSimulationSubject> : EditParameterPresenter<IIndividualProteinExpressionsView, IIndividualProteinExpressionsPresenter>, IIndividualProteinExpressionsPresenter
+   public abstract class IndividualProteinExpressionsPresenter<TProtein, TSimulationSubject> :
+      EditParameterPresenter<IIndividualProteinExpressionsView, IIndividualProteinExpressionsPresenter>,
+      IIndividualProteinExpressionsPresenter
       where TProtein : IndividualProtein
       where TSimulationSubject : ISimulationSubject
    {
-      protected readonly IMoleculeExpressionTask<TSimulationSubject> _moleculeExpressionTask;
-      private readonly IIndividualProteinToProteinExpressionDTOMapper _proteinExpressionDTOMapper;
-      private readonly IRepresentationInfoRepository _representationInfoRepository;
+      private readonly IIndividualProteinToIndividualProteinDTOMapper _individualProteinMapper;
       private readonly IIndividualMoleculePropertiesPresenter<TSimulationSubject> _moleculePropertiesPresenter;
+      private readonly IExpressionLocalizationPresenter<TSimulationSubject> _expressionLocalizationPresenter;
       protected TProtein _protein;
-      private readonly Action<Object> _updateLocationVisibilityHandler;
-      private ProteinExpressionDTO _proteinExpressionDTO;
+      private IndividualProteinDTO _proteinDTO;
+      private bool _showInitialConcentration;
       public ISimulationSubject SimulationSubject { get; set; }
 
-      protected IndividualProteinExpressionsPresenter(IIndividualProteinExpressionsView view, IEditParameterPresenterTask parameterTask,
-         IMoleculeExpressionTask<TSimulationSubject> moleculeExpressionTask, IIndividualProteinToProteinExpressionDTOMapper proteinExpressionDTOMapper,
-         IRepresentationInfoRepository representationInfoRepository, IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter)
+      public bool ShowInitialConcentration
+      {
+         get => _showInitialConcentration;
+         set
+         {
+            _showInitialConcentration = value;
+            rebind();
+         }
+      }
+
+      protected IndividualProteinExpressionsPresenter(
+         IIndividualProteinExpressionsView view,
+         IEditParameterPresenterTask parameterTask,
+         IIndividualProteinToIndividualProteinDTOMapper individualProteinMapper,
+         IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter,
+         IExpressionLocalizationPresenter<TSimulationSubject> expressionLocalizationPresenter)
          : base(view, parameterTask)
       {
-         _moleculeExpressionTask = moleculeExpressionTask;
-         _proteinExpressionDTOMapper = proteinExpressionDTOMapper;
-         _representationInfoRepository = representationInfoRepository;
+         _individualProteinMapper = individualProteinMapper;
          _moleculePropertiesPresenter = moleculePropertiesPresenter;
-         AddSubPresenters(_moleculePropertiesPresenter);
-         _updateLocationVisibilityHandler = o => updateLocationSelectionVisibility();
+         _expressionLocalizationPresenter = expressionLocalizationPresenter;
+         _expressionLocalizationPresenter.LocalizationChanged += (o, e) => onLocalizationChanged();
+         AddSubPresenters(_moleculePropertiesPresenter, _expressionLocalizationPresenter);
          view.AddMoleculePropertiesView(_moleculePropertiesPresenter.View);
+         view.AddLocalizationView(_expressionLocalizationPresenter.View);
+
+         //TODO probably in preferences
+         _showInitialConcentration = false;
+      }
+
+      private void onLocalizationChanged()
+      {
+         rebind();
+      }
+
+      private void rebind()
+      {
+         if (_proteinDTO == null)
+            return;
+
+         updateParametersVisibility();
+         normalizeExpressionValues();
+         _view.BindTo(_proteinDTO.AllExpressionParameters.Where(x => x.Visible));
+      }
+
+      private void updateParametersVisibility()
+      {
+         if (_protein == null)
+            return;
+
+         _proteinDTO.AllExpressionParameters.Each(x => { x.Visible = isParameterVisible(x); });
+      }
+
+      private bool isParameterVisible(ExpressionParameterDTO expressionParameterDTO)
+      {
+         var parameter = expressionParameterDTO.Parameter;
+         //initial concentration always visible
+         if (parameter.IsNamed(INITIAL_CONCENTRATION))
+            return ShowInitialConcentration;
+
+         //global surrogate parameters depending on settings
+         if (string.Equals(parameter.Parameter.GroupName, CoreConstants.Groups.VASCULAR_SYSTEM))
+         {
+            switch (parameter.Name)
+            {
+               case REL_EXP_BLOOD_CELLS:
+                  return _protein.InBloodCells;
+               case FRACTION_EXPRESSED_BLOOD_CELLS:
+               case FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE:
+                  return _protein.IsBloodCellsMembrane && _protein.IsBloodCellsIntracellular;
+               case REL_EXP_VASC_ENDO:
+                  return _protein.InVascularEndothelium;
+               case FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME:
+                  return _protein.IsVascEndosome;
+               case FRACTION_EXPRESSED_VASC_ENDO_BASOLATERAL:
+                  return _protein.IsVascMembraneBasolateral;
+               case FRACTION_EXPRESSED_VASC_ENDO_APICAL:
+                  return _protein.IsVascMembraneApical;
+            }
+         }
+
+         //tissue location. Rel exp visible if we are expressing it
+         switch (parameter.Name)
+         {
+            case REL_EXP:
+               return _protein.InTissue;
+            case FRACTION_EXPRESSED_INTRACELLULAR:
+            case FRACTION_EXPRESSED_INTERSTITIAL:
+               return _protein.IsIntracellular && _protein.IsInterstitial;
+         }
+
+         return true;
       }
 
       public bool OntogenyVisible
@@ -77,81 +142,32 @@ namespace PKSim.Presentation.Presenters.Individuals
          Activate(molecule.DowncastTo<TProtein>());
       }
 
-      public override void ReleaseFrom(IEventPublisher eventPublisher)
+      public void SetExpressionParameterValue(IParameterDTO expressionParameterDTO, double value)
       {
-         base.ReleaseFrom(eventPublisher);
-         clearReferences();
+         SetParameterValue(expressionParameterDTO, value);
+         var parameter = expressionParameterDTO.Parameter;
+         if (!parameter.IsExpression())
+            return;
+
+         normalizeExpressionValues();
       }
 
-      public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
+      private void normalizeExpressionValues()
       {
-         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_protein, expressionContainerDTO.RelativeExpressionParameter.Parameter, value));
-      }
+         var allExpressionParameters = _proteinDTO.AllExpressionParameters.Where(x => x.Parameter.Parameter.IsExpression()).ToList();
+         var max = allExpressionParameters.Select(x => x.Value).Max();
 
-      private void updateLocationSelectionVisibility()
-      {
-         _view.IntracellularVascularEndoLocationVisible = (_protein.TissueLocation == TissueLocation.Intracellular);
-         _view.LocationOnVascularEndoVisible = (_protein.TissueLocation == TissueLocation.ExtracellularMembrane);
-      }
-
-      public IEnumerable<TissueLocation> AllTissueLocations()
-      {
-         return EnumHelper.AllValuesFor<TissueLocation>();
-      }
-
-      public IEnumerable<IntracellularVascularEndoLocation> AllIntracellularVascularEndoLocations()
-      {
-         return EnumHelper.AllValuesFor<IntracellularVascularEndoLocation>();
-      }
-
-      public string DisplayFor(TissueLocation tissueLocation)
-      {
-         return _representationInfoRepository.DisplayNameFor(RepresentationObjectType.CONTAINER, tissueLocation.ToString());
-      }
-
-      public string IconFor(TissueLocation tissueLocation)
-      {
-         return _representationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, tissueLocation.ToString()).IconName;
-      }
-
-      public void TissueLocationChanged(TissueLocation tissueLocation)
-      {
-         AddCommand(_moleculeExpressionTask.SetTissueLocationFor(_protein, tissueLocation));
-      }
-
-      public void MembraneLocationChanged(MembraneLocation membraneLocation)
-      {
-         AddCommand(_moleculeExpressionTask.SetMembraneLocationFor(_protein, membraneLocation));
-      }
-
-      public void IntracellularLocationVascularEndoChanged(IntracellularVascularEndoLocation vascularEndoLocation)
-      {
-         AddCommand(_moleculeExpressionTask.SetIntracellularVascularEndoLocation(_protein, vascularEndoLocation));
-      }
-
-      public IEnumerable<MembraneLocation> AllMembraneLocation()
-      {
-         return new[] {MembraneLocation.Apical, MembraneLocation.Basolateral};
+         allExpressionParameters.Each(x => x.NormalizedExpression = max == 0 ? 0 : x.Value / max);
       }
 
       protected virtual void Activate(TProtein protein)
       {
-         clearReferences();
          _protein = protein;
-         _proteinExpressionDTO = _proteinExpressionDTOMapper.MapFrom(protein);
-         _view.BindTo(_proteinExpressionDTO);
+         _proteinDTO = _individualProteinMapper.MapFrom(SimulationSubject, protein);
+         rebind();
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
-         _protein.Changed += _updateLocationVisibilityHandler;
-         updateLocationSelectionVisibility();
+         _expressionLocalizationPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
          _moleculePropertiesPresenter.RefreshView();
-      }
-
-      private void clearReferences()
-      {
-         if (_protein != null)
-            _protein.Changed -= _updateLocationVisibilityHandler;
-
-         _proteinExpressionDTO?.ClearReferences();
       }
    }
 }

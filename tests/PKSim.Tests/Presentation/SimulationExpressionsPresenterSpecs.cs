@@ -52,7 +52,7 @@ namespace PKSim.Presentation
          sut.InitializeWith(_commandCollector);
 
          _simulationExpressionDTO = new SimulationExpressionsDTO(new ParameterDTO(_propertyParameter), new ParameterDTO(_propertyParameter), new ParameterDTO(_propertyParameter), 
-            new List<ExpressionContainerDTO>());
+            new List<ExpressionParameterDTO>());
 
          _propertyParameter = DomainHelperForSpecs.ConstantParameterWithValue().WithName("PROP");
          _relativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue().WithName("REL_EXP");
@@ -98,37 +98,5 @@ namespace PKSim.Presentation
          A.CallTo(() => _moleculeParametersPresenter.Edit(_simulationExpressionDTO.MoleculeParameters)).MustHaveHappened();
       }
 
-   }
-
-   public class When_the_value_of_a_relative_expression_paraemter_is_set_in_the_simulation_expression_presenter : concern_for_SimulationExpressionsPresenter
-   {
-      private ExpressionContainerDTO _expressionContainerDTO;
-      private double _value=5;
-      private ICommand _command;
-
-      protected override void Context()
-      {
-         base.Context();
-         _command = A.Fake<ICommand>();
-         _expressionContainerDTO = new ExpressionContainerDTO {RelativeExpressionParameter = new ParameterDTO(_relativeExpressionParameter)};
-         A.CallTo(() => _moleculeExpressionTask.SetRelativeExpressionInSimulationFor(_relativeExpressionParameter, _value)).Returns(_command);
-      }
-
-      protected override void Because()
-      {
-         sut.SetRelativeExpression(_expressionContainerDTO, _value);
-      }
-
-      [Observation]
-      public void should_leverage_the_relative_expression_command_to_update_the_value()
-      {
-         A.CallTo(() => _moleculeExpressionTask.SetRelativeExpressionInSimulationFor(_relativeExpressionParameter,_value)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_add_the_commadn_to_the_history()
-      {
-         A.CallTo(() => _commandCollector.AddCommand(_command)).MustHaveHappened();
-      }
    }
 }

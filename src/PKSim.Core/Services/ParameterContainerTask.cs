@@ -13,8 +13,8 @@ namespace PKSim.Core.Services
 {
    public interface IParameterContainerTask
    {
-      void AddInvididualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData) where TContainer : IContainer;
-      void AddInvididualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, string parameterName) where TContainer : IContainer;
+      void AddIndividualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData) where TContainer : IContainer;
+      void AddIndividualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, string parameterName) where TContainer : IContainer;
 
       void AddActiveProcessParametersTo(CompoundProcess process);
       void AddProcessBuilderParametersTo(IContainer process);
@@ -40,12 +40,12 @@ namespace PKSim.Core.Services
          _parameterFactory = parameterFactory;
       }
 
-      public void AddInvididualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData) where TContainer : IContainer
+      public void AddIndividualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData) where TContainer : IContainer
       {
          addParametersTo(parameterContainer, originData, originData.AllCalculationMethods().Select(cm => cm.Name), param => param.BuildingBlockType == PKSimBuildingBlockType.Individual);
       }
 
-      public void AddInvididualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, string parameterName) where TContainer : IContainer
+      public void AddIndividualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, string parameterName) where TContainer : IContainer
       {
          addParametersTo(parameterContainer, originData, originData.AllCalculationMethods().Select(cm => cm.Name),
             param => param.BuildingBlockType == PKSimBuildingBlockType.Individual && string.Equals(param.ParameterName, parameterName));

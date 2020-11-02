@@ -21,8 +21,8 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _molecules_4Comp = sut.MoleculeNamesWithoutDrug(CoreConstants.Model.FourComp);
-         _molecules_2Poren = sut.MoleculeNamesWithoutDrug(CoreConstants.Model.TwoPores);
+         _molecules_4Comp = sut.MoleculeNamesWithoutDrug(CoreConstants.Model.FOUR_COMP);
+         _molecules_2Poren = sut.MoleculeNamesWithoutDrug(CoreConstants.Model.TWO_PORES);
       }
 
       [Observation]
@@ -114,20 +114,20 @@ namespace PKSim.IntegrationTests
 
       private void shouldReturnNegativeValuesAllowedFalseForAllMoleculesAndModels(ObjectPath path, string[] molecules)
       {
-         shouldReturnNegativeValuesAllowedFalseForAllMolecules(CoreConstants.Model.FourComp, path, molecules);
-         shouldReturnNegativeValuesAllowedFalseForAllMolecules(CoreConstants.Model.TwoPores, path, molecules);
+         shouldReturnNegativeValuesAllowedFalseForAllMolecules(CoreConstants.Model.FOUR_COMP, path, molecules);
+         shouldReturnNegativeValuesAllowedFalseForAllMolecules(CoreConstants.Model.TWO_PORES, path, molecules);
       }
 
       [Observation]
       public void should_return_negative_values_allowed_true_only_for_predefined_compartments()
       {
          var pathIggSource = new ObjectPath("Organism", "EndogenousIgG", "IgG_Source");
-         sut.NegativeValuesAllowed(CoreConstants.Model.TwoPores,pathIggSource,_ligandEndo).ShouldBeTrue();
-         shouldReturnNegativeValuesAllowedFalseForAllMolecules(CoreConstants.Model.TwoPores, pathIggSource, _moleculesWithoutLigandEndo);
+         sut.NegativeValuesAllowed(CoreConstants.Model.TWO_PORES,pathIggSource,_ligandEndo).ShouldBeTrue();
+         shouldReturnNegativeValuesAllowedFalseForAllMolecules(CoreConstants.Model.TWO_PORES, pathIggSource, _moleculesWithoutLigandEndo);
 
          var pathSalivaGland = new ObjectPath("Organism", "Saliva", "SalivaGland");
-         sut.NegativeValuesAllowed(CoreConstants.Model.TwoPores,pathSalivaGland,_drug).ShouldBeTrue();
-         sut.NegativeValuesAllowed(CoreConstants.Model.FourComp,pathSalivaGland,_drug).ShouldBeTrue();
+         sut.NegativeValuesAllowed(CoreConstants.Model.TWO_PORES,pathSalivaGland,_drug).ShouldBeTrue();
+         sut.NegativeValuesAllowed(CoreConstants.Model.FOUR_COMP,pathSalivaGland,_drug).ShouldBeTrue();
          shouldReturnNegativeValuesAllowedFalseForAllMoleculesAndModels(pathSalivaGland, _moleculesWithoutDrug);
 
          var somePathsWhereAllMoleculesMustBePositive = new ObjectPath[]
@@ -149,27 +149,27 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void salivagland_should_contain_drug_only()
       {
-         shouldContainOnly(CoreConstants.Model.FourComp, new int[]{salivagland_id}, new[] { _drug });
-         shouldContainOnly(CoreConstants.Model.TwoPores, new int[] { salivagland_id }, new[] { _drug });
+         shouldContainOnly(CoreConstants.Model.FOUR_COMP, new int[]{salivagland_id}, new[] { _drug });
+         shouldContainOnly(CoreConstants.Model.TWO_PORES, new int[] { salivagland_id }, new[] { _drug });
       }
 
       [Observation]
       public void all_liver_zone_containers_in_4comp_should_contain_drug_only()
       {
          if (_liver_periportal_ids != null)
-            shouldContainOnly(CoreConstants.Model.FourComp, _liver_periportal_ids, new[] {_drug});
+            shouldContainOnly(CoreConstants.Model.FOUR_COMP, _liver_periportal_ids, new[] {_drug});
          if (_liver_pericentral_ids != null)
-            shouldContainOnly(CoreConstants.Model.FourComp, _liver_pericentral_ids, new[] { _drug });
+            shouldContainOnly(CoreConstants.Model.FOUR_COMP, _liver_pericentral_ids, new[] { _drug });
       }
 
       [Observation]
       public void liver_zone_blood_cells_and_cells_in_2poren_should_contain_drug_only()
       {
-         shouldContainOnly(CoreConstants.Model.TwoPores,
+         shouldContainOnly(CoreConstants.Model.TWO_PORES,
             new int[] {_liv_periportal_bc_id, _liv_periportal_cell_id},
             new string[] {_drug});
 
-         shouldContainOnly(CoreConstants.Model.TwoPores,
+         shouldContainOnly(CoreConstants.Model.TWO_PORES,
             new int[] { _liv_pericentral_bc_id, _liv_pericentral_cell_id },
             new string[] { _drug });
       }
@@ -177,11 +177,11 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void liver_zone_plasma_interstitial_endosome_in_2poren_should_contain_drug_and_FcRnKomplex()
       {
-         shouldContainOnly(CoreConstants.Model.TwoPores,
+         shouldContainOnly(CoreConstants.Model.TWO_PORES,
             new[] {_liv_periportal_pls_id, _liv_periportal_int_id, _liv_periportal_endo_id},
             new[] {_drug, _fcRnComplex});
 
-         shouldContainOnly(CoreConstants.Model.TwoPores,
+         shouldContainOnly(CoreConstants.Model.TWO_PORES,
             new[] { _liv_pericentral_pls_id, _liv_pericentral_int_id, _liv_pericentral_endo_id },
             new[] { _drug, _fcRnComplex });      
       }
@@ -189,7 +189,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void endogenous_igg_plasma_interstitial_endosome_in_2poren_should_contain_FcRn_Ligand_and_LigandComplex()
       {
-         shouldContainOnly(CoreConstants.Model.TwoPores,
+         shouldContainOnly(CoreConstants.Model.TWO_PORES,
             _igg_ids,
             new[] {_fcRn, _ligandEndo, _ligandEndoComplex});
       }

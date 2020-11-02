@@ -46,26 +46,4 @@ namespace PKSim.Core
          A.CallTo(() => _context.PublishEvent(A<RemoveAdvancedParameterContainerFromPopulationEvent>._)).MustHaveHappened();
       }
    }
-
-   public class The_inverse_of_the_remove_molecule_from_population_command : concern_for_RemoveMoleculeFromPopulationCommand
-   {
-      private IReversibleCommand<IExecutionContext> _result;
-
-      protected override void Because()
-      {
-         _result = sut.InverseCommand(_context);
-      }
-
-      [Observation]
-      public void should_be_an_add_molecule_to_population_command()
-      {
-         _result.ShouldBeAnInstanceOf<AddMoleculeToPopulationCommand>();
-      }
-
-      [Observation]
-      public void should_have_beeen_marked_as_inverse_for_the_remove_command()
-      {
-         _result.IsInverseFor(sut).ShouldBeTrue();
-      }
-   }
 }

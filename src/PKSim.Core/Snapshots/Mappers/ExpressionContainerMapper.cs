@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Collections;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -11,6 +12,9 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       public IndividualMolecule Molecule { get; set; }
       public ISimulationSubject SimulationSubject { get; set; }
+
+      //This is required to speed up process and ONLY for older format
+      public ICache<string, IParameter> ExpressionParameters { get; set; }
    }
 
    public class ExpressionContainerMapper : SnapshotMapperBase<MoleculeExpressionContainer, ExpressionContainer, ExpressionContainerMapperContext>
@@ -32,15 +36,10 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ExpressionContainer> MapToSnapshot(MoleculeExpressionContainer expressionContainer)
       {
          var transportedExpressionContainer = expressionContainer as TransporterExpressionContainer;
-         var expressionParameter = expressionContainer.RelativeExpressionParameter;
-
-         if (!expressionParameter.ShouldExportToSnapshot())
+         if (transportedExpressionContainer == null)
             return null;
 
          var snapshot = await SnapshotFrom(expressionContainer, x => { x.Name = expressionContainer.Name; });
-
-         await _parameterMapper.UpdateSnapshotFromParameter(snapshot, expressionParameter);
-
          mapTransporterExpressionProperties(snapshot, transportedExpressionContainer);
 
          return snapshot;
@@ -61,26 +60,44 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var molecule = context.Molecule;
          var individual = context.SimulationSubject;
+         var expressionParameterCache = context.ExpressionParameters;
 
-         var expressionContainer = molecule.ExpressionContainer(snapshot.Name);
-         if (expressionContainer == null)
-         {
-            _logger.AddWarning(PKSimConstants.Error.RelativeExpressionContainerNotFound(snapshot.Name));
+         //Value was only defined for older version of the snapshot
+         if (!snapshot.Value.HasValue)
             return null;
-         }
 
-         var expressionParameter = expressionContainer.RelativeExpressionParameter;
-         await _parameterMapper.MapToModel(snapshot, expressionParameter);
+         var relExp = expressionParameterCache[snapshot.Name];
+         if (relExp == null)
+            return null;
 
-         if (!(molecule is IndividualTransporter transporter))
-            return expressionContainer;
 
-         var species = individual.Species.Name;
-         var transporterExpressionContainer = expressionContainer.DowncastTo<TransporterExpressionContainer>();
-         var membraneLocation = ModelValueFor(snapshot.MembraneLocation, MembraneLocation.Basolateral);
-         _transportContainerUpdater.UpdateTransporterFromTemplate(transporterExpressionContainer, species, membraneLocation, transporter.TransportType);
+         await _parameterMapper.MapToModel(snapshot, relExp);
 
-         return expressionContainer;
+         //TODO 
+         return null;
+         // if (!(molecule is IndividualTransporter transporter))
+         //    return expressionContainer;
+
+
+         // var expressionContainer = molecule.ExpressionContainer(snapshot.Name);
+         // if (expressionContainer == null)
+         // {
+         //    _logger.AddWarning(PKSimConstants.Error.RelativeExpressionContainerNotFound(snapshot.Name));
+         //    return null;
+         // }
+         //
+         // var expressionParameter = expressionContainer.RelativeExpressionParameter;
+         // await _parameterMapper.MapToModel(snapshot, expressionParameter);
+         //
+         // if (!(molecule is IndividualTransporter transporter))
+         //    return expressionContainer;
+         //
+         // var species = individual.Species.Name;
+         // var transporterExpressionContainer = expressionContainer.DowncastTo<TransporterExpressionContainer>();
+         // var membraneLocation = ModelValueFor(snapshot.MembraneLocation, MembraneLocation.Basolateral);
+         // _transportContainerUpdater.UpdateTransporterFromTemplate(transporterExpressionContainer, species, membraneLocation, transporter.TransportType);
+         //
+         // return expressionContainer;
       }
    }
 }

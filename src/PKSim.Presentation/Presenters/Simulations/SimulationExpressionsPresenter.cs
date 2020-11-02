@@ -21,8 +21,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       IListener<AddParameterToFavoritesEvent>,
       IListener<RemoveParameterFromFavoritesEvent>
    {
-      void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double valueInGuiUnit);
-      void SetFavorite(ExpressionContainerDTO expressionContainerDTO, bool isFavorite);
+      void SetRelativeExpression(ExpressionParameterDTO expressionContainerDTO, double valueInGuiUnit);
+      void SetFavorite(ExpressionParameterDTO expressionContainerDTO, bool isFavorite);
    }
 
    public class SimulationExpressionsPresenter : EditParameterPresenter<ISimulationExpressionsView, ISimulationExpressionsPresenter>, ISimulationExpressionsPresenter
@@ -69,14 +69,14 @@ namespace PKSim.Presentation.Presenters.Simulations
          _view.BindTo(_simulationExpressionsDTO);
       }
 
-      public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double valueInGuiUnit)
+      public void SetRelativeExpression(ExpressionParameterDTO expressionContainerDTO, double valueInGuiUnit)
       {
-         AddCommand(_moleculeExpressionTask.SetRelativeExpressionInSimulationFor(expressionContainerDTO.RelativeExpressionParameter.Parameter, valueInGuiUnit));
+         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(ParameterFrom(expressionContainerDTO.Parameter), valueInGuiUnit));
       }
 
-      public void SetFavorite(ExpressionContainerDTO expressionContainerDTO, bool isFavorite)
+      public void SetFavorite(ExpressionParameterDTO expressionContainerDTO, bool isFavorite)
       {
-         SetFavorite(expressionContainerDTO.RelativeExpressionParameter, isFavorite);
+         SetFavorite(expressionContainerDTO.Parameter, isFavorite);
       }
 
       public virtual void Handle(AddParameterToFavoritesEvent eventToHandle)

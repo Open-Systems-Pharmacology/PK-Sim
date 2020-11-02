@@ -12,6 +12,7 @@ namespace PKSim.Core.Repositories
       RepresentationInfo InfoFor(RepresentationObjectType objectType, string objectName);
       RepresentationInfo ContainerInfoFor(string objectName);
       RepresentationInfo InfoFor(IObjectBase objectBase);
+      PathElement PathElementFor(RepresentationObjectType objectType, string objectName);
       string DisplayNameFor(IObjectBase objectBase);
       string DisplayNameFor(StatisticalAggregation statisticalAggregation);
       string DescriptionFor(IObjectBase objectBase);
