@@ -29,6 +29,10 @@ namespace PKSim.Core.Services
       public override IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName)
       {
          var molecule = CreateMolecule(moleculeName);
+
+         //default localization
+         molecule.Localization = Localization.Intracellular;
+
          AddVascularSystemExpression(molecule, CoreConstants.Groups.VASCULAR_SYSTEM,
             RelExpParam(REL_EXP_BLOOD_CELLS),
             fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS, CoreConstants.Rate.ZERO_RATE),

@@ -34,10 +34,18 @@ namespace PKSim.ProjectConverter.v10
       [Observation]
       public void should_have_converted_the_individual_enzyme_and_protein_to_use_the_new_localization_concept()
       {
-         _allIndividuals.SelectMany(x=>x.AllMolecules<IndividualProtein>()).Each(m =>
+         verifyMoleculesInIndividuals(_allSimulations.Select(x=>x.BuildingBlock<Individual>()));
+         verifyMoleculesInIndividuals(_allIndividuals);
+         verifyMoleculesInIndividuals(_allPopulations.Select(x=>x.Individual));
+      }
+
+      private void verifyMoleculesInIndividuals(IEnumerable<Individual> individuals)
+      {
+         individuals.SelectMany(x => x.AllMolecules<IndividualProtein>()).Each(m =>
          {
             m.Localization.ShouldNotBeEqualTo(Localization.None);
          });
+
       }
    }
 

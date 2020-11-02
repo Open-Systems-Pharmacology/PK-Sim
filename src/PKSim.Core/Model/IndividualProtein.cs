@@ -31,7 +31,7 @@ namespace PKSim.Core.Model
 
    public abstract class IndividualProtein : IndividualMolecule
    {
-      public Localization Localization { get; set; } = Localization.Intracellular;
+      public Localization Localization { get; set; } = Localization.None;
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {

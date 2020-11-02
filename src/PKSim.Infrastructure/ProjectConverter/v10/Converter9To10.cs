@@ -15,10 +15,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          _conversionHappened = false;
-         foreach (var individualElement in element.DescendantsAndSelf("Individual"))
-         {
-            convertIndividualProteinsIn(individualElement);
-         }
+         element.DescendantsAndSelf("Individual").Each(convertIndividualProteinsIn);
+         element.DescendantsAndSelf("BaseIndividual").Each(convertIndividualProteinsIn);
 
          return (ProjectVersions.V10, _conversionHappened);
       }
