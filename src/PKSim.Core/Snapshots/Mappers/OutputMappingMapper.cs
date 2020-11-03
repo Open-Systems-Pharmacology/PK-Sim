@@ -67,7 +67,6 @@ namespace PKSim.Core.Snapshots.Mappers
          return Task.FromResult(outputMapping);
       }
 
-      //TODO Define in core
       private void updateWeights(float[] weights, float[] snapshotWeights)
       {
          for (int index = 0; index < weights.Length; ++index)

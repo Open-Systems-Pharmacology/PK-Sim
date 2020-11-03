@@ -22,6 +22,8 @@ namespace PKSim.Core
       protected IContainerTask _containerTask;
       protected IBuildingBlockRepository _buildingBlockRepository;
       protected Individual _templateIndividual1;
+      private IGenderRepository _genderRepository;
+      private IPopulationRepository _populationRepository;
 
       protected override void Context()
       {
@@ -30,15 +32,24 @@ namespace PKSim.Core
          _individualTask = A.Fake<IIndividualTask>();
          _containerTask = new ContainerTaskForSpecs();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         _genderRepository= A.Fake<IGenderRepository>(); 
+         _populationRepository= A.Fake<IPopulationRepository>();
 
-         sut = new IndividualExtractor(_executionContext, _entityPathResolver, _individualTask, _containerTask, _buildingBlockRepository);
+         sut = new IndividualExtractor(
+            _executionContext, 
+            _entityPathResolver, 
+            _individualTask, 
+            _containerTask, 
+            _buildingBlockRepository,
+            _genderRepository,
+            _populationRepository);
 
          _templateIndividual1 = new Individual();
          A.CallTo(() => _buildingBlockRepository.All<Individual>()).Returns(new[] {_templateIndividual1});
       }
    }
 
-   public class When_extracting_indiduals_by_id_for_a_population_that_was_created_from_MoBi : concern_for_IndividualExtractor
+   public class When_extracting_individuals_by_id_for_a_population_that_was_created_from_MoBi : concern_for_IndividualExtractor
    {
       private Population _population;
 
@@ -62,7 +73,7 @@ namespace PKSim.Core
       private Individual _cloneIndividual;
       private IParameter _constParam1;
       private IParameter _constParam2;
-      private IParameter _forumlaParameter;
+      private IParameter _formulaParameter;
       private IParameter _indParam1;
       private IParameter _indParam2;
       private IParameter _indParam3;
@@ -90,9 +101,9 @@ namespace PKSim.Core
          _constParam2 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P2");
 
          //create a reference to another parameter to ensure that formula parameter are not overwritten if nothing has changed
-         _forumlaParameter = new PKSimParameter().WithName("P3").WithFormula(new ExplicitFormula("P2*2"));
-         _forumlaParameter.Formula.AddObjectPath(new FormulaUsablePath("..", "P2").WithAlias("P2"));
-         var container1 = new Container {_constParam1, _constParam2, _forumlaParameter};
+         _formulaParameter = new PKSimParameter().WithName("P3").WithFormula(new ExplicitFormula("P2*2"));
+         _formulaParameter.Formula.AddObjectPath(new FormulaUsablePath("..", "P2").WithAlias("P2"));
+         var container1 = new Container {_constParam1, _constParam2, _formulaParameter};
 
          _indParam1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P1");
          _indParam2 = DomainHelperForSpecs.ConstantParameterWithValue(2).WithName("P2");
@@ -104,12 +115,12 @@ namespace PKSim.Core
          A.CallTo(() => _executionContext.Clone(_baseIndividual)).Returns(_cloneIndividual);
          A.CallTo(() => _population.FirstIndividual).Returns(_baseIndividual);
          //put explicit formula first
-         A.CallTo(() => _population.AllVectorialParameters(_entityPathResolver)).Returns(new[] {_forumlaParameter, _constParam1, _constParam2});
+         A.CallTo(() => _population.AllVectorialParameters(_entityPathResolver)).Returns(new[] {_formulaParameter, _constParam1, _constParam2});
          A.CallTo(() => _cloneIndividual.GetAllChildren<IParameter>()).Returns(new[] {_indParam1, _indParam2, _indParam3, _indParam4});
 
          A.CallTo(() => _entityPathResolver.PathFor(_constParam1)).Returns("PATH1");
          A.CallTo(() => _entityPathResolver.PathFor(_constParam2)).Returns("PATH2");
-         A.CallTo(() => _entityPathResolver.PathFor(_forumlaParameter)).Returns("PATH3");
+         A.CallTo(() => _entityPathResolver.PathFor(_formulaParameter)).Returns("PATH3");
 
          A.CallTo(() => _entityPathResolver.PathFor(_indParam1)).Returns("PATH1");
          A.CallTo(() => _entityPathResolver.PathFor(_indParam2)).Returns("PATH2");

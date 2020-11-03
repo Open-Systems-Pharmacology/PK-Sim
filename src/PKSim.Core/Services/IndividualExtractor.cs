@@ -45,14 +45,25 @@ namespace PKSim.Core.Services
       private readonly IIndividualTask _individualTask;
       private readonly IContainerTask _containerTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IGenderRepository _genderRepository;
+      private readonly IPopulationRepository _populationRepository;
 
-      public IndividualExtractor(IExecutionContext executionContext, IEntityPathResolver entityPathResolver, IIndividualTask individualTask, IContainerTask containerTask, IBuildingBlockRepository buildingBlockRepository)
+      public IndividualExtractor(
+         IExecutionContext executionContext, 
+         IEntityPathResolver entityPathResolver, 
+         IIndividualTask individualTask, 
+         IContainerTask containerTask, 
+         IBuildingBlockRepository buildingBlockRepository,
+         IGenderRepository genderRepository, 
+         IPopulationRepository populationRepository)
       {
          _executionContext = executionContext;
          _entityPathResolver = entityPathResolver;
          _individualTask = individualTask;
          _containerTask = containerTask;
          _buildingBlockRepository = buildingBlockRepository;
+         _genderRepository = genderRepository;
+         _populationRepository = populationRepository;
       }
 
       public void ExtractIndividualsFrom(Population population, params int[] individualIds)
@@ -120,9 +131,8 @@ namespace PKSim.Core.Services
          var originData = individual.OriginData;
          updateOriginDataFromIndividual(individual, originData);
 
-         // TODO
-//         originData.Gender = population.AllGenders[individualId];
-//         originData.SpeciesPopulation = population.AllRaces[individualId];
+         originData.Gender = population.AllGenders(_genderRepository)[individualId];
+         originData.SpeciesPopulation = population.AllSpeciesPopulations(_populationRepository)[individualId];
 
          return _individualTask.AddToProject(individual, editBuildingBlock: false, addToHistory: false);
       }
@@ -141,13 +151,13 @@ namespace PKSim.Core.Services
       {
          var parameterPath = _entityPathResolver.PathFor(parameter);
          var parameterValues = population.AllValuesFor(parameterPath);
-         var exactractedParameter = exctractedIndividualParameterCache[parameterPath];
+         var extractedParameter = exctractedIndividualParameterCache[parameterPath];
          var value = parameterValues[individualId];
 
-         if (!shouldUpdateParameter(exactractedParameter, value))
+         if (!shouldUpdateParameter(extractedParameter, value))
             return;
 
-         exactractedParameter.Value = value;
+         extractedParameter.Value = value;
       }
 
       private bool shouldUpdateParameter(IParameter parameter, double value)
