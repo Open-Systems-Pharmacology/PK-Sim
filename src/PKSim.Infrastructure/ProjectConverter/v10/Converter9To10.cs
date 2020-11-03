@@ -96,13 +96,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          allFractionEndosomalParameters.Each(x =>
          {
             //Find container in the individual to convert
-            var containerPath = new ObjectPath(x.ParentContainer.ConsolidatedPath().ToPathArray());
-            
-            //Path under individual start with ROOT. This should be removed
-            if(containerPath[0] == Constants.ROOT)
-               containerPath.RemoveFirst();
+            var containerPath = new ObjectPath(x.ParentContainer.ConsolidatedPath());
 
-            var container = individual.Root.EntityAt<IContainer>(containerPath.ToArray());
+            var container = individual.Root.EntityAt<IContainer>(containerPath);
             //add clone of parameter
             container.Add(_cloner.Clone(x));
          });

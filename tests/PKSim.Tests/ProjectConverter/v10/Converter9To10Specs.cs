@@ -2,6 +2,7 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ProjectConverter.v10;
@@ -33,6 +34,12 @@ namespace PKSim.ProjectConverter.v10
          verifyIndividuals(_allSimulations.Select(x => x.BuildingBlock<Individual>()));
          verifyIndividuals(_allIndividuals);
          verifyIndividuals(_allPopulations.Select(x => x.FirstIndividual));
+
+         var ind = _allIndividuals.FindByName("Human");
+         var cyp3A4 = ind.MoleculeByName<IndividualEnzyme>("CYP3A4");
+         var allExpressionParameters = ind.AllExpressionParametersFor(cyp3A4);
+         allExpressionParameters["Bone"].Value.ShouldBeEqualTo(0.04749, 1e-2);
+         allExpressionParameters["Duodenum"].Value.ShouldBeEqualTo(0.3999, 1e-2);
       }
 
       private void verifyIndividuals(IEnumerable<Individual> individuals) => individuals.Each(verifyIndividual);
