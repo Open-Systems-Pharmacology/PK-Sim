@@ -30,10 +30,6 @@ namespace PKSim.Core.Services
 
             return CoreConstants.Groups.VASCULAR_SYSTEM;
 
-         // CoreConstants.Groups.GI_MUCOSA
-         // CoreConstants.Groups.GI_LUMEN
-         // CoreConstants.Groups.GI_NON_MUCOSA_TISSUE
-
          var expressionContainer = expressionContainerFor(parameter);
          var organType = _organTypeRepository.OrganTypeFor(expressionContainer);
          switch (organType)
