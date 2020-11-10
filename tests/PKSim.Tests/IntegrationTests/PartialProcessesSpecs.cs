@@ -119,10 +119,10 @@ namespace PKSim.IntegrationTests
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
 
-         //Default value of null so that the parmaeter does not appear to have been set by the user
+         //Default value should not be NaN, which is the value coming from ModelConstructor. so that the parameter does not appear to have been set by the user
          foreach (var parameter in allRelExp)
          {
-            parameter.DefaultValue.ShouldBeNull();
+            parameter.DefaultValue.ShouldNotBeEqualTo(double.NaN);
          }
 
       }
