@@ -99,12 +99,13 @@ namespace PKSim.Core.Services
       }
 
 
-      private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual, bool visible = true)
+      private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual)
       {
          _parameterIdUpdater.UpdateParameterId(parameterInIndividual, parameterToUpdate);
          parameterToUpdate.BuildingBlockType = PKSimBuildingBlockType.Individual;
          parameterToUpdate.Origin.BuilingBlockId = individual.Id;
          parameterToUpdate.Visible = parameterInIndividual.Visible;
+         //This ensures that default value set to NaN (for example relative expression localized) have the expected default value from the individual
          parameterToUpdate.DefaultValue = parameterInIndividual.DefaultValue;
       }
    }
