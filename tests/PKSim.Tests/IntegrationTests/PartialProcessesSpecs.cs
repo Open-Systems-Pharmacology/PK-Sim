@@ -109,6 +109,22 @@ namespace PKSim.IntegrationTests
             else
                parameter.Value.ShouldBeEqualTo(0);
          }
+
+      }
+
+      [Observation]
+      public void the_default_value_of_relative_expression_parameters_should_be_null()
+      {
+         var allRelExp = _simulation.All<IMoleculeAmount>()
+            .Where(x => x.Name.Equals(_enzyme.Name))
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
+
+         //Default value of null so that the parmaeter does not appear to have been set by the user
+         foreach (var parameter in allRelExp)
+         {
+            parameter.DefaultValue.ShouldBeNull();
+         }
+
       }
 
       [Observation]
