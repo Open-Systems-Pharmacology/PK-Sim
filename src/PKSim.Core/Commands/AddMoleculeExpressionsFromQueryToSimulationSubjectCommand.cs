@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using PKSim.Core.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
@@ -43,7 +44,10 @@ namespace PKSim.Core.Commands
 
          base.Execute(context);
 
-         //clear references
+         //Now notify a refresh event to ensure that the user interface can update
+         context.PublishEvent(new RefreshMoleculeInSimulationSubjectEvent<TSimulationSubject>{Container = _simulationSubject, Entity = _molecule});
+
+          //clear references
          _molecule = null;
          _queryExpressionResults = null;
          _simulationSubject = null;

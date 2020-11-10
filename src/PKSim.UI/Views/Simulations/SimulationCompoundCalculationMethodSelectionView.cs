@@ -6,6 +6,7 @@ using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Views.Core;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -42,21 +43,10 @@ namespace PKSim.UI.Views.Simulations
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
-      public void AdjustHeight()
-      {
-         if (_resizableView == null) return;
-         _resizableView.AdjustHeight();
-      }
+      public void AdjustHeight() => _resizableView?.AdjustHeight();
 
-      public void Repaint()
-      {
-         if (_resizableView == null) return;
-         _resizableView.Repaint();
-      }
+      public void Repaint() => _resizableView?.Repaint();
 
-      public int OptimalHeight
-      {
-         get { return layoutControlGroup.Height; }
-      }
+      public int OptimalHeight => layoutControlGroup.Height;
    }
 }

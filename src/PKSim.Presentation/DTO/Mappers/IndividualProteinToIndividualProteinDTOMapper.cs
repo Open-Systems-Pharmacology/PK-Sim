@@ -14,9 +14,9 @@ namespace PKSim.Presentation.DTO.Mappers
 
    public class IndividualProteinToIndividualProteinDTOMapper : IIndividualProteinToIndividualProteinDTOMapper
    {
-      private readonly IExpressionContainerMapper _expressionContainerMapper;
+      private readonly IExpressionParameterMapper _expressionContainerMapper;
 
-      public IndividualProteinToIndividualProteinDTOMapper(IExpressionContainerMapper expressionContainerMapper)
+      public IndividualProteinToIndividualProteinDTOMapper(IExpressionParameterMapper expressionContainerMapper)
       {
          _expressionContainerMapper = expressionContainerMapper;
       }
@@ -25,7 +25,7 @@ namespace PKSim.Presentation.DTO.Mappers
       {
          var dto = new IndividualProteinDTO(individualProtein);
          allExpressionContainersFor(simulationSubject, individualProtein)
-            .SelectMany(x => expressionContainerParameterFrom(individualProtein, x))
+            .SelectMany(expressionContainerParameterFrom)
             .Union(globalExpressionParametersFrom(individualProtein))
             .Each(dto.AddExpressionParameter);
          return dto;
@@ -34,14 +34,17 @@ namespace PKSim.Presentation.DTO.Mappers
       private IEnumerable<ExpressionParameterDTO> globalExpressionParametersFrom(IndividualProtein individualProtein)
       {
          return individualProtein.AllParameters()
-            .Except(new[] {individualProtein.ReferenceConcentration, individualProtein.HalfLifeLiver, individualProtein.HalfLifeIntestine, individualProtein.OntogenyFactorParameter, individualProtein.OntogenyFactorGIParameter})
-            .Select(x => _expressionContainerMapper.MapFrom(individualProtein, x));
+            .Except(new[]
+            {
+               individualProtein.ReferenceConcentration, individualProtein.HalfLifeLiver, individualProtein.HalfLifeIntestine,
+               individualProtein.OntogenyFactorParameter, individualProtein.OntogenyFactorGIParameter
+            })
+            .Select(x => _expressionContainerMapper.MapFrom(x));
       }
 
-      private IEnumerable<ExpressionParameterDTO> expressionContainerParameterFrom(
-         IndividualProtein protein, MoleculeExpressionContainer moleculeExpressionContainer)
+      private IEnumerable<ExpressionParameterDTO> expressionContainerParameterFrom(MoleculeExpressionContainer moleculeExpressionContainer)
       {
-         return moleculeExpressionContainer.AllParameters().Select(x => _expressionContainerMapper.MapFrom(moleculeExpressionContainer, protein, x));
+         return moleculeExpressionContainer.AllParameters().Select(x => _expressionContainerMapper.MapFrom(x));
       }
 
       private IReadOnlyList<MoleculeExpressionContainer> allExpressionContainersFor(ISimulationSubject simulationSubject,

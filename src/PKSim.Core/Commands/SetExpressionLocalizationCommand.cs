@@ -10,7 +10,7 @@ using static PKSim.Core.Model.Localization;
 
 namespace PKSim.Core.Commands
 {
-   internal class SetExpressionLocalizationInProteinCommand : BuildingBlockChangeCommand
+   internal class SetExpressionLocalizationInProteinCommand : BuildingBlockStructureChangeCommand
    {
       private IndividualProtein _protein;
       private readonly string _proteinId;

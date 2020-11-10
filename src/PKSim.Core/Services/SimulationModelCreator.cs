@@ -76,7 +76,6 @@ namespace PKSim.Core.Services
          var allParameters = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
          var individual = simulation.Individual;
 
-         hideAllUndefinedParameterForMolecules(simulation);
          individual.AllMolecules().Each(m =>
          {
             var allMoleculeParameters = individual.AllMoleculeParametersFor(m);
@@ -102,50 +101,14 @@ namespace PKSim.Core.Services
          _simulationPersistableUpdater.ResetPersistable(simulation);
       }
 
-      private void hideAllUndefinedParameterForMolecules(Simulation simulation)
-      {
-         var allNaNParametersFromMolecules = simulation.Model.Root.GetAllChildren<IContainer>()
-            .Where(c => c.ContainerType == ContainerType.Molecule)
-            .SelectMany(c => c.AllParameters(p => double.IsNaN(p.Value)));
 
-         allNaNParametersFromMolecules.Each(hideParameter);
-      }
-
-
-      private void hideParameter(IParameter parameter)
-      {
-         if (parameter == null)
-            return;
-
-         parameter.Visible = false;
-      }
-
-    
-  
-
-      //
-      // private void hideGlobalParametersForUndefinedMolecule(IContainer globalMoleculeContainer)
-      // {
-      //    if (!globalMoleculeContainer.IsUndefinedMolecule())
-      //       return;
-      //
-      //    globalMoleculeContainer.GetAllChildren<IParameter>().Each(hideParameter);
-      // }
-
-      //TODO PROBABLY NOT NEEDED ANYMORE
-
-      // private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual, IndividualMolecule molecule)
-      // {
-      //    //undefined molecule parameters are always hidden
-      //    updateFromIndividualParameter(parameterToUpdate, parameterInIndividual, individual, !molecule.IsUndefinedMolecule());
-      // }
-      //
       private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual, bool visible = true)
       {
          _parameterIdUpdater.UpdateParameterId(parameterInIndividual, parameterToUpdate);
          parameterToUpdate.BuildingBlockType = PKSimBuildingBlockType.Individual;
          parameterToUpdate.Origin.BuilingBlockId = individual.Id;
-         parameterToUpdate.Visible = visible;
+         parameterToUpdate.Visible = parameterInIndividual.Visible;
+         parameterToUpdate.DefaultValue = parameterInIndividual.DefaultValue;
       }
    }
 }

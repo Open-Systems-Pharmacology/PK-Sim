@@ -1,10 +1,10 @@
 ﻿using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Assets;
-using PKSim.UI.Views.Core;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Extensions;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -27,14 +27,14 @@ namespace PKSim.UI.Views.Simulations
 
       public bool WarningVisible
       {
-         set { layoutItemWarning.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemWarning.Visibility); }
+         set => layoutItemWarning.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemWarning.Visibility);
       }
 
       public string Warning
       {
-         set { uxHintPanel.NoteText = value; }
-         get { return uxHintPanel.NoteText; }
+         set => uxHintPanel.NoteText = value;
+         get => uxHintPanel.NoteText;
       }
 
       public void AddProtocolChart(IView view)

@@ -1,9 +1,9 @@
+using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Model;
-using PKSim.Presentation.Presenters.Parameters;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
-   public interface IIndividualMoleculeExpressionsPresenter : IEditParameterPresenter
+   public interface IIndividualMoleculeExpressionsPresenter : ICommandCollectorPresenter
    {
       bool OntogenyVisible { set; }
       bool MoleculeParametersVisible { set; }

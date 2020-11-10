@@ -1,13 +1,10 @@
-using System.Linq;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.Presenters.Parameters;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
 using static PKSim.Core.CoreConstants.Parameters;
 
@@ -15,12 +12,11 @@ namespace PKSim.Presentation.Presenters.Individuals
 {
    public interface IIndividualProteinExpressionsPresenter : IIndividualMoleculeExpressionsPresenter
    {
-      void SetExpressionParameterValue(IParameterDTO expressionParameterDTO, double value);
       bool ShowInitialConcentration { get; set; }
    }
 
    public abstract class IndividualProteinExpressionsPresenter<TProtein, TSimulationSubject> :
-      EditParameterPresenter<IIndividualProteinExpressionsView, IIndividualProteinExpressionsPresenter>,
+      AbstractCommandCollectorPresenter<IIndividualProteinExpressionsView, IIndividualProteinExpressionsPresenter>,
       IIndividualProteinExpressionsPresenter
       where TProtein : IndividualProtein
       where TSimulationSubject : ISimulationSubject
@@ -28,6 +24,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly IIndividualProteinToIndividualProteinDTOMapper _individualProteinMapper;
       private readonly IIndividualMoleculePropertiesPresenter<TSimulationSubject> _moleculePropertiesPresenter;
       private readonly IExpressionLocalizationPresenter<TSimulationSubject> _expressionLocalizationPresenter;
+      private readonly IExpressionParametersPresenter _expressionParametersPresenter;
       protected TProtein _protein;
       private IndividualProteinDTO _proteinDTO;
       private bool _showInitialConcentration;
@@ -45,45 +42,36 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       protected IndividualProteinExpressionsPresenter(
          IIndividualProteinExpressionsView view,
-         IEditParameterPresenterTask parameterTask,
          IIndividualProteinToIndividualProteinDTOMapper individualProteinMapper,
          IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter,
-         IExpressionLocalizationPresenter<TSimulationSubject> expressionLocalizationPresenter)
-         : base(view, parameterTask)
+         IExpressionLocalizationPresenter<TSimulationSubject> expressionLocalizationPresenter,
+         IExpressionParametersPresenter expressionParametersPresenter)
+         : base(view)
       {
          _individualProteinMapper = individualProteinMapper;
          _moleculePropertiesPresenter = moleculePropertiesPresenter;
          _expressionLocalizationPresenter = expressionLocalizationPresenter;
+         _expressionParametersPresenter = expressionParametersPresenter;
          _expressionLocalizationPresenter.LocalizationChanged += (o, e) => onLocalizationChanged();
-         AddSubPresenters(_moleculePropertiesPresenter, _expressionLocalizationPresenter);
+         AddSubPresenters(_moleculePropertiesPresenter, _expressionLocalizationPresenter, _expressionParametersPresenter);
          view.AddMoleculePropertiesView(_moleculePropertiesPresenter.View);
          view.AddLocalizationView(_expressionLocalizationPresenter.View);
+         view.AddExpressionParametersView(_expressionParametersPresenter.View);
 
          //TODO probably in preferences
          _showInitialConcentration = false;
       }
 
-      private void onLocalizationChanged()
-      {
-         rebind();
-      }
+      private void onLocalizationChanged() => rebind();
 
       private void rebind()
       {
          if (_proteinDTO == null)
             return;
 
-         updateParametersVisibility();
-         normalizeExpressionValues();
-         _view.BindTo(_proteinDTO.AllExpressionParameters.Where(x => x.Visible));
-      }
-
-      private void updateParametersVisibility()
-      {
-         if (_protein == null)
-            return;
-
          _proteinDTO.AllExpressionParameters.Each(x => { x.Visible = isParameterVisible(x); });
+
+         _expressionParametersPresenter.Edit(_proteinDTO.AllExpressionParameters);
       }
 
       private bool isParameterVisible(ExpressionParameterDTO expressionParameterDTO)
@@ -94,7 +82,7 @@ namespace PKSim.Presentation.Presenters.Individuals
             return ShowInitialConcentration;
 
          //global surrogate parameters depending on settings
-         if (string.Equals(parameter.Parameter.GroupName, CoreConstants.Groups.VASCULAR_SYSTEM))
+         if (string.Equals(expressionParameterDTO.GroupName, CoreConstants.Groups.VASCULAR_SYSTEM))
          {
             switch (parameter.Name)
             {
@@ -137,28 +125,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          set => _moleculePropertiesPresenter.MoleculeParametersVisible = value;
       }
 
-      public void ActivateMolecule(IndividualMolecule molecule)
-      {
-         Activate(molecule.DowncastTo<TProtein>());
-      }
-
-      public void SetExpressionParameterValue(IParameterDTO expressionParameterDTO, double value)
-      {
-         SetParameterValue(expressionParameterDTO, value);
-         var parameter = expressionParameterDTO.Parameter;
-         if (!parameter.IsExpression())
-            return;
-
-         normalizeExpressionValues();
-      }
-
-      private void normalizeExpressionValues()
-      {
-         var allExpressionParameters = _proteinDTO.AllExpressionParameters.Where(x => x.Parameter.Parameter.IsExpression()).ToList();
-         var max = allExpressionParameters.Select(x => x.Value).Max();
-
-         allExpressionParameters.Each(x => x.NormalizedExpression = max == 0 ? 0 : x.Value / max);
-      }
+      public void ActivateMolecule(IndividualMolecule molecule) => Activate(molecule.DowncastTo<TProtein>());
 
       protected virtual void Activate(TProtein protein)
       {
