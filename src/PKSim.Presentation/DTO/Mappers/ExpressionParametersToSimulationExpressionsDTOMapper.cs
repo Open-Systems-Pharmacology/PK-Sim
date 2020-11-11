@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
-using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Simulations;
 
 namespace PKSim.Presentation.DTO.Mappers
@@ -30,24 +29,15 @@ namespace PKSim.Presentation.DTO.Mappers
       {
          var allParameters = expressionParameters.ToList();
 
-         return new SimulationExpressionsDTO(
-            updateGlobalParameter(allParameters, CoreConstants.Parameters.REFERENCE_CONCENTRATION),
-            updateGlobalParameter(allParameters, CoreConstants.Parameters.HALF_LIFE_LIVER),
-            updateGlobalParameter(allParameters, CoreConstants.Parameters.HALF_LIFE_INTESTINE),
-            relativeExpressionsFrom(allParameters).ToList()
+         var allGlobalParameters = allParameters.Where(x => x.NameIsOneOf(
+            CoreConstants.Parameters.REFERENCE_CONCENTRATION,
+            CoreConstants.Parameters.HALF_LIFE_LIVER,
+            CoreConstants.Parameters.HALF_LIFE_INTESTINE)
+         ).ToArray();
+
+
+         return new SimulationExpressionsDTO(allGlobalParameters, allParameters.Except(allGlobalParameters).MapAllUsing(_expressionContainerMapper)
          );
       }
-
-      private IParameterDTO updateGlobalParameter(List<IParameter> allParameters, string globalParameterName)
-      {
-         var globalParameter = allParameters.FindByName(globalParameterName);
-         allParameters.Remove(globalParameter);
-         return _parameterMapper.MapFrom(globalParameter);
-      }
-
-      private IEnumerable<ExpressionParameterDTO> relativeExpressionsFrom(IReadOnlyList<IParameter> allParameters) =>
-         allParameters.Select(expressionContainerFor);
-
-      private ExpressionParameterDTO expressionContainerFor(IParameter relativeExpression) => _expressionContainerMapper.MapFrom(relativeExpression);
    }
 }

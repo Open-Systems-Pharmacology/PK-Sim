@@ -85,14 +85,13 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_retrieve_the_reference_concentration()
       {
-         _result.ReferenceConcentration.Parameter.ShouldBeEqualTo(_referenceConcentrationParam);
+         _result.MoleculeParameters.ShouldContain(_referenceConcentrationParam);
       }
 
       [Observation]
       public void should_retrieve_the_half_life()
       {
-         _result.HalfLifeLiver.Parameter.ShouldBeEqualTo(_halfLifeLiverParameter);
-         _result.HalfLifeIntestine.Parameter.ShouldBeEqualTo(_halfLifeLiverIntestineParameter);
+         _result.MoleculeParameters.ShouldContain(_halfLifeLiverParameter, _halfLifeLiverIntestineParameter);
       }
 
       [Observation]
@@ -147,14 +146,13 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_retrieve_the_reference_concentration()
       {
-         _result.ReferenceConcentration.Parameter.ShouldBeEqualTo(_referenceConcentrationParam);
+         _result.MoleculeParameters.ShouldContain(_referenceConcentrationParam);
       }
 
       [Observation]
       public void should_retrieve_the_half_life()
       {
-         _result.HalfLifeLiver.Parameter.ShouldBeEqualTo(_halfLifeLiverParameter);
-         _result.HalfLifeIntestine.Parameter.ShouldBeEqualTo(_halfLifeLiverIntestineParameter);
+         _result.MoleculeParameters.ShouldContain(_halfLifeLiverParameter, _halfLifeLiverIntestineParameter);
       }
 
       [Observation]

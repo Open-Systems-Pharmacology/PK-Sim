@@ -181,6 +181,8 @@ namespace PKSim.Core.Model
 
       public ICache<string, IParameter> AllExpressionParametersFor(IndividualMolecule molecule) => FirstIndividual?.AllExpressionParametersFor(molecule);
 
+      public IReadOnlyList<MoleculeExpressionContainer> AllMoleculeContainersFor(IndividualMolecule molecule) => FirstIndividual?.AllMoleculeContainersFor(molecule);
+
       public virtual IEnumerable<IParameter> AllAdvancedParameters(IEntityPathResolver entityPathResolver)
       {
          return AllVectorialParameters(entityPathResolver).Where(p => !p.IsChangedByCreateIndividual);
