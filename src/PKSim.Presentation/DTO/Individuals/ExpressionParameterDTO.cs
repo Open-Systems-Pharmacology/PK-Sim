@@ -21,7 +21,9 @@ namespace PKSim.Presentation.DTO.Individuals
       public PathElement ContainerPathDTO { get; set; }
       public PathElement CompartmentPathDTO { get; set; }
       public IParameterDTO Parameter { get; set; }
+
       public string ParameterName => Parameter?.Name;
+      public string GroupName { get; set; }
       public string ParameterPath { get; set; }
       public int Sequence { get; set; }
 
@@ -47,7 +49,11 @@ namespace PKSim.Presentation.DTO.Individuals
          set => Parameter.Value = value;
       }
 
-      public bool Visible { get; set; }
+      public bool Visible
+      {
+         get => Parameter.Parameter.Visible;
+         set => Parameter.Parameter.Visible = value;
+      }
 
       public override string ToString()
       {

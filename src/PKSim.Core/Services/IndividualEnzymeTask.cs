@@ -38,7 +38,7 @@ namespace PKSim.Core.Services
       {
          var liver = individual.Organism.Organ(CoreConstants.Organ.Liver);
          var zone = liver.Container(zoneName);
-         AddTissueParameters(zone, individualEnzyme.Name, CoreConstants.Groups.ORGANS_AND_TISSUES);
+         AddTissueParameters(zone, individualEnzyme.Name);
          var relExp = zone.EntityAt<IParameter>(CoreConstants.Compartment.Intracellular, individualEnzyme.Name, REL_EXP);
          relExp.Value = 1;
       }

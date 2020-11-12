@@ -1,10 +1,10 @@
-﻿using PKSim.Assets;
-using OSPSuite.Assets;
-using PKSim.Presentation.Presenters.Compounds;
-using PKSim.Presentation.Views.Compounds;
-using PKSim.UI.Views.Core;
+﻿using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
+using PKSim.Assets;
+using PKSim.Presentation.Presenters.Compounds;
+using PKSim.Presentation.Views.Compounds;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -22,15 +22,9 @@ namespace PKSim.UI.Views.Compounds
 
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.Parameters;
 
-      public void AddViewForGroup(ISubPresenterItem subPresenterItem, IView view)
-      {
-         AddViewTo(layoutMainGroup, view);
-      }
+      public void AddViewForGroup(ISubPresenterItem subPresenterItem, IView view) => AddViewTo(layoutMainGroup, view);
 
-      public void AddEmptyPlaceHolder()
-      {
-         AddEmptyPlaceHolder(layoutMainGroup);
-      }
+      public void AddEmptyPlaceHolder() => AddEmptyPlaceHolder(layoutMainGroup);
 
       public override void InitializeResources()
       {

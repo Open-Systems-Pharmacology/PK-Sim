@@ -68,5 +68,12 @@ namespace PKSim.Core.Model
       /// </summary>
       /// <example>If we have the following structure Kidney|Intracellular|CYP3A4|RelExp, it will return (Kidney, RelExp)</example>
       ICache<string, IParameter> AllExpressionParametersFor(IndividualMolecule molecule);
+
+
+      /// <summary>
+      ///  Returns all possible molecule containers of the individual in which <paramref name="molecule"/> will be defined.
+      ///   This also returns the global molecule containers
+      /// </summary>
+      IReadOnlyList<MoleculeExpressionContainer> AllMoleculeContainersFor(IndividualMolecule molecule);
    }
 }

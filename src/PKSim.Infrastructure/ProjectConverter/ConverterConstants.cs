@@ -137,6 +137,7 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_PLASMA);
          public static readonly string REL_EXP_VASC_ENDO_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_VASC_ENDO);
          public static readonly string REL_EXP_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP);
+         public static readonly string FRACTION_ENDOSOMAL = "Fraction endosomal";
 
          public static string NormParameterFor(string parameter)
          {
@@ -162,6 +163,7 @@ namespace PKSim.Infrastructure.ProjectConverter
             SITT,
             EffectiveSurfaceAreaVariabilityFactor
          };
+
       }
 
       public static class ContainerName

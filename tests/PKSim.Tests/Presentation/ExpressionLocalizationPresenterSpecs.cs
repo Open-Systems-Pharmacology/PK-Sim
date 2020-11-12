@@ -203,7 +203,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_the_the_localization_was_not_updated()
       {
-         _localizationUpdated.ShouldBeTrue();
+         _localizationUpdated.ShouldBeFalse();
       }
 
 

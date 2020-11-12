@@ -14,6 +14,7 @@ namespace PKSim.Presentation.Views.Individuals
    {
       void BindTo(IEnumerable<ExpressionParameterDTO> parameters);
       void AddLocalizationView(IView view);
+      void AddExpressionParametersView(IView view);
    }
 
    public interface IIndividualTransporterExpressionsView : IView<IIndividualTransporterExpressionsPresenter>, IIndividualMoleculeView

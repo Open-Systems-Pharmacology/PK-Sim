@@ -74,7 +74,8 @@ namespace PKSim.Presentation.Presenters.Individuals
    public abstract class MoleculesPresenter<TSimulationSubject> : AbstractSubPresenter<IMoleculesView, IMoleculesPresenter>,
       IMoleculesPresenter,
       IListener<AddMoleculeToSimulationSubjectEvent<TSimulationSubject>>,
-      IListener<RemoveMoleculeFromSimulationSubjectEvent<TSimulationSubject>>
+      IListener<RemoveMoleculeFromSimulationSubjectEvent<TSimulationSubject>>,
+      IListener<RefreshMoleculeInSimulationSubjectEvent<TSimulationSubject>>
       where TSimulationSubject : ISimulationSubject
    {
       private readonly IEditMoleculeTask<TSimulationSubject> _editMoleculeTask;
@@ -271,6 +272,12 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          if (_simulationSubject == null) return false;
          return Equals(simulationSubjectEvent.SimulationSubject, _simulationSubject);
+      }
+
+      public void Handle(RefreshMoleculeInSimulationSubjectEvent<TSimulationSubject> eventToHandle)
+      {
+         if (!canHandle(eventToHandle)) return;
+         editMolecule(eventToHandle.Entity);
       }
    }
 }

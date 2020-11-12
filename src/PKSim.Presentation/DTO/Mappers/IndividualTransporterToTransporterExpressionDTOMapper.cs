@@ -10,9 +10,9 @@ namespace PKSim.Presentation.DTO.Mappers
 
    public class IndividualTransporterToTransporterExpressionDTOMapper : IIndividualTransporterToTransporterExpressionDTOMapper
    {
-      private readonly IExpressionContainerMapper _expressionContainerMapper;
+      private readonly IExpressionParameterMapper _expressionContainerMapper;
 
-      public IndividualTransporterToTransporterExpressionDTOMapper(IExpressionContainerMapper expressionContainerMapper)
+      public IndividualTransporterToTransporterExpressionDTOMapper(IExpressionParameterMapper expressionContainerMapper)
       {
          _expressionContainerMapper = expressionContainerMapper;
       }

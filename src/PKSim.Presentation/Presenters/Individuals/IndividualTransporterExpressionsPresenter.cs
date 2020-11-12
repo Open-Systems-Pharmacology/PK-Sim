@@ -19,7 +19,7 @@ using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
-   public interface IIndividualTransporterExpressionsPresenter : IIndividualMoleculeExpressionsPresenter,
+   public interface IIndividualTransporterExpressionsPresenter : IIndividualMoleculeExpressionsPresenter,IEditParameterPresenter,
       IListener<NoTranporterTemplateAvailableEvent>
 
    {

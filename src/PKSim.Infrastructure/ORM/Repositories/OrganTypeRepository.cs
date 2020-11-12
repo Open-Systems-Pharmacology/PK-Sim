@@ -28,12 +28,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
       public OrganType OrganTypeFor(string organName)
       {
          Start();
-         return _cache[organName];
+         return string.IsNullOrEmpty(organName) ? OrganType.Unknown : _cache[organName];
       }
 
-      public OrganType OrganTypeFor(IContainer container)
-      {
-         return OrganTypeFor(container.Name);
-      }
+      public OrganType OrganTypeFor(IContainer container) => OrganTypeFor(container?.Name);
    }
 }

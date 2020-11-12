@@ -4,6 +4,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Drawing;
 using DevExpress.XtraEditors.ViewInfo;
 using DevExpress.XtraGrid.Columns;
+using OSPSuite.UI.Controls;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.UI.Views.Core

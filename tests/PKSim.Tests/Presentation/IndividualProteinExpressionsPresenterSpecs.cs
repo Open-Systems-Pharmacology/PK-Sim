@@ -10,7 +10,6 @@ using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Individuals;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.Presentation
@@ -18,7 +17,6 @@ namespace PKSim.Presentation
    public abstract class concern_for_IndividualProteinExpressionsPresenter : ContextSpecification<IIndividualProteinExpressionsPresenter>
    {
       protected IIndividualProteinExpressionsView _view;
-      protected IEditParameterPresenterTask _parameterTask;
       protected IIndividualProteinToIndividualProteinDTOMapper _individualProteinMapper;
       protected IIndividualMoleculePropertiesPresenter<Individual> _moleculesPropertiesPresenter;
       protected IExpressionLocalizationPresenter<Individual> _expressionLocalizationPresenter;
@@ -30,6 +28,7 @@ namespace PKSim.Presentation
       protected ExpressionParameterDTO _relativeExpression2;
       protected ExpressionParameterDTO _fraction_exp_bc;
       protected List<ExpressionParameterDTO> _allParameters;
+      private IExpressionParametersPresenter _expressionParametersPresenter;
 
       private ExpressionParameterDTO createParameter(string parameterName)
       {
@@ -40,13 +39,16 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _view = A.Fake<IIndividualProteinExpressionsView>();
-         _parameterTask = A.Fake<IEditParameterPresenterTask>();
          _individualProteinMapper = A.Fake<IIndividualProteinToIndividualProteinDTOMapper>();
          _moleculesPropertiesPresenter = A.Fake<IIndividualMoleculePropertiesPresenter<Individual>>();
          _expressionLocalizationPresenter = A.Fake<IExpressionLocalizationPresenter<Individual>>();
+         _expressionParametersPresenter= A.Fake<IExpressionParametersPresenter>();  
 
-         sut = new IndividualEnzymeExpressionsPresenter<Individual>(_view, _parameterTask, _individualProteinMapper, _moleculesPropertiesPresenter,
-            _expressionLocalizationPresenter);
+         sut = new IndividualEnzymeExpressionsPresenter<Individual>(
+            _view, _individualProteinMapper, 
+            _moleculesPropertiesPresenter,
+            _expressionLocalizationPresenter, 
+            _expressionParametersPresenter);
 
 
          _individual = new Individual();
@@ -117,32 +119,4 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_setting_the_value_of_an_expression_parameter : concern_for_IndividualProteinExpressionsPresenter
-   {
-      protected override void Context()
-      {
-         base.Context();
-         _enzymeDTO.AddExpressionParameter(_relativeExpression2);
-
-         _relativeExpression.Parameter.Parameter.Value = 5;
-         _relativeExpression2.Parameter.Parameter.Value = 10;
-
-         sut.ActivateMolecule(_enzyme);
-         //Make sure that we in fact update the value of the parameter as the command will not be executed
-         A.CallTo(() => _parameterTask.SetParameterValue(sut, _relativeExpression.Parameter, 20))
-            .Invokes(x => _relativeExpression.Parameter.Parameter.Value = 20);
-      }
-
-      protected override void Because()
-      {
-         sut.SetExpressionParameterValue(_relativeExpression.Parameter, 20);
-      }
-
-      [Observation]
-      public void should_also_calculate_the_normalized_value()
-      {
-         _relativeExpression.NormalizedExpressionPercent.ShouldBeEqualTo(100);
-         _relativeExpression2.NormalizedExpressionPercent.ShouldBeEqualTo(50);
-      }
-   }
 }

@@ -7,6 +7,7 @@ using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Views.Core;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -21,16 +22,13 @@ namespace PKSim.UI.Views.Simulations
          _subViews = new List<IResizableView>();
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.Compound; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Compound;
 
       public void AttachPresenter(ISimulationCompoundConfigurationPresenter presenter)
       {
       }
 
-      public void AddParameterAlernativesView(IResizableView view)
+      public void AddParameterAlternativesView(IResizableView view)
       {
          _subViews.Add(view);
          AddViewTo(layoutMainGroup, view);
@@ -53,10 +51,7 @@ namespace PKSim.UI.Views.Simulations
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
-      public int OptimalHeight
-      {
-         get { return layoutMainGroup.Height; }
-      }
+      public int OptimalHeight => layoutMainGroup.Height;
 
       public void AdjustHeight()
       {

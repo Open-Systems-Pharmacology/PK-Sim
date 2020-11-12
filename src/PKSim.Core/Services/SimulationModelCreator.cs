@@ -1,10 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Services
 {
@@ -76,7 +73,6 @@ namespace PKSim.Core.Services
          var allParameters = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
          var individual = simulation.Individual;
 
-         hideAllUndefinedParameterForMolecules(simulation);
          individual.AllMolecules().Each(m =>
          {
             var allMoleculeParameters = individual.AllMoleculeParametersFor(m);
@@ -102,50 +98,15 @@ namespace PKSim.Core.Services
          _simulationPersistableUpdater.ResetPersistable(simulation);
       }
 
-      private void hideAllUndefinedParameterForMolecules(Simulation simulation)
-      {
-         var allNaNParametersFromMolecules = simulation.Model.Root.GetAllChildren<IContainer>()
-            .Where(c => c.ContainerType == ContainerType.Molecule)
-            .SelectMany(c => c.AllParameters(p => double.IsNaN(p.Value)));
 
-         allNaNParametersFromMolecules.Each(hideParameter);
-      }
-
-
-      private void hideParameter(IParameter parameter)
-      {
-         if (parameter == null)
-            return;
-
-         parameter.Visible = false;
-      }
-
-    
-  
-
-      //
-      // private void hideGlobalParametersForUndefinedMolecule(IContainer globalMoleculeContainer)
-      // {
-      //    if (!globalMoleculeContainer.IsUndefinedMolecule())
-      //       return;
-      //
-      //    globalMoleculeContainer.GetAllChildren<IParameter>().Each(hideParameter);
-      // }
-
-      //TODO PROBABLY NOT NEEDED ANYMORE
-
-      // private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual, IndividualMolecule molecule)
-      // {
-      //    //undefined molecule parameters are always hidden
-      //    updateFromIndividualParameter(parameterToUpdate, parameterInIndividual, individual, !molecule.IsUndefinedMolecule());
-      // }
-      //
-      private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual, bool visible = true)
+      private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual)
       {
          _parameterIdUpdater.UpdateParameterId(parameterInIndividual, parameterToUpdate);
          parameterToUpdate.BuildingBlockType = PKSimBuildingBlockType.Individual;
          parameterToUpdate.Origin.BuilingBlockId = individual.Id;
-         parameterToUpdate.Visible = visible;
+         parameterToUpdate.Visible = parameterInIndividual.Visible;
+         //This ensures that default value set to NaN (for example relative expression localized) have the expected default value from the individual
+         parameterToUpdate.DefaultValue = parameterInIndividual.DefaultValue;
       }
    }
 }

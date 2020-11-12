@@ -12,6 +12,7 @@ namespace PKSim.Core.Model
       private MembraneLocation _membraneLocation;
       public string CompartmentName { get; set; }
       private readonly IList<string> _allProcessNames = new List<string>();
+      public string GroupName { get; set; }
 
       public IEnumerable<string> ProcessNames => _allProcessNames;
 
