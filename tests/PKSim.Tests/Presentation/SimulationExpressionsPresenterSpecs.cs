@@ -41,8 +41,7 @@ namespace PKSim.Presentation
 
          sut.InitializeWith(_commandCollector);
 
-         _simulationExpressionDTO = new SimulationExpressionsDTO(new ParameterDTO(_propertyParameter), new ParameterDTO(_propertyParameter),
-            new ParameterDTO(_propertyParameter),
+         _simulationExpressionDTO = new SimulationExpressionsDTO(new[] { _propertyParameter, _propertyParameter, _propertyParameter },
             new List<ExpressionParameterDTO>());
 
          _propertyParameter = DomainHelperForSpecs.ConstantParameterWithValue().WithName("PROP");
