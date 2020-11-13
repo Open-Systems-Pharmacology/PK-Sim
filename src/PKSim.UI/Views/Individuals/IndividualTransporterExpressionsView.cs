@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
@@ -12,14 +11,12 @@ using OSPSuite.Core.Domain;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using PKSim.Assets;
-using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
@@ -30,10 +27,10 @@ namespace PKSim.UI.Views.Individuals
 {
    public partial class IndividualTransporterExpressionsView : BaseUserControlWithValueInGrid, IIndividualTransporterExpressionsView
    {
-      private readonly GridViewBinder<TransporterExpressionContainerDTO> _gridViewBinder;
+      private readonly GridViewBinder<TransporterExpressionParameterDTO> _gridViewBinder;
       protected readonly IImageListRetriever _imageListRetriever;
       private readonly IToolTipCreator _toolTipCreator;
-      private readonly ScreenBinder<TransporterExpressionDTO> _screenBinder;
+      private readonly ScreenBinder<IndividualTransporterDTO> _screenBinder;
       private IIndividualTransporterExpressionsPresenter _presenter;
       protected readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
       private IGridViewColumn _colGrouping;
@@ -44,9 +41,9 @@ namespace PKSim.UI.Views.Individuals
          InitializeComponent();
          _imageListRetriever = imageListRetriever;
          _toolTipCreator = toolTipCreator;
-         _screenBinder = new ScreenBinder<TransporterExpressionDTO>();
+         _screenBinder = new ScreenBinder<IndividualTransporterDTO>();
          gridView.AllowsFiltering = false;
-         _gridViewBinder = new GridViewBinder<TransporterExpressionContainerDTO>(gridView) {BindingMode = BindingMode.OneWay};
+         _gridViewBinder = new GridViewBinder<TransporterExpressionParameterDTO>(gridView) {BindingMode = BindingMode.OneWay};
 
 
          gridView.EndGrouping += (o, e) => gridView.ExpandAllGroups();
@@ -127,7 +124,7 @@ namespace PKSim.UI.Views.Individuals
          return _colRelativeExpression.XtraColumn == column;
       }
 
-      private string membraneContainerDisplayName(MembraneLocation membraneLocation, TransporterExpressionContainerDTO containerDTO)
+      private string membraneContainerDisplayName(MembraneLocation membraneLocation, TransporterExpressionParameterDTO containerDTO)
       {
          return $"{containerDTO.ContainerPathDTO.DisplayName} ({membraneLocation})";
       }
@@ -156,7 +153,7 @@ namespace PKSim.UI.Views.Individuals
       //    return repositoryItemImageComboBox;
       // }
 
-      private void editTransporterMembraneTypeRepository(BaseEdit editor, TransporterExpressionContainerDTO containerDTO)
+      private void editTransporterMembraneTypeRepository(BaseEdit editor, TransporterExpressionParameterDTO containerDTO)
       {
          var allMembranesTypes = _presenter.AllProteinMembraneLocationsFor(containerDTO);
          if (allMembranesTypes.Count() == 1)
@@ -175,10 +172,10 @@ namespace PKSim.UI.Views.Individuals
          _presenter = presenter;
       }
 
-      public void BindTo(TransporterExpressionDTO transporterExpressionDTO)
+      public void BindTo(IndividualTransporterDTO transporterExpressionDTO)
       {
          _screenBinder.BindToSource(transporterExpressionDTO);
-         _gridViewBinder.BindToSource(transporterExpressionDTO.AllContainerExpressions);
+         _gridViewBinder.BindToSource(transporterExpressionDTO.AllExpressionParameters);
          gridView.BestFitColumns();
       }
 

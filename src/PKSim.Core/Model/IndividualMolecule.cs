@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Assets;
@@ -42,6 +44,10 @@ namespace PKSim.Core.Model
       public virtual IParameter HalfLifeLiver => this.Parameter(CoreConstants.Parameters.HALF_LIFE_LIVER);
 
       public virtual IParameter HalfLifeIntestine => this.Parameter(CoreConstants.Parameters.HALF_LIFE_INTESTINE);
+
+      public IReadOnlyList<IParameter> AllGlobalMoleculeParameters => new[] {ReferenceConcentration, HalfLifeLiver, HalfLifeIntestine};
+
+      public IReadOnlyList<IParameter> AllGlobalExpressionParameters => this.AllParameters().Except(AllGlobalMoleculeParameters).ToList();
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {

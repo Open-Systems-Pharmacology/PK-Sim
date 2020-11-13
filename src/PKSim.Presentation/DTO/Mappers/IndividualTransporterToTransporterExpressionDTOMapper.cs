@@ -1,40 +1,35 @@
-using OSPSuite.Utility;
+using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
-   public interface IIndividualTransporterToTransporterExpressionDTOMapper : IMapper<IndividualTransporter, TransporterExpressionDTO>
+   public interface IIndividualTransporterToTransporterExpressionDTOMapper
    {
+      IndividualTransporterDTO MapFrom(IndividualTransporter transporter, ISimulationSubject simulationSubject);
    }
 
    public class IndividualTransporterToTransporterExpressionDTOMapper : IIndividualTransporterToTransporterExpressionDTOMapper
    {
-      private readonly IExpressionParameterMapper _expressionContainerMapper;
+      private readonly IExpressionParameterMapper<TransporterExpressionParameterDTO> _expressionContainerMapper;
 
-      public IndividualTransporterToTransporterExpressionDTOMapper(IExpressionParameterMapper expressionContainerMapper)
+      public IndividualTransporterToTransporterExpressionDTOMapper(
+         IExpressionParameterMapper<TransporterExpressionParameterDTO> expressionContainerMapper)
       {
          _expressionContainerMapper = expressionContainerMapper;
       }
 
-      public TransporterExpressionDTO MapFrom(IndividualTransporter transporter)
+      public IndividualTransporterDTO MapFrom(IndividualTransporter transporter, ISimulationSubject simulationSubject)
       {
-         var transporterExpressionDTO = new TransporterExpressionDTO(transporter);
-
-         //TODO
-         // foreach (var transporterExpressionContainer in transporter.AllExpressionsContainers())
-         // {
-         //    addContainerExpression(transporterExpressionDTO, transporter, transporterExpressionContainer);
-         // }
-         return transporterExpressionDTO;
-      }
-
-      private void addContainerExpression(TransporterExpressionDTO proteinExpressionDTO, IndividualTransporter transporter, TransporterExpressionContainer transporterExpressionContainer)
-      {
-         var expressionDTO = new TransporterExpressionContainerDTO(transporterExpressionContainer) {MoleculeName = transporter.Name, ContainerName = transporterExpressionContainer.Name};
-      //TODO 
-         //   _expressionContainerMapper.UpdateProperties(expressionDTO, transporterExpressionContainer);
-         proteinExpressionDTO.AddProteinExpression(expressionDTO);
+         var dto = new IndividualTransporterDTO(transporter);
+         simulationSubject.AllMoleculeContainersFor(transporter)
+            .SelectMany(x => x.AllParameters())
+            .Union(transporter.AllGlobalExpressionParameters)
+            .MapAllUsing(_expressionContainerMapper)
+            .Each(dto.AddExpressionParameter);
+         return dto;
       }
    }
 }

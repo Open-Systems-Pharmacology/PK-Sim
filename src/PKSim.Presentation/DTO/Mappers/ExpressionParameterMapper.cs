@@ -10,19 +10,19 @@ using PKSim.Presentation.DTO.Individuals;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
-   public interface IExpressionParameterMapper : IMapper<IParameter, ExpressionParameterDTO>
+   public interface IExpressionParameterMapper<TExpressionParameterDTO> : IMapper<IParameter, TExpressionParameterDTO> where TExpressionParameterDTO: ExpressionParameterDTO, new()
    {
    }
 
-   public class ExpressionParameterMapper : IExpressionParameterMapper
+   public class ExpressionParameterMapper<TExpressionParameterDTO> : IExpressionParameterMapper<TExpressionParameterDTO> where TExpressionParameterDTO: ExpressionParameterDTO, new()
    {
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IGroupRepository _groupRepository;
       private readonly IExpressionParameterTask _expressionParameterTask;
-      private readonly IParameterToParameterDTOInContainerMapper<ExpressionParameterDTO> _parameterMapper;
+      private readonly IParameterToParameterDTOInContainerMapper<TExpressionParameterDTO> _parameterMapper;
 
       public ExpressionParameterMapper(
-         IParameterToParameterDTOInContainerMapper<ExpressionParameterDTO> parameterMapper,
+         IParameterToParameterDTOInContainerMapper<TExpressionParameterDTO> parameterMapper,
          IRepresentationInfoRepository representationInfoRepository,
          IGroupRepository groupRepository,
          IExpressionParameterTask expressionParameterTask)
@@ -33,7 +33,7 @@ namespace PKSim.Presentation.DTO.Mappers
          _expressionParameterTask = expressionParameterTask;
       }
 
-      public ExpressionParameterDTO MapFrom(IParameter parameter)
+      public TExpressionParameterDTO MapFrom(IParameter parameter)
       {
          var containerName = CoreConstants.ContainerName.GlobalExpressionContainerNameFor(parameter.Name);
          var groupName = _expressionParameterTask.ExpressionGroupFor(parameter);
@@ -48,13 +48,13 @@ namespace PKSim.Presentation.DTO.Mappers
          return createExpressionContainerParameterDTOFrom(organ.Name, compartmentName, groupName, parameter);
       }
 
-      private ExpressionParameterDTO createExpressionContainerParameterDTOFrom(string containerName, string compartmentName,
+      private TExpressionParameterDTO createExpressionContainerParameterDTOFrom(string containerName, string compartmentName,
          string groupName, IParameter moleculeParameter)
       {
          var moleculeName = moleculeParameter.ParentContainer.Name;
          var group = _groupRepository.GroupByName(groupName);
 
-         var dto = new ExpressionParameterDTO
+         var dto = new TExpressionParameterDTO
          {
             MoleculeName = moleculeName,
             ContainerName = containerName,

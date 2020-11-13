@@ -92,7 +92,7 @@ namespace PKSim.Presentation.Presenters.Individuals
                case FRACTION_EXPRESSED_BLOOD_CELLS:
                case FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE:
                   return _protein.IsBloodCellsMembrane && _protein.IsBloodCellsIntracellular;
-               case REL_EXP_VASC_ENDO:
+               case REL_EXP_VASCULAR_ENDOTHELIUM:
                   return _protein.InVascularEndothelium;
                case FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME:
                   return _protein.IsVascEndosome;
@@ -131,7 +131,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       protected virtual void Activate(TProtein protein)
       {
          _protein = protein;
-         _proteinDTO = _individualProteinMapper.MapFrom(SimulationSubject, protein);
+         _proteinDTO = _individualProteinMapper.MapFrom(protein, SimulationSubject);
          _view.Bind();
          rebind();
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());

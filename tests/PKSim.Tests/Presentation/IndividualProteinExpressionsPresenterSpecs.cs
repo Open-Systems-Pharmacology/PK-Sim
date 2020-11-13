@@ -65,7 +65,7 @@ namespace PKSim.Presentation
          _enzymeDTO.AddExpressionParameter(_initialConcentration);
          _enzymeDTO.AddExpressionParameter(_relativeExpression);
          _enzymeDTO.AddExpressionParameter(_fraction_exp_bc);
-         A.CallTo(() => _individualProteinMapper.MapFrom(_individual, _enzyme)).Returns(_enzymeDTO);
+         A.CallTo(() => _individualProteinMapper.MapFrom(_enzyme, _individual)).Returns(_enzymeDTO);
 
       }
    }
