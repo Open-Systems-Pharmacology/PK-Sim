@@ -71,6 +71,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
          _proteinDTO.AllExpressionParameters.Each(x => { x.Visible = isParameterVisible(x); });
 
+         _expressionParametersPresenter.EmphasisRelativeExpressionParameters = ShowInitialConcentration;
          _expressionParametersPresenter.Edit(_proteinDTO.AllExpressionParameters);
       }
 
@@ -131,6 +132,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          _protein = protein;
          _proteinDTO = _individualProteinMapper.MapFrom(SimulationSubject, protein);
+         _view.Bind();
          rebind();
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
          _expressionLocalizationPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());

@@ -28,7 +28,7 @@ namespace PKSim.Presentation
       protected ExpressionParameterDTO _relativeExpression2;
       protected ExpressionParameterDTO _fraction_exp_bc;
       protected List<ExpressionParameterDTO> _allParameters;
-      private IExpressionParametersPresenter _expressionParametersPresenter;
+      protected IExpressionParametersPresenter _expressionParametersPresenter;
 
       private ExpressionParameterDTO createParameter(string parameterName)
       {
@@ -67,8 +67,6 @@ namespace PKSim.Presentation
          _enzymeDTO.AddExpressionParameter(_fraction_exp_bc);
          A.CallTo(() => _individualProteinMapper.MapFrom(_individual, _enzyme)).Returns(_enzymeDTO);
 
-         A.CallTo(() => _view.BindTo(A<IEnumerable<ExpressionParameterDTO>>._))
-            .Invokes(x => _allParameters = x.GetArgument<IEnumerable<ExpressionParameterDTO>>(0).ToList());
       }
    }
 
@@ -95,7 +93,12 @@ namespace PKSim.Presentation
       public void should_edit_the_molecule_ontogeny()
       {
          A.CallTo(() => _moleculesPropertiesPresenter.Edit(_enzyme, _individual)).MustHaveHappened();
+      }
 
+      [Observation]
+      public void should_update_the_expression_parameters()
+      {
+         A.CallTo(() => _expressionParametersPresenter.Edit(_enzymeDTO.AllExpressionParameters)).MustHaveHappened();
       }
    }
 
@@ -115,7 +118,27 @@ namespace PKSim.Presentation
       [Observation]
       public void should_hide_concentration_parameters()
       {
-         _allParameters.ShouldOnlyContain(_relativeExpression, _fraction_exp_bc);
+         _initialConcentration.Visible.ShouldBeFalse();
+      }
+   }
+
+   public class When_switching_the_visibility_of_initial_concentration_parameters_on : concern_for_IndividualProteinExpressionsPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.ActivateMolecule(_enzyme);
+      }
+
+      protected override void Because()
+      {
+         sut.ShowInitialConcentration = true;
+      }
+
+      [Observation]
+      public void should_show_concentration_parameters()
+      {
+         _initialConcentration.Visible.ShouldBeTrue();
       }
    }
 

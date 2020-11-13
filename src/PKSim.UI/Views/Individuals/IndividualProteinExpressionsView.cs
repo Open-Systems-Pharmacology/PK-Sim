@@ -22,8 +22,6 @@ namespace PKSim.UI.Views.Individuals
          InitializeComponent();
       }
 
-      //https://github.com/DevExpress-Examples/custom-gridcontrol-how-to-hide-particular-grouprow-headers-footers-t264208/blob/16.1.4%2B/CS/CustomGridControl/MyDataController.cs
-
       public void AttachPresenter(IIndividualProteinExpressionsPresenter presenter)
       {
          _presenter = presenter;
@@ -39,10 +37,7 @@ namespace PKSim.UI.Views.Individuals
 
       public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, view);
 
-      public void BindTo(IEnumerable<ExpressionParameterDTO> parameters)
-      {
-         _screenBinder.BindToSource(_presenter);
-      }
+      public void Bind() => _screenBinder.BindToSource(_presenter);
 
       public void AddLocalizationView(IView view) => AddViewTo(layoutItemPanelLocalization, view);
 

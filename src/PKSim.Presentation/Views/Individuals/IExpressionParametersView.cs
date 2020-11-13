@@ -8,5 +8,6 @@ namespace PKSim.Presentation.Views.Individuals
    public interface IExpressionParametersView: IView<IExpressionParametersPresenter>
    {
       void BindTo(IEnumerable<ExpressionParameterDTO> expressionParameters);
+      bool EmphasisRelativeExpressionParameters { get; set; }
    }
 }

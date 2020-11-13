@@ -103,7 +103,11 @@ namespace PKSim.Core.Services
             ReadOnly = !editable,
             Dimension = CoreConstants.Dimension.Fraction,
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            IsDefault = true
+            IsDefault = true,
+            MinValue = 0,
+            MaxValue = 1,
+            MinIsAllowed = true,
+            MaxIsAllowed = true,
          };
 
       private ParameterRateMetaData initialConcentrationParam(string rate) =>
@@ -117,6 +121,8 @@ namespace PKSim.Core.Services
             CanBeVariedInPopulation = true,
             Dimension = MOLAR_CONCENTRATION,
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            MinValue = 0,
+            MinIsAllowed =  true
          };
 
       protected void AddMucosaExpression(ISimulationSubject simulationSubject, string moleculeName)

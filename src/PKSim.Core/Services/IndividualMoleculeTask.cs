@@ -61,6 +61,8 @@ namespace PKSim.Core.Services
          GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
          BuildingBlockType = PKSimBuildingBlockType.Individual,
          IsDefault = true,
+         MinValue = 0,
+         MinIsAllowed =  true
       };
 
       protected TMolecule CreateMolecule(string moleculeName)

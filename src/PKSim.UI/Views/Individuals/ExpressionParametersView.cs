@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
@@ -10,6 +11,7 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
@@ -37,13 +39,14 @@ namespace PKSim.UI.Views.Individuals
       private IGridViewColumn _colParameterName;
       private readonly ToolTipController _toolTipController = new ToolTipController();
       private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
+      public bool EmphasisRelativeExpressionParameters { get; set; } = false;
 
       private readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar
-         { Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true };
+         {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
 
       private readonly UxRepositoryItemButtonImage _isFixedParameterEditRepository =
          new UxRepositoryItemButtonImage(ApplicationIcons.Reset, PKSimConstants.UI.ResetParameterToolTip)
-            { TextEditStyle = TextEditStyles.Standard };
+            {TextEditStyle = TextEditStyles.Standard};
 
       private IExpressionParametersPresenter _presenter;
 
@@ -55,7 +58,6 @@ namespace PKSim.UI.Views.Individuals
          InitializeComponent();
          InitializeWithGrid(_gridView);
          initializeRepositories();
-
 
          _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _toolTipController.Initialize(_imageListRetriever);
@@ -75,7 +77,6 @@ namespace PKSim.UI.Views.Individuals
          gridView.CustomColumnSort += customColumnSort;
          gridView.GridControl.ToolTipController = _toolTipController;
       }
-
 
       private void onShowingEditor(object sender, CancelEventArgs e)
       {
@@ -124,6 +125,7 @@ namespace PKSim.UI.Views.Individuals
       {
          _gridViewBinder.BindToSource(expressionParameters);
       }
+
 
       public override void InitializeBinding()
       {
@@ -238,7 +240,6 @@ namespace PKSim.UI.Views.Individuals
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
       }
 
-
       private RepositoryItem configureContainerRepository(PathElement pathElement)
       {
          var containerRepository = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever);
@@ -256,11 +257,16 @@ namespace PKSim.UI.Views.Individuals
 
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
       {
-         var parameterDTO = _gridViewBinder.ElementAt(e.RowHandle)?.Parameter;
+         var expressionDTO = _gridViewBinder.ElementAt(e.RowHandle);
+         var parameterDTO = expressionDTO?.Parameter;
          if (parameterDTO == null)
             return;
 
-         if (e.Column.OptionsColumn.ReadOnly)
+         //Make sure the name and value of a relative expression parameter are using a bold font
+         if (shouldEmphasisCellAppearance(expressionDTO, e))
+            e.Appearance.Font = new Font(e.Appearance.Font.FontFamily, e.Appearance.Font.Size, FontStyle.Bold);
+
+         else if (e.Column.OptionsColumn.ReadOnly)
             _gridView.AdjustAppearance(e, true);
 
          else if (!parameterDTO.Parameter.Editable)
@@ -268,9 +274,15 @@ namespace PKSim.UI.Views.Individuals
 
          else if (_presenter.IsSetByUser(parameterDTO))
             _gridView.AdjustAppearance(e, PKSimColors.Changed);
+         
          else
             e.CombineAppearance(_gridView.Appearance.Row);
       }
+
+      private bool shouldEmphasisCellAppearance(ExpressionParameterDTO expressionDTO, RowCellStyleEventArgs e) =>
+         EmphasisRelativeExpressionParameters && 
+         expressionDTO.NormalizedExpressionPercent != null &&
+         e.Column.IsOneOf(_colParameterName.XtraColumn, _colParameterValue.XtraColumn);
 
       public override bool HasError => _gridViewBinder.HasError;
    }

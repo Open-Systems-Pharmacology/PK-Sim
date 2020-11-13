@@ -12,7 +12,7 @@ namespace PKSim.Presentation.Views.Individuals
 
    public interface IIndividualProteinExpressionsView : IView<IIndividualProteinExpressionsPresenter>, IIndividualMoleculeView
    {
-      void BindTo(IEnumerable<ExpressionParameterDTO> parameters);
+      void Bind();
       void AddLocalizationView(IView view);
       void AddExpressionParametersView(IView view);
    }

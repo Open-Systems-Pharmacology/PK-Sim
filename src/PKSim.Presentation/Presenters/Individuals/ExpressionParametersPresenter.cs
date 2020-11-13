@@ -11,19 +11,20 @@ using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
-   public interface IExpressionParametersPresenter:IPresenter<IExpressionParametersView>, IEditParameterPresenter
+   public interface IExpressionParametersPresenter : IPresenter<IExpressionParametersView>, IEditParameterPresenter
    {
       void Edit(IReadOnlyList<ExpressionParameterDTO> expressionParameters);
+      bool EmphasisRelativeExpressionParameters { get; set; }
       void SetExpressionParameterValue(IParameterDTO expressionParameterDTO, double value);
-
    }
 
-   public class ExpressionParametersPresenter : EditParameterPresenter<IExpressionParametersView, IExpressionParametersPresenter>, IExpressionParametersPresenter
+   public class ExpressionParametersPresenter : EditParameterPresenter<IExpressionParametersView, IExpressionParametersPresenter>,
+      IExpressionParametersPresenter
    {
       private IReadOnlyList<ExpressionParameterDTO> _expressionParameters;
 
       public ExpressionParametersPresenter(
-         IExpressionParametersView view, 
+         IExpressionParametersView view,
          IEditParameterPresenterTask editParameterPresenterTask) : base(view, editParameterPresenterTask)
       {
       }
@@ -38,6 +39,12 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          _expressionParameters = expressionParameters;
          rebind();
+      }
+
+      public bool EmphasisRelativeExpressionParameters
+      {
+         get => View.EmphasisRelativeExpressionParameters;
+         set => View.EmphasisRelativeExpressionParameters = value;
       }
 
       private void normalizeExpressionValues()
@@ -57,6 +64,5 @@ namespace PKSim.Presentation.Presenters.Individuals
 
          normalizeExpressionValues();
       }
-
    }
 }
