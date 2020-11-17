@@ -47,7 +47,9 @@ namespace PKSim.Core.Model
 
       public IReadOnlyList<IParameter> AllGlobalMoleculeParameters => new[] {ReferenceConcentration, HalfLifeLiver, HalfLifeIntestine};
 
-      public IReadOnlyList<IParameter> AllGlobalExpressionParameters => this.AllParameters().Except(AllGlobalMoleculeParameters).ToList();
+      public IReadOnlyList<IParameter> AllOntogenyParameters => new[] {OntogenyFactorParameter, OntogenyFactorGIParameter};
+
+      public IReadOnlyList<IParameter> AllGlobalExpressionParameters => this.AllParameters().Except(AllGlobalMoleculeParameters).Except(AllOntogenyParameters).ToList();
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {

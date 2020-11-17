@@ -16,7 +16,7 @@ namespace PKSim.Presentation.DTO.Individuals
          _individualTransporter = individualTransporter;
       }
 
-      public IEnumerable<TransporterExpressionParameterDTO> AllExpressionParameters => _allExpressionParameters;
+      public IReadOnlyList<TransporterExpressionParameterDTO> AllExpressionParameters => _allExpressionParameters;
 
       public void AddExpressionParameter(TransporterExpressionParameterDTO expressionParameterDTO)
       {

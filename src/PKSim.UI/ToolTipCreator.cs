@@ -73,7 +73,7 @@ namespace PKSim.UI
 
       public SuperToolTip ToolTipFor(TransporterExpressionParameterDTO containerDTO)
       {
-         return CreateToolTip($"{containerDTO.ContainerPathDTO.DisplayName} ({containerDTO.MembraneLocation})", containerDTO.ContainerName);
+         return CreateToolTip($"{containerDTO.ContainerPathDTO.DisplayName} ({containerDTO.TransportDirection})", containerDTO.ContainerName);
       }
 
       public SuperToolTip WarningToolTip(string warning)

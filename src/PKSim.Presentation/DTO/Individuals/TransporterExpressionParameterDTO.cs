@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using OSPSuite.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
 
@@ -19,7 +20,9 @@ namespace PKSim.Presentation.DTO.Individuals
       // }
 
       //TODO 
-      public MembraneLocation MembraneLocation { get; set; }
+      public TransportDirection TransportDirection { get; set; }
+
+   
 
      //TODO
       // public override void ClearReferences()

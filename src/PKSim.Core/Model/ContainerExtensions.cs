@@ -69,5 +69,20 @@ namespace PKSim.Core.Model
 
          return container.ParentContainer.IsLiver() && container.NameIsOneOf(CoreConstants.Compartment.LiverZones);
       }
+
+      /// <summary>
+      /// Returns <c>True</c> of the container is an organ with lumen, otherwise <c>False</c>.
+      /// Typically, Kidney, Liver and all mucosal tissues
+      /// </summary>
+      public static bool IsOrganWithLumen(this IContainer container)
+      {
+         if (container.IsNamed(CoreConstants.Organ.Kidney))
+            return true;
+
+         if (container.ParentContainer.NameIsOneOf(CoreConstants.Organ.Liver, CoreConstants.Compartment.Mucosa))
+            return true;
+
+         return false;
+      }
    }
 }

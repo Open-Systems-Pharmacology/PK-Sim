@@ -23,8 +23,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       IListener<NoTranporterTemplateAvailableEvent>
 
    {
-      void SetRelativeExpression(ExpressionParameterDTO expressionParameterDTO, double value);
-
       /// <summary>
       ///    Update the membrane type for the given transporter container
       /// </summary>
@@ -69,23 +67,29 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly IMoleculeExpressionTask<TSimulationSubject> _moleculeExpressionTask;
       private readonly IIndividualTransporterToTransporterExpressionDTOMapper _transporterExpressionDTOMapper;
       private readonly IIndividualMoleculePropertiesPresenter<TSimulationSubject> _moleculePropertiesPresenter;
+      private readonly ITransporterExpressionParametersPresenter _transporterExpressionParametersPresenter;
       private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
       private IndividualTransporter _transporter;
+      private IndividualTransporterDTO _transporterExpressionDTO;
       public ISimulationSubject SimulationSubject { get; set; }
 
-      public IndividualTransporterExpressionsPresenter(IIndividualTransporterExpressionsView view, IEditParameterPresenterTask parameterTask,
+      public IndividualTransporterExpressionsPresenter(
+         IIndividualTransporterExpressionsView view, IEditParameterPresenterTask parameterTask,
          IMoleculeExpressionTask<TSimulationSubject> moleculeExpressionTask,
          IIndividualTransporterToTransporterExpressionDTOMapper transporterExpressionDTOMapper,
          ITransporterContainerTemplateRepository transporterContainerTemplateRepository,
-         IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter)
+         IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter,
+         ITransporterExpressionParametersPresenter transporterExpressionParametersPresenter)
          : base(view, parameterTask)
       {
          _moleculeExpressionTask = moleculeExpressionTask;
          _transporterExpressionDTOMapper = transporterExpressionDTOMapper;
          _moleculePropertiesPresenter = moleculePropertiesPresenter;
+         _transporterExpressionParametersPresenter = transporterExpressionParametersPresenter;
          _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
-         AddSubPresenters(_moleculePropertiesPresenter);
+         AddSubPresenters(_moleculePropertiesPresenter, _transporterExpressionParametersPresenter);
          view.AddMoleculePropertiesView(_moleculePropertiesPresenter.View);
+         view.AddExpressionParametersView(_transporterExpressionParametersPresenter.View);
       }
 
       public void SetMembraneLocation(TransporterExpressionParameterDTO transporterExpressionContainerDTO, MembraneLocation membraneLocation)
@@ -153,20 +157,18 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          _transporter = molecule.DowncastTo<IndividualTransporter>();
          _view.HideWarning();
-         _view.BindTo(_transporterExpressionDTOMapper.MapFrom(_transporter, SimulationSubject.DowncastTo<TSimulationSubject>()));
+         _transporterExpressionDTO = _transporterExpressionDTOMapper.MapFrom(_transporter, SimulationSubject.DowncastTo<TSimulationSubject>());
+         _view.BindTo(_transporterExpressionDTO);
          _moleculePropertiesPresenter.Edit(molecule, SimulationSubject.DowncastTo<TSimulationSubject>());
+         _transporterExpressionParametersPresenter.Edit(_transporterExpressionDTO.AllExpressionParameters);
          RefreshView();
       }
 
-      public void SetRelativeExpression(ExpressionParameterDTO expressionParameterDTO, double value)
-      {
-         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(ParameterFrom(expressionParameterDTO.Parameter), value));
-      }
 
       public void RefreshView()
       {
          _moleculePropertiesPresenter.RefreshView();
-         _view.RefreshData();
+         _transporterExpressionParametersPresenter.Edit(_transporterExpressionDTO.AllExpressionParameters);
       }
 
       public void Handle(NoTranporterTemplateAvailableEvent eventToHandle)

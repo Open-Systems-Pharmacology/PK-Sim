@@ -23,6 +23,7 @@ namespace PKSim.Presentation
       private IIndividualTransporterToTransporterExpressionDTOMapper _transporterMapper;
       private ITransporterContainerTemplateRepository _transportRepository;
       private IIndividualMoleculePropertiesPresenter<Individual> _moleculePropertiesPresenter;
+      private ITransporterExpressionParametersPresenter _transporterExpressionParametersPresenter;
 
       protected override void Context()
       {
@@ -32,7 +33,10 @@ namespace PKSim.Presentation
          _transporterMapper = A.Fake<IIndividualTransporterToTransporterExpressionDTOMapper>();
          _transportRepository = A.Fake<ITransporterContainerTemplateRepository>();
          _moleculePropertiesPresenter = A.Fake<IIndividualMoleculePropertiesPresenter<Individual>>();
-         sut = new IndividualTransporterExpressionsPresenter<Individual>(_view, _parameterTask, _moleculeTask, _transporterMapper, _transportRepository, _moleculePropertiesPresenter);
+         _transporterExpressionParametersPresenter= A.Fake<ITransporterExpressionParametersPresenter>(); 
+         sut = new IndividualTransporterExpressionsPresenter<Individual>(
+            _view, _parameterTask, _moleculeTask, _transporterMapper, _transportRepository, _moleculePropertiesPresenter,
+            _transporterExpressionParametersPresenter);
       }
    }
 

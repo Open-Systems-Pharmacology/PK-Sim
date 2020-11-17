@@ -184,10 +184,15 @@ namespace PKSim.Core
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA = "PARAM_Application_DoseFromDosePerBodySurfaceArea";
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT = "PARAM_Application_DoseFromDosePerBodyWeight";
          public static readonly string INITIAL_CONCENTRATION_BLOOD_CELLS = "InitialConcentrationBloodCells";
+         public static readonly string INITIAL_CONCENTRATION_BLOOD_CELLS_TRANSPORTER = "InitialConcentrationBloodCells_Transporter";
          public static readonly string INITIAL_CONCENTRATION_INTRACELLULAR = "InitialConcentrationIntracellular";
+         public static readonly string INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER = "InitialConcentrationIntracellular_Transporter";
          public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL = "InitialConcentrationInterstitial";
+         public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER = "InitialConcentrationInterstitial_Transporter";
+         public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL_LUMEN_TRANSPORTER = "InitialConcentrationInterstitialLumen_Transporter";
          public static readonly string INITIAL_CONCENTRATION_PLASMA = "InitialConcentrationPlasma";
          public static readonly string INITIAL_CONCENTRATION_ENDOSOME = "InitialConcentrationEndosome";
+         public static readonly string INITIAL_CONCENTRATION_PLASMA_TRANSPORTER = "InitialConcentrationPlasma_Transporter";
          public static readonly string INITIAL_CONCENTRATION_LUMEN = "InitialConcentrationLumen";
          public static readonly string ONE_RATE = "One_Rate";
          public static readonly string ZERO_RATE = "Zero_Rate";

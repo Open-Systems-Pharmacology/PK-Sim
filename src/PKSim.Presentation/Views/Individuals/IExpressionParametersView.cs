@@ -5,9 +5,10 @@ using PKSim.Presentation.Presenters.Individuals;
 
 namespace PKSim.Presentation.Views.Individuals
 {
-   public interface IExpressionParametersView: IView<IExpressionParametersPresenter>
+   public interface IExpressionParametersView<TExpressionParameterDTO> : IView<IExpressionParametersPresenter<TExpressionParameterDTO>>
+      where TExpressionParameterDTO : ExpressionParameterDTO
    {
-      void BindTo(IEnumerable<ExpressionParameterDTO> expressionParameters);
+      void BindTo(IEnumerable<TExpressionParameterDTO> expressionParameters);
       bool EmphasisRelativeExpressionParameters { get; set; }
    }
 }

@@ -13,7 +13,7 @@ namespace PKSim.Presentation
 {
    public abstract class concern_for_ExpressionParametersPresenter : ContextSpecification<IExpressionParametersPresenter>
    {
-      protected IExpressionParametersView _view;
+      protected IExpressionParametersView<ExpressionParameterDTO> _view;
       protected IEditParameterPresenterTask _editParameterTask;
       protected ExpressionParameterDTO _initialConcentration;
       protected ExpressionParameterDTO _relativeExpression;
@@ -22,7 +22,7 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _view= A.Fake<IExpressionParametersView>();
+         _view= A.Fake<IExpressionParametersView<ExpressionParameterDTO>>();
          _editParameterTask= A.Fake<IEditParameterPresenterTask>();  
          sut = new ExpressionParametersPresenter(_view,_editParameterTask);
 
@@ -67,6 +67,47 @@ namespace PKSim.Presentation
       {
          _relativeExpression.NormalizedExpressionPercent.ShouldBeEqualTo(100);
          _relativeExpression2.NormalizedExpressionPercent.ShouldBeEqualTo(50);
+      }
+   }
+
+
+   public class When_switching_the_visibility_of_initial_concentration_parameters_off : concern_for_ExpressionParametersPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(new[] { _fraction_exp_bc, _initialConcentration, _relativeExpression, _relativeExpression2, });
+      }
+
+      protected override void Because()
+      {
+         sut.ShowInitialConcentration = false;
+      }
+
+      [Observation]
+      public void should_hide_concentration_parameters()
+      {
+         _initialConcentration.Visible.ShouldBeFalse();
+      }
+   }
+
+   public class When_switching_the_visibility_of_initial_concentration_parameters_on : concern_for_ExpressionParametersPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(new[] { _fraction_exp_bc, _initialConcentration, _relativeExpression, _relativeExpression2, });
+      }
+
+      protected override void Because()
+      {
+         sut.ShowInitialConcentration = true;
+      }
+
+      [Observation]
+      public void should_show_concentration_parameters()
+      {
+         _initialConcentration.Visible.ShouldBeTrue();
       }
    }
 

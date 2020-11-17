@@ -102,44 +102,4 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_switching_the_visibility_of_initial_concentration_parameters_off : concern_for_IndividualProteinExpressionsPresenter
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.ActivateMolecule(_enzyme);
-      }
-
-      protected override void Because()
-      {
-         sut.ShowInitialConcentration = false;
-      }
-
-      [Observation]
-      public void should_hide_concentration_parameters()
-      {
-         _initialConcentration.Visible.ShouldBeFalse();
-      }
-   }
-
-   public class When_switching_the_visibility_of_initial_concentration_parameters_on : concern_for_IndividualProteinExpressionsPresenter
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.ActivateMolecule(_enzyme);
-      }
-
-      protected override void Because()
-      {
-         sut.ShowInitialConcentration = true;
-      }
-
-      [Observation]
-      public void should_show_concentration_parameters()
-      {
-         _initialConcentration.Visible.ShouldBeTrue();
-      }
-   }
-
 }

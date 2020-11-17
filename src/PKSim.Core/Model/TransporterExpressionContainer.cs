@@ -10,6 +10,8 @@ namespace PKSim.Core.Model
    public class TransporterExpressionContainer : MoleculeExpressionContainer, ITransporterContainer
    {
       private MembraneLocation _membraneLocation;
+      private TransportDirection _transportDirection;
+
       public string CompartmentName { get; set; }
       private readonly IList<string> _allProcessNames = new List<string>();
       public string GroupName { get; set; }
@@ -32,6 +34,13 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _membraneLocation, value);
       }
 
+
+      public TransportDirection TransportDirection
+      {
+         get => _transportDirection;
+         set => SetProperty(ref _transportDirection, value);
+      }
+      
       public string OrganName => Name;
 
       public bool HasPolarizedMembrane

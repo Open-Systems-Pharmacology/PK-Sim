@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Parameters;
@@ -11,40 +12,60 @@ using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
-   public interface IExpressionParametersPresenter : IPresenter<IExpressionParametersView>, IEditParameterPresenter
+   public interface IExpressionParametersPresenter<TExpressionParameterDTO> : IPresenter<IExpressionParametersView<TExpressionParameterDTO>>,
+      IEditParameterPresenter where TExpressionParameterDTO : ExpressionParameterDTO
    {
-      void Edit(IReadOnlyList<ExpressionParameterDTO> expressionParameters);
-      bool EmphasisRelativeExpressionParameters { get; set; }
+      void Edit(IReadOnlyList<TExpressionParameterDTO> expressionParameters);
+      bool ShowInitialConcentration { get; set; }
       void SetExpressionParameterValue(IParameterDTO expressionParameterDTO, double value);
    }
 
-   public class ExpressionParametersPresenter : EditParameterPresenter<IExpressionParametersView, IExpressionParametersPresenter>,
-      IExpressionParametersPresenter
+   public interface IExpressionParametersPresenter : IExpressionParametersPresenter<ExpressionParameterDTO>
    {
-      private IReadOnlyList<ExpressionParameterDTO> _expressionParameters;
+   }
 
-      public ExpressionParametersPresenter(
-         IExpressionParametersView view,
+   public abstract class ExpressionParametersPresenter<TExpressionParameterDTO> : EditParameterPresenter<
+         IExpressionParametersView<TExpressionParameterDTO>,
+         IExpressionParametersPresenter<TExpressionParameterDTO>>,
+      IExpressionParametersPresenter<TExpressionParameterDTO> where TExpressionParameterDTO : ExpressionParameterDTO
+   {
+      private IReadOnlyList<TExpressionParameterDTO> _expressionParameters;
+      private bool _showInitialConcentration;
+
+      protected ExpressionParametersPresenter(
+         IExpressionParametersView<TExpressionParameterDTO> view,
          IEditParameterPresenterTask editParameterPresenterTask) : base(view, editParameterPresenterTask)
       {
+         //TODO probably in preferences
+         _showInitialConcentration = false;
+      }
+
+
+      public bool ShowInitialConcentration
+      {
+         get => _showInitialConcentration;
+         set
+         {
+            _showInitialConcentration = value;
+            rebind();
+         }
       }
 
       private void rebind()
       {
          normalizeExpressionValues();
+         _view.EmphasisRelativeExpressionParameters = ShowInitialConcentration;
+         _expressionParameters
+            .Where(x=>string.Equals(x.ParameterName, CoreConstants.Parameters.INITIAL_CONCENTRATION))
+            .Each(x=>x.Visible = ShowInitialConcentration);
+
          _view.BindTo(_expressionParameters.Where(x => x.Visible));
       }
 
-      public void Edit(IReadOnlyList<ExpressionParameterDTO> expressionParameters)
+      public void Edit(IReadOnlyList<TExpressionParameterDTO> expressionParameters)
       {
          _expressionParameters = expressionParameters;
          rebind();
-      }
-
-      public bool EmphasisRelativeExpressionParameters
-      {
-         get => View.EmphasisRelativeExpressionParameters;
-         set => View.EmphasisRelativeExpressionParameters = value;
       }
 
       private void normalizeExpressionValues()
@@ -63,6 +84,14 @@ namespace PKSim.Presentation.Presenters.Individuals
             return;
 
          normalizeExpressionValues();
+      }
+   }
+
+   public class ExpressionParametersPresenter : ExpressionParametersPresenter<ExpressionParameterDTO>, IExpressionParametersPresenter
+   {
+      public ExpressionParametersPresenter(IExpressionParametersView<ExpressionParameterDTO> view,
+         IEditParameterPresenterTask editParameterPresenterTask) : base(view, editParameterPresenterTask)
+      {
       }
    }
 }

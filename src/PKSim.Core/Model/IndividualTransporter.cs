@@ -1,13 +1,25 @@
-using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
+   public enum TransportDirection
+   {
+      None,
+      Influx,
+      Efflux,
+      BiDirectional,
+      Excretion,
+      PlasmaToInterstitial,
+      InterstitialToPlasma,
+   }
+
+
    public class IndividualTransporter : IndividualMolecule
    {
       private TransportType _transportType;
+      private TransportDirection _transportDirectionBloodCells;
+      private TransportDirection _transportDirectionVascularEndothelium;
 
       public IndividualTransporter()
       {
@@ -23,6 +35,20 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _transportType, value);
       }
 
+
+      public TransportDirection TransportDirectionBloodCells
+      {
+         get => _transportDirectionBloodCells;
+         set => SetProperty(ref _transportDirectionBloodCells, value);
+      }
+
+      public TransportDirection TransportDirectionVascularEndothelium
+      {
+         get => _transportDirectionVascularEndothelium;
+         set => SetProperty(ref _transportDirectionVascularEndothelium, value);
+      }
+
+      
       //TODO
       // /// <summary>
       // ///    Returns the organ container where the transporter mey be defined
