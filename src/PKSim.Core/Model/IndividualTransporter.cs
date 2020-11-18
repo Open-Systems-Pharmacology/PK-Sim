@@ -8,8 +8,9 @@ namespace PKSim.Core.Model
       None,
       Influx,
       Efflux,
+      PgpLike,
       BiDirectional,
-      Excretion,
+      Elimination,
       PlasmaToInterstitial,
       InterstitialToPlasma,
    }

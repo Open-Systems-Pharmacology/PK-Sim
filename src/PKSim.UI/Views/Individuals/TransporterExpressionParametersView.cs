@@ -41,8 +41,8 @@ namespace PKSim.UI.Views.Individuals
       {
          InitializeGroupBinding();
          InitializeContainerBinding();
-         InitializeParameterNameBinding();
          InitializeDirectionBinding();
+         InitializeParameterNameBinding();
          InitializeValueBinding();
          InitializeShowInitialConcentrationBinding();
       }

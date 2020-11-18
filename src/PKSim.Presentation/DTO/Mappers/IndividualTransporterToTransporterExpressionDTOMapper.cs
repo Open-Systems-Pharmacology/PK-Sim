@@ -62,7 +62,7 @@ namespace PKSim.Presentation.DTO.Mappers
          if (!isInOrganWithLumen)
             return parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirection.None;
 
-         return transporterExpressionContainer.TransportDirection;
+         return !parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirection.None;
       }
    }
 }

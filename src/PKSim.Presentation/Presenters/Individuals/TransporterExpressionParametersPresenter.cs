@@ -20,7 +20,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       ITransporterExpressionParametersPresenter
    {
       private static readonly TransportDirection[] PLASMA_DIRECTIONS = {PlasmaToInterstitial, InterstitialToPlasma, BiDirectional};
-      private static readonly TransportDirection[] CELLS_DIRECTIONS = {Influx, Efflux, BiDirectional};
+      private static readonly TransportDirection[] CELLS_DIRECTIONS = {Influx, Efflux, BiDirectional, PgpLike};
 
       public TransporterExpressionParametersPresenter(ITransporterExpressionParametersView view,
          IEditParameterPresenterTask editParameterPresenterTask) : base(view, editParameterPresenterTask)
@@ -54,12 +54,14 @@ namespace PKSim.Presentation.Presenters.Individuals
                return ApplicationIcons.Efflux;
             case BiDirectional:
                return ApplicationIcons.Refresh;
-            case Excretion:
+            case Elimination:
                return ApplicationIcons.Excretion;
             case InterstitialToPlasma:
                return ApplicationIcons.Interstitial;
             case PlasmaToInterstitial:
                return ApplicationIcons.Plasma;
+            case PgpLike:
+               return ApplicationIcons.Pgp;
             default:
                return ApplicationIcons.EmptyIcon;
          }

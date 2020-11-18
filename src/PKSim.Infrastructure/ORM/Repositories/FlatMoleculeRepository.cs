@@ -14,7 +14,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
    public class FlatMoleculeRepository : MetaDataRepository<FlatMolecule>, IFlatMoleculeRepository
    {
-      public FlatMoleculeRepository(IDbGateway dbGateway,IDataTableToMetaDataMapper<FlatMolecule> mapper): base(dbGateway, mapper, CoreConstants.ORM.ViewMolecules)
+      public FlatMoleculeRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatMolecule> mapper) : base(dbGateway, mapper,
+         CoreConstants.ORM.ViewMolecules)
       {
       }
 
@@ -24,5 +25,4 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return All().First(x => x.MoleculeType == moleculeType);
       }
    }
-
 }

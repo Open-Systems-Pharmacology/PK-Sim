@@ -51,6 +51,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<AxisCountMode, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<PopulationAnalysisType, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<InteractionType, SerializationContext>());
+         AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<TransportDirection, SerializationContext>());
 
          //PKSim Serializers
          this.AddSerializers(x =>

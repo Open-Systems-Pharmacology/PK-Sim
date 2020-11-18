@@ -31,6 +31,8 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       {
          base.PerformMapping();
          Map(x => x.TransportType);
+         Map(x => x.TransportDirectionBloodCells);
+         Map(x => x.TransportDirectionVascularEndothelium);
       }
    }
 
@@ -52,9 +54,10 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          base.PerformMapping();
+         //TODO DELETE
          Map(x => x.GroupName);
          Map(x => x.MembraneLocation);
-         Map(x => x.CompartmentName);
+         Map(x => x.TransportDirection);
          MapEnumerable(x => x.ProcessNames, x => x.AddProcessName);
       }
    }

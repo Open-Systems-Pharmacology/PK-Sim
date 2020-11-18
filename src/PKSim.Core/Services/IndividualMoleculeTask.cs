@@ -66,7 +66,7 @@ namespace PKSim.Core.Services
       };
 
       protected ParameterRateMetaData FractionParam(string paramName, string rate,
-         bool editable = true) =>
+         bool editable = true, bool visible = true) =>
          new ParameterRateMetaData
          {
             ParameterName = paramName,
@@ -76,6 +76,7 @@ namespace PKSim.Core.Services
             CanBeVaried = true,
             CanBeVariedInPopulation = false,
             ReadOnly = !editable,
+            Visible = visible,
             Dimension = CoreConstants.Dimension.Fraction,
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
             IsDefault = true,

@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -55,12 +56,13 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          normalizeExpressionValues();
          _view.EmphasisRelativeExpressionParameters = ShowInitialConcentration;
-         _expressionParameters
-            .Where(x=>string.Equals(x.ParameterName, CoreConstants.Parameters.INITIAL_CONCENTRATION))
-            .Each(x=>x.Visible = ShowInitialConcentration);
 
-         _view.BindTo(_expressionParameters.Where(x => x.Visible));
+         var parametersToDisplay = _expressionParameters.Where(x=>parameterShouldBeDisplayed(x.Parameter)).ToList();
+         _view.BindTo(parametersToDisplay);
       }
+
+      private bool parameterShouldBeDisplayed(IParameterDTO parameter) => 
+         parameter.IsNamed(INITIAL_CONCENTRATION) ? ShowInitialConcentration : parameter.Parameter.Visible;
 
       public void Edit(IReadOnlyList<TExpressionParameterDTO> expressionParameters)
       {

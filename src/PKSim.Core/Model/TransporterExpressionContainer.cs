@@ -12,7 +12,6 @@ namespace PKSim.Core.Model
       private MembraneLocation _membraneLocation;
       private TransportDirection _transportDirection;
 
-      public string CompartmentName { get; set; }
       private readonly IList<string> _allProcessNames = new List<string>();
       public string GroupName { get; set; }
 
@@ -57,7 +56,6 @@ namespace PKSim.Core.Model
       public void UpdatePropertiesFrom(TransporterContainerTemplate transporterContainerTemplate)
       {
          updatePropertiesFrom(transporterContainerTemplate);
-         CompartmentName = transporterContainerTemplate.CompartmentName;
       }
 
       private void updatePropertiesFrom(ITransporterContainer transporterContainer)
@@ -72,7 +70,6 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          if (!(sourceObject is TransporterExpressionContainer sourceTransporterContainer)) return;
          updatePropertiesFrom(sourceTransporterContainer);
-         CompartmentName = sourceTransporterContainer.CompartmentName;
       }
    }
 }
