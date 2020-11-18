@@ -184,16 +184,21 @@ namespace PKSim.Core
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA = "PARAM_Application_DoseFromDosePerBodySurfaceArea";
          public static readonly string APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT = "PARAM_Application_DoseFromDosePerBodyWeight";
          public static readonly string INITIAL_CONCENTRATION_BLOOD_CELLS = "InitialConcentrationBloodCells";
+         public static readonly string INITIAL_CONCENTRATION_BLOOD_CELLS_TRANSPORTER = "InitialConcentrationBloodCells_Transporter";
          public static readonly string INITIAL_CONCENTRATION_INTRACELLULAR = "InitialConcentrationIntracellular";
+         public static readonly string INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER = "InitialConcentrationIntracellular_Transporter";
          public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL = "InitialConcentrationInterstitial";
+         public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER = "InitialConcentrationInterstitial_Transporter";
          public static readonly string INITIAL_CONCENTRATION_PLASMA = "InitialConcentrationPlasma";
          public static readonly string INITIAL_CONCENTRATION_ENDOSOME = "InitialConcentrationEndosome";
+         public static readonly string INITIAL_CONCENTRATION_PLASMA_TRANSPORTER = "InitialConcentrationPlasma_Transporter";
          public static readonly string INITIAL_CONCENTRATION_LUMEN = "InitialConcentrationLumen";
          public static readonly string ONE_RATE = "One_Rate";
          public static readonly string ZERO_RATE = "Zero_Rate";
          public static readonly string PARAM_F_EXP_BC_MEMBRANE = "PARAM_f_exp_bc_membrane";
          public static readonly string PARAM_F_EXP_VASC_BASOLATERAL = "PARAM_f_exp_vasc_basolateral";
-         public static readonly string PARAM_F_EXP_INTRACELLULAR = "PARAM_f_exp_intracellular";
+         public static readonly string PARAM_F_EXP_INTERSTITIAL = "PARAM_f_exp_interstitial";
+         public static readonly string PARAM_F_EXP_BASOLATERAL = "PARAM_f_exp_basolateral";
       }
 
       public static class Alias
@@ -439,7 +444,7 @@ namespace PKSim.Core
                   return Compartment.Plasma;
                case Parameters.REL_EXP_BLOOD_CELLS:
                   return Compartment.BloodCells;
-               case Parameters.REL_EXP_VASC_ENDO:
+               case Parameters.REL_EXP_VASCULAR_ENDOTHELIUM:
                   return Compartment.VascularEndothelium;
 
                default:
@@ -870,8 +875,7 @@ namespace PKSim.Core
          public const string REL_EXP = "Relative expression";
          public const string REL_EXP_BLOOD_CELLS = "Relative expression in blood cells";
          public const string REL_EXP_PLASMA = "Relative expression in plasma";
-         public const string REL_EXP_VASC_ENDO = "Relative expression in vascular endothelium";
-         public static readonly string NORM_SUFFIX = " (normalized)";
+         public const string REL_EXP_VASCULAR_ENDOTHELIUM = "Relative expression in vascular endothelium";
 
          public static readonly IReadOnlyList<string> AllGlobalMoleculeParameters = new[]
          {
@@ -884,7 +888,7 @@ namespace PKSim.Core
          {
             REL_EXP_BLOOD_CELLS,
             REL_EXP_PLASMA,
-            REL_EXP_VASC_ENDO,
+            REL_EXP_VASCULAR_ENDOTHELIUM,
          };
 
          public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
@@ -1020,6 +1024,8 @@ namespace PKSim.Core
          public const string INITIAL_CONCENTRATION = "Initial concentration";
          public const string FRACTION_EXPRESSED_INTRACELLULAR = "Fraction expressed intracellular";
          public const string FRACTION_EXPRESSED_INTERSTITIAL = "Fraction expressed interstitial";
+         public const string FRACTION_EXPRESSED_APICAL = "Fraction expressed apical";
+         public const string FRACTION_EXPRESSED_BASOLATERAL = "Fraction expressed basolateral";
 
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
          {

@@ -193,7 +193,6 @@ namespace PKSim.Core.Model
 
       /// <summary>
       ///  Returns all possible molecule containers of the individual in which <paramref name="molecule"/> will be defined.
-      ///   This also returns the global molecule containers
       /// </summary>
       public virtual IReadOnlyList<MoleculeExpressionContainer> AllMoleculeContainersFor(IndividualMolecule molecule) =>
          GetAllChildren<MoleculeExpressionContainer>(x => x.IsNamed(molecule.Name));

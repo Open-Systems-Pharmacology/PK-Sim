@@ -3,7 +3,8 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Simulations;
 
 namespace PKSim.Presentation.DTO.Mappers
@@ -14,27 +15,18 @@ namespace PKSim.Presentation.DTO.Mappers
 
    public class ExpressionParametersToSimulationExpressionsDTOMapper : IExpressionParametersToSimulationExpressionsDTOMapper
    {
-      private readonly IParameterToParameterDTOMapper _parameterMapper;
-      private readonly IExpressionParameterMapper _expressionContainerMapper;
+      private readonly IExpressionParameterMapper<ExpressionParameterDTO> _expressionContainerMapper;
 
       public ExpressionParametersToSimulationExpressionsDTOMapper(
-         IParameterToParameterDTOMapper parameterMapper,
-         IExpressionParameterMapper expressionContainerMapper)
+         IExpressionParameterMapper<ExpressionParameterDTO> expressionContainerMapper)
       {
-         _parameterMapper = parameterMapper;
          _expressionContainerMapper = expressionContainerMapper;
       }
 
       public SimulationExpressionsDTO MapFrom(IEnumerable<IParameter> expressionParameters)
       {
          var allParameters = expressionParameters.ToList();
-
-         var allGlobalParameters = allParameters.Where(x => x.NameIsOneOf(
-            CoreConstants.Parameters.REFERENCE_CONCENTRATION,
-            CoreConstants.Parameters.HALF_LIFE_LIVER,
-            CoreConstants.Parameters.HALF_LIFE_INTESTINE)
-         ).ToArray();
-
+         var allGlobalParameters = allParameters.AllGlobalMoleculeParameters();
 
          return new SimulationExpressionsDTO(allGlobalParameters, allParameters.Except(allGlobalParameters).MapAllUsing(_expressionContainerMapper)
          );

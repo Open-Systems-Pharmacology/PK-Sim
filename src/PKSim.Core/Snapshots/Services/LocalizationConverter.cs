@@ -11,6 +11,7 @@ namespace PKSim.Core.Snapshots.Services
       Tissue,            //(basolateral)
    }
 
+
    public enum TissueLocation
    {
       ExtracellularMembrane,

@@ -27,7 +27,7 @@ namespace PKSim.UI
    {
       SuperToolTip ToolTipFor(IParameterDTO parameterDTO);
       SuperToolTip ToolTipFor(SystemicProcessDTO systemicProcessDTO);
-      SuperToolTip ToolTipFor(TransporterExpressionContainerDTO transporterExpressionContainerDTO);
+      SuperToolTip ToolTipFor(TransporterExpressionParameterDTO transporterExpressionContainerDTO);
       SuperToolTip ToolTipFor(CategoryCategoryItemDTO categoryCalculationMethodDTO);
       SuperToolTip ToolTipForPKAnalysis(string parameterDisplayName, string displayValue, string warning);
       SuperToolTip CreateToolTip(string content, string title);
@@ -71,9 +71,9 @@ namespace PKSim.UI
          return CreateToolTip(systemicProcessDTO.Description);
       }
 
-      public SuperToolTip ToolTipFor(TransporterExpressionContainerDTO containerDTO)
+      public SuperToolTip ToolTipFor(TransporterExpressionParameterDTO containerDTO)
       {
-         return CreateToolTip($"{containerDTO.ContainerPathDTO.DisplayName} ({containerDTO.MembraneLocation})", containerDTO.ContainerName);
+         return CreateToolTip($"{containerDTO.ContainerPathDTO.DisplayName} ({containerDTO.TransportDirection})", containerDTO.ContainerName);
       }
 
       public SuperToolTip WarningToolTip(string warning)

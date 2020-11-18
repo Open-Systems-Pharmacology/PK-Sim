@@ -12,7 +12,6 @@ namespace PKSim.Presentation.Presenters.Individuals
 {
    public interface IIndividualProteinExpressionsPresenter : IIndividualMoleculeExpressionsPresenter
    {
-      bool ShowInitialConcentration { get; set; }
    }
 
    public abstract class IndividualProteinExpressionsPresenter<TProtein, TSimulationSubject> :
@@ -27,18 +26,8 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly IExpressionParametersPresenter _expressionParametersPresenter;
       protected TProtein _protein;
       private IndividualProteinDTO _proteinDTO;
-      private bool _showInitialConcentration;
       public ISimulationSubject SimulationSubject { get; set; }
 
-      public bool ShowInitialConcentration
-      {
-         get => _showInitialConcentration;
-         set
-         {
-            _showInitialConcentration = value;
-            rebind();
-         }
-      }
 
       protected IndividualProteinExpressionsPresenter(
          IIndividualProteinExpressionsView view,
@@ -58,8 +47,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          view.AddLocalizationView(_expressionLocalizationPresenter.View);
          view.AddExpressionParametersView(_expressionParametersPresenter.View);
 
-         //TODO probably in preferences
-         _showInitialConcentration = false;
+       
       }
 
       private void onLocalizationChanged() => rebind();
@@ -77,9 +65,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       private bool isParameterVisible(ExpressionParameterDTO expressionParameterDTO)
       {
          var parameter = expressionParameterDTO.Parameter;
-         //initial concentration always visible
-         if (parameter.IsNamed(INITIAL_CONCENTRATION))
-            return ShowInitialConcentration;
 
          //global surrogate parameters depending on settings
          if (string.Equals(expressionParameterDTO.GroupName, CoreConstants.Groups.VASCULAR_SYSTEM))
@@ -91,7 +76,7 @@ namespace PKSim.Presentation.Presenters.Individuals
                case FRACTION_EXPRESSED_BLOOD_CELLS:
                case FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE:
                   return _protein.IsBloodCellsMembrane && _protein.IsBloodCellsIntracellular;
-               case REL_EXP_VASC_ENDO:
+               case REL_EXP_VASCULAR_ENDOTHELIUM:
                   return _protein.InVascularEndothelium;
                case FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME:
                   return _protein.IsVascEndosome;
@@ -130,7 +115,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       protected virtual void Activate(TProtein protein)
       {
          _protein = protein;
-         _proteinDTO = _individualProteinMapper.MapFrom(SimulationSubject, protein);
+         _proteinDTO = _individualProteinMapper.MapFrom(protein, SimulationSubject);
          rebind();
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
          _expressionLocalizationPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());

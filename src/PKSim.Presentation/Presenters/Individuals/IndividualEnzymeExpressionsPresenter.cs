@@ -14,7 +14,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       public IndividualEnzymeExpressionsPresenter(IIndividualProteinExpressionsView view,
          IIndividualProteinToIndividualProteinDTOMapper individualProteinMapper,
          IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter,
-         IExpressionLocalizationPresenter<TSimulationSubject> expressionLocalizationPresenter, 
+         IExpressionLocalizationPresenter<TSimulationSubject> expressionLocalizationPresenter,
          IExpressionParametersPresenter expressionParametersPresenter)
          : base(view,  individualProteinMapper, moleculePropertiesPresenter, expressionLocalizationPresenter, expressionParametersPresenter)
       {

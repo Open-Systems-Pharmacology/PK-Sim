@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Presentation.Views;
+﻿using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using PKSim.Assets;
-using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 
@@ -14,35 +10,17 @@ namespace PKSim.UI.Views.Individuals
    {
       private IIndividualProteinExpressionsPresenter _presenter;
 
-      private readonly ScreenBinder<IIndividualProteinExpressionsPresenter> _screenBinder =
-         new ScreenBinder<IIndividualProteinExpressionsPresenter>();
-
       public IndividualProteinExpressionsView()
       {
          InitializeComponent();
       }
 
-      //https://github.com/DevExpress-Examples/custom-gridcontrol-how-to-hide-particular-grouprow-headers-footers-t264208/blob/16.1.4%2B/CS/CustomGridControl/MyDataController.cs
-
       public void AttachPresenter(IIndividualProteinExpressionsPresenter presenter)
       {
          _presenter = presenter;
       }
-
-      public override void InitializeBinding()
-      {
-         base.InitializeBinding();
-         _screenBinder.Bind(x => x.ShowInitialConcentration)
-            .To(chkShowInitialConcentration)
-            .WithCaption(PKSimConstants.UI.ShowInitialConcentrationParameter);
-      }
-
+      
       public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, view);
-
-      public void BindTo(IEnumerable<ExpressionParameterDTO> parameters)
-      {
-         _screenBinder.BindToSource(_presenter);
-      }
 
       public void AddLocalizationView(IView view) => AddViewTo(layoutItemPanelLocalization, view);
 
@@ -57,7 +35,5 @@ namespace PKSim.UI.Views.Individuals
          layoutGroupMoleculeProperties.Text = PKSimConstants.UI.Properties;
          layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.Localization;
       }
-
-      public override bool HasError => _screenBinder.HasError;
    }
 }

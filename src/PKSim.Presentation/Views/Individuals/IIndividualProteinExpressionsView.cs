@@ -8,21 +8,18 @@ namespace PKSim.Presentation.Views.Individuals
    public interface IIndividualMoleculeView
    {
       void AddMoleculePropertiesView(IView view);
+      void AddExpressionParametersView(IView view);
    }
 
    public interface IIndividualProteinExpressionsView : IView<IIndividualProteinExpressionsPresenter>, IIndividualMoleculeView
    {
-      void BindTo(IEnumerable<ExpressionParameterDTO> parameters);
       void AddLocalizationView(IView view);
-      void AddExpressionParametersView(IView view);
    }
 
    public interface IIndividualTransporterExpressionsView : IView<IIndividualTransporterExpressionsPresenter>, IIndividualMoleculeView
    {
-      void Clear();
-      void BindTo(TransporterExpressionDTO transporterExpressionDTO);
+      void BindTo(IndividualTransporterDTO transporterExpressionDTO);
       void ShowWarning(string warning);
       void HideWarning();
-      void RefreshData();
    }
 }

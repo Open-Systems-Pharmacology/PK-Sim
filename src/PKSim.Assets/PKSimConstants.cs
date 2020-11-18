@@ -1543,6 +1543,7 @@ namespace PKSim.Assets
          public static readonly string ObserversFolder = "Observers";
          public static readonly string AdministrationProtocolFolder = "Administration Protocols";
          public const string Value = "Value";
+         public const string Direction = "Direction";
          public static readonly string Percentage = "Percentage";
          public static readonly string Container = "Container";
          public static readonly string Percentile = "Percentile";
@@ -1556,7 +1557,6 @@ namespace PKSim.Assets
          public static readonly string AllowsScientificNotation = "Allows scientific notation";
          public static readonly string ShouldRestoreWorkspaceLayout = "Restore opened view when loading project";
          public static readonly string ShowUpdateNotification = "Show software update notification if available";
-         public static readonly string HideImmediatelyOnAutoHide = "Immediatly hide panel on auto hide (no animaton)";
          public static readonly string ActiveSkin = "Active skin";
          public static readonly string DecimalPlace = "Decimal place";
          public static readonly string IconSizes = "Icon Sizes";

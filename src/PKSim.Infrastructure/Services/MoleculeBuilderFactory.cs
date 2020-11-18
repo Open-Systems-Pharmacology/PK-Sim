@@ -71,9 +71,9 @@ namespace PKSim.Infrastructure.Services
 
             case QuantityType.Enzyme:
             case QuantityType.OtherProtein:
-               return defaultProteinMoleculeFrom(moleculeType, formulaCache);
+               return defaultProteinMoleculeFrom(moleculeType, formulaCache, QuantityType.Protein);
             case QuantityType.Transporter:
-               return defaultTransporterMoleculeFrom(formulaCache);
+               return defaultProteinMoleculeFrom(QuantityType.Transporter, formulaCache, QuantityType.Transporter);
             case QuantityType.Metabolite:
             case QuantityType.Complex:
                return defaultReactionProduct(moleculeType, formulaCache);
@@ -84,33 +84,17 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      private IMoleculeBuilder defaultTransporterMoleculeFrom(IFormulaCache formulaCache)
+      private IMoleculeBuilder defaultProteinMoleculeFrom(QuantityType moleculeType, IFormulaCache formulaCache, QuantityType templateType)
       {
-         var transporter = defaultProteinMoleculeFrom(QuantityType.Transporter, formulaCache);
-         removeGlobalExpressionsParameterFor(transporter);
-         return transporter;
-      }
-
-      private void removeGlobalExpressionsParameterFor(IMoleculeBuilder molecule)
-      {
-         CoreConstants.Parameters.AllGlobalRelExpParameters.Each(parameterName =>
-         {
-            var parameter = molecule.Parameter(parameterName);
-            if (parameter != null)
-               molecule.RemoveChild(parameter);
-         });
-      }
-
-      private IMoleculeBuilder defaultProteinMoleculeFrom(QuantityType moleculeType, IFormulaCache formulaCache)
-      {
-         var molecule = _moleculeMapper.MapFrom(_flatMoleculeRepository.FindBy(QuantityType.Protein), formulaCache);
+         var molecule = _moleculeMapper.MapFrom(_flatMoleculeRepository.FindBy(templateType), formulaCache);
          molecule.QuantityType = moleculeType;
          molecule.IsXenobiotic = false;
          addDrugParametersTo(molecule, formulaCache);
          return molecule;
       }
 
-      public IMoleculeBuilder Create(Compound compound, CompoundProperties compoundProperties, InteractionProperties interactionProperties, IFormulaCache formulaCache)
+      public IMoleculeBuilder Create(Compound compound, CompoundProperties compoundProperties, InteractionProperties interactionProperties,
+         IFormulaCache formulaCache)
       {
          var drug = Create(QuantityType.Drug, formulaCache).WithName(compound.Name);
 
@@ -151,7 +135,8 @@ namespace PKSim.Infrastructure.Services
          return interactionProperties.Uses(interactionProcess);
       }
 
-      private void updateAlternativeParameters(Compound compound, CompoundProperties compoundProperties, IMoleculeBuilder drug, IFormulaCache formulaCache)
+      private void updateAlternativeParameters(Compound compound, CompoundProperties compoundProperties, IMoleculeBuilder drug,
+         IFormulaCache formulaCache)
       {
          selectedAlternativesFor(compound, compoundProperties).Each(alternative => updateAlternativeParameters(alternative, drug, formulaCache));
       }

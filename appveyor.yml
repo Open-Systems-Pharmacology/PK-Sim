@@ -22,7 +22,6 @@ branches:
   only:
     - develop
     - feature/relative_expression_redesign
-    - 1561-update-relative-expression-design
 
 pull_requests:
   do_not_increment_build_number: true

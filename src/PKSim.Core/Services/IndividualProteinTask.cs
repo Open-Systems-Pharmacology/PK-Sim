@@ -3,7 +3,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using static OSPSuite.Core.Domain.Constants.Dimension;
 using static PKSim.Core.CoreConstants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
@@ -32,19 +31,19 @@ namespace PKSim.Core.Services
          //default localization
          molecule.Localization = Localization.Intracellular;
 
-         AddVascularSystemExpression(molecule,
+         AddGlobalExpression(molecule,
             RelExpParam(REL_EXP_BLOOD_CELLS),
-            fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS, CoreConstants.Rate.ZERO_RATE),
-            fractionParam(FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE, CoreConstants.Rate.PARAM_F_EXP_BC_MEMBRANE, editable: false)
+            FractionParam(FRACTION_EXPRESSED_BLOOD_CELLS, CoreConstants.Rate.ZERO_RATE),
+            FractionParam(FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE, CoreConstants.Rate.PARAM_F_EXP_BC_MEMBRANE, editable: false)
          );
 
-         AddVascularSystemExpression(molecule, RelExpParam(REL_EXP_PLASMA));
+         AddGlobalExpression(molecule, RelExpParam(REL_EXP_PLASMA));
 
-         AddVascularSystemExpression(molecule,
-            RelExpParam(REL_EXP_VASC_ENDO),
-            fractionParam(FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME, CoreConstants.Rate.ZERO_RATE),
-            fractionParam(FRACTION_EXPRESSED_VASC_ENDO_APICAL, CoreConstants.Rate.ZERO_RATE),
-            fractionParam(FRACTION_EXPRESSED_VASC_ENDO_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_VASC_BASOLATERAL, editable: false)
+         AddGlobalExpression(molecule,
+            RelExpParam(REL_EXP_VASCULAR_ENDOTHELIUM),
+            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME, CoreConstants.Rate.ZERO_RATE),
+            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_APICAL, CoreConstants.Rate.ZERO_RATE),
+            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_VASC_BASOLATERAL, editable: false)
          );
 
          AddTissueOrgansExpression(simulationSubject, moleculeName);
@@ -67,58 +66,29 @@ namespace PKSim.Core.Services
       protected void AddTissueParameters(IContainer organ, string moleculeName)
       {
          AddContainerExpression(organ.Container(CoreConstants.Compartment.BloodCells), moleculeName,
-            initialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS)
+            InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS)
          );
 
          AddContainerExpression(organ.Container(CoreConstants.Compartment.Plasma), moleculeName,
-            initialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA)
+            InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA)
          );
 
          AddContainerExpression(organ.Container(CoreConstants.Compartment.Endosome), moleculeName,
-            initialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_ENDOSOME)
+            InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_ENDOSOME)
          );
 
          AddContainerExpression(organ.Container(CoreConstants.Compartment.Intracellular), moleculeName,
             RelExpParam(REL_EXP),
-            fractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.PARAM_F_EXP_INTRACELLULAR, editable: false),
-            initialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR)
+            FractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.ONE_RATE),
+            InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR)
          );
 
          AddContainerExpression(organ.Container(CoreConstants.Compartment.Interstitial), moleculeName,
-            fractionParam(FRACTION_EXPRESSED_INTERSTITIAL, CoreConstants.Rate.ZERO_RATE),
-            initialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL)
+            FractionParam(FRACTION_EXPRESSED_INTERSTITIAL, CoreConstants.Rate.PARAM_F_EXP_INTERSTITIAL, editable: false),
+            InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL)
          );
       }
-
-      private ParameterRateMetaData fractionParam(string paramName, string rate,
-         bool editable = true) =>
-         new ParameterRateMetaData
-         {
-            ParameterName = paramName,
-            Rate = rate,
-            CalculationMethod = CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS,
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            CanBeVaried = true,
-            CanBeVariedInPopulation = false,
-            ReadOnly = !editable,
-            Dimension = CoreConstants.Dimension.Fraction,
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            IsDefault = true
-         };
-
-      private ParameterRateMetaData initialConcentrationParam(string rate) =>
-         new ParameterRateMetaData
-         {
-            ParameterName = INITIAL_CONCENTRATION,
-            Rate = rate,
-            CalculationMethod = CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS,
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            CanBeVaried = true,
-            CanBeVariedInPopulation = true,
-            Dimension = MOLAR_CONCENTRATION,
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-         };
-
+      
       protected void AddMucosaExpression(ISimulationSubject simulationSubject, string moleculeName)
       {
          foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SmallIntestine, CoreConstants.Organ.LargeIntestine))
@@ -135,23 +105,10 @@ namespace PKSim.Core.Services
          foreach (var segment in lumen.Compartments.Where(x => x.Visible))
          {
             AddContainerExpression(segment, moleculeName, RelExpParam(REL_EXP),
-               initialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_LUMEN));
+               InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_LUMEN));
          }
       }
 
-      protected virtual MoleculeExpressionContainer AddContainerExpression(IContainer parentContainer, string moleculeName,
-         params ParameterMetaData[] parameters)
-      {
-         var expressionContainer = _objectBaseFactory.Create<MoleculeExpressionContainer>()
-            .WithName(moleculeName)
-            .WithParentContainer(parentContainer);
-         parameters.Each(p => AddParameterIn(expressionContainer, p, moleculeName));
-         return expressionContainer;
-      }
-
-      protected void AddVascularSystemExpression(IContainer moleculeContainer, params ParameterMetaData[] parameters)
-      {
-         parameters.Each(p => AddParameterIn(moleculeContainer, p, moleculeContainer.Name));
-      }
+    
    }
 }

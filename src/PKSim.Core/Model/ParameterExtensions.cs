@@ -30,7 +30,7 @@ namespace PKSim.Core.Model
             return false;
 
          return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELLS,
-            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
+            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
       }
 
       public static bool IsExpression(this IParameter parameter)
@@ -112,7 +112,7 @@ namespace PKSim.Core.Model
 
       public static bool ShouldExportToSnapshot(this IParameter parameter)
       {
-         if (parameter == null) 
+         if (parameter == null)
             return false;
 
          //For a molecule, we export all global parameters to ensure that they do not get out of sync when loading from snapshot 
@@ -178,15 +178,19 @@ namespace PKSim.Core.Model
          return parameter.CanBeVariedInPopulation && !parameter.IsChangedByCreateIndividual;
       }
 
-      public static IReadOnlyList<IParameter> AllRelatedRelativeExpressionParameters(this IParameter relativeExpressionParameter)
+      public static IReadOnlyList<IParameter> AllGlobalMoleculeParameters(this IEnumerable<IParameter> parameters)
       {
-         var moleculeContainer = relativeExpressionParameter.ParentContainer;
-         var rootContainer = relativeExpressionParameter.RootContainer;
-         return rootContainer.GetAllChildren<IParameter>(x => string.Equals(x.GroupName, CoreConstants.Groups.RELATIVE_EXPRESSION))
-            .Where(x => x.BuildingBlockType == PKSimBuildingBlockType.Individual)
-            .Where(x => moleculeContainer.IsNamed(x.ParentContainer.Name))
-            .Where(x => x.IsExpression())
-            .Where(x => x.Formula.IsConstant()).ToList();
+         return parameters.Where(x => x.NameIsOneOf(
+            CoreConstants.Parameters.REFERENCE_CONCENTRATION,
+            CoreConstants.Parameters.HALF_LIFE_LIVER,
+            CoreConstants.Parameters.HALF_LIFE_INTESTINE)
+         ).ToList();
+      }
+
+      public static IReadOnlyList<IParameter> AllExpressionParameters(this IEnumerable<IParameter> parameters)
+      {
+         var allParameters = parameters.ToList();
+         return allParameters.Except(AllGlobalMoleculeParameters(allParameters)).ToList();
       }
    }
 }

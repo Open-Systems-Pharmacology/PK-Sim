@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
@@ -10,6 +11,8 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
@@ -26,26 +29,32 @@ using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.Individuals
 {
-   public partial class ExpressionParametersView : BaseUserControlWithValueInGrid, IExpressionParametersView
+   public partial class ExpressionParametersView<TExpressionParameterDTO> : BaseUserControlWithValueInGrid,
+      IExpressionParametersView<TExpressionParameterDTO> where TExpressionParameterDTO : ExpressionParameterDTO
    {
       private readonly IToolTipCreator _toolTipCreator;
-      private readonly IImageListRetriever _imageListRetriever;
+      protected readonly IImageListRetriever _imageListRetriever;
 
-      private readonly GridViewBinder<ExpressionParameterDTO> _gridViewBinder;
+      protected readonly GridViewBinder<TExpressionParameterDTO> _gridViewBinder;
       private IGridViewColumn _colGrouping;
       private IGridViewColumn _colParameterValue;
       private IGridViewColumn _colParameterName;
       private readonly ToolTipController _toolTipController = new ToolTipController();
       private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
+      public bool EmphasisRelativeExpressionParameters { get; set; } = false;
 
       private readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar
-         { Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true };
+         {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
 
       private readonly UxRepositoryItemButtonImage _isFixedParameterEditRepository =
          new UxRepositoryItemButtonImage(ApplicationIcons.Reset, PKSimConstants.UI.ResetParameterToolTip)
-            { TextEditStyle = TextEditStyles.Standard };
+            {TextEditStyle = TextEditStyles.Standard};
 
-      private IExpressionParametersPresenter _presenter;
+      protected IExpressionParametersPresenter<TExpressionParameterDTO> _presenter;
+
+      private readonly ScreenBinder<IExpressionParametersPresenter<TExpressionParameterDTO>> _screenBinder =
+         new ScreenBinder<IExpressionParametersPresenter<TExpressionParameterDTO>>();
+
 
       public ExpressionParametersView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever)
       {
@@ -56,11 +65,10 @@ namespace PKSim.UI.Views.Individuals
          InitializeWithGrid(_gridView);
          initializeRepositories();
 
-
          _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _toolTipController.Initialize(_imageListRetriever);
 
-         _gridViewBinder = new GridViewBinder<ExpressionParameterDTO>(_gridView);
+         _gridViewBinder = new GridViewBinder<TExpressionParameterDTO>(_gridView);
       }
 
       protected override void InitializeWithGrid(UxGridView gridView)
@@ -75,7 +83,6 @@ namespace PKSim.UI.Views.Individuals
          gridView.CustomColumnSort += customColumnSort;
          gridView.GridControl.ToolTipController = _toolTipController;
       }
-
 
       private void onShowingEditor(object sender, CancelEventArgs e)
       {
@@ -115,17 +122,18 @@ namespace PKSim.UI.Views.Individuals
 
       //https://github.com/DevExpress-Examples/custom-gridcontrol-how-to-hide-particular-grouprow-headers-footers-t264208/blob/16.1.4%2B/CS/CustomGridControl/MyDataController.cs
 
-      public void AttachPresenter(IExpressionParametersPresenter presenter)
+      public virtual void AttachPresenter(IExpressionParametersPresenter<TExpressionParameterDTO> presenter)
       {
          _presenter = presenter;
       }
 
-      public void BindTo(IEnumerable<ExpressionParameterDTO> expressionParameters)
+      public void BindTo(IEnumerable<TExpressionParameterDTO> expressionParameters)
       {
          _gridViewBinder.BindToSource(expressionParameters);
+         _screenBinder.BindToSource(_presenter);
       }
 
-      public override void InitializeBinding()
+      protected void InitializeGroupBinding()
       {
          _colGrouping = _gridViewBinder.AutoBind(item => item.GroupingPathDTO)
             .WithRepository(dto => configureContainerRepository(dto.GroupingPathDTO))
@@ -133,21 +141,26 @@ namespace PKSim.UI.Views.Individuals
             .AsReadOnly();
          _colGrouping.XtraColumn.GroupIndex = 0;
          _colGrouping.XtraColumn.SortMode = ColumnSortMode.Custom;
+      }
 
-         _gridViewBinder.AutoBind(item => item.ContainerPathDTO)
-            .WithRepository(dto => configureContainerRepository(dto.ContainerPathDTO))
-            .WithCaption(PKSimConstants.UI.Organ)
-            .AsReadOnly();
+      public override void InitializeBinding()
+      {
+         InitializeGroupBinding();
+         InitializeContainerBinding();
+         InitializeParameterNameBinding();
+         InitializeValueBinding();
+         InitializeShowInitialConcentrationBinding();
+      }
 
-         _gridViewBinder.AutoBind(item => item.CompartmentPathDTO)
-            .WithRepository(dto => configureContainerRepository(dto.CompartmentPathDTO))
-            .WithCaption(PKSimConstants.UI.Compartment)
-            .AsReadOnly();
+      protected void InitializeShowInitialConcentrationBinding()
+      {
+         _screenBinder.Bind(x => x.ShowInitialConcentration)
+            .To(chkShowInitialConcentration)
+            .WithCaption(PKSimConstants.UI.ShowInitialConcentrationParameter);
+      }
 
-         _colParameterName = _gridViewBinder.AutoBind(item => item.ParameterName)
-            .WithCaption(PKSimConstants.UI.Parameter)
-            .AsReadOnly();
-
+      protected void InitializeValueBinding()
+      {
          _colParameterValue = _gridViewBinder.AutoBind(item => item.Value)
             .WithFormat(parameterFormatter)
             .WithRepository(repoForParameter)
@@ -155,9 +168,7 @@ namespace PKSim.UI.Views.Individuals
             .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetExpressionParameterValue(o.Parameter, e.NewValue)))
             .WithCaption(PKSimConstants.UI.Value);
 
-         _colParameterName.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.False;
          _colParameterValue.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.False;
-
 
          var col = _gridViewBinder.AutoBind(item => item.NormalizedExpressionPercent)
             .WithCaption(PKSimConstants.UI.RelativeExpressionNorm)
@@ -168,9 +179,29 @@ namespace PKSim.UI.Views.Individuals
          col.XtraColumn.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
          col.XtraColumn.DisplayFormat.FormatType = FormatType.None;
          col.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.False;
+      }
+
+      protected void InitializeParameterNameBinding()
+      {
+         _colParameterName = _gridViewBinder.AutoBind(item => item.ParameterName)
+            .WithCaption(PKSimConstants.UI.Parameter)
+            .AsReadOnly();
+
+         _colParameterName.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.False;
+      }
+
+      protected void InitializeContainerBinding()
+      {
+         _gridViewBinder.AutoBind(item => item.ContainerPathDTO)
+            .WithRepository(dto => configureContainerRepository(dto.ContainerPathDTO))
+            .WithCaption(PKSimConstants.UI.Organ)
+            .AsReadOnly();
 
 
-         _isFixedParameterEditRepository.ButtonClick += (o, e) => OnEvent(resetParameter);
+         _gridViewBinder.AutoBind(item => item.CompartmentPathDTO)
+            .WithRepository(dto => configureContainerRepository(dto.CompartmentPathDTO))
+            .WithCaption(PKSimConstants.UI.Compartment)
+            .AsReadOnly();
       }
 
       private IFormatter<double> parameterFormatter(ExpressionParameterDTO expressionParameterDTO)
@@ -236,8 +267,8 @@ namespace PKSim.UI.Views.Individuals
          _standardParameterEditRepository.ConfigureWith(typeof(double));
          _standardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
+         _isFixedParameterEditRepository.ButtonClick += (o, e) => OnEvent(resetParameter);
       }
-
 
       private RepositoryItem configureContainerRepository(PathElement pathElement)
       {
@@ -256,11 +287,16 @@ namespace PKSim.UI.Views.Individuals
 
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
       {
-         var parameterDTO = _gridViewBinder.ElementAt(e.RowHandle)?.Parameter;
+         var expressionDTO = _gridViewBinder.ElementAt(e.RowHandle);
+         var parameterDTO = expressionDTO?.Parameter;
          if (parameterDTO == null)
             return;
 
-         if (e.Column.OptionsColumn.ReadOnly)
+         //Make sure the name and value of a relative expression parameter are using a bold font
+         if (shouldEmphasisCellAppearance(expressionDTO, e))
+            e.Appearance.Font = new Font(e.Appearance.Font.FontFamily, e.Appearance.Font.Size, FontStyle.Bold);
+
+         else if (e.Column.OptionsColumn.ReadOnly)
             _gridView.AdjustAppearance(e, true);
 
          else if (!parameterDTO.Parameter.Editable)
@@ -268,9 +304,15 @@ namespace PKSim.UI.Views.Individuals
 
          else if (_presenter.IsSetByUser(parameterDTO))
             _gridView.AdjustAppearance(e, PKSimColors.Changed);
+
          else
             e.CombineAppearance(_gridView.Appearance.Row);
       }
+
+      private bool shouldEmphasisCellAppearance(ExpressionParameterDTO expressionDTO, RowCellStyleEventArgs e) =>
+         EmphasisRelativeExpressionParameters &&
+         expressionDTO.NormalizedExpressionPercent != null &&
+         e.Column.IsOneOf(_colParameterName.XtraColumn, _colParameterValue.XtraColumn);
 
       public override bool HasError => _gridViewBinder.HasError;
    }

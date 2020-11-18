@@ -61,7 +61,46 @@ namespace PKSim.Core.Services
          GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
          BuildingBlockType = PKSimBuildingBlockType.Individual,
          IsDefault = true,
+         MinValue = 0,
+         MinIsAllowed = true
       };
+
+      protected ParameterRateMetaData FractionParam(string paramName, string rate,
+         bool editable = true, bool visible = true) =>
+         new ParameterRateMetaData
+         {
+            ParameterName = paramName,
+            Rate = rate,
+            CalculationMethod = CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS,
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            CanBeVaried = true,
+            CanBeVariedInPopulation = false,
+            ReadOnly = !editable,
+            Visible = visible,
+            Dimension = CoreConstants.Dimension.Fraction,
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            IsDefault = true,
+            MinValue = 0,
+            MaxValue = 1,
+            MinIsAllowed = true,
+            MaxIsAllowed = true,
+         };
+
+      protected ParameterRateMetaData InitialConcentrationParam(string rate) =>
+         new ParameterRateMetaData
+         {
+            ParameterName = INITIAL_CONCENTRATION,
+            Rate = rate,
+            CalculationMethod = CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS,
+            BuildingBlockType = PKSimBuildingBlockType.Individual,
+            CanBeVaried = true,
+            CanBeVariedInPopulation = true,
+            Dimension = MOLAR_CONCENTRATION,
+            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
+            MinValue = 0,
+            MinIsAllowed = true
+         };
+
 
       protected TMolecule CreateMolecule(string moleculeName)
       {
@@ -145,5 +184,21 @@ namespace PKSim.Core.Services
 
          return CreateConstantParameterIn(parameterContainer, parameterValue);
       }
+
+      protected void AddGlobalExpression(IContainer moleculeContainer, params ParameterMetaData[] parameters)
+      {
+         parameters.Each(p => AddParameterIn(moleculeContainer, p, moleculeContainer.Name));
+      }
+
+      protected virtual TMoleculeExpressionContainer AddContainerExpression(IContainer parentContainer, string moleculeName,
+         params ParameterMetaData[] parameters)
+      {
+         var expressionContainer = _objectBaseFactory.Create<TMoleculeExpressionContainer>()
+            .WithName(moleculeName)
+            .WithParentContainer(parentContainer);
+         parameters.Each(p => AddParameterIn(expressionContainer, p, moleculeName));
+         return expressionContainer;
+      }
+
    }
 }

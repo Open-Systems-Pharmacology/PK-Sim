@@ -1,40 +1,68 @@
-using OSPSuite.Utility;
+using System.Linq;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
-   public interface IIndividualTransporterToTransporterExpressionDTOMapper : IMapper<IndividualTransporter, TransporterExpressionDTO>
+   public interface IIndividualTransporterToTransporterExpressionDTOMapper
    {
+      IndividualTransporterDTO MapFrom(IndividualTransporter transporter, ISimulationSubject simulationSubject);
    }
 
    public class IndividualTransporterToTransporterExpressionDTOMapper : IIndividualTransporterToTransporterExpressionDTOMapper
    {
-      private readonly IExpressionParameterMapper _expressionContainerMapper;
+      private readonly IExpressionParameterMapper<TransporterExpressionParameterDTO> _expressionContainerMapper;
 
-      public IndividualTransporterToTransporterExpressionDTOMapper(IExpressionParameterMapper expressionContainerMapper)
+      public IndividualTransporterToTransporterExpressionDTOMapper(
+         IExpressionParameterMapper<TransporterExpressionParameterDTO> expressionContainerMapper)
       {
          _expressionContainerMapper = expressionContainerMapper;
       }
 
-      public TransporterExpressionDTO MapFrom(IndividualTransporter transporter)
+      public IndividualTransporterDTO MapFrom(IndividualTransporter transporter, ISimulationSubject simulationSubject)
       {
-         var transporterExpressionDTO = new TransporterExpressionDTO(transporter);
+         var dto = new IndividualTransporterDTO(transporter);
 
-         //TODO
-         // foreach (var transporterExpressionContainer in transporter.AllExpressionsContainers())
-         // {
-         //    addContainerExpression(transporterExpressionDTO, transporter, transporterExpressionContainer);
-         // }
-         return transporterExpressionDTO;
+         //Local parameters
+         foreach (var transporterExpressionContainer in simulationSubject.AllMoleculeContainersFor(transporter).Cast<TransporterExpressionContainer>()
+         )
+         {
+            //Two parents to move up the hierarchy => Organ/Comp/Transporter
+            var isInOrganWithLumen = transporterExpressionContainer.ParentContainer.ParentContainer.IsOrganWithLumen();
+            foreach (var parameter in transporterExpressionContainer.AllParameters())
+            {
+               var expressionParameter = _expressionContainerMapper.MapFrom(parameter);
+               expressionParameter.TransportDirection =
+                  retrieveTransporterDirectionFor(transporterExpressionContainer, parameter, isInOrganWithLumen);
+               dto.AddExpressionParameter(expressionParameter);
+            }
+         }
+
+         //Global parameters;
+         foreach (var parameter in transporter.AllGlobalExpressionParameters)
+         {
+            var expressionParameter = _expressionContainerMapper.MapFrom(parameter);
+            expressionParameter.TransportDirection = parameter.IsNamed(REL_EXP_BLOOD_CELLS)
+               ? transporter.TransportDirectionBloodCells
+               : transporter.TransportDirectionVascularEndothelium;
+            dto.AddExpressionParameter(expressionParameter);
+         }
+
+         return dto;
       }
 
-      private void addContainerExpression(TransporterExpressionDTO proteinExpressionDTO, IndividualTransporter transporter, TransporterExpressionContainer transporterExpressionContainer)
+      private TransportDirection retrieveTransporterDirectionFor(TransporterExpressionContainer transporterExpressionContainer, IParameter parameter,
+         bool isInOrganWithLumen)
       {
-         var expressionDTO = new TransporterExpressionContainerDTO(transporterExpressionContainer) {MoleculeName = transporter.Name, ContainerName = transporterExpressionContainer.Name};
-      //TODO 
-         //   _expressionContainerMapper.UpdateProperties(expressionDTO, transporterExpressionContainer);
-         proteinExpressionDTO.AddProteinExpression(expressionDTO);
+         if (parameter.IsNamed(INITIAL_CONCENTRATION))
+            return TransportDirection.None;
+
+         if (!isInOrganWithLumen)
+            return parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirection.None;
+
+         return !parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirection.None;
       }
    }
 }

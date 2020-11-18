@@ -110,8 +110,8 @@ namespace PKSim.Core.Commands
       {
          var command = new PKSimMacroCommand();
          //We need to iterate over all parameters defined in the protein and update the values as expected
-         var allInterstitialFractionParameters = _simulationSubject.Individual.GetAllChildren<IParameter>(x =>
-            x.IsNamed(CoreConstants.Parameters.FRACTION_EXPRESSED_INTERSTITIAL) && x.ParentContainer.IsNamed(_protein.Name));
+         var allIntracellularFractionParameters = _simulationSubject.Individual.GetAllChildren<IParameter>(x =>
+            x.IsNamed(CoreConstants.Parameters.FRACTION_EXPRESSED_INTRACELLULAR) && x.ParentContainer.IsNamed(_protein.Name));
 
          var allTissueRelExpParameters = _simulationSubject.Individual.GetAllChildren<IParameter>(x =>
             x.IsNamed(CoreConstants.Parameters.REL_EXP) && x.ParentContainer.IsNamed(_protein.Name));
@@ -120,11 +120,11 @@ namespace PKSim.Core.Commands
          //not in tissue=> set expression to 0
          command.AddRange(setParametersForFlags(context, None, InTissue, allTissueRelExpParameters.Select(x => (x, 0.0)).ToArray()));
 
-         //Only in Interstitial => set interstitial fraction to 1
-         command.AddRange(setParametersForFlags(context, Interstitial, Intracellular, allInterstitialFractionParameters.Select(x => (x, 1.0)).ToArray()));
+         //Only in Interstitial => set intracellular fraction to 0
+         command.AddRange(setParametersForFlags(context, Interstitial, Intracellular, allIntracellularFractionParameters.Select(x => (x, 0.0)).ToArray()));
 
-         //Only in Intracellular=> set interstitial fraction to 0
-         command.AddRange(setParametersForFlags(context, Intracellular, Interstitial, allInterstitialFractionParameters.Select(x => (x, 0.0)).ToArray()));
+         //Only in Intracellular=> set intracellular fraction to 1
+         command.AddRange(setParametersForFlags(context, Intracellular, Interstitial, allIntracellularFractionParameters.Select(x => (x, 1.0)).ToArray()));
 
          // no action is required when all localization settings of a group are active. {InTissue, None}
 
@@ -136,7 +136,7 @@ namespace PKSim.Core.Commands
          var command = new PKSimMacroCommand();
          var f_exp_apical = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_APICAL);
          var f_exp_endosome = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME);
-         var rel_exp_vasc = _protein.Parameter(CoreConstants.Parameters.REL_EXP_VASC_ENDO);
+         var rel_exp_vasc = _protein.Parameter(CoreConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
 
          //not in vasc endo => set expression to 0
          command.AddRange(setParametersForFlags(context, None, InVascularEndothelium, (rel_exp_vasc, 0)));
