@@ -28,18 +28,6 @@ namespace PKSim.Core.Model
       private TransporterExpressionContainer globalContainer(string containerName) =>
          this.GetSingleChildByName<TransporterExpressionContainer>(containerName);
 
-      public TransportDirection TransportDirectionBloodCells
-      {
-         get => BloodCellsContainer.TransportDirection;
-         set => BloodCellsContainer.TransportDirection = value;
-      }
-
-      public TransportDirection TransportDirectionVascularEndothelium
-      {
-         get => VascularEndotheliumContainer.TransportDirection;
-         set => VascularEndotheliumContainer.TransportDirection = value;
-      }
-
       //
       // /// <summary>
       // ///    Returns the list of organ name where the process will not take place
@@ -68,8 +56,6 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          if (!(sourceObject is IndividualTransporter sourceTransporter)) return;
          TransportType = sourceTransporter.TransportType;
-         TransportDirectionBloodCells = sourceTransporter.TransportDirectionBloodCells;
-         TransportDirectionVascularEndothelium = sourceTransporter.TransportDirectionVascularEndothelium;
       }
    }
 }
