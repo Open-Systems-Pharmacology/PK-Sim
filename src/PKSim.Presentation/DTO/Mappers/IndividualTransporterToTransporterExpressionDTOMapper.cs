@@ -29,7 +29,7 @@ namespace PKSim.Presentation.DTO.Mappers
          foreach (var transporterExpressionContainer in simulationSubject.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter))
          {
             //Two parents to move up the hierarchy => Organ/Comp/Transporter
-            var isInOrganWithLumen = transporterExpressionContainer.ParentContainer.ParentContainer.IsOrganWithLumen();
+            var isInOrganWithLumen = transporterExpressionContainer.LogicalContainer.IsOrganWithLumen();
             foreach (var parameter in transporterExpressionContainer.AllParameters())
             {
                var expressionParameter = _expressionContainerMapper.MapFrom(parameter);

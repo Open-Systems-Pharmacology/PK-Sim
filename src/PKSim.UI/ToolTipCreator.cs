@@ -87,7 +87,7 @@ namespace PKSim.UI
          if (!string.IsNullOrEmpty(containerDTO.CompartmentName))
             path.Add(containerDTO.CompartmentName);
 
-         var containerDisplay = path.ToString(" -> ");
+         var containerDisplay = path.ToString(" - ");
          return CreateToolTip(transportDirection.Description, containerDisplay, transportDirection.Icon);
       }
 
