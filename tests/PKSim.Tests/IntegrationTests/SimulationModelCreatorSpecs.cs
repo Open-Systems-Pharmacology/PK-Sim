@@ -20,7 +20,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeTask>();
+         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
          var templateIndividual = DomainFactoryForSpecs.CreateStandardIndividual();
          var compound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();

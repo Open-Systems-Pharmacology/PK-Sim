@@ -8,12 +8,12 @@ using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
 {
-   public abstract class IndividualProteinTask<TMolecule> : IndividualMoleculeTask<TMolecule, MoleculeExpressionContainer>
+   public abstract class IndividualProteinFactory<TMolecule> : IndividualMoleculeFactory<TMolecule, MoleculeExpressionContainer>
       where TMolecule : IndividualProtein
    {
       private readonly IIndividualPathWithRootExpander _individualPathWithRootExpander;
 
-      protected IndividualProteinTask(
+      protected IndividualProteinFactory(
          IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,

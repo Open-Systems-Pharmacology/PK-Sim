@@ -1,26 +1,12 @@
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using static PKSim.Core.CoreConstants.Compartment;
 
 namespace PKSim.Core.Model
 {
-   public enum TransportDirection
-   {
-      None,
-      Influx,
-      Efflux,
-      PgpLike,
-      BiDirectional,
-      Elimination,
-      PlasmaToInterstitial,
-      InterstitialToPlasma,
-   }
-
-
    public class IndividualTransporter : IndividualMolecule
    {
       private TransportType _transportType;
-      private TransportDirection _transportDirectionBloodCells;
-      private TransportDirection _transportDirectionVascularEndothelium;
 
       public IndividualTransporter()
       {
@@ -36,36 +22,24 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _transportType, value);
       }
 
+      public TransporterExpressionContainer BloodCellsContainer => globalContainer(BloodCells);
+      public TransporterExpressionContainer VascularEndotheliumContainer => globalContainer(VascularEndothelium);
+
+      private TransporterExpressionContainer globalContainer(string containerName) =>
+         this.GetSingleChildByName<TransporterExpressionContainer>(containerName);
 
       public TransportDirection TransportDirectionBloodCells
       {
-         get => _transportDirectionBloodCells;
-         set => SetProperty(ref _transportDirectionBloodCells, value);
+         get => BloodCellsContainer.TransportDirection;
+         set => BloodCellsContainer.TransportDirection = value;
       }
 
       public TransportDirection TransportDirectionVascularEndothelium
       {
-         get => _transportDirectionVascularEndothelium;
-         set => SetProperty(ref _transportDirectionVascularEndothelium, value);
+         get => VascularEndotheliumContainer.TransportDirection;
+         set => VascularEndotheliumContainer.TransportDirection = value;
       }
 
-      
-      //TODO
-      // /// <summary>
-      // ///    Returns the organ container where the transporter mey be defined
-      // /// </summary>
-      // public new IEnumerable<TransporterExpressionContainer> AllExpressionsContainers()
-      // {
-      //    return base.AllExpressionsContainers().Cast<TransporterExpressionContainer>();
-      // }
-      //
-      // /// <summary>
-      // ///    Retuns the process names induced in the simulation by the given transporter definition
-      // /// </summary>
-      // public IEnumerable<string> AllInducedProcesses()
-      // {
-      //    return AllExpressionsContainers().SelectMany(x => x.ProcessNames).Distinct();
-      // }
       //
       // /// <summary>
       // ///    Returns the list of organ name where the process will not take place
@@ -94,6 +68,8 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          if (!(sourceObject is IndividualTransporter sourceTransporter)) return;
          TransportType = sourceTransporter.TransportType;
+         TransportDirectionBloodCells = sourceTransporter.TransportDirectionBloodCells;
+         TransportDirectionVascularEndothelium = sourceTransporter.TransportDirectionVascularEndothelium;
       }
    }
 }

@@ -12,49 +12,17 @@ namespace PKSim.Core
       }
    }
 
-   public class When_checking_if_a_transporter_container_as_a_polarized_membrane : concern_for_TransporterExpressionContainer
+   public class When_updating_from_a_transporter_template : concern_for_TransporterExpressionContainer
    {
-      [Observation]
-      public void should_return_true_for_kidney()
+      protected override void Because()
       {
-         sut.Name = CoreConstants.Organ.Kidney;
-         sut.HasPolarizedMembrane.ShouldBeTrue();
+         sut.UpdatePropertiesFrom(new TransporterContainerTemplate {TransportDirection = TransportDirections.Excretion});
       }
 
       [Observation]
-      public void should_return_true_for_brain()
+      public void should_update_the_transporter_direction()
       {
-         sut.Name = CoreConstants.Organ.Brain;
-         sut.HasPolarizedMembrane.ShouldBeTrue();
-      }
-
-      [Observation]
-      public void should_return_true_for_pericentral()
-      {
-         sut.Name = CoreConstants.Compartment.Pericentral;
-         sut.HasPolarizedMembrane.ShouldBeTrue();
-      }
-
-      [Observation]
-      public void should_return_true_for_periportal()
-      {
-         sut.Name = CoreConstants.Compartment.Periportal;
-         sut.HasPolarizedMembrane.ShouldBeTrue();
-      }
-
-      [Observation]
-      public void should_return_false_for_other_organs()
-      {
-         sut.Name = CoreConstants.Organ.Muscle;
-         sut.HasPolarizedMembrane.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_return_true_for_gi_mucosa()
-      {
-         sut.GroupName = CoreConstants.Groups.GI_MUCOSA;
-         sut.Name = CoreConstants.Organ.Muscle;
-         sut.HasPolarizedMembrane.ShouldBeTrue();
+         sut.TransportDirection.ShouldBeEqualTo(TransportDirections.Excretion);
       }
    }
-}	
+}

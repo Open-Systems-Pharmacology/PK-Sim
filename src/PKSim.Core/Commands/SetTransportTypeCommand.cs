@@ -53,13 +53,14 @@ namespace PKSim.Core.Commands
 
       protected override void PerformExecuteWith(IExecutionContext context)
       {
-         var transportContainerUpdater = context.Resolve<ITransportContainerUpdater>();
-         Description = PKSimConstants.Command.SetTransportTypeCommandDescription(_transporterContainer.Name, _oldTransportType.ToString(), _newTransportType.ToString());
-         //Update required membrane location before updating transport type
-         _oldMembraneLocation = _transporterContainer.MembraneLocation;
-         _transporterContainer.MembraneLocation = _membraneLocationToUse;
-
-         transportContainerUpdater.UpdateTransporterFromTemplate(_transporterContainer, _individual.Species.Name, _transporterContainer.MembraneLocation, _newTransportType);
+         //TODO
+         // var transportContainerUpdater = context.Resolve<ITransportContainerUpdater>();
+         // Description = PKSimConstants.Command.SetTransportTypeCommandDescription(_transporterContainer.Name, _oldTransportType.ToString(), _newTransportType.ToString());
+         // //Update required membrane location before updating transport type
+         // _oldMembraneLocation = _transporterContainer.MembraneLocation;
+         // _transporterContainer.MembraneLocation = _membraneLocationToUse;
+         //
+         // transportContainerUpdater.UpdateTransporterFromTemplate(_transporterContainer, _individual.Species.Name, _transporterContainer.MembraneLocation, _newTransportType);
       }
    }
 }

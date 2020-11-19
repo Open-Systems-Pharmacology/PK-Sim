@@ -26,14 +26,14 @@ namespace PKSim.Presentation.DTO.Mappers
          var dto = new IndividualTransporterDTO(transporter);
 
          //Local parameters
-         foreach (var transporterExpressionContainer in simulationSubject.AllMoleculeContainersFor(transporter).Cast<TransporterExpressionContainer>()
-         )
+         foreach (var transporterExpressionContainer in simulationSubject.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter))
          {
             //Two parents to move up the hierarchy => Organ/Comp/Transporter
             var isInOrganWithLumen = transporterExpressionContainer.ParentContainer.ParentContainer.IsOrganWithLumen();
             foreach (var parameter in transporterExpressionContainer.AllParameters())
             {
                var expressionParameter = _expressionContainerMapper.MapFrom(parameter);
+               expressionParameter.TransporterExpressionContainer = transporterExpressionContainer;
                expressionParameter.TransportDirection =
                   retrieveTransporterDirectionFor(transporterExpressionContainer, parameter, isInOrganWithLumen);
                dto.AddExpressionParameter(expressionParameter);
@@ -44,9 +44,11 @@ namespace PKSim.Presentation.DTO.Mappers
          foreach (var parameter in transporter.AllGlobalExpressionParameters)
          {
             var expressionParameter = _expressionContainerMapper.MapFrom(parameter);
-            expressionParameter.TransportDirection = parameter.IsNamed(REL_EXP_BLOOD_CELLS)
-               ? transporter.TransportDirectionBloodCells
-               : transporter.TransportDirectionVascularEndothelium;
+            expressionParameter.TransporterExpressionContainer = parameter.IsNamed(REL_EXP_BLOOD_CELLS)
+               ? transporter.BloodCellsContainer
+               : transporter.VascularEndotheliumContainer;
+
+            expressionParameter.TransportDirection = expressionParameter.TransporterExpressionContainer.TransportDirection;
             dto.AddExpressionParameter(expressionParameter);
          }
 
@@ -57,12 +59,12 @@ namespace PKSim.Presentation.DTO.Mappers
          bool isInOrganWithLumen)
       {
          if (parameter.IsNamed(INITIAL_CONCENTRATION))
-            return TransportDirection.None;
+            return TransportDirections.None;
 
          if (!isInOrganWithLumen)
-            return parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirection.None;
+            return parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirections.None;
 
-         return !parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirection.None;
+         return !parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirections.None;
       }
    }
 }

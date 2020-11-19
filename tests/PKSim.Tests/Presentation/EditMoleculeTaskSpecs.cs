@@ -69,7 +69,7 @@ namespace PKSim.Presentation
       private ICommand _resultCommand;
       private QueryExpressionResults _queryResults;
       private QueryExpressionSettings _querySettings;
-      private IIndividualMoleculeTask _proteinFactory;
+      private IIndividualMoleculeFactory _proteinFactory;
       private IndividualMolecule _tempProtein;
       private ICommand _addCommand;
       private const string _queryConfiguration = "blalal";
@@ -87,7 +87,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _proteinExpressionPresenter.GetQueryResults()).Returns(_queryResults);
          _queryResults.QueryConfiguration = _queryConfiguration;
          A.CallTo(() => _executionContext.BuildingBlockContaining(_molecule)).Returns(_individual);
-         _proteinFactory = A.Fake<IIndividualMoleculeTask>();
+         _proteinFactory = A.Fake<IIndividualMoleculeFactory>();
          A.CallTo(() => _moleculeFactoryResolver.FactoryFor<IndividualProtein>()).Returns(_proteinFactory);
          _tempProtein = new IndividualEnzyme();
          A.CallTo(() => _querySettingsMapper.MapFrom(_tempProtein, _individual)).Returns(_querySettings);

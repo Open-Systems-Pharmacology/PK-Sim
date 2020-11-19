@@ -23,7 +23,7 @@ namespace PKSim.Matlab
       private readonly IRandomPopulationFactory _randomPopulationFactory;
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IMoleculeOntogenyVariabilityUpdater _ontogenyVariabilityUpdater;
-      private readonly IIndividualEnzymeTask _individualEnzymeTask;
+      private readonly IIndividualEnzymeFactory _individualEnzymeFactory;
 
       static MatlabPopulationFactory()
       {
@@ -31,18 +31,18 @@ namespace PKSim.Matlab
       }
 
       public MatlabPopulationFactory() : this(IoC.Resolve<IMatlabPopulationSettingsToPopulationSettingsMapper>(), IoC.Resolve<IRandomPopulationFactory>(),
-         IoC.Resolve<IOntogenyRepository>(), IoC.Resolve<IMoleculeOntogenyVariabilityUpdater>(), IoC.Resolve<IIndividualEnzymeTask>())
+         IoC.Resolve<IOntogenyRepository>(), IoC.Resolve<IMoleculeOntogenyVariabilityUpdater>(), IoC.Resolve<IIndividualEnzymeFactory>())
       {
       }
 
       public MatlabPopulationFactory(IMatlabPopulationSettingsToPopulationSettingsMapper populationSettingsMapper, IRandomPopulationFactory randomPopulationFactory,
-         IOntogenyRepository ontogenyRepository, IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater, IIndividualEnzymeTask individualEnzymeTask)
+         IOntogenyRepository ontogenyRepository, IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater, IIndividualEnzymeFactory individualEnzymeFactory)
       {
          _populationSettingsMapper = populationSettingsMapper;
          _randomPopulationFactory = randomPopulationFactory;
          _ontogenyRepository = ontogenyRepository;
          _ontogenyVariabilityUpdater = ontogenyVariabilityUpdater;
-         _individualEnzymeTask = individualEnzymeTask;
+         _individualEnzymeFactory = individualEnzymeFactory;
       }
 
       public IParameterValueCache CreatePopulation(PopulationSettings matlabPopulationSettings, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
@@ -60,7 +60,7 @@ namespace PKSim.Matlab
             if (ontogeny == null)
                continue;
 
-            var molecule = _individualEnzymeTask.CreateEmpty().WithName(moleculeOntogeny.Molecule);
+            var molecule = _individualEnzymeFactory.CreateEmpty().WithName(moleculeOntogeny.Molecule);
             molecule.Ontogeny = ontogeny;
 
             population.AddMolecule(molecule);

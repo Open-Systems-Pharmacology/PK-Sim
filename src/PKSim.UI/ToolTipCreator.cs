@@ -20,6 +20,8 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Assets;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Mappers;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
 
 namespace PKSim.UI
 {
@@ -43,6 +45,7 @@ namespace PKSim.UI
       SuperToolTip ToolTipFor<TX, TY>(CurveData<TX, TY> curveData, double xDisplayValue, double yDisplayValue)
          where TX : IXValue
          where TY : IYValue;
+
    }
 
    public class ToolTipCreator : OSPSuite.UI.Services.ToolTipCreator, IToolTipCreator
@@ -73,7 +76,19 @@ namespace PKSim.UI
 
       public SuperToolTip ToolTipFor(TransporterExpressionParameterDTO containerDTO)
       {
-         return CreateToolTip($"{containerDTO.ContainerPathDTO.DisplayName} ({containerDTO.TransportDirection})", containerDTO.ContainerName);
+         var transportDirection = containerDTO.TransportDirection;
+         if (transportDirection == TransportDirections.None)
+            return null;
+
+         var path = new List<string>();
+         if(!string.IsNullOrEmpty(containerDTO.ContainerName))
+            path.Add(containerDTO.ContainerName);
+
+         if (!string.IsNullOrEmpty(containerDTO.CompartmentName))
+            path.Add(containerDTO.CompartmentName);
+
+         var containerDisplay = path.ToString(" -> ");
+         return CreateToolTip(transportDirection.Description, containerDisplay, transportDirection.Icon);
       }
 
       public SuperToolTip WarningToolTip(string warning)

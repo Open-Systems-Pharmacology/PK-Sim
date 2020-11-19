@@ -38,10 +38,9 @@ namespace PKSim.Core.Services
       ICommand RemoveMoleculeFrom(IndividualMolecule moleculeToRemove, TSimulationSubject simulationSubject);
 
       /// <summary>
-      ///    Updates the membrane type for the transporter container given as parameter
+      ///    Updates the transport direction type for the transporter container given as parameter
       /// </summary>
-      ICommand SetMembraneLocationFor(TransporterExpressionContainer transporterContainer, TransportType transportType,
-         MembraneLocation membraneLocation);
+      ICommand SetTransportDirection(TransporterExpressionContainer transporterContainer, TransportDirection transportDirection);
 
       /// <summary>
       ///    Update the localization of the protein
@@ -138,10 +137,9 @@ namespace PKSim.Core.Services
          return command;
       }
 
-      public ICommand SetMembraneLocationFor(TransporterExpressionContainer transporterContainer, TransportType transportType,
-         MembraneLocation membraneLocation)
+      public ICommand SetTransportDirection(TransporterExpressionContainer transporterContainer, TransportDirection transportDirection)
       {
-         return new SetMembraneTypeCommand(transporterContainer, transportType, membraneLocation, _executionContext).Run(_executionContext);
+         return new SetTransportDirectionCommand(transporterContainer, transportDirection, _executionContext).Run(_executionContext);
       }
 
       public ICommand SetExpressionLocalizationFor(IndividualProtein protein, Localization localization, TSimulationSubject simulationSubject)
@@ -165,7 +163,7 @@ namespace PKSim.Core.Services
       {
          if (!(molecule is IndividualTransporter transporter)) return;
 
-         _transportContainerUpdater.SetDefaultSettingsForTransporter(transporter, simulationSubject.Species.Name, moleculeName);
+         _transportContainerUpdater.SetDefaultSettingsForTransporter(simulationSubject, transporter, simulationSubject.Species.Name, moleculeName);
       }
 
       private void setDefaultOntogeny(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)

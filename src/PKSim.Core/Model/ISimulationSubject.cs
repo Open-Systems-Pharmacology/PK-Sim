@@ -74,5 +74,10 @@ namespace PKSim.Core.Model
       ///  Returns all possible molecule containers of the individual in which <paramref name="molecule"/> will be defined.
       /// </summary>
       IReadOnlyList<MoleculeExpressionContainer> AllMoleculeContainersFor(IndividualMolecule molecule);
+
+      /// <summary>
+      ///  Returns all possible molecule containers of the individual in which <paramref name="molecule"/> will be defined.
+      /// </summary>
+      IReadOnlyList<T> AllMoleculeContainersFor<T>(IndividualMolecule molecule) where T : MoleculeExpressionContainer;
    }
 }

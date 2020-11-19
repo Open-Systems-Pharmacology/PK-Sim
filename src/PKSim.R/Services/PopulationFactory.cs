@@ -25,20 +25,20 @@ namespace PKSim.R.Services
       private readonly RandomPopulationSettingsMapper _populationSettingsMapper;
       private readonly IRandomPopulationFactory _randomPopulationFactory;
       private readonly IOntogenyRepository _ontogenyRepository;
-      private readonly IIndividualEnzymeTask _individualEnzymeTask;
+      private readonly IIndividualEnzymeFactory _individualEnzymeFactory;
       private readonly IMoleculeOntogenyVariabilityUpdater _ontogenyVariabilityUpdater;
 
       public PopulationFactory(
          RandomPopulationSettingsMapper populationSettingsMapper,
          IRandomPopulationFactory randomPopulationFactory,
          IOntogenyRepository ontogenyRepository,
-         IIndividualEnzymeTask individualEnzymeTask,
+         IIndividualEnzymeFactory individualEnzymeFactory,
          IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater)
       {
          _populationSettingsMapper = populationSettingsMapper;
          _randomPopulationFactory = randomPopulationFactory;
          _ontogenyRepository = ontogenyRepository;
-         _individualEnzymeTask = individualEnzymeTask;
+         _individualEnzymeFactory = individualEnzymeFactory;
          _ontogenyVariabilityUpdater = ontogenyVariabilityUpdater;
       }
 
@@ -58,7 +58,7 @@ namespace PKSim.R.Services
             if (ontogeny == null)
                continue;
 
-            var molecule = _individualEnzymeTask.CreateEmpty().WithName(moleculeOntogeny.Molecule);
+            var molecule = _individualEnzymeFactory.CreateEmpty().WithName(moleculeOntogeny.Molecule);
             molecule.Ontogeny = ontogeny;
 
             population.AddMolecule(molecule);

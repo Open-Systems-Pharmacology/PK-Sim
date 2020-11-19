@@ -31,10 +31,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public string CompartmentName { get; set; }
 
-      public IEnumerable<string> ProcessNames
-      {
-         get { return _allProcessNames; }
-      }
+      public IEnumerable<string> ProcessNames => _allProcessNames;
 
       public void AddProcessName(string processName)
       {
@@ -51,16 +48,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public TransportType TransportType { get; set; }
 
-      /// <summary>
-      ///    Where in the compartment does the transporter sit?
-      /// </summary>
-      public MembraneLocation MembraneLocation { get; set; }
-
-      /// <summary>
-      ///    Membrane display name
-      /// </summary>
-      public string MembraneLocationDisplayName { get; set; }
-
       public override string Name => Gene;
+
+      public TransportDirection TransportDirection { get; set; }
    }
 }

@@ -32,7 +32,7 @@ namespace PKSim.UI.Views.Individuals
    public partial class ExpressionParametersView<TExpressionParameterDTO> : BaseUserControlWithValueInGrid,
       IExpressionParametersView<TExpressionParameterDTO> where TExpressionParameterDTO : ExpressionParameterDTO
    {
-      private readonly IToolTipCreator _toolTipCreator;
+      protected readonly IToolTipCreator _toolTipCreator;
       protected readonly IImageListRetriever _imageListRetriever;
 
       protected readonly GridViewBinder<TExpressionParameterDTO> _gridViewBinder;
@@ -204,32 +204,32 @@ namespace PKSim.UI.Views.Individuals
             .AsReadOnly();
       }
 
-      private IFormatter<double> parameterFormatter(ExpressionParameterDTO expressionParameterDTO)
+      private IFormatter<double> parameterFormatter(TExpressionParameterDTO expressionParameterDTO)
       {
          return expressionParameterDTO.Parameter.ParameterFormatter();
       }
 
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
       {
-         var parameterDTO = _gridViewBinder.ElementAt(e)?.Parameter;
-         if (parameterDTO == null)
+         var expressionParameterDTO = _gridViewBinder.ElementAt(e);
+         if (expressionParameterDTO == null)
             return;
 
          //check if subclass want to display a tool tip as well
-         var superToolTip = GetToolTipFor(parameterDTO, _gridView.HitInfoAt(e.ControlMousePosition));
+         var superToolTip = GetToolTipFor(expressionParameterDTO, _gridView.HitInfoAt(e.ControlMousePosition));
          if (superToolTip == null)
             return;
 
-         e.Info = _toolTipCreator.ToolTipControlInfoFor(parameterDTO, superToolTip);
+         e.Info = _toolTipCreator.ToolTipControlInfoFor(expressionParameterDTO, superToolTip);
       }
 
-      protected virtual SuperToolTip GetToolTipFor(IParameterDTO parameterDTO, GridHitInfo hi)
+      protected virtual SuperToolTip GetToolTipFor(TExpressionParameterDTO expressionParameterDTO, GridHitInfo hi)
       {
          //don't show tooltips for value as it might contain error info that would be hidden
          if (hi.Column == _colParameterValue.XtraColumn)
             return null;
 
-         return _toolTipCreator.ToolTipFor(parameterDTO);
+         return _toolTipCreator.ToolTipFor(expressionParameterDTO.Parameter);
       }
 
       protected override bool ColumnIsValue(GridColumn gridColumn)
@@ -240,7 +240,7 @@ namespace PKSim.UI.Views.Individuals
          return _colParameterValue.XtraColumn == gridColumn;
       }
 
-      private RepositoryItem repoForParameter(ExpressionParameterDTO expressionDTO)
+      private RepositoryItem repoForParameter(TExpressionParameterDTO expressionDTO)
       {
          if (_presenter.IsSetByUser(expressionDTO.Parameter))
             return _isFixedParameterEditRepository;
@@ -248,7 +248,7 @@ namespace PKSim.UI.Views.Individuals
          return _standardParameterEditRepository;
       }
 
-      private RepositoryItem repoForNormalizedExpression(ExpressionParameterDTO expressionDTO)
+      private RepositoryItem repoForNormalizedExpression(TExpressionParameterDTO expressionDTO)
       {
          if (expressionDTO.NormalizedExpressionPercent == null)
             return _standardParameterEditRepository;
@@ -309,7 +309,7 @@ namespace PKSim.UI.Views.Individuals
             e.CombineAppearance(_gridView.Appearance.Row);
       }
 
-      private bool shouldEmphasisCellAppearance(ExpressionParameterDTO expressionDTO, RowCellStyleEventArgs e) =>
+      private bool shouldEmphasisCellAppearance(TExpressionParameterDTO expressionDTO, RowCellStyleEventArgs e) =>
          EmphasisRelativeExpressionParameters &&
          expressionDTO.NormalizedExpressionPercent != null &&
          e.Column.IsOneOf(_colParameterName.XtraColumn, _colParameterValue.XtraColumn);

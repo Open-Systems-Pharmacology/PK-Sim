@@ -26,8 +26,8 @@ namespace PKSim.IntegrationTests
       protected Individual _individual;
       protected Compound _compound;
       protected Protocol _protocol;
-      protected IIndividualEnzymeTask _enzymeTask;
-      protected IIndividualTransporterTask _transporterTask;
+      protected IIndividualEnzymeFactory _enzymeFactory;
+      protected IIndividualTransporterFactory _transporterFactory;
       protected double _relExpPls = 0.2;
       protected double _relExpBloodCells = 0.5;
       protected double _relExpVascEndo = 0.3;
@@ -46,14 +46,14 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          _compoundProcessRepository = IoC.Resolve<ICompoundProcessRepository>();
          _cloneManager = IoC.Resolve<ICloneManager>();
-         _enzymeTask = IoC.Resolve<IIndividualEnzymeTask>();
-         _transporterTask = IoC.Resolve<IIndividualTransporterTask>();
+         _enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
+         _transporterFactory = IoC.Resolve<IIndividualTransporterFactory>();
          _modelPropertiesTask = IoC.Resolve<IModelPropertiesTask>();
          _modelConfigurationRepository = IoC.Resolve<IModelConfigurationRepository>();
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
-         _enzyme = _enzymeTask.AddMoleculeTo(_individual, "CYP").DowncastTo<IndividualEnzyme>();
+         _enzyme = _enzymeFactory.AddMoleculeTo(_individual, "CYP").DowncastTo<IndividualEnzyme>();
          _allExpressionParameters = _individual.AllExpressionParametersFor(_enzyme);
          _allExpressionParameters[CoreConstants.Compartment.Plasma].Value = _relExpPls;
          _allExpressionParameters[CoreConstants.Compartment.BloodCells].Value = _relExpBloodCells;
@@ -266,10 +266,10 @@ namespace PKSim.IntegrationTests
          _transporterContainerTemplateRepository = IoC.Resolve<ITransporterContainerTemplateRepository>();
          var allTransporters = _transporterContainerTemplateRepository.TransportersFor(_individual.Species.Name, CoreConstants.Organ.Brain);
 
-         var influxBBB = allTransporters.Where(x => x.MembraneLocation == MembraneLocation.BloodBrainBarrier)
+         var influxBBB = allTransporters.Where(x => x.TransportDirection == TransportDirections.Influx)
             .FirstOrDefault(x => x.TransportType == TransportType.Influx);
 
-         _transporter = _transporterTask.CreateFor(_individual, "TRANS", TransportType.Efflux).DowncastTo<IndividualTransporter>();
+         _transporter = _transporterFactory.CreateFor(_individual, "TRANS", TransportType.Efflux).DowncastTo<IndividualTransporter>();
          //TODO    var transportContainer = _transporter.ExpressionContainer(CoreConstants.Organ.Brain).DowncastTo<TransporterExpressionContainer>();
          TransporterExpressionContainer transportContainer = null;
 

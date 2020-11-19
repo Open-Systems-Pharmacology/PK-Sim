@@ -10,14 +10,14 @@ using PKSim.Core.Services;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_IndividualEnzymeFactory : ContextForIntegration<IIndividualEnzymeTask>
+   public abstract class concern_for_IndividualEnzymeFactory : ContextForIntegration<IIndividualEnzymeFactory>
    {
       protected Individual _individual;
       public override void GlobalContext()
       {
          base.GlobalContext();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
-         sut = IoC.Resolve<IIndividualEnzymeTask>();
+         sut = IoC.Resolve<IIndividualEnzymeFactory>();
       }
 
    }

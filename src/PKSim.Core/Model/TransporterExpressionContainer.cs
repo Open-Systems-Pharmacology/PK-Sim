@@ -1,38 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Model
 {
    public class TransporterExpressionContainer : MoleculeExpressionContainer, ITransporterContainer
    {
-      private MembraneLocation _membraneLocation;
       private TransportDirection _transportDirection;
-
-      private readonly IList<string> _allProcessNames = new List<string>();
-      public string GroupName { get; set; }
-
-      public IEnumerable<string> ProcessNames => _allProcessNames;
-
-      public void AddProcessName(string processName)
-      {
-         _allProcessNames.Add(processName);
-      }
-
-      public void ClearProcessNames()
-      {
-         _allProcessNames.Clear();
-      }
-
-      public MembraneLocation MembraneLocation
-      {
-         get => _membraneLocation;
-         set => SetProperty(ref _membraneLocation, value);
-      }
-
 
       public TransportDirection TransportDirection
       {
@@ -40,18 +13,6 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _transportDirection, value);
       }
       
-      public string OrganName => Name;
-
-      public bool HasPolarizedMembrane
-      {
-         get
-         {
-            if (CoreConstants.Organ.PolarizedMembraneOrgans.Contains(OrganName))
-               return true;
-
-            return string.Equals(GroupName, CoreConstants.Groups.GI_MUCOSA);
-         }
-      }
 
       public void UpdatePropertiesFrom(TransporterContainerTemplate transporterContainerTemplate)
       {
@@ -60,9 +21,7 @@ namespace PKSim.Core.Model
 
       private void updatePropertiesFrom(ITransporterContainer transporterContainer)
       {
-         MembraneLocation = transporterContainer.MembraneLocation;
-         _allProcessNames.Clear();
-         transporterContainer.ProcessNames.Each(AddProcessName);
+         TransportDirection = transporterContainer.TransportDirection;
       }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)

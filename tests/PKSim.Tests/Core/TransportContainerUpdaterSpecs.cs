@@ -25,76 +25,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_asked_to_update_a_transport_container_for_a_given_species_membrane_and_transport_type_that_do_exit_in_the_databse : concern_for_TransportContainerUpdater
-   {
-      private TransporterExpressionContainer _transporterContainer;
-      private string _species;
-      private MembraneLocation _membrane;
-      private TransportType _transportType;
-      private const string _liver = "Liver";
-      private readonly List<TransporterContainerTemplate> _allTransporters = new List<TransporterContainerTemplate>();
-      private TransporterContainerTemplate _transporterContainerTemplate;
 
-      protected override void Context()
-      {
-         base.Context();
-         _transporterContainer = new TransporterExpressionContainer().WithName(_liver);
-         _species = "human";
-         A.CallTo(() => _repository.TransportersFor(_species, _liver)).Returns(_allTransporters);
-         _membrane = MembraneLocation.Apical;
-         _transportType = TransportType.Efflux;
-         _transporterContainerTemplate = new TransporterContainerTemplate {MembraneLocation = _membrane, TransportType = _transportType};
-         _allTransporters.Add(_transporterContainerTemplate);
-      }
-
-      protected override void Because()
-      {
-         sut.UpdateTransporterFromTemplate(_transporterContainer, _species, _membrane, _transportType);
-      }
-
-      [Observation]
-      public void should_update_the_transporter_if_the_template_exists()
-      {
-         _transporterContainer.MembraneLocation.ShouldBeEqualTo(_membrane);
-      }
-   }
-
-   public class When_asked_to_update_a_transport_container_for_a_given_species_membrane_and_transport_type_that_do_not_exit_in_the_databse : concern_for_TransportContainerUpdater
-   {
-      private TransporterExpressionContainer _transporterContainer;
-      private string _species;
-      private MembraneLocation _membrane;
-      private TransportType _transportType;
-      private string _liver = "Liver";
-      private readonly List<TransporterContainerTemplate> _allTransporters = new List<TransporterContainerTemplate>();
-      private TransporterContainerTemplate _transporterContainerTemplate;
-
-      protected override void Context()
-      {
-         base.Context();
-         _transporterContainer = new TransporterExpressionContainer().WithName(_liver);
-         _species = "human";
-         A.CallTo(() => _repository.TransportersFor(_species, _liver)).Returns(_allTransporters);
-         _membrane = MembraneLocation.Apical;
-         _transportType = TransportType.Efflux;
-         _transporterContainerTemplate = new TransporterContainerTemplate {MembraneLocation = _membrane, TransportType = _transportType};
-         _allTransporters.Add(_transporterContainerTemplate);
-      }
-
-      [Observation]
-      public void should_throw_an_exception_if_the_template_does_not_exist_for_the_given_membrane()
-      {
-         The.Action(() => sut.UpdateTransporterFromTemplate(_transporterContainer, _species, MembraneLocation.Basolateral, _transportType))
-            .ShouldThrowAn<PKSimException>();
-      }
-
-      [Observation]
-      public void should_throw_an_exception_if_the_template_does_not_exist_for_the_given_transport_type()
-      {
-         The.Action(() => sut.UpdateTransporterFromTemplate(_transporterContainer, _species, _membrane, TransportType.Secretion))
-            .ShouldThrowAn<PKSimException>();
-      }
-   }
 
    public class When_asked_to_set_the_default_settings_for_a_transporter : concern_for_TransportContainerUpdater
    {
@@ -107,18 +38,19 @@ namespace PKSim.Core
       private TransporterContainerTemplate _transporterContainerTemplate;
       private IndividualTransporter _transporter;
       private TransporterContainerTemplate _defaultTemplate;
+      private ISimulationSubject _individual;
 
       protected override void Context()
       {
          base.Context();
+         _individual= A.Fake<ISimulationSubject>();
          _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "toto"};
-         _transporterWithTemplate = new TransporterExpressionContainer {MembraneLocation = MembraneLocation.Apical}.WithName(_liver);
-         _transporterWithoutTemplate = new TransporterExpressionContainer {MembraneLocation = MembraneLocation.Basolateral}.WithName("Kidney");
-         _transporter.Add(_transporterWithTemplate);
-         _transporter.Add(_transporterWithoutTemplate);
+         _transporterWithTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirections.Influx}.WithName(_liver);
+         _transporterWithoutTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirections.Efflux}.WithName("Kidney");
+         A.CallTo(() => _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter)).Returns(new []{_transporterWithTemplate, _transporterWithoutTemplate, });
 
-         _transporterContainerTemplate = new TransporterContainerTemplate {MembraneLocation = MembraneLocation.Apical, TransportType = TransportType.Influx};
-         _defaultTemplate = new TransporterContainerTemplate {MembraneLocation = MembraneLocation.Basolateral, TransportType = TransportType.Influx};
+         _transporterContainerTemplate = new TransporterContainerTemplate { TransportType = TransportType.Influx};
+         _defaultTemplate = new TransporterContainerTemplate { TransportType = TransportType.Influx};
          _allTransporterTemplates.Add(_transporterContainerTemplate);
 
          A.CallTo(() => _repository.HasTransporterTemplateFor(_species, _transporter.Name)).Returns(true);
@@ -130,7 +62,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.SetDefaultSettingsForTransporter(_transporter, _species, _transporter.Name);
+         sut.SetDefaultSettingsForTransporter(_individual, _transporter, _species, _transporter.Name);
       }
 
       [Observation]
@@ -148,13 +80,13 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_template_defined_in_the_database_if_available()
       {
-         _transporterWithTemplate.MembraneLocation.ShouldBeEqualTo(_transporterContainerTemplate.MembraneLocation);
+         _transporterWithTemplate.TransportDirection.ShouldBeEqualTo(_transporterContainerTemplate.TransportDirection);
       }
 
       [Observation]
       public void should_use_the_default_settings_otherwise()
       {
-         _transporterWithoutTemplate.MembraneLocation.ShouldBeEqualTo(_defaultTemplate.MembraneLocation);
+         _transporterWithoutTemplate.TransportDirection.ShouldBeEqualTo(_defaultTemplate.TransportDirection);
       }
    }
 
@@ -163,10 +95,13 @@ namespace PKSim.Core
       private const string _species = "human";
       private const string _transporterName = "toto";
       private IndividualTransporter _transporter;
+      private ISimulationSubject _individual;
 
       protected override void Context()
       {
          base.Context();
+         _individual = A.Fake<ISimulationSubject>();
+
          _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "aa"};
 
          A.CallTo(() => _repository.HasTransporterTemplateFor(_species, _transporterName)).Returns(false);
@@ -175,7 +110,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.SetDefaultSettingsForTransporter(_transporter, _species, _transporterName);
+         sut.SetDefaultSettingsForTransporter (_individual, _transporter, _species, _transporterName);
       }
 
       [Observation]

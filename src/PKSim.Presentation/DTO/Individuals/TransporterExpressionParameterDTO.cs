@@ -7,6 +7,8 @@ namespace PKSim.Presentation.DTO.Individuals
 {
    public class TransporterExpressionParameterDTO : ExpressionParameterDTO
    {
+      public TransporterExpressionContainer TransporterExpressionContainer { get; set; }
+
       //
       // public TransporterExpressionContainerDTO(TransporterExpressionContainer transporterContainer) 
       // {
