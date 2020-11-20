@@ -257,23 +257,17 @@ namespace PKSim.IntegrationTests
    public class When_creating_a_transporter_for_brain_BBB_influx : concern_for_PartialProcesses
    {
       private IndividualTransporter _transporter;
-      private ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
       private PartialProcess _transportProcess;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _transporterContainerTemplateRepository = IoC.Resolve<ITransporterContainerTemplateRepository>();
-         var allTransporters = _transporterContainerTemplateRepository.TransportersFor(_individual.Species.Name, CoreConstants.Organ.Brain);
-
-         var influxBBB = allTransporters.Where(x => x.TransportDirection == TransportDirections.Influx)
-            .FirstOrDefault(x => x.TransportType == TransportType.Influx);
-
          _transporter = _transporterFactory.CreateFor(_individual, "TRANS", TransportType.Efflux).DowncastTo<IndividualTransporter>();
-         //TODO    var transportContainer = _transporter.ExpressionContainer(CoreConstants.Organ.Brain).DowncastTo<TransporterExpressionContainer>();
-         TransporterExpressionContainer transportContainer = null;
+         var transportContainer = _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter)
+            .First(x => x.LogicalContainer.IsNamed(CoreConstants.Organ.Brain));
 
-         transportContainer.UpdatePropertiesFrom(influxBBB);
+         transportContainer.TransportDirection = TransportDirections.Influx;
+
          _individual.AddMolecule(_transporter);
          _transportProcess = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_SPECIFIC_MM)
             .DowncastTo<PartialProcess>());

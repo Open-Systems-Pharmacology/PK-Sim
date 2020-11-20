@@ -9,6 +9,7 @@ namespace PKSim.Presentation.DTO.Mappers
    public interface IIndividualTransporterToTransporterExpressionDTOMapper
    {
       IndividualTransporterDTO MapFrom(IndividualTransporter transporter, ISimulationSubject simulationSubject);
+      void UpdateExpressionParameters(IndividualTransporterDTO individualTransporterDTO, ISimulationSubject simulationSubject);
    }
 
    public class IndividualTransporterToTransporterExpressionDTOMapper : IIndividualTransporterToTransporterExpressionDTOMapper
@@ -24,19 +25,25 @@ namespace PKSim.Presentation.DTO.Mappers
       public IndividualTransporterDTO MapFrom(IndividualTransporter transporter, ISimulationSubject simulationSubject)
       {
          var dto = new IndividualTransporterDTO(transporter);
+         UpdateExpressionParameters(dto, simulationSubject);
+         return dto;
+      }
+
+      public void UpdateExpressionParameters(IndividualTransporterDTO individualTransporterDTO, ISimulationSubject simulationSubject)
+      {
+         var transporter = individualTransporterDTO.Transporter;
+         individualTransporterDTO.ClearExpressionParameters();
 
          //Local parameters
          foreach (var transporterExpressionContainer in simulationSubject.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter))
          {
-            //Two parents to move up the hierarchy => Organ/Comp/Transporter
-            var isInOrganWithLumen = transporterExpressionContainer.LogicalContainer.IsOrganWithLumen();
             foreach (var parameter in transporterExpressionContainer.AllParameters())
             {
                var expressionParameter = _expressionContainerMapper.MapFrom(parameter);
                expressionParameter.TransporterExpressionContainer = transporterExpressionContainer;
                expressionParameter.TransportDirection =
-                  retrieveTransporterDirectionFor(transporterExpressionContainer, parameter, isInOrganWithLumen);
-               dto.AddExpressionParameter(expressionParameter);
+                  retrieveTransporterDirectionFor(transporterExpressionContainer, parameter);
+               individualTransporterDTO.AddExpressionParameter(expressionParameter);
             }
          }
 
@@ -49,18 +56,18 @@ namespace PKSim.Presentation.DTO.Mappers
                : transporter.VascularEndotheliumContainer;
 
             expressionParameter.TransportDirection = expressionParameter.TransporterExpressionContainer.TransportDirection;
-            dto.AddExpressionParameter(expressionParameter);
+            individualTransporterDTO.AddExpressionParameter(expressionParameter);
          }
-
-         return dto;
       }
 
-      private TransportDirection retrieveTransporterDirectionFor(TransporterExpressionContainer transporterExpressionContainer, IParameter parameter,
-         bool isInOrganWithLumen)
+      private TransportDirection retrieveTransporterDirectionFor(TransporterExpressionContainer transporterExpressionContainer, IParameter parameter)
       {
          if (parameter.IsNamed(INITIAL_CONCENTRATION))
             return TransportDirections.None;
 
+         var isInOrganWithLumen = transporterExpressionContainer.LogicalContainer.IsOrganWithLumen();
+
+         //Organ without lumen only show transporter direction at the rel exp parameter level
          if (!isInOrganWithLumen)
             return parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirections.None;
 

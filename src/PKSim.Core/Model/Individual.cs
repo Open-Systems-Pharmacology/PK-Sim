@@ -179,45 +179,51 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///  Returns all possible (physical) containers of the organism in which <paramref name="molecule"/> will be defined or an empty array if the organism is not defined
+      ///    Returns all possible (physical) containers of the organism in which <paramref name="molecule" /> will be defined or
+      ///    an empty array if the organism is not defined
       /// </summary>
       public virtual IReadOnlyList<IContainer> AllPhysicalContainersWithMoleculeFor(IndividualMolecule molecule) =>
-         Organism?.GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)).Select(x=>x.ParentContainer).ToArray() ?? Array.Empty<IContainer>();
+         Organism?.GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)).Select(x => x.ParentContainer).ToArray() ?? Array.Empty<IContainer>();
 
       /// <summary>
-      ///  Returns all possible molecule parameters defined for <paramref name="molecule"/> in the individual.
-      ///   This also returns the global molecule parameters
+      ///    Returns all possible molecule parameters defined for <paramref name="molecule" /> in the individual.
+      ///    This also returns the global molecule parameters
       /// </summary>
       public virtual IReadOnlyList<IParameter> AllMoleculeParametersFor(IndividualMolecule molecule) =>
          GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)).SelectMany(x => x.AllParameters()).ToList();
 
       /// <summary>
-      ///  Returns all possible molecule containers of the individual in which <paramref name="molecule"/> will be defined.
+      ///    Returns all possible molecule containers of the individual in which <paramref name="molecule" /> will be defined.
       /// </summary>
       public virtual IReadOnlyList<MoleculeExpressionContainer> AllMoleculeContainersFor(IndividualMolecule molecule) =>
          AllMoleculeContainersFor<MoleculeExpressionContainer>(molecule);
 
-      public IReadOnlyList<T> AllMoleculeContainersFor<T>(IndividualMolecule molecule) where T : MoleculeExpressionContainer => GetAllChildren<T>(x => x.IsNamed(molecule.Name));
+      /// <summary>
+      ///    Returns all possible molecule containers of the individual in which <paramref name="molecule" /> will be defined.
+      ///    This also returns global container under the global molecule named after <paramref name="molecule" />
+      /// </summary>
+      public IReadOnlyList<T> AllMoleculeContainersFor<T>(IndividualMolecule molecule) where T : MoleculeExpressionContainer =>
+         GetAllChildren<T>(x => x.IsNamed(molecule.Name) || x.ParentContainer.IsNamed(molecule.Name));
 
-      public virtual ICache<string,IParameter> AllExpressionParametersFor(IndividualMolecule molecule)
+      public virtual ICache<string, IParameter> AllExpressionParametersFor(IndividualMolecule molecule)
       {
-         var cache = new Cache<string, IParameter>(onMissingKey: x=>null);
-         var allExpressionParameters =  GetAllChildren<IParameter>(x => x.IsExpression() && x.ParentContainer.IsNamed(molecule.Name));
+         var cache = new Cache<string, IParameter>(onMissingKey: x => null);
+         var allExpressionParameters = GetAllChildren<IParameter>(x => x.IsExpression() && x.ParentContainer.IsNamed(molecule.Name));
          allExpressionParameters.Each(p =>
+         {
+            if (p.IsGlobalExpression())
+               cache[CoreConstants.ContainerName.GlobalExpressionContainerNameFor(p.Name)] = p;
+            else
             {
-               if (p.IsGlobalExpression())
-                  cache[CoreConstants.ContainerName.GlobalExpressionContainerNameFor(p.Name)] = p;
-               else
-               {     
-                  var container = p.ParentContainer.ParentContainer;
-                  var key = container.IsNamed(CoreConstants.Compartment.Intracellular) ? container.ParentContainer.Name : container.Name;
-                  if (p.IsInLumen())
-                     key = CoreConstants.ContainerName.LumenSegmentNameFor(key);
+               var container = p.ParentContainer.ParentContainer;
+               var key = container.IsNamed(CoreConstants.Compartment.Intracellular) ? container.ParentContainer.Name : container.Name;
+               if (p.IsInLumen())
+                  key = CoreConstants.ContainerName.LumenSegmentNameFor(key);
 
-                  cache[key] = p;
-               }
-            });
-            return cache;
+               cache[key] = p;
+            }
+         });
+         return cache;
       }
    }
 }

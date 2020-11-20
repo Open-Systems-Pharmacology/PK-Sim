@@ -1,14 +1,11 @@
-using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
-using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Compartment;
 using static PKSim.Core.CoreConstants.Parameters;
-using static PKSim.Core.Model.TransportDirections;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
@@ -22,17 +19,17 @@ namespace PKSim.Core.Services
    public class IndividualTransporterFactory : IndividualMoleculeFactory<IndividualTransporter, TransporterExpressionContainer>,
       IIndividualTransporterFactory
    {
-      private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
+      private readonly ITransportContainerUpdater _transportContainerUpdater;
       private readonly IIndividualPathWithRootExpander _individualPathWithRootExpander;
 
       public IndividualTransporterFactory(IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory, IEntityPathResolver entityPathResolver,
-         ITransporterContainerTemplateRepository transporterContainerTemplateRepository,
+         ITransportContainerUpdater transportContainerUpdater,
          IIndividualPathWithRootExpander individualPathWithRootExpander) : base(objectBaseFactory, parameterFactory,
          objectPathFactory, entityPathResolver)
       {
-         _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
+         _transportContainerUpdater = transportContainerUpdater;
          _individualPathWithRootExpander = individualPathWithRootExpander;
       }
 
@@ -42,8 +39,13 @@ namespace PKSim.Core.Services
          //default transporter type
          transporter.TransportType = transporterType;
 
-         addGlobalExpression(transporter, BloodCells, Influx, RelExpParam(REL_EXP_BLOOD_CELLS));
-         addGlobalExpression(transporter, VascularEndothelium, PlasmaToInterstitial, RelExpParam(REL_EXP_VASCULAR_ENDOTHELIUM));
+         //default transport direction
+         var defaultTransportDirection = _transportContainerUpdater.MapTransportTypeTransportDirection(transporterType);
+
+         addGlobalExpression(transporter, BloodCells, defaultTransportDirection, RelExpParam(REL_EXP_BLOOD_CELLS));
+
+         //Special direction for vascular endothelium that is independent from the default direction choice
+         addGlobalExpression(transporter, VascularEndothelium, TransportDirections.PlasmaToInterstitial, RelExpParam(REL_EXP_VASCULAR_ENDOTHELIUM));
 
          addTissueOrgansExpression(simulationSubject, transporter);
          addMucosaExpression(simulationSubject, transporter);
@@ -83,10 +85,10 @@ namespace PKSim.Core.Services
          var liver = individual.Organism.Organ(CoreConstants.Organ.Liver);
          var zone = liver.Compartment(zoneName);
 
-         addTissueParameters(zone, individual, transporter);
+         addTissueParameters(zone, transporter);
 
          var transporterContainer = zone.EntityAt<TransporterExpressionContainer>(Intracellular, transporter.Name);
-         transporterContainer.TransportDirection = Excretion;
+         transporterContainer.TransportDirection = TransportDirections.Excretion;
          transporterContainer.RelativeExpression = 1;
       }
 
@@ -96,12 +98,12 @@ namespace PKSim.Core.Services
          organism.NonGITissueContainers.Each(x =>
          {
             if (x.IsOrganWithLumen())
-               addOrganWithLumenParameters(x, simulationSubject, transporter);
+               addOrganWithLumenParameters(x, transporter);
             else
-               addTissueParameters(x, simulationSubject, transporter);
+               addTissueParameters(x, transporter);
          });
 
-         organism.GITissueContainers.Each(x => addTissueParameters(x, simulationSubject, transporter));
+         organism.GITissueContainers.Each(x => addTissueParameters(x, transporter));
       }
 
       private void addMucosaExpression(ISimulationSubject simulationSubject, IndividualTransporter transporter)
@@ -109,71 +111,67 @@ namespace PKSim.Core.Services
          foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SmallIntestine, CoreConstants.Organ.LargeIntestine))
          {
             var organMucosa = organ.Compartment(Mucosa);
-            organMucosa.GetChildren<Compartment>().Each(x => addOrganWithLumenParameters(x, simulationSubject, transporter));
+            organMucosa.GetChildren<Compartment>().Each(x => addOrganWithLumenParameters(x, transporter));
          }
       }
 
-      private void addOrganWithLumenParameters(IContainer organ, ISimulationSubject simulationSubject, IndividualTransporter transporter)
+      private void addOrganWithLumenParameters(IContainer organ, IndividualTransporter transporter)
       {
-         addTissuePlasmaAndBloodCellsInitialConcentrations(organ, simulationSubject, transporter);
+         var defaultTransportDirection = _transportContainerUpdater.MapTransportTypeTransportDirection(transporter.TransportType);
 
-         addContainerExpression(organ.Container(Intracellular), simulationSubject, transporter, Influx,
+         addTissuePlasmaAndBloodCellsInitialConcentrations(organ, transporter);
+
+         addContainerExpression(organ.Container(Intracellular), transporter, defaultTransportDirection,
             RelExpParam(REL_EXP),
             FractionParam(FRACTION_EXPRESSED_APICAL, CoreConstants.Rate.ZERO_RATE),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER)
          );
 
-         var (transportDirection, editable) =
-            organ.IsInMucosa() ? (Influx, true) : (Elimination: Excretion, false);
-         addContainerExpression(organ.Container(Interstitial), simulationSubject, transporter, transportDirection,
+         var (transportDirection, editable) = organ.IsInMucosa() ? (defaultTransportDirection, true) : (TransportDirections.Excretion, false);
+         addContainerExpression(organ.Container(Interstitial), transporter, transportDirection,
             FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_BASOLATERAL, editable),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
       }
 
-      private void addTissueParameters(IContainer organ, ISimulationSubject simulationSubject, IndividualTransporter transporter)
+      private void addTissueParameters(IContainer organ, IndividualTransporter transporter)
       {
-         addTissuePlasmaAndBloodCellsInitialConcentrations(organ, simulationSubject, transporter);
+         var defaultTransportDirection = _transportContainerUpdater.MapTransportTypeTransportDirection(transporter.TransportType);
 
-         addContainerExpression(organ.Container(Intracellular), simulationSubject, transporter,
-            Influx,
+         addTissuePlasmaAndBloodCellsInitialConcentrations(organ, transporter);
+
+         addContainerExpression(organ.Container(Intracellular), transporter,
+            defaultTransportDirection,
             RelExpParam(REL_EXP)
          );
 
-         addContainerExpression(organ.Container(Interstitial), simulationSubject, transporter,
-            None,
+         addContainerExpression(organ.Container(Interstitial), transporter,
+            TransportDirections.None,
             //We had the basolateral parameter to ensure that we can use the same formula. But this parameter is required only from a technical point of view
             FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.ONE_RATE, editable: false, visible: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
       }
 
-      private void addTissuePlasmaAndBloodCellsInitialConcentrations(IContainer organ, ISimulationSubject simulationSubject,
-         IndividualTransporter transporter)
+      private void addTissuePlasmaAndBloodCellsInitialConcentrations(IContainer organ, IndividualTransporter transporter)
       {
-         addContainerExpression(organ.Container(Plasma), simulationSubject, transporter, None,
+         addContainerExpression(organ.Container(Plasma), transporter, TransportDirections.None,
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA_TRANSPORTER)
          );
 
-         addContainerExpression(organ.Container(BloodCells), simulationSubject, transporter, None,
+         addContainerExpression(organ.Container(BloodCells), transporter, TransportDirections.None,
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS_TRANSPORTER)
          );
       }
 
-      private TransporterExpressionContainer addContainerExpression(IContainer parentContainer, ISimulationSubject simulationSubject,
+      private TransporterExpressionContainer addContainerExpression(IContainer parentContainer,
          IndividualTransporter transporter, TransportDirection transportDirection, params ParameterMetaData[] parameters)
       {
          var expressionContainer = AddContainerExpression(parentContainer, transporter.Name, parameters);
 
+         //Required to set this first to ensure that we capture container that are purely parameter containers
          expressionContainer.TransportDirection = transportDirection;
 
-         var availableTemplates = _transporterContainerTemplateRepository.TransportersFor(simulationSubject.Species.Name, parentContainer.Name)
-            .Where(x => x.TransportType == transporter.TransportType).ToList();
-
-         if (!availableTemplates.Any())
-            return null;
-
-         expressionContainer.UpdatePropertiesFrom(availableTemplates.ElementAt(0));
          return expressionContainer;
       }
    }

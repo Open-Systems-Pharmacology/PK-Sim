@@ -34,18 +34,13 @@ namespace PKSim.UI.Views.Individuals
       {
          _screenBinder.Bind(x => x.TransportType)
             .To(cbTransporterType)
-            .WithImages(transporterIconIndex)
+            .WithImages(x=>x.Icon.Index)
             .WithValues(x => _presenter.AllTransportTypes())
-            .AndDisplays(x => _presenter.TransportTypeCaptionFor(x))
-            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.UpdateTransportType(e.NewValue));
-         
-
+            .AndDisplays(x => x.DisplayName)
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.UpdateTransportType(e.NewValue.TransportType));
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
-
-      private int transporterIconIndex(TransportType transportType) => TransportTypes.By(transportType).Icon.Index;
-
       public void AttachPresenter(IIndividualTransporterExpressionsPresenter presenter)
       {
          _presenter = presenter;

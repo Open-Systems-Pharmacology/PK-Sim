@@ -2,7 +2,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
@@ -41,8 +40,6 @@ namespace PKSim.Core.Commands
 
       protected override void PerformExecuteWith(IExecutionContext context)
       {
-         var transportContainerUpdater = context.Resolve<ITransportContainerUpdater>();
-
          Description = PKSimConstants.Command.SetTransportDirectionCommandDescription(_transporterContainer.ParentContainer.Name,
             _transporterContainer.Name, _transporterContainer.TransportDirection.ToString(), _newTransportDirection.ToString());
 

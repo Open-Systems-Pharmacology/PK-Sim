@@ -9,8 +9,8 @@ namespace PKSim.Core.Commands
    public class SetTransportTypeInAllContainerCommand : PKSimMacroCommand
    {
       private IndividualTransporter _individualTransporter;
-      public TransportType NewTransportType { get; private set; }
-      public TransportType OldTransportType { get; private set; }
+      public TransportType NewTransportType { get; }
+      public TransportType OldTransportType { get; }
       private Individual _individual;
 
       public SetTransportTypeInAllContainerCommand(IndividualTransporter individualTransporter, TransportType transportType, IExecutionContext context)
@@ -32,16 +32,16 @@ namespace PKSim.Core.Commands
 
          Add(new SetTransportTypeInTransporterCommand(_individualTransporter, NewTransportType, context));
 
-         //TODO 
          //Check if a template is available for the given container. If yes, we're good to go and can create a change transporter type command
          //we need to retrieve the process name for the given MembraneTupe/Process Type combo
-         // foreach (var transporterContainer in _individualTransporter.AllExpressionsContainers())
-         // {
-         //    var membraneLocationToUse = transportContainerUpdater.MembraneLocationToUse(transporterContainer, NewTransportType);
-         //
-         //    //change transport type 
-         //    Add(new SetTransportTypeCommand(transporterContainer, OldTransportType, NewTransportType, membraneLocationToUse, context));
-         // }
+         foreach (var transporterContainer in _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_individualTransporter))
+         {
+            var transportDirectionToUse = transportContainerUpdater.TransportDirectionToUse(transporterContainer, NewTransportType);
+         
+            //change transport type 
+            if(transportDirectionToUse!=transporterContainer.TransportDirection)
+               Add(new SetTransportDirectionCommand(transporterContainer, transportDirectionToUse, context)); 
+         }
 
          //now execute all commands
          base.Execute(context);

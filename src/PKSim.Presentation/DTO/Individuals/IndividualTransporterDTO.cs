@@ -1,19 +1,17 @@
 using System.Collections.Generic;
-using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Individuals
 {
    public class IndividualTransporterDTO : ValidatableDTO<IndividualTransporter>
    {
-      private readonly IndividualTransporter _individualTransporter;
-
-      private readonly List <TransporterExpressionParameterDTO> _allExpressionParameters = new List<TransporterExpressionParameterDTO>();
+      private readonly List<TransporterExpressionParameterDTO> _allExpressionParameters = new List<TransporterExpressionParameterDTO>();
+      public IndividualTransporter Transporter { get; }
 
       public IndividualTransporterDTO(IndividualTransporter individualTransporter) : base(individualTransporter)
       {
-         _individualTransporter = individualTransporter;
+         Transporter = individualTransporter;
       }
 
       public IReadOnlyList<TransporterExpressionParameterDTO> AllExpressionParameters => _allExpressionParameters;
@@ -23,10 +21,12 @@ namespace PKSim.Presentation.DTO.Individuals
          _allExpressionParameters.Add(expressionParameterDTO);
       }
 
-      public TransportType TransportType
+      public TransportTypeDTO TransportType
       {
-         get => _individualTransporter.TransportType;
-         set => _individualTransporter.TransportType = value;
+         get => TransportTypes.By(Transporter.TransportType);
+         set => Transporter.TransportType = value.TransportType;
       }
+
+      public void ClearExpressionParameters() => _allExpressionParameters.Clear();
    }
 }

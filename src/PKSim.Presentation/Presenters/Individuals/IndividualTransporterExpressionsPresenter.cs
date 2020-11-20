@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Events;
@@ -8,7 +6,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
@@ -30,7 +27,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       /// <summary>
       ///    Returns the available transporter types
       /// </summary>
-      IEnumerable<TransportType> AllTransportTypes();
+      IEnumerable<TransportTypeDTO> AllTransportTypes();
 
       /// <summary>
       ///    This function is called when the user triggers the transporter type change. All process, for which the selected
@@ -38,16 +35,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       /// </summary>
       /// <param name="newTransportType"> </param>
       void UpdateTransportType(TransportType newTransportType);
-
-      /// <summary>
-      ///    Returns the application icon associated with the given transport type
-      /// </summary>
-      ApplicationIcon IconFor(TransportType transportType);
-
-      /// <summary>
-      ///    Returns the display name associated with the given transport type
-      /// </summary>
-      string TransportTypeCaptionFor(TransportType transportType);
    }
 
    public interface IIndividualTransporterExpressionsPresenter<TSimulationSubject> : IIndividualTransporterExpressionsPresenter
@@ -62,7 +49,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly IIndividualTransporterToTransporterExpressionDTOMapper _transporterExpressionDTOMapper;
       private readonly IIndividualMoleculePropertiesPresenter<TSimulationSubject> _moleculePropertiesPresenter;
       private readonly ITransporterExpressionParametersPresenter _transporterExpressionParametersPresenter;
-      private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
       private IndividualTransporter _transporter;
       private IndividualTransporterDTO _transporterExpressionDTO;
       public ISimulationSubject SimulationSubject { get; set; }
@@ -71,7 +57,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          IIndividualTransporterExpressionsView view, IEditParameterPresenterTask parameterTask,
          IMoleculeExpressionTask<TSimulationSubject> moleculeExpressionTask,
          IIndividualTransporterToTransporterExpressionDTOMapper transporterExpressionDTOMapper,
-         ITransporterContainerTemplateRepository transporterContainerTemplateRepository,
          IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter,
          ITransporterExpressionParametersPresenter transporterExpressionParametersPresenter)
          : base(view, parameterTask)
@@ -80,7 +65,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          _transporterExpressionDTOMapper = transporterExpressionDTOMapper;
          _moleculePropertiesPresenter = moleculePropertiesPresenter;
          _transporterExpressionParametersPresenter = transporterExpressionParametersPresenter;
-         _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
          _transporterExpressionParametersPresenter.SetTransportDirection = SetTransportDirection;
          AddSubPresenters(_moleculePropertiesPresenter, _transporterExpressionParametersPresenter);
          view.AddMoleculePropertiesView(_moleculePropertiesPresenter.View);
@@ -97,7 +81,8 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          AddCommand(_moleculeExpressionTask.SetTransporterTypeFor(_transporter, newTransportType));
          //required to refresh view when changing transport type as some UI elements need to be invalidated
-         RefreshView();
+         _transporterExpressionDTOMapper.UpdateExpressionParameters(_transporterExpressionDTO, SimulationSubject);
+         rebind();
       }
 
       public override void AddCommand(ICommand command)
@@ -107,14 +92,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.HideWarning();
       }
 
-      public ApplicationIcon IconFor(TransportType transportType) => TransportTypes.By(transportType).Icon;
-
-      public string TransportTypeCaptionFor(TransportType transportType) => TransportTypes.By(transportType).DisplayName;
-
-      public IEnumerable<TransportType> AllTransportTypes()
-      {
-         return TransportTypes.All().Select(x => x.TransportType);
-      }
+      public IEnumerable<TransportTypeDTO> AllTransportTypes() => TransportTypes.All();
 
       public bool OntogenyVisible
       {
@@ -129,17 +107,15 @@ namespace PKSim.Presentation.Presenters.Individuals
       public void ActivateMolecule(IndividualMolecule molecule)
       {
          _transporter = molecule.DowncastTo<IndividualTransporter>();
-         _view.HideWarning();
          _transporterExpressionDTO = _transporterExpressionDTOMapper.MapFrom(_transporter, SimulationSubject.DowncastTo<TSimulationSubject>());
          _view.BindTo(_transporterExpressionDTO);
-         _moleculePropertiesPresenter.Edit(molecule, SimulationSubject.DowncastTo<TSimulationSubject>());
-         _transporterExpressionParametersPresenter.Edit(_transporterExpressionDTO.AllExpressionParameters);
-         RefreshView();
+         rebind();
+         _view.HideWarning();
       }
 
-      public void RefreshView()
+      private void rebind()
       {
-         _moleculePropertiesPresenter.RefreshView();
+         _moleculePropertiesPresenter.Edit(_transporter, SimulationSubject.DowncastTo<TSimulationSubject>());
          _transporterExpressionParametersPresenter.Edit(_transporterExpressionDTO.AllExpressionParameters);
       }
 
