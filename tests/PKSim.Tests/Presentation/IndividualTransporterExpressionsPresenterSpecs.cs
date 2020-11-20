@@ -1,7 +1,7 @@
-﻿using OSPSuite.BDDHelper;
+﻿using System.Linq;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
-using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -9,9 +9,9 @@ using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
+using PKSim.Core.Commands;
+using PKSim.Presentation.DTO.Individuals;
 
 namespace PKSim.Presentation
 {
@@ -21,9 +21,9 @@ namespace PKSim.Presentation
       private IEditParameterPresenterTask _parameterTask;
       private IMoleculeExpressionTask<Individual> _moleculeTask;
       private IIndividualTransporterToTransporterExpressionDTOMapper _transporterMapper;
-      private ITransporterContainerTemplateRepository _transportRepository;
       private IIndividualMoleculePropertiesPresenter<Individual> _moleculePropertiesPresenter;
       private ITransporterExpressionParametersPresenter _transporterExpressionParametersPresenter;
+      protected ICommandCollector _commandCollector;
 
       protected override void Context()
       {
@@ -31,30 +31,46 @@ namespace PKSim.Presentation
          _parameterTask = A.Fake<IEditParameterPresenterTask>();
          _moleculeTask = A.Fake<IMoleculeExpressionTask<Individual>>();
          _transporterMapper = A.Fake<IIndividualTransporterToTransporterExpressionDTOMapper>();
-         _transportRepository = A.Fake<ITransporterContainerTemplateRepository>();
          _moleculePropertiesPresenter = A.Fake<IIndividualMoleculePropertiesPresenter<Individual>>();
          _transporterExpressionParametersPresenter= A.Fake<ITransporterExpressionParametersPresenter>(); 
          sut = new IndividualTransporterExpressionsPresenter<Individual>(
-            _view, _parameterTask, _moleculeTask, _transporterMapper, _transportRepository, _moleculePropertiesPresenter,
+            _view, _parameterTask, _moleculeTask, _transporterMapper, _moleculePropertiesPresenter,
             _transporterExpressionParametersPresenter);
+
+         _commandCollector = new PKSimMacroCommand();
+         sut.InitializeWith(_commandCollector);
       }
    }
 
-   public class When_returning_the_application_icon_defined_for_a_given_transporter_type : concern_for_IndividualTransporterExpressionsPresenter
+   public class When_setting_the_transport_type_for_a_transporter_expression_container : concern_for_IndividualTransporterExpressionsPresenter
    {
-      [Observation]
-      public void should_return_the_expected_icon()
-      {
-         sut.IconFor(TransportType.Efflux).ShouldBeEqualTo(ApplicationIcons.Efflux);
-      }
-   }
+      private TransporterExpressionParameterDTO _transporterExpressionDTO;
 
-   public class When_returning_the_display_name_defined_for_a_given_transporter_type : concern_for_IndividualTransporterExpressionsPresenter
-   {
-      [Observation]
-      public void should_return_the_expected_caption()
+      protected override void Context()
       {
-         sut.TransportTypeCaptionFor(TransportType.Efflux).ShouldBeEqualTo(PKSimConstants.UI.Efflux);
+         base.Context();
+         _transporterExpressionDTO = new TransporterExpressionParameterDTO
+         {
+            TransportDirection = TransportDirections.Efflux, 
+            TransporterExpressionContainer = new TransporterExpressionContainer()
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.SetTransportDirection(_transporterExpressionDTO, TransportDirections.Influx);
+      }
+
+      [Observation]
+      public void should_have_updated_the_transport_direction_of_the_transport_container()
+      {
+         _transporterExpressionDTO.TransportDirection.ShouldBeEqualTo(TransportDirections.Influx);
+      }
+
+      [Observation]
+      public void should_have_triggered_a_command()
+      {
+         _commandCollector.All().Count().ShouldBeEqualTo(1);
       }
    }
 }

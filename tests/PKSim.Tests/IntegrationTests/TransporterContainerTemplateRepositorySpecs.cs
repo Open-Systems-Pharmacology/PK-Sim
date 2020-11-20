@@ -101,7 +101,7 @@ namespace PKSim.IntegrationTests
       {
          return
             transporter1.Gene == transporter2.Gene &&
-            transporter1.MembraneLocation == transporter2.MembraneLocation &&
+            transporter1.TransportDirection == transporter2.TransportDirection &&
             transporter1.TransportType == transporter2.TransportType;
 
       }

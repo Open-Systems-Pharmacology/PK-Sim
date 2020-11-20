@@ -50,7 +50,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (transporterExpressionContainer == null)
             return;
 
-         snapshot.MembraneLocation = transporterExpressionContainer.MembraneLocation;
+         snapshot.TransportDirection = transporterExpressionContainer.TransportDirection.TransportDirectionId;
       }
 
       public override async Task<MoleculeExpressionContainer> MapToModel(ExpressionContainer snapshot, ExpressionContainerMapperContext context)

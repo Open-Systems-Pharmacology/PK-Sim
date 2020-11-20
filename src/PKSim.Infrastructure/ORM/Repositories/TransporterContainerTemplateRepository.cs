@@ -86,8 +86,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
          {
             CompartmentName = flatTemplate.CompartmentName,
             Gene = flatTemplate.Gene,
-            MembraneLocation = flatTemplate.MembraneLocation,
-            MembraneLocationDisplayName = flatTemplate.MembraneLocationDisplayName,
             OrganName = flatTemplate.OrganName,
             Species = flatTemplate.Species,
             TransportType = flatTemplate.TransportType

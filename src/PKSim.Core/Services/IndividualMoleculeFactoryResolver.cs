@@ -6,21 +6,21 @@ namespace PKSim.Core.Services
 {
    public interface IIndividualMoleculeFactoryResolver
    {
-      IIndividualMoleculeTask FactoryFor<TIndividualMolecule>();
-      IIndividualMoleculeTask FactoryFor(Type individualMoleculeType);
-      IIndividualMoleculeTask FactoryFor(IndividualMolecule individualMolecule);
+      IIndividualMoleculeFactory FactoryFor<TIndividualMolecule>();
+      IIndividualMoleculeFactory FactoryFor(Type individualMoleculeType);
+      IIndividualMoleculeFactory FactoryFor(IndividualMolecule individualMolecule);
    }
 
    public class IndividualMoleculeFactoryResolver : IIndividualMoleculeFactoryResolver
    {
-      private readonly IRepository<IIndividualMoleculeTask> _enzymeExpressionFactoryRepository;
+      private readonly IRepository<IIndividualMoleculeFactory> _enzymeExpressionFactoryRepository;
 
-      public IndividualMoleculeFactoryResolver(IRepository<IIndividualMoleculeTask> enzymeExpressionFactoryRepository)
+      public IndividualMoleculeFactoryResolver(IRepository<IIndividualMoleculeFactory> enzymeExpressionFactoryRepository)
       {
          _enzymeExpressionFactoryRepository = enzymeExpressionFactoryRepository;
       }
 
-      public IIndividualMoleculeTask FactoryFor(Type individualMoleculeType)
+      public IIndividualMoleculeFactory FactoryFor(Type individualMoleculeType)
       {
          foreach (var expressionFactory in _enzymeExpressionFactoryRepository.All())
          {
@@ -31,8 +31,8 @@ namespace PKSim.Core.Services
          throw new IndividualProteinFactoryNotFoundException(individualMoleculeType);
       }
 
-      public IIndividualMoleculeTask FactoryFor<TIndividualMolecule>() => FactoryFor(typeof(TIndividualMolecule));
+      public IIndividualMoleculeFactory FactoryFor<TIndividualMolecule>() => FactoryFor(typeof(TIndividualMolecule));
 
-      public IIndividualMoleculeTask FactoryFor(IndividualMolecule individualMolecule) => FactoryFor(individualMolecule.GetType());
+      public IIndividualMoleculeFactory FactoryFor(IndividualMolecule individualMolecule) => FactoryFor(individualMolecule.GetType());
    }
 }

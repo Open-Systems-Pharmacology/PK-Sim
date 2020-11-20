@@ -23,13 +23,14 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          _builderRepository.Report(sb, buildTracker);
       }
 
-      protected override string ExpressionContainerDisplayNameFor(IParameter parameter)
-      {
-         var container = parameter.ParentContainer.DowncastTo<TransporterExpressionContainer>();
-         var displayName = _representationInfoRepository.DisplayNameFor(container);
-         if (container.HasPolarizedMembrane)
-            displayName = $"{displayName} ({container.MembraneLocation})";
-         return displayName;
-      }
+      //TODO
+       protected override string ExpressionContainerDisplayNameFor(IParameter parameter)
+       {
+          var container = parameter.ParentContainer.DowncastTo<TransporterExpressionContainer>();
+          var displayName = _representationInfoRepository.DisplayNameFor(container);
+      //    if (container.HasPolarizedMembrane)
+      //       displayName = $"{displayName} ({container.MembraneLocation})";
+          return displayName;
+       }
    }
 }

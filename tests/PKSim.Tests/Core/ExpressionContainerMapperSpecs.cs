@@ -43,7 +43,7 @@ namespace PKSim.Core
 
          _transporterRelativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
          _transporterExpressionContainer = new TransporterExpressionContainer().WithName("TRANS");
-         _transporterExpressionContainer.MembraneLocation = MembraneLocation.Apical;
+         _transporterExpressionContainer.TransportDirection = TransportDirections.Influx;
 
          _transporterExpressionContainer.Add(_transporterRelativeExpressionParameter);
 
@@ -148,12 +148,6 @@ namespace PKSim.Core
       public void should_update_the_expression_container_with_the_expected_value()
       {
          A.CallTo(() => _parameterMapper.MapToModel(_snapshot, _transporterRelativeExpressionParameter)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_update_the_transporter_container_properties()
-      {
-         A.CallTo(() => _transportContainerUpdater.UpdateTransporterFromTemplate(_transporterExpressionContainer, _individual.Species.Name, _snapshot.MembraneLocation.Value, _transporter.TransportType)).MustHaveHappened();
       }
    }
 }

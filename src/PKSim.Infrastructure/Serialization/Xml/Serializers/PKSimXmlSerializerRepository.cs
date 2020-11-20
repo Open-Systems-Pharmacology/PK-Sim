@@ -38,6 +38,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          AttributeMapperRepository.AddAttributeMapper(new DistributionTypeXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new IconSizeAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new DosingIntervalXmlAttributeMapper());
+         AttributeMapperRepository.AddAttributeMapper(new TransportDirectionXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new LabelGenerationStrategyXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<Localization, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<OrganType, SerializationContext>());
@@ -51,7 +52,6 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<AxisCountMode, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<PopulationAnalysisType, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<InteractionType, SerializationContext>());
-         AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<TransportDirection, SerializationContext>());
 
          //PKSim Serializers
          this.AddSerializers(x =>

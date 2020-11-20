@@ -6,5 +6,6 @@ namespace PKSim.Core.Snapshots
    public class ExpressionContainer : Parameter
    {
       public MembraneLocation? MembraneLocation { get; set; }
+      public TransportDirectionId? TransportDirection { get; set; }
    }
 }

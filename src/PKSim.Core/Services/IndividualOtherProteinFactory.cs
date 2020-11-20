@@ -6,13 +6,13 @@ using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
 {
-   public interface IIndividualOtherProteinTask : IIndividualMoleculeTask
+   public interface IIndividualOtherProteinFactory : IIndividualMoleculeFactory
    {
    }
 
-   public class IndividualOtherProteinTask : IndividualProteinTask<IndividualOtherProtein>, IIndividualOtherProteinTask
+   public class IndividualOtherProteinFactory : IndividualProteinFactory<IndividualOtherProtein>, IIndividualOtherProteinFactory
    {
-      public IndividualOtherProteinTask(
+      public IndividualOtherProteinFactory(
          IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,

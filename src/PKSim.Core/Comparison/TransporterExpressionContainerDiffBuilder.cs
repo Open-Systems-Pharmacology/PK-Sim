@@ -16,7 +16,7 @@ namespace PKSim.Core.Comparison
       public override void Compare(IComparison<TransporterExpressionContainer> comparison)
       {
          _containerDiffBuilder.Compare(comparison);
-         CompareValues(x => x.MembraneLocation, PKSimConstants.UI.LocalizationOnMembrane, comparison);
+         CompareValues(x => x.TransportDirection, PKSimConstants.UI.TransportDirection, comparison);
       }
    }
 }

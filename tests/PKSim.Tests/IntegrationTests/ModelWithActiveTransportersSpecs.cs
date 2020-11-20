@@ -26,7 +26,7 @@ namespace PKSim.IntegrationTests
          const string transporterName = "Tr1";
 
          var individual = DomainFactoryForSpecs.CreateStandardIndividual();
-         var transporterFactory = IoC.Resolve<IIndividualTransporterTask>();
+         var transporterFactory = IoC.Resolve<IIndividualTransporterFactory>();
 
          var transporter = transporterFactory.CreateFor(individual, transporterName, TransportType.Efflux);
          individual.AddMolecule(transporter);

@@ -61,7 +61,7 @@ namespace PKSim.IntegrationTests
 
       protected IndividualEnzyme AddEnzymeTo(Individual individual, string enzymeName)
       {
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeTask>();
+         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
 
          var enzyme = enzymeFactory.AddMoleculeTo(_individual, enzymeName).DowncastTo<IndividualEnzyme>();
          var allExpressionParameters = _individual.AllExpressionParametersFor(enzyme);

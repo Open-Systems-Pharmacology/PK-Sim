@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using DevExpress.Utils;
+﻿using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Extensions;
@@ -41,34 +41,29 @@ namespace PKSim.UI.Views.Individuals
       {
          InitializeGroupBinding();
          InitializeContainerBinding();
-         InitializeDirectionBinding();
+         initializeDirectionBinding();
          InitializeParameterNameBinding();
          InitializeValueBinding();
          InitializeShowInitialConcentrationBinding();
       }
 
-      private void InitializeDirectionBinding()
+      private void initializeDirectionBinding()
       {
          _colDirection = _gridViewBinder.Bind(item => item.TransportDirection)
             .WithRepository(getTransporterMembraneRepository)
             .WithEditorConfiguration(editTransporterMembraneTypeRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithCaption(PKSimConstants.UI.Direction)
+            .WithCaption(PKSimConstants.UI.TransportDirection)
             .WithOnValueUpdating((o, e) => OnEvent(() => transporterExpressionParametersPresenter.SetTransportDirection(o, e.NewValue)));
 
          _colDirection.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.False;
-
-      }
-
-      private string transportDirectionDisplayName(TransportDirection transportDirection, TransporterExpressionParameterDTO expressionParameterDTO)
-      {
-         return $"{expressionParameterDTO.ContainerPathDTO.DisplayName} ({transportDirection})";
       }
 
       private RepositoryItem getTransporterMembraneRepository(TransporterExpressionParameterDTO expressionParameterDTO)
       {
          var allMembranesTypes = transporterExpressionParametersPresenter.AllTransportDirectionsFor(expressionParameterDTO);
-         var displayName = expressionParameterDTO.TransportDirection== TransportDirection.None ? "" : expressionParameterDTO.TransportDirection.ToString();
+         var transportDirection = expressionParameterDTO.TransportDirection;
+         var displayName = transportDirection.DisplayName;
 
          var repositoryItemImageComboBox = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever)
             {ReadOnly = (allMembranesTypes.Count == 1), AllowDropDownWhenReadOnly = DefaultBoolean.False};
@@ -76,8 +71,7 @@ namespace PKSim.UI.Views.Individuals
             repositoryItemImageComboBox.Buttons.Clear();
 
 
-         var comboBoxItem = new ImageComboBoxItem(displayName, expressionParameterDTO.TransportDirection,
-            transporterExpressionParametersPresenter.TransporterDirectionIconFor(expressionParameterDTO.TransportDirection).Index);
+         var comboBoxItem = new ImageComboBoxItem(displayName, transportDirection, transportDirection.Icon.Index);
          repositoryItemImageComboBox.Items.Add(comboBoxItem);
          return repositoryItemImageComboBox;
       }
@@ -88,8 +82,16 @@ namespace PKSim.UI.Views.Individuals
          if (allMembranesTypes.Count == 1)
             return;
 
-         editor.FillImageComboBoxEditorWith(allMembranesTypes, x => transporterExpressionParametersPresenter.TransporterDirectionIconFor(x).Index,
-            x => transportDirectionDisplayName(x, containerDTO));
+         editor.FillImageComboBoxEditorWith(allMembranesTypes, x => x.Icon.Index, x => x.Description);
+      }
+
+      protected override SuperToolTip GetToolTipFor(TransporterExpressionParameterDTO expressionParameterDTO, GridHitInfo hi)
+      {
+         if (hi.Column != _colDirection.XtraColumn)
+            return base.GetToolTipFor(expressionParameterDTO, hi);
+
+         //Show direction tool tio
+         return _toolTipCreator.ToolTipFor(expressionParameterDTO);
       }
    }
 }

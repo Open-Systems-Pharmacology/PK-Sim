@@ -7,14 +7,14 @@ using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 using static PKSim.Core.CoreConstants.Parameters;
 namespace PKSim.Core.Services
 {
-   public interface IIndividualEnzymeTask : IIndividualMoleculeTask
+   public interface IIndividualEnzymeFactory : IIndividualMoleculeFactory
    {
       IndividualEnzyme AddUndefinedLiverTo(Individual individual);
    }
 
-   public class IndividualEnzymeTask : IndividualProteinTask<IndividualEnzyme>, IIndividualEnzymeTask
+   public class IndividualEnzymeFactory : IndividualProteinFactory<IndividualEnzyme>, IIndividualEnzymeFactory
    {
-      public IndividualEnzymeTask(
+      public IndividualEnzymeFactory(
          IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,

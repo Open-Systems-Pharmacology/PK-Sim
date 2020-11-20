@@ -13,7 +13,7 @@ using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
 {
-   public interface IIndividualMoleculeTask : ISpecification<Type>
+   public interface IIndividualMoleculeFactory : ISpecification<Type>
    {
       /// <summary>
       ///    Returns an empty <see cref="IndividualMolecule" />  (only parameters are defined in the protein, no protein
@@ -24,7 +24,7 @@ namespace PKSim.Core.Services
       IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
    }
 
-   public abstract class IndividualMoleculeTask<TMolecule, TMoleculeExpressionContainer> : IIndividualMoleculeTask
+   public abstract class IndividualMoleculeFactory<TMolecule, TMoleculeExpressionContainer> : IIndividualMoleculeFactory
       where TMolecule : IndividualMolecule
       where TMoleculeExpressionContainer : MoleculeExpressionContainer
    {
@@ -33,7 +33,7 @@ namespace PKSim.Core.Services
       protected readonly IObjectPathFactory _objectPathFactory;
       protected readonly IParameterFactory _parameterFactory;
 
-      protected IndividualMoleculeTask(
+      protected IndividualMoleculeFactory(
          IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,

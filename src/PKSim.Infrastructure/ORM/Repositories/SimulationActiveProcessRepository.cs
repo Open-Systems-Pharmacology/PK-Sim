@@ -88,7 +88,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
             return compoundProcessName;
 
          //this is a composed name
-         return string.Format("{0}_{1}", simulationPrefix, compoundProcess.KineticType);
+         return $"{simulationPrefix}_{compoundProcess.KineticType}";
       }
    }
 }

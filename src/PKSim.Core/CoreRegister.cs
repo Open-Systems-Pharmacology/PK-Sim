@@ -110,9 +110,9 @@ namespace PKSim.Core
 
       private void registerMoleculeFactories(IContainer container)
       {
-         container.Register<IIndividualMoleculeTask, IndividualEnzymeTask>();
-         container.Register<IIndividualMoleculeTask, IndividualTransporterTask>();
-         container.Register<IIndividualMoleculeTask, IndividualOtherProteinTask>();
+         container.Register<IIndividualMoleculeFactory, IndividualEnzymeFactory>();
+         container.Register<IIndividualMoleculeFactory, IndividualTransporterFactory>();
+         container.Register<IIndividualMoleculeFactory, IndividualOtherProteinFactory>();
       }
 
       private static void registerComparers(IContainer container)

@@ -26,17 +26,14 @@ namespace PKSim.Presentation.DTO.Individuals
          return _allTransporterTypes[transporterType];
       }
 
-      public static IEnumerable<TransportTypeDTO> All()
-      {
-         return _allTransporterTypes;
-      }
+      public static IReadOnlyCollection<TransportTypeDTO> All() => _allTransporterTypes;
    }
 
    public class TransportTypeDTO
    {
-      public TransportType TransportType { get; private set; }
-      public string DisplayName { get; private  set; }
-      public ApplicationIcon Icon { get; private set; }
+      public TransportType TransportType { get; }
+      public string DisplayName { get; }
+      public ApplicationIcon Icon { get; }
 
       public TransportTypeDTO(TransportType transporterType, string displayName, ApplicationIcon icon)
       {

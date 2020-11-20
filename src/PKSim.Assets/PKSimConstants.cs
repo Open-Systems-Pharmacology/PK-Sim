@@ -286,9 +286,9 @@ namespace PKSim.Assets
             return $"Transporter type for '{transporterName}' was changed from '{oldTransporterType}' to '{newTransporterType}'";
          }
 
-         public static string SetMembraneTypeCommandDescription(string transporterName, string containerName, string oldMembraneType, string newMembraneType)
+         public static string SetTransportDirectionCommandDescription(string transporterName, string containerName, string oldTransportDirection, string newTransportDirection)
          {
-            return $"Membrane location for '{transporterName}' in '{containerName}' was changed from '{oldMembraneType}' to '{newMembraneType}'";
+            return $"Transport direction for '{transporterName}' in '{containerName}' was changed from '{oldTransportDirection}' to '{newTransportDirection}'";
          }
 
          public static string SetCompartmentTypeInAllContainerCommandDescription(string proteinName, string oldCompartmentName, string newCompartmentName)
@@ -1543,7 +1543,7 @@ namespace PKSim.Assets
          public static readonly string ObserversFolder = "Observers";
          public static readonly string AdministrationProtocolFolder = "Administration Protocols";
          public const string Value = "Value";
-         public const string Direction = "Direction";
+         public const string TransportDirection = "Direction";
          public static readonly string Percentage = "Percentage";
          public static readonly string Container = "Container";
          public static readonly string Percentile = "Percentile";
@@ -1614,10 +1614,6 @@ namespace PKSim.Assets
          public static readonly string HalfLife = "Half life";
          public static readonly string HalfLifeLiver = "Half life (liver)";
          public static readonly string HalfLifeIntestine = "Half life (intestine)";
-         public static readonly string LocalizationInTissue = "Localization in tissue";
-         public static readonly string LocalizationOnMembrane = "Localization on membrane";
-         public static readonly string IntracellularVascularEndoLocation = "Localization in vasc. endothelium";
-         public static readonly string LocationOnVascularEndo = "Localization on vasc. endothelium";
          public static readonly string OntogenyVariabilityLike = "Ontogeny/Variability like";
          public static readonly string Ontogeny = "Ontogeny";
          public static readonly string OntogenyFactor = "Ontogeny factor";
@@ -2589,7 +2585,7 @@ namespace PKSim.Assets
          public static readonly string SimulationType= "Simulation Type";
       }
 
-      public class PKAnalysis
+      public static class PKAnalysis
       {
          public static readonly string Compound = ObjectTypes.Compound;
          public static readonly string ParameterDisplayName = ObjectTypes.Parameter;
@@ -2601,7 +2597,7 @@ namespace PKSim.Assets
          public static readonly string Warning = "Warning";
       }
 
-      public class Comparison
+      public static class Comparison
       {
          public static readonly string RelativeTolerance = "Relative Tolerance";
          public static readonly string FormulaComparisonMode = "Formula Comparision";
@@ -2618,6 +2614,27 @@ namespace PKSim.Assets
          public static readonly string HideSettings = "Hide";
          public static readonly string Absent = "Absent";
          public static readonly string Present = "Present";
+      }
+
+      public static class TransportDirection
+      {
+         public const string None = "";
+         public const string Influx = "Influx";
+         public const string InfluxDescription = "InfluxDescription";
+         public const string Efflux = "Efflux";
+         public const string EffluxDescription = "EffluxDescription";
+         public const string PgpLike = "PgpLike";
+         public const string PgpLikeDescription = "PgpLikeDescription";
+         public const string CellsBiDirectional = "CellsBiDirectional";
+         public const string CellsBiDirectionalDescription = "CellsBiDirectionalDescription";
+         public const string Excretion = "Excretion";
+         public const string InExcretionDirection= "InExcretionDirection";
+         public const string PlasmaToInterstitial = "PlasmaToInterstitial";
+         public const string PlasmaToInterstitialDescription = "PlasmaToInterstitialDescription";
+         public const string InterstitialToPlasma = "InterstitialToPlasma";
+         public const string InterstitialToPlasmaDescription = "InterstitialToPlasmaDescription";
+         public const string VascEndoBiDirectional = "VascEndoBiDirectional";
+         public const string VascEndoBiDirectionalDescription = "VascEndoBiDirectionalDescription";
       }
    }
 }

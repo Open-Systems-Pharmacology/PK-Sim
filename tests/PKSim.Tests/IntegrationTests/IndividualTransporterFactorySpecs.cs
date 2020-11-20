@@ -7,7 +7,7 @@ using PKSim.Infrastructure;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_IndividualTransporterFactory : ContextForIntegration<IIndividualTransporterTask>
+   public abstract class concern_for_IndividualTransporterFactory : ContextForIntegration<IIndividualTransporterFactory>
    {
       protected Individual _individual;
 
