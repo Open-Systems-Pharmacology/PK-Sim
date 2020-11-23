@@ -29,7 +29,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.uxLayoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelExpressionParameters = new DevExpress.XtraEditors.PanelControl();
          this.panelMoleculeLocalization = new DevExpress.XtraEditors.PanelControl();
          this.panelMoleculeProperties = new DevExpress.XtraEditors.PanelControl();
@@ -40,8 +40,8 @@
          this.layoutItemPanelLocalization = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemPanelExpressionParameters = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl1)).BeginInit();
-         this.uxLayoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelExpressionParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeLocalization)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeProperties)).BeginInit();
@@ -53,20 +53,20 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPanelExpressionParameters)).BeginInit();
          this.SuspendLayout();
          // 
-         // uxLayoutControl1
+         // layoutControl
          // 
-         this.uxLayoutControl1.AllowCustomization = false;
-         this.uxLayoutControl1.Controls.Add(this.panelExpressionParameters);
-         this.uxLayoutControl1.Controls.Add(this.panelMoleculeLocalization);
-         this.uxLayoutControl1.Controls.Add(this.panelMoleculeProperties);
-         this.uxLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.uxLayoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.uxLayoutControl1.Name = "uxLayoutControl1";
-         this.uxLayoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(857, 251, 650, 400);
-         this.uxLayoutControl1.Root = this.Root;
-         this.uxLayoutControl1.Size = new System.Drawing.Size(810, 543);
-         this.uxLayoutControl1.TabIndex = 0;
-         this.uxLayoutControl1.Text = "uxLayoutControl1";
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.panelExpressionParameters);
+         this.layoutControl.Controls.Add(this.panelMoleculeLocalization);
+         this.layoutControl.Controls.Add(this.panelMoleculeProperties);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(857, 251, 650, 400);
+         this.layoutControl.Root = this.Root;
+         this.layoutControl.Size = new System.Drawing.Size(810, 543);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "layoutControl";
          // 
          // panelExpressionParameters
          // 
@@ -145,12 +145,12 @@
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.uxLayoutControl1);
+         this.Controls.Add(this.layoutControl);
          this.Name = "IndividualProteinExpressionsView";
          this.Size = new System.Drawing.Size(810, 543);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl1)).EndInit();
-         this.uxLayoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.panelExpressionParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeLocalization)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeProperties)).EndInit();
@@ -166,7 +166,7 @@
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxLayoutControl uxLayoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup Root;
       private DevExpress.XtraEditors.PanelControl panelMoleculeProperties;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemMoleculeProperties;

@@ -1,4 +1,3 @@
-using System.Linq;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
@@ -40,9 +39,11 @@ namespace PKSim.Presentation.DTO.Mappers
             foreach (var parameter in transporterExpressionContainer.AllParameters())
             {
                var expressionParameter = _expressionContainerMapper.MapFrom(parameter);
+               var isInOrganWithLumen = transporterExpressionContainer.LogicalContainer.IsOrganWithLumen();
                expressionParameter.TransporterExpressionContainer = transporterExpressionContainer;
+               expressionParameter.IsInOrganWithLumen = isInOrganWithLumen;
                expressionParameter.TransportDirection =
-                  retrieveTransporterDirectionFor(transporterExpressionContainer, parameter);
+                  retrieveTransporterDirectionFor(transporterExpressionContainer, parameter, isInOrganWithLumen);
                individualTransporterDTO.AddExpressionParameter(expressionParameter);
             }
          }
@@ -60,13 +61,11 @@ namespace PKSim.Presentation.DTO.Mappers
          }
       }
 
-      private TransportDirection retrieveTransporterDirectionFor(TransporterExpressionContainer transporterExpressionContainer, IParameter parameter)
+      private TransportDirection retrieveTransporterDirectionFor(TransporterExpressionContainer transporterExpressionContainer, IParameter parameter,
+         bool isInOrganWithLumen = false)
       {
          if (parameter.IsNamed(INITIAL_CONCENTRATION))
             return TransportDirections.None;
-
-         var isInOrganWithLumen = transporterExpressionContainer.LogicalContainer.IsOrganWithLumen();
-
          //Organ without lumen only show transporter direction at the rel exp parameter level
          if (!isInOrganWithLumen)
             return parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirections.None;

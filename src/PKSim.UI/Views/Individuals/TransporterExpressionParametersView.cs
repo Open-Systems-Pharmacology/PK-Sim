@@ -1,8 +1,10 @@
-﻿using DevExpress.Utils;
+﻿using System.Collections.Generic;
+using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
@@ -59,14 +61,40 @@ namespace PKSim.UI.Views.Individuals
          _colDirection.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.False;
       }
 
+      protected override void OnCellMerge(CellMergeEventArgs e)
+      {
+         base.OnCellMerge(e);
+         var p1 = _gridViewBinder.ElementAt(e.RowHandle1);
+         var p2 = _gridViewBinder.ElementAt(e.RowHandle2);
+         //One raw represents an organ with lumen. We only authorize merging if the organ are the same
+         if (p1.IsInOrganWithLumen || p2.IsInOrganWithLumen) 
+            e.Handled = !string.Equals(p1.ContainerName, p2.ContainerName);
+      }
+
+      protected override bool CanEditValueAt(TransporterExpressionParameterDTO expressionParameterDTO)
+      {
+         if (!Equals(_gridView.FocusedColumn, _colDirection.XtraColumn))
+            return base.CanEditValueAt(expressionParameterDTO);
+
+         return allTransportDirectionsFor(expressionParameterDTO).Count > 1;
+      }
+
+      protected override void UpdateExpressionParameterAppearance(TransporterExpressionParameterDTO expressionParameterDTO, RowCellStyleEventArgs e)
+      {
+         if (e.Column == _colDirection.XtraColumn)
+            _gridView.AdjustAppearance(e, isEnabled: allTransportDirectionsFor(expressionParameterDTO).Count > 1);
+         else
+            base.UpdateExpressionParameterAppearance(expressionParameterDTO, e);
+      }
+
       private RepositoryItem getTransporterMembraneRepository(TransporterExpressionParameterDTO expressionParameterDTO)
       {
-         var allMembranesTypes = transporterExpressionParametersPresenter.AllTransportDirectionsFor(expressionParameterDTO);
+         var allMembranesTypes = allTransportDirectionsFor(expressionParameterDTO);
          var transportDirection = expressionParameterDTO.TransportDirection;
          var displayName = transportDirection.DisplayName;
 
          var repositoryItemImageComboBox = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever)
-            {ReadOnly = (allMembranesTypes.Count == 1), AllowDropDownWhenReadOnly = DefaultBoolean.False};
+            {ReadOnly = (allMembranesTypes.Count <= 1), AllowDropDownWhenReadOnly = DefaultBoolean.False};
          if (repositoryItemImageComboBox.ReadOnly)
             repositoryItemImageComboBox.Buttons.Clear();
 
@@ -74,6 +102,11 @@ namespace PKSim.UI.Views.Individuals
          var comboBoxItem = new ImageComboBoxItem(displayName, transportDirection, transportDirection.Icon.Index);
          repositoryItemImageComboBox.Items.Add(comboBoxItem);
          return repositoryItemImageComboBox;
+      }
+
+      private IReadOnlyList<TransportDirection> allTransportDirectionsFor(TransporterExpressionParameterDTO expressionParameterDTO)
+      {
+         return transporterExpressionParametersPresenter.AllTransportDirectionsFor(expressionParameterDTO);
       }
 
       private void editTransporterMembraneTypeRepository(BaseEdit editor, TransporterExpressionParameterDTO containerDTO)

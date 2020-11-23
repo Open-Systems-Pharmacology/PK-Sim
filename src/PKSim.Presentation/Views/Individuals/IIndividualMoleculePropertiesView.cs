@@ -5,8 +5,8 @@ namespace PKSim.Presentation.Views.Individuals
 {
    public interface IIndividualMoleculePropertiesView : IView<IIndividualMoleculePropertiesPresenter>, IResizableView
    {
-      void AddOntogenyView(IView view);
-      void AddMoleculeParametersView(IView view);
+      void AddOntogenyView(IResizableView view);
+      void AddMoleculeParametersView(IResizableView view);
       bool OntogenyVisible { set; }
       bool MoleculeParametersVisible { set; }
    }

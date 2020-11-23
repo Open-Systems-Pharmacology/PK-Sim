@@ -121,15 +121,16 @@ namespace PKSim.Core.Services
 
          addTissuePlasmaAndBloodCellsInitialConcentrations(organ, transporter);
 
-         addContainerExpression(organ.Container(Intracellular), transporter, defaultTransportDirection,
+         var transportDirection = organ.IsInMucosa() ? defaultTransportDirection : TransportDirections.Excretion;
+
+         addContainerExpression(organ.Container(Intracellular), transporter, transportDirection,
             RelExpParam(REL_EXP),
             FractionParam(FRACTION_EXPRESSED_APICAL, CoreConstants.Rate.ZERO_RATE),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER)
          );
 
-         var (transportDirection, editable) = organ.IsInMucosa() ? (defaultTransportDirection, true) : (TransportDirections.Excretion, false);
-         addContainerExpression(organ.Container(Interstitial), transporter, transportDirection,
-            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_BASOLATERAL, editable),
+         addContainerExpression(organ.Container(Interstitial), transporter, defaultTransportDirection,
+            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_BASOLATERAL, editable: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
       }

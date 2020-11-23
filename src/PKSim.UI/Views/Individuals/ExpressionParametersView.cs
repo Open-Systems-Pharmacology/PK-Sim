@@ -55,7 +55,6 @@ namespace PKSim.UI.Views.Individuals
       private readonly ScreenBinder<IExpressionParametersPresenter<TExpressionParameterDTO>> _screenBinder =
          new ScreenBinder<IExpressionParametersPresenter<TExpressionParameterDTO>>();
 
-
       public ExpressionParametersView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever)
       {
          _toolTipCreator = toolTipCreator;
@@ -74,7 +73,7 @@ namespace PKSim.UI.Views.Individuals
       protected override void InitializeWithGrid(UxGridView gridView)
       {
          base.InitializeWithGrid(gridView);
-         gridView.ShouldUseColorForDisabledCell = false;
+         gridView.ShouldUseColorForDisabledCell = true;
          gridView.OptionsView.AllowCellMerge = true;
          gridView.GroupFormat = "[#image]{1}";
          gridView.RowCellStyle += updateRowCellStyle;
@@ -82,13 +81,30 @@ namespace PKSim.UI.Views.Individuals
          gridView.EndGrouping += (o, e) => gridView.ExpandAllGroups();
          gridView.CustomColumnSort += customColumnSort;
          gridView.GridControl.ToolTipController = _toolTipController;
+         gridView.CellMerge += (o, e) => OnEvent(OnCellMerge, e);
+      }
+
+      protected virtual void OnCellMerge(CellMergeEventArgs e)
+      {
+         //nothing to do here
       }
 
       private void onShowingEditor(object sender, CancelEventArgs e)
       {
+         if (_gridView.FocusedColumn == null)
+            return;
+
+         if (_gridView.FocusedColumn.ReadOnly)
+            e.Cancel = true;
+
+
+         e.Cancel = !CanEditValueAt(_gridViewBinder.FocusedElement);
+      }
+
+      protected virtual bool CanEditValueAt(TExpressionParameterDTO expressionParameterDTO)
+      {
          var parameterDTO = _gridViewBinder.FocusedElement?.Parameter;
-         if (parameterDTO == null) return;
-         e.Cancel = !_presenter.CanEditParameter(parameterDTO);
+         return parameterDTO != null && _presenter.CanEditParameter(parameterDTO);
       }
 
       private void customColumnSort(object sender, CustomColumnSortEventArgs e)
@@ -288,18 +304,23 @@ namespace PKSim.UI.Views.Individuals
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
       {
          var expressionDTO = _gridViewBinder.ElementAt(e.RowHandle);
-         var parameterDTO = expressionDTO?.Parameter;
-         if (parameterDTO == null)
-            return;
 
          //Make sure the name and value of a relative expression parameter are using a bold font
          if (shouldEmphasisCellAppearance(expressionDTO, e))
             e.Appearance.Font = new Font(e.Appearance.Font.FontFamily, e.Appearance.Font.Size, FontStyle.Bold);
-
          else if (e.Column.OptionsColumn.ReadOnly)
             _gridView.AdjustAppearance(e, true);
+         else
+            UpdateExpressionParameterAppearance(expressionDTO, e);
+      }
 
-         else if (!parameterDTO.Parameter.Editable)
+      protected virtual void UpdateExpressionParameterAppearance(TExpressionParameterDTO expressionParameterDTO, RowCellStyleEventArgs e)
+      {
+         var parameterDTO = expressionParameterDTO?.Parameter;
+         if (parameterDTO == null)
+            return;
+
+         if (!parameterDTO.Parameter.Editable)
             _gridView.AdjustAppearance(e, isEnabled: false);
 
          else if (_presenter.IsSetByUser(parameterDTO))
